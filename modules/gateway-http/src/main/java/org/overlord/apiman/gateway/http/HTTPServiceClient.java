@@ -8,20 +8,32 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.overlord.apiman.gateway.http;
 
-import org.apache.http.*;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.servlet.ServletException;
+
+import org.apache.http.HttpEntityEnclosingRequest;
+import org.apache.http.HttpHeaders;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.AbortableHttpRequest;
 import org.apache.http.client.utils.URIUtils;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
+import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.apache.http.message.BasicHttpRequest;
@@ -32,38 +44,32 @@ import org.overlord.apiman.Request;
 import org.overlord.apiman.Response;
 import org.overlord.apiman.gateway.ServiceClient;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.servlet.ServletException;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  * The HTTP based implementation of the service client.
- * 
+ *
  * Based on the http servlet proxy implemented by David Smiley:
  * https://github.com/dsmiley/HTTP-Proxy-Servlet
  *
  */
 public class HTTPServiceClient implements ServiceClient {
-	
+
 	private static final Logger LOG=Logger.getLogger(HTTPServiceClient.class.getName());
 
 	private static final String APIKEY = "apikey";
 
 	private HttpClient proxyClient;
-	
+
 	/**
 	 * The default constructor.
 	 */
 	public HTTPServiceClient() {
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean isSupported(Request request) {
+	@Override
+    public boolean isSupported(Request request) {
 		return (request.getServiceURI().startsWith("http:") ||
 				request.getServiceURI().startsWith("https:"));
 	}
@@ -75,34 +81,35 @@ public class HTTPServiceClient implements ServiceClient {
 	public void init() {
 		HttpParams hcParams = new BasicHttpParams();
 		//readConfigParam(hcParams, ClientPNames.HANDLE_REDIRECTS, Boolean.class);
-		proxyClient = new DefaultHttpClient(new ThreadSafeClientConnManager(),hcParams);
+		proxyClient = new DefaultHttpClient(new PoolingClientConnectionManager(),hcParams);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Response process(Request request) throws Exception {
+	@Override
+    public Response process(Request request) throws Exception {
 	    String method="GET";
-	    
+
 	    if (request instanceof HTTPGatewayRequest) {
 	    		method = ((HTTPGatewayRequest)request).getHTTPMethod();
 	    }
-	    
+
 	    String proxyRequestUri = rewriteUrlFromRequest(request);
-	    
+
 	    HttpRequest proxyRequest;
-	    
+
 	    //spec: RFC 2616, sec 4.3: either of these two headers signal that there is a message body.
 	    if (request.getHeader(HttpHeaders.CONTENT_LENGTH) != null ||
 	    		request.getHeader(HttpHeaders.TRANSFER_ENCODING) != null) {
 	    	HttpEntityEnclosingRequest eProxyRequest = new BasicHttpEntityEnclosingRequest(method, proxyRequestUri);
-	    	
+
 	    	java.io.InputStream is=new java.io.ByteArrayInputStream(request.getContent());
-	    	
+
 	    	InputStreamEntity entity=new InputStreamEntity(is, request.getContent().length);
-	    	
+
 	    	is.close();
-	    	
+
 	    	eProxyRequest.setEntity(entity);
 
 	    	proxyRequest = eProxyRequest;
@@ -121,9 +128,9 @@ public class HTTPServiceClient implements ServiceClient {
 
 	    	HttpResponse proxyResponse = proxyClient.execute(URIUtils.extractHost(
 	    			new java.net.URI(request.getServiceURI())), proxyRequest);
-	    	
-	    	Response resp=new HTTPGatewayResponse((HttpResponse)proxyResponse);
-	    	
+
+	    	Response resp=new HTTPGatewayResponse(proxyResponse);
+
 	    	return (resp);
 
 	    } catch (Exception e) {
@@ -174,7 +181,7 @@ public class HTTPServiceClient implements ServiceClient {
 
 		for (int i=0; i < request.getHeaders().size(); i++) {
 			org.overlord.apiman.NameValuePair nvp=request.getHeaders().get(i);
-			
+
 			if (nvp.getName().equalsIgnoreCase(APIKEY)) {
 				continue;
 			}
@@ -189,10 +196,10 @@ public class HTTPServiceClient implements ServiceClient {
 			// In case the proxy host is running multiple virtual servers,
 			// rewrite the Host header to ensure that we get content from
 			// the correct virtual server
-			
+
 			// TODO: Assumes string for now
 			String headerValue=(String)nvp.getValue();
-			
+
 			if (nvp.getName().equalsIgnoreCase(HttpHeaders.HOST)) {
 				HttpHost host = URIUtils.extractHost(new java.net.URI(request.getServiceURI()));
 				headerValue = host.getHostName();
@@ -200,51 +207,51 @@ public class HTTPServiceClient implements ServiceClient {
 					headerValue += ":"+host.getPort();
 				}
 			}
-			
+
 			proxyRequest.addHeader(nvp.getName(), headerValue);
 		}
 	}
-	
+
 	/** Reads the request URI from {@code servletRequest} and rewrites it, considering {@link
 	 * #targetUri}. It's used to make the new request.
 	 */
 	protected String rewriteUrlFromRequest(Request request) {
 		StringBuilder uri = new StringBuilder(500);
-		
+
 		uri.append(request.getServiceURI().toString());
-		
+
 		// Append optional operation
 		if (request.getOperation() != null) {
-			
+
 			if (uri.charAt(uri.length()-1) != '/') {
-				uri.append('/');				
+				uri.append('/');
 			}
-			
+
 			uri.append(request.getOperation());
 		}
-		
+
 		// Handle the query string
 		if (request.getParameters().size() > 0) {
 			uri.append('?');
-			
+
 			boolean f_first=true;
 
 			for (int i=0; i < request.getParameters().size(); i++) {
 				org.overlord.apiman.NameValuePair nvp=request.getParameters().get(i);
-				
+
 				// Skip api key
 				if (nvp.getName().equalsIgnoreCase(APIKEY)) {
 					continue;
 				}
-				
+
 				if (!f_first) {
 					uri.append('&');
 				}
-				
+
 				uri.append(nvp.getName());
 				uri.append('=');
 				uri.append(nvp.getValue().toString());
-				
+
 				f_first = false;
 			}
 		}
@@ -261,7 +268,7 @@ public class HTTPServiceClient implements ServiceClient {
 			}
 		}
 		*/
-		
+
 		return uri.toString();
 	}
 
