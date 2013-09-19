@@ -15,19 +15,14 @@
  */
 package org.overlord.apiman.services.rest;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.overlord.apiman.model.Contract;
 import org.overlord.apiman.model.Plan;
 import org.overlord.apiman.model.Service;
 import org.overlord.apiman.services.ManagerService;
+import org.overlord.apiman.util.BeanResolverUtil;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.naming.InitialContext;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -49,8 +44,6 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 @ApplicationScoped
 public class RESTManagerService {
 
-    private static final Logger LOG=Logger.getLogger(RESTManagerService.class.getName());
-    
     private static final ObjectMapper MAPPER=new ObjectMapper();
 
     static {
@@ -71,44 +64,40 @@ public class RESTManagerService {
     /**
      * This is the default constructor.
      */
-    @SuppressWarnings("unchecked")
     public RESTManagerService() {
-        
-        try {
-            // Need to obtain activity server directly, as inject does not
-            // work for REST service, and RESTeasy/CDI integration did not
-            // appear to work in AS7. Directly accessing the bean manager
-            // should be portable.
-            BeanManager bm=InitialContext.doLookup("java:comp/BeanManager");
-            
-            java.util.Set<Bean<?>> beans=bm.getBeans(ManagerService.class);
-            
-            for (Bean<?> b : beans) {                
-                CreationalContext<Object> cc=new CreationalContext<Object>() {
-                    public void push(Object arg0) {
-                    }
-                    public void release() {
-                    }                   
-                };
-                
-                _managerService = (ManagerService)((Bean<Object>)b).create(cc);
-                
-                if (LOG.isLoggable(Level.FINE)) {
-                    LOG.fine("Manager service="+_managerService+" for bean="+b);
-                }
-                
-                if (_managerService != null) {
-                    break;
-                }
-            }
-        } catch (Exception e) {
-            LOG.log(Level.SEVERE, "Failed to init mnager service", e);
+    }
+    
+    @PostConstruct
+    public void init() {
+        // Only access CDI if service not set, to support both OSGi and CDI
+        if (_managerService == null) {
+            _managerService = BeanResolverUtil.getBean(ManagerService.class);
         }
+    }
+    
+    /**
+     * This method sets the manager service.
+     * 
+     * @param ms The manager service
+     */
+    public void setManagerService(ManagerService ms) {
+        _managerService = ms;
+    }
+    
+    /**
+     * This method returns the manager service.
+     * 
+     * @return The manager service
+     */
+    public ManagerService getManagerService() {
+        return (_managerService);
     }
     
     @POST
     @Path("/service/register")
 	public Response registerService(String service) throws Exception {		
+        init();
+        
         try {
         	Service s=MAPPER.readValue(service, Service.class);
         	
@@ -123,13 +112,17 @@ public class RESTManagerService {
     @GET
     @Path("/service/find")
     @Produces("application/json")
-	public Service getService(@QueryParam("name") String name) throws Exception {
-    	return (_managerService.getService(name));
+	public String getService(@QueryParam("name") String name) throws Exception {
+        init();
+        
+    	return (MAPPER.writeValueAsString(_managerService.getService(name)));
     }
 	
     @POST
     @Path("/service/update")
 	public Response updateService(String service) throws Exception {		
+        init();
+        
         try {
         	Service s=MAPPER.readValue(service, Service.class);
         	
@@ -144,6 +137,8 @@ public class RESTManagerService {
     @GET
     @Path("/service/unregister")
 	public Response unregisterService(@QueryParam("name") String name) throws Exception {
+        init();
+        
         try {
         	_managerService.unregisterService(name);
             
@@ -156,13 +151,17 @@ public class RESTManagerService {
     @GET
     @Path("/service/names")
     @Produces("application/json")
-	public java.util.List<String> getServiceNames() throws Exception {
-    	return (_managerService.getServiceNames());
+	public String getServiceNames() throws Exception {
+        init();
+        
+    	return (MAPPER.writeValueAsString(_managerService.getServiceNames()));
     }
 	
     @POST
     @Path("/plan/register")
 	public Response registerPlan(String plan) throws Exception {		
+        init();
+        
         try {
         	Plan p=MAPPER.readValue(plan, Plan.class);
         	
@@ -178,12 +177,16 @@ public class RESTManagerService {
     @Path("/plan/find")
     @Produces("application/json")
 	public Plan getPlan(@QueryParam("id") String id) throws Exception {
+        init();
+        
     	return (_managerService.getPlan(id));
     }
 	
     @POST
     @Path("/plan/update")
 	public Response updatePlan(String plan) throws Exception {		
+        init();
+        
         try {
         	Plan p=MAPPER.readValue(plan, Plan.class);
         	
@@ -198,6 +201,8 @@ public class RESTManagerService {
     @GET
     @Path("/plan/unregister")
 	public Response unregisterPlan(@QueryParam("id") String id) throws Exception {
+        init();
+        
         try {
         	_managerService.unregisterPlan(id);
             
@@ -210,6 +215,8 @@ public class RESTManagerService {
     @POST
     @Path("/contract/register")
 	public Response registerContract(String contract) throws Exception {		
+        init();
+        
         try {
         	Contract c=MAPPER.readValue(contract, Contract.class);
         	
@@ -225,12 +232,16 @@ public class RESTManagerService {
     @Path("/contract/find")
     @Produces("application/json")
 	public Contract getContract(@QueryParam("id") String id) throws Exception {
+        init();
+        
     	return (_managerService.getContract(id));
     }
 	
     @POST
     @Path("/contract/update")
 	public Response updateContract(String contract) throws Exception {		
+        init();
+        
         try {
         	Contract c=MAPPER.readValue(contract, Contract.class);
         	
@@ -245,6 +256,8 @@ public class RESTManagerService {
     @GET
     @Path("/contract/unregister")
 	public Response unregisterContract(@QueryParam("id") String id) throws Exception {
+        init();
+        
         try {
         	_managerService.unregisterContract(id);
             

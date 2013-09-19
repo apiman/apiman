@@ -16,11 +16,9 @@
 package org.overlord.apiman.gateway;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
 
 import org.overlord.apiman.Request;
+import org.overlord.apiman.util.BeanResolverUtil;
 
 /**
  * This is an implementation of the Service Client Manager interface
@@ -29,10 +27,9 @@ import org.overlord.apiman.Request;
  */
 public class DefaultServiceClientManager implements ServiceClientManager {
 
-	@Inject @Any
-	private Instance<ServiceClient> _initialServiceClients;
-	
 	private java.util.List<ServiceClient> _serviceClients=new java.util.ArrayList<ServiceClient>();
+	
+	private boolean _initialized=false;
 	
 	/**
 	 * The default constructor.
@@ -45,9 +42,19 @@ public class DefaultServiceClientManager implements ServiceClientManager {
 	 */
 	@PostConstruct
 	public void init() {
-		for (ServiceClient sc : _initialServiceClients) {
-			_serviceClients.add(sc);
+        // Only access CDI if service not set, to support both OSGi and CDI
+        if (_serviceClients.size() == 0) {
+            BeanResolverUtil.getBeans(ServiceClient.class, _serviceClients);
+        }
+
+        for (ServiceClient sc : _serviceClients) {
+		    try {
+		        sc.init();
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		    }
 		}
+		_initialized = true;
 	}
 	
 	/**
@@ -58,16 +65,30 @@ public class DefaultServiceClientManager implements ServiceClientManager {
 	public java.util.List<ServiceClient> getServiceClients() {
 		return (_serviceClients);
 	}
+	
+    /**
+     * This method sets the service clients.
+     * 
+     * @param serviceClients The service clients
+     */
+	public void setServiceClients(java.util.List<ServiceClient> serviceClients) {
+	    _serviceClients = serviceClients;
+	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public ServiceClient getServiceClient(Request request) {
+        if (!_initialized) {
+            init();
+        }
+	    
 		for (int i=0; i < _serviceClients.size(); i++) {
 			if (_serviceClients.get(i).isSupported(request)) {
 				return (_serviceClients.get(i));
 			}
 		}
+		
 		return (null);
 	}
 

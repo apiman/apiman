@@ -15,20 +15,15 @@
  */
 package org.overlord.apiman.services.rest;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.overlord.apiman.model.Account;
 import org.overlord.apiman.model.App;
 import org.overlord.apiman.model.AppUser;
 import org.overlord.apiman.services.AccountService;
 import org.overlord.apiman.util.AuthorizationUtil;
+import org.overlord.apiman.util.BeanResolverUtil;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.naming.InitialContext;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -52,8 +47,6 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 @ApplicationScoped
 public class RESTAccountService {
 
-    private static final Logger LOG=Logger.getLogger(RESTAccountService.class.getName());
-    
     private static final ObjectMapper MAPPER=new ObjectMapper();
 
     static {
@@ -74,44 +67,40 @@ public class RESTAccountService {
     /**
      * This is the default constructor.
      */
-    @SuppressWarnings("unchecked")
     public RESTAccountService() {
-        
-        try {
-            // Need to obtain activity server directly, as inject does not
-            // work for REST service, and RESTeasy/CDI integration did not
-            // appear to work in AS7. Directly accessing the bean manager
-            // should be portable.
-            BeanManager bm=InitialContext.doLookup("java:comp/BeanManager");
-            
-            java.util.Set<Bean<?>> beans=bm.getBeans(AccountService.class);
-            
-            for (Bean<?> b : beans) {                
-                CreationalContext<Object> cc=new CreationalContext<Object>() {
-                    public void push(Object arg0) {
-                    }
-                    public void release() {
-                    }                   
-                };
-                
-                _accountService = (AccountService)((Bean<Object>)b).create(cc);
-                
-                if (LOG.isLoggable(Level.FINE)) {
-                    LOG.fine("Account service="+_accountService+" for bean="+b);
-                }
-                
-                if (_accountService != null) {
-                    break;
-                }
-            }
-        } catch (Exception e) {
-            LOG.log(Level.SEVERE, "Failed to init mnager service", e);
+    }
+    
+    @PostConstruct
+    public void init() {
+        // Only access CDI if service not set, to support both OSGi and CDI
+        if (_accountService == null) {
+            _accountService = BeanResolverUtil.getBean(AccountService.class);
         }
+    }
+    
+    /**
+     * This method sets the account service.
+     * 
+     * @param as The account service
+     */
+    public void setAccountService(AccountService as) {
+        _accountService = as;
+    }
+    
+    /**
+     * This method returns the account service.
+     * 
+     * @return The account service
+     */
+    public AccountService getAccountService() {
+        return (_accountService);
     }
     
     @POST
     @Path("/user/register")
-	public Response registerAccount(String account) throws Exception {		
+	public Response registerAccount(String account) throws Exception {
+        init();
+        
         try {
         	Account a=MAPPER.readValue(account, Account.class);
         	
@@ -119,6 +108,7 @@ public class RESTAccountService {
             
             return Response.status(Status.OK).entity("User account registered").build();
         } catch (Exception e) {
+            e.printStackTrace();
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Failed to register user account: "+e).build();
         }
 	}
@@ -126,6 +116,8 @@ public class RESTAccountService {
     @GET
     @Path("/user/unregister")
 	public Response unregisterAccount(@QueryParam("name") String name) throws Exception {
+        init();
+        
         try {
         	_accountService.removeAccount(name);
             
@@ -138,6 +130,8 @@ public class RESTAccountService {
     @POST
     @Path("/app/register")
 	public Response registerApp(String app, @Context HttpHeaders headers) throws Exception {		
+        init();
+        
         try {
         	App a=MAPPER.readValue(app, App.class);
         	
@@ -162,6 +156,8 @@ public class RESTAccountService {
     @POST
     @Path("/app/update")
 	public Response updateApp(String app, @Context HttpHeaders headers) throws Exception {		
+        init();
+        
         try {
         	App a=MAPPER.readValue(app, App.class);
         	
@@ -186,6 +182,8 @@ public class RESTAccountService {
     @GET
     @Path("/app/unregister")
 	public Response unregisterApp(@QueryParam("id") String id, @Context HttpHeaders headers) throws Exception {		
+        init();
+        
         try {
         	
         	//_accountService.removeApp(username, a);
@@ -199,6 +197,8 @@ public class RESTAccountService {
     @POST
     @Path("/appuser/register")
 	public Response registerAppUser(String appuser, @Context HttpHeaders headers) throws Exception {		
+        init();
+        
         try {
         	AppUser a=MAPPER.readValue(appuser, AppUser.class);
         	

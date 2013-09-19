@@ -13,15 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.gateway.http;
+package org.overlord.apiman.service.client.http;
 
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.servlet.ServletException;
 
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpHeaders;
@@ -43,6 +39,8 @@ import org.apache.http.params.HttpParams;
 import org.overlord.apiman.Request;
 import org.overlord.apiman.Response;
 import org.overlord.apiman.gateway.ServiceClient;
+import org.overlord.apiman.gateway.http.HTTPGatewayRequest;
+import org.overlord.apiman.gateway.http.HTTPGatewayResponse;
 
 /**
  * The HTTP based implementation of the service client.
@@ -57,7 +55,7 @@ public class HTTPServiceClient implements ServiceClient {
 
 	private static final String APIKEY = "apikey";
 
-	private HttpClient proxyClient;
+	private HttpClient _proxyClient;
 
 	/**
 	 * The default constructor.
@@ -77,11 +75,10 @@ public class HTTPServiceClient implements ServiceClient {
 	/**
 	 * {@inheritDoc}
 	 */
-	@PostConstruct
 	public void init() {
 		HttpParams hcParams = new BasicHttpParams();
 		//readConfigParam(hcParams, ClientPNames.HANDLE_REDIRECTS, Boolean.class);
-		proxyClient = new DefaultHttpClient(new PoolingClientConnectionManager(),hcParams);
+		_proxyClient = new DefaultHttpClient(new PoolingClientConnectionManager(),hcParams);
 	}
 
 	/**
@@ -126,7 +123,7 @@ public class HTTPServiceClient implements ServiceClient {
 	    					+ proxyRequest.getRequestLine().getUri());
 	    	}
 
-	    	HttpResponse proxyResponse = proxyClient.execute(URIUtils.extractHost(
+	    	HttpResponse proxyResponse = _proxyClient.execute(URIUtils.extractHost(
 	    			new java.net.URI(request.getServiceURI())), proxyRequest);
 
 	    	Response resp=new HTTPGatewayResponse(proxyResponse);
@@ -142,9 +139,6 @@ public class HTTPServiceClient implements ServiceClient {
 	    	if (e instanceof RuntimeException) {
 	    		throw (RuntimeException)e;
 	    	}
-	    	if (e instanceof ServletException) {
-	    		throw (ServletException)e;
-	    	}
 	    	//noinspection ConstantConditions
 	    	if (e instanceof IOException) {
 	    		throw (IOException) e;
@@ -153,10 +147,12 @@ public class HTTPServiceClient implements ServiceClient {
 	    }
 	}
 
-	@PreDestroy
-	public void destroy() {
-		if (proxyClient != null) {
-			proxyClient.getConnectionManager().shutdown();
+	/**
+	 * {@inheritDoc}
+	 */
+	public void close() {
+		if (_proxyClient != null) {
+			_proxyClient.getConnectionManager().shutdown();
 		}
 	}
 

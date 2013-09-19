@@ -15,9 +15,18 @@
  */
 package org.overlord.apiman.model.policies;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.overlord.apiman.Message;
+import org.overlord.apiman.model.AppUser;
 import org.overlord.apiman.model.Policy;
+import org.overlord.apiman.policy.PolicyContext;
+import org.overlord.apiman.util.AuthorizationUtil;
 
 public class BasicAuthPolicy extends Policy {
+    
+    private static final Logger LOG=Logger.getLogger(BasicAuthPolicy.class.getName());
 
 	private boolean _authenticate=true;
 	private boolean _associateUserWithRequest=true;
@@ -61,4 +70,40 @@ public class BasicAuthPolicy extends Policy {
 	public void setAssociateUserWithRequest(boolean b) {
 		_associateUserWithRequest = b;
 	}
+	
+    /**
+     * {@inheritDoc}
+     */
+    public void apply(PolicyContext context, Message mesg) throws Exception {    
+        
+        String auth=(String)mesg.getHeader("Authorization");
+        
+        if (auth == null) {
+            throw new Exception("No authorization information available");
+        }
+        
+        String[] up=AuthorizationUtil.getBasicAuthUsernamePassword(auth);
+        
+        if (isAuthenticate()) {
+            
+            // Check if user is known
+            AppUser appUser=context.getAppUser(up[0]);
+            
+            if (appUser == null) {
+                throw new Exception("Unknown app user '"+up[0]+"'");
+            }
+            
+            if (!appUser.getPassword().equals(up[1])) {
+                throw new Exception("Authorization failed for app user '"+up[0]+"'");
+            }
+            
+            if (LOG.isLoggable(Level.FINEST)) {
+                LOG.finest("Authorized user='"+up[0]+"'");
+            }
+        }
+        
+        if (isAssociateUserWithRequest()) {
+            mesg.getContext().put("user", up[0]);
+        }
+    }
 }

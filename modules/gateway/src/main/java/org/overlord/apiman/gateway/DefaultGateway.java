@@ -28,8 +28,6 @@ import org.overlord.apiman.model.Policy;
 import org.overlord.apiman.model.Service;
 import org.overlord.apiman.policy.DefaultPolicyContext;
 import org.overlord.apiman.policy.PolicyContext;
-import org.overlord.apiman.policy.PolicyHandler;
-import org.overlord.apiman.policy.PolicyManager;
 import org.overlord.apiman.repository.APIManRepository;
 
 /**
@@ -46,15 +44,30 @@ public class DefaultGateway implements Gateway {
 	@Inject @Dependent
 	private APIManRepository _apiRepository=null;
 	
-	@Inject @Dependent
-	private PolicyManager _policyManager=null;
-	
 	/**
 	 * The default constructor.
 	 */
 	public DefaultGateway() {
 	}
 	
+    /**
+     * This method sets the repository.
+     * 
+     * @param repo The repository
+     */
+    public void setRepository(APIManRepository repo) {
+        _apiRepository = repo;
+    }
+    
+    /**
+     * This method returns the repository.
+     * 
+     * @return The repository
+     */
+    public APIManRepository getRepository() {
+        return (_apiRepository);
+    }
+
 	/**
 	 * This method sets the service client manager.
 	 * 
@@ -132,50 +145,35 @@ public class DefaultGateway implements Gateway {
 		// Process the request with the policies associated with the app
 		for (int i=0; i < app.getRequestPolicies().size(); i++) {
 			Policy policy=app.getRequestPolicies().get(i);
-			PolicyHandler handler=_policyManager.getPolicyHandler(policy);
-			
-			if (handler == null) {
-				throw new Exception("Policy handler not found for policy '"+policy+"'");
-			}
 			
 			//if (LOG.isLoggable(Level.FINEST)) {
 				LOG.info("App["+app+"] request policy="+policy+" request="+request);
 			//}
 				
-			handler.apply(context, policy, request);
+			policy.apply(context, request);
 		}
 		
 		if (plan != null) {
 			for (int i=0; i < plan.getRequestPolicies().size(); i++) {
 				Policy policy=plan.getRequestPolicies().get(i);
-				PolicyHandler handler=_policyManager.getPolicyHandler(policy);
-				
-				if (handler == null) {
-					throw new Exception("Policy handler not found for policy '"+policy+"'");
-				}
 				
 				//if (LOG.isLoggable(Level.FINEST)) {
 					LOG.info("Plan["+plan+"] request policy="+policy+" request="+request);
 				//}
 				
-				handler.apply(context, policy, request);
+				policy.apply(context, request);
 			}
 		}
 
 		// Process the request with the policies associated with the service
 		for (int i=0; i < service.getRequestPolicies().size(); i++) {
 			Policy policy=service.getRequestPolicies().get(i);
-			PolicyHandler handler=_policyManager.getPolicyHandler(policy);
-			
-			if (handler == null) {
-				throw new Exception("Policy handler not found for policy '"+policy+"'");
-			}
-			
+
 			//if (LOG.isLoggable(Level.FINEST)) {
 				LOG.info("Service["+service+"] request policy="+policy+" request="+request);
 			//}
 		
-			handler.apply(context, policy, request);
+			policy.apply(context, request);
 		}
 		
 		ServiceClient serviceClient=_serviceClientManager.getServiceClient(request);
@@ -190,50 +188,35 @@ public class DefaultGateway implements Gateway {
 			// Process the response with the policies associated with the service
 			for (int i=0; i < service.getResponsePolicies().size(); i++) {
 				Policy policy=service.getResponsePolicies().get(i);
-				PolicyHandler handler=_policyManager.getPolicyHandler(policy);
-				
-				if (handler == null) {
-					throw new Exception("Policy handler not found for policy '"+policy+"'");
-				}
 				
 				//if (LOG.isLoggable(Level.FINEST)) {
 					LOG.info("Service["+service+"] response policy="+policy+" ret="+ret);
 				//}
 		
-				handler.apply(context, policy, ret);
+				policy.apply(context, ret);
 			}
 			
 			if (plan != null) {
 				for (int i=0; i < plan.getResponsePolicies().size(); i++) {
 					Policy policy=plan.getResponsePolicies().get(i);
-					PolicyHandler handler=_policyManager.getPolicyHandler(policy);
-					
-					if (handler == null) {
-						throw new Exception("Policy handler not found for policy '"+policy+"'");
-					}
 					
 					//if (LOG.isLoggable(Level.FINEST)) {
 						LOG.info("Plan["+plan+"] response policy="+policy+" ret="+ret);
 					//}
 				
-					handler.apply(context, policy, ret);
+					policy.apply(context, ret);
 				}
 			}
 
 			// Process the response with the policies associated with the app
 			for (int i=0; i < app.getResponsePolicies().size(); i++) {
 				Policy policy=app.getResponsePolicies().get(i);
-				PolicyHandler handler=_policyManager.getPolicyHandler(policy);
-				
-				if (handler == null) {
-					throw new Exception("Policy handler not found for policy '"+policy+"'");
-				}
 				
 				//if (LOG.isLoggable(Level.FINEST)) {
 					LOG.info("App["+app+"] response policy="+policy+" ret="+ret);
 				//}
 				
-				handler.apply(context, policy, ret);
+				policy.apply(context, ret);
 			}
 			
 		}

@@ -29,6 +29,24 @@ public class DefaultAccountService implements AccountService {
 	
 	@Inject
 	private APIManRepository _repository=null;
+	
+	/**
+	 * This method sets the repository.
+	 * 
+	 * @param repo The repository
+	 */
+	public void setRepository(APIManRepository repo) {
+	    _repository = repo;
+	}
+	
+    /**
+     * This method returns the repository.
+     * 
+     * @return The repository
+     */
+	public APIManRepository getRepository() {
+	    return (_repository);
+	}
 
 	/**
 	 * {@inheritDoc}

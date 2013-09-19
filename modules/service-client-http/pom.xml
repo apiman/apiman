@@ -1,59 +1,59 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   	<modelVersion>4.0.0</modelVersion>
-	<artifactId>apiman-services-rest</artifactId> 
+	<artifactId>apiman-service-client-http</artifactId> 
 	<packaging>bundle</packaging>
-	<name>Overlord APIMan::Modules::Services REST</name>
+	<name>Overlord APIMan::Modules::Service Client HTTP</name>
 
 	<parent>
 		<groupId>org.overlord.apiman</groupId>
 		<artifactId>modules</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
-  
+
 	<dependencies>
 		<dependency>
 			<groupId>org.overlord.apiman</groupId>
-			<artifactId>apiman-core</artifactId>
+			<artifactId>apiman-gateway</artifactId>
 			<version>${project.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-core-asl</artifactId>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-mapper-asl</artifactId>
-			<scope>provided</scope>
+			<groupId>org.overlord.apiman</groupId>
+			<artifactId>apiman-gateway-http</artifactId>
+			<version>${project.version}</version>
 		</dependency>
+
 		<dependency>
-			<groupId>org.jboss.resteasy</groupId>
-			<artifactId>resteasy-jackson-provider</artifactId>
+			<groupId>org.jboss.spec</groupId>
+			<artifactId>jboss-javaee-6.0</artifactId>
+			<type>pom</type>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.jboss.resteasy</groupId>
-			<artifactId>resteasy-jaxrs</artifactId>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpcore</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.core</artifactId>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.jboss.spec.javax.ws.rs</groupId>
-			<artifactId>jboss-jaxrs-api_1.1_spec</artifactId>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.compendium</artifactId>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>javax.enterprise</groupId>
-			<artifactId>cdi-api</artifactId>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.http.base</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
-		    <groupId>javax</groupId>
-		    <artifactId>javaee-api</artifactId>
-		    <scope>provided</scope>
-		</dependency>
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -72,15 +72,15 @@
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
 						<Bundle-Version>${project.version}</Bundle-Version>
 						<Export-Package>
-							org.overlord.apiman.services.rest.*;version=${project.version}
+							org.overlord.apiman.gateway.http.*;version=${project.version}
 						</Export-Package>
 						<Import-Package>
-							!javax.inject.*,!javax.enterprise.*,*,org.overlord.apiman.model.policies
+							!javax.inject.*,!javax.enterprise.*,*
 						</Import-Package>
 					</instructions>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
-	
+
 </project>
