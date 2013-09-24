@@ -18,6 +18,7 @@
 		<module>gateway</module>
 		<module>gateway-http</module>
 		<module>services-rest</module>
+		<module>ui</module>
 	</modules>
 
 </project>

@@ -1,0 +1,49 @@
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+  xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>apiman-ui</artifactId>
+  <packaging>pom</packaging>
+  <name>Overlord APIMan::UI</name>
+
+  <parent>
+    <groupId>org.overlord.apiman</groupId>
+    <artifactId>modules</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <properties>
+    <s-ramp.version>0.4.0-SNAPSHOT</s-ramp.version>
+    <overlord-commons.version>2.0.0-SNAPSHOT</overlord-commons.version>
+  </properties>
+
+  <modules>
+    <module>apiman-ui-war</module>
+  </modules>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-gwt</artifactId>
+        <version>${overlord-commons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-auth</artifactId>
+        <version>${overlord-commons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-config</artifactId>
+        <version>${overlord-commons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-</artifactId>
+        <version>${overlord-commons.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+</project>
+
