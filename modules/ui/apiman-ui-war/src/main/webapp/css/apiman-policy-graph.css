@@ -9,15 +9,18 @@
   width: 100%;
 }
 .pg-col-0, .pg-col-14 {
-  width: 17%;
+  width: 14%;
 }
 .pg-col-3, .pg-col-7, .pg-col-11 {
   width: 16%;
 }
 .pg-col-5, .pg-col-9 {
-  width: 1%;
+  width: 2%;
 }
 .pg-col-1, .pg-col-2, .pg-col-4, .pg-col-6, .pg-col-8, .pg-col-10, .pg-col-12, .pg-col-13 {
+  width: 2%;
+}
+.pg-col-d1, .pg-col-d2 {
   width: 2%;
 }
 .pg-row-1 div {
@@ -162,4 +165,25 @@
 .pg-cell-7-4, .pg-cell-7-8, .pg-cell-7-12 {
   border-bottom: 1px dotted #999;
   border-right: 1px dotted #999;
+}
+
+
+.pg-cell-3-1, .pg-cell-3-d1, .pg-cell-3-4, .pg-cell-3-5, .pg-cell-3-8, .pg-cell-3-9, .pg-cell-3-12, .pg-cell-3-13,
+.pg-cell-5-1, .pg-cell-5-2, .pg-cell-5-5, .pg-cell-5-6, .pg-cell-5-9, .pg-cell-5-10, .pg-cell-5-13, .pg-cell-5-d2
+{
+  background-image: url(images/pgraph/arrow-body.png);
+  background-repeat: no-repeat;
+  background-position: top 0px;
+}
+.pg-cell-3-2, .pg-cell-3-6, .pg-cell-3-10, .pg-cell-3-d2
+{
+  background-image: url(images/pgraph/arrow-right.png);
+  background-repeat: no-repeat;
+  background-position: top 0px right 0px;
+}
+.pg-cell-5-d1, .pg-cell-5-4, .pg-cell-5-8, .pg-cell-5-12
+{
+  background-image: url(images/pgraph/arrow-left.png);
+  background-repeat: no-repeat;
+  background-position: top 0px left 0px;
 }
