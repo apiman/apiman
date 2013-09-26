@@ -1,24 +1,23 @@
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="JBoss Overlord API Management - New Service">
+    <meta name="description" content="JBoss Overlord API Management - New Application">
     <meta name="author" content="JBoss Overlord">
 
-    <title>JBoss Overlord API Management - New Service</title>
+    <title>JBoss Overlord API Management - New Application</title>
 
-    <link href="../../../../../../../../webapp/bootstrap-3.0.0/css/bootstrap.min.css" rel="stylesheet" media="screen"></link>
-    <link href="../../../../../../../../webapp/css/apiman.css" rel="stylesheet" media="screen"></link>
+    <link href="../bootstrap-3.0.0/css/bootstrap.min.css" rel="stylesheet" media="screen"></link>
+    <link href="../css/apiman.css" rel="stylesheet" media="screen"></link>
 
-    <script type="text/javascript" src="../../../../../../../../webapp/jquery-1.10.2/jquery-1.10.2.min.js"></script>
-    <script type="text/javascript" src="../../../../../../../../webapp/bootstrap-3.0.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../jquery-1.10.2/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="../bootstrap-3.0.0/js/bootstrap.min.js"></script>
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
-      <script type="text/javascript" src="../../../../../../../../webapp/bootstrap-3.0.0/js/html5shiv.js"></script>
-      <script type="text/javascript" src="../../../../../../../../webapp/bootstrap-3.0.0/js/respond.min.js"></script>
+      <script type="text/javascript" src="../bootstrap-3.0.0/js/html5shiv.js"></script>
+      <script type="text/javascript" src="../bootstrap-3.0.0/js/respond.min.js"></script>
     <![endif]-->
   </head>
 
@@ -44,9 +43,9 @@
     </div>
 
     <div class="container apiman-entity-new">
-      <!-- Choose org and service name -->
+      <!-- Choose org and app name -->
       <div class="row">
-        <div class="medium-icon medium-icon-service apiman-entity-new-icon"></div>
+        <div class="medium-icon medium-icon-gear apiman-entity-new-icon"></div>
         <dl>
           <dt>Organization</dt>
           <dd>
@@ -55,25 +54,25 @@
                 <span id="selector-org-value" class="apiman-label-faded">Select Organization</span> &nbsp;&nbsp;<span class="caret"></span>
               </button>
               <ul class="dropdown-menu" role="menu">
-                <li><a href="#" onclick="$('#selector-org-value').text('JBoss Overlord'); $('#apiman-servicename').focus()">JBoss Overlord</a></li>
-                <li><a href="#" onclick="$('#selector-org-value').text('Apereo Bedework'); $('#apiman-servicename').focus()">Apereo Bedework</a></li>
+                <li><a href="#" onclick="$('#selector-org-value').text('JBoss Overlord'); $('#apiman-entityname').focus()">JBoss Overlord</a></li>
+                <li><a href="#" onclick="$('#selector-org-value').text('Apereo Bedework'); $('#apiman-entityname').focus()">Apereo Bedework</a></li>
               </ul>
             </div>
           </dd>
         </dl>
         <span class="divider">/</span>
         <dl class="name">
-          <dt>Service Name</dt>
+          <dt>Application Name</dt>
           <dd>
-            <input type="text" class="form-control servicename" id="apiman-servicename" placeholder="Enter service name..."></input>
+            <input type="text" class="form-control entityname" id="apiman-entityname" placeholder="Enter application name..."></input>
           </dd>
         </dl>
       </div>
       <!-- Helpful hint -->
       <div class="row">
-        <span class="apiman-label-faded">Note: the Organization and Service Name will be incorporated into the service's endpoint URL.</span>
+        <span class="apiman-label-faded">Note: Some helpful text should go here explaining any interesting facts about this action.</span>
       </div>
-      <!-- Description of service -->
+      <!-- Description of app -->
       <div class="row">
         <div class="apiman-divider-40"></div>
         <div class="medium-icon"></div>
@@ -90,7 +89,7 @@
       </div>
       <!-- Add Button -->
       <div class="row">
-        <a href="serviceHome.html" class="btn btn-primary">Create Service</a>
+        <a href="appHome.html" class="btn btn-primary">Create Application</a>
       </div>
     </div> <!-- /container -->
     <script>

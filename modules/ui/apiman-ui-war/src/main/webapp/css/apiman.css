@@ -53,6 +53,9 @@ a:hover {
 .apiman-label-faded {
   color: #789;
 }
+.apiman-label-small {
+  font-size: 10px;
+}
 
 .apiman-usersummary {
   padding: 5px;
@@ -94,6 +97,11 @@ a:hover {
   margin-bottom: 20px;
 }
 
+.apiman-divider-80 {
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
+
 .icon {
   width: 16px;
   height: 16px;
@@ -131,6 +139,12 @@ a:hover {
 .medium-icon-service {
   background-image: url(images/medium-service.png);
 }
+.medium-icon-plan {
+  background-image: url(images/medium-plan.png);
+}
+.medium-icon-gear {
+  background-image: url(images/medium-gear.png);
+}
 
 .large-icon {
   width: 48px;
@@ -140,6 +154,12 @@ a:hover {
 }
 .large-icon-gear {
   background-image: url(images/large-gear.png);
+}
+.large-icon-service {
+  background-image: url(images/large-service.png);
+}
+.large-icon-plan {
+  background-image: url(images/large-plan.png);
 }
 
 .apiman-filters {
@@ -235,6 +255,8 @@ a.apiman-summaryrow-icon:hover {
 .apiman-entity-nav .nav-pills li a {
   border-right: 1px solid rgb(221, 221, 221);
   border-radius: 0px;
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid transparent;
 }
 .apiman-entity-nav .nav-pills li a:hover {
   text-decoration: underline;
@@ -311,7 +333,7 @@ a.apiman-summaryrow-icon:hover {
   color: #555;
 }
 
-.apiman-entity-new .servicename {
+.apiman-entity-new .entityname {
   width: 300px;
 }
 
