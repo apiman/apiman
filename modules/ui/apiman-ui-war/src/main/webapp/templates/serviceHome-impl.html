@@ -79,11 +79,11 @@
         <!-- Left hand nav -->
         <div class="col-md-2 apiman-entity-nav">
           <ul class="nav nav-pills nav-stacked">
-            <li class="first north"><a>&nbsp;</a></li>
-            <li class="active"><a>Overview</a></li>
-            <li class="south"><a href="serviceHome-impl.html">Implementation</a></li>
-            <li class=""><a href="serviceHome-policies.html">Policies</a></li>
-            <li><a href="serviceHome-requests.html">Requests</a></li>
+            <li class="first"><a>&nbsp;</a></li>
+            <li class="north"><a href="serviceHome.html">Overview</a></li>
+            <li class="active"><a>Implementation</a></li>
+            <li class="south"><a href="serviceHome-policies.html">Policies</a></li>
+            <li class=""><a href="serviceHome-requests.html">Requests</a></li>
             <li class="last"><a>&nbsp;</a></li>
           </ul>
         </div>
@@ -91,71 +91,20 @@
 
         <!-- Content -->
         <div class="col-md-10 apiman-entity-content">
-          <!-- Content Summary (left side) -->
-          <div class="col-md-6">
-            <div class="title">Summary</div>
-            <div class="description">This API allows consumers to deploy binary artifacts to runtime environments.</div>
-            <div>
-              <div class="icon icon-time"></div>
-              <span class="apiman-label-faded">Created on</span>
-              <span>Oct 21, 2012</span>
-            </div>
-            <div>
-              <div class="icon icon-user"></div>
-              <span class="apiman-label-faded">Created by</span>
-              <span><a href="userHome.html">Eric Wittmann</a></span>
-            </div>
-            <div class="apiman-divider-40"></div>
-            <div>
-              <span class="">Status: </span>
-              <span class="emphasis">Created</span>
-            </div>
-            <div class="apiman-divider-20"></div>
-            <div>
-              <a href="#" class="btn btn-primary">Activate</a>
-            </div>
-            <div class="apiman-divider-40"></div>
+          <div class="title">Backend Service</div>
+          <div class="apiman-divider-40" />
+          <div>
+            <span>API Endpoint:</span>
+            <input class="form-control" type="text" value="http://mydomain.myhost.org/services/dtgov/deploy/"></input>
           </div>
-          <!-- /Content Summary (left side) -->
-          
-          <!-- Activity -->
-          <div class="col-md-6">
-            <div class="title">Activity</div>
-            <div class="apiman-activity">
-              <div class="container apiman-summaryrow">
-                <div class="row">
-                  <span class=""><a href="userHome.html">Eric Wittmann</a> added three policies to service <a href="orgHome.html">JBoss Overlord</a> / <a class="emphasis" href="serviceHome.html">dtgov-deploy</a>.</span>
-                </div>
-                <div class="row">
-                  <div class="icon icon-service"></div>
-                  <div class="apiman-timestamp">Just now</div>
-                </div>
-                <hr/>
-              </div>
-              <div class="container apiman-summaryrow">
-                <div class="row">
-                  <span class=""><a href="userHome.html">Eric Wittmann</a> updated service <a href="orgHome.html">JBoss Overlord</a> / <a class="emphasis" href="serviceHome.html">dtgov-deploy</a>.</span>
-                </div>
-                <div class="row">
-                  <div class="icon icon-service"></div>
-                  <div class="apiman-timestamp">2 days ago</div>
-                </div>
-                <hr/>
-              </div>
-              <div class="container apiman-summaryrow">
-                <div class="row">
-                  <span class=""><a href="userHome.html">Eric Wittmann</a> created service <a href="orgHome.html">JBoss Overlord</a> / <a class="emphasis" href="serviceHome.html">dtgov-deploy</a>.</span>
-                </div>
-                <div class="row">
-                  <div class="icon icon-service"></div>
-                  <div class="apiman-timestamp">3 days ago</div>
-                </div>
-                <hr/>
-              </div>
-            </div>
+          <div class="apiman-divider-20" />
+          <div>
+            <span>API Type:</span>
+            <select name="" class="form-control" style="width: 150px">
+              <option value="rest">REST</option>
+              <option value="soap">SOAP</option>
+            </select>
           </div>
-          <!-- /Activity -->
-
         </div>
         <!-- /Content -->
       </div>

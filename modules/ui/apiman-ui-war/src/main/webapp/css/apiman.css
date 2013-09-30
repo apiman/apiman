@@ -300,8 +300,13 @@ a.apiman-summaryrow-icon:hover {
   margin-top: 1px;
 }
 
-.apiman-entity-content .apiman-app-key {
+.apiman-entity-content .apiman-input-ro {
   cursor: auto;
+}
+
+.apiman-entity-action {
+  margin-top: 5px;
+  margin-left: 5px;
 }
 
 .apiman-entity-content .apiman-timestamp {
