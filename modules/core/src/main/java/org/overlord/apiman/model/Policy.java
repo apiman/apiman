@@ -16,6 +16,8 @@
 package org.overlord.apiman.model;
 
 import org.codehaus.jackson.annotate.JsonTypeInfo;
+import org.overlord.apiman.Message;
+import org.overlord.apiman.policy.PolicyContext;
 
 /**
  * This class represents a policy that needs to be applied and enforced.
@@ -29,5 +31,14 @@ public abstract class Policy {
 	 */
 	public Policy() {
 	}
+	
+	/**
+	 * This method applies the policy to the supplied message.
+	 * 
+	 * @param context The policy context
+	 * @param mesg The message
+	 * @throws Exception Failed to apply the policy
+	 */
+	public abstract void apply(PolicyContext context, Message mesg) throws Exception;
 	
 }

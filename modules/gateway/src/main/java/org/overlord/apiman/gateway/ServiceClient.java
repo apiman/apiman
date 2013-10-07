@@ -19,6 +19,13 @@ import org.overlord.apiman.Request;
 import org.overlord.apiman.Response;
 
 public interface ServiceClient {
+    
+    /**
+     * This method initializes the service client.
+     * 
+     * @throws Exception Failed to init
+     */
+    public void init() throws Exception;
 
 	/**
 	 * This method determines whether the service client
@@ -38,4 +45,11 @@ public interface ServiceClient {
 	 */
 	public Response process(Request request) throws Exception;
 	
+    /**
+     * This method closes the service client.
+     * 
+     * @throws Exception Failed to close
+     */
+    public void close() throws Exception;
+
 }

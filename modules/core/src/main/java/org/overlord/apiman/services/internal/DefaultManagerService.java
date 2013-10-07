@@ -30,6 +30,24 @@ public class DefaultManagerService implements ManagerService {
 	@Inject
 	private APIManRepository _repository=null;
 
+    /**
+     * This method sets the repository.
+     * 
+     * @param repo The repository
+     */
+    public void setRepository(APIManRepository repo) {
+        _repository = repo;
+    }
+    
+    /**
+     * This method returns the repository.
+     * 
+     * @return The repository
+     */
+    public APIManRepository getRepository() {
+        return (_repository);
+    }
+
 	public void registerService(Service service) throws Exception {
 		if (_repository.getService(service.getName()) != null) {
 			throw new Exception("A service already exists with name '"+service.getName()+"'");

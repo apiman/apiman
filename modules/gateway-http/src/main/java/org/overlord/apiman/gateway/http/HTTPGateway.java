@@ -15,12 +15,13 @@
  */
 package org.overlord.apiman.gateway.http;
 
+import org.apache.http.message.BasicHeader;
+import org.apache.http.message.HeaderGroup;
 import org.overlord.apiman.Request;
 import org.overlord.apiman.Response;
 import org.overlord.apiman.gateway.Gateway;
 
 import javax.inject.Inject;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -40,12 +41,30 @@ public class HTTPGateway extends HttpServlet {
 	@Inject
 	private Gateway _gateway=null;
 	
+	/**
+	 * This method returns the gateway.
+	 * 
+	 * @return The gateway
+	 */
+	public Gateway getGateway() {
+	    return (_gateway);
+	}
+	
+    /**
+     * This method sets the gateway.
+     * 
+     * @param gw The gateway
+     */
+	public void setGateway(Gateway gw) {
+	    _gateway = gw;
+	}
+	
 	@Override
 	protected void service(HttpServletRequest servletRequest, HttpServletResponse servletResponse)
-							throws ServletException, IOException {
-		
+							throws IOException {
+	    
 		if (_gateway == null) {
-			throw new ServletException("No gateway available");
+			throw new IOException("No gateway available");
 		}
 		
 		try {
@@ -73,7 +92,7 @@ public class HTTPGateway extends HttpServlet {
 		for (int i=0; i < proxyResponse.getHeaders().size(); i++) {
 			org.overlord.apiman.NameValuePair nvp=proxyResponse.getHeaders().get(i);
 			
-			if (HTTPServiceClient.hopByHopHeaders.containsHeader(nvp.getName())) {
+			if (hopByHopHeaders.containsHeader(nvp.getName())) {
 				continue;
 			}
 			
@@ -97,4 +116,21 @@ public class HTTPGateway extends HttpServlet {
 			}
 		}
 	}
+	
+	/** These are the "hop-by-hop" headers that should not be copied.
+     * http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html
+     * I use an HttpClient HeaderGroup class instead of Set<String> because this
+     * approach does case insensitive lookup faster.
+     */
+    protected static final HeaderGroup hopByHopHeaders;
+    static {
+    hopByHopHeaders = new HeaderGroup();
+        String[] headers = new String[] {
+                "Connection", "Keep-Alive", "Proxy-Authenticate", "Proxy-Authorization",
+                "TE", "Trailers", "Transfer-Encoding", "Upgrade" };
+        for (String header : headers) {
+            hopByHopHeaders.addHeader(new BasicHeader(header, null));
+        }
+    }
+
 }

@@ -52,6 +52,7 @@
 		<cdi.version>1.0-SP4</cdi.version>
 		<commons-codec.version>1.5</commons-codec.version>
 		<drools.version>6.0.0.CR1</drools.version>
+		<felix.version>2.0.4</felix.version>
 		<gadgets.version>2.0.0-SNAPSHOT</gadgets.version>
 		<hibernate-jpa.version>1.0.1.Final</hibernate-jpa.version>
 		<hibernate-ogm.version>4.0.0.Beta1</hibernate-ogm.version>
@@ -66,6 +67,7 @@
 		<kie.version>6.0.0.CR1</kie.version>
 		<maven-aether.version>3.0.1</maven-aether.version>
 		<mvel.version>2.1.6.Final</mvel.version>			<!-- Passed into junit tests -->
+		<osgi.version>4.3.1</osgi.version>
 		<overlord-commons.version>1.0.9</overlord-commons.version>
 		<shrinkwrap.version>1.0.0</shrinkwrap.version>
 		<shrinkwrap-resolver.version>1.0.0-beta-6</shrinkwrap-resolver.version>
@@ -88,6 +90,23 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+
+			<dependency>
+				<groupId>org.osgi</groupId>
+				<artifactId>org.osgi.core</artifactId>
+				<version>${osgi.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.osgi</groupId>
+				<artifactId>org.osgi.compendium</artifactId>
+				<version>${osgi.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>org.apache.felix.http.base</artifactId>
+				<version>${felix.version}</version>
+			</dependency>
+
 
 			<dependency>
 				<groupId>org.jboss.arquillian</groupId>

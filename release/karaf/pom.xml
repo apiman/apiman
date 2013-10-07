@@ -1,9 +1,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   	<modelVersion>4.0.0</modelVersion>
-	<artifactId>apiman</artifactId> 
-	<packaging>war</packaging>
-	<name>Overlord APIMan::Release::WAR</name>
+	<artifactId>karaf</artifactId> 
+	<name>Overlord APIMan::Release::Karaf</name>
 
 	<parent>
 		<groupId>org.overlord.apiman</groupId>
@@ -11,20 +10,12 @@
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 
+<!--
 	<dependencies>
+
 		<dependency>
 			<groupId>org.overlord.apiman</groupId>
-			<artifactId>apiman-gateway</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.overlord.apiman</groupId>
-			<artifactId>apiman-service-client-http</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.overlord.apiman</groupId>
-			<artifactId>apiman-gateway-http</artifactId>
+			<artifactId>apiman-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
@@ -34,34 +25,25 @@
 		</dependency>
 		<dependency>
 			<groupId>org.overlord.apiman</groupId>
+			<artifactId>apiman-gateway</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.overlord.apiman</groupId>
+			<artifactId>apiman-gateway-http</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.overlord.apiman</groupId>
 			<artifactId>apiman-inmemory</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
 		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-core-asl</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-mapper-asl</artifactId>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpcore</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>org.jboss.spec</groupId>
-			<artifactId>jboss-javaee-6.0</artifactId>
-			<type>pom</type>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
 	</dependencies>
 
 	<build>
@@ -69,18 +51,39 @@
 
 		<plugins>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-war-plugin</artifactId>
-				<configuration>
-					<failOnMissingWebXml>false</failOnMissingWebXml>
- 					<archive>
-						<manifestEntries>
-							<Dependencies>org.osgi.core</Dependencies>
-						</manifestEntries>
-					</archive>
-				</configuration>
+				<groupId>org.apache.karaf.tooling</groupId>
+				<artifactId>features-maven-plugin</artifactId>
+				<version>2.3.2</version>
+				<executions>
+					<execution>
+						<id>generate</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>generate-features-xml</goal>
+						</goals>
+						<configuration>
+							<kernelVersion>2.3.2</kernelVersion>
+							<outputFile>target/features.xml</outputFile>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
-
 	</build>
+
+	<repositories>
+		<repository>
+			<id>servicemix</id>
+			<name>Apache ServiceMix Repository</name>
+			<url>http://svn.apache.org/repos/asf/servicemix/m2-repo</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+-->
+
 </project>

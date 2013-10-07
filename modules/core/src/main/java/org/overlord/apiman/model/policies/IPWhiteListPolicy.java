@@ -15,7 +15,10 @@
  */
 package org.overlord.apiman.model.policies;
 
+import org.overlord.apiman.Message;
+import org.overlord.apiman.Request;
 import org.overlord.apiman.model.Policy;
+import org.overlord.apiman.policy.PolicyContext;
 
 public class IPWhiteListPolicy extends Policy {
 
@@ -39,4 +42,19 @@ public class IPWhiteListPolicy extends Policy {
 		_ipAddresses = addresses;
 	}
 	
+    /**
+     * {@inheritDoc}
+     */
+    public void apply(PolicyContext context, Message mesg) throws Exception {    
+
+        if (mesg instanceof Request) {
+            String ipaddr=((Request)mesg).getIPAddress();
+            if (!getAddresses().contains(ipaddr)) {
+                throw new Exception("Request's IP address '"+ipaddr+"' is not permitted to use this service: "+getAddresses());
+            }
+        } else {
+            throw new Exception("IP White List validation can only performed against a request");
+        }
+    }
+
 }

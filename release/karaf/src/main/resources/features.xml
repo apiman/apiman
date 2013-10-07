@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<features>
+ <feature  name='apiman-services-rest'  version='1.0.0-SNAPSHOT'   > 
+    <bundle>mvn:org.codehaus.jackson/jackson-core-asl/1.9.9</bundle>
+    <bundle>mvn:commons-codec/commons-codec/1.5</bundle>
+    <bundle>mvn:org.overlord.apiman/apiman-core/1.0.0-SNAPSHOT</bundle>
+    <bundle>mvn:org.codehaus.jackson/jackson-mapper-asl/1.9.9</bundle>
+    <bundle>mvn:org.overlord.apiman/apiman-services-rest/1.0.0-SNAPSHOT</bundle>
+ </feature>
+ <feature  name='apiman-gateway-http'  version='1.0.0-SNAPSHOT'   > 
+    <bundle>mvn:org.codehaus.jackson/jackson-core-asl/1.9.9</bundle>
+    <bundle>mvn:commons-codec/commons-codec/1.5</bundle>
+    <bundle>mvn:org.overlord.apiman/apiman-core/1.0.0-SNAPSHOT</bundle>
+    <bundle>mvn:org.overlord.apiman/apiman-gateway/1.0.0-SNAPSHOT</bundle>
+    <bundle>wrap:mvn:org.apache.httpcomponents/httpcore/4.2.1</bundle>
+    <bundle>wrap:mvn:org.apache.httpcomponents/httpclient/4.2.1</bundle>
+    <bundle>mvn:org.overlord.apiman/apiman-gateway-http/1.0.0-SNAPSHOT</bundle>
+    <bundle>mvn:org.overlord.apiman/apiman-service-client-http/1.0.0-SNAPSHOT</bundle>
+ </feature>
+ <feature  name='apiman-inmemory'  version='1.0.0-SNAPSHOT'   > 
+    <bundle>mvn:org.codehaus.jackson/jackson-core-asl/1.9.9</bundle>
+    <bundle>mvn:commons-codec/commons-codec/1.5</bundle>
+    <bundle>mvn:org.overlord.apiman/apiman-core/1.0.0-SNAPSHOT</bundle>
+    <bundle>mvn:org.overlord.apiman/apiman-inmemory/1.0.0-SNAPSHOT</bundle>
+ </feature>
+</features>

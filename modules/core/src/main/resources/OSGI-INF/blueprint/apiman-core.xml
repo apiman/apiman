@@ -1,0 +1,21 @@
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
+
+    <service interface="org.overlord.apiman.services.AccountService">
+        <bean class="org.overlord.apiman.services.internal.DefaultAccountService" >
+        	<property name="repository" ref="apiManRepo"/>
+        </bean>
+    </service>
+
+    <service interface="org.overlord.apiman.services.ManagerService">
+        <bean class="org.overlord.apiman.services.internal.DefaultManagerService" >
+        	<property name="repository" ref="apiManRepo"/>
+        </bean>
+    </service>
+
+    <reference id="apiManRepo"
+               interface="org.overlord.apiman.repository.APIManRepository">
+    </reference>
+
+</blueprint>
