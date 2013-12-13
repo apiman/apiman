@@ -17,6 +17,7 @@
 		<module>inmemory</module>
 		<module>gateway</module>
 		<module>gateway-http</module>
+		<module>gateway-undertow</module>
 		<module>service-client-http</module>
 		<module>services-rest</module>
 	</modules>

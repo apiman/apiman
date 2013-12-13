@@ -20,6 +20,17 @@ package org.overlord.rtgov.testing.proxy;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import org.overlord.apiman.gateway.DefaultGateway;
+import org.overlord.apiman.gateway.DefaultServiceClientManager;
+import org.overlord.apiman.gateway.undertow.UndertowGateway;
+import org.overlord.apiman.inmemory.repository.InMemoryAPIManRepository;
+import org.overlord.apiman.model.Account;
+import org.overlord.apiman.model.App;
+import org.overlord.apiman.model.Service;
+import org.overlord.apiman.service.client.http.HTTPServiceClient;
+import org.overlord.apiman.services.internal.DefaultAccountService;
+import org.overlord.apiman.services.internal.DefaultManagerService;
+
 import io.undertow.Undertow;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
@@ -65,16 +76,62 @@ public class ProxyServer {
             return;
         }
         
+        String handlerName=System.getProperty("handler");
+        HttpHandler handler=null;
+        
+        if (handlerName != null && handlerName.equals("apiman")) {
+            handler = new UndertowGateway();
+            
+            // Need to directly create the gateway for now
+            DefaultGateway gw=new DefaultGateway();
+            DefaultServiceClientManager scm=new DefaultServiceClientManager();
+            InMemoryAPIManRepository repo=new InMemoryAPIManRepository();
+            HTTPServiceClient hsc=new HTTPServiceClient();
+            
+            gw.setRepository(repo);
+            gw.setServiceClientManager(scm);
+            
+            scm.getServiceClients().add(hsc);
+            
+            // Configure the gateway
+            DefaultAccountService accountService=new DefaultAccountService();
+            accountService.setRepository(repo);
+            DefaultManagerService managerService=new DefaultManagerService();
+            managerService.setRepository(repo);
+            
+            try {
+                Account account=new Account();
+                account.setUserId("admin");
+                account.setPassword("admin");
+                accountService.createAccount(account);
+                
+                App app=new App();
+                app.setDomainId("admin");
+                app.setId("1234");
+                app.setName("MyApp");
+                accountService.createApp("admin", app);
+                
+                Service service=new Service();
+                service.setName("testingservice");
+                service.setURI("http://localhost:8080/testingservice/");
+                managerService.registerService(service);
+                
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            
+            ((UndertowGateway)handler).setGateway(gw);
+        }
+        
+        if (handler == null) {
+            handler = new DefaultHttpHandler();
+        }
+        
+        System.out.println("USING HANDLER="+handler);
+        
         Undertow server = Undertow.builder()
                 .addListener(8282, "localhost")
-                .setHandler(new HttpHandler() {
-                    @Override
-                    public void handleRequest(final HttpServerExchange exchange) throws Exception {
-                        exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/plain");
-                        exchange.getResponseSender().send(testCall("Hello"));
-                                // value when simply echoing: "Hello World");
-                    }
-                }).build();
+                .setHandler(handler).build();
         server.start();
     }
     
@@ -99,5 +156,14 @@ public class ProxyServer {
         is.close();
         
         return (new String(b));
+    }
+    
+    public class DefaultHttpHandler implements HttpHandler {
+        @Override
+        public void handleRequest(final HttpServerExchange exchange) throws Exception {
+            exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/plain");
+            exchange.getResponseSender().send(testCall("Hello"));
+                    // value when simply echoing: "Hello World");
+        }
     }
 }
