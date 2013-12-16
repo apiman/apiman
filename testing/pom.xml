@@ -2,9 +2,9 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>modules</artifactId>
+	<artifactId>testing</artifactId>
 	<packaging>pom</packaging>
-	<name>Overlord APIMan::Modules</name>
+	<name>Overlord APIMan::Testing</name>
 
 	<parent>
 		<groupId>org.overlord.apiman</groupId>
@@ -13,14 +13,9 @@
 	</parent>
 
 	<modules>
-		<module>core</module>
-		<module>inmemory</module>
-		<module>gateway</module>
-		<module>gateway-http</module>
-		<module>gateway-undertow</module>
-		<module>service-client-http</module>
-		<module>services-rest</module>
-		<module>ui</module>
+		<module>client</module>
+		<module>proxy</module>
+		<module>service</module>
 	</modules>
 
 </project>

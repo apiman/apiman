@@ -15,6 +15,7 @@
  */
 package org.overlord.apiman.gateway;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.Dependent;
@@ -127,9 +128,9 @@ public class DefaultGateway implements Gateway {
 			}
 		}
 		
-		//if (LOG.isLoggable(Level.FINEST)) {
-			LOG.info("Service URI="+service.getURI());
-		//}
+		if (LOG.isLoggable(Level.FINEST)) {
+			LOG.finest("Service URI="+service.getURI());
+		}
 		
 		request.setServiceURI(service.getURI());
 		
@@ -146,9 +147,9 @@ public class DefaultGateway implements Gateway {
 		for (int i=0; i < app.getRequestPolicies().size(); i++) {
 			Policy policy=app.getRequestPolicies().get(i);
 			
-			//if (LOG.isLoggable(Level.FINEST)) {
-				LOG.info("App["+app+"] request policy="+policy+" request="+request);
-			//}
+			if (LOG.isLoggable(Level.FINEST)) {
+				LOG.finest("App["+app+"] request policy="+policy+" request="+request);
+			}
 				
 			policy.apply(context, request);
 		}
@@ -157,9 +158,9 @@ public class DefaultGateway implements Gateway {
 			for (int i=0; i < plan.getRequestPolicies().size(); i++) {
 				Policy policy=plan.getRequestPolicies().get(i);
 				
-				//if (LOG.isLoggable(Level.FINEST)) {
-					LOG.info("Plan["+plan+"] request policy="+policy+" request="+request);
-				//}
+				if (LOG.isLoggable(Level.FINEST)) {
+					LOG.finest("Plan["+plan+"] request policy="+policy+" request="+request);
+				}
 				
 				policy.apply(context, request);
 			}
@@ -169,9 +170,9 @@ public class DefaultGateway implements Gateway {
 		for (int i=0; i < service.getRequestPolicies().size(); i++) {
 			Policy policy=service.getRequestPolicies().get(i);
 
-			//if (LOG.isLoggable(Level.FINEST)) {
-				LOG.info("Service["+service+"] request policy="+policy+" request="+request);
-			//}
+			if (LOG.isLoggable(Level.FINEST)) {
+				LOG.finest("Service["+service+"] request policy="+policy+" request="+request);
+			}
 		
 			policy.apply(context, request);
 		}
@@ -189,9 +190,9 @@ public class DefaultGateway implements Gateway {
 			for (int i=0; i < service.getResponsePolicies().size(); i++) {
 				Policy policy=service.getResponsePolicies().get(i);
 				
-				//if (LOG.isLoggable(Level.FINEST)) {
-					LOG.info("Service["+service+"] response policy="+policy+" ret="+ret);
-				//}
+				if (LOG.isLoggable(Level.FINEST)) {
+					LOG.finest("Service["+service+"] response policy="+policy+" ret="+ret);
+				}
 		
 				policy.apply(context, ret);
 			}
@@ -200,9 +201,9 @@ public class DefaultGateway implements Gateway {
 				for (int i=0; i < plan.getResponsePolicies().size(); i++) {
 					Policy policy=plan.getResponsePolicies().get(i);
 					
-					//if (LOG.isLoggable(Level.FINEST)) {
-						LOG.info("Plan["+plan+"] response policy="+policy+" ret="+ret);
-					//}
+					if (LOG.isLoggable(Level.FINEST)) {
+						LOG.finest("Plan["+plan+"] response policy="+policy+" ret="+ret);
+					}
 				
 					policy.apply(context, ret);
 				}
@@ -212,18 +213,18 @@ public class DefaultGateway implements Gateway {
 			for (int i=0; i < app.getResponsePolicies().size(); i++) {
 				Policy policy=app.getResponsePolicies().get(i);
 				
-				//if (LOG.isLoggable(Level.FINEST)) {
-					LOG.info("App["+app+"] response policy="+policy+" ret="+ret);
-				//}
+				if (LOG.isLoggable(Level.FINEST)) {
+					LOG.finest("App["+app+"] response policy="+policy+" ret="+ret);
+				}
 				
 				policy.apply(context, ret);
 			}
 			
 		}
 		
-		//if (LOG.isLoggable(Level.FINEST)) {
-			LOG.info("Gateway response="+ret);
-		//}
+		if (LOG.isLoggable(Level.FINEST)) {
+			LOG.finest("Gateway response="+ret);
+		}
 		
 		return (ret);
 	}

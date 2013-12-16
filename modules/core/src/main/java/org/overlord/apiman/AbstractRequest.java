@@ -36,7 +36,7 @@ public abstract class AbstractRequest extends AbstractMessage implements Request
 		for (int i=0; i < _parameters.size(); i++) {
 			NameValuePair nvp=_parameters.get(i);
 			if (nvp.getName().equals(name)) {
-				return (nvp);
+				return (nvp.getValue());
 			}
 		}
 		
