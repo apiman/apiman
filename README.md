@@ -1,95 +1,63 @@
-API Management
-==============
+# The Overlord APIMan project (API Management)
 
-This repository currently contains a prototype API management capability.
+## Summary
 
+This is the official Git repository for the Overlord APIMan project, which is intended to be a part of the [JBoss Overlord](http://www.jboss.org/overlord) umbrella project.
 
-Build
------
+The APIMan project is a standalone API Management system that can be either run as a separate system or embedded within existing frameworks.
 
-Invoke the following in the root folder:
+## Get the code
 
-	mvn clean install
+The easiest way to get started with the code is to [create your own fork](http://help.github.com/forking/) of this repository, and then clone your fork:
 
+	$ git clone git@github.com:<you>/apiman.git
+	$ cd apiman
+	$ git remote add upstream git://github.com/Governance/apiman.git
+	
+At any time, you can pull changes from the upstream and merge them onto your master:
 
-JBoss EAP
----------
+	$ git checkout master               # switches to the 'master' branch
+	$ git pull upstream master          # fetches all 'upstream' changes and merges 'upstream/master' onto your 'master' branch
+	$ git push origin                   # pushes all the updates to your fork, which should be in-sync with 'upstream'
 
-The distribution is found in the _$apiman/release/war/target_ folder, called __apiman.war__. Simply copy the war into the _$EAP/standalone/deployment_ folder to deploy APIMan into the EAP server.
+The general idea is to keep your 'master' branch in-sync with the 'upstream/master'.
 
-1) Manager REST service
+## Building APIMan
 
-This service provides capabilities for the service managers. The REST service can be found at the URL _host_/apiman/manager.
+We use Maven 3.x to build our software. The following command compiles all the code, installs the JARs into your local Maven repository, and runs all of the unit tests:
 
-For example, http://localhost:8080/apiman/manager/service/names is used to retrieve the list of service names.
+	$ mvn clean install
 
-2) Account REST service
+## Contribute fixes and features
 
-This service provides capabilities for account holders. The REST service can be found at the URL _host_/apiman/account.
+APIMan is open source, and we welcome anybody who wants to participate and contribute!
 
-For example, http://localhost:8080/apiman/account/user/register is used to register a new user's account.
+If you want to fix a bug or make any changes, please log an issue in the [APIMan JIRA](http://issues.jboss.org/browse/APIMAN) describing the bug
+or new feature. Then we highly recommend making the changes on a topic branch named with the JIRA issue number. For example, this command creates
+a branch for the APIMAN-1234 issue:
 
-3) HTTP Gateway
+	$ git checkout -b apiman-1234
 
-The HTTP gateway can be found at the URL _host_/apiman/gateway/_serviceName_/_serviceSpecificPart_
+After you're happy with your changes and a full build (with unit tests) runs successfully, commit your changes on your topic branch
+(using [really good comments](http://community.jboss.org/wiki/OverlordDevelopmentGuidelines#Commits)). Then it's time to check for
+and pull any recent changes that were made in the official repository:
 
-For example, http://localhost:8080/apiman/gateway/rtgov/activity/query?apikey=1234 posts a request to the RTGov activity server.
+	$ git checkout master               # switches to the 'master' branch
+	$ git pull upstream master          # fetches all 'upstream' changes and merges 'upstream/master' onto your 'master' branch
+	$ git checkout apiman-1234           # switches to your topic branch
+	$ git rebase master                 # reapplies your changes on top of the latest in master
+	                                      (i.e., the latest from master will be the new base for your changes)
 
+If the pull grabbed a lot of changes, you should rerun your build to make sure your changes are still good.
+You can then either [create patches](http://progit.org/book/ch5-2.html) (one file per commit, saved in `~/apiman-1234`) with 
 
-Apache Karaf
-------------
+	$ git format-patch -M -o ~/apiman-1234 orgin/master
 
-Installation:
+and upload them to the JIRA issue, or you can push your topic branch and its changes into your public fork repository
 
-a) Download Karaf version 3.0.0.RC1 from http://karaf.apache.org/index/community/download.html
+	$ git push origin apiman-1234         # pushes your topic branch into your public fork of APIMan
 
-b) Unpack karaf and go to the bin folder and run ./karaf
+and [generate a pull-request](http://help.github.com/pull-requests/) for your changes. 
 
-c) From within the Karaf console, run the following commands:
-
-	feature:repo-add cxf 2.7.5
-	feature:install http cxf
-	feature:repo-add file:/<full_path_to>/apiman/release/karaf/src/main/resources/features.xml
-	feature:install apiman-inmemory
-	feature:install apiman-gateway-http
-	feature:install apiman-services-rest
-	bundle:list
-
-The final command should show:
-
-	START LEVEL 100 , List Threshold: 50
-	   ID   State         Level Name
-	[  86] [  Resolved] [   80] XBean-Finder-Fragment (3.0.0.M3), Hosts: 87
-	[ 176] [    Active] [   50] Apache CXF Compatibility Bundle Jar (2.7.5)
-	[ 261] [    Active] [   80] Jackson JSON processor (1.9.9)
-	[ 262] [    Active] [   80] Commons Codec (1.5)
-	[ 263] [    Active] [   80] Overlord APIMan::Modules::Core (1.0.0.SNAPSHOT)
-	[ 264] [    Active] [   80] Overlord APIMan::Modules::InMemory (1.0.0.SNAPSHOT)
-	[ 265] [    Active] [   80] Overlord APIMan::Modules::Gateway (1.0.0.SNAPSHOT)
-	[ 266] [    Active] [   80] wrap_mvn_org.apache.httpcomponents_httpcore_4.2.1 (0)
-	[ 267] [    Active] [   80] wrap_mvn_org.apache.httpcomponents_httpclient_4.2.1 (0)
-	[ 268] [    Active] [   80] Overlord APIMan::Modules::Gateway HTTP (1.0.0.SNAPSHOT)
-	[ 269] [    Active] [   80] Overlord APIMan::Modules::Service Client HTTP (1.0.0.SNAPSHOT)
-	[ 270] [    Active] [   80] Data mapper for Jackson JSON processor (1.9.9)
-	[ 271] [    Active] [   80] Overlord APIMan::Modules::Services REST (1.0.0.SNAPSHOT)
-
-
-1) Manager REST service
-
-This service provides capabilities for the service managers. The REST service can be found at the URL _host_/apiman/manager.
-
-For example, http://localhost:8181/cxf/apiman/manager/service/names is used to retrieve the list of service names.
-
-2) Account REST service
-
-This service provides capabilities for account holders. The REST service can be found at the URL _host_/apiman/account.
-
-For example, http://localhost:8181/cxf/apiman/account/user/register is used to register a new user's account.
-
-3) HTTP Gateway
-
-The HTTP gateway can be found at the URL _host_/apiman/gateway/_serviceName_/_serviceSpecificPart_
-
-For example, http://localhost:8181/apiman/gateway/rtgov/activity/query?apikey=1234 posts a request to the RTGov activity server.
-
-
+We prefer pull-requests, because we can review the proposed changes, comment on them,
+discuss them with you, and likely merge the changes right into the official repository.
