@@ -13,7 +13,7 @@
   <version>1.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
-  <name>Overlord APIMan</name>
+  <name>apiman</name>
   <url>http://www.jboss.org/overlord</url>
   <description>The Overlord API Management project</description>
 
@@ -77,6 +77,7 @@
     <maven.surefire.report.plugin.version>2.16</maven.surefire.report.plugin.version>
 
     <!-- Dependency Versions (not found in parent) -->
+    <overlord-commons.version>2.0.0-SNAPSHOT</overlord-commons.version>
 
     <!-- Dependency Overrides -->
   </properties>
@@ -87,12 +88,62 @@
       <dependency>
         <groupId>org.jboss.integration-platform</groupId>
         <artifactId>jboss-integration-platform-bom</artifactId>
-        <version>6.0.0.CR3</version>
+        <version>6.0.0-SNAPSHOT</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+
+      <!-- Overlord Commons -->
+      <dependency>
+        <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-gwt</artifactId>
+        <version>${overlord-commons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-config</artifactId>
+        <version>${overlord-commons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-i18n</artifactId>
+        <version>${overlord-commons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-errai-fuse-support</artifactId>
+        <version>${overlord-commons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-osgi</artifactId>
+        <version>${overlord-commons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-osgi-weld</artifactId>
+        <version>${overlord-commons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-uiheader</artifactId>
+        <version>${overlord-commons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-services</artifactId>
+        <version>${overlord-commons.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
   <build>
     <!-- This section defines the default plugin settings inherited by child projects. -->
@@ -106,8 +157,8 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <source>1.7</source>
-          <target>1.7</target>
+          <source>1.6</source>
+          <target>1.6</target>
           <showDeprecation>false</showDeprecation>
           <showWarnings>false</showWarnings>
         </configuration>
@@ -141,6 +192,29 @@
             </property>
           </systemProperties>
           <argLine>-Xmx368m -XX:MaxPermSize=128m</argLine>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-clean-plugin</artifactId>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>${basedir}</directory>
+              <includes>
+                <include>www-test/**</include>
+                <include>.gwt/**</include>
+                <include>.errai/**</include>
+                <include>src/main/webapp/.errai/**</include>
+                <include>src/main/webapp/app/**</include>
+                <include>src/main/webapp/WEB-INF/deploy/**</include>
+                <include>src/main/webapp/WEB-INF/lib/**</include>
+                <include>src/main/webapp/WEB-INF/classes/**</include>
+                <include>**/gwt-unitCache/**</include>
+                <include>**/*.JUnit/**</include>
+              </includes>
+            </fileset>
+          </filesets>
         </configuration>
       </plugin>
     </plugins>
@@ -202,6 +276,9 @@
   </distributionManagement>
 
   <modules>
+    <module>apiman-rt</module>
+    <module>apiman-dt</module>
+    <module>apiman-tools</module>
   </modules>
 
 </project>

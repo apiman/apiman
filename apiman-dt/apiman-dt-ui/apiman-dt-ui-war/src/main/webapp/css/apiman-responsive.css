@@ -1,0 +1,21 @@
+/* Global Responsive Styles */
+
+/* Huge Desktop */
+@media ( min-width : 1900px) {
+}
+
+/* Desktop */
+@media ( min-width : 768px) {
+}
+
+/* Mobile */
+@media ( max-width : 767px) {
+}
+
+/* Smart Phones */
+@media ( max-width : 480px) {
+}
+
+/* Original iPhone */
+@media ( max-width : 360px) {
+}
