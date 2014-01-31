@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.overlord.apiman</groupId>
@@ -7,23 +8,13 @@
   </parent>
   <artifactId>apiman-tools-dev-server</artifactId>
   <name>apiman-tools-dev-server</name>
-  
+
   <dependencies>
     <!-- Dev Server Dependencies -->
     <dependency>
       <groupId>org.overlord</groupId>
       <artifactId>overlord-commons-dev</artifactId>
       <version>${overlord-commons.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.logging</groupId>
-      <artifactId>jboss-logging</artifactId>
-    </dependency>
-
-    <!-- Required Third Party Libs -->
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
     </dependency>
 
     <!-- Overlord Commons -->
@@ -55,8 +46,31 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <dependency>
+      <groupId>org.overlord.apiman</groupId>
+      <artifactId>apiman-dt-api-rest</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <!-- Required Third Party Libs -->
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-jaxrs</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-jackson-provider</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.logging</groupId>
+      <artifactId>jboss-logging</artifactId>
+    </dependency>
   </dependencies>
-  
+
   <build>
     <plugins>
       <plugin>
@@ -98,5 +112,5 @@
       </build>
     </profile>
   </profiles>
-  
+
 </project>

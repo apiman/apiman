@@ -12,6 +12,18 @@
 
   <dependencies>
     <!-- Project Dependencies -->
+    <dependency>
+      <groupId>org.overlord.apiman</groupId>
+      <artifactId>apiman-dt-api-beans</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord.apiman</groupId>
+      <artifactId>apiman-dt-api-rest</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>
 
     <!-- Overlord Commons -->
     <dependency>
@@ -59,6 +71,12 @@
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-data-binding</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-jaxrs-client</artifactId>
+      <version>${version.org.jboss.errai}</version>
       <scope>provided</scope>
     </dependency>
 

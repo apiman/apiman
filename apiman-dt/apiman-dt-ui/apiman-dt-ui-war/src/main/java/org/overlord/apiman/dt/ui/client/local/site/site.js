@@ -20,6 +20,13 @@ function loadResource(filename, filetype) {
 	}
 }
 
+/**
+ * Loads all of the resources needed by the templates so that they look
+ * like they will in the deployed app.  This is done dynamically so that
+ * the templates are as slim and trim as possible.  It also means that,
+ * if we need to add another CSS or JS file, we can add it here rather 
+ * than in every single template file.
+ */
 function loadAll() {
 	loadResource("../../../../../../../../../webapp/bootstrap-3.0.3/css/bootstrap.min.css", "css");
 	loadResource("../../../../../../../../../webapp/bootstrap-3.0.3/css/bootstrap-theme.min.css", "css");

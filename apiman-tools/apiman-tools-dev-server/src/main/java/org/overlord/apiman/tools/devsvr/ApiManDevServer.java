@@ -31,9 +31,11 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.security.Constraint;
 import org.eclipse.jetty.util.security.Credential;
 import org.jboss.errai.bus.server.servlet.DefaultBlockingServlet;
+import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
 import org.jboss.weld.environment.servlet.BeanManagerResourceBindingListener;
 import org.jboss.weld.environment.servlet.Listener;
 import org.overlord.apiman.dt.ui.server.ApiManUI;
+import org.overlord.apiman.tools.devsvr.rest.ApiManDtDevServerApplication;
 import org.overlord.commons.dev.server.DevServerEnvironment;
 import org.overlord.commons.dev.server.ErraiDevServer;
 import org.overlord.commons.dev.server.MultiDefaultServlet;
@@ -120,7 +122,7 @@ public class ApiManDevServer extends ErraiDevServer {
         ServletContextHandler apiManDtUI = new ServletContextHandler(ServletContextHandler.SESSIONS);
         apiManDtUI.setWelcomeFiles(new String[] { "index.html" });
         apiManDtUI.setSecurityHandler(createSecurityHandler());
-        apiManDtUI.setContextPath("/apiman");
+        apiManDtUI.setContextPath("/apiman-ui");
         apiManDtUI.setWelcomeFiles(new String[] { "index.html" });
         apiManDtUI.setResourceBase(environment.getModuleDir("apiman-dt-ui").getCanonicalPath());
         apiManDtUI.setInitParameter("errai.properties", "/WEB-INF/errai.properties");
@@ -152,8 +154,19 @@ public class ApiManDevServer extends ErraiDevServer {
             apiManDtUI.addServlet(resources, "*." + fileType);
         }
 
+        /* *************
+         * APIMan DT API
+         * ************* */
+        ServletContextHandler apiManServer = new ServletContextHandler(ServletContextHandler.SESSIONS);
+        apiManServer.setContextPath("/apiman-api");
+        ServletHolder resteasyServlet = new ServletHolder(new HttpServletDispatcher());
+        resteasyServlet.setInitParameter("javax.ws.rs.Application", ApiManDtDevServerApplication.class.getName());
+        apiManServer.addServlet(resteasyServlet, "/*");
+        apiManServer.addFilter(LocaleFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
+
         // Add the web contexts to jetty
         handlers.addHandler(apiManDtUI);
+        handlers.addHandler(apiManServer);
     }
 
     /**

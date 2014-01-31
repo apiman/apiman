@@ -15,12 +15,16 @@
  */
 package org.overlord.apiman.dt.ui.client.local.pages;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
+import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ui.nav.client.local.DefaultPage;
 import org.jboss.errai.ui.nav.client.local.Page;
 import org.jboss.errai.ui.nav.client.local.PageShown;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.overlord.apiman.dt.api.rest.contract.UserResource;
 
 /**
  * The "Dashboard" page.
@@ -32,10 +36,41 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 @Dependent
 public class DashboardPage extends AbstractPage {
 
+    @Inject
+    private Caller<UserResource> user;
+    
+//    @Inject @DataField
+//    private Button testButton;
+//    @Inject @DataField
+//    private TextBox testValue;
+
     /**
      * Constructor.
      */
     public DashboardPage() {
+    }
+    
+    /**
+     * Called after the page is built.
+     */
+    @PostConstruct
+    protected void postConstruct() {
+//        testButton.addClickHandler(new ClickHandler() {
+//            @Override
+//            public void onClick(ClickEvent event) {
+//                RemoteCallback<UserBean> callback2 = new RemoteCallback<UserBean>() {
+//                    @Override
+//                    public void callback(UserBean response) {
+//                        Window.alert("User is: " + response.getEmail());
+//                    }
+//                };
+//                try {
+//                    user.call(callback2).getUser(testValue.getValue());
+//                } catch (UserNotFoundException e) {
+//                    Window.alert("Error: " + e.getMessage());
+//                }
+//            }
+//        });
     }
 
     @PageShown

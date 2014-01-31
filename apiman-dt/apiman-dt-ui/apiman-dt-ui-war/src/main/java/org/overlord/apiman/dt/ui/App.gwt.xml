@@ -9,4 +9,7 @@
   <inherits name="org.jboss.errai.databinding.DataBinding" />
   <inherits name="org.jboss.errai.ui.UI" />
   <inherits name="org.jboss.errai.ui.nav.Navigation" />
+  <inherits name="org.jboss.errai.enterprise.Jaxrs"/>
+  <inherits name="org.overlord.apiman.dt.api.beans.Beans" />
+  <inherits name="org.overlord.apiman.dt.api.rest.Rest" />
 </module>

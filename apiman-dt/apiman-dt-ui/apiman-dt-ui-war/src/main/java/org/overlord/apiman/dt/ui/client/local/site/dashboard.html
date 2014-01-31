@@ -6,7 +6,8 @@
     <script type="text/javascript" src="site.js"></script>
   </head>
 
-  <script>
+  <script data-role="dummy">
+    // Load all the template resources.  See the jdoc in site.js for more info.
     loadAll();
   </script>
 
@@ -15,10 +16,14 @@
       <!-- Content area with footer-->
       <div id="page-content" class="container">
         <div class="hero-unit desktop-only">
-          <h1 data-i18n-key="hero-title">S-RAMP Browser</h1>
+          <h1 data-i18n-key="hero-title">API Management Dashboard</h1>
           <p data-i18n-key="hero-description">
             Welcome to the API Management Dashboard.  This UI is intended to allow you to manage the 
             Services and Applications that you manage.  Blah blah.
+          </p>
+          <p>
+            <input type="text" data-field="testValue"></input>
+            <button class="btn" data-field="testButton">Test Me</button>
           </p>
         </div>
       </div> <!-- /container -->

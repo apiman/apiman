@@ -8,4 +8,10 @@
   <artifactId>apiman-dt-api</artifactId>
   <packaging>pom</packaging>
   <name>apiman-dt-api</name>
+  <modules>
+    <module>apiman-dt-api-services</module>
+    <module>apiman-dt-api-beans</module>
+    <module>apiman-dt-api-rest</module>
+    <module>apiman-dt-api-war</module>
+  </modules>
 </project>
