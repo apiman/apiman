@@ -16,38 +16,18 @@
 
 package org.overlord.apiman.dt.api.rest.exceptions;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
- * Base class for all APIMan errors coming out of the REST layer.
+ * A set of error codes used by the application when returning errors via
+ * the DT REST API.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
-public class RestException extends RuntimeException {
-
-    private static final long serialVersionUID = -2406210413693314452L;
-
-    /**
-     * Constructor.
-     */
-    public RestException() {
-    }
+public class ErrorCodes {
     
-    /**
-     * Constructor.
-     * @param message
-     */
-    public RestException(String message) {
-        super(message);
-    }
+    public static final int HTTP_STATUS_CODE_NOT_FOUND = 404;
     
-    /**
-     * Constructor.
-     * @param cause
-     */
-    public RestException(Throwable cause) {
-        super(cause);
-    }
+    public static final int USER_NOT_FOUND      = 1001;
+    public static final String USER_NOT_FOUND_INFO = null;
 
 }

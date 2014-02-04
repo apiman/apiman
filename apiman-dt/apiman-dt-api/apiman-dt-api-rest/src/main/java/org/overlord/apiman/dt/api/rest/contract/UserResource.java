@@ -23,7 +23,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.overlord.apiman.dt.api.beans.users.UserBean;
-import org.overlord.apiman.dt.api.rest.exceptions.UserNotFoundException;
+import org.overlord.apiman.dt.api.rest.exceptions.AbstractRestException;
 
 /**
  * Implementation of the User API.
@@ -36,5 +36,5 @@ public interface UserResource {
     @GET
     @Path("{username}")
     @Produces(MediaType.APPLICATION_JSON)
-    public UserBean getUser(@PathParam("username") String username) throws UserNotFoundException;
+    public UserBean getUser(@PathParam("username") String username) throws AbstractRestException;
 }

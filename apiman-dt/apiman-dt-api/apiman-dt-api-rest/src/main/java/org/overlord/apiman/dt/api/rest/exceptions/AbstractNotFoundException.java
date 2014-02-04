@@ -16,52 +16,43 @@
 
 package org.overlord.apiman.dt.api.rest.exceptions;
 
-
 /**
- * Thrown when a request is sent for a user who does not exist.
+ * Base class for "not found" exceptions.
  *
  * @author eric.wittmann@redhat.com
  */
-public class UserNotFoundException extends AbstractNotFoundException {
+public abstract class AbstractNotFoundException extends AbstractRestException {
+    
+    private static final long serialVersionUID = -196398343525920762L;
 
-    private static final long serialVersionUID = 8937297365588151067L;
-    
-    /**
-     * Creates an exception from a username.
-     * @param username
-     */
-    public static final UserNotFoundException create(String username) {
-        return new UserNotFoundException("User not found: " + username);
-    }
-    
     /**
      * Constructor.
      */
-    public UserNotFoundException() {
+    public AbstractNotFoundException() {
     }
-    
+
     /**
      * Constructor.
      * @param message
      */
-    public UserNotFoundException(String message) {
+    public AbstractNotFoundException(String message) {
         super(message);
     }
     
     /**
-     * @see org.overlord.apiman.dt.api.rest.exceptions.AbstractRestException#getErrorCode()
+     * Constructor.
+     * @param cause
      */
-    @Override
-    public int getErrorCode() {
-        return ErrorCodes.USER_NOT_FOUND;
+    public AbstractNotFoundException(Throwable cause) {
+        super(cause);
     }
     
     /**
-     * @see org.overlord.apiman.dt.api.rest.exceptions.AbstractRestException#getMoreInfo()
+     * @see org.overlord.apiman.dt.api.rest.exceptions.AbstractRestException#getHttpCode()
      */
     @Override
-    public String getMoreInfoUrl() {
-        return ErrorCodes.USER_NOT_FOUND_INFO;
+    public final int getHttpCode() {
+        return ErrorCodes.HTTP_STATUS_CODE_NOT_FOUND;
     }
 
 }

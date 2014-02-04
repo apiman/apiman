@@ -20,11 +20,23 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
+import org.jboss.errai.enterprise.client.jaxrs.api.RestErrorCallback;
 import org.jboss.errai.ui.nav.client.local.DefaultPage;
 import org.jboss.errai.ui.nav.client.local.Page;
 import org.jboss.errai.ui.nav.client.local.PageShown;
+import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.overlord.apiman.dt.api.beans.users.UserBean;
 import org.overlord.apiman.dt.api.rest.contract.UserResource;
+import org.overlord.apiman.dt.api.rest.exceptions.UserNotFoundException;
+
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.http.client.Request;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.TextBox;
 
 /**
  * The "Dashboard" page.
@@ -38,11 +50,11 @@ public class DashboardPage extends AbstractPage {
 
     @Inject
     private Caller<UserResource> user;
-    
-//    @Inject @DataField
-//    private Button testButton;
-//    @Inject @DataField
-//    private TextBox testValue;
+
+    @Inject @DataField
+    private Button testButton;
+    @Inject @DataField
+    private TextBox testValue;
 
     /**
      * Constructor.
@@ -55,22 +67,31 @@ public class DashboardPage extends AbstractPage {
      */
     @PostConstruct
     protected void postConstruct() {
-//        testButton.addClickHandler(new ClickHandler() {
-//            @Override
-//            public void onClick(ClickEvent event) {
-//                RemoteCallback<UserBean> callback2 = new RemoteCallback<UserBean>() {
-//                    @Override
-//                    public void callback(UserBean response) {
-//                        Window.alert("User is: " + response.getEmail());
-//                    }
-//                };
-//                try {
-//                    user.call(callback2).getUser(testValue.getValue());
-//                } catch (UserNotFoundException e) {
-//                    Window.alert("Error: " + e.getMessage());
-//                }
-//            }
-//        });
+        testButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                RemoteCallback<UserBean> callback = new RemoteCallback<UserBean>() {
+                    @Override
+                    public void callback(UserBean response) {
+                        Window.alert("User is: " + response.getEmail());
+                    }
+                };
+                RestErrorCallback errorCallback = new RestErrorCallback() {
+                    @Override
+                    public boolean error(Request request, Throwable throwable) {
+                        try {
+                            throw throwable;
+                        } catch (UserNotFoundException e) {
+                            Window.alert("User not found: " + e.getMessage());
+                        } catch (Throwable t) {
+                            Window.alert("Unknown Error: " + throwable.getMessage());
+                        }
+                        return false;
+                    }
+                };
+                user.call(callback, errorCallback).getUser(testValue.getValue());
+            }
+        });
     }
 
     @PageShown

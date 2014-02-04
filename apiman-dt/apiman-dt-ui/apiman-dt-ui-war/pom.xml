@@ -49,6 +49,12 @@
       <artifactId>cdi-api</artifactId>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-dev</artifactId>
+      <version>${version.com.google.gwt}</version>
+      <scope>provided</scope>
+    </dependency>
 
     <!-- Errai -->
     <dependency>

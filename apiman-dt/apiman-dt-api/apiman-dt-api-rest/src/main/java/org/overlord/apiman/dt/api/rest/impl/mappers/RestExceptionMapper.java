@@ -20,7 +20,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
-import org.overlord.apiman.dt.api.rest.exceptions.RestException;
+import org.overlord.apiman.dt.api.rest.exceptions.ErrorBean;
+import org.overlord.apiman.dt.api.rest.exceptions.AbstractRestException;
 
 /**
  * Provider that maps an error.
@@ -28,7 +29,7 @@ import org.overlord.apiman.dt.api.rest.exceptions.RestException;
  * @author eric.wittmann@redhat.com
  */
 @Provider
-public class RestExceptionMapper implements ExceptionMapper<RestException> {
+public class RestExceptionMapper implements ExceptionMapper<AbstractRestException> {
     
     /**
      * Constructor.
@@ -40,8 +41,13 @@ public class RestExceptionMapper implements ExceptionMapper<RestException> {
      * @see javax.ws.rs.ext.ExceptionMapper#toResponse(java.lang.Throwable)
      */
     @Override
-    public Response toResponse(RestException data) {
-        return Response.status(500).entity(data).build();
+    public Response toResponse(AbstractRestException data) {
+        ErrorBean error = new ErrorBean();
+        error.setType(data.getClass().getSimpleName());
+        error.setErrorCode(data.getErrorCode());
+        error.setMessage(data.getMessage());
+        error.setMoreInfoUrl(data.getMoreInfoUrl());
+        return Response.status(data.getHttpCode()).entity(error).build();
     }
 
 }

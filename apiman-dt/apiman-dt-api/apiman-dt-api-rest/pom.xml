@@ -45,6 +45,7 @@
         <directory>src/main/java</directory>
         <includes>
           <include>**/contract/**</include>
+          <include>**/exceptions/**</include>
           <include>**/*.gwt.xml</include>
         </includes>
       </resource>

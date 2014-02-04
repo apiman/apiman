@@ -80,6 +80,7 @@
     <overlord-commons.version>2.0.0-SNAPSHOT</overlord-commons.version>
 
     <!-- Dependency Overrides -->
+    <version.org.jboss.errai>3.0-SNAPSHOT</version.org.jboss.errai>
   </properties>
 
   <dependencyManagement>
@@ -91,6 +92,92 @@
         <version>6.0.0-SNAPSHOT</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+
+      <!-- Use Errai 3.0 (temporary override) -->
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-common</artifactId>
+        <version>${version.org.jboss.errai}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-cdi-jetty</artifactId>
+        <version>${version.org.jboss.errai}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-ioc</artifactId>
+        <version>${version.org.jboss.errai}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-cdi-client</artifactId>
+        <version>${version.org.jboss.errai}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-javax-enterprise</artifactId>
+        <version>${version.org.jboss.errai}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-weld-integration</artifactId>
+        <version>${version.org.jboss.errai}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-ui</artifactId>
+        <version>${version.org.jboss.errai}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-navigation</artifactId>
+        <version>${version.org.jboss.errai}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-data-binding</artifactId>
+        <version>${version.org.jboss.errai}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-marshalling</artifactId>
+        <version>${version.org.jboss.errai}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-bus</artifactId>
+        <version>${version.org.jboss.errai}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.annotation</groupId>
+            <artifactId>jsr250-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-jboss-as-support</artifactId>
+        <version>${version.org.jboss.errai}</version>
       </dependency>
 
       <!-- Overlord Commons -->

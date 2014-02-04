@@ -50,7 +50,7 @@ public class UserResourceImpl implements UserResource {
             return user;
         } else {
             System.out.println("Throwing user not found.");
-            throw new UserNotFoundException(username);
+            throw UserNotFoundException.create(username);
         }
     }
 }
