@@ -19,8 +19,8 @@ package org.overlord.apiman.dt.ui.client.local;
 import javax.ws.rs.ext.Provider;
 
 import org.jboss.errai.enterprise.client.jaxrs.AbstractJSONClientExceptionMapper;
-import org.overlord.apiman.dt.api.rest.exceptions.ErrorBean;
-import org.overlord.apiman.dt.api.rest.exceptions.UserNotFoundException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.ErrorBean;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.UserNotFoundException;
 
 import com.google.gwt.http.client.Response;
 

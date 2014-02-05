@@ -14,54 +14,54 @@
  * limitations under the License.
  */
 
-package org.overlord.apiman.dt.api.rest.exceptions;
+package org.overlord.apiman.dt.api.rest.contract.exceptions;
 
 
 /**
- * Thrown when a request is sent for a user who does not exist.
+ * Thrown when trying to get, update, or delete an organization that does not exist.
  *
  * @author eric.wittmann@redhat.com
  */
-public class UserNotFoundException extends AbstractNotFoundException {
+public class OrganizationNotFoundException extends AbstractNotFoundException {
 
-    private static final long serialVersionUID = 8937297365588151067L;
-    
+    private static final long serialVersionUID = -6377298317341796900L;
+
     /**
-     * Creates an exception from a username.
-     * @param username
+     * Creates an exception from an organization id.
+     * @param organizationId
      */
-    public static final UserNotFoundException create(String username) {
-        return new UserNotFoundException("User not found: " + username);
+    public static final OrganizationNotFoundException create(String organizationId) {
+        return new OrganizationNotFoundException("Organization does not exist: " + organizationId);
     }
     
     /**
      * Constructor.
      */
-    public UserNotFoundException() {
+    public OrganizationNotFoundException() {
     }
     
     /**
      * Constructor.
      * @param message
      */
-    public UserNotFoundException(String message) {
+    public OrganizationNotFoundException(String message) {
         super(message);
     }
     
     /**
-     * @see org.overlord.apiman.dt.api.rest.exceptions.AbstractRestException#getErrorCode()
+     * @see org.overlord.apiman.dt.api.rest.contract.exceptions.AbstractRestException#getErrorCode()
      */
     @Override
     public int getErrorCode() {
-        return ErrorCodes.USER_NOT_FOUND;
+        return ErrorCodes.ORG_NOT_FOUND;
     }
     
     /**
-     * @see org.overlord.apiman.dt.api.rest.exceptions.AbstractRestException#getMoreInfo()
+     * @see org.overlord.apiman.dt.api.rest.contract.exceptions.AbstractRestException#getMoreInfo()
      */
     @Override
     public String getMoreInfoUrl() {
-        return ErrorCodes.USER_NOT_FOUND_INFO;
+        return ErrorCodes.ORG_NOT_FOUND_INFO;
     }
 
 }

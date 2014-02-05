@@ -27,9 +27,12 @@ import org.jboss.errai.ui.nav.client.local.Page;
 import org.jboss.errai.ui.nav.client.local.PageShown;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.overlord.apiman.dt.api.beans.BeanUtils;
+import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
 import org.overlord.apiman.dt.api.beans.users.UserBean;
-import org.overlord.apiman.dt.api.rest.contract.UserResource;
-import org.overlord.apiman.dt.api.rest.exceptions.UserNotFoundException;
+import org.overlord.apiman.dt.api.rest.contract.IOrganizationResource;
+import org.overlord.apiman.dt.api.rest.contract.IUserResource;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.AbstractRestException;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -49,13 +52,24 @@ import com.google.gwt.user.client.ui.TextBox;
 public class DashboardPage extends AbstractPage {
 
     @Inject
-    private Caller<UserResource> user;
+    private Caller<IUserResource> user;
+    @Inject
+    private Caller<IOrganizationResource> org;
 
     @Inject @DataField
     private Button testButton;
     @Inject @DataField
     private TextBox testValue;
 
+
+    @Inject @DataField
+    private Button orgAddButton;
+    @Inject @DataField
+    private Button orgGetButton;
+    @Inject @DataField
+    private TextBox orgValue;
+
+    
     /**
      * Constructor.
      */
@@ -67,29 +81,55 @@ public class DashboardPage extends AbstractPage {
      */
     @PostConstruct
     protected void postConstruct() {
+        final RestErrorCallback errorCallback = new RestErrorCallback() {
+            @Override
+            public boolean error(Request request, Throwable throwable) {
+                try {
+                    throw throwable;
+                } catch (AbstractRestException e) {
+                    Window.alert("REST error: " + e.getMessage());
+                } catch (Throwable t) {
+                    Window.alert("Unknown Error: " + throwable.getMessage());
+                }
+                return false;
+            }
+        };
+
         testButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                RemoteCallback<UserBean> callback = new RemoteCallback<UserBean>() {
+                user.call(new RemoteCallback<UserBean>() {
                     @Override
                     public void callback(UserBean response) {
                         Window.alert("User is: " + response.getEmail());
                     }
-                };
-                RestErrorCallback errorCallback = new RestErrorCallback() {
+                }, errorCallback).getUser(testValue.getValue());
+            }
+        });
+        
+        orgAddButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                OrganizationBean newOrg = new OrganizationBean();
+                newOrg.setName(orgValue.getValue());
+                org.call(new RemoteCallback<Void>() {
                     @Override
-                    public boolean error(Request request, Throwable throwable) {
-                        try {
-                            throw throwable;
-                        } catch (UserNotFoundException e) {
-                            Window.alert("User not found: " + e.getMessage());
-                        } catch (Throwable t) {
-                            Window.alert("Unknown Error: " + throwable.getMessage());
-                        }
-                        return false;
+                    public void callback(Void response) {
+                        Window.alert("Created!");
                     }
-                };
-                user.call(callback, errorCallback).getUser(testValue.getValue());
+                }, errorCallback).create(newOrg);
+            }
+        });
+        orgGetButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                String orgId = BeanUtils.idFromName(orgValue.getValue());
+                org.call(new RemoteCallback<OrganizationBean>() {
+                    @Override
+                    public void callback(OrganizationBean bean) {
+                        Window.alert("Organization: " + bean.getName());
+                    }
+                }, errorCallback).get(orgId);
             }
         });
     }

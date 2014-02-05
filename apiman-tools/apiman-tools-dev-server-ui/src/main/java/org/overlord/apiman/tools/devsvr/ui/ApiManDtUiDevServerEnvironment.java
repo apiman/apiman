@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.tools.devsvr;
+package org.overlord.apiman.tools.devsvr.ui;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -25,13 +25,13 @@ import org.overlord.commons.dev.server.DevServerEnvironment;
  * Holds information about the apiman development runtime environment.
  * @author eric.wittmann@redhat.com
  */
-public class ApiManDevServerEnvironment extends DevServerEnvironment {
+public class ApiManDtUiDevServerEnvironment extends DevServerEnvironment {
 
     /**
      * Constructor.
      * @param args
      */
-    public ApiManDevServerEnvironment(String[] args) {
+    public ApiManDtUiDevServerEnvironment(String[] args) {
         super(args);
     }
     

@@ -13,21 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.overlord.apiman.dt.api.rest.exceptions;
-
+package org.overlord.apiman.dt.api.beans;
 
 /**
- * A set of error codes used by the application when returning errors via
- * the DT REST API.
+ * Some simple bean utils.
  *
  * @author eric.wittmann@redhat.com
  */
-public class ErrorCodes {
+public class BeanUtils {
     
-    public static final int HTTP_STATUS_CODE_NOT_FOUND = 404;
-    
-    public static final int USER_NOT_FOUND      = 1001;
-    public static final String USER_NOT_FOUND_INFO = null;
+    /**
+     * Creates a bean id from the given bean name.  This essentially removes any
+     * non "word" characters from the name.
+     * @param name
+     */
+    public static final String idFromName(String name) {
+        return name.replaceAll("\\W", "");
+    }
 
 }

@@ -13,24 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.overlord.apiman.dt.api.rest.contract;
-
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+package org.overlord.apiman.dt.api.persist;
 
 /**
- * Implementation of the System API.
  * 
+ *
  * @author eric.wittmann@redhat.com
  */
-@Path("system")
-public interface SystemResource {
+public class AlreadyExistsException extends StorageException {
 
-    @GET
-    @Path("status")
-    @Produces("application/json")
-    public String getStatus();
+    private static final long serialVersionUID = -8861679618736432651L;
+
+    /**
+     * Constructor.
+     */
+    public AlreadyExistsException() {
+    }
 
 }

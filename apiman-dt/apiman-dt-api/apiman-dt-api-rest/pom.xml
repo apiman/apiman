@@ -16,8 +16,18 @@
       <artifactId>apiman-dt-api-beans</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.overlord.apiman</groupId>
+      <artifactId>apiman-dt-api-persistence</artifactId>
+      <version>${project.version}</version>
+    </dependency>
 
     <!-- Third Party Dependencies -->
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-common</artifactId>

@@ -18,16 +18,19 @@ package org.overlord.apiman.dt.api.rest.impl;
 
 import java.util.Date;
 
+import javax.enterprise.context.ApplicationScoped;
+
 import org.overlord.apiman.dt.api.beans.users.UserBean;
-import org.overlord.apiman.dt.api.rest.contract.UserResource;
-import org.overlord.apiman.dt.api.rest.exceptions.UserNotFoundException;
+import org.overlord.apiman.dt.api.rest.contract.IUserResource;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.UserNotFoundException;
 
 /**
  * Implementation of the User API.
  * 
  * @author eric.wittmann@redhat.com
  */
-public class UserResourceImpl implements UserResource {
+@ApplicationScoped
+public class UserResourceImpl implements IUserResource {
     
     /**
      * Constructor.
@@ -36,7 +39,7 @@ public class UserResourceImpl implements UserResource {
     }
 
     /**
-     * @see org.overlord.apiman.dt.api.rest.contract.UserResource#getUser(java.lang.String)
+     * @see org.overlord.apiman.dt.api.rest.contract.IUserResource#getUser(java.lang.String)
      */
     @Override
     public UserBean getUser(String username) throws UserNotFoundException {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.overlord.apiman.dt.api.rest.exceptions;
+package org.overlord.apiman.dt.api.rest.contract.exceptions;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 

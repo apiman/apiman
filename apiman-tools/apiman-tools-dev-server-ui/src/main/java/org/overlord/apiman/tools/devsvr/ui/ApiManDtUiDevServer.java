@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.overlord.apiman.tools.devsvr;
+package org.overlord.apiman.tools.devsvr.ui;
 
 import java.util.EnumSet;
 
@@ -31,11 +31,9 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.security.Constraint;
 import org.eclipse.jetty.util.security.Credential;
 import org.jboss.errai.bus.server.servlet.DefaultBlockingServlet;
-import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
 import org.jboss.weld.environment.servlet.BeanManagerResourceBindingListener;
 import org.jboss.weld.environment.servlet.Listener;
 import org.overlord.apiman.dt.ui.server.ApiManUI;
-import org.overlord.apiman.tools.devsvr.rest.ApiManDtDevServerApplication;
 import org.overlord.commons.dev.server.DevServerEnvironment;
 import org.overlord.commons.dev.server.ErraiDevServer;
 import org.overlord.commons.dev.server.MultiDefaultServlet;
@@ -53,14 +51,14 @@ import org.overlord.commons.ui.header.OverlordHeaderDataJS;
  *
  * @author eric.wittmann@redhat.com
  */
-public class ApiManDevServer extends ErraiDevServer {
+public class ApiManDtUiDevServer extends ErraiDevServer {
 
     /**
      * Main entry point.
      * @param args
      */
     public static void main(String [] args) throws Exception {
-        ApiManDevServer devServer = new ApiManDevServer(args);
+        ApiManDtUiDevServer devServer = new ApiManDtUiDevServer(args);
         devServer.enableDebug();
         devServer.go();
     }
@@ -69,7 +67,7 @@ public class ApiManDevServer extends ErraiDevServer {
      * Constructor.
      * @param args
      */
-    public ApiManDevServer(String [] args) {
+    public ApiManDtUiDevServer(String [] args) {
         super(args);
     }
     
@@ -92,12 +90,12 @@ public class ApiManDevServer extends ErraiDevServer {
      * @see org.overlord.commons.dev.server.DevServer#createDevEnvironment()
      */
     @Override
-    protected ApiManDevServerEnvironment createDevEnvironment() {
-        return new ApiManDevServerEnvironment(args);
+    protected ApiManDtUiDevServerEnvironment createDevEnvironment() {
+        return new ApiManDtUiDevServerEnvironment(args);
     }
 
     /**
-     * @see org.overlord.commons.dev.server.DevServer#addModules(org.overlord.commons.dev.server.ApiManDevServerEnvironment)
+     * @see org.overlord.commons.dev.server.DevServer#addModules(org.overlord.commons.dev.server.ApiManDtUiDevServerEnvironment)
      */
     @Override
     protected void addModules(DevServerEnvironment environment) {
@@ -110,7 +108,7 @@ public class ApiManDevServer extends ErraiDevServer {
     }
 
     /**
-     * @see org.overlord.commons.dev.server.DevServer#addModulesToJetty(org.overlord.commons.dev.server.ApiManDevServerEnvironment, org.eclipse.jetty.server.handler.ContextHandlerCollection)
+     * @see org.overlord.commons.dev.server.DevServer#addModulesToJetty(org.overlord.commons.dev.server.ApiManDtUiDevServerEnvironment, org.eclipse.jetty.server.handler.ContextHandlerCollection)
      */
     @Override
     protected void addModulesToJetty(DevServerEnvironment environment, ContextHandlerCollection handlers)
@@ -154,23 +152,12 @@ public class ApiManDevServer extends ErraiDevServer {
             apiManDtUI.addServlet(resources, "*." + fileType);
         }
 
-        /* *************
-         * APIMan DT API
-         * ************* */
-        ServletContextHandler apiManServer = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        apiManServer.setContextPath("/apiman-api");
-        ServletHolder resteasyServlet = new ServletHolder(new HttpServletDispatcher());
-        resteasyServlet.setInitParameter("javax.ws.rs.Application", ApiManDtDevServerApplication.class.getName());
-        apiManServer.addServlet(resteasyServlet, "/*");
-        apiManServer.addFilter(LocaleFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
-
         // Add the web contexts to jetty
         handlers.addHandler(apiManDtUI);
-        handlers.addHandler(apiManServer);
     }
 
     /**
-     * @see org.overlord.commons.dev.server.DevServer#postStart(org.overlord.commons.dev.server.ApiManDevServerEnvironment)
+     * @see org.overlord.commons.dev.server.DevServer#postStart(org.overlord.commons.dev.server.ApiManDtUiDevServerEnvironment)
      */
     @Override
     protected void postStart(DevServerEnvironment environment) throws Exception {

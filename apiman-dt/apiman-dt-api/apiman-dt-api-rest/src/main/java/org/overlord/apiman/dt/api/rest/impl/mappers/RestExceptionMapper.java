@@ -20,8 +20,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
-import org.overlord.apiman.dt.api.rest.exceptions.ErrorBean;
-import org.overlord.apiman.dt.api.rest.exceptions.AbstractRestException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.AbstractRestException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.ErrorBean;
 
 /**
  * Provider that maps an error.

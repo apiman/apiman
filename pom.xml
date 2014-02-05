@@ -363,8 +363,8 @@
   </distributionManagement>
 
   <modules>
-    <module>apiman-rt</module>
     <module>apiman-dt</module>
+    <module>apiman-rt</module>
     <module>apiman-tools</module>
   </modules>
 

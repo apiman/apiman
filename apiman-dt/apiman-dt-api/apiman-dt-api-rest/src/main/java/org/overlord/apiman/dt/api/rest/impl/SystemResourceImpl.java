@@ -16,14 +16,21 @@
 
 package org.overlord.apiman.dt.api.rest.impl;
 
-import org.overlord.apiman.dt.api.rest.contract.SystemResource;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
+import org.overlord.apiman.dt.api.persist.IStorage;
+import org.overlord.apiman.dt.api.rest.contract.ISystemResource;
 
 /**
  * Implementation of the System API.
  * 
  * @author eric.wittmann@redhat.com
  */
-public class SystemResourceImpl implements SystemResource {
+@ApplicationScoped
+public class SystemResourceImpl implements ISystemResource {
+    
+    @Inject IStorage storage;
     
     /**
      * Constructor.
@@ -32,10 +39,13 @@ public class SystemResourceImpl implements SystemResource {
     }
 
     /**
-     * @see org.overlord.apiman.dt.api.rest.contract.SystemResource#getStatus()
+     * @see org.overlord.apiman.dt.api.rest.contract.ISystemResource#getStatus()
      */
     @Override
     public String getStatus() {
-        return "OK";
+        if (storage != null)
+            return "OK";
+        else
+            return "DOWN";
     }
 }

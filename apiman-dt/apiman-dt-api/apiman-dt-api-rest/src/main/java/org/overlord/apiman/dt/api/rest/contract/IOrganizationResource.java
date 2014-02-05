@@ -16,25 +16,34 @@
 
 package org.overlord.apiman.dt.api.rest.contract;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import org.overlord.apiman.dt.api.beans.users.UserBean;
-import org.overlord.apiman.dt.api.rest.exceptions.AbstractRestException;
+import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationAlreadyExistsException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationNotFoundException;
 
 /**
- * Implementation of the User API.
+ * Implementation of the Organization API.
  * 
  * @author eric.wittmann@redhat.com
  */
-@Path("users")
-public interface UserResource {
-
-    @GET
-    @Path("{username}")
+@Path("organizations")
+public interface IOrganizationResource {
+    
+    @POST
     @Produces(MediaType.APPLICATION_JSON)
-    public UserBean getUser(@PathParam("username") String username) throws AbstractRestException;
+    @Consumes(MediaType.APPLICATION_JSON)
+    public OrganizationBean create(OrganizationBean bean) throws OrganizationAlreadyExistsException;
+    
+    @GET
+    @Path("{organizationId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public OrganizationBean get(@PathParam("organizationId") String organizationId) throws OrganizationNotFoundException;
+
 }

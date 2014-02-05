@@ -14,28 +14,30 @@
  * limitations under the License.
  */
 
-package org.overlord.apiman.dt.api.rest.exceptions;
+package org.overlord.apiman.dt.api.rest.contract.exceptions;
 
 /**
- * Base class for "not found" exceptions.
+ * Base class for all user exceptions.  A user exception happens when the user
+ * does something that is problematic, such as try to create an Organization
+ * that already exists.
  *
  * @author eric.wittmann@redhat.com
  */
-public abstract class AbstractNotFoundException extends AbstractRestException {
-    
-    private static final long serialVersionUID = -196398343525920762L;
+public abstract class AbstractUserException extends AbstractRestException {
+
+    private static final long serialVersionUID = 8254519224298006332L;
 
     /**
      * Constructor.
      */
-    public AbstractNotFoundException() {
+    public AbstractUserException() {
     }
 
     /**
      * Constructor.
      * @param message
      */
-    public AbstractNotFoundException(String message) {
+    public AbstractUserException(String message) {
         super(message);
     }
     
@@ -43,16 +45,8 @@ public abstract class AbstractNotFoundException extends AbstractRestException {
      * Constructor.
      * @param cause
      */
-    public AbstractNotFoundException(Throwable cause) {
+    public AbstractUserException(Throwable cause) {
         super(cause);
-    }
-    
-    /**
-     * @see org.overlord.apiman.dt.api.rest.exceptions.AbstractRestException#getHttpCode()
-     */
-    @Override
-    public final int getHttpCode() {
-        return ErrorCodes.HTTP_STATUS_CODE_NOT_FOUND;
     }
 
 }

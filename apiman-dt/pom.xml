@@ -9,8 +9,15 @@
   <artifactId>apiman-dt</artifactId>
   <packaging>pom</packaging>
   <name>apiman-dt</name>
+  <dependencies>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
   <modules>
-    <module>apiman-dt-ui</module>
     <module>apiman-dt-api</module>
+    <module>apiman-dt-ui</module>
   </modules>
 </project>

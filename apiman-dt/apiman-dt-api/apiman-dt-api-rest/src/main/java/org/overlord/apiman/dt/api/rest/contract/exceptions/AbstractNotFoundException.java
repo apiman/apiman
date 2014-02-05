@@ -14,30 +14,28 @@
  * limitations under the License.
  */
 
-package org.overlord.apiman.dt.api.rest.exceptions;
-
-
+package org.overlord.apiman.dt.api.rest.contract.exceptions;
 
 /**
- * Base class for all APIMan errors coming out of the REST layer.
+ * Base class for "not found" exceptions.
  *
  * @author eric.wittmann@redhat.com
  */
-public abstract class AbstractRestException extends RuntimeException {
-
-    private static final long serialVersionUID = -2406210413693314452L;
+public abstract class AbstractNotFoundException extends AbstractRestException {
     
+    private static final long serialVersionUID = -196398343525920762L;
+
     /**
      * Constructor.
      */
-    public AbstractRestException() {
+    public AbstractNotFoundException() {
     }
-    
+
     /**
      * Constructor.
      * @param message
      */
-    public AbstractRestException(String message) {
+    public AbstractNotFoundException(String message) {
         super(message);
     }
     
@@ -45,23 +43,16 @@ public abstract class AbstractRestException extends RuntimeException {
      * Constructor.
      * @param cause
      */
-    public AbstractRestException(Throwable cause) {
+    public AbstractNotFoundException(Throwable cause) {
         super(cause);
     }
-
+    
     /**
-     * @return the httpCode
+     * @see org.overlord.apiman.dt.api.rest.contract.exceptions.AbstractRestException#getHttpCode()
      */
-    public abstract int getHttpCode();
-
-    /**
-     * @return the errorCode
-     */
-    public abstract int getErrorCode();
-
-    /**
-     * @return the moreInfo
-     */
-    public abstract String getMoreInfoUrl();
+    @Override
+    public final int getHttpCode() {
+        return ErrorCodes.HTTP_STATUS_CODE_NOT_FOUND;
+    }
 
 }

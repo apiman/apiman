@@ -50,7 +50,7 @@ public class App {
 	@PostConstruct
 	public void buildUI() {
 	    // TODO the application root should be configurable and should be passed from the server (along with authentication and other configuration params)
-        RestClient.setApplicationRoot("/apiman-api");
+        RestClient.setApplicationRoot("http://localhost:7070/apiman-api");
         RestClient.setJacksonMarshallingActive(true);
 
         rootPanel.add(navigation.getContentPanel());

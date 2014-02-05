@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.overlord.apiman.dt.api.rest.ApiManDtApplication;
+import org.overlord.apiman.dt.api.rest.impl.OrganizationResourceImpl;
 import org.overlord.apiman.dt.api.rest.impl.SystemResourceImpl;
 import org.overlord.apiman.dt.api.rest.impl.UserResourceImpl;
 import org.overlord.apiman.dt.api.rest.impl.mappers.RestExceptionMapper;
@@ -38,8 +39,9 @@ public class ApiManDtDevServerApplication extends ApiManDtApplication {
      * Constructor.
      */
     public ApiManDtDevServerApplication() {
-        singletons.add(new SystemResourceImpl());
-        singletons.add(new UserResourceImpl());
+        classes.add(SystemResourceImpl.class);
+        classes.add(UserResourceImpl.class);
+        classes.add(OrganizationResourceImpl.class);
         
         classes.add(RestExceptionMapper.class);
     }
