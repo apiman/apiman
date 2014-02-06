@@ -23,11 +23,11 @@ import org.overlord.apiman.dt.test.util.AbstractTestPlanTest;
  *
  * @author eric.wittmann@redhat.com
  */
-public class All extends AbstractTestPlanTest {
+public class AllTest extends AbstractTestPlanTest {
 
     @Test
     public void test() {
-        runTestPlan("test-plans/all-testPlan.xml", All.class.getClassLoader());
+        runTestPlan("test-plans/all-testPlan.xml", AllTest.class.getClassLoader());
     }
 
 }
