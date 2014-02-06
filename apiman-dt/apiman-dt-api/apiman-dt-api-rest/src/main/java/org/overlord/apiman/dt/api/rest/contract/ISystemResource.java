@@ -30,7 +30,7 @@ public interface ISystemResource {
 
     @GET
     @Path("status")
-    @Produces("application/json")
+    @Produces("text/plain")
     public String getStatus();
 
 }

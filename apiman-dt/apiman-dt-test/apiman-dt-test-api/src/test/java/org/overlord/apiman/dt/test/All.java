@@ -13,22 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.tools.devsvr.api;
+package org.overlord.apiman.dt.test;
 
-import org.overlord.commons.dev.server.DevServerEnvironment;
+import org.junit.Test;
+import org.overlord.apiman.dt.test.util.AbstractTestPlanTest;
 
 /**
- * Holds information about the apiman development runtime environment.
+ * Runs the "all" test plan.
+ *
  * @author eric.wittmann@redhat.com
  */
-public class ApiManDtApiDevServerEnvironment extends DevServerEnvironment {
+public class All extends AbstractTestPlanTest {
 
-    /**
-     * Constructor.
-     * @param args
-     */
-    public ApiManDtApiDevServerEnvironment(String[] args) {
-        super(args);
+    @Test
+    public void test() {
+        runTestPlan("test-plans/all-testPlan.xml", All.class.getClassLoader());
     }
 
 }

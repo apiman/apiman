@@ -19,5 +19,6 @@
   <modules>
     <module>apiman-dt-api</module>
     <module>apiman-dt-ui</module>
+    <module>apiman-dt-test</module>
   </modules>
 </project>

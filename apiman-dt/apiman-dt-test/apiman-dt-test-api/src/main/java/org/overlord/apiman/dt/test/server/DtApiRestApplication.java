@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.overlord.apiman.tools.devsvr.rest;
+package org.overlord.apiman.dt.test.server;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -30,7 +30,7 @@ import org.overlord.apiman.dt.api.rest.impl.mappers.RestExceptionMapper;
  *
  * @author eric.wittmann@redhat.com
  */
-public class ApiManDtDevServerApplication extends ApiManDtApplication {
+public class DtApiRestApplication extends ApiManDtApplication {
 
     private Set<Object> singletons = new HashSet<Object>();
     private Set<Class<?>> classes = new HashSet<Class<?>>();
@@ -38,7 +38,7 @@ public class ApiManDtDevServerApplication extends ApiManDtApplication {
     /**
      * Constructor.
      */
-    public ApiManDtDevServerApplication() {
+    public DtApiRestApplication() {
         classes.add(SystemResourceImpl.class);
         classes.add(UserResourceImpl.class);
         classes.add(OrganizationResourceImpl.class);

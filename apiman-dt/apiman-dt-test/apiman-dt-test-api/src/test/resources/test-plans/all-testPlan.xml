@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testPlan xmlns="urn:org.overlord.apiman.test:2014:02:testPlan">
+
+  <!-- First, do some simple System level requests -->
+  <testGroup name="System">
+    <test name="Status">all/system/001_status.resttest</test>
+  </testGroup>
+
+  <!-- Now make sure Organizations are working properly -->
+  <testGroup name="Organizations CRUD">
+    <test name="Create Organization">all/organizations/001_create.resttest</test>
+    <test name="Get Organization">all/organizations/002_get.resttest</test>
+    <test name="Create Org (Duplicate)">all/organizations/003_create_already-exists.resttest</test>
+  </testGroup>
+
+</testPlan>

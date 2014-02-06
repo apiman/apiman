@@ -23,7 +23,7 @@ package org.overlord.apiman.dt.api.rest.contract.exceptions;
  *
  * @author eric.wittmann@redhat.com
  */
-public class ErrorCodes {
+public final class ErrorCodes {
     
     //
     // HTTP status codes

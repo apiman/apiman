@@ -44,7 +44,7 @@ public abstract class AbstractAlreadyExistsException extends AbstractRestExcepti
      */
     @Override
     public final int getHttpCode() {
-        return ErrorCodes.HTTP_STATUS_CODE_NOT_FOUND;
+        return ErrorCodes.HTTP_STATUS_CODE_ALREADY_EXISTS;
     }
 
 }
