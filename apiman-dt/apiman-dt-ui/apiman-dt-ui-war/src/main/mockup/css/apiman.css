@@ -1,12 +1,6 @@
 
 body {
   padding-top: 70px;
-#  color: #0B61A4;
-#  color: #1B1BB3;
-#  color: #7573D9;
-
-# colors: 3F92D2 0B61A4 25567B 033E6B
-# colors: FF9200
 }
 
 .emphasis {
@@ -57,7 +51,7 @@ a:hover {
   font-size: 10px;
 }
 
-.apiman-usersummary {
+.apiman-entitysummary {
   padding: 5px;
   border: 1px solid #ddd;
   box-shadow: 1px 1px 2px #999;
@@ -66,18 +60,18 @@ a:hover {
   margin-bottom: 10px;
 }
 
-.apiman-usersummary .apiman-header {
+.apiman-entitysummary .apiman-header {
   font-size: 19px;
   font-weight: bold;
   color: #666;
 }
 
-.apiman-usersummary .apiman-subheader {
+.apiman-entitysummary .apiman-subheader {
   font-size: 16px;
   color: #666;
 }
 
-.apiman-usersummary hr {
+.apiman-entitysummary hr {
   margin-top: 10px;
   margin-bottom: 10px;
 }
@@ -176,7 +170,7 @@ a:hover {
   margin-right: 5px;
 }
 
-.apiman-usersummary .icon {
+.apiman-entitysummary .icon {
   float: left;
   margin-right: 5px;
   margin-top: 2px;
@@ -244,6 +238,10 @@ a.apiman-summaryrow-icon:hover {
   font-size: 22px;
   padding-top: 8px;
   line-height: 48px;
+}
+
+.apiman-entitysummary .description {
+  padding-top: 15px;
 }
 
 .apiman-entity-nav {
