@@ -21,6 +21,8 @@ import java.sql.SQLException;
 import java.util.EnumSet;
 
 import javax.naming.InitialContext;
+import javax.naming.NameAlreadyBoundException;
+import javax.naming.NamingException;
 import javax.servlet.DispatcherType;
 
 import org.apache.commons.dbcp.BasicDataSource;
@@ -83,14 +85,6 @@ public class DtApiTestServer {
     }
     
     /**
-     * Gets the absolute URL to use to invoke a rest service at a given path.
-     * @param path
-     */
-    public String getUrl(String path) {
-        return "http://localhost:" + serverPort() + "/apiman-dt-api" + path;
-    }
-    
-    /**
      * Stop the server.
      * @throws Exception
      */
@@ -98,13 +92,13 @@ public class DtApiTestServer {
         server.stop();
         ds.close();
         InitialContext ctx = new InitialContext();
-        ctx.unbind("java:datasources/ApiManDT");
+        ctx.unbind("java:comp/env/jdbc/ApiManDT");
     }
 
     /**
      * The server port.
      */
-    protected int serverPort() {
+    public int serverPort() {
         return 7070;
     }
 
@@ -114,11 +108,26 @@ public class DtApiTestServer {
     protected void preStart() {
         try {
             InitialContext ctx = new InitialContext();
-            ctx.bind("java:datasources", new InitialContext());
+            ensureCtx(ctx, "java:/comp/env");
+            ensureCtx(ctx, "java:/comp/env/jdbc");
             ds = createInMemoryDatasource();
-            ctx.bind("java:datasources/ApiManDT", ds);
+            ctx.bind("java:/comp/env/jdbc/ApiManDT", ds);
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Ensure that the given name is bound to a context.
+     * @param ctx
+     * @param name
+     * @throws NamingException 
+     */
+    private void ensureCtx(InitialContext ctx, String name) throws NamingException {
+        try {
+            ctx.bind(name, new InitialContext());
+        } catch (NameAlreadyBoundException e) {
+            // this is ok
         }
     }
 

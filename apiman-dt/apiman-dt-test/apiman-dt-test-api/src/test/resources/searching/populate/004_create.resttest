@@ -1,0 +1,12 @@
+POST /organizations admin/admin
+Content-Type: application/json
+
+{"name":"Test Organization 4"}
+----
+200
+Content-Type: application/json
+
+{
+  "name" : "Test Organization 4",
+  "id" : "TestOrganization4"
+}

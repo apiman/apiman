@@ -28,9 +28,18 @@ public final class ErrorCodes {
     //
     // HTTP status codes
     //
+    public static final int HTTP_STATUS_CODE_INVALID_INPUT  = 400;
     public static final int HTTP_STATUS_CODE_NOT_FOUND      = 404;
     public static final int HTTP_STATUS_CODE_ALREADY_EXISTS = 409;
     public static final int HTTP_STATUS_CODE_SYSTEM_ERROR   = 500;
+
+    
+    //
+    // Search API related (cross-cutting across many APIs)
+    //
+    public static final int SEARCH_CRITERIA_INVALID         = 9001;
+
+    public static final String SEARCH_CRITERIA_INVALID_INFO = null;
 
     
     //

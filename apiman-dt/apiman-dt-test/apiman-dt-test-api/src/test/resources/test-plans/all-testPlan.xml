@@ -11,6 +11,10 @@
     <test name="Create Organization">all/organizations/001_create.resttest</test>
     <test name="Get Organization">all/organizations/002_get.resttest</test>
     <test name="Create Org (Duplicate)">all/organizations/003_create_already-exists.resttest</test>
+    <test name="Search for all Orgs">all/organizations/004_search_all.resttest</test>
+    <test name="Search (Invalid Request)">all/organizations/005_search_invalid-request.resttest</test>
+    <test name="Create Organization 2">all/organizations/006_create_another.resttest</test>
+    <test name="Search for all Orgs (2)">all/organizations/007_search_all-2.resttest</test>
   </testGroup>
 
 </testPlan>

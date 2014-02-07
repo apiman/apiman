@@ -23,14 +23,18 @@ import javax.inject.Inject;
 
 import org.overlord.apiman.dt.api.beans.BeanUtils;
 import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
+import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
+import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
 import org.overlord.apiman.dt.api.persist.AlreadyExistsException;
 import org.overlord.apiman.dt.api.persist.DoesNotExistException;
 import org.overlord.apiman.dt.api.persist.IStorage;
 import org.overlord.apiman.dt.api.persist.StorageException;
 import org.overlord.apiman.dt.api.rest.contract.IOrganizationResource;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.InvalidSearchCriteriaException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationAlreadyExistsException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.SystemErrorException;
+import org.overlord.apiman.dt.api.rest.impl.util.SearchCriteriaUtil;
 
 /**
  * Implementation of the Organization API.
@@ -74,6 +78,19 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             return storage.get(organizationId, OrganizationBean.class);
         } catch (DoesNotExistException e) {
             throw OrganizationNotFoundException.create(organizationId);
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+    }
+    
+    /**
+     * @see org.overlord.apiman.dt.api.rest.contract.IOrganizationResource#search(org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean)
+     */
+    @Override
+    public SearchResultsBean<OrganizationBean> search(SearchCriteriaBean criteria) throws InvalidSearchCriteriaException {
+        try {
+            SearchCriteriaUtil.validateSearchCriteria(criteria);
+            return storage.find(criteria, OrganizationBean.class);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }

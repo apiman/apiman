@@ -1,0 +1,283 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="JBoss Overlord API Management - Service">
+    <meta name="author" content="JBoss Overlord">
+
+    <title>JBoss Overlord API Management - Service</title>
+
+    <link href="../bootstrap-3.0.0/css/bootstrap.min.css" rel="stylesheet" media="screen"></link>
+    <link href="../css/apiman.css" rel="stylesheet" media="screen"></link>
+    <link href="../css/apiman-policy-graph.css" rel="stylesheet" media="screen"></link>
+
+    <script type="text/javascript" src="../jquery-1.10.2/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="../bootstrap-3.0.0/js/bootstrap.min.js"></script>
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script type="text/javascript" src="../bootstrap-3.0.0/js/html5shiv.js"></script>
+      <script type="text/javascript" src="../bootstrap-3.0.0/js/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <div class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">JBoss Overlord API Manager</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a class="lnk-logout" href="#">Logout</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+
+    <div class="container">
+      <!-- Entity Summary Row -->
+      <div class="row">
+        <div class="col-md-12 apiman-entity-summary">
+          <div class="title">
+            <div class="large-icon large-icon-service"></div>
+            <span class="">
+              <a href="orgHome.html">JBoss Overlord</a>
+            </span>
+            <span> / </span>
+            <span class="emphasis">
+              <a href="serviceHome.html">dtgov-deploy</a>
+            </span>
+            <a href="#" class="btn btn-primary pull-right apiman-entity-action">New Version</a>
+            <div class="btn-group pull-right apiman-entity-action">
+              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                Version: 3.0.1 <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="#">3.0</a></li>
+                <li><a href="#">2.1.1</a></li>
+                <li><a href="#">2.1</a></li>
+                <li><a href="#">2.0.1</a></li>
+                <li><a href="#">2.0</a></li>
+                <li><a href="#">1.0</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Navigation + Content Row -->
+      <div class="row">
+        <!-- Left hand nav -->
+        <div class="col-md-2 apiman-entity-nav">
+          <ul class="nav nav-pills nav-stacked">
+            <li class="first"><a>&nbsp;</a></li>
+            <li class=""><a href="serviceHome.html">Overview</a></li>
+            <li class="north"><a href="serviceHome-impl.html">Implementation</a></li>
+            <li class="active"><a>Policies</a></li>
+            <li class="south"><a href="serviceHome-requests.html">Requests</a></li>
+            <li class="last"><a>&nbsp;</a></li>
+          </ul>
+        </div>
+        <!-- /Left hand nav -->
+
+        <!-- Content -->
+        <div class="col-md-10 apiman-entity-content">
+          <div class="title">Service Policies</div>
+          <div class="description">View and/or modify inbound/outbound service policies by selecting one of the relevant boxes in the policy application diagram below.</div>
+          <div class="apiman-divider-40"></div>
+          <div class="container apiman-policy-graph apiman-policy-graph-service">
+            <div class="pg-row pg-row-0">
+              <div class="pg-col-0 pg-cell-0-0"></div>
+              <div class="pg-col-d1 pg-cell-0-d1"></div>
+              <div class="pg-col-1 pg-cell-0-1"></div>
+              <div class="pg-col-2 pg-cell-0-2"></div>
+              <div class="pg-col-3 pg-cell-0-3">
+                <span>App</span>
+              </div>
+              <div class="pg-col-4 pg-cell-0-4"></div>
+              <div class="pg-col-5 pg-cell-0-5"></div>
+              <div class="pg-col-6 pg-cell-0-6"></div>
+              <div class="pg-col-7 pg-cell-0-7">
+                <span>Plan</span>
+              </div>
+              <div class="pg-col-8 pg-cell-0-8"></div>
+              <div class="pg-col-9 pg-cell-0-9"></div>
+              <div class="pg-col-10 pg-cell-0-10"></div>
+              <div class="pg-col-11 pg-cell-0-11">
+                <span>Service</span>
+              </div>
+              <div class="pg-col-12 pg-cell-0-12"></div>
+              <div class="pg-col-13 pg-cell-0-13"></div>
+              <div class="pg-col-d2 pg-cell-0-d2"></div>
+              <div class="pg-col-14 pg-cell-0-14"></div>
+            </div>
+            <div class="pg-row pg-row-1">
+              <div class="pg-col-0 pg-cell-1-0"></div>
+              <div class="pg-col-d1 pg-cell-1-d1"></div>
+              <div class="pg-col-1 pg-cell-1-1"></div>
+              <div class="pg-col-2 pg-cell-1-2"></div>
+              <div class="pg-col-3 pg-cell-1-3"></div>
+              <div class="pg-col-4 pg-cell-1-4"></div>
+              <div class="pg-col-5 pg-cell-1-5"></div>
+              <div class="pg-col-6 pg-cell-1-6"></div>
+              <div class="pg-col-7 pg-cell-1-7"></div>
+              <div class="pg-col-8 pg-cell-1-8"></div>
+              <div class="pg-col-9 pg-cell-1-9"></div>
+              <div class="pg-col-10 pg-cell-1-10"></div>
+              <div class="pg-col-11 pg-cell-1-11"></div>
+              <div class="pg-col-12 pg-cell-1-12"></div>
+              <div class="pg-col-13 pg-cell-1-13"></div>
+              <div class="pg-col-d2 pg-cell-1-d2"></div>
+              <div class="pg-col-14 pg-cell-1-14"></div>
+            </div>
+            <div class="pg-row pg-row-2">
+              <div class="pg-col-0 pg-cell-2-0"></div>
+              <div class="pg-col-d1 pg-cell-2-d1"></div>
+              <div class="pg-col-1 pg-cell-2-1"></div>
+              <div class="pg-col-2 pg-cell-2-2"></div>
+              <div class="pg-col-3 pg-cell-2-3"></div>
+              <div class="pg-col-4 pg-cell-2-4"></div>
+              <div class="pg-col-5 pg-cell-2-5"></div>
+              <div class="pg-col-6 pg-cell-2-6"></div>
+              <div class="pg-col-7 pg-cell-2-7"></div>
+              <div class="pg-col-8 pg-cell-2-8"></div>
+              <div class="pg-col-9 pg-cell-2-9"></div>
+              <div class="pg-col-10 pg-cell-2-10"></div>
+              <div class="pg-col-11 pg-cell-2-11"></div>
+              <div class="pg-col-12 pg-cell-2-12"></div>
+              <div class="pg-col-13 pg-cell-2-13"></div>
+              <div class="pg-col-d2 pg-cell-2-d2"></div>
+              <div class="pg-col-14 pg-cell-2-14"></div>
+            </div>
+            <div class="pg-row pg-row-3">
+              <div class="pg-col-0 pg-cell-3-0"></div>
+              <div class="pg-col-d1 pg-cell-3-d1"></div>
+              <div class="pg-col-1 pg-cell-3-1"></div>
+              <div class="pg-col-2 pg-cell-3-2"></div>
+              <div class="pg-col-3 pg-cell-3-3">
+                <span>Policies</span>
+              </div>
+              <div class="pg-col-4 pg-cell-3-4"></div>
+              <div class="pg-col-5 pg-cell-3-5"></div>
+              <div class="pg-col-6 pg-cell-3-6"></div>
+              <div class="pg-col-7 pg-cell-3-7">
+                <span>Policies</span>
+              </div>
+              <div class="pg-col-8 pg-cell-3-8"></div>
+              <div class="pg-col-9 pg-cell-3-9"></div>
+              <div class="pg-col-10 pg-cell-3-10"></div>
+              <div class="pg-col-11 pg-cell-3-11">
+                <span>Policies</span>
+              </div>
+              <div class="pg-col-12 pg-cell-3-12"></div>
+              <div class="pg-col-13 pg-cell-3-13"></div>
+              <div class="pg-col-d2 pg-cell-3-d2"></div>
+              <div class="pg-col-14 pg-cell-3-14"></div>
+            </div>
+            <div class="pg-row pg-row-4">
+              <div class="pg-col-0 pg-cell-4-0">
+                <span>Gateway</span>
+              </div>
+              <div class="pg-col-d1 pg-cell-4-d1"></div>
+              <div class="pg-col-1 pg-cell-4-1"></div>
+              <div class="pg-col-2 pg-cell-4-2"></div>
+              <div class="pg-col-3 pg-cell-4-3"></div>
+              <div class="pg-col-4 pg-cell-4-4"></div>
+              <div class="pg-col-5 pg-cell-4-5"></div>
+              <div class="pg-col-6 pg-cell-4-6"></div>
+              <div class="pg-col-7 pg-cell-4-7"></div>
+              <div class="pg-col-8 pg-cell-4-8"></div>
+              <div class="pg-col-9 pg-cell-4-9"></div>
+              <div class="pg-col-10 pg-cell-4-10"></div>
+              <div class="pg-col-11 pg-cell-4-11"></div>
+              <div class="pg-col-12 pg-cell-4-12"></div>
+              <div class="pg-col-13 pg-cell-4-13"></div>
+              <div class="pg-col-d2 pg-cell-4-d2"></div>
+              <div class="pg-col-14 pg-cell-4-14">
+                <span>Backend</span>
+              </div>
+            </div>
+            <div class="pg-row pg-row-5">
+              <div class="pg-col-0 pg-cell-5-0"></div>
+              <div class="pg-col-d1 pg-cell-5-d1"></div>
+              <div class="pg-col-1 pg-cell-5-1"></div>
+              <div class="pg-col-2 pg-cell-5-2"></div>
+              <div class="pg-col-3 pg-cell-5-3">
+                <span>Policies</span>
+              </div>
+              <div class="pg-col-4 pg-cell-5-4"></div>
+              <div class="pg-col-5 pg-cell-5-5"></div>
+              <div class="pg-col-6 pg-cell-5-6"></div>
+              <div class="pg-col-7 pg-cell-5-7">
+                <span>Policies</span>
+              </div>
+              <div class="pg-col-8 pg-cell-5-8"></div>
+              <div class="pg-col-9 pg-cell-5-9"></div>
+              <div class="pg-col-10 pg-cell-5-10"></div>
+              <div class="pg-col-11 pg-cell-5-11">
+                <span>Policies</span>
+              </div>
+              <div class="pg-col-12 pg-cell-5-12"></div>
+              <div class="pg-col-13 pg-cell-5-13"></div>
+              <div class="pg-col-d2 pg-cell-5-d2"></div>
+              <div class="pg-col-14 pg-cell-5-14"></div>
+            </div>
+            <div class="pg-row pg-row-6">
+              <div class="pg-col-0 pg-cell-6-0"></div>
+              <div class="pg-col-d1 pg-cell-6-d1"></div>
+              <div class="pg-col-1 pg-cell-6-1"></div>
+              <div class="pg-col-2 pg-cell-6-2"></div>
+              <div class="pg-col-3 pg-cell-6-3"></div>
+              <div class="pg-col-4 pg-cell-6-4"></div>
+              <div class="pg-col-5 pg-cell-6-5"></div>
+              <div class="pg-col-6 pg-cell-6-6"></div>
+              <div class="pg-col-7 pg-cell-6-7"></div>
+              <div class="pg-col-8 pg-cell-6-8"></div>
+              <div class="pg-col-9 pg-cell-6-9"></div>
+              <div class="pg-col-10 pg-cell-6-10"></div>
+              <div class="pg-col-11 pg-cell-6-11"></div>
+              <div class="pg-col-12 pg-cell-6-12"></div>
+              <div class="pg-col-13 pg-cell-6-13"></div>
+              <div class="pg-col-d2 pg-cell-6-d2"></div>
+              <div class="pg-col-14 pg-cell-6-14"></div>
+            </div>
+            <div class="pg-row pg-row-7">
+              <div class="pg-col-0 pg-cell-7-0"></div>
+              <div class="pg-col-d1 pg-cell-7-d1"></div>
+              <div class="pg-col-1 pg-cell-7-1"></div>
+              <div class="pg-col-2 pg-cell-7-2"></div>
+              <div class="pg-col-3 pg-cell-7-3"></div>
+              <div class="pg-col-4 pg-cell-7-4"></div>
+              <div class="pg-col-5 pg-cell-7-5"></div>
+              <div class="pg-col-6 pg-cell-7-6"></div>
+              <div class="pg-col-7 pg-cell-7-7"></div>
+              <div class="pg-col-8 pg-cell-7-8"></div>
+              <div class="pg-col-9 pg-cell-7-9"></div>
+              <div class="pg-col-10 pg-cell-7-10"></div>
+              <div class="pg-col-11 pg-cell-7-11"></div>
+              <div class="pg-col-12 pg-cell-7-12"></div>
+              <div class="pg-col-13 pg-cell-7-13"></div>
+              <div class="pg-col-d2 pg-cell-7-d2"></div>
+              <div class="pg-col-14 pg-cell-7-14"></div>
+            </div>
+          </div>
+        </div>
+        <!-- /Content -->
+      </div>
+    </div> <!-- /container -->
+    <script>
+    $("[data-toggle='tooltip']").tooltip();
+    $("[data-toggle='popover']").popover();
+    </script>
+  </body>
+</html>

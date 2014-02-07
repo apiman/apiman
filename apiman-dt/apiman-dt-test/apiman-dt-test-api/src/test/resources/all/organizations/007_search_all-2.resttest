@@ -1,0 +1,18 @@
+POST /organizations/search admin/admin
+Content-Type: application/json
+
+{
+  "filters" : [],
+  "paging" : {
+    "page" : 1,
+    "pageSize" : 20
+  }
+}
+----
+200
+Content-Type: application/json
+
+{
+  "beans" : [{"id":"TestOrganization1","name":"Test Organization 1"},{"id":"TestOrganization2","name":"Test Organization 2"}],
+  "totalSize" : 2
+}

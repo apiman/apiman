@@ -16,6 +16,7 @@
 package org.overlord.apiman.dt.test.util;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -48,6 +49,23 @@ public class TestUtil {
             JAXBContext jaxbContext = JAXBContext.newInstance(TestPlan.class);
             Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
             TestPlan plan = (TestPlan) jaxbUnmarshaller.unmarshal(url.openStream());
+            return plan;
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    /**
+     * Loads a test plan from a file resource.
+     * @param planFile
+     */
+    public static final TestPlan loadTestPlan(File planFile) {
+        try {
+            if (!planFile.isFile())
+                throw new RuntimeException("Test Plan not found: " + planFile.getCanonicalPath());
+            JAXBContext jaxbContext = JAXBContext.newInstance(TestPlan.class);
+            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+            TestPlan plan = (TestPlan) jaxbUnmarshaller.unmarshal(planFile);
             return plan;
         } catch (Throwable e) {
             throw new RuntimeException(e);

@@ -25,6 +25,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
+import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
+import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.InvalidSearchCriteriaException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationAlreadyExistsException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationNotFoundException;
 
@@ -37,13 +40,19 @@ import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationNotFoundE
 public interface IOrganizationResource {
     
     @POST
-    @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public OrganizationBean create(OrganizationBean bean) throws OrganizationAlreadyExistsException;
     
     @GET
     @Path("{organizationId}")
     @Produces(MediaType.APPLICATION_JSON)
     public OrganizationBean get(@PathParam("organizationId") String organizationId) throws OrganizationNotFoundException;
-
+    
+    @POST
+    @Path("search")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public SearchResultsBean<OrganizationBean> search(SearchCriteriaBean criteria) throws InvalidSearchCriteriaException;
+    
 }

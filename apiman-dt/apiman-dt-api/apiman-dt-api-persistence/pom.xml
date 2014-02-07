@@ -8,4 +8,12 @@
   </parent>
   <artifactId>apiman-dt-api-persistence</artifactId>
   <name>apiman-dt-api-persistence</name>
+  <dependencies>
+    <!-- Project Dependencies -->
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-dt-api-beans</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
 </project>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testPlan xmlns="urn:org.overlord.apiman.test:2014:02:testPlan">
+
+  <!-- First, create a bunch of Organizations -->
+  <testGroup name="Populate With Data">
+    <test name="Create Organization 1">searching/populate/001_create.resttest</test>
+    <test name="Create Organization 2">searching/populate/002_create.resttest</test>
+    <test name="Create Organization 3">searching/populate/003_create.resttest</test>
+    <test name="Create Organization 4">searching/populate/004_create.resttest</test>
+    <test name="Create Organization 5">searching/populate/005_create.resttest</test>
+    <test name="Create Organization 6">searching/populate/006_create.resttest</test>
+    <test name="Create Organization 7">searching/populate/007_create.resttest</test>
+    <test name="Create Organization 8">searching/populate/008_create.resttest</test>
+    <test name="Create Organization 9">searching/populate/009_create.resttest</test>
+    <test name="Create Organization 10">searching/populate/010_create.resttest</test>
+  </testGroup>
+
+  <!-- Now, execute a number of queries -->
+  <testGroup name="Test Various Queries">
+    <test name="Query All">searching/queries/001_query-all.resttest</test>
+    <test name="Query First Page">searching/queries/002_query-page-1.resttest</test>
+    <test name="Query Second Page">searching/queries/003_query-page-2.resttest</test>
+    <test name="Query By ID">searching/queries/004_query-by-id.resttest</test>
+    <test name="Descending Order">searching/queries/005_query-order-by-desc.resttest</test>
+  </testGroup>
+
+  <!-- Now, test that request validation is working -->
+  <testGroup name="Test Various Invalid Requests">
+    <test name="Missing Order-By Name">searching/validation/001_query-invalid-orderby-name.resttest</test>
+    <test name="Invalid Page Size">searching/validation/002_query-invalid-pageSize.resttest</test>
+    <test name="Invalid Page">searching/validation/003_query-invalid-page.resttest</test>
+    <test name="Invalid Filter Name">searching/validation/004_query-invalid-filter-name.resttest</test>
+    <test name="Invalid Filter Value">searching/validation/005_query-invalid-filter-value.resttest</test>
+    <test name="Invalid Filter Operator">searching/validation/006_query-invalid-filter-operator.resttest</test>
+  </testGroup>
+
+
+</testPlan>

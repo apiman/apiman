@@ -15,19 +15,23 @@
  */
 package org.overlord.apiman.dt.api.persist;
 
+import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
+import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
+
 /**
- * Represents the 
+ * Represents the persistent storage interface for Apiman DT.
  *
  * @author eric.wittmann@redhat.com
  */
 public interface IStorage {
-    
+
     public <T> void create(T bean) throws StorageException, AlreadyExistsException;
-    
+
     public <T> void update(T bean) throws StorageException, DoesNotExistException;
 
     public <T> void delete(T bean) throws StorageException, DoesNotExistException;
-    
+
     public <T> T get(String id, Class<T> type) throws StorageException, DoesNotExistException;
-    
+
+    public <T> SearchResultsBean<T> find(SearchCriteriaBean criteria, Class<T> type) throws StorageException;
 }
