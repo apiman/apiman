@@ -43,13 +43,14 @@ public class RestClientExceptionMapper extends AbstractJSONClientExceptionMapper
     /**
      * @see org.jboss.errai.enterprise.client.jaxrs.ClientExceptionMapper#fromResponse(com.google.gwt.http.client.Response)
      */
+    @SuppressWarnings("nls") // cannot inject into a client exception mapper - so can't get the translation service easily
     @Override
     public Throwable fromResponse(Response response) {
-        String header = response.getHeader("X-Apiman-Error");
-        if (header != null && "true".equals(header)) {
+        String header = response.getHeader("X-Apiman-Error"); //$NON-NLS-1$
+        if (header != null && "true".equals(header)) { //$NON-NLS-1$
             ErrorBean errorBean = fromJSON(response, ErrorBean.class);
             String type = errorBean.getType();
-            if (type.equals("UserNotFoundException")) {
+            if (type.equals("UserNotFoundException")) { //$NON-NLS-1$
                 return new UserNotFoundException(errorBean.getMessage());
             }
             // Default - simple exception.

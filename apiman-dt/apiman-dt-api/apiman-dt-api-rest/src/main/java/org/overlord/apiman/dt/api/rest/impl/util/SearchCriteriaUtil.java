@@ -21,6 +21,7 @@ import java.util.Set;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaFilterBean;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.InvalidSearchCriteriaException;
+import org.overlord.apiman.dt.api.rest.i18n.Messages;
 
 /**
  * Some utility methods related to searches and search criteria.
@@ -47,27 +48,27 @@ public final class SearchCriteriaUtil {
     public static final void validateSearchCriteria(SearchCriteriaBean criteria) throws InvalidSearchCriteriaException {
         if (criteria.getPaging() != null) {
             if (criteria.getPaging().getPage() < 1) {
-                throw new InvalidSearchCriteriaException("Missing or invalid 'page' param in search criteria.");
+                throw new InvalidSearchCriteriaException(Messages.i18n.format("SearchCriteriaUtil.MissingPage")); //$NON-NLS-1$
             }
             if (criteria.getPaging().getPageSize() < 1) {
-                throw new InvalidSearchCriteriaException("Missing or invalid 'pageSize' param in search criteria.");
+                throw new InvalidSearchCriteriaException(Messages.i18n.format("SearchCriteriaUtil.MissingPageSize")); //$NON-NLS-1$
             }
         }
         int count = 1;
         for (SearchCriteriaFilterBean filter : criteria.getFilters()) {
             if (filter.getName() == null || filter.getName().trim().length() == 0) {
-                throw new InvalidSearchCriteriaException("Missing search filter name (filter #" + count + ").");
+                throw new InvalidSearchCriteriaException(Messages.i18n.format("SearchCriteriaUtil.MissingSearchFilterName", count)); //$NON-NLS-1$
             }
             if (filter.getValue() == null || filter.getValue().trim().length() == 0) {
-                throw new InvalidSearchCriteriaException("Missing search filter value (filter #" + count + ").");
+                throw new InvalidSearchCriteriaException(Messages.i18n.format("SearchCriteriaUtil.MissingSearchFilterValue", count)); //$NON-NLS-1$
             }
             if (filter.getOperator() == null || !validOperators.contains(filter.getOperator())) {
-                throw new InvalidSearchCriteriaException("Unsupported or missing search filter operator (filter #" + count + ").");
+                throw new InvalidSearchCriteriaException(Messages.i18n.format("SearchCriteriaUtil.MissingSearchFilterOperator", count)); //$NON-NLS-1$
             }
             count++;
         }
         if (criteria.getOrderBy() != null && (criteria.getOrderBy().getName() == null || criteria.getOrderBy().getName().trim().length() == 0)) {
-            throw new InvalidSearchCriteriaException("Missing 'name' in 'orderBy'.");
+            throw new InvalidSearchCriteriaException(Messages.i18n.format("SearchCriteriaUtil.MissingOrderByName")); //$NON-NLS-1$
         }
     }
 }

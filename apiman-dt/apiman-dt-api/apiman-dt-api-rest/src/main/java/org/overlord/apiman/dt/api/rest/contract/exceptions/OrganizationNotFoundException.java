@@ -16,6 +16,8 @@
 
 package org.overlord.apiman.dt.api.rest.contract.exceptions;
 
+import org.overlord.apiman.dt.api.rest.i18n.Messages;
+
 
 /**
  * Thrown when trying to get, update, or delete an organization that does not exist.
@@ -31,7 +33,7 @@ public class OrganizationNotFoundException extends AbstractNotFoundException {
      * @param organizationId
      */
     public static final OrganizationNotFoundException create(String organizationId) {
-        return new OrganizationNotFoundException("Organization does not exist: " + organizationId);
+        return new OrganizationNotFoundException(Messages.i18n.format("OrganizationDoesNotExist", organizationId)); //$NON-NLS-1$
     }
     
     /**

@@ -26,13 +26,13 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public class SearchCriteriaFilterBean {
     
-    public static final String OPERATOR_EQ = "eq";
-    public static final String OPERATOR_NEQ = "neq";
-    public static final String OPERATOR_GT = "gt";
-    public static final String OPERATOR_GTE = "gte";
-    public static final String OPERATOR_LT = "lt";
-    public static final String OPERATOR_LTE = "lte";
-    public static final String OPERATOR_LIKE = "like";
+    public static final String OPERATOR_EQ = "eq"; //$NON-NLS-1$
+    public static final String OPERATOR_NEQ = "neq"; //$NON-NLS-1$
+    public static final String OPERATOR_GT = "gt"; //$NON-NLS-1$
+    public static final String OPERATOR_GTE = "gte"; //$NON-NLS-1$
+    public static final String OPERATOR_LT = "lt"; //$NON-NLS-1$
+    public static final String OPERATOR_LTE = "lte"; //$NON-NLS-1$
+    public static final String OPERATOR_LIKE = "like"; //$NON-NLS-1$
     
     private String name;
     private String value;

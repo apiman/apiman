@@ -23,7 +23,6 @@ import org.jboss.errai.bus.client.api.BusLifecycleEvent;
 import org.jboss.errai.bus.client.api.ClientMessageBus;
 import org.jboss.errai.bus.client.api.TransportError;
 import org.jboss.errai.bus.client.api.TransportErrorHandler;
-import org.jboss.errai.enterprise.client.jaxrs.api.RestClient;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ui.nav.client.local.Navigation;
 import org.jboss.errai.ui.shared.api.annotations.Bundle;
@@ -49,10 +48,6 @@ public class App {
 
 	@PostConstruct
 	public void buildUI() {
-	    // TODO the application root should be configurable and should be passed from the server (along with authentication and other configuration params)
-        RestClient.setApplicationRoot("http://localhost:7070/apiman-api");
-        RestClient.setJacksonMarshallingActive(true);
-
         rootPanel.add(navigation.getContentPanel());
 		bus.addLifecycleListener(new BusLifecycleAdapter() {
 		    @Override

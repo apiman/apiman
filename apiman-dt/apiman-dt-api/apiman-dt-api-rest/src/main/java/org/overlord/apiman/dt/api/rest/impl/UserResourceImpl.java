@@ -41,6 +41,7 @@ public class UserResourceImpl implements IUserResource {
     /**
      * @see org.overlord.apiman.dt.api.rest.contract.IUserResource#getUser(java.lang.String)
      */
+    @SuppressWarnings("nls")
     @Override
     public UserBean getUser(String username) throws UserNotFoundException {
         if (username.equals("ewittman")) {

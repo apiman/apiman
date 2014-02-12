@@ -16,6 +16,8 @@
 
 package org.overlord.apiman.dt.api.rest.contract.exceptions;
 
+import org.overlord.apiman.dt.api.rest.i18n.Messages;
+
 
 /**
  * Thrown when a request is sent for a user who does not exist.
@@ -31,7 +33,7 @@ public class UserNotFoundException extends AbstractNotFoundException {
      * @param username
      */
     public static final UserNotFoundException create(String username) {
-        return new UserNotFoundException("User not found: " + username);
+        return new UserNotFoundException(Messages.i18n.format("UserNotFound", username)); //$NON-NLS-1$
     }
     
     /**

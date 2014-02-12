@@ -56,7 +56,7 @@ public class ConfigurationService {
 
         JavaScriptObject configData = getInitialConfigurationData();
         if (configData == null) {
-            throw new RuntimeException("Could not find initial configuration!");
+            throw new RuntimeException("Could not find initial configuration!"); //$NON-NLS-1$
         }
         String data = new JSONObject(configData).toString();
         configuration = MarshallingWrapper.fromJSON(data, ConfigurationBean.class);

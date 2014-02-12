@@ -106,7 +106,7 @@ public class JpaStorage implements IStorage {
     protected boolean isConstraintViolation(RollbackException e) {
         Throwable cause = e;
         while (cause != cause.getCause() && cause.getCause() != null) {
-            if (cause.getClass().getSimpleName().equals("ConstraintViolationException"))
+            if (cause.getClass().getSimpleName().equals("ConstraintViolationException")) //$NON-NLS-1$
                 return true;
             cause = cause.getCause();
         }

@@ -13,22 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.dt.api.beans;
+package org.overlord.apiman.dt.ui.client.local;
+
+import org.jboss.errai.ui.shared.api.annotations.TranslationKey;
 
 /**
- * Some simple bean utils.
+ * i18n messages used in the Java portion of the application (vs. the templates).
  *
  * @author eric.wittmann@redhat.com
  */
-public class BeanUtils {
+public class AppMessages {
     
-    /**
-     * Creates a bean id from the given bean name.  This essentially removes any
-     * non "word" characters from the name.
-     * @param name
-     */
-    public static final String idFromName(String name) {
-        return name.replaceAll("\\W", ""); //$NON-NLS-1$ //$NON-NLS-2$
-    }
+    @TranslationKey(defaultValue = "Configuration service not available.")
+    public static final String CONFIG_SERVICE_NOT_AVAILABLE = "authInterceptor.configServiceNotAvailable"; //$NON-NLS-1$
 
 }

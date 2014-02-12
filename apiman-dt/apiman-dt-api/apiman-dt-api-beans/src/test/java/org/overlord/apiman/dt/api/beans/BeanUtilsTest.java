@@ -28,6 +28,7 @@ public class BeanUtilsTest {
     /**
      * Test method for {@link org.overlord.apiman.dt.api.beans.BeanUtils#idFromName(java.lang.String)}.
      */
+    @SuppressWarnings("nls")
     @Test
     public void testIdFromName() {
         assertIdFromName("EricWittmann", "Eric Wittmann");

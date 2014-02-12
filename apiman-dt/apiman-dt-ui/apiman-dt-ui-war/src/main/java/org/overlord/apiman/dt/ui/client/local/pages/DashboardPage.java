@@ -80,11 +80,11 @@ public class DashboardPage extends AbstractPage {
                 rest.getSystemStatus(new IRestInvokerCallback<String>() {
                     @Override
                     public void onSuccess(String response) {
-                        Window.alert("Status: " + response);
+                        Window.alert("Status: " + response); //$NON-NLS-1$
                     }
                     @Override
                     public void onError(Throwable error) {
-                        Window.alert("Error: " + error.getMessage());
+                        Window.alert("Error: " + error.getMessage()); //$NON-NLS-1$
                     }
                 });
             }

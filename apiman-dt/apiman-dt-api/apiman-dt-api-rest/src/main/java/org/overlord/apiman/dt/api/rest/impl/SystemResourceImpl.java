@@ -44,8 +44,8 @@ public class SystemResourceImpl implements ISystemResource {
     @Override
     public String getStatus() {
         if (storage != null)
-            return "OK";
+            return "OK"; //$NON-NLS-1$
         else
-            return "DOWN";
+            return "DOWN"; //$NON-NLS-1$
     }
 }

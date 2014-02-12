@@ -49,9 +49,9 @@ public class ApimanUiVersion {
      * Loads the version info from version.properties.
      */
     private void load() {
-        URL url = ApimanUiVersion.class.getResource("version.properties");
+        URL url = ApimanUiVersion.class.getResource("version.properties"); //$NON-NLS-1$
         if (url == null) {
-            this.versionString = "(unknown)";
+            this.versionString = "Unknown"; //$NON-NLS-1$
             this.versionDate = new Date().toString();
         } else {
             InputStream is = null;
@@ -59,8 +59,8 @@ public class ApimanUiVersion {
             try {
                 is = url.openStream();
                 props.load(is);
-                this.versionString = props.getProperty("version", "(unknown)");
-                this.versionDate = props.getProperty("date", new Date().toString());
+                this.versionString = props.getProperty("version", "Unknown"); //$NON-NLS-1$ //$NON-NLS-2$
+                this.versionDate = props.getProperty("date", new Date().toString()); //$NON-NLS-1$
             } catch (IOException e) {
                 throw new RuntimeException(e);
             } finally {

@@ -16,6 +16,8 @@
 
 package org.overlord.apiman.dt.api.rest.contract.exceptions;
 
+import org.overlord.apiman.dt.api.rest.i18n.Messages;
+
 
 /**
  * Thrown when trying to create an Organization that already exists.
@@ -31,7 +33,7 @@ public class OrganizationAlreadyExistsException extends AbstractAlreadyExistsExc
      * @param organizationName
      */
     public static final OrganizationAlreadyExistsException create(String organizationName) {
-        return new OrganizationAlreadyExistsException("Organization already exists: " + organizationName);
+        return new OrganizationAlreadyExistsException(Messages.i18n.format("OrganizationAlreadyExists", organizationName)); //$NON-NLS-1$
     }
     
     /**

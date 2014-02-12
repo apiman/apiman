@@ -13,22 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.dt.api.beans;
+package org.overlord.apiman.dt.api.rest.i18n;
+
+import org.overlord.commons.i18n.AbstractMessages;
 
 /**
- * Some simple bean utils.
+ * I18N Messages
  *
  * @author eric.wittmann@redhat.com
  */
-public class BeanUtils {
-    
-    /**
-     * Creates a bean id from the given bean name.  This essentially removes any
-     * non "word" characters from the name.
-     * @param name
-     */
-    public static final String idFromName(String name) {
-        return name.replaceAll("\\W", ""); //$NON-NLS-1$ //$NON-NLS-2$
-    }
+public class Messages extends AbstractMessages {
 
+    public static final Messages i18n = new Messages();
+
+    /**
+     * Constructor.
+     */
+    public Messages() {
+        super(Messages.class);
+    }
 }

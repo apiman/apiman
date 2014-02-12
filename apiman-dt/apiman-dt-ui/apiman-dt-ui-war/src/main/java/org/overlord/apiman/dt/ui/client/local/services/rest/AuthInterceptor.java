@@ -21,9 +21,11 @@ import javax.inject.Inject;
 import org.jboss.errai.common.client.api.interceptor.InterceptsRemoteCall;
 import org.jboss.errai.enterprise.client.jaxrs.api.interceptor.RestCallContext;
 import org.jboss.errai.enterprise.client.jaxrs.api.interceptor.RestClientInterceptor;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.overlord.apiman.dt.api.rest.contract.IOrganizationResource;
 import org.overlord.apiman.dt.api.rest.contract.ISystemResource;
 import org.overlord.apiman.dt.api.rest.contract.IUserResource;
+import org.overlord.apiman.dt.ui.client.local.AppMessages;
 import org.overlord.apiman.dt.ui.client.local.services.ConfigurationService;
 import org.overlord.apiman.dt.ui.client.local.util.Base64Util;
 import org.overlord.apiman.dt.ui.client.shared.beans.ApiAuthConfigurationBean;
@@ -41,17 +43,13 @@ public class AuthInterceptor implements RestClientInterceptor {
     
     @Inject
     ConfigurationService config;
+    @Inject
+    TranslationService i18n;
     
     /**
      * Constructor.
      */
     public AuthInterceptor() {
-//        IOC.getAsyncBeanManager().lookupBean(ConfigurationService.class).getInstance(new CreationalCallback<ConfigurationService>() {
-//            @Override
-//            public void callback(ConfigurationService beanInstance) {
-//                config = beanInstance;
-//            }
-//        });
     }
 
     /**
@@ -60,7 +58,7 @@ public class AuthInterceptor implements RestClientInterceptor {
     @Override
     public void aroundInvoke(RestCallContext context) {
         if (config == null) {
-            throw new RuntimeException("Configuration service not available.");
+            throw new RuntimeException(i18n.format(AppMessages.CONFIG_SERVICE_NOT_AVAILABLE));
         }
         ApiAuthConfigurationBean auth = config.getCurrentConfig().getApi().getAuth();
         if (auth.getType() == ApiAuthType.basic) {
@@ -77,9 +75,9 @@ public class AuthInterceptor implements RestClientInterceptor {
      * @param auth
      */
     private void doBasicAuth(RestCallContext context, ApiAuthConfigurationBean auth) {
-        String encoded = Base64Util.b64encode(auth.getBasic().getUsername() + ":" + auth.getBasic().getPassword());
+        String encoded = Base64Util.b64encode(auth.getBasic().getUsername() + ":" + auth.getBasic().getPassword()); //$NON-NLS-1$
         context.getRequestBuilder().setIncludeCredentials(true);
-        context.getRequestBuilder().setHeader("Authorization", "Basic " + encoded);
+        context.getRequestBuilder().setHeader("Authorization", "Basic " + encoded); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**
@@ -89,7 +87,7 @@ public class AuthInterceptor implements RestClientInterceptor {
      */
     private void doBearerTokenAuth(RestCallContext context, ApiAuthConfigurationBean auth) {
         // TODO implement bearer token authentication
-        throw new RuntimeException("Not yet implemented (Bearer Token Auth).");
+        throw new RuntimeException("Not yet implemented (Bearer Token Auth)."); //$NON-NLS-1$
     }
 
 }

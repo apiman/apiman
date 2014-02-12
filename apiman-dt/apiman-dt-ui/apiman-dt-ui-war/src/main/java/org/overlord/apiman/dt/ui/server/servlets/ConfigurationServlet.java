@@ -65,7 +65,7 @@ public class ConfigurationServlet extends HttpServlet {
             IOException {
 
         try {
-            response.getOutputStream().write("var APIMAN_CONFIG_DATA = ".getBytes("UTF-8"));
+            response.getOutputStream().write("var APIMAN_CONFIG_DATA = ".getBytes("UTF-8")); //$NON-NLS-1$ //$NON-NLS-2$
             JsonFactory f = new JsonFactory();
             JsonGenerator g = f.createJsonGenerator(response.getOutputStream(), JsonEncoding.UTF8);
             ObjectMapper mapper = new ObjectMapper();
@@ -106,7 +106,7 @@ public class ConfigurationServlet extends HttpServlet {
             g.writeObject(configBean);
             
             g.flush();
-            response.getOutputStream().write(";".getBytes("UTF-8"));
+            response.getOutputStream().write(";".getBytes("UTF-8")); //$NON-NLS-1$ //$NON-NLS-2$
             g.close();
         } catch (Exception e) {
             throw new ServletException(e);
@@ -121,7 +121,7 @@ public class ConfigurationServlet extends HttpServlet {
      */
     private String getBearerToken(HttpServletRequest request, HttpServletResponse response) {
         // TODO implement bearer token auth
-        return "TODO:BEARER-TOKEN";
+        return "TODO:BEARER-TOKEN"; //$NON-NLS-1$
     }
 
     /**
@@ -131,11 +131,11 @@ public class ConfigurationServlet extends HttpServlet {
     private String getDefaultEndpoint(HttpServletRequest request) {
         StringBuilder builder = new StringBuilder();
         builder.append(request.getScheme())
-               .append("://")
+               .append("://") //$NON-NLS-1$
                .append(request.getRemoteHost())
-               .append(":")
+               .append(":") //$NON-NLS-1$
                .append(request.getRemotePort())
-               .append("/apiman-dt-api");
+               .append("/apiman-dt-api"); //$NON-NLS-1$
         return builder.toString();
     }
 }

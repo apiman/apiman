@@ -16,6 +16,12 @@
       <artifactId>apiman-dt-api-persistence</artifactId>
       <version>${project.version}</version>
     </dependency>
+    
+    <!-- Overlord Commons -->
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-i18n</artifactId>
+    </dependency>
 
     <!-- Third Party Dependencies -->
     <dependency>

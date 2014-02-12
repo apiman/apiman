@@ -39,10 +39,10 @@ public class EntityManagerFactoryProducer {
     
     @Produces
     public EntityManagerFactory getEntityManagerFactory() {
-        String autoValue = System.getProperty("hibernate.hbm2ddl.auto", "validate");
+        String autoValue = System.getProperty("hibernate.hbm2ddl.auto", "validate"); //$NON-NLS-1$ //$NON-NLS-2$
         Map<String, String> properties = new HashMap<String, String>();
-        properties.put("hibernate.hbm2ddl.auto", autoValue);
-        return Persistence.createEntityManagerFactory("apiman-dt-api-jpa", properties);
+        properties.put("hibernate.hbm2ddl.auto", autoValue); //$NON-NLS-1$
+        return Persistence.createEntityManagerFactory("apiman-dt-api-jpa", properties); //$NON-NLS-1$
     }
     
 }
