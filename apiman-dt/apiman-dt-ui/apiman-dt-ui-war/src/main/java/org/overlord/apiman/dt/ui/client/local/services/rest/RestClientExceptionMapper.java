@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-package org.overlord.apiman.dt.ui.client.local;
+package org.overlord.apiman.dt.ui.client.local.services.rest;
 
 import javax.ws.rs.ext.Provider;
 
 import org.jboss.errai.enterprise.client.jaxrs.AbstractJSONClientExceptionMapper;
+import org.jboss.errai.enterprise.client.jaxrs.api.ResponseException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ErrorBean;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.UserNotFoundException;
+import org.overlord.apiman.dt.ui.client.local.exceptions.NotAuthenticatedException;
 
 import com.google.gwt.http.client.Response;
 
@@ -30,12 +32,12 @@ import com.google.gwt.http.client.Response;
  * @author eric.wittmann@redhat.com
  */
 @Provider
-public class DtUiClientExceptionMapper extends AbstractJSONClientExceptionMapper {
+public class RestClientExceptionMapper extends AbstractJSONClientExceptionMapper {
 
     /**
      * Constructor.
      */
-    public DtUiClientExceptionMapper() {
+    public RestClientExceptionMapper() {
     }
 
     /**
@@ -43,13 +45,23 @@ public class DtUiClientExceptionMapper extends AbstractJSONClientExceptionMapper
      */
     @Override
     public Throwable fromResponse(Response response) {
-        ErrorBean errorBean = fromJSON(response, ErrorBean.class);
-        String type = errorBean.getType();
-        if (type.equals("UserNotFoundException")) {
-            return new UserNotFoundException(errorBean.getMessage());
+        String header = response.getHeader("X-Apiman-Error");
+        if (header != null && "true".equals(header)) {
+            ErrorBean errorBean = fromJSON(response, ErrorBean.class);
+            String type = errorBean.getType();
+            if (type.equals("UserNotFoundException")) {
+                return new UserNotFoundException(errorBean.getMessage());
+            }
+            // Default - simple exception.
+            return new RuntimeException(errorBean.getMessage());
         }
-        // Default - simple exception.
-        return new RuntimeException(errorBean.getMessage());
+        
+        if (response.getStatusCode() == 401) {
+            throw new NotAuthenticatedException("[Not Authenticated] - The APIMan DT API expected authentication credentials but they were missing.");
+        }
+        
+        return new ResponseException("Unexpected error [" + response.getStatusCode() + "]: "
+                + response.getStatusText(), response);
     }
 
 }

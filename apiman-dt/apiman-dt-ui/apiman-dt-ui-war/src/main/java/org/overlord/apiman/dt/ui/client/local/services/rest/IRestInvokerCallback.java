@@ -13,15 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.overlord.apiman.dt.ui.client.local.services.rest;
 
-package org.overlord.apiman.dt.ui.server;
+import org.overlord.apiman.dt.ui.client.local.services.RestInvokerService;
 
 /**
- * Simple marker class.  Used by the dev server framework to locate the 
- * UI module either in the IDE or in Maven.
+ * Callback used when making rest invokation via the {@link RestInvokerService}.
  *
  * @author eric.wittmann@redhat.com
  */
-public class ApiManUI {
+public interface IRestInvokerCallback<T> {
+    
+    /**
+     * Called when the rest invokation returns a 200 response.
+     * @param response
+     */
+    public void onSuccess(T response);
+    
+    /**
+     * Called when the rest invokation returns an error response.
+     * @param error
+     */
+    public void onError(Throwable error);
 
 }

@@ -137,8 +137,22 @@
     </dependency>
   </dependencies>
 
+  <properties>
+    <timestamp>${maven.build.timestamp}</timestamp>
+  </properties>
+
   <build>
     <outputDirectory>src/main/webapp/WEB-INF/classes</outputDirectory>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>false</filtering>
+      </resource>
+      <resource>
+        <directory>src/main/resources-filtered</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
     <plugins>
       <plugin>
         <artifactId>maven-war-plugin</artifactId>

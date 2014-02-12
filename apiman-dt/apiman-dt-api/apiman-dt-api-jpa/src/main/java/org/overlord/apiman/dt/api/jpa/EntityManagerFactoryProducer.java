@@ -39,8 +39,9 @@ public class EntityManagerFactoryProducer {
     
     @Produces
     public EntityManagerFactory getEntityManagerFactory() {
+        String autoValue = System.getProperty("hibernate.hbm2ddl.auto", "validate");
         Map<String, String> properties = new HashMap<String, String>();
-        properties.put("hibernate.hbm2ddl.auto", "create");
+        properties.put("hibernate.hbm2ddl.auto", autoValue);
         return Persistence.createEntityManagerFactory("apiman-dt-api-jpa", properties);
     }
     

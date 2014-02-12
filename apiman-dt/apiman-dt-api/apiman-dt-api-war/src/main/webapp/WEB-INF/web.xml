@@ -28,6 +28,13 @@
     <web-resource-collection>
       <web-resource-name>ApimanDT</web-resource-name>
       <url-pattern>/*</url-pattern>
+      <http-method>GET</http-method>
+      <http-method>HEAD</http-method>
+      <http-method>POST</http-method>
+      <http-method>PUT</http-method>
+      <http-method>DELETE</http-method>
+      <http-method>TRACE</http-method>
+      <http-method>CONNECT</http-method>
     </web-resource-collection>
     <auth-constraint>
       <role-name>overlorduser</role-name>

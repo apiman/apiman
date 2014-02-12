@@ -41,7 +41,6 @@ import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
 import org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap;
 import org.jboss.weld.environment.servlet.BeanManagerResourceBindingListener;
 import org.jboss.weld.environment.servlet.Listener;
-import org.jboss.weld.servlet.ConversationPropagationFilter;
 import org.overlord.commons.gwt.server.filters.SimpleCorsFilter;
 import org.overlord.commons.i18n.server.filters.LocaleFilter;
 
@@ -106,6 +105,8 @@ public class DtApiTestServer {
      * Stuff to do before the server is started.
      */
     protected void preStart() {
+        System.setProperty("hibernate.hbm2ddl.auto", "create-drop");
+
         try {
             InitialContext ctx = new InitialContext();
             ensureCtx(ctx, "java:/comp/env");
@@ -165,7 +166,6 @@ public class DtApiTestServer {
         apiManServer.addEventListener(new ResteasyBootstrap());
         apiManServer.addFilter(LocaleFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
         apiManServer.addFilter(SimpleCorsFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
-        apiManServer.addFilter(ConversationPropagationFilter.class, "*", EnumSet.of(DispatcherType.REQUEST));
         ServletHolder resteasyServlet = new ServletHolder(new HttpServletDispatcher());
         resteasyServlet.setInitParameter("javax.ws.rs.Application", DtApiRestApplication.class.getName());
         apiManServer.addServlet(resteasyServlet, "/*");
@@ -196,14 +196,18 @@ public class DtApiTestServer {
         constraint.setRoles(new String[]{"apiman.user", "apiman.admin"});
         constraint.setAuthenticate(true);
 
-        ConstraintMapping cm = new ConstraintMapping();
-        cm.setConstraint(constraint);
-        cm.setPathSpec("/*");
+        String[] protectedMethods = new String[] { "GET", "HEAD", "POST", "PUT", "DELETE", "TRACE", "CONNECT" };
 
         ConstraintSecurityHandler csh = new ConstraintSecurityHandler();
         csh.setAuthenticator(new BasicAuthenticator());
         csh.setRealmName("apimanrealm");
-        csh.addConstraintMapping(cm);
+        for (String method : protectedMethods) {
+            ConstraintMapping cm = new ConstraintMapping();
+            cm.setConstraint(constraint);
+            cm.setPathSpec("/*");
+            cm.setMethod(method);
+            csh.addConstraintMapping(cm);
+        }
         csh.setLoginService(l);
 
         return csh;

@@ -47,7 +47,7 @@ public class RestExceptionMapper implements ExceptionMapper<AbstractRestExceptio
         error.setErrorCode(data.getErrorCode());
         error.setMessage(data.getMessage());
         error.setMoreInfoUrl(data.getMoreInfoUrl());
-        return Response.status(data.getHttpCode()).entity(error).build();
+        return Response.status(data.getHttpCode()).header("X-Apiman-Error", "true").entity(error).build();
     }
 
 }

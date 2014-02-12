@@ -33,7 +33,9 @@ import org.eclipse.jetty.util.security.Credential;
 import org.jboss.errai.bus.server.servlet.DefaultBlockingServlet;
 import org.jboss.weld.environment.servlet.BeanManagerResourceBindingListener;
 import org.jboss.weld.environment.servlet.Listener;
-import org.overlord.apiman.dt.ui.server.ApiManUI;
+import org.overlord.apiman.dt.ui.client.shared.beans.ApiAuthType;
+import org.overlord.apiman.dt.ui.server.ApimanUIConfig;
+import org.overlord.apiman.dt.ui.server.servlets.ConfigurationServlet;
 import org.overlord.commons.dev.server.DevServerEnvironment;
 import org.overlord.commons.dev.server.ErraiDevServer;
 import org.overlord.commons.dev.server.MultiDefaultServlet;
@@ -84,6 +86,10 @@ public class ApiManDtUiDevServer extends ErraiDevServer {
      */
     @Override
     protected void preConfig() {
+        System.setProperty(ApimanUIConfig.APIMAN_DT_UI_API_ENDPOINT, "http://localhost:7071/apiman-dt-api");
+        System.setProperty(ApimanUIConfig.APIMAN_DT_UI_API_AUTH_TYPE, ApiAuthType.basic.toString());
+        System.setProperty(ApimanUIConfig.APIMAN_DT_UI_API_BASIC_AUTH_USER, "eric");
+        System.setProperty(ApimanUIConfig.APIMAN_DT_UI_API_BASIC_AUTH_PASS, "eric");
     }
 
     /**
@@ -100,8 +106,8 @@ public class ApiManDtUiDevServer extends ErraiDevServer {
     @Override
     protected void addModules(DevServerEnvironment environment) {
         environment.addModule("apiman-dt-ui",
-                new WebAppModuleFromIDEDiscoveryStrategy(ApiManUI.class),
-                new ErraiWebAppModuleFromMavenDiscoveryStrategy(ApiManUI.class));
+                new WebAppModuleFromIDEDiscoveryStrategy(ApimanUIConfig.class),
+                new ErraiWebAppModuleFromMavenDiscoveryStrategy(ApimanUIConfig.class));
         environment.addModule("overlord-commons-uiheader",
                 new JarModuleFromIDEDiscoveryStrategy(OverlordHeaderDataJS.class, "src/main/resources/META-INF/resources"),
                 new JarModuleFromMavenDiscoveryStrategy(OverlordHeaderDataJS.class, "/META-INF/resources"));
@@ -139,7 +145,8 @@ public class ApiManDtUiDevServer extends ErraiDevServer {
         apiManDtUI.addServlet(erraiServlet, "*.erraiBus");
         ServletHolder headerDataServlet = new ServletHolder(OverlordHeaderDataJS.class);
         headerDataServlet.setInitParameter("app-id", "apiman-dt-ui");
-        apiManDtUI.addServlet(headerDataServlet, "/js/overlord-header-data.js");
+        apiManDtUI.addServlet(headerDataServlet, "/js/overlord-header-data.nocache.js");
+        apiManDtUI.addServlet(ConfigurationServlet.class.getName(), "/js/configuration.nocache.js");
         // File resources
         ServletHolder resources = new ServletHolder(new MultiDefaultServlet());
         resources.setInitParameter("resourceBase", "/");
