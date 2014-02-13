@@ -8,6 +8,6 @@ Content-Type: application/json
 
 {
   "type" : "OrganizationAlreadyExistsException",
-  "errorCode" : 2001,
+  "errorCode" : 3001,
   "message" : "Organization already exists: Test Organization 1"
 }
