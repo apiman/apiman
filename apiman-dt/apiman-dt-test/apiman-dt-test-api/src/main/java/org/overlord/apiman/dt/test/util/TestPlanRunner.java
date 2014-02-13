@@ -19,6 +19,8 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.MessageFormat;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -150,6 +152,9 @@ public class TestPlanRunner {
             
             HttpResponse response = client.execute(request);
             assertResponse(restTest, response);
+        } catch (Error e) {
+            log("[ERROR] " + e.getMessage());
+            throw e;
         } catch (Exception e) {
             throw new Error(e);
         }
@@ -172,10 +177,12 @@ public class TestPlanRunner {
             throw e;
         }
         for (Entry<String, String> entry : restTest.getExpectedResponseHeaders().entrySet()) {
-            String headerName = entry.getKey();
+            String expectedHeaderName = entry.getKey();
+            if (expectedHeaderName.startsWith("X-RestTest-"))
+                continue;
             String expectedHeaderValue = entry.getValue();
-            Header header = response.getFirstHeader(headerName);
-            Assert.assertNotNull("Expected header to exist but was not found: " + headerName, header);
+            Header header = response.getFirstHeader(expectedHeaderName);
+            Assert.assertNotNull("Expected header to exist but was not found: " + expectedHeaderName, header);
             String actualValue = header.getValue();
             Assert.assertEquals(expectedHeaderValue, actualValue);
         }
@@ -218,9 +225,11 @@ public class TestPlanRunner {
             inputStream = response.getEntity().getContent();
             ObjectMapper jacksonParser = new ObjectMapper();
             JsonNode actualJson = jacksonParser.readTree(inputStream);
-            JsonNode expectedJson = jacksonParser.readTree(restTest.getExpectedResponsePayload());
+            String expectedPayload = restTest.getExpectedResponsePayload();
+            Assert.assertNotNull("REST Test missing expected JSON payload.", expectedPayload);
+            JsonNode expectedJson = jacksonParser.readTree(expectedPayload);
             try {
-                assertJson(expectedJson, actualJson);
+                assertJson(restTest, expectedJson, actualJson);
             } catch (Error e) {
                 System.out.println("--- START FAILED JSON PAYLOAD ---");
                 System.out.println(actualJson.toString());
@@ -237,10 +246,11 @@ public class TestPlanRunner {
     /**
      * Asserts that the JSON payload matches what we expected, as defined
      * in the configuration of the rest test.
+     * @param restTest 
      * @param expectedJson
      * @param actualJson
      */
-    private void assertJson(JsonNode expectedJson, JsonNode actualJson) {
+    private void assertJson(RestTest restTest, JsonNode expectedJson, JsonNode actualJson) {
         Iterator<Entry<String, JsonNode>> fields = expectedJson.getFields();
         while (fields.hasNext()) {
             Entry<String, JsonNode> entry = fields.next();
@@ -289,7 +299,7 @@ public class TestPlanRunner {
                 Assert.assertEquals("Expected parent JSON field '" + expectedFieldName
                         + "' but found field of type '" + actualValue.getClass().getSimpleName() + "'.",
                         ObjectNode.class, actualValue.getClass());
-                assertJson(expectedValue, actualValue);
+                assertJson(restTest, expectedValue, actualValue);
             } else if (expectedValue instanceof ArrayNode) {
                 JsonNode actualValue = actualJson.get(expectedFieldName);
                 Assert.assertNotNull("Expected JSON array field '" + expectedFieldName
@@ -301,10 +311,30 @@ public class TestPlanRunner {
                 ArrayNode actualArray = (ArrayNode) actualValue;
                 Assert.assertEquals("Field '" + expectedFieldName + "' array size mismatch.",
                         expectedArray.size(), actualArray.size());
-                for (int idx = 0; idx < expectedArray.size(); idx++) {
-                    JsonNode expected = expectedArray.get(idx);
-                    JsonNode actual = actualArray.get(idx);
-                    assertJson(expected, actual);
+                String ordering = restTest.getExpectedResponseHeaders().get("X-RestTest-ArrayOrdering");
+                
+                JsonNode [] expected = new JsonNode[expectedArray.size()];
+                JsonNode [] actual = new JsonNode[actualArray.size()];
+                for (int idx = 0; idx < expected.length; idx++) {
+                    expected[idx] = expectedArray.get(idx);
+                    actual[idx] = actualArray.get(idx);
+                }
+                // If strict orderingis disabled, then sort both arrays
+                if ("any".equals(ordering)) {
+                    Comparator<? super JsonNode> comparator = new Comparator<JsonNode>() {
+                        @Override
+                        public int compare(JsonNode o1, JsonNode o2) {
+                            int cmp = o1.toString().compareTo(o2.toString());
+                            if (cmp == 0)
+                                cmp = 1;
+                            return cmp;
+                        }
+                    };
+                    Arrays.sort(expected, comparator);
+                    Arrays.sort(actual, comparator);
+                }
+                for (int idx = 0; idx < expected.length; idx++) {
+                    assertJson(restTest, expected[idx], actual[idx]);
                 }
             } else if (expectedValue instanceof NullNode) {
                 JsonNode actualValue = actualJson.get(expectedFieldName);

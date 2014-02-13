@@ -3,7 +3,7 @@ Content-Type: application/json
 
 {
   "name" : "Test Role 3",
-  "permissions" : [ "permission-1", "permission-2", "permission-3" ]
+  "permissions" : [ "permission-3.1", "permission-3.2", "permission-3.3" ]
 }
 ----
 200
@@ -12,5 +12,5 @@ Content-Type: application/json
 {
   "id" : "TestRole3",
   "name" : "Test Role 3",
-  "permissions" : [ "permission-1", "permission-2", "permission-3" ]
+  "permissions" : [ "permission-3.1", "permission-3.2", "permission-3.3" ]
 }

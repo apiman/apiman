@@ -30,9 +30,21 @@ import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
  * strategy. An obvious example is that the users and roles may be stored in an
  * LDAP directory while the core apiman data is stored in a database.
  * 
+ * Depending on implementation, various methods in this interface may not
+ * be supported.  For example, if the IDM system being used is read only 
+ * (perhaps because it is backed by some centrally managed LDAP system).
+ * 
  * @author eric.wittmann@redhat.com
  */
 public interface IIdmStorage {
+    
+    /**
+     * Creates a user in the IDM system.
+     * @param user
+     * @throws StorageException
+     * @throws AlreadyExistsException
+     */
+    public void createUser(UserBean user) throws StorageException, AlreadyExistsException;
     
     /**
      * Gets a user by id.
@@ -43,9 +55,7 @@ public interface IIdmStorage {
     public UserBean getUser(String userId) throws StorageException, DoesNotExistException;
     
     /**
-     * Updates the personal information about a user.  Depending on implementation, this
-     * method may not be supported.  For example, if the IDM system being used is read
-     * only (perhaps some centrally managed LDAP system).
+     * Updates the personal information about a user.
      * @param user
      * @throws StorageException
      * @throws DoesNotExistException

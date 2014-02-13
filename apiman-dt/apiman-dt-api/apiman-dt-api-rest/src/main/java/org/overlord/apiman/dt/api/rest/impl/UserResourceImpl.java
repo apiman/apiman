@@ -48,12 +48,27 @@ public class UserResourceImpl implements IUserResource {
     }
 
     /**
-     * @see org.overlord.apiman.dt.api.rest.contract.IUserResource#getUser(java.lang.String)
+     * @see org.overlord.apiman.dt.api.rest.contract.IUserResource#get(java.lang.String)
      */
     @Override
-    public UserBean getUser(String userId) throws UserNotFoundException {
+    public UserBean get(String userId) throws UserNotFoundException {
         try {
             return idmStorage.getUser(userId);
+        } catch (DoesNotExistException e) {
+            throw UserNotFoundException.create(userId);
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+    }
+    
+    /**
+     * @see org.overlord.apiman.dt.api.rest.contract.IUserResource#update(java.lang.String, org.overlord.apiman.dt.api.beans.idm.UserBean)
+     */
+    @Override
+    public void update(String userId, UserBean user) throws UserNotFoundException {
+        user.setUsername(userId);
+        try {
+            idmStorage.updateUser(user);
         } catch (DoesNotExistException e) {
             throw UserNotFoundException.create(userId);
         } catch (StorageException e) {

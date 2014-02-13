@@ -18,6 +18,7 @@ package org.overlord.apiman.dt.api.jpa;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.persistence.EntityManagerFactory;
@@ -30,6 +31,8 @@ import javax.persistence.Persistence;
  */
 @ApplicationScoped
 public class EntityManagerFactoryProducer {
+    
+    private EntityManagerFactory emf;
 
     /**
      * Constructor.
@@ -37,12 +40,17 @@ public class EntityManagerFactoryProducer {
     public EntityManagerFactoryProducer() {
     }
     
-    @Produces
-    public EntityManagerFactory getEntityManagerFactory() {
+    @PostConstruct
+    protected void postConstruct() {
         String autoValue = System.getProperty("hibernate.hbm2ddl.auto", "validate"); //$NON-NLS-1$ //$NON-NLS-2$
         Map<String, String> properties = new HashMap<String, String>();
         properties.put("hibernate.hbm2ddl.auto", autoValue); //$NON-NLS-1$
-        return Persistence.createEntityManagerFactory("apiman-dt-api-jpa", properties); //$NON-NLS-1$
+        emf = Persistence.createEntityManagerFactory("apiman-dt-api-jpa", properties); //$NON-NLS-1$
+    }
+    
+    @Produces
+    public EntityManagerFactory getEntityManagerFactory() {
+        return emf;
     }
     
 }

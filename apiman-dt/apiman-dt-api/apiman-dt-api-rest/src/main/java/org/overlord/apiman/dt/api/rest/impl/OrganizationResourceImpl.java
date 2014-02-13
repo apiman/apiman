@@ -22,18 +22,26 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.overlord.apiman.dt.api.beans.BeanUtils;
+import org.overlord.apiman.dt.api.beans.idm.GrantRoleBean;
+import org.overlord.apiman.dt.api.beans.idm.RevokeRoleBean;
+import org.overlord.apiman.dt.api.beans.idm.RoleMembershipBean;
 import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
 import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
 import org.overlord.apiman.dt.api.persist.AlreadyExistsException;
 import org.overlord.apiman.dt.api.persist.DoesNotExistException;
+import org.overlord.apiman.dt.api.persist.IIdmStorage;
 import org.overlord.apiman.dt.api.persist.IStorage;
 import org.overlord.apiman.dt.api.persist.StorageException;
 import org.overlord.apiman.dt.api.rest.contract.IOrganizationResource;
+import org.overlord.apiman.dt.api.rest.contract.IRoleResource;
+import org.overlord.apiman.dt.api.rest.contract.IUserResource;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.InvalidSearchCriteriaException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationAlreadyExistsException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationNotFoundException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.RoleNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.SystemErrorException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.UserNotFoundException;
 import org.overlord.apiman.dt.api.rest.impl.util.SearchCriteriaUtil;
 
 /**
@@ -45,6 +53,10 @@ import org.overlord.apiman.dt.api.rest.impl.util.SearchCriteriaUtil;
 public class OrganizationResourceImpl implements IOrganizationResource {
 
     @Inject IStorage storage;
+    @Inject IIdmStorage idmStorage;
+    
+    @Inject IUserResource users;
+    @Inject IRoleResource roles;
     
     /**
      * Constructor.
@@ -91,6 +103,51 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         try {
             SearchCriteriaUtil.validateSearchCriteria(criteria);
             return storage.find(criteria, OrganizationBean.class);
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+    }
+    
+    /**
+     * @see org.overlord.apiman.dt.api.rest.contract.IOrganizationResource#grant(java.lang.String, org.overlord.apiman.dt.api.beans.idm.GrantRoleBean)
+     */
+    @Override
+    public void grant(String organizationId, GrantRoleBean bean) throws OrganizationNotFoundException,
+            RoleNotFoundException, UserNotFoundException {
+        // Verify that the references are valid.
+        get(organizationId);
+        users.get(bean.getUserId());
+        roles.get(bean.getRoleId());
+        
+        RoleMembershipBean membership = new RoleMembershipBean();
+        membership.setOrganizationId(organizationId);
+        membership.setUserId(bean.getUserId());
+        membership.setRoleId(bean.getRoleId());
+        
+        try {
+            idmStorage.createMembership(membership);
+        } catch (AlreadyExistsException e) {
+            // Do nothing - re-granting is OK.
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+    }
+
+    /**
+     * @see org.overlord.apiman.dt.api.rest.contract.IOrganizationResource#revoke(java.lang.String, org.overlord.apiman.dt.api.beans.idm.RevokeRoleBean)
+     */
+    @Override
+    public void revoke(String organizationId, RevokeRoleBean bean) throws OrganizationNotFoundException,
+            RoleNotFoundException, UserNotFoundException {
+        // Verify that the references are valid.
+        get(organizationId);
+        users.get(bean.getUserId());
+        roles.get(bean.getRoleId());
+        
+        try {
+            idmStorage.deleteMembership(organizationId, bean.getUserId(), bean.getRoleId());
+        } catch (DoesNotExistException e) {
+            // Do nothing - revoking something that doesn't exist is OK.
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }

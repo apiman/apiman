@@ -52,8 +52,6 @@ import org.overlord.commons.i18n.server.filters.LocaleFilter;
  */
 public class DtApiTestServer {
 
-    private static final String [] USERS = { "admin", "eric", "gary", "kurt" };
-    
     private BasicDataSource ds = null;
     private Server server;
     
@@ -164,6 +162,7 @@ public class DtApiTestServer {
         apiManServer.addEventListener(new Listener());
         apiManServer.addEventListener(new BeanManagerResourceBindingListener());
         apiManServer.addEventListener(new ResteasyBootstrap());
+        apiManServer.addFilter(DatabaseSeedFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
         apiManServer.addFilter(LocaleFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
         apiManServer.addFilter(SimpleCorsFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
         ServletHolder resteasyServlet = new ServletHolder(new HttpServletDispatcher());
@@ -183,7 +182,7 @@ public class DtApiTestServer {
      */
     private SecurityHandler createSecurityHandler() {
         HashLoginService l = new HashLoginService();
-        for (String user : USERS) {
+        for (String user : TestUsers.USERS) {
             String[] roles = new String[] {"apiman.user"};
             if ("admin".equals(user))
                 roles = new String[] {"apiman.admin"};

@@ -13,21 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.dt.test;
-
-import org.junit.Test;
-import org.overlord.apiman.dt.test.util.AbstractTestPlanTest;
+package org.overlord.apiman.dt.test.server;
 
 /**
- * Runs the "searching" test plan.
+ * Test users.
  *
  * @author eric.wittmann@redhat.com
  */
-public class RolesTest extends AbstractTestPlanTest {
-
-    @Test
-    public void test() {
-        runTestPlan("test-plans/roles-testPlan.xml", RolesTest.class.getClassLoader());
-    }
+public final class TestUsers {
+    
+    public static final String [] USERS = { "admin", "eric", "gary", "kurt", "user1", "user2" };
 
 }

@@ -16,43 +16,30 @@
 
 package org.overlord.apiman.dt.api.rest.contract;
 
-import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import org.overlord.apiman.dt.api.beans.idm.UserBean;
-import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
-import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
-import org.overlord.apiman.dt.api.rest.contract.exceptions.InvalidSearchCriteriaException;
+import org.overlord.apiman.dt.api.beans.idm.UserPermissionsBean;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.UserNotFoundException;
 
 /**
- * The User API.
+ * The Permissions API.
  * 
  * @author eric.wittmann@redhat.com
  */
-@Path("users")
-public interface IUserResource {
+@Path("permissions")
+public interface IPermissionsResource {
 
     @GET
     @Path("{userId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public UserBean get(@PathParam("userId") String userId) throws UserNotFoundException;
+    public UserPermissionsBean getPermissionsForUser(@PathParam("userId") String userId) throws UserNotFoundException;
 
-    @PUT
-    @Path("{userId}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public void update(@PathParam("userId") String userId, UserBean user) throws UserNotFoundException;
-
-    @POST
-    @Path("search")
-    @Consumes(MediaType.APPLICATION_JSON)
+    @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public SearchResultsBean<UserBean> search(SearchCriteriaBean criteria) throws InvalidSearchCriteriaException;
+    public UserPermissionsBean getPermissionsForCurrentUser() throws UserNotFoundException;
     
 }

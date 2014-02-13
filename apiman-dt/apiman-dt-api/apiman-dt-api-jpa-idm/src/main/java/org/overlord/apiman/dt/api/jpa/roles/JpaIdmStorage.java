@@ -15,6 +15,7 @@
  */
 package org.overlord.apiman.dt.api.jpa.roles;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -56,6 +57,15 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
      * Constructor.
      */
     public JpaIdmStorage() {
+    }
+    
+    /**
+     * @see org.overlord.apiman.dt.api.persist.IIdmStorage#createUser(org.overlord.apiman.dt.api.beans.idm.UserBean)
+     */
+    @Override
+    public void createUser(UserBean user) throws StorageException, AlreadyExistsException {
+        user.setJoinedOn(new Date());
+        super.create(user);
     }
     
     /**
