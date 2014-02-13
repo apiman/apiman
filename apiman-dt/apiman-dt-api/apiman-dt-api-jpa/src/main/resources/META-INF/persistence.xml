@@ -8,6 +8,9 @@
 
     <jta-data-source>java:/comp/env/jdbc/ApiManDT</jta-data-source>
 
+    <class>org.overlord.apiman.dt.api.beans.idm.UserBean</class>
+    <class>org.overlord.apiman.dt.api.beans.idm.RoleBean</class>
+    <class>org.overlord.apiman.dt.api.beans.idm.RoleMembershipBean</class>
     <class>org.overlord.apiman.dt.api.beans.orgs.OrganizationBean</class>
 
     <properties>

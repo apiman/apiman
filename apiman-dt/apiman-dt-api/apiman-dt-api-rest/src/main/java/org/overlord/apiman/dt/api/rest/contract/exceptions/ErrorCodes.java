@@ -45,18 +45,28 @@ public final class ErrorCodes {
     //
     // User API related
     //
-    public static final int USER_NOT_FOUND      = 1001;
+    public static final int USER_NOT_FOUND                  = 1001;
 
-    public static final String USER_NOT_FOUND_INFO = null;
+    public static final String USER_NOT_FOUND_INFO          = null;
+
+    
+    //
+    // Role API related
+    //
+    public static final int ROLE_NOT_FOUND                  = 2001;
+    public static final int ROLE_ALREADY_EXISTS             = 2002;
+
+    public static final String ROLE_NOT_FOUND_INFO          = null;
+    public static final String ROLE_ALREADY_EXISTS_INFO     = null;
 
     
     //
     // Organization API related
     //
-    public static final int ORG_ALREADY_EXISTS             = 2001;
-    public static final int ORG_NOT_FOUND                  = 2002;
+    public static final int ORG_ALREADY_EXISTS              = 3001;
+    public static final int ORG_NOT_FOUND                   = 3002;
     
-    public static final String ORG_ALREADY_EXISTS_INFO     = null;
-    public static final String ORG_NOT_FOUND_INFO          = null;
+    public static final String ORG_ALREADY_EXISTS_INFO      = null;
+    public static final String ORG_NOT_FOUND_INFO           = null;
 
 }

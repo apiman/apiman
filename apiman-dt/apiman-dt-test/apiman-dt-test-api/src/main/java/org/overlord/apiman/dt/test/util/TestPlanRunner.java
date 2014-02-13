@@ -30,8 +30,10 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicCredentialsProvider;
@@ -53,7 +55,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 
+ * Runs a test plan.
  *
  * @author eric.wittmann@redhat.com
  */
@@ -123,6 +125,15 @@ public class TestPlanRunner {
                 request = new HttpPost();
                 HttpEntity entity = new StringEntity(restTest.getRequestPayload());
                 ((HttpPost) request).setEntity(entity);
+            } else if (restTest.getRequestMethod().equalsIgnoreCase("PUT")) {
+                request = new HttpPut();
+                HttpEntity entity = new StringEntity(restTest.getRequestPayload());
+                ((HttpPut) request).setEntity(entity);
+            } else if (restTest.getRequestMethod().equalsIgnoreCase("DELETE")) {
+                request = new HttpDelete();
+            }
+            if (request == null) {
+                Assert.fail("Unsupported method in REST Test: " + restTest.getRequestMethod());
             }
             request.setURI(uri);
             
@@ -168,13 +179,30 @@ public class TestPlanRunner {
             String actualValue = header.getValue();
             Assert.assertEquals(expectedHeaderValue, actualValue);
         }
-        String ct = response.getFirstHeader("Content-Type").getValue();
-        if (ct.equals("application/json")) {
-            assertJsonPayload(restTest, response);
-        } else if (ct.equals("text/plain")) {
-            assertTextPayload(restTest, response);
+        Header ctHeader = response.getFirstHeader("Content-Type");
+        if (ctHeader == null) {
+            assertNoPayload(restTest, response);
         } else {
-            Assert.fail("Unsupported response payload type: " + ct);
+            String ct = ctHeader.getValue();
+            if (ct.equals("application/json")) {
+                assertJsonPayload(restTest, response);
+            } else if (ct.equals("text/plain")) {
+                assertTextPayload(restTest, response);
+            } else {
+                Assert.fail("Unsupported response payload type: " + ct);
+            }
+        }
+    }
+
+    /**
+     * Asserts that the response has no payload and that we are not expecting one.
+     * @param restTest
+     * @param response
+     */
+    private void assertNoPayload(RestTest restTest, HttpResponse response) {
+        String expectedPayload = restTest.getExpectedResponsePayload();
+        if (expectedPayload != null && expectedPayload.trim().length() > 0) {
+            Assert.fail("Expected a payload but didn't get one.");
         }
     }
 

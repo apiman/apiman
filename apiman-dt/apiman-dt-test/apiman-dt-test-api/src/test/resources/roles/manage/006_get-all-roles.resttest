@@ -1,0 +1,24 @@
+POST /roles/search admin/admin
+Content-Type: application/json
+
+{
+  "orderBy" : {
+    "name" : "id",
+    "ascending" : true
+  },
+  "paging" : {
+    "page" : 1,
+    "pageSize" : 20
+  }
+}
+
+----
+200
+Content-Type: application/json
+
+{ "beans" : [
+      {"id":"TestRole2","name":"Test Role 2","permissions":["permission-1","permission-2","permission-3"]},
+      {"id":"TestRole3","name":"Test Role 3","permissions":["permission-1","permission-2","permission-3"]},
+      {"id":"TestRole4","name":"Test Role 4","permissions":["permission-1","permission-2","permission-3"]}  ],
+  "totalSize":3
+}

@@ -32,7 +32,7 @@ import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationAlreadyEx
 import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationNotFoundException;
 
 /**
- * Implementation of the Organization API.
+ * The Organization API.
  * 
  * @author eric.wittmann@redhat.com
  */

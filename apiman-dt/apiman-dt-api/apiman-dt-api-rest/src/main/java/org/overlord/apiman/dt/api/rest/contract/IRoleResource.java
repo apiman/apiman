@@ -17,36 +17,56 @@
 package org.overlord.apiman.dt.api.rest.contract;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import org.overlord.apiman.dt.api.beans.idm.UserBean;
+import org.overlord.apiman.dt.api.beans.idm.RoleBean;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
 import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.InvalidSearchCriteriaException;
-import org.overlord.apiman.dt.api.rest.contract.exceptions.UserNotFoundException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.RoleAlreadyExistsException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.RoleNotFoundException;
 
 /**
- * The User API.
+ * The Role API.  Used to manage roles.  Note: not used to manage
+ * users or user membership in roles.  This API simply provides a way
+ * to create and manage role definitions.  Typically this API is only
+ * available to system admins.
  * 
  * @author eric.wittmann@redhat.com
  */
-@Path("users")
-public interface IUserResource {
+@Path("roles")
+public interface IRoleResource {
 
-    @GET
-    @Path("{userId}")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public UserBean getUser(@PathParam("userId") String userId) throws UserNotFoundException;
+    public RoleBean create(RoleBean bean) throws RoleAlreadyExistsException;
+    
+    @GET
+    @Path("{roleId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public RoleBean get(@PathParam("roleId") String roleId) throws RoleNotFoundException;
+
+    @PUT
+    @Path("{roleId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void update(@PathParam("roleId") String roleId, RoleBean bean) throws RoleNotFoundException;
+
+    @DELETE
+    @Path("{roleId}")
+    public void delete(@PathParam("roleId") String roleId) throws RoleNotFoundException;
 
     @POST
     @Path("search")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public SearchResultsBean<UserBean> search(SearchCriteriaBean criteria) throws InvalidSearchCriteriaException;
+    public SearchResultsBean<RoleBean> search(SearchCriteriaBean criteria) throws InvalidSearchCriteriaException;
     
 }

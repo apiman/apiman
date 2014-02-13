@@ -11,6 +11,7 @@
   <modules>
     <module>apiman-dt-api-beans</module>
     <module>apiman-dt-api-jpa</module>
+    <module>apiman-dt-api-jpa-idm</module>
     <module>apiman-dt-api-persistence</module>
     <module>apiman-dt-api-rest</module>
     <module>apiman-dt-api-services</module>

@@ -25,6 +25,11 @@
       <artifactId>apiman-dt-api-jpa</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-dt-api-jpa-idm</artifactId>
+      <version>${project.version}</version>
+    </dependency>
 
     <!-- Overlord Commons -->
     <dependency>

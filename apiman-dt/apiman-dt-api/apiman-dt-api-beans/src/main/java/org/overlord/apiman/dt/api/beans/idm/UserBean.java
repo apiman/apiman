@@ -14,9 +14,13 @@
  * limitations under the License.
  */
 
-package org.overlord.apiman.dt.api.beans.users;
+package org.overlord.apiman.dt.api.beans.idm;
 
 import java.util.Date;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
@@ -26,10 +30,13 @@ import org.jboss.errai.common.client.api.annotations.Portable;
  * @author eric.wittmann@redhat.com
  */
 @Portable
+@Entity
+@Table(name = "users")
 public class UserBean {
     
-    private String fullName;
+    @Id
     private String username;
+    private String fullName;
     private String email;
     private Date joinedOn;
     

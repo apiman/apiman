@@ -1,0 +1,16 @@
+POST /roles admin/admin
+Content-Type: application/json
+
+{
+  "name" : "Test Role 1",
+  "permissions" : [ "permission-1", "permission-2", "permission-3" ]
+}
+----
+200
+Content-Type: application/json
+
+{
+  "id" : "TestRole1",
+  "name" : "Test Role 1",
+  "permissions" : [ "permission-1", "permission-2", "permission-3" ]
+}

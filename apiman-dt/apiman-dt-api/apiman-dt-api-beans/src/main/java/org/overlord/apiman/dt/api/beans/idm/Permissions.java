@@ -13,24 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.overlord.apiman.dt.api.rest.contract;
-
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+package org.overlord.apiman.dt.api.beans.idm;
 
 /**
- * A simple System API.
- * 
+ * A list of all the permissions supported by the system.
+ *
  * @author eric.wittmann@redhat.com
  */
-@Path("system")
-public interface ISystemResource {
-
-    @GET
-    @Path("status")
-    @Produces("text/plain")
-    public String getStatus();
+public final class Permissions {
+    
+    public static final String ORGANIZATION_ALL = "org.all"; //$NON-NLS-1$
+    public static final String ORGANIZATION_CREATE = "org.create"; //$NON-NLS-1$
+    public static final String ORGANIZATION_UPDATE = "org.update"; //$NON-NLS-1$
+    public static final String ORGANIZATION_DELETE = "org.delete"; //$NON-NLS-1$
 
 }

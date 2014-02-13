@@ -1,0 +1,9 @@
+PUT /roles/TestRole1 admin/admin
+Content-Type: application/json
+
+{
+  "name" : "Test Role 1",
+  "permissions" : [ "permission-1", "permission-2", "permission-4", "permission-5" ]
+}
+----
+204

@@ -19,6 +19,8 @@ import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Lob;
+import javax.persistence.Table;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
@@ -30,11 +32,14 @@ import org.jboss.errai.common.client.api.annotations.Portable;
  */
 @Portable
 @Entity
+@Table(name = "organizations")
 public class OrganizationBean {
     
     @Id
     private String id;
     private String name;
+    @Lob
+    private String description;
     private Date createdOn;
     
     /**
@@ -89,6 +94,22 @@ public class OrganizationBean {
      */
     public void setCreatedOn(Date createdOn) {
         this.createdOn = createdOn;
+    }
+
+
+    /**
+     * @return the description
+     */
+    public String getDescription() {
+        return description;
+    }
+
+
+    /**
+     * @param description the description to set
+     */
+    public void setDescription(String description) {
+        this.description = description;
     }
     
 }

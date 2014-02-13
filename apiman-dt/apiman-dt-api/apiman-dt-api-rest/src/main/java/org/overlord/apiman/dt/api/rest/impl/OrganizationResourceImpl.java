@@ -43,7 +43,7 @@ import org.overlord.apiman.dt.api.rest.impl.util.SearchCriteriaUtil;
  */
 @ApplicationScoped
 public class OrganizationResourceImpl implements IOrganizationResource {
-    
+
     @Inject IStorage storage;
     
     /**

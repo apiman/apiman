@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testPlan xmlns="urn:org.overlord.apiman.test:2014:02:testPlan">
+
+  <!-- First, create a bunch of Organizations -->
+  <testGroup name="Create Some Roles">
+    <test name="Create Role 1">roles/create/001_create-role1.resttest</test>
+    <test name="Create Role 2">roles/create/002_create-role2.resttest</test>
+    <test name="Create Role 3">roles/create/003_create-role3.resttest</test>
+    <test name="Create Role 4">roles/create/004_create-role4.resttest</test>
+  </testGroup>
+
+  <!-- Now do some basic management on them -->
+  <testGroup name="Manage Roles">
+    <test name="Get a Role">roles/manage/001_get-role.resttest</test>
+    <test name="Update a Role">roles/manage/002_update-role.resttest</test>
+    <test name="Verify Role Update">roles/manage/003_verify-update.resttest</test>
+    <test name="Delete a Role">roles/manage/004_delete-role.resttest</test>
+    <test name="Verify Delete">roles/manage/005_verify-delete.resttest</test>
+    <test name="Get All Roles">roles/manage/006_get-all-roles.resttest</test>
+  </testGroup>
+
+</testPlan>

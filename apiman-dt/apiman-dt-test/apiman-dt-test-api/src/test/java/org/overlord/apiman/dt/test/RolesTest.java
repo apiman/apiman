@@ -13,24 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.overlord.apiman.dt.test;
 
-package org.overlord.apiman.dt.api.rest.contract;
-
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import org.junit.Test;
+import org.overlord.apiman.dt.test.util.AbstractTestPlanTest;
 
 /**
- * A simple System API.
- * 
+ * Runs the "searching" test plan.
+ *
  * @author eric.wittmann@redhat.com
  */
-@Path("system")
-public interface ISystemResource {
+public class RolesTest extends AbstractTestPlanTest {
 
-    @GET
-    @Path("status")
-    @Produces("text/plain")
-    public String getStatus();
+    @Test
+    public void test() {
+        runTestPlan("test-plans/roles-testPlan.xml", RolesTest.class.getClassLoader());
+    }
 
 }

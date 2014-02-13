@@ -16,12 +16,18 @@
 
 package org.overlord.apiman.dt.api.rest.impl;
 
-import java.util.Date;
-
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
-import org.overlord.apiman.dt.api.beans.users.UserBean;
+import org.overlord.apiman.dt.api.beans.idm.UserBean;
+import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
+import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
+import org.overlord.apiman.dt.api.persist.DoesNotExistException;
+import org.overlord.apiman.dt.api.persist.IIdmStorage;
+import org.overlord.apiman.dt.api.persist.StorageException;
 import org.overlord.apiman.dt.api.rest.contract.IUserResource;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.InvalidSearchCriteriaException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.SystemErrorException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.UserNotFoundException;
 
 /**
@@ -32,6 +38,9 @@ import org.overlord.apiman.dt.api.rest.contract.exceptions.UserNotFoundException
 @ApplicationScoped
 public class UserResourceImpl implements IUserResource {
     
+    @Inject
+    IIdmStorage idmStorage;
+    
     /**
      * Constructor.
      */
@@ -41,20 +50,27 @@ public class UserResourceImpl implements IUserResource {
     /**
      * @see org.overlord.apiman.dt.api.rest.contract.IUserResource#getUser(java.lang.String)
      */
-    @SuppressWarnings("nls")
     @Override
-    public UserBean getUser(String username) throws UserNotFoundException {
-        if (username.equals("ewittman")) {
-            System.out.println("Returning user 'ewittman'");
-            UserBean user = new UserBean();
-            user.setEmail("eric.wittmann@redhat.com");
-            user.setFullName("Eric Wittmann");
-            user.setJoinedOn(new Date());
-            user.setUsername(username);
-            return user;
-        } else {
-            System.out.println("Throwing user not found.");
-            throw UserNotFoundException.create(username);
+    public UserBean getUser(String userId) throws UserNotFoundException {
+        try {
+            return idmStorage.getUser(userId);
+        } catch (DoesNotExistException e) {
+            throw UserNotFoundException.create(userId);
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+    }
+    
+    /**
+     * @see org.overlord.apiman.dt.api.rest.contract.IUserResource#search(org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean)
+     */
+    @Override
+    public SearchResultsBean<UserBean> search(SearchCriteriaBean criteria)
+            throws InvalidSearchCriteriaException {
+        try {
+            return idmStorage.findUsers(criteria);
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
         }
     }
 }

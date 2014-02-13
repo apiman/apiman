@@ -21,6 +21,7 @@ import java.util.Set;
 
 import org.overlord.apiman.dt.api.rest.ApiManDtApplication;
 import org.overlord.apiman.dt.api.rest.impl.OrganizationResourceImpl;
+import org.overlord.apiman.dt.api.rest.impl.RoleResourceImpl;
 import org.overlord.apiman.dt.api.rest.impl.SystemResourceImpl;
 import org.overlord.apiman.dt.api.rest.impl.UserResourceImpl;
 import org.overlord.apiman.dt.api.rest.impl.mappers.RestExceptionMapper;
@@ -40,6 +41,7 @@ public class DtApiRestApplication extends ApiManDtApplication {
      */
     public DtApiRestApplication() {
         classes.add(SystemResourceImpl.class);
+        classes.add(RoleResourceImpl.class);
         classes.add(UserResourceImpl.class);
         classes.add(OrganizationResourceImpl.class);
         
