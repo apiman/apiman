@@ -14,7 +14,7 @@
     <module>apiman-dt-api-jpa-idm</module>
     <module>apiman-dt-api-persistence</module>
     <module>apiman-dt-api-rest</module>
-    <module>apiman-dt-api-services</module>
+    <module>apiman-dt-api-security</module>
     <module>apiman-dt-api-war</module>
     <module>apiman-dt-api-war/eap61</module>
   </modules>

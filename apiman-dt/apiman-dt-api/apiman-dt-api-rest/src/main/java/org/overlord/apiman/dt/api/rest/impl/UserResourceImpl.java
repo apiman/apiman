@@ -27,8 +27,10 @@ import org.overlord.apiman.dt.api.persist.IIdmStorage;
 import org.overlord.apiman.dt.api.persist.StorageException;
 import org.overlord.apiman.dt.api.rest.contract.IUserResource;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.InvalidSearchCriteriaException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.NotAuthorizedException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.SystemErrorException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.UserNotFoundException;
+import org.overlord.apiman.dt.api.security.ISecurityContext;
 
 /**
  * Implementation of the User API.
@@ -40,6 +42,8 @@ public class UserResourceImpl implements IUserResource {
     
     @Inject
     IIdmStorage idmStorage;
+    @Inject
+    ISecurityContext securityContext;
     
     /**
      * Constructor.
@@ -65,7 +69,9 @@ public class UserResourceImpl implements IUserResource {
      * @see org.overlord.apiman.dt.api.rest.contract.IUserResource#update(java.lang.String, org.overlord.apiman.dt.api.beans.idm.UserBean)
      */
     @Override
-    public void update(String userId, UserBean user) throws UserNotFoundException {
+    public void update(String userId, UserBean user) throws UserNotFoundException, NotAuthorizedException {
+        if (!securityContext.isAdmin() && !securityContext.getCurrentUser().equals(userId))
+            throw new NotAuthorizedException();
         user.setUsername(userId);
         try {
             idmStorage.updateUser(user);

@@ -23,6 +23,7 @@ import javax.inject.Inject;
 
 import org.overlord.apiman.dt.api.beans.BeanUtils;
 import org.overlord.apiman.dt.api.beans.idm.GrantRoleBean;
+import org.overlord.apiman.dt.api.beans.idm.PermissionType;
 import org.overlord.apiman.dt.api.beans.idm.RevokeRoleBean;
 import org.overlord.apiman.dt.api.beans.idm.RoleMembershipBean;
 import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
@@ -37,12 +38,14 @@ import org.overlord.apiman.dt.api.rest.contract.IOrganizationResource;
 import org.overlord.apiman.dt.api.rest.contract.IRoleResource;
 import org.overlord.apiman.dt.api.rest.contract.IUserResource;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.InvalidSearchCriteriaException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.NotAuthorizedException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationAlreadyExistsException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.RoleNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.SystemErrorException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.UserNotFoundException;
 import org.overlord.apiman.dt.api.rest.impl.util.SearchCriteriaUtil;
+import org.overlord.apiman.dt.api.security.ISecurityContext;
 
 /**
  * Implementation of the Organization API.
@@ -58,6 +61,8 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     @Inject IUserResource users;
     @Inject IRoleResource roles;
     
+    @Inject ISecurityContext securityContext;
+    
     /**
      * Constructor.
      */
@@ -72,7 +77,16 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         bean.setId(BeanUtils.idFromName(bean.getName()));
         bean.setCreatedOn(new Date());
         try {
+            // Store/persist the new organization
             storage.create(bean);
+
+            // Make the current user an owner of the new organization so that she can
+            // manage it (grant/revoke, edit details, etc).
+            // TODO warning - hard coded role name here
+            String orgOwnerRoleId = "OrganizationOwner"; //$NON-NLS-1$
+            String currentUser = securityContext.getCurrentUser();
+            String orgId = bean.getId();
+            idmStorage.createMembership(RoleMembershipBean.create(currentUser, orgOwnerRoleId, orgId));
             return bean;
         } catch (AlreadyExistsException e) {
             throw OrganizationAlreadyExistsException.create(bean.getName());
@@ -85,7 +99,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
      * @see org.overlord.apiman.dt.api.rest.contract.IOrganizationResource#get(java.lang.String)
      */
     @Override
-    public OrganizationBean get(String organizationId) throws OrganizationNotFoundException {
+    public OrganizationBean get(String organizationId) throws OrganizationNotFoundException, NotAuthorizedException {
+        if (!securityContext.hasPermission(PermissionType.orgView, organizationId))
+            throw new NotAuthorizedException();
         try {
             return storage.get(organizationId, OrganizationBean.class);
         } catch (DoesNotExistException e) {
@@ -100,6 +116,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
      */
     @Override
     public SearchResultsBean<OrganizationBean> search(SearchCriteriaBean criteria) throws InvalidSearchCriteriaException {
+        // TODO only return organizations that the user is permitted to see
         try {
             SearchCriteriaUtil.validateSearchCriteria(criteria);
             return storage.find(criteria, OrganizationBean.class);
@@ -113,12 +130,15 @@ public class OrganizationResourceImpl implements IOrganizationResource {
      */
     @Override
     public void grant(String organizationId, GrantRoleBean bean) throws OrganizationNotFoundException,
-            RoleNotFoundException, UserNotFoundException {
+            RoleNotFoundException, UserNotFoundException, NotAuthorizedException {
         // Verify that the references are valid.
         get(organizationId);
         users.get(bean.getUserId());
         roles.get(bean.getRoleId());
-        
+
+        if (!securityContext.hasPermission(PermissionType.orgUpdate, organizationId))
+            throw new NotAuthorizedException();
+
         RoleMembershipBean membership = new RoleMembershipBean();
         membership.setOrganizationId(organizationId);
         membership.setUserId(bean.getUserId());
@@ -138,12 +158,15 @@ public class OrganizationResourceImpl implements IOrganizationResource {
      */
     @Override
     public void revoke(String organizationId, RevokeRoleBean bean) throws OrganizationNotFoundException,
-            RoleNotFoundException, UserNotFoundException {
+            RoleNotFoundException, UserNotFoundException, NotAuthorizedException {
         // Verify that the references are valid.
         get(organizationId);
         users.get(bean.getUserId());
         roles.get(bean.getRoleId());
-        
+
+        if (!securityContext.hasPermission(PermissionType.orgUpdate, organizationId))
+            throw new NotAuthorizedException();
+
         try {
             idmStorage.deleteMembership(organizationId, bean.getUserId(), bean.getRoleId());
         } catch (DoesNotExistException e) {

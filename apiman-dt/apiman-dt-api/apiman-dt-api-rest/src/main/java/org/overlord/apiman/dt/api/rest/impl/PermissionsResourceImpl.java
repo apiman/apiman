@@ -23,8 +23,10 @@ import org.overlord.apiman.dt.api.beans.idm.UserPermissionsBean;
 import org.overlord.apiman.dt.api.persist.IIdmStorage;
 import org.overlord.apiman.dt.api.persist.StorageException;
 import org.overlord.apiman.dt.api.rest.contract.IPermissionsResource;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.NotAuthorizedException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.SystemErrorException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.UserNotFoundException;
+import org.overlord.apiman.dt.api.security.ISecurityContext;
 
 /**
  * Implementation of the Permissions API.
@@ -36,6 +38,8 @@ public class PermissionsResourceImpl implements IPermissionsResource {
     
     @Inject
     IIdmStorage idmStorage;
+    @Inject
+    ISecurityContext securityContext;
     
     /**
      * Constructor.
@@ -47,7 +51,10 @@ public class PermissionsResourceImpl implements IPermissionsResource {
      * @see org.overlord.apiman.dt.api.rest.contract.IPermissionsResource#getPermissionsForUser(java.lang.String)
      */
     @Override
-    public UserPermissionsBean getPermissionsForUser(String userId) throws UserNotFoundException {
+    public UserPermissionsBean getPermissionsForUser(String userId) throws UserNotFoundException, NotAuthorizedException {
+        if (!securityContext.isAdmin())
+            throw new NotAuthorizedException();
+
         try {
             UserPermissionsBean bean = new UserPermissionsBean();
             bean.setUserId(userId);
@@ -63,8 +70,15 @@ public class PermissionsResourceImpl implements IPermissionsResource {
      */
     @Override
     public UserPermissionsBean getPermissionsForCurrentUser() throws UserNotFoundException {
-        // TODO implement this!
-        return null;
+        try {
+            String currentUser = securityContext.getCurrentUser();
+            UserPermissionsBean bean = new UserPermissionsBean();
+            bean.setUserId(currentUser);
+            bean.setPermissions(idmStorage.getPermissions(currentUser));
+            return bean;
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
     }
     
 }

@@ -20,11 +20,11 @@ package org.overlord.apiman.dt.api.beans.idm;
  *
  * @author eric.wittmann@redhat.com
  */
-public final class Permissions {
+public enum PermissionType {
     
-    public static final String ORGANIZATION_ALL = "org.all"; //$NON-NLS-1$
-    public static final String ORGANIZATION_CREATE = "org.create"; //$NON-NLS-1$
-    public static final String ORGANIZATION_UPDATE = "org.update"; //$NON-NLS-1$
-    public static final String ORGANIZATION_DELETE = "org.delete"; //$NON-NLS-1$
+                orgUpdate,  orgDelete,  orgView,
+    svcCreate,  svcUpdate,  svcDelete,  svcView,
+    planCreate, planUpdate, planDelete, planView,
+    appCreate,  appUpdate,  appDelete,  appView
 
 }

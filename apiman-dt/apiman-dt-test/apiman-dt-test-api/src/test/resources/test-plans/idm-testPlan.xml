@@ -28,4 +28,12 @@
     <test name="Get Permissions">idm/memberships/005_get-permissions.resttest</test>
   </testGroup>
 
+  <!-- Now test security -->
+  <testGroup name="Role Based Security">
+    <test name="Access Denied to Org 1">idm/security/001_notauthorized-org1.resttest</test>
+    <test name="Create 'Organization Owner' Role">idm/security/002_create-org-owner-role.resttest</test>
+    <test name="Make User 1 Owner of Org 1">idm/security/003_grant-ownership.resttest</test>
+    <test name="Get Org 1 (Now Authorized)">idm/security/004_get-org1.resttest</test>
+  </testGroup>
+
 </testPlan>

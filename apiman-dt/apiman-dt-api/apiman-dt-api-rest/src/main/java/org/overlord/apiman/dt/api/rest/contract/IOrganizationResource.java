@@ -34,6 +34,7 @@ import org.overlord.apiman.dt.api.rest.contract.exceptions.InvalidSearchCriteria
 import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationAlreadyExistsException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.RoleNotFoundException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.NotAuthorizedException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.UserNotFoundException;
 
 /**
@@ -47,12 +48,12 @@ public interface IOrganizationResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public OrganizationBean create(OrganizationBean bean) throws OrganizationAlreadyExistsException;
+    public OrganizationBean create(OrganizationBean bean) throws OrganizationAlreadyExistsException, NotAuthorizedException;
     
     @GET
     @Path("{organizationId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public OrganizationBean get(@PathParam("organizationId") String organizationId) throws OrganizationNotFoundException;
+    public OrganizationBean get(@PathParam("organizationId") String organizationId) throws OrganizationNotFoundException, NotAuthorizedException;
     
     @POST
     @Path("search")
@@ -64,12 +65,12 @@ public interface IOrganizationResource {
     @Path("{organizationId}/role")
     @Consumes(MediaType.APPLICATION_JSON)
     public void grant(@PathParam("organizationId") String organizationId, GrantRoleBean bean)
-            throws OrganizationNotFoundException, RoleNotFoundException, UserNotFoundException;
+            throws OrganizationNotFoundException, RoleNotFoundException, UserNotFoundException, NotAuthorizedException;
 
     @DELETE
     @Path("{organizationId}/role")
     @Consumes(MediaType.APPLICATION_JSON)
     public void revoke(@PathParam("organizationId") String organizationId, RevokeRoleBean bean)
-            throws OrganizationNotFoundException, RoleNotFoundException, UserNotFoundException;
+            throws OrganizationNotFoundException, RoleNotFoundException, UserNotFoundException, NotAuthorizedException;
     
 }

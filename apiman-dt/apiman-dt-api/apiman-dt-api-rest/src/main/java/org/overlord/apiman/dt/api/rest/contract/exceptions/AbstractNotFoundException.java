@@ -21,7 +21,7 @@ package org.overlord.apiman.dt.api.rest.contract.exceptions;
  *
  * @author eric.wittmann@redhat.com
  */
-public abstract class AbstractNotFoundException extends AbstractRestException {
+public abstract class AbstractNotFoundException extends AbstractUserException {
     
     private static final long serialVersionUID = -196398343525920762L;
 

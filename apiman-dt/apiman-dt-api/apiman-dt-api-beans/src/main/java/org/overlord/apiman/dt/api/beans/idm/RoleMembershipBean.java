@@ -38,6 +38,14 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Table(name = "memberships",
        uniqueConstraints={@UniqueConstraint(columnNames={"user_id","role_id","org_id"})})
 public class RoleMembershipBean {
+    
+    public static final RoleMembershipBean create(String userId, String roleId, String organizationId) {
+        RoleMembershipBean bean = new RoleMembershipBean();
+        bean.setUserId(userId);
+        bean.setRoleId(roleId);
+        bean.setOrganizationId(organizationId);
+        return bean;
+    }
 
     @Id @GeneratedValue
     private Long id;

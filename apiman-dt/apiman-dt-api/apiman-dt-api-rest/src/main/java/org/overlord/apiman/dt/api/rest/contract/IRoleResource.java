@@ -32,12 +32,12 @@ import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.InvalidSearchCriteriaException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.RoleAlreadyExistsException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.RoleNotFoundException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.NotAuthorizedException;
 
 /**
- * The Role API.  Used to manage roles.  Note: not used to manage
- * users or user membership in roles.  This API simply provides a way
- * to create and manage role definitions.  Typically this API is only
- * available to system admins.
+ * The Role API. Used to manage roles. Note: not used to manage users or user
+ * membership in roles. This API simply provides a way to create and manage role
+ * definitions. Typically this API is only available to system admins.
  * 
  * @author eric.wittmann@redhat.com
  */
@@ -47,26 +47,28 @@ public interface IRoleResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public RoleBean create(RoleBean bean) throws RoleAlreadyExistsException;
-    
+    public RoleBean create(RoleBean bean) throws RoleAlreadyExistsException, NotAuthorizedException;
+
     @GET
     @Path("{roleId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public RoleBean get(@PathParam("roleId") String roleId) throws RoleNotFoundException;
+    public RoleBean get(@PathParam("roleId") String roleId) throws RoleNotFoundException, NotAuthorizedException;
 
     @PUT
     @Path("{roleId}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void update(@PathParam("roleId") String roleId, RoleBean bean) throws RoleNotFoundException;
+    public void update(@PathParam("roleId") String roleId, RoleBean bean) throws RoleNotFoundException,
+            NotAuthorizedException;
 
     @DELETE
     @Path("{roleId}")
-    public void delete(@PathParam("roleId") String roleId) throws RoleNotFoundException;
+    public void delete(@PathParam("roleId") String roleId) throws RoleNotFoundException, NotAuthorizedException;
 
     @POST
     @Path("search")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public SearchResultsBean<RoleBean> search(SearchCriteriaBean criteria) throws InvalidSearchCriteriaException;
-    
+    public SearchResultsBean<RoleBean> search(SearchCriteriaBean criteria)
+            throws InvalidSearchCriteriaException, NotAuthorizedException;
+
 }

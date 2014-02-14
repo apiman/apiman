@@ -29,6 +29,7 @@ import org.overlord.apiman.dt.api.beans.idm.UserBean;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
 import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.InvalidSearchCriteriaException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.NotAuthorizedException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.UserNotFoundException;
 
 /**
@@ -47,7 +48,7 @@ public interface IUserResource {
     @PUT
     @Path("{userId}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void update(@PathParam("userId") String userId, UserBean user) throws UserNotFoundException;
+    public void update(@PathParam("userId") String userId, UserBean user) throws UserNotFoundException, NotAuthorizedException;
 
     @POST
     @Path("search")

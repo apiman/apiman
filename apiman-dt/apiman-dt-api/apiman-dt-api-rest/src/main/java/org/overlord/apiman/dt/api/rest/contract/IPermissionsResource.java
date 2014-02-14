@@ -23,6 +23,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.overlord.apiman.dt.api.beans.idm.UserPermissionsBean;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.NotAuthorizedException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.UserNotFoundException;
 
 /**
@@ -36,7 +37,8 @@ public interface IPermissionsResource {
     @GET
     @Path("{userId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public UserPermissionsBean getPermissionsForUser(@PathParam("userId") String userId) throws UserNotFoundException;
+    public UserPermissionsBean getPermissionsForUser(@PathParam("userId") String userId)
+            throws UserNotFoundException, NotAuthorizedException;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)

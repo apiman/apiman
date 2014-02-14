@@ -41,6 +41,7 @@ import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
 import org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap;
 import org.jboss.weld.environment.servlet.BeanManagerResourceBindingListener;
 import org.jboss.weld.environment.servlet.Listener;
+import org.overlord.apiman.dt.api.security.impl.DefaultSecurityContextFilter;
 import org.overlord.commons.gwt.server.filters.SimpleCorsFilter;
 import org.overlord.commons.i18n.server.filters.LocaleFilter;
 
@@ -162,8 +163,9 @@ public class DtApiTestServer {
         apiManServer.addEventListener(new Listener());
         apiManServer.addEventListener(new BeanManagerResourceBindingListener());
         apiManServer.addEventListener(new ResteasyBootstrap());
-        apiManServer.addFilter(DatabaseSeedFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
+        apiManServer.addFilter(DatabaseSeedFilter.class, "/db-seeder", EnumSet.of(DispatcherType.REQUEST));
         apiManServer.addFilter(LocaleFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
+        apiManServer.addFilter(DefaultSecurityContextFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
         apiManServer.addFilter(SimpleCorsFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
         ServletHolder resteasyServlet = new ServletHolder(new HttpServletDispatcher());
         resteasyServlet.setInitParameter("javax.ws.rs.Application", DtApiRestApplication.class.getName());
@@ -183,16 +185,16 @@ public class DtApiTestServer {
     private SecurityHandler createSecurityHandler() {
         HashLoginService l = new HashLoginService();
         for (String user : TestUsers.USERS) {
-            String[] roles = new String[] {"apiman.user"};
+            String[] roles = new String[] { "apiuser" };
             if ("admin".equals(user))
-                roles = new String[] {"apiman.admin"};
+                roles = new String[] {"apiadmin"};
             l.putUser(user, Credential.getCredential(user), roles);
         }
         l.setName("apimanrealm");
 
         Constraint constraint = new Constraint();
         constraint.setName(Constraint.__BASIC_AUTH);
-        constraint.setRoles(new String[]{"apiman.user", "apiman.admin"});
+        constraint.setRoles(new String[] { "apiuser", "apiadmin" });
         constraint.setAuthenticate(true);
 
         String[] protectedMethods = new String[] { "GET", "HEAD", "POST", "PUT", "DELETE", "TRACE", "CONNECT" };

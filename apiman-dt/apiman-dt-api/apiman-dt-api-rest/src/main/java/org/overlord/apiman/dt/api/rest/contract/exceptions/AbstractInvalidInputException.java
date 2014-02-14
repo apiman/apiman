@@ -21,7 +21,7 @@ package org.overlord.apiman.dt.api.rest.contract.exceptions;
  *
  * @author eric.wittmann@redhat.com
  */
-public abstract class AbstractInvalidInputException extends AbstractRestException {
+public abstract class AbstractInvalidInputException extends AbstractUserException {
 
     private static final long serialVersionUID = -8851909147205592784L;
 

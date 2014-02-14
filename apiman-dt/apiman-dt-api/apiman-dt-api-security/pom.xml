@@ -6,24 +6,18 @@
     <artifactId>apiman-dt-api</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
-  <artifactId>apiman-dt-api-rest</artifactId>
-  <name>apiman-dt-api-rest</name>
-
+  <artifactId>apiman-dt-api-security</artifactId>
+  <name>apiman-dt-api-security</name>
   <dependencies>
     <!-- Project Dependencies -->
     <dependency>
-      <groupId>org.overlord.apiman</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>apiman-dt-api-beans</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.overlord.apiman</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>apiman-dt-api-persistence</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.overlord.apiman</groupId>
-      <artifactId>apiman-dt-api-security</artifactId>
       <version>${project.version}</version>
     </dependency>
 
@@ -40,36 +34,9 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-common</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.resteasy</groupId>
-      <artifactId>resteasy-jaxrs</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
       <groupId>org.jboss.spec.javax.servlet</groupId>
       <artifactId>jboss-servlet-api_3.0_spec</artifactId>
       <scope>provided</scope>
     </dependency>
   </dependencies>
-
-  <build>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-      </resource>
-      <!-- Include some of the source for this project so that it can be used by GWT projects. -->
-      <resource>
-        <directory>src/main/java</directory>
-        <includes>
-          <include>**/contract/**</include>
-          <include>**/exceptions/**</include>
-          <include>**/*.gwt.xml</include>
-        </includes>
-      </resource>
-    </resources>
-  </build>
 </project>

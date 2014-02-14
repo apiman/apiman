@@ -29,10 +29,12 @@ import org.overlord.apiman.dt.api.persist.IIdmStorage;
 import org.overlord.apiman.dt.api.persist.StorageException;
 import org.overlord.apiman.dt.api.rest.contract.IRoleResource;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.InvalidSearchCriteriaException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.NotAuthorizedException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.RoleAlreadyExistsException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.RoleNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.SystemErrorException;
 import org.overlord.apiman.dt.api.rest.impl.util.SearchCriteriaUtil;
+import org.overlord.apiman.dt.api.security.ISecurityContext;
 
 /**
  * Implementation of the Role API.
@@ -44,6 +46,8 @@ public class RoleResourceImpl implements IRoleResource {
     
     @Inject
     IIdmStorage idmStorage;
+    @Inject
+    ISecurityContext securityContext;
     
     /**
      * Constructor.
@@ -55,7 +59,10 @@ public class RoleResourceImpl implements IRoleResource {
      * @see org.overlord.apiman.dt.api.rest.contract.IRoleResource#create(org.overlord.apiman.dt.api.beans.idm.RoleBean)
      */
     @Override
-    public RoleBean create(RoleBean bean) throws RoleAlreadyExistsException {
+    public RoleBean create(RoleBean bean) throws RoleAlreadyExistsException, NotAuthorizedException {
+        if (!securityContext.isAdmin())
+            throw new NotAuthorizedException();
+
         bean.setId(BeanUtils.idFromName(bean.getName()));
         try {
             idmStorage.createRole(bean);
@@ -71,7 +78,9 @@ public class RoleResourceImpl implements IRoleResource {
      * @see org.overlord.apiman.dt.api.rest.contract.IRoleResource#get(java.lang.String)
      */
     @Override
-    public RoleBean get(String roleId) throws RoleNotFoundException {
+    public RoleBean get(String roleId) throws RoleNotFoundException, NotAuthorizedException {
+        if (!securityContext.isAdmin())
+            throw new NotAuthorizedException();
         try {
             return idmStorage.getRole(roleId);
         } catch (DoesNotExistException e) {
@@ -85,7 +94,9 @@ public class RoleResourceImpl implements IRoleResource {
      * @see org.overlord.apiman.dt.api.rest.contract.IRoleResource#update(java.lang.String, org.overlord.apiman.dt.api.beans.idm.RoleBean)
      */
     @Override
-    public void update(String roleId, RoleBean bean) throws RoleNotFoundException {
+    public void update(String roleId, RoleBean bean) throws RoleNotFoundException, NotAuthorizedException {
+        if (!securityContext.isAdmin())
+            throw new NotAuthorizedException();
         bean.setId(roleId);
         try {
             idmStorage.updateRole(bean);
@@ -100,7 +111,9 @@ public class RoleResourceImpl implements IRoleResource {
      * @see org.overlord.apiman.dt.api.rest.contract.IRoleResource#delete(java.lang.String)
      */
     @Override
-    public void delete(String roleId) throws RoleNotFoundException {
+    public void delete(String roleId) throws RoleNotFoundException, NotAuthorizedException {
+        if (!securityContext.isAdmin())
+            throw new NotAuthorizedException();
         RoleBean bean = get(roleId);
         try {
             idmStorage.deleteRole(bean);
@@ -116,7 +129,9 @@ public class RoleResourceImpl implements IRoleResource {
      */
     @Override
     public SearchResultsBean<RoleBean> search(SearchCriteriaBean criteria)
-            throws InvalidSearchCriteriaException {
+            throws InvalidSearchCriteriaException, NotAuthorizedException {
+        if (!securityContext.isAdmin())
+            throw new NotAuthorizedException();
         try {
             SearchCriteriaUtil.validateSearchCriteria(criteria);
             return idmStorage.findRoles(criteria);

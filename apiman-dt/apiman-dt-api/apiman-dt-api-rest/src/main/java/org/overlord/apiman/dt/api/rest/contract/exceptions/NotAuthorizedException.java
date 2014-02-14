@@ -16,35 +16,24 @@
 
 package org.overlord.apiman.dt.api.rest.contract.exceptions;
 
+import org.overlord.apiman.dt.api.rest.i18n.Messages;
+
 /**
- * Thrown when something unexpected happens.
+ * Thrown when the user attempts to do or see something that they
+ * are not authorized (do not have permission) to.
  *
  * @author eric.wittmann@redhat.com
  */
-public class SystemErrorException extends AbstractSystemException {
+public class NotAuthorizedException extends AbstractUserException {
     
-    private static final long serialVersionUID = 5590264580639703192L;
-    
-    /**
-     * Constructor.
-     */
-    public SystemErrorException() {
-    }
-    
+    private static final long serialVersionUID = 5447085523881661547L;
+
     /**
      * Constructor.
      * @param message
      */
-    public SystemErrorException(String message) {
-        super(message);
-    }
-    
-    /**
-     * Constructor.
-     * @param t
-     */
-    public SystemErrorException(Throwable t) {
-        super(t.getMessage());
+    public NotAuthorizedException() {
+        super(Messages.i18n.format("AccessDenied")); //$NON-NLS-1$
     }
     
     /**
@@ -52,7 +41,7 @@ public class SystemErrorException extends AbstractSystemException {
      */
     @Override
     public int getHttpCode() {
-        return ErrorCodes.HTTP_STATUS_CODE_SYSTEM_ERROR;
+        return ErrorCodes.HTTP_STATUS_CODE_FORBIDDEN;
     }
     
     /**

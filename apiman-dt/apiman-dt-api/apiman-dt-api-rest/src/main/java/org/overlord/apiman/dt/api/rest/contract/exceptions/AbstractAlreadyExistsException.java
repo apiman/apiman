@@ -21,7 +21,7 @@ package org.overlord.apiman.dt.api.rest.contract.exceptions;
  *
  * @author eric.wittmann@redhat.com
  */
-public abstract class AbstractAlreadyExistsException extends AbstractRestException {
+public abstract class AbstractAlreadyExistsException extends AbstractUserException {
     
     private static final long serialVersionUID = 1345772129352225376L;
 
