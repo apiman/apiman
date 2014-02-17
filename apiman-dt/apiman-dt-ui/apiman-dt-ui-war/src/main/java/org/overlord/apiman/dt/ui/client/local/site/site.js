@@ -50,9 +50,12 @@ function loadAll() {
 	loadResource("../../../../../../../../../webapp/css/apiman.css", "css");
 	loadResource("../../../../../../../../../webapp/css/apiman-responsive.css", "css");
 	
-	loadResource("../../../../../../../../../webapp/jquery-2.1.0/jquery-2.1.0.min.js", "js");
-	loadResource("../../../../../../../../../webapp/bootstrap-3.1.1/js/bootstrap.min.js", "js");
+	loadResource("../../../../../../../../../webapp/jquery-1.10.2/jquery-1.10.2.min.js", "js");
 	loadResource("https://rawgithub.com/Governance/overlord-commons/master/overlord-commons-uiheader/src/main/resources/META-INF/resources/js/overlord-header.js", "js");
+	setTimeout(function() {
+		loadResource("../../../../../../../../../webapp/bootstrap-3.1.1/js/bootstrap.min.js", "js");
+		loadResource("init.js", "js");
+	}, 500);
 }
 
 loadAll();

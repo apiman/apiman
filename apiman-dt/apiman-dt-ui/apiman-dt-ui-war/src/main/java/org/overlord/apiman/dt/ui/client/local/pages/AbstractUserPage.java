@@ -20,8 +20,6 @@ import javax.inject.Inject;
 import org.jboss.errai.ui.nav.client.local.PageState;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.overlord.apiman.dt.api.beans.idm.UserBean;
-import org.overlord.apiman.dt.ui.client.local.services.NavigationHelperService;
-import org.overlord.apiman.dt.ui.client.local.services.RestInvokerService;
 import org.overlord.apiman.dt.ui.client.local.services.rest.IRestInvokerCallback;
 import org.overlord.apiman.dt.ui.client.local.util.MultimapUtil;
 
@@ -41,11 +39,6 @@ public abstract class AbstractUserPage extends AbstractPage {
     
     @PageState
     private String user;
-    
-    @Inject
-    RestInvokerService rest;
-    @Inject 
-    NavigationHelperService navHelper;
     
     UserBean userBean;
 

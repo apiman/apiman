@@ -24,7 +24,11 @@ import org.jboss.errai.ui.nav.client.local.Navigation;
 import org.jboss.errai.ui.nav.client.local.PageHiding;
 import org.jboss.errai.ui.nav.client.local.PageShowing;
 import org.overlord.apiman.dt.ui.client.local.PageLoadingWidget;
+import org.overlord.apiman.dt.ui.client.local.services.NavigationHelperService;
+import org.overlord.apiman.dt.ui.client.local.services.RestInvokerService;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.user.client.Window;
@@ -43,7 +47,11 @@ public abstract class AbstractPage extends Composite {
     protected PageLoadingWidget pageLoadingWidget;
     @Inject
     protected Navigation navigation;
-    
+    @Inject
+    protected RestInvokerService rest;
+    @Inject 
+    protected NavigationHelperService navHelper;
+
     private int expectedDataPackets;
     private int dataPacketsReceived;
 
@@ -142,7 +150,14 @@ public abstract class AbstractPage extends Composite {
         pageLoadingWidget.hide();
         navigation.getContentPanel().asWidget().getElement().getStyle().clearVisibility();
         navigation.getContentPanel().asWidget().getElement().getStyle().clearDisplay();
-        onPageLoaded();
+        GWT.runAsync(new RunAsyncCallback() {
+            public void onSuccess() {
+                onPageLoaded();
+            }
+            public void onFailure(Throwable caught) {
+              // can't really fail
+            }
+          });
     }
 
     /**

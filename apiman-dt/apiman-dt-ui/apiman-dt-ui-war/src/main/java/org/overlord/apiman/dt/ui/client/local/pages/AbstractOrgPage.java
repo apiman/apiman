@@ -20,8 +20,6 @@ import javax.inject.Inject;
 import org.jboss.errai.ui.nav.client.local.PageState;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
-import org.overlord.apiman.dt.ui.client.local.services.NavigationHelperService;
-import org.overlord.apiman.dt.ui.client.local.services.RestInvokerService;
 import org.overlord.apiman.dt.ui.client.local.services.rest.IRestInvokerCallback;
 import org.overlord.apiman.dt.ui.client.local.util.MultimapUtil;
 import org.overlord.commons.gwt.client.local.widgets.ParagraphLabel;
@@ -42,11 +40,6 @@ public abstract class AbstractOrgPage extends AbstractPage {
     
     @PageState
     private String org;
-    
-    @Inject
-    RestInvokerService rest;
-    @Inject 
-    NavigationHelperService navHelper;
     
     OrganizationBean organizationBean;
 

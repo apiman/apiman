@@ -63,7 +63,7 @@ public class RestInvokerService {
         CallbackAdapter<UserBean> adapter = new CallbackAdapter<UserBean>(callback);
         currentUser.call(adapter, adapter).getInfo();
     }
-    
+
     /**
      * Gets the organizations visible to the current user.
      * @param callback
@@ -72,7 +72,7 @@ public class RestInvokerService {
         CallbackAdapter<List<OrganizationSummaryBean>> adapter = new CallbackAdapter<List<OrganizationSummaryBean>>(callback);
         currentUser.call(adapter, adapter).getOrganizations();
     }
-    
+
     /**
      * Gets an organization by ID.
      * @param orgId
@@ -81,6 +81,16 @@ public class RestInvokerService {
     public void getOrganization(String orgId, IRestInvokerCallback<OrganizationBean> callback) {
         CallbackAdapter<OrganizationBean> adapter = new CallbackAdapter<OrganizationBean>(callback);
         organizations.call(adapter, adapter).get(orgId);
+    }
+
+    /**
+     * Creates a new organization.
+     * @param org
+     * @param callback
+     */
+    public void createOrganization(OrganizationBean org, IRestInvokerCallback<OrganizationBean> callback) {
+        CallbackAdapter<OrganizationBean> adapter = new CallbackAdapter<OrganizationBean>(callback);
+        organizations.call(adapter, adapter).create(org);
     }
 
 }

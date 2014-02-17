@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <script type="text/javascript" src="site.js"></script>
+  </head>
+
+  <body>
+
+    <!-- Top header/nav bar -->
+    <div id="overlord-header">
+    </div>
+
+    <div class="container apiman-entity-new page" data-field="page">
+      <!-- Choose org and app name -->
+      <div class="row">
+        <div class="medium-icon medium-icon-org apiman-entity-new-icon"></div>
+        <dl class="name">
+          <dt data-i18n-key="organization-name">Organization Name</dt>
+          <dd>
+            <input data-field="name" type="text" class="form-control entityname" id="apiman-entityname" placeholder="Enter organization name..."></input>
+          </dd>
+        </dl>
+      </div>
+      <!-- Helpful hint -->
+      <div class="row">
+        <span data-i18n-key="new-org-help-text" class="apiman-label-faded">Create a new Organization within which to manage your Services and Applications.</span>
+      </div>
+      <!-- Description of app -->
+      <div class="row">
+        <div class="apiman-divider-40"></div>
+        <div class="medium-icon"></div>
+        <dl>
+          <dt data-i18n-key="description">Description</dt>
+          <dd>
+            <input data-field="description" type="text" class="form-control description" id="apiman-description" placeholder="Enter description (optional)..."></input>
+          </dd>
+        </dl>
+      </div>
+      <!-- HR -->
+      <div class="row">
+        <hr/>
+      </div>
+      <!-- Add Button -->
+      <div class="row">
+        <button data-field="createButton" class="btn btn-primary" data-i18n-key="create-organization" disabled="">Create Organization</button>
+      </div>
+    </div> <!-- /container -->
+  </body>
+</html>

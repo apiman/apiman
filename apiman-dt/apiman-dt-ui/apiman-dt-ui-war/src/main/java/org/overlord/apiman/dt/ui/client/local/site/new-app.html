@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <script type="text/javascript" src="site.js"></script>
+  </head>
+
+  <body>
+
+    <!-- Top header/nav bar -->
+    <div id="overlord-header">
+    </div>
+
+    <div class="container apiman-entity-new page" data-field="page">
+      <!-- Choose org and app name -->
+      <div class="row">
+        <div class="medium-icon medium-icon-gear apiman-entity-new-icon"></div>
+        <dl>
+          <dt data-i18n-key="organization">Organization</dt>
+          <dd>
+            <div class="btn-group" data-field="orgSelector">
+              <button type="button" id="selector-org" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                <span id="selector-org-value" class="apiman-label-faded" data-i18n-key="select-org">Select Organization</span> &nbsp;&nbsp;<span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu" data-role="dummy">
+                <li><a href="#" onclick="$('#selector-org-value').text('JBoss Overlord'); $('#apiman-entityname').focus()">JBoss Overlord</a></li>
+                <li><a href="#" onclick="$('#selector-org-value').text('Apereo Bedework'); $('#apiman-entityname').focus()">Apereo Bedework</a></li>
+              </ul>
+            </div>
+          </dd>
+        </dl>
+        <span class="divider">/</span>
+        <dl class="name">
+          <dt data-i18n-key="application=name">Application Name</dt>
+          <dd>
+            <input data-field="" type="text" class="form-control entityname" id="apiman-entityname" placeholder="Enter application name..."></input>
+          </dd>
+        </dl>
+      </div>
+      <!-- Helpful hint -->
+      <div class="row">
+        <span data-i18n-key="new-org-help-text" class="apiman-label-faded">Create a new Application within the specified Organization, allowing you to begin connecting provided Services with your Application.</span>
+      </div>
+      <!-- Description of app -->
+      <div class="row">
+        <div class="apiman-divider-40"></div>
+        <div class="medium-icon"></div>
+        <dl>
+          <dt data-i18n-key="description">Description</dt>
+          <dd>
+            <input type="text" class="form-control description" id="apiman-description" placeholder="Enter description (optional)..."></input>
+          </dd>
+        </dl>
+      </div>
+      <!-- HR -->
+      <div class="row">
+        <hr/>
+      </div>
+      <!-- Add Button -->
+      <div class="row">
+        <a href="appHome.html" class="btn btn-primary" data-i18n-key="create-application">Create Application</a>
+      </div>
+    </div> <!-- /container -->
+  </body>
+</html>

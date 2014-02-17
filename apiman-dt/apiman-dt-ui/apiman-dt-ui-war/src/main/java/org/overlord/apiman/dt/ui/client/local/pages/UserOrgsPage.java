@@ -21,6 +21,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.ui.nav.client.local.Page;
+import org.jboss.errai.ui.nav.client.local.TransitionAnchor;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.apiman.dt.api.beans.summary.OrganizationSummaryBean;
@@ -42,6 +43,9 @@ public class UserOrgsPage extends AbstractUserPage {
     
     @Inject @DataField
     UserOrganizations organizations;
+    
+    @Inject @DataField
+    TransitionAnchor<NewOrgPage> toNewOrg;
 
     /**
      * Constructor.

@@ -6,6 +6,11 @@ body {
   font-weight: bold;
 }
 
+.dropdown-menu li a:hover {
+    color: rgb(255, 255, 255);
+    background-color: rgb(66, 139, 202);
+}
+
 .btn-primary {
   background: #3498db;
   background-image: -webkit-linear-gradient(top, #3498db, #2980b9);
@@ -27,6 +32,15 @@ body {
   background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
   border: solid #51a8db 1px;
 }
+.btn-primary[disabled], .btn-primary.disabled {
+  background: #9d9d9d;
+  background-image: -webkit-linear-gradient(top, #9d9d9d, #888888);
+  background-image: -moz-linear-gradient(top, #9d9d9d, #888888);
+  background-image: -ms-linear-gradient(top, #9d9d9d, #888888);
+  background-image: -o-linear-gradient(top, #9d9d9d, #888888);
+  background-image: linear-gradient(to bottom, #9d9d9d, #888888);
+  border: solid #999999 1px;
+}
 
 .table th {
   color: #666;
@@ -35,7 +49,7 @@ body {
 .navbar-default {
   background-color: #0B61A4;
   border-bottom: 1px solid #FF9200;
-  }
+}
 .navbar-default .navbar-brand, .navbar-default .navbar-brand:hover, .navbar-default .navbar-brand:focus {
   color: white;
 }
@@ -45,11 +59,11 @@ body {
 .navbar-default .navbar-nav li a:hover, .navbar-default .navbar-nav li a:focus {
   color: #ddd;
 }
-a, .nav > li > a {
+a, .nav li a {
   color: #3F92D2;
   text-decoration: none;
 }
-a:hover, a:focus, .nav > li > a:hover, .nav > li > a:focus {
+a:hover, a:focus, .nav li a:hover, .nav li a:focus {
   color: #3F92D2;
 }
 a:hover {
@@ -147,8 +161,8 @@ div.page {
 .icon-users {
   background-image: url(images/users.png);
 }
-.icon-gear {
-  background-image: url(images/gear.png);
+.icon-app {
+  background-image: url(images/app.png);
 }
 .icon-service {
   background-image: url(images/service.png);
@@ -163,14 +177,17 @@ div.page {
   background-repeat: no-repeat;
   background-position: 0px 0px;
 }
+.medium-icon-org {
+  background-image: url(images/medium-org.png);
+}
 .medium-icon-service {
   background-image: url(images/medium-service.png);
 }
 .medium-icon-plan {
   background-image: url(images/medium-plan.png);
 }
-.medium-icon-gear {
-  background-image: url(images/medium-gear.png);
+.medium-icon-app {
+  background-image: url(images/medium-app.png);
 }
 
 .large-icon {
@@ -179,8 +196,8 @@ div.page {
   background-repeat: no-repeat;
   background-position: 0px 0px;
 }
-.large-icon-gear {
-  background-image: url(images/large-gear.png);
+.large-icon-app {
+  background-image: url(images/large-app.png);
 }
 .large-icon-service {
   background-image: url(images/large-service.png);
@@ -343,6 +360,10 @@ a.apiman-summaryrow-icon:hover {
 .apiman-entity-content .apiman-timestamp {
   padding-top: 2px;
   margin-left: 1px;
+}
+
+.apiman-entity-new {
+  margin-top: 30px;
 }
 
 .apiman-entity-new .medium-icon {
