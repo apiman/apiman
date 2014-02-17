@@ -21,6 +21,7 @@ import javax.inject.Inject;
 import org.jboss.errai.bus.client.api.ClientMessageBus;
 import org.jboss.errai.enterprise.client.cdi.api.CDI;
 import org.jboss.errai.ui.nav.client.local.Navigation;
+import org.jboss.errai.ui.nav.client.local.PageHiding;
 import org.jboss.errai.ui.nav.client.local.PageShowing;
 import org.overlord.apiman.dt.ui.client.local.PageLoadingWidget;
 
@@ -75,6 +76,13 @@ public abstract class AbstractPage extends Composite {
                 doPageLoadingLifecycle();
             }
         });
+    }
+    
+    @PageHiding
+    private final void _onPageHiding() {
+        pageLoadingWidget.show();
+        navigation.getContentPanel().asWidget().getElement().getStyle().setVisibility(Visibility.HIDDEN);
+        navigation.getContentPanel().asWidget().getElement().getStyle().setDisplay(Display.NONE);
     }
 
     /**

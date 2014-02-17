@@ -15,14 +15,25 @@
  */
 package org.overlord.apiman.dt.api.jpa;
 
-import javax.enterprise.context.ApplicationScoped;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+
+import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
 import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
+import org.overlord.apiman.dt.api.beans.summary.OrganizationSummaryBean;
 import org.overlord.apiman.dt.api.persist.AlreadyExistsException;
 import org.overlord.apiman.dt.api.persist.DoesNotExistException;
 import org.overlord.apiman.dt.api.persist.IStorage;
+import org.overlord.apiman.dt.api.persist.IStorageQuery;
 import org.overlord.apiman.dt.api.persist.StorageException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A JPA implementation of the storage interface.
@@ -30,7 +41,9 @@ import org.overlord.apiman.dt.api.persist.StorageException;
  * @author eric.wittmann@redhat.com
  */
 @ApplicationScoped
-public class JpaStorage extends AbstractJpaStorage implements IStorage {
+public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorageQuery {
+
+    private static Logger logger = LoggerFactory.getLogger(JpaStorage.class);
 
     /**
      * Constructor.
@@ -76,6 +89,36 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage {
     @Override
     public <T> SearchResultsBean<T> find(SearchCriteriaBean criteria, Class<T> type) throws StorageException {
         return super.find(criteria, type);
+    }
+    
+    /**
+     * @see org.overlord.apiman.dt.api.persist.IStorageQuery#getOrgs(java.util.Set)
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<OrganizationSummaryBean> getOrgs(Set<String> orgIds) throws StorageException {
+        List<OrganizationSummaryBean> orgs = new ArrayList<OrganizationSummaryBean>();
+        EntityManager entityManager = emf.createEntityManager();
+        try {
+            String jpql = "SELECT o from OrganizationBean o WHERE o.id IN :orgs ORDER BY o.id ASC"; //$NON-NLS-1$
+            Query query = entityManager.createQuery(jpql);
+            query.setParameter("orgs", orgIds); //$NON-NLS-1$
+            List<OrganizationBean> qr = (List<OrganizationBean>) query.getResultList();
+            for (OrganizationBean bean : qr) {
+                OrganizationSummaryBean summary = new OrganizationSummaryBean();
+                summary.setId(bean.getId());
+                summary.setName(bean.getName());
+                summary.setDescription(bean.getDescription());
+                orgs.add(summary);
+            }
+            return orgs;
+        } catch (Throwable t) {
+            JpaUtil.rollbackQuietly(entityManager);
+            logger.error(t.getMessage(), t);
+            throw new StorageException(t);
+        } finally {
+            entityManager.close();
+        }
     }
 
 }

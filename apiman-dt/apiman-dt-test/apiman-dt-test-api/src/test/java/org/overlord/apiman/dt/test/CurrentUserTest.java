@@ -13,26 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.overlord.apiman.dt.test;
 
-package org.overlord.apiman.tools.devsvr.api;
-
-import org.overlord.apiman.dt.test.server.DtApiTestServer;
-import org.overlord.apiman.dt.test.server.ISeeder;
+import org.junit.Test;
+import org.overlord.apiman.dt.test.util.AbstractTestPlanTest;
 
 /**
- * A dev server for APIMan.
+ * Runs the "searching" test plan.
  *
  * @author eric.wittmann@redhat.com
  */
-public class ApiManDtApiDevServer {
+public class CurrentUserTest extends AbstractTestPlanTest {
 
-    /**
-     * Main entry point.
-     * @param args
-     */
-    public static void main(String [] args) throws Exception {
-        System.setProperty(ISeeder.SYSTEM_PROPERTY, DevServerDataSeeder.class.getName());
-        DtApiTestServer server = new DtApiTestServer();
-        server.start();
+    @Test
+    public void test() {
+        runTestPlan("test-plans/currentuser-testPlan.xml", CurrentUserTest.class.getClassLoader());
     }
+
 }

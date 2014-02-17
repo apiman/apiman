@@ -251,100 +251,111 @@ public class TestPlanRunner {
      * @param actualJson
      */
     private void assertJson(RestTest restTest, JsonNode expectedJson, JsonNode actualJson) {
-        Iterator<Entry<String, JsonNode>> fields = expectedJson.getFields();
-        while (fields.hasNext()) {
-            Entry<String, JsonNode> entry = fields.next();
-            String expectedFieldName = entry.getKey();
-            JsonNode expectedValue = entry.getValue();
-            if (expectedValue instanceof TextNode) {
-                TextNode tn = (TextNode) expectedValue;
-                String expected = tn.getTextValue();
-                JsonNode actualValue = actualJson.get(expectedFieldName);
-                Assert.assertNotNull("Expected JSON text field '" + expectedFieldName + "' with value '"
-                        + expected + "' but was not found.", actualValue);
-                Assert.assertEquals("Expected JSON text field '" + expectedFieldName + "' with value '"
-                        + expected + "' but found non-text [" + actualValue.getClass().getSimpleName()
-                        + "] field with that name instead.", TextNode.class, actualValue.getClass());
-                String actual = ((TextNode) actualValue).getTextValue();
-                Assert.assertEquals("Value mismatch for text field '" + expectedFieldName + "'.", expected,
-                        actual);
-            } else if (expectedValue instanceof NumericNode) {
-                NumericNode numeric = (NumericNode) expectedValue;
-                Number expected = numeric.getNumberValue();
-                JsonNode actualValue = actualJson.get(expectedFieldName);
-                Assert.assertNotNull("Expected JSON numeric field '" + expectedFieldName + "' with value '"
-                        + expected + "' but was not found.", actualValue);
-                Assert.assertEquals("Expected JSON numeric field '" + expectedFieldName + "' with value '"
-                        + expected + "' but found non-numeric [" + actualValue.getClass().getSimpleName()
-                        + "] field with that name instead.", expectedValue.getClass(), actualValue.getClass());
-                Number actual = ((NumericNode) actualValue).getNumberValue();
-                Assert.assertEquals("Value mismatch for numeric field '" + expectedFieldName + "'.", expected,
-                        actual);
-            } else if (expectedValue instanceof BooleanNode) {
-                BooleanNode bool = (BooleanNode) expectedValue;
-                Boolean expected = bool.getBooleanValue();
-                JsonNode actualValue = actualJson.get(expectedFieldName);
-                Assert.assertNotNull("Expected JSON boolean field '" + expectedFieldName + "' with value '"
-                        + expected + "' but was not found.", actualValue);
-                Assert.assertEquals("Expected JSON boolean field '" + expectedFieldName + "' with value '"
-                        + expected + "' but found non-boolean [" + actualValue.getClass().getSimpleName()
-                        + "] field with that name instead.", expectedValue.getClass(), actualValue.getClass());
-                Boolean actual = ((BooleanNode) actualValue).getBooleanValue();
-                Assert.assertEquals("Value mismatch for boolean field '" + expectedFieldName + "'.", expected,
-                        actual);
-            } else if (expectedValue instanceof ObjectNode) {
-                JsonNode actualValue = actualJson.get(expectedFieldName);
-                Assert.assertNotNull("Expected parent JSON field '" + expectedFieldName
-                        + "' but was not found.", actualValue);
-                Assert.assertEquals("Expected parent JSON field '" + expectedFieldName
-                        + "' but found field of type '" + actualValue.getClass().getSimpleName() + "'.",
-                        ObjectNode.class, actualValue.getClass());
-                assertJson(restTest, expectedValue, actualValue);
-            } else if (expectedValue instanceof ArrayNode) {
-                JsonNode actualValue = actualJson.get(expectedFieldName);
-                Assert.assertNotNull("Expected JSON array field '" + expectedFieldName
-                        + "' but was not found.", actualValue);
-                ArrayNode expectedArray = (ArrayNode) expectedValue;
-                Assert.assertEquals("Expected JSON array field '" + expectedFieldName
-                        + "' but found non-array [" + actualValue.getClass().getSimpleName()
-                        + "] field with that name instead.", expectedValue.getClass(), actualValue.getClass());
-                ArrayNode actualArray = (ArrayNode) actualValue;
-                Assert.assertEquals("Field '" + expectedFieldName + "' array size mismatch.",
-                        expectedArray.size(), actualArray.size());
-                String ordering = restTest.getExpectedResponseHeaders().get("X-RestTest-ArrayOrdering");
-                
-                JsonNode [] expected = new JsonNode[expectedArray.size()];
-                JsonNode [] actual = new JsonNode[actualArray.size()];
-                for (int idx = 0; idx < expected.length; idx++) {
-                    expected[idx] = expectedArray.get(idx);
-                    actual[idx] = actualArray.get(idx);
+        if (expectedJson instanceof ArrayNode) {
+            JsonNode actualValue = actualJson;
+            ArrayNode expectedArray = (ArrayNode) expectedJson;
+            Assert.assertEquals("Expected JSON array but found non-array ["
+                    + actualValue.getClass().getSimpleName() + "] instead.", expectedJson.getClass(),
+                    actualValue.getClass());
+            ArrayNode actualArray = (ArrayNode) actualValue;
+            Assert.assertEquals("Array size mismatch.", expectedArray.size(), actualArray.size());
+            String ordering = restTest.getExpectedResponseHeaders().get("X-RestTest-ArrayOrdering");
+            
+            JsonNode [] expected = new JsonNode[expectedArray.size()];
+            JsonNode [] actual = new JsonNode[actualArray.size()];
+            for (int idx = 0; idx < expected.length; idx++) {
+                expected[idx] = expectedArray.get(idx);
+                actual[idx] = actualArray.get(idx);
+            }
+            // If strict ordering is disabled, then sort both arrays
+            if ("any".equals(ordering)) {
+                Comparator<? super JsonNode> comparator = new Comparator<JsonNode>() {
+                    @Override
+                    public int compare(JsonNode o1, JsonNode o2) {
+                        int cmp = o1.toString().compareTo(o2.toString());
+                        if (cmp == 0)
+                            cmp = 1;
+                        return cmp;
+                    }
+                };
+                Arrays.sort(expected, comparator);
+                Arrays.sort(actual, comparator);
+            }
+            for (int idx = 0; idx < expected.length; idx++) {
+                assertJson(restTest, expected[idx], actual[idx]);
+            }
+        } else {
+            Iterator<Entry<String, JsonNode>> fields = expectedJson.getFields();
+            while (fields.hasNext()) {
+                Entry<String, JsonNode> entry = fields.next();
+                String expectedFieldName = entry.getKey();
+                JsonNode expectedValue = entry.getValue();
+                if (expectedValue instanceof TextNode) {
+                    TextNode tn = (TextNode) expectedValue;
+                    String expected = tn.getTextValue();
+                    JsonNode actualValue = actualJson.get(expectedFieldName);
+                    Assert.assertNotNull("Expected JSON text field '" + expectedFieldName + "' with value '"
+                            + expected + "' but was not found.", actualValue);
+                    Assert.assertEquals("Expected JSON text field '" + expectedFieldName + "' with value '"
+                            + expected + "' but found non-text [" + actualValue.getClass().getSimpleName()
+                            + "] field with that name instead.", TextNode.class, actualValue.getClass());
+                    String actual = ((TextNode) actualValue).getTextValue();
+                    Assert.assertEquals("Value mismatch for text field '" + expectedFieldName + "'.", expected,
+                            actual);
+                } else if (expectedValue instanceof NumericNode) {
+                    NumericNode numeric = (NumericNode) expectedValue;
+                    Number expected = numeric.getNumberValue();
+                    JsonNode actualValue = actualJson.get(expectedFieldName);
+                    Assert.assertNotNull("Expected JSON numeric field '" + expectedFieldName + "' with value '"
+                            + expected + "' but was not found.", actualValue);
+                    Assert.assertEquals("Expected JSON numeric field '" + expectedFieldName + "' with value '"
+                            + expected + "' but found non-numeric [" + actualValue.getClass().getSimpleName()
+                            + "] field with that name instead.", expectedValue.getClass(), actualValue.getClass());
+                    Number actual = ((NumericNode) actualValue).getNumberValue();
+                    Assert.assertEquals("Value mismatch for numeric field '" + expectedFieldName + "'.", expected,
+                            actual);
+                } else if (expectedValue instanceof BooleanNode) {
+                    BooleanNode bool = (BooleanNode) expectedValue;
+                    Boolean expected = bool.getBooleanValue();
+                    JsonNode actualValue = actualJson.get(expectedFieldName);
+                    Assert.assertNotNull("Expected JSON boolean field '" + expectedFieldName + "' with value '"
+                            + expected + "' but was not found.", actualValue);
+                    Assert.assertEquals("Expected JSON boolean field '" + expectedFieldName + "' with value '"
+                            + expected + "' but found non-boolean [" + actualValue.getClass().getSimpleName()
+                            + "] field with that name instead.", expectedValue.getClass(), actualValue.getClass());
+                    Boolean actual = ((BooleanNode) actualValue).getBooleanValue();
+                    Assert.assertEquals("Value mismatch for boolean field '" + expectedFieldName + "'.", expected,
+                            actual);
+                } else if (expectedValue instanceof ObjectNode) {
+                    JsonNode actualValue = actualJson.get(expectedFieldName);
+                    Assert.assertNotNull("Expected parent JSON field '" + expectedFieldName
+                            + "' but was not found.", actualValue);
+                    Assert.assertEquals("Expected parent JSON field '" + expectedFieldName
+                            + "' but found field of type '" + actualValue.getClass().getSimpleName() + "'.",
+                            ObjectNode.class, actualValue.getClass());
+                    assertJson(restTest, expectedValue, actualValue);
+                } else if (expectedValue instanceof ArrayNode) {
+                    JsonNode actualValue = actualJson.get(expectedFieldName);
+                    Assert.assertNotNull("Expected JSON array field '" + expectedFieldName
+                            + "' but was not found.", actualValue);
+                    ArrayNode expectedArray = (ArrayNode) expectedValue;
+                    Assert.assertEquals("Expected JSON array field '" + expectedFieldName
+                            + "' but found non-array [" + actualValue.getClass().getSimpleName()
+                            + "] field with that name instead.", expectedValue.getClass(), actualValue.getClass());
+                    ArrayNode actualArray = (ArrayNode) actualValue;
+                    Assert.assertEquals("Field '" + expectedFieldName + "' array size mismatch.",
+                            expectedArray.size(), actualArray.size());
+                    assertJson(restTest, expectedArray, actualArray);
+                } else if (expectedValue instanceof NullNode) {
+                    JsonNode actualValue = actualJson.get(expectedFieldName);
+                    Assert.assertNotNull("Expected Null JSON field '" + expectedFieldName
+                            + "' but was not found.", actualValue);
+                    Assert.assertEquals("Expected Null JSON field '" + expectedFieldName
+                            + "' but found field of type '" + actualValue.getClass().getSimpleName() + "'.",
+                            NullNode.class, actualValue.getClass());
+                } else {
+                    Assert.fail("Unsupported field type: " + expectedValue.getClass().getSimpleName());
                 }
-                // If strict orderingis disabled, then sort both arrays
-                if ("any".equals(ordering)) {
-                    Comparator<? super JsonNode> comparator = new Comparator<JsonNode>() {
-                        @Override
-                        public int compare(JsonNode o1, JsonNode o2) {
-                            int cmp = o1.toString().compareTo(o2.toString());
-                            if (cmp == 0)
-                                cmp = 1;
-                            return cmp;
-                        }
-                    };
-                    Arrays.sort(expected, comparator);
-                    Arrays.sort(actual, comparator);
-                }
-                for (int idx = 0; idx < expected.length; idx++) {
-                    assertJson(restTest, expected[idx], actual[idx]);
-                }
-            } else if (expectedValue instanceof NullNode) {
-                JsonNode actualValue = actualJson.get(expectedFieldName);
-                Assert.assertNotNull("Expected Null JSON field '" + expectedFieldName
-                        + "' but was not found.", actualValue);
-                Assert.assertEquals("Expected Null JSON field '" + expectedFieldName
-                        + "' but found field of type '" + actualValue.getClass().getSimpleName() + "'.",
-                        NullNode.class, actualValue.getClass());
-            } else {
-                Assert.fail("Unsupported field type: " + expectedValue.getClass().getSimpleName());
             }
         }
     }

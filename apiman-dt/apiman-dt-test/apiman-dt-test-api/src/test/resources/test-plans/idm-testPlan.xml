@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testPlan xmlns="urn:org.overlord.apiman.test:2014:02:testPlan">
 
-  <!-- First, create a bunch of Organizations -->
+  <!-- First, create a bunch of Roles -->
   <testGroup name="Create Some Roles">
     <test name="Create Role 1">idm/create/001_create-role1.resttest</test>
     <test name="Create Role 2">idm/create/002_create-role2.resttest</test>
@@ -9,7 +9,7 @@
     <test name="Create Role 4">idm/create/004_create-role4.resttest</test>
   </testGroup>
 
-  <!-- Now do some basic management on them -->
+  <!-- Now do some basic role management -->
   <testGroup name="Manage Roles">
     <test name="Get a Role">idm/manage/001_get-role.resttest</test>
     <test name="Update a Role">idm/manage/002_update-role.resttest</test>

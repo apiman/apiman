@@ -13,26 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.overlord.apiman.dt.ui.client.local.util;
 
-package org.overlord.apiman.tools.devsvr.api;
-
-import org.overlord.apiman.dt.test.server.DtApiTestServer;
-import org.overlord.apiman.dt.test.server.ISeeder;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 
 /**
- * A dev server for APIMan.
+ * Simple utility for dealing with Multimaps.
  *
  * @author eric.wittmann@redhat.com
  */
-public class ApiManDtApiDevServer {
-
+public class MultimapUtil {
+    
     /**
-     * Main entry point.
-     * @param args
+     * Creates a multimap from a key and value.
+     * @param key
+     * @param value
      */
-    public static void main(String [] args) throws Exception {
-        System.setProperty(ISeeder.SYSTEM_PROPERTY, DevServerDataSeeder.class.getName());
-        DtApiTestServer server = new DtApiTestServer();
-        server.start();
+    public static final Multimap<String, String> singleItemMap(String key, String value) {
+        HashMultimap<String, String> multimap = HashMultimap.create();
+        multimap.put(key, value);
+        return multimap;
     }
+
 }

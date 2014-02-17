@@ -15,14 +15,21 @@
  */
 package org.overlord.apiman.dt.ui.client.local.pages;
 
+import java.util.List;
+
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
 import org.jboss.errai.ui.nav.client.local.Page;
+import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.overlord.apiman.dt.api.beans.summary.OrganizationSummaryBean;
+import org.overlord.apiman.dt.ui.client.local.pages.user.UserOrganizations;
+import org.overlord.apiman.dt.ui.client.local.services.rest.IRestInvokerCallback;
 
 
 /**
- * The "User" page, with the Organizations tab displayed.
+ * The "User" page, with the Applications tab displayed.
  *
  * @author eric.wittmann@redhat.com
  */
@@ -30,6 +37,11 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 @Page(path="user-orgs")
 @Dependent
 public class UserOrgsPage extends AbstractUserPage {
+    
+    List<OrganizationSummaryBean> orgs;
+    
+    @Inject @DataField
+    UserOrganizations organizations;
 
     /**
      * Constructor.
@@ -43,7 +55,27 @@ public class UserOrgsPage extends AbstractUserPage {
     @Override
     protected int loadPageData() {
         int rval = super.loadPageData();
-        return rval;
+        rest.getCurrentUserOrgs(new IRestInvokerCallback<List<OrganizationSummaryBean>>() {
+            @Override
+            public void onSuccess(List<OrganizationSummaryBean> response) {
+                orgs = response;
+                dataPacketLoaded();
+            }
+            @Override
+            public void onError(Throwable error) {
+                dataPacketError(error);
+            }
+        });
+        return rval + 1;
+    }
+
+    /**
+     * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractUserPage#renderPage()
+     */
+    @Override
+    protected void renderPage() {
+        organizations.setValue(orgs);
+        super.renderPage();
     }
 
 }

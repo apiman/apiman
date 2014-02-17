@@ -13,36 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.overlord.apiman.dt.api.rest.contract;
+package org.overlord.apiman.dt.api.persist;
 
 import java.util.List;
+import java.util.Set;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-
-import org.overlord.apiman.dt.api.beans.idm.UserBean;
 import org.overlord.apiman.dt.api.beans.summary.OrganizationSummaryBean;
 
+
 /**
- * The Current User API.  Returns information about the authenticated
- * user.
- * 
+ * Specific querying of the storage layer.
+ *
  * @author eric.wittmann@redhat.com
  */
-@Path("currentuser")
-public interface ICurrentUserResource {
+public interface IStorageQuery {
+    
+    /**
+     * Returns summary info for all organizations in the given set.
+     * @param orgIds
+     * @throws StorageException
+     */
+    public List<OrganizationSummaryBean> getOrgs(Set<String> orgIds) throws StorageException;
 
-    @GET
-    @Path("info")
-    @Produces(MediaType.APPLICATION_JSON)
-    public UserBean getInfo();
-    
-    @GET
-    @Path("organizations")
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<OrganizationSummaryBean> getOrganizations();
-    
 }

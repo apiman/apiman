@@ -25,8 +25,8 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-import org.overlord.apiman.dt.api.beans.idm.UserBean;
 import org.overlord.apiman.dt.api.persist.IIdmStorage;
+import org.overlord.apiman.dt.api.persist.IStorage;
 
 /**
  * Used to seed the test server with some initial data, such as users.
@@ -36,6 +36,7 @@ import org.overlord.apiman.dt.api.persist.IIdmStorage;
 public class DatabaseSeedFilter implements Filter {
     
     @Inject IIdmStorage idmStorage;
+    @Inject IStorage storage;
     
     /**
      * Constructor.
@@ -48,16 +49,12 @@ public class DatabaseSeedFilter implements Filter {
      */
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        for (String user : TestUsers.USERS) {
-            UserBean userBean = new UserBean();
-            userBean.setUsername(user);
-            userBean.setFullName(user.toUpperCase());
-            userBean.setEmail(user + "@example.org");
-            try {
-                idmStorage.createUser(userBean);
-            } catch (Exception e) {
-                throw new ServletException(e);
-            }
+        String seederClass = System.getProperty(ISeeder.SYSTEM_PROPERTY, DefaultTestDataSeeder.class.getName());
+        try {
+            ISeeder seeder = (ISeeder) Class.forName(seederClass).newInstance();
+            seeder.seed(idmStorage, storage);
+        } catch (Exception e) {
+            throw new ServletException(e);
         }
     }
     

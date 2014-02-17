@@ -1,0 +1,9 @@
+POST /organizations/TestOrganization2/role admin/admin
+Content-Type: application/json
+
+{
+  "userId" : "user1",
+  "roleId" : "OrganizationRoles"
+}
+----
+204

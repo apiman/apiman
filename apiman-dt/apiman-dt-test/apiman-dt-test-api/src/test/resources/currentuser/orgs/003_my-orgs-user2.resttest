@@ -1,0 +1,7 @@
+GET /currentuser/organizations user2/user2
+----
+200
+Content-Type: application/json
+
+[
+]

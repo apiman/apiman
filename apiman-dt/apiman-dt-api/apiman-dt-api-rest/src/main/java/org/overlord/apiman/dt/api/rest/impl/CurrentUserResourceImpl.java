@@ -17,14 +17,20 @@
 package org.overlord.apiman.dt.api.rest.impl;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.overlord.apiman.dt.api.beans.idm.PermissionType;
 import org.overlord.apiman.dt.api.beans.idm.UserBean;
+import org.overlord.apiman.dt.api.beans.summary.OrganizationSummaryBean;
 import org.overlord.apiman.dt.api.persist.AlreadyExistsException;
 import org.overlord.apiman.dt.api.persist.DoesNotExistException;
 import org.overlord.apiman.dt.api.persist.IIdmStorage;
+import org.overlord.apiman.dt.api.persist.IStorage;
+import org.overlord.apiman.dt.api.persist.IStorageQuery;
 import org.overlord.apiman.dt.api.persist.StorageException;
 import org.overlord.apiman.dt.api.rest.contract.ICurrentUserResource;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.SystemErrorException;
@@ -40,6 +46,10 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
     
     @Inject
     IIdmStorage idmStorage;
+    @Inject
+    IStorage storage;
+    @Inject
+    IStorageQuery query;
     @Inject
     ISecurityContext securityContext;
 
@@ -69,6 +79,19 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
                 throw new SystemErrorException(e);
             }
             return user;
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+    }
+    
+    /**
+     * @see org.overlord.apiman.dt.api.rest.contract.ICurrentUserResource#getOrganizations()
+     */
+    @Override
+    public List<OrganizationSummaryBean> getOrganizations() {
+        Set<String> permittedOrganizations = securityContext.getPermittedOrganizations(PermissionType.orgView);
+        try {
+            return query.getOrgs(permittedOrganizations);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }

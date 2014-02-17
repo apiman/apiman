@@ -48,7 +48,7 @@
         <div class="col-md-8">
           <div class="apiman-usertabs">
             <ul id="usertabs" class="nav nav-tabs">
-              <li class="active"><a data-i18n-key="organizations">Organizations</a></li>
+              <li class="active"><a href="user-orgs.html" data-field="toUserOrgs" data-i18n-key="organizations">Organizations</a></li>
               <li><a href="user-apps.html" data-field="toUserApps" data-i18n-key="applications">Applications</a></li>
               <li><a href="user-services.html" data-field="toUserServices" data-i18n-key="services">Services</a></li>
               <li class="pull-right"><a href="user-activity.html" data-field="toUserActivity" data-i18n-key="activity">Activity</a></li>
@@ -63,7 +63,7 @@
                 </div>
                 <div class="clearfix"></div>
                 <!-- The list of organizations the user belongs to -->
-                <div class="apiman-organizations" data-role="dummy">
+                <div class="apiman-organizations" data-field="organizations" data-role="dummy">
                   <div class="container-fluid apiman-summaryrow">
                     <div class="row">
                       <span class="title"><a href="orgHome.html">JBoss Overlord</a></span>
@@ -81,7 +81,7 @@
                       </a>
                     </div>
                     <div class="row">
-                      <span class="description" data-field="description" data-role="dummy">
+                      <span class="description">
                         Overlord is the umbrella project that will bring governance to the JBoss SOA Platform and eventually beyond.
                       </span>
                     </div>
