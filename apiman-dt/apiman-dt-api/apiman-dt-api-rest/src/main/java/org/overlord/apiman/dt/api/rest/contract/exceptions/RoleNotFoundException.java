@@ -16,7 +16,6 @@
 
 package org.overlord.apiman.dt.api.rest.contract.exceptions;
 
-import org.overlord.apiman.dt.api.rest.i18n.Messages;
 
 
 /**
@@ -28,14 +27,6 @@ public class RoleNotFoundException extends AbstractNotFoundException {
     
     private static final long serialVersionUID = -5416700206708610404L;
 
-    /**
-     * Creates an exception from a username.
-     * @param roleId
-     */
-    public static final RoleNotFoundException create(String roleId) {
-        return new RoleNotFoundException(Messages.i18n.format("RoleNotFound", roleId)); //$NON-NLS-1$
-    }
-    
     /**
      * Constructor.
      */

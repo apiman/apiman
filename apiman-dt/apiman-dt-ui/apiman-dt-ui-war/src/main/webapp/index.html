@@ -6,18 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
     <link rel="icon" type="image/png" href="images/favicon.png"></link>
 
-    <link href="bootstrap-3.0.3/css/bootstrap.min.css" rel="stylesheet" media="screen"></link>
+    <link href="bootstrap-3.1.1/css/bootstrap.min.css" rel="stylesheet" media="screen"></link>
     <link href="css/overlord-header.css" rel="stylesheet"></link>
     <link href="css/apiman.css" rel="stylesheet"></link>
     <link href="css/apiman-responsive.css" rel="stylesheet"></link>
     <link href="css/branding.css" rel="stylesheet"></link>
-    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
     
     <script type="text/javascript" src="jquery-2.1.0/jquery-2.1.0.min.js"></script>
-    <script type="text/javascript" src="bootstrap-3.0.3/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="bootstrap-3.1.1/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="js/overlord-header-data.nocache.js"></script>
     <script type="text/javascript" src="js/overlord-header.js"></script>
     <script type="text/javascript" src="js/configuration.nocache.js"></script>
@@ -36,7 +32,12 @@
     <!-- Top header/nav bar -->
     <div id="overlord-header">
     </div>
-    
+
+    <!-- Shown while the page is loading (obvs) -->
+    <div id="page-loading">
+      <span class="center">Page loading, please wait...</span>
+    </div>
+
     <!-- Root panel of the GWT app -->
     <div id="rootPanel"></div>
   </body>

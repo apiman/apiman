@@ -52,6 +52,7 @@ public class DatabaseSeedFilter implements Filter {
             UserBean userBean = new UserBean();
             userBean.setUsername(user);
             userBean.setFullName(user.toUpperCase());
+            userBean.setEmail(user + "@example.org");
             try {
                 idmStorage.createUser(userBean);
             } catch (Exception e) {

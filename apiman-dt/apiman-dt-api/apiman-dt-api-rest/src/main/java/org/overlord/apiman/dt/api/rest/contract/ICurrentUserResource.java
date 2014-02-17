@@ -13,38 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.dt.ui.client.shared.beans;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
+package org.overlord.apiman.dt.api.rest.contract;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+
+import org.overlord.apiman.dt.api.beans.idm.UserBean;
 
 /**
- * Contains information about the current user.
- *
+ * The Current User API.  Returns information about the authenticated
+ * user.
+ * 
  * @author eric.wittmann@redhat.com
  */
-@Portable
-public class UserConfigurationBean {
+@Path("currentuser")
+public interface ICurrentUserResource {
+
+    @GET
+    @Path("info")
+    @Produces(MediaType.APPLICATION_JSON)
+    public UserBean getInfo();
     
-    private String username;
-    
-    /**
-     * Constructor.
-     */
-    public UserConfigurationBean() {
-    }
-
-    /**
-     * @return the username
-     */
-    public String getUsername() {
-        return username;
-    }
-
-    /**
-     * @param username the username to set
-     */
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
 }

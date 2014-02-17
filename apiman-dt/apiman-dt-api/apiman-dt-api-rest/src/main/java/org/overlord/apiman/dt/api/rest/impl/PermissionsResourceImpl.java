@@ -26,6 +26,7 @@ import org.overlord.apiman.dt.api.rest.contract.IPermissionsResource;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.NotAuthorizedException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.SystemErrorException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.UserNotFoundException;
+import org.overlord.apiman.dt.api.rest.impl.util.ExceptionFactory;
 import org.overlord.apiman.dt.api.security.ISecurityContext;
 
 /**
@@ -53,7 +54,7 @@ public class PermissionsResourceImpl implements IPermissionsResource {
     @Override
     public UserPermissionsBean getPermissionsForUser(String userId) throws UserNotFoundException, NotAuthorizedException {
         if (!securityContext.isAdmin())
-            throw new NotAuthorizedException();
+            throw ExceptionFactory.notAuthorizedException();
 
         try {
             UserPermissionsBean bean = new UserPermissionsBean();

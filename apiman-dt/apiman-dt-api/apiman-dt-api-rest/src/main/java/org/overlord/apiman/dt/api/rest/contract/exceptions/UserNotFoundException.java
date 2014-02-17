@@ -16,7 +16,6 @@
 
 package org.overlord.apiman.dt.api.rest.contract.exceptions;
 
-import org.overlord.apiman.dt.api.rest.i18n.Messages;
 
 
 /**
@@ -27,14 +26,6 @@ import org.overlord.apiman.dt.api.rest.i18n.Messages;
 public class UserNotFoundException extends AbstractNotFoundException {
 
     private static final long serialVersionUID = 8937297365588151067L;
-    
-    /**
-     * Creates an exception from a username.
-     * @param username
-     */
-    public static final UserNotFoundException create(String username) {
-        return new UserNotFoundException(Messages.i18n.format("UserNotFound", username)); //$NON-NLS-1$
-    }
     
     /**
      * Constructor.

@@ -1,5 +1,22 @@
 
 /**
+ * Header data used when viewing the site statically.
+ */
+var OVERLORD_HEADER_DATA = {
+  "username" : "eric",
+  "logoutLink" : "http://www.logout.com",
+  "primaryBrand" : "JBoss Overlord",
+  "secondaryBrand" : "API Management",
+  "tabs" : [ {
+    "app-id" : "apiman",
+    "href" : "/apiman-ui/",
+    "label" : "APIMan",
+    "active" : true
+  } ]
+};
+
+
+/**
  * Loads a resource.  The type of resource 
  * @param filename
  * @param filetype
@@ -28,11 +45,14 @@ function loadResource(filename, filetype) {
  * than in every single template file.
  */
 function loadAll() {
-	loadResource("../../../../../../../../../webapp/bootstrap-3.0.3/css/bootstrap.min.css", "css");
-	loadResource("../../../../../../../../../webapp/bootstrap-3.0.3/css/bootstrap-theme.min.css", "css");
+	loadResource("../../../../../../../../../webapp/bootstrap-3.1.1/css/bootstrap.min.css", "css");
+	loadResource("https://rawgithub.com/Governance/overlord-commons/master/overlord-commons-uiheader/src/main/resources/META-INF/resources/css/overlord-header.css", "css");
 	loadResource("../../../../../../../../../webapp/css/apiman.css", "css");
 	loadResource("../../../../../../../../../webapp/css/apiman-responsive.css", "css");
 	
 	loadResource("../../../../../../../../../webapp/jquery-2.1.0/jquery-2.1.0.min.js", "js");
-	loadResource("../../../../../../../../../webapp/bootstrap-3.0.3/js/bootstrap.min.js", "js");
+	loadResource("../../../../../../../../../webapp/bootstrap-3.1.1/js/bootstrap.min.js", "js");
+	loadResource("https://rawgithub.com/Governance/overlord-commons/master/overlord-commons-uiheader/src/main/resources/META-INF/resources/js/overlord-header.js", "js");
 }
+
+loadAll();

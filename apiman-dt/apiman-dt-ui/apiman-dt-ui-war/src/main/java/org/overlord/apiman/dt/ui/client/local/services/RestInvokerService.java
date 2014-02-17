@@ -19,9 +19,9 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.api.Caller;
-import org.overlord.apiman.dt.api.rest.contract.IOrganizationResource;
+import org.overlord.apiman.dt.api.beans.idm.UserBean;
+import org.overlord.apiman.dt.api.rest.contract.ICurrentUserResource;
 import org.overlord.apiman.dt.api.rest.contract.ISystemResource;
-import org.overlord.apiman.dt.api.rest.contract.IUserResource;
 import org.overlord.apiman.dt.ui.client.local.services.rest.CallbackAdapter;
 import org.overlord.apiman.dt.ui.client.local.services.rest.IRestInvokerCallback;
 
@@ -37,9 +37,11 @@ public class RestInvokerService {
     @Inject
     private Caller<ISystemResource> system;
     @Inject
-    private Caller<IUserResource> users;
-    @Inject
-    private Caller<IOrganizationResource> orgs;
+    private Caller<ICurrentUserResource> currentUser;
+//    @Inject
+//    private Caller<IUserResource> users;
+//    @Inject
+//    private Caller<IOrganizationResource> orgs;
     
     /**
      * Gets the current system status.
@@ -48,6 +50,15 @@ public class RestInvokerService {
     public void getSystemStatus(IRestInvokerCallback<String> callback) {
         CallbackAdapter<String> adapter = new CallbackAdapter<String>(callback);
         system.call(adapter, adapter).getStatus();
+    }
+
+    /**
+     * Gets info about the current user.
+     * @param callback
+     */
+    public void getCurrentUserInfo(IRestInvokerCallback<UserBean> callback) {
+        CallbackAdapter<UserBean> adapter = new CallbackAdapter<UserBean>(callback);
+        currentUser.call(adapter, adapter).getInfo();
     }
 
 }

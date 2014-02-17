@@ -16,7 +16,6 @@
 
 package org.overlord.apiman.dt.api.rest.contract.exceptions;
 
-import org.overlord.apiman.dt.api.rest.i18n.Messages;
 
 
 /**
@@ -28,14 +27,6 @@ public class OrganizationAlreadyExistsException extends AbstractAlreadyExistsExc
 
     private static final long serialVersionUID = -1444829046948798598L;
 
-    /**
-     * Creates an exception from an organization name.
-     * @param organizationName
-     */
-    public static final OrganizationAlreadyExistsException create(String organizationName) {
-        return new OrganizationAlreadyExistsException(Messages.i18n.format("OrganizationAlreadyExists", organizationName)); //$NON-NLS-1$
-    }
-    
     /**
      * Constructor.
      */

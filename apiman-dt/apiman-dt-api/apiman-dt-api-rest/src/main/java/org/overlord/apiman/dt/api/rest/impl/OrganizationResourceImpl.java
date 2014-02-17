@@ -44,6 +44,7 @@ import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationNotFoundE
 import org.overlord.apiman.dt.api.rest.contract.exceptions.RoleNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.SystemErrorException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.UserNotFoundException;
+import org.overlord.apiman.dt.api.rest.impl.util.ExceptionFactory;
 import org.overlord.apiman.dt.api.rest.impl.util.SearchCriteriaUtil;
 import org.overlord.apiman.dt.api.security.ISecurityContext;
 
@@ -89,7 +90,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             idmStorage.createMembership(RoleMembershipBean.create(currentUser, orgOwnerRoleId, orgId));
             return bean;
         } catch (AlreadyExistsException e) {
-            throw OrganizationAlreadyExistsException.create(bean.getName());
+            throw ExceptionFactory.organizationAlreadyExistsException(bean.getName());
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
@@ -101,11 +102,29 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     @Override
     public OrganizationBean get(String organizationId) throws OrganizationNotFoundException, NotAuthorizedException {
         if (!securityContext.hasPermission(PermissionType.orgView, organizationId))
-            throw new NotAuthorizedException();
+            throw ExceptionFactory.notAuthorizedException();
         try {
             return storage.get(organizationId, OrganizationBean.class);
         } catch (DoesNotExistException e) {
-            throw OrganizationNotFoundException.create(organizationId);
+            throw ExceptionFactory.organizationNotFoundException(organizationId);
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+    }
+    
+    /**
+     * @see org.overlord.apiman.dt.api.rest.contract.IOrganizationResource#update(java.lang.String, org.overlord.apiman.dt.api.beans.orgs.OrganizationBean)
+     */
+    @Override
+    public void update(String organizationId, OrganizationBean bean)
+            throws OrganizationNotFoundException, NotAuthorizedException {
+        if (!securityContext.hasPermission(PermissionType.orgUpdate, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
+        try {
+            bean.setId(organizationId);
+            storage.update(bean);
+        } catch (DoesNotExistException e) {
+            throw ExceptionFactory.organizationNotFoundException(organizationId);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
@@ -137,7 +156,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         roles.get(bean.getRoleId());
 
         if (!securityContext.hasPermission(PermissionType.orgUpdate, organizationId))
-            throw new NotAuthorizedException();
+            throw ExceptionFactory.notAuthorizedException();
 
         RoleMembershipBean membership = new RoleMembershipBean();
         membership.setOrganizationId(organizationId);
@@ -165,7 +184,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         roles.get(bean.getRoleId());
 
         if (!securityContext.hasPermission(PermissionType.orgUpdate, organizationId))
-            throw new NotAuthorizedException();
+            throw ExceptionFactory.notAuthorizedException();
 
         try {
             idmStorage.deleteMembership(organizationId, bean.getUserId(), bean.getRoleId());

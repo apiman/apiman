@@ -30,6 +30,7 @@ import org.overlord.apiman.dt.api.rest.contract.exceptions.InvalidSearchCriteria
 import org.overlord.apiman.dt.api.rest.contract.exceptions.NotAuthorizedException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.SystemErrorException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.UserNotFoundException;
+import org.overlord.apiman.dt.api.rest.impl.util.ExceptionFactory;
 import org.overlord.apiman.dt.api.security.ISecurityContext;
 
 /**
@@ -59,7 +60,7 @@ public class UserResourceImpl implements IUserResource {
         try {
             return idmStorage.getUser(userId);
         } catch (DoesNotExistException e) {
-            throw UserNotFoundException.create(userId);
+            throw ExceptionFactory.userNotFoundException(userId);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
@@ -71,12 +72,12 @@ public class UserResourceImpl implements IUserResource {
     @Override
     public void update(String userId, UserBean user) throws UserNotFoundException, NotAuthorizedException {
         if (!securityContext.isAdmin() && !securityContext.getCurrentUser().equals(userId))
-            throw new NotAuthorizedException();
+            throw ExceptionFactory.notAuthorizedException();
         user.setUsername(userId);
         try {
             idmStorage.updateUser(user);
         } catch (DoesNotExistException e) {
-            throw UserNotFoundException.create(userId);
+            throw ExceptionFactory.userNotFoundException(userId);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }

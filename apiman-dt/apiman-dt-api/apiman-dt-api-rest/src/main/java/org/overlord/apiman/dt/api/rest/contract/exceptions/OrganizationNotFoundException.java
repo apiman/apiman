@@ -16,7 +16,6 @@
 
 package org.overlord.apiman.dt.api.rest.contract.exceptions;
 
-import org.overlord.apiman.dt.api.rest.i18n.Messages;
 
 
 /**
@@ -28,14 +27,6 @@ public class OrganizationNotFoundException extends AbstractNotFoundException {
 
     private static final long serialVersionUID = -6377298317341796900L;
 
-    /**
-     * Creates an exception from an organization id.
-     * @param organizationId
-     */
-    public static final OrganizationNotFoundException create(String organizationId) {
-        return new OrganizationNotFoundException(Messages.i18n.format("OrganizationDoesNotExist", organizationId)); //$NON-NLS-1$
-    }
-    
     /**
      * Constructor.
      */

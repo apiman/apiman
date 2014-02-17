@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.overlord.apiman.dt.api.rest.ApiManDtApplication;
+import org.overlord.apiman.dt.api.rest.impl.CurrentUserResourceImpl;
 import org.overlord.apiman.dt.api.rest.impl.OrganizationResourceImpl;
 import org.overlord.apiman.dt.api.rest.impl.PermissionsResourceImpl;
 import org.overlord.apiman.dt.api.rest.impl.RoleResourceImpl;
@@ -44,6 +45,7 @@ public class DtApiRestApplication extends ApiManDtApplication {
         classes.add(SystemResourceImpl.class);
         classes.add(RoleResourceImpl.class);
         classes.add(UserResourceImpl.class);
+        classes.add(CurrentUserResourceImpl.class);
         classes.add(PermissionsResourceImpl.class);
         classes.add(OrganizationResourceImpl.class);
         

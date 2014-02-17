@@ -16,7 +16,6 @@
 
 package org.overlord.apiman.dt.api.rest.contract.exceptions;
 
-import org.overlord.apiman.dt.api.rest.i18n.Messages;
 
 /**
  * Thrown when the user attempts to do or see something that they
@@ -32,8 +31,8 @@ public class NotAuthorizedException extends AbstractUserException {
      * Constructor.
      * @param message
      */
-    public NotAuthorizedException() {
-        super(Messages.i18n.format("AccessDenied")); //$NON-NLS-1$
+    public NotAuthorizedException(String message) {
+        super(message);
     }
     
     /**

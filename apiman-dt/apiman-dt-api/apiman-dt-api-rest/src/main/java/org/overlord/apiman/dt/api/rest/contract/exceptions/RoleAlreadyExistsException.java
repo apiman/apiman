@@ -16,7 +16,6 @@
 
 package org.overlord.apiman.dt.api.rest.contract.exceptions;
 
-import org.overlord.apiman.dt.api.rest.i18n.Messages;
 
 
 /**
@@ -28,14 +27,6 @@ public class RoleAlreadyExistsException extends AbstractAlreadyExistsException {
 
     private static final long serialVersionUID = -688580326437962778L;
 
-    /**
-     * Creates an exception from an role id.
-     * @param roleId
-     */
-    public static final RoleAlreadyExistsException create(String roleId) {
-        return new RoleAlreadyExistsException(Messages.i18n.format("RoleAlreadyExists", roleId)); //$NON-NLS-1$
-    }
-    
     /**
      * Constructor.
      */

@@ -13,38 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.dt.ui.client.shared.beans;
+package org.overlord.apiman.dt.ui.client.local.pages;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
+import javax.enterprise.context.Dependent;
+
+import org.jboss.errai.ui.nav.client.local.Page;
+import org.jboss.errai.ui.shared.api.annotations.Templated;
+
 
 /**
- * Contains information about the current user.
+ * The "User" page, with the Organizations tab displayed.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
-public class UserConfigurationBean {
-    
-    private String username;
-    
+@Templated("/org/overlord/apiman/dt/ui/client/local/site/user-orgs.html#page")
+@Page(path="user-orgs")
+@Dependent
+public class UserOrgsPage extends AbstractUserPage {
+
     /**
      * Constructor.
      */
-    public UserConfigurationBean() {
+    public UserOrgsPage() {
     }
-
+    
     /**
-     * @return the username
+     * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractPage#loadPageData()
      */
-    public String getUsername() {
-        return username;
-    }
-
-    /**
-     * @param username the username to set
-     */
-    public void setUsername(String username) {
-        this.username = username;
+    @Override
+    protected int loadPageData() {
+        int rval = super.loadPageData();
+        return rval;
     }
 
 }
