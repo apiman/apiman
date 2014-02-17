@@ -22,8 +22,10 @@ import javax.inject.Inject;
 
 import org.jboss.errai.common.client.api.Caller;
 import org.overlord.apiman.dt.api.beans.idm.UserBean;
+import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
 import org.overlord.apiman.dt.api.beans.summary.OrganizationSummaryBean;
 import org.overlord.apiman.dt.api.rest.contract.ICurrentUserResource;
+import org.overlord.apiman.dt.api.rest.contract.IOrganizationResource;
 import org.overlord.apiman.dt.api.rest.contract.ISystemResource;
 import org.overlord.apiman.dt.ui.client.local.services.rest.CallbackAdapter;
 import org.overlord.apiman.dt.ui.client.local.services.rest.IRestInvokerCallback;
@@ -41,7 +43,9 @@ public class RestInvokerService {
     private Caller<ISystemResource> system;
     @Inject
     private Caller<ICurrentUserResource> currentUser;
-    
+    @Inject
+    private Caller<IOrganizationResource> organizations;
+
     /**
      * Gets the current system status.
      * @param callback
@@ -67,6 +71,16 @@ public class RestInvokerService {
     public void getCurrentUserOrgs(IRestInvokerCallback<List<OrganizationSummaryBean>> callback) {
         CallbackAdapter<List<OrganizationSummaryBean>> adapter = new CallbackAdapter<List<OrganizationSummaryBean>>(callback);
         currentUser.call(adapter, adapter).getOrganizations();
+    }
+    
+    /**
+     * Gets an organization by ID.
+     * @param orgId
+     * @param callback
+     */
+    public void getOrganization(String orgId, IRestInvokerCallback<OrganizationBean> callback) {
+        CallbackAdapter<OrganizationBean> adapter = new CallbackAdapter<OrganizationBean>(callback);
+        organizations.call(adapter, adapter).get(orgId);
     }
 
 }

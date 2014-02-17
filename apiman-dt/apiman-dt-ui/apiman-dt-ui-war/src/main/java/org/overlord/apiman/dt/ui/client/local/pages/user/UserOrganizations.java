@@ -21,7 +21,9 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.overlord.apiman.dt.api.beans.summary.OrganizationSummaryBean;
+import org.overlord.apiman.dt.ui.client.local.pages.OrgAppsPage;
 import org.overlord.apiman.dt.ui.client.local.services.NavigationHelperService;
+import org.overlord.apiman.dt.ui.client.local.util.MultimapUtil;
 import org.overlord.commons.gwt.client.local.widgets.SpanPanel;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -117,9 +119,8 @@ public class UserOrganizations extends FlowPanel implements HasValue<List<Organi
         title.getElement().setClassName("title"); //$NON-NLS-1$
         Anchor a = new Anchor();
         title.add(a);
-        a.setHref("#");
         a.setText(bean.getName());
-//        a.setHref(navHelper.createHrefToPage(OrgAppsPage.class, bean.getId()));
+        a.setHref(navHelper.createHrefToPage(OrgAppsPage.class, MultimapUtil.singleItemMap("org", bean.getId()))); //$NON-NLS-1$
 
         FlowPanel row2 = new FlowPanel();
         container.add(row2);
