@@ -33,5 +33,7 @@ public interface IStorage {
 
     public <T> T get(String id, Class<T> type) throws StorageException, DoesNotExistException;
 
+    public <T> T get(String organizationId, String id, Class<T> type) throws StorageException, DoesNotExistException;
+
     public <T> SearchResultsBean<T> find(SearchCriteriaBean criteria, Class<T> type) throws StorageException;
 }

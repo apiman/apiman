@@ -84,6 +84,15 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     }
     
     /**
+     * @see org.overlord.apiman.dt.api.persist.IStorage#get(java.lang.String, java.lang.String, java.lang.Class)
+     */
+    @Override
+    public <T> T get(String organizationId, String id, Class<T> type) throws StorageException,
+            DoesNotExistException {
+        return super.get(organizationId, id, type);
+    }
+    
+    /**
      * @see org.overlord.apiman.dt.api.persist.IStorage#find(org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean, java.lang.Class)
      */
     @Override

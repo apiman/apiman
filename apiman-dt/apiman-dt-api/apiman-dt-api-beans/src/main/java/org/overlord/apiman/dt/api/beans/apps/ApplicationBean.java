@@ -13,29 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.dt.api.beans.orgs;
+package org.overlord.apiman.dt.api.beans.apps;
 
 import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.Lob;
 import javax.persistence.Table;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.overlord.apiman.dt.api.beans.orgs.OrgBasedCompositeId;
 
 /**
- * An APIMan Organization.  This is an important top level entity in the APIMan
- * data model.  It contains the Services, Plans, etc.
+ * Models an application.
  *
  * @author eric.wittmann@redhat.com
  */
 @Portable
 @Entity
-@Table(name = "organizations")
-public class OrganizationBean {
+@Table(name = "applications")
+@IdClass(OrgBasedCompositeId.class)
+public class ApplicationBean {
     
+    @Id
+    private String organizationId;
     @Id
     private String id;
     private String name;
@@ -45,12 +49,6 @@ public class OrganizationBean {
     private String createdBy;
     @Column(updatable=false)
     private Date createdOn;
-    
-    /**
-     * Constructor.
-     */
-    public OrganizationBean() {
-    }
 
     /**
      * @return the id
@@ -106,6 +104,20 @@ public class OrganizationBean {
      */
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    /**
+     * @return the organizationId
+     */
+    public String getOrganizationId() {
+        return organizationId;
+    }
+
+    /**
+     * @param organizationId the organizationId to set
+     */
+    public void setOrganizationId(String organizationId) {
+        this.organizationId = organizationId;
     }
 
     /**

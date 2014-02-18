@@ -12,6 +12,7 @@
     <class>org.overlord.apiman.dt.api.beans.idm.RoleBean</class>
     <class>org.overlord.apiman.dt.api.beans.idm.RoleMembershipBean</class>
     <class>org.overlord.apiman.dt.api.beans.orgs.OrganizationBean</class>
+    <class>org.overlord.apiman.dt.api.beans.apps.ApplicationBean</class>
 
     <properties>
       <property name="hibernate.show_sql" value="false" />

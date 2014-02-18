@@ -186,7 +186,7 @@ public class DtApiTestServer {
         HashLoginService l = new HashLoginService();
         for (String user : TestUsers.USERS) {
             String[] roles = new String[] { "apiuser" };
-            if ("admin".equals(user))
+            if (user.startsWith("admin"))
                 roles = new String[] {"apiadmin"};
             l.putUser(user, Credential.getCredential(user), roles);
         }

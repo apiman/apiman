@@ -29,6 +29,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.overlord.apiman.dt.api.beans.orgs.OrgBasedCompositeId;
 import org.overlord.apiman.dt.api.beans.search.OrderByBean;
 import org.overlord.apiman.dt.api.beans.search.PagingBean;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
@@ -137,6 +138,26 @@ public abstract class AbstractJpaStorage {
         EntityManager entityManager = emf.createEntityManager();
         try {
             rval = entityManager.find(type, id);
+        } catch (Throwable t) {
+            logger.error(t.getMessage(), t);
+            throw new StorageException(t);
+        } finally {
+            entityManager.close();
+        }
+        if (rval == null)
+            throw new DoesNotExistException();
+        return rval;
+    }
+
+    /**
+     * @see org.overlord.apiman.dt.api.persist.IStorage#get(java.lang.String, java.lang.String, java.lang.Class)
+     */
+    public <T> T get(String organizationId, String id, Class<T> type) throws StorageException, DoesNotExistException {
+        T rval = null;
+        EntityManager entityManager = emf.createEntityManager();
+        try {
+            Object key = new OrgBasedCompositeId(organizationId, id);
+            rval = entityManager.find(type, key);
         } catch (Throwable t) {
             logger.error(t.getMessage(), t);
             throw new StorageException(t);
