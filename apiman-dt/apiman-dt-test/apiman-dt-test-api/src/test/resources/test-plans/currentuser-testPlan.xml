@@ -18,6 +18,7 @@
     <test name="My Orgs (user2)">currentuser/orgs/003_my-orgs-user2.resttest</test>
     <test name="Grant Access to Org2 (user1)">currentuser/orgs/004_grant-org2.resttest</test>
     <test name="My Orgs (user1)">currentuser/orgs/005_my-orgs-user1.resttest</test>
+    <test name="Someone Else's Orgs (user1)">currentuser/orgs/006_other-orgs-user1.resttest</test>
   </testGroup>
 
 </testPlan>

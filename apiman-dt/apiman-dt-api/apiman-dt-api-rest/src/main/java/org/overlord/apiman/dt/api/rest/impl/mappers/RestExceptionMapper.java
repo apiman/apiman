@@ -16,12 +16,16 @@
 
 package org.overlord.apiman.dt.api.rest.impl.mappers;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 import org.overlord.apiman.dt.api.rest.contract.exceptions.AbstractRestException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ErrorBean;
+import org.overlord.apiman.dt.api.security.ISecurityContext;
 
 /**
  * Provider that maps an error.
@@ -29,7 +33,11 @@ import org.overlord.apiman.dt.api.rest.contract.exceptions.ErrorBean;
  * @author eric.wittmann@redhat.com
  */
 @Provider
+@ApplicationScoped
 public class RestExceptionMapper implements ExceptionMapper<AbstractRestException> {
+    
+    @Inject
+    ISecurityContext securityContext;
     
     /**
      * Constructor.
@@ -42,12 +50,20 @@ public class RestExceptionMapper implements ExceptionMapper<AbstractRestExceptio
      */
     @Override
     public Response toResponse(AbstractRestException data) {
+        String origin = securityContext.getRequestHeader("Origin"); //$NON-NLS-1$
         ErrorBean error = new ErrorBean();
         error.setType(data.getClass().getSimpleName());
         error.setErrorCode(data.getErrorCode());
         error.setMessage(data.getMessage());
         error.setMoreInfoUrl(data.getMoreInfoUrl());
-        return Response.status(data.getHttpCode()).header("X-Apiman-Error", "true").entity(error).build(); //$NON-NLS-1$ //$NON-NLS-2$
+        ResponseBuilder builder = Response.status(data.getHttpCode()).header("X-Apiman-Error", "true"); //$NON-NLS-1$ //$NON-NLS-2$
+        if (origin != null) {
+            builder = builder
+                    .header("Access-Control-Allow-Origin", origin) //$NON-NLS-1$
+                    .header("Access-Control-Allow-Credentials", "true") //$NON-NLS-1$ //$NON-NLS-2$
+                    .header("Access-Control-Expose-Headers", "X-Apiman-Error"); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+        return builder.entity(error).build();
     }
 
 }

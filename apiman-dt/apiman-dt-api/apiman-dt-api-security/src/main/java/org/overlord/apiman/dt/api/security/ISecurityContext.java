@@ -52,5 +52,11 @@ public interface ISecurityContext {
      * @param permission
      */
     public Set<String> getPermittedOrganizations(PermissionType permission);
+    
+    /**
+     * Gets a request header from the current in-scope request.
+     * @param headerName
+     */
+    public String getRequestHeader(String headerName);
 
 }

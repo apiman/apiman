@@ -16,6 +16,8 @@
 
 package org.overlord.apiman.dt.api.rest.contract;
 
+import java.util.List;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -28,6 +30,7 @@ import javax.ws.rs.core.MediaType;
 import org.overlord.apiman.dt.api.beans.idm.UserBean;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
 import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
+import org.overlord.apiman.dt.api.beans.summary.OrganizationSummaryBean;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.InvalidSearchCriteriaException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.NotAuthorizedException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.UserNotFoundException;
@@ -55,5 +58,10 @@ public interface IUserResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public SearchResultsBean<UserBean> search(SearchCriteriaBean criteria) throws InvalidSearchCriteriaException;
+
+    @GET
+    @Path("{userId}/organizations")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<OrganizationSummaryBean> getOrganizations(@PathParam("userId") String userId);
     
 }

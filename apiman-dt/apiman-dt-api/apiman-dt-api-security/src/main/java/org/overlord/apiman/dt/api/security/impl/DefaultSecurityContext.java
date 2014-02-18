@@ -52,6 +52,14 @@ public class DefaultSecurityContext implements ISecurityContext {
     }
     
     /**
+     * @see org.overlord.apiman.dt.api.security.ISecurityContext#getRequestHeader(java.lang.String)
+     */
+    @Override
+    public String getRequestHeader(String headerName) {
+        return servletRequest.get().getHeader(headerName);
+    }
+    
+    /**
      * @see org.overlord.apiman.dt.api.security.ISecurityContext#getCurrentUser()
      */
     @Override

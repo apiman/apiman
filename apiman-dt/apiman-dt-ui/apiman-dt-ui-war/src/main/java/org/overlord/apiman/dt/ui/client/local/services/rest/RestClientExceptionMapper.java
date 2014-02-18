@@ -21,6 +21,13 @@ import javax.ws.rs.ext.Provider;
 import org.jboss.errai.enterprise.client.jaxrs.AbstractJSONClientExceptionMapper;
 import org.jboss.errai.enterprise.client.jaxrs.api.ResponseException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ErrorBean;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.InvalidSearchCriteriaException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.NotAuthorizedException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationAlreadyExistsException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationNotFoundException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.RoleAlreadyExistsException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.RoleNotFoundException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.SystemErrorException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.UserNotFoundException;
 import org.overlord.apiman.dt.ui.client.local.exceptions.NotAuthenticatedException;
 
@@ -50,9 +57,22 @@ public class RestClientExceptionMapper extends AbstractJSONClientExceptionMapper
         if (header != null && "true".equals(header)) { //$NON-NLS-1$
             ErrorBean errorBean = fromJSON(response, ErrorBean.class);
             String type = errorBean.getType();
-            if (type.equals("UserNotFoundException")) { //$NON-NLS-1$
+            if (type.equals("InvalidSearchCriteriaException")) //$NON-NLS-1$
+                return new InvalidSearchCriteriaException(errorBean.getMessage());
+            if (type.equals("NotAuthorizedException")) //$NON-NLS-1$
+                return new NotAuthorizedException(errorBean.getMessage());
+            if (type.equals("OrganizationAlreadyExistsException")) //$NON-NLS-1$
+                return new OrganizationAlreadyExistsException(errorBean.getMessage());
+            if (type.equals("OrganizationNotFoundException")) //$NON-NLS-1$
+                return new OrganizationNotFoundException(errorBean.getMessage());
+            if (type.equals("RoleAlreadyExistsException")) //$NON-NLS-1$
+                return new RoleAlreadyExistsException(errorBean.getMessage());
+            if (type.equals("RoleNotFoundException")) //$NON-NLS-1$
+                return new RoleNotFoundException(errorBean.getMessage());
+            if (type.equals("SystemErrorException")) //$NON-NLS-1$
+                return new SystemErrorException(errorBean.getMessage());
+            if (type.equals("UserNotFoundException")) //$NON-NLS-1$
                 return new UserNotFoundException(errorBean.getMessage());
-            }
             // Default - simple exception.
             return new RuntimeException(errorBean.getMessage());
         }

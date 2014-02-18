@@ -59,7 +59,7 @@ public class UserOrgsPage extends AbstractUserPage {
     @Override
     protected int loadPageData() {
         int rval = super.loadPageData();
-        rest.getCurrentUserOrgs(new IRestInvokerCallback<List<OrganizationSummaryBean>>() {
+        rest.getUserOrgs(user, new IRestInvokerCallback<List<OrganizationSummaryBean>>() {
             @Override
             public void onSuccess(List<OrganizationSummaryBean> response) {
                 orgs = response;

@@ -16,14 +16,21 @@
 
 package org.overlord.apiman.dt.api.rest.impl;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.overlord.apiman.dt.api.beans.idm.RoleMembershipBean;
 import org.overlord.apiman.dt.api.beans.idm.UserBean;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
 import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
+import org.overlord.apiman.dt.api.beans.summary.OrganizationSummaryBean;
 import org.overlord.apiman.dt.api.persist.DoesNotExistException;
 import org.overlord.apiman.dt.api.persist.IIdmStorage;
+import org.overlord.apiman.dt.api.persist.IStorageQuery;
 import org.overlord.apiman.dt.api.persist.StorageException;
 import org.overlord.apiman.dt.api.rest.contract.IUserResource;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.InvalidSearchCriteriaException;
@@ -45,7 +52,9 @@ public class UserResourceImpl implements IUserResource {
     IIdmStorage idmStorage;
     @Inject
     ISecurityContext securityContext;
-    
+    @Inject
+    IStorageQuery query;
+
     /**
      * Constructor.
      */
@@ -91,6 +100,22 @@ public class UserResourceImpl implements IUserResource {
             throws InvalidSearchCriteriaException {
         try {
             return idmStorage.findUsers(criteria);
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+    }
+    
+    /**
+     * @see org.overlord.apiman.dt.api.rest.contract.IUserResource#getOrganizations(java.lang.String)
+     */
+    @Override
+    public List<OrganizationSummaryBean> getOrganizations(String userId) {
+        Set<String> permittedOrganizations = new HashSet<String>();
+        try {
+            Set<RoleMembershipBean> memberships = idmStorage.getUserMemberships(userId);
+            for (RoleMembershipBean membership : memberships)
+                permittedOrganizations.add(membership.getOrganizationId());
+            return query.getOrgs(permittedOrganizations);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }

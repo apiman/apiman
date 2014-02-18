@@ -38,7 +38,7 @@ import com.google.gwt.user.client.ui.Label;
 public abstract class AbstractUserPage extends AbstractPage {
     
     @PageState
-    private String user;
+    protected String user;
     
     UserBean userBean;
 
@@ -71,7 +71,7 @@ public abstract class AbstractUserPage extends AbstractPage {
      */
     @Override
     protected int loadPageData() {
-        rest.getCurrentUserInfo(new IRestInvokerCallback<UserBean>() {
+        rest.getUser(user, new IRestInvokerCallback<UserBean>() {
             @Override
             public void onSuccess(UserBean response) {
                 userBean = response;

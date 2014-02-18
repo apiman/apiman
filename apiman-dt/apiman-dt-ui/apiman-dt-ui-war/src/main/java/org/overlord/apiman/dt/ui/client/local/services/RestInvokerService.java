@@ -27,6 +27,7 @@ import org.overlord.apiman.dt.api.beans.summary.OrganizationSummaryBean;
 import org.overlord.apiman.dt.api.rest.contract.ICurrentUserResource;
 import org.overlord.apiman.dt.api.rest.contract.IOrganizationResource;
 import org.overlord.apiman.dt.api.rest.contract.ISystemResource;
+import org.overlord.apiman.dt.api.rest.contract.IUserResource;
 import org.overlord.apiman.dt.ui.client.local.services.rest.CallbackAdapter;
 import org.overlord.apiman.dt.ui.client.local.services.rest.IRestInvokerCallback;
 
@@ -44,7 +45,15 @@ public class RestInvokerService {
     @Inject
     private Caller<ICurrentUserResource> currentUser;
     @Inject
+    private Caller<IUserResource> user;
+    @Inject
     private Caller<IOrganizationResource> organizations;
+    
+    /**
+     * Constructor.
+     */
+    public RestInvokerService() {
+    }
 
     /**
      * Gets the current system status.
@@ -53,6 +62,24 @@ public class RestInvokerService {
     public void getSystemStatus(IRestInvokerCallback<String> callback) {
         CallbackAdapter<String> adapter = new CallbackAdapter<String>(callback);
         system.call(adapter, adapter).getStatus();
+    }
+
+    /**
+     * Gets info about the given user.
+     * @param callback
+     */
+    public void getUser(String userId, IRestInvokerCallback<UserBean> callback) {
+        CallbackAdapter<UserBean> adapter = new CallbackAdapter<UserBean>(callback);
+        user.call(adapter, adapter).get(userId);
+    }
+
+    /**
+     * Gets the organizations visible to the current user.
+     * @param callback
+     */
+    public void getUserOrgs(String userId, IRestInvokerCallback<List<OrganizationSummaryBean>> callback) {
+        CallbackAdapter<List<OrganizationSummaryBean>> adapter = new CallbackAdapter<List<OrganizationSummaryBean>>(callback);
+        user.call(adapter, adapter).getOrganizations(userId);
     }
 
     /**

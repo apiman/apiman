@@ -23,6 +23,7 @@ import org.jboss.errai.enterprise.client.cdi.api.CDI;
 import org.jboss.errai.ui.nav.client.local.Navigation;
 import org.jboss.errai.ui.nav.client.local.PageHiding;
 import org.jboss.errai.ui.nav.client.local.PageShowing;
+import org.overlord.apiman.dt.ui.client.local.PageErrorPanel;
 import org.overlord.apiman.dt.ui.client.local.PageLoadingWidget;
 import org.overlord.apiman.dt.ui.client.local.services.NavigationHelperService;
 import org.overlord.apiman.dt.ui.client.local.services.RestInvokerService;
@@ -31,7 +32,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Visibility;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 
 /**
@@ -51,6 +51,8 @@ public abstract class AbstractPage extends Composite {
     protected RestInvokerService rest;
     @Inject 
     protected NavigationHelperService navHelper;
+    @Inject
+    protected PageErrorPanel errorPanel;
 
     private int expectedDataPackets;
     private int dataPacketsReceived;
@@ -104,6 +106,8 @@ public abstract class AbstractPage extends Composite {
     protected void doPageLoadingLifecycle() {
         onPageLoading();
         pageLoadingWidget.show();
+        errorPanel.clear();
+        errorPanel.hide();
         navigation.getContentPanel().asWidget().getElement().getStyle().setVisibility(Visibility.HIDDEN);
         navigation.getContentPanel().asWidget().getElement().getStyle().setDisplay(Display.NONE);
         dataPacketsReceived = 0;
@@ -138,8 +142,9 @@ public abstract class AbstractPage extends Composite {
      * Called when an error occurs trying to load page data.
      */
     protected void dataPacketError(Throwable t) {
-        // TODO implement this!
-        Window.alert("Error loading page data: " + t.getMessage()); //$NON-NLS-1$
+        errorPanel.displayError(t);
+        pageLoadingWidget.hide();
+        errorPanel.show();
     }
 
     /**
@@ -157,7 +162,7 @@ public abstract class AbstractPage extends Composite {
             public void onFailure(Throwable caught) {
               // can't really fail
             }
-          });
+        });
     }
 
     /**

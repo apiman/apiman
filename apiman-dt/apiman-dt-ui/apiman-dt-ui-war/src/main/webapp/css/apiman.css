@@ -397,3 +397,44 @@ a.apiman-summaryrow-icon:hover {
 .apiman-entity-new .description {
   width: 700px;
 }
+
+.error-page {
+  margin-top: 30px;
+}
+
+.error-page {
+  margin-top: 30px;
+}
+.error-page .title {
+  font-size: 18px;
+  font-weight: bold;
+}
+.error-page .description {
+  font-size: 14px;
+  color: #444;
+}
+.error-page .header {
+  font-size: 14px;
+  font-weight: bold;
+  text-decoration: underline;
+}
+.error-page .errorMessage {
+  width: 100%;
+  cursor: auto;
+  margin-top: 5px;
+}
+.error-icon {
+  width: 128px;
+  height: 128px;
+  background-repeat: no-repeat;
+  background-position: top left;
+}
+.error-403 {
+  background-image: url(images/error-403.png);
+}
+.error-404 {
+  background-image: url(images/error-404.png);
+}
+.error-500 {
+  background-image: url(images/error-500.png);
+}
