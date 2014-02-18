@@ -10,12 +10,39 @@
 
 /* Mobile */
 @media ( max-width : 767px) {
+  .nav-tabs li {
+    float: none;
+  }
+  .nav-tabs li.pull-right {
+    float: none !important;
+  }
+  .nav-tabs li a {
+    border-radius: 4px 4px 4px 4px;
+  }
+  .nav-tabs li.active a {
+    border-color: transparent;
+    border-bottom-color: transparent;
+    background-color: rgb(66, 139, 202);
+    color: white;
+  }
+  .nav-tabs li.active a:hover {
+    border-color: transparent;
+    border-bottom-color: transparent;
+    background-color: rgb(66, 139, 202);
+    color: white;
+  }
 }
 
 /* Smart Phones */
 @media ( max-width : 480px) {
+  .apiman-filters .input-search {
+    width: 220px;
+  }
 }
 
 /* Original iPhone */
 @media ( max-width : 360px) {
+  .apiman-filters .input-search {
+    width: 180px;
+  }
 }
