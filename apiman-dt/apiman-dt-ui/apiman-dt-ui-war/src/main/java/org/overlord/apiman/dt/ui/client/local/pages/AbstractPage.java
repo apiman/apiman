@@ -142,6 +142,7 @@ public abstract class AbstractPage extends Composite {
      * Called when an error occurs trying to load page data.
      */
     protected void dataPacketError(Throwable t) {
+        errorPanel.clear();
         errorPanel.displayError(t);
         pageLoadingWidget.hide();
         errorPanel.show();

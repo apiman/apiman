@@ -59,11 +59,11 @@
               <div class="tab-pane active" id="tab-apps">
                 <div class="apiman-filters apiman-applications-filters">
                   <input type="text" class="form-control input-search" placeholder="Search by org or app name..."></input>
-                  <a href="newApp.html" class="btn btn-primary pull-right">New App</a>
+                  <a data-field="toNewApp" href="newApp.html" class="btn btn-primary pull-right">New App</a>
                 </div>
                 <div class="clearfix"></div>
                 <!-- The list of applications the user has access to -->
-                <div class="apiman-applications">
+                <div class="apiman-applications" data-field="applications" data-role="dummy">
                   <div class="container-fluid apiman-summaryrow">
                     <div class="row">
                       <a href="orgHome.html">JBoss Overlord</a> / <span class="title"><a href="appHome.html">gadget-server</a></span>

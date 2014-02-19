@@ -25,7 +25,7 @@ import org.jboss.errai.ui.nav.client.local.TransitionAnchor;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.apiman.dt.api.beans.summary.OrganizationSummaryBean;
-import org.overlord.apiman.dt.ui.client.local.pages.user.UserOrganizations;
+import org.overlord.apiman.dt.ui.client.local.pages.user.UserOrganizationList;
 import org.overlord.apiman.dt.ui.client.local.services.rest.IRestInvokerCallback;
 
 
@@ -42,7 +42,7 @@ public class UserOrgsPage extends AbstractUserPage {
     List<OrganizationSummaryBean> orgs;
     
     @Inject @DataField
-    UserOrganizations organizations;
+    UserOrganizationList organizations;
     
     @Inject @DataField
     TransitionAnchor<NewOrgPage> toNewOrg;

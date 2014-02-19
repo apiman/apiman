@@ -16,6 +16,8 @@
 
 package org.overlord.apiman.dt.api.rest.contract;
 
+import java.util.List;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -28,6 +30,7 @@ import javax.ws.rs.core.MediaType;
 import org.overlord.apiman.dt.api.beans.apps.ApplicationBean;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
 import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
+import org.overlord.apiman.dt.api.beans.summary.ApplicationSummaryBean;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ApplicationAlreadyExistsException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ApplicationNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.InvalidSearchCriteriaException;
@@ -55,6 +58,12 @@ public interface IApplicationResource {
     public ApplicationBean get(@PathParam("organizationId") String organizationId,
             @PathParam("applicationId") String applicationId) throws ApplicationNotFoundException,
             NotAuthorizedException;
+
+    @GET
+    @Path("{organizationId}/applications")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<ApplicationSummaryBean> list(@PathParam("organizationId") String organizationId)
+            throws OrganizationNotFoundException, NotAuthorizedException;
 
     @PUT
     @Path("{organizationId}/applications/{applicationId}")

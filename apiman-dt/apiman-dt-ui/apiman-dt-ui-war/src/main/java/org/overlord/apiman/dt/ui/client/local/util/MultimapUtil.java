@@ -35,5 +35,23 @@ public class MultimapUtil {
         multimap.put(key, value);
         return multimap;
     }
+    
+    /**
+     * Creates a multimap out of a variable number of keys and values.  This should
+     * always be called with an even number of arguments, otherwise an {@link ArrayIndexOutOfBoundsException}
+     * is likely to occur.
+     * @param data
+     */
+    public static final Multimap<String, String> fromMultiple(String ... data) {
+        HashMultimap<String, String> multimap = HashMultimap.create();
+        if (data == null)
+            return multimap;
+        for (int i = 0; i < data.length; i+=2) {
+            String key = data[i];
+            String val = data[i+1];
+            multimap.put(key, val);
+        }
+        return multimap;
+    }
 
 }

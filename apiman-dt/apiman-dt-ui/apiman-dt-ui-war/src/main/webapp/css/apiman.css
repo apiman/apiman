@@ -32,7 +32,7 @@ body {
   background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
   border: solid #51a8db 1px;
 }
-.btn-primary[disabled], .btn-primary.disabled {
+.btn-primary[disabled], .btn-primary.disabled, .btn-primary[disabled]:focus, .btn-primary.disabled:focus {
   background: #9d9d9d;
   background-image: -webkit-linear-gradient(top, #9d9d9d, #888888);
   background-image: -moz-linear-gradient(top, #9d9d9d, #888888);

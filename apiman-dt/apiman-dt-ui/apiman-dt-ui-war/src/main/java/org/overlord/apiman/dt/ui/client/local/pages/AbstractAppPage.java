@@ -19,54 +19,47 @@ import javax.inject.Inject;
 
 import org.jboss.errai.ui.nav.client.local.PageState;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.overlord.apiman.dt.api.beans.apps.ApplicationBean;
 import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
 import org.overlord.apiman.dt.ui.client.local.services.rest.IRestInvokerCallback;
 import org.overlord.apiman.dt.ui.client.local.util.MultimapUtil;
-import org.overlord.commons.gwt.client.local.widgets.ParagraphLabel;
 
-import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.InlineLabel;
-import com.google.gwt.user.client.ui.Label;
 
 
 /**
- * Base class for all Organization pages.
+ * Base class for all Application pages.
  *
  * @author eric.wittmann@redhat.com
  */
-public abstract class AbstractOrgPage extends AbstractPage {
+public abstract class AbstractAppPage extends AbstractPage {
     
     @PageState
-    protected String org;
+    private String app;
+    @PageState
+    private String org;
     
     OrganizationBean organizationBean;
-
-    @Inject @DataField
-    Label name;
-    @Inject @DataField
-    InlineLabel createdOn;
-    @Inject @DataField
-    InlineLabel numMembers;
-    @Inject @DataField
-    ParagraphLabel description;
+    ApplicationBean applicationBean;
     
     @Inject @DataField
-    Anchor toOrgApps;
+    Anchor organization;
     @Inject @DataField
-    Anchor toOrgServices;
+    Anchor application;
+
     @Inject @DataField
-    Anchor toOrgPlans;
+    Anchor toAppOverview;
     @Inject @DataField
-    Anchor toOrgMembers;
+    Anchor toAppContracts;
     @Inject @DataField
-    Anchor toOrgActivity;
+    Anchor toAppPolicies;
+    @Inject @DataField
+    Anchor toAppActivity;
 
     /**
      * Constructor.
      */
-    public AbstractOrgPage() {
+    public AbstractAppPage() {
     }
     
     /**
@@ -85,35 +78,39 @@ public abstract class AbstractOrgPage extends AbstractPage {
                 dataPacketError(error);
             }
         });
-        return 1;
+        rest.getApplication(org, app, new IRestInvokerCallback<ApplicationBean>() {
+            @Override
+            public void onSuccess(ApplicationBean response) {
+                applicationBean = response;
+                dataPacketLoaded();
+            }
+            @Override
+            public void onError(Throwable error) {
+                dataPacketError(error);
+            }
+        });
+        return 2;
     }
-    
+
     /**
      * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractPage#renderPage()
      */
     @Override
     protected void renderPage() {
         String orgAppsHref = navHelper.createHrefToPage(OrgAppsPage.class, MultimapUtil.singleItemMap("org", org)); //$NON-NLS-1$
-        String orgServicesHref = navHelper.createHrefToPage(OrgServicesPage.class, MultimapUtil.singleItemMap("org", org)); //$NON-NLS-1$
-        String orgPlansHref = navHelper.createHrefToPage(OrgPlansPage.class, MultimapUtil.singleItemMap("org", org)); //$NON-NLS-1$
-        String orgMembersHref = navHelper.createHrefToPage(OrgMembersPage.class, MultimapUtil.singleItemMap("org", org)); //$NON-NLS-1$
-        String orgActivityHref = navHelper.createHrefToPage(OrgActivityPage.class, MultimapUtil.singleItemMap("org", org)); //$NON-NLS-1$
-        toOrgApps.setHref(orgAppsHref);
-        toOrgServices.setHref(orgServicesHref);
-        toOrgPlans.setHref(orgPlansHref);
-        toOrgMembers.setHref(orgMembersHref);
-        toOrgActivity.setHref(orgActivityHref);
+        String appOverviewHref = navHelper.createHrefToPage(AppOverviewPage.class, MultimapUtil.fromMultiple("org", org, "app", app)); //$NON-NLS-1$ //$NON-NLS-2$
+        String appContractsHref = navHelper.createHrefToPage(AppContractsPage.class, MultimapUtil.fromMultiple("org", org, "app", app)); //$NON-NLS-1$ //$NON-NLS-2$
+        String appPoliciesHref = navHelper.createHrefToPage(AppPoliciesPage.class, MultimapUtil.fromMultiple("org", org, "app", app)); //$NON-NLS-1$ //$NON-NLS-2$
+        String appActivityHref = navHelper.createHrefToPage(AppActivityPage.class, MultimapUtil.fromMultiple("org", org, "app", app)); //$NON-NLS-1$ //$NON-NLS-2$
+        toAppOverview.setHref(appOverviewHref);
+        toAppContracts.setHref(appContractsHref);
+        toAppPolicies.setHref(appPoliciesHref);
+        toAppActivity.setHref(appActivityHref);
 
-        name.setText(organizationBean.getName());
-        DateTimeFormat format = DateTimeFormat.getFormat(PredefinedFormat.DATE_MEDIUM);
-        createdOn.setText(format.format(organizationBean.getCreatedOn()));
-        // TODO implement # members
-        numMembers.setText("1"); //$NON-NLS-1$
-        if (organizationBean.getDescription() != null) {
-            description.setText(organizationBean.getDescription());
-        } else {
-            description.setText(""); //$NON-NLS-1$
-        }
+        organization.setHref(orgAppsHref);
+        organization.setText(organizationBean.getName());
+        application.setHref(appOverviewHref);
+        application.setText(applicationBean.getName());
     }
 
 }

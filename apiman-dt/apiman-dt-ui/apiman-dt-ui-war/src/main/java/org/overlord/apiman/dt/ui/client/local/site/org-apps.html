@@ -53,7 +53,7 @@
           <div class="apiman-entitytabs">
             <ul id="entitytabs" class="nav nav-tabs">
               <li class="active"><a href="org-apps.html" data-field="toOrgApps" data-i18n-key="applications">Applications</a></li>
-              <li><a href=org-services.html" data-field="toOrgServices" data-i18n-key="services">Services</a></li>
+              <li><a href="org-services.html" data-field="toOrgServices" data-i18n-key="services">Services</a></li>
               <li><a href="org-plans.html" data-field="toOrgPlans" data-i18n-key="plans">Plans</a></li>
               <li><a href="org-members.html" data-field="toOrgMembers" data-i18n-key="members">Members</a></li>
               <li class="pull-right"><a href="org-activity.html" data-field="toOrgActivity" data-i18n-key="activity">Activity</a></li>
@@ -61,17 +61,17 @@
             <div id="entitytabsContent" class="tab-content">
 
               <!-- Applications Tab Content -->
-              <div class="tab-pane fade in active" id="tab-apps">
+              <div class="tab-pane active" id="tab-apps">
                 <div class="apiman-filters apiman-applications-filters">
-                  <input type="text" class="form-control input-search" placeholder="Search by application name..."></input>
-                  <a href="newApp.html" class="btn btn-primary pull-right">New App</a>
+                  <input data-field="appSearch" type="text" class="form-control input-search" placeholder="Search by application name..."></input>
+                  <a data-field="toNewApp" href="new-app.html" class="btn btn-primary pull-right">New App</a>
                 </div>
                 <div class="clearfix"></div>
                 <!-- The list of applications in the org -->
-                <div class="apiman-applications">
+                <div class="apiman-applications" data-field="applications" data-role="dummy">
                   <div class="container-fluid apiman-summaryrow">
                     <div class="row">
-                      <span class="title"><a href="appHome.html">gadget-server</a></span>
+                      <span class="title"><a href="app-overview.html">gadget-server</a></span>
                       <a href="#" data-toggle="popover" data-trigger="hover" data-html="true" data-content="This application invokes <b>52</b> <em>services</em>." data-placement="top" class="apiman-summaryrow-icon">
                         <div class="icon icon-service"></div>
                         <span class="title-summary-item">52</span>
@@ -86,7 +86,7 @@
                   </div>
                   <div class="container-fluid apiman-summaryrow">
                     <div class="row">
-                      <span class="title"><a href="appHome.html">rtgov</a></span>
+                      <span class="title"><a href="app-overview.html">rtgov</a></span>
                       <a href="#" data-toggle="popover" data-trigger="hover" data-html="true" data-content="This application invokes <b>11</b> <em>services</em>." data-placement="top" class="apiman-summaryrow-icon">
                         <div class="icon icon-service"></div>
                         <span class="title-summary-item">11</span>
@@ -102,7 +102,7 @@
                   </div>
                   <div class="container-fluid apiman-summaryrow">
                     <div class="row">
-                      <span class="title"><a href="appHome.html">dtgov</a></span>
+                      <span class="title"><a href="app-overview.html">dtgov</a></span>
                       <a href="#" data-toggle="popover" data-trigger="hover" data-html="true" data-content="This application invokes <b>123</b> <em>services</em>." data-placement="top" class="apiman-summaryrow-icon">
                         <div class="icon icon-service"></div>
                         <span class="title-summary-item">123</span>
@@ -117,7 +117,7 @@
                   </div>
                   <div class="container-fluid apiman-summaryrow">
                     <div class="row">
-                      <span class="title"><a href="appHome.html">s-ramp</a></span>
+                      <span class="title"><a href="app-overview.html">s-ramp</a></span>
                       <a href="#" data-toggle="popover" data-trigger="hover" data-html="true" data-content="This application invokes <b>5</b> <em>services</em>." data-placement="top" class="apiman-summaryrow-icon">
                         <div class="icon icon-service"></div>
                         <span class="title-summary-item">5</span>

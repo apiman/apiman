@@ -13,18 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.dt.api.beans.idm;
+package org.overlord.apiman.dt.ui.client.local.services;
 
 /**
- * A list of all the permissions supported by the system.
+ * Keys to use when using the {@link CurrentContextService}.
  *
  * @author eric.wittmann@redhat.com
  */
-public enum PermissionType {
+public final class ContextKeys {
     
-    orgView,  orgEdit,  orgAdmin,
-    svcView,  svcEdit,  svcAdmin,
-    appView,  appEdit,  appAdmin,
-    planView, planEdit, planAdmin
-    
+    public static final String CURRENT_ORGANIZATION = "organizations.current"; //$NON-NLS-1$
+
 }

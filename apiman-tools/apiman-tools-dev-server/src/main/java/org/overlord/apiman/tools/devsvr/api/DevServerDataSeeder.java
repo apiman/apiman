@@ -18,6 +18,7 @@ package org.overlord.apiman.tools.devsvr.api;
 import java.util.Date;
 import java.util.HashSet;
 
+import org.overlord.apiman.dt.api.beans.apps.ApplicationBean;
 import org.overlord.apiman.dt.api.beans.idm.PermissionType;
 import org.overlord.apiman.dt.api.beans.idm.RoleBean;
 import org.overlord.apiman.dt.api.beans.idm.RoleMembershipBean;
@@ -53,8 +54,17 @@ public class DevServerDataSeeder extends DefaultTestDataSeeder {
         role.setName("Organization Owner");
         role.setPermissions(new HashSet<String>());
         role.getPermissions().add(PermissionType.orgView.toString());
-        role.getPermissions().add(PermissionType.orgUpdate.toString());
-        role.getPermissions().add(PermissionType.orgDelete.toString());
+        role.getPermissions().add(PermissionType.orgEdit.toString());
+        role.getPermissions().add(PermissionType.orgAdmin.toString());
+        role.getPermissions().add(PermissionType.appView.toString());
+        role.getPermissions().add(PermissionType.appEdit.toString());
+        role.getPermissions().add(PermissionType.appAdmin.toString());
+        role.getPermissions().add(PermissionType.planView.toString());
+        role.getPermissions().add(PermissionType.planEdit.toString());
+        role.getPermissions().add(PermissionType.planAdmin.toString());
+        role.getPermissions().add(PermissionType.svcView.toString());
+        role.getPermissions().add(PermissionType.svcEdit.toString());
+        role.getPermissions().add(PermissionType.svcAdmin.toString());
         idmStorage.createRole(role);
         
         // Create JBoss Overlord org
@@ -73,18 +83,45 @@ public class DevServerDataSeeder extends DefaultTestDataSeeder {
         org.setCreatedOn(new Date());
         storage.create(org);
         
-        // Make eric the owner of both orgs
+        // Make admin the owner of both orgs
         RoleMembershipBean membership = new RoleMembershipBean();
         membership.setOrganizationId("JBossOverlord");
         membership.setRoleId("OrganizationOwner");
-        membership.setUserId("eric");
+        membership.setUserId("admin");
         idmStorage.createMembership(membership);
 
         membership = new RoleMembershipBean();
         membership.setOrganizationId("ApereoBedework");
         membership.setRoleId("OrganizationOwner");
-        membership.setUserId("eric");
+        membership.setUserId("admin");
         idmStorage.createMembership(membership);
+        
+        ApplicationBean app = new ApplicationBean();
+        app.setId("dtgov");
+        app.setName("dtgov");
+        app.setDescription("This is the official Git repository for the Governance DTGov project, which is intended to be a part of the JBoss Overlord.");
+        app.setOrganizationId("JBossOverlord");
+        app.setCreatedBy("admin");
+        app.setCreatedOn(new Date());
+        storage.create(app);
+
+        app = new ApplicationBean();
+        app.setId("rtgov");
+        app.setName("rtgov");
+        app.setDescription("This component provides the infrastructure to capture service activity information and then correlate...");
+        app.setOrganizationId("JBossOverlord");
+        app.setCreatedBy("admin");
+        app.setCreatedOn(new Date());
+        storage.create(app);
+        
+        app = new ApplicationBean();
+        app.setId("gadget-server");
+        app.setName("gadget-server");
+        app.setDescription("This is a project that builds on the Apache Shindig as the open social gadget containers.");
+        app.setOrganizationId("JBossOverlord");
+        app.setCreatedBy("admin");
+        app.setCreatedOn(new Date());
+        storage.create(app);
     }
 
 }

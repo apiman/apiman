@@ -24,6 +24,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.overlord.apiman.dt.api.beans.idm.UserBean;
+import org.overlord.apiman.dt.api.beans.summary.ApplicationSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.OrganizationSummaryBean;
 
 /**
@@ -45,4 +46,9 @@ public interface ICurrentUserResource {
     @Produces(MediaType.APPLICATION_JSON)
     public List<OrganizationSummaryBean> getOrganizations();
     
+    @GET
+    @Path("applications")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<ApplicationSummaryBean> getApplications();
+
 }

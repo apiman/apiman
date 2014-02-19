@@ -84,6 +84,7 @@ public class NewOrgPage extends AbstractPage {
      */
     @EventHandler("createButton")
     public void onCreate(ClickEvent event) {
+        createButton.setFocus(false);
         createButton.setEnabled(false);
         OrganizationBean bean = new OrganizationBean();
         bean.setName(name.getValue());

@@ -15,15 +15,15 @@
     <div class="container apiman-entity-new page" data-field="page">
       <!-- Choose org and app name -->
       <div class="row">
-        <div class="medium-icon medium-icon-gear apiman-entity-new-icon"></div>
+        <div class="medium-icon medium-icon-app apiman-entity-new-icon"></div>
         <dl>
           <dt data-i18n-key="organization">Organization</dt>
           <dd>
             <div class="btn-group" data-field="orgSelector">
               <button type="button" id="selector-org" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                <span id="selector-org-value" class="apiman-label-faded" data-i18n-key="select-org">Select Organization</span> &nbsp;&nbsp;<span class="caret"></span>
+                <span data-field="selectorLabel" id="selector-org-value" class="apiman-label-faded" data-i18n-key="select-org">Select Organization</span> &nbsp;&nbsp;<span class="caret"></span>
               </button>
-              <ul class="dropdown-menu" data-role="dummy">
+              <ul class="dropdown-menu" data-role="dummy" data-field="organizations">
                 <li><a href="#" onclick="$('#selector-org-value').text('JBoss Overlord'); $('#apiman-entityname').focus()">JBoss Overlord</a></li>
                 <li><a href="#" onclick="$('#selector-org-value').text('Apereo Bedework'); $('#apiman-entityname').focus()">Apereo Bedework</a></li>
               </ul>
@@ -34,7 +34,7 @@
         <dl class="name">
           <dt data-i18n-key="application=name">Application Name</dt>
           <dd>
-            <input data-field="" type="text" class="form-control entityname" id="apiman-entityname" placeholder="Enter application name..."></input>
+            <input data-field="name" type="text" class="form-control entityname" id="apiman-entityname" placeholder="Enter application name..."></input>
           </dd>
         </dl>
       </div>
@@ -49,7 +49,7 @@
         <dl>
           <dt data-i18n-key="description">Description</dt>
           <dd>
-            <input type="text" class="form-control description" id="apiman-description" placeholder="Enter description (optional)..."></input>
+            <input data-field="description" type="text" class="form-control description" id="apiman-description" placeholder="Enter application description (optional)..."></input>
           </dd>
         </dl>
       </div>
@@ -57,9 +57,9 @@
       <div class="row">
         <hr/>
       </div>
-      <!-- Add Button -->
+      <!-- Create Button -->
       <div class="row">
-        <a href="appHome.html" class="btn btn-primary" data-i18n-key="create-application">Create Application</a>
+        <button class="btn btn-primary" data-field="createButton" data-i18n-key="create-application">Create Application</button>
       </div>
     </div> <!-- /container -->
   </body>

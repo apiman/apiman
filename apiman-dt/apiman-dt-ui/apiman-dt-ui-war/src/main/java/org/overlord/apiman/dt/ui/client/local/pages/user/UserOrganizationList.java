@@ -42,7 +42,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author eric.wittmann@redhat.com
  */
 @Dependent
-public class UserOrganizations extends FlowPanel implements HasValue<List<OrganizationSummaryBean>> {
+public class UserOrganizationList extends FlowPanel implements HasValue<List<OrganizationSummaryBean>> {
     
     @Inject
     NavigationHelperService navHelper;
@@ -52,7 +52,7 @@ public class UserOrganizations extends FlowPanel implements HasValue<List<Organi
     /**
      * Constructor.
      */
-    public UserOrganizations() {
+    public UserOrganizationList() {
         getElement().setClassName("apiman-organizations"); //$NON-NLS-1$
     }
 

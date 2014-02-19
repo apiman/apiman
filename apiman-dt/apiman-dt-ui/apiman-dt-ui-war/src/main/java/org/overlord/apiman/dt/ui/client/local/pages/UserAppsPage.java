@@ -15,10 +15,18 @@
  */
 package org.overlord.apiman.dt.ui.client.local.pages;
 
+import java.util.List;
+
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
 import org.jboss.errai.ui.nav.client.local.Page;
+import org.jboss.errai.ui.nav.client.local.TransitionAnchor;
+import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.overlord.apiman.dt.api.beans.summary.ApplicationSummaryBean;
+import org.overlord.apiman.dt.ui.client.local.pages.user.UserApplicationList;
+import org.overlord.apiman.dt.ui.client.local.services.rest.IRestInvokerCallback;
 
 
 /**
@@ -30,6 +38,14 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 @Page(path="user-apps")
 @Dependent
 public class UserAppsPage extends AbstractUserPage {
+
+    private List<ApplicationSummaryBean> apps;
+
+    @Inject @DataField
+    TransitionAnchor<NewAppPage> toNewApp;
+    
+    @Inject @DataField
+    UserApplicationList applications;
 
     /**
      * Constructor.
@@ -43,7 +59,27 @@ public class UserAppsPage extends AbstractUserPage {
     @Override
     protected int loadPageData() {
         int rval = super.loadPageData();
-        return rval;
+        rest.getCurrentUserApps(new IRestInvokerCallback<List<ApplicationSummaryBean>>() {
+            @Override
+            public void onSuccess(List<ApplicationSummaryBean> response) {
+                apps = response;
+                dataPacketLoaded();
+            }
+            @Override
+            public void onError(Throwable error) {
+                dataPacketError(error);
+            }
+        });
+        return rval + 1;
+    }
+    
+    /**
+     * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractUserPage#renderPage()
+     */
+    @Override
+    protected void renderPage() {
+        super.renderPage();
+        applications.setValue(apps);
     }
 
 }

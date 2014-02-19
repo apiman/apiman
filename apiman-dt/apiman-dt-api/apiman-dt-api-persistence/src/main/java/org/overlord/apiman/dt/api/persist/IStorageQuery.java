@@ -18,6 +18,7 @@ package org.overlord.apiman.dt.api.persist;
 import java.util.List;
 import java.util.Set;
 
+import org.overlord.apiman.dt.api.beans.summary.ApplicationSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.OrganizationSummaryBean;
 
 
@@ -34,5 +35,19 @@ public interface IStorageQuery {
      * @throws StorageException
      */
     public List<OrganizationSummaryBean> getOrgs(Set<String> orgIds) throws StorageException;
+
+    /**
+     * Returns summary info for all applications in all organizations in the given set.
+     * @param orgIds
+     * @throws StorageException
+     */
+    public List<ApplicationSummaryBean> getApplicationsInOrgs(Set<String> orgIds) throws StorageException;
+
+    /**
+     * Returns summary info for all applications in the given organization.
+     * @param orgId
+     * @throws StorageException
+     */
+    public List<ApplicationSummaryBean> getApplicationsInOrg(String orgId) throws StorageException;
 
 }

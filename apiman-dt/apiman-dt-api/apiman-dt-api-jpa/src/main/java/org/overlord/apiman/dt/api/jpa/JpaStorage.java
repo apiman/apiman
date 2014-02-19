@@ -16,6 +16,7 @@
 package org.overlord.apiman.dt.api.jpa;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -23,9 +24,11 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import org.overlord.apiman.dt.api.beans.apps.ApplicationBean;
 import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
 import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
+import org.overlord.apiman.dt.api.beans.summary.ApplicationSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.OrganizationSummaryBean;
 import org.overlord.apiman.dt.api.persist.AlreadyExistsException;
 import org.overlord.apiman.dt.api.persist.DoesNotExistException;
@@ -121,6 +124,50 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                 orgs.add(summary);
             }
             return orgs;
+        } catch (Throwable t) {
+            JpaUtil.rollbackQuietly(entityManager);
+            logger.error(t.getMessage(), t);
+            throw new StorageException(t);
+        } finally {
+            entityManager.close();
+        }
+    }
+    
+    /**
+     * @see org.overlord.apiman.dt.api.persist.IStorageQuery#getApplicationsInOrg(java.lang.String)
+     */
+    @Override
+    public List<ApplicationSummaryBean> getApplicationsInOrg(String orgId) throws StorageException {
+        Set<String> orgIds = new HashSet<String>();
+        orgIds.add(orgId);
+        return getApplicationsInOrgs(orgIds);
+    }
+    
+    /**
+     * @see org.overlord.apiman.dt.api.persist.IStorageQuery#getApplicationsInOrgs(java.util.Set)
+     */
+    @Override
+    public List<ApplicationSummaryBean> getApplicationsInOrgs(Set<String> orgIds) throws StorageException {
+        List<ApplicationSummaryBean> rval = new ArrayList<ApplicationSummaryBean>();
+        EntityManager entityManager = emf.createEntityManager();
+        try {
+            String jpql = "SELECT a from ApplicationBean a WHERE a.organizationId IN :orgs ORDER BY a.id ASC"; //$NON-NLS-1$
+            Query query = entityManager.createQuery(jpql);
+            query.setParameter("orgs", orgIds); //$NON-NLS-1$
+            @SuppressWarnings("unchecked")
+            List<ApplicationBean> qr = (List<ApplicationBean>) query.getResultList();
+            for (ApplicationBean bean : qr) {
+                ApplicationSummaryBean summary = new ApplicationSummaryBean();
+                summary.setId(bean.getId());
+                summary.setName(bean.getName());
+                summary.setDescription(bean.getDescription());
+                summary.setNumContracts(0);
+                OrganizationBean org = entityManager.find(OrganizationBean.class, bean.getOrganizationId());
+                summary.setOrganizationId(org.getId());
+                summary.setOrganizationName(org.getName());
+                rval.add(summary);
+            }
+            return rval;
         } catch (Throwable t) {
             JpaUtil.rollbackQuietly(entityManager);
             logger.error(t.getMessage(), t);

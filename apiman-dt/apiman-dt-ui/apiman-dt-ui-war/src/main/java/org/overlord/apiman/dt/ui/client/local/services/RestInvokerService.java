@@ -21,9 +21,12 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.api.Caller;
+import org.overlord.apiman.dt.api.beans.apps.ApplicationBean;
 import org.overlord.apiman.dt.api.beans.idm.UserBean;
 import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
+import org.overlord.apiman.dt.api.beans.summary.ApplicationSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.OrganizationSummaryBean;
+import org.overlord.apiman.dt.api.rest.contract.IApplicationResource;
 import org.overlord.apiman.dt.api.rest.contract.ICurrentUserResource;
 import org.overlord.apiman.dt.api.rest.contract.IOrganizationResource;
 import org.overlord.apiman.dt.api.rest.contract.ISystemResource;
@@ -48,6 +51,8 @@ public class RestInvokerService {
     private Caller<IUserResource> user;
     @Inject
     private Caller<IOrganizationResource> organizations;
+    @Inject
+    private Caller<IApplicationResource> applications;
     
     /**
      * Constructor.
@@ -101,6 +106,15 @@ public class RestInvokerService {
     }
 
     /**
+     * Gets all applications visible to the current user.
+     * @param callback
+     */
+    public void getCurrentUserApps(IRestInvokerCallback<List<ApplicationSummaryBean>> callback) {
+        CallbackAdapter<List<ApplicationSummaryBean>> adapter = new CallbackAdapter<List<ApplicationSummaryBean>>(callback);
+        currentUser.call(adapter, adapter).getApplications();
+    }
+
+    /**
      * Gets an organization by ID.
      * @param orgId
      * @param callback
@@ -118,6 +132,39 @@ public class RestInvokerService {
     public void createOrganization(OrganizationBean org, IRestInvokerCallback<OrganizationBean> callback) {
         CallbackAdapter<OrganizationBean> adapter = new CallbackAdapter<OrganizationBean>(callback);
         organizations.call(adapter, adapter).create(org);
+    }
+
+    /**
+     * Creates a new application.
+     * @param organizationId
+     * @param app
+     * @param callback
+     */
+    public void createApplication(String organizationId, ApplicationBean app, IRestInvokerCallback<ApplicationBean> callback) {
+        CallbackAdapter<ApplicationBean> adapter = new CallbackAdapter<ApplicationBean>(callback);
+        applications.call(adapter, adapter).create(organizationId, app);
+    }
+
+    /**
+     * Gets an application.
+     * @param organizationId
+     * @param applicationId
+     * @param callback
+     */
+    public void getApplication(String organizationId, String applicationId, IRestInvokerCallback<ApplicationBean> callback) {
+        CallbackAdapter<ApplicationBean> adapter = new CallbackAdapter<ApplicationBean>(callback);
+        applications.call(adapter, adapter).get(organizationId, applicationId);
+    }
+    
+    /**
+     * Gets all applications in the organization.
+     * @param organizationId
+     * @param applicationId
+     * @param callback
+     */
+    public void getApplications(String organizationId, IRestInvokerCallback<List<ApplicationSummaryBean>> callback) {
+        CallbackAdapter<List<ApplicationSummaryBean>> adapter = new CallbackAdapter<List<ApplicationSummaryBean>>(callback);
+        applications.call(adapter, adapter).list(organizationId);
     }
 
 }

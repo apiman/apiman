@@ -4,12 +4,54 @@
 @media ( min-width : 1900px) {
 }
 
-/* Desktop */
-@media ( min-width : 768px) {
+/* Small Desktop */
+@media (max-width: 991px) {
+  .apiman-entity-nav {
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgb(221, 221, 221);
+  }
+  .apiman-entity-nav .nav li.first, .apiman-entity-nav .nav li.last {
+    display: none;
+  }
+  .apiman-entity-nav .nav-pills li a {
+    border-right: 1px solid transparent;
+    border-radius: 4px 4px 4px 4px;
+  }
+  .apiman-entity-nav .nav-pills li.active a {
+    background-color: rgb(66, 139, 202);
+    color: white;
+    border-right: 0px none;
+    border-radius: 4px 4px 4px 4px;
+  }
+  .apiman-entity-nav .nav-pills li.north a {
+    border-radius: 4px 4px 4px 4px;
+  }
+  .apiman-entity-nav .nav-pills li.south a {
+    border-radius: 4px 4px 4px 4px;
+  }
+  
+  .apiman-entity-new .description {
+    width: 500px;
+  }
 }
 
 /* Mobile */
 @media ( max-width : 767px) {
+  div.page {
+    margin-top: 5px;
+  }
+  
+  .apiman-entity-new {
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+  
+  .apiman-entitysummary {
+    border: 0px;
+    border-bottom: 1px solid rgb(221, 221, 221);
+    box-shadow: none;
+  }
+  
   .nav-tabs li {
     float: none;
   }
@@ -37,6 +79,12 @@
 @media ( max-width : 480px) {
   .apiman-filters .input-search {
     width: 220px;
+  }
+  .apiman-entity-new .description {
+    width: 300px;
+  }
+  .apiman-entity-new .medium-icon {
+    display: none;
   }
 }
 

@@ -118,7 +118,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     @Override
     public void update(String organizationId, OrganizationBean bean)
             throws OrganizationNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.orgUpdate, organizationId))
+        if (!securityContext.hasPermission(PermissionType.orgEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
         try {
             bean.setId(organizationId);
@@ -155,7 +155,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         users.get(bean.getUserId());
         roles.get(bean.getRoleId());
 
-        if (!securityContext.hasPermission(PermissionType.orgUpdate, organizationId))
+        if (!securityContext.hasPermission(PermissionType.orgEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
 
         RoleMembershipBean membership = new RoleMembershipBean();
@@ -183,7 +183,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         users.get(bean.getUserId());
         roles.get(bean.getRoleId());
 
-        if (!securityContext.hasPermission(PermissionType.orgUpdate, organizationId))
+        if (!securityContext.hasPermission(PermissionType.orgEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
 
         try {

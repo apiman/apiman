@@ -105,6 +105,7 @@ public class PageErrorPanel {
             errorPage.setValue(restError);
             errorPanel.add(errorPage);
         } else {
+            // TODO need to do something better here!
             errorPanel.add(new Label("Unknown/unhandled error received!  Please report this.")); //$NON-NLS-1$
         }
     }

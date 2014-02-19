@@ -88,8 +88,8 @@ public class ApiManDtUiDevServer extends ErraiDevServer {
     protected void preConfig() {
         System.setProperty(ApimanUIConfig.APIMAN_DT_UI_API_ENDPOINT, "http://localhost:7071/apiman-dt-api");
         System.setProperty(ApimanUIConfig.APIMAN_DT_UI_API_AUTH_TYPE, ApiAuthType.basic.toString());
-        System.setProperty(ApimanUIConfig.APIMAN_DT_UI_API_BASIC_AUTH_USER, "eric");
-        System.setProperty(ApimanUIConfig.APIMAN_DT_UI_API_BASIC_AUTH_PASS, "eric");
+        System.setProperty(ApimanUIConfig.APIMAN_DT_UI_API_BASIC_AUTH_USER, "admin");
+        System.setProperty(ApimanUIConfig.APIMAN_DT_UI_API_BASIC_AUTH_PASS, "admin");
     }
 
     /**

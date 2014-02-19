@@ -17,6 +17,7 @@
 package org.overlord.apiman.dt.api.rest.impl;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -27,10 +28,12 @@ import org.overlord.apiman.dt.api.beans.idm.PermissionType;
 import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
 import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
+import org.overlord.apiman.dt.api.beans.summary.ApplicationSummaryBean;
 import org.overlord.apiman.dt.api.persist.AlreadyExistsException;
 import org.overlord.apiman.dt.api.persist.DoesNotExistException;
 import org.overlord.apiman.dt.api.persist.IIdmStorage;
 import org.overlord.apiman.dt.api.persist.IStorage;
+import org.overlord.apiman.dt.api.persist.IStorageQuery;
 import org.overlord.apiman.dt.api.persist.StorageException;
 import org.overlord.apiman.dt.api.rest.contract.IApplicationResource;
 import org.overlord.apiman.dt.api.rest.contract.IRoleResource;
@@ -54,6 +57,7 @@ import org.overlord.apiman.dt.api.security.ISecurityContext;
 public class ApplicationResourceImpl implements IApplicationResource {
 
     @Inject IStorage storage;
+    @Inject IStorageQuery query;
     @Inject IIdmStorage idmStorage;
     
     @Inject IUserResource users;
@@ -73,7 +77,7 @@ public class ApplicationResourceImpl implements IApplicationResource {
     @Override
     public ApplicationBean create(String organizationId, ApplicationBean bean)
             throws OrganizationNotFoundException, ApplicationAlreadyExistsException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.appCreate, organizationId))
+        if (!securityContext.hasPermission(PermissionType.appEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
         
         try {
@@ -119,12 +123,35 @@ public class ApplicationResourceImpl implements IApplicationResource {
     }
     
     /**
+     * @see org.overlord.apiman.dt.api.rest.contract.IApplicationResource#list(java.lang.String)
+     */
+    @Override
+    public List<ApplicationSummaryBean> list(String organizationId) throws OrganizationNotFoundException,
+            NotAuthorizedException {
+        if (!securityContext.hasPermission(PermissionType.appView, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
+        try {
+            storage.get(organizationId, OrganizationBean.class);
+        } catch (DoesNotExistException e) {
+            throw ExceptionFactory.organizationNotFoundException(organizationId);
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+
+        try {
+            return query.getApplicationsInOrg(organizationId);
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+    }
+    
+    /**
      * @see org.overlord.apiman.dt.api.rest.contract.IApplicationResource#update(java.lang.String, java.lang.String, org.overlord.apiman.dt.api.beans.apps.ApplicationBean)
      */
     @Override
     public void update(String organizationId, String applicationId, ApplicationBean bean)
             throws ApplicationNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.appUpdate, organizationId))
+        if (!securityContext.hasPermission(PermissionType.appEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
         try {
             bean.setOrganizationId(organizationId);
