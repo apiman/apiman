@@ -168,7 +168,7 @@ public class DtApiTestServer {
         apiManServer.addFilter(DefaultSecurityContextFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
         apiManServer.addFilter(SimpleCorsFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
         ServletHolder resteasyServlet = new ServletHolder(new HttpServletDispatcher());
-        resteasyServlet.setInitParameter("javax.ws.rs.Application", DtApiRestApplication.class.getName());
+        resteasyServlet.setInitParameter("javax.ws.rs.Application", TestApiManDtApplication.class.getName());
         apiManServer.addServlet(resteasyServlet, "/*");
 
         apiManServer.setInitParameter("resteasy.injector.factory", "org.jboss.resteasy.cdi.CdiInjectorFactory");

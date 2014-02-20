@@ -15,6 +15,7 @@
  */
 package org.overlord.apiman.dt.api.beans.idm;
 
+import java.io.Serializable;
 import java.util.Set;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -25,8 +26,10 @@ import org.jboss.errai.common.client.api.annotations.Portable;
  * @author eric.wittmann@redhat.com
  */
 @Portable
-public class UserPermissionsBean {
+public class UserPermissionsBean implements Serializable {
 
+    private static final long serialVersionUID = -3148877050712405169L;
+    
     private String userId;
     private Set<PermissionBean> permissions;
     
@@ -62,5 +65,42 @@ public class UserPermissionsBean {
      */
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((permissions == null) ? 0 : permissions.hashCode());
+        result = prime * result + ((userId == null) ? 0 : userId.hashCode());
+        return result;
+    }
+
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        UserPermissionsBean other = (UserPermissionsBean) obj;
+        if (permissions == null) {
+            if (other.permissions != null)
+                return false;
+        } else if (!permissions.equals(other.permissions))
+            return false;
+        if (userId == null) {
+            if (other.userId != null)
+                return false;
+        } else if (!userId.equals(other.userId))
+            return false;
+        return true;
     }
 }

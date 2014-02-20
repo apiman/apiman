@@ -16,6 +16,7 @@
 
 package org.overlord.apiman.dt.api.beans.idm;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -32,7 +33,9 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 @Entity
 @Table(name = "users")
-public class UserBean {
+public class UserBean implements Serializable {
+    
+    private static final long serialVersionUID = 865765107251347714L;
     
     @Id
     private String username;
@@ -100,6 +103,37 @@ public class UserBean {
      */
     public void setJoinedOn(Date joinedOn) {
         this.joinedOn = joinedOn;
+    }
+
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((username == null) ? 0 : username.hashCode());
+        return result;
+    }
+
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        UserBean other = (UserBean) obj;
+        if (username == null) {
+            if (other.username != null)
+                return false;
+        } else if (!username.equals(other.username))
+            return false;
+        return true;
     }
 
 }

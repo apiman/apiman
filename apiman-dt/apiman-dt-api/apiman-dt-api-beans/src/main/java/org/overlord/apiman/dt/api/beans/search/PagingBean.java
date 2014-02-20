@@ -15,6 +15,8 @@
  */
 package org.overlord.apiman.dt.api.beans.search;
 
+import java.io.Serializable;
+
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
@@ -25,7 +27,9 @@ import org.jboss.errai.common.client.api.annotations.Portable;
  * @author eric.wittmann@redhat.com
  */
 @Portable
-public class PagingBean {
+public class PagingBean implements Serializable {
+    
+    private static final long serialVersionUID = -7218662169900773534L;
     
     private int page;
     private int pageSize;
@@ -62,6 +66,37 @@ public class PagingBean {
      */
     public void setPageSize(int pageSize) {
         this.pageSize = pageSize;
+    }
+
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + page;
+        result = prime * result + pageSize;
+        return result;
+    }
+
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        PagingBean other = (PagingBean) obj;
+        if (page != other.page)
+            return false;
+        if (pageSize != other.pageSize)
+            return false;
+        return true;
     }
 
 }

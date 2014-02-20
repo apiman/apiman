@@ -15,6 +15,7 @@
  */
 package org.overlord.apiman.dt.api.beans.apps;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -36,7 +37,9 @@ import org.overlord.apiman.dt.api.beans.orgs.OrgBasedCompositeId;
 @Entity
 @Table(name = "applications")
 @IdClass(OrgBasedCompositeId.class)
-public class ApplicationBean {
+public class ApplicationBean implements Serializable {
+    
+    private static final long serialVersionUID = -197129444021040365L;
     
     @Id
     private String organizationId;
@@ -132,6 +135,43 @@ public class ApplicationBean {
      */
     public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
+    }
+
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((organizationId == null) ? 0 : organizationId.hashCode());
+        return result;
+    }
+
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        ApplicationBean other = (ApplicationBean) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        if (organizationId == null) {
+            if (other.organizationId != null)
+                return false;
+        } else if (!organizationId.equals(other.organizationId))
+            return false;
+        return true;
     }
     
 }

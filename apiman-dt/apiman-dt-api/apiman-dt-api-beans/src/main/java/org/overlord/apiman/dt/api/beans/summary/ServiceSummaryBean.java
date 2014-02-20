@@ -13,45 +13,61 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.dt.api.beans.idm;
+package org.overlord.apiman.dt.api.beans.summary;
 
 import java.io.Serializable;
-import java.util.Set;
-
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.Table;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
- * A single, qualified, role granted to the user.  Roles in the system
- * might include things like "Service Owner", "Application Developer", etc.
- * A role is qualified by an Organization ID.  The purpose of a role is
- * to grant permissions to a user.  A role might grant CREATE-APPLICATION 
- * and VIEW-SERVICE permissions for a particular Organization.
+ * A bean modeling a summary of a Service.  Typically used when listing
+ * all Services visible to a user.
  *
  * @author eric.wittmann@redhat.com
  */
 @Portable
-@Entity
-@Table(name = "roles")
-public class RoleBean implements Serializable {
+public class ServiceSummaryBean implements Serializable {
 
-    private static final long serialVersionUID = -646534082583069712L;
+    private static final long serialVersionUID = -4213543715123177461L;
     
-    @Id
+    private String organizationId;
+    private String organizationName;
     private String id;
     private String name;
-    @ElementCollection(fetch=FetchType.EAGER)
-    private Set<String> permissions;
+    private String description;
     
     /**
      * Constructor.
      */
-    public RoleBean() {
+    public ServiceSummaryBean() {
+    }
+
+    /**
+     * @return the organizationId
+     */
+    public String getOrganizationId() {
+        return organizationId;
+    }
+
+    /**
+     * @param organizationId the organizationId to set
+     */
+    public void setOrganizationId(String organizationId) {
+        this.organizationId = organizationId;
+    }
+
+    /**
+     * @return the organizationName
+     */
+    public String getOrganizationName() {
+        return organizationName;
+    }
+
+    /**
+     * @param organizationName the organizationName to set
+     */
+    public void setOrganizationName(String organizationName) {
+        this.organizationName = organizationName;
     }
 
     /**
@@ -83,17 +99,24 @@ public class RoleBean implements Serializable {
     }
 
     /**
-     * @return the permissions
+     * @return the description
      */
-    public Set<String> getPermissions() {
-        return permissions;
+    public String getDescription() {
+        return description;
     }
 
     /**
-     * @param permissions the permissions to set
+     * @param description the description to set
      */
-    public void setPermissions(Set<String> permissions) {
-        this.permissions = permissions;
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    /**
+     * @return the serialversionuid
+     */
+    public static long getSerialversionuid() {
+        return serialVersionUID;
     }
 
     /**
@@ -104,6 +127,7 @@ public class RoleBean implements Serializable {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((organizationId == null) ? 0 : organizationId.hashCode());
         return result;
     }
 
@@ -118,13 +142,18 @@ public class RoleBean implements Serializable {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        RoleBean other = (RoleBean) obj;
+        ServiceSummaryBean other = (ServiceSummaryBean) obj;
         if (id == null) {
             if (other.id != null)
                 return false;
         } else if (!id.equals(other.id))
             return false;
+        if (organizationId == null) {
+            if (other.organizationId != null)
+                return false;
+        } else if (!organizationId.equals(other.organizationId))
+            return false;
         return true;
     }
-    
+
 }

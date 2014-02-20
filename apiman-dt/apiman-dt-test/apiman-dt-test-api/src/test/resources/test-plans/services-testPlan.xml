@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testPlan xmlns="urn:org.overlord.apiman.test:2014:02:testPlan">
+
+  <!-- Create Organizations -->
+  <testGroup name="Initial Creates">
+    <test name="Create Organization 1">services/create/001_create-org1.resttest</test>
+    <test name="Create Organization 2">services/create/002_create-org2.resttest</test>
+  </testGroup>
+
+  <!-- Test Application management -->
+  <testGroup name="Application Management">
+    <test name="Create Application 1">services/svcs/001_create-service1.resttest</test>
+    <test name="Get Application 1">services/svcs/002_get-service1.resttest</test>
+    <test name="Get Missing App">services/svcs/003_get-missing-service.resttest</test>
+    <test name="Create Application 2">services/svcs/004_create-service2.resttest</test>
+    <test name="Search Apps">services/svcs/005_search-services.resttest</test>
+    <test name="Update App 1">services/svcs/006_update-service1.resttest</test>
+    <test name="Get Application 1 (updated)">services/svcs/007_get-service1.resttest</test>
+    <test name="Create Application 1 (Org 2)">services/svcs/008_create-service1-org2.resttest</test>
+    <test name="Get Application 1">services/svcs/009_get-service1.resttest</test>
+    <test name="Get Application 1 (Org 2)">services/svcs/010_get-service1-org2.resttest</test>
+  </testGroup>
+
+</testPlan>

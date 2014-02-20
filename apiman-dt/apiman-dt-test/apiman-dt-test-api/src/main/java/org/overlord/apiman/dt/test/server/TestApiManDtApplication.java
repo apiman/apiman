@@ -25,6 +25,7 @@ import org.overlord.apiman.dt.api.rest.impl.CurrentUserResourceImpl;
 import org.overlord.apiman.dt.api.rest.impl.OrganizationResourceImpl;
 import org.overlord.apiman.dt.api.rest.impl.PermissionsResourceImpl;
 import org.overlord.apiman.dt.api.rest.impl.RoleResourceImpl;
+import org.overlord.apiman.dt.api.rest.impl.ServiceResourceImpl;
 import org.overlord.apiman.dt.api.rest.impl.SystemResourceImpl;
 import org.overlord.apiman.dt.api.rest.impl.UserResourceImpl;
 import org.overlord.apiman.dt.api.rest.impl.mappers.RestExceptionMapper;
@@ -34,7 +35,7 @@ import org.overlord.apiman.dt.api.rest.impl.mappers.RestExceptionMapper;
  *
  * @author eric.wittmann@redhat.com
  */
-public class DtApiRestApplication extends ApiManDtApplication {
+public class TestApiManDtApplication extends ApiManDtApplication {
 
     private Set<Object> singletons = new HashSet<Object>();
     private Set<Class<?>> classes = new HashSet<Class<?>>();
@@ -42,7 +43,7 @@ public class DtApiRestApplication extends ApiManDtApplication {
     /**
      * Constructor.
      */
-    public DtApiRestApplication() {
+    public TestApiManDtApplication() {
         classes.add(SystemResourceImpl.class);
         classes.add(RoleResourceImpl.class);
         classes.add(UserResourceImpl.class);
@@ -50,6 +51,7 @@ public class DtApiRestApplication extends ApiManDtApplication {
         classes.add(PermissionsResourceImpl.class);
         classes.add(OrganizationResourceImpl.class);
         classes.add(ApplicationResourceImpl.class);
+        classes.add(ServiceResourceImpl.class);
         
         classes.add(RestExceptionMapper.class);
     }

@@ -15,6 +15,7 @@
  */
 package org.overlord.apiman.dt.api.beans.search;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,8 +27,10 @@ import org.jboss.errai.common.client.api.annotations.Portable;
  * @author eric.wittmann@redhat.com
  */
 @Portable
-public class SearchResultsBean<T> {
+public class SearchResultsBean<T> implements Serializable {
 
+    private static final long serialVersionUID = -1672829715471947181L;
+    
     private List<T> beans = new ArrayList<T>();
     private int totalSize;
 

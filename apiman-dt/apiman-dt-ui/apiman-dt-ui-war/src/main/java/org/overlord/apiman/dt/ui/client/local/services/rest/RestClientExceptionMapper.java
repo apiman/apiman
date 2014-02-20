@@ -20,6 +20,8 @@ import javax.ws.rs.ext.Provider;
 
 import org.jboss.errai.enterprise.client.jaxrs.AbstractJSONClientExceptionMapper;
 import org.jboss.errai.enterprise.client.jaxrs.api.ResponseException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.ApplicationAlreadyExistsException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.ApplicationNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ErrorBean;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.InvalidSearchCriteriaException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.NotAuthorizedException;
@@ -27,6 +29,8 @@ import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationAlreadyEx
 import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.RoleAlreadyExistsException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.RoleNotFoundException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.ServiceAlreadyExistsException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.ServiceNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.SystemErrorException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.UserNotFoundException;
 import org.overlord.apiman.dt.ui.client.local.exceptions.NotAuthenticatedException;
@@ -73,6 +77,14 @@ public class RestClientExceptionMapper extends AbstractJSONClientExceptionMapper
                 return new SystemErrorException(errorBean.getMessage());
             if (type.equals("UserNotFoundException")) //$NON-NLS-1$
                 return new UserNotFoundException(errorBean.getMessage());
+            if (type.equals("ApplicationFoundException")) //$NON-NLS-1$
+                return new ApplicationNotFoundException(errorBean.getMessage());
+            if (type.equals("ApplicationAlreadyExistsException")) //$NON-NLS-1$
+                return new ApplicationAlreadyExistsException(errorBean.getMessage());
+            if (type.equals("ServiceFoundException")) //$NON-NLS-1$
+                return new ServiceNotFoundException(errorBean.getMessage());
+            if (type.equals("ServiceAlreadyExistsException")) //$NON-NLS-1$
+                return new ServiceAlreadyExistsException(errorBean.getMessage());
             // Default - simple exception.
             return new RuntimeException(errorBean.getMessage());
         }

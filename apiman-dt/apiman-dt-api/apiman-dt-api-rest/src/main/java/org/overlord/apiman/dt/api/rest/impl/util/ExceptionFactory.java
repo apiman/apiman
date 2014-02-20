@@ -22,6 +22,8 @@ import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationAlreadyEx
 import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.RoleAlreadyExistsException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.RoleNotFoundException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.ServiceAlreadyExistsException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.ServiceNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.UserNotFoundException;
 import org.overlord.apiman.dt.api.rest.i18n.Messages;
 
@@ -94,6 +96,22 @@ public final class ExceptionFactory {
      */
     public static final ApplicationNotFoundException applicationNotFoundException(String applicationId) {
         return new ApplicationNotFoundException(Messages.i18n.format("ApplicationDoesNotExist", applicationId)); //$NON-NLS-1$
+    }
+
+    /**
+     * Creates an exception from an service name.
+     * @param serviceName
+     */
+    public static final ServiceAlreadyExistsException serviceAlreadyExistsException(String serviceName) {
+        return new ServiceAlreadyExistsException(Messages.i18n.format("ServiceAlreadyExists", serviceName)); //$NON-NLS-1$
+    }
+
+    /**
+     * Creates an exception from an service id.
+     * @param serviceId
+     */
+    public static final ServiceNotFoundException serviceNotFoundException(String serviceId) {
+        return new ServiceNotFoundException(Messages.i18n.format("ServiceDoesNotExist", serviceId)); //$NON-NLS-1$
     }
 
 }

@@ -20,7 +20,7 @@ import java.io.Serializable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
- * A bean modeling a summary of an Organization.  Typically used when listing
+ * A bean modeling a summary of an Application.  Typically used when listing
  * all Applications visible to a user.
  *
  * @author eric.wittmann@redhat.com

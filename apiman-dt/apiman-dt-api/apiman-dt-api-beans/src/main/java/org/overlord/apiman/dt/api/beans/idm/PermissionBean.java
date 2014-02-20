@@ -15,6 +15,8 @@
  */
 package org.overlord.apiman.dt.api.beans.idm;
 
+import java.io.Serializable;
+
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
@@ -26,7 +28,9 @@ import org.jboss.errai.common.client.api.annotations.Portable;
  * @author eric.wittmann@redhat.com
  */
 @Portable
-public class PermissionBean {
+public class PermissionBean implements Serializable {
+    
+    private static final long serialVersionUID = 6005936454144731711L;
     
     private String name;
     private String organizationId;

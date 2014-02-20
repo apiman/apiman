@@ -15,6 +15,7 @@
  */
 package org.overlord.apiman.dt.api.beans.search;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +27,9 @@ import org.jboss.errai.common.client.api.annotations.Portable;
  * @author eric.wittmann@redhat.com
  */
 @Portable
-public class SearchCriteriaBean {
+public class SearchCriteriaBean implements Serializable {
+    
+    private static final long serialVersionUID = 5103776179000907112L;
     
     private List<SearchCriteriaFilterBean> filters = new ArrayList<SearchCriteriaFilterBean>();
     private OrderByBean orderBy;
@@ -119,6 +122,49 @@ public class SearchCriteriaBean {
      */
     public void setOrderBy(OrderByBean orderBy) {
         this.orderBy = orderBy;
+    }
+
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((filters == null) ? 0 : filters.hashCode());
+        result = prime * result + ((orderBy == null) ? 0 : orderBy.hashCode());
+        result = prime * result + ((paging == null) ? 0 : paging.hashCode());
+        return result;
+    }
+
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        SearchCriteriaBean other = (SearchCriteriaBean) obj;
+        if (filters == null) {
+            if (other.filters != null)
+                return false;
+        } else if (!filters.equals(other.filters))
+            return false;
+        if (orderBy == null) {
+            if (other.orderBy != null)
+                return false;
+        } else if (!orderBy.equals(other.orderBy))
+            return false;
+        if (paging == null) {
+            if (other.paging != null)
+                return false;
+        } else if (!paging.equals(other.paging))
+            return false;
+        return true;
     }
 
 }

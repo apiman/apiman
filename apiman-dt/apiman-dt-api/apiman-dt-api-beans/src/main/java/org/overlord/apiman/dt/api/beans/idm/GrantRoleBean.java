@@ -15,6 +15,8 @@
  */
 package org.overlord.apiman.dt.api.beans.idm;
 
+import java.io.Serializable;
+
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
@@ -24,8 +26,10 @@ import org.jboss.errai.common.client.api.annotations.Portable;
  * @author eric.wittmann@redhat.com
  */
 @Portable
-public class GrantRoleBean {
+public class GrantRoleBean implements Serializable {
 
+    private static final long serialVersionUID = -1509983712261196134L;
+    
     private String userId;
     private String roleId;
 
@@ -61,6 +65,43 @@ public class GrantRoleBean {
      */
     public void setRoleId(String roleId) {
         this.roleId = roleId;
+    }
+
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((roleId == null) ? 0 : roleId.hashCode());
+        result = prime * result + ((userId == null) ? 0 : userId.hashCode());
+        return result;
+    }
+
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        GrantRoleBean other = (GrantRoleBean) obj;
+        if (roleId == null) {
+            if (other.roleId != null)
+                return false;
+        } else if (!roleId.equals(other.roleId))
+            return false;
+        if (userId == null) {
+            if (other.userId != null)
+                return false;
+        } else if (!userId.equals(other.userId))
+            return false;
+        return true;
     }
 
 }

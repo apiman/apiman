@@ -15,6 +15,8 @@
  */
 package org.overlord.apiman.dt.api.beans.idm;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -37,8 +39,10 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Entity
 @Table(name = "memberships",
        uniqueConstraints={@UniqueConstraint(columnNames={"user_id","role_id","org_id"})})
-public class RoleMembershipBean {
+public class RoleMembershipBean implements Serializable {
     
+    private static final long serialVersionUID = 7798709783947356888L;
+
     public static final RoleMembershipBean create(String userId, String roleId, String organizationId) {
         RoleMembershipBean bean = new RoleMembershipBean();
         bean.setUserId(userId);

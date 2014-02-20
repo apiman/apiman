@@ -28,8 +28,10 @@ import org.overlord.apiman.dt.api.beans.apps.ApplicationBean;
 import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
 import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
+import org.overlord.apiman.dt.api.beans.services.ServiceBean;
 import org.overlord.apiman.dt.api.beans.summary.ApplicationSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.OrganizationSummaryBean;
+import org.overlord.apiman.dt.api.beans.summary.ServiceSummaryBean;
 import org.overlord.apiman.dt.api.persist.AlreadyExistsException;
 import org.overlord.apiman.dt.api.persist.DoesNotExistException;
 import org.overlord.apiman.dt.api.persist.IStorage;
@@ -162,6 +164,49 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                 summary.setName(bean.getName());
                 summary.setDescription(bean.getDescription());
                 summary.setNumContracts(0);
+                OrganizationBean org = entityManager.find(OrganizationBean.class, bean.getOrganizationId());
+                summary.setOrganizationId(org.getId());
+                summary.setOrganizationName(org.getName());
+                rval.add(summary);
+            }
+            return rval;
+        } catch (Throwable t) {
+            JpaUtil.rollbackQuietly(entityManager);
+            logger.error(t.getMessage(), t);
+            throw new StorageException(t);
+        } finally {
+            entityManager.close();
+        }
+    }
+
+    /**
+     * @see org.overlord.apiman.dt.api.persist.IStorageQuery#getServicesInOrg(java.lang.String)
+     */
+    @Override
+    public List<ServiceSummaryBean> getServicesInOrg(String orgId) throws StorageException {
+        Set<String> orgIds = new HashSet<String>();
+        orgIds.add(orgId);
+        return getServicesInOrgs(orgIds);
+    }
+    
+    /**
+     * @see org.overlord.apiman.dt.api.persist.IStorageQuery#getServicesInOrgs(java.util.Set)
+     */
+    @Override
+    public List<ServiceSummaryBean> getServicesInOrgs(Set<String> orgIds) throws StorageException {
+        List<ServiceSummaryBean> rval = new ArrayList<ServiceSummaryBean>();
+        EntityManager entityManager = emf.createEntityManager();
+        try {
+            String jpql = "SELECT s from ServiceBean s WHERE s.organizationId IN :orgs ORDER BY s.id ASC"; //$NON-NLS-1$
+            Query query = entityManager.createQuery(jpql);
+            query.setParameter("orgs", orgIds); //$NON-NLS-1$
+            @SuppressWarnings("unchecked")
+            List<ServiceBean> qr = (List<ServiceBean>) query.getResultList();
+            for (ServiceBean bean : qr) {
+                ServiceSummaryBean summary = new ServiceSummaryBean();
+                summary.setId(bean.getId());
+                summary.setName(bean.getName());
+                summary.setDescription(bean.getDescription());
                 OrganizationBean org = entityManager.find(OrganizationBean.class, bean.getOrganizationId());
                 summary.setOrganizationId(org.getId());
                 summary.setOrganizationName(org.getName());

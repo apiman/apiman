@@ -20,6 +20,7 @@ import java.util.Set;
 
 import org.overlord.apiman.dt.api.beans.summary.ApplicationSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.OrganizationSummaryBean;
+import org.overlord.apiman.dt.api.beans.summary.ServiceSummaryBean;
 
 
 /**
@@ -49,5 +50,19 @@ public interface IStorageQuery {
      * @throws StorageException
      */
     public List<ApplicationSummaryBean> getApplicationsInOrg(String orgId) throws StorageException;
+
+    /**
+     * Returns summary info for all services in all organizations in the given set.
+     * @param orgIds
+     * @throws StorageException
+     */
+    public List<ServiceSummaryBean> getServicesInOrgs(Set<String> orgIds) throws StorageException;
+
+    /**
+     * Returns summary info for all services in the given organization.
+     * @param orgId
+     * @throws StorageException
+     */
+    public List<ServiceSummaryBean> getServicesInOrg(String orgId) throws StorageException;
 
 }
