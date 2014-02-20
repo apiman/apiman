@@ -19,6 +19,7 @@ import javax.enterprise.context.Dependent;
 
 import org.jboss.errai.ui.nav.client.local.Page;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.overlord.apiman.dt.ui.client.local.AppMessages;
 
 
 /**
@@ -52,6 +53,14 @@ public class OrgActivityPage extends AbstractOrgPage {
     @Override
     protected void renderPage() {
         super.renderPage();
+    }
+
+    /**
+     * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractPage#getPageTitle()
+     */
+    @Override
+    protected String getPageTitle() {
+        return i18n.format(AppMessages.TITLE_ORG_ACTIVITY, organizationBean.getName());
     }
 
 }

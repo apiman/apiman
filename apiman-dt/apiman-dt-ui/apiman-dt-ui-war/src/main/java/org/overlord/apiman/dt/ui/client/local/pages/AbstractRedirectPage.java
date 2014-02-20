@@ -15,45 +15,40 @@
  */
 package org.overlord.apiman.dt.ui.client.local.pages;
 
-import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.jboss.errai.ui.nav.client.local.DefaultPage;
 import org.jboss.errai.ui.nav.client.local.Navigation;
-import org.jboss.errai.ui.nav.client.local.Page;
 import org.jboss.errai.ui.nav.client.local.PageShowing;
-import org.overlord.apiman.dt.ui.client.local.services.ConfigurationService;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 import com.google.gwt.user.client.ui.Label;
 
 /**
- * The default page.  This is responsible for redirecting the user to
- * an appropriate starting page.
+ * Base class for all pages that simply redirect somewhere else.
  *
  * @author eric.wittmann@redhat.com
  */
-@Page(path="h", role=DefaultPage.class)
-@Dependent
-public class HomePage extends Label {
-    
+public abstract class AbstractRedirectPage extends Label {
+
     @Inject
     Navigation nav;
-    @Inject
-    ConfigurationService config;
 
     /**
      * Constructor.
      */
-    public HomePage() {
+    public AbstractRedirectPage() {
     }
     
+    /**
+     * Do the redirect when the page is 'showing'.
+     */
     @PageShowing
     public void onPageShowing() {
-        Multimap<String, String> params = HashMultimap.create();
-        params.put("user", config.getCurrentConfig().getUser().getUsername()); //$NON-NLS-1$
-        nav.goTo(UserOrgsPage.class, params);
+        doRedirect();
     }
+
+    /**
+     * Called to actually do the redirect.
+     */
+    protected abstract void doRedirect();
 
 }

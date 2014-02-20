@@ -20,8 +20,12 @@ import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.jboss.errai.ui.nav.client.local.TransitionAnchorFactory;
 import org.overlord.apiman.dt.api.beans.summary.OrganizationSummaryBean;
-import org.overlord.apiman.dt.ui.client.local.pages.OrgAppsPage;
+import org.overlord.apiman.dt.ui.client.local.AppMessages;
+import org.overlord.apiman.dt.ui.client.local.pages.OrgRedirectPage;
+import org.overlord.apiman.dt.ui.client.local.pages.common.NoEntitiesWidget;
 import org.overlord.apiman.dt.ui.client.local.services.NavigationHelperService;
 import org.overlord.apiman.dt.ui.client.local.util.MultimapUtil;
 import org.overlord.commons.gwt.client.local.widgets.SpanPanel;
@@ -46,6 +50,11 @@ public class UserOrganizationList extends FlowPanel implements HasValue<List<Org
     
     @Inject
     NavigationHelperService navHelper;
+    @Inject
+    TranslationService i18n;
+    
+    @Inject
+    TransitionAnchorFactory<OrgRedirectPage> toOrgFactory;
     
     private List<OrganizationSummaryBean> orgs;
 
@@ -94,11 +103,13 @@ public class UserOrganizationList extends FlowPanel implements HasValue<List<Org
      * Refresh the display with the current value.
      */
     public void refresh() {
-        if (orgs != null) {
+        if (orgs != null && !orgs.isEmpty()) {
             for (OrganizationSummaryBean bean : orgs) {
                 Widget row = createOrgRow(bean);
                 add(row);
             }
+        } else {
+            add(new NoEntitiesWidget(i18n.format(AppMessages.NO_ORGS_FOR_USER_MESSAGE), true));
         }
     }
 
@@ -117,10 +128,9 @@ public class UserOrganizationList extends FlowPanel implements HasValue<List<Org
         SpanPanel title = new SpanPanel();
         row1.add(title);
         title.getElement().setClassName("title"); //$NON-NLS-1$
-        Anchor a = new Anchor();
+        Anchor a = toOrgFactory.get(MultimapUtil.singleItemMap("org", bean.getId())); //$NON-NLS-1$
         title.add(a);
         a.setText(bean.getName());
-        a.setHref(navHelper.createHrefToPage(OrgAppsPage.class, MultimapUtil.singleItemMap("org", bean.getId()))); //$NON-NLS-1$
 
         FlowPanel row2 = new FlowPanel();
         container.add(row2);

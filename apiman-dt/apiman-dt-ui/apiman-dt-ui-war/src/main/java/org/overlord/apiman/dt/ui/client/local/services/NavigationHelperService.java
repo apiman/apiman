@@ -20,9 +20,9 @@ import javax.inject.Inject;
 
 import org.jboss.errai.ui.nav.client.local.ErraiNavExtension;
 import org.jboss.errai.ui.nav.client.local.Navigation;
-import org.overlord.apiman.dt.ui.client.local.pages.AbstractPage;
 
 import com.google.common.collect.Multimap;
+import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  * Provides some navigation functionality to the application.
@@ -46,7 +46,7 @@ public class NavigationHelperService {
      * @param toPage
      * @param state
      */
-    public <T extends AbstractPage> String createHrefToPage(Class<T> toPage, Multimap<String, String> state) {
+    public <T extends IsWidget> String createHrefToPage(Class<T> toPage, Multimap<String, String> state) {
         return ErraiNavExtension.createHrefToPage(nav, toPage, state);
     }
 

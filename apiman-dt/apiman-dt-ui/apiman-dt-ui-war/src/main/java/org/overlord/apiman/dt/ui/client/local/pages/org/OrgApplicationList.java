@@ -18,8 +18,10 @@ package org.overlord.apiman.dt.ui.client.local.pages.org;
 import javax.enterprise.context.Dependent;
 
 import org.overlord.apiman.dt.api.beans.summary.ApplicationSummaryBean;
+import org.overlord.apiman.dt.ui.client.local.AppMessages;
 import org.overlord.apiman.dt.ui.client.local.pages.AppOverviewPage;
 import org.overlord.apiman.dt.ui.client.local.pages.common.AbstractApplicationList;
+import org.overlord.apiman.dt.ui.client.local.pages.common.NoEntitiesWidget;
 import org.overlord.apiman.dt.ui.client.local.util.MultimapUtil;
 import org.overlord.commons.gwt.client.local.widgets.SpanPanel;
 
@@ -52,5 +54,13 @@ public class OrgApplicationList extends AbstractApplicationList {
         sp.add(a);
         a.setHref(navHelper.createHrefToPage(AppOverviewPage.class,
                 MultimapUtil.fromMultiple("org", bean.getOrganizationId(), "app", bean.getId()))); //$NON-NLS-1$ //$NON-NLS-2$
+    }
+    
+    /**
+     * @see org.overlord.apiman.dt.ui.client.local.pages.common.AbstractApplicationList#createNoEntitiesWidget()
+     */
+    @Override
+    protected NoEntitiesWidget createNoEntitiesWidget() {
+        return new NoEntitiesWidget(i18n.format(AppMessages.NO_APPS_IN_ORG_MESSAGE), true);
     }
 }

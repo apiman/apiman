@@ -16,43 +16,39 @@
 package org.overlord.apiman.dt.ui.client.local.pages;
 
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
+import org.jboss.errai.ui.nav.client.local.DefaultPage;
 import org.jboss.errai.ui.nav.client.local.Page;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.overlord.apiman.dt.ui.client.local.AppMessages;
-
+import org.overlord.apiman.dt.ui.client.local.services.ConfigurationService;
+import org.overlord.apiman.dt.ui.client.local.util.MultimapUtil;
 
 /**
- * The "Application" page, with the Policies tab displayed.
+ * The default page.  This is responsible for redirecting the user to
+ * an appropriate starting page.
  *
  * @author eric.wittmann@redhat.com
  */
-@Templated("/org/overlord/apiman/dt/ui/client/local/site/app-policies.html#page")
-@Page(path="app-policies")
+@Page(path="h", role=DefaultPage.class)
 @Dependent
-public class AppPoliciesPage extends AbstractAppPage {
+public class HomeRedirectPage extends AbstractRedirectPage {
     
+    @Inject
+    ConfigurationService config;
+
     /**
      * Constructor.
      */
-    public AppPoliciesPage() {
-    }
-    
-    /**
-     * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractPage#loadPageData()
-     */
-    @Override
-    protected int loadPageData() {
-        int rval = super.loadPageData();
-        return rval;
+    public HomeRedirectPage() {
     }
 
     /**
-     * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractPage#getPageTitle()
+     * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractRedirectPage#doRedirect()
      */
     @Override
-    protected String getPageTitle() {
-        return i18n.format(AppMessages.TITLE_APP_POLICIES, applicationBean.getName());
+    protected void doRedirect() {
+        String currentUser = config.getCurrentConfig().getUser().getUsername();
+        nav.goTo(UserRedirectPage.class, MultimapUtil.singleItemMap("user", currentUser)); //$NON-NLS-1$
     }
 
 }

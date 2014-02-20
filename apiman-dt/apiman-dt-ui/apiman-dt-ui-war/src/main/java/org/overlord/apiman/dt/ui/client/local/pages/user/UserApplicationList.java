@@ -16,11 +16,15 @@
 package org.overlord.apiman.dt.ui.client.local.pages.user;
 
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
+import org.jboss.errai.ui.nav.client.local.TransitionAnchorFactory;
 import org.overlord.apiman.dt.api.beans.summary.ApplicationSummaryBean;
-import org.overlord.apiman.dt.ui.client.local.pages.AppOverviewPage;
-import org.overlord.apiman.dt.ui.client.local.pages.OrgAppsPage;
+import org.overlord.apiman.dt.ui.client.local.AppMessages;
+import org.overlord.apiman.dt.ui.client.local.pages.AppRedirectPage;
+import org.overlord.apiman.dt.ui.client.local.pages.OrgRedirectPage;
 import org.overlord.apiman.dt.ui.client.local.pages.common.AbstractApplicationList;
+import org.overlord.apiman.dt.ui.client.local.pages.common.NoEntitiesWidget;
 import org.overlord.apiman.dt.ui.client.local.util.MultimapUtil;
 import org.overlord.commons.gwt.client.local.widgets.SpanPanel;
 
@@ -35,6 +39,11 @@ import com.google.gwt.user.client.ui.InlineLabel;
  */
 @Dependent
 public class UserApplicationList extends AbstractApplicationList {
+    
+    @Inject
+    TransitionAnchorFactory<OrgRedirectPage> toOrgFactory;
+    @Inject
+    TransitionAnchorFactory<AppRedirectPage> toAppFactory;
 
     /**
      * Constructor.
@@ -47,16 +56,24 @@ public class UserApplicationList extends AbstractApplicationList {
      */
     @Override
     protected void createTitleRow(ApplicationSummaryBean bean, FlowPanel row1) {
-        Anchor a = new Anchor(bean.getOrganizationName());
+        Anchor a = toOrgFactory.get(MultimapUtil.singleItemMap("org", bean.getOrganizationId())); //$NON-NLS-1$
         row1.add(a);
-        a.setHref(navHelper.createHrefToPage(OrgAppsPage.class, MultimapUtil.singleItemMap("org", bean.getOrganizationId()))); //$NON-NLS-1$
+        a.setText(bean.getOrganizationName());
         row1.add(new InlineLabel(" / ")); //$NON-NLS-1$
         SpanPanel sp = new SpanPanel();
         row1.add(sp);
         sp.getElement().setClassName("title"); //$NON-NLS-1$
-        a = new Anchor(bean.getName());
+        a = toAppFactory.get(MultimapUtil.fromMultiple("org", bean.getOrganizationId(), "app", bean.getId())); //$NON-NLS-1$ //$NON-NLS-2$
         sp.add(a);
-        a.setHref(navHelper.createHrefToPage(AppOverviewPage.class,
-                MultimapUtil.fromMultiple("org", bean.getOrganizationId(), "app", bean.getId()))); //$NON-NLS-1$ //$NON-NLS-2$
+        a.setText(bean.getName());
     }
+    
+    /**
+     * @see org.overlord.apiman.dt.ui.client.local.pages.common.AbstractApplicationList#createNoEntitiesWidget()
+     */
+    @Override
+    protected NoEntitiesWidget createNoEntitiesWidget() {
+        return new NoEntitiesWidget(i18n.format(AppMessages.NO_APPS_FOR_USER_MESSAGE), true);
+    }
+
 }

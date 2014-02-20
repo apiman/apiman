@@ -16,9 +16,9 @@
 package org.jboss.errai.ui.nav.client.local;
 
 import org.jboss.errai.ui.nav.client.local.spi.PageNode;
-import org.overlord.apiman.dt.ui.client.local.pages.AbstractPage;
 
 import com.google.common.collect.Multimap;
+import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  * Slight extension to Errai.  Must be in this package to gain visibility to code.
@@ -33,7 +33,7 @@ public class ErraiNavExtension {
      * @param toPage
      * @param state
      */
-    public static <T extends AbstractPage> String createHrefToPage(Navigation nav, Class<T> toPage, Multimap<String, String> state) {
+    public static <T extends IsWidget> String createHrefToPage(Navigation nav, Class<T> toPage, Multimap<String, String> state) {
         PageNode<T> toPageInstance = nav.getNavGraph().getPage(toPage);
         HistoryToken token = HistoryToken.of(toPageInstance.name(), state);
         String href = "#" + token.toString(); //$NON-NLS-1$

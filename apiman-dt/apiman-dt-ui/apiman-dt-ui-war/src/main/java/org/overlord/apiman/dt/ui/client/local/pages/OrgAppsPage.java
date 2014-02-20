@@ -25,6 +25,7 @@ import org.jboss.errai.ui.nav.client.local.TransitionAnchor;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.apiman.dt.api.beans.summary.ApplicationSummaryBean;
+import org.overlord.apiman.dt.ui.client.local.AppMessages;
 import org.overlord.apiman.dt.ui.client.local.pages.org.OrgApplicationList;
 import org.overlord.apiman.dt.ui.client.local.services.rest.IRestInvokerCallback;
 
@@ -80,6 +81,14 @@ public class OrgAppsPage extends AbstractOrgPage {
     protected void renderPage() {
         super.renderPage();
         applications.setValue(apps);
+    }
+
+    /**
+     * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractPage#getPageTitle()
+     */
+    @Override
+    protected String getPageTitle() {
+        return i18n.format(AppMessages.TITLE_ORG_APPS, organizationBean.getName());
     }
 
 }

@@ -33,6 +33,11 @@
   .apiman-entity-new .description {
     width: 500px;
   }
+  
+  .apiman-no-entities-arrow {
+    display: none;
+    visibility: hidden;
+  }
 }
 
 /* Mobile */

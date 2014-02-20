@@ -19,6 +19,7 @@ import javax.enterprise.context.Dependent;
 
 import org.jboss.errai.ui.nav.client.local.Page;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.overlord.apiman.dt.ui.client.local.AppMessages;
 
 
 /**
@@ -44,6 +45,14 @@ public class UserActivityPage extends AbstractUserPage {
     protected int loadPageData() {
         int rval = super.loadPageData();
         return rval;
+    }
+
+    /**
+     * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractPage#getPageTitle()
+     */
+    @Override
+    protected String getPageTitle() {
+        return i18n.format(AppMessages.TITLE_USER_ACTIVITY, userBean.getFullName());
     }
 
 }

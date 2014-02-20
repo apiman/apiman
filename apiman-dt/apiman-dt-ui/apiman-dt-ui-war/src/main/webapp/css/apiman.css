@@ -398,6 +398,26 @@ a.apiman-summaryrow-icon:hover {
   width: 700px;
 }
 
+.apiman-no-entities-description {
+  padding: 25px;
+  font-size: 24px;
+  font-weight: normal;
+  line-height: 1.3;
+  color: rgb(136, 136, 136);
+  background-color: #F2F2FA;
+  border-radius: 5px;
+  border: 1px solid #EAEBEF;
+}
+
+.apiman-no-entities-arrow {
+  float: right;
+  background-image: url(images/new-entity-arrow.png);
+  background-position: top left;
+  width: 69px;
+  height: 69px;
+  margin-right: 25px;
+}
+
 .error-page {
   margin-top: 30px;
 }

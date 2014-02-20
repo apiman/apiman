@@ -18,41 +18,36 @@ package org.overlord.apiman.dt.ui.client.local.pages;
 import javax.enterprise.context.Dependent;
 
 import org.jboss.errai.ui.nav.client.local.Page;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.overlord.apiman.dt.ui.client.local.AppMessages;
-
+import org.jboss.errai.ui.nav.client.local.PageState;
+import org.overlord.apiman.dt.ui.client.local.util.MultimapUtil;
 
 /**
- * The "Application" page, with the Policies tab displayed.
+ * The default org page.  This page is responsible for simply
+ * redirecting to the proper specific org page.
  *
  * @author eric.wittmann@redhat.com
  */
-@Templated("/org/overlord/apiman/dt/ui/client/local/site/app-policies.html#page")
-@Page(path="app-policies")
+@Page(path="app")
 @Dependent
-public class AppPoliciesPage extends AbstractAppPage {
+public class AppRedirectPage extends AbstractRedirectPage {
     
+    @PageState
+    protected String org;
+    @PageState
+    protected String app;
+
     /**
      * Constructor.
      */
-    public AppPoliciesPage() {
-    }
-    
-    /**
-     * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractPage#loadPageData()
-     */
-    @Override
-    protected int loadPageData() {
-        int rval = super.loadPageData();
-        return rval;
+    public AppRedirectPage() {
     }
 
     /**
-     * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractPage#getPageTitle()
+     * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractRedirectPage#doRedirect()
      */
     @Override
-    protected String getPageTitle() {
-        return i18n.format(AppMessages.TITLE_APP_POLICIES, applicationBean.getName());
+    protected void doRedirect() {
+        nav.goTo(AppOverviewPage.class, MultimapUtil.fromMultiple("org", org, "app", app)); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
 }

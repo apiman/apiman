@@ -19,6 +19,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.overlord.apiman.dt.api.beans.summary.ApplicationSummaryBean;
 import org.overlord.apiman.dt.ui.client.local.services.NavigationHelperService;
 
@@ -40,6 +41,8 @@ public abstract class AbstractApplicationList extends FlowPanel implements HasVa
     
     @Inject
     protected NavigationHelperService navHelper;
+    @Inject
+    protected TranslationService i18n;
     
     private List<ApplicationSummaryBean> apps;
 
@@ -88,13 +91,20 @@ public abstract class AbstractApplicationList extends FlowPanel implements HasVa
      * Refresh the display with the current value.
      */
     public void refresh() {
-        if (apps != null) {
+        if (apps != null && !apps.isEmpty()) {
             for (ApplicationSummaryBean bean : apps) {
                 Widget row = createAppRow(bean);
                 add(row);
             }
+        } else {
+            add(createNoEntitiesWidget());
         }
     }
+
+    /**
+     * @return a no-entities widget to be shown when no aps are found
+     */
+    protected abstract NoEntitiesWidget createNoEntitiesWidget();
 
     /**
      * Creates a single application row.

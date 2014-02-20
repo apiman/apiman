@@ -29,6 +29,7 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.apiman.dt.api.beans.apps.ApplicationBean;
 import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
 import org.overlord.apiman.dt.api.beans.summary.OrganizationSummaryBean;
+import org.overlord.apiman.dt.ui.client.local.AppMessages;
 import org.overlord.apiman.dt.ui.client.local.pages.common.OrganizationSelector;
 import org.overlord.apiman.dt.ui.client.local.services.ContextKeys;
 import org.overlord.apiman.dt.ui.client.local.services.CurrentContextService;
@@ -157,6 +158,14 @@ public class NewAppPage extends AbstractPage {
                 Window.alert("App creation failed: " + error.getMessage()); //$NON-NLS-1$
             }
         });
+    }
+
+    /**
+     * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractPage#getPageTitle()
+     */
+    @Override
+    protected String getPageTitle() {
+        return i18n.format(AppMessages.TITLE_NEW_APP);
     }
 
 }

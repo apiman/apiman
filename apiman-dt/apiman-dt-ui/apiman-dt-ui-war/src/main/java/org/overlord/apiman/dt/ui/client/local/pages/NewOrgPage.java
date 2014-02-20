@@ -25,6 +25,7 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
+import org.overlord.apiman.dt.ui.client.local.AppMessages;
 import org.overlord.apiman.dt.ui.client.local.services.rest.IRestInvokerCallback;
 import org.overlord.apiman.dt.ui.client.local.util.MultimapUtil;
 
@@ -45,7 +46,7 @@ import com.google.gwt.user.client.ui.TextBox;
 public class NewOrgPage extends AbstractPage {
     
     @Inject
-    TransitionTo<OrgAppsPage> toOrgApps;
+    TransitionTo<OrgRedirectPage> toOrg;
     
     @Inject @DataField
     TextBox name;
@@ -94,7 +95,7 @@ public class NewOrgPage extends AbstractPage {
             public void onSuccess(OrganizationBean response) {
                 String orgId = response.getId();
                 // Short circuit page loading lifecycle - redirect to the Org page
-                toOrgApps.go(MultimapUtil.singleItemMap("org", orgId)); //$NON-NLS-1$
+                toOrg.go(MultimapUtil.singleItemMap("org", orgId)); //$NON-NLS-1$
             }
             @Override
             public void onError(Throwable error) {
@@ -102,6 +103,14 @@ public class NewOrgPage extends AbstractPage {
                 Window.alert("Org creation failed: " + error.getMessage()); //$NON-NLS-1$
             }
         });
+    }
+
+    /**
+     * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractPage#getPageTitle()
+     */
+    @Override
+    protected String getPageTitle() {
+        return i18n.format(AppMessages.TITLE_NEW_ORG);
     }
 
 }

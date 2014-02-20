@@ -20,6 +20,7 @@ import javax.inject.Inject;
 
 import org.jboss.errai.bus.client.api.ClientMessageBus;
 import org.jboss.errai.enterprise.client.cdi.api.CDI;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.nav.client.local.Navigation;
 import org.jboss.errai.ui.nav.client.local.PageHiding;
 import org.jboss.errai.ui.nav.client.local.PageShowing;
@@ -30,6 +31,7 @@ import org.overlord.apiman.dt.ui.client.local.services.RestInvokerService;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.user.client.ui.Composite;
@@ -53,6 +55,8 @@ public abstract class AbstractPage extends Composite {
     protected NavigationHelperService navHelper;
     @Inject
     protected PageErrorPanel errorPanel;
+    @Inject
+    protected TranslationService i18n;
 
     private int expectedDataPackets;
     private int dataPacketsReceived;
@@ -62,6 +66,11 @@ public abstract class AbstractPage extends Composite {
      */
     public AbstractPage() {
     }
+    
+    /**
+     * @return the title for this page
+     */
+    protected abstract String getPageTitle();
 
     /**
      * Called after the page is constructed.
@@ -152,6 +161,7 @@ public abstract class AbstractPage extends Composite {
      * Called after all data has been loaded.
      */
     protected void showPage() {
+        setPageTitle(getPageTitle());
         renderPage();
         pageLoadingWidget.hide();
         navigation.getContentPanel().asWidget().getElement().getStyle().clearVisibility();
@@ -186,6 +196,16 @@ public abstract class AbstractPage extends Composite {
      */
     protected void onPageLoaded() {
         
+    }
+    
+    /**
+     * Sets the page title.
+     * @param title
+     */
+    protected void setPageTitle(String title) {
+        if (Document.get() != null && title != null) {
+            Document.get().setTitle (title);
+        }
     }
 
 }
