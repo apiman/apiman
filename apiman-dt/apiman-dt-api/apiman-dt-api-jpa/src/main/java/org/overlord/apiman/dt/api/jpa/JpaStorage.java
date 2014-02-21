@@ -22,6 +22,7 @@ import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import org.overlord.apiman.dt.api.beans.apps.ApplicationBean;
@@ -29,6 +30,7 @@ import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
 import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
 import org.overlord.apiman.dt.api.beans.services.ServiceBean;
+import org.overlord.apiman.dt.api.beans.services.ServiceVersionBean;
 import org.overlord.apiman.dt.api.beans.summary.ApplicationSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.OrganizationSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.ServiceSummaryBean;
@@ -213,6 +215,56 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                 rval.add(summary);
             }
             return rval;
+        } catch (Throwable t) {
+            JpaUtil.rollbackQuietly(entityManager);
+            logger.error(t.getMessage(), t);
+            throw new StorageException(t);
+        } finally {
+            entityManager.close();
+        }
+    }
+    
+    /**
+     * @see org.overlord.apiman.dt.api.persist.IStorageQuery#getServiceVersion(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public ServiceVersionBean getServiceVersion(String orgId, String serviceId, String version)
+            throws StorageException {
+        EntityManager entityManager = emf.createEntityManager();
+        try {
+            String jpql = "SELECT v from ServiceVersionBean v JOIN v.service s WHERE s.organizationId = :orgId AND s.id = :serviceId AND v.version = :version"; //$NON-NLS-1$
+            Query query = entityManager.createQuery(jpql);
+            query.setParameter("orgId", orgId); //$NON-NLS-1$
+            query.setParameter("serviceId", serviceId); //$NON-NLS-1$
+            query.setParameter("version", version); //$NON-NLS-1$
+            
+            return (ServiceVersionBean) query.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        } catch (Throwable t) {
+            JpaUtil.rollbackQuietly(entityManager);
+            logger.error(t.getMessage(), t);
+            throw new StorageException(t);
+        } finally {
+            entityManager.close();
+        }
+    }
+    
+    /**
+     * @see org.overlord.apiman.dt.api.persist.IStorageQuery#getServiceVersions(java.lang.String, java.lang.String)
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<ServiceVersionBean> getServiceVersions(String orgId, String serviceId)
+            throws StorageException {
+        EntityManager entityManager = emf.createEntityManager();
+        try {
+            String jpql = "SELECT v from ServiceVersionBean v JOIN v.service s WHERE s.organizationId = :orgId AND s.id = :serviceId ORDER BY v.id DESC"; //$NON-NLS-1$
+            Query query = entityManager.createQuery(jpql);
+            query.setParameter("orgId", orgId); //$NON-NLS-1$
+            query.setParameter("serviceId", serviceId); //$NON-NLS-1$
+            
+            return (List<ServiceVersionBean>) query.getResultList();
         } catch (Throwable t) {
             JpaUtil.rollbackQuietly(entityManager);
             logger.error(t.getMessage(), t);

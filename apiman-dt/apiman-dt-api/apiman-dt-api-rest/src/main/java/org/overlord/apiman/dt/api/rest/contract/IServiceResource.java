@@ -18,7 +18,6 @@ package org.overlord.apiman.dt.api.rest.contract;
 
 import java.util.List;
 
-import javax.management.ServiceNotFoundException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -31,11 +30,14 @@ import javax.ws.rs.core.MediaType;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
 import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
 import org.overlord.apiman.dt.api.beans.services.ServiceBean;
+import org.overlord.apiman.dt.api.beans.services.ServiceVersionBean;
 import org.overlord.apiman.dt.api.beans.summary.ServiceSummaryBean;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.InvalidSearchCriteriaException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.NotAuthorizedException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ServiceAlreadyExistsException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.ServiceNotFoundException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.ServiceVersionNotFoundException;
 
 /**
  * The Service API.
@@ -67,11 +69,40 @@ public interface IServiceResource {
 
     @PUT
     @Path("{organizationId}/services/{serviceId}")
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public void update(@PathParam("organizationId") String organizationId,
             @PathParam("serviceId") String serviceId, ServiceBean bean)
             throws ServiceNotFoundException, NotAuthorizedException;
-    
+
+    @POST
+    @Path("{organizationId}/services/{serviceId}/versions")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public ServiceVersionBean createVersion(@PathParam("organizationId") String organizationId,
+            @PathParam("serviceId") String serviceId, ServiceVersionBean bean)
+            throws ServiceNotFoundException, NotAuthorizedException;
+
+    @GET
+    @Path("{organizationId}/services/{serviceId}/versions")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<ServiceVersionBean> listVersions(@PathParam("organizationId") String organizationId,
+            @PathParam("serviceId") String serviceId) throws ServiceNotFoundException, NotAuthorizedException;
+
+    @GET
+    @Path("{organizationId}/services/{serviceId}/versions/{version}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public ServiceVersionBean getVersion(@PathParam("organizationId") String organizationId,
+            @PathParam("serviceId") String serviceId, @PathParam("version") String version)
+            throws ServiceVersionNotFoundException, NotAuthorizedException;
+
+    @PUT
+    @Path("{organizationId}/services/{serviceId}/versions/{version}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void updateVersion(@PathParam("organizationId") String organizationId,
+            @PathParam("serviceId") String serviceId, @PathParam("version") String version,
+            ServiceVersionBean bean) throws ServiceVersionNotFoundException, NotAuthorizedException;
+
     @POST
     @Path("{organizationId}/services/search")
     @Consumes(MediaType.APPLICATION_JSON)

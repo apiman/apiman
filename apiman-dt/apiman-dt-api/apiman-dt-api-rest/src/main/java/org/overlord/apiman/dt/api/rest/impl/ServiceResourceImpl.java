@@ -28,6 +28,8 @@ import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
 import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
 import org.overlord.apiman.dt.api.beans.services.ServiceBean;
+import org.overlord.apiman.dt.api.beans.services.ServiceStatus;
+import org.overlord.apiman.dt.api.beans.services.ServiceVersionBean;
 import org.overlord.apiman.dt.api.beans.summary.ServiceSummaryBean;
 import org.overlord.apiman.dt.api.persist.AlreadyExistsException;
 import org.overlord.apiman.dt.api.persist.DoesNotExistException;
@@ -43,6 +45,7 @@ import org.overlord.apiman.dt.api.rest.contract.exceptions.NotAuthorizedExceptio
 import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ServiceAlreadyExistsException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ServiceNotFoundException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.ServiceVersionNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.SystemErrorException;
 import org.overlord.apiman.dt.api.rest.impl.util.ExceptionFactory;
 import org.overlord.apiman.dt.api.rest.impl.util.SearchCriteriaUtil;
@@ -72,12 +75,12 @@ public class ServiceResourceImpl implements IServiceResource {
     }
     
     /**
-     * @see org.overlord.apiman.dt.api.rest.contract.IServiceResource#create(java.lang.String, org.overlord.apiman.dt.api.beans.apps.ServiceBean)
+     * @see org.overlord.apiman.dt.api.rest.contract.IServiceResource#create(java.lang.String, org.overlord.apiman.dt.api.beans.services.ServiceBean)
      */
     @Override
     public ServiceBean create(String organizationId, ServiceBean bean)
             throws OrganizationNotFoundException, ServiceAlreadyExistsException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.appEdit, organizationId))
+        if (!securityContext.hasPermission(PermissionType.svcEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
         
         try {
@@ -111,7 +114,7 @@ public class ServiceResourceImpl implements IServiceResource {
     @Override
     public ServiceBean get(String organizationId, String serviceId)
             throws ServiceNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.appView, organizationId))
+        if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
             throw ExceptionFactory.notAuthorizedException();
         try {
             return storage.get(organizationId, serviceId, ServiceBean.class);
@@ -128,7 +131,7 @@ public class ServiceResourceImpl implements IServiceResource {
     @Override
     public List<ServiceSummaryBean> list(String organizationId) throws OrganizationNotFoundException,
             NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.appView, organizationId))
+        if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
             throw ExceptionFactory.notAuthorizedException();
         try {
             storage.get(organizationId, OrganizationBean.class);
@@ -146,12 +149,12 @@ public class ServiceResourceImpl implements IServiceResource {
     }
     
     /**
-     * @see org.overlord.apiman.dt.api.rest.contract.IServiceResource#update(java.lang.String, java.lang.String, org.overlord.apiman.dt.api.beans.apps.ServiceBean)
+     * @see org.overlord.apiman.dt.api.rest.contract.IServiceResource#update(java.lang.String, java.lang.String, org.overlord.apiman.dt.api.beans.services.ServiceBean)
      */
     @Override
     public void update(String organizationId, String serviceId, ServiceBean bean)
             throws ServiceNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.appEdit, organizationId))
+        if (!securityContext.hasPermission(PermissionType.svcEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
         try {
             bean.setOrganizationId(organizationId);
@@ -163,7 +166,95 @@ public class ServiceResourceImpl implements IServiceResource {
             throw new SystemErrorException(e);
         }
     }
+
+    /**
+     * @see org.overlord.apiman.dt.api.rest.contract.IServiceResource#createVersion(java.lang.String, java.lang.String, org.overlord.apiman.dt.api.beans.services.ServiceVersionBean)
+     */
+    @Override
+    public ServiceVersionBean createVersion(String organizationId, String serviceId, ServiceVersionBean bean)
+            throws ServiceNotFoundException, NotAuthorizedException {
+        if (!securityContext.hasPermission(PermissionType.svcEdit, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
+        try {
+            ServiceBean service = storage.get(organizationId, serviceId, ServiceBean.class);
+            bean.setCreatedBy(securityContext.getCurrentUser());
+            bean.setCreatedOn(new Date());
+            bean.setStatus(ServiceStatus.Created);
+            bean.setService(service);
+            storage.create(bean);
+            return bean;
+        } catch (DoesNotExistException e) {
+            throw ExceptionFactory.serviceNotFoundException(serviceId);
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+    }
     
+    /**
+     * @see org.overlord.apiman.dt.api.rest.contract.IServiceResource#getVersion(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public ServiceVersionBean getVersion(String organizationId, String serviceId, String version)
+            throws ServiceVersionNotFoundException, NotAuthorizedException {
+        if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
+        try {
+            ServiceVersionBean serviceVersion = query.getServiceVersion(organizationId, serviceId, version);
+            if (serviceVersion == null)
+                throw ExceptionFactory.serviceVersionNotFoundException(serviceId, version);
+            return serviceVersion;
+        } catch (DoesNotExistException e) {
+            throw ExceptionFactory.serviceNotFoundException(serviceId);
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+    }
+    
+    /**
+     * @see org.overlord.apiman.dt.api.rest.contract.IServiceResource#updateVersion(java.lang.String, java.lang.String, java.lang.String, org.overlord.apiman.dt.api.beans.services.ServiceVersionBean)
+     */
+    @Override
+    public void updateVersion(String organizationId, String serviceId, String version, ServiceVersionBean bean)
+            throws ServiceVersionNotFoundException, NotAuthorizedException {
+        if (!securityContext.hasPermission(PermissionType.svcEdit, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
+        // TODO throw error if version is not in the right state
+        try {
+            ServiceVersionBean svb = getVersion(organizationId, serviceId, version);
+            bean.setId(svb.getId());
+            bean.setService(svb.getService());
+            bean.setStatus(ServiceStatus.Created);
+            bean.setPublishedOn(null);
+            bean.setRetiredOn(null);
+            storage.update(bean);
+        } catch (DoesNotExistException e) {
+            throw ExceptionFactory.serviceNotFoundException(serviceId);
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+    }
+
+    /**
+     * @see org.overlord.apiman.dt.api.rest.contract.IServiceResource#listVersions(java.lang.String, java.lang.String)
+     */
+    @Override
+    public List<ServiceVersionBean> listVersions(String organizationId, String serviceId)
+            throws ServiceNotFoundException, NotAuthorizedException {
+        if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
+        
+        // Try to get the service first - will throw a ServiceNotFoundException if not found.
+        get(organizationId, serviceId);
+        
+        try {
+            return query.getServiceVersions(organizationId, serviceId);
+        } catch (DoesNotExistException e) {
+            throw ExceptionFactory.serviceNotFoundException(serviceId);
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+    }
+
     /**
      * @see org.overlord.apiman.dt.api.rest.contract.IServiceResource#search(java.lang.String, org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean)
      */

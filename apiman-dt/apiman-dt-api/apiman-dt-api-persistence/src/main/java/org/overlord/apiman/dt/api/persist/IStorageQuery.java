@@ -18,6 +18,7 @@ package org.overlord.apiman.dt.api.persist;
 import java.util.List;
 import java.util.Set;
 
+import org.overlord.apiman.dt.api.beans.services.ServiceVersionBean;
 import org.overlord.apiman.dt.api.beans.summary.ApplicationSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.OrganizationSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.ServiceSummaryBean;
@@ -64,5 +65,23 @@ public interface IStorageQuery {
      * @throws StorageException
      */
     public List<ServiceSummaryBean> getServicesInOrg(String orgId) throws StorageException;
+    
+    /**
+     * Returns the service version bean with the given info (orgid, serviceid, version).
+     * @param orgId
+     * @param serviceId
+     * @param version
+     * @throws StorageException
+     */
+    public ServiceVersionBean getServiceVersion(String orgId, String serviceId, String version) throws StorageException;
+    
+    /**
+     * Returns all service versions for a given service.
+     * @param orgId
+     * @param serviceId
+     * @throws StorageException
+     */
+    public List<ServiceVersionBean> getServiceVersions(String orgId, String serviceId) throws StorageException;
+    
 
 }

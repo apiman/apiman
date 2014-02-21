@@ -67,6 +67,7 @@ public interface IApplicationResource {
 
     @PUT
     @Path("{organizationId}/applications/{applicationId}")
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public void update(@PathParam("organizationId") String organizationId,
             @PathParam("applicationId") String applicationId, ApplicationBean bean)

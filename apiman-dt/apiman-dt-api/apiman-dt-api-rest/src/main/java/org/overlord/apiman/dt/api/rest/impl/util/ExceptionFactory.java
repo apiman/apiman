@@ -24,6 +24,7 @@ import org.overlord.apiman.dt.api.rest.contract.exceptions.RoleAlreadyExistsExce
 import org.overlord.apiman.dt.api.rest.contract.exceptions.RoleNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ServiceAlreadyExistsException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ServiceNotFoundException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.ServiceVersionNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.UserNotFoundException;
 import org.overlord.apiman.dt.api.rest.i18n.Messages;
 
@@ -112,6 +113,14 @@ public final class ExceptionFactory {
      */
     public static final ServiceNotFoundException serviceNotFoundException(String serviceId) {
         return new ServiceNotFoundException(Messages.i18n.format("ServiceDoesNotExist", serviceId)); //$NON-NLS-1$
+    }
+
+    /**
+     * Creates an exception from an service id and version.
+     * @param serviceId
+     */
+    public static final ServiceVersionNotFoundException serviceVersionNotFoundException(String serviceId, String version) {
+        return new ServiceVersionNotFoundException(Messages.i18n.format("ServiceVersionDoesNotExist", serviceId, version)); //$NON-NLS-1$
     }
 
 }

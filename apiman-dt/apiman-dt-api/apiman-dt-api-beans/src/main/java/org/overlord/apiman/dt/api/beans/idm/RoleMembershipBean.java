@@ -24,6 +24,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.hibernate.annotations.Index;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
@@ -54,10 +55,12 @@ public class RoleMembershipBean implements Serializable {
     @Id @GeneratedValue
     private Long id;
     @Column(name="user_id")
+    @Index(name="userIdIdx")
     private String userId;
     @Column(name="role_id")
     private String roleId;
     @Column(name="org_id")
+    @Index(name="orgIdIdx")
     private String organizationId;
 
     /**

@@ -31,6 +31,7 @@ import org.overlord.apiman.dt.api.rest.contract.exceptions.RoleAlreadyExistsExce
 import org.overlord.apiman.dt.api.rest.contract.exceptions.RoleNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ServiceAlreadyExistsException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ServiceNotFoundException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.ServiceVersionNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.SystemErrorException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.UserNotFoundException;
 import org.overlord.apiman.dt.ui.client.local.exceptions.NotAuthenticatedException;
@@ -85,6 +86,8 @@ public class RestClientExceptionMapper extends AbstractJSONClientExceptionMapper
                 return new ServiceNotFoundException(errorBean.getMessage());
             if (type.equals("ServiceAlreadyExistsException")) //$NON-NLS-1$
                 return new ServiceAlreadyExistsException(errorBean.getMessage());
+            if (type.equals("ServiceVersionNotFoundException")) //$NON-NLS-1$
+                return new ServiceVersionNotFoundException(errorBean.getMessage());
             // Default - simple exception.
             return new RuntimeException(errorBean.getMessage());
         }
