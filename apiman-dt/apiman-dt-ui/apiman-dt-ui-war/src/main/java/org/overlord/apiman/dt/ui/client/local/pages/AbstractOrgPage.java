@@ -20,6 +20,7 @@ import javax.inject.Inject;
 import org.jboss.errai.ui.nav.client.local.PageState;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
+import org.overlord.apiman.dt.ui.client.local.services.ContextKeys;
 import org.overlord.apiman.dt.ui.client.local.services.rest.IRestInvokerCallback;
 import org.overlord.apiman.dt.ui.client.local.util.MultimapUtil;
 import org.overlord.commons.gwt.client.local.widgets.ParagraphLabel;
@@ -78,6 +79,7 @@ public abstract class AbstractOrgPage extends AbstractPage {
             @Override
             public void onSuccess(OrganizationBean response) {
                 organizationBean = response;
+                currentContext.setAttribute(ContextKeys.CURRENT_ORGANIZATION, organizationBean);
                 dataPacketLoaded();
             }
             @Override

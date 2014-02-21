@@ -26,6 +26,7 @@ import org.jboss.errai.ui.nav.client.local.PageHiding;
 import org.jboss.errai.ui.nav.client.local.PageShowing;
 import org.overlord.apiman.dt.ui.client.local.PageErrorPanel;
 import org.overlord.apiman.dt.ui.client.local.PageLoadingWidget;
+import org.overlord.apiman.dt.ui.client.local.services.CurrentContextService;
 import org.overlord.apiman.dt.ui.client.local.services.NavigationHelperService;
 import org.overlord.apiman.dt.ui.client.local.services.RestInvokerService;
 
@@ -57,6 +58,8 @@ public abstract class AbstractPage extends Composite {
     protected PageErrorPanel errorPanel;
     @Inject
     protected TranslationService i18n;
+    @Inject
+    protected CurrentContextService currentContext;
 
     private int expectedDataPackets;
     private int dataPacketsReceived;
