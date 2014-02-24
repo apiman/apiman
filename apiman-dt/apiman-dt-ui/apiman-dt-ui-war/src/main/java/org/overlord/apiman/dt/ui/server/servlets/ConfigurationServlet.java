@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.codec.binary.Base64;
 import org.codehaus.jackson.JsonEncoding;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
@@ -38,6 +39,7 @@ import org.overlord.apiman.dt.ui.client.shared.beans.ConfigurationBean;
 import org.overlord.apiman.dt.ui.client.shared.beans.UserConfigurationBean;
 import org.overlord.apiman.dt.ui.server.ApimanUIConfig;
 import org.overlord.apiman.dt.ui.server.ApimanUiVersion;
+import org.overlord.apiman.dt.ui.server.auth.ITokenGenerator;
 
 /**
  * Generates the initial configuration JSON used by the UI when it
@@ -99,9 +101,24 @@ public class ConfigurationServlet extends HttpServlet {
                 configBean.getApi().getAuth().getBasic().setPassword(password);
             } else if (ApiAuthType.bearerToken.toString().equals(authType)) {
                 configBean.getApi().getAuth().setType(ApiAuthType.bearerToken);
+                String tokenGeneratorClassName = ApimanUIConfig.config.getString(ApimanUIConfig.APIMAN_DT_UI_API_AUTH_TOKEN_GENERATOR);
+                if (tokenGeneratorClassName == null)
+                    throw new ServletException("No token generator class specified."); //$NON-NLS-1$
+                Class<?> c = Class.forName(tokenGeneratorClassName);
+                ITokenGenerator tokenGenerator = (ITokenGenerator) c.newInstance();
                 configBean.getApi().getAuth().setBearerToken(new BearerTokenCredentialsBean());
-                String token = getBearerToken(request, response);
-                configBean.getApi().getAuth().getBearerToken().setToken(token);
+                configBean.getApi().getAuth().getBearerToken().setToken(new String(Base64.encodeBase64(tokenGenerator.generateToken(request).getBytes("UTF-8")))); //$NON-NLS-1$
+                configBean.getApi().getAuth().getBearerToken().setRefreshPeriod(tokenGenerator.getRefreshPeriod());
+            } else if (ApiAuthType.samlBearerToken.toString().equals(authType)) {
+                configBean.getApi().getAuth().setType(ApiAuthType.samlBearerToken);
+                String tokenGeneratorClassName = ApimanUIConfig.config.getString(ApimanUIConfig.APIMAN_DT_UI_API_AUTH_TOKEN_GENERATOR);
+                if (tokenGeneratorClassName == null)
+                    throw new ServletException("No token generator class specified."); //$NON-NLS-1$
+                Class<?> c = Class.forName(tokenGeneratorClassName);
+                ITokenGenerator tokenGenerator = (ITokenGenerator) c.newInstance();
+                configBean.getApi().getAuth().setBearerToken(new BearerTokenCredentialsBean());
+                configBean.getApi().getAuth().getBearerToken().setToken(new String(Base64.encodeBase64(tokenGenerator.generateToken(request).getBytes("UTF-8")))); //$NON-NLS-1$
+                configBean.getApi().getAuth().getBearerToken().setRefreshPeriod(tokenGenerator.getRefreshPeriod());
             }
             g.writeObject(configBean);
             
@@ -111,17 +128,6 @@ public class ConfigurationServlet extends HttpServlet {
         } catch (Exception e) {
             throw new ServletException(e);
         }
-    }
-
-    /**
-     * Gets/generates a bearer token that can be passed to the client and used to
-     * make authenticated REST calls to the Apiman DT REST API.
-     * @param request
-     * @param response
-     */
-    private String getBearerToken(HttpServletRequest request, HttpServletResponse response) {
-        // TODO implement bearer token auth
-        return "TODO:BEARER-TOKEN"; //$NON-NLS-1$
     }
 
     /**

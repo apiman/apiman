@@ -26,7 +26,6 @@ import javax.naming.NamingException;
 import javax.servlet.DispatcherType;
 
 import org.apache.commons.dbcp.BasicDataSource;
-import org.eclipse.jetty.security.ConstraintMapping;
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.HashLoginService;
 import org.eclipse.jetty.security.SecurityHandler;
@@ -35,7 +34,6 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import org.eclipse.jetty.util.security.Constraint;
 import org.eclipse.jetty.util.security.Credential;
 import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
 import org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap;
@@ -165,8 +163,9 @@ public class DtApiTestServer {
         apiManServer.addEventListener(new ResteasyBootstrap());
         apiManServer.addFilter(DatabaseSeedFilter.class, "/db-seeder", EnumSet.of(DispatcherType.REQUEST));
         apiManServer.addFilter(LocaleFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
-        apiManServer.addFilter(DefaultSecurityContextFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
         apiManServer.addFilter(SimpleCorsFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
+        apiManServer.addFilter(DtApiTestAuthFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
+        apiManServer.addFilter(DefaultSecurityContextFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
         ServletHolder resteasyServlet = new ServletHolder(new HttpServletDispatcher());
         resteasyServlet.setInitParameter("javax.ws.rs.Application", TestApiManDtApplication.class.getName());
         apiManServer.addServlet(resteasyServlet, "/*");
@@ -192,23 +191,23 @@ public class DtApiTestServer {
         }
         l.setName("apimanrealm");
 
-        Constraint constraint = new Constraint();
-        constraint.setName(Constraint.__BASIC_AUTH);
-        constraint.setRoles(new String[] { "apiuser", "apiadmin" });
-        constraint.setAuthenticate(true);
+//        Constraint constraint = new Constraint();
+//        constraint.setName(Constraint.__BASIC_AUTH);
+//        constraint.setRoles(new String[] { "apiuser", "apiadmin" });
+//        constraint.setAuthenticate(true);
 
-        String[] protectedMethods = new String[] { "GET", "HEAD", "POST", "PUT", "DELETE", "TRACE", "CONNECT" };
+//        String[] protectedMethods = new String[] { "GET", "HEAD", "POST", "PUT", "DELETE", "TRACE", "CONNECT" };
 
         ConstraintSecurityHandler csh = new ConstraintSecurityHandler();
         csh.setAuthenticator(new BasicAuthenticator());
         csh.setRealmName("apimanrealm");
-        for (String method : protectedMethods) {
-            ConstraintMapping cm = new ConstraintMapping();
-            cm.setConstraint(constraint);
-            cm.setPathSpec("/*");
-            cm.setMethod(method);
-            csh.addConstraintMapping(cm);
-        }
+//        for (String method : protectedMethods) {
+//            ConstraintMapping cm = new ConstraintMapping();
+//            cm.setConstraint(constraint);
+//            cm.setPathSpec("/*");
+//            cm.setMethod(method);
+//            csh.addConstraintMapping(cm);
+//        }
         csh.setLoginService(l);
 
         return csh;

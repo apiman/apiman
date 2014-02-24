@@ -67,6 +67,8 @@ public class AuthInterceptor implements RestClientInterceptor {
         ApiAuthConfigurationBean auth = config.getCurrentConfig().getApi().getAuth();
         if (auth.getType() == ApiAuthType.basic) {
             doBasicAuth(context, auth);
+        } else if (auth.getType() == ApiAuthType.samlBearerToken) {
+            doSAMLBearerTokenAuth(context, auth);
         } else if (auth.getType() == ApiAuthType.bearerToken) {
             doBearerTokenAuth(context, auth);
         }
@@ -80,6 +82,19 @@ public class AuthInterceptor implements RestClientInterceptor {
      */
     private void doBasicAuth(RestCallContext context, ApiAuthConfigurationBean auth) {
         String encoded = Base64Util.b64encode(auth.getBasic().getUsername() + ":" + auth.getBasic().getPassword()); //$NON-NLS-1$
+        context.getRequestBuilder().setIncludeCredentials(true);
+        context.getRequestBuilder().setHeader("Authorization", "Basic " + encoded); //$NON-NLS-1$ //$NON-NLS-2$
+    }
+
+    /**
+     * Implementation of Overlord SAML bearer token auth.
+     * @param context
+     * @param auth
+     */
+    private void doSAMLBearerTokenAuth(RestCallContext context, ApiAuthConfigurationBean auth) {
+        String b64Token = auth.getBearerToken().getToken();
+        String token = Base64Util.b64decode(b64Token);
+        String encoded = Base64Util.b64encode("SAML-BEARER-TOKEN:" + token); //$NON-NLS-1$
         context.getRequestBuilder().setIncludeCredentials(true);
         context.getRequestBuilder().setHeader("Authorization", "Basic " + encoded); //$NON-NLS-1$ //$NON-NLS-2$
     }

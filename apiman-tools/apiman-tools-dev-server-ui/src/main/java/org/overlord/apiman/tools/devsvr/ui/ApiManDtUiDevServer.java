@@ -36,6 +36,7 @@ import org.jboss.weld.environment.servlet.Listener;
 import org.overlord.apiman.dt.ui.client.shared.beans.ApiAuthType;
 import org.overlord.apiman.dt.ui.server.ApimanUIConfig;
 import org.overlord.apiman.dt.ui.server.servlets.ConfigurationServlet;
+import org.overlord.commons.auth.jetty8.HttpRequestThreadLocalFilter;
 import org.overlord.commons.dev.server.DevServerEnvironment;
 import org.overlord.commons.dev.server.ErraiDevServer;
 import org.overlord.commons.dev.server.MultiDefaultServlet;
@@ -87,9 +88,10 @@ public class ApiManDtUiDevServer extends ErraiDevServer {
     @Override
     protected void preConfig() {
         System.setProperty(ApimanUIConfig.APIMAN_DT_UI_API_ENDPOINT, "http://localhost:7071/apiman-dt-api");
-        System.setProperty(ApimanUIConfig.APIMAN_DT_UI_API_AUTH_TYPE, ApiAuthType.basic.toString());
-        System.setProperty(ApimanUIConfig.APIMAN_DT_UI_API_BASIC_AUTH_USER, "admin");
-        System.setProperty(ApimanUIConfig.APIMAN_DT_UI_API_BASIC_AUTH_PASS, "admin");
+        System.setProperty(ApimanUIConfig.APIMAN_DT_UI_API_AUTH_TYPE, ApiAuthType.samlBearerToken.toString());
+        System.setProperty(ApimanUIConfig.APIMAN_DT_UI_API_AUTH_TOKEN_GENERATOR, ApiManDtUiTokenGenerator.class.getName());
+//        System.setProperty(ApimanUIConfig.APIMAN_DT_UI_API_BASIC_AUTH_USER, "admin");
+//        System.setProperty(ApimanUIConfig.APIMAN_DT_UI_API_BASIC_AUTH_PASS, "admin");
     }
 
     /**
@@ -134,6 +136,7 @@ public class ApiManDtUiDevServer extends ErraiDevServer {
         apiManDtUI.setInitParameter("users.properties", "/WEB-INF/users.properties");
         apiManDtUI.addEventListener(new Listener());
         apiManDtUI.addEventListener(new BeanManagerResourceBindingListener());
+        apiManDtUI.addFilter(HttpRequestThreadLocalFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
         apiManDtUI.addFilter(GWTCacheControlFilter.class, "/app/*", EnumSet.of(DispatcherType.REQUEST));
         apiManDtUI.addFilter(ResourceCacheControlFilter.class, "/css/*", EnumSet.of(DispatcherType.REQUEST));
         apiManDtUI.addFilter(ResourceCacheControlFilter.class, "/images/*", EnumSet.of(DispatcherType.REQUEST));

@@ -30,4 +30,12 @@ public final class Base64Util {
         return $wnd.btoa(data);
     }-*/;
 
+    /**
+     * Base64 decoding.
+     * @param data
+     */
+    public static final native String b64decode(String data) /*-{
+        return $wnd.atob(data);
+    }-*/;
+
 }

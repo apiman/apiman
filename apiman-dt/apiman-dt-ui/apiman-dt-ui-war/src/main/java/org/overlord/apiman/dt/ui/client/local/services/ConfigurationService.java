@@ -19,14 +19,23 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.ErrorCallback;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.enterprise.client.jaxrs.MarshallingWrapper;
 import org.jboss.errai.enterprise.client.jaxrs.api.RestClient;
 import org.jboss.errai.ioc.client.api.InitBallot;
+import org.overlord.apiman.dt.ui.client.shared.beans.ApiAuthType;
+import org.overlord.apiman.dt.ui.client.shared.beans.BearerTokenCredentialsBean;
 import org.overlord.apiman.dt.ui.client.shared.beans.ConfigurationBean;
+import org.overlord.apiman.dt.ui.client.shared.services.ITokenRefreshService;
 import org.overlord.apiman.dt.ui.server.servlets.ConfigurationServlet;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 
 /**
  * An application configuration service. This service is responsible for getting
@@ -41,6 +50,9 @@ public class ConfigurationService {
 
     @Inject
     InitBallot<ConfigurationService> ballot;
+    
+    @Inject
+    Caller<ITokenRefreshService> tokenRefresh;
     
     private ConfigurationBean configuration;
 
@@ -62,10 +74,44 @@ public class ConfigurationService {
         configuration = MarshallingWrapper.fromJSON(data, ConfigurationBean.class);
         
         RestClient.setApplicationRoot(configuration.getApi().getEndpoint());
+        
+        ApiAuthType apiAuthType = configuration.getApi().getAuth().getType();
+        if (apiAuthType == ApiAuthType.bearerToken || apiAuthType == ApiAuthType.samlBearerToken) {
+            startTokenRefreshTimer();
+        }
 
         ballot.voteForInit();
     }
-    
+
+    /**
+     * Starts a timer that will refresh the configuration's bearer token
+     * periodically.
+     */
+    private void startTokenRefreshTimer() {
+        Timer timer = new Timer() {
+            @SuppressWarnings("rawtypes")
+            @Override
+            public void run() {
+                GWT.log("Refreshing auth token."); //$NON-NLS-1$
+                tokenRefresh.call(new RemoteCallback<BearerTokenCredentialsBean>() {
+                    @Override
+                    public void callback(BearerTokenCredentialsBean response) {
+                        configuration.getApi().getAuth().setBearerToken(response);
+                        startTokenRefreshTimer();
+                    }
+                }, new ErrorCallback() {
+                    @Override
+                    public boolean error(Object message, Throwable throwable) {
+                        // TODO do something more interesting with this error
+                        Window.alert("Authentication token refresh failed!"); //$NON-NLS-1$
+                        return true;
+                    }
+                }).refreshToken();
+            }
+        };
+        timer.schedule(configuration.getApi().getAuth().getBearerToken().getRefreshPeriod() * 1000);
+    }
+
     /**
      * @return the current configuration
      */

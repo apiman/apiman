@@ -13,14 +13,20 @@
   <dependencies>
     <!-- Project Dependencies -->
     <dependency>
-      <groupId>org.overlord.apiman</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>apiman-dt-api-beans</artifactId>
       <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.overlord.apiman</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>apiman-dt-api-rest</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-dt-api-security</artifactId>
       <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
@@ -54,6 +60,10 @@
       <artifactId>gwt-dev</artifactId>
       <version>${version.com.google.gwt}</version>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
     </dependency>
 
     <!-- Errai -->

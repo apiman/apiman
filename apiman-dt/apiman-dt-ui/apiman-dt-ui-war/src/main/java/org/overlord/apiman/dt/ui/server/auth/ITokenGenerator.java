@@ -13,15 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.dt.ui.client.shared.beans;
+package org.overlord.apiman.dt.ui.server.auth;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
- * The supported authentication types.
+ * Simple interface used to generate bearer tokens.
  *
  * @author eric.wittmann@redhat.com
  */
-public enum ApiAuthType {
-    
-    basic, bearerToken, samlBearerToken;
+public interface ITokenGenerator {
 
+    /**
+     * Generates a token.
+     * @param request
+     */
+    public String generateToken(HttpServletRequest request);
+    
+    /**
+     * Returns the time (in seconds) the client has before it should ask
+     * for a new token.
+     */
+    public int getRefreshPeriod();
+    
 }

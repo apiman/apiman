@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.overlord.apiman</groupId>
@@ -7,7 +8,11 @@
   </parent>
   <artifactId>apiman-tools-dev-server-ui</artifactId>
   <name>apiman-tools-dev-server-ui</name>
-  
+
+  <properties>
+    <picketlink.version>2.1.6.Final</picketlink.version>
+  </properties>
+
   <dependencies>
     <!-- Dev Server Dependencies -->
     <dependency>
@@ -21,16 +26,24 @@
       <groupId>org.overlord</groupId>
       <artifactId>overlord-commons-uiheader</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-auth</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-auth-jetty8</artifactId>
+    </dependency>
 
     <!-- APIMan -->
     <dependency>
-      <groupId>org.overlord.apiman</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>apiman-dt-ui-war</artifactId>
       <version>${project.version}</version>
       <type>war</type>
     </dependency>
     <dependency>
-      <groupId>org.overlord.apiman</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>apiman-dt-ui-war</artifactId>
       <version>${project.version}</version>
       <classifier>classes</classifier>
@@ -58,6 +71,11 @@
     <dependency>
       <groupId>org.jboss.logging</groupId>
       <artifactId>jboss-logging</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.picketlink</groupId>
+      <artifactId>picketlink-core</artifactId>
+      <version>${picketlink.version}</version>
     </dependency>
   </dependencies>
 

@@ -8,6 +8,10 @@
   </parent>
   <artifactId>apiman-tools-dev-server</artifactId>
   <name>apiman-tools-dev-server</name>
+  
+  <properties>
+    <picketlink.version>2.1.6.Final</picketlink.version>
+  </properties>
 
   <dependencies>
     <dependency>

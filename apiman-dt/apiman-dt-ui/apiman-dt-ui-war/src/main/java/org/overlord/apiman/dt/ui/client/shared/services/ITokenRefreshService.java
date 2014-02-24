@@ -13,15 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.dt.ui.client.shared.beans;
+package org.overlord.apiman.dt.ui.client.shared.services;
+
+import org.jboss.errai.bus.server.annotations.Remote;
+import org.overlord.apiman.dt.ui.client.shared.beans.BearerTokenCredentialsBean;
 
 /**
- * The supported authentication types.
+ * Provides a way to refresh a bearer token.
  *
  * @author eric.wittmann@redhat.com
  */
-public enum ApiAuthType {
+@Remote
+public interface ITokenRefreshService {
     
-    basic, bearerToken, samlBearerToken;
+    /**
+     * Called to create a new bearer token.
+     */
+    public BearerTokenCredentialsBean refreshToken();
 
 }
