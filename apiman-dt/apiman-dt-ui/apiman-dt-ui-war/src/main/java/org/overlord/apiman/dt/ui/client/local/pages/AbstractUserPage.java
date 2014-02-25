@@ -26,7 +26,6 @@ import org.overlord.apiman.dt.ui.client.local.util.MultimapUtil;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 
 
@@ -49,7 +48,7 @@ public abstract class AbstractUserPage extends AbstractPage {
     @Inject @DataField
     Anchor email;
     @Inject @DataField
-    InlineLabel joinedOn;
+    Label joinedOn;
     
     @Inject @DataField
     Anchor toUserOrgs;

@@ -157,7 +157,7 @@ public class ApiManDtUiDevServer extends ErraiDevServer {
                 + "|" + environment.getModuleDir("overlord-commons-uiheader").getCanonicalPath());
         resources.setInitParameter("dirAllowed", "true");
         resources.setInitParameter("pathInfoOnly", "false");
-        String[] fileTypes = new String[] { "html", "js", "css", "png", "gif" };
+        String[] fileTypes = new String[] { "html", "js", "css", "png", "gif", "woff", "ttf" };
         for (String fileType : fileTypes) {
             apiManDtUI.addServlet(resources, "*." + fileType);
         }

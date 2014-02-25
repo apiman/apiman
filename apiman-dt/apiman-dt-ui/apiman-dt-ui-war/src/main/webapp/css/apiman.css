@@ -1,5 +1,6 @@
 
 body {
+  line-height: normal;
 }
 
 .emphasis {
@@ -9,37 +10,6 @@ body {
 .dropdown-menu li a:hover {
     color: rgb(255, 255, 255);
     background-color: rgb(66, 139, 202);
-}
-
-.btn-primary {
-  background: #3498db;
-  background-image: -webkit-linear-gradient(top, #3498db, #2980b9);
-  background-image: -moz-linear-gradient(top, #3498db, #2980b9);
-  background-image: -ms-linear-gradient(top, #3498db, #2980b9);
-  background-image: -o-linear-gradient(top, #3498db, #2980b9);
-  background-image: linear-gradient(to bottom, #3498db, #2980b9);
-  -webkit-border-radius: 5;
-  -moz-border-radius: 5;
-  border-radius: 5px;
-  border: solid #1e7db8 1px;
-}
-.btn-primary:hover, .btn-primary:focus {
-  background: #3cb0fd;
-  background-image: -webkit-linear-gradient(top, #3cb0fd, #3498db);
-  background-image: -moz-linear-gradient(top, #3cb0fd, #3498db);
-  background-image: -ms-linear-gradient(top, #3cb0fd, #3498db);
-  background-image: -o-linear-gradient(top, #3cb0fd, #3498db);
-  background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
-  border: solid #51a8db 1px;
-}
-.btn-primary[disabled], .btn-primary.disabled, .btn-primary[disabled]:focus, .btn-primary.disabled:focus {
-  background: #9d9d9d;
-  background-image: -webkit-linear-gradient(top, #9d9d9d, #888888);
-  background-image: -moz-linear-gradient(top, #9d9d9d, #888888);
-  background-image: -ms-linear-gradient(top, #9d9d9d, #888888);
-  background-image: -o-linear-gradient(top, #9d9d9d, #888888);
-  background-image: linear-gradient(to bottom, #9d9d9d, #888888);
-  border: solid #999999 1px;
 }
 
 .table th {
@@ -101,31 +71,52 @@ div.page {
 .apiman-entitysummary {
   padding: 5px;
   border: 1px solid #ddd;
-  box-shadow: 1px 1px 2px #999;
   padding-top: 15px;
   padding-bottom: 15px;
   margin-bottom: 10px;
 }
-
 .apiman-entitysummary .apiman-header {
   font-size: 19px;
   font-weight: bold;
   color: #666;
 }
-
 .apiman-entitysummary .apiman-subheader {
   font-size: 16px;
   color: #666;
 }
-
 .apiman-entitysummary hr {
   margin-top: 10px;
   margin-bottom: 10px;
+}
+.apiman-entitysummary .metadata-with-icon .fa {
+  float: left;
+  line-height: 14px;
+  color: #456;
+}
+.apiman-entitysummary .metadata-with-icon div {
+  float: left;
+  margin-left: 3px;
+  min-height: 16px;
+  line-height: 14px;
+}
+.apiman-entitysummary .description {
+  padding-top: 15px;
+}
+
+.apiman-entitytabs .nav-tabs li a {
+  color: rgb(34, 34, 34);
+}
+
+.apiman-entitytabs .nav-tabs li.active a {
+  color: rgb(0, 153, 211);
 }
 
 .apiman-activity .apiman-summaryrow hr {
   margin-top: 10px;
   margin-bottom: 10px;
+}
+.apiman-activity .apiman-summaryrow .fa {
+  color: #456;
 }
 
 .apiman-divider-20 {
@@ -143,69 +134,6 @@ div.page {
   margin-bottom: 40px;
 }
 
-.icon {
-  width: 16px;
-  height: 16px;
-  background-repeat: no-repeat;
-  background-position: 1px 1px;
-}
-.icon-email {
-  background-image: url(images/envelope.png);
-}
-.icon-time {
-  background-image: url(images/time.png);
-}
-.icon-user {
-  background-image: url(images/user.png);
-}
-.icon-users {
-  background-image: url(images/users.png);
-}
-.icon-app {
-  background-image: url(images/app.png);
-}
-.icon-service {
-  background-image: url(images/service.png);
-}
-.icon-org {
-  background-image: url(images/organization.png);
-}
-
-.medium-icon {
-  width: 48px;
-  height: 48px;
-  background-repeat: no-repeat;
-  background-position: 0px 0px;
-}
-.medium-icon-org {
-  background-image: url(images/medium-org.png);
-}
-.medium-icon-service {
-  background-image: url(images/medium-service.png);
-}
-.medium-icon-plan {
-  background-image: url(images/medium-plan.png);
-}
-.medium-icon-app {
-  background-image: url(images/medium-app.png);
-}
-
-.large-icon {
-  width: 48px;
-  height: 48px;
-  background-repeat: no-repeat;
-  background-position: 0px 0px;
-}
-.large-icon-app {
-  background-image: url(images/large-app.png);
-}
-.large-icon-service {
-  background-image: url(images/large-service.png);
-}
-.large-icon-plan {
-  background-image: url(images/large-plan.png);
-}
-
 .apiman-filters {
   margin-bottom: 10px;
   padding-bottom: 10px;
@@ -220,22 +148,15 @@ div.page {
   margin-right: 5px;
 }
 
-.apiman-entitysummary .icon {
-  float: left;
-  margin-right: 5px;
-  margin-top: 2px;
-}
-
 .tab-content {
   margin-top: 10px;
 }
 
-.apiman-summaryrow .apiman-summaryrow-icon {
-  min-width: 50px;
-  float: right;
-}
-
 a.apiman-summaryrow-icon {
+  min-width: 45px;
+  padding-left: 5px;
+  padding-right: 5px;
+  float: right;
   color: #444;
   text-decoration: none;
 }
@@ -245,20 +166,18 @@ a.apiman-summaryrow-icon:hover {
 }
 
 .apiman-summaryrow .title {
-  font-size: 16px;
   font-weight: bold;
 }
 
-.apiman-summaryrow .icon {
+.apiman-summaryrow .fa {
   float: left;
-  margin-top: 3px;
-  margin-left: 5px;
+  line-height: 14px;
 }
 .apiman-summaryrow .title-summary-item {
-  font-size: 12px;
+  font-size: 11px;
   float: left;
-  margin-top: 3px;
   margin-left: 2px;
+  line-height: 14px;
 }
 
 .apiman-members hr {
@@ -267,34 +186,32 @@ a.apiman-summaryrow-icon:hover {
 
 .apiman-timestamp {
   color: #777;
-  font-size: 12px;
   margin-left: 3px;
-  padding-top: 4px;
   float: left;
+  line-height: 14px;
 }
 
-.apiman-entity-summary {
+.apiman-entity-breadcrumb {
   margin-bottom: 10px;
   padding-bottom: 10px;
   border-bottom: 1px solid rgb(221, 221, 221);
 }
-
-.apiman-entity-summary .large-icon {
-  float: left;
+.apiman-entity-breadcrumb .breadcrumb-icon {
+  color: rgb(83, 107, 133);
+  font-size: 1.5em;
   margin-right: 8px;
 }
-
-.apiman-entity-summary .title {
-  font-size: 22px;
+.apiman-entity-breadcrumb .title {
+  font-size: 18px;
   padding-top: 8px;
   line-height: 48px;
 }
-
-.apiman-entitysummary .description {
-  padding-top: 15px;
+.apiman-entity-breadcrumb .divider {
+  color: #999;
 }
 
 .apiman-entity-nav {
+  font-size: 13px;
 }
 
 .apiman-entity-nav .nav-pills li {
@@ -305,25 +222,36 @@ a.apiman-summaryrow-icon:hover {
   border-radius: 0px;
   border-top: 1px solid transparent;
   border-bottom: 1px solid transparent;
+  color: rgb(34, 34, 34);
 }
 .apiman-entity-nav .nav-pills li a:hover {
-  text-decoration: underline;
+  background-color: white;
+  border-top: 1px solid rgb(221, 221, 221);
+  border-bottom: 1px solid rgb(221, 221, 221);
 }
 .apiman-entity-nav .nav-pills li.active a:hover, .apiman-entity-nav .nav-pills li.first a:hover, .apiman-entity-nav .nav-pills li.last a:hover {
   text-decoration: none;
 }
 .apiman-entity-nav .nav-pills li.active a {
   background-color: white;
-  color: rgb(85,85,85);
+  color: rgb(0, 153, 211);
   border-right: 0px;
-}
-.apiman-entity-nav .nav-pills li.north a {
-  border-bottom: 1px solid rgb(221, 221, 221);
-  border-radius: 0px 0px 5px 0px;
-}
-.apiman-entity-nav .nav-pills li.south a {
   border-top: 1px solid rgb(221, 221, 221);
-  border-radius: 0px 5px 0px 0px;
+  border-bottom: 1px solid rgb(221, 221, 221);
+}
+.apiman-entity-nav .nav-pills li.first a:hover {
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid transparent;
+}
+.apiman-entity-nav .nav-pills li.last a:hover {
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid transparent;
+}
+.apiman-entity-nav .nav-pills li.north a:hover {
+  border-bottom: 1px solid transparent;
+}
+.apiman-entity-nav .nav-pills li.south a:hover {
+  border-top: 1px solid transparent;
 }
 .apiman-entity-nav .nav-pills li.first a:hover, .apiman-entity-nav .nav-pills li.last a:hover {
   background-color: white;
@@ -333,7 +261,7 @@ a.apiman-summaryrow-icon:hover {
   padding: 10px;
 }
 .apiman-entity-content .title {
-  color: #243446;
+  color: #555;
   font-weight: bold;
   font-size: 18px;
   margin-bottom: 5px;
@@ -342,10 +270,12 @@ a.apiman-summaryrow-icon:hover {
   color: #243446;
   margin-bottom: 12px;
 }
-.apiman-entity-content .icon {
-  float: left;
-  margin-right: 3px;
-  margin-top: 1px;
+
+.entity-info-with-icon {
+  min-height: 16px;
+}
+.entity-info-with-icon .fa {
+  color: #456;
 }
 
 .apiman-entity-content .apiman-input-ro {
@@ -357,33 +287,31 @@ a.apiman-summaryrow-icon:hover {
   margin-left: 5px;
 }
 
-.apiman-entity-content .apiman-timestamp {
-  padding-top: 2px;
-  margin-left: 1px;
-}
-
 .apiman-entity-new {
   margin-top: 30px;
 }
 
-.apiman-entity-new .medium-icon {
-  float: left;
-}
-
-.apiman-entity-new-icon {
-  margin-top: 35px;
+.apiman-entity-new .title {
+  margin-bottom: 20px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid rgb(238, 238, 238);
+  color: rgb(85, 85, 85);
 }
 
 .apiman-entity-new .divider {
   float: left;
   font-size: 22px;
-  margin-top: 38px;
   color: #999;
+  line-height: normal;
 }
 
 .apiman-entity-new dl {
   float: left;
-  margin: 10px;
+}
+.apiman-entity-new dl.org, .apiman-entity-new dl.slash {
+  margin-right: 10px;
+}
+.apiman-entity-new dl.name {
 }
 .apiman-entity-new dt {
   padding-bottom: 5px;
@@ -399,14 +327,14 @@ a.apiman-summaryrow-icon:hover {
 }
 
 .apiman-no-entities-description {
-  padding: 25px;
-  font-size: 24px;
+  margin-top: 20px;
+  padding: 15px;
+  font-size: 20px;
   font-weight: normal;
   line-height: 1.3;
   color: rgb(136, 136, 136);
   background-color: #F2F2FA;
-  border-radius: 5px;
-  border: 1px solid #EAEBEF;
+  border: 2px solid rgb(204, 204, 204);
 }
 
 .apiman-no-entities-arrow {

@@ -15,19 +15,17 @@
   }
   .apiman-entity-nav .nav-pills li a {
     border-right: 1px solid transparent;
-    border-radius: 4px 4px 4px 4px;
+  }
+  .apiman-entity-nav .nav-pills li a:hover {
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid transparent;
   }
   .apiman-entity-nav .nav-pills li.active a {
-    background-color: rgb(66, 139, 202);
+    background-color: rgb(102, 102, 102);
     color: white;
     border-right: 0px none;
-    border-radius: 4px 4px 4px 4px;
-  }
-  .apiman-entity-nav .nav-pills li.north a {
-    border-radius: 4px 4px 4px 4px;
-  }
-  .apiman-entity-nav .nav-pills li.south a {
-    border-radius: 4px 4px 4px 4px;
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid transparent;
   }
   
   .apiman-entity-new .description {
@@ -57,25 +55,21 @@
     box-shadow: none;
   }
   
-  .nav-tabs li {
+  .apiman-entitytabs .nav-tabs li {
     float: none;
   }
-  .nav-tabs li.pull-right {
+  .apiman-entitytabs .nav-tabs li.pull-right {
     float: none !important;
   }
-  .nav-tabs li a {
-    border-radius: 4px 4px 4px 4px;
+  .apiman-entitytabs .nav-tabs li a {
   }
-  .nav-tabs li.active a {
+  .apiman-entitytabs .nav-tabs li a:hover {
+    border: 1px solid transparent;
+  }
+  .apiman-entitytabs .nav-tabs li.active a, .apiman-entitytabs .nav-tabs li.active a:hover {
     border-color: transparent;
     border-bottom-color: transparent;
-    background-color: rgb(66, 139, 202);
-    color: white;
-  }
-  .nav-tabs li.active a:hover {
-    border-color: transparent;
-    border-bottom-color: transparent;
-    background-color: rgb(66, 139, 202);
+    background-color: rgb(102, 102, 102);
     color: white;
   }
 }
@@ -88,13 +82,21 @@
   .apiman-entity-new .description {
     width: 300px;
   }
-  .apiman-entity-new .medium-icon {
-    display: none;
-  }
 }
 
 /* Original iPhone */
 @media ( max-width : 360px) {
+  .apiman-entity-breadcrumb .title {
+    font-size: 16px;
+    padding-top: 8px;
+    line-height: 48px;
+  }
+
+  .apiman-entity-new .divider {
+    display: none;
+    visibility: hidden;
+  }
+  
   .apiman-filters .input-search {
     width: 180px;
   }

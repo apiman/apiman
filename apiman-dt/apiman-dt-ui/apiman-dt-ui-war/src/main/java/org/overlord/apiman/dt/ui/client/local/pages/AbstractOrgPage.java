@@ -28,7 +28,6 @@ import org.overlord.commons.gwt.client.local.widgets.ParagraphLabel;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 
 
@@ -47,9 +46,9 @@ public abstract class AbstractOrgPage extends AbstractPage {
     @Inject @DataField
     Label name;
     @Inject @DataField
-    InlineLabel createdOn;
+    Label createdOn;
     @Inject @DataField
-    InlineLabel numMembers;
+    Label numMembers;
     @Inject @DataField
     ParagraphLabel description;
     

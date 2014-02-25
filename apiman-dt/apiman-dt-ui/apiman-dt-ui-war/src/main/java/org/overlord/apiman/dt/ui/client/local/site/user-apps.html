@@ -28,16 +28,16 @@
               <hr />
             </div>
             <div class="row">
-              <div class="col-md-12">
-                <div class="icon icon-email"></div>
-                <span><a href="#" data-role="dummy" data-field="email">eric.wittmann@redhat.com</a></span>
+              <div class="col-md-12 metadata-with-icon">
+                <i class="fa fa-envelope-o fa-fw"></i>
+                <div><a href="#" data-role="dummy" data-field="email">eric.wittmann@redhat.com</a></div>
               </div>
             </div>
             <div class="row">
-              <div class="col-md-12">
-                <div class="icon icon-time"></div>
-                <span class="apiman-label-faded" data-i18n-key="joined-on">Joined on</span>
-                <span data-role="dummy" data-field="joinedOn">Oct 19, 2012</span>
+              <div class="col-md-12 metadata-with-icon">
+                <i class="fa fa-clock-o fa-fw"></i>
+                <div class="apiman-label-faded" data-i18n-key="joined-on">Joined on</div>
+                <div data-role="dummy" data-field="joinedOn">Oct 19, 2012</div>
               </div>
             </div>
           </div>
@@ -59,16 +59,16 @@
               <div class="tab-pane active" id="tab-apps">
                 <div class="apiman-filters apiman-applications-filters">
                   <input type="text" class="form-control input-search" placeholder="Search by org or app name..."></input>
-                  <a data-field="toNewApp" href="newApp.html" class="btn btn-primary pull-right">New App</a>
+                  <a data-field="toNewApp" href="new-app.html" class="btn btn-primary pull-right">New App</a>
                 </div>
                 <div class="clearfix"></div>
                 <!-- The list of applications the user has access to -->
                 <div class="apiman-applications" data-field="applications" data-role="dummy">
                   <div class="container-fluid apiman-summaryrow">
                     <div class="row">
-                      <a href="orgHome.html">JBoss Overlord</a> / <span class="title"><a href="appHome.html">gadget-server</a></span>
+                      <a href="org-apps.html">JBoss Overlord</a> / <span class="title"><a href="app-overview.html">gadget-server</a></span>
                       <a href="#" data-toggle="popover" data-trigger="hover" data-html="true" data-content="This application invokes <b>52</b> <em>services</em>." data-placement="top" class="apiman-summaryrow-icon">
-                        <div class="icon icon-service"></div>
+                        <i class="fa fa-puzzle-piece"></i>
                         <span class="title-summary-item">52</span>
                       </a>
                     </div>
@@ -81,9 +81,9 @@
                   </div>
                   <div class="container-fluid apiman-summaryrow">
                     <div class="row">
-                      <a href="orgHome.html">JBoss Overlord</a> / <span class="title"><a href="appHome.html">rtgov</a></span>
+                      <a href="org-apps.html">JBoss Overlord</a> / <span class="title"><a href="app-overview.html">rtgov</a></span>
                       <a href="#" data-toggle="popover" data-trigger="hover" data-html="true" data-content="This application invokes <b>11</b> <em>services</em>." data-placement="top" class="apiman-summaryrow-icon">
-                        <div class="icon icon-service"></div>
+                        <i class="fa fa-puzzle-piece"></i>
                         <span class="title-summary-item">11</span>
                       </a>
                     </div>
@@ -97,9 +97,9 @@
                   </div>
                   <div class="container-fluid apiman-summaryrow">
                     <div class="row">
-                      <a href="orgHome.html">JBoss Overlord</a> / <span class="title"><a href="appHome.html">dtgov</a></span>
+                      <a href="org-apps.html">JBoss Overlord</a> / <span class="title"><a href="app-overview.html">dtgov</a></span>
                       <a href="#" data-toggle="popover" data-trigger="hover" data-html="true" data-content="This application invokes <b>123</b> <em>services</em>." data-placement="top" class="apiman-summaryrow-icon">
-                        <div class="icon icon-service"></div>
+                        <i class="fa fa-puzzle-piece"></i>
                         <span class="title-summary-item">123</span>
                       </a>
                     </div>
@@ -112,9 +112,9 @@
                   </div>
                   <div class="container-fluid apiman-summaryrow">
                     <div class="row">
-                      <a href="orgHome.html">JBoss Overlord</a> / <span class="title"><a href="appHome.html">s-ramp</a></span>
+                      <a href="org-apps.html">JBoss Overlord</a> / <span class="title"><a href="app-overview.html">s-ramp</a></span>
                       <a href="#" data-toggle="popover" data-trigger="hover" data-html="true" data-content="This application invokes <b>5</b> <em>services</em>." data-placement="top" class="apiman-summaryrow-icon">
-                        <div class="icon icon-service"></div>
+                        <i class="fa fa-puzzle-piece"></i>
                         <span class="title-summary-item">5</span>
                       </a>
                     </div>
@@ -127,9 +127,9 @@
                   </div>
                   <div class="container-fluid apiman-summaryrow">
                     <div class="row">
-                      <a href="orgHome.html">Apereo Bedework</a> / <span class="title"><a href="appHome.html">bw-synch</a></span>
+                      <a href="org-apps.html">Apereo Bedework</a> / <span class="title"><a href="app-overview.html">bw-synch</a></span>
                       <a href="#" data-toggle="popover" data-trigger="hover" data-html="true" data-content="This application invokes <b>9</b> <em>services</em>." data-placement="top" class="apiman-summaryrow-icon">
-                        <div class="icon icon-service"></div>
+                        <i class="fa fa-puzzle-piece"></i>
                         <span class="title-summary-item">9</span>
                       </a>
                     </div>
@@ -142,9 +142,9 @@
                   </div>
                   <div class="container-fluid apiman-summaryrow">
                     <div class="row">
-                      <a href="orgHome.html">Apereo Bedework</a> / <span class="title"><a href="appHome.html">bw-timezone-server</a></span>
+                      <a href="org-apps.html">Apereo Bedework</a> / <span class="title"><a href="app-overview.html">bw-timezone-server</a></span>
                       <a href="#" data-toggle="popover" data-trigger="hover" data-html="true" data-content="This application invokes <b>2</b> <em>services</em>." data-placement="top" class="apiman-summaryrow-icon">
-                        <div class="icon icon-service"></div>
+                        <i class="fa fa-puzzle-piece"></i>
                         <span class="title-summary-item">2</span>
                       </a>
                     </div>

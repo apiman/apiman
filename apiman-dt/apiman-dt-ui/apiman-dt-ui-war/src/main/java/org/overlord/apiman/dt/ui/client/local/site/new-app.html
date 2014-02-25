@@ -13,15 +13,17 @@
     </div>
 
     <div class="container apiman-entity-new page" data-field="page">
+      <div class="row">
+        <h2 class="title" data-i18n-key="new-application">New Application</h2>
+      </div>
       <!-- Choose org and app name -->
       <div class="row">
-        <div class="medium-icon medium-icon-app apiman-entity-new-icon"></div>
-        <dl>
+        <dl class="org">
           <dt data-i18n-key="organization">Organization</dt>
           <dd>
             <div class="btn-group" data-field="orgSelector">
               <button type="button" id="selector-org" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                <span data-field="selectorLabel" id="selector-org-value" class="apiman-label-faded" data-i18n-key="select-org">Select Organization</span> &nbsp;&nbsp;<span class="caret"></span>
+                <span data-field="selectorLabel" id="selector-org-value" data-i18n-key="select-org">Select Organization</span> &nbsp;&nbsp;<span class="caret"></span>
               </button>
               <ul class="dropdown-menu" data-role="dummy" data-field="organizations">
                 <li><a href="#" onclick="$('#selector-org-value').text('JBoss Overlord'); $('#apiman-entityname').focus()">JBoss Overlord</a></li>
@@ -30,9 +32,14 @@
             </div>
           </dd>
         </dl>
-        <span class="divider">/</span>
+        <dl class="slash">
+          <dt data-role="dummy">&nbsp;</dt>
+          <dd>
+            <span class="divider">/</span>
+          </dd>
+        </dl>
         <dl class="name">
-          <dt data-i18n-key="application=name">Application Name</dt>
+          <dt data-i18n-key="application-name">Application Name</dt>
           <dd>
             <input data-field="name" type="text" class="form-control entityname" id="apiman-entityname" placeholder="Enter application name..."></input>
           </dd>
@@ -40,12 +47,10 @@
       </div>
       <!-- Helpful hint -->
       <div class="row">
-        <span data-i18n-key="new-org-help-text" class="apiman-label-faded">Create a new Application within the specified Organization, allowing you to begin connecting provided Services with your Application.</span>
+        <p data-i18n-key="new-org-help-text" class="apiman-label-faded">Create a new Application within the specified Organization, allowing you to begin connecting provided Services with your Application.</p>
       </div>
       <!-- Description of app -->
       <div class="row">
-        <div class="apiman-divider-40"></div>
-        <div class="medium-icon"></div>
         <dl>
           <dt data-i18n-key="description">Description</dt>
           <dd>
