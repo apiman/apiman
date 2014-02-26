@@ -108,6 +108,9 @@
     display: none;
     visibility: hidden;
   }
+  .apiman-entity-new .input-search {
+    width: 240px;
+  }
   
   .apiman-filters .input-search {
     width: 180px;
