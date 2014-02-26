@@ -58,6 +58,7 @@ function loadAll() {
     setTimeout(function() {
         loadResource("../../../../../../../../../webapp/bootstrap-3.1.1/js/bootstrap.min.js", "js");
         loadResource("../../../../../../../../../webapp/patternfly-1.0/js/patternfly.min.js", "js");
+        loadResource("../../../../../../../../../webapp/bootstrap-3.1.1/js/bootstrap-select.min.js", "js");
         loadResource("init.js", "js");
     }, 500);
 }

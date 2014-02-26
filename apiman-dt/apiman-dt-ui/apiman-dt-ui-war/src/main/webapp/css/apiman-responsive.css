@@ -82,14 +82,17 @@
   .apiman-entity-new .description {
     width: 300px;
   }
+  .apiman-entity-breadcrumb .title .versions {
+    float: left;
+    padding-top: 0px;
+  }
+
 }
 
 /* Original iPhone */
 @media ( max-width : 360px) {
   .apiman-entity-breadcrumb .title {
     font-size: 16px;
-    padding-top: 8px;
-    line-height: 48px;
   }
 
   .apiman-entity-new .divider {

@@ -64,35 +64,60 @@
               <div class="tab-pane active" id="tab-services">
                 <div class="apiman-filters apiman-services-filters">
                   <input type="text" class="form-control input-search" placeholder="Search by org or service name..."></input>
-                  <a href="newService.html" class="btn btn-primary pull-right">New Service</a>
+                  <a href="new-service.html" class="btn btn-primary pull-right">New Service</a>
                 </div>
                 <div class="clearfix"></div>
-                <table class="table table-condensed table-hover table-striped">
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th width="1%" nowrap="nowrap">Created</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td><a class="emphasis" href="serviceHome.html">s-ramp-api</a></td>
-                      <td width="1%" nowrap="nowrap">Nov 22, 2012</td>
-                    </tr>
-                    <tr>
-                      <td><a class="emphasis" href="serviceHome.html">dtgov-deploy</a></td>
-                      <td width="1%" nowrap="nowrap">Jan 17, 2013</td>
-                    </tr>
-                    <tr>
-                      <td><a class="emphasis" href="serviceHome.html">dtgov-tasks</a></td>
-                      <td width="1%" nowrap="nowrap">Jan 18, 2013</td>
-                    </tr>
-                    <tr>
-                      <td><a class="emphasis" href="serviceHome.html">dtgov-notifications</a></td>
-                      <td width="1%" nowrap="nowrap">Feb 3, 2012</td>
-                    </tr>
-                  </tbody>
-                </table>
+                <!-- The list of services the user has access to -->
+                <div class="apiman-services" data-field="services" data-role="dummy">
+                  <div class="container-fluid apiman-summaryrow">
+                    <div class="row">
+                      <span class="title"><a href="service-overview.html">s-ramp-api</a></span>
+                      <a class="apiman-summaryrow-icon">
+                        <i class="fa fa-clock-o fa-fw"></i>
+                        <span class="title-summary-item">Created on</span>
+                        <span class="title-summary-item">Oct 19, 2012</span>
+                      </a>
+                    </div>
+                    <div class="row">
+                      <span class="description">
+                        This API allows users to interact with a remote S-RAMP repository.
+                      </span>
+                    </div>
+                    <hr/>
+                  </div>
+                  <div class="container-fluid apiman-summaryrow">
+                    <div class="row">
+                      <span class="title"><a href="service-overview.html">dtgov-deploy</a></span>
+                      <a class="apiman-summaryrow-icon">
+                        <i class="fa fa-clock-o fa-fw"></i>
+                        <span class="title-summary-item">Created on</span>
+                        <span class="title-summary-item">Nov 01, 2011</span>
+                      </a>
+                    </div>
+                    <div class="row">
+                      <span class="description">
+                        This API provides an automated mechanism to deploy artifacts to running servers.
+                      </span>
+                    </div>
+                    <hr/>
+                  </div>
+                  <div class="container-fluid apiman-summaryrow">
+                    <div class="row">
+                      <span class="title"><a href="service-overview.html">public-calendar</a></span>
+                      <a class="apiman-summaryrow-icon">
+                        <i class="fa fa-clock-o fa-fw"></i>
+                        <span class="title-summary-item">Created on</span>
+                        <span class="title-summary-item">Feb 10, 1076</span>
+                      </a>
+                    </div>
+                    <div class="row">
+                      <span class="description">
+                        This allows users to manipulate calendar data in a Bedework calendar system.
+                      </span>
+                    </div>
+                    <hr/>
+                  </div>
+                </div>
               </div>
               <!-- End Services Tab Content -->
               

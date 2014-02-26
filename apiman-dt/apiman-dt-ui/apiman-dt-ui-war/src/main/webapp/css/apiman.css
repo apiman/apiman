@@ -7,6 +7,10 @@ body {
   font-weight: bold;
 }
 
+.form-label {
+  margin-right: 10px;
+}
+
 .dropdown-menu li a:hover {
     color: rgb(255, 255, 255);
     background-color: rgb(66, 139, 202);
@@ -180,7 +184,7 @@ a.apiman-summaryrow-icon:hover {
   line-height: 14px;
 }
 
-.apiman-members hr {
+.apiman-services hr, .apiman-applications hr, .apiman-plans hr, .apiman-members hr {
   margin: 8px;
 }
 
@@ -196,18 +200,31 @@ a.apiman-summaryrow-icon:hover {
   padding-bottom: 10px;
   border-bottom: 1px solid rgb(221, 221, 221);
 }
-.apiman-entity-breadcrumb .breadcrumb-icon {
-  color: rgb(83, 107, 133);
-  font-size: 1.5em;
-  margin-right: 8px;
-}
 .apiman-entity-breadcrumb .title {
   font-size: 18px;
-  padding-top: 8px;
   line-height: 48px;
 }
-.apiman-entity-breadcrumb .divider {
+.apiman-entity-breadcrumb .title .breadcrumb-icon {
+  color: rgb(83, 107, 133);
+  font-size: 1.5em;
+  line-height: 48px;
+  float: left;
+}
+.apiman-entity-breadcrumb .title div {
+  line-height: 48px;
+  float: left;
+  margin-left: 8px;
+}
+.apiman-entity-breadcrumb .title .divider {
   color: #999;
+}
+.apiman-entity-breadcrumb .title .versions {
+  float: right;
+  line-height: normal;
+  padding-top: 5px;
+}
+.apiman-entity-breadcrumb .title .versions div {
+  float: none;
 }
 
 .apiman-entity-nav {
@@ -290,21 +307,18 @@ a.apiman-summaryrow-icon:hover {
 .apiman-entity-new {
   margin-top: 30px;
 }
-
 .apiman-entity-new .title {
   margin-bottom: 20px;
   padding-bottom: 5px;
   border-bottom: 1px solid rgb(238, 238, 238);
   color: rgb(85, 85, 85);
 }
-
 .apiman-entity-new .divider {
   float: left;
   font-size: 22px;
   color: #999;
   line-height: normal;
 }
-
 .apiman-entity-new dl {
   float: left;
 }
@@ -317,13 +331,15 @@ a.apiman-summaryrow-icon:hover {
   padding-bottom: 5px;
   color: #555;
 }
-
 .apiman-entity-new .entityname {
   width: 300px;
 }
-
 .apiman-entity-new .description {
   width: 700px;
+}
+.apiman-entity-new .hr-row {
+  margin-top: -10px;
+  padding-top: 0px;
 }
 
 .apiman-no-entities-description {
@@ -336,7 +352,6 @@ a.apiman-summaryrow-icon:hover {
   background-color: #F2F2FA;
   border: 2px solid rgb(204, 204, 204);
 }
-
 .apiman-no-entities-arrow {
   float: right;
   background-image: url(images/new-entity-arrow.png);
@@ -346,6 +361,88 @@ a.apiman-summaryrow-icon:hover {
   margin-right: 25px;
 }
 
+.apiman-cards {
+  padding-left: 0px;
+  padding-right: 0px;
+}
+.apiman-cards div {
+  float: left;
+}
+.apiman-cards .apiman-card {
+  width: 320px;
+  border: 1px solid rgb(204, 204, 204);
+  box-shadow: 2px 2px 3px #ddd;
+  margin-right: 20px;
+  margin-bottom: 20px;
+  min-height: 110px;
+}
+.apiman-cards .apiman-card .title {
+  width: 318px;
+  border-bottom: 1px solid rgb(204, 204, 204);
+  background-color: #fafafa;
+}
+.apiman-cards .apiman-card .title .name {
+  line-height: 24px;
+  margin-left: 5px;
+}
+.apiman-cards .apiman-card .title .actions {
+  line-height: 24px;
+  margin-right: 5px;
+  float: right;
+}
+.apiman-cards .apiman-card .body {
+  width: 318px;
+}
+.apiman-cards .apiman-card .body .card-icon {
+}
+.apiman-cards .apiman-card .body .card-icon i.fa {
+  font-size: 4em;
+  line-height: 75px;
+  color: #bbb;
+  width: 75px;
+  text-align: center;
+}
+.apiman-cards .apiman-card .body .card-details {
+  width: 243px;
+  padding-top: 10px;
+}
+.apiman-cards .apiman-card .body .card-details .card-details-item {
+  width: 243px;
+}
+.apiman-cards .apiman-card .body .card-details .card-details-item i {
+  float: left;
+  line-height: 16px;
+}
+.apiman-cards .apiman-card .body .card-details .card-details-item .apiman-timestamp {
+  line-height: 16px;
+}
+.apiman-cards .apiman-card .body .card-details .card-details-item .card-label {
+}
+.apiman-cards .apiman-card .body .card-details .card-details-item .card-value {
+  margin-left: 5px;
+}
+.apiman-cards .apiman-card .body .card-edit-details {
+  padding: 5px;
+  width: 318px;
+}
+.apiman-cards .apiman-card .title .explanation {
+  line-height: 24px;
+  padding-left: 5px;
+}
+.apiman-cards .apiman-card .body .card-edit-details .roles {
+  padding-top: 5px;
+  width: 308px;
+}
+.apiman-cards .apiman-card .body .card-edit-details .roles .bootstrap-select {
+  width: 306px;
+}
+.apiman-cards .apiman-card .body .card-edit-details .actions {
+  width: 308px;
+}
+.apiman-cards .apiman-card .body .card-edit-details .actions button {
+  float: right;
+  margin-left: 5px;
+}
 .error-page {
   margin-top: 30px;
 }

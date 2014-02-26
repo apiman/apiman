@@ -16,15 +16,31 @@
       <!-- Entity Summary Row -->
       <div class="row">
         <div class="col-md-12 apiman-entity-breadcrumb">
-          <div class="title">
-            <div class="large-icon large-icon-app"></div>
-            <span class="">
+          <div class="title container-fluid">
+            <i class="breadcrumb-icon fa fa-gears"></i>
+            <div class="org">
               <a data-field="organization" href="org-apps.html" data-role="dummy">JBoss Overlord</a>
-            </span>
-            <span data-role="dummy"> / </span>
-            <span class="emphasis">
+            </div>
+            <div class="divider" data-role="dummy"> / </div>
+            <div class="entity emphasis">
               <a data-field="application" href="app-overview.html" data-role="dummy">gadget-server</a>
-            </span>
+            </div>
+            <div class="versions">
+              <div class="btn-group apiman-entity-action">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                  Version: 3.0.1 <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="#">3.0</a></li>
+                  <li><a href="#">2.1.1</a></li>
+                  <li><a href="#">2.1</a></li>
+                  <li><a href="#">2.0.1</a></li>
+                  <li><a href="#">2.0</a></li>
+                  <li><a href="#">1.0</a></li>
+                </ul>
+              </div>
+              <a href="new-appversion.html" class="btn btn-primary apiman-entity-action">New Version</a>
+            </div>
           </div>
         </div>
       </div>
