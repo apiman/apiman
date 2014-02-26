@@ -17,6 +17,7 @@ package org.overlord.apiman.dt.api.rest.impl.util;
 
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ApplicationAlreadyExistsException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ApplicationNotFoundException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.ApplicationVersionNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.MemberNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.NotAuthorizedException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationAlreadyExistsException;
@@ -98,6 +99,14 @@ public final class ExceptionFactory {
      */
     public static final ApplicationNotFoundException applicationNotFoundException(String applicationId) {
         return new ApplicationNotFoundException(Messages.i18n.format("ApplicationDoesNotExist", applicationId)); //$NON-NLS-1$
+    }
+
+    /**
+     * Creates an exception from an application id and version.
+     * @param applicationId
+     */
+    public static final ApplicationVersionNotFoundException applicationVersionNotFoundException(String applicationId, String version) {
+        return new ApplicationVersionNotFoundException(Messages.i18n.format("ApplicationVersionDoesNotExist", applicationId, version)); //$NON-NLS-1$
     }
 
     /**

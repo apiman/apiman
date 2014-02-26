@@ -13,6 +13,7 @@
     <class>org.overlord.apiman.dt.api.beans.idm.RoleMembershipBean</class>
     <class>org.overlord.apiman.dt.api.beans.orgs.OrganizationBean</class>
     <class>org.overlord.apiman.dt.api.beans.apps.ApplicationBean</class>
+    <class>org.overlord.apiman.dt.api.beans.apps.ApplicationVersionBean</class>
     <class>org.overlord.apiman.dt.api.beans.services.ServiceBean</class>
     <class>org.overlord.apiman.dt.api.beans.services.ServiceVersionBean</class>
 

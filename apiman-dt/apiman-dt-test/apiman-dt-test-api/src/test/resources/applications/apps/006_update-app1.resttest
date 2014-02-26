@@ -3,7 +3,7 @@ Content-Type: application/json
 
 {
   "name" : "Application 1",
-  "description" : "[UPDATED] This is the description of Application 2.",
+  "description" : "[UPDATED] This is the description of Application 1!",
   "createdBy" : "admin2"
 }
 ----

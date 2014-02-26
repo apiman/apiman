@@ -19,6 +19,7 @@ package org.overlord.apiman.dt.api.beans.idm;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -38,6 +39,7 @@ public class UserBean implements Serializable {
     private static final long serialVersionUID = 865765107251347714L;
     
     @Id
+    @Column(updatable=false)
     private String username;
     private String fullName;
     private String email;

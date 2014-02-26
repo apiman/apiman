@@ -21,4 +21,15 @@
     <test name="Get Application 1 (Org 2)">applications/apps/010_get-app1-org2.resttest</test>
   </testGroup>
 
+  <!-- Test Application Version management -->
+  <testGroup name="Application Version Management">
+    <test name="Create Application Version 1.0">applications/versions/001_create-version-1.0.resttest</test>
+    <test name="Get Application Version 1.0">applications/versions/002_get-version-1.0.resttest</test>
+    <test name="Get Missing Application Version">applications/versions/003_get-version-missing.resttest</test>
+    <test name="Create Application Version 2.0">applications/versions/004_create-version-2.0.resttest</test>
+    <test name="List All Versions">applications/versions/005_list-versions.resttest</test>
+    <test name="Update Version 1.0">applications/versions/006_update-version-1.0.resttest</test>
+    <test name="Get Version 1.0 (updated)">applications/versions/007_get-version-1.0.resttest</test>
+  </testGroup>
+
 </testPlan>

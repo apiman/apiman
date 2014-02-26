@@ -76,9 +76,11 @@ public final class ErrorCodes {
     //
     public static final int APP_ALREADY_EXISTS              = 4001;
     public static final int APP_NOT_FOUND                   = 4002;
-    
+    public static final int APP_VERSION_NOT_FOUND           = 4003;
+
     public static final String APP_ALREADY_EXISTS_INFO      = null;
     public static final String APP_NOT_FOUND_INFO           = null;
+    public static final String APP_VERSION_NOT_FOUND_INFO   = null;
 
     
     //

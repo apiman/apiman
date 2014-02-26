@@ -24,6 +24,8 @@ import javax.inject.Inject;
 
 import org.overlord.apiman.dt.api.beans.BeanUtils;
 import org.overlord.apiman.dt.api.beans.apps.ApplicationBean;
+import org.overlord.apiman.dt.api.beans.apps.ApplicationStatus;
+import org.overlord.apiman.dt.api.beans.apps.ApplicationVersionBean;
 import org.overlord.apiman.dt.api.beans.idm.PermissionType;
 import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
@@ -40,6 +42,7 @@ import org.overlord.apiman.dt.api.rest.contract.IRoleResource;
 import org.overlord.apiman.dt.api.rest.contract.IUserResource;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ApplicationAlreadyExistsException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ApplicationNotFoundException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.ApplicationVersionNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.InvalidSearchCriteriaException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.NotAuthorizedException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationNotFoundException;
@@ -163,7 +166,95 @@ public class ApplicationResourceImpl implements IApplicationResource {
             throw new SystemErrorException(e);
         }
     }
+
+    /**
+     * @see org.overlord.apiman.dt.api.rest.contract.IApplicationResource#createVersion(java.lang.String, java.lang.String, org.overlord.apiman.dt.api.beans.apps.ApplicationVersionBean)
+     */
+    @Override
+    public ApplicationVersionBean createVersion(String organizationId, String applicationId, ApplicationVersionBean bean)
+            throws ApplicationNotFoundException, NotAuthorizedException {
+        if (!securityContext.hasPermission(PermissionType.svcEdit, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
+        try {
+            ApplicationBean application = storage.get(organizationId, applicationId, ApplicationBean.class);
+            bean.setCreatedBy(securityContext.getCurrentUser());
+            bean.setCreatedOn(new Date());
+            bean.setStatus(ApplicationStatus.Created);
+            bean.setApplication(application);
+            storage.create(bean);
+            return bean;
+        } catch (DoesNotExistException e) {
+            throw ExceptionFactory.applicationNotFoundException(applicationId);
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+    }
     
+    /**
+     * @see org.overlord.apiman.dt.api.rest.contract.IApplicationResource#getVersion(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public ApplicationVersionBean getVersion(String organizationId, String applicationId, String version)
+            throws ApplicationVersionNotFoundException, NotAuthorizedException {
+        if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
+        try {
+            ApplicationVersionBean applicationVersion = query.getApplicationVersion(organizationId, applicationId, version);
+            if (applicationVersion == null)
+                throw ExceptionFactory.applicationVersionNotFoundException(applicationId, version);
+            return applicationVersion;
+        } catch (DoesNotExistException e) {
+            throw ExceptionFactory.applicationNotFoundException(applicationId);
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+    }
+    
+    /**
+     * @see org.overlord.apiman.dt.api.rest.contract.IApplicationResource#updateVersion(java.lang.String, java.lang.String, java.lang.String, org.overlord.apiman.dt.api.beans.apps.ApplicationVersionBean)
+     */
+    @Override
+    public void updateVersion(String organizationId, String applicationId, String version, ApplicationVersionBean bean)
+            throws ApplicationVersionNotFoundException, NotAuthorizedException {
+        if (!securityContext.hasPermission(PermissionType.svcEdit, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
+        // TODO throw error if version is not in the right state
+        try {
+            ApplicationVersionBean svb = getVersion(organizationId, applicationId, version);
+            bean.setId(svb.getId());
+            bean.setApplication(svb.getApplication());
+            bean.setStatus(ApplicationStatus.Created);
+            bean.setPublishedOn(null);
+            bean.setRetiredOn(null);
+            storage.update(bean);
+        } catch (DoesNotExistException e) {
+            throw ExceptionFactory.applicationNotFoundException(applicationId);
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+    }
+
+    /**
+     * @see org.overlord.apiman.dt.api.rest.contract.IApplicationResource#listVersions(java.lang.String, java.lang.String)
+     */
+    @Override
+    public List<ApplicationVersionBean> listVersions(String organizationId, String applicationId)
+            throws ApplicationNotFoundException, NotAuthorizedException {
+        if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
+        
+        // Try to get the application first - will throw a ApplicationNotFoundException if not found.
+        get(organizationId, applicationId);
+        
+        try {
+            return query.getApplicationVersions(organizationId, applicationId);
+        } catch (DoesNotExistException e) {
+            throw ExceptionFactory.applicationNotFoundException(applicationId);
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+    }
+
     /**
      * @see org.overlord.apiman.dt.api.rest.contract.IApplicationResource#search(java.lang.String, org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean)
      */

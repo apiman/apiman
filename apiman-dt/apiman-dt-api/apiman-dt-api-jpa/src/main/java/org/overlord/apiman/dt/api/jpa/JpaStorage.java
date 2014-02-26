@@ -26,6 +26,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import org.overlord.apiman.dt.api.beans.apps.ApplicationBean;
+import org.overlord.apiman.dt.api.beans.apps.ApplicationVersionBean;
 import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
 import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
@@ -274,4 +275,60 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         }
     }
 
+    
+    
+    
+
+    /**
+     * @see org.overlord.apiman.dt.api.persist.IStorageQuery#getApplicationVersion(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public ApplicationVersionBean getApplicationVersion(String orgId, String applicationId, String version)
+            throws StorageException {
+        EntityManager entityManager = emf.createEntityManager();
+        try {
+            String jpql = "SELECT v from ApplicationVersionBean v JOIN v.application s WHERE s.organizationId = :orgId AND s.id = :applicationId AND v.version = :version"; //$NON-NLS-1$
+            Query query = entityManager.createQuery(jpql);
+            query.setParameter("orgId", orgId); //$NON-NLS-1$
+            query.setParameter("applicationId", applicationId); //$NON-NLS-1$
+            query.setParameter("version", version); //$NON-NLS-1$
+            
+            return (ApplicationVersionBean) query.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        } catch (Throwable t) {
+            JpaUtil.rollbackQuietly(entityManager);
+            logger.error(t.getMessage(), t);
+            throw new StorageException(t);
+        } finally {
+            entityManager.close();
+        }
+    }
+    
+    /**
+     * @see org.overlord.apiman.dt.api.persist.IStorageQuery#getApplicationVersions(java.lang.String, java.lang.String)
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<ApplicationVersionBean> getApplicationVersions(String orgId, String applicationId)
+            throws StorageException {
+        EntityManager entityManager = emf.createEntityManager();
+        try {
+            String jpql = "SELECT v from ApplicationVersionBean v JOIN v.application s WHERE s.organizationId = :orgId AND s.id = :applicationId ORDER BY v.id DESC"; //$NON-NLS-1$
+            Query query = entityManager.createQuery(jpql);
+            query.setParameter("orgId", orgId); //$NON-NLS-1$
+            query.setParameter("applicationId", applicationId); //$NON-NLS-1$
+            
+            return (List<ApplicationVersionBean>) query.getResultList();
+        } catch (Throwable t) {
+            JpaUtil.rollbackQuietly(entityManager);
+            logger.error(t.getMessage(), t);
+            throw new StorageException(t);
+        } finally {
+            entityManager.close();
+        }
+    }
+
+    
+    
 }

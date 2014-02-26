@@ -341,6 +341,9 @@ a.apiman-summaryrow-icon:hover {
   margin-top: -10px;
   padding-top: 0px;
 }
+.apiman-entity-new .btn-cancel {
+  margin-left: 5px;
+}
 
 .apiman-no-entities-description {
   margin-top: 20px;
