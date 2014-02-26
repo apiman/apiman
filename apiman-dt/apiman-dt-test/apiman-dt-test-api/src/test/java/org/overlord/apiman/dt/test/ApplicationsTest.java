@@ -19,15 +19,15 @@ import org.junit.Test;
 import org.overlord.apiman.dt.test.util.AbstractTestPlanTest;
 
 /**
- * Runs the "searching" test plan.
+ * Runs the "applications" test plan.
  *
  * @author eric.wittmann@redhat.com
  */
-public class ServicesTestPlan extends AbstractTestPlanTest {
+public class ApplicationsTest extends AbstractTestPlanTest {
 
     @Test
     public void test() {
-        runTestPlan("test-plans/services-testPlan.xml", ServicesTestPlan.class.getClassLoader());
+        runTestPlan("test-plans/applications-testPlan.xml", ApplicationsTest.class.getClassLoader());
     }
 
 }

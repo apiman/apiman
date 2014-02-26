@@ -35,7 +35,12 @@
       <div class="row">
         <div class="col-md-12">
           <div class="apiman-filters apiman-members-filters">
-            <input type="text" class="form-control input-search" placeholder="Search by member name..."></input>
+            <input type="text" class="form-control input-search" placeholder="Filter by member name..."></input>
+              <select class="selectpicker" title="Filter by role(s)..." multiple="">
+                <option>Organization Owner</option>
+                <option>Application Developer</option>
+                <option>Service Developer</option>
+              </select>
             <a href="#" class="btn btn-primary pull-right" data-i18n-key="add-member">Add Member</a>
           </div>
         </div>
@@ -46,54 +51,110 @@
           <div class="container-fluid apiman-cards">
             <!-- One card per member -->
             <div class="apiman-card">
-              <div class="title">
-                <div class="name">Eric Wittmann</div>
-                <div class="actions">
-                  <a href="#">Edit</a>
-                  <span class="divider">|</span>
-                  <a href="#">Remove</a>
-                </div>
-              </div>
-              <div class="body">
-                <div class="card-icon">
-                  <i class="fa fa-user"></i>
-                </div>
-                <div class="card-details">
-                  <div class="card-details-item">
-                    <div class="card-label">Email:</div>
-                    <div class="card-value"><a href="mailto:eric.wittmann@redhat.com">eric.wittmann@redhat.com</a></div>
+              <div class="front active">
+                <div class="title">
+                  <div class="name">Eric Wittmann</div>
+                  <div class="actions">
+                    <a href="#">Edit</a>
+                    <span class="divider">|</span>
+                    <a href="#">Remove</a>
                   </div>
-                  <div class="card-details-item">
-                    <div class="card-label">Role(s):</div>
-                    <div class="card-value">
-                      Organization Owner
+                </div>
+                <div class="body">
+                  <div class="card-icon">
+                    <i class="fa fa-user"></i>
+                  </div>
+                  <div class="card-details">
+                    <div class="card-details-item">
+                      <div class="card-label">Email:</div>
+                      <div class="card-value"><a href="mailto:eric.wittmann@redhat.com">eric.wittmann@redhat.com</a></div>
+                    </div>
+                    <div class="card-details-item">
+                      <div class="card-label">Role(s):</div>
+                      <div class="card-value">
+                        Organization Owner
+                      </div>
+                    </div>
+                    <div class="card-details-item">
+                      <i class="fa fa-clock-o"></i>
+                      <div class="apiman-label-faded card-value" data-i18n-key="joined-on">Joined on</div>
+                      <div class="card-value" data-role="dummy" data-field="joinedOn">Oct 19, 2012</div>
                     </div>
                   </div>
-                  <div class="card-details-item">
-                    <i class="fa fa-clock-o"></i>
-                    <div class="apiman-label-faded card-value" data-i18n-key="joined-on">Joined on</div>
-                    <div class="card-value" data-role="dummy" data-field="joinedOn">Oct 19, 2012</div>
+                </div>
+              </div>
+              <div class="back">
+                <div class="title">
+                  <div class="explanation">Assign roles to this user.</div>
+                </div>
+                <div class="body">
+                  <div class="card-edit-details">
+                    <div class="roles">
+                      <select class="selectpicker" title="Select at least one role..." multiple="">
+                        <option>Organization Owner</option>
+                        <option>Application Developer</option>
+                        <option>Service Developer</option>
+                      </select>
+                    </div>
+                    <div class="actions">
+                      <button class="btn btn-default btn-small btn-cancel">Cancel</button>
+                      <button class="btn btn-primary btn-small btn-grant">Grant</button>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
             <!-- Card while editing -->
-            <div class="apiman-card">
-              <div class="title">
-                  <div class="explanation">Assign roles to this user.</div>
-              </div>
-              <div class="body">
-                <div class="card-edit-details">
-                  <div class="roles">
-                    <select class="selectpicker" title="Select at least one role..." multiple="">
-                      <option>Organization Owner</option>
-                      <option>Application Developer</option>
-                      <option>Service Developer</option>
-                    </select>
-                  </div>
+           <div class="apiman-card">
+              <div class="front">
+                <div class="title">
+                  <div class="name">Eric Wittmann</div>
                   <div class="actions">
-                    <button class="btn btn-default btn-small btn-cancel">Cancel</button>
-                    <button class="btn btn-primary btn-small btn-grant">Grant</button>
+                    <a href="#">Edit</a>
+                    <span class="divider">|</span>
+                    <a href="#">Remove</a>
+                  </div>
+                </div>
+                <div class="body">
+                  <div class="card-icon">
+                    <i class="fa fa-user"></i>
+                  </div>
+                  <div class="card-details">
+                    <div class="card-details-item">
+                      <div class="card-label">Email:</div>
+                      <div class="card-value"><a href="mailto:eric.wittmann@redhat.com">eric.wittmann@redhat.com</a></div>
+                    </div>
+                    <div class="card-details-item">
+                      <div class="card-label">Role(s):</div>
+                      <div class="card-value">
+                        Organization Owner
+                      </div>
+                    </div>
+                    <div class="card-details-item">
+                      <i class="fa fa-clock-o"></i>
+                      <div class="apiman-label-faded card-value" data-i18n-key="joined-on">Joined on</div>
+                      <div class="card-value" data-role="dummy" data-field="joinedOn">Oct 19, 2012</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="back active">
+                <div class="title">
+                  <div class="explanation">Assign roles to this user.</div>
+                </div>
+                <div class="body">
+                  <div class="card-edit-details">
+                    <div class="roles">
+                      <select class="selectpicker" title="Select at least one role..." multiple="">
+                        <option>Organization Owner</option>
+                        <option>Application Developer</option>
+                        <option>Service Developer</option>
+                      </select>
+                    </div>
+                    <div class="actions">
+                      <button class="btn btn-default btn-small btn-cancel">Cancel</button>
+                      <button class="btn btn-primary btn-small btn-grant">Grant</button>
+                    </div>
                   </div>
                 </div>
               </div>

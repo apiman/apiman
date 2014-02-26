@@ -22,9 +22,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.overlord.apiman.dt.api.beans.BeanUtils;
-import org.overlord.apiman.dt.api.beans.idm.GrantRoleBean;
 import org.overlord.apiman.dt.api.beans.idm.PermissionType;
-import org.overlord.apiman.dt.api.beans.idm.RevokeRoleBean;
 import org.overlord.apiman.dt.api.beans.idm.RoleMembershipBean;
 import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
@@ -41,9 +39,7 @@ import org.overlord.apiman.dt.api.rest.contract.exceptions.InvalidSearchCriteria
 import org.overlord.apiman.dt.api.rest.contract.exceptions.NotAuthorizedException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationAlreadyExistsException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationNotFoundException;
-import org.overlord.apiman.dt.api.rest.contract.exceptions.RoleNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.SystemErrorException;
-import org.overlord.apiman.dt.api.rest.contract.exceptions.UserNotFoundException;
 import org.overlord.apiman.dt.api.rest.impl.util.ExceptionFactory;
 import org.overlord.apiman.dt.api.rest.impl.util.SearchCriteriaUtil;
 import org.overlord.apiman.dt.api.security.ISecurityContext;
@@ -87,7 +83,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             String orgOwnerRoleId = "OrganizationOwner"; //$NON-NLS-1$
             String currentUser = securityContext.getCurrentUser();
             String orgId = bean.getId();
-            idmStorage.createMembership(RoleMembershipBean.create(currentUser, orgOwnerRoleId, orgId));
+            RoleMembershipBean membership = RoleMembershipBean.create(currentUser, orgOwnerRoleId, orgId);
+            membership.setCreatedOn(new Date());
+            idmStorage.createMembership(membership);
             return bean;
         } catch (AlreadyExistsException e) {
             throw ExceptionFactory.organizationAlreadyExistsException(bean.getName());
@@ -144,54 +142,4 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         }
     }
     
-    /**
-     * @see org.overlord.apiman.dt.api.rest.contract.IOrganizationResource#grant(java.lang.String, org.overlord.apiman.dt.api.beans.idm.GrantRoleBean)
-     */
-    @Override
-    public void grant(String organizationId, GrantRoleBean bean) throws OrganizationNotFoundException,
-            RoleNotFoundException, UserNotFoundException, NotAuthorizedException {
-        // Verify that the references are valid.
-        get(organizationId);
-        users.get(bean.getUserId());
-        roles.get(bean.getRoleId());
-
-        if (!securityContext.hasPermission(PermissionType.orgEdit, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
-
-        RoleMembershipBean membership = new RoleMembershipBean();
-        membership.setOrganizationId(organizationId);
-        membership.setUserId(bean.getUserId());
-        membership.setRoleId(bean.getRoleId());
-        
-        try {
-            idmStorage.createMembership(membership);
-        } catch (AlreadyExistsException e) {
-            // Do nothing - re-granting is OK.
-        } catch (StorageException e) {
-            throw new SystemErrorException(e);
-        }
-    }
-
-    /**
-     * @see org.overlord.apiman.dt.api.rest.contract.IOrganizationResource#revoke(java.lang.String, org.overlord.apiman.dt.api.beans.idm.RevokeRoleBean)
-     */
-    @Override
-    public void revoke(String organizationId, RevokeRoleBean bean) throws OrganizationNotFoundException,
-            RoleNotFoundException, UserNotFoundException, NotAuthorizedException {
-        // Verify that the references are valid.
-        get(organizationId);
-        users.get(bean.getUserId());
-        roles.get(bean.getRoleId());
-
-        if (!securityContext.hasPermission(PermissionType.orgEdit, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
-
-        try {
-            idmStorage.deleteMembership(organizationId, bean.getUserId(), bean.getRoleId());
-        } catch (DoesNotExistException e) {
-            // Do nothing - revoking something that doesn't exist is OK.
-        } catch (StorageException e) {
-            throw new SystemErrorException(e);
-        }
-    }
 }

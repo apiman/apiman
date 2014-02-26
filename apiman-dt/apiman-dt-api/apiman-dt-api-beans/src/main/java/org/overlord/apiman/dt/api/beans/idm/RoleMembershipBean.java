@@ -16,6 +16,7 @@
 package org.overlord.apiman.dt.api.beans.idm;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -62,6 +63,7 @@ public class RoleMembershipBean implements Serializable {
     @Column(name="org_id")
     @Index(name="orgIdIdx")
     private String organizationId;
+    private Date createdOn;
 
     /**
      * Constructor.
@@ -109,6 +111,20 @@ public class RoleMembershipBean implements Serializable {
      */
     public void setOrganizationId(String organizationId) {
         this.organizationId = organizationId;
+    }
+
+    /**
+     * @return the createdOn
+     */
+    public Date getCreatedOn() {
+        return createdOn;
+    }
+
+    /**
+     * @param createdOn the createdOn to set
+     */
+    public void setCreatedOn(Date createdOn) {
+        this.createdOn = createdOn;
     }
 
     /**

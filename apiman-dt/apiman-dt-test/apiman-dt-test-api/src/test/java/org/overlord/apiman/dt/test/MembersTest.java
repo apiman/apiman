@@ -19,15 +19,15 @@ import org.junit.Test;
 import org.overlord.apiman.dt.test.util.AbstractTestPlanTest;
 
 /**
- * Runs the "current user" test plan.
+ * Runs the "members" test plan.
  *
  * @author eric.wittmann@redhat.com
  */
-public class CurrentUserTest extends AbstractTestPlanTest {
+public class MembersTest extends AbstractTestPlanTest {
 
     @Test
     public void test() {
-        runTestPlan("test-plans/currentuser-testPlan.xml", CurrentUserTest.class.getClassLoader());
+        runTestPlan("test-plans/members-testPlan.xml", MembersTest.class.getClassLoader());
     }
 
 }

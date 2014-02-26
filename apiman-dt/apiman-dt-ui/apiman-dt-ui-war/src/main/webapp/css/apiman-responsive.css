@@ -94,6 +94,15 @@
   .apiman-entity-breadcrumb .title {
     font-size: 16px;
   }
+  .apiman-entity-breadcrumb .title div {
+    line-height: 24px;
+  }
+  .apiman-entity-breadcrumb .title .breadcrumb-icon {
+    display: none;
+  }
+  .apiman-members-filters .input-search {
+    margin-bottom: 10px;
+  }
 
   .apiman-entity-new .divider {
     display: none;

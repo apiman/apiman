@@ -143,6 +143,14 @@ public interface IIdmStorage {
      * @throws StorageException
      */
     public Set<RoleMembershipBean> getUserMemberships(String userId) throws StorageException;
+
+    /**
+     * Gets all the user's memberships for the given organization.
+     * @param userId
+     * @param organizationId
+     * @throws StorageException
+     */
+    public Set<RoleMembershipBean> getUserMemberships(String userId, String organizationId) throws StorageException;
     
     /**
      * Gets all the memberships configured for a particular organization.

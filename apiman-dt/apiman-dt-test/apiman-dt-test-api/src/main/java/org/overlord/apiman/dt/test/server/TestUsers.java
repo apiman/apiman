@@ -22,6 +22,7 @@ package org.overlord.apiman.dt.test.server;
  */
 public final class TestUsers {
 
-    public static final String [] USERS = { "admin", "admin2", "eric", "gary", "kurt", "user1", "user2" };
+    public static final String[] USERS = { "admin", "admin2", "eric", "gary", "kurt", "user1", "user2",
+            "user3", "user4", "user5" };
 
 }

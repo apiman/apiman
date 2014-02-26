@@ -13,25 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.dt.api.beans.idm;
+package org.overlord.apiman.dt.test;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
+import org.junit.Test;
+import org.overlord.apiman.dt.test.util.AbstractTestPlanTest;
 
 /**
- * Bean used to revoke role membership for a given user (qualified
- * by organization).
+ * Runs the "services" test plan.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
-public class RevokeRoleBean extends GrantRoleBean {
+public class ServicesTest extends AbstractTestPlanTest {
 
-    private static final long serialVersionUID = -3931420813431940269L;
-
-    /**
-     * Constructor.
-     */
-    public RevokeRoleBean() {
+    @Test
+    public void test() {
+        runTestPlan("test-plans/services-testPlan.xml", ServicesTest.class.getClassLoader());
     }
 
 }

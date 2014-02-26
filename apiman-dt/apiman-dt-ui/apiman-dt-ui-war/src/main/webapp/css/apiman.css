@@ -376,6 +376,18 @@ a.apiman-summaryrow-icon:hover {
   margin-bottom: 20px;
   min-height: 110px;
 }
+.apiman-cards .apiman-card .front {
+  display: none;
+}
+.apiman-cards .apiman-card .back {
+  display: none;
+}
+.apiman-cards .apiman-card .front.active {
+  display: inherit;
+}
+.apiman-cards .apiman-card .back.active {
+  display: inherit;
+}
 .apiman-cards .apiman-card .title {
   width: 318px;
   border-bottom: 1px solid rgb(204, 204, 204);

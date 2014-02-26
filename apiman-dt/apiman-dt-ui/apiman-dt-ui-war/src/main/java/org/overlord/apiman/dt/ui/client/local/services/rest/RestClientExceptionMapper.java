@@ -24,6 +24,7 @@ import org.overlord.apiman.dt.api.rest.contract.exceptions.ApplicationAlreadyExi
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ApplicationNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ErrorBean;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.InvalidSearchCriteriaException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.MemberNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.NotAuthorizedException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationAlreadyExistsException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationNotFoundException;
@@ -82,12 +83,14 @@ public class RestClientExceptionMapper extends AbstractJSONClientExceptionMapper
                 return new ApplicationNotFoundException(errorBean.getMessage());
             if (type.equals("ApplicationAlreadyExistsException")) //$NON-NLS-1$
                 return new ApplicationAlreadyExistsException(errorBean.getMessage());
-            if (type.equals("ServiceFoundException")) //$NON-NLS-1$
+            if (type.equals("ServiceNotFoundException")) //$NON-NLS-1$
                 return new ServiceNotFoundException(errorBean.getMessage());
             if (type.equals("ServiceAlreadyExistsException")) //$NON-NLS-1$
                 return new ServiceAlreadyExistsException(errorBean.getMessage());
             if (type.equals("ServiceVersionNotFoundException")) //$NON-NLS-1$
                 return new ServiceVersionNotFoundException(errorBean.getMessage());
+            if (type.equals("MemberNotFoundException")) //$NON-NLS-1$
+                return new MemberNotFoundException(errorBean.getMessage());
             // Default - simple exception.
             return new RuntimeException(errorBean.getMessage());
         }

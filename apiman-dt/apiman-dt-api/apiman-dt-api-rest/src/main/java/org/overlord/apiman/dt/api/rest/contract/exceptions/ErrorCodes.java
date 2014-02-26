@@ -92,4 +92,12 @@ public final class ErrorCodes {
     public static final String SERVICE_NOT_FOUND_INFO           = null;
     public static final String SERVICE_VERSION_NOT_FOUND_INFO   = null;
 
+    
+    //
+    // Member API related
+    //
+    public static final int MEMBER_NOT_FOUND                  = 2001;
+
+    public static final String MEMBER_NOT_FOUND_INFO          = null;
+
 }

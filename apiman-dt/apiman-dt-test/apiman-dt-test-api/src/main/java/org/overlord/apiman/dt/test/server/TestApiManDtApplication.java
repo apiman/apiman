@@ -22,6 +22,7 @@ import java.util.Set;
 import org.overlord.apiman.dt.api.rest.ApiManDtApplication;
 import org.overlord.apiman.dt.api.rest.impl.ApplicationResourceImpl;
 import org.overlord.apiman.dt.api.rest.impl.CurrentUserResourceImpl;
+import org.overlord.apiman.dt.api.rest.impl.MemberResourceImpl;
 import org.overlord.apiman.dt.api.rest.impl.OrganizationResourceImpl;
 import org.overlord.apiman.dt.api.rest.impl.PermissionsResourceImpl;
 import org.overlord.apiman.dt.api.rest.impl.RoleResourceImpl;
@@ -52,6 +53,7 @@ public class TestApiManDtApplication extends ApiManDtApplication {
         classes.add(OrganizationResourceImpl.class);
         classes.add(ApplicationResourceImpl.class);
         classes.add(ServiceResourceImpl.class);
+        classes.add(MemberResourceImpl.class);
         
         classes.add(RestExceptionMapper.class);
     }

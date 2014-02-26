@@ -84,10 +84,8 @@ public class DevServerDataSeeder extends DefaultTestDataSeeder {
         storage.create(org);
         
         // Make admin the owner of both orgs
-        RoleMembershipBean membership = new RoleMembershipBean();
-        membership.setOrganizationId("JBossOverlord");
-        membership.setRoleId("OrganizationOwner");
-        membership.setUserId("admin");
+        RoleMembershipBean membership = RoleMembershipBean.create("admin", "OrganizationOwner", "JBossOverlord");
+        membership.setCreatedOn(new Date());
         idmStorage.createMembership(membership);
 
         membership = new RoleMembershipBean();

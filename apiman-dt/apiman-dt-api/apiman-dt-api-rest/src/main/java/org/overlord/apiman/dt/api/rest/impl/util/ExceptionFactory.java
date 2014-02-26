@@ -17,6 +17,7 @@ package org.overlord.apiman.dt.api.rest.impl.util;
 
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ApplicationAlreadyExistsException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ApplicationNotFoundException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.MemberNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.NotAuthorizedException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationAlreadyExistsException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationNotFoundException;
@@ -121,6 +122,14 @@ public final class ExceptionFactory {
      */
     public static final ServiceVersionNotFoundException serviceVersionNotFoundException(String serviceId, String version) {
         return new ServiceVersionNotFoundException(Messages.i18n.format("ServiceVersionDoesNotExist", serviceId, version)); //$NON-NLS-1$
+    }
+
+    /**
+     * Creates an exception from an member id.
+     * @param memberId
+     */
+    public static final MemberNotFoundException memberNotFoundException(String memberId) {
+        return new MemberNotFoundException(Messages.i18n.format("MemberDoesNotExist", memberId)); //$NON-NLS-1$
     }
 
 }

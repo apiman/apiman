@@ -156,22 +156,55 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
             AlreadyExistsException {
         super.create(membership);
     }
-    
+
     /**
      * @see org.overlord.apiman.dt.api.persist.IIdmStorage#deleteMembership(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
     public void deleteMembership(String userId, String roleId, String organizationId)
             throws StorageException, DoesNotExistException {
-        // TODO implement this
+        EntityManager entityManager = emf.createEntityManager();
+        try {
+            entityManager.getTransaction().begin();
+            Query query = entityManager.createQuery("DELETE FROM RoleMembershipBean m WHERE m.roleId = :roleId AND m.userId = :userId AND m.organizationId = :orgId" );
+            query.setParameter("roleId", roleId);
+            query.setParameter("userId", userId);
+            query.setParameter("orgId", organizationId);
+            if (query.executeUpdate() == 0)
+                throw new DoesNotExistException();
+            entityManager.getTransaction().commit();
+        } catch (DoesNotExistException dne) {
+            JpaUtil.rollbackQuietly(entityManager);
+            throw dne;
+        } catch (Throwable t) {
+            JpaUtil.rollbackQuietly(entityManager);
+            logger.error(t.getMessage(), t);
+            throw new StorageException(t);
+        } finally {
+            entityManager.close();
+        }
     }
-    
+
     /**
      * @see org.overlord.apiman.dt.api.persist.IIdmStorage#deleteMemberships(java.lang.String, java.lang.String)
      */
     @Override
     public void deleteMemberships(String userId, String organizationId) throws StorageException {
-        // TODO implement this
+        EntityManager entityManager = emf.createEntityManager();
+        try {
+            entityManager.getTransaction().begin();
+            Query query = entityManager.createQuery("DELETE FROM RoleMembershipBean m WHERE m.userId = :userId AND m.organizationId = :orgId" );
+            query.setParameter("userId", userId);
+            query.setParameter("orgId", organizationId);
+            query.executeUpdate();
+            entityManager.getTransaction().commit();
+        } catch (Throwable t) {
+            JpaUtil.rollbackQuietly(entityManager);
+            logger.error(t.getMessage(), t);
+            throw new StorageException(t);
+        } finally {
+            entityManager.close();
+        }
     }
     
     /**
@@ -186,6 +219,32 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
             CriteriaQuery<RoleMembershipBean> criteriaQuery = builder.createQuery(RoleMembershipBean.class);
             Root<RoleMembershipBean> from = criteriaQuery.from(RoleMembershipBean.class);
             criteriaQuery.where(builder.equal(from.get("userId"), userId));
+            TypedQuery<RoleMembershipBean> typedQuery = entityManager.createQuery(criteriaQuery);
+            List<RoleMembershipBean> resultList = typedQuery.getResultList();
+            memberships.addAll(resultList);
+            return memberships;
+        } catch (Throwable t) {
+            logger.error(t.getMessage(), t);
+            throw new StorageException(t);
+        } finally {
+            entityManager.close();
+        }
+    }
+    
+    /**
+     * @see org.overlord.apiman.dt.api.persist.IIdmStorage#getUserMemberships(java.lang.String, java.lang.String)
+     */
+    @Override
+    public Set<RoleMembershipBean> getUserMemberships(String userId, String organizationId) throws StorageException {
+        Set<RoleMembershipBean> memberships = new HashSet<RoleMembershipBean>();
+        EntityManager entityManager = emf.createEntityManager();
+        try {
+            CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+            CriteriaQuery<RoleMembershipBean> criteriaQuery = builder.createQuery(RoleMembershipBean.class);
+            Root<RoleMembershipBean> from = criteriaQuery.from(RoleMembershipBean.class);
+            criteriaQuery.where(
+                    builder.equal(from.get("userId"), userId),
+                    builder.equal(from.get("organizationId"), organizationId) );
             TypedQuery<RoleMembershipBean> typedQuery = entityManager.createQuery(criteriaQuery);
             List<RoleMembershipBean> resultList = typedQuery.getResultList();
             memberships.addAll(resultList);
