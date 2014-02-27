@@ -45,11 +45,13 @@ public class SearchCriteriaBean implements Serializable {
      * Adds a single filter to the criteria.
      * @param name
      * @param value
+     * @param operator
      */
-    public void addFilter(String name, String value) {
+    public void addFilter(String name, String value, String operator) {
         SearchCriteriaFilterBean filter = new SearchCriteriaFilterBean();
         filter.setName(name);
         filter.setValue(value);
+        filter.setOperator(operator);
         filters.add(filter);
     }
     

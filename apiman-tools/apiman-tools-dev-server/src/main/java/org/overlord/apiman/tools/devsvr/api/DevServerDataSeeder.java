@@ -66,6 +66,31 @@ public class DevServerDataSeeder extends DefaultTestDataSeeder {
         role.getPermissions().add(PermissionType.svcEdit.toString());
         role.getPermissions().add(PermissionType.svcAdmin.toString());
         idmStorage.createRole(role);
+
+        // Create Application Developer role
+        role = new RoleBean();
+        role.setId("ApplicationDeveloper");
+        role.setName("Application Developer");
+        role.setPermissions(new HashSet<String>());
+        role.getPermissions().add(PermissionType.orgView.toString());
+        role.getPermissions().add(PermissionType.appView.toString());
+        role.getPermissions().add(PermissionType.appEdit.toString());
+        role.getPermissions().add(PermissionType.appAdmin.toString());
+        idmStorage.createRole(role);
+
+        // Create Service Developer role
+        role = new RoleBean();
+        role.setId("ServiceDeveloper");
+        role.setName("Service Developer");
+        role.setPermissions(new HashSet<String>());
+        role.getPermissions().add(PermissionType.orgView.toString());
+        role.getPermissions().add(PermissionType.svcView.toString());
+        role.getPermissions().add(PermissionType.svcEdit.toString());
+        role.getPermissions().add(PermissionType.svcAdmin.toString());
+        role.getPermissions().add(PermissionType.planView.toString());
+        role.getPermissions().add(PermissionType.planEdit.toString());
+        role.getPermissions().add(PermissionType.planAdmin.toString());
+        idmStorage.createRole(role);
         
         // Create JBoss Overlord org
         OrganizationBean org = new OrganizationBean();

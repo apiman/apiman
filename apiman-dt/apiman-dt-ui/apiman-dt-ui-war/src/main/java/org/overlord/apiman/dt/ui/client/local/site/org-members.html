@@ -63,12 +63,12 @@
               <!-- Members Tab Content -->
               <div class="tab-pane active" id="tab-members">
                 <div class="apiman-filters apiman-members-filters">
-                  <input type="text" class="form-control input-search" placeholder="Search by member name..."></input>
-                  <a href="org-manage-members.html" class="btn btn-default pull-right" data-i18n-key="manage-members">Manage Members</a>
+                  <input data-field="memberSearch" type="text" class="form-control input-search" placeholder="Filter by member name..."></input>
+                  <a href="org-manage-members.html" class="btn btn-default pull-right" data-field="toManageMembers" data-i18n-key="manage-members">Manage Members</a>
                 </div>
                 <div class="clearfix"></div>
                 <!-- The organization's list of members -->
-                <div class="apiman-members">
+                <div class="apiman-members" data-field="members" data-role="dummy">
                   <div class="container-fluid apiman-summaryrow">
                     <div class="row">
                       <span class="title"><a href="user-orgs.html">ewittman</a></span>

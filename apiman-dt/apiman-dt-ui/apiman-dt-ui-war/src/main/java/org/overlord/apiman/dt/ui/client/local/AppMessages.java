@@ -30,6 +30,8 @@ public class AppMessages {
     public static final String TITLE_NEW_APP = "page.title.new-app"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "APIMan - New Service")
     public static final String TITLE_NEW_SERVICE = "page.title.new-service"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "APIMan - Add Member")
+    public static final String TITLE_NEW_MEMBER = "page.title.new-member"; //$NON-NLS-1$
 
     @TranslationKey(defaultValue = "APIMan - {0} (Organizations)")
     public static final String TITLE_USER_ORGS = "page.title.user-orgs"; //$NON-NLS-1$
@@ -50,6 +52,8 @@ public class AppMessages {
     public static final String TITLE_ORG_PLANS = "page.title.org-plans"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "APIMan - {0} (Services)")
     public static final String TITLE_ORG_SERVICES = "page.title.org-services"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "APIMan - {0} (Manage Members)")
+    public static final String TITLE_ORG_MANAGE_MEMBERS = "page.title.org-manage-members"; //$NON-NLS-1$
 
     @TranslationKey(defaultValue = "APIMan - {0} (Activity)")
     public static final String TITLE_APP_ACTIVITY = "page.title.app-activity"; //$NON-NLS-1$
@@ -77,4 +81,21 @@ public class AppMessages {
     @TranslationKey(defaultValue = "It looks like you aren't responsible for any services at all.  Maybe you're just all about the applications?  If not, maybe try creating a New Service.")
     public static final String NO_SERVICES_FOR_USER_MESSAGE = "noEntitiesFound.services-for-user"; //$NON-NLS-1$
 
+    @TranslationKey(defaultValue = "Assign roles to {0}.")
+    public static final String MEMBER_CARD_ASSIGN_ROLES_HELP = "manageMembers.card.edit-help"; //$NON-NLS-1$
+
+    @TranslationKey(defaultValue = "No users found.")
+    public static final String USER_SELECTOR_NONE_FOUND = "userSelector.users.no-uses-found"; //$NON-NLS-1$
+
+    @TranslationKey(defaultValue = "Search for users above")
+    public static final String NEW_MEMBER_SEARCH_TEXT = "newMember.userSelector.help-text"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "Search")
+    public static final String NEW_MEMBER_SEARCH_BUTTON_SEARCH = "newMember.searchButton.search"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "Searching...")
+    public static final String NEW_MEMBER_SEARCH_BUTTON_SEARCHING = "newMember.searchButton.searching"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "Add")
+    public static final String NEW_MEMBER_ADD_BUTTON_ADD = "newMember.addButton.add"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "Adding...")
+    public static final String NEW_MEMBER_ADD_BUTTON_ADDING = "newMember.addButton.adding"; //$NON-NLS-1$
+   
 }

@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testPlan xmlns="urn:org.overlord.apiman.test:2014:02:testPlan">
 
-  <!-- First, create a bunch of Roles -->
+  <!-- How about some user testing? -->
+  <testGroup name="User Testing">
+    <test name="Find Users by Name">idm/users/001_find-users.resttest</test>
+    <test name="Get User 1">idm/users/002_get-user1.resttest</test>
+  </testGroup>
+
+  <!-- Create a bunch of Roles -->
   <testGroup name="Create Some Roles">
     <test name="Create Role 1">idm/create/001_create-role1.resttest</test>
     <test name="Create Role 2">idm/create/002_create-role2.resttest</test>
@@ -35,5 +41,5 @@
     <test name="Make User 1 Owner of Org 1">idm/security/003_grant-ownership.resttest</test>
     <test name="Get Org 1 (Now Authorized)">idm/security/004_get-org1.resttest</test>
   </testGroup>
-
+  
 </testPlan>

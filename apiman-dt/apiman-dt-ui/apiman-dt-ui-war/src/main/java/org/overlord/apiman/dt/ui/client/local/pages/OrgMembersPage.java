@@ -16,10 +16,16 @@
 package org.overlord.apiman.dt.ui.client.local.pages;
 
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
 import org.jboss.errai.ui.nav.client.local.Page;
+import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.apiman.dt.ui.client.local.AppMessages;
+import org.overlord.apiman.dt.ui.client.local.pages.org.OrgMemberList;
+import org.overlord.apiman.dt.ui.client.local.util.MultimapUtil;
+
+import com.google.gwt.user.client.ui.Anchor;
 
 
 /**
@@ -31,6 +37,12 @@ import org.overlord.apiman.dt.ui.client.local.AppMessages;
 @Page(path="org-members")
 @Dependent
 public class OrgMembersPage extends AbstractOrgPage {
+    
+    @Inject @DataField
+    Anchor toManageMembers;
+
+    @Inject @DataField
+    OrgMemberList members;
 
     /**
      * Constructor.
@@ -53,6 +65,9 @@ public class OrgMembersPage extends AbstractOrgPage {
     @Override
     protected void renderPage() {
         super.renderPage();
+        members.setValue(memberBeans);
+        String manageMembersHref = navHelper.createHrefToPage(OrgManageMembersPage.class, MultimapUtil.singleItemMap("org", org)); //$NON-NLS-1$
+        toManageMembers.setHref(manageMembersHref);
     }
 
     /**

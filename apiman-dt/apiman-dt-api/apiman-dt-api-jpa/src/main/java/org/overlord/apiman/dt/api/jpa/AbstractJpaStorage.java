@@ -264,7 +264,7 @@ public abstract class AbstractJpaStorage {
                 } else if (filter.getOperator().intern() == SearchCriteriaFilterBean.OPERATOR_NEQ) {
                     predicates.add(builder.notEqual(from.get(filter.getName()), filter.getValue()));
                 } else if (filter.getOperator().intern() == SearchCriteriaFilterBean.OPERATOR_LIKE) {
-                    predicates.add(builder.like(from.<String>get(filter.getName()), filter.getValue().replace('*', '%')));
+                    predicates.add(builder.like(builder.upper(from.<String>get(filter.getName())), filter.getValue().toUpperCase().replace('*', '%')));
                 }
             }
             query.where(predicates.toArray(new Predicate[predicates.size()]));

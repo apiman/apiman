@@ -16,6 +16,8 @@
 
 package org.overlord.apiman.dt.api.rest.impl;
 
+import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -80,8 +82,6 @@ public class RoleResourceImpl implements IRoleResource {
      */
     @Override
     public RoleBean get(String roleId) throws RoleNotFoundException, NotAuthorizedException {
-        if (!securityContext.isAdmin())
-            throw ExceptionFactory.notAuthorizedException();
         try {
             return idmStorage.getRole(roleId);
         } catch (DoesNotExistException e) {
@@ -126,13 +126,25 @@ public class RoleResourceImpl implements IRoleResource {
     }
     
     /**
+     * @see org.overlord.apiman.dt.api.rest.contract.IRoleResource#list()
+     */
+    @Override
+    public List<RoleBean> list() throws NotAuthorizedException {
+        try {
+            SearchCriteriaBean criteria = new SearchCriteriaBean();
+            criteria.setOrder("name", true); //$NON-NLS-1$
+            return idmStorage.findRoles(criteria).getBeans();
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+    }
+    
+    /**
      * @see org.overlord.apiman.dt.api.rest.contract.IRoleResource#search(org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean)
      */
     @Override
     public SearchResultsBean<RoleBean> search(SearchCriteriaBean criteria)
             throws InvalidSearchCriteriaException, NotAuthorizedException {
-        if (!securityContext.isAdmin())
-            throw ExceptionFactory.notAuthorizedException();
         try {
             SearchCriteriaUtil.validateSearchCriteria(criteria);
             return idmStorage.findRoles(criteria);

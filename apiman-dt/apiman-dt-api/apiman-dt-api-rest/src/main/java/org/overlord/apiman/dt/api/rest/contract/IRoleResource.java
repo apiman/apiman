@@ -16,6 +16,8 @@
 
 package org.overlord.apiman.dt.api.rest.contract;
 
+import java.util.List;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -30,9 +32,9 @@ import org.overlord.apiman.dt.api.beans.idm.RoleBean;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
 import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.InvalidSearchCriteriaException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.NotAuthorizedException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.RoleAlreadyExistsException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.RoleNotFoundException;
-import org.overlord.apiman.dt.api.rest.contract.exceptions.NotAuthorizedException;
 
 /**
  * The Role API. Used to manage roles. Note: not used to manage users or user
@@ -48,6 +50,10 @@ public interface IRoleResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public RoleBean create(RoleBean bean) throws RoleAlreadyExistsException, NotAuthorizedException;
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<RoleBean> list() throws NotAuthorizedException;
 
     @GET
     @Path("{roleId}")

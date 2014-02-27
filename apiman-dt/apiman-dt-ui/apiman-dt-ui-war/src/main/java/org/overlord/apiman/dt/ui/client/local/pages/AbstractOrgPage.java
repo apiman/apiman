@@ -15,10 +15,13 @@
  */
 package org.overlord.apiman.dt.ui.client.local.pages;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import org.jboss.errai.ui.nav.client.local.PageState;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.overlord.apiman.dt.api.beans.members.MemberBean;
 import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
 import org.overlord.apiman.dt.ui.client.local.services.ContextKeys;
 import org.overlord.apiman.dt.ui.client.local.services.rest.IRestInvokerCallback;
@@ -42,6 +45,7 @@ public abstract class AbstractOrgPage extends AbstractPage {
     protected String org;
     
     OrganizationBean organizationBean;
+    List<MemberBean> memberBeans;
 
     @Inject @DataField
     Label name;
@@ -86,7 +90,18 @@ public abstract class AbstractOrgPage extends AbstractPage {
                 dataPacketError(error);
             }
         });
-        return 1;
+        rest.getOrgMembers(org, new IRestInvokerCallback<List<MemberBean>>() {
+            @Override
+            public void onSuccess(List<MemberBean> response) {
+                memberBeans = response;
+                dataPacketLoaded();
+            }
+            @Override
+            public void onError(Throwable error) {
+                dataPacketError(error);
+            }
+        });
+        return 2;
     }
     
     /**
@@ -108,8 +123,7 @@ public abstract class AbstractOrgPage extends AbstractPage {
         name.setText(organizationBean.getName());
         DateTimeFormat format = DateTimeFormat.getFormat(PredefinedFormat.DATE_MEDIUM);
         createdOn.setText(format.format(organizationBean.getCreatedOn()));
-        // TODO implement # members
-        numMembers.setText("1"); //$NON-NLS-1$
+        numMembers.setText(String.valueOf(memberBeans.size()));
         if (organizationBean.getDescription() != null) {
             description.setText(organizationBean.getDescription());
         } else {

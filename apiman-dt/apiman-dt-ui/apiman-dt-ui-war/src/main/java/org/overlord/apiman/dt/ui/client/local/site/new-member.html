@@ -25,19 +25,19 @@
         <dl>
           <dt data-i18n-key="find-user">Find a User</dt>
           <dd>
-            <input type="text" class="form-control input-search" placeholder="Search by user name..."></input>
-            <button class="btn btn-default btn-search">Search</button>
+            <input data-field="searchBox" type="text" class="form-control input-search" placeholder="Search by user name..."></input>
+            <button class="btn btn-default btn-search" data-field="searchButton" data-i18n-key="search">Search</button>
           </dd>
         </dl>
       </div>
       <!-- User search results -->
       <div class="row">
         <div class="panel panel-default input-search-results">
-          <div class="panel-body container-fluid">
+          <div class="panel-body container-fluid" data-field="users" data-role="dummy">
             <a href="#" class="item selected">
               <i class="fa fa-user fa-fw"></i>
               <span class="">Eric Wittmann</span>
-              <span>(</span><span class="">ewittman</span><span>)</span>
+              <span>(</span><span>ewittman</span><span>)</span>
             </a>
             <a href="#" class="item">
               <i class="fa fa-user fa-fw"></i>
@@ -55,9 +55,9 @@
       <!-- Role selections -->
       <div class="row">
         <dl>
-          <dt data-i18n-key="Roles">Role(s)</dt>
+          <dt data-i18n-key="roles">Role(s)</dt>
           <dd>
-            <select class="selectpicker" title="Select at least one role..." multiple="">
+            <select class="selectpicker" title="Select at least one role..." multiple="" data-field="roles" data-role="dummy">
               <option>Organization Owner</option>
               <option>Application Developer</option>
               <option>Service Developer</option>
@@ -72,7 +72,7 @@
       <!-- Create Button -->
       <div class="row">
         <button class="btn btn-primary" data-field="addButton" data-i18n-key="add-member">Add Member</button>
-        <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" data-i18n-key="cancel">Cancel</a>
+        <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-i18n-key="cancel">Cancel</a>
       </div>
     </div> <!-- /container -->
   </body>

@@ -22,13 +22,21 @@ import javax.inject.Inject;
 
 import org.jboss.errai.common.client.api.Caller;
 import org.overlord.apiman.dt.api.beans.apps.ApplicationBean;
+import org.overlord.apiman.dt.api.beans.idm.GrantRoleBean;
+import org.overlord.apiman.dt.api.beans.idm.RoleBean;
 import org.overlord.apiman.dt.api.beans.idm.UserBean;
+import org.overlord.apiman.dt.api.beans.members.MemberBean;
 import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
+import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
+import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
 import org.overlord.apiman.dt.api.beans.summary.ApplicationSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.OrganizationSummaryBean;
 import org.overlord.apiman.dt.api.rest.contract.IApplicationResource;
 import org.overlord.apiman.dt.api.rest.contract.ICurrentUserResource;
+import org.overlord.apiman.dt.api.rest.contract.IMemberResource;
 import org.overlord.apiman.dt.api.rest.contract.IOrganizationResource;
+import org.overlord.apiman.dt.api.rest.contract.IRoleResource;
+import org.overlord.apiman.dt.api.rest.contract.IServiceResource;
 import org.overlord.apiman.dt.api.rest.contract.ISystemResource;
 import org.overlord.apiman.dt.api.rest.contract.IUserResource;
 import org.overlord.apiman.dt.ui.client.local.services.rest.CallbackAdapter;
@@ -48,11 +56,17 @@ public class RestInvokerService {
     @Inject
     private Caller<ICurrentUserResource> currentUser;
     @Inject
-    private Caller<IUserResource> user;
+    private Caller<IRoleResource> roles;
+    @Inject
+    private Caller<IUserResource> users;
     @Inject
     private Caller<IOrganizationResource> organizations;
     @Inject
     private Caller<IApplicationResource> applications;
+    @Inject
+    private Caller<IServiceResource> services;
+    @Inject
+    private Caller<IMemberResource> members;
     
     /**
      * Constructor.
@@ -70,12 +84,31 @@ public class RestInvokerService {
     }
 
     /**
+     * Gets all roles that can be assigned to users.
+     * @param callback
+     */
+    public void getRoles(IRestInvokerCallback<List<RoleBean>> callback) {
+        CallbackAdapter<List<RoleBean>> adapter = new CallbackAdapter<List<RoleBean>>(callback);
+        roles.call(adapter, adapter).list();
+    }
+
+    /**
      * Gets info about the given user.
      * @param callback
      */
     public void getUser(String userId, IRestInvokerCallback<UserBean> callback) {
         CallbackAdapter<UserBean> adapter = new CallbackAdapter<UserBean>(callback);
-        user.call(adapter, adapter).get(userId);
+        users.call(adapter, adapter).get(userId);
+    }
+    
+    /**
+     * Finds users using the given search criteria.
+     * @param criteria
+     * @param callback
+     */
+    public void findUsers(SearchCriteriaBean criteria, IRestInvokerCallback<SearchResultsBean<UserBean>> callback) {
+        CallbackAdapter<SearchResultsBean<UserBean>> adapter = new CallbackAdapter<SearchResultsBean<UserBean>>(callback);
+        users.call(adapter, adapter).search(criteria);
     }
 
     /**
@@ -84,7 +117,7 @@ public class RestInvokerService {
      */
     public void getUserOrgs(String userId, IRestInvokerCallback<List<OrganizationSummaryBean>> callback) {
         CallbackAdapter<List<OrganizationSummaryBean>> adapter = new CallbackAdapter<List<OrganizationSummaryBean>>(callback);
-        user.call(adapter, adapter).getOrganizations(userId);
+        users.call(adapter, adapter).getOrganizations(userId);
     }
 
     /**
@@ -165,6 +198,54 @@ public class RestInvokerService {
     public void getApplications(String organizationId, IRestInvokerCallback<List<ApplicationSummaryBean>> callback) {
         CallbackAdapter<List<ApplicationSummaryBean>> adapter = new CallbackAdapter<List<ApplicationSummaryBean>>(callback);
         applications.call(adapter, adapter).list(organizationId);
+    }
+    
+    /**
+     * Gets all members of an org.
+     * @param organizationId
+     * @param callback
+     */
+    public void getOrgMembers(String organizationId, IRestInvokerCallback<List<MemberBean>> callback) {
+        CallbackAdapter<List<MemberBean>> adapter = new CallbackAdapter<List<MemberBean>>(callback);
+        members.call(adapter, adapter).listMembers(organizationId);
+    }
+    
+    /**
+     * Grants a role to a user.
+     * @param organizationId
+     * @param userId
+     * @param roleId
+     * @param callback
+     */
+    public void grant(String organizationId, String userId, String roleId, IRestInvokerCallback<Void> callback) {
+        CallbackAdapter<Void> adapter = new CallbackAdapter<Void>(callback);
+        GrantRoleBean bean = new GrantRoleBean();
+        bean.setUserId(userId);
+        bean.setRoleId(roleId);
+        members.call(adapter, adapter).grant(organizationId, bean );
+    }
+
+    /**
+     * Revokes a role from the user.
+     * @param organizationId
+     * @param userId
+     * @param roleId
+     * @param callback
+     */
+    public void revoke(String organizationId, String userId, String roleId, IRestInvokerCallback<Void> callback) {
+        CallbackAdapter<Void> adapter = new CallbackAdapter<Void>(callback);
+        members.call(adapter, adapter).revoke(organizationId, roleId, userId);
+    }
+
+    /**
+     * Revokes a role from the user.
+     * @param organizationId
+     * @param userId
+     * @param callback
+     */
+    public void revokeAll(String organizationId, String userId, IRestInvokerCallback<Void> callback) {
+        CallbackAdapter<Void> adapter = new CallbackAdapter<Void>(callback);
+        members.call(adapter, adapter).revokeAll(organizationId, userId);
     }
 
 }
