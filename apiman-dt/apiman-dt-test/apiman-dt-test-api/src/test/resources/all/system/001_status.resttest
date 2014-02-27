@@ -1,0 +1,6 @@
+GET /system/status admin/admin
+----
+200
+Content-Type: text/plain
+
+OK

@@ -1,461 +1,381 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" 
-	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.overlord.apiman</groupId>
-	<artifactId>parent</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
-	<packaging>pom</packaging>
-	<name>Overlord APIMan</name>
-	<url>http://www.jboss.org/overlord</url>
-	<description>
-		The Overlord API Management project
-	</description>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>org.jboss</groupId>
-		<artifactId>jboss-parent</artifactId>
-		<version>10</version>
-	</parent>
+  <parent>
+    <groupId>org.jboss.integration-platform</groupId>
+    <artifactId>jboss-integration-platform-parent</artifactId>
+    <version>6.0.0-SNAPSHOT</version>
+  </parent>
 
-	<scm>
-		<connection>scm:git:https://github.com/Governance</connection>
-		<url>https://github.com/Governance</url>
-	</scm>
+  <groupId>org.overlord.apiman</groupId>
+  <artifactId>apiman</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
 
-	<licenses>
-		<license>
-			<name>Apache License</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
-			<distribution>repo</distribution>
-			<comments>Apache License</comments>
-		</license>
-	</licenses>
+  <name>apiman</name>
+  <url>http://www.jboss.org/overlord</url>
+  <description>The Overlord API Management project</description>
 
-	<developers>
-		<developer>
-		    <name>Gary Brown</name>
-		    <id>objectiser</id>
-		    <email>gbrown@redhat.com</email>
-		    <organization>Red Hat</organization>
-		    <roles>
-		        <role>Developer</role>
-		    </roles>
-		    <timezone>+1</timezone>
-		</developer>
-	</developers>
+  <organization>
+    <name>JBoss, a division of Red Hat</name>
+    <url>http://www.jboss.org</url>
+  </organization>
 
-	<properties>
-		<aether.version>1.8</aether.version>
-		<arquillian.jbossas.version>7.2.0.Final</arquillian.jbossas.version>
-		<arquillian.version>1.0.0.Final</arquillian.version>
-		<cdi.version>1.0-SP4</cdi.version>
-		<commons-codec.version>1.5</commons-codec.version>
-		<drools.version>6.0.0.CR1</drools.version>
-		<felix.version>2.0.4</felix.version>
-		<gadgets.version>2.0.0-SNAPSHOT</gadgets.version>
-		<hibernate-jpa.version>1.0.1.Final</hibernate-jpa.version>
-		<hibernate-ogm.version>4.0.0.Beta1</hibernate-ogm.version>
-		<jackson.version>1.9.2</jackson.version>			<!-- Passed into junit tests -->
-		<javaee-api.version>6.0</javaee-api.version>
-		<javassist.version>3.9.0.GA</javassist.version>
-		<jboss-javaee.version>1.0.0.Final</jboss-javaee.version>
-		<jbossas.version>7.2.0.Final</jbossas.version>
-		<jbossts.version>4.16.4.Final</jbossts.version>
-		<jnp-client.version>5.0.3.GA</jnp-client.version>
-		<jta.version>1.0.0.Final</jta.version>
-		<kie.version>6.0.0.CR1</kie.version>
-		<maven-aether.version>3.0.1</maven-aether.version>
-		<mvel.version>2.1.6.Final</mvel.version>			<!-- Passed into junit tests -->
-		<osgi.version>4.3.1</osgi.version>
-		<overlord-commons.version>1.0.9</overlord-commons.version>
-		<shrinkwrap.version>1.0.0</shrinkwrap.version>
-		<shrinkwrap-resolver.version>1.0.0-beta-6</shrinkwrap-resolver.version>
-	</properties>
+  <licenses>
+    <license>
+      <name>Apache License Version 2.0</name>
+      <url>http://repository.jboss.org/licenses/apache-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
 
-	<modules>
-		<module>build</module>
-		<module>modules</module>
-		<module>release</module>
-	</modules>
+  <issueManagement>
+    <system>jira</system>
+    <url>http://issues.jboss.org/browse/APIMAN</url>
+  </issueManagement>
 
-	<dependencyManagement>
-		<dependencies>
+  <scm>
+    <connection>scm:git:git@github.com:Governance/apiman.git</connection>
+    <developerConnection>scm:git:git@github.com:Governance/apiman.git</developerConnection>
+    <url>scm:git:git@github.com:Governance/apiman.git</url>
+  </scm>
 
-			<!-- Imported dependencies -->
-			<dependency>
-				<groupId>org.jboss.as</groupId>
-				<artifactId>jboss-as-parent</artifactId>
-				<version>${jbossas.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
+  <developers>
+    <developer>
+      <name>Eric Wittmann</name>
+      <id>EricWittmann</id>
+      <email>eric.wittmann@redhat.com</email>
+      <organization>Red Hat</organization>
+      <roles>
+        <role>Tech Lead</role>
+        <role>Developer</role>
+      </roles>
+      <timezone>-5</timezone>
+    </developer>
+    <developer>
+      <name>Gary Brown</name>
+      <id>objectiser</id>
+      <email>gbrown@redhat.com</email>
+      <organization>Red Hat</organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+      <timezone>+1</timezone>
+    </developer>
+  </developers>
 
-			<dependency>
-				<groupId>org.osgi</groupId>
-				<artifactId>org.osgi.core</artifactId>
-				<version>${osgi.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.osgi</groupId>
-				<artifactId>org.osgi.compendium</artifactId>
-				<version>${osgi.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>org.apache.felix.http.base</artifactId>
-				<version>${felix.version}</version>
-			</dependency>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
 
+    <!-- Distribution URLs -->
+    <jboss.releases.repo.url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</jboss.releases.repo.url>
+    <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots/</jboss.snapshots.repo.url>
 
-			<dependency>
-				<groupId>org.jboss.arquillian</groupId>
-				<artifactId>arquillian-bom</artifactId>
-				<version>${arquillian.version}</version>
-				<scope>import</scope>
-				<type>pom</type>
-			</dependency>
-			<dependency>
-				<groupId>org.jboss.as</groupId>
-				<artifactId>jboss-as-arquillian-container-managed</artifactId>
-				<version>${arquillian.jbossas.version}</version>
-			</dependency>
+    <!-- Plugin Versions -->
+    <maven.surefire.report.plugin.version>2.16</maven.surefire.report.plugin.version>
 
-			<dependency>
-				<groupId>org.overlord.gadgets.server</groupId>
-				<artifactId>distribution</artifactId>
-				<version>${gadgets.version}</version>
-				<type>zip</type>
-			</dependency>
+    <!-- Dependency Versions (not found in parent) -->
+    <overlord-commons.version>2.0.0-SNAPSHOT</overlord-commons.version>
 
-			<dependency>
-				<groupId>org.overlord</groupId>
-				<artifactId>overlord-commons-installer</artifactId>
-				<version>${overlord-commons.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.overlord</groupId>
-				<artifactId>overlord-commons-auth</artifactId>
-				<version>${overlord-commons.version}</version>
-			</dependency>
+    <!-- Dependency Overrides -->
+    <version.org.jboss.errai>3.0-SNAPSHOT</version.org.jboss.errai>
+  </properties>
 
-			<dependency>
-				<groupId>org.kie</groupId>
-				<artifactId>kie-api</artifactId>
-				<version>${kie.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.kie</groupId>
-				<artifactId>kie-internal</artifactId>
-				<version>${kie.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.drools</groupId>
-				<artifactId>drools-core</artifactId>
-				<version>${drools.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.drools</groupId>
-				<artifactId>drools-compiler</artifactId>
-				<version>${drools.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.mvel</groupId>
-				<artifactId>mvel2</artifactId>
-				<version>${mvel.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>javax</groupId>
-				<artifactId>javaee-api</artifactId>
-				<version>${javaee-api.version}</version>
-			</dependency>
+  <dependencyManagement>
+    <dependencies>
+      <!-- Integration Platform Imports -->
+      <dependency>
+        <groupId>org.jboss.integration-platform</groupId>
+        <artifactId>jboss-integration-platform-bom</artifactId>
+        <version>6.0.0-SNAPSHOT</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
 
-			<dependency>
-				<groupId>org.jboss.spec</groupId>
-				<artifactId>jboss-javaee-6.0</artifactId>
-				<version>${jboss-javaee.version}</version>
-				<type>pom</type>
-			</dependency>
-			<dependency>
-				<groupId>org.hibernate.javax.persistence</groupId>
-				<artifactId>hibernate-jpa-2.0-api</artifactId>
-				<version>${hibernate-jpa.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>javax.enterprise</groupId>
-				<artifactId>cdi-api</artifactId>
-				<version>${cdi.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.jboss.spec.javax.transaction</groupId>
-				<artifactId>jboss-transaction-api_1.1_spec</artifactId>
-				<version>${jta.version}</version>
-			</dependency>
+      <!-- Use Errai 3.0 (temporary override) -->
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-common</artifactId>
+        <version>${version.org.jboss.errai}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-cdi-jetty</artifactId>
+        <version>${version.org.jboss.errai}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-ioc</artifactId>
+        <version>${version.org.jboss.errai}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-cdi-client</artifactId>
+        <version>${version.org.jboss.errai}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-javax-enterprise</artifactId>
+        <version>${version.org.jboss.errai}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-weld-integration</artifactId>
+        <version>${version.org.jboss.errai}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-ui</artifactId>
+        <version>${version.org.jboss.errai}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-navigation</artifactId>
+        <version>${version.org.jboss.errai}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-data-binding</artifactId>
+        <version>${version.org.jboss.errai}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-marshalling</artifactId>
+        <version>${version.org.jboss.errai}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-bus</artifactId>
+        <version>${version.org.jboss.errai}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.annotation</groupId>
+            <artifactId>jsr250-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-jboss-as-support</artifactId>
+        <version>${version.org.jboss.errai}</version>
+      </dependency>
 
-			<dependency>
-				<groupId>org.jboss.naming</groupId>
-				<artifactId>jnp-client</artifactId>
-				<version>${jnp-client.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.jboss.jbossts</groupId>
-				<artifactId>jbossjta</artifactId>
-				<version>${jbossts.version}</version>
-			</dependency>
-		
+      <!-- Overlord Commons -->
+      <dependency>
+        <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-gwt</artifactId>
+        <version>${overlord-commons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-config</artifactId>
+        <version>${overlord-commons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-i18n</artifactId>
+        <version>${overlord-commons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-errai-fuse-support</artifactId>
+        <version>${overlord-commons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-osgi</artifactId>
+        <version>${overlord-commons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-osgi-weld</artifactId>
+        <version>${overlord-commons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-uiheader</artifactId>
+        <version>${overlord-commons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-services</artifactId>
+        <version>${overlord-commons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-auth</artifactId>
+        <version>${overlord-commons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-auth-jetty8</artifactId>
+        <version>${overlord-commons.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
-			<dependency>
-				<groupId>org.hibernate.ogm</groupId>
-				<artifactId>hibernate-ogm-mongodb</artifactId>
-				<version>${hibernate-ogm.version}</version>
-			</dependency>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
-			<dependency>
-				<groupId>javassist</groupId>
-				<artifactId>javassist</artifactId>
-				<version>${javassist.version}</version>
-				<scope>test</scope>
-			</dependency>
+  <build>
+    <!-- This section defines the default plugin settings inherited by child projects. -->
+    <pluginManagement>
+      <plugins>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <!-- Include the maven-compiler-plugin settings here so that Eclipse/m2e will properly import the projects. -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+          <showDeprecation>false</showDeprecation>
+          <showWarnings>false</showWarnings>
+        </configuration>
+      </plugin>
+      <!-- Produce source jars during the 'verify' phase -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>jar</goal>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <includes>
+            <include>**/*TestCase.java</include>
+            <include>**/*Test.java</include>
+          </includes>
+          <systemProperties>
+            <property>
+              <name>java.io.tmpdir</name>
+              <value>${basedir}/target</value>
+            </property>
+          </systemProperties>
+          <argLine>-Xmx368m -XX:MaxPermSize=128m</argLine>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-clean-plugin</artifactId>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>${basedir}</directory>
+              <includes>
+                <include>www-test/**</include>
+                <include>.gwt/**</include>
+                <include>.errai/**</include>
+                <include>src/main/webapp/.errai/**</include>
+                <include>src/main/webapp/app/**</include>
+                <include>src/main/webapp/WEB-INF/deploy/**</include>
+                <include>src/main/webapp/WEB-INF/lib/**</include>
+                <include>src/main/webapp/WEB-INF/classes/**</include>
+                <include>**/gwt-unitCache/**</include>
+                <include>**/*.JUnit/**</include>
+              </includes>
+            </fileset>
+          </filesets>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
-			<dependency>
-				<groupId>commons-codec</groupId>
-				<artifactId>commons-codec</artifactId>
-				<version>${commons-codec.version}</version>
-			</dependency>
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-report-plugin</artifactId>
+        <version>${maven.surefire.report.plugin.version}</version>
+      </plugin>
+    </plugins>
+  </reporting>
 
-			<!--
-				Dependencies required to get arquillian tests running against
-				AS7.2, due to incompatibility between shrinkwrap and aether, resulting in:
-				
-				org.sonatype.aether.repository.NoLocalRepositoryManagerException:
-					No manager available for local repository /Users/..../.m2/repository of
-					type enhanced using the available factories EnhancedLocalRepositoryManagerFactory,
-							SimpleLocalRepositoryManagerFactory
-			-->
+  <repositories>
+    <repository>
+      <id>jboss-public-repository-group</id>
+      <name>JBoss Public Repository Group</name>
+      <url>http://repository.jboss.org/nexus/content/groups/developer/</url>
+      <layout>default</layout>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>daily</updatePolicy>
+      </snapshots>
+    </repository>
+  </repositories>
 
-			<dependency>
-				<groupId>org.jboss.shrinkwrap</groupId>
-				<artifactId>shrinkwrap-bom</artifactId>
-				<version>${shrinkwrap.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.jboss.shrinkwrap.resolver</groupId>
-				<artifactId>shrinkwrap-resolver-bom</artifactId>
-				<version>${shrinkwrap-resolver.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>jboss-public-repository-group</id>
+      <name>JBoss Public Repository Group</name>
+      <url>http://repository.jboss.org/nexus/content/groups/developer/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+      </snapshots>
+    </pluginRepository>
+  </pluginRepositories>
 
-			<dependency>
-				<groupId>org.sonatype.aether</groupId>
-				<artifactId>aether-api</artifactId>
-				<version>${aether.version}</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.sonatype.aether</groupId>
-				<artifactId>aether-util</artifactId>
-				<version>${aether.version}</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.sonatype.aether</groupId>
-				<artifactId>aether-connector-wagon</artifactId>
-				<version>${aether.version}</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.sonatype.aether</groupId>
-				<artifactId>aether-spi</artifactId>
-				<version>${aether.version}</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.sonatype.aether</groupId>
-				<artifactId>aether-impl</artifactId>
-				<version>${aether.version}</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.maven</groupId>
-				<artifactId>maven-aether-provider</artifactId>
-				<version>${maven-aether.version}</version>
-				<scope>test</scope>
-			</dependency>
+  <distributionManagement>
+    <repository>
+      <id>jboss-releases-repository</id>
+      <name>JBoss Releases Repository</name>
+      <url>${jboss.releases.repo.url}</url>
+    </repository>
+    <snapshotRepository>
+      <id>jboss-snapshots-repository</id>
+      <name>JBoss Snapshots Repository</name>
+      <url>${jboss.snapshots.repo.url}</url>
+    </snapshotRepository>
+  </distributionManagement>
 
-		</dependencies>
-	</dependencyManagement>
+  <modules>
+    <module>apiman-dt</module>
+    <module>apiman-rt</module>
+    <module>apiman-tools</module>
+  </modules>
 
-	<build>
-		<!-- This section defines the default plugin settings inherited by child projects. -->
-		<pluginManagement>
-			<plugins>
-				<!-- Fixes how test resources of a project can be used in projects dependent on it  -->
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-jar-plugin</artifactId>
-				</plugin>
-<!--
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-javadoc-plugin</artifactId>
-					<configuration>
-						<aggregate>true</aggregate>
-						<excludePackageNames>org.overlord.rtgov.tests.*:*.internal.*:*.quickstarts.*:*.samples.*</excludePackageNames>
-						<groups>
-							<group>
-								<title>Activity Model</title>
-								<packages>org.overlord.rtgov.activity.model*</packages>
-							</group>
-							<group>
-								<title>Activity Collection</title>
-								<packages>org.overlord.rtgov.activity.collector*:org.overlord.rtgov.activity.processor*:org.overlord.rtgov.activity.validator*:org.overlord.rtgov.activity.embedded*</packages>
-							</group>
-							<group>
-								<title>Activity Server</title>
-								<packages>org.overlord.rtgov.activity.server*:org.overlord.rtgov.activity.store*</packages>
-							</group>
-							<group>
-								<title>Event Processing</title>
-								<packages>org.overlord.rtgov.ep*:org.overlord.rtgov.epn*:org.overlord.rtgov.content.epn*</packages>
-							</group>
-							<group>
-								<title>Active Collections</title>
-								<packages>org.overlord.rtgov.active.collection*</packages>
-							</group>
-							<group>
-								<title>Services</title>
-								<packages>org.overlord.rtgov.call.trace*:org.overlord.rtgov.reports*:org.overlord.rtgov.service.dependency*:org.overlord.rtgov.situation.manager*</packages>
-							</group>
-							<group>
-								<title>Integration Support</title>
-								<packages>org.overlord.rtgov.client*:org.overlord.rtgov.switchyard*</packages>
-							</group>
-						</groups>
-					</configuration>
-				</plugin>
--->
-			</plugins>
-		</pluginManagement>
-		<plugins>
-			<!-- Specify the compiler options and settings -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-					<showDeprecation>false</showDeprecation>
-					<showWarnings>false</showWarnings>
-				</configuration>
-			</plugin>
-			<!-- Produce source jars during the 'verify' phase -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<phase>verify</phase>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-					<includes>
-						<include>**/*TestCase.java</include>
-						<include>**/*Test.java</include>
-					</includes>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-checkstyle-plugin</artifactId>
-				<configuration>
-					<configLocation>checkstyle/checkstyle.xml</configLocation>
-					<consoleOutput>false</consoleOutput>
-					<suppressionsLocation>checkstyle/suppressions.xml</suppressionsLocation>
-					<failsOnError>false</failsOnError>
-					<useFile/>
-				</configuration>
-				<dependencies>
-					<dependency>
-						<groupId>org.overlord.apiman</groupId>
-						<artifactId>build</artifactId>
-						<version>${project.version}</version>
-					</dependency>
-				</dependencies>
-				<executions>
-					<execution>
-						<id>check-style</id>
-						<phase>site</phase>
-						<goals>
-							<goal>checkstyle</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
-
-	<reporting>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-report-plugin</artifactId>
-			</plugin>
-	    </plugins>
-	</reporting>
-	
-	<repositories>
-	    <repository>
-	        <id>jboss-public-repository-group</id>
-	        <name>JBoss Public Maven Repository Group</name>
-		<url>https://repository.jboss.org/nexus/content/groups/public/</url>
-		<releases>
-		  <enabled>true</enabled>
-		  <updatePolicy>never</updatePolicy>
-		</releases>
-		<snapshots>
-		  <enabled>true</enabled>
-		  <updatePolicy>never</updatePolicy>
-		</snapshots>
-	    </repository>
-	</repositories>
-
-	<pluginRepositories>
-		<pluginRepository>
-			<id>jboss-public-repository-group</id>
-			<name>JBoss Public Maven Repository Group</name>
-			<url>https://repository.jboss.org/nexus/content/groups/public/</url>
-			<layout>default</layout>
-			<releases>
-				<updatePolicy>never</updatePolicy>
-			</releases>
-			<snapshots>
-				<updatePolicy>never</updatePolicy>
-			</snapshots>
-		</pluginRepository>
-	</pluginRepositories>
-
-	<distributionManagement>
-		<repository>
-			<id>jboss-releases-repository</id>
-			<name>JBoss Releases Repository</name>
-			<url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</url>
-		</repository>
-		<snapshotRepository>
-			<id>jboss-snapshots-repository</id>
-			<name>JBoss Snapshots Repository</name>
-			<url>https://repository.jboss.org/nexus/content/repositories/snapshots/</url>
-      			<uniqueVersion>false</uniqueVersion>
-		</snapshotRepository>
-	</distributionManagement>
-  
 </project>

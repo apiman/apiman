@@ -1,0 +1,553 @@
+
+body {
+  line-height: normal;
+}
+
+.emphasis {
+  font-weight: bold;
+}
+
+.form-label {
+  margin-right: 10px;
+}
+
+#form-page {
+}
+#form-page .bootstrap-select {
+  width: 300px;
+}
+
+.dropdown-menu li a:hover {
+    color: rgb(255, 255, 255);
+    background-color: rgb(66, 139, 202);
+}
+
+.table th {
+  color: #666;
+}
+
+.navbar-default {
+  background-color: #0B61A4;
+  border-bottom: 1px solid #FF9200;
+}
+.navbar-default .navbar-brand, .navbar-default .navbar-brand:hover, .navbar-default .navbar-brand:focus {
+  color: white;
+}
+.navbar-default .navbar-nav li a {
+  color: white;
+}
+.navbar-default .navbar-nav li a:hover, .navbar-default .navbar-nav li a:focus {
+  color: #ddd;
+}
+a, .nav li a {
+  color: #3F92D2;
+  text-decoration: none;
+}
+a:hover, a:focus, .nav li a:hover, .nav li a:focus {
+  color: #3F92D2;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+#page-loading {
+  width: 100%;
+  padding: 38px;
+  text-align: center;
+}
+
+#page-loading .center {
+  display: inline-block;
+  height: 33px;
+  font-size: 18px;
+  padding-left: 35px;
+  padding-top: 4px;
+  background-image: url(images/page-spinner.gif);
+  background-position: left top;
+  background-repeat: no-repeat;
+}
+
+div.page {
+  margin-top: 20px;
+}
+
+.apiman-label-faded {
+  color: #789;
+}
+.apiman-label-small {
+  font-size: 10px;
+}
+
+.apiman-entitysummary {
+  padding: 5px;
+  border: 1px solid #ddd;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  margin-bottom: 10px;
+}
+.apiman-entitysummary .apiman-header {
+  font-size: 19px;
+  font-weight: bold;
+  color: #666;
+}
+.apiman-entitysummary .apiman-subheader {
+  font-size: 16px;
+  color: #666;
+}
+.apiman-entitysummary hr {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.apiman-entitysummary .metadata-with-icon .fa {
+  float: left;
+  line-height: 14px;
+  color: #456;
+}
+.apiman-entitysummary .metadata-with-icon div {
+  float: left;
+  margin-left: 3px;
+  min-height: 16px;
+  line-height: 14px;
+}
+.apiman-entitysummary .description {
+  padding-top: 15px;
+}
+
+.apiman-entitytabs .nav-tabs li a {
+  color: rgb(34, 34, 34);
+}
+
+.apiman-entitytabs .nav-tabs li.active a {
+  color: rgb(0, 153, 211);
+}
+
+.apiman-activity .apiman-summaryrow hr {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.apiman-activity .apiman-summaryrow .fa {
+  color: #456;
+}
+
+.apiman-divider-20 {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.apiman-divider-40 {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.apiman-divider-80 {
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
+
+.apiman-filters {
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgb(221, 221, 221);
+  float: left;
+  width: 100%;
+}
+.apiman-filters .input-search {
+  width: 300px;
+  float: left;
+  margin-right: 5px;
+}
+
+.tab-content {
+  margin-top: 10px;
+}
+
+.apiman-summaryrow-icon {
+  min-width: 45px;
+  padding-left: 5px;
+  padding-right: 5px;
+  float: right;
+  color: #444;
+  text-decoration: none;
+}
+.apiman-summaryrow-icon:hover {
+  color: black;
+  text-decoration: underline;
+}
+
+.apiman-summaryrow .title {
+  font-weight: bold;
+}
+
+.apiman-summaryrow .fa {
+  float: left;
+  line-height: 14px;
+}
+.apiman-summaryrow .title-summary-item {
+  font-size: 11px;
+  float: left;
+  margin-left: 2px;
+  line-height: 14px;
+}
+
+.apiman-services hr, .apiman-applications hr, .apiman-plans hr, .apiman-members hr {
+  margin: 8px;
+}
+
+.apiman-timestamp {
+  color: #777;
+  margin-left: 3px;
+  float: left;
+  line-height: 14px;
+}
+
+.apiman-entity-breadcrumb {
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgb(221, 221, 221);
+}
+.apiman-entity-breadcrumb .title {
+  font-size: 18px;
+  line-height: 48px;
+}
+.apiman-entity-breadcrumb .title .breadcrumb-icon {
+  color: rgb(83, 107, 133);
+  font-size: 1.5em;
+  line-height: 48px;
+  float: left;
+}
+.apiman-entity-breadcrumb .title div {
+  line-height: 48px;
+  float: left;
+  margin-left: 8px;
+}
+.apiman-entity-breadcrumb .title .divider {
+  color: #999;
+}
+.apiman-entity-breadcrumb .title .versions {
+  float: right;
+  line-height: normal;
+  padding-top: 5px;
+}
+.apiman-entity-breadcrumb .title .versions div {
+  float: none;
+}
+
+.apiman-entity-nav {
+  font-size: 13px;
+}
+
+.apiman-entity-nav .nav-pills li {
+  margin-top: 0px;
+}
+.apiman-entity-nav .nav-pills li a {
+  border-right: 1px solid rgb(221, 221, 221);
+  border-radius: 0px;
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid transparent;
+  color: rgb(34, 34, 34);
+}
+.apiman-entity-nav .nav-pills li a:hover {
+  background-color: white;
+  border-top: 1px solid rgb(221, 221, 221);
+  border-bottom: 1px solid rgb(221, 221, 221);
+}
+.apiman-entity-nav .nav-pills li.active a:hover, .apiman-entity-nav .nav-pills li.first a:hover, .apiman-entity-nav .nav-pills li.last a:hover {
+  text-decoration: none;
+}
+.apiman-entity-nav .nav-pills li.active a {
+  background-color: white;
+  color: rgb(0, 153, 211);
+  border-right: 0px;
+  border-top: 1px solid rgb(221, 221, 221);
+  border-bottom: 1px solid rgb(221, 221, 221);
+}
+.apiman-entity-nav .nav-pills li.first a:hover {
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid transparent;
+}
+.apiman-entity-nav .nav-pills li.last a:hover {
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid transparent;
+}
+.apiman-entity-nav .nav-pills li.north a:hover {
+  border-bottom: 1px solid transparent;
+}
+.apiman-entity-nav .nav-pills li.south a:hover {
+  border-top: 1px solid transparent;
+}
+.apiman-entity-nav .nav-pills li.first a:hover, .apiman-entity-nav .nav-pills li.last a:hover {
+  background-color: white;
+}
+
+.apiman-entity-content {
+  padding: 10px;
+}
+.apiman-entity-content .title {
+  color: #555;
+  font-weight: bold;
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+.apiman-entity-content .description {
+  color: #243446;
+  margin-bottom: 12px;
+}
+
+.entity-info-with-icon {
+  min-height: 16px;
+}
+.entity-info-with-icon .fa {
+  color: #456;
+}
+
+.apiman-entity-content .apiman-input-ro {
+  cursor: auto;
+}
+
+.apiman-entity-action {
+  margin-top: 5px;
+  margin-left: 5px;
+}
+
+.apiman-entity-new {
+  margin-top: 30px;
+}
+.apiman-entity-new .title {
+  margin-bottom: 20px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid rgb(238, 238, 238);
+  color: rgb(85, 85, 85);
+}
+.apiman-entity-new .divider {
+  float: left;
+  font-size: 22px;
+  color: #999;
+  line-height: normal;
+}
+.apiman-entity-new dl {
+  float: left;
+  margin-bottom: 10px;
+}
+.apiman-entity-new dl.org, .apiman-entity-new dl.slash {
+  margin-right: 10px;
+}
+.apiman-entity-new dl.name {
+}
+.apiman-entity-new dt {
+  padding-bottom: 5px;
+  color: #555;
+}
+.apiman-entity-new .entityname {
+  width: 300px;
+}
+.apiman-entity-new .description {
+  width: 700px;
+}
+.apiman-entity-new .hr-row {
+  margin-top: -10px;
+  padding-top: 0px;
+}
+.apiman-entity-new .btn-cancel {
+  margin-left: 5px;
+}
+.apiman-entity-new .input-search {
+  width: 300px;
+  float: left;
+}
+.apiman-entity-new .input-search-results {
+  max-width: 500px;
+}
+.apiman-entity-new .input-search-results .panel-body {
+  padding: 10px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 200px;
+}
+.apiman-entity-new .input-search-results .item {
+  width: 100%;
+  float: left;
+  line-height: 22px;
+  cursor: pointer;
+  border-top: 1px solid;
+  border-bottom: 1px solid;
+  border-color: transparent;
+}
+.apiman-entity-new .input-search-results .item:hover {
+  border-color: rgb(179, 211, 231);
+  background-color: rgb(212, 237, 250);
+  text-decoration: none;
+}
+.apiman-entity-new .input-search-results .item:focus {
+  text-decoration: none;
+}
+.apiman-entity-new .input-search-results .item.selected {
+  color: white;
+  border-color: rgb(0, 118, 183);
+  background-color: rgb(0, 153, 211);
+}
+.apiman-entity-new .btn-search {
+  float: left;
+  margin-left: 5px;
+}
+
+.apiman-no-entities-description {
+  margin-top: 20px;
+  padding: 15px;
+  font-size: 13px;
+  font-weight: normal;
+  line-height: 1.3;
+  color: rgb(136, 136, 136);
+  background-color: #F2F2FA;
+  border: 2px solid rgb(204, 204, 204);
+}
+.apiman-no-entities-arrow {
+  float: right;
+  background-image: url(images/new-entity-arrow.png);
+  background-position: top left;
+  width: 69px;
+  height: 69px;
+  margin-right: 25px;
+}
+
+.apiman-cards {
+  padding-left: 0px;
+  padding-right: 0px;
+  margin-top: 10px;
+}
+.apiman-cards div {
+  float: left;
+}
+.apiman-cards .apiman-card {
+  width: 320px;
+  border: 1px solid rgb(204, 204, 204);
+  box-shadow: 2px 2px 3px #ddd;
+  margin-right: 15px;
+  margin-bottom: 15px;
+  min-height: 110px;
+}
+.apiman-cards .apiman-card .front {
+  display: none;
+}
+.apiman-cards .apiman-card .back {
+  display: none;
+}
+.apiman-cards .apiman-card .front.active {
+  display: inherit;
+}
+.apiman-cards .apiman-card .back.active {
+  display: inherit;
+}
+.apiman-cards .apiman-card .title {
+  width: 318px;
+  border-bottom: 1px solid rgb(204, 204, 204);
+  background-color: #fafafa;
+}
+.apiman-cards .apiman-card .title .name {
+  line-height: 24px;
+  margin-left: 5px;
+}
+.apiman-cards .apiman-card .title .actions {
+  line-height: 24px;
+  margin-right: 5px;
+  float: right;
+}
+.apiman-cards .apiman-card .body {
+  width: 318px;
+}
+.apiman-cards .apiman-card .body .card-icon {
+}
+.apiman-cards .apiman-card .body .card-icon i.fa {
+  font-size: 4em;
+  line-height: 75px;
+  color: #bbb;
+  width: 75px;
+  text-align: center;
+}
+.apiman-cards .apiman-card .body .card-details {
+  width: 243px;
+  padding-top: 10px;
+  max-height: 83px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.apiman-cards .apiman-card .body .card-details .card-details-item {
+  width: 243px;
+}
+.apiman-cards .apiman-card .body .card-details .card-details-item i {
+  float: left;
+  line-height: 16px;
+}
+.apiman-cards .apiman-card .body .card-details .card-details-item .apiman-timestamp {
+  line-height: 16px;
+}
+.apiman-cards .apiman-card .body .card-details .card-details-item .card-label {
+}
+.apiman-cards .apiman-card .body .card-details .card-details-item .card-value {
+  margin-left: 5px;
+}
+.apiman-cards .apiman-card .body .card-edit-details {
+  padding: 5px;
+  width: 318px;
+}
+.apiman-cards .apiman-card .title .explanation {
+  line-height: 24px;
+  padding-left: 5px;
+}
+.apiman-cards .apiman-card .body .card-edit-details .roles {
+  padding-top: 5px;
+  width: 308px;
+}
+.apiman-cards .apiman-card .body .card-edit-details .roles .bootstrap-select {
+  width: 306px;
+}
+.apiman-cards .apiman-card .body .card-edit-details .actions {
+  width: 308px;
+}
+.apiman-cards .apiman-card .body .card-edit-details .actions button {
+  float: left;
+  margin-right: 5px;
+}
+.apiman-cards .apiman-card .body .card-edit-details .actions button.btn-revoke-all {
+  float: right;
+  margin-right: 2px;
+}
+.error-page {
+  margin-top: 30px;
+}
+
+.error-page {
+  margin-top: 30px;
+}
+.error-page .title {
+  font-size: 18px;
+  font-weight: bold;
+}
+.error-page .description {
+  font-size: 14px;
+  color: #444;
+}
+.error-page .header {
+  font-size: 14px;
+  font-weight: bold;
+  text-decoration: underline;
+}
+.error-page .errorMessage {
+  width: 100%;
+  cursor: auto;
+  margin-top: 5px;
+}
+.error-icon {
+  width: 128px;
+  height: 128px;
+  background-repeat: no-repeat;
+  background-position: top left;
+}
+.error-403 {
+  background-image: url(images/error-403.png);
+}
+.error-404 {
+  background-image: url(images/error-404.png);
+}
+.error-500 {
+  background-image: url(images/error-500.png);
+}

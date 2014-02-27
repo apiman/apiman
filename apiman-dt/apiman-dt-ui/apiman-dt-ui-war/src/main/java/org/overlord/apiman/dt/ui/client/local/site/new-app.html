@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <script type="text/javascript" src="site.js"></script>
+  </head>
+
+  <body>
+
+    <!-- Top header/nav bar -->
+    <div id="overlord-header">
+    </div>
+
+    <div id="form-page" class="container apiman-entity-new page" data-field="page">
+      <div class="row">
+        <h2 class="title" data-i18n-key="new-application">New Application</h2>
+      </div>
+      <!-- Choose org and app name -->
+      <div class="row">
+        <dl class="org">
+          <dt data-i18n-key="organization">Organization</dt>
+          <dd>
+            <div class="btn-group" data-field="orgSelector">
+              <button type="button" id="selector-org" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                <span data-field="selectorLabel" id="selector-org-value" data-i18n-key="select-org">Select Organization</span> &nbsp;&nbsp;<span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu" data-role="dummy" data-field="organizations">
+                <li><a href="#" onclick="$('#selector-org-value').text('JBoss Overlord'); $('#apiman-entityname').focus()">JBoss Overlord</a></li>
+                <li><a href="#" onclick="$('#selector-org-value').text('Apereo Bedework'); $('#apiman-entityname').focus()">Apereo Bedework</a></li>
+              </ul>
+            </div>
+          </dd>
+        </dl>
+        <dl class="slash">
+          <dt data-role="dummy">&nbsp;</dt>
+          <dd>
+            <span class="divider">/</span>
+          </dd>
+        </dl>
+        <dl class="name">
+          <dt data-i18n-key="application-name">Application Name</dt>
+          <dd>
+            <input data-field="name" type="text" class="form-control entityname" id="apiman-entityname" placeholder="Enter application name..."></input>
+          </dd>
+        </dl>
+      </div>
+      <!-- Helpful hint -->
+      <div class="row">
+        <p data-i18n-key="new-app-help-text" class="apiman-label-faded">Create a new Application within the specified Organization, allowing you to begin connecting provided Services with your Application.</p>
+      </div>
+      <!-- Initial Service Version -->
+      <div class="row">
+        <dl>
+          <dt data-i18n-key="initial-version">Initial Version</dt>
+          <dd>
+            <input data-field="version" type="text" class="form-control version" id="apiman-version" value="1.0"></input>
+          </dd>
+        </dl>
+      </div>
+      <!-- Description of app -->
+      <div class="row">
+        <dl>
+          <dt data-i18n-key="description">Description</dt>
+          <dd>
+            <input data-field="description" type="text" class="form-control description" id="apiman-description" placeholder="Enter application description (optional)..."></input>
+          </dd>
+        </dl>
+      </div>
+      <!-- HR -->
+      <div class="row hr-row">
+        <hr/>
+      </div>
+      <!-- Create Button -->
+      <div class="row">
+        <button class="btn btn-primary" data-field="createButton" data-i18n-key="create-application">Create Application</button>
+        <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" data-i18n-key="cancel">Cancel</a>
+      </div>
+    </div> <!-- /container -->
+  </body>
+</html>

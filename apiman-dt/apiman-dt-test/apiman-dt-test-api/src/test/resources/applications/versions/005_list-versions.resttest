@@ -1,0 +1,35 @@
+GET /organizations/Organization1/applications/Application1/versions admin/admin
+----
+200
+Content-Type: application/json
+
+[
+  {
+    "application" : {
+      "organizationId":"Organization1",
+      "id":"Application1",
+      "name":"Application 1",
+      "description":"[UPDATED] This is the description of Application 1!",
+      "createdBy":"admin"
+    },
+    "status":"Created",
+    "version":"2.0",
+    "createdBy":"admin",
+    "publishedOn":null,
+    "retiredOn":null
+  },
+  {
+    "application" : {
+      "organizationId":"Organization1",
+      "id":"Application1",
+      "name":"Application 1",
+      "description":"[UPDATED] This is the description of Application 1!",
+      "createdBy":"admin"
+    },
+    "status":"Created",
+    "version":"1.0",
+    "createdBy":"admin",
+    "publishedOn":null,
+    "retiredOn":null
+  }
+]

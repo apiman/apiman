@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <script type="text/javascript" src="site.js"></script>
+  </head>
+
+  <body>
+    
+    <!-- Top header/nav bar -->
+    <div id="overlord-header">
+    </div>
+
+    <!-- Page content -->
+    <div class="page container" data-field="page">
+      <div class="row">
+        <!-- Left Hand Side -->
+        <div class="col-md-4 apiman-entitysummary">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-md-12 apiman-header" data-role="dummy" data-field="fullName">Eric Wittmann</div>
+            </div>
+            <div class="row">
+              <div class="col-md-12 apiman-subheader" data-role="dummy" data-field="userId">ewittman</div>
+            </div>
+            <div class="row">
+              <hr />
+            </div>
+            <div class="row">
+              <div class="col-md-12 metadata-with-icon">
+                <i class="fa fa-envelope-o fa-fw"></i>
+                <div><a href="#" data-role="dummy" data-field="email">eric.wittmann@redhat.com</a></div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12 metadata-with-icon">
+                <i class="fa fa-clock-o fa-fw"></i>
+                <div class="apiman-label-faded" data-i18n-key="joined-on">Joined on</div>
+                <div data-role="dummy" data-field="joinedOn">Oct 19, 2012</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- /Left Hand Side -->
+
+        <!-- Center Content -->
+        <div class="col-md-8">
+          <div class="apiman-entitytabs">
+            <ul id="entitytabs" class="nav nav-tabs">
+              <li><a href="user-orgs.html" data-field="toUserOrgs" data-i18n-key="organizations">Organizations</a></li>
+              <li><a href="user-apps.html" data-field="toUserApps" data-i18n-key="applications">Applications</a></li>
+              <li><a href="user-services.html" data-field="toUserServices" data-i18n-key="services">Services</a></li>
+              <li class="active pull-right"><a href="user-activity.html" data-field="toUserActivity" data-i18n-key="activity">Activity</a></li>
+            </ul>
+            <div id="entitytabsContent" class="tab-content">
+
+              <!-- Activity Tab Content -->
+              <div class="tab-pane active" id="tab-activity">
+                <div class="apiman-filters apiman-activity-filters">
+                  <input type="text" class="form-control input-search" placeholder="Search..."></input>
+                </div>
+                <div class="clearfix"></div>
+                <!-- The user's activity stream -->
+                <div class="apiman-activity">
+                  <div class="container-fluid apiman-summaryrow">
+                    <div class="row">
+                      <span class=""><a href="user-orgs.html">Eric Wittmann</a> created application <a href="org-apps.html">JBoss Overlord</a> / <a class="emphasis" href="app-overview.html">gadget-server</a>.</span>
+                    </div>
+                    <div class="row">
+                      <i class="fa fa-gears"></i>
+                      <div class="apiman-timestamp">2 days ago</div>
+                    </div>
+                    <hr/>
+                  </div>
+                  <div class="container-fluid apiman-summaryrow">
+                    <div class="row">
+                      <span class=""><a href="user-orgs.html">Eric Wittmann</a> created application <a href="org-apps.html">JBoss Overlord</a> / <a class="emphasis" href="app-overview.html">dtgov</a>.</span>
+                    </div>
+                    <div class="row">
+                      <i class="fa fa-gears"></i>
+                      <div class="apiman-timestamp">2 days ago</div>
+                    </div>
+                    <hr/>
+                  </div>
+                  <div class="container-fluid apiman-summaryrow">
+                    <div class="row">
+                      <span class=""><a href="user-orgs.html">Eric Wittmann</a> created organization <a class="emphasis" href="org-apps.html">JBoss Overlord</a>.</span>
+                    </div>
+                    <div class="row">
+                      <i class="fa fa-shield"></i>
+                      <div class="apiman-timestamp">3 days ago</div>
+                    </div>
+                    <hr/>
+                  </div>
+                  <div class="container-fluid apiman-summaryrow">
+                    <div class="row">
+                      <span class=""><a href="user-orgs.html">Eric Wittmann</a> created application <a href="org-apps.html">Apereo Bedework</a> / <a class="emphasis" href="app-overview.html">bw-timezone-server</a>.</span>
+                    </div>
+                    <div class="row">
+                      <i class="fa fa-gears"></i>
+                      <div class="apiman-timestamp">6 days ago</div>
+                    </div>
+                    <hr/>
+                  </div>
+                  <div class="container-fluid apiman-summaryrow">
+                    <div class="row">
+                      <span class=""><a href="user-orgs.html">Eric Wittmann</a> created organization <a class="emphasis" href="org-apps.html">Apereo Bedework</a>.</span>
+                    </div>
+                    <div class="row">
+                      <i class="fa fa-shield"></i>
+                      <div class="apiman-timestamp">6 days ago</div>
+                    </div>
+                    <hr/>
+                  </div>
+                </div>
+              </div>
+              <!-- End Activity Tab Content -->
+              
+            </div>
+          </div>
+        </div>
+        <!-- /Center Content -->
+        
+      </div>
+    </div> <!-- /container -->
+    <script>
+    $("[data-toggle='tooltip']").tooltip();
+    $("[data-toggle='popover']").popover();
+    </script>
+  </body>
+</html>

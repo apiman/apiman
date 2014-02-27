@@ -1,7 +1,0 @@
-<FindBugsFilter>
-     <!-- InputStreamGraph uses this without side effects -->
-     <Match>
-       <Class name="org.switchyard.internal.io.graph.InputStreamGraph" />
-       <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2" />
-     </Match>
-</FindBugsFilter>

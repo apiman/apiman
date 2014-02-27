@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testPlan xmlns="urn:org.overlord.apiman.test:2014:02:testPlan">
+
+  <!-- Make sure Organizations are working properly -->
+  <testGroup name="Organization Management">
+    <test name="Create Organization">organizations/orgs/001_create.resttest</test>
+    <test name="Get Organization">organizations/orgs/002_get.resttest</test>
+    <test name="Create Org (Duplicate)">organizations/orgs/003_create_already-exists.resttest</test>
+    <test name="Search for all Orgs">organizations/orgs/004_search_all.resttest</test>
+    <test name="Create Organization 2">organizations/orgs/005_create_another.resttest</test>
+    <test name="Search for all Orgs (2)">organizations/orgs/006_search_all-2.resttest</test>
+  </testGroup>
+
+</testPlan>

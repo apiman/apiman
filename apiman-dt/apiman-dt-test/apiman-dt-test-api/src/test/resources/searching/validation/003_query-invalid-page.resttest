@@ -1,0 +1,14 @@
+POST /organizations/search admin/admin
+Content-Type: application/json
+
+{
+  "paging" : {
+    "page" : 0,
+    "pageSize" : 20
+  }
+}
+----
+400
+Content-Type: application/json
+
+{"type":"InvalidSearchCriteriaException","errorCode":9001,"message":"Missing or invalid 'page' param in search criteria."}

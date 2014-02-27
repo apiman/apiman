@@ -1,0 +1,6 @@
+GET /organizations/Organization1/applications/Application1/versions/missing admin/admin
+----
+404
+Content-Type: application/json
+
+{"type":"ApplicationVersionNotFoundException","errorCode":4003,"message":"Application Version does not exist: Application1/missing","moreInfoUrl":null}

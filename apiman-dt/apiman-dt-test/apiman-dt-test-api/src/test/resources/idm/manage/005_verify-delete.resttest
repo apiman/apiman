@@ -1,0 +1,6 @@
+GET /roles/TestRole1 admin/admin
+----
+404
+Content-Type: application/json
+
+{"type":"RoleNotFoundException","errorCode":2001,"message":"Role not found: TestRole1","moreInfoUrl":null}

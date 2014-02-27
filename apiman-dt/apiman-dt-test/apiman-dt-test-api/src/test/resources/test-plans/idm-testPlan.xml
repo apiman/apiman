@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testPlan xmlns="urn:org.overlord.apiman.test:2014:02:testPlan">
+
+  <!-- How about some user testing? -->
+  <testGroup name="User Testing">
+    <test name="Find Users by Name">idm/users/001_find-users.resttest</test>
+    <test name="Get User 1">idm/users/002_get-user1.resttest</test>
+  </testGroup>
+
+  <!-- Create a bunch of Roles -->
+  <testGroup name="Create Some Roles">
+    <test name="Create Role 1">idm/create/001_create-role1.resttest</test>
+    <test name="Create Role 2">idm/create/002_create-role2.resttest</test>
+    <test name="Create Role 3">idm/create/003_create-role3.resttest</test>
+    <test name="Create Role 4">idm/create/004_create-role4.resttest</test>
+  </testGroup>
+
+  <!-- Now do some basic role management -->
+  <testGroup name="Manage Roles">
+    <test name="Get a Role">idm/manage/001_get-role.resttest</test>
+    <test name="Update a Role">idm/manage/002_update-role.resttest</test>
+    <test name="Verify Role Update">idm/manage/003_verify-update.resttest</test>
+    <test name="Delete a Role">idm/manage/004_delete-role.resttest</test>
+    <test name="Verify Delete">idm/manage/005_verify-delete.resttest</test>
+    <test name="Get All Roles">idm/manage/006_get-all-roles.resttest</test>
+  </testGroup>
+  
+  <!-- Now grant some memberships -->
+  <testGroup name="Manage Memberships">
+    <test name="Create Org 1">idm/memberships/001_create-org-1.resttest</test>
+    <test name="Create Org 2">idm/memberships/002_create-org-2.resttest</test>
+    <test name="Grant Role 2">idm/memberships/003_grant-role2.resttest</test>
+    <test name="Grant Role 3">idm/memberships/004_grant-role3.resttest</test>
+    <test name="Get Permissions">idm/memberships/005_get-permissions.resttest</test>
+  </testGroup>
+
+  <!-- Now test security -->
+  <testGroup name="Role Based Security">
+    <test name="Access Denied to Org 1">idm/security/001_notauthorized-org1.resttest</test>
+    <test name="Create 'Organization Owner' Role">idm/security/002_create-org-owner-role.resttest</test>
+    <test name="Make User 1 Owner of Org 1">idm/security/003_grant-ownership.resttest</test>
+    <test name="Get Org 1 (Now Authorized)">idm/security/004_get-org1.resttest</test>
+  </testGroup>
+  
+</testPlan>

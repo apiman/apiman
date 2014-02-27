@@ -1,0 +1,16 @@
+POST /roles admin/admin
+Content-Type: application/json
+
+{
+  "name" : "Service Developer",
+  "permissions" : [ "serviceView", "serviceEdit", "serviceAdmin" ]
+}
+----
+200
+Content-Type: application/json
+
+{
+  "id" : "ServiceDeveloper",
+  "name" : "Service Developer",
+  "permissions" : [ "serviceView", "serviceEdit", "serviceAdmin" ]
+}

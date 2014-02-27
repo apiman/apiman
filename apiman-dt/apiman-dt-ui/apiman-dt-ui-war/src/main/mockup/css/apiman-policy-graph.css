@@ -1,0 +1,364 @@
+
+.apiman-policy-graph {
+}
+.apiman-policy-graph div {
+  float: left;
+  min-height: 1px;
+}
+.pg-row {
+  width: 100%;
+}
+.pg-col-0, .pg-col-14 {
+  width: 14%;
+}
+.pg-col-3, .pg-col-7, .pg-col-11 {
+  width: 16%;
+}
+.pg-col-5, .pg-col-9 {
+  width: 2%;
+}
+.pg-col-1, .pg-col-2, .pg-col-4, .pg-col-6, .pg-col-8, .pg-col-10, .pg-col-12, .pg-col-13 {
+  width: 2%;
+}
+.pg-col-d1, .pg-col-d2 {
+  width: 2%;
+}
+.pg-row-1 div {
+  height: 20px;
+}
+.pg-cell-1-2, .pg-cell-1-6, .pg-cell-1-10 {
+  border-left: 1px dotted #999;
+  border-top: 1px dotted #999;
+}
+.pg-cell-1-3, .pg-cell-1-7, .pg-cell-1-11 {
+  border-top: 1px dotted #999;
+}
+.pg-cell-1-4, .pg-cell-1-8, .pg-cell-1-12 {
+  border-top: 1px dotted #999;
+  border-right: 1px dotted #999;
+}
+.pg-row-2 {
+  line-height: 24px;
+}
+.pg-row-2 div {
+  height: 24px;
+}
+.pg-cell-2-1, .pg-cell-2-2, .pg-cell-2-3, .pg-cell-2-4, .pg-cell-2-5, .pg-cell-2-6, .pg-cell-2-7, .pg-cell-2-8, .pg-cell-2-9, .pg-cell-2-10, .pg-cell-2-11, .pg-cell-2-12, .pg-cell-2-13 {
+  background-color: #fff7a3;
+}
+.pg-cell-2-1 {
+  border-radius: 20px 0px 0px 0px;
+}
+.pg-cell-2-13 {
+  border-radius: 0px 20px 0px 0px;
+}
+.pg-cell-2-2, .pg-cell-2-6, .pg-cell-2-10 {
+  border-left: 1px dotted #999;
+}
+.pg-cell-2-4, .pg-cell-2-8, .pg-cell-2-12 {
+  border-right: 1px dotted #999;
+}
+.pg-row-3 {
+  line-height: 50px;
+}
+.pg-row-3 div {
+  height: 50px;
+}
+.pg-cell-3-0, .pg-cell-3-14 {
+  border-left: 1px solid #666;
+  border-top: 1px solid #666;
+  border-right: 1px solid #666;
+  background-color: #cccfd2;
+}
+.pg-cell-3-1, .pg-cell-3-2, .pg-cell-3-3, .pg-cell-3-4, .pg-cell-3-5, .pg-cell-3-6, .pg-cell-3-7, .pg-cell-3-8, .pg-cell-3-9, .pg-cell-3-10, .pg-cell-3-11, .pg-cell-3-12, .pg-cell-3-13 {
+  background-color: #fff7a3;
+}
+.pg-cell-3-2, .pg-cell-3-6, .pg-cell-3-10 {
+  border-left: 1px dotted #999;
+}
+.pg-cell-3-4, .pg-cell-3-8, .pg-cell-3-12 {
+  border-right: 1px dotted #999;
+}
+.pg-cell-3-3, .pg-cell-3-7, .pg-cell-3-11 {
+  border: 1px solid #666;
+  text-align: center;
+  background-color: #cccfd2;
+}
+.pg-row-4 {
+  line-height: 30px;
+  text-align: center;
+}
+.pg-row-4 div {
+  height: 30px;
+}
+.pg-cell-4-1, .pg-cell-4-2, .pg-cell-4-3, .pg-cell-4-4, .pg-cell-4-5, .pg-cell-4-6, .pg-cell-4-7, .pg-cell-4-8, .pg-cell-4-9, .pg-cell-4-10, .pg-cell-4-11, .pg-cell-4-12, .pg-cell-4-13 {
+  background-color: #fff7a3;
+}
+.pg-cell-4-0, .pg-cell-4-14 {
+  border-left: 1px solid #666;
+  border-right: 1px solid #666;
+  background-color: #cccfd2;
+}
+.pg-cell-4-2, .pg-cell-4-6, .pg-cell-4-10 {
+  border-left: 1px dotted #999;
+}
+.pg-cell-4-4, .pg-cell-4-8, .pg-cell-4-12 {
+  border-right: 1px dotted #999;
+}
+.pg-row-5 {
+  line-height: 50px;
+}
+.pg-row-5 div {
+  height: 50px;
+}
+.pg-cell-5-0, .pg-cell-5-14 {
+  border-left: 1px solid #666;
+  border-bottom: 1px solid #666;
+  border-right: 1px solid #666;
+  background-color: #cccfd2;
+}
+.pg-cell-5-1, .pg-cell-5-2, .pg-cell-5-4, .pg-cell-5-5, .pg-cell-5-6, .pg-cell-5-8, .pg-cell-5-9, .pg-cell-5-10, .pg-cell-5-12, .pg-cell-5-13 {
+  background-color: #fff7a3;
+}
+.pg-cell-5-2, .pg-cell-5-6, .pg-cell-5-10 {
+  border-left: 1px dotted #999;
+}
+.pg-cell-5-4, .pg-cell-5-8, .pg-cell-5-12 {
+  border-right: 1px dotted #999;
+}
+.pg-cell-5-3, .pg-cell-5-7, .pg-cell-5-11 {
+  border: 1px solid #666;
+  text-align: center;
+  background-color: #cccfd2;
+}
+.pg-row-6 {
+  line-height: 24px;
+}
+.pg-row-6 div {
+  height: 24px;
+}
+.pg-cell-6-1, .pg-cell-6-2, .pg-cell-6-3, .pg-cell-6-4, .pg-cell-6-5, .pg-cell-6-6, .pg-cell-6-7, .pg-cell-6-8, .pg-cell-6-9, .pg-cell-6-10, .pg-cell-6-11, .pg-cell-6-12, .pg-cell-6-13 {
+  background-color: #fff7a3;
+}
+.pg-cell-6-1 {
+  border-radius: 0px 0px 0px 20px;
+}
+.pg-cell-6-13 {
+  border-radius: 0px 0px 20px 0px;
+}
+.pg-cell-6-2, .pg-cell-6-6, .pg-cell-6-10 {
+  border-left: 1px dotted #999;
+}
+.pg-cell-6-4, .pg-cell-6-8, .pg-cell-6-12 {
+  border-right: 1px dotted #999;
+}
+.pg-row-7 div {
+  height: 20px;
+}
+.pg-cell-7-2, .pg-cell-7-6, .pg-cell-7-10 {
+  border-left: 1px dotted #999;
+  border-bottom: 1px dotted #999;
+}
+.pg-cell-7-3, .pg-cell-7-7, .pg-cell-7-11 {
+  border-bottom: 1px dotted #999;
+}
+.pg-cell-7-4, .pg-cell-7-8, .pg-cell-7-12 {
+  border-bottom: 1px dotted #999;
+  border-right: 1px dotted #999;
+}
+.pg-cell-3-1, .pg-cell-3-d1, .pg-cell-3-4, .pg-cell-3-5, .pg-cell-3-8, .pg-cell-3-9, .pg-cell-3-12, .pg-cell-3-13,
+.pg-cell-5-1, .pg-cell-5-2, .pg-cell-5-5, .pg-cell-5-6, .pg-cell-5-9, .pg-cell-5-10, .pg-cell-5-13, .pg-cell-5-d2
+{
+  background-image: url(images/pgraph/arrow-body.png);
+  background-repeat: no-repeat;
+  background-position: top 0px;
+}
+.pg-cell-3-2, .pg-cell-3-6, .pg-cell-3-10, .pg-cell-3-d2
+{
+  background-image: url(images/pgraph/arrow-right.png);
+  background-repeat: no-repeat;
+  background-position: top 0px right 0px;
+}
+.pg-cell-5-d1, .pg-cell-5-4, .pg-cell-5-8, .pg-cell-5-12
+{
+  background-image: url(images/pgraph/arrow-left.png);
+  background-repeat: no-repeat;
+  background-position: top 0px left 0px;
+}
+
+
+/**************************************
+ Visual Context for Service Policies
+ **************************************/
+/** Make the dotted border pop out */
+.apiman-policy-graph-service .pg-cell-1-10 {
+  border-left: 1px dotted black;
+  border-top: 1px dotted black;
+}
+.apiman-policy-graph-service .pg-cell-1-11 {
+  border-top: 1px dotted black;
+}
+.apiman-policy-graph-service .pg-cell-1-12 {
+  border-top: 1px dotted black;
+  border-right: 1px dotted black;
+}
+.apiman-policy-graph-service .pg-cell-2-10, .apiman-policy-graph-service .pg-cell-3-10, .apiman-policy-graph-service .pg-cell-4-10,
+.apiman-policy-graph-service .pg-cell-5-10, .apiman-policy-graph-service .pg-cell-6-10
+{
+  border-left: 1px dotted black;
+}
+.apiman-policy-graph-service .pg-cell-2-12, .apiman-policy-graph-service .pg-cell-3-12, .apiman-policy-graph-service .pg-cell-4-12,
+.apiman-policy-graph-service .pg-cell-5-12, .apiman-policy-graph-service .pg-cell-6-12
+{
+  border-right: 1px dotted black;
+}
+.apiman-policy-graph-service .pg-cell-7-10 {
+  border-left: 1px dotted black;
+  border-bottom: 1px dotted black;
+}
+.apiman-policy-graph-service .pg-cell-7-11 {
+  border-bottom: 1px dotted black;
+}
+.apiman-policy-graph-service .pg-cell-7-12 {
+  border-bottom: 1px dotted black;
+  border-right: 1px dotted black;
+}
+/** Make the text bold */
+.apiman-policy-graph-service .pg-cell-0-11 {
+  font-weight: bold;
+}
+.apiman-policy-graph-service .pg-cell-3-11, .apiman-policy-graph-service .pg-cell-5-11 {
+  font-weight: bold;
+  background-color: #4089d2;
+  color: white;
+  text-shadow: 1px 1px #1a5187;
+}
+.apiman-policy-graph-service .pg-cell-3-11 a, .apiman-policy-graph-service .pg-cell-5-11 a {
+}
+/** Hover effects */
+.apiman-policy-graph-service .pg-cell-3-11, .apiman-policy-graph-service .pg-cell-5-11 {
+  cursor: pointer;
+}
+.apiman-policy-graph-service .pg-cell-3-11:hover, .apiman-policy-graph-service .pg-cell-5-11:hover {
+  background-color: #297dd2;
+  text-decoration: underline;
+  border: 1px solid black;
+}
+
+
+/****************************************
+ Visual Context for Application Policies
+ ****************************************/
+/** Make the dotted border pop out */
+.apiman-policy-graph-app .pg-cell-1-2 {
+  border-left: 1px dotted black;
+  border-top: 1px dotted black;
+}
+.apiman-policy-graph-app .pg-cell-1-3 {
+  border-top: 1px dotted black;
+}
+.apiman-policy-graph-app .pg-cell-1-4 {
+  border-top: 1px dotted black;
+  border-right: 1px dotted black;
+}
+.apiman-policy-graph-app .pg-cell-2-2, .apiman-policy-graph-app .pg-cell-3-2, .apiman-policy-graph-app .pg-cell-4-2,
+.apiman-policy-graph-app .pg-cell-5-2, .apiman-policy-graph-app .pg-cell-6-2
+{
+  border-left: 1px dotted black;
+}
+.apiman-policy-graph-app .pg-cell-2-4, .apiman-policy-graph-app .pg-cell-3-4, .apiman-policy-graph-app .pg-cell-4-4,
+.apiman-policy-graph-app .pg-cell-5-4, .apiman-policy-graph-app .pg-cell-6-4
+{
+  border-right: 1px dotted black;
+}
+.apiman-policy-graph-app .pg-cell-7-2 {
+  border-left: 1px dotted black;
+  border-bottom: 1px dotted black;
+}
+.apiman-policy-graph-app .pg-cell-7-3 {
+  border-bottom: 1px dotted black;
+}
+.apiman-policy-graph-app .pg-cell-7-4 {
+  border-bottom: 1px dotted black;
+  border-right: 1px dotted black;
+}
+/** Make the text bold */
+.apiman-policy-graph-app .pg-cell-0-3 {
+  font-weight: bold;
+}
+.apiman-policy-graph-app .pg-cell-3-3, .apiman-policy-graph-app .pg-cell-5-3 {
+  font-weight: bold;
+  background-color: #4089d2;
+  color: white;
+  text-shadow: 1px 1px #1a5187;
+}
+.apiman-policy-graph-app .pg-cell-3-3 a, .apiman-policy-graph-app .pg-cell-5-3 a {
+}
+/** Hover effects */
+.apiman-policy-graph-app .pg-cell-3-3, .apiman-policy-graph-app .pg-cell-5-3 {
+  cursor: pointer;
+}
+.apiman-policy-graph-app .pg-cell-3-3:hover, .apiman-policy-graph-app .pg-cell-5-3:hover {
+  background-color: #297dd2;
+  text-decoration: underline;
+  border: 1px solid black;
+}
+
+
+/**********************************
+ Visual Context for Plan Policies
+ **********************************/
+/** Make the dotted border pop out */
+.apiman-policy-graph-plan .pg-cell-1-6 {
+  border-left: 1px dotted black;
+  border-top: 1px dotted black;
+}
+.apiman-policy-graph-plan .pg-cell-1-7 {
+  border-top: 1px dotted black;
+}
+.apiman-policy-graph-plan .pg-cell-1-8 {
+  border-top: 1px dotted black;
+  border-right: 1px dotted black;
+}
+.apiman-policy-graph-plan .pg-cell-2-6, .apiman-policy-graph-plan .pg-cell-3-6, .apiman-policy-graph-plan .pg-cell-4-6,
+.apiman-policy-graph-plan .pg-cell-5-6, .apiman-policy-graph-plan .pg-cell-6-6
+{
+  border-left: 1px dotted black;
+}
+.apiman-policy-graph-plan .pg-cell-2-8, .apiman-policy-graph-plan .pg-cell-3-8, .apiman-policy-graph-plan .pg-cell-4-8,
+.apiman-policy-graph-plan .pg-cell-5-8, .apiman-policy-graph-plan .pg-cell-6-8
+{
+  border-right: 1px dotted black;
+}
+.apiman-policy-graph-plan .pg-cell-7-6 {
+  border-left: 1px dotted black;
+  border-bottom: 1px dotted black;
+}
+.apiman-policy-graph-plan .pg-cell-7-7 {
+  border-bottom: 1px dotted black;
+}
+.apiman-policy-graph-plan .pg-cell-7-8 {
+  border-bottom: 1px dotted black;
+  border-right: 1px dotted black;
+}
+/** Make the text bold */
+.apiman-policy-graph-plan .pg-cell-0-7 {
+  font-weight: bold;
+}
+.apiman-policy-graph-plan .pg-cell-3-7, .apiman-policy-graph-plan .pg-cell-5-7 {
+  font-weight: bold;
+  background-color: #4089d2;
+  color: white;
+  text-shadow: 1px 1px #1a5187;
+}
+.apiman-policy-graph-plan .pg-cell-3-7 a, .apiman-policy-graph-plan .pg-cell-5-7 a {
+}
+/** Hover effects */
+.apiman-policy-graph-plan .pg-cell-3-7, .apiman-policy-graph-plan .pg-cell-5-7 {
+  cursor: pointer;
+}
+.apiman-policy-graph-plan .pg-cell-3-7:hover, .apiman-policy-graph-plan .pg-cell-5-7:hover {
+  background-color: #297dd2;
+  text-decoration: underline;
+  border: 1px solid black;
+}

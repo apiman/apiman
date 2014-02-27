@@ -1,0 +1,7 @@
+GET /organizations/Organization1/applications/Application2 admin/admin
+----
+404
+Content-Type: application/json
+X-Apiman-Error: true
+
+{"type":"ApplicationNotFoundException","errorCode":4002,"message":"Application does not exist: Application2","moreInfoUrl":null}

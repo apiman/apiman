@@ -1,0 +1,19 @@
+POST /organizations/search admin/admin
+Content-Type: application/json
+
+{
+  "filters" : [],
+  "orderBy" : {
+    "name" : "id",
+    "ascending" : true
+  },
+  "paging" : {
+    "page" : 1,
+    "pageSize" : 20
+  }
+}
+----
+200
+Content-Type: application/json
+
+{"beans":[{"id":"TestOrganization1","name":"Test Organization 1"},{"id":"TestOrganization10","name":"Test Organization 10"},{"id":"TestOrganization2","name":"Test Organization 2"},{"id":"TestOrganization3","name":"Test Organization 3"},{"id":"TestOrganization4","name":"Test Organization 4"},{"id":"TestOrganization5","name":"Test Organization 5"},{"id":"TestOrganization6","name":"Test Organization 6"},{"id":"TestOrganization7","name":"Test Organization 7"},{"id":"TestOrganization8","name":"Test Organization 8"},{"id":"TestOrganization9","name":"Test Organization 9"}],"totalSize":10}

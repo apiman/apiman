@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <script type="text/javascript" src="site.js"></script>
+  </head>
+
+  <body>
+    
+    <!-- Top header/nav bar -->
+    <div id="overlord-header">
+    </div>
+
+    <!-- Page content -->
+    <div class="page container" data-field="page">
+      <div class="row">
+        <!-- Left Hand Side -->
+        <div class="col-md-4 apiman-entitysummary">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-md-12 apiman-header" data-role="dummy" data-field="fullName">Eric Wittmann</div>
+            </div>
+            <div class="row">
+              <div class="col-md-12 apiman-subheader" data-role="dummy" data-field="userId">ewittman</div>
+            </div>
+            <div class="row">
+              <hr />
+            </div>
+            <div class="row">
+              <div class="col-md-12 metadata-with-icon">
+                <i class="fa fa-envelope-o fa-fw"></i>
+                <div><a href="#" data-role="dummy" data-field="email">eric.wittmann@redhat.com</a></div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12 metadata-with-icon">
+                <i class="fa fa-clock-o fa-fw"></i>
+                <div class="apiman-label-faded" data-i18n-key="joined-on">Joined on</div>
+                <div data-role="dummy" data-field="joinedOn">Oct 19, 2012</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- /Left Hand Side -->
+
+        <!-- Center Content -->
+        <div class="col-md-8">
+          <div class="apiman-entitytabs">
+            <ul id="entitytabs" class="nav nav-tabs">
+              <li class="active"><a href="user-orgs.html" data-field="toUserOrgs" data-i18n-key="organizations">Organizations</a></li>
+              <li><a href="user-apps.html" data-field="toUserApps" data-i18n-key="applications">Applications</a></li>
+              <li><a href="user-services.html" data-field="toUserServices" data-i18n-key="services">Services</a></li>
+              <li class="pull-right"><a href="user-activity.html" data-field="toUserActivity" data-i18n-key="activity">Activity</a></li>
+            </ul>
+            <div id="entitytabsContent" class="tab-content">
+              
+              <!-- Organizations Tab Content -->
+              <div class="tab-pane active" id="tab-orgs">
+                <div class="apiman-filters apiman-organizations-filters">
+                  <input type="text" class="form-control input-search" placeholder="Search by organization name..."></input>
+                  <a data-field="toNewOrg" href="new-org.html" class="btn btn-primary pull-right" data-i18n-key="new-organization">New Org</a>
+                </div>
+                <div class="clearfix"></div>
+                <!-- The list of organizations the user belongs to -->
+                <div class="apiman-organizations" data-field="organizations" data-role="dummy">
+                  <div class="container-fluid apiman-summaryrow">
+                    <div class="row">
+                      <span class="title"><a href="org-apps.html">JBoss Overlord</a></span>
+                      <a href="#" data-toggle="popover" data-trigger="hover" data-html="true" data-content="The organization contains <b>12</b> <em>members</em>." data-placement="top" class="apiman-summaryrow-icon">
+                        <i class="fa fa-user"></i>
+                        <span class="title-summary-item">12</span>
+                      </a>
+                      <a href="#" data-toggle="popover" data-trigger="hover" data-html="true" data-content="The organization contains <b>52</b> <em>services</em>." data-placement="top" class="apiman-summaryrow-icon">
+                        <i class="fa fa-puzzle-piece"></i>
+                        <span class="title-summary-item">52</span>
+                      </a>
+                      <a href="#" data-toggle="popover" data-trigger="hover" data-html="true" data-content="The organization contains <b>32</b> <em>applications</em>." data-placement="top" class="apiman-summaryrow-icon">
+                        <i class="fa fa-gears"></i>
+                        <span class="title-summary-item">32</span>
+                      </a>
+                    </div>
+                    <div class="row">
+                      <span class="description">
+                        Overlord is the umbrella project that will bring governance to the JBoss SOA Platform and eventually beyond.
+                      </span>
+                    </div>
+                    <hr/>
+                  </div>
+                  <div class="container-fluid apiman-summaryrow">
+                    <div class="row">
+                      <span class="title"><a href="org-apps.html">Apereo Bedework</a></span>
+                      <a href="#" data-toggle="popover" data-trigger="hover" data-html="true" data-content="This organization contains <b>5</b> <em>members</em>." data-placement="top" class="apiman-summaryrow-icon">
+                        <i class="fa fa-user"></i>
+                        <span class="title-summary-item">5</span>
+                      </a>
+                      <a href="#" data-toggle="popover" data-trigger="hover" data-html="true" data-content="This organization contains <b>159</b> <em>services</em>." data-placement="top" class="apiman-summaryrow-icon">
+                        <i class="fa fa-puzzle-piece"></i>
+                        <span class="title-summary-item">159</span>
+                      </a>
+                      <a href="#" data-toggle="popover" data-trigger="hover" data-html="true" data-content="This organization contains <b>3</b> <em>applications</em>." data-placement="top" class="apiman-summaryrow-icon">
+                        <i class="fa fa-gears"></i>
+                        <span class="title-summary-item">3</span>
+                      </a>
+                    </div>
+                    <div class="row">
+                      <span class="description">
+                        Bedework is an open-source enterprise calendar system that supports public, personal, and group calendaring.
+                      </span>
+                    </div>
+                    <hr/>
+                  </div>
+                </div>
+              </div>
+              <!-- End Organizations Tab Content -->
+              
+            </div>
+          </div>
+        </div>
+        <!-- /Center Content -->
+        
+      </div>
+    </div> <!-- /container -->
+  </body>
+</html>

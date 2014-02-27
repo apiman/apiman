@@ -1,0 +1,24 @@
+GET /organizations/Organization1/members admin/admin
+----
+200
+Content-Type: application/json
+
+[
+  {
+    "userId" : "admin",
+    "userName" : "ADMIN",
+    "email" : "admin@example.org",
+    "roles" : [
+      {"roleId":"OrganizationOwner", "roleName":"Organization Owner"}
+    ]
+  },
+  {
+    "userId" : "user1",
+    "userName" : "USER1",
+    "email" : "user1@example.org",
+    "roles" : [
+      {"roleId":"ApplicationDeveloper", "roleName":"Application Developer"},
+      {"roleId":"ServiceDeveloper", "roleName":"Service Developer"}
+    ]
+  }
+]

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testPlan xmlns="urn:org.overlord.apiman.test:2014:02:testPlan">
+
+  <!-- Create Organizations -->
+  <testGroup name="Initial Creates">
+    <test name="Create Organization 1">services/create/001_create-org1.resttest</test>
+    <test name="Create Organization 2">services/create/002_create-org2.resttest</test>
+  </testGroup>
+
+  <!-- Test Service management -->
+  <testGroup name="Service Management">
+    <test name="Create Service 1">services/svcs/001_create-service1.resttest</test>
+    <test name="Get Service 1">services/svcs/002_get-service1.resttest</test>
+    <test name="Get Missing Svc">services/svcs/003_get-missing-service.resttest</test>
+    <test name="Create Service 2">services/svcs/004_create-service2.resttest</test>
+    <test name="Search Svcs">services/svcs/005_search-services.resttest</test>
+    <test name="Update Svc 1">services/svcs/006_update-service1.resttest</test>
+    <test name="Get Service 1 (updated)">services/svcs/007_get-service1.resttest</test>
+    <test name="Create Service 1 (Org 2)">services/svcs/008_create-service1-org2.resttest</test>
+    <test name="Get Service 1">services/svcs/009_get-service1.resttest</test>
+    <test name="Get Service 1 (Org 2)">services/svcs/010_get-service1-org2.resttest</test>
+  </testGroup>
+
+  <!-- Test Service Version management -->
+  <testGroup name="Service Version Management">
+    <test name="Create Service Version 1.0">services/versions/001_create-version-1.0.resttest</test>
+    <test name="Get Service Version 1.0">services/versions/002_get-version-1.0.resttest</test>
+    <test name="Get Missing Service Version">services/versions/003_get-version-missing.resttest</test>
+    <test name="Create Service Version 2.0">services/versions/004_create-version-2.0.resttest</test>
+    <test name="List All Versions">services/versions/005_list-versions.resttest</test>
+    <test name="Update Version 1.0">services/versions/006_update-version-1.0.resttest</test>
+    <test name="Get Version 1.0 (updated)">services/versions/007_get-version-1.0.resttest</test>
+  </testGroup>
+
+</testPlan>

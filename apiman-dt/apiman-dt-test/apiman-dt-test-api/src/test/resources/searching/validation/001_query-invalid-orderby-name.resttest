@@ -1,0 +1,13 @@
+POST /organizations/search admin/admin
+Content-Type: application/json
+
+{
+  "orderBy" : {
+    "ascending" : true
+  }
+}
+----
+400
+Content-Type: application/json
+
+{"type":"InvalidSearchCriteriaException","errorCode":9001,"message":"Missing 'name' in 'orderBy'."}

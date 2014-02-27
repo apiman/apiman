@@ -1,0 +1,21 @@
+POST /organizations/Organization1/applications/search admin/admin
+Content-Type: application/json
+
+{
+  "filters" : [],
+  "orderBy" : {
+    "name" : "id",
+    "ascending" : true
+  }
+}
+----
+200
+Content-Type: application/json
+
+{
+  "beans" : [
+        {"organizationId":"Organization1","id":"Application1","name":"Application 1","description":"This is the description of Application 1.","createdBy":"admin"},
+        {"organizationId":"Organization1","id":"Application2","name":"Application 2","description":"This is the description of Application 2.","createdBy":"admin"}
+      ],
+  "totalSize" : 2
+}

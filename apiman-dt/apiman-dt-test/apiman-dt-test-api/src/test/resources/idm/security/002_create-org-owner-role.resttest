@@ -1,0 +1,16 @@
+POST /roles admin/admin
+Content-Type: application/json
+
+{
+  "name" : "Organization Owner",
+  "permissions" : [ "orgUpdate", "orgDelete", "orgView" ]
+}
+----
+200
+Content-Type: application/json
+
+{
+  "id" : "OrganizationOwner",
+  "name" : "Organization Owner",
+  "permissions" : [ "orgUpdate", "orgDelete", "orgView" ]
+}
