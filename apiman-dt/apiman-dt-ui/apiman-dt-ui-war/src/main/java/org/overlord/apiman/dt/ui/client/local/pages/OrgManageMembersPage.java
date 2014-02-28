@@ -182,7 +182,7 @@ public class OrgManageMembersPage extends AbstractPage {
         }
         if (cardsVisible == 0) {
             ParagraphLabel noneFound = new ParagraphLabel();
-            noneFound.setText("No members found matching the selected filter criteria.");
+            noneFound.setText(i18n.format(AppMessages.ORG_MANAGE_MEMBERS_NO_MEMBERS_FOUND));
             noneFound.getElement().setClassName("apiman-no-entities-description"); //$NON-NLS-1$
             cards.add(noneFound);
         }

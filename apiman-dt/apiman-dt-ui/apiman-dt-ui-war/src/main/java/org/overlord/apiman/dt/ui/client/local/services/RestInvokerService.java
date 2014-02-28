@@ -23,6 +23,7 @@ import javax.inject.Inject;
 
 import org.jboss.errai.common.client.api.Caller;
 import org.overlord.apiman.dt.api.beans.apps.ApplicationBean;
+import org.overlord.apiman.dt.api.beans.apps.ApplicationVersionBean;
 import org.overlord.apiman.dt.api.beans.idm.GrantRolesBean;
 import org.overlord.apiman.dt.api.beans.idm.RoleBean;
 import org.overlord.apiman.dt.api.beans.idm.UserBean;
@@ -177,6 +178,19 @@ public class RestInvokerService {
     public void createApplication(String organizationId, ApplicationBean app, IRestInvokerCallback<ApplicationBean> callback) {
         CallbackAdapter<ApplicationBean> adapter = new CallbackAdapter<ApplicationBean>(callback);
         applications.call(adapter, adapter).create(organizationId, app);
+    }
+    
+    /**
+     * Creates a new version of an app.
+     * @param organizationId
+     * @param applicationId
+     * @param version
+     * @param callback
+     */
+    public void createApplicationVersion(String organizationId, String applicationId, ApplicationVersionBean version,
+            IRestInvokerCallback<ApplicationVersionBean> callback) {
+        CallbackAdapter<ApplicationVersionBean> adapter = new CallbackAdapter<ApplicationVersionBean>(callback);
+        applications.call(adapter, adapter).createVersion(organizationId, applicationId, version);
     }
 
     /**

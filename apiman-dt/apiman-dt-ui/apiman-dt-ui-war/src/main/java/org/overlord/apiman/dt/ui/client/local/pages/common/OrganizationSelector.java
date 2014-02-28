@@ -31,7 +31,9 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Focusable;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.InlineLabel;
 
@@ -43,8 +45,10 @@ import com.google.gwt.user.client.ui.InlineLabel;
  */
 @Templated("/org/overlord/apiman/dt/ui/client/local/site/new-app.html#orgSelector")
 @Dependent
-public class OrganizationSelector extends Composite implements HasValue<OrganizationSummaryBean> {
+public class OrganizationSelector extends Composite implements HasValue<OrganizationSummaryBean>, Focusable {
 
+    @Inject @DataField
+    Button button;
     @Inject @DataField
     InlineLabel selectorLabel;
     @Inject @DataField
@@ -117,4 +121,35 @@ public class OrganizationSelector extends Composite implements HasValue<Organiza
         }
     }
 
+    /**
+     * @see com.google.gwt.user.client.ui.Focusable#getTabIndex()
+     */
+    @Override
+    public int getTabIndex() {
+        return button.getTabIndex();
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.Focusable#setAccessKey(char)
+     */
+    @Override
+    public void setAccessKey(char key) {
+        button.setAccessKey(key);
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.Focusable#setFocus(boolean)
+     */
+    @Override
+    public void setFocus(boolean focused) {
+        button.setFocus(focused);
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.Focusable#setTabIndex(int)
+     */
+    @Override
+    public void setTabIndex(int index) {
+        button.setTabIndex(index);
+    }
 }

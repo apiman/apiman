@@ -22,7 +22,7 @@
           <dt data-i18n-key="organization">Organization</dt>
           <dd>
             <div class="btn-group" data-field="orgSelector">
-              <button type="button" id="selector-org" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+              <button type="button" id="selector-org" class="btn btn-default dropdown-toggle" data-toggle="dropdown" data-field="button">
                 <span data-field="selectorLabel" id="selector-org-value" data-i18n-key="select-org">Select Organization</span> &nbsp;&nbsp;<span class="caret"></span>
               </button>
               <ul class="dropdown-menu" data-role="dummy" data-field="organizations">
@@ -73,7 +73,7 @@
       </div>
       <!-- Create Button -->
       <div class="row">
-        <button class="btn btn-primary" data-field="createButton" data-i18n-key="create-application">Create Application</button>
+        <button class="btn btn-primary" data-field="createButton" data-i18n-key="create-application" placeholder="Creating..." data-icon="fa-cog">Create Application</button>
         <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" data-i18n-key="cancel">Cancel</a>
       </div>
     </div> <!-- /container -->

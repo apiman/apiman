@@ -27,6 +27,7 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.apiman.dt.api.beans.apps.ApplicationBean;
+import org.overlord.apiman.dt.api.beans.apps.ApplicationVersionBean;
 import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
 import org.overlord.apiman.dt.api.beans.summary.OrganizationSummaryBean;
 import org.overlord.apiman.dt.ui.client.local.AppMessages;
@@ -35,12 +36,13 @@ import org.overlord.apiman.dt.ui.client.local.services.ContextKeys;
 import org.overlord.apiman.dt.ui.client.local.services.CurrentContextService;
 import org.overlord.apiman.dt.ui.client.local.services.rest.IRestInvokerCallback;
 import org.overlord.apiman.dt.ui.client.local.util.MultimapUtil;
+import org.overlord.commons.gwt.client.local.widgets.AsyncActionButton;
 
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.TextBox;
 
 
@@ -66,9 +68,11 @@ public class NewAppPage extends AbstractPage {
     @Inject @DataField
     TextBox name;
     @Inject @DataField
+    TextBox version;
+    @Inject @DataField
     TextBox description;
     @Inject @DataField
-    Button createButton;
+    AsyncActionButton createButton;
     
     /**
      * Constructor.
@@ -77,6 +81,7 @@ public class NewAppPage extends AbstractPage {
     }
     
     @PostConstruct
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     protected void postConstruct() {
         orgSelector.addValueChangeHandler(new ValueChangeHandler<OrganizationSummaryBean>() {
             @Override
@@ -84,6 +89,20 @@ public class NewAppPage extends AbstractPage {
                 name.setFocus(true);
             }
         });
+        orgSelector.addValueChangeHandler(new ValueChangeHandler() {
+            @Override
+            public void onValueChange(ValueChangeEvent event) {
+                onFormUpdated();
+            }
+        });
+        KeyUpHandler kph = new KeyUpHandler() {
+            @Override
+            public void onKeyUp(KeyUpEvent event) {
+                onFormUpdated();
+            }
+        };
+        name.addKeyUpHandler(kph);
+        version.addKeyUpHandler(kph);
     }
     
     /**
@@ -128,8 +147,12 @@ public class NewAppPage extends AbstractPage {
      */
     @Override
     protected void onPageLoaded() {
-        name.setFocus(true);
-        createButton.setEnabled(true);
+        if (orgSelector.getValue() == null)
+            orgSelector.setFocus(true);
+        else
+            name.setFocus(true);
+        createButton.reset();
+        onFormUpdated();
     }
     
     /**
@@ -138,26 +161,51 @@ public class NewAppPage extends AbstractPage {
      */
     @EventHandler("createButton")
     public void onCreate(ClickEvent event) {
-        createButton.setEnabled(false);
-        createButton.setFocus(false);
+        createButton.onActionStarted();
         final String orgId = orgSelector.getValue().getId();
+        final String appVersion = version.getValue();
         ApplicationBean bean = new ApplicationBean();
         bean.setName(name.getValue());
         bean.setDescription(description.getValue());
+        // Create the application and then create an initial app version.
         rest.createApplication(orgId, bean, new IRestInvokerCallback<ApplicationBean>() {
             @Override
-            public void onSuccess(ApplicationBean response) {
-                String orgId = response.getOrganizationId();
-                String appId = response.getId();
-                // Short circuit page loading lifecycle - redirect to the Org page
-                toAppOverview.go(MultimapUtil.fromMultiple("org", orgId, "app", appId)); //$NON-NLS-1$ //$NON-NLS-2$
+            public void onSuccess(final ApplicationBean response) {
+                final String appId = response.getId();
+                ApplicationVersionBean vb = new ApplicationVersionBean();
+                vb.setVersion(appVersion);
+                rest.createApplicationVersion(orgId, appId, vb, new IRestInvokerCallback<ApplicationVersionBean>() {
+                    @Override
+                    public void onSuccess(ApplicationVersionBean response) {
+                        createButton.onActionComplete();
+                        toAppOverview.go(MultimapUtil.fromMultiple("org", orgId, "app", appId, "version", appVersion)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    }
+                    @Override
+                    public void onError(Throwable error) {
+                        dataPacketError(error);
+                    }
+                });
             }
             @Override
             public void onError(Throwable error) {
-                // TODO do something interesting here!
-                Window.alert("App creation failed: " + error.getMessage()); //$NON-NLS-1$
+                dataPacketError(error);
             }
         });
+    }
+
+    /**
+     * Called whenever the user modifies the form.  Checks for form validity and then
+     * enables or disables the Create button as appropriate.
+     */
+    protected void onFormUpdated() {
+        boolean formComplete = true;
+        if (orgSelector.getValue() == null)
+            formComplete = false;
+        if (name.getValue() == null || name.getValue().trim().length() == 0)
+            formComplete = false;
+        if (version.getValue() == null || version.getValue().trim().length() == 0)
+            formComplete = false;
+        createButton.setEnabled(formComplete);
     }
 
     /**

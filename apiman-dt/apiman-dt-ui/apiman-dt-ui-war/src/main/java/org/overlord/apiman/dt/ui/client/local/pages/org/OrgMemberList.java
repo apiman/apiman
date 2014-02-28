@@ -24,6 +24,7 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.nav.client.local.TransitionAnchorFactory;
 import org.overlord.apiman.dt.api.beans.members.MemberBean;
 import org.overlord.apiman.dt.api.beans.members.MemberRoleBean;
+import org.overlord.apiman.dt.ui.client.local.AppMessages;
 import org.overlord.apiman.dt.ui.client.local.pages.UserRedirectPage;
 import org.overlord.apiman.dt.ui.client.local.services.NavigationHelperService;
 import org.overlord.apiman.dt.ui.client.local.util.MultimapUtil;
@@ -181,7 +182,7 @@ public class OrgMemberList extends FlowPanel implements HasValue<List<MemberBean
             FontAwesomeIcon icon = new FontAwesomeIcon("clock-o", true); //$NON-NLS-1$
             iconDiv.add(icon);
             
-            InlineLabel label1 = new InlineLabel("Joined on");
+            InlineLabel label1 = new InlineLabel(i18n.format(AppMessages.JOINED_ON));
             iconDiv.add(label1);
             label1.getElement().setClassName("title-summary-item"); //$NON-NLS-1$
             InlineLabel label2 = new InlineLabel(format.format(bean.getJoinedOn()));

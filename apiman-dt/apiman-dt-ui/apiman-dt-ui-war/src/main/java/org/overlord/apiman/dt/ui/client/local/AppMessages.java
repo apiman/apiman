@@ -89,5 +89,11 @@ public class AppMessages {
 
     @TranslationKey(defaultValue = "Search for users above")
     public static final String NEW_MEMBER_SEARCH_TEXT = "newMember.userSelector.help-text"; //$NON-NLS-1$
+
+    @TranslationKey(defaultValue = "No members found matching the selected filter criteria.")
+    public static final String ORG_MANAGE_MEMBERS_NO_MEMBERS_FOUND = "manageMembers.no-members-found"; //$NON-NLS-1$
+
+    @TranslationKey(defaultValue = "Joined on")
+    public static final String JOINED_ON = "joined-on"; //$NON-NLS-1$
    
 }
