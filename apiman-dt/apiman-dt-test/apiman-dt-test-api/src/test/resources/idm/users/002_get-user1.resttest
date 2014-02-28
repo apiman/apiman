@@ -3,4 +3,4 @@ GET /users/user1 admin/admin
 200
 Content-Type: application/json
 
-{"username":"user1","fullName":"USER1","email":"user1@example.org"}
+{"username":"user1","fullName":"User 1","email":"user1@example.org"}

@@ -183,11 +183,13 @@ public class DtApiTestServer {
      */
     private SecurityHandler createSecurityHandler() {
         HashLoginService l = new HashLoginService();
-        for (String user : TestUsers.USERS) {
+        for (String [] userInfo : TestUsers.USERS) {
+            String user = userInfo[0];
+            String pwd = userInfo[1];
             String[] roles = new String[] { "apiuser" };
             if (user.startsWith("admin"))
-                roles = new String[] {"apiadmin"};
-            l.putUser(user, Credential.getCredential(user), roles);
+                roles = new String[] { "apiuser", "apiadmin"};
+            l.putUser(user, Credential.getCredential(pwd), roles);
         }
         l.setName("apimanrealm");
 

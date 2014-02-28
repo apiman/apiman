@@ -58,7 +58,7 @@ public class ApplicationVersionBean implements Serializable {
     private ApplicationBean application;
     private ApplicationStatus status;
     @Column(updatable=false)
-    @Index(name="versionIdx")
+    @Index(name="app_vIdx")
     private String version;
     @Column(updatable=false)
     private String createdBy;

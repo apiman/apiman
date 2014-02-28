@@ -21,6 +21,7 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.overlord.apiman.dt.api.rest.contract.exceptions.AbstractRestException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.SystemErrorException;
 import org.overlord.apiman.dt.ui.client.local.pages.error.AbstractErrorPage;
 import org.overlord.apiman.dt.ui.client.local.pages.error.Error403Page;
 import org.overlord.apiman.dt.ui.client.local.pages.error.Error404Page;
@@ -28,7 +29,6 @@ import org.overlord.apiman.dt.ui.client.local.pages.error.Error500Page;
 
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Visibility;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
@@ -105,8 +105,10 @@ public class PageErrorPanel {
             errorPage.setValue(restError);
             errorPanel.add(errorPage);
         } else {
-            // TODO need to do something better here!
-            errorPanel.add(new Label("Unknown/unhandled error received!  Please report this.")); //$NON-NLS-1$
+            AbstractErrorPage errorPage = null;
+            errorPage = error500Factory.get();
+            errorPage.setValue(new SystemErrorException(t));
+            errorPanel.add(errorPage);
         }
     }
 

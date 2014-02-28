@@ -23,6 +23,7 @@ import javax.inject.Inject;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.nav.client.local.TransitionAnchorFactory;
 import org.overlord.apiman.dt.api.beans.members.MemberBean;
+import org.overlord.apiman.dt.api.beans.members.MemberRoleBean;
 import org.overlord.apiman.dt.ui.client.local.pages.UserRedirectPage;
 import org.overlord.apiman.dt.ui.client.local.services.NavigationHelperService;
 import org.overlord.apiman.dt.ui.client.local.util.MultimapUtil;
@@ -130,13 +131,21 @@ public class OrgMemberList extends FlowPanel implements HasValue<List<MemberBean
         FlowPanel row2 = new FlowPanel();
         container.add(row2);
         row2.getElement().setClassName("row"); //$NON-NLS-1$
-        InlineLabel description = new InlineLabel(bean.getUserName());
-        row2.add(description);
-        description.getElement().setClassName("description"); //$NON-NLS-1$
+        createDescription(bean, row2);
         
         container.add(new HTMLPanel("<hr/>")); //$NON-NLS-1$
         
         return container;
+    }
+
+    /**
+     * @param bean
+     * @param row2
+     */
+    protected void createDescription(MemberBean bean, FlowPanel row2) {
+        InlineLabel description = new InlineLabel(formatRoles(bean));
+        row2.add(description);
+        description.getElement().setClassName("description"); //$NON-NLS-1$
     }
 
     /**
@@ -150,7 +159,11 @@ public class OrgMemberList extends FlowPanel implements HasValue<List<MemberBean
         sp.getElement().setClassName("title"); //$NON-NLS-1$
         Anchor a = toUserRedirectFactory.get(MultimapUtil.singleItemMap("user", bean.getUserId())); //$NON-NLS-1$
         sp.add(a);
-        a.setText(bean.getUserId());
+        a.setText(bean.getUserName());
+        InlineLabel span = new InlineLabel();
+        sp.add(span);
+        span.getElement().setClassName("secondary"); //$NON-NLS-1$
+        span.setText(" (" + bean.getUserId() + ") "); //$NON-NLS-1$ //$NON-NLS-2$
     }
     
     /**
@@ -176,4 +189,27 @@ public class OrgMemberList extends FlowPanel implements HasValue<List<MemberBean
             label2.getElement().setClassName("title-summary-item"); //$NON-NLS-1$
         }
     }
+    
+    /**
+     * Formats the member's roles into a comma separated string.
+     * 
+     * TODO share this method with {@link MemberCard} (along with formatJoinedOn)
+     * 
+     * @param member
+     */
+    private static String formatRoles(MemberBean member) {
+        StringBuilder builder = new StringBuilder();
+        List<MemberRoleBean> roles = member.getRoles();
+        boolean first = true;
+        for (MemberRoleBean role : roles) {
+            if (first) {
+                first = false;
+            } else {
+                builder.append(", "); //$NON-NLS-1$
+            }
+            builder.append(role.getRoleName());
+        }
+        return builder.toString();
+    }
+
 }

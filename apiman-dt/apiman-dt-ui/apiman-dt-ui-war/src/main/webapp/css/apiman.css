@@ -177,7 +177,11 @@ div.page {
 .apiman-summaryrow .title {
   font-weight: bold;
 }
-
+.apiman-summaryrow .title .secondary {
+  color: #333;
+  font-weight: normal;
+  font-style: italic;
+}
 .apiman-summaryrow .fa {
   float: left;
   line-height: 14px;

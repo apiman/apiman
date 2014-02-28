@@ -6,7 +6,7 @@ Content-Type: application/json
 [
   {
     "userId" : "admin",
-    "userName" : "ADMIN",
+    "userName" : "Admin",
     "email" : "admin@example.org",
     "roles" : [
       {"roleId":"OrganizationOwner", "roleName":"Organization Owner"}
@@ -14,7 +14,7 @@ Content-Type: application/json
   },
   {
     "userId" : "user1",
-    "userName" : "USER1",
+    "userName" : "User 1",
     "email" : "user1@example.org",
     "roles" : [
       {"roleId":"ApplicationDeveloper", "roleName":"Application Developer"},

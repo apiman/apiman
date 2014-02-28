@@ -20,21 +20,21 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.apiman.dt.api.beans.idm.RoleBean;
 import org.overlord.apiman.dt.api.beans.members.MemberBean;
 import org.overlord.apiman.dt.api.beans.members.MemberRoleBean;
 import org.overlord.apiman.dt.ui.client.local.AppMessages;
 import org.overlord.apiman.dt.ui.client.local.pages.common.RoleMultiSelector;
+import org.overlord.commons.gwt.client.local.widgets.AsyncActionButton;
 
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -90,47 +90,14 @@ public class MemberCard extends Composite implements HasValue<MemberBean> {
     @Inject @DataField
     Button cancelButton;
     @Inject @DataField
-    Button applyButton;
+    AsyncActionButton applyButton;
     @Inject @DataField
-    Button revokeButton;
+    AsyncActionButton revokeButton;
     
     /**
      * Constructor.
      */
     public MemberCard() {
-    }
-    
-    /**
-     * Called after an instance of this class is built.
-     */
-    @PostConstruct
-    protected void postConstruct() {
-        editButton.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                flipCard();
-                event.preventDefault();
-            }
-        });
-        revokeButton.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                doRevoke();
-            }
-        });
-        cancelButton.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                refresh();
-                flipCard();
-            }
-        });
-        applyButton.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                doApply();
-            }
-        });
     }
     
     /**
@@ -242,24 +209,29 @@ public class MemberCard extends Composite implements HasValue<MemberBean> {
     }
 
     /**
-     * Called when the user clicks the "Remove" button.
+     * Called when the user clicks the "Edit" button.
+     * @param event
      */
-    protected void doRevoke() {
-        // TODO replace this with a bootstrap modal yes/no dialog!
-        if (Window.confirm("This will remove the user from all roles in the Organization.  Really do this?")) {
-            // Firing with a null value is a signal to the page that the user wants to delete the card.
-            ValueChangeEvent.fire(this, null);
-        }
+    @EventHandler("editButton")
+    public void onEdit(ClickEvent event) {
+        applyButton.reset();
+        cancelButton.setEnabled(true);
+        revokeButton.reset();
+        flipCard();
+        event.preventDefault();
     }
-
+    
     /**
      * Called when the user clicks the Apply button.  This will build up
      * a new MemberBean from the info in the UI *and* the current MemberBean
      * and then fire a change event.
+     * @param event
      */
-    protected void doApply() {
+    @EventHandler("applyButton")
+    public void onApply(ClickEvent event) {
+        applyButton.onActionStarted();
         cancelButton.setEnabled(false);
-        applyButton.setEnabled(false);
+        revokeButton.setEnabled(false);
         
         MemberBean newValue = new MemberBean();
         newValue.setUserId(this.value.getUserId());
@@ -279,6 +251,33 @@ public class MemberCard extends Composite implements HasValue<MemberBean> {
         newValue.setRoles(newRoles);
         ValueChangeEvent.fire(this, newValue);
     }
+
+    /**
+     * Called when the user clicks the "Revoke All" button.
+     * @param event
+     */
+    @EventHandler("revokeButton")
+    public void onRevoke(ClickEvent event) {
+        applyButton.setEnabled(false);
+        cancelButton.setEnabled(false);
+        revokeButton.onActionStarted();
+
+        // TODO replace this with a bootstrap modal yes/no dialog!
+        if (Window.confirm("This will remove the user from all roles in the Organization.  Really do this?")) {
+            // Firing with a null value is a signal to the page that the user wants to delete the card.
+            ValueChangeEvent.fire(this, null);
+        }
+    }
+    
+    /**
+     * Called when the user clicks the "Cancel" button.
+     * @param event
+     */
+    @EventHandler("cancelButton")
+    public void onCancel(ClickEvent event) {
+        refresh();
+        flipCard();
+    }
     
     /**
      * Called by the page when changes to the member's roles have been
@@ -286,8 +285,9 @@ public class MemberCard extends Composite implements HasValue<MemberBean> {
      */
     public void onApplySuccess(MemberBean value) {
         setValue(value);
+        applyButton.onActionComplete();
         cancelButton.setEnabled(true);
-        applyButton.setEnabled(true);
+        revokeButton.setEnabled(true);
         flipCard();
     }
     
@@ -297,8 +297,9 @@ public class MemberCard extends Composite implements HasValue<MemberBean> {
      */
     public void onApplyFailed() {
         refresh();
+        applyButton.onActionComplete();
         cancelButton.setEnabled(true);
-        applyButton.setEnabled(true);
+        revokeButton.setEnabled(true);
         flipCard();
     }
 

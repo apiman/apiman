@@ -152,11 +152,15 @@ public abstract class AbstractPage extends Composite {
 
     /**
      * Called when an error occurs trying to load page data.
+     * 
+     * TODO also support a version of this with additional provided context information - sometimes we know what we were doing when a problem happened
      */
     protected void dataPacketError(Throwable t) {
         errorPanel.clear();
         errorPanel.displayError(t);
         pageLoadingWidget.hide();
+        navigation.getContentPanel().asWidget().getElement().getStyle().setVisibility(Visibility.HIDDEN);
+        navigation.getContentPanel().asWidget().getElement().getStyle().setDisplay(Display.NONE);
         errorPanel.show();
     }
 

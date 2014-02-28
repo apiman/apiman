@@ -27,7 +27,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import org.overlord.apiman.dt.api.beans.idm.GrantRoleBean;
+import org.overlord.apiman.dt.api.beans.idm.GrantRolesBean;
 import org.overlord.apiman.dt.api.beans.members.MemberBean;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.NotAuthorizedException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationNotFoundException;
@@ -54,7 +54,7 @@ public interface IMemberResource {
     @POST
     @Path("{organizationId}/roles")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void grant(@PathParam("organizationId") String organizationId, GrantRoleBean bean)
+    public void grant(@PathParam("organizationId") String organizationId, GrantRolesBean bean)
             throws OrganizationNotFoundException, RoleNotFoundException, UserNotFoundException, NotAuthorizedException;
 
     /**

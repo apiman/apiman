@@ -16,13 +16,14 @@
 package org.overlord.apiman.dt.ui.client.local.services;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.api.Caller;
 import org.overlord.apiman.dt.api.beans.apps.ApplicationBean;
-import org.overlord.apiman.dt.api.beans.idm.GrantRoleBean;
+import org.overlord.apiman.dt.api.beans.idm.GrantRolesBean;
 import org.overlord.apiman.dt.api.beans.idm.RoleBean;
 import org.overlord.apiman.dt.api.beans.idm.UserBean;
 import org.overlord.apiman.dt.api.beans.members.MemberBean;
@@ -214,15 +215,15 @@ public class RestInvokerService {
      * Grants a role to a user.
      * @param organizationId
      * @param userId
-     * @param roleId
+     * @param roleIds
      * @param callback
      */
-    public void grant(String organizationId, String userId, String roleId, IRestInvokerCallback<Void> callback) {
+    public void grant(String organizationId, String userId, Set<String> roleIds, IRestInvokerCallback<Void> callback) {
         CallbackAdapter<Void> adapter = new CallbackAdapter<Void>(callback);
-        GrantRoleBean bean = new GrantRoleBean();
+        GrantRolesBean bean = new GrantRolesBean();
         bean.setUserId(userId);
-        bean.setRoleId(roleId);
-        members.call(adapter, adapter).grant(organizationId, bean );
+        bean.setRoleIds(roleIds);
+        members.call(adapter, adapter).grant(organizationId, bean);
     }
 
     /**

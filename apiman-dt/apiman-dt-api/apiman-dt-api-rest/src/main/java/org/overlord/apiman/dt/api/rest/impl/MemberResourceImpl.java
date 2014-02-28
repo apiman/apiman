@@ -25,7 +25,7 @@ import java.util.TreeMap;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.overlord.apiman.dt.api.beans.idm.GrantRoleBean;
+import org.overlord.apiman.dt.api.beans.idm.GrantRolesBean;
 import org.overlord.apiman.dt.api.beans.idm.PermissionType;
 import org.overlord.apiman.dt.api.beans.idm.RoleBean;
 import org.overlord.apiman.dt.api.beans.idm.RoleMembershipBean;
@@ -73,22 +73,26 @@ public class MemberResourceImpl implements IMemberResource {
     }
 
     /**
-     * @see org.overlord.apiman.dt.api.rest.contract.IOrganizationResource#grant(java.lang.String, org.overlord.apiman.dt.api.beans.idm.GrantRoleBean)
+     * @see org.overlord.apiman.dt.api.rest.contract.IOrganizationResource#grant(java.lang.String, org.overlord.apiman.dt.api.beans.idm.GrantRolesBean)
      */
     @Override
-    public void grant(String organizationId, GrantRoleBean bean) throws OrganizationNotFoundException,
+    public void grant(String organizationId, GrantRolesBean bean) throws OrganizationNotFoundException,
             RoleNotFoundException, UserNotFoundException, NotAuthorizedException {
         if (!securityContext.hasPermission(PermissionType.orgEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
         // Verify that the references are valid.
         orgs.get(organizationId);
         users.get(bean.getUserId());
-        roles.get(bean.getRoleId());
+        for (String roleId : bean.getRoleIds()) {
+            roles.get(roleId);
+        }
 
-        RoleMembershipBean membership = RoleMembershipBean.create(bean.getUserId(), bean.getRoleId(), organizationId);
-        membership.setCreatedOn(new Date());
         try {
-            idmStorage.createMembership(membership);
+            for (String roleId : bean.getRoleIds()) {
+                RoleMembershipBean membership = RoleMembershipBean.create(bean.getUserId(), roleId, organizationId);
+                membership.setCreatedOn(new Date());
+                idmStorage.createMembership(membership);
+            }
         } catch (AlreadyExistsException e) {
             // Do nothing - re-granting is OK.
         } catch (StorageException e) {

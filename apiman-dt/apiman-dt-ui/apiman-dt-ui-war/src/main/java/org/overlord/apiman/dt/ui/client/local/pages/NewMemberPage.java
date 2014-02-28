@@ -37,12 +37,14 @@ import org.overlord.apiman.dt.ui.client.local.pages.common.RoleMultiSelector;
 import org.overlord.apiman.dt.ui.client.local.pages.org.UserSelector;
 import org.overlord.apiman.dt.ui.client.local.services.rest.IRestInvokerCallback;
 import org.overlord.apiman.dt.ui.client.local.util.MultimapUtil;
+import org.overlord.commons.gwt.client.local.widgets.AsyncActionButton;
 
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 
@@ -65,16 +67,13 @@ public class NewMemberPage extends AbstractPage {
     @Inject @DataField
     TextBox searchBox;
     @Inject @DataField
-    Button searchButton;
+    AsyncActionButton searchButton;
     @Inject @DataField
     UserSelector users;
     @Inject @DataField
     RoleMultiSelector roles;
     @Inject @DataField
-    Button addButton;
-
-    private int waitForIt;
-
+    AsyncActionButton addButton;
     
     /**
      * Constructor.
@@ -99,8 +98,17 @@ public class NewMemberPage extends AbstractPage {
                 onFormUpdated();
             }
         });
+        searchBox.addKeyPressHandler(new KeyPressHandler() {
+            @Override
+            public void onKeyPress(KeyPressEvent event) {
+                boolean enterPressed = KeyCodes.KEY_ENTER == event.getNativeEvent().getKeyCode();
+                if (enterPressed) {
+                    onSearch(null);
+                }
+            }
+        });
     }
-    
+
     /**
      * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractPage#loadPageData()
      */
@@ -127,8 +135,8 @@ public class NewMemberPage extends AbstractPage {
     @Override
     protected void renderPage() {
         super.renderPage();
+        addButton.reset();
         addButton.setEnabled(false);
-        addButton.setHTML(i18n.format(AppMessages.NEW_MEMBER_ADD_BUTTON_ADD));
         unlockPage();
         roles.setRoles(roleBeans);
         users.add(new Label("(" + i18n.format(AppMessages.NEW_MEMBER_SEARCH_TEXT) + ")")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -176,10 +184,9 @@ public class NewMemberPage extends AbstractPage {
     public void onSearch(ClickEvent event) {
         if (searchBox.getValue().trim().length() == 0)
             return;
-        
+
         searchBox.setEnabled(false);
-        searchButton.setEnabled(false);
-        searchButton.setHTML("<i class=\"fa fa-cog fa-spin\"></i> " + i18n.format(AppMessages.NEW_MEMBER_SEARCH_BUTTON_SEARCHING)); //$NON-NLS-1$
+        searchButton.onActionStarted();
         users.clear();
         onFormUpdated();
         
@@ -192,17 +199,12 @@ public class NewMemberPage extends AbstractPage {
             @Override
             public void onSuccess(SearchResultsBean<UserBean> response) {
                 users.setUsers(response.getBeans());
-                searchButton.setEnabled(true);
                 searchBox.setEnabled(true);
-                searchButton.setHTML(i18n.format(AppMessages.NEW_MEMBER_SEARCH_BUTTON_SEARCH));
+                searchButton.onActionComplete();
             }
             @Override
             public void onError(Throwable error) {
-                // TODO report this error in some sensible way!
-                Window.alert("Error searching for users: " + error.getMessage()); //$NON-NLS-1$
-                searchButton.setEnabled(true);
-                searchBox.setEnabled(true);
-                searchButton.setHTML(i18n.format(AppMessages.NEW_MEMBER_SEARCH_BUTTON_SEARCH));
+                dataPacketError(error);
             }
         });
     }
@@ -214,34 +216,30 @@ public class NewMemberPage extends AbstractPage {
     @EventHandler("addButton")
     public void onAdd(ClickEvent event) {
         lockPage();
-        addButton.setHTML("<i class=\"fa fa-cog fa-spin\"></i> " + i18n.format(AppMessages.NEW_MEMBER_ADD_BUTTON_ADDING)); //$NON-NLS-1$
+        addButton.onActionStarted();
 
         UserBean user = users.getValue();
-        Set<String> roleIds = roles.getValue();
+        final Set<String> roleIds = roles.getValue();
         String orgId = org;
-        waitForIt = 0;
-        for (String roleId : roleIds) {
-            rest.grant(orgId, user.getUsername(), roleId, new IRestInvokerCallback<Void>() {
-                @Override
-                public void onSuccess(Void response) {
-                    waitForIt++;
-                    onAddComplete();
-                }
-                @Override
-                public void onError(Throwable error) {
-                    // TODO need a way to display errors like this in some sensible way
-                    Window.alert("Error granting role(s): " + error.getMessage());
-                    unlockPage();
-                    searchButton.setHTML(i18n.format(AppMessages.NEW_MEMBER_ADD_BUTTON_ADD));
-                }
-            });
-        }
+        rest.grant(orgId, user.getUsername(), roleIds, new IRestInvokerCallback<Void>() {
+            @Override
+            public void onSuccess(Void response) {
+                onAddComplete();
+            }
+            @Override
+            public void onError(Throwable error) {
+                addButton.onActionComplete();
+                unlockPage();
+                dataPacketError(error);
+            }
+        });
     }
 
     /**
-     * Called when the grant is complete.
+     * Called when all the grants are complete.
      */
     protected void onAddComplete() {
+        addButton.onActionComplete();
         navigation.goTo(OrgManageMembersPage.class, MultimapUtil.singleItemMap("org", org)); //$NON-NLS-1$
     }
 

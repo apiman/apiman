@@ -32,11 +32,11 @@ public class DefaultTestDataSeeder implements ISeeder {
      */
     @Override
     public void seed(IIdmStorage idmStorage, IStorage storage) throws StorageException {
-        for (String user : TestUsers.USERS) {
+        for (String [] userInfo : TestUsers.USERS) {
             UserBean userBean = new UserBean();
-            userBean.setUsername(user);
-            userBean.setFullName(user.toUpperCase());
-            userBean.setEmail(user + "@example.org");
+            userBean.setUsername(userInfo[0]);
+            userBean.setFullName(userInfo[2]);
+            userBean.setEmail(userInfo[3]);
             idmStorage.createUser(userBean);
         }
     }

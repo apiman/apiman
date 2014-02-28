@@ -15,6 +15,7 @@
  */
 package org.overlord.apiman.dt.ui.client.local.pages;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -193,15 +194,47 @@ public class OrgManageMembersPage extends AbstractPage {
      * @param oldValue
      * @param newValue
      */
-    protected void onMemberCardChange(MemberCard card, MemberBean oldValue, MemberBean newValue) {
-        // TODO update the user's roles on the server
+    protected void onMemberCardChange(final MemberCard card, final MemberBean oldValue, final MemberBean newValue) {
         if (newValue == null) {
             // Revoke all roles
-            memberBeans.remove(oldValue);
-            refreshCards();
+            rest.revokeAll(org, oldValue.getUserId(), new IRestInvokerCallback<Void>() {
+                @Override
+                public void onSuccess(Void response) {
+                    memberBeans.remove(oldValue);
+                    refreshCards();
+                }
+                @Override
+                public void onError(Throwable error) {
+                    dataPacketError(error);
+                }
+            });
         } else {
-            oldValue.setRoles(newValue.getRoles());
-            card.onApplySuccess(newValue);
+            final Set<String> roleIds = new HashSet<String>();
+            List<MemberRoleBean> roles = newValue.getRoles();
+            for (MemberRoleBean mrb : roles) {
+                roleIds.add(mrb.getRoleId());
+            }
+            // First revoke all existing roles, then grant the new roles.
+            rest.revokeAll(org, oldValue.getUserId(), new IRestInvokerCallback<Void>() {
+                @Override
+                public void onSuccess(Void response) {
+                    rest.grant(org, oldValue.getUserId(), roleIds, new IRestInvokerCallback<Void>() {
+                        @Override
+                        public void onSuccess(Void response) {
+                            oldValue.setRoles(newValue.getRoles());
+                            card.onApplySuccess(oldValue);
+                        }
+                        @Override
+                        public void onError(Throwable error) {
+                            dataPacketError(error);
+                        }
+                    });
+                }
+                @Override
+                public void onError(Throwable error) {
+                    dataPacketError(error);
+                }
+            });
         }
     }
 

@@ -89,13 +89,5 @@ public class AppMessages {
 
     @TranslationKey(defaultValue = "Search for users above")
     public static final String NEW_MEMBER_SEARCH_TEXT = "newMember.userSelector.help-text"; //$NON-NLS-1$
-    @TranslationKey(defaultValue = "Search")
-    public static final String NEW_MEMBER_SEARCH_BUTTON_SEARCH = "newMember.searchButton.search"; //$NON-NLS-1$
-    @TranslationKey(defaultValue = "Searching...")
-    public static final String NEW_MEMBER_SEARCH_BUTTON_SEARCHING = "newMember.searchButton.searching"; //$NON-NLS-1$
-    @TranslationKey(defaultValue = "Add")
-    public static final String NEW_MEMBER_ADD_BUTTON_ADD = "newMember.addButton.add"; //$NON-NLS-1$
-    @TranslationKey(defaultValue = "Adding...")
-    public static final String NEW_MEMBER_ADD_BUTTON_ADDING = "newMember.addButton.adding"; //$NON-NLS-1$
    
 }

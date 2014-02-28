@@ -16,6 +16,8 @@
 package org.overlord.apiman.dt.api.beans.idm;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
@@ -26,17 +28,24 @@ import org.jboss.errai.common.client.api.annotations.Portable;
  * @author eric.wittmann@redhat.com
  */
 @Portable
-public class GrantRoleBean implements Serializable {
+public class GrantRolesBean implements Serializable {
 
     private static final long serialVersionUID = -1509983712261196134L;
     
     private String userId;
-    private String roleId;
+    private Set<String> roleIds = new HashSet<String>();
 
     /**
      * Constructor.
      */
-    public GrantRoleBean() {
+    public GrantRolesBean() {
+    }
+    
+    /**
+     * @param roleId
+     */
+    public void addRoleId(String roleId) {
+        roleIds.add(roleId);
     }
 
     /**
@@ -54,17 +63,17 @@ public class GrantRoleBean implements Serializable {
     }
 
     /**
-     * @return the roleId
+     * @return the roleIds
      */
-    public String getRoleId() {
-        return roleId;
+    public Set<String> getRoleIds() {
+        return roleIds;
     }
 
     /**
-     * @param roleId the roleId to set
+     * @param roleIds the roleIds to set
      */
-    public void setRoleId(String roleId) {
-        this.roleId = roleId;
+    public void setRoleIds(Set<String> roleIds) {
+        this.roleIds = roleIds;
     }
 
     /**
@@ -74,7 +83,7 @@ public class GrantRoleBean implements Serializable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((roleId == null) ? 0 : roleId.hashCode());
+        result = prime * result + ((getRoleIds() == null) ? 0 : getRoleIds().hashCode());
         result = prime * result + ((userId == null) ? 0 : userId.hashCode());
         return result;
     }
@@ -90,11 +99,11 @@ public class GrantRoleBean implements Serializable {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        GrantRoleBean other = (GrantRoleBean) obj;
-        if (roleId == null) {
-            if (other.roleId != null)
+        GrantRolesBean other = (GrantRolesBean) obj;
+        if (getRoleIds() == null) {
+            if (other.getRoleIds() != null)
                 return false;
-        } else if (!roleId.equals(other.roleId))
+        } else if (!getRoleIds().equals(other.getRoleIds()))
             return false;
         if (userId == null) {
             if (other.userId != null)

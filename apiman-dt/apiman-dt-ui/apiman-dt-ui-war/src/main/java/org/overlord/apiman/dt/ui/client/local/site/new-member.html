@@ -26,7 +26,7 @@
           <dt data-i18n-key="find-user">Find a User</dt>
           <dd>
             <input data-field="searchBox" type="text" class="form-control input-search" placeholder="Search by user name..."></input>
-            <button class="btn btn-default btn-search" data-field="searchButton" data-i18n-key="search">Search</button>
+            <button class="btn btn-default btn-search" data-field="searchButton" data-i18n-key="search" data-icon="fa-cog" placeholder="Searching">Search</button>
           </dd>
         </dl>
       </div>
@@ -34,20 +34,20 @@
       <div class="row">
         <div class="panel panel-default input-search-results">
           <div class="panel-body container-fluid" data-field="users" data-role="dummy">
-            <a href="#" class="item selected">
-              <i class="fa fa-user fa-fw"></i>
-              <span class="">Eric Wittmann</span>
-              <span>(</span><span>ewittman</span><span>)</span>
-            </a>
             <a href="#" class="item">
               <i class="fa fa-user fa-fw"></i>
               <span class="">Bruce Wayne</span>
               <span>(</span><span class="">bwayne</span><span>)</span>
             </a>
-            <a href="#" class="item">
+            <a href="#" class="item selected">
               <i class="fa fa-user fa-fw"></i>
               <span class="">Clark Kent</span>
-              <span>(</span><span class="">ckent</span><span>)</span>
+              <span>(</span><span>ckent</span><span>)</span>
+            </a>
+            <a href="#" class="item">
+              <i class="fa fa-user fa-fw"></i>
+              <span class="">Diana Prince</span>
+              <span>(</span><span class="">dprince</span><span>)</span>
             </a>
           </div>
         </div>
@@ -71,7 +71,7 @@
       </div>
       <!-- Create Button -->
       <div class="row">
-        <button class="btn btn-primary" data-field="addButton" data-i18n-key="add-member">Add Member</button>
+        <button class="btn btn-primary" data-field="addButton" data-i18n-key="add-member" data-icon="fa-cog" placeholder="Adding...">Add Member</button>
         <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-i18n-key="cancel">Cancel</a>
       </div>
     </div> <!-- /container -->

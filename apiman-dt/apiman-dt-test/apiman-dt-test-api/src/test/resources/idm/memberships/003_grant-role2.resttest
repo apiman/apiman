@@ -3,7 +3,7 @@ Content-Type: application/json
 
 {
   "userId" : "user1",
-  "roleId" : "TestRole2"
+  "roleIds" : [ "TestRole2" ]
 }
 ----
 204

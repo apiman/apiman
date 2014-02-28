@@ -60,7 +60,7 @@ public class ServiceVersionBean implements Serializable {
     private String endpoint;
     private EndpointType endpointType;
     @Column(updatable=false)
-    @Index(name="versionIdx")
+    @Index(name="svc_vIdx")
     private String version;
     @Column(updatable=false)
     private String createdBy;
