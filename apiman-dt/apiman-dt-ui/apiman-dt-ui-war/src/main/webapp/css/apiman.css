@@ -232,6 +232,10 @@ div.page {
   line-height: normal;
   padding-top: 5px;
 }
+.apiman-entity-breadcrumb .title .versions .bootstrap-select:not([class*="span"]):not([class*="col-"]):not([class*="form-control"]) {
+  float: left;
+  width: 140px;
+}
 .apiman-entity-breadcrumb .title .versions div {
   float: none;
 }

@@ -19,6 +19,8 @@ import java.util.Date;
 import java.util.HashSet;
 
 import org.overlord.apiman.dt.api.beans.apps.ApplicationBean;
+import org.overlord.apiman.dt.api.beans.apps.ApplicationStatus;
+import org.overlord.apiman.dt.api.beans.apps.ApplicationVersionBean;
 import org.overlord.apiman.dt.api.beans.idm.PermissionType;
 import org.overlord.apiman.dt.api.beans.idm.RoleBean;
 import org.overlord.apiman.dt.api.beans.idm.RoleMembershipBean;
@@ -127,6 +129,13 @@ public class DevServerDataSeeder extends DefaultTestDataSeeder {
         app.setCreatedBy("admin");
         app.setCreatedOn(new Date());
         storage.create(app);
+        ApplicationVersionBean avb = new ApplicationVersionBean();
+        avb.setVersion("1.0");
+        avb.setStatus(ApplicationStatus.Created);
+        avb.setApplication(app);
+        avb.setCreatedBy("admin");
+        avb.setCreatedOn(new Date());
+        storage.create(avb);
 
         app = new ApplicationBean();
         app.setId("rtgov");
@@ -136,7 +145,14 @@ public class DevServerDataSeeder extends DefaultTestDataSeeder {
         app.setCreatedBy("admin");
         app.setCreatedOn(new Date());
         storage.create(app);
-        
+        avb = new ApplicationVersionBean();
+        avb.setVersion("1.0");
+        avb.setStatus(ApplicationStatus.Created);
+        avb.setApplication(app);
+        avb.setCreatedBy("admin");
+        avb.setCreatedOn(new Date());
+        storage.create(avb);
+
         app = new ApplicationBean();
         app.setId("gadget-server");
         app.setName("gadget-server");
@@ -145,6 +161,13 @@ public class DevServerDataSeeder extends DefaultTestDataSeeder {
         app.setCreatedBy("admin");
         app.setCreatedOn(new Date());
         storage.create(app);
+        avb = new ApplicationVersionBean();
+        avb.setVersion("1.0");
+        avb.setStatus(ApplicationStatus.Created);
+        avb.setApplication(app);
+        avb.setCreatedBy("admin");
+        avb.setCreatedOn(new Date());
+        storage.create(avb);
     }
 
 }

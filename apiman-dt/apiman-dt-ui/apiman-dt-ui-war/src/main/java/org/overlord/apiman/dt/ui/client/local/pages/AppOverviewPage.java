@@ -16,10 +16,19 @@
 package org.overlord.apiman.dt.ui.client.local.pages;
 
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
 import org.jboss.errai.ui.nav.client.local.Page;
+import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.apiman.dt.ui.client.local.AppMessages;
+import org.overlord.apiman.dt.ui.client.local.util.MultimapUtil;
+
+import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
+import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.InlineLabel;
+import com.google.gwt.user.client.ui.Label;
 
 
 /**
@@ -32,6 +41,20 @@ import org.overlord.apiman.dt.ui.client.local.AppMessages;
 @Dependent
 public class AppOverviewPage extends AbstractAppPage {
     
+    @Inject @DataField
+    Label description;
+    @Inject @DataField
+    InlineLabel createdOn;
+    @Inject @DataField
+    Anchor createdBy;
+    
+    @Inject @DataField
+    InlineLabel version;
+    @Inject @DataField
+    InlineLabel versionCreatedOn;
+    @Inject @DataField
+    Anchor versionCreatedBy;
+
     /**
      * Constructor.
      */
@@ -45,6 +68,29 @@ public class AppOverviewPage extends AbstractAppPage {
     protected int loadPageData() {
         int rval = super.loadPageData();
         return rval;
+    }
+    
+    /**
+     * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractAppPage#renderPage()
+     */
+    @Override
+    protected void renderPage() {
+        super.renderPage();
+        DateTimeFormat format = DateTimeFormat.getFormat(PredefinedFormat.DATE_MEDIUM);
+
+        description.setText(applicationBean.getDescription());
+        createdOn.setText(format.format(applicationBean.getCreatedOn()));
+        createdBy.setText(applicationBean.getCreatedBy());
+        String toUserHref = navHelper.createHrefToPage(UserAppsPage.class,
+                MultimapUtil.fromMultiple("user", applicationBean.getCreatedBy())); //$NON-NLS-1$
+        createdBy.setHref(toUserHref);
+
+        version.setText(versionBean.getVersion());
+        versionCreatedOn.setText(format.format(versionBean.getCreatedOn()));
+        versionCreatedBy.setText(versionBean.getCreatedBy());
+        toUserHref = navHelper.createHrefToPage(UserAppsPage.class,
+                MultimapUtil.fromMultiple("user", versionBean.getCreatedBy())); //$NON-NLS-1$
+        versionCreatedBy.setHref(toUserHref);
     }
 
     /**

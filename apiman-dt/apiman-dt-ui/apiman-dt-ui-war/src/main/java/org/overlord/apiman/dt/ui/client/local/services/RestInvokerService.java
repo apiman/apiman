@@ -203,7 +203,19 @@ public class RestInvokerService {
         CallbackAdapter<ApplicationBean> adapter = new CallbackAdapter<ApplicationBean>(callback);
         applications.call(adapter, adapter).get(organizationId, applicationId);
     }
-    
+
+    /**
+     * Gets all versions of the application.
+     * @param organizationId
+     * @param applicationId
+     * @param callback
+     */
+    public void getApplicationVersions(String organizationId, String applicationId, 
+            IRestInvokerCallback<List<ApplicationVersionBean>> callback) {
+        CallbackAdapter<List<ApplicationVersionBean>> adapter = new CallbackAdapter<List<ApplicationVersionBean>>(callback);
+        applications.call(adapter, adapter).listVersions(organizationId, applicationId);
+    }
+
     /**
      * Gets all applications in the organization.
      * @param organizationId
@@ -262,5 +274,6 @@ public class RestInvokerService {
         CallbackAdapter<Void> adapter = new CallbackAdapter<Void>(callback);
         members.call(adapter, adapter).revokeAll(organizationId, userId);
     }
+
 
 }

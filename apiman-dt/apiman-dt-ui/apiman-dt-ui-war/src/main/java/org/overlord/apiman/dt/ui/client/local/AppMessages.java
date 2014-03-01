@@ -28,6 +28,8 @@ public class AppMessages {
     public static final String TITLE_NEW_ORG = "page.title.new-org"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "APIMan - New Application")
     public static final String TITLE_NEW_APP = "page.title.new-app"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "APIMan - New Application Version")
+    public static final String TITLE_NEW_APP_VERSION = "page.title.new-app-version"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "APIMan - New Service")
     public static final String TITLE_NEW_SERVICE = "page.title.new-service"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "APIMan - Add Member")
@@ -95,5 +97,7 @@ public class AppMessages {
 
     @TranslationKey(defaultValue = "Joined on")
     public static final String JOINED_ON = "joined-on"; //$NON-NLS-1$
-   
+    @TranslationKey(defaultValue = "Version: {0}")
+    public static final String VERSION_SELECTOR_LABEL = "version-selector.label"; //$NON-NLS-1$
+
 }
