@@ -19,6 +19,7 @@
     <test name="Create Service 1 (Org 2)">services/svcs/008_create-service1-org2.resttest</test>
     <test name="Get Service 1">services/svcs/009_get-service1.resttest</test>
     <test name="Get Service 1 (Org 2)">services/svcs/010_get-service1-org2.resttest</test>
+    <test name="List Services">services/svcs/011_list-services.resttest</test>
   </testGroup>
 
   <!-- Test Service Version management -->

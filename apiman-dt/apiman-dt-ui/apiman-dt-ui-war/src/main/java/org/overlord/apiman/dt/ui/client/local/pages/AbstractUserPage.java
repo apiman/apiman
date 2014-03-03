@@ -21,10 +21,9 @@ import org.jboss.errai.ui.nav.client.local.PageState;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.overlord.apiman.dt.api.beans.idm.UserBean;
 import org.overlord.apiman.dt.ui.client.local.services.rest.IRestInvokerCallback;
+import org.overlord.apiman.dt.ui.client.local.util.Formatting;
 import org.overlord.apiman.dt.ui.client.local.util.MultimapUtil;
 
-import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Label;
 
@@ -111,8 +110,7 @@ public abstract class AbstractUserPage extends AbstractPage {
             email.setText("N/A"); //$NON-NLS-1$
         }
         if (userBean.getJoinedOn() != null) {
-            DateTimeFormat format = DateTimeFormat.getFormat(PredefinedFormat.DATE_MEDIUM);
-            joinedOn.setText(format.format(userBean.getJoinedOn()));
+            joinedOn.setText(Formatting.formatShortDate(userBean.getJoinedOn()));
         } else {
             joinedOn.setText("N/A"); //$NON-NLS-1$
         }

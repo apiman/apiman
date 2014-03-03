@@ -31,8 +31,11 @@ import org.overlord.apiman.dt.api.beans.members.MemberBean;
 import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
 import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
+import org.overlord.apiman.dt.api.beans.services.ServiceBean;
+import org.overlord.apiman.dt.api.beans.services.ServiceVersionBean;
 import org.overlord.apiman.dt.api.beans.summary.ApplicationSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.OrganizationSummaryBean;
+import org.overlord.apiman.dt.api.beans.summary.ServiceSummaryBean;
 import org.overlord.apiman.dt.api.rest.contract.IApplicationResource;
 import org.overlord.apiman.dt.api.rest.contract.ICurrentUserResource;
 import org.overlord.apiman.dt.api.rest.contract.IMemberResource;
@@ -227,6 +230,64 @@ public class RestInvokerService {
         applications.call(adapter, adapter).list(organizationId);
     }
     
+    /**
+     * Creates a new service.
+     * @param organizationId
+     * @param service
+     * @param callback
+     */
+    public void createService(String organizationId, ServiceBean service, IRestInvokerCallback<ServiceBean> callback) {
+        CallbackAdapter<ServiceBean> adapter = new CallbackAdapter<ServiceBean>(callback);
+        services.call(adapter, adapter).create(organizationId, service);
+    }
+    
+    /**
+     * Creates a new version of an service.
+     * @param organizationId
+     * @param serviceId
+     * @param version
+     * @param callback
+     */
+    public void createServiceVersion(String organizationId, String serviceId, ServiceVersionBean version,
+            IRestInvokerCallback<ServiceVersionBean> callback) {
+        CallbackAdapter<ServiceVersionBean> adapter = new CallbackAdapter<ServiceVersionBean>(callback);
+        services.call(adapter, adapter).createVersion(organizationId, serviceId, version);
+    }
+
+    /**
+     * Gets an service.
+     * @param organizationId
+     * @param serviceId
+     * @param callback
+     */
+    public void getService(String organizationId, String serviceId, IRestInvokerCallback<ServiceBean> callback) {
+        CallbackAdapter<ServiceBean> adapter = new CallbackAdapter<ServiceBean>(callback);
+        services.call(adapter, adapter).get(organizationId, serviceId);
+    }
+
+    /**
+     * Gets all versions of the service.
+     * @param organizationId
+     * @param serviceId
+     * @param callback
+     */
+    public void getServiceVersions(String organizationId, String serviceId,
+            IRestInvokerCallback<List<ServiceVersionBean>> callback) {
+        CallbackAdapter<List<ServiceVersionBean>> adapter = new CallbackAdapter<List<ServiceVersionBean>>(callback);
+        services.call(adapter, adapter).listVersions(organizationId, serviceId);
+    }
+
+    /**
+     * Gets all services in the organization.
+     * @param organizationId
+     * @param serviceId
+     * @param callback
+     */
+    public void getServices(String organizationId, IRestInvokerCallback<List<ServiceSummaryBean>> callback) {
+        CallbackAdapter<List<ServiceSummaryBean>> adapter = new CallbackAdapter<List<ServiceSummaryBean>>(callback);
+        services.call(adapter, adapter).list(organizationId);
+    }
+
     /**
      * Gets all members of an org.
      * @param organizationId

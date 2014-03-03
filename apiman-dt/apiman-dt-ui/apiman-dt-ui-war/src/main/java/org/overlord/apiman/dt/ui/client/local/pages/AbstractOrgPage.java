@@ -25,11 +25,10 @@ import org.overlord.apiman.dt.api.beans.members.MemberBean;
 import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
 import org.overlord.apiman.dt.ui.client.local.services.ContextKeys;
 import org.overlord.apiman.dt.ui.client.local.services.rest.IRestInvokerCallback;
+import org.overlord.apiman.dt.ui.client.local.util.Formatting;
 import org.overlord.apiman.dt.ui.client.local.util.MultimapUtil;
 import org.overlord.commons.gwt.client.local.widgets.ParagraphLabel;
 
-import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Label;
 
@@ -121,8 +120,7 @@ public abstract class AbstractOrgPage extends AbstractPage {
         toOrgActivity.setHref(orgActivityHref);
 
         name.setText(organizationBean.getName());
-        DateTimeFormat format = DateTimeFormat.getFormat(PredefinedFormat.DATE_MEDIUM);
-        createdOn.setText(format.format(organizationBean.getCreatedOn()));
+        createdOn.setText(Formatting.formatShortDate(organizationBean.getCreatedOn()));
         numMembers.setText(String.valueOf(memberBeans.size()));
         if (organizationBean.getDescription() != null) {
             description.setText(organizationBean.getDescription());

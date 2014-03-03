@@ -27,6 +27,7 @@ import org.overlord.apiman.dt.api.beans.members.MemberRoleBean;
 import org.overlord.apiman.dt.ui.client.local.AppMessages;
 import org.overlord.apiman.dt.ui.client.local.pages.UserRedirectPage;
 import org.overlord.apiman.dt.ui.client.local.services.NavigationHelperService;
+import org.overlord.apiman.dt.ui.client.local.util.Formatting;
 import org.overlord.apiman.dt.ui.client.local.util.MultimapUtil;
 import org.overlord.commons.gwt.client.local.widgets.FontAwesomeIcon;
 import org.overlord.commons.gwt.client.local.widgets.SpanPanel;
@@ -34,8 +35,6 @@ import org.overlord.commons.gwt.client.local.widgets.SpanPanel;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
@@ -174,8 +173,6 @@ public class OrgMemberList extends FlowPanel implements HasValue<List<MemberBean
      */
     protected void createJoinedOn(MemberBean bean, FlowPanel row1) {
         if (bean.getJoinedOn() != null) {
-            DateTimeFormat format = DateTimeFormat.getFormat(PredefinedFormat.DATE_MEDIUM);
-    
             FlowPanel iconDiv = new FlowPanel();
             row1.add(iconDiv);
             iconDiv.getElement().setClassName("apiman-summaryrow-icon"); //$NON-NLS-1$
@@ -185,7 +182,7 @@ public class OrgMemberList extends FlowPanel implements HasValue<List<MemberBean
             InlineLabel label1 = new InlineLabel(i18n.format(AppMessages.JOINED_ON));
             iconDiv.add(label1);
             label1.getElement().setClassName("title-summary-item"); //$NON-NLS-1$
-            InlineLabel label2 = new InlineLabel(format.format(bean.getJoinedOn()));
+            InlineLabel label2 = new InlineLabel(Formatting.formatShortDate(bean.getJoinedOn()));
             iconDiv.add(label2);
             label2.getElement().setClassName("title-summary-item"); //$NON-NLS-1$
         }

@@ -26,9 +26,9 @@ import org.jboss.errai.ui.nav.client.local.TransitionTo;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.overlord.apiman.dt.api.beans.apps.ApplicationBean;
-import org.overlord.apiman.dt.api.beans.apps.ApplicationVersionBean;
 import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
+import org.overlord.apiman.dt.api.beans.services.ServiceBean;
+import org.overlord.apiman.dt.api.beans.services.ServiceVersionBean;
 import org.overlord.apiman.dt.api.beans.summary.OrganizationSummaryBean;
 import org.overlord.apiman.dt.ui.client.local.AppMessages;
 import org.overlord.apiman.dt.ui.client.local.pages.common.OrganizationSelector;
@@ -47,19 +47,19 @@ import com.google.gwt.user.client.ui.TextBox;
 
 
 /**
- * Page that lets the user create a new Application.
+ * Page that lets the user create a new Service.
  *
  * @author eric.wittmann@redhat.com
  */
-@Templated("/org/overlord/apiman/dt/ui/client/local/site/new-app.html#page")
-@Page(path="new-app")
+@Templated("/org/overlord/apiman/dt/ui/client/local/site/new-service.html#page")
+@Page(path="new-service")
 @Dependent
-public class NewAppPage extends AbstractPage {
+public class NewServicePage extends AbstractPage {
     
     @Inject
     CurrentContextService context;
     @Inject
-    TransitionTo<AppOverviewPage> toAppOverview;
+    TransitionTo<ServiceOverviewPage> toServiceOverview;
     
     List<OrganizationSummaryBean> organizations;
     
@@ -77,7 +77,7 @@ public class NewAppPage extends AbstractPage {
     /**
      * Constructor.
      */
-    public NewAppPage() {
+    public NewServicePage() {
     }
     
     @PostConstruct
@@ -163,22 +163,22 @@ public class NewAppPage extends AbstractPage {
     public void onCreate(ClickEvent event) {
         createButton.onActionStarted();
         final String orgId = orgSelector.getValue().getId();
-        final String appVersion = version.getValue();
-        ApplicationBean bean = new ApplicationBean();
+        final String serviceVersion = version.getValue();
+        ServiceBean bean = new ServiceBean();
         bean.setName(name.getValue());
         bean.setDescription(description.getValue());
-        // Create the application and then create an initial app version.
-        rest.createApplication(orgId, bean, new IRestInvokerCallback<ApplicationBean>() {
+        // Create the service and then create an initial service version.
+        rest.createService(orgId, bean, new IRestInvokerCallback<ServiceBean>() {
             @Override
-            public void onSuccess(final ApplicationBean response) {
-                final String appId = response.getId();
-                ApplicationVersionBean vb = new ApplicationVersionBean();
-                vb.setVersion(appVersion);
-                rest.createApplicationVersion(orgId, appId, vb, new IRestInvokerCallback<ApplicationVersionBean>() {
+            public void onSuccess(final ServiceBean response) {
+                final String serviceId = response.getId();
+                ServiceVersionBean vb = new ServiceVersionBean();
+                vb.setVersion(serviceVersion);
+                rest.createServiceVersion(orgId, serviceId, vb, new IRestInvokerCallback<ServiceVersionBean>() {
                     @Override
-                    public void onSuccess(ApplicationVersionBean response) {
+                    public void onSuccess(ServiceVersionBean response) {
                         createButton.onActionComplete();
-                        toAppOverview.go(MultimapUtil.fromMultiple("org", orgId, "app", appId, "version", appVersion)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                        toServiceOverview.go(MultimapUtil.fromMultiple("org", orgId, "service", serviceId, "version", serviceVersion)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                     }
                     @Override
                     public void onError(Throwable error) {
@@ -213,7 +213,7 @@ public class NewAppPage extends AbstractPage {
      */
     @Override
     protected String getPageTitle() {
-        return i18n.format(AppMessages.TITLE_NEW_APP);
+        return i18n.format(AppMessages.TITLE_NEW_SERVICE);
     }
 
 }

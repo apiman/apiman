@@ -16,6 +16,7 @@
 package org.overlord.apiman.dt.api.beans.summary;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
@@ -29,13 +30,14 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 public class ServiceSummaryBean implements Serializable {
 
     private static final long serialVersionUID = -4213543715123177461L;
-    
+
     private String organizationId;
     private String organizationName;
     private String id;
     private String name;
     private String description;
-    
+    private Date createdOn;
+
     /**
      * Constructor.
      */
@@ -113,10 +115,17 @@ public class ServiceSummaryBean implements Serializable {
     }
 
     /**
-     * @return the serialversionuid
+     * @return the createdOn
      */
-    public static long getSerialversionuid() {
-        return serialVersionUID;
+    public Date getCreatedOn() {
+        return createdOn;
+    }
+
+    /**
+     * @param createdOn the createdOn to set
+     */
+    public void setCreatedOn(Date createdOn) {
+        this.createdOn = createdOn;
     }
 
     /**

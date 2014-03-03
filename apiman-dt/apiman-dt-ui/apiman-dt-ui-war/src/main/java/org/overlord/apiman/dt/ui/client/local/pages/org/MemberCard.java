@@ -32,14 +32,13 @@ import org.overlord.apiman.dt.api.beans.members.MemberBean;
 import org.overlord.apiman.dt.api.beans.members.MemberRoleBean;
 import org.overlord.apiman.dt.ui.client.local.AppMessages;
 import org.overlord.apiman.dt.ui.client.local.pages.common.RoleMultiSelector;
+import org.overlord.apiman.dt.ui.client.local.util.Formatting;
 import org.overlord.commons.gwt.client.local.widgets.AsyncActionButton;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
@@ -170,7 +169,7 @@ public class MemberCard extends Composite implements HasValue<MemberBean> {
         email.setText(this.value.getEmail());
         email.setHref("mailto:" + this.value.getEmail()); //$NON-NLS-1$
         roles.setText(formatRoles(this.value));
-        joinedOn.setText(formatJoinedOn(this.value));
+        joinedOn.setText(Formatting.formatShortDate(this.value.getJoinedOn()));
         
         editExplanation.setText(i18n.format(AppMessages.MEMBER_CARD_ASSIGN_ROLES_HELP, this.value.getUserName()));
         Set<String> roleIds = new HashSet<String>();
@@ -197,15 +196,6 @@ public class MemberCard extends Composite implements HasValue<MemberBean> {
             builder.append(role.getRoleName());
         }
         return builder.toString();
-    }
-
-    /**
-     * Formats the joinedOn field value.
-     * @param member
-     */
-    private static String formatJoinedOn(MemberBean member) {
-        DateTimeFormat format = DateTimeFormat.getFormat(PredefinedFormat.DATE_MEDIUM);
-        return format.format(member.getJoinedOn());
     }
 
     /**

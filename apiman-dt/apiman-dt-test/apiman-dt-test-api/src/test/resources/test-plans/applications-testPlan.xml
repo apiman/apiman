@@ -19,6 +19,7 @@
     <test name="Create Application 1 (Org 2)">applications/apps/008_create-app1-org2.resttest</test>
     <test name="Get Application 1">applications/apps/009_get-app1.resttest</test>
     <test name="Get Application 1 (Org 2)">applications/apps/010_get-app1-org2.resttest</test>
+    <test name="List Application">applications/apps/011_list-apps.resttest</test>
   </testGroup>
 
   <!-- Test Application Version management -->

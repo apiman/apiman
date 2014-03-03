@@ -13,22 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.dt.api.beans;
+package org.overlord.apiman.dt.ui.client.local.util;
+
+import java.util.Date;
+
+import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 
 /**
- * Some simple bean utils.
+ * Provides static methods to aid in formatting various objects for
+ * display.
  *
  * @author eric.wittmann@redhat.com
  */
-public class BeanUtils {
+public class Formatting {
     
     /**
-     * Creates a bean id from the given bean name.  This essentially removes any
-     * non "word" characters from the name.
-     * @param name
+     * Formats just the date portion.
+     * @param date
      */
-    public static final String idFromName(String name) {
-        return name.replaceAll("[^\\w-\\.]", ""); //$NON-NLS-1$ //$NON-NLS-2$
+    public static final String formatShortDate(Date date) {
+        DateTimeFormat format = DateTimeFormat.getFormat(PredefinedFormat.DATE_SHORT);
+        return format.format(date);
     }
 
 }

@@ -32,6 +32,8 @@ public class AppMessages {
     public static final String TITLE_NEW_APP_VERSION = "page.title.new-app-version"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "APIMan - New Service")
     public static final String TITLE_NEW_SERVICE = "page.title.new-service"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "APIMan - New Service Version")
+    public static final String TITLE_NEW_SERVICE_VERSION = "page.title.new-service-version"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "APIMan - Add Member")
     public static final String TITLE_NEW_MEMBER = "page.title.new-member"; //$NON-NLS-1$
 
@@ -66,6 +68,15 @@ public class AppMessages {
     @TranslationKey(defaultValue = "APIMan - {0} (Policies)")
     public static final String TITLE_APP_POLICIES = "page.title.app-policies"; //$NON-NLS-1$
 
+    @TranslationKey(defaultValue = "APIMan - {0} (Overview)")
+    public static final String TITLE_SERVICE_OVERVIEW = "page.title.service-overview"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "APIMan - {0} (Implementation)")
+    public static final String TITLE_SERVICE_IMPL = "page.title.service-impl"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "APIMan - {0} (Policies)")
+    public static final String TITLE_SERVICE_POLICIES = "page.title.service-policies"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "APIMan - {0} (Activity)")
+    public static final String TITLE_SERVICE_ACTIVITY = "page.title.service-activity"; //$NON-NLS-1$
+
     @TranslationKey(defaultValue = "Configuration service not available.")
     public static final String CONFIG_SERVICE_NOT_AVAILABLE = "authInterceptor.configServiceNotAvailable"; //$NON-NLS-1$
 
@@ -95,6 +106,8 @@ public class AppMessages {
     @TranslationKey(defaultValue = "No members found matching the selected filter criteria.")
     public static final String ORG_MANAGE_MEMBERS_NO_MEMBERS_FOUND = "manageMembers.no-members-found"; //$NON-NLS-1$
 
+    @TranslationKey(defaultValue = "Created on")
+    public static final String CREATED_ON = "created-on"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "Joined on")
     public static final String JOINED_ON = "joined-on"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "Version: {0}")

@@ -25,6 +25,10 @@ import org.overlord.apiman.dt.api.beans.idm.PermissionType;
 import org.overlord.apiman.dt.api.beans.idm.RoleBean;
 import org.overlord.apiman.dt.api.beans.idm.RoleMembershipBean;
 import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
+import org.overlord.apiman.dt.api.beans.services.EndpointType;
+import org.overlord.apiman.dt.api.beans.services.ServiceBean;
+import org.overlord.apiman.dt.api.beans.services.ServiceStatus;
+import org.overlord.apiman.dt.api.beans.services.ServiceVersionBean;
 import org.overlord.apiman.dt.api.persist.IIdmStorage;
 import org.overlord.apiman.dt.api.persist.IStorage;
 import org.overlord.apiman.dt.api.persist.StorageException;
@@ -121,6 +125,7 @@ public class DevServerDataSeeder extends DefaultTestDataSeeder {
         membership.setUserId("admin");
         idmStorage.createMembership(membership);
         
+        // Create some applications
         ApplicationBean app = new ApplicationBean();
         app.setId("dtgov");
         app.setName("dtgov");
@@ -168,6 +173,26 @@ public class DevServerDataSeeder extends DefaultTestDataSeeder {
         avb.setCreatedBy("admin");
         avb.setCreatedOn(new Date());
         storage.create(avb);
+        
+        // Create some services
+        ServiceBean service = new ServiceBean();
+        service.setId("s-ramp-api");
+        service.setName("s-ramp-api");
+        service.setDescription("Allows S-RAMP repository users to communicate with the repository via an Atom based API.");
+        service.setOrganizationId("JBossOverlord");
+        service.setCreatedOn(new Date());
+        service.setCreatedBy("admin");
+        storage.create(service);
+        ServiceVersionBean svb = new ServiceVersionBean();
+        svb.setVersion("1.0");
+        svb.setStatus(ServiceStatus.Created);
+        svb.setService(service);
+        svb.setCreatedBy("admin");
+        svb.setCreatedOn(new Date());
+        svb.setEndpoint("http://localhost:8080/s-ramp-server/");
+        svb.setEndpointType(EndpointType.rest);
+        storage.create(svb);
+        
     }
 
 }

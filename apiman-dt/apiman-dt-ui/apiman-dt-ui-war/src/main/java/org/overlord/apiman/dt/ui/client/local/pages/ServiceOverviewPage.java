@@ -31,14 +31,14 @@ import com.google.gwt.user.client.ui.Label;
 
 
 /**
- * The "Application" page, with the Overview tab displayed.
+ * The "Service" page, with the Overview tab displayed.
  *
  * @author eric.wittmann@redhat.com
  */
-@Templated("/org/overlord/apiman/dt/ui/client/local/site/app-overview.html#page")
-@Page(path="app-overview")
+@Templated("/org/overlord/apiman/dt/ui/client/local/site/service-overview.html#page")
+@Page(path="service-overview")
 @Dependent
-public class AppOverviewPage extends AbstractAppPage {
+public class ServiceOverviewPage extends AbstractServicePage {
     
     @Inject @DataField
     Label description;
@@ -57,7 +57,7 @@ public class AppOverviewPage extends AbstractAppPage {
     /**
      * Constructor.
      */
-    public AppOverviewPage() {
+    public ServiceOverviewPage() {
     }
     
     /**
@@ -70,22 +70,22 @@ public class AppOverviewPage extends AbstractAppPage {
     }
     
     /**
-     * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractAppPage#renderPage()
+     * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractServicePage#renderPage()
      */
     @Override
     protected void renderPage() {
         super.renderPage();
-        description.setText(applicationBean.getDescription());
-        createdOn.setText(Formatting.formatShortDate(applicationBean.getCreatedOn()));
-        createdBy.setText(applicationBean.getCreatedBy());
-        String toUserHref = navHelper.createHrefToPage(UserAppsPage.class,
-                MultimapUtil.fromMultiple("user", applicationBean.getCreatedBy())); //$NON-NLS-1$
+        description.setText(serviceBean.getDescription());
+        createdOn.setText(Formatting.formatShortDate(serviceBean.getCreatedOn()));
+        createdBy.setText(serviceBean.getCreatedBy());
+        String toUserHref = navHelper.createHrefToPage(UserServicesPage.class,
+                MultimapUtil.fromMultiple("user", serviceBean.getCreatedBy())); //$NON-NLS-1$
         createdBy.setHref(toUserHref);
 
         version.setText(versionBean.getVersion());
         versionCreatedOn.setText(Formatting.formatShortDate(versionBean.getCreatedOn()));
         versionCreatedBy.setText(versionBean.getCreatedBy());
-        toUserHref = navHelper.createHrefToPage(UserAppsPage.class,
+        toUserHref = navHelper.createHrefToPage(UserServicesPage.class,
                 MultimapUtil.fromMultiple("user", versionBean.getCreatedBy())); //$NON-NLS-1$
         versionCreatedBy.setHref(toUserHref);
     }
@@ -95,7 +95,7 @@ public class AppOverviewPage extends AbstractAppPage {
      */
     @Override
     protected String getPageTitle() {
-        return i18n.format(AppMessages.TITLE_APP_OVERVIEW, applicationBean.getName());
+        return i18n.format(AppMessages.TITLE_SERVICE_OVERVIEW, serviceBean.getName());
     }
 
 }
