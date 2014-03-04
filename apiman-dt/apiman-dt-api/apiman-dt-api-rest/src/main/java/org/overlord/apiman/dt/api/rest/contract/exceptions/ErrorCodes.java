@@ -96,9 +96,21 @@ public final class ErrorCodes {
 
     
     //
+    // Plan API related
+    //
+    public static final int PLAN_ALREADY_EXISTS              = 6001;
+    public static final int PLAN_NOT_FOUND                   = 6002;
+    public static final int PLAN_VERSION_NOT_FOUND           = 6003;
+
+    public static final String PLAN_ALREADY_EXISTS_INFO      = null;
+    public static final String PLAN_NOT_FOUND_INFO           = null;
+    public static final String PLAN_VERSION_NOT_FOUND_INFO   = null;
+
+    
+    //
     // Member API related
     //
-    public static final int MEMBER_NOT_FOUND                  = 2001;
+    public static final int MEMBER_NOT_FOUND                  = 7001;
 
     public static final String MEMBER_NOT_FOUND_INFO          = null;
 

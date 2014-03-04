@@ -22,6 +22,8 @@ import org.overlord.apiman.dt.api.rest.contract.exceptions.MemberNotFoundExcepti
 import org.overlord.apiman.dt.api.rest.contract.exceptions.NotAuthorizedException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationAlreadyExistsException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationNotFoundException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.PlanAlreadyExistsException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.PlanNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.RoleAlreadyExistsException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.RoleNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ServiceAlreadyExistsException;
@@ -139,6 +141,22 @@ public final class ExceptionFactory {
      */
     public static final MemberNotFoundException memberNotFoundException(String memberId) {
         return new MemberNotFoundException(Messages.i18n.format("MemberDoesNotExist", memberId)); //$NON-NLS-1$
+    }
+    
+    /**
+     * Creates an exception from an plan name.
+     * @param planName
+     */
+    public static final PlanAlreadyExistsException planAlreadyExistsException(String planName) {
+        return new PlanAlreadyExistsException(Messages.i18n.format("PlanAlreadyExists", planName)); //$NON-NLS-1$
+    }
+
+    /**
+     * Creates an exception from an plan id.
+     * @param planId
+     */
+    public static final PlanNotFoundException planNotFoundException(String planId) {
+        return new PlanNotFoundException(Messages.i18n.format("PlanDoesNotExist", planId)); //$NON-NLS-1$
     }
 
 }

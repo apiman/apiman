@@ -16,6 +16,7 @@
     <class>org.overlord.apiman.dt.api.beans.apps.ApplicationVersionBean</class>
     <class>org.overlord.apiman.dt.api.beans.services.ServiceBean</class>
     <class>org.overlord.apiman.dt.api.beans.services.ServiceVersionBean</class>
+    <class>org.overlord.apiman.dt.api.beans.plans.PlanBean</class>
 
     <properties>
       <property name="hibernate.show_sql" value="false" />

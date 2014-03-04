@@ -28,12 +28,14 @@ import javax.persistence.Query;
 import org.overlord.apiman.dt.api.beans.apps.ApplicationBean;
 import org.overlord.apiman.dt.api.beans.apps.ApplicationVersionBean;
 import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
+import org.overlord.apiman.dt.api.beans.plans.PlanBean;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
 import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
 import org.overlord.apiman.dt.api.beans.services.ServiceBean;
 import org.overlord.apiman.dt.api.beans.services.ServiceVersionBean;
 import org.overlord.apiman.dt.api.beans.summary.ApplicationSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.OrganizationSummaryBean;
+import org.overlord.apiman.dt.api.beans.summary.PlanSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.ServiceSummaryBean;
 import org.overlord.apiman.dt.api.persist.AlreadyExistsException;
 import org.overlord.apiman.dt.api.persist.DoesNotExistException;
@@ -330,6 +332,47 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         }
     }
 
+    /**
+     * @see org.overlord.apiman.dt.api.persist.IStorageQuery#getPlansInOrg(java.lang.String)
+     */
+    @Override
+    public List<PlanSummaryBean> getPlansInOrg(String orgId) throws StorageException {
+        Set<String> orgIds = new HashSet<String>();
+        orgIds.add(orgId);
+        return getPlansInOrgs(orgIds);
+    }
     
+    /**
+     * @see org.overlord.apiman.dt.api.persist.IStorageQuery#getPlansInOrgs(java.util.Set)
+     */
+    @Override
+    public List<PlanSummaryBean> getPlansInOrgs(Set<String> orgIds) throws StorageException {
+        List<PlanSummaryBean> rval = new ArrayList<PlanSummaryBean>();
+        EntityManager entityManager = emf.createEntityManager();
+        try {
+            String jpql = "SELECT p from PlanBean p WHERE p.organizationId IN :orgs ORDER BY p.id ASC"; //$NON-NLS-1$
+            Query query = entityManager.createQuery(jpql);
+            query.setParameter("orgs", orgIds); //$NON-NLS-1$
+            @SuppressWarnings("unchecked")
+            List<PlanBean> qr = (List<PlanBean>) query.getResultList();
+            for (PlanBean bean : qr) {
+                PlanSummaryBean summary = new PlanSummaryBean();
+                summary.setId(bean.getId());
+                summary.setName(bean.getName());
+                summary.setDescription(bean.getDescription());
+                OrganizationBean org = entityManager.find(OrganizationBean.class, bean.getOrganizationId());
+                summary.setOrganizationId(org.getId());
+                summary.setOrganizationName(org.getName());
+                rval.add(summary);
+            }
+            return rval;
+        } catch (Throwable t) {
+            JpaUtil.rollbackQuietly(entityManager);
+            logger.error(t.getMessage(), t);
+            throw new StorageException(t);
+        } finally {
+            entityManager.close();
+        }
+    }
     
 }

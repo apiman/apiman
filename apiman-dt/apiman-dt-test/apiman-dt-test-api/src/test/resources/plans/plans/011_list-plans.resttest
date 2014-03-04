@@ -1,0 +1,19 @@
+GET /organizations/Organization1/plans admin/admin
+----
+200
+Content-Type: application/json
+
+[
+  {
+    "organizationId":"Organization1",
+    "organizationName":"Organization 1",
+    "id":"Plan1","name":"Plan 1",
+    "description":"[UPDATED] This is the description of Plan 1!"
+  },
+  {
+    "organizationId":"Organization1",
+    "organizationName":"Organization 1",
+    "id":"Plan2","name":"Plan 2",
+    "description":"This is the description of Plan 2."
+  }
+]
