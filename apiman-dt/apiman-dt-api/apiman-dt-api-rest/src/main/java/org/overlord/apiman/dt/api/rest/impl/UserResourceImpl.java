@@ -27,7 +27,9 @@ import org.overlord.apiman.dt.api.beans.idm.RoleMembershipBean;
 import org.overlord.apiman.dt.api.beans.idm.UserBean;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
 import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
+import org.overlord.apiman.dt.api.beans.summary.ApplicationSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.OrganizationSummaryBean;
+import org.overlord.apiman.dt.api.beans.summary.ServiceSummaryBean;
 import org.overlord.apiman.dt.api.persist.DoesNotExistException;
 import org.overlord.apiman.dt.api.persist.IIdmStorage;
 import org.overlord.apiman.dt.api.persist.IStorageQuery;
@@ -116,6 +118,38 @@ public class UserResourceImpl implements IUserResource {
             for (RoleMembershipBean membership : memberships)
                 permittedOrganizations.add(membership.getOrganizationId());
             return query.getOrgs(permittedOrganizations);
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+    }
+    
+    /**
+     * @see org.overlord.apiman.dt.api.rest.contract.IUserResource#getApplications(java.lang.String)
+     */
+    @Override
+    public List<ApplicationSummaryBean> getApplications(String userId) {
+        Set<String> permittedOrganizations = new HashSet<String>();
+        try {
+            Set<RoleMembershipBean> memberships = idmStorage.getUserMemberships(userId);
+            for (RoleMembershipBean membership : memberships)
+                permittedOrganizations.add(membership.getOrganizationId());
+            return query.getApplicationsInOrgs(permittedOrganizations);
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+    }
+    
+    /**
+     * @see org.overlord.apiman.dt.api.rest.contract.IUserResource#getServices(java.lang.String)
+     */
+    @Override
+    public List<ServiceSummaryBean> getServices(String userId) {
+        Set<String> permittedOrganizations = new HashSet<String>();
+        try {
+            Set<RoleMembershipBean> memberships = idmStorage.getUserMemberships(userId);
+            for (RoleMembershipBean membership : memberships)
+                permittedOrganizations.add(membership.getOrganizationId());
+            return query.getServicesInOrgs(permittedOrganizations);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }

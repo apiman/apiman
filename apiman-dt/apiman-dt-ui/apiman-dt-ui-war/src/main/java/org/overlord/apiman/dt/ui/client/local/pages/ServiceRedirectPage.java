@@ -22,24 +22,24 @@ import org.jboss.errai.ui.nav.client.local.PageState;
 import org.overlord.apiman.dt.ui.client.local.util.MultimapUtil;
 
 /**
- * The default application page.  This page is responsible for simply
- * redirecting to the proper specific application page.
+ * The default service page.  This page is responsible for simply
+ * redirecting to the proper specific service page.
  *
  * @author eric.wittmann@redhat.com
  */
-@Page(path="app")
+@Page(path="service")
 @Dependent
-public class AppRedirectPage extends AbstractRedirectPage {
+public class ServiceRedirectPage extends AbstractRedirectPage {
     
     @PageState
     protected String org;
     @PageState
-    protected String app;
+    protected String service;
 
     /**
      * Constructor.
      */
-    public AppRedirectPage() {
+    public ServiceRedirectPage() {
     }
 
     /**
@@ -47,7 +47,7 @@ public class AppRedirectPage extends AbstractRedirectPage {
      */
     @Override
     protected void doRedirect() {
-        nav.goTo(AppOverviewPage.class, MultimapUtil.fromMultiple("org", org, "app", app)); //$NON-NLS-1$ //$NON-NLS-2$
+        nav.goTo(ServiceOverviewPage.class, MultimapUtil.fromMultiple("org", org, "service", service)); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
 }

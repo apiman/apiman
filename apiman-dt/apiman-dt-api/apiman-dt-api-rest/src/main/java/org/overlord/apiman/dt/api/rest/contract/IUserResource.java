@@ -30,7 +30,9 @@ import javax.ws.rs.core.MediaType;
 import org.overlord.apiman.dt.api.beans.idm.UserBean;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
 import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
+import org.overlord.apiman.dt.api.beans.summary.ApplicationSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.OrganizationSummaryBean;
+import org.overlord.apiman.dt.api.beans.summary.ServiceSummaryBean;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.InvalidSearchCriteriaException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.NotAuthorizedException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.UserNotFoundException;
@@ -63,5 +65,15 @@ public interface IUserResource {
     @Path("{userId}/organizations")
     @Produces(MediaType.APPLICATION_JSON)
     public List<OrganizationSummaryBean> getOrganizations(@PathParam("userId") String userId);
+
+    @GET
+    @Path("{userId}/applications")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<ApplicationSummaryBean> getApplications(@PathParam("userId") String userId);
+
+    @GET
+    @Path("{userId}/servicess")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<ServiceSummaryBean> getServices(@PathParam("userId") String userId);
     
 }

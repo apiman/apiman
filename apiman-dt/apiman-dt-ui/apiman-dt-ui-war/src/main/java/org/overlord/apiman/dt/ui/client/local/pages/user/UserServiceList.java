@@ -13,13 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.dt.ui.client.local.pages.org;
+package org.overlord.apiman.dt.ui.client.local.pages.user;
 
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
+import org.jboss.errai.ui.nav.client.local.TransitionAnchorFactory;
 import org.overlord.apiman.dt.api.beans.summary.ServiceSummaryBean;
 import org.overlord.apiman.dt.ui.client.local.AppMessages;
+import org.overlord.apiman.dt.ui.client.local.pages.OrgRedirectPage;
+import org.overlord.apiman.dt.ui.client.local.pages.OrgServicesPage;
 import org.overlord.apiman.dt.ui.client.local.pages.ServiceOverviewPage;
+import org.overlord.apiman.dt.ui.client.local.pages.ServiceRedirectPage;
 import org.overlord.apiman.dt.ui.client.local.pages.common.AbstractServiceList;
 import org.overlord.apiman.dt.ui.client.local.pages.common.NoEntitiesWidget;
 import org.overlord.apiman.dt.ui.client.local.util.Formatting;
@@ -33,17 +38,22 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 
 /**
- * List of services in an organization.
+ * List of services visible to the user.
  *
  * @author eric.wittmann@redhat.com
  */
 @Dependent
-public class OrgServiceList extends AbstractServiceList {
+public class UserServiceList extends AbstractServiceList {
+    
+    @Inject
+    TransitionAnchorFactory<OrgRedirectPage> toOrgFactory;
+    @Inject
+    TransitionAnchorFactory<ServiceRedirectPage> toServiceFactory;
 
     /**
      * Constructor.
      */
-    public OrgServiceList() {
+    public UserServiceList() {
     }
 
     /**
@@ -51,6 +61,11 @@ public class OrgServiceList extends AbstractServiceList {
      */
     @Override
     protected void createTitleRow(ServiceSummaryBean bean, FlowPanel row) {
+        Anchor org = new Anchor(bean.getOrganizationName());
+        row.add(org);
+        org.setHref(navHelper.createHrefToPage(OrgServicesPage.class, MultimapUtil.fromMultiple("org", bean.getOrganizationId()))); //$NON-NLS-1$
+        InlineLabel divider = new InlineLabel(" / "); //$NON-NLS-1$
+        row.add(divider);
         SpanPanel sp = new SpanPanel();
         row.add(sp);
         sp.getElement().setClassName("title"); //$NON-NLS-1$
@@ -78,8 +93,9 @@ public class OrgServiceList extends AbstractServiceList {
     @Override
     protected NoEntitiesWidget createNoEntitiesWidget() {
         if (isFiltered())
-            return new NoEntitiesWidget(i18n.format(AppMessages.NO_FILTERED_SERVICES_IN_ORG_MESSAGE), true);
+            return new NoEntitiesWidget(i18n.format(AppMessages.NO_FILTERED_SERVICES_FOR_USER_MESSAGE), true);
         else
-            return new NoEntitiesWidget(i18n.format(AppMessages.NO_SERVICES_IN_ORG_MESSAGE), true);
+            return new NoEntitiesWidget(i18n.format(AppMessages.NO_SERVICES_FOR_USER_MESSAGE), true);
     }
+
 }

@@ -73,7 +73,10 @@ public class UserApplicationList extends AbstractApplicationList {
      */
     @Override
     protected NoEntitiesWidget createNoEntitiesWidget() {
-        return new NoEntitiesWidget(i18n.format(AppMessages.NO_APPS_FOR_USER_MESSAGE), true);
+        if (isFiltered())
+            return new NoEntitiesWidget(i18n.format(AppMessages.NO_FILTERED_APPS_FOR_USER_MESSAGE), true);
+        else
+            return new NoEntitiesWidget(i18n.format(AppMessages.NO_APPS_FOR_USER_MESSAGE), true);
     }
 
 }

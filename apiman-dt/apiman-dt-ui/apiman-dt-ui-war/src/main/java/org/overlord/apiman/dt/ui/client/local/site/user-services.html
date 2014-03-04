@@ -58,8 +58,8 @@
               <!-- Services Tab Content -->
               <div class="tab-pane active" id="tab-services">
                 <div class="apiman-filters apiman-services-filters">
-                  <input type="text" class="form-control input-search" placeholder="Search by org or service name..."></input>
-                  <a href="new-service.html" class="btn btn-primary pull-right">New Service</a>
+                  <input data-field="serviceFilter" type="text" class="form-control input-search" placeholder="Search by org or service name..."></input>
+                  <a data-field="toNewService" data-i18n-key="new-service" href="new-service.html" class="btn btn-primary pull-right">New Service</a>
                 </div>
                 <div class="clearfix"></div>
                 <!-- The list of services the user has access to -->
@@ -123,9 +123,5 @@
         
       </div>
     </div> <!-- /container -->
-    <script>
-    $("[data-toggle='tooltip']").tooltip();
-    $("[data-toggle='popover']").popover();
-    </script>
   </body>
 </html>

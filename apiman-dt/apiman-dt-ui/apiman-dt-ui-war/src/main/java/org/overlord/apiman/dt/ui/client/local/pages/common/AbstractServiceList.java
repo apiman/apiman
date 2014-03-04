@@ -45,6 +45,7 @@ public abstract class AbstractServiceList extends FlowPanel implements HasValue<
     protected TranslationService i18n;
     
     private List<ServiceSummaryBean> services;
+    private boolean filtered;
 
     /**
      * Constructor.
@@ -68,12 +69,21 @@ public abstract class AbstractServiceList extends FlowPanel implements HasValue<
     public List<ServiceSummaryBean> getValue() {
         return services;
     }
+    
+    /**
+     * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object)
+     */
+    public void setFilteredValue(List<ServiceSummaryBean> value) {
+        filtered = true;
+        setValue(value, false);
+    }
 
     /**
      * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object)
      */
     @Override
     public void setValue(List<ServiceSummaryBean> value) {
+        filtered = false;
         setValue(value, false);
     }
 
@@ -146,5 +156,12 @@ public abstract class AbstractServiceList extends FlowPanel implements HasValue<
         InlineLabel description = new InlineLabel(bean.getDescription());
         row.add(description);
         description.getElement().setClassName("description"); //$NON-NLS-1$
+    }
+
+    /**
+     * @return the filtered
+     */
+    protected boolean isFiltered() {
+        return filtered;
     }
 }

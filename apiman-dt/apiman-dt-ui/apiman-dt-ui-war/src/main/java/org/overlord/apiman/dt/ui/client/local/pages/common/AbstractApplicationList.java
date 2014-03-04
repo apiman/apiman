@@ -45,6 +45,7 @@ public abstract class AbstractApplicationList extends FlowPanel implements HasVa
     protected TranslationService i18n;
     
     private List<ApplicationSummaryBean> apps;
+    private boolean filtered;
 
     /**
      * Constructor.
@@ -72,8 +73,17 @@ public abstract class AbstractApplicationList extends FlowPanel implements HasVa
     /**
      * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object)
      */
+    public void setFilteredValue(List<ApplicationSummaryBean> value) {
+        filtered = true;
+        setValue(value, false);
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object)
+     */
     @Override
     public void setValue(List<ApplicationSummaryBean> value) {
+        filtered = false;
         setValue(value, false);
     }
 
@@ -138,4 +148,11 @@ public abstract class AbstractApplicationList extends FlowPanel implements HasVa
      * @param row1
      */
     protected abstract void createTitleRow(ApplicationSummaryBean bean, FlowPanel row1);
+
+    /**
+     * @return the filtered
+     */
+    protected boolean isFiltered() {
+        return filtered;
+    }
 }

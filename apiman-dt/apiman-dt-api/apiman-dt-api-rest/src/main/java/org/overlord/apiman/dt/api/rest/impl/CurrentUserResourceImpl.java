@@ -27,6 +27,7 @@ import org.overlord.apiman.dt.api.beans.idm.PermissionType;
 import org.overlord.apiman.dt.api.beans.idm.UserBean;
 import org.overlord.apiman.dt.api.beans.summary.ApplicationSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.OrganizationSummaryBean;
+import org.overlord.apiman.dt.api.beans.summary.ServiceSummaryBean;
 import org.overlord.apiman.dt.api.persist.AlreadyExistsException;
 import org.overlord.apiman.dt.api.persist.DoesNotExistException;
 import org.overlord.apiman.dt.api.persist.IIdmStorage;
@@ -97,7 +98,7 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
             throw new SystemErrorException(e);
         }
     }
-    
+
     /**
      * @see org.overlord.apiman.dt.api.rest.contract.ICurrentUserResource#getApplications()
      */
@@ -106,6 +107,19 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
         Set<String> permittedOrganizations = securityContext.getPermittedOrganizations(PermissionType.orgView);
         try {
             return query.getApplicationsInOrgs(permittedOrganizations);
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+    }
+    
+    /**
+     * @see org.overlord.apiman.dt.api.rest.contract.ICurrentUserResource#getServices()
+     */
+    @Override
+    public List<ServiceSummaryBean> getServices() {
+        Set<String> permittedOrganizations = securityContext.getPermittedOrganizations(PermissionType.orgView);
+        try {
+            return query.getServicesInOrgs(permittedOrganizations);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }

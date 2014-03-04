@@ -119,10 +119,8 @@ public class DevServerDataSeeder extends DefaultTestDataSeeder {
         membership.setCreatedOn(new Date());
         idmStorage.createMembership(membership);
 
-        membership = new RoleMembershipBean();
-        membership.setOrganizationId("ApereoBedework");
-        membership.setRoleId("OrganizationOwner");
-        membership.setUserId("admin");
+        membership = RoleMembershipBean.create("admin", "OrganizationOwner", "ApereoBedework");
+        membership.setCreatedOn(new Date());
         idmStorage.createMembership(membership);
         
         // Create some applications

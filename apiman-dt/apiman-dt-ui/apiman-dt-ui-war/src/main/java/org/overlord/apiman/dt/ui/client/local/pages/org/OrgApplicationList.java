@@ -61,6 +61,9 @@ public class OrgApplicationList extends AbstractApplicationList {
      */
     @Override
     protected NoEntitiesWidget createNoEntitiesWidget() {
-        return new NoEntitiesWidget(i18n.format(AppMessages.NO_APPS_IN_ORG_MESSAGE), true);
+        if (isFiltered())
+            return new NoEntitiesWidget(i18n.format(AppMessages.NO_FILTERED_APPS_IN_ORG_MESSAGE), true);
+        else
+            return new NoEntitiesWidget(i18n.format(AppMessages.NO_APPS_IN_ORG_MESSAGE), true);
     }
 }

@@ -57,6 +57,7 @@ public class UserOrganizationList extends FlowPanel implements HasValue<List<Org
     TransitionAnchorFactory<OrgRedirectPage> toOrgFactory;
     
     private List<OrganizationSummaryBean> orgs;
+    private boolean filtered;
 
     /**
      * Constructor.
@@ -80,12 +81,21 @@ public class UserOrganizationList extends FlowPanel implements HasValue<List<Org
     public List<OrganizationSummaryBean> getValue() {
         return orgs;
     }
+    
+    /**
+     * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object)
+     */
+    public void setFilteredValue(List<OrganizationSummaryBean> value) {
+        setFiltered(true);
+        setValue(value, false);
+    }
 
     /**
      * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object)
      */
     @Override
     public void setValue(List<OrganizationSummaryBean> value) {
+        setFiltered(false);
         setValue(value, false);
     }
 
@@ -109,7 +119,10 @@ public class UserOrganizationList extends FlowPanel implements HasValue<List<Org
                 add(row);
             }
         } else {
-            add(new NoEntitiesWidget(i18n.format(AppMessages.NO_ORGS_FOR_USER_MESSAGE), true));
+            if (isFiltered())
+                add(new NoEntitiesWidget(i18n.format(AppMessages.NO_FILTERED_ORGS_FOR_USER_MESSAGE), true));
+            else
+                add(new NoEntitiesWidget(i18n.format(AppMessages.NO_ORGS_FOR_USER_MESSAGE), true));
         }
     }
 
@@ -142,5 +155,19 @@ public class UserOrganizationList extends FlowPanel implements HasValue<List<Org
         container.add(new HTMLPanel("<hr/>")); //$NON-NLS-1$
         
         return container;
+    }
+
+    /**
+     * @return the filtered
+     */
+    public boolean isFiltered() {
+        return filtered;
+    }
+
+    /**
+     * @param filtered the filtered to set
+     */
+    private void setFiltered(boolean filtered) {
+        this.filtered = filtered;
     }
 }

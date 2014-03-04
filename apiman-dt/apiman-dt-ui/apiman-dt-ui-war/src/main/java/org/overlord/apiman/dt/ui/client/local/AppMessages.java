@@ -82,17 +82,33 @@ public class AppMessages {
 
     @TranslationKey(defaultValue = "It looks like there aren't (yet) any applications in this organization! Now might be a good time to click the New App button up above...")
     public static final String NO_APPS_IN_ORG_MESSAGE = "noEntitiesFound.applications-in-org"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "No applications matched the filter criteria.  Please try modifying the filter or else create a new application using the button above.")
+    public static final String NO_FILTERED_APPS_IN_ORG_MESSAGE = "noEntitiesFound.applications-in-org.filtered"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "We couldn't find any services in this organization.  Probably because none exist.  We hope.  Try creating one using the New Service button.")
     public static final String NO_SERVICES_IN_ORG_MESSAGE = "noEntitiesFound.services-in-org"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "No services matched the current filter criteria.  Please try modifying the filter or else create a new service using the button above.")
+    public static final String NO_FILTERED_SERVICES_IN_ORG_MESSAGE = "noEntitiesFound.services-in-org.filtered"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "There aren't any plans configured for this organization.  That means all published services in this organization will be considered public.")
     public static final String NO_PLANS_IN_ORG_MESSAGE = "noEntitiesFound.plans-in-org"; //$NON-NLS-1$
-
-    @TranslationKey(defaultValue = "You aren't a member of any organizations yet!  You'll need to either be granted membership in an existing organization by its admin or else create your own.")
+    @TranslationKey(defaultValue = "No plans matched the current filter criteria.  Please try modifying the filter or else create a new plan using the button above.")
+    public static final String NO_FILTERED_PLANS_IN_ORG_MESSAGE = "noEntitiesFound.plans-in-org.filtered"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "This organization has no members!  Use the Manage Members button above to change that.")
+    public static final String NO_MEMBERS_IN_ORG_MESSAGE = "noEntitiesFound.members-in-org"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "No members matched the filter criteria.  Please try modifying the filter or else change memberships with the Manage Members button.")
+    public static final String NO_FILTERED_MEMBERS_IN_ORG_MESSAGE = "noEntitiesFound.members-in-org.filtered"; //$NON-NLS-1$
+    
+    @TranslationKey(defaultValue = "No organizations found.  This user should be granted membership in an organization or perhaps create a new one with the button above.")
     public static final String NO_ORGS_FOR_USER_MESSAGE = "noEntitiesFound.organizations-for-user"; //$NON-NLS-1$
-    @TranslationKey(defaultValue = "You are not yet managing any applications.  Perhaps that's just not your thing.  But if it is, you can create a new Application using the New App button!")
+    @TranslationKey(defaultValue = "No organization matches the current filter criteria.  Please try changing the filter criteria or else create a new Organization using the button above.")
+    public static final String NO_FILTERED_ORGS_FOR_USER_MESSAGE = "noEntitiesFound.organizations-for-user.filtered"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "User is not managing any applications.  Perhaps that's just not her thing.  But if it is, she can create a new Application using the New App button above.")
     public static final String NO_APPS_FOR_USER_MESSAGE = "noEntitiesFound.applications-for-user"; //$NON-NLS-1$
-    @TranslationKey(defaultValue = "It looks like you aren't responsible for any services at all.  Maybe you're just all about the applications?  If not, maybe try creating a New Service.")
+    @TranslationKey(defaultValue = "No applications matched the filter criteria.  Please try modifying the filter or else create a new application using the button above.")
+    public static final String NO_FILTERED_APPS_FOR_USER_MESSAGE = "noEntitiesFound.applications-for-user.filtered"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "It looks like this user isn't responsible for any services.  Maybe she's just all about the applications?  If not, maybe she could log in and try creating a New Service.")
     public static final String NO_SERVICES_FOR_USER_MESSAGE = "noEntitiesFound.services-for-user"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "No services matched the current filter criteria.  Please try modifying the filter or else create a new service using the button above.")
+    public static final String NO_FILTERED_SERVICES_FOR_USER_MESSAGE = "noEntitiesFound.services-for-user.filtered"; //$NON-NLS-1$
 
     @TranslationKey(defaultValue = "Assign roles to {0}.")
     public static final String MEMBER_CARD_ASSIGN_ROLES_HELP = "manageMembers.card.edit-help"; //$NON-NLS-1$

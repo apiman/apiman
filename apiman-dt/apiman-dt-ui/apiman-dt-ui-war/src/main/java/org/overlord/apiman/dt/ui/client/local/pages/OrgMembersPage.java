@@ -15,17 +15,25 @@
  */
 package org.overlord.apiman.dt.ui.client.local.pages;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.ui.nav.client.local.Page;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.overlord.apiman.dt.api.beans.members.MemberBean;
 import org.overlord.apiman.dt.ui.client.local.AppMessages;
 import org.overlord.apiman.dt.ui.client.local.pages.org.OrgMemberList;
 import org.overlord.apiman.dt.ui.client.local.util.MultimapUtil;
 
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.TextBox;
 
 
 /**
@@ -42,6 +50,8 @@ public class OrgMembersPage extends AbstractOrgPage {
     Anchor toManageMembers;
 
     @Inject @DataField
+    TextBox memberFilter;
+    @Inject @DataField
     OrgMemberList members;
 
     /**
@@ -49,7 +59,20 @@ public class OrgMembersPage extends AbstractOrgPage {
      */
     public OrgMembersPage() {
     }
-    
+
+    /**
+     * Called after the bean is created.
+     */
+    @PostConstruct
+    protected void postConstruct() {
+        memberFilter.addValueChangeHandler(new ValueChangeHandler<String>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<String> event) {
+                filterMembers();
+            }
+        });
+    }
+
     /**
      * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractPage#loadPageData()
      */
@@ -68,6 +91,33 @@ public class OrgMembersPage extends AbstractOrgPage {
         members.setValue(memberBeans);
         String manageMembersHref = navHelper.createHrefToPage(OrgManageMembersPage.class, MultimapUtil.singleItemMap("org", org)); //$NON-NLS-1$
         toManageMembers.setHref(manageMembersHref);
+    }
+
+    /**
+     * Apply a filter to the list of members.
+     */
+    protected void filterMembers() {
+        List<MemberBean> filtered = new ArrayList<MemberBean>();
+        for (MemberBean member : memberBeans) {
+            if (matchesFilter(member)) {
+                filtered.add(member);
+            }
+        }
+        members.setFilteredValue(filtered);
+    }
+
+    /**
+     * Returns true if the given member matches the current filter.
+     * @param member
+     */
+    private boolean matchesFilter(MemberBean member) {
+        if (memberFilter.getValue() == null || memberFilter.getValue().trim().length() == 0)
+            return true;
+        if (member.getUserName().toUpperCase().contains(memberFilter.getValue().toUpperCase()))
+            return true;
+        if (member.getUserId().toUpperCase().contains(memberFilter.getValue().toUpperCase()))
+            return true;
+        return false;
     }
 
     /**

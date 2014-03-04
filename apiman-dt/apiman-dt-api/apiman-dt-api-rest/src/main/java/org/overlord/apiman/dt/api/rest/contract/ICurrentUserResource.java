@@ -26,6 +26,7 @@ import javax.ws.rs.core.MediaType;
 import org.overlord.apiman.dt.api.beans.idm.UserBean;
 import org.overlord.apiman.dt.api.beans.summary.ApplicationSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.OrganizationSummaryBean;
+import org.overlord.apiman.dt.api.beans.summary.ServiceSummaryBean;
 
 /**
  * The Current User API.  Returns information about the authenticated
@@ -45,10 +46,15 @@ public interface ICurrentUserResource {
     @Path("organizations")
     @Produces(MediaType.APPLICATION_JSON)
     public List<OrganizationSummaryBean> getOrganizations();
-    
+
     @GET
     @Path("applications")
     @Produces(MediaType.APPLICATION_JSON)
     public List<ApplicationSummaryBean> getApplications();
+
+    @GET
+    @Path("services")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<ServiceSummaryBean> getServices();
 
 }

@@ -179,13 +179,17 @@ public class ApiManDtUiDevServer extends ErraiDevServer {
     private SecurityHandler createSecurityHandler() {
         HashLoginService l = new HashLoginService();
         for (String user : USERS) {
-            l.putUser(user, Credential.getCredential(user), new String[] {"user"});
+            String pwd = user;
+            String[] roles = new String[] { "apiuser" };
+            if (user.startsWith("admin"))
+                roles = new String[] { "apiuser", "apiadmin"};
+            l.putUser(user, Credential.getCredential(pwd), roles);
         }
         l.setName("apimanrealm");
 
         Constraint constraint = new Constraint();
         constraint.setName(Constraint.__BASIC_AUTH);
-        constraint.setRoles(new String[]{"user"});
+        constraint.setRoles(new String[]{"apiuser", "apiadmin"});
         constraint.setAuthenticate(true);
 
         ConstraintMapping cm = new ConstraintMapping();
@@ -201,5 +205,5 @@ public class ApiManDtUiDevServer extends ErraiDevServer {
         return csh;
     }
 
-    private static final String [] USERS = { "admin", "eric", "gary", "kurt" };
+    private static final String [] USERS = { "admin", "eric", "gary", "kevin", "admin2", "bwayne", "ckent", "dprince" };
 }

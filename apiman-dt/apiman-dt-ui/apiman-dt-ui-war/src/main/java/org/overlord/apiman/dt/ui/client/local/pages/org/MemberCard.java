@@ -168,7 +168,7 @@ public class MemberCard extends Composite implements HasValue<MemberBean> {
         userId.setText("(" + value.getUserId() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
         email.setText(this.value.getEmail());
         email.setHref("mailto:" + this.value.getEmail()); //$NON-NLS-1$
-        roles.setText(formatRoles(this.value));
+        roles.setText(Formatting.formatRoles(this.value));
         joinedOn.setText(Formatting.formatShortDate(this.value.getJoinedOn()));
         
         editExplanation.setText(i18n.format(AppMessages.MEMBER_CARD_ASSIGN_ROLES_HELP, this.value.getUserName()));
@@ -177,25 +177,6 @@ public class MemberCard extends Composite implements HasValue<MemberBean> {
             roleIds.add(memberRoleBean.getRoleId());
         }
         editRolesSelector.setValue(roleIds);
-    }
-
-    /**
-     * Formats the member's roles into a comma separated string.
-     * @param member
-     */
-    private static String formatRoles(MemberBean member) {
-        StringBuilder builder = new StringBuilder();
-        List<MemberRoleBean> roles = member.getRoles();
-        boolean first = true;
-        for (MemberRoleBean role : roles) {
-            if (first) {
-                first = false;
-            } else {
-                builder.append(", "); //$NON-NLS-1$
-            }
-            builder.append(role.getRoleName());
-        }
-        return builder.toString();
     }
 
     /**

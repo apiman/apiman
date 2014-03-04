@@ -117,12 +117,30 @@ public class RestInvokerService {
     }
 
     /**
-     * Gets the organizations visible to the current user.
+     * Gets the organizations visible to the given user.
      * @param callback
      */
     public void getUserOrgs(String userId, IRestInvokerCallback<List<OrganizationSummaryBean>> callback) {
         CallbackAdapter<List<OrganizationSummaryBean>> adapter = new CallbackAdapter<List<OrganizationSummaryBean>>(callback);
         users.call(adapter, adapter).getOrganizations(userId);
+    }
+
+    /**
+     * Gets the applications visible to the given user.
+     * @param callback
+     */
+    public void getUserApps(String userId, IRestInvokerCallback<List<ApplicationSummaryBean>> callback) {
+        CallbackAdapter<List<ApplicationSummaryBean>> adapter = new CallbackAdapter<List<ApplicationSummaryBean>>(callback);
+        users.call(adapter, adapter).getApplications(userId);
+    }
+
+    /**
+     * Gets the services visible to the given user.
+     * @param callback
+     */
+    public void getUserServices(String userId, IRestInvokerCallback<List<ServiceSummaryBean>> callback) {
+        CallbackAdapter<List<ServiceSummaryBean>> adapter = new CallbackAdapter<List<ServiceSummaryBean>>(callback);
+        users.call(adapter, adapter).getServices(userId);
     }
 
     /**
@@ -150,6 +168,15 @@ public class RestInvokerService {
     public void getCurrentUserApps(IRestInvokerCallback<List<ApplicationSummaryBean>> callback) {
         CallbackAdapter<List<ApplicationSummaryBean>> adapter = new CallbackAdapter<List<ApplicationSummaryBean>>(callback);
         currentUser.call(adapter, adapter).getApplications();
+    }
+
+    /**
+     * Gets all services visible to the current user.
+     * @param callback
+     */
+    public void getCurrentUserServices(IRestInvokerCallback<List<ServiceSummaryBean>> callback) {
+        CallbackAdapter<List<ServiceSummaryBean>> adapter = new CallbackAdapter<List<ServiceSummaryBean>>(callback);
+        currentUser.call(adapter, adapter).getServices();
     }
 
     /**

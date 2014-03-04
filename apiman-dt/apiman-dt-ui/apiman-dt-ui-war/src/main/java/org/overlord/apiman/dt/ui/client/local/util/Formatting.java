@@ -16,6 +16,10 @@
 package org.overlord.apiman.dt.ui.client.local.util;
 
 import java.util.Date;
+import java.util.List;
+
+import org.overlord.apiman.dt.api.beans.members.MemberBean;
+import org.overlord.apiman.dt.api.beans.members.MemberRoleBean;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
@@ -33,8 +37,30 @@ public class Formatting {
      * @param date
      */
     public static final String formatShortDate(Date date) {
+        if (date == null)
+            return "n/a"; //$NON-NLS-1$
         DateTimeFormat format = DateTimeFormat.getFormat(PredefinedFormat.DATE_SHORT);
         return format.format(date);
+    }
+
+    /**
+     * Formats the member's roles into a comma separated string.
+     * 
+     * @param member
+     */
+    public static String formatRoles(MemberBean member) {
+        StringBuilder builder = new StringBuilder();
+        List<MemberRoleBean> roles = member.getRoles();
+        boolean first = true;
+        for (MemberRoleBean role : roles) {
+            if (first) {
+                first = false;
+            } else {
+                builder.append(", "); //$NON-NLS-1$
+            }
+            builder.append(role.getRoleName());
+        }
+        return builder.toString();
     }
 
 }

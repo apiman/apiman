@@ -15,8 +15,10 @@
  */
 package org.overlord.apiman.dt.ui.client.local.pages;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -28,6 +30,10 @@ import org.overlord.apiman.dt.api.beans.summary.OrganizationSummaryBean;
 import org.overlord.apiman.dt.ui.client.local.AppMessages;
 import org.overlord.apiman.dt.ui.client.local.pages.user.UserOrganizationList;
 import org.overlord.apiman.dt.ui.client.local.services.rest.IRestInvokerCallback;
+
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.ui.TextBox;
 
 
 /**
@@ -43,6 +49,8 @@ public class UserOrgsPage extends AbstractUserPage {
     List<OrganizationSummaryBean> orgs;
     
     @Inject @DataField
+    TextBox orgFilter;
+    @Inject @DataField
     UserOrganizationList organizations;
     
     @Inject @DataField
@@ -53,7 +61,20 @@ public class UserOrgsPage extends AbstractUserPage {
      */
     public UserOrgsPage() {
     }
-    
+
+    /**
+     * Called after the bean is created.
+     */
+    @PostConstruct
+    protected void postConstruct() {
+        orgFilter.addValueChangeHandler(new ValueChangeHandler<String>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<String> event) {
+                filterOrgs();
+            }
+        });
+    }
+
     /**
      * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractPage#loadPageData()
      */
@@ -81,6 +102,31 @@ public class UserOrgsPage extends AbstractUserPage {
     protected void renderPage() {
         organizations.setValue(orgs);
         super.renderPage();
+    }
+
+    /**
+     * Apply a filter to the list of organizations.
+     */
+    protected void filterOrgs() {
+        List<OrganizationSummaryBean> filtered = new ArrayList<OrganizationSummaryBean>();
+        for (OrganizationSummaryBean org : orgs) {
+            if (matchesFilter(org)) {
+                filtered.add(org);
+            }
+        }
+        organizations.setFilteredValue(filtered);
+    }
+
+    /**
+     * Returns true if the given org matches the current filter.
+     * @param org
+     */
+    private boolean matchesFilter(OrganizationSummaryBean org) {
+        if (orgFilter.getValue() == null || orgFilter.getValue().trim().length() == 0)
+            return true;
+        if (org.getName().toUpperCase().contains(orgFilter.getValue().toUpperCase()))
+            return true;
+        return false;
     }
 
     /**

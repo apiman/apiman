@@ -23,9 +23,9 @@ import javax.inject.Inject;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.nav.client.local.TransitionAnchorFactory;
 import org.overlord.apiman.dt.api.beans.members.MemberBean;
-import org.overlord.apiman.dt.api.beans.members.MemberRoleBean;
 import org.overlord.apiman.dt.ui.client.local.AppMessages;
 import org.overlord.apiman.dt.ui.client.local.pages.UserRedirectPage;
+import org.overlord.apiman.dt.ui.client.local.pages.common.NoEntitiesWidget;
 import org.overlord.apiman.dt.ui.client.local.services.NavigationHelperService;
 import org.overlord.apiman.dt.ui.client.local.util.Formatting;
 import org.overlord.apiman.dt.ui.client.local.util.MultimapUtil;
@@ -57,7 +57,8 @@ public class OrgMemberList extends FlowPanel implements HasValue<List<MemberBean
     @Inject
     protected TransitionAnchorFactory<UserRedirectPage> toUserRedirectFactory;
     
-    private List<MemberBean> apps;
+    private List<MemberBean> members;
+    private boolean filtered;
 
     /**
      * Constructor.
@@ -79,7 +80,15 @@ public class OrgMemberList extends FlowPanel implements HasValue<List<MemberBean
      */
     @Override
     public List<MemberBean> getValue() {
-        return apps;
+        return members;
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object)
+     */
+    public void setFilteredValue(List<MemberBean> value) {
+        filtered = true;
+        setValue(value, false);
     }
 
     /**
@@ -87,6 +96,7 @@ public class OrgMemberList extends FlowPanel implements HasValue<List<MemberBean
      */
     @Override
     public void setValue(List<MemberBean> value) {
+        filtered = false;
         setValue(value, false);
     }
 
@@ -95,7 +105,7 @@ public class OrgMemberList extends FlowPanel implements HasValue<List<MemberBean
      */
     @Override
     public void setValue(List<MemberBean> value, boolean fireEvents) {
-        apps = value;
+        members = value;
         clear();
         refresh();
     }
@@ -104,12 +114,24 @@ public class OrgMemberList extends FlowPanel implements HasValue<List<MemberBean
      * Refresh the display with the current value.
      */
     public void refresh() {
-        if (apps != null && !apps.isEmpty()) {
-            for (MemberBean bean : apps) {
+        if (members != null && !members.isEmpty()) {
+            for (MemberBean bean : members) {
                 Widget row = createRow(bean);
                 add(row);
             }
+        } else {
+            add(createNoEntitiesWidget());
         }
+    }
+
+    /**
+     * @return a widget to display when no items are found
+     */
+    protected NoEntitiesWidget createNoEntitiesWidget() {
+        if (isFiltered())
+            return new NoEntitiesWidget(i18n.format(AppMessages.NO_FILTERED_MEMBERS_IN_ORG_MESSAGE), true);
+        else
+            return new NoEntitiesWidget(i18n.format(AppMessages.NO_MEMBERS_IN_ORG_MESSAGE), true);
     }
 
     /**
@@ -139,11 +161,12 @@ public class OrgMemberList extends FlowPanel implements HasValue<List<MemberBean
     }
 
     /**
+     * Creates the description area of the member listing.
      * @param bean
      * @param row2
      */
     protected void createDescription(MemberBean bean, FlowPanel row2) {
-        InlineLabel description = new InlineLabel(formatRoles(bean));
+        InlineLabel description = new InlineLabel(Formatting.formatRoles(bean));
         row2.add(description);
         description.getElement().setClassName("description"); //$NON-NLS-1$
     }
@@ -187,27 +210,12 @@ public class OrgMemberList extends FlowPanel implements HasValue<List<MemberBean
             label2.getElement().setClassName("title-summary-item"); //$NON-NLS-1$
         }
     }
-    
+
     /**
-     * Formats the member's roles into a comma separated string.
-     * 
-     * TODO share this method with {@link MemberCard} (along with formatJoinedOn)
-     * 
-     * @param member
+     * @return the filtered
      */
-    private static String formatRoles(MemberBean member) {
-        StringBuilder builder = new StringBuilder();
-        List<MemberRoleBean> roles = member.getRoles();
-        boolean first = true;
-        for (MemberRoleBean role : roles) {
-            if (first) {
-                first = false;
-            } else {
-                builder.append(", "); //$NON-NLS-1$
-            }
-            builder.append(role.getRoleName());
-        }
-        return builder.toString();
+    protected boolean isFiltered() {
+        return filtered;
     }
 
 }

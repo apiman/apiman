@@ -114,7 +114,7 @@ public class OrgAppsPage extends AbstractOrgPage {
                 filtered.add(app);
             }
         }
-        applications.setValue(filtered);
+        applications.setFilteredValue(filtered);
     }
 
     /**
