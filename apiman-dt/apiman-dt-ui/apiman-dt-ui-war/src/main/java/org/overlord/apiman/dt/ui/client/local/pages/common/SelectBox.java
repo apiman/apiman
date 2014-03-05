@@ -15,14 +15,12 @@
  */
 package org.overlord.apiman.dt.ui.client.local.pages.common;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
-import org.overlord.apiman.dt.api.beans.idm.RoleBean;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.logical.shared.AttachEvent;
+import com.google.gwt.event.logical.shared.AttachEvent.Handler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -31,20 +29,27 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.ListBox;
 
 /**
- * Widget used to select an organization, typically on the various
- * "new" pages (e.g. New Application, New Service, etc...).
+ * A select box using bootstrap-select as the UI enhancement.
  *
  * @author eric.wittmann@redhat.com
  */
-public class RoleMultiSelector extends ListBox implements HasValue<Set<String>> {
-
-    private List<RoleBean> all;
-    private Set<String> value;
-
+public abstract class SelectBox<T> extends ListBox implements HasValue<T> {
+    
+    private T value;
+    private List<T> options;
+    
     /**
      * Constructor.
      */
-    public RoleMultiSelector() {
+    public SelectBox() {
+        addAttachHandler(new Handler() {
+            @Override
+            public void onAttachOrDetach(AttachEvent event) {
+                if (event.isAttached()) {
+                    initUI(getElement());
+                }
+            }
+        });
         addChangeHandler(new ChangeHandler() {
             @Override
             public void onChange(ChangeEvent event) {
@@ -54,22 +59,37 @@ public class RoleMultiSelector extends ListBox implements HasValue<Set<String>> 
     }
     
     /**
-     * Sets the organization choices available to the user for selection.
-     * @param organizations
+     * Sets the select box's options.
+     * @param options
      */
-    public void setRoles(final List<RoleBean> choices) {
-        all = choices;
-        for (RoleBean roleBean : choices) {
-            this.addItem(roleBean.getName(), roleBean.getId());
+    public void setOptions(List<T> options) {
+        clear();
+        this.options = options;
+        for (T option : options) {
+            String name = optionName(option);
+            String value = optionValue(option);
+            this.addItem(name, value);
         }
-        initUI(getElement());
+        if (isAttached()) {
+            refreshUI(getElement());
+        }
     }
+
+    /**
+     * @param option
+     */
+    protected abstract String optionName(T option);
+
+    /**
+     * @param option
+     */
+    protected abstract String optionValue(T option);
 
     /**
      * @see com.google.gwt.event.logical.shared.HasValueChangeHandlers#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
      */
     @Override
-    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<Set<String>> handler) {
+    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<T> handler) {
         return addHandler(handler, ValueChangeEvent.getType());
     }
 
@@ -77,7 +97,7 @@ public class RoleMultiSelector extends ListBox implements HasValue<Set<String>> 
      * @see com.google.gwt.user.client.ui.HasValue#getValue()
      */
     @Override
-    public Set<String> getValue() {
+    public T getValue() {
         return value;
     }
 
@@ -85,36 +105,32 @@ public class RoleMultiSelector extends ListBox implements HasValue<Set<String>> 
      * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object)
      */
     @Override
-    public void setValue(Set<String> value) {
+    public void setValue(T value) {
         setValue(value, false);
-        // mark the correct items as selected in the control
-        for (int i = 0; i < getItemCount(); i++) {
-            String roleId = getValue(i);
-            boolean shouldSelect = value.contains(roleId);
-            setItemSelected(i, shouldSelect);
-        }
+        setSelectedIndex(indexOf(value));
         refreshUI(getElement());
     }
 
     /**
-     * Returns true if a role with the given ID is included in the list.
-     * @param roleId
-     * @param roles
+     * Returns the index of the given item or -1 if not found.
+     * @param value
      */
-    private static boolean isInList(String roleId, List<RoleBean> roles) {
-        for (RoleBean roleBean : roles) {
-            if (roleBean.getId().equals(roleId)) {
-                return true;
+    protected int indexOf(T value) {
+        String itemValue = optionValue(value);
+        for (int i = 0; i < getItemCount(); i++) {
+            String rowValue = getValue(i);
+            if (rowValue.equals(itemValue)) {
+                return i;
             }
         }
-        return false;
+        return -1;
     }
 
     /**
      * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object, boolean)
      */
     @Override
-    public void setValue(Set<String> value, boolean fireEvents) {
+    public void setValue(T value, boolean fireEvents) {
         this.value = value;
         if (fireEvents) {
             ValueChangeEvent.fire(this, value);
@@ -136,18 +152,20 @@ public class RoleMultiSelector extends ListBox implements HasValue<Set<String>> 
      * @param elem
      */
     private native void refreshUI(Element elem) /*-{
-        $wnd.jQuery(elem).selectpickers('render');
+        $wnd.jQuery(elem).selectpicker('render');
     }-*/;
 
     /**
-     * Called when something changes.  This is used to gather up the
-     * selected items and fire a proper value change event.
+     * Called when something changes.
      */
     protected void fireValueChangeEvent() {
-        Set<String> newValue = new HashSet<String>();
-        for (int i = 0; i < getItemCount(); i++) {
-            if (isItemSelected(i)) {
-                newValue.add(getValue(i));
+        int idx = this.getSelectedIndex();
+        String value = this.getValue(idx);
+        T newValue = null;
+        for (T option : options) {
+            String optionVal = optionValue(option);
+            if (value.equals(optionVal)) {
+                newValue = option;
             }
         }
         setValue(newValue, true);

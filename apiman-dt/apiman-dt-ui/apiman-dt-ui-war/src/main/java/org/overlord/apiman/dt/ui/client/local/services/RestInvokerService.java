@@ -309,6 +309,20 @@ public class RestInvokerService {
         CallbackAdapter<List<ServiceVersionBean>> adapter = new CallbackAdapter<List<ServiceVersionBean>>(callback);
         services.call(adapter, adapter).listVersions(organizationId, serviceId);
     }
+    
+    /**
+     * Updates a service version.
+     * @param organizationId
+     * @param serviceId
+     * @param version
+     * @param svb
+     * @param callback
+     */
+    public void updateServiceVersion(String organizationId, String serviceId, String version,
+            ServiceVersionBean svb, IRestInvokerCallback<Void> callback) {
+        CallbackAdapter<Void> adapter = new CallbackAdapter<Void>(callback);
+        services.call(adapter, adapter).updateVersion(organizationId, serviceId, version, svb);
+    }
 
     /**
      * Gets all services in the organization.

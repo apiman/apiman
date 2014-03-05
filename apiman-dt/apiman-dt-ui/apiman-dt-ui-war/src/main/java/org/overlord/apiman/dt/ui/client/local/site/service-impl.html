@@ -62,6 +62,24 @@
 
         <!-- Content -->
         <div class="col-md-10 apiman-entity-content">
+          <div class="col-md-8">
+            <div class="title" data-i18n-key="service-impl">Service Implementation</div>
+            <div>
+              <span>API Endpoint:</span>
+              <input data-field="endpoint" class="form-control" type="text"></input>
+            </div>
+            <div class="apiman-divider-20">
+              <span class="clearfix">API Type:</span>
+              <select class="selectpicker" data-field="endpointType" data-role="dummy">
+                <option value="rest">REST</option>
+                <option value="soap">SOAP</option>
+              </select>
+            </div>
+            <div class="actions">
+              <button class="btn btn-primary" data-field="saveButton" data-i18n-key="save" placeholder="Saving" data-icon="fa-cog">Save</button>
+              <button class="btn btn-default" data-field="cancelButton" data-i18n-key="cancel">Cancel</button>
+            </div>
+          </div>
         </div>
         <!-- /Content -->
       </div>
