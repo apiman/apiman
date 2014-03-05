@@ -14,9 +14,9 @@
 
     <div id="form-page" class="container apiman-entity-new page" data-field="page">
       <div class="row">
-        <h2 class="title" data-i18n-key="new-application">New Application</h2>
+        <h2 class="title" data-i18n-key="new-plan">New Plan</h2>
       </div>
-      <!-- Choose org and app name -->
+      <!-- Choose org and plan name -->
       <div class="row">
         <dl class="org">
           <dt data-i18n-key="organization">Organization</dt>
@@ -39,17 +39,17 @@
           </dd>
         </dl>
         <dl class="name">
-          <dt data-i18n-key="application-name">Application Name</dt>
+          <dt data-i18n-key="plan-name">Plan Name</dt>
           <dd>
-            <input data-field="name" type="text" class="form-control entityname" id="apiman-entityname" placeholder="Enter application name..."></input>
+            <input data-field="name" type="text" class="form-control entityname" id="apiman-entityname" placeholder="Enter plan name..."></input>
           </dd>
         </dl>
       </div>
       <!-- Helpful hint -->
       <div class="row">
-        <p data-i18n-key="new-app-help-text" class="apiman-label-faded">Create a new Application within the specified Organization, allowing you to begin connecting provided Services with your Application.</p>
+        <p data-i18n-key="new-plan-help-text" class="apiman-label-faded">Create a new Plan within the specified Organization, allowing you to assign groups of Policies to Services.</p>
       </div>
-      <!-- Initial Application Version -->
+      <!-- Initial Plan Version -->
       <div class="row">
         <dl>
           <dt data-i18n-key="initial-version">Initial Version</dt>
@@ -58,12 +58,12 @@
           </dd>
         </dl>
       </div>
-      <!-- Description of app -->
+      <!-- Description of plan -->
       <div class="row">
         <dl>
           <dt data-i18n-key="description">Description</dt>
           <dd>
-            <input data-field="description" type="text" class="form-control description" id="apiman-description" placeholder="Enter application description (optional)..."></input>
+            <input data-field="description" type="text" class="form-control description" id="apiman-description" placeholder="Enter plan description (optional)..."></input>
           </dd>
         </dl>
       </div>
@@ -73,7 +73,7 @@
       </div>
       <!-- Create Button -->
       <div class="row">
-        <button class="btn btn-primary" data-field="createButton" data-i18n-key="create-application" placeholder="Creating..." data-icon="fa-cog">Create Application</button>
+        <button class="btn btn-primary" data-field="createButton" data-i18n-key="create-plan" placeholder="Creating..." data-icon="fa-cog">Create Plan</button>
         <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" data-i18n-key="cancel">Cancel</a>
       </div>
     </div> <!-- /container -->

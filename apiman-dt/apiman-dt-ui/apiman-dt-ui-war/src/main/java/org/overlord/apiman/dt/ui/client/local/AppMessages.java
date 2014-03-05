@@ -36,6 +36,10 @@ public class AppMessages {
     public static final String TITLE_NEW_SERVICE_VERSION = "page.title.new-service-version"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "APIMan - Add Member")
     public static final String TITLE_NEW_MEMBER = "page.title.new-member"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "APIMan - New Plan")
+    public static final String TITLE_NEW_PLAN = "page.title.new-plan"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "APIMan - New Plan Version")
+    public static final String TITLE_NEW_PLAN_VERSION = "page.title.new-plan-version"; //$NON-NLS-1$
 
     @TranslationKey(defaultValue = "APIMan - {0} (Organizations)")
     public static final String TITLE_USER_ORGS = "page.title.user-orgs"; //$NON-NLS-1$
@@ -77,6 +81,13 @@ public class AppMessages {
     @TranslationKey(defaultValue = "APIMan - {0} (Activity)")
     public static final String TITLE_SERVICE_ACTIVITY = "page.title.service-activity"; //$NON-NLS-1$
 
+    @TranslationKey(defaultValue = "APIMan - {0} (Overview)")
+    public static final String TITLE_PLAN_OVERVIEW = "page.title.plan-overview"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "APIMan - {0} (Policies)")
+    public static final String TITLE_PLAN_POLICIES = "page.title.plan-policies"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "APIMan - {0} (Activity)")
+    public static final String TITLE_PLAN_ACTIVITY = "page.title.plan-activity"; //$NON-NLS-1$
+    
     @TranslationKey(defaultValue = "Configuration service not available.")
     public static final String CONFIG_SERVICE_NOT_AVAILABLE = "authInterceptor.configServiceNotAvailable"; //$NON-NLS-1$
 

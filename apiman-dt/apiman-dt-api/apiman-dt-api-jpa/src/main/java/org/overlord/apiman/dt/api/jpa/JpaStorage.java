@@ -29,6 +29,7 @@ import org.overlord.apiman.dt.api.beans.apps.ApplicationBean;
 import org.overlord.apiman.dt.api.beans.apps.ApplicationVersionBean;
 import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
 import org.overlord.apiman.dt.api.beans.plans.PlanBean;
+import org.overlord.apiman.dt.api.beans.plans.PlanVersionBean;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
 import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
 import org.overlord.apiman.dt.api.beans.services.ServiceBean;
@@ -278,10 +279,6 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         }
     }
 
-    
-    
-    
-
     /**
      * @see org.overlord.apiman.dt.api.persist.IStorageQuery#getApplicationVersion(java.lang.String, java.lang.String, java.lang.String)
      */
@@ -366,6 +363,56 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                 rval.add(summary);
             }
             return rval;
+        } catch (Throwable t) {
+            JpaUtil.rollbackQuietly(entityManager);
+            logger.error(t.getMessage(), t);
+            throw new StorageException(t);
+        } finally {
+            entityManager.close();
+        }
+    }
+    
+    /**
+     * @see org.overlord.apiman.dt.api.persist.IStorageQuery#getPlanVersion(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public PlanVersionBean getPlanVersion(String orgId, String planId, String version)
+            throws StorageException {
+        EntityManager entityManager = emf.createEntityManager();
+        try {
+            String jpql = "SELECT v from PlanVersionBean v JOIN v.plan s WHERE s.organizationId = :orgId AND s.id = :planId AND v.version = :version"; //$NON-NLS-1$
+            Query query = entityManager.createQuery(jpql);
+            query.setParameter("orgId", orgId); //$NON-NLS-1$
+            query.setParameter("planId", planId); //$NON-NLS-1$
+            query.setParameter("version", version); //$NON-NLS-1$
+            
+            return (PlanVersionBean) query.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        } catch (Throwable t) {
+            JpaUtil.rollbackQuietly(entityManager);
+            logger.error(t.getMessage(), t);
+            throw new StorageException(t);
+        } finally {
+            entityManager.close();
+        }
+    }
+    
+    /**
+     * @see org.overlord.apiman.dt.api.persist.IStorageQuery#getPlanVersions(java.lang.String, java.lang.String)
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<PlanVersionBean> getPlanVersions(String orgId, String planId)
+            throws StorageException {
+        EntityManager entityManager = emf.createEntityManager();
+        try {
+            String jpql = "SELECT v from PlanVersionBean v JOIN v.plan s WHERE s.organizationId = :orgId AND s.id = :planId ORDER BY v.id DESC"; //$NON-NLS-1$
+            Query query = entityManager.createQuery(jpql);
+            query.setParameter("orgId", orgId); //$NON-NLS-1$
+            query.setParameter("planId", planId); //$NON-NLS-1$
+            
+            return (List<PlanVersionBean>) query.getResultList();
         } catch (Throwable t) {
             JpaUtil.rollbackQuietly(entityManager);
             logger.error(t.getMessage(), t);

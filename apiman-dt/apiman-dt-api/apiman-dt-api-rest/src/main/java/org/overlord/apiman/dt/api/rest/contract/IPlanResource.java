@@ -28,6 +28,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.overlord.apiman.dt.api.beans.plans.PlanBean;
+import org.overlord.apiman.dt.api.beans.plans.PlanVersionBean;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
 import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
 import org.overlord.apiman.dt.api.beans.summary.PlanSummaryBean;
@@ -36,6 +37,7 @@ import org.overlord.apiman.dt.api.rest.contract.exceptions.NotAuthorizedExceptio
 import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.PlanAlreadyExistsException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.PlanNotFoundException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.PlanVersionNotFoundException;
 
 /**
  * The Plan API.
@@ -74,9 +76,38 @@ public interface IPlanResource {
             throws PlanNotFoundException, NotAuthorizedException;
 
     @POST
+    @Path("{organizationId}/plans/{planId}/versions")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public PlanVersionBean createVersion(@PathParam("organizationId") String organizationId,
+            @PathParam("planId") String planId, PlanVersionBean bean)
+            throws PlanNotFoundException, NotAuthorizedException;
+
+    @GET
+    @Path("{organizationId}/plans/{planId}/versions")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<PlanVersionBean> listVersions(@PathParam("organizationId") String organizationId,
+            @PathParam("planId") String planId) throws PlanNotFoundException, NotAuthorizedException;
+
+    @GET
+    @Path("{organizationId}/plans/{planId}/versions/{version}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public PlanVersionBean getVersion(@PathParam("organizationId") String organizationId,
+            @PathParam("planId") String planId, @PathParam("version") String version)
+            throws PlanVersionNotFoundException, NotAuthorizedException;
+
+    @PUT
+    @Path("{organizationId}/plans/{planId}/versions/{version}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void updateVersion(@PathParam("organizationId") String organizationId,
+            @PathParam("planId") String planId, @PathParam("version") String version,
+            PlanVersionBean bean) throws PlanVersionNotFoundException, NotAuthorizedException;
+
+    @POST
     @Path("{organizationId}/plans/search")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public SearchResultsBean<PlanBean> search(@PathParam("organizationId") String organizationId,
             SearchCriteriaBean criteria) throws OrganizationNotFoundException, InvalidSearchCriteriaException;
+
 }

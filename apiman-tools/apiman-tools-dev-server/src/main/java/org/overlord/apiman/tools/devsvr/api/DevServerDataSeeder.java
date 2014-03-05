@@ -25,6 +25,9 @@ import org.overlord.apiman.dt.api.beans.idm.PermissionType;
 import org.overlord.apiman.dt.api.beans.idm.RoleBean;
 import org.overlord.apiman.dt.api.beans.idm.RoleMembershipBean;
 import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
+import org.overlord.apiman.dt.api.beans.plans.PlanBean;
+import org.overlord.apiman.dt.api.beans.plans.PlanStatus;
+import org.overlord.apiman.dt.api.beans.plans.PlanVersionBean;
 import org.overlord.apiman.dt.api.beans.services.EndpointType;
 import org.overlord.apiman.dt.api.beans.services.ServiceBean;
 import org.overlord.apiman.dt.api.beans.services.ServiceStatus;
@@ -190,7 +193,40 @@ public class DevServerDataSeeder extends DefaultTestDataSeeder {
         svb.setEndpoint("http://localhost:8080/s-ramp-server/");
         svb.setEndpointType(EndpointType.rest);
         storage.create(svb);
-        
+
+        // Create some plans
+        PlanBean plan = new PlanBean();
+        plan.setId("Platinum");
+        plan.setName("Platinum");
+        plan.setDescription("Provides subscribing applications with full access to the Services in this Organization.");
+        plan.setOrganizationId("JBossOverlord");
+        plan.setCreatedBy("admin");
+        plan.setCreatedOn(new Date());
+        storage.create(plan);
+        PlanVersionBean pvb = new PlanVersionBean();
+        pvb.setVersion("1.0");
+        pvb.setStatus(PlanStatus.Created);
+        pvb.setPlan(plan);
+        pvb.setCreatedBy("admin");
+        pvb.setCreatedOn(new Date());
+        storage.create(pvb);
+
+        plan = new PlanBean();
+        plan.setId("Gold");
+        plan.setName("Gold");
+        plan.setDescription("Provides subscribing applications with full access to a subset of Services. Also allows partial (rate limited) access to the rest.");
+        plan.setOrganizationId("JBossOverlord");
+        plan.setCreatedBy("admin");
+        plan.setCreatedOn(new Date());
+        storage.create(plan);
+        pvb = new PlanVersionBean();
+        pvb.setVersion("1.0");
+        pvb.setStatus(PlanStatus.Created);
+        pvb.setPlan(plan);
+        pvb.setCreatedBy("admin");
+        pvb.setCreatedOn(new Date());
+        storage.create(pvb);
+
     }
 
 }

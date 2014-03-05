@@ -1,0 +1,23 @@
+POST /organizations/Organization1/plans/Plan1/versions admin/admin
+Content-Type: application/json
+
+{
+  "version" : "1.0"
+}
+----
+200
+Content-Type: application/json
+
+{
+  "plan" : {
+    "organizationId" : "Organization1",
+    "id" : "Plan1",
+    "name" : "Plan 1",
+    "description" : "[UPDATED] This is the description of Plan 1!",
+    "createdBy":"admin"
+  },
+  "status" : "Created",
+  "version" : "1.0",
+  "createdBy" : "admin",
+  "lockedOn" : null
+}

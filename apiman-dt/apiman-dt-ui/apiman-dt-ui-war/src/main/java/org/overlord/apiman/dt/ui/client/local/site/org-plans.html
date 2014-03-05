@@ -63,15 +63,15 @@
               <!-- Plans Tab Content -->
               <div class="tab-pane active" id="tab-plans">
                 <div class="apiman-filters apiman-plans-filters">
-                  <input type="text" class="form-control input-search" placeholder="Filter by plan name..."></input>
-                  <a href="newPlan.html" class="btn btn-primary pull-right">New Plan</a>
+                  <input data-field="planFilter" type="text" class="form-control input-search" placeholder="Filter by plan name..."></input>
+                  <a data-field="toNewPlan" data-i18n-key="new-plan" href="new-plan.html" class="btn btn-primary pull-right">New Plan</a>
                 </div>
                 <div class="clearfix"></div>
                 <!-- The list of plans in this organization -->
-                <div class="apiman-plans">
+                <div class="apiman-plans" data-field="plans" data-role="dummy">
                   <div class="container-fluid apiman-summaryrow">
                     <div class="row">
-                      <span class="title"><a href="planHome.html">Platinum</a></span>
+                      <span class="title"><a href="plan-overview.html">Platinum</a></span>
                     </div>
                     <div class="row">
                       <span class="description">
@@ -82,7 +82,7 @@
                   </div>
                   <div class="container-fluid apiman-summaryrow">
                     <div class="row">
-                      <span class="title"><a href="planHome.html">Gold</a></span>
+                      <span class="title"><a href="plan-overview.html">Gold</a></span>
                     </div>
                     <div class="row">
                       <span class="description">
@@ -94,7 +94,7 @@
                   </div>
                   <div class="container-fluid apiman-summaryrow">
                     <div class="row">
-                      <span class="title"><a href="planHome.html">Silver</a></span>
+                      <span class="title"><a href="plan-overview.html">Silver</a></span>
                     </div>
                     <div class="row">
                       <span class="description">

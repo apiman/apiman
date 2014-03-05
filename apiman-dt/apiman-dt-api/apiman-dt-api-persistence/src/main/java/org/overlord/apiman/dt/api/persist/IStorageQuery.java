@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.overlord.apiman.dt.api.beans.apps.ApplicationVersionBean;
+import org.overlord.apiman.dt.api.beans.plans.PlanVersionBean;
 import org.overlord.apiman.dt.api.beans.services.ServiceVersionBean;
 import org.overlord.apiman.dt.api.beans.summary.ApplicationSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.OrganizationSummaryBean;
@@ -116,4 +117,23 @@ public interface IStorageQuery {
      */
     public List<PlanSummaryBean> getPlansInOrg(String orgId) throws StorageException;
 
+    /**
+     * Returns the plan version bean with the given info (orgId, appId, version).
+     * @param organizationId
+     * @param planId
+     * @param version
+     * @throws StorageException
+     */
+    public PlanVersionBean getPlanVersion(String organizationId, String planId, String version)
+            throws StorageException;
+
+    /**
+     * Returns all plan versions for a given plan.
+     * @param organizationId
+     * @param planId
+     * @throws StorageException
+     */
+    public List<PlanVersionBean> getPlanVersions(String organizationId, String planId)
+            throws StorageException;
+    
 }

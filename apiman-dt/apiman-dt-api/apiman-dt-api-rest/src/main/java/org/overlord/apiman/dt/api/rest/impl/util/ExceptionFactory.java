@@ -24,6 +24,7 @@ import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationAlreadyEx
 import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.PlanAlreadyExistsException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.PlanNotFoundException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.PlanVersionNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.RoleAlreadyExistsException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.RoleNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ServiceAlreadyExistsException;
@@ -157,6 +158,14 @@ public final class ExceptionFactory {
      */
     public static final PlanNotFoundException planNotFoundException(String planId) {
         return new PlanNotFoundException(Messages.i18n.format("PlanDoesNotExist", planId)); //$NON-NLS-1$
+    }
+
+    /**
+     * Creates an exception from an plan id and version.
+     * @param planId
+     */
+    public static final PlanVersionNotFoundException planVersionNotFoundException(String planId, String version) {
+        return new PlanVersionNotFoundException(Messages.i18n.format("PlanVersionDoesNotExist", planId, version)); //$NON-NLS-1$
     }
 
 }

@@ -22,4 +22,15 @@
     <test name="List Plan">plans/plans/011_list-plans.resttest</test>
   </testGroup>
 
+  <!-- Test Plan Version management -->
+  <testGroup name="Plan Version Management">
+    <test name="Create Plan Version 1.0">plans/versions/001_create-version-1.0.resttest</test>
+    <test name="Get Plan Version 1.0">plans/versions/002_get-version-1.0.resttest</test>
+    <test name="Get Missing Plan Version">plans/versions/003_get-version-missing.resttest</test>
+    <test name="Create Plan Version 2.0">plans/versions/004_create-version-2.0.resttest</test>
+    <test name="List All Versions">plans/versions/005_list-versions.resttest</test>
+    <test name="Update Version 1.0">plans/versions/006_update-version-1.0.resttest</test>
+    <test name="Get Version 1.0 (updated)">plans/versions/007_get-version-1.0.resttest</test>
+  </testGroup>
+
 </testPlan>

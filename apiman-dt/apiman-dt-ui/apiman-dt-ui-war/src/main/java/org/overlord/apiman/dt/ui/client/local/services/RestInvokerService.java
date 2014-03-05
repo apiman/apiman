@@ -29,17 +29,21 @@ import org.overlord.apiman.dt.api.beans.idm.RoleBean;
 import org.overlord.apiman.dt.api.beans.idm.UserBean;
 import org.overlord.apiman.dt.api.beans.members.MemberBean;
 import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
+import org.overlord.apiman.dt.api.beans.plans.PlanBean;
+import org.overlord.apiman.dt.api.beans.plans.PlanVersionBean;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
 import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
 import org.overlord.apiman.dt.api.beans.services.ServiceBean;
 import org.overlord.apiman.dt.api.beans.services.ServiceVersionBean;
 import org.overlord.apiman.dt.api.beans.summary.ApplicationSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.OrganizationSummaryBean;
+import org.overlord.apiman.dt.api.beans.summary.PlanSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.ServiceSummaryBean;
 import org.overlord.apiman.dt.api.rest.contract.IApplicationResource;
 import org.overlord.apiman.dt.api.rest.contract.ICurrentUserResource;
 import org.overlord.apiman.dt.api.rest.contract.IMemberResource;
 import org.overlord.apiman.dt.api.rest.contract.IOrganizationResource;
+import org.overlord.apiman.dt.api.rest.contract.IPlanResource;
 import org.overlord.apiman.dt.api.rest.contract.IRoleResource;
 import org.overlord.apiman.dt.api.rest.contract.IServiceResource;
 import org.overlord.apiman.dt.api.rest.contract.ISystemResource;
@@ -70,6 +74,8 @@ public class RestInvokerService {
     private Caller<IApplicationResource> applications;
     @Inject
     private Caller<IServiceResource> services;
+    @Inject
+    private Caller<IPlanResource> plans;
     @Inject
     private Caller<IMemberResource> members;
     
@@ -363,5 +369,50 @@ public class RestInvokerService {
         members.call(adapter, adapter).revokeAll(organizationId, userId);
     }
 
+    /**
+     * Gets all plans in the organization.
+     * @param organizationId
+     * @param callback
+     */
+    public void getPlans(String organizationId, IRestInvokerCallback<List<PlanSummaryBean>> callback) {
+        CallbackAdapter<List<PlanSummaryBean>> adapter = new CallbackAdapter<List<PlanSummaryBean>>(callback);
+        plans.call(adapter, adapter).list(organizationId);
+    }
+
+    /**
+     * Gets all versions of the plan.
+     * @param organizationId
+     * @param planId
+     * @param callback
+     */
+    public void getPlanVersions(String organizationId, String planId, 
+            IRestInvokerCallback<List<PlanVersionBean>> callback) {
+        CallbackAdapter<List<PlanVersionBean>> adapter = new CallbackAdapter<List<PlanVersionBean>>(callback);
+        plans.call(adapter, adapter).listVersions(organizationId, planId);
+    }
+
+    /**
+     * Creates a new plan.
+     * @param organizationId
+     * @param plan
+     * @param callback
+     */
+    public void createPlan(String organizationId, PlanBean plan, IRestInvokerCallback<PlanBean> callback) {
+        CallbackAdapter<PlanBean> adapter = new CallbackAdapter<PlanBean>(callback);
+        plans.call(adapter, adapter).create(organizationId, plan);
+    }
+    
+    /**
+     * Creates a new version of an plan.
+     * @param organizationId
+     * @param planId
+     * @param version
+     * @param callback
+     */
+    public void createPlanVersion(String organizationId, String planId, PlanVersionBean version,
+            IRestInvokerCallback<PlanVersionBean> callback) {
+        CallbackAdapter<PlanVersionBean> adapter = new CallbackAdapter<PlanVersionBean>(callback);
+        plans.call(adapter, adapter).createVersion(organizationId, planId, version);
+    }
 
 }
