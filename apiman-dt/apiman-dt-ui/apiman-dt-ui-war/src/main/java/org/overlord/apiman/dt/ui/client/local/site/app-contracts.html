@@ -62,7 +62,88 @@
 
         <!-- Content -->
         <div class="col-md-10 apiman-entity-content">
-          <h2>Not yet implemented.</h2>
+          <div class="col-md-9">
+            <!-- Title and help text -->
+            <div class="title" data-i18n-key="contracts">Service Contracts</div>
+            <div class="description" data-i18n-key="contracts-help">Here is a list of all Services that this Application is currently contracted to utilize.  This provides a list of all Services that Application can potentially invoke.</div>
+            <hr />
+            <!-- The list of contracts (filterable) -->
+            <div>
+              <div class="apiman-filters apiman-contracts-filters">
+                <input data-field="contractFilter" class="form-control input-search" placeholder="Filter by org or service name..." type="text">
+                <a data-field="toNewContract" data-i18n-key="new-contract" href="new-contract.html" class="btn btn-primary pull-right">New Contract</a>
+              </div>
+              <div class="clearfix"></div>
+              <!-- The list of contracts -->
+              <div class="apiman-contracts" data-field="contracts" data-role="dummy">
+                <div class="container-fluid apiman-summaryrow">
+                  <div class="row">
+                    <a href="org-apps.html">JBoss Overlord</a> / <span class="title"><a href="service-overview.html">s-ramp-api</a></span>
+                    <span class="pull-right actions"><a href="#">Break Contract</a></span>
+                  </div>
+                  <div class="row">
+                    <div class="versionAndPlan">
+                      <span>Service version</span>
+                      <span><a href="#">2.1</a></span>
+                      <span>via plan</span>
+                      <span><a href="#">Platinum</a></span>
+                      <span>entered into on</span>
+                      <i class="fa fa-clock-o fa-fw fa-inline"></i>
+                      <span>Oct 19, 2012</span>
+                    </div>
+                    <div class="description apiman-label-faded">
+                      This API allows users to interact with a remote S-RAMP repository.
+                    </div>
+                  </div>
+                  <hr />
+                </div>
+                <div class="container-fluid apiman-summaryrow">
+                  <div class="row">
+                    <a href="org-apps.html">JBoss Overlord</a> / <span class="title"><a href="service-overview.html">dtgov-deploy</a></span>
+                    <span class="pull-right actions"><a href="#">Break Contract</a></span>
+                  </div>
+                  <div class="row">
+                    <div class="versionAndPlan">
+                      <span>Service version</span>
+                      <span><a href="#">2.1</a></span>
+                      <span>via plan</span>
+                      <span><a href="#">Platinum</a></span>
+                      <span>entered into on</span>
+                      <i class="fa fa-clock-o fa-fw fa-inline"></i>
+                      <span>Oct 19, 2012</span>
+                    </div>
+                    <div class="description apiman-label-faded">
+                      This API provides an automated mechanism to deploy artifacts to running servers.
+                    </div>
+                  </div>
+                  <hr>
+                </div>
+                <div class="container-fluid apiman-summaryrow">
+                  <div class="row">
+                    <a href="org-apps.html">Apereo Bedework</a> / <span class="title"><a href="service-overview.html">public-calendar</a></span>
+                    <span class="pull-right actions"><a href="#">Break Contract</a></span>
+                  </div>
+                  <div class="row">
+                    <div class="versionAndPlan">
+                      <span>Service version</span>
+                      <span><a href="#">2.1</a></span>
+                      <span>via plan</span>
+                      <span><a href="#">Platinum</a></span>
+                      <span>entered into on</span>
+                      <i class="fa fa-clock-o fa-fw fa-inline"></i>
+                      <span>Oct 19, 2012</span>
+                    </div>
+                    <div class="description apiman-label-faded">
+                      This allows users to manipulate calendar data in a Bedework calendar system.
+                    </div>
+                  </div>
+                  <hr>
+                </div>
+              </div>
+            </div>
+            <!-- /Contract List -->
+            
+          </div>
         </div>
         <!-- /Content -->
       </div>

@@ -53,7 +53,8 @@
             <li class="first"><a data-role="dummy">&nbsp;</a></li>
             <li class="north"><a data-field="toServiceOverview" href="service-overview.html" data-i18n-key="overview">Overview</a></li>
             <li class="active"><a data-field="toServiceImpl" href="service-impl.html" data-i18n-key="implementation">Implementation</a></li>
-            <li class="south"><a data-field="toServicePolicies" href="service-policies.html" data-i18n-key="policies">Policies</a></li>
+            <li class="south"><a data-field="toServicePlans" href="service-plans.html" data-i18n-key="plans">Plans</a></li>
+            <li class=""><a data-field="toServicePolicies" href="service-policies.html" data-i18n-key="policies">Policies</a></li>
             <li><a data-field="toServiceActivity" href="service-activity.html" data-i18n-key="activity">Activity</a></li>
             <li class="last"><a data-role="dummy">&nbsp;</a></li>
           </ul>
@@ -65,11 +66,11 @@
           <div class="col-md-8">
             <div class="title" data-i18n-key="service-impl">Service Implementation</div>
             <div>
-              <span>API Endpoint:</span>
+              <span data-i18n-key="api-endpoint-label">API Endpoint:</span>
               <input data-field="endpoint" class="form-control" type="text"></input>
             </div>
             <div class="apiman-divider-20">
-              <span class="clearfix">API Type:</span>
+              <span class="clearfix" data-i18n-key="api-type-label">API Type:</span>
               <select class="selectpicker" data-field="endpointType" data-role="dummy">
                 <option value="rest">REST</option>
                 <option value="soap">SOAP</option>

@@ -11,8 +11,6 @@ body {
   margin-right: 10px;
 }
 
-#form-page {
-}
 #form-page .bootstrap-select {
   width: 300px;
 }
@@ -186,6 +184,9 @@ div.page {
   float: left;
   line-height: 14px;
 }
+.apiman-summaryrow .fa-inline {
+  float: none;
+}
 .apiman-summaryrow .title-summary-item {
   font-size: 11px;
   float: left;
@@ -193,7 +194,7 @@ div.page {
   line-height: 14px;
 }
 
-.apiman-services hr, .apiman-applications hr, .apiman-plans hr, .apiman-members hr {
+.apiman-services hr, .apiman-applications hr, .apiman-plans hr, .apiman-members hr, .apiman-contracts hr {
   margin: 8px;
 }
 
@@ -296,9 +297,18 @@ div.page {
   font-size: 18px;
   margin-bottom: 5px;
 }
+.apiman-entity-content .apiman-summaryrow .title {
+  font-size: 11px;
+}
 .apiman-entity-content .description {
   color: #243446;
   margin-bottom: 12px;
+}
+.apiman-entity-content .description.apiman-label-faded {
+  color: #789;
+}
+.apiman-entity-content .apiman-summaryrow .description {
+  margin-bottom: 0px;
 }
 
 .entity-info-with-icon {
@@ -396,6 +406,13 @@ div.page {
 .apiman-entity-new .btn-search {
   float: left;
   margin-left: 5px;
+}
+
+.apiman-contracts .apiman-summaryrow .actions {
+  visibility: hidden;
+}
+.apiman-contracts .apiman-summaryrow:hover .actions {
+  visibility: visible;
 }
 
 .apiman-no-entities-description {
@@ -519,8 +536,24 @@ div.page {
   float: right;
   margin-right: 2px;
 }
-.error-page {
-  margin-top: 30px;
+
+.apiman-plan-selector {
+  padding: 10px;
+}
+.apiman-plan-selector .title {
+  font-size: 16px;
+  font-weight: normal;
+  margin-left: 6px;
+}
+.apiman-plan-selector .title a {
+  color: #345;
+}
+.apiman-plan-selector hr {
+  margin-top: 0px;
+  margin-bottom: 10px;
+}
+#page-content .apiman-plan-selector div.bootstrap-select {
+  width: 125px;
 }
 
 .error-page {

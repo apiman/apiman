@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <script type="text/javascript" src="site.js"></script>
+  </head>
+
+  <body>
+
+    <!-- Top header/nav bar -->
+    <div id="overlord-header">
+    </div>
+
+    <div id="form-page" class="container apiman-entity-new page" data-field="page">
+      <div class="row">
+        <h2 class="title" data-i18n-key="new-contract">New Contract</h2>
+      </div>
+      <!-- Helpful hint -->
+      <div class="row">
+        <p class="col-md-6" data-i18n-key="new-contract-help-text" class="apiman-label-faded">Creating a Contract allows you to connect an Application to a Service via a particular Plan offered by the Service.  You would want to do this so that your Application can invoke the Service successfully.  Note that this is not necessary if the Service is public.</p>
+      </div>
+      <!-- HR -->
+      <div class="row hr-row">
+        <hr/>
+      </div>
+      <!-- Application -->
+      <div class="row">
+        <dl>
+          <dt data-i18n-key="application">Application</dt>
+          <dd>
+            <select class="selectpicker" data-live-search="true" data-role="dummy">
+              <option data-content="Bedework / <span class='emphasis'>bw-calendar</span>">Bedework / bw-calendar</option>
+              <option data-content="Overlord / <span class='emphasis'>dtgov</span>">Overlord / dtgov</option>
+              <option data-content="Overlord / <span class='emphasis'>s-ramp</span>">Overlord / s-ramp</option>
+            </select>
+          </dd>
+        </dl>
+      </div>
+      <!-- Application Version -->
+      <div class="row">
+        <dl>
+          <dt data-i18n-key="application-version">Application Version</dt>
+          <dd>
+            <select class="selectpicker" data-role="dummy">
+              <option>2.0</option>
+              <option>1.5</option>
+              <option>1.4</option>
+              <option>1.3</option>
+              <option>1.2</option>
+            </select>
+          </dd>
+        </dl>
+      </div>
+      <!-- Service search bar -->
+      <div class="row">
+        <dl>
+          <dt data-i18n-key="find-service">Find a Service</dt>
+          <dd>
+            <input data-field="searchBox" type="text" class="form-control input-search" placeholder="Search by service name..."></input>
+            <button class="btn btn-default btn-search" data-field="searchButton" data-i18n-key="search" data-icon="fa-cog" placeholder="Searching">Search</button>
+          </dd>
+        </dl>
+      </div>
+      <!-- Service search results -->
+      <div class="row">
+        <div class="panel panel-default input-search-results">
+          <div class="panel-body container-fluid" data-field="services" data-role="dummy">
+            <a href="#" class="item">
+              <i class="fa fa-puzzle-piece fa-fw"></i>
+              <span class="">Overlord</span>
+              <span> / </span>
+              <span class="emphasis">dtgov-deploy</span>
+            </a>
+            <a href="#" class="item">
+              <i class="fa fa-puzzle-piece fa-fw"></i>
+              <span class="">Overlord</span>
+              <span> / </span>
+              <span class="emphasis">s-ramp-api</span>
+            </a>
+            <a href="#" class="item">
+              <i class="fa fa-puzzle-piece fa-fw"></i>
+              <span class="">Overlord</span>
+              <span> / </span>
+              <span class="emphasis">apiman-dt-api</span>
+            </a>
+          </div>
+        </div>
+      </div>
+      <!-- Service Version -->
+      <div class="row">
+        <dl>
+          <dt data-i18n-key="service-version">Service Version</dt>
+          <dd>
+            <select data-field="serviceVersion" class="selectpicker" data-role="dummy">
+              <option>2.0</option>
+              <option>1.5</option>
+              <option>1.4</option>
+              <option>1.3</option>
+              <option>1.2</option>
+            </select>
+          </dd>
+        </dl>
+      </div>
+      <!-- Plan -->
+      <div class="row">
+        <dl>
+          <dt data-i18n-key="plan">Plan</dt>
+          <dd>
+            <select data-field="plan" class="selectpicker" data-role="dummy">
+              <option>Platinum</option>
+              <option>Gold</option>
+              <option>Silver</option>
+            </select>
+          </dd>
+        </dl>
+      </div>
+
+      <!-- HR -->
+      <div class="row hr-row">
+        <hr/>
+      </div>
+      <!-- Create Button -->
+      <div class="row">
+        <button class="btn btn-primary" data-field="createButton" data-i18n-key="create-contract" placeholder="Creating..." data-icon="fa-cog">Create Contract</button>
+        <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" data-i18n-key="cancel">Cancel</a>
+      </div>
+    </div> <!-- /container -->
+  </body>
+</html>

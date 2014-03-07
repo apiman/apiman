@@ -76,6 +76,8 @@ public class AppMessages {
     public static final String TITLE_SERVICE_OVERVIEW = "page.title.service-overview"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "APIMan - {0} (Implementation)")
     public static final String TITLE_SERVICE_IMPL = "page.title.service-impl"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "APIMan - {0} (Plans)")
+    public static final String TITLE_SERVICE_PLANS = "page.title.service-plans"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "APIMan - {0} (Policies)")
     public static final String TITLE_SERVICE_POLICIES = "page.title.service-policies"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "APIMan - {0} (Activity)")

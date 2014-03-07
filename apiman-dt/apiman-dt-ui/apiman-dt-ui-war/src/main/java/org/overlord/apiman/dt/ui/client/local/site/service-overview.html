@@ -53,6 +53,7 @@
             <li class="first north"><a data-role="dummy">&nbsp;</a></li>
             <li class="active"><a data-field="toServiceOverview" href="service-overview.html" data-i18n-key="overview">Overview</a></li>
             <li class="south"><a data-field="toServiceImpl" href="service-impl.html" data-i18n-key="implementation">Implementation</a></li>
+            <li class=""><a data-field="toServicePlans" href="service-plans.html" data-i18n-key="plans">Plans</a></li>
             <li><a data-field="toServicePolicies" href="service-policies.html" data-i18n-key="policies">Policies</a></li>
             <li><a data-field="toServiceActivity" href="service-activity.html" data-i18n-key="activity">Activity</a></li>
             <li class="last"><a data-role="dummy">&nbsp;</a></li>
@@ -99,33 +100,17 @@
           </div>
           <!-- /Content Summary (left side) -->
           
-          <!-- Activity -->
-          <div class="col-md-6 hide">
-            <div class="title">Latest Activity</div>
-            <div class="apiman-activity">
-              <div class="container-fluid apiman-summaryrow">
-                <div class="row">
-                  <span class=""><a href="user-orgs.html">Clark Kent</a> updated application <a href="org-apps.html">JBoss Overlord</a> / <a class="emphasis" href="service-overview.html">gadget-server</a>.</span>
-                </div>
-                <div class="row">
-                  <i class="fa fa-gears"></i>
-                  <div class="apiman-timestamp">2 days ago</div>
-                </div>
-                <hr/>
-              </div>
-              <div class="container-fluid apiman-summaryrow">
-                <div class="row">
-                  <span class=""><a href="user-orgs.html">Clark Kent</a> created application <a href="org-apps.html">JBoss Overlord</a> / <a class="emphasis" href="service-overview.html">gadget-server</a>.</span>
-                </div>
-                <div class="row">
-                  <i class="fa fa-gears"></i>
-                  <div class="apiman-timestamp">3 days ago</div>
-                </div>
-                <hr/>
-              </div>
+          <!-- Actions -->
+          <div class="col-md-6">
+            <div class="title" data-i18n-key="things-to-do">Things To Do</div>
+            <div class="apiman-divider-20">
+              <ul>
+                <li><a href="new-contract.html">Link my Application to this Service (New Contract)</a></li>
+                <li><a href="new-serviceversion.html">Create a new version of this Service (New Version)</a></li>
+              </ul>
             </div>
           </div>
-          <!-- /Activity -->
+          <!-- /Actions -->
 
         </div>
         <!-- /Content -->
