@@ -33,4 +33,20 @@
     <test name="Get Version 1.0 (updated)">services/versions/007_get-version-1.0.resttest</test>
   </testGroup>
 
+  <!-- Test service plans -->
+  <testGroup name="Service Plans">
+    <test name="Create Plan 1">services/plans/001_create-plan1.resttest</test>
+    <test name="Create Plan 2">services/plans/002_create-plan2.resttest</test>
+    <test name="Create Plan 1, v1.0">services/plans/003_create-plan1-version-1.0.resttest</test>
+    <test name="Create Plan 1, v2.0">services/plans/004_create-plan1-version-2.0.resttest</test>
+    <test name="Create Plan 2, v1.1">services/plans/005_create-plan2-version-1.1.resttest</test>
+    <test name="Update Service Plans">services/plans/006_update-version-1.0-plans.resttest</test>
+    <test name="Get Version 1.0 (with 1 plan)">services/plans/007_get-version-1.0.resttest</test>
+    <test name="Update Service Plans 2">services/plans/008_update-version-1.0-plans.resttest</test>
+    <test name="Get Version 1.0 (with 2 plans)">services/plans/009_get-version-1.0.resttest</test>
+    <test name="Update Service Plans 3">services/plans/010_update-version-1.0-plans.resttest</test>
+    <test name="Get Version 1.0 (with 1 plan)">services/plans/011_get-version-1.0.resttest</test>
+    <test name="Update Service Plans (error 500)">services/plans/012_update-version-1.0-plans-500.resttest</test>
+  </testGroup>
+
 </testPlan>

@@ -18,6 +18,7 @@ package org.overlord.apiman.dt.api.rest.impl.mappers;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.ext.ExceptionMapper;
@@ -63,6 +64,7 @@ public class RestExceptionMapper implements ExceptionMapper<AbstractRestExceptio
                     .header("Access-Control-Allow-Credentials", "true") //$NON-NLS-1$ //$NON-NLS-2$
                     .header("Access-Control-Expose-Headers", "X-Apiman-Error"); //$NON-NLS-1$ //$NON-NLS-2$
         }
+        builder.type(MediaType.APPLICATION_JSON_TYPE);
         return builder.entity(error).build();
     }
 

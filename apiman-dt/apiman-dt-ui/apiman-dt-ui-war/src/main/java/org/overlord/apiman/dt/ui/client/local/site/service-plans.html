@@ -64,17 +64,17 @@
         <!-- Content -->
         <div class="col-md-10 apiman-entity-content">
           <div class="col-md-10">
-            <div class="title" data-i18n-key="service-impl">Available Plans</div>
+            <div class="title" data-i18n-key="available-plans">Available Plans</div>
             <div>
-              <span>Choose which plans should be presented when Applications create a link (Contract) to this Service.</span>
+              <span data-i18n-key="available-plans-help">Choose which plans should be presented when Applications create a link (Contract) to this Service.</span>
             </div>
-            
-            <div class="apiman-plan-selector apiman-divider-40" data-field="plans" data-role="dummy">
-              <div class="container-fluid apiman-summaryrow">
+            <!-- The plans to choose from -->
+            <div class="apiman-plan-selector apiman-divider-40" data-field="plans">
+              <div class="container-fluid apiman-summaryrow" data-field="plan-widget">
                 <div class="row">
-                  <input type="checkbox"></input>
-                  <span class="title"><a href="#" title="Provides subscribing applications with full access to the Services in this Organization.">Platinum</a></span>
-                  <select class="selectpicker pull-right" data-role="dummy">
+                  <input data-field="checkbox" type="checkbox"></input>
+                  <span class="title"><a data-field="name" title="Provides subscribing applications with full access to the Services in this Organization.">Platinum</a></span>
+                  <select class="selectpicker pull-right" data-role="dummy" data-field="versions">
                     <option value="2.0">2.0</option>
                     <option value="1.7">1.7</option>
                     <option value="1.0">1.0</option>
@@ -85,7 +85,7 @@
               <div class="container-fluid apiman-summaryrow">
                 <div class="row">
                   <input type="checkbox"></input>
-                  <span class="title"><a href="#" title="Provides subscribing applications with full access to a subset of Services.  Also allows partial (rate limited) access to the rest.">Gold</a></span>
+                  <span class="title"><a title="Provides subscribing applications with full access to a subset of Services.  Also allows partial (rate limited) access to the rest.">Gold</a></span>
                   <select class="selectpicker pull-right" data-role="dummy">
                     <option value="1.3">1.3</option>
                     <option value="1.1">1.1</option>
@@ -97,7 +97,7 @@
               <div class="container-fluid apiman-summaryrow">
                 <div class="row">
                   <input type="checkbox"></input>
-                  <span class="title"><a href="#" title="Provides subscribing applications with free, but limited access to all Services in this Organization.">Silver</a></span>
+                  <span class="title"><a title="Provides subscribing applications with free, but limited access to all Services in this Organization.">Silver</a></span>
                   <select class="selectpicker pull-right" data-role="dummy">
                     <option value="2.2">2.2</option>
                     <option value="2.0">2.0</option>
@@ -109,7 +109,7 @@
             </div>
             
             <div class="actions">
-              <button class="btn btn-primary" data-field="saveButton" data-i18n-key="save" placeholder="Saving" data-icon="fa-cog">Save</button>
+              <button class="btn btn-primary" data-field="saveButton" data-i18n-key="save" placeholder="Saving..." data-icon="fa-cog">Save</button>
               <button class="btn btn-default" data-field="cancelButton" data-i18n-key="cancel">Cancel</button>
             </div>
             

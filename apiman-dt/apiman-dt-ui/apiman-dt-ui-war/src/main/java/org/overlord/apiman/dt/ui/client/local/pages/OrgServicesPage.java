@@ -81,7 +81,7 @@ public class OrgServicesPage extends AbstractOrgPage {
     @Override
     protected int loadPageData() {
         int rval = super.loadPageData();
-        rest.getServices(org, new IRestInvokerCallback<List<ServiceSummaryBean>>() {
+        rest.getOrgServices(org, new IRestInvokerCallback<List<ServiceSummaryBean>>() {
             @Override
             public void onSuccess(List<ServiceSummaryBean> response) {
                 serviceBeans = response;

@@ -78,8 +78,8 @@ public class VersionSelector extends FlowPanel implements HasValue<String>, Focu
     }
     
     /**
-     * Sets the organization choices available to the user for selection.
-     * @param organizations
+     * Sets the choices available to the user for selection.
+     * @param choices
      */
     public void setVersions(final List<String> choices) {
         versions.clear();

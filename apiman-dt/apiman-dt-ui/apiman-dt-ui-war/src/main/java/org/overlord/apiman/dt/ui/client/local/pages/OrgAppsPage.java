@@ -81,7 +81,7 @@ public class OrgAppsPage extends AbstractOrgPage {
     @Override
     protected int loadPageData() {
         int rval = super.loadPageData();
-        rest.getApplications(org, new IRestInvokerCallback<List<ApplicationSummaryBean>>() {
+        rest.getOrgApplications(org, new IRestInvokerCallback<List<ApplicationSummaryBean>>() {
             @Override
             public void onSuccess(List<ApplicationSummaryBean> response) {
                 apps = response;

@@ -17,9 +17,14 @@ package org.overlord.apiman.dt.api.beans.services;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -59,12 +64,15 @@ public class ServiceVersionBean implements Serializable {
     private ServiceStatus status;
     private String endpoint;
     private EndpointType endpointType;
+    @Embedded
+    @ElementCollection(fetch=FetchType.EAGER)
+    private Set<ServicePlanBean> plans = new HashSet<ServicePlanBean>();
     @Column(updatable=false)
     @Index(name="svc_vIdx")
     private String version;
-    @Column(updatable=false)
+    @Column(updatable=false, nullable=false)
     private String createdBy;
-    @Column(updatable=false)
+    @Column(updatable=false, nullable=false)
     private Date createdOn;
     private Date publishedOn;
     private Date retiredOn;
@@ -213,6 +221,27 @@ public class ServiceVersionBean implements Serializable {
      */
     public void setRetiredOn(Date retiredOn) {
         this.retiredOn = retiredOn;
+    }
+
+    /**
+     * @return the plans
+     */
+    public Set<ServicePlanBean> getPlans() {
+        return plans;
+    }
+
+    /**
+     * @param plans the plans to set
+     */
+    public void setPlans(Set<ServicePlanBean> plans) {
+        this.plans = plans;
+    }
+    
+    /**
+     * @param plan
+     */
+    public void addPlan(ServicePlanBean plan) {
+        this.plans.add(plan);
     }
 
     /**

@@ -107,6 +107,7 @@ public class DevServerDataSeeder extends DefaultTestDataSeeder {
         org.setName("JBoss Overlord");
         org.setDescription("Overlord is the umbrella project that will bring governance to the JBoss SOA Platform and eventually beyond.");
         org.setCreatedOn(new Date());
+        org.setCreatedBy("admin");
         storage.create(org);
         
         // Create JBoss Overlord org
@@ -115,6 +116,7 @@ public class DevServerDataSeeder extends DefaultTestDataSeeder {
         org.setName("Apereo Bedework");
         org.setDescription("Bedework is an open-source enterprise calendar system that supports public, personal, and group calendaring.");
         org.setCreatedOn(new Date());
+        org.setCreatedBy("admin");
         storage.create(org);
         
         // Make admin the owner of both orgs
@@ -221,6 +223,13 @@ public class DevServerDataSeeder extends DefaultTestDataSeeder {
         storage.create(plan);
         pvb = new PlanVersionBean();
         pvb.setVersion("1.0");
+        pvb.setStatus(PlanStatus.Created);
+        pvb.setPlan(plan);
+        pvb.setCreatedBy("admin");
+        pvb.setCreatedOn(new Date());
+        storage.create(pvb);
+        pvb = new PlanVersionBean();
+        pvb.setVersion("1.2");
         pvb.setStatus(PlanStatus.Created);
         pvb.setPlan(plan);
         pvb.setCreatedBy("admin");

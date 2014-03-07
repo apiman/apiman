@@ -42,15 +42,18 @@ public class ServiceBean implements Serializable {
     private static final long serialVersionUID = 1526742536153467539L;
     
     @Id
+    @Column(nullable=false)
     private String organizationId;
     @Id
+    @Column(nullable=false)
     private String id;
+    @Column(nullable=false)
     private String name;
     @Lob
     private String description;
-    @Column(updatable=false)
+    @Column(updatable=false, nullable=false)
     private String createdBy;
-    @Column(updatable=false)
+    @Column(updatable=false, nullable=false)
     private Date createdOn;
 
     /**

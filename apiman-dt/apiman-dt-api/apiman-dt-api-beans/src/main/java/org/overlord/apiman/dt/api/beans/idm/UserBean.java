@@ -39,10 +39,11 @@ public class UserBean implements Serializable {
     private static final long serialVersionUID = 865765107251347714L;
     
     @Id
-    @Column(updatable=false)
+    @Column(updatable=false, nullable=false)
     private String username;
     private String fullName;
     private String email;
+    @Column(updatable=false)
     private Date joinedOn;
     
     /**

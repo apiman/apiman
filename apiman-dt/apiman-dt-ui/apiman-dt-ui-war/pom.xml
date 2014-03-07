@@ -188,6 +188,7 @@
         <artifactId>gwt-maven-plugin</artifactId>
         <configuration>
           <logLevel>INFO</logLevel>
+          <strict>true</strict>
           <runTarget>index.html</runTarget>
           <extraJvmArgs>-Xmx512m</extraJvmArgs>
           <soyc>false</soyc>

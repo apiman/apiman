@@ -81,7 +81,7 @@ public class OrgPlansPage extends AbstractOrgPage {
     @Override
     protected int loadPageData() {
         int rval = super.loadPageData();
-        rest.getPlans(org, new IRestInvokerCallback<List<PlanSummaryBean>>() {
+        rest.getOrgPlans(org, new IRestInvokerCallback<List<PlanSummaryBean>>() {
             @Override
             public void onSuccess(List<PlanSummaryBean> response) {
                 planBeans = response;

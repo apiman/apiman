@@ -106,9 +106,15 @@ public abstract class SelectBox<T> extends ListBox implements HasValue<T> {
      */
     @Override
     public void setValue(T value) {
-        setValue(value, false);
-        setSelectedIndex(indexOf(value));
-        refreshUI(getElement());
+        int idx = indexOf(value);
+        if (idx != -1) {
+            setValue(value, false);
+            setSelectedIndex(idx);
+            refreshUI(getElement());
+        } else {
+            setSelectedIndex(0);
+            setValue(options.get(0));
+        }
     }
 
     /**
@@ -116,6 +122,8 @@ public abstract class SelectBox<T> extends ListBox implements HasValue<T> {
      * @param value
      */
     protected int indexOf(T value) {
+        if (value == null)
+            return -1;
         String itemValue = optionValue(value);
         for (int i = 0; i < getItemCount(); i++) {
             String rowValue = getValue(i);

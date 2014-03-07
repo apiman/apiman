@@ -15,11 +15,32 @@
  */
 package org.overlord.apiman.dt.ui.client.local.pages;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
 import org.jboss.errai.ui.nav.client.local.Page;
+import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.overlord.apiman.dt.api.beans.plans.PlanVersionBean;
+import org.overlord.apiman.dt.api.beans.services.ServicePlanBean;
+import org.overlord.apiman.dt.api.beans.summary.PlanSummaryBean;
 import org.overlord.apiman.dt.ui.client.local.AppMessages;
+import org.overlord.apiman.dt.ui.client.local.pages.service.ServicePlansSelector;
+import org.overlord.apiman.dt.ui.client.local.services.rest.IRestInvokerCallback;
+import org.overlord.commons.gwt.client.local.widgets.AsyncActionButton;
+
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.ui.Button;
 
 
 /**
@@ -32,19 +53,86 @@ import org.overlord.apiman.dt.ui.client.local.AppMessages;
 @Dependent
 public class ServicePlansPage extends AbstractServicePage {
     
+    List<PlanSummaryBean> planBeans;
+    Map<PlanSummaryBean, List<PlanVersionBean>> planVersions = new HashMap<PlanSummaryBean, List<PlanVersionBean>>();
+    
+    @Inject @DataField
+    ServicePlansSelector plans;
+    @Inject @DataField
+    AsyncActionButton saveButton;
+    @Inject @DataField
+    Button cancelButton;
+
     /**
      * Constructor.
      */
     public ServicePlansPage() {
     }
     
+    @PostConstruct
+    protected void postConstruct() {
+        plans.addValueChangeHandler(new ValueChangeHandler<Set<ServicePlanBean>>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<Set<ServicePlanBean>> event) {
+                onPlansChange();
+            }
+        });
+    }
+
+    /**
+     * Called when the user changes something in the plan list.
+     */
+    protected void onPlansChange() {
+        saveButton.setEnabled(true);
+        cancelButton.setEnabled(true);
+    }
+
     /**
      * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractPage#loadPageData()
      */
     @Override
     protected int loadPageData() {
         int rval = super.loadPageData();
-        return rval;
+        rest.getOrgPlans(org, new IRestInvokerCallback<List<PlanSummaryBean>>() {
+            @Override
+            public void onSuccess(List<PlanSummaryBean> response) {
+                planBeans = response;
+                planVersions.clear();
+                increaseExpectedDataPackets(response.size());
+                dataPacketLoaded();
+                for (final PlanSummaryBean planSummaryBean : response) {
+                    rest.getPlanVersions(org, planSummaryBean.getId(), new IRestInvokerCallback<List<PlanVersionBean>>() {
+                        @Override
+                        public void onSuccess(List<PlanVersionBean> response) {
+                            planVersions.put(planSummaryBean, response);
+                            dataPacketLoaded();
+                        }
+                        @Override
+                        public void onError(Throwable error) {
+                            dataPacketError(error);
+                        }
+                    });
+                }
+            }
+            @Override
+            public void onError(Throwable error) {
+                dataPacketError(error);
+            }
+        });
+        return rval + 1;
+    }
+    
+    /**
+     * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractServicePage#renderPage()
+     */
+    @Override
+    protected void renderPage() {
+        super.renderPage();
+        saveButton.reset();
+        saveButton.setEnabled(false);
+        cancelButton.setEnabled(false);
+        plans.setChoices(planBeans, planVersions);
+        plans.setValue(new HashSet<ServicePlanBean>(versionBean.getPlans()));
     }
     
     /**
@@ -53,6 +141,39 @@ public class ServicePlansPage extends AbstractServicePage {
     @Override
     protected String getPageTitle() {
         return i18n.format(AppMessages.TITLE_SERVICE_PLANS, serviceBean.getName());
+    }
+    
+    /**
+     * Called when the user clicks the Save button.
+     */
+    @EventHandler("saveButton")
+    protected void onSave(ClickEvent event) {
+        saveButton.onActionStarted();
+        cancelButton.setEnabled(false);
+        versionBean.setPlans(plans.getValue());
+        rest.updateServiceVersion(serviceBean.getOrganizationId(), serviceBean.getId(),
+                versionBean.getVersion(), versionBean, new IRestInvokerCallback<Void>() {
+            @Override
+            public void onSuccess(Void response) {
+                saveButton.onActionComplete();
+                saveButton.setEnabled(false);
+            }
+            @Override
+            public void onError(Throwable error) {
+                dataPacketError(error);
+            }
+        });
+    }
+
+    /**
+     * Called when the user clicks the Cancel button.
+     */
+    @EventHandler("cancelButton")
+    protected void onCancel(ClickEvent event) {
+        saveButton.reset();
+        saveButton.setEnabled(false);
+        cancelButton.setEnabled(false);
+        plans.setValue(new HashSet<ServicePlanBean>(versionBean.getPlans()));
     }
 
 }

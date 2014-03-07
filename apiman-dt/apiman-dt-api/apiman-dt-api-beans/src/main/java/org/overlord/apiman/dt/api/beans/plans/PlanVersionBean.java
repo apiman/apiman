@@ -56,13 +56,14 @@ public class PlanVersionBean implements Serializable {
         @JoinColumn(name="plan_orgId", referencedColumnName="organizationId")
     })
     private PlanBean plan;
+    @Column(nullable=false)
     private PlanStatus status;
     @Column(updatable=false, nullable=false)
     @Index(name="pln_vIdx")
     private String version;
-    @Column(updatable=false)
+    @Column(updatable=false, nullable=false)
     private String createdBy;
-    @Column(updatable=false)
+    @Column(updatable=false, nullable=false)
     private Date createdOn;
     private Date lockedOn;
     

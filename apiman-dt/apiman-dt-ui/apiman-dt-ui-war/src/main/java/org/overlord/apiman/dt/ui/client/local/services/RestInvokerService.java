@@ -258,7 +258,7 @@ public class RestInvokerService {
      * @param applicationId
      * @param callback
      */
-    public void getApplications(String organizationId, IRestInvokerCallback<List<ApplicationSummaryBean>> callback) {
+    public void getOrgApplications(String organizationId, IRestInvokerCallback<List<ApplicationSummaryBean>> callback) {
         CallbackAdapter<List<ApplicationSummaryBean>> adapter = new CallbackAdapter<List<ApplicationSummaryBean>>(callback);
         applications.call(adapter, adapter).list(organizationId);
     }
@@ -330,7 +330,7 @@ public class RestInvokerService {
      * @param serviceId
      * @param callback
      */
-    public void getServices(String organizationId, IRestInvokerCallback<List<ServiceSummaryBean>> callback) {
+    public void getOrgServices(String organizationId, IRestInvokerCallback<List<ServiceSummaryBean>> callback) {
         CallbackAdapter<List<ServiceSummaryBean>> adapter = new CallbackAdapter<List<ServiceSummaryBean>>(callback);
         services.call(adapter, adapter).list(organizationId);
     }
@@ -388,7 +388,7 @@ public class RestInvokerService {
      * @param organizationId
      * @param callback
      */
-    public void getPlans(String organizationId, IRestInvokerCallback<List<PlanSummaryBean>> callback) {
+    public void getOrgPlans(String organizationId, IRestInvokerCallback<List<PlanSummaryBean>> callback) {
         CallbackAdapter<List<PlanSummaryBean>> adapter = new CallbackAdapter<List<PlanSummaryBean>>(callback);
         plans.call(adapter, adapter).list(organizationId);
     }

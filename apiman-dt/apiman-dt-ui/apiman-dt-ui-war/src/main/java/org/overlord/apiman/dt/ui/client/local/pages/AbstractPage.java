@@ -128,6 +128,15 @@ public abstract class AbstractPage extends Composite {
             showPage();
         }
     }
+
+    /**
+     * Increments the number of data packets we're expecting to receive during the 
+     * data load phase of page lifecycle.
+     * @param additionalExpectedPackets
+     */
+    protected void increaseExpectedDataPackets(int additionalExpectedPackets) {
+        expectedDataPackets += additionalExpectedPackets;
+    }
     
     /**
      * Subclasses should implement this method.  This method represents an opportunity

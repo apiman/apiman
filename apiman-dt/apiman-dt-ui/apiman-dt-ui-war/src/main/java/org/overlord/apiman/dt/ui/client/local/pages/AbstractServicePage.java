@@ -44,11 +44,11 @@ import com.google.gwt.user.client.ui.Anchor;
 public abstract class AbstractServicePage extends AbstractPage {
     
     @PageState
-    private String service;
+    protected String service;
     @PageState
-    private String org;
+    protected String org;
     @PageState
-    private String version;
+    protected String version;
     
     OrganizationBean organizationBean;
     ServiceBean serviceBean;

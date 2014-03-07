@@ -1,0 +1,21 @@
+PUT /organizations/Organization1/services/Service1/versions/1.0 admin/admin
+Content-Type: application/json
+
+{
+  "version" : "7.0",
+  "endpoint" : "http://localhost:8080/ping",
+  "endpointType" : "rest",
+  "plans" : [
+    { "planId" : "Plan2", "version" : null }
+  ]
+}
+----
+500
+Content-Type: application/json
+
+{ 
+  "type" : "SystemErrorException",
+  "errorCode" : -1,
+  "message" : "javax.persistence.RollbackException: Error while committing the transaction",
+  "moreInfoUrl" : null
+}
