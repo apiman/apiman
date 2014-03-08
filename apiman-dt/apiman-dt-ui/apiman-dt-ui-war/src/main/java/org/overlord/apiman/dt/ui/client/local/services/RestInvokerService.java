@@ -253,6 +253,19 @@ public class RestInvokerService {
     }
 
     /**
+     * Get a single version of the application.
+     * @param organizationId
+     * @param applicationId
+     * @param version
+     * @param callback
+     */
+    public void getApplicationVersion(String organizationId, String applicationId, String version, 
+            IRestInvokerCallback<ApplicationVersionBean> callback) {
+        CallbackAdapter<ApplicationVersionBean> adapter = new CallbackAdapter<ApplicationVersionBean>(callback);
+        applications.call(adapter, adapter).getVersion(organizationId, applicationId, version);
+    }
+
+    /**
      * Gets all applications in the organization.
      * @param organizationId
      * @param applicationId
@@ -296,6 +309,19 @@ public class RestInvokerService {
     public void getService(String organizationId, String serviceId, IRestInvokerCallback<ServiceBean> callback) {
         CallbackAdapter<ServiceBean> adapter = new CallbackAdapter<ServiceBean>(callback);
         services.call(adapter, adapter).get(organizationId, serviceId);
+    }
+
+    /**
+     * Gets a single version of a service.
+     * @param organizationId
+     * @param serviceId
+     * @param version
+     * @param iRestInvokerCallback
+     */
+    public void getServiceVersion(String organizationId, String serviceId, String version,
+            IRestInvokerCallback<ServiceVersionBean> callback) {
+        CallbackAdapter<ServiceVersionBean> adapter = new CallbackAdapter<ServiceVersionBean>(callback);
+        services.call(adapter, adapter).getVersion(organizationId, serviceId, version);
     }
 
     /**

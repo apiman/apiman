@@ -31,6 +31,7 @@ import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.apiman.dt.api.beans.plans.PlanVersionBean;
 import org.overlord.apiman.dt.api.beans.services.ServicePlanBean;
+import org.overlord.apiman.dt.api.beans.services.ServiceVersionBean;
 import org.overlord.apiman.dt.api.beans.summary.PlanSummaryBean;
 import org.overlord.apiman.dt.ui.client.local.AppMessages;
 import org.overlord.apiman.dt.ui.client.local.pages.service.ServicePlansSelector;
@@ -150,13 +151,25 @@ public class ServicePlansPage extends AbstractServicePage {
     protected void onSave(ClickEvent event) {
         saveButton.onActionStarted();
         cancelButton.setEnabled(false);
-        versionBean.setPlans(plans.getValue());
-        rest.updateServiceVersion(serviceBean.getOrganizationId(), serviceBean.getId(),
-                versionBean.getVersion(), versionBean, new IRestInvokerCallback<Void>() {
+        
+        final Set<ServicePlanBean> newplans = plans.getValue();
+        versionBean.setPlans(newplans);
+        rest.getServiceVersion(serviceBean.getOrganizationId(), serviceBean.getId(), versionBean.getVersion(), new IRestInvokerCallback<ServiceVersionBean>() {
             @Override
-            public void onSuccess(Void response) {
-                saveButton.onActionComplete();
-                saveButton.setEnabled(false);
+            public void onSuccess(final ServiceVersionBean response) {
+                response.setPlans(newplans);
+                rest.updateServiceVersion(serviceBean.getOrganizationId(), serviceBean.getId(),
+                        versionBean.getVersion(), response, new IRestInvokerCallback<Void>() {
+                    @Override
+                    public void onSuccess(Void response) {
+                        saveButton.onActionComplete();
+                        saveButton.setEnabled(false);
+                    }
+                    @Override
+                    public void onError(Throwable error) {
+                        dataPacketError(error);
+                    }
+                });
             }
             @Override
             public void onError(Throwable error) {

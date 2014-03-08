@@ -27,6 +27,7 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.apiman.dt.api.beans.services.EndpointType;
+import org.overlord.apiman.dt.api.beans.services.ServiceVersionBean;
 import org.overlord.apiman.dt.ui.client.local.AppMessages;
 import org.overlord.apiman.dt.ui.client.local.pages.service.EndpointTypeSelectBox;
 import org.overlord.apiman.dt.ui.client.local.services.rest.IRestInvokerCallback;
@@ -117,21 +118,35 @@ public class ServiceImplPage extends AbstractServicePage {
     public void onSave(ClickEvent event) {
         saveButton.onActionStarted();
         cancelButton.setEnabled(false);
-        versionBean.setEndpoint(this.endpoint.getValue());
-        versionBean.setEndpointType(this.endpointType.getValue());
-        rest.updateServiceVersion(serviceBean.getOrganizationId(), serviceBean.getId(),
-                versionBean.getVersion(), versionBean, new IRestInvokerCallback<Void>() {
+        
+        final String endpointValue = this.endpoint.getValue();
+        final EndpointType endpointTypeValue = this.endpointType.getValue();
+        versionBean.setEndpoint(endpointValue);
+        versionBean.setEndpointType(endpointTypeValue);
+        rest.getServiceVersion(serviceBean.getOrganizationId(), serviceBean.getId(), versionBean.getVersion(), new IRestInvokerCallback<ServiceVersionBean>() {
+            @Override
+            public void onSuccess(final ServiceVersionBean response) {
+                response.setEndpoint(endpointValue);
+                response.setEndpointType(endpointTypeValue);
+                rest.updateServiceVersion(serviceBean.getOrganizationId(), serviceBean.getId(),
+                        versionBean.getVersion(), response, new IRestInvokerCallback<Void>() {
                     @Override
                     public void onSuccess(Void response) {
                         saveButton.onActionComplete();
                         saveButton.setEnabled(false);
-                        cancelButton.setEnabled(false);
                     }
                     @Override
                     public void onError(Throwable error) {
                         dataPacketError(error);
                     }
                 });
+            }
+            @Override
+            public void onError(Throwable error) {
+                dataPacketError(error);
+            }
+        });
+
     }
 
     /**
