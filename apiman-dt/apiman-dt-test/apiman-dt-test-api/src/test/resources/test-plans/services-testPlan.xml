@@ -47,6 +47,7 @@
     <test name="Update Service Plans 3">services/plans/010_update-version-1.0-plans.resttest</test>
     <test name="Get Version 1.0 (with 1 plan)">services/plans/011_get-version-1.0.resttest</test>
     <test name="Update Service Plans (error 500)">services/plans/012_update-version-1.0-plans-500.resttest</test>
+    <test name="Get Service Plans">services/plans/013_get-service-plans.resttest</test>
   </testGroup>
 
 </testPlan>

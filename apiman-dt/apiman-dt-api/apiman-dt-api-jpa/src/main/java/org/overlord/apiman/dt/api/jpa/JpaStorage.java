@@ -33,10 +33,12 @@ import org.overlord.apiman.dt.api.beans.plans.PlanVersionBean;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
 import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
 import org.overlord.apiman.dt.api.beans.services.ServiceBean;
+import org.overlord.apiman.dt.api.beans.services.ServicePlanBean;
 import org.overlord.apiman.dt.api.beans.services.ServiceVersionBean;
 import org.overlord.apiman.dt.api.beans.summary.ApplicationSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.OrganizationSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.PlanSummaryBean;
+import org.overlord.apiman.dt.api.beans.summary.ServicePlanSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.ServiceSummaryBean;
 import org.overlord.apiman.dt.api.persist.AlreadyExistsException;
 import org.overlord.apiman.dt.api.persist.DoesNotExistException;
@@ -277,6 +279,27 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         } finally {
             entityManager.close();
         }
+    }
+    
+    /**
+     * @see org.overlord.apiman.dt.api.persist.IStorageQuery#getServiceVersionPlans(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public List<ServicePlanSummaryBean> getServiceVersionPlans(String organizationId, String serviceId,
+            String version) throws StorageException {
+        List<ServicePlanSummaryBean> plans = new ArrayList<ServicePlanSummaryBean>();
+        
+        ServiceVersionBean versionBean = getServiceVersion(organizationId, serviceId, version);
+        Set<ServicePlanBean> servicePlans = versionBean.getPlans();
+        for (ServicePlanBean spb : servicePlans) {
+            PlanVersionBean planVersion = getPlanVersion(organizationId, spb.getPlanId(), spb.getVersion());
+            ServicePlanSummaryBean summary = new ServicePlanSummaryBean();
+            summary.setPlanId(planVersion.getPlan().getId());
+            summary.setPlanName(planVersion.getPlan().getName());
+            summary.setVersion(spb.getVersion());
+            plans.add(summary);
+        }
+        return plans;
     }
 
     /**

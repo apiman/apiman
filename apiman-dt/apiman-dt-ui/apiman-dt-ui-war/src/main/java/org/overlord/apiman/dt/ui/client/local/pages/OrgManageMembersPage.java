@@ -155,7 +155,7 @@ public class OrgManageMembersPage extends AbstractPage {
         String newMemberHref = navHelper.createHrefToPage(NewMemberPage.class, MultimapUtil.singleItemMap("org", org)); //$NON-NLS-1$
         addMember.setHref(newMemberHref);
 
-        roleSelector.setRoles(roleBeans);
+        roleSelector.setOptions(roleBeans);
         refreshCards();
     }
 

@@ -25,11 +25,10 @@ import javax.inject.Inject;
 import org.overlord.apiman.dt.api.beans.BeanUtils;
 import org.overlord.apiman.dt.api.beans.idm.PermissionType;
 import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
-import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
-import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
 import org.overlord.apiman.dt.api.beans.services.ServiceBean;
 import org.overlord.apiman.dt.api.beans.services.ServiceStatus;
 import org.overlord.apiman.dt.api.beans.services.ServiceVersionBean;
+import org.overlord.apiman.dt.api.beans.summary.ServicePlanSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.ServiceSummaryBean;
 import org.overlord.apiman.dt.api.persist.AlreadyExistsException;
 import org.overlord.apiman.dt.api.persist.DoesNotExistException;
@@ -40,7 +39,6 @@ import org.overlord.apiman.dt.api.persist.StorageException;
 import org.overlord.apiman.dt.api.rest.contract.IRoleResource;
 import org.overlord.apiman.dt.api.rest.contract.IServiceResource;
 import org.overlord.apiman.dt.api.rest.contract.IUserResource;
-import org.overlord.apiman.dt.api.rest.contract.exceptions.InvalidSearchCriteriaException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.NotAuthorizedException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ServiceAlreadyExistsException;
@@ -48,7 +46,6 @@ import org.overlord.apiman.dt.api.rest.contract.exceptions.ServiceNotFoundExcept
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ServiceVersionNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.SystemErrorException;
 import org.overlord.apiman.dt.api.rest.impl.util.ExceptionFactory;
-import org.overlord.apiman.dt.api.rest.impl.util.SearchCriteriaUtil;
 import org.overlord.apiman.dt.api.security.ISecurityContext;
 
 /**
@@ -254,25 +251,23 @@ public class ServiceResourceImpl implements IServiceResource {
             throw new SystemErrorException(e);
         }
     }
-
+    
     /**
-     * @see org.overlord.apiman.dt.api.rest.contract.IServiceResource#search(java.lang.String, org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean)
+     * @see org.overlord.apiman.dt.api.rest.contract.IServiceResource#getVersionPlans(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
-    public SearchResultsBean<ServiceBean> search(String organizationId, SearchCriteriaBean criteria)
-            throws OrganizationNotFoundException, InvalidSearchCriteriaException {
+    public List<ServicePlanSummaryBean> getVersionPlans(String organizationId, String serviceId,
+            String version) throws ServiceVersionNotFoundException, NotAuthorizedException {
+        if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
+        
+        // Ensure the version exists first.
+        getVersion(organizationId, serviceId, version);
+        
         try {
-            storage.get(organizationId, OrganizationBean.class);
+            return query.getServiceVersionPlans(organizationId, serviceId, version);
         } catch (DoesNotExistException e) {
-            throw ExceptionFactory.organizationNotFoundException(organizationId);
-        } catch (StorageException e) {
-            throw new SystemErrorException(e);
-        }
-
-        // TODO only return services that the user is permitted to see
-        try {
-            SearchCriteriaUtil.validateSearchCriteria(criteria);
-            return storage.find(criteria, ServiceBean.class);
+            throw ExceptionFactory.serviceNotFoundException(serviceId);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }

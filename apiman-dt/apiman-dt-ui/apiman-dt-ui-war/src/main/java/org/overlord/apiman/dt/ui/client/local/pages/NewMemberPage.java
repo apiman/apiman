@@ -138,7 +138,7 @@ public class NewMemberPage extends AbstractPage {
         addButton.reset();
         addButton.setEnabled(false);
         unlockPage();
-        roles.setRoles(roleBeans);
+        roles.setOptions(roleBeans);
         users.add(new Label("(" + i18n.format(AppMessages.NEW_MEMBER_SEARCH_TEXT) + ")")); //$NON-NLS-1$ //$NON-NLS-2$
     }
 

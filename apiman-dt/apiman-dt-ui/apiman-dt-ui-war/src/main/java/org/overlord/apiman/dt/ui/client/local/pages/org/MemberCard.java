@@ -105,7 +105,7 @@ public class MemberCard extends Composite implements HasValue<MemberBean> {
      */
     public void setRoles(List<RoleBean> roles) {
         roleBeans = roles;
-        editRolesSelector.setRoles(roles);
+        editRolesSelector.setOptions(roles);
     }
     
     /**

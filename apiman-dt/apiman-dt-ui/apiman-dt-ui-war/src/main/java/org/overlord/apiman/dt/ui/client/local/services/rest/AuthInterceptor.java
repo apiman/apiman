@@ -28,6 +28,7 @@ import org.overlord.apiman.dt.api.rest.contract.IMemberResource;
 import org.overlord.apiman.dt.api.rest.contract.IOrganizationResource;
 import org.overlord.apiman.dt.api.rest.contract.IPlanResource;
 import org.overlord.apiman.dt.api.rest.contract.IRoleResource;
+import org.overlord.apiman.dt.api.rest.contract.ISearchResource;
 import org.overlord.apiman.dt.api.rest.contract.IServiceResource;
 import org.overlord.apiman.dt.api.rest.contract.ISystemResource;
 import org.overlord.apiman.dt.api.rest.contract.IUserResource;
@@ -44,7 +45,7 @@ import org.overlord.apiman.dt.ui.client.shared.beans.ApiAuthType;
  * @author eric.wittmann@redhat.com
  */
 @ApplicationScoped
-@InterceptsRemoteCall({ ISystemResource.class, ICurrentUserResource.class, IUserResource.class,
+@InterceptsRemoteCall({ ISystemResource.class, ISearchResource.class, ICurrentUserResource.class, IUserResource.class,
         IRoleResource.class, IOrganizationResource.class, IApplicationResource.class, IServiceResource.class,
         IMemberResource.class, IPlanResource.class })
 public class AuthInterceptor implements RestClientInterceptor {

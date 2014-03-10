@@ -54,6 +54,12 @@ public class ServiceOverviewPage extends AbstractServicePage {
     @Inject @DataField
     Anchor versionCreatedBy;
 
+    @Inject @DataField
+    Anchor ttd_toNewContract;
+    @Inject @DataField
+    Anchor ttd_toNewServiceVersion;
+
+    
     /**
      * Constructor.
      */
@@ -75,6 +81,12 @@ public class ServiceOverviewPage extends AbstractServicePage {
     @Override
     protected void renderPage() {
         super.renderPage();
+        
+        String newContractHref = navHelper.createHrefToPage(NewContractPage.class, MultimapUtil.fromMultiple("org", org, "svc", service, "svcv", versionBean.getVersion())); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        ttd_toNewContract.setHref(newContractHref);
+        String newServiceVersionHref = navHelper.createHrefToPage(NewServiceVersionPage.class, MultimapUtil.fromMultiple("org", org, "service", service)); //$NON-NLS-1$ //$NON-NLS-2$
+        ttd_toNewServiceVersion.setHref(newServiceVersionHref);
+        
         description.setText(serviceBean.getDescription());
         createdOn.setText(Formatting.formatShortDate(serviceBean.getCreatedOn()));
         createdBy.setText(serviceBean.getCreatedBy());

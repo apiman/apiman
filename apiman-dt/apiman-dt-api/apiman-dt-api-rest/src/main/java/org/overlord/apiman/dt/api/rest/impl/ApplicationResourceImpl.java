@@ -28,8 +28,6 @@ import org.overlord.apiman.dt.api.beans.apps.ApplicationStatus;
 import org.overlord.apiman.dt.api.beans.apps.ApplicationVersionBean;
 import org.overlord.apiman.dt.api.beans.idm.PermissionType;
 import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
-import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
-import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
 import org.overlord.apiman.dt.api.beans.summary.ApplicationSummaryBean;
 import org.overlord.apiman.dt.api.persist.AlreadyExistsException;
 import org.overlord.apiman.dt.api.persist.DoesNotExistException;
@@ -43,12 +41,10 @@ import org.overlord.apiman.dt.api.rest.contract.IUserResource;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ApplicationAlreadyExistsException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ApplicationNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ApplicationVersionNotFoundException;
-import org.overlord.apiman.dt.api.rest.contract.exceptions.InvalidSearchCriteriaException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.NotAuthorizedException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.SystemErrorException;
 import org.overlord.apiman.dt.api.rest.impl.util.ExceptionFactory;
-import org.overlord.apiman.dt.api.rest.impl.util.SearchCriteriaUtil;
 import org.overlord.apiman.dt.api.security.ISecurityContext;
 
 /**
@@ -250,29 +246,6 @@ public class ApplicationResourceImpl implements IApplicationResource {
             return query.getApplicationVersions(organizationId, applicationId);
         } catch (DoesNotExistException e) {
             throw ExceptionFactory.applicationNotFoundException(applicationId);
-        } catch (StorageException e) {
-            throw new SystemErrorException(e);
-        }
-    }
-
-    /**
-     * @see org.overlord.apiman.dt.api.rest.contract.IApplicationResource#search(java.lang.String, org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean)
-     */
-    @Override
-    public SearchResultsBean<ApplicationBean> search(String organizationId, SearchCriteriaBean criteria)
-            throws OrganizationNotFoundException, InvalidSearchCriteriaException {
-        try {
-            storage.get(organizationId, OrganizationBean.class);
-        } catch (DoesNotExistException e) {
-            throw ExceptionFactory.organizationNotFoundException(organizationId);
-        } catch (StorageException e) {
-            throw new SystemErrorException(e);
-        }
-
-        // TODO only return applications that the user is permitted to see
-        try {
-            SearchCriteriaUtil.validateSearchCriteria(criteria);
-            return storage.find(criteria, ApplicationBean.class);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }

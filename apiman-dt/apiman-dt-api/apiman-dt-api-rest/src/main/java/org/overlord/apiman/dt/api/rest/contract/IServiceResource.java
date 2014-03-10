@@ -27,12 +27,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
-import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
 import org.overlord.apiman.dt.api.beans.services.ServiceBean;
 import org.overlord.apiman.dt.api.beans.services.ServiceVersionBean;
+import org.overlord.apiman.dt.api.beans.summary.ServicePlanSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.ServiceSummaryBean;
-import org.overlord.apiman.dt.api.rest.contract.exceptions.InvalidSearchCriteriaException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.NotAuthorizedException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ServiceAlreadyExistsException;
@@ -103,10 +101,10 @@ public interface IServiceResource {
             @PathParam("serviceId") String serviceId, @PathParam("version") String version,
             ServiceVersionBean bean) throws ServiceVersionNotFoundException, NotAuthorizedException;
 
-    @POST
-    @Path("{organizationId}/services/search")
-    @Consumes(MediaType.APPLICATION_JSON)
+    @GET
+    @Path("{organizationId}/services/{serviceId}/versions/{version}/plans")
     @Produces(MediaType.APPLICATION_JSON)
-    public SearchResultsBean<ServiceBean> search(@PathParam("organizationId") String organizationId,
-            SearchCriteriaBean criteria) throws OrganizationNotFoundException, InvalidSearchCriteriaException;
+    public List<ServicePlanSummaryBean> getVersionPlans(@PathParam("organizationId") String organizationId,
+            @PathParam("serviceId") String serviceId, @PathParam("version") String version)
+            throws ServiceVersionNotFoundException, NotAuthorizedException;
 }

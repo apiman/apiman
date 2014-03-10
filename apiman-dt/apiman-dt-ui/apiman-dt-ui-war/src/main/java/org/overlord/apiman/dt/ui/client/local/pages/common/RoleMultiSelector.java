@@ -23,6 +23,8 @@ import org.overlord.apiman.dt.api.beans.idm.RoleBean;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.logical.shared.AttachEvent;
+import com.google.gwt.event.logical.shared.AttachEvent.Handler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -45,6 +47,14 @@ public class RoleMultiSelector extends ListBox implements HasValue<Set<String>> 
      * Constructor.
      */
     public RoleMultiSelector() {
+        addAttachHandler(new Handler() {
+            @Override
+            public void onAttachOrDetach(AttachEvent event) {
+                if (event.isAttached()) {
+                    initUI(getElement());
+                }
+            }
+        });
         addChangeHandler(new ChangeHandler() {
             @Override
             public void onChange(ChangeEvent event) {
@@ -57,12 +67,14 @@ public class RoleMultiSelector extends ListBox implements HasValue<Set<String>> 
      * Sets the organization choices available to the user for selection.
      * @param organizations
      */
-    public void setRoles(final List<RoleBean> choices) {
-        all = choices;
-        for (RoleBean roleBean : choices) {
+    public void setOptions(final List<RoleBean> options) {
+        all = options;
+        for (RoleBean roleBean : options) {
             this.addItem(roleBean.getName(), roleBean.getId());
         }
-        initUI(getElement());
+        if (isAttached()) {
+            refreshUI(getElement());
+        }
     }
 
     /**
@@ -93,7 +105,8 @@ public class RoleMultiSelector extends ListBox implements HasValue<Set<String>> 
             boolean shouldSelect = value.contains(roleId);
             setItemSelected(i, shouldSelect);
         }
-        refreshUI(getElement());
+        if (isAttached())
+            renderUI(getElement());
     }
 
     /**
@@ -130,13 +143,22 @@ public class RoleMultiSelector extends ListBox implements HasValue<Set<String>> 
     }-*/;
 
     /**
-     * Refresh the UI.  This is done when the values in the select box
-     * are modified programmatically and the widget's UI needs to 
-     * reflect the changed state.
+     * Refresh the UI.  This is done when the select box's options
+     * are modified programmatically (after it is initially built).
      * @param elem
      */
     private native void refreshUI(Element elem) /*-{
-        $wnd.jQuery(elem).selectpickers('render');
+        $wnd.jQuery(elem).selectpicker('refresh');
+    }-*/;
+
+    /**
+     * Re-render the UI.  This is done when the select box's value
+     * is changed programmatically.  The UI will get updated to
+     * match the new value.
+     * @param elem
+     */
+    private native void renderUI(Element elem) /*-{
+        $wnd.jQuery(elem).selectpicker('render');
     }-*/;
 
     /**

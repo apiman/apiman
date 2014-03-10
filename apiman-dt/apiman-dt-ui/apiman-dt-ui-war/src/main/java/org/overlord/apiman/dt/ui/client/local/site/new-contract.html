@@ -12,7 +12,7 @@
     <div id="overlord-header">
     </div>
 
-    <div id="form-page" class="container apiman-entity-new page" data-field="page">
+    <div id="form-page" class="container apiman-new-contract apiman-entity-new page" data-field="page">
       <div class="row">
         <h2 class="title" data-i18n-key="new-contract">New Contract</h2>
       </div>
@@ -25,11 +25,11 @@
         <hr/>
       </div>
       <!-- Application -->
-      <div class="row">
+      <div class="row application-row">
         <dl>
           <dt data-i18n-key="application">Application</dt>
           <dd>
-            <select class="selectpicker" data-live-search="true" data-role="dummy">
+            <select class="selectpicker" data-live-search="true" data-role="dummy" data-field="applicationSelector">
               <option data-content="Bedework / <span class='emphasis'>bw-calendar</span>">Bedework / bw-calendar</option>
               <option data-content="Overlord / <span class='emphasis'>dtgov</span>">Overlord / dtgov</option>
               <option data-content="Overlord / <span class='emphasis'>s-ramp</span>">Overlord / s-ramp</option>
@@ -38,11 +38,11 @@
         </dl>
       </div>
       <!-- Application Version -->
-      <div class="row">
+      <div class="row application-version-row">
         <dl>
           <dt data-i18n-key="application-version">Application Version</dt>
           <dd>
-            <select class="selectpicker" data-role="dummy">
+            <select class="selectpicker" data-role="dummy" data-field="applicationVersion">
               <option>2.0</option>
               <option>1.5</option>
               <option>1.4</option>
@@ -53,7 +53,7 @@
         </dl>
       </div>
       <!-- Service search bar -->
-      <div class="row">
+      <div class="row service-row">
         <dl>
           <dt data-i18n-key="find-service">Find a Service</dt>
           <dd>
@@ -63,7 +63,7 @@
         </dl>
       </div>
       <!-- Service search results -->
-      <div class="row">
+      <div class="row service-row">
         <div class="panel panel-default input-search-results">
           <div class="panel-body container-fluid" data-field="services" data-role="dummy">
             <a href="#" class="item">
@@ -88,7 +88,7 @@
         </div>
       </div>
       <!-- Service Version -->
-      <div class="row">
+      <div class="row service-version-row">
         <dl>
           <dt data-i18n-key="service-version">Service Version</dt>
           <dd>
@@ -103,17 +103,25 @@
         </dl>
       </div>
       <!-- Plan -->
-      <div class="row">
+      <div class="row plan-row">
         <dl>
           <dt data-i18n-key="plan">Plan</dt>
           <dd>
-            <select data-field="plan" class="selectpicker" data-role="dummy">
+            <select data-field="plan" class="selectpicker" data-role="dummy" data-role="plan">
               <option>Platinum</option>
               <option>Gold</option>
               <option>Silver</option>
             </select>
           </dd>
         </dl>
+      </div>
+
+      <!-- Spinner -->
+      <div class="row spinner-row hide">
+        <div>
+          <i class="fa fa-cog fa-spin fa-fw"></i>
+          <span>Loading data, please wait...</span>
+        </div>
       </div>
 
       <!-- HR -->

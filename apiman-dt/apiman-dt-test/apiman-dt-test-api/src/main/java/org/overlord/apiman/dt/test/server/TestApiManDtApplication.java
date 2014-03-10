@@ -27,6 +27,7 @@ import org.overlord.apiman.dt.api.rest.impl.OrganizationResourceImpl;
 import org.overlord.apiman.dt.api.rest.impl.PermissionsResourceImpl;
 import org.overlord.apiman.dt.api.rest.impl.PlanResourceImpl;
 import org.overlord.apiman.dt.api.rest.impl.RoleResourceImpl;
+import org.overlord.apiman.dt.api.rest.impl.SearchResourceImpl;
 import org.overlord.apiman.dt.api.rest.impl.ServiceResourceImpl;
 import org.overlord.apiman.dt.api.rest.impl.SystemResourceImpl;
 import org.overlord.apiman.dt.api.rest.impl.UserResourceImpl;
@@ -47,6 +48,7 @@ public class TestApiManDtApplication extends ApiManDtApplication {
      */
     public TestApiManDtApplication() {
         classes.add(SystemResourceImpl.class);
+        classes.add(SearchResourceImpl.class);
         classes.add(RoleResourceImpl.class);
         classes.add(UserResourceImpl.class);
         classes.add(CurrentUserResourceImpl.class);

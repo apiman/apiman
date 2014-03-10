@@ -38,6 +38,7 @@ import org.overlord.apiman.dt.api.beans.services.ServiceVersionBean;
 import org.overlord.apiman.dt.api.beans.summary.ApplicationSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.OrganizationSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.PlanSummaryBean;
+import org.overlord.apiman.dt.api.beans.summary.ServicePlanSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.ServiceSummaryBean;
 import org.overlord.apiman.dt.api.rest.contract.IApplicationResource;
 import org.overlord.apiman.dt.api.rest.contract.ICurrentUserResource;
@@ -45,6 +46,7 @@ import org.overlord.apiman.dt.api.rest.contract.IMemberResource;
 import org.overlord.apiman.dt.api.rest.contract.IOrganizationResource;
 import org.overlord.apiman.dt.api.rest.contract.IPlanResource;
 import org.overlord.apiman.dt.api.rest.contract.IRoleResource;
+import org.overlord.apiman.dt.api.rest.contract.ISearchResource;
 import org.overlord.apiman.dt.api.rest.contract.IServiceResource;
 import org.overlord.apiman.dt.api.rest.contract.ISystemResource;
 import org.overlord.apiman.dt.api.rest.contract.IUserResource;
@@ -62,6 +64,8 @@ public class RestInvokerService {
     
     @Inject
     private Caller<ISystemResource> system;
+    @Inject
+    private Caller<ISearchResource> search;
     @Inject
     private Caller<ICurrentUserResource> currentUser;
     @Inject
@@ -316,7 +320,7 @@ public class RestInvokerService {
      * @param organizationId
      * @param serviceId
      * @param version
-     * @param iRestInvokerCallback
+     * @param callback
      */
     public void getServiceVersion(String organizationId, String serviceId, String version,
             IRestInvokerCallback<ServiceVersionBean> callback) {
@@ -334,6 +338,19 @@ public class RestInvokerService {
             IRestInvokerCallback<List<ServiceVersionBean>> callback) {
         CallbackAdapter<List<ServiceVersionBean>> adapter = new CallbackAdapter<List<ServiceVersionBean>>(callback);
         services.call(adapter, adapter).listVersions(organizationId, serviceId);
+    }
+
+    /**
+     * Gets the plans for a service version.
+     * @param organizationId
+     * @param serviceId
+     * @param version
+     * @param callback
+     */
+    public void getServiceVersionPlans(String organizationId, String serviceId, String version,
+            IRestInvokerCallback<List<ServicePlanSummaryBean>> callback) {
+        CallbackAdapter<List<ServicePlanSummaryBean>> adapter = new CallbackAdapter<List<ServicePlanSummaryBean>>(callback);
+        services.call(adapter, adapter).getVersionPlans(organizationId, serviceId, version);
     }
     
     /**
@@ -453,6 +470,26 @@ public class RestInvokerService {
             IRestInvokerCallback<PlanVersionBean> callback) {
         CallbackAdapter<PlanVersionBean> adapter = new CallbackAdapter<PlanVersionBean>(callback);
         plans.call(adapter, adapter).createVersion(organizationId, planId, version);
+    }
+    
+    /**
+     * Finds applications using the given search criteria.
+     * @param criteria
+     * @param callback
+     */
+    public void findApplications(SearchCriteriaBean criteria, IRestInvokerCallback<SearchResultsBean<ApplicationBean>> callback) {
+        CallbackAdapter<SearchResultsBean<ApplicationBean>> adapter = new CallbackAdapter<SearchResultsBean<ApplicationBean>>(callback);
+        search.call(adapter, adapter).searchApps(criteria);
+    }
+    
+    /**
+     * Finds services using the given search criteria.
+     * @param criteria
+     * @param callback
+     */
+    public void findServices(SearchCriteriaBean criteria, IRestInvokerCallback<SearchResultsBean<ServiceBean>> callback) {
+        CallbackAdapter<SearchResultsBean<ServiceBean>> adapter = new CallbackAdapter<SearchResultsBean<ServiceBean>>(callback);
+        search.call(adapter, adapter).searchServices(criteria);
     }
 
 }

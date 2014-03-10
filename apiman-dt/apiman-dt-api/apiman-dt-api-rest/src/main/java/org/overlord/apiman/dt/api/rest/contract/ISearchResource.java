@@ -17,41 +17,46 @@
 package org.overlord.apiman.dt.api.rest.contract;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.overlord.apiman.dt.api.beans.apps.ApplicationBean;
 import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
-import org.overlord.apiman.dt.api.rest.contract.exceptions.NotAuthorizedException;
-import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationAlreadyExistsException;
+import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
+import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
+import org.overlord.apiman.dt.api.beans.services.ServiceBean;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.InvalidSearchCriteriaException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationNotFoundException;
 
 /**
- * The Organization API.
+ * The Search API.
  * 
  * @author eric.wittmann@redhat.com
  */
-@Path("organizations")
-public interface IOrganizationResource {
-    
+@Path("search")
+public interface ISearchResource {
+
     @POST
+    @Path("organizations")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public OrganizationBean create(OrganizationBean bean) throws OrganizationAlreadyExistsException, NotAuthorizedException;
-    
-    @GET
-    @Path("{organizationId}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public OrganizationBean get(@PathParam("organizationId") String organizationId) throws OrganizationNotFoundException, NotAuthorizedException;
+    public SearchResultsBean<OrganizationBean> searchOrgs(SearchCriteriaBean criteria)
+            throws InvalidSearchCriteriaException;
 
-    @PUT
-    @Path("{organizationId}")
+    @POST
+    @Path("applications")
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public void update(@PathParam("organizationId") String organizationId, OrganizationBean bean)
-            throws OrganizationNotFoundException, NotAuthorizedException;
+    public SearchResultsBean<ApplicationBean> searchApps(SearchCriteriaBean criteria)
+            throws OrganizationNotFoundException, InvalidSearchCriteriaException;
+
+    @POST
+    @Path("services")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public SearchResultsBean<ServiceBean> searchServices(SearchCriteriaBean criteria)
+            throws OrganizationNotFoundException, InvalidSearchCriteriaException;
 
 }

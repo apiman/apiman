@@ -40,6 +40,8 @@ public class AppMessages {
     public static final String TITLE_NEW_PLAN = "page.title.new-plan"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "APIMan - New Plan Version")
     public static final String TITLE_NEW_PLAN_VERSION = "page.title.new-plan-version"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "APIMan - New Contract")
+    public static final String TITLE_NEW_CONTRACT = "page.title.new-contract"; //$NON-NLS-1$
 
     @TranslationKey(defaultValue = "APIMan - {0} (Organizations)")
     public static final String TITLE_USER_ORGS = "page.title.user-orgs"; //$NON-NLS-1$
@@ -127,7 +129,9 @@ public class AppMessages {
     public static final String MEMBER_CARD_ASSIGN_ROLES_HELP = "manageMembers.card.edit-help"; //$NON-NLS-1$
 
     @TranslationKey(defaultValue = "No users found.")
-    public static final String USER_SELECTOR_NONE_FOUND = "userSelector.users.no-uses-found"; //$NON-NLS-1$
+    public static final String USER_SELECTOR_NONE_FOUND = "userSelector.users.no-users-found"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "No services found.")
+    public static final String SERVICE_SELECTOR_NONE_FOUND = "serviceSelector.users.no-services-found"; //$NON-NLS-1$
 
     @TranslationKey(defaultValue = "Search for users above")
     public static final String NEW_MEMBER_SEARCH_TEXT = "newMember.userSelector.help-text"; //$NON-NLS-1$

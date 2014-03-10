@@ -29,13 +29,10 @@ import javax.ws.rs.core.MediaType;
 
 import org.overlord.apiman.dt.api.beans.apps.ApplicationBean;
 import org.overlord.apiman.dt.api.beans.apps.ApplicationVersionBean;
-import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
-import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
 import org.overlord.apiman.dt.api.beans.summary.ApplicationSummaryBean;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ApplicationAlreadyExistsException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ApplicationNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ApplicationVersionNotFoundException;
-import org.overlord.apiman.dt.api.rest.contract.exceptions.InvalidSearchCriteriaException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.NotAuthorizedException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationNotFoundException;
 
@@ -102,11 +99,4 @@ public interface IApplicationResource {
     public void updateVersion(@PathParam("organizationId") String organizationId,
             @PathParam("applicationId") String applicationId, @PathParam("version") String version,
             ApplicationVersionBean bean) throws ApplicationVersionNotFoundException, NotAuthorizedException;
-
-    @POST
-    @Path("{organizationId}/applications/search")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public SearchResultsBean<ApplicationBean> search(@PathParam("organizationId") String organizationId,
-            SearchCriteriaBean criteria) throws OrganizationNotFoundException, InvalidSearchCriteriaException;
 }

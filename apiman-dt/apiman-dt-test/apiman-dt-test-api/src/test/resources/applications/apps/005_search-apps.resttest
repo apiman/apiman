@@ -1,4 +1,4 @@
-POST /organizations/Organization1/applications/search admin/admin
+POST /search/applications admin/admin
 Content-Type: application/json
 
 {

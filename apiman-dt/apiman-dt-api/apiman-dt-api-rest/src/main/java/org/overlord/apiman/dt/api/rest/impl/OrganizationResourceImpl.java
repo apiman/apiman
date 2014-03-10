@@ -25,8 +25,6 @@ import org.overlord.apiman.dt.api.beans.BeanUtils;
 import org.overlord.apiman.dt.api.beans.idm.PermissionType;
 import org.overlord.apiman.dt.api.beans.idm.RoleMembershipBean;
 import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
-import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
-import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
 import org.overlord.apiman.dt.api.persist.AlreadyExistsException;
 import org.overlord.apiman.dt.api.persist.DoesNotExistException;
 import org.overlord.apiman.dt.api.persist.IIdmStorage;
@@ -35,13 +33,11 @@ import org.overlord.apiman.dt.api.persist.StorageException;
 import org.overlord.apiman.dt.api.rest.contract.IOrganizationResource;
 import org.overlord.apiman.dt.api.rest.contract.IRoleResource;
 import org.overlord.apiman.dt.api.rest.contract.IUserResource;
-import org.overlord.apiman.dt.api.rest.contract.exceptions.InvalidSearchCriteriaException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.NotAuthorizedException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationAlreadyExistsException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.SystemErrorException;
 import org.overlord.apiman.dt.api.rest.impl.util.ExceptionFactory;
-import org.overlord.apiman.dt.api.rest.impl.util.SearchCriteriaUtil;
 import org.overlord.apiman.dt.api.security.ISecurityContext;
 
 /**
@@ -125,20 +121,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.update(bean);
         } catch (DoesNotExistException e) {
             throw ExceptionFactory.organizationNotFoundException(organizationId);
-        } catch (StorageException e) {
-            throw new SystemErrorException(e);
-        }
-    }
-    
-    /**
-     * @see org.overlord.apiman.dt.api.rest.contract.IOrganizationResource#search(org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean)
-     */
-    @Override
-    public SearchResultsBean<OrganizationBean> search(SearchCriteriaBean criteria) throws InvalidSearchCriteriaException {
-        // TODO only return organizations that the user is permitted to see
-        try {
-            SearchCriteriaUtil.validateSearchCriteria(criteria);
-            return storage.find(criteria, OrganizationBean.class);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }

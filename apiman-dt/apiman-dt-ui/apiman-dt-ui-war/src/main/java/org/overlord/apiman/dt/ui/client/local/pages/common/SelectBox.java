@@ -17,6 +17,9 @@ package org.overlord.apiman.dt.ui.client.local.pages.common;
 
 import java.util.List;
 
+import com.google.gwt.dom.client.NodeList;
+import com.google.gwt.dom.client.OptionElement;
+import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.logical.shared.AttachEvent;
@@ -68,7 +71,17 @@ public abstract class SelectBox<T> extends ListBox implements HasValue<T> {
         for (T option : options) {
             String name = optionName(option);
             String value = optionValue(option);
-            this.addItem(name, value);
+            String dataContent = optionDataContent(option);
+            if (value == null)
+                this.addItem(name);
+            else
+                this.addItem(name, value);
+            if (dataContent != null) {
+                SelectElement select = getElement().cast();
+                NodeList<OptionElement> o = select.getOptions();
+                OptionElement item = o.getItem(o.getLength() - 1);
+                item.setAttribute("data-content", dataContent); //$NON-NLS-1$
+            }
         }
         if (isAttached()) {
             refreshUI(getElement());
@@ -83,7 +96,16 @@ public abstract class SelectBox<T> extends ListBox implements HasValue<T> {
     /**
      * @param option
      */
-    protected abstract String optionValue(T option);
+    protected String optionValue(T option) {
+        return null;
+    }
+
+    /**
+     * @param option
+     */
+    protected String optionDataContent(T option) {
+        return null;
+    }
 
     /**
      * @see com.google.gwt.event.logical.shared.HasValueChangeHandlers#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
@@ -108,13 +130,14 @@ public abstract class SelectBox<T> extends ListBox implements HasValue<T> {
     public void setValue(T value) {
         int idx = indexOf(value);
         if (idx != -1) {
-            setValue(value, false);
             setSelectedIndex(idx);
-            refreshUI(getElement());
+            setValue(value, false);
         } else {
             setSelectedIndex(0);
-            setValue(options.get(0));
+            setValue(options.get(0), false);
         }
+        if (isAttached())
+            renderUI(getElement());
     }
 
     /**
@@ -154,12 +177,21 @@ public abstract class SelectBox<T> extends ListBox implements HasValue<T> {
     }-*/;
 
     /**
-     * Refresh the UI.  This is done when the values in the select box
-     * are modified programmatically and the widget's UI needs to 
-     * reflect the changed state.
+     * Refresh the UI.  This is done when the select box's options
+     * are modified programmatically (after it is initially built).
      * @param elem
      */
     private native void refreshUI(Element elem) /*-{
+        $wnd.jQuery(elem).selectpicker('refresh');
+    }-*/;
+
+    /**
+     * Re-render the UI.  This is done when the select box's value
+     * is changed programmatically.  The UI will get updated to
+     * match the new value.
+     * @param elem
+     */
+    private native void renderUI(Element elem) /*-{
         $wnd.jQuery(elem).selectpicker('render');
     }-*/;
 
@@ -168,14 +200,7 @@ public abstract class SelectBox<T> extends ListBox implements HasValue<T> {
      */
     protected void fireValueChangeEvent() {
         int idx = this.getSelectedIndex();
-        String value = this.getValue(idx);
-        T newValue = null;
-        for (T option : options) {
-            String optionVal = optionValue(option);
-            if (value.equals(optionVal)) {
-                newValue = option;
-            }
-        }
+        T newValue = options.get(idx);
         setValue(newValue, true);
     }
 
