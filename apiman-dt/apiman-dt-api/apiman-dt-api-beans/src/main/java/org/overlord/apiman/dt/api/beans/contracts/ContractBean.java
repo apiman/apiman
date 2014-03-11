@@ -16,7 +16,9 @@
 package org.overlord.apiman.dt.api.beans.contracts;
 
 import java.io.Serializable;
+import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -65,6 +67,10 @@ public class ContractBean implements Serializable {
         @JoinColumn(name="planv_id", referencedColumnName="id")
     })
     private PlanVersionBean plan;
+    @Column(updatable=false, nullable=false)
+    private String createdBy;
+    @Column(updatable=false, nullable=false)
+    private Date createdOn;
 
     /**
      * Constructor.
@@ -126,6 +132,34 @@ public class ContractBean implements Serializable {
      */
     public void setId(Long id) {
         this.id = id;
+    }
+
+    /**
+     * @return the createdBy
+     */
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    /**
+     * @param createdBy the createdBy to set
+     */
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    /**
+     * @return the createdOn
+     */
+    public Date getCreatedOn() {
+        return createdOn;
+    }
+
+    /**
+     * @param createdOn the createdOn to set
+     */
+    public void setCreatedOn(Date createdOn) {
+        this.createdOn = createdOn;
     }
 
 }

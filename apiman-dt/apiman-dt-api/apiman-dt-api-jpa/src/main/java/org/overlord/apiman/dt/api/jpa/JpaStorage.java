@@ -37,6 +37,7 @@ import org.overlord.apiman.dt.api.beans.services.ServiceBean;
 import org.overlord.apiman.dt.api.beans.services.ServicePlanBean;
 import org.overlord.apiman.dt.api.beans.services.ServiceVersionBean;
 import org.overlord.apiman.dt.api.beans.summary.ApplicationSummaryBean;
+import org.overlord.apiman.dt.api.beans.summary.ContractSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.OrganizationSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.PlanSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.ServicePlanSummaryBean;
@@ -87,6 +88,14 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     @Override
     public <T> void delete(T bean) throws StorageException, DoesNotExistException {
         super.delete(bean);
+    }
+    
+    /**
+     * @see org.overlord.apiman.dt.api.persist.IStorage#get(java.lang.Long, java.lang.Class)
+     */
+    @Override
+    public <T> T get(Long id, Class<T> type) throws StorageException, DoesNotExistException {
+        return super.get(id, type);
     }
 
     /**
@@ -358,8 +367,10 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      */
     @SuppressWarnings("unchecked")
     @Override
-    public List<ContractBean> getApplicationContracts(String organizationId, String applicationId,
+    public List<ContractSummaryBean> getApplicationContracts(String organizationId, String applicationId,
             String version) throws StorageException {
+        List<ContractSummaryBean> rval = new ArrayList<ContractSummaryBean>();
+
         EntityManager entityManager = emf.createEntityManager();
         try {
             String jpql = 
@@ -374,8 +385,35 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             query.setParameter("orgId", organizationId); //$NON-NLS-1$
             query.setParameter("applicationId", applicationId); //$NON-NLS-1$
             query.setParameter("version", version); //$NON-NLS-1$
-            
-            return (List<ContractBean>) query.getResultList();
+            List<ContractBean> contracts = (List<ContractBean>) query.getResultList();
+            for (ContractBean contractBean : contracts) {
+                ApplicationBean application = contractBean.getApplication().getApplication();
+                ServiceBean service = contractBean.getService().getService();
+                PlanBean plan = contractBean.getPlan().getPlan();
+                
+                OrganizationBean appOrg = entityManager.find(OrganizationBean.class, application.getOrganizationId());
+                OrganizationBean svcOrg = entityManager.find(OrganizationBean.class, service.getOrganizationId());
+                
+                ContractSummaryBean csb = new ContractSummaryBean();
+                csb.setAppId(application.getId());
+                csb.setAppOrganizationId(application.getOrganizationId());
+                csb.setAppOrganizationName(appOrg.getName());
+                csb.setAppName(application.getName());
+                csb.setAppVersion(contractBean.getApplication().getVersion());
+                csb.setContractId(contractBean.getId());
+                csb.setCreatedOn(contractBean.getCreatedOn());
+                csb.setPlanId(plan.getId());
+                csb.setPlanName(plan.getName());
+                csb.setPlanVersion(contractBean.getPlan().getVersion());
+                csb.setServiceDescription(service.getDescription());
+                csb.setServiceId(service.getId());
+                csb.setServiceName(service.getName());
+                csb.setServiceOrganizationId(svcOrg.getId());
+                csb.setServiceOrganizationName(svcOrg.getName());
+                csb.setServiceVersion(contractBean.getService().getVersion());
+                
+                rval.add(csb);
+            }
         } catch (Throwable t) {
             JpaUtil.rollbackQuietly(entityManager);
             logger.error(t.getMessage(), t);
@@ -383,6 +421,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         } finally {
             entityManager.close();
         }
+        return rval;
     }
 
     /**

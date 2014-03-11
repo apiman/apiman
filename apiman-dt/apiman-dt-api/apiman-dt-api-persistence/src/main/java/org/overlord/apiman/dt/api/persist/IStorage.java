@@ -31,6 +31,8 @@ public interface IStorage {
 
     public <T> void delete(T bean) throws StorageException, DoesNotExistException;
 
+    public <T> T get(Long id, Class<T> type) throws StorageException, DoesNotExistException;
+
     public <T> T get(String id, Class<T> type) throws StorageException, DoesNotExistException;
 
     public <T> T get(String organizationId, String id, Class<T> type) throws StorageException, DoesNotExistException;

@@ -32,10 +32,12 @@ import org.overlord.apiman.dt.api.beans.apps.ApplicationVersionBean;
 import org.overlord.apiman.dt.api.beans.contracts.ContractBean;
 import org.overlord.apiman.dt.api.beans.contracts.NewContractBean;
 import org.overlord.apiman.dt.api.beans.summary.ApplicationSummaryBean;
+import org.overlord.apiman.dt.api.beans.summary.ContractSummaryBean;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ApplicationAlreadyExistsException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ApplicationNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ApplicationVersionNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ContractAlreadyExistsException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.ContractNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.NotAuthorizedException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.PlanNotFoundException;
@@ -116,9 +118,17 @@ public interface IApplicationResource {
             NotAuthorizedException;
 
     @GET
+    @Path("{organizationId}/applications/{applicationId}/versions/{version}/contracts/{contractId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public ContractBean getContract(@PathParam("organizationId") String organizationId,
+            @PathParam("applicationId") String applicationId, @PathParam("version") String version,
+            @PathParam("contractId") Long contractId) throws ApplicationNotFoundException,
+            ContractNotFoundException, NotAuthorizedException;
+
+    @GET
     @Path("{organizationId}/applications/{applicationId}/versions/{version}/contracts")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<ContractBean> listContracts(@PathParam("organizationId") String organizationId,
+    public List<ContractSummaryBean> listContracts(@PathParam("organizationId") String organizationId,
             @PathParam("applicationId") String applicationId, @PathParam("version") String version)
             throws ApplicationNotFoundException, NotAuthorizedException;
 

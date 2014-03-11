@@ -35,6 +35,7 @@ import org.overlord.apiman.dt.api.beans.plans.PlanVersionBean;
 import org.overlord.apiman.dt.api.beans.services.ServicePlanBean;
 import org.overlord.apiman.dt.api.beans.services.ServiceVersionBean;
 import org.overlord.apiman.dt.api.beans.summary.ApplicationSummaryBean;
+import org.overlord.apiman.dt.api.beans.summary.ContractSummaryBean;
 import org.overlord.apiman.dt.api.persist.AlreadyExistsException;
 import org.overlord.apiman.dt.api.persist.DoesNotExistException;
 import org.overlord.apiman.dt.api.persist.IIdmStorage;
@@ -48,6 +49,7 @@ import org.overlord.apiman.dt.api.rest.contract.exceptions.ApplicationAlreadyExi
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ApplicationNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ApplicationVersionNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ContractAlreadyExistsException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.ContractNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.NotAuthorizedException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.PlanNotFoundException;
@@ -295,8 +297,30 @@ public class ApplicationResourceImpl implements IApplicationResource {
             contract.setApplication(avb);
             contract.setService(svb);
             contract.setPlan(pvb);
+            contract.setCreatedBy(securityContext.getCurrentUser());
+            contract.setCreatedOn(new Date());
             storage.create(contract);
             return contract;
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+    }
+    
+    /**
+     * @see org.overlord.apiman.dt.api.rest.contract.IApplicationResource#getContract(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public ContractBean getContract(String organizationId, String applicationId, String version,
+            Long contractId) throws ApplicationNotFoundException, ContractNotFoundException, NotAuthorizedException {
+        if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
+        try {
+            ContractBean contract = storage.get(contractId, ContractBean.class);
+            if (contract == null)
+                throw ExceptionFactory.contractNotFoundException(contractId);
+            return contract;
+        } catch (DoesNotExistException e) {
+            throw ExceptionFactory.contractNotFoundException(contractId);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
@@ -306,7 +330,7 @@ public class ApplicationResourceImpl implements IApplicationResource {
      * @see org.overlord.apiman.dt.api.rest.contract.IApplicationResource#listContracts(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
-    public List<ContractBean> listContracts(String organizationId, String applicationId, String version)
+    public List<ContractSummaryBean> listContracts(String organizationId, String applicationId, String version)
             throws ApplicationNotFoundException, NotAuthorizedException {
         if (!securityContext.hasPermission(PermissionType.appView, organizationId))
             throw ExceptionFactory.notAuthorizedException();

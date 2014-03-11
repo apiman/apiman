@@ -131,6 +131,25 @@ public abstract class AbstractJpaStorage {
     }
 
     /**
+     * @see org.overlord.apiman.dt.api.persist.IStorage#get(java.lang.Long, java.lang.Class)
+     */
+    public <T> T get(Long id, Class<T> type) throws StorageException, DoesNotExistException {
+        T rval = null;
+        EntityManager entityManager = emf.createEntityManager();
+        try {
+            rval = entityManager.find(type, id);
+        } catch (Throwable t) {
+            logger.error(t.getMessage(), t);
+            throw new StorageException(t);
+        } finally {
+            entityManager.close();
+        }
+        if (rval == null)
+            throw new DoesNotExistException();
+        return rval;
+    }
+    
+    /**
      * @see org.overlord.apiman.dt.api.persist.IStorage#get(java.lang.String, java.lang.Class)
      */
     public <T> T get(String id, Class<T> type) throws StorageException, DoesNotExistException {
