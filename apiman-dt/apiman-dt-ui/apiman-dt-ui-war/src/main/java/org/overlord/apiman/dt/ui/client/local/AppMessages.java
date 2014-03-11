@@ -125,6 +125,11 @@ public class AppMessages {
     @TranslationKey(defaultValue = "No services matched the current filter criteria.  Please try modifying the filter or else create a new service using the button above.")
     public static final String NO_FILTERED_SERVICES_FOR_USER_MESSAGE = "noEntitiesFound.services-for-user.filtered"; //$NON-NLS-1$
 
+    @TranslationKey(defaultValue = "This application doesn't appear to have any service contracts.  You could try creating one using the New Contract button above.  Alternatively you can browse for a Service in the UI and create a contract from the Service details page.")
+    public static final String NO_CONTRACTS_FOR_APP_MESSAGE = "noEntitiesFound.contracts-in-app"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "No contracts matched the filter criteria.  Please try modifying the filter or else create a new contract using the New Contract button above.")
+    public static final String NO_FILTERED_CONTRACTS_FOR_APP_MESSAGE = "noEntitiesFound.contracts-in-app.filtered"; //$NON-NLS-1$
+
     @TranslationKey(defaultValue = "Assign roles to {0}.")
     public static final String MEMBER_CARD_ASSIGN_ROLES_HELP = "manageMembers.card.edit-help"; //$NON-NLS-1$
 
@@ -145,5 +150,14 @@ public class AppMessages {
     public static final String JOINED_ON = "joined-on"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "Version: {0}")
     public static final String VERSION_SELECTOR_LABEL = "version-selector.label"; //$NON-NLS-1$
+
+    @TranslationKey(defaultValue = "Break Contract")
+    public static final String BREAK_CONTRACT = "break-contract"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "Service version")
+    public static final String SERVICE_VERSION = "service-version"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "via plan")
+    public static final String VIA_PLAN = "via-plan"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "entered into on")
+    public static final String ENTERED_INTO_ON = "entered-into-on"; //$NON-NLS-1$
 
 }

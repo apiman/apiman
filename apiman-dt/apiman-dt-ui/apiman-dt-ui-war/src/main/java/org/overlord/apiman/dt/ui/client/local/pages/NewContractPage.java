@@ -30,6 +30,8 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.apiman.dt.api.beans.apps.ApplicationVersionBean;
+import org.overlord.apiman.dt.api.beans.contracts.ContractBean;
+import org.overlord.apiman.dt.api.beans.contracts.NewContractBean;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaFilterBean;
 import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
@@ -43,6 +45,7 @@ import org.overlord.apiman.dt.ui.client.local.pages.contract.ApplicationSelectBo
 import org.overlord.apiman.dt.ui.client.local.pages.contract.PlanSelectBox;
 import org.overlord.apiman.dt.ui.client.local.pages.contract.ServiceSelector;
 import org.overlord.apiman.dt.ui.client.local.services.rest.IRestInvokerCallback;
+import org.overlord.apiman.dt.ui.client.local.util.MultimapUtil;
 import org.overlord.commons.gwt.client.local.widgets.AsyncActionButton;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -341,6 +344,30 @@ public class NewContractPage extends AbstractPage {
     public void onCreate(ClickEvent event) {
         createButton.onActionStarted();
         cancelButton.setEnabled(false);
+        ApplicationSummaryBean app = applicationSelector.getValue();
+        String appVersion = applicationVersion.getValue();
+        ServiceBean service = services.getValue();
+        String svcVersion = serviceVersion.getValue();
+        ServicePlanSummaryBean planSummary = plan.getValue();
+        
+        final String orgId = app.getOrganizationId();
+        final String appId = app.getId();
+        final String version = appVersion;
+        NewContractBean bean = new NewContractBean();
+        bean.setServiceOrgId(service.getOrganizationId());
+        bean.setServiceId(service.getId());
+        bean.setServiceVersion(svcVersion);
+        bean.setPlanId(planSummary.getPlanId());
+        rest.createContract(orgId, appId, version, bean, new IRestInvokerCallback<ContractBean>() {
+            @Override
+            public void onSuccess(ContractBean response) {
+                toApp.go(MultimapUtil.fromMultiple("org", orgId, "app", appId, "version", version)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            }
+            @Override
+            public void onError(Throwable error) {
+                dataPacketError(error);
+            }
+        });
     }
 
     /**

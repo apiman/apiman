@@ -44,11 +44,11 @@ import com.google.gwt.user.client.ui.Anchor;
 public abstract class AbstractAppPage extends AbstractPage {
     
     @PageState
-    private String app;
+    protected String app;
     @PageState
-    private String org;
+    protected String org;
     @PageState
-    private String version;
+    protected String version;
     
     OrganizationBean organizationBean;
     ApplicationBean applicationBean;
@@ -128,6 +128,7 @@ public abstract class AbstractAppPage extends AbstractPage {
                 } else {
                     applicationBean = versionBean.getApplication();
                     dataPacketLoaded();
+                    onAppVersionLoaded();
                 }
             }
             @Override
@@ -136,6 +137,14 @@ public abstract class AbstractAppPage extends AbstractPage {
             }
         });
         return 2;
+    }
+
+    /**
+     * Called when the application version is successfully loaded.  This provides a 
+     * way for subclasses to start their own data fetching if they require the app
+     * version to do it.
+     */
+    protected void onAppVersionLoaded() {
     }
 
     /**

@@ -24,6 +24,8 @@ import javax.inject.Inject;
 import org.jboss.errai.common.client.api.Caller;
 import org.overlord.apiman.dt.api.beans.apps.ApplicationBean;
 import org.overlord.apiman.dt.api.beans.apps.ApplicationVersionBean;
+import org.overlord.apiman.dt.api.beans.contracts.ContractBean;
+import org.overlord.apiman.dt.api.beans.contracts.NewContractBean;
 import org.overlord.apiman.dt.api.beans.idm.GrantRolesBean;
 import org.overlord.apiman.dt.api.beans.idm.RoleBean;
 import org.overlord.apiman.dt.api.beans.idm.UserBean;
@@ -36,6 +38,7 @@ import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
 import org.overlord.apiman.dt.api.beans.services.ServiceBean;
 import org.overlord.apiman.dt.api.beans.services.ServiceVersionBean;
 import org.overlord.apiman.dt.api.beans.summary.ApplicationSummaryBean;
+import org.overlord.apiman.dt.api.beans.summary.ContractSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.OrganizationSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.PlanSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.ServicePlanSummaryBean;
@@ -232,6 +235,19 @@ public class RestInvokerService {
         CallbackAdapter<ApplicationVersionBean> adapter = new CallbackAdapter<ApplicationVersionBean>(callback);
         applications.call(adapter, adapter).createVersion(organizationId, applicationId, version);
     }
+    
+    /**
+     * Creates a contract for an application.
+     * @param organizationId
+     * @param applicationId
+     * @param version
+     * @param bean
+     */
+    public void createContract(String organizationId, String applicationId, String version,
+            NewContractBean bean, IRestInvokerCallback<ContractBean> callback) {
+        CallbackAdapter<ContractBean> adapter = new CallbackAdapter<ContractBean>(callback);
+        applications.call(adapter, adapter).createContract(organizationId, applicationId, version, bean);
+    }
 
     /**
      * Gets an application.
@@ -267,6 +283,16 @@ public class RestInvokerService {
             IRestInvokerCallback<ApplicationVersionBean> callback) {
         CallbackAdapter<ApplicationVersionBean> adapter = new CallbackAdapter<ApplicationVersionBean>(callback);
         applications.call(adapter, adapter).getVersion(organizationId, applicationId, version);
+    }
+
+    /**
+     * Gets the application's contracts.
+     * @param callback
+     */
+    public void getApplicationContracts(String organizationId, String applicationId, String version, 
+            IRestInvokerCallback<List<ContractSummaryBean>> callback) {
+        CallbackAdapter<List<ContractSummaryBean>> adapter = new CallbackAdapter<List<ContractSummaryBean>>(callback);
+        applications.call(adapter, adapter).listContracts(organizationId, applicationId, version);
     }
 
     /**

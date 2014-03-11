@@ -15,11 +15,26 @@
  */
 package org.overlord.apiman.dt.ui.client.local.pages;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
 import org.jboss.errai.ui.nav.client.local.Page;
+import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.overlord.apiman.dt.api.beans.summary.ContractSummaryBean;
 import org.overlord.apiman.dt.ui.client.local.AppMessages;
+import org.overlord.apiman.dt.ui.client.local.pages.app.AppContractList;
+import org.overlord.apiman.dt.ui.client.local.services.rest.IRestInvokerCallback;
+import org.overlord.apiman.dt.ui.client.local.util.MultimapUtil;
+
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.TextBox;
 
 
 /**
@@ -31,11 +46,34 @@ import org.overlord.apiman.dt.ui.client.local.AppMessages;
 @Page(path="app-contracts")
 @Dependent
 public class AppContractsPage extends AbstractAppPage {
-    
+
+    private List<ContractSummaryBean> contractBeans;
+
+    @Inject @DataField
+    Anchor toNewContract;
+
+    @Inject @DataField
+    TextBox contractFilter;
+    @Inject @DataField
+    AppContractList contracts;
+
     /**
      * Constructor.
      */
     public AppContractsPage() {
+    }
+
+    /**
+     * Called after the bean is created.
+     */
+    @PostConstruct
+    protected void postConstruct() {
+        contractFilter.addValueChangeHandler(new ValueChangeHandler<String>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<String> event) {
+                filterContracts();
+            }
+        });
     }
     
     /**
@@ -44,7 +82,74 @@ public class AppContractsPage extends AbstractAppPage {
     @Override
     protected int loadPageData() {
         int rval = super.loadPageData();
-        return rval;
+        return rval + 1;
+    }
+    
+    /**
+     * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractAppPage#onAppVersionLoaded()
+     */
+    @Override
+    protected void onAppVersionLoaded() {
+        String orgId = org;
+        String appId = app;
+        String appVersion = versionBean.getVersion();
+        rest.getApplicationContracts(orgId, appId, appVersion, new IRestInvokerCallback<List<ContractSummaryBean>>() {
+            @Override
+            public void onSuccess(List<ContractSummaryBean> response) {
+                contractBeans = response;
+                dataPacketLoaded();
+            }
+            @Override
+            public void onError(Throwable error) {
+                dataPacketError(error);
+            }
+        });
+    }
+
+    /**
+     * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractUserPage#renderPage()
+     */
+    @Override
+    protected void renderPage() {
+        super.renderPage();
+        String orgId = org;
+        String appId = app;
+        String appVersion = versionBean.getVersion();
+        String newContractHref = navHelper.createHrefToPage(NewContractPage.class,
+                MultimapUtil.fromMultiple("org", orgId, "app", appId, "appv", appVersion)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        toNewContract.setHref(newContractHref);
+        contracts.setValue(contractBeans);
+    }
+
+    /**
+     * Apply a filter to the list of contracts.
+     */
+    protected void filterContracts() {
+        if (contractFilter.getValue().trim().length() == 0) {
+            contracts.setValue(contractBeans);
+        } else {
+        List<ContractSummaryBean> filtered = new ArrayList<ContractSummaryBean>();
+            for (ContractSummaryBean contract : contractBeans) {
+                if (matchesFilter(contract)) {
+                    filtered.add(contract);
+                }
+            }
+            contracts.setFilteredValue(filtered);
+        }
+    }
+
+    /**
+     * Returns true if the given contract matches the current filter.
+     * @param contract
+     */
+    private boolean matchesFilter(ContractSummaryBean contract) {
+        if (contractFilter.getValue() == null || contractFilter.getValue().trim().length() == 0)
+            return true;
+        if (contract.getServiceOrganizationName().toUpperCase().contains(contractFilter.getValue().toUpperCase()))
+            return true;
+        if (contract.getServiceName().toUpperCase().contains(contractFilter.getValue().toUpperCase()))
+            return true;
+        return false;
     }
 
     /**
