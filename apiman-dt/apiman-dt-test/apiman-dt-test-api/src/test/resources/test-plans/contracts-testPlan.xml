@@ -10,6 +10,16 @@
     <test name="Create Service Version 1.0">contracts/create/005_create-service-version-1.0.resttest</test>
     <test name="Create Plan 1">contracts/create/006_create-plan1.resttest</test>
     <test name="Create Plan Version 1.0">contracts/create/007_create-plan-version-1.0.resttest</test>
+    <test name="Create Org 2">contracts/create/008_create-org2.resttest</test>
+    <test name="Create Org 2 / Service 2">contracts/create/009_create-service2.resttest</test>
+    <test name="Create Service 2 / Version 1.0">contracts/create/010_create-service-2-version-1.0.resttest</test>
+    <test name="Create Service 2 / Version 1.5">contracts/create/011_create-service-2-version-1.5.resttest</test>
+    <test name="Create Org 2 / Plan A">contracts/create/012_create-planA.resttest</test>
+    <test name="Create Org 2 / Plan B">contracts/create/013_create-planB.resttest</test>
+    <test name="Create Plan A / Version 1.0">contracts/create/014_create-plan-A-version-1.0.resttest</test>
+    <test name="Create Plan A / Version 2.0">contracts/create/015_create-plan-A-version-2.0.resttest</test>
+    <test name="Create Plan B / Version 1.0">contracts/create/016_create-plan-B-version-1.0.resttest</test>
+    <test name="Update Service 2 Plans">contracts/create/017_update-svc2-version-1.5-plans.resttest</test>
   </testGroup>
 
   <!-- Test Contract management -->
@@ -18,6 +28,8 @@
     <test name="Update Service 1 (add plans)">contracts/contracts/002_update-version-1.0-plans.resttest</test>
     <test name="Create Contract to Service 1">contracts/contracts/003_create-contract1.resttest</test>
     <test name="List Contracts for App 1">contracts/contracts/004_get-contracts.resttest</test>
+    <test name="Create Contract to Service 2">contracts/contracts/005_create-contract2.resttest</test>
+    <test name="List Contracts for App 1">contracts/contracts/006_get-contracts.resttest</test>
   </testGroup>
 
 </testPlan>

@@ -362,11 +362,14 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             String version) throws StorageException {
         EntityManager entityManager = emf.createEntityManager();
         try {
-            String jpql = "SELECT c from ContractBean c" //$NON-NLS-1$
-                        + " WHERE c.application.application.organizationId = :orgId" //$NON-NLS-1$
-                        + "   AND c.application.application.id = :applicationId" //$NON-NLS-1$
-                        + "   AND c.application.version = :version" //$NON-NLS-1$
-                        + " ORDER BY c.id ASC"; //$NON-NLS-1$
+            String jpql = 
+                    "SELECT c from ContractBean c " +  //$NON-NLS-1$
+                    "  JOIN c.application appv " +  //$NON-NLS-1$
+                    "  JOIN appv.application app " +  //$NON-NLS-1$
+                    " WHERE app.id = :applicationId " +  //$NON-NLS-1$
+                    "   AND app.organizationId = :orgId " +  //$NON-NLS-1$
+                    "   AND appv.version = :version " +  //$NON-NLS-1$
+                    " ORDER BY c.id ASC"; //$NON-NLS-1$
             Query query = entityManager.createQuery(jpql);
             query.setParameter("orgId", organizationId); //$NON-NLS-1$
             query.setParameter("applicationId", applicationId); //$NON-NLS-1$

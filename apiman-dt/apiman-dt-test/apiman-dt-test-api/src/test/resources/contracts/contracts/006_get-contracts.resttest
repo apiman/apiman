@@ -1,0 +1,98 @@
+GET /organizations/Organization1/applications/Application1/versions/1.0/contracts admin/admin
+
+----
+200
+Content-Type: application/json
+
+[
+{
+  "application" : {
+    "id" : 1,
+    "application" : {
+      "organizationId" : "Organization1",
+      "id" : "Application1",
+      "name" : "Application 1",
+      "description" : "This is the description of Application 1.",
+      "createdBy" : "admin"
+    },
+    "status" : "Created",
+    "version" : "1.0",
+    "createdBy" : "admin"
+  },
+  
+  "service":{
+    "id" : 1,
+    "service" : {
+      "organizationId" : "Organization1",
+      "id" : "Service1",
+      "name" : "Service 1",
+      "description" : "This is the description of Service 1.",
+      "createdBy" : "admin"
+    },
+    "status" : "Created",
+    "endpoint" : "http://localhost:8080/ping",
+    "endpointType" : "rest",
+    "plans" : [{"planId" : "Plan1","version" : "1.0"}],
+    "version" : "1.0",
+    "createdBy" : "admin"
+  },
+  
+  "plan" : {
+    "id":1,
+    "plan" : {
+      "organizationId" : "Organization1",
+      "id" : "Plan1",
+      "name" : "Plan 1",
+      "description" : "This is the description of Plan 1.",
+      "createdBy" : "admin"
+    },
+    "status" : "Created",
+    "version" : "1.0",
+    "createdBy" : "admin"
+  }
+}
+,
+{
+  "application" : {
+    "application" : {
+      "organizationId" : "Organization1",
+      "id" : "Application1",
+      "name" : "Application 1",
+      "description" : "This is the description of Application 1.",
+      "createdBy" : "admin"
+    },
+    "status" : "Created",
+    "version" : "1.0",
+    "createdBy" : "admin"
+  },
+  
+  "service" : {
+    "service" : {
+      "organizationId" : "Organization2",
+      "id" : "Service2",
+      "name" : "Service 2",
+      "description" : "This is the description of Service 2.",
+      "createdBy" : "admin"
+    },
+    "status" : "Created",
+    "endpoint" : "http://localhost:8080/ping",
+    "endpointType" : "rest",
+    "version" : "1.5",
+    "createdBy" : "admin"
+  },
+  
+  "plan" : {
+    "plan" : {
+      "organizationId" : "Organization2",
+      "id" : "PlanA",
+      "name" : "Plan A",
+      "description" : "This is the description of Plan A.",
+      "createdBy" : "admin"
+    },
+    "status" : "Created",
+    "version" : "2.0",
+    "createdBy" : "admin"
+  }
+}
+
+]
