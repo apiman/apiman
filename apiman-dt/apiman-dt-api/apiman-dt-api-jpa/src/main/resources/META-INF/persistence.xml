@@ -19,6 +19,7 @@
     <class>org.overlord.apiman.dt.api.beans.services.ServicePlanBean</class>
     <class>org.overlord.apiman.dt.api.beans.plans.PlanBean</class>
     <class>org.overlord.apiman.dt.api.beans.plans.PlanVersionBean</class>
+    <class>org.overlord.apiman.dt.api.beans.contracts.ContractBean</class>
 
     <properties>
       <property name="hibernate.show_sql" value="false" />

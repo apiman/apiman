@@ -18,6 +18,8 @@ package org.overlord.apiman.dt.api.rest.impl.util;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ApplicationAlreadyExistsException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ApplicationNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ApplicationVersionNotFoundException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.ContractAlreadyExistsException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.ContractNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.MemberNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.NotAuthorizedException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationAlreadyExistsException;
@@ -97,11 +99,26 @@ public final class ExceptionFactory {
     }
 
     /**
+     * Creates an exception.
+     */
+    public static final ContractAlreadyExistsException contractAlreadyExistsException() {
+        return new ContractAlreadyExistsException(Messages.i18n.format("ContractAlreadyExists")); //$NON-NLS-1$
+    }
+
+    /**
      * Creates an exception from an application id.
      * @param applicationId
      */
     public static final ApplicationNotFoundException applicationNotFoundException(String applicationId) {
         return new ApplicationNotFoundException(Messages.i18n.format("ApplicationDoesNotExist", applicationId)); //$NON-NLS-1$
+    }
+
+    /**
+     * Creates an exception from an contract id.
+     * @param contractId
+     */
+    public static final ContractNotFoundException contractNotFoundException(Long contractId) {
+        return new ContractNotFoundException(Messages.i18n.format("ContractDoesNotExist", contractId)); //$NON-NLS-1$
     }
 
     /**

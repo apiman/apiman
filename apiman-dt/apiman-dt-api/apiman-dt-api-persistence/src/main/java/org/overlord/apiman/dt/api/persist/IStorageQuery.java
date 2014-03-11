@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.overlord.apiman.dt.api.beans.apps.ApplicationVersionBean;
+import org.overlord.apiman.dt.api.beans.contracts.ContractBean;
 import org.overlord.apiman.dt.api.beans.plans.PlanVersionBean;
 import org.overlord.apiman.dt.api.beans.services.ServiceVersionBean;
 import org.overlord.apiman.dt.api.beans.summary.ApplicationSummaryBean;
@@ -72,7 +73,16 @@ public interface IStorageQuery {
      */
     public List<ApplicationVersionBean> getApplicationVersions(String organizationId, String applicationId)
             throws StorageException;
-    
+
+    /**
+     * Returns all Contracts for the application.
+     * @param organizationId
+     * @param applicationId
+     * @param version
+     */
+    public List<ContractBean> getApplicationContracts(String organizationId, String applicationId, String version)
+            throws StorageException;
+
     /**
      * Returns summary info for all services in all organizations in the given set.
      * @param orgIds

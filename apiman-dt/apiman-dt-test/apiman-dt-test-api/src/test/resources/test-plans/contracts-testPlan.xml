@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testPlan xmlns="urn:org.overlord.apiman.test:2014:02:testPlan">
+
+  <!-- Create Organizations -->
+  <testGroup name="Initial Creates">
+    <test name="Create Organization 1">contracts/create/001_create-org1.resttest</test>
+    <test name="Create App 1">contracts/create/002_create-app1.resttest</test>
+    <test name="Create App Version 1.0">contracts/create/003_create-app-version-1.0.resttest</test>
+    <test name="Create Service 1">contracts/create/004_create-service1.resttest</test>
+    <test name="Create Service Version 1.0">contracts/create/005_create-service-version-1.0.resttest</test>
+    <test name="Create Plan 1">contracts/create/006_create-plan1.resttest</test>
+    <test name="Create Plan Version 1.0">contracts/create/007_create-plan-version-1.0.resttest</test>
+  </testGroup>
+
+  <!-- Test Contract management -->
+  <testGroup name="Contract Management">
+    <test name="Create Contract to Service 1 (no plan)">contracts/contracts/001_create-contract1-404.resttest</test>
+    <test name="Update Service 1 (add plans)">contracts/contracts/002_update-version-1.0-plans.resttest</test>
+    <test name="Create Contract to Service 1">contracts/contracts/003_create-contract1.resttest</test>
+    <test name="List Contracts for App 1">contracts/contracts/004_get-contracts.resttest</test>
+  </testGroup>
+
+</testPlan>

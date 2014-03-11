@@ -77,10 +77,14 @@ public final class ErrorCodes {
     public static final int APP_ALREADY_EXISTS              = 4001;
     public static final int APP_NOT_FOUND                   = 4002;
     public static final int APP_VERSION_NOT_FOUND           = 4003;
+    public static final int CONTRACT_NOT_FOUND              = 4004;
+    public static final int CONTRACT_ALREADY_EXISTS         = 4005;
 
     public static final String APP_ALREADY_EXISTS_INFO      = null;
     public static final String APP_NOT_FOUND_INFO           = null;
     public static final String APP_VERSION_NOT_FOUND_INFO   = null;
+    public static final String CONTRACT_NOT_FOUND_INFO      = null;
+    public static final String CONTRACT_ALREADY_EXISTS_INFO = null;
 
     
     //
@@ -113,5 +117,5 @@ public final class ErrorCodes {
     public static final int MEMBER_NOT_FOUND                  = 7001;
 
     public static final String MEMBER_NOT_FOUND_INFO          = null;
-
+    
 }

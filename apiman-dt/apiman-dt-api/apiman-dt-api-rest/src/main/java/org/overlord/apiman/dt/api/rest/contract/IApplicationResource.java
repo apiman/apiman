@@ -29,12 +29,17 @@ import javax.ws.rs.core.MediaType;
 
 import org.overlord.apiman.dt.api.beans.apps.ApplicationBean;
 import org.overlord.apiman.dt.api.beans.apps.ApplicationVersionBean;
+import org.overlord.apiman.dt.api.beans.contracts.ContractBean;
+import org.overlord.apiman.dt.api.beans.contracts.NewContractBean;
 import org.overlord.apiman.dt.api.beans.summary.ApplicationSummaryBean;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ApplicationAlreadyExistsException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ApplicationNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ApplicationVersionNotFoundException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.ContractAlreadyExistsException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.NotAuthorizedException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationNotFoundException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.PlanNotFoundException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.ServiceNotFoundException;
 
 /**
  * The Application API.
@@ -99,4 +104,22 @@ public interface IApplicationResource {
     public void updateVersion(@PathParam("organizationId") String organizationId,
             @PathParam("applicationId") String applicationId, @PathParam("version") String version,
             ApplicationVersionBean bean) throws ApplicationVersionNotFoundException, NotAuthorizedException;
+
+    @POST
+    @Path("{organizationId}/applications/{applicationId}/versions/{version}/contracts")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public ContractBean createContract(@PathParam("organizationId") String organizationId,
+            @PathParam("applicationId") String applicationId, @PathParam("version") String version,
+            NewContractBean bean) throws OrganizationNotFoundException, ApplicationNotFoundException,
+            ServiceNotFoundException, PlanNotFoundException, ContractAlreadyExistsException,
+            NotAuthorizedException;
+
+    @GET
+    @Path("{organizationId}/applications/{applicationId}/versions/{version}/contracts")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<ContractBean> listContracts(@PathParam("organizationId") String organizationId,
+            @PathParam("applicationId") String applicationId, @PathParam("version") String version)
+            throws ApplicationNotFoundException, NotAuthorizedException;
+
 }

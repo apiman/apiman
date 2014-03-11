@@ -27,6 +27,7 @@ import javax.persistence.Query;
 
 import org.overlord.apiman.dt.api.beans.apps.ApplicationBean;
 import org.overlord.apiman.dt.api.beans.apps.ApplicationVersionBean;
+import org.overlord.apiman.dt.api.beans.contracts.ContractBean;
 import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
 import org.overlord.apiman.dt.api.beans.plans.PlanBean;
 import org.overlord.apiman.dt.api.beans.plans.PlanVersionBean;
@@ -343,6 +344,35 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             query.setParameter("applicationId", applicationId); //$NON-NLS-1$
             
             return (List<ApplicationVersionBean>) query.getResultList();
+        } catch (Throwable t) {
+            JpaUtil.rollbackQuietly(entityManager);
+            logger.error(t.getMessage(), t);
+            throw new StorageException(t);
+        } finally {
+            entityManager.close();
+        }
+    }
+    
+    /**
+     * @see org.overlord.apiman.dt.api.persist.IStorageQuery#getApplicationContracts(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<ContractBean> getApplicationContracts(String organizationId, String applicationId,
+            String version) throws StorageException {
+        EntityManager entityManager = emf.createEntityManager();
+        try {
+            String jpql = "SELECT c from ContractBean c" //$NON-NLS-1$
+                        + " WHERE c.application.application.organizationId = :orgId" //$NON-NLS-1$
+                        + "   AND c.application.application.id = :applicationId" //$NON-NLS-1$
+                        + "   AND c.application.version = :version" //$NON-NLS-1$
+                        + " ORDER BY c.id ASC"; //$NON-NLS-1$
+            Query query = entityManager.createQuery(jpql);
+            query.setParameter("orgId", organizationId); //$NON-NLS-1$
+            query.setParameter("applicationId", applicationId); //$NON-NLS-1$
+            query.setParameter("version", version); //$NON-NLS-1$
+            
+            return (List<ContractBean>) query.getResultList();
         } catch (Throwable t) {
             JpaUtil.rollbackQuietly(entityManager);
             logger.error(t.getMessage(), t);

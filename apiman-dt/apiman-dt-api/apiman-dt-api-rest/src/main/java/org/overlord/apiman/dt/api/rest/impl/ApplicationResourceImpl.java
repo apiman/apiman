@@ -18,6 +18,7 @@ package org.overlord.apiman.dt.api.rest.impl;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -26,8 +27,13 @@ import org.overlord.apiman.dt.api.beans.BeanUtils;
 import org.overlord.apiman.dt.api.beans.apps.ApplicationBean;
 import org.overlord.apiman.dt.api.beans.apps.ApplicationStatus;
 import org.overlord.apiman.dt.api.beans.apps.ApplicationVersionBean;
+import org.overlord.apiman.dt.api.beans.contracts.ContractBean;
+import org.overlord.apiman.dt.api.beans.contracts.NewContractBean;
 import org.overlord.apiman.dt.api.beans.idm.PermissionType;
 import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
+import org.overlord.apiman.dt.api.beans.plans.PlanVersionBean;
+import org.overlord.apiman.dt.api.beans.services.ServicePlanBean;
+import org.overlord.apiman.dt.api.beans.services.ServiceVersionBean;
 import org.overlord.apiman.dt.api.beans.summary.ApplicationSummaryBean;
 import org.overlord.apiman.dt.api.persist.AlreadyExistsException;
 import org.overlord.apiman.dt.api.persist.DoesNotExistException;
@@ -41,8 +47,11 @@ import org.overlord.apiman.dt.api.rest.contract.IUserResource;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ApplicationAlreadyExistsException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ApplicationNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ApplicationVersionNotFoundException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.ContractAlreadyExistsException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.NotAuthorizedException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationNotFoundException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.PlanNotFoundException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.ServiceNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.SystemErrorException;
 import org.overlord.apiman.dt.api.rest.impl.util.ExceptionFactory;
 import org.overlord.apiman.dt.api.security.ISecurityContext;
@@ -246,6 +255,67 @@ public class ApplicationResourceImpl implements IApplicationResource {
             return query.getApplicationVersions(organizationId, applicationId);
         } catch (DoesNotExistException e) {
             throw ExceptionFactory.applicationNotFoundException(applicationId);
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+    }
+    
+    /**
+     * @see org.overlord.apiman.dt.api.rest.contract.IApplicationResource#createContract(java.lang.String, java.lang.String, java.lang.String, org.overlord.apiman.dt.api.beans.contracts.NewContractBean)
+     */
+    @Override
+    public ContractBean createContract(String organizationId, String applicationId, String version,
+            NewContractBean bean) throws OrganizationNotFoundException, ApplicationNotFoundException,
+            ServiceNotFoundException, PlanNotFoundException, ContractAlreadyExistsException,
+            NotAuthorizedException {
+        if (!securityContext.hasPermission(PermissionType.appEdit, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
+        
+        try {
+            ApplicationVersionBean avb = query.getApplicationVersion(organizationId, applicationId, version);
+            if (avb == null)
+                throw ExceptionFactory.applicationNotFoundException(bean.getServiceId());
+            ServiceVersionBean svb = query.getServiceVersion(bean.getServiceOrgId(), bean.getServiceId(), bean.getServiceVersion());
+            if (svb == null)
+                throw ExceptionFactory.serviceNotFoundException(bean.getServiceId());
+            Set<ServicePlanBean> plans = svb.getPlans();
+            String planVersion = null;
+            for (ServicePlanBean servicePlanBean : plans) {
+                if (servicePlanBean.getPlanId().equals(bean.getPlanId())) {
+                    planVersion = servicePlanBean.getVersion();
+                }
+            }
+            if (planVersion == null)
+                throw ExceptionFactory.planNotFoundException(bean.getPlanId());
+            PlanVersionBean pvb = query.getPlanVersion(bean.getServiceOrgId(), bean.getPlanId(), planVersion);
+            if (pvb == null)
+                throw ExceptionFactory.planNotFoundException(bean.getPlanId());
+            
+            ContractBean contract = new ContractBean();
+            contract.setApplication(avb);
+            contract.setService(svb);
+            contract.setPlan(pvb);
+            storage.create(contract);
+            return contract;
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+    }
+    
+    /**
+     * @see org.overlord.apiman.dt.api.rest.contract.IApplicationResource#listContracts(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public List<ContractBean> listContracts(String organizationId, String applicationId, String version)
+            throws ApplicationNotFoundException, NotAuthorizedException {
+        if (!securityContext.hasPermission(PermissionType.appView, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
+        
+        // Try to get the application first - will throw a ApplicationNotFoundException if not found.
+        get(organizationId, applicationId);
+        
+        try {
+            return query.getApplicationContracts(organizationId, applicationId, version);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
