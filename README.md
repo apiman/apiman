@@ -27,6 +27,22 @@ The general idea is to keep your 'master' branch in-sync with the 'upstream/mast
 We use Maven 3.x to build our software. The following command compiles all the code, installs the JARs into your local Maven repository, and runs all of the unit tests:
 
 	$ mvn clean install
+	
+## Quickstart (i.e. How To Run It)
+
+The project can be built and deployed on a variety of runtime platforms, but if you want to see it in 
+action as quickly as possible try this:
+
+    $ mvn clean install -Prun-all
+    
+Then point your browser here to:  http://localhost:8080/apiman-dt-ui/
+
+You should be able to log in as any of the following users:
+
+* admin/admin
+* bwayne/bwayne
+* ckent/ckent
+* dprince/dprince
 
 ## Contribute fixes and features
 
