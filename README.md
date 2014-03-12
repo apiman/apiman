@@ -35,9 +35,8 @@ action as quickly as possible try this:
 
     $ mvn clean install -Prun-all
     
-Then point your browser here to:  http://localhost:8080/apiman-dt-ui/
-
-You should be able to log in as any of the following users:
+Then point your browser to the [API Management UI](http://localhost:8080/apiman-dt-ui/) and log in as
+any of the following users:
 
 * admin/admin
 * bwayne/bwayne
