@@ -1,0 +1,18 @@
+POST /organizations/Overlord/applications admin/admin
+Content-Type: application/json
+
+{
+  "name" : "gadget-server",
+  "organizationId" : "Overlord",
+  "description" : "The Gadget Servers visualizes the data accumulated by the rtgov system."
+}
+----
+200
+Content-Type: application/json
+
+{
+  "organizationId" : "Overlord",
+  "id" : "gadget-server",
+  "name" : "gadget-server",
+  "description" : "The Gadget Servers visualizes the data accumulated by the rtgov system."
+}

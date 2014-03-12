@@ -1,0 +1,18 @@
+POST /organizations/Overlord/applications admin/admin
+Content-Type: application/json
+
+{
+  "name" : "rtgov",
+  "organizationId" : "Overlord",
+  "description" : "The Runtime Governance project monitors running business services for business errors."
+}
+----
+200
+Content-Type: application/json
+
+{
+  "organizationId" : "Overlord",
+  "id" : "rtgov",
+  "name" : "rtgov",
+  "description" : "The Runtime Governance project monitors running business services for business errors."
+}

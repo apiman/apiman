@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.overlord.apiman.dt.api.rest;
+package org.overlord.apiman.dt.api.rest.impl;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;

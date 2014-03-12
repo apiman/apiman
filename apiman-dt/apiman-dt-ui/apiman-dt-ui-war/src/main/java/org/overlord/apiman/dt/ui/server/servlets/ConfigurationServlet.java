@@ -138,9 +138,9 @@ public class ConfigurationServlet extends HttpServlet {
         StringBuilder builder = new StringBuilder();
         builder.append(request.getScheme())
                .append("://") //$NON-NLS-1$
-               .append(request.getRemoteHost())
+               .append(request.getServerName())
                .append(":") //$NON-NLS-1$
-               .append(request.getRemotePort())
+               .append(request.getServerPort())
                .append("/apiman-dt-api"); //$NON-NLS-1$
         return builder.toString();
     }

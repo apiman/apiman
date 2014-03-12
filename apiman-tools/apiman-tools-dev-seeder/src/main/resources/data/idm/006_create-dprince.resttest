@@ -1,0 +1,6 @@
+GET /currentuser/info dprince/dprince
+----
+200
+
+{
+}

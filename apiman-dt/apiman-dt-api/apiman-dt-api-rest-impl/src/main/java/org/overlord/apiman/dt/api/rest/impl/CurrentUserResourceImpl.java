@@ -72,6 +72,8 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
         } catch (DoesNotExistException e) {
             UserBean user = new UserBean();
             user.setUsername(userId);
+            user.setFullName(userId);
+            user.setEmail(userId + "@example.org");
             user.setJoinedOn(new Date());
             try {
                 idmStorage.createUser(user);

@@ -1,0 +1,18 @@
+POST /organizations/Overlord/applications admin/admin
+Content-Type: application/json
+
+{
+  "name" : "dtgov",
+  "organizationId" : "Overlord",
+  "description" : "The Design Time Governance project layers artifact governance functionality on top of an S-RAMP repository."
+}
+----
+200
+Content-Type: application/json
+
+{
+  "organizationId" : "Overlord",
+  "id" : "dtgov",
+  "name" : "dtgov",
+  "description" : "The Design Time Governance project layers artifact governance functionality on top of an S-RAMP repository."
+}

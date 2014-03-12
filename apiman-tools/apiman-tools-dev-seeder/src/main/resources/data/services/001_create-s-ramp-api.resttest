@@ -1,0 +1,18 @@
+POST /organizations/Overlord/services admin/admin
+Content-Type: application/json
+
+{
+  "name" : "s-ramp-api",
+  "organizationId" : "Overlord",
+  "description" : "This is the public API for the S-RAMP repository."
+}
+----
+200
+Content-Type: application/json
+
+{
+  "organizationId" : "Overlord",
+  "id" : "s-ramp-api",
+  "name" : "s-ramp-api",
+  "description" : "This is the public API for the S-RAMP repository."
+}

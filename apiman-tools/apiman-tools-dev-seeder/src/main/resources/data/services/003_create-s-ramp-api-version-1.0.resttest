@@ -1,0 +1,19 @@
+POST /organizations/Overlord/services/s-ramp-api/versions admin/admin
+Content-Type: application/json
+
+{
+  "version" : "1.0"
+}
+----
+200
+Content-Type: application/json
+
+{
+  "service" : {
+    "organizationId" : "Overlord",
+    "id" : "s-ramp-api",
+    "name" : "s-ramp-api"
+  },
+  "status" : "Created",
+  "version" : "1.0"
+}

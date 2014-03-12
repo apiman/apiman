@@ -9,6 +9,7 @@
   <packaging>pom</packaging>
   <name>apiman-tools</name>
   <modules>
+    <module>apiman-tools-dev-seeder</module>
     <module>apiman-tools-dev-server</module>
     <module>apiman-tools-dev-server-ui</module>
     <module>apiman-tools-dev-server-all</module>

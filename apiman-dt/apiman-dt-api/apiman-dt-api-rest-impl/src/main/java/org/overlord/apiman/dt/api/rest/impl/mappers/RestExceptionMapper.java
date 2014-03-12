@@ -24,8 +24,8 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
+import org.overlord.apiman.dt.api.beans.exceptions.ErrorBean;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.AbstractRestException;
-import org.overlord.apiman.dt.api.rest.contract.exceptions.ErrorBean;
 import org.overlord.apiman.dt.api.security.ISecurityContext;
 
 /**

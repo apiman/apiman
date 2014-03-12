@@ -1,0 +1,6 @@
+GET /currentuser/info bwayne/bwayne
+----
+200
+
+{
+}

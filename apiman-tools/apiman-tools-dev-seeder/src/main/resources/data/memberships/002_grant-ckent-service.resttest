@@ -1,0 +1,9 @@
+POST /organizations/Overlord/roles admin/admin
+Content-Type: application/json
+
+{
+  "userId" : "ckent",
+  "roleIds" : [ "ServiceDeveloper" ]
+}
+----
+204

@@ -1,0 +1,15 @@
+POST /organizations admin/admin
+Content-Type: application/json
+
+{ 
+  "name" : "Jasig",
+  "description" : "Recently renamed 'Apereo', this organization contains all Jasig applications and services."
+}
+----
+200
+Content-Type: application/json
+
+{
+  "name" : "Jasig",
+  "id" : "Jasig"
+}

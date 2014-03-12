@@ -1,0 +1,19 @@
+POST /organizations/Overlord/plans/Gold/versions admin/admin
+Content-Type: application/json
+
+{
+  "version" : "1.0"
+}
+----
+200
+Content-Type: application/json
+
+{
+  "plan" : {
+    "organizationId" : "Overlord",
+    "id" : "Gold",
+    "name" : "Gold"
+  },
+  "status" : "Created",
+  "version" : "1.0"
+}

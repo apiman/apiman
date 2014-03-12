@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testPlan xmlns="urn:org.overlord.apiman.test:2014:02:testPlan">
+
+  <!-- Initial IDM setup -->
+  <testGroup name="IDM">
+    <test name="Create Org Owner">data/idm/001_create-org-owner.resttest</test>
+    <test name="Create App Developer">data/idm/002_create-app-dev.resttest</test>
+    <test name="Create Service Developer">data/idm/003_create-service-dev.resttest</test>
+    <test name="Create Bruce Wayne">data/idm/004_create-bwayne.resttest</test>
+    <test name="Create Clark Kent">data/idm/005_create-ckent.resttest</test>
+    <test name="Create Diane Prince">data/idm/006_create-dprince.resttest</test>
+    <test name="Create Admin">data/idm/007_create-admin.resttest</test>
+  </testGroup>
+
+  <!-- Create Organizations -->
+  <testGroup name="Create Orgs">
+    <test name="Create Overlord">data/orgs/001_create-overlord.resttest</test>
+    <test name="Create Jasig">data/orgs/002_create-jasig.resttest</test>
+  </testGroup>
+
+  <!-- Memberships -->
+  <testGroup name="Memberships">
+    <test name="Grant App Dev Role">data/memberships/001_grant-bwayne-app.resttest</test>
+    <test name="Grant Service Dev Role">data/memberships/002_grant-ckent-service.resttest</test>
+  </testGroup>
+
+  <!-- Applications -->
+  <testGroup name="Applications">
+    <test name="Create s-ramp">data/apps/001_create-s-ramp.resttest</test>
+    <test name="Create dtgov">data/apps/002_create-dtgov.resttest</test>
+    <test name="Create rtgov">data/apps/003_create-rtgov.resttest</test>
+    <test name="Create gadget-server">data/apps/004_create-gadget-server.resttest</test>
+    <test name="Create s-ramp (version 1.0)">data/apps/005_create-s-ramp-version-1.0.resttest</test>
+    <test name="Create dtgov (version 1.0)">data/apps/006_create-dtgov-version-1.0.resttest</test>
+    <test name="Create rtgov (version 1.0)">data/apps/007_create-rtgov-version-1.0.resttest</test>
+    <test name="Create gadget-server (version 1.0)">data/apps/008_create-gadget-server-version-1.0.resttest</test>
+  </testGroup>
+
+  <!-- Services -->
+  <testGroup name="Services">
+    <test name="Create s-ramp">data/services/001_create-s-ramp-api.resttest</test>
+    <test name="Create s-ramp">data/services/002_create-dtgov-deploy.resttest</test>
+    <test name="Create s-ramp">data/services/003_create-s-ramp-api-version-1.0.resttest</test>
+    <test name="Create s-ramp">data/services/004_create-dtgov-deploy-version-1.0.resttest</test>
+  </testGroup>
+
+  <!-- Plans -->
+  <testGroup name="Plans">
+    <test name="Create s-ramp">data/plans/001_create-gold.resttest</test>
+    <test name="Create s-ramp">data/plans/002_create-silver.resttest</test>
+    <test name="Create s-ramp">data/plans/003_create-gold-version-1.0.resttest</test>
+    <test name="Create s-ramp">data/plans/004_create-silver-version-1.0.resttest</test>
+  </testGroup>
+
+</testPlan>

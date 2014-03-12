@@ -1,0 +1,6 @@
+GET /currentuser/info ckent/ckent
+----
+200
+
+{
+}

@@ -106,5 +106,8 @@
   <Set name="gracefulShutdown">1000</Set>
   <Set name="dumpAfterStart">false</Set>
   <Set name="dumpBeforeStop">false</Set>
+  
+  <Set class="org.eclipse.jetty.util.resource.Resource"
+     name="defaultUseCaches">false</Set>
 
 </Configure>

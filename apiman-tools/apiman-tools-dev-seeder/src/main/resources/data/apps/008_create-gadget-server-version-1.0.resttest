@@ -1,0 +1,19 @@
+POST /organizations/Overlord/applications/gadget-server/versions admin/admin
+Content-Type: application/json
+
+{
+  "version" : "1.0"
+}
+----
+200
+Content-Type: application/json
+
+{
+  "application" : {
+    "organizationId" : "Overlord",
+    "id" : "gadget-server",
+    "name" : "gadget-server"
+  },
+  "status" : "Created",
+  "version" : "1.0"
+}

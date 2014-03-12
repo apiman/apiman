@@ -1,0 +1,18 @@
+POST /organizations/Overlord/services admin/admin
+Content-Type: application/json
+
+{
+  "name" : "dtgov-deploy",
+  "organizationId" : "Overlord",
+  "description" : "The design time governance project exposes a public API to deploy artifacts to runtime systems."
+}
+----
+200
+Content-Type: application/json
+
+{
+  "organizationId" : "Overlord",
+  "id" : "dtgov-deploy",
+  "name" : "dtgov-deploy",
+  "description" : "The design time governance project exposes a public API to deploy artifacts to runtime systems."
+}

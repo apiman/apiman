@@ -58,12 +58,21 @@
     <servlet-class>org.overlord.commons.ui.header.OverlordHeaderDataJS</servlet-class>
     <init-param>
         <param-name>app-id</param-name>
-        <param-value>apiman-dt</param-value>
+        <param-value>apiman-dt-ui</param-value>
     </init-param>
   </servlet>
   <servlet-mapping>
     <servlet-name>OverlordHeaderDataJS</servlet-name>
-    <url-pattern>/js/overlord-header-data.js</url-pattern>
+    <url-pattern>/js/overlord-header-data.nocache.js</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>ConfigurationJS</servlet-name>
+    <servlet-class>org.overlord.apiman.dt.ui.server.servlets.ConfigurationServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ConfigurationJS</servlet-name>
+    <url-pattern>/js/configuration.nocache.js</url-pattern>
   </servlet-mapping>
   
   <resource-env-ref>

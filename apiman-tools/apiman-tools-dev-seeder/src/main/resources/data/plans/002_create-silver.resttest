@@ -1,0 +1,18 @@
+POST /organizations/Overlord/plans admin/admin
+Content-Type: application/json
+
+{
+  "name" : "Silver",
+  "organizationId" : "Overlord",
+  "description" : "The Silver plan allows users a certain level of service."
+}
+----
+200
+Content-Type: application/json
+
+{
+  "name" : "Silver",
+  "organizationId" : "Overlord",
+  "id" : "Silver",
+  "description" : "The Silver plan allows users a certain level of service."
+}

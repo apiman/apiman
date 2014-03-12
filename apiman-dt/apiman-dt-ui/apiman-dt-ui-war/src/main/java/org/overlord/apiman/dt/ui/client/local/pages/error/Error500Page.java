@@ -44,7 +44,7 @@ public class Error500Page extends AbstractErrorPage {
     }
     
     /**
-     * @see org.overlord.apiman.dt.ui.client.local.pages.error.AbstractErrorPage#setValue(org.overlord.apiman.dt.api.rest.contract.exceptions.AbstractRestException, boolean)
+     * @see org.overlord.apiman.dt.ui.client.local.pages.error.AbstractErrorPage#setValue(org.overlord.apiman.dt.api.rest.contract.exceptions.rest.contract.exceptions.AbstractRestException, boolean)
      */
     @Override
     public void setValue(AbstractRestException value, boolean fireEvents) {

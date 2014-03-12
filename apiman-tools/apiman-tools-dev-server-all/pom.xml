@@ -11,7 +11,7 @@
   <name>apiman-tools-dev-server-all</name>
 
   <dependencies>
-    <!-- The Jetty 8 version of APIMan-DT -->
+    <!-- The Jetty 8 version of APIMan DT API -->
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-dt-api-war-jetty8</artifactId>
@@ -21,6 +21,22 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-dt-ui-war</artifactId>
+      <version>${project.version}</version>
+      <type>war</type>
+    </dependency>
+
+    <!-- The Jetty 8 version of APIMan DT UI -->
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-dt-ui-war-jetty8</artifactId>
+      <version>${project.version}</version>
+      <type>war</type>
+    </dependency>
+    
+    <!-- The Dev Environment Seeder -->
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-tools-dev-seeder</artifactId>
       <version>${project.version}</version>
       <type>war</type>
     </dependency>
@@ -73,6 +89,10 @@
                     <property name="apiman.jetty.zip" location="${apiman.tempdir}/jetty-distribution-8.1.14.v20131031.zip" />
                     <property name="apiman.apiman-dt-api-war-jetty8.war"
                       value="${maven.dependency.org.overlord.apiman.apiman-dt-api-war-jetty8.war.path}" />
+                    <property name="apiman.apiman-dt-ui-war-jetty8.war"
+                      value="${maven.dependency.org.overlord.apiman.apiman-dt-ui-war-jetty8.war.path}" />
+                    <property name="apiman.apiman-tools-dev-seeder.war"
+                      value="${maven.dependency.org.overlord.apiman.apiman-tools-dev-seeder.war.path}" />
                     <property name="apiman.commons-dbcp.jar"
                       value="${maven.dependency.commons-dbcp.commons-dbcp.jar.path}" />
                     <property name="apiman.commons-pool.jar"
@@ -87,6 +107,8 @@
                     <echo></echo>
                     <echo>********************************************************************</echo>
                     <echo>APIMan DT:         ${apiman.apiman-dt-api-war-jetty8.war}</echo>
+                    <echo>APIMan DT UI:      ${apiman.apiman-dt-ui-war-jetty8.war}</echo>
+                    <echo>Dev Seeder:        ${apiman.apiman-tools-dev-seeder.war}</echo>
                     <echo>Commons Pooling:   ${apiman.commons-pool.jar}</echo>
                     <echo>Commons DBCP:      ${apiman.commons-dbcp.jar}</echo>
                     <echo>H2:                ${apiman.h2.jar}</echo>
@@ -113,6 +135,8 @@
                     <copy file="${apiman.commons-pool.jar}" todir="${apiman.jetty.home}/lib/ext" overwrite="true" /> 
                     <copy file="${apiman.h2.jar}" todir="${apiman.jetty.home}/lib/ext" overwrite="true" /> 
                     <copy file="${apiman.apiman-dt-api-war-jetty8.war}" tofile="${apiman.jetty.webapps}/apiman-dt-api.war" overwrite="true" /> 
+                    <copy file="${apiman.apiman-dt-ui-war-jetty8.war}" tofile="${apiman.jetty.webapps}/apiman-dt-ui.war" overwrite="true" /> 
+                    <copy file="${apiman.apiman-tools-dev-seeder.war}" tofile="${apiman.jetty.webapps}/dev-seeder.war" overwrite="true" /> 
                     
                     <!-- Start Jetty 8 -->
                     <java jar="${apiman.jetty.home}/start.jar" fork="true" failonerror="true" dir="${apiman.jetty.home}">
@@ -121,6 +145,10 @@
                       <sysproperty key="java.io.tmpdir" value="${apiman.tempdir}"/>
                       <sysproperty key="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
                       <sysproperty key="hibernate.hbm2ddl.auto" value="create-drop"/>
+                      <sysproperty key="apiman-dt-ui.dt-api.authentication.type" value="basic"/>
+                      <sysproperty key="apiman-dt-ui.dt-api.authentication.basic.user" value="admin"/>
+                      <sysproperty key="apiman-dt-ui.dt-api.authentication.basic.password" value="admin"/>
+                      <sysproperty key="org.overlord.apps.config-dir" value="${apiman.resources.dir}/config/header"/>
                       <jvmarg line="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787" />
                       <arg value="etc/jetty-logging.xml"/>
                       <arg value="etc/jetty-started.xml"/>

@@ -1,0 +1,19 @@
+POST /organizations/Overlord/services/dtgov-deploy/versions admin/admin
+Content-Type: application/json
+
+{
+  "version" : "1.0"
+}
+----
+200
+Content-Type: application/json
+
+{
+  "service" : {
+    "organizationId" : "Overlord",
+    "id" : "dtgov-deploy",
+    "name" : "dtgov-deploy"
+  },
+  "status" : "Created",
+  "version" : "1.0"
+}

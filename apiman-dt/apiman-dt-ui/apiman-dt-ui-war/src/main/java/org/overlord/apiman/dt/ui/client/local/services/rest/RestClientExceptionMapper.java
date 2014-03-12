@@ -20,10 +20,10 @@ import javax.ws.rs.ext.Provider;
 
 import org.jboss.errai.enterprise.client.jaxrs.AbstractJSONClientExceptionMapper;
 import org.jboss.errai.enterprise.client.jaxrs.api.ResponseException;
+import org.overlord.apiman.dt.api.beans.exceptions.ErrorBean;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ApplicationAlreadyExistsException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ApplicationNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ApplicationVersionNotFoundException;
-import org.overlord.apiman.dt.api.rest.contract.exceptions.ErrorBean;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.InvalidSearchCriteriaException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.MemberNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.NotAuthorizedException;

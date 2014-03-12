@@ -18,9 +18,9 @@ package org.overlord.apiman.dt.api.webapp.jetty8;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.overlord.apiman.dt.api.rest.DtApiApplication;
 import org.overlord.apiman.dt.api.rest.impl.ApplicationResourceImpl;
 import org.overlord.apiman.dt.api.rest.impl.CurrentUserResourceImpl;
+import org.overlord.apiman.dt.api.rest.impl.DtApiApplication;
 import org.overlord.apiman.dt.api.rest.impl.MemberResourceImpl;
 import org.overlord.apiman.dt.api.rest.impl.OrganizationResourceImpl;
 import org.overlord.apiman.dt.api.rest.impl.PermissionsResourceImpl;

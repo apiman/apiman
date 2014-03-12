@@ -1,0 +1,15 @@
+POST /organizations admin/admin
+Content-Type: application/json
+
+{ 
+  "name" : "Overlord",
+  "description" : "The organization that contains all JBoss Overlord applications and services."
+}
+----
+200
+Content-Type: application/json
+
+{
+  "name" : "Overlord",
+  "id" : "Overlord"
+}

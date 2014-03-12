@@ -1,0 +1,9 @@
+POST /organizations/Overlord/roles admin/admin
+Content-Type: application/json
+
+{
+  "userId" : "bwayne",
+  "roleIds" : [ "ApplicationDeveloper" ]
+}
+----
+204

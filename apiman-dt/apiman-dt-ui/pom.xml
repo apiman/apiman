@@ -11,5 +11,6 @@
   <name>apiman-dt-ui</name>
   <modules>
     <module>apiman-dt-ui-war</module>
+    <module>apiman-dt-ui-war/jetty8</module>
   </modules>
 </project>

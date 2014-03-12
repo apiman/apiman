@@ -1,0 +1,6 @@
+GET /currentuser/info admin/admin
+----
+200
+
+{
+}
