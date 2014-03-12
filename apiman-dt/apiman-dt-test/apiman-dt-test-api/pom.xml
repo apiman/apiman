@@ -36,6 +36,13 @@
       <artifactId>apiman-dt-api-jpa-idm</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-dt-api-war-jetty8</artifactId>
+      <version>${project.version}</version>
+      <classifier>classes</classifier>
+      <type>jar</type>
+    </dependency>
 
     <!-- Overlord Commons -->
     <dependency>

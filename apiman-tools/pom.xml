@@ -11,5 +11,6 @@
   <modules>
     <module>apiman-tools-dev-server</module>
     <module>apiman-tools-dev-server-ui</module>
+    <module>apiman-tools-dev-server-all</module>
   </modules>
 </project>

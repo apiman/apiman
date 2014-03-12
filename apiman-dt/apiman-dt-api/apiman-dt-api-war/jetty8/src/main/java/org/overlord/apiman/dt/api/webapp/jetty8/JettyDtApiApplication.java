@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.overlord.apiman.dt.test.server;
+package org.overlord.apiman.dt.api.webapp.jetty8;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import org.overlord.apiman.dt.api.rest.ApiManDtApplication;
+import org.overlord.apiman.dt.api.rest.DtApiApplication;
 import org.overlord.apiman.dt.api.rest.impl.ApplicationResourceImpl;
 import org.overlord.apiman.dt.api.rest.impl.CurrentUserResourceImpl;
 import org.overlord.apiman.dt.api.rest.impl.MemberResourceImpl;
@@ -34,11 +33,11 @@ import org.overlord.apiman.dt.api.rest.impl.UserResourceImpl;
 import org.overlord.apiman.dt.api.rest.impl.mappers.RestExceptionMapper;
 
 /**
- * Version of the application used for testing.
+ * Useful if jax-rs is not supported by the runtime platform.
  *
  * @author eric.wittmann@redhat.com
  */
-public class TestApiManDtApplication extends ApiManDtApplication {
+public class JettyDtApiApplication extends DtApiApplication {
 
     private Set<Object> singletons = new HashSet<Object>();
     private Set<Class<?>> classes = new HashSet<Class<?>>();
@@ -46,7 +45,7 @@ public class TestApiManDtApplication extends ApiManDtApplication {
     /**
      * Constructor.
      */
-    public TestApiManDtApplication() {
+    public JettyDtApiApplication() {
         classes.add(SystemResourceImpl.class);
         classes.add(SearchResourceImpl.class);
         classes.add(RoleResourceImpl.class);

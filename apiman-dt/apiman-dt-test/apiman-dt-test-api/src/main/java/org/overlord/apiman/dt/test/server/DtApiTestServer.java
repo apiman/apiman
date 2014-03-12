@@ -40,6 +40,7 @@ import org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap;
 import org.jboss.weld.environment.servlet.BeanManagerResourceBindingListener;
 import org.jboss.weld.environment.servlet.Listener;
 import org.overlord.apiman.dt.api.security.impl.DefaultSecurityContextFilter;
+import org.overlord.apiman.dt.api.webapp.jetty8.JettyDtApiApplication;
 import org.overlord.commons.gwt.server.filters.SimpleCorsFilter;
 import org.overlord.commons.i18n.server.filters.LocaleFilter;
 
@@ -167,7 +168,7 @@ public class DtApiTestServer {
         apiManServer.addFilter(DtApiTestAuthFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
         apiManServer.addFilter(DefaultSecurityContextFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
         ServletHolder resteasyServlet = new ServletHolder(new HttpServletDispatcher());
-        resteasyServlet.setInitParameter("javax.ws.rs.Application", TestApiManDtApplication.class.getName());
+        resteasyServlet.setInitParameter("javax.ws.rs.Application", JettyDtApiApplication.class.getName());
         apiManServer.addServlet(resteasyServlet, "/*");
 
         apiManServer.setInitParameter("resteasy.injector.factory", "org.jboss.resteasy.cdi.CdiInjectorFactory");

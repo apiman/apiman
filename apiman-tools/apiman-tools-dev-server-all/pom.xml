@@ -1,0 +1,140 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.overlord.apiman</groupId>
+    <artifactId>apiman-tools</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>apiman-tools-dev-server-all</artifactId>
+  <packaging>pom</packaging>
+  <name>apiman-tools-dev-server-all</name>
+
+  <dependencies>
+    <!-- The Jetty 8 version of APIMan-DT -->
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-dt-api-war-jetty8</artifactId>
+      <version>${project.version}</version>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-dt-ui-war</artifactId>
+      <version>${project.version}</version>
+      <type>war</type>
+    </dependency>
+    
+    <!-- Data Source Dependencies -->
+    <dependency>
+      <groupId>commons-dbcp</groupId>
+      <artifactId>commons-dbcp</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-pool</groupId>
+      <artifactId>commons-pool</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+    </dependency>
+  </dependencies>
+
+  <profiles>
+    <profile>
+      <id>run-all</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>1.7</version>
+            <dependencies>
+              <dependency>
+                <groupId>org.apache.ant</groupId>
+                <artifactId>ant</artifactId>
+                <version>1.8.2</version>
+              </dependency>
+            </dependencies>
+            <executions>
+              <execution>
+                <id>run-jetty8</id>
+                <phase>install</phase>
+                <configuration>
+                  <tasks>
+                    <antversion property="antversion" />
+                    <echo>Ant Version: ${antversion}</echo>
+                    
+                    <property name="appserver.id" value="jetty8" />
+                    <property name="apiman.tempdir" value="${project.build.directory}/_tmp" />
+                    <property name="apiman.install.dir" value="${project.build.directory}" />
+                    <property name="apiman.appserver.dir" location="${apiman.install.dir}/jetty-distribution-8.1.14.v20131031" />
+                    <property name="apiman.jetty.download.url" value="http://eclipse.org/downloads/download.php?file=/jetty/8.1.14.v20131031/dist/jetty-distribution-8.1.14.v20131031.zip&amp;r=1" />
+                    <property name="apiman.jetty.zip" location="${apiman.tempdir}/jetty-distribution-8.1.14.v20131031.zip" />
+                    <property name="apiman.apiman-dt-api-war-jetty8.war"
+                      value="${maven.dependency.org.overlord.apiman.apiman-dt-api-war-jetty8.war.path}" />
+                    <property name="apiman.commons-dbcp.jar"
+                      value="${maven.dependency.commons-dbcp.commons-dbcp.jar.path}" />
+                    <property name="apiman.commons-pool.jar"
+                      value="${maven.dependency.commons-pool.commons-pool.jar.path}" />
+                    <property name="apiman.h2.jar"
+                      value="${maven.dependency.com.h2database.h2.jar.path}" />
+                    <property name="apiman.jetty.home" location="${apiman.appserver.dir}" />
+                    <property name="apiman.jetty.webapps" location="${apiman.appserver.dir}/webapps" />
+                    <property name="apiman.jetty.logdir" location="${apiman.appserver.dir}/logs" />
+                    <property name="apiman.resources.dir" location="${basedir}/src/main/resources" />
+                    
+                    <echo></echo>
+                    <echo>********************************************************************</echo>
+                    <echo>APIMan DT:         ${apiman.apiman-dt-api-war-jetty8.war}</echo>
+                    <echo>Commons Pooling:   ${apiman.commons-pool.jar}</echo>
+                    <echo>Commons DBCP:      ${apiman.commons-dbcp.jar}</echo>
+                    <echo>H2:                ${apiman.h2.jar}</echo>
+                    <echo>-------</echo>
+                    <echo>Jetty Home:        ${apiman.jetty.home}</echo>
+                    <echo>********************************************************************</echo>
+                    <echo></echo>
+                    
+                    <mkdir dir="${apiman.tempdir}"/>
+                    <delete dir="${apiman.jetty.logdir}" />
+                    <mkdir dir="${apiman.jetty.logdir}"/>
+                    
+                    <!-- Download Jetty 8 and Unpack it -->
+                    <get src="${apiman.jetty.download.url}" dest="${apiman.tempdir}/jetty-distribution-8.1.14.v20131031.zip" usetimestamp="true" />
+                    <unzip src="${apiman.jetty.zip}" dest="${apiman.install.dir}" overwrite="false" />
+                    <makeurl file="${apiman.jetty.home}" property="apiman.jetty.home.url"/>
+                    <echo>Jetty Home URL:    ${apiman.jetty.home.url}</echo>
+                    
+                    <!-- Deploy apiman to Jetty 8 -->
+                    <copy file="${apiman.resources.dir}/jetty/etc/jetty.xml" todir="${apiman.jetty.home}/etc" overwrite="true" /> 
+                    <copy file="${apiman.resources.dir}/jetty/etc/realm.properties" todir="${apiman.jetty.home}/etc" overwrite="true" /> 
+                    <copy file="${apiman.resources.dir}/jetty/etc/jetty-logging.xml" todir="${apiman.jetty.home}/etc" overwrite="true" /> 
+                    <copy file="${apiman.commons-dbcp.jar}" todir="${apiman.jetty.home}/lib/ext" overwrite="true" /> 
+                    <copy file="${apiman.commons-pool.jar}" todir="${apiman.jetty.home}/lib/ext" overwrite="true" /> 
+                    <copy file="${apiman.h2.jar}" todir="${apiman.jetty.home}/lib/ext" overwrite="true" /> 
+                    <copy file="${apiman.apiman-dt-api-war-jetty8.war}" tofile="${apiman.jetty.webapps}/apiman-dt-api.war" overwrite="true" /> 
+                    
+                    <!-- Start Jetty 8 -->
+                    <java jar="${apiman.jetty.home}/start.jar" fork="true" failonerror="true" dir="${apiman.jetty.home}">
+                      <sysproperty key="jetty.home" value="${apiman.jetty.home}"/>
+                      <sysproperty key="jetty.home.url" value="${apiman.jetty.home.url}"/>
+                      <sysproperty key="java.io.tmpdir" value="${apiman.tempdir}"/>
+                      <sysproperty key="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
+                      <sysproperty key="hibernate.hbm2ddl.auto" value="create-drop"/>
+                      <jvmarg line="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787" />
+                      <arg value="etc/jetty-logging.xml"/>
+                      <arg value="etc/jetty-started.xml"/>
+                    </java>
+                  </tasks>
+                </configuration>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

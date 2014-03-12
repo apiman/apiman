@@ -17,5 +17,6 @@
     <module>apiman-dt-api-security</module>
     <module>apiman-dt-api-war</module>
     <module>apiman-dt-api-war/eap61</module>
+    <module>apiman-dt-api-war/jetty8</module>
   </modules>
 </project>

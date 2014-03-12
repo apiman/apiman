@@ -26,6 +26,6 @@ import javax.ws.rs.core.Application;
  * @author eric.wittmann@redhat.com
  */
 @ApplicationPath("/")
-public class ApiManDtApplication extends Application {
+public class DtApiApplication extends Application {
 
 }

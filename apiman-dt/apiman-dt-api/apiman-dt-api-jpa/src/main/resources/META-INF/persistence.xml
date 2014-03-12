@@ -6,7 +6,7 @@
   <persistence-unit name="apiman-dt-api-jpa" transaction-type="RESOURCE_LOCAL">
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
 
-    <jta-data-source>java:/comp/env/jdbc/ApiManDT</jta-data-source>
+    <jta-data-source>jdbc/ApiManDT</jta-data-source>
 
     <class>org.overlord.apiman.dt.api.beans.idm.UserBean</class>
     <class>org.overlord.apiman.dt.api.beans.idm.RoleBean</class>
