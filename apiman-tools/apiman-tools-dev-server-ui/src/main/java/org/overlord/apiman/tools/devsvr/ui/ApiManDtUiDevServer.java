@@ -201,6 +201,7 @@ public class ApiManDtUiDevServer extends ErraiDevServer {
         csh.setRealmName("apimanrealm");
         csh.addConstraintMapping(cm);
         csh.setLoginService(l);
+        csh.setSessionRenewedOnAuthentication(false);
 
         return csh;
     }

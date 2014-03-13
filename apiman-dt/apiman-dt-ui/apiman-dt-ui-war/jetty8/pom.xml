@@ -19,6 +19,24 @@
       <version>${project.version}</version>
       <type>war</type>
     </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-dt-ui-war</artifactId>
+      <version>${project.version}</version>
+      <classifier>classes</classifier>
+      <type>jar</type>
+      <scope>provided</scope>
+    </dependency>
+    
+    <!-- Overlord Commons -->
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-auth</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-auth-jetty8</artifactId>
+    </dependency>
 
     <!-- Project JARs -->
     <dependency>
@@ -30,6 +48,12 @@
       <groupId>org.overlord.apiman</groupId>
       <artifactId>apiman-dt-api-rest</artifactId>
       <version>${project.version}</version>
+    </dependency>
+    
+    <!-- PicketLink -->
+    <dependency>
+      <groupId>org.picketlink</groupId>
+      <artifactId>picketlink-core</artifactId>
     </dependency>
 
     <!-- Third Party Dependencies -->
@@ -48,6 +72,13 @@
     <dependency>
       <artifactId>slf4j-log4j12</artifactId>
       <groupId>org.slf4j</groupId>
+    </dependency>
+
+    <!-- Provided Dependencies -->
+    <dependency>
+      <groupId>org.jboss.spec.javax.servlet</groupId>
+      <artifactId>jboss-servlet-api_3.0_spec</artifactId>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 

@@ -145,9 +145,8 @@
                       <sysproperty key="java.io.tmpdir" value="${apiman.tempdir}"/>
                       <sysproperty key="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
                       <sysproperty key="hibernate.hbm2ddl.auto" value="create-drop"/>
-                      <sysproperty key="apiman-dt-ui.dt-api.authentication.type" value="basic"/>
-                      <sysproperty key="apiman-dt-ui.dt-api.authentication.basic.user" value="admin"/>
-                      <sysproperty key="apiman-dt-ui.dt-api.authentication.basic.password" value="admin"/>
+                      <sysproperty key="apiman-dt-ui.dt-api.authentication.type" value="samlBearerToken"/>
+                      <sysproperty key="apiman-dt-ui.dt-api.authentication.token.generator" value="org.overlord.apiman.dt.ui.jetty8.auth.ApiManDtUiTokenGenerator"/>
                       <sysproperty key="org.overlord.apps.config-dir" value="${apiman.resources.dir}/config/header"/>
                       <jvmarg line="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787" />
                       <arg value="etc/jetty-logging.xml"/>

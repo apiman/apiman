@@ -78,6 +78,7 @@
 
     <!-- Dependency Versions (not found in parent) -->
     <overlord-commons.version>2.0.0-SNAPSHOT</overlord-commons.version>
+    <picketlink.version>2.1.6.Final</picketlink.version>
 
     <!-- Dependency Overrides -->
     <version.org.jboss.errai>3.0-SNAPSHOT</version.org.jboss.errai>
@@ -230,6 +231,13 @@
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-auth-jetty8</artifactId>
         <version>${overlord-commons.version}</version>
+      </dependency>
+
+      <!-- PicketLink -->
+      <dependency>
+        <groupId>org.picketlink</groupId>
+        <artifactId>picketlink-core</artifactId>
+        <version>${picketlink.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

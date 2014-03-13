@@ -38,18 +38,18 @@
 
   <!-- Services -->
   <testGroup name="Services">
-    <test name="Create s-ramp">data/services/001_create-s-ramp-api.resttest</test>
-    <test name="Create s-ramp">data/services/002_create-dtgov-deploy.resttest</test>
-    <test name="Create s-ramp">data/services/003_create-s-ramp-api-version-1.0.resttest</test>
-    <test name="Create s-ramp">data/services/004_create-dtgov-deploy-version-1.0.resttest</test>
+    <test name="Create s-ramp-api">data/services/001_create-s-ramp-api.resttest</test>
+    <test name="Create dtgov-deploy">data/services/002_create-dtgov-deploy.resttest</test>
+    <test name="Create s-ramp-api 1.0">data/services/003_create-s-ramp-api-version-1.0.resttest</test>
+    <test name="Create dtgov-deploy 1.0">data/services/004_create-dtgov-deploy-version-1.0.resttest</test>
   </testGroup>
 
   <!-- Plans -->
   <testGroup name="Plans">
-    <test name="Create s-ramp">data/plans/001_create-gold.resttest</test>
-    <test name="Create s-ramp">data/plans/002_create-silver.resttest</test>
-    <test name="Create s-ramp">data/plans/003_create-gold-version-1.0.resttest</test>
-    <test name="Create s-ramp">data/plans/004_create-silver-version-1.0.resttest</test>
+    <test name="Create Gold">data/plans/001_create-gold.resttest</test>
+    <test name="Create Silver">data/plans/002_create-silver.resttest</test>
+    <test name="Create Gold 1.0">data/plans/003_create-gold-version-1.0.resttest</test>
+    <test name="Create Silver 1.0">data/plans/004_create-silver-version-1.0.resttest</test>
   </testGroup>
 
 </testPlan>

@@ -56,6 +56,14 @@
       <groupId>org.overlord</groupId>
       <artifactId>overlord-commons-i18n</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-auth</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-auth-jetty8</artifactId>
+    </dependency>
 
     <!-- Hibernate -->
     <dependency>
@@ -85,6 +93,12 @@
     <dependency>
       <groupId>org.jboss.weld.servlet</groupId>
       <artifactId>weld-servlet-core</artifactId>
+    </dependency>
+    
+    <!-- PicketLink -->
+    <dependency>
+      <groupId>org.picketlink</groupId>
+      <artifactId>picketlink-core</artifactId>
     </dependency>
 
     <!-- Third Party Dependencies -->

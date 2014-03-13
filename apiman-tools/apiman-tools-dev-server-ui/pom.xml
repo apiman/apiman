@@ -9,10 +9,6 @@
   <artifactId>apiman-tools-dev-server-ui</artifactId>
   <name>apiman-tools-dev-server-ui</name>
 
-  <properties>
-    <picketlink.version>2.1.6.Final</picketlink.version>
-  </properties>
-
   <dependencies>
     <!-- Dev Server Dependencies -->
     <dependency>
@@ -75,7 +71,6 @@
     <dependency>
       <groupId>org.picketlink</groupId>
       <artifactId>picketlink-core</artifactId>
-      <version>${picketlink.version}</version>
     </dependency>
   </dependencies>
 

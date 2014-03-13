@@ -3,6 +3,7 @@
 
   <Get name="securityHandler">
     <Set name="realmName">OverlordRealm</Set>
+    <Set name="sessionRenewedOnAuthentication">false</Set>
   </Get>
 
   <Set name="serverClasses">
