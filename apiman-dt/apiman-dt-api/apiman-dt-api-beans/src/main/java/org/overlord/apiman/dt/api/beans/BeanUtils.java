@@ -15,13 +15,14 @@
  */
 package org.overlord.apiman.dt.api.beans;
 
+
 /**
  * Some simple bean utils.
  *
  * @author eric.wittmann@redhat.com
  */
 public class BeanUtils {
-    
+
     /**
      * Creates a bean id from the given bean name.  This essentially removes any
      * non "word" characters from the name.

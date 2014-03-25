@@ -1,0 +1,111 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.overlord.apiman</groupId>
+    <artifactId>apiman-rt-test</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>apiman-rt-test-gateway</artifactId>
+  <name>apiman-rt-test-gateway</name>
+
+  <dependencies>
+    <!-- Project Dependencies -->
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-rt-engine-core</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-rt-engine-mem</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-test-common</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-rt-gateway-war</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+      <classifier>classes</classifier>
+    </dependency>
+
+    <!-- Overlord Commons -->
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-i18n</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Weld -->
+    <dependency>
+      <groupId>org.jboss.weld.se</groupId>
+      <artifactId>weld-se-core</artifactId>
+      <exclusions>
+        <exclusion>
+          <artifactId>el-api</artifactId>
+          <groupId>javax.el</groupId>
+        </exclusion>
+      </exclusions>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.weld.servlet</groupId>
+      <artifactId>weld-servlet-core</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Undertow -->
+    <dependency>
+      <groupId>io.undertow</groupId>
+      <artifactId>undertow-core</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.undertow</groupId>
+      <artifactId>undertow-servlet</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    
+    <!-- Jackson -->
+    <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-mapper-asl</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Required Third Party Libs -->
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <artifactId>slf4j-log4j12</artifactId>
+      <groupId>org.slf4j</groupId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.logging</groupId>
+      <artifactId>jboss-logging</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+</project>

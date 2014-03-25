@@ -13,7 +13,7 @@
     <!-- Project Dependencies -->
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-dt-test-api</artifactId>
+      <artifactId>apiman-test-common</artifactId>
       <version>${project.version}</version>
     </dependency>
 

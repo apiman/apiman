@@ -27,8 +27,8 @@ public class ApimanUIConfig {
     
     // TODO turn this into a CDI bean!
 
-    public static final String APIMAN_DT_UI_CONFIG_FILE_NAME     = "sramp-ui.config.file.name"; //$NON-NLS-1$
-    public static final String APIMAN_DT_UI_CONFIG_FILE_REFRESH  = "sramp-ui.config.file.refresh"; //$NON-NLS-1$
+    public static final String APIMAN_DT_UI_CONFIG_FILE_NAME     = "apiman-dt-ui.config.file.name"; //$NON-NLS-1$
+    public static final String APIMAN_DT_UI_CONFIG_FILE_REFRESH  = "apiman-dt-ui.config.file.refresh"; //$NON-NLS-1$
 
     public static final String APIMAN_DT_UI_API_ENDPOINT = "apiman-dt-ui.dt-api.endpoint"; //$NON-NLS-1$
     public static final String APIMAN_DT_UI_API_AUTH_TYPE = "apiman-dt-ui.dt-api.authentication.type"; //$NON-NLS-1$

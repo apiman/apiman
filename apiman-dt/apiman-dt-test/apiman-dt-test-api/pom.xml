@@ -9,10 +9,6 @@
   <artifactId>apiman-dt-test-api</artifactId>
   <name>apiman-dt-test-api</name>
 
-  <properties>
-    <jetty.version>8.1.9.v20130131</jetty.version>
-  </properties>
-
   <dependencies>
     <!-- Project Dependencies -->
     <dependency>
@@ -57,6 +53,12 @@
       <version>${project.version}</version>
       <classifier>classes</classifier>
       <type>jar</type>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-test-common</artifactId>
+      <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
 

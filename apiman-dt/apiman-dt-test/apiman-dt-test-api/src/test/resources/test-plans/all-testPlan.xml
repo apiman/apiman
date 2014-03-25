@@ -3,17 +3,17 @@
 
   <!-- First, do some simple System level requests -->
   <testGroup name="System">
-    <test name="Status">all/system/001_status.resttest</test>
+    <test name="Status">test-plan-data/all/system/001_status.resttest</test>
   </testGroup>
 
   <!-- Now make sure Organizations are working properly -->
   <testGroup name="Organizations CRUD">
-    <test name="Create Organization">all/organizations/001_create.resttest</test>
-    <test name="Get Organization">all/organizations/002_get.resttest</test>
-    <test name="Create Org (Duplicate)">all/organizations/003_create_already-exists.resttest</test>
-    <test name="Search for all Orgs">all/organizations/004_search_all.resttest</test>
-    <test name="Create Organization 2">all/organizations/005_create_another.resttest</test>
-    <test name="Search for all Orgs (2)">all/organizations/006_search_all-2.resttest</test>
+    <test name="Create Organization">test-plan-data/all/organizations/001_create.resttest</test>
+    <test name="Get Organization">test-plan-data/all/organizations/002_get.resttest</test>
+    <test name="Create Org (Duplicate)">test-plan-data/all/organizations/003_create_already-exists.resttest</test>
+    <test name="Search for all Orgs">test-plan-data/all/organizations/004_search_all.resttest</test>
+    <test name="Create Organization 2">test-plan-data/all/organizations/005_create_another.resttest</test>
+    <test name="Search for all Orgs (2)">test-plan-data/all/organizations/006_search_all-2.resttest</test>
   </testGroup>
 
 </testPlan>

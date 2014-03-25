@@ -38,7 +38,7 @@ import org.overlord.apiman.dt.ui.client.shared.beans.BearerTokenCredentialsBean;
 import org.overlord.apiman.dt.ui.client.shared.beans.ConfigurationBean;
 import org.overlord.apiman.dt.ui.client.shared.beans.UserConfigurationBean;
 import org.overlord.apiman.dt.ui.server.ApimanUIConfig;
-import org.overlord.apiman.dt.ui.server.ApimanUiVersion;
+import org.overlord.apiman.dt.ui.server.ApimanUIVersion;
 import org.overlord.apiman.dt.ui.server.auth.ITokenGenerator;
 
 /**
@@ -80,7 +80,7 @@ public class ConfigurationServlet extends HttpServlet {
             if (endpoint == null) {
                 endpoint = getDefaultEndpoint(request);
             }
-            ApimanUiVersion version = ApimanUiVersion.get();
+            ApimanUIVersion version = ApimanUIVersion.get();
             String authType = ApimanUIConfig.config.getString(ApimanUIConfig.APIMAN_DT_UI_API_AUTH_TYPE);
             
             ConfigurationBean configBean = new ConfigurationBean();

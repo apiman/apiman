@@ -77,8 +77,10 @@
     <maven.surefire.report.plugin.version>2.16</maven.surefire.report.plugin.version>
 
     <!-- Dependency Versions (not found in parent) -->
-    <overlord-commons.version>2.0.0-SNAPSHOT</overlord-commons.version>
+    <overlord-commons.version>2.0.1-SNAPSHOT</overlord-commons.version>
     <picketlink.version>2.1.6.Final</picketlink.version>
+    <jetty.version>8.1.9.v20130131</jetty.version>
+    <undertow.version>1.0.1.Final</undertow.version>
 
     <!-- Dependency Overrides -->
     <version.org.jboss.errai>3.0-SNAPSHOT</version.org.jboss.errai>
@@ -239,6 +241,19 @@
         <artifactId>picketlink-core</artifactId>
         <version>${picketlink.version}</version>
       </dependency>
+      
+      <!-- Undertow -->
+      <dependency>
+        <groupId>io.undertow</groupId>
+        <artifactId>undertow-core</artifactId>
+        <version>${undertow.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.undertow</groupId>
+        <artifactId>undertow-servlet</artifactId>
+        <version>${undertow.version}</version>
+      </dependency>
+      
     </dependencies>
   </dependencyManagement>
 
@@ -322,6 +337,33 @@
           </filesets>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <configuration>
+          <configLocation>checkstyle/checkstyle.xml</configLocation>
+          <consoleOutput>false</consoleOutput>
+          <suppressionsLocation>checkstyle/suppressions.xml</suppressionsLocation>
+          <failsOnError>false</failsOnError>
+          <useFile />
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.overlord</groupId>
+            <artifactId>overlord-commons-build</artifactId>
+            <version>${overlord-commons.version}</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <id>check-style</id>
+            <phase>package</phase>
+            <goals>
+              <goal>checkstyle</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 
@@ -384,6 +426,7 @@
     <module>apiman-dt</module>
     <module>apiman-rt</module>
     <module>apiman-tools</module>
+    <module>apiman-test</module>
   </modules>
 
 </project>

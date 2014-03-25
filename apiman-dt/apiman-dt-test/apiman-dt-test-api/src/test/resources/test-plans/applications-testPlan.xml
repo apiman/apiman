@@ -3,34 +3,34 @@
 
   <!-- Create Organizations -->
   <testGroup name="Initial Creates">
-    <test name="Create Organization 1">applications/create/001_create-org1.resttest</test>
-    <test name="Create Organization 2">applications/create/002_create-org2.resttest</test>
+    <test name="Create Organization 1">test-plan-data/applications/create/001_create-org1.resttest</test>
+    <test name="Create Organization 2">test-plan-data/applications/create/002_create-org2.resttest</test>
   </testGroup>
 
   <!-- Test Application management -->
   <testGroup name="Application Management">
-    <test name="Create Application 1">applications/apps/001_create-app1.resttest</test>
-    <test name="Get Application 1">applications/apps/002_get-app1.resttest</test>
-    <test name="Get Missing App">applications/apps/003_get-missing-app.resttest</test>
-    <test name="Create Application 2">applications/apps/004_create-app2.resttest</test>
-    <test name="Search Apps">applications/apps/005_search-apps.resttest</test>
-    <test name="Update App 1">applications/apps/006_update-app1.resttest</test>
-    <test name="Get Application 1 (updated)">applications/apps/007_get-app1.resttest</test>
-    <test name="Create Application 1 (Org 2)">applications/apps/008_create-app1-org2.resttest</test>
-    <test name="Get Application 1">applications/apps/009_get-app1.resttest</test>
-    <test name="Get Application 1 (Org 2)">applications/apps/010_get-app1-org2.resttest</test>
-    <test name="List Application">applications/apps/011_list-apps.resttest</test>
+    <test name="Create Application 1">test-plan-data/applications/apps/001_create-app1.resttest</test>
+    <test name="Get Application 1">test-plan-data/applications/apps/002_get-app1.resttest</test>
+    <test name="Get Missing App">test-plan-data/applications/apps/003_get-missing-app.resttest</test>
+    <test name="Create Application 2">test-plan-data/applications/apps/004_create-app2.resttest</test>
+    <test name="Search Apps">test-plan-data/applications/apps/005_search-apps.resttest</test>
+    <test name="Update App 1">test-plan-data/applications/apps/006_update-app1.resttest</test>
+    <test name="Get Application 1 (updated)">test-plan-data/applications/apps/007_get-app1.resttest</test>
+    <test name="Create Application 1 (Org 2)">test-plan-data/applications/apps/008_create-app1-org2.resttest</test>
+    <test name="Get Application 1">test-plan-data/applications/apps/009_get-app1.resttest</test>
+    <test name="Get Application 1 (Org 2)">test-plan-data/applications/apps/010_get-app1-org2.resttest</test>
+    <test name="List Application">test-plan-data/applications/apps/011_list-apps.resttest</test>
   </testGroup>
 
   <!-- Test Application Version management -->
   <testGroup name="Application Version Management">
-    <test name="Create Application Version 1.0">applications/versions/001_create-version-1.0.resttest</test>
-    <test name="Get Application Version 1.0">applications/versions/002_get-version-1.0.resttest</test>
-    <test name="Get Missing Application Version">applications/versions/003_get-version-missing.resttest</test>
-    <test name="Create Application Version 2.0">applications/versions/004_create-version-2.0.resttest</test>
-    <test name="List All Versions">applications/versions/005_list-versions.resttest</test>
-    <test name="Update Version 1.0">applications/versions/006_update-version-1.0.resttest</test>
-    <test name="Get Version 1.0 (updated)">applications/versions/007_get-version-1.0.resttest</test>
+    <test name="Create Application Version 1.0">test-plan-data/applications/versions/001_create-version-1.0.resttest</test>
+    <test name="Get Application Version 1.0">test-plan-data/applications/versions/002_get-version-1.0.resttest</test>
+    <test name="Get Missing Application Version">test-plan-data/applications/versions/003_get-version-missing.resttest</test>
+    <test name="Create Application Version 2.0">test-plan-data/applications/versions/004_create-version-2.0.resttest</test>
+    <test name="List All Versions">test-plan-data/applications/versions/005_list-versions.resttest</test>
+    <test name="Update Version 1.0">test-plan-data/applications/versions/006_update-version-1.0.resttest</test>
+    <test name="Get Version 1.0 (updated)">test-plan-data/applications/versions/007_get-version-1.0.resttest</test>
   </testGroup>
 
 </testPlan>

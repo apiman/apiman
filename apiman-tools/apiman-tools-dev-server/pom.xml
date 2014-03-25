@@ -8,10 +8,6 @@
   </parent>
   <artifactId>apiman-tools-dev-server</artifactId>
   <name>apiman-tools-dev-server</name>
-  
-  <properties>
-    <jetty.version>8.1.9.v20130131</jetty.version>
-  </properties>
 
   <dependencies>
     <dependency>

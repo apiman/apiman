@@ -3,34 +3,34 @@
 
   <!-- Create Organizations -->
   <testGroup name="Initial Creates">
-    <test name="Create Organization 1">plans/create/001_create-org1.resttest</test>
-    <test name="Create Organization 2">plans/create/002_create-org2.resttest</test>
+    <test name="Create Organization 1">test-plan-data/plans/create/001_create-org1.resttest</test>
+    <test name="Create Organization 2">test-plan-data/plans/create/002_create-org2.resttest</test>
   </testGroup>
 
   <!-- Test Plan management -->
   <testGroup name="Plan Management">
-    <test name="Create Plan 1">plans/plans/001_create-plan1.resttest</test>
-    <test name="Get Plan 1">plans/plans/002_get-plan1.resttest</test>
-    <test name="Get Missing App">plans/plans/003_get-missing-plan.resttest</test>
-    <test name="Create Plan 2">plans/plans/004_create-plan2.resttest</test>
-    <test name="Search Apps">plans/plans/005_search-plans.resttest</test>
-    <test name="Update App 1">plans/plans/006_update-plan1.resttest</test>
-    <test name="Get Plan 1 (updated)">plans/plans/007_get-plan1.resttest</test>
-    <test name="Create Plan 1 (Org 2)">plans/plans/008_create-plan1-org2.resttest</test>
-    <test name="Get Plan 1">plans/plans/009_get-plan1.resttest</test>
-    <test name="Get Plan 1 (Org 2)">plans/plans/010_get-plan1-org2.resttest</test>
-    <test name="List Plan">plans/plans/011_list-plans.resttest</test>
+    <test name="Create Plan 1">test-plan-data/plans/plans/001_create-plan1.resttest</test>
+    <test name="Get Plan 1">test-plan-data/plans/plans/002_get-plan1.resttest</test>
+    <test name="Get Missing App">test-plan-data/plans/plans/003_get-missing-plan.resttest</test>
+    <test name="Create Plan 2">test-plan-data/plans/plans/004_create-plan2.resttest</test>
+    <test name="Search Apps">test-plan-data/plans/plans/005_search-plans.resttest</test>
+    <test name="Update App 1">test-plan-data/plans/plans/006_update-plan1.resttest</test>
+    <test name="Get Plan 1 (updated)">test-plan-data/plans/plans/007_get-plan1.resttest</test>
+    <test name="Create Plan 1 (Org 2)">test-plan-data/plans/plans/008_create-plan1-org2.resttest</test>
+    <test name="Get Plan 1">test-plan-data/plans/plans/009_get-plan1.resttest</test>
+    <test name="Get Plan 1 (Org 2)">test-plan-data/plans/plans/010_get-plan1-org2.resttest</test>
+    <test name="List Plan">test-plan-data/plans/plans/011_list-plans.resttest</test>
   </testGroup>
 
   <!-- Test Plan Version management -->
   <testGroup name="Plan Version Management">
-    <test name="Create Plan Version 1.0">plans/versions/001_create-version-1.0.resttest</test>
-    <test name="Get Plan Version 1.0">plans/versions/002_get-version-1.0.resttest</test>
-    <test name="Get Missing Plan Version">plans/versions/003_get-version-missing.resttest</test>
-    <test name="Create Plan Version 2.0">plans/versions/004_create-version-2.0.resttest</test>
-    <test name="List All Versions">plans/versions/005_list-versions.resttest</test>
-    <test name="Update Version 1.0">plans/versions/006_update-version-1.0.resttest</test>
-    <test name="Get Version 1.0 (updated)">plans/versions/007_get-version-1.0.resttest</test>
+    <test name="Create Plan Version 1.0">test-plan-data/plans/versions/001_create-version-1.0.resttest</test>
+    <test name="Get Plan Version 1.0">test-plan-data/plans/versions/002_get-version-1.0.resttest</test>
+    <test name="Get Missing Plan Version">test-plan-data/plans/versions/003_get-version-missing.resttest</test>
+    <test name="Create Plan Version 2.0">test-plan-data/plans/versions/004_create-version-2.0.resttest</test>
+    <test name="List All Versions">test-plan-data/plans/versions/005_list-versions.resttest</test>
+    <test name="Update Version 1.0">test-plan-data/plans/versions/006_update-version-1.0.resttest</test>
+    <test name="Get Version 1.0 (updated)">test-plan-data/plans/versions/007_get-version-1.0.resttest</test>
   </testGroup>
 
 </testPlan>

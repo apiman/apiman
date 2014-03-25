@@ -18,7 +18,7 @@ package org.overlord.apiman.tools.dev.seeder;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import org.overlord.apiman.dt.test.util.TestPlanRunner;
+import org.overlord.apiman.test.common.util.TestPlanRunner;
 
 /**
  * Seeds the dev environment.

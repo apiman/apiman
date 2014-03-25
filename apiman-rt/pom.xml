@@ -9,4 +9,9 @@
   <artifactId>apiman-rt</artifactId>
   <packaging>pom</packaging>
   <name>apiman-rt</name>
+  <modules>
+    <module>apiman-rt-engine</module>
+    <module>apiman-rt-test</module>
+    <module>apiman-rt-gateway</module>
+  </modules>
 </project>

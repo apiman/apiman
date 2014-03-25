@@ -18,6 +18,7 @@ package org.overlord.apiman.dt.test.util;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.overlord.apiman.dt.test.server.DtApiTestServer;
+import org.overlord.apiman.test.common.util.TestPlanRunner;
 
 /**
  * Base class for all junit integration tests for dt api.

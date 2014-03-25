@@ -3,22 +3,22 @@
 
   <!-- Create some organizations and roles -->
   <testGroup name="Create Some Organizations &amp; Roles">
-    <test name="Create Org 1">currentuser/populate/001_create-org1.resttest</test>
-    <test name="Create Org 2">currentuser/populate/002_create-org2.resttest</test>
-    <test name="Create Org 3">currentuser/populate/003_create-org3.resttest</test>
-    <test name="Create Role 1">currentuser/populate/004_create-role1.resttest</test>
-    <test name="Create Role 2">currentuser/populate/005_create-role2.resttest</test>
-    <test name="Create Role 3">currentuser/populate/006_create-role3.resttest</test>
+    <test name="Create Org 1">test-plan-data/currentuser/populate/001_create-org1.resttest</test>
+    <test name="Create Org 2">test-plan-data/currentuser/populate/002_create-org2.resttest</test>
+    <test name="Create Org 3">test-plan-data/currentuser/populate/003_create-org3.resttest</test>
+    <test name="Create Role 1">test-plan-data/currentuser/populate/004_create-role1.resttest</test>
+    <test name="Create Role 2">test-plan-data/currentuser/populate/005_create-role2.resttest</test>
+    <test name="Create Role 3">test-plan-data/currentuser/populate/006_create-role3.resttest</test>
   </testGroup>
   
   <!-- Now test organization summary listings -->
   <testGroup name="My Organizations">
-    <test name="Grant Access to Org1 (user1)">currentuser/orgs/001_grant-org1.resttest</test>
-    <test name="My Orgs (user1)">currentuser/orgs/002_my-orgs-user1.resttest</test>
-    <test name="My Orgs (user2)">currentuser/orgs/003_my-orgs-user2.resttest</test>
-    <test name="Grant Access to Org2 (user1)">currentuser/orgs/004_grant-org2.resttest</test>
-    <test name="My Orgs (user1)">currentuser/orgs/005_my-orgs-user1.resttest</test>
-    <test name="Someone Else's Orgs (user1)">currentuser/orgs/006_other-orgs-user1.resttest</test>
+    <test name="Grant Access to Org1 (user1)">test-plan-data/currentuser/orgs/001_grant-org1.resttest</test>
+    <test name="My Orgs (user1)">test-plan-data/currentuser/orgs/002_my-orgs-user1.resttest</test>
+    <test name="My Orgs (user2)">test-plan-data/currentuser/orgs/003_my-orgs-user2.resttest</test>
+    <test name="Grant Access to Org2 (user1)">test-plan-data/currentuser/orgs/004_grant-org2.resttest</test>
+    <test name="My Orgs (user1)">test-plan-data/currentuser/orgs/005_my-orgs-user1.resttest</test>
+    <test name="Someone Else's Orgs (user1)">test-plan-data/currentuser/orgs/006_other-orgs-user1.resttest</test>
   </testGroup>
 
 </testPlan>

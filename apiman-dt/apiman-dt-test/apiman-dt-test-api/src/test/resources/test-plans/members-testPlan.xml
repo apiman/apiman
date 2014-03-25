@@ -3,25 +3,25 @@
 
   <!-- Create Organizations -->
   <testGroup name="Initial Creates">
-    <test name="Create Org Owner Role">members/create/001_create-org-owner.resttest</test>
-    <test name="Create App Dev Role">members/create/002_create-app-dev.resttest</test>
-    <test name="Create Service Dev Role">members/create/003_create-service-dev.resttest</test>
-    <test name="Create Organization 1">members/create/004_create-org1.resttest</test>
-    <test name="Create Organization 2">members/create/005_create-org2.resttest</test>
+    <test name="Create Org Owner Role">test-plan-data/members/create/001_create-org-owner.resttest</test>
+    <test name="Create App Dev Role">test-plan-data/members/create/002_create-app-dev.resttest</test>
+    <test name="Create Service Dev Role">test-plan-data/members/create/003_create-service-dev.resttest</test>
+    <test name="Create Organization 1">test-plan-data/members/create/004_create-org1.resttest</test>
+    <test name="Create Organization 2">test-plan-data/members/create/005_create-org2.resttest</test>
   </testGroup>
 
   <!-- Test Memberships -->
   <testGroup name="Member Management">
-    <test name="Get Org 1 Members (one)">members/manage/001_get-members.resttest</test>
-    <test name="Grant user1 app dev role">members/manage/002_grant-user1-app.resttest</test>
-    <test name="Get Org 1 Members (two)">members/manage/003_get-members.resttest</test>
-    <test name="Grant user1 svc dev role">members/manage/004_grant-user1-service.resttest</test>
-    <test name="Grant user2 svc dev role">members/manage/005_grant-user2-service.resttest</test>
-    <test name="Get Org 1 Members (three)">members/manage/006_get-members.resttest</test>
-    <test name="Revoke user2 role">members/manage/007_revoke-user2.resttest</test>
-    <test name="Get Org 1 Members (two)">members/manage/008_get-members.resttest</test>
-    <test name="Revoke all user1 roles">members/manage/009_revoke-user1-all.resttest</test>
-    <test name="Get Org 1 Members (one)">members/manage/010_get-members.resttest</test>
+    <test name="Get Org 1 Members (one)">test-plan-data/members/manage/001_get-members.resttest</test>
+    <test name="Grant user1 app dev role">test-plan-data/members/manage/002_grant-user1-app.resttest</test>
+    <test name="Get Org 1 Members (two)">test-plan-data/members/manage/003_get-members.resttest</test>
+    <test name="Grant user1 svc dev role">test-plan-data/members/manage/004_grant-user1-service.resttest</test>
+    <test name="Grant user2 svc dev role">test-plan-data/members/manage/005_grant-user2-service.resttest</test>
+    <test name="Get Org 1 Members (three)">test-plan-data/members/manage/006_get-members.resttest</test>
+    <test name="Revoke user2 role">test-plan-data/members/manage/007_revoke-user2.resttest</test>
+    <test name="Get Org 1 Members (two)">test-plan-data/members/manage/008_get-members.resttest</test>
+    <test name="Revoke all user1 roles">test-plan-data/members/manage/009_revoke-user1-all.resttest</test>
+    <test name="Get Org 1 Members (one)">test-plan-data/members/manage/010_get-members.resttest</test>
   </testGroup>
 
 </testPlan>

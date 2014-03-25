@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testPlan xmlns="urn:org.overlord.apiman.test:2014:02:testPlan">
+
+  <testGroup name="Test the Echo Server through the Gateway">
+    <test name="Echo 1">test-plan-data/simple-echo/001.resttest</test>
+    <test name="Echo 2">test-plan-data/simple-echo/002.resttest</test>
+  </testGroup>
+
+</testPlan>
