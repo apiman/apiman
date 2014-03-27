@@ -12,5 +12,6 @@
   <modules>
     <module>apiman-rt-gateway-undertow</module>
     <module>apiman-rt-gateway-war</module>
+    <module>apiman-rt-gateway-war/jetty8</module>
   </modules>
 </project>

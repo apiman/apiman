@@ -18,7 +18,7 @@ package org.overlord.apiman.rt.engine;
 import org.overlord.apiman.rt.engine.beans.Service;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
 import org.overlord.apiman.rt.engine.beans.ServiceResponse;
-import org.overlord.apiman.rt.engine.exceptions.ServiceInvocationException;
+import org.overlord.apiman.rt.engine.beans.exceptions.ServiceInvocationException;
 
 /**
  * A connector to a back end service.  An implementation of this interface

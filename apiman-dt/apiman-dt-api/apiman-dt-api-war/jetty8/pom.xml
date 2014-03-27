@@ -22,27 +22,27 @@
 
     <!-- Project JARs -->
     <dependency>
-      <groupId>org.overlord.apiman</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>apiman-dt-api-beans</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.overlord.apiman</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>apiman-dt-api-rest</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.overlord.apiman</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>apiman-dt-api-rest-impl</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.overlord.apiman</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>apiman-dt-api-jpa</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.overlord.apiman</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>apiman-dt-api-jpa-idm</artifactId>
       <version>${project.version}</version>
     </dependency>

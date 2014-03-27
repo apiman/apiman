@@ -33,6 +33,14 @@
       <type>war</type>
     </dependency>
     
+    <!-- The Jetty 8 version of the Gateway -->
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-rt-gateway-war-jetty8</artifactId>
+      <version>${project.version}</version>
+      <type>war</type>
+    </dependency>
+    
     <!-- The Dev Environment Seeder -->
     <dependency>
       <groupId>${project.groupId}</groupId>
@@ -99,6 +107,8 @@
                       value="${maven.dependency.commons-pool.commons-pool.jar.path}" />
                     <property name="apiman.h2.jar"
                       value="${maven.dependency.com.h2database.h2.jar.path}" />
+                    <property name="apiman.apiman-rt-gateway-war-jetty8.war"
+                      value="${maven.dependency.org.overlord.apiman.apiman-rt-gateway-war-jetty8.war.path}" />
                     <property name="apiman.jetty.home" location="${apiman.appserver.dir}" />
                     <property name="apiman.jetty.webapps" location="${apiman.appserver.dir}/webapps" />
                     <property name="apiman.jetty.logdir" location="${apiman.appserver.dir}/logs" />
@@ -108,6 +118,7 @@
                     <echo>********************************************************************</echo>
                     <echo>APIMan DT:         ${apiman.apiman-dt-api-war-jetty8.war}</echo>
                     <echo>APIMan DT UI:      ${apiman.apiman-dt-ui-war-jetty8.war}</echo>
+                    <echo>APIMan Gateway:    ${apiman.apiman-rt-gateway-war-jetty8.war}</echo>
                     <echo>Dev Seeder:        ${apiman.apiman-tools-dev-seeder.war}</echo>
                     <echo>Commons Pooling:   ${apiman.commons-pool.jar}</echo>
                     <echo>Commons DBCP:      ${apiman.commons-dbcp.jar}</echo>
@@ -137,6 +148,7 @@
                     <copy file="${apiman.apiman-dt-api-war-jetty8.war}" tofile="${apiman.jetty.webapps}/apiman-dt-api.war" overwrite="true" /> 
                     <copy file="${apiman.apiman-dt-ui-war-jetty8.war}" tofile="${apiman.jetty.webapps}/apiman-dt-ui.war" overwrite="true" /> 
                     <copy file="${apiman.apiman-tools-dev-seeder.war}" tofile="${apiman.jetty.webapps}/dev-seeder.war" overwrite="true" /> 
+                    <copy file="${apiman.apiman-rt-gateway-war-jetty8.war}" tofile="${apiman.jetty.webapps}/apiman-rt.war" overwrite="true" /> 
                     
                     <!-- Start Jetty 8 -->
                     <java jar="${apiman.jetty.home}/start.jar" fork="true" failonerror="true" dir="${apiman.jetty.home}">
@@ -148,6 +160,8 @@
                       <sysproperty key="apiman-dt-ui.dt-api.authentication.type" value="samlBearerToken"/>
                       <sysproperty key="apiman-dt-ui.dt-api.authentication.token.generator" value="org.overlord.apiman.dt.ui.jetty8.auth.ApiManDtUiTokenGenerator"/>
                       <sysproperty key="org.overlord.apps.config-dir" value="${apiman.resources.dir}/config/header"/>
+                      <sysproperty key="apiman-rt.registry" value="org.overlord.apiman.rt.engine.mem.InMemoryRegistry"/>
+                      <sysproperty key="apiman-rt.connector-factory" value="org.overlord.apiman.rt.war.connectors.HttpConnectorFactory"/>
                       <jvmarg line="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787" />
                       <arg value="etc/jetty-logging.xml"/>
                       <arg value="etc/jetty-started.xml"/>

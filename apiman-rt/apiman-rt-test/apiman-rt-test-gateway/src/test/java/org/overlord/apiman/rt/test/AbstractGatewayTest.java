@@ -20,8 +20,8 @@ import org.junit.BeforeClass;
 import org.overlord.apiman.rt.engine.EngineConfig;
 import org.overlord.apiman.rt.engine.beans.Application;
 import org.overlord.apiman.rt.engine.beans.Service;
-import org.overlord.apiman.rt.engine.exceptions.PublishingException;
-import org.overlord.apiman.rt.engine.exceptions.RegistrationException;
+import org.overlord.apiman.rt.engine.beans.exceptions.PublishingException;
+import org.overlord.apiman.rt.engine.beans.exceptions.RegistrationException;
 import org.overlord.apiman.rt.engine.mem.InMemoryRegistry;
 import org.overlord.apiman.rt.test.echo.EchoServer;
 import org.overlord.apiman.rt.test.gateway.GatewayServer;
@@ -38,6 +38,8 @@ public class AbstractGatewayTest {
     
     protected static final int ECHO_PORT = 7654;
     protected static final int GATEWAY_PORT = 8080;
+    protected static final int GATEWAY_PROXY_PORT = 8081;
+    protected static final boolean USE_PROXY = false; // if you set this to true you must start a tcp proxy on 8081
     
     static {
         configureGateway();
@@ -88,6 +90,7 @@ public class AbstractGatewayTest {
      * @param planPath
      */
     protected void runTestPlan(String planPath) {
+        System.setProperty("apiman-rt-test-gateway.endpoints.echo", getEchoEndpoint());
         runTestPlan(planPath, getClass().getClassLoader());
     }
     
@@ -97,17 +100,20 @@ public class AbstractGatewayTest {
      * @param classLoader
      */
     protected void runTestPlan(String planPath, ClassLoader classLoader) {
-        String baseApiUrl = "http://localhost:" + GATEWAY_PORT;
+        int port = GATEWAY_PORT;
+        if (USE_PROXY) {
+            port = GATEWAY_PROXY_PORT;
+        }
+        String baseApiUrl = "http://localhost:" + port;
         TestPlanRunner runner = new TestPlanRunner(baseApiUrl);
         runner.runTestPlan(planPath, classLoader);
     }
     
     /**
-     * @param path path to a resource - should start with /
      * @return the echo server endpoint
      */
-    protected String getEchoEndpoint(String path) {
-        return "http://localhost:" + ECHO_PORT + path;
+    protected String getEchoEndpoint() {
+        return "http://localhost:" + ECHO_PORT;
     }
 
 }

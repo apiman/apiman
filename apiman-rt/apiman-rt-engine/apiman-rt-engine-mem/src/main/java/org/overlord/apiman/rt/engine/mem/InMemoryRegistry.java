@@ -23,10 +23,10 @@ import org.overlord.apiman.rt.engine.beans.Application;
 import org.overlord.apiman.rt.engine.beans.Contract;
 import org.overlord.apiman.rt.engine.beans.Service;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
-import org.overlord.apiman.rt.engine.exceptions.InvalidContractException;
-import org.overlord.apiman.rt.engine.exceptions.InvalidServiceException;
-import org.overlord.apiman.rt.engine.exceptions.PublishingException;
-import org.overlord.apiman.rt.engine.exceptions.RegistrationException;
+import org.overlord.apiman.rt.engine.beans.exceptions.InvalidContractException;
+import org.overlord.apiman.rt.engine.beans.exceptions.InvalidServiceException;
+import org.overlord.apiman.rt.engine.beans.exceptions.PublishingException;
+import org.overlord.apiman.rt.engine.beans.exceptions.RegistrationException;
 
 /**
  * An in-memory implementation of the registry.
@@ -71,6 +71,18 @@ public class InMemoryRegistry implements IRegistry {
     }
     
     /**
+     * @see org.overlord.apiman.rt.engine.IRegistry#retireService(org.overlord.apiman.rt.engine.beans.Service)
+     */
+    @Override
+    public synchronized void retireService(Service service) throws PublishingException {
+        String serviceKey = service.getServiceKey();
+        if (services.containsKey(serviceKey)) {
+            services.remove(serviceKey);
+        }
+        throw new PublishingException("Service not found.");
+    }
+    
+    /**
      * @see org.overlord.apiman.rt.engine.IRegistry#registerApplication(org.overlord.apiman.rt.engine.beans.Application)
      */
     @Override
@@ -82,6 +94,31 @@ public class InMemoryRegistry implements IRegistry {
         applications.put(applicationKey, application);
         for (Contract contract : application.getContracts()) {
             registerContract(contract);
+        }
+    }
+    
+    /**
+     * @see org.overlord.apiman.rt.engine.IRegistry#unregisterApplication(org.overlord.apiman.rt.engine.beans.Application)
+     */
+    @Override
+    public void unregisterApplication(Application application) throws RegistrationException {
+        String applicationKey = application.getApplicationKey();
+        if (applications.containsKey(applicationKey)) {
+            Application removed = applications.remove(applicationKey);
+            for (Contract contract : removed.getContracts()) {
+                removeContract(contract);
+            }
+        }
+        throw new RegistrationException("Application not found.");
+    }
+
+    /**
+     * Removes a contract from the registry.
+     * @param contract
+     */
+    private void removeContract(Contract contract) {
+        if (contracts.containsKey(contract.getApiKey())) {
+            contracts.remove(contract.getApiKey());
         }
     }
 

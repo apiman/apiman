@@ -14,5 +14,12 @@
       <groupId>org.overlord</groupId>
       <artifactId>overlord-commons-config</artifactId>
     </dependency>
+    
+    <!-- Project Dependencies -->
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-rt-engine-beans</artifactId>
+      <version>${project.version}</version>
+    </dependency>
   </dependencies>
 </project>

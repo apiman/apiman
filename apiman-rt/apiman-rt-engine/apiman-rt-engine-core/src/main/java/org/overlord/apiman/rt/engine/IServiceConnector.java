@@ -17,7 +17,7 @@ package org.overlord.apiman.rt.engine;
 
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
 import org.overlord.apiman.rt.engine.beans.ServiceResponse;
-import org.overlord.apiman.rt.engine.exceptions.ConnectorException;
+import org.overlord.apiman.rt.engine.beans.exceptions.ConnectorException;
 
 /**
  * Interface implemented by connectors to back end systems.  The engine uses

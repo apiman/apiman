@@ -19,10 +19,10 @@ import org.overlord.apiman.rt.engine.beans.Application;
 import org.overlord.apiman.rt.engine.beans.Contract;
 import org.overlord.apiman.rt.engine.beans.Service;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
-import org.overlord.apiman.rt.engine.exceptions.InvalidContractException;
-import org.overlord.apiman.rt.engine.exceptions.InvalidServiceException;
-import org.overlord.apiman.rt.engine.exceptions.PublishingException;
-import org.overlord.apiman.rt.engine.exceptions.RegistrationException;
+import org.overlord.apiman.rt.engine.beans.exceptions.InvalidContractException;
+import org.overlord.apiman.rt.engine.beans.exceptions.InvalidServiceException;
+import org.overlord.apiman.rt.engine.beans.exceptions.PublishingException;
+import org.overlord.apiman.rt.engine.beans.exceptions.RegistrationException;
 
 /**
  * A registry that maintains a collection of Services and Contracts that have
@@ -35,7 +35,7 @@ import org.overlord.apiman.rt.engine.exceptions.RegistrationException;
 public interface IRegistry {
 
     /**
-     * Gets the Service being invoked based on information included in the inbound
+     * Gets the {@link Service} being invoked based on information included in the inbound
      * service request.
      * @param request an inbound service request
      * @return a Service or null if not found
@@ -43,21 +43,35 @@ public interface IRegistry {
     public Service getService(ServiceRequest request) throws InvalidServiceException;
     
     /**
-     * Publishes a new Service into the registry.
+     * Publishes a new {@link Service} into the registry.
      * @param service the service being published
      * @throws PublishingException
      */
     public void publishService(Service service) throws PublishingException;
     
     /**
-     * Registers a new application with the registry.
+     * Retires (removes) a {@link Service} from the registry.
+     * @param service
+     * @throws PublishingException
+     */
+    public void retireService(Service service) throws PublishingException;
+    
+    /**
+     * Registers a new {@link Application} with the registry.
      * @param application the application being registered
      * @throws RegistrationException
      */
     public void registerApplication(Application application) throws RegistrationException;
+    
+    /**
+     * Removes an {@link Application} from the registry.
+     * @param application the application to remove
+     * @throws RegistrationException
+     */
+    public void unregisterApplication(Application application) throws RegistrationException;
 
     /**
-     * Gets the Contract to use based on information included in the inbound
+     * Gets the {@link Contract} to use based on information included in the inbound
      * service request.
      * 
      * @param request an inbound service request

@@ -12,7 +12,7 @@
   <dependencies>
     <!-- Project Dependencies -->
     <dependency>
-      <groupId>org.overlord.apiman</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>apiman-dt-api-beans</artifactId>
       <version>${project.version}</version>
     </dependency>
