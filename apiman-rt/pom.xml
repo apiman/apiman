@@ -13,5 +13,6 @@
     <module>apiman-rt-engine</module>
     <module>apiman-rt-test</module>
     <module>apiman-rt-gateway</module>
+    <module>apiman-rt-api</module>
   </modules>
 </project>

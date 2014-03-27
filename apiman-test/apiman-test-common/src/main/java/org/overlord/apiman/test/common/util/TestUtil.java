@@ -143,6 +143,7 @@ public class TestUtil {
                 while (!line.trim().startsWith("----")) {
                     builder.append(line).append("\n");
                     line = reader.readLine();
+                    line = doPropertyReplacement(line);
                 }
                 rval.setRequestPayload(builder.toString());
             }
@@ -176,6 +177,26 @@ public class TestUtil {
             throw new IOException("Error while parsing Rest Test", t);
         }
         
+        return rval;
+    }
+
+    /**
+     * Provides Ant-style property replacement support.  This method looks for ${property-name}
+     * formatted text and replaces the property with its value.  Values are looked up from
+     * the system properties.
+     * @param line the line being processed
+     * @return the line with all properties replaced
+     */
+    private static String doPropertyReplacement(String line) {
+        String rval = line;
+        int sidx = -1;
+        while ( (sidx = rval.indexOf("${")) != -1 ) {
+            int eidx = rval.indexOf('}', sidx);
+            String substring = rval.substring(sidx + 2, eidx);
+            String propName = substring.trim();
+            String propVal = System.getProperty(propName, "");
+            rval = rval.replace("${" + substring + "}", propVal);
+        }
         return rval;
     }
 

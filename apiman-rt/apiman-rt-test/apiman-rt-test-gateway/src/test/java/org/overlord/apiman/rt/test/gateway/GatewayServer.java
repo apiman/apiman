@@ -20,8 +20,16 @@ import io.undertow.servlet.Servlets;
 import io.undertow.servlet.api.DeploymentInfo;
 import io.undertow.servlet.api.DeploymentManager;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.servlet.ServletException;
 
+import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
+import org.overlord.apiman.rt.api.rest.impl.ApplicationResourceImpl;
+import org.overlord.apiman.rt.api.rest.impl.RtApiApplication;
+import org.overlord.apiman.rt.api.rest.impl.ServiceResourceImpl;
+import org.overlord.apiman.rt.api.rest.impl.mappers.RestExceptionMapper;
 import org.overlord.apiman.rt.war.listeners.GatewayBootstrapper;
 import org.overlord.apiman.rt.war.servlets.GatewayServlet;
 
@@ -36,17 +44,23 @@ public class GatewayServer {
 
     /**
      * Constructor.
+     * @param port which port to run the test server on
      */
     public GatewayServer(int port) {
         try {
             DeploymentInfo servletBuilder = Servlets
                     .deployment()
                     .setClassLoader(GatewayServer.class.getClassLoader())
-                    .setContextPath("/gateway")
-                    .setDeploymentName("gateway.war")
+                    .setContextPath("/apiman-rt")
+                    .setDeploymentName("apiman-rt.war")
                     .addListener(Servlets.listener(GatewayBootstrapper.class))
                     .addServlets(
-                            Servlets.servlet("GatewayServlet", GatewayServlet.class).addMapping("/*"));
+                            Servlets.servlet("GatewayServlet", GatewayServlet.class).addMapping("/gateway/*"))
+                    .addServlets(
+                            Servlets.servlet("ResteasyServlet", HttpServletDispatcher.class)
+                                    .addInitParam("javax.ws.rs.Application", GatewayApplication.class.getName())
+                                    .setLoadOnStartup(1)
+                                    .addMapping("/api/*"));
 
             DeploymentManager manager = Servlets.defaultContainer().addDeployment(servletBuilder);
             manager.deploy();
@@ -71,4 +85,20 @@ public class GatewayServer {
         server.stop();
     }
 
+    public static class GatewayApplication extends RtApiApplication {
+        /**
+         * Constructor.
+         */
+        public GatewayApplication() {
+        }
+
+        @Override
+        public Set<Class<?>> getClasses() {
+            HashSet<Class<?>> classes = new HashSet<Class<?>>();
+            classes.add(ServiceResourceImpl.class);
+            classes.add(ApplicationResourceImpl.class);
+            classes.add(RestExceptionMapper.class);
+            return classes;
+        }
+    }
 }

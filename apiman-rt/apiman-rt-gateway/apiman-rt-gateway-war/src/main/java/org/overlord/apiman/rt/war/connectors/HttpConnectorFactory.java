@@ -35,7 +35,7 @@ import org.overlord.apiman.rt.engine.IServiceConnector;
 import org.overlord.apiman.rt.engine.beans.Service;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
 import org.overlord.apiman.rt.engine.beans.ServiceResponse;
-import org.overlord.apiman.rt.engine.exceptions.ConnectorException;
+import org.overlord.apiman.rt.engine.beans.exceptions.ConnectorException;
 
 /**
  * Connector factory that uses HTTP to invoke back end systems.

@@ -16,9 +16,6 @@
 package org.overlord.apiman.rt.test;
 
 import org.junit.Test;
-import org.overlord.apiman.rt.engine.beans.Application;
-import org.overlord.apiman.rt.engine.beans.Contract;
-import org.overlord.apiman.rt.engine.beans.Service;
 
 /**
  * Make sure the gateway and test echo server are working.
@@ -29,27 +26,6 @@ public class SimpleEchoTest extends AbstractGatewayTest {
     
     @Test
     public void test() throws Exception {
-        Service service = new Service();
-        service.setOrganizationId("SimpleEchoTest");
-        service.setServiceId("echo");
-        service.setVersion("1.0.0");
-        service.setEndpoint(getEchoEndpoint("/"));
-        service.setEndpointType("REST");
-        publishService(service);
-        
-        Application app = new Application();
-        app.setOrganizationId("SimpleEchoTest");
-        app.setApplicationId("test");
-        app.setVersion("1.0.0");
-        Contract contract = new Contract();
-        contract.setApiKey("12345");
-        contract.setContractId("echo-1");
-        contract.setServiceOrgId("SimpleEchoTest");
-        contract.setServiceId("echo");
-        contract.setServiceVersion("1.0.0");
-        app.getContracts().add(contract);
-        registerApplication(app);
-        
         runTestPlan("test-plans/simple-echo-testPlan.xml");
     }
 

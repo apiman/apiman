@@ -21,7 +21,7 @@ import java.util.Set;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaFilterBean;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.InvalidSearchCriteriaException;
-import org.overlord.apiman.dt.api.rest.i18n.Messages;
+import org.overlord.apiman.dt.api.rest.impl.i18n.Messages;
 
 /**
  * Some utility methods related to searches and search criteria.

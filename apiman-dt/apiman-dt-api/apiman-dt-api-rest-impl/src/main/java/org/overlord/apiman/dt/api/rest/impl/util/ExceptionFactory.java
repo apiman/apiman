@@ -33,7 +33,7 @@ import org.overlord.apiman.dt.api.rest.contract.exceptions.ServiceAlreadyExistsE
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ServiceNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ServiceVersionNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.UserNotFoundException;
-import org.overlord.apiman.dt.api.rest.i18n.Messages;
+import org.overlord.apiman.dt.api.rest.impl.i18n.Messages;
 
 /**
  * Simple factory for creating REST exceptions.

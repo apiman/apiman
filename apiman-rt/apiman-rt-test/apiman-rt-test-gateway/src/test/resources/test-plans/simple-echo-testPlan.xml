@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testPlan xmlns="urn:org.overlord.apiman.test:2014:02:testPlan">
 
+  <testGroup name="Configure the Gateway">
+    <test name="Publish Service">test-plan-data/simple-echo/setup/001-publish-service.resttest</test>
+    <test name="Register Application">test-plan-data/simple-echo/setup/002-register-app.resttest</test>
+  </testGroup>
+
   <testGroup name="Test the Echo Server through the Gateway">
-    <test name="Echo 1">test-plan-data/simple-echo/001.resttest</test>
-    <test name="Echo 2">test-plan-data/simple-echo/002.resttest</test>
+    <test name="Echo 1">test-plan-data/simple-echo/echo/001.resttest</test>
+    <test name="Echo 2">test-plan-data/simple-echo/echo/002.resttest</test>
   </testGroup>
 
 </testPlan>

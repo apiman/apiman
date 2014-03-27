@@ -20,8 +20,8 @@ import org.overlord.apiman.rt.engine.beans.Contract;
 import org.overlord.apiman.rt.engine.beans.Service;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
 import org.overlord.apiman.rt.engine.beans.ServiceResponse;
-import org.overlord.apiman.rt.engine.exceptions.PublishingException;
-import org.overlord.apiman.rt.engine.exceptions.RegistrationException;
+import org.overlord.apiman.rt.engine.beans.exceptions.PublishingException;
+import org.overlord.apiman.rt.engine.beans.exceptions.RegistrationException;
 
 /**
  * The implementation of the API Management runtime engine.
@@ -90,11 +90,27 @@ public class EngineImpl implements IEngine {
     }
     
     /**
+     * @see org.overlord.apiman.rt.engine.IEngine#retireService(org.overlord.apiman.rt.engine.beans.Service)
+     */
+    @Override
+    public void retireService(Service service) throws PublishingException {
+        getRegistry().retireService(service);
+    }
+    
+    /**
      * @see org.overlord.apiman.rt.engine.IEngine#registerApplication(org.overlord.apiman.rt.engine.beans.Application)
      */
     @Override
     public void registerApplication(Application application) throws RegistrationException {
         getRegistry().registerApplication(application);
+    }
+    
+    /**
+     * @see org.overlord.apiman.rt.engine.IEngine#unregisterApplication(org.overlord.apiman.rt.engine.beans.Application)
+     */
+    @Override
+    public void unregisterApplication(Application application) throws RegistrationException {
+        getRegistry().unregisterApplication(application);
     }
 
     /**
