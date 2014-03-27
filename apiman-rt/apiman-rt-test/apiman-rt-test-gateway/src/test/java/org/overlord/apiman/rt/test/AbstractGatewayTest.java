@@ -39,7 +39,7 @@ public class AbstractGatewayTest {
     protected static final int ECHO_PORT = 7654;
     protected static final int GATEWAY_PORT = 8080;
     protected static final int GATEWAY_PROXY_PORT = 8081;
-    protected static final boolean USE_PROXY = true; // if you set this to true you must start a tcp proxy on 8081
+    protected static final boolean USE_PROXY = false; // if you set this to true you must start a tcp proxy on 8081
     
     static {
         configureGateway();

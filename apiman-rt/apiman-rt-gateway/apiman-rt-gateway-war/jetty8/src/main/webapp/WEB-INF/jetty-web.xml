@@ -1,0 +1,14 @@
+<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure.dtd">
+<Configure class="org.eclipse.jetty.webapp.WebAppContext">
+
+  <Get name="securityHandler">
+    <Set name="realmName">OverlordRealm</Set>
+  </Get>
+
+  <Set name="serverClasses">
+    <Array type="java.lang.String">
+      <Item>-org.eclipse.jetty.servlet.ServletContextHandler.Decorator</Item>
+    </Array>
+  </Set>
+
+</Configure>
