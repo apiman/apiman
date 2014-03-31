@@ -1,0 +1,18 @@
+PUT /api/applications admin/admin
+Content-Type: application/json
+
+{
+  "organizationId" : "test-applications",
+  "applicationId" : "test",
+  "version" : "1.0",
+  "contracts" : [
+    {
+      "apiKey" : "12345",
+      "serviceOrgId" : "test-services",
+      "serviceId" : "datetime",
+      "serviceVersion" : "1.0"
+    }
+  ]
+}
+----
+204

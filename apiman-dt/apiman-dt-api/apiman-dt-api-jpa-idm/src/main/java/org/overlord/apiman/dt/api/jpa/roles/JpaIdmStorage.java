@@ -117,8 +117,8 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
         EntityManager entityManager = emf.createEntityManager();
         try {
             entityManager.getTransaction().begin();
-            Query query = entityManager.createQuery("DELETE from RoleMembershipBean m WHERE m.roleId = :roleId" );
-            query.setParameter("roleId", role.getId());
+            Query query = entityManager.createQuery("DELETE from RoleMembershipBean m WHERE m.roleId = :roleId" ); //$NON-NLS-1$
+            query.setParameter("roleId", role.getId()); //$NON-NLS-1$
             query.executeUpdate();
             entityManager.getTransaction().commit();
         } catch (Throwable t) {
@@ -166,10 +166,10 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
         EntityManager entityManager = emf.createEntityManager();
         try {
             entityManager.getTransaction().begin();
-            Query query = entityManager.createQuery("DELETE FROM RoleMembershipBean m WHERE m.roleId = :roleId AND m.userId = :userId AND m.organizationId = :orgId" );
-            query.setParameter("roleId", roleId);
-            query.setParameter("userId", userId);
-            query.setParameter("orgId", organizationId);
+            Query query = entityManager.createQuery("DELETE FROM RoleMembershipBean m WHERE m.roleId = :roleId AND m.userId = :userId AND m.organizationId = :orgId" ); //$NON-NLS-1$
+            query.setParameter("roleId", roleId); //$NON-NLS-1$
+            query.setParameter("userId", userId); //$NON-NLS-1$
+            query.setParameter("orgId", organizationId); //$NON-NLS-1$
             if (query.executeUpdate() == 0)
                 throw new DoesNotExistException();
             entityManager.getTransaction().commit();
@@ -193,9 +193,9 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
         EntityManager entityManager = emf.createEntityManager();
         try {
             entityManager.getTransaction().begin();
-            Query query = entityManager.createQuery("DELETE FROM RoleMembershipBean m WHERE m.userId = :userId AND m.organizationId = :orgId" );
-            query.setParameter("userId", userId);
-            query.setParameter("orgId", organizationId);
+            Query query = entityManager.createQuery("DELETE FROM RoleMembershipBean m WHERE m.userId = :userId AND m.organizationId = :orgId" ); //$NON-NLS-1$
+            query.setParameter("userId", userId); //$NON-NLS-1$
+            query.setParameter("orgId", organizationId); //$NON-NLS-1$
             query.executeUpdate();
             entityManager.getTransaction().commit();
         } catch (Throwable t) {
@@ -218,7 +218,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
             CriteriaBuilder builder = entityManager.getCriteriaBuilder();
             CriteriaQuery<RoleMembershipBean> criteriaQuery = builder.createQuery(RoleMembershipBean.class);
             Root<RoleMembershipBean> from = criteriaQuery.from(RoleMembershipBean.class);
-            criteriaQuery.where(builder.equal(from.get("userId"), userId));
+            criteriaQuery.where(builder.equal(from.get("userId"), userId)); //$NON-NLS-1$
             TypedQuery<RoleMembershipBean> typedQuery = entityManager.createQuery(criteriaQuery);
             List<RoleMembershipBean> resultList = typedQuery.getResultList();
             memberships.addAll(resultList);
@@ -243,8 +243,8 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
             CriteriaQuery<RoleMembershipBean> criteriaQuery = builder.createQuery(RoleMembershipBean.class);
             Root<RoleMembershipBean> from = criteriaQuery.from(RoleMembershipBean.class);
             criteriaQuery.where(
-                    builder.equal(from.get("userId"), userId),
-                    builder.equal(from.get("organizationId"), organizationId) );
+                    builder.equal(from.get("userId"), userId), //$NON-NLS-1$
+                    builder.equal(from.get("organizationId"), organizationId) ); //$NON-NLS-1$
             TypedQuery<RoleMembershipBean> typedQuery = entityManager.createQuery(criteriaQuery);
             List<RoleMembershipBean> resultList = typedQuery.getResultList();
             memberships.addAll(resultList);
@@ -268,7 +268,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
             CriteriaBuilder builder = entityManager.getCriteriaBuilder();
             CriteriaQuery<RoleMembershipBean> criteriaQuery = builder.createQuery(RoleMembershipBean.class);
             Root<RoleMembershipBean> from = criteriaQuery.from(RoleMembershipBean.class);
-            criteriaQuery.where(builder.equal(from.get("organizationId"), organizationId));
+            criteriaQuery.where(builder.equal(from.get("organizationId"), organizationId)); //$NON-NLS-1$
             TypedQuery<RoleMembershipBean> typedQuery = entityManager.createQuery(criteriaQuery);
             List<RoleMembershipBean> resultList = typedQuery.getResultList();
             memberships.addAll(resultList);
@@ -292,7 +292,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
             CriteriaBuilder builder = entityManager.getCriteriaBuilder();
             CriteriaQuery<RoleMembershipBean> criteriaQuery = builder.createQuery(RoleMembershipBean.class);
             Root<RoleMembershipBean> from = criteriaQuery.from(RoleMembershipBean.class);
-            criteriaQuery.where(builder.equal(from.get("userId"), userId));
+            criteriaQuery.where(builder.equal(from.get("userId"), userId)); //$NON-NLS-1$
             TypedQuery<RoleMembershipBean> typedQuery = entityManager.createQuery(criteriaQuery);
             List<RoleMembershipBean> resultList = typedQuery.getResultList();
             for (RoleMembershipBean membership : resultList) {

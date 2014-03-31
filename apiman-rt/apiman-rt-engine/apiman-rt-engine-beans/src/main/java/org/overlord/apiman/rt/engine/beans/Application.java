@@ -85,7 +85,7 @@ public class Application implements Serializable {
      * @return a unique application key useful for indexing
      */
     public String getApplicationKey() {
-        return this.organizationId + "|" + this.getApplicationId() + "|" + this.version;
+        return this.organizationId + "|" + this.getApplicationId() + "|" + this.version; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**

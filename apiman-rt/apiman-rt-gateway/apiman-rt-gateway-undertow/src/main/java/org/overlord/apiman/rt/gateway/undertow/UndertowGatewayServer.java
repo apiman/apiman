@@ -36,7 +36,7 @@ public abstract class UndertowGatewayServer {
      */
     public UndertowGatewayServer(int port) {
         server = Undertow.builder()
-                .addHttpListener(port, "localhost")
+                .addHttpListener(port, "localhost") //$NON-NLS-1$
                 .setHandler(new HttpHandler() {
                     @Override
                     public void handleRequest(final HttpServerExchange exchange) throws Exception {

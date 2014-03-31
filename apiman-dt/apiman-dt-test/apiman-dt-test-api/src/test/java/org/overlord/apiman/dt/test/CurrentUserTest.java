@@ -27,7 +27,7 @@ public class CurrentUserTest extends AbstractTestPlanTest {
 
     @Test
     public void test() {
-        runTestPlan("test-plans/currentuser-testPlan.xml", CurrentUserTest.class.getClassLoader());
+        runTestPlan("test-plans/currentuser-testPlan.xml", CurrentUserTest.class.getClassLoader()); //$NON-NLS-1$
     }
 
 }

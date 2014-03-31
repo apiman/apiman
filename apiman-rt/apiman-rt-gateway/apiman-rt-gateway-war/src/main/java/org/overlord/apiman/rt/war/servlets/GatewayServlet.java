@@ -56,7 +56,7 @@ public class GatewayServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
             IOException {
-        doAction(req, resp, "GET");
+        doAction(req, resp, "GET"); //$NON-NLS-1$
     }
 
     /**
@@ -65,7 +65,7 @@ public class GatewayServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
             IOException {
-        doAction(req, resp, "POST");
+        doAction(req, resp, "POST"); //$NON-NLS-1$
     }
     
     /**
@@ -74,7 +74,7 @@ public class GatewayServlet extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
             IOException {
-        doAction(req, resp, "PUT");
+        doAction(req, resp, "PUT"); //$NON-NLS-1$
     }
     
     /**
@@ -83,7 +83,7 @@ public class GatewayServlet extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
             IOException {
-        doAction(req, resp, "DELETE");
+        doAction(req, resp, "DELETE"); //$NON-NLS-1$
     }
 
     /**
@@ -129,7 +129,7 @@ public class GatewayServlet extends HttpServlet {
      */
     protected String getOrganization(HttpServletRequest request) {
         String path = request.getPathInfo();
-        return path.split("/")[1];
+        return path.split("/")[1]; //$NON-NLS-1$
     }
 
     /**
@@ -138,7 +138,7 @@ public class GatewayServlet extends HttpServlet {
      */
     protected String getService(HttpServletRequest request) {
         String path = request.getPathInfo();
-        return path.split("/")[2];
+        return path.split("/")[2]; //$NON-NLS-1$
     }
 
     /**
@@ -147,7 +147,7 @@ public class GatewayServlet extends HttpServlet {
      */
     protected String getVersion(HttpServletRequest request) {
         String path = request.getPathInfo();
-        return path.split("/")[3];
+        return path.split("/")[3]; //$NON-NLS-1$
     }
 
     /**
@@ -155,7 +155,7 @@ public class GatewayServlet extends HttpServlet {
      * @return
      */
     protected String getApiKey(HttpServletRequest request) {
-        return request.getHeader("X-API-Key");
+        return request.getHeader("X-API-Key"); //$NON-NLS-1$
     }
 
     /**
@@ -222,7 +222,7 @@ public class GatewayServlet extends HttpServlet {
      */
     protected void writeError(HttpServletResponse resp, Exception e) {
         try {
-            resp.setHeader("X-Exception", e.getMessage());
+            resp.setHeader("X-Exception", e.getMessage()); //$NON-NLS-1$
             resp.sendError(500, e.getMessage());
         } catch (IOException e1) {
             throw new RuntimeException(e);

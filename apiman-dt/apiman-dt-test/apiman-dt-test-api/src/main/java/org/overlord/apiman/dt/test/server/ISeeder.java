@@ -27,7 +27,7 @@ import org.overlord.apiman.dt.api.persist.StorageException;
  */
 public interface ISeeder {
     
-    public static final String SYSTEM_PROPERTY = "apiman-dt-api.seeder.class";
+    public static final String SYSTEM_PROPERTY = "apiman-dt-api.seeder.class"; //$NON-NLS-1$
     
     /**
      * @param idmStorage

@@ -42,7 +42,7 @@ public class EchoServer {
      */
     public EchoServer(int port) {
         server = Undertow.builder()
-                .addHttpListener(port, "localhost")
+                .addHttpListener(port, "localhost") //$NON-NLS-1$
                 .setHandler(new HttpHandler() {
                     @Override
                     public void handleRequest(final HttpServerExchange exchange) throws Exception {
@@ -68,7 +68,7 @@ public class EchoServer {
             throw new RuntimeException(e);
         }
         
-        exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "application/json");
+        exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "application/json"); //$NON-NLS-1$
         exchange.getResponseSender().send(writer.getBuffer().toString());
     }
 

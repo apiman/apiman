@@ -49,9 +49,9 @@ public class DevSeeder implements ServletContextListener {
             @Override
             public void run() {
                 try { Thread.sleep(5000); } catch (InterruptedException e) { }
-                System.out.println("Seeding the API Management Development Environment");
+                System.out.println("Seeding the API Management Development Environment"); //$NON-NLS-1$
                 doSeeding();
-                System.out.println("Done Seeding (Success)");
+                System.out.println("Done Seeding (Success)"); //$NON-NLS-1$
             }
         }).start();;
     }
@@ -61,11 +61,15 @@ public class DevSeeder implements ServletContextListener {
      */
     protected void doSeeding() {
         try {
-            TestPlanRunner runner = new TestPlanRunner("http://localhost:8080/apiman-dt-api");
-            runner.runTestPlan("scripts/seed-dev-environment-testPlan.xml", getClass().getClassLoader());
+            TestPlanRunner runner = new TestPlanRunner("http://localhost:8080/apiman-dt-api"); //$NON-NLS-1$
+            runner.runTestPlan("scripts/seed-dev-environment-testPlan.xml", getClass().getClassLoader()); //$NON-NLS-1$
+            
+            System.setProperty("apiman-tools-dev-seeder.endpoints.datetime", "http://localhost:8080/services/datetime/"); //$NON-NLS-1$ //$NON-NLS-2$
+            runner = new TestPlanRunner("http://localhost:8080/apiman-rt"); //$NON-NLS-1$
+            runner.runTestPlan("scripts/seed-runtime-testPlan.xml", getClass().getClassLoader()); //$NON-NLS-1$
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("Done Seeding (!ERROR!)");
+            System.out.println("Done Seeding (!ERROR!)"); //$NON-NLS-1$
         }
     }
 

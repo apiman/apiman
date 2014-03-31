@@ -59,8 +59,8 @@ public class DevServerDataSeeder extends DefaultTestDataSeeder {
         
         // Create Organization Owner role
         RoleBean role = new RoleBean();
-        role.setId("OrganizationOwner");
-        role.setName("Organization Owner");
+        role.setId("OrganizationOwner"); //$NON-NLS-1$
+        role.setName("Organization Owner"); //$NON-NLS-1$
         role.setPermissions(new HashSet<String>());
         role.getPermissions().add(PermissionType.orgView.toString());
         role.getPermissions().add(PermissionType.orgEdit.toString());
@@ -78,8 +78,8 @@ public class DevServerDataSeeder extends DefaultTestDataSeeder {
 
         // Create Application Developer role
         role = new RoleBean();
-        role.setId("ApplicationDeveloper");
-        role.setName("Application Developer");
+        role.setId("ApplicationDeveloper"); //$NON-NLS-1$
+        role.setName("Application Developer"); //$NON-NLS-1$
         role.setPermissions(new HashSet<String>());
         role.getPermissions().add(PermissionType.orgView.toString());
         role.getPermissions().add(PermissionType.appView.toString());
@@ -89,8 +89,8 @@ public class DevServerDataSeeder extends DefaultTestDataSeeder {
 
         // Create Service Developer role
         role = new RoleBean();
-        role.setId("ServiceDeveloper");
-        role.setName("Service Developer");
+        role.setId("ServiceDeveloper"); //$NON-NLS-1$
+        role.setName("Service Developer"); //$NON-NLS-1$
         role.setPermissions(new HashSet<String>());
         role.getPermissions().add(PermissionType.orgView.toString());
         role.getPermissions().add(PermissionType.svcView.toString());
@@ -103,136 +103,136 @@ public class DevServerDataSeeder extends DefaultTestDataSeeder {
         
         // Create JBoss Overlord org
         OrganizationBean org = new OrganizationBean();
-        org.setId("JBossOverlord");
-        org.setName("JBoss Overlord");
-        org.setDescription("Overlord is the umbrella project that will bring governance to the JBoss SOA Platform and eventually beyond.");
+        org.setId("JBossOverlord"); //$NON-NLS-1$
+        org.setName("JBoss Overlord"); //$NON-NLS-1$
+        org.setDescription("Overlord is the umbrella project that will bring governance to the JBoss SOA Platform and eventually beyond."); //$NON-NLS-1$
         org.setCreatedOn(new Date());
-        org.setCreatedBy("admin");
+        org.setCreatedBy("admin"); //$NON-NLS-1$
         storage.create(org);
         
         // Create JBoss Overlord org
         org = new OrganizationBean();
-        org.setId("ApereoBedework");
-        org.setName("Apereo Bedework");
-        org.setDescription("Bedework is an open-source enterprise calendar system that supports public, personal, and group calendaring.");
+        org.setId("ApereoBedework"); //$NON-NLS-1$
+        org.setName("Apereo Bedework"); //$NON-NLS-1$
+        org.setDescription("Bedework is an open-source enterprise calendar system that supports public, personal, and group calendaring."); //$NON-NLS-1$
         org.setCreatedOn(new Date());
-        org.setCreatedBy("admin");
+        org.setCreatedBy("admin"); //$NON-NLS-1$
         storage.create(org);
         
         // Make admin the owner of both orgs
-        RoleMembershipBean membership = RoleMembershipBean.create("admin", "OrganizationOwner", "JBossOverlord");
+        RoleMembershipBean membership = RoleMembershipBean.create("admin", "OrganizationOwner", "JBossOverlord"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         membership.setCreatedOn(new Date());
         idmStorage.createMembership(membership);
 
-        membership = RoleMembershipBean.create("admin", "OrganizationOwner", "ApereoBedework");
+        membership = RoleMembershipBean.create("admin", "OrganizationOwner", "ApereoBedework"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         membership.setCreatedOn(new Date());
         idmStorage.createMembership(membership);
         
         // Create some applications
         ApplicationBean app = new ApplicationBean();
-        app.setId("dtgov");
-        app.setName("dtgov");
-        app.setDescription("This is the official Git repository for the Governance DTGov project, which is intended to be a part of the JBoss Overlord.");
-        app.setOrganizationId("JBossOverlord");
-        app.setCreatedBy("admin");
+        app.setId("dtgov"); //$NON-NLS-1$
+        app.setName("dtgov"); //$NON-NLS-1$
+        app.setDescription("This is the official Git repository for the Governance DTGov project, which is intended to be a part of the JBoss Overlord."); //$NON-NLS-1$
+        app.setOrganizationId("JBossOverlord"); //$NON-NLS-1$
+        app.setCreatedBy("admin"); //$NON-NLS-1$
         app.setCreatedOn(new Date());
         storage.create(app);
         ApplicationVersionBean avb = new ApplicationVersionBean();
-        avb.setVersion("1.0");
+        avb.setVersion("1.0"); //$NON-NLS-1$
         avb.setStatus(ApplicationStatus.Created);
         avb.setApplication(app);
-        avb.setCreatedBy("admin");
+        avb.setCreatedBy("admin"); //$NON-NLS-1$
         avb.setCreatedOn(new Date());
         storage.create(avb);
 
         app = new ApplicationBean();
-        app.setId("rtgov");
-        app.setName("rtgov");
-        app.setDescription("This component provides the infrastructure to capture service activity information and then correlate...");
-        app.setOrganizationId("JBossOverlord");
-        app.setCreatedBy("admin");
+        app.setId("rtgov"); //$NON-NLS-1$
+        app.setName("rtgov"); //$NON-NLS-1$
+        app.setDescription("This component provides the infrastructure to capture service activity information and then correlate..."); //$NON-NLS-1$
+        app.setOrganizationId("JBossOverlord"); //$NON-NLS-1$
+        app.setCreatedBy("admin"); //$NON-NLS-1$
         app.setCreatedOn(new Date());
         storage.create(app);
         avb = new ApplicationVersionBean();
-        avb.setVersion("1.0");
+        avb.setVersion("1.0"); //$NON-NLS-1$
         avb.setStatus(ApplicationStatus.Created);
         avb.setApplication(app);
-        avb.setCreatedBy("admin");
+        avb.setCreatedBy("admin"); //$NON-NLS-1$
         avb.setCreatedOn(new Date());
         storage.create(avb);
 
         app = new ApplicationBean();
-        app.setId("gadget-server");
-        app.setName("gadget-server");
-        app.setDescription("This is a project that builds on the Apache Shindig as the open social gadget containers.");
-        app.setOrganizationId("JBossOverlord");
-        app.setCreatedBy("admin");
+        app.setId("gadget-server"); //$NON-NLS-1$
+        app.setName("gadget-server"); //$NON-NLS-1$
+        app.setDescription("This is a project that builds on the Apache Shindig as the open social gadget containers."); //$NON-NLS-1$
+        app.setOrganizationId("JBossOverlord"); //$NON-NLS-1$
+        app.setCreatedBy("admin"); //$NON-NLS-1$
         app.setCreatedOn(new Date());
         storage.create(app);
         avb = new ApplicationVersionBean();
-        avb.setVersion("1.0");
+        avb.setVersion("1.0"); //$NON-NLS-1$
         avb.setStatus(ApplicationStatus.Created);
         avb.setApplication(app);
-        avb.setCreatedBy("admin");
+        avb.setCreatedBy("admin"); //$NON-NLS-1$
         avb.setCreatedOn(new Date());
         storage.create(avb);
         
         // Create some services
         ServiceBean service = new ServiceBean();
-        service.setId("s-ramp-api");
-        service.setName("s-ramp-api");
-        service.setDescription("Allows S-RAMP repository users to communicate with the repository via an Atom based API.");
-        service.setOrganizationId("JBossOverlord");
+        service.setId("s-ramp-api"); //$NON-NLS-1$
+        service.setName("s-ramp-api"); //$NON-NLS-1$
+        service.setDescription("Allows S-RAMP repository users to communicate with the repository via an Atom based API."); //$NON-NLS-1$
+        service.setOrganizationId("JBossOverlord"); //$NON-NLS-1$
         service.setCreatedOn(new Date());
-        service.setCreatedBy("admin");
+        service.setCreatedBy("admin"); //$NON-NLS-1$
         storage.create(service);
         ServiceVersionBean svb = new ServiceVersionBean();
-        svb.setVersion("1.0");
+        svb.setVersion("1.0"); //$NON-NLS-1$
         svb.setStatus(ServiceStatus.Created);
         svb.setService(service);
-        svb.setCreatedBy("admin");
+        svb.setCreatedBy("admin"); //$NON-NLS-1$
         svb.setCreatedOn(new Date());
-        svb.setEndpoint("http://localhost:8080/s-ramp-server/");
+        svb.setEndpoint("http://localhost:8080/s-ramp-server/"); //$NON-NLS-1$
         svb.setEndpointType(EndpointType.rest);
         storage.create(svb);
 
         // Create some plans
         PlanBean plan = new PlanBean();
-        plan.setId("Platinum");
-        plan.setName("Platinum");
-        plan.setDescription("Provides subscribing applications with full access to the Services in this Organization.");
-        plan.setOrganizationId("JBossOverlord");
-        plan.setCreatedBy("admin");
+        plan.setId("Platinum"); //$NON-NLS-1$
+        plan.setName("Platinum"); //$NON-NLS-1$
+        plan.setDescription("Provides subscribing applications with full access to the Services in this Organization."); //$NON-NLS-1$
+        plan.setOrganizationId("JBossOverlord"); //$NON-NLS-1$
+        plan.setCreatedBy("admin"); //$NON-NLS-1$
         plan.setCreatedOn(new Date());
         storage.create(plan);
         PlanVersionBean pvb = new PlanVersionBean();
-        pvb.setVersion("1.0");
+        pvb.setVersion("1.0"); //$NON-NLS-1$
         pvb.setStatus(PlanStatus.Created);
         pvb.setPlan(plan);
-        pvb.setCreatedBy("admin");
+        pvb.setCreatedBy("admin"); //$NON-NLS-1$
         pvb.setCreatedOn(new Date());
         storage.create(pvb);
 
         plan = new PlanBean();
-        plan.setId("Gold");
-        plan.setName("Gold");
-        plan.setDescription("Provides subscribing applications with full access to a subset of Services. Also allows partial (rate limited) access to the rest.");
-        plan.setOrganizationId("JBossOverlord");
-        plan.setCreatedBy("admin");
+        plan.setId("Gold"); //$NON-NLS-1$
+        plan.setName("Gold"); //$NON-NLS-1$
+        plan.setDescription("Provides subscribing applications with full access to a subset of Services. Also allows partial (rate limited) access to the rest."); //$NON-NLS-1$
+        plan.setOrganizationId("JBossOverlord"); //$NON-NLS-1$
+        plan.setCreatedBy("admin"); //$NON-NLS-1$
         plan.setCreatedOn(new Date());
         storage.create(plan);
         pvb = new PlanVersionBean();
-        pvb.setVersion("1.0");
+        pvb.setVersion("1.0"); //$NON-NLS-1$
         pvb.setStatus(PlanStatus.Created);
         pvb.setPlan(plan);
-        pvb.setCreatedBy("admin");
+        pvb.setCreatedBy("admin"); //$NON-NLS-1$
         pvb.setCreatedOn(new Date());
         storage.create(pvb);
         pvb = new PlanVersionBean();
-        pvb.setVersion("1.2");
+        pvb.setVersion("1.2"); //$NON-NLS-1$
         pvb.setStatus(PlanStatus.Created);
         pvb.setPlan(plan);
-        pvb.setCreatedBy("admin");
+        pvb.setCreatedBy("admin"); //$NON-NLS-1$
         pvb.setCreatedOn(new Date());
         storage.create(pvb);
 

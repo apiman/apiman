@@ -27,7 +27,7 @@ public class SearchingTest extends AbstractTestPlanTest {
 
     @Test
     public void test() {
-        runTestPlan("test-plans/searching-testPlan.xml", SearchingTest.class.getClassLoader());
+        runTestPlan("test-plans/searching-testPlan.xml", SearchingTest.class.getClassLoader()); //$NON-NLS-1$
     }
 
 }

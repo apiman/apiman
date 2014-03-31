@@ -66,7 +66,7 @@ public class DtApiTestServer {
      */
     public void start() throws Exception {
         long startTime = System.currentTimeMillis();
-        System.out.println("**** Starting Server (" + getClass().getSimpleName() + ")");
+        System.out.println("**** Starting Server (" + getClass().getSimpleName() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
         preStart();
 
         ContextHandlerCollection handlers = new ContextHandlerCollection();
@@ -78,7 +78,7 @@ public class DtApiTestServer {
         server.setHandler(handlers);
         server.start();
         long endTime = System.currentTimeMillis();
-        System.out.println("******* Started in " + (endTime - startTime) + "ms");
+        System.out.println("******* Started in " + (endTime - startTime) + "ms"); //$NON-NLS-1$ //$NON-NLS-2$
     }
     
     /**
@@ -89,7 +89,7 @@ public class DtApiTestServer {
         server.stop();
         ds.close();
         InitialContext ctx = new InitialContext();
-        ctx.unbind("java:comp/env/jdbc/ApiManDT");
+        ctx.unbind("java:comp/env/jdbc/ApiManDT"); //$NON-NLS-1$
     }
 
     /**
@@ -103,14 +103,14 @@ public class DtApiTestServer {
      * Stuff to do before the server is started.
      */
     protected void preStart() {
-        System.setProperty("hibernate.hbm2ddl.auto", "create-drop");
+        System.setProperty("hibernate.hbm2ddl.auto", "create-drop"); //$NON-NLS-1$ //$NON-NLS-2$
 
         try {
             InitialContext ctx = new InitialContext();
-            ensureCtx(ctx, "java:/comp/env");
-            ensureCtx(ctx, "java:/comp/env/jdbc");
+            ensureCtx(ctx, "java:/comp/env"); //$NON-NLS-1$
+            ensureCtx(ctx, "java:/comp/env/jdbc"); //$NON-NLS-1$
             ds = createInMemoryDatasource();
-            ctx.bind("java:/comp/env/jdbc/ApiManDT", ds);
+            ctx.bind("java:/comp/env/jdbc/ApiManDT", ds); //$NON-NLS-1$
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -135,15 +135,15 @@ public class DtApiTestServer {
      * @throws SQLException
      */
     private static BasicDataSource createInMemoryDatasource() throws SQLException {
-        System.setProperty("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
+        System.setProperty("hibernate.dialect", "org.hibernate.dialect.H2Dialect"); //$NON-NLS-1$ //$NON-NLS-2$
         BasicDataSource ds = new BasicDataSource();
         ds.setDriverClassName(Driver.class.getName());
-        ds.setUsername("sa");
-        ds.setPassword("");
-        ds.setUrl("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1");
+        ds.setUsername("sa"); //$NON-NLS-1$
+        ds.setPassword(""); //$NON-NLS-1$
+        ds.setUrl("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1"); //$NON-NLS-1$
         Connection connection = ds.getConnection();
         connection.close();
-        System.out.println("DataSource created and bound to JNDI.");
+        System.out.println("DataSource created and bound to JNDI."); //$NON-NLS-1$
         return ds;
     }
 
@@ -158,22 +158,22 @@ public class DtApiTestServer {
          * ************* */
         ServletContextHandler apiManServer = new ServletContextHandler(ServletContextHandler.SESSIONS);
         apiManServer.setSecurityHandler(createSecurityHandler());
-        apiManServer.setContextPath("/apiman-dt-api");
+        apiManServer.setContextPath("/apiman-dt-api"); //$NON-NLS-1$
         apiManServer.addEventListener(new Listener());
         apiManServer.addEventListener(new BeanManagerResourceBindingListener());
         apiManServer.addEventListener(new ResteasyBootstrap());
-        apiManServer.addFilter(DatabaseSeedFilter.class, "/db-seeder", EnumSet.of(DispatcherType.REQUEST));
-        apiManServer.addFilter(LocaleFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
-        apiManServer.addFilter(SimpleCorsFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
-        apiManServer.addFilter(DtApiTestAuthFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
-        apiManServer.addFilter(DefaultSecurityContextFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
+        apiManServer.addFilter(DatabaseSeedFilter.class, "/db-seeder", EnumSet.of(DispatcherType.REQUEST)); //$NON-NLS-1$
+        apiManServer.addFilter(LocaleFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST)); //$NON-NLS-1$
+        apiManServer.addFilter(SimpleCorsFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST)); //$NON-NLS-1$
+        apiManServer.addFilter(DtApiTestAuthFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST)); //$NON-NLS-1$
+        apiManServer.addFilter(DefaultSecurityContextFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST)); //$NON-NLS-1$
         ServletHolder resteasyServlet = new ServletHolder(new HttpServletDispatcher());
-        resteasyServlet.setInitParameter("javax.ws.rs.Application", JettyDtApiApplication.class.getName());
-        apiManServer.addServlet(resteasyServlet, "/*");
+        resteasyServlet.setInitParameter("javax.ws.rs.Application", JettyDtApiApplication.class.getName()); //$NON-NLS-1$
+        apiManServer.addServlet(resteasyServlet, "/*"); //$NON-NLS-1$
 
-        apiManServer.setInitParameter("resteasy.injector.factory", "org.jboss.resteasy.cdi.CdiInjectorFactory");
-        apiManServer.setInitParameter("resteasy.scan", "true");
-        apiManServer.setInitParameter("resteasy.servlet.mapping.prefix", "");
+        apiManServer.setInitParameter("resteasy.injector.factory", "org.jboss.resteasy.cdi.CdiInjectorFactory"); //$NON-NLS-1$ //$NON-NLS-2$
+        apiManServer.setInitParameter("resteasy.scan", "true"); //$NON-NLS-1$ //$NON-NLS-2$
+        apiManServer.setInitParameter("resteasy.servlet.mapping.prefix", ""); //$NON-NLS-1$ //$NON-NLS-2$
 
         // Add the web contexts to jetty
         handlers.addHandler(apiManServer);
@@ -187,12 +187,12 @@ public class DtApiTestServer {
         for (String [] userInfo : TestUsers.USERS) {
             String user = userInfo[0];
             String pwd = userInfo[1];
-            String[] roles = new String[] { "apiuser" };
-            if (user.startsWith("admin"))
-                roles = new String[] { "apiuser", "apiadmin"};
+            String[] roles = new String[] { "apiuser" }; //$NON-NLS-1$
+            if (user.startsWith("admin")) //$NON-NLS-1$
+                roles = new String[] { "apiuser", "apiadmin"}; //$NON-NLS-1$ //$NON-NLS-2$
             l.putUser(user, Credential.getCredential(pwd), roles);
         }
-        l.setName("apimanrealm");
+        l.setName("apimanrealm"); //$NON-NLS-1$
 
 //        Constraint constraint = new Constraint();
 //        constraint.setName(Constraint.__BASIC_AUTH);
@@ -203,7 +203,7 @@ public class DtApiTestServer {
 
         ConstraintSecurityHandler csh = new ConstraintSecurityHandler();
         csh.setAuthenticator(new BasicAuthenticator());
-        csh.setRealmName("apimanrealm");
+        csh.setRealmName("apimanrealm"); //$NON-NLS-1$
 //        for (String method : protectedMethods) {
 //            ConstraintMapping cm = new ConstraintMapping();
 //            cm.setConstraint(constraint);

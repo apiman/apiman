@@ -129,7 +129,7 @@ public class Service implements Serializable {
      * @return a unique service key useful for indexing
      */
     public String getServiceKey() {
-        return this.organizationId + "|" + this.serviceId + "|" + this.version;
+        return this.organizationId + "|" + this.serviceId + "|" + this.version; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**

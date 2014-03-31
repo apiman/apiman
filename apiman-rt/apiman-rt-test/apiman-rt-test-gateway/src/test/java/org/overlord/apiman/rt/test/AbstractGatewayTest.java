@@ -90,7 +90,7 @@ public class AbstractGatewayTest {
      * @param planPath
      */
     protected void runTestPlan(String planPath) {
-        System.setProperty("apiman-rt-test-gateway.endpoints.echo", getEchoEndpoint());
+        System.setProperty("apiman-rt-test-gateway.endpoints.echo", getEchoEndpoint()); //$NON-NLS-1$
         runTestPlan(planPath, getClass().getClassLoader());
     }
     
@@ -104,7 +104,7 @@ public class AbstractGatewayTest {
         if (USE_PROXY) {
             port = GATEWAY_PROXY_PORT;
         }
-        String baseApiUrl = "http://localhost:" + port;
+        String baseApiUrl = "http://localhost:" + port; //$NON-NLS-1$
         TestPlanRunner runner = new TestPlanRunner(baseApiUrl);
         runner.runTestPlan(planPath, classLoader);
     }
@@ -113,7 +113,7 @@ public class AbstractGatewayTest {
      * @return the echo server endpoint
      */
     protected String getEchoEndpoint() {
-        return "http://localhost:" + ECHO_PORT;
+        return "http://localhost:" + ECHO_PORT; //$NON-NLS-1$
     }
 
 }

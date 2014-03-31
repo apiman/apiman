@@ -98,7 +98,7 @@ public class UndertowGateway {
      */
     protected String getOrganization(HttpServerExchange exchange) {
         String path = exchange.getRequestPath();
-        return path.split("/")[1];
+        return path.split("/")[1]; //$NON-NLS-1$
     }
 
     /**
@@ -107,7 +107,7 @@ public class UndertowGateway {
      */
     protected String getService(HttpServerExchange exchange) {
         String path = exchange.getRequestPath();
-        return path.split("/")[2];
+        return path.split("/")[2]; //$NON-NLS-1$
     }
 
     /**
@@ -116,7 +116,7 @@ public class UndertowGateway {
      */
     protected String getVersion(HttpServerExchange exchange) {
         String path = exchange.getRequestPath();
-        return path.split("/")[3];
+        return path.split("/")[3]; //$NON-NLS-1$
     }
 
     /**
@@ -124,7 +124,7 @@ public class UndertowGateway {
      * @return
      */
     protected String getApiKey(HttpServerExchange exchange) {
-        return exchange.getRequestHeaders().getFirst("X-API-Key");
+        return exchange.getRequestHeaders().getFirst("X-API-Key"); //$NON-NLS-1$
     }
 
     /**

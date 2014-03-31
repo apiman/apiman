@@ -27,6 +27,7 @@ import org.overlord.apiman.rt.engine.beans.exceptions.InvalidContractException;
 import org.overlord.apiman.rt.engine.beans.exceptions.InvalidServiceException;
 import org.overlord.apiman.rt.engine.beans.exceptions.PublishingException;
 import org.overlord.apiman.rt.engine.beans.exceptions.RegistrationException;
+import org.overlord.apiman.rt.engine.mem.i18n.Messages;
 
 /**
  * An in-memory implementation of the registry.
@@ -50,10 +51,11 @@ public class InMemoryRegistry implements IRegistry {
      */
     @Override
     public Service getService(ServiceRequest request) throws InvalidServiceException {
-        String serviceKey = request.getOrganization() + "|" + request.getService() + "|" + request.getVersion();
+        String serviceKey = request.getOrganization() + "|" + request.getService() + "|" + request.getVersion(); //$NON-NLS-1$ //$NON-NLS-2$
         Service service = services.get(serviceKey);
         if (service == null) {
-            throw new InvalidServiceException("Service " + request.getService() + " not found in Organization " + request.getOrganization());
+            throw new InvalidServiceException(Messages.i18n.format("InMemoryRegistry.ServiceNotFoundInOrg",  //$NON-NLS-1$
+                    request.getService(), request.getOrganization()));
         }
         return service;
     }
@@ -65,7 +67,7 @@ public class InMemoryRegistry implements IRegistry {
     public synchronized void publishService(Service service) throws PublishingException {
         String serviceKey = service.getServiceKey();
         if (services.containsKey(serviceKey)) {
-            throw new PublishingException("Service already published.");
+            throw new PublishingException(Messages.i18n.format("InMemoryRegistry.ServiceAlreadyPublished")); //$NON-NLS-1$
         }
         services.put(serviceKey, service);
     }
@@ -79,7 +81,7 @@ public class InMemoryRegistry implements IRegistry {
         if (services.containsKey(serviceKey)) {
             services.remove(serviceKey);
         }
-        throw new PublishingException("Service not found.");
+        throw new PublishingException(Messages.i18n.format("InMemoryRegistry.ServiceNotFound")); //$NON-NLS-1$
     }
     
     /**
@@ -89,7 +91,7 @@ public class InMemoryRegistry implements IRegistry {
     public synchronized void registerApplication(Application application) throws RegistrationException {
         String applicationKey = application.getApplicationKey();
         if (applications.containsKey(applicationKey)) {
-            throw new RegistrationException("Application already registered.");
+            throw new RegistrationException(Messages.i18n.format("InMemoryRegistry.AppAlreadyRegistered")); //$NON-NLS-1$
         }
         applications.put(applicationKey, application);
         for (Contract contract : application.getContracts()) {
@@ -109,7 +111,7 @@ public class InMemoryRegistry implements IRegistry {
                 removeContract(contract);
             }
         }
-        throw new RegistrationException("Application not found.");
+        throw new RegistrationException(Messages.i18n.format("InMemoryRegistry.AppNotFound")); //$NON-NLS-1$
     }
 
     /**
@@ -129,12 +131,12 @@ public class InMemoryRegistry implements IRegistry {
     public Contract getContract(ServiceRequest request) throws InvalidContractException {
         Contract contract = contracts.get(request.getApiKey());
         if (contract == null) {
-            throw new InvalidContractException("No contract found for API Key " + request.getApiKey());
+            throw new InvalidContractException(Messages.i18n.format("InMemoryRegistry.NoContractForAPIKey", request.getApiKey())); //$NON-NLS-1$
         }
         String serviceId = contract.getServiceId();
         String orgId = contract.getServiceOrgId();
         if (!serviceId.equals(request.getService()) || !orgId.equals(request.getOrganization())) {
-            throw new InvalidContractException("Contract not valid for requested service.");
+            throw new InvalidContractException(Messages.i18n.format("InMemoryRegistry.InvalidContract")); //$NON-NLS-1$
         }
         return contract;
     }
@@ -146,7 +148,8 @@ public class InMemoryRegistry implements IRegistry {
      */
     private void registerContract(Contract contract) throws RegistrationException {
         if (contracts.containsKey(contract.getApiKey())) {
-            throw new RegistrationException("Contract with API Key {0} has already been published.");
+            throw new RegistrationException(Messages.i18n.format("InMemoryRegistry.ContractAlreadyPublished", //$NON-NLS-1$
+                    contract.getApiKey()));
         }
         contracts.put(contract.getApiKey(), contract);
     }

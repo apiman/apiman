@@ -40,7 +40,7 @@ public abstract class AbstractTestPlanTest {
      * @param classLoader
      */
     protected void runTestPlan(String planPath, ClassLoader classLoader) {
-        String baseApiUrl = "http://localhost:" + testServer.serverPort() + "/apiman-dt-api";
+        String baseApiUrl = "http://localhost:" + testServer.serverPort() + "/apiman-dt-api"; //$NON-NLS-1$ //$NON-NLS-2$
         TestPlanRunner runner = new TestPlanRunner(baseApiUrl);
         runner.runTestPlan(planPath, classLoader);
     }

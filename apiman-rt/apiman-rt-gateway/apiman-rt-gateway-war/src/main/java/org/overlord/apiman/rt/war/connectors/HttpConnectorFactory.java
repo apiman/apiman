@@ -36,6 +36,7 @@ import org.overlord.apiman.rt.engine.beans.Service;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
 import org.overlord.apiman.rt.engine.beans.ServiceResponse;
 import org.overlord.apiman.rt.engine.beans.exceptions.ConnectorException;
+import org.overlord.apiman.rt.war.i18n.Messages;
 
 /**
  * Connector factory that uses HTTP to invoke back end systems.
@@ -46,9 +47,9 @@ public class HttpConnectorFactory implements IConnectorFactory {
     
     private static final Set<String> SUPPRESSED_HEADERS = new HashSet<String>();
     static {
-        SUPPRESSED_HEADERS.add("Transfer-Encoding");
-        SUPPRESSED_HEADERS.add("Content-Length");
-        SUPPRESSED_HEADERS.add("X-API-Key");
+        SUPPRESSED_HEADERS.add("Transfer-Encoding"); //$NON-NLS-1$
+        SUPPRESSED_HEADERS.add("Content-Length"); //$NON-NLS-1$
+        SUPPRESSED_HEADERS.add("X-API-Key"); //$NON-NLS-1$
     }
     
     /**
@@ -81,26 +82,26 @@ public class HttpConnectorFactory implements IConnectorFactory {
         DefaultHttpClient httpclient = new DefaultHttpClient();
         
         String endpoint = service.getEndpoint();
-        if (endpoint.endsWith("/")) {
+        if (endpoint.endsWith("/")) { //$NON-NLS-1$
             endpoint = endpoint.substring(0, endpoint.length() - 1);
         }
         endpoint += request.getDestination();
 
         HttpRequestBase httpmethod = null;
-        if ("GET".equals(request.getType())) {
+        if ("GET".equals(request.getType())) { //$NON-NLS-1$
             httpmethod = new HttpGet(endpoint);
-        } else if ("PUT".equals(request.getType())) {
+        } else if ("PUT".equals(request.getType())) { //$NON-NLS-1$
             httpmethod = new HttpPut(endpoint);
             HttpEntity entity = new InputStreamEntity(request.getBody(), getContentLength(request));
             ((HttpPut) httpmethod).setEntity(entity);
-        } else if ("POST".equals(request.getType())) {
+        } else if ("POST".equals(request.getType())) { //$NON-NLS-1$
             httpmethod = new HttpPost(endpoint);
             HttpEntity entity = new InputStreamEntity(request.getBody(), getContentLength(request));
             ((HttpPost) httpmethod).setEntity(entity);
-        } else if ("DELETE".equals(request.getType())) {
+        } else if ("DELETE".equals(request.getType())) { //$NON-NLS-1$
             httpmethod = new HttpDelete(endpoint);
         } else {
-            throw new ConnectorException("Method not supported: " + request.getType());
+            throw new ConnectorException(Messages.i18n.format("HttpConnectorFactory.MethodNotSupported", request.getType())); //$NON-NLS-1$
         }
 
         // Set the request headers
@@ -130,7 +131,7 @@ public class HttpConnectorFactory implements IConnectorFactory {
             return sresponse;
         } catch (Exception e) {
             e.printStackTrace();
-            throw new ConnectorException("Error invoking back end service.", e);
+            throw new ConnectorException(Messages.i18n.format("HttpConnectorFactory.ErrorInvokingService"), e); //$NON-NLS-1$
         }
     }
 
@@ -140,7 +141,7 @@ public class HttpConnectorFactory implements IConnectorFactory {
      * @return the content length
      */
     private long getContentLength(ServiceRequest request) {
-        String cl = request.getHeaders().get("Content-Length");
+        String cl = request.getHeaders().get("Content-Length"); //$NON-NLS-1$
         if (cl == null || cl.trim().length() == 0) {
             return -1;
         }

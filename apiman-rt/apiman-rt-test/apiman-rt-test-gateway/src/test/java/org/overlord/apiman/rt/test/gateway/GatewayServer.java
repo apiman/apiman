@@ -51,21 +51,21 @@ public class GatewayServer {
             DeploymentInfo servletBuilder = Servlets
                     .deployment()
                     .setClassLoader(GatewayServer.class.getClassLoader())
-                    .setContextPath("/apiman-rt")
-                    .setDeploymentName("apiman-rt.war")
+                    .setContextPath("/apiman-rt") //$NON-NLS-1$
+                    .setDeploymentName("apiman-rt.war") //$NON-NLS-1$
                     .addListener(Servlets.listener(GatewayBootstrapper.class))
                     .addServlets(
-                            Servlets.servlet("GatewayServlet", GatewayServlet.class).addMapping("/gateway/*"))
+                            Servlets.servlet("GatewayServlet", GatewayServlet.class).addMapping("/gateway/*")) //$NON-NLS-1$ //$NON-NLS-2$
                     .addServlets(
-                            Servlets.servlet("ResteasyServlet", HttpServletDispatcher.class)
-                                    .addInitParam("javax.ws.rs.Application", GatewayApplication.class.getName())
+                            Servlets.servlet("ResteasyServlet", HttpServletDispatcher.class) //$NON-NLS-1$
+                                    .addInitParam("javax.ws.rs.Application", GatewayApplication.class.getName()) //$NON-NLS-1$
                                     .setLoadOnStartup(1)
-                                    .addMapping("/api/*"));
+                                    .addMapping("/api/*")); //$NON-NLS-1$
 
             DeploymentManager manager = Servlets.defaultContainer().addDeployment(servletBuilder);
             manager.deploy();
 
-            server = Undertow.builder().addHttpListener(port, "localhost").setHandler(manager.start()).build();
+            server = Undertow.builder().addHttpListener(port, "localhost").setHandler(manager.start()).build(); //$NON-NLS-1$
         } catch (ServletException e) {
             throw new RuntimeException(e);
         }

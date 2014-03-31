@@ -73,7 +73,7 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
             UserBean user = new UserBean();
             user.setUsername(userId);
             user.setFullName(userId);
-            user.setEmail(userId + "@example.org");
+            user.setEmail(userId + "@example.org"); //$NON-NLS-1$
             user.setJoinedOn(new Date());
             try {
                 idmStorage.createUser(user);

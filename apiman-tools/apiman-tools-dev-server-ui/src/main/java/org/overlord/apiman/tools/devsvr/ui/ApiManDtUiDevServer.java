@@ -79,7 +79,7 @@ public class ApiManDtUiDevServer extends ErraiDevServer {
      */
     @Override
     protected String getErraiModuleId() {
-        return "apiman-dt-ui";
+        return "apiman-dt-ui"; //$NON-NLS-1$
     }
 
     /**
@@ -87,7 +87,7 @@ public class ApiManDtUiDevServer extends ErraiDevServer {
      */
     @Override
     protected void preConfig() {
-        System.setProperty(ApimanUIConfig.APIMAN_DT_UI_API_ENDPOINT, "http://localhost:7071/apiman-dt-api");
+        System.setProperty(ApimanUIConfig.APIMAN_DT_UI_API_ENDPOINT, "http://localhost:7071/apiman-dt-api"); //$NON-NLS-1$
         System.setProperty(ApimanUIConfig.APIMAN_DT_UI_API_AUTH_TYPE, ApiAuthType.samlBearerToken.toString());
         System.setProperty(ApimanUIConfig.APIMAN_DT_UI_API_AUTH_TOKEN_GENERATOR, ApiManDtUiTokenGenerator.class.getName());
 //        System.setProperty(ApimanUIConfig.APIMAN_DT_UI_API_BASIC_AUTH_USER, "admin");
@@ -107,12 +107,12 @@ public class ApiManDtUiDevServer extends ErraiDevServer {
      */
     @Override
     protected void addModules(DevServerEnvironment environment) {
-        environment.addModule("apiman-dt-ui",
+        environment.addModule("apiman-dt-ui", //$NON-NLS-1$
                 new WebAppModuleFromIDEDiscoveryStrategy(ApimanUIConfig.class),
                 new ErraiWebAppModuleFromMavenDiscoveryStrategy(ApimanUIConfig.class));
-        environment.addModule("overlord-commons-uiheader",
-                new JarModuleFromIDEDiscoveryStrategy(OverlordHeaderDataJS.class, "src/main/resources/META-INF/resources"),
-                new JarModuleFromMavenDiscoveryStrategy(OverlordHeaderDataJS.class, "/META-INF/resources"));
+        environment.addModule("overlord-commons-uiheader", //$NON-NLS-1$
+                new JarModuleFromIDEDiscoveryStrategy(OverlordHeaderDataJS.class, "src/main/resources/META-INF/resources"), //$NON-NLS-1$
+                new JarModuleFromMavenDiscoveryStrategy(OverlordHeaderDataJS.class, "/META-INF/resources")); //$NON-NLS-1$
     }
 
     /**
@@ -126,40 +126,40 @@ public class ApiManDtUiDevServer extends ErraiDevServer {
          * APIMan DT UI
          * ************* */
         ServletContextHandler apiManDtUI = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        apiManDtUI.setWelcomeFiles(new String[] { "index.html" });
+        apiManDtUI.setWelcomeFiles(new String[] { "index.html" }); //$NON-NLS-1$
         apiManDtUI.setSecurityHandler(createSecurityHandler());
-        apiManDtUI.setContextPath("/apiman-ui");
-        apiManDtUI.setWelcomeFiles(new String[] { "index.html" });
-        apiManDtUI.setResourceBase(environment.getModuleDir("apiman-dt-ui").getCanonicalPath());
-        apiManDtUI.setInitParameter("errai.properties", "/WEB-INF/errai.properties");
-        apiManDtUI.setInitParameter("login.config", "/WEB-INF/login.config");
-        apiManDtUI.setInitParameter("users.properties", "/WEB-INF/users.properties");
+        apiManDtUI.setContextPath("/apiman-ui"); //$NON-NLS-1$
+        apiManDtUI.setWelcomeFiles(new String[] { "index.html" }); //$NON-NLS-1$
+        apiManDtUI.setResourceBase(environment.getModuleDir("apiman-dt-ui").getCanonicalPath()); //$NON-NLS-1$
+        apiManDtUI.setInitParameter("errai.properties", "/WEB-INF/errai.properties"); //$NON-NLS-1$ //$NON-NLS-2$
+        apiManDtUI.setInitParameter("login.config", "/WEB-INF/login.config"); //$NON-NLS-1$ //$NON-NLS-2$
+        apiManDtUI.setInitParameter("users.properties", "/WEB-INF/users.properties"); //$NON-NLS-1$ //$NON-NLS-2$
         apiManDtUI.addEventListener(new Listener());
         apiManDtUI.addEventListener(new BeanManagerResourceBindingListener());
-        apiManDtUI.addFilter(HttpRequestThreadLocalFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
-        apiManDtUI.addFilter(GWTCacheControlFilter.class, "/app/*", EnumSet.of(DispatcherType.REQUEST));
-        apiManDtUI.addFilter(ResourceCacheControlFilter.class, "/css/*", EnumSet.of(DispatcherType.REQUEST));
-        apiManDtUI.addFilter(ResourceCacheControlFilter.class, "/images/*", EnumSet.of(DispatcherType.REQUEST));
-        apiManDtUI.addFilter(ResourceCacheControlFilter.class, "/js/*", EnumSet.of(DispatcherType.REQUEST));
-        apiManDtUI.addFilter(LocaleFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
+        apiManDtUI.addFilter(HttpRequestThreadLocalFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST)); //$NON-NLS-1$
+        apiManDtUI.addFilter(GWTCacheControlFilter.class, "/app/*", EnumSet.of(DispatcherType.REQUEST)); //$NON-NLS-1$
+        apiManDtUI.addFilter(ResourceCacheControlFilter.class, "/css/*", EnumSet.of(DispatcherType.REQUEST)); //$NON-NLS-1$
+        apiManDtUI.addFilter(ResourceCacheControlFilter.class, "/images/*", EnumSet.of(DispatcherType.REQUEST)); //$NON-NLS-1$
+        apiManDtUI.addFilter(ResourceCacheControlFilter.class, "/js/*", EnumSet.of(DispatcherType.REQUEST)); //$NON-NLS-1$
+        apiManDtUI.addFilter(LocaleFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST)); //$NON-NLS-1$
         // Servlets
         ServletHolder erraiServlet = new ServletHolder(DefaultBlockingServlet.class);
         erraiServlet.setInitOrder(1);
-        apiManDtUI.addServlet(erraiServlet, "*.erraiBus");
+        apiManDtUI.addServlet(erraiServlet, "*.erraiBus"); //$NON-NLS-1$
         ServletHolder headerDataServlet = new ServletHolder(OverlordHeaderDataJS.class);
-        headerDataServlet.setInitParameter("app-id", "apiman-dt-ui");
-        apiManDtUI.addServlet(headerDataServlet, "/js/overlord-header-data.nocache.js");
-        apiManDtUI.addServlet(ConfigurationServlet.class.getName(), "/js/configuration.nocache.js");
+        headerDataServlet.setInitParameter("app-id", "apiman-dt-ui"); //$NON-NLS-1$ //$NON-NLS-2$
+        apiManDtUI.addServlet(headerDataServlet, "/js/overlord-header-data.nocache.js"); //$NON-NLS-1$
+        apiManDtUI.addServlet(ConfigurationServlet.class.getName(), "/js/configuration.nocache.js"); //$NON-NLS-1$
         // File resources
         ServletHolder resources = new ServletHolder(new MultiDefaultServlet());
-        resources.setInitParameter("resourceBase", "/");
-        resources.setInitParameter("resourceBases", environment.getModuleDir("apiman-dt-ui").getCanonicalPath()
-                + "|" + environment.getModuleDir("overlord-commons-uiheader").getCanonicalPath());
-        resources.setInitParameter("dirAllowed", "true");
-        resources.setInitParameter("pathInfoOnly", "false");
-        String[] fileTypes = new String[] { "html", "js", "css", "png", "gif", "woff", "ttf" };
+        resources.setInitParameter("resourceBase", "/"); //$NON-NLS-1$ //$NON-NLS-2$
+        resources.setInitParameter("resourceBases", environment.getModuleDir("apiman-dt-ui").getCanonicalPath() //$NON-NLS-1$ //$NON-NLS-2$
+                + "|" + environment.getModuleDir("overlord-commons-uiheader").getCanonicalPath()); //$NON-NLS-1$ //$NON-NLS-2$
+        resources.setInitParameter("dirAllowed", "true"); //$NON-NLS-1$ //$NON-NLS-2$
+        resources.setInitParameter("pathInfoOnly", "false"); //$NON-NLS-1$ //$NON-NLS-2$
+        String[] fileTypes = new String[] { "html", "js", "css", "png", "gif", "woff", "ttf" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
         for (String fileType : fileTypes) {
-            apiManDtUI.addServlet(resources, "*." + fileType);
+            apiManDtUI.addServlet(resources, "*." + fileType); //$NON-NLS-1$
         }
 
         // Add the web contexts to jetty
@@ -180,25 +180,25 @@ public class ApiManDtUiDevServer extends ErraiDevServer {
         HashLoginService l = new HashLoginService();
         for (String user : USERS) {
             String pwd = user;
-            String[] roles = new String[] { "apiuser" };
-            if (user.startsWith("admin"))
-                roles = new String[] { "apiuser", "apiadmin"};
+            String[] roles = new String[] { "apiuser" }; //$NON-NLS-1$
+            if (user.startsWith("admin")) //$NON-NLS-1$
+                roles = new String[] { "apiuser", "apiadmin"}; //$NON-NLS-1$ //$NON-NLS-2$
             l.putUser(user, Credential.getCredential(pwd), roles);
         }
-        l.setName("apimanrealm");
+        l.setName("apimanrealm"); //$NON-NLS-1$
 
         Constraint constraint = new Constraint();
         constraint.setName(Constraint.__BASIC_AUTH);
-        constraint.setRoles(new String[]{"apiuser", "apiadmin"});
+        constraint.setRoles(new String[]{"apiuser", "apiadmin"}); //$NON-NLS-1$ //$NON-NLS-2$
         constraint.setAuthenticate(true);
 
         ConstraintMapping cm = new ConstraintMapping();
         cm.setConstraint(constraint);
-        cm.setPathSpec("/*");
+        cm.setPathSpec("/*"); //$NON-NLS-1$
 
         ConstraintSecurityHandler csh = new ConstraintSecurityHandler();
         csh.setAuthenticator(new BasicAuthenticator());
-        csh.setRealmName("apimanrealm");
+        csh.setRealmName("apimanrealm"); //$NON-NLS-1$
         csh.addConstraintMapping(cm);
         csh.setLoginService(l);
         csh.setSessionRenewedOnAuthentication(false);
@@ -206,5 +206,5 @@ public class ApiManDtUiDevServer extends ErraiDevServer {
         return csh;
     }
 
-    private static final String [] USERS = { "admin", "eric", "gary", "kevin", "admin2", "bwayne", "ckent", "dprince" };
+    private static final String [] USERS = { "admin", "eric", "gary", "kevin", "admin2", "bwayne", "ckent", "dprince" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$
 }

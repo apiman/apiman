@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.commons.configuration.Configuration;
+import org.overlord.apiman.rt.engine.i18n.Messages;
 import org.overlord.commons.config.ConfigurationFactory;
 
 /**
@@ -77,7 +78,7 @@ public class EngineConfig {
      * @return all properties to be passed to the registry
      */
     public static Map<String, String> getRegistryConfig() {
-        return getConfig(APIMAN_RT_REGISTRY_CLASS + ".");
+        return getConfig(APIMAN_RT_REGISTRY_CLASS + "."); //$NON-NLS-1$
     }
 
     /**
@@ -91,7 +92,7 @@ public class EngineConfig {
      * @return all properties to be passed to the factory
      */
     public static Map<String, String> getConnectorFactoryConfig() {
-        return getConfig(APIMAN_RT_CONNECTOR_FACTORY_CLASS + ".");
+        return getConfig(APIMAN_RT_CONNECTOR_FACTORY_CLASS + "."); //$NON-NLS-1$
     }
 
     /**
@@ -108,7 +109,7 @@ public class EngineConfig {
     private static <T> Class<T> loadConfigClass(String property, Class<T> type) {
         String classname = getConfig().getString(property);
         if (classname == null) {
-            throw new RuntimeException("No " + type.getClass().getSimpleName() + " class configured.");
+            throw new RuntimeException("No " + type.getClass().getSimpleName() + " class configured."); //$NON-NLS-1$ //$NON-NLS-2$
         }
         try {
             Class<T> c = (Class<T>) Thread.currentThread().getContextClassLoader().loadClass(classname);
@@ -122,7 +123,7 @@ public class EngineConfig {
         } catch (ClassNotFoundException e) {
             // Not found via Class.forName() - try other mechanisms.
         }
-        throw new RuntimeException("Failed to load registry class: " + classname);
+        throw new RuntimeException(Messages.i18n.format("EngineConfig.FailedToLoadRegistryClass", classname)); //$NON-NLS-1$
     }
 
     /**
@@ -133,7 +134,7 @@ public class EngineConfig {
      */
     private static Map<String, String> getConfig(String prefix) {
         Map<String, String> rval = new HashMap<String, String>();
-        Iterator<?> keys = config.getKeys(APIMAN_RT_REGISTRY_CLASS + ".");
+        Iterator<?> keys = config.getKeys(APIMAN_RT_REGISTRY_CLASS + "."); //$NON-NLS-1$
         while (keys.hasNext()) {
             String key = String.valueOf(keys.next());
             rval.put(key, config.getString(key));

@@ -43,8 +43,8 @@ public class ApiManDtUiTokenGenerator implements ITokenGenerator {
     @Override
     public String generateToken(HttpServletRequest request) {
         // TODO parameterize the issuer and service
-        String issuer = "apiman-dt-ui";
-        String service = "/apiman-dt-api";
+        String issuer = "apiman-dt-ui"; //$NON-NLS-1$
+        String service = "/apiman-dt-api"; //$NON-NLS-1$
         return SAMLAssertionUtil.createSAMLAssertion(issuer, service, TEN_MINUTES);
     }
 

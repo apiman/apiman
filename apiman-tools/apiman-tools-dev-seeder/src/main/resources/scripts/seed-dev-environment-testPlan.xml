@@ -51,5 +51,4 @@
     <test name="Create Gold 1.0">data/plans/003_create-gold-version-1.0.resttest</test>
     <test name="Create Silver 1.0">data/plans/004_create-silver-version-1.0.resttest</test>
   </testGroup>
-
 </testPlan>

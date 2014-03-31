@@ -24,16 +24,16 @@ public final class TestUsers {
 
     // UserName, Password, Full Name, Email
     public static final String[][] USERS = { 
-        { "admin", "admin", "Admin", "admin@example.org" },
-        { "admin2", "admin2", "Admin 2", "admin2@example.org" },
-        { "user1", "user1", "User 1", "user1@example.org" },
-        { "user2", "user2", "User 2", "user2@example.org" },
-        { "user3", "user3", "User 3", "user3@example.org" },
-        { "user4", "user4", "User 4", "user4@example.org" },
-        { "user5", "user5", "User 5", "user5@example.org" },
-        { "bwayne", "bwayne", "Bruce Wayne", "bwayne@wayne-enterprises.com" },
-        { "ckent", "ckent", "Clark Kent", "ckent@dailyplanet.com" },
-        { "dprince", "dprince", "Diana Prince", "dprince@themyscira.gov" }
+        { "admin", "admin", "Admin", "admin@example.org" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        { "admin2", "admin2", "Admin 2", "admin2@example.org" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        { "user1", "user1", "User 1", "user1@example.org" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        { "user2", "user2", "User 2", "user2@example.org" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        { "user3", "user3", "User 3", "user3@example.org" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        { "user4", "user4", "User 4", "user4@example.org" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        { "user5", "user5", "User 5", "user5@example.org" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        { "bwayne", "bwayne", "Bruce Wayne", "bwayne@wayne-enterprises.com" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        { "ckent", "ckent", "Clark Kent", "ckent@dailyplanet.com" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        { "dprince", "dprince", "Diana Prince", "dprince@themyscira.gov" } //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     };
 
 }

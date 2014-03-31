@@ -48,6 +48,14 @@
       <version>${project.version}</version>
       <type>war</type>
     </dependency>
+
+    <!-- Some Basic Services for Testing -->
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-tools-dev-services</artifactId>
+      <version>${project.version}</version>
+      <type>war</type>
+    </dependency>
     
     <!-- Data Source Dependencies -->
     <dependency>
@@ -101,6 +109,8 @@
                       value="${maven.dependency.org.overlord.apiman.apiman-dt-ui-war-jetty8.war.path}" />
                     <property name="apiman.apiman-tools-dev-seeder.war"
                       value="${maven.dependency.org.overlord.apiman.apiman-tools-dev-seeder.war.path}" />
+                    <property name="apiman.apiman-tools-dev-services.war"
+                      value="${maven.dependency.org.overlord.apiman.apiman-tools-dev-services.war.path}" />
                     <property name="apiman.commons-dbcp.jar"
                       value="${maven.dependency.commons-dbcp.commons-dbcp.jar.path}" />
                     <property name="apiman.commons-pool.jar"
@@ -120,6 +130,7 @@
                     <echo>APIMan DT UI:      ${apiman.apiman-dt-ui-war-jetty8.war}</echo>
                     <echo>APIMan Gateway:    ${apiman.apiman-rt-gateway-war-jetty8.war}</echo>
                     <echo>Dev Seeder:        ${apiman.apiman-tools-dev-seeder.war}</echo>
+                    <echo>Dev Services:      ${apiman.apiman-tools-dev-services.war}</echo>
                     <echo>Commons Pooling:   ${apiman.commons-pool.jar}</echo>
                     <echo>Commons DBCP:      ${apiman.commons-dbcp.jar}</echo>
                     <echo>H2:                ${apiman.h2.jar}</echo>
@@ -148,6 +159,7 @@
                     <copy file="${apiman.apiman-dt-api-war-jetty8.war}" tofile="${apiman.jetty.webapps}/apiman-dt-api.war" overwrite="true" /> 
                     <copy file="${apiman.apiman-dt-ui-war-jetty8.war}" tofile="${apiman.jetty.webapps}/apiman-dt-ui.war" overwrite="true" /> 
                     <copy file="${apiman.apiman-tools-dev-seeder.war}" tofile="${apiman.jetty.webapps}/dev-seeder.war" overwrite="true" /> 
+                    <copy file="${apiman.apiman-tools-dev-services.war}" tofile="${apiman.jetty.webapps}/services.war" overwrite="true" /> 
                     <copy file="${apiman.apiman-rt-gateway-war-jetty8.war}" tofile="${apiman.jetty.webapps}/apiman-rt.war" overwrite="true" /> 
                     
                     <!-- Start Jetty 8 -->

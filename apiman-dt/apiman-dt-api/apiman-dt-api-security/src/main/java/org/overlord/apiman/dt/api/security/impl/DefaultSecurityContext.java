@@ -27,6 +27,7 @@ import org.overlord.apiman.dt.api.beans.idm.PermissionType;
 import org.overlord.apiman.dt.api.persist.IIdmStorage;
 import org.overlord.apiman.dt.api.persist.StorageException;
 import org.overlord.apiman.dt.api.security.ISecurityContext;
+import org.overlord.apiman.dt.api.security.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,7 +74,7 @@ public class DefaultSecurityContext implements ISecurityContext {
     @Override
     public boolean isAdmin() {
         // TODO warning - hard coded role value here
-        return servletRequest.get().isUserInRole("apiadmin");
+        return servletRequest.get().isUserInRole("apiadmin"); //$NON-NLS-1$
     }
 
     /**
@@ -115,7 +116,7 @@ public class DefaultSecurityContext implements ISecurityContext {
         try {
             return new IndexedPermissions(idmStorage.getPermissions(userId));
         } catch (StorageException e) {
-            logger.error("Error loading permissions for: " + userId, e);
+            logger.error(Messages.getString("DefaultSecurityContext.ErrorLoadingPermissions") + userId, e); //$NON-NLS-1$
             return new IndexedPermissions(new HashSet<PermissionBean>());
         }
     }

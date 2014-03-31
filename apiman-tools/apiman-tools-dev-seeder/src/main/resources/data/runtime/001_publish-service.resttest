@@ -1,0 +1,12 @@
+PUT /api/services admin/admin
+Content-Type: application/json
+
+{
+  "organizationId" : "test-services",
+  "serviceId" : "datetime",
+  "version" : "1.0",
+  "endpointType" : "REST",
+  "endpoint" : "${apiman-tools-dev-seeder.endpoints.datetime}"
+}
+----
+204

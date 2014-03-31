@@ -42,17 +42,17 @@ public class ApiManDtUiDevServerEnvironment extends DevServerEnvironment {
     public void createAppConfigs() throws Exception {
         super.createAppConfigs();
         
-        File dir = new File(getTargetDir(), "overlord-apps");
+        File dir = new File(getTargetDir(), "overlord-apps"); //$NON-NLS-1$
         dir.mkdirs();
 
-        File configFile1 = new File(dir, "apiman-dt-ui-overlordapp.properties");
+        File configFile1 = new File(dir, "apiman-dt-ui-overlordapp.properties"); //$NON-NLS-1$
         Properties props = new Properties();
-        props.setProperty("overlordapp.app-id", "apiman-dt-ui");
-        props.setProperty("overlordapp.href", "/apiman/index.html");
-        props.setProperty("overlordapp.label", "API Management");
-        props.setProperty("overlordapp.primary-brand", "JBoss Overlord");
-        props.setProperty("overlordapp.secondary-brand", "API Management");
-        props.store(new FileWriter(configFile1), "APIMan UI application");
+        props.setProperty("overlordapp.app-id", "apiman-dt-ui"); //$NON-NLS-1$ //$NON-NLS-2$
+        props.setProperty("overlordapp.href", "/apiman/index.html"); //$NON-NLS-1$ //$NON-NLS-2$
+        props.setProperty("overlordapp.label", "API Management"); //$NON-NLS-1$ //$NON-NLS-2$
+        props.setProperty("overlordapp.primary-brand", "JBoss Overlord"); //$NON-NLS-1$ //$NON-NLS-2$
+        props.setProperty("overlordapp.secondary-brand", "API Management"); //$NON-NLS-1$ //$NON-NLS-2$
+        props.store(new FileWriter(configFile1), "APIMan UI application"); //$NON-NLS-1$
     }
 
 }

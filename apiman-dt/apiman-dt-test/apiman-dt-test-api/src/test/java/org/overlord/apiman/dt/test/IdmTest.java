@@ -27,7 +27,7 @@ public class IdmTest extends AbstractTestPlanTest {
 
     @Test
     public void test() {
-        runTestPlan("test-plans/idm-testPlan.xml", IdmTest.class.getClassLoader());
+        runTestPlan("test-plans/idm-testPlan.xml", IdmTest.class.getClassLoader()); //$NON-NLS-1$
     }
 
 }

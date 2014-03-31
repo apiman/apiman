@@ -4,6 +4,7 @@
   version="2.5">
 
   <listener>
+    <listener-class>org.overlord.apiman.rt.war.listeners.GatewayBootstrapper</listener-class>
     <listener-class>org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap</listener-class>
   </listener>
 
@@ -41,14 +42,6 @@
     <url-pattern>/api/*</url-pattern>
   </servlet-mapping>
 
-  <context-param>
-    <param-name>resteasy.injector.factory</param-name>
-    <param-value>org.jboss.resteasy.cdi.CdiInjectorFactory</param-value>
-  </context-param>
-  <context-param>
-    <param-name>resteasy.scan</param-name>
-    <param-value>true</param-value>
-  </context-param>
   <context-param>
     <param-name>resteasy.servlet.mapping.prefix</param-name>
     <param-value></param-value>

@@ -91,7 +91,7 @@ public class IndexedPermissions implements Serializable {
      * @param orgQualifier
      */
     protected String createQualifiedPermissionKey(String permissionName, String orgQualifier) {
-        return permissionName + "||" + orgQualifier;
+        return permissionName + "||" + orgQualifier; //$NON-NLS-1$
     }
     
 }

@@ -27,7 +27,7 @@ public class OrganizationsTest extends AbstractTestPlanTest {
 
     @Test
     public void test() {
-        runTestPlan("test-plans/organizations-testPlan.xml", OrganizationsTest.class.getClassLoader());
+        runTestPlan("test-plans/organizations-testPlan.xml", OrganizationsTest.class.getClassLoader()); //$NON-NLS-1$
     }
 
 }

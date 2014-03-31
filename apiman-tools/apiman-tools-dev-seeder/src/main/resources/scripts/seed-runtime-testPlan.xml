@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testPlan xmlns="urn:org.overlord.apiman.test:2014:02:testPlan">
+
+  <testGroup name="Runtime">
+    <test name="Publish a Service">data/runtime/001_publish-service.resttest</test>
+    <test name="Register an App">data/runtime/002_register-app.resttest</test>
+  </testGroup>
+</testPlan>
