@@ -118,4 +118,13 @@ public final class ErrorCodes {
 
     public static final String MEMBER_NOT_FOUND_INFO          = null;
     
+    
+
+    //
+    // Action API related
+    //
+    public static final int ACTION_ERROR                = 8001;
+
+    public static final String ACTION_ERROR_INFO        = null;
+
 }

@@ -17,7 +17,9 @@ package org.overlord.apiman.dt.test.util;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.overlord.apiman.dt.api.config.Config;
 import org.overlord.apiman.dt.test.server.DtApiTestServer;
+import org.overlord.apiman.dt.test.server.MockGatewayServlet;
 import org.overlord.apiman.test.common.util.TestPlanRunner;
 
 /**
@@ -28,6 +30,7 @@ import org.overlord.apiman.test.common.util.TestPlanRunner;
 public abstract class AbstractTestPlanTest {
 
     private static DtApiTestServer testServer = new DtApiTestServer();
+    private static final boolean USE_PROXY = false;
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -40,9 +43,32 @@ public abstract class AbstractTestPlanTest {
      * @param classLoader
      */
     protected void runTestPlan(String planPath, ClassLoader classLoader) {
-        String baseApiUrl = "http://localhost:" + testServer.serverPort() + "/apiman-dt-api"; //$NON-NLS-1$ //$NON-NLS-2$
+        MockGatewayServlet.reset();
+        String baseApiUrl = "http://localhost:" + getTestServerPort() + "/apiman-dt-api"; //$NON-NLS-1$ //$NON-NLS-2$
         TestPlanRunner runner = new TestPlanRunner(baseApiUrl);
+        configureSystemProperties();
         runner.runTestPlan(planPath, classLoader);
+    }
+
+    /**
+     * @return the port to use when sending requests
+     */
+    protected int getTestServerPort() {
+        if (USE_PROXY) {
+            return 7071;
+        } else {
+            return testServer.serverPort();
+        }
+    }
+
+    /**
+     * Configure some proeprties.
+     */
+    private void configureSystemProperties() {
+        System.setProperty(Config.APIMAN_DT_API_GATEWAY_AUTH_TYPE, "Basic"); //$NON-NLS-1$
+        System.setProperty(Config.APIMAN_DT_API_GATEWAY_REST_ENDPOINT, "http://localhost:" + getTestServerPort() + "/mock-gateway"); //$NON-NLS-1$ //$NON-NLS-2$
+        System.setProperty(Config.APIMAN_DT_API_GATEWAY_BASIC_AUTH_USER, "admin"); //$NON-NLS-1$
+        System.setProperty(Config.APIMAN_DT_API_GATEWAY_BASIC_AUTH_PASS, "admin"); //$NON-NLS-1$
     }
 
     @AfterClass

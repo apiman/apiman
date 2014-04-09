@@ -34,7 +34,7 @@ import org.jboss.errai.bus.server.servlet.DefaultBlockingServlet;
 import org.jboss.weld.environment.servlet.BeanManagerResourceBindingListener;
 import org.jboss.weld.environment.servlet.Listener;
 import org.overlord.apiman.dt.ui.client.shared.beans.ApiAuthType;
-import org.overlord.apiman.dt.ui.server.ApimanUIConfig;
+import org.overlord.apiman.dt.ui.server.UIConfig;
 import org.overlord.apiman.dt.ui.server.servlets.ConfigurationServlet;
 import org.overlord.commons.auth.jetty8.HttpRequestThreadLocalFilter;
 import org.overlord.commons.dev.server.DevServerEnvironment;
@@ -87,9 +87,9 @@ public class ApiManDtUiDevServer extends ErraiDevServer {
      */
     @Override
     protected void preConfig() {
-        System.setProperty(ApimanUIConfig.APIMAN_DT_UI_API_ENDPOINT, "http://localhost:7071/apiman-dt-api"); //$NON-NLS-1$
-        System.setProperty(ApimanUIConfig.APIMAN_DT_UI_API_AUTH_TYPE, ApiAuthType.samlBearerToken.toString());
-        System.setProperty(ApimanUIConfig.APIMAN_DT_UI_API_AUTH_TOKEN_GENERATOR, ApiManDtUiTokenGenerator.class.getName());
+        System.setProperty(UIConfig.APIMAN_DT_UI_API_ENDPOINT, "http://localhost:7071/apiman-dt-api"); //$NON-NLS-1$
+        System.setProperty(UIConfig.APIMAN_DT_UI_API_AUTH_TYPE, ApiAuthType.samlBearerToken.toString());
+        System.setProperty(UIConfig.APIMAN_DT_UI_API_AUTH_TOKEN_GENERATOR, ApiManDtUiTokenGenerator.class.getName());
 //        System.setProperty(ApimanUIConfig.APIMAN_DT_UI_API_BASIC_AUTH_USER, "admin");
 //        System.setProperty(ApimanUIConfig.APIMAN_DT_UI_API_BASIC_AUTH_PASS, "admin");
     }
@@ -108,8 +108,8 @@ public class ApiManDtUiDevServer extends ErraiDevServer {
     @Override
     protected void addModules(DevServerEnvironment environment) {
         environment.addModule("apiman-dt-ui", //$NON-NLS-1$
-                new WebAppModuleFromIDEDiscoveryStrategy(ApimanUIConfig.class),
-                new ErraiWebAppModuleFromMavenDiscoveryStrategy(ApimanUIConfig.class));
+                new WebAppModuleFromIDEDiscoveryStrategy(UIConfig.class),
+                new ErraiWebAppModuleFromMavenDiscoveryStrategy(UIConfig.class));
         environment.addModule("overlord-commons-uiheader", //$NON-NLS-1$
                 new JarModuleFromIDEDiscoveryStrategy(OverlordHeaderDataJS.class, "src/main/resources/META-INF/resources"), //$NON-NLS-1$
                 new JarModuleFromMavenDiscoveryStrategy(OverlordHeaderDataJS.class, "/META-INF/resources")); //$NON-NLS-1$

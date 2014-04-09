@@ -22,6 +22,7 @@ import org.jboss.errai.common.client.api.interceptor.InterceptsRemoteCall;
 import org.jboss.errai.enterprise.client.jaxrs.api.interceptor.RestCallContext;
 import org.jboss.errai.enterprise.client.jaxrs.api.interceptor.RestClientInterceptor;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.overlord.apiman.dt.api.rest.contract.IActionResource;
 import org.overlord.apiman.dt.api.rest.contract.IApplicationResource;
 import org.overlord.apiman.dt.api.rest.contract.ICurrentUserResource;
 import org.overlord.apiman.dt.api.rest.contract.IMemberResource;
@@ -47,7 +48,7 @@ import org.overlord.apiman.dt.ui.client.shared.beans.ApiAuthType;
 @ApplicationScoped
 @InterceptsRemoteCall({ ISystemResource.class, ISearchResource.class, ICurrentUserResource.class, IUserResource.class,
         IRoleResource.class, IOrganizationResource.class, IApplicationResource.class, IServiceResource.class,
-        IMemberResource.class, IPlanResource.class })
+        IMemberResource.class, IPlanResource.class, IActionResource.class })
 public class AuthInterceptor implements RestClientInterceptor {
     
     @Inject

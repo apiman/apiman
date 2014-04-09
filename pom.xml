@@ -337,33 +337,6 @@
           </filesets>
         </configuration>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-        <configuration>
-          <configLocation>checkstyle/checkstyle.xml</configLocation>
-          <consoleOutput>false</consoleOutput>
-          <suppressionsLocation>checkstyle/suppressions.xml</suppressionsLocation>
-          <failsOnError>false</failsOnError>
-          <useFile />
-        </configuration>
-        <dependencies>
-          <dependency>
-            <groupId>org.overlord</groupId>
-            <artifactId>overlord-commons-build</artifactId>
-            <version>${overlord-commons.version}</version>
-          </dependency>
-        </dependencies>
-        <executions>
-          <execution>
-            <id>check-style</id>
-            <phase>package</phase>
-            <goals>
-              <goal>checkstyle</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
   </build>
 

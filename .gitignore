@@ -4,5 +4,6 @@ bin/
 .project
 .settings/
 .gwt
+.checkstyle
 .errai
 gwt-unitCache

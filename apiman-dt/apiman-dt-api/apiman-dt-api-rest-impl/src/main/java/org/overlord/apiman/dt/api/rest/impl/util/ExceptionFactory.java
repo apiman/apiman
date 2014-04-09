@@ -15,6 +15,7 @@
  */
 package org.overlord.apiman.dt.api.rest.impl.util;
 
+import org.overlord.apiman.dt.api.rest.contract.exceptions.ActionException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ApplicationAlreadyExistsException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ApplicationNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ApplicationVersionNotFoundException;
@@ -183,6 +184,23 @@ public final class ExceptionFactory {
      */
     public static final PlanVersionNotFoundException planVersionNotFoundException(String planId, String version) {
         return new PlanVersionNotFoundException(Messages.i18n.format("PlanVersionDoesNotExist", planId, version)); //$NON-NLS-1$
+    }
+    
+    /**
+     * Creates an action exception.
+     * @param message
+     */
+    public static final ActionException actionException(String message) {
+        return new ActionException(message);
+    }
+
+    /**
+     * Creates an action exception.
+     * @param message
+     * @param cause
+     */
+    public static ActionException actionException(String message, Exception cause) {
+        return new ActionException(message, cause);
     }
 
 }

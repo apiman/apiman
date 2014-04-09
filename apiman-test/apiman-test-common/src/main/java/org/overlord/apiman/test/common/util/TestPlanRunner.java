@@ -144,6 +144,7 @@ public class TestPlanRunner {
                 request.setHeader(entry.getKey(), entry.getValue());
             }
             
+            // TODO implement basic auth directly via Authorization header so that the client doesn't send 2 http requests for every test!
             DefaultHttpClient client = new DefaultHttpClient();
             BasicCredentialsProvider credsProvider = new BasicCredentialsProvider();
             credsProvider.setCredentials(new AuthScope(uri.getHost(), uri.getPort()),

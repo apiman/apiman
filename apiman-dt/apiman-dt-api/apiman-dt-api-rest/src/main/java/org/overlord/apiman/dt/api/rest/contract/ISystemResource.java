@@ -19,6 +19,9 @@ package org.overlord.apiman.dt.api.rest.contract;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+
+import org.overlord.apiman.dt.api.beans.system.SystemStatusBean;
 
 /**
  * A simple System API.
@@ -30,7 +33,7 @@ public interface ISystemResource {
 
     @GET
     @Path("status")
-    @Produces("text/plain")
-    public String getStatus();
+    @Produces(MediaType.APPLICATION_JSON)
+    public SystemStatusBean getStatus();
 
 }

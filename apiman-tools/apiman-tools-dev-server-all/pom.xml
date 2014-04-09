@@ -174,6 +174,9 @@
                       <sysproperty key="org.overlord.apps.config-dir" value="${apiman.resources.dir}/config/header"/>
                       <sysproperty key="apiman-rt.registry" value="org.overlord.apiman.rt.engine.mem.InMemoryRegistry"/>
                       <sysproperty key="apiman-rt.connector-factory" value="org.overlord.apiman.rt.war.connectors.HttpConnectorFactory"/>
+                      <sysproperty key="apiman-dt-api.gateway.rest-endpoint" value="http://localhost:8080/apiman-rt"/>
+                      <sysproperty key="apiman-dt-api.gateway.authentication.basic.user" value="admin"/>
+                      <sysproperty key="apiman-dt-api.gateway.authentication.basic.password" value="admin"/>
                       <jvmarg line="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787" />
                       <arg value="etc/jetty-logging.xml"/>
                       <arg value="etc/jetty-started.xml"/>

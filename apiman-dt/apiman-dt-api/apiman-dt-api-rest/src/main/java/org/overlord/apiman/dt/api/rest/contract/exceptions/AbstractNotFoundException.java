@@ -38,13 +38,22 @@ public abstract class AbstractNotFoundException extends AbstractUserException {
     public AbstractNotFoundException(String message) {
         super(message);
     }
-    
+
     /**
      * Constructor.
      * @param cause
      */
     public AbstractNotFoundException(Throwable cause) {
         super(cause);
+    }
+    
+    /**
+     * Constructor.
+     * @param message
+     * @param cause
+     */
+    public AbstractNotFoundException(String message, Throwable cause) {
+        super(message, cause);
     }
     
     /**

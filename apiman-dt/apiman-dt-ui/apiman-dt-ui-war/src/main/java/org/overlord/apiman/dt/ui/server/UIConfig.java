@@ -23,7 +23,7 @@ import org.overlord.commons.config.ConfigurationFactory;
  *
  * @author eric.wittmann@redhat.com
  */
-public class ApimanUIConfig {
+public class UIConfig {
     
     // TODO turn this into a CDI bean!
 
@@ -50,13 +50,13 @@ public class ApimanUIConfig {
                 "apiman-dt-ui.properties", //$NON-NLS-1$
                 refreshDelay,
                 null,
-                ApimanUIConfig.class);
+                UIConfig.class);
     }
 
     /**
      * Constructor.
      */
-    public ApimanUIConfig() {
+    public UIConfig() {
     }
 
     /**

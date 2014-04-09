@@ -49,6 +49,15 @@ public abstract class AbstractRestException extends RuntimeException {
     }
 
     /**
+     * Constructor.
+     * @param message
+     * @param cause
+     */
+    public AbstractRestException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    /**
      * @return the httpCode
      */
     public abstract int getHttpCode();

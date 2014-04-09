@@ -19,5 +19,8 @@
     <module>apiman-dt-api-war/eap61</module>
     <module>apiman-dt-api-war/jetty8</module>
     <module>apiman-dt-api-rest-impl</module>
+    <module>apiman-dt-api-gateway</module>
+    <module>apiman-dt-api-gateway-rest</module>
+    <module>apiman-dt-api-config</module>
   </modules>
 </project>

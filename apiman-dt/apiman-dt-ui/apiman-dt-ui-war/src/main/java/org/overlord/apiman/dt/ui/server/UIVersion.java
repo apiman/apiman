@@ -28,10 +28,10 @@ import org.apache.commons.io.IOUtils;
  *
  * @author eric.wittmann@redhat.com
  */
-public class ApimanUIVersion {
+public class UIVersion {
     
-    private static final ApimanUIVersion instance = new ApimanUIVersion();
-    public static final ApimanUIVersion get() {
+    private static final UIVersion instance = new UIVersion();
+    public static final UIVersion get() {
         return instance;
     }
     
@@ -41,7 +41,7 @@ public class ApimanUIVersion {
     /**
      * Constructor.
      */
-    private ApimanUIVersion() {
+    private UIVersion() {
         load();
     }
 
@@ -49,7 +49,7 @@ public class ApimanUIVersion {
      * Loads the version info from version.properties.
      */
     private void load() {
-        URL url = ApimanUIVersion.class.getResource("version.properties"); //$NON-NLS-1$
+        URL url = UIVersion.class.getResource("version.properties"); //$NON-NLS-1$
         if (url == null) {
             this.versionString = "Unknown"; //$NON-NLS-1$
             this.versionDate = new Date().toString();

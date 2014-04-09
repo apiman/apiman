@@ -37,8 +37,8 @@ import org.overlord.apiman.dt.ui.client.shared.beans.BasicAuthCredentialsBean;
 import org.overlord.apiman.dt.ui.client.shared.beans.BearerTokenCredentialsBean;
 import org.overlord.apiman.dt.ui.client.shared.beans.ConfigurationBean;
 import org.overlord.apiman.dt.ui.client.shared.beans.UserConfigurationBean;
-import org.overlord.apiman.dt.ui.server.ApimanUIConfig;
-import org.overlord.apiman.dt.ui.server.ApimanUIVersion;
+import org.overlord.apiman.dt.ui.server.UIConfig;
+import org.overlord.apiman.dt.ui.server.UIVersion;
 import org.overlord.apiman.dt.ui.server.auth.ITokenGenerator;
 
 /**
@@ -76,12 +76,12 @@ public class ConfigurationServlet extends HttpServlet {
             g.useDefaultPrettyPrinter();
             
             // Get data from various sources.
-            String endpoint = ApimanUIConfig.config.getString(ApimanUIConfig.APIMAN_DT_UI_API_ENDPOINT);
+            String endpoint = UIConfig.config.getString(UIConfig.APIMAN_DT_UI_API_ENDPOINT);
             if (endpoint == null) {
                 endpoint = getDefaultEndpoint(request);
             }
-            ApimanUIVersion version = ApimanUIVersion.get();
-            String authType = ApimanUIConfig.config.getString(ApimanUIConfig.APIMAN_DT_UI_API_AUTH_TYPE);
+            UIVersion version = UIVersion.get();
+            String authType = UIConfig.config.getString(UIConfig.APIMAN_DT_UI_API_AUTH_TYPE);
             
             ConfigurationBean configBean = new ConfigurationBean();
             configBean.setApiman(new AppConfigurationBean());
@@ -95,13 +95,13 @@ public class ConfigurationServlet extends HttpServlet {
             if (ApiAuthType.basic.toString().equals(authType)) {
                 configBean.getApi().getAuth().setType(ApiAuthType.basic);
                 configBean.getApi().getAuth().setBasic(new BasicAuthCredentialsBean());
-                String username = ApimanUIConfig.config.getString(ApimanUIConfig.APIMAN_DT_UI_API_BASIC_AUTH_USER);
-                String password = ApimanUIConfig.config.getString(ApimanUIConfig.APIMAN_DT_UI_API_BASIC_AUTH_PASS);
+                String username = UIConfig.config.getString(UIConfig.APIMAN_DT_UI_API_BASIC_AUTH_USER);
+                String password = UIConfig.config.getString(UIConfig.APIMAN_DT_UI_API_BASIC_AUTH_PASS);
                 configBean.getApi().getAuth().getBasic().setUsername(username);
                 configBean.getApi().getAuth().getBasic().setPassword(password);
             } else if (ApiAuthType.bearerToken.toString().equals(authType)) {
                 configBean.getApi().getAuth().setType(ApiAuthType.bearerToken);
-                String tokenGeneratorClassName = ApimanUIConfig.config.getString(ApimanUIConfig.APIMAN_DT_UI_API_AUTH_TOKEN_GENERATOR);
+                String tokenGeneratorClassName = UIConfig.config.getString(UIConfig.APIMAN_DT_UI_API_AUTH_TOKEN_GENERATOR);
                 if (tokenGeneratorClassName == null)
                     throw new ServletException("No token generator class specified."); //$NON-NLS-1$
                 Class<?> c = Class.forName(tokenGeneratorClassName);
@@ -111,7 +111,7 @@ public class ConfigurationServlet extends HttpServlet {
                 configBean.getApi().getAuth().getBearerToken().setRefreshPeriod(tokenGenerator.getRefreshPeriod());
             } else if (ApiAuthType.samlBearerToken.toString().equals(authType)) {
                 configBean.getApi().getAuth().setType(ApiAuthType.samlBearerToken);
-                String tokenGeneratorClassName = ApimanUIConfig.config.getString(ApimanUIConfig.APIMAN_DT_UI_API_AUTH_TOKEN_GENERATOR);
+                String tokenGeneratorClassName = UIConfig.config.getString(UIConfig.APIMAN_DT_UI_API_AUTH_TOKEN_GENERATOR);
                 if (tokenGeneratorClassName == null)
                     throw new ServletException("No token generator class specified."); //$NON-NLS-1$
                 Class<?> c = Class.forName(tokenGeneratorClassName);

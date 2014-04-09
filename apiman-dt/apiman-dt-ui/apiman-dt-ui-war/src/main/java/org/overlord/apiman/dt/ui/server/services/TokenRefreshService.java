@@ -23,7 +23,7 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.jboss.errai.bus.server.api.RpcContext;
 import org.overlord.apiman.dt.ui.client.shared.beans.BearerTokenCredentialsBean;
 import org.overlord.apiman.dt.ui.client.shared.services.ITokenRefreshService;
-import org.overlord.apiman.dt.ui.server.ApimanUIConfig;
+import org.overlord.apiman.dt.ui.server.UIConfig;
 import org.overlord.apiman.dt.ui.server.auth.ITokenGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +52,7 @@ public class TokenRefreshService implements ITokenRefreshService {
     public BearerTokenCredentialsBean refreshToken() {
         logger.debug("Refreshing authentication token."); //$NON-NLS-1$
         ServletRequest request = RpcContext.getServletRequest();
-        String tokenGeneratorClassName = ApimanUIConfig.config.getString(ApimanUIConfig.APIMAN_DT_UI_API_AUTH_TOKEN_GENERATOR);
+        String tokenGeneratorClassName = UIConfig.config.getString(UIConfig.APIMAN_DT_UI_API_AUTH_TOKEN_GENERATOR);
         if (tokenGeneratorClassName == null)
             throw new RuntimeException("No token generator class specified."); //$NON-NLS-1$
         try {

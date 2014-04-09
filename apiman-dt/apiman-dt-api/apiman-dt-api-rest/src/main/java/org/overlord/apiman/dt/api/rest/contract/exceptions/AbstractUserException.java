@@ -49,4 +49,13 @@ public abstract class AbstractUserException extends AbstractRestException {
         super(cause);
     }
 
+    /**
+     * Constructor.
+     * @param message
+     * @param cause
+     */
+    public AbstractUserException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
 }

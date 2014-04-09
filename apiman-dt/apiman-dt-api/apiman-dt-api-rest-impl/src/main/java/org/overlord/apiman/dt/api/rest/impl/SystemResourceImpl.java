@@ -19,6 +19,8 @@ package org.overlord.apiman.dt.api.rest.impl;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.overlord.apiman.dt.api.beans.system.SystemStatusBean;
+import org.overlord.apiman.dt.api.config.Version;
 import org.overlord.apiman.dt.api.persist.IStorage;
 import org.overlord.apiman.dt.api.rest.contract.ISystemResource;
 
@@ -31,6 +33,7 @@ import org.overlord.apiman.dt.api.rest.contract.ISystemResource;
 public class SystemResourceImpl implements ISystemResource {
     
     @Inject IStorage storage;
+    @Inject Version version;
     
     /**
      * Constructor.
@@ -42,10 +45,12 @@ public class SystemResourceImpl implements ISystemResource {
      * @see org.overlord.apiman.dt.api.rest.contract.ISystemResource#getStatus()
      */
     @Override
-    public String getStatus() {
-        if (storage != null)
-            return "OK"; //$NON-NLS-1$
-        else
-            return "DOWN"; //$NON-NLS-1$
+    public SystemStatusBean getStatus() {
+        SystemStatusBean rval = new SystemStatusBean();
+        rval.setUp(storage != null);
+        if (version != null) {
+            rval.setVersion(version.getVersionString());
+        }
+        return rval;
     }
 }

@@ -177,6 +177,18 @@ public class DtApiTestServer {
 
         // Add the web contexts to jetty
         handlers.addHandler(apiManServer);
+        
+        /* *************
+         * Mock Gateway (to test publishing of Services from dt to rt)
+         * ************* */
+        ServletContextHandler mockGatewayServer = new ServletContextHandler(ServletContextHandler.SESSIONS);
+        mockGatewayServer.setSecurityHandler(createSecurityHandler());
+        mockGatewayServer.setContextPath("/mock-gateway"); //$NON-NLS-1$
+        ServletHolder mockGatewayServlet = new ServletHolder(new MockGatewayServlet());
+        mockGatewayServer.addServlet(mockGatewayServlet, "/*"); //$NON-NLS-1$
+
+        // Add the web contexts to jetty
+        handlers.addHandler(mockGatewayServer);
     }
 
     /**
@@ -194,23 +206,9 @@ public class DtApiTestServer {
         }
         l.setName("apimanrealm"); //$NON-NLS-1$
 
-//        Constraint constraint = new Constraint();
-//        constraint.setName(Constraint.__BASIC_AUTH);
-//        constraint.setRoles(new String[] { "apiuser", "apiadmin" });
-//        constraint.setAuthenticate(true);
-
-//        String[] protectedMethods = new String[] { "GET", "HEAD", "POST", "PUT", "DELETE", "TRACE", "CONNECT" };
-
         ConstraintSecurityHandler csh = new ConstraintSecurityHandler();
         csh.setAuthenticator(new BasicAuthenticator());
         csh.setRealmName("apimanrealm"); //$NON-NLS-1$
-//        for (String method : protectedMethods) {
-//            ConstraintMapping cm = new ConstraintMapping();
-//            cm.setConstraint(constraint);
-//            cm.setPathSpec("/*");
-//            cm.setMethod(method);
-//            csh.addConstraintMapping(cm);
-//        }
         csh.setLoginService(l);
 
         return csh;

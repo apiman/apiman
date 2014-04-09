@@ -18,6 +18,7 @@ package org.overlord.apiman.dt.api.webapp.jetty8;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.overlord.apiman.dt.api.rest.impl.ActionResourceImpl;
 import org.overlord.apiman.dt.api.rest.impl.ApplicationResourceImpl;
 import org.overlord.apiman.dt.api.rest.impl.CurrentUserResourceImpl;
 import org.overlord.apiman.dt.api.rest.impl.DtApiApplication;
@@ -57,7 +58,8 @@ public class JettyDtApiApplication extends DtApiApplication {
         classes.add(ServiceResourceImpl.class);
         classes.add(MemberResourceImpl.class);
         classes.add(PlanResourceImpl.class);
-        
+        classes.add(ActionResourceImpl.class);
+
         classes.add(RestExceptionMapper.class);
     }
 

@@ -24,6 +24,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.SerializationConfig;
 
 
 /**
@@ -41,6 +42,7 @@ public class EchoServer {
      * Constructor.
      */
     public EchoServer(int port) {
+        mapper.enable(SerializationConfig.Feature.INDENT_OUTPUT);
         server = Undertow.builder()
                 .addHttpListener(port, "localhost") //$NON-NLS-1$
                 .setHandler(new HttpHandler() {

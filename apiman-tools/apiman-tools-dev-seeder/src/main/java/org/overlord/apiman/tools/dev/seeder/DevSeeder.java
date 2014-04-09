@@ -53,7 +53,7 @@ public class DevSeeder implements ServletContextListener {
                 doSeeding();
                 System.out.println("Done Seeding (Success)"); //$NON-NLS-1$
             }
-        }).start();;
+        }).start();
     }
 
     /**

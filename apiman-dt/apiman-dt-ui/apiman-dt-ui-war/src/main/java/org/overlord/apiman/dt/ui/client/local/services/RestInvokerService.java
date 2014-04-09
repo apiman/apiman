@@ -43,6 +43,7 @@ import org.overlord.apiman.dt.api.beans.summary.OrganizationSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.PlanSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.ServicePlanSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.ServiceSummaryBean;
+import org.overlord.apiman.dt.api.rest.contract.IActionResource;
 import org.overlord.apiman.dt.api.rest.contract.IApplicationResource;
 import org.overlord.apiman.dt.api.rest.contract.ICurrentUserResource;
 import org.overlord.apiman.dt.api.rest.contract.IMemberResource;
@@ -85,6 +86,8 @@ public class RestInvokerService {
     private Caller<IPlanResource> plans;
     @Inject
     private Caller<IMemberResource> members;
+    @Inject
+    private Caller<IActionResource> actions;
     
     /**
      * Constructor.

@@ -49,5 +49,10 @@
     <test name="Update Service Plans (error 500)">test-plan-data/services/plans/012_update-version-1.0-plans-500.resttest</test>
     <test name="Get Service Plans">test-plan-data/services/plans/013_get-service-plans.resttest</test>
   </testGroup>
+  
+  <!-- Publishing -->
+  <testGroup name="Publish Services">
+    <test name="Publish Service 1">test-plan-data/services/publish/001_publish-service-1.resttest</test>
+  </testGroup>
 
 </testPlan>
