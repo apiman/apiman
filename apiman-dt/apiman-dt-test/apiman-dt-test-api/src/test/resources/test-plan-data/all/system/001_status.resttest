@@ -1,6 +1,8 @@
 GET /system/status admin/admin
 ----
 200
-Content-Type: text/plain
+Content-Type: application/json
 
-OK
+{
+  "up" : true
+}
