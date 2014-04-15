@@ -5,9 +5,12 @@
 
   <listener>
     <listener-class>org.overlord.apiman.rt.war.listeners.GatewayBootstrapper</listener-class>
-    <listener-class>org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap</listener-class>
   </listener>
 
+  <listener>
+    <listener-class>org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap</listener-class>
+  </listener>
+  
   <!-- Locale Filter -->
   <filter>
     <filter-name>LocaleFilter</filter-name>
