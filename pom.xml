@@ -78,7 +78,7 @@
 
     <!-- Dependency Versions (not found in parent) -->
     <overlord-commons.version>2.0.1-SNAPSHOT</overlord-commons.version>
-    <picketlink.version>2.1.6.Final</picketlink.version>
+    <picketlink.version>2.5.3.SP1</picketlink.version>
     <jetty.version>8.1.9.v20130131</jetty.version>
     <undertow.version>1.0.1.Final</undertow.version>
 
@@ -238,7 +238,7 @@
       <!-- PicketLink -->
       <dependency>
         <groupId>org.picketlink</groupId>
-        <artifactId>picketlink-core</artifactId>
+        <artifactId>picketlink-federation</artifactId>
         <version>${picketlink.version}</version>
       </dependency>
       
