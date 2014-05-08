@@ -38,6 +38,14 @@ public class EngineImpl implements IEngine {
      */
     public EngineImpl() {
     }
+    
+    /**
+     * @see org.overlord.apiman.rt.engine.IEngine#getVersion()
+     */
+    @Override
+    public String getVersion() {
+        return Version.get().getVersionString();
+    }
 
     /**
      * Constructor.

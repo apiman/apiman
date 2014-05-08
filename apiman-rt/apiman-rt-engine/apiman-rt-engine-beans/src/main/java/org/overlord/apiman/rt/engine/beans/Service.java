@@ -124,13 +124,6 @@ public class Service implements Serializable {
     public void setVersion(String version) {
         this.version = version;
     }
-    
-    /**
-     * @return a unique service key useful for indexing
-     */
-    public String getServiceKey() {
-        return this.organizationId + "|" + this.serviceId + "|" + this.version; //$NON-NLS-1$ //$NON-NLS-2$
-    }
 
     /**
      * @see java.lang.Object#hashCode()

@@ -31,6 +31,11 @@ import org.overlord.apiman.rt.engine.beans.exceptions.RegistrationException;
 public interface IEngine {
 
     /**
+     * @return the version of the engine
+     */
+    public String getVersion();
+
+    /**
      * Processes a single inbound request for a managed service.
      * @param request
      * @param handler

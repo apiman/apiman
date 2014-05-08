@@ -10,8 +10,9 @@
   <name>apiman-tools</name>
   <modules>
     <module>apiman-tools-dev-seeder</module>
-    <module>apiman-tools-dev-server</module>
+    <module>apiman-tools-dev-server-dt</module>
     <module>apiman-tools-dev-server-ui</module>
+    <module>apiman-tools-dev-server-gateway</module>
     <module>apiman-tools-dev-server-all</module>
     <module>apiman-tools-dev-services</module>
   </modules>

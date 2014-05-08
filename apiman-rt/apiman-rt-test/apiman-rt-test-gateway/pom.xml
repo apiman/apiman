@@ -14,22 +14,18 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-rt-engine-core</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-rt-engine-mem</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-test-common</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-rt-gateway-war</artifactId>
-      <scope>provided</scope>
       <classifier>classes</classifier>
     </dependency>
 
@@ -37,7 +33,6 @@
     <dependency>
       <groupId>org.overlord</groupId>
       <artifactId>overlord-commons-i18n</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <!-- Weld -->
@@ -50,43 +45,36 @@
           <groupId>javax.el</groupId>
         </exclusion>
       </exclusions>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.weld.servlet</groupId>
       <artifactId>weld-servlet-core</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <!-- Undertow -->
     <dependency>
       <groupId>io.undertow</groupId>
       <artifactId>undertow-core</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>io.undertow</groupId>
       <artifactId>undertow-servlet</artifactId>
-      <scope>provided</scope>
     </dependency>
     
     <!-- RESTEasy -->
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jaxrs</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jackson-provider</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <!-- Jackson -->
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-mapper-asl</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <!-- Required Third Party Libs -->
@@ -97,22 +85,18 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <artifactId>slf4j-log4j12</artifactId>
       <groupId>org.slf4j</groupId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.logging</groupId>
       <artifactId>jboss-logging</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <scope>provided</scope>
     </dependency>
   </dependencies>
 

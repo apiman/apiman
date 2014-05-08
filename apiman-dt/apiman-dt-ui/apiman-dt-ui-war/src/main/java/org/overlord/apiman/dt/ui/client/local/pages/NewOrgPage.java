@@ -28,10 +28,10 @@ import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
 import org.overlord.apiman.dt.ui.client.local.AppMessages;
 import org.overlord.apiman.dt.ui.client.local.services.rest.IRestInvokerCallback;
 import org.overlord.apiman.dt.ui.client.local.util.MultimapUtil;
+import org.overlord.commons.gwt.client.local.widgets.AsyncActionButton;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.TextBox;
 
 
@@ -53,7 +53,7 @@ public class NewOrgPage extends AbstractPage {
     @Inject @DataField
     TextBox description;
     @Inject @DataField
-    Button createButton;
+    AsyncActionButton createButton;
     
     /**
      * Constructor.
@@ -76,23 +76,23 @@ public class NewOrgPage extends AbstractPage {
     @PageShown
     protected void onPageShown() {
         name.setFocus(true);
-        createButton.setEnabled(true);
+        createButton.reset();
     }
-    
+
     /**
      * Called when the user clicks the Create Organization button.
      * @param event
      */
     @EventHandler("createButton")
     public void onCreate(ClickEvent event) {
-        createButton.setFocus(false);
-        createButton.setEnabled(false);
+        createButton.onActionStarted();
         OrganizationBean bean = new OrganizationBean();
         bean.setName(name.getValue());
         bean.setDescription(description.getValue());
         rest.createOrganization(bean, new IRestInvokerCallback<OrganizationBean>() {
             @Override
             public void onSuccess(OrganizationBean response) {
+                createButton.onActionComplete();
                 String orgId = response.getId();
                 // Short circuit page loading lifecycle - redirect to the Org page
                 toOrg.go(MultimapUtil.singleItemMap("org", orgId)); //$NON-NLS-1$
@@ -104,7 +104,7 @@ public class NewOrgPage extends AbstractPage {
             }
         });
     }
-
+    
     /**
      * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractPage#getPageTitle()
      */

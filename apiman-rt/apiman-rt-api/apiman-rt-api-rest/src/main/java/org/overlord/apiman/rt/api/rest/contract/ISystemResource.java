@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-package org.overlord.apiman.tools.devsvr.api;
+package org.overlord.apiman.rt.api.rest.contract;
 
-import org.overlord.apiman.dt.test.server.DtApiTestServer;
-import org.overlord.apiman.dt.test.server.ISeeder;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+
+import org.overlord.apiman.rt.engine.beans.SystemStatus;
 
 /**
- * A dev server for APIMan.
- *
+ * The Service API.
+ * 
  * @author eric.wittmann@redhat.com
  */
-public class ApiManDtApiDevServer {
+@Path("api/system")
+public interface ISystemResource {
 
-    /**
-     * Main entry point.
-     * @param args
-     */
-    public static void main(String [] args) throws Exception {
-        System.setProperty(ISeeder.SYSTEM_PROPERTY, DevServerDataSeeder.class.getName());
-        DtApiTestServer server = new DtApiTestServer();
-        server.start();
-    }
+    @GET
+    @Path("status")
+    @Produces(MediaType.APPLICATION_JSON)
+    public SystemStatus getStatus();
 }

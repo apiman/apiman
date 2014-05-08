@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.rt.test.gateway;
+package org.overlord.apiman.rt.test.server;
 
 import io.undertow.Undertow;
 import io.undertow.servlet.Servlets;
@@ -29,6 +29,7 @@ import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
 import org.overlord.apiman.rt.api.rest.impl.ApplicationResourceImpl;
 import org.overlord.apiman.rt.api.rest.impl.RtApiApplication;
 import org.overlord.apiman.rt.api.rest.impl.ServiceResourceImpl;
+import org.overlord.apiman.rt.api.rest.impl.SystemResourceImpl;
 import org.overlord.apiman.rt.api.rest.impl.mappers.RestExceptionMapper;
 import org.overlord.apiman.rt.war.listeners.GatewayBootstrapper;
 import org.overlord.apiman.rt.war.servlets.GatewayServlet;
@@ -95,6 +96,7 @@ public class GatewayServer {
         @Override
         public Set<Class<?>> getClasses() {
             HashSet<Class<?>> classes = new HashSet<Class<?>>();
+            classes.add(SystemResourceImpl.class);
             classes.add(ServiceResourceImpl.class);
             classes.add(ApplicationResourceImpl.class);
             classes.add(RestExceptionMapper.class);

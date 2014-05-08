@@ -109,7 +109,7 @@ public class EngineConfig {
     private static <T> Class<T> loadConfigClass(String property, Class<T> type) {
         String classname = getConfig().getString(property);
         if (classname == null) {
-            throw new RuntimeException("No " + type.getClass().getSimpleName() + " class configured."); //$NON-NLS-1$ //$NON-NLS-2$
+            throw new RuntimeException("No " + type.getSimpleName() + " class configured."); //$NON-NLS-1$ //$NON-NLS-2$
         }
         try {
             Class<T> c = (Class<T>) Thread.currentThread().getContextClassLoader().loadClass(classname);

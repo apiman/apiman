@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.rt.test.echo;
+package org.overlord.apiman.rt.test.server;
 
 import io.undertow.Undertow;
 import io.undertow.server.HttpHandler;

@@ -65,7 +65,7 @@ public class InMemoryRegistry implements IRegistry {
      */
     @Override
     public synchronized void publishService(Service service) throws PublishingException {
-        String serviceKey = service.getServiceKey();
+        String serviceKey = getServiceKey(service);
         if (services.containsKey(serviceKey)) {
             throw new PublishingException(Messages.i18n.format("InMemoryRegistry.ServiceAlreadyPublished")); //$NON-NLS-1$
         }
@@ -77,19 +77,19 @@ public class InMemoryRegistry implements IRegistry {
      */
     @Override
     public synchronized void retireService(Service service) throws PublishingException {
-        String serviceKey = service.getServiceKey();
+        String serviceKey = getServiceKey(service);
         if (services.containsKey(serviceKey)) {
             services.remove(serviceKey);
         }
         throw new PublishingException(Messages.i18n.format("InMemoryRegistry.ServiceNotFound")); //$NON-NLS-1$
     }
-    
+
     /**
      * @see org.overlord.apiman.rt.engine.IRegistry#registerApplication(org.overlord.apiman.rt.engine.beans.Application)
      */
     @Override
     public synchronized void registerApplication(Application application) throws RegistrationException {
-        String applicationKey = application.getApplicationKey();
+        String applicationKey = getApplicationKey(application);
         if (applications.containsKey(applicationKey)) {
             throw new RegistrationException(Messages.i18n.format("InMemoryRegistry.AppAlreadyRegistered")); //$NON-NLS-1$
         }
@@ -98,13 +98,13 @@ public class InMemoryRegistry implements IRegistry {
             registerContract(contract);
         }
     }
-    
+
     /**
      * @see org.overlord.apiman.rt.engine.IRegistry#unregisterApplication(org.overlord.apiman.rt.engine.beans.Application)
      */
     @Override
     public void unregisterApplication(Application application) throws RegistrationException {
-        String applicationKey = application.getApplicationKey();
+        String applicationKey = getApplicationKey(application);
         if (applications.containsKey(applicationKey)) {
             Application removed = applications.remove(applicationKey);
             for (Contract contract : removed.getContracts()) {
@@ -153,5 +153,26 @@ public class InMemoryRegistry implements IRegistry {
         }
         contracts.put(contract.getApiKey(), contract);
     }
+    
+    /**
+     * Generates an in-memory key for an service, used to index the app for later quick
+     * retrieval.
+     * @param service an service
+     * @return an service key
+     */
+    private String getServiceKey(Service service) {
+        return service.getOrganizationId() + "|" + service.getServiceId() + "|" + service.getVersion(); //$NON-NLS-1$ //$NON-NLS-2$
+    }
+
+    /**
+     * Generates an in-memory key for an application, used to index the app for later quick
+     * retrieval.
+     * @param app an application
+     * @return an application key
+     */
+    private String getApplicationKey(Application app) {
+        return app.getOrganizationId() + "|" + app.getApplicationId() + "|" + app.getVersion(); //$NON-NLS-1$ //$NON-NLS-2$
+    }
+
 
 }

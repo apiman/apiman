@@ -29,6 +29,7 @@ import org.overlord.apiman.dt.api.rest.contract.IActionResource;
 import org.overlord.apiman.dt.api.rest.contract.IServiceResource;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ActionException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ServiceVersionNotFoundException;
+import org.overlord.apiman.dt.api.rest.impl.i18n.Messages;
 import org.overlord.apiman.dt.api.rest.impl.util.ExceptionFactory;
 import org.overlord.apiman.dt.api.security.ISecurityContext;
 import org.overlord.apiman.rt.engine.beans.Service;
@@ -80,6 +81,7 @@ public class ActionResourceImpl implements IActionResource {
     }
 
     /**
+     * Publishes a service to the gateway.
      * @param action
      */
     private void publishService(ActionBean action) throws ActionException {
@@ -90,7 +92,7 @@ public class ActionResourceImpl implements IActionResource {
         try {
             versionBean = services.getVersion(action.getOrganizationId(), action.getEntityId(), action.getEntityVersion());
         } catch (ServiceVersionNotFoundException e) {
-            throw ExceptionFactory.actionException("Service not found.");
+            throw ExceptionFactory.actionException(Messages.i18n.format("ServiceNotFound")); //$NON-NLS-1$
         }
         
         Service gatewaySvc = new Service();
@@ -103,7 +105,7 @@ public class ActionResourceImpl implements IActionResource {
         try {
             gatewayLink.publishService(gatewaySvc);
         } catch (PublishingException e) {
-            throw ExceptionFactory.actionException("Failed to publish service.", e);
+            throw ExceptionFactory.actionException(Messages.i18n.format("PublishError")); //$NON-NLS-1$
         }
     }
 
@@ -112,7 +114,7 @@ public class ActionResourceImpl implements IActionResource {
      */
     private void retireService(ActionBean action) throws ActionException {
         // TODO Auto-generated method stub
-        throw ExceptionFactory.actionException("Not yet implemented.");
+        throw ExceptionFactory.actionException("Not yet implemented."); //$NON-NLS-1$
 
     }
 
@@ -121,7 +123,7 @@ public class ActionResourceImpl implements IActionResource {
      */
     private void registerApplication(ActionBean action) throws ActionException {
         // TODO Auto-generated method stub
-        throw ExceptionFactory.actionException("Not yet implemented.");
+        throw ExceptionFactory.actionException("Not yet implemented."); //$NON-NLS-1$
 
     }
 
@@ -130,7 +132,7 @@ public class ActionResourceImpl implements IActionResource {
      */
     private void deregisterApplication(ActionBean action) throws ActionException {
         // TODO Auto-generated method stub
-        throw ExceptionFactory.actionException("Not yet implemented.");
+        throw ExceptionFactory.actionException("Not yet implemented."); //$NON-NLS-1$
 
     }
         

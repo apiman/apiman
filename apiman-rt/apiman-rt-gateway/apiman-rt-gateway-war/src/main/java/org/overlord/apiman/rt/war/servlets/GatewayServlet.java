@@ -151,11 +151,36 @@ public class GatewayServlet extends HttpServlet {
     }
 
     /**
-     * @param request
-     * @return
+     * Gets the API Key from the request.  The API key can be passed either via
+     * a custom http request header called X-API-Key or else by a query parameter
+     * in the URL called apikey.
+     * @param request the inbound request
+     * @return the api key or null if not found
      */
     protected String getApiKey(HttpServletRequest request) {
-        return request.getHeader("X-API-Key"); //$NON-NLS-1$
+        String apiKey = request.getHeader("X-API-Key"); //$NON-NLS-1$
+        if (apiKey == null || apiKey.trim().length() == 0) {
+            apiKey = getApiKeyFromQuery(request);
+        }
+        return apiKey;
+    }
+
+    /**
+     * Gets the API key from the request's query string.
+     * @param request the inbound request
+     * @return the api key or null if not found
+     */
+    protected String getApiKeyFromQuery(HttpServletRequest request) {
+        String queryString = request.getQueryString();
+        int idx = queryString.indexOf("apikey=");
+        if (idx >= 0) {
+            int endIdx = queryString.indexOf('&', idx);
+            if (endIdx == -1) {
+                endIdx = queryString.length();
+            }
+            return queryString.substring(idx, endIdx);
+        }
+        return null;
     }
 
     /**
