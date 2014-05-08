@@ -12,22 +12,18 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-dt-api-config</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-dt-api-gateway</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-rt-engine-beans</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-rt-api-rest</artifactId>
-      <version>${project.version}</version>
     </dependency>
     
     <!-- Third Party Dependencies -->

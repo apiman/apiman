@@ -15,13 +15,11 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-dt-api-war-jetty8</artifactId>
-      <version>${project.version}</version>
       <type>war</type>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-dt-ui-war</artifactId>
-      <version>${project.version}</version>
       <type>war</type>
     </dependency>
 
@@ -29,7 +27,6 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-dt-ui-war-jetty8</artifactId>
-      <version>${project.version}</version>
       <type>war</type>
     </dependency>
     
@@ -37,7 +34,6 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-rt-gateway-war-jetty8</artifactId>
-      <version>${project.version}</version>
       <type>war</type>
     </dependency>
     
@@ -45,7 +41,6 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-tools-dev-seeder</artifactId>
-      <version>${project.version}</version>
       <type>war</type>
     </dependency>
 
@@ -53,7 +48,6 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-tools-dev-services</artifactId>
-      <version>${project.version}</version>
       <type>war</type>
     </dependency>
     
