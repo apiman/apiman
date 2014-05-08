@@ -14,25 +14,21 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-rt-engine-core</artifactId>
-      <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-rt-engine-mem</artifactId>
-      <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-test-common</artifactId>
-      <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-rt-gateway-war</artifactId>
-      <version>${project.version}</version>
       <scope>provided</scope>
       <classifier>classes</classifier>
     </dependency>

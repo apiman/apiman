@@ -16,13 +16,11 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-dt-ui-war</artifactId>
-      <version>${project.version}</version>
       <type>war</type>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-dt-ui-war</artifactId>
-      <version>${project.version}</version>
       <classifier>classes</classifier>
       <type>jar</type>
       <scope>provided</scope>
@@ -42,12 +40,10 @@
     <dependency>
       <groupId>org.overlord.apiman</groupId>
       <artifactId>apiman-dt-api-beans</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.overlord.apiman</groupId>
       <artifactId>apiman-dt-api-rest</artifactId>
-      <version>${project.version}</version>
     </dependency>
     
     <!-- PicketLink -->
@@ -57,6 +53,10 @@
     </dependency>
 
     <!-- Third Party Dependencies -->
+    <dependency>
+      <groupId>org.jboss.logging</groupId>
+      <artifactId>jboss-logging</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>jaxrs-api</artifactId>

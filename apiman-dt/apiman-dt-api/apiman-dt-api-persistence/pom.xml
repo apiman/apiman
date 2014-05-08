@@ -13,7 +13,6 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-dt-api-beans</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <!-- APIs -->
     <dependency>

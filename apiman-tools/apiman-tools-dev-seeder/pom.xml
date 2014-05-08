@@ -14,7 +14,6 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-test-common</artifactId>
-      <version>${project.version}</version>
     </dependency>
 
     <!-- Third Party Dependencies -->

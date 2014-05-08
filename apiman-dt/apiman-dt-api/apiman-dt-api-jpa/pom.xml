@@ -14,7 +14,6 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-dt-api-persistence</artifactId>
-      <version>${project.version}</version>
     </dependency>
     
     <!-- Overlord Commons -->

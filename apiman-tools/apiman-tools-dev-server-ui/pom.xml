@@ -14,7 +14,6 @@
     <dependency>
       <groupId>org.overlord</groupId>
       <artifactId>overlord-commons-dev</artifactId>
-      <version>${overlord-commons.version}</version>
     </dependency>
 
     <!-- Overlord Commons -->
@@ -35,13 +34,11 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-dt-ui-war</artifactId>
-      <version>${project.version}</version>
       <type>war</type>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-dt-ui-war</artifactId>
-      <version>${project.version}</version>
       <classifier>classes</classifier>
       <exclusions>
         <exclusion>

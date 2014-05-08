@@ -16,7 +16,6 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-dt-api-war</artifactId>
-      <version>${project.version}</version>
       <type>war</type>
     </dependency>
 
@@ -24,17 +23,14 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-dt-api-beans</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-dt-api-rest</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-dt-api-jpa</artifactId>
-      <version>${project.version}</version>
     </dependency>
     
     <!-- Overlord Commons -->

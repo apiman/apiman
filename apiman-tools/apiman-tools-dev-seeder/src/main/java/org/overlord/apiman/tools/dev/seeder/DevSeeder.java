@@ -48,7 +48,7 @@ public class DevSeeder implements ServletContextListener {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                try { Thread.sleep(5000); } catch (InterruptedException e) { }
+                try { Thread.sleep(15000); } catch (InterruptedException e) { }
                 System.out.println("Seeding the API Management Development Environment"); //$NON-NLS-1$
                 doSeeding();
                 System.out.println("Done Seeding (Success)"); //$NON-NLS-1$
