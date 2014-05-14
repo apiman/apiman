@@ -15,16 +15,13 @@
  */
 package org.overlord.apiman.rt.test.server;
 
-import io.undertow.Undertow;
-import io.undertow.servlet.Servlets;
-import io.undertow.servlet.api.DeploymentInfo;
-import io.undertow.servlet.api.DeploymentManager;
-
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.servlet.ServletException;
-
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.ContextHandlerCollection;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
 import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
 import org.overlord.apiman.rt.api.rest.impl.ApplicationResourceImpl;
 import org.overlord.apiman.rt.api.rest.impl.RtApiApplication;
@@ -35,58 +32,85 @@ import org.overlord.apiman.rt.war.listeners.GatewayBootstrapper;
 import org.overlord.apiman.rt.war.servlets.GatewayServlet;
 
 /**
- * Uses Undertow to run the WAR version of the API Management gateway.
+ * Uses Jetty to run the WAR version of the API Management gateway.
  * 
  * @author eric.wittmann@redhat.com
  */
 public class GatewayServer {
 
-    private Undertow server;
+    private Server server;
+    private int port;
 
     /**
      * Constructor.
      * @param port which port to run the test server on
      */
     public GatewayServer(int port) {
-        try {
-            DeploymentInfo servletBuilder = Servlets
-                    .deployment()
-                    .setClassLoader(GatewayServer.class.getClassLoader())
-                    .setContextPath("/apiman-rt") //$NON-NLS-1$
-                    .setDeploymentName("apiman-rt.war") //$NON-NLS-1$
-                    .addListener(Servlets.listener(GatewayBootstrapper.class))
-                    .addServlets(
-                            Servlets.servlet("GatewayServlet", GatewayServlet.class).addMapping("/gateway/*")) //$NON-NLS-1$ //$NON-NLS-2$
-                    .addServlets(
-                            Servlets.servlet("ResteasyServlet", HttpServletDispatcher.class) //$NON-NLS-1$
-                                    .addInitParam("javax.ws.rs.Application", GatewayApplication.class.getName()) //$NON-NLS-1$
-                                    .setLoadOnStartup(1)
-                                    .addMapping("/api/*")); //$NON-NLS-1$
-
-            DeploymentManager manager = Servlets.defaultContainer().addDeployment(servletBuilder);
-            manager.deploy();
-
-            server = Undertow.builder().addHttpListener(port, "localhost").setHandler(manager.start()).build(); //$NON-NLS-1$
-        } catch (ServletException e) {
-            throw new RuntimeException(e);
-        }
+        this.port = port;
     }
 
     /**
-     * Starts the server.
+     * Start/run the server.
      */
-    public void start() {
+    public void start() throws Exception {
+        long startTime = System.currentTimeMillis();
+        System.out.println("**** Starting Server (" + getClass().getSimpleName() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
+        preStart();
+
+        ContextHandlerCollection handlers = new ContextHandlerCollection();
+        addModulesToJetty(handlers);
+
+        // Create the server.
+        server = new Server(port);
+        server.setHandler(handlers);
         server.start();
+        long endTime = System.currentTimeMillis();
+        System.out.println("******* Started in " + (endTime - startTime) + "ms"); //$NON-NLS-1$ //$NON-NLS-2$
+    }
+    
+    /**
+     * Does some configuration before starting the server.
+     */
+    private void preStart() {
     }
 
     /**
      * Stops the server.
      */
     public void stop() {
-        server.stop();
+        try {
+            server.stop();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Configure the web application(s).
+     * @param handlers
+     * @throws Exception
+     */
+    protected void addModulesToJetty(ContextHandlerCollection handlers) throws Exception {
+        /* *************
+         * Gateway
+         * ************* */
+        ServletContextHandler server = new ServletContextHandler(ServletContextHandler.SESSIONS);
+//        server.setSecurityHandler(createSecurityHandler());
+        server.setContextPath("/"); //$NON-NLS-1$
+        server.addEventListener(new GatewayBootstrapper());
+        ServletHolder servlet = new ServletHolder(new GatewayServlet());
+        server.addServlet(servlet, "/gateway/*"); //$NON-NLS-1$
+        servlet = new ServletHolder(new HttpServletDispatcher());
+        servlet.setInitParameter("javax.ws.rs.Application", GatewayApplication.class.getName()); //$NON-NLS-1$
+        servlet.setInitOrder(1);
+        server.addServlet(servlet, "/api/*"); //$NON-NLS-1$
+
+        // Add the web contexts to jetty
+        handlers.addHandler(server);
     }
 
     public static class GatewayApplication extends RtApiApplication {
+        
         /**
          * Constructor.
          */

@@ -15,11 +15,11 @@
  */
 package org.overlord.apiman.rt.test.server;
 
-import io.undertow.server.HttpServerExchange;
-import io.undertow.util.HeaderValues;
-
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * A simple echo response POJO.
@@ -30,19 +30,20 @@ public class EchoResponse {
 
     /**
      * Create an echo response from the inbound information in the http server
-     * exchange.
-     * @param exchange
+     * request.
+     * @param request
      * @return a new echo response
      */
-    public static EchoResponse from(HttpServerExchange exchange) {
+    public static EchoResponse from(HttpServletRequest request) {
         EchoResponse response = new EchoResponse();
-        response.setMethod(exchange.getRequestMethod().toString());
-        response.setResource(exchange.getRequestPath());
-        response.setLength(exchange.getRequestContentLength());
-        response.setUri(exchange.getRequestURI());
-        for (HeaderValues headerValues : exchange.getRequestHeaders()) {
-            String name = headerValues.getHeaderName().toString();
-            String value = headerValues.getFirst();
+        response.setMethod(request.getMethod());
+        response.setResource(request.getRequestURI());
+        response.setLength(request.getContentLength());
+        response.setUri(request.getRequestURI());
+        Enumeration<String> headerNames = request.getHeaderNames();
+        while (headerNames.hasMoreElements()) {
+            String name = headerNames.nextElement();
+            String value = request.getHeader(name);
             response.getHeaders().put(name, value);
         }
         return response;

@@ -15,16 +15,19 @@
  */
 package org.overlord.apiman.rt.test.server;
 
-import io.undertow.Undertow;
-import io.undertow.server.HttpHandler;
-import io.undertow.server.HttpServerExchange;
-import io.undertow.util.Headers;
+import java.io.IOException;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.ContextHandlerCollection;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
 
 
 /**
@@ -35,22 +38,109 @@ import org.codehaus.jackson.map.SerializationConfig;
  */
 public class EchoServer {
     
-    private Undertow server;
+    private Server server;
     private ObjectMapper mapper = new ObjectMapper();
-    
+    private int port;
+
     /**
      * Constructor.
      */
     public EchoServer(int port) {
+        this.port = port;
         mapper.enable(SerializationConfig.Feature.INDENT_OUTPUT);
-        server = Undertow.builder()
-                .addHttpListener(port, "localhost") //$NON-NLS-1$
-                .setHandler(new HttpHandler() {
-                    @Override
-                    public void handleRequest(final HttpServerExchange exchange) throws Exception {
-                        doEchoResponse(exchange);
-                    }
-                }).build();
+    }
+
+    /**
+     * Start/run the server.
+     */
+    public void start() throws Exception {
+        long startTime = System.currentTimeMillis();
+        System.out.println("**** Starting Server (" + getClass().getSimpleName() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
+        preStart();
+
+        ContextHandlerCollection handlers = new ContextHandlerCollection();
+        addModulesToJetty(handlers);
+
+        // Create the server.
+        server = new Server(port);
+        server.setHandler(handlers);
+        server.start();
+        long endTime = System.currentTimeMillis();
+        System.out.println("******* Started in " + (endTime - startTime) + "ms"); //$NON-NLS-1$ //$NON-NLS-2$
+    }
+    
+    /**
+     * Does some configuration before starting the server.
+     */
+    private void preStart() {
+    }
+
+    /**
+     * Stops the server.
+     */
+    public void stop() {
+        try {
+            server.stop();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Configure the web application(s).
+     * @param handlers
+     * @throws Exception
+     */
+    protected void addModulesToJetty(ContextHandlerCollection handlers) throws Exception {
+        /* *************
+         * Echo Server
+         * ************* */
+        ServletContextHandler server = new ServletContextHandler(ServletContextHandler.SESSIONS);
+//        server.setSecurityHandler(createSecurityHandler());
+        server.setContextPath("/"); //$NON-NLS-1$
+        ServletHolder servlet = new ServletHolder(new HttpServlet() {
+            private static final long serialVersionUID = -5519107324541106467L;
+
+            /**
+             * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+             */
+            @Override
+            protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
+                    IOException {
+                doEchoResponse(req, resp);
+            }
+            
+            /**
+             * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+             */
+            @Override
+            protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
+                    IOException {
+                doEchoResponse(req, resp);
+            }
+            
+            /**
+             * @see javax.servlet.http.HttpServlet#doPut(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+             */
+            @Override
+            protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
+                    IOException {
+                doEchoResponse(req, resp);
+            }
+            
+            /**
+             * @see javax.servlet.http.HttpServlet#doDelete(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+             */
+            @Override
+            protected void doDelete(HttpServletRequest req, HttpServletResponse resp)
+                    throws ServletException, IOException {
+                doEchoResponse(req, resp);
+            }
+        });
+        server.addServlet(servlet, "/"); //$NON-NLS-1$
+
+        // Add the web contexts to jetty
+        handlers.addHandler(server);
     }
 
     /**
@@ -59,33 +149,15 @@ public class EchoServer {
      * with that data as a JSON response.
      * @param exchange
      */
-    protected void doEchoResponse(HttpServerExchange exchange) {
-        EchoResponse response = EchoResponse.from(exchange);
+    protected void doEchoResponse(HttpServletRequest req, HttpServletResponse resp) {
+        EchoResponse response = EchoResponse.from(req);
         
-        StringWriter writer = new StringWriter();
+        resp.setContentType("application/json"); //$NON-NLS-1$
         try {
-            mapper.writeValue(writer, response);
+            mapper.writeValue(resp.getOutputStream(), response);
         } catch (Exception e) {
-            e.printStackTrace(new PrintWriter(writer));
             throw new RuntimeException(e);
         }
-        
-        exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "application/json"); //$NON-NLS-1$
-        exchange.getResponseSender().send(writer.getBuffer().toString());
     }
 
-    /**
-     * Starts the server.
-     */
-    public void start() {
-        server.start();
-    }
-
-    /**
-     * Stops the server.
-     */
-    public void stop() {
-        server.stop();
-    }
-    
 }

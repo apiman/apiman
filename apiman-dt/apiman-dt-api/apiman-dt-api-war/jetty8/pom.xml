@@ -47,12 +47,10 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-dt-api-gateway</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-dt-api-gateway-rest</artifactId>
-      <version>${project.version}</version>
     </dependency>
 
     <!-- Overlord Commons -->
