@@ -36,7 +36,7 @@ import org.jboss.weld.environment.servlet.Listener;
 import org.overlord.apiman.dt.ui.client.shared.beans.ApiAuthType;
 import org.overlord.apiman.dt.ui.server.UIConfig;
 import org.overlord.apiman.dt.ui.server.servlets.ConfigurationServlet;
-import org.overlord.commons.auth.jetty8.HttpRequestThreadLocalFilter;
+import org.overlord.commons.auth.filters.HttpRequestThreadLocalFilter;
 import org.overlord.commons.dev.server.DevServerEnvironment;
 import org.overlord.commons.dev.server.ErraiDevServer;
 import org.overlord.commons.dev.server.MultiDefaultServlet;
