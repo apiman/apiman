@@ -18,11 +18,24 @@
       <groupId>org.overlord</groupId>
       <artifactId>overlord-commons-i18n</artifactId>
     </dependency>
-    
+
     <!-- Project Dependencies -->
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-rt-engine-beans</artifactId>
     </dependency>
   </dependencies>
+
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>false</filtering>
+      </resource>
+      <resource>
+        <directory>src/main/resources-filtered</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+  </build>
 </project>

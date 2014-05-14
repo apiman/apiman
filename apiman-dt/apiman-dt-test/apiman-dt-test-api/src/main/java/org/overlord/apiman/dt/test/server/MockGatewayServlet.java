@@ -16,6 +16,7 @@
 package org.overlord.apiman.dt.test.server;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -53,8 +54,17 @@ public class MockGatewayServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
             IOException {
-        builder.append("GET:").append(req.getRequestURI()); //$NON-NLS-1$
-        resp.setStatus(204);
+        builder.append("GET:").append(req.getRequestURI()).append("\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        if (req.getRequestURI().endsWith("/system/status")) { //$NON-NLS-1$
+            resp.setStatus(200);
+            resp.setContentType("application/json"); //$NON-NLS-1$
+            PrintWriter printWriter = new PrintWriter(resp.getOutputStream());
+            printWriter.println("{ \"up\" : true, \"version\" : \"0\" }"); //$NON-NLS-1$
+            printWriter.flush();
+            printWriter.close();
+        } else {
+            resp.setStatus(204);
+        }
     }
     
     /**
@@ -63,7 +73,7 @@ public class MockGatewayServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
             IOException {
-        builder.append("POST:").append(req.getRequestURI()); //$NON-NLS-1$
+        builder.append("POST:").append(req.getRequestURI()).append("\n"); //$NON-NLS-1$ //$NON-NLS-2$
         resp.setStatus(204);
     }
     
@@ -73,7 +83,7 @@ public class MockGatewayServlet extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
             IOException {
-        builder.append("PUT:").append(req.getRequestURI()); //$NON-NLS-1$
+        builder.append("PUT:").append(req.getRequestURI()).append("\n"); //$NON-NLS-1$ //$NON-NLS-2$
         resp.setStatus(204);
     }
 

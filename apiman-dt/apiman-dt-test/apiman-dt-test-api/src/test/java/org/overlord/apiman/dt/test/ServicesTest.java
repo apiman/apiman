@@ -27,7 +27,9 @@ import org.overlord.apiman.dt.test.util.AbstractTestPlanTest;
  */
 public class ServicesTest extends AbstractTestPlanTest {
 
-    private static final String EXPECTED_GATEWAY_LOG = "PUT:/mock-gateway/api/services"; //$NON-NLS-1$
+    private static final String EXPECTED_GATEWAY_LOG = 
+            "GET:/mock-gateway/api/system/status\n" +  //$NON-NLS-1$
+            "PUT:/mock-gateway/api/services\n"; //$NON-NLS-1$
 
     @Test
     public void test() {

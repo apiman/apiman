@@ -37,8 +37,10 @@ import org.overlord.apiman.dt.api.config.Config;
 import org.overlord.apiman.dt.api.gateway.IGatewayLink;
 import org.overlord.apiman.rt.api.rest.contract.IApplicationResource;
 import org.overlord.apiman.rt.api.rest.contract.IServiceResource;
+import org.overlord.apiman.rt.api.rest.contract.ISystemResource;
 import org.overlord.apiman.rt.engine.beans.Application;
 import org.overlord.apiman.rt.engine.beans.Service;
+import org.overlord.apiman.rt.engine.beans.SystemStatus;
 import org.overlord.apiman.rt.engine.beans.exceptions.PublishingException;
 import org.overlord.apiman.rt.engine.beans.exceptions.RegistrationException;
 
@@ -55,6 +57,7 @@ public class RestGatewayLink implements IGatewayLink {
     private Config config;
     
     private DefaultHttpClient httpClient;
+    private ISystemResource systemClient;
     private IServiceResource serviceClient;
     private IApplicationResource appClient;
 
@@ -79,11 +82,16 @@ public class RestGatewayLink implements IGatewayLink {
         
         RegisterBuiltin.register(ResteasyProviderFactory.getInstance());
         
-        // TODO get this info from the config
-        String gatewayApi = config.getGatewayRestEndpoint(); // "http://localhost:8080/apiman-rt/api";
+        String gatewayApi = config.getGatewayRestEndpoint();
         
+        systemClient = ProxyFactory.create(ISystemResource.class, gatewayApi, createClientExecutor());
         serviceClient = ProxyFactory.create(IServiceResource.class, gatewayApi, createClientExecutor());
         appClient = ProxyFactory.create(IApplicationResource.class, gatewayApi, createClientExecutor());
+        
+        SystemStatus status = systemClient.getStatus();
+        if (!status.isUp()) {
+            throw new RuntimeException("Gateway is not running!"); //$NON-NLS-1$
+        }
     }
 
     /**

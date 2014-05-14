@@ -1,6 +1,19 @@
 
 body {
   line-height: normal;
+  font-size: 13px;
+}
+
+.btn {
+  font-size: 12px;
+}
+
+.dropdown-menu, .form-control {
+  font-size: 13px;
+}
+
+.form-control {
+  height: 28px;
 }
 
 .emphasis {
@@ -109,6 +122,10 @@ div.page {
 }
 .apiman-entitysummary .description {
   padding-top: 15px;
+}
+
+.apiman-entitytabs .nav-tabs {
+  font-size: 15px;
 }
 
 .apiman-entitytabs .nav-tabs li a {
@@ -242,7 +259,7 @@ div.page {
 }
 
 .apiman-entity-nav {
-  font-size: 13px;
+  font-size: 15px;
 }
 
 .apiman-entity-nav .nav-pills li {

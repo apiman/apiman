@@ -14,7 +14,7 @@
   <!-- Authentication Filter -->
   <filter>
     <filter-name>AuthenticationFilter</filter-name>
-    <filter-class>org.overlord.commons.auth.jetty8.Jetty8SamlBearerTokenAuthFilter</filter-class>
+    <filter-class>org.overlord.commons.auth.filters.SamlBearerTokenAuthFilter</filter-class>
     <init-param>
       <param-name>allowedIssuers</param-name>
       <param-value>apiman-dt-ui</param-value>

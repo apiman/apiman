@@ -10,7 +10,7 @@
 
   <filter>
     <filter-name>HttpRequestThreadLocalFilter</filter-name>
-    <filter-class>org.overlord.commons.auth.jetty8.HttpRequestThreadLocalFilter</filter-class>
+    <filter-class>org.overlord.commons.auth.filters.HttpRequestThreadLocalFilter</filter-class>
   </filter>
   <filter-mapping>
     <filter-name>HttpRequestThreadLocalFilter</filter-name>

@@ -42,12 +42,12 @@ import org.overlord.apiman.dt.test.server.DefaultTestDataSeeder;
  *
  * @author eric.wittmann@redhat.com
  */
-public class DevServerDataSeeder extends DefaultTestDataSeeder {
+public class DtApiDataSeeder extends DefaultTestDataSeeder {
     
     /**
      * Constructor.
      */
-    public DevServerDataSeeder() {
+    public DtApiDataSeeder() {
     }
     
     /**

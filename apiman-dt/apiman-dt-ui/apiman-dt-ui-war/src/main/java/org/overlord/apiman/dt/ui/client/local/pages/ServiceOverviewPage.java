@@ -20,11 +20,18 @@ import javax.inject.Inject;
 
 import org.jboss.errai.ui.nav.client.local.Page;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.overlord.apiman.dt.api.beans.actions.ActionBean;
+import org.overlord.apiman.dt.api.beans.actions.ActionType;
+import org.overlord.apiman.dt.api.beans.services.ServiceStatus;
 import org.overlord.apiman.dt.ui.client.local.AppMessages;
+import org.overlord.apiman.dt.ui.client.local.services.rest.IRestInvokerCallback;
 import org.overlord.apiman.dt.ui.client.local.util.Formatting;
 import org.overlord.apiman.dt.ui.client.local.util.MultimapUtil;
+import org.overlord.commons.gwt.client.local.widgets.AsyncActionButton;
 
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
@@ -46,7 +53,7 @@ public class ServiceOverviewPage extends AbstractServicePage {
     InlineLabel createdOn;
     @Inject @DataField
     Anchor createdBy;
-    
+
     @Inject @DataField
     InlineLabel version;
     @Inject @DataField
@@ -59,6 +66,8 @@ public class ServiceOverviewPage extends AbstractServicePage {
     @Inject @DataField
     Anchor ttd_toNewServiceVersion;
 
+    @Inject @DataField
+    AsyncActionButton publishButton;
     
     /**
      * Constructor.
@@ -100,8 +109,47 @@ public class ServiceOverviewPage extends AbstractServicePage {
         toUserHref = navHelper.createHrefToPage(UserServicesPage.class,
                 MultimapUtil.fromMultiple("user", versionBean.getCreatedBy())); //$NON-NLS-1$
         versionCreatedBy.setHref(toUserHref);
+        
+        boolean canPublish = versionBean.getStatus() == ServiceStatus.Created || 
+                versionBean.getStatus() == ServiceStatus.Ready;
+        publishButton.setEnabled(canPublish);
     }
+    
+    /**
+     * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractPage#onPageLoaded()
+     */
+    @Override
+    protected void onPageLoaded() {
+        publishButton.reset();
+    }
+    
+    /**
+     * Called when the user clicks the "Publish" button.
+     * @param event
+     */
+    @EventHandler("publishButton")
+    public void onPublish(ClickEvent event) {
+        publishButton.onActionStarted();
 
+        ActionBean action = new ActionBean();
+        action.setType(ActionType.publishService);
+        action.setOrganizationId(versionBean.getService().getOrganizationId());
+        action.setEntityId(versionBean.getService().getId());
+        action.setEntityVersion(versionBean.getVersion());
+        rest.performAction(action, new IRestInvokerCallback<Void>() {
+            @Override
+            public void onSuccess(Void response) {
+                publishButton.onActionComplete();
+                publishButton.setEnabled(false);
+            }
+            
+            @Override
+            public void onError(Throwable error) {
+                dataPacketError(error);
+            }
+        });
+    }
+    
     /**
      * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractPage#getPageTitle()
      */

@@ -21,6 +21,7 @@ import java.util.Set;
 import org.overlord.apiman.rt.api.rest.impl.ApplicationResourceImpl;
 import org.overlord.apiman.rt.api.rest.impl.RtApiApplication;
 import org.overlord.apiman.rt.api.rest.impl.ServiceResourceImpl;
+import org.overlord.apiman.rt.api.rest.impl.SystemResourceImpl;
 import org.overlord.apiman.rt.api.rest.impl.mappers.RestExceptionMapper;
 
 /**
@@ -37,6 +38,7 @@ public class JettyRtApiApplication extends RtApiApplication {
      * Constructor.
      */
     public JettyRtApiApplication() {
+        classes.add(SystemResourceImpl.class);
         classes.add(ApplicationResourceImpl.class);
         classes.add(ServiceResourceImpl.class);
         

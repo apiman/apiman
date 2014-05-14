@@ -22,6 +22,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.api.Caller;
+import org.overlord.apiman.dt.api.beans.actions.ActionBean;
 import org.overlord.apiman.dt.api.beans.apps.ApplicationBean;
 import org.overlord.apiman.dt.api.beans.apps.ApplicationVersionBean;
 import org.overlord.apiman.dt.api.beans.contracts.ContractBean;
@@ -519,6 +520,15 @@ public class RestInvokerService {
     public void findServices(SearchCriteriaBean criteria, IRestInvokerCallback<SearchResultsBean<ServiceBean>> callback) {
         CallbackAdapter<SearchResultsBean<ServiceBean>> adapter = new CallbackAdapter<SearchResultsBean<ServiceBean>>(callback);
         search.call(adapter, adapter).searchServices(criteria);
+    }
+
+    /**
+     * Performs/executes the given action.
+     * @param action
+     */
+    public void performAction(ActionBean action, IRestInvokerCallback<Void> callback) {
+        CallbackAdapter<Void> adapter = new CallbackAdapter<Void>(callback);
+        actions.call(adapter, adapter).performAction(action);
     }
 
 }
