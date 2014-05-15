@@ -20,11 +20,18 @@ import javax.inject.Inject;
 
 import org.jboss.errai.ui.nav.client.local.Page;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.overlord.apiman.dt.api.beans.actions.ActionBean;
+import org.overlord.apiman.dt.api.beans.actions.ActionType;
+import org.overlord.apiman.dt.api.beans.apps.ApplicationStatus;
 import org.overlord.apiman.dt.ui.client.local.AppMessages;
+import org.overlord.apiman.dt.ui.client.local.services.rest.IRestInvokerCallback;
 import org.overlord.apiman.dt.ui.client.local.util.Formatting;
 import org.overlord.apiman.dt.ui.client.local.util.MultimapUtil;
+import org.overlord.commons.gwt.client.local.widgets.AsyncActionButton;
 
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
@@ -54,6 +61,14 @@ public class AppOverviewPage extends AbstractAppPage {
     @Inject @DataField
     Anchor versionCreatedBy;
 
+    @Inject @DataField
+    Anchor ttd_toNewContract;
+    @Inject @DataField
+    Anchor ttd_toNewVersion;
+
+    @Inject @DataField
+    AsyncActionButton registerButton;
+    
     /**
      * Constructor.
      */
@@ -75,6 +90,12 @@ public class AppOverviewPage extends AbstractAppPage {
     @Override
     protected void renderPage() {
         super.renderPage();
+
+        String newContractHref = navHelper.createHrefToPage(NewContractPage.class, MultimapUtil.fromMultiple("apporg", org, "app", app, "appv", versionBean.getVersion())); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        ttd_toNewContract.setHref(newContractHref);
+        String newVersionHref = navHelper.createHrefToPage(NewAppVersionPage.class, MultimapUtil.fromMultiple("org", org, "app", app)); //$NON-NLS-1$ //$NON-NLS-2$
+        ttd_toNewVersion.setHref(newVersionHref);
+
         description.setText(applicationBean.getDescription());
         createdOn.setText(Formatting.formatShortDate(applicationBean.getCreatedOn()));
         createdBy.setText(applicationBean.getCreatedBy());
@@ -88,8 +109,47 @@ public class AppOverviewPage extends AbstractAppPage {
         toUserHref = navHelper.createHrefToPage(UserAppsPage.class,
                 MultimapUtil.fromMultiple("user", versionBean.getCreatedBy())); //$NON-NLS-1$
         versionCreatedBy.setHref(toUserHref);
+        
+        boolean canRegister = versionBean.getStatus() == ApplicationStatus.Created || 
+                versionBean.getStatus() == ApplicationStatus.Ready;
+        registerButton.setEnabled(canRegister);
     }
 
+    /**
+     * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractPage#onPageLoaded()
+     */
+    @Override
+    protected void onPageLoaded() {
+        registerButton.reset();
+    }
+    
+    /**
+     * Called when the user clicks the "Register" button.
+     * @param event
+     */
+    @EventHandler("registerButton")
+    public void onRegister(ClickEvent event) {
+        registerButton.onActionStarted();
+
+        ActionBean action = new ActionBean();
+        action.setType(ActionType.registerApplication);
+        action.setOrganizationId(versionBean.getApplication().getOrganizationId());
+        action.setEntityId(versionBean.getApplication().getId());
+        action.setEntityVersion(versionBean.getVersion());
+        rest.performAction(action, new IRestInvokerCallback<Void>() {
+            @Override
+            public void onSuccess(Void response) {
+                registerButton.onActionComplete();
+                registerButton.setEnabled(false);
+            }
+            
+            @Override
+            public void onError(Throwable error) {
+                dataPacketError(error);
+            }
+        });
+    }
+    
     /**
      * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractPage#getPageTitle()
      */

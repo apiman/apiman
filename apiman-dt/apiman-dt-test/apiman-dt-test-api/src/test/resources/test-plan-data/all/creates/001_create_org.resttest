@@ -1,12 +1,12 @@
 POST /organizations admin/admin
 Content-Type: application/json
 
-{"name":"Test Organization 2"}
+{"name":"Organization 1"}
 ----
 200
 Content-Type: application/json
 
 {
-  "name" : "Test Organization 2",
-  "id" : "TestOrganization2"
+  "name" : "Organization 1",
+  "id" : "Organization1"
 }

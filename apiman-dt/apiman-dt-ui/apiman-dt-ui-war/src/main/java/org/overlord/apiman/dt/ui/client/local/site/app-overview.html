@@ -104,9 +104,14 @@
             <div class="title" data-i18n-key="things-to-do">Things To Do</div>
             <div class="apiman-divider-20">
               <ul>
-                <li><a data-i18n-key="ttdo-new-contract" href="new-contract.html">Link this Application to a Service (New Contract)</a></li>
-                <li><a data-i18n-key="ttdo-new-version" href="new-appversion.html">Create a new version of this Application (New Version)</a></li>
+                <li><a data-i18n-key="ttdo-new-contract" data-field="ttd_toNewContract" href="new-contract.html">Link this Application to a Service (New Contract)</a></li>
+                <li><a data-i18n-key="ttdo-new-version" data-field="ttd_toNewVersion" href="new-appversion.html">Create a new version of this Application (New Version)</a></li>
               </ul>
+            </div>
+            <!-- The Register Action -->
+            <div class="apiman-divider-40"></div>
+            <div class="">
+              <button class="btn btn-primary" data-field="registerButton" data-i18n-key="register" placeholder="Registering..." data-icon="fa-cog">Register</button>
             </div>
           </div>
           <!-- /Actions -->

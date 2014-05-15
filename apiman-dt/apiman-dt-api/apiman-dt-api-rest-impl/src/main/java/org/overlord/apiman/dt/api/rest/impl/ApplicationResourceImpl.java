@@ -38,6 +38,7 @@ import org.overlord.apiman.dt.api.beans.summary.ApplicationSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.ContractSummaryBean;
 import org.overlord.apiman.dt.api.persist.AlreadyExistsException;
 import org.overlord.apiman.dt.api.persist.DoesNotExistException;
+import org.overlord.apiman.dt.api.persist.IApiKeyGenerator;
 import org.overlord.apiman.dt.api.persist.IIdmStorage;
 import org.overlord.apiman.dt.api.persist.IStorage;
 import org.overlord.apiman.dt.api.persist.IStorageQuery;
@@ -69,6 +70,7 @@ public class ApplicationResourceImpl implements IApplicationResource {
     @Inject IStorage storage;
     @Inject IStorageQuery query;
     @Inject IIdmStorage idmStorage;
+    @Inject IApiKeyGenerator apiKeyGenerator;
     
     @Inject IUserResource users;
     @Inject IRoleResource roles;
@@ -299,6 +301,7 @@ public class ApplicationResourceImpl implements IApplicationResource {
             contract.setPlan(pvb);
             contract.setCreatedBy(securityContext.getCurrentUser());
             contract.setCreatedOn(new Date());
+            contract.setKey(apiKeyGenerator.generate());
             storage.create(contract);
             return contract;
         } catch (StorageException e) {

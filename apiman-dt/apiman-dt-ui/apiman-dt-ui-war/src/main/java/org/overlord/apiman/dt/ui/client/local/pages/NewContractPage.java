@@ -76,11 +76,13 @@ public class NewContractPage extends AbstractPage {
     private static final String SPINNER_ROW = "spinner-row"; //$NON-NLS-1$
     
     @PageState
-    String org;
+    String svcorg;
     @PageState
     String svc;
     @PageState
     String svcv;
+    @PageState
+    String apporg;
     @PageState
     String app;
     @PageState

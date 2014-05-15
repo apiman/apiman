@@ -6,14 +6,20 @@
     <test name="Status">test-plan-data/all/system/001_status.resttest</test>
   </testGroup>
 
-  <!-- Now make sure Organizations are working properly -->
-  <testGroup name="Organizations CRUD">
-    <test name="Create Organization">test-plan-data/all/organizations/001_create.resttest</test>
-    <test name="Get Organization">test-plan-data/all/organizations/002_get.resttest</test>
-    <test name="Create Org (Duplicate)">test-plan-data/all/organizations/003_create_already-exists.resttest</test>
-    <test name="Search for all Orgs">test-plan-data/all/organizations/004_search_all.resttest</test>
-    <test name="Create Organization 2">test-plan-data/all/organizations/005_create_another.resttest</test>
-    <test name="Search for all Orgs (2)">test-plan-data/all/organizations/006_search_all-2.resttest</test>
+  <testGroup name="Create Entities">
+    <test name="Create Organization">test-plan-data/all/creates/001_create_org.resttest</test>
+    <test name="Create Plan">test-plan-data/all/creates/002_create-plan1.resttest</test>
+    <test name="Create Plan Version">test-plan-data/all/creates/003_create-plan1-version-1.0.resttest</test>
+    <test name="Create App">test-plan-data/all/creates/004_create-app1.resttest</test>
+    <test name="Create App Version">test-plan-data/all/creates/005_create-app1-version-1.0.resttest</test>
+    <test name="Create Service">test-plan-data/all/creates/006_create-service1.resttest</test>
+    <test name="Create Service Version">test-plan-data/all/creates/007_create-service1-version-1.0.resttest</test>
+    <test name="Create Contract">test-plan-data/all/creates/008_create-contract1.resttest</test>
+  </testGroup>
+
+  <testGroup name="Publish">
+    <test name="Publish Service">test-plan-data/all/publish/001_publish-service-1.resttest</test>
+    <test name="Register Application">test-plan-data/all/publish/002_register-app-1.resttest</test>
   </testGroup>
 
 </testPlan>
