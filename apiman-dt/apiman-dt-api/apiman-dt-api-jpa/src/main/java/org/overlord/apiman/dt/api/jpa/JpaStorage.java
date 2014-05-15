@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
@@ -44,6 +45,7 @@ import org.overlord.apiman.dt.api.beans.summary.ServicePlanSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.ServiceSummaryBean;
 import org.overlord.apiman.dt.api.persist.AlreadyExistsException;
 import org.overlord.apiman.dt.api.persist.DoesNotExistException;
+import org.overlord.apiman.dt.api.persist.IApiKeyGenerator;
 import org.overlord.apiman.dt.api.persist.IStorage;
 import org.overlord.apiman.dt.api.persist.IStorageQuery;
 import org.overlord.apiman.dt.api.persist.StorageException;
@@ -56,7 +58,7 @@ import org.slf4j.LoggerFactory;
  * @author eric.wittmann@redhat.com
  */
 @ApplicationScoped
-public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorageQuery {
+public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorageQuery, IApiKeyGenerator {
 
     private static Logger logger = LoggerFactory.getLogger(JpaStorage.class);
 
@@ -396,6 +398,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                 
                 ContractSummaryBean csb = new ContractSummaryBean();
                 csb.setAppId(application.getId());
+                csb.setKey(contractBean.getKey());
                 csb.setAppOrganizationId(application.getOrganizationId());
                 csb.setAppOrganizationName(appOrg.getName());
                 csb.setAppName(application.getName());
@@ -515,6 +518,14 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         } finally {
             entityManager.close();
         }
+    }
+
+    /**
+     * @see org.overlord.apiman.dt.api.persist.IApiKeyGenerator#generate()
+     */
+    @Override
+    public String generate() {
+        return UUID.randomUUID().toString();
     }
     
 }

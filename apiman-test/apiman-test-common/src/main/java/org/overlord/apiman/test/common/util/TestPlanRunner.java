@@ -26,19 +26,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -144,12 +142,13 @@ public class TestPlanRunner {
                 request.setHeader(entry.getKey(), entry.getValue());
             }
             
-            // TODO implement basic auth directly via Authorization header so that the client doesn't send 2 http requests for every test!
+            // Set up basic auth
+            String authorization = createBasicAuthorization(restTest.getUsername(), restTest.getPassword());
+            if (authorization != null) {
+                request.setHeader("Authorization", authorization); //$NON-NLS-1$
+            }
+            
             DefaultHttpClient client = new DefaultHttpClient();
-            BasicCredentialsProvider credsProvider = new BasicCredentialsProvider();
-            credsProvider.setCredentials(new AuthScope(uri.getHost(), uri.getPort()),
-                    new UsernamePasswordCredentials(restTest.getUsername(), restTest.getPassword()));
-            client.setCredentialsProvider(credsProvider);
             
             HttpResponse response = client.execute(request);
             assertResponse(restTest, response);
@@ -160,6 +159,19 @@ public class TestPlanRunner {
             throw new Error(e);
         }
         
+    }
+
+    /**
+     * Create the basic auth header value.
+     * @param username
+     * @param password
+     */
+    private String createBasicAuthorization(String username, String password) {
+        if (username == null || username.trim().length() == 0) {
+            return null;
+        }
+        String val = username + ":" + password; //$NON-NLS-1$
+        return "Basic " + Base64.encodeBase64String(val.getBytes()).trim(); //$NON-NLS-1$
     }
 
     /**
@@ -226,7 +238,8 @@ public class TestPlanRunner {
             inputStream = response.getEntity().getContent();
             ObjectMapper jacksonParser = new ObjectMapper();
             JsonNode actualJson = jacksonParser.readTree(inputStream);
-            String expectedPayload = restTest.getExpectedResponsePayload();
+            bindVariables(actualJson, restTest);
+            String expectedPayload = TestUtil.doPropertyReplacement(restTest.getExpectedResponsePayload());
             Assert.assertNotNull("REST Test missing expected JSON payload.", expectedPayload); //$NON-NLS-1$
             JsonNode expectedJson = jacksonParser.readTree(expectedPayload);
             try {
@@ -242,6 +255,53 @@ public class TestPlanRunner {
         } finally {
             IOUtils.closeQuietly(inputStream);
         }
+    }
+
+    /**
+     * Binds any variables found in the response JSON to system properties
+     * so they can be used in later rest tests.
+     * @param actualJson
+     * @param restTest
+     */
+    private void bindVariables(JsonNode actualJson, RestTest restTest) {
+        for (String headerName : restTest.getExpectedResponseHeaders().keySet()) {
+            if (headerName.startsWith("X-RestTest-BindTo-")) { //$NON-NLS-1$
+                String bindExpression = restTest.getExpectedResponseHeaders().get(headerName);
+                String bindVarName = headerName.substring("X-RestTest-BindTo-".length()); //$NON-NLS-1$
+                String bindValue = evaluate(bindExpression, actualJson);
+                log("-- Binding value in response --"); //$NON-NLS-1$
+                log("\tExpression: " + bindExpression); //$NON-NLS-1$
+                log("\t    To Var: " + bindVarName); //$NON-NLS-1$
+                log("\t New Value: " + bindValue); //$NON-NLS-1$
+                System.setProperty(bindVarName, bindValue);
+            }
+        }
+    }
+
+    /**
+     * Evaluates the given expression against the given JSON object.
+     * @param bindExpression
+     * @param json
+     */
+    private String evaluate(String bindExpression, JsonNode json) {
+        String [] segments = bindExpression.split("\\."); //$NON-NLS-1$
+        JsonNode currentNode = json;
+        for (String segment : segments) {
+            if (segment.startsWith("$[")) { //$NON-NLS-1$
+                throw new RuntimeException("Not yet implemented: bind value in array response."); //$NON-NLS-1$
+            } else if ("$".equals(segment)) { //$NON-NLS-1$
+                currentNode = json;
+            } else {
+                if (segment.contains("[")) { //$NON-NLS-1$
+                    throw new RuntimeException("Not yet implemented: bind value from array."); //$NON-NLS-1$
+                }
+                currentNode = currentNode.get(segment);
+                if (currentNode == null) {
+                    return null;
+                }
+            }
+        }
+        return currentNode.asText();
     }
 
     /**

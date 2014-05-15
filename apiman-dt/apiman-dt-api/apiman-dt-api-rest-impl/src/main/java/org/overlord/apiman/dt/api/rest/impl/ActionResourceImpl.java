@@ -16,22 +16,32 @@
 
 package org.overlord.apiman.dt.api.rest.impl;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.overlord.apiman.dt.api.beans.actions.ActionBean;
+import org.overlord.apiman.dt.api.beans.apps.ApplicationVersionBean;
 import org.overlord.apiman.dt.api.beans.idm.PermissionType;
 import org.overlord.apiman.dt.api.beans.services.ServiceVersionBean;
+import org.overlord.apiman.dt.api.beans.summary.ContractSummaryBean;
 import org.overlord.apiman.dt.api.gateway.IGatewayLink;
 import org.overlord.apiman.dt.api.persist.IIdmStorage;
 import org.overlord.apiman.dt.api.persist.IStorage;
 import org.overlord.apiman.dt.api.rest.contract.IActionResource;
+import org.overlord.apiman.dt.api.rest.contract.IApplicationResource;
 import org.overlord.apiman.dt.api.rest.contract.IServiceResource;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ActionException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.ApplicationVersionNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ServiceVersionNotFoundException;
 import org.overlord.apiman.dt.api.rest.impl.i18n.Messages;
 import org.overlord.apiman.dt.api.rest.impl.util.ExceptionFactory;
 import org.overlord.apiman.dt.api.security.ISecurityContext;
+import org.overlord.apiman.rt.engine.beans.Application;
+import org.overlord.apiman.rt.engine.beans.Contract;
 import org.overlord.apiman.rt.engine.beans.Service;
 import org.overlord.apiman.rt.engine.beans.exceptions.PublishingException;
 
@@ -48,6 +58,7 @@ public class ActionResourceImpl implements IActionResource {
     @Inject IGatewayLink gatewayLink;
     
     @Inject IServiceResource services;
+    @Inject IApplicationResource applications;
 
     @Inject ISecurityContext securityContext;
 
@@ -110,30 +121,62 @@ public class ActionResourceImpl implements IActionResource {
     }
 
     /**
+     * Retires a service that is currently published to the Gateway.
      * @param action
      */
     private void retireService(ActionBean action) throws ActionException {
         // TODO Auto-generated method stub
         throw ExceptionFactory.actionException("Not yet implemented."); //$NON-NLS-1$
-
     }
 
     /**
+     * Registers an application (along with all of its contracts) to the gateway.
      * @param action
      */
     private void registerApplication(ActionBean action) throws ActionException {
-        // TODO Auto-generated method stub
-        throw ExceptionFactory.actionException("Not yet implemented."); //$NON-NLS-1$
+        if (!securityContext.hasPermission(PermissionType.appEdit, action.getOrganizationId()))
+            throw ExceptionFactory.notAuthorizedException();
+
+        ApplicationVersionBean versionBean = null;
+        List<ContractSummaryBean> contractBeans = null;
+        try {
+            versionBean = applications.getVersion(action.getOrganizationId(), action.getEntityId(), action.getEntityVersion());
+            contractBeans = applications.listContracts(action.getOrganizationId(), action.getEntityId(), action.getEntityVersion());
+        } catch (ApplicationVersionNotFoundException e) {
+            throw ExceptionFactory.actionException(Messages.i18n.format("ApplicationNotFound")); //$NON-NLS-1$
+        }
+        
+        Application application = new Application();
+        application.setOrganizationId(versionBean.getApplication().getOrganizationId());
+        application.setApplicationId(versionBean.getApplication().getId());
+        application.setVersion(versionBean.getVersion());
+        
+        Set<Contract> contracts = new HashSet<Contract>();
+        for (ContractSummaryBean contractBean : contractBeans) {
+            Contract contract = new Contract();
+            contract.setApiKey(contractBean.getKey());
+            contract.setServiceId(contractBean.getServiceId());
+            contract.setServiceOrgId(contractBean.getServiceOrganizationId());
+            contract.setServiceVersion(contractBean.getServiceVersion());
+            contracts.add(contract);
+        }
+        application.setContracts(contracts);
+        
+        try {
+            gatewayLink.registerApplication(application);
+        } catch (PublishingException e) {
+            throw ExceptionFactory.actionException(Messages.i18n.format("PublishError")); //$NON-NLS-1$
+        }
 
     }
 
     /**
+     * De-registers an application that is currently registered with the gateway.
      * @param action
      */
     private void deregisterApplication(ActionBean action) throws ActionException {
         // TODO Auto-generated method stub
         throw ExceptionFactory.actionException("Not yet implemented."); //$NON-NLS-1$
-
     }
         
 }

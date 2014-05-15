@@ -172,13 +172,13 @@ public class GatewayServlet extends HttpServlet {
      */
     protected String getApiKeyFromQuery(HttpServletRequest request) {
         String queryString = request.getQueryString();
-        int idx = queryString.indexOf("apikey=");
+        int idx = queryString.indexOf("apikey="); //$NON-NLS-1$
         if (idx >= 0) {
             int endIdx = queryString.indexOf('&', idx);
             if (endIdx == -1) {
                 endIdx = queryString.length();
             }
-            return queryString.substring(idx, endIdx);
+            return queryString.substring(idx + 7, endIdx);
         }
         return null;
     }

@@ -15,19 +15,11 @@
  */
 package org.overlord.apiman.rt.test.server;
 
-import java.io.IOException;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.overlord.apiman.test.common.mock.EchoServlet;
 
 
 /**
@@ -39,7 +31,6 @@ import org.eclipse.jetty.servlet.ServletHolder;
 public class EchoServer {
     
     private Server server;
-    private ObjectMapper mapper = new ObjectMapper();
     private int port;
 
     /**
@@ -47,7 +38,6 @@ public class EchoServer {
      */
     public EchoServer(int port) {
         this.port = port;
-        mapper.enable(SerializationConfig.Feature.INDENT_OUTPUT);
     }
 
     /**
@@ -98,66 +88,11 @@ public class EchoServer {
         ServletContextHandler server = new ServletContextHandler(ServletContextHandler.SESSIONS);
 //        server.setSecurityHandler(createSecurityHandler());
         server.setContextPath("/"); //$NON-NLS-1$
-        ServletHolder servlet = new ServletHolder(new HttpServlet() {
-            private static final long serialVersionUID = -5519107324541106467L;
-
-            /**
-             * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-             */
-            @Override
-            protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
-                    IOException {
-                doEchoResponse(req, resp);
-            }
-            
-            /**
-             * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-             */
-            @Override
-            protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
-                    IOException {
-                doEchoResponse(req, resp);
-            }
-            
-            /**
-             * @see javax.servlet.http.HttpServlet#doPut(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-             */
-            @Override
-            protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
-                    IOException {
-                doEchoResponse(req, resp);
-            }
-            
-            /**
-             * @see javax.servlet.http.HttpServlet#doDelete(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-             */
-            @Override
-            protected void doDelete(HttpServletRequest req, HttpServletResponse resp)
-                    throws ServletException, IOException {
-                doEchoResponse(req, resp);
-            }
-        });
+        ServletHolder servlet = new ServletHolder(new EchoServlet());
         server.addServlet(servlet, "/"); //$NON-NLS-1$
 
         // Add the web contexts to jetty
         handlers.addHandler(server);
-    }
-
-    /**
-     * Responds with a comprehensive echo.  This means bundling up all the
-     * information about the inbound request into a java bean and responding
-     * with that data as a JSON response.
-     * @param exchange
-     */
-    protected void doEchoResponse(HttpServletRequest req, HttpServletResponse resp) {
-        EchoResponse response = EchoResponse.from(req);
-        
-        resp.setContentType("application/json"); //$NON-NLS-1$
-        try {
-            mapper.writeValue(resp.getOutputStream(), response);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 
 }

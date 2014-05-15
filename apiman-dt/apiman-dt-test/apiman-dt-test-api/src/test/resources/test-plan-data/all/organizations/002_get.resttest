@@ -1,9 +1,0 @@
-GET /organizations/TestOrganization1 admin/admin
-----
-200
-Content-Type: application/json
-
-{
-  "name" : "Test Organization 1",
-  "id" : "TestOrganization1"
-}

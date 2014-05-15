@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.rt.test.server;
+package org.overlord.apiman.test.common.mock;
 
 import java.util.Enumeration;
 import java.util.HashMap;

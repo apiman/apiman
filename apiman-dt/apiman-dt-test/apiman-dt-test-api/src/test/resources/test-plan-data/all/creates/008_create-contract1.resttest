@@ -10,7 +10,6 @@ Content-Type: application/json
 ----
 200
 Content-Type: application/json
-X-RestTest-BindTo-api-key: $.key
 
 {
   "application" : {

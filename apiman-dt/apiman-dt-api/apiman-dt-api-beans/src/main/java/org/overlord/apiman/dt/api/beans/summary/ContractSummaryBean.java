@@ -32,6 +32,7 @@ public class ContractSummaryBean implements Serializable {
     private static final long serialVersionUID = 1412354024017539782L;
     
     private Long contractId;
+    private String key;
     private String appOrganizationId;
     private String appOrganizationName;
     private String appId;
@@ -237,37 +238,6 @@ public class ContractSummaryBean implements Serializable {
     }
 
     /**
-     * @see java.lang.Object#hashCode()
-     */
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((contractId == null) ? 0 : contractId.hashCode());
-        return result;
-    }
-
-    /**
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        ContractSummaryBean other = (ContractSummaryBean) obj;
-        if (contractId == null) {
-            if (other.contractId != null)
-                return false;
-        } else if (!contractId.equals(other.contractId))
-            return false;
-        return true;
-    }
-
-    /**
      * @return the appName
      */
     public String getAppName() {
@@ -307,6 +277,51 @@ public class ContractSummaryBean implements Serializable {
      */
     public void setServiceName(String serviceName) {
         this.serviceName = serviceName;
+    }
+
+    /**
+     * @return the key
+     */
+    public String getKey() {
+        return key;
+    }
+
+    /**
+     * @param key the key to set
+     */
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((contractId == null) ? 0 : contractId.hashCode());
+        return result;
+    }
+
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        ContractSummaryBean other = (ContractSummaryBean) obj;
+        if (contractId == null) {
+            if (other.contractId != null)
+                return false;
+        } else if (!contractId.equals(other.contractId))
+            return false;
+        return true;
     }
 
 }

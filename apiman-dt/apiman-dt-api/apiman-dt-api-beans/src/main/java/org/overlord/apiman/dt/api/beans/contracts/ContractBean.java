@@ -71,6 +71,8 @@ public class ContractBean implements Serializable {
     private String createdBy;
     @Column(updatable=false, nullable=false)
     private Date createdOn;
+    @Column(updatable=false, nullable=false)
+    private String key;
 
     /**
      * Constructor.
@@ -160,6 +162,20 @@ public class ContractBean implements Serializable {
      */
     public void setCreatedOn(Date createdOn) {
         this.createdOn = createdOn;
+    }
+
+    /**
+     * @return the key
+     */
+    public String getKey() {
+        return key;
+    }
+
+    /**
+     * @param key the key to set
+     */
+    public void setKey(String key) {
+        this.key = key;
     }
 
 }

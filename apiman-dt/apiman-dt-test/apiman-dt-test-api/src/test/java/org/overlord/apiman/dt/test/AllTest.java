@@ -15,7 +15,9 @@
  */
 package org.overlord.apiman.dt.test;
 
+import org.junit.Assert;
 import org.junit.Test;
+import org.overlord.apiman.dt.test.server.MockGatewayServlet;
 import org.overlord.apiman.dt.test.util.AbstractTestPlanTest;
 
 /**
@@ -25,9 +27,20 @@ import org.overlord.apiman.dt.test.util.AbstractTestPlanTest;
  */
 public class AllTest extends AbstractTestPlanTest {
 
+    private static final String EXPECTED_GATEWAY_LOG = 
+            "GET:/mock-gateway/api/system/status\n" +  //$NON-NLS-1$
+            "PUT:/mock-gateway/api/services\n" + //$NON-NLS-1$
+            "PUT:/mock-gateway/api/applications\n"; //$NON-NLS-1$
+
     @Test
     public void test() {
         runTestPlan("test-plans/all-testPlan.xml", AllTest.class.getClassLoader()); //$NON-NLS-1$
+
+        // This test includes publishing of a service to the gateway REST API.  The
+        // test framework incldues a mock gateway API to test that the REST calls were
+        // properly make.  Here is where we assert the result.
+        String actualGatewayLog = MockGatewayServlet.getRequestLog();
+        Assert.assertEquals(EXPECTED_GATEWAY_LOG, actualGatewayLog);
     }
 
 }
