@@ -86,7 +86,12 @@
     float: left;
     padding-top: 0px;
   }
-
+  .apiman-apis .apiman-summaryrow .apikey {
+    display: none;
+  }
+  .apiman-apis .apiman-summaryrow .url .extra-path {
+    display: none;
+  }
 }
 
 /* Original iPhone */

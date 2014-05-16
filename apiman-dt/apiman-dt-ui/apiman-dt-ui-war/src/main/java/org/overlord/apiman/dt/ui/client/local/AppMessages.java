@@ -69,6 +69,8 @@ public class AppMessages {
     public static final String TITLE_APP_ACTIVITY = "page.title.app-activity"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "APIMan - {0} (Contracts)")
     public static final String TITLE_APP_CONTRACTS = "page.title.app-contracts"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "APIMan - {0} (APIs)")
+    public static final String TITLE_APP_APIS = "page.title.app-apis"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "APIMan - {0} (Overview)")
     public static final String TITLE_APP_OVERVIEW = "page.title.app-overview"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "APIMan - {0} (Policies)")
@@ -127,6 +129,8 @@ public class AppMessages {
 
     @TranslationKey(defaultValue = "This application doesn't appear to have any service contracts.  You could try creating one using the New Contract button above.  Alternatively you can browse for a Service in the UI and create a contract from the Service details page.")
     public static final String NO_CONTRACTS_FOR_APP_MESSAGE = "noEntitiesFound.contracts-in-app"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "This application doesn't appear to have any service contracts (and therefore no referenced APIs).  There are a variety of ways to create contracts for this application, but you may want to start with the Contracts tab on this page.")
+    public static final String NO_APIS_FOR_APP_MESSAGE = "noEntitiesFound.apis-in-app"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "No contracts matched the filter criteria.  Please try modifying the filter or else create a new contract using the New Contract button above.")
     public static final String NO_FILTERED_CONTRACTS_FOR_APP_MESSAGE = "noEntitiesFound.contracts-in-app.filtered"; //$NON-NLS-1$
 
@@ -150,6 +154,10 @@ public class AppMessages {
     public static final String JOINED_ON = "joined-on"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "Version: {0}")
     public static final String VERSION_SELECTOR_LABEL = "version-selector.label"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "Copy")
+    public static final String COPY = "copy"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "Key")
+    public static final String KEY = "key"; //$NON-NLS-1$
 
     @TranslationKey(defaultValue = "Break Contract")
     public static final String BREAK_CONTRACT = "break-contract"; //$NON-NLS-1$
@@ -159,5 +167,8 @@ public class AppMessages {
     public static final String VIA_PLAN = "via-plan"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "entered into on")
     public static final String ENTERED_INTO_ON = "entered-into-on"; //$NON-NLS-1$
+
+    @TranslationKey(defaultValue = "Please copy the value below (e.g. Ctrl-C).")
+    public static final String APIS_LIST_PLEASE_COPY = "appApisList.please-copy"; //$NON-NLS-1$
 
 }

@@ -239,6 +239,11 @@ public class GatewayServlet extends HttpServlet {
                 IOUtils.closeQuietly(out);
             }
         }
+        try {
+            response.flushBuffer();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**

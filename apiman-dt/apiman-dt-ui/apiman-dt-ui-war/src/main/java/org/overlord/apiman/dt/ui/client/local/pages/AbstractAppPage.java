@@ -69,6 +69,8 @@ public abstract class AbstractAppPage extends AbstractPage {
     @Inject @DataField
     Anchor toAppContracts;
     @Inject @DataField
+    Anchor toAppApis;
+    @Inject @DataField
     Anchor toAppPolicies;
     @Inject @DataField
     Anchor toAppActivity;
@@ -155,11 +157,13 @@ public abstract class AbstractAppPage extends AbstractPage {
         String orgAppsHref = navHelper.createHrefToPage(OrgAppsPage.class, MultimapUtil.singleItemMap("org", org)); //$NON-NLS-1$
         String appOverviewHref = navHelper.createHrefToPage(AppOverviewPage.class, MultimapUtil.fromMultiple("org", org, "app", app)); //$NON-NLS-1$ //$NON-NLS-2$
         String appContractsHref = navHelper.createHrefToPage(AppContractsPage.class, MultimapUtil.fromMultiple("org", org, "app", app)); //$NON-NLS-1$ //$NON-NLS-2$
+        String appApisHref = navHelper.createHrefToPage(AppApisPage.class, MultimapUtil.fromMultiple("org", org, "app", app)); //$NON-NLS-1$ //$NON-NLS-2$
         String appPoliciesHref = navHelper.createHrefToPage(AppPoliciesPage.class, MultimapUtil.fromMultiple("org", org, "app", app)); //$NON-NLS-1$ //$NON-NLS-2$
         String appActivityHref = navHelper.createHrefToPage(AppActivityPage.class, MultimapUtil.fromMultiple("org", org, "app", app)); //$NON-NLS-1$ //$NON-NLS-2$
         String newAppVersionHref = navHelper.createHrefToPage(NewAppVersionPage.class, MultimapUtil.fromMultiple("org", org, "app", app)); //$NON-NLS-1$ //$NON-NLS-2$
         toAppOverview.setHref(appOverviewHref);
         toAppContracts.setHref(appContractsHref);
+        toAppApis.setHref(appApisHref);
         toAppPolicies.setHref(appPoliciesHref);
         toAppActivity.setHref(appActivityHref);
         toNewAppVersion.setHref(newAppVersionHref);

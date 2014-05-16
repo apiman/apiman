@@ -51,10 +51,10 @@
         <div class="col-md-2 apiman-entity-nav">
           <ul class="nav nav-pills nav-stacked">
             <li class="first"><a data-role="dummy">&nbsp;</a></li>
-            <li class="north"><a data-field="toAppOverview" href="app-overview.html" data-i18n-key="overview">Overview</a></li>
-            <li class="active"><a data-field="toAppContracts" href="app-contracts.html" data-i18n-key="contracts">Contracts</a></li>
-            <li class="south"><a data-field="toAppApis" href="app-apis.html" data-i18n-key="apis">APIs</a></li>
-            <li class=""><a data-field="toAppPolicies" href="app-policies.html" data-i18n-key="policies">Policies</a></li>
+            <li class=""><a data-field="toAppOverview" href="app-overview.html" data-i18n-key="overview">Overview</a></li>
+            <li class="north"><a data-field="toAppContracts" href="app-contracts.html" data-i18n-key="contracts">Contracts</a></li>
+            <li class="active"><a data-field="toAppApis" href="app-apis.html" data-i18n-key="apis">APIs</a></li>
+            <li class="south"><a data-field="toAppPolicies" href="app-policies.html" data-i18n-key="policies">Policies</a></li>
             <li><a data-field="toAppActivity" href="app-activity.html" data-i18n-key="activity">Activity</a></li>
             <li class="last"><a data-role="dummy">&nbsp;</a></li>
           </ul>
@@ -63,82 +63,64 @@
 
         <!-- Content -->
         <div class="col-md-10 apiman-entity-content">
-          <div class="col-md-9">
+          <div class="col-md-11">
             <!-- Title and help text -->
-            <div class="title" data-i18n-key="contracts">Service Contracts</div>
-            <div class="description" data-i18n-key="contracts-help">Here is a list of all Services that this Application is currently contracted to utilize.  This provides a list of all Services that Application can potentially invoke.</div>
+            <div class="title" data-i18n-key="apis">Application APIs</div>
+            <div class="description" data-i18n-key="apis-help">Below is a list of all the APIs this application consumes.  This information is derived from the set of Service Contracts the Application has entered into.  Manage these Contracts by switching to the "Contracts" tab.</div>
             <hr />
-            <!-- The list of contracts (filterable) -->
+            <!-- The list of apis (filterable) -->
             <div>
-              <div class="apiman-filters apiman-contracts-filters">
-                <input data-field="contractFilter" class="form-control input-search" placeholder="Filter by org or service name..." type="text">
-                <a data-field="toNewContract" data-i18n-key="new-contract" href="new-contract.html" class="btn btn-primary pull-right">New Contract</a>
-              </div>
               <div class="clearfix"></div>
-              <!-- The list of contracts -->
-              <div class="apiman-contracts" data-field="contracts" data-role="dummy">
+              <!-- The list of apis -->
+              <div class="apiman-apis" data-field="apis" data-role="dummy">
                 <div class="container-fluid apiman-summaryrow">
                   <div class="row">
                     <a href="org-apps.html">JBoss Overlord</a> / <span class="title"><a href="service-overview.html">s-ramp-api</a></span>
-                    <span class="pull-right actions"><a href="#">Break Contract</a></span>
+                    <span class="pull-right apikey"><span class="emphasis">Key:</span> <span>067e6162-3b6f-4ae2-a171-2470b63dff00</span></span>
                   </div>
                   <div class="row">
-                    <div class="versionAndPlan">
-                      <span>Service version</span>
-                      <span><a href="#">2.1</a></span>
-                      <span>via plan</span>
-                      <span><a href="#">Platinum</a></span>
-                      <span>entered into on</span>
-                      <i class="fa fa-clock-o fa-fw fa-inline"></i>
-                      <span>Oct 19, 2012</span>
-                    </div>
-                    <div class="description apiman-label-faded">
-                      This API allows users to interact with a remote S-RAMP repository.
+                    <div class="url">
+                      <a href="#">http://localhost:8080/apiman-rt/gateway/JBossOverlord/s-ramp-api</a>
+                      <span class="extra-path">
+                        <span>/</span>
+                        <input type="text" class="form-input api-path"></input>
+                        <button class="btn btn-default btn-xs btn-copy">Copy</button>
+                      </span>
                     </div>
                   </div>
-                  <hr />
                 </div>
+
                 <div class="container-fluid apiman-summaryrow">
                   <div class="row">
                     <a href="org-apps.html">JBoss Overlord</a> / <span class="title"><a href="service-overview.html">dtgov-deploy</a></span>
-                    <span class="pull-right actions"><a href="#">Break Contract</a></span>
+                    <span class="pull-right apikey"><span class="emphasis">Key:</span> <span>54947df8-0e9e-4471-a2f9-9af509fb5889</span></span>
                   </div>
                   <div class="row">
-                    <div class="versionAndPlan">
-                      <span>Service version</span>
-                      <span><a href="#">2.1</a></span>
-                      <span>via plan</span>
-                      <span><a href="#">Platinum</a></span>
-                      <span>entered into on</span>
-                      <i class="fa fa-clock-o fa-fw fa-inline"></i>
-                      <span>Oct 19, 2012</span>
-                    </div>
-                    <div class="description apiman-label-faded">
-                      This API provides an automated mechanism to deploy artifacts to running servers.
+                    <div class="url">
+                      <a href="#">http://localhost:8080/apiman-rt/gateway/JBossOverlord/dtgov-deploy</a>
+                      <span class="extra-path">
+                        <span>/</span>
+                        <input type="text" class="form-input api-path"></input>
+                        <button class="btn btn-default btn-xs btn-copy">Copy</button>
+                      </span>
                     </div>
                   </div>
-                  <hr>
                 </div>
                 <div class="container-fluid apiman-summaryrow">
                   <div class="row">
-                    <a href="org-apps.html">Apereo Bedework</a> / <span class="title"><a href="service-overview.html">public-calendar</a></span>
-                    <span class="pull-right actions"><a href="#">Break Contract</a></span>
+                    <a href="org-apps.html">Apereo Bedework</a> / <span class="title"><a href="service-overview.html">bw-caldav</a></span>
+                    <span class="pull-right apikey"><span class="emphasis">Key:</span> <span>3494eef8-382-f8a9-a2f9-01250bac5229</span></span>
                   </div>
                   <div class="row">
-                    <div class="versionAndPlan">
-                      <span>Service version</span>
-                      <span><a href="#">2.1</a></span>
-                      <span>via plan</span>
-                      <span><a href="#">Platinum</a></span>
-                      <span>entered into on</span>
-                      <i class="fa fa-clock-o fa-fw fa-inline"></i>
-                      <span>Oct 19, 2012</span>
-                    </div>
-                    <div class="description apiman-label-faded">
-                      This allows users to manipulate calendar data in a Bedework calendar system.
+                    <div class="url">
+                      <a href="#">http://localhost:8080/apiman-rt/gateway/ApereoBedework/bw-caldav</a>
+                      <span class="extra-path">
+                        <span>/</span>
+                        <input type="text" class="form-input api-path"></input>
+                        <button class="btn btn-default btn-xs btn-copy">Copy</button>
+                      </span>
                     </div>
                   </div>
-                  <hr>
                 </div>
               </div>
             </div>

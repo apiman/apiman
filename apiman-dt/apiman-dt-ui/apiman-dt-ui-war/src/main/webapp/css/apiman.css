@@ -315,7 +315,7 @@ div.page {
   margin-bottom: 5px;
 }
 .apiman-entity-content .apiman-summaryrow .title {
-  font-size: 11px;
+  font-size: 13px;
 }
 .apiman-entity-content .description {
   color: #243446;
@@ -430,6 +430,39 @@ div.page {
 }
 .apiman-contracts .apiman-summaryrow:hover .actions {
   visibility: visible;
+}
+
+.apiman-apis .apiman-summaryrow {
+  margin-bottom: 5px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid rgb(238, 238, 238);
+}
+.apiman-apis .apiman-summaryrow .url {
+  padding-left: 10px;
+}
+.apiman-apis .apiman-summaryrow .apikey {
+  visibility: hidden;
+  font-size: 11px;
+}
+.apiman-apis .apiman-summaryrow:hover .apikey {
+  visibility: visible;
+}
+.apiman-apis .apiman-summaryrow .url .extra-path {
+  visibility: hidden;
+}
+.apiman-apis .apiman-summaryrow:hover .url .extra-path {
+  visibility: visible;
+}
+.apiman-apis .apiman-summaryrow .url .extra-path .api-path {
+  font-size: 11px;
+  height: 18px;
+  width: 200px;
+}
+.apiman-apis .apiman-summaryrow .url .extra-path .btn-copy {
+  font-size: 10px;
+  height: 18px;
+  margin-top: -2px;
+  padding-top: 0px; 
 }
 
 .apiman-no-entities-description {

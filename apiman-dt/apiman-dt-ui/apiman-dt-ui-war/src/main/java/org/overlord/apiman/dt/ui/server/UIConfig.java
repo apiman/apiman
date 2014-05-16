@@ -35,6 +35,8 @@ public class UIConfig {
     public static final String APIMAN_DT_UI_API_BASIC_AUTH_USER = "apiman-dt-ui.dt-api.authentication.basic.user"; //$NON-NLS-1$
     public static final String APIMAN_DT_UI_API_BASIC_AUTH_PASS = "apiman-dt-ui.dt-api.authentication.basic.password"; //$NON-NLS-1$
     public static final String APIMAN_DT_UI_API_AUTH_TOKEN_GENERATOR = "apiman-dt-ui.dt-api.authentication.token.generator"; //$NON-NLS-1$
+    
+    public static final String APIMAN_DT_UI_GATEWAY_URL = "apiman-dt-ui.gateway.base-url"; //$NON-NLS-1$
 
     public static Configuration config;
     static {

@@ -165,6 +165,7 @@
                       <sysproperty key="hibernate.hbm2ddl.auto" value="create-drop"/>
                       <sysproperty key="apiman-dt-ui.dt-api.authentication.type" value="samlBearerToken"/>
                       <sysproperty key="apiman-dt-ui.dt-api.authentication.token.generator" value="org.overlord.apiman.dt.ui.jetty8.auth.ApiManDtUiTokenGenerator"/>
+                      <sysproperty key="apiman-dt-ui.gateway.base-url" value="http://localhost:8080/apiman-rt/gateway/"/>
                       <sysproperty key="org.overlord.apps.config-dir" value="${apiman.resources.dir}/config/header"/>
                       <sysproperty key="apiman-rt.registry" value="org.overlord.apiman.rt.engine.mem.InMemoryRegistry"/>
                       <sysproperty key="apiman-rt.connector-factory" value="org.overlord.apiman.rt.war.connectors.HttpConnectorFactory"/>

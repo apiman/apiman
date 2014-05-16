@@ -30,6 +30,7 @@ import org.overlord.apiman.dt.api.beans.plans.PlanStatus;
 import org.overlord.apiman.dt.api.beans.plans.PlanVersionBean;
 import org.overlord.apiman.dt.api.beans.services.EndpointType;
 import org.overlord.apiman.dt.api.beans.services.ServiceBean;
+import org.overlord.apiman.dt.api.beans.services.ServicePlanBean;
 import org.overlord.apiman.dt.api.beans.services.ServiceStatus;
 import org.overlord.apiman.dt.api.beans.services.ServiceVersionBean;
 import org.overlord.apiman.dt.api.persist.IIdmStorage;
@@ -110,7 +111,7 @@ public class DtApiDataSeeder extends DefaultTestDataSeeder {
         org.setCreatedBy("admin"); //$NON-NLS-1$
         storage.create(org);
         
-        // Create JBoss Overlord org
+        // Create Apereo Bedework org
         org = new OrganizationBean();
         org.setId("ApereoBedework"); //$NON-NLS-1$
         org.setName("Apereo Bedework"); //$NON-NLS-1$
@@ -127,7 +128,47 @@ public class DtApiDataSeeder extends DefaultTestDataSeeder {
         membership = RoleMembershipBean.create("admin", "OrganizationOwner", "ApereoBedework"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         membership.setCreatedOn(new Date());
         idmStorage.createMembership(membership);
-        
+
+        // Create some plans
+        PlanBean plan = new PlanBean();
+        plan.setId("Platinum"); //$NON-NLS-1$
+        plan.setName("Platinum"); //$NON-NLS-1$
+        plan.setDescription("Provides subscribing applications with full access to the Services in this Organization."); //$NON-NLS-1$
+        plan.setOrganizationId("JBossOverlord"); //$NON-NLS-1$
+        plan.setCreatedBy("admin"); //$NON-NLS-1$
+        plan.setCreatedOn(new Date());
+        storage.create(plan);
+        PlanVersionBean pvb = new PlanVersionBean();
+        pvb.setVersion("1.0"); //$NON-NLS-1$
+        pvb.setStatus(PlanStatus.Created);
+        pvb.setPlan(plan);
+        pvb.setCreatedBy("admin"); //$NON-NLS-1$
+        pvb.setCreatedOn(new Date());
+        storage.create(pvb);
+
+        plan = new PlanBean();
+        plan.setId("Gold"); //$NON-NLS-1$
+        plan.setName("Gold"); //$NON-NLS-1$
+        plan.setDescription("Provides subscribing applications with full access to a subset of Services. Also allows partial (rate limited) access to the rest."); //$NON-NLS-1$
+        plan.setOrganizationId("JBossOverlord"); //$NON-NLS-1$
+        plan.setCreatedBy("admin"); //$NON-NLS-1$
+        plan.setCreatedOn(new Date());
+        storage.create(plan);
+        pvb = new PlanVersionBean();
+        pvb.setVersion("1.0"); //$NON-NLS-1$
+        pvb.setStatus(PlanStatus.Created);
+        pvb.setPlan(plan);
+        pvb.setCreatedBy("admin"); //$NON-NLS-1$
+        pvb.setCreatedOn(new Date());
+        storage.create(pvb);
+        pvb = new PlanVersionBean();
+        pvb.setVersion("1.2"); //$NON-NLS-1$
+        pvb.setStatus(PlanStatus.Created);
+        pvb.setPlan(plan);
+        pvb.setCreatedBy("admin"); //$NON-NLS-1$
+        pvb.setCreatedOn(new Date());
+        storage.create(pvb);
+
         // Create some applications
         ApplicationBean app = new ApplicationBean();
         app.setId("dtgov"); //$NON-NLS-1$
@@ -192,50 +233,13 @@ public class DtApiDataSeeder extends DefaultTestDataSeeder {
         svb.setService(service);
         svb.setCreatedBy("admin"); //$NON-NLS-1$
         svb.setCreatedOn(new Date());
-        svb.setEndpoint("http://localhost:8080/s-ramp-server/"); //$NON-NLS-1$
+        svb.setEndpoint("http://localhost:9001/echo/s-ramp-server/"); //$NON-NLS-1$
         svb.setEndpointType(EndpointType.rest);
+        ServicePlanBean spb = new ServicePlanBean();
+        spb.setPlanId("Gold"); //$NON-NLS-1$
+        spb.setVersion("1.0"); //$NON-NLS-1$
+        svb.addPlan(spb);
         storage.create(svb);
-
-        // Create some plans
-        PlanBean plan = new PlanBean();
-        plan.setId("Platinum"); //$NON-NLS-1$
-        plan.setName("Platinum"); //$NON-NLS-1$
-        plan.setDescription("Provides subscribing applications with full access to the Services in this Organization."); //$NON-NLS-1$
-        plan.setOrganizationId("JBossOverlord"); //$NON-NLS-1$
-        plan.setCreatedBy("admin"); //$NON-NLS-1$
-        plan.setCreatedOn(new Date());
-        storage.create(plan);
-        PlanVersionBean pvb = new PlanVersionBean();
-        pvb.setVersion("1.0"); //$NON-NLS-1$
-        pvb.setStatus(PlanStatus.Created);
-        pvb.setPlan(plan);
-        pvb.setCreatedBy("admin"); //$NON-NLS-1$
-        pvb.setCreatedOn(new Date());
-        storage.create(pvb);
-
-        plan = new PlanBean();
-        plan.setId("Gold"); //$NON-NLS-1$
-        plan.setName("Gold"); //$NON-NLS-1$
-        plan.setDescription("Provides subscribing applications with full access to a subset of Services. Also allows partial (rate limited) access to the rest."); //$NON-NLS-1$
-        plan.setOrganizationId("JBossOverlord"); //$NON-NLS-1$
-        plan.setCreatedBy("admin"); //$NON-NLS-1$
-        plan.setCreatedOn(new Date());
-        storage.create(plan);
-        pvb = new PlanVersionBean();
-        pvb.setVersion("1.0"); //$NON-NLS-1$
-        pvb.setStatus(PlanStatus.Created);
-        pvb.setPlan(plan);
-        pvb.setCreatedBy("admin"); //$NON-NLS-1$
-        pvb.setCreatedOn(new Date());
-        storage.create(pvb);
-        pvb = new PlanVersionBean();
-        pvb.setVersion("1.2"); //$NON-NLS-1$
-        pvb.setStatus(PlanStatus.Created);
-        pvb.setPlan(plan);
-        pvb.setCreatedBy("admin"); //$NON-NLS-1$
-        pvb.setCreatedOn(new Date());
-        storage.create(pvb);
-
     }
 
 }

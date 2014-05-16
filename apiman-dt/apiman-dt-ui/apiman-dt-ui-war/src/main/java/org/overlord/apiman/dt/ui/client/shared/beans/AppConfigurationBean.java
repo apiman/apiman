@@ -32,6 +32,7 @@ public class AppConfigurationBean implements Serializable {
     
     private String version;
     private String builtOn;
+    private String gatewayBaseUrl;
 
     /**
      * Constructor.
@@ -65,5 +66,19 @@ public class AppConfigurationBean implements Serializable {
      */
     public void setBuiltOn(String builtOn) {
         this.builtOn = builtOn;
+    }
+
+    /**
+     * @return the gatewayBaseUrl
+     */
+    public String getGatewayBaseUrl() {
+        return gatewayBaseUrl;
+    }
+
+    /**
+     * @param gatewayBaseUrl the gatewayBaseUrl to set
+     */
+    public void setGatewayBaseUrl(String gatewayBaseUrl) {
+        this.gatewayBaseUrl = gatewayBaseUrl;
     }
 }

@@ -89,6 +89,8 @@ public class ConfigurationServlet extends HttpServlet {
             configBean.setApi(new ApiConfigurationBean());
             configBean.getApiman().setVersion(version.getVersionString());
             configBean.getApiman().setBuiltOn(version.getVersionDate());
+            configBean.getApiman().setGatewayBaseUrl(UIConfig.config.getString(UIConfig.APIMAN_DT_UI_GATEWAY_URL, 
+                    "http://localhost:8080/apiman-rt/gateway")); //$NON-NLS-1$
             configBean.getUser().setUsername(request.getRemoteUser());
             configBean.getApi().setEndpoint(endpoint);
             configBean.getApi().setAuth(new ApiAuthConfigurationBean());
