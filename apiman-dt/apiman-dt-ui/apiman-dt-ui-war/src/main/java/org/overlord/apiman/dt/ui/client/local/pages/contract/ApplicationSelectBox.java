@@ -51,6 +51,14 @@ public class ApplicationSelectBox extends SelectBox<ApplicationSummaryBean> {
     protected String optionName(ApplicationSummaryBean option) {
         return option.getOrganizationName() + " / " + option.getName(); //$NON-NLS-1$
     }
+    
+    /**
+     * @see org.overlord.apiman.dt.ui.client.local.pages.common.SelectBox#optionValue(java.lang.Object)
+     */
+    @Override
+    protected String optionValue(ApplicationSummaryBean option) {
+        return option.getOrganizationId() + "|" + option.getId(); //$NON-NLS-1$
+    }
 
     /**
      * @see org.overlord.apiman.dt.ui.client.local.pages.common.SelectBox#optionDataContent(java.lang.Object)

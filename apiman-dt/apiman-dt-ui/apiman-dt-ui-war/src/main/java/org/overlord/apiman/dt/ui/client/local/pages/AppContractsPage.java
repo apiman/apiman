@@ -116,7 +116,7 @@ public class AppContractsPage extends AbstractAppPage {
         String appId = app;
         String appVersion = versionBean.getVersion();
         String newContractHref = navHelper.createHrefToPage(NewContractPage.class,
-                MultimapUtil.fromMultiple("org", orgId, "app", appId, "appv", appVersion)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                MultimapUtil.fromMultiple("apporg", orgId, "app", appId, "appv", appVersion)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         toNewContract.setHref(newContractHref);
         contracts.setValue(contractBeans);
     }

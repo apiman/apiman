@@ -15,6 +15,7 @@
  */
 package org.overlord.apiman.dt.ui.client.local.pages.contract;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.enterprise.context.Dependent;
@@ -46,6 +47,8 @@ public class ServiceSelector extends FlowPanel implements HasValue<ServiceBean> 
     private ServiceBean value;
     private Anchor selectedRow;
     private boolean enabled = true;
+    private List<Anchor> rows = new ArrayList<Anchor>();
+    private List<ServiceBean> services;
     
     @Inject TranslationService i18n;
     
@@ -76,14 +79,15 @@ public class ServiceSelector extends FlowPanel implements HasValue<ServiceBean> 
 
     /**
      * Called to display a list of users to choose from.
-     * @param users
+     * @param services
      */
-    public void setServices(List<ServiceBean> users) {
+    public void setServices(List<ServiceBean> services) {
         clear();
-        if (users.isEmpty()) {
+        this.services = services;
+        if (services.isEmpty()) {
             add(new Label(i18n.format(AppMessages.SERVICE_SELECTOR_NONE_FOUND)));
         } else {
-            for (ServiceBean userBean : users) {
+            for (ServiceBean userBean : services) {
                 Widget row = createServiceRow(userBean);
                 add(row);
             }
@@ -116,29 +120,15 @@ public class ServiceSelector extends FlowPanel implements HasValue<ServiceBean> 
         a.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                if (enabled)
-                    onServiceRowSelected(a, serviceBean);
+                if (enabled) {
+                    setValue(serviceBean, true);
+                }
             }
         });
+        rows.add(a);
         return a;
     }
 
-    /**
-     * Called when the user clicks on a service/row in the list.
-     * @param row
-     * @param serviceBean
-     */
-    protected void onServiceRowSelected(Anchor row, ServiceBean serviceBean) {
-        if (row == selectedRow)
-            return;
-        if (selectedRow != null) {
-            selectedRow.getElement().removeClassName("selected"); //$NON-NLS-1$
-            selectedRow = null;
-        }
-        row.getElement().addClassName("selected"); //$NON-NLS-1$
-        selectedRow = row;
-        setValue(serviceBean, true);
-    }
 
     /**
      * @see com.google.gwt.user.client.ui.HasValue#getValue()
@@ -156,6 +146,7 @@ public class ServiceSelector extends FlowPanel implements HasValue<ServiceBean> 
         super.clear();
         this.value = null;
         selectedRow = null;
+        this.rows.clear();
     }
 
     /**
@@ -172,9 +163,47 @@ public class ServiceSelector extends FlowPanel implements HasValue<ServiceBean> 
     @Override
     public void setValue(ServiceBean value, boolean fireEvents) {
         this.value = value;
+        selectRow(value);
         if (fireEvents) {
             ValueChangeEvent.fire(this, value);
         }
     }
 
+    /**
+     * Selects the row associated with the given value.
+     * @param value
+     */
+    private void selectRow(ServiceBean value) {
+        int idx = 0;
+        for (ServiceBean serviceBean : this.services) {
+            if (serviceBean == value) {
+                break;
+            }
+            idx++;
+        }
+        if (idx < rows.size()) {
+            Anchor row = rows.get(idx);
+            selectRow(row);
+        } else {
+            if (selectedRow != null) {
+                selectedRow.getElement().removeClassName("selected"); //$NON-NLS-1$
+                selectedRow = null;
+            }
+        }
+    }
+
+    /**
+     * Called when the user clicks on a service/row in the list.
+     * @param row
+     */
+    protected void selectRow(Anchor row) {
+        if (row == selectedRow)
+            return;
+        if (selectedRow != null) {
+            selectedRow.getElement().removeClassName("selected"); //$NON-NLS-1$
+            selectedRow = null;
+        }
+        row.getElement().addClassName("selected"); //$NON-NLS-1$
+        selectedRow = row;
+    }
 }

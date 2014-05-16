@@ -178,11 +178,18 @@ public class NewContractPage extends AbstractPage {
                 @Override
                 public void onSuccess(List<ApplicationVersionBean> response) {
                     List<String> versions = new ArrayList<String>(response.size());
+                    String contextVersion = null;
                     for (ApplicationVersionBean avb : response) {
-                        versions.add(avb.getVersion());
+                        String avbVersion = avb.getVersion();
+                        versions.add(avbVersion);
+                        if (avb.getApplication().getOrganizationId().equals(apporg)
+                                && avb.getApplication().getOrganizationId().equals(apporg)
+                                && avbVersion.equals(appv)) {
+                            contextVersion = avbVersion;
+                        }
                     }
                     applicationVersion.setOptions(versions);
-                    applicationVersion.setValue(null);
+                    applicationVersion.setValue(contextVersion );
                     onApplicationVersionSelected();
                     showRow(APP_VERSION_ROW);
                     hideRow(SPINNER_ROW);
@@ -199,6 +206,10 @@ public class NewContractPage extends AbstractPage {
      * Called when the user selects an application version.
      */
     protected void onApplicationVersionSelected() {
+        if (svc != null) {
+            this.searchBox.setValue(svc);
+            onSearch(null);
+        }
         showRow(SERVICE_ROW);
     }
 
@@ -213,11 +224,16 @@ public class NewContractPage extends AbstractPage {
             @Override
             public void onSuccess(List<ServiceVersionBean> response) {
                 List<String> versions = new ArrayList<String>(response.size());
+                String initialContextServiceVersion = null;
                 for (ServiceVersionBean svb : response) {
-                    versions.add(svb.getVersion());
+                    String svbVersion = svb.getVersion();
+                    versions.add(svbVersion);
+                    if (svb.getService().getOrganizationId().equals(svcorg) && svb.getService().getId().equals(svc) && svbVersion.equals(svcv)) {
+                        initialContextServiceVersion = svbVersion;
+                    }
                 }
                 serviceVersion.setOptions(versions);
-                serviceVersion.setValue(null);
+                serviceVersion.setValue(initialContextServiceVersion);
                 onServiceVersionSelected();
                 showRow(SERVICE_VERSION_ROW);
                 hideRow(SPINNER_ROW);
@@ -293,10 +309,28 @@ public class NewContractPage extends AbstractPage {
         createButton.reset();
         createButton.setEnabled(false);
         applicationSelector.setOptions(applicationBeans);
-        applicationSelector.setValue(null);
+        ApplicationSummaryBean contextApp = getInitialContextApp();
+        applicationSelector.setValue(contextApp);
+        
         onApplicationSelected();
     }
     
+    /**
+     * Gets the application that should be initially selected, based on the 
+     * current page state.  The initial application to select may or may not
+     * be provided in the page state (depending on how the user got to this 
+     * page).
+     * @return the initial application to select based on the page state
+     */
+    private ApplicationSummaryBean getInitialContextApp() {
+        for (ApplicationSummaryBean appBean : applicationBeans) {
+            if (appBean.getOrganizationId().equals(apporg) && appBean.getId().equals(app)) {
+                return appBean;
+            }
+        }
+        return null;
+    }
+
     /**
      * Called once the page is shown.
      */
@@ -327,7 +361,21 @@ public class NewContractPage extends AbstractPage {
         rest.findServices(criteria, new IRestInvokerCallback<SearchResultsBean<ServiceBean>>() {
             @Override
             public void onSuccess(SearchResultsBean<ServiceBean> response) {
-                services.setServices(response.getBeans());
+                List<ServiceBean> svcBeans = response.getBeans();
+                services.setServices(svcBeans);
+                ServiceBean initialContextService = null;
+                if (svcorg != null && svc != null) {
+                    for (ServiceBean serviceBean : svcBeans) {
+                        if (serviceBean.getOrganizationId().equals(svcorg) && serviceBean.getId().equals(svc)) {
+                            initialContextService = serviceBean;
+                            break;
+                        }
+                    }
+                }
+                services.setValue(initialContextService);
+                if (initialContextService != null) {
+                    onServiceSelected();
+                }
                 searchBox.setEnabled(true);
                 searchButton.onActionComplete();
             }
