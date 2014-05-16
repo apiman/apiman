@@ -12,7 +12,7 @@ Content-Type: application/json
     "description" : "[UPDATED] This is the description of Service 1!",
     "createdBy":"admin"
   },
-  "status" : "Created",
+  "status" : "Ready",
   "endpoint" : "http://localhost:8080/ping",
   "endpointType" : "rest",
   "plans" : [

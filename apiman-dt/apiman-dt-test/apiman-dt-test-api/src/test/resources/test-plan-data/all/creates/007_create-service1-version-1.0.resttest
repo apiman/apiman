@@ -30,7 +30,7 @@ Content-Type: application/json
       "version" : "1.0"
     }
   ],
-  "status" : "Created",
+  "status" : "Ready",
   "endpoint" : "http://localhost:8080/ping",
   "endpointType" : "rest",
   "version" : "1.0",

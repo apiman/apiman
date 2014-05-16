@@ -20,7 +20,7 @@ Content-Type: application/json
       "description" : "This is the description of Application 1.",
       "createdBy" : "admin"
     },
-    "status" : "Created",
+    "status" : "Ready",
     "version" : "1.0",
     "createdBy" : "admin"
   },
@@ -33,7 +33,7 @@ Content-Type: application/json
       "description" : "This is the description of Service 2.",
       "createdBy" : "admin"
     },
-    "status" : "Created",
+    "status" : "Ready",
     "endpoint" : "http://localhost:8080/ping",
     "endpointType" : "rest",
     "version" : "1.5",

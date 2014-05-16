@@ -21,7 +21,7 @@ Content-Type: application/json
       "description" : "This is the description of Application 1.",
       "createdBy" : "admin"
     },
-    "status" : "Created",
+    "status" : "Ready",
     "version" : "1.0",
     "createdBy" : "admin"
   },
@@ -35,7 +35,7 @@ Content-Type: application/json
       "description" : "This is the description of Service 1.",
       "createdBy" : "admin"
     },
-    "status" : "Created",
+    "status" : "Ready",
     "endpoint" : "http://localhost:8080/ping",
     "endpointType" : "rest",
     "plans" : [{"planId" : "Plan1","version" : "1.0"}],
