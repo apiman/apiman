@@ -30,12 +30,13 @@ import org.overlord.apiman.dt.api.beans.services.ServiceStatus;
 import org.overlord.apiman.dt.api.beans.services.ServiceVersionBean;
 import org.overlord.apiman.dt.api.beans.summary.ServicePlanSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.ServiceSummaryBean;
-import org.overlord.apiman.dt.api.persist.AlreadyExistsException;
-import org.overlord.apiman.dt.api.persist.DoesNotExistException;
-import org.overlord.apiman.dt.api.persist.IIdmStorage;
-import org.overlord.apiman.dt.api.persist.IStorage;
-import org.overlord.apiman.dt.api.persist.IStorageQuery;
-import org.overlord.apiman.dt.api.persist.StorageException;
+import org.overlord.apiman.dt.api.core.IIdmStorage;
+import org.overlord.apiman.dt.api.core.IServiceValidator;
+import org.overlord.apiman.dt.api.core.IStorage;
+import org.overlord.apiman.dt.api.core.IStorageQuery;
+import org.overlord.apiman.dt.api.core.exceptions.AlreadyExistsException;
+import org.overlord.apiman.dt.api.core.exceptions.DoesNotExistException;
+import org.overlord.apiman.dt.api.core.exceptions.StorageException;
 import org.overlord.apiman.dt.api.rest.contract.IRoleResource;
 import org.overlord.apiman.dt.api.rest.contract.IServiceResource;
 import org.overlord.apiman.dt.api.rest.contract.IUserResource;
@@ -62,6 +63,8 @@ public class ServiceResourceImpl implements IServiceResource {
     
     @Inject IUserResource users;
     @Inject IRoleResource roles;
+    
+    @Inject IServiceValidator serviceValidator;
     
     @Inject ISecurityContext securityContext;
     
@@ -178,11 +181,18 @@ public class ServiceResourceImpl implements IServiceResource {
             bean.setCreatedOn(new Date());
             bean.setStatus(ServiceStatus.Created);
             bean.setService(service);
+            if (serviceValidator.isReady(bean)) {
+                bean.setStatus(ServiceStatus.Ready);
+            } else {
+                bean.setStatus(ServiceStatus.Created);
+            }
             storage.create(bean);
             return bean;
         } catch (DoesNotExistException e) {
             throw ExceptionFactory.serviceNotFoundException(serviceId);
         } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        } catch (Exception e) {
             throw new SystemErrorException(e);
         }
     }
@@ -215,18 +225,25 @@ public class ServiceResourceImpl implements IServiceResource {
             throws ServiceVersionNotFoundException, NotAuthorizedException {
         if (!securityContext.hasPermission(PermissionType.svcEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
-        // TODO throw error if version is not in the right state
         try {
             ServiceVersionBean svb = getVersion(organizationId, serviceId, version);
+            if (svb.getStatus() == ServiceStatus.Published || svb.getStatus() == ServiceStatus.Retired) {
+                throw ExceptionFactory.invalidServiceStatusException();
+            }
             bean.setId(svb.getId());
             bean.setService(svb.getService());
             bean.setStatus(ServiceStatus.Created);
             bean.setPublishedOn(null);
             bean.setRetiredOn(null);
+            if (serviceValidator.isReady(bean)) {
+                bean.setStatus(ServiceStatus.Ready);
+            }
             storage.update(bean);
         } catch (DoesNotExistException e) {
             throw ExceptionFactory.serviceNotFoundException(serviceId);
         } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        } catch (Exception e) {
             throw new SystemErrorException(e);
         }
     }

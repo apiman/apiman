@@ -34,12 +34,12 @@ import org.overlord.apiman.dt.api.beans.idm.RoleMembershipBean;
 import org.overlord.apiman.dt.api.beans.idm.UserBean;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
 import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
+import org.overlord.apiman.dt.api.core.IIdmStorage;
+import org.overlord.apiman.dt.api.core.exceptions.AlreadyExistsException;
+import org.overlord.apiman.dt.api.core.exceptions.DoesNotExistException;
+import org.overlord.apiman.dt.api.core.exceptions.StorageException;
 import org.overlord.apiman.dt.api.jpa.AbstractJpaStorage;
 import org.overlord.apiman.dt.api.jpa.JpaUtil;
-import org.overlord.apiman.dt.api.persist.AlreadyExistsException;
-import org.overlord.apiman.dt.api.persist.DoesNotExistException;
-import org.overlord.apiman.dt.api.persist.IIdmStorage;
-import org.overlord.apiman.dt.api.persist.StorageException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,7 +60,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
     }
     
     /**
-     * @see org.overlord.apiman.dt.api.persist.IIdmStorage#createUser(org.overlord.apiman.dt.api.beans.idm.UserBean)
+     * @see org.overlord.apiman.dt.api.core.IIdmStorage#createUser(org.overlord.apiman.dt.api.beans.idm.UserBean)
      */
     @Override
     public void createUser(UserBean user) throws StorageException, AlreadyExistsException {
@@ -69,7 +69,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
     }
     
     /**
-     * @see org.overlord.apiman.dt.api.persist.IIdmStorage#getUser(java.lang.String)
+     * @see org.overlord.apiman.dt.api.core.IIdmStorage#getUser(java.lang.String)
      */
     @Override
     public UserBean getUser(String userId) throws StorageException, DoesNotExistException {
@@ -77,7 +77,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
     }
     
     /**
-     * @see org.overlord.apiman.dt.api.persist.IIdmStorage#updateUser(org.overlord.apiman.dt.api.beans.idm.UserBean)
+     * @see org.overlord.apiman.dt.api.core.IIdmStorage#updateUser(org.overlord.apiman.dt.api.beans.idm.UserBean)
      */
     @Override
     public void updateUser(UserBean user) throws StorageException, DoesNotExistException {
@@ -85,7 +85,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
     }
     
     /**
-     * @see org.overlord.apiman.dt.api.persist.IIdmStorage#findUsers(org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean)
+     * @see org.overlord.apiman.dt.api.core.IIdmStorage#findUsers(org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean)
      */
     @Override
     public SearchResultsBean<UserBean> findUsers(SearchCriteriaBean criteria) throws StorageException {
@@ -93,7 +93,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
     }
     
     /**
-     * @see org.overlord.apiman.dt.api.persist.IIdmStorage#createRole(org.overlord.apiman.dt.api.beans.idm.RoleBean)
+     * @see org.overlord.apiman.dt.api.core.IIdmStorage#createRole(org.overlord.apiman.dt.api.beans.idm.RoleBean)
      */
     @Override
     public void createRole(RoleBean role) throws StorageException, AlreadyExistsException {
@@ -101,7 +101,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
     }
     
     /**
-     * @see org.overlord.apiman.dt.api.persist.IIdmStorage#updateRole(org.overlord.apiman.dt.api.beans.idm.RoleBean)
+     * @see org.overlord.apiman.dt.api.core.IIdmStorage#updateRole(org.overlord.apiman.dt.api.beans.idm.RoleBean)
      */
     @Override
     public void updateRole(RoleBean role) throws StorageException, DoesNotExistException {
@@ -109,7 +109,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
     }
     
     /**
-     * @see org.overlord.apiman.dt.api.persist.IIdmStorage#deleteRole(org.overlord.apiman.dt.api.beans.idm.RoleBean)
+     * @see org.overlord.apiman.dt.api.core.IIdmStorage#deleteRole(org.overlord.apiman.dt.api.beans.idm.RoleBean)
      */
     @Override
     public void deleteRole(RoleBean role) throws StorageException, DoesNotExistException {
@@ -133,7 +133,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
     }
     
     /**
-     * @see org.overlord.apiman.dt.api.persist.IIdmStorage#getRole(java.lang.String)
+     * @see org.overlord.apiman.dt.api.core.IIdmStorage#getRole(java.lang.String)
      */
     @Override
     public RoleBean getRole(String roleId) throws StorageException, DoesNotExistException {
@@ -141,7 +141,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
     }
     
     /**
-     * @see org.overlord.apiman.dt.api.persist.IIdmStorage#findRoles(org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean)
+     * @see org.overlord.apiman.dt.api.core.IIdmStorage#findRoles(org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean)
      */
     @Override
     public SearchResultsBean<RoleBean> findRoles(SearchCriteriaBean criteria) throws StorageException {
@@ -149,7 +149,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
     }
     
     /**
-     * @see org.overlord.apiman.dt.api.persist.IIdmStorage#createMembership(org.overlord.apiman.dt.api.beans.idm.RoleMembershipBean)
+     * @see org.overlord.apiman.dt.api.core.IIdmStorage#createMembership(org.overlord.apiman.dt.api.beans.idm.RoleMembershipBean)
      */
     @Override
     public void createMembership(RoleMembershipBean membership) throws StorageException,
@@ -158,7 +158,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
     }
 
     /**
-     * @see org.overlord.apiman.dt.api.persist.IIdmStorage#deleteMembership(java.lang.String, java.lang.String, java.lang.String)
+     * @see org.overlord.apiman.dt.api.core.IIdmStorage#deleteMembership(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
     public void deleteMembership(String userId, String roleId, String organizationId)
@@ -186,7 +186,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
     }
 
     /**
-     * @see org.overlord.apiman.dt.api.persist.IIdmStorage#deleteMemberships(java.lang.String, java.lang.String)
+     * @see org.overlord.apiman.dt.api.core.IIdmStorage#deleteMemberships(java.lang.String, java.lang.String)
      */
     @Override
     public void deleteMemberships(String userId, String organizationId) throws StorageException {
@@ -208,7 +208,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
     }
     
     /**
-     * @see org.overlord.apiman.dt.api.persist.IIdmStorage#getUserMemberships(java.lang.String)
+     * @see org.overlord.apiman.dt.api.core.IIdmStorage#getUserMemberships(java.lang.String)
      */
     @Override
     public Set<RoleMembershipBean> getUserMemberships(String userId) throws StorageException {
@@ -232,7 +232,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
     }
     
     /**
-     * @see org.overlord.apiman.dt.api.persist.IIdmStorage#getUserMemberships(java.lang.String, java.lang.String)
+     * @see org.overlord.apiman.dt.api.core.IIdmStorage#getUserMemberships(java.lang.String, java.lang.String)
      */
     @Override
     public Set<RoleMembershipBean> getUserMemberships(String userId, String organizationId) throws StorageException {
@@ -258,7 +258,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
     }
     
     /**
-     * @see org.overlord.apiman.dt.api.persist.IIdmStorage#getOrgMemberships(java.lang.String)
+     * @see org.overlord.apiman.dt.api.core.IIdmStorage#getOrgMemberships(java.lang.String)
      */
     @Override
     public Set<RoleMembershipBean> getOrgMemberships(String organizationId) throws StorageException {
@@ -282,7 +282,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
     }
     
     /**
-     * @see org.overlord.apiman.dt.api.persist.IIdmStorage#getPermissions(java.lang.String)
+     * @see org.overlord.apiman.dt.api.core.IIdmStorage#getPermissions(java.lang.String)
      */
     @Override
     public Set<PermissionBean> getPermissions(String userId) throws StorageException {

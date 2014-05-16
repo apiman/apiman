@@ -57,6 +57,8 @@ public class AppOverviewPage extends AbstractAppPage {
     @Inject @DataField
     InlineLabel version;
     @Inject @DataField
+    InlineLabel status;
+    @Inject @DataField
     InlineLabel versionCreatedOn;
     @Inject @DataField
     Anchor versionCreatedBy;
@@ -104,15 +106,12 @@ public class AppOverviewPage extends AbstractAppPage {
         createdBy.setHref(toUserHref);
 
         version.setText(versionBean.getVersion());
+        status.setText(versionBean.getStatus().toString());
         versionCreatedOn.setText(Formatting.formatShortDate(versionBean.getCreatedOn()));
         versionCreatedBy.setText(versionBean.getCreatedBy());
         toUserHref = navHelper.createHrefToPage(UserAppsPage.class,
                 MultimapUtil.fromMultiple("user", versionBean.getCreatedBy())); //$NON-NLS-1$
         versionCreatedBy.setHref(toUserHref);
-        
-        boolean canRegister = versionBean.getStatus() == ApplicationStatus.Created || 
-                versionBean.getStatus() == ApplicationStatus.Ready;
-        registerButton.setEnabled(canRegister);
     }
 
     /**
@@ -121,6 +120,8 @@ public class AppOverviewPage extends AbstractAppPage {
     @Override
     protected void onPageLoaded() {
         registerButton.reset();
+        boolean canRegister = versionBean.getStatus() == ApplicationStatus.Ready;
+        registerButton.setEnabled(canRegister);
     }
     
     /**
@@ -141,6 +142,7 @@ public class AppOverviewPage extends AbstractAppPage {
             public void onSuccess(Void response) {
                 registerButton.onActionComplete();
                 registerButton.setEnabled(false);
+                status.setText(ApplicationStatus.Registered.toString());
             }
             
             @Override

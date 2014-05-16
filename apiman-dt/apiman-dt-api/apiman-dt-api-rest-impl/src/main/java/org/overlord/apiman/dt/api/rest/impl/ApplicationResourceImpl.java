@@ -36,13 +36,14 @@ import org.overlord.apiman.dt.api.beans.services.ServicePlanBean;
 import org.overlord.apiman.dt.api.beans.services.ServiceVersionBean;
 import org.overlord.apiman.dt.api.beans.summary.ApplicationSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.ContractSummaryBean;
-import org.overlord.apiman.dt.api.persist.AlreadyExistsException;
-import org.overlord.apiman.dt.api.persist.DoesNotExistException;
-import org.overlord.apiman.dt.api.persist.IApiKeyGenerator;
-import org.overlord.apiman.dt.api.persist.IIdmStorage;
-import org.overlord.apiman.dt.api.persist.IStorage;
-import org.overlord.apiman.dt.api.persist.IStorageQuery;
-import org.overlord.apiman.dt.api.persist.StorageException;
+import org.overlord.apiman.dt.api.core.IApiKeyGenerator;
+import org.overlord.apiman.dt.api.core.IApplicationValidator;
+import org.overlord.apiman.dt.api.core.IIdmStorage;
+import org.overlord.apiman.dt.api.core.IStorage;
+import org.overlord.apiman.dt.api.core.IStorageQuery;
+import org.overlord.apiman.dt.api.core.exceptions.AlreadyExistsException;
+import org.overlord.apiman.dt.api.core.exceptions.DoesNotExistException;
+import org.overlord.apiman.dt.api.core.exceptions.StorageException;
 import org.overlord.apiman.dt.api.rest.contract.IApplicationResource;
 import org.overlord.apiman.dt.api.rest.contract.IRoleResource;
 import org.overlord.apiman.dt.api.rest.contract.IUserResource;
@@ -75,6 +76,8 @@ public class ApplicationResourceImpl implements IApplicationResource {
     @Inject IUserResource users;
     @Inject IRoleResource roles;
     
+    @Inject IApplicationValidator applicationValidator;
+
     @Inject ISecurityContext securityContext;
     
     /**
@@ -190,11 +193,18 @@ public class ApplicationResourceImpl implements IApplicationResource {
             bean.setCreatedOn(new Date());
             bean.setStatus(ApplicationStatus.Created);
             bean.setApplication(application);
+            if (applicationValidator.isReady(bean)) {
+                bean.setStatus(ApplicationStatus.Ready);
+            } else {
+                bean.setStatus(ApplicationStatus.Created);
+            }
             storage.create(bean);
             return bean;
         } catch (DoesNotExistException e) {
             throw ExceptionFactory.applicationNotFoundException(applicationId);
         } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        } catch (Exception e) {
             throw new SystemErrorException(e);
         }
     }
@@ -227,18 +237,22 @@ public class ApplicationResourceImpl implements IApplicationResource {
             throws ApplicationVersionNotFoundException, NotAuthorizedException {
         if (!securityContext.hasPermission(PermissionType.svcEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
-        // TODO throw error if version is not in the right state
         try {
-            ApplicationVersionBean svb = getVersion(organizationId, applicationId, version);
-            bean.setId(svb.getId());
-            bean.setApplication(svb.getApplication());
+            ApplicationVersionBean avb = getVersion(organizationId, applicationId, version);
+            bean.setId(avb.getId());
+            bean.setApplication(avb.getApplication());
             bean.setStatus(ApplicationStatus.Created);
             bean.setPublishedOn(null);
             bean.setRetiredOn(null);
+            if (applicationValidator.isReady(bean)) {
+                bean.setStatus(ApplicationStatus.Ready);
+            }
             storage.update(bean);
         } catch (DoesNotExistException e) {
             throw ExceptionFactory.applicationNotFoundException(applicationId);
         } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        } catch (Exception e) {
             throw new SystemErrorException(e);
         }
     }
@@ -303,6 +317,18 @@ public class ApplicationResourceImpl implements IApplicationResource {
             contract.setCreatedOn(new Date());
             contract.setKey(apiKeyGenerator.generate());
             storage.create(contract);
+            
+            // Possibly update the application if it has transitioned into the Ready
+            // status due to the creation of this contract.
+            try {
+                if (applicationValidator.isReady(avb)) {
+                    avb.setStatus(ApplicationStatus.Ready);
+                    storage.update(avb);
+                }
+            } catch (Exception e) {
+                throw new SystemErrorException(e);
+            }
+            
             return contract;
         } catch (StorageException e) {
             throw new SystemErrorException(e);
@@ -339,7 +365,7 @@ public class ApplicationResourceImpl implements IApplicationResource {
             throw ExceptionFactory.notAuthorizedException();
         
         // Try to get the application first - will throw a ApplicationNotFoundException if not found.
-        get(organizationId, applicationId);
+        getVersion(organizationId, applicationId, version);
         
         try {
             return query.getApplicationContracts(organizationId, applicationId, version);

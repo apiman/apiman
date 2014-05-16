@@ -61,6 +61,7 @@ public class ServiceVersionBean implements Serializable {
         @JoinColumn(name="service_orgId", referencedColumnName="organizationId")
     })
     private ServiceBean service;
+    @Column(updatable=true, nullable=false)
     private ServiceStatus status;
     private String endpoint;
     private EndpointType endpointType;

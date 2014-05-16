@@ -33,9 +33,9 @@ import org.overlord.apiman.dt.api.beans.services.ServiceBean;
 import org.overlord.apiman.dt.api.beans.services.ServicePlanBean;
 import org.overlord.apiman.dt.api.beans.services.ServiceStatus;
 import org.overlord.apiman.dt.api.beans.services.ServiceVersionBean;
-import org.overlord.apiman.dt.api.persist.IIdmStorage;
-import org.overlord.apiman.dt.api.persist.IStorage;
-import org.overlord.apiman.dt.api.persist.StorageException;
+import org.overlord.apiman.dt.api.core.IIdmStorage;
+import org.overlord.apiman.dt.api.core.IStorage;
+import org.overlord.apiman.dt.api.core.exceptions.StorageException;
 import org.overlord.apiman.dt.test.server.DefaultTestDataSeeder;
 
 /**
@@ -52,7 +52,7 @@ public class DtApiDataSeeder extends DefaultTestDataSeeder {
     }
     
     /**
-     * @see org.overlord.apiman.dt.test.server.DefaultTestDataSeeder#seed(org.overlord.apiman.dt.api.persist.IIdmStorage, org.overlord.apiman.dt.api.persist.IStorage)
+     * @see org.overlord.apiman.dt.test.server.DefaultTestDataSeeder#seed(org.overlord.apiman.dt.api.core.IIdmStorage, org.overlord.apiman.dt.api.core.IStorage)
      */
     @Override
     public void seed(IIdmStorage idmStorage, IStorage storage) throws StorageException {
@@ -229,7 +229,7 @@ public class DtApiDataSeeder extends DefaultTestDataSeeder {
         storage.create(service);
         ServiceVersionBean svb = new ServiceVersionBean();
         svb.setVersion("1.0"); //$NON-NLS-1$
-        svb.setStatus(ServiceStatus.Created);
+        svb.setStatus(ServiceStatus.Ready);
         svb.setService(service);
         svb.setCreatedBy("admin"); //$NON-NLS-1$
         svb.setCreatedOn(new Date());

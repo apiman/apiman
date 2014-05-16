@@ -24,8 +24,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.overlord.apiman.dt.api.beans.idm.PermissionBean;
 import org.overlord.apiman.dt.api.beans.idm.PermissionType;
-import org.overlord.apiman.dt.api.persist.IIdmStorage;
-import org.overlord.apiman.dt.api.persist.StorageException;
+import org.overlord.apiman.dt.api.core.IIdmStorage;
+import org.overlord.apiman.dt.api.core.exceptions.StorageException;
 import org.overlord.apiman.dt.api.security.ISecurityContext;
 import org.overlord.apiman.dt.api.security.Messages;
 import org.slf4j.Logger;

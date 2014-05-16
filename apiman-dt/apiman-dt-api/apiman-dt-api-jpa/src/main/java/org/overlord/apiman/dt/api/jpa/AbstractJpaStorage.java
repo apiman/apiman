@@ -35,9 +35,9 @@ import org.overlord.apiman.dt.api.beans.search.PagingBean;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaFilterBean;
 import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
-import org.overlord.apiman.dt.api.persist.AlreadyExistsException;
-import org.overlord.apiman.dt.api.persist.DoesNotExistException;
-import org.overlord.apiman.dt.api.persist.StorageException;
+import org.overlord.apiman.dt.api.core.exceptions.AlreadyExistsException;
+import org.overlord.apiman.dt.api.core.exceptions.DoesNotExistException;
+import org.overlord.apiman.dt.api.core.exceptions.StorageException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,7 +60,7 @@ public abstract class AbstractJpaStorage {
     }
 
     /**
-     * @see org.overlord.apiman.dt.api.persist.IStorage#create(java.lang.Object)
+     * @see org.overlord.apiman.dt.api.core.IStorage#create(java.lang.Object)
      */
     public <T> void create(T bean) throws StorageException, AlreadyExistsException {
         EntityManager entityManager = emf.createEntityManager();
@@ -89,7 +89,7 @@ public abstract class AbstractJpaStorage {
     }
 
     /**
-     * @see org.overlord.apiman.dt.api.persist.IStorage#update(java.lang.Object)
+     * @see org.overlord.apiman.dt.api.core.IStorage#update(java.lang.Object)
      */
     public <T> void update(T bean) throws StorageException, DoesNotExistException {
         EntityManager entityManager = emf.createEntityManager();
@@ -110,7 +110,7 @@ public abstract class AbstractJpaStorage {
     }
 
     /**
-     * @see org.overlord.apiman.dt.api.persist.IStorage#delete(java.lang.Object)
+     * @see org.overlord.apiman.dt.api.core.IStorage#delete(java.lang.Object)
      */
     public <T> void delete(T bean) throws StorageException, DoesNotExistException {
         EntityManager entityManager = emf.createEntityManager();
@@ -131,7 +131,7 @@ public abstract class AbstractJpaStorage {
     }
 
     /**
-     * @see org.overlord.apiman.dt.api.persist.IStorage#get(java.lang.Long, java.lang.Class)
+     * @see org.overlord.apiman.dt.api.core.IStorage#get(java.lang.Long, java.lang.Class)
      */
     public <T> T get(Long id, Class<T> type) throws StorageException, DoesNotExistException {
         T rval = null;
@@ -150,7 +150,7 @@ public abstract class AbstractJpaStorage {
     }
     
     /**
-     * @see org.overlord.apiman.dt.api.persist.IStorage#get(java.lang.String, java.lang.Class)
+     * @see org.overlord.apiman.dt.api.core.IStorage#get(java.lang.String, java.lang.Class)
      */
     public <T> T get(String id, Class<T> type) throws StorageException, DoesNotExistException {
         T rval = null;
@@ -169,7 +169,7 @@ public abstract class AbstractJpaStorage {
     }
 
     /**
-     * @see org.overlord.apiman.dt.api.persist.IStorage#get(java.lang.String, java.lang.String, java.lang.Class)
+     * @see org.overlord.apiman.dt.api.core.IStorage#get(java.lang.String, java.lang.String, java.lang.Class)
      */
     public <T> T get(String organizationId, String id, Class<T> type) throws StorageException, DoesNotExistException {
         T rval = null;
@@ -189,7 +189,7 @@ public abstract class AbstractJpaStorage {
     }
     
     /**
-     * @see org.overlord.apiman.dt.api.persist.IStorage#find(org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean, java.lang.Class)
+     * @see org.overlord.apiman.dt.api.core.IStorage#find(org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean, java.lang.Class)
      */
     public <T> SearchResultsBean<T> find(SearchCriteriaBean criteria, Class<T> type) throws StorageException {
         SearchResultsBean<T> results = new SearchResultsBean<T>();

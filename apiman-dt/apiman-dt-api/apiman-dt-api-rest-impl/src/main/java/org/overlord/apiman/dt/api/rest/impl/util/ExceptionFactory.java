@@ -21,6 +21,8 @@ import org.overlord.apiman.dt.api.rest.contract.exceptions.ApplicationNotFoundEx
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ApplicationVersionNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ContractAlreadyExistsException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ContractNotFoundException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.InvalidApplicationStatusException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.InvalidServiceStatusException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.MemberNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.NotAuthorizedException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationAlreadyExistsException;
@@ -131,6 +133,13 @@ public final class ExceptionFactory {
     }
 
     /**
+     * Creates an invalid service status exception.
+     */
+    public static final InvalidApplicationStatusException invalidApplicationStatusException() {
+        return new InvalidApplicationStatusException(Messages.i18n.format("InvalidApplicationStatus")); //$NON-NLS-1$
+    }
+
+    /**
      * Creates an exception from an service name.
      * @param serviceName
      */
@@ -152,6 +161,13 @@ public final class ExceptionFactory {
      */
     public static final ServiceVersionNotFoundException serviceVersionNotFoundException(String serviceId, String version) {
         return new ServiceVersionNotFoundException(Messages.i18n.format("ServiceVersionDoesNotExist", serviceId, version)); //$NON-NLS-1$
+    }
+
+    /**
+     * Creates an invalid service status exception.
+     */
+    public static final InvalidServiceStatusException invalidServiceStatusException() {
+        return new InvalidServiceStatusException(Messages.i18n.format("InvalidServiceStatus")); //$NON-NLS-1$
     }
 
     /**

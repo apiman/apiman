@@ -16,9 +16,9 @@
 package org.overlord.apiman.dt.test.server;
 
 import org.overlord.apiman.dt.api.beans.idm.UserBean;
-import org.overlord.apiman.dt.api.persist.IIdmStorage;
-import org.overlord.apiman.dt.api.persist.IStorage;
-import org.overlord.apiman.dt.api.persist.StorageException;
+import org.overlord.apiman.dt.api.core.IIdmStorage;
+import org.overlord.apiman.dt.api.core.IStorage;
+import org.overlord.apiman.dt.api.core.exceptions.StorageException;
 
 /**
  * Default seeder used by tests.
@@ -28,7 +28,7 @@ import org.overlord.apiman.dt.api.persist.StorageException;
 public class DefaultTestDataSeeder implements ISeeder {
     
     /**
-     * @see org.overlord.apiman.dt.test.server.ISeeder#seed(org.overlord.apiman.dt.api.persist.IIdmStorage, org.overlord.apiman.dt.api.persist.IStorage)
+     * @see org.overlord.apiman.dt.test.server.ISeeder#seed(org.overlord.apiman.dt.api.core.IIdmStorage, org.overlord.apiman.dt.api.core.IStorage)
      */
     @Override
     public void seed(IIdmStorage idmStorage, IStorage storage) throws StorageException {

@@ -56,6 +56,7 @@ public class ApplicationVersionBean implements Serializable {
         @JoinColumn(name="app_orgId", referencedColumnName="organizationId")
     })
     private ApplicationBean application;
+    @Column(updatable=true, nullable=false)
     private ApplicationStatus status;
     @Column(updatable=false, nullable=false)
     @Index(name="app_vIdx")

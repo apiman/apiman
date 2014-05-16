@@ -24,13 +24,19 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.overlord.apiman.dt.api.beans.actions.ActionBean;
+import org.overlord.apiman.dt.api.beans.apps.ApplicationStatus;
 import org.overlord.apiman.dt.api.beans.apps.ApplicationVersionBean;
 import org.overlord.apiman.dt.api.beans.idm.PermissionType;
+import org.overlord.apiman.dt.api.beans.services.ServiceStatus;
 import org.overlord.apiman.dt.api.beans.services.ServiceVersionBean;
 import org.overlord.apiman.dt.api.beans.summary.ContractSummaryBean;
+import org.overlord.apiman.dt.api.core.IApplicationValidator;
+import org.overlord.apiman.dt.api.core.IIdmStorage;
+import org.overlord.apiman.dt.api.core.IServiceValidator;
+import org.overlord.apiman.dt.api.core.IStorage;
+import org.overlord.apiman.dt.api.core.IStorageQuery;
+import org.overlord.apiman.dt.api.core.exceptions.StorageException;
 import org.overlord.apiman.dt.api.gateway.IGatewayLink;
-import org.overlord.apiman.dt.api.persist.IIdmStorage;
-import org.overlord.apiman.dt.api.persist.IStorage;
 import org.overlord.apiman.dt.api.rest.contract.IActionResource;
 import org.overlord.apiman.dt.api.rest.contract.IApplicationResource;
 import org.overlord.apiman.dt.api.rest.contract.IServiceResource;
@@ -54,11 +60,15 @@ import org.overlord.apiman.rt.engine.beans.exceptions.PublishingException;
 public class ActionResourceImpl implements IActionResource {
 
     @Inject IStorage storage;
+    @Inject IStorageQuery query;
     @Inject IIdmStorage idmStorage;
     @Inject IGatewayLink gatewayLink;
     
     @Inject IServiceResource services;
     @Inject IApplicationResource applications;
+    
+    @Inject IServiceValidator serviceValidator;
+    @Inject IApplicationValidator applicationValidator;
 
     @Inject ISecurityContext securityContext;
 
@@ -105,7 +115,16 @@ public class ActionResourceImpl implements IActionResource {
         } catch (ServiceVersionNotFoundException e) {
             throw ExceptionFactory.actionException(Messages.i18n.format("ServiceNotFound")); //$NON-NLS-1$
         }
-        
+
+        // Validate that it's ok to perform this action - service must be Ready.
+        try {
+            if (!serviceValidator.isReady(versionBean)) {
+                throw ExceptionFactory.actionException(Messages.i18n.format("InvalidServiceStatus")); //$NON-NLS-1$
+            }
+        } catch (Exception e) {
+            throw ExceptionFactory.actionException(Messages.i18n.format("InvalidServiceStatus"), e); //$NON-NLS-1$
+        }
+
         Service gatewaySvc = new Service();
         gatewaySvc.setEndpoint(versionBean.getEndpoint());
         gatewaySvc.setEndpointType(versionBean.getEndpointType().toString());
@@ -116,6 +135,13 @@ public class ActionResourceImpl implements IActionResource {
         try {
             gatewayLink.publishService(gatewaySvc);
         } catch (PublishingException e) {
+            throw ExceptionFactory.actionException(Messages.i18n.format("PublishError")); //$NON-NLS-1$
+        }
+        
+        versionBean.setStatus(ServiceStatus.Published);
+        try {
+            storage.update(versionBean);
+        } catch (Exception e) {
             throw ExceptionFactory.actionException(Messages.i18n.format("PublishError")); //$NON-NLS-1$
         }
     }
@@ -141,11 +167,24 @@ public class ActionResourceImpl implements IActionResource {
         List<ContractSummaryBean> contractBeans = null;
         try {
             versionBean = applications.getVersion(action.getOrganizationId(), action.getEntityId(), action.getEntityVersion());
-            contractBeans = applications.listContracts(action.getOrganizationId(), action.getEntityId(), action.getEntityVersion());
         } catch (ApplicationVersionNotFoundException e) {
             throw ExceptionFactory.actionException(Messages.i18n.format("ApplicationNotFound")); //$NON-NLS-1$
         }
+        try {
+            contractBeans = query.getApplicationContracts(action.getOrganizationId(), action.getEntityId(), action.getEntityVersion());
+        } catch (StorageException e) {
+            throw ExceptionFactory.actionException(Messages.i18n.format("ApplicationNotFound"), e); //$NON-NLS-1$
+        }
         
+        // Validate that it's ok to perform this action - application must be Ready.
+        try {
+            if (!applicationValidator.isReady(versionBean)) {
+                throw ExceptionFactory.actionException(Messages.i18n.format("InvalidApplicationStatus")); //$NON-NLS-1$
+            }
+        } catch (Exception e) {
+            throw ExceptionFactory.actionException(Messages.i18n.format("InvalidApplicationStatus"), e); //$NON-NLS-1$
+        }
+
         Application application = new Application();
         application.setOrganizationId(versionBean.getApplication().getOrganizationId());
         application.setApplicationId(versionBean.getApplication().getId());
@@ -165,6 +204,14 @@ public class ActionResourceImpl implements IActionResource {
         try {
             gatewayLink.registerApplication(application);
         } catch (PublishingException e) {
+            throw ExceptionFactory.actionException(Messages.i18n.format("PublishError")); //$NON-NLS-1$
+        }
+        
+        versionBean.setStatus(ApplicationStatus.Registered);
+        
+        try {
+            storage.update(versionBean);
+        } catch (Exception e) {
             throw ExceptionFactory.actionException(Messages.i18n.format("PublishError")); //$NON-NLS-1$
         }
 

@@ -13,37 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.dt.api.persist;
+package org.overlord.apiman.dt.api.core;
 
 /**
- * Thrown if a storage problem occurs while storing a bean.
+ * Service responsible for generating unique API keys whenever a contract
+ * is created between an Application and a Service it wishes to invoke via
+ * a specific plan.
  *
  * @author eric.wittmann@redhat.com
  */
-public class StorageException extends Exception {
+public interface IApiKeyGenerator {
 
-    private static final long serialVersionUID = -2331516263436545223L;
-    
     /**
-     * Constructor.
+     * Generates a new API key.
+     * @return a new API key
      */
-    public StorageException() {
-    }
-    
-    /**
-     * Constructor.
-     * @param message
-     */
-    public StorageException(String message) {
-        super(message);
-    }
-    
-    /**
-     * Constructor.
-     * @param cause
-     */
-    public StorageException(Throwable cause) {
-        super(cause);
-    }
+    public String generate();
 
 }

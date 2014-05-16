@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.dt.api.persist;
+package org.overlord.apiman.dt.api.core;
 
 import java.util.List;
 import java.util.Set;
@@ -27,6 +27,7 @@ import org.overlord.apiman.dt.api.beans.summary.OrganizationSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.PlanSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.ServicePlanSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.ServiceSummaryBean;
+import org.overlord.apiman.dt.api.core.exceptions.StorageException;
 
 
 /**

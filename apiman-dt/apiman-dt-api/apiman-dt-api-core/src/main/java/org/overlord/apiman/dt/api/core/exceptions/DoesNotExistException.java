@@ -13,21 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.dt.api.persist;
+package org.overlord.apiman.dt.api.core.exceptions;
 
 /**
  * 
  *
  * @author eric.wittmann@redhat.com
  */
-public class AlreadyExistsException extends StorageException {
+public class DoesNotExistException extends StorageException {
 
-    private static final long serialVersionUID = -8861679618736432651L;
-
+    private static final long serialVersionUID = -7445754147775177820L;
+    
     /**
      * Constructor.
      */
-    public AlreadyExistsException() {
+    public DoesNotExistException() {
     }
 
 }

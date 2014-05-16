@@ -193,6 +193,8 @@ public class AppApisList extends FlowPanel implements HasValue<List<ContractSumm
         Anchor a = new Anchor(apiUrl);
         url.add(a);
         a.setStyleName(""); //$NON-NLS-1$
+        a.setHref(apiUrl);
+        a.setTarget("_apipage"); //$NON-NLS-1$
         
         // The interactive portion - adding extra path info and copying to clipboard
         SpanPanel sp = new SpanPanel();

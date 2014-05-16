@@ -43,12 +43,12 @@ import org.overlord.apiman.dt.api.beans.summary.OrganizationSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.PlanSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.ServicePlanSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.ServiceSummaryBean;
-import org.overlord.apiman.dt.api.persist.AlreadyExistsException;
-import org.overlord.apiman.dt.api.persist.DoesNotExistException;
-import org.overlord.apiman.dt.api.persist.IApiKeyGenerator;
-import org.overlord.apiman.dt.api.persist.IStorage;
-import org.overlord.apiman.dt.api.persist.IStorageQuery;
-import org.overlord.apiman.dt.api.persist.StorageException;
+import org.overlord.apiman.dt.api.core.IApiKeyGenerator;
+import org.overlord.apiman.dt.api.core.IStorage;
+import org.overlord.apiman.dt.api.core.IStorageQuery;
+import org.overlord.apiman.dt.api.core.exceptions.AlreadyExistsException;
+import org.overlord.apiman.dt.api.core.exceptions.DoesNotExistException;
+import org.overlord.apiman.dt.api.core.exceptions.StorageException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,7 +69,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     }
 
     /**
-     * @see org.overlord.apiman.dt.api.persist.IStorage#create(java.lang.Object)
+     * @see org.overlord.apiman.dt.api.core.IStorage#create(java.lang.Object)
      */
     @Override
     public <T> void create(T bean) throws StorageException, AlreadyExistsException {
@@ -77,7 +77,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     }
 
     /**
-     * @see org.overlord.apiman.dt.api.persist.IStorage#update(java.lang.Object)
+     * @see org.overlord.apiman.dt.api.core.IStorage#update(java.lang.Object)
      */
     @Override
     public <T> void update(T bean) throws StorageException, DoesNotExistException {
@@ -85,7 +85,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     }
 
     /**
-     * @see org.overlord.apiman.dt.api.persist.IStorage#delete(java.lang.Object)
+     * @see org.overlord.apiman.dt.api.core.IStorage#delete(java.lang.Object)
      */
     @Override
     public <T> void delete(T bean) throws StorageException, DoesNotExistException {
@@ -93,7 +93,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     }
     
     /**
-     * @see org.overlord.apiman.dt.api.persist.IStorage#get(java.lang.Long, java.lang.Class)
+     * @see org.overlord.apiman.dt.api.core.IStorage#get(java.lang.Long, java.lang.Class)
      */
     @Override
     public <T> T get(Long id, Class<T> type) throws StorageException, DoesNotExistException {
@@ -101,7 +101,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     }
 
     /**
-     * @see org.overlord.apiman.dt.api.persist.IStorage#get(java.lang.String, java.lang.Class)
+     * @see org.overlord.apiman.dt.api.core.IStorage#get(java.lang.String, java.lang.Class)
      */
     @Override
     public <T> T get(String id, Class<T> type) throws StorageException, DoesNotExistException {
@@ -109,7 +109,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     }
     
     /**
-     * @see org.overlord.apiman.dt.api.persist.IStorage#get(java.lang.String, java.lang.String, java.lang.Class)
+     * @see org.overlord.apiman.dt.api.core.IStorage#get(java.lang.String, java.lang.String, java.lang.Class)
      */
     @Override
     public <T> T get(String organizationId, String id, Class<T> type) throws StorageException,
@@ -118,7 +118,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     }
     
     /**
-     * @see org.overlord.apiman.dt.api.persist.IStorage#find(org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean, java.lang.Class)
+     * @see org.overlord.apiman.dt.api.core.IStorage#find(org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean, java.lang.Class)
      */
     @Override
     public <T> SearchResultsBean<T> find(SearchCriteriaBean criteria, Class<T> type) throws StorageException {
@@ -126,7 +126,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     }
     
     /**
-     * @see org.overlord.apiman.dt.api.persist.IStorageQuery#getOrgs(java.util.Set)
+     * @see org.overlord.apiman.dt.api.core.IStorageQuery#getOrgs(java.util.Set)
      */
     @SuppressWarnings("unchecked")
     @Override
@@ -156,7 +156,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     }
     
     /**
-     * @see org.overlord.apiman.dt.api.persist.IStorageQuery#getApplicationsInOrg(java.lang.String)
+     * @see org.overlord.apiman.dt.api.core.IStorageQuery#getApplicationsInOrg(java.lang.String)
      */
     @Override
     public List<ApplicationSummaryBean> getApplicationsInOrg(String orgId) throws StorageException {
@@ -166,7 +166,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     }
     
     /**
-     * @see org.overlord.apiman.dt.api.persist.IStorageQuery#getApplicationsInOrgs(java.util.Set)
+     * @see org.overlord.apiman.dt.api.core.IStorageQuery#getApplicationsInOrgs(java.util.Set)
      */
     @Override
     public List<ApplicationSummaryBean> getApplicationsInOrgs(Set<String> orgIds) throws StorageException {
@@ -200,7 +200,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     }
 
     /**
-     * @see org.overlord.apiman.dt.api.persist.IStorageQuery#getServicesInOrg(java.lang.String)
+     * @see org.overlord.apiman.dt.api.core.IStorageQuery#getServicesInOrg(java.lang.String)
      */
     @Override
     public List<ServiceSummaryBean> getServicesInOrg(String orgId) throws StorageException {
@@ -210,7 +210,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     }
     
     /**
-     * @see org.overlord.apiman.dt.api.persist.IStorageQuery#getServicesInOrgs(java.util.Set)
+     * @see org.overlord.apiman.dt.api.core.IStorageQuery#getServicesInOrgs(java.util.Set)
      */
     @Override
     public List<ServiceSummaryBean> getServicesInOrgs(Set<String> orgIds) throws StorageException {
@@ -244,7 +244,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     }
     
     /**
-     * @see org.overlord.apiman.dt.api.persist.IStorageQuery#getServiceVersion(java.lang.String, java.lang.String, java.lang.String)
+     * @see org.overlord.apiman.dt.api.core.IStorageQuery#getServiceVersion(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
     public ServiceVersionBean getServiceVersion(String orgId, String serviceId, String version)
@@ -270,7 +270,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     }
     
     /**
-     * @see org.overlord.apiman.dt.api.persist.IStorageQuery#getServiceVersions(java.lang.String, java.lang.String)
+     * @see org.overlord.apiman.dt.api.core.IStorageQuery#getServiceVersions(java.lang.String, java.lang.String)
      */
     @SuppressWarnings("unchecked")
     @Override
@@ -294,7 +294,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     }
     
     /**
-     * @see org.overlord.apiman.dt.api.persist.IStorageQuery#getServiceVersionPlans(java.lang.String, java.lang.String, java.lang.String)
+     * @see org.overlord.apiman.dt.api.core.IStorageQuery#getServiceVersionPlans(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
     public List<ServicePlanSummaryBean> getServiceVersionPlans(String organizationId, String serviceId,
@@ -315,7 +315,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     }
 
     /**
-     * @see org.overlord.apiman.dt.api.persist.IStorageQuery#getApplicationVersion(java.lang.String, java.lang.String, java.lang.String)
+     * @see org.overlord.apiman.dt.api.core.IStorageQuery#getApplicationVersion(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
     public ApplicationVersionBean getApplicationVersion(String orgId, String applicationId, String version)
@@ -341,7 +341,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     }
     
     /**
-     * @see org.overlord.apiman.dt.api.persist.IStorageQuery#getApplicationVersions(java.lang.String, java.lang.String)
+     * @see org.overlord.apiman.dt.api.core.IStorageQuery#getApplicationVersions(java.lang.String, java.lang.String)
      */
     @SuppressWarnings("unchecked")
     @Override
@@ -365,7 +365,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     }
     
     /**
-     * @see org.overlord.apiman.dt.api.persist.IStorageQuery#getApplicationContracts(java.lang.String, java.lang.String, java.lang.String)
+     * @see org.overlord.apiman.dt.api.core.IStorageQuery#getApplicationContracts(java.lang.String, java.lang.String, java.lang.String)
      */
     @SuppressWarnings("unchecked")
     @Override
@@ -428,7 +428,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     }
 
     /**
-     * @see org.overlord.apiman.dt.api.persist.IStorageQuery#getPlansInOrg(java.lang.String)
+     * @see org.overlord.apiman.dt.api.core.IStorageQuery#getPlansInOrg(java.lang.String)
      */
     @Override
     public List<PlanSummaryBean> getPlansInOrg(String orgId) throws StorageException {
@@ -438,7 +438,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     }
     
     /**
-     * @see org.overlord.apiman.dt.api.persist.IStorageQuery#getPlansInOrgs(java.util.Set)
+     * @see org.overlord.apiman.dt.api.core.IStorageQuery#getPlansInOrgs(java.util.Set)
      */
     @Override
     public List<PlanSummaryBean> getPlansInOrgs(Set<String> orgIds) throws StorageException {
@@ -471,7 +471,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     }
     
     /**
-     * @see org.overlord.apiman.dt.api.persist.IStorageQuery#getPlanVersion(java.lang.String, java.lang.String, java.lang.String)
+     * @see org.overlord.apiman.dt.api.core.IStorageQuery#getPlanVersion(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
     public PlanVersionBean getPlanVersion(String orgId, String planId, String version)
@@ -497,7 +497,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     }
     
     /**
-     * @see org.overlord.apiman.dt.api.persist.IStorageQuery#getPlanVersions(java.lang.String, java.lang.String)
+     * @see org.overlord.apiman.dt.api.core.IStorageQuery#getPlanVersions(java.lang.String, java.lang.String)
      */
     @SuppressWarnings("unchecked")
     @Override
@@ -521,7 +521,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     }
 
     /**
-     * @see org.overlord.apiman.dt.api.persist.IApiKeyGenerator#generate()
+     * @see org.overlord.apiman.dt.api.core.IApiKeyGenerator#generate()
      */
     @Override
     public String generate() {

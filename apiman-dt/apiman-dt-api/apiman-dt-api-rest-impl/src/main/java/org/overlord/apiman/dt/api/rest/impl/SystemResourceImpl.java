@@ -21,7 +21,7 @@ import javax.inject.Inject;
 
 import org.overlord.apiman.dt.api.beans.system.SystemStatusBean;
 import org.overlord.apiman.dt.api.config.Version;
-import org.overlord.apiman.dt.api.persist.IStorage;
+import org.overlord.apiman.dt.api.core.IStorage;
 import org.overlord.apiman.dt.api.rest.contract.ISystemResource;
 
 /**

@@ -15,9 +15,9 @@
  */
 package org.overlord.apiman.dt.test.server;
 
-import org.overlord.apiman.dt.api.persist.IIdmStorage;
-import org.overlord.apiman.dt.api.persist.IStorage;
-import org.overlord.apiman.dt.api.persist.StorageException;
+import org.overlord.apiman.dt.api.core.IIdmStorage;
+import org.overlord.apiman.dt.api.core.IStorage;
+import org.overlord.apiman.dt.api.core.exceptions.StorageException;
 
 /**
  * Interface implemented by classes that seed the apiman database with data on

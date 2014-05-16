@@ -31,6 +31,7 @@ import org.overlord.apiman.dt.api.beans.services.ServiceBean;
 import org.overlord.apiman.dt.api.beans.services.ServiceVersionBean;
 import org.overlord.apiman.dt.api.beans.summary.ServicePlanSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.ServiceSummaryBean;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.InvalidServiceStatusException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.NotAuthorizedException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ServiceAlreadyExistsException;
@@ -99,7 +100,8 @@ public interface IServiceResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public void updateVersion(@PathParam("organizationId") String organizationId,
             @PathParam("serviceId") String serviceId, @PathParam("version") String version,
-            ServiceVersionBean bean) throws ServiceVersionNotFoundException, NotAuthorizedException;
+            ServiceVersionBean bean) throws ServiceVersionNotFoundException, NotAuthorizedException,
+            InvalidServiceStatusException;
 
     @GET
     @Path("{organizationId}/services/{serviceId}/versions/{version}/plans")

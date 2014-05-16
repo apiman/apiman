@@ -57,6 +57,8 @@ public class ServiceOverviewPage extends AbstractServicePage {
     @Inject @DataField
     InlineLabel version;
     @Inject @DataField
+    InlineLabel status;
+    @Inject @DataField
     InlineLabel versionCreatedOn;
     @Inject @DataField
     Anchor versionCreatedBy;
@@ -104,15 +106,12 @@ public class ServiceOverviewPage extends AbstractServicePage {
         createdBy.setHref(toUserHref);
 
         version.setText(versionBean.getVersion());
+        status.setText(versionBean.getStatus().name());
         versionCreatedOn.setText(Formatting.formatShortDate(versionBean.getCreatedOn()));
         versionCreatedBy.setText(versionBean.getCreatedBy());
         toUserHref = navHelper.createHrefToPage(UserServicesPage.class,
                 MultimapUtil.fromMultiple("user", versionBean.getCreatedBy())); //$NON-NLS-1$
         versionCreatedBy.setHref(toUserHref);
-        
-        boolean canPublish = versionBean.getStatus() == ServiceStatus.Created || 
-                versionBean.getStatus() == ServiceStatus.Ready;
-        publishButton.setEnabled(canPublish);
     }
     
     /**
@@ -121,6 +120,8 @@ public class ServiceOverviewPage extends AbstractServicePage {
     @Override
     protected void onPageLoaded() {
         publishButton.reset();
+        boolean canPublish = versionBean.getStatus() == ServiceStatus.Ready;
+        publishButton.setEnabled(canPublish);
     }
     
     /**
@@ -141,6 +142,7 @@ public class ServiceOverviewPage extends AbstractServicePage {
             public void onSuccess(Void response) {
                 publishButton.onActionComplete();
                 publishButton.setEnabled(false);
+                status.setText(ServiceStatus.Published.toString());
             }
             
             @Override

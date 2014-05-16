@@ -6,18 +6,20 @@
     <artifactId>apiman-dt-api</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
-  <artifactId>apiman-dt-api-persistence</artifactId>
-  <name>apiman-dt-api-persistence</name>
+  <artifactId>apiman-dt-api-core</artifactId>
+  <name>apiman-dt-api-core</name>
+
   <dependencies>
     <!-- Project Dependencies -->
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-dt-api-beans</artifactId>
     </dependency>
+    
     <!-- APIs -->
     <dependency>
-      <groupId>org.hibernate.javax.persistence</groupId>
-      <artifactId>hibernate-jpa-2.0-api</artifactId>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
       <scope>provided</scope>
     </dependency>
   </dependencies>

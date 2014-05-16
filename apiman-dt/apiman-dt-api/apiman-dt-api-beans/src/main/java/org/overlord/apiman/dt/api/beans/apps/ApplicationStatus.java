@@ -22,6 +22,6 @@ package org.overlord.apiman.dt.api.beans.apps;
  */
 public enum ApplicationStatus {
 
-    Created, Ready, Published, Retired
+    Created, Ready, Registered, Retired
     
 }
