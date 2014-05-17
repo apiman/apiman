@@ -22,5 +22,13 @@
       <artifactId>cdi-api</artifactId>
       <scope>provided</scope>
     </dependency>
+    
+    <!-- The jenkins build fails without this...unknown why -->
+    <dependency>
+      <groupId>org.hibernate.javax.persistence</groupId>
+      <artifactId>hibernate-jpa-2.0-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
   </dependencies>
 </project>
