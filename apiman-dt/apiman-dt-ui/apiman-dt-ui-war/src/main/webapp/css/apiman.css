@@ -211,7 +211,7 @@ div.page {
   line-height: 14px;
 }
 
-.apiman-services hr, .apiman-applications hr, .apiman-plans hr, .apiman-members hr, .apiman-contracts hr {
+.apiman-services hr, .apiman-applications hr, .apiman-plans hr, .apiman-members hr, .apiman-contracts hr, .apiman-policies hr {
   margin: 8px;
 }
 
@@ -424,12 +424,52 @@ div.page {
   float: left;
   margin-left: 5px;
 }
+.apiman-entity-new h3 hr {
+  margin: 5px 0px 20px 0px;
+  padding: 0px;
+}
+.apiman-entity-new .box {
+  border: 1px solid rgb(222, 222, 222);
+  border-radius: 5px;
+  padding-top: 10px;
+}
 
 .apiman-contracts .apiman-summaryrow .actions {
   visibility: hidden;
+  float: right;
 }
 .apiman-contracts .apiman-summaryrow:hover .actions {
   visibility: visible;
+}
+
+.apiman-policies .apiman-summaryrow {
+}
+.apiman-policies .apiman-summaryrow .container-fluid {
+  float: left;
+  width: 90%;
+}
+.apiman-policies .apiman-summaryrow .actions {
+  visibility: hidden;
+  float: right;
+}
+.apiman-policies .apiman-summaryrow:hover .actions {
+  visibility: visible;
+}
+.apiman-policies .apiman-summaryrow .actions span {
+  color: #789;
+}
+.apiman-policies .apiman-summaryrow .apiman-policy-icon {
+  color: rgb(83, 107, 133);
+  float: left;
+  font-size: 34px;
+  padding-right: 8px;
+  line-height: 36px;
+}
+.apiman-policies .apiman-summaryrow .description {
+  margin-bottom: 5px;
+}
+.apiman-policies .apiman-summaryrow hr {
+  clear: both;
 }
 
 .apiman-apis .apiman-summaryrow {
@@ -450,6 +490,20 @@ div.page {
 .apiman-apis .apiman-summaryrow .url .extra-path {
   visibility: hidden;
 }
+.apiman-apis .apiman-summaryrow .url .extra-path input::-webkit-input-placeholder {
+  color:    #BBB;
+  font-style: italic;
+}
+.apiman-apis .apiman-summaryrow .url .extra-path input::-moz-placeholder {
+  color:    #BBB;
+  font-style: italic;
+  opacity:  1;
+}
+.apiman-apis .apiman-summaryrow .url .extra-path input::-ms-input-placeholder {
+  color:    #BBB;
+  font-style: italic;
+}
+
 .apiman-apis .apiman-summaryrow:hover .url .extra-path {
   visibility: visible;
 }

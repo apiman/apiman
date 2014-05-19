@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <script type="text/javascript" src="site.js"></script>
+  </head>
+
+  <body>
+
+    <!-- Top header/nav bar -->
+    <div id="overlord-header">
+    </div>
+
+    <div id="form-page" class="container apiman-new-policy apiman-entity-new page" data-field="page">
+      <div class="row">
+        <h2 class="title" data-field="heading">Add Policy</h2>
+      </div>
+      <!-- Helpful hint -->
+      <div class="row">
+        <p class="col-md-6 apiman-label-faded" data-i18n-key="new-policy-help-text" class="apiman-label-faded">Adding a policy will allow its specific functionality to be applied to the service invocation as part of the overall Policy Chain.</p>
+      </div>
+      <!-- HR -->
+      <div class="row hr-row">
+        <hr/>
+      </div>
+      <!-- Policy Type -->
+      <div class="row policy-type-row">
+        <dl>
+          <dt data-i18n-key="policy-type">Policy Type</dt>
+          <dd>
+            <select class="selectpicker" data-live-search="true" data-role="dummy" data-field="typeSelector">
+              <option data-content="<i class='fa fa-inline fa-fw'></i> <span class='apiman-label-faded'>Choose a policy type...</span>">Choose a policy type...</option>
+              <option selected="selected" data-content="<i class='fa fa-lock fa-inline fa-fw'></i> <span>Authentication Policy</span>">Authentication Policy</option>
+              <option data-content="<i class='fa fa-arrow-circle-right fa-inline fa-fw'></i> <span>Rate Limiting Policy</span>">Rate Limiting Policy</option>
+              <option data-content="<i class='fa fa-puzzle-piece fa-inline fa-fw'></i> <span>User Defined (Custom) Policy</span>">User Defined (Custom) Policy</option>
+            </select>
+          </dd>
+        </dl>
+      </div>
+      <!-- Policy Type-specific config -->
+      <div class="row policy-config-row">
+        <h3 data-field="policyHeading">Authentication Policy Configuration</h3>
+        <div class="box col-md-9 container">
+          <div class="row policy-config-row">
+            <dl class="col-md-12">
+              <dt>Authentication Type</dt>
+              <dd>
+                <select class="selectpicker" data-role="dummy" data-field="authenticationType">
+                  <option>BASIC</option>
+                  <option>OAuth</option>
+                  <option>SAML Bearer Token</option>
+                </select>
+              </dd>
+            </dl>
+          </div>
+          <div class="row policy-config-row">
+            <dl class="col-md-12">
+              <dt>Provider</dt>
+              <dd>
+                <select class="selectpicker" data-role="dummy" data-field="authenticationProvider">
+                  <option>LDAP</option>
+                  <option>KeyCloak</option>
+                  <option>PicketLink</option>
+                </select>
+              </dd>
+            </dl>
+          </div>
+          <div class="row policy-config-row">
+            <dl class="col-md-12">
+              <dt>LDAP Configuration</dt>
+              <dd>
+                <form class="form-inline" role="form">
+                  <div class="form-group">
+                    <label class="sr-only" for="ldapServer">Server address</label>
+                    <input type="text" style="width: 250px;" class="form-control" id="ldapServer" placeholder="Server address">
+                  </div>
+                  <span> : </span>
+                  <div class="form-group">
+                    <label class="sr-only" for="ldapPort">Port</label>
+                    <input type="text" size="5" class="form-control" id="ldapPort" placeholder="port">
+                  </div>
+                  <span> / </span>
+                  <div class="form-group">
+                    <label class="sr-only" for="baseDn">Base Distinguished Name</label>
+                    <input type="text" style="width: 250px;" class="form-control" id="baseDn" placeholder="root DN (e.g. dc=mycompany,dc=com)">
+                  </div>
+                </form>
+              </dd>
+              <dd style="padding-top: 5px">
+                <form class="form-inline" role="form">
+                  <div class="form-group">
+                    <label class="sr-only" for="ldapUserDnPattern">User DN Pattern</label>
+                    <input type="text" style="width: 350px;" class="form-control" id="ldapUserDnPattern" placeholder="User DN pattern (e.g. cn={0},ou=people)">
+                  </div>
+                </form>
+              </dd>
+              <dd style="padding-top: 5px">
+                <button class="btn btn-default">Test Connection</button>
+              </dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+
+      <!-- HR -->
+      <div class="row hr-row">
+        <hr/>
+      </div>
+      <!-- Create Button -->
+      <div class="row">
+        <button class="btn btn-primary" data-field="createButton" data-i18n-key="create-policy" placeholder="Adding..." data-icon="fa-cog">Add Policy</button>
+        <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" data-i18n-key="cancel">Cancel</a>
+      </div>
+    </div> <!-- /container -->
+  </body>
+</html>

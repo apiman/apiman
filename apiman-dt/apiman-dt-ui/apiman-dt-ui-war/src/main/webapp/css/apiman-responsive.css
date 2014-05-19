@@ -43,6 +43,18 @@
   div.page {
     margin-top: 5px;
   }
+
+  .apiman-policies .apiman-summaryrow .actions {
+    visibility: visible;
+  }
+
+  .apiman-contracts .apiman-summaryrow .actions {
+    visibility: visible;
+  }
+
+  .apiman-policy-icon {
+    display: none;
+  }
   
   .apiman-entity-new {
     padding-left: 30px;
@@ -79,18 +91,27 @@
   .apiman-filters .input-search {
     width: 220px;
   }
+  
   .apiman-entity-new .description {
     width: 300px;
   }
+  
   .apiman-entity-breadcrumb .title .versions {
     float: left;
     padding-top: 0px;
   }
+  
   .apiman-apis .apiman-summaryrow .apikey {
     display: none;
   }
   .apiman-apis .apiman-summaryrow .url .extra-path {
     display: none;
+  }
+
+  .apiman-contracts .apiman-summaryrow .actions, .apiman-policies .apiman-summaryrow .actions {
+    clear: both;
+    float: none;
+    display: block;
   }
 }
 
