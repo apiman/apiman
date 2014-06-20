@@ -167,6 +167,8 @@ public class AppMessages {
     public static final String VIA_PLAN = "via-plan"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "entered into on")
     public static final String ENTERED_INTO_ON = "entered-into-on"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "Really break contract with service {0}?")
+    public static final String CONFIRM_BREAK_CONTRACT = "confirm-break-contract"; //$NON-NLS-1$
 
     @TranslationKey(defaultValue = "Please copy the value below (e.g. Ctrl-C).")
     public static final String APIS_LIST_PLEASE_COPY = "appApisList.please-copy"; //$NON-NLS-1$

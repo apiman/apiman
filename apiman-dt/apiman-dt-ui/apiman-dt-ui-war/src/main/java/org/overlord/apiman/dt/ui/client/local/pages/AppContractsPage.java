@@ -27,12 +27,14 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.apiman.dt.api.beans.summary.ContractSummaryBean;
 import org.overlord.apiman.dt.ui.client.local.AppMessages;
+import org.overlord.apiman.dt.ui.client.local.events.BreakContractEvent;
 import org.overlord.apiman.dt.ui.client.local.pages.app.AppContractList;
 import org.overlord.apiman.dt.ui.client.local.services.rest.IRestInvokerCallback;
 import org.overlord.apiman.dt.ui.client.local.util.MultimapUtil;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.TextBox;
 
@@ -72,6 +74,12 @@ public class AppContractsPage extends AbstractAppPage {
             @Override
             public void onValueChange(ValueChangeEvent<String> event) {
                 filterContracts();
+            }
+        });
+        contracts.addBreakContractHandler(new BreakContractEvent.Handler() {
+            @Override
+            public void onBreakContract(BreakContractEvent event) {
+                doBreakContract(event.getContract());
             }
         });
     }
@@ -128,7 +136,7 @@ public class AppContractsPage extends AbstractAppPage {
         if (contractFilter.getValue().trim().length() == 0) {
             contracts.setValue(contractBeans);
         } else {
-        List<ContractSummaryBean> filtered = new ArrayList<ContractSummaryBean>();
+            List<ContractSummaryBean> filtered = new ArrayList<ContractSummaryBean>();
             for (ContractSummaryBean contract : contractBeans) {
                 if (matchesFilter(contract)) {
                     filtered.add(contract);
@@ -150,6 +158,24 @@ public class AppContractsPage extends AbstractAppPage {
         if (contract.getServiceName().toUpperCase().contains(contractFilter.getValue().toUpperCase()))
             return true;
         return false;
+    }
+
+    /**
+     * Called when the user chooses to break a contract.
+     * @param contract
+     */
+    protected void doBreakContract(final ContractSummaryBean contract) {
+        rest.deleteContract(org, app, version, contract.getContractId(), new IRestInvokerCallback<Void>() {
+            @Override
+            public void onSuccess(Void response) {
+                contractBeans.remove(contract);
+                filterContracts();
+            }
+            @Override
+            public void onError(Throwable error) {
+                Window.alert("Failed to break contract!");
+            }
+        });
     }
 
     /**

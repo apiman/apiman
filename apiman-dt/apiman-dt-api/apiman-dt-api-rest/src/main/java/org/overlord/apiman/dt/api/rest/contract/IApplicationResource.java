@@ -19,6 +19,7 @@ package org.overlord.apiman.dt.api.rest.contract;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -131,5 +132,12 @@ public interface IApplicationResource {
     public List<ContractSummaryBean> listContracts(@PathParam("organizationId") String organizationId,
             @PathParam("applicationId") String applicationId, @PathParam("version") String version)
             throws ApplicationNotFoundException, NotAuthorizedException;
+
+    @DELETE
+    @Path("{organizationId}/applications/{applicationId}/versions/{version}/contracts/{contractId}")
+    public void deleteContract(@PathParam("organizationId") String organizationId,
+            @PathParam("applicationId") String applicationId, @PathParam("version") String version,
+            @PathParam("contractId") Long contractId) throws ApplicationNotFoundException,
+            ContractNotFoundException, NotAuthorizedException;
 
 }

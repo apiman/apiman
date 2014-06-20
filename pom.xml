@@ -77,7 +77,7 @@
     <maven.surefire.report.plugin.version>2.16</maven.surefire.report.plugin.version>
 
     <!-- Dependency Versions (not found in parent) -->
-    <overlord-commons.version>2.0.1-SNAPSHOT</overlord-commons.version>
+    <overlord-commons.version>2.0.2-SNAPSHOT</overlord-commons.version>
     <picketlink.version>2.5.3.SP4</picketlink.version>
     <jetty.version>8.1.9.v20130131</jetty.version>
     <undertow.version>1.0.1.Final</undertow.version>
