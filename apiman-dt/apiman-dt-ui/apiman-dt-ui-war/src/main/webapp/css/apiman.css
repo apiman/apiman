@@ -4,6 +4,10 @@ body {
   font-size: 13px;
 }
 
+.container-fluid .row .col-no-padding {
+  padding: 0px;
+}
+
 .btn {
   font-size: 12px;
 }

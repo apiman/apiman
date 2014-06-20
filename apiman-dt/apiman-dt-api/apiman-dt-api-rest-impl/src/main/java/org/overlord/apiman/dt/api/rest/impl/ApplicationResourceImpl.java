@@ -356,6 +356,26 @@ public class ApplicationResourceImpl implements IApplicationResource {
     }
     
     /**
+     * @see org.overlord.apiman.dt.api.rest.contract.IApplicationResource#deleteContract(java.lang.String, java.lang.String, java.lang.String, java.lang.Long)
+     */
+    @Override
+    public void deleteContract(String organizationId, String applicationId, String version, Long contractId)
+            throws ApplicationNotFoundException, ContractNotFoundException, NotAuthorizedException {
+        if (!securityContext.hasPermission(PermissionType.appEdit, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
+        try {
+            ContractBean contract = storage.get(contractId, ContractBean.class);
+            if (contract == null)
+                throw ExceptionFactory.contractNotFoundException(contractId);
+            storage.delete(contract);
+        } catch (DoesNotExistException e) {
+            throw ExceptionFactory.contractNotFoundException(contractId);
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }        
+    }
+    
+    /**
      * @see org.overlord.apiman.dt.api.rest.contract.IApplicationResource#listContracts(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override

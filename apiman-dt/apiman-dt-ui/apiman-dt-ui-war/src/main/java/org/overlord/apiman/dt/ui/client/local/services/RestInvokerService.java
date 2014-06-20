@@ -252,6 +252,20 @@ public class RestInvokerService {
         CallbackAdapter<ContractBean> adapter = new CallbackAdapter<ContractBean>(callback);
         applications.call(adapter, adapter).createContract(organizationId, applicationId, version, bean);
     }
+    
+    /**
+     * Deletes a contract.  This is synonymous with "breaking" a contract.
+     * @param organizationId
+     * @param applicationId
+     * @param version
+     * @param contractId
+     * @param callback
+     */
+    public void deleteContract(String organizationId, String applicationId, String version,
+            Long contractId, IRestInvokerCallback<Void> callback) {
+        CallbackAdapter<Void> adapter = new CallbackAdapter<Void>(callback);
+        applications.call(adapter, adapter).deleteContract(organizationId, applicationId, version, contractId);
+    }
 
     /**
      * Gets an application.

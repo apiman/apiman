@@ -22,6 +22,7 @@ package org.overlord.apiman.dt.api.beans.actions;
  */
 public enum ActionType {
     
-    publishService, retireService, registerApplication, deregisterApplication;
+    publishService, retireService, 
+    registerApplication, deregisterApplication;
 
 }
