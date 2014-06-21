@@ -117,7 +117,8 @@ public class TestPlanRunner {
      */
     private void runTest(RestTest restTest) throws Error {
         try {
-            URI uri = getUri(restTest.getRequestPath());
+            String requestPath = TestUtil.doPropertyReplacement(restTest.getRequestPath());
+            URI uri = getUri(requestPath);
             HttpRequestBase request = null;
             if (restTest.getRequestMethod().equalsIgnoreCase("GET")) { //$NON-NLS-1$
                 request = new HttpGet();

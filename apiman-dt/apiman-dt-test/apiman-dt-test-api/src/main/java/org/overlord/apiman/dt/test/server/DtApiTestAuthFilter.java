@@ -17,14 +17,14 @@ package org.overlord.apiman.dt.test.server;
 
 import java.util.Set;
 
-import org.overlord.commons.auth.jetty8.Jetty8SamlBearerTokenAuthFilter;
+import org.overlord.commons.auth.filters.SamlBearerTokenAuthFilter;
 
 /**
  * Auth filter for the test server.
  *
  * @author eric.wittmann@redhat.com
  */
-public class DtApiTestAuthFilter extends Jetty8SamlBearerTokenAuthFilter {
+public class DtApiTestAuthFilter extends SamlBearerTokenAuthFilter {
     
     /**
      * Constructor.

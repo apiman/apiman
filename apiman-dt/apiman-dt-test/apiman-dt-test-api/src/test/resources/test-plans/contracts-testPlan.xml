@@ -30,6 +30,8 @@
     <test name="List Contracts for App 1">test-plan-data/contracts/contracts/004_get-contracts.resttest</test>
     <test name="Create Contract to Service 2">test-plan-data/contracts/contracts/005_create-contract2.resttest</test>
     <test name="List Contracts for App 1">test-plan-data/contracts/contracts/006_get-contracts.resttest</test>
+    <test name="Delete Contract 1">test-plan-data/contracts/contracts/007_delete-contract1.resttest</test>
+    <test name="List Contracts for App 1 (after delete)">test-plan-data/contracts/contracts/008_get-contracts.resttest</test>
   </testGroup>
 
 </testPlan>

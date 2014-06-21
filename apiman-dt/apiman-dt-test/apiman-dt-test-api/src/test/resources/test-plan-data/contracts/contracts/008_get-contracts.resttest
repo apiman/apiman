@@ -1,0 +1,24 @@
+GET /organizations/Organization1/applications/Application1/versions/1.0/contracts admin/admin
+
+----
+200
+Content-Type: application/json
+
+[
+  {
+    "appOrganizationId" : "Organization1",
+    "appOrganizationName" : "Organization 1",
+    "appId" : "Application1",
+    "appName" : "Application 1",
+    "appVersion" : "1.0",
+    "serviceOrganizationId" : "Organization2",
+    "serviceOrganizationName" : "Organization 2",
+    "serviceId" : "Service2",
+    "serviceName" : "Service 2",
+    "serviceVersion" : "1.5",
+    "serviceDescription" : "This is the description of Service 2.",
+    "planName" : "Plan A",
+    "planId" : "PlanA",
+    "planVersion" : "2.0"
+  }
+]
