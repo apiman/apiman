@@ -165,7 +165,8 @@ public class AppContractsPage extends AbstractAppPage {
      * @param contract
      */
     protected void doBreakContract(final ContractSummaryBean contract) {
-        rest.deleteContract(org, app, version, contract.getContractId(), new IRestInvokerCallback<Void>() {
+        rest.deleteContract(org, versionBean.getApplication().getId(), versionBean.getVersion(),
+                contract.getContractId(), new IRestInvokerCallback<Void>() {
             @Override
             public void onSuccess(Void response) {
                 contractBeans.remove(contract);

@@ -32,22 +32,49 @@ public class GatewayDevServer {
 
     private static final int GATEWAY_PORT  = 6666;
     private static final int ECHO_PORT     = 9001;
+    private static final String APIMAN_RT_GATEWAY_SERVER_PORT = "apiman.gateway.server.port"; //$NON-NLS-1$
+    private static final String ECHO_PORT_PROPERTY = "apiman.echo.server.port"; //$NON-NLS-1$
 
     /**
      * Main entry point.
      * @param args
      */
     public static void main(String [] args) throws Exception {
+        int gatewayPort = getGatewayPort();
+        int echoPort = getEchoPort();
+        
         System.setProperty(EngineConfig.APIMAN_RT_REGISTRY_CLASS, InMemoryRegistry.class.getName());
         System.setProperty(EngineConfig.APIMAN_RT_CONNECTOR_FACTORY_CLASS, HttpConnectorFactory.class.getName());
-        System.setProperty(EngineConfig.APIMAN_RT_GATEWAY_SERVER_PORT, String.valueOf(GATEWAY_PORT));
+        System.setProperty(EngineConfig.APIMAN_RT_GATEWAY_SERVER_PORT, String.valueOf(gatewayPort));
 
-        GatewayServer server = new GatewayServer(GATEWAY_PORT);
+        GatewayServer server = new GatewayServer(gatewayPort);
         server.start();
-        EchoServer echo = new EchoServer(ECHO_PORT);
+        EchoServer echo = new EchoServer(echoPort);
         echo.start();
         while (true) {
             Thread.sleep(5000);
         }
+    }
+
+    /**
+     * @return the gateway port to use
+     */
+    private static int getGatewayPort() {
+        int port = GATEWAY_PORT;
+        if (System.getProperty(APIMAN_RT_GATEWAY_SERVER_PORT) != null) {
+            port = new Integer(System.getProperty(APIMAN_RT_GATEWAY_SERVER_PORT));
+        }
+        return port;
+    }
+
+    /**
+     * @return the port to start the echo server on
+     */
+    private static int getEchoPort() {
+        int port = ECHO_PORT;
+        if (System.getProperty(ECHO_PORT_PROPERTY) != null) {
+            port = new Integer(System.getProperty(ECHO_PORT_PROPERTY));
+        }
+        return port;
     }
 }

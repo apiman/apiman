@@ -239,7 +239,6 @@ public class AppContractList extends FlowPanel implements HasValue<List<Contract
         SpanPanel sp = new SpanPanel();
         col.add(sp);
         sp.getElement().setClassName("actions"); //$NON-NLS-1$
-        sp.getElement().addClassName("pull-right"); //$NON-NLS-1$
         final AsyncActionButton aab = new AsyncActionButton();
         aab.getElement().setClassName("btn"); //$NON-NLS-1$
         aab.getElement().addClassName("btn-default"); //$NON-NLS-1$

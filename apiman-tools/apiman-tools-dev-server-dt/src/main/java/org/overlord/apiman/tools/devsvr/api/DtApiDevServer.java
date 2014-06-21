@@ -26,13 +26,18 @@ import org.overlord.apiman.dt.test.server.ISeeder;
  * @author eric.wittmann@redhat.com
  */
 public class DtApiDevServer {
+    
+    private static final int GATEWAY_PORT  = 6666;
+    private static final String APIMAN_RT_GATEWAY_SERVER_PORT = "apiman.gateway.server.port"; //$NON-NLS-1$
 
     /**
      * Main entry point.
      * @param args
      */
     public static void main(String [] args) throws Exception {
-        System.setProperty(Config.APIMAN_DT_API_GATEWAY_REST_ENDPOINT, "http://localhost:6667"); //$NON-NLS-1$
+        int gatewayPort = getGatewayPort();
+        
+        System.setProperty(Config.APIMAN_DT_API_GATEWAY_REST_ENDPOINT, "http://localhost:" + gatewayPort); //$NON-NLS-1$
         System.setProperty(Config.APIMAN_DT_API_GATEWAY_AUTH_TYPE, "basic"); //$NON-NLS-1$
         System.setProperty(Config.APIMAN_DT_API_GATEWAY_BASIC_AUTH_USER, "admin"); //$NON-NLS-1$
         System.setProperty(Config.APIMAN_DT_API_GATEWAY_BASIC_AUTH_PASS, "admin"); //$NON-NLS-1$
@@ -41,4 +46,16 @@ public class DtApiDevServer {
         DtApiTestServer server = new DtApiTestServer();
         server.start();
     }
+
+    /**
+     * @return the gateway port to use
+     */
+    private static int getGatewayPort() {
+        int port = GATEWAY_PORT;
+        if (System.getProperty(APIMAN_RT_GATEWAY_SERVER_PORT) != null) {
+            port = new Integer(System.getProperty(APIMAN_RT_GATEWAY_SERVER_PORT));
+        }
+        return port;
+    }
+
 }

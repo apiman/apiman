@@ -56,6 +56,11 @@ import org.overlord.commons.ui.header.OverlordHeaderDataJS;
  */
 public class ApiManDtUiDevServer extends ErraiDevServer {
 
+    private static final int API_PORT  = 7070;
+    private static final int GATEWAY_PORT  = 6666;
+    private static final String APIMAN_RT_API_SERVER_PORT = "apiman.api.server.port"; //$NON-NLS-1$
+    private static final String APIMAN_RT_GATEWAY_SERVER_PORT = "apiman.gateway.server.port"; //$NON-NLS-1$
+
     /**
      * Main entry point.
      * @param args
@@ -87,10 +92,36 @@ public class ApiManDtUiDevServer extends ErraiDevServer {
      */
     @Override
     protected void preConfig() {
-        System.setProperty(UIConfig.APIMAN_DT_UI_API_ENDPOINT, "http://localhost:7071/apiman-dt-api"); //$NON-NLS-1$
+        int apiPort = getApiPort();
+        int gatewayPort = getGatewayPort();
+        
+        System.setProperty(UIConfig.APIMAN_DT_UI_API_ENDPOINT,
+                "http://localhost:" + apiPort + "/apiman-dt-api"); //$NON-NLS-1$ //$NON-NLS-2$
         System.setProperty(UIConfig.APIMAN_DT_UI_API_AUTH_TYPE, ApiAuthType.samlBearerToken.toString());
         System.setProperty(UIConfig.APIMAN_DT_UI_API_AUTH_TOKEN_GENERATOR, ApiManDtUiTokenGenerator.class.getName());
-        System.setProperty(UIConfig.APIMAN_DT_UI_GATEWAY_URL, "http://localhost:6666/gateway"); //$NON-NLS-1$
+        System.setProperty(UIConfig.APIMAN_DT_UI_GATEWAY_URL, "http://localhost:" + gatewayPort + "/gateway"); //$NON-NLS-1$ //$NON-NLS-2$
+    }
+
+    /**
+     * @return the gateway port to use
+     */
+    private static int getGatewayPort() {
+        int port = GATEWAY_PORT;
+        if (System.getProperty(APIMAN_RT_GATEWAY_SERVER_PORT) != null) {
+            port = new Integer(System.getProperty(APIMAN_RT_GATEWAY_SERVER_PORT));
+        }
+        return port;
+    }
+
+    /**
+     * @return the gateway port to use
+     */
+    private static int getApiPort() {
+        int port = API_PORT;
+        if (System.getProperty(APIMAN_RT_API_SERVER_PORT) != null) {
+            port = new Integer(System.getProperty(APIMAN_RT_API_SERVER_PORT));
+        }
+        return port;
     }
 
     /**
