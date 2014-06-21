@@ -244,7 +244,7 @@ public class AppContractList extends FlowPanel implements HasValue<List<Contract
         aab.getElement().setClassName("btn"); //$NON-NLS-1$
         aab.getElement().addClassName("btn-default"); //$NON-NLS-1$
         aab.setHTML(i18n.format(AppMessages.BREAK_CONTRACT));
-        aab.setActionText("Breaking...");
+        aab.setActionText(i18n.format(AppMessages.BREAKING));
         aab.setIcon("fa-cog"); //$NON-NLS-1$
         aab.addClickHandler(new ClickHandler() {
             @Override

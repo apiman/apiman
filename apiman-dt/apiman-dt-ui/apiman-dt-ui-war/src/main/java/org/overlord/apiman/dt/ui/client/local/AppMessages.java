@@ -161,6 +161,8 @@ public class AppMessages {
 
     @TranslationKey(defaultValue = "Break Contract")
     public static final String BREAK_CONTRACT = "break-contract"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "Breaking...")
+    public static final String BREAKING = "breaking"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "Service version")
     public static final String SERVICE_VERSION = "service-version"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "via plan")
@@ -169,6 +171,8 @@ public class AppMessages {
     public static final String ENTERED_INTO_ON = "entered-into-on"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "Really break contract with service {0}?")
     public static final String CONFIRM_BREAK_CONTRACT = "confirm-break-contract"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "Failed to break contract!")
+    public static final String BREAK_CONTRACT_FAILURE = "break-contract-failure"; //$NON-NLS-1$
 
     @TranslationKey(defaultValue = "Please copy the value below (e.g. Ctrl-C).")
     public static final String APIS_LIST_PLEASE_COPY = "appApisList.please-copy"; //$NON-NLS-1$

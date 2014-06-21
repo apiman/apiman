@@ -15,7 +15,7 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-dt-api-core</artifactId>
     </dependency>
-    
+
     <!-- Overlord Commons -->
     <dependency>
       <groupId>org.overlord</groupId>
@@ -33,6 +33,5 @@
       <artifactId>hibernate-jpa-2.0-api</artifactId>
       <scope>provided</scope>
     </dependency>
-
   </dependencies>
 </project>

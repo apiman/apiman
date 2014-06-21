@@ -173,7 +173,7 @@ public class AppContractsPage extends AbstractAppPage {
             }
             @Override
             public void onError(Throwable error) {
-                Window.alert("Failed to break contract!");
+                Window.alert(i18n.format(AppMessages.BREAK_CONTRACT_FAILURE));
             }
         });
     }
