@@ -76,3 +76,5 @@ and [generate a pull-request](http://help.github.com/pull-requests/) for your ch
 
 We prefer pull-requests, because we can review the proposed changes, comment on them,
 discuss them with you, and likely merge the changes right into the official repository.
+
+Please also read the guidelines for contributors: https://github.com/Governance/overlord/wiki/Contributor-Guidelines
