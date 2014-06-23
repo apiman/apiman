@@ -121,7 +121,7 @@ public class AppApisList extends FlowPanel implements HasValue<List<ContractSumm
      * @return a widget to show when there are no entities.
      */
     protected NoEntitiesWidget createNoEntitiesWidget() {
-        return new NoEntitiesWidget(i18n.format(AppMessages.NO_APIS_FOR_APP_MESSAGE), true);
+        return new NoEntitiesWidget(i18n.format(AppMessages.NO_APIS_FOR_APP_MESSAGE), false);
     }
 
     /**

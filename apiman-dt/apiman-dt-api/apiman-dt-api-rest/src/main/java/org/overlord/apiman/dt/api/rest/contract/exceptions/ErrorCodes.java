@@ -132,4 +132,13 @@ public final class ErrorCodes {
 
     public static final String ACTION_ERROR_INFO        = null;
 
+    
+    //
+    // Policy related
+    //
+    public static final int POLICY_NOT_FOUND                   = 9001;
+
+    public static final String POLICY_NOT_FOUND_INFO           = null;
+
+    
 }

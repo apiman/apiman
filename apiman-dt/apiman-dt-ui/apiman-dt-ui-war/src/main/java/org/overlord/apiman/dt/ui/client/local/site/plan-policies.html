@@ -61,7 +61,69 @@
 
         <!-- Content -->
         <div class="col-md-10 apiman-entity-content">
-          <h2>Not yet implemented.</h2>
+          <div class="col-md-9">
+            <!-- Title and help text -->
+            <div class="title" data-i18n-key="plan-policies">Plan Policies</div>
+            <div class="description" data-i18n-key="policies-help">Here is a list of all Policies defined for this Plan.  These Policies will be applied to all Service invocations made by Applications using this Plan in a Contract (in addition to whatever Policies are defined individually by the Application and/or Service).</div>
+            <hr />
+            <!-- The list of policies -->
+            <div class="apiman-filters apiman-policies-filters">
+              <input data-field="policyFilter" class="form-control input-search" placeholder="Filter by policy name..." type="text">
+              <a data-field="toNewPolicy" data-i18n-key="add-policy" href="new-policy.html" class="btn btn-primary pull-right">Add Policy</a>
+            </div>
+            <div class="clearfix"></div>
+            <div class="apiman-policies" data-field="policies" data-role="dummy">
+              <div class="apiman-summaryrow">
+                <i class="apiman-policy-icon fa fa-tachometer fa-fw"></i>
+                <div class="container-fluid">
+                  <div class="row">
+                    <span class="title">Usage Metering Policy</span>
+                    <span class="actions">
+                      <a href="#">Edit</a><span> | </span><a href="#">Remove</a><span> | </span><a href="#">Up</a><span> | </span><a href="#">Down</a>
+                    </span>
+                  </div>
+                  <div class="row">
+                    <div class="metaData">
+                      <span>Policy created by </span>
+                      <span><a href="user-orgs.html">ckent</a></span>
+                      <span> on </span>
+                      <i class="fa fa-clock-o fa-inline"></i>
+                      <span>Jan 1, 2014</span>
+                    </div>
+                    <div class="description apiman-label-faded">
+                      Service usage will be tracked and limited to 1000 requests per day per user.
+                    </div>
+                  </div>
+                </div>
+                <hr />
+              </div>
+              <div class="apiman-summaryrow">
+                <i class="apiman-policy-icon fa fa-money fa-fw"></i>
+                <div class="container-fluid">
+                  <div class="row">
+                    <span class="title">Billing Policy</span>
+                    <span class="actions">
+                      <a href="#">Edit</a><span> | </span><a href="#">Remove</a><span> | </span><a href="#">Up</a><span> | </span><a href="#">Down</a>
+                    </span>
+                  </div>
+                  <div class="row">
+                    <div class="metaData">
+                      <span>Policy created by </span>
+                      <span><a href="user-orgs.html">dprince</a></span>
+                      <span> on </span>
+                      <i class="fa fa-clock-o fa-inline"></i>
+                      <span>Feb 10, 2014</span>
+                    </div>
+                    <div class="description apiman-label-faded">
+                      Tracks and records usage for billing purposes.  Aggregate billing information will be recorded and stored 
+                      at a contracted rate of $5 per month per user, regardless of usage.
+                    </div>
+                  </div>
+                </div>
+                <hr />
+              </div>
+            </div>
+          </div>
         </div>
         <!-- /Content -->
       </div>

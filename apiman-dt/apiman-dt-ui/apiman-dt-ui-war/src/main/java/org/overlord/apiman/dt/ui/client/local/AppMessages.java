@@ -42,6 +42,8 @@ public class AppMessages {
     public static final String TITLE_NEW_PLAN_VERSION = "page.title.new-plan-version"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "APIMan - New Contract")
     public static final String TITLE_NEW_CONTRACT = "page.title.new-contract"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "APIMan - New Policy")
+    public static final String TITLE_NEW_POLICY = "page.title.new-policy"; //$NON-NLS-1$
 
     @TranslationKey(defaultValue = "APIMan - {0} (Organizations)")
     public static final String TITLE_USER_ORGS = "page.title.user-orgs"; //$NON-NLS-1$

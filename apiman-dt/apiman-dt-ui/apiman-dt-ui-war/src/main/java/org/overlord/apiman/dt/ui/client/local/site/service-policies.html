@@ -63,7 +63,44 @@
 
         <!-- Content -->
         <div class="col-md-10 apiman-entity-content">
-          <h2>Not yet implemented.</h2>
+          <div class="col-md-9">
+            <!-- Title and help text -->
+            <div class="title" data-i18n-key="service-policies">Service Policies</div>
+            <div class="description" data-i18n-key="policies-help">Here is a list of all Policies defined for this Service.  These Policies will be applied to all invocations of this Service by any Application, regardless of the Plan used in its Contract.</div>
+            <hr />
+            <!-- The list of policies -->
+            <div class="apiman-filters apiman-policies-filters">
+              <input data-field="policyFilter" class="form-control input-search" placeholder="Filter by policy name..." type="text">
+              <a data-field="toNewPolicy" data-i18n-key="add-policy" href="new-policy.html" class="btn btn-primary pull-right">Add Policy</a>
+            </div>
+            <div class="clearfix"></div>
+            <div class="apiman-policies" data-field="policies" data-role="dummy">
+              <div class="apiman-summaryrow">
+                <i class="apiman-policy-icon fa fa-lock fa-fw"></i>
+                <div class="container-fluid">
+                  <div class="row">
+                    <span class="title">Authentication Policy</span>
+                    <span class="actions">
+                      <a href="#">Edit</a><span> | </span><a href="#">Remove</a><span> | </span><a href="#">Up</a><span> | </span><a href="#">Down</a>
+                    </span>
+                  </div>
+                  <div class="row">
+                    <div class="metaData">
+                      <span>Policy created by </span>
+                      <span><a href="user-orgs.html">bwayne</a></span>
+                      <span> on </span>
+                      <i class="fa fa-clock-o fa-inline"></i>
+                      <span>Dec 1, 2013</span>
+                    </div>
+                    <div class="description apiman-label-faded">
+                      All service invocations must be first authenticated using BASIC auth against the "ldap://dir.mycompany.com" LDAP directory.
+                    </div>
+                  </div>
+                </div>
+                <hr />
+              </div>
+            </div>
+          </div>
         </div>
         <!-- /Content -->
       </div>

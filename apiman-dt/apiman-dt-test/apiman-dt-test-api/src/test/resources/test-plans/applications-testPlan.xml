@@ -33,4 +33,10 @@
     <test name="Get Version 1.0 (updated)">test-plan-data/applications/versions/007_get-version-1.0.resttest</test>
   </testGroup>
 
+  <!-- Test Application Policy management -->
+  <testGroup name="Application Policy Management">
+    <test name="Create Policy 1">test-plan-data/applications/policies/001_create-policy1.resttest</test>
+    <test name="Get Policy 1">test-plan-data/applications/policies/002_get-policy1.resttest</test>
+  </testGroup>
+
 </testPlan>

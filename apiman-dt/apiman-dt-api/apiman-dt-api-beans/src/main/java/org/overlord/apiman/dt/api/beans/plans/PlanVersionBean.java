@@ -65,6 +65,10 @@ public class PlanVersionBean implements Serializable {
     private String createdBy;
     @Column(updatable=false, nullable=false)
     private Date createdOn;
+    @Column(updatable=true, nullable=false)
+    private String modifiedBy;
+    @Column(updatable=true, nullable=false)
+    private Date modifiedOn;
     private Date lockedOn;
     
     /**
@@ -169,6 +173,34 @@ public class PlanVersionBean implements Serializable {
      */
     public void setLockedOn(Date lockedOn) {
         this.lockedOn = lockedOn;
+    }
+
+    /**
+     * @return the modifiedBy
+     */
+    public String getModifiedBy() {
+        return modifiedBy;
+    }
+
+    /**
+     * @param modifiedBy the modifiedBy to set
+     */
+    public void setModifiedBy(String modifiedBy) {
+        this.modifiedBy = modifiedBy;
+    }
+
+    /**
+     * @return the modifiedOn
+     */
+    public Date getModifiedOn() {
+        return modifiedOn;
+    }
+
+    /**
+     * @param modifiedOn the modifiedOn to set
+     */
+    public void setModifiedOn(Date modifiedOn) {
+        this.modifiedOn = modifiedOn;
     }
 
     /**

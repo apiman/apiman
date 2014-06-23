@@ -16,10 +16,15 @@
 package org.overlord.apiman.dt.ui.client.local.pages;
 
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
 import org.jboss.errai.ui.nav.client.local.Page;
+import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.apiman.dt.ui.client.local.AppMessages;
+import org.overlord.apiman.dt.ui.client.local.util.MultimapUtil;
+
+import com.google.gwt.user.client.ui.Anchor;
 
 
 /**
@@ -31,6 +36,9 @@ import org.overlord.apiman.dt.ui.client.local.AppMessages;
 @Page(path="plan-policies")
 @Dependent
 public class PlanPoliciesPage extends AbstractPlanPage {
+
+    @Inject @DataField
+    Anchor toNewPolicy;
     
     /**
      * Constructor.
@@ -46,7 +54,20 @@ public class PlanPoliciesPage extends AbstractPlanPage {
         int rval = super.loadPageData();
         return rval;
     }
-    
+
+    /**
+     * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractAppPage#renderPage()
+     */
+    @Override
+    protected void renderPage() {
+        super.renderPage();
+        
+        String newPolicyHref = navHelper.createHrefToPage(NewPolicyPage.class,
+                MultimapUtil.fromMultiple("org", this.planBean.getOrganizationId(), "id", this.planBean.getId(),  //$NON-NLS-1$ //$NON-NLS-2$
+                        "ver", this.versionBean.getVersion(), "type", "app")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        toNewPolicy.setHref(newPolicyHref);
+    }
+
     /**
      * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractPage#getPageTitle()
      */
