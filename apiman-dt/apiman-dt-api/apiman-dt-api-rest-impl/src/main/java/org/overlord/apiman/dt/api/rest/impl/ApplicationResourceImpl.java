@@ -438,14 +438,34 @@ public class ApplicationResourceImpl extends AbstractPolicyResourceImpl implemen
     }
 
     /**
-     * @see org.overlord.apiman.dt.api.rest.contract.IApplicationResource#updatePolicy(java.lang.String, java.lang.String, java.lang.String, long)
+     * @see org.overlord.apiman.dt.api.rest.contract.IApplicationResource#updatePolicy(java.lang.String, java.lang.String, java.lang.String, long, org.overlord.apiman.dt.api.beans.policies.PolicyBean)
      */
     @Override
-    public PolicyBean updatePolicy(String organizationId, String applicationId, String version, long policyId)
-            throws OrganizationNotFoundException, ApplicationVersionNotFoundException,
-            PolicyNotFoundException, NotAuthorizedException {
-        // TODO Auto-generated method stub
-        return null;
+    public void updatePolicy(String organizationId, String applicationId, String version,
+            long policyId, PolicyBean bean) throws OrganizationNotFoundException,
+            ApplicationVersionNotFoundException, PolicyNotFoundException, NotAuthorizedException {
+        if (!securityContext.hasPermission(PermissionType.appEdit, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
+
+        try {
+            ApplicationVersionBean avb = query.getApplicationVersion(organizationId, applicationId, version);
+            if (avb == null)
+                throw ExceptionFactory.applicationVersionNotFoundException(applicationId, version);
+            PolicyBean policy = this.storage.get(policyId, PolicyBean.class);
+            if (bean.getName() != null)
+                policy.setName(bean.getName());
+            if (bean.getDescription() != null)
+                policy.setDescription(bean.getDescription());
+            if (bean.getConfiguration() != null)
+                policy.setConfiguration(bean.getConfiguration());
+            policy.setModifiedOn(new Date());
+            policy.setModifiedBy(this.securityContext.getCurrentUser());
+            this.storage.update(policy);
+        } catch (DoesNotExistException e) {
+            throw ExceptionFactory.policyNotFoundException(policyId);
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
     }
 
     /**
@@ -455,8 +475,20 @@ public class ApplicationResourceImpl extends AbstractPolicyResourceImpl implemen
     public void deletePolicy(String organizationId, String applicationId, String version, long policyId)
             throws OrganizationNotFoundException, ApplicationVersionNotFoundException,
             PolicyNotFoundException, NotAuthorizedException {
-        // TODO Auto-generated method stub
-        
+        if (!securityContext.hasPermission(PermissionType.appEdit, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
+
+        try {
+            ApplicationVersionBean avb = query.getApplicationVersion(organizationId, applicationId, version);
+            if (avb == null)
+                throw ExceptionFactory.applicationVersionNotFoundException(applicationId, version);
+            PolicyBean policy = this.storage.get(policyId, PolicyBean.class);
+            this.storage.delete(policy);
+        } catch (DoesNotExistException e) {
+            throw ExceptionFactory.policyNotFoundException(policyId);
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
     }
 
     /**
@@ -465,7 +497,16 @@ public class ApplicationResourceImpl extends AbstractPolicyResourceImpl implemen
     @Override
     public List<PolicyBean> listPolicies(String organizationId, String applicationId, String version)
             throws OrganizationNotFoundException, ApplicationVersionNotFoundException, NotAuthorizedException {
-        // TODO Auto-generated method stub
-        return null;
+        if (!securityContext.hasPermission(PermissionType.appView, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
+
+        // Try to get the application first - will throw an exception if not found.
+        getVersion(organizationId, applicationId, version);
+
+        try {
+            return query.getPolicies(organizationId, applicationId, version, PolicyType.Application);
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
     }
 }

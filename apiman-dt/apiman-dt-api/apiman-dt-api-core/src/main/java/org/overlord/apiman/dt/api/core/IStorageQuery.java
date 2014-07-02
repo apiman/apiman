@@ -20,6 +20,8 @@ import java.util.Set;
 
 import org.overlord.apiman.dt.api.beans.apps.ApplicationVersionBean;
 import org.overlord.apiman.dt.api.beans.plans.PlanVersionBean;
+import org.overlord.apiman.dt.api.beans.policies.PolicyBean;
+import org.overlord.apiman.dt.api.beans.policies.PolicyType;
 import org.overlord.apiman.dt.api.beans.services.ServiceVersionBean;
 import org.overlord.apiman.dt.api.beans.summary.ApplicationSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.ContractSummaryBean;
@@ -156,5 +158,16 @@ public interface IStorageQuery {
      */
     public List<PlanVersionBean> getPlanVersions(String organizationId, String planId)
             throws StorageException;
+
+    /**
+     * Returns all policies of the given type for the given entity/version.  This could be
+     * any of Application, Plan, Service.
+     * @param organizationId
+     * @param entityId
+     * @param version
+     * @param type
+     */
+    public List<PolicyBean> getPolicies(String organizationId, String entityId, String version,
+            PolicyType type) throws StorageException;
     
 }

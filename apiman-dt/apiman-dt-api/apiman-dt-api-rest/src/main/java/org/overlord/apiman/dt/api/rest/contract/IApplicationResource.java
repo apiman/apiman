@@ -161,11 +161,12 @@ public interface IApplicationResource {
 
     @PUT
     @Path("{organizationId}/applications/{applicationId}/versions/{version}/policies/{policyId}")
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public PolicyBean updatePolicy(@PathParam("organizationId") String organizationId,
+    public void updatePolicy(@PathParam("organizationId") String organizationId,
             @PathParam("applicationId") String applicationId, @PathParam("version") String version,
-            @PathParam("policyId") long policyId) throws OrganizationNotFoundException, ApplicationVersionNotFoundException,
-            PolicyNotFoundException, NotAuthorizedException;
+            @PathParam("policyId") long policyId, PolicyBean bean) throws OrganizationNotFoundException,
+            ApplicationVersionNotFoundException, PolicyNotFoundException, NotAuthorizedException;
 
     @DELETE
     @Path("{organizationId}/applications/{applicationId}/versions/{version}/policies/{policyId}")

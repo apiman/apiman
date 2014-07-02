@@ -32,6 +32,8 @@ import org.overlord.apiman.dt.api.beans.contracts.ContractBean;
 import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
 import org.overlord.apiman.dt.api.beans.plans.PlanBean;
 import org.overlord.apiman.dt.api.beans.plans.PlanVersionBean;
+import org.overlord.apiman.dt.api.beans.policies.PolicyBean;
+import org.overlord.apiman.dt.api.beans.policies.PolicyType;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
 import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
 import org.overlord.apiman.dt.api.beans.services.ServiceBean;
@@ -511,6 +513,33 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             query.setParameter("planId", planId); //$NON-NLS-1$
             
             return (List<PlanVersionBean>) query.getResultList();
+        } catch (Throwable t) {
+            JpaUtil.rollbackQuietly(entityManager);
+            logger.error(t.getMessage(), t);
+            throw new StorageException(t);
+        } finally {
+            entityManager.close();
+        }
+    }
+    
+    /**
+     * @see org.overlord.apiman.dt.api.core.IStorageQuery#getPolicies(java.lang.String, java.lang.String, java.lang.String, org.overlord.apiman.dt.api.beans.policies.PolicyType)
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<PolicyBean> getPolicies(String organizationId, String entityId, String version,
+            PolicyType type) throws StorageException {
+        EntityManager entityManager = emf.createEntityManager();
+        try {
+            
+            String jpql = "SELECT p from PolicyBean p WHERE p.organizationId = :orgId AND p.entityId = :entityId AND p.entityVersion = :entityVersion AND p.type = :type"; //$NON-NLS-1$
+            Query query = entityManager.createQuery(jpql);
+            query.setParameter("orgId", organizationId); //$NON-NLS-1$
+            query.setParameter("entityId", entityId); //$NON-NLS-1$
+            query.setParameter("entityVersion", version); //$NON-NLS-1$
+            query.setParameter("type", type); //$NON-NLS-1$
+            
+            return (List<PolicyBean>) query.getResultList();
         } catch (Throwable t) {
             JpaUtil.rollbackQuietly(entityManager);
             logger.error(t.getMessage(), t);

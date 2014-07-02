@@ -37,6 +37,11 @@
   <testGroup name="Application Policy Management">
     <test name="Create Policy 1">test-plan-data/applications/policies/001_create-policy1.resttest</test>
     <test name="Get Policy 1">test-plan-data/applications/policies/002_get-policy1.resttest</test>
+    <test name="Create Policy 2">test-plan-data/applications/policies/003_create-policy2.resttest</test>
+    <test name="List Policies">test-plan-data/applications/policies/004_list-policies.resttest</test>
+    <test name="Update Policy 1">test-plan-data/applications/policies/005_update-policy1.resttest</test>
+    <test name="Delete Policy 2">test-plan-data/applications/policies/006_delete-policy2.resttest</test>
+    <test name="List Policies">test-plan-data/applications/policies/007_list-policies.resttest</test>
   </testGroup>
 
 </testPlan>
