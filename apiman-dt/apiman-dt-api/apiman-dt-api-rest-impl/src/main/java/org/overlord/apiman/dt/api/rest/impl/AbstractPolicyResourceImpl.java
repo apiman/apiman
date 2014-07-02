@@ -25,9 +25,7 @@ import org.overlord.apiman.dt.api.core.IStorage;
 import org.overlord.apiman.dt.api.core.IStorageQuery;
 import org.overlord.apiman.dt.api.core.exceptions.DoesNotExistException;
 import org.overlord.apiman.dt.api.core.exceptions.StorageException;
-import org.overlord.apiman.dt.api.rest.contract.exceptions.ApplicationVersionNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.NotAuthorizedException;
-import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.PolicyNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.SystemErrorException;
 import org.overlord.apiman.dt.api.rest.impl.util.ExceptionFactory;
@@ -53,13 +51,10 @@ public abstract class AbstractPolicyResourceImpl {
      * @param entityVersion
      * @param bean
      * @return the stored policy bean (with updated information)
-     * @throws OrganizationNotFoundException
-     * @throws ApplicationVersionNotFoundException
      * @throws NotAuthorizedException
      */
     protected PolicyBean doCreatePolicy(String organizationId, String entityId, String entityVersion,
-            PolicyBean bean) throws OrganizationNotFoundException, ApplicationVersionNotFoundException,
-            NotAuthorizedException {
+            PolicyBean bean, PolicyType type) {
         try {
             bean.setId(null);
             bean.setCreatedBy(securityContext.getCurrentUser());
@@ -69,7 +64,7 @@ public abstract class AbstractPolicyResourceImpl {
             bean.setOrganizationId(organizationId);
             bean.setEntityId(entityId);
             bean.setEntityVersion(entityVersion);
-            bean.setType(PolicyType.Application);
+            bean.setType(type);
             storage.create(bean);
             
             return bean;

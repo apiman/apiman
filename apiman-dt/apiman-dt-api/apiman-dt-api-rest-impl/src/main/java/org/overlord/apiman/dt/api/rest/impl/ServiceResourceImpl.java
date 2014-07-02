@@ -25,6 +25,8 @@ import javax.inject.Inject;
 import org.overlord.apiman.dt.api.beans.BeanUtils;
 import org.overlord.apiman.dt.api.beans.idm.PermissionType;
 import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
+import org.overlord.apiman.dt.api.beans.policies.PolicyBean;
+import org.overlord.apiman.dt.api.beans.policies.PolicyType;
 import org.overlord.apiman.dt.api.beans.services.ServiceBean;
 import org.overlord.apiman.dt.api.beans.services.ServiceStatus;
 import org.overlord.apiman.dt.api.beans.services.ServiceVersionBean;
@@ -32,8 +34,6 @@ import org.overlord.apiman.dt.api.beans.summary.ServicePlanSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.ServiceSummaryBean;
 import org.overlord.apiman.dt.api.core.IIdmStorage;
 import org.overlord.apiman.dt.api.core.IServiceValidator;
-import org.overlord.apiman.dt.api.core.IStorage;
-import org.overlord.apiman.dt.api.core.IStorageQuery;
 import org.overlord.apiman.dt.api.core.exceptions.AlreadyExistsException;
 import org.overlord.apiman.dt.api.core.exceptions.DoesNotExistException;
 import org.overlord.apiman.dt.api.core.exceptions.StorageException;
@@ -42,12 +42,12 @@ import org.overlord.apiman.dt.api.rest.contract.IServiceResource;
 import org.overlord.apiman.dt.api.rest.contract.IUserResource;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.NotAuthorizedException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationNotFoundException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.PolicyNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ServiceAlreadyExistsException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ServiceNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ServiceVersionNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.SystemErrorException;
 import org.overlord.apiman.dt.api.rest.impl.util.ExceptionFactory;
-import org.overlord.apiman.dt.api.security.ISecurityContext;
 
 /**
  * Implementation of the Service API.
@@ -55,18 +55,14 @@ import org.overlord.apiman.dt.api.security.ISecurityContext;
  * @author eric.wittmann@redhat.com
  */
 @ApplicationScoped
-public class ServiceResourceImpl implements IServiceResource {
+public class ServiceResourceImpl extends AbstractPolicyResourceImpl implements IServiceResource {
 
-    @Inject IStorage storage;
-    @Inject IStorageQuery query;
     @Inject IIdmStorage idmStorage;
     
     @Inject IUserResource users;
     @Inject IRoleResource roles;
     
     @Inject IServiceValidator serviceValidator;
-    
-    @Inject ISecurityContext securityContext;
     
     /**
      * Constructor.
@@ -293,4 +289,125 @@ public class ServiceResourceImpl implements IServiceResource {
             throw new SystemErrorException(e);
         }
     }
+
+
+    
+    
+    
+    
+    /**
+     * @see org.overlord.apiman.dt.api.rest.contract.IServiceResource#createPolicy(java.lang.String, java.lang.String, java.lang.String, org.overlord.apiman.dt.api.beans.policies.PolicyBean)
+     */
+    @Override
+    public PolicyBean createPolicy(String organizationId, String serviceId, String version,
+            PolicyBean bean) throws OrganizationNotFoundException, ServiceVersionNotFoundException,
+            NotAuthorizedException {
+        if (!securityContext.hasPermission(PermissionType.svcEdit, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
+        
+        try {
+            ServiceVersionBean avb = query.getServiceVersion(organizationId, serviceId, version);
+            if (avb == null)
+                throw ExceptionFactory.serviceVersionNotFoundException(serviceId, version);
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+        
+        return doCreatePolicy(organizationId, serviceId, version, bean, PolicyType.Service);
+    }
+
+    /**
+     * @see org.overlord.apiman.dt.api.rest.contract.IServiceResource#getPolicy(java.lang.String, java.lang.String, java.lang.String, long)
+     */
+    @Override
+    public PolicyBean getPolicy(String organizationId, String serviceId, String version, long policyId)
+            throws OrganizationNotFoundException, ServiceVersionNotFoundException,
+            PolicyNotFoundException, NotAuthorizedException {
+        if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
+        
+        try {
+            ServiceVersionBean avb = query.getServiceVersion(organizationId, serviceId, version);
+            if (avb == null)
+                throw ExceptionFactory.serviceVersionNotFoundException(serviceId, version);
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+
+        return doGetPolicy(PolicyType.Service, organizationId, serviceId, version, policyId);
+    }
+
+    /**
+     * @see org.overlord.apiman.dt.api.rest.contract.IServiceResource#updatePolicy(java.lang.String, java.lang.String, java.lang.String, long, org.overlord.apiman.dt.api.beans.policies.PolicyBean)
+     */
+    @Override
+    public void updatePolicy(String organizationId, String serviceId, String version,
+            long policyId, PolicyBean bean) throws OrganizationNotFoundException,
+            ServiceVersionNotFoundException, PolicyNotFoundException, NotAuthorizedException {
+        if (!securityContext.hasPermission(PermissionType.svcEdit, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
+
+        try {
+            ServiceVersionBean avb = query.getServiceVersion(organizationId, serviceId, version);
+            if (avb == null)
+                throw ExceptionFactory.serviceVersionNotFoundException(serviceId, version);
+            PolicyBean policy = this.storage.get(policyId, PolicyBean.class);
+            if (bean.getName() != null)
+                policy.setName(bean.getName());
+            if (bean.getDescription() != null)
+                policy.setDescription(bean.getDescription());
+            if (bean.getConfiguration() != null)
+                policy.setConfiguration(bean.getConfiguration());
+            policy.setModifiedOn(new Date());
+            policy.setModifiedBy(this.securityContext.getCurrentUser());
+            this.storage.update(policy);
+        } catch (DoesNotExistException e) {
+            throw ExceptionFactory.policyNotFoundException(policyId);
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+    }
+
+    /**
+     * @see org.overlord.apiman.dt.api.rest.contract.IServiceResource#deletePolicy(java.lang.String, java.lang.String, java.lang.String, long)
+     */
+    @Override
+    public void deletePolicy(String organizationId, String serviceId, String version, long policyId)
+            throws OrganizationNotFoundException, ServiceVersionNotFoundException,
+            PolicyNotFoundException, NotAuthorizedException {
+        if (!securityContext.hasPermission(PermissionType.svcEdit, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
+
+        try {
+            ServiceVersionBean avb = query.getServiceVersion(organizationId, serviceId, version);
+            if (avb == null)
+                throw ExceptionFactory.serviceVersionNotFoundException(serviceId, version);
+            PolicyBean policy = this.storage.get(policyId, PolicyBean.class);
+            this.storage.delete(policy);
+        } catch (DoesNotExistException e) {
+            throw ExceptionFactory.policyNotFoundException(policyId);
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+    }
+
+    /**
+     * @see org.overlord.apiman.dt.api.rest.contract.IServiceResource#listPolicies(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public List<PolicyBean> listPolicies(String organizationId, String serviceId, String version)
+            throws OrganizationNotFoundException, ServiceVersionNotFoundException, NotAuthorizedException {
+        if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
+
+        // Try to get the service first - will throw an exception if not found.
+        getVersion(organizationId, serviceId, version);
+
+        try {
+            return query.getPolicies(organizationId, serviceId, version, PolicyType.Service);
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+    }
+
 }
