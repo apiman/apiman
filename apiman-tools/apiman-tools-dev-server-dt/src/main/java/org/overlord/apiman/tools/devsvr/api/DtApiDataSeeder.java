@@ -144,6 +144,8 @@ public class DtApiDataSeeder extends DefaultTestDataSeeder {
         pvb.setPlan(plan);
         pvb.setCreatedBy("admin"); //$NON-NLS-1$
         pvb.setCreatedOn(new Date());
+        pvb.setModifiedBy("admin"); //$NON-NLS-1$
+        pvb.setModifiedOn(new Date());
         storage.create(pvb);
 
         plan = new PlanBean();
@@ -160,13 +162,17 @@ public class DtApiDataSeeder extends DefaultTestDataSeeder {
         pvb.setPlan(plan);
         pvb.setCreatedBy("admin"); //$NON-NLS-1$
         pvb.setCreatedOn(new Date());
+        pvb.setModifiedBy("admin"); //$NON-NLS-1$
+        pvb.setModifiedOn(new Date());
         storage.create(pvb);
         pvb = new PlanVersionBean();
         pvb.setVersion("1.2"); //$NON-NLS-1$
         pvb.setStatus(PlanStatus.Created);
         pvb.setPlan(plan);
-        pvb.setCreatedBy("admin"); //$NON-NLS-1$
+        pvb.setCreatedBy("bwayne"); //$NON-NLS-1$
         pvb.setCreatedOn(new Date());
+        pvb.setModifiedBy("bwayne"); //$NON-NLS-1$
+        pvb.setModifiedOn(new Date());
         storage.create(pvb);
 
         // Create some applications
@@ -184,6 +190,8 @@ public class DtApiDataSeeder extends DefaultTestDataSeeder {
         avb.setApplication(app);
         avb.setCreatedBy("admin"); //$NON-NLS-1$
         avb.setCreatedOn(new Date());
+        avb.setModifiedBy("admin"); //$NON-NLS-1$
+        avb.setModifiedOn(new Date());
         storage.create(avb);
 
         app = new ApplicationBean();
@@ -200,6 +208,8 @@ public class DtApiDataSeeder extends DefaultTestDataSeeder {
         avb.setApplication(app);
         avb.setCreatedBy("admin"); //$NON-NLS-1$
         avb.setCreatedOn(new Date());
+        avb.setModifiedBy("admin"); //$NON-NLS-1$
+        avb.setModifiedOn(new Date());
         storage.create(avb);
 
         app = new ApplicationBean();
@@ -216,6 +226,8 @@ public class DtApiDataSeeder extends DefaultTestDataSeeder {
         avb.setApplication(app);
         avb.setCreatedBy("admin"); //$NON-NLS-1$
         avb.setCreatedOn(new Date());
+        avb.setModifiedBy("admin"); //$NON-NLS-1$
+        avb.setModifiedOn(new Date());
         storage.create(avb);
         
         // Create some services
@@ -233,6 +245,8 @@ public class DtApiDataSeeder extends DefaultTestDataSeeder {
         svb.setService(service);
         svb.setCreatedBy("admin"); //$NON-NLS-1$
         svb.setCreatedOn(new Date());
+        svb.setModifiedBy("admin"); //$NON-NLS-1$
+        svb.setModifiedOn(new Date());
         svb.setEndpoint("http://localhost:9001/echo/s-ramp-server/"); //$NON-NLS-1$
         svb.setEndpointType(EndpointType.rest);
         ServicePlanBean spb = new ServicePlanBean();

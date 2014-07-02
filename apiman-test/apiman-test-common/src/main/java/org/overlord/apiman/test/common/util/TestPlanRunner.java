@@ -60,9 +60,9 @@ import org.slf4j.LoggerFactory;
  * @author eric.wittmann@redhat.com
  */
 public class TestPlanRunner {
-    
+
     private static Logger logger = LoggerFactory.getLogger(TestPlanRunner.class);
-    
+
     private String baseApiUrl;
 
     /**
@@ -75,7 +75,7 @@ public class TestPlanRunner {
 
     /**
      * Called to run a test plan.
-     * 
+     *
      * @param resourcePath
      * @param cl
      */
@@ -102,7 +102,7 @@ public class TestPlanRunner {
 
             log("Test Group [{0}] Completed Successfully", group.getName()); //$NON-NLS-1$
         }
-        
+
         log(""); //$NON-NLS-1$
         log("-------------------------------------------------------------------------------"); //$NON-NLS-1$
         log("Test Plan successfully executed: " + resourcePath); //$NON-NLS-1$
@@ -112,7 +112,7 @@ public class TestPlanRunner {
 
     /**
      * Runs a single REST test.
-     * 
+     *
      * @param restTest
      */
     private void runTest(RestTest restTest) throws Error {
@@ -137,20 +137,20 @@ public class TestPlanRunner {
                 Assert.fail("Unsupported method in REST Test: " + restTest.getRequestMethod()); //$NON-NLS-1$
             }
             request.setURI(uri);
-            
+
             Map<String, String> requestHeaders = restTest.getRequestHeaders();
             for (Entry<String, String> entry : requestHeaders.entrySet()) {
                 request.setHeader(entry.getKey(), entry.getValue());
             }
-            
+
             // Set up basic auth
             String authorization = createBasicAuthorization(restTest.getUsername(), restTest.getPassword());
             if (authorization != null) {
                 request.setHeader("Authorization", authorization); //$NON-NLS-1$
             }
-            
+
             DefaultHttpClient client = new DefaultHttpClient();
-            
+
             HttpResponse response = client.execute(request);
             assertResponse(restTest, response);
         } catch (Error e) {
@@ -159,7 +159,7 @@ public class TestPlanRunner {
         } catch (Exception e) {
             throw new Error(e);
         }
-        
+
     }
 
     /**
@@ -308,7 +308,7 @@ public class TestPlanRunner {
     /**
      * Asserts that the JSON payload matches what we expected, as defined
      * in the configuration of the rest test.
-     * @param restTest 
+     * @param restTest
      * @param expectedJson
      * @param actualJson
      */
@@ -322,7 +322,7 @@ public class TestPlanRunner {
             ArrayNode actualArray = (ArrayNode) actualValue;
             Assert.assertEquals("Array size mismatch.", expectedArray.size(), actualArray.size()); //$NON-NLS-1$
             String ordering = restTest.getExpectedResponseHeaders().get("X-RestTest-ArrayOrdering"); //$NON-NLS-1$
-            
+
             JsonNode [] expected = new JsonNode[expectedArray.size()];
             JsonNode [] actual = new JsonNode[actualArray.size()];
             for (int idx = 0; idx < expected.length; idx++) {
@@ -437,7 +437,7 @@ public class TestPlanRunner {
             for (String line : lines) {
                 builder.append(line).append("\n"); //$NON-NLS-1$
             }
-            
+
             String actual = builder.toString();
             String expected = restTest.getExpectedResponsePayload();
             Assert.assertEquals("Response payload (text/plain) mismatch.", expected, actual); //$NON-NLS-1$
@@ -451,15 +451,15 @@ public class TestPlanRunner {
     /**
      * Gets the absolute URL to use to invoke a rest service at a given path.
      * @param path
-     * @throws URISyntaxException 
+     * @throws URISyntaxException
      */
     public URI getUri(String path) throws URISyntaxException {
         return new URI(baseApiUrl + path);
     }
-    
+
     /**
      * Logs a message.
-     * 
+     *
      * @param message
      * @param params
      */

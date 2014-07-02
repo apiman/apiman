@@ -32,6 +32,7 @@ import org.overlord.apiman.dt.api.beans.apps.ApplicationBean;
 import org.overlord.apiman.dt.api.beans.apps.ApplicationVersionBean;
 import org.overlord.apiman.dt.api.beans.contracts.ContractBean;
 import org.overlord.apiman.dt.api.beans.contracts.NewContractBean;
+import org.overlord.apiman.dt.api.beans.policies.PolicyBean;
 import org.overlord.apiman.dt.api.beans.summary.ApplicationSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.ContractSummaryBean;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ApplicationAlreadyExistsException;
@@ -42,23 +43,24 @@ import org.overlord.apiman.dt.api.rest.contract.exceptions.ContractNotFoundExcep
 import org.overlord.apiman.dt.api.rest.contract.exceptions.NotAuthorizedException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.PlanNotFoundException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.PolicyNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ServiceNotFoundException;
 
 /**
  * The Application API.
- * 
+ *
  * @author eric.wittmann@redhat.com
  */
 @Path("organizations")
 public interface IApplicationResource {
-    
+
     @POST
     @Path("{organizationId}/applications")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public ApplicationBean create(@PathParam("organizationId") String organizationId, ApplicationBean bean)
             throws OrganizationNotFoundException, ApplicationAlreadyExistsException, NotAuthorizedException;
-    
+
     @GET
     @Path("{organizationId}/applications/{applicationId}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -139,5 +141,46 @@ public interface IApplicationResource {
             @PathParam("applicationId") String applicationId, @PathParam("version") String version,
             @PathParam("contractId") Long contractId) throws ApplicationNotFoundException,
             ContractNotFoundException, NotAuthorizedException;
+
+    @POST
+    @Path("{organizationId}/applications/{applicationId}/versions/{version}/policies")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public PolicyBean createPolicy(@PathParam("organizationId") String organizationId,
+            @PathParam("applicationId") String applicationId, @PathParam("version") String version,
+            PolicyBean bean) throws OrganizationNotFoundException, ApplicationVersionNotFoundException,
+            NotAuthorizedException;
+
+    @GET
+    @Path("{organizationId}/applications/{applicationId}/versions/{version}/policies/{policyId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public PolicyBean getPolicy(@PathParam("organizationId") String organizationId,
+            @PathParam("applicationId") String applicationId, @PathParam("version") String version,
+            @PathParam("policyId") long policyId) throws OrganizationNotFoundException, ApplicationVersionNotFoundException,
+            PolicyNotFoundException, NotAuthorizedException;
+
+    @PUT
+    @Path("{organizationId}/applications/{applicationId}/versions/{version}/policies/{policyId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public void updatePolicy(@PathParam("organizationId") String organizationId,
+            @PathParam("applicationId") String applicationId, @PathParam("version") String version,
+            @PathParam("policyId") long policyId, PolicyBean bean) throws OrganizationNotFoundException,
+            ApplicationVersionNotFoundException, PolicyNotFoundException, NotAuthorizedException;
+
+    @DELETE
+    @Path("{organizationId}/applications/{applicationId}/versions/{version}/policies/{policyId}")
+    public void deletePolicy(@PathParam("organizationId") String organizationId,
+            @PathParam("applicationId") String applicationId, @PathParam("version") String version,
+            @PathParam("policyId") long policyId) throws OrganizationNotFoundException, ApplicationVersionNotFoundException,
+            PolicyNotFoundException, NotAuthorizedException;
+
+    @GET
+    @Path("{organizationId}/applications/{applicationId}/versions/{version}/policies")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<PolicyBean> listPolicies(@PathParam("organizationId") String organizationId,
+            @PathParam("applicationId") String applicationId, @PathParam("version") String version)
+            throws OrganizationNotFoundException, ApplicationVersionNotFoundException,
+            NotAuthorizedException;
 
 }

@@ -207,6 +207,8 @@ public class PlanResourceImpl implements IPlanResource {
             PlanBean plan = storage.get(organizationId, planId, PlanBean.class);
             bean.setCreatedBy(securityContext.getCurrentUser());
             bean.setCreatedOn(new Date());
+            bean.setModifiedBy(securityContext.getCurrentUser());
+            bean.setModifiedOn(new Date());
             bean.setStatus(PlanStatus.Created);
             bean.setPlan(plan);
             storage.create(bean);
@@ -252,6 +254,8 @@ public class PlanResourceImpl implements IPlanResource {
             bean.setId(pvb.getId());
             bean.setPlan(pvb.getPlan());
             bean.setStatus(PlanStatus.Created);
+            bean.setModifiedBy(securityContext.getCurrentUser());
+            bean.setModifiedOn(new Date());
             bean.setLockedOn(null);
             storage.update(bean);
         } catch (DoesNotExistException e) {

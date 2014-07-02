@@ -1,0 +1,26 @@
+POST /organizations/Organization1/applications/Application1/versions/1.0/policies admin/admin
+Content-Type: application/json
+
+{
+  "name" : "My Test Policy",
+  "description" : "This is a policy that does nothing but test.",
+  "policyImpl" : "org.example.foo.TestPolicy",
+  "configuration" : "{\"foo\" : \"bar\"}"
+}
+----
+200
+Content-Type: application/json
+X-RestTest-BindTo-policy-id: $.id
+
+{
+  "type" : "Application",
+  "organizationId" : "Organization1",
+  "entityId" : "Application1",
+  "entityVersion" : "1.0",
+  "name" : "My Test Policy",
+  "description" : "This is a policy that does nothing but test.",
+  "policyImpl" : "org.example.foo.TestPolicy",
+  "configuration" : "{\"foo\" : \"bar\"}",
+  "createdBy" : "admin",
+  "modifiedBy" : "admin"
+}

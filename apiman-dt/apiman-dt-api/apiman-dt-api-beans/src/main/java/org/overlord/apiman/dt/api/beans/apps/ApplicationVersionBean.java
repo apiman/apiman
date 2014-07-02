@@ -61,10 +61,14 @@ public class ApplicationVersionBean implements Serializable {
     @Column(updatable=false, nullable=false)
     @Index(name="app_vIdx")
     private String version;
-    @Column(updatable=false)
+    @Column(updatable=false, nullable=false)
     private String createdBy;
-    @Column(updatable=false)
+    @Column(updatable=false, nullable=false)
     private Date createdOn;
+    @Column(updatable=true, nullable=false)
+    private String modifiedBy;
+    @Column(updatable=true, nullable=false)
+    private Date modifiedOn;
     private Date publishedOn;
     private Date retiredOn;
     
@@ -184,6 +188,34 @@ public class ApplicationVersionBean implements Serializable {
      */
     public void setRetiredOn(Date retiredOn) {
         this.retiredOn = retiredOn;
+    }
+
+    /**
+     * @return the modifiedBy
+     */
+    public String getModifiedBy() {
+        return modifiedBy;
+    }
+
+    /**
+     * @param modifiedBy the modifiedBy to set
+     */
+    public void setModifiedBy(String modifiedBy) {
+        this.modifiedBy = modifiedBy;
+    }
+
+    /**
+     * @return the modifiedOn
+     */
+    public Date getModifiedOn() {
+        return modifiedOn;
+    }
+
+    /**
+     * @param modifiedOn the modifiedOn to set
+     */
+    public void setModifiedOn(Date modifiedOn) {
+        this.modifiedOn = modifiedOn;
     }
 
     /**

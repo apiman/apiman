@@ -179,6 +179,8 @@ public class ServiceResourceImpl implements IServiceResource {
             ServiceBean service = storage.get(organizationId, serviceId, ServiceBean.class);
             bean.setCreatedBy(securityContext.getCurrentUser());
             bean.setCreatedOn(new Date());
+            bean.setModifiedBy(securityContext.getCurrentUser());
+            bean.setModifiedOn(new Date());
             bean.setStatus(ServiceStatus.Created);
             bean.setService(service);
             if (serviceValidator.isReady(bean)) {
@@ -233,6 +235,8 @@ public class ServiceResourceImpl implements IServiceResource {
             bean.setId(svb.getId());
             bean.setService(svb.getService());
             bean.setStatus(ServiceStatus.Created);
+            bean.setModifiedBy(securityContext.getCurrentUser());
+            bean.setModifiedOn(new Date());
             bean.setPublishedOn(null);
             bean.setRetiredOn(null);
             if (serviceValidator.isReady(bean)) {

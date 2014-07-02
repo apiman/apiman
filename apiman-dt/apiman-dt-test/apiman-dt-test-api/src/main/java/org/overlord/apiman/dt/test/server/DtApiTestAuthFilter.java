@@ -25,13 +25,13 @@ import org.overlord.commons.auth.filters.SamlBearerTokenAuthFilter;
  * @author eric.wittmann@redhat.com
  */
 public class DtApiTestAuthFilter extends SamlBearerTokenAuthFilter {
-    
+
     /**
      * Constructor.
      */
     public DtApiTestAuthFilter() {
     }
-    
+
     /**
      * @see org.overlord.commons.auth.filters.SamlBearerTokenAuthFilter#defaultAllowedIssuers()
      */
@@ -39,7 +39,7 @@ public class DtApiTestAuthFilter extends SamlBearerTokenAuthFilter {
     protected Set<String> defaultAllowedIssuers() {
         return null;
     }
-    
+
     /**
      * @see org.overlord.commons.auth.filters.SamlBearerTokenAuthFilter#defaultSignatureRequired()
      */
@@ -47,5 +47,5 @@ public class DtApiTestAuthFilter extends SamlBearerTokenAuthFilter {
     protected boolean defaultSignatureRequired() {
         return false;
     }
-    
+
 }

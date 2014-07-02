@@ -50,6 +50,7 @@ public class ApplicationBean implements Serializable {
     @Column(nullable=false)
     private String name;
     @Lob
+    @Column(updatable=true, nullable=true)
     private String description;
     @Column(updatable=false, nullable=false)
     private String createdBy;
