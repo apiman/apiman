@@ -28,12 +28,12 @@ import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
 import org.overlord.apiman.dt.api.beans.plans.PlanBean;
 import org.overlord.apiman.dt.api.beans.plans.PlanStatus;
 import org.overlord.apiman.dt.api.beans.plans.PlanVersionBean;
+import org.overlord.apiman.dt.api.beans.policies.PolicyBean;
+import org.overlord.apiman.dt.api.beans.policies.PolicyType;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
 import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
 import org.overlord.apiman.dt.api.beans.summary.PlanSummaryBean;
 import org.overlord.apiman.dt.api.core.IIdmStorage;
-import org.overlord.apiman.dt.api.core.IStorage;
-import org.overlord.apiman.dt.api.core.IStorageQuery;
 import org.overlord.apiman.dt.api.core.exceptions.AlreadyExistsException;
 import org.overlord.apiman.dt.api.core.exceptions.DoesNotExistException;
 import org.overlord.apiman.dt.api.core.exceptions.StorageException;
@@ -46,10 +46,10 @@ import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationNotFoundE
 import org.overlord.apiman.dt.api.rest.contract.exceptions.PlanAlreadyExistsException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.PlanNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.PlanVersionNotFoundException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.PolicyNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.SystemErrorException;
 import org.overlord.apiman.dt.api.rest.impl.util.ExceptionFactory;
 import org.overlord.apiman.dt.api.rest.impl.util.SearchCriteriaUtil;
-import org.overlord.apiman.dt.api.security.ISecurityContext;
 
 /**
  * Implementation of the Plan API.
@@ -57,16 +57,12 @@ import org.overlord.apiman.dt.api.security.ISecurityContext;
  * @author eric.wittmann@redhat.com
  */
 @ApplicationScoped
-public class PlanResourceImpl implements IPlanResource {
+public class PlanResourceImpl extends AbstractPolicyResourceImpl implements IPlanResource {
 
-    @Inject IStorage storage;
-    @Inject IStorageQuery query;
     @Inject IIdmStorage idmStorage;
     
     @Inject IUserResource users;
     @Inject IRoleResource roles;
-    
-    @Inject ISecurityContext securityContext;
     
     /**
      * Constructor.
@@ -181,20 +177,16 @@ public class PlanResourceImpl implements IPlanResource {
             throw new SystemErrorException(e);
         }
 
+        SearchCriteriaUtil.validateSearchCriteria(criteria);
+
         // TODO only return plans that the user is permitted to see
         try {
-            SearchCriteriaUtil.validateSearchCriteria(criteria);
             return storage.find(criteria, PlanBean.class);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
     }
     
-    
-    
-    
-    
-
     /**
      * @see org.overlord.apiman.dt.api.rest.contract.IPlanResource#createVersion(java.lang.String, java.lang.String, org.overlord.apiman.dt.api.beans.apps.PlanVersionBean)
      */
@@ -281,6 +273,121 @@ public class PlanResourceImpl implements IPlanResource {
             return query.getPlanVersions(organizationId, planId);
         } catch (DoesNotExistException e) {
             throw ExceptionFactory.planNotFoundException(planId);
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+    }
+
+    /**
+     * @see org.overlord.apiman.dt.api.rest.contract.IPlanResource#createPolicy(java.lang.String, java.lang.String, java.lang.String, org.overlord.apiman.dt.api.beans.policies.PolicyBean)
+     */
+    @Override
+    public PolicyBean createPolicy(String organizationId, String planId, String version,
+            PolicyBean bean) throws OrganizationNotFoundException, PlanVersionNotFoundException,
+            NotAuthorizedException {
+        if (!securityContext.hasPermission(PermissionType.appEdit, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
+        
+        try {
+            PlanVersionBean avb = query.getPlanVersion(organizationId, planId, version);
+            if (avb == null)
+                throw ExceptionFactory.planVersionNotFoundException(planId, version);
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+        
+        return doCreatePolicy(organizationId, planId, version, bean, PolicyType.Plan);
+    }
+
+    /**
+     * @see org.overlord.apiman.dt.api.rest.contract.IPlanResource#getPolicy(java.lang.String, java.lang.String, java.lang.String, long)
+     */
+    @Override
+    public PolicyBean getPolicy(String organizationId, String planId, String version, long policyId)
+            throws OrganizationNotFoundException, PlanVersionNotFoundException,
+            PolicyNotFoundException, NotAuthorizedException {
+        if (!securityContext.hasPermission(PermissionType.appView, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
+        
+        try {
+            PlanVersionBean avb = query.getPlanVersion(organizationId, planId, version);
+            if (avb == null)
+                throw ExceptionFactory.planVersionNotFoundException(planId, version);
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+
+        return doGetPolicy(PolicyType.Plan, organizationId, planId, version, policyId);
+    }
+
+    /**
+     * @see org.overlord.apiman.dt.api.rest.contract.IPlanResource#updatePolicy(java.lang.String, java.lang.String, java.lang.String, long, org.overlord.apiman.dt.api.beans.policies.PolicyBean)
+     */
+    @Override
+    public void updatePolicy(String organizationId, String planId, String version,
+            long policyId, PolicyBean bean) throws OrganizationNotFoundException,
+            PlanVersionNotFoundException, PolicyNotFoundException, NotAuthorizedException {
+        if (!securityContext.hasPermission(PermissionType.appEdit, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
+
+        try {
+            PlanVersionBean avb = query.getPlanVersion(organizationId, planId, version);
+            if (avb == null)
+                throw ExceptionFactory.planVersionNotFoundException(planId, version);
+            PolicyBean policy = this.storage.get(policyId, PolicyBean.class);
+            if (bean.getName() != null)
+                policy.setName(bean.getName());
+            if (bean.getDescription() != null)
+                policy.setDescription(bean.getDescription());
+            if (bean.getConfiguration() != null)
+                policy.setConfiguration(bean.getConfiguration());
+            policy.setModifiedOn(new Date());
+            policy.setModifiedBy(this.securityContext.getCurrentUser());
+            this.storage.update(policy);
+        } catch (DoesNotExistException e) {
+            throw ExceptionFactory.policyNotFoundException(policyId);
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+    }
+
+    /**
+     * @see org.overlord.apiman.dt.api.rest.contract.IPlanResource#deletePolicy(java.lang.String, java.lang.String, java.lang.String, long)
+     */
+    @Override
+    public void deletePolicy(String organizationId, String planId, String version, long policyId)
+            throws OrganizationNotFoundException, PlanVersionNotFoundException,
+            PolicyNotFoundException, NotAuthorizedException {
+        if (!securityContext.hasPermission(PermissionType.appEdit, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
+
+        try {
+            PlanVersionBean avb = query.getPlanVersion(organizationId, planId, version);
+            if (avb == null)
+                throw ExceptionFactory.planVersionNotFoundException(planId, version);
+            PolicyBean policy = this.storage.get(policyId, PolicyBean.class);
+            this.storage.delete(policy);
+        } catch (DoesNotExistException e) {
+            throw ExceptionFactory.policyNotFoundException(policyId);
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+    }
+
+    /**
+     * @see org.overlord.apiman.dt.api.rest.contract.IPlanResource#listPolicies(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public List<PolicyBean> listPolicies(String organizationId, String planId, String version)
+            throws OrganizationNotFoundException, PlanVersionNotFoundException, NotAuthorizedException {
+        if (!securityContext.hasPermission(PermissionType.appView, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
+
+        // Try to get the plan first - will throw an exception if not found.
+        getVersion(organizationId, planId, version);
+
+        try {
+            return query.getPolicies(organizationId, planId, version, PolicyType.Plan);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
