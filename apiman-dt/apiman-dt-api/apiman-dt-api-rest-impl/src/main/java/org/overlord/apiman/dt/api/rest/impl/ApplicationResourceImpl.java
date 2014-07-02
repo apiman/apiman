@@ -413,7 +413,7 @@ public class ApplicationResourceImpl extends AbstractPolicyResourceImpl implemen
             throw new SystemErrorException(e);
         }
         
-        return doCreatePolicy(organizationId, applicationId, version, bean);
+        return doCreatePolicy(organizationId, applicationId, version, bean, PolicyType.Application);
     }
 
     /**

@@ -19,6 +19,7 @@ package org.overlord.apiman.dt.api.rest.contract;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -27,6 +28,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.overlord.apiman.dt.api.beans.policies.PolicyBean;
 import org.overlord.apiman.dt.api.beans.services.ServiceBean;
 import org.overlord.apiman.dt.api.beans.services.ServiceVersionBean;
 import org.overlord.apiman.dt.api.beans.summary.ServicePlanSummaryBean;
@@ -34,6 +36,7 @@ import org.overlord.apiman.dt.api.beans.summary.ServiceSummaryBean;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.InvalidServiceStatusException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.NotAuthorizedException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationNotFoundException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.PolicyNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ServiceAlreadyExistsException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ServiceNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ServiceVersionNotFoundException;
@@ -109,4 +112,46 @@ public interface IServiceResource {
     public List<ServicePlanSummaryBean> getVersionPlans(@PathParam("organizationId") String organizationId,
             @PathParam("serviceId") String serviceId, @PathParam("version") String version)
             throws ServiceVersionNotFoundException, NotAuthorizedException;
+
+    @POST
+    @Path("{organizationId}/services/{serviceId}/versions/{version}/policies")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public PolicyBean createPolicy(@PathParam("organizationId") String organizationId,
+            @PathParam("serviceId") String serviceId, @PathParam("version") String version,
+            PolicyBean bean) throws OrganizationNotFoundException, ServiceVersionNotFoundException,
+            NotAuthorizedException;
+
+    @GET
+    @Path("{organizationId}/services/{serviceId}/versions/{version}/policies/{policyId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public PolicyBean getPolicy(@PathParam("organizationId") String organizationId,
+            @PathParam("serviceId") String serviceId, @PathParam("version") String version,
+            @PathParam("policyId") long policyId) throws OrganizationNotFoundException, ServiceVersionNotFoundException,
+            PolicyNotFoundException, NotAuthorizedException;
+
+    @PUT
+    @Path("{organizationId}/services/{serviceId}/versions/{version}/policies/{policyId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public void updatePolicy(@PathParam("organizationId") String organizationId,
+            @PathParam("serviceId") String serviceId, @PathParam("version") String version,
+            @PathParam("policyId") long policyId, PolicyBean bean) throws OrganizationNotFoundException,
+            ServiceVersionNotFoundException, PolicyNotFoundException, NotAuthorizedException;
+
+    @DELETE
+    @Path("{organizationId}/services/{serviceId}/versions/{version}/policies/{policyId}")
+    public void deletePolicy(@PathParam("organizationId") String organizationId,
+            @PathParam("serviceId") String serviceId, @PathParam("version") String version,
+            @PathParam("policyId") long policyId) throws OrganizationNotFoundException, ServiceVersionNotFoundException,
+            PolicyNotFoundException, NotAuthorizedException;
+
+    @GET
+    @Path("{organizationId}/services/{serviceId}/versions/{version}/policies")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<PolicyBean> listPolicies(@PathParam("organizationId") String organizationId,
+            @PathParam("serviceId") String serviceId, @PathParam("version") String version)
+            throws OrganizationNotFoundException, ServiceVersionNotFoundException,
+            NotAuthorizedException;
+
 }
