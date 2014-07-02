@@ -33,4 +33,15 @@
     <test name="Get Version 1.0 (updated)">test-plan-data/plans/versions/007_get-version-1.0.resttest</test>
   </testGroup>
 
+  <!-- Test Plan Policy management -->
+  <testGroup name="Plan Policy Management">
+    <test name="Create Policy 1">test-plan-data/plans/policies/001_create-policy1.resttest</test>
+    <test name="Get Policy 1">test-plan-data/plans/policies/002_get-policy1.resttest</test>
+    <test name="Create Policy 2">test-plan-data/plans/policies/003_create-policy2.resttest</test>
+    <test name="List Policies">test-plan-data/plans/policies/004_list-policies.resttest</test>
+    <test name="Update Policy 1">test-plan-data/plans/policies/005_update-policy1.resttest</test>
+    <test name="Delete Policy 2">test-plan-data/plans/policies/006_delete-policy2.resttest</test>
+    <test name="List Policies">test-plan-data/plans/policies/007_list-policies.resttest</test>
+  </testGroup>
+
 </testPlan>

@@ -19,6 +19,7 @@ package org.overlord.apiman.dt.api.rest.contract;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -29,6 +30,7 @@ import javax.ws.rs.core.MediaType;
 
 import org.overlord.apiman.dt.api.beans.plans.PlanBean;
 import org.overlord.apiman.dt.api.beans.plans.PlanVersionBean;
+import org.overlord.apiman.dt.api.beans.policies.PolicyBean;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
 import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
 import org.overlord.apiman.dt.api.beans.summary.PlanSummaryBean;
@@ -38,6 +40,7 @@ import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationNotFoundE
 import org.overlord.apiman.dt.api.rest.contract.exceptions.PlanAlreadyExistsException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.PlanNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.PlanVersionNotFoundException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.PolicyNotFoundException;
 
 /**
  * The Plan API.
@@ -109,5 +112,46 @@ public interface IPlanResource {
     @Produces(MediaType.APPLICATION_JSON)
     public SearchResultsBean<PlanBean> search(@PathParam("organizationId") String organizationId,
             SearchCriteriaBean criteria) throws OrganizationNotFoundException, InvalidSearchCriteriaException;
+
+    @POST
+    @Path("{organizationId}/plans/{planId}/versions/{version}/policies")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public PolicyBean createPolicy(@PathParam("organizationId") String organizationId,
+            @PathParam("planId") String planId, @PathParam("version") String version,
+            PolicyBean bean) throws OrganizationNotFoundException, PlanVersionNotFoundException,
+            NotAuthorizedException;
+
+    @GET
+    @Path("{organizationId}/plans/{planId}/versions/{version}/policies/{policyId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public PolicyBean getPolicy(@PathParam("organizationId") String organizationId,
+            @PathParam("planId") String planId, @PathParam("version") String version,
+            @PathParam("policyId") long policyId) throws OrganizationNotFoundException, PlanVersionNotFoundException,
+            PolicyNotFoundException, NotAuthorizedException;
+
+    @PUT
+    @Path("{organizationId}/plans/{planId}/versions/{version}/policies/{policyId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public void updatePolicy(@PathParam("organizationId") String organizationId,
+            @PathParam("planId") String planId, @PathParam("version") String version,
+            @PathParam("policyId") long policyId, PolicyBean bean) throws OrganizationNotFoundException,
+            PlanVersionNotFoundException, PolicyNotFoundException, NotAuthorizedException;
+
+    @DELETE
+    @Path("{organizationId}/plans/{planId}/versions/{version}/policies/{policyId}")
+    public void deletePolicy(@PathParam("organizationId") String organizationId,
+            @PathParam("planId") String planId, @PathParam("version") String version,
+            @PathParam("policyId") long policyId) throws OrganizationNotFoundException, PlanVersionNotFoundException,
+            PolicyNotFoundException, NotAuthorizedException;
+
+    @GET
+    @Path("{organizationId}/plans/{planId}/versions/{version}/policies")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<PolicyBean> listPolicies(@PathParam("organizationId") String organizationId,
+            @PathParam("planId") String planId, @PathParam("version") String version)
+            throws OrganizationNotFoundException, PlanVersionNotFoundException,
+            NotAuthorizedException;
 
 }

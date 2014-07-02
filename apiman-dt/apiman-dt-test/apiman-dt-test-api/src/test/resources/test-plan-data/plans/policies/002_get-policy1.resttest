@@ -1,0 +1,17 @@
+GET /organizations/Organization1/plans/Plan1/versions/1.0/policies/${policy-id} admin/admin
+----
+200
+Content-Type: application/json
+
+{
+  "type" : "Plan",
+  "organizationId" : "Organization1",
+  "entityId" : "Plan1",
+  "entityVersion" : "1.0",
+  "name" : "My Test Policy",
+  "description" : "This is a policy that does nothing but test.",
+  "policyImpl" : "org.example.foo.TestPolicy",
+  "configuration" : "{\"foo\" : \"bar\"}",
+  "createdBy" : "admin",
+  "modifiedBy" : "admin"
+}

@@ -1,0 +1,3 @@
+DELETE /organizations/Organization1/plans/Plan1/versions/1.0/policies/${policy-id-2} admin/admin
+----
+204
