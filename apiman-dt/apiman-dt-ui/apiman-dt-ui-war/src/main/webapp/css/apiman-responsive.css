@@ -88,6 +88,18 @@
 
 /* Smart Phones */
 @media ( max-width : 480px) {
+  .no-phone {
+    display: none;
+  }
+
+  .dash-group {
+    width: 100%;
+  }
+
+  .dash-group .description {
+    display: none;
+  }
+  
   .apiman-filters .input-search {
     width: 220px;
   }
@@ -117,6 +129,7 @@
 
 /* Original iPhone */
 @media ( max-width : 360px) {
+  
   .apiman-entity-breadcrumb .title {
     font-size: 16px;
   }

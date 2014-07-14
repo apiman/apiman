@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <script type="text/javascript" src="site.js"></script>
+  </head>
+
+  <body>
+    
+    <!-- Top header/nav bar -->
+    <div id="overlord-header">
+    </div>
+
+    <!-- Page content -->
+    <div class="page container" data-field="page">
+      <div class="row">
+        <div class="col-md-12">
+          <h1 data-i18n-key="page-heading">Overlord API Management</h1>
+          <hr />
+        </div>
+        <div class="col-md-12 no-phone">
+          <span class="description" data-i18n-key="page-description">
+            Welcome to the Overlord API Management application.  Use this software to provide
+            various APIs (Services) to your users (Applications) through a secure, scalable,
+            and governed Gateway layer.  API Management allows Service Developers to centralize
+            control and analysis of their Services.  It also provides a central locaton for
+            Application Developers to find and consume available APIs.
+          </span>
+          <hr />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+        
+          <div class="dash-group">
+            <div class="title">
+              <i class="fa fa-shield"></i>
+              <span data-i18n-key="organizatoins">Organizations</span>
+            </div>
+            <div class="description" data-i18n-key="orgs-description">
+              All services and applications must be managed within the context of an 
+              Organization.  You can be a member of multiple Organizations at the same
+              time, with different roles in each:  you can be an Application
+              Developer in one organization and a Service Developer in another.
+            </div>
+            <div class="actions">
+              <ul>
+                <li><a href="new-org.html" data-i18n-key="actions.create-new-org" data-field="createOrg">Create a New Organization</a></li>
+                <li><a href="#" data-i18n-key="actions.browse-orgs" data-field="browseOrgs">Browse/Find an Organization</a></li>
+                <li><a href="user-orgs.html" data-i18n-key="actions.my-orgs" data-field="myOrgs">Go to My Organizations</a></li>
+              </ul>
+            </div>
+          </div>
+          
+          <div class="dash-group pull-right">
+            <div class="title">
+              <i class="fa fa-puzzle-piece"></i>
+              <span data-i18n-key="services">Services</span>
+            </div>
+            <div class="description" data-i18n-key="services-description">
+              Create, find, or manage Services.  A Service is also known as an API - anything
+              that can be invoked remotely by some sort of client (Application).  This platform
+              simply provides a way to expose existing APIs by defining them as Services and
+              attaching value-added policies to them.
+            </div>
+            <div class="actions">
+              <ul>
+                <li><a href="#"data-i18n-key="actions.find-service" data-field="browseServices">Find/Consume a Service</a></li>
+                <li><a href="user-services.html" data-i18n-key="actions.my-services" data-field="myServices">Manage My Services</a></li>
+                <li><a href="new-service.html" data-i18n-key="actions.create-service" data-field="createService">Create a New Service</a></li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="dash-group">
+            <div class="title">
+              <i class="fa fa-gears"></i>
+              <span data-i18n-key="applications">Applications</span>
+            </div>
+            <div class="description" data-i18n-key="applications-description">
+              Create and manage your Applications.  An Application is the thing that consumes
+              APIs (Services).  These consumers must be defined in this platform so that 
+              contracts can be created between them and the Services they wish to consume.
+            </div>
+            <div class="actions">
+              <ul>
+                <li><a href="user-apps.html" data-i18n-key="actions.my-apps" data-field="myApps">Manage My Applications</a></li>
+                <li><a href="new-app.html" data-i18n-key="actions.new-app" data-field="createApp">Create a New Application</a></li>
+              </ul>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </div> <!-- /container -->
+  </body>
+</html>

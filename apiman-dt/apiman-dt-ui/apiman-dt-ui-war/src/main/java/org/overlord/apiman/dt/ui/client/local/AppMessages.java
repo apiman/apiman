@@ -24,6 +24,8 @@ import org.jboss.errai.ui.shared.api.annotations.TranslationKey;
  */
 public class AppMessages {
 
+    @TranslationKey(defaultValue = "APIMan - Home")
+    public static final String TITLE_DASHBOARD = "page.title.dashboard"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "APIMan - New Organization")
     public static final String TITLE_NEW_ORG = "page.title.new-org"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "APIMan - New Application")
