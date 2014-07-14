@@ -33,8 +33,8 @@ body {
 }
 
 .dropdown-menu li a:hover {
-    color: rgb(255, 255, 255);
-    background-color: rgb(66, 139, 202);
+  color: rgb(255, 255, 255);
+  background-color: rgb(66, 139, 202);
 }
 
 .table th {
@@ -84,6 +84,36 @@ a:hover {
 
 div.page {
   margin-top: 20px;
+}
+
+.dash-group {
+  border: 1px solid rgb(238, 238, 238);
+  width: 49%;
+  float: left;
+  margin-top: 20px;
+}
+.dash-group .title {
+  background-color: #f6f6f6;
+  padding: 8px;
+  color: #666;
+  font-weight: bold;
+  font-size: 12px;
+  border-bottom: 1px solid rgb(238, 238, 238);
+}
+.dash-group .description {
+  padding: 10px;
+}
+.dash-group .actions {
+  padding: 10px;
+}
+.dash-group .actions ul {
+  margin: 0px;
+  margin-left: 40px;
+  padding: 0px;
+}
+.dash-group .actions ul li {
+  list-style: circle;
+  padding: 2px;
 }
 
 .apiman-label-faded {
