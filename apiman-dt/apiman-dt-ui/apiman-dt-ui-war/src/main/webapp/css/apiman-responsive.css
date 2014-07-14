@@ -99,8 +99,12 @@
   .dash-group .description {
     display: none;
   }
-  
-  .apiman-filters .input-search {
+
+  .browse-items .item {
+    width: 100%;
+  }
+
+  .input-search {
     width: 220px;
   }
   
