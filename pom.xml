@@ -83,7 +83,7 @@
     <undertow.version>1.0.1.Final</undertow.version>
 
     <!-- Dependency Overrides -->
-    <version.org.jboss.errai>3.0-SNAPSHOT</version.org.jboss.errai>
+    <version.org.jboss.errai>3.0.1.Final</version.org.jboss.errai>
   </properties>
 
   <dependencyManagement>

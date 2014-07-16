@@ -15,7 +15,6 @@
  */
 package org.overlord.apiman.dt.ui.client.local.pages;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -26,9 +25,10 @@ import org.jboss.errai.ui.nav.client.local.Page;
 import org.jboss.errai.ui.nav.client.local.PageState;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.overlord.apiman.dt.api.beans.policies.PolicyDefinitionBean;
 import org.overlord.apiman.dt.ui.client.local.AppMessages;
-import org.overlord.apiman.dt.ui.client.local.pages.policy.PolicyTypeSelectBox;
-import org.overlord.apiman.dt.ui.client.shared.beans.PolicyTypeBean;
+import org.overlord.apiman.dt.ui.client.local.pages.policy.PolicyDefinitionSelectBox;
+import org.overlord.apiman.dt.ui.client.local.services.rest.IRestInvokerCallback;
 
 
 /**
@@ -52,7 +52,9 @@ public class NewPolicyPage extends AbstractPage {
     String type;
     
     @DataField @Inject
-    PolicyTypeSelectBox typeSelector;
+    PolicyDefinitionSelectBox typeSelector;
+    
+    List<PolicyDefinitionBean> policyDefBeans;
     
     /**
      * Constructor.
@@ -60,15 +62,38 @@ public class NewPolicyPage extends AbstractPage {
     public NewPolicyPage() {
     }
     
+    /**
+     * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractPage#loadPageData()
+     */
+    @Override
+    protected int loadPageData() {
+        int size = super.loadPageData();
+        rest.listPolicyDefinitions(new IRestInvokerCallback<List<PolicyDefinitionBean>>() {
+            @Override
+            public void onSuccess(List<PolicyDefinitionBean> response) {
+                policyDefBeans = response;
+                dataPacketLoaded();
+            }
+            @Override
+            public void onError(Throwable error) {
+                dataPacketError(error);
+            }
+        });
+        return size;
+    }
+    
     @PostConstruct
     protected void postConstruct() {
-        List<PolicyTypeBean> policyTypes = new ArrayList<PolicyTypeBean>();
-        policyTypes.add(new PolicyTypeBean("Choose a policy type...", null, null));
-        policyTypes.add(new PolicyTypeBean("Authentication Policy", "org.overlord.policies.AuthenticationPolicyImpl", "lock"));
-        policyTypes.add(new PolicyTypeBean("Rate Limiting Policy", "org.overlord.policies.AuthenticationPolicyImpl", "arrow-circle-right"));
-        policyTypes.add(new PolicyTypeBean("User Defined (Custom) Policy", "user", "puzzle-piece"));
-        typeSelector.setOptions(policyTypes);
-    }    
+    }
+    
+    /**
+     * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractPage#renderPage()
+     */
+    @Override
+    protected void renderPage() {
+        super.renderPage();
+        typeSelector.setOptions(policyDefBeans);
+    }
 
     /**
      * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractPage#getPageTitle()

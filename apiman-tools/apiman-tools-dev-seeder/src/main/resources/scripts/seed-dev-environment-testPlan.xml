@@ -11,6 +11,14 @@
     <test name="Create Diane Prince">data/idm/006_create-dprince.resttest</test>
     <test name="Create Admin">data/idm/007_create-admin.resttest</test>
   </testGroup>
+  
+  <!-- Policy Definitions -->
+  <testGroup name="Policy Defs">
+    <test name="Create Policy Def 1">data/policyDefs/000_create-policy-def-1.resttest</test>
+    <test name="Create Policy Def 2">data/policyDefs/001_create-policy-def-2.resttest</test>
+    <test name="Create Policy Def 3">data/policyDefs/002_create-policy-def-3.resttest</test>
+  </testGroup>
+  
 
   <!-- Create Organizations -->
   <testGroup name="Create Orgs">

@@ -1,0 +1,12 @@
+GET /policyDefs/PolicyDefTwo admin/admin
+----
+200
+Content-Type: application/json
+
+{
+  "id" : "PolicyDefTwo",
+  "name" : "Policy Def Two",
+  "description" : "This is the first policy def.",
+  "policyImpl" : "org.example.PolicyDefTwo",
+  "icon" : "two"
+}

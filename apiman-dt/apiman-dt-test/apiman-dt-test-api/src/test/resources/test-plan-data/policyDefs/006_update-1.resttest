@@ -1,0 +1,9 @@
+PUT /policyDefs/PolicyDefOne admin/admin
+Content-Type: application/json
+
+{
+  "description" : "This is the first policy def. (updated)",
+  "icon" : "one-one"
+}
+----
+204

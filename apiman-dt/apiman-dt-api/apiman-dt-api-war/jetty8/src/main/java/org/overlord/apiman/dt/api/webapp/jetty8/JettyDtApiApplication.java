@@ -26,6 +26,7 @@ import org.overlord.apiman.dt.api.rest.impl.MemberResourceImpl;
 import org.overlord.apiman.dt.api.rest.impl.OrganizationResourceImpl;
 import org.overlord.apiman.dt.api.rest.impl.PermissionsResourceImpl;
 import org.overlord.apiman.dt.api.rest.impl.PlanResourceImpl;
+import org.overlord.apiman.dt.api.rest.impl.PolicyDefinitionResourceImpl;
 import org.overlord.apiman.dt.api.rest.impl.RoleResourceImpl;
 import org.overlord.apiman.dt.api.rest.impl.SearchResourceImpl;
 import org.overlord.apiman.dt.api.rest.impl.ServiceResourceImpl;
@@ -54,6 +55,7 @@ public class JettyDtApiApplication extends DtApiApplication {
         classes.add(CurrentUserResourceImpl.class);
         classes.add(PermissionsResourceImpl.class);
         classes.add(OrganizationResourceImpl.class);
+        classes.add(PolicyDefinitionResourceImpl.class);
         classes.add(ApplicationResourceImpl.class);
         classes.add(ServiceResourceImpl.class);
         classes.add(MemberResourceImpl.class);

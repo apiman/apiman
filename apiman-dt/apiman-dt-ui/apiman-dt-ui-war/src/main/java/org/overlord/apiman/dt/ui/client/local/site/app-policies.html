@@ -70,35 +70,38 @@
             <hr />
             <!-- The list of policies -->
             <div class="apiman-filters apiman-policies-filters">
-              <input data-field="policyFilter" class="form-control input-search" placeholder="Filter by policy name..." type="text">
               <a data-field="toNewPolicy" data-i18n-key="add-policy" href="new-policy.html" class="btn btn-primary pull-right">Add Policy</a>
             </div>
             <div class="clearfix"></div>
             <div class="apiman-policies" data-field="policies" data-role="dummy">
-              <div class="apiman-summaryrow">
-                <i class="apiman-policy-icon fa fa-puzzle-piece fa-fw"></i>
-                <div class="container-fluid">
+
+                <div class="container-fluid apiman-summaryrow">
                   <div class="row">
-                    <span class="title">User Defined (Custom) Policy</span>
-                    <span class="actions">
-                      <a href="#">Edit</a><span> | </span><a href="#">Remove</a><span> | </span><a href="#">Up</a><span> | </span><a href="#">Down</a>
-                    </span>
-                  </div>
-                  <div class="row">
-                    <div class="metaData">
-                      <span>Policy created by </span>
-                      <span><a href="user-orgs.html">bwayne</a></span>
-                      <span> on </span>
-                      <i class="fa fa-clock-o fa-inline"></i>
-                      <span>Dec 1, 2013</span>
+                    <div class="col-md-1 col-no-padding">
+                      <i class="apiman-policy-icon fa fa-puzzle-piece fa-fw movable"></i>
                     </div>
-                    <div class="description apiman-label-faded">
-                      A user-defined policy using 'com.example.mybusiness.policies.MyCustomPolicy' as the implementation.  Click edit for details.
+                    <div class="col-md-9 col-no-padding">
+                      <div>
+                        <span class="title"><a href="#">User Defined (Custom) Policy</a></span>
+                      </div>
+                      <div class="metaData">
+                        <span>Policy created by </span>
+                        <span><a href="user-orgs.html">bwayne</a></span>
+                        <span> on </span>
+                        <i class="fa fa-clock-o fa-inline"></i>
+                        <span>Dec 1, 2013</span>
+                      </div>
+                      <div class="description apiman-label-faded">
+                        A user-defined policy using 'com.example.mybusiness.policies.MyCustomPolicy' as the implementation.  Click edit for details.
+                      </div>
+                    </div>
+                    <div class="col-md-2 col-no-padding">
+                      <span class="actions"><button class="btn btn-default">Remove</button></span>
                     </div>
                   </div>
+                  <hr />
                 </div>
-                <hr />
-              </div>
+
             </div>
           </div>
         </div>

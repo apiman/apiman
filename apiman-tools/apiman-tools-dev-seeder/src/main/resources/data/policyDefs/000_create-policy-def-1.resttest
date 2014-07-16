@@ -1,0 +1,11 @@
+POST /policyDefs admin/admin
+Content-Type: application/json
+
+{
+  "name" : "Authentication Policy",
+  "description" : "This policy provides configurable authentication functionality to any service it is attached to.",
+  "policyImpl" : "org.overlord.apiman.rt.policies.AuthenticationPolicy",
+  "icon" : "lock"
+}
+----
+200

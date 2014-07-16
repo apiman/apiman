@@ -35,6 +35,7 @@
 
   <!-- Test Plan Policy management -->
   <testGroup name="Plan Policy Management">
+    <test name="Create Policy Def">test-plan-data/plans/policies/000_create-policy-def.resttest</test>
     <test name="Create Policy 1">test-plan-data/plans/policies/001_create-policy1.resttest</test>
     <test name="Get Policy 1">test-plan-data/plans/policies/002_get-policy1.resttest</test>
     <test name="Create Policy 2">test-plan-data/plans/policies/003_create-policy2.resttest</test>

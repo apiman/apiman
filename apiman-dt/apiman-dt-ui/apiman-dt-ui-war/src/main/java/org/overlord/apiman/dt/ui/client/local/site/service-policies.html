@@ -75,30 +75,34 @@
             </div>
             <div class="clearfix"></div>
             <div class="apiman-policies" data-field="policies" data-role="dummy">
-              <div class="apiman-summaryrow">
-                <i class="apiman-policy-icon fa fa-lock fa-fw"></i>
-                <div class="container-fluid">
+            
+                <div class="container-fluid apiman-summaryrow">
                   <div class="row">
-                    <span class="title">Authentication Policy</span>
-                    <span class="actions">
-                      <a href="#">Edit</a><span> | </span><a href="#">Remove</a><span> | </span><a href="#">Up</a><span> | </span><a href="#">Down</a>
-                    </span>
-                  </div>
-                  <div class="row">
-                    <div class="metaData">
-                      <span>Policy created by </span>
-                      <span><a href="user-orgs.html">bwayne</a></span>
-                      <span> on </span>
-                      <i class="fa fa-clock-o fa-inline"></i>
-                      <span>Dec 1, 2013</span>
+                    <div class="col-md-1 col-no-padding">
+                      <i class="apiman-policy-icon fa fa-lock fa-fw movable"></i>
                     </div>
-                    <div class="description apiman-label-faded">
-                      All service invocations must be first authenticated using BASIC auth against the "ldap://dir.mycompany.com" LDAP directory.
+                    <div class="col-md-9 col-no-padding">
+                      <div>
+                        <span class="title"><a href="#">Authentication Policy</a></span>
+                      </div>
+                      <div class="metaData">
+                        <span>Policy created by </span>
+                        <span><a href="user-orgs.html">ckent</a></span>
+                        <span> on </span>
+                        <i class="fa fa-clock-o fa-inline"></i>
+                        <span>Jan 1, 2014</span>
+                      </div>
+                      <div class="description apiman-label-faded">
+                        All service invocations must be first authenticated using BASIC auth against the "ldap://dir.mycompany.com" LDAP directory.
+                      </div>
+                    </div>
+                    <div class="col-md-2 col-no-padding">
+                      <span class="actions"><button class="btn btn-default">Remove</button></span>
                     </div>
                   </div>
+                  <hr />
                 </div>
-                <hr />
-              </div>
+            
             </div>
           </div>
         </div>

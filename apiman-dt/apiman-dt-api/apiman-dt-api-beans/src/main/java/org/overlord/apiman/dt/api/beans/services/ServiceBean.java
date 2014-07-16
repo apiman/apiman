@@ -22,7 +22,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -49,7 +48,7 @@ public class ServiceBean implements Serializable {
     private String id;
     @Column(nullable=false)
     private String name;
-    @Lob
+    @Column(updatable=true, nullable=true, length=512)
     private String description;
     @Column(updatable=false, nullable=false)
     private String createdBy;

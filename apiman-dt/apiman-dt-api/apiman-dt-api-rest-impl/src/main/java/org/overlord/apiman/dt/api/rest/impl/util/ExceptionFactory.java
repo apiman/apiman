@@ -30,6 +30,8 @@ import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationNotFoundE
 import org.overlord.apiman.dt.api.rest.contract.exceptions.PlanAlreadyExistsException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.PlanNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.PlanVersionNotFoundException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.PolicyDefinitionAlreadyExistsException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.PolicyDefinitionNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.PolicyNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.RoleAlreadyExistsException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.RoleNotFoundException;
@@ -226,6 +228,22 @@ public final class ExceptionFactory {
      */
     public static final PolicyNotFoundException policyNotFoundException(long policyId) {
         return new PolicyNotFoundException(Messages.i18n.format("PolicyDoesNotExist", policyId)); //$NON-NLS-1$
+    }
+
+    /**
+     * Creates an exception from an policyDef name.
+     * @param policyDefName
+     */
+    public static final PolicyDefinitionAlreadyExistsException policyDefAlreadyExistsException(String policyDefName) {
+        return new PolicyDefinitionAlreadyExistsException(Messages.i18n.format("PolicyDefinitionAlreadyExists", policyDefName)); //$NON-NLS-1$
+    }
+
+    /**
+     * Creates an exception from an policyDef id.
+     * @param policyDefId
+     */
+    public static final PolicyDefinitionNotFoundException policyDefNotFoundException(String policyDefId) {
+        return new PolicyDefinitionNotFoundException(Messages.i18n.format("PolicyDefinitionDoesNotExist", policyDefId)); //$NON-NLS-1$
     }
 
 }
