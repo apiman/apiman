@@ -128,17 +128,27 @@ public final class ErrorCodes {
     //
     // Action API related
     //
-    public static final int ACTION_ERROR                = 8001;
+    public static final int ACTION_ERROR                      = 8001;
 
-    public static final String ACTION_ERROR_INFO        = null;
+    public static final String ACTION_ERROR_INFO              = null;
 
     
     //
     // Policy related
     //
-    public static final int POLICY_NOT_FOUND                   = 9001;
+    public static final int POLICY_NOT_FOUND                  = 9001;
 
-    public static final String POLICY_NOT_FOUND_INFO           = null;
+    public static final String POLICY_NOT_FOUND_INFO          = null;
+
+    
+    //
+    // Policy Definition related
+    //
+    public static final int POLICY_DEF_ALREADY_EXISTS              = 10001;
+    public static final int POLICY_DEF_NOT_FOUND                   = 10002;
+    
+    public static final String POLICY_DEF_ALREADY_EXISTS_INFO      = null;
+    public static final String POLICY_DEF_NOT_FOUND_INFO           = null;
 
     
 }

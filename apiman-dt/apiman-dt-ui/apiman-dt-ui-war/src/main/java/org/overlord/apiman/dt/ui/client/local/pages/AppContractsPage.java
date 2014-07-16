@@ -90,6 +90,7 @@ public class AppContractsPage extends AbstractAppPage {
     @Override
     protected int loadPageData() {
         int rval = super.loadPageData();
+        // we'll trigger an additional load after the app version has been loaded (hence the +1)
         return rval + 1;
     }
     

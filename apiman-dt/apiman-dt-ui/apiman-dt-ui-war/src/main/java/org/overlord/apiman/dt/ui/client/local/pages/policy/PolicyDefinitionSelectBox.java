@@ -17,8 +17,8 @@ package org.overlord.apiman.dt.ui.client.local.pages.policy;
 
 import javax.enterprise.context.Dependent;
 
+import org.overlord.apiman.dt.api.beans.policies.PolicyDefinitionBean;
 import org.overlord.apiman.dt.ui.client.local.pages.common.SelectBox;
-import org.overlord.apiman.dt.ui.client.shared.beans.PolicyTypeBean;
 
 /**
  * Select box for picking a policy type.
@@ -26,46 +26,47 @@ import org.overlord.apiman.dt.ui.client.shared.beans.PolicyTypeBean;
  * @author eric.wittmann@redhat.com
  */
 @Dependent
-public class PolicyTypeSelectBox extends SelectBox<PolicyTypeBean> {
+public class PolicyDefinitionSelectBox extends SelectBox<PolicyDefinitionBean> {
     
     /**
      * Constructor.
      */
-    public PolicyTypeSelectBox() {
+    public PolicyDefinitionSelectBox() {
     }
     
     /**
      * @see org.overlord.apiman.dt.ui.client.local.pages.common.SelectBox#optionName(java.lang.Object)
      */
     @Override
-    protected String optionName(PolicyTypeBean option) {
-        return option.getLabel();
+    protected String optionName(PolicyDefinitionBean option) {
+        return option.getName();
     }
 
     /**
      * @see org.overlord.apiman.dt.ui.client.local.pages.common.SelectBox#optionValue(java.lang.Object)
      */
     @Override
-    protected String optionValue(PolicyTypeBean option) {
-        return option.getImpl();
+    protected String optionValue(PolicyDefinitionBean option) {
+        return option.getId();
     }
 
     /**
      * @see org.overlord.apiman.dt.ui.client.local.pages.common.SelectBox#optionDataContent(java.lang.Object)
      */
     @Override
-    protected String optionDataContent(PolicyTypeBean option) {
+    protected String optionDataContent(PolicyDefinitionBean option) {
         StringBuilder builder = new StringBuilder();
         builder.append("<i class='fa fa-inline fa-fw"); //$NON-NLS-1$
         if (option.getIcon() != null) {
             builder.append(" fa-" + option.getIcon()); //$NON-NLS-1$
         }
         builder.append("'></i> <span"); //$NON-NLS-1$
-        if (option.getImpl() == null) {
+        // TODO need another way to make the "Please choose..." label greyed-out
+        if (option.getPolicyImpl() == null) {
             builder.append(" class='apiman-label-faded'"); //$NON-NLS-1$
         }
         builder.append(">"); //$NON-NLS-1$
-        builder.append(option.getLabel());
+        builder.append(option.getName());
         builder.append("</span>"); //$NON-NLS-1$
         return builder.toString();
     }

@@ -69,7 +69,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     public OrganizationBean create(OrganizationBean bean) throws OrganizationAlreadyExistsException {
         bean.setId(BeanUtils.idFromName(bean.getName()));
         bean.setCreatedOn(new Date());
-        bean.setCreatedOn(new Date());
         bean.setCreatedBy(securityContext.getCurrentUser());
         try {
             // Store/persist the new organization

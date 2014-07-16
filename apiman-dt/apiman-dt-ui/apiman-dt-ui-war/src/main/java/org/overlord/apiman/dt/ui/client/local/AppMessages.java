@@ -178,5 +178,20 @@ public class AppMessages {
 
     @TranslationKey(defaultValue = "Please copy the value below (e.g. Ctrl-C).")
     public static final String APIS_LIST_PLEASE_COPY = "appApisList.please-copy"; //$NON-NLS-1$
+    
+    @TranslationKey(defaultValue = "No policies matched the filter criteria.  Please try modifying the filter or else create a new policy using the button above.")
+    public static final String NO_FILTERED_POLICIES_MESSAGE = "no-filtered-policies"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "It looks like there aren't (yet) any policies defined!  That may be exactly what you want (of course) but if not, you may try defining one using the New Policy button above...")
+    public static final String NO_POLICIES_MESSAGE = "no-policies"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "Policy created by")
+    public static final String POLICY_CREATED_BY = "policy-created-by"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "Remove")
+    public static final String REMOVE = "remove"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "Removing...")
+    public static final String REMOVING = "removing"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "Really remove policy {0}?")
+    public static final String CONFIRM_REMOVE_POLICY = "confirm-remove-policy"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "on")
+    public static final String ON = "on"; //$NON-NLS-1$
 
 }

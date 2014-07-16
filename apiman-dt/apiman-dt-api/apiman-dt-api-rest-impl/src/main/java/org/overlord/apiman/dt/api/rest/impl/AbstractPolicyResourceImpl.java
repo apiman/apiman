@@ -20,12 +20,14 @@ import java.util.Date;
 import javax.inject.Inject;
 
 import org.overlord.apiman.dt.api.beans.policies.PolicyBean;
+import org.overlord.apiman.dt.api.beans.policies.PolicyDefinitionBean;
 import org.overlord.apiman.dt.api.beans.policies.PolicyType;
 import org.overlord.apiman.dt.api.core.IStorage;
 import org.overlord.apiman.dt.api.core.IStorageQuery;
 import org.overlord.apiman.dt.api.core.exceptions.DoesNotExistException;
 import org.overlord.apiman.dt.api.core.exceptions.StorageException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.NotAuthorizedException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.PolicyDefinitionNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.PolicyNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.SystemErrorException;
 import org.overlord.apiman.dt.api.rest.impl.util.ExceptionFactory;
@@ -54,7 +56,19 @@ public abstract class AbstractPolicyResourceImpl {
      * @throws NotAuthorizedException
      */
     protected PolicyBean doCreatePolicy(String organizationId, String entityId, String entityVersion,
-            PolicyBean bean, PolicyType type) {
+            PolicyBean bean, PolicyType type) throws PolicyDefinitionNotFoundException {
+        if (bean.getDefinition() == null) {
+            ExceptionFactory.policyDefNotFoundException("null"); //$NON-NLS-1$
+        }
+        try {
+            PolicyDefinitionBean def = storage.get(bean.getDefinition().getId(), PolicyDefinitionBean.class);
+            bean.setDefinition(def);
+        } catch (DoesNotExistException e) {
+            ExceptionFactory.policyDefNotFoundException(bean.getDefinition().getId());
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+        
         try {
             bean.setId(null);
             bean.setCreatedBy(securityContext.getCurrentUser());

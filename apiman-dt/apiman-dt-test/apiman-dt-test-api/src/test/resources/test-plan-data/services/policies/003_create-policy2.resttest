@@ -4,7 +4,9 @@ Content-Type: application/json
 {
   "name" : "Test Policy 2",
   "description" : "This is our second test policy.",
-  "policyImpl" : "org.example.foo.PolicyTwoImpl",
+  "definition" : {
+    "id" : "PolicyDef"
+  },
   "configuration" : "{\"jerk\" : \"store\"}"
 }
 ----
@@ -19,7 +21,13 @@ X-RestTest-BindTo-policy-id-2: $.id
   "entityVersion" : "1.0",
   "name" : "Test Policy 2",
   "description" : "This is our second test policy.",
-  "policyImpl" : "org.example.foo.PolicyTwoImpl",
+  "definition" : {
+    "id" : "PolicyDef",
+    "name" : "Policy Def",
+    "description" : "This is the test policy def.",
+    "policyImpl" : "org.example.policies.PolicyDef",
+    "icon" : "policy-def"
+  },
   "configuration" : "{\"jerk\" : \"store\"}",
   "createdBy" : "admin",
   "modifiedBy" : "admin"

@@ -34,6 +34,9 @@ import org.overlord.apiman.dt.api.beans.members.MemberBean;
 import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
 import org.overlord.apiman.dt.api.beans.plans.PlanBean;
 import org.overlord.apiman.dt.api.beans.plans.PlanVersionBean;
+import org.overlord.apiman.dt.api.beans.policies.PolicyBean;
+import org.overlord.apiman.dt.api.beans.policies.PolicyDefinitionBean;
+import org.overlord.apiman.dt.api.beans.policies.PolicyType;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
 import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
 import org.overlord.apiman.dt.api.beans.services.ServiceBean;
@@ -50,6 +53,7 @@ import org.overlord.apiman.dt.api.rest.contract.ICurrentUserResource;
 import org.overlord.apiman.dt.api.rest.contract.IMemberResource;
 import org.overlord.apiman.dt.api.rest.contract.IOrganizationResource;
 import org.overlord.apiman.dt.api.rest.contract.IPlanResource;
+import org.overlord.apiman.dt.api.rest.contract.IPolicyDefinitionResource;
 import org.overlord.apiman.dt.api.rest.contract.IRoleResource;
 import org.overlord.apiman.dt.api.rest.contract.ISearchResource;
 import org.overlord.apiman.dt.api.rest.contract.IServiceResource;
@@ -77,6 +81,8 @@ public class RestInvokerService {
     private Caller<IRoleResource> roles;
     @Inject
     private Caller<IUserResource> users;
+    @Inject
+    private Caller<IPolicyDefinitionResource> policyDefs;
     @Inject
     private Caller<IOrganizationResource> organizations;
     @Inject
@@ -314,6 +320,16 @@ public class RestInvokerService {
     }
 
     /**
+     * Gets the application's policies.
+     * @param callback
+     */
+    public void getApplicationPolicies(String organizationId, String applicationId, String version, 
+            IRestInvokerCallback<List<PolicyBean>> callback) {
+        CallbackAdapter<List<PolicyBean>> adapter = new CallbackAdapter<List<PolicyBean>>(callback);
+        applications.call(adapter, adapter).listPolicies(organizationId, applicationId, version);
+    }
+
+    /**
      * Gets all applications in the organization.
      * @param organizationId
      * @param applicationId
@@ -412,6 +428,16 @@ public class RestInvokerService {
     }
 
     /**
+     * Gets the service's policies.
+     * @param callback
+     */
+    public void getServicePolicies(String organizationId, String serviceId, String version, 
+            IRestInvokerCallback<List<PolicyBean>> callback) {
+        CallbackAdapter<List<PolicyBean>> adapter = new CallbackAdapter<List<PolicyBean>>(callback);
+        services.call(adapter, adapter).listPolicies(organizationId, serviceId, version);
+    }
+
+    /**
      * Gets all services in the organization.
      * @param organizationId
      * @param serviceId
@@ -493,6 +519,16 @@ public class RestInvokerService {
     }
 
     /**
+     * Gets the plan's policies.
+     * @param callback
+     */
+    public void getPlanPolicies(String organizationId, String planId, String version, 
+            IRestInvokerCallback<List<PolicyBean>> callback) {
+        CallbackAdapter<List<PolicyBean>> adapter = new CallbackAdapter<List<PolicyBean>>(callback);
+        plans.call(adapter, adapter).listPolicies(organizationId, planId, version);
+    }
+
+    /**
      * Creates a new plan.
      * @param organizationId
      * @param plan
@@ -535,14 +571,85 @@ public class RestInvokerService {
         CallbackAdapter<SearchResultsBean<ServiceBean>> adapter = new CallbackAdapter<SearchResultsBean<ServiceBean>>(callback);
         search.call(adapter, adapter).searchServices(criteria);
     }
+    
+    /**
+     * Creates a policy for an application, service, or plan.
+     * @param policyType
+     * @param organizationId
+     * @param entityId
+     * @param entityVersion
+     * @param bean
+     */
+    public void createPolicy(PolicyType policyType, String organizationId, String entityId, String entityVersion,
+            PolicyBean bean, IRestInvokerCallback<PolicyBean> callback) {
+        CallbackAdapter<PolicyBean> adapter = new CallbackAdapter<PolicyBean>(callback);
+        if (policyType == PolicyType.Application) {
+            applications.call(adapter, adapter).createPolicy(organizationId, entityId, entityVersion, bean);
+        } else if (policyType == PolicyType.Service) {
+            services.call(adapter, adapter).createPolicy(organizationId, entityId, entityVersion, bean);
+        } else if (policyType == PolicyType.Plan) {
+            plans.call(adapter, adapter).createPolicy(organizationId, entityId, entityVersion, bean);
+        }
+    }
+    
+    /**
+     * Removes a policy from an application, service, or plan.
+     * @param organizationId
+     * @param entityId
+     * @param entityVersion
+     * @param policyId
+     * @param callback
+     */
+    public void removePolicy(PolicyType policyType, String organizationId, String entityId, String entityVersion,
+            Long policyId, IRestInvokerCallback<Void> callback) {
+        CallbackAdapter<Void> adapter = new CallbackAdapter<Void>(callback);
+        if (policyType == PolicyType.Application) {
+            applications.call(adapter, adapter).deletePolicy(organizationId, entityId, entityVersion, policyId);
+        } else if (policyType == PolicyType.Service) {
+            services.call(adapter, adapter).deletePolicy(organizationId, entityId, entityVersion, policyId);
+        } else if (policyType == PolicyType.Plan) {
+            plans.call(adapter, adapter).deletePolicy(organizationId, entityId, entityVersion, policyId);
+        }
+    }
 
+    /**
+     * Gets a policy for an application, service, or plan.
+     * @param policyType
+     * @param organizationId
+     * @param entityId
+     * @param entityVersion
+     * @param policyId
+     * @param callback
+     */
+    public void getPolicy(PolicyType policyType, String organizationId, String entityId,
+            String entityVersion, Long policyId, IRestInvokerCallback<PolicyBean> callback) {
+        CallbackAdapter<PolicyBean> adapter = new CallbackAdapter<PolicyBean>(callback);
+        if (policyType == PolicyType.Application) {
+            applications.call(adapter, adapter).getPolicy(organizationId, entityId, entityVersion, policyId);
+        } else if (policyType == PolicyType.Service) {
+            services.call(adapter, adapter).getPolicy(organizationId, entityId, entityVersion, policyId);
+        } else if (policyType == PolicyType.Plan) {
+            plans.call(adapter, adapter).getPolicy(organizationId, entityId, entityVersion, policyId);
+        }
+    }
+    
     /**
      * Performs/executes the given action.
      * @param action
+     * @param callback
      */
     public void performAction(ActionBean action, IRestInvokerCallback<Void> callback) {
         CallbackAdapter<Void> adapter = new CallbackAdapter<Void>(callback);
         actions.call(adapter, adapter).performAction(action);
+    }
+
+    /**
+     * Gets a list of all the policy definitions in the system.
+     * @param callback
+     */
+    public void listPolicyDefinitions(IRestInvokerCallback<List<PolicyDefinitionBean>> callback) {
+        CallbackAdapter<List<PolicyDefinitionBean>> adapter = new CallbackAdapter<List<PolicyDefinitionBean>>(callback);
+        policyDefs.call(adapter, adapter).list();
     }
 
 }

@@ -1,0 +1,11 @@
+POST /policyDefs admin/admin
+Content-Type: application/json
+
+{
+  "name" : "Billing Policy",
+  "description" : "Aggregates service usage statistics for billing purposes.  The billing rate and aggregation rules are configurable.",
+  "policyImpl" : "org.overlord.apiman.rt.policies.BillingPolicy",
+  "icon" : "money"
+}
+----
+200

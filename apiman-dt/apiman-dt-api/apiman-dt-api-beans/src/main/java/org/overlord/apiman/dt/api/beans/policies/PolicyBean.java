@@ -20,9 +20,11 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -51,11 +53,10 @@ public class PolicyBean implements Serializable {
     private String entityId;
     @Column(updatable=false, nullable=false)
     private String entityVersion;
+    @Column(updatable=true, nullable=false)
     private String name;
-    @Lob
+    @Column(updatable=true, nullable=true, length=512)
     private String description;
-    @Column(updatable=false, nullable=false)
-    private String policyImpl;
     @Lob
     @Column(updatable=true, nullable=true)
     private String configuration;
@@ -67,6 +68,8 @@ public class PolicyBean implements Serializable {
     private String modifiedBy;
     @Column(updatable=true, nullable=false)
     private Date modifiedOn;
+    @ManyToOne(fetch=FetchType.EAGER, optional=false)
+    private PolicyDefinitionBean definition;
 
     /**
      * Constructor.
@@ -159,20 +162,6 @@ public class PolicyBean implements Serializable {
     }
 
     /**
-     * @return the policyImpl
-     */
-    public String getPolicyImpl() {
-        return policyImpl;
-    }
-
-    /**
-     * @param policyImpl the policyImpl to set
-     */
-    public void setPolicyImpl(String policyImpl) {
-        this.policyImpl = policyImpl;
-    }
-
-    /**
      * @return the configuration
      */
     public String getConfiguration() {
@@ -254,6 +243,51 @@ public class PolicyBean implements Serializable {
      */
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    /**
+     * @return the definition
+     */
+    public PolicyDefinitionBean getDefinition() {
+        return definition;
+    }
+
+    /**
+     * @param definition the definition to set
+     */
+    public void setDefinition(PolicyDefinitionBean definition) {
+        this.definition = definition;
+    }
+
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        return result;
+    }
+
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        PolicyBean other = (PolicyBean) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        return true;
     }
 
 }

@@ -1,0 +1,20 @@
+POST /policyDefs admin/admin
+Content-Type: application/json
+
+{
+  "name" : "Policy Def Three",
+  "description" : "This is the first policy def.",
+  "policyImpl" : "org.example.PolicyDefThree",
+  "icon" : "three"
+}
+----
+200
+Content-Type: application/json
+
+{
+  "id" : "PolicyDefThree",
+  "name" : "Policy Def Three",
+  "description" : "This is the first policy def.",
+  "policyImpl" : "org.example.PolicyDefThree",
+  "icon" : "three"
+}
