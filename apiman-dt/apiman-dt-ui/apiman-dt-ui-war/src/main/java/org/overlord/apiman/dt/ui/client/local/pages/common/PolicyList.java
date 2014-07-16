@@ -206,8 +206,7 @@ public class PolicyList extends FlowPanel implements HasValue<List<PolicyBean>>,
         col.setStyleName("col-md-1"); //$NON-NLS-1$
         col.addStyleName("col-no-padding"); //$NON-NLS-1$
         
-        // TODO the icon needs to come from somewhere - e.g. a registry of policy definitions
-        FontAwesomeIcon icon = new FontAwesomeIcon("puzzle-piece", true);
+        FontAwesomeIcon icon = new FontAwesomeIcon(bean.getDefinition().getIcon(), true);
         icon.getElement().addClassName("movable"); //$NON-NLS-1$
         icon.getElement().addClassName("apiman-policy-icon"); //$NON-NLS-1$
         col.add(icon);
