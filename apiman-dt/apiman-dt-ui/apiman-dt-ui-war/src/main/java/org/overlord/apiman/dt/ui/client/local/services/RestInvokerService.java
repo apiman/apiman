@@ -223,6 +223,16 @@ public class RestInvokerService {
     }
 
     /**
+     * Finds organizations using the given search criteria.
+     * @param criteria
+     * @param callback
+     */
+    public void findOrganizations(SearchCriteriaBean criteria, IRestInvokerCallback<SearchResultsBean<OrganizationBean>> callback) {
+        CallbackAdapter<SearchResultsBean<OrganizationBean>> adapter = new CallbackAdapter<SearchResultsBean<OrganizationBean>>(callback);
+        search.call(adapter, adapter).searchOrgs(criteria);
+    }
+
+    /**
      * Creates a new application.
      * @param organizationId
      * @param app

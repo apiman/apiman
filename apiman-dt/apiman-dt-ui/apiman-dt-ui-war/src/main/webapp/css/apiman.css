@@ -127,6 +127,9 @@ div.page {
 
 .browse-items {
 }
+.browse-items .count {
+  margin-bottom: 15px;
+}
 .browse-items .item {
   position: relative;
   padding: 10px;
@@ -151,6 +154,7 @@ div.page {
 }
 .browse-items .item .description {
   color: #666;
+  min-height: 40px;
 }
 .browse-items .item .actions {
   margin-top: 20px;

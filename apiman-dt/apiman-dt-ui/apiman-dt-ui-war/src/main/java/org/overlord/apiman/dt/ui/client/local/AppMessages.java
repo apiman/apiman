@@ -26,6 +26,8 @@ public class AppMessages {
 
     @TranslationKey(defaultValue = "APIMan - Home")
     public static final String TITLE_DASHBOARD = "page.title.dashboard"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "APIMan - Organizations")
+    public static final String TITLE_CONSUME_ORGS = "page.title.consume-orgs"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "APIMan - New Organization")
     public static final String TITLE_NEW_ORG = "page.title.new-org"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "APIMan - New Application")
@@ -138,6 +140,9 @@ public class AppMessages {
     @TranslationKey(defaultValue = "No contracts matched the filter criteria.  Please try modifying the filter or else create a new contract using the New Contract button above.")
     public static final String NO_FILTERED_CONTRACTS_FOR_APP_MESSAGE = "noEntitiesFound.contracts-in-app.filtered"; //$NON-NLS-1$
 
+    @TranslationKey(defaultValue = "No organizations found.  Either no organizations matched the query or you haven't queried yet!")
+    public static final String NO_ORGANIZATIONS_MESSAGE = "noEntitiesFound.consumer-orgs"; //$NON-NLS-1$
+
     @TranslationKey(defaultValue = "Assign roles to {0}.")
     public static final String MEMBER_CARD_ASSIGN_ROLES_HELP = "manageMembers.card.edit-help"; //$NON-NLS-1$
 
@@ -177,6 +182,13 @@ public class AppMessages {
     public static final String CONFIRM_BREAK_CONTRACT = "confirm-break-contract"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "Failed to break contract!")
     public static final String BREAK_CONTRACT_FAILURE = "break-contract-failure"; //$NON-NLS-1$
+
+    @TranslationKey(defaultValue = "Found {0} matching organizations.")
+    public static final String ORGANIZATION_COUNT = "organization-count"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "Request Membership")
+    public static final String REQUEST_MEMBERSHIP = "request-membership"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "You are already a member of this Organization.")
+    public static final String ALREADY_A_MEMBER = "already-a-member"; //$NON-NLS-1$
 
     @TranslationKey(defaultValue = "Please copy the value below (e.g. Ctrl-C).")
     public static final String APIS_LIST_PLEASE_COPY = "appApisList.please-copy"; //$NON-NLS-1$

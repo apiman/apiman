@@ -15,15 +15,15 @@
     <div class="container page" data-field="page">
       <div class="row">
         <div class="col-md-12">
-          <h1>Browse Organizations</h1>
+          <h1 data-i18n-key="find-org">Find an Organization</h1>
         </div>
         <div class="col-md-6 no-phone">
-          <p class="description">Use this page to find Organizations you may wish to join. Use this page to find Organizations you may wish to join. Use this page to find Organizations you may wish to join.</p>
+          <p class="description" data-i18n-key="find-org-description">Use this page to find Organizations you may wish to join. Use this page to find Organizations you may wish to join. Use this page to find Organizations you may wish to join.</p>
         </div>
         <div class="col-md-6">
-          <input type="text" class="form-control input-search" placeholder="Enter a word or phrase to search by..."></input>
+          <input type="text" class="form-control input-search" data-field="searchBox" data-i18n-key="searchfor" placeholder="Enter a word or phrase to search by..."></input>
           &nbsp;
-          <button class="btn btn-primary">Search</input>
+          <button class="btn btn-primary" data-i18n-key="search" data-field="searchButton">Search</input>
         </div>
         <div class="col-md-12">
           <hr />
@@ -32,7 +32,10 @@
       
       <!-- Search results -->
       <div class="row browse-items">
-        <div class="col-md-12">
+        <div class="col-md-12" data-role="dummy" data-field="orgs">
+          <div class="count">
+            Found 3 matching organizations.
+          </div>
 
           <div class="item">
             <div class="title"><i class="fa fa-shield icon"></i><a href="org-members.html">JBoss Overlord</a></div>
