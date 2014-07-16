@@ -44,11 +44,11 @@ import com.google.gwt.user.client.ui.Anchor;
 public abstract class AbstractPlanPage extends AbstractPage {
     
     @PageState
-    private String org;
+    protected String org;
     @PageState
-    private String plan;
+    protected String plan;
     @PageState
-    private String version;
+    protected String version;
     
     OrganizationBean organizationBean;
     PlanBean planBean;
@@ -126,6 +126,7 @@ public abstract class AbstractPlanPage extends AbstractPage {
                 } else {
                     planBean = versionBean.getPlan();
                     dataPacketLoaded();
+                    onPlanVersionLoaded();
                 }
             }
             @Override
@@ -136,6 +137,14 @@ public abstract class AbstractPlanPage extends AbstractPage {
         return 2;
     }
 
+    /**
+     * Called when the plan version is successfully loaded.  This provides a 
+     * way for subclasses to start their own data fetching if they require the plan
+     * version to do it.
+     */
+    protected void onPlanVersionLoaded() {
+    }
+    
     /**
      * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractPage#renderPage()
      */
