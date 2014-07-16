@@ -79,7 +79,7 @@ public class NewPolicyPage extends AbstractPage {
                 dataPacketError(error);
             }
         });
-        return size;
+        return size + 1;
     }
     
     @PostConstruct

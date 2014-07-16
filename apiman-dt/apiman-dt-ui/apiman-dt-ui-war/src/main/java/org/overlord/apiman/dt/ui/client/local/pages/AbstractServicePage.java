@@ -130,6 +130,7 @@ public abstract class AbstractServicePage extends AbstractPage {
                 } else {
                     serviceBean = versionBean.getService();
                     dataPacketLoaded();
+                    onServiceVersionLoaded();
                 }
             }
             @Override
@@ -138,6 +139,14 @@ public abstract class AbstractServicePage extends AbstractPage {
             }
         });
         return 2;
+    }
+
+    /**
+     * Called when the service version is successfully loaded.  This provides a 
+     * way for subclasses to start their own data fetching if they require the service
+     * version to do it.
+     */
+    protected void onServiceVersionLoaded() {
     }
 
     /**
