@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <script type="text/javascript" src="site.js"></script>
+  </head>
+
+  <body>
+
+    <!-- Top header/nav bar -->
+    <div id="overlord-header">
+    </div>
+
+    <div class="container page" data-field="page">
+      <div class="row">
+        <div class="col-md-12">
+          <h1 data-i18n-key="organization-details">Organization Details</h1>
+        </div>
+        <div class="col-md-12">
+          <div class="vspacer-10" />
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="col-md-12">
+          <div class="container">
+            <div class="row">
+
+                <!-- Left column -->
+                <div class="col-md-4 browse-items">
+                  <div class="item" style="width: 100%; margin-bottom: 20px;" data-field="organizationCard">
+                    <div class="title"><i class="fa fa-shield icon"></i><span data-field="title">JBoss Overlord</span></div>
+                    <div class="description" data-field="description">Overlord is the umbrella project that will bring governance to the JBoss SOA Platform and eventually beyond.</div>
+                    <div class="actions">
+                      <button class="btn btn-default" data-field="requestMembership" data-i18n-key="request-membership">Request Membership</button>
+                    </div>
+                    <a class="ismember" title="You are already a member of this Organization." href="#" data-field="isMemberLink" data-i18n-key="is-member"></a>
+                  </div>
+                  
+                  <div class="consumer-section">
+                    <h3 data-i18n-key="current-members" class="consumer-header">Current Members</h3>
+                    <div class="apiman-members" data-field="members" data-role="dummy">
+                      <div class="container-fluid apiman-summaryrow">
+                        <div class="row">
+                          <span class="title">
+                            <i class="fa fa-fw fa-user icon"></i>
+                            <a href="user-orgs.html">Clark Kent</a>
+                            <span class="secondary">(ckent)</span>
+                          </span>
+                        </div>
+                      </div>
+                      <div class="container-fluid apiman-summaryrow">
+                        <div class="row">
+                          <span class="title">
+                            <i class="fa fa-fw fa-user icon"></i>
+                            <a href="user-orgs.html">Bruce Wayne</a>
+                            <span class="secondary">(bwayne)</span>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Right column -->
+                <div class="col-md-8">
+                  <div class="consumer-section">
+                    <h3 data-i18n-key="services-offered" class="consumer-header">Services Offered</h3>
+                    <div class="apiman-filters apiman-services-filters" style="border-bottom: none; margin-bottom: 0px;">
+                      <input data-field="serviceFilter" data-i18n-key="service-filter" type="text" class="form-control input-search" placeholder="Filter by org or service name..."></input>
+                    </div>
+                    <div class="apiman-services consumer-section" data-field="services" data-role="dummy">
+                      <div class="container-fluid apiman-summaryrow">
+                        <div class="row">
+                          <i class="fa fa-fw fa-puzzle-piece icon"></i>
+                          <span class="title"><a href="service-overview.html">s-ramp-api</a></span>
+                        </div>
+                        <div class="row">
+                          <span class="description">
+                            This API allows users to interact with a remote S-RAMP repository.
+                          </span>
+                        </div>
+                        <hr/>
+                      </div>
+                      <div class="container-fluid apiman-summaryrow">
+                        <div class="row">
+                          <i class="fa fa-fw fa-puzzle-piece icon"></i>
+                          <span class="title"><a href="service-overview.html">dtgov-deploy</a></span>
+                        </div>
+                        <div class="row">
+                          <span class="description">
+                            This API provides an automated mechanism to deploy artifacts to running servers.
+                          </span>
+                        </div>
+                        <hr/>
+                      </div>
+                      <div class="container-fluid apiman-summaryrow">
+                        <div class="row">
+                          <i class="fa fa-fw fa-puzzle-piece icon"></i>
+                          <span class="title"><a href="service-overview.html">public-calendar</a></span>
+                        </div>
+                        <div class="row">
+                          <span class="description">
+                            This allows users to manipulate calendar data in a Bedework calendar system.
+                          </span>
+                        </div>
+                        <hr/>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+        
+            </div>
+          </div>
+        </div>
+      </div>
+    </div> <!-- /container -->
+  </body>
+</html>

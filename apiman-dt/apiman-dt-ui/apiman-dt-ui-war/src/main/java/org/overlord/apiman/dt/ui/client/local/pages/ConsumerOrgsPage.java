@@ -55,9 +55,9 @@ import com.google.gwt.user.client.ui.TextBox;
  * @author eric.wittmann@redhat.com
  */
 @Templated("/org/overlord/apiman/dt/ui/client/local/site/consumer-orgs.html#page")
-@Page(path="consume-orgs")
+@Page(path="corgs")
 @Dependent
-public class ConsumeOrgs extends AbstractPage {
+public class ConsumerOrgsPage extends AbstractPage {
     
     @PageState
     protected String query;
@@ -72,7 +72,7 @@ public class ConsumeOrgs extends AbstractPage {
     @Inject
     ConfigurationService config;
     @Inject
-    TransitionTo<ConsumeOrgs> toSelf;
+    TransitionTo<ConsumerOrgsPage> toSelf;
 
     protected List<OrganizationBean> orgBeans;
     protected Set<String> memberOrgs = new HashSet<String>();
@@ -80,7 +80,7 @@ public class ConsumeOrgs extends AbstractPage {
     /**
      * Constructor.
      */
-    public ConsumeOrgs() {
+    public ConsumerOrgsPage() {
     }
     
     @PostConstruct

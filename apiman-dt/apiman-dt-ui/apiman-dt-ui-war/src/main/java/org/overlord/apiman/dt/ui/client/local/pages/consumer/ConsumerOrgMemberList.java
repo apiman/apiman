@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.dt.ui.client.local.pages.org;
+package org.overlord.apiman.dt.ui.client.local.pages.consumer;
 
 import java.util.List;
 
@@ -25,9 +25,7 @@ import org.jboss.errai.ui.nav.client.local.TransitionAnchorFactory;
 import org.overlord.apiman.dt.api.beans.members.MemberBean;
 import org.overlord.apiman.dt.ui.client.local.AppMessages;
 import org.overlord.apiman.dt.ui.client.local.pages.UserRedirectPage;
-import org.overlord.apiman.dt.ui.client.local.pages.common.NoEntitiesWidget;
 import org.overlord.apiman.dt.ui.client.local.services.NavigationHelperService;
-import org.overlord.apiman.dt.ui.client.local.util.Formatting;
 import org.overlord.apiman.dt.ui.client.local.util.MultimapUtil;
 import org.overlord.commons.gwt.client.local.widgets.FontAwesomeIcon;
 import org.overlord.commons.gwt.client.local.widgets.SpanPanel;
@@ -37,7 +35,6 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Widget;
@@ -48,7 +45,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author eric.wittmann@redhat.com
  */
 @Dependent
-public class OrgMemberList extends FlowPanel implements HasValue<List<MemberBean>> {
+public class ConsumerOrgMemberList extends FlowPanel implements HasValue<List<MemberBean>> {
     
     @Inject
     protected NavigationHelperService navHelper;
@@ -58,12 +55,11 @@ public class OrgMemberList extends FlowPanel implements HasValue<List<MemberBean
     protected TransitionAnchorFactory<UserRedirectPage> toUserRedirectFactory;
     
     private List<MemberBean> members;
-    private boolean filtered;
 
     /**
      * Constructor.
      */
-    public OrgMemberList() {
+    public ConsumerOrgMemberList() {
         getElement().setClassName("apiman-members"); //$NON-NLS-1$
     }
 
@@ -86,17 +82,8 @@ public class OrgMemberList extends FlowPanel implements HasValue<List<MemberBean
     /**
      * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object)
      */
-    public void setFilteredValue(List<MemberBean> value) {
-        filtered = true;
-        setValue(value, false);
-    }
-
-    /**
-     * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object)
-     */
     @Override
     public void setValue(List<MemberBean> value) {
-        filtered = false;
         setValue(value, false);
     }
 
@@ -127,11 +114,10 @@ public class OrgMemberList extends FlowPanel implements HasValue<List<MemberBean
     /**
      * @return a widget to display when no items are found
      */
-    protected NoEntitiesWidget createNoEntitiesWidget() {
-        if (isFiltered())
-            return new NoEntitiesWidget(i18n.format(AppMessages.NO_FILTERED_MEMBERS_IN_ORG_MESSAGE), true);
-        else
-            return new NoEntitiesWidget(i18n.format(AppMessages.NO_MEMBERS_IN_ORG_MESSAGE), true);
+    protected Widget createNoEntitiesWidget() {
+        InlineLabel label = new InlineLabel();
+        label.setText(i18n.format(AppMessages.NO_MEMBERS_MESSAGE));
+        return label;
     }
 
     /**
@@ -148,27 +134,8 @@ public class OrgMemberList extends FlowPanel implements HasValue<List<MemberBean
         row.getElement().setClassName("row"); //$NON-NLS-1$
         
         createTitle(bean, row);
-        createJoinedOn(bean, row);
-
-        FlowPanel row2 = new FlowPanel();
-        container.add(row2);
-        row2.getElement().setClassName("row"); //$NON-NLS-1$
-        createDescription(bean, row2);
-        
-        container.add(new HTMLPanel("<hr/>")); //$NON-NLS-1$
         
         return container;
-    }
-
-    /**
-     * Creates the description area of the member listing.
-     * @param bean
-     * @param row
-     */
-    protected void createDescription(MemberBean bean, FlowPanel row) {
-        InlineLabel description = new InlineLabel(Formatting.formatRoles(bean));
-        row.add(description);
-        description.getElement().setClassName("description"); //$NON-NLS-1$
     }
 
     /**
@@ -180,6 +147,11 @@ public class OrgMemberList extends FlowPanel implements HasValue<List<MemberBean
         SpanPanel sp = new SpanPanel();
         row.add(sp);
         sp.getElement().setClassName("title"); //$NON-NLS-1$
+        
+        FontAwesomeIcon icon = new FontAwesomeIcon("user", true); //$NON-NLS-1$
+        sp.add(icon);
+        icon.getElement().addClassName("icon"); //$NON-NLS-1$
+        
         Anchor a = toUserRedirectFactory.get(MultimapUtil.singleItemMap("user", bean.getUserId())); //$NON-NLS-1$
         sp.add(a);
         a.setText(bean.getUserName());
@@ -187,35 +159,6 @@ public class OrgMemberList extends FlowPanel implements HasValue<List<MemberBean
         sp.add(span);
         span.getElement().setClassName("secondary"); //$NON-NLS-1$
         span.setText(" (" + bean.getUserId() + ") "); //$NON-NLS-1$ //$NON-NLS-2$
-    }
-    
-    /**
-     * Creates the 'joined on' section of a row.
-     * @param bean
-     * @param row
-     */
-    protected void createJoinedOn(MemberBean bean, FlowPanel row) {
-        if (bean.getJoinedOn() != null) {
-            FlowPanel iconDiv = new FlowPanel();
-            row.add(iconDiv);
-            iconDiv.getElement().setClassName("apiman-summaryrow-icon"); //$NON-NLS-1$
-            FontAwesomeIcon icon = new FontAwesomeIcon("clock-o", true); //$NON-NLS-1$
-            iconDiv.add(icon);
-            
-            InlineLabel label1 = new InlineLabel(i18n.format(AppMessages.JOINED_ON));
-            iconDiv.add(label1);
-            label1.getElement().setClassName("title-summary-item"); //$NON-NLS-1$
-            InlineLabel label2 = new InlineLabel(Formatting.formatShortDate(bean.getJoinedOn()));
-            iconDiv.add(label2);
-            label2.getElement().setClassName("title-summary-item"); //$NON-NLS-1$
-        }
-    }
-
-    /**
-     * @return the filtered
-     */
-    protected boolean isFiltered() {
-        return filtered;
     }
 
 }

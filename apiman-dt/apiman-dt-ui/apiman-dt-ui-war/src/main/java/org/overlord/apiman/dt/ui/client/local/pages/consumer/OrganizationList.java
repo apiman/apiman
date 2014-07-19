@@ -29,7 +29,8 @@ import org.overlord.apiman.dt.ui.client.local.AppMessages;
 import org.overlord.apiman.dt.ui.client.local.events.RequestMembershipEvent;
 import org.overlord.apiman.dt.ui.client.local.events.RequestMembershipEvent.Handler;
 import org.overlord.apiman.dt.ui.client.local.events.RequestMembershipEvent.HasRequestMembershipHandlers;
-import org.overlord.apiman.dt.ui.client.local.pages.OrgMembersPage;
+import org.overlord.apiman.dt.ui.client.local.pages.ConsumerOrgPage;
+import org.overlord.apiman.dt.ui.client.local.pages.OrgServicesPage;
 import org.overlord.apiman.dt.ui.client.local.pages.common.NoEntitiesWidget;
 import org.overlord.apiman.dt.ui.client.local.services.NavigationHelperService;
 import org.overlord.apiman.dt.ui.client.local.util.MultimapUtil;
@@ -63,7 +64,9 @@ public class OrganizationList extends FlowPanel implements HasValue<List<Organiz
     protected TranslationService i18n;
     
     @Inject
-    protected TransitionAnchorFactory<OrgMembersPage> toOrgMembers;
+    protected TransitionAnchorFactory<ConsumerOrgPage> toOrgDetails;
+    @Inject
+    protected TransitionAnchorFactory<OrgServicesPage> toOrgServices;
     
     private List<OrganizationBean> organizations;
     private Set<String> memberOrgs = new HashSet<String>();
@@ -173,7 +176,7 @@ public class OrganizationList extends FlowPanel implements HasValue<List<Organiz
         title.add(icon);
         icon.getElement().addClassName("icon"); //$NON-NLS-1$
         
-        Anchor a = toOrgMembers.get(MultimapUtil.singleItemMap("org", bean.getId())); //$NON-NLS-1$
+        Anchor a = toOrgDetails.get(MultimapUtil.singleItemMap("org", bean.getId())); //$NON-NLS-1$
         title.add(a);
         a.setText(bean.getName());
     }
@@ -221,10 +224,10 @@ public class OrganizationList extends FlowPanel implements HasValue<List<Organiz
      * @param item
      */
     private void createIsMemberBadge(OrganizationBean bean, FlowPanel item) {
-        Label label = new Label();
-        item.add(label);
-        label.getElement().setClassName("ismember"); //$NON-NLS-1$
-        label.setTitle(i18n.format(AppMessages.ALREADY_A_MEMBER));
+        Anchor a = toOrgServices.get(MultimapUtil.singleItemMap("org", bean.getId())); //$NON-NLS-1$
+        item.add(a);
+        a.getElement().setClassName("ismember"); //$NON-NLS-1$
+        a.setTitle(i18n.format(AppMessages.ALREADY_A_MEMBER));
     }
 
     /**
