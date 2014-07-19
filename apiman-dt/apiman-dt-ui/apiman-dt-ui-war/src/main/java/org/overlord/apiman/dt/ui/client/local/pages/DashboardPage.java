@@ -85,7 +85,7 @@ public class DashboardPage extends AbstractPage {
         String currentUser = config.getCurrentConfig().getUser().getUsername();
 
         String createOrgHref = navHelper.createHrefToPage(NewOrgPage.class, MultimapUtil.fromMultiple());
-        String browseOrgsHref = navHelper.createHrefToPage(ConsumeOrgs.class, MultimapUtil.fromMultiple());
+        String browseOrgsHref = navHelper.createHrefToPage(ConsumerOrgsPage.class, MultimapUtil.fromMultiple());
         String myOrgsHref = navHelper.createHrefToPage(UserOrgsPage.class, MultimapUtil.singleItemMap("user", currentUser)); //$NON-NLS-1$
         String createServiceHref = navHelper.createHrefToPage(NewServicePage.class, MultimapUtil.fromMultiple());
 //        String browseServicesHref = navHelper.createHrefToPage(NewOrgPage.class, MultimapUtil.fromMultiple());

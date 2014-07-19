@@ -4,6 +4,20 @@ body {
   font-size: 13px;
 }
 
+
+.vspacer-10, .vspacer-20 {
+  width: 100%;
+  float: left;
+}
+
+.vspacer-10 {
+  height: 10px;
+}
+
+.vspacer-20 {
+  height: 20px;
+}
+
 .movable {
   cursor: move;
 }
@@ -784,4 +798,22 @@ div.page {
 }
 .error-500 {
   background-image: url(images/error-500.png);
+}
+
+.consumer-header {
+  margin-top: 0px;
+  border-bottom: 1px solid rgb(238, 238, 238);
+  padding-bottom: 5px;
+}
+
+.consumer-section {
+  float: left;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.consumer-section .icon {
+  line-height: 18px;
+  color: rgb(63, 146, 210);
+  margin-right: 3px;
 }

@@ -28,6 +28,8 @@ public class AppMessages {
     public static final String TITLE_DASHBOARD = "page.title.dashboard"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "APIMan - Organizations")
     public static final String TITLE_CONSUME_ORGS = "page.title.consume-orgs"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "APIMan - Organization")
+    public static final String TITLE_CONSUME_ORG = "page.title.consume-org"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "APIMan - New Organization")
     public static final String TITLE_NEW_ORG = "page.title.new-org"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "APIMan - New Application")
@@ -142,6 +144,10 @@ public class AppMessages {
 
     @TranslationKey(defaultValue = "No organizations found.  Either no organizations matched the query or you haven't queried yet!")
     public static final String NO_ORGANIZATIONS_MESSAGE = "noEntitiesFound.consumer-orgs"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "No services are currently offered by this organization.")
+    public static final String NO_SERVICES_IN_CONSUMER_ORG_MESSAGE = "noEntitiesFound.services-in-consumer-org"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "No services matched the current filter criteria.")
+    public static final String NO_FILTERED_SERVICES_IN_CONSUMER_ORG_MESSAGE = "noEntitiesFound.services-in-consumer-org.filtered"; //$NON-NLS-1$
 
     @TranslationKey(defaultValue = "Assign roles to {0}.")
     public static final String MEMBER_CARD_ASSIGN_ROLES_HELP = "manageMembers.card.edit-help"; //$NON-NLS-1$
@@ -189,6 +195,9 @@ public class AppMessages {
     public static final String REQUEST_MEMBERSHIP = "request-membership"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "You are already a member of this Organization.")
     public static final String ALREADY_A_MEMBER = "already-a-member"; //$NON-NLS-1$
+
+    @TranslationKey(defaultValue = "No members found")
+    public static final String NO_MEMBERS_MESSAGE = "no-members-found"; //$NON-NLS-1$
 
     @TranslationKey(defaultValue = "Please copy the value below (e.g. Ctrl-C).")
     public static final String APIS_LIST_PLEASE_COPY = "appApisList.please-copy"; //$NON-NLS-1$
