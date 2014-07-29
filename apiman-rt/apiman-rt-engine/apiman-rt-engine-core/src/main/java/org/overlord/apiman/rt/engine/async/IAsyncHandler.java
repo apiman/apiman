@@ -16,7 +16,7 @@
 package org.overlord.apiman.rt.engine.async;
 
 /**
- * Asynchronous handler called when an event occurs.
+ * Asynchronous handler called when an async operation completes.
  * 
  * @author Marc Savy <msavy@redhat.com>
  *
@@ -25,9 +25,9 @@ package org.overlord.apiman.rt.engine.async;
 public interface IAsyncHandler<T> {
     
     /**
-     * Fired when an event occurs.
+     * Called when an async result is available.
      * 
-     * @param event the event
+     * @param result the async result
      */
-    public void onHandler(T event);
+    public void handle(IAsyncResult<T> result);
 }

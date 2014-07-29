@@ -16,8 +16,11 @@
 package org.overlord.apiman.dt.ui.client.local.pages.policy;
 
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
 import org.overlord.apiman.dt.api.beans.policies.PolicyDefinitionBean;
+import org.overlord.apiman.dt.ui.client.local.AppMessages;
+import org.overlord.apiman.dt.ui.client.local.ClientMessages;
 import org.overlord.apiman.dt.ui.client.local.pages.common.SelectBox;
 
 /**
@@ -28,6 +31,9 @@ import org.overlord.apiman.dt.ui.client.local.pages.common.SelectBox;
 @Dependent
 public class PolicyDefinitionSelectBox extends SelectBox<PolicyDefinitionBean> {
     
+    @Inject
+    private ClientMessages i18n;
+
     /**
      * Constructor.
      */
@@ -40,7 +46,7 @@ public class PolicyDefinitionSelectBox extends SelectBox<PolicyDefinitionBean> {
     @Override
     protected String optionName(PolicyDefinitionBean option) {
         if (option == null) {
-            return "Choose a policy type...";
+            return i18n.format(AppMessages.CHOOSE_POLICY_TYPE);
         } else {
             return option.getName();
         }
@@ -74,7 +80,7 @@ public class PolicyDefinitionSelectBox extends SelectBox<PolicyDefinitionBean> {
         }
         builder.append(">"); //$NON-NLS-1$
         if (option == null) {
-            builder.append("Choose a policy type...");
+            builder.append(i18n.format(AppMessages.CHOOSE_POLICY_TYPE));
         } else {
             builder.append(option.getName());
         }
