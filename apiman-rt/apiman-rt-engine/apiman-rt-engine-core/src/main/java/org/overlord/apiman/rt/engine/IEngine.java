@@ -15,10 +15,13 @@
  */
 package org.overlord.apiman.rt.engine;
 
+import java.util.concurrent.Future;
+
+import org.overlord.apiman.rt.engine.async.IAsyncHandler;
+import org.overlord.apiman.rt.engine.async.IAsyncResult;
 import org.overlord.apiman.rt.engine.beans.Application;
 import org.overlord.apiman.rt.engine.beans.Service;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
-import org.overlord.apiman.rt.engine.beans.ServiceResponse;
 import org.overlord.apiman.rt.engine.beans.exceptions.PublishingException;
 import org.overlord.apiman.rt.engine.beans.exceptions.RegistrationException;
 
@@ -34,22 +37,27 @@ public interface IEngine {
      * @return the version of the engine
      */
     public String getVersion();
-
-    /**
-     * Processes a single inbound request for a managed service.
-     * @param request
-     * @param handler
-     */
-    public void executeAsync(ServiceRequest request, IResponseHandler handler);
     
     /**
-     * Executes a single inbound request for a managed service.  Blocks until
-     * the back end service has satisfied the request.
+     * Executes an asynchronous request for a managed service, with the provided
+     * handler being passed an {@link EngineResult} with the status and result 
+     * of the policy chain invocation. TODO
+     * 
      * @param request a request for a managed service
-     * @return the response from the back-end service
-     * @throws Exception if an error occurs while invoking the back-end service
-     */
-    public ServiceResponse execute(ServiceRequest request) throws Exception;
+     * @param handler an async handler called when a response is returned or an
+     *            exception is captured.
+     */    
+    public void execute(ServiceRequest request, IAsyncHandler<EngineResult> handler);
+    
+    
+    /**
+     * Executes an asynchronous request for a managed service, with the returned
+     * Future containing a valid {@link EngineResult} once the request has completed.
+     * 
+     * @param request a request for a managed service
+     * @return handler a {@link Future} containing the request result.
+     */ 
+    public Future<IAsyncResult<EngineResult>> execute(ServiceRequest request);
     
     /**
      * Publishes a new {@link Service}.
