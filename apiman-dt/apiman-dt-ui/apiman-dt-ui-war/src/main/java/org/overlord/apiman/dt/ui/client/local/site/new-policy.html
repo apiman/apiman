@@ -14,7 +14,7 @@
 
     <div id="form-page" class="container apiman-new-policy apiman-entity-new page" data-field="page">
       <div class="row">
-        <h2 class="title" data-field="heading">Add Policy</h2>
+        <h2 class="title" data-field="heading" data-i18n-key="add-policy">Add Policy</h2>
       </div>
       <!-- Helpful hint -->
       <div class="row">
@@ -39,66 +39,12 @@
         </dl>
       </div>
       <!-- Policy Type-specific config -->
-      <div class="row policy-config-row">
-        <h3 data-field="policyHeading">Authentication Policy Configuration</h3>
-        <div class="box col-md-9 container">
-          <div class="row policy-config-row">
-            <dl class="col-md-12">
-              <dt>Authentication Type</dt>
-              <dd>
-                <select class="selectpicker" data-role="dummy" data-field="authenticationType">
-                  <option>BASIC</option>
-                  <option>OAuth</option>
-                  <option>SAML Bearer Token</option>
-                </select>
-              </dd>
-            </dl>
-          </div>
-          <div class="row policy-config-row">
-            <dl class="col-md-12">
-              <dt>Provider</dt>
-              <dd>
-                <select class="selectpicker" data-role="dummy" data-field="authenticationProvider">
-                  <option>LDAP</option>
-                  <option>KeyCloak</option>
-                  <option>PicketLink</option>
-                </select>
-              </dd>
-            </dl>
-          </div>
-          <div class="row policy-config-row">
-            <dl class="col-md-12">
-              <dt>LDAP Configuration</dt>
-              <dd>
-                <form class="form-inline" role="form">
-                  <div class="form-group">
-                    <label class="sr-only" for="ldapServer">Server address</label>
-                    <input type="text" style="width: 250px;" class="form-control" id="ldapServer" placeholder="Server address">
-                  </div>
-                  <span> : </span>
-                  <div class="form-group">
-                    <label class="sr-only" for="ldapPort">Port</label>
-                    <input type="text" size="5" class="form-control" id="ldapPort" placeholder="port">
-                  </div>
-                  <span> / </span>
-                  <div class="form-group">
-                    <label class="sr-only" for="baseDn">Base Distinguished Name</label>
-                    <input type="text" style="width: 250px;" class="form-control" id="baseDn" placeholder="root DN (e.g. dc=mycompany,dc=com)">
-                  </div>
-                </form>
-              </dd>
-              <dd style="padding-top: 5px">
-                <form class="form-inline" role="form">
-                  <div class="form-group">
-                    <label class="sr-only" for="ldapUserDnPattern">User DN Pattern</label>
-                    <input type="text" style="width: 350px;" class="form-control" id="ldapUserDnPattern" placeholder="User DN pattern (e.g. cn={0},ou=people)">
-                  </div>
-                </form>
-              </dd>
-              <dd style="padding-top: 5px">
-                <button class="btn btn-default">Test Connection</button>
-              </dd>
-            </dl>
+      <div class="row">
+        <h3 data-field="policyHeading">Authentication Policy Configuration<i data-role="dummy"> </i></h3>
+        <div class="box col-md-9 container" data-field="policyFormWrapper" data-role="dummy">
+          <div class="form policy-config default">
+            <span>Please manually configure your policy's JSON configuration below.</span>
+            <textarea></textarea>
           </div>
         </div>
       </div>

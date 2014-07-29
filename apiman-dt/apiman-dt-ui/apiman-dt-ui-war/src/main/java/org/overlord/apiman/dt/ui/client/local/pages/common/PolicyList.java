@@ -31,7 +31,7 @@ import org.overlord.apiman.dt.ui.client.local.events.MoveItemUpEvent;
 import org.overlord.apiman.dt.ui.client.local.events.MoveItemUpEvent.HasMoveItemUpHandlers;
 import org.overlord.apiman.dt.ui.client.local.events.RemovePolicyEvent;
 import org.overlord.apiman.dt.ui.client.local.events.RemovePolicyEvent.HasRemovePolicyHandlers;
-import org.overlord.apiman.dt.ui.client.local.pages.NewPolicyPage;
+import org.overlord.apiman.dt.ui.client.local.pages.EditPolicyPage;
 import org.overlord.apiman.dt.ui.client.local.pages.UserRedirectPage;
 import org.overlord.apiman.dt.ui.client.local.services.NavigationHelperService;
 import org.overlord.apiman.dt.ui.client.local.util.Formatting;
@@ -68,7 +68,7 @@ public class PolicyList extends FlowPanel implements HasValue<List<PolicyBean>>,
     @Inject
     protected TranslationService i18n;
     @Inject
-    TransitionAnchorFactory<NewPolicyPage> toEditPolicyFactory;
+    TransitionAnchorFactory<EditPolicyPage> toEditPolicyFactory;
     @Inject
     TransitionAnchorFactory<UserRedirectPage> toUserFactory;
     
@@ -231,7 +231,7 @@ public class PolicyList extends FlowPanel implements HasValue<List<PolicyBean>>,
         titleDiv.add(titleSpan);
         titleSpan.getElement().setClassName("title"); //$NON-NLS-1$
 
-        TransitionAnchor<NewPolicyPage> titleAnchor = toEditPolicyFactory.get(MultimapUtil.fromMultiple(
+        TransitionAnchor<EditPolicyPage> titleAnchor = toEditPolicyFactory.get(MultimapUtil.fromMultiple(
                 "org", bean.getOrganizationId(), //$NON-NLS-1$
                 "id", bean.getEntityId(), //$NON-NLS-1$
                 "ver", bean.getEntityVersion(), //$NON-NLS-1$

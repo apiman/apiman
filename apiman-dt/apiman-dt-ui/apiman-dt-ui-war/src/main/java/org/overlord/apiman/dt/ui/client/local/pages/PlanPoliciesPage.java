@@ -25,6 +25,7 @@ import org.jboss.errai.ui.nav.client.local.Page;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.apiman.dt.api.beans.policies.PolicyBean;
+import org.overlord.apiman.dt.api.beans.policies.PolicyType;
 import org.overlord.apiman.dt.ui.client.local.AppMessages;
 import org.overlord.apiman.dt.ui.client.local.events.RemovePolicyEvent;
 import org.overlord.apiman.dt.ui.client.local.pages.common.PolicyList;
@@ -110,7 +111,7 @@ public class PlanPoliciesPage extends AbstractPlanPage {
         
         String newPolicyHref = navHelper.createHrefToPage(NewPolicyPage.class,
                 MultimapUtil.fromMultiple("org", this.planBean.getOrganizationId(), "id", this.planBean.getId(),  //$NON-NLS-1$ //$NON-NLS-2$
-                        "ver", this.versionBean.getVersion(), "type", "app")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                        "ver", this.versionBean.getVersion(), "type", PolicyType.Plan.toString())); //$NON-NLS-1$ //$NON-NLS-2$
         toNewPolicy.setHref(newPolicyHref);
         policies.setValue(policyBeans);
     }
