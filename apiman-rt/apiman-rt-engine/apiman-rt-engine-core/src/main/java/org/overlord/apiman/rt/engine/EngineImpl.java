@@ -15,6 +15,10 @@
  */
 package org.overlord.apiman.rt.engine;
 
+import java.util.concurrent.Future;
+
+import org.overlord.apiman.rt.engine.async.IAsyncHandler;
+import org.overlord.apiman.rt.engine.async.IAsyncResult;
 import org.overlord.apiman.rt.engine.beans.Application;
 import org.overlord.apiman.rt.engine.beans.Contract;
 import org.overlord.apiman.rt.engine.beans.Service;
@@ -57,36 +61,14 @@ public class EngineImpl implements IEngine {
         setConnectorFactory(connectorFactory);
     }
 
-    /**
-     * @see org.overlord.apiman.rt.engine.IEngine#executeAsync(org.overlord.apiman.rt.engine.beans.ServiceRequest, org.overlord.apiman.rt.engine.IResponseHandler)
-     */
-    @Override
-    public void executeAsync(ServiceRequest request, IResponseHandler handler) {
-        // TODO implement this!
-        try {
-            ServiceResponse response = execute(request);
-            handler.onResponse(response);
-        } catch (Exception e) {
-            handler.onError(e);
-        }
+    public void execute(ServiceRequest request, IAsyncHandler<EngineResult> handler) {
+        return;
     }
     
-    /**
-     * @see org.overlord.apiman.rt.engine.IEngine#execute(org.overlord.apiman.rt.engine.beans.ServiceRequest)
-     */
-    @Override
-    public ServiceResponse execute(ServiceRequest request) throws Exception {
-        Service service = getRegistry().getService(request);
-        Contract contract = getRegistry().getContract(request);
-        
-        // TODO apply inbound policies to request
-        
-        IServiceConnector connector = getConnectorFactory().createConnector(request, service);
-        ServiceResponse response = connector.invoke(request);
-        
-        // TODO apply outbound policies to response
-        
-        return response;
+    public Future<IAsyncResult<EngineResult>> execute(ServiceRequest request) {
+        //return execute(request, null);
+        //TODO Set callback wrapper to update Future's result & status.
+        return null;
     }
     
     /**
