@@ -68,6 +68,7 @@ public abstract class SelectBox<T> extends ListBox implements HasValue<T> {
     public void setOptions(List<T> options) {
         clear();
         this.options = options;
+        
         for (T option : options) {
             String name = optionName(option);
             String value = optionValue(option);

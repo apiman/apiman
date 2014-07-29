@@ -642,7 +642,29 @@ public class RestInvokerService {
             plans.call(adapter, adapter).getPolicy(organizationId, entityId, entityVersion, policyId);
         }
     }
-    
+
+    /**
+     * Updates a policy.  Works for all three types: app, service, plan.
+     * @param policyType
+     * @param organizationId
+     * @param entityId
+     * @param entityVersion
+     * @param policyId
+     * @param policy
+     * @param callback
+     */
+    public void updatePolicy(PolicyType policyType, String organizationId, String entityId,
+            String entityVersion, Long policyId, PolicyBean policy, IRestInvokerCallback<Void> callback) {
+        CallbackAdapter<Void> adapter = new CallbackAdapter<Void>(callback);
+        if (policyType == PolicyType.Application) {
+            applications.call(adapter, adapter).updatePolicy(organizationId, entityId, entityVersion, policyId, policy);
+        } else if (policyType == PolicyType.Service) {
+            services.call(adapter, adapter).updatePolicy(organizationId, entityId, entityVersion, policyId, policy);
+        } else if (policyType == PolicyType.Plan) {
+            plans.call(adapter, adapter).updatePolicy(organizationId, entityId, entityVersion, policyId, policy);
+        }
+    }
+
     /**
      * Performs/executes the given action.
      * @param action

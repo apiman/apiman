@@ -39,7 +39,11 @@ public class PolicyDefinitionSelectBox extends SelectBox<PolicyDefinitionBean> {
      */
     @Override
     protected String optionName(PolicyDefinitionBean option) {
-        return option.getName();
+        if (option == null) {
+            return "Choose a policy type...";
+        } else {
+            return option.getName();
+        }
     }
 
     /**
@@ -47,7 +51,11 @@ public class PolicyDefinitionSelectBox extends SelectBox<PolicyDefinitionBean> {
      */
     @Override
     protected String optionValue(PolicyDefinitionBean option) {
-        return option.getId();
+        if (option == null) {
+            return "__null__"; //$NON-NLS-1$
+        } else {
+            return option.getId();
+        }
     }
 
     /**
@@ -57,16 +65,19 @@ public class PolicyDefinitionSelectBox extends SelectBox<PolicyDefinitionBean> {
     protected String optionDataContent(PolicyDefinitionBean option) {
         StringBuilder builder = new StringBuilder();
         builder.append("<i class='fa fa-inline fa-fw"); //$NON-NLS-1$
-        if (option.getIcon() != null) {
+        if (option != null && option.getIcon() != null) {
             builder.append(" fa-" + option.getIcon()); //$NON-NLS-1$
         }
         builder.append("'></i> <span"); //$NON-NLS-1$
-        // TODO need another way to make the "Please choose..." label greyed-out
-        if (option.getPolicyImpl() == null) {
+        if (option == null) {
             builder.append(" class='apiman-label-faded'"); //$NON-NLS-1$
         }
         builder.append(">"); //$NON-NLS-1$
-        builder.append(option.getName());
+        if (option == null) {
+            builder.append("Choose a policy type...");
+        } else {
+            builder.append(option.getName());
+        }
         builder.append("</span>"); //$NON-NLS-1$
         return builder.toString();
     }
