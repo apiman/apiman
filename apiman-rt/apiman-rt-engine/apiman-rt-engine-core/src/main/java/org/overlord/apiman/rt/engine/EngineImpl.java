@@ -20,10 +20,8 @@ import java.util.concurrent.Future;
 import org.overlord.apiman.rt.engine.async.IAsyncHandler;
 import org.overlord.apiman.rt.engine.async.IAsyncResult;
 import org.overlord.apiman.rt.engine.beans.Application;
-import org.overlord.apiman.rt.engine.beans.Contract;
 import org.overlord.apiman.rt.engine.beans.Service;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
-import org.overlord.apiman.rt.engine.beans.ServiceResponse;
 import org.overlord.apiman.rt.engine.beans.exceptions.PublishingException;
 import org.overlord.apiman.rt.engine.beans.exceptions.RegistrationException;
 

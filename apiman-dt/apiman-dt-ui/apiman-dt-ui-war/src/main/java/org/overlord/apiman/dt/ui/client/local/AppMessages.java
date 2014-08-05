@@ -219,4 +219,9 @@ public class AppMessages {
     @TranslationKey(defaultValue = "on")
     public static final String ON = "on"; //$NON-NLS-1$
 
+    @TranslationKey(defaultValue = "Please manually configure your policy's JSON configuration below.")
+    public static final String DEFAULT_POLICY_FORM_HELP = "default-policy-form-help"; //$NON-NLS-1$
+
+    @TranslationKey(defaultValue = "Choose a policy type...")
+    public static final String CHOOSE_POLICY_TYPE = "choose-policy-type"; //$NON-NLS-1$
 }

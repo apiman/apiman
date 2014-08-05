@@ -19,6 +19,7 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.jboss.errai.ui.nav.client.local.Page;
@@ -81,7 +82,10 @@ public class NewPolicyPage extends AbstractPage {
     FlowPanel policyFormWrapper;
     @Inject @DataField
     AsyncActionButton createButton;
-    
+
+    @Inject
+    Instance<DefaultPolicyConfigurationForm> defaultFormFactory;
+
     IPolicyConfigurationForm policyForm;
     
     List<PolicyDefinitionBean> policyDefBeans;
@@ -170,7 +174,7 @@ public class NewPolicyPage extends AbstractPage {
      * @param value
      */
     private IPolicyConfigurationForm createPolicyConfigForm(PolicyDefinitionBean value) {
-        return new DefaultPolicyConfigurationForm();
+        return defaultFormFactory.get();
     }
     
     /**

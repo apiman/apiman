@@ -15,6 +15,12 @@
  */
 package org.overlord.apiman.dt.ui.client.local.pages.policy;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
+import org.overlord.apiman.dt.ui.client.local.AppMessages;
+import org.overlord.apiman.dt.ui.client.local.ClientMessages;
+
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -28,7 +34,11 @@ import com.google.gwt.user.client.ui.TextArea;
  *
  * @author eric.wittmann@redhat.com
  */
+@Dependent
 public class DefaultPolicyConfigurationForm extends FlowPanel implements IPolicyConfigurationForm {
+    
+    @Inject
+    private ClientMessages i18n;
     
     private TextArea text;
 
@@ -39,7 +49,7 @@ public class DefaultPolicyConfigurationForm extends FlowPanel implements IPolicy
         getElement().addClassName("form"); //$NON-NLS-1$
         getElement().addClassName("policy-config"); //$NON-NLS-1$
         getElement().addClassName("default"); //$NON-NLS-1$
-        add(new InlineLabel("Please manually configure your policy's JSON configuration below."));
+        add(new InlineLabel(i18n.format(AppMessages.DEFAULT_POLICY_FORM_HELP)));
         text = new TextArea();
         add(text);
     }

@@ -53,8 +53,9 @@ public class UndertowGateway {
             protected void doGateway(final HttpServerExchange exchange) {
                 ServiceRequest request = readRequest(exchange);
                 try {
-                    ServiceResponse response = engine.execute(request);
-                    writeResponse(exchange, response);
+                    // TODO recent engine interface changes broke this - fix!
+//                    ServiceResponse response = engine.execute(request);
+//                    writeResponse(exchange, response);
                 } catch (Exception e) {
                     writeError(exchange, e);
                 }

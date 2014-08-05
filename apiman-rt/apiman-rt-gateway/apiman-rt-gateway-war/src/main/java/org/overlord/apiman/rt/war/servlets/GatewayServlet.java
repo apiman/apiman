@@ -29,7 +29,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
 import org.overlord.apiman.rt.engine.beans.ServiceResponse;
-import org.overlord.apiman.rt.war.Gateway;
 
 /**
  * The API Management gateway servlet.  This servlet is responsible for converting inbound
@@ -95,8 +94,9 @@ public class GatewayServlet extends HttpServlet {
         try {
             ServiceRequest srequest = readRequest(req);
             srequest.setType(action);
-            ServiceResponse sresponse = Gateway.engine.execute(srequest);
-            writeResponse(resp, sresponse);
+            // TODO recent engine interface changes broke this - fix!
+//            ServiceResponse sresponse = Gateway.engine.execute(srequest);
+//            writeResponse(resp, sresponse);
         } catch (Exception e) {
             writeError(resp, e);
         }

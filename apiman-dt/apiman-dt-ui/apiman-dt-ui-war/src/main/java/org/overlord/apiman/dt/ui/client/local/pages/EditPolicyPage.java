@@ -17,6 +17,7 @@ package org.overlord.apiman.dt.ui.client.local.pages;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.jboss.errai.ui.nav.client.local.Page;
@@ -76,6 +77,9 @@ public class EditPolicyPage extends AbstractPage {
     FlowPanel policyFormWrapper;
     @Inject @DataField
     AsyncActionButton updateButton;
+    
+    @Inject
+    Instance<DefaultPolicyConfigurationForm> defaultFormFactory;
     
     IPolicyConfigurationForm policyForm;
     
@@ -141,7 +145,7 @@ public class EditPolicyPage extends AbstractPage {
      * @param value
      */
     private IPolicyConfigurationForm createPolicyConfigForm(PolicyDefinitionBean value) {
-        return new DefaultPolicyConfigurationForm();
+        return defaultFormFactory.get();
     }
     
     /**

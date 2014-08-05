@@ -16,6 +16,8 @@
 package org.overlord.apiman.rt.engine.beans;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Models a service contract published to the API Management runtime.
@@ -30,6 +32,7 @@ public class Contract implements Serializable {
     private String serviceOrgId;
     private String serviceId;
     private String serviceVersion;
+    private List<Policy> policies = new ArrayList<Policy>();
     
     /**
      * Constructor.
@@ -94,15 +97,27 @@ public class Contract implements Serializable {
     }
 
     /**
+     * @return the policies
+     */
+    public List<Policy> getPolicies() {
+        return policies;
+    }
+
+    /**
+     * @param policies the policies to set
+     */
+    public void setPolicies(List<Policy> policies) {
+        this.policies = policies;
+    }
+
+    /**
      * @see java.lang.Object#hashCode()
      */
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((serviceId == null) ? 0 : serviceId.hashCode());
-        result = prime * result + ((serviceOrgId == null) ? 0 : serviceOrgId.hashCode());
-        result = prime * result + ((serviceVersion == null) ? 0 : serviceVersion.hashCode());
+        result = prime * result + ((apiKey == null) ? 0 : apiKey.hashCode());
         return result;
     }
 
@@ -118,20 +133,10 @@ public class Contract implements Serializable {
         if (getClass() != obj.getClass())
             return false;
         Contract other = (Contract) obj;
-        if (serviceId == null) {
-            if (other.serviceId != null)
+        if (apiKey == null) {
+            if (other.apiKey != null)
                 return false;
-        } else if (!serviceId.equals(other.serviceId))
-            return false;
-        if (serviceOrgId == null) {
-            if (other.serviceOrgId != null)
-                return false;
-        } else if (!serviceOrgId.equals(other.serviceOrgId))
-            return false;
-        if (serviceVersion == null) {
-            if (other.serviceVersion != null)
-                return false;
-        } else if (!serviceVersion.equals(other.serviceVersion))
+        } else if (!apiKey.equals(other.apiKey))
             return false;
         return true;
     }
