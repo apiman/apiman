@@ -25,25 +25,14 @@ import java.io.Serializable;
 public class Policy implements Serializable {
 
     private static final long serialVersionUID = -5945877012261045491L;
-    private long policyId;
-    private Object policyConfig; //config_info json str
-    private String policyClass; //Reference to policy (classname?) we're going to load?
+    private String policyJsonConfig; //config_info json str
+    private Object policyConfig; // parsed/unmarshaled configuration object
+    private String policyImpl; //Reference to policy (classname?) we're going to load?
 
+    /**
+     * Constructor.
+     */
     public Policy() {
-    }
-
-    /**
-     * @return the policyId
-     */
-    public long getPolicyId() {
-        return policyId;
-    }
-
-    /**
-     * @param policyId the policyId to set
-     */
-    public void setPolicyId(long policyId) {
-        this.policyId = policyId;
     }
 
     /**
@@ -63,14 +52,28 @@ public class Policy implements Serializable {
     /**
      * @return the policyClass
      */
-    public String getPolicyClass() {
-        return policyClass;
+    public String getPolicyImpl() {
+        return policyImpl;
     }
 
     /**
      * @param policyClass the policyClass to set
      */
-    public void setPolicyClass(String policyClass) {
-        this.policyClass = policyClass;
+    public void setPolicyImpl(String policyClass) {
+        this.policyImpl = policyClass;
+    }
+
+    /**
+     * @return the policyJsonConfig
+     */
+    public String getPolicyJsonConfig() {
+        return policyJsonConfig;
+    }
+
+    /**
+     * @param policyJsonConfig the policyJsonConfig to set
+     */
+    public void setPolicyJsonConfig(String policyJsonConfig) {
+        this.policyJsonConfig = policyJsonConfig;
     }
 }

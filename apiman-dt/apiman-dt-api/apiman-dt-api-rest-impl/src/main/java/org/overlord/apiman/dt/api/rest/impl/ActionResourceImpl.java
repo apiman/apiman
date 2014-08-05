@@ -16,6 +16,7 @@
 
 package org.overlord.apiman.dt.api.rest.impl;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -27,6 +28,8 @@ import org.overlord.apiman.dt.api.beans.actions.ActionBean;
 import org.overlord.apiman.dt.api.beans.apps.ApplicationStatus;
 import org.overlord.apiman.dt.api.beans.apps.ApplicationVersionBean;
 import org.overlord.apiman.dt.api.beans.idm.PermissionType;
+import org.overlord.apiman.dt.api.beans.policies.PolicyBean;
+import org.overlord.apiman.dt.api.beans.policies.PolicyType;
 import org.overlord.apiman.dt.api.beans.services.ServiceStatus;
 import org.overlord.apiman.dt.api.beans.services.ServiceVersionBean;
 import org.overlord.apiman.dt.api.beans.summary.ContractSummaryBean;
@@ -48,6 +51,7 @@ import org.overlord.apiman.dt.api.rest.impl.util.ExceptionFactory;
 import org.overlord.apiman.dt.api.security.ISecurityContext;
 import org.overlord.apiman.rt.engine.beans.Application;
 import org.overlord.apiman.rt.engine.beans.Contract;
+import org.overlord.apiman.rt.engine.beans.Policy;
 import org.overlord.apiman.rt.engine.beans.Service;
 import org.overlord.apiman.rt.engine.beans.exceptions.PublishingException;
 
@@ -197,6 +201,7 @@ public class ActionResourceImpl implements IActionResource {
             contract.setServiceId(contractBean.getServiceId());
             contract.setServiceOrgId(contractBean.getServiceOrganizationId());
             contract.setServiceVersion(contractBean.getServiceVersion());
+            contract.getPolicies().addAll(aggregateContractPolicies(contractBean));
             contracts.add(contract);
         }
         application.setContracts(contracts);
@@ -215,6 +220,56 @@ public class ActionResourceImpl implements IActionResource {
             throw ExceptionFactory.actionException(Messages.i18n.format("PublishError")); //$NON-NLS-1$
         }
 
+    }
+
+    /**
+     * Aggregates the service, app, and plan policies into a single ordered list.
+     * @param contractBean
+     */
+    private List<Policy> aggregateContractPolicies(ContractSummaryBean contractBean) {
+        try {
+            List<Policy> policies = new ArrayList<Policy>();
+            PolicyType [] types = new PolicyType[3];
+            types[0] = PolicyType.Application;
+            types[1] = PolicyType.Plan;
+            types[2] = PolicyType.Service;
+            for (PolicyType pt : types) {
+                String org, id, ver;
+                switch (pt) {
+                  case Application: {
+                      org = contractBean.getAppOrganizationId();
+                      id = contractBean.getAppId();
+                      ver = contractBean.getAppVersion();
+                      break;
+                  }
+                  case Plan: {
+                      org = contractBean.getServiceOrganizationId();
+                      id = contractBean.getPlanId();
+                      ver = contractBean.getPlanVersion();
+                      break;
+                  }
+                  case Service: {
+                      org = contractBean.getServiceOrganizationId();
+                      id = contractBean.getServiceId();
+                      ver = contractBean.getServiceVersion();
+                      break;
+                  }
+                  default: {
+                      throw new RuntimeException("Missing case for switch!"); //$NON-NLS-1$
+                  }
+                }
+                List<PolicyBean> appPolicies = query.getPolicies(org, id, ver, pt);
+                for (PolicyBean policyBean : appPolicies) {
+                    Policy policy = new Policy();
+                    policy.setPolicyJsonConfig(policyBean.getConfiguration());
+                    policy.setPolicyImpl(policyBean.getDefinition().getPolicyImpl());
+                    policies.add(policy);
+                }
+            }
+            return policies;
+        } catch (StorageException e) {
+            throw ExceptionFactory.actionException(Messages.i18n.format("PolicyPublishError", contractBean.getKey()), e); //$NON-NLS-1$
+        }
     }
 
     /**
