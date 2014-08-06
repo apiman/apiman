@@ -15,11 +15,13 @@
  */
 package org.overlord.apiman.rt.engine.policy;
 
+import java.util.Map;
+
 /**
  * Context information provided to an executing policy.
  * 
  * @author Marc Savy <msavy@redhat.com>
  */
 public interface IPolicyContext {
-   
+    Map<String, Object> getConversation();
 }
