@@ -15,6 +15,7 @@
  */
 package org.overlord.apiman.rt.engine;
 
+import org.overlord.apiman.rt.engine.async.IAsyncHandler;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
 import org.overlord.apiman.rt.engine.beans.ServiceResponse;
 import org.overlord.apiman.rt.engine.beans.exceptions.ConnectorException;
@@ -22,6 +23,7 @@ import org.overlord.apiman.rt.engine.beans.exceptions.ConnectorException;
 /**
  * Interface implemented by connectors to back end systems.  The engine uses
  * a connector to invoke a back end system on behalf of a managed service.
+ * All connectors are expected to do their work asynchronously.
  *
  * @author eric.wittmann@redhat.com
  */
@@ -30,9 +32,10 @@ public interface IServiceConnector {
     /**
      * Invokes the back end system.
      * @param request the inbound service request
+     * @param handler an async handler to receive the service response when complete
      * @return a response from the back end system
      * @throws ConnectorException if a connection error occurs
      */
-    public ServiceResponse invoke(ServiceRequest request) throws ConnectorException;
+    public void invoke(ServiceRequest request, IAsyncHandler<ServiceResponse> handler) throws ConnectorException;
 
 }

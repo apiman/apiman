@@ -32,6 +32,8 @@ import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.overlord.apiman.rt.engine.IConnectorFactory;
 import org.overlord.apiman.rt.engine.IServiceConnector;
+import org.overlord.apiman.rt.engine.async.AsyncResultImpl;
+import org.overlord.apiman.rt.engine.async.IAsyncHandler;
 import org.overlord.apiman.rt.engine.beans.Service;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
 import org.overlord.apiman.rt.engine.beans.ServiceResponse;
@@ -51,7 +53,7 @@ public class HttpConnectorFactory implements IConnectorFactory {
         SUPPRESSED_HEADERS.add("Content-Length"); //$NON-NLS-1$
         SUPPRESSED_HEADERS.add("X-API-Key"); //$NON-NLS-1$
     }
-    
+
     /**
      * Constructor.
      */
@@ -64,9 +66,18 @@ public class HttpConnectorFactory implements IConnectorFactory {
     @Override
     public IServiceConnector createConnector(ServiceRequest request, final Service service) {
         return new IServiceConnector() {
+            /**
+             * @see org.overlord.apiman.rt.engine.IServiceConnector#invoke(org.overlord.apiman.rt.engine.beans.ServiceRequest, org.overlord.apiman.rt.engine.async.IAsyncHandler)
+             */
             @Override
-            public ServiceResponse invoke(ServiceRequest request) throws ConnectorException {
-                return doInvoke(request, service);
+            public void invoke(ServiceRequest request, IAsyncHandler<ServiceResponse> handler)
+                    throws ConnectorException {
+                try {
+                    ServiceResponse response = doInvoke(request, service);
+                    handler.handle(AsyncResultImpl.create(response));
+                } catch (Exception e) {
+                    handler.handle(AsyncResultImpl.<ServiceResponse>create(e));
+                }
             }
         };
     }

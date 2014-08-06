@@ -73,14 +73,11 @@
     <jboss.releases.repo.url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</jboss.releases.repo.url>
     <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots/</jboss.snapshots.repo.url>
 
-    <!-- Plugin Versions -->
-    <maven.surefire.report.plugin.version>2.16</maven.surefire.report.plugin.version>
-
     <!-- Dependency Versions (not found in parent) -->
-    <overlord-commons.version>2.0.2-SNAPSHOT</overlord-commons.version>
-    <picketlink.version>2.5.3.SP4</picketlink.version>
+    <version.org.overlord>2.0.7-SNAPSHOT</version.org.overlord>
+    <version.org.picketlink>2.5.3.SP4</version.org.picketlink>
     <jetty.version>8.1.9.v20130131</jetty.version>
-    <undertow.version>1.0.1.Final</undertow.version>
+    <version.io.undertow>1.0.1.Final</version.io.undertow>
 
     <!-- Dependency Overrides -->
     <version.org.jboss.errai>3.0.1.Final</version.org.jboss.errai>
@@ -402,76 +399,76 @@
       <dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-gwt</artifactId>
-        <version>${overlord-commons.version}</version>
+        <version>${version.org.overlord}</version>
       </dependency>
       <dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-config</artifactId>
-        <version>${overlord-commons.version}</version>
+        <version>${version.org.overlord}</version>
       </dependency>
       <dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-i18n</artifactId>
-        <version>${overlord-commons.version}</version>
+        <version>${version.org.overlord}</version>
       </dependency>
       <dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-errai-fuse-support</artifactId>
-        <version>${overlord-commons.version}</version>
+        <version>${version.org.overlord}</version>
       </dependency>
       <dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-osgi</artifactId>
-        <version>${overlord-commons.version}</version>
+        <version>${version.org.overlord}</version>
       </dependency>
       <dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-osgi-weld</artifactId>
-        <version>${overlord-commons.version}</version>
+        <version>${version.org.overlord}</version>
       </dependency>
       <dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-uiheader</artifactId>
-        <version>${overlord-commons.version}</version>
+        <version>${version.org.overlord}</version>
       </dependency>
       <dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-services</artifactId>
-        <version>${overlord-commons.version}</version>
+        <version>${version.org.overlord}</version>
       </dependency>
       <dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-auth</artifactId>
-        <version>${overlord-commons.version}</version>
+        <version>${version.org.overlord}</version>
       </dependency>
       <dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-auth-jetty8</artifactId>
-        <version>${overlord-commons.version}</version>
+        <version>${version.org.overlord}</version>
       </dependency>
       <dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-dev</artifactId>
-        <version>${overlord-commons.version}</version>
+        <version>${version.org.overlord}</version>
       </dependency>
 
       <!-- PicketLink -->
       <dependency>
         <groupId>org.picketlink</groupId>
         <artifactId>picketlink-federation</artifactId>
-        <version>${picketlink.version}</version>
+        <version>${version.org.picketlink}</version>
       </dependency>
       
       <!-- Undertow -->
       <dependency>
         <groupId>io.undertow</groupId>
         <artifactId>undertow-core</artifactId>
-        <version>${undertow.version}</version>
+        <version>${version.io.undertow}</version>
       </dependency>
       <dependency>
         <groupId>io.undertow</groupId>
         <artifactId>undertow-servlet</artifactId>
-        <version>${undertow.version}</version>
+        <version>${version.io.undertow}</version>
       </dependency>
 
       <!-- Jetty -->

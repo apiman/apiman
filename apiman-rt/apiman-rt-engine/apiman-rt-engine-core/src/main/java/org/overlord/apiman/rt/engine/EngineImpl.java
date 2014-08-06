@@ -74,33 +74,63 @@ public class EngineImpl implements IEngine {
     @Override
     public void execute(final ServiceRequest request, final IAsyncHandler<EngineResult> handler) {
         final Contract contract = getContract(request);
+        // TODO create the policy context here
         final IPolicyContext context = null;
         final List<IPolicy> policies = getPolicies(contract);
         final PolicyChainImpl chain = new PolicyChainImpl(policies, context);
         chain.setInboundHandler(new IAsyncHandler<ServiceRequest>() {
             @Override
             public void handle(IAsyncResult<ServiceRequest> result) {
-                final Service service = registry.getService(contract); // TODO handle exceptions here
-                IServiceConnector connector = getConnectorFactory().createConnector(request, service);
-                // TODO make this interface async
-                ServiceResponse response = connector.invoke(request);
-                chain.doApply(response);
+                // The chain has discovered that all of the policies have been applied
+                // to the inbound request (or possibly an exception has been thrown).
+                
+                // If success, proxy the request to the back-end system asynchronously.
+                // If error, propagate to the caller.
+                if (result.isSuccess()) {
+                    try {
+                        final Service service = registry.getService(contract);
+                        IServiceConnector connector = getConnectorFactory().createConnector(request, service);
+                        connector.invoke(request, new IAsyncHandler<ServiceResponse>() {
+                            @Override
+                            public void handle(IAsyncResult<ServiceResponse> result) {
+                                if (result.isSuccess()) {
+                                    ServiceResponse response = result.getResult();
+                                    chain.doApply(response);
+                                } else {
+                                    handler.handle(AsyncResultImpl.<EngineResult>create(result.getError()));
+                                }
+                            }
+                        });
+                    } catch (Throwable e) {
+                        handler.handle(AsyncResultImpl.<EngineResult>create(e));
+                    }
+                } else {
+                    handler.handle(AsyncResultImpl.<EngineResult>create(result.getError()));
+                }
             }
         });
         chain.setOutboundHandler(new IAsyncHandler<ServiceResponse>() {
             @Override
             public void handle(IAsyncResult<ServiceResponse> result) {
-                if (result.isError()) {
-                    handler.handle(AsyncResultImpl.<EngineResult>create(result.getError()));
-                } else {
+                // The chain has discovered that all of the policies have been applied
+                // to the outbound response (or possibly an exception has been thrown).
+                
+                // If success, send the service response to the caller
+                // If failure, send the exception to the caller
+                if (result.isSuccess()) {
                     EngineResult er = new EngineResult(result.getResult());
                     handler.handle(AsyncResultImpl.create(er));
+                } else {
+                    handler.handle(AsyncResultImpl.<EngineResult>create(result.getError()));
                 }
             }
         });
         chain.setPolicyFailureHandler(new IAsyncHandler<PolicyFailure>() {
             @Override
             public void handle(IAsyncResult<PolicyFailure> result) {
+                // One of the policies has triggered a failure.  At this
+                // point we should stop processing and send the failure to
+                // the client for appropriate handling.
                 EngineResult er = new EngineResult(result.getResult());
                 handler.handle(AsyncResultImpl.create(er));
             }
