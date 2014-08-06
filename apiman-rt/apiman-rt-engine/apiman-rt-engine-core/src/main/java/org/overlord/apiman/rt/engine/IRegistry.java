@@ -35,13 +35,21 @@ import org.overlord.apiman.rt.engine.beans.exceptions.RegistrationException;
 public interface IRegistry {
 
     /**
-     * Gets the {@link Service} being invoked based on information included in the inbound
-     * service request.
-     * @param request an inbound service request
+     * Gets the {@link Service} being invoked.
+     * @param contract the service contract being used for the invokation
      * @return a Service or null if not found
      */
-    public Service getService(ServiceRequest request) throws InvalidServiceException;
-    
+    public Service getService(Contract contract) throws InvalidServiceException;
+
+    /**
+     * Gets the {@link Contract} to use based on information included in the inbound
+     * service request.
+     * 
+     * @param request an inbound service request
+     * @return a Contract or null if not found
+     */
+    public Contract getContract(ServiceRequest request) throws InvalidContractException;
+
     /**
      * Publishes a new {@link Service} into the registry.
      * @param service the service being published
@@ -69,14 +77,5 @@ public interface IRegistry {
      * @throws RegistrationException
      */
     public void unregisterApplication(Application application) throws RegistrationException;
-
-    /**
-     * Gets the {@link Contract} to use based on information included in the inbound
-     * service request.
-     * 
-     * @param request an inbound service request
-     * @return a Contract or null if not found
-     */
-    public Contract getContract(ServiceRequest request) throws InvalidContractException;
 
 }

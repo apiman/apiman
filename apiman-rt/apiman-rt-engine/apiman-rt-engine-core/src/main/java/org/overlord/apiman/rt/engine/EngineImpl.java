@@ -15,15 +15,24 @@
  */
 package org.overlord.apiman.rt.engine;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Future;
 
+import org.overlord.apiman.rt.engine.async.AsyncResultImpl;
 import org.overlord.apiman.rt.engine.async.IAsyncHandler;
 import org.overlord.apiman.rt.engine.async.IAsyncResult;
 import org.overlord.apiman.rt.engine.beans.Application;
+import org.overlord.apiman.rt.engine.beans.Contract;
+import org.overlord.apiman.rt.engine.beans.PolicyFailure;
 import org.overlord.apiman.rt.engine.beans.Service;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
+import org.overlord.apiman.rt.engine.beans.ServiceResponse;
 import org.overlord.apiman.rt.engine.beans.exceptions.PublishingException;
 import org.overlord.apiman.rt.engine.beans.exceptions.RegistrationException;
+import org.overlord.apiman.rt.engine.policy.IPolicy;
+import org.overlord.apiman.rt.engine.policy.IPolicyContext;
+import org.overlord.apiman.rt.engine.policy.PolicyChainImpl;
 
 /**
  * The implementation of the API Management runtime engine.
@@ -54,26 +63,67 @@ public class EngineImpl implements IEngine {
      * @param registry the registry to use
      * @param connectorFactory the connector factory to use
      */
-    public EngineImpl(IRegistry registry, IConnectorFactory connectorFactory) {
+    public EngineImpl(final IRegistry registry, final IConnectorFactory connectorFactory) {
         setRegistry(registry);
         setConnectorFactory(connectorFactory);
     }
 
-    public void execute(ServiceRequest request, IAsyncHandler<EngineResult> handler) {
+    /**
+     * @see org.overlord.apiman.rt.engine.IEngine#execute(org.overlord.apiman.rt.engine.beans.ServiceRequest, org.overlord.apiman.rt.engine.async.IAsyncHandler)
+     */
+    @Override
+    public void execute(final ServiceRequest request, final IAsyncHandler<EngineResult> handler) {
+        final Contract contract = getContract(request);
+        final IPolicyContext context = null;
+        final List<IPolicy> policies = getPolicies(contract);
+        final PolicyChainImpl chain = new PolicyChainImpl(policies, context);
+        chain.setInboundHandler(new IAsyncHandler<ServiceRequest>() {
+            @Override
+            public void handle(IAsyncResult<ServiceRequest> result) {
+                final Service service = registry.getService(contract); // TODO handle exceptions here
+                IServiceConnector connector = getConnectorFactory().createConnector(request, service);
+                // TODO make this interface async
+                ServiceResponse response = connector.invoke(request);
+                chain.doApply(response);
+            }
+        });
+        chain.setOutboundHandler(new IAsyncHandler<ServiceResponse>() {
+            @Override
+            public void handle(IAsyncResult<ServiceResponse> result) {
+                if (result.isError()) {
+                    handler.handle(AsyncResultImpl.<EngineResult>create(result.getError()));
+                } else {
+                    EngineResult er = new EngineResult(result.getResult());
+                    handler.handle(AsyncResultImpl.create(er));
+                }
+            }
+        });
+        chain.setPolicyFailureHandler(new IAsyncHandler<PolicyFailure>() {
+            @Override
+            public void handle(IAsyncResult<PolicyFailure> result) {
+                EngineResult er = new EngineResult(result.getResult());
+                handler.handle(AsyncResultImpl.create(er));
+            }
+        });
+        chain.doApply(request);
         return;
     }
-    
-    public Future<IAsyncResult<EngineResult>> execute(ServiceRequest request) {
-        //return execute(request, null);
-        //TODO Set callback wrapper to update Future's result & status.
-        return null;
+
+    /**
+     * @see org.overlord.apiman.rt.engine.IEngine#execute(org.overlord.apiman.rt.engine.beans.ServiceRequest)
+     */
+    @Override
+    public Future<IAsyncResult<EngineResult>> execute(final ServiceRequest request) {
+        EngineResultFuture future = new EngineResultFuture();
+        execute(request, future);
+        return future;
     }
     
     /**
      * @see org.overlord.apiman.rt.engine.IEngine#publishService(org.overlord.apiman.rt.engine.beans.Service)
      */
     @Override
-    public void publishService(Service service) throws PublishingException {
+    public void publishService(final Service service) throws PublishingException {
         getRegistry().publishService(service);
     }
     
@@ -81,7 +131,7 @@ public class EngineImpl implements IEngine {
      * @see org.overlord.apiman.rt.engine.IEngine#retireService(org.overlord.apiman.rt.engine.beans.Service)
      */
     @Override
-    public void retireService(Service service) throws PublishingException {
+    public void retireService(final Service service) throws PublishingException {
         getRegistry().retireService(service);
     }
     
@@ -89,7 +139,7 @@ public class EngineImpl implements IEngine {
      * @see org.overlord.apiman.rt.engine.IEngine#registerApplication(org.overlord.apiman.rt.engine.beans.Application)
      */
     @Override
-    public void registerApplication(Application application) throws RegistrationException {
+    public void registerApplication(final Application application) throws RegistrationException {
         getRegistry().registerApplication(application);
     }
     
@@ -97,8 +147,27 @@ public class EngineImpl implements IEngine {
      * @see org.overlord.apiman.rt.engine.IEngine#unregisterApplication(org.overlord.apiman.rt.engine.beans.Application)
      */
     @Override
-    public void unregisterApplication(Application application) throws RegistrationException {
+    public void unregisterApplication(final Application application) throws RegistrationException {
         getRegistry().unregisterApplication(application);
+    }
+
+    /**
+     * Gets the service contract to use for the given request. 
+     * @param request
+     */
+    private Contract getContract(ServiceRequest request) {
+        return this.registry.getContract(request);
+    }
+
+    /**
+     * Creates the policies that should be applied for this service invokation.  This is
+     * achieved by using the policy information set on the contract.
+     * @param contract
+     */
+    private List<IPolicy> getPolicies(Contract contract) {
+        List<IPolicy> policies = new ArrayList<IPolicy>();
+        // TODO implement creating the policies
+        return policies;
     }
 
     /**
@@ -111,7 +180,7 @@ public class EngineImpl implements IEngine {
     /**
      * @param registry the registry to set
      */
-    public void setRegistry(IRegistry registry) {
+    public void setRegistry(final IRegistry registry) {
         this.registry = registry;
     }
 
@@ -125,7 +194,7 @@ public class EngineImpl implements IEngine {
     /**
      * @param connectorFactory the connectorFactory to set
      */
-    public void setConnectorFactory(IConnectorFactory connectorFactory) {
+    public void setConnectorFactory(final IConnectorFactory connectorFactory) {
         this.connectorFactory = connectorFactory;
     }
 

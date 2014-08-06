@@ -29,9 +29,6 @@ public class ServiceRequest implements Serializable {
     
     private static final long serialVersionUID = 8024669261165845962L;
     
-    private String organization;
-    private String service;
-    private String version;
     private String apiKey;
     
     private String type;
@@ -44,34 +41,6 @@ public class ServiceRequest implements Serializable {
      * Constructor.
      */
     public ServiceRequest() {
-    }
-
-    /**
-     * @return the organization
-     */
-    public String getOrganization() {
-        return organization;
-    }
-
-    /**
-     * @param organization the organization to set
-     */
-    public void setOrganization(String organization) {
-        this.organization = organization;
-    }
-
-    /**
-     * @return the service
-     */
-    public String getService() {
-        return service;
-    }
-
-    /**
-     * @param service the service to set
-     */
-    public void setService(String service) {
-        this.service = service;
     }
 
     /**
@@ -142,20 +111,6 @@ public class ServiceRequest implements Serializable {
      */
     public void setHeaders(Map<String, String> headers) {
         this.headers = headers;
-    }
-
-    /**
-     * @return the version
-     */
-    public String getVersion() {
-        return version;
-    }
-
-    /**
-     * @param version the version to set
-     */
-    public void setVersion(String version) {
-        this.version = version;
     }
 
     /**

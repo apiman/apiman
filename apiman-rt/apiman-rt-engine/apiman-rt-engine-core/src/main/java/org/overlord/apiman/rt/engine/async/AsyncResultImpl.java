@@ -16,48 +16,77 @@
 package org.overlord.apiman.rt.engine.async;
 
 /**
+ * A simple implementation of the async result interface.  Offers convenient
+ * creation of result instances.
+ * 
  * @author Marc Savy <msavy@redhat.com>
- * @param <T>
- *
  */
 public class AsyncResultImpl<T> implements IAsyncResult<T> {
+    
     private T result;
     private Throwable error;
-    private boolean success;
     
     /**
-     * A successful async call.
-     * @param result the result of the async call.
+     * Convenience method for creating an async result.
+     * @param result
      */
-    public AsyncResultImpl(T result) {
+    public static final <T> AsyncResultImpl<T> create(T result) {
+        AsyncResultImpl<T> ar = new AsyncResultImpl<T>(result);
+        return ar;
+    }
+    
+    /**
+     * Convenience method for creating an async result.
+     * @param t
+     */
+    public static final <T> AsyncResultImpl<T> create(Throwable t) {
+        AsyncResultImpl<T> ar = new AsyncResultImpl<T>(t);
+        return ar;
+    }
+    
+    /**
+     * Constructor.
+     * @param result
+     */
+    private AsyncResultImpl(T result) {
         this.result = result;
-        success = true;
     }
-    
+
     /**
-     * An unsuccessful async call.
-     * @param error the Throwable raised when error occurred.
+     * Constructor.
+     * @param error
      */
-    public AsyncResultImpl(Throwable error) {
+    private AsyncResultImpl(Throwable error) {
         this.error = error;
-        success = false;
     }
-    
+
+    /**
+     * @see org.overlord.apiman.rt.engine.async.IAsyncResult#isSuccess()
+     */
     @Override
     public boolean isSuccess() {
-        return success;
+        return error == null;
     }
 
+    /**
+     * @see org.overlord.apiman.rt.engine.async.IAsyncResult#isError()
+     */
     @Override
     public boolean isError() {
-        return success == false; 
+        return error != null;
     }
 
+    /**
+     * @see org.overlord.apiman.rt.engine.async.IAsyncResult#getResult()
+     */
     @Override
     public T getResult() {
         return result;
     }
 
+    /**
+     * @see org.overlord.apiman.rt.engine.async.IAsyncResult#getError()
+     */
     @Override
     public Throwable getError() {
         return error;

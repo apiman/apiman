@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Enumeration;
 import java.util.Map;
+import java.util.concurrent.Future;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -27,8 +28,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
+import org.overlord.apiman.rt.engine.EngineResult;
+import org.overlord.apiman.rt.engine.async.IAsyncResult;
+import org.overlord.apiman.rt.engine.beans.PolicyFailure;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
 import org.overlord.apiman.rt.engine.beans.ServiceResponse;
+import org.overlord.apiman.rt.war.Gateway;
 
 /**
  * The API Management gateway servlet.  This servlet is responsible for converting inbound
@@ -86,6 +91,7 @@ public class GatewayServlet extends HttpServlet {
     }
 
     /**
+     * Generic handler for all types of http actions/verbs.
      * @param req
      * @param resp
      * @param action 
@@ -94,14 +100,24 @@ public class GatewayServlet extends HttpServlet {
         try {
             ServiceRequest srequest = readRequest(req);
             srequest.setType(action);
-            // TODO recent engine interface changes broke this - fix!
-//            ServiceResponse sresponse = Gateway.engine.execute(srequest);
-//            writeResponse(resp, sresponse);
-        } catch (Exception e) {
+            
+            Future<IAsyncResult<EngineResult>> futureResult = Gateway.engine.execute(srequest);
+            IAsyncResult<EngineResult> asyncResult = futureResult.get();
+            if (asyncResult.isError()) {
+                throw new Exception(asyncResult.getError());
+            } else {
+                EngineResult result = asyncResult.getResult();
+                if (result.isResponse()) {
+                    writeResponse(resp, result.getServiceResponse());
+                } else {
+                    writeFailure(resp, result.getPolicyFailure());
+                }
+            }
+        } catch (Throwable e) {
             writeError(resp, e);
         }
     }
-    
+
     /**
      * Reads a {@link ServiceRequest} from information found in the inbound
      * portion of the http request.
@@ -110,44 +126,16 @@ public class GatewayServlet extends HttpServlet {
      * @throws IOException 
      */
     protected ServiceRequest readRequest(HttpServletRequest request) throws IOException {
+        String apiKey = getApiKey(request);
+
         // TODO get the service request from a pool (re-use these objects)
         ServiceRequest srequest = new ServiceRequest();
-        srequest.setOrganization(getOrganization(request));
-        srequest.setService(getService(request));
-        srequest.setVersion(getVersion(request));
-        srequest.setApiKey(getApiKey(request));
+        srequest.setApiKey(apiKey);
         srequest.setDestination(getDestination(request));
         readHeaders(srequest, request);
         srequest.setBody(request.getInputStream());
         srequest.setRawRequest(request);
         return srequest;
-    }
-
-    /**
-     * @param request
-     * @return
-     */
-    protected String getOrganization(HttpServletRequest request) {
-        String path = request.getPathInfo();
-        return path.split("/")[1]; //$NON-NLS-1$
-    }
-
-    /**
-     * @param request
-     * @return
-     */
-    protected String getService(HttpServletRequest request) {
-        String path = request.getPathInfo();
-        return path.split("/")[2]; //$NON-NLS-1$
-    }
-
-    /**
-     * @param request
-     * @return
-     */
-    protected String getVersion(HttpServletRequest request) {
-        String path = request.getPathInfo();
-        return path.split("/")[3]; //$NON-NLS-1$
     }
 
     /**
@@ -179,22 +167,18 @@ public class GatewayServlet extends HttpServlet {
                 endIdx = queryString.length();
             }
             return queryString.substring(idx + 7, endIdx);
+        } else {
+            return null;
         }
-        return null;
     }
 
     /**
+     * Returns the path to the resource.
      * @param request
-     * @return
      */
     protected String getDestination(HttpServletRequest request) {
-        // Format:  /org/svc/version/dest/in/a/tion
         String path = request.getPathInfo();
-        int idx = -1;
-        for (int i=0; i<4; i++) {
-            idx = path.indexOf('/', idx+1);
-        }
-        return path.substring(idx);
+        return path;
     }
 
     /**
@@ -245,12 +229,22 @@ public class GatewayServlet extends HttpServlet {
             throw new RuntimeException(e);
         }
     }
+    
+    /**
+     * Writes a policy failure to the http response.
+     * @param resp
+     * @param policyFailure
+     */
+    private void writeFailure(HttpServletResponse resp, PolicyFailure policyFailure) {
+        throw new IllegalStateException("Not yet implemented.");
+    }
 
     /**
+     * Writes an error to the servlet response object.
      * @param resp
      * @param e
      */
-    protected void writeError(HttpServletResponse resp, Exception e) {
+    protected void writeError(HttpServletResponse resp, Throwable e) {
         try {
             resp.setHeader("X-Exception", e.getMessage()); //$NON-NLS-1$
             resp.sendError(500, e.getMessage());

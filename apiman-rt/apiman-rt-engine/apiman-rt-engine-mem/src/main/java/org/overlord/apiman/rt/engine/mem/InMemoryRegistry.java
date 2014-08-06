@@ -47,15 +47,15 @@ public class InMemoryRegistry implements IRegistry {
     }
     
     /**
-     * @see org.overlord.apiman.rt.engine.IRegistry#getService(org.overlord.apiman.rt.engine.beans.ServiceRequest)
+     * @see org.overlord.apiman.rt.engine.IRegistry#getService(org.overlord.apiman.rt.engine.beans.Contract)
      */
     @Override
-    public Service getService(ServiceRequest request) throws InvalidServiceException {
-        String serviceKey = request.getOrganization() + "|" + request.getService() + "|" + request.getVersion(); //$NON-NLS-1$ //$NON-NLS-2$
+    public Service getService(Contract contract) throws InvalidServiceException {
+        String serviceKey = contract.getServiceOrgId() + "|" + contract.getServiceId() + "|" + contract.getServiceVersion(); //$NON-NLS-1$ //$NON-NLS-2$
         Service service = services.get(serviceKey);
         if (service == null) {
             throw new InvalidServiceException(Messages.i18n.format("InMemoryRegistry.ServiceNotFoundInOrg",  //$NON-NLS-1$
-                    request.getService(), request.getOrganization()));
+                    contract.getServiceId(), contract.getServiceOrgId()));
         }
         return service;
     }
@@ -80,8 +80,9 @@ public class InMemoryRegistry implements IRegistry {
         String serviceKey = getServiceKey(service);
         if (services.containsKey(serviceKey)) {
             services.remove(serviceKey);
+        } else {
+            throw new PublishingException(Messages.i18n.format("InMemoryRegistry.ServiceNotFound")); //$NON-NLS-1$
         }
-        throw new PublishingException(Messages.i18n.format("InMemoryRegistry.ServiceNotFound")); //$NON-NLS-1$
     }
 
     /**
@@ -103,24 +104,17 @@ public class InMemoryRegistry implements IRegistry {
      * @see org.overlord.apiman.rt.engine.IRegistry#unregisterApplication(org.overlord.apiman.rt.engine.beans.Application)
      */
     @Override
-    public void unregisterApplication(Application application) throws RegistrationException {
+    public synchronized void unregisterApplication(Application application) throws RegistrationException {
         String applicationKey = getApplicationKey(application);
         if (applications.containsKey(applicationKey)) {
             Application removed = applications.remove(applicationKey);
             for (Contract contract : removed.getContracts()) {
-                removeContract(contract);
+                if (contracts.containsKey(contract.getApiKey())) {
+                    contracts.remove(contract.getApiKey());
+                }
             }
-        }
-        throw new RegistrationException(Messages.i18n.format("InMemoryRegistry.AppNotFound")); //$NON-NLS-1$
-    }
-
-    /**
-     * Removes a contract from the registry.
-     * @param contract
-     */
-    private void removeContract(Contract contract) {
-        if (contracts.containsKey(contract.getApiKey())) {
-            contracts.remove(contract.getApiKey());
+        } else {
+            throw new RegistrationException(Messages.i18n.format("InMemoryRegistry.AppNotFound")); //$NON-NLS-1$
         }
     }
 
@@ -132,11 +126,6 @@ public class InMemoryRegistry implements IRegistry {
         Contract contract = contracts.get(request.getApiKey());
         if (contract == null) {
             throw new InvalidContractException(Messages.i18n.format("InMemoryRegistry.NoContractForAPIKey", request.getApiKey())); //$NON-NLS-1$
-        }
-        String serviceId = contract.getServiceId();
-        String orgId = contract.getServiceOrgId();
-        if (!serviceId.equals(request.getService()) || !orgId.equals(request.getOrganization())) {
-            throw new InvalidContractException(Messages.i18n.format("InMemoryRegistry.InvalidContract")); //$NON-NLS-1$
         }
         return contract;
     }

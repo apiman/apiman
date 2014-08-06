@@ -16,56 +16,127 @@
 package org.overlord.apiman.rt.engine.policy;
 
 import java.util.List;
+
+import org.overlord.apiman.rt.engine.async.AsyncResultImpl;
+import org.overlord.apiman.rt.engine.async.IAsyncHandler;
 import org.overlord.apiman.rt.engine.beans.PolicyFailure;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
 import org.overlord.apiman.rt.engine.beans.ServiceResponse;
 
-
+/**
+ * An implementation of the policy chain.  Created by the engine and then
+ * passed to the policy impls when they are applied to the request/response.
+ *
+ * @author eric.wittmann@redhat.com
+ */
 public class PolicyChainImpl implements IPolicyChain {
-    
-    private IPolicyChainHandler chainHandler;
-    private List<IPolicy> policies;
-    private IPolicyContext context;
+
+    private IAsyncHandler<ServiceRequest> inboundHandler;
+    private IAsyncHandler<ServiceResponse> outboundHandler;
+    private IAsyncHandler<PolicyFailure> policyFailureHandler;
     private int inboundPolicyIndex;
     private int outboundPolicyIndex;
+    private List<IPolicy> policies;
+    private IPolicyContext context;
 
-    public PolicyChainImpl(List<IPolicy> policies, IPolicyContext context, IPolicyChainHandler chainHandler) {
+    /**
+     * Constructor.
+     * @param context
+     * @param policies
+     */
+    public PolicyChainImpl(List<IPolicy> policies, IPolicyContext context) {
         this.policies = policies;
+        this.context = context;
         this.inboundPolicyIndex = 0;
         this.outboundPolicyIndex = policies.size() - 1;
-        this.context = context;
-        this.chainHandler = chainHandler;
     }
-    
+
+    /**
+     * @see org.overlord.apiman.rt.engine.policy.IPolicyChain#doApply(org.overlord.apiman.rt.engine.beans.ServiceRequest)
+     */
+    @Override
     public void doApply(ServiceRequest request) {
         if (inboundPolicyIndex < policies.size()) {
             try {
                 IPolicy policy = policies.get(inboundPolicyIndex++);
-                Object policyConfig = null; //TODO get policy config.
+                // TODO obtain the policy configuration object somehow
+                Object policyConfig = null;
                 policy.apply(request, this.context, policyConfig, this);
             } catch (Throwable error) {
-                this.chainHandler.onError(error);
+                inboundHandler.handle(AsyncResultImpl.<ServiceRequest>create(error));
             }
         } else {
-            this.chainHandler.onInboundComplete(request);
+            inboundHandler.handle(AsyncResultImpl.create(request));
         }
     }
-    
+
+    /**
+     * @see org.overlord.apiman.rt.engine.policy.IPolicyChain#doApply(org.overlord.apiman.rt.engine.beans.ServiceResponse)
+     */
+    @Override
     public void doApply(ServiceResponse response) {
         if (outboundPolicyIndex >= 0) {
             try {
                 IPolicy policy = policies.get(outboundPolicyIndex--);
-                Object policyConfig = null; //TODO get policy config.
+                // TODO obtain the policy configuration object somehow
+                Object policyConfig = null;
                 policy.apply(response, this.context, policyConfig, this);
             } catch (Throwable error) {
-                this.chainHandler.onError(error);
+                outboundHandler.handle(AsyncResultImpl.<ServiceResponse>create(error));
             }
         } else {
-            this.chainHandler.onOutboundComplete(response);
+            outboundHandler.handle(AsyncResultImpl.create(response));
         }
     }
 
+    /**
+     * @see org.overlord.apiman.rt.engine.policy.IPolicyChain#doFailure(org.overlord.apiman.rt.engine.beans.PolicyFailure)
+     */
+    @Override
     public void doFailure(PolicyFailure failure) {
-        this.chainHandler.onFailure(failure);
+        policyFailureHandler.handle(AsyncResultImpl.create(failure));
     }
+
+    /**
+     * @return the inboundCompleteHandler
+     */
+    public IAsyncHandler<ServiceRequest> getInboundHandler() {
+        return inboundHandler;
+    }
+
+    /**
+     * @param inboundCompleteHandler the inboundCompleteHandler to set
+     */
+    public void setInboundHandler(IAsyncHandler<ServiceRequest> inboundCompleteHandler) {
+        this.inboundHandler = inboundCompleteHandler;
+    }
+
+    /**
+     * @return the outboundCompleteHandler
+     */
+    public IAsyncHandler<ServiceResponse> getOutboundHandler() {
+        return outboundHandler;
+    }
+
+    /**
+     * @param outboundCompleteHandler the outboundCompleteHandler to set
+     */
+    public void setOutboundHandler(IAsyncHandler<ServiceResponse> outboundCompleteHandler) {
+        this.outboundHandler = outboundCompleteHandler;
+    }
+
+    /**
+     * @return the policyFailureHandler
+     */
+    public IAsyncHandler<PolicyFailure> getPolicyFailureHandler() {
+        return policyFailureHandler;
+    }
+
+    /**
+     * @param policyFailureHandler the policyFailureHandler to set
+     */
+    public void setPolicyFailureHandler(IAsyncHandler<PolicyFailure> policyFailureHandler) {
+        this.policyFailureHandler = policyFailureHandler;
+    }
+
 }

@@ -82,9 +82,6 @@ public class UndertowGateway {
     protected ServiceRequest readRequest(HttpServerExchange exchange) {
         // TODO get the service request from a pool (re-use these objects)
         ServiceRequest request = new ServiceRequest();
-        request.setOrganization(getOrganization(exchange));
-        request.setService(getService(exchange));
-        request.setVersion(getVersion(exchange));
         request.setApiKey(getApiKey(exchange));
         request.setType(exchange.getRequestMethod().toString());
         request.setDestination(getDestination(exchange));
@@ -121,13 +118,39 @@ public class UndertowGateway {
     }
 
     /**
+     * Gets the API Key from the exchange.  The API key can be passed either via
+     * a custom http request header called X-API-Key or else by a query parameter
+     * in the URL called apikey.
      * @param exchange
-     * @return
      */
     protected String getApiKey(HttpServerExchange exchange) {
-        return exchange.getRequestHeaders().getFirst("X-API-Key"); //$NON-NLS-1$
+        String apiKey = exchange.getRequestHeaders().getFirst("X-API-Key"); //$NON-NLS-1$
+        if (apiKey == null || apiKey.trim().length() == 0) {
+            apiKey = getApiKeyFromQuery(exchange);
+        }
+        return apiKey;
     }
 
+    /**
+     * Gets the API key from the query string.
+     * @param exchange the inbound request
+     * @return the api key or null if not found
+     */
+    protected String getApiKeyFromQuery(HttpServerExchange exchange) {
+        String queryString = exchange.getQueryString();
+        int idx = queryString.indexOf("apikey="); //$NON-NLS-1$
+        if (idx >= 0) {
+            int endIdx = queryString.indexOf('&', idx);
+            if (endIdx == -1) {
+                endIdx = queryString.length();
+            }
+            return queryString.substring(idx + 7, endIdx);
+        } else {
+            return null;
+        }
+    }
+    
+    
     /**
      * @param exchange
      * @return

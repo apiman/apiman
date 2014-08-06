@@ -95,7 +95,6 @@ public class GatewayServer {
          * Gateway
          * ************* */
         ServletContextHandler server = new ServletContextHandler(ServletContextHandler.SESSIONS);
-//        server.setSecurityHandler(createSecurityHandler());
         server.setContextPath("/"); //$NON-NLS-1$
         server.addEventListener(new GatewayBootstrapper());
         ServletHolder servlet = new ServletHolder(new GatewayServlet());

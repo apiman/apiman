@@ -29,6 +29,9 @@ public class EngineResult {
     public ServiceResponse serviceResponse = null;
     public PolicyFailure policyFailure = null;
     
+    /**
+     * Constructor.
+     */
     public EngineResult() {
     }
     
@@ -40,18 +43,15 @@ public class EngineResult {
     public EngineResult(ServiceResponse serviceResponse) {
         this.serviceResponse = serviceResponse;
     }
-    
+
     /**
      * Construct an unsuccessful EngineResult.
-     * 
-     * @param serviceResponse the service response
-     * @param policyFailure the failure that occurred
+     * @param policyFailure
      */
-    public EngineResult(ServiceResponse serviceResponse, PolicyFailure policyFailure) {
-        this.serviceResponse = serviceResponse;
+    public EngineResult(PolicyFailure policyFailure) {
         this.policyFailure = policyFailure;
     }
-    
+
     /**
      * Whether a response has been set.
      * 

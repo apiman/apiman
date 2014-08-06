@@ -15,7 +15,6 @@
  */
 package org.overlord.apiman.rt.test;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -25,7 +24,7 @@ import org.junit.Test;
  */
 public class SimpleEchoTest extends AbstractGatewayTest {
     
-    @Test @Ignore
+    @Test
     public void test() throws Exception {
         runTestPlan("test-plans/simple-echo-testPlan.xml"); //$NON-NLS-1$
     }

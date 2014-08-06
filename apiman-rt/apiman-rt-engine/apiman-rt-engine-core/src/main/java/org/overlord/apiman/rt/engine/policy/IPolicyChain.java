@@ -33,8 +33,6 @@ import org.overlord.apiman.rt.engine.beans.ServiceResponse;
  * {@link PolicyFailure} or exception.
  * 
  * @author Marc Savy <msavy@redhat.com>
- * 
- * @see IPolicyChainHandler
  */
 public interface IPolicyChain {
     /**
