@@ -33,6 +33,7 @@ import org.overlord.apiman.rt.engine.beans.exceptions.RegistrationException;
 import org.overlord.apiman.rt.engine.policy.IPolicy;
 import org.overlord.apiman.rt.engine.policy.IPolicyContext;
 import org.overlord.apiman.rt.engine.policy.PolicyChainImpl;
+import org.overlord.apiman.rt.engine.policy.PolicyContextImpl;
 
 /**
  * The implementation of the API Management runtime engine.
@@ -74,8 +75,7 @@ public class EngineImpl implements IEngine {
     @Override
     public void execute(final ServiceRequest request, final IAsyncHandler<EngineResult> handler) {
         final Contract contract = getContract(request);
-        // TODO create the policy context here
-        final IPolicyContext context = null;
+        final IPolicyContext context = new PolicyContextImpl();
         final List<IPolicy> policies = getPolicies(contract);
         final PolicyChainImpl chain = new PolicyChainImpl(policies, context);
         chain.setInboundHandler(new IAsyncHandler<ServiceRequest>() {
