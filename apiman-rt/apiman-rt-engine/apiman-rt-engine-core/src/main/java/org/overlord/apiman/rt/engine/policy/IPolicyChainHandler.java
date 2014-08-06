@@ -33,7 +33,7 @@ public interface IPolicyChainHandler {
      * 
      * @param response the outbound response
      */
-    void onOutputComplete(ServiceResponse response);
+    void onOutboundComplete(ServiceResponse response);
 
     /**
      * Called if a failure is indicated during policy chain execution. 
@@ -45,7 +45,7 @@ public interface IPolicyChainHandler {
     /** 
      * Called if an exception was raised during policy chain execution.
      * 
-     * @param t
+     * @param t the throwable raised
      */
     void onError(Throwable t);
  

@@ -15,28 +15,18 @@
  */
 package org.overlord.apiman.rt.engine.policy;
 
+import org.overlord.apiman.rt.engine.beans.Policy;
 import org.overlord.apiman.rt.engine.beans.PolicyFailure;
-import org.overlord.apiman.rt.engine.beans.ServiceRequest;
-import org.overlord.apiman.rt.engine.beans.ServiceResponse;
 
-public class PolicyChain implements IPolicyChain {
-
-    @Override
-    public void doApply(ServiceRequest request) {
-        // TODO Auto-generated method stub
-
+/**
+ * Factory to create failures.
+ * 
+ * @author Marc Savy <msavy@redhat.com>
+ */
+public class PolicyFailureFactory {
+    public static PolicyFailure createFailure(Policy failedPolicy) {
+        PolicyFailure failure = new PolicyFailure();
+        failure.setFailedPolicy(failedPolicy);
+        return failure;
     }
-
-    @Override
-    public void doApply(ServiceResponse response) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void doFailure(PolicyFailure failure) {
-        // TODO Auto-generated method stub
-
-    }
-
 }
