@@ -15,7 +15,9 @@
  */
 package org.overlord.apiman.rt.engine.policy;
 
-import java.util.Map;
+import org.overlord.apiman.rt.engine.beans.exceptions.ComponentNotFoundException;
+import org.overlord.apiman.rt.engine.component.IComponent;
+
 
 /**
  * Context information provided to an executing policy.
@@ -23,5 +25,33 @@ import java.util.Map;
  * @author Marc Savy <msavy@redhat.com>
  */
 public interface IPolicyContext {
-    Map<String, Object> getConversation();
+    
+    /**
+     * Sets a conversation-scoped attribute, allowing policies to pass interesting
+     * information to each other and to themselves.
+     * @param name
+     * @param value
+     */
+    public void setAttribute(String name, Object value);
+    
+    /**
+     * Fetches an attribute value from the conversation.
+     * @param name
+     * @param defaultValue
+     */
+    public Object getAttribute(String name, Object defaultValue);
+    
+    /**
+     * Removes an attribute from the conversation.
+     * @param name
+     */
+    public boolean removeAttribute(String name);
+    
+    /**
+     * Gets a component by type.  Components are provided by the APIMan system for
+     * use by policies during their execution.  Examples of components include the
+     * Shared State Component and the HTTP Client Component.
+     * @param componentClass
+     */
+    public <T extends IComponent> T getComponent(Class<T> componentClass) throws ComponentNotFoundException;
 }
