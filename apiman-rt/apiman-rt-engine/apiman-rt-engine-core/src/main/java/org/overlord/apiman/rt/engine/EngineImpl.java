@@ -30,10 +30,10 @@ import org.overlord.apiman.rt.engine.beans.ServiceRequest;
 import org.overlord.apiman.rt.engine.beans.ServiceResponse;
 import org.overlord.apiman.rt.engine.beans.exceptions.PublishingException;
 import org.overlord.apiman.rt.engine.beans.exceptions.RegistrationException;
-import org.overlord.apiman.rt.engine.policy.IPolicy;
 import org.overlord.apiman.rt.engine.policy.IPolicyContext;
 import org.overlord.apiman.rt.engine.policy.PolicyChainImpl;
 import org.overlord.apiman.rt.engine.policy.PolicyContextImpl;
+import org.overlord.apiman.rt.engine.policy.PolicyWithConfiguration;
 
 /**
  * The implementation of the API Management runtime engine.
@@ -76,7 +76,7 @@ public class EngineImpl implements IEngine {
     public void execute(final ServiceRequest request, final IAsyncHandler<EngineResult> handler) {
         final Contract contract = getContract(request);
         final IPolicyContext context = new PolicyContextImpl();
-        final List<IPolicy> policies = getPolicies(contract);
+        final List<PolicyWithConfiguration> policies = getPolicies(contract);
         final PolicyChainImpl chain = new PolicyChainImpl(policies, context);
         chain.setInboundHandler(new IAsyncHandler<ServiceRequest>() {
             @Override
@@ -194,8 +194,8 @@ public class EngineImpl implements IEngine {
      * achieved by using the policy information set on the contract.
      * @param contract
      */
-    private List<IPolicy> getPolicies(Contract contract) {
-        List<IPolicy> policies = new ArrayList<IPolicy>();
+    private List<PolicyWithConfiguration> getPolicies(Contract contract) {
+        List<PolicyWithConfiguration> policies = new ArrayList<PolicyWithConfiguration>();
         // TODO implement creating the policies
         return policies;
     }

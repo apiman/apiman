@@ -27,6 +27,15 @@ import org.overlord.apiman.rt.engine.beans.ServiceResponse;
  * @author Marc Savy <msavy@redhat.com>
  */
 public interface IPolicy extends Serializable {
+    
+    /**
+     * Parses the JSON configuration into a policy specific configuration object type.  The
+     * policy implementation can parse the config in any way it chooses, resulting in any
+     * type of object it desires.
+     * @param jsonConfiguration
+     */
+    public Object parseConfiguration(String jsonConfiguration);
+    
     /**
      * Applies a policy upon a {@link ServiceRequest} based on information
      * included in the request itself in addition to its context and configuration.

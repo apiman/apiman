@@ -36,15 +36,15 @@ public class PolicyChainImpl implements IPolicyChain {
     private IAsyncHandler<PolicyFailure> policyFailureHandler;
     private int inboundPolicyIndex;
     private int outboundPolicyIndex;
-    private List<IPolicy> policies;
+    private List<PolicyWithConfiguration> policies;
     private IPolicyContext context;
 
     /**
      * Constructor.
-     * @param context
      * @param policies
+     * @param context
      */
-    public PolicyChainImpl(List<IPolicy> policies, IPolicyContext context) {
+    public PolicyChainImpl(List<PolicyWithConfiguration> policies, IPolicyContext context) {
         this.policies = policies;
         this.context = context;
         this.inboundPolicyIndex = 0;
@@ -58,9 +58,10 @@ public class PolicyChainImpl implements IPolicyChain {
     public void doApply(ServiceRequest request) {
         if (inboundPolicyIndex < policies.size()) {
             try {
-                IPolicy policy = policies.get(inboundPolicyIndex++);
-                // TODO obtain the policy configuration object somehow
-                Object policyConfig = null;
+                PolicyWithConfiguration policyWithConfiguration = policies.get(inboundPolicyIndex++);
+                String config = policyWithConfiguration.getConfiguration();
+                IPolicy policy = policyWithConfiguration.getPolicy();
+                Object policyConfig = policy.parseConfiguration(config);
                 policy.apply(request, this.context, policyConfig, this);
             } catch (Throwable error) {
                 inboundHandler.handle(AsyncResultImpl.<ServiceRequest>create(error));
@@ -77,9 +78,10 @@ public class PolicyChainImpl implements IPolicyChain {
     public void doApply(ServiceResponse response) {
         if (outboundPolicyIndex >= 0) {
             try {
-                IPolicy policy = policies.get(outboundPolicyIndex--);
-                // TODO obtain the policy configuration object somehow
-                Object policyConfig = null;
+                PolicyWithConfiguration policyWithConfiguration = policies.get(outboundPolicyIndex--);
+                String config = policyWithConfiguration.getConfiguration();
+                IPolicy policy = policyWithConfiguration.getPolicy();
+                Object policyConfig = policy.parseConfiguration(config);
                 policy.apply(response, this.context, policyConfig, this);
             } catch (Throwable error) {
                 outboundHandler.handle(AsyncResultImpl.<ServiceResponse>create(error));
