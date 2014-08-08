@@ -2,7 +2,7 @@ PUT /api/services admin/admin
 Content-Type: application/json
 
 {
-  "organizationId" : "SimplePolicyTest",
+  "organizationId" : "ConversationPolicyTest",
   "serviceId" : "echo",
   "version" : "1.0.0",
   "endpointType" : "REST",
