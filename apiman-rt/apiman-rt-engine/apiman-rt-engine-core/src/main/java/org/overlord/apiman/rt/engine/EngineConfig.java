@@ -21,6 +21,7 @@ import java.util.Map;
 
 import org.apache.commons.configuration.Configuration;
 import org.overlord.apiman.rt.engine.i18n.Messages;
+import org.overlord.apiman.rt.engine.policy.IPolicyFactory;
 import org.overlord.commons.config.ConfigurationFactory;
 
 /**
@@ -35,6 +36,8 @@ public class EngineConfig {
 
     public static final String APIMAN_RT_REGISTRY_CLASS = "apiman-rt.registry"; //$NON-NLS-1$
     public static final String APIMAN_RT_CONNECTOR_FACTORY_CLASS = "apiman-rt.connector-factory"; //$NON-NLS-1$
+    public static final String APIMAN_RT_POLICY_FACTORY_CLASS = "apiman-rt.policy-factory"; //$NON-NLS-1$
+
     public static final String APIMAN_RT_GATEWAY_SERVER_PORT = "apiman-rt.gateway.server.port"; //$NON-NLS-1$
 
     public static Configuration config;
@@ -96,6 +99,20 @@ public class EngineConfig {
     }
 
     /**
+     * @return the class to use as the {@link IPolicyFactory}
+     */
+    public static Class<IPolicyFactory> getPolicyFactoryClass() {
+        return loadConfigClass(APIMAN_RT_POLICY_FACTORY_CLASS, IPolicyFactory.class);
+    }
+
+    /**
+     * @return all properties to be passed to the factory
+     */
+    public static Map<String, String> getPolicyFactoryConfig() {
+        return getConfig(APIMAN_RT_POLICY_FACTORY_CLASS + "."); //$NON-NLS-1$
+    }
+
+    /**
      * @return the configured server port
      */
     public static int getServerPort() {
@@ -123,7 +140,7 @@ public class EngineConfig {
         } catch (ClassNotFoundException e) {
             // Not found via Class.forName() - try other mechanisms.
         }
-        throw new RuntimeException(Messages.i18n.format("EngineConfig.FailedToLoadRegistryClass", classname)); //$NON-NLS-1$
+        throw new RuntimeException(Messages.i18n.format("EngineConfig.FailedToLoadClass", classname)); //$NON-NLS-1$
     }
 
     /**

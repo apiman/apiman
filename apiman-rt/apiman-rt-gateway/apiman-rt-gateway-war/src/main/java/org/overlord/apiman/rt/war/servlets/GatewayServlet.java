@@ -236,7 +236,8 @@ public class GatewayServlet extends HttpServlet {
      * @param policyFailure
      */
     private void writeFailure(HttpServletResponse resp, PolicyFailure policyFailure) {
-        throw new IllegalStateException("Not yet implemented.");
+        // TODO implement writing a failure to the response
+        throw new IllegalStateException("Not yet implemented."); //$NON-NLS-1$
     }
 
     /**

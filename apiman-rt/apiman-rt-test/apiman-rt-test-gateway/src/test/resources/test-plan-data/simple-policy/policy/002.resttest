@@ -1,0 +1,21 @@
+PUT /gateway/path/to/app/resource admin/admin
+Content-Type: application/json
+X-API-Key: 12345
+
+{
+  "key" : "value",
+  "key" : "value"
+}
+----
+200
+Content-Type: application/json
+
+{
+  "method" : "PUT",
+  "resource" : "/path/to/app/resource",
+  "length" : 41,
+  "uri" : "/path/to/app/resource",
+  "headers" : {
+    "Content-Type":"application/json"
+  }
+}

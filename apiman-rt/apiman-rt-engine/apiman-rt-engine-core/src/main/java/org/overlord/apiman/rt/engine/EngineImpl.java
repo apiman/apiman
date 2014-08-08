@@ -24,13 +24,16 @@ import org.overlord.apiman.rt.engine.async.IAsyncHandler;
 import org.overlord.apiman.rt.engine.async.IAsyncResult;
 import org.overlord.apiman.rt.engine.beans.Application;
 import org.overlord.apiman.rt.engine.beans.Contract;
+import org.overlord.apiman.rt.engine.beans.Policy;
 import org.overlord.apiman.rt.engine.beans.PolicyFailure;
 import org.overlord.apiman.rt.engine.beans.Service;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
 import org.overlord.apiman.rt.engine.beans.ServiceResponse;
 import org.overlord.apiman.rt.engine.beans.exceptions.PublishingException;
 import org.overlord.apiman.rt.engine.beans.exceptions.RegistrationException;
+import org.overlord.apiman.rt.engine.policy.IPolicy;
 import org.overlord.apiman.rt.engine.policy.IPolicyContext;
+import org.overlord.apiman.rt.engine.policy.IPolicyFactory;
 import org.overlord.apiman.rt.engine.policy.PolicyChainImpl;
 import org.overlord.apiman.rt.engine.policy.PolicyContextImpl;
 import org.overlord.apiman.rt.engine.policy.PolicyWithConfiguration;
@@ -44,29 +47,26 @@ public class EngineImpl implements IEngine {
 
     private IRegistry registry;
     private IConnectorFactory connectorFactory;
+    private IPolicyFactory policyfactory;
 
     /**
      * Constructor.
+     * @param registry the registry to use
+     * @param connectorFactory the connector factory to use
+     * @param policyfactory the policy factory to use
      */
-    public EngineImpl() {
+    public EngineImpl(final IRegistry registry, final IConnectorFactory connectorFactory, IPolicyFactory policyfactory) {
+        setRegistry(registry);
+        setConnectorFactory(connectorFactory);
+        setPolicyfactory(policyfactory);
     }
-    
+
     /**
      * @see org.overlord.apiman.rt.engine.IEngine#getVersion()
      */
     @Override
     public String getVersion() {
         return Version.get().getVersionString();
-    }
-
-    /**
-     * Constructor.
-     * @param registry the registry to use
-     * @param connectorFactory the connector factory to use
-     */
-    public EngineImpl(final IRegistry registry, final IConnectorFactory connectorFactory) {
-        setRegistry(registry);
-        setConnectorFactory(connectorFactory);
     }
 
     /**
@@ -196,7 +196,13 @@ public class EngineImpl implements IEngine {
      */
     private List<PolicyWithConfiguration> getPolicies(Contract contract) {
         List<PolicyWithConfiguration> policies = new ArrayList<PolicyWithConfiguration>();
-        // TODO implement creating the policies
+        for (Policy policy : contract.getPolicies()) {
+            IPolicy policyImpl = this.getPolicyfactory().getPolicy(policy.getPolicyImpl());
+            // TODO cache the parsed policy config - perhaps in the Policy object itself as a transient?
+            Object policyConfig = policyImpl.parseConfiguration(policy.getPolicyJsonConfig());
+            PolicyWithConfiguration pwc = new PolicyWithConfiguration(policyImpl, policyConfig);
+            policies.add(pwc);
+        }
         return policies;
     }
 
@@ -226,6 +232,20 @@ public class EngineImpl implements IEngine {
      */
     public void setConnectorFactory(final IConnectorFactory connectorFactory) {
         this.connectorFactory = connectorFactory;
+    }
+
+    /**
+     * @return the policyfactory
+     */
+    public IPolicyFactory getPolicyfactory() {
+        return policyfactory;
+    }
+
+    /**
+     * @param policyfactory the policyfactory to set
+     */
+    public void setPolicyfactory(IPolicyFactory policyfactory) {
+        this.policyfactory = policyfactory;
     }
 
 }

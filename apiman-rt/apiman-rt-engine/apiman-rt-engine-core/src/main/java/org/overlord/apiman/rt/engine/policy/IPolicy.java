@@ -15,8 +15,6 @@
  */
 package org.overlord.apiman.rt.engine.policy;
 
-import java.io.Serializable;
-
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
 import org.overlord.apiman.rt.engine.beans.ServiceResponse;
 
@@ -26,7 +24,7 @@ import org.overlord.apiman.rt.engine.beans.ServiceResponse;
  * 
  * @author Marc Savy <msavy@redhat.com>
  */
-public interface IPolicy extends Serializable {
+public interface IPolicy {
     
     /**
      * Parses the JSON configuration into a policy specific configuration object type.  The

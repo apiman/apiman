@@ -59,10 +59,9 @@ public class PolicyChainImpl implements IPolicyChain {
         if (inboundPolicyIndex < policies.size()) {
             try {
                 PolicyWithConfiguration policyWithConfiguration = policies.get(inboundPolicyIndex++);
-                String config = policyWithConfiguration.getConfiguration();
+                Object config = policyWithConfiguration.getConfiguration();
                 IPolicy policy = policyWithConfiguration.getPolicy();
-                Object policyConfig = policy.parseConfiguration(config);
-                policy.apply(request, this.context, policyConfig, this);
+                policy.apply(request, this.context, config, this);
             } catch (Throwable error) {
                 inboundHandler.handle(AsyncResultImpl.<ServiceRequest>create(error));
             }
@@ -79,10 +78,9 @@ public class PolicyChainImpl implements IPolicyChain {
         if (outboundPolicyIndex >= 0) {
             try {
                 PolicyWithConfiguration policyWithConfiguration = policies.get(outboundPolicyIndex--);
-                String config = policyWithConfiguration.getConfiguration();
+                Object config = policyWithConfiguration.getConfiguration();
                 IPolicy policy = policyWithConfiguration.getPolicy();
-                Object policyConfig = policy.parseConfiguration(config);
-                policy.apply(response, this.context, policyConfig, this);
+                policy.apply(response, this.context, config, this);
             } catch (Throwable error) {
                 outboundHandler.handle(AsyncResultImpl.<ServiceResponse>create(error));
             }

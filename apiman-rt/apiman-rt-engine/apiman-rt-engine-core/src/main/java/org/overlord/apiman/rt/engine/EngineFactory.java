@@ -18,6 +18,8 @@ package org.overlord.apiman.rt.engine;
 import java.lang.reflect.Constructor;
 import java.util.Map;
 
+import org.overlord.apiman.rt.engine.policy.IPolicyFactory;
+
 /**
  * Factory for creating the engine, obviously.
  * 
@@ -35,8 +37,9 @@ public class EngineFactory {
     public static final IEngine createEngine() {
         IRegistry registry = createRegistry();
         IConnectorFactory cfactory = createConnectionFactory();
+        IPolicyFactory pfactory = createPolicyFactory();
         
-        IEngine engine = new EngineImpl(registry, cfactory);
+        IEngine engine = new EngineImpl(registry, cfactory, pfactory);
         return engine;
     }
 
@@ -58,6 +61,16 @@ public class EngineFactory {
     private static IConnectorFactory createConnectionFactory() {
         Class<IConnectorFactory> c = EngineConfig.getConnectorFactoryClass();
         Map<String, String> config = EngineConfig.getConnectorFactoryConfig();
+        return create(c, config);
+    }
+
+    /**
+     * Creates a policy factory from configuration information.
+     * @return a new policy factory
+     */
+    private static IPolicyFactory createPolicyFactory() {
+        Class<IPolicyFactory> c = EngineConfig.getPolicyFactoryClass();
+        Map<String, String> config = EngineConfig.getPolicyFactoryConfig();
         return create(c, config);
     }
     
