@@ -36,10 +36,11 @@ public class EngineFactory {
      */
     public static final IEngine createEngine() {
         IRegistry registry = createRegistry();
+        IComponentRegistry componentRegistry = createComponentRegistry();
         IConnectorFactory cfactory = createConnectionFactory();
         IPolicyFactory pfactory = createPolicyFactory();
         
-        IEngine engine = new EngineImpl(registry, cfactory, pfactory);
+        IEngine engine = new EngineImpl(registry, componentRegistry, cfactory, pfactory);
         return engine;
     }
 
@@ -52,6 +53,16 @@ public class EngineFactory {
         Class<IRegistry> c = EngineConfig.getRegistryClass();
         Map<String, String> config = EngineConfig.getRegistryConfig();
         return create(c, config);
+    }
+
+    /**
+     * Creates the proper component registry given information found in the global engine
+     * config.
+     * @return a new registry instance
+     */
+    private static IComponentRegistry createComponentRegistry() {
+        // TODO This should be pluggable - should be done as part of the apiman plugin framework work
+        return new ComponentRegistryImpl();
     }
 
     /**
@@ -81,7 +92,7 @@ public class EngineFactory {
      * @param config config to pass
      * @return a new instance of 'type'
      */
-    private static <T> T create(Class<T> type, Map<String, String> config) {
+    protected static <T> T create(Class<T> type, Map<String, String> config) {
         try {
             Constructor<T> constructor = type.getConstructor(Map.class);
             return constructor.newInstance(config);

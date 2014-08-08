@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.overlord.apiman.rt.engine.component;
+package org.overlord.apiman.rt.engine;
 
 /**
  * All components provided to policies during their runtime must implement this interface.  A

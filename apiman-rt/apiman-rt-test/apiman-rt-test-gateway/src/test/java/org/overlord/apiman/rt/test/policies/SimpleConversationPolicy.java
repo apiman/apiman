@@ -26,12 +26,12 @@ import org.overlord.apiman.rt.engine.policy.IPolicyContext;
  *
  * @author eric.wittmann@redhat.com
  */
-public class ConversationPolicy implements IPolicy {
+public class SimpleConversationPolicy implements IPolicy {
     
     /**
      * Constructor.
      */
-    public ConversationPolicy() {
+    public SimpleConversationPolicy() {
     }
 
     /**

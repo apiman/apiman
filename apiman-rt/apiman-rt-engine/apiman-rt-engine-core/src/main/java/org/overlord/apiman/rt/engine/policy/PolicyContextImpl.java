@@ -19,8 +19,9 @@ package org.overlord.apiman.rt.engine.policy;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.overlord.apiman.rt.engine.IComponent;
+import org.overlord.apiman.rt.engine.IComponentRegistry;
 import org.overlord.apiman.rt.engine.beans.exceptions.ComponentNotFoundException;
-import org.overlord.apiman.rt.engine.component.IComponent;
 
 /**
  * A simple implementation of a {@link IPolicyContext}.
@@ -29,12 +30,15 @@ import org.overlord.apiman.rt.engine.component.IComponent;
  */
 public class PolicyContextImpl implements IPolicyContext {
     
-    private Map<String, Object> conversation = new HashMap<String, Object>();
+    private final IComponentRegistry componentRegistry;
+    private final Map<String, Object> conversation = new HashMap<String, Object>();
     
     /**
      * Constructor.
+     * @param componentRegistry
      */
-    public PolicyContextImpl() {
+    public PolicyContextImpl(IComponentRegistry componentRegistry) {
+        this.componentRegistry = componentRegistry;
     }
 
     /**
@@ -71,7 +75,7 @@ public class PolicyContextImpl implements IPolicyContext {
      */
     @Override
     public <T extends IComponent> T getComponent(Class<T> componentClass) throws ComponentNotFoundException {
-        throw new ComponentNotFoundException(componentClass.getName());
+        return this.componentRegistry.getComponent(componentClass);
     }
 
 }

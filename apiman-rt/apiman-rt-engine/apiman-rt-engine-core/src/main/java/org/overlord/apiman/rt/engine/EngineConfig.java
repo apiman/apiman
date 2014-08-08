@@ -37,6 +37,8 @@ public class EngineConfig {
     public static final String APIMAN_RT_REGISTRY_CLASS = "apiman-rt.registry"; //$NON-NLS-1$
     public static final String APIMAN_RT_CONNECTOR_FACTORY_CLASS = "apiman-rt.connector-factory"; //$NON-NLS-1$
     public static final String APIMAN_RT_POLICY_FACTORY_CLASS = "apiman-rt.policy-factory"; //$NON-NLS-1$
+    
+    public static final String APIMAN_RT_COMPONENT_PREFIX = "apiman-rt.components."; //$NON-NLS-1$
 
     public static final String APIMAN_RT_GATEWAY_SERVER_PORT = "apiman-rt.gateway.server.port"; //$NON-NLS-1$
 
@@ -110,6 +112,20 @@ public class EngineConfig {
      */
     public static Map<String, String> getPolicyFactoryConfig() {
         return getConfig(APIMAN_RT_POLICY_FACTORY_CLASS + "."); //$NON-NLS-1$
+    }
+
+    /**
+     * @return the class to use for the given component
+     */
+    public static <T extends IComponent> Class<T> getComponentClass(Class<T> componentType) {
+        return loadConfigClass(APIMAN_RT_COMPONENT_PREFIX + componentType.getSimpleName(), componentType);
+    }
+
+    /**
+     * @return all properties to be passed to the factory
+     */
+    public static <T extends IComponent> Map<String, String> getComponentConfig(Class<T> componentType) {
+        return getConfig(APIMAN_RT_COMPONENT_PREFIX + componentType.getSimpleName() + "."); //$NON-NLS-1$
     }
 
     /**

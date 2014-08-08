@@ -15,8 +15,8 @@
  */
 package org.overlord.apiman.rt.engine.policy;
 
+import org.overlord.apiman.rt.engine.IComponent;
 import org.overlord.apiman.rt.engine.beans.exceptions.ComponentNotFoundException;
-import org.overlord.apiman.rt.engine.component.IComponent;
 
 
 /**

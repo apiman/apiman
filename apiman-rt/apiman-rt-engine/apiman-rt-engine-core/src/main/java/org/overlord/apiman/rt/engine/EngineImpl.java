@@ -46,19 +46,23 @@ import org.overlord.apiman.rt.engine.policy.PolicyWithConfiguration;
 public class EngineImpl implements IEngine {
 
     private IRegistry registry;
+    private IComponentRegistry componentRegistry;
     private IConnectorFactory connectorFactory;
-    private IPolicyFactory policyfactory;
+    private IPolicyFactory policyFactory;
 
     /**
      * Constructor.
-     * @param registry the registry to use
-     * @param connectorFactory the connector factory to use
-     * @param policyfactory the policy factory to use
+     * @param registry
+     * @param componentRegistry
+     * @param connectorFactory
+     * @param policyFactory
      */
-    public EngineImpl(final IRegistry registry, final IConnectorFactory connectorFactory, IPolicyFactory policyfactory) {
+    public EngineImpl(final IRegistry registry, final IComponentRegistry componentRegistry,
+            final IConnectorFactory connectorFactory, final IPolicyFactory policyFactory) {
         setRegistry(registry);
+        setComponentRegistry(componentRegistry);
         setConnectorFactory(connectorFactory);
-        setPolicyfactory(policyfactory);
+        setPolicyFactory(policyFactory);
     }
 
     /**
@@ -75,7 +79,7 @@ public class EngineImpl implements IEngine {
     @Override
     public void execute(final ServiceRequest request, final IAsyncHandler<EngineResult> handler) {
         final Contract contract = getContract(request);
-        final IPolicyContext context = new PolicyContextImpl();
+        final IPolicyContext context = new PolicyContextImpl(getComponentRegistry());
         final List<PolicyWithConfiguration> policies = getPolicies(contract);
         final PolicyChainImpl chain = new PolicyChainImpl(policies, context);
         chain.setInboundHandler(new IAsyncHandler<ServiceRequest>() {
@@ -197,7 +201,7 @@ public class EngineImpl implements IEngine {
     private List<PolicyWithConfiguration> getPolicies(Contract contract) {
         List<PolicyWithConfiguration> policies = new ArrayList<PolicyWithConfiguration>();
         for (Policy policy : contract.getPolicies()) {
-            IPolicy policyImpl = this.getPolicyfactory().getPolicy(policy.getPolicyImpl());
+            IPolicy policyImpl = this.getPolicyFactory().getPolicy(policy.getPolicyImpl());
             // TODO cache the parsed policy config - perhaps in the Policy object itself as a transient?
             Object policyConfig = policyImpl.parseConfiguration(policy.getPolicyJsonConfig());
             PolicyWithConfiguration pwc = new PolicyWithConfiguration(policyImpl, policyConfig);
@@ -235,17 +239,31 @@ public class EngineImpl implements IEngine {
     }
 
     /**
-     * @return the policyfactory
+     * @return the policyFactory
      */
-    public IPolicyFactory getPolicyfactory() {
-        return policyfactory;
+    public IPolicyFactory getPolicyFactory() {
+        return policyFactory;
     }
 
     /**
-     * @param policyfactory the policyfactory to set
+     * @param policyFactory the policyFactory to set
      */
-    public void setPolicyfactory(IPolicyFactory policyfactory) {
-        this.policyfactory = policyfactory;
+    public void setPolicyFactory(IPolicyFactory policyFactory) {
+        this.policyFactory = policyFactory;
+    }
+
+    /**
+     * @return the componentRegistry
+     */
+    public IComponentRegistry getComponentRegistry() {
+        return componentRegistry;
+    }
+
+    /**
+     * @param componentRegistry the componentRegistry to set
+     */
+    public void setComponentRegistry(IComponentRegistry componentRegistry) {
+        this.componentRegistry = componentRegistry;
     }
 
 }

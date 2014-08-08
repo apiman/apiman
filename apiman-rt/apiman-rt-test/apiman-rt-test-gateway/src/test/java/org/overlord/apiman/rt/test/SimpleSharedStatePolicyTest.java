@@ -18,15 +18,15 @@ package org.overlord.apiman.rt.test;
 import org.junit.Test;
 
 /**
- * Make sure the gateway and test echo server are working.
+ * Unit test for the shared state component.
  *
  * @author eric.wittmann@redhat.com
  */
-public class ConversationPolicyTest extends AbstractGatewayTest {
+public class SimpleSharedStatePolicyTest extends AbstractGatewayTest {
     
     @Test
     public void test() throws Exception {
-        runTestPlan("test-plans/conversation-policy-testPlan.xml"); //$NON-NLS-1$
+        runTestPlan("test-plans/simple-shared-state-policy-testPlan.xml"); //$NON-NLS-1$
     }
 
 }

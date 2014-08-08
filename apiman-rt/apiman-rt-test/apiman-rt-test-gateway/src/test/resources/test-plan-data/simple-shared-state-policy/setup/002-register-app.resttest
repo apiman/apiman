@@ -2,18 +2,18 @@ PUT /api/applications admin/admin
 Content-Type: application/json
 
 {
-  "organizationId" : "ConversationPolicyTest",
+  "organizationId" : "SimpleSharedStatePolicyTest",
   "applicationId" : "test",
   "version" : "1.0.0",
   "contracts" : [
     {
       "apiKey" : "12345",
-      "serviceOrgId" : "ConversationPolicyTest",
+      "serviceOrgId" : "SimpleSharedStatePolicyTest",
       "serviceId" : "echo",
       "serviceVersion" : "1.0.0",
       "policies" : [
         {
-          "policyImpl" : "class:org.overlord.apiman.rt.test.policies.ConversationPolicy",
+          "policyImpl" : "class:org.overlord.apiman.rt.test.policies.SimpleSharedStatePolicy",
           "policyJsonConfig" : ""
         }
       ]

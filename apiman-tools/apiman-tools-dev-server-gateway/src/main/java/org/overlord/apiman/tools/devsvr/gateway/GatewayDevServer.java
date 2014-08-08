@@ -17,7 +17,9 @@
 package org.overlord.apiman.tools.devsvr.gateway;
 
 import org.overlord.apiman.rt.engine.EngineConfig;
+import org.overlord.apiman.rt.engine.components.ISharedStateComponent;
 import org.overlord.apiman.rt.engine.mem.InMemoryRegistry;
+import org.overlord.apiman.rt.engine.mem.InMemorySharedStateComponent;
 import org.overlord.apiman.rt.engine.policy.PolicyFactoryImpl;
 import org.overlord.apiman.rt.test.server.EchoServer;
 import org.overlord.apiman.rt.test.server.GatewayServer;
@@ -48,6 +50,10 @@ public class GatewayDevServer {
         System.setProperty(EngineConfig.APIMAN_RT_CONNECTOR_FACTORY_CLASS, HttpConnectorFactory.class.getName());
         System.setProperty(EngineConfig.APIMAN_RT_POLICY_FACTORY_CLASS, PolicyFactoryImpl.class.getName());
         System.setProperty(EngineConfig.APIMAN_RT_GATEWAY_SERVER_PORT, String.valueOf(gatewayPort));
+
+        // Register test components
+        System.setProperty(EngineConfig.APIMAN_RT_COMPONENT_PREFIX + ISharedStateComponent.class.getSimpleName(), 
+                InMemorySharedStateComponent.class.getName());
 
         GatewayServer server = new GatewayServer(gatewayPort);
         server.start();
