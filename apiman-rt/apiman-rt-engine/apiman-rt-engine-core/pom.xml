@@ -9,21 +9,24 @@
   <artifactId>apiman-rt-engine-core</artifactId>
   <name>apiman-rt-engine-core</name>
   <dependencies>
-    <!-- Overlord Commons -->
-    <dependency>
-      <groupId>org.overlord</groupId>
-      <artifactId>overlord-commons-config</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.overlord</groupId>
-      <artifactId>overlord-commons-i18n</artifactId>
-    </dependency>
-
     <!-- Project Dependencies -->
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-rt-engine-beans</artifactId>
     </dependency>
+    
+    <!-- Overlord Commons -->
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-i18n</artifactId>
+    </dependency>
+    
+    <!-- Third Party Dependencies -->
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+    </dependency>
+
   </dependencies>
 
   <build>
