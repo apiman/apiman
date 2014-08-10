@@ -28,12 +28,15 @@ import org.overlord.apiman.rt.engine.beans.exceptions.ComponentNotFoundException
  */
 public class ComponentRegistryImpl implements IComponentRegistry {
     
+    private IEngineConfig engineConfig;
     private Map<Class<? extends IComponent>, IComponent> components = new HashMap<Class<? extends IComponent>, IComponent>();
     
     /**
      * Constructor.
+     * @param engineConfig 
      */
-    public ComponentRegistryImpl() {
+    public ComponentRegistryImpl(IEngineConfig engineConfig) {
+        this.engineConfig = engineConfig;
     }
 
     /**
@@ -57,8 +60,8 @@ public class ComponentRegistryImpl implements IComponentRegistry {
     public <T extends IComponent> T createAndRegisterComponent(Class<T> componentType) throws ComponentNotFoundException {
         try {
             synchronized (components) {
-                Class<T> componentClass = EngineConfig.getComponentClass(componentType);
-                Map<String, String> componentConfig = EngineConfig.getComponentConfig(componentType);
+                Class<T> componentClass = engineConfig.getComponentClass(componentType);
+                Map<String, String> componentConfig = engineConfig.getComponentConfig(componentType);
                 T component = EngineFactory.create(componentClass, componentConfig);
                 components.put(componentType, component);
                 return component;

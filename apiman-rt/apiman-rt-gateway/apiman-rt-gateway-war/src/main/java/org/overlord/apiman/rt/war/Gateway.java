@@ -17,6 +17,7 @@ package org.overlord.apiman.rt.war;
 
 import org.overlord.apiman.rt.engine.EngineFactory;
 import org.overlord.apiman.rt.engine.IEngine;
+import org.overlord.apiman.rt.engine.IEngineConfig;
 
 /**
  * Top level gateway.  Used when the API Management Runtime Engine is being used
@@ -32,7 +33,8 @@ public class Gateway {
      * Initialize the gateway.
      */
     public static void init() {
-        engine = EngineFactory.createEngine();
+        IEngineConfig config = new WarEngineConfig();
+        engine = EngineFactory.createEngine(config);
     }
 
     /**

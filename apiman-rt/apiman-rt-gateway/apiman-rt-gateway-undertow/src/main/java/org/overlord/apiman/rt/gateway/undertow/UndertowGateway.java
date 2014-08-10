@@ -21,7 +21,6 @@ import io.undertow.util.HttpString;
 
 import java.util.Collection;
 
-import org.overlord.apiman.rt.engine.EngineConfig;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
 import org.overlord.apiman.rt.engine.beans.ServiceResponse;
 
@@ -46,9 +45,9 @@ public class UndertowGateway {
      */
     public void start() {
 //        engine = EngineFactory.createEngine();
-        server = new UndertowGatewayServer(EngineConfig.getServerPort()) {
-            @Override
-            protected void doGateway(final HttpServerExchange exchange) {
+//        server = new UndertowGatewayServer(EngineConfig.getServerPort()) {
+//            @Override
+//            protected void doGateway(final HttpServerExchange exchange) {
 //                ServiceRequest request = readRequest(exchange);
 //                try {
                     // TODO recent engine interface changes broke this - fix!
@@ -57,9 +56,9 @@ public class UndertowGateway {
 //                } catch (Exception e) {
 //                    writeError(exchange, e);
 //                }
-            }
-        };
-        server.start();
+//            }
+//        };
+//        server.start();
     }
 
     /**

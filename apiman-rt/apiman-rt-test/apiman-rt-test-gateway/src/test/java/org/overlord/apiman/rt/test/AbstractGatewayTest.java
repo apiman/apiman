@@ -17,7 +17,6 @@ package org.overlord.apiman.rt.test;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.overlord.apiman.rt.engine.EngineConfig;
 import org.overlord.apiman.rt.engine.beans.Application;
 import org.overlord.apiman.rt.engine.beans.Service;
 import org.overlord.apiman.rt.engine.beans.exceptions.PublishingException;
@@ -28,6 +27,7 @@ import org.overlord.apiman.rt.engine.mem.InMemorySharedStateComponent;
 import org.overlord.apiman.rt.engine.policy.PolicyFactoryImpl;
 import org.overlord.apiman.rt.test.server.EchoServer;
 import org.overlord.apiman.rt.test.server.GatewayServer;
+import org.overlord.apiman.rt.war.WarEngineConfig;
 import org.overlord.apiman.rt.war.Gateway;
 import org.overlord.apiman.rt.war.connectors.HttpConnectorFactory;
 import org.overlord.apiman.test.common.util.TestPlanRunner;
@@ -61,13 +61,13 @@ public class AbstractGatewayTest {
      * Configures the gateway by settings system properties.
      */
     protected static void configureGateway() {
-        System.setProperty(EngineConfig.APIMAN_RT_REGISTRY_CLASS, InMemoryRegistry.class.getName());
-        System.setProperty(EngineConfig.APIMAN_RT_CONNECTOR_FACTORY_CLASS, HttpConnectorFactory.class.getName());
-        System.setProperty(EngineConfig.APIMAN_RT_POLICY_FACTORY_CLASS, PolicyFactoryImpl.class.getName());
-        System.setProperty(EngineConfig.APIMAN_RT_GATEWAY_SERVER_PORT, String.valueOf(GATEWAY_PORT));
+        System.setProperty(WarEngineConfig.APIMAN_RT_REGISTRY_CLASS, InMemoryRegistry.class.getName());
+        System.setProperty(WarEngineConfig.APIMAN_RT_CONNECTOR_FACTORY_CLASS, HttpConnectorFactory.class.getName());
+        System.setProperty(WarEngineConfig.APIMAN_RT_POLICY_FACTORY_CLASS, PolicyFactoryImpl.class.getName());
+        System.setProperty(WarEngineConfig.APIMAN_RT_GATEWAY_SERVER_PORT, String.valueOf(GATEWAY_PORT));
         
         // Register test components
-        System.setProperty(EngineConfig.APIMAN_RT_COMPONENT_PREFIX + ISharedStateComponent.class.getSimpleName(), 
+        System.setProperty(WarEngineConfig.APIMAN_RT_COMPONENT_PREFIX + ISharedStateComponent.class.getSimpleName(), 
                 InMemorySharedStateComponent.class.getName());
     }
 

@@ -13,13 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.rt.engine;
+package org.overlord.apiman.rt.war;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.commons.configuration.Configuration;
+import org.overlord.apiman.rt.engine.IComponent;
+import org.overlord.apiman.rt.engine.IConnectorFactory;
+import org.overlord.apiman.rt.engine.IEngineConfig;
+import org.overlord.apiman.rt.engine.IRegistry;
 import org.overlord.apiman.rt.engine.i18n.Messages;
 import org.overlord.apiman.rt.engine.policy.IPolicyFactory;
 import org.overlord.commons.config.ConfigurationFactory;
@@ -29,7 +33,7 @@ import org.overlord.commons.config.ConfigurationFactory;
  *
  * @author eric.wittmann@redhat.com
  */
-public class EngineConfig {
+public class WarEngineConfig implements IEngineConfig {
 
     public static final String APIMAN_RT_CONFIG_FILE_NAME     = "apiman-rt.config.file.name"; //$NON-NLS-1$
     public static final String APIMAN_RT_CONFIG_FILE_REFRESH  = "apiman-rt.config.file.refresh"; //$NON-NLS-1$
@@ -56,82 +60,82 @@ public class EngineConfig {
                 "apiman-rt.properties", //$NON-NLS-1$
                 refreshDelay,
                 null,
-                EngineConfig.class);
+                WarEngineConfig.class);
     }
 
     /**
      * Constructor.
      */
-    public EngineConfig() {
+    public WarEngineConfig() {
     }
 
     /**
      * @return the configuration
      */
-    public static Configuration getConfig() {
+    public Configuration getConfig() {
         return config;
     }
 
     /**
      * @return the class to use as the {@link IRegistry}
      */
-    public static Class<IRegistry> getRegistryClass() {
+    public Class<IRegistry> getRegistryClass() {
         return loadConfigClass(APIMAN_RT_REGISTRY_CLASS, IRegistry.class);
     }
 
     /**
      * @return all properties to be passed to the registry
      */
-    public static Map<String, String> getRegistryConfig() {
+    public Map<String, String> getRegistryConfig() {
         return getConfig(APIMAN_RT_REGISTRY_CLASS + "."); //$NON-NLS-1$
     }
 
     /**
      * @return the class to use as the {@link IConnectorFactory}
      */
-    public static Class<IConnectorFactory> getConnectorFactoryClass() {
+    public Class<IConnectorFactory> getConnectorFactoryClass() {
         return loadConfigClass(APIMAN_RT_CONNECTOR_FACTORY_CLASS, IConnectorFactory.class);
     }
 
     /**
      * @return all properties to be passed to the factory
      */
-    public static Map<String, String> getConnectorFactoryConfig() {
+    public Map<String, String> getConnectorFactoryConfig() {
         return getConfig(APIMAN_RT_CONNECTOR_FACTORY_CLASS + "."); //$NON-NLS-1$
     }
 
     /**
      * @return the class to use as the {@link IPolicyFactory}
      */
-    public static Class<IPolicyFactory> getPolicyFactoryClass() {
+    public Class<IPolicyFactory> getPolicyFactoryClass() {
         return loadConfigClass(APIMAN_RT_POLICY_FACTORY_CLASS, IPolicyFactory.class);
     }
 
     /**
      * @return all properties to be passed to the factory
      */
-    public static Map<String, String> getPolicyFactoryConfig() {
+    public Map<String, String> getPolicyFactoryConfig() {
         return getConfig(APIMAN_RT_POLICY_FACTORY_CLASS + "."); //$NON-NLS-1$
     }
 
     /**
      * @return the class to use for the given component
      */
-    public static <T extends IComponent> Class<T> getComponentClass(Class<T> componentType) {
+    public <T extends IComponent> Class<T> getComponentClass(Class<T> componentType) {
         return loadConfigClass(APIMAN_RT_COMPONENT_PREFIX + componentType.getSimpleName(), componentType);
     }
 
     /**
      * @return all properties to be passed to the factory
      */
-    public static <T extends IComponent> Map<String, String> getComponentConfig(Class<T> componentType) {
+    public <T extends IComponent> Map<String, String> getComponentConfig(Class<T> componentType) {
         return getConfig(APIMAN_RT_COMPONENT_PREFIX + componentType.getSimpleName() + "."); //$NON-NLS-1$
     }
 
     /**
      * @return the configured server port
      */
-    public static int getServerPort() {
+    public int getServerPort() {
         return config.getInt(APIMAN_RT_GATEWAY_SERVER_PORT, 8080);
     }
 
@@ -139,7 +143,7 @@ public class EngineConfig {
      * @return a loaded class
      */
     @SuppressWarnings("unchecked")
-    private static <T> Class<T> loadConfigClass(String property, Class<T> type) {
+    private <T> Class<T> loadConfigClass(String property, Class<T> type) {
         String classname = getConfig().getString(property);
         if (classname == null) {
             throw new RuntimeException("No " + type.getSimpleName() + " class configured."); //$NON-NLS-1$ //$NON-NLS-2$
@@ -165,7 +169,7 @@ public class EngineConfig {
      * @param prefix
      * @return all prefixed properties
      */
-    private static Map<String, String> getConfig(String prefix) {
+    private Map<String, String> getConfig(String prefix) {
         Map<String, String> rval = new HashMap<String, String>();
         Iterator<?> keys = config.getKeys(APIMAN_RT_REGISTRY_CLASS + "."); //$NON-NLS-1$
         while (keys.hasNext()) {

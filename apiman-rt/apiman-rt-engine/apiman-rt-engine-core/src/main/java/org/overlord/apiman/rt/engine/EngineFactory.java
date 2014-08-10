@@ -26,19 +26,18 @@ import org.overlord.apiman.rt.engine.policy.IPolicyFactory;
  * @author eric.wittmann@redhat.com
  */
 public class EngineFactory {
-
+    
     /**
      * Call this to create a new engine. This method uses the global engine
      * config singleton to create the engine.
      * 
-     * @param config the engine configuration
-     * @return a new apiman runtime engine
+     * @param engineConfig
      */
-    public static final IEngine createEngine() {
-        IRegistry registry = createRegistry();
-        IComponentRegistry componentRegistry = createComponentRegistry();
-        IConnectorFactory cfactory = createConnectionFactory();
-        IPolicyFactory pfactory = createPolicyFactory();
+    public static final IEngine createEngine(IEngineConfig engineConfig) {
+        IRegistry registry = createRegistry(engineConfig);
+        IComponentRegistry componentRegistry = createComponentRegistry(engineConfig);
+        IConnectorFactory cfactory = createConnectionFactory(engineConfig);
+        IPolicyFactory pfactory = createPolicyFactory(engineConfig);
         
         IEngine engine = new EngineImpl(registry, componentRegistry, cfactory, pfactory);
         return engine;
@@ -47,41 +46,45 @@ public class EngineFactory {
     /**
      * Creates the proper registry given information found in the global engine
      * config.
+     * @param engineConfig 
      * @return a new registry instance
      */
-    private static IRegistry createRegistry() {
-        Class<IRegistry> c = EngineConfig.getRegistryClass();
-        Map<String, String> config = EngineConfig.getRegistryConfig();
+    private static IRegistry createRegistry(IEngineConfig engineConfig) {
+        Class<IRegistry> c = engineConfig.getRegistryClass();
+        Map<String, String> config = engineConfig.getRegistryConfig();
         return create(c, config);
     }
 
     /**
      * Creates the proper component registry given information found in the global engine
      * config.
+     * @param engineConfig 
      * @return a new registry instance
      */
-    private static IComponentRegistry createComponentRegistry() {
+    private static IComponentRegistry createComponentRegistry(IEngineConfig engineConfig) {
         // TODO This should be pluggable - should be done as part of the apiman plugin framework work
-        return new ComponentRegistryImpl();
+        return new ComponentRegistryImpl(engineConfig);
     }
 
     /**
      * Creates a connection factory from configuration information.
+     * @param engineConfig 
      * @return a new connection factory
      */
-    private static IConnectorFactory createConnectionFactory() {
-        Class<IConnectorFactory> c = EngineConfig.getConnectorFactoryClass();
-        Map<String, String> config = EngineConfig.getConnectorFactoryConfig();
+    private static IConnectorFactory createConnectionFactory(IEngineConfig engineConfig) {
+        Class<IConnectorFactory> c = engineConfig.getConnectorFactoryClass();
+        Map<String, String> config = engineConfig.getConnectorFactoryConfig();
         return create(c, config);
     }
 
     /**
      * Creates a policy factory from configuration information.
+     * @param engineConfig 
      * @return a new policy factory
      */
-    private static IPolicyFactory createPolicyFactory() {
-        Class<IPolicyFactory> c = EngineConfig.getPolicyFactoryClass();
-        Map<String, String> config = EngineConfig.getPolicyFactoryConfig();
+    private static IPolicyFactory createPolicyFactory(IEngineConfig engineConfig) {
+        Class<IPolicyFactory> c = engineConfig.getPolicyFactoryClass();
+        Map<String, String> config = engineConfig.getPolicyFactoryConfig();
         return create(c, config);
     }
     
