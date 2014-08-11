@@ -260,36 +260,12 @@ public class DtApiDataSeeder extends DefaultTestDataSeeder {
         
         // Create some policy definitions
         PolicyDefinitionBean customPolicyDef = new PolicyDefinitionBean();
-        customPolicyDef.setId("MyCustomPolicy"); //$NON-NLS-1$
-        customPolicyDef.setName("My Custom Policy"); //$NON-NLS-1$
-        customPolicyDef.setDescription("A user-defined policy using 'com.example.mybusiness.policies.MyCustomPolicy' as the implementation. Click edit for details. "); //$NON-NLS-1$
-        customPolicyDef.setIcon("puzzle-piece"); //$NON-NLS-1$
-        customPolicyDef.setPolicyImpl("com.example.mybusiness.policies.MyCustomPolicy"); //$NON-NLS-1$
+        customPolicyDef.setId("IPWhitelistPolicy"); //$NON-NLS-1$
+        customPolicyDef.setName("IP Whitelist Policy"); //$NON-NLS-1$
+        customPolicyDef.setDescription("Only requests that originate from a specified set of valid IP addresses will be allowed through."); //$NON-NLS-1$
+        customPolicyDef.setIcon("filter"); //$NON-NLS-1$
+        customPolicyDef.setPolicyImpl("class:org.overlord.apiman.engine.policies.IPWhitelistPolicy"); //$NON-NLS-1$
         storage.create(customPolicyDef);
-
-        PolicyDefinitionBean authPolicyDef = new PolicyDefinitionBean();
-        authPolicyDef.setId("AuthenticationPolicy"); //$NON-NLS-1$
-        authPolicyDef.setName("Authentication Policy"); //$NON-NLS-1$
-        authPolicyDef.setDescription("All service invocations must be first authenticated using BASIC auth against the \\\"ldap://dir.mycompany.com\\\" LDAP directory. "); //$NON-NLS-1$
-        authPolicyDef.setIcon("lock"); //$NON-NLS-1$
-        authPolicyDef.setPolicyImpl("org.overlord.apiman.rt.policies.AuthenticationPolicy"); //$NON-NLS-1$
-        storage.create(authPolicyDef);
-
-        PolicyDefinitionBean rateLimitPolicyDef = new PolicyDefinitionBean();
-        rateLimitPolicyDef.setId("RateLimitPolicy"); //$NON-NLS-1$
-        rateLimitPolicyDef.setName("Rate Limit Policy"); //$NON-NLS-1$
-        rateLimitPolicyDef.setDescription("Service usage will be tracked and limited to 1000 requests per day per user. "); //$NON-NLS-1$
-        rateLimitPolicyDef.setIcon("tachometer"); //$NON-NLS-1$
-        rateLimitPolicyDef.setPolicyImpl("org.overlord.apiman.rt.policies.MeteringPolicy"); //$NON-NLS-1$
-        storage.create(rateLimitPolicyDef);
-
-        PolicyDefinitionBean meterPolicyDef = new PolicyDefinitionBean();
-        meterPolicyDef.setId("BillingPolicy"); //$NON-NLS-1$
-        meterPolicyDef.setName("Billing Policy"); //$NON-NLS-1$
-        meterPolicyDef.setDescription("Tracks and records usage for billing purposes. Aggregate billing information will be recorded and stored at a contracted rate of $5 per month per user, regardless of usage. "); //$NON-NLS-1$
-        meterPolicyDef.setIcon("money"); //$NON-NLS-1$
-        meterPolicyDef.setPolicyImpl("org.overlord.apiman.rt.policies.MeteringPolicy"); //$NON-NLS-1$
-        storage.create(meterPolicyDef);
 
         // Create some policies
         PolicyBean policy = new PolicyBean();
@@ -300,50 +276,6 @@ public class DtApiDataSeeder extends DefaultTestDataSeeder {
         policy.setName("User Defined (Custom) Policy"); //$NON-NLS-1$
         policy.setDescription("A user-defined policy using 'com.example.mybusiness.policies.MyCustomPolicy' as the implementation. Click edit for details. "); //$NON-NLS-1$
         policy.setDefinition(customPolicyDef);
-        policy.setConfiguration(""); //$NON-NLS-1$
-        policy.setCreatedBy("admin"); //$NON-NLS-1$
-        policy.setCreatedOn(new Date());
-        policy.setModifiedBy("admin"); //$NON-NLS-1$
-        policy.setModifiedOn(new Date());
-        storage.create(policy);
-
-        policy = new PolicyBean();
-        policy.setOrganizationId("JBossOverlord"); //$NON-NLS-1$
-        policy.setEntityId("s-ramp-api"); //$NON-NLS-1$
-        policy.setEntityVersion("1.0"); //$NON-NLS-1$
-        policy.setType(PolicyType.Service);
-        policy.setName("Authentication Policy"); //$NON-NLS-1$
-        policy.setDescription("All service invocations must be first authenticated using BASIC auth against the \"ldap://dir.mycompany.com\" LDAP directory. "); //$NON-NLS-1$
-        policy.setDefinition(authPolicyDef);
-        policy.setConfiguration(""); //$NON-NLS-1$
-        policy.setCreatedBy("admin"); //$NON-NLS-1$
-        policy.setCreatedOn(new Date());
-        policy.setModifiedBy("admin"); //$NON-NLS-1$
-        policy.setModifiedOn(new Date());
-        storage.create(policy);
-
-        policy = new PolicyBean();
-        policy.setOrganizationId("JBossOverlord"); //$NON-NLS-1$
-        policy.setEntityId("Platinum"); //$NON-NLS-1$
-        policy.setEntityVersion("1.0"); //$NON-NLS-1$
-        policy.setType(PolicyType.Plan);
-        policy.setName("Usage Metering Policy"); //$NON-NLS-1$
-        policy.setDescription("Service usage will be tracked and limited to 1000 requests per day per user. "); //$NON-NLS-1$
-        policy.setDefinition(rateLimitPolicyDef);
-        policy.setConfiguration(""); //$NON-NLS-1$
-        policy.setCreatedBy("admin"); //$NON-NLS-1$
-        policy.setCreatedOn(new Date());
-        policy.setModifiedBy("admin"); //$NON-NLS-1$
-        policy.setModifiedOn(new Date());
-        storage.create(policy);
-        policy = new PolicyBean();
-        policy.setOrganizationId("JBossOverlord"); //$NON-NLS-1$
-        policy.setEntityId("Platinum"); //$NON-NLS-1$
-        policy.setEntityVersion("1.0"); //$NON-NLS-1$
-        policy.setType(PolicyType.Plan);
-        policy.setName("Billing Policy"); //$NON-NLS-1$
-        policy.setDescription("Tracks and records usage for billing purposes. Aggregate billing information will be recorded and stored at a contracted rate of $5 per month per user, regardless of usage. "); //$NON-NLS-1$
-        policy.setDefinition(meterPolicyDef);
         policy.setConfiguration(""); //$NON-NLS-1$
         policy.setCreatedBy("admin"); //$NON-NLS-1$
         policy.setCreatedOn(new Date());

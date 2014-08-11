@@ -201,13 +201,13 @@ public class AppApisList extends FlowPanel implements HasValue<List<ContractSumm
         sp.setStyleName("extra-path"); //$NON-NLS-1$
         url.add(sp);
         
-        InlineLabel slash = new InlineLabel(" / "); //$NON-NLS-1$
-        sp.add(slash);
+        InlineLabel spacer = new InlineLabel(" "); //$NON-NLS-1$
+        sp.add(spacer);
         final TextBox pathInput = new TextBox();
         sp.add(pathInput);
         pathInput.setStyleName("form-input"); //$NON-NLS-1$
         pathInput.addStyleName("api-path"); //$NON-NLS-1$
-        InlineLabel spacer = new InlineLabel(" "); //$NON-NLS-1$
+        spacer = new InlineLabel(" "); //$NON-NLS-1$
         sp.add(spacer);
         spacer.setStyleName(""); //$NON-NLS-1$
         Button button = new Button();
@@ -241,7 +241,7 @@ public class AppApisList extends FlowPanel implements HasValue<List<ContractSumm
             extraPath.substring(1);
         }
         String baseUrl = generateBaseApiUrl(bean);
-        String fullUrl = baseUrl + "/" + extraPath; //$NON-NLS-1$
+        String fullUrl = baseUrl + extraPath;
         if (fullUrl.contains("?")) { //$NON-NLS-1$
             fullUrl += "&apikey=" + bean.getKey(); //$NON-NLS-1$
         } else {
@@ -265,11 +265,6 @@ public class AppApisList extends FlowPanel implements HasValue<List<ContractSumm
             gatewayUrl += "/"; //$NON-NLS-1$
         }
         builder.append(gatewayUrl);
-        builder.append(bean.getServiceOrganizationId());
-        builder.append("/"); //$NON-NLS-1$
-        builder.append(bean.getServiceId());
-        builder.append("/"); //$NON-NLS-1$
-        builder.append(bean.getServiceVersion());
         return builder.toString();
     }
 

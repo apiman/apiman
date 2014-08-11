@@ -15,6 +15,7 @@
  */
 package org.overlord.apiman.dt.ui.client.local.pages.policy;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -46,6 +47,13 @@ public class DefaultPolicyConfigurationForm extends FlowPanel implements IPolicy
      * Constructor.
      */
     public DefaultPolicyConfigurationForm() {
+    }
+    
+    /**
+     * Post-construct.
+     */
+    @PostConstruct
+    protected void postConstruct() {
         getElement().addClassName("form"); //$NON-NLS-1$
         getElement().addClassName("policy-config"); //$NON-NLS-1$
         getElement().addClassName("default"); //$NON-NLS-1$

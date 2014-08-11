@@ -18,37 +18,11 @@
       <artifactId>apiman-rt-gateway-war</artifactId>
       <type>war</type>
     </dependency>
-
-    <!-- Project JARs -->
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-rt-engine-beans</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-rt-engine-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-rt-engine-mem</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-rt-api-rest</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-rt-api-rest-impl</artifactId>
-    </dependency>
-
-    <!-- Overlord Commons -->
-    <dependency>
-      <groupId>org.overlord</groupId>
-      <artifactId>overlord-commons-i18n</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.overlord</groupId>
-      <artifactId>overlord-commons-services</artifactId>
+      <artifactId>apiman-rt-gateway-war</artifactId>
+      <type>jar</type>
+      <classifier>classes</classifier>
     </dependency>
 
     <!-- Third Party Dependencies -->

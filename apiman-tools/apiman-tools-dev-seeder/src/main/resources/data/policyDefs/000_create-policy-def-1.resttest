@@ -2,10 +2,14 @@ POST /policyDefs admin/admin
 Content-Type: application/json
 
 {
-  "name" : "Authentication Policy",
-  "description" : "This policy provides configurable authentication functionality to any service it is attached to.",
-  "policyImpl" : "org.overlord.apiman.rt.policies.AuthenticationPolicy",
-  "icon" : "lock"
+  "name" : "IP Whitelist Policy",
+  "description" : "Only requests that originate from a specified set of valid IP addresses will be allowed through.",
+  "policyImpl" : "class:org.overlord.apiman.engine.policies.IPWhitelistPolicy",
+  "icon" : "filter"
 }
 ----
 200
+Content-Type: application/json
+
+{
+}

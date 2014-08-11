@@ -74,7 +74,7 @@
     <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots/</jboss.snapshots.repo.url>
 
     <!-- Dependency Versions (not found in parent) -->
-    <version.org.overlord>2.0.7-SNAPSHOT</version.org.overlord>
+    <version.org.overlord>2.0.8-SNAPSHOT</version.org.overlord>
     <version.org.picketlink>2.5.3.SP4</version.org.picketlink>
     <jetty.version>8.1.9.v20130131</jetty.version>
     <version.io.undertow>1.0.1.Final</version.io.undertow>
