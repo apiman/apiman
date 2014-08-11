@@ -13,26 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.rt.engine.policy;
-
-import org.overlord.apiman.rt.engine.beans.PolicyFailure;
-import org.overlord.apiman.rt.engine.beans.PolicyFailureType;
+package org.overlord.apiman.engine.policies;
 
 /**
- * Factory to create failures.
- * 
- * @author Marc Savy <msavy@redhat.com>
+ * An index of all standard apiman policy failure codes.
+ *
+ * @author eric.wittmann@redhat.com
  */
-public class PolicyFailureFactory {
+public final class FailureCodes {
+
+    public static final int IP_NOT_WHITELISTED = 10001;
     
-    /**
-     * Creates a policy failure.
-     * @param type
-     * @param failureCode
-     * @param message
-     */
-    public static PolicyFailure createFailure(PolicyFailureType type, int failureCode, String message) {
-        PolicyFailure failure = new PolicyFailure(type, failureCode, message);
-        return failure;
-    }
 }

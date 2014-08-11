@@ -13,26 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.rt.engine.policy;
+package org.overlord.apiman.engine.policies;
 
-import org.overlord.apiman.rt.engine.beans.PolicyFailure;
-import org.overlord.apiman.rt.engine.beans.PolicyFailureType;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
- * Factory to create failures.
- * 
- * @author Marc Savy <msavy@redhat.com>
+ * Configuration object for the IP whitelist policy.
+ *
+ * @author eric.wittmann@redhat.com
  */
-public class PolicyFailureFactory {
+public class IPWhitelistConfig {
+    
+    private Set<String> ipList = new HashSet<String>();
     
     /**
-     * Creates a policy failure.
-     * @param type
-     * @param failureCode
-     * @param message
+     * Constructor.
      */
-    public static PolicyFailure createFailure(PolicyFailureType type, int failureCode, String message) {
-        PolicyFailure failure = new PolicyFailure(type, failureCode, message);
-        return failure;
+    public IPWhitelistConfig() {
     }
+
+    /**
+     * @return the ipList
+     */
+    public Set<String> getIpList() {
+        return ipList;
+    }
+
+    /**
+     * @param ipList the ipList to set
+     */
+    public void setIpList(Set<String> ipList) {
+        this.ipList = ipList;
+    }
+
 }

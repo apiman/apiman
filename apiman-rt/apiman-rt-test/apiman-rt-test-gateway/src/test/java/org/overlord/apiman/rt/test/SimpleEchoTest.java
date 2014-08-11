@@ -26,7 +26,7 @@ public class SimpleEchoTest extends AbstractGatewayTest {
     
     @Test
     public void test() throws Exception {
-        runTestPlan("test-plans/simple-echo-testPlan.xml"); //$NON-NLS-1$
+        runTestPlan("test-plans/simple/simple-echo-testPlan.xml"); //$NON-NLS-1$
     }
 
 }

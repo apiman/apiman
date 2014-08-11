@@ -13,26 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.rt.engine.policy;
+package org.overlord.apiman.engine.policies.i18n;
 
-import org.overlord.apiman.rt.engine.beans.PolicyFailure;
-import org.overlord.apiman.rt.engine.beans.PolicyFailureType;
+import org.overlord.commons.i18n.AbstractMessages;
 
 /**
- * Factory to create failures.
- * 
- * @author Marc Savy <msavy@redhat.com>
+ * I18N Messages
+ *
+ * @author eric.wittmann@redhat.com
  */
-public class PolicyFailureFactory {
-    
+public class Messages extends AbstractMessages {
+
+    public static final Messages i18n = new Messages();
+
     /**
-     * Creates a policy failure.
-     * @param type
-     * @param failureCode
-     * @param message
+     * Constructor.
      */
-    public static PolicyFailure createFailure(PolicyFailureType type, int failureCode, String message) {
-        PolicyFailure failure = new PolicyFailure(type, failureCode, message);
-        return failure;
+    public Messages() {
+        super(Messages.class);
     }
 }

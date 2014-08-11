@@ -26,7 +26,7 @@ public class SimpleHttpHeaderPolicyTest extends AbstractGatewayTest {
     
     @Test
     public void test() throws Exception {
-        runTestPlan("test-plans/simple-httpheader-policy-testPlan.xml"); //$NON-NLS-1$
+        runTestPlan("test-plans/simple/simple-httpheader-policy-testPlan.xml"); //$NON-NLS-1$
     }
 
 }

@@ -26,7 +26,7 @@ public class SimpleConversationPolicyTest extends AbstractGatewayTest {
     
     @Test
     public void test() throws Exception {
-        runTestPlan("test-plans/simple-conversation-policy-testPlan.xml"); //$NON-NLS-1$
+        runTestPlan("test-plans/simple/simple-conversation-policy-testPlan.xml"); //$NON-NLS-1$
     }
 
 }

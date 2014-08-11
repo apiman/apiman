@@ -28,9 +28,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.overlord.apiman.rt.engine.EngineResult;
 import org.overlord.apiman.rt.engine.async.IAsyncResult;
 import org.overlord.apiman.rt.engine.beans.PolicyFailure;
+import org.overlord.apiman.rt.engine.beans.PolicyFailureType;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
 import org.overlord.apiman.rt.engine.beans.ServiceResponse;
 import org.overlord.apiman.rt.war.Gateway;
@@ -47,6 +49,7 @@ import org.overlord.apiman.rt.war.Gateway;
 public class GatewayServlet extends HttpServlet {
 
     private static final long serialVersionUID = 958726685958622333L;
+    private static final ObjectMapper mapper = new ObjectMapper();
     
     /**
      * Constructor.
@@ -135,6 +138,7 @@ public class GatewayServlet extends HttpServlet {
         readHeaders(srequest, request);
         srequest.setBody(request.getInputStream());
         srequest.setRawRequest(request);
+        srequest.setRemoteAddr(request.getRemoteAddr());
         return srequest;
     }
 
@@ -236,21 +240,37 @@ public class GatewayServlet extends HttpServlet {
      * @param policyFailure
      */
     private void writeFailure(HttpServletResponse resp, PolicyFailure policyFailure) {
-        // TODO implement writing a failure to the response
-        throw new IllegalStateException("Not yet implemented."); //$NON-NLS-1$
+        resp.setContentType("application/json"); //$NON-NLS-1$
+        resp.setHeader("X-Policy-Failure-Type", String.valueOf(policyFailure.getType())); //$NON-NLS-1$
+        resp.setHeader("X-Policy-Failure-Message", policyFailure.getMessage()); //$NON-NLS-1$
+        resp.setHeader("X-Policy-Failure-Code", String.valueOf(policyFailure.getFailureCode())); //$NON-NLS-1$
+        int errorCode = 500;
+        if (policyFailure.getType() == PolicyFailureType.Authentication) {
+            errorCode = 401;
+        } else if (policyFailure.getType() == PolicyFailureType.Authorization) {
+            errorCode = 403;
+        }
+        resp.setStatus(errorCode);
+        try {
+            mapper.writer().writeValue(resp.getOutputStream(), policyFailure);
+            IOUtils.closeQuietly(resp.getOutputStream());
+        } catch (Exception e) {
+            writeError(resp, e);
+        } finally {
+        }
     }
 
     /**
      * Writes an error to the servlet response object.
      * @param resp
-     * @param e
+     * @param error
      */
-    protected void writeError(HttpServletResponse resp, Throwable e) {
+    protected void writeError(HttpServletResponse resp, Throwable error) {
         try {
-            resp.setHeader("X-Exception", e.getMessage()); //$NON-NLS-1$
-            resp.sendError(500, e.getMessage());
+            resp.setHeader("X-Exception", error.getMessage()); //$NON-NLS-1$
+            resp.sendError(500, error.getMessage());
         } catch (IOException e1) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(error);
         }
     }
 

@@ -29,7 +29,7 @@ public class SimplePolicyTest extends AbstractGatewayTest {
     @Test
     public void test() throws Exception {
         SimplePolicy.reset();
-        runTestPlan("test-plans/simple-policy-testPlan.xml"); //$NON-NLS-1$
+        runTestPlan("test-plans/simple/simple-policy-testPlan.xml"); //$NON-NLS-1$
         // This test invokes the echo service twice, so that should result in two
         // invokations of the simple policy
         Assert.assertEquals(2, SimplePolicy.inboundCallCounter);

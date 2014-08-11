@@ -13,26 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.rt.engine.policy;
-
-import org.overlord.apiman.rt.engine.beans.PolicyFailure;
-import org.overlord.apiman.rt.engine.beans.PolicyFailureType;
+package org.overlord.apiman.rt.engine.beans;
 
 /**
- * Factory to create failures.
- * 
- * @author Marc Savy <msavy@redhat.com>
+ * In general, what kind of policy failure are we dealing with?
+ *
+ * @author eric.wittmann@redhat.com
  */
-public class PolicyFailureFactory {
+public enum PolicyFailureType {
     
-    /**
-     * Creates a policy failure.
-     * @param type
-     * @param failureCode
-     * @param message
-     */
-    public static PolicyFailure createFailure(PolicyFailureType type, int failureCode, String message) {
-        PolicyFailure failure = new PolicyFailure(type, failureCode, message);
-        return failure;
-    }
+    Authentication,
+    Authorization,
+    Other
+
 }

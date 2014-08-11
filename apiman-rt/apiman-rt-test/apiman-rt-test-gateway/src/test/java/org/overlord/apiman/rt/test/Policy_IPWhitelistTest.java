@@ -13,26 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.rt.engine.policy;
+package org.overlord.apiman.rt.test;
 
-import org.overlord.apiman.rt.engine.beans.PolicyFailure;
-import org.overlord.apiman.rt.engine.beans.PolicyFailureType;
+import org.junit.Test;
 
 /**
- * Factory to create failures.
- * 
- * @author Marc Savy <msavy@redhat.com>
+ * Make sure the gateway and test echo server are working.
+ *
+ * @author eric.wittmann@redhat.com
  */
-public class PolicyFailureFactory {
+public class Policy_IPWhitelistTest extends AbstractGatewayTest {
     
-    /**
-     * Creates a policy failure.
-     * @param type
-     * @param failureCode
-     * @param message
-     */
-    public static PolicyFailure createFailure(PolicyFailureType type, int failureCode, String message) {
-        PolicyFailure failure = new PolicyFailure(type, failureCode, message);
-        return failure;
+    @Test
+    public void test() throws Exception {
+        runTestPlan("test-plans/policies/ip-whitelist-testPlan.xml"); //$NON-NLS-1$
     }
+
 }

@@ -25,22 +25,62 @@ import java.io.Serializable;
 public class PolicyFailure implements Serializable {
     
     private static final long serialVersionUID = -4698896399383125062L;
-    private Policy failedPolicy;
-    
-    public PolicyFailure() {
+
+    private PolicyFailureType type;
+    private int failureCode;
+    private String message;
+
+    /**
+     * Constructor.
+     * @param type
+     * @param failureCode
+     * @param message
+     */
+    public PolicyFailure(PolicyFailureType type, int failureCode, String message) {
+        this.type = type;
+        this.failureCode = failureCode;
+        this.message = message;
     }
 
     /**
-     * @return the failedPolicy
+     * @return the message
      */
-    public Policy getFailedPolicy() {
-        return failedPolicy;
+    public String getMessage() {
+        return message;
     }
 
     /**
-     * @param failedPolicy the failedPolicy to set
+     * @param message the message to set
      */
-    public void setFailedPolicy(Policy failedPolicy) {
-        this.failedPolicy = failedPolicy;
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    /**
+     * @return the failureCode
+     */
+    public int getFailureCode() {
+        return failureCode;
+    }
+
+    /**
+     * @param failureCode the failureCode to set
+     */
+    public void setFailureCode(int failureCode) {
+        this.failureCode = failureCode;
+    }
+
+    /**
+     * @return the type
+     */
+    public PolicyFailureType getType() {
+        return type;
+    }
+
+    /**
+     * @param type the type to set
+     */
+    public void setType(PolicyFailureType type) {
+        this.type = type;
     }
 }

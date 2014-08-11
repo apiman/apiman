@@ -34,6 +34,7 @@ public class ServiceRequest implements Serializable {
     private String type;
     private String destination;
     private Map<String, String> headers = new HashMap<String, String>();
+    private String remoteAddr;
     private InputStream body;
     private Object rawRequest;
 
@@ -125,5 +126,19 @@ public class ServiceRequest implements Serializable {
      */
     public void setDestination(String destination) {
         this.destination = destination;
+    }
+
+    /**
+     * @return the remoteAddr
+     */
+    public String getRemoteAddr() {
+        return remoteAddr;
+    }
+
+    /**
+     * @param remoteAddr the remoteAddr to set
+     */
+    public void setRemoteAddr(String remoteAddr) {
+        this.remoteAddr = remoteAddr;
     }
 }
