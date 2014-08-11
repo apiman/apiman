@@ -151,10 +151,10 @@ public abstract class AbstractPlanPage extends AbstractPage {
     @Override
     protected void renderPage() {
         String orgPlansHref = navHelper.createHrefToPage(OrgPlansPage.class, MultimapUtil.singleItemMap("org", org)); //$NON-NLS-1$
-        String planOverviewHref = navHelper.createHrefToPage(PlanOverviewPage.class, MultimapUtil.fromMultiple("org", org, "plan", plan)); //$NON-NLS-1$ //$NON-NLS-2$
-        String planPoliciesHref = navHelper.createHrefToPage(PlanPoliciesPage.class, MultimapUtil.fromMultiple("org", org, "plan", plan)); //$NON-NLS-1$ //$NON-NLS-2$
-        String planActivityHref = navHelper.createHrefToPage(PlanActivityPage.class, MultimapUtil.fromMultiple("org", org, "plan", plan)); //$NON-NLS-1$ //$NON-NLS-2$
-        String newPlanVersionHref = navHelper.createHrefToPage(NewPlanVersionPage.class, MultimapUtil.fromMultiple("org", org, "plan", plan)); //$NON-NLS-1$ //$NON-NLS-2$
+        String planOverviewHref = navHelper.createHrefToPage(PlanOverviewPage.class, MultimapUtil.fromMultiple("org", org, "plan", plan, "version", version)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        String planPoliciesHref = navHelper.createHrefToPage(PlanPoliciesPage.class, MultimapUtil.fromMultiple("org", org, "plan", plan, "version", version)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        String planActivityHref = navHelper.createHrefToPage(PlanActivityPage.class, MultimapUtil.fromMultiple("org", org, "plan", plan, "version", version)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        String newPlanVersionHref = navHelper.createHrefToPage(NewPlanVersionPage.class, MultimapUtil.fromMultiple("org", org, "plan", plan, "version", version)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         toPlanOverview.setHref(planOverviewHref);
         toPlanPolicies.setHref(planPoliciesHref);
         toPlanActivity.setHref(planActivityHref);

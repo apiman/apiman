@@ -155,12 +155,12 @@ public abstract class AbstractServicePage extends AbstractPage {
     @Override
     protected void renderPage() {
         String orgServicesHref = navHelper.createHrefToPage(OrgServicesPage.class, MultimapUtil.singleItemMap("org", org)); //$NON-NLS-1$
-        String serviceOverviewHref = navHelper.createHrefToPage(ServiceOverviewPage.class, MultimapUtil.fromMultiple("org", org, "service", service)); //$NON-NLS-1$ //$NON-NLS-2$
-        String serviceImplHref = navHelper.createHrefToPage(ServiceImplPage.class, MultimapUtil.fromMultiple("org", org, "service", service)); //$NON-NLS-1$ //$NON-NLS-2$
-        String servicePlansHref = navHelper.createHrefToPage(ServicePlansPage.class, MultimapUtil.fromMultiple("org", org, "service", service)); //$NON-NLS-1$ //$NON-NLS-2$
-        String servicePoliciesHref = navHelper.createHrefToPage(ServicePoliciesPage.class, MultimapUtil.fromMultiple("org", org, "service", service)); //$NON-NLS-1$ //$NON-NLS-2$
-        String serviceActivityHref = navHelper.createHrefToPage(ServiceActivityPage.class, MultimapUtil.fromMultiple("org", org, "service", service)); //$NON-NLS-1$ //$NON-NLS-2$
-        String newServiceVersionHref = navHelper.createHrefToPage(NewServiceVersionPage.class, MultimapUtil.fromMultiple("org", org, "service", service)); //$NON-NLS-1$ //$NON-NLS-2$
+        String serviceOverviewHref = navHelper.createHrefToPage(ServiceOverviewPage.class, MultimapUtil.fromMultiple("org", org, "service", service, "version", version)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        String serviceImplHref = navHelper.createHrefToPage(ServiceImplPage.class, MultimapUtil.fromMultiple("org", org, "service", service, "version", version)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        String servicePlansHref = navHelper.createHrefToPage(ServicePlansPage.class, MultimapUtil.fromMultiple("org", org, "service", service, "version", version)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        String servicePoliciesHref = navHelper.createHrefToPage(ServicePoliciesPage.class, MultimapUtil.fromMultiple("org", org, "service", service, "version", version)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        String serviceActivityHref = navHelper.createHrefToPage(ServiceActivityPage.class, MultimapUtil.fromMultiple("org", org, "service", service, "version", version)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        String newServiceVersionHref = navHelper.createHrefToPage(NewServiceVersionPage.class, MultimapUtil.fromMultiple("org", org, "service", service, "version", version)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         toServiceOverview.setHref(serviceOverviewHref);
         toServiceImpl.setHref(serviceImplHref);
         toServicePlans.setHref(servicePlansHref);

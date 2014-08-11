@@ -49,7 +49,9 @@ public class MultimapUtil {
         for (int i = 0; i < data.length; i+=2) {
             String key = data[i];
             String val = data[i+1];
-            multimap.put(key, val);
+            if (val != null) {
+                multimap.put(key, val);
+            }
         }
         return multimap;
     }

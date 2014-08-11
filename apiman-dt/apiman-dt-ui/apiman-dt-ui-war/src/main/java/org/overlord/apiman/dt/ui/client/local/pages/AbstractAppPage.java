@@ -155,12 +155,12 @@ public abstract class AbstractAppPage extends AbstractPage {
     @Override
     protected void renderPage() {
         String orgAppsHref = navHelper.createHrefToPage(OrgAppsPage.class, MultimapUtil.singleItemMap("org", org)); //$NON-NLS-1$
-        String appOverviewHref = navHelper.createHrefToPage(AppOverviewPage.class, MultimapUtil.fromMultiple("org", org, "app", app)); //$NON-NLS-1$ //$NON-NLS-2$
-        String appContractsHref = navHelper.createHrefToPage(AppContractsPage.class, MultimapUtil.fromMultiple("org", org, "app", app)); //$NON-NLS-1$ //$NON-NLS-2$
-        String appApisHref = navHelper.createHrefToPage(AppApisPage.class, MultimapUtil.fromMultiple("org", org, "app", app)); //$NON-NLS-1$ //$NON-NLS-2$
-        String appPoliciesHref = navHelper.createHrefToPage(AppPoliciesPage.class, MultimapUtil.fromMultiple("org", org, "app", app)); //$NON-NLS-1$ //$NON-NLS-2$
-        String appActivityHref = navHelper.createHrefToPage(AppActivityPage.class, MultimapUtil.fromMultiple("org", org, "app", app)); //$NON-NLS-1$ //$NON-NLS-2$
-        String newAppVersionHref = navHelper.createHrefToPage(NewAppVersionPage.class, MultimapUtil.fromMultiple("org", org, "app", app)); //$NON-NLS-1$ //$NON-NLS-2$
+        String appOverviewHref = navHelper.createHrefToPage(AppOverviewPage.class, MultimapUtil.fromMultiple("org", org, "app", app, "version", version)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        String appContractsHref = navHelper.createHrefToPage(AppContractsPage.class, MultimapUtil.fromMultiple("org", org, "app", app, "version", version)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        String appApisHref = navHelper.createHrefToPage(AppApisPage.class, MultimapUtil.fromMultiple("org", org, "app", app, "version", version)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        String appPoliciesHref = navHelper.createHrefToPage(AppPoliciesPage.class, MultimapUtil.fromMultiple("org", org, "app", app, "version", version)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        String appActivityHref = navHelper.createHrefToPage(AppActivityPage.class, MultimapUtil.fromMultiple("org", org, "app", app, "version", version)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        String newAppVersionHref = navHelper.createHrefToPage(NewAppVersionPage.class, MultimapUtil.fromMultiple("org", org, "app", app, "version", version)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         toAppOverview.setHref(appOverviewHref);
         toAppContracts.setHref(appContractsHref);
         toAppApis.setHref(appApisHref);

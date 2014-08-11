@@ -89,7 +89,7 @@ public class PlanPoliciesPage extends AbstractPlanPage {
         String orgId = org;
         String planId = plan;
         String planVersion = versionBean.getVersion();
-        rest.getServicePolicies(orgId, planId, planVersion, new IRestInvokerCallback<List<PolicyBean>>() {
+        rest.getPlanPolicies(orgId, planId, planVersion, new IRestInvokerCallback<List<PolicyBean>>() {
             @Override
             public void onSuccess(List<PolicyBean> response) {
                 policyBeans = response;
