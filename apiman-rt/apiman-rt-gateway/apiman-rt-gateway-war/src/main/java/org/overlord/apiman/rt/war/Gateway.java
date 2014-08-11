@@ -34,7 +34,8 @@ public class Gateway {
      */
     public static void init() {
         IEngineConfig config = new WarEngineConfig();
-        engine = EngineFactory.createEngine(config);
+        EngineFactory factory = new EngineFactory(config);
+        engine = factory.createEngine();
     }
 
     /**

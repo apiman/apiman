@@ -25,7 +25,17 @@ import org.overlord.apiman.rt.engine.policy.IPolicyFactory;
  * 
  * @author eric.wittmann@redhat.com
  */
-public class EngineFactory {
+public class EngineFactory implements IEngineFactory {
+    
+    private IEngineConfig engineConfig;
+    
+    /**
+     * Constructor.
+     * @param engineConfig
+     */
+    public EngineFactory(IEngineConfig engineConfig) {
+        this.engineConfig = engineConfig;
+    }
     
     /**
      * Call this to create a new engine. This method uses the global engine
@@ -33,11 +43,11 @@ public class EngineFactory {
      * 
      * @param engineConfig
      */
-    public static final IEngine createEngine(IEngineConfig engineConfig) {
-        IRegistry registry = createRegistry(engineConfig);
-        IComponentRegistry componentRegistry = createComponentRegistry(engineConfig);
-        IConnectorFactory cfactory = createConnectionFactory(engineConfig);
-        IPolicyFactory pfactory = createPolicyFactory(engineConfig);
+    public final IEngine createEngine() {
+        IRegistry registry = createRegistry();
+        IComponentRegistry componentRegistry = createComponentRegistry();
+        IConnectorFactory cfactory = createConnectionFactory();
+        IPolicyFactory pfactory = createPolicyFactory();
         
         IEngine engine = new EngineImpl(registry, componentRegistry, cfactory, pfactory);
         return engine;
@@ -49,7 +59,7 @@ public class EngineFactory {
      * @param engineConfig 
      * @return a new registry instance
      */
-    private static IRegistry createRegistry(IEngineConfig engineConfig) {
+    protected IRegistry createRegistry() {
         Class<IRegistry> c = engineConfig.getRegistryClass();
         Map<String, String> config = engineConfig.getRegistryConfig();
         return create(c, config);
@@ -61,7 +71,7 @@ public class EngineFactory {
      * @param engineConfig 
      * @return a new registry instance
      */
-    private static IComponentRegistry createComponentRegistry(IEngineConfig engineConfig) {
+    protected IComponentRegistry createComponentRegistry() {
         // TODO This should be pluggable - should be done as part of the apiman plugin framework work
         return new ComponentRegistryImpl(engineConfig);
     }
@@ -71,7 +81,7 @@ public class EngineFactory {
      * @param engineConfig 
      * @return a new connection factory
      */
-    private static IConnectorFactory createConnectionFactory(IEngineConfig engineConfig) {
+    protected IConnectorFactory createConnectionFactory() {
         Class<IConnectorFactory> c = engineConfig.getConnectorFactoryClass();
         Map<String, String> config = engineConfig.getConnectorFactoryConfig();
         return create(c, config);
@@ -82,7 +92,7 @@ public class EngineFactory {
      * @param engineConfig 
      * @return a new policy factory
      */
-    private static IPolicyFactory createPolicyFactory(IEngineConfig engineConfig) {
+    protected IPolicyFactory createPolicyFactory() {
         Class<IPolicyFactory> c = engineConfig.getPolicyFactoryClass();
         Map<String, String> config = engineConfig.getPolicyFactoryConfig();
         return create(c, config);

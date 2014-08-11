@@ -49,6 +49,10 @@
       <artifactId>commons-io</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-config</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient</artifactId>
     </dependency>
