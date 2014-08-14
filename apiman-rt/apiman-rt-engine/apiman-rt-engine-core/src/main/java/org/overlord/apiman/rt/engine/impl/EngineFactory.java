@@ -13,11 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.rt.engine;
+package org.overlord.apiman.rt.engine.impl;
 
 import java.lang.reflect.Constructor;
 import java.util.Map;
 
+import org.overlord.apiman.rt.engine.IComponentRegistry;
+import org.overlord.apiman.rt.engine.IConnectorFactory;
+import org.overlord.apiman.rt.engine.IEngine;
+import org.overlord.apiman.rt.engine.IEngineConfig;
+import org.overlord.apiman.rt.engine.IEngineFactory;
+import org.overlord.apiman.rt.engine.IRegistry;
 import org.overlord.apiman.rt.engine.policy.IPolicyFactory;
 
 /**

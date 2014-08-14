@@ -17,13 +17,13 @@ package org.overlord.apiman.engine.policies;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.overlord.apiman.engine.policies.i18n.Messages;
+import org.overlord.apiman.rt.engine.IPolicyFailureFactoryComponent;
 import org.overlord.apiman.rt.engine.beans.PolicyFailureType;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
 import org.overlord.apiman.rt.engine.beans.ServiceResponse;
 import org.overlord.apiman.rt.engine.policy.IPolicy;
 import org.overlord.apiman.rt.engine.policy.IPolicyChain;
 import org.overlord.apiman.rt.engine.policy.IPolicyContext;
-import org.overlord.apiman.rt.engine.policy.PolicyFailureFactory;
 
 /**
  * A simple policy that 
@@ -69,8 +69,9 @@ public class IPWhitelistPolicy implements IPolicy {
         if (wc.getIpList().contains(request.getRemoteAddr())) {
             chain.doApply(request);
         } else {
+            IPolicyFailureFactoryComponent ffactory = context.getComponent(IPolicyFailureFactoryComponent.class);
             String msg = Messages.i18n.format("IPWhitelistPolicy.NotWhitelisted", request.getRemoteAddr()); //$NON-NLS-1$
-            chain.doFailure(PolicyFailureFactory.createFailure(PolicyFailureType.Other, FailureCodes.IP_NOT_WHITELISTED, msg));
+            chain.doFailure(ffactory.createFailure(PolicyFailureType.Other, FailureCodes.IP_NOT_WHITELISTED, msg));
         }
     }
 

@@ -187,7 +187,16 @@ public class TestPlanRunner {
                     + response.getStatusLine().getReasonPhrase(), restTest.getExpectedStatusCode(),
                     actualStatusCode);
         } catch (Error e) {
-            // TODO print out response payload if status code is in the 400s
+            if (actualStatusCode >= 400) {
+                try {
+                    InputStream content = response.getEntity().getContent();
+                    String payload = IOUtils.toString(content);
+                    System.out.println("------ START ERROR PAYLOAD ------"); //$NON-NLS-1$
+                    System.out.println(payload);
+                    System.out.println("------ END   ERROR PAYLOAD ------"); //$NON-NLS-1$
+                } catch (Exception e1) {
+                }
+            }
             throw e;
         }
         for (Entry<String, String> entry : restTest.getExpectedResponseHeaders().entrySet()) {

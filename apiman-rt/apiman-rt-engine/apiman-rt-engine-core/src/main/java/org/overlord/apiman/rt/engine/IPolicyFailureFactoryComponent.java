@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 JBoss Inc
+ * Copyright 2013 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,26 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.rt.engine.policy;
+
+package org.overlord.apiman.rt.engine;
 
 import org.overlord.apiman.rt.engine.beans.PolicyFailure;
 import org.overlord.apiman.rt.engine.beans.PolicyFailureType;
 
 /**
- * Factory to create failures.
- * 
- * @author Marc Savy <msavy@redhat.com>
+ * Component that can be used to create policy failures.
+ *
+ * @author eric.wittmann@redhat.com
  */
-public class PolicyFailureFactory {
+public interface IPolicyFailureFactoryComponent extends IComponent {
     
     /**
-     * Creates a policy failure.
+     * Creates a policy failure for the given information.
      * @param type
      * @param failureCode
      * @param message
      */
-    public static PolicyFailure createFailure(PolicyFailureType type, int failureCode, String message) {
-        PolicyFailure failure = new PolicyFailure(type, failureCode, message);
-        return failure;
-    }
+    public PolicyFailure createFailure(PolicyFailureType type, int failureCode, String message);
+
 }

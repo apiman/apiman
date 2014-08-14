@@ -36,6 +36,7 @@ import org.overlord.apiman.rt.engine.beans.PolicyFailureType;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
 import org.overlord.apiman.rt.engine.beans.ServiceResponse;
 import org.overlord.apiman.rt.war.Gateway;
+import org.overlord.apiman.rt.war.GatewayThreadContext;
 
 /**
  * The API Management gateway servlet.  This servlet is responsible for converting inbound
@@ -103,7 +104,7 @@ public class GatewayServlet extends HttpServlet {
         try {
             ServiceRequest srequest = readRequest(req);
             srequest.setType(action);
-            
+
             Future<IAsyncResult<EngineResult>> futureResult = Gateway.engine.execute(srequest);
             IAsyncResult<EngineResult> asyncResult = futureResult.get();
             if (asyncResult.isError()) {
@@ -118,6 +119,8 @@ public class GatewayServlet extends HttpServlet {
             }
         } catch (Throwable e) {
             writeError(resp, e);
+        } finally {
+            GatewayThreadContext.reset();
         }
     }
 
@@ -128,11 +131,10 @@ public class GatewayServlet extends HttpServlet {
      * @return a valid {@link ServiceRequest}
      * @throws IOException 
      */
-    protected ServiceRequest readRequest(HttpServletRequest request) throws IOException {
+    protected ServiceRequest readRequest(HttpServletRequest request) throws Exception {
         String apiKey = getApiKey(request);
 
-        // TODO get the service request from a pool (re-use these objects)
-        ServiceRequest srequest = new ServiceRequest();
+        ServiceRequest srequest = GatewayThreadContext.getServiceRequest();
         srequest.setApiKey(apiKey);
         srequest.setDestination(getDestination(request));
         readHeaders(srequest, request);

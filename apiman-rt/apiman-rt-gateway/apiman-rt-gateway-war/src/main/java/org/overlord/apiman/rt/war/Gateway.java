@@ -15,9 +15,9 @@
  */
 package org.overlord.apiman.rt.war;
 
-import org.overlord.apiman.rt.engine.EngineFactory;
 import org.overlord.apiman.rt.engine.IEngine;
 import org.overlord.apiman.rt.engine.IEngineConfig;
+import org.overlord.apiman.rt.engine.impl.EngineFactory;
 
 /**
  * Top level gateway.  Used when the API Management Runtime Engine is being used

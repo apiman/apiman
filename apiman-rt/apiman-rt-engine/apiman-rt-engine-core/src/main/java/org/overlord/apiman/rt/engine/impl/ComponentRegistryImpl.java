@@ -13,11 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.rt.engine;
+package org.overlord.apiman.rt.engine.impl;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import org.overlord.apiman.rt.engine.IComponent;
+import org.overlord.apiman.rt.engine.IComponentRegistry;
+import org.overlord.apiman.rt.engine.IEngineConfig;
 import org.overlord.apiman.rt.engine.beans.exceptions.ComponentNotFoundException;
 
 /**

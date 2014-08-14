@@ -38,6 +38,7 @@ import org.overlord.apiman.rt.engine.beans.Service;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
 import org.overlord.apiman.rt.engine.beans.ServiceResponse;
 import org.overlord.apiman.rt.engine.beans.exceptions.ConnectorException;
+import org.overlord.apiman.rt.war.GatewayThreadContext;
 import org.overlord.apiman.rt.war.i18n.Messages;
 
 /**
@@ -124,6 +125,7 @@ public class HttpConnectorFactory implements IConnectorFactory {
             }
         }
 
+        ServiceResponse sresponse = null;
         try {
             // Do the actual invoke via HTTP
             HttpResponse response = httpclient.execute(httpmethod);
@@ -131,7 +133,7 @@ public class HttpConnectorFactory implements IConnectorFactory {
             // Process the response, convert to a ServiceResponse object, and return it
             StatusLine statusLine = response.getStatusLine();
 
-            ServiceResponse sresponse = new ServiceResponse();
+            sresponse = GatewayThreadContext.getServiceResponse();
             Header[] headers = response.getAllHeaders();
             for (Header header : headers) {
                 sresponse.getHeaders().put(header.getName(), header.getValue());
@@ -141,7 +143,6 @@ public class HttpConnectorFactory implements IConnectorFactory {
             sresponse.setBody(response.getEntity().getContent());
             return sresponse;
         } catch (Exception e) {
-            e.printStackTrace();
             throw new ConnectorException(Messages.i18n.format("HttpConnectorFactory.ErrorInvokingService"), e); //$NON-NLS-1$
         }
     }

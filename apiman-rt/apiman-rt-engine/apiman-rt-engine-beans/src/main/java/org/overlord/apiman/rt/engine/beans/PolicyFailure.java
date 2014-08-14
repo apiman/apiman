@@ -32,6 +32,12 @@ public class PolicyFailure implements Serializable {
 
     /**
      * Constructor.
+     */
+    public PolicyFailure() {
+    }
+    
+    /**
+     * Constructor.
      * @param type
      * @param failureCode
      * @param message

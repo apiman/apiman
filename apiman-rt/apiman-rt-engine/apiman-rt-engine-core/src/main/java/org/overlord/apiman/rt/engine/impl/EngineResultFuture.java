@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.rt.engine;
+package org.overlord.apiman.rt.engine.impl;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
@@ -21,6 +21,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import org.overlord.apiman.rt.engine.EngineResult;
 import org.overlord.apiman.rt.engine.async.IAsyncHandler;
 import org.overlord.apiman.rt.engine.async.IAsyncResult;
 

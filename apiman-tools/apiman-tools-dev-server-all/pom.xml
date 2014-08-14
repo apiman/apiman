@@ -172,6 +172,7 @@
                       <sysproperty key="apiman-rt.connector-factory" value="org.overlord.apiman.rt.war.connectors.HttpConnectorFactory"/>
                       <sysproperty key="apiman-rt.policy-factory" value="org.overlord.apiman.rt.engine.policy.PolicyFactoryImpl"/>
                       <sysproperty key="apiman-rt.components.ISharedStateComponent" value="org.overlord.apiman.rt.engine.mem.InMemorySharedStateComponent"/>
+                      <sysproperty key="apiman-rt.components.IPolicyFailureFactoryComponent" value="org.overlord.apiman.rt.war.WarPolicyFailureFactoryComponent"/>
 
                       <sysproperty key="apiman-dt-api.gateway.rest-endpoint" value="http://localhost:8080/apiman-rt"/>
                       <sysproperty key="apiman-dt-api.gateway.authentication.basic.user" value="admin"/>

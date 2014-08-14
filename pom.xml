@@ -81,6 +81,7 @@
 
     <!-- Dependency Overrides -->
     <version.org.jboss.errai>3.0.1.Final</version.org.jboss.errai>
+    <version.commons-pool2>2.2</version.commons-pool2>
   </properties>
 
   <dependencyManagement>
@@ -93,7 +94,7 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      
+
       <!-- Internal Projects -->
       <dependency>
         <groupId>${project.groupId}</groupId>
@@ -398,7 +399,7 @@
         <groupId>com.google.gwt</groupId>
         <artifactId>gwt-dev</artifactId>
         <version>${version.com.google.gwt}</version>
-      </dependency> 
+      </dependency>
 
       <!-- Overlord Commons -->
       <dependency>
@@ -463,7 +464,7 @@
         <artifactId>picketlink-federation</artifactId>
         <version>${version.org.picketlink}</version>
       </dependency>
-      
+
       <!-- Undertow -->
       <dependency>
         <groupId>io.undertow</groupId>
@@ -501,6 +502,13 @@
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-jndi</artifactId>
         <version>${jetty.version}</version>
+      </dependency>
+      
+      <!-- Third Party Libraries -->
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-pool2</artifactId>
+        <version>${version.commons-pool2}</version>
       </dependency>
 
     </dependencies>
