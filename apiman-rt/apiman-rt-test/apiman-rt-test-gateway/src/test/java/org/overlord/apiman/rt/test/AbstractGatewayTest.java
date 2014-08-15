@@ -112,13 +112,21 @@ public class AbstractGatewayTest {
      * @param classLoader
      */
     protected void runTestPlan(String planPath, ClassLoader classLoader) {
+        String baseApiUrl = getGatewayEndpoint();
+        TestPlanRunner runner = new TestPlanRunner(baseApiUrl);
+        runner.runTestPlan(planPath, classLoader);
+    }
+
+    /**
+     * @return the gateway endpoint
+     */
+    protected String getGatewayEndpoint() {
         int port = GATEWAY_PORT;
         if (USE_PROXY) {
             port = GATEWAY_PROXY_PORT;
         }
         String baseApiUrl = "http://localhost:" + port; //$NON-NLS-1$
-        TestPlanRunner runner = new TestPlanRunner(baseApiUrl);
-        runner.runTestPlan(planPath, classLoader);
+        return baseApiUrl;
     }
     
     /**
