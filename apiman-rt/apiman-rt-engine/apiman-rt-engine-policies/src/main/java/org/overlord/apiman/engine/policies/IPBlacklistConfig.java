@@ -15,14 +15,36 @@
  */
 package org.overlord.apiman.engine.policies;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
- * An index of all standard apiman policy failure codes.
+ * Configuration object for the IP blacklist policy.
  *
  * @author eric.wittmann@redhat.com
  */
-public final class FailureCodes {
-
-    public static final int IP_NOT_WHITELISTED = 10001;
-    public static final int IP_BLACKLISTED = 10002;
+public class IPBlacklistConfig {
     
+    private Set<String> ipList = new HashSet<String>();
+    
+    /**
+     * Constructor.
+     */
+    public IPBlacklistConfig() {
+    }
+
+    /**
+     * @return the ipList
+     */
+    public Set<String> getIpList() {
+        return ipList;
+    }
+
+    /**
+     * @param ipList the ipList to set
+     */
+    public void setIpList(Set<String> ipList) {
+        this.ipList = ipList;
+    }
+
 }

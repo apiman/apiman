@@ -28,9 +28,7 @@ import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
 import org.overlord.apiman.dt.api.beans.plans.PlanBean;
 import org.overlord.apiman.dt.api.beans.plans.PlanStatus;
 import org.overlord.apiman.dt.api.beans.plans.PlanVersionBean;
-import org.overlord.apiman.dt.api.beans.policies.PolicyBean;
 import org.overlord.apiman.dt.api.beans.policies.PolicyDefinitionBean;
-import org.overlord.apiman.dt.api.beans.policies.PolicyType;
 import org.overlord.apiman.dt.api.beans.services.EndpointType;
 import org.overlord.apiman.dt.api.beans.services.ServiceBean;
 import org.overlord.apiman.dt.api.beans.services.ServicePlanBean;
@@ -259,29 +257,22 @@ public class DtApiDataSeeder extends DefaultTestDataSeeder {
         storage.create(svb);
         
         // Create some policy definitions
-        PolicyDefinitionBean customPolicyDef = new PolicyDefinitionBean();
-        customPolicyDef.setId("IPWhitelistPolicy"); //$NON-NLS-1$
-        customPolicyDef.setName("IP Whitelist Policy"); //$NON-NLS-1$
-        customPolicyDef.setDescription("Only requests that originate from a specified set of valid IP addresses will be allowed through."); //$NON-NLS-1$
-        customPolicyDef.setIcon("filter"); //$NON-NLS-1$
-        customPolicyDef.setPolicyImpl("class:org.overlord.apiman.engine.policies.IPWhitelistPolicy"); //$NON-NLS-1$
-        storage.create(customPolicyDef);
+        PolicyDefinitionBean whitelistPolicyDef = new PolicyDefinitionBean();
+        whitelistPolicyDef.setId("IPWhitelistPolicy"); //$NON-NLS-1$
+        whitelistPolicyDef.setName("IP Whitelist Policy"); //$NON-NLS-1$
+        whitelistPolicyDef.setDescription("Only requests that originate from a specified set of valid IP addresses will be allowed through."); //$NON-NLS-1$
+        whitelistPolicyDef.setIcon("filter"); //$NON-NLS-1$
+        whitelistPolicyDef.setPolicyImpl("class:org.overlord.apiman.engine.policies.IPWhitelistPolicy"); //$NON-NLS-1$
+        storage.create(whitelistPolicyDef);
 
-        // Create some policies
-        PolicyBean policy = new PolicyBean();
-        policy.setOrganizationId("JBossOverlord"); //$NON-NLS-1$
-        policy.setEntityId("dtgov"); //$NON-NLS-1$
-        policy.setEntityVersion("1.0"); //$NON-NLS-1$
-        policy.setType(PolicyType.Application);
-        policy.setName("User Defined (Custom) Policy"); //$NON-NLS-1$
-        policy.setDescription("A user-defined policy using 'com.example.mybusiness.policies.MyCustomPolicy' as the implementation. Click edit for details. "); //$NON-NLS-1$
-        policy.setDefinition(customPolicyDef);
-        policy.setConfiguration(""); //$NON-NLS-1$
-        policy.setCreatedBy("admin"); //$NON-NLS-1$
-        policy.setCreatedOn(new Date());
-        policy.setModifiedBy("admin"); //$NON-NLS-1$
-        policy.setModifiedOn(new Date());
-        storage.create(policy);
+        PolicyDefinitionBean blacklistPolicyDef = new PolicyDefinitionBean();
+        blacklistPolicyDef.setId("IPBlacklistPolicy"); //$NON-NLS-1$
+        blacklistPolicyDef.setName("IP Blacklist Policy"); //$NON-NLS-1$
+        blacklistPolicyDef.setDescription("Only requests that originate from a specified set of valid IP addresses will be allowed through."); //$NON-NLS-1$
+        blacklistPolicyDef.setIcon("thumbs-down"); //$NON-NLS-1$
+        blacklistPolicyDef.setPolicyImpl("class:org.overlord.apiman.engine.policies.IPBlacklistPolicy"); //$NON-NLS-1$
+        storage.create(blacklistPolicyDef);
+
     }
 
 }

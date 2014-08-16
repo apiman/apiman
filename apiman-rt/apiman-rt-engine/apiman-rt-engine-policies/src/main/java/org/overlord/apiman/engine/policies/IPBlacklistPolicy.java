@@ -27,19 +27,19 @@ import org.overlord.apiman.rt.engine.policy.IPolicyChain;
 import org.overlord.apiman.rt.engine.policy.IPolicyContext;
 
 /**
- * A simple policy that causes a failure if the IP address of the inbound
- * request is not included in a specific list of allowed IP addresses.
+ * A simple policy that fails the inbound request if its IP address is
+ * included in the list of dis-allowed IPs.
  *
  * @author eric.wittmann@redhat.com
  */
-public class IPWhitelistPolicy implements IPolicy {
+public class IPBlacklistPolicy implements IPolicy {
     
     private static final ObjectMapper mapper = new ObjectMapper();
     
     /**
      * Constructor.
      */
-    public IPWhitelistPolicy() {
+    public IPBlacklistPolicy() {
     }
 
     /**
@@ -55,7 +55,7 @@ public class IPWhitelistPolicy implements IPolicy {
     @Override
     public Object parseConfiguration(String jsonConfiguration) throws ConfigurationParseException {
         try {
-            return mapper.reader(IPWhitelistConfig.class).readValue(jsonConfiguration);
+            return mapper.reader(IPBlacklistConfig.class).readValue(jsonConfiguration);
         } catch (Exception e) {
             throw new ConfigurationParseException(e);
         }
@@ -66,13 +66,13 @@ public class IPWhitelistPolicy implements IPolicy {
      */
     @Override
     public void apply(ServiceRequest request, IPolicyContext context, Object config, IPolicyChain chain) {
-        IPWhitelistConfig wc = (IPWhitelistConfig) config;
+        IPBlacklistConfig wc = (IPBlacklistConfig) config;
         if (wc.getIpList().contains(request.getRemoteAddr())) {
-            chain.doApply(request);
-        } else {
             IPolicyFailureFactoryComponent ffactory = context.getComponent(IPolicyFailureFactoryComponent.class);
-            String msg = Messages.i18n.format("IPWhitelistPolicy.NotWhitelisted", request.getRemoteAddr()); //$NON-NLS-1$
-            chain.doFailure(ffactory.createFailure(PolicyFailureType.Other, FailureCodes.IP_NOT_WHITELISTED, msg));
+            String msg = Messages.i18n.format("IPBlacklistPolicy.NotBlacklisted", request.getRemoteAddr()); //$NON-NLS-1$
+            chain.doFailure(ffactory.createFailure(PolicyFailureType.Other, FailureCodes.IP_BLACKLISTED, msg));
+        } else {
+            chain.doApply(request);
         }
     }
 

@@ -18,7 +18,7 @@ package org.overlord.apiman.rt.test;
 import org.junit.Test;
 
 /**
- * Make sure the gateway and test echo server are working.
+ * Make sure the whitelist policy works.
  *
  * @author eric.wittmann@redhat.com
  */

@@ -14,7 +14,8 @@
   
   <!-- Policy Definitions -->
   <testGroup name="Policy Defs">
-    <test name="Create Policy Def 1">data/policyDefs/000_create-policy-def-1.resttest</test>
+    <test name="Create Whitelist Policy Def">data/policyDefs/000_whitelist-policydef.resttest</test>
+    <test name="Create Blacklist Policy Def">data/policyDefs/001_blacklist-policydef.resttest</test>
   </testGroup>
   
 

@@ -17,6 +17,7 @@ package org.overlord.apiman.rt.engine.policy;
 
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
 import org.overlord.apiman.rt.engine.beans.ServiceResponse;
+import org.overlord.apiman.rt.engine.beans.exceptions.ConfigurationParseException;
 
 /**
  * A {@link Policy} may inspect a {@link ServiceRequest} and associated {@link ServiceRespose} to indicate
@@ -32,7 +33,7 @@ public interface IPolicy {
      * type of object it desires.
      * @param jsonConfiguration
      */
-    public Object parseConfiguration(String jsonConfiguration);
+    public Object parseConfiguration(String jsonConfiguration) throws ConfigurationParseException;
     
     /**
      * Applies a policy upon a {@link ServiceRequest} based on information

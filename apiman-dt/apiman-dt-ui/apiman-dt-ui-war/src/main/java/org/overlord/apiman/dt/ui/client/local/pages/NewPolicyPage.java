@@ -201,7 +201,7 @@ public class NewPolicyPage extends AbstractPage {
                 } else if (policyType == PolicyType.Service) {
                     toServicePolicies.go(MultimapUtil.fromMultiple("service", id, "org", org, "version", ver)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 } else if (policyType == PolicyType.Plan) {
-                    toServicePolicies.go(MultimapUtil.fromMultiple("plan", id, "org", org, "version", ver)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    toPlanPolicies.go(MultimapUtil.fromMultiple("plan", id, "org", org, "version", ver)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 }
             }
             @Override
