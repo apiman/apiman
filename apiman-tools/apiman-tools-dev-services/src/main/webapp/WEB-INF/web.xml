@@ -13,4 +13,13 @@
     <url-pattern>/datetime/*</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <servlet-name>EchoServlet</servlet-name>
+    <servlet-class>org.overlord.apiman.test.common.mock.EchoServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>EchoServlet</servlet-name>
+    <url-pattern>/echo/*</url-pattern>
+  </servlet-mapping>
+
 </web-app>

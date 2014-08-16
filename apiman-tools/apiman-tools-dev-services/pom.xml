@@ -9,6 +9,11 @@
   <packaging>war</packaging>
   <name>apiman-tools-dev-services</name>
   <dependencies>
+    <!-- Project Dependencies -->
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-test-common</artifactId>
+    </dependency>
     <!-- Provided Dependencies -->
     <dependency>
       <groupId>org.jboss.spec.javax.servlet</groupId>

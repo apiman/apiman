@@ -16,7 +16,10 @@
 package org.overlord.apiman.rt.engine.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Future;
 
 import org.overlord.apiman.rt.engine.EngineResult;
@@ -36,6 +39,8 @@ import org.overlord.apiman.rt.engine.beans.PolicyFailure;
 import org.overlord.apiman.rt.engine.beans.Service;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
 import org.overlord.apiman.rt.engine.beans.ServiceResponse;
+import org.overlord.apiman.rt.engine.beans.exceptions.ConfigurationParseException;
+import org.overlord.apiman.rt.engine.beans.exceptions.PolicyNotFoundException;
 import org.overlord.apiman.rt.engine.beans.exceptions.PublishingException;
 import org.overlord.apiman.rt.engine.beans.exceptions.RegistrationException;
 import org.overlord.apiman.rt.engine.policy.IPolicy;
@@ -56,6 +61,7 @@ public class EngineImpl implements IEngine {
     private IComponentRegistry componentRegistry;
     private IConnectorFactory connectorFactory;
     private IPolicyFactory policyFactory;
+    private Map<Contract, List<PolicyWithConfiguration>> cache = new HashMap<Contract, List<PolicyWithConfiguration>>();
 
     /**
      * Constructor.
@@ -181,6 +187,24 @@ public class EngineImpl implements IEngine {
      */
     @Override
     public void registerApplication(final Application application) throws RegistrationException {
+        Set<Contract> contracts = application.getContracts();
+        for (Contract contract : contracts) {
+            List<Policy> policies = contract.getPolicies();
+            for (Policy policy : policies) {
+                try {
+                    // Validate that the policy can be loaded.
+                    IPolicy policyImpl = this.getPolicyFactory().getPolicy(policy.getPolicyImpl());
+                    // Validate that the config can be parsed
+                    Object configuration = policyImpl.parseConfiguration(policy.getPolicyJsonConfig());
+                    // Cache the parsed config
+                    policy.setPolicyConfig(configuration);
+                } catch (PolicyNotFoundException e) {
+                    throw new RegistrationException(e);
+                } catch (ConfigurationParseException e) {
+                    throw new RegistrationException(e);
+                }
+            }
+        }
         getRegistry().registerApplication(application);
     }
     
@@ -206,13 +230,22 @@ public class EngineImpl implements IEngine {
      * @param contract
      */
     private List<PolicyWithConfiguration> getPolicies(Contract contract) {
-        List<PolicyWithConfiguration> policies = new ArrayList<PolicyWithConfiguration>();
-        for (Policy policy : contract.getPolicies()) {
-            IPolicy policyImpl = this.getPolicyFactory().getPolicy(policy.getPolicyImpl());
-            // TODO cache the parsed policy config - perhaps in the Policy object itself as a transient?
-            Object policyConfig = policyImpl.parseConfiguration(policy.getPolicyJsonConfig());
-            PolicyWithConfiguration pwc = new PolicyWithConfiguration(policyImpl, policyConfig);
-            policies.add(pwc);
+        // Note: do not synchronize on the cache.  We don't really care if we accidentally
+        // create the list a few times - it's not worth the overhead of the synch block.
+        List<PolicyWithConfiguration> policies = cache.get(contract);
+        if (policies == null) {
+            policies = new ArrayList<PolicyWithConfiguration>();
+            for (Policy policy : contract.getPolicies()) {
+                IPolicy policyImpl = this.getPolicyFactory().getPolicy(policy.getPolicyImpl());
+                Object policyConfig = policy.getPolicyConfig();
+                if (policyConfig == null) {
+                    policyConfig = policyImpl.parseConfiguration(policy.getPolicyJsonConfig());
+                    policy.setPolicyConfig(policyConfig);
+                }
+                PolicyWithConfiguration pwc = new PolicyWithConfiguration(policyImpl, policyConfig);
+                policies.add(pwc);
+            }
+            cache.put(contract, policies);
         }
         return policies;
     }

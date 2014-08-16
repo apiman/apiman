@@ -41,7 +41,7 @@ public interface IEngine {
     /**
      * Executes an asynchronous request for a managed service, with the provided
      * handler being passed an {@link EngineResult} with the status and result 
-     * of the policy chain invocation. TODO
+     * of the policy chain invocation.
      * 
      * @param request a request for a managed service
      * @param handler an async handler called when a response is returned or an

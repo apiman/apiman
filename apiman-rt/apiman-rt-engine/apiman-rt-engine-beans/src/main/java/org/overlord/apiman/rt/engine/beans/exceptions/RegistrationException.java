@@ -41,4 +41,12 @@ public class RegistrationException extends AbstractEngineException {
         super(message, cause);
     }
 
+    /**
+     * Constructor.
+     * @param cause the underlying cause
+     */
+    public RegistrationException(Exception cause) {
+        super(cause);
+    }
+
 }

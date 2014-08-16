@@ -38,7 +38,7 @@ public class PerfOverheadTest extends AbstractGatewayTest {
         
         // Make a bunch of requests directly to the echo server and measure
         // the average response time.
-        int avgTime_Echo = doTest(getEchoEndpoint(), 2);
+        int avgTime_Echo = doTest(getEchoEndpoint(), 1);
         avgTime_Echo = doTest(getEchoEndpoint(), 100);
         
         // Now do the same thing but through the gateway.
@@ -55,7 +55,7 @@ public class PerfOverheadTest extends AbstractGatewayTest {
      * @param numIterations
      * @throws Exception 
      */
-    private int doTest(String endpoint, int numIterations) throws Exception {
+    private static int doTest(String endpoint, int numIterations) throws Exception {
         System.out.print("Testing endpoint " + endpoint + ": \n    ["); //$NON-NLS-1$ //$NON-NLS-2$
         DefaultHttpClient client = new DefaultHttpClient();
         
@@ -75,6 +75,25 @@ public class PerfOverheadTest extends AbstractGatewayTest {
         }
         System.out.println("]"); //$NON-NLS-1$
         return (int) (totalResponseTime / numIterations);
+    }
+    
+    /**
+     * Run the test against a running instance of APIMan instead of the embedded
+     * unit test environment.
+     * @param args
+     */
+    public static void main(String [] args) throws Exception {
+        String rawServiceEndpoint = "http://localhost:8080/services/echo"; //$NON-NLS-1$
+        String gatewayEndpoint = "http://localhost:8080/gateway/echo?apikey=12345"; //$NON-NLS-1$
+        
+        int avgTime_Echo = doTest(rawServiceEndpoint, 1);
+        avgTime_Echo = doTest(rawServiceEndpoint, 100);
+        
+        // Now do the same thing but through the gateway.
+        int avgTime_Gateway = doTest(gatewayEndpoint, 100);
+        
+        System.out.println("Average echo response time:    " + avgTime_Echo); //$NON-NLS-1$
+        System.out.println("Average gateway response time: " + avgTime_Gateway); //$NON-NLS-1$
     }
 
 }
