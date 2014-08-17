@@ -4,7 +4,7 @@
   version="2.5">
 
   <listener>
-    <listener-class>org.overlord.apiman.rt.war.listeners.GatewayBootstrapper</listener-class>
+    <listener-class>org.overlord.apiman.rt.war.listeners.WarGatewayBootstrapper</listener-class>
   </listener>
 
   <listener>
@@ -23,11 +23,11 @@
 
   <!-- Gateway Servlet -->
   <servlet>
-    <servlet-name>GatewayServlet</servlet-name>
-    <servlet-class>org.overlord.apiman.rt.war.servlets.GatewayServlet</servlet-class>
+    <servlet-name>WarGatewayServlet</servlet-name>
+    <servlet-class>org.overlord.apiman.rt.war.servlets.WarGatewayServlet</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>GatewayServlet</servlet-name>
+    <servlet-name>WarGatewayServlet</servlet-name>
     <url-pattern>/gateway/*</url-pattern>
   </servlet-mapping>
 
@@ -62,7 +62,7 @@
   </security-constraint>
   <login-config>
     <auth-method>BASIC</auth-method>
-    <realm-name>OverlordRealm</realm-name>
+    <realm-name>Overlord</realm-name>
   </login-config>
   <security-role>
     <role-name>apiadmin</role-name>

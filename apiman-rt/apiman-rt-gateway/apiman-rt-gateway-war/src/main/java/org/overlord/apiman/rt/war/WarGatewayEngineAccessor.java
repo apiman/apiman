@@ -24,14 +24,14 @@ import org.overlord.apiman.rt.engine.IEngine;
  *
  * @author eric.wittmann@redhat.com
  */
-public class GatewayEngineAccessor implements IEngineAccessor {
+public class WarGatewayEngineAccessor implements IEngineAccessor {
 
     /**
      * @see org.overlord.apiman.rt.api.rest.impl.IEngineAccessor#getEngine()
      */
     @Override
     public IEngine getEngine() {
-        return Gateway.engine;
+        return WarGateway.engine;
     }
 
 }

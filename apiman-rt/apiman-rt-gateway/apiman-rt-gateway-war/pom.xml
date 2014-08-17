@@ -45,6 +45,16 @@
     <dependency>
       <groupId>org.overlord</groupId>
       <artifactId>overlord-commons-config</artifactId>
+      <exclusions>
+        <exclusion>
+          <artifactId>org.apache.felix.scr.annotations</artifactId>
+          <groupId>org.apache.felix</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>jboss-logging</artifactId>
+          <groupId>org.jboss.logging</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.overlord</groupId>

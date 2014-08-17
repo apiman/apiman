@@ -25,7 +25,7 @@ import org.overlord.apiman.rt.engine.impl.EngineFactory;
  *
  * @author eric.wittmann@redhat.com
  */
-public class Gateway {
+public class WarGateway {
     
     public static IEngine engine;
 

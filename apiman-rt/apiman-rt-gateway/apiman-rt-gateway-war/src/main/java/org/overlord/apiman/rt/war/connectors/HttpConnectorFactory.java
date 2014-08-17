@@ -38,7 +38,7 @@ import org.overlord.apiman.rt.engine.beans.Service;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
 import org.overlord.apiman.rt.engine.beans.ServiceResponse;
 import org.overlord.apiman.rt.engine.beans.exceptions.ConnectorException;
-import org.overlord.apiman.rt.war.GatewayThreadContext;
+import org.overlord.apiman.rt.war.WarGatewayThreadContext;
 import org.overlord.apiman.rt.war.i18n.Messages;
 
 /**
@@ -133,7 +133,7 @@ public class HttpConnectorFactory implements IConnectorFactory {
             // Process the response, convert to a ServiceResponse object, and return it
             StatusLine statusLine = response.getStatusLine();
 
-            sresponse = GatewayThreadContext.getServiceResponse();
+            sresponse = WarGatewayThreadContext.getServiceResponse();
             Header[] headers = response.getAllHeaders();
             for (Header header : headers) {
                 sresponse.getHeaders().put(header.getName(), header.getValue());

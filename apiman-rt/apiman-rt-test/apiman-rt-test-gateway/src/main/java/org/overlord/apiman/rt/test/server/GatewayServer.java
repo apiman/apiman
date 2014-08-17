@@ -28,8 +28,8 @@ import org.overlord.apiman.rt.api.rest.impl.RtApiApplication;
 import org.overlord.apiman.rt.api.rest.impl.ServiceResourceImpl;
 import org.overlord.apiman.rt.api.rest.impl.SystemResourceImpl;
 import org.overlord.apiman.rt.api.rest.impl.mappers.RestExceptionMapper;
-import org.overlord.apiman.rt.war.listeners.GatewayBootstrapper;
-import org.overlord.apiman.rt.war.servlets.GatewayServlet;
+import org.overlord.apiman.rt.war.listeners.WarGatewayBootstrapper;
+import org.overlord.apiman.rt.war.servlets.WarGatewayServlet;
 
 /**
  * Uses Jetty to run the WAR version of the API Management gateway.
@@ -96,11 +96,11 @@ public class GatewayServer {
          * ************* */
         ServletContextHandler server = new ServletContextHandler(ServletContextHandler.SESSIONS);
         server.setContextPath("/"); //$NON-NLS-1$
-        server.addEventListener(new GatewayBootstrapper());
-        ServletHolder servlet = new ServletHolder(new GatewayServlet());
+        server.addEventListener(new WarGatewayBootstrapper());
+        ServletHolder servlet = new ServletHolder(new WarGatewayServlet());
         server.addServlet(servlet, "/gateway/*"); //$NON-NLS-1$
         servlet = new ServletHolder(new HttpServletDispatcher());
-        servlet.setInitParameter("javax.ws.rs.Application", GatewayApplication.class.getName()); //$NON-NLS-1$
+        servlet.setInitParameter("javax.ws.rs.Application", TestGatewayApplication.class.getName()); //$NON-NLS-1$
         servlet.setInitOrder(1);
         server.addServlet(servlet, "/api/*"); //$NON-NLS-1$
 
@@ -108,12 +108,12 @@ public class GatewayServer {
         handlers.addHandler(server);
     }
 
-    public static class GatewayApplication extends RtApiApplication {
+    public static class TestGatewayApplication extends RtApiApplication {
         
         /**
          * Constructor.
          */
-        public GatewayApplication() {
+        public TestGatewayApplication() {
         }
 
         @Override

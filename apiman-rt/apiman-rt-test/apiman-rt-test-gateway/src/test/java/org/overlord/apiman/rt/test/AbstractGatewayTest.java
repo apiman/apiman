@@ -28,7 +28,7 @@ import org.overlord.apiman.rt.engine.mem.InMemorySharedStateComponent;
 import org.overlord.apiman.rt.engine.policy.PolicyFactoryImpl;
 import org.overlord.apiman.rt.test.server.EchoServer;
 import org.overlord.apiman.rt.test.server.GatewayServer;
-import org.overlord.apiman.rt.war.Gateway;
+import org.overlord.apiman.rt.war.WarGateway;
 import org.overlord.apiman.rt.war.WarEngineConfig;
 import org.overlord.apiman.rt.war.WarPolicyFailureFactoryComponent;
 import org.overlord.apiman.rt.war.connectors.HttpConnectorFactory;
@@ -86,7 +86,7 @@ public class AbstractGatewayTest {
      * @throws PublishingException 
      */
     protected void publishService(Service service) throws PublishingException {
-        Gateway.engine.publishService(service);
+        WarGateway.engine.publishService(service);
     }
     
     /**
@@ -94,7 +94,7 @@ public class AbstractGatewayTest {
      * @throws RegistrationException 
      */
     protected void registerApplication(Application application) throws RegistrationException {
-        Gateway.engine.registerApplication(application);
+        WarGateway.engine.registerApplication(application);
     }
 
     /**

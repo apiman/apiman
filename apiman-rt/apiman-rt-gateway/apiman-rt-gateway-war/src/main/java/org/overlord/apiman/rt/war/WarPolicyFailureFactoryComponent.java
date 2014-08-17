@@ -40,7 +40,7 @@ public class WarPolicyFailureFactoryComponent implements IPolicyFailureFactoryCo
      */
     @Override
     public PolicyFailure createFailure(PolicyFailureType type, int failureCode, String message) {
-        PolicyFailure failure = GatewayThreadContext.getPolicyFailure();
+        PolicyFailure failure = WarGatewayThreadContext.getPolicyFailure();
         failure.setFailureCode(failureCode);
         failure.setMessage(message);
         failure.setType(type);

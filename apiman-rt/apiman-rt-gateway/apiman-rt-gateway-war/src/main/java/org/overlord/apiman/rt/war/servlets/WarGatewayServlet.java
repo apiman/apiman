@@ -35,8 +35,9 @@ import org.overlord.apiman.rt.engine.beans.PolicyFailure;
 import org.overlord.apiman.rt.engine.beans.PolicyFailureType;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
 import org.overlord.apiman.rt.engine.beans.ServiceResponse;
-import org.overlord.apiman.rt.war.Gateway;
-import org.overlord.apiman.rt.war.GatewayThreadContext;
+import org.overlord.apiman.rt.war.WarGateway;
+import org.overlord.apiman.rt.war.WarGatewayThreadContext;
+import org.overlord.apiman.rt.war.i18n.Messages;
 
 /**
  * The API Management gateway servlet.  This servlet is responsible for converting inbound
@@ -47,7 +48,7 @@ import org.overlord.apiman.rt.war.GatewayThreadContext;
  *
  * @author eric.wittmann@redhat.com
  */
-public class GatewayServlet extends HttpServlet {
+public class WarGatewayServlet extends HttpServlet {
 
     private static final long serialVersionUID = 958726685958622333L;
     private static final ObjectMapper mapper = new ObjectMapper();
@@ -55,7 +56,7 @@ public class GatewayServlet extends HttpServlet {
     /**
      * Constructor.
      */
-    public GatewayServlet() {
+    public WarGatewayServlet() {
     }
     
     /**
@@ -105,7 +106,7 @@ public class GatewayServlet extends HttpServlet {
             ServiceRequest srequest = readRequest(req);
             srequest.setType(action);
 
-            Future<IAsyncResult<EngineResult>> futureResult = Gateway.engine.execute(srequest);
+            Future<IAsyncResult<EngineResult>> futureResult = WarGateway.engine.execute(srequest);
             IAsyncResult<EngineResult> asyncResult = futureResult.get();
             if (asyncResult.isError()) {
                 throw new Exception(asyncResult.getError());
@@ -120,7 +121,7 @@ public class GatewayServlet extends HttpServlet {
         } catch (Throwable e) {
             writeError(resp, e);
         } finally {
-            GatewayThreadContext.reset();
+            WarGatewayThreadContext.reset();
         }
     }
 
@@ -133,8 +134,11 @@ public class GatewayServlet extends HttpServlet {
      */
     protected ServiceRequest readRequest(HttpServletRequest request) throws Exception {
         String apiKey = getApiKey(request);
+        if (apiKey == null) {
+            throw new Exception(Messages.i18n.format("WarGatewayServlet.MissingAPIKey")); //$NON-NLS-1$
+        }
 
-        ServiceRequest srequest = GatewayThreadContext.getServiceRequest();
+        ServiceRequest srequest = WarGatewayThreadContext.getServiceRequest();
         srequest.setApiKey(apiKey);
         srequest.setDestination(getDestination(request));
         readHeaders(srequest, request);
@@ -166,6 +170,9 @@ public class GatewayServlet extends HttpServlet {
      */
     protected String getApiKeyFromQuery(HttpServletRequest request) {
         String queryString = request.getQueryString();
+        if (queryString == null) {
+            return null;
+        }
         int idx = queryString.indexOf("apikey="); //$NON-NLS-1$
         if (idx >= 0) {
             int endIdx = queryString.indexOf('&', idx);

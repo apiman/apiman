@@ -25,7 +25,7 @@ import org.overlord.apiman.rt.engine.beans.ServiceResponse;
  *
  * @author eric.wittmann@redhat.com
  */
-public class GatewayThreadContext {
+public class WarGatewayThreadContext {
     
     private static final ThreadLocal<ServiceRequest> serviceRequest = new ThreadLocal<ServiceRequest>();
     private static final ThreadLocal<ServiceResponse> serviceResponse = new ThreadLocal<ServiceResponse>();

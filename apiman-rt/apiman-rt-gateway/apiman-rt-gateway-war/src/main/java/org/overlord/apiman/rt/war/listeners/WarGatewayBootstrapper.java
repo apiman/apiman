@@ -18,7 +18,7 @@ package org.overlord.apiman.rt.war.listeners;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import org.overlord.apiman.rt.war.Gateway;
+import org.overlord.apiman.rt.war.WarGateway;
 
 /**
  * Used to bootstrap the API Management Gateway when it is running in a simple
@@ -26,12 +26,12 @@ import org.overlord.apiman.rt.war.Gateway;
  *
  * @author eric.wittmann@redhat.com
  */
-public class GatewayBootstrapper implements ServletContextListener {
+public class WarGatewayBootstrapper implements ServletContextListener {
 
     /**
      * Constructor.
      */
-    public GatewayBootstrapper() {
+    public WarGatewayBootstrapper() {
     }
 
     /**
@@ -39,7 +39,7 @@ public class GatewayBootstrapper implements ServletContextListener {
      */
     @Override
     public void contextInitialized(ServletContextEvent arg0) {
-        Gateway.init();
+        WarGateway.init();
     }
 
     /**
@@ -47,7 +47,7 @@ public class GatewayBootstrapper implements ServletContextListener {
      */
     @Override
     public void contextDestroyed(ServletContextEvent arg0) {
-        Gateway.shutdown();
+        WarGateway.shutdown();
     }
 
 }
