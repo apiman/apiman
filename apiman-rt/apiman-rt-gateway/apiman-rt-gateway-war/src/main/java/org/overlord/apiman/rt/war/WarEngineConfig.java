@@ -171,7 +171,7 @@ public class WarEngineConfig implements IEngineConfig {
      */
     private Map<String, String> getConfig(String prefix) {
         Map<String, String> rval = new HashMap<String, String>();
-        Iterator<?> keys = config.getKeys(APIMAN_RT_REGISTRY_CLASS + "."); //$NON-NLS-1$
+        Iterator<?> keys = config.getKeys(prefix + "."); //$NON-NLS-1$
         while (keys.hasNext()) {
             String key = String.valueOf(keys.next());
             rval.put(key, config.getString(key));
