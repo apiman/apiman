@@ -52,7 +52,7 @@ public class EngineFactory implements IEngineFactory {
     public final IEngine createEngine() {
         IRegistry registry = createRegistry();
         IComponentRegistry componentRegistry = createComponentRegistry();
-        IConnectorFactory cfactory = createConnectionFactory();
+        IConnectorFactory cfactory = createConnectorFactory();
         IPolicyFactory pfactory = createPolicyFactory();
         
         IEngine engine = new EngineImpl(registry, componentRegistry, cfactory, pfactory);
@@ -87,7 +87,7 @@ public class EngineFactory implements IEngineFactory {
      * @param engineConfig 
      * @return a new connection factory
      */
-    protected IConnectorFactory createConnectionFactory() {
+    protected IConnectorFactory createConnectorFactory() {
         Class<IConnectorFactory> c = engineConfig.getConnectorFactoryClass();
         Map<String, String> config = engineConfig.getConnectorFactoryConfig();
         return create(c, config);
