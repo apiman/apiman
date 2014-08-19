@@ -20,7 +20,7 @@
   <Call name="addBean">
     <Arg>
       <New class="org.eclipse.jetty.security.HashLoginService">
-        <Set name="name">OverlordRealm</Set>
+        <Set name="name">Overlord</Set>
         <Set name="config"><SystemProperty name="jetty.home.url" default="." />/etc/realm.properties</Set>
         <Set name="refreshInterval">0</Set>
       </New>

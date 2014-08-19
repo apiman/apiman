@@ -24,6 +24,12 @@
       <type>jar</type>
       <classifier>classes</classifier>
     </dependency>
+    
+    <!-- Project Dependencies -->
+    <dependency>
+      <groupId>org.overlord.apiman</groupId>
+      <artifactId>apiman-rt-api-rest-impl</artifactId>
+    </dependency>
 
     <!-- Third Party Dependencies -->
     <dependency>

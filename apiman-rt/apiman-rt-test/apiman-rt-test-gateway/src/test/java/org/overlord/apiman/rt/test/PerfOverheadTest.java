@@ -39,10 +39,10 @@ public class PerfOverheadTest extends AbstractGatewayTest {
         // Make a bunch of requests directly to the echo server and measure
         // the average response time.
         int avgTime_Echo = doTest(getEchoEndpoint(), 1);
-        avgTime_Echo = doTest(getEchoEndpoint(), 100);
+        avgTime_Echo = doTest(getEchoEndpoint(), 200);
         
         // Now do the same thing but through the gateway.
-        int avgTime_Gateway = doTest(getGatewayEndpoint() + "/gateway/echo?apikey=12345", 100); //$NON-NLS-1$
+        int avgTime_Gateway = doTest(getGatewayEndpoint() + "/gateway/echo?apikey=12345", 200); //$NON-NLS-1$
         
         System.out.println("Average echo response time:    " + avgTime_Echo); //$NON-NLS-1$
         System.out.println("Average gateway response time: " + avgTime_Gateway); //$NON-NLS-1$
@@ -72,8 +72,11 @@ public class PerfOverheadTest extends AbstractGatewayTest {
             long end = System.currentTimeMillis();
             totalResponseTime += (end - start);
             System.out.print("-"); //$NON-NLS-1$
+            if (i % 80 == 0) {
+                System.out.println(""); //$NON-NLS-1$
+            }
         }
-        System.out.println("]"); //$NON-NLS-1$
+        System.out.println("]  Total=" + totalResponseTime); //$NON-NLS-1$
         return (int) (totalResponseTime / numIterations);
     }
     

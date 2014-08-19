@@ -26,10 +26,6 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-rt-engine-mem</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
       <artifactId>apiman-rt-api-rest</artifactId>
     </dependency>
     <dependency>

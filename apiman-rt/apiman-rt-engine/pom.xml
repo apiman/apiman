@@ -11,7 +11,6 @@
   <name>apiman-rt-engine</name>
   <modules>
     <module>apiman-rt-engine-core</module>
-    <module>apiman-rt-engine-mem</module>
     <module>apiman-rt-engine-beans</module>
     <module>apiman-rt-engine-policies</module>
   </modules>

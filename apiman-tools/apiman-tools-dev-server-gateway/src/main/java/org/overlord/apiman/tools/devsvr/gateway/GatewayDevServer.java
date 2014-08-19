@@ -16,10 +16,10 @@
 
 package org.overlord.apiman.tools.devsvr.gateway;
 
-import org.overlord.apiman.rt.engine.IPolicyFailureFactoryComponent;
+import org.overlord.apiman.rt.engine.components.IPolicyFailureFactoryComponent;
 import org.overlord.apiman.rt.engine.components.ISharedStateComponent;
-import org.overlord.apiman.rt.engine.mem.InMemoryRegistry;
-import org.overlord.apiman.rt.engine.mem.InMemorySharedStateComponent;
+import org.overlord.apiman.rt.engine.impl.InMemoryRegistry;
+import org.overlord.apiman.rt.engine.impl.InMemorySharedStateComponent;
 import org.overlord.apiman.rt.engine.policy.PolicyFactoryImpl;
 import org.overlord.apiman.rt.test.server.EchoServer;
 import org.overlord.apiman.rt.test.server.GatewayServer;

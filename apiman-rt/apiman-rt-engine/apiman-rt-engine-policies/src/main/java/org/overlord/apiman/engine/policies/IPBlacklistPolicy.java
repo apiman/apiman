@@ -17,11 +17,11 @@ package org.overlord.apiman.engine.policies;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.overlord.apiman.engine.policies.i18n.Messages;
-import org.overlord.apiman.rt.engine.IPolicyFailureFactoryComponent;
 import org.overlord.apiman.rt.engine.beans.PolicyFailureType;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
 import org.overlord.apiman.rt.engine.beans.ServiceResponse;
 import org.overlord.apiman.rt.engine.beans.exceptions.ConfigurationParseException;
+import org.overlord.apiman.rt.engine.components.IPolicyFailureFactoryComponent;
 import org.overlord.apiman.rt.engine.policy.IPolicy;
 import org.overlord.apiman.rt.engine.policy.IPolicyChain;
 import org.overlord.apiman.rt.engine.policy.IPolicyContext;

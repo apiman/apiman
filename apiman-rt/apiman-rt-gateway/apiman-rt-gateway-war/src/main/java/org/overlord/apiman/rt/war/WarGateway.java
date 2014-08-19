@@ -17,7 +17,7 @@ package org.overlord.apiman.rt.war;
 
 import org.overlord.apiman.rt.engine.IEngine;
 import org.overlord.apiman.rt.engine.IEngineConfig;
-import org.overlord.apiman.rt.engine.impl.EngineFactory;
+import org.overlord.apiman.rt.engine.impl.ConfigDrivenEngineFactory;
 
 /**
  * Top level gateway.  Used when the API Management Runtime Engine is being used
@@ -34,7 +34,7 @@ public class WarGateway {
      */
     public static void init() {
         IEngineConfig config = new WarEngineConfig();
-        EngineFactory factory = new EngineFactory(config);
+        ConfigDrivenEngineFactory factory = new ConfigDrivenEngineFactory(config);
         engine = factory.createEngine();
     }
 

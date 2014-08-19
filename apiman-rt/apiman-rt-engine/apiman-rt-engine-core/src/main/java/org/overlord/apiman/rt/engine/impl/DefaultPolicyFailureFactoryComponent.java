@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,37 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.overlord.apiman.rt.war;
+package org.overlord.apiman.rt.engine.impl;
 
 import org.overlord.apiman.rt.engine.beans.PolicyFailure;
 import org.overlord.apiman.rt.engine.beans.PolicyFailureType;
 import org.overlord.apiman.rt.engine.components.IPolicyFailureFactoryComponent;
 
 /**
- * Simple policy failure factory component implementation.  Uses the thread local 
- * policy failure instance.  Only useful in the synchronous WAR implementation of the
- * apiman gateway.
+ * A simple failure factory.
  *
  * @author eric.wittmann@redhat.com
  */
-public class WarPolicyFailureFactoryComponent implements IPolicyFailureFactoryComponent {
+public class DefaultPolicyFailureFactoryComponent implements IPolicyFailureFactoryComponent {
     
     /**
      * Constructor.
      */
-    public WarPolicyFailureFactoryComponent() {
+    public DefaultPolicyFailureFactoryComponent() {
     }
-
+    
     /**
      * @see org.overlord.apiman.rt.engine.components.IPolicyFailureFactoryComponent#createFailure(org.overlord.apiman.rt.engine.beans.PolicyFailureType, int, java.lang.String)
      */
     @Override
     public PolicyFailure createFailure(PolicyFailureType type, int failureCode, String message) {
-        PolicyFailure failure = WarGatewayThreadContext.getPolicyFailure();
-        failure.setFailureCode(failureCode);
-        failure.setMessage(message);
-        failure.setType(type);
+        PolicyFailure failure = new PolicyFailure(type, failureCode, message);
         return failure;
     }
 

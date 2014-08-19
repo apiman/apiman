@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 JBoss Inc
+ * Copyright 2013 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,23 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.rt.engine.mem.i18n;
 
-import org.overlord.commons.i18n.AbstractMessages;
+package org.overlord.apiman.rt.engine.components;
+
+import org.overlord.apiman.rt.engine.IComponent;
+import org.overlord.apiman.rt.engine.beans.PolicyFailure;
+import org.overlord.apiman.rt.engine.beans.PolicyFailureType;
 
 /**
- * I18N Messages
+ * Component that can be used to create policy failures.
  *
  * @author eric.wittmann@redhat.com
  */
-public class Messages extends AbstractMessages {
-
-    public static final Messages i18n = new Messages();
-
+public interface IPolicyFailureFactoryComponent extends IComponent {
+    
     /**
-     * Constructor.
+     * Creates a policy failure for the given information.
+     * @param type
+     * @param failureCode
+     * @param message
      */
-    public Messages() {
-        super(Messages.class);
-    }
+    public PolicyFailure createFailure(PolicyFailureType type, int failureCode, String message);
+
 }

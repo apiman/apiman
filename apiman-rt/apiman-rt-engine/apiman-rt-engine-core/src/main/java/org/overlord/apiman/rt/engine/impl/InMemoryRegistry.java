@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.rt.engine.mem;
+package org.overlord.apiman.rt.engine.impl;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,7 +27,7 @@ import org.overlord.apiman.rt.engine.beans.exceptions.InvalidContractException;
 import org.overlord.apiman.rt.engine.beans.exceptions.InvalidServiceException;
 import org.overlord.apiman.rt.engine.beans.exceptions.PublishingException;
 import org.overlord.apiman.rt.engine.beans.exceptions.RegistrationException;
-import org.overlord.apiman.rt.engine.mem.i18n.Messages;
+import org.overlord.apiman.rt.engine.i18n.Messages;
 
 /**
  * An in-memory implementation of the registry.

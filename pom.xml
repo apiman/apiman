@@ -231,11 +231,6 @@
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-rt-engine-mem</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
         <artifactId>apiman-rt-gateway-undertow</artifactId>
         <version>${project.version}</version>
       </dependency>

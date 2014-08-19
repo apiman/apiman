@@ -20,9 +20,7 @@ import java.util.Map;
 
 import org.overlord.apiman.rt.engine.IComponentRegistry;
 import org.overlord.apiman.rt.engine.IConnectorFactory;
-import org.overlord.apiman.rt.engine.IEngine;
 import org.overlord.apiman.rt.engine.IEngineConfig;
-import org.overlord.apiman.rt.engine.IEngineFactory;
 import org.overlord.apiman.rt.engine.IRegistry;
 import org.overlord.apiman.rt.engine.policy.IPolicyFactory;
 
@@ -31,75 +29,52 @@ import org.overlord.apiman.rt.engine.policy.IPolicyFactory;
  * 
  * @author eric.wittmann@redhat.com
  */
-public class EngineFactory implements IEngineFactory {
-    
+public class ConfigDrivenEngineFactory extends AbstractEngineFactory {
+
     private IEngineConfig engineConfig;
-    
+
     /**
      * Constructor.
      * @param engineConfig
      */
-    public EngineFactory(IEngineConfig engineConfig) {
+    public ConfigDrivenEngineFactory(IEngineConfig engineConfig) {
         this.engineConfig = engineConfig;
-    }
-    
-    /**
-     * Call this to create a new engine. This method uses the global engine
-     * config singleton to create the engine.
-     * 
-     * @param engineConfig
-     */
-    public final IEngine createEngine() {
-        IRegistry registry = createRegistry();
-        IComponentRegistry componentRegistry = createComponentRegistry();
-        IConnectorFactory cfactory = createConnectorFactory();
-        IPolicyFactory pfactory = createPolicyFactory();
-        
-        IEngine engine = new EngineImpl(registry, componentRegistry, cfactory, pfactory);
-        return engine;
     }
 
     /**
-     * Creates the proper registry given information found in the global engine
-     * config.
-     * @param engineConfig 
-     * @return a new registry instance
+     * @see org.overlord.apiman.rt.engine.impl.AbstractEngineFactory#createRegistry()
      */
+    @Override
     protected IRegistry createRegistry() {
-        Class<IRegistry> c = engineConfig.getRegistryClass();
+        Class<? extends IRegistry> c = engineConfig.getRegistryClass();
         Map<String, String> config = engineConfig.getRegistryConfig();
         return create(c, config);
     }
 
     /**
-     * Creates the proper component registry given information found in the global engine
-     * config.
-     * @param engineConfig 
-     * @return a new registry instance
+     * @see org.overlord.apiman.rt.engine.impl.AbstractEngineFactory#createComponentRegistry()
      */
+    @Override
     protected IComponentRegistry createComponentRegistry() {
-        // TODO This should be pluggable - should be done as part of the apiman plugin framework work
-        return new ComponentRegistryImpl(engineConfig);
+        return new ConfigDrivenComponentRegistry(engineConfig);
     }
 
     /**
-     * Creates a connection factory from configuration information.
-     * @param engineConfig 
-     * @return a new connection factory
+     * @see org.overlord.apiman.rt.engine.impl.AbstractEngineFactory#createConnectorFactory()
      */
+    @Override
     protected IConnectorFactory createConnectorFactory() {
-        Class<IConnectorFactory> c = engineConfig.getConnectorFactoryClass();
+        Class<? extends IConnectorFactory> c = engineConfig.getConnectorFactoryClass();
         Map<String, String> config = engineConfig.getConnectorFactoryConfig();
         return create(c, config);
     }
 
     /**
-     * Creates a policy factory from configuration information.
-     * @param engineConfig 
-     * @return a new policy factory
+     * @see org.overlord.apiman.rt.engine.impl.AbstractEngineFactory#createPolicyFactory()
      */
+    @Override
     protected IPolicyFactory createPolicyFactory() {
-        Class<IPolicyFactory> c = engineConfig.getPolicyFactoryClass();
+        Class<? extends IPolicyFactory> c = engineConfig.getPolicyFactoryClass();
         Map<String, String> config = engineConfig.getPolicyFactoryConfig();
         return create(c, config);
     }

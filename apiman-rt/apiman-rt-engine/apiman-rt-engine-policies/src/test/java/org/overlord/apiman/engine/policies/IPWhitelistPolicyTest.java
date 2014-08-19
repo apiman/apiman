@@ -18,10 +18,10 @@ package org.overlord.apiman.engine.policies;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.overlord.apiman.rt.engine.IPolicyFailureFactoryComponent;
 import org.overlord.apiman.rt.engine.beans.PolicyFailure;
 import org.overlord.apiman.rt.engine.beans.PolicyFailureType;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
+import org.overlord.apiman.rt.engine.components.IPolicyFailureFactoryComponent;
 import org.overlord.apiman.rt.engine.policy.IPolicyChain;
 import org.overlord.apiman.rt.engine.policy.IPolicyContext;
 

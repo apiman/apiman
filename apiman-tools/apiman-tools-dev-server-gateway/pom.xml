@@ -13,6 +13,16 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-rt-test-gateway</artifactId>
     </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-rt-engine-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-rt-gateway-war</artifactId>
+      <type>jar</type>
+      <classifier>classes</classifier>
+    </dependency>
   </dependencies>
 
   <profiles>

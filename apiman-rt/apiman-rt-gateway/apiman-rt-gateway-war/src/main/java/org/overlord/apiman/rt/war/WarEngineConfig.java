@@ -87,7 +87,7 @@ public class WarEngineConfig implements IEngineConfig {
      * @return all properties to be passed to the registry
      */
     public Map<String, String> getRegistryConfig() {
-        return getConfig(APIMAN_RT_REGISTRY_CLASS + "."); //$NON-NLS-1$
+        return getConfigMap(APIMAN_RT_REGISTRY_CLASS + "."); //$NON-NLS-1$
     }
 
     /**
@@ -101,7 +101,7 @@ public class WarEngineConfig implements IEngineConfig {
      * @return all properties to be passed to the factory
      */
     public Map<String, String> getConnectorFactoryConfig() {
-        return getConfig(APIMAN_RT_CONNECTOR_FACTORY_CLASS + "."); //$NON-NLS-1$
+        return getConfigMap(APIMAN_RT_CONNECTOR_FACTORY_CLASS + "."); //$NON-NLS-1$
     }
 
     /**
@@ -115,7 +115,7 @@ public class WarEngineConfig implements IEngineConfig {
      * @return all properties to be passed to the factory
      */
     public Map<String, String> getPolicyFactoryConfig() {
-        return getConfig(APIMAN_RT_POLICY_FACTORY_CLASS + "."); //$NON-NLS-1$
+        return getConfigMap(APIMAN_RT_POLICY_FACTORY_CLASS + "."); //$NON-NLS-1$
     }
 
     /**
@@ -129,7 +129,7 @@ public class WarEngineConfig implements IEngineConfig {
      * @return all properties to be passed to the factory
      */
     public <T extends IComponent> Map<String, String> getComponentConfig(Class<T> componentType) {
-        return getConfig(APIMAN_RT_COMPONENT_PREFIX + componentType.getSimpleName() + "."); //$NON-NLS-1$
+        return getConfigMap(APIMAN_RT_COMPONENT_PREFIX + componentType.getSimpleName() + "."); //$NON-NLS-1$
     }
 
     /**
@@ -169,7 +169,7 @@ public class WarEngineConfig implements IEngineConfig {
      * @param prefix
      * @return all prefixed properties
      */
-    private Map<String, String> getConfig(String prefix) {
+    private Map<String, String> getConfigMap(String prefix) {
         Map<String, String> rval = new HashMap<String, String>();
         Iterator<?> keys = config.getKeys(prefix + "."); //$NON-NLS-1$
         while (keys.hasNext()) {

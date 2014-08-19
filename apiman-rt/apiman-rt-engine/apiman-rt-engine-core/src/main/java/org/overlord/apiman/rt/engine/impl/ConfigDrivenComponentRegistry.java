@@ -24,12 +24,11 @@ import org.overlord.apiman.rt.engine.IEngineConfig;
 import org.overlord.apiman.rt.engine.beans.exceptions.ComponentNotFoundException;
 
 /**
- * A simple component registry that uses the engine configuration information to
- * 
+ * A simple component registry.
  *
  * @author eric.wittmann@redhat.com
  */
-public class ComponentRegistryImpl implements IComponentRegistry {
+public class ConfigDrivenComponentRegistry implements IComponentRegistry {
     
     private IEngineConfig engineConfig;
     private Map<Class<? extends IComponent>, IComponent> components = new HashMap<Class<? extends IComponent>, IComponent>();
@@ -38,7 +37,7 @@ public class ComponentRegistryImpl implements IComponentRegistry {
      * Constructor.
      * @param engineConfig 
      */
-    public ComponentRegistryImpl(IEngineConfig engineConfig) {
+    public ConfigDrivenComponentRegistry(IEngineConfig engineConfig) {
         this.engineConfig = engineConfig;
     }
 
@@ -65,7 +64,7 @@ public class ComponentRegistryImpl implements IComponentRegistry {
             synchronized (components) {
                 Class<T> componentClass = engineConfig.getComponentClass(componentType);
                 Map<String, String> componentConfig = engineConfig.getComponentConfig(componentType);
-                T component = EngineFactory.create(componentClass, componentConfig);
+                T component = ConfigDrivenEngineFactory.create(componentClass, componentConfig);
                 components.put(componentType, component);
                 return component;
             }

@@ -29,7 +29,7 @@ public interface IEngineConfig {
     /**
      * @return the class to use as the {@link IRegistry}
      */
-    public Class<IRegistry> getRegistryClass();
+    public Class<? extends IRegistry> getRegistryClass();
 
     /**
      * @return all properties to be passed to the registry
@@ -39,7 +39,7 @@ public interface IEngineConfig {
     /**
      * @return the class to use as the {@link IConnectorFactory}
      */
-    public Class<IConnectorFactory> getConnectorFactoryClass();
+    public Class<? extends IConnectorFactory> getConnectorFactoryClass();
 
     /**
      * @return all properties to be passed to the factory
@@ -49,7 +49,7 @@ public interface IEngineConfig {
     /**
      * @return the class to use as the {@link IPolicyFactory}
      */
-    public Class<IPolicyFactory> getPolicyFactoryClass();
+    public Class<? extends IPolicyFactory> getPolicyFactoryClass();
 
     /**
      * @return all properties to be passed to the factory
@@ -66,8 +66,4 @@ public interface IEngineConfig {
      */
     public <T extends IComponent> Map<String, String> getComponentConfig(Class<T> componentType);
 
-    /**
-     * @return the configured server port
-     */
-    public int getServerPort();
 }

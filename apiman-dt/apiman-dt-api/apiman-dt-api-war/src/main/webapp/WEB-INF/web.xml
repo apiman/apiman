@@ -41,7 +41,7 @@
   </security-constraint>
   <login-config>
     <auth-method>BASIC</auth-method>
-    <realm-name>OverlordRealm</realm-name>
+    <realm-name>Overlord</realm-name>
   </login-config>
   <security-role>
     <role-name>overlorduser</role-name>
