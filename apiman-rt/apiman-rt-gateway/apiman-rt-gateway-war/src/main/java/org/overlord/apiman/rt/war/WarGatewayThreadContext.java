@@ -85,7 +85,7 @@ public class WarGatewayThreadContext {
         response.setCode(0);
         response.getHeaders().clear();
         response.setMessage(null);
-        response.setRawResponse(null);
+        response.getAttributes().clear();
         
         PolicyFailure failure = getPolicyFailure();
         failure.setFailureCode(0);

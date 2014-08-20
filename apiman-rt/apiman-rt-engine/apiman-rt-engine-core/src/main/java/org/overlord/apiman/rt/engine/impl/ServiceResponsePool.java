@@ -70,7 +70,7 @@ public final class ServiceResponsePool extends GenericObjectPool<ServiceResponse
                 response.setCode(0);
                 response.getHeaders().clear();
                 response.setMessage(null);
-                response.setRawResponse(null);
+                response.getAttributes().clear();
             }
         }, poolConfig);
     }

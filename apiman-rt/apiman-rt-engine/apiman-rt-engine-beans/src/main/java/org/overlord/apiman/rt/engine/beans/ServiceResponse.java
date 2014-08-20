@@ -34,26 +34,12 @@ public class ServiceResponse implements Serializable {
     private String message;
     private Map<String, String> headers = new HashMap<String, String>();
     private InputStream body;
-    private Object rawResponse;
+    private Map<String, Object> attributes = new HashMap<String, Object>();
 
     /**
      * Constructor.
      */
     public ServiceResponse() {
-    }
-
-    /**
-     * @return the rawResponse
-     */
-    public Object getRawResponse() {
-        return rawResponse;
-    }
-
-    /**
-     * @param rawResponse the rawResponse to set
-     */
-    public void setRawResponse(Object rawResponse) {
-        this.rawResponse = rawResponse;
     }
 
     /**
@@ -110,6 +96,36 @@ public class ServiceResponse implements Serializable {
      */
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    /**
+     * @return the attributes
+     */
+    public Map<String, Object> getAttributes() {
+        return attributes;
+    }
+
+    /**
+     * @param attributes the attributes to set
+     */
+    public void setAttributes(Map<String, Object> attributes) {
+        this.attributes = attributes;
+    }
+    
+    /**
+     * @param name
+     * @param value
+     */
+    public void setAttribute(String name, Object value) {
+        this.attributes.put(name, value);
+    }
+    
+    /**
+     * @param name
+     * @return
+     */
+    public Object getAttribute(String name) {
+        return this.attributes.get(name);
     }
 
 }
