@@ -19,7 +19,6 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.jboss.errai.ui.nav.client.local.Page;
@@ -33,9 +32,9 @@ import org.overlord.apiman.dt.api.beans.policies.PolicyBean;
 import org.overlord.apiman.dt.api.beans.policies.PolicyDefinitionBean;
 import org.overlord.apiman.dt.api.beans.policies.PolicyType;
 import org.overlord.apiman.dt.ui.client.local.AppMessages;
-import org.overlord.apiman.dt.ui.client.local.pages.policy.DefaultPolicyConfigurationForm;
 import org.overlord.apiman.dt.ui.client.local.pages.policy.IPolicyConfigurationForm;
 import org.overlord.apiman.dt.ui.client.local.pages.policy.PolicyDefinitionSelectBox;
+import org.overlord.apiman.dt.ui.client.local.services.PolicyConfigurationFormFactory;
 import org.overlord.apiman.dt.ui.client.local.services.rest.IRestInvokerCallback;
 import org.overlord.apiman.dt.ui.client.local.util.MultimapUtil;
 import org.overlord.apiman.dt.ui.client.local.widgets.H3Label;
@@ -84,7 +83,7 @@ public class NewPolicyPage extends AbstractPage {
     AsyncActionButton createButton;
 
     @Inject
-    Instance<DefaultPolicyConfigurationForm> defaultFormFactory;
+    PolicyConfigurationFormFactory formFactory;
 
     IPolicyConfigurationForm policyForm;
     
@@ -158,7 +157,7 @@ public class NewPolicyPage extends AbstractPage {
             policyFormWrapper.clear();
             policyHeading.setVisible(false);
         } else {
-            policyForm = createPolicyConfigForm(value);
+            policyForm = formFactory.createForm(value);
             policyFormWrapper.clear();
             policyFormWrapper.add(policyForm);
             policyFormWrapper.setVisible(true);
@@ -167,14 +166,6 @@ public class NewPolicyPage extends AbstractPage {
             policyHeading.setText(heading);
             policyHeading.setVisible(true);
         }
-    }
-
-    /**
-     * Create the right policy config form for the type of policy selected by the user.
-     * @param value
-     */
-    private IPolicyConfigurationForm createPolicyConfigForm(PolicyDefinitionBean value) {
-        return defaultFormFactory.get();
     }
     
     /**

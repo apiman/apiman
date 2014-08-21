@@ -818,9 +818,11 @@ div.page {
   margin-right: 3px;
 }
 
+.form.policy-config {
+  margin-bottom: 10px;
+}
 .form.policy-config.default {
   width: 100%;
-  margin-bottom: 10px;
 }
 .form.policy-config.default span {
   font-style: italic;
