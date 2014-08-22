@@ -4,10 +4,6 @@
       xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
       version="3.0">
 
-  <listener>
-    <listener-class>org.jboss.weld.environment.servlet.Listener</listener-class>
-  </listener>
-
   <filter>
     <filter-name>GWTCacheControl</filter-name>
     <filter-class>org.overlord.commons.gwt.server.filters.GWTCacheControlFilter</filter-class>
@@ -44,16 +40,6 @@
   </filter-mapping>
 
   <servlet>
-    <servlet-name>ErraiServlet</servlet-name>
-    <servlet-class>org.jboss.errai.bus.server.servlet.DefaultBlockingServlet</servlet-class>
-    <load-on-startup>1</load-on-startup>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>ErraiServlet</servlet-name>
-    <url-pattern>*.erraiBus</url-pattern>
-  </servlet-mapping>
-  
-  <servlet>
     <servlet-name>OverlordHeaderDataJS</servlet-name>
     <servlet-class>org.overlord.commons.ui.header.OverlordHeaderDataJS</servlet-class>
     <init-param>
@@ -75,23 +61,13 @@
     <url-pattern>/js/configuration.nocache.js</url-pattern>
   </servlet-mapping>
   
-  <resource-env-ref>
-    <description>Object factory for the CDI Bean Manager</description>
-    <resource-env-ref-name>BeanManager</resource-env-ref-name>
-    <resource-env-ref-type>javax.enterprise.inject.spi.BeanManager</resource-env-ref-type>
-  </resource-env-ref>
-
-  <context-param>
-    <param-name>errai.properties</param-name>
-    <param-value>/WEB-INF/errai.properties</param-value>
-  </context-param>
-  <context-param>
-    <param-name>login.config</param-name>
-    <param-value>/WEB-INF/login.config</param-value>
-  </context-param>
-  <context-param>
-    <param-name>users.properties</param-name>
-    <param-value>/WEB-INF/users.properties</param-value>
-  </context-param>
+  <servlet>
+    <servlet-name>TokenRefresh</servlet-name>
+    <servlet-class>org.overlord.apiman.dt.ui.server.servlets.TokenRefreshServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>TokenRefresh</servlet-name>
+    <url-pattern>/rest/tokenRefresh</url-pattern>
+  </servlet-mapping>
 
 </web-app>

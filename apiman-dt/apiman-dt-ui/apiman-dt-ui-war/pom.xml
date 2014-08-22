@@ -27,6 +27,12 @@
     <dependency>
       <groupId>org.overlord</groupId>
       <artifactId>overlord-commons-config</artifactId>
+      <exclusions>
+        <exclusion>
+          <artifactId>org.apache.felix.scr.annotations</artifactId>
+          <groupId>org.apache.felix</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.overlord</groupId>
@@ -76,14 +82,17 @@
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-bus</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-ioc</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-ui</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.errai</groupId>
@@ -105,31 +114,12 @@
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-cdi-client</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-javax-enterprise</artifactId>
       <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-weld-integration</artifactId>
-    </dependency>
-
-    <!-- Weld -->
-    <dependency>
-      <groupId>org.jboss.weld.se</groupId>
-      <artifactId>weld-se-core</artifactId>
-      <exclusions>
-        <exclusion>
-          <artifactId>el-api</artifactId>
-          <groupId>javax.el</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.weld.servlet</groupId>
-      <artifactId>weld-servlet-core</artifactId>
     </dependency>
 
     <!-- GWT -->
@@ -192,6 +182,7 @@
         <configuration>
           <logLevel>INFO</logLevel>
           <strict>true</strict>
+	  <localWorkers>2</localWorkers>
           <runTarget>index.html</runTarget>
           <extraJvmArgs>-Xmx512m</extraJvmArgs>
           <soyc>false</soyc>

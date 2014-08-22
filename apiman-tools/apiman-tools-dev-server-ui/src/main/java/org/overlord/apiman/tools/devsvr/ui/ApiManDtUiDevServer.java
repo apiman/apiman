@@ -30,12 +30,10 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.security.Constraint;
 import org.eclipse.jetty.util.security.Credential;
-import org.jboss.errai.bus.server.servlet.DefaultBlockingServlet;
-import org.jboss.weld.environment.servlet.BeanManagerResourceBindingListener;
-import org.jboss.weld.environment.servlet.Listener;
 import org.overlord.apiman.dt.ui.client.shared.beans.ApiAuthType;
 import org.overlord.apiman.dt.ui.server.UIConfig;
 import org.overlord.apiman.dt.ui.server.servlets.ConfigurationServlet;
+import org.overlord.apiman.dt.ui.server.servlets.TokenRefreshServlet;
 import org.overlord.commons.auth.filters.HttpRequestThreadLocalFilter;
 import org.overlord.commons.dev.server.DevServerEnvironment;
 import org.overlord.commons.dev.server.ErraiDevServer;
@@ -161,11 +159,6 @@ public class ApiManDtUiDevServer extends ErraiDevServer {
         apiManDtUI.setContextPath("/apiman-ui"); //$NON-NLS-1$
         apiManDtUI.setWelcomeFiles(new String[] { "index.html" }); //$NON-NLS-1$
         apiManDtUI.setResourceBase(environment.getModuleDir("apiman-dt-ui").getCanonicalPath()); //$NON-NLS-1$
-        apiManDtUI.setInitParameter("errai.properties", "/WEB-INF/errai.properties"); //$NON-NLS-1$ //$NON-NLS-2$
-        apiManDtUI.setInitParameter("login.config", "/WEB-INF/login.config"); //$NON-NLS-1$ //$NON-NLS-2$
-        apiManDtUI.setInitParameter("users.properties", "/WEB-INF/users.properties"); //$NON-NLS-1$ //$NON-NLS-2$
-        apiManDtUI.addEventListener(new Listener());
-        apiManDtUI.addEventListener(new BeanManagerResourceBindingListener());
         apiManDtUI.addFilter(HttpRequestThreadLocalFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST)); //$NON-NLS-1$
         apiManDtUI.addFilter(GWTCacheControlFilter.class, "/app/*", EnumSet.of(DispatcherType.REQUEST)); //$NON-NLS-1$
         apiManDtUI.addFilter(ResourceCacheControlFilter.class, "/css/*", EnumSet.of(DispatcherType.REQUEST)); //$NON-NLS-1$
@@ -173,13 +166,11 @@ public class ApiManDtUiDevServer extends ErraiDevServer {
         apiManDtUI.addFilter(ResourceCacheControlFilter.class, "/js/*", EnumSet.of(DispatcherType.REQUEST)); //$NON-NLS-1$
         apiManDtUI.addFilter(LocaleFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST)); //$NON-NLS-1$
         // Servlets
-        ServletHolder erraiServlet = new ServletHolder(DefaultBlockingServlet.class);
-        erraiServlet.setInitOrder(1);
-        apiManDtUI.addServlet(erraiServlet, "*.erraiBus"); //$NON-NLS-1$
         ServletHolder headerDataServlet = new ServletHolder(OverlordHeaderDataJS.class);
         headerDataServlet.setInitParameter("app-id", "apiman-dt-ui"); //$NON-NLS-1$ //$NON-NLS-2$
         apiManDtUI.addServlet(headerDataServlet, "/js/overlord-header-data.nocache.js"); //$NON-NLS-1$
-        apiManDtUI.addServlet(ConfigurationServlet.class.getName(), "/js/configuration.nocache.js"); //$NON-NLS-1$
+        apiManDtUI.addServlet(ConfigurationServlet.class, "/js/configuration.nocache.js"); //$NON-NLS-1$
+        apiManDtUI.addServlet(TokenRefreshServlet.class, "/rest/refreshToken"); //$NON-NLS-1$
         // File resources
         ServletHolder resources = new ServletHolder(new MultiDefaultServlet());
         resources.setInitParameter("resourceBase", "/"); //$NON-NLS-1$ //$NON-NLS-2$

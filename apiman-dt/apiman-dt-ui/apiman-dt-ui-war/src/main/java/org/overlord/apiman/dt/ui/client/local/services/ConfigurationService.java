@@ -19,21 +19,24 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.common.client.api.ErrorCallback;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.enterprise.client.jaxrs.MarshallingWrapper;
 import org.jboss.errai.enterprise.client.jaxrs.api.RestClient;
 import org.jboss.errai.ioc.client.api.InitBallot;
 import org.overlord.apiman.dt.ui.client.shared.beans.ApiAuthType;
 import org.overlord.apiman.dt.ui.client.shared.beans.BearerTokenCredentialsBean;
 import org.overlord.apiman.dt.ui.client.shared.beans.ConfigurationBean;
-import org.overlord.apiman.dt.ui.client.shared.services.ITokenRefreshService;
 import org.overlord.apiman.dt.ui.server.servlets.ConfigurationServlet;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.RequestException;
+import com.google.gwt.http.client.Response;
+import com.google.gwt.http.client.URL;
 import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 
@@ -50,9 +53,6 @@ public class ConfigurationService {
 
     @Inject
     InitBallot<ConfigurationService> ballot;
-    
-    @Inject
-    Caller<ITokenRefreshService> tokenRefresh;
     
     private ConfigurationBean configuration;
 
@@ -89,27 +89,38 @@ public class ConfigurationService {
      */
     private void startTokenRefreshTimer() {
         Timer timer = new Timer() {
-            @SuppressWarnings("rawtypes")
             @Override
             public void run() {
                 GWT.log("Refreshing auth token."); //$NON-NLS-1$
-                tokenRefresh.call(new RemoteCallback<BearerTokenCredentialsBean>() {
-                    @Override
-                    public void callback(BearerTokenCredentialsBean response) {
-                        configuration.getApi().getAuth().setBearerToken(response);
-                        startTokenRefreshTimer();
-                    }
-                }, new ErrorCallback() {
-                    @Override
-                    public boolean error(Object message, Throwable throwable) {
-                        // TODO do something more interesting with this error
-                        Window.alert("Authentication token refresh failed!"); //$NON-NLS-1$
-                        return true;
-                    }
-                }).refreshToken();
+
+                String url = GWT.getHostPageBaseURL() + "rest/refreshToken"; //$NON-NLS-1$
+                RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, URL.encode(url));
+                try {
+                    builder.sendRequest(null, new RequestCallback() {
+                        @Override
+                        public void onResponseReceived(Request request, Response response) {
+                            if (response.getStatusCode() != 200) {
+                                Window.alert("Authentication token refresh failed!"); //$NON-NLS-1$
+                            } else {
+                                BearerTokenCredentialsBean bean = new BearerTokenCredentialsBean();
+                                JSONObject root = JSONParser.parseStrict(response.getText()).isObject();
+                                bean.setToken(root.get("token").isString().stringValue()); //$NON-NLS-1$
+                                bean.setRefreshPeriod((int) root.get("refreshPeriod").isNumber().doubleValue()); //$NON-NLS-1$
+                                configuration.getApi().getAuth().setBearerToken(bean);
+                            }
+                            startTokenRefreshTimer();
+                        }
+                        @Override
+                        public void onError(Request request, Throwable exception) {
+                            Window.alert("Authentication token refresh failed!"); //$NON-NLS-1$
+                        }
+                    });
+                } catch (RequestException e) {
+                    Window.alert("Authentication token refresh failed!"); //$NON-NLS-1$
+                }
             }
         };
-        timer.schedule(configuration.getApi().getAuth().getBearerToken().getRefreshPeriod() * 1000);
+        timer.schedule(configuration.getApi().getAuth().getBearerToken().getRefreshPeriod() * 100);
     }
 
     /**

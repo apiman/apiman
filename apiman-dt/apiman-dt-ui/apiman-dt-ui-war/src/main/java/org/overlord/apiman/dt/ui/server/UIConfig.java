@@ -24,8 +24,6 @@ import org.overlord.commons.config.ConfigurationFactory;
  * @author eric.wittmann@redhat.com
  */
 public class UIConfig {
-    
-    // TODO turn this into a CDI bean!
 
     public static final String APIMAN_DT_UI_CONFIG_FILE_NAME     = "apiman-dt-ui.config.file.name"; //$NON-NLS-1$
     public static final String APIMAN_DT_UI_CONFIG_FILE_REFRESH  = "apiman-dt-ui.config.file.refresh"; //$NON-NLS-1$
