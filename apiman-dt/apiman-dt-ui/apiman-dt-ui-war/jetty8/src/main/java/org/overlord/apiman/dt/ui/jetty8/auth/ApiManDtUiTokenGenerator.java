@@ -28,7 +28,8 @@ import org.overlord.commons.auth.util.SAMLAssertionUtil;
  */
 public class ApiManDtUiTokenGenerator implements ITokenGenerator {
 
-    private static final int TEN_MINUTES = 10 * 60 * 1000;
+    private static final int TEN_MINUTES = 10 * 60 * 1000; // in millis
+    private static final int NINE_MINUTES = 9 * 60; // in seconds
 
     /**
      * Constructor.
@@ -52,7 +53,7 @@ public class ApiManDtUiTokenGenerator implements ITokenGenerator {
      */
     @Override
     public int getRefreshPeriod() {
-        return 540; // 9 minutes
+        return NINE_MINUTES;
     }
 
 }

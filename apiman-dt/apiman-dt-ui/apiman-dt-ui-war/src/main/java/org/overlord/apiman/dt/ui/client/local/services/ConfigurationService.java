@@ -93,14 +93,14 @@ public class ConfigurationService {
             public void run() {
                 GWT.log("Refreshing auth token."); //$NON-NLS-1$
 
-                String url = GWT.getHostPageBaseURL() + "rest/refreshToken"; //$NON-NLS-1$
+                final String url = GWT.getHostPageBaseURL() + "rest/tokenRefresh"; //$NON-NLS-1$
                 RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, URL.encode(url));
                 try {
                     builder.sendRequest(null, new RequestCallback() {
                         @Override
                         public void onResponseReceived(Request request, Response response) {
                             if (response.getStatusCode() != 200) {
-                                Window.alert("Authentication token refresh failed!"); //$NON-NLS-1$
+                                Window.alert("[001] Authentication token refresh failure: " + url); //$NON-NLS-1$
                             } else {
                                 BearerTokenCredentialsBean bean = new BearerTokenCredentialsBean();
                                 JSONObject root = JSONParser.parseStrict(response.getText()).isObject();
@@ -112,7 +112,7 @@ public class ConfigurationService {
                         }
                         @Override
                         public void onError(Request request, Throwable exception) {
-                            Window.alert("Authentication token refresh failed!"); //$NON-NLS-1$
+                            Window.alert("[002] Authentication token refresh failure: " + url); //$NON-NLS-1$
                         }
                     });
                 } catch (RequestException e) {
@@ -120,7 +120,7 @@ public class ConfigurationService {
                 }
             }
         };
-        timer.schedule(configuration.getApi().getAuth().getBearerToken().getRefreshPeriod() * 100);
+        timer.schedule(configuration.getApi().getAuth().getBearerToken().getRefreshPeriod() * 1000);
     }
 
     /**

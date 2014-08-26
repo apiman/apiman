@@ -76,7 +76,7 @@
     <!-- Dependency Versions (not found in parent) -->
     <version.org.overlord>2.0.7.Final</version.org.overlord>
     <version.org.picketlink>2.5.3.SP4</version.org.picketlink>
-    <jetty.version>8.1.9.v20130131</jetty.version>
+    <org.eclipse.jetty>8.1.9.v20130131</org.eclipse.jetty>
     <version.io.undertow>1.0.1.Final</version.io.undertow>
 
     <!-- Dependency Overrides -->
@@ -177,6 +177,18 @@
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-dt-api-war-eap6</artifactId>
+        <version>${project.version}</version>
+        <type>war</type>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-dt-api-war-eap6</artifactId>
+        <version>${project.version}</version>
+        <classifier>classes</classifier>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
         <artifactId>apiman-dt-test-api</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -201,6 +213,18 @@
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>apiman-dt-ui-war-jetty8</artifactId>
+        <version>${project.version}</version>
+        <classifier>classes</classifier>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-dt-ui-war-eap6</artifactId>
+        <version>${project.version}</version>
+        <type>war</type>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-dt-ui-war-eap6</artifactId>
         <version>${project.version}</version>
         <classifier>classes</classifier>
       </dependency>
@@ -255,6 +279,18 @@
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>apiman-rt-gateway-war-jetty8</artifactId>
+        <version>${project.version}</version>
+        <classifier>classes</classifier>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-rt-gateway-war-eap6</artifactId>
+        <version>${project.version}</version>
+        <type>war</type>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-rt-gateway-war-eap6</artifactId>
         <version>${project.version}</version>
         <classifier>classes</classifier>
       </dependency>
@@ -449,6 +485,11 @@
       </dependency>
       <dependency>
         <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-auth-jboss7</artifactId>
+        <version>${version.org.overlord}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-dev</artifactId>
         <version>${version.org.overlord}</version>
       </dependency>
@@ -476,29 +517,29 @@
       <dependency>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-server</artifactId>
-        <version>${jetty.version}</version>
+        <version>${org.eclipse.jetty}</version>
       </dependency>
       <dependency>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-servlet</artifactId>
-        <version>${jetty.version}</version>
+        <version>${org.eclipse.jetty}</version>
       </dependency>
       <dependency>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-servlets</artifactId>
-        <version>${jetty.version}</version>
+        <version>${org.eclipse.jetty}</version>
       </dependency>
       <dependency>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-jsp</artifactId>
-        <version>${jetty.version}</version>
+        <version>${org.eclipse.jetty}</version>
       </dependency>
       <dependency>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-jndi</artifactId>
-        <version>${jetty.version}</version>
+        <version>${org.eclipse.jetty}</version>
       </dependency>
-      
+
       <!-- Third Party Libraries -->
       <dependency>
         <groupId>org.apache.commons</groupId>

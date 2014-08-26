@@ -53,8 +53,9 @@ public class PolicyContextImpl implements IPolicyContext {
      * @see org.overlord.apiman.rt.engine.policy.IPolicyContext#getAttribute(java.lang.String, java.lang.Object)
      */
     @Override
-    public Object getAttribute(String name, Object defaultValue) {
-        Object value = conversation.get(name);
+    public <T> T getAttribute(String name, T defaultValue) {
+        @SuppressWarnings("unchecked")
+        T value = (T) conversation.get(name);
         if (value == null) {
             return defaultValue;
         } else {

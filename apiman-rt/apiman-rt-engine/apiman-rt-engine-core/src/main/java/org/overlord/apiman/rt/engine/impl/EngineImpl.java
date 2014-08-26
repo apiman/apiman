@@ -97,24 +97,25 @@ public class EngineImpl implements IEngine {
         final PolicyChainImpl chain = new PolicyChainImpl(policies, context);
         chain.setInboundHandler(new IAsyncHandler<ServiceRequest>() {
             @Override
-            public void handle(IAsyncResult<ServiceRequest> result) {
+            public void handle(IAsyncResult<ServiceRequest> serviceRequestAR) {
                 // The chain has discovered that all of the policies have been applied
                 // to the inbound request (or possibly an exception has been thrown).
                 
                 // If success, proxy the request to the back-end system asynchronously.
                 // If error, propagate to the caller.
-                if (result.isSuccess()) {
+                if (serviceRequestAR.isSuccess()) {
                     try {
                         final Service service = registry.getService(contract);
                         IServiceConnector connector = getConnectorFactory().createConnector(request, service);
                         connector.invoke(request, new IAsyncHandler<ServiceResponse>() {
                             @Override
-                            public void handle(IAsyncResult<ServiceResponse> result) {
-                                if (result.isSuccess()) {
-                                    ServiceResponse response = result.getResult();
+                            public void handle(IAsyncResult<ServiceResponse> serviceResponseAR) {
+                                if (serviceResponseAR.isSuccess()) {
+                                    ServiceResponse response = serviceResponseAR.getResult();
+                                    context.setAttribute("apiman.engine.serviceResponse", response); //$NON-NLS-1$
                                     chain.doApply(response);
                                 } else {
-                                    handler.handle(AsyncResultImpl.<EngineResult>create(result.getError()));
+                                    handler.handle(AsyncResultImpl.<EngineResult>create(serviceResponseAR.getError()));
                                 }
                             }
                         });
@@ -122,7 +123,7 @@ public class EngineImpl implements IEngine {
                         handler.handle(AsyncResultImpl.<EngineResult>create(e));
                     }
                 } else {
-                    handler.handle(AsyncResultImpl.<EngineResult>create(result.getError()));
+                    handler.handle(AsyncResultImpl.<EngineResult>create(serviceRequestAR.getError()));
                 }
             }
         });
@@ -149,6 +150,13 @@ public class EngineImpl implements IEngine {
                 // point we should stop processing and send the failure to
                 // the client for appropriate handling.
                 EngineResult er = new EngineResult(result.getResult());
+                
+                // Send the response as well, in the case that this was a policy failure
+                // on the outbound response.  In that case the handler may need to know
+                // both (it may need to close some resources on the response even though
+                // the response isn't being proxied back to the caller/client)
+                ServiceResponse response = context.getAttribute("apiman.engine.serviceResponse", (ServiceResponse) null); //$NON-NLS-1$
+                er.setServiceResponse(response);
                 handler.handle(AsyncResultImpl.create(er));
             }
         });

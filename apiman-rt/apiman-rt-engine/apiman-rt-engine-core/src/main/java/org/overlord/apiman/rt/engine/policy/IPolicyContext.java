@@ -39,7 +39,7 @@ public interface IPolicyContext {
      * @param name
      * @param defaultValue
      */
-    public Object getAttribute(String name, Object defaultValue);
+    public <T> T getAttribute(String name, T defaultValue);
     
     /**
      * Removes an attribute from the conversation.

@@ -1,4 +1,4 @@
-POST /policyDefs admin/admin
+POST /policyDefs admin/admin123!
 Content-Type: application/json
 
 {

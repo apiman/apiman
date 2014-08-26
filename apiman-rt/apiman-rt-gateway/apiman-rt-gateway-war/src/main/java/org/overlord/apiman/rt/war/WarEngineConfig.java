@@ -57,7 +57,7 @@ public class WarEngineConfig implements IEngineConfig {
 
         config = ConfigurationFactory.createConfig(
                 configFile,
-                "apiman-rt.properties", //$NON-NLS-1$
+                "apiman.properties", //$NON-NLS-1$
                 refreshDelay,
                 null,
                 WarEngineConfig.class);

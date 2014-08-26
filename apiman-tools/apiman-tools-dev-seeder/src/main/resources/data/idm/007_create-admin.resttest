@@ -1,4 +1,4 @@
-GET /currentuser/info admin/admin
+GET /currentuser/info admin/admin123!
 ----
 200
 

@@ -5,6 +5,15 @@
       version="3.0">
 
   <filter>
+    <filter-name>HttpRequestThreadLocalFilter</filter-name>
+    <filter-class>org.overlord.commons.auth.filters.HttpRequestThreadLocalFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>HttpRequestThreadLocalFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <filter>
     <filter-name>GWTCacheControl</filter-name>
     <filter-class>org.overlord.commons.gwt.server.filters.GWTCacheControlFilter</filter-class>
   </filter>

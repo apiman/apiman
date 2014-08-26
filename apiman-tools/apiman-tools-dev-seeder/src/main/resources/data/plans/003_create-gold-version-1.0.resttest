@@ -1,4 +1,4 @@
-POST /organizations/Overlord/plans/Gold/versions admin/admin
+POST /organizations/Overlord/plans/Gold/versions admin/admin123!
 Content-Type: application/json
 
 {

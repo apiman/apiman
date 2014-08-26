@@ -40,10 +40,12 @@
     <dependency>
       <groupId>org.overlord.apiman</groupId>
       <artifactId>apiman-dt-api-beans</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.overlord.apiman</groupId>
       <artifactId>apiman-dt-api-rest</artifactId>
+      <scope>provided</scope>
     </dependency>
     
     <!-- PicketLink -->
@@ -53,18 +55,6 @@
     </dependency>
 
     <!-- Third Party Dependencies -->
-    <dependency>
-      <groupId>org.jboss.logging</groupId>
-      <artifactId>jboss-logging</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.resteasy</groupId>
-      <artifactId>jaxrs-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>javax.enterprise</groupId>
-      <artifactId>cdi-api</artifactId>
-    </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>

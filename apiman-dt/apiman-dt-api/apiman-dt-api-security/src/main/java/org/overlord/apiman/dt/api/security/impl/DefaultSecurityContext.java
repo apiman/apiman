@@ -27,7 +27,7 @@ import org.overlord.apiman.dt.api.beans.idm.PermissionType;
 import org.overlord.apiman.dt.api.core.IIdmStorage;
 import org.overlord.apiman.dt.api.core.exceptions.StorageException;
 import org.overlord.apiman.dt.api.security.ISecurityContext;
-import org.overlord.apiman.dt.api.security.Messages;
+import org.overlord.apiman.dt.api.security.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

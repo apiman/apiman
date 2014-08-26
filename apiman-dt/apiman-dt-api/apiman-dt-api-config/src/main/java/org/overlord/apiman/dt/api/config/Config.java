@@ -47,7 +47,7 @@ public class Config {
 
         config = ConfigurationFactory.createConfig(
                 configFile,
-                "apiman-dt-api.properties", //$NON-NLS-1$
+                "apiman.properties", //$NON-NLS-1$
                 refreshDelay,
                 null,
                 Config.class);

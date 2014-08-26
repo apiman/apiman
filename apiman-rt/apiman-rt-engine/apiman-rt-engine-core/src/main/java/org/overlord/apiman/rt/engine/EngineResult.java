@@ -58,7 +58,7 @@ public class EngineResult {
      * @return true if response set, false if unset.
      */
     public boolean isResponse() {
-        return serviceResponse != null;
+        return policyFailure == null;
     }
     
     /**

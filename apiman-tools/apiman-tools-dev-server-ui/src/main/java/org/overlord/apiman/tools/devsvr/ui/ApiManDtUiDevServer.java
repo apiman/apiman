@@ -170,7 +170,7 @@ public class ApiManDtUiDevServer extends ErraiDevServer {
         headerDataServlet.setInitParameter("app-id", "apiman-dt-ui"); //$NON-NLS-1$ //$NON-NLS-2$
         apiManDtUI.addServlet(headerDataServlet, "/js/overlord-header-data.nocache.js"); //$NON-NLS-1$
         apiManDtUI.addServlet(ConfigurationServlet.class, "/js/configuration.nocache.js"); //$NON-NLS-1$
-        apiManDtUI.addServlet(TokenRefreshServlet.class, "/rest/refreshToken"); //$NON-NLS-1$
+        apiManDtUI.addServlet(TokenRefreshServlet.class, "/rest/tokenRefresh"); //$NON-NLS-1$
         // File resources
         ServletHolder resources = new ServletHolder(new MultiDefaultServlet());
         resources.setInitParameter("resourceBase", "/"); //$NON-NLS-1$ //$NON-NLS-2$

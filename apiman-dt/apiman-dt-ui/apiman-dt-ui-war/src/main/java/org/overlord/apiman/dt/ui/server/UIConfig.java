@@ -47,7 +47,7 @@ public class UIConfig {
 
         config = ConfigurationFactory.createConfig(
                 configFile,
-                "apiman-dt-ui.properties", //$NON-NLS-1$
+                "apiman.properties", //$NON-NLS-1$
                 refreshDelay,
                 null,
                 UIConfig.class);
