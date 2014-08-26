@@ -80,7 +80,7 @@
     <version.io.undertow>1.0.1.Final</version.io.undertow>
 
     <!-- Dependency Overrides -->
-    <version.org.jboss.errai>3.0.1.Final</version.org.jboss.errai>
+    <version.org.jboss.errai>3.0.3-SNAPSHOT</version.org.jboss.errai>
     <version.commons-pool2>2.2</version.commons-pool2>
   </properties>
 

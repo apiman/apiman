@@ -13,24 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.engine.policies;
+package org.overlord.apiman.engine.policies.config;
 
 import java.util.HashSet;
 import java.util.Set;
 
+import org.jboss.errai.common.client.api.annotations.Portable;
+
 /**
- * Configuration object for the IP blacklist policy.
+ * Configuration object for the IP whitelist policy.
  *
  * @author eric.wittmann@redhat.com
  */
-public class IPBlacklistConfig {
+@Portable
+public class IPWhitelistConfig {
     
     private Set<String> ipList = new HashSet<String>();
     
     /**
      * Constructor.
      */
-    public IPBlacklistConfig() {
+    public IPWhitelistConfig() {
     }
 
     /**

@@ -16,6 +16,7 @@
 package org.overlord.apiman.engine.policies;
 
 import org.codehaus.jackson.map.ObjectMapper;
+import org.overlord.apiman.engine.policies.config.IPWhitelistConfig;
 import org.overlord.apiman.engine.policies.i18n.Messages;
 import org.overlord.apiman.rt.engine.beans.PolicyFailureType;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;

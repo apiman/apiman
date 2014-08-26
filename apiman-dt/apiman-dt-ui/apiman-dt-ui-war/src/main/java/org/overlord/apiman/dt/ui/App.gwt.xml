@@ -13,6 +13,7 @@
   <inherits name="org.overlord.commons.gwt.Overlord" />
   <inherits name="org.overlord.apiman.dt.api.beans.Beans" />
   <inherits name="org.overlord.apiman.dt.api.rest.Rest" />
+  <inherits name="org.overlord.apiman.rt.engine.beans.Beans" />
+  <inherits name="org.overlord.apiman.engine.policies.Policies" />
   <inherits name="com.google.gwt.http.HTTP" />
-  <inherits name="com.google.gwt.json.JSON" />
 </module>

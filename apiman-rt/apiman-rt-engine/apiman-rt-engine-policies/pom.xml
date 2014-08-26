@@ -38,5 +38,28 @@
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-mapper-asl</artifactId>
     </dependency>
+    
+    <!-- Provided dependencies -->
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-common</artifactId>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
+
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+      <!-- Include some of the source for this project so that it can be used by GWT projects. -->
+      <resource>
+        <directory>src/main/java</directory>
+        <includes>
+          <include>**/config/*.java</include>
+          <include>**/*.gwt.xml</include>
+        </includes>
+      </resource>
+    </resources>
+  </build>
 </project>

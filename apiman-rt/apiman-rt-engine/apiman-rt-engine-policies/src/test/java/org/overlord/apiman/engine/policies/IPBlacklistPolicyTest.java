@@ -18,6 +18,7 @@ package org.overlord.apiman.engine.policies;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.overlord.apiman.engine.policies.config.IPBlacklistConfig;
 import org.overlord.apiman.rt.engine.beans.PolicyFailure;
 import org.overlord.apiman.rt.engine.beans.PolicyFailureType;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;

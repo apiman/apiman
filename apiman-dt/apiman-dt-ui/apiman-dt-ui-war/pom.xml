@@ -22,6 +22,16 @@
       <artifactId>apiman-dt-api-rest</artifactId>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-rt-engine-beans</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-rt-engine-policies</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
     <!-- Overlord Commons -->
     <dependency>

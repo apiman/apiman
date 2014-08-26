@@ -25,6 +25,8 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.apiman.dt.ui.client.local.pages.policy.IPolicyConfigurationForm;
+import org.overlord.apiman.dt.ui.client.local.services.BeanMarshallingService;
+import org.overlord.apiman.engine.policies.config.IPWhitelistConfig;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -34,11 +36,6 @@ import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.json.client.JSONArray;
-import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONParser;
-import com.google.gwt.json.client.JSONString;
-import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.ListBox;
@@ -52,6 +49,9 @@ import com.google.gwt.user.client.ui.TextBox;
 @Templated("/org/overlord/apiman/dt/ui/client/local/site/policyconfig-ip-list.html#form")
 @Dependent
 public class IPListPolicyConfigurationForm extends Composite implements IPolicyConfigurationForm {
+
+    @Inject
+    BeanMarshallingService marshaller;
     
     @Inject @DataField
     ListBox ipAddresses;
@@ -97,14 +97,12 @@ public class IPListPolicyConfigurationForm extends Composite implements IPolicyC
      */
     @Override
     public String getValue() {
-        JSONObject root = new JSONObject();
-        JSONArray array = new JSONArray();
+        IPWhitelistConfig config = new IPWhitelistConfig();
         for (int idx = 0; idx < ipAddresses.getItemCount(); idx++) {
             String val = ipAddresses.getValue(idx);
-            array.set(idx, new JSONString(val));
+            config.getIpList().add(val);
         }
-        root.put("ipList", array); //$NON-NLS-1$
-        return root.toString();
+        return marshaller.marshal(config);
     }
 
     /**
@@ -126,16 +124,11 @@ public class IPListPolicyConfigurationForm extends Composite implements IPolicyC
         add.setEnabled(false);
         ipAddress.setValue(""); //$NON-NLS-1$
         if (value != null && !value.trim().isEmpty()) {
-            JSONValue jsonval = JSONParser.parseStrict(value);
-            JSONObject jsonObject = jsonval.isObject();
-            JSONValue ipList = jsonObject.get("ipList"); //$NON-NLS-1$
+            IPWhitelistConfig config = marshaller.unmarshal(value, IPWhitelistConfig.class);
+            
             TreeSet<String> sorted = new TreeSet<String>();
-            if (ipList != null) {
-                JSONArray array = ipList.isArray();
-                for (int idx = 0; idx < array.size(); idx++) {
-                    String ip = array.get(idx).isString().stringValue();
-                    sorted.add(ip);
-                }
+            if (config.getIpList() != null && !config.getIpList().isEmpty()) {
+                sorted.addAll(config.getIpList());
             }
             for (String ip : sorted) {
                 ipAddresses.addItem(ip);
