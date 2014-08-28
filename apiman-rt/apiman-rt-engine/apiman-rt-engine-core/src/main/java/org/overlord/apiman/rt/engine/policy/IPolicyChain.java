@@ -35,6 +35,7 @@ import org.overlord.apiman.rt.engine.beans.ServiceResponse;
  * @author Marc Savy <msavy@redhat.com>
  */
 public interface IPolicyChain {
+    
     /**
      * Apply the inbound Policy Chain to the request. 
      * 
@@ -55,4 +56,10 @@ public interface IPolicyChain {
      * @param failure the policy failure
      */
     void doFailure(PolicyFailure failure);
+    
+    /**
+     * Called when an unexpected and unrecoverable error is encountered.
+     * @param error
+     */
+    void throwError(Throwable error);
 }

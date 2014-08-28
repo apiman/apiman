@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.overlord.apiman.rt.engine.async.AsyncResultImpl;
 import org.overlord.apiman.rt.engine.async.IAsyncHandler;
+import org.overlord.apiman.rt.engine.async.IAsyncResult;
 import org.overlord.apiman.rt.engine.beans.PolicyFailure;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
 import org.overlord.apiman.rt.engine.beans.ServiceResponse;
@@ -95,6 +96,14 @@ public class PolicyChainImpl implements IPolicyChain {
     @Override
     public void doFailure(PolicyFailure failure) {
         policyFailureHandler.handle(AsyncResultImpl.create(failure));
+    }
+    
+    /**
+     * @see org.overlord.apiman.rt.engine.policy.IPolicyChain#throwError(java.lang.Throwable)
+     */
+    @Override
+    public void throwError(Throwable error) {
+        policyFailureHandler.handle((IAsyncResult<PolicyFailure>) AsyncResultImpl.<PolicyFailure>create(error));
     }
 
     /**

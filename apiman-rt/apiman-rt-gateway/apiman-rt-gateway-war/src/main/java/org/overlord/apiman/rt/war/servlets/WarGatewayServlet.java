@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Enumeration;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.Future;
 
 import javax.servlet.ServletException;
@@ -253,6 +254,9 @@ public class WarGatewayServlet extends HttpServlet {
         resp.setHeader("X-Policy-Failure-Type", String.valueOf(policyFailure.getType())); //$NON-NLS-1$
         resp.setHeader("X-Policy-Failure-Message", policyFailure.getMessage()); //$NON-NLS-1$
         resp.setHeader("X-Policy-Failure-Code", String.valueOf(policyFailure.getFailureCode())); //$NON-NLS-1$
+        for (Entry<String, String> entry : policyFailure.getHeaders().entrySet()) {
+            resp.setHeader(entry.getKey(), entry.getValue());
+        }
         int errorCode = 500;
         if (policyFailure.getType() == PolicyFailureType.Authentication) {
             errorCode = 401;

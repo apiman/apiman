@@ -32,7 +32,7 @@ public class ServiceResponse implements Serializable {
     
     private int code;
     private String message;
-    private Map<String, String> headers = new HashMap<String, String>();
+    private Map<String, String> headers = new HeaderHashMap();
     private InputStream body;
     private Map<String, Object> attributes = new HashMap<String, Object>();
 

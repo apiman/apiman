@@ -44,6 +44,8 @@ body {
 
 .form-label {
   margin-right: 10px;
+  font-weight: 700;
+  color: rgb(85, 85, 85);
 }
 
 #form-page .bootstrap-select {

@@ -15,15 +15,11 @@
  */
 package org.overlord.apiman.engine.policies;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.overlord.apiman.engine.policies.config.IPWhitelistConfig;
 import org.overlord.apiman.engine.policies.i18n.Messages;
 import org.overlord.apiman.rt.engine.beans.PolicyFailureType;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
-import org.overlord.apiman.rt.engine.beans.ServiceResponse;
-import org.overlord.apiman.rt.engine.beans.exceptions.ConfigurationParseException;
 import org.overlord.apiman.rt.engine.components.IPolicyFailureFactoryComponent;
-import org.overlord.apiman.rt.engine.policy.IPolicy;
 import org.overlord.apiman.rt.engine.policy.IPolicyChain;
 import org.overlord.apiman.rt.engine.policy.IPolicyContext;
 
@@ -33,56 +29,36 @@ import org.overlord.apiman.rt.engine.policy.IPolicyContext;
  *
  * @author eric.wittmann@redhat.com
  */
-public class IPWhitelistPolicy implements IPolicy {
-    
-    private static final ObjectMapper mapper = new ObjectMapper();
+public class IPWhitelistPolicy extends AbstractPolicy<IPWhitelistConfig> {
     
     /**
      * Constructor.
      */
     public IPWhitelistPolicy() {
     }
-
+    
     /**
-     * @see org.overlord.apiman.rt.engine.policy.IPolicy#parseConfiguration(java.lang.String)
-     * 
-     * Configuration format:
-     * <pre>
-     *   {
-     *     "ipList" : [ "1.2.3.4", "3.4.5.6", "10.0.0.1" ]
-     *   }
-     * </pre>
+     * @see org.overlord.apiman.engine.policies.AbstractPolicy#getConfigClass()
      */
     @Override
-    public Object parseConfiguration(String jsonConfiguration) throws ConfigurationParseException {
-        try {
-            return mapper.reader(IPWhitelistConfig.class).readValue(jsonConfiguration);
-        } catch (Exception e) {
-            throw new ConfigurationParseException(e);
-        }
+    protected Class<IPWhitelistConfig> getConfigClass() {
+        return IPWhitelistConfig.class;
     }
-
+    
     /**
-     * @see org.overlord.apiman.rt.engine.policy.IPolicy#apply(org.overlord.apiman.rt.engine.beans.ServiceRequest, org.overlord.apiman.rt.engine.policy.IPolicyContext, java.lang.Object, org.overlord.apiman.rt.engine.policy.IPolicyChain)
+     * @see org.overlord.apiman.engine.policies.AbstractPolicy#doApply(org.overlord.apiman.rt.engine.beans.ServiceRequest, org.overlord.apiman.rt.engine.policy.IPolicyContext, java.lang.Object, org.overlord.apiman.rt.engine.policy.IPolicyChain)
      */
     @Override
-    public void apply(ServiceRequest request, IPolicyContext context, Object config, IPolicyChain chain) {
+    protected void doApply(ServiceRequest request, IPolicyContext context, IPWhitelistConfig config,
+            IPolicyChain chain) {
         IPWhitelistConfig wc = (IPWhitelistConfig) config;
         if (wc.getIpList().contains(request.getRemoteAddr())) {
-            chain.doApply(request);
+            super.doApply(request, context, config, chain);
         } else {
             IPolicyFailureFactoryComponent ffactory = context.getComponent(IPolicyFailureFactoryComponent.class);
             String msg = Messages.i18n.format("IPWhitelistPolicy.NotWhitelisted", request.getRemoteAddr()); //$NON-NLS-1$
             chain.doFailure(ffactory.createFailure(PolicyFailureType.Other, FailureCodes.IP_NOT_WHITELISTED, msg));
         }
-    }
-
-    /**
-     * @see org.overlord.apiman.rt.engine.policy.IPolicy#apply(org.overlord.apiman.rt.engine.beans.ServiceResponse, org.overlord.apiman.rt.engine.policy.IPolicyContext, java.lang.Object, org.overlord.apiman.rt.engine.policy.IPolicyChain)
-     */
-    @Override
-    public void apply(ServiceResponse response, IPolicyContext context, Object config, IPolicyChain chain) {
-        chain.doApply(response);
     }
 
 }

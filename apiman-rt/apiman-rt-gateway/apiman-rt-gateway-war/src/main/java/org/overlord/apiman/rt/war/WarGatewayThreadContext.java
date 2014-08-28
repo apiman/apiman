@@ -91,7 +91,7 @@ public class WarGatewayThreadContext {
         failure.setFailureCode(0);
         failure.setMessage(null);
         failure.setType(null);
-        
+        failure.getHeaders().clear();
     }
 
 }

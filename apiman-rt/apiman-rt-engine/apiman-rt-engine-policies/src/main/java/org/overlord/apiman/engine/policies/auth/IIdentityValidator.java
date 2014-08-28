@@ -13,23 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.engine.policies.config;
+package org.overlord.apiman.engine.policies.auth;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
+import org.overlord.apiman.rt.engine.async.IAsyncHandler;
+import org.overlord.apiman.rt.engine.policy.IPolicyContext;
 
 /**
- * Configuration object for the IP blacklist policy.
- *
+ * Interface used to validate an inbound user.
+ * 
  * @author eric.wittmann@redhat.com
  */
-@Portable
-public class AuthenticationPolicyConfig {
-    
+public interface IIdentityValidator<C> {
+
     /**
-     * Constructor.
+     * Asynchronously validates a user.
+     * @param username
+     * @param password
+     * @param context
+     * @param config
+     * @param handler
      */
-    public AuthenticationPolicyConfig() {
-    }
+    public void validate(String username, String password, IPolicyContext context,
+            C config, IAsyncHandler<Boolean> handler);
 
 }

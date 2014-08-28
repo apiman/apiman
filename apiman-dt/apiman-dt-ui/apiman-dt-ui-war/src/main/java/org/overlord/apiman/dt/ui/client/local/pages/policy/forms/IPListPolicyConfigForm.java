@@ -48,7 +48,7 @@ import com.google.gwt.user.client.ui.TextBox;
  */
 @Templated("/org/overlord/apiman/dt/ui/client/local/site/policyconfig-ip-list.html#form")
 @Dependent
-public class IPListPolicyConfigurationForm extends Composite implements IPolicyConfigurationForm {
+public class IPListPolicyConfigForm extends Composite implements IPolicyConfigurationForm {
 
     @Inject
     BeanMarshallingService marshaller;
@@ -69,7 +69,7 @@ public class IPListPolicyConfigurationForm extends Composite implements IPolicyC
     /**
      * Constructor.
      */
-    public IPListPolicyConfigurationForm() {
+    public IPListPolicyConfigForm() {
     }
     
     @PostConstruct

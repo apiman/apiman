@@ -1,0 +1,15 @@
+POST /policyDefs admin/admin123!
+Content-Type: application/json
+
+{
+  "name" : "BASIC Authentication Policy",
+  "description" : "Enables HTTP BASIC Authentication on a service.  Some configuration required.",
+  "policyImpl" : "class:org.overlord.apiman.engine.policies.BasicAuthenticationPolicy",
+  "icon" : "lock"
+}
+----
+200
+Content-Type: application/json
+
+{
+}

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <script type="text/javascript" src="site.js"></script>
+  </head>
+
+  <body>
+
+    <!-- Top header/nav bar -->
+    <div id="overlord-header">
+    </div>
+
+    <div id="form-page" class="container apiman-new-policy apiman-entity-new page">
+      <!-- Policy Type-specific config -->
+      <div class="row">
+        <h3 data-field="policyHeading">BASIC Authentication Policy Configuration</i></h3>
+        <div class="box col-md-9 container">
+          <div class="form policy-config ip-list" data-field="form">
+            <div>
+              <dl>
+                <dt data-i18n-key="auth-realm">Authentication Realm</dt>
+                <dd>
+                  <input data-field="realm" class="form-control" style="" type="text" placeholder="Realm..."></input>
+                </dd>
+                <dt data-i18n-key="forward-authenticated-user">Forward Authenticated Username as HTTP Header</dt>
+                <dd>
+                  <input data-field="authenticatedUserHeader" class="form-control" style="" type="text" placeholder="HTTP header or leave blank to disable..."></input>
+                </dd>
+                <dt data-i18n-key="identity-source">Identity Source</dt>
+                <dd>
+                  <select class="selectpicker" data-live-search="false" data-role="dummy" data-field="identitySourceSelector">
+                    <option selected="selected" data-content="<span class='apiman-label-faded'>Choose an Identity Source...</span>">Choose an Identity Source...</option>
+                    <option data-content="<span>Static</span>">Static</option>
+                    <option data-content="<span>JDBC</span>">JDBC</option>
+                    <option data-content="<span>LDAP</span>">LDAP</option>
+                  </select>
+                </dd>
+              </dl>
+            </div>
+            
+            <!-- Static Identity Source - Form Fields -->
+            <div id="static-form-fields" class="sub-form-fields" style="clear:both">
+              <div>
+                <dl>
+                  <dt data-i18n-key="static-identities">Static Identities</dt>
+                </dl>
+              </div>
+              <div style="width: 100%; float: left; margin-bottom: 5px;">
+                <select data-field="staticIdentities" multiple class="form-control" style="height: 150px; width: 200px; float: left;" data-role="dummy">
+                  <option>bwayne:bwayne</option>
+                  <option>ckent:ckent123!</option>
+                  <option>dprince:f00b4r#</option>
+                </select>
+                <div style="margin-left: 5px; float: left">
+                  <button data-field="staticClear" data-i18n-key="clear" class="btn btn-default" style="min-width: 75px">Clear</button>
+                  <div class="clear:both"></div>
+                  <button data-field="staticRemove" data-i18n-key="remove" class="btn btn-default" style="min-width: 75px; margin-top: 5px;">Remove</button>
+                </div>
+              </div>
+              <div style="width: 100%; float: left; margin-bottom: 10px; margin-top: 5px">
+                <input data-field="staticUsername" class="form-control" style="width: 85px; float: left; margin-right: 5px" type="text" placeholder="Username..."></input>
+                <div data-role="dummy" style="width: 8px; float: left; line-height: 28px"> : </div>
+                <input data-field="staticPassword" class="form-control" style="width: 102px; float: left; margin-right: 5px" type="text" placeholder="Password..."></input>
+                <button data-field="staticAdd" data-i18n-key="add" class="btn btn-default" style="min-width: 75px">Add</button>
+              </div>
+            </div>
+            
+            <!-- JDBC Identity Source - Form Fields -->
+            <div id="jdbc-form-fields" class="sub-form-fields" style="clear:both">
+              <span>Not yet implemented.</span>
+            </div>
+            
+            <!-- LDAP Identity Source - Form Fields -->
+            <div id="ldap-form-fields" class="sub-form-fields" style="clear:both">
+              <span>Not yet implemented.</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div> <!-- /container -->
+  </body>
+</html>

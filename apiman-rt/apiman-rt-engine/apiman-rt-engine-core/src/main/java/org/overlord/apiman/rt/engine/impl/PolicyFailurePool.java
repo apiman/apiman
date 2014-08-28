@@ -69,6 +69,7 @@ public final class PolicyFailurePool extends GenericObjectPool<PolicyFailure> {
                 failure.setFailureCode(0);
                 failure.setMessage(null);
                 failure.setType(null);
+                failure.getHeaders().clear();
             }
         }, poolConfig);
     }

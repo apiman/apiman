@@ -273,6 +273,14 @@ public class DtApiDataSeeder extends DefaultTestDataSeeder {
         blacklistPolicyDef.setPolicyImpl("class:org.overlord.apiman.engine.policies.IPBlacklistPolicy"); //$NON-NLS-1$
         storage.create(blacklistPolicyDef);
 
+        PolicyDefinitionBean basicAuthPolicyDef = new PolicyDefinitionBean();
+        basicAuthPolicyDef.setId("BASICAuthenticationPolicy"); //$NON-NLS-1$
+        basicAuthPolicyDef.setName("BASIC Authentication Policy"); //$NON-NLS-1$
+        basicAuthPolicyDef.setDescription("Enables HTTP BASIC Authentication on a service.  Some configuration required."); //$NON-NLS-1$
+        basicAuthPolicyDef.setIcon("lock"); //$NON-NLS-1$
+        basicAuthPolicyDef.setPolicyImpl("class:org.overlord.apiman.engine.policies.BasicAuthenticationPolicy"); //$NON-NLS-1$
+        storage.create(basicAuthPolicyDef);
+
     }
 
 }

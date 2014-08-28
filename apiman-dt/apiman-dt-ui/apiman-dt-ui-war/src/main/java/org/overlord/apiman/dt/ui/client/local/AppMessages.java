@@ -224,4 +224,7 @@ public class AppMessages {
 
     @TranslationKey(defaultValue = "Choose a policy type...")
     public static final String CHOOSE_POLICY_TYPE = "choose-policy-type"; //$NON-NLS-1$
+
+    @TranslationKey(defaultValue = "Choose an Identity Source...")
+    public static final String CHOOSE_IDENTITY_SOURCE = "choose-identity-source"; //$NON-NLS-1$
 }

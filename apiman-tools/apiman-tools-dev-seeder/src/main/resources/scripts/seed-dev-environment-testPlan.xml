@@ -16,6 +16,7 @@
   <testGroup name="Policy Defs">
     <test name="Create Whitelist Policy Def">data/policyDefs/000_whitelist-policydef.resttest</test>
     <test name="Create Blacklist Policy Def">data/policyDefs/001_blacklist-policydef.resttest</test>
+    <test name="Create BASIC Authentication Policy Def">data/policyDefs/002_basicauth-policydef.resttest</test>
   </testGroup>
   
 

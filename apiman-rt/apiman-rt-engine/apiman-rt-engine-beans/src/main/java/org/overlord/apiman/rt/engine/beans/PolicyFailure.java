@@ -16,6 +16,8 @@
 package org.overlord.apiman.rt.engine.beans;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Models a policy failure.
@@ -29,6 +31,7 @@ public class PolicyFailure implements Serializable {
     private PolicyFailureType type;
     private int failureCode;
     private String message;
+    private Map<String, String> headers = new HashMap<String, String>();
 
     /**
      * Constructor.
@@ -88,5 +91,19 @@ public class PolicyFailure implements Serializable {
      */
     public void setType(PolicyFailureType type) {
         this.type = type;
+    }
+
+    /**
+     * @return the headers
+     */
+    public Map<String, String> getHeaders() {
+        return headers;
+    }
+
+    /**
+     * @param headers the headers to set
+     */
+    public void setHeaders(Map<String, String> headers) {
+        this.headers = headers;
     }
 }

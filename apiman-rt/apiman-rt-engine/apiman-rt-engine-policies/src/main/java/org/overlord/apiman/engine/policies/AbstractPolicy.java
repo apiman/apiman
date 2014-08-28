@@ -15,6 +15,7 @@
  */
 package org.overlord.apiman.engine.policies;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
 import org.overlord.apiman.rt.engine.beans.ServiceResponse;
 import org.overlord.apiman.rt.engine.beans.exceptions.ConfigurationParseException;
@@ -23,46 +24,72 @@ import org.overlord.apiman.rt.engine.policy.IPolicyChain;
 import org.overlord.apiman.rt.engine.policy.IPolicyContext;
 
 /**
- * An implementation of an apiman policy that supports multiple styles of authentication.
- * Specifically this policy is responsible for authenticating the inbound request prior
- * to proxying the request to the back end service.  If the authentication fails then
- * the back end system is never invoked.
+ * A base class for policy impls.
  *
  * @author eric.wittmann@redhat.com
  */
-public class AuthenticationPolicy implements IPolicy {
+public abstract class AbstractPolicy<C> implements IPolicy {
+    
+    private static final ObjectMapper mapper = new ObjectMapper();
     
     /**
      * Constructor.
      */
-    public AuthenticationPolicy() {
+    public AbstractPolicy() {
     }
 
     /**
      * @see org.overlord.apiman.rt.engine.policy.IPolicy#parseConfiguration(java.lang.String)
      */
     @Override
-    public Object parseConfiguration(String jsonConfiguration) throws ConfigurationParseException {
-        // TODO Auto-generated method stub
-        return null;
+    public C parseConfiguration(String jsonConfiguration) throws ConfigurationParseException {
+        try {
+            return mapper.reader(getConfigClass()).readValue(jsonConfiguration);
+        } catch (Exception e) {
+            throw new ConfigurationParseException(e);
+        }
     }
+
+    /**
+     * @return the class to use for JSON configuration deserialization
+     */
+    protected abstract Class<C> getConfigClass();
 
     /**
      * @see org.overlord.apiman.rt.engine.policy.IPolicy#apply(org.overlord.apiman.rt.engine.beans.ServiceRequest, org.overlord.apiman.rt.engine.policy.IPolicyContext, java.lang.Object, org.overlord.apiman.rt.engine.policy.IPolicyChain)
      */
+    @SuppressWarnings("unchecked")
     @Override
-    public void apply(ServiceRequest request, IPolicyContext context, Object config, IPolicyChain chain) {
-        // TODO Auto-generated method stub
-        
+    public final void apply(ServiceRequest request, IPolicyContext context, Object config, IPolicyChain chain) {
+        doApply(request, context, (C) config, chain);
+    }
+
+    /**
+     * @param request
+     * @param chain
+     */
+    protected void doApply(ServiceRequest request, IPolicyContext context, C config, IPolicyChain chain) {
+        chain.doApply(request);
     }
 
     /**
      * @see org.overlord.apiman.rt.engine.policy.IPolicy#apply(org.overlord.apiman.rt.engine.beans.ServiceResponse, org.overlord.apiman.rt.engine.policy.IPolicyContext, java.lang.Object, org.overlord.apiman.rt.engine.policy.IPolicyChain)
      */
+    @SuppressWarnings("unchecked")
     @Override
-    public void apply(ServiceResponse response, IPolicyContext context, Object config, IPolicyChain chain) {
-        // TODO Auto-generated method stub
-        
+    public final void apply(ServiceResponse response, IPolicyContext context, Object config, IPolicyChain chain) {
+        doApply(response, context, (C) config, chain);
+    }
+
+    /**
+     * Apply the policy to the response.
+     * @param response
+     * @param context
+     * @param config
+     * @param chain
+     */
+    protected void doApply(ServiceResponse response, IPolicyContext context, C config, IPolicyChain chain) {
+        chain.doApply(response);
     }
 
 }

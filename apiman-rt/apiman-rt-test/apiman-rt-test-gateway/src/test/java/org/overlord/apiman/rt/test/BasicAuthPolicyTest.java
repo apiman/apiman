@@ -13,18 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.engine.policies;
+package org.overlord.apiman.rt.test;
+
+import org.junit.Test;
 
 /**
- * An index of all standard apiman policy failure codes.
+ * Make sure the blacklist policy works.
  *
  * @author eric.wittmann@redhat.com
  */
-public final class FailureCodes {
-
-    public static final int IP_NOT_WHITELISTED    = 10001;
-    public static final int IP_BLACKLISTED        = 10002;
-    public static final int BASIC_AUTH_FAILED     = 10003;
-    public static final int BASIC_AUTH_REQUIRED   = 10004;
+public class BasicAuthPolicyTest extends AbstractGatewayTest {
     
+    @Test
+    public void test() throws Exception {
+        runTestPlan("test-plans/policies/basic-auth-testPlan.xml"); //$NON-NLS-1$
+    }
+
 }

@@ -31,6 +31,10 @@
       <artifactId>commons-io</artifactId>
     </dependency>
     <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-core-asl</artifactId>
     </dependency>
@@ -56,7 +60,7 @@
       <resource>
         <directory>src/main/java</directory>
         <includes>
-          <include>**/config/*.java</include>
+          <include>**/config/**/*.java</include>
           <include>**/*.gwt.xml</include>
         </includes>
       </resource>

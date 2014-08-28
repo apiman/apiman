@@ -22,7 +22,8 @@ import javax.inject.Inject;
 import org.overlord.apiman.dt.api.beans.policies.PolicyDefinitionBean;
 import org.overlord.apiman.dt.ui.client.local.pages.policy.DefaultPolicyConfigurationForm;
 import org.overlord.apiman.dt.ui.client.local.pages.policy.IPolicyConfigurationForm;
-import org.overlord.apiman.dt.ui.client.local.pages.policy.forms.IPListPolicyConfigurationForm;
+import org.overlord.apiman.dt.ui.client.local.pages.policy.forms.BasicAuthPolicyConfigForm;
+import org.overlord.apiman.dt.ui.client.local.pages.policy.forms.IPListPolicyConfigForm;
 
 /**
  * A factory for creating policy configuration forms.
@@ -35,7 +36,9 @@ import org.overlord.apiman.dt.ui.client.local.pages.policy.forms.IPListPolicyCon
 public class PolicyConfigurationFormFactory {
     
     @Inject
-    Instance<IPListPolicyConfigurationForm> ipListFormFactory;
+    Instance<IPListPolicyConfigForm> ipListFormFactory;
+    @Inject
+    Instance<BasicAuthPolicyConfigForm> basicAuthFormFactory;
     @Inject
     Instance<DefaultPolicyConfigurationForm> defaultFormFactory;
     
@@ -55,6 +58,9 @@ public class PolicyConfigurationFormFactory {
         }
         if ("IPBlacklistPolicy".equals(policyDef.getId())) { //$NON-NLS-1$
             return ipListFormFactory.get();
+        }
+        if ("BASICAuthenticationPolicy".equals(policyDef.getId())) { //$NON-NLS-1$
+            return basicAuthFormFactory.get();
         }
         return defaultFormFactory.get();
     }

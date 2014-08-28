@@ -17,7 +17,6 @@ package org.overlord.apiman.rt.engine.beans;
 
 import java.io.InputStream;
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -33,7 +32,8 @@ public class ServiceRequest implements Serializable {
     
     private String type;
     private String destination;
-    private Map<String, String> headers = new HashMap<String, String>();
+    @SuppressWarnings("unchecked")
+    private Map<String, String> headers = new HeaderHashMap();
     private String remoteAddr;
     private InputStream body;
     private Object rawRequest;
