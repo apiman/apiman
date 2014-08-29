@@ -45,7 +45,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
  * @author eric.wittmann@redhat.com
  */
 @Templated("/org/overlord/apiman/dt/ui/client/local/site/consumer-service.html#page")
-@Page(path="corg")
+@Page(path="cservice")
 @Dependent
 public class ConsumerServicePage extends AbstractPage {
     

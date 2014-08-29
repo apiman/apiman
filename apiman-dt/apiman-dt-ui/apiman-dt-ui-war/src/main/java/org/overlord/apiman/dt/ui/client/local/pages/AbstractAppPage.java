@@ -28,6 +28,7 @@ import org.overlord.apiman.dt.api.beans.apps.ApplicationVersionBean;
 import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ApplicationVersionNotFoundException;
 import org.overlord.apiman.dt.ui.client.local.pages.common.VersionSelector;
+import org.overlord.apiman.dt.ui.client.local.services.ContextKeys;
 import org.overlord.apiman.dt.ui.client.local.services.rest.IRestInvokerCallback;
 import org.overlord.apiman.dt.ui.client.local.util.MultimapUtil;
 
@@ -129,6 +130,8 @@ public abstract class AbstractAppPage extends AbstractPage {
                     }
                 } else {
                     applicationBean = versionBean.getApplication();
+                    currentContext.setAttribute(ContextKeys.CURRENT_APPLICATION, applicationBean);
+                    currentContext.setAttribute(ContextKeys.CURRENT_APPLICATION_VERSION, versionBean);
                     dataPacketLoaded();
                     onAppVersionLoaded();
                 }

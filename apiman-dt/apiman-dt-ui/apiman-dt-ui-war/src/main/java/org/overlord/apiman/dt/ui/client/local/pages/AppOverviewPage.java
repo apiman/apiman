@@ -64,6 +64,8 @@ public class AppOverviewPage extends AbstractAppPage {
     Anchor versionCreatedBy;
 
     @Inject @DataField
+    Anchor ttd_toConsumeServices;
+    @Inject @DataField
     Anchor ttd_toNewContract;
     @Inject @DataField
     Anchor ttd_toNewVersion;
@@ -93,6 +95,8 @@ public class AppOverviewPage extends AbstractAppPage {
     protected void renderPage() {
         super.renderPage();
 
+        String consumeServicesHref = navHelper.createHrefToPage(ConsumerServicesPage.class, MultimapUtil.fromMultiple());
+        ttd_toConsumeServices.setHref(consumeServicesHref);
         String newContractHref = navHelper.createHrefToPage(NewContractPage.class, MultimapUtil.fromMultiple("apporg", org, "app", app, "appv", versionBean.getVersion())); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         ttd_toNewContract.setHref(newContractHref);
         String newVersionHref = navHelper.createHrefToPage(NewAppVersionPage.class, MultimapUtil.fromMultiple("org", org, "app", app)); //$NON-NLS-1$ //$NON-NLS-2$

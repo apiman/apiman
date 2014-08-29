@@ -23,5 +23,7 @@ package org.overlord.apiman.dt.ui.client.local.services;
 public final class ContextKeys {
     
     public static final String CURRENT_ORGANIZATION = "organizations.current"; //$NON-NLS-1$
+    public static final String CURRENT_APPLICATION = "applications.current"; //$NON-NLS-1$
+    public static final String CURRENT_APPLICATION_VERSION = "applications.current-version"; //$NON-NLS-1$
 
 }

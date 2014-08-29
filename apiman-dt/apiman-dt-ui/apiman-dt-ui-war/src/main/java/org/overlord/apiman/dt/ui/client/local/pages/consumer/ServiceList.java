@@ -40,6 +40,7 @@ import com.google.gwt.user.client.TakesValue;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -151,13 +152,17 @@ public class ServiceList extends FlowPanel implements TakesValue<List<ServiceSum
         title.add(icon);
         icon.getElement().addClassName("icon"); //$NON-NLS-1$
 
-        Anchor orgLink = toServiceDetails.get(MultimapUtil.singleItemMap("org", bean.getOrganizationId())); //$NON-NLS-1$
+        Anchor orgLink = toOrg.get(MultimapUtil.singleItemMap("org", bean.getOrganizationId())); //$NON-NLS-1$
         title.add(orgLink);
         orgLink.setText(bean.getOrganizationName());
+        
+        InlineLabel divider = new InlineLabel(" / "); //$NON-NLS-1$
+        title.add(divider);
 
         Anchor serviceLink = toServiceDetails.get(MultimapUtil.fromMultiple("org", bean.getOrganizationId(), "service", bean.getId())); //$NON-NLS-1$ //$NON-NLS-2$
         title.add(serviceLink);
         serviceLink.setText(bean.getName());
+        serviceLink.setStyleName("emphasis"); //$NON-NLS-1$
     }
 
     /**

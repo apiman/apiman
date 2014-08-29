@@ -27,13 +27,17 @@ import org.jboss.errai.ui.nav.client.local.PageState;
 import org.jboss.errai.ui.nav.client.local.TransitionTo;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.overlord.apiman.dt.api.beans.apps.ApplicationVersionBean;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaFilterBean;
 import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
 import org.overlord.apiman.dt.api.beans.summary.ServiceSummaryBean;
 import org.overlord.apiman.dt.ui.client.local.AppMessages;
+import org.overlord.apiman.dt.ui.client.local.events.CreateContractEvent;
+import org.overlord.apiman.dt.ui.client.local.events.CreateContractEvent.Handler;
 import org.overlord.apiman.dt.ui.client.local.pages.consumer.ServiceList;
 import org.overlord.apiman.dt.ui.client.local.services.ConfigurationService;
+import org.overlord.apiman.dt.ui.client.local.services.ContextKeys;
 import org.overlord.apiman.dt.ui.client.local.services.rest.IRestInvokerCallback;
 import org.overlord.apiman.dt.ui.client.local.util.MultimapUtil;
 
@@ -70,6 +74,8 @@ public class ConsumerServicesPage extends AbstractPage {
     ConfigurationService config;
     @Inject
     TransitionTo<ConsumerServicesPage> toSelf;
+    @Inject
+    TransitionTo<NewContractPage> toCreateContract;
 
     protected List<ServiceSummaryBean> serviceBeans;
 
@@ -93,6 +99,12 @@ public class ConsumerServicesPage extends AbstractPage {
                 toSelf.go(MultimapUtil.singleItemMap("query", searchBox.getValue())); //$NON-NLS-1$
             }
         });
+        services.addCreateContractHandler(new Handler() {
+            @Override
+            public void onCreateContract(CreateContractEvent event) {
+                ConsumerServicesPage.this.onCreateContract((ServiceSummaryBean) event.getBean());
+            }
+        });
     }
 
     /**
@@ -103,7 +115,7 @@ public class ConsumerServicesPage extends AbstractPage {
         int rval = super.loadPageData();
         if (query != null && !query.trim().isEmpty()) {
             doQuery(query);
-            rval+=2;
+            rval += 1;
         } else {
             serviceBeans = new ArrayList<ServiceSummaryBean>();
         }
@@ -144,6 +156,27 @@ public class ConsumerServicesPage extends AbstractPage {
             searchBox.setValue(""); //$NON-NLS-1$
         }
         services.setValue(serviceBeans);
+    }
+    
+    /**
+     * Event handler for when the user clicks "Create Contract".
+     * @param service
+     */
+    protected void onCreateContract(ServiceSummaryBean service) {
+        ApplicationVersionBean app = (ApplicationVersionBean) currentContext.getAttribute(ContextKeys.CURRENT_APPLICATION_VERSION);
+        if (app != null) {
+            toCreateContract.go(MultimapUtil.fromMultiple(
+                    "svcorg", service.getOrganizationId(), //$NON-NLS-1$
+                    "svc", service.getId(), //$NON-NLS-1$
+                    "svcv", null, //$NON-NLS-1$
+                    "apporg", app.getApplication().getOrganizationId(), //$NON-NLS-1$
+                    "app", app.getApplication().getId(), //$NON-NLS-1$
+                    "appv", app.getVersion() //$NON-NLS-1$
+                    ));
+        } else {
+            toCreateContract.go(MultimapUtil.fromMultiple("svcorg", service.getOrganizationId(), "svc", //$NON-NLS-1$ //$NON-NLS-2$
+                    service.getId()));
+        }
     }
 
     /**
