@@ -88,7 +88,7 @@ public class DashboardPage extends AbstractPage {
         String browseOrgsHref = navHelper.createHrefToPage(ConsumerOrgsPage.class, MultimapUtil.fromMultiple());
         String myOrgsHref = navHelper.createHrefToPage(UserOrgsPage.class, MultimapUtil.singleItemMap("user", currentUser)); //$NON-NLS-1$
         String createServiceHref = navHelper.createHrefToPage(NewServicePage.class, MultimapUtil.fromMultiple());
-//        String browseServicesHref = navHelper.createHrefToPage(NewOrgPage.class, MultimapUtil.fromMultiple());
+        String browseServicesHref = navHelper.createHrefToPage(ConsumerServicesPage.class, MultimapUtil.fromMultiple());
         String myServicesHref = navHelper.createHrefToPage(UserServicesPage.class, MultimapUtil.singleItemMap("user", currentUser)); //$NON-NLS-1$
         String createAppHref = navHelper.createHrefToPage(NewAppPage.class, MultimapUtil.fromMultiple());
         String myAppsHref = navHelper.createHrefToPage(UserAppsPage.class, MultimapUtil.singleItemMap("user", currentUser)); //$NON-NLS-1$
@@ -98,7 +98,7 @@ public class DashboardPage extends AbstractPage {
         myOrgs.setHref(myOrgsHref);
 
         createService.setHref(createServiceHref);
-//        browseServices.setHref(browseServicesHref);
+        browseServices.setHref(browseServicesHref);
         myServices.setHref(myServicesHref);
 
         createApp.setHref(createAppHref);

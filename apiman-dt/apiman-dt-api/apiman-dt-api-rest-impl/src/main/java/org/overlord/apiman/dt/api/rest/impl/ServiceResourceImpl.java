@@ -289,11 +289,6 @@ public class ServiceResourceImpl extends AbstractPolicyResourceImpl implements I
             throw new SystemErrorException(e);
         }
     }
-
-
-    
-    
-    
     
     /**
      * @see org.overlord.apiman.dt.api.rest.contract.IServiceResource#createPolicy(java.lang.String, java.lang.String, java.lang.String, org.overlord.apiman.dt.api.beans.policies.PolicyBean)

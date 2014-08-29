@@ -35,10 +35,10 @@ import org.overlord.apiman.dt.api.beans.contracts.NewContractBean;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaFilterBean;
 import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
-import org.overlord.apiman.dt.api.beans.services.ServiceBean;
 import org.overlord.apiman.dt.api.beans.services.ServiceVersionBean;
 import org.overlord.apiman.dt.api.beans.summary.ApplicationSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.ServicePlanSummaryBean;
+import org.overlord.apiman.dt.api.beans.summary.ServiceSummaryBean;
 import org.overlord.apiman.dt.ui.client.local.AppMessages;
 import org.overlord.apiman.dt.ui.client.local.pages.common.VersionSelectBox;
 import org.overlord.apiman.dt.ui.client.local.pages.contract.ApplicationSelectBox;
@@ -142,9 +142,9 @@ public class NewContractPage extends AbstractPage {
                 }
             }
         });
-        services.addValueChangeHandler(new ValueChangeHandler<ServiceBean>() {
+        services.addValueChangeHandler(new ValueChangeHandler<ServiceSummaryBean>() {
             @Override
-            public void onValueChange(ValueChangeEvent<ServiceBean> event) {
+            public void onValueChange(ValueChangeEvent<ServiceSummaryBean> event) {
                 onServiceSelected();
             }
         });
@@ -219,7 +219,7 @@ public class NewContractPage extends AbstractPage {
     protected void onServiceSelected() {
         hideRows(SERVICE_VERSION_ROW, PLAN_ROW);
         showRow(SPINNER_ROW);
-        ServiceBean service = services.getValue();
+        ServiceSummaryBean service = services.getValue();
         rest.getServiceVersions(service.getOrganizationId(), service.getId(), new IRestInvokerCallback<List<ServiceVersionBean>>() {
             @Override
             public void onSuccess(List<ServiceVersionBean> response) {
@@ -251,7 +251,7 @@ public class NewContractPage extends AbstractPage {
     protected void onServiceVersionSelected() {
         hideRow(PLAN_ROW);
         showRow(SPINNER_ROW);
-        ServiceBean service = services.getValue();
+        ServiceSummaryBean service = services.getValue();
         String version = serviceVersion.getValue();
         rest.getServiceVersionPlans(service.getOrganizationId(), service.getId(), version, new IRestInvokerCallback<List<ServicePlanSummaryBean>>() {
             @Override
@@ -358,14 +358,14 @@ public class NewContractPage extends AbstractPage {
         criteria.setPage(1);
         criteria.setOrder("name", true); //$NON-NLS-1$
         criteria.addFilter("name", "*" + searchBox.getValue() + "*", SearchCriteriaFilterBean.OPERATOR_LIKE); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        rest.findServices(criteria, new IRestInvokerCallback<SearchResultsBean<ServiceBean>>() {
+        rest.findServices(criteria, new IRestInvokerCallback<SearchResultsBean<ServiceSummaryBean>>() {
             @Override
-            public void onSuccess(SearchResultsBean<ServiceBean> response) {
-                List<ServiceBean> svcBeans = response.getBeans();
+            public void onSuccess(SearchResultsBean<ServiceSummaryBean> response) {
+                List<ServiceSummaryBean> svcBeans = response.getBeans();
                 services.setServices(svcBeans);
-                ServiceBean initialContextService = null;
+                ServiceSummaryBean initialContextService = null;
                 if (svcorg != null && svc != null) {
-                    for (ServiceBean serviceBean : svcBeans) {
+                    for (ServiceSummaryBean serviceBean : svcBeans) {
                         if (serviceBean.getOrganizationId().equals(svcorg) && serviceBean.getId().equals(svc)) {
                             initialContextService = serviceBean;
                             break;
@@ -396,7 +396,7 @@ public class NewContractPage extends AbstractPage {
         cancelButton.setEnabled(false);
         ApplicationSummaryBean app = applicationSelector.getValue();
         String appVersion = applicationVersion.getValue();
-        ServiceBean service = services.getValue();
+        ServiceSummaryBean service = services.getValue();
         String svcVersion = serviceVersion.getValue();
         ServicePlanSummaryBean planSummary = plan.getValue();
         

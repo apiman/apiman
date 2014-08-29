@@ -13,17 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.dt.ui.client.local.services;
+package org.overlord.apiman.dt.ui.client.local.widgets;
+
+import org.overlord.apiman.dt.ui.client.local.pages.common.SelectBox;
 
 /**
- * Keys to use when using the {@link CurrentContextService}.
+ * A simple version select box.
  *
  * @author eric.wittmann@redhat.com
  */
-public final class ContextKeys {
+public class SimpleVersionSelectBox extends SelectBox<String> {
     
-    public static final String CURRENT_ORGANIZATION = "organizations.current"; //$NON-NLS-1$
-    public static final String CURRENT_APPLICATION = "applications.current"; //$NON-NLS-1$
-    public static final String CURRENT_APPLICATION_VERSION = "applications.current-version"; //$NON-NLS-1$
+    /**
+     * Constructor.
+     */
+    public SimpleVersionSelectBox() {
+    }
+
+    /**
+     * @see org.overlord.apiman.dt.ui.client.local.pages.common.SelectBox#optionName(java.lang.Object)
+     */
+    @Override
+    protected String optionName(String option) {
+        return null;
+    }
 
 }

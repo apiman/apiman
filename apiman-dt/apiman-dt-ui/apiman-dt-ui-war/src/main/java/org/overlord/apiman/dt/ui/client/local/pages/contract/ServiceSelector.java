@@ -22,7 +22,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.ui.client.local.spi.TranslationService;
-import org.overlord.apiman.dt.api.beans.services.ServiceBean;
+import org.overlord.apiman.dt.api.beans.summary.ServiceSummaryBean;
 import org.overlord.apiman.dt.ui.client.local.AppMessages;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -42,13 +42,13 @@ import com.google.gwt.user.client.ui.Widget;
  * @author eric.wittmann@redhat.com
  */
 @Dependent
-public class ServiceSelector extends FlowPanel implements HasValue<ServiceBean> {
+public class ServiceSelector extends FlowPanel implements HasValue<ServiceSummaryBean> {
     
-    private ServiceBean value;
+    private ServiceSummaryBean value;
     private Anchor selectedRow;
     private boolean enabled = true;
     private List<Anchor> rows = new ArrayList<Anchor>();
-    private List<ServiceBean> services;
+    private List<ServiceSummaryBean> services;
     
     @Inject TranslationService i18n;
     
@@ -73,7 +73,7 @@ public class ServiceSelector extends FlowPanel implements HasValue<ServiceBean> 
      * @see com.google.gwt.event.logical.shared.HasValueChangeHandlers#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
      */
     @Override
-    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<ServiceBean> handler) {
+    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<ServiceSummaryBean> handler) {
         return addHandler(handler, ValueChangeEvent.getType());
     }
 
@@ -81,21 +81,21 @@ public class ServiceSelector extends FlowPanel implements HasValue<ServiceBean> 
      * Called to display a list of users to choose from.
      * @param services
      */
-    public void setServices(List<ServiceBean> services) {
+    public void setServices(List<ServiceSummaryBean> services) {
         clear();
         this.services = services;
         if (services.isEmpty()) {
             add(new Label(i18n.format(AppMessages.SERVICE_SELECTOR_NONE_FOUND)));
         } else {
-            for (ServiceBean userBean : services) {
-                Widget row = createServiceRow(userBean);
+            for (ServiceSummaryBean service : services) {
+                Widget row = createServiceRow(service);
                 add(row);
             }
         }
     }
 
     /**
-     * Creates a row in the output table for each user.
+     * Creates a row in the output table for each service.
      * 
      * <pre>
      *      &lt;a href="#" class="item">
@@ -108,7 +108,7 @@ public class ServiceSelector extends FlowPanel implements HasValue<ServiceBean> 
      * 
      * @param serviceBean
      */
-    private Widget createServiceRow(final ServiceBean serviceBean) {
+    private Widget createServiceRow(final ServiceSummaryBean serviceBean) {
         final Anchor a = new Anchor();
         a.getElement().setClassName("item"); //$NON-NLS-1$
         StringBuilder builder = new StringBuilder();
@@ -134,7 +134,7 @@ public class ServiceSelector extends FlowPanel implements HasValue<ServiceBean> 
      * @see com.google.gwt.user.client.ui.HasValue#getValue()
      */
     @Override
-    public ServiceBean getValue() {
+    public ServiceSummaryBean getValue() {
         return value;
     }
     
@@ -153,7 +153,7 @@ public class ServiceSelector extends FlowPanel implements HasValue<ServiceBean> 
      * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object)
      */
     @Override
-    public void setValue(ServiceBean value) {
+    public void setValue(ServiceSummaryBean value) {
         setValue(value, false);
     }
 
@@ -161,7 +161,7 @@ public class ServiceSelector extends FlowPanel implements HasValue<ServiceBean> 
      * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object, boolean)
      */
     @Override
-    public void setValue(ServiceBean value, boolean fireEvents) {
+    public void setValue(ServiceSummaryBean value, boolean fireEvents) {
         this.value = value;
         selectRow(value);
         if (fireEvents) {
@@ -173,9 +173,9 @@ public class ServiceSelector extends FlowPanel implements HasValue<ServiceBean> 
      * Selects the row associated with the given value.
      * @param value
      */
-    private void selectRow(ServiceBean value) {
+    private void selectRow(ServiceSummaryBean value) {
         int idx = 0;
-        for (ServiceBean serviceBean : this.services) {
+        for (ServiceSummaryBean serviceBean : this.services) {
             if (serviceBean == value) {
                 break;
             }

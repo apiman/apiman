@@ -577,8 +577,8 @@ public class RestInvokerService {
      * @param criteria
      * @param callback
      */
-    public void findServices(SearchCriteriaBean criteria, IRestInvokerCallback<SearchResultsBean<ServiceBean>> callback) {
-        CallbackAdapter<SearchResultsBean<ServiceBean>> adapter = new CallbackAdapter<SearchResultsBean<ServiceBean>>(callback);
+    public void findServices(SearchCriteriaBean criteria, IRestInvokerCallback<SearchResultsBean<ServiceSummaryBean>> callback) {
+        CallbackAdapter<SearchResultsBean<ServiceSummaryBean>> adapter = new CallbackAdapter<SearchResultsBean<ServiceSummaryBean>>(callback);
         search.call(adapter, adapter).searchServices(criteria);
     }
     

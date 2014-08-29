@@ -16,6 +16,9 @@
 
 package org.overlord.apiman.dt.api.rest.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -24,6 +27,8 @@ import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
 import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
 import org.overlord.apiman.dt.api.beans.services.ServiceBean;
+import org.overlord.apiman.dt.api.beans.summary.ApplicationSummaryBean;
+import org.overlord.apiman.dt.api.beans.summary.ServiceSummaryBean;
 import org.overlord.apiman.dt.api.core.IIdmStorage;
 import org.overlord.apiman.dt.api.core.IStorage;
 import org.overlord.apiman.dt.api.core.exceptions.StorageException;
@@ -77,27 +82,60 @@ public class SearchResourceImpl implements ISearchResource {
      * @see org.overlord.apiman.dt.api.rest.contract.ISearchResource#searchApps(org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean)
      */
     @Override
-    public SearchResultsBean<ApplicationBean> searchApps(SearchCriteriaBean criteria)
+    public SearchResultsBean<ApplicationSummaryBean> searchApps(SearchCriteriaBean criteria)
             throws OrganizationNotFoundException, InvalidSearchCriteriaException {
         // TODO only return applications that the user is permitted to see?
         try {
             SearchCriteriaUtil.validateSearchCriteria(criteria);
-            return storage.find(criteria, ApplicationBean.class);
+            SearchResultsBean<ApplicationBean> result = storage.find(criteria, ApplicationBean.class);
+            SearchResultsBean<ApplicationSummaryBean> rval = new SearchResultsBean<ApplicationSummaryBean>();
+            rval.setTotalSize(result.getTotalSize());
+            List<ApplicationBean> beans = result.getBeans();
+            rval.setBeans(new ArrayList<ApplicationSummaryBean>(beans.size()));
+            for (ApplicationBean application : beans) {
+                ApplicationSummaryBean summary = new ApplicationSummaryBean();
+                OrganizationBean organization = storage.get(application.getOrganizationId(), OrganizationBean.class);
+                summary.setId(application.getId());
+                summary.setName(application.getName());
+                summary.setDescription(application.getDescription());
+                // TODO find the number of contracts
+                summary.setNumContracts(0);
+                summary.setOrganizationId(application.getOrganizationId());
+                summary.setOrganizationName(organization.getName());
+                rval.getBeans().add(summary);
+            }
+            return rval;
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
     }
-    
+
     /**
      * @see org.overlord.apiman.dt.api.rest.contract.ISearchResource#searchServices(org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean)
      */
     @Override
-    public SearchResultsBean<ServiceBean> searchServices(SearchCriteriaBean criteria)
+    public SearchResultsBean<ServiceSummaryBean> searchServices(SearchCriteriaBean criteria)
             throws OrganizationNotFoundException, InvalidSearchCriteriaException {
         // TODO only return services that the user is permitted to see?
         try {
             SearchCriteriaUtil.validateSearchCriteria(criteria);
-            return storage.find(criteria, ServiceBean.class);
+            SearchResultsBean<ServiceBean> result = storage.find(criteria, ServiceBean.class);
+            SearchResultsBean<ServiceSummaryBean> rval = new SearchResultsBean<ServiceSummaryBean>();
+            rval.setTotalSize(result.getTotalSize());
+            List<ServiceBean> beans = result.getBeans();
+            rval.setBeans(new ArrayList<ServiceSummaryBean>(beans.size()));
+            for (ServiceBean service : beans) {
+                ServiceSummaryBean summary = new ServiceSummaryBean();
+                OrganizationBean organization = storage.get(service.getOrganizationId(), OrganizationBean.class);
+                summary.setId(service.getId());
+                summary.setName(service.getName());
+                summary.setDescription(service.getDescription());
+                summary.setCreatedOn(service.getCreatedOn());
+                summary.setOrganizationId(service.getOrganizationId());
+                summary.setOrganizationName(organization.getName());
+                rval.getBeans().add(summary);
+            }
+            return rval;
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
