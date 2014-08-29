@@ -32,7 +32,6 @@ public class ServiceRequest implements Serializable {
     
     private String type;
     private String destination;
-    @SuppressWarnings("unchecked")
     private Map<String, String> headers = new HeaderHashMap();
     private String remoteAddr;
     private InputStream body;

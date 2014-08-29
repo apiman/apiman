@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <script type="text/javascript" src="site.js"></script>
+  </head>
+
+  <body>
+
+    <!-- Top header/nav bar -->
+    <div id="overlord-header">
+    </div>
+
+    <div class="container page" data-field="page">
+      <div class="row">
+        <div class="col-md-12">
+          <h1 data-i18n-key="service-details">Service Details</h1>
+        </div>
+        <div class="col-md-12">
+          <div class="vspacer-10" />
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="col-md-12">
+          <div class="container">
+            <div class="row">
+
+                <!-- Left column -->
+                <div class="col-md-4 browse-items">
+                  <div class="item" style="width: 100%; margin-bottom: 20px;" data-field="serviceCard">
+                    <div class="title">
+                      <i class="fa fa-puzzle-piece icon"></i><a href="consumer-org.html" data-field="titleOrg">JBoss Overlord</a>
+                      <span> / </span>
+                      <span class="emphasis" data-field="titleService">s-ramp-api</span>
+                    </div>
+                    <div class="description" data-field="description" style="margin-bottom: 10px;">This API allows users to interact with a remote S-RAMP repository.</div>
+                    <span class="form-label" data-i18n-key="choose-version">Choose Version:</span>
+                    <div class="btn-group apiman-entity-action">
+                      <select class="selectpicker" data-live-search="false" data-role="dummy" data-field="versionSelector">
+                        <option>3.0.1</option>
+                        <option>3.0</option>
+                        <option>2.1</option>
+                        <option>2.0</option>
+                        <option>1.0</option>
+                      </select>
+                    </div>
+                  </div>
+                  
+                </div>
+                
+                <!-- Right column -->
+                <div class="col-md-8">
+                  <div class="consumer-section">
+                    <h3 data-i18n-key="available-plans" class="consumer-header">Available Plans</h3>
+                    <div class="apiman-plans consumer-section" data-field="plans" data-role="dummy">
+                    
+                      <div class="container-fluid apiman-summaryrow">
+                        <div class="row">
+                          <div class="col-md-10 col-no-padding">
+                            <i class="fa fa-fw fa-bar-chart-o icon"></i>
+                            <span class="title"><a href="#">Platinum</a></span>
+                            <div class="description">
+                              Provides subscribing applications with full access to the Services in this Organization.
+                            </div>
+                          </div>
+                          <div class="col-md-2 col-no-padding">
+                            <span class="actions"><button class="btn btn-default">Create Contract</button></span>
+                          </div>
+                        </div>
+                        <hr />
+                      </div>                    
+                      <div class="container-fluid apiman-summaryrow">
+                        <div class="row">
+                          <div class="col-md-10 col-no-padding">
+                            <i class="fa fa-fw fa-bar-chart-o icon"></i>
+                            <span class="title"><a href="#">Gold</a></span>
+                            <div class="description">
+                              Provides subscribing applications with full access to a subset of Services. Also allows partial (rate limited) access to the rest. 
+                            </div>
+                          </div>
+                          <div class="col-md-2 col-no-padding">
+                            <span class="actions"><button class="btn btn-default">Create Contract</button></span>
+                          </div>
+                        </div>
+                        <hr />
+                      </div>                    
+                      <div class="container-fluid apiman-summaryrow">
+                        <div class="row">
+                          <div class="col-md-10 col-no-padding">
+                            <i class="fa fa-fw fa-bar-chart-o icon"></i>
+                            <span class="title"><a href="#">Silver</a></span>
+                            <div class="description">
+                              Provides subscribing applications with free, but limited access to all Services in this Organization. 
+                            </div>
+                          </div>
+                          <div class="col-md-2 col-no-padding">
+                            <span class="actions"><button class="btn btn-default">Create Contract</button></span>
+                          </div>
+                        </div>
+                        <hr />
+                      </div>                    
+
+                    </div>
+                  </div>
+                </div>
+                
+                
+            </div>
+          </div>
+        </div>
+      </div>
+    </div> <!-- /container -->
+  </body>
+</html>

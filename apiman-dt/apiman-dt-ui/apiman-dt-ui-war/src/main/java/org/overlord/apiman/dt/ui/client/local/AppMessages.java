@@ -28,6 +28,8 @@ public class AppMessages {
     public static final String TITLE_DASHBOARD = "page.title.dashboard"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "APIMan - Organizations")
     public static final String TITLE_CONSUME_ORGS = "page.title.consume-orgs"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "APIMan - Services")
+    public static final String TITLE_CONSUME_SERVICES = "page.title.consume-services"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "APIMan - Organization")
     public static final String TITLE_CONSUME_ORG = "page.title.consume-org"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "APIMan - New Organization")
@@ -227,4 +229,12 @@ public class AppMessages {
 
     @TranslationKey(defaultValue = "Choose an Identity Source...")
     public static final String CHOOSE_IDENTITY_SOURCE = "choose-identity-source"; //$NON-NLS-1$
+
+    @TranslationKey(defaultValue = "Create Contract")
+    public static final String CREATE_CONTRACT = "create-contract"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "No services found.  Either no services matched the query or you haven't queried yet!")
+    public static final String NO_SERVICES_MESSAGE = "noEntitiesFound.consumer-services"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "Found {0} matching services.")
+    public static final String SERVICE_COUNT = "service-count"; //$NON-NLS-1$
+
 }
