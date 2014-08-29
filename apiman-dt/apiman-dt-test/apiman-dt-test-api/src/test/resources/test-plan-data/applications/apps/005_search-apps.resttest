@@ -14,8 +14,8 @@ Content-Type: application/json
 
 {
   "beans" : [
-        {"organizationId":"Organization1","id":"Application1","name":"Application 1","description":"This is the description of Application 1.","createdBy":"admin"},
-        {"organizationId":"Organization1","id":"Application2","name":"Application 2","description":"This is the description of Application 2.","createdBy":"admin"}
+        {"organizationId":"Organization1","organizationName":"Organization 1","id":"Application1","name":"Application 1","description":"This is the description of Application 1."},
+        {"organizationId":"Organization1","organizationName":"Organization 1","id":"Application2","name":"Application 2","description":"This is the description of Application 2."}
       ],
   "totalSize" : 2
 }

@@ -29,10 +29,12 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaFilterBean;
+import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
 import org.overlord.apiman.dt.api.beans.summary.ServiceSummaryBean;
 import org.overlord.apiman.dt.ui.client.local.AppMessages;
 import org.overlord.apiman.dt.ui.client.local.pages.consumer.ServiceList;
 import org.overlord.apiman.dt.ui.client.local.services.ConfigurationService;
+import org.overlord.apiman.dt.ui.client.local.services.rest.IRestInvokerCallback;
 import org.overlord.apiman.dt.ui.client.local.util.MultimapUtil;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -118,17 +120,17 @@ public class ConsumerServicesPage extends AbstractPage {
         criteria.setPage(1);
         criteria.setOrder("name", true); //$NON-NLS-1$
         criteria.addFilter("name", "*" + query + "*", SearchCriteriaFilterBean.OPERATOR_LIKE); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-//        rest.findServices(criteria, new IRestInvokerCallback<SearchResultsBean<ServiceSummaryBean>>() {
-//            @Override
-//            public void onSuccess(SearchResultsBean<ServiceSummaryBean> response) {
-//                serviceBeans = response.getBeans();
-//                dataPacketLoaded();
-//            }
-//            @Override
-//            public void onError(Throwable error) {
-//                dataPacketError(error);
-//            }
-//        });
+        rest.findServices(criteria, new IRestInvokerCallback<SearchResultsBean<ServiceSummaryBean>>() {
+            @Override
+            public void onSuccess(SearchResultsBean<ServiceSummaryBean> response) {
+                serviceBeans = response.getBeans();
+                dataPacketLoaded();
+            }
+            @Override
+            public void onError(Throwable error) {
+                dataPacketError(error);
+            }
+        });
     }
     
     /**

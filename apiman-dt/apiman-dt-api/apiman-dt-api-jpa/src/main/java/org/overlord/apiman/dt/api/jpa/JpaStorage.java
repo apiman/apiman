@@ -185,6 +185,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                 summary.setId(bean.getId());
                 summary.setName(bean.getName());
                 summary.setDescription(bean.getDescription());
+                // TODO find the number of contracts
                 summary.setNumContracts(0);
                 OrganizationBean org = entityManager.find(OrganizationBean.class, bean.getOrganizationId());
                 summary.setOrganizationId(org.getId());

@@ -22,11 +22,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import org.overlord.apiman.dt.api.beans.apps.ApplicationBean;
 import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
 import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
-import org.overlord.apiman.dt.api.beans.services.ServiceBean;
+import org.overlord.apiman.dt.api.beans.summary.ApplicationSummaryBean;
+import org.overlord.apiman.dt.api.beans.summary.ServiceSummaryBean;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.InvalidSearchCriteriaException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationNotFoundException;
 
@@ -49,14 +49,14 @@ public interface ISearchResource {
     @Path("applications")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public SearchResultsBean<ApplicationBean> searchApps(SearchCriteriaBean criteria)
+    public SearchResultsBean<ApplicationSummaryBean> searchApps(SearchCriteriaBean criteria)
             throws OrganizationNotFoundException, InvalidSearchCriteriaException;
 
     @POST
     @Path("services")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public SearchResultsBean<ServiceBean> searchServices(SearchCriteriaBean criteria)
+    public SearchResultsBean<ServiceSummaryBean> searchServices(SearchCriteriaBean criteria)
             throws OrganizationNotFoundException, InvalidSearchCriteriaException;
 
 }
