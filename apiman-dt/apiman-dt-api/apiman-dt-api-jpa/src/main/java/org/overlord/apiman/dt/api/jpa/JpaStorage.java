@@ -311,6 +311,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             ServicePlanSummaryBean summary = new ServicePlanSummaryBean();
             summary.setPlanId(planVersion.getPlan().getId());
             summary.setPlanName(planVersion.getPlan().getName());
+            summary.setPlanDescription(planVersion.getPlan().getDescription());
             summary.setVersion(spb.getVersion());
             plans.add(summary);
         }

@@ -32,6 +32,7 @@ public class ServicePlanSummaryBean implements Serializable {
     
     private String planId;
     private String planName;
+    private String planDescription;
     private String version;
     
     /**
@@ -119,6 +120,20 @@ public class ServicePlanSummaryBean implements Serializable {
     @Override
     public String toString() {
         return getPlanName() + "(" + version + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+    }
+
+    /**
+     * @return the planDescription
+     */
+    public String getPlanDescription() {
+        return planDescription;
+    }
+
+    /**
+     * @param planDescription the planDescription to set
+     */
+    public void setPlanDescription(String planDescription) {
+        this.planDescription = planDescription;
     }
 
 }

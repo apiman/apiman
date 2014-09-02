@@ -16,13 +16,20 @@
 
 package org.overlord.apiman.dt.ui.client.local.pages.consumer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.overlord.apiman.dt.api.beans.services.ServiceBean;
+import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
+import org.overlord.apiman.dt.api.beans.services.ServiceVersionBean;
+import org.overlord.apiman.dt.ui.client.local.pages.ConsumerOrgPage;
+import org.overlord.apiman.dt.ui.client.local.services.NavigationHelperService;
+import org.overlord.apiman.dt.ui.client.local.util.MultimapUtil;
 import org.overlord.apiman.dt.ui.client.local.widgets.SimpleVersionSelectBox;
 
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
@@ -41,7 +48,10 @@ import com.google.gwt.user.client.ui.Label;
  */
 @Templated("/org/overlord/apiman/dt/ui/client/local/site/consumer-service.html#serviceCard")
 @Dependent
-public class ServiceCard extends Composite implements TakesValue<ServiceBean>, HasValueChangeHandlers<String> {
+public class ServiceCard extends Composite implements TakesValue<ServiceVersionBean>, HasValueChangeHandlers<String> {
+
+    @Inject 
+    protected NavigationHelperService navHelper;
 
     @Inject @DataField
     private Anchor titleOrg;
@@ -52,8 +62,7 @@ public class ServiceCard extends Composite implements TakesValue<ServiceBean>, H
     @Inject @DataField
     private SimpleVersionSelectBox versionSelector;
     
-    
-    private ServiceBean value;
+    private ServiceVersionBean value;
 
     /**
      * Constructor.
@@ -77,7 +86,7 @@ public class ServiceCard extends Composite implements TakesValue<ServiceBean>, H
      * @see com.google.gwt.user.client.ui.HasValue#getValue()
      */
     @Override
-    public ServiceBean getValue() {
+    public ServiceVersionBean getValue() {
         return value;
     }
 
@@ -85,7 +94,7 @@ public class ServiceCard extends Composite implements TakesValue<ServiceBean>, H
      * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object)
      */
     @Override
-    public void setValue(ServiceBean value) {
+    public void setValue(ServiceVersionBean value) {
         this.value = value;
         refresh();
     }
@@ -94,14 +103,37 @@ public class ServiceCard extends Composite implements TakesValue<ServiceBean>, H
      * Refresh the UI with the new data.
      */
     private void refresh() {
-        // TODO fix this - the text should be the org name, not the org id - need the OrganizationBean for this
-        titleOrg.setText(value.getOrganizationId());
-        titleService.setText(value.getName());
-        description.setText(value.getDescription());
+        titleService.setText(value.getService().getName());
+        description.setText(value.getService().getDescription());
     }
     
-    public void refreshVersions() {
-        
+    /**
+     * Sets the list of service versions.
+     * @param versions
+     */
+    public void setVersions(List<ServiceVersionBean> versions) {
+        List<String> versionList = new ArrayList<String>();
+        for (ServiceVersionBean version : versions) {
+            versionList.add(version.getVersion());
+        }
+        versionSelector.setOptions(versionList);
+    }
+    
+    /**
+     * Sets the organization.
+     * @param organization
+     */
+    public void setOrganization(OrganizationBean organization) {
+        titleOrg.setText(organization.getName());
+        String toOrgPage = navHelper.createHrefToPage(ConsumerOrgPage.class, MultimapUtil.singleItemMap("org", organization.getId())); //$NON-NLS-1$
+        titleOrg.setHref(toOrgPage);
+    }
+
+    /**
+     * @param version
+     */
+    public void selectVersion(String version) {
+        versionSelector.setValue(version);
     }
 
 }

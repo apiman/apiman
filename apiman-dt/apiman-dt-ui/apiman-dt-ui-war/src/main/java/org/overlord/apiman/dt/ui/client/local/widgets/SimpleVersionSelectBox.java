@@ -35,7 +35,15 @@ public class SimpleVersionSelectBox extends SelectBox<String> {
      */
     @Override
     protected String optionName(String option) {
-        return null;
+        return option;
+    }
+    
+    /**
+     * @see org.overlord.apiman.dt.ui.client.local.pages.common.SelectBox#optionValue(java.lang.Object)
+     */
+    @Override
+    protected String optionValue(String option) {
+        return option;
     }
 
 }

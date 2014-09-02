@@ -32,6 +32,8 @@ public class AppMessages {
     public static final String TITLE_CONSUME_SERVICES = "page.title.consume-services"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "APIMan - Organization")
     public static final String TITLE_CONSUME_ORG = "page.title.consume-org"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "APIMan - Service")
+    public static final String TITLE_CONSUME_SERVICE = "page.title.consume-service"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "APIMan - New Organization")
     public static final String TITLE_NEW_ORG = "page.title.new-org"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "APIMan - New Application")
@@ -236,5 +238,8 @@ public class AppMessages {
     public static final String NO_SERVICES_MESSAGE = "noEntitiesFound.consumer-services"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "Found {0} matching services.")
     public static final String SERVICE_COUNT = "service-count"; //$NON-NLS-1$
+
+    @TranslationKey(defaultValue = "No plans are currently offered by this service.")
+    public static final String NO_PLANS_IN_CONSUMER_SERVICE_MESSAGE = "noEntitiesFound.plans-in-consumer-service"; //$NON-NLS-1$
 
 }

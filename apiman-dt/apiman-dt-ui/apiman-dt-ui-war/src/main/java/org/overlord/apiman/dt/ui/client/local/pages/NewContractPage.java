@@ -44,6 +44,7 @@ import org.overlord.apiman.dt.ui.client.local.pages.common.VersionSelectBox;
 import org.overlord.apiman.dt.ui.client.local.pages.contract.ApplicationSelectBox;
 import org.overlord.apiman.dt.ui.client.local.pages.contract.PlanSelectBox;
 import org.overlord.apiman.dt.ui.client.local.pages.contract.ServiceSelector;
+import org.overlord.apiman.dt.ui.client.local.services.ContextKeys;
 import org.overlord.apiman.dt.ui.client.local.services.rest.IRestInvokerCallback;
 import org.overlord.apiman.dt.ui.client.local.util.MultimapUtil;
 import org.overlord.commons.gwt.client.local.widgets.AsyncActionButton;
@@ -81,6 +82,8 @@ public class NewContractPage extends AbstractPage {
     String svc;
     @PageState
     String svcv;
+    @PageState
+    String planid;
     @PageState
     String apporg;
     @PageState
@@ -259,7 +262,16 @@ public class NewContractPage extends AbstractPage {
                 plan.setOptions(response);
                 if (response == null || response.isEmpty()) {
                 } else {
-                    plan.setValue(null);
+                    ServicePlanSummaryBean selected = null;
+                    if (planid != null) {
+                        for (ServicePlanSummaryBean pb : response) {
+                            if (pb.getPlanId().equals(planid)) {
+                                selected = pb;
+                                break;
+                            }
+                        }
+                    }
+                    plan.setValue(selected);
                     onPlanSelected();
                 }
                 hideRow(SPINNER_ROW);
@@ -285,6 +297,14 @@ public class NewContractPage extends AbstractPage {
     @Override
     protected int loadPageData() {
         int rval = super.loadPageData();
+        if (app == null) {
+            ApplicationVersionBean ctxapp = (ApplicationVersionBean) currentContext.getAttribute(ContextKeys.CURRENT_APPLICATION_VERSION);
+            if (ctxapp != null) {
+                app = ctxapp.getApplication().getId();
+                apporg = ctxapp.getApplication().getOrganizationId();
+                appv = ctxapp.getVersion();
+            }
+        }
         rest.getCurrentUserApps(new IRestInvokerCallback<List<ApplicationSummaryBean>>() {
             @Override
             public void onSuccess(List<ApplicationSummaryBean> response) {

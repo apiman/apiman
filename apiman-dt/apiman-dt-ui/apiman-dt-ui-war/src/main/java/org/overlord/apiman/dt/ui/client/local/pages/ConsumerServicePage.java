@@ -23,14 +23,21 @@ import javax.inject.Inject;
 
 import org.jboss.errai.ui.nav.client.local.Page;
 import org.jboss.errai.ui.nav.client.local.PageState;
+import org.jboss.errai.ui.nav.client.local.TransitionTo;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
 import org.overlord.apiman.dt.api.beans.services.ServiceBean;
-import org.overlord.apiman.dt.api.beans.summary.PlanSummaryBean;
+import org.overlord.apiman.dt.api.beans.services.ServiceVersionBean;
+import org.overlord.apiman.dt.api.beans.summary.ServicePlanSummaryBean;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.ServiceVersionNotFoundException;
 import org.overlord.apiman.dt.ui.client.local.AppMessages;
-import org.overlord.apiman.dt.ui.client.local.pages.consumer.ConsumerOrgServiceList;
+import org.overlord.apiman.dt.ui.client.local.events.CreateContractEvent;
+import org.overlord.apiman.dt.ui.client.local.events.CreateContractEvent.Handler;
+import org.overlord.apiman.dt.ui.client.local.pages.consumer.ConsumerServicePlanList;
 import org.overlord.apiman.dt.ui.client.local.pages.consumer.ServiceCard;
 import org.overlord.apiman.dt.ui.client.local.services.rest.IRestInvokerCallback;
+import org.overlord.apiman.dt.ui.client.local.util.MultimapUtil;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -59,10 +66,18 @@ public class ConsumerServicePage extends AbstractPage {
     @Inject @DataField
     private ServiceCard serviceCard;
     @Inject @DataField
-    private ConsumerOrgServiceList plans;
+    private ConsumerServicePlanList plans;
+    
+    @Inject
+    private TransitionTo<ConsumerServicePage> toThis;
+    @Inject
+    private TransitionTo<NewContractPage> toNewContract;
 
+    protected OrganizationBean organizationBean;
     protected ServiceBean serviceBean;
-    protected List<PlanSummaryBean> planBeans;
+    protected List<ServiceVersionBean> versionBeans;
+    protected ServiceVersionBean versionBean;
+    protected List<ServicePlanSummaryBean> planBeans;
 
     /**
      * Constructor.
@@ -78,14 +93,32 @@ public class ConsumerServicePage extends AbstractPage {
                 onVersionSelected(event.getValue());
             }
         });
+        plans.addCreateContractHandler(new Handler() {
+            @Override
+            public void onCreateContract(CreateContractEvent event) {
+                ConsumerServicePage.this.onCreateContract((ServicePlanSummaryBean) event.getBean());
+            }
+        });
     }
     
+    /**
+     * Called when the user clicks the Create Contract button on one of the plans.
+     * @param bean
+     */
+    protected void onCreateContract(final ServicePlanSummaryBean bean) {
+        toNewContract.go(MultimapUtil.fromMultiple(
+                "svcorg", this.serviceBean.getOrganizationId(),  //$NON-NLS-1$
+                "svc", this.serviceBean.getId(), //$NON-NLS-1$
+                "svcv", this.versionBean.getVersion(), //$NON-NLS-1$
+                "planid", bean.getPlanId())); //$NON-NLS-1$
+    }
+
     /**
      * Called when the user picks a different version of the Service.
      * @param value
      */
     protected void onVersionSelected(String value) {
-        // TODO implement this
+        toThis.go(MultimapUtil.fromMultiple("org", org, "service", service, "version", value)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     /**
@@ -94,11 +127,42 @@ public class ConsumerServicePage extends AbstractPage {
     @Override
     protected int loadPageData() {
         int rval = super.loadPageData();
-        rest.getService(org, service, new IRestInvokerCallback<ServiceBean>() {
+        rest.getOrganization(org, new IRestInvokerCallback<OrganizationBean>() {
             @Override
-            public void onSuccess(ServiceBean response) {
-                serviceBean = response;
+            public void onSuccess(OrganizationBean response) {
+                organizationBean = response;
                 dataPacketLoaded();
+            }
+            @Override
+            public void onError(Throwable error) {
+                dataPacketError(error);
+            }
+        });
+        rest.getServiceVersions(org, service, new IRestInvokerCallback<List<ServiceVersionBean>>() {
+            @Override
+            public void onSuccess(List<ServiceVersionBean> response) {
+                versionBeans = response;
+                // If no version is specified in the URL, use the most recent (first in the list)
+                if (version == null) {
+                    versionBean = response.get(0);
+                } else {
+                    for (ServiceVersionBean avb : response) {
+                        if (avb.getVersion().equals(version)) {
+                            versionBean = avb;
+                        }
+                    }
+                }
+                if (versionBean == null) {
+                    try {
+                        throw new ServiceVersionNotFoundException();
+                    } catch (Throwable t) {
+                        dataPacketError(t);
+                    }
+                } else {
+                    serviceBean = versionBean.getService();
+                    dataPacketLoaded();
+                    getPlansForServiceVersion();
+                }
             }
             @Override
             public void onError(Throwable error) {
@@ -109,12 +173,34 @@ public class ConsumerServicePage extends AbstractPage {
     }
 
     /**
+     * Makes a REST call to get the plan information for the selected service
+     * version.
+     */
+    protected void getPlansForServiceVersion() {
+        rest.getServiceVersionPlans(org, service, versionBean.getVersion(), new IRestInvokerCallback<List<ServicePlanSummaryBean>>() {
+            @Override
+            public void onSuccess(List<ServicePlanSummaryBean> response) {
+                planBeans = response;
+                dataPacketLoaded();
+            }
+            @Override
+            public void onError(Throwable error) {
+                dataPacketError(error);
+            }
+        });
+    }
+
+    /**
      * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractPage#renderPage()
      */
     @Override
     protected void renderPage() {
-        serviceCard.setValue(serviceBean);
-//        plans.setValue(planBeans);
+        serviceCard.setValue(versionBean);
+        serviceCard.setOrganization(organizationBean);
+        serviceCard.setVersions(versionBeans);
+        serviceCard.selectVersion(versionBean.getVersion());
+        
+        plans.setValue(planBeans);
     }
 
     /**
@@ -122,7 +208,7 @@ public class ConsumerServicePage extends AbstractPage {
      */
     @Override
     protected String getPageTitle() {
-        return i18n.format(AppMessages.TITLE_CONSUME_ORG);
+        return i18n.format(AppMessages.TITLE_CONSUME_SERVICE);
     }
 
 }

@@ -27,7 +27,6 @@ import org.jboss.errai.ui.nav.client.local.PageState;
 import org.jboss.errai.ui.nav.client.local.TransitionTo;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.overlord.apiman.dt.api.beans.apps.ApplicationVersionBean;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaFilterBean;
 import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
@@ -37,7 +36,6 @@ import org.overlord.apiman.dt.ui.client.local.events.CreateContractEvent;
 import org.overlord.apiman.dt.ui.client.local.events.CreateContractEvent.Handler;
 import org.overlord.apiman.dt.ui.client.local.pages.consumer.ServiceList;
 import org.overlord.apiman.dt.ui.client.local.services.ConfigurationService;
-import org.overlord.apiman.dt.ui.client.local.services.ContextKeys;
 import org.overlord.apiman.dt.ui.client.local.services.rest.IRestInvokerCallback;
 import org.overlord.apiman.dt.ui.client.local.util.MultimapUtil;
 
@@ -163,20 +161,8 @@ public class ConsumerServicesPage extends AbstractPage {
      * @param service
      */
     protected void onCreateContract(ServiceSummaryBean service) {
-        ApplicationVersionBean app = (ApplicationVersionBean) currentContext.getAttribute(ContextKeys.CURRENT_APPLICATION_VERSION);
-        if (app != null) {
-            toCreateContract.go(MultimapUtil.fromMultiple(
-                    "svcorg", service.getOrganizationId(), //$NON-NLS-1$
-                    "svc", service.getId(), //$NON-NLS-1$
-                    "svcv", null, //$NON-NLS-1$
-                    "apporg", app.getApplication().getOrganizationId(), //$NON-NLS-1$
-                    "app", app.getApplication().getId(), //$NON-NLS-1$
-                    "appv", app.getVersion() //$NON-NLS-1$
-                    ));
-        } else {
-            toCreateContract.go(MultimapUtil.fromMultiple("svcorg", service.getOrganizationId(), "svc", //$NON-NLS-1$ //$NON-NLS-2$
-                    service.getId()));
-        }
+        toCreateContract.go(MultimapUtil.fromMultiple("svcorg", service.getOrganizationId(), "svc", //$NON-NLS-1$ //$NON-NLS-2$
+                service.getId()));
     }
 
     /**

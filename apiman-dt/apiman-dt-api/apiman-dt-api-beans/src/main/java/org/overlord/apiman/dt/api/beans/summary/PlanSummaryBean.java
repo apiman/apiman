@@ -20,8 +20,8 @@ import java.io.Serializable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
- * A bean modeling a summary of an Plan.  Typically used when listing
- * all Plans visible to a user.
+ * A bean modeling a summary of a Plan.  Typically used when listing
+ * plans in an org.
  *
  * @author eric.wittmann@redhat.com
  */
