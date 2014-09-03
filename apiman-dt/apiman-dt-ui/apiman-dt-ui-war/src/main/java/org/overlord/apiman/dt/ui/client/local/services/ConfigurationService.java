@@ -38,7 +38,6 @@ import com.google.gwt.http.client.URL;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 
 /**
  * An application configuration service. This service is responsible for getting
@@ -100,7 +99,7 @@ public class ConfigurationService {
                         @Override
                         public void onResponseReceived(Request request, Response response) {
                             if (response.getStatusCode() != 200) {
-                                Window.alert("[001] Authentication token refresh failure: " + url); //$NON-NLS-1$
+                                GWT.log("[001] Authentication token refresh failure: " + url); //$NON-NLS-1$
                             } else {
                                 BearerTokenCredentialsBean bean = new BearerTokenCredentialsBean();
                                 JSONObject root = JSONParser.parseStrict(response.getText()).isObject();
@@ -112,11 +111,11 @@ public class ConfigurationService {
                         }
                         @Override
                         public void onError(Request request, Throwable exception) {
-                            Window.alert("[002] Authentication token refresh failure: " + url); //$NON-NLS-1$
+                            GWT.log("[002] Authentication token refresh failure: " + url); //$NON-NLS-1$
                         }
                     });
                 } catch (RequestException e) {
-                    Window.alert("Authentication token refresh failed!"); //$NON-NLS-1$
+                    GWT.log("Authentication token refresh failed!"); //$NON-NLS-1$
                 }
             }
         };

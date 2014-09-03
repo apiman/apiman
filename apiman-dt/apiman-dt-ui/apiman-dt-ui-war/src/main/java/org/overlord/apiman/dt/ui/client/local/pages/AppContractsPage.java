@@ -34,7 +34,6 @@ import org.overlord.apiman.dt.ui.client.local.util.MultimapUtil;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.TextBox;
 
@@ -175,7 +174,7 @@ public class AppContractsPage extends AbstractAppPage {
             }
             @Override
             public void onError(Throwable error) {
-                Window.alert(i18n.format(AppMessages.BREAK_CONTRACT_FAILURE));
+                dataPacketError(error);
             }
         });
     }

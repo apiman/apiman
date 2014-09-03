@@ -31,7 +31,6 @@ import org.overlord.apiman.dt.ui.client.local.util.MultimapUtil;
 import org.overlord.commons.gwt.client.local.widgets.AsyncActionButton;
 
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.TextBox;
 
 
@@ -99,8 +98,7 @@ public class NewOrgPage extends AbstractPage {
             }
             @Override
             public void onError(Throwable error) {
-                // TODO do something interesting here!
-                Window.alert("Org creation failed: " + error.getMessage()); //$NON-NLS-1$
+                dataPacketError(error);
             }
         });
     }
