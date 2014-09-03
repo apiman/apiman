@@ -32,6 +32,8 @@ import org.overlord.apiman.dt.api.beans.policies.PolicyBean;
 import org.overlord.apiman.dt.api.beans.policies.PolicyDefinitionBean;
 import org.overlord.apiman.dt.api.beans.policies.PolicyType;
 import org.overlord.apiman.dt.ui.client.local.AppMessages;
+import org.overlord.apiman.dt.ui.client.local.events.IsFormValidEvent;
+import org.overlord.apiman.dt.ui.client.local.events.IsFormValidEvent.Handler;
 import org.overlord.apiman.dt.ui.client.local.pages.policy.IPolicyConfigurationForm;
 import org.overlord.apiman.dt.ui.client.local.pages.policy.PolicyDefinitionSelectBox;
 import org.overlord.apiman.dt.ui.client.local.services.PolicyConfigurationFormFactory;
@@ -145,6 +147,7 @@ public class NewPolicyPage extends AbstractPage {
     protected void renderPage() {
         super.renderPage();
         typeSelector.setOptions(policyDefBeans);
+        createButton.setEnabled(false);
     }
 
     /**
@@ -158,6 +161,13 @@ public class NewPolicyPage extends AbstractPage {
             policyHeading.setVisible(false);
         } else {
             policyForm = formFactory.createForm(value);
+            policyForm.addIsFormValidHandler(new Handler() {
+                @Override
+                public void onIsFormValid(IsFormValidEvent event) {
+                    createButton.setEnabled(event.isValid());
+                }
+            });
+            policyForm.setValue(null);
             policyFormWrapper.clear();
             policyFormWrapper.add(policyForm);
             policyFormWrapper.setVisible(true);

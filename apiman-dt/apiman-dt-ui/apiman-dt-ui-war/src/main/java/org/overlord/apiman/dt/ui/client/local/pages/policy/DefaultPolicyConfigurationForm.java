@@ -21,6 +21,7 @@ import javax.inject.Inject;
 
 import org.overlord.apiman.dt.ui.client.local.AppMessages;
 import org.overlord.apiman.dt.ui.client.local.ClientMessages;
+import org.overlord.apiman.dt.ui.client.local.events.IsFormValidEvent;
 
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -92,6 +93,16 @@ public class DefaultPolicyConfigurationForm extends FlowPanel implements IPolicy
     @Override
     public void setValue(String value, boolean fireEvents) {
         text.setValue(value, fireEvents);
+        
+        IsFormValidEvent.fire(this, Boolean.TRUE);
+    }
+
+    /**
+     * @see org.overlord.apiman.dt.ui.client.local.events.IsFormValidEvent.HasIsFormValidHandlers#addIsFormValidHandler(org.overlord.apiman.dt.ui.client.local.events.IsFormValidEvent.Handler)
+     */
+    @Override
+    public HandlerRegistration addIsFormValidHandler(IsFormValidEvent.Handler handler) {
+        return addHandler(handler, IsFormValidEvent.getType());
     }
 
 }

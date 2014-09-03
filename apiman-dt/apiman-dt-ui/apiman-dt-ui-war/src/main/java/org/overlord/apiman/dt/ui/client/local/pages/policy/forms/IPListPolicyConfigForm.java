@@ -24,6 +24,7 @@ import javax.inject.Inject;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.overlord.apiman.dt.ui.client.local.events.IsFormValidEvent;
 import org.overlord.apiman.dt.ui.client.local.pages.policy.IPolicyConfigurationForm;
 import org.overlord.apiman.dt.ui.client.local.services.BeanMarshallingService;
 import org.overlord.apiman.engine.policies.config.IPWhitelistConfig;
@@ -129,10 +130,14 @@ public class IPListPolicyConfigForm extends Composite implements IPolicyConfigur
             TreeSet<String> sorted = new TreeSet<String>();
             if (config.getIpList() != null && !config.getIpList().isEmpty()) {
                 sorted.addAll(config.getIpList());
+                clear.setEnabled(true);
             }
             for (String ip : sorted) {
                 ipAddresses.addItem(ip);
             }
+            IsFormValidEvent.fire(this, Boolean.TRUE);
+        } else {
+            IsFormValidEvent.fire(this, Boolean.TRUE);
         }
     }
 
@@ -196,6 +201,14 @@ public class IPListPolicyConfigForm extends Composite implements IPolicyConfigur
         add.setEnabled(false);
         ipAddress.setValue(""); //$NON-NLS-1$
         ipAddress.setFocus(true);
+    }
+
+    /**
+     * @see org.overlord.apiman.dt.ui.client.local.events.IsFormValidEvent.HasIsFormValidHandlers#addIsFormValidHandler(org.overlord.apiman.dt.ui.client.local.events.IsFormValidEvent.Handler)
+     */
+    @Override
+    public HandlerRegistration addIsFormValidHandler(IsFormValidEvent.Handler handler) {
+        return addHandler(handler, IsFormValidEvent.getType());
     }
 
 }

@@ -24,6 +24,7 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.overlord.apiman.dt.api.beans.summary.ContractSummaryBean;
 import org.overlord.apiman.dt.ui.client.local.AppMessages;
 import org.overlord.apiman.dt.ui.client.local.pages.OrgServicesPage;
+import org.overlord.apiman.dt.ui.client.local.pages.PlanOverviewPage;
 import org.overlord.apiman.dt.ui.client.local.pages.ServiceOverviewPage;
 import org.overlord.apiman.dt.ui.client.local.pages.common.NoEntitiesWidget;
 import org.overlord.apiman.dt.ui.client.local.services.ConfigurationService;
@@ -163,7 +164,16 @@ public class AppApisList extends FlowPanel implements HasValue<List<ContractSumm
         Anchor a = new Anchor(bean.getServiceName());
         sp.add(a);
         a.setHref(navHelper.createHrefToPage(ServiceOverviewPage.class,
-                MultimapUtil.fromMultiple("org", bean.getServiceOrganizationId(), "service", bean.getServiceId()))); //$NON-NLS-1$ //$NON-NLS-2$
+                MultimapUtil.fromMultiple("org", bean.getServiceOrganizationId(), "service", bean.getServiceId(), "version", bean.getServiceVersion()))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        divider = new InlineLabel(" / "); //$NON-NLS-1$
+        row.add(divider);
+        sp = new SpanPanel();
+        row.add(sp);
+        a = new Anchor('[' + bean.getPlanName() + ']');
+        sp.add(a);
+        a.setHref(navHelper.createHrefToPage(PlanOverviewPage.class,
+                MultimapUtil.fromMultiple("org", bean.getServiceOrganizationId(), "plan", bean.getPlanId(), "version", bean.getPlanVersion()))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        
         sp = new SpanPanel();
         row.add(sp);
         sp.getElement().setClassName("apikey"); //$NON-NLS-1$

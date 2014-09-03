@@ -15,6 +15,8 @@
  */
 package org.overlord.apiman.dt.ui.client.local.pages.policy;
 
+import org.overlord.apiman.dt.ui.client.local.events.IsFormValidEvent.HasIsFormValidHandlers;
+
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.IsWidget;
 
@@ -29,6 +31,6 @@ import com.google.gwt.user.client.ui.IsWidget;
  *
  * @author eric.wittmann@redhat.com
  */
-public interface IPolicyConfigurationForm extends IsWidget, HasValue<String> {
+public interface IPolicyConfigurationForm extends IsWidget, HasValue<String>, HasIsFormValidHandlers {
 
 }

@@ -29,6 +29,8 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.apiman.dt.api.beans.policies.PolicyBean;
 import org.overlord.apiman.dt.api.beans.policies.PolicyType;
 import org.overlord.apiman.dt.ui.client.local.AppMessages;
+import org.overlord.apiman.dt.ui.client.local.events.IsFormValidEvent;
+import org.overlord.apiman.dt.ui.client.local.events.IsFormValidEvent.Handler;
 import org.overlord.apiman.dt.ui.client.local.pages.policy.IPolicyConfigurationForm;
 import org.overlord.apiman.dt.ui.client.local.services.PolicyConfigurationFormFactory;
 import org.overlord.apiman.dt.ui.client.local.services.rest.IRestInvokerCallback;
@@ -129,9 +131,15 @@ public class EditPolicyPage extends AbstractPage {
     protected void renderPage() {
         super.renderPage();
         policyForm = formFactory.createForm(policyBean.getDefinition());
-        policyForm.setValue(policyBean.getConfiguration());
+        policyForm.addIsFormValidHandler(new Handler() {
+            @Override
+            public void onIsFormValid(IsFormValidEvent event) {
+                updateButton.setEnabled(event.isValid());
+            }
+        });
         policyFormWrapper.clear();
         policyFormWrapper.add(policyForm);
+        policyForm.setValue(policyBean.getConfiguration());
 
         String heading = policyBean.getName() + " "  + "Configuration"; //$NON-NLS-1$ //$NON-NLS-2$
         policyHeading.setText(heading);

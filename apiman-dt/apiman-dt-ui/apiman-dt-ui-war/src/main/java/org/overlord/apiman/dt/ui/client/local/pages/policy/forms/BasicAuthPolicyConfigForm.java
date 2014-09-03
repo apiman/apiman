@@ -27,6 +27,7 @@ import javax.inject.Inject;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.overlord.apiman.dt.ui.client.local.events.IsFormValidEvent;
 import org.overlord.apiman.dt.ui.client.local.pages.policy.IPolicyConfigurationForm;
 import org.overlord.apiman.dt.ui.client.local.pages.policy.forms.widgets.IdentitySourceSelectBox;
 import org.overlord.apiman.dt.ui.client.local.services.BeanMarshallingService;
@@ -62,11 +63,11 @@ public class BasicAuthPolicyConfigForm extends Composite implements IPolicyConfi
     BeanMarshallingService marshaller;
     
     @Inject @DataField
-    IdentitySourceSelectBox identitySourceSelector;
-    @Inject @DataField
     TextBox realm;
     @Inject @DataField
     TextBox authenticatedUserHeader;
+    @Inject @DataField
+    IdentitySourceSelectBox identitySourceSelector;
     
     // Static form fields
     //////////////////////////////////////
@@ -82,6 +83,8 @@ public class BasicAuthPolicyConfigForm extends Composite implements IPolicyConfi
     TextBox staticPassword;
     @Inject @DataField
     Button staticAdd;
+    
+    private boolean valid = false;
 
     /**
      * Constructor.
@@ -91,6 +94,21 @@ public class BasicAuthPolicyConfigForm extends Composite implements IPolicyConfi
     
     @PostConstruct
     protected void postConstruct() {
+        KeyUpHandler keyUpValidityHandler = new KeyUpHandler() {
+            @Override
+            public void onKeyUp(KeyUpEvent event) {
+                checkValidity();
+            }
+        };
+        realm.addKeyUpHandler(keyUpValidityHandler);
+        authenticatedUserHeader.addKeyUpHandler(keyUpValidityHandler);
+        staticIdentities.addChangeHandler(new ChangeHandler() {
+            @Override
+            public void onChange(ChangeEvent event) {
+                checkValidity();
+            }
+        });
+        
         staticClear.setEnabled(false);
         staticRemove.setEnabled(false);
         staticAdd.setEnabled(false);
@@ -116,14 +134,15 @@ public class BasicAuthPolicyConfigForm extends Composite implements IPolicyConfi
         identitySourceSelector.addChangeHandler(new ChangeHandler() {
             @Override
             public void onChange(ChangeEvent event) {
-                showSubForm(identitySourceSelector.getValue(identitySourceSelector.getSelectedIndex()));
+                showSubForm(identitySourceSelector.getValue());
+                checkValidity();
             }
         });
         addAttachHandler(new Handler() {
             @Override
             public void onAttachOrDetach(AttachEvent event) {
                 if (event.isAttached()) {
-                    showSubForm(identitySourceSelector.getValue(identitySourceSelector.getSelectedIndex()));
+                    showSubForm(identitySourceSelector.getValue());
                 }
             }
         });
@@ -220,9 +239,13 @@ public class BasicAuthPolicyConfigForm extends Composite implements IPolicyConfi
                 for (String val : sorted) {
                     staticIdentities.addItem(val);
                 }
-                this.identitySourceSelector.setSelectedIndex(1);
+                this.identitySourceSelector.setValue("Static"); //$NON-NLS-1$
                 this.showSubForm("Static"); //$NON-NLS-1$
+                staticClear.setEnabled(true);
             }
+            IsFormValidEvent.fire(this, Boolean.TRUE);
+        } else {
+            IsFormValidEvent.fire(this, Boolean.FALSE);
         }
         if (fireEvents) {
             ValueChangeEvent.fire(this, value);
@@ -246,6 +269,7 @@ public class BasicAuthPolicyConfigForm extends Composite implements IPolicyConfi
         staticIdentities.clear();
         staticRemove.setEnabled(false);
         staticClear.setEnabled(false);
+        checkValidity();
     }
     
     /**
@@ -261,6 +285,7 @@ public class BasicAuthPolicyConfigForm extends Composite implements IPolicyConfi
         }
         staticRemove.setEnabled(false);
         staticClear.setEnabled(staticIdentities.getItemCount() > 0);
+        checkValidity();
     }
     
     /**
@@ -275,10 +300,9 @@ public class BasicAuthPolicyConfigForm extends Composite implements IPolicyConfi
         boolean inserted = false;
         for (int idx = 0; idx < staticIdentities.getItemCount(); idx++) {
             String v = staticIdentities.getValue(idx);
-            // Check for dupes and update
+            // Check for dupes
             if (v.startsWith(newUsername + ":")) { //$NON-NLS-1$
-                staticIdentities.removeItem(idx);
-                staticIdentities.insertItem(newValue, idx);
+                inserted = true;
                 staticIdentities.setSelectedIndex(idx);
                 break;
             }
@@ -300,6 +324,37 @@ public class BasicAuthPolicyConfigForm extends Composite implements IPolicyConfi
         staticUsername.setValue(""); //$NON-NLS-1$
         staticUsername.setFocus(true);
         staticPassword.setValue(""); //$NON-NLS-1$
+        checkValidity();
+    }
+    
+    /**
+     * @see org.overlord.apiman.dt.ui.client.local.events.IsFormValidEvent.HasIsFormValidHandlers#addIsFormValidHandler(org.overlord.apiman.dt.ui.client.local.events.IsFormValidEvent.Handler)
+     */
+    @Override
+    public HandlerRegistration addIsFormValidHandler(IsFormValidEvent.Handler handler) {
+        return addHandler(handler, IsFormValidEvent.getType());
+    }
+
+    /**
+     * Determine whether the form is valid (the user has completed filling out the form).
+     */
+    protected void checkValidity() {
+        Boolean validity = Boolean.TRUE;
+        String authRealm = realm.getValue();
+        String identitySourceType = identitySourceSelector.getValue();
+        if (authRealm.trim().isEmpty()) {
+            validity = Boolean.FALSE;
+        }
+        if ("Static".equals(identitySourceType)) { //$NON-NLS-1$
+            if (staticIdentities.getItemCount() == 0) {
+                validity = Boolean.FALSE;
+            }
+        } else if ("JDBC".equals(identitySourceType)) { //$NON-NLS-1$
+        } else if ("LDAP".equals(identitySourceType)) { //$NON-NLS-1$
+        } else {
+            validity = Boolean.FALSE;
+        }
+        IsFormValidEvent.fire(this, validity);
     }
 
 }

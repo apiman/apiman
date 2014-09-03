@@ -24,7 +24,10 @@ import javax.inject.Inject;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.apiman.dt.api.beans.summary.PlanSummaryBean;
+import org.overlord.apiman.dt.ui.client.local.pages.PlanOverviewPage;
 import org.overlord.apiman.dt.ui.client.local.pages.common.VersionSelectBox;
+import org.overlord.apiman.dt.ui.client.local.services.NavigationHelperService;
+import org.overlord.apiman.dt.ui.client.local.util.MultimapUtil;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -45,6 +48,9 @@ import com.google.gwt.view.client.SelectionChangeEvent.HasSelectionChangedHandle
 @Templated("/org/overlord/apiman/dt/ui/client/local/site/service-plans.html#plan-widget")
 public class ServicePlanWidget extends Composite implements HasSelectionChangedHandlers {
     
+    @Inject 
+    protected NavigationHelperService navHelper;
+
     @Inject @DataField
     CheckBox checkbox;
     @Inject @DataField
@@ -122,6 +128,8 @@ public class ServicePlanWidget extends Composite implements HasSelectionChangedH
     public void setPlanBean(PlanSummaryBean plan) {
         name.setText(plan.getName());
         name.setTitle(plan.getDescription());
+        name.setHref(navHelper.createHrefToPage(PlanOverviewPage.class, MultimapUtil.fromMultiple(
+                "org", plan.getOrganizationId(), "plan", plan.getId()))); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**

@@ -4,6 +4,9 @@ body {
   font-size: 13px;
 }
 
+.italic {
+  font-style: italic;
+}
 
 .vspacer-10, .vspacer-20 {
   width: 100%;
@@ -786,9 +789,6 @@ ol.breadcrumb {
   font-size: 16px;
   font-weight: normal;
   margin-left: 6px;
-}
-.apiman-plan-selector .title a {
-  color: #345;
 }
 .apiman-plan-selector hr {
   margin-top: 0px;
