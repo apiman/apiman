@@ -164,7 +164,7 @@ public class OrgManageMembersPage extends AbstractPage {
         
         String dashHref = navHelper.createHrefToPage(DashboardPage.class, MultimapUtil.fromMultiple());
         breadcrumb.addItem(dashHref, "home", i18n.format(AppMessages.HOME)); //$NON-NLS-1$
-        breadcrumb.addItem(dashHref, "shield", orgMembersHref); //$NON-NLS-1$
+        breadcrumb.addItem(orgMembersHref, "shield", organizationBean.getName()); //$NON-NLS-1$
         breadcrumb.addActiveItem(null, i18n.format(AppMessages.MANAGE_MEMBERS));
     }
 
