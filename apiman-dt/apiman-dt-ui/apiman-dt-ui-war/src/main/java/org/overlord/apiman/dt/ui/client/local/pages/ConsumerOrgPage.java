@@ -32,10 +32,12 @@ import org.overlord.apiman.dt.api.beans.summary.ServiceSummaryBean;
 import org.overlord.apiman.dt.ui.client.local.AppMessages;
 import org.overlord.apiman.dt.ui.client.local.events.RequestMembershipEvent;
 import org.overlord.apiman.dt.ui.client.local.events.RequestMembershipEvent.Handler;
+import org.overlord.apiman.dt.ui.client.local.pages.common.Breadcrumb;
 import org.overlord.apiman.dt.ui.client.local.pages.consumer.ConsumerOrgMemberList;
 import org.overlord.apiman.dt.ui.client.local.pages.consumer.ConsumerOrgServiceList;
 import org.overlord.apiman.dt.ui.client.local.pages.consumer.OrganizationCard;
 import org.overlord.apiman.dt.ui.client.local.services.rest.IRestInvokerCallback;
+import org.overlord.apiman.dt.ui.client.local.util.MultimapUtil;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -57,7 +59,10 @@ public class ConsumerOrgPage extends AbstractPage {
     
     @PageState
     protected String org;
-    
+
+    @Inject @DataField
+    Breadcrumb breadcrumb;
+
     @Inject @DataField
     private OrganizationCard organizationCard;
     @Inject @DataField
@@ -168,6 +173,12 @@ public class ConsumerOrgPage extends AbstractPage {
         organizationCard.setValue(orgBean);
         members.setValue(memberBeans);
         services.setValue(serviceBeans);
+
+        String dashHref = navHelper.createHrefToPage(DashboardPage.class, MultimapUtil.fromMultiple());
+        String consumerOrgsHref = navHelper.createHrefToPage(ConsumerOrgsPage.class, MultimapUtil.fromMultiple());
+        breadcrumb.addItem(dashHref, "home", i18n.format(AppMessages.HOME)); //$NON-NLS-1$
+        breadcrumb.addItem(consumerOrgsHref, "search", i18n.format(AppMessages.ORGANIZATIONS)); //$NON-NLS-1$
+        breadcrumb.addActiveItem("shield", orgBean.getName()); //$NON-NLS-1$
     }
 
     /**

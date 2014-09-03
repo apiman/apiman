@@ -27,6 +27,8 @@ import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
 import org.overlord.apiman.dt.api.beans.services.ServiceBean;
 import org.overlord.apiman.dt.api.beans.services.ServiceVersionBean;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ServiceVersionNotFoundException;
+import org.overlord.apiman.dt.ui.client.local.AppMessages;
+import org.overlord.apiman.dt.ui.client.local.pages.common.Breadcrumb;
 import org.overlord.apiman.dt.ui.client.local.pages.common.VersionSelector;
 import org.overlord.apiman.dt.ui.client.local.services.rest.IRestInvokerCallback;
 import org.overlord.apiman.dt.ui.client.local.util.MultimapUtil;
@@ -56,7 +58,8 @@ public abstract class AbstractServicePage extends AbstractPage {
     ServiceVersionBean versionBean;
     
     @Inject @DataField
-    Anchor organization;
+    Breadcrumb breadcrumb;
+
     @Inject @DataField
     Anchor serviceName;
     @Inject @DataField
@@ -154,6 +157,7 @@ public abstract class AbstractServicePage extends AbstractPage {
      */
     @Override
     protected void renderPage() {
+        String dashHref = navHelper.createHrefToPage(DashboardPage.class, MultimapUtil.fromMultiple());
         String orgServicesHref = navHelper.createHrefToPage(OrgServicesPage.class, MultimapUtil.singleItemMap("org", org)); //$NON-NLS-1$
         String serviceOverviewHref = navHelper.createHrefToPage(ServiceOverviewPage.class, MultimapUtil.fromMultiple("org", org, "service", service, "version", version)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         String serviceImplHref = navHelper.createHrefToPage(ServiceImplPage.class, MultimapUtil.fromMultiple("org", org, "service", service, "version", version)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -168,13 +172,15 @@ public abstract class AbstractServicePage extends AbstractPage {
         toServiceActivity.setHref(serviceActivityHref);
         toNewServiceVersion.setHref(newServiceVersionHref);
 
-        organization.setHref(orgServicesHref);
-        organization.setText(organizationBean.getName());
         serviceName.setHref(serviceOverviewHref);
         serviceName.setText(serviceBean.getName());
         
         versions.setVersions(getVersions());
         versions.setValue(this.versionBean.getVersion());
+        
+        breadcrumb.addItem(dashHref, "home", i18n.format(AppMessages.HOME)); //$NON-NLS-1$
+        breadcrumb.addItem(orgServicesHref, "shield", organizationBean.getName()); //$NON-NLS-1$
+        breadcrumb.addActiveItem("puzzle-piece", serviceBean.getName()); //$NON-NLS-1$
     }
 
     /**

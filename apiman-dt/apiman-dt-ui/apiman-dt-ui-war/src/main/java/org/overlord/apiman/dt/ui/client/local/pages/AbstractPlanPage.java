@@ -27,6 +27,8 @@ import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
 import org.overlord.apiman.dt.api.beans.plans.PlanBean;
 import org.overlord.apiman.dt.api.beans.plans.PlanVersionBean;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.PlanVersionNotFoundException;
+import org.overlord.apiman.dt.ui.client.local.AppMessages;
+import org.overlord.apiman.dt.ui.client.local.pages.common.Breadcrumb;
 import org.overlord.apiman.dt.ui.client.local.pages.common.VersionSelector;
 import org.overlord.apiman.dt.ui.client.local.services.rest.IRestInvokerCallback;
 import org.overlord.apiman.dt.ui.client.local.util.MultimapUtil;
@@ -54,9 +56,10 @@ public abstract class AbstractPlanPage extends AbstractPage {
     PlanBean planBean;
     List<PlanVersionBean> versionBeans;
     PlanVersionBean versionBean;
-
+    
     @Inject @DataField
-    Anchor organization;
+    Breadcrumb breadcrumb;
+
     @Inject @DataField
     Anchor thePlan;
     @Inject @DataField
@@ -150,6 +153,7 @@ public abstract class AbstractPlanPage extends AbstractPage {
      */
     @Override
     protected void renderPage() {
+        String dashHref = navHelper.createHrefToPage(DashboardPage.class, MultimapUtil.fromMultiple());
         String orgPlansHref = navHelper.createHrefToPage(OrgPlansPage.class, MultimapUtil.singleItemMap("org", org)); //$NON-NLS-1$
         String planOverviewHref = navHelper.createHrefToPage(PlanOverviewPage.class, MultimapUtil.fromMultiple("org", org, "plan", plan, "version", version)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         String planPoliciesHref = navHelper.createHrefToPage(PlanPoliciesPage.class, MultimapUtil.fromMultiple("org", org, "plan", plan, "version", version)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -160,13 +164,15 @@ public abstract class AbstractPlanPage extends AbstractPage {
         toPlanActivity.setHref(planActivityHref);
         toNewPlanVersion.setHref(newPlanVersionHref);
 
-        organization.setHref(orgPlansHref);
-        organization.setText(organizationBean.getName());
         thePlan.setHref(planOverviewHref);
         thePlan.setText(planBean.getName());
         
         versions.setVersions(getVersions());
         versions.setValue(this.versionBean.getVersion());
+        
+        breadcrumb.addItem(dashHref, "home", i18n.format(AppMessages.HOME)); //$NON-NLS-1$
+        breadcrumb.addItem(orgPlansHref, "shield", organizationBean.getName()); //$NON-NLS-1$
+        breadcrumb.addActiveItem("bar-chart-o", planBean.getName()); //$NON-NLS-1$
     }
 
     /**

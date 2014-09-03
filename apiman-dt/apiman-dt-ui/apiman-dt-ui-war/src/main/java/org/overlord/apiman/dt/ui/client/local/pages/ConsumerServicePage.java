@@ -34,6 +34,7 @@ import org.overlord.apiman.dt.api.rest.contract.exceptions.ServiceVersionNotFoun
 import org.overlord.apiman.dt.ui.client.local.AppMessages;
 import org.overlord.apiman.dt.ui.client.local.events.CreateContractEvent;
 import org.overlord.apiman.dt.ui.client.local.events.CreateContractEvent.Handler;
+import org.overlord.apiman.dt.ui.client.local.pages.common.Breadcrumb;
 import org.overlord.apiman.dt.ui.client.local.pages.consumer.ConsumerServicePlanList;
 import org.overlord.apiman.dt.ui.client.local.pages.consumer.ServiceCard;
 import org.overlord.apiman.dt.ui.client.local.services.rest.IRestInvokerCallback;
@@ -62,7 +63,10 @@ public class ConsumerServicePage extends AbstractPage {
     protected String service;
     @PageState
     protected String version;
-    
+
+    @Inject @DataField
+    Breadcrumb breadcrumb;
+
     @Inject @DataField
     private ServiceCard serviceCard;
     @Inject @DataField
@@ -201,6 +205,12 @@ public class ConsumerServicePage extends AbstractPage {
         serviceCard.selectVersion(versionBean.getVersion());
         
         plans.setValue(planBeans);
+
+        String dashHref = navHelper.createHrefToPage(DashboardPage.class, MultimapUtil.fromMultiple());
+        String consumerServicesHref = navHelper.createHrefToPage(ConsumerServicesPage.class, MultimapUtil.fromMultiple());
+        breadcrumb.addItem(dashHref, "home", i18n.format(AppMessages.HOME)); //$NON-NLS-1$
+        breadcrumb.addItem(consumerServicesHref, "search", i18n.format(AppMessages.SERVICES)); //$NON-NLS-1$
+        breadcrumb.addActiveItem("puzzle-piece", serviceBean.getName()); //$NON-NLS-1$
     }
 
     /**

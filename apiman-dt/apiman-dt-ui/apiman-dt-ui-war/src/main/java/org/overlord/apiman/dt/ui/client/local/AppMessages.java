@@ -242,4 +242,11 @@ public class AppMessages {
     @TranslationKey(defaultValue = "No plans are currently offered by this service.")
     public static final String NO_PLANS_IN_CONSUMER_SERVICE_MESSAGE = "noEntitiesFound.plans-in-consumer-service"; //$NON-NLS-1$
 
+    @TranslationKey(defaultValue = "Home")
+    public static final String HOME = "home"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "Organizations")
+    public static final String ORGANIZATIONS = "organizations"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "Services")
+    public static final String SERVICES = "services"; //$NON-NLS-1$
+
 }

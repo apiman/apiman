@@ -20,6 +20,8 @@ import javax.inject.Inject;
 import org.jboss.errai.ui.nav.client.local.PageState;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.overlord.apiman.dt.api.beans.idm.UserBean;
+import org.overlord.apiman.dt.ui.client.local.AppMessages;
+import org.overlord.apiman.dt.ui.client.local.pages.common.Breadcrumb;
 import org.overlord.apiman.dt.ui.client.local.services.rest.IRestInvokerCallback;
 import org.overlord.apiman.dt.ui.client.local.util.Formatting;
 import org.overlord.apiman.dt.ui.client.local.util.MultimapUtil;
@@ -40,6 +42,9 @@ public abstract class AbstractUserPage extends AbstractPage {
     
     UserBean userBean;
 
+    @Inject @DataField
+    Breadcrumb breadcrumb;
+    
     @Inject @DataField
     Label fullName;
     @Inject @DataField
@@ -114,6 +119,10 @@ public abstract class AbstractUserPage extends AbstractPage {
         } else {
             joinedOn.setText("N/A"); //$NON-NLS-1$
         }
+        
+        String dashHref = navHelper.createHrefToPage(DashboardPage.class, MultimapUtil.fromMultiple());
+        breadcrumb.addItem(dashHref, "home", i18n.format(AppMessages.HOME)); //$NON-NLS-1$
+        breadcrumb.addActiveItem("user", userBean.getFullName()); //$NON-NLS-1$
     }
 
 }

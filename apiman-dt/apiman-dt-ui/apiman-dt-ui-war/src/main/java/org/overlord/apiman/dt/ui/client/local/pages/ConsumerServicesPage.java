@@ -34,6 +34,7 @@ import org.overlord.apiman.dt.api.beans.summary.ServiceSummaryBean;
 import org.overlord.apiman.dt.ui.client.local.AppMessages;
 import org.overlord.apiman.dt.ui.client.local.events.CreateContractEvent;
 import org.overlord.apiman.dt.ui.client.local.events.CreateContractEvent.Handler;
+import org.overlord.apiman.dt.ui.client.local.pages.common.Breadcrumb;
 import org.overlord.apiman.dt.ui.client.local.pages.consumer.ServiceList;
 import org.overlord.apiman.dt.ui.client.local.services.ConfigurationService;
 import org.overlord.apiman.dt.ui.client.local.services.rest.IRestInvokerCallback;
@@ -60,7 +61,10 @@ public class ConsumerServicesPage extends AbstractPage {
     
     @PageState
     protected String query;
-    
+
+    @Inject @DataField
+    Breadcrumb breadcrumb;
+
     @Inject @DataField
     private TextBox searchBox;
     @Inject @DataField
@@ -154,6 +158,10 @@ public class ConsumerServicesPage extends AbstractPage {
             searchBox.setValue(""); //$NON-NLS-1$
         }
         services.setValue(serviceBeans);
+
+        String dashHref = navHelper.createHrefToPage(DashboardPage.class, MultimapUtil.fromMultiple());
+        breadcrumb.addItem(dashHref, "home", i18n.format(AppMessages.HOME)); //$NON-NLS-1$
+        breadcrumb.addActiveItem("search", i18n.format(AppMessages.SERVICES)); //$NON-NLS-1$
     }
     
     /**

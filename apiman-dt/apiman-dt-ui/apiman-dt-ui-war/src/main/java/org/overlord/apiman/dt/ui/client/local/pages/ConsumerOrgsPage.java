@@ -35,6 +35,7 @@ import org.overlord.apiman.dt.api.beans.search.SearchCriteriaFilterBean;
 import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
 import org.overlord.apiman.dt.api.beans.summary.OrganizationSummaryBean;
 import org.overlord.apiman.dt.ui.client.local.AppMessages;
+import org.overlord.apiman.dt.ui.client.local.pages.common.Breadcrumb;
 import org.overlord.apiman.dt.ui.client.local.pages.consumer.OrganizationList;
 import org.overlord.apiman.dt.ui.client.local.services.ConfigurationService;
 import org.overlord.apiman.dt.ui.client.local.services.rest.IRestInvokerCallback;
@@ -61,7 +62,10 @@ public class ConsumerOrgsPage extends AbstractPage {
     
     @PageState
     protected String query;
-    
+
+    @Inject @DataField
+    Breadcrumb breadcrumb;
+
     @Inject @DataField
     private TextBox searchBox;
     @Inject @DataField
@@ -164,6 +168,10 @@ public class ConsumerOrgsPage extends AbstractPage {
         }
         orgs.setMemberOrgs(memberOrgs);
         orgs.setValue(orgBeans);
+
+        String dashHref = navHelper.createHrefToPage(DashboardPage.class, MultimapUtil.fromMultiple());
+        breadcrumb.addItem(dashHref, "home", i18n.format(AppMessages.HOME)); //$NON-NLS-1$
+        breadcrumb.addActiveItem("search", i18n.format(AppMessages.ORGANIZATIONS)); //$NON-NLS-1$
     }
 
     /**

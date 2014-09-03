@@ -27,6 +27,8 @@ import org.overlord.apiman.dt.api.beans.apps.ApplicationBean;
 import org.overlord.apiman.dt.api.beans.apps.ApplicationVersionBean;
 import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ApplicationVersionNotFoundException;
+import org.overlord.apiman.dt.ui.client.local.AppMessages;
+import org.overlord.apiman.dt.ui.client.local.pages.common.Breadcrumb;
 import org.overlord.apiman.dt.ui.client.local.pages.common.VersionSelector;
 import org.overlord.apiman.dt.ui.client.local.services.ContextKeys;
 import org.overlord.apiman.dt.ui.client.local.services.rest.IRestInvokerCallback;
@@ -57,7 +59,8 @@ public abstract class AbstractAppPage extends AbstractPage {
     ApplicationVersionBean versionBean;
     
     @Inject @DataField
-    Anchor organization;
+    Breadcrumb breadcrumb;
+    
     @Inject @DataField
     Anchor application;
     @Inject @DataField
@@ -157,6 +160,7 @@ public abstract class AbstractAppPage extends AbstractPage {
      */
     @Override
     protected void renderPage() {
+        String dashHref = navHelper.createHrefToPage(DashboardPage.class, MultimapUtil.fromMultiple());
         String orgAppsHref = navHelper.createHrefToPage(OrgAppsPage.class, MultimapUtil.singleItemMap("org", org)); //$NON-NLS-1$
         String appOverviewHref = navHelper.createHrefToPage(AppOverviewPage.class, MultimapUtil.fromMultiple("org", org, "app", app, "version", version)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         String appContractsHref = navHelper.createHrefToPage(AppContractsPage.class, MultimapUtil.fromMultiple("org", org, "app", app, "version", version)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -171,13 +175,15 @@ public abstract class AbstractAppPage extends AbstractPage {
         toAppActivity.setHref(appActivityHref);
         toNewAppVersion.setHref(newAppVersionHref);
 
-        organization.setHref(orgAppsHref);
-        organization.setText(organizationBean.getName());
         application.setHref(appOverviewHref);
         application.setText(applicationBean.getName());
         
         versions.setVersions(getVersions());
         versions.setValue(this.versionBean.getVersion());
+        
+        breadcrumb.addItem(dashHref, "home", i18n.format(AppMessages.HOME)); //$NON-NLS-1$
+        breadcrumb.addItem(orgAppsHref, "shield", organizationBean.getName()); //$NON-NLS-1$
+        breadcrumb.addActiveItem("gears", applicationBean.getName()); //$NON-NLS-1$
     }
 
     /**
