@@ -33,6 +33,7 @@ import org.overlord.apiman.dt.api.beans.members.MemberBean;
 import org.overlord.apiman.dt.api.beans.members.MemberRoleBean;
 import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
 import org.overlord.apiman.dt.ui.client.local.AppMessages;
+import org.overlord.apiman.dt.ui.client.local.pages.common.Breadcrumb;
 import org.overlord.apiman.dt.ui.client.local.pages.common.RoleMultiSelector;
 import org.overlord.apiman.dt.ui.client.local.pages.org.MemberCard;
 import org.overlord.apiman.dt.ui.client.local.services.ContextKeys;
@@ -63,7 +64,10 @@ public class OrgManageMembersPage extends AbstractPage {
     OrganizationBean organizationBean;
     List<MemberBean> memberBeans;
     List<RoleBean> roleBeans;
-    
+
+    @Inject @DataField
+    Breadcrumb breadcrumb;
+
     @Inject @DataField
     Anchor organization;
     @Inject @DataField
@@ -157,6 +161,11 @@ public class OrgManageMembersPage extends AbstractPage {
 
         roleSelector.setOptions(roleBeans);
         refreshCards();
+        
+        String dashHref = navHelper.createHrefToPage(DashboardPage.class, MultimapUtil.fromMultiple());
+        breadcrumb.addItem(dashHref, "home", i18n.format(AppMessages.HOME)); //$NON-NLS-1$
+        breadcrumb.addItem(dashHref, "shield", orgMembersHref); //$NON-NLS-1$
+        breadcrumb.addActiveItem(null, i18n.format(AppMessages.MANAGE_MEMBERS));
     }
 
     /**

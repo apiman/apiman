@@ -297,14 +297,6 @@ public class NewContractPage extends AbstractPage {
     @Override
     protected int loadPageData() {
         int rval = super.loadPageData();
-        if (app == null) {
-            ApplicationVersionBean ctxapp = (ApplicationVersionBean) currentContext.getAttribute(ContextKeys.CURRENT_APPLICATION_VERSION);
-            if (ctxapp != null) {
-                app = ctxapp.getApplication().getId();
-                apporg = ctxapp.getApplication().getOrganizationId();
-                appv = ctxapp.getVersion();
-            }
-        }
         rest.getCurrentUserApps(new IRestInvokerCallback<List<ApplicationSummaryBean>>() {
             @Override
             public void onSuccess(List<ApplicationSummaryBean> response) {
@@ -343,9 +335,21 @@ public class NewContractPage extends AbstractPage {
      * @return the initial application to select based on the page state
      */
     private ApplicationSummaryBean getInitialContextApp() {
-        for (ApplicationSummaryBean appBean : applicationBeans) {
-            if (appBean.getOrganizationId().equals(apporg) && appBean.getId().equals(app)) {
-                return appBean;
+        if (app == null) {
+            ApplicationVersionBean ctxapp = (ApplicationVersionBean) currentContext.getAttribute(ContextKeys.CURRENT_APPLICATION_VERSION);
+            if (ctxapp != null) {
+                for (ApplicationSummaryBean appBean : applicationBeans) {
+                    if (appBean.getOrganizationId().equals(ctxapp.getApplication().getOrganizationId())
+                            && appBean.getId().equals(ctxapp.getApplication().getId())) {
+                        return appBean;
+                    }
+                }
+            }
+        } else {
+            for (ApplicationSummaryBean appBean : applicationBeans) {
+                if (appBean.getOrganizationId().equals(apporg) && appBean.getId().equals(app)) {
+                    return appBean;
+                }
             }
         }
         return null;

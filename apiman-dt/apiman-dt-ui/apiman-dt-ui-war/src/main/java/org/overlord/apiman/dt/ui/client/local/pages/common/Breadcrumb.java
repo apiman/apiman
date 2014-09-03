@@ -53,8 +53,10 @@ public class Breadcrumb extends OrderedListPanel {
     public void addItem(String url, String icon, String label) {
         AnchorPanel ap = new AnchorPanel();
         ap.setHref(url);
-        FontAwesomeIcon fai = new FontAwesomeIcon(icon, true);
-        ap.add(fai);
+        if (icon != null) {
+            FontAwesomeIcon fai = new FontAwesomeIcon(icon, true);
+            ap.add(fai);
+        }
         InlineLabel l = new InlineLabel(label);
         l.getElement().setClassName(""); //$NON-NLS-1$
         ap.add(l);
@@ -68,8 +70,10 @@ public class Breadcrumb extends OrderedListPanel {
      */
     public void addActiveItem(String icon, String label) {
         SpanPanel sp = new SpanPanel();
-        FontAwesomeIcon fai = new FontAwesomeIcon(icon, true);
-        sp.add(fai);
+        if (icon != null) {
+            FontAwesomeIcon fai = new FontAwesomeIcon(icon, true);
+            sp.add(fai);
+        }
         InlineLabel l = new InlineLabel(label);
         l.getElement().setClassName(""); //$NON-NLS-1$
         sp.add(l);

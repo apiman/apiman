@@ -248,5 +248,7 @@ public class AppMessages {
     public static final String ORGANIZATIONS = "organizations"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "Services")
     public static final String SERVICES = "services"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "Manage Members")
+    public static final String MANAGE_MEMBERS = "manage-members"; //$NON-NLS-1$
 
 }
