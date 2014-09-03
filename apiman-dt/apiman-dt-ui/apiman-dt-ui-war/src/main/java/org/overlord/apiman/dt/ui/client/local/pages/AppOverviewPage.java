@@ -116,6 +116,29 @@ public class AppOverviewPage extends AbstractAppPage {
         toUserHref = navHelper.createHrefToPage(UserAppsPage.class,
                 MultimapUtil.fromMultiple("user", versionBean.getCreatedBy())); //$NON-NLS-1$
         versionCreatedBy.setHref(toUserHref);
+
+        renderApplicationStatus();
+    }
+
+    /**
+     * Sets the proper CSS class(es) on the label based on the application's status.
+     * @param label
+     * @param status
+     */
+    private static void setStatusLabelClass(InlineLabel label, ApplicationStatus status) {
+        label.getElement().setClassName("apiman-label"); //$NON-NLS-1$
+        switch (status) {
+        case Created:
+        case Ready:
+            label.getElement().addClassName("apiman-label-warning"); //$NON-NLS-1$
+            break;
+        case Registered:
+            label.getElement().addClassName("apiman-label-success"); //$NON-NLS-1$
+            break;
+        case Retired:
+            label.getElement().addClassName("apiman-label-default"); //$NON-NLS-1$
+            break;
+        }
     }
 
     /**
@@ -124,8 +147,19 @@ public class AppOverviewPage extends AbstractAppPage {
     @Override
     protected void onPageLoaded() {
         registerButton.reset();
+        renderApplicationStatus();
+    }
+
+    /**
+     * Updates various UI bits based on the status of the app.
+     */
+    protected void renderApplicationStatus() {
+        setStatusLabelClass(status, versionBean.getStatus());
+
         boolean canRegister = versionBean.getStatus() == ApplicationStatus.Ready;
         registerButton.setEnabled(canRegister);
+        boolean registeredOrRetired = versionBean.getStatus() == ApplicationStatus.Registered || versionBean.getStatus() == ApplicationStatus.Retired;
+        registerButton.setVisible(!registeredOrRetired);
     }
     
     /**
@@ -145,8 +179,9 @@ public class AppOverviewPage extends AbstractAppPage {
             @Override
             public void onSuccess(Void response) {
                 registerButton.onActionComplete();
-                registerButton.setEnabled(false);
+                versionBean.setStatus(ApplicationStatus.Registered);
                 status.setText(ApplicationStatus.Registered.toString());
+                renderApplicationStatus();
             }
             
             @Override

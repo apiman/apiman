@@ -112,6 +112,8 @@ public class ServiceOverviewPage extends AbstractServicePage {
         toUserHref = navHelper.createHrefToPage(UserServicesPage.class,
                 MultimapUtil.fromMultiple("user", versionBean.getCreatedBy())); //$NON-NLS-1$
         versionCreatedBy.setHref(toUserHref);
+
+        renderServiceStatus();
     }
     
     /**
@@ -120,8 +122,19 @@ public class ServiceOverviewPage extends AbstractServicePage {
     @Override
     protected void onPageLoaded() {
         publishButton.reset();
-        boolean canPublish = versionBean.getStatus() == ServiceStatus.Ready;
-        publishButton.setEnabled(canPublish);
+        renderServiceStatus();
+    }
+
+    /**
+     * Updates various UI bits based on the status of the app.
+     */
+    protected void renderServiceStatus() {
+        setStatusLabelClass(status, versionBean.getStatus());
+
+        boolean canRegister = versionBean.getStatus() == ServiceStatus.Ready;
+        publishButton.setEnabled(canRegister);
+        boolean publishedOrRetired = versionBean.getStatus() == ServiceStatus.Published || versionBean.getStatus() == ServiceStatus.Retired;
+        publishButton.setVisible(!publishedOrRetired);
     }
     
     /**
@@ -140,9 +153,10 @@ public class ServiceOverviewPage extends AbstractServicePage {
         rest.performAction(action, new IRestInvokerCallback<Void>() {
             @Override
             public void onSuccess(Void response) {
+                versionBean.setStatus(ServiceStatus.Published);
                 publishButton.onActionComplete();
-                publishButton.setEnabled(false);
                 status.setText(ServiceStatus.Published.toString());
+                renderServiceStatus();
             }
             
             @Override
@@ -151,7 +165,28 @@ public class ServiceOverviewPage extends AbstractServicePage {
             }
         });
     }
-    
+
+    /**
+     * Sets the proper CSS class(es) on the label based on the service's status.
+     * @param label
+     * @param status
+     */
+    private static void setStatusLabelClass(InlineLabel label, ServiceStatus status) {
+        label.getElement().setClassName("apiman-label"); //$NON-NLS-1$
+        switch (status) {
+        case Created:
+        case Ready:
+            label.getElement().addClassName("apiman-label-warning"); //$NON-NLS-1$
+            break;
+        case Published:
+            label.getElement().addClassName("apiman-label-success"); //$NON-NLS-1$
+            break;
+        case Retired:
+            label.getElement().addClassName("apiman-label-default"); //$NON-NLS-1$
+            break;
+        }
+    }
+
     /**
      * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractPage#getPageTitle()
      */
