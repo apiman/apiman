@@ -51,6 +51,7 @@ import org.overlord.apiman.dt.api.core.IStorageQuery;
 import org.overlord.apiman.dt.api.core.exceptions.AlreadyExistsException;
 import org.overlord.apiman.dt.api.core.exceptions.DoesNotExistException;
 import org.overlord.apiman.dt.api.core.exceptions.StorageException;
+import org.overlord.apiman.dt.api.core.impl.PolicyTemplateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -541,7 +542,11 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             query.setParameter("entityVersion", version); //$NON-NLS-1$
             query.setParameter("type", type); //$NON-NLS-1$
             
-            return (List<PolicyBean>) query.getResultList();
+            List<PolicyBean> rval = (List<PolicyBean>) query.getResultList();
+            for (PolicyBean policyBean : rval) {
+                PolicyTemplateUtil.generatePolicyDescription(policyBean);
+            }
+            return rval;
         } catch (Throwable t) {
             JpaUtil.rollbackQuietly(entityManager);
             logger.error(t.getMessage(), t);

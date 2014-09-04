@@ -10,7 +10,7 @@ Content-Type: application/json
       "entityId" : "Service1",
       "entityVersion" : "1.0",
       "name" : "My Test Policy",
-      "description" : "This is a policy that does nothing but test.",
+      "description" : "This is a test policy for ServicesTest.",
       "definition" : {
         "id" : "PolicyDef",
         "name" : "Policy Def",
@@ -18,7 +18,7 @@ Content-Type: application/json
         "policyImpl" : "org.example.policies.PolicyDef",
         "icon" : "policy-def"
       },
-      "configuration" : "{\"foo\" : \"bar\"}",
+      "configuration" : "{\"testName\" : \"ServicesTest\"}",
       "createdBy" : "admin",
       "modifiedBy" : "admin"
     },
@@ -28,7 +28,7 @@ Content-Type: application/json
       "entityId" : "Service1",
       "entityVersion" : "1.0",
       "name" : "Test Policy 2",
-      "description" : "This is our second test policy.",
+      "description" : "This is a test policy for @{testName}.",
       "definition" : {
         "id" : "PolicyDef",
         "name" : "Policy Def",

@@ -16,10 +16,16 @@
 package org.overlord.apiman.dt.api.beans.policies;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -49,6 +55,9 @@ public class PolicyDefinitionBean implements Serializable {
     private String description;
     @Column(updatable=true, nullable=false)
     private String icon;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "pd_templates", joinColumns = @JoinColumn(name = "DEF_ID"))
+    private Set<PolicyDefinitionTemplateBean> templates = new HashSet<PolicyDefinitionTemplateBean>();
 
     /**
      * Constructor.
@@ -124,6 +133,20 @@ public class PolicyDefinitionBean implements Serializable {
      */
     public void setIcon(String icon) {
         this.icon = icon;
+    }
+
+    /**
+     * @return the templates
+     */
+    public Set<PolicyDefinitionTemplateBean> getTemplates() {
+        return templates;
+    }
+
+    /**
+     * @param templates the templates to set
+     */
+    public void setTemplates(Set<PolicyDefinitionTemplateBean> templates) {
+        this.templates = templates;
     }
 
     /**

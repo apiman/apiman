@@ -349,8 +349,6 @@ public class ServiceResourceImpl extends AbstractPolicyResourceImpl implements I
             PolicyBean policy = this.storage.get(policyId, PolicyBean.class);
             if (bean.getName() != null)
                 policy.setName(bean.getName());
-            if (bean.getDescription() != null)
-                policy.setDescription(bean.getDescription());
             if (bean.getConfiguration() != null)
                 policy.setConfiguration(bean.getConfiguration());
             policy.setModifiedOn(new Date());

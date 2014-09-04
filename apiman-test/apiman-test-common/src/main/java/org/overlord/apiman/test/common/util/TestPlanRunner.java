@@ -154,7 +154,7 @@ public class TestPlanRunner {
             HttpResponse response = client.execute(request);
             assertResponse(restTest, response);
         } catch (Error e) {
-            log("[ERROR] " + e.getMessage()); //$NON-NLS-1$
+            logPlain("[ERROR] " + e.getMessage()); //$NON-NLS-1$
             throw e;
         } catch (Exception e) {
             throw new Error(e);
@@ -475,6 +475,15 @@ public class TestPlanRunner {
     private void log(String message, Object... params) {
         String outmsg = MessageFormat.format(message, params);
         logger.info("    >> " + outmsg); //$NON-NLS-1$
+    }
+
+    /**
+     * Logs a message.
+     *
+     * @param message
+     */
+    private void logPlain(String message) {
+        logger.info("    >> " + message); //$NON-NLS-1$
     }
 
 }

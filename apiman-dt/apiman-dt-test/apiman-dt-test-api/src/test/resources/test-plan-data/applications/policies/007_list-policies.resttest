@@ -10,13 +10,19 @@ Content-Type: application/json
       "entityId" : "Application1",
       "entityVersion" : "1.0",
       "name" : "My Test Policy (updated)",
-      "description" : "This is a policy that does nothing but test. (updated)",
+      "description" : "This is a policy that does nothing but test.",
       "definition" : {
         "id" : "PolicyDef",
         "name" : "Policy Def",
         "description" : "This is the test policy def.",
         "policyImpl" : "org.example.policies.PolicyDef",
-        "icon" : "policy-def"
+        "icon" : "policy-def",
+        "templates" : [
+          {
+            "language" : null,
+            "template" : "This is a policy that does nothing but test."
+          }
+        ]
       },
       "configuration" : "{\"foo\" : \"bar\"}",
       "createdBy" : "admin",

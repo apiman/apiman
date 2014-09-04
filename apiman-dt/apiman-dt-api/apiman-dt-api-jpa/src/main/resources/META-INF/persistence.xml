@@ -21,6 +21,7 @@
     <class>org.overlord.apiman.dt.api.beans.plans.PlanVersionBean</class>
     <class>org.overlord.apiman.dt.api.beans.contracts.ContractBean</class>
     <class>org.overlord.apiman.dt.api.beans.policies.PolicyDefinitionBean</class>
+    <class>org.overlord.apiman.dt.api.beans.policies.PolicyDefinitionTemplateBean</class>
     <class>org.overlord.apiman.dt.api.beans.policies.PolicyBean</class>
 
     <properties>

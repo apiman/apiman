@@ -185,7 +185,9 @@ public class BasicAuthPolicyConfigForm extends Composite implements IPolicyConfi
         BasicAuthenticationPolicyConfig config = new BasicAuthenticationPolicyConfig();
         config.setStaticIdentity(new StaticIdentitySource());
         config.setRealm(realm.getValue());
-        config.setForwardIdentityHttpHeader(authenticatedUserHeader.getValue());
+        if (!authenticatedUserHeader.getValue().trim().isEmpty()) {
+            config.setForwardIdentityHttpHeader(authenticatedUserHeader.getValue().trim());
+        }
 
         for (int idx = 0; idx < staticIdentities.getItemCount(); idx++) {
             String val = staticIdentities.getValue(idx);

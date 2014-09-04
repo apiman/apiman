@@ -191,7 +191,6 @@ public class NewPolicyPage extends AbstractPage {
         PolicyBean bean = new PolicyBean();
         bean.setConfiguration(this.policyForm.getValue());
         bean.setName(policyDef.getName());
-        bean.setDescription(policyDef.getDescription());
         bean.setDefinition(policyDef);
         rest.createPolicy(policyType, org, id, ver, bean, new IRestInvokerCallback<PolicyBean>() {
             @Override

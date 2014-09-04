@@ -29,6 +29,7 @@ import org.overlord.apiman.dt.api.beans.plans.PlanBean;
 import org.overlord.apiman.dt.api.beans.plans.PlanStatus;
 import org.overlord.apiman.dt.api.beans.plans.PlanVersionBean;
 import org.overlord.apiman.dt.api.beans.policies.PolicyDefinitionBean;
+import org.overlord.apiman.dt.api.beans.policies.PolicyDefinitionTemplateBean;
 import org.overlord.apiman.dt.api.beans.services.EndpointType;
 import org.overlord.apiman.dt.api.beans.services.ServiceBean;
 import org.overlord.apiman.dt.api.beans.services.ServicePlanBean;
@@ -263,6 +264,10 @@ public class DtApiDataSeeder extends DefaultTestDataSeeder {
         whitelistPolicyDef.setDescription("Only requests that originate from a specified set of valid IP addresses will be allowed through."); //$NON-NLS-1$
         whitelistPolicyDef.setIcon("filter"); //$NON-NLS-1$
         whitelistPolicyDef.setPolicyImpl("class:org.overlord.apiman.engine.policies.IPWhitelistPolicy"); //$NON-NLS-1$
+        PolicyDefinitionTemplateBean templateBean = new PolicyDefinitionTemplateBean();
+        templateBean.setLanguage(null);
+        templateBean.setTemplate("Only requests that originate from the set of @{ipList.size()} configured IP address(es) will be allowed to invoke the managed service."); //$NON-NLS-1$
+        whitelistPolicyDef.getTemplates().add(templateBean);
         storage.create(whitelistPolicyDef);
 
         PolicyDefinitionBean blacklistPolicyDef = new PolicyDefinitionBean();
@@ -271,6 +276,10 @@ public class DtApiDataSeeder extends DefaultTestDataSeeder {
         blacklistPolicyDef.setDescription("Only requests that originate from a specified set of valid IP addresses will be allowed through."); //$NON-NLS-1$
         blacklistPolicyDef.setIcon("thumbs-down"); //$NON-NLS-1$
         blacklistPolicyDef.setPolicyImpl("class:org.overlord.apiman.engine.policies.IPBlacklistPolicy"); //$NON-NLS-1$
+        templateBean = new PolicyDefinitionTemplateBean();
+        templateBean.setLanguage(null);
+        templateBean.setTemplate("Requests that originate from the set of @{ipList.size()} configured IP address(es) will be denied access to the managed service."); //$NON-NLS-1$
+        blacklistPolicyDef.getTemplates().add(templateBean);
         storage.create(blacklistPolicyDef);
 
         PolicyDefinitionBean basicAuthPolicyDef = new PolicyDefinitionBean();
@@ -279,6 +288,10 @@ public class DtApiDataSeeder extends DefaultTestDataSeeder {
         basicAuthPolicyDef.setDescription("Enables HTTP BASIC Authentication on a service.  Some configuration required."); //$NON-NLS-1$
         basicAuthPolicyDef.setIcon("lock"); //$NON-NLS-1$
         basicAuthPolicyDef.setPolicyImpl("class:org.overlord.apiman.engine.policies.BasicAuthenticationPolicy"); //$NON-NLS-1$
+        templateBean = new PolicyDefinitionTemplateBean();
+        templateBean.setLanguage(null);
+        templateBean.setTemplate("Access to the service is protected by BASIC Authentication through the '@{realm}' authentication realm.  @if{forwardIdentityHttpHeader != null}Successfully authenticated requests will forward the authenticated identity to the back end service via the '@{forwardIdentityHttpHeader}' custom HTTP header.@end{}"); //$NON-NLS-1$
+        basicAuthPolicyDef.getTemplates().add(templateBean);
         storage.create(basicAuthPolicyDef);
 
     }

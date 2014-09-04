@@ -2,8 +2,7 @@ PUT /organizations/Organization1/services/Service1/versions/1.0/policies/${polic
 Content-Type: application/json
 
 {
-  "name" : "My Test Policy (updated)",
-  "description" : "This is a policy that does nothing but test. (updated)"
+  "name" : "My Test Policy (updated)"
 }
 ----
 204

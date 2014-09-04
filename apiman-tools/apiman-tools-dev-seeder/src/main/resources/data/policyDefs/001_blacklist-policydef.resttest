@@ -5,7 +5,13 @@ Content-Type: application/json
   "name" : "IP Blacklist Policy",
   "description" : "Requests that originate from a specified set of valid IP addresses will be denied access.",
   "policyImpl" : "class:org.overlord.apiman.engine.policies.IPBlacklistPolicy",
-  "icon" : "thumbs-down"
+  "icon" : "thumbs-down",
+  "templates" : [
+    {
+      "language" : null,
+      "template" : "Requests that originate from the set of @{ipList.size()} configured IP address(es) will be denied access to the managed service."
+    }
+  ]
 }
 ----
 200

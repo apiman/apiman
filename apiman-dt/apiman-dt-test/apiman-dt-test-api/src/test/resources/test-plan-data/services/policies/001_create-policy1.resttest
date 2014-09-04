@@ -7,7 +7,7 @@ Content-Type: application/json
   "definition" : {
     "id" : "PolicyDef"
   },
-  "configuration" : "{\"foo\" : \"bar\"}"
+  "configuration" : "{\"testName\" : \"ServicesTest\"}"
 }
 ----
 200
@@ -20,15 +20,21 @@ X-RestTest-BindTo-policy-id: $.id
   "entityId" : "Service1",
   "entityVersion" : "1.0",
   "name" : "My Test Policy",
-  "description" : "This is a policy that does nothing but test.",
+  "description" : "This is a test policy for ServicesTest.",
   "definition" : {
     "id" : "PolicyDef",
     "name" : "Policy Def",
     "description" : "This is the test policy def.",
     "policyImpl" : "org.example.policies.PolicyDef",
-    "icon" : "policy-def"
+    "icon" : "policy-def",
+    "templates" : [
+      {
+        "language" : null,
+        "template" : "This is a test policy for @{testName}."
+      }
+    ]
   },
-  "configuration" : "{\"foo\" : \"bar\"}",
+  "configuration" : "{\"testName\" : \"ServicesTest\"}",
   "createdBy" : "admin",
   "modifiedBy" : "admin"
 }

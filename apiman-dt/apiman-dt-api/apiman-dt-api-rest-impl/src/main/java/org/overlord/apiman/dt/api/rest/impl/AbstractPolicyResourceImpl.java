@@ -26,6 +26,7 @@ import org.overlord.apiman.dt.api.core.IStorage;
 import org.overlord.apiman.dt.api.core.IStorageQuery;
 import org.overlord.apiman.dt.api.core.exceptions.DoesNotExistException;
 import org.overlord.apiman.dt.api.core.exceptions.StorageException;
+import org.overlord.apiman.dt.api.core.impl.PolicyTemplateUtil;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.NotAuthorizedException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.PolicyDefinitionNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.PolicyNotFoundException;
@@ -81,8 +82,9 @@ public abstract class AbstractPolicyResourceImpl {
             bean.setType(type);
             storage.create(bean);
             
+            PolicyTemplateUtil.generatePolicyDescription(bean);
             return bean;
-        } catch (StorageException e) {
+        } catch (Exception e) {
             throw new SystemErrorException(e);
         }
     }
@@ -114,10 +116,13 @@ public abstract class AbstractPolicyResourceImpl {
             if (!policy.getEntityVersion().equals(entityVersion)) {
                 throw ExceptionFactory.policyNotFoundException(policyId);
             }
+            PolicyTemplateUtil.generatePolicyDescription(policy);
             return policy;
         } catch (DoesNotExistException e) {
             throw ExceptionFactory.policyNotFoundException(policyId);
         } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        } catch (Exception e) {
             throw new SystemErrorException(e);
         }
     }

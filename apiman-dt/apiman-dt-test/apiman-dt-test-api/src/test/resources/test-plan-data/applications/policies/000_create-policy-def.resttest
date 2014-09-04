@@ -5,7 +5,13 @@ Content-Type: application/json
   "name" : "Policy Def",
   "description" : "This is the test policy def.",
   "policyImpl" : "org.example.policies.PolicyDef",
-  "icon" : "policy-def"
+  "icon" : "policy-def",
+  "templates" : [
+    {
+      "language" : null,
+      "template" : "This is a policy that does nothing but test."
+    }
+  ]
 }
 ----
 200
@@ -16,5 +22,11 @@ Content-Type: application/json
   "name" : "Policy Def",
   "description" : "This is the test policy def.",
   "policyImpl" : "org.example.policies.PolicyDef",
-  "icon" : "policy-def"
+  "icon" : "policy-def",
+  "templates" : [
+    {
+      "language" : null,
+      "template" : "This is a policy that does nothing but test."
+    }
+  ]
 }

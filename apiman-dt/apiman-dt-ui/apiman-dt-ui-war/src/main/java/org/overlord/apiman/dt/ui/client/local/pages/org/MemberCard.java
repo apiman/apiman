@@ -234,7 +234,7 @@ public class MemberCard extends Composite implements HasValue<MemberBean> {
         revokeButton.onActionStarted();
 
         // TODO replace this with a bootstrap modal yes/no dialog!
-        if (Window.confirm("This will remove the user from all roles in the Organization.  Really do this?")) {
+        if (Window.confirm("This will remove the user from all roles in the Organization.  Really do this?")) { //$NON-NLS-1$
             // Firing with a null value is a signal to the page that the user wants to delete the card.
             ValueChangeEvent.fire(this, null);
         }

@@ -7,7 +7,6 @@ Content-Type: application/json
   "entityId" : "Plan1",
   "entityVersion" : "1.0",
   "name" : "Plan Policy",
-  "description" : "This Plan Policy is awesome.",
   "configuration" : "{ 'kung' : 'foo' }",
   "definition" : {
     "id" : "PolicyDefOne"
@@ -23,7 +22,6 @@ Content-Type: application/json
   "entityId" : "Plan1",
   "entityVersion" : "1.0",
   "name" : "Plan Policy",
-  "description" : "This Plan Policy is awesome.",
   "configuration" : "{ 'kung' : 'foo' }",
   "createdBy" : "admin",
   "modifiedBy" : "admin",

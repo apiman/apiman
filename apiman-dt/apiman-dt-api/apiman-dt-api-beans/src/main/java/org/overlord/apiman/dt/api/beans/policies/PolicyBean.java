@@ -26,6 +26,7 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
@@ -55,7 +56,8 @@ public class PolicyBean implements Serializable {
     private String entityVersion;
     @Column(updatable=true, nullable=false)
     private String name;
-    @Column(updatable=true, nullable=true, length=512)
+    // description is generated using MVEL
+    @Transient
     private String description;
     @Lob
     @Column(updatable=true, nullable=true)
@@ -232,20 +234,6 @@ public class PolicyBean implements Serializable {
     }
 
     /**
-     * @return the description
-     */
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * @param description the description to set
-     */
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    /**
      * @return the definition
      */
     public PolicyDefinitionBean getDefinition() {
@@ -288,6 +276,20 @@ public class PolicyBean implements Serializable {
         } else if (!id.equals(other.id))
             return false;
         return true;
+    }
+
+    /**
+     * @return the description
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * @param description the description to set
+     */
+    public void setDescription(String description) {
+        this.description = description;
     }
 
 }

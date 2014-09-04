@@ -10,7 +10,6 @@ Content-Type: application/json
       "entityId" : "Plan1",
       "entityVersion" : "1.0",
       "name" : "My Test Policy",
-      "description" : "This is a policy that does nothing but test.",
       "definition" : {
         "id" : "PolicyDef",
         "name" : "Policy Def",
@@ -28,7 +27,6 @@ Content-Type: application/json
       "entityId" : "Plan1",
       "entityVersion" : "1.0",
       "name" : "Test Policy 2",
-      "description" : "This is our second test policy.",
       "definition" : {
         "id" : "PolicyDef",
         "name" : "Policy Def",

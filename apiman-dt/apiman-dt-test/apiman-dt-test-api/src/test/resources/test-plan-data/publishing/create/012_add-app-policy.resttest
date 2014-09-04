@@ -7,7 +7,6 @@ Content-Type: application/json
   "entityId" : "Application1",
   "entityVersion" : "1.0",
   "name" : "Application Policy",
-  "description" : "This Application Policy is awesome.",
   "configuration" : "{ 'foo' : 'bar' }",
   "definition" : {
     "id" : "PolicyDefTwo"
@@ -23,7 +22,6 @@ Content-Type: application/json
   "entityId" : "Application1",
   "entityVersion" : "1.0",
   "name" : "Application Policy",
-  "description" : "This Application Policy is awesome.",
   "configuration" : "{ 'foo' : 'bar' }",
   "createdBy" : "admin",
   "modifiedBy" : "admin",
