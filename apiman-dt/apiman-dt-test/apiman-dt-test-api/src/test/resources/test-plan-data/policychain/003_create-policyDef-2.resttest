@@ -1,0 +1,32 @@
+POST /policyDefs admin/admin
+Content-Type: application/json
+
+{
+  "name" : "Policy Def Two",
+  "description" : "This is the second policy def.",
+  "policyImpl" : "org.example.PolicyDefTwo",
+  "icon" : "one",
+  "templates" : [
+    {
+      "language" : null,
+      "template" : "Policy Def Two: @{message}"
+    }
+  ]
+}
+----
+200
+Content-Type: application/json
+
+{
+  "id" : "PolicyDefTwo",
+  "name" : "Policy Def Two",
+  "description" : "This is the second policy def.",
+  "policyImpl" : "org.example.PolicyDefTwo",
+  "icon" : "one",
+  "templates" : [
+    {
+      "language" : null,
+      "template" : "Policy Def Two: @{message}"
+    }
+  ]
+}

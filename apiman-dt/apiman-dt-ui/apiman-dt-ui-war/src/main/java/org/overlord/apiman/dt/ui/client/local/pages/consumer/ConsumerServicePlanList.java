@@ -15,22 +15,31 @@
  */
 package org.overlord.apiman.dt.ui.client.local.pages.consumer;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.overlord.apiman.dt.api.beans.summary.PolicyChainSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.ServicePlanSummaryBean;
 import org.overlord.apiman.dt.ui.client.local.AppMessages;
 import org.overlord.apiman.dt.ui.client.local.events.CreateContractEvent;
 import org.overlord.apiman.dt.ui.client.local.events.CreateContractEvent.Handler;
 import org.overlord.apiman.dt.ui.client.local.events.CreateContractEvent.HasCreateContractHandlers;
+import org.overlord.apiman.dt.ui.client.local.events.ShowPolicyChainEvent;
+import org.overlord.apiman.dt.ui.client.local.events.ShowPolicyChainEvent.HasShowPolicyChainHandlers;
 import org.overlord.apiman.dt.ui.client.local.pages.common.NoEntitiesWidget;
 import org.overlord.apiman.dt.ui.client.local.services.NavigationHelperService;
 import org.overlord.commons.gwt.client.local.widgets.FontAwesomeIcon;
 import org.overlord.commons.gwt.client.local.widgets.SpanPanel;
 
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -39,6 +48,7 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -48,14 +58,19 @@ import com.google.gwt.user.client.ui.Widget;
  * @author eric.wittmann@redhat.com
  */
 @Dependent
-public class ConsumerServicePlanList extends FlowPanel implements TakesValue<List<ServicePlanSummaryBean>>, HasCreateContractHandlers {
+public class ConsumerServicePlanList extends FlowPanel implements TakesValue<List<ServicePlanSummaryBean>>,
+        HasCreateContractHandlers, HasShowPolicyChainHandlers {
     
     @Inject
     protected NavigationHelperService navHelper;
     @Inject
     protected TranslationService i18n;
+    @Inject
+    protected Instance<PolicyChain> policyChainFactory;
     
     private List<ServicePlanSummaryBean> plans;
+    private Map<String, FlowPanel> chainIndex = new HashMap<String, FlowPanel>();
+    private Set<String> loadedPlans = new HashSet<String>();
 
     /**
      * Constructor.
@@ -87,6 +102,8 @@ public class ConsumerServicePlanList extends FlowPanel implements TakesValue<Lis
      */
     public void refresh() {
         if (plans != null && !plans.isEmpty()) {
+            chainIndex.clear();
+            loadedPlans.clear();
             for (ServicePlanSummaryBean bean : plans) {
                 Widget row = createPlanRow(bean);
                 add(row);
@@ -104,13 +121,26 @@ public class ConsumerServicePlanList extends FlowPanel implements TakesValue<Lis
         FlowPanel container = new FlowPanel();
         container.getElement().setClassName("container-fluid"); //$NON-NLS-1$
         container.getElement().addClassName("apiman-summaryrow"); //$NON-NLS-1$
-        
+
+        FlowPanel chainWrap = new FlowPanel();
+        chainWrap.getElement().setId("chain_" + bean.getPlanId()); //$NON-NLS-1$
+        chainWrap.getElement().setClassName("panel-collapse"); //$NON-NLS-1$
+        chainWrap.getElement().addClassName("collapse"); //$NON-NLS-1$
+        chainWrap.getElement().addClassName("apiman-policy-chain"); //$NON-NLS-1$
+        chainWrap.getElement().getStyle().setMarginTop(15, Unit.PX);
+        chainIndex.put(bean.getPlanId(), chainWrap);
+        FontAwesomeIcon spinner = new FontAwesomeIcon("refresh", true); //$NON-NLS-1$
+        spinner.getElement().addClassName("fa-spin"); //$NON-NLS-1$
+        chainWrap.add(spinner);
+        chainWrap.add(new InlineLabel("Loading policies..."));
+
         FlowPanel row = new FlowPanel();
         container.add(row);
         row.getElement().setClassName("row"); //$NON-NLS-1$
         createTitleAndDescription(bean, row);
         createActions(bean, row);
         
+        container.add(chainWrap);
         container.add(new HTMLPanel("<hr/>")); //$NON-NLS-1$
         
         return container;
@@ -121,7 +151,7 @@ public class ConsumerServicePlanList extends FlowPanel implements TakesValue<Lis
      * @param bean
      * @param row
      */
-    protected void createTitleAndDescription(ServicePlanSummaryBean bean, FlowPanel row) {
+    protected void createTitleAndDescription(final ServicePlanSummaryBean bean, FlowPanel row) {
         FlowPanel div = new FlowPanel();
         row.add(div);
         div.getElement().setClassName("col-md-10"); //$NON-NLS-1$
@@ -136,7 +166,16 @@ public class ConsumerServicePlanList extends FlowPanel implements TakesValue<Lis
         sp.getElement().setClassName("title"); //$NON-NLS-1$
         
         Anchor a = new Anchor();
-        a.setHref("#"); //$NON-NLS-1$
+        a.getElement().setAttribute("data-toggle", "collapse"); //$NON-NLS-1$ //$NON-NLS-2$
+        a.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                if (!loadedPlans.contains(bean.getPlanId())) {
+                    ShowPolicyChainEvent.fire(ConsumerServicePlanList.this, bean.getPlanId());
+                }
+            }
+        });
+        a.setHref("#chain_" + bean.getPlanId()); //$NON-NLS-1$
         a.setText(bean.getPlanName());
         sp.add(a);
         
@@ -171,6 +210,20 @@ public class ConsumerServicePlanList extends FlowPanel implements TakesValue<Lis
             }
         });
     }
+    
+    /**
+     * Renders the policy chain for the given plan.
+     * @param planId
+     * @param chain
+     */
+    public void renderPolicyChain(final String planId, final PolicyChainSummaryBean chain) {
+        FlowPanel chainPanel = this.chainIndex.get(planId);
+        chainPanel.clear();
+        PolicyChain policyChain = policyChainFactory.get();
+        policyChain.setValue(chain.getPolicies());
+        chainPanel.add(policyChain);
+        loadedPlans.add(planId);
+    }
 
     /**
      * @return a widget to display when no plans exist
@@ -185,5 +238,13 @@ public class ConsumerServicePlanList extends FlowPanel implements TakesValue<Lis
     @Override
     public HandlerRegistration addCreateContractHandler(Handler handler) {
         return addHandler(handler, CreateContractEvent.getType());
+    }
+
+    /**
+     * @see org.overlord.apiman.dt.ui.client.local.events.ShowPolicyChainEvent.HasShowPolicyChainHandlers#addShowPolicyChainHandler(org.overlord.apiman.dt.ui.client.local.events.ShowPolicyChainEvent.Handler)
+     */
+    @Override
+    public HandlerRegistration addShowPolicyChainHandler(ShowPolicyChainEvent.Handler handler) {
+        return addHandler(handler, ShowPolicyChainEvent.getType());
     }
 }

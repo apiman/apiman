@@ -1,0 +1,37 @@
+GET /organizations/TestOrganization/services/foo/versions/1.0/plans/Gold/policyChain admin/admin
+
+----
+200
+Content-Type: application/json
+
+{
+  "policies" : [
+    {
+      "type" : "Plan",
+      "organizationId" : "TestOrganization",
+      "entityId" : "Gold",
+      "entityVersion" : "1.0",
+      "name" : "Plan Policy 1",
+      "description" : "Policy Def One: Plan Policy 1",
+      "configuration" : "{\"message\" : \"Plan Policy 1\"}"
+    },
+    {
+      "type" : "Plan",
+      "organizationId" : "TestOrganization",
+      "entityId" : "Gold",
+      "entityVersion" : "1.0",
+      "name" : "Plan Policy 2",
+      "description" : "Policy Def Two: Plan Policy 2",
+      "configuration" : "{\"message\" : \"Plan Policy 2\"}"
+    },
+    {
+      "type" : "Service",
+      "organizationId" : "TestOrganization",
+      "entityId" : "foo",
+      "entityVersion" : "1.0",
+      "name" : "Service Policy 1",
+      "description" : "Policy Def Three: Service Policy 1",
+      "configuration" : "{\"message\" : \"Service Policy 1\"}"
+    }
+  ]
+}

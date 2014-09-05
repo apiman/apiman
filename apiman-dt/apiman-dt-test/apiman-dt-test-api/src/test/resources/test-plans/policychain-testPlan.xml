@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testPlan xmlns="urn:org.overlord.apiman.test:2014:02:testPlan">
+
+  <testGroup name="Initial Creates">
+    <test name="Create Organization 1">test-plan-data/policychain/001_create-org.resttest</test>
+    <test name="Create Policy Def 1">test-plan-data/policychain/002_create-policyDef-1.resttest</test>
+    <test name="Create Policy Def 2">test-plan-data/policychain/003_create-policyDef-2.resttest</test>
+    <test name="Create Policy Def 3">test-plan-data/policychain/004_create-policyDef-3.resttest</test>
+    <test name="Create Gold Plan">test-plan-data/policychain/005_create-plan-gold.resttest</test>
+    <test name="Create Gold Plan 1.0">test-plan-data/policychain/006_create-plan-1-1.0.resttest</test>
+    <test name="Create foo Service">test-plan-data/policychain/007_create-service-foo.resttest</test>
+    <test name="Create foo Service 1.0">test-plan-data/policychain/008_create-service-foo-1.0.resttest</test>
+    <test name="Create plan policy 1">test-plan-data/policychain/009_create-planpolicy-1.resttest</test>
+    <test name="Create plan policy 2">test-plan-data/policychain/010_create-planpolicy-2.resttest</test>
+    <test name="Create service policy 1">test-plan-data/policychain/011_create-servicepolicy-1.resttest</test>
+  </testGroup>
+
+  <!-- Policy Chain -->
+  <testGroup name="Policy Chain">
+    <test name="Gold Policy Chain">test-plan-data/policychain/020_get-policychain-gold.resttest</test>
+  </testGroup>
+
+</testPlan>

@@ -1,0 +1,19 @@
+POST /organizations/TestOrganization/services admin/admin
+Content-Type: application/json
+
+{
+  "name" : "foo",
+  "organizationId" : "TestOrganization",
+  "description" : "Some service for testing policy chains."
+}
+----
+200
+Content-Type: application/json
+
+{
+  "organizationId" : "TestOrganization",
+  "id" : "foo",
+  "name" : "foo",
+  "description" : "Some service for testing policy chains.",
+  "createdBy" : "admin"
+}

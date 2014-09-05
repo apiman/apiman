@@ -41,6 +41,13 @@ public class PolicyTemplateUtil {
     private static final ObjectMapper mapper = new ObjectMapper();
     // Cache a MVEL 2.0 compiled template - the key is PolicyDefId::language
     private static final Map<String, CompiledTemplate> templateCache = new HashMap<String, CompiledTemplate>();
+    
+    /**
+     * Clears out the template cache.
+     */
+    public static void clearCache() {
+        templateCache.clear();
+    }
 
     /**
      * Generates a dynamic description for the given policy and stores the

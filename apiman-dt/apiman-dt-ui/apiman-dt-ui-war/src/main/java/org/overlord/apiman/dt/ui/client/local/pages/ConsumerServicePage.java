@@ -29,11 +29,13 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
 import org.overlord.apiman.dt.api.beans.services.ServiceBean;
 import org.overlord.apiman.dt.api.beans.services.ServiceVersionBean;
+import org.overlord.apiman.dt.api.beans.summary.PolicyChainSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.ServicePlanSummaryBean;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ServiceVersionNotFoundException;
 import org.overlord.apiman.dt.ui.client.local.AppMessages;
 import org.overlord.apiman.dt.ui.client.local.events.CreateContractEvent;
 import org.overlord.apiman.dt.ui.client.local.events.CreateContractEvent.Handler;
+import org.overlord.apiman.dt.ui.client.local.events.ShowPolicyChainEvent;
 import org.overlord.apiman.dt.ui.client.local.pages.common.Breadcrumb;
 import org.overlord.apiman.dt.ui.client.local.pages.consumer.ConsumerServicePlanList;
 import org.overlord.apiman.dt.ui.client.local.pages.consumer.ServiceCard;
@@ -103,8 +105,32 @@ public class ConsumerServicePage extends AbstractPage {
                 ConsumerServicePage.this.onCreateContract((ServicePlanSummaryBean) event.getBean());
             }
         });
+        plans.addShowPolicyChainHandler(new ShowPolicyChainEvent.Handler() {
+            @Override
+            public void onShowPolicyChain(ShowPolicyChainEvent event) {
+                String planId = event.getPlanId();
+                ConsumerServicePage.this.onShowPolicyChain(planId);
+            }
+        });
     }
     
+    /**
+     * Called when the user clicks on one of the 
+     * @param planId
+     */
+    protected void onShowPolicyChain(final String planId) {
+        rest.getServicePlanPolicyChain(organizationBean.getId(), serviceBean.getId(), versionBean.getVersion(), planId, new IRestInvokerCallback<PolicyChainSummaryBean>() {
+            @Override
+            public void onSuccess(PolicyChainSummaryBean response) {
+                plans.renderPolicyChain(planId, response);
+            }
+            @Override
+            public void onError(Throwable error) {
+                dataPacketError(error);
+            }
+        });
+    }
+
     /**
      * Called when the user clicks the Create Contract button on one of the plans.
      * @param bean

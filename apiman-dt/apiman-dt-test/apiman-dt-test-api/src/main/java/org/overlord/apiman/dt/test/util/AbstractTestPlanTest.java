@@ -18,6 +18,7 @@ package org.overlord.apiman.dt.test.util;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.overlord.apiman.dt.api.config.Config;
+import org.overlord.apiman.dt.api.core.impl.PolicyTemplateUtil;
 import org.overlord.apiman.dt.test.server.DtApiTestServer;
 import org.overlord.apiman.dt.test.server.MockGatewayServlet;
 import org.overlord.apiman.test.common.util.TestPlanRunner;
@@ -43,6 +44,7 @@ public abstract class AbstractTestPlanTest {
      * @param classLoader
      */
     protected void runTestPlan(String planPath, ClassLoader classLoader) {
+        PolicyTemplateUtil.clearCache();
         MockGatewayServlet.reset();
         String baseApiUrl = "http://localhost:" + getTestServerPort() + "/apiman-dt-api"; //$NON-NLS-1$ //$NON-NLS-2$
         TestPlanRunner runner = new TestPlanRunner(baseApiUrl);

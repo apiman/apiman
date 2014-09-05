@@ -350,6 +350,11 @@ div.page {
   margin: 8px;
 }
 
+.apiman-plans .apiman-policy-chain {
+  max-height: 200px;
+  overflow: auto;
+}
+
 .apiman-timestamp {
   color: #777;
   margin-left: 3px;

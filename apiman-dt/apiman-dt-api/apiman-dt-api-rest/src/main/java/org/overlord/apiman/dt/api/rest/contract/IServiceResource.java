@@ -31,6 +31,7 @@ import javax.ws.rs.core.MediaType;
 import org.overlord.apiman.dt.api.beans.policies.PolicyBean;
 import org.overlord.apiman.dt.api.beans.services.ServiceBean;
 import org.overlord.apiman.dt.api.beans.services.ServiceVersionBean;
+import org.overlord.apiman.dt.api.beans.summary.PolicyChainSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.ServicePlanSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.ServiceSummaryBean;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.InvalidServiceStatusException;
@@ -152,6 +153,14 @@ public interface IServiceResource {
     public List<PolicyBean> listPolicies(@PathParam("organizationId") String organizationId,
             @PathParam("serviceId") String serviceId, @PathParam("version") String version)
             throws OrganizationNotFoundException, ServiceVersionNotFoundException,
+            NotAuthorizedException;
+
+    @GET
+    @Path("{organizationId}/services/{serviceId}/versions/{version}/plans/{planId}/policyChain")
+    @Produces(MediaType.APPLICATION_JSON)
+    public PolicyChainSummaryBean getPolicyChain(@PathParam("organizationId") String organizationId,
+            @PathParam("serviceId") String serviceId, @PathParam("version") String version,
+            @PathParam("planId") String planId) throws ServiceVersionNotFoundException,
             NotAuthorizedException;
 
 }

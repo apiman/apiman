@@ -1,0 +1,26 @@
+POST /organizations/TestOrganization/services/foo/versions/1.0/policies admin/admin
+Content-Type: application/json
+
+{
+  "name" : "Service Policy 1",
+  "definition" : {
+    "id" : "PolicyDefThree"
+  },
+  "configuration" : "{\"message\" : \"Service Policy 1\"}"
+}
+----
+200
+Content-Type: application/json
+X-RestTest-BindTo-servicepolicy1-id: $.id
+
+{
+  "type" : "Service",
+  "organizationId" : "TestOrganization",
+  "entityId" : "foo",
+  "entityVersion" : "1.0",
+  "name" : "Service Policy 1",
+  "description" : "Policy Def Three: Service Policy 1",
+  "definition" : {
+    "id" : "PolicyDefThree"
+  }
+}

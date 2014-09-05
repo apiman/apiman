@@ -251,4 +251,7 @@ public class AppMessages {
     @TranslationKey(defaultValue = "Manage Members")
     public static final String MANAGE_MEMBERS = "manage-members"; //$NON-NLS-1$
 
+    @TranslationKey(defaultValue = "There are no policies defined.  This is highly irregular!")
+    public static final String EMPTY_POLICY_CHAIN_MESSAGE = "empty-policy-chain"; //$NON-NLS-1$
+
 }

@@ -45,6 +45,7 @@ import org.overlord.apiman.dt.api.beans.summary.ApplicationSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.ContractSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.OrganizationSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.PlanSummaryBean;
+import org.overlord.apiman.dt.api.beans.summary.PolicyChainSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.ServicePlanSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.ServiceSummaryBean;
 import org.overlord.apiman.dt.api.rest.contract.IActionResource;
@@ -445,6 +446,21 @@ public class RestInvokerService {
             IRestInvokerCallback<List<PolicyBean>> callback) {
         CallbackAdapter<List<PolicyBean>> adapter = new CallbackAdapter<List<PolicyBean>>(callback);
         services.call(adapter, adapter).listPolicies(organizationId, serviceId, version);
+    }
+    
+    /**
+     * Gets the policy chain for a particular service + version + plan.  This method
+     * can be used to answer the question:  "What policies will be applied if Service X
+     * is invoked via Plan Y?"
+     * @param organizationId
+     * @param serviceId
+     * @param version
+     * @param planId
+     */
+    public void getServicePlanPolicyChain(String organizationId, String serviceId, String version,
+            String planId, IRestInvokerCallback<PolicyChainSummaryBean> callback) {
+        CallbackAdapter<PolicyChainSummaryBean> adapter = new CallbackAdapter<PolicyChainSummaryBean>(callback);
+        services.call(adapter, adapter).getPolicyChain(organizationId, serviceId, version, planId);
     }
 
     /**

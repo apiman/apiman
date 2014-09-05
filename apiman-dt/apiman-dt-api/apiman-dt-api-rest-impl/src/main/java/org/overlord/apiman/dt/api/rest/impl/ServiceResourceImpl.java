@@ -18,6 +18,7 @@ package org.overlord.apiman.dt.api.rest.impl;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -28,8 +29,10 @@ import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
 import org.overlord.apiman.dt.api.beans.policies.PolicyBean;
 import org.overlord.apiman.dt.api.beans.policies.PolicyType;
 import org.overlord.apiman.dt.api.beans.services.ServiceBean;
+import org.overlord.apiman.dt.api.beans.services.ServicePlanBean;
 import org.overlord.apiman.dt.api.beans.services.ServiceStatus;
 import org.overlord.apiman.dt.api.beans.services.ServiceVersionBean;
+import org.overlord.apiman.dt.api.beans.summary.PolicyChainSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.ServicePlanSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.ServiceSummaryBean;
 import org.overlord.apiman.dt.api.core.IIdmStorage;
@@ -42,6 +45,7 @@ import org.overlord.apiman.dt.api.rest.contract.IServiceResource;
 import org.overlord.apiman.dt.api.rest.contract.IUserResource;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.NotAuthorizedException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationNotFoundException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.PlanNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.PolicyNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ServiceAlreadyExistsException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ServiceNotFoundException;
@@ -398,6 +402,42 @@ public class ServiceResourceImpl extends AbstractPolicyResourceImpl implements I
 
         try {
             return query.getPolicies(organizationId, serviceId, version, PolicyType.Service);
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+    }
+    
+    /**
+     * @see org.overlord.apiman.dt.api.rest.contract.IServiceResource#getPolicyChain(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public PolicyChainSummaryBean getPolicyChain(String organizationId, String serviceId, String version,
+            String planId) throws ServiceVersionNotFoundException, PlanNotFoundException, NotAuthorizedException {
+        if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
+
+        // Try to get the service first - will throw an exception if not found.
+        ServiceVersionBean svb = getVersion(organizationId, serviceId, version);
+
+        try {
+            String planVersion = null;
+            Set<ServicePlanBean> plans = svb.getPlans();
+            for (ServicePlanBean servicePlanBean : plans) {
+                if (servicePlanBean.getPlanId().equals(planId)) {
+                    planVersion = servicePlanBean.getVersion();
+                    break;
+                }
+            }
+            if (planVersion == null) {
+                throw ExceptionFactory.planNotFoundException(planId);
+            }
+            List<PolicyBean> servicePolicies = query.getPolicies(organizationId, serviceId, version, PolicyType.Service);
+            List<PolicyBean> planPolicies = query.getPolicies(organizationId, planId, planVersion, PolicyType.Plan);
+            
+            PolicyChainSummaryBean chain = new PolicyChainSummaryBean();
+            chain.getPolicies().addAll(planPolicies);
+            chain.getPolicies().addAll(servicePolicies);
+            return chain;
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }

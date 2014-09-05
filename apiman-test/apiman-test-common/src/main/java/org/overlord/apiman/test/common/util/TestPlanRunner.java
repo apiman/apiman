@@ -283,13 +283,20 @@ public class TestPlanRunner {
                 log("\tExpression: " + bindExpression); //$NON-NLS-1$
                 log("\t    To Var: " + bindVarName); //$NON-NLS-1$
                 log("\t New Value: " + bindValue); //$NON-NLS-1$
-                System.setProperty(bindVarName, bindValue);
+                if (bindValue == null) {
+                    System.clearProperty(bindVarName);
+                } else {
+                    System.setProperty(bindVarName, bindValue);
+                }
             }
         }
     }
 
     /**
      * Evaluates the given expression against the given JSON object.
+     * 
+     * TODO replace with MVEL
+     * 
      * @param bindExpression
      * @param json
      */
