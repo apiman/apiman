@@ -24,114 +24,154 @@
       <div class="row hr-row">
         <hr/>
       </div>
-      <!-- Application -->
-      <div class="row application-row">
-        <dl>
-          <dt data-i18n-key="application">Application</dt>
-          <dd>
-            <select class="selectpicker" data-live-search="true" data-role="dummy" data-field="applicationSelector">
-              <option data-content="Bedework / <span class='emphasis'>bw-calendar</span>">Bedework / bw-calendar</option>
-              <option data-content="Overlord / <span class='emphasis'>dtgov</span>">Overlord / dtgov</option>
-              <option data-content="Overlord / <span class='emphasis'>s-ramp</span>">Overlord / s-ramp</option>
-            </select>
-          </dd>
-        </dl>
-      </div>
-      <!-- Application Version -->
-      <div class="row application-version-row">
-        <dl>
-          <dt data-i18n-key="application-version">Application Version</dt>
-          <dd>
-            <select class="selectpicker" data-role="dummy" data-field="applicationVersion">
-              <option>2.0</option>
-              <option>1.5</option>
-              <option>1.4</option>
-              <option>1.3</option>
-              <option>1.2</option>
-            </select>
-          </dd>
-        </dl>
-      </div>
-      <!-- Service search bar -->
-      <div class="row service-row">
-        <dl>
-          <dt data-i18n-key="find-service">Find a Service</dt>
-          <dd>
-            <input data-field="searchBox" type="text" class="form-control input-search" placeholder="Search by service name..."></input>
-            <button class="btn btn-default btn-search" data-field="searchButton" data-i18n-key="search" data-icon="fa-cog" placeholder="Searching">Search</button>
-          </dd>
-        </dl>
-      </div>
-      <!-- Service search results -->
-      <div class="row service-row">
-        <div class="panel panel-default input-search-results">
-          <div class="panel-body container-fluid" data-field="services" data-role="dummy">
-            <a href="#" class="item">
-              <i class="fa fa-puzzle-piece fa-fw"></i>
-              <span class="">Overlord</span>
-              <span> / </span>
-              <span class="emphasis">dtgov-deploy</span>
-            </a>
-            <a href="#" class="item">
-              <i class="fa fa-puzzle-piece fa-fw"></i>
-              <span class="">Overlord</span>
-              <span> / </span>
-              <span class="emphasis">s-ramp-api</span>
-            </a>
-            <a href="#" class="item">
-              <i class="fa fa-puzzle-piece fa-fw"></i>
-              <span class="">Overlord</span>
-              <span> / </span>
-              <span class="emphasis">apiman-dt-api</span>
-            </a>
-          </div>
+      <div id="new-contract-form">
+	      <!-- Application -->
+	      <div class="row application-row">
+	        <dl>
+	          <dt data-i18n-key="application">Application</dt>
+	          <dd>
+	            <select class="selectpicker" data-live-search="true" data-role="dummy" data-field="applicationSelector">
+	              <option data-content="Bedework / <span class='emphasis'>bw-calendar</span>">Bedework / bw-calendar</option>
+	              <option data-content="Overlord / <span class='emphasis'>dtgov</span>">Overlord / dtgov</option>
+	              <option data-content="Overlord / <span class='emphasis'>s-ramp</span>">Overlord / s-ramp</option>
+	            </select>
+	          </dd>
+	        </dl>
+	      </div>
+	      <!-- Application Version -->
+	      <div class="row application-version-row">
+	        <dl>
+	          <dt data-i18n-key="application-version">Application Version</dt>
+	          <dd>
+	            <select class="selectpicker" data-role="dummy" data-field="applicationVersion">
+	              <option>2.0</option>
+	              <option>1.5</option>
+	              <option>1.4</option>
+	              <option>1.3</option>
+	              <option>1.2</option>
+	            </select>
+	          </dd>
+	        </dl>
+	      </div>
+	      <!-- Service search bar -->
+	      <div class="row service-row">
+	        <dl>
+	          <dt data-i18n-key="find-service">Find a Service</dt>
+	          <dd>
+	            <input data-field="searchBox" type="text" class="form-control input-search" placeholder="Search by service name..."></input>
+	            <button class="btn btn-default btn-search" data-field="searchButton" data-i18n-key="search" data-icon="fa-cog" placeholder="Searching">Search</button>
+	          </dd>
+	        </dl>
+	      </div>
+	      <!-- Service search results -->
+	      <div class="row service-row">
+	        <div class="panel panel-default input-search-results">
+	          <div class="panel-body container-fluid" data-field="services" data-role="dummy">
+	            <a href="#" class="item">
+	              <i class="fa fa-puzzle-piece fa-fw"></i>
+	              <span class="">Overlord</span>
+	              <span> / </span>
+	              <span class="emphasis">dtgov-deploy</span>
+	            </a>
+	            <a href="#" class="item">
+	              <i class="fa fa-puzzle-piece fa-fw"></i>
+	              <span class="">Overlord</span>
+	              <span> / </span>
+	              <span class="emphasis">s-ramp-api</span>
+	            </a>
+	            <a href="#" class="item">
+	              <i class="fa fa-puzzle-piece fa-fw"></i>
+	              <span class="">Overlord</span>
+	              <span> / </span>
+	              <span class="emphasis">apiman-dt-api</span>
+	            </a>
+	          </div>
+	        </div>
+	      </div>
+	      <!-- Service Version -->
+	      <div class="row service-version-row">
+	        <dl>
+	          <dt data-i18n-key="service-version">Service Version</dt>
+	          <dd>
+	            <select data-field="serviceVersion" class="selectpicker" data-role="dummy">
+	              <option>2.0</option>
+	              <option>1.5</option>
+	              <option>1.4</option>
+	              <option>1.3</option>
+	              <option>1.2</option>
+	            </select>
+	          </dd>
+	        </dl>
+	      </div>
+	      <!-- Plan -->
+	      <div class="row plan-row">
+	        <dl>
+	          <dt data-i18n-key="plan">Plan</dt>
+	          <dd>
+	            <select data-field="plan" class="selectpicker" data-role="dummy" data-role="plan">
+	              <option>Platinum</option>
+	              <option>Gold</option>
+	              <option>Silver</option>
+	            </select>
+	          </dd>
+	        </dl>
+	      </div>
+	
+	      <!-- Spinner -->
+	      <div class="row spinner-row hide">
+	        <div>
+	          <i class="fa fa-cog fa-spin fa-fw"></i>
+	          <span>Loading data, please wait...</span>
+	        </div>
+	      </div>
+	
+	      <!-- HR -->
+	      <div class="row hr-row">
+	        <hr/>
+	      </div>
+	      <!-- Create Button -->
+	      <div class="row">
+	        <button class="btn btn-primary" data-field="createButton" data-i18n-key="create-contract">Create Contract</button>
+	        <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" data-i18n-key="cancel">Cancel</a>
+	      </div>
+      </div> <!-- /new-contract-form -->
+      <div id="terms-conditions" style="display:none; margin-left: 2000px;">
+        <div class="row">
+          <h2 class="title">Terms & Conditions</h2>
         </div>
-      </div>
-      <!-- Service Version -->
-      <div class="row service-version-row">
-        <dl>
-          <dt data-i18n-key="service-version">Service Version</dt>
-          <dd>
-            <select data-field="serviceVersion" class="selectpicker" data-role="dummy">
-              <option>2.0</option>
-              <option>1.5</option>
-              <option>1.4</option>
-              <option>1.3</option>
-              <option>1.2</option>
-            </select>
-          </dd>
-        </dl>
-      </div>
-      <!-- Plan -->
-      <div class="row plan-row">
-        <dl>
-          <dt data-i18n-key="plan">Plan</dt>
-          <dd>
-            <select data-field="plan" class="selectpicker" data-role="dummy" data-role="plan">
-              <option>Platinum</option>
-              <option>Gold</option>
-              <option>Silver</option>
-            </select>
-          </dd>
-        </dl>
-      </div>
-
-      <!-- Spinner -->
-      <div class="row spinner-row hide">
-        <div>
-          <i class="fa fa-cog fa-spin fa-fw"></i>
-          <span>Loading data, please wait...</span>
+        <div class="row">
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec lobortis massa vitae pulvinar pretium. 
+            Ut suscipit pellentesque auctor. Nullam venenatis pulvinar scelerisque. Sed sit amet leo laoreet, 
+            consectetur massa eget, consequat lacus. Maecenas efficitur ornare nibh. Morbi accumsan magna quis 
+            felis commodo, quis accumsan turpis molestie. Pellentesque habitant morbi tristique senectus et 
+            netus et malesuada fames ac turpis egestas.
+          </p>
+          <p>
+            Nam porta, risus id tempus finibus, justo ipsum facilisis lacus, sit amet dignissim nunc lacus id 
+            felis. Cras vestibulum dui vitae magna lacinia, ac scelerisque odio laoreet. Etiam tristique sed 
+            quam sit amet finibus. Nulla luctus felis a nunc vestibulum, in dictum sapien condimentum. Vestibulum 
+            convallis malesuada lobortis. Curabitur mollis tellus sit amet libero consectetur lobortis. Aliquam 
+            erat volutpat. Quisque vel tortor mauris. Ut ac egestas orci. Nunc mollis id nisl fringilla rhoncus. 
+            Integer bibendum rhoncus lorem. Nam commodo leo et turpis molestie, vitae tristique risus faucibus. 
+            Proin accumsan ex sit amet eros sollicitudin, et condimentum justo suscipit. Morbi ac facilisis urna. 
+            Phasellus quis dui et dui luctus fringilla eget vitae erat. Proin malesuada vestibulum convallis.
+          </p>
+          <p>
+            Sed eleifend non justo ut efficitur. Maecenas iaculis odio ut lacus scelerisque, et maximus nunc 
+            cursus. Vestibulum eu lorem quis ante egestas scelerisque. Etiam nisi massa, luctus non mauris vitae, 
+            sagittis aliquet turpis. In auctor posuere neque, sit amet aliquam lacus. Donec hendrerit pharetra 
+            nisl, nec imperdiet mi iaculis non. Phasellus bibendum vulputate metus, vel varius elit vestibulum 
+            eu. Phasellus fermentum dapibus est, sed convallis nulla ultricies ac. Maecenas venenatis, mauris 
+            eget lobortis aliquet, odio odio iaculis orci, et tristique nisi mauris quis lacus. Curabitur 
+            vehicula, nisl at vulputate efficitur, elit risus sollicitudin eros, nec molestie elit magna lobortis 
+            magna. Integer molestie lectus ac imperdiet consequat.          
+          </p>
         </div>
-      </div>
-
-      <!-- HR -->
-      <div class="row hr-row">
-        <hr/>
-      </div>
-      <!-- Create Button -->
-      <div class="row">
-        <button class="btn btn-primary" data-field="createButton" data-i18n-key="create-contract" placeholder="Creating..." data-icon="fa-cog">Create Contract</button>
-        <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" data-i18n-key="cancel">Cancel</a>
+        <div class="row">
+          <button class="btn btn-primary" data-field="agreeButton" data-i18n-key="agree" placeholder="Creating Contract..." data-icon="fa-cog">I Agree</button>
+          <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" data-i18n-key="cancel">Cancel</a>
+        </div>
       </div>
     </div> <!-- /container -->
   </body>

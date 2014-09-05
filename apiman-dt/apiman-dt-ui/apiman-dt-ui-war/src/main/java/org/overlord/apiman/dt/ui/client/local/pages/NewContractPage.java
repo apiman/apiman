@@ -110,9 +110,11 @@ public class NewContractPage extends AbstractPage {
     PlanSelectBox plan;
     
     @Inject @DataField
-    AsyncActionButton createButton;
+    Anchor createButton;
     @Inject @DataField
     Anchor cancelButton;
+    @Inject @DataField
+    AsyncActionButton agreeButton;
     
     private List<ApplicationSummaryBean> applicationBeans;
     
@@ -318,7 +320,7 @@ public class NewContractPage extends AbstractPage {
     protected void renderPage() {
         super.renderPage();
         hideRows(APP_VERSION_ROW, SERVICE_ROW, SERVICE_VERSION_ROW, PLAN_ROW, SPINNER_ROW);
-        createButton.reset();
+        agreeButton.reset();
         createButton.setEnabled(false);
         applicationSelector.setOptions(applicationBeans);
         ApplicationSummaryBean contextApp = getInitialContextApp();
@@ -411,12 +413,33 @@ public class NewContractPage extends AbstractPage {
     }
 
     /**
-     * Called when the user clicks the Create Organization button.
+     * Called when the user clicks the Create Contract button.  This will hide the form
+     * and show the Terms & Conditions screen - the user must agree to them.
      * @param event
      */
     @EventHandler("createButton")
     public void onCreate(ClickEvent event) {
-        createButton.onActionStarted();
+        showTermsAndConditions();
+    }
+
+    /**
+     * Native helper method for showing the Terms & Conditions with a bit of an animation.
+     */
+    private native void showTermsAndConditions() /*-{
+        $wnd.jQuery("#new-contract-form").animate( { "margin-left" : "-1000px" }, 250, function() { 
+            $wnd.jQuery("#new-contract-form").hide();
+            $wnd.jQuery("#terms-conditions").show();
+            $wnd.jQuery("#terms-conditions").animate( { "margin-left" : "0px" }, 250);
+        });
+    }-*/;
+
+    /**
+     * Called when the user clicks the I Agree button.
+     * @param event
+     */
+    @EventHandler("agreeButton")
+    public void onAgree(ClickEvent event) {
+        agreeButton.onActionStarted();
         cancelButton.setEnabled(false);
         ApplicationSummaryBean app = applicationSelector.getValue();
         String appVersion = applicationVersion.getValue();
