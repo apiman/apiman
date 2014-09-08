@@ -7,6 +7,7 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
   <artifactId>apiman-rt-engine-core</artifactId>
+  <packaging>bundle</packaging>
   <name>apiman-rt-engine-core</name>
   <dependencies>
     <!-- Project Dependencies -->
@@ -44,5 +45,12 @@
         <filtering>true</filtering>
       </resource>
     </resources>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+      </plugin>
+    </plugins>
   </build>
 </project>

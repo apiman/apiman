@@ -74,7 +74,7 @@
     <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots/</jboss.snapshots.repo.url>
 
     <!-- Dependency Versions (not found in parent) -->
-    <version.org.overlord>2.0.9-SNAPSHOT</version.org.overlord>
+    <version.org.overlord.overlord-commons>2.0.9.Final</version.org.overlord.overlord-commons>
     <version.org.picketlink>2.5.3.SP4</version.org.picketlink>
     <org.eclipse.jetty>8.1.9.v20130131</org.eclipse.jetty>
     <version.io.undertow>1.0.1.Final</version.io.undertow>
@@ -436,62 +436,62 @@
       <dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-gwt</artifactId>
-        <version>${version.org.overlord}</version>
+        <version>${version.org.overlord.overlord-commons}</version>
       </dependency>
       <dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-config</artifactId>
-        <version>${version.org.overlord}</version>
+        <version>${version.org.overlord.overlord-commons}</version>
       </dependency>
       <dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-i18n</artifactId>
-        <version>${version.org.overlord}</version>
+        <version>${version.org.overlord.overlord-commons}</version>
       </dependency>
       <dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-errai-fuse-support</artifactId>
-        <version>${version.org.overlord}</version>
+        <version>${version.org.overlord.overlord-commons}</version>
       </dependency>
       <dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-osgi</artifactId>
-        <version>${version.org.overlord}</version>
+        <version>${version.org.overlord.overlord-commons}</version>
       </dependency>
       <dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-osgi-weld</artifactId>
-        <version>${version.org.overlord}</version>
+        <version>${version.org.overlord.overlord-commons}</version>
       </dependency>
       <dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-uiheader</artifactId>
-        <version>${version.org.overlord}</version>
+        <version>${version.org.overlord.overlord-commons}</version>
       </dependency>
       <dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-services</artifactId>
-        <version>${version.org.overlord}</version>
+        <version>${version.org.overlord.overlord-commons}</version>
       </dependency>
       <dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-auth</artifactId>
-        <version>${version.org.overlord}</version>
+        <version>${version.org.overlord.overlord-commons}</version>
       </dependency>
       <dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-auth-jetty8</artifactId>
-        <version>${version.org.overlord}</version>
+        <version>${version.org.overlord.overlord-commons}</version>
       </dependency>
       <dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-auth-jboss7</artifactId>
-        <version>${version.org.overlord}</version>
+        <version>${version.org.overlord.overlord-commons}</version>
       </dependency>
       <dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-dev</artifactId>
-        <version>${version.org.overlord}</version>
+        <version>${version.org.overlord.overlord-commons}</version>
       </dependency>
 
       <!-- PicketLink -->
@@ -698,6 +698,7 @@
     <module>apiman-rt</module>
     <module>apiman-tools</module>
     <module>apiman-test</module>
+    <module>apiman-distro</module>
   </modules>
 
 </project>

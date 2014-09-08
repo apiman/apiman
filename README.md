@@ -33,7 +33,7 @@ We use Maven 3.x to build our software. The following command compiles all the c
 The project can be built and deployed on a variety of runtime platforms, but if you want to see it in 
 action as quickly as possible try this:
 
-    $ mvn clean install -Prun-all
+    $ mvn clean install -Prun-all-jetty8
     
 Then point your browser to the [API Management UI](http://localhost:8080/apiman-dt-ui/) and log in as
 any of the following users:
