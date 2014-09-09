@@ -13,5 +13,6 @@
     <module>apiman-dt-ui-war</module>
     <module>apiman-dt-ui-war/eap6</module>
     <module>apiman-dt-ui-war/jetty8</module>
+    <module>apiman-dt-ui-war/wildfly8</module>
   </modules>
 </project>

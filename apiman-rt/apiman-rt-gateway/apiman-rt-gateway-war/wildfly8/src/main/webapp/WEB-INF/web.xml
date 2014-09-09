@@ -3,10 +3,14 @@
   xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
   version="2.5">
 
+  <listener>
+    <listener-class>org.overlord.apiman.rt.war.listeners.WarGatewayBootstrapper</listener-class>
+  </listener>
+
   <!-- Authentication Filter -->
   <filter>
     <filter-name>AuthenticationFilter</filter-name>
-    <filter-class>org.overlord.commons.auth.filters.SamlBearerTokenAuthFilter</filter-class>
+    <filter-class>org.overlord.apiman.rt.gateway.wildfly8.auth.SamlBearerTokenAuthFilter</filter-class>
     <init-param>
       <param-name>allowedIssuers</param-name>
       <param-value>apiman-dt-ui</param-value>
@@ -18,9 +22,9 @@
   </filter>
   <filter-mapping>
     <filter-name>AuthenticationFilter</filter-name>
-    <url-pattern>/*</url-pattern>
+    <url-pattern>/api/*</url-pattern>
   </filter-mapping>
-
+  
   <!-- Locale Filter -->
   <filter>
     <filter-name>LocaleFilter</filter-name>
@@ -31,36 +35,14 @@
     <url-pattern>/*</url-pattern>
   </filter-mapping>
 
-  <!-- CORS Filter -->
-  <filter>
-    <filter-name>CorsFilter</filter-name>
-    <filter-class>org.overlord.commons.gwt.server.filters.SimpleCorsFilter</filter-class>
-  </filter>
-  <filter-mapping>
-    <filter-name>CorsFilter</filter-name>
-    <url-pattern>/*</url-pattern>
-  </filter-mapping>
-  
-  <!-- Security Context Filter -->
-  <filter>
-    <filter-name>SecurityContext</filter-name>
-    <filter-class>org.overlord.apiman.dt.api.security.impl.DefaultSecurityContextFilter</filter-class>
-  </filter>
-  <filter-mapping>
-    <filter-name>SecurityContext</filter-name>
-    <url-pattern>/*</url-pattern>
-  </filter-mapping>
-  
-  <security-constraint>
-    <web-resource-collection>
-      <web-resource-name>apiman</web-resource-name>
-      <url-pattern>/dummy/*</url-pattern>
-    </web-resource-collection>
-  </security-constraint>
-
-  <login-config>
-    <auth-method>BASIC</auth-method>
-    <realm-name>Overlord</realm-name>
-  </login-config>
+  <!-- Gateway Servlet -->
+  <servlet>
+    <servlet-name>WarGatewayServlet</servlet-name>
+    <servlet-class>org.overlord.apiman.rt.war.servlets.WarGatewayServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>WarGatewayServlet</servlet-name>
+    <url-pattern>/gateway/*</url-pattern>
+  </servlet-mapping>
 
 </web-app>

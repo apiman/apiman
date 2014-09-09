@@ -14,5 +14,6 @@
     <module>apiman-rt-gateway-war</module>
     <module>apiman-rt-gateway-war/jetty8</module>
     <module>apiman-rt-gateway-war/eap6</module>
+    <module>apiman-rt-gateway-war/wildfly8</module>
   </modules>
 </project>

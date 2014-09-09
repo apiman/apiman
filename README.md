@@ -33,15 +33,23 @@ We use Maven 3.x to build our software. The following command compiles all the c
 The project can be built and deployed on a variety of runtime platforms, but if you want to see it in 
 action as quickly as possible try this:
 
-    $ mvn clean install -Prun-all-jetty8
-    
-Then point your browser to the [API Management UI](http://localhost:8080/apiman-dt-ui/) and log in as
+    $ mvn clean install -Prun-all-wildfly8
+
+This maven command will do the following:
+
+1. A full build of apiman
+2. Download WildFly 8.x
+3. Unpack and configure WildFly 8.x
+4. Deploy the WildFly 8.x version of apiman to WildFly
+5. Launch WildFly
+
+If all goes well, you can point your browser to the [API Management UI](http://localhost:8080/apiman-dt-ui/) and log in as
 any of the following users:
 
-* admin/admin
-* bwayne/bwayne
-* ckent/ckent
-* dprince/dprince
+* admin/admin123!
+* bwayne/bwayne123!
+* ckent/ckent123!
+* dprince/dprince123!
 
 ## Contribute fixes and features
 

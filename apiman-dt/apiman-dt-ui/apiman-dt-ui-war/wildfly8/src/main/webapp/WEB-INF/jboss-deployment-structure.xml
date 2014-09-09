@@ -1,0 +1,9 @@
+<jboss-deployment-structure>
+  <deployment>
+    <dependencies>
+    </dependencies>
+    <exclude-subsystems>
+      <subsystem name="webservices" />
+    </exclude-subsystems>
+  </deployment>
+</jboss-deployment-structure>

@@ -159,7 +159,14 @@
           <attachClasses>true</attachClasses>
           <classesClassifier>classes</classesClassifier>
           <outputFileNameMapping>@{artifactId}@-@{baseVersion}@@{dashClassifier?}@.@{extension}@</outputFileNameMapping>
-          <packagingExcludes>**/javax/**/*.*,**/client/local/**/*.class,**/rebel.xml</packagingExcludes>
+          <packagingExcludes>
+            **/*.java,
+            **/.errai/**/*.*,
+            **/javax/**/*.*,
+            **/client/local/**/*.class,
+            **/rebel.xml,
+            **/ServerMarshallingFactoryImpl*
+          </packagingExcludes>
         </configuration>
       </plugin>
       <plugin>
@@ -176,7 +183,7 @@
         <configuration>
           <logLevel>INFO</logLevel>
           <strict>true</strict>
-	  <localWorkers>2</localWorkers>
+          <localWorkers>2</localWorkers>
           <runTarget>index.html</runTarget>
           <extraJvmArgs>-Xmx512m</extraJvmArgs>
           <soyc>false</soyc>

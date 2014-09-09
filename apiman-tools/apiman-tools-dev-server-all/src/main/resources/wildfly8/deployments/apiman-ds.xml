@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<datasources>
+  <datasource jndi-name="jdbc/ApiManDT" pool-name="apiman-dt-api" enabled="true"
+    use-java-context="true">
+    <connection-url>jdbc:h2:${jboss.server.data.dir}${/}h2${/}apiman-dt-api;MVCC=true</connection-url>
+    <driver>h2</driver>
+    <security>
+      <user-name>sa</user-name>
+    </security>
+  </datasource>
+</datasources>
