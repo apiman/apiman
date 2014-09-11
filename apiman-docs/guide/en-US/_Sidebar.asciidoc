@@ -1,0 +1,3 @@
+.Contents
+****
+link:GuideGettingStarted[Getting Started] +
