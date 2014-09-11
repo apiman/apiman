@@ -5,11 +5,14 @@
     <groupId>org.overlord.apiman</groupId>
     <artifactId>apiman-distro</artifactId>
     <version>1.0.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>apiman-distro-fuse6</artifactId>
   <packaging>pom</packaging>
   <name>apiman-distro-fuse6</name>
+
   <dependencies>
+    <!-- APIMan Modules -->
     <dependency>
       <groupId>org.overlord.apiman</groupId>
       <artifactId>apiman-rt-api-rest</artifactId>
@@ -30,13 +33,23 @@
       <groupId>org.overlord.apiman</groupId>
       <artifactId>apiman-rt-engine-policies</artifactId>
     </dependency>
+
+    <!-- Required by Apache commons-pool2 but marked as 'provided' in pool2's pom.xml -->
+    <dependency>
+      <groupId>cglib</groupId>
+      <artifactId>cglib</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.ow2.asm</groupId>
+      <artifactId>asm-util</artifactId>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
       <plugin>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-maven-plugin</artifactId>
-        <version>${version.org.overlord.overlord-commons}</version>
+        <version>${version.org.overlord.overlord-commons.overlord-commons-maven-plugin}</version>
         <executions>
           <execution>
             <phase>generate-resources</phase>
@@ -46,16 +59,12 @@
             <configuration>
               <outputFile>${project.build.directory}/features.xml</outputFile>
               <attach>true</attach>
-              <repositories>
-                <repository>mvn:org.overlord/overlord-commons-dist-fuse6/${version.org.overlord.overlord-commons}/xml/features</repository>
-              </repositories>
               <features>
                 <!-- All APIMan Dependencies -->
                 <feature>
                   <name>apiman-dependencies</name>
                   <version>${project.version}</version>
                   <comment>All API Management Dependencies</comment>
-
                   <excludes>
                     <exclude>org.overlord.apiman:apiman-*:*</exclude>
                   </excludes>

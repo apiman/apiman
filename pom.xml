@@ -75,6 +75,7 @@
 
     <!-- Dependency Versions (not found in parent) -->
     <version.org.overlord.overlord-commons>2.0.10-SNAPSHOT</version.org.overlord.overlord-commons>
+    <version.org.overlord.overlord-commons.overlord-commons-maven-plugin>2.0.9.Final</version.org.overlord.overlord-commons.overlord-commons-maven-plugin>
     <version.org.picketlink>2.5.3.SP4</version.org.picketlink>
     <org.eclipse.jetty>8.1.9.v20130131</org.eclipse.jetty>
     <version.io.undertow>1.0.1.Final</version.io.undertow>
@@ -581,6 +582,16 @@
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-pool2</artifactId>
         <version>${version.org.apache.commons.commons-pool2}</version>
+      </dependency>
+      <dependency>
+        <groupId>cglib</groupId>
+        <artifactId>cglib</artifactId>
+        <version>3.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.ow2.asm</groupId>
+        <artifactId>asm-util</artifactId>
+        <version>4.0</version>
       </dependency>
 
     </dependencies>
