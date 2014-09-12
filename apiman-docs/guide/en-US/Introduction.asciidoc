@@ -1,0 +1,47 @@
+Introduction to APIMan
+----------------------
+
+What is API Management?
+~~~~~~~~~~~~~~~~~~~~~~~
+A popular trend in enterprise software development these days is to design applications to be very decoupled and use API's to connect them.  This approach provides an excellent way to reuse functionality across various applications and business units. Another great benefit of API usage in enterprises is the ability to create those API's using a variety of disparate technologies.
+
+However, this approach also introduces its own pitfalls and disadvantages. Some of those disadvantages include things like:
+
+* Difficulty discovering or sharing existing API's
+* Difficulty sharing common functionality across API implementations
+* Tracking of API usage/consumption
+
+API Management is a technology that addresses these and other issues by providing a management layer to track APIs and configure governance policies, as well as a runtime layer that sits between the API and the client. This runtime layer is responsible for applying the policies configured during management.
+
+Therefore an API management system tends to provide the following features:
+
+* Centralized governance policy configuration
+* Tracking of API's and consumers of those API's
+* Easy sharing and discovery of API's
+* Leveraging common policy configuration across different API's
+
+
+Project Goals
+~~~~~~~~~~~~~
+The goals of the JBoss overlord API management project are to provide an easy to use and powerful management layer as well as a small, fast, low overhead runtime layer to implement standard API management functionality.
+
+
+Typical Use Cases
+~~~~~~~~~~~~~~~~~
+Some common API management use cases include:
+
+Security
+^^^^^^^^
+APRs will very often have a security requirement such that clients connecting to the API must authenticate in some fashion. Authentication can vary greatly both in the protocols used to authenticate and the identity source used for validation.
+
+It can often be convenient to provide authentication at the API management layer to free up the back end service from having to do this work. This approach also has the side benefit of centralizing configuration of authentication for a wide array of disparate services.
+
+Therefore the API management layer must provide authentication capabilities using a wide range of protocols including BASIC, digest, OAuth, etc.  
+
+Throttling
+^^^^^^^^^^
+The API management layer is a convenient place to ensure throttling (also known as rate limiting) to your API's.  Throttling is a way to prevent individual clients from issuing too many requests to an API. Because all requests to an API go through the API management runtime layer it is an excellent place to do this throttling work.
+
+Metering
+^^^^^^^^
+There are a number of reasons why an API provider would be interested in the number of requests made to her API. The most common reason for public facing API's is to implement billing based on usage per consumer.  Metering is the feature that provides this API management capability.

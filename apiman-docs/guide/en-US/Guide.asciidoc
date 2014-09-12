@@ -4,7 +4,15 @@ JBoss Overlord - API Management
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 :doctype: book
 
-include::GuideIntroduction.asciidoc[]
+include::Introduction.asciidoc[]
+
+include::GettingStarted.asciidoc[]
+
+include::InstallationGuide.asciidoc[]
+
+include::UserGuide.asciidoc[]
+
+include::DeveloperGuide.asciidoc[]
 
 :numbered!:
 
