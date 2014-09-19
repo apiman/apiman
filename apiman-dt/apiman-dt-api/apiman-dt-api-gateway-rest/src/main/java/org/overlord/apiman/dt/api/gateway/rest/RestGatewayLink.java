@@ -33,7 +33,7 @@ import org.jboss.resteasy.client.ProxyFactory;
 import org.jboss.resteasy.client.core.executors.ApacheHttpClient4Executor;
 import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
-import org.overlord.apiman.dt.api.config.Config;
+import org.overlord.apiman.dt.api.config.IConfig;
 import org.overlord.apiman.dt.api.gateway.IGatewayLink;
 import org.overlord.apiman.rt.api.rest.contract.IApplicationResource;
 import org.overlord.apiman.rt.api.rest.contract.IServiceResource;
@@ -54,7 +54,7 @@ import org.overlord.apiman.rt.engine.beans.exceptions.RegistrationException;
 public class RestGatewayLink implements IGatewayLink {
     
     @Inject
-    private Config config;
+    private IConfig config;
     
     private DefaultHttpClient httpClient;
     private ISystemResource systemClient;

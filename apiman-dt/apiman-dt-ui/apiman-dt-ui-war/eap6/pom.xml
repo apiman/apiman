@@ -26,22 +26,6 @@
       <scope>provided</scope>
     </dependency>
 
-    <!-- Overlord Commons -->
-    <dependency>
-      <groupId>org.overlord</groupId>
-      <artifactId>overlord-commons-auth</artifactId>
-      <exclusions>
-        <exclusion>
-          <artifactId>jboss-logging</artifactId>
-          <groupId>org.jboss.logging</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.overlord</groupId>
-      <artifactId>overlord-commons-auth-jboss7</artifactId>
-    </dependency>
-
     <!-- Project JARs -->
     <dependency>
       <groupId>org.overlord.apiman</groupId>
@@ -52,12 +36,6 @@
       <groupId>org.overlord.apiman</groupId>
       <artifactId>apiman-dt-api-rest</artifactId>
       <scope>provided</scope>
-    </dependency>
-    
-    <!-- PicketLink -->
-    <dependency>
-      <groupId>org.picketlink</groupId>
-      <artifactId>picketlink-federation</artifactId>
     </dependency>
 
     <!-- Provided Dependencies -->

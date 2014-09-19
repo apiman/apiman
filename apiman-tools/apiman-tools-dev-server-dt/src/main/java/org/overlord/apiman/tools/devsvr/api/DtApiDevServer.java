@@ -16,7 +16,7 @@
 
 package org.overlord.apiman.tools.devsvr.api;
 
-import org.overlord.apiman.dt.api.config.Config;
+import org.overlord.apiman.dt.api.war.config.Config;
 import org.overlord.apiman.dt.test.server.DtApiTestServer;
 import org.overlord.apiman.dt.test.server.ISeeder;
 

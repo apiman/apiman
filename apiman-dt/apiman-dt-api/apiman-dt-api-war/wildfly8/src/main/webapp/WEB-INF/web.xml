@@ -6,11 +6,7 @@
   <!-- Authentication Filter -->
   <filter>
     <filter-name>AuthenticationFilter</filter-name>
-    <filter-class>org.overlord.apiman.dt.api.wildfly8.auth.SamlBearerTokenAuthFilter</filter-class>
-    <init-param>
-      <param-name>allowedIssuers</param-name>
-      <param-value>apiman-dt-ui</param-value>
-    </init-param>
+    <filter-class>org.overlord.apiman.common.servlet.AuthenticationFilter</filter-class>
     <init-param>
       <param-name>signatureRequired</param-name>
       <param-value>false</param-value>

@@ -84,6 +84,7 @@ public class TestPlanRunner {
         log(""); //$NON-NLS-1$
         log("-------------------------------------------------------------------------------"); //$NON-NLS-1$
         log("Executing Test Plan: " + resourcePath); //$NON-NLS-1$
+        log("   Base API URL: " + baseApiUrl); //$NON-NLS-1$
         log("-------------------------------------------------------------------------------"); //$NON-NLS-1$
         log(""); //$NON-NLS-1$
         for (TestGroupType group : testPlan.getTestGroup()) {

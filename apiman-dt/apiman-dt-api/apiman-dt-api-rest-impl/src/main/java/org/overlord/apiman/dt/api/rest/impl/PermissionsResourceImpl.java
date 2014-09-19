@@ -81,5 +81,33 @@ public class PermissionsResourceImpl implements IPermissionsResource {
             throw new SystemErrorException(e);
         }
     }
+
+    /**
+     * @return the idmStorage
+     */
+    public IIdmStorage getIdmStorage() {
+        return idmStorage;
+    }
+
+    /**
+     * @param idmStorage the idmStorage to set
+     */
+    public void setIdmStorage(IIdmStorage idmStorage) {
+        this.idmStorage = idmStorage;
+    }
+
+    /**
+     * @return the securityContext
+     */
+    public ISecurityContext getSecurityContext() {
+        return securityContext;
+    }
+
+    /**
+     * @param securityContext the securityContext to set
+     */
+    public void setSecurityContext(ISecurityContext securityContext) {
+        this.securityContext = securityContext;
+    }
     
 }

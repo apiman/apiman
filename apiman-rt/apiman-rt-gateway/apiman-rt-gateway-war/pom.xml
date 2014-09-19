@@ -50,6 +50,10 @@
           <artifactId>jboss-logging</artifactId>
           <groupId>org.jboss.logging</groupId>
         </exclusion>
+        <exclusion>
+          <artifactId>overlord-commons-auth</artifactId>
+          <groupId>org.overlord</groupId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>

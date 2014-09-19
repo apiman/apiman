@@ -7,7 +7,9 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
   <artifactId>apiman-dt-api-gateway</artifactId>
+  <packaging>bundle</packaging>
   <name>apiman-dt-api-gateway</name>
+  
   <dependencies>
     <!-- Project Dependencies -->
     <dependency>
@@ -15,4 +17,14 @@
       <artifactId>apiman-rt-engine-beans</artifactId>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+      </plugin>
+    </plugins>
+  </build>
 </project>

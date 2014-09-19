@@ -17,8 +17,8 @@ package org.overlord.apiman.dt.test.util;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.overlord.apiman.dt.api.config.Config;
-import org.overlord.apiman.dt.api.core.impl.PolicyTemplateUtil;
+import org.overlord.apiman.dt.api.core.util.PolicyTemplateUtil;
+import org.overlord.apiman.dt.api.war.config.Config;
 import org.overlord.apiman.dt.test.server.DtApiTestServer;
 import org.overlord.apiman.dt.test.server.MockGatewayServlet;
 import org.overlord.apiman.test.common.util.TestPlanRunner;
@@ -35,7 +35,11 @@ public abstract class AbstractTestPlanTest {
 
     @BeforeClass
     public static void setup() throws Exception {
-        testServer.start();
+        if (!"true".equals(System.getProperty("apiman.junit.no-server", "false"))) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            testServer.start();
+        } else {
+            System.out.println("**** APIMan Server suppressed - assuming running tests against a live server. ****"); //$NON-NLS-1$
+        }
     }
 
     /**
@@ -46,16 +50,27 @@ public abstract class AbstractTestPlanTest {
     protected void runTestPlan(String planPath, ClassLoader classLoader) {
         PolicyTemplateUtil.clearCache();
         MockGatewayServlet.reset();
-        String baseApiUrl = "http://localhost:" + getTestServerPort() + "/apiman-dt-api"; //$NON-NLS-1$ //$NON-NLS-2$
+        String baseApiUrl = "http://localhost:" + getTestServerPort() + getBaseApiContext(); //$NON-NLS-1$
         TestPlanRunner runner = new TestPlanRunner(baseApiUrl);
         configureSystemProperties();
         runner.runTestPlan(planPath, classLoader);
     }
 
     /**
+     * @return the base context of the DT API
+     */
+    protected String getBaseApiContext() {
+        return System.getProperty("apiman.junit.server-api-context", "/apiman-dt-api"); //$NON-NLS-1$ //$NON-NLS-2$
+    }
+
+    /**
      * @return the port to use when sending requests
      */
     protected int getTestServerPort() {
+        String spPort = System.getProperty("apiman.junit.server-port"); //$NON-NLS-1$
+        if (spPort != null) {
+            return Integer.parseInt(spPort);
+        }
         if (USE_PROXY) {
             return 7071;
         } else {
@@ -75,7 +90,9 @@ public abstract class AbstractTestPlanTest {
 
     @AfterClass
     public static void shutdown() throws Exception {
-        testServer.stop();
+        if (!"true".equals(System.getProperty("apiman.junit.no-server", "false"))) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            testServer.stop();
+        }
     }
 
 }

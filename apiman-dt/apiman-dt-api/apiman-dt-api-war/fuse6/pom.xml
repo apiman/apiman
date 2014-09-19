@@ -1,0 +1,83 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.overlord.apiman</groupId>
+    <artifactId>apiman-dt-api</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <relativePath>../../pom.xml</relativePath>
+  </parent>
+  <artifactId>apiman-dt-api-war-fuse6</artifactId>
+  <packaging>bundle</packaging>
+  <name>apiman-dt-api-war-fuse6</name>
+
+  <dependencies>
+    <!-- Project Dependencies -->
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-dt-api-config</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-dt-api-beans</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-dt-api-jpa</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-dt-api-security</artifactId>
+    </dependency>
+
+    <!-- Required Spec Libs -->
+    <dependency>
+      <groupId>org.hibernate.javax.persistence</groupId>
+      <artifactId>hibernate-jpa-2.0-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.core</artifactId>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+            <Bundle-Name>${project.name}</Bundle-Name>
+            <Bundle-Version>${project.version}</Bundle-Version>
+            <Import-Package>
+              org.overlord.apiman.dt.api.beans.actions,
+              org.overlord.apiman.dt.api.beans.apps,
+              org.overlord.apiman.dt.api.beans.contracts,
+              org.overlord.apiman.dt.api.beans.exceptions,
+              org.overlord.apiman.dt.api.beans.idm,
+              org.overlord.apiman.dt.api.beans.members,
+              org.overlord.apiman.dt.api.beans.orgs,
+              org.overlord.apiman.dt.api.beans.plans,
+              org.overlord.apiman.dt.api.beans.policies,
+              org.overlord.apiman.dt.api.beans.search,
+              org.overlord.apiman.dt.api.beans.services,
+              org.overlord.apiman.dt.api.beans.summary,
+              org.overlord.apiman.dt.api.beans.system,
+              org.apache.karaf.jaas.boot.principal,
+              org.eclipse.jetty.plus.jaas,
+              org.hibernate.proxy,
+              javassist.util.proxy,
+              org.h2,
+              *
+            </Import-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

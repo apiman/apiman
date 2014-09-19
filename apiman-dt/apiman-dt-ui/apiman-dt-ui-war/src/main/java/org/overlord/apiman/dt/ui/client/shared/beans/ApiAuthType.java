@@ -22,6 +22,6 @@ package org.overlord.apiman.dt.ui.client.shared.beans;
  */
 public enum ApiAuthType {
     
-    basic, bearerToken, samlBearerToken;
+    basic, bearerToken, samlBearerToken, authToken;
 
 }

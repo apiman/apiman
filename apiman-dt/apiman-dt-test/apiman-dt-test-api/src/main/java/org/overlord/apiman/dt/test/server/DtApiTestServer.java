@@ -39,6 +39,7 @@ import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
 import org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap;
 import org.jboss.weld.environment.servlet.BeanManagerResourceBindingListener;
 import org.jboss.weld.environment.servlet.Listener;
+import org.overlord.apiman.common.servlet.AuthenticationFilter;
 import org.overlord.apiman.dt.api.security.impl.DefaultSecurityContextFilter;
 import org.overlord.apiman.dt.api.webapp.jetty8.JettyDtApiApplication;
 import org.overlord.commons.gwt.server.filters.SimpleCorsFilter;
@@ -165,7 +166,7 @@ public class DtApiTestServer {
         apiManServer.addFilter(DatabaseSeedFilter.class, "/db-seeder", EnumSet.of(DispatcherType.REQUEST)); //$NON-NLS-1$
         apiManServer.addFilter(LocaleFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST)); //$NON-NLS-1$
         apiManServer.addFilter(SimpleCorsFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST)); //$NON-NLS-1$
-        apiManServer.addFilter(DtApiTestAuthFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST)); //$NON-NLS-1$
+        apiManServer.addFilter(AuthenticationFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST)); //$NON-NLS-1$
         apiManServer.addFilter(DefaultSecurityContextFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST)); //$NON-NLS-1$
         ServletHolder resteasyServlet = new ServletHolder(new HttpServletDispatcher());
         resteasyServlet.setInitParameter("javax.ws.rs.Application", JettyDtApiApplication.class.getName()); //$NON-NLS-1$

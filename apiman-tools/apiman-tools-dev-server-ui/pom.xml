@@ -20,14 +20,12 @@
     <dependency>
       <groupId>org.overlord</groupId>
       <artifactId>overlord-commons-uiheader</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.overlord</groupId>
-      <artifactId>overlord-commons-auth</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.overlord</groupId>
-      <artifactId>overlord-commons-auth-jetty8</artifactId>
+      <exclusions>
+        <exclusion>
+          <artifactId>overlord-commons-auth</artifactId>
+          <groupId>org.overlord</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <!-- APIMan -->
@@ -64,10 +62,6 @@
     <dependency>
       <groupId>org.jboss.logging</groupId>
       <artifactId>jboss-logging</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.picketlink</groupId>
-      <artifactId>picketlink-federation</artifactId>
     </dependency>
   </dependencies>
 

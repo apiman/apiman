@@ -21,7 +21,6 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.RollbackException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -51,7 +50,7 @@ public abstract class AbstractJpaStorage {
     private static Logger logger = LoggerFactory.getLogger(AbstractJpaStorage.class);
 
     @Inject
-    protected EntityManagerFactory emf;
+    private IEntityManagerFactoryAccessor emfAccessor;
 
     /**
      * Constructor.
@@ -63,7 +62,7 @@ public abstract class AbstractJpaStorage {
      * @see org.overlord.apiman.dt.api.core.IStorage#create(java.lang.Object)
      */
     public <T> void create(T bean) throws StorageException, AlreadyExistsException {
-        EntityManager entityManager = emf.createEntityManager();
+        EntityManager entityManager = emfAccessor.getEntityManagerFactory().createEntityManager();
         try {
             entityManager.getTransaction().begin();
             entityManager.persist(bean);
@@ -92,7 +91,7 @@ public abstract class AbstractJpaStorage {
      * @see org.overlord.apiman.dt.api.core.IStorage#update(java.lang.Object)
      */
     public <T> void update(T bean) throws StorageException, DoesNotExistException {
-        EntityManager entityManager = emf.createEntityManager();
+        EntityManager entityManager = emfAccessor.getEntityManagerFactory().createEntityManager();
         try {
             entityManager.getTransaction().begin();
             entityManager.merge(bean);
@@ -113,7 +112,7 @@ public abstract class AbstractJpaStorage {
      * @see org.overlord.apiman.dt.api.core.IStorage#delete(java.lang.Object)
      */
     public <T> void delete(T bean) throws StorageException, DoesNotExistException {
-        EntityManager entityManager = emf.createEntityManager();
+        EntityManager entityManager = emfAccessor.getEntityManagerFactory().createEntityManager();
         try {
             entityManager.getTransaction().begin();
             entityManager.remove(entityManager.merge(bean));
@@ -135,7 +134,7 @@ public abstract class AbstractJpaStorage {
      */
     public <T> T get(Long id, Class<T> type) throws StorageException, DoesNotExistException {
         T rval = null;
-        EntityManager entityManager = emf.createEntityManager();
+        EntityManager entityManager = emfAccessor.getEntityManagerFactory().createEntityManager();
         try {
             rval = entityManager.find(type, id);
         } catch (Throwable t) {
@@ -154,7 +153,7 @@ public abstract class AbstractJpaStorage {
      */
     public <T> T get(String id, Class<T> type) throws StorageException, DoesNotExistException {
         T rval = null;
-        EntityManager entityManager = emf.createEntityManager();
+        EntityManager entityManager = emfAccessor.getEntityManagerFactory().createEntityManager();
         try {
             rval = entityManager.find(type, id);
         } catch (Throwable t) {
@@ -173,7 +172,7 @@ public abstract class AbstractJpaStorage {
      */
     public <T> T get(String organizationId, String id, Class<T> type) throws StorageException, DoesNotExistException {
         T rval = null;
-        EntityManager entityManager = emf.createEntityManager();
+        EntityManager entityManager = emfAccessor.getEntityManagerFactory().createEntityManager();
         try {
             Object key = new OrgBasedCompositeId(organizationId, id);
             rval = entityManager.find(type, key);
@@ -193,7 +192,7 @@ public abstract class AbstractJpaStorage {
      */
     public <T> SearchResultsBean<T> find(SearchCriteriaBean criteria, Class<T> type) throws StorageException {
         SearchResultsBean<T> results = new SearchResultsBean<T>();
-        EntityManager entityManager = emf.createEntityManager();
+        EntityManager entityManager = emfAccessor.getEntityManagerFactory().createEntityManager();
         try {
             // Set some default in the case that paging information was not included in the request.
             PagingBean paging = criteria.getPaging();
@@ -296,6 +295,20 @@ public abstract class AbstractJpaStorage {
                 query.orderBy(builder.desc(from.get(orderBy.getName())));
             }
         }
+    }
+
+    /**
+     * @return the emfAccessor
+     */
+    public IEntityManagerFactoryAccessor getEmfAccessor() {
+        return emfAccessor;
+    }
+
+    /**
+     * @param emfAccessor the emfAccessor to set
+     */
+    public void setEmfAccessor(IEntityManagerFactoryAccessor emfAccessor) {
+        this.emfAccessor = emfAccessor;
     }
 
 }

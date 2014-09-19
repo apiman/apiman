@@ -32,8 +32,10 @@ import org.overlord.apiman.dt.api.rest.contract.ISystemResource;
 @ApplicationScoped
 public class SystemResourceImpl implements ISystemResource {
     
-    @Inject IStorage storage;
-    @Inject Version version;
+    @Inject
+    private IStorage storage;
+    @Inject
+    private Version version;
     
     /**
      * Constructor.
@@ -47,10 +49,38 @@ public class SystemResourceImpl implements ISystemResource {
     @Override
     public SystemStatusBean getStatus() {
         SystemStatusBean rval = new SystemStatusBean();
-        rval.setUp(storage != null);
-        if (version != null) {
-            rval.setVersion(version.getVersionString());
+        rval.setUp(getStorage() != null);
+        if (getVersion() != null) {
+            rval.setVersion(getVersion().getVersionString());
         }
         return rval;
+    }
+
+    /**
+     * @return the storage
+     */
+    public IStorage getStorage() {
+        return storage;
+    }
+
+    /**
+     * @param storage the storage to set
+     */
+    public void setStorage(IStorage storage) {
+        this.storage = storage;
+    }
+
+    /**
+     * @return the version
+     */
+    public Version getVersion() {
+        return version;
+    }
+
+    /**
+     * @param version the version to set
+     */
+    public void setVersion(Version version) {
+        this.version = version;
     }
 }

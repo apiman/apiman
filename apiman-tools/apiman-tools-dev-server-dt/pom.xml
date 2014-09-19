@@ -14,6 +14,11 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-dt-test-api</artifactId>
     </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-dt-api-war</artifactId>
+      <classifier>classes</classifier>
+    </dependency>
   </dependencies>
 
   <profiles>

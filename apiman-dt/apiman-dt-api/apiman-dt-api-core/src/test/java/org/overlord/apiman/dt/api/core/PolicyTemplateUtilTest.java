@@ -22,7 +22,7 @@ import org.junit.Test;
 import org.overlord.apiman.dt.api.beans.policies.PolicyBean;
 import org.overlord.apiman.dt.api.beans.policies.PolicyDefinitionBean;
 import org.overlord.apiman.dt.api.beans.policies.PolicyDefinitionTemplateBean;
-import org.overlord.apiman.dt.api.core.impl.PolicyTemplateUtil;
+import org.overlord.apiman.dt.api.core.util.PolicyTemplateUtil;
 import org.overlord.commons.i18n.AbstractMessages;
 
 /**
@@ -33,7 +33,7 @@ import org.overlord.commons.i18n.AbstractMessages;
 public class PolicyTemplateUtilTest {
 
     /**
-     * Test method for {@link org.overlord.apiman.dt.api.core.impl.PolicyTemplateUtil#generatePolicyDescription(org.overlord.apiman.dt.api.beans.policies.PolicyBean)}.
+     * Test method for {@link org.overlord.apiman.dt.api.core.util.PolicyTemplateUtil#generatePolicyDescription(org.overlord.apiman.dt.api.beans.policies.PolicyBean)}.
      */
     @Test
     public void testGeneratePolicyDescription_novars() throws Exception {
@@ -50,7 +50,7 @@ public class PolicyTemplateUtilTest {
     }
 
     /**
-     * Test method for {@link org.overlord.apiman.dt.api.core.impl.PolicyTemplateUtil#generatePolicyDescription(org.overlord.apiman.dt.api.beans.policies.PolicyBean)}.
+     * Test method for {@link org.overlord.apiman.dt.api.core.util.PolicyTemplateUtil#generatePolicyDescription(org.overlord.apiman.dt.api.beans.policies.PolicyBean)}.
      */
     @Test
     public void testGeneratePolicyDescription_simplevar() throws Exception {
@@ -67,7 +67,7 @@ public class PolicyTemplateUtilTest {
     }
 
     /**
-     * Test method for {@link org.overlord.apiman.dt.api.core.impl.PolicyTemplateUtil#generatePolicyDescription(org.overlord.apiman.dt.api.beans.policies.PolicyBean)}.
+     * Test method for {@link org.overlord.apiman.dt.api.core.util.PolicyTemplateUtil#generatePolicyDescription(org.overlord.apiman.dt.api.beans.policies.PolicyBean)}.
      */
     @Test
     public void testGeneratePolicyDescription_nested() throws Exception {
@@ -84,7 +84,7 @@ public class PolicyTemplateUtilTest {
     }
 
     /**
-     * Test method for {@link org.overlord.apiman.dt.api.core.impl.PolicyTemplateUtil#generatePolicyDescription(org.overlord.apiman.dt.api.beans.policies.PolicyBean)}.
+     * Test method for {@link org.overlord.apiman.dt.api.core.util.PolicyTemplateUtil#generatePolicyDescription(org.overlord.apiman.dt.api.beans.policies.PolicyBean)}.
      */
     @Test
     public void testGeneratePolicyDescription_arrays() throws Exception {
@@ -101,7 +101,7 @@ public class PolicyTemplateUtilTest {
     }
 
     /**
-     * Test method for {@link org.overlord.apiman.dt.api.core.impl.PolicyTemplateUtil#generatePolicyDescription(org.overlord.apiman.dt.api.beans.policies.PolicyBean)}.
+     * Test method for {@link org.overlord.apiman.dt.api.core.util.PolicyTemplateUtil#generatePolicyDescription(org.overlord.apiman.dt.api.beans.policies.PolicyBean)}.
      */
     @Test
     public void testGeneratePolicyDescription_nested2() throws Exception {
@@ -118,7 +118,7 @@ public class PolicyTemplateUtilTest {
     }
 
     /**
-     * Test method for {@link org.overlord.apiman.dt.api.core.impl.PolicyTemplateUtil#generatePolicyDescription(org.overlord.apiman.dt.api.beans.policies.PolicyBean)}.
+     * Test method for {@link org.overlord.apiman.dt.api.core.util.PolicyTemplateUtil#generatePolicyDescription(org.overlord.apiman.dt.api.beans.policies.PolicyBean)}.
      */
     @Test
     public void testGeneratePolicyDescription_missingvar() throws Exception {
@@ -135,7 +135,7 @@ public class PolicyTemplateUtilTest {
     }
 
     /**
-     * Test method for {@link org.overlord.apiman.dt.api.core.impl.PolicyTemplateUtil#generatePolicyDescription(org.overlord.apiman.dt.api.beans.policies.PolicyBean)}.
+     * Test method for {@link org.overlord.apiman.dt.api.core.util.PolicyTemplateUtil#generatePolicyDescription(org.overlord.apiman.dt.api.beans.policies.PolicyBean)}.
      */
     @Test
     public void testGeneratePolicyDescription_blacklist() throws Exception {
@@ -152,7 +152,7 @@ public class PolicyTemplateUtilTest {
     }
 
     /**
-     * Test method for {@link org.overlord.apiman.dt.api.core.impl.PolicyTemplateUtil#generatePolicyDescription(org.overlord.apiman.dt.api.beans.policies.PolicyBean)}.
+     * Test method for {@link org.overlord.apiman.dt.api.core.util.PolicyTemplateUtil#generatePolicyDescription(org.overlord.apiman.dt.api.beans.policies.PolicyBean)}.
      */
     @Test
     public void testGeneratePolicyDescription_basicauth() throws Exception {
@@ -169,7 +169,7 @@ public class PolicyTemplateUtilTest {
     }
 
     /**
-     * Test method for {@link org.overlord.apiman.dt.api.core.impl.PolicyTemplateUtil#generatePolicyDescription(org.overlord.apiman.dt.api.beans.policies.PolicyBean)}.
+     * Test method for {@link org.overlord.apiman.dt.api.core.util.PolicyTemplateUtil#generatePolicyDescription(org.overlord.apiman.dt.api.beans.policies.PolicyBean)}.
      */
     @Test
     public void testGeneratePolicyDescription_i18n() throws Exception {

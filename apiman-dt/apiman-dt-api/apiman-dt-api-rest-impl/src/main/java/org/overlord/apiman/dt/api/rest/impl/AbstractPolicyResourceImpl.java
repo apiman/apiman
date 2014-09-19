@@ -26,7 +26,7 @@ import org.overlord.apiman.dt.api.core.IStorage;
 import org.overlord.apiman.dt.api.core.IStorageQuery;
 import org.overlord.apiman.dt.api.core.exceptions.DoesNotExistException;
 import org.overlord.apiman.dt.api.core.exceptions.StorageException;
-import org.overlord.apiman.dt.api.core.impl.PolicyTemplateUtil;
+import org.overlord.apiman.dt.api.core.util.PolicyTemplateUtil;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.NotAuthorizedException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.PolicyDefinitionNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.PolicyNotFoundException;

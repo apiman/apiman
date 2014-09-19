@@ -22,7 +22,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.codec.binary.Base64;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.overlord.apiman.dt.ui.client.shared.beans.BearerTokenCredentialsBean;
 import org.overlord.apiman.dt.ui.server.UIConfig;
@@ -56,7 +55,7 @@ public class TokenRefreshServlet extends HttpServlet {
         String token = tokenGenerator.generateToken(req);
         int refresh = tokenGenerator.getRefreshPeriod();
         BearerTokenCredentialsBean btcb = new BearerTokenCredentialsBean();
-        btcb.setToken(new String(Base64.encodeBase64(token.getBytes("UTF-8")))); //$NON-NLS-1$
+        btcb.setToken(token);
         btcb.setRefreshPeriod(refresh);
         ObjectMapper mapper = new ObjectMapper();
         resp.setContentType("application/json"); //$NON-NLS-1$

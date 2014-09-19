@@ -51,7 +51,7 @@ import org.overlord.apiman.dt.api.core.IStorageQuery;
 import org.overlord.apiman.dt.api.core.exceptions.AlreadyExistsException;
 import org.overlord.apiman.dt.api.core.exceptions.DoesNotExistException;
 import org.overlord.apiman.dt.api.core.exceptions.StorageException;
-import org.overlord.apiman.dt.api.core.impl.PolicyTemplateUtil;
+import org.overlord.apiman.dt.api.core.util.PolicyTemplateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -135,7 +135,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     @Override
     public List<OrganizationSummaryBean> getOrgs(Set<String> orgIds) throws StorageException {
         List<OrganizationSummaryBean> orgs = new ArrayList<OrganizationSummaryBean>();
-        EntityManager entityManager = emf.createEntityManager();
+        EntityManager entityManager = getEmfAccessor().getEntityManagerFactory().createEntityManager();
         try {
             String jpql = "SELECT o from OrganizationBean o WHERE o.id IN :orgs ORDER BY o.id ASC"; //$NON-NLS-1$
             Query query = entityManager.createQuery(jpql);
@@ -174,7 +174,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     @Override
     public List<ApplicationSummaryBean> getApplicationsInOrgs(Set<String> orgIds) throws StorageException {
         List<ApplicationSummaryBean> rval = new ArrayList<ApplicationSummaryBean>();
-        EntityManager entityManager = emf.createEntityManager();
+        EntityManager entityManager = getEmfAccessor().getEntityManagerFactory().createEntityManager();
         try {
             String jpql = "SELECT a from ApplicationBean a WHERE a.organizationId IN :orgs ORDER BY a.id ASC"; //$NON-NLS-1$
             Query query = entityManager.createQuery(jpql);
@@ -219,7 +219,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     @Override
     public List<ServiceSummaryBean> getServicesInOrgs(Set<String> orgIds) throws StorageException {
         List<ServiceSummaryBean> rval = new ArrayList<ServiceSummaryBean>();
-        EntityManager entityManager = emf.createEntityManager();
+        EntityManager entityManager = getEmfAccessor().getEntityManagerFactory().createEntityManager();
         try {
             String jpql = "SELECT s from ServiceBean s WHERE s.organizationId IN :orgs ORDER BY s.id ASC"; //$NON-NLS-1$
             Query query = entityManager.createQuery(jpql);
@@ -253,7 +253,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     @Override
     public ServiceVersionBean getServiceVersion(String orgId, String serviceId, String version)
             throws StorageException {
-        EntityManager entityManager = emf.createEntityManager();
+        EntityManager entityManager = getEmfAccessor().getEntityManagerFactory().createEntityManager();
         try {
             String jpql = "SELECT v from ServiceVersionBean v JOIN v.service s WHERE s.organizationId = :orgId AND s.id = :serviceId AND v.version = :version"; //$NON-NLS-1$
             Query query = entityManager.createQuery(jpql);
@@ -280,7 +280,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     @Override
     public List<ServiceVersionBean> getServiceVersions(String orgId, String serviceId)
             throws StorageException {
-        EntityManager entityManager = emf.createEntityManager();
+        EntityManager entityManager = getEmfAccessor().getEntityManagerFactory().createEntityManager();
         try {
             String jpql = "SELECT v from ServiceVersionBean v JOIN v.service s WHERE s.organizationId = :orgId AND s.id = :serviceId ORDER BY v.id DESC"; //$NON-NLS-1$
             Query query = entityManager.createQuery(jpql);
@@ -325,7 +325,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     @Override
     public ApplicationVersionBean getApplicationVersion(String orgId, String applicationId, String version)
             throws StorageException {
-        EntityManager entityManager = emf.createEntityManager();
+        EntityManager entityManager = getEmfAccessor().getEntityManagerFactory().createEntityManager();
         try {
             String jpql = "SELECT v from ApplicationVersionBean v JOIN v.application s WHERE s.organizationId = :orgId AND s.id = :applicationId AND v.version = :version"; //$NON-NLS-1$
             Query query = entityManager.createQuery(jpql);
@@ -352,7 +352,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     @Override
     public List<ApplicationVersionBean> getApplicationVersions(String orgId, String applicationId)
             throws StorageException {
-        EntityManager entityManager = emf.createEntityManager();
+        EntityManager entityManager = getEmfAccessor().getEntityManagerFactory().createEntityManager();
         try {
             String jpql = "SELECT v from ApplicationVersionBean v JOIN v.application s WHERE s.organizationId = :orgId AND s.id = :applicationId ORDER BY v.id DESC"; //$NON-NLS-1$
             Query query = entityManager.createQuery(jpql);
@@ -378,7 +378,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             String version) throws StorageException {
         List<ContractSummaryBean> rval = new ArrayList<ContractSummaryBean>();
 
-        EntityManager entityManager = emf.createEntityManager();
+        EntityManager entityManager = getEmfAccessor().getEntityManagerFactory().createEntityManager();
         try {
             String jpql = 
                     "SELECT c from ContractBean c " +  //$NON-NLS-1$
@@ -448,7 +448,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     @Override
     public List<PlanSummaryBean> getPlansInOrgs(Set<String> orgIds) throws StorageException {
         List<PlanSummaryBean> rval = new ArrayList<PlanSummaryBean>();
-        EntityManager entityManager = emf.createEntityManager();
+        EntityManager entityManager = getEmfAccessor().getEntityManagerFactory().createEntityManager();
         try {
             String jpql = "SELECT p from PlanBean p WHERE p.organizationId IN :orgs ORDER BY p.id ASC"; //$NON-NLS-1$
             Query query = entityManager.createQuery(jpql);
@@ -481,7 +481,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     @Override
     public PlanVersionBean getPlanVersion(String orgId, String planId, String version)
             throws StorageException {
-        EntityManager entityManager = emf.createEntityManager();
+        EntityManager entityManager = getEmfAccessor().getEntityManagerFactory().createEntityManager();
         try {
             String jpql = "SELECT v from PlanVersionBean v JOIN v.plan s WHERE s.organizationId = :orgId AND s.id = :planId AND v.version = :version"; //$NON-NLS-1$
             Query query = entityManager.createQuery(jpql);
@@ -508,7 +508,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     @Override
     public List<PlanVersionBean> getPlanVersions(String orgId, String planId)
             throws StorageException {
-        EntityManager entityManager = emf.createEntityManager();
+        EntityManager entityManager = getEmfAccessor().getEntityManagerFactory().createEntityManager();
         try {
             String jpql = "SELECT v from PlanVersionBean v JOIN v.plan s WHERE s.organizationId = :orgId AND s.id = :planId ORDER BY v.id DESC"; //$NON-NLS-1$
             Query query = entityManager.createQuery(jpql);
@@ -532,7 +532,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     @Override
     public List<PolicyBean> getPolicies(String organizationId, String entityId, String version,
             PolicyType type) throws StorageException {
-        EntityManager entityManager = emf.createEntityManager();
+        EntityManager entityManager = getEmfAccessor().getEntityManagerFactory().createEntityManager();
         try {
             
             String jpql = "SELECT p from PolicyBean p WHERE p.organizationId = :orgId AND p.entityId = :entityId AND p.entityVersion = :entityVersion AND p.type = :type"; //$NON-NLS-1$

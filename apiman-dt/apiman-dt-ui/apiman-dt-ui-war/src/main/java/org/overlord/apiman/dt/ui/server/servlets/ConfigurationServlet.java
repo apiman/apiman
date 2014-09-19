@@ -22,7 +22,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.codec.binary.Base64;
 import org.codehaus.jackson.JsonEncoding;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
@@ -109,7 +108,7 @@ public class ConfigurationServlet extends HttpServlet {
                 Class<?> c = Class.forName(tokenGeneratorClassName);
                 ITokenGenerator tokenGenerator = (ITokenGenerator) c.newInstance();
                 configBean.getApi().getAuth().setBearerToken(new BearerTokenCredentialsBean());
-                configBean.getApi().getAuth().getBearerToken().setToken(new String(Base64.encodeBase64(tokenGenerator.generateToken(request).getBytes("UTF-8")))); //$NON-NLS-1$
+                configBean.getApi().getAuth().getBearerToken().setToken(tokenGenerator.generateToken(request));
                 configBean.getApi().getAuth().getBearerToken().setRefreshPeriod(tokenGenerator.getRefreshPeriod());
             } else if (ApiAuthType.samlBearerToken.toString().equals(authType)) {
                 configBean.getApi().getAuth().setType(ApiAuthType.samlBearerToken);
@@ -119,7 +118,17 @@ public class ConfigurationServlet extends HttpServlet {
                 Class<?> c = Class.forName(tokenGeneratorClassName);
                 ITokenGenerator tokenGenerator = (ITokenGenerator) c.newInstance();
                 configBean.getApi().getAuth().setBearerToken(new BearerTokenCredentialsBean());
-                configBean.getApi().getAuth().getBearerToken().setToken(new String(Base64.encodeBase64(tokenGenerator.generateToken(request).getBytes("UTF-8")))); //$NON-NLS-1$
+                configBean.getApi().getAuth().getBearerToken().setToken(tokenGenerator.generateToken(request));
+                configBean.getApi().getAuth().getBearerToken().setRefreshPeriod(tokenGenerator.getRefreshPeriod());
+            } else if (ApiAuthType.authToken.toString().equals(authType)) {
+                configBean.getApi().getAuth().setType(ApiAuthType.authToken);
+                String tokenGeneratorClassName = UIConfig.config.getString(UIConfig.APIMAN_DT_UI_API_AUTH_TOKEN_GENERATOR);
+                if (tokenGeneratorClassName == null)
+                    throw new ServletException("No token generator class specified."); //$NON-NLS-1$
+                Class<?> c = Class.forName(tokenGeneratorClassName);
+                ITokenGenerator tokenGenerator = (ITokenGenerator) c.newInstance();
+                configBean.getApi().getAuth().setBearerToken(new BearerTokenCredentialsBean());
+                configBean.getApi().getAuth().getBearerToken().setToken(tokenGenerator.generateToken(request));
                 configBean.getApi().getAuth().getBearerToken().setRefreshPeriod(tokenGenerator.getRefreshPeriod());
             }
             g.writeObject(configBean);

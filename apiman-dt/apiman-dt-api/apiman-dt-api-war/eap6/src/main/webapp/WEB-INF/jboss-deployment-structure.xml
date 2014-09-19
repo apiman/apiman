@@ -4,8 +4,5 @@
       <module name="org.apache.httpcomponents" />
       <module name="org.jboss.resteasy.resteasy-jaxrs" />
     </dependencies>
-    <exclude-subsystems>
-      <subsystem name="webservices" />
-    </exclude-subsystems>
   </deployment>
 </jboss-deployment-structure>

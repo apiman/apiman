@@ -10,6 +10,7 @@
   <packaging>pom</packaging>
   <name>apiman-distro</name>
   <modules>
-    <module>fuse6</module>
+    <module>fuse6-dt</module>
+    <module>fuse6-rt</module>
   </modules>
 </project>

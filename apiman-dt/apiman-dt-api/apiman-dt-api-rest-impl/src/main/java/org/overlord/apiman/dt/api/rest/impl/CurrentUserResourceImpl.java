@@ -47,13 +47,13 @@ import org.overlord.apiman.dt.api.security.ISecurityContext;
 public class CurrentUserResourceImpl implements ICurrentUserResource {
     
     @Inject
-    IIdmStorage idmStorage;
+    private IIdmStorage idmStorage;
     @Inject
-    IStorage storage;
+    private IStorage storage;
     @Inject
-    IStorageQuery query;
+    private IStorageQuery query;
     @Inject
-    ISecurityContext securityContext;
+    private ISecurityContext securityContext;
 
     /**
      * Constructor.
@@ -66,9 +66,9 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
      */
     @Override
     public UserBean getInfo() {
-        String userId = securityContext.getCurrentUser();
+        String userId = getSecurityContext().getCurrentUser();
         try {
-            return idmStorage.getUser(userId);
+            return getIdmStorage().getUser(userId);
         } catch (DoesNotExistException e) {
             UserBean user = new UserBean();
             user.setUsername(userId);
@@ -76,7 +76,7 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
             user.setEmail(userId + "@example.org"); //$NON-NLS-1$
             user.setJoinedOn(new Date());
             try {
-                idmStorage.createUser(user);
+                getIdmStorage().createUser(user);
             } catch (AlreadyExistsException e1) {
                 throw new SystemErrorException(e);
             } catch (StorageException e1) {
@@ -93,9 +93,9 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
      */
     @Override
     public List<OrganizationSummaryBean> getOrganizations() {
-        Set<String> permittedOrganizations = securityContext.getPermittedOrganizations(PermissionType.orgView);
+        Set<String> permittedOrganizations = getSecurityContext().getPermittedOrganizations(PermissionType.orgView);
         try {
-            return query.getOrgs(permittedOrganizations);
+            return getQuery().getOrgs(permittedOrganizations);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
@@ -106,9 +106,9 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
      */
     @Override
     public List<ApplicationSummaryBean> getApplications() {
-        Set<String> permittedOrganizations = securityContext.getPermittedOrganizations(PermissionType.orgView);
+        Set<String> permittedOrganizations = getSecurityContext().getPermittedOrganizations(PermissionType.orgView);
         try {
-            return query.getApplicationsInOrgs(permittedOrganizations);
+            return getQuery().getApplicationsInOrgs(permittedOrganizations);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
@@ -119,11 +119,67 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
      */
     @Override
     public List<ServiceSummaryBean> getServices() {
-        Set<String> permittedOrganizations = securityContext.getPermittedOrganizations(PermissionType.orgView);
+        Set<String> permittedOrganizations = getSecurityContext().getPermittedOrganizations(PermissionType.orgView);
         try {
-            return query.getServicesInOrgs(permittedOrganizations);
+            return getQuery().getServicesInOrgs(permittedOrganizations);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
+    }
+
+    /**
+     * @return the idmStorage
+     */
+    public IIdmStorage getIdmStorage() {
+        return idmStorage;
+    }
+
+    /**
+     * @param idmStorage the idmStorage to set
+     */
+    public void setIdmStorage(IIdmStorage idmStorage) {
+        this.idmStorage = idmStorage;
+    }
+
+    /**
+     * @return the storage
+     */
+    public IStorage getStorage() {
+        return storage;
+    }
+
+    /**
+     * @param storage the storage to set
+     */
+    public void setStorage(IStorage storage) {
+        this.storage = storage;
+    }
+
+    /**
+     * @return the query
+     */
+    public IStorageQuery getQuery() {
+        return query;
+    }
+
+    /**
+     * @param query the query to set
+     */
+    public void setQuery(IStorageQuery query) {
+        this.query = query;
+    }
+
+    /**
+     * @return the securityContext
+     */
+    public ISecurityContext getSecurityContext() {
+        return securityContext;
+    }
+
+    /**
+     * @param securityContext the securityContext to set
+     */
+    public void setSecurityContext(ISecurityContext securityContext) {
+        this.securityContext = securityContext;
     }
 }

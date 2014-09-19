@@ -22,49 +22,7 @@
     <!-- Project JARs -->
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-dt-api-beans</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-dt-api-rest</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
       <artifactId>apiman-dt-api-rest-impl</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-dt-api-jpa</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-dt-api-jpa-idm</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-dt-api-gateway-rest</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-dt-api-gateway</artifactId>
-    </dependency>
-
-    <!-- Overlord Commons -->
-    <dependency>
-      <groupId>org.overlord</groupId>
-      <artifactId>overlord-commons-gwt</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.overlord</groupId>
-      <artifactId>overlord-commons-i18n</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.overlord</groupId>
-      <artifactId>overlord-commons-auth</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.overlord</groupId>
-      <artifactId>overlord-commons-auth-jetty8</artifactId>
     </dependency>
 
     <!-- Hibernate -->
@@ -95,12 +53,6 @@
     <dependency>
       <groupId>org.jboss.weld.servlet</groupId>
       <artifactId>weld-servlet-core</artifactId>
-    </dependency>
-    
-    <!-- PicketLink -->
-    <dependency>
-      <groupId>org.picketlink</groupId>
-      <artifactId>picketlink-federation</artifactId>
     </dependency>
 
     <!-- Third Party Dependencies -->

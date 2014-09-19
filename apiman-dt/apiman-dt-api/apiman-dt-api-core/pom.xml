@@ -7,6 +7,7 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
   <artifactId>apiman-dt-api-core</artifactId>
+  <packaging>bundle</packaging>
   <name>apiman-dt-api-core</name>
 
   <dependencies>
@@ -47,6 +48,20 @@
       <artifactId>hibernate-jpa-2.0-api</artifactId>
       <scope>provided</scope>
     </dependency>
-
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Import-Package>!javax.inject,*</Import-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

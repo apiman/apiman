@@ -32,9 +32,9 @@ import org.eclipse.jetty.util.security.Constraint;
 import org.eclipse.jetty.util.security.Credential;
 import org.overlord.apiman.dt.ui.client.shared.beans.ApiAuthType;
 import org.overlord.apiman.dt.ui.server.UIConfig;
+import org.overlord.apiman.dt.ui.server.auth.AuthTokenGenerator;
 import org.overlord.apiman.dt.ui.server.servlets.ConfigurationServlet;
 import org.overlord.apiman.dt.ui.server.servlets.TokenRefreshServlet;
-import org.overlord.commons.auth.filters.HttpRequestThreadLocalFilter;
 import org.overlord.commons.dev.server.DevServerEnvironment;
 import org.overlord.commons.dev.server.ErraiDevServer;
 import org.overlord.commons.dev.server.MultiDefaultServlet;
@@ -95,8 +95,8 @@ public class ApiManDtUiDevServer extends ErraiDevServer {
         
         System.setProperty(UIConfig.APIMAN_DT_UI_API_ENDPOINT,
                 "http://localhost:" + apiPort + "/apiman-dt-api"); //$NON-NLS-1$ //$NON-NLS-2$
-        System.setProperty(UIConfig.APIMAN_DT_UI_API_AUTH_TYPE, ApiAuthType.samlBearerToken.toString());
-        System.setProperty(UIConfig.APIMAN_DT_UI_API_AUTH_TOKEN_GENERATOR, ApiManDtUiTokenGenerator.class.getName());
+        System.setProperty(UIConfig.APIMAN_DT_UI_API_AUTH_TYPE, ApiAuthType.authToken.toString());
+        System.setProperty(UIConfig.APIMAN_DT_UI_API_AUTH_TOKEN_GENERATOR, AuthTokenGenerator.class.getName());
         System.setProperty(UIConfig.APIMAN_DT_UI_GATEWAY_URL, "http://localhost:" + gatewayPort + "/gateway"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
@@ -159,7 +159,6 @@ public class ApiManDtUiDevServer extends ErraiDevServer {
         apiManDtUI.setContextPath("/apiman-ui"); //$NON-NLS-1$
         apiManDtUI.setWelcomeFiles(new String[] { "index.html" }); //$NON-NLS-1$
         apiManDtUI.setResourceBase(environment.getModuleDir("apiman-dt-ui").getCanonicalPath()); //$NON-NLS-1$
-        apiManDtUI.addFilter(HttpRequestThreadLocalFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST)); //$NON-NLS-1$
         apiManDtUI.addFilter(GWTCacheControlFilter.class, "/app/*", EnumSet.of(DispatcherType.REQUEST)); //$NON-NLS-1$
         apiManDtUI.addFilter(ResourceCacheControlFilter.class, "/css/*", EnumSet.of(DispatcherType.REQUEST)); //$NON-NLS-1$
         apiManDtUI.addFilter(ResourceCacheControlFilter.class, "/images/*", EnumSet.of(DispatcherType.REQUEST)); //$NON-NLS-1$

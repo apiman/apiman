@@ -19,17 +19,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.overlord.apiman.dt.api.rest.impl.ActionResourceImpl;
-import org.overlord.apiman.dt.api.rest.impl.ApplicationResourceImpl;
 import org.overlord.apiman.dt.api.rest.impl.CurrentUserResourceImpl;
 import org.overlord.apiman.dt.api.rest.impl.DtApiApplication;
-import org.overlord.apiman.dt.api.rest.impl.MemberResourceImpl;
 import org.overlord.apiman.dt.api.rest.impl.OrganizationResourceImpl;
 import org.overlord.apiman.dt.api.rest.impl.PermissionsResourceImpl;
-import org.overlord.apiman.dt.api.rest.impl.PlanResourceImpl;
 import org.overlord.apiman.dt.api.rest.impl.PolicyDefinitionResourceImpl;
 import org.overlord.apiman.dt.api.rest.impl.RoleResourceImpl;
 import org.overlord.apiman.dt.api.rest.impl.SearchResourceImpl;
-import org.overlord.apiman.dt.api.rest.impl.ServiceResourceImpl;
 import org.overlord.apiman.dt.api.rest.impl.SystemResourceImpl;
 import org.overlord.apiman.dt.api.rest.impl.UserResourceImpl;
 import org.overlord.apiman.dt.api.rest.impl.mappers.RestExceptionMapper;
@@ -56,10 +52,6 @@ public class JettyDtApiApplication extends DtApiApplication {
         classes.add(PermissionsResourceImpl.class);
         classes.add(OrganizationResourceImpl.class);
         classes.add(PolicyDefinitionResourceImpl.class);
-        classes.add(ApplicationResourceImpl.class);
-        classes.add(ServiceResourceImpl.class);
-        classes.add(MemberResourceImpl.class);
-        classes.add(PlanResourceImpl.class);
         classes.add(ActionResourceImpl.class);
 
         classes.add(RestExceptionMapper.class);

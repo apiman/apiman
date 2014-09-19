@@ -13,6 +13,14 @@
     <!-- Project Dependencies -->
     <dependency>
       <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-common-auth</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-common-servlet</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>apiman-dt-api-rest</artifactId>
     </dependency>
     <dependency>
@@ -45,6 +53,11 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-dt-api-war</artifactId>
+      <classifier>classes</classifier>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>apiman-dt-api-war-jetty8</artifactId>
       <classifier>classes</classifier>
     </dependency>
@@ -54,6 +67,20 @@
     </dependency>
 
     <!-- Overlord Commons -->
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-config</artifactId>
+      <exclusions>
+        <exclusion>
+          <artifactId>overlord-commons-auth</artifactId>
+          <groupId>org.overlord</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>org.apache.felix.scr.annotations</artifactId>
+          <groupId>org.apache.felix</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
     <dependency>
       <groupId>org.overlord</groupId>
       <artifactId>overlord-commons-i18n</artifactId>
@@ -155,18 +182,6 @@
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.overlord</groupId>
-      <artifactId>overlord-commons-auth</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.overlord</groupId>
-      <artifactId>overlord-commons-auth-jetty8</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.picketlink</groupId>
-      <artifactId>picketlink-federation</artifactId>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

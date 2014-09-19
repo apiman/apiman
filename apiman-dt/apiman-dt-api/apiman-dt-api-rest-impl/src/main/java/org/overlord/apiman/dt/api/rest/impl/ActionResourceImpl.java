@@ -41,8 +41,7 @@ import org.overlord.apiman.dt.api.core.IStorageQuery;
 import org.overlord.apiman.dt.api.core.exceptions.StorageException;
 import org.overlord.apiman.dt.api.gateway.IGatewayLink;
 import org.overlord.apiman.dt.api.rest.contract.IActionResource;
-import org.overlord.apiman.dt.api.rest.contract.IApplicationResource;
-import org.overlord.apiman.dt.api.rest.contract.IServiceResource;
+import org.overlord.apiman.dt.api.rest.contract.IOrganizationResource;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ActionException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ApplicationVersionNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ServiceVersionNotFoundException;
@@ -68,8 +67,7 @@ public class ActionResourceImpl implements IActionResource {
     @Inject IIdmStorage idmStorage;
     @Inject IGatewayLink gatewayLink;
     
-    @Inject IServiceResource services;
-    @Inject IApplicationResource applications;
+    @Inject IOrganizationResource orgs;
     
     @Inject IServiceValidator serviceValidator;
     @Inject IApplicationValidator applicationValidator;
@@ -115,7 +113,7 @@ public class ActionResourceImpl implements IActionResource {
 
         ServiceVersionBean versionBean = null;
         try {
-            versionBean = services.getVersion(action.getOrganizationId(), action.getEntityId(), action.getEntityVersion());
+            versionBean = getOrgs().getServiceVersion(action.getOrganizationId(), action.getEntityId(), action.getEntityVersion());
         } catch (ServiceVersionNotFoundException e) {
             throw ExceptionFactory.actionException(Messages.i18n.format("ServiceNotFound")); //$NON-NLS-1$
         }
@@ -170,7 +168,7 @@ public class ActionResourceImpl implements IActionResource {
         ApplicationVersionBean versionBean = null;
         List<ContractSummaryBean> contractBeans = null;
         try {
-            versionBean = applications.getVersion(action.getOrganizationId(), action.getEntityId(), action.getEntityVersion());
+            versionBean = getOrgs().getAppVersion(action.getOrganizationId(), action.getEntityId(), action.getEntityVersion());
         } catch (ApplicationVersionNotFoundException e) {
             throw ExceptionFactory.actionException(Messages.i18n.format("ApplicationNotFound")); //$NON-NLS-1$
         }
@@ -279,6 +277,118 @@ public class ActionResourceImpl implements IActionResource {
     private void deregisterApplication(ActionBean action) throws ActionException {
         // TODO Auto-generated method stub
         throw ExceptionFactory.actionException("Not yet implemented."); //$NON-NLS-1$
+    }
+
+    /**
+     * @return the storage
+     */
+    public IStorage getStorage() {
+        return storage;
+    }
+
+    /**
+     * @param storage the storage to set
+     */
+    public void setStorage(IStorage storage) {
+        this.storage = storage;
+    }
+
+    /**
+     * @return the query
+     */
+    public IStorageQuery getQuery() {
+        return query;
+    }
+
+    /**
+     * @param query the query to set
+     */
+    public void setQuery(IStorageQuery query) {
+        this.query = query;
+    }
+
+    /**
+     * @return the idmStorage
+     */
+    public IIdmStorage getIdmStorage() {
+        return idmStorage;
+    }
+
+    /**
+     * @param idmStorage the idmStorage to set
+     */
+    public void setIdmStorage(IIdmStorage idmStorage) {
+        this.idmStorage = idmStorage;
+    }
+
+    /**
+     * @return the gatewayLink
+     */
+    public IGatewayLink getGatewayLink() {
+        return gatewayLink;
+    }
+
+    /**
+     * @param gatewayLink the gatewayLink to set
+     */
+    public void setGatewayLink(IGatewayLink gatewayLink) {
+        this.gatewayLink = gatewayLink;
+    }
+
+    /**
+     * @return the serviceValidator
+     */
+    public IServiceValidator getServiceValidator() {
+        return serviceValidator;
+    }
+
+    /**
+     * @param serviceValidator the serviceValidator to set
+     */
+    public void setServiceValidator(IServiceValidator serviceValidator) {
+        this.serviceValidator = serviceValidator;
+    }
+
+    /**
+     * @return the applicationValidator
+     */
+    public IApplicationValidator getApplicationValidator() {
+        return applicationValidator;
+    }
+
+    /**
+     * @param applicationValidator the applicationValidator to set
+     */
+    public void setApplicationValidator(IApplicationValidator applicationValidator) {
+        this.applicationValidator = applicationValidator;
+    }
+
+    /**
+     * @return the securityContext
+     */
+    public ISecurityContext getSecurityContext() {
+        return securityContext;
+    }
+
+    /**
+     * @param securityContext the securityContext to set
+     */
+    public void setSecurityContext(ISecurityContext securityContext) {
+        this.securityContext = securityContext;
+    }
+
+    /**
+     * @return the orgs
+     */
+    public IOrganizationResource getOrgs() {
+        return orgs;
+    }
+
+    /**
+     * @param orgs the orgs to set
+     */
+    public void setOrgs(IOrganizationResource orgs) {
+        this.orgs = orgs;
     }
         
 }

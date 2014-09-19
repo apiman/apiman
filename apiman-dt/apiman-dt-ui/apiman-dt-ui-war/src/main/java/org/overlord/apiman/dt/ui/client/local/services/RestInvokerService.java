@@ -49,15 +49,11 @@ import org.overlord.apiman.dt.api.beans.summary.PolicyChainSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.ServicePlanSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.ServiceSummaryBean;
 import org.overlord.apiman.dt.api.rest.contract.IActionResource;
-import org.overlord.apiman.dt.api.rest.contract.IApplicationResource;
 import org.overlord.apiman.dt.api.rest.contract.ICurrentUserResource;
-import org.overlord.apiman.dt.api.rest.contract.IMemberResource;
 import org.overlord.apiman.dt.api.rest.contract.IOrganizationResource;
-import org.overlord.apiman.dt.api.rest.contract.IPlanResource;
 import org.overlord.apiman.dt.api.rest.contract.IPolicyDefinitionResource;
 import org.overlord.apiman.dt.api.rest.contract.IRoleResource;
 import org.overlord.apiman.dt.api.rest.contract.ISearchResource;
-import org.overlord.apiman.dt.api.rest.contract.IServiceResource;
 import org.overlord.apiman.dt.api.rest.contract.ISystemResource;
 import org.overlord.apiman.dt.api.rest.contract.IUserResource;
 import org.overlord.apiman.dt.ui.client.local.services.rest.CallbackAdapter;
@@ -86,14 +82,6 @@ public class RestInvokerService {
     private Caller<IPolicyDefinitionResource> policyDefs;
     @Inject
     private Caller<IOrganizationResource> organizations;
-    @Inject
-    private Caller<IApplicationResource> applications;
-    @Inject
-    private Caller<IServiceResource> services;
-    @Inject
-    private Caller<IPlanResource> plans;
-    @Inject
-    private Caller<IMemberResource> members;
     @Inject
     private Caller<IActionResource> actions;
     
@@ -241,7 +229,7 @@ public class RestInvokerService {
      */
     public void createApplication(String organizationId, ApplicationBean app, IRestInvokerCallback<ApplicationBean> callback) {
         CallbackAdapter<ApplicationBean> adapter = new CallbackAdapter<ApplicationBean>(callback);
-        applications.call(adapter, adapter).create(organizationId, app);
+        organizations.call(adapter, adapter).createApp(organizationId, app);
     }
     
     /**
@@ -254,7 +242,7 @@ public class RestInvokerService {
     public void createApplicationVersion(String organizationId, String applicationId, ApplicationVersionBean version,
             IRestInvokerCallback<ApplicationVersionBean> callback) {
         CallbackAdapter<ApplicationVersionBean> adapter = new CallbackAdapter<ApplicationVersionBean>(callback);
-        applications.call(adapter, adapter).createVersion(organizationId, applicationId, version);
+        organizations.call(adapter, adapter).createAppVersion(organizationId, applicationId, version);
     }
     
     /**
@@ -267,7 +255,7 @@ public class RestInvokerService {
     public void createContract(String organizationId, String applicationId, String version,
             NewContractBean bean, IRestInvokerCallback<ContractBean> callback) {
         CallbackAdapter<ContractBean> adapter = new CallbackAdapter<ContractBean>(callback);
-        applications.call(adapter, adapter).createContract(organizationId, applicationId, version, bean);
+        organizations.call(adapter, adapter).createContract(organizationId, applicationId, version, bean);
     }
     
     /**
@@ -281,7 +269,7 @@ public class RestInvokerService {
     public void deleteContract(String organizationId, String applicationId, String version,
             Long contractId, IRestInvokerCallback<Void> callback) {
         CallbackAdapter<Void> adapter = new CallbackAdapter<Void>(callback);
-        applications.call(adapter, adapter).deleteContract(organizationId, applicationId, version, contractId);
+        organizations.call(adapter, adapter).deleteContract(organizationId, applicationId, version, contractId);
     }
 
     /**
@@ -292,7 +280,7 @@ public class RestInvokerService {
      */
     public void getApplication(String organizationId, String applicationId, IRestInvokerCallback<ApplicationBean> callback) {
         CallbackAdapter<ApplicationBean> adapter = new CallbackAdapter<ApplicationBean>(callback);
-        applications.call(adapter, adapter).get(organizationId, applicationId);
+        organizations.call(adapter, adapter).getApp(organizationId, applicationId);
     }
 
     /**
@@ -304,7 +292,7 @@ public class RestInvokerService {
     public void getApplicationVersions(String organizationId, String applicationId, 
             IRestInvokerCallback<List<ApplicationVersionBean>> callback) {
         CallbackAdapter<List<ApplicationVersionBean>> adapter = new CallbackAdapter<List<ApplicationVersionBean>>(callback);
-        applications.call(adapter, adapter).listVersions(organizationId, applicationId);
+        organizations.call(adapter, adapter).listAppVersions(organizationId, applicationId);
     }
 
     /**
@@ -317,7 +305,7 @@ public class RestInvokerService {
     public void getApplicationVersion(String organizationId, String applicationId, String version, 
             IRestInvokerCallback<ApplicationVersionBean> callback) {
         CallbackAdapter<ApplicationVersionBean> adapter = new CallbackAdapter<ApplicationVersionBean>(callback);
-        applications.call(adapter, adapter).getVersion(organizationId, applicationId, version);
+        organizations.call(adapter, adapter).getAppVersion(organizationId, applicationId, version);
     }
 
     /**
@@ -327,7 +315,7 @@ public class RestInvokerService {
     public void getApplicationContracts(String organizationId, String applicationId, String version, 
             IRestInvokerCallback<List<ContractSummaryBean>> callback) {
         CallbackAdapter<List<ContractSummaryBean>> adapter = new CallbackAdapter<List<ContractSummaryBean>>(callback);
-        applications.call(adapter, adapter).listContracts(organizationId, applicationId, version);
+        organizations.call(adapter, adapter).listContracts(organizationId, applicationId, version);
     }
 
     /**
@@ -337,7 +325,7 @@ public class RestInvokerService {
     public void getApplicationPolicies(String organizationId, String applicationId, String version, 
             IRestInvokerCallback<List<PolicyBean>> callback) {
         CallbackAdapter<List<PolicyBean>> adapter = new CallbackAdapter<List<PolicyBean>>(callback);
-        applications.call(adapter, adapter).listPolicies(organizationId, applicationId, version);
+        organizations.call(adapter, adapter).listAppPolicies(organizationId, applicationId, version);
     }
 
     /**
@@ -348,7 +336,7 @@ public class RestInvokerService {
      */
     public void getOrgApplications(String organizationId, IRestInvokerCallback<List<ApplicationSummaryBean>> callback) {
         CallbackAdapter<List<ApplicationSummaryBean>> adapter = new CallbackAdapter<List<ApplicationSummaryBean>>(callback);
-        applications.call(adapter, adapter).list(organizationId);
+        organizations.call(adapter, adapter).listApps(organizationId);
     }
     
     /**
@@ -359,7 +347,7 @@ public class RestInvokerService {
      */
     public void createService(String organizationId, ServiceBean service, IRestInvokerCallback<ServiceBean> callback) {
         CallbackAdapter<ServiceBean> adapter = new CallbackAdapter<ServiceBean>(callback);
-        services.call(adapter, adapter).create(organizationId, service);
+        organizations.call(adapter, adapter).createService(organizationId, service);
     }
     
     /**
@@ -372,7 +360,7 @@ public class RestInvokerService {
     public void createServiceVersion(String organizationId, String serviceId, ServiceVersionBean version,
             IRestInvokerCallback<ServiceVersionBean> callback) {
         CallbackAdapter<ServiceVersionBean> adapter = new CallbackAdapter<ServiceVersionBean>(callback);
-        services.call(adapter, adapter).createVersion(organizationId, serviceId, version);
+        organizations.call(adapter, adapter).createServiceVersion(organizationId, serviceId, version);
     }
 
     /**
@@ -383,7 +371,7 @@ public class RestInvokerService {
      */
     public void getService(String organizationId, String serviceId, IRestInvokerCallback<ServiceBean> callback) {
         CallbackAdapter<ServiceBean> adapter = new CallbackAdapter<ServiceBean>(callback);
-        services.call(adapter, adapter).get(organizationId, serviceId);
+        organizations.call(adapter, adapter).getService(organizationId, serviceId);
     }
 
     /**
@@ -396,7 +384,7 @@ public class RestInvokerService {
     public void getServiceVersion(String organizationId, String serviceId, String version,
             IRestInvokerCallback<ServiceVersionBean> callback) {
         CallbackAdapter<ServiceVersionBean> adapter = new CallbackAdapter<ServiceVersionBean>(callback);
-        services.call(adapter, adapter).getVersion(organizationId, serviceId, version);
+        organizations.call(adapter, adapter).getServiceVersion(organizationId, serviceId, version);
     }
 
     /**
@@ -408,7 +396,7 @@ public class RestInvokerService {
     public void getServiceVersions(String organizationId, String serviceId,
             IRestInvokerCallback<List<ServiceVersionBean>> callback) {
         CallbackAdapter<List<ServiceVersionBean>> adapter = new CallbackAdapter<List<ServiceVersionBean>>(callback);
-        services.call(adapter, adapter).listVersions(organizationId, serviceId);
+        organizations.call(adapter, adapter).listServiceVersions(organizationId, serviceId);
     }
 
     /**
@@ -421,7 +409,7 @@ public class RestInvokerService {
     public void getServiceVersionPlans(String organizationId, String serviceId, String version,
             IRestInvokerCallback<List<ServicePlanSummaryBean>> callback) {
         CallbackAdapter<List<ServicePlanSummaryBean>> adapter = new CallbackAdapter<List<ServicePlanSummaryBean>>(callback);
-        services.call(adapter, adapter).getVersionPlans(organizationId, serviceId, version);
+        organizations.call(adapter, adapter).getServiceVersionPlans(organizationId, serviceId, version);
     }
     
     /**
@@ -435,7 +423,7 @@ public class RestInvokerService {
     public void updateServiceVersion(String organizationId, String serviceId, String version,
             ServiceVersionBean svb, IRestInvokerCallback<Void> callback) {
         CallbackAdapter<Void> adapter = new CallbackAdapter<Void>(callback);
-        services.call(adapter, adapter).updateVersion(organizationId, serviceId, version, svb);
+        organizations.call(adapter, adapter).updateServiceVersion(organizationId, serviceId, version, svb);
     }
 
     /**
@@ -445,7 +433,7 @@ public class RestInvokerService {
     public void getServicePolicies(String organizationId, String serviceId, String version, 
             IRestInvokerCallback<List<PolicyBean>> callback) {
         CallbackAdapter<List<PolicyBean>> adapter = new CallbackAdapter<List<PolicyBean>>(callback);
-        services.call(adapter, adapter).listPolicies(organizationId, serviceId, version);
+        organizations.call(adapter, adapter).listServicePolicies(organizationId, serviceId, version);
     }
     
     /**
@@ -460,7 +448,7 @@ public class RestInvokerService {
     public void getServicePlanPolicyChain(String organizationId, String serviceId, String version,
             String planId, IRestInvokerCallback<PolicyChainSummaryBean> callback) {
         CallbackAdapter<PolicyChainSummaryBean> adapter = new CallbackAdapter<PolicyChainSummaryBean>(callback);
-        services.call(adapter, adapter).getPolicyChain(organizationId, serviceId, version, planId);
+        organizations.call(adapter, adapter).getServicePolicyChain(organizationId, serviceId, version, planId);
     }
 
     /**
@@ -471,7 +459,7 @@ public class RestInvokerService {
      */
     public void getOrgServices(String organizationId, IRestInvokerCallback<List<ServiceSummaryBean>> callback) {
         CallbackAdapter<List<ServiceSummaryBean>> adapter = new CallbackAdapter<List<ServiceSummaryBean>>(callback);
-        services.call(adapter, adapter).list(organizationId);
+        organizations.call(adapter, adapter).listServices(organizationId);
     }
 
     /**
@@ -481,7 +469,7 @@ public class RestInvokerService {
      */
     public void getOrgMembers(String organizationId, IRestInvokerCallback<List<MemberBean>> callback) {
         CallbackAdapter<List<MemberBean>> adapter = new CallbackAdapter<List<MemberBean>>(callback);
-        members.call(adapter, adapter).listMembers(organizationId);
+        organizations.call(adapter, adapter).listMembers(organizationId);
     }
     
     /**
@@ -496,7 +484,7 @@ public class RestInvokerService {
         GrantRolesBean bean = new GrantRolesBean();
         bean.setUserId(userId);
         bean.setRoleIds(roleIds);
-        members.call(adapter, adapter).grant(organizationId, bean);
+        organizations.call(adapter, adapter).grant(organizationId, bean);
     }
 
     /**
@@ -508,7 +496,7 @@ public class RestInvokerService {
      */
     public void revoke(String organizationId, String userId, String roleId, IRestInvokerCallback<Void> callback) {
         CallbackAdapter<Void> adapter = new CallbackAdapter<Void>(callback);
-        members.call(adapter, adapter).revoke(organizationId, roleId, userId);
+        organizations.call(adapter, adapter).revoke(organizationId, roleId, userId);
     }
 
     /**
@@ -519,7 +507,7 @@ public class RestInvokerService {
      */
     public void revokeAll(String organizationId, String userId, IRestInvokerCallback<Void> callback) {
         CallbackAdapter<Void> adapter = new CallbackAdapter<Void>(callback);
-        members.call(adapter, adapter).revokeAll(organizationId, userId);
+        organizations.call(adapter, adapter).revokeAll(organizationId, userId);
     }
 
     /**
@@ -529,7 +517,7 @@ public class RestInvokerService {
      */
     public void getOrgPlans(String organizationId, IRestInvokerCallback<List<PlanSummaryBean>> callback) {
         CallbackAdapter<List<PlanSummaryBean>> adapter = new CallbackAdapter<List<PlanSummaryBean>>(callback);
-        plans.call(adapter, adapter).list(organizationId);
+        organizations.call(adapter, adapter).listPlans(organizationId);
     }
 
     /**
@@ -541,7 +529,7 @@ public class RestInvokerService {
     public void getPlanVersions(String organizationId, String planId, 
             IRestInvokerCallback<List<PlanVersionBean>> callback) {
         CallbackAdapter<List<PlanVersionBean>> adapter = new CallbackAdapter<List<PlanVersionBean>>(callback);
-        plans.call(adapter, adapter).listVersions(organizationId, planId);
+        organizations.call(adapter, adapter).listPlanVersions(organizationId, planId);
     }
 
     /**
@@ -551,7 +539,7 @@ public class RestInvokerService {
     public void getPlanPolicies(String organizationId, String planId, String version, 
             IRestInvokerCallback<List<PolicyBean>> callback) {
         CallbackAdapter<List<PolicyBean>> adapter = new CallbackAdapter<List<PolicyBean>>(callback);
-        plans.call(adapter, adapter).listPolicies(organizationId, planId, version);
+        organizations.call(adapter, adapter).listPlanPolicies(organizationId, planId, version);
     }
 
     /**
@@ -562,7 +550,7 @@ public class RestInvokerService {
      */
     public void createPlan(String organizationId, PlanBean plan, IRestInvokerCallback<PlanBean> callback) {
         CallbackAdapter<PlanBean> adapter = new CallbackAdapter<PlanBean>(callback);
-        plans.call(adapter, adapter).create(organizationId, plan);
+        organizations.call(adapter, adapter).createPlan(organizationId, plan);
     }
     
     /**
@@ -575,7 +563,7 @@ public class RestInvokerService {
     public void createPlanVersion(String organizationId, String planId, PlanVersionBean version,
             IRestInvokerCallback<PlanVersionBean> callback) {
         CallbackAdapter<PlanVersionBean> adapter = new CallbackAdapter<PlanVersionBean>(callback);
-        plans.call(adapter, adapter).createVersion(organizationId, planId, version);
+        organizations.call(adapter, adapter).createPlanVersion(organizationId, planId, version);
     }
     
     /**
@@ -610,11 +598,11 @@ public class RestInvokerService {
             PolicyBean bean, IRestInvokerCallback<PolicyBean> callback) {
         CallbackAdapter<PolicyBean> adapter = new CallbackAdapter<PolicyBean>(callback);
         if (policyType == PolicyType.Application) {
-            applications.call(adapter, adapter).createPolicy(organizationId, entityId, entityVersion, bean);
+            organizations.call(adapter, adapter).createAppPolicy(organizationId, entityId, entityVersion, bean);
         } else if (policyType == PolicyType.Service) {
-            services.call(adapter, adapter).createPolicy(organizationId, entityId, entityVersion, bean);
+            organizations.call(adapter, adapter).createServicePolicy(organizationId, entityId, entityVersion, bean);
         } else if (policyType == PolicyType.Plan) {
-            plans.call(adapter, adapter).createPolicy(organizationId, entityId, entityVersion, bean);
+            organizations.call(adapter, adapter).createPlanPolicy(organizationId, entityId, entityVersion, bean);
         }
     }
     
@@ -630,11 +618,11 @@ public class RestInvokerService {
             Long policyId, IRestInvokerCallback<Void> callback) {
         CallbackAdapter<Void> adapter = new CallbackAdapter<Void>(callback);
         if (policyType == PolicyType.Application) {
-            applications.call(adapter, adapter).deletePolicy(organizationId, entityId, entityVersion, policyId);
+            organizations.call(adapter, adapter).deleteAppPolicy(organizationId, entityId, entityVersion, policyId);
         } else if (policyType == PolicyType.Service) {
-            services.call(adapter, adapter).deletePolicy(organizationId, entityId, entityVersion, policyId);
+            organizations.call(adapter, adapter).deleteServicePolicy(organizationId, entityId, entityVersion, policyId);
         } else if (policyType == PolicyType.Plan) {
-            plans.call(adapter, adapter).deletePolicy(organizationId, entityId, entityVersion, policyId);
+            organizations.call(adapter, adapter).deletePlanPolicy(organizationId, entityId, entityVersion, policyId);
         }
     }
 
@@ -651,11 +639,11 @@ public class RestInvokerService {
             String entityVersion, Long policyId, IRestInvokerCallback<PolicyBean> callback) {
         CallbackAdapter<PolicyBean> adapter = new CallbackAdapter<PolicyBean>(callback);
         if (policyType == PolicyType.Application) {
-            applications.call(adapter, adapter).getPolicy(organizationId, entityId, entityVersion, policyId);
+            organizations.call(adapter, adapter).getAppPolicy(organizationId, entityId, entityVersion, policyId);
         } else if (policyType == PolicyType.Service) {
-            services.call(adapter, adapter).getPolicy(organizationId, entityId, entityVersion, policyId);
+            organizations.call(adapter, adapter).getServicePolicy(organizationId, entityId, entityVersion, policyId);
         } else if (policyType == PolicyType.Plan) {
-            plans.call(adapter, adapter).getPolicy(organizationId, entityId, entityVersion, policyId);
+            organizations.call(adapter, adapter).getPlanPolicy(organizationId, entityId, entityVersion, policyId);
         }
     }
 
@@ -673,11 +661,11 @@ public class RestInvokerService {
             String entityVersion, Long policyId, PolicyBean policy, IRestInvokerCallback<Void> callback) {
         CallbackAdapter<Void> adapter = new CallbackAdapter<Void>(callback);
         if (policyType == PolicyType.Application) {
-            applications.call(adapter, adapter).updatePolicy(organizationId, entityId, entityVersion, policyId, policy);
+            organizations.call(adapter, adapter).updateAppPolicy(organizationId, entityId, entityVersion, policyId, policy);
         } else if (policyType == PolicyType.Service) {
-            services.call(adapter, adapter).updatePolicy(organizationId, entityId, entityVersion, policyId, policy);
+            organizations.call(adapter, adapter).updateServicePolicy(organizationId, entityId, entityVersion, policyId, policy);
         } else if (policyType == PolicyType.Plan) {
-            plans.call(adapter, adapter).updatePolicy(organizationId, entityId, entityVersion, policyId, policy);
+            organizations.call(adapter, adapter).updatePlanPolicy(organizationId, entityId, entityVersion, policyId, policy);
         }
     }
 

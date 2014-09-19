@@ -140,5 +140,75 @@ public class SearchResourceImpl implements ISearchResource {
             throw new SystemErrorException(e);
         }
     }
+
+    /**
+     * @return the storage
+     */
+    public IStorage getStorage() {
+        return storage;
+    }
+
+    /**
+     * @param storage the storage to set
+     */
+    public void setStorage(IStorage storage) {
+        this.storage = storage;
+    }
+
+    /**
+     * @return the idmStorage
+     */
+    public IIdmStorage getIdmStorage() {
+        return idmStorage;
+    }
+
+    /**
+     * @param idmStorage the idmStorage to set
+     */
+    public void setIdmStorage(IIdmStorage idmStorage) {
+        this.idmStorage = idmStorage;
+    }
+
+    /**
+     * @return the users
+     */
+    public IUserResource getUsers() {
+        return users;
+    }
+
+    /**
+     * @param users the users to set
+     */
+    public void setUsers(IUserResource users) {
+        this.users = users;
+    }
+
+    /**
+     * @return the roles
+     */
+    public IRoleResource getRoles() {
+        return roles;
+    }
+
+    /**
+     * @param roles the roles to set
+     */
+    public void setRoles(IRoleResource roles) {
+        this.roles = roles;
+    }
+
+    /**
+     * @return the securityContext
+     */
+    public ISecurityContext getSecurityContext() {
+        return securityContext;
+    }
+
+    /**
+     * @param securityContext the securityContext to set
+     */
+    public void setSecurityContext(ISecurityContext securityContext) {
+        this.securityContext = securityContext;
+    }
     
 }

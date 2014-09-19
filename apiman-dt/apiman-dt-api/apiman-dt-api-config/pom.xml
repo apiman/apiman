@@ -7,20 +7,17 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
   <artifactId>apiman-dt-api-config</artifactId>
+  <packaging>bundle</packaging>
   <name>apiman-dt-api-config</name>
   
   <dependencies>
-    <!-- Overlord Commons -->
-    <dependency>
-      <groupId>org.overlord</groupId>
-      <artifactId>overlord-commons-config</artifactId>
-    </dependency>
-  
     <!-- Third Party Dependencies -->
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
     </dependency>
+    
+    <!-- Spec libs -->
     <dependency>
       <groupId>javax.enterprise</groupId>
       <artifactId>cdi-api</artifactId>
@@ -39,5 +36,17 @@
         <filtering>true</filtering>
       </resource>
     </resources>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Import-Package>!javax.enterprise.context,!javax.enterprise.inject,!javax.inject,*</Import-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
   </build>
 </project>

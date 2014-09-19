@@ -23,15 +23,11 @@ import org.jboss.errai.enterprise.client.jaxrs.api.interceptor.RestCallContext;
 import org.jboss.errai.enterprise.client.jaxrs.api.interceptor.RestClientInterceptor;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.overlord.apiman.dt.api.rest.contract.IActionResource;
-import org.overlord.apiman.dt.api.rest.contract.IApplicationResource;
 import org.overlord.apiman.dt.api.rest.contract.ICurrentUserResource;
-import org.overlord.apiman.dt.api.rest.contract.IMemberResource;
 import org.overlord.apiman.dt.api.rest.contract.IOrganizationResource;
-import org.overlord.apiman.dt.api.rest.contract.IPlanResource;
 import org.overlord.apiman.dt.api.rest.contract.IPolicyDefinitionResource;
 import org.overlord.apiman.dt.api.rest.contract.IRoleResource;
 import org.overlord.apiman.dt.api.rest.contract.ISearchResource;
-import org.overlord.apiman.dt.api.rest.contract.IServiceResource;
 import org.overlord.apiman.dt.api.rest.contract.ISystemResource;
 import org.overlord.apiman.dt.api.rest.contract.IUserResource;
 import org.overlord.apiman.dt.ui.client.local.AppMessages;
@@ -47,9 +43,9 @@ import org.overlord.apiman.dt.ui.client.shared.beans.ApiAuthType;
  * @author eric.wittmann@redhat.com
  */
 @ApplicationScoped
-@InterceptsRemoteCall({ ISystemResource.class, ISearchResource.class, ICurrentUserResource.class, IUserResource.class,
-        IRoleResource.class, IOrganizationResource.class, IApplicationResource.class, IServiceResource.class,
-        IMemberResource.class, IPlanResource.class, IActionResource.class, IPolicyDefinitionResource.class })
+@InterceptsRemoteCall({ ISystemResource.class, ISearchResource.class, ICurrentUserResource.class,
+        IUserResource.class, IRoleResource.class, IOrganizationResource.class, IActionResource.class,
+        IPolicyDefinitionResource.class })
 public class AuthInterceptor implements RestClientInterceptor {
     
     @Inject
@@ -78,6 +74,8 @@ public class AuthInterceptor implements RestClientInterceptor {
             doSAMLBearerTokenAuth(context, auth);
         } else if (auth.getType() == ApiAuthType.bearerToken) {
             doBearerTokenAuth(context, auth);
+        } else if (auth.getType() == ApiAuthType.authToken) {
+            doAuthTokenAuth(context, auth);
         }
         context.proceed();
     }
@@ -104,6 +102,17 @@ public class AuthInterceptor implements RestClientInterceptor {
         String encoded = Base64Util.b64encode("SAML-BEARER-TOKEN:" + token); //$NON-NLS-1$
         context.getRequestBuilder().setIncludeCredentials(true);
         context.getRequestBuilder().setHeader("Authorization", "Basic " + encoded); //$NON-NLS-1$ //$NON-NLS-2$
+    }
+
+    /**
+     * Implementation of APIMan AuthToken auth.
+     * @param context
+     * @param auth
+     */
+    private void doAuthTokenAuth(RestCallContext context, ApiAuthConfigurationBean auth) {
+        String b64Token = auth.getBearerToken().getToken();
+        context.getRequestBuilder().setIncludeCredentials(true);
+        context.getRequestBuilder().setHeader("Authorization", "AUTH-TOKEN " + b64Token); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**

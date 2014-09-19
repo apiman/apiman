@@ -25,28 +25,16 @@
       <classifier>classes</classifier>
     </dependency>
     
-    <!-- Overlord Commons -->
+    <!-- Project Libs -->
     <dependency>
-      <groupId>org.overlord</groupId>
-      <artifactId>overlord-commons-auth</artifactId>
-      <exclusions>
-        <exclusion>
-          <artifactId>jboss-logging</artifactId>
-          <groupId>org.jboss.logging</groupId>
-        </exclusion>
-      </exclusions>
+      <groupId>org.overlord.apiman</groupId>
+      <artifactId>apiman-common-auth</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.overlord</groupId>
-      <artifactId>overlord-commons-auth-jboss7</artifactId>
+      <groupId>org.overlord.apiman</groupId>
+      <artifactId>apiman-common-servlet</artifactId>
     </dependency>
 
-    <!-- Third Party Libraries -->
-    <dependency>
-      <groupId>org.picketlink</groupId>
-      <artifactId>picketlink-federation</artifactId>
-    </dependency>
-    
     <!-- Spec libs -->
     <dependency>
       <groupId>org.jboss.spec.javax.servlet</groupId>

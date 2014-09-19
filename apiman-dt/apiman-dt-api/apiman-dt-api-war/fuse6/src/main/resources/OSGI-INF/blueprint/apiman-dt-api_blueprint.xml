@@ -1,0 +1,110 @@
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.0.0" xmlns:jaxws="http://cxf.apache.org/blueprint/jaxws"
+  xmlns:jaxrs="http://cxf.apache.org/blueprint/jaxrs" xmlns:cxf="http://cxf.apache.org/blueprint/core"
+  xsi:schemaLocation="
+  http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+  http://cxf.apache.org/blueprint/jaxws http://cxf.apache.org/schemas/blueprint/jaxws.xsd
+  http://cxf.apache.org/blueprint/jaxrs http://cxf.apache.org/schemas/blueprint/jaxrs.xsd
+  http://cxf.apache.org/blueprint/core http://cxf.apache.org/schemas/blueprint/core.xsd">
+
+  <cxf:bus id="cxfBus1">
+    <cxf:features>
+      <cxf:logging />
+    </cxf:features>
+  </cxf:bus>
+
+  <jaxrs:server address="/apiman-dt-api" id="apimanDtApi">
+    <jaxrs:providers>
+      <bean class="org.codehaus.jackson.jaxrs.JacksonJsonProvider" />
+      <bean id="authenticationFilter" class="org.apache.cxf.jaxrs.security.JAASAuthenticationFilter">
+        <property name="contextName" value="karaf" />
+      </bean>
+    </jaxrs:providers>
+    <jaxrs:serviceBeans>
+      <ref component-id="actionService" />
+      <ref component-id="currentUserService" />
+      <ref component-id="organizationService" />
+      <ref component-id="permissionService" />
+      <ref component-id="policyDefinitionService" />
+      <ref component-id="roleService" />
+      <ref component-id="searchService" />
+      <ref component-id="systemService" />
+      <ref component-id="userService" />
+    </jaxrs:serviceBeans>
+  </jaxrs:server>
+
+  <!-- The REST services -->
+  <bean id="actionService" class="org.overlord.apiman.dt.api.rest.impl.ActionResourceImpl">
+    <property name="storage" ref="storage" />
+    <property name="query" ref="storage" />
+    <property name="idmStorage" ref="idmStorage" />
+<!--     <property name="gatewayLink" ref="gatewayLink" /> -->
+    <property name="orgs" ref="organizationService" />
+    <property name="serviceValidator" ref="validator" />
+    <property name="applicationValidator" ref="validator" />
+    <property name="securityContext" ref="securityContext" />
+  </bean>
+  <bean id="currentUserService" class="org.overlord.apiman.dt.api.rest.impl.CurrentUserResourceImpl">
+    <property name="idmStorage" ref="idmStorage" />
+    <property name="storage" ref="storage" />
+    <property name="query" ref="storage" />
+    <property name="securityContext" ref="securityContext" />
+  </bean>
+  <bean id="organizationService" class="org.overlord.apiman.dt.api.rest.impl.OrganizationResourceImpl">
+    <property name="storage" ref="storage" />
+    <property name="idmStorage" ref="idmStorage" />
+    <property name="query" ref="storage" />
+    <property name="applicationValidator" ref="validator" />
+    <property name="serviceValidator" ref="validator" />
+    <property name="apiKeyGenerator" ref="storage" />
+    <property name="users" ref="userService" />
+    <property name="roles" ref="roleService" />
+    <property name="securityContext" ref="securityContext" />
+  </bean>
+  <bean id="permissionService" class="org.overlord.apiman.dt.api.rest.impl.PermissionsResourceImpl">
+    <property name="idmStorage" ref="idmStorage" />
+    <property name="securityContext" ref="securityContext" />
+  </bean>
+  <bean id="policyDefinitionService" class="org.overlord.apiman.dt.api.rest.impl.PolicyDefinitionResourceImpl">
+    <property name="storage" ref="storage" />
+    <property name="securityContext" ref="securityContext" />
+  </bean>
+  <bean id="roleService" class="org.overlord.apiman.dt.api.rest.impl.RoleResourceImpl">
+    <property name="idmStorage" ref="idmStorage" />
+    <property name="securityContext" ref="securityContext" />
+  </bean>
+  <bean id="searchService" class="org.overlord.apiman.dt.api.rest.impl.SearchResourceImpl">
+    <property name="storage" ref="storage" />
+    <property name="idmStorage" ref="idmStorage" />
+    <property name="users" ref="userService" />
+    <property name="roles" ref="roleService" />
+    <property name="securityContext" ref="securityContext" />
+  </bean>
+  <bean id="systemService" class="org.overlord.apiman.dt.api.rest.impl.SystemResourceImpl">
+    <property name="version" ref="version" />
+    <property name="storage" ref="storage" />
+  </bean>
+  <bean id="userService" class="org.overlord.apiman.dt.api.rest.impl.UserResourceImpl">
+    <property name="idmStorage" ref="idmStorage" />
+    <property name="securityContext" ref="securityContext" />
+    <property name="query" ref="storage" />
+  </bean>
+
+  <!-- Entity Manager Accessor -->
+  <bean id="emfAccessor" class="org.overlord.apiman.dt.api.fuse6.jpa.FuseEntityManagerFactoryAccessor" />
+
+  <!-- The API Management DT beans -->
+  <bean id="version" class="org.overlord.apiman.dt.api.config.Version" init-method="postConstruct" />
+  <bean id="validator" class="org.overlord.apiman.dt.api.core.util.EntityValidator" />
+  <bean id="securityContext" class="org.overlord.apiman.dt.api.fuse6.security.FuseSecurityContext">
+    <property name="idmStorage" ref="idmStorage" />
+  </bean>
+  <bean id="storage" class="org.overlord.apiman.dt.api.jpa.JpaStorage">
+    <property name="emfAccessor" ref="emfAccessor" />
+  </bean>
+  <bean id="idmStorage" class="org.overlord.apiman.dt.api.jpa.roles.JpaIdmStorage">
+    <property name="emfAccessor" ref="emfAccessor" />
+  </bean>
+<!--   <bean id="gatewayLink" class="org.overlord.apiman.dt.api.config.Version" /> -->
+
+</blueprint>

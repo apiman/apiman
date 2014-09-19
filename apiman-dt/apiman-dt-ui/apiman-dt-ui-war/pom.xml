@@ -14,6 +14,10 @@
     <!-- Project Dependencies -->
     <dependency>
       <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-common-auth</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>apiman-dt-api-beans</artifactId>
       <scope>provided</scope>
     </dependency>
@@ -31,17 +35,17 @@
     <!-- Overlord Commons -->
     <dependency>
       <groupId>org.overlord</groupId>
-      <artifactId>overlord-commons-config</artifactId>
+      <artifactId>overlord-commons-uiheader</artifactId>
       <exclusions>
+        <exclusion>
+          <artifactId>overlord-commons-auth</artifactId>
+          <groupId>org.overlord</groupId>
+        </exclusion>
         <exclusion>
           <artifactId>org.apache.felix.scr.annotations</artifactId>
           <groupId>org.apache.felix</groupId>
         </exclusion>
       </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.overlord</groupId>
-      <artifactId>overlord-commons-uiheader</artifactId>
     </dependency>
     <dependency>
       <groupId>org.overlord</groupId>

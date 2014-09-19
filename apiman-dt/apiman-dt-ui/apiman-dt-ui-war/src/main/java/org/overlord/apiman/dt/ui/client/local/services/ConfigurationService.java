@@ -75,7 +75,7 @@ public class ConfigurationService {
         RestClient.setApplicationRoot(configuration.getApi().getEndpoint());
         
         ApiAuthType apiAuthType = configuration.getApi().getAuth().getType();
-        if (apiAuthType == ApiAuthType.bearerToken || apiAuthType == ApiAuthType.samlBearerToken) {
+        if (apiAuthType == ApiAuthType.bearerToken || apiAuthType == ApiAuthType.samlBearerToken || apiAuthType == ApiAuthType.authToken) {
             startTokenRefreshTimer();
         }
 

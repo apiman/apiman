@@ -9,18 +9,110 @@
   <artifactId>apiman-dt-api-war</artifactId>
   <packaging>war</packaging>
   <name>apiman-dt-api-war</name>
-
+  
   <dependencies>
-    <!-- Project Dependencies -->
+    <!-- Project JARs -->
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-common-auth</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-common-servlet</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-dt-api-config</artifactId>
+    </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-dt-api-beans</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-dt-api-rest</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-dt-api-rest-impl</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.felix</groupId>
+          <artifactId>org.apache.felix.scr.annotations</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-dt-api-jpa</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-dt-api-jpa-idm</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-dt-api-gateway-rest</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.httpcomponents</groupId>
+          <artifactId>httpcore</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-dt-api-gateway</artifactId>
+    </dependency>
+
+    <!-- Overlord Commons -->
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-config</artifactId>
+      <exclusions>
+        <exclusion>
+          <artifactId>overlord-commons-auth</artifactId>
+          <groupId>org.overlord</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>org.apache.felix.scr.annotations</artifactId>
+          <groupId>org.apache.felix</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-gwt</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-i18n</artifactId>
+    </dependency>
+    
+    <!-- Provided Dependencies -->
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
       <scope>provided</scope>
     </dependency>
   </dependencies>
+  
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-war-plugin</artifactId>
+        <configuration>
+          <attachClasses>true</attachClasses>
+          <classesClassifier>classes</classesClassifier>
+          <archive>
+            <manifest>
+              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+              <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  
 </project>

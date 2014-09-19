@@ -76,7 +76,6 @@
     <!-- Dependency Versions (not found in parent) -->
     <version.org.overlord.overlord-commons>2.0.10.Final</version.org.overlord.overlord-commons>
     <version.org.overlord.overlord-commons.overlord-commons-maven-plugin>2.0.10.Final</version.org.overlord.overlord-commons.overlord-commons-maven-plugin>
-    <version.org.picketlink>2.5.3.SP4</version.org.picketlink>
     <org.eclipse.jetty>8.1.9.v20130131</org.eclipse.jetty>
     <version.io.undertow>1.0.1.Final</version.io.undertow>
 
@@ -100,6 +99,16 @@
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>apiman-tools-dev-server-all</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-common-auth</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-common-servlet</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -169,6 +178,11 @@
         <artifactId>apiman-dt-api-war-jetty8</artifactId>
         <version>${project.version}</version>
         <type>war</type>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-dt-api-war-fuse6</artifactId>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
@@ -487,21 +501,6 @@
       </dependency>
       <dependency>
         <groupId>org.overlord</groupId>
-        <artifactId>overlord-commons-errai-fuse-support</artifactId>
-        <version>${version.org.overlord.overlord-commons}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.overlord</groupId>
-        <artifactId>overlord-commons-osgi</artifactId>
-        <version>${version.org.overlord.overlord-commons}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.overlord</groupId>
-        <artifactId>overlord-commons-osgi-weld</artifactId>
-        <version>${version.org.overlord.overlord-commons}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-uiheader</artifactId>
         <version>${version.org.overlord.overlord-commons}</version>
       </dependency>
@@ -512,30 +511,8 @@
       </dependency>
       <dependency>
         <groupId>org.overlord</groupId>
-        <artifactId>overlord-commons-auth</artifactId>
-        <version>${version.org.overlord.overlord-commons}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.overlord</groupId>
-        <artifactId>overlord-commons-auth-jetty8</artifactId>
-        <version>${version.org.overlord.overlord-commons}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.overlord</groupId>
-        <artifactId>overlord-commons-auth-jboss7</artifactId>
-        <version>${version.org.overlord.overlord-commons}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-dev</artifactId>
         <version>${version.org.overlord.overlord-commons}</version>
-      </dependency>
-
-      <!-- PicketLink -->
-      <dependency>
-        <groupId>org.picketlink</groupId>
-        <artifactId>picketlink-federation</artifactId>
-        <version>${version.org.picketlink}</version>
       </dependency>
 
       <!-- Undertow -->
@@ -592,6 +569,38 @@
         <groupId>org.ow2.asm</groupId>
         <artifactId>asm-util</artifactId>
         <version>4.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-osgi</artifactId>
+        <version>${version.org.hibernate}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml</groupId>
+        <artifactId>classmate</artifactId>
+        <version>0.8.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss</groupId>
+        <artifactId>jandex</artifactId>
+        <version>1.1.0.Final</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.servicemix.bundles</groupId>
+        <artifactId>org.apache.servicemix.bundles.antlr</artifactId>
+        <version>2.7.7_5</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.servicemix.bundles</groupId>
+        <artifactId>org.apache.servicemix.bundles.dom4j</artifactId>
+        <version>1.6.1_5</version>
+      </dependency>
+
+      <!-- Spec Libraries -->
+      <dependency>
+        <groupId>org.apache.geronimo.specs</groupId>
+        <artifactId>geronimo-jta_1.1_spec</artifactId>
+        <version>1.1.1</version>
       </dependency>
 
     </dependencies>
@@ -741,12 +750,13 @@
   </distributionManagement>
 
   <modules>
+    <module>apiman-common</module>
+    <module>apiman-distro</module>
+    <module>apiman-docs</module>
     <module>apiman-dt</module>
     <module>apiman-rt</module>
     <module>apiman-tools</module>
     <module>apiman-test</module>
-    <module>apiman-distro</module>
-    <module>apiman-docs</module>
   </modules>
 
 </project>

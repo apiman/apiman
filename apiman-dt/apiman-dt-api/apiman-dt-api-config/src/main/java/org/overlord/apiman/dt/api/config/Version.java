@@ -44,7 +44,7 @@ public class Version {
     }
     
     @PostConstruct
-    protected void postConstruct() {
+    public void postConstruct() {
         load();
     }
 

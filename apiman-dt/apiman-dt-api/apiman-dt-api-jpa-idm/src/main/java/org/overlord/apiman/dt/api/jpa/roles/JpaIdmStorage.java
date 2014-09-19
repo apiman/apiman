@@ -114,7 +114,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
     @Override
     public void deleteRole(RoleBean role) throws StorageException, DoesNotExistException {
         // First delete all memberships in this role
-        EntityManager entityManager = emf.createEntityManager();
+        EntityManager entityManager = getEmfAccessor().getEntityManagerFactory().createEntityManager();
         try {
             entityManager.getTransaction().begin();
             Query query = entityManager.createQuery("DELETE from RoleMembershipBean m WHERE m.roleId = :roleId" ); //$NON-NLS-1$
@@ -163,7 +163,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
     @Override
     public void deleteMembership(String userId, String roleId, String organizationId)
             throws StorageException, DoesNotExistException {
-        EntityManager entityManager = emf.createEntityManager();
+        EntityManager entityManager = getEmfAccessor().getEntityManagerFactory().createEntityManager();
         try {
             entityManager.getTransaction().begin();
             Query query = entityManager.createQuery("DELETE FROM RoleMembershipBean m WHERE m.roleId = :roleId AND m.userId = :userId AND m.organizationId = :orgId" ); //$NON-NLS-1$
@@ -190,7 +190,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
      */
     @Override
     public void deleteMemberships(String userId, String organizationId) throws StorageException {
-        EntityManager entityManager = emf.createEntityManager();
+        EntityManager entityManager = getEmfAccessor().getEntityManagerFactory().createEntityManager();
         try {
             entityManager.getTransaction().begin();
             Query query = entityManager.createQuery("DELETE FROM RoleMembershipBean m WHERE m.userId = :userId AND m.organizationId = :orgId" ); //$NON-NLS-1$
@@ -213,7 +213,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
     @Override
     public Set<RoleMembershipBean> getUserMemberships(String userId) throws StorageException {
         Set<RoleMembershipBean> memberships = new HashSet<RoleMembershipBean>();
-        EntityManager entityManager = emf.createEntityManager();
+        EntityManager entityManager = getEmfAccessor().getEntityManagerFactory().createEntityManager();
         try {
             CriteriaBuilder builder = entityManager.getCriteriaBuilder();
             CriteriaQuery<RoleMembershipBean> criteriaQuery = builder.createQuery(RoleMembershipBean.class);
@@ -237,7 +237,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
     @Override
     public Set<RoleMembershipBean> getUserMemberships(String userId, String organizationId) throws StorageException {
         Set<RoleMembershipBean> memberships = new HashSet<RoleMembershipBean>();
-        EntityManager entityManager = emf.createEntityManager();
+        EntityManager entityManager = getEmfAccessor().getEntityManagerFactory().createEntityManager();
         try {
             CriteriaBuilder builder = entityManager.getCriteriaBuilder();
             CriteriaQuery<RoleMembershipBean> criteriaQuery = builder.createQuery(RoleMembershipBean.class);
@@ -263,7 +263,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
     @Override
     public Set<RoleMembershipBean> getOrgMemberships(String organizationId) throws StorageException {
         Set<RoleMembershipBean> memberships = new HashSet<RoleMembershipBean>();
-        EntityManager entityManager = emf.createEntityManager();
+        EntityManager entityManager = getEmfAccessor().getEntityManagerFactory().createEntityManager();
         try {
             CriteriaBuilder builder = entityManager.getCriteriaBuilder();
             CriteriaQuery<RoleMembershipBean> criteriaQuery = builder.createQuery(RoleMembershipBean.class);
@@ -287,7 +287,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
     @Override
     public Set<PermissionBean> getPermissions(String userId) throws StorageException {
         Set<PermissionBean> permissions = new HashSet<PermissionBean>();
-        EntityManager entityManager = emf.createEntityManager();
+        EntityManager entityManager = getEmfAccessor().getEntityManagerFactory().createEntityManager();
         try {
             CriteriaBuilder builder = entityManager.getCriteriaBuilder();
             CriteriaQuery<RoleMembershipBean> criteriaQuery = builder.createQuery(RoleMembershipBean.class);
