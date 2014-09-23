@@ -15,6 +15,9 @@
  */
 package org.overlord.apiman.dt.api.fuse6.security;
 
+import javax.ws.rs.core.HttpHeaders;
+
+import org.apache.cxf.security.SecurityContext;
 import org.overlord.apiman.dt.api.security.ISecurityContext;
 import org.overlord.apiman.dt.api.security.impl.AbstractSecurityContext;
 
@@ -25,10 +28,21 @@ import org.overlord.apiman.dt.api.security.impl.AbstractSecurityContext;
  */
 public class FuseSecurityContext extends AbstractSecurityContext {
     
+    private static final ThreadLocal<SecurityContext> cxfSecurityContext = new ThreadLocal<SecurityContext>();
+    private static final ThreadLocal<HttpHeaders> headers = new ThreadLocal<HttpHeaders>();
+
     /**
      * Constructor.
      */
     public FuseSecurityContext() {
+    }
+    
+    /**
+     * @see org.overlord.apiman.dt.api.security.ISecurityContext#getRequestHeader(java.lang.String)
+     */
+    @Override
+    public String getRequestHeader(String headerName) {
+        return headers.get().getHeaderString(headerName);
     }
 
     /**
@@ -36,8 +50,7 @@ public class FuseSecurityContext extends AbstractSecurityContext {
      */
     @Override
     public String getCurrentUser() {
-        // TODO Auto-generated method stub
-        return "admin"; //$NON-NLS-1$
+        return cxfSecurityContext.get().getUserPrincipal().getName();
     }
 
     /**
@@ -45,17 +58,27 @@ public class FuseSecurityContext extends AbstractSecurityContext {
      */
     @Override
     public boolean isAdmin() {
-        // TODO Auto-generated method stub
-        return true;
+        // TODO warning - hard coded role value here
+        return cxfSecurityContext.get().isUserInRole("apiadmin"); //$NON-NLS-1$
     }
 
     /**
-     * @see org.overlord.apiman.dt.api.security.ISecurityContext#getRequestHeader(java.lang.String)
+     * Called to set the current context.
+     * @param ctx
+     * @param reqHeaders
      */
-    @Override
-    public String getRequestHeader(String headerName) {
-        // TODO Auto-generated method stub
-        return null;
+    public static void set(SecurityContext ctx, HttpHeaders reqHeaders) {
+        cxfSecurityContext.set(ctx);
+        headers.set(reqHeaders);
+    }
+    
+    /**
+     * Called to clear the current thread local permissions bean.
+     */
+    public static void clear() {
+        AbstractSecurityContext.clearPermissions();
+        cxfSecurityContext.remove();
+        headers.remove();
     }
 
 }

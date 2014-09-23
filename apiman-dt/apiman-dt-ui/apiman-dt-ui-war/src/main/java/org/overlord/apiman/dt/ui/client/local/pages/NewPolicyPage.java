@@ -98,11 +98,11 @@ public class NewPolicyPage extends AbstractPage {
     }
     
     /**
-     * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractPage#loadPageData()
+     * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractPage#doLoadPageData()
      */
     @Override
-    protected int loadPageData() {
-        int size = super.loadPageData();
+    protected int doLoadPageData() {
+        int size = super.doLoadPageData();
         rest.listPolicyDefinitions(new IRestInvokerCallback<List<PolicyDefinitionBean>>() {
             @Override
             public void onSuccess(List<PolicyDefinitionBean> response) {

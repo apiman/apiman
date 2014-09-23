@@ -16,27 +16,28 @@
 package org.overlord.apiman.dt.ui.server;
 
 import org.apache.commons.configuration.Configuration;
+import org.overlord.apiman.dt.ui.client.shared.beans.ApiAuthType;
 import org.overlord.commons.config.ConfigurationFactory;
 
 /**
  * Global access to configuration information.
- *
+ * 
  * @author eric.wittmann@redhat.com
  */
-public class UIConfig {
+public class UIConfig implements IUIConfig {
 
-    public static final String APIMAN_DT_UI_CONFIG_FILE_NAME     = "apiman-dt-ui.config.file.name"; //$NON-NLS-1$
-    public static final String APIMAN_DT_UI_CONFIG_FILE_REFRESH  = "apiman-dt-ui.config.file.refresh"; //$NON-NLS-1$
+    public static final String APIMAN_DT_UI_CONFIG_FILE_NAME = "apiman-dt-ui.config.file.name"; //$NON-NLS-1$
+    public static final String APIMAN_DT_UI_CONFIG_FILE_REFRESH = "apiman-dt-ui.config.file.refresh"; //$NON-NLS-1$
 
     public static final String APIMAN_DT_UI_API_ENDPOINT = "apiman-dt-ui.dt-api.endpoint"; //$NON-NLS-1$
     public static final String APIMAN_DT_UI_API_AUTH_TYPE = "apiman-dt-ui.dt-api.authentication.type"; //$NON-NLS-1$
     public static final String APIMAN_DT_UI_API_BASIC_AUTH_USER = "apiman-dt-ui.dt-api.authentication.basic.user"; //$NON-NLS-1$
     public static final String APIMAN_DT_UI_API_BASIC_AUTH_PASS = "apiman-dt-ui.dt-api.authentication.basic.password"; //$NON-NLS-1$
     public static final String APIMAN_DT_UI_API_AUTH_TOKEN_GENERATOR = "apiman-dt-ui.dt-api.authentication.token.generator"; //$NON-NLS-1$
-    
+
     public static final String APIMAN_DT_UI_GATEWAY_URL = "apiman-dt-ui.gateway.base-url"; //$NON-NLS-1$
 
-    public static Configuration config;
+    private static Configuration config;
     static {
         String configFile = System.getProperty(APIMAN_DT_UI_CONFIG_FILE_NAME);
         String refreshDelayStr = System.getProperty(APIMAN_DT_UI_CONFIG_FILE_REFRESH);
@@ -45,18 +46,67 @@ public class UIConfig {
             refreshDelay = new Long(refreshDelayStr);
         }
 
-        config = ConfigurationFactory.createConfig(
-                configFile,
-                "apiman.properties", //$NON-NLS-1$
-                refreshDelay,
-                null,
-                UIConfig.class);
+        config = ConfigurationFactory.createConfig(configFile, "apiman.properties", //$NON-NLS-1$
+                refreshDelay, null, UIConfig.class);
     }
 
     /**
      * Constructor.
      */
     public UIConfig() {
+    }
+
+    /**
+     * @see org.overlord.apiman.dt.ui.server.IUIConfig#getManagementApiEndpoint()
+     */
+    @Override
+    public String getManagementApiEndpoint() {
+        return config.getString(UIConfig.APIMAN_DT_UI_API_ENDPOINT);
+    }
+
+    /**
+     * @see org.overlord.apiman.dt.ui.server.IUIConfig#getManagementApiAuthType()
+     */
+    @Override
+    public ApiAuthType getManagementApiAuthType() {
+        String at = config.getString(UIConfig.APIMAN_DT_UI_API_AUTH_TYPE);
+        try {
+            return ApiAuthType.valueOf(at);
+        } catch (Exception e) {
+            throw new RuntimeException("Invalid API authentication type: " + at); //$NON-NLS-1$
+        }
+    }
+
+    /**
+     * @see org.overlord.apiman.dt.ui.server.IUIConfig#getGatewayUrl()
+     */
+    @Override
+    public String getGatewayUrl() {
+        return config.getString(UIConfig.APIMAN_DT_UI_GATEWAY_URL, "http://localhost:8080/apiman-rt/gateway"); //$NON-NLS-1$
+    }
+    
+    /**
+     * @see org.overlord.apiman.dt.ui.server.IUIConfig#getManagementApiAuthUsername()
+     */
+    @Override
+    public String getManagementApiAuthUsername() {
+        return config.getString(UIConfig.APIMAN_DT_UI_API_BASIC_AUTH_USER);
+    }
+    
+    /**
+     * @see org.overlord.apiman.dt.ui.server.IUIConfig#getManagementApiAuthPassword()
+     */
+    @Override
+    public String getManagementApiAuthPassword() {
+        return config.getString(UIConfig.APIMAN_DT_UI_API_BASIC_AUTH_PASS);
+    }
+    
+    /**
+     * @see org.overlord.apiman.dt.ui.server.IUIConfig#getManagementApiAuthTokenGenerator()
+     */
+    @Override
+    public String getManagementApiAuthTokenGenerator() {
+        return config.getString(UIConfig.APIMAN_DT_UI_API_AUTH_TOKEN_GENERATOR);
     }
 
     /**

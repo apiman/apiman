@@ -18,21 +18,21 @@ package org.overlord.apiman.dt.ui.client.shared.beans;
 import java.io.Serializable;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.overlord.apiman.dt.ui.client.local.services.ConfigurationService;
 import org.overlord.apiman.dt.ui.server.servlets.ConfigurationServlet;
 
 /**
- * Encapsulates initial app configuration data sent from the server
- * (via the {@link ConfigurationServlet} servlet) to the client (via the
- * {@link ConfigurationService} service).
- *
+ * Encapsulates initial app configuration data sent from the server (via the
+ * {@link ConfigurationServlet} servlet) to the client (via the
+ * {@link org.overlord.apiman.dt.ui.client.local.services.ConfigurationService}
+ * service).
+ * 
  * @author eric.wittmann@redhat.com
  */
 @Portable
 public class ConfigurationBean implements Serializable {
-    
+
     private static final long serialVersionUID = -6342457151615532102L;
-    
+
     private AppConfigurationBean apiman;
     private UserConfigurationBean user;
     private ApiConfigurationBean api;
@@ -51,7 +51,8 @@ public class ConfigurationBean implements Serializable {
     }
 
     /**
-     * @param apiman the apiman to set
+     * @param apiman
+     *            the apiman to set
      */
     public void setApiman(AppConfigurationBean apiman) {
         this.apiman = apiman;
@@ -65,7 +66,8 @@ public class ConfigurationBean implements Serializable {
     }
 
     /**
-     * @param user the user to set
+     * @param user
+     *            the user to set
      */
     public void setUser(UserConfigurationBean user) {
         this.user = user;
@@ -79,7 +81,8 @@ public class ConfigurationBean implements Serializable {
     }
 
     /**
-     * @param api the api to set
+     * @param api
+     *            the api to set
      */
     public void setApi(ApiConfigurationBean api) {
         this.api = api;

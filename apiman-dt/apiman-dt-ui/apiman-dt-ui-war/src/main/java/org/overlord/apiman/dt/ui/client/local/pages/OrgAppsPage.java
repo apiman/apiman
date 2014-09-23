@@ -74,13 +74,13 @@ public class OrgAppsPage extends AbstractOrgPage {
             }
         });
     }
-
+    
     /**
-     * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractPage#loadPageData()
+     * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractOrgPage#doLoadPageData()
      */
     @Override
-    protected int loadPageData() {
-        int rval = super.loadPageData();
+    protected int doLoadPageData() {
+        int rval = super.doLoadPageData();
         rest.getOrgApplications(org, new IRestInvokerCallback<List<ApplicationSummaryBean>>() {
             @Override
             public void onSuccess(List<ApplicationSummaryBean> response) {

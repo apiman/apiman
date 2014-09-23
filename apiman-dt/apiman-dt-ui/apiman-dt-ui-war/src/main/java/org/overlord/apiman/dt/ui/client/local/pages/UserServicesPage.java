@@ -76,11 +76,11 @@ public class UserServicesPage extends AbstractUserPage {
     }
     
     /**
-     * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractPage#loadPageData()
+     * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractUserPage#doLoadPageData()
      */
     @Override
-    protected int loadPageData() {
-        int rval = super.loadPageData();
+    protected int doLoadPageData() {
+        int rval = super.doLoadPageData();
         rest.getUserServices(user, new IRestInvokerCallback<List<ServiceSummaryBean>>() {
             @Override
             public void onSuccess(List<ServiceSummaryBean> response) {

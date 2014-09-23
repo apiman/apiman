@@ -294,11 +294,11 @@ public class NewContractPage extends AbstractPage {
     }
 
     /**
-     * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractPage#loadPageData()
+     * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractPage#doLoadPageData()
      */
     @Override
-    protected int loadPageData() {
-        int rval = super.loadPageData();
+    protected int doLoadPageData() {
+        int rval = super.doLoadPageData();
         rest.getCurrentUserApps(new IRestInvokerCallback<List<ApplicationSummaryBean>>() {
             @Override
             public void onSuccess(List<ApplicationSummaryBean> response) {

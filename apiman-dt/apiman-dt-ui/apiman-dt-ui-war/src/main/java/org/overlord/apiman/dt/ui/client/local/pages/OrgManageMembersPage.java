@@ -106,10 +106,11 @@ public class OrgManageMembersPage extends AbstractPage {
     }
 
     /**
-     * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractPage#loadPageData()
+     * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractPage#doLoadPageData()
      */
     @Override
-    protected int loadPageData() {
+    protected int doLoadPageData() {
+        int rval = super.doLoadPageData();
         rest.getRoles(new IRestInvokerCallback<List<RoleBean>>() {
             @Override
             public void onSuccess(List<RoleBean> response) {
@@ -144,7 +145,7 @@ public class OrgManageMembersPage extends AbstractPage {
                 dataPacketError(error);
             }
         });
-        return 3;
+        return rval + 3;
     }
     
     /**

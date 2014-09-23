@@ -79,15 +79,6 @@ public class NewAppVersionPage extends AbstractPage {
     }
     
     /**
-     * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractPage#loadPageData()
-     */
-    @Override
-    protected int loadPageData() {
-        int rval = super.loadPageData();
-        return rval;
-    }
-    
-    /**
      * Called once the page is shown.
      */
     @PageShown

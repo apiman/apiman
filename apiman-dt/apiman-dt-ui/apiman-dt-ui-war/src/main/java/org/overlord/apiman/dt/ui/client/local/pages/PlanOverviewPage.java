@@ -61,15 +61,6 @@ public class PlanOverviewPage extends AbstractPlanPage {
     }
     
     /**
-     * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractPage#loadPageData()
-     */
-    @Override
-    protected int loadPageData() {
-        int rval = super.loadPageData();
-        return rval;
-    }
-    
-    /**
      * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractPlanPage#renderPage()
      */
     @Override

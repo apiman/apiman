@@ -20,7 +20,6 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.jgroups.auth.AuthToken;
 import org.overlord.apiman.common.auth.AuthTokenUtil;
 
 /**

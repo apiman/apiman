@@ -139,4 +139,5 @@ public class ConfigurationService {
 			return $wnd.APIMAN_CONFIG_DATA;
 		}
     }-*/;
+
 }

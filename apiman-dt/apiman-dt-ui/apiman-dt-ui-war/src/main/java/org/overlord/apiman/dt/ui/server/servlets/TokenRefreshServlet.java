@@ -18,13 +18,11 @@ package org.overlord.apiman.dt.ui.server.servlets;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.overlord.apiman.dt.ui.client.shared.beans.BearerTokenCredentialsBean;
-import org.overlord.apiman.dt.ui.server.UIConfig;
 import org.overlord.apiman.dt.ui.server.auth.ITokenGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +35,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author eric.wittmann@redhat.com
  */
-public class TokenRefreshServlet extends HttpServlet {
+public class TokenRefreshServlet extends AbstractUIServlet {
 
     private static final long serialVersionUID = 7721708152826837757L;
     private static Logger logger = LoggerFactory.getLogger(TokenRefreshServlet.class);
@@ -71,7 +69,7 @@ public class TokenRefreshServlet extends HttpServlet {
      */
     private ITokenGenerator getTokenGenerator() {
         if (tokenGenerator == null) {
-            String tokenGeneratorClassName = UIConfig.config.getString(UIConfig.APIMAN_DT_UI_API_AUTH_TOKEN_GENERATOR);
+            String tokenGeneratorClassName = getConfig().getManagementApiAuthTokenGenerator();
             if (tokenGeneratorClassName == null)
                 throw new RuntimeException("No token generator class specified."); //$NON-NLS-1$
             try {

@@ -70,10 +70,11 @@ public abstract class AbstractUserPage extends AbstractPage {
     }
     
     /**
-     * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractPage#loadPageData()
+     * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractPage#doLoadPageData()
      */
     @Override
-    protected int loadPageData() {
+    protected int doLoadPageData() {
+        int rval = super.doLoadPageData();
         rest.getUser(user, new IRestInvokerCallback<UserBean>() {
             @Override
             public void onSuccess(UserBean response) {
@@ -85,7 +86,7 @@ public abstract class AbstractUserPage extends AbstractPage {
                 dataPacketError(error);
             }
         });
-        return 1;
+        return rval + 1;
     }
     
     /**

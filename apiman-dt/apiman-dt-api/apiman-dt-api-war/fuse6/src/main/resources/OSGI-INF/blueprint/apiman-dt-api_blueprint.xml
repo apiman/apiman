@@ -16,9 +16,13 @@
   <jaxrs:server address="/apiman-dt-api" id="apimanDtApi">
     <jaxrs:providers>
       <bean class="org.codehaus.jackson.jaxrs.JacksonJsonProvider" />
-      <bean id="authenticationFilter" class="org.apache.cxf.jaxrs.security.JAASAuthenticationFilter">
+      <bean id="authRequestHandler" class="org.overlord.apiman.dt.api.fuse6.auth.AuthTokenRequestHandler">
         <property name="contextName" value="karaf" />
+        <property name="roleClassifier" value="RolePrincipal"/>
+        <property name="roleClassifierType" value="classname"/>
+        <property name="realm" value="apiman-dt-api" />
       </bean>
+      <bean id="authResponseHandler" class="org.overlord.apiman.dt.api.fuse6.auth.AuthTokenResponseHandler" />
     </jaxrs:providers>
     <jaxrs:serviceBeans>
       <ref component-id="actionService" />

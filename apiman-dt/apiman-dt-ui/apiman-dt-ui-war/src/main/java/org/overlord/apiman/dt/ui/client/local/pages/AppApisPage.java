@@ -59,11 +59,12 @@ public class AppApisPage extends AbstractAppPage {
     }
     
     /**
-     * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractPage#loadPageData()
+     * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractAppPage#doLoadPageData()
      */
     @Override
-    protected int loadPageData() {
-        int rval = super.loadPageData();
+    protected int doLoadPageData() {
+        int rval = super.doLoadPageData();
+        // Return an extra 1 because we'll call getApplicationContracts() later
         return rval + 1;
     }
     

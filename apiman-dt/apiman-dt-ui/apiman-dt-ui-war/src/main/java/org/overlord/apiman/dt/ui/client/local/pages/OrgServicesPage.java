@@ -76,11 +76,11 @@ public class OrgServicesPage extends AbstractOrgPage {
     }
 
     /**
-     * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractPage#loadPageData()
+     * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractOrgPage#doLoadPageData()
      */
     @Override
-    protected int loadPageData() {
-        int rval = super.loadPageData();
+    protected int doLoadPageData() {
+        int rval = super.doLoadPageData();
         rest.getOrgServices(org, new IRestInvokerCallback<List<ServiceSummaryBean>>() {
             @Override
             public void onSuccess(List<ServiceSummaryBean> response) {

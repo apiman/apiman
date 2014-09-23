@@ -70,13 +70,13 @@ public class ServicePoliciesPage extends AbstractServicePage {
             }
         });
     }
-
+    
     /**
-     * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractPage#loadPageData()
+     * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractServicePage#doLoadPageData()
      */
     @Override
-    protected int loadPageData() {
-        int rval = super.loadPageData();
+    protected int doLoadPageData() {
+        int rval = super.doLoadPageData();
         // we'll trigger an additional load after the service version has been loaded (hence the +1)
         return rval + 1;
     }

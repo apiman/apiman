@@ -89,11 +89,11 @@ public class ServicePlansPage extends AbstractServicePage {
     }
 
     /**
-     * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractPage#loadPageData()
+     * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractServicePage#doLoadPageData()
      */
     @Override
-    protected int loadPageData() {
-        int rval = super.loadPageData();
+    protected int doLoadPageData() {
+        int rval = super.doLoadPageData();
         rest.getOrgPlans(org, new IRestInvokerCallback<List<PlanSummaryBean>>() {
             @Override
             public void onSuccess(List<PlanSummaryBean> response) {

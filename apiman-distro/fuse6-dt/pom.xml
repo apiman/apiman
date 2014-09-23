@@ -57,6 +57,25 @@
       <groupId>org.overlord.apiman</groupId>
       <artifactId>apiman-dt-api-war-fuse6</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.overlord.apiman</groupId>
+      <artifactId>apiman-dt-ui-war-fuse6</artifactId>
+      <type>war</type>
+    </dependency>
+
+    <!-- Overlord Commons -->
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-gwt</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-i18n</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-services</artifactId>
+    </dependency>
     
     <!-- Required Spec Libs -->
     <dependency>
@@ -149,10 +168,6 @@
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
     </dependency>
-<!--     <bundle>mvn:commons-collections/commons-collections/3.2.1</bundle> -->
-<!--     <bundle>mvn:commons-lang/commons-lang/2.6</bundle> -->
-<!--     <bundle>wrap:mvn:net.sourceforge.serp/serp/1.13.1</bundle> -->
-<!--     <bundle>mvn:com.h2database/h2/1.3.170</bundle> -->
 
   </dependencies>
   <build>
@@ -178,7 +193,7 @@
                   <comment>All API Management Dependencies</comment>
                   <dependsOnFeatures>
                     <feature>
-                      <name>jndi</name>
+                      <name>war</name>
                     </feature>
                   </dependsOnFeatures>
                   <excludes>

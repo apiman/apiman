@@ -24,11 +24,13 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.nav.client.local.Navigation;
 import org.jboss.errai.ui.nav.client.local.PageHiding;
 import org.jboss.errai.ui.nav.client.local.PageShowing;
+import org.overlord.apiman.dt.api.beans.idm.UserBean;
 import org.overlord.apiman.dt.ui.client.local.PageErrorPanel;
 import org.overlord.apiman.dt.ui.client.local.PageLoadingWidget;
 import org.overlord.apiman.dt.ui.client.local.services.CurrentContextService;
 import org.overlord.apiman.dt.ui.client.local.services.NavigationHelperService;
 import org.overlord.apiman.dt.ui.client.local.services.RestInvokerService;
+import org.overlord.apiman.dt.ui.client.local.services.rest.IRestInvokerCallback;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
@@ -63,6 +65,8 @@ public abstract class AbstractPage extends Composite {
 
     private int expectedDataPackets;
     private int dataPacketsReceived;
+    
+    private static UserBean currentUserBean;
 
     /**
      * Constructor.
@@ -139,14 +143,40 @@ public abstract class AbstractPage extends Composite {
     }
     
     /**
-     * Subclasses should implement this method.  This method represents an opportunity
-     * for the page to load its data asynchronously.  If the page does not need to 
-     * load any data, it should return 0;
+     * Load the page data asynchronously.
      */
-    protected int loadPageData() {
-        return 0;
+    private final int loadPageData() {
+        if (currentUserBean == null) {
+            rest.getCurrentUserInfo(new IRestInvokerCallback<UserBean>() {
+                @Override
+                public void onSuccess(UserBean response) {
+                    currentUserBean = response;
+                    increaseExpectedDataPackets(doLoadPageData());
+                    dataPacketLoaded();
+                }
+                @Override
+                public void onError(Throwable error) {
+                    dataPacketError(error);
+                }
+            });
+            return 1;
+        } else {
+            return doLoadPageData();
+        }
     }
     
+    /**
+     * Subclasses may implement this method.  This method represents an opportunity
+     * for the page to load its data asynchronously.  The method should return the
+     * number of data packets it expects to receive asynchronously.  Only after all
+     * of the packets have been received will the page render.  Subclasses should
+     * call dataPacketLoaded() each time an asynchronous data packet is returned
+     * from the server.
+     */
+    protected int doLoadPageData() {
+        return 0;
+    }
+
     /**
      * Called when a single piece of data that the page requires is successfully
      * loaded.  Subclasses should call this method upon return of an async data
@@ -222,6 +252,13 @@ public abstract class AbstractPage extends Composite {
         if (Document.get() != null && title != null) {
             Document.get().setTitle (title);
         }
+    }
+
+    /**
+     * @return the currentUserBean
+     */
+    public UserBean getCurrentUserBean() {
+        return currentUserBean;
     }
 
 }

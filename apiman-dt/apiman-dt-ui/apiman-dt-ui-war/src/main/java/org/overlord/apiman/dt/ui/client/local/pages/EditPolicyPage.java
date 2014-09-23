@@ -92,11 +92,11 @@ public class EditPolicyPage extends AbstractPage {
     }
     
     /**
-     * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractPage#loadPageData()
+     * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractPage#doLoadPageData()
      */
     @Override
-    protected int loadPageData() {
-        int size = super.loadPageData();
+    protected int doLoadPageData() {
+        int size = super.doLoadPageData();
         PolicyType pt = PolicyType.valueOf(type);
         rest.getPolicy(pt, org, id, ver, new Long(policy), new IRestInvokerCallback<PolicyBean>() {
             @Override

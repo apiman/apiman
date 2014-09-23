@@ -95,10 +95,11 @@ public abstract class AbstractServicePage extends AbstractPage {
     }
     
     /**
-     * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractPage#loadPageData()
+     * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractPage#doLoadPageData()
      */
     @Override
-    protected int loadPageData() {
+    protected int doLoadPageData() {
+        int rval = super.doLoadPageData();
         rest.getOrganization(org, new IRestInvokerCallback<OrganizationBean>() {
             @Override
             public void onSuccess(OrganizationBean response) {
@@ -141,7 +142,7 @@ public abstract class AbstractServicePage extends AbstractPage {
                 dataPacketError(error);
             }
         });
-        return 2;
+        return rval + 2;
     }
 
     /**

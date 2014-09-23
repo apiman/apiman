@@ -16,10 +16,7 @@
 package org.overlord.apiman.dt.api.security.impl;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
-
-import org.overlord.apiman.dt.api.core.IIdmStorage;
 
 /**
  * The basic/default implementation of a security context.
@@ -30,8 +27,6 @@ import org.overlord.apiman.dt.api.core.IIdmStorage;
 public class DefaultSecurityContext extends AbstractSecurityContext {
 
     private static final ThreadLocal<HttpServletRequest> servletRequest = new ThreadLocal<HttpServletRequest>();
-    
-    @Inject IIdmStorage idmStorage;
     
     /**
      * Constructor.

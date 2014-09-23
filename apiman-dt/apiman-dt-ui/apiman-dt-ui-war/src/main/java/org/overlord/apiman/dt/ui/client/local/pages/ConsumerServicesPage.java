@@ -110,11 +110,11 @@ public class ConsumerServicesPage extends AbstractPage {
     }
 
     /**
-     * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractPage#loadPageData()
+     * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractPage#doLoadPageData()
      */
     @Override
-    protected int loadPageData() {
-        int rval = super.loadPageData();
+    protected int doLoadPageData() {
+        int rval = super.doLoadPageData();
         if (query != null && !query.trim().isEmpty()) {
             doQuery(query);
             rval += 1;

@@ -39,15 +39,6 @@ public class OrgActivityPage extends AbstractOrgPage {
     }
     
     /**
-     * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractPage#loadPageData()
-     */
-    @Override
-    protected int loadPageData() {
-        int rval = super.loadPageData();
-        return rval + 0;
-    }
-
-    /**
      * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractUserPage#renderPage()
      */
     @Override
