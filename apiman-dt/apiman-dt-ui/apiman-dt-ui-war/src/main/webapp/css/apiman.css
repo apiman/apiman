@@ -139,6 +139,7 @@ a:hover {
 
 div.page {
   margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 .dash-group {
@@ -169,6 +170,18 @@ div.page {
 .dash-group .actions ul li {
   list-style: circle;
   padding: 2px;
+}
+
+#dash-admin-group {
+  border: 1px solid rgb(254, 201, 201);
+}
+#dash-admin-group .title {
+  background-color: rgb(254, 227, 227);
+  color: #666;
+  border-bottom: 1px solid rgb(254, 201, 201);
+}
+#dash-admin-group a {
+  color: rgb(217, 82, 79);
 }
 
 .browse-items {
@@ -346,7 +359,7 @@ div.page {
   line-height: 14px;
 }
 
-.apiman-services hr, .apiman-applications hr, .apiman-plans hr, .apiman-members hr, .apiman-contracts hr, .apiman-policies hr {
+.apiman-services hr, .apiman-applications hr, .apiman-plans hr, .apiman-members hr, .apiman-contracts hr, .apiman-policies hr, .apiman-roles hr {
   margin: 8px;
 }
 
@@ -875,4 +888,37 @@ ol.breadcrumb {
   width: 100%;
   height: 225px;
   text-decoration: none;
+}
+
+
+div.admin-page {
+}
+
+div.admin-page .breadcrumb {
+  border-bottom: 1px solid rgb(221, 221, 221);
+  margin-bottom: 15px;
+}
+
+div.admin-page .side-nav {
+  border: 1px solid rgb(221, 221, 221);
+  border-radius: 2px;
+  padding: 2px;
+}
+
+div.admin-page .admin-content h2 {
+  margin-top: 10px;
+}
+
+div.admin-page .admin-content .hr-row hr {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+div.admin-page .admin-content .apiman-summaryrow .permissions {
+  padding-left: 8px;
+  padding-right: 150px;
+}
+
+div.admin-page .admin-content .apiman-summaryrow .emphasis {
+  color: #555;
 }

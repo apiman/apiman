@@ -3,6 +3,8 @@ Content-Type: application/json
 
 {
   "name" : "Test Role 1",
+  "autoGrant" : true,
+  "description" : "This is the description of Test Role 1.",
   "permissions" : [ "permission-1", "permission-2", "permission-3" ]
 }
 ----
@@ -12,5 +14,7 @@ Content-Type: application/json
 {
   "id" : "TestRole1",
   "name" : "Test Role 1",
+  "autoGrant" : true,
+  "description" : "This is the description of Test Role 1.",
   "permissions" : [ "permission-1", "permission-2", "permission-3" ]
 }

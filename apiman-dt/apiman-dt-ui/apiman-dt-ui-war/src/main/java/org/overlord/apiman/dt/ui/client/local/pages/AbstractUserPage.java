@@ -121,7 +121,7 @@ public abstract class AbstractUserPage extends AbstractPage {
             joinedOn.setText("N/A"); //$NON-NLS-1$
         }
         
-        String dashHref = navHelper.createHrefToPage(DashboardPage.class, MultimapUtil.fromMultiple());
+        String dashHref = navHelper.createHrefToPage(DashboardPage.class, MultimapUtil.emptyMap());
         breadcrumb.addItem(dashHref, "home", i18n.format(AppMessages.HOME)); //$NON-NLS-1$
         breadcrumb.addActiveItem("user", userBean.getFullName()); //$NON-NLS-1$
     }

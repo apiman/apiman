@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <script type="text/javascript" src="site.js"></script>
+  </head>
+
+  <body>
+
+    <!-- Top header/nav bar -->
+    <div id="overlord-header">
+    </div>
+
+    <div class="container page admin-page" data-field="page">
+      <div class="row">
+        <div class="col-md-12">
+          <ol class="breadcrumb" data-field="breadcrumb" data-role="dummy">
+            <li><a href="dash.html"><i class="fa fa-home fa-fw"></i><span>Home</span></a></li>
+            <li class="active"><i class="fa fa-gavel fa-fw"></i><span>System Administration</span></li>
+          </ol>
+        </div>
+      </div>
+      <div class="row">
+        <!-- Side Navigation -->
+        <div class="col-md-3">
+         <ul class="side-nav nav nav-pills nav-stacked">
+           <li><a data-field="toRoles" data-i18n-key="admin-nav.admin-roles" href="admin-roles.html">Roles</a></li>
+           <li><a data-field="toPolicyDefs" data-i18n-key="admin-nav.policy-definitions" href="admin-policyDefs.html">Policy Definitions</a></li>
+           <li class="active"><a data-field="toGateways" data-i18n-key="admin-nav.gateways" href="admin-gateways.html">Gateways</a></li>
+         </ul>
+        </div>
+        <!-- Admin Content -->
+        <div class="col-md-9 admin-content">
+          <div class="container-fluid">
+            <div class="row">
+              <h2 class="title" data-field="heading" data-i18n-key="gateways">Gateways</h2>
+            </div>
+            <!-- Helpful hint -->
+            <div class="row">
+              <p class="col-md-10 apiman-label-faded" data-i18n-key="gateways-help-text" class="apiman-label-faded">Configure the gateways on which the services may be published.  If no gateways are configured, then users will not be able to publish their services!</p>
+            </div>
+            <!-- HR -->
+            <div class="row hr-row">
+              <hr/>
+            </div>
+            
+            <div>
+              <h4>Not yet implemented.</h4>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

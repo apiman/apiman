@@ -6,5 +6,7 @@ Content-Type: application/json
 {
   "id" : "TestRole1",
   "name" : "Test Role 1",
+  "autoGrant" : false,
+  "description" : "This is the description of Test Role 1 (updated).",
   "permissions" : [ "permission-1", "permission-2", "permission-4", "permission-5" ]
 }

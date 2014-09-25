@@ -16,8 +16,10 @@
 package org.overlord.apiman.dt.api.beans.idm;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -45,6 +47,14 @@ public class RoleBean implements Serializable {
     @Id
     private String id;
     private String name;
+    @Column(updatable=true, nullable=true, length=512)
+    private String description;
+    @Column(updatable=false, nullable=false)
+    private String createdBy;
+    @Column(updatable=false, nullable=false)
+    private Date createdOn;
+    @Column(updatable=true, nullable=true)
+    private Boolean autoGrant;
     @ElementCollection(fetch=FetchType.EAGER)
     private Set<String> permissions;
     
@@ -125,6 +135,62 @@ public class RoleBean implements Serializable {
         } else if (!id.equals(other.id))
             return false;
         return true;
+    }
+
+    /**
+     * @return the description
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * @param description the description to set
+     */
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    /**
+     * @return the createdBy
+     */
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    /**
+     * @param createdBy the createdBy to set
+     */
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    /**
+     * @return the createdOn
+     */
+    public Date getCreatedOn() {
+        return createdOn;
+    }
+
+    /**
+     * @param createdOn the createdOn to set
+     */
+    public void setCreatedOn(Date createdOn) {
+        this.createdOn = createdOn;
+    }
+
+    /**
+     * @return the autoGrant
+     */
+    public Boolean getAutoGrant() {
+        return autoGrant;
+    }
+
+    /**
+     * @param autoGrant the autoGrant to set
+     */
+    public void setAutoGrant(Boolean autoGrant) {
+        this.autoGrant = autoGrant;
     }
     
 }

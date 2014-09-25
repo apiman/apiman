@@ -174,8 +174,8 @@ public class ConsumerOrgPage extends AbstractPage {
         members.setValue(memberBeans);
         services.setValue(serviceBeans);
 
-        String dashHref = navHelper.createHrefToPage(DashboardPage.class, MultimapUtil.fromMultiple());
-        String consumerOrgsHref = navHelper.createHrefToPage(ConsumerOrgsPage.class, MultimapUtil.fromMultiple());
+        String dashHref = navHelper.createHrefToPage(DashboardPage.class, MultimapUtil.emptyMap());
+        String consumerOrgsHref = navHelper.createHrefToPage(ConsumerOrgsPage.class, MultimapUtil.emptyMap());
         breadcrumb.addItem(dashHref, "home", i18n.format(AppMessages.HOME)); //$NON-NLS-1$
         breadcrumb.addItem(consumerOrgsHref, "search", i18n.format(AppMessages.ORGANIZATIONS)); //$NON-NLS-1$
         breadcrumb.addActiveItem("shield", orgBean.getName()); //$NON-NLS-1$

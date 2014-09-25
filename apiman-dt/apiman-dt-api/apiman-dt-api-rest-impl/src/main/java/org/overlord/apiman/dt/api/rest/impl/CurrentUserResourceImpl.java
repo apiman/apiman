@@ -68,7 +68,9 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
     public UserBean getInfo() {
         String userId = getSecurityContext().getCurrentUser();
         try {
-            return getIdmStorage().getUser(userId);
+            UserBean user = getIdmStorage().getUser(userId);
+            user.setAdmin(getSecurityContext().isAdmin());
+            return user;
         } catch (DoesNotExistException e) {
             UserBean user = new UserBean();
             user.setUsername(userId);

@@ -84,6 +84,10 @@
     background-color: rgb(102, 102, 102);
     color: white;
   }
+  
+  div.admin-page .admin-content .apiman-summaryrow .permissions {
+    padding-right: 50px;
+  }
 }
 
 /* Smart Phones */
@@ -129,6 +133,11 @@
     float: none;
     display: block;
   }
+
+  div.admin-page .admin-content .apiman-summaryrow .permissions {
+    padding-right: 50px;
+  }
+
 }
 
 /* Original iPhone */
@@ -158,4 +167,9 @@
   .apiman-filters .input-search {
     width: 180px;
   }
+
+  div.admin-page .admin-content .apiman-summaryrow .permissions {
+    padding-right: 10px;
+  }
+
 }

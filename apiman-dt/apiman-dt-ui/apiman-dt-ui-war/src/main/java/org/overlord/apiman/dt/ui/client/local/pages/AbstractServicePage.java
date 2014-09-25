@@ -158,7 +158,7 @@ public abstract class AbstractServicePage extends AbstractPage {
      */
     @Override
     protected void renderPage() {
-        String dashHref = navHelper.createHrefToPage(DashboardPage.class, MultimapUtil.fromMultiple());
+        String dashHref = navHelper.createHrefToPage(DashboardPage.class, MultimapUtil.emptyMap());
         String orgServicesHref = navHelper.createHrefToPage(OrgServicesPage.class, MultimapUtil.singleItemMap("org", org)); //$NON-NLS-1$
         String serviceOverviewHref = navHelper.createHrefToPage(ServiceOverviewPage.class, MultimapUtil.fromMultiple("org", org, "service", service, "version", version)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         String serviceImplHref = navHelper.createHrefToPage(ServiceImplPage.class, MultimapUtil.fromMultiple("org", org, "service", service, "version", version)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$

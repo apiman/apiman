@@ -46,6 +46,7 @@ import org.overlord.apiman.dt.api.beans.policies.PolicyBean;
 import org.overlord.apiman.dt.api.beans.policies.PolicyDefinitionBean;
 import org.overlord.apiman.dt.api.beans.policies.PolicyType;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
+import org.overlord.apiman.dt.api.beans.search.SearchCriteriaFilterBean;
 import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
 import org.overlord.apiman.dt.api.beans.services.ServiceBean;
 import org.overlord.apiman.dt.api.beans.services.ServicePlanBean;
@@ -133,15 +134,19 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             // Store/persist the new organization
             storage.create(bean);
 
-            // Make the current user an owner of the new organization so that she can
-            // manage it (grant/revoke, edit details, etc).
-            // TODO warning - hard coded role name here
-            String orgOwnerRoleId = "OrganizationOwner"; //$NON-NLS-1$
-            String currentUser = securityContext.getCurrentUser();
-            String orgId = bean.getId();
-            RoleMembershipBean membership = RoleMembershipBean.create(currentUser, orgOwnerRoleId, orgId);
-            membership.setCreatedOn(new Date());
-            idmStorage.createMembership(membership);
+            // Auto-grant memberships in roles to the creator of the organization
+            SearchCriteriaBean criteria = new SearchCriteriaBean();
+            criteria.setPage(1);
+            criteria.setPageSize(100);
+            criteria.addFilter("autoGrant", "true", SearchCriteriaFilterBean.OPERATOR_BOOL_EQ); //$NON-NLS-1$ //$NON-NLS-2$
+            List<RoleBean> autoGrantedRoles = idmStorage.findRoles(criteria).getBeans();
+            for (RoleBean roleBean : autoGrantedRoles) {
+                String currentUser = securityContext.getCurrentUser();
+                String orgId = bean.getId();
+                RoleMembershipBean membership = RoleMembershipBean.create(currentUser, roleBean.getId(), orgId);
+                membership.setCreatedOn(new Date());
+                idmStorage.createMembership(membership);
+            }
             return bean;
         } catch (AlreadyExistsException e) {
             throw ExceptionFactory.organizationAlreadyExistsException(bean.getName());

@@ -64,6 +64,10 @@ public class DtApiDataSeeder extends DefaultTestDataSeeder {
         RoleBean role = new RoleBean();
         role.setId("OrganizationOwner"); //$NON-NLS-1$
         role.setName("Organization Owner"); //$NON-NLS-1$
+        role.setAutoGrant(true);
+        role.setDescription("This role is automatically given to users when they create an organization.  It grants all permissions."); //$NON-NLS-1$
+        role.setCreatedBy("admin"); //$NON-NLS-1$
+        role.setCreatedOn(new Date());
         role.setPermissions(new HashSet<String>());
         role.getPermissions().add(PermissionType.orgView.toString());
         role.getPermissions().add(PermissionType.orgEdit.toString());
@@ -83,6 +87,9 @@ public class DtApiDataSeeder extends DefaultTestDataSeeder {
         role = new RoleBean();
         role.setId("ApplicationDeveloper"); //$NON-NLS-1$
         role.setName("Application Developer"); //$NON-NLS-1$
+        role.setDescription("This role allows users to perform standard application development tasks (manage applications but not services or plans)."); //$NON-NLS-1$
+        role.setCreatedBy("admin"); //$NON-NLS-1$
+        role.setCreatedOn(new Date());
         role.setPermissions(new HashSet<String>());
         role.getPermissions().add(PermissionType.orgView.toString());
         role.getPermissions().add(PermissionType.appView.toString());
@@ -94,6 +101,9 @@ public class DtApiDataSeeder extends DefaultTestDataSeeder {
         role = new RoleBean();
         role.setId("ServiceDeveloper"); //$NON-NLS-1$
         role.setName("Service Developer"); //$NON-NLS-1$
+        role.setDescription("This role allows users to perform standard service development tasks such as managing services and plans."); //$NON-NLS-1$
+        role.setCreatedBy("admin"); //$NON-NLS-1$
+        role.setCreatedOn(new Date());
         role.setPermissions(new HashSet<String>());
         role.getPermissions().add(PermissionType.orgView.toString());
         role.getPermissions().add(PermissionType.svcView.toString());

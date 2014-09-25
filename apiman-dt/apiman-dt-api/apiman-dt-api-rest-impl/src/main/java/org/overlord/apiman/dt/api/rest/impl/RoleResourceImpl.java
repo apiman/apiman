@@ -16,6 +16,7 @@
 
 package org.overlord.apiman.dt.api.rest.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -67,6 +68,8 @@ public class RoleResourceImpl implements IRoleResource {
             throw ExceptionFactory.notAuthorizedException();
 
         bean.setId(BeanUtils.idFromName(bean.getName()));
+        bean.setCreatedBy(securityContext.getCurrentUser());
+        bean.setCreatedOn(new Date());
         try {
             idmStorage.createRole(bean);
             return bean;
@@ -98,9 +101,22 @@ public class RoleResourceImpl implements IRoleResource {
     public void update(String roleId, RoleBean bean) throws RoleNotFoundException, NotAuthorizedException {
         if (!securityContext.isAdmin())
             throw ExceptionFactory.notAuthorizedException();
-        bean.setId(roleId);
         try {
-            idmStorage.updateRole(bean);
+            RoleBean role = idmStorage.getRole(roleId);
+            if (bean.getDescription() != null) {
+                role.setDescription(bean.getDescription());
+            }
+            if (bean.getAutoGrant() != null) {
+                role.setAutoGrant(bean.getAutoGrant());
+            }
+            if (bean.getName() != null) {
+                role.setName(bean.getName());
+            }
+            if (bean.getPermissions() != null) {
+                role.getPermissions().clear();
+                role.getPermissions().addAll(bean.getPermissions());
+            }
+            idmStorage.updateRole(role);
         } catch (DoesNotExistException e) {
             throw ExceptionFactory.roleNotFoundException(roleId);
         } catch (StorageException e) {

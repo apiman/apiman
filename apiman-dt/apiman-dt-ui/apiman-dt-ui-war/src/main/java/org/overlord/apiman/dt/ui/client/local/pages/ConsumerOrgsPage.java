@@ -169,7 +169,7 @@ public class ConsumerOrgsPage extends AbstractPage {
         orgs.setMemberOrgs(memberOrgs);
         orgs.setValue(orgBeans);
 
-        String dashHref = navHelper.createHrefToPage(DashboardPage.class, MultimapUtil.fromMultiple());
+        String dashHref = navHelper.createHrefToPage(DashboardPage.class, MultimapUtil.emptyMap());
         breadcrumb.addItem(dashHref, "home", i18n.format(AppMessages.HOME)); //$NON-NLS-1$
         breadcrumb.addActiveItem("search", i18n.format(AppMessages.ORGANIZATIONS)); //$NON-NLS-1$
     }

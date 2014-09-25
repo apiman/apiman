@@ -232,8 +232,8 @@ public class ConsumerServicePage extends AbstractPage {
         
         plans.setValue(planBeans);
 
-        String dashHref = navHelper.createHrefToPage(DashboardPage.class, MultimapUtil.fromMultiple());
-        String consumerServicesHref = navHelper.createHrefToPage(ConsumerServicesPage.class, MultimapUtil.fromMultiple());
+        String dashHref = navHelper.createHrefToPage(DashboardPage.class, MultimapUtil.emptyMap());
+        String consumerServicesHref = navHelper.createHrefToPage(ConsumerServicesPage.class, MultimapUtil.emptyMap());
         breadcrumb.addItem(dashHref, "home", i18n.format(AppMessages.HOME)); //$NON-NLS-1$
         breadcrumb.addItem(consumerServicesHref, "search", i18n.format(AppMessages.SERVICES)); //$NON-NLS-1$
         breadcrumb.addActiveItem("puzzle-piece", serviceBean.getName()); //$NON-NLS-1$

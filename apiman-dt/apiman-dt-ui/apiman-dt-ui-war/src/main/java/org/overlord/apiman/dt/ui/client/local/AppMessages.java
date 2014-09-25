@@ -56,6 +56,10 @@ public class AppMessages {
     public static final String TITLE_NEW_POLICY = "page.title.new-policy"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "APIMan - Edit Policy")
     public static final String TITLE_EDIT_POLICY = "page.title.edit-policy"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "APIMan - New Role")
+    public static final String TITLE_NEW_ROLE = "page.title.new-role"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "APIMan - Edit Role")
+    public static final String TITLE_EDIT_ROLE = "page.title.edit-role"; //$NON-NLS-1$
 
     @TranslationKey(defaultValue = "APIMan - {0} (Organizations)")
     public static final String TITLE_USER_ORGS = "page.title.user-orgs"; //$NON-NLS-1$
@@ -108,6 +112,13 @@ public class AppMessages {
     @TranslationKey(defaultValue = "APIMan - {0} (Activity)")
     public static final String TITLE_PLAN_ACTIVITY = "page.title.plan-activity"; //$NON-NLS-1$
     
+    @TranslationKey(defaultValue = "APIMan - Admin - Roles")
+    public static final String TITLE_ADMIN_ROLES = "page.title.admin-roles"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "APIMan - Admin - Policy Definitions")
+    public static final String TITLE_ADMIN_POLICY_DEFS = "page.title.policy-defs"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "APIMan - Admin - Gateways")
+    public static final String TITLE_ADMIN_GATEWAYS = "page.title.admin-gateways"; //$NON-NLS-1$
+
     @TranslationKey(defaultValue = "Configuration service not available.")
     public static final String CONFIG_SERVICE_NOT_AVAILABLE = "authInterceptor.configServiceNotAvailable"; //$NON-NLS-1$
 
@@ -127,6 +138,15 @@ public class AppMessages {
     public static final String NO_MEMBERS_IN_ORG_MESSAGE = "noEntitiesFound.members-in-org"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "No members matched the filter criteria.  Please try modifying the filter or else change memberships with the Manage Members button.")
     public static final String NO_FILTERED_MEMBERS_IN_ORG_MESSAGE = "noEntitiesFound.members-in-org.filtered"; //$NON-NLS-1$
+
+    @TranslationKey(defaultValue = "No roles have been configured!  You really should create at least one role that is auto-granted upon creation of an organization.")
+    public static final String NO_ROLES_ADMIN_MESSAGE = "noEntitiesFound.admin-roles"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "No roles matched the filter criteria.  Please try modifying the filter or else add a new Role that matches it.")
+    public static final String NO_FILTERED_ROLES_ADMIN_MESSAGE = "noEntitiesFound.admin-roles.filtered"; //$NON-NLS-1$
+
+    
+    
+    
     
     @TranslationKey(defaultValue = "No organizations found.  This user should be granted membership in an organization or perhaps create a new one with the button above.")
     public static final String NO_ORGS_FOR_USER_MESSAGE = "noEntitiesFound.organizations-for-user"; //$NON-NLS-1$
@@ -195,6 +215,9 @@ public class AppMessages {
     @TranslationKey(defaultValue = "Failed to break contract!")
     public static final String BREAK_CONTRACT_FAILURE = "break-contract-failure"; //$NON-NLS-1$
 
+    @TranslationKey(defaultValue = "Really delete role {0}?")
+    public static final String CONFIRM_ROLE_DELETE = "confirm-delete-role"; //$NON-NLS-1$
+
     @TranslationKey(defaultValue = "Found {0} matching organizations.")
     public static final String ORGANIZATION_COUNT = "organization-count"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "Request Membership")
@@ -250,8 +273,41 @@ public class AppMessages {
     public static final String SERVICES = "services"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "Manage Members")
     public static final String MANAGE_MEMBERS = "manage-members"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "System Administration")
+    public static final String SYSTEM_ADMINISTRATION = "system-admin"; //$NON-NLS-1$
 
     @TranslationKey(defaultValue = "There are no policies defined.  This is highly irregular!")
     public static final String EMPTY_POLICY_CHAIN_MESSAGE = "empty-policy-chain"; //$NON-NLS-1$
+    
+    @TranslationKey(defaultValue = "Auto-granted to org creator")
+    public static final String AUTO_GRANTED_TO_CREATOR = "auto-granted-to-creator"; //$NON-NLS-1$
+
+    @TranslationKey(defaultValue = "Application Admin")
+    public static final String PERMISSION_APP_ADMIN = "permission.appAdmin"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "Application Edit")
+    public static final String PERMISSION_APP_EDIT = "permission.appEdit"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "Application View")
+    public static final String PERMISSION_APP_VIEW = "permission.appView"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "Organization Admin")
+    public static final String PERMISSION_ORG_ADMIN = "permission.orgAdmin"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "Organization Edit")
+    public static final String PERMISSION_ORG_EDIT = "permission.orgEdit"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "Organization View")
+    public static final String PERMISSION_ORG_VIEW = "permission.orgView"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "Plan Admin")
+    public static final String PERMISSION_PLAN_ADMIN = "permission.planAdmin"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "Plan Edit")
+    public static final String PERMISSION_PLAN_EDIT = "permission.planEdit"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "Plan View")
+    public static final String PERMISSION_PLAN_VIEW = "permission.planView"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "Service Admin")
+    public static final String PERMISSION_SVC_ADMIN = "permission.svcAdmin"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "Service Edit")
+    public static final String PERMISSION_SVC_EDIT = "permission.svcEdit"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "Service View")
+    public static final String PERMISSION_SVC_VIEW = "permission.svcView"; //$NON-NLS-1$
+    
+    @TranslationKey(defaultValue = "Grants Permissions:")
+    public static final String GRANTS_PERMISSIONS = "grants-permissions"; //$NON-NLS-1$
 
 }

@@ -86,7 +86,7 @@ public class AppOverviewPage extends AbstractAppPage {
     protected void renderPage() {
         super.renderPage();
 
-        String consumeServicesHref = navHelper.createHrefToPage(ConsumerServicesPage.class, MultimapUtil.fromMultiple());
+        String consumeServicesHref = navHelper.createHrefToPage(ConsumerServicesPage.class, MultimapUtil.emptyMap());
         ttd_toConsumeServices.setHref(consumeServicesHref);
         String newContractHref = navHelper.createHrefToPage(NewContractPage.class, MultimapUtil.fromMultiple("apporg", org, "app", app, "appv", versionBean.getVersion())); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         ttd_toNewContract.setHref(newContractHref);

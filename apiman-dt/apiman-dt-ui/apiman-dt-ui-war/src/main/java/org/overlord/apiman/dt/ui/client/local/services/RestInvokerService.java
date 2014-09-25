@@ -101,12 +101,52 @@ public class RestInvokerService {
     }
 
     /**
+     * Creates a role.
+     * @param roleId
+     * @param callback
+     */
+    public void createRole(RoleBean role, IRestInvokerCallback<RoleBean> callback) {
+        CallbackAdapter<RoleBean> adapter = new CallbackAdapter<RoleBean>(callback);
+        roles.call(adapter, adapter).create(role);
+    }
+
+    /**
      * Gets all roles that can be assigned to users.
      * @param callback
      */
     public void getRoles(IRestInvokerCallback<List<RoleBean>> callback) {
         CallbackAdapter<List<RoleBean>> adapter = new CallbackAdapter<List<RoleBean>>(callback);
         roles.call(adapter, adapter).list();
+    }
+    
+    /**
+     * Gets a single role by ID.
+     * @param roleId
+     * @param callback
+     */
+    public void getRole(String roleId, IRestInvokerCallback<RoleBean> callback) {
+        CallbackAdapter<RoleBean> adapter = new CallbackAdapter<RoleBean>(callback);
+        roles.call(adapter, adapter).get(roleId);
+    }
+    
+    /**
+     * Updates a role.
+     * @param roleId
+     * @param callback
+     */
+    public void updateRole(RoleBean role, IRestInvokerCallback<Void> callback) {
+        CallbackAdapter<Void> adapter = new CallbackAdapter<Void>(callback);
+        roles.call(adapter, adapter).update(role.getId(), role);
+    }
+
+    /**
+     * Deletes a role.  Use with caution!
+     * @param roleId
+     * @param callback
+     */
+    public void deleteRole(RoleBean role, IRestInvokerCallback<Void> callback) {
+        CallbackAdapter<Void> adapter = new CallbackAdapter<Void>(callback);
+        roles.call(adapter, adapter).delete(role.getId());
     }
 
     /**

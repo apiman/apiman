@@ -59,6 +59,9 @@ public class DashboardPage extends AbstractPage {
     Anchor createApp;
     @Inject @DataField
     Anchor myApps;
+    
+    @Inject @DataField
+    Anchor manageRoles;
 
     /**
      * Constructor.
@@ -73,16 +76,21 @@ public class DashboardPage extends AbstractPage {
     protected void renderPage() {
         super.renderPage();
         
+        if (!getCurrentUserBean().isAdmin()) {
+            hideAdminGroup();
+        }
+        
         String currentUser = config.getCurrentConfig().getUser().getUsername();
 
-        String createOrgHref = navHelper.createHrefToPage(NewOrgPage.class, MultimapUtil.fromMultiple());
-        String browseOrgsHref = navHelper.createHrefToPage(ConsumerOrgsPage.class, MultimapUtil.fromMultiple());
+        String createOrgHref = navHelper.createHrefToPage(NewOrgPage.class, MultimapUtil.emptyMap());
+        String browseOrgsHref = navHelper.createHrefToPage(ConsumerOrgsPage.class, MultimapUtil.emptyMap());
         String myOrgsHref = navHelper.createHrefToPage(UserOrgsPage.class, MultimapUtil.singleItemMap("user", currentUser)); //$NON-NLS-1$
-        String createServiceHref = navHelper.createHrefToPage(NewServicePage.class, MultimapUtil.fromMultiple());
-        String browseServicesHref = navHelper.createHrefToPage(ConsumerServicesPage.class, MultimapUtil.fromMultiple());
+        String createServiceHref = navHelper.createHrefToPage(NewServicePage.class, MultimapUtil.emptyMap());
+        String browseServicesHref = navHelper.createHrefToPage(ConsumerServicesPage.class, MultimapUtil.emptyMap());
         String myServicesHref = navHelper.createHrefToPage(UserServicesPage.class, MultimapUtil.singleItemMap("user", currentUser)); //$NON-NLS-1$
-        String createAppHref = navHelper.createHrefToPage(NewAppPage.class, MultimapUtil.fromMultiple());
+        String createAppHref = navHelper.createHrefToPage(NewAppPage.class, MultimapUtil.emptyMap());
         String myAppsHref = navHelper.createHrefToPage(UserAppsPage.class, MultimapUtil.singleItemMap("user", currentUser)); //$NON-NLS-1$
+        String manageRolesHref = navHelper.createHrefToPage(AdminRolesPage.class, MultimapUtil.emptyMap());
         
         createOrg.setHref(createOrgHref);
         browseOrgs.setHref(browseOrgsHref);
@@ -94,7 +102,16 @@ public class DashboardPage extends AbstractPage {
 
         createApp.setHref(createAppHref);
         myApps.setHref(myAppsHref);
+        
+        manageRoles.setHref(manageRolesHref);
     }
+
+    /**
+     * Hides the admin group div.
+     */
+    private native void hideAdminGroup() /*-{
+        $wnd.jQuery('#dash-admin-group').hide();
+    }-*/;
 
     /**
      * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractPage#getPageTitle()

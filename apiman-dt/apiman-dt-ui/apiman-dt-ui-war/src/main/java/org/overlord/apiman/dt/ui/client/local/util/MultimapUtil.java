@@ -55,5 +55,12 @@ public class MultimapUtil {
         }
         return multimap;
     }
+    
+    /**
+     * Creates an empty {@link Multimap}.
+     */
+    public static final Multimap<String, String> emptyMap() {
+        return HashMultimap.create();
+    }
 
 }

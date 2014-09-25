@@ -271,6 +271,8 @@ public abstract class AbstractJpaStorage {
             for (SearchCriteriaFilterBean filter : filters) {
                 if (filter.getOperator().intern() == SearchCriteriaFilterBean.OPERATOR_EQ) {
                     predicates.add(builder.equal(from.get(filter.getName()), filter.getValue()));
+                } else if (filter.getOperator().intern() == SearchCriteriaFilterBean.OPERATOR_BOOL_EQ) {
+                    predicates.add(builder.equal(from.<Boolean>get(filter.getName()), Boolean.valueOf(filter.getValue())));
                 } else if (filter.getOperator().intern() == SearchCriteriaFilterBean.OPERATOR_GT) {
                     predicates.add(builder.greaterThan(from.<Long>get(filter.getName()), new Long(filter.getValue())));
                 } else if (filter.getOperator().intern() == SearchCriteriaFilterBean.OPERATOR_GTE) {

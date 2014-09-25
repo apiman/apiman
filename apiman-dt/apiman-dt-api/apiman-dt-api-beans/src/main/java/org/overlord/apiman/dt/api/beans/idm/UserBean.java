@@ -23,6 +23,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
@@ -45,6 +46,10 @@ public class UserBean implements Serializable {
     private String email;
     @Column(updatable=false)
     private Date joinedOn;
+    
+    // Used only when returning information about the current user
+    @Transient
+    private boolean admin;
     
     /**
      * Constructor.
@@ -137,6 +142,20 @@ public class UserBean implements Serializable {
         } else if (!username.equals(other.username))
             return false;
         return true;
+    }
+
+    /**
+     * @return the admin
+     */
+    public boolean isAdmin() {
+        return admin;
+    }
+
+    /**
+     * @param admin the admin to set
+     */
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
     }
 
 }

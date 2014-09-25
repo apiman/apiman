@@ -3,6 +3,7 @@ Content-Type: application/json
 
 {
   "name" : "Organization Owner",
+  "autoGrant" : true,
   "permissions" : [ "orgView", "orgEdit", "orgAdmin" ]
 }
 ----

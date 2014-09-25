@@ -134,7 +134,7 @@ public abstract class AbstractOrgPage extends AbstractPage {
             description.setText(""); //$NON-NLS-1$
         }
         
-        String dashHref = navHelper.createHrefToPage(DashboardPage.class, MultimapUtil.fromMultiple());
+        String dashHref = navHelper.createHrefToPage(DashboardPage.class, MultimapUtil.emptyMap());
         breadcrumb.addItem(dashHref, "home", i18n.format(AppMessages.HOME)); //$NON-NLS-1$
         breadcrumb.addActiveItem("shield", organizationBean.getName()); //$NON-NLS-1$
     }
