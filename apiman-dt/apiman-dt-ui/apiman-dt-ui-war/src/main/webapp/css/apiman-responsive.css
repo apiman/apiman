@@ -88,6 +88,11 @@
   div.admin-page .admin-content .apiman-summaryrow .permissions {
     padding-right: 50px;
   }
+
+  textarea.form-data {
+    width: 640px;
+  }
+
 }
 
 /* Smart Phones */
@@ -138,6 +143,10 @@
     padding-right: 50px;
   }
 
+  textarea.form-data {
+    width: 400px;
+  }
+
 }
 
 /* Original iPhone */
@@ -170,6 +179,10 @@
 
   div.admin-page .admin-content .apiman-summaryrow .permissions {
     padding-right: 10px;
+  }
+
+  textarea.form-data {
+    width: 320px;
   }
 
 }

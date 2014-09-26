@@ -132,7 +132,7 @@ public class ConsumerServicePlanList extends FlowPanel implements TakesValue<Lis
         FontAwesomeIcon spinner = new FontAwesomeIcon("refresh", true); //$NON-NLS-1$
         spinner.getElement().addClassName("fa-spin"); //$NON-NLS-1$
         chainWrap.add(spinner);
-        chainWrap.add(new InlineLabel("Loading policies..."));
+        chainWrap.add(new InlineLabel(i18n.format(AppMessages.LOADING_POLICIES)));
 
         FlowPanel row = new FlowPanel();
         container.add(row);

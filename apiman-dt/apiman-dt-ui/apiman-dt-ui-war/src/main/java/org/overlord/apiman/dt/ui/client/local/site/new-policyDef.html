@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <script type="text/javascript" src="site.js"></script>
+  </head>
+
+  <body>
+
+    <!-- Top header/nav bar -->
+    <div id="overlord-header">
+    </div>
+
+    <div id="form-page" class="container apiman-entity-new page" data-field="page">
+      <div class="row">
+        <h2 class="title" data-i18n-key="new-policyDef">New Policy Definition</h2>
+      </div>
+      <!-- Helpful hint -->
+      <div class="row">
+        <p data-i18n-key="new-policyDef-help-text" class="col-md-6 apiman-label-faded">Create a new Policy Definition, which will allow users to add policies of this type to their services, applications, and plans.</p>
+      </div>
+      <!-- HR -->
+      <div class="row hr-row">
+        <hr/>
+      </div>
+      <!-- Choose policyDef name -->
+      <div class="row">
+        <dl>
+          <dt data-i18n-key="policyDef-name">Policy Name</dt>
+          <dd>
+            <input data-field="name" type="text" class="form-control name entityname" placeholder="Enter policy name..."></input>
+          </dd>
+        </dl>
+      </div>
+      <!-- Description of policyDef -->
+      <div class="row">
+        <dl>
+          <dt data-i18n-key="description">Description</dt>
+          <dd>
+            <input data-field="description" type="text" class="form-control description" id="apiman-description" placeholder="Enter policy description (optional)..."></input>
+          </dd>
+        </dl>
+      </div>
+      <!-- HR -->
+      <div class="row hr-row">
+        <hr/>
+      </div>
+      <!-- Create Button -->
+      <div class="row">
+        <button class="btn btn-primary" data-field="createButton" data-i18n-key="create-policyDef" placeholder="Creating..." data-icon="fa-cog">Create Policy</button>
+        <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" data-i18n-key="cancel">Cancel</a>
+      </div>
+    </div> <!-- /container -->
+  </body>
+</html>

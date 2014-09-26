@@ -44,11 +44,39 @@
             <div class="row hr-row">
               <hr/>
             </div>
-            
-            <div>
-              <h4>Not yet implemented.</h4>
+            <!-- Filter and Actions -->
+            <div class="row">
+              <div class="apiman-filters apiman-policyDefs-filters">
+                <input data-field="policyDefFilter" type="text" class="form-control input-search" placeholder="Filter by policy definition name..."></input>
+<!--                 <a data-field="toNewPolicyDef" href="new-policyDef.html" class="btn btn-default pull-right">Add Policy</a> -->
+                <a data-field="toImportPolicyDef" href="import-policyDef.html" class="btn btn-primary pull-right">Import Policy</a>
+              </div>
             </div>
-            
+            <!-- Table of Policy Definitions -->
+            <div class="row">
+              <table class="table table-responsive" data-field="policyDefs">
+                <thead>
+                  <tr>
+                    <th data-i18n-key="policy">Policy</th>
+                    <th class="no-phone" data-i18n-key="implementation">Implementation</th>
+                  </tr>
+                </thead>
+                <tbody data-role="dummy">
+                  <tr>
+                    <td><a href="edit-policyDef.html"><i class="fa fa-lock fa-fw"></i><span>BASIC Authentication Policy</span></a></td>
+                    <td class="no-phone">class:org.overlord.apiman.engine.policies.BasicAuthenticationPolicy</td>
+                  </tr>
+                  <tr>
+                    <td><a href="edit-policyDef.html"><i class="fa fa-thumbs-down fa-fw"></i><span>IP Black-List Policy</span></a></td>
+                    <td class="no-phone">class:org.overlord.apiman.engine.policies.IPBlacklistPolicy</td>
+                  </tr>
+                  <tr>
+                    <td><a href="edit-policyDef.html"><i class="fa fa-filter fa-fw"></i><span>IP White-List Policy</span></a></td>
+                    <td class="no-phone">class:org.overlord.apiman.engine.policies.IPWhitelistPolicy</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>

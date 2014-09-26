@@ -309,5 +309,8 @@ public class AppMessages {
     
     @TranslationKey(defaultValue = "Grants Permissions:")
     public static final String GRANTS_PERMISSIONS = "grants-permissions"; //$NON-NLS-1$
+    
+    @TranslationKey(defaultValue = "Loading policies...")
+    public static final String LOADING_POLICIES = "loading-policies"; //$NON-NLS-1$
 
 }

@@ -41,6 +41,11 @@ body {
   height: 28px;
 }
 
+textarea.form-data {
+  width: 780px;
+  height: 400px;
+}
+
 .emphasis {
   font-weight: bold;
 }
@@ -318,6 +323,9 @@ div.page {
 }
 .apiman-filters .input-search {
   margin-right: 5px;
+}
+.apiman-filters .btn {
+  margin-left: 8px;
 }
 
 .tab-content {
@@ -922,3 +930,8 @@ div.admin-page .admin-content .apiman-summaryrow .permissions {
 div.admin-page .admin-content .apiman-summaryrow .emphasis {
   color: #555;
 }
+
+.table > tbody > tr > td > a:hover {
+  text-decoration: underline;
+}
+
