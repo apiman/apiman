@@ -60,6 +60,9 @@ public class AppMessages {
     public static final String TITLE_NEW_ROLE = "page.title.new-role"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "APIMan - Edit Role")
     public static final String TITLE_EDIT_ROLE = "page.title.edit-role"; //$NON-NLS-1$
+    
+    @TranslationKey(defaultValue = "APIMan - Import Policy Definition(s)")
+    public static final String TITLE_IMPORT_POLICY_DEF = "page.title.import-policyDef"; //$NON-NLS-1$
 
     @TranslationKey(defaultValue = "APIMan - {0} (Organizations)")
     public static final String TITLE_USER_ORGS = "page.title.user-orgs"; //$NON-NLS-1$
@@ -144,8 +147,10 @@ public class AppMessages {
     @TranslationKey(defaultValue = "No roles matched the filter criteria.  Please try modifying the filter or else add a new Role that matches it.")
     public static final String NO_FILTERED_ROLES_ADMIN_MESSAGE = "noEntitiesFound.admin-roles.filtered"; //$NON-NLS-1$
 
-    
-    
+    @TranslationKey(defaultValue = "No policy definitions have been added/imported!  You must add at least one policy if you want to do any governance of your services.")
+    public static final String NO_POLICY_DEFS_ADMIN_MESSAGE = "noEntitiesFound.admin-policyDefs"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "No policy definitions matched the filter criteria.  Please try modifying the filter or else import at least one Policy Definition that matches it.")
+    public static final String NO_FILTERED_POLICY_DEFS_ADMIN_MESSAGE = "noEntitiesFound.admin-policyDefs.filtered"; //$NON-NLS-1$
     
     
     @TranslationKey(defaultValue = "No organizations found.  This user should be granted membership in an organization or perhaps create a new one with the button above.")

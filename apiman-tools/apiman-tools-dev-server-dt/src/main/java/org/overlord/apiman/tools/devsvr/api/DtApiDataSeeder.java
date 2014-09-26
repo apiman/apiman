@@ -60,6 +60,10 @@ public class DtApiDataSeeder extends DefaultTestDataSeeder {
     public void seed(IIdmStorage idmStorage, IStorage storage) throws StorageException {
         super.seed(idmStorage, storage);
         
+        if (Boolean.TRUE) {
+            return;
+        }
+        
         // Create Organization Owner role
         RoleBean role = new RoleBean();
         role.setId("OrganizationOwner"); //$NON-NLS-1$

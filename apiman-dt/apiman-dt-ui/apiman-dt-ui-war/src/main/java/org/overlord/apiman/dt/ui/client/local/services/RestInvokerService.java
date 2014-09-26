@@ -727,5 +727,15 @@ public class RestInvokerService {
         CallbackAdapter<List<PolicyDefinitionBean>> adapter = new CallbackAdapter<List<PolicyDefinitionBean>>(callback);
         policyDefs.call(adapter, adapter).list();
     }
+    
+    /**
+     * Creates a policy definition.
+     * @param policyDef
+     * @param callback
+     */
+    public void createPolicyDefinition(PolicyDefinitionBean policyDef, IRestInvokerCallback<PolicyDefinitionBean> callback) {
+        CallbackAdapter<PolicyDefinitionBean> adapter = new CallbackAdapter<PolicyDefinitionBean>(callback);
+        policyDefs.call(adapter, adapter).create(policyDef);
+    }
 
 }

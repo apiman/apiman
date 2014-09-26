@@ -2,16 +2,9 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.overlord.apiman</groupId>
-    <artifactId>apiman</artifactId>
+    <artifactId>apiman-distro</artifactId>
     <version>1.0.0-SNAPSHOT</version>
-    <relativePath>../pom.xml</relativePath>
   </parent>
-  <artifactId>apiman-distro</artifactId>
-  <packaging>pom</packaging>
-  <name>apiman-distro</name>
-  <modules>
-    <module>fuse6-dt</module>
-    <module>fuse6-rt</module>
-    <module>apiman-distro-data</module>
-  </modules>
+  <artifactId>apiman-distro-data</artifactId>
+  <name>apiman-distro-data</name>
 </project>

@@ -44,6 +44,7 @@ body {
 textarea.form-data {
   width: 780px;
   height: 400px;
+  font-size: 11px;
 }
 
 .emphasis {

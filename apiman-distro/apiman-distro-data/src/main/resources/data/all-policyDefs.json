@@ -1,0 +1,38 @@
+[
+    {
+      "name" : "BASIC Authentication Policy",
+      "description" : "Enables HTTP BASIC Authentication on a service.  Some configuration required.",
+      "policyImpl" : "class:org.overlord.apiman.engine.policies.BasicAuthenticationPolicy",
+      "icon" : "lock",
+      "templates" : [
+        {
+          "language" : null,
+          "template" : "Access to the service is protected by BASIC Authentication through the '@{realm}' authentication realm.  @if{forwardIdentityHttpHeader != null}Successfully authenticated requests will forward the authenticated identity to the back end service via the '@{forwardIdentityHttpHeader}' custom HTTP header.@end{}"
+        }
+      ]
+    },
+    {
+      "name" : "IP Whitelist Policy",
+      "description" : "Only requests that originate from a specified set of valid IP addresses will be allowed through.",
+      "policyImpl" : "class:org.overlord.apiman.engine.policies.IPWhitelistPolicy",
+      "icon" : "filter",
+      "templates" : [
+        {
+          "language" : null,
+          "template" : "Only requests that originate from the set of @{ipList.size()} configured IP address(es) will be allowed to invoke the managed service."
+        }
+      ]
+    },
+    {
+      "name" : "IP Blacklist Policy",
+      "description" : "Requests that originate from a specified set of valid IP addresses will be denied access.",
+      "policyImpl" : "class:org.overlord.apiman.engine.policies.IPBlacklistPolicy",
+      "icon" : "thumbs-down",
+      "templates" : [
+        {
+          "language" : null,
+          "template" : "Requests that originate from the set of @{ipList.size()} configured IP address(es) will be denied access to the managed service."
+        }
+      ]
+    }
+]
