@@ -89,6 +89,12 @@
       <artifactId>overlord-commons-i18n</artifactId>
     </dependency>
     
+    <!-- Third Party Dependencies -->
+    <dependency>
+      <groupId>commons-configuration</groupId>
+      <artifactId>commons-configuration</artifactId>
+    </dependency>
+    
     <!-- Provided Dependencies -->
     <dependency>
       <groupId>javax.enterprise</groupId>

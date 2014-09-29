@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.jboss.integration-platform</groupId>
     <artifactId>jboss-integration-platform-parent</artifactId>
-    <version>6.0.0.CR12</version>
+    <version>6.0.0.CR13</version>
   </parent>
 
   <groupId>org.overlord.apiman</groupId>
@@ -90,7 +90,7 @@
       <dependency>
         <groupId>org.jboss.integration-platform</groupId>
         <artifactId>jboss-integration-platform-bom</artifactId>
-        <version>6.0.0.CR12</version>
+        <version>6.0.0.CR13</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -565,6 +565,16 @@
         <artifactId>jetty-jndi</artifactId>
         <version>${org.eclipse.jetty}</version>
       </dependency>
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-security</artifactId>
+        <version>${org.eclipse.jetty}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-util</artifactId>
+        <version>${org.eclipse.jetty}</version>
+      </dependency>
 
       <!-- Third Party Libraries -->
       <dependency>
@@ -612,6 +622,16 @@
         <artifactId>org.apache.felix.scr.annotations</artifactId>
         <version>1.7.0</version>
       </dependency>
+      <dependency>
+        <groupId>org.apache.cxf</groupId>
+        <artifactId>cxf-api</artifactId>
+        <version>${version.org.apache.cxf}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.cxf</groupId>
+        <artifactId>cxf-rt-core</artifactId>
+        <version>${version.org.apache.cxf}</version>
+      </dependency>
 
       <!-- Spec Libraries -->
       <dependency>
@@ -648,21 +668,6 @@
           <showDeprecation>false</showDeprecation>
           <showWarnings>false</showWarnings>
         </configuration>
-      </plugin>
-      <!-- Produce source jars during the 'verify' phase -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>attach-sources</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>jar</goal>
-              <goal>test-jar</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>

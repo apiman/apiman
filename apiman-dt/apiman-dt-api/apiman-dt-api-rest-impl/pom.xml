@@ -36,6 +36,10 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-dt-api-gateway</artifactId>
     </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-rt-engine-beans</artifactId>
+    </dependency>
 
     <!-- Overlord Commons -->
     <dependency>

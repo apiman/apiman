@@ -49,6 +49,16 @@
     <!-- CXF -->
     <dependency>
       <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-core</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-frontend-jaxrs</artifactId>
       <scope>provided</scope>
     </dependency>

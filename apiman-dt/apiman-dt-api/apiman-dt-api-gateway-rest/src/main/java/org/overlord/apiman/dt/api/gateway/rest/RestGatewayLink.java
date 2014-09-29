@@ -26,7 +26,8 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.http.HttpException;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpRequestInterceptor;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.protocol.HttpContext;
 import org.jboss.resteasy.client.ClientExecutor;
 import org.jboss.resteasy.client.ProxyFactory;
@@ -56,7 +57,7 @@ public class RestGatewayLink implements IGatewayLink {
     @Inject
     private IConfig config;
     
-    private DefaultHttpClient httpClient;
+    private CloseableHttpClient httpClient;
     private ISystemResource systemClient;
     private IServiceResource serviceClient;
     private IApplicationResource appClient;
@@ -72,13 +73,12 @@ public class RestGatewayLink implements IGatewayLink {
      */
     @PostConstruct
     public void postConstruct() {
-        httpClient = new DefaultHttpClient();
-        httpClient.addRequestInterceptor(new HttpRequestInterceptor() {
+        httpClient = HttpClientBuilder.create().addInterceptorFirst(new HttpRequestInterceptor() {
             @Override
             public void process(HttpRequest request, HttpContext context) throws HttpException, IOException {
                 configureBasicAuth(request);
             }
-        });
+        }).build();;
         
         RegisterBuiltin.register(ResteasyProviderFactory.getInstance());
         

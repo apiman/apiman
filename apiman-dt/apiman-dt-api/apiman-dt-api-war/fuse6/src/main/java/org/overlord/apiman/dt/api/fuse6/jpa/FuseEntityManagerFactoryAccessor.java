@@ -63,7 +63,7 @@ public class FuseEntityManagerFactoryAccessor implements IEntityManagerFactoryAc
 
         Bundle bundle = FrameworkUtil.getBundle(FuseEntityManagerFactoryAccessor.class);
         BundleContext context = bundle.getBundleContext();
-        ServiceReference serviceReference = context.getServiceReference(PersistenceProvider.class.getName());
+        ServiceReference<?> serviceReference = context.getServiceReference(PersistenceProvider.class.getName());
         PersistenceProvider persistenceProvider = (PersistenceProvider) context.getService(serviceReference);
 
         return persistenceProvider.createEntityManagerFactory("apiman-dt-api-jpa", properties); //$NON-NLS-1$

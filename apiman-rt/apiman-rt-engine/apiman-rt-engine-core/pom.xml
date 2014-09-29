@@ -50,6 +50,11 @@
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Export-Package>org.overlord.apiman.rt.engine,org.overlord.apiman.rt.engine.async,org.overlord.apiman.rt.engine.components,org.overlord.apiman.rt.engine.impl,org.overlord.apiman.rt.engine.policy</Export-Package>
+          </instructions>
+        </configuration>
       </plugin>
     </plugins>
   </build>

@@ -15,6 +15,7 @@
  */
 package org.overlord.apiman.test.common.util;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -37,7 +38,8 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ArrayNode;
@@ -63,6 +65,7 @@ public class TestPlanRunner {
 
     private static Logger logger = LoggerFactory.getLogger(TestPlanRunner.class);
 
+    private CloseableHttpClient client = HttpClientBuilder.create().build();
     private String baseApiUrl;
 
     /**
@@ -80,35 +83,41 @@ public class TestPlanRunner {
      * @param cl
      */
     public void runTestPlan(String resourcePath, ClassLoader cl) {
-        TestPlan testPlan = TestUtil.loadTestPlan(resourcePath, cl);
-        log(""); //$NON-NLS-1$
-        log("-------------------------------------------------------------------------------"); //$NON-NLS-1$
-        log("Executing Test Plan: " + resourcePath); //$NON-NLS-1$
-        log("   Base API URL: " + baseApiUrl); //$NON-NLS-1$
-        log("-------------------------------------------------------------------------------"); //$NON-NLS-1$
-        log(""); //$NON-NLS-1$
-        for (TestGroupType group : testPlan.getTestGroup()) {
-            log("-----------------------------------------------------------"); //$NON-NLS-1$
-            log("Starting Test Group [{0}]", group.getName()); //$NON-NLS-1$
-            log("-----------------------------------------------------------"); //$NON-NLS-1$
-
-            for (TestType test : group.getTest()) {
-                String rtPath = test.getValue();
-                log("Executing REST Test [{0}] - {1}", test.getName(), rtPath); //$NON-NLS-1$
-                RestTest restTest = TestUtil.loadRestTest(rtPath, cl);
-                runTest(restTest);
-                log("REST Test Completed"); //$NON-NLS-1$
-                log("+++++++++++++++++++"); //$NON-NLS-1$
+        client = HttpClientBuilder.create().build();
+        try {
+            TestPlan testPlan = TestUtil.loadTestPlan(resourcePath, cl);
+            log(""); //$NON-NLS-1$
+            log("-------------------------------------------------------------------------------"); //$NON-NLS-1$
+            log("Executing Test Plan: " + resourcePath); //$NON-NLS-1$
+            log("   Base API URL: " + baseApiUrl); //$NON-NLS-1$
+            log("-------------------------------------------------------------------------------"); //$NON-NLS-1$
+            log(""); //$NON-NLS-1$
+            for (TestGroupType group : testPlan.getTestGroup()) {
+                log("-----------------------------------------------------------"); //$NON-NLS-1$
+                log("Starting Test Group [{0}]", group.getName()); //$NON-NLS-1$
+                log("-----------------------------------------------------------"); //$NON-NLS-1$
+    
+                for (TestType test : group.getTest()) {
+                    String rtPath = test.getValue();
+                    log("Executing REST Test [{0}] - {1}", test.getName(), rtPath); //$NON-NLS-1$
+                    RestTest restTest = TestUtil.loadRestTest(rtPath, cl);
+                    runTest(restTest);
+                    log("REST Test Completed"); //$NON-NLS-1$
+                    log("+++++++++++++++++++"); //$NON-NLS-1$
+                }
+    
+                log("Test Group [{0}] Completed Successfully", group.getName()); //$NON-NLS-1$
             }
-
-            log("Test Group [{0}] Completed Successfully", group.getName()); //$NON-NLS-1$
+    
+            log(""); //$NON-NLS-1$
+            log("-------------------------------------------------------------------------------"); //$NON-NLS-1$
+            log("Test Plan successfully executed: " + resourcePath); //$NON-NLS-1$
+            log("-------------------------------------------------------------------------------"); //$NON-NLS-1$
+            log(""); //$NON-NLS-1$
+        } finally {
+            try { client.close(); } catch (IOException e) { throw new RuntimeException(e); }
+            client = null;
         }
-
-        log(""); //$NON-NLS-1$
-        log("-------------------------------------------------------------------------------"); //$NON-NLS-1$
-        log("Test Plan successfully executed: " + resourcePath); //$NON-NLS-1$
-        log("-------------------------------------------------------------------------------"); //$NON-NLS-1$
-        log(""); //$NON-NLS-1$
     }
 
     /**
@@ -149,8 +158,6 @@ public class TestPlanRunner {
             if (authorization != null) {
                 request.setHeader("Authorization", authorization); //$NON-NLS-1$
             }
-
-            DefaultHttpClient client = new DefaultHttpClient();
 
             HttpResponse response = client.execute(request);
             assertResponse(restTest, response);

@@ -29,7 +29,8 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.InputStreamEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.overlord.apiman.rt.engine.IConnectorFactory;
 import org.overlord.apiman.rt.engine.IServiceConnector;
 import org.overlord.apiman.rt.engine.async.AsyncResultImpl;
@@ -54,6 +55,7 @@ public class HttpConnectorFactory implements IConnectorFactory {
         SUPPRESSED_HEADERS.add("Content-Length"); //$NON-NLS-1$
         SUPPRESSED_HEADERS.add("X-API-Key"); //$NON-NLS-1$
     }
+    private CloseableHttpClient httpclient = HttpClientBuilder.create().build();
 
     /**
      * Constructor.
@@ -91,8 +93,6 @@ public class HttpConnectorFactory implements IConnectorFactory {
      * @throws ConnectorException
      */
     protected ServiceResponse doInvoke(ServiceRequest request, Service service) throws ConnectorException {
-        DefaultHttpClient httpclient = new DefaultHttpClient();
-        
         String endpoint = service.getEndpoint();
         if (endpoint.endsWith("/")) { //$NON-NLS-1$
             endpoint = endpoint.substring(0, endpoint.length() - 1);

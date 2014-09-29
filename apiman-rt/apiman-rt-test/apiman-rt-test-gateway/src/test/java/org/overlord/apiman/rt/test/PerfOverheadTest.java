@@ -19,7 +19,8 @@ package org.overlord.apiman.rt.test;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.junit.Test;
 
 /**
@@ -57,27 +58,31 @@ public class PerfOverheadTest extends AbstractGatewayTest {
      */
     private static int doTest(String endpoint, int numIterations) throws Exception {
         System.out.print("Testing endpoint " + endpoint + ": \n    ["); //$NON-NLS-1$ //$NON-NLS-2$
-        DefaultHttpClient client = new DefaultHttpClient();
+        CloseableHttpClient client = HttpClientBuilder.create().build();
         
-        long totalResponseTime = 0;
-        for (int i = 0; i < numIterations; i++) {
-            HttpGet get = new HttpGet(endpoint);
-            long start = System.currentTimeMillis();
-            HttpResponse response = client.execute(get);
-            if (response.getStatusLine().getStatusCode() != 200) {
-                throw new Exception("Status Code Error: " + response.getStatusLine().getStatusCode()); //$NON-NLS-1$
+        try {
+            long totalResponseTime = 0;
+            for (int i = 0; i < numIterations; i++) {
+                HttpGet get = new HttpGet(endpoint);
+                long start = System.currentTimeMillis();
+                HttpResponse response = client.execute(get);
+                if (response.getStatusLine().getStatusCode() != 200) {
+                    throw new Exception("Status Code Error: " + response.getStatusLine().getStatusCode()); //$NON-NLS-1$
+                }
+                response.getAllHeaders();
+                IOUtils.toString(response.getEntity().getContent());
+                long end = System.currentTimeMillis();
+                totalResponseTime += (end - start);
+                System.out.print("-"); //$NON-NLS-1$
+                if (i % 80 == 0) {
+                    System.out.println(""); //$NON-NLS-1$
+                }
             }
-            response.getAllHeaders();
-            IOUtils.toString(response.getEntity().getContent());
-            long end = System.currentTimeMillis();
-            totalResponseTime += (end - start);
-            System.out.print("-"); //$NON-NLS-1$
-            if (i % 80 == 0) {
-                System.out.println(""); //$NON-NLS-1$
-            }
+            System.out.println("]  Total=" + totalResponseTime); //$NON-NLS-1$
+            return (int) (totalResponseTime / numIterations);
+        } finally {
+            client.close();
         }
-        System.out.println("]  Total=" + totalResponseTime); //$NON-NLS-1$
-        return (int) (totalResponseTime / numIterations);
     }
     
     /**
