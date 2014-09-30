@@ -42,6 +42,17 @@
           </overlays>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <!-- Disable this check - this is an overlay project with no direct dependencies -->
+          <execution>
+            <id>enforce-direct-dependencies</id>
+            <phase>non-existant</phase>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 </project>
