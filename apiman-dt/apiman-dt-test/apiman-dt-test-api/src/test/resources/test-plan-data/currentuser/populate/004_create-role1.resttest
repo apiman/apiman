@@ -3,7 +3,7 @@ Content-Type: application/json
 
 {
   "name" : "Organization Roles",
-  "permissions" : [ "orgView", "orgUpdate", "orgDelete" ]
+  "permissions" : [ "orgEdit", "orgAdmin", "orgView" ]
 }
 ----
 200
@@ -12,5 +12,5 @@ Content-Type: application/json
 {
   "id" : "OrganizationRoles",
   "name" : "Organization Roles",
-  "permissions" : [ "orgView", "orgUpdate", "orgDelete" ]
+  "permissions" : [ "orgEdit", "orgAdmin", "orgView" ]
 }

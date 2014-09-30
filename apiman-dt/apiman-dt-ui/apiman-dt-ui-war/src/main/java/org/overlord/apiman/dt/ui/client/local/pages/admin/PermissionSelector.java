@@ -38,7 +38,7 @@ import com.google.gwt.user.client.ui.HasValue;
  * @author eric.wittmann@redhat.com
  */
 @Templated("/org/overlord/apiman/dt/ui/client/local/site/new-role.html#permissions")
-public class PermissionSelector extends Composite implements HasValue<Set<String>> {
+public class PermissionSelector extends Composite implements HasValue<Set<PermissionType>> {
     
     @Inject @DataField
     CheckBox orgView;
@@ -68,7 +68,7 @@ public class PermissionSelector extends Composite implements HasValue<Set<String
     @Inject @DataField
     CheckBox appAdmin;
 
-    private Set<String> value;
+    private Set<PermissionType> value;
     
     /**
      * Constructor.
@@ -84,22 +84,22 @@ public class PermissionSelector extends Composite implements HasValue<Set<String
         ValueChangeHandler<Boolean> handler = new ValueChangeHandler<Boolean>() {
             @Override
             public void onValueChange(ValueChangeEvent<Boolean> event) {
-                Set<String> permissions = new HashSet<String>();
-                if (orgView.getValue()) { permissions.add(PermissionType.orgView.toString()); }
-                if (orgEdit.getValue()) { permissions.add(PermissionType.orgEdit.toString()); }
-                if (orgAdmin.getValue()) { permissions.add(PermissionType.orgAdmin.toString()); }
+                Set<PermissionType> permissions = new HashSet<PermissionType>();
+                if (orgView.getValue()) { permissions.add(PermissionType.orgView); }
+                if (orgEdit.getValue()) { permissions.add(PermissionType.orgEdit); }
+                if (orgAdmin.getValue()) { permissions.add(PermissionType.orgAdmin); }
 
-                if (planView.getValue()) { permissions.add(PermissionType.planView.toString()); }
-                if (planEdit.getValue()) { permissions.add(PermissionType.planEdit.toString()); }
-                if (planAdmin.getValue()) { permissions.add(PermissionType.planAdmin.toString()); }
+                if (planView.getValue()) { permissions.add(PermissionType.planView); }
+                if (planEdit.getValue()) { permissions.add(PermissionType.planEdit); }
+                if (planAdmin.getValue()) { permissions.add(PermissionType.planAdmin); }
 
-                if (svcView.getValue()) { permissions.add(PermissionType.svcView.toString()); }
-                if (svcEdit.getValue()) { permissions.add(PermissionType.svcEdit.toString()); }
-                if (svcAdmin.getValue()) { permissions.add(PermissionType.svcAdmin.toString()); }
+                if (svcView.getValue()) { permissions.add(PermissionType.svcView); }
+                if (svcEdit.getValue()) { permissions.add(PermissionType.svcEdit); }
+                if (svcAdmin.getValue()) { permissions.add(PermissionType.svcAdmin); }
 
-                if (appView.getValue()) { permissions.add(PermissionType.appView.toString()); }
-                if (appEdit.getValue()) { permissions.add(PermissionType.appEdit.toString()); }
-                if (appAdmin.getValue()) { permissions.add(PermissionType.appAdmin.toString()); }
+                if (appView.getValue()) { permissions.add(PermissionType.appView); }
+                if (appEdit.getValue()) { permissions.add(PermissionType.appEdit); }
+                if (appAdmin.getValue()) { permissions.add(PermissionType.appAdmin); }
                 
                 setValue(permissions, true);
             }
@@ -125,7 +125,7 @@ public class PermissionSelector extends Composite implements HasValue<Set<String
      * @see com.google.gwt.event.logical.shared.HasValueChangeHandlers#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
      */
     @Override
-    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<Set<String>> handler) {
+    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<Set<PermissionType>> handler) {
         return super.addHandler(handler, ValueChangeEvent.getType());
     }
 
@@ -133,7 +133,7 @@ public class PermissionSelector extends Composite implements HasValue<Set<String
      * @see com.google.gwt.user.client.ui.HasValue#getValue()
      */
     @Override
-    public Set<String> getValue() {
+    public Set<PermissionType> getValue() {
         return value;
     }
 
@@ -141,9 +141,9 @@ public class PermissionSelector extends Composite implements HasValue<Set<String
      * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object)
      */
     @Override
-    public void setValue(Set<String> value) {
+    public void setValue(Set<PermissionType> value) {
         if (value == null) {
-            value = new HashSet<String>();
+            value = new HashSet<PermissionType>();
         }
         setValue(value, false);
     }
@@ -152,8 +152,8 @@ public class PermissionSelector extends Composite implements HasValue<Set<String
      * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object, boolean)
      */
     @Override
-    public void setValue(Set<String> value, boolean fireEvents) {
-        Set<String> oldValue = this.value;
+    public void setValue(Set<PermissionType> value, boolean fireEvents) {
+        Set<PermissionType> oldValue = this.value;
         this.value = value;
         refresh();
         if (fireEvents) {
@@ -165,21 +165,21 @@ public class PermissionSelector extends Composite implements HasValue<Set<String
      * Refresh the UI.
      */
     private void refresh() {
-        orgView.setValue(value.contains(PermissionType.orgView.toString()));
-        orgEdit.setValue(value.contains(PermissionType.orgEdit.toString()));
-        orgAdmin.setValue(value.contains(PermissionType.orgAdmin.toString()));
+        orgView.setValue(value.contains(PermissionType.orgView));
+        orgEdit.setValue(value.contains(PermissionType.orgEdit));
+        orgAdmin.setValue(value.contains(PermissionType.orgAdmin));
 
-        planView.setValue(value.contains(PermissionType.planView.toString()));
-        planEdit.setValue(value.contains(PermissionType.planEdit.toString()));
-        planAdmin.setValue(value.contains(PermissionType.planAdmin.toString()));
+        planView.setValue(value.contains(PermissionType.planView));
+        planEdit.setValue(value.contains(PermissionType.planEdit));
+        planAdmin.setValue(value.contains(PermissionType.planAdmin));
 
-        svcView.setValue(value.contains(PermissionType.svcView.toString()));
-        svcEdit.setValue(value.contains(PermissionType.svcEdit.toString()));
-        svcAdmin.setValue(value.contains(PermissionType.svcAdmin.toString()));
+        svcView.setValue(value.contains(PermissionType.svcView));
+        svcEdit.setValue(value.contains(PermissionType.svcEdit));
+        svcAdmin.setValue(value.contains(PermissionType.svcAdmin));
 
-        appView.setValue(value.contains(PermissionType.appView.toString()));
-        appEdit.setValue(value.contains(PermissionType.appEdit.toString()));
-        appAdmin.setValue(value.contains(PermissionType.appAdmin.toString()));
+        appView.setValue(value.contains(PermissionType.appView));
+        appEdit.setValue(value.contains(PermissionType.appEdit));
+        appAdmin.setValue(value.contains(PermissionType.appAdmin));
     }
 
 }

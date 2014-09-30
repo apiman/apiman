@@ -5,7 +5,7 @@ Content-Type: application/json
   "name" : "Test Role 2",
   "autoGrant" : true,
   "description" : "This is the description of Test Role 2.",
-  "permissions" : [ "permission-2.1", "permission-2.2" ]
+  "permissions" : [ "appAdmin", "appView" ]
 }
 ----
 200
@@ -16,5 +16,5 @@ Content-Type: application/json
   "name" : "Test Role 2",
   "autoGrant" : true,
   "description" : "This is the description of Test Role 2.",
-  "permissions" : [ "permission-2.1", "permission-2.2" ]
+  "permissions" : [ "appAdmin", "appView" ]
 }

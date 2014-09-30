@@ -32,7 +32,7 @@ public class PermissionBean implements Serializable {
     
     private static final long serialVersionUID = 6005936454144731711L;
     
-    private String name;
+    private PermissionType name;
     private String organizationId;
     
     /**
@@ -44,14 +44,14 @@ public class PermissionBean implements Serializable {
     /**
      * @return the name
      */
-    public String getName() {
+    public PermissionType getName() {
         return name;
     }
 
     /**
      * @param name the name to set
      */
-    public void setName(String name) {
+    public void setName(PermissionType name) {
         this.name = name;
     }
 

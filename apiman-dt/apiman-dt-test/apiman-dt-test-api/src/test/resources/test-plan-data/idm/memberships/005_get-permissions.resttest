@@ -7,9 +7,12 @@ X-RestTest-ArrayOrdering: any
 {
   "userId" : "user1",
   "permissions" : [
-    {"name":"permission-2.1","organizationId":"TestOrganization1"},
-    {"name":"permission-2.2","organizationId":"TestOrganization1"},
-    {"name":"permission-3.1","organizationId":"TestOrganization1"},
-    {"name":"permission-3.2","organizationId":"TestOrganization1"},
-    {"name":"permission-3.3","organizationId":"TestOrganization1"}  ]
+    {"name":"appAdmin","organizationId":"TestOrganization1"},
+    {"name":"appView","organizationId":"TestOrganization1"},
+    {"name":"planAdmin","organizationId":"TestOrganization1"},
+    {"name":"planView","organizationId":"TestOrganization1"},
+    {"name":"planEdit","organizationId":"TestOrganization1"} ]
 }
+
+
+

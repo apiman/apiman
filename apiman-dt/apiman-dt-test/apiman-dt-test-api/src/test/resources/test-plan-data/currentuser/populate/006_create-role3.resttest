@@ -3,7 +3,7 @@ Content-Type: application/json
 
 {
   "name" : "Service Roles",
-  "permissions" : [ "serviceView", "serviceUpdate", "serviceCreate" ]
+  "permissions" : [ "svcView", "svcEdit", "svcAdmin" ]
 }
 ----
 200
@@ -12,5 +12,5 @@ Content-Type: application/json
 {
   "id" : "ServiceRoles",
   "name" : "Service Roles",
-  "permissions" : [ "serviceView", "serviceUpdate", "serviceCreate" ]
+  "permissions" : [ "svcView", "svcEdit", "svcAdmin" ]
 }

@@ -29,6 +29,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import org.overlord.apiman.dt.api.beans.idm.PermissionBean;
+import org.overlord.apiman.dt.api.beans.idm.PermissionType;
 import org.overlord.apiman.dt.api.beans.idm.RoleBean;
 import org.overlord.apiman.dt.api.beans.idm.RoleMembershipBean;
 import org.overlord.apiman.dt.api.beans.idm.UserBean;
@@ -298,7 +299,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
             for (RoleMembershipBean membership : resultList) {
                 RoleBean role = getRole(membership.getRoleId());
                 String qualifier = membership.getOrganizationId();
-                for (String permission : role.getPermissions()) {
+                for (PermissionType permission : role.getPermissions()) {
                     PermissionBean p = new PermissionBean();
                     p.setName(permission);
                     p.setOrganizationId(qualifier);

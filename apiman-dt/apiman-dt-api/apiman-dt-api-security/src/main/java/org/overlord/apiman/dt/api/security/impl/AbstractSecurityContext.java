@@ -57,7 +57,7 @@ public abstract class AbstractSecurityContext implements ISecurityContext {
         // Admins can do everything.
         if (isAdmin())
             return true;
-        return getPermissions().hasQualifiedPermission(permission.toString(), organizationId);
+        return getPermissions().hasQualifiedPermission(permission, organizationId);
     }
 
     /**
@@ -65,7 +65,7 @@ public abstract class AbstractSecurityContext implements ISecurityContext {
      */
     @Override
     public Set<String> getPermittedOrganizations(PermissionType permission) {
-        return getPermissions().getOrgQualifiers(permission.toString());
+        return getPermissions().getOrgQualifiers(permission);
     }
     
     /**

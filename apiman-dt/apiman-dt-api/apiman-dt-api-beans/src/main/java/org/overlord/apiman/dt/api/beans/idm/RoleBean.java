@@ -56,7 +56,7 @@ public class RoleBean implements Serializable {
     @Column(updatable=true, nullable=true)
     private Boolean autoGrant;
     @ElementCollection(fetch=FetchType.EAGER)
-    private Set<String> permissions;
+    private Set<PermissionType> permissions;
     
     /**
      * Constructor.
@@ -95,14 +95,14 @@ public class RoleBean implements Serializable {
     /**
      * @return the permissions
      */
-    public Set<String> getPermissions() {
+    public Set<PermissionType> getPermissions() {
         return permissions;
     }
 
     /**
      * @param permissions the permissions to set
      */
-    public void setPermissions(Set<String> permissions) {
+    public void setPermissions(Set<PermissionType> permissions) {
         this.permissions = permissions;
     }
 

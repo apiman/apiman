@@ -9,5 +9,5 @@ Content-Type: application/json
   "autoGrant" : true,
   "createdBy" : "admin",
   "description" : "This is the description of Test Role 1.",
-  "permissions" : [ "permission-1", "permission-2", "permission-3" ]
+  "permissions" : [ "orgAdmin", "orgView", "orgEdit" ]
 }

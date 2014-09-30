@@ -4,7 +4,12 @@ Content-Type: application/json
 {
   "name" : "Organization Owner",
   "autoGrant" : true,
-  "permissions" : [ "orgView", "orgEdit", "orgAdmin" ]
+  "permissions" : [ 
+     "orgView", "orgEdit", "orgAdmin",
+     "appView", "appEdit", "appAdmin",
+     "svcView", "svcEdit", "svcAdmin",
+     "planView", "planEdit", "planAdmin"
+  ]
 }
 ----
 200
@@ -13,5 +18,9 @@ Content-Type: application/json
 {
   "id" : "OrganizationOwner",
   "name" : "Organization Owner",
-  "permissions" : [ "orgView", "orgEdit", "orgAdmin" ]
+  "permissions" : [
+     "orgView", "orgEdit", "orgAdmin",
+     "appView", "appEdit", "appAdmin",
+     "svcView", "svcEdit", "svcAdmin",
+     "planView", "planEdit", "planAdmin" ]
 }

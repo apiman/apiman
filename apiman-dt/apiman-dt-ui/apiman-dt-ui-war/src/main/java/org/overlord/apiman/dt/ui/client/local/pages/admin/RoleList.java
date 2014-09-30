@@ -224,9 +224,9 @@ public class RoleList extends FlowPanel implements TakesValue<List<RoleBean>> {
      * @param bean
      */
     private String generatePermissionsText(RoleBean bean) {
-        Set<String> permissions = bean.getPermissions();
+        Set<PermissionType> permissions = bean.getPermissions();
         TreeSet<String> sortedPerms = new TreeSet<String>();
-        for (String permission : permissions) {
+        for (PermissionType permission : permissions) {
             String i18nTxt = lookup(permission);
             if (i18nTxt != null) {
                 sortedPerms.add(i18nTxt);
@@ -249,9 +249,8 @@ public class RoleList extends FlowPanel implements TakesValue<List<RoleBean>> {
      * Maps the permission string to an i18n value.
      * @param permission
      */
-    private String lookup(String permission) {
-        PermissionType type = PermissionType.valueOf(permission);
-        switch(type) {
+    private String lookup(PermissionType permission) {
+        switch(permission) {
         case appAdmin:
             return i18n.format(AppMessages.PERMISSION_APP_ADMIN);
         case appEdit:

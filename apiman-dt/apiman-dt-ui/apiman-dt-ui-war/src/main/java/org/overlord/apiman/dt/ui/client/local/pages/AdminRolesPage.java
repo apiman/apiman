@@ -17,7 +17,6 @@ package org.overlord.apiman.dt.ui.client.local.pages;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -132,12 +131,6 @@ public class AdminRolesPage extends AbstractAdminPage {
     private boolean matchesFilter(RoleBean role) {
         if (role.getName().toUpperCase().contains(roleFilter.getValue().toUpperCase())) {
             return true;
-        }
-        Set<String> permissions = role.getPermissions();
-        for (String permission : permissions) {
-            if (permission.toUpperCase().contains(roleFilter.getValue().toUpperCase())) {
-                return true;
-            }
         }
         return false;
     }

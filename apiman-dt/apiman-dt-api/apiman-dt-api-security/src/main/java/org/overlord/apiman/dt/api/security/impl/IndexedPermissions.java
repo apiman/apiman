@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.overlord.apiman.dt.api.beans.idm.PermissionBean;
+import org.overlord.apiman.dt.api.beans.idm.PermissionType;
 
 /**
  * A class that optimizes the user permissions for querying.
@@ -34,7 +35,7 @@ public class IndexedPermissions implements Serializable {
     private static final long serialVersionUID = -474966481686691421L;
     
     private Set<String> qualifiedPermissions = new HashSet<String>();
-    private Map<String, Set<String>> permissionToOrgsMap = new HashMap<String, Set<String>>();
+    private Map<PermissionType, Set<String>> permissionToOrgsMap = new HashMap<PermissionType, Set<String>>();
 
     /**
      * Constructor.
@@ -49,7 +50,7 @@ public class IndexedPermissions implements Serializable {
      * @param permissionName
      * @param orgQualifier
      */
-    public boolean hasQualifiedPermission(String permissionName, String orgQualifier) {
+    public boolean hasQualifiedPermission(PermissionType permissionName, String orgQualifier) {
         String key = createQualifiedPermissionKey(permissionName, orgQualifier);
         return qualifiedPermissions.contains(key);
     }
@@ -59,7 +60,7 @@ public class IndexedPermissions implements Serializable {
      * @param permissionName
      */
     @SuppressWarnings("unchecked")
-    public Set<String> getOrgQualifiers(String permissionName) {
+    public Set<String> getOrgQualifiers(PermissionType permissionName) {
         Set<String> orgs = permissionToOrgsMap.get(permissionName);
         if (orgs == null)
             orgs = Collections.EMPTY_SET;
@@ -72,7 +73,7 @@ public class IndexedPermissions implements Serializable {
      */
     private void index(Set<PermissionBean> permissions) {
         for (PermissionBean permissionBean : permissions) {
-            String permissionName = permissionBean.getName();
+            PermissionType permissionName = permissionBean.getName();
             String orgQualifier = permissionBean.getOrganizationId();
             String qualifiedPermission = createQualifiedPermissionKey(permissionName, orgQualifier);
             qualifiedPermissions.add(qualifiedPermission);
@@ -90,8 +91,8 @@ public class IndexedPermissions implements Serializable {
      * @param permissionName
      * @param orgQualifier
      */
-    protected String createQualifiedPermissionKey(String permissionName, String orgQualifier) {
-        return permissionName + "||" + orgQualifier; //$NON-NLS-1$
+    protected String createQualifiedPermissionKey(PermissionType permissionName, String orgQualifier) {
+        return permissionName.name() + "||" + orgQualifier; //$NON-NLS-1$
     }
     
 }

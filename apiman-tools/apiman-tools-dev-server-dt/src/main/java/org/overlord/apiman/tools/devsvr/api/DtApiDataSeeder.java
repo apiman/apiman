@@ -68,19 +68,19 @@ public class DtApiDataSeeder extends DefaultTestDataSeeder {
         role.setDescription("This role is automatically given to users when they create an organization.  It grants all permissions."); //$NON-NLS-1$
         role.setCreatedBy("admin"); //$NON-NLS-1$
         role.setCreatedOn(new Date());
-        role.setPermissions(new HashSet<String>());
-        role.getPermissions().add(PermissionType.orgView.toString());
-        role.getPermissions().add(PermissionType.orgEdit.toString());
-        role.getPermissions().add(PermissionType.orgAdmin.toString());
-        role.getPermissions().add(PermissionType.appView.toString());
-        role.getPermissions().add(PermissionType.appEdit.toString());
-        role.getPermissions().add(PermissionType.appAdmin.toString());
-        role.getPermissions().add(PermissionType.planView.toString());
-        role.getPermissions().add(PermissionType.planEdit.toString());
-        role.getPermissions().add(PermissionType.planAdmin.toString());
-        role.getPermissions().add(PermissionType.svcView.toString());
-        role.getPermissions().add(PermissionType.svcEdit.toString());
-        role.getPermissions().add(PermissionType.svcAdmin.toString());
+        role.setPermissions(new HashSet<PermissionType>());
+        role.getPermissions().add(PermissionType.orgView);
+        role.getPermissions().add(PermissionType.orgEdit);
+        role.getPermissions().add(PermissionType.orgAdmin);
+        role.getPermissions().add(PermissionType.appView);
+        role.getPermissions().add(PermissionType.appEdit);
+        role.getPermissions().add(PermissionType.appAdmin);
+        role.getPermissions().add(PermissionType.planView);
+        role.getPermissions().add(PermissionType.planEdit);
+        role.getPermissions().add(PermissionType.planAdmin);
+        role.getPermissions().add(PermissionType.svcView);
+        role.getPermissions().add(PermissionType.svcEdit);
+        role.getPermissions().add(PermissionType.svcAdmin);
         idmStorage.createRole(role);
 
         // Create Application Developer role
@@ -90,11 +90,11 @@ public class DtApiDataSeeder extends DefaultTestDataSeeder {
         role.setDescription("This role allows users to perform standard application development tasks (manage applications but not services or plans)."); //$NON-NLS-1$
         role.setCreatedBy("admin"); //$NON-NLS-1$
         role.setCreatedOn(new Date());
-        role.setPermissions(new HashSet<String>());
-        role.getPermissions().add(PermissionType.orgView.toString());
-        role.getPermissions().add(PermissionType.appView.toString());
-        role.getPermissions().add(PermissionType.appEdit.toString());
-        role.getPermissions().add(PermissionType.appAdmin.toString());
+        role.setPermissions(new HashSet<PermissionType>());
+        role.getPermissions().add(PermissionType.orgView);
+        role.getPermissions().add(PermissionType.appView);
+        role.getPermissions().add(PermissionType.appEdit);
+        role.getPermissions().add(PermissionType.appAdmin);
         idmStorage.createRole(role);
 
         // Create Service Developer role
@@ -104,14 +104,14 @@ public class DtApiDataSeeder extends DefaultTestDataSeeder {
         role.setDescription("This role allows users to perform standard service development tasks such as managing services and plans."); //$NON-NLS-1$
         role.setCreatedBy("admin"); //$NON-NLS-1$
         role.setCreatedOn(new Date());
-        role.setPermissions(new HashSet<String>());
-        role.getPermissions().add(PermissionType.orgView.toString());
-        role.getPermissions().add(PermissionType.svcView.toString());
-        role.getPermissions().add(PermissionType.svcEdit.toString());
-        role.getPermissions().add(PermissionType.svcAdmin.toString());
-        role.getPermissions().add(PermissionType.planView.toString());
-        role.getPermissions().add(PermissionType.planEdit.toString());
-        role.getPermissions().add(PermissionType.planAdmin.toString());
+        role.setPermissions(new HashSet<PermissionType>());
+        role.getPermissions().add(PermissionType.orgView);
+        role.getPermissions().add(PermissionType.svcView);
+        role.getPermissions().add(PermissionType.svcEdit);
+        role.getPermissions().add(PermissionType.svcAdmin);
+        role.getPermissions().add(PermissionType.planView);
+        role.getPermissions().add(PermissionType.planEdit);
+        role.getPermissions().add(PermissionType.planAdmin);
         idmStorage.createRole(role);
         
         // Create JBoss Overlord org
