@@ -25,7 +25,12 @@ import org.overlord.apiman.dt.api.config.IConfig;
  * @author eric.wittmann@redhat.com
  */
 public class FuseConfig implements IConfig {
-    
+
+    private String gatewayRestEndpoint;
+    private String gatewayAuthenticationType;
+    private String gatewayBasicAuthUsername;
+    private String gatewayBasicAuthPassword;
+
     /**
      * Constructor.
      */
@@ -37,7 +42,7 @@ public class FuseConfig implements IConfig {
      */
     @Override
     public String getGatewayRestEndpoint() {
-        throw new RuntimeException("FuseConfig: Not yet implemented."); //$NON-NLS-1$
+        return gatewayRestEndpoint;
     }
 
     /**
@@ -45,7 +50,7 @@ public class FuseConfig implements IConfig {
      */
     @Override
     public String getGatewayAuthenticationType() {
-        throw new RuntimeException("FuseConfig: Not yet implemented."); //$NON-NLS-1$
+        return gatewayAuthenticationType;
     }
 
     /**
@@ -53,7 +58,7 @@ public class FuseConfig implements IConfig {
      */
     @Override
     public String getGatewayBasicAuthUsername() {
-        throw new RuntimeException("FuseConfig: Not yet implemented."); //$NON-NLS-1$
+        return gatewayBasicAuthUsername;
     }
 
     /**
@@ -61,7 +66,35 @@ public class FuseConfig implements IConfig {
      */
     @Override
     public String getGatewayBasicAuthPassword() {
-        throw new RuntimeException("FuseConfig: Not yet implemented."); //$NON-NLS-1$
+        return gatewayBasicAuthPassword;
+    }
+
+    /**
+     * @param gatewayRestEndpoint the gatewayRestEndpoint to set
+     */
+    public void setGatewayRestEndpoint(String gatewayRestEndpoint) {
+        this.gatewayRestEndpoint = gatewayRestEndpoint;
+    }
+
+    /**
+     * @param gatewayAuthenticationType the gatewayAuthenticationType to set
+     */
+    public void setGatewayAuthenticationType(String gatewayAuthenticationType) {
+        this.gatewayAuthenticationType = gatewayAuthenticationType;
+    }
+
+    /**
+     * @param gatewayBasicAuthUsername the gatewayBasicAuthUsername to set
+     */
+    public void setGatewayBasicAuthUsername(String gatewayBasicAuthUsername) {
+        this.gatewayBasicAuthUsername = gatewayBasicAuthUsername;
+    }
+
+    /**
+     * @param gatewayBasicAuthPassword the gatewayBasicAuthPassword to set
+     */
+    public void setGatewayBasicAuthPassword(String gatewayBasicAuthPassword) {
+        this.gatewayBasicAuthPassword = gatewayBasicAuthPassword;
     }
 
 }

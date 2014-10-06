@@ -20,6 +20,7 @@ import org.overlord.apiman.rt.api.rest.contract.IServiceResource;
 import org.overlord.apiman.rt.api.rest.contract.exceptions.NotAuthorizedException;
 import org.overlord.apiman.rt.engine.beans.Service;
 import org.overlord.apiman.rt.engine.beans.exceptions.PublishingException;
+import org.overlord.apiman.rt.engine.beans.exceptions.RegistrationException;
 
 /**
  * Implementation of the Service API.
@@ -43,11 +44,12 @@ public class ServiceResourceImpl extends AbstractResourceImpl implements IServic
     }
     
     /**
-     * @see org.overlord.apiman.rt.api.rest.contract.IServiceResource#retire(org.overlord.apiman.rt.engine.beans.Service)
+     * @see org.overlord.apiman.rt.api.rest.contract.IServiceResource#retire(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
-    public void retire(Service service) throws PublishingException, NotAuthorizedException {
-        getEngine().retireService(service);
+    public void retire(String organizationId, String serviceId, String version) throws RegistrationException,
+            NotAuthorizedException {
+        getEngine().retireService(organizationId, serviceId, version);
     }
     
 }

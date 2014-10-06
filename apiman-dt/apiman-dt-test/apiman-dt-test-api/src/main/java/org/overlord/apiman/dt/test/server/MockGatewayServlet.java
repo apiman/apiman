@@ -70,7 +70,7 @@ public class MockGatewayServlet extends HttpServlet {
             resp.setStatus(200);
             resp.setContentType("application/json"); //$NON-NLS-1$
             PrintWriter printWriter = new PrintWriter(resp.getOutputStream());
-            printWriter.println("{ \"up\" : true, \"version\" : \"0\" }"); //$NON-NLS-1$
+            printWriter.println("{ \"up\" : true, \"version\" : \"1.0.Mock\" }"); //$NON-NLS-1$
             printWriter.flush();
             printWriter.close();
         } else {

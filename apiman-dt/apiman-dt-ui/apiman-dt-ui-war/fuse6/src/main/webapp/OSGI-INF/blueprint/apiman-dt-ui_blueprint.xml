@@ -7,8 +7,26 @@
   http://cxf.apache.org/blueprint/jaxrs http://cxf.apache.org/schemas/blueprint/jaxrs.xsd
   http://cxf.apache.org/blueprint/core http://cxf.apache.org/schemas/blueprint/core.xsd">
 
-  <bean id="config" class="org.overlord.apiman.dt.ui.server.fuse.FuseUIConfig" />
-  
+  <cm:property-placeholder persistent-id="apiman-dt">
+    <cm:default-properties>
+      <cm:property name="apiman-dt.ui.apiEndpoint" value="http://localhost:8181/cxf/apiman-dt-api" />
+      <cm:property name="apiman-dt.ui.apiAuthType" value="authToken" />
+      <cm:property name="apiman-dt.ui.apiAuthUsername" value="" />
+      <cm:property name="apiman-dt.ui.apiAuthPassword" value="" />
+      <cm:property name="apiman-dt.ui.apiAuthTokenGenerator" value="org.overlord.apiman.dt.ui.server.auth.AuthTokenGenerator" />
+      <cm:property name="apiman-dt.ui.gatewayUrl" value="http://localhost:8181/cxf/apiman-gateway" />
+    </cm:default-properties>
+  </cm:property-placeholder>
+
+  <bean id="config" class="org.overlord.apiman.dt.ui.server.fuse.FuseUIConfig">
+    <property name="apiEndpoint" value="${apiman-dt.ui.apiEndpoint}" />
+    <property name="apiAuthType" value="${apiman-dt.ui.apiAuthType}" />
+    <property name="apiAuthUsername" value="${apiman-dt.ui.apiAuthUsername}" />
+    <property name="apiAuthPassword" value="${apiman-dt.ui.apiAuthPassword}" />
+    <property name="apiAuthTokenGenerator" value="${apiman-dt.ui.apiAuthTokenGenerator}" />
+    <property name="gatewayUrl" value="${apiman-dt.ui.gatewayUrl}" />
+  </bean>
+
   <service ref="config" interface="org.overlord.apiman.dt.ui.server.IUIConfig" />
 
 </blueprint>

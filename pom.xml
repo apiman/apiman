@@ -74,14 +74,15 @@
     <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots/</jboss.snapshots.repo.url>
 
     <!-- Dependency Versions (not found in parent) -->
-    <version.org.overlord.overlord-commons>2.0.10.Final</version.org.overlord.overlord-commons>
-    <version.org.overlord.overlord-commons.overlord-commons-maven-plugin>2.0.10.Final</version.org.overlord.overlord-commons.overlord-commons-maven-plugin>
+    <version.org.overlord.overlord-commons>2.0.11.Final</version.org.overlord.overlord-commons>
+    <version.org.overlord.overlord-commons.overlord-commons-maven-plugin>2.0.11.Final</version.org.overlord.overlord-commons.overlord-commons-maven-plugin>
     <org.eclipse.jetty>8.1.9.v20130131</org.eclipse.jetty>
     <version.io.undertow>1.0.1.Final</version.io.undertow>
 
     <!-- Dependency Overrides -->
     <version.org.jboss.errai>3.0.3-SNAPSHOT</version.org.jboss.errai>
     <version.org.apache.commons.commons-pool2>2.2</version.org.apache.commons.commons-pool2>
+    <version.org.hibernate.commons.annotations>4.0.2.Final</version.org.hibernate.commons.annotations>
   </properties>
 
   <dependencyManagement>
@@ -306,6 +307,11 @@
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-rt-engine-osgi</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
         <artifactId>apiman-rt-gateway-undertow</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -320,6 +326,11 @@
         <artifactId>apiman-rt-gateway-war</artifactId>
         <version>${project.version}</version>
         <classifier>classes</classifier>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-rt-gateway-war-fuse6</artifactId>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
@@ -574,6 +585,13 @@
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-util</artifactId>
         <version>${org.eclipse.jetty}</version>
+      </dependency>
+
+      <!-- Hibernate -->
+      <dependency>
+        <groupId>org.hibernate.common</groupId>
+        <artifactId>hibernate-commons-annotations</artifactId>
+        <version>${version.org.hibernate.commons.annotations}</version>
       </dependency>
 
       <!-- Third Party Libraries -->

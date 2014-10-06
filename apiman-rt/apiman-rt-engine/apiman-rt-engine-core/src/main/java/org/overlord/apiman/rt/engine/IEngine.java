@@ -68,10 +68,12 @@ public interface IEngine {
 
     /**
      * Retires (removes) a {@link Service} from the registry.
-     * @param service the service to retire/remove
+     * @param organizationId
+     * @param serviceId
+     * @param version
      * @throws PublishingException
      */
-    public void retireService(Service service) throws PublishingException;
+    public void retireService(String organizationId, String serviceId, String version) throws PublishingException;
     
     /**
      * Registers a new {@link Application}.  An application is ultimately a collection of
@@ -83,9 +85,11 @@ public interface IEngine {
 
     /**
      * Removes an {@link Application} from the registry.
-     * @param application the application to remove
+     * @param organizationId
+     * @param applicationId
+     * @param version
      * @throws RegistrationException
      */
-    public void unregisterApplication(Application application) throws RegistrationException;
+    public void unregisterApplication(String organizationId, String applicationId, String version) throws RegistrationException;
 
 }

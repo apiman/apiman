@@ -33,6 +33,14 @@
       <groupId>org.overlord.apiman</groupId>
       <artifactId>apiman-rt-engine-policies</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.overlord.apiman</groupId>
+      <artifactId>apiman-rt-engine-osgi</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord.apiman</groupId>
+      <artifactId>apiman-rt-gateway-war-fuse6</artifactId>
+    </dependency>
 
     <!-- Required by Apache commons-pool2 but marked as 'provided' in pool2's pom.xml -->
     <dependency>
@@ -47,6 +55,17 @@
   
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <!-- Disable this check -->
+          <execution>
+            <id>enforce-plugin-versions</id>
+            <phase>non-existant</phase>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-maven-plugin</artifactId>
@@ -70,11 +89,11 @@
                     <exclude>org.overlord.apiman:apiman-*:*</exclude>
                   </excludes>
                 </feature>
-                <!-- APIMan Runtime -->
+                <!-- APIMan Modules -->
                 <feature>
-                  <name>apiman-rt</name>
+                  <name>apiman-rt-modules</name>
                   <version>${project.version}</version>
-                  <comment>API Management Runtime</comment>
+                  <comment>API Management Runtime Modules</comment>
                   <dependsOnFeatures>
                     <feature>
                       <name>apiman-rt-dependencies</name>
@@ -83,6 +102,24 @@
                   </dependsOnFeatures>
                   <includes>
                     <include>org.overlord.apiman:apiman-*:*</include>
+                  </includes>
+                  <excludes>
+                    <exclude>org.overlord.apiman:apiman-rt-gateway*:*</exclude>
+                  </excludes>
+                </feature>
+                <!-- APIMan Runtime -->
+                <feature>
+                  <name>apiman-rt</name>
+                  <version>${project.version}</version>
+                  <comment>API Management Runtime</comment>
+                  <dependsOnFeatures>
+                    <feature>
+                      <name>apiman-rt-modules</name>
+                      <version>${project.version}</version>
+                    </feature>
+                  </dependsOnFeatures>
+                  <includes>
+                    <include>org.overlord.apiman:apiman-rt-gateway*:*</include>
                   </includes>
                 </feature>
               </features>

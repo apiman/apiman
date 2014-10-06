@@ -17,7 +17,6 @@ package org.overlord.apiman.dt.ui.server.fuse;
 
 import org.overlord.apiman.dt.ui.client.shared.beans.ApiAuthType;
 import org.overlord.apiman.dt.ui.server.IUIConfig;
-import org.overlord.apiman.dt.ui.server.auth.AuthTokenGenerator;
 
 /**
  * A fuse implementation of the UI config.
@@ -26,20 +25,25 @@ import org.overlord.apiman.dt.ui.server.auth.AuthTokenGenerator;
  */
 public class FuseUIConfig implements IUIConfig {
     
+    private String apiEndpoint;
+    private ApiAuthType apiAuthType;
+    private String apiAuthUsername;
+    private String apiAuthPassword;
+    private String apiAuthTokenGenerator;
+    private String gatewayUrl;
+    
     /**
      * Constructor.
      */
     public FuseUIConfig() {
     }
-    
-    // TODO remove hard-coded values, get config from appropriate fuse-y place
 
     /**
      * @see org.overlord.apiman.dt.ui.server.IUIConfig#getManagementApiEndpoint()
      */
     @Override
     public String getManagementApiEndpoint() {
-        return "http://localhost:8181/cxf/apiman-dt-api"; //$NON-NLS-1$
+        return apiEndpoint;
     }
 
     /**
@@ -47,7 +51,7 @@ public class FuseUIConfig implements IUIConfig {
      */
     @Override
     public ApiAuthType getManagementApiAuthType() {
-        return ApiAuthType.authToken;
+        return apiAuthType;
     }
 
     /**
@@ -55,7 +59,7 @@ public class FuseUIConfig implements IUIConfig {
      */
     @Override
     public String getGatewayUrl() {
-        return "http://localhost:8181/gateway"; //$NON-NLS-1$
+        return gatewayUrl;
     }
 
     /**
@@ -63,7 +67,7 @@ public class FuseUIConfig implements IUIConfig {
      */
     @Override
     public String getManagementApiAuthUsername() {
-        return null;
+        return apiAuthUsername;
     }
 
     /**
@@ -71,7 +75,7 @@ public class FuseUIConfig implements IUIConfig {
      */
     @Override
     public String getManagementApiAuthPassword() {
-        return null;
+        return apiAuthPassword;
     }
 
     /**
@@ -79,7 +83,84 @@ public class FuseUIConfig implements IUIConfig {
      */
     @Override
     public String getManagementApiAuthTokenGenerator() {
-        return AuthTokenGenerator.class.getName();
+        return apiAuthTokenGenerator;
+    }
+
+    /**
+     * @return the apiEndpoint
+     */
+    public String getApiEndpoint() {
+        return apiEndpoint;
+    }
+
+    /**
+     * @param apiEndpoint the apiEndpoint to set
+     */
+    public void setApiEndpoint(String apiEndpoint) {
+        this.apiEndpoint = apiEndpoint;
+    }
+
+    /**
+     * @return the apiAuthType
+     */
+    public String getApiAuthType() {
+        return apiAuthType == null ? null : apiAuthType.toString();
+    }
+
+    /**
+     * @param apiAuthType the apiAuthType to set
+     */
+    public void setApiAuthType(String apiAuthType) {
+        this.apiAuthType = apiAuthType == null ? null : ApiAuthType.valueOf(apiAuthType);
+    }
+
+    /**
+     * @return the apiAuthUsername
+     */
+    public String getApiAuthUsername() {
+        return apiAuthUsername;
+    }
+
+    /**
+     * @param apiAuthUsername the apiAuthUsername to set
+     */
+    public void setApiAuthUsername(String apiAuthUsername) {
+        this.apiAuthUsername = apiAuthUsername;
+    }
+
+    /**
+     * @return the apiAuthPassword
+     */
+    public String getApiAuthPassword() {
+        return apiAuthPassword;
+    }
+
+    /**
+     * @param apiAuthPassword the apiAuthPassword to set
+     */
+    public void setApiAuthPassword(String apiAuthPassword) {
+        this.apiAuthPassword = apiAuthPassword;
+    }
+
+    /**
+     * @return the apiAuthTokenGenerator
+     */
+    public String getApiAuthTokenGenerator() {
+        return apiAuthTokenGenerator;
+    }
+
+    /**
+     * @param apiAuthTokenGenerator the apiAuthTokenGenerator to set
+     */
+    public void setApiAuthTokenGenerator(String apiAuthTokenGenerator) {
+        this.apiAuthTokenGenerator = apiAuthTokenGenerator;
+    }
+
+    /**
+     * @param gatewayUrl the gatewayUrl to set
+     */
+    public void setGatewayUrl(String gatewayUrl) {
+        this.gatewayUrl = gatewayUrl;
     }
 
 }

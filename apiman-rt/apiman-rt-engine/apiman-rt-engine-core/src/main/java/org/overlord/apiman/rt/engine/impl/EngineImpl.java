@@ -183,11 +183,16 @@ public class EngineImpl implements IEngine {
     }
     
     /**
-     * @see org.overlord.apiman.rt.engine.IEngine#retireService(org.overlord.apiman.rt.engine.beans.Service)
+     * @see org.overlord.apiman.rt.engine.IEngine#retireService(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
-    public void retireService(final Service service) throws PublishingException {
-        getRegistry().retireService(service);
+    public void retireService(String organizationId, String serviceId, String version)
+            throws PublishingException {
+        Service svc = new Service();
+        svc.setOrganizationId(organizationId);
+        svc.setServiceId(serviceId);
+        svc.setVersion(version);
+        getRegistry().retireService(svc);
     }
     
     /**
@@ -217,11 +222,16 @@ public class EngineImpl implements IEngine {
     }
     
     /**
-     * @see org.overlord.apiman.rt.engine.IEngine#unregisterApplication(org.overlord.apiman.rt.engine.beans.Application)
+     * @see org.overlord.apiman.rt.engine.IEngine#unregisterApplication(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
-    public void unregisterApplication(final Application application) throws RegistrationException {
-        getRegistry().unregisterApplication(application);
+    public void unregisterApplication(String organizationId, String applicationId, String version)
+            throws RegistrationException {
+        Application app = new Application();
+        app.setOrganizationId(organizationId);
+        app.setApplicationId(applicationId);
+        app.setVersion(version);
+        getRegistry().unregisterApplication(app);
     }
 
     /**

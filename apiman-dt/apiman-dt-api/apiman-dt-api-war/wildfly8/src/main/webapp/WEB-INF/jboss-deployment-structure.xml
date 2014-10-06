@@ -1,8 +1,6 @@
 <jboss-deployment-structure>
   <deployment>
     <dependencies>
-      <module name="org.apache.httpcomponents" />
-      <module name="org.jboss.resteasy.resteasy-jaxrs" />
     </dependencies>
   </deployment>
 </jboss-deployment-structure>

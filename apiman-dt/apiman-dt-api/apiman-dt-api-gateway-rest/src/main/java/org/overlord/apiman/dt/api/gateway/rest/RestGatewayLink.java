@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -29,16 +30,8 @@ import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.protocol.HttpContext;
-import org.jboss.resteasy.client.ClientExecutor;
-import org.jboss.resteasy.client.ProxyFactory;
-import org.jboss.resteasy.client.core.executors.ApacheHttpClient4Executor;
-import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
-import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.overlord.apiman.dt.api.config.IConfig;
 import org.overlord.apiman.dt.api.gateway.IGatewayLink;
-import org.overlord.apiman.rt.api.rest.contract.IApplicationResource;
-import org.overlord.apiman.rt.api.rest.contract.IServiceResource;
-import org.overlord.apiman.rt.api.rest.contract.ISystemResource;
 import org.overlord.apiman.rt.engine.beans.Application;
 import org.overlord.apiman.rt.engine.beans.Service;
 import org.overlord.apiman.rt.engine.beans.SystemStatus;
@@ -58,9 +51,7 @@ public class RestGatewayLink implements IGatewayLink {
     private IConfig config;
     
     private CloseableHttpClient httpClient;
-    private ISystemResource systemClient;
-    private IServiceResource serviceClient;
-    private IApplicationResource appClient;
+    private GatewayClient gatewayClient;
 
     /**
      * Constructor.
@@ -78,19 +69,26 @@ public class RestGatewayLink implements IGatewayLink {
             public void process(HttpRequest request, HttpContext context) throws HttpException, IOException {
                 configureBasicAuth(request);
             }
-        }).build();;
+        }).build();
         
-        RegisterBuiltin.register(ResteasyProviderFactory.getInstance());
+        String gatewayEndpoint = config.getGatewayRestEndpoint();
+        gatewayClient = new GatewayClient(gatewayEndpoint, httpClient);
         
-        String gatewayApi = config.getGatewayRestEndpoint();
-        
-        systemClient = ProxyFactory.create(ISystemResource.class, gatewayApi, createClientExecutor());
-        serviceClient = ProxyFactory.create(IServiceResource.class, gatewayApi, createClientExecutor());
-        appClient = ProxyFactory.create(IApplicationResource.class, gatewayApi, createClientExecutor());
-        
-        SystemStatus status = systemClient.getStatus();
+        SystemStatus status = gatewayClient.getStatus();
         if (!status.isUp()) {
             throw new RuntimeException("Gateway is not running!"); //$NON-NLS-1$
+        }
+    }
+
+    /**
+     * Called on destruction of the bean.
+     */
+    @PreDestroy
+    public void preDestroy() {
+        try {
+            httpClient.close();
+        } catch (IOException e) {
+            // TODO log the error?
         }
     }
 
@@ -99,7 +97,7 @@ public class RestGatewayLink implements IGatewayLink {
      */
     @Override
     public void publishService(Service service) throws PublishingException {
-        serviceClient.publish(service);
+        gatewayClient.publish(service);
     }
 
     /**
@@ -107,7 +105,7 @@ public class RestGatewayLink implements IGatewayLink {
      */
     @Override
     public void retireService(Service service) throws PublishingException {
-        serviceClient.retire(service);
+        gatewayClient.retire(service.getOrganizationId(), service.getServiceId(), service.getVersion());
     }
 
     /**
@@ -115,7 +113,7 @@ public class RestGatewayLink implements IGatewayLink {
      */
     @Override
     public void registerApplication(Application application) throws RegistrationException {
-        appClient.register(application);
+        gatewayClient.register(application);
     }
 
     /**
@@ -123,15 +121,7 @@ public class RestGatewayLink implements IGatewayLink {
      */
     @Override
     public void unregisterApplication(Application application) throws RegistrationException {
-        appClient.unregister(application);
-    }
-
-    /**
-     * Creates the client executor that will be used by RESTEasy when
-     * making the request.
-     */
-    private ClientExecutor createClientExecutor() {
-        return new ApacheHttpClient4Executor(httpClient);
+        gatewayClient.unregister(application.getOrganizationId(), application.getApplicationId(), application.getVersion());
     }
 
     /**

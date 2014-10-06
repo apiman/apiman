@@ -20,11 +20,13 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 
 import org.overlord.apiman.rt.api.rest.contract.exceptions.NotAuthorizedException;
 import org.overlord.apiman.rt.engine.beans.Service;
 import org.overlord.apiman.rt.engine.beans.exceptions.PublishingException;
+import org.overlord.apiman.rt.engine.beans.exceptions.RegistrationException;
 
 /**
  * The Service API.
@@ -37,8 +39,10 @@ public interface IServiceResource {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     public void publish(Service service) throws PublishingException, NotAuthorizedException;
-    
+
     @DELETE
-    @Consumes(MediaType.APPLICATION_JSON)
-    public void retire(Service service) throws PublishingException, NotAuthorizedException;
+    @Path("{organizationId}/{serviceId}/{version}")
+    public void retire(@PathParam("organizationId") String organizationId,
+            @PathParam("serviceId") String serviceId, @PathParam("version") String version)
+            throws RegistrationException, NotAuthorizedException;
 }

@@ -29,10 +29,10 @@
       <groupId>org.overlord.apiman</groupId>
       <artifactId>apiman-dt-api-gateway</artifactId>
     </dependency>
-<!--     <dependency> -->
-<!--       <groupId>org.overlord.apiman</groupId> -->
-<!--       <artifactId>apiman-dt-api-gateway-rest</artifactId> -->
-<!--     </dependency> -->
+    <!-- <dependency> -->
+    <!-- <groupId>org.overlord.apiman</groupId> -->
+    <!-- <artifactId>apiman-dt-api-gateway-rest</artifactId> -->
+    <!-- </dependency> -->
     <dependency>
       <groupId>org.overlord.apiman</groupId>
       <artifactId>apiman-dt-api-jpa</artifactId>
@@ -76,7 +76,7 @@
       <groupId>org.overlord</groupId>
       <artifactId>overlord-commons-services</artifactId>
     </dependency>
-    
+
     <!-- Required Spec Libs -->
     <dependency>
       <groupId>org.apache.geronimo.specs</groupId>
@@ -168,10 +168,42 @@
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
     </dependency>
-
   </dependencies>
+
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-artifacts</id>
+            <phase>package</phase>
+            <goals>
+              <goal>attach-artifact</goal>
+            </goals>
+            <configuration>
+              <artifacts>
+                <artifact>
+                  <file>${basedir}/src/main/resources/apiman-dt.cfg</file>
+                  <type>cfg</type>
+                </artifact>
+              </artifacts>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <!-- Disable this check -->
+          <execution>
+            <id>enforce-plugin-versions</id>
+            <phase>non-existant</phase>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-maven-plugin</artifactId>
@@ -200,7 +232,7 @@
                     <exclude>org.overlord.apiman:apiman-*:*</exclude>
                   </excludes>
                 </feature>
-                <!-- APIMan Runtime -->
+                <!-- APIMan Management Layer -->
                 <feature>
                   <name>apiman-dt</name>
                   <version>${project.version}</version>
@@ -211,6 +243,12 @@
                       <version>${project.version}</version>
                     </feature>
                   </dependsOnFeatures>
+                  <configFiles>
+                    <configFile>
+                      <finalName>/etc/apiman-dt.cfg</finalName>
+                      <value>mvn:org.overlord.apiman/apiman-distro-fuse6-dt/${project.version}/cfg</value>
+                    </configFile>
+                  </configFiles>
                   <includes>
                     <include>org.overlord.apiman:apiman-*:*</include>
                   </includes>

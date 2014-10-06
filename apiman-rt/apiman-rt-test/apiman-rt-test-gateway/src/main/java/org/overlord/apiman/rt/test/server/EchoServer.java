@@ -94,5 +94,12 @@ public class EchoServer {
         // Add the web contexts to jetty
         handlers.addHandler(server);
     }
+    
+    public static void main(String [] args) throws Exception {
+        new EchoServer(9999).start();
+        while (Boolean.TRUE) {
+            Thread.sleep(1000);
+        }
+    }
 
 }

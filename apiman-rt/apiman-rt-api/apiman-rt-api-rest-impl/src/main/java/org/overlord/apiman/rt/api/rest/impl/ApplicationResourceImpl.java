@@ -42,13 +42,14 @@ public class ApplicationResourceImpl extends AbstractResourceImpl implements IAp
     public void register(Application application) throws RegistrationException, NotAuthorizedException {
         getEngine().registerApplication(application);
     }
-
+    
     /**
-     * @see org.overlord.apiman.rt.api.rest.contract.IApplicationResource#unregister(org.overlord.apiman.rt.engine.beans.Application)
+     * @see org.overlord.apiman.rt.api.rest.contract.IApplicationResource#unregister(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
-    public void unregister(Application application) throws RegistrationException, NotAuthorizedException {
-        getEngine().unregisterApplication(application);
+    public void unregister(String organizationId, String applicationId, String version)
+            throws RegistrationException, NotAuthorizedException {
+        getEngine().unregisterApplication(organizationId, applicationId, version);
     }
     
 }

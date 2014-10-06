@@ -7,6 +7,22 @@
   http://cxf.apache.org/blueprint/jaxrs http://cxf.apache.org/schemas/blueprint/jaxrs.xsd
   http://cxf.apache.org/blueprint/core http://cxf.apache.org/schemas/blueprint/core.xsd">
 
+  <cm:property-placeholder persistent-id="apiman-dt">
+    <cm:default-properties>
+      <cm:property name="apiman-dt-api.gateway.rest-endpoint" value="http://localhost:8181/cxf/apiman-dt-api/" />
+      <cm:property name="apiman-dt-api.gateway.authentication.type" value="BASIC" />
+      <cm:property name="apiman-dt-api.gateway.authentication.basic.user" value="admin" />
+      <cm:property name="apiman-dt-api.gateway.authentication.basic.password" value="admin123!" />
+    </cm:default-properties>
+  </cm:property-placeholder>
+
+  <bean id="config" class="org.overlord.apiman.dt.api.fuse6.config.FuseConfig">
+    <property name="gatewayRestEndpoint" value="${apiman-dt-api.gateway.rest-endpoint}" />
+    <property name="gatewayAuthenticationType" value="${apiman-dt-api.gateway.authentication.type}" />
+    <property name="gatewayBasicAuthUsername" value="${apiman-dt-api.gateway.authentication.basic.user}" />
+    <property name="gatewayBasicAuthPassword" value="${apiman-dt-api.gateway.authentication.basic.password}" />
+  </bean>
+
   <cxf:bus id="cxfBus1">
     <cxf:features>
       <cxf:logging />
@@ -42,7 +58,7 @@
     <property name="storage" ref="storage" />
     <property name="query" ref="storage" />
     <property name="idmStorage" ref="idmStorage" />
-<!--     <property name="gatewayLink" ref="gatewayLink" /> -->
+    <property name="gatewayLink" ref="gatewayLink" />
     <property name="orgs" ref="organizationService" />
     <property name="serviceValidator" ref="validator" />
     <property name="applicationValidator" ref="validator" />
@@ -109,6 +125,8 @@
   <bean id="idmStorage" class="org.overlord.apiman.dt.api.jpa.roles.JpaIdmStorage">
     <property name="emfAccessor" ref="emfAccessor" />
   </bean>
-<!--   <bean id="gatewayLink" class="org.overlord.apiman.dt.api.config.Version" /> -->
+  <bean id="gatewayLink" class="org.overlord.apiman.dt.api.gateway.rest.RestGatewayLink">
+    <property name="config" ref="config" />
+  </bean>
 
 </blueprint>

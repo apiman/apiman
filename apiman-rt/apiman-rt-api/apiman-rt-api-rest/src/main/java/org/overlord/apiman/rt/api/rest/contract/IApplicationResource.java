@@ -20,6 +20,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 
 import org.overlord.apiman.rt.api.rest.contract.exceptions.NotAuthorizedException;
@@ -39,6 +40,8 @@ public interface IApplicationResource {
     public void register(Application application) throws RegistrationException, NotAuthorizedException;
 
     @DELETE
-    @Consumes(MediaType.APPLICATION_JSON)
-    public void unregister(Application application) throws RegistrationException, NotAuthorizedException;
+    @Path("{organizationId}/{applicationId}/{version}")
+    public void unregister(@PathParam("organizationId") String organizationId,
+            @PathParam("applicationId") String applicationId, @PathParam("version") String version)
+            throws RegistrationException, NotAuthorizedException;
 }
