@@ -26,12 +26,12 @@ import org.overlord.apiman.rt.engine.components.ISharedStateComponent;
 import org.overlord.apiman.rt.engine.impl.InMemoryRegistry;
 import org.overlord.apiman.rt.engine.impl.InMemorySharedStateComponent;
 import org.overlord.apiman.rt.engine.policy.PolicyFactoryImpl;
+import org.overlord.apiman.rt.gateway.servlet.PolicyFailureFactoryComponent;
+import org.overlord.apiman.rt.gateway.servlet.connectors.HttpConnectorFactory;
 import org.overlord.apiman.rt.test.server.EchoServer;
 import org.overlord.apiman.rt.test.server.GatewayServer;
-import org.overlord.apiman.rt.war.WarGateway;
 import org.overlord.apiman.rt.war.WarEngineConfig;
-import org.overlord.apiman.rt.war.WarPolicyFailureFactoryComponent;
-import org.overlord.apiman.rt.war.connectors.HttpConnectorFactory;
+import org.overlord.apiman.rt.war.WarGateway;
 import org.overlord.apiman.test.common.util.TestPlanRunner;
 
 /**
@@ -72,7 +72,7 @@ public class AbstractGatewayTest {
         System.setProperty(WarEngineConfig.APIMAN_RT_COMPONENT_PREFIX + ISharedStateComponent.class.getSimpleName(), 
                 InMemorySharedStateComponent.class.getName());
         System.setProperty(WarEngineConfig.APIMAN_RT_COMPONENT_PREFIX + IPolicyFailureFactoryComponent.class.getSimpleName(), 
-                WarPolicyFailureFactoryComponent.class.getName());
+                PolicyFailureFactoryComponent.class.getName());
     }
 
     @AfterClass

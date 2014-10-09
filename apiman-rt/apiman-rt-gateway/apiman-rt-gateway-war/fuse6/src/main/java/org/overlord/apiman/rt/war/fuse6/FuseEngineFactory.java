@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.rt.fuse6;
+package org.overlord.apiman.rt.war.fuse6;
 
 import org.overlord.apiman.rt.engine.IComponentRegistry;
 import org.overlord.apiman.rt.engine.IConnectorFactory;
@@ -24,6 +24,7 @@ import org.overlord.apiman.rt.engine.impl.DefaultComponentRegistry;
 import org.overlord.apiman.rt.engine.impl.InMemoryRegistry;
 import org.overlord.apiman.rt.engine.osgi.policy.OSGIPolicyFactory;
 import org.overlord.apiman.rt.engine.policy.IPolicyFactory;
+import org.overlord.apiman.rt.gateway.servlet.connectors.HttpConnectorFactory;
 
 /**
  * Create the runtime engine within Fuse.
@@ -68,7 +69,7 @@ public class FuseEngineFactory extends AbstractEngineFactory {
      */
     @Override
     protected IConnectorFactory createConnectorFactory() {
-        return new FuseHttpConnectorFactory();
+        return new HttpConnectorFactory();
     }
 
     /**

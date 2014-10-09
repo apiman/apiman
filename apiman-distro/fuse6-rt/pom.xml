@@ -39,7 +39,22 @@
     </dependency>
     <dependency>
       <groupId>org.overlord.apiman</groupId>
+      <artifactId>apiman-rt-gateway-servlet</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord.apiman</groupId>
       <artifactId>apiman-rt-gateway-war-fuse6</artifactId>
+      <type>war</type>
+    </dependency>
+    
+    <!-- Specification Bundles -->
+    <dependency>
+      <groupId>javax.ws.rs</groupId>
+      <artifactId>javax.ws.rs-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-servlet_3.0_spec</artifactId>
     </dependency>
 
     <!-- Required by Apache commons-pool2 but marked as 'provided' in pool2's pom.xml -->
@@ -51,8 +66,15 @@
       <groupId>org.ow2.asm</groupId>
       <artifactId>asm-util</artifactId>
     </dependency>
+    
+    <!-- Additional Third Party JARs needed by apiman-rt-gateway-war-fuse6 but marked as
+         'provided there because we don't want them packaged in the WAR -->
+    <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-jaxrs</artifactId>
+    </dependency>
   </dependencies>
-  
+
   <build>
     <plugins>
       <plugin>
@@ -113,6 +135,12 @@
                   <version>${project.version}</version>
                   <comment>API Management Runtime</comment>
                   <dependsOnFeatures>
+                    <feature>
+                      <name>war</name>
+                    </feature>
+                    <feature>
+                      <name>cxf</name>
+                    </feature>
                     <feature>
                       <name>apiman-rt-modules</name>
                       <version>${project.version}</version>

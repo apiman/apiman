@@ -33,11 +33,11 @@
 
   <!-- Gateway Servlet -->
   <servlet>
-    <servlet-name>WarGatewayServlet</servlet-name>
+    <servlet-name>GatewayServlet</servlet-name>
     <servlet-class>org.overlord.apiman.rt.war.servlets.WarGatewayServlet</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>WarGatewayServlet</servlet-name>
+    <servlet-name>GatewayServlet</servlet-name>
     <url-pattern>/gateway/*</url-pattern>
   </servlet-mapping>
 

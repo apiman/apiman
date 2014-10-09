@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.rt.war.connectors;
+package org.overlord.apiman.rt.gateway.servlet.connectors;
 
 import java.util.HashSet;
 import java.util.Map.Entry;
@@ -39,8 +39,8 @@ import org.overlord.apiman.rt.engine.beans.Service;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
 import org.overlord.apiman.rt.engine.beans.ServiceResponse;
 import org.overlord.apiman.rt.engine.beans.exceptions.ConnectorException;
-import org.overlord.apiman.rt.war.WarGatewayThreadContext;
-import org.overlord.apiman.rt.war.i18n.Messages;
+import org.overlord.apiman.rt.gateway.servlet.GatewayThreadContext;
+import org.overlord.apiman.rt.gateway.servlet.i18n.Messages;
 
 /**
  * Connector factory that uses HTTP to invoke back end systems.
@@ -133,7 +133,7 @@ public class HttpConnectorFactory implements IConnectorFactory {
             // Process the response, convert to a ServiceResponse object, and return it
             StatusLine statusLine = response.getStatusLine();
 
-            sresponse = WarGatewayThreadContext.getServiceResponse();
+            sresponse = GatewayThreadContext.getServiceResponse();
             Header[] headers = response.getAllHeaders();
             for (Header header : headers) {
                 sresponse.getHeaders().put(header.getName(), header.getValue());

@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package org.overlord.apiman.rt.war;
+package org.overlord.apiman.rt.gateway.servlet;
 
 import org.overlord.apiman.rt.engine.beans.PolicyFailure;
 import org.overlord.apiman.rt.engine.beans.PolicyFailureType;
 import org.overlord.apiman.rt.engine.components.IPolicyFailureFactoryComponent;
+import org.overlord.apiman.rt.gateway.servlet.GatewayThreadContext;
 
 /**
  * Simple policy failure factory component implementation.  Uses the thread local 
@@ -27,12 +28,12 @@ import org.overlord.apiman.rt.engine.components.IPolicyFailureFactoryComponent;
  *
  * @author eric.wittmann@redhat.com
  */
-public class WarPolicyFailureFactoryComponent implements IPolicyFailureFactoryComponent {
+public class PolicyFailureFactoryComponent implements IPolicyFailureFactoryComponent {
     
     /**
      * Constructor.
      */
-    public WarPolicyFailureFactoryComponent() {
+    public PolicyFailureFactoryComponent() {
     }
 
     /**
@@ -40,7 +41,7 @@ public class WarPolicyFailureFactoryComponent implements IPolicyFailureFactoryCo
      */
     @Override
     public PolicyFailure createFailure(PolicyFailureType type, int failureCode, String message) {
-        PolicyFailure failure = WarGatewayThreadContext.getPolicyFailure();
+        PolicyFailure failure = GatewayThreadContext.getPolicyFailure();
         failure.setFailureCode(failureCode);
         failure.setMessage(message);
         failure.setType(type);

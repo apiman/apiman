@@ -78,6 +78,18 @@
     <version.org.overlord.overlord-commons.overlord-commons-maven-plugin>2.0.11.Final</version.org.overlord.overlord-commons.overlord-commons-maven-plugin>
     <org.eclipse.jetty>8.1.9.v20130131</org.eclipse.jetty>
     <version.io.undertow>1.0.1.Final</version.io.undertow>
+    <version.org.apache.geronimo.specs.geronimo-jta_1.1_spec>1.1.1</version.org.apache.geronimo.specs.geronimo-jta_1.1_spec>
+    <version.org.apache.geronimo.specs.geronimo-servlet_3.0_spec>1.0</version.org.apache.geronimo.specs.geronimo-servlet_3.0_spec>
+    <version.javax.ws.rs-api>2.0</version.javax.ws.rs-api>
+
+
+    <version.cglib>3.0</version.cglib>
+    <version.org.ow2.asm>4.0</version.org.ow2.asm>
+    <version.com.fasterxml.classmate>0.8.0</version.com.fasterxml.classmate>
+    <version.org.jboss.jandex>1.1.0.Final</version.org.jboss.jandex>
+    <version.org.apache.servicemix.bundles.antlr>2.7.7_5</version.org.apache.servicemix.bundles.antlr>
+    <version.org.apache.servicemix.bundles.dom4j>1.6.1_5</version.org.apache.servicemix.bundles.dom4j>
+    <version.org.apache.felix.scr.annotations>1.7.0</version.org.apache.felix.scr.annotations>
 
     <!-- Dependency Overrides -->
     <version.org.jboss.errai>3.0.3-SNAPSHOT</version.org.jboss.errai>
@@ -317,6 +329,11 @@
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-rt-gateway-servlet</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
         <artifactId>apiman-rt-gateway-war</artifactId>
         <version>${project.version}</version>
         <type>war</type>
@@ -331,6 +348,7 @@
         <groupId>${project.groupId}</groupId>
         <artifactId>apiman-rt-gateway-war-fuse6</artifactId>
         <version>${project.version}</version>
+        <type>war</type>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
@@ -603,12 +621,12 @@
       <dependency>
         <groupId>cglib</groupId>
         <artifactId>cglib</artifactId>
-        <version>3.0</version>
+        <version>${version.cglib}</version>
       </dependency>
       <dependency>
         <groupId>org.ow2.asm</groupId>
         <artifactId>asm-util</artifactId>
-        <version>4.0</version>
+        <version>${version.org.ow2.asm}</version>
       </dependency>
       <dependency>
         <groupId>org.hibernate</groupId>
@@ -618,27 +636,27 @@
       <dependency>
         <groupId>com.fasterxml</groupId>
         <artifactId>classmate</artifactId>
-        <version>0.8.0</version>
+        <version>${version.com.fasterxml.classmate}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss</groupId>
         <artifactId>jandex</artifactId>
-        <version>1.1.0.Final</version>
+        <version>${version.org.jboss.jandex}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.servicemix.bundles</groupId>
         <artifactId>org.apache.servicemix.bundles.antlr</artifactId>
-        <version>2.7.7_5</version>
+        <version>${version.org.apache.servicemix.bundles.antlr}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.servicemix.bundles</groupId>
         <artifactId>org.apache.servicemix.bundles.dom4j</artifactId>
-        <version>1.6.1_5</version>
+        <version>${version.org.apache.servicemix.bundles.dom4j}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.felix</groupId>
         <artifactId>org.apache.felix.scr.annotations</artifactId>
-        <version>1.7.0</version>
+        <version>${version.org.apache.felix.scr.annotations}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.cxf</groupId>
@@ -655,7 +673,17 @@
       <dependency>
         <groupId>org.apache.geronimo.specs</groupId>
         <artifactId>geronimo-jta_1.1_spec</artifactId>
-        <version>1.1.1</version>
+        <version>${version.org.apache.geronimo.specs.geronimo-jta_1.1_spec}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.geronimo.specs</groupId>
+        <artifactId>geronimo-servlet_3.0_spec</artifactId>
+        <version>${version.org.apache.geronimo.specs.geronimo-servlet_3.0_spec}</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.ws.rs</groupId>
+        <artifactId>javax.ws.rs-api</artifactId>
+        <version>${version.javax.ws.rs-api}</version>
       </dependency>
 
     </dependencies>

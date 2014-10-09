@@ -19,6 +19,10 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-rt-gateway-servlet</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>apiman-rt-gateway-war</artifactId>
       <type>jar</type>
       <classifier>classes</classifier>

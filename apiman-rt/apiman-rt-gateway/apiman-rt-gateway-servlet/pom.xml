@@ -3,19 +3,28 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.overlord.apiman</groupId>
-    <artifactId>apiman-rt-engine</artifactId>
+    <artifactId>apiman-rt-gateway</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
-  <artifactId>apiman-rt-engine-core</artifactId>
+  <artifactId>apiman-rt-gateway-servlet</artifactId>
   <packaging>bundle</packaging>
-  <name>apiman-rt-engine-core</name>
+  <name>apiman-rt-gateway-servlet</name>
+
   <dependencies>
     <!-- Project Dependencies -->
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-rt-engine-beans</artifactId>
     </dependency>
-
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-rt-engine-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-rt-engine-policies</artifactId>
+    </dependency>
+    
     <!-- Overlord Commons -->
     <dependency>
       <groupId>org.overlord</groupId>
@@ -28,34 +37,38 @@
       <artifactId>commons-io</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-pool2</artifactId>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpcore</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-core-asl</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-mapper-asl</artifactId>
     </dependency>
 
+    <!-- Spec Libs -->
+    <dependency>
+      <groupId>org.jboss.spec.javax.servlet</groupId>
+      <artifactId>jboss-servlet-api_3.0_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
 
   <build>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-        <filtering>false</filtering>
-      </resource>
-      <resource>
-        <directory>src/main/resources-filtered</directory>
-        <filtering>true</filtering>
-      </resource>
-    </resources>
     <plugins>
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <extensions>true</extensions>
-        <configuration>
-          <instructions>
-            <Export-Package>org.overlord.apiman.rt.engine,org.overlord.apiman.rt.engine.i18n,org.overlord.apiman.rt.engine.async,org.overlord.apiman.rt.engine.components,org.overlord.apiman.rt.engine.impl,org.overlord.apiman.rt.engine.policy</Export-Package>
-          </instructions>
-        </configuration>
       </plugin>
     </plugins>
   </build>
+
 </project>

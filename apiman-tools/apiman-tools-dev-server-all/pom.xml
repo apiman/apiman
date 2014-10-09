@@ -164,10 +164,10 @@
                       <entry key="apiman-dt-api.gateway.authentication.basic.password" value="admin123!" />
 
                       <entry key="apiman-rt.registry" value="org.overlord.apiman.rt.engine.impl.InMemoryRegistry" />
-                      <entry key="apiman-rt.connector-factory" value="org.overlord.apiman.rt.war.connectors.HttpConnectorFactory" />
+                      <entry key="apiman-rt.connector-factory" value="org.overlord.apiman.rt.gateway.servlet.connectors.HttpConnectorFactory" />
                       <entry key="apiman-rt.policy-factory" value="org.overlord.apiman.rt.engine.policy.PolicyFactoryImpl" />
                       <entry key="apiman-rt.components.ISharedStateComponent" value="org.overlord.apiman.rt.engine.impl.InMemorySharedStateComponent" />
-                      <entry key="apiman-rt.components.IPolicyFailureFactoryComponent" value="org.overlord.apiman.rt.war.WarPolicyFailureFactoryComponent" />
+                      <entry key="apiman-rt.components.IPolicyFailureFactoryComponent" value="org.overlord.apiman.rt.gateway.servlet.PolicyFailureFactoryComponent" />
                     </propertyfile>
                     <property name="apiman.uiheader.config.src" value="${apiman.resources.dir}/config/header" />
                     <property name="apiman.uiheader.config.dest" value="${apiman.eap.home}/standalone/configuration/overlord-apps" />
@@ -295,10 +295,10 @@
                       <entry key="apiman-dt-api.gateway.authentication.basic.password" value="admin123!" />
 
                       <entry key="apiman-rt.registry" value="org.overlord.apiman.rt.engine.impl.InMemoryRegistry" />
-                      <entry key="apiman-rt.connector-factory" value="org.overlord.apiman.rt.war.connectors.HttpConnectorFactory" />
+                      <entry key="apiman-rt.connector-factory" value="org.overlord.apiman.rt.gateway.servlet.connectors.HttpConnectorFactory" />
                       <entry key="apiman-rt.policy-factory" value="org.overlord.apiman.rt.engine.policy.PolicyFactoryImpl" />
                       <entry key="apiman-rt.components.ISharedStateComponent" value="org.overlord.apiman.rt.engine.impl.InMemorySharedStateComponent" />
-                      <entry key="apiman-rt.components.IPolicyFailureFactoryComponent" value="org.overlord.apiman.rt.war.WarPolicyFailureFactoryComponent" />
+                      <entry key="apiman-rt.components.IPolicyFailureFactoryComponent" value="org.overlord.apiman.rt.gateway.servlet.PolicyFailureFactoryComponent" />
                     </propertyfile>
                     <property name="apiman.uiheader.config.src" value="${apiman.resources.dir}/config/header" />
                     <property name="apiman.uiheader.config.dest" value="${apiman.wildfly.home}/standalone/configuration/overlord-apps" />
@@ -451,10 +451,10 @@
                       <sysproperty key="org.overlord.apps.config-dir" value="${apiman.resources.dir}/config/header" />
 
                       <sysproperty key="apiman-rt.registry" value="org.overlord.apiman.rt.engine.impl.InMemoryRegistry" />
-                      <sysproperty key="apiman-rt.connector-factory" value="org.overlord.apiman.rt.war.connectors.HttpConnectorFactory" />
+                      <sysproperty key="apiman-rt.connector-factory" value="org.overlord.apiman.rt.gateway.servlet.connectors.HttpConnectorFactory" />
                       <sysproperty key="apiman-rt.policy-factory" value="org.overlord.apiman.rt.engine.policy.PolicyFactoryImpl" />
                       <sysproperty key="apiman-rt.components.ISharedStateComponent" value="org.overlord.apiman.rt.engine.impl.InMemorySharedStateComponent" />
-                      <sysproperty key="apiman-rt.components.IPolicyFailureFactoryComponent" value="org.overlord.apiman.rt.war.WarPolicyFailureFactoryComponent" />
+                      <sysproperty key="apiman-rt.components.IPolicyFailureFactoryComponent" value="org.overlord.apiman.rt.gateway.servlet.PolicyFailureFactoryComponent" />
 
                       <sysproperty key="apiman-dt-api.gateway.rest-endpoint" value="http://localhost:8080/apiman-rt" />
                       <sysproperty key="apiman-dt-api.gateway.authentication.basic.user" value="admin" />

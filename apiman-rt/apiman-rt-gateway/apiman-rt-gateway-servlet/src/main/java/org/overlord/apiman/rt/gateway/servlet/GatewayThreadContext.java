@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package org.overlord.apiman.rt.fuse6;
+package org.overlord.apiman.rt.gateway.servlet;
 
 import org.overlord.apiman.rt.engine.beans.PolicyFailure;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
 import org.overlord.apiman.rt.engine.beans.ServiceResponse;
 
 /**
- * Thread context for the Fuse implementation of the gateway.
+ * Thread context for the WAR implementation of the gateway.
  *
  * @author eric.wittmann@redhat.com
  */
-public class FuseGatewayThreadContext {
+public class GatewayThreadContext {
     
     private static final ThreadLocal<ServiceRequest> serviceRequest = new ThreadLocal<ServiceRequest>();
     private static final ThreadLocal<ServiceResponse> serviceResponse = new ThreadLocal<ServiceResponse>();

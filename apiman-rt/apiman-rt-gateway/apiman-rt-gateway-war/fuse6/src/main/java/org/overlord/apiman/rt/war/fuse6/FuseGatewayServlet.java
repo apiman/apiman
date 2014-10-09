@@ -13,40 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.rt.fuse6;
+package org.overlord.apiman.rt.war.fuse6;
 
 import org.overlord.apiman.rt.api.rest.impl.IEngineAccessor;
 import org.overlord.apiman.rt.engine.IEngine;
+import org.overlord.apiman.rt.gateway.servlet.GatewayServlet;
+import org.overlord.commons.services.ServiceRegistryUtil;
 
 /**
- * Grants access to the engine.  Uses blueprint to create the engine
- * and inject it into this class.
+ * Fuse version of the gateway servlet.
  *
  * @author eric.wittmann@redhat.com
  */
-public class FuseEngineAccessor implements IEngineAccessor {
-    
-    private IEngine engine;
-    
+public class FuseGatewayServlet extends GatewayServlet {
+
+    private static final long serialVersionUID = -2206325158260259252L;
+
     /**
      * Constructor.
      */
-    public FuseEngineAccessor() {
+    public FuseGatewayServlet() {
     }
 
     /**
-     * @see org.overlord.apiman.rt.api.rest.impl.IEngineAccessor#getEngine()
+     * @see org.overlord.apiman.rt.gateway.servlet.GatewayServlet#getEngine()
      */
     @Override
-    public IEngine getEngine() {
-        return engine;
-    }
-
-    /**
-     * @param engine the engine to set
-     */
-    public void setEngine(IEngine engine) {
-        this.engine = engine;
+    protected IEngine getEngine() {
+        return ServiceRegistryUtil.getSingleService(IEngineAccessor.class).getEngine();
     }
 
 }

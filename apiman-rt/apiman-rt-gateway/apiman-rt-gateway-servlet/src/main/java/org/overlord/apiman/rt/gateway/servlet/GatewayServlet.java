@@ -13,62 +13,98 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.rt.fuse6;
+package org.overlord.apiman.rt.gateway.servlet;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Enumeration;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.Future;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.IOUtils;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.overlord.apiman.rt.api.rest.impl.AbstractResourceImpl;
 import org.overlord.apiman.rt.engine.EngineResult;
+import org.overlord.apiman.rt.engine.IEngine;
 import org.overlord.apiman.rt.engine.async.IAsyncResult;
 import org.overlord.apiman.rt.engine.beans.PolicyFailure;
 import org.overlord.apiman.rt.engine.beans.PolicyFailureType;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
 import org.overlord.apiman.rt.engine.beans.ServiceResponse;
+import org.overlord.apiman.rt.gateway.servlet.i18n.Messages;
 
 /**
- * A simple JAX-RS endpoint that is invoked for all inbound requests. Obviously
- * this supports REST style endpoints only, so we'll have to figure out
- * something else in Fuse for other styles.
- * 
+ * The API Management gateway servlet.  This servlet is responsible for converting inbound
+ * http servlet requests into {@link ServiceRequest}s so that they can be fed into the 
+ * API Management machinery.  It also is responsible for converting the resulting 
+ * {@link ServiceResponse} into an HTTP Servlet Response that is suitable for returning
+ * to the caller.
+ *
  * @author eric.wittmann@redhat.com
  */
-@Path("/gateway")
-public class FuseGatewayEndpoint extends AbstractResourceImpl {
+public abstract class GatewayServlet extends HttpServlet {
 
+    private static final long serialVersionUID = 958726685958622333L;
     private static final ObjectMapper mapper = new ObjectMapper();
+    
+    /**
+     * Constructor.
+     */
+    public GatewayServlet() {
+    }
+    
+    /**
+     * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     */
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
+            IOException {
+        doAction(req, resp, "GET"); //$NON-NLS-1$
+    }
 
     /**
-     * All GET REST calls to the gateway come in through here.
-     * @param path
+     * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    @Path("/{path:.*}")
-    @GET
-    @POST
-    @PUT
-    @DELETE
-    public Response doGet(@Context HttpServletRequest request, @PathParam("path") String path) {
-        Response response;
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
+            IOException {
+        doAction(req, resp, "POST"); //$NON-NLS-1$
+    }
+    
+    /**
+     * @see javax.servlet.http.HttpServlet#doPut(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     */
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
+            IOException {
+        doAction(req, resp, "PUT"); //$NON-NLS-1$
+    }
+    
+    /**
+     * @see javax.servlet.http.HttpServlet#doDelete(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     */
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
+            IOException {
+        doAction(req, resp, "DELETE"); //$NON-NLS-1$
+    }
+
+    /**
+     * Generic handler for all types of http actions/verbs.
+     * @param req
+     * @param resp
+     * @param action 
+     */
+    protected void doAction(HttpServletRequest req, HttpServletResponse resp, String action) {
         try {
-            ServiceRequest srequest = readRequest(request);
-            srequest.setType(request.getMethod());
+            ServiceRequest srequest = readRequest(req);
+            srequest.setType(action);
 
             Future<IAsyncResult<EngineResult>> futureResult = getEngine().execute(srequest);
             IAsyncResult<EngineResult> asyncResult = futureResult.get();
@@ -77,18 +113,23 @@ public class FuseGatewayEndpoint extends AbstractResourceImpl {
             } else {
                 EngineResult result = asyncResult.getResult();
                 if (result.isResponse()) {
-                    response = createResponse(result.getServiceResponse());
+                    writeResponse(resp, result.getServiceResponse());
                 } else {
-                    response = createResponse(result.getPolicyFailure());
+                    writeFailure(resp, result.getPolicyFailure());
                 }
             }
         } catch (Throwable e) {
-            response = createResponse(e);
+            writeError(resp, e);
         } finally {
-            FuseGatewayThreadContext.reset();
+            GatewayThreadContext.reset();
         }
-        return response;
     }
+
+    /**
+     * Gets the engine - subclasses must implement this.
+     * @return gets the engine
+     */
+    protected abstract IEngine getEngine();
 
     /**
      * Reads a {@link ServiceRequest} from information found in the inbound
@@ -100,10 +141,10 @@ public class FuseGatewayEndpoint extends AbstractResourceImpl {
     protected ServiceRequest readRequest(HttpServletRequest request) throws Exception {
         String apiKey = getApiKey(request);
         if (apiKey == null) {
-            throw new Exception("API key not found."); //$NON-NLS-1$
+            throw new Exception(Messages.i18n.format("GatewayServlet.MissingAPIKey")); //$NON-NLS-1$
         }
 
-        ServiceRequest srequest = FuseGatewayThreadContext.getServiceRequest();
+        ServiceRequest srequest = GatewayThreadContext.getServiceRequest();
         srequest.setApiKey(apiKey);
         srequest.setDestination(getDestination(request));
         readHeaders(srequest, request);
@@ -175,60 +216,80 @@ public class FuseGatewayEndpoint extends AbstractResourceImpl {
     }
 
     /**
-     * Creates a jax-rs response from the {@link ServiceResponse}.
+     * Writes the service response to the HTTP servlet response object.
+     * @param response
      * @param sresponse
      */
-    protected Response createResponse(ServiceResponse sresponse) {
-        ResponseBuilder builder = Response.status(sresponse.getCode());
+    protected void writeResponse(HttpServletResponse response, ServiceResponse sresponse) {
+        response.setStatus(sresponse.getCode());
         Map<String, String> headers = sresponse.getHeaders();
         for (Map.Entry<String, String> entry : headers.entrySet()) {
             String hname = entry.getKey();
             String hval = entry.getValue();
-            builder.header(hname, hval);
+            response.setHeader(hname, hval);
         }
         if (sresponse.getBody() != null) {
-            builder.entity(sresponse.getBody());
+            InputStream body = null;
+            OutputStream out = null;
+            try {
+                body = sresponse.getBody();
+                out = response.getOutputStream();
+                IOUtils.copy(body, out);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            } finally {
+                IOUtils.closeQuietly(body);
+                IOUtils.closeQuietly(out);
+            }
         }
-        return builder.build();
+        try {
+            response.flushBuffer();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
     
     /**
-     * Creates a jax-rs response from the {@link PolicyFailure}.
+     * Writes a policy failure to the http response.
+     * @param resp
      * @param policyFailure
      */
-    private Response createResponse(PolicyFailure policyFailure) {
+    private void writeFailure(HttpServletResponse resp, PolicyFailure policyFailure) {
+        resp.setContentType("application/json"); //$NON-NLS-1$
+        resp.setHeader("X-Policy-Failure-Type", String.valueOf(policyFailure.getType())); //$NON-NLS-1$
+        resp.setHeader("X-Policy-Failure-Message", policyFailure.getMessage()); //$NON-NLS-1$
+        resp.setHeader("X-Policy-Failure-Code", String.valueOf(policyFailure.getFailureCode())); //$NON-NLS-1$
+        for (Entry<String, String> entry : policyFailure.getHeaders().entrySet()) {
+            resp.setHeader(entry.getKey(), entry.getValue());
+        }
         int errorCode = 500;
         if (policyFailure.getType() == PolicyFailureType.Authentication) {
             errorCode = 401;
         } else if (policyFailure.getType() == PolicyFailureType.Authorization) {
             errorCode = 403;
         }
-        ResponseBuilder builder = Response.status(errorCode).type("application/json"); //$NON-NLS-1$
-
-        builder.header("X-Policy-Failure-Type", String.valueOf(policyFailure.getType())); //$NON-NLS-1$
-        builder.header("X-Policy-Failure-Message", policyFailure.getMessage()); //$NON-NLS-1$
-        builder.header("X-Policy-Failure-Code", String.valueOf(policyFailure.getFailureCode())); //$NON-NLS-1$
-        for (Entry<String, String> entry : policyFailure.getHeaders().entrySet()) {
-            builder.header(entry.getKey(), entry.getValue());
-        }
+        resp.setStatus(errorCode);
         try {
-            builder.entity(mapper.writer().writeValueAsString(policyFailure));
-            return builder.build();
+            mapper.writer().writeValue(resp.getOutputStream(), policyFailure);
+            IOUtils.closeQuietly(resp.getOutputStream());
         } catch (Exception e) {
-            return createResponse(e);
+            writeError(resp, e);
+        } finally {
         }
     }
 
     /**
-     * Creates a jax-rs response from an error.
+     * Writes an error to the servlet response object.
      * @param resp
      * @param error
      */
-    protected Response createResponse(Throwable error) {
-        StringWriter entity = new StringWriter();
-        PrintWriter writer = new PrintWriter(entity);
-        error.printStackTrace(writer);
-        return Response.serverError().type("text/plain").entity(entity.getBuffer().toString()).header("X-Exception", error.getMessage()).build(); //$NON-NLS-1$ //$NON-NLS-2$
+    protected void writeError(HttpServletResponse resp, Throwable error) {
+        try {
+            resp.setHeader("X-Exception", error.getMessage()); //$NON-NLS-1$
+            resp.sendError(500, error.getMessage());
+        } catch (IOException e1) {
+            throw new RuntimeException(error);
+        }
     }
 
 }

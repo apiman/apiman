@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.rt.war.i18n;
+package org.overlord.apiman.rt.gateway.servlet.i18n;
 
 import org.overlord.commons.i18n.AbstractMessages;
 
