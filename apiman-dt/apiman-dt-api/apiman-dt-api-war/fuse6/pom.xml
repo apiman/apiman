@@ -8,7 +8,7 @@
     <relativePath>../../pom.xml</relativePath>
   </parent>
   <artifactId>apiman-dt-api-war-fuse6</artifactId>
-  <packaging>bundle</packaging>
+  <packaging>war</packaging>
   <name>apiman-dt-api-war-fuse6</name>
 
   <dependencies>
@@ -31,6 +31,10 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-dt-api-rest</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>apiman-dt-api-security</artifactId>
     </dependency>
     <dependency>
@@ -40,6 +44,20 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-dt-api-gateway-rest</artifactId>
+    </dependency>
+
+    <!-- Overlord Commons -->
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-services</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-gwt</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-i18n</artifactId>
     </dependency>
 
     <!-- Required Spec Libs -->
@@ -75,15 +93,40 @@
   <build>
     <plugins>
       <plugin>
+        <artifactId>maven-war-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestFile>${project.build.directory}/osgi/MANIFEST.MF</manifestFile>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <extensions>true</extensions>
+        <executions>
+          <execution>
+            <id>bundle-manifest</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>manifest</goal>
+            </goals>
+          </execution>
+        </executions>
         <configuration>
+          <supportedProjectTypes>
+            <supportedProjectType>jar</supportedProjectType>
+            <supportedProjectType>bundle</supportedProjectType>
+            <supportedProjectType>war</supportedProjectType>
+          </supportedProjectTypes>
+          <manifestLocation>${project.build.directory}/osgi</manifestLocation>
           <instructions>
-            <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
-            <Bundle-Name>${project.name}</Bundle-Name>
-            <Bundle-Version>${project.version}</Bundle-Version>
+            <Web-ContextPath>/apiman-dt-api</Web-ContextPath>
+            <Webapp-Context>/apiman-dt-api</Webapp-Context>
+            <Bundle-ClassPath>.,WEB-INF/classes</Bundle-ClassPath>
             <Import-Package>
+              org.overlord.commons.gwt.server.filters,
+              org.overlord.commons.i18n.server.filters,
               org.overlord.apiman.dt.api.beans.actions,
               org.overlord.apiman.dt.api.beans.apps,
               org.overlord.apiman.dt.api.beans.contracts,
@@ -97,7 +140,20 @@
               org.overlord.apiman.dt.api.beans.services,
               org.overlord.apiman.dt.api.beans.summary,
               org.overlord.apiman.dt.api.beans.system,
+              org.overlord.apiman.dt.api.security.impl,
+              org.apache.cxf.binding.xml,
+              org.apache.cxf.binding.xml.wsdl11,
+              org.apache.cxf.jaxrs.servlet,
+              org.apache.cxf.policy,
+              org.apache.cxf.transport.http,
+              org.apache.cxf.transport.http_jetty,
+              org.apache.cxf.transport.http_jetty.continuations,
+              org.apache.cxf.ws.policy,
+              org.apache.cxf.ws.policy.attachment,
+              org.apache.cxf.ws.policy.attachment.external,
+              org.apache.cxf.ws.policy.mtom,
               org.apache.karaf.jaas.boot.principal,
+              org.codehaus.jackson.jaxrs,
               org.eclipse.jetty.plus.jaas,
               org.hibernate.proxy,
               javassist.util.proxy,

@@ -65,6 +65,11 @@ public class AuthTokenRequestHandler implements RequestHandler {
      * Constructor.
      */
     public AuthTokenRequestHandler() {
+        // Set the default values.
+        setContextName("karaf"); //$NON-NLS-1$
+        setRoleClassifier("RolePrincipal"); //$NON-NLS-1$
+        setRoleClassifierType("classname"); //$NON-NLS-1$
+        setRealm("apiman-dt-api"); //$NON-NLS-1$
     }
 
     /**

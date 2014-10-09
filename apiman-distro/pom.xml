@@ -12,6 +12,7 @@
   <modules>
     <module>fuse6-dt</module>
     <module>fuse6-rt</module>
+    <module>fuse6-rt-embedded</module>
     <module>apiman-distro-data</module>
   </modules>
 </project>

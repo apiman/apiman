@@ -29,10 +29,10 @@
       <groupId>org.overlord.apiman</groupId>
       <artifactId>apiman-dt-api-gateway</artifactId>
     </dependency>
-    <!-- <dependency> -->
-    <!-- <groupId>org.overlord.apiman</groupId> -->
-    <!-- <artifactId>apiman-dt-api-gateway-rest</artifactId> -->
-    <!-- </dependency> -->
+    <dependency>
+      <groupId>org.overlord.apiman</groupId>
+      <artifactId>apiman-dt-api-gateway-rest</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.overlord.apiman</groupId>
       <artifactId>apiman-dt-api-jpa</artifactId>
@@ -239,6 +239,12 @@
                   <comment>API Management Runtime</comment>
                   <dependsOnFeatures>
                     <feature>
+                      <name>war</name>
+                    </feature>
+                    <feature>
+                      <name>cxf</name>
+                    </feature>
+                    <feature>
                       <name>apiman-dependencies</name>
                       <version>${project.version}</version>
                     </feature>
@@ -252,6 +258,9 @@
                   <includes>
                     <include>org.overlord.apiman:apiman-*:*</include>
                   </includes>
+                  <excludes>
+                    <exclude>org.overlord.apiman:apiman-dt-ui*:*</exclude>
+                  </excludes>
                 </feature>
               </features>
             </configuration>

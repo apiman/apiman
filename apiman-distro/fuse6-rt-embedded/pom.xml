@@ -1,0 +1,120 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.overlord.apiman</groupId>
+    <artifactId>apiman-distro</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+  <artifactId>apiman-distro-fuse6-rt-embedded</artifactId>
+  <packaging>pom</packaging>
+  <name>apiman-distro-fuse6-rt-embedded</name>
+
+  <dependencies>
+    <!-- APIMan Modules -->
+    <dependency>
+      <groupId>org.overlord.apiman</groupId>
+      <artifactId>apiman-rt-api-rest</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord.apiman</groupId>
+      <artifactId>apiman-rt-api-rest-impl</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord.apiman</groupId>
+      <artifactId>apiman-rt-engine-beans</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord.apiman</groupId>
+      <artifactId>apiman-rt-engine-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord.apiman</groupId>
+      <artifactId>apiman-rt-engine-policies</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord.apiman</groupId>
+      <artifactId>apiman-rt-engine-osgi</artifactId>
+    </dependency>
+    
+    <!-- Specification Bundles -->
+    <dependency>
+      <groupId>javax.ws.rs</groupId>
+      <artifactId>javax.ws.rs-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-servlet_3.0_spec</artifactId>
+    </dependency>
+
+    <!-- Required by Apache commons-pool2 but marked as 'provided' in pool2's pom.xml -->
+    <dependency>
+      <groupId>cglib</groupId>
+      <artifactId>cglib</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.ow2.asm</groupId>
+      <artifactId>asm-util</artifactId>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <!-- Disable this check -->
+          <execution>
+            <id>enforce-plugin-versions</id>
+            <phase>non-existant</phase>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-maven-plugin</artifactId>
+        <version>${version.org.overlord.overlord-commons.overlord-commons-maven-plugin}</version>
+        <executions>
+          <execution>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>generate-features-xml</goal>
+            </goals>
+            <configuration>
+              <outputFile>${project.build.directory}/features.xml</outputFile>
+              <attach>true</attach>
+              <features>
+                <!-- All APIMan Dependencies -->
+                <feature>
+                  <name>apiman-rt-embedded-dependencies</name>
+                  <version>${project.version}</version>
+                  <comment>All API Management (Embedded) Dependencies</comment>
+                  <excludes>
+                    <exclude>org.overlord.apiman:apiman-*:*</exclude>
+                  </excludes>
+                </feature>
+                <!-- APIMan Modules -->
+                <feature>
+                  <name>apiman-rt-embedded</name>
+                  <version>${project.version}</version>
+                  <comment>API Management (Embedded) Runtime Modules</comment>
+                  <dependsOnFeatures>
+                    <feature>
+                      <name>apiman-rt-dependencies</name>
+                      <version>${project.version}</version>
+                    </feature>
+                  </dependsOnFeatures>
+                  <includes>
+                    <include>org.overlord.apiman:apiman-*:*</include>
+                  </includes>
+                </feature>
+              </features>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>
