@@ -82,8 +82,7 @@
     <version.org.apache.geronimo.specs.geronimo-servlet_3.0_spec>1.0</version.org.apache.geronimo.specs.geronimo-servlet_3.0_spec>
     <version.javax.ws.rs-api>2.0</version.javax.ws.rs-api>
 
-
-    <version.cglib>3.0</version.cglib>
+    <org.apache.servicemix.bundles.cglib>3.0_1</org.apache.servicemix.bundles.cglib>
     <version.org.ow2.asm>4.0</version.org.ow2.asm>
     <version.com.fasterxml.classmate>0.8.0</version.com.fasterxml.classmate>
     <version.org.jboss.jandex>1.1.0.Final</version.org.jboss.jandex>
@@ -620,13 +619,13 @@
         <version>${version.org.apache.commons.commons-pool2}</version>
       </dependency>
       <dependency>
-        <groupId>cglib</groupId>
-        <artifactId>cglib</artifactId>
-        <version>${version.cglib}</version>
+        <groupId>org.apache.servicemix.bundles</groupId>
+        <artifactId>org.apache.servicemix.bundles.cglib</artifactId>
+        <version>${org.apache.servicemix.bundles.cglib}</version>
       </dependency>
       <dependency>
         <groupId>org.ow2.asm</groupId>
-        <artifactId>asm-util</artifactId>
+        <artifactId>asm-all</artifactId>
         <version>${version.org.ow2.asm}</version>
       </dependency>
       <dependency>

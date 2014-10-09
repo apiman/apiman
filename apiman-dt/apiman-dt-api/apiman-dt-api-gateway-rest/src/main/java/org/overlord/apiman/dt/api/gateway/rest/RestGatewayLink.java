@@ -71,7 +71,7 @@ public class RestGatewayLink implements IGatewayLink {
             }
         }).build();
         
-        String gatewayEndpoint = config.getGatewayRestEndpoint();
+        String gatewayEndpoint = getConfig().getGatewayRestEndpoint();
         gatewayClient = new GatewayClient(gatewayEndpoint, httpClient);
         
         SystemStatus status = gatewayClient.getStatus();
@@ -130,8 +130,8 @@ public class RestGatewayLink implements IGatewayLink {
      */
     protected void configureBasicAuth(HttpRequest request) {
         try {
-            String username = config.getGatewayBasicAuthUsername();
-            String password = config.getGatewayBasicAuthPassword();
+            String username = getConfig().getGatewayBasicAuthUsername();
+            String password = getConfig().getGatewayBasicAuthPassword();
             String up = username + ":" + password; //$NON-NLS-1$
             String base64 = new String(Base64.encodeBase64(up.getBytes("UTF-8"))); //$NON-NLS-1$
             String authHeader = "Basic " + base64; //$NON-NLS-1$
@@ -139,6 +139,20 @@ public class RestGatewayLink implements IGatewayLink {
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * @return the config
+     */
+    public IConfig getConfig() {
+        return config;
+    }
+
+    /**
+     * @param config the config to set
+     */
+    public void setConfig(IConfig config) {
+        this.config = config;
     }
 
 }

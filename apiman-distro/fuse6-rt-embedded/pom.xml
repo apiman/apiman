@@ -37,7 +37,7 @@
       <groupId>org.overlord.apiman</groupId>
       <artifactId>apiman-rt-engine-osgi</artifactId>
     </dependency>
-    
+
     <!-- Specification Bundles -->
     <dependency>
       <groupId>javax.ws.rs</groupId>
@@ -50,12 +50,12 @@
 
     <!-- Required by Apache commons-pool2 but marked as 'provided' in pool2's pom.xml -->
     <dependency>
-      <groupId>cglib</groupId>
-      <artifactId>cglib</artifactId>
+      <groupId>org.apache.servicemix.bundles</groupId>
+      <artifactId>org.apache.servicemix.bundles.cglib</artifactId>
     </dependency>
     <dependency>
       <groupId>org.ow2.asm</groupId>
-      <artifactId>asm-util</artifactId>
+      <artifactId>asm-all</artifactId>
     </dependency>
   </dependencies>
 

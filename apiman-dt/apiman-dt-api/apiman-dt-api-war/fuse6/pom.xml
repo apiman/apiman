@@ -88,6 +88,12 @@
       <artifactId>cxf-rt-frontend-jaxrs</artifactId>
       <scope>provided</scope>
     </dependency>
+    
+    <!-- Jackson JAX-RS -->
+    <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-jaxrs</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
@@ -141,8 +147,10 @@
               org.overlord.apiman.dt.api.beans.summary,
               org.overlord.apiman.dt.api.beans.system,
               org.overlord.apiman.dt.api.core.util,
-              org.overlord.apiman.dt.api.security.impl,
+              org.overlord.apiman.dt.api.gateway.rest,
               org.overlord.apiman.dt.api.jpa.roles,
+              org.overlord.apiman.dt.api.rest.impl,
+              org.overlord.apiman.dt.api.security.impl,
               org.apache.cxf.binding.xml,
               org.apache.cxf.binding.xml.wsdl11,
               org.apache.cxf.jaxrs.servlet,
@@ -155,7 +163,6 @@
               org.apache.cxf.ws.policy.attachment.external,
               org.apache.cxf.ws.policy.mtom,
               org.apache.karaf.jaas.boot.principal,
-              org.codehaus.jackson.jaxrs,
               org.eclipse.jetty.plus.jaas,
               org.hibernate.proxy,
               javassist.util.proxy,

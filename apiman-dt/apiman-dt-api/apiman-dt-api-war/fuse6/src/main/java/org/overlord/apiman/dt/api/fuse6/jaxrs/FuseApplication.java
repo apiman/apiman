@@ -20,6 +20,9 @@ import java.util.Set;
 
 import javax.ws.rs.core.Application;
 
+import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
+import org.overlord.apiman.dt.api.fuse6.auth.AuthTokenRequestHandler;
+import org.overlord.apiman.dt.api.fuse6.auth.AuthTokenResponseHandler;
 import org.overlord.apiman.dt.api.rest.contract.IActionResource;
 import org.overlord.apiman.dt.api.rest.contract.ICurrentUserResource;
 import org.overlord.apiman.dt.api.rest.contract.IOrganizationResource;
@@ -27,6 +30,7 @@ import org.overlord.apiman.dt.api.rest.contract.IPermissionsResource;
 import org.overlord.apiman.dt.api.rest.contract.IPolicyDefinitionResource;
 import org.overlord.apiman.dt.api.rest.contract.IRoleResource;
 import org.overlord.apiman.dt.api.rest.contract.ISearchResource;
+import org.overlord.apiman.dt.api.rest.contract.ISystemResource;
 import org.overlord.apiman.dt.api.rest.contract.IUserResource;
 import org.overlord.commons.services.ServiceRegistryUtil;
 
@@ -44,6 +48,18 @@ public class FuseApplication extends Application {
     }
     
     /**
+     * @see javax.ws.rs.core.Application#getClasses()
+     */
+    @Override
+    public Set<Class<?>> getClasses() {
+        Set<Class<?>> classes = new HashSet<Class<?>>();
+        classes.add(AuthTokenRequestHandler.class);
+        classes.add(AuthTokenResponseHandler.class);
+        classes.add(JacksonJsonProvider.class);
+        return super.getClasses();
+    }
+    
+    /**
      * @see javax.ws.rs.core.Application#getSingletons()
      */
     @Override
@@ -56,6 +72,7 @@ public class FuseApplication extends Application {
         addResourceTo(IPolicyDefinitionResource.class, singletons);
         addResourceTo(IRoleResource.class, singletons);
         addResourceTo(ISearchResource.class, singletons);
+        addResourceTo(ISystemResource.class, singletons);
         addResourceTo(IUserResource.class, singletons);
         return singletons;
     }
@@ -67,7 +84,6 @@ public class FuseApplication extends Application {
      */
     private void addResourceTo(Class<?> resourceInterface, Set<Object> singletons) {
         Object resource = ServiceRegistryUtil.getSingleService(resourceInterface);
-        System.out.println("Getting resource: " + resourceInterface + " (" + resource + ")");
         if (resource != null) {
             singletons.add(resource);
         }
