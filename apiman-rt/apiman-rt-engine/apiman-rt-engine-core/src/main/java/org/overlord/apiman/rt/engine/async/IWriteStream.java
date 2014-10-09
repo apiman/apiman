@@ -15,19 +15,27 @@
  */
 package org.overlord.apiman.rt.engine.async;
 
+import org.overlord.apiman.rt.engine.ApimanBuffer;
+
 /**
- * Asynchronous handler called when an async operation completes.
+ * Write into a stream by repeatedly submitting chunks via
+ * {@link #write(ApimanBuffer)}. End of transmission is indicated by
+ * {@link #end()}.
  * 
  * @author Marc Savy <msavy@redhat.com>
- *
- * @param <T> The event to handle
  */
-public interface IAsyncHandler<T> {
-    
+public interface IWriteStream extends IStream {
     /**
-     * Called when an async result is available.
+     * Write a chunk to the stream. No writes should be made after
+     * {@link #end()} has been signalled.
      * 
-     * @param result the result
+     * @param chunk
      */
-    void handle(T result);
+     void write(ApimanBuffer chunk);
+
+    /**
+     * Signal transmission has ended. This should only be called once, after
+     * which no further calls to {@link #write(ApimanBuffer)} should be made.
+     */
+     void end();
 }

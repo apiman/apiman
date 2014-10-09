@@ -15,7 +15,6 @@
  */
 package org.overlord.apiman.rt.engine.beans;
 
-import java.io.InputStream;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,7 +32,6 @@ public class ServiceResponse implements Serializable {
     private int code;
     private String message;
     private Map<String, String> headers = new HeaderHashMap();
-    private InputStream body;
     private Map<String, Object> attributes = new HashMap<String, Object>();
 
     /**
@@ -55,21 +53,7 @@ public class ServiceResponse implements Serializable {
     public void setHeaders(Map<String, String> headers) {
         this.headers = headers;
     }
-
-    /**
-     * @return the body
-     */
-    public InputStream getBody() {
-        return body;
-    }
-
-    /**
-     * @param body the body to set
-     */
-    public void setBody(InputStream body) {
-        this.body = body;
-    }
-
+    
     /**
      * @return the code
      */
@@ -112,17 +96,17 @@ public class ServiceResponse implements Serializable {
         this.attributes = attributes;
     }
     
-    /**
-     * @param name
-     * @param value
+    /**  
+     * @param name Name of attribute
+     * @param value Value of attribute
      */
     public void setAttribute(String name, Object value) {
         this.attributes.put(name, value);
     }
     
     /**
-     * @param name
-     * @return
+     * @param name Name of attribute
+     * @return Attribute if present; else null.
      */
     public Object getAttribute(String name) {
         return this.attributes.get(name);

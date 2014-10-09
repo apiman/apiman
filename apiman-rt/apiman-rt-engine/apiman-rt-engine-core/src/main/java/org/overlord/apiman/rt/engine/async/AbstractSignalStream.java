@@ -13,21 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.rt.engine;
-
-import org.overlord.apiman.rt.engine.beans.Service;
+package org.overlord.apiman.rt.engine.async;
 
 /**
- * Implement this interface to create connectors to back end services.
+ * As {@link AbstractSignalStream} but with {@link #transmit()} to signal body transmission may begin
+ * 
+ * @author Marc Savy <msavy@redhat.com>
  *
- * @author eric.wittmann@redhat.com
+ * @param <H>
+ * @see ISignalReadStream
  */
-public interface IServiceConnectorFactory {
-    
-    /**
-     * Creates a connector to a back end service.
-     * @param service the service being invoked
-     */
-    void createConnector(Service service);
-
+public abstract class AbstractSignalStream<H> extends AbstractStream<H> implements ISignalReadStream<H>, ISignalWriteStream {
 }

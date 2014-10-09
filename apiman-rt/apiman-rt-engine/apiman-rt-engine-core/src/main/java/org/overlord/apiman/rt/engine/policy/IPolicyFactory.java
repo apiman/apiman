@@ -16,10 +16,11 @@
 package org.overlord.apiman.rt.engine.policy;
 
 import org.overlord.apiman.rt.engine.beans.exceptions.PolicyNotFoundException;
+import org.overlord.apiman.rt.engine.beans.exceptions.NoSuchPolicyException;
+
 
 /**
- * Factory used to create instances of policies.  Policies must be stateless
- * and thread safe.
+ * Factory used to create instances of policies.
  *
  * @author eric.wittmann@redhat.com
  */
@@ -30,6 +31,19 @@ public interface IPolicyFactory {
      * @param policyImpl
      * @throws PolicyNotFoundException
      */
-    public IPolicy getPolicy(String policyImpl) throws PolicyNotFoundException;
-
+    Class<AbstractPolicy> loadPolicyClass(String policyImpl, String jsonConfiguration) throws PolicyNotFoundException;
+    
+    /**
+     * Instantiate a new preconfigured policy.
+     * 
+     * @param policyImpl qualified name
+     * @return Instantiated policy
+     * @throws NoSuchPolicyException
+     */
+    AbstractPolicy newPolicy(String policyImpl) throws NoSuchPolicyException;
+    
+    /**
+     * @return Number of policies held in the factory.
+     */
+    int size();
 }

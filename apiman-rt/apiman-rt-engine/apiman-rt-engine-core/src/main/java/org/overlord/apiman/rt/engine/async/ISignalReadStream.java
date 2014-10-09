@@ -16,18 +16,21 @@
 package org.overlord.apiman.rt.engine.async;
 
 /**
- * Asynchronous handler called when an async operation completes.
+ * As {@link IReadStream} but with explicit {@link #transmit()} which indicates to the sender that they may
+ * begin transmitting.
+ * 
+ * Implementors must ensure that no data is sent before {@link #transmit()} is called; when or if the data is
+ * ultimately sent is implementation dependent.
  * 
  * @author Marc Savy <msavy@redhat.com>
  *
- * @param <T> The event to handle
+ * @param <H> Head type.
  */
-public interface IAsyncHandler<T> {
-    
+public interface ISignalReadStream<H> extends IReadStream<H>, Abortable {
+
     /**
-     * Called when an async result is available.
-     * 
-     * @param result the result
+     * Signal that transmission may begin. No calls to {@link #bodyHandler(IAsyncHandler)} or
+     * {@link #endHandler(IAsyncHandler)} will arrive until this has been invoked.
      */
-    void handle(T result);
+    void transmit();
 }

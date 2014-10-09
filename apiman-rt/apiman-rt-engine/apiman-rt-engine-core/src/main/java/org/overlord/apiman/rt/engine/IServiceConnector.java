@@ -15,7 +15,9 @@
  */
 package org.overlord.apiman.rt.engine;
 
-import org.overlord.apiman.rt.engine.async.IAsyncHandler;
+import org.overlord.apiman.rt.engine.async.IAsyncResultHandler;
+import org.overlord.apiman.rt.engine.async.ISignalReadStream;
+import org.overlord.apiman.rt.engine.async.ISignalWriteStream;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
 import org.overlord.apiman.rt.engine.beans.ServiceResponse;
 import org.overlord.apiman.rt.engine.beans.exceptions.ConnectorException;
@@ -30,12 +32,12 @@ import org.overlord.apiman.rt.engine.beans.exceptions.ConnectorException;
 public interface IServiceConnector {
 
     /**
-     * Invokes the back end system.
-     * @param request the inbound service request
-     * @param handler an async handler to receive the service response when complete
-     * @return a response from the back end system
-     * @throws ConnectorException if a connection error occurs
+     * Invokes the back-end system.
+     *
+     * @param request The inbound service request
+     * @param iAsyncResultHandler An async handler to receive stream containing a {@link ServiceResponse}
+     * @return A stream used by caller to pass data to the back-end
+     * @throws ConnectorException If a connection error occurs
      */
-    public void invoke(ServiceRequest request, IAsyncHandler<ServiceResponse> handler) throws ConnectorException;
-
+    ISignalWriteStream request(ServiceRequest request, IAsyncResultHandler<ISignalReadStream<ServiceResponse>> iAsyncResultHandler) throws ConnectorException;
 }

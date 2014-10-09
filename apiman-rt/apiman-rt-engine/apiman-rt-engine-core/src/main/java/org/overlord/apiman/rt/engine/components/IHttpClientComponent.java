@@ -35,6 +35,6 @@ public interface IHttpClientComponent extends IComponent {
      * @param method
      * @param handler
      */
-    public IHttpClientRequest request(String endpoint, HttpMethod method, IAsyncHandler<IHttpClientResponse> handler);
+    IHttpClientRequest request(String endpoint, HttpMethod method, IAsyncHandler<IHttpClientResponse> handler);
 
 }

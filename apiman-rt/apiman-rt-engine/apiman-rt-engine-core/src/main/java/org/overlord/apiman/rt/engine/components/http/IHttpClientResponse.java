@@ -26,27 +26,27 @@ public interface IHttpClientResponse {
     /**
      * @return the http response code
      */
-    public int getResponseCode();
+    int getResponseCode();
     
     /**
      * @return the http response message
      */
-    public String getResponseMessage();
+    String getResponseMessage();
     
     /**
      * @param headerName the name of the http response header to get
      * @return a response header value
      */
-    public String getHeader(String headerName);
+    String getHeader(String headerName);
     
     /**
      * @return the http response body
      */
-    public String getBody();
+    String getBody();
 
     /**
      * Called to close the connection to the remote server.
      */
-    public void close();
+    void close();
 
 }

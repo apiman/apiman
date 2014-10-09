@@ -25,27 +25,27 @@ import org.overlord.apiman.rt.engine.beans.exceptions.ComponentNotFoundException
  * @author Marc Savy <msavy@redhat.com>
  */
 public interface IPolicyContext {
-    
+
     /**
      * Sets a conversation-scoped attribute, allowing policies to pass interesting
      * information to each other and to themselves.
      * @param name
      * @param value
      */
-    public void setAttribute(String name, Object value);
-    
+    void setAttribute(String name, Object value);
+
     /**
      * Fetches an attribute value from the conversation.
      * @param name
      * @param defaultValue
      */
-    public <T> T getAttribute(String name, T defaultValue);
-    
+    <T> T getAttribute(String name, T defaultValue);
+
     /**
      * Removes an attribute from the conversation.
      * @param name
      */
-    public boolean removeAttribute(String name);
+    boolean removeAttribute(String name);
     
     /**
      * Gets a component by type.  Components are provided by the APIMan system for
@@ -53,5 +53,5 @@ public interface IPolicyContext {
      * Shared State Component and the HTTP Client Component.
      * @param componentClass
      */
-    public <T extends IComponent> T getComponent(Class<T> componentClass) throws ComponentNotFoundException;
+    <T extends IComponent> T getComponent(Class<T> componentClass) throws ComponentNotFoundException;
 }
