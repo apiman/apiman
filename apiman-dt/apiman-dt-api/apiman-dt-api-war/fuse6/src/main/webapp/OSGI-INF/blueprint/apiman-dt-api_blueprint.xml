@@ -110,7 +110,7 @@
     <property name="version" ref="version" />
     <property name="storage" ref="storage" />
   </bean>
-  <service ref=""systemService"" interface="org.overlord.apiman.dt.api.rest.contract.ISystemResource" />
+  <service ref="systemService" interface="org.overlord.apiman.dt.api.rest.contract.ISystemResource" />
 
   <bean id="userService" class="org.overlord.apiman.dt.api.rest.impl.UserResourceImpl">
     <property name="idmStorage" ref="idmStorage" />

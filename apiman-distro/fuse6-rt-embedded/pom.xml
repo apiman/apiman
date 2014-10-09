@@ -102,7 +102,7 @@
                   <comment>API Management (Embedded) Runtime Modules</comment>
                   <dependsOnFeatures>
                     <feature>
-                      <name>apiman-rt-dependencies</name>
+                      <name>apiman-rt-embedded-dependencies</name>
                       <version>${project.version}</version>
                     </feature>
                   </dependsOnFeatures>

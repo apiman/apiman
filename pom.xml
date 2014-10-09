@@ -196,6 +196,7 @@
         <groupId>${project.groupId}</groupId>
         <artifactId>apiman-dt-api-war-fuse6</artifactId>
         <version>${project.version}</version>
+        <type>war</type>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>

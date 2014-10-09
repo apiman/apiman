@@ -49,15 +49,28 @@ public class FuseApplication extends Application {
     @Override
     public Set<Object> getSingletons() {
         Set<Object> singletons = new HashSet<Object>();
-        singletons.add(ServiceRegistryUtil.getSingleService(IActionResource.class));
-        singletons.add(ServiceRegistryUtil.getSingleService(ICurrentUserResource.class));
-        singletons.add(ServiceRegistryUtil.getSingleService(IOrganizationResource.class));
-        singletons.add(ServiceRegistryUtil.getSingleService(IPermissionsResource.class));
-        singletons.add(ServiceRegistryUtil.getSingleService(IPolicyDefinitionResource.class));
-        singletons.add(ServiceRegistryUtil.getSingleService(IRoleResource.class));
-        singletons.add(ServiceRegistryUtil.getSingleService(ISearchResource.class));
-        singletons.add(ServiceRegistryUtil.getSingleService(IUserResource.class));
+        addResourceTo(IActionResource.class, singletons);
+        addResourceTo(ICurrentUserResource.class, singletons);
+        addResourceTo(IOrganizationResource.class, singletons);
+        addResourceTo(IPermissionsResource.class, singletons);
+        addResourceTo(IPolicyDefinitionResource.class, singletons);
+        addResourceTo(IRoleResource.class, singletons);
+        addResourceTo(ISearchResource.class, singletons);
+        addResourceTo(IUserResource.class, singletons);
         return singletons;
+    }
+
+    /**
+     * Gets the resource from the osgi registry.
+     * @param resourceInterface
+     * @param singletons
+     */
+    private void addResourceTo(Class<?> resourceInterface, Set<Object> singletons) {
+        Object resource = ServiceRegistryUtil.getSingleService(resourceInterface);
+        System.out.println("Getting resource: " + resourceInterface + " (" + resource + ")");
+        if (resource != null) {
+            singletons.add(resource);
+        }
     }
 
 }
