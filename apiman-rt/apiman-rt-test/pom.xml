@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.overlord.apiman</groupId>
     <artifactId>apiman-rt</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0.Alpha3</version>
   </parent>
   <artifactId>apiman-rt-test</artifactId>
   <packaging>pom</packaging>
