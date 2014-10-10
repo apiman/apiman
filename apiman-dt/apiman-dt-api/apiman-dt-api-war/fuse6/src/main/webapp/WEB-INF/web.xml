@@ -37,17 +37,31 @@
   <servlet>
     <servlet-name>CXFServlet</servlet-name>
     <servlet-class>org.apache.cxf.jaxrs.servlet.CXFNonSpringJaxrsServlet</servlet-class>
-<!--     <init-param> -->
-<!--       <param-name>hide-service-list-page</param-name> -->
-<!--       <param-value>true</param-value> -->
-<!--     </init-param> -->
     <init-param>
       <param-name>service-list-path</param-name>
       <param-value>/_svcs</param-value>
     </init-param>
     <init-param>
-      <param-name>javax.ws.rs.Application</param-name>
-      <param-value>org.overlord.apiman.dt.api.fuse6.jaxrs.FuseApplication</param-value>
+      <param-name>jaxrs.serviceClasses</param-name>
+      <param-value>
+          org.overlord.apiman.dt.api.fuse6.jaxrs.FuseActionResource,
+          org.overlord.apiman.dt.api.fuse6.jaxrs.FuseCurrentUserResource,
+          org.overlord.apiman.dt.api.fuse6.jaxrs.FuseOrganizationResource,
+          org.overlord.apiman.dt.api.fuse6.jaxrs.FusePermissionsResource,
+          org.overlord.apiman.dt.api.fuse6.jaxrs.FusePolicyDefinitionResource,
+          org.overlord.apiman.dt.api.fuse6.jaxrs.FuseRoleResource,
+          org.overlord.apiman.dt.api.fuse6.jaxrs.FuseSearchResource,
+          org.overlord.apiman.dt.api.fuse6.jaxrs.FuseSystemResource,
+          org.overlord.apiman.dt.api.fuse6.jaxrs.FuseUserResource
+      </param-value>
+    </init-param>
+    <init-param>
+      <param-name>jaxrs.providers</param-name>
+      <param-value>
+          org.codehaus.jackson.jaxrs.JacksonJsonProvider,
+          org.overlord.apiman.dt.api.fuse6.auth.AuthTokenRequestHandler,
+          org.overlord.apiman.dt.api.fuse6.auth.AuthTokenResponseHandler
+      </param-value>
     </init-param>
     <init-param>
       <param-name>jaxrs.extensions</param-name>

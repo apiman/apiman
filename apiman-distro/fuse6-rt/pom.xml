@@ -15,31 +15,45 @@
     <!-- APIMan Modules -->
     <dependency>
       <groupId>org.overlord.apiman</groupId>
-      <artifactId>apiman-rt-api-rest</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.overlord.apiman</groupId>
-      <artifactId>apiman-rt-api-rest-impl</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.overlord.apiman</groupId>
-      <artifactId>apiman-rt-engine-beans</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.overlord.apiman</groupId>
-      <artifactId>apiman-rt-engine-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.overlord.apiman</groupId>
-      <artifactId>apiman-rt-engine-policies</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.overlord.apiman</groupId>
-      <artifactId>apiman-rt-engine-osgi</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.overlord.apiman</groupId>
       <artifactId>apiman-rt-gateway-servlet</artifactId>
+      <exclusions>
+        <exclusion>
+          <artifactId>apiman-rt-engine-beans</artifactId>
+          <groupId>org.overlord.apiman</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>apiman-rt-engine-policies</artifactId>
+          <groupId>org.overlord.apiman</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>apiman-rt-engine-core</artifactId>
+          <groupId>org.overlord.apiman</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>overlord-commons-i18n</artifactId>
+          <groupId>org.overlord</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>commons-io</artifactId>
+          <groupId>commons-io</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>httpclient</artifactId>
+          <groupId>org.apache.httpcomponents</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>httpcore</artifactId>
+          <groupId>org.apache.httpcomponents</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>jackson-core-asl</artifactId>
+          <groupId>org.codehaus.jackson</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>jackson-mapper-asl</artifactId>
+          <groupId>org.codehaus.jackson</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.overlord.apiman</groupId>
@@ -47,24 +61,50 @@
       <type>war</type>
     </dependency>
 
-    <!-- Specification Bundles -->
+    <!-- HTTP Components -->
     <dependency>
-      <groupId>javax.ws.rs</groupId>
-      <artifactId>javax.ws.rs-api</artifactId>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient-osgi</artifactId>
+      <exclusions>
+        <exclusion>
+          <artifactId>httpclient</artifactId>
+          <groupId>org.apache.httpcomponents</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>httpclient-cache</artifactId>
+          <groupId>org.apache.httpcomponents</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>fluent-hc</artifactId>
+          <groupId>org.apache.httpcomponents</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>httpcore</artifactId>
+          <groupId>org.apache.httpcomponents</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>httpmime</artifactId>
+          <groupId>org.apache.httpcomponents</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>commons-codec</artifactId>
+          <groupId>commons-codec</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.apache.geronimo.specs</groupId>
-      <artifactId>geronimo-servlet_3.0_spec</artifactId>
-    </dependency>
-
-    <!-- Required by Apache commons-pool2 but marked as 'provided' in pool2's pom.xml -->
-    <dependency>
-      <groupId>org.apache.servicemix.bundles</groupId>
-      <artifactId>org.apache.servicemix.bundles.cglib</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.ow2.asm</groupId>
-      <artifactId>asm-all</artifactId>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpcore-osgi</artifactId>
+      <exclusions>
+        <exclusion>
+          <artifactId>httpcore</artifactId>
+          <groupId>org.apache.httpcomponents</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>httpcore-nio</artifactId>
+          <groupId>org.apache.httpcomponents</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <!-- Additional Third Party JARs needed by apiman-rt-gateway-war-fuse6 but marked as 'provided there because 
@@ -72,6 +112,16 @@
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-jaxrs</artifactId>
+      <exclusions>
+        <exclusion>
+          <artifactId>jackson-core-asl</artifactId>
+          <groupId>org.codehaus.jackson</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>jackson-mapper-asl</artifactId>
+          <groupId>org.codehaus.jackson</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
   </dependencies>
 
@@ -101,6 +151,9 @@
             <configuration>
               <outputFile>${project.build.directory}/features.xml</outputFile>
               <attach>true</attach>
+              <repositories>
+                <repository>mvn:org.overlord.apiman/apiman-distro-fuse6-rt-embedded/${project.version}/xml/features</repository>
+              </repositories>
               <features>
                 <!-- All APIMan Dependencies -->
                 <feature>
@@ -111,24 +164,6 @@
                     <exclude>org.overlord.apiman:apiman-*:*</exclude>
                   </excludes>
                 </feature>
-                <!-- APIMan Modules -->
-                <feature>
-                  <name>apiman-rt-modules</name>
-                  <version>${project.version}</version>
-                  <comment>API Management Runtime Modules</comment>
-                  <dependsOnFeatures>
-                    <feature>
-                      <name>apiman-rt-dependencies</name>
-                      <version>${project.version}</version>
-                    </feature>
-                  </dependsOnFeatures>
-                  <includes>
-                    <include>org.overlord.apiman:apiman-*:*</include>
-                  </includes>
-                  <excludes>
-                    <exclude>org.overlord.apiman:apiman-rt-gateway*:*</exclude>
-                  </excludes>
-                </feature>
                 <!-- APIMan Runtime -->
                 <feature>
                   <name>apiman-rt</name>
@@ -136,13 +171,20 @@
                   <comment>API Management Runtime</comment>
                   <dependsOnFeatures>
                     <feature>
+                      <name>jndi</name>
+                    </feature>
+                    <feature>
                       <name>war</name>
                     </feature>
                     <feature>
                       <name>cxf</name>
                     </feature>
                     <feature>
-                      <name>apiman-rt-modules</name>
+                      <name>apiman-rt-dependencies</name>
+                      <version>${project.version}</version>
+                    </feature>
+                    <feature>
+                      <name>apiman-rt-embedded</name>
                       <version>${project.version}</version>
                     </feature>
                   </dependsOnFeatures>

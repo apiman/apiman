@@ -85,7 +85,7 @@
     <org.apache.servicemix.bundles.cglib>3.0_1</org.apache.servicemix.bundles.cglib>
     <version.org.ow2.asm>4.0</version.org.ow2.asm>
     <version.com.fasterxml.classmate>0.8.0</version.com.fasterxml.classmate>
-    <version.org.jboss.jandex>1.1.0.Final</version.org.jboss.jandex>
+    <version.org.jboss.jandex>1.2.0.Final</version.org.jboss.jandex>
     <version.org.apache.servicemix.bundles.antlr>2.7.7_5</version.org.apache.servicemix.bundles.antlr>
     <version.org.apache.servicemix.bundles.dom4j>1.6.1_5</version.org.apache.servicemix.bundles.dom4j>
     <version.org.apache.felix.scr.annotations>1.7.0</version.org.apache.felix.scr.annotations>
@@ -94,6 +94,8 @@
     <version.org.jboss.errai>3.0.3-SNAPSHOT</version.org.jboss.errai>
     <version.org.apache.commons.commons-pool2>2.2</version.org.apache.commons.commons-pool2>
     <version.org.hibernate.commons.annotations>4.0.2.Final</version.org.hibernate.commons.annotations>
+    <version.org.apache.httpcomponents.httpclient>4.4-beta1</version.org.apache.httpcomponents.httpclient>
+    <version.org.apache.httpcomponents.httpcore>4.4-beta1</version.org.apache.httpcomponents.httpcore>
   </properties>
 
   <dependencyManagement>
@@ -613,6 +615,16 @@
       </dependency>
 
       <!-- Third Party Libraries -->
+      <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpclient-osgi</artifactId>
+        <version>${version.org.apache.httpcomponents.httpclient}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpcore-osgi</artifactId>
+        <version>${version.org.apache.httpcomponents.httpcore}</version>
+      </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-pool2</artifactId>

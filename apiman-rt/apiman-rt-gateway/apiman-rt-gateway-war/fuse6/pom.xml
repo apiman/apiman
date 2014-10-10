@@ -156,6 +156,7 @@
               org.overlord.apiman.rt.api.rest.impl,
               org.apache.cxf.binding.xml,
               org.apache.cxf.binding.xml.wsdl11,
+              org.apache.cxf.binding.soap,
               org.apache.cxf.jaxrs.servlet,
               org.apache.cxf.policy,
               org.apache.cxf.transport.http,

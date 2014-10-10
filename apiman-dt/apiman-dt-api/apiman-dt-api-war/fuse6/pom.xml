@@ -162,6 +162,7 @@
               org.apache.cxf.ws.policy.attachment,
               org.apache.cxf.ws.policy.attachment.external,
               org.apache.cxf.ws.policy.mtom,
+              org.codehaus.jackson.jaxrs,
               org.apache.karaf.jaas.boot.principal,
               org.eclipse.jetty.plus.jaas,
               org.hibernate.proxy,

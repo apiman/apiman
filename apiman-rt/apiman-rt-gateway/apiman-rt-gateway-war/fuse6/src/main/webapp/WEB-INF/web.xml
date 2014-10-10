@@ -27,9 +27,13 @@
   <servlet>
     <servlet-name>CXFServlet</servlet-name>
     <servlet-class>org.apache.cxf.jaxrs.servlet.CXFNonSpringJaxrsServlet</servlet-class>
+<!--     <init-param> -->
+<!--       <param-name>hide-service-list-page</param-name> -->
+<!--       <param-value>true</param-value> -->
+<!--     </init-param> -->
     <init-param>
-      <param-name>hide-service-list-page</param-name>
-      <param-value>true</param-value>
+      <param-name>service-list-path</param-name>
+      <param-value>/_svcs</param-value>
     </init-param>
     <init-param>
       <param-name>jaxrs.serviceClasses</param-name>
