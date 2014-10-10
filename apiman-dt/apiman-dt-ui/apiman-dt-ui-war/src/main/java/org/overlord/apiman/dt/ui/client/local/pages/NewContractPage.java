@@ -35,6 +35,7 @@ import org.overlord.apiman.dt.api.beans.contracts.NewContractBean;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaFilterBean;
 import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
+import org.overlord.apiman.dt.api.beans.services.ServiceBean;
 import org.overlord.apiman.dt.api.beans.services.ServiceVersionBean;
 import org.overlord.apiman.dt.api.beans.summary.ApplicationSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.ServicePlanSummaryBean;
@@ -68,9 +69,10 @@ import com.google.gwt.user.client.ui.TextBox;
 @Page(path="new-contract")
 @Dependent
 public class NewContractPage extends AbstractPage {
-   
+
     private static final String APP_ROW = "application-row"; //$NON-NLS-1$
     private static final String APP_VERSION_ROW = "application-version-row"; //$NON-NLS-1$
+    private static final String SERVICE_SEARCH_ROW = "service-search-row"; //$NON-NLS-1$
     private static final String SERVICE_ROW = "service-row"; //$NON-NLS-1$
     private static final String SERVICE_VERSION_ROW = "service-version-row"; //$NON-NLS-1$
     private static final String PLAN_ROW = "plan-row"; //$NON-NLS-1$
@@ -171,7 +173,7 @@ public class NewContractPage extends AbstractPage {
      * Called when the user selects an application.
      */
     protected void onApplicationSelected() {
-        hideRows(APP_VERSION_ROW, SERVICE_ROW, SERVICE_VERSION_ROW, PLAN_ROW);
+        hideRows(APP_VERSION_ROW, SERVICE_SEARCH_ROW, SERVICE_ROW, SERVICE_VERSION_ROW, PLAN_ROW);
         showRow(SPINNER_ROW);
         
         searchBox.setValue(""); //$NON-NLS-1$
@@ -212,10 +214,10 @@ public class NewContractPage extends AbstractPage {
      */
     protected void onApplicationVersionSelected() {
         if (svc != null) {
-            this.searchBox.setValue(svc);
-            onSearch(null);
+            getSpecificService();
+        } else {
+            showRows(SERVICE_SEARCH_ROW, SERVICE_ROW);
         }
-        showRow(SERVICE_ROW);
     }
 
     /**
@@ -319,7 +321,7 @@ public class NewContractPage extends AbstractPage {
     @Override
     protected void renderPage() {
         super.renderPage();
-        hideRows(APP_VERSION_ROW, SERVICE_ROW, SERVICE_VERSION_ROW, PLAN_ROW, SPINNER_ROW);
+        hideRows(APP_VERSION_ROW, SERVICE_SEARCH_ROW, SERVICE_ROW, SERVICE_VERSION_ROW, PLAN_ROW, SPINNER_ROW);
         agreeButton.reset();
         createButton.setEnabled(false);
         applicationSelector.setOptions(applicationBeans);
@@ -365,6 +367,39 @@ public class NewContractPage extends AbstractPage {
         applicationSelector.setFocus(true);
     }
 
+    /**
+     * Gets a specific service rather than searching for one.  This happens when
+     * the new-contract page has both a svc and svcorg param.
+     */
+    protected void getSpecificService() {
+        services.clear();
+        hideRows(SERVICE_VERSION_ROW, PLAN_ROW, SPINNER_ROW);
+        
+        rest.getService(svcorg, svc, new IRestInvokerCallback<ServiceBean>() {
+            @Override
+            public void onSuccess(ServiceBean response) {
+                ServiceSummaryBean summary = new ServiceSummaryBean();
+                summary.setId(response.getId());
+                summary.setDescription(response.getDescription());
+                summary.setName(response.getName());
+                summary.setCreatedOn(response.getCreatedOn());
+                summary.setOrganizationId(response.getOrganizationId());
+                summary.setOrganizationName(response.getOrganizationId());
+                List<ServiceSummaryBean> svcBeans = new ArrayList<ServiceSummaryBean>();
+                svcBeans.add(summary);
+                services.setServices(svcBeans);
+                services.setValue(summary);
+                searchBox.setValue(summary.getName());
+                showRows(SERVICE_SEARCH_ROW, SERVICE_ROW);
+                onServiceSelected();
+            }
+            @Override
+            public void onError(Throwable error) {
+                dataPacketError(error);
+            }
+        });
+    }
+    
     /**
      * Called when the user clicks the Search button to find services.
      * @param event
