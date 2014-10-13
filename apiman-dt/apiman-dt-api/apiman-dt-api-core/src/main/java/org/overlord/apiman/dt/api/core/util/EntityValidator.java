@@ -33,7 +33,8 @@ import org.overlord.apiman.dt.api.core.IStorageQuery;
  */
 public class EntityValidator implements IServiceValidator, IApplicationValidator {
     
-    @Inject IStorageQuery storageQuery;
+    @Inject
+    private IStorageQuery storageQuery;
     
     /**
      * Constructor.
@@ -48,7 +49,7 @@ public class EntityValidator implements IServiceValidator, IApplicationValidator
     public boolean isReady(ApplicationVersionBean application) throws Exception {
         boolean ready = true;
         
-        List<ContractSummaryBean> contracts = storageQuery.getApplicationContracts(application.getApplication().getOrganizationId(), application
+        List<ContractSummaryBean> contracts = getStorageQuery().getApplicationContracts(application.getApplication().getOrganizationId(), application
                 .getApplication().getId(), application.getVersion());
         if (contracts.isEmpty()) {
             ready = false;
@@ -70,6 +71,20 @@ public class EntityValidator implements IServiceValidator, IApplicationValidator
             ready = false;
         }
         return ready;
+    }
+
+    /**
+     * @return the storageQuery
+     */
+    public IStorageQuery getStorageQuery() {
+        return storageQuery;
+    }
+
+    /**
+     * @param storageQuery the storageQuery to set
+     */
+    public void setStorageQuery(IStorageQuery storageQuery) {
+        this.storageQuery = storageQuery;
     }
 
 }

@@ -13,22 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.dt.api.fuse6.jaxrs;
+package org.overlord.apiman.dt.api.gateway.rest.i18n;
 
+import org.overlord.commons.i18n.AbstractMessages;
 
 /**
- * Base class for all fuse jax-rs proxy resources.
+ * I18N Messages
  *
  * @author eric.wittmann@redhat.com
  */
-public abstract class AbstractFuseResource<T> {
+public class Messages extends AbstractMessages {
+
+    public static final Messages i18n = new Messages();
 
     /**
      * Constructor.
      */
-    public AbstractFuseResource() {
+    public Messages() {
+        super(Messages.class);
     }
-    
-    protected abstract T getProxy();
-
 }

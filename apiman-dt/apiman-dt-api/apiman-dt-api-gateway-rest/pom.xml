@@ -30,6 +30,10 @@
     
     <!-- Third Party Dependencies -->
     <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-i18n</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient</artifactId>
     </dependency>

@@ -8,7 +8,7 @@
     <relativePath>../../pom.xml</relativePath>
   </parent>
   <artifactId>apiman-rt-gateway-war-fuse6</artifactId>
-  <packaging>war</packaging>
+  <packaging>bundle</packaging>
   <name>apiman-rt-gateway-war-fuse6</name>
 
   <dependencies>
@@ -68,23 +68,6 @@
       <scope>provided</scope>
     </dependency>
 
-    <!-- CXF -->
-    <dependency>
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-core</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-frontend-jaxrs</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
     <!-- HTTP Components -->
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
@@ -118,54 +101,15 @@
   <build>
     <plugins>
       <plugin>
-        <artifactId>maven-war-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifestFile>${project.build.directory}/osgi/MANIFEST.MF</manifestFile>
-          </archive>
-        </configuration>
-      </plugin>
-      <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>bundle-manifest</id>
-            <phase>process-classes</phase>
-            <goals>
-              <goal>manifest</goal>
-            </goals>
-          </execution>
-        </executions>
+        <extensions>true</extensions>
         <configuration>
-          <supportedProjectTypes>
-            <supportedProjectType>jar</supportedProjectType>
-            <supportedProjectType>bundle</supportedProjectType>
-            <supportedProjectType>war</supportedProjectType>
-          </supportedProjectTypes>
-          <manifestLocation>${project.build.directory}/osgi</manifestLocation>
           <instructions>
-            <Web-ContextPath>/apiman-rt</Web-ContextPath>
-            <Webapp-Context>/apiman-rt</Webapp-Context>
-            <Bundle-ClassPath>.,WEB-INF/classes</Bundle-ClassPath>
             <Import-Package>
               org.apache.karaf.jaas.boot.principal,
               org.eclipse.jetty.plus.jaas,
               org.codehaus.jackson.jaxrs,
-              org.overlord.commons.i18n.server.filters,
-              org.overlord.apiman.rt.api.rest.impl,
-              org.apache.cxf.binding.xml,
-              org.apache.cxf.binding.xml.wsdl11,
-              org.apache.cxf.binding.soap,
-              org.apache.cxf.jaxrs.servlet,
-              org.apache.cxf.policy,
-              org.apache.cxf.transport.http,
-              org.apache.cxf.transport.http_jetty,
-              org.apache.cxf.transport.http_jetty.continuations,
-              org.apache.cxf.ws.policy,
-              org.apache.cxf.ws.policy.attachment,
-              org.apache.cxf.ws.policy.attachment.external,
-              org.apache.cxf.ws.policy.mtom,
               *
             </Import-Package>
           </instructions>

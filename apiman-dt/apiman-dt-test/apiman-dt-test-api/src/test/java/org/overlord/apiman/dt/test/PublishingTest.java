@@ -40,6 +40,7 @@ public class PublishingTest extends AbstractTestPlanTest {
     private static final String EXPECTED_GATEWAY_LOG = 
             "GET:/mock-gateway/api/system/status\n" +  //$NON-NLS-1$
             "PUT:/mock-gateway/api/services\n" + //$NON-NLS-1$
+            "GET:/mock-gateway/api/system/status\n" +  //$NON-NLS-1$
             "PUT:/mock-gateway/api/applications\n"; //$NON-NLS-1$
     
     private static final String EXPECTED_PUBLISH_PAYLOAD = 
@@ -57,7 +58,7 @@ public class PublishingTest extends AbstractTestPlanTest {
         
         String publishServicePayload = MockGatewayServlet.getPayloads().get(1);
         Assert.assertEquals(EXPECTED_PUBLISH_PAYLOAD, publishServicePayload.trim());
-        String registerAppPayload = MockGatewayServlet.getPayloads().get(2);
+        String registerAppPayload = MockGatewayServlet.getPayloads().get(3);
         
         ObjectMapper mapper = new ObjectMapper();
         Application app = mapper.readValue(registerAppPayload.getBytes("UTF-8"), Application.class); //$NON-NLS-1$

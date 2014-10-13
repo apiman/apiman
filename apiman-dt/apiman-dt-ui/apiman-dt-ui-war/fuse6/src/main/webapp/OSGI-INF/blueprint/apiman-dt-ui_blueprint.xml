@@ -14,7 +14,7 @@
       <cm:property name="apiman-dt.ui.apiAuthUsername" value="" />
       <cm:property name="apiman-dt.ui.apiAuthPassword" value="" />
       <cm:property name="apiman-dt.ui.apiAuthTokenGenerator" value="org.overlord.apiman.dt.ui.server.auth.AuthTokenGenerator" />
-      <cm:property name="apiman-dt.ui.gatewayUrl" value="http://localhost:8181/cxf/apiman-gateway" />
+      <cm:property name="apiman-dt.ui.gatewayUrl" value="http://localhost:8181/apiman-rt-gateway/" />
     </cm:default-properties>
   </cm:property-placeholder>
 

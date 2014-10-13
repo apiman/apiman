@@ -30,6 +30,7 @@ public class AllTest extends AbstractTestPlanTest {
     private static final String EXPECTED_GATEWAY_LOG = 
             "GET:/mock-gateway/api/system/status\n" +  //$NON-NLS-1$
             "PUT:/mock-gateway/api/services\n" + //$NON-NLS-1$
+            "GET:/mock-gateway/api/system/status\n" +  //$NON-NLS-1$
             "PUT:/mock-gateway/api/applications\n"; //$NON-NLS-1$
 
     @Test

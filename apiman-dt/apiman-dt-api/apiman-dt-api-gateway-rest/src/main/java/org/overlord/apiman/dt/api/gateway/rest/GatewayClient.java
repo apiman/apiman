@@ -59,7 +59,7 @@ public class GatewayClient /*implements ISystemResource, IServiceResource, IAppl
         this.httpClient = httpClient;
         
         if (this.endpoint.endsWith("/")) { //$NON-NLS-1$
-            this.endpoint = this.endpoint.substring(0, this.endpoint.length() - 2);
+            this.endpoint = this.endpoint.substring(0, this.endpoint.length() - 1);
         }
     }
 

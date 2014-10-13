@@ -9,7 +9,7 @@
 
   <cm:property-placeholder persistent-id="apiman-dt">
     <cm:default-properties>
-      <cm:property name="apiman-dt-api.gateway.rest-endpoint" value="http://localhost:8181/apiman-rt/rest/" />
+      <cm:property name="apiman-dt-api.gateway.rest-endpoint" value="http://localhost:8181/cxf/apiman-rt-api" />
       <cm:property name="apiman-dt-api.gateway.authentication.type" value="BASIC" />
       <cm:property name="apiman-dt-api.gateway.authentication.basic.user" value="admin" />
       <cm:property name="apiman-dt-api.gateway.authentication.basic.password" value="admin123!" />
@@ -23,6 +23,36 @@
     <property name="gatewayBasicAuthPassword" value="${apiman-dt-api.gateway.authentication.basic.password}" />
   </bean>
 
+  <cxf:bus id="cxfBus1">
+    <cxf:features>
+      <cxf:logging />
+    </cxf:features>
+  </cxf:bus>
+
+  <jaxrs:server address="/apiman-dt-api" id="apimanDtApi">
+    <jaxrs:providers>
+      <bean class="org.codehaus.jackson.jaxrs.JacksonJsonProvider" />
+      <bean id="authRequestHandler" class="org.overlord.apiman.dt.api.fuse6.auth.AuthTokenRequestHandler">
+        <property name="contextName" value="karaf" />
+        <property name="roleClassifier" value="RolePrincipal"/>
+        <property name="roleClassifierType" value="classname"/>
+        <property name="realm" value="apiman-dt-api" />
+      </bean>
+      <bean id="authResponseHandler" class="org.overlord.apiman.dt.api.fuse6.auth.AuthTokenResponseHandler" />
+    </jaxrs:providers>
+    <jaxrs:serviceBeans>
+      <ref component-id="actionService" />
+      <ref component-id="currentUserService" />
+      <ref component-id="organizationService" />
+      <ref component-id="permissionService" />
+      <ref component-id="policyDefinitionService" />
+      <ref component-id="roleService" />
+      <ref component-id="searchService" />
+      <ref component-id="systemService" />
+      <ref component-id="userService" />
+    </jaxrs:serviceBeans>
+  </jaxrs:server>
+
 
   <!-- Entity Manager Accessor -->
   <bean id="emfAccessor" class="org.overlord.apiman.dt.api.fuse6.jpa.FuseEntityManagerFactoryAccessor" />
@@ -30,7 +60,9 @@
 
   <!-- The API Management DT beans -->
   <bean id="version" class="org.overlord.apiman.dt.api.config.Version" init-method="postConstruct" />
-  <bean id="validator" class="org.overlord.apiman.dt.api.core.util.EntityValidator" />
+  <bean id="validator" class="org.overlord.apiman.dt.api.core.util.EntityValidator">
+    <property name="storageQuery" ref="storage" />
+  </bean>
   <bean id="securityContext" class="org.overlord.apiman.dt.api.fuse6.security.FuseSecurityContext">
     <property name="idmStorage" ref="idmStorage" />
   </bean>
@@ -40,7 +72,7 @@
   <bean id="idmStorage" class="org.overlord.apiman.dt.api.jpa.roles.JpaIdmStorage">
     <property name="emfAccessor" ref="emfAccessor" />
   </bean>
-  <bean id="gatewayLink" class="org.overlord.apiman.dt.api.gateway.rest.RestGatewayLink">
+  <bean id="gatewayLink" class="org.overlord.apiman.dt.api.gateway.rest.RestGatewayLink" init-method="postConstruct" destroy-method="preDestroy">
     <property name="config" ref="config" />
   </bean>
 
@@ -56,16 +88,12 @@
     <property name="applicationValidator" ref="validator" />
     <property name="securityContext" ref="securityContext" />
   </bean>
-  <service ref="actionService" interface="org.overlord.apiman.dt.api.rest.contract.IActionResource" />
-
   <bean id="currentUserService" class="org.overlord.apiman.dt.api.rest.impl.CurrentUserResourceImpl">
     <property name="idmStorage" ref="idmStorage" />
     <property name="storage" ref="storage" />
     <property name="query" ref="storage" />
     <property name="securityContext" ref="securityContext" />
   </bean>
-  <service ref="currentUserService" interface="org.overlord.apiman.dt.api.rest.contract.ICurrentUserResource" />
-
   <bean id="organizationService" class="org.overlord.apiman.dt.api.rest.impl.OrganizationResourceImpl">
     <property name="storage" ref="storage" />
     <property name="idmStorage" ref="idmStorage" />
@@ -77,26 +105,18 @@
     <property name="roles" ref="roleService" />
     <property name="securityContext" ref="securityContext" />
   </bean>
-  <service ref="organizationService" interface="org.overlord.apiman.dt.api.rest.contract.IOrganizationResource" />
-
   <bean id="permissionService" class="org.overlord.apiman.dt.api.rest.impl.PermissionsResourceImpl">
     <property name="idmStorage" ref="idmStorage" />
     <property name="securityContext" ref="securityContext" />
   </bean>
-  <service ref="permissionService" interface="org.overlord.apiman.dt.api.rest.contract.IPermissionsResource" />
-
   <bean id="policyDefinitionService" class="org.overlord.apiman.dt.api.rest.impl.PolicyDefinitionResourceImpl">
     <property name="storage" ref="storage" />
     <property name="securityContext" ref="securityContext" />
   </bean>
-  <service ref="policyDefinitionService" interface="org.overlord.apiman.dt.api.rest.contract.IPolicyDefinitionResource" />
-  
   <bean id="roleService" class="org.overlord.apiman.dt.api.rest.impl.RoleResourceImpl">
     <property name="idmStorage" ref="idmStorage" />
     <property name="securityContext" ref="securityContext" />
   </bean>
-  <service ref="roleService" interface="org.overlord.apiman.dt.api.rest.contract.IRoleResource" />
-
   <bean id="searchService" class="org.overlord.apiman.dt.api.rest.impl.SearchResourceImpl">
     <property name="storage" ref="storage" />
     <property name="idmStorage" ref="idmStorage" />
@@ -104,19 +124,13 @@
     <property name="roles" ref="roleService" />
     <property name="securityContext" ref="securityContext" />
   </bean>
-  <service ref="searchService" interface="org.overlord.apiman.dt.api.rest.contract.ISearchResource" />
-
   <bean id="systemService" class="org.overlord.apiman.dt.api.rest.impl.SystemResourceImpl">
     <property name="version" ref="version" />
     <property name="storage" ref="storage" />
   </bean>
-  <service ref="systemService" interface="org.overlord.apiman.dt.api.rest.contract.ISystemResource" />
-
   <bean id="userService" class="org.overlord.apiman.dt.api.rest.impl.UserResourceImpl">
     <property name="idmStorage" ref="idmStorage" />
     <property name="securityContext" ref="securityContext" />
     <property name="query" ref="storage" />
   </bean>
-  <service ref="userService" interface="org.overlord.apiman.dt.api.rest.contract.IUserResource" />
-
 </blueprint>

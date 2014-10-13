@@ -32,6 +32,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.protocol.HttpContext;
 import org.overlord.apiman.dt.api.config.IConfig;
 import org.overlord.apiman.dt.api.gateway.IGatewayLink;
+import org.overlord.apiman.dt.api.gateway.rest.i18n.Messages;
 import org.overlord.apiman.rt.engine.beans.Application;
 import org.overlord.apiman.rt.engine.beans.Service;
 import org.overlord.apiman.rt.engine.beans.SystemStatus;
@@ -70,14 +71,6 @@ public class RestGatewayLink implements IGatewayLink {
                 configureBasicAuth(request);
             }
         }).build();
-        
-        String gatewayEndpoint = getConfig().getGatewayRestEndpoint();
-        gatewayClient = new GatewayClient(gatewayEndpoint, httpClient);
-        
-        SystemStatus status = gatewayClient.getStatus();
-        if (!status.isUp()) {
-            throw new RuntimeException("Gateway is not running!"); //$NON-NLS-1$
-        }
     }
 
     /**
@@ -93,11 +86,22 @@ public class RestGatewayLink implements IGatewayLink {
     }
 
     /**
+     * Checks that the gateway is up.
+     */
+    private boolean isGatewayUp() {
+        SystemStatus status = getClient().getStatus();
+        return status.isUp();
+    }
+
+    /**
      * @see org.overlord.apiman.dt.api.gateway.IGatewayLink#publishService(org.overlord.apiman.rt.engine.beans.Service)
      */
     @Override
     public void publishService(Service service) throws PublishingException {
-        gatewayClient.publish(service);
+        if (!isGatewayUp()) {
+            throw new PublishingException(Messages.i18n.format("RestGatewayLink.GatewayNotRunning")); //$NON-NLS-1$
+        }
+        getClient().publish(service);
     }
 
     /**
@@ -105,7 +109,10 @@ public class RestGatewayLink implements IGatewayLink {
      */
     @Override
     public void retireService(Service service) throws PublishingException {
-        gatewayClient.retire(service.getOrganizationId(), service.getServiceId(), service.getVersion());
+        if (!isGatewayUp()) {
+            throw new PublishingException(Messages.i18n.format("RestGatewayLink.GatewayNotRunning")); //$NON-NLS-1$
+        }
+        getClient().retire(service.getOrganizationId(), service.getServiceId(), service.getVersion());
     }
 
     /**
@@ -113,7 +120,10 @@ public class RestGatewayLink implements IGatewayLink {
      */
     @Override
     public void registerApplication(Application application) throws RegistrationException {
-        gatewayClient.register(application);
+        if (!isGatewayUp()) {
+            throw new RegistrationException(Messages.i18n.format("RestGatewayLink.GatewayNotRunning")); //$NON-NLS-1$
+        }
+        getClient().register(application);
     }
 
     /**
@@ -121,7 +131,10 @@ public class RestGatewayLink implements IGatewayLink {
      */
     @Override
     public void unregisterApplication(Application application) throws RegistrationException {
-        gatewayClient.unregister(application.getOrganizationId(), application.getApplicationId(), application.getVersion());
+        if (!isGatewayUp()) {
+            throw new RegistrationException(Messages.i18n.format("RestGatewayLink.GatewayNotRunning")); //$NON-NLS-1$
+        }
+        getClient().unregister(application.getOrganizationId(), application.getApplicationId(), application.getVersion());
     }
 
     /**
@@ -153,6 +166,17 @@ public class RestGatewayLink implements IGatewayLink {
      */
     public void setConfig(IConfig config) {
         this.config = config;
+    }
+
+    /**
+     * @return the gateway client
+     */
+    protected GatewayClient getClient() {
+        if (gatewayClient == null) {
+            String gatewayEndpoint = getConfig().getGatewayRestEndpoint();
+            gatewayClient = new GatewayClient(gatewayEndpoint, httpClient);
+        }
+        return gatewayClient;
     }
 
 }

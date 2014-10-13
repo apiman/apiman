@@ -58,7 +58,6 @@
     <dependency>
       <groupId>org.overlord.apiman</groupId>
       <artifactId>apiman-rt-gateway-war-fuse6</artifactId>
-      <type>war</type>
     </dependency>
 
     <!-- HTTP Components -->
