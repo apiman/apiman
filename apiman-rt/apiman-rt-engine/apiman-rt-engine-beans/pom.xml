@@ -9,6 +9,15 @@
   <artifactId>apiman-rt-engine-beans</artifactId>
   <packaging>bundle</packaging>
   <name>apiman-rt-engine-beans</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-core-asl</artifactId>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
   <build>
     <plugins>
       <plugin>

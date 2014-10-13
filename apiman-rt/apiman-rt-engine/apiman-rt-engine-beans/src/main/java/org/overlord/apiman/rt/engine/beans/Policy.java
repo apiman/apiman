@@ -17,6 +17,8 @@ package org.overlord.apiman.rt.engine.beans;
 
 import java.io.Serializable;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 /**
  * Models a policy.
  * 
@@ -66,6 +68,7 @@ public class Policy implements Serializable {
     /**
      * @return the policyConfig
      */
+    @JsonIgnore
     public Object getPolicyConfig() {
         return policyConfig;
     }
