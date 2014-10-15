@@ -67,6 +67,7 @@ public final class ServiceRequestPool extends GenericObjectPool<ServiceRequest> 
                 super.passivateObject(p);
                 ServiceRequest request = p.getObject();
                 request.setApiKey(null);
+                request.setContract(null);
                 request.setBody(null);
                 request.setDestination(null);
                 request.getHeaders().clear();

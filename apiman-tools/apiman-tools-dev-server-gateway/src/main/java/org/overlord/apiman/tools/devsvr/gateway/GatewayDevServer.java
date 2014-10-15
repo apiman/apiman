@@ -17,7 +17,9 @@
 package org.overlord.apiman.tools.devsvr.gateway;
 
 import org.overlord.apiman.rt.engine.components.IPolicyFailureFactoryComponent;
+import org.overlord.apiman.rt.engine.components.IRateLimiterComponent;
 import org.overlord.apiman.rt.engine.components.ISharedStateComponent;
+import org.overlord.apiman.rt.engine.impl.InMemoryRateLimiterComponent;
 import org.overlord.apiman.rt.engine.impl.InMemoryRegistry;
 import org.overlord.apiman.rt.engine.impl.InMemorySharedStateComponent;
 import org.overlord.apiman.rt.engine.policy.PolicyFactoryImpl;
@@ -56,6 +58,8 @@ public class GatewayDevServer {
         // Register test components
         System.setProperty(WarEngineConfig.APIMAN_RT_COMPONENT_PREFIX + ISharedStateComponent.class.getSimpleName(), 
                 InMemorySharedStateComponent.class.getName());
+        System.setProperty(WarEngineConfig.APIMAN_RT_COMPONENT_PREFIX + IRateLimiterComponent.class.getSimpleName(), 
+                InMemoryRateLimiterComponent.class.getName());
         System.setProperty(WarEngineConfig.APIMAN_RT_COMPONENT_PREFIX + IPolicyFailureFactoryComponent.class.getSimpleName(), 
                 PolicyFailureFactoryComponent.class.getName());
 

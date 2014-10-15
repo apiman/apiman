@@ -31,7 +31,7 @@ import org.overlord.apiman.dt.ui.client.local.events.IsFormValidEvent;
 import org.overlord.apiman.dt.ui.client.local.pages.policy.IPolicyConfigurationForm;
 import org.overlord.apiman.dt.ui.client.local.pages.policy.forms.widgets.IdentitySourceSelectBox;
 import org.overlord.apiman.dt.ui.client.local.services.BeanMarshallingService;
-import org.overlord.apiman.engine.policies.config.BasicAuthenticationPolicyConfig;
+import org.overlord.apiman.engine.policies.config.BasicAuthenticationConfig;
 import org.overlord.apiman.engine.policies.config.basicauth.StaticIdentity;
 import org.overlord.apiman.engine.policies.config.basicauth.StaticIdentitySource;
 
@@ -182,7 +182,7 @@ public class BasicAuthPolicyConfigForm extends Composite implements IPolicyConfi
      */
     @Override
     public String getValue() {
-        BasicAuthenticationPolicyConfig config = new BasicAuthenticationPolicyConfig();
+        BasicAuthenticationConfig config = new BasicAuthenticationConfig();
         config.setStaticIdentity(new StaticIdentitySource());
         config.setRealm(realm.getValue());
         if (!authenticatedUserHeader.getValue().trim().isEmpty()) {
@@ -227,7 +227,7 @@ public class BasicAuthPolicyConfigForm extends Composite implements IPolicyConfi
         staticUsername.setValue(""); //$NON-NLS-1$
         staticPassword.setValue(""); //$NON-NLS-1$
         if (value != null && !value.trim().isEmpty()) {
-            BasicAuthenticationPolicyConfig config = marshaller.unmarshal(value, BasicAuthenticationPolicyConfig.class);
+            BasicAuthenticationConfig config = marshaller.unmarshal(value, BasicAuthenticationConfig.class);
             realm.setValue(config.getRealm());
             authenticatedUserHeader.setValue(config.getForwardIdentityHttpHeader());
             StaticIdentitySource staticIdentity = config.getStaticIdentity();

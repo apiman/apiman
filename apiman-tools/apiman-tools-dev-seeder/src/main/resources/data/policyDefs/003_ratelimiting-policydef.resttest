@@ -1,0 +1,21 @@
+POST /policyDefs admin/admin123!
+Content-Type: application/json
+
+{
+  "name" : "Rate Limiting Policy",
+  "description" : "Enforces rate configurable request rate limits on a service.  This ensures that consumers can't overload a service with too many requests.",
+  "policyImpl" : "class:org.overlord.apiman.engine.policies.RateLimitingPolicy",
+  "icon" : "sliders",
+  "templates" : [
+    {
+      "language" : null,
+      "template" : "Consumers are limited to @{limit} requests per @{granularity} per @{period}."
+    }
+  ]
+}
+----
+200
+Content-Type: application/json
+
+{
+}

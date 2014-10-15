@@ -25,7 +25,7 @@ import org.overlord.apiman.engine.policies.config.basicauth.StaticIdentitySource
  * @author eric.wittmann@redhat.com
  */
 @Portable
-public class BasicAuthenticationPolicyConfig {
+public class BasicAuthenticationConfig {
     
     private String realm;
     private String forwardIdentityHttpHeader;
@@ -35,7 +35,7 @@ public class BasicAuthenticationPolicyConfig {
     /**
      * Constructor.
      */
-    public BasicAuthenticationPolicyConfig() {
+    public BasicAuthenticationConfig() {
     }
 
     /**

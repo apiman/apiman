@@ -37,6 +37,7 @@ import org.overlord.apiman.rt.engine.beans.Contract;
 import org.overlord.apiman.rt.engine.beans.Policy;
 import org.overlord.apiman.rt.engine.beans.PolicyFailure;
 import org.overlord.apiman.rt.engine.beans.Service;
+import org.overlord.apiman.rt.engine.beans.ServiceContract;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
 import org.overlord.apiman.rt.engine.beans.ServiceResponse;
 import org.overlord.apiman.rt.engine.beans.exceptions.ConfigurationParseException;
@@ -61,7 +62,7 @@ public class EngineImpl implements IEngine {
     private IComponentRegistry componentRegistry;
     private IConnectorFactory connectorFactory;
     private IPolicyFactory policyFactory;
-    private Map<Contract, List<PolicyWithConfiguration>> cache = new HashMap<Contract, List<PolicyWithConfiguration>>();
+    private Map<ServiceContract, List<PolicyWithConfiguration>> cache = new HashMap<ServiceContract, List<PolicyWithConfiguration>>();
 
     /**
      * Constructor.
@@ -91,7 +92,8 @@ public class EngineImpl implements IEngine {
      */
     @Override
     public void execute(final ServiceRequest request, final IAsyncHandler<EngineResult> handler) {
-        final Contract contract = getContract(request);
+        final ServiceContract contract = getContract(request);
+        request.setContract(contract);
         final IPolicyContext context = new PolicyContextImpl(getComponentRegistry());
         final List<PolicyWithConfiguration> policies = getPolicies(contract);
         final PolicyChainImpl chain = new PolicyChainImpl(policies, context);
@@ -105,7 +107,7 @@ public class EngineImpl implements IEngine {
                 // If error, propagate to the caller.
                 if (serviceRequestAR.isSuccess()) {
                     try {
-                        final Service service = registry.getService(contract);
+                        final Service service = contract.getService();
                         IServiceConnector connector = getConnectorFactory().createConnector(request, service);
                         connector.invoke(request, new IAsyncHandler<ServiceResponse>() {
                             @Override
@@ -238,7 +240,7 @@ public class EngineImpl implements IEngine {
      * Gets the service contract to use for the given request. 
      * @param request
      */
-    private Contract getContract(ServiceRequest request) {
+    private ServiceContract getContract(ServiceRequest request) {
         return this.registry.getContract(request);
     }
 
@@ -247,7 +249,7 @@ public class EngineImpl implements IEngine {
      * achieved by using the policy information set on the contract.
      * @param contract
      */
-    private List<PolicyWithConfiguration> getPolicies(Contract contract) {
+    private List<PolicyWithConfiguration> getPolicies(ServiceContract contract) {
         // Note: do not synchronize on the cache.  We don't really care if we accidentally
         // create the list a few times - it's not worth the overhead of the synch block.
         List<PolicyWithConfiguration> policies = cache.get(contract);

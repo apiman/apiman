@@ -304,6 +304,18 @@ public class DtApiDataSeeder extends DefaultTestDataSeeder {
         basicAuthPolicyDef.getTemplates().add(templateBean);
         storage.create(basicAuthPolicyDef);
 
+        PolicyDefinitionBean rateLimitPolicyDef = new PolicyDefinitionBean();
+        rateLimitPolicyDef.setId("RateLimitingPolicy"); //$NON-NLS-1$
+        rateLimitPolicyDef.setName("Rate Limiting Policy"); //$NON-NLS-1$
+        rateLimitPolicyDef.setDescription("Enforces rate configurable request rate limits on a service.  This ensures that consumers can't overload a service with too many requests."); //$NON-NLS-1$
+        rateLimitPolicyDef.setIcon("sliders"); //$NON-NLS-1$
+        rateLimitPolicyDef.setPolicyImpl("class:org.overlord.apiman.engine.policies.RateLimitingPolicy"); //$NON-NLS-1$
+        templateBean = new PolicyDefinitionTemplateBean();
+        templateBean.setLanguage(null);
+        templateBean.setTemplate("Consumers are limited to @{limit} requests per @{granularity} per @{period}."); //$NON-NLS-1$
+        rateLimitPolicyDef.getTemplates().add(templateBean);
+        storage.create(rateLimitPolicyDef);
+
     }
 
 }

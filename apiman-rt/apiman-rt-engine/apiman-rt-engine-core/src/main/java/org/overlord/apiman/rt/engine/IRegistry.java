@@ -18,9 +18,9 @@ package org.overlord.apiman.rt.engine;
 import org.overlord.apiman.rt.engine.beans.Application;
 import org.overlord.apiman.rt.engine.beans.Contract;
 import org.overlord.apiman.rt.engine.beans.Service;
+import org.overlord.apiman.rt.engine.beans.ServiceContract;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
 import org.overlord.apiman.rt.engine.beans.exceptions.InvalidContractException;
-import org.overlord.apiman.rt.engine.beans.exceptions.InvalidServiceException;
 import org.overlord.apiman.rt.engine.beans.exceptions.PublishingException;
 import org.overlord.apiman.rt.engine.beans.exceptions.RegistrationException;
 
@@ -35,20 +35,13 @@ import org.overlord.apiman.rt.engine.beans.exceptions.RegistrationException;
 public interface IRegistry {
 
     /**
-     * Gets the {@link Service} being invoked.
-     * @param contract the service contract being used for the invokation
-     * @return a Service or null if not found
-     */
-    public Service getService(Contract contract) throws InvalidServiceException;
-
-    /**
      * Gets the {@link Contract} to use based on information included in the inbound
      * service request.
      * 
      * @param request an inbound service request
      * @return a Contract or null if not found
      */
-    public Contract getContract(ServiceRequest request) throws InvalidContractException;
+    public ServiceContract getContract(ServiceRequest request) throws InvalidContractException;
 
     /**
      * Publishes a new {@link Service} into the registry.

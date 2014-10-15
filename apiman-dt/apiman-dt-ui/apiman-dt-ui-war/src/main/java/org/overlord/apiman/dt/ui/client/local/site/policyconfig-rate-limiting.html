@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <script type="text/javascript" src="site.js"></script>
+  </head>
+
+  <body>
+
+    <!-- Top header/nav bar -->
+    <div id="overlord-header">
+    </div>
+
+    <div id="form-page" class="container apiman-new-policy apiman-entity-new page">
+      <!-- Policy Type-specific config -->
+      <div class="row">
+        <h3 data-field="policyHeading">Configure Rate Limits</i></h3>
+        <div class="box col-md-9 container">
+        
+          <div class="form policy-config rates" data-field="form">
+            <div>
+              <span data-i18n-key="config-sentence-preamble">I want to limit request rates to</span>
+              <input data-field="limit" class="form-control inline-form-control" style="width: 100px" type="text" placeholder="# of requests"></input>
+              <span data-i18n-key="requests-per">requests per</span>
+              <select data-field="granularity" class="selectpicker inline-line inline-form-dropdown" data-style="btn-default inline-form-dropdown" style="width: 100px">
+                <option>(granularity)</option>
+                <option>Application</option>
+                <option>User</option>
+                <option>Service</option>
+              </select>
+              <span data-i18n-key="per">per</span>
+              <select data-field="period" class="selectpicker inline-line inline-form-dropdown" data-style="btn-default inline-form-dropdown" style="width: 100px">
+                <option>(period)</option>
+                <option>Second</option>
+                <option>Minute</option>
+                <option>Hour</option>
+                <option>Day</option>
+                <option>Month</option>
+                <option>Year</option>
+              </select>
+            </div>
+            <div style="margin-top: 8px;" id="userRow">
+              <span>Get the user's id from:</span>
+              <input data-field="userHeader" class="form-control inline-form-control" style="width: 250px" type="text" placeholder="Enter header (e.g. X-Identity)..."></input>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </div> <!-- /container -->
+  </body>
+</html>

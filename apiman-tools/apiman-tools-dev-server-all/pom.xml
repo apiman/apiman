@@ -93,6 +93,7 @@
 
   <profiles>
     <!-- Run on EAP 6.3 - must have EAP 6.3 ZIP file locally at the root of apiman-tool-dev-server-all -->
+    <!-- 
     <profile>
       <id>run-all-eap6</id>
       <build>
@@ -143,17 +144,15 @@
                     <echo>APIMan Gateway:    ${apiman.apiman-rt-gateway-war-eap6.war}</echo>
                     <echo>Dev Seeder:        ${apiman.apiman-tools-dev-seeder.war}</echo>
                     <echo>Dev Services:      ${apiman.apiman-tools-dev-services.war}</echo>
-                    <echo>-------</echo>
+                    <echo>=======</echo>
                     <echo>EAP Home:          ${apiman.eap.home}</echo>
                     <echo>********************************************************************</echo>
                     <echo></echo>
                     
                     <mkdir dir="${apiman.tempdir}" />
                     
-                    <!-- Unpack EAP 6.3 -->
                     <unzip src="${apiman.eap.zip}" dest="${apiman.install.dir}" overwrite="false" />
                     
-                    <!-- Configure APIMan -->
                     <property name="apiman.config.file" location="${apiman.eap.home}/standalone/configuration/apiman.properties" />
                     <propertyfile file="${apiman.config.file}" comment=" Configuration information for Overlord API Management">
                       <entry key="apiman-dt-ui.dt-api.authentication.type" value="authToken" />
@@ -176,7 +175,6 @@
                       <fileset dir="${apiman.uiheader.config.src}" />
                     </copy>
                     
-                    <!-- Deploy apiman to EAP 6.3 -->
                     <copy file="${apiman.resources.dir}/eap6/deployments/apiman-ds.xml" todir="${apiman.eap.webapps}" overwrite="true" />
                     <copy file="${apiman.resources.dir}/eap6/configuration/application-users.properties" todir="${apiman.eap.home}/standalone/configuration" overwrite="true" />
                     <copy file="${apiman.resources.dir}/eap6/configuration/application-roles.properties" todir="${apiman.eap.home}/standalone/configuration" overwrite="true" />
@@ -187,11 +185,9 @@
                     <copy file="${apiman.apiman-tools-dev-services.war}" tofile="${apiman.eap.webapps}/services.war" overwrite="true" />
                     <copy file="${apiman.apiman-rt-gateway-war-eap6.war}" tofile="${apiman.eap.webapps}/apiman-rt.war" overwrite="true" />
                     
-                    <!-- Start EAP 6 -->
                     <property name="apiman.eap.gclog" location="${apiman.eap.home}/standalone/log/gc.log" />
                     <makeurl property="apiman.eap.logconfig.url" file="${apiman.eap.home}/standalone/configuration/logging.properties" />
                     <java jar="${apiman.eap.home}/jboss-modules.jar" fork="true" failonerror="true" dir="${apiman.eap.home}">
-                      <!-- Set EAP startup system properties -->
                       <sysproperty key="java.io.tmpdir" value="${apiman.tempdir}" />
                       <sysproperty key="java.net.preferIPv4Stack" value="true" />
                       <sysproperty key="jboss.modules.system.pkgs" value="org.jboss.byteman" />
@@ -220,6 +216,7 @@
         </plugins>
       </build>
     </profile>
+     -->
     
     <!-- Run on WildFly 8.1 -->
     <profile>
@@ -298,6 +295,7 @@
                       <entry key="apiman-rt.connector-factory" value="org.overlord.apiman.rt.gateway.servlet.connectors.HttpConnectorFactory" />
                       <entry key="apiman-rt.policy-factory" value="org.overlord.apiman.rt.engine.policy.PolicyFactoryImpl" />
                       <entry key="apiman-rt.components.ISharedStateComponent" value="org.overlord.apiman.rt.engine.impl.InMemorySharedStateComponent" />
+                      <entry key="apiman-rt.components.IRateLimiterComponent" value="org.overlord.apiman.rt.engine.impl.InMemoryRateLimiterComponent" />
                       <entry key="apiman-rt.components.IPolicyFailureFactoryComponent" value="org.overlord.apiman.rt.gateway.servlet.PolicyFailureFactoryComponent" />
                     </propertyfile>
                     <property name="apiman.uiheader.config.src" value="${apiman.resources.dir}/config/header" />
@@ -349,6 +347,7 @@
     </profile>
 
     <!-- Run on Jetty 8 -->
+    <!-- 
     <profile>
       <id>run-all-jetty8</id>
       <build>
@@ -410,7 +409,7 @@
                     <echo>Commons Pooling:   ${apiman.commons-pool.jar}</echo>
                     <echo>Commons DBCP:      ${apiman.commons-dbcp.jar}</echo>
                     <echo>H2:                ${apiman.h2.jar}</echo>
-                    <echo>-------</echo>
+                    <echo>========</echo>
                     <echo>Jetty Home:        ${apiman.jetty.home}</echo>
                     <echo>********************************************************************</echo>
                     <echo></echo>
@@ -419,13 +418,11 @@
                     <delete dir="${apiman.jetty.logdir}" />
                     <mkdir dir="${apiman.jetty.logdir}" />
                     
-                    <!-- Download Jetty 8 and Unpack it -->
                     <get src="${apiman.jetty.download.url}" dest="${apiman.jetty.zip}" usetimestamp="true" />
                     <unzip src="${apiman.jetty.zip}" dest="${apiman.install.dir}" overwrite="false" />
                     <makeurl file="${apiman.jetty.home}" property="apiman.jetty.home.url" />
                     <echo>Jetty Home URL:    ${apiman.jetty.home.url}</echo>
                     
-                    <!-- Deploy apiman to Jetty 8 -->
                     <copy file="${apiman.resources.dir}/jetty8/etc/jetty.xml" todir="${apiman.jetty.home}/etc" overwrite="true" />
                     <copy file="${apiman.resources.dir}/jetty8/etc/realm.properties" todir="${apiman.jetty.home}/etc" overwrite="true" />
                     <copy file="${apiman.resources.dir}/jetty8/etc/jetty-logging.xml" todir="${apiman.jetty.home}/etc" overwrite="true" />
@@ -438,7 +435,6 @@
                     <copy file="${apiman.apiman-tools-dev-services.war}" tofile="${apiman.jetty.webapps}/services.war" overwrite="true" />
                     <copy file="${apiman.apiman-rt-gateway-war-jetty8.war}" tofile="${apiman.jetty.webapps}/apiman-rt.war" overwrite="true" />
                     
-                    <!-- Start Jetty 8 -->
                     <java jar="${apiman.jetty.home}/start.jar" fork="true" failonerror="true" dir="${apiman.jetty.home}">
                       <sysproperty key="jetty.home" value="${apiman.jetty.home}" />
                       <sysproperty key="jetty.home.url" value="${apiman.jetty.home.url}" />
@@ -474,5 +470,6 @@
         </plugins>
       </build>
     </profile>
+     -->
   </profiles>
 </project>

@@ -22,6 +22,7 @@ import org.overlord.apiman.rt.engine.IComponent;
 import org.overlord.apiman.rt.engine.IComponentRegistry;
 import org.overlord.apiman.rt.engine.beans.exceptions.ComponentNotFoundException;
 import org.overlord.apiman.rt.engine.components.IPolicyFailureFactoryComponent;
+import org.overlord.apiman.rt.engine.components.IRateLimiterComponent;
 import org.overlord.apiman.rt.engine.components.ISharedStateComponent;
 
 /**
@@ -39,6 +40,7 @@ public class DefaultComponentRegistry implements IComponentRegistry {
      */
     public DefaultComponentRegistry() {
         components.put(ISharedStateComponent.class, new InMemorySharedStateComponent());
+        components.put(IRateLimiterComponent.class, new InMemoryRateLimiterComponent());
         components.put(IPolicyFailureFactoryComponent.class, new DefaultPolicyFailureFactoryComponent());
     }
 

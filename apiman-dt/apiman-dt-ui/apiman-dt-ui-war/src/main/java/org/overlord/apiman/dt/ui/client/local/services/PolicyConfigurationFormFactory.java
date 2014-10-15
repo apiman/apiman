@@ -24,6 +24,7 @@ import org.overlord.apiman.dt.ui.client.local.pages.policy.DefaultPolicyConfigur
 import org.overlord.apiman.dt.ui.client.local.pages.policy.IPolicyConfigurationForm;
 import org.overlord.apiman.dt.ui.client.local.pages.policy.forms.BasicAuthPolicyConfigForm;
 import org.overlord.apiman.dt.ui.client.local.pages.policy.forms.IPListPolicyConfigForm;
+import org.overlord.apiman.dt.ui.client.local.pages.policy.forms.RateLimitingPolicyConfigForm;
 
 /**
  * A factory for creating policy configuration forms.
@@ -39,6 +40,8 @@ public class PolicyConfigurationFormFactory {
     Instance<IPListPolicyConfigForm> ipListFormFactory;
     @Inject
     Instance<BasicAuthPolicyConfigForm> basicAuthFormFactory;
+    @Inject
+    Instance<RateLimitingPolicyConfigForm> rateLimitingFormFactory;
     @Inject
     Instance<DefaultPolicyConfigurationForm> defaultFormFactory;
     
@@ -61,6 +64,9 @@ public class PolicyConfigurationFormFactory {
         }
         if ("BASICAuthenticationPolicy".equals(policyDef.getId())) { //$NON-NLS-1$
             return basicAuthFormFactory.get();
+        }
+        if ("RateLimitingPolicy".equals(policyDef.getId())) { //$NON-NLS-1$
+            return rateLimitingFormFactory.get();
         }
         return defaultFormFactory.get();
     }

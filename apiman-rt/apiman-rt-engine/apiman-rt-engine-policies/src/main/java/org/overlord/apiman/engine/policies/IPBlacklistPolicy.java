@@ -55,7 +55,7 @@ public class IPBlacklistPolicy extends AbstractPolicy<IPBlacklistConfig> {
         if (wc.getIpList().contains(request.getRemoteAddr())) {
             IPolicyFailureFactoryComponent ffactory = context.getComponent(IPolicyFailureFactoryComponent.class);
             String msg = Messages.i18n.format("IPBlacklistPolicy.NotBlacklisted", request.getRemoteAddr()); //$NON-NLS-1$
-            chain.doFailure(ffactory.createFailure(PolicyFailureType.Other, FailureCodes.IP_BLACKLISTED, msg));
+            chain.doFailure(ffactory.createFailure(PolicyFailureType.Other, PolicyFailureCodes.IP_BLACKLISTED, msg));
         } else {
             super.doApply(request, context, config, chain);
         }

@@ -22,11 +22,11 @@ import org.junit.Test;
  *
  * @author eric.wittmann@redhat.com
  */
-public class BasicAuthPolicyTest extends AbstractGatewayTest {
+public class Policy_RateLimitingTest extends AbstractGatewayTest {
     
     @Test
     public void test() throws Exception {
-        runTestPlan("test-plans/policies/basic-auth-testPlan.xml"); //$NON-NLS-1$
+        runTestPlan("test-plans/policies/rate-limiting-testPlan.xml"); //$NON-NLS-1$
     }
 
 }

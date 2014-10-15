@@ -27,9 +27,9 @@ import java.util.Map;
 public class ServiceRequest implements Serializable {
     
     private static final long serialVersionUID = 8024669261165845962L;
-    
+
     private String apiKey;
-    
+    private transient ServiceContract contract;
     private String type;
     private String destination;
     private Map<String, String> headers = new HeaderHashMap();
@@ -139,5 +139,19 @@ public class ServiceRequest implements Serializable {
      */
     public void setRemoteAddr(String remoteAddr) {
         this.remoteAddr = remoteAddr;
+    }
+
+    /**
+     * @return the contract
+     */
+    public ServiceContract getContract() {
+        return contract;
+    }
+
+    /**
+     * @param contract the contract to set
+     */
+    public void setContract(ServiceContract contract) {
+        this.contract = contract;
     }
 }

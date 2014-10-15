@@ -17,7 +17,7 @@ package org.overlord.apiman.engine.policies;
 
 import org.apache.commons.codec.binary.Base64;
 import org.overlord.apiman.engine.policies.auth.StaticIdentityValidator;
-import org.overlord.apiman.engine.policies.config.BasicAuthenticationPolicyConfig;
+import org.overlord.apiman.engine.policies.config.BasicAuthenticationConfig;
 import org.overlord.apiman.engine.policies.i18n.Messages;
 import org.overlord.apiman.rt.engine.async.AsyncResultImpl;
 import org.overlord.apiman.rt.engine.async.IAsyncHandler;
@@ -37,7 +37,7 @@ import org.overlord.apiman.rt.engine.policy.IPolicyContext;
  *
  * @author eric.wittmann@redhat.com
  */
-public class BasicAuthenticationPolicy extends AbstractPolicy<BasicAuthenticationPolicyConfig> {
+public class BasicAuthenticationPolicy extends AbstractPolicy<BasicAuthenticationConfig> {
     
     private static final StaticIdentityValidator staticIdentityValidator = new StaticIdentityValidator();
     
@@ -51,8 +51,8 @@ public class BasicAuthenticationPolicy extends AbstractPolicy<BasicAuthenticatio
      * @see org.overlord.apiman.engine.policies.AbstractPolicy#getConfigClass()
      */
     @Override
-    protected Class<BasicAuthenticationPolicyConfig> getConfigClass() {
-        return BasicAuthenticationPolicyConfig.class;
+    protected Class<BasicAuthenticationConfig> getConfigClass() {
+        return BasicAuthenticationConfig.class;
     }
     
     /**
@@ -60,14 +60,14 @@ public class BasicAuthenticationPolicy extends AbstractPolicy<BasicAuthenticatio
      */
     @Override
     protected void doApply(final ServiceRequest request, final IPolicyContext context,
-            final BasicAuthenticationPolicyConfig config, final IPolicyChain chain) {
+            final BasicAuthenticationConfig config, final IPolicyChain chain) {
         String authHeader = request.getHeaders().get("Authorization"); //$NON-NLS-1$
         if (authHeader == null || authHeader.trim().isEmpty()) {
-            sendAuthResponse(context, chain, config, FailureCodes.BASIC_AUTH_REQUIRED);
+            sendAuthResponse(context, chain, config, PolicyFailureCodes.BASIC_AUTH_REQUIRED);
             return;
         }
         if (!authHeader.toUpperCase().startsWith("BASIC ")) { //$NON-NLS-1$
-            sendAuthResponse(context, chain, config, FailureCodes.BASIC_AUTH_REQUIRED);
+            sendAuthResponse(context, chain, config, PolicyFailureCodes.BASIC_AUTH_REQUIRED);
             return;
         }
 
@@ -87,7 +87,7 @@ public class BasicAuthenticationPolicy extends AbstractPolicy<BasicAuthenticatio
             }
         } catch (Throwable t) {
             // TODO log this error to apiman::logger
-            sendAuthResponse(context, chain, config, FailureCodes.BASIC_AUTH_FAILED);
+            sendAuthResponse(context, chain, config, PolicyFailureCodes.BASIC_AUTH_FAILED);
             return;
         }
         
@@ -109,7 +109,7 @@ public class BasicAuthenticationPolicy extends AbstractPolicy<BasicAuthenticatio
                         request.getHeaders().remove("Authorization"); //$NON-NLS-1$
                         chain.doApply(request);
                     } else {
-                        sendAuthResponse(context, chain, config, FailureCodes.BASIC_AUTH_FAILED);
+                        sendAuthResponse(context, chain, config, PolicyFailureCodes.BASIC_AUTH_FAILED);
                     }
                 }
             }
@@ -125,7 +125,7 @@ public class BasicAuthenticationPolicy extends AbstractPolicy<BasicAuthenticatio
      * @param handler
      */
     private void validateCredentials(String username, String password, IPolicyContext context,
-            BasicAuthenticationPolicyConfig config, IAsyncHandler<Boolean> handler) {
+            BasicAuthenticationConfig config, IAsyncHandler<Boolean> handler) {
         if (config.getStaticIdentity() != null) {
             staticIdentityValidator.validate(username, password, context, config.getStaticIdentity(), handler);
         } else {
@@ -140,7 +140,7 @@ public class BasicAuthenticationPolicy extends AbstractPolicy<BasicAuthenticatio
      * @param config
      * @param reason
      */
-    protected void sendAuthResponse(IPolicyContext context, IPolicyChain chain, final BasicAuthenticationPolicyConfig config, int reason) {
+    protected void sendAuthResponse(IPolicyContext context, IPolicyChain chain, final BasicAuthenticationConfig config, int reason) {
         IPolicyFailureFactoryComponent pff = context.getComponent(IPolicyFailureFactoryComponent.class);
         PolicyFailure failure = pff.createFailure(PolicyFailureType.Authentication, reason, Messages.i18n.format("BasicAuthenticationPolicy.AuthenticationFailed")); //$NON-NLS-1$
         String realm = config.getRealm();

@@ -88,6 +88,20 @@ textarea.form-data {
   width: 300px;
 }
 
+#form-page .inline-form-control {
+  display: inline; 
+  margin: 0px 5px;
+  width: auto;
+}
+
+#form-page .inline-form-dropdown {
+  height: 28px;
+  display: inline;
+  float: none;
+  margin: 0px 3px 5px 3px;
+  width: auto;
+}
+
 .dropdown-menu li a:hover {
   color: rgb(255, 255, 255);
   background-color: rgb(66, 139, 202);

@@ -22,9 +22,9 @@ import org.overlord.apiman.rt.engine.IRegistry;
 import org.overlord.apiman.rt.engine.beans.Application;
 import org.overlord.apiman.rt.engine.beans.Contract;
 import org.overlord.apiman.rt.engine.beans.Service;
+import org.overlord.apiman.rt.engine.beans.ServiceContract;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
 import org.overlord.apiman.rt.engine.beans.exceptions.InvalidContractException;
-import org.overlord.apiman.rt.engine.beans.exceptions.InvalidServiceException;
 import org.overlord.apiman.rt.engine.beans.exceptions.PublishingException;
 import org.overlord.apiman.rt.engine.beans.exceptions.RegistrationException;
 import org.overlord.apiman.rt.engine.i18n.Messages;
@@ -38,26 +38,12 @@ public class InMemoryRegistry implements IRegistry {
 
     private Map<String, Service> services = new HashMap<String, Service>();
     private Map<String, Application> applications = new HashMap<String, Application>();
-    private Map<String, Contract> contracts = new HashMap<String, Contract>();
+    private Map<String, ServiceContract> contracts = new HashMap<String, ServiceContract>();
 
     /**
      * Constructor.
      */
     public InMemoryRegistry() {
-    }
-    
-    /**
-     * @see org.overlord.apiman.rt.engine.IRegistry#getService(org.overlord.apiman.rt.engine.beans.Contract)
-     */
-    @Override
-    public Service getService(Contract contract) throws InvalidServiceException {
-        String serviceKey = contract.getServiceOrgId() + "|" + contract.getServiceId() + "|" + contract.getServiceVersion(); //$NON-NLS-1$ //$NON-NLS-2$
-        Service service = services.get(serviceKey);
-        if (service == null) {
-            throw new InvalidServiceException(Messages.i18n.format("InMemoryRegistry.ServiceNotFoundInOrg",  //$NON-NLS-1$
-                    contract.getServiceId(), contract.getServiceOrgId()));
-        }
-        return service;
     }
     
     /**
@@ -90,13 +76,28 @@ public class InMemoryRegistry implements IRegistry {
      */
     @Override
     public synchronized void registerApplication(Application application) throws RegistrationException {
+        // Validate the application first - we need to be able to resolve all the contracts.
+        for (Contract contract : application.getContracts()) {
+            if (contracts.containsKey(contract.getApiKey())) {
+                throw new RegistrationException(Messages.i18n.format("InMemoryRegistry.ContractAlreadyPublished", //$NON-NLS-1$
+                        contract.getApiKey()));
+            }
+            String svcKey = getServiceKey(contract.getServiceOrgId(), contract.getServiceId(), contract.getServiceVersion());
+            if (!services.containsKey(svcKey)) {
+                throw new RegistrationException(Messages.i18n.format("InMemoryRegistry.ServiceNotFoundInOrg", //$NON-NLS-1$
+                        contract.getServiceId(), contract.getServiceOrgId()));
+            }
+        }
+        
         String applicationKey = getApplicationKey(application);
         if (applications.containsKey(applicationKey)) {
             throw new RegistrationException(Messages.i18n.format("InMemoryRegistry.AppAlreadyRegistered")); //$NON-NLS-1$
         }
         applications.put(applicationKey, application);
         for (Contract contract : application.getContracts()) {
-            registerContract(contract);
+            String svcKey = getServiceKey(contract.getServiceOrgId(), contract.getServiceId(), contract.getServiceVersion());
+            ServiceContract sc = new ServiceContract(contract.getApiKey(), services.get(svcKey), application, contract.getPolicies());
+            contracts.put(contract.getApiKey(), sc);
         }
     }
 
@@ -122,8 +123,8 @@ public class InMemoryRegistry implements IRegistry {
      * @see org.overlord.apiman.rt.engine.IRegistry#getContract(org.overlord.apiman.rt.engine.beans.ServiceRequest)
      */
     @Override
-    public Contract getContract(ServiceRequest request) throws InvalidContractException {
-        Contract contract = contracts.get(request.getApiKey());
+    public ServiceContract getContract(ServiceRequest request) throws InvalidContractException {
+        ServiceContract contract = contracts.get(request.getApiKey());
         if (contract == null) {
             throw new InvalidContractException(Messages.i18n.format("InMemoryRegistry.NoContractForAPIKey", request.getApiKey())); //$NON-NLS-1$
         }
@@ -131,26 +132,25 @@ public class InMemoryRegistry implements IRegistry {
     }
 
     /**
-     * Registers a contract.  Potentially many of these will happen per application.
-     * @param contract the contract being registered
-     * @throws PublishingException
-     */
-    private void registerContract(Contract contract) throws RegistrationException {
-        if (contracts.containsKey(contract.getApiKey())) {
-            throw new RegistrationException(Messages.i18n.format("InMemoryRegistry.ContractAlreadyPublished", //$NON-NLS-1$
-                    contract.getApiKey()));
-        }
-        contracts.put(contract.getApiKey(), contract);
-    }
-    
-    /**
      * Generates an in-memory key for an service, used to index the app for later quick
      * retrieval.
      * @param service an service
-     * @return an service key
+     * @return a service key
      */
     private String getServiceKey(Service service) {
-        return service.getOrganizationId() + "|" + service.getServiceId() + "|" + service.getVersion(); //$NON-NLS-1$ //$NON-NLS-2$
+        return getServiceKey(service.getOrganizationId(), service.getServiceId(), service.getVersion());
+    }
+
+    /**
+     * Generates an in-memory key for an service, used to index the app for later quick
+     * retrieval.
+     * @param orgId
+     * @param serviceId
+     * @param version
+     * @return a service key
+     */
+    private String getServiceKey(String orgId, String serviceId, String version) {
+        return orgId + "|" + serviceId + "|" + version; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**
