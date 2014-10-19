@@ -34,7 +34,6 @@ import org.overlord.apiman.dt.api.beans.services.ServiceStatus;
 import org.overlord.apiman.dt.api.beans.services.ServiceVersionBean;
 import org.overlord.apiman.dt.api.beans.summary.ContractSummaryBean;
 import org.overlord.apiman.dt.api.core.IApplicationValidator;
-import org.overlord.apiman.dt.api.core.IIdmStorage;
 import org.overlord.apiman.dt.api.core.IServiceValidator;
 import org.overlord.apiman.dt.api.core.IStorage;
 import org.overlord.apiman.dt.api.core.IStorageQuery;
@@ -64,9 +63,7 @@ public class ActionResourceImpl implements IActionResource {
 
     @Inject IStorage storage;
     @Inject IStorageQuery query;
-    @Inject IIdmStorage idmStorage;
     @Inject IGatewayLink gatewayLink;
-    
     @Inject IOrganizationResource orgs;
     
     @Inject IServiceValidator serviceValidator;
@@ -113,7 +110,7 @@ public class ActionResourceImpl implements IActionResource {
 
         ServiceVersionBean versionBean = null;
         try {
-            versionBean = getOrgs().getServiceVersion(action.getOrganizationId(), action.getEntityId(), action.getEntityVersion());
+            versionBean = orgs.getServiceVersion(action.getOrganizationId(), action.getEntityId(), action.getEntityVersion());
         } catch (ServiceVersionNotFoundException e) {
             throw ExceptionFactory.actionException(Messages.i18n.format("ServiceNotFound")); //$NON-NLS-1$
         }
@@ -142,8 +139,11 @@ public class ActionResourceImpl implements IActionResource {
         
         versionBean.setStatus(ServiceStatus.Published);
         try {
+            storage.beginTx();
             storage.update(versionBean);
+            storage.commitTx();
         } catch (Exception e) {
+            storage.rollbackTx();
             throw ExceptionFactory.actionException(Messages.i18n.format("PublishError")); //$NON-NLS-1$
         }
     }
@@ -168,7 +168,7 @@ public class ActionResourceImpl implements IActionResource {
         ApplicationVersionBean versionBean = null;
         List<ContractSummaryBean> contractBeans = null;
         try {
-            versionBean = getOrgs().getAppVersion(action.getOrganizationId(), action.getEntityId(), action.getEntityVersion());
+            versionBean = orgs.getAppVersion(action.getOrganizationId(), action.getEntityId(), action.getEntityVersion());
         } catch (ApplicationVersionNotFoundException e) {
             throw ExceptionFactory.actionException(Messages.i18n.format("ApplicationNotFound")); //$NON-NLS-1$
         }
@@ -213,8 +213,11 @@ public class ActionResourceImpl implements IActionResource {
         versionBean.setStatus(ApplicationStatus.Registered);
         
         try {
+            storage.beginTx();
             storage.update(versionBean);
+            storage.commitTx();
         } catch (Exception e) {
+            storage.rollbackTx();
             throw ExceptionFactory.actionException(Messages.i18n.format("PublishError")); //$NON-NLS-1$
         }
 
@@ -305,20 +308,6 @@ public class ActionResourceImpl implements IActionResource {
      */
     public void setQuery(IStorageQuery query) {
         this.query = query;
-    }
-
-    /**
-     * @return the idmStorage
-     */
-    public IIdmStorage getIdmStorage() {
-        return idmStorage;
-    }
-
-    /**
-     * @param idmStorage the idmStorage to set
-     */
-    public void setIdmStorage(IIdmStorage idmStorage) {
-        this.idmStorage = idmStorage;
     }
 
     /**

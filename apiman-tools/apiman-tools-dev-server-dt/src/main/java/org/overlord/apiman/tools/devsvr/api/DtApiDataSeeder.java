@@ -114,6 +114,8 @@ public class DtApiDataSeeder extends DefaultTestDataSeeder {
         role.getPermissions().add(PermissionType.planAdmin);
         idmStorage.createRole(role);
         
+        storage.beginTx();
+        
         // Create JBoss Overlord org
         OrganizationBean org = new OrganizationBean();
         org.setId("JBossOverlord"); //$NON-NLS-1$
@@ -132,6 +134,8 @@ public class DtApiDataSeeder extends DefaultTestDataSeeder {
         org.setCreatedBy("admin"); //$NON-NLS-1$
         storage.create(org);
         
+        storage.commitTx();
+        
         // Make admin the owner of both orgs
         RoleMembershipBean membership = RoleMembershipBean.create("admin", "OrganizationOwner", "JBossOverlord"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         membership.setCreatedOn(new Date());
@@ -141,6 +145,8 @@ public class DtApiDataSeeder extends DefaultTestDataSeeder {
         membership.setCreatedOn(new Date());
         idmStorage.createMembership(membership);
 
+        storage.beginTx();
+        
         // Create some plans
         PlanBean plan = new PlanBean();
         plan.setId("Platinum"); //$NON-NLS-1$
@@ -315,7 +321,8 @@ public class DtApiDataSeeder extends DefaultTestDataSeeder {
         templateBean.setTemplate("Consumers are limited to @{limit} requests per @{granularity} per @{period}."); //$NON-NLS-1$
         rateLimitPolicyDef.getTemplates().add(templateBean);
         storage.create(rateLimitPolicyDef);
-
+        
+        storage.commitTx();
     }
 
 }

@@ -60,13 +60,17 @@ public class PolicyDefinitionResourceImpl implements IPolicyDefinitionResource {
     @Override
     public List<PolicyDefinitionBean> list() throws NotAuthorizedException {
         try {
+            storage.beginTx();
             SearchCriteriaBean criteria = new SearchCriteriaBean();
             criteria.setOrder("name", true); //$NON-NLS-1$
             criteria.setPage(1);
             criteria.setPageSize(500);
             SearchResultsBean<PolicyDefinitionBean> resultsBean = storage.find(criteria, PolicyDefinitionBean.class);
-            return resultsBean.getBeans();
+            List<PolicyDefinitionBean> beans = resultsBean.getBeans();
+            storage.commitTx();
+            return beans;
         } catch (StorageException e) {
+            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -80,30 +84,39 @@ public class PolicyDefinitionResourceImpl implements IPolicyDefinitionResource {
             throw ExceptionFactory.notAuthorizedException();
         bean.setId(BeanUtils.idFromName(bean.getName()));
         try {
+            storage.beginTx();
             // Store/persist the new policyDef
             storage.create(bean);
+            storage.commitTx();
             return bean;
         } catch (AlreadyExistsException e) {
+            storage.rollbackTx();
             throw ExceptionFactory.policyDefAlreadyExistsException(bean.getName());
         } catch (StorageException e) {
+            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
-    
+
     /**
      * @see org.overlord.apiman.dt.api.rest.contract.IPolicyDefinitionResource#get(java.lang.String)
      */
     @Override
     public PolicyDefinitionBean get(String policyDefinitionId) throws PolicyDefinitionNotFoundException, NotAuthorizedException {
         try {
-            return storage.get(policyDefinitionId, PolicyDefinitionBean.class);
+            storage.beginTx();
+            PolicyDefinitionBean bean = storage.get(policyDefinitionId, PolicyDefinitionBean.class);
+            storage.commitTx();
+            return bean;
         } catch (DoesNotExistException e) {
+            storage.rollbackTx();
             throw ExceptionFactory.policyDefNotFoundException(policyDefinitionId);
         } catch (StorageException e) {
+            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
-    
+
     /**
      * @see org.overlord.apiman.dt.api.rest.contract.IPolicyDefinitionResource#update(java.lang.String, org.overlord.apiman.dt.api.beans.orgs.PolicyDefinitionBean)
      */
@@ -113,6 +126,7 @@ public class PolicyDefinitionResourceImpl implements IPolicyDefinitionResource {
         if (!securityContext.isAdmin())
             throw ExceptionFactory.notAuthorizedException();
         try {
+            storage.beginTx();
             bean.setId(policyDefinitionId);
             PolicyDefinitionBean pdb = storage.get(policyDefinitionId, PolicyDefinitionBean.class);
             if (bean.getName() != null)
@@ -122,9 +136,12 @@ public class PolicyDefinitionResourceImpl implements IPolicyDefinitionResource {
             if (bean.getIcon() != null)
                 pdb.setIcon(bean.getIcon());
             storage.update(pdb);
+            storage.commitTx();
         } catch (DoesNotExistException e) {
+            storage.rollbackTx();
             throw ExceptionFactory.policyDefNotFoundException(policyDefinitionId);
         } catch (StorageException e) {
+            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -138,11 +155,15 @@ public class PolicyDefinitionResourceImpl implements IPolicyDefinitionResource {
         if (!securityContext.isAdmin())
             throw ExceptionFactory.notAuthorizedException();
         try {
+            storage.beginTx();
             PolicyDefinitionBean pdb = storage.get(policyDefinitionId, PolicyDefinitionBean.class);
             storage.delete(pdb);
+            storage.commitTx();
         } catch (DoesNotExistException e) {
+            storage.rollbackTx();
             throw ExceptionFactory.policyDefNotFoundException(policyDefinitionId);
         } catch (StorageException e) {
+            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }

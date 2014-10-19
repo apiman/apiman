@@ -35,6 +35,7 @@ import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaFilterBean;
 import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
 import org.overlord.apiman.dt.api.core.exceptions.AlreadyExistsException;
+import org.overlord.apiman.dt.api.core.exceptions.ConstraintViolationException;
 import org.overlord.apiman.dt.api.core.exceptions.DoesNotExistException;
 import org.overlord.apiman.dt.api.core.exceptions.StorageException;
 import org.slf4j.Logger;
@@ -51,6 +52,8 @@ public abstract class AbstractJpaStorage {
 
     @Inject
     private IEntityManagerFactoryAccessor emfAccessor;
+    
+    private static ThreadLocal<EntityManager> activeEM = new ThreadLocal<EntityManager>();
 
     /**
      * Constructor.
@@ -59,74 +62,94 @@ public abstract class AbstractJpaStorage {
     }
 
     /**
-     * @see org.overlord.apiman.dt.api.core.IStorage#create(java.lang.Object)
+     * @see org.overlord.apiman.dt.api.core.IStorage#beginTx()
      */
-    public <T> void create(T bean) throws StorageException, AlreadyExistsException {
+    protected void beginTx() throws StorageException {
+        if (activeEM.get() != null) {
+            throw new StorageException("Transaction already active.");
+        }
         EntityManager entityManager = emfAccessor.getEntityManagerFactory().createEntityManager();
+        activeEM.set(entityManager);
+        entityManager.getTransaction().begin();
+    }
+    
+    /**
+     * @see org.overlord.apiman.dt.api.core.IStorage#commitTx()
+     */
+    protected void commitTx() throws StorageException {
+        if (activeEM.get() == null) {
+            throw new StorageException("Transaction not active.");
+        }
+        
         try {
-            entityManager.getTransaction().begin();
-            entityManager.persist(bean);
-            entityManager.getTransaction().commit();
+            activeEM.get().getTransaction().commit();
+            activeEM.get().close();
+            activeEM.set(null);
         } catch (EntityExistsException e) {
-            JpaUtil.rollbackQuietly(entityManager);
             throw new AlreadyExistsException();
         } catch (RollbackException e) {
             if (JpaUtil.isConstraintViolation(e)) {
-                throw new AlreadyExistsException();
+                logger.error(e.getMessage(), e);
+                throw new ConstraintViolationException(e);
             } else {
-                JpaUtil.rollbackQuietly(entityManager);
                 logger.error(e.getMessage(), e);
                 throw new StorageException(e);
             }
         } catch (Throwable t) {
-            JpaUtil.rollbackQuietly(entityManager);
             logger.error(t.getMessage(), t);
             throw new StorageException(t);
-        } finally {
-            entityManager.close();
         }
+    }
+    
+    /**
+     * @see org.overlord.apiman.dt.api.core.IStorage#rollbackTx()
+     */
+    protected void rollbackTx() {
+        if (activeEM.get() == null) {
+            throw new RuntimeException("Transaction not active.");
+        }
+        try {
+            JpaUtil.rollbackQuietly(activeEM.get());
+        } finally {
+            activeEM.get().close();
+            activeEM.set(null);
+        }
+    }
+    
+    /**
+     * @return the thread's entity manager
+     * @throws StorageException
+     */
+    protected EntityManager getActiveEntityManager() throws StorageException {
+        EntityManager entityManager = activeEM.get();
+        if (entityManager == null) {
+            throw new StorageException("Transaction not active.");
+        }
+        return entityManager;
+    }
+    
+    /**
+     * @see org.overlord.apiman.dt.api.core.IStorage#create(java.lang.Object)
+     */
+    public <T> void create(T bean) throws StorageException, AlreadyExistsException {
+        EntityManager entityManager = getActiveEntityManager();
+        entityManager.persist(bean);
     }
 
     /**
      * @see org.overlord.apiman.dt.api.core.IStorage#update(java.lang.Object)
      */
     public <T> void update(T bean) throws StorageException, DoesNotExistException {
-        EntityManager entityManager = emfAccessor.getEntityManagerFactory().createEntityManager();
-        try {
-            entityManager.getTransaction().begin();
-            entityManager.merge(bean);
-            entityManager.getTransaction().commit();
-        } catch (IllegalArgumentException e) {
-            JpaUtil.rollbackQuietly(entityManager);
-            throw new DoesNotExistException();
-        } catch (Throwable t) {
-            JpaUtil.rollbackQuietly(entityManager);
-            logger.error(t.getMessage(), t);
-            throw new StorageException(t);
-        } finally {
-            entityManager.close();
-        }
+        EntityManager entityManager = getActiveEntityManager();
+        entityManager.merge(bean);
     }
 
     /**
      * @see org.overlord.apiman.dt.api.core.IStorage#delete(java.lang.Object)
      */
     public <T> void delete(T bean) throws StorageException, DoesNotExistException {
-        EntityManager entityManager = emfAccessor.getEntityManagerFactory().createEntityManager();
-        try {
-            entityManager.getTransaction().begin();
-            entityManager.remove(entityManager.merge(bean));
-            entityManager.getTransaction().commit();
-        } catch (IllegalArgumentException e) {
-            JpaUtil.rollbackQuietly(entityManager);
-            throw new DoesNotExistException();
-        } catch (Throwable t) {
-            JpaUtil.rollbackQuietly(entityManager);
-            logger.error(t.getMessage(), t);
-            throw new StorageException(t);
-        } finally {
-            entityManager.close();
-        }
+        EntityManager entityManager = getActiveEntityManager();
+        entityManager.remove(entityManager.merge(bean));
     }
 
     /**
@@ -134,14 +157,12 @@ public abstract class AbstractJpaStorage {
      */
     public <T> T get(Long id, Class<T> type) throws StorageException, DoesNotExistException {
         T rval = null;
-        EntityManager entityManager = emfAccessor.getEntityManagerFactory().createEntityManager();
+        EntityManager entityManager = getActiveEntityManager();
         try {
             rval = entityManager.find(type, id);
         } catch (Throwable t) {
             logger.error(t.getMessage(), t);
             throw new StorageException(t);
-        } finally {
-            entityManager.close();
         }
         if (rval == null)
             throw new DoesNotExistException();
@@ -153,14 +174,12 @@ public abstract class AbstractJpaStorage {
      */
     public <T> T get(String id, Class<T> type) throws StorageException, DoesNotExistException {
         T rval = null;
-        EntityManager entityManager = emfAccessor.getEntityManagerFactory().createEntityManager();
+        EntityManager entityManager = getActiveEntityManager();
         try {
             rval = entityManager.find(type, id);
         } catch (Throwable t) {
             logger.error(t.getMessage(), t);
             throw new StorageException(t);
-        } finally {
-            entityManager.close();
         }
         if (rval == null)
             throw new DoesNotExistException();
@@ -172,15 +191,13 @@ public abstract class AbstractJpaStorage {
      */
     public <T> T get(String organizationId, String id, Class<T> type) throws StorageException, DoesNotExistException {
         T rval = null;
-        EntityManager entityManager = emfAccessor.getEntityManagerFactory().createEntityManager();
+        EntityManager entityManager = getActiveEntityManager();
         try {
             Object key = new OrgBasedCompositeId(organizationId, id);
             rval = entityManager.find(type, key);
         } catch (Throwable t) {
             logger.error(t.getMessage(), t);
             throw new StorageException(t);
-        } finally {
-            entityManager.close();
         }
         if (rval == null)
             throw new DoesNotExistException();
@@ -192,7 +209,7 @@ public abstract class AbstractJpaStorage {
      */
     public <T> SearchResultsBean<T> find(SearchCriteriaBean criteria, Class<T> type) throws StorageException {
         SearchResultsBean<T> results = new SearchResultsBean<T>();
-        EntityManager entityManager = emfAccessor.getEntityManagerFactory().createEntityManager();
+        EntityManager entityManager = getActiveEntityManager();
         try {
             // Set some default in the case that paging information was not included in the request.
             PagingBean paging = criteria.getPaging();
@@ -235,8 +252,6 @@ public abstract class AbstractJpaStorage {
         } catch (Throwable t) {
             logger.error(t.getMessage(), t);
             throw new StorageException(t);
-        } finally {
-            entityManager.close();
         }
     }
 

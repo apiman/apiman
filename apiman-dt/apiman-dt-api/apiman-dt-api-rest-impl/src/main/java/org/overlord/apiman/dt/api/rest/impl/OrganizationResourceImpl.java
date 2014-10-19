@@ -65,6 +65,7 @@ import org.overlord.apiman.dt.api.core.IServiceValidator;
 import org.overlord.apiman.dt.api.core.IStorage;
 import org.overlord.apiman.dt.api.core.IStorageQuery;
 import org.overlord.apiman.dt.api.core.exceptions.AlreadyExistsException;
+import org.overlord.apiman.dt.api.core.exceptions.ConstraintViolationException;
 import org.overlord.apiman.dt.api.core.exceptions.DoesNotExistException;
 import org.overlord.apiman.dt.api.core.exceptions.StorageException;
 import org.overlord.apiman.dt.api.core.util.PolicyTemplateUtil;
@@ -132,7 +133,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         bean.setCreatedBy(securityContext.getCurrentUser());
         try {
             // Store/persist the new organization
+            storage.beginTx();
             storage.create(bean);
+            storage.commitTx();
 
             // Auto-grant memberships in roles to the creator of the organization
             SearchCriteriaBean criteria = new SearchCriteriaBean();
@@ -149,8 +152,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             }
             return bean;
         } catch (AlreadyExistsException e) {
+            storage.rollbackTx();
+            throw ExceptionFactory.organizationAlreadyExistsException(bean.getName());
+        } catch (ConstraintViolationException e) {
+            storage.rollbackTx();
             throw ExceptionFactory.organizationAlreadyExistsException(bean.getName());
         } catch (StorageException e) {
+            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -163,10 +171,15 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (!securityContext.hasPermission(PermissionType.orgView, organizationId))
             throw ExceptionFactory.notAuthorizedException();
         try {
-            return storage.get(organizationId, OrganizationBean.class);
+            storage.beginTx();
+            OrganizationBean organizationBean = storage.get(organizationId, OrganizationBean.class);
+            storage.commitTx();
+            return organizationBean;
         } catch (DoesNotExistException e) {
+            storage.rollbackTx();
             throw ExceptionFactory.organizationNotFoundException(organizationId);
         } catch (StorageException e) {
+            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -181,10 +194,14 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw ExceptionFactory.notAuthorizedException();
         try {
             bean.setId(organizationId);
+            storage.beginTx();
             storage.update(bean);
+            storage.commitTx();
         } catch (DoesNotExistException e) {
+            storage.rollbackTx();
             throw ExceptionFactory.organizationNotFoundException(organizationId);
         } catch (StorageException e) {
+            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -200,10 +217,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw ExceptionFactory.notAuthorizedException();
         
         try {
+            storage.beginTx();
             storage.get(organizationId, OrganizationBean.class);
         } catch (DoesNotExistException e) {
+            storage.rollbackTx();
             throw ExceptionFactory.organizationNotFoundException(organizationId);
         } catch (StorageException e) {
+            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
 
@@ -216,10 +236,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         try {
             // Store/persist the new application
             storage.create(bean);
+            storage.commitTx();
             return bean;
         } catch (AlreadyExistsException e) {
+            storage.rollbackTx();
             throw ExceptionFactory.applicationAlreadyExistsException(bean.getName());
         } catch (StorageException e) {
+            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -233,10 +256,15 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (!securityContext.hasPermission(PermissionType.appView, organizationId))
             throw ExceptionFactory.notAuthorizedException();
         try {
-            return storage.get(organizationId, applicationId, ApplicationBean.class);
+            storage.beginTx();
+            ApplicationBean applicationBean = storage.get(organizationId, applicationId, ApplicationBean.class);
+            storage.commitTx();
+            return applicationBean;
         } catch (DoesNotExistException e) {
+            storage.rollbackTx();
             throw ExceptionFactory.applicationNotFoundException(applicationId);
         } catch (StorageException e) {
+            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -249,16 +277,11 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             NotAuthorizedException {
         if (!securityContext.hasPermission(PermissionType.appView, organizationId))
             throw ExceptionFactory.notAuthorizedException();
-        try {
-            storage.get(organizationId, OrganizationBean.class);
-        } catch (DoesNotExistException e) {
-            throw ExceptionFactory.organizationNotFoundException(organizationId);
-        } catch (StorageException e) {
-            throw new SystemErrorException(e);
-        }
+        
+        get(organizationId);
 
         try {
-            return getQuery().getApplicationsInOrg(organizationId);
+            return query.getApplicationsInOrg(organizationId);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
@@ -273,12 +296,16 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (!securityContext.hasPermission(PermissionType.appEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
         try {
+            storage.beginTx();
             bean.setOrganizationId(organizationId);
             bean.setId(applicationId);
             storage.update(bean);
+            storage.commitTx();
         } catch (DoesNotExistException e) {
+            storage.rollbackTx();
             throw ExceptionFactory.applicationNotFoundException(applicationId);
         } catch (StorageException e) {
+            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -291,26 +318,28 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throws ApplicationNotFoundException, NotAuthorizedException {
         if (!securityContext.hasPermission(PermissionType.svcEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
+
         try {
+            storage.beginTx();
             ApplicationBean application = storage.get(organizationId, applicationId, ApplicationBean.class);
+
             bean.setCreatedBy(securityContext.getCurrentUser());
             bean.setCreatedOn(new Date());
             bean.setModifiedBy(securityContext.getCurrentUser());
             bean.setModifiedOn(new Date());
             bean.setStatus(ApplicationStatus.Created);
             bean.setApplication(application);
-            if (getApplicationValidator().isReady(bean)) {
-                bean.setStatus(ApplicationStatus.Ready);
-            } else {
-                bean.setStatus(ApplicationStatus.Created);
-            }
             storage.create(bean);
+            storage.commitTx();
             return bean;
         } catch (DoesNotExistException e) {
+            storage.rollbackTx();
             throw ExceptionFactory.applicationNotFoundException(applicationId);
         } catch (StorageException e) {
+            storage.rollbackTx();
             throw new SystemErrorException(e);
         } catch (Exception e) {
+            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -324,7 +353,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
             throw ExceptionFactory.notAuthorizedException();
         try {
-            ApplicationVersionBean applicationVersion = getQuery().getApplicationVersion(organizationId, applicationId, version);
+            ApplicationVersionBean applicationVersion = query.getApplicationVersion(organizationId, applicationId, version);
             if (applicationVersion == null)
                 throw ExceptionFactory.applicationVersionNotFoundException(applicationId, version);
             return applicationVersion;
@@ -343,24 +372,34 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throws ApplicationVersionNotFoundException, NotAuthorizedException {
         if (!securityContext.hasPermission(PermissionType.svcEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
+        
+        ApplicationVersionBean avb = getAppVersion(organizationId, applicationId, version);
+        if (avb.getStatus() == ApplicationStatus.Registered || avb.getStatus() == ApplicationStatus.Retired) {
+            throw ExceptionFactory.invalidApplicationStatusException();
+        }
+        avb.setModifiedBy(securityContext.getCurrentUser());
+        avb.setModifiedOn(new Date());
+
         try {
-            ApplicationVersionBean avb = getAppVersion(organizationId, applicationId, version);
-            bean.setId(avb.getId());
-            bean.setApplication(avb.getApplication());
-            bean.setStatus(ApplicationStatus.Created);
-            bean.setModifiedBy(securityContext.getCurrentUser());
-            bean.setModifiedOn(new Date());
-            bean.setPublishedOn(null);
-            bean.setRetiredOn(null);
-            if (getApplicationValidator().isReady(bean)) {
-                bean.setStatus(ApplicationStatus.Ready);
+            if (applicationValidator.isReady(avb)) {
+                avb.setStatus(ApplicationStatus.Ready);
             }
-            storage.update(bean);
+        } catch (Exception e) {
+            throw new SystemErrorException(e);
+        }
+        
+        try {
+            storage.beginTx();
+            storage.update(avb);
+            storage.commitTx();
         } catch (DoesNotExistException e) {
+            storage.rollbackTx();
             throw ExceptionFactory.applicationNotFoundException(applicationId);
         } catch (StorageException e) {
+            storage.rollbackTx();
             throw new SystemErrorException(e);
         } catch (Exception e) {
+            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -378,7 +417,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         getApp(organizationId, applicationId);
         
         try {
-            return getQuery().getApplicationVersions(organizationId, applicationId);
+            return query.getApplicationVersions(organizationId, applicationId);
         } catch (DoesNotExistException e) {
             throw ExceptionFactory.applicationNotFoundException(applicationId);
         } catch (StorageException e) {
@@ -397,11 +436,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (!securityContext.hasPermission(PermissionType.appEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
         
+        ContractBean contract;
+        ApplicationVersionBean avb;
         try {
-            ApplicationVersionBean avb = getQuery().getApplicationVersion(organizationId, applicationId, version);
+            avb = query.getApplicationVersion(organizationId, applicationId, version);
             if (avb == null)
                 throw ExceptionFactory.applicationNotFoundException(applicationId);
-            ServiceVersionBean svb = getQuery().getServiceVersion(bean.getServiceOrgId(), bean.getServiceId(), bean.getServiceVersion());
+            ServiceVersionBean svb = query.getServiceVersion(bean.getServiceOrgId(), bean.getServiceId(), bean.getServiceVersion());
             if (svb == null)
                 throw ExceptionFactory.serviceNotFoundException(bean.getServiceId());
             Set<ServicePlanBean> plans = svb.getPlans();
@@ -413,33 +454,44 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             }
             if (planVersion == null)
                 throw ExceptionFactory.planNotFoundException(bean.getPlanId());
-            PlanVersionBean pvb = getQuery().getPlanVersion(bean.getServiceOrgId(), bean.getPlanId(), planVersion);
+            PlanVersionBean pvb = query.getPlanVersion(bean.getServiceOrgId(), bean.getPlanId(), planVersion);
             if (pvb == null)
                 throw ExceptionFactory.planNotFoundException(bean.getPlanId());
             
-            ContractBean contract = new ContractBean();
+            contract = new ContractBean();
             contract.setApplication(avb);
             contract.setService(svb);
             contract.setPlan(pvb);
             contract.setCreatedBy(securityContext.getCurrentUser());
             contract.setCreatedOn(new Date());
-            contract.setKey(getApiKeyGenerator().generate());
+            contract.setKey(apiKeyGenerator.generate());
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+
+        // Validate the state of the application.
+        try {
+            if (applicationValidator.isReady(avb, true)) {
+                avb.setStatus(ApplicationStatus.Ready);
+            }
+        } catch (Exception e) {
+            storage.rollbackTx();
+            throw new SystemErrorException(e);
+        }
+
+        try {
+            storage.beginTx();
             storage.create(contract);
             
             // Update the version with new meta-data (e.g. modified-by)
-            try {
-                if (getApplicationValidator().isReady(avb)) {
-                    avb.setStatus(ApplicationStatus.Ready);
-                }
-                avb.setModifiedBy(securityContext.getCurrentUser());
-                avb.setModifiedOn(new Date());
-                storage.update(avb);
-            } catch (Exception e) {
-                throw new SystemErrorException(e);
-            }
+            avb.setModifiedBy(securityContext.getCurrentUser());
+            avb.setModifiedOn(new Date());
+            storage.update(avb);
             
+            storage.commitTx();
             return contract;
         } catch (StorageException e) {
+            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -453,13 +505,17 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
             throw ExceptionFactory.notAuthorizedException();
         try {
+            storage.beginTx();
             ContractBean contract = storage.get(contractId, ContractBean.class);
             if (contract == null)
                 throw ExceptionFactory.contractNotFoundException(contractId);
+            storage.commitTx();
             return contract;
         } catch (DoesNotExistException e) {
+            storage.rollbackTx();
             throw ExceptionFactory.contractNotFoundException(contractId);
         } catch (StorageException e) {
+            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -473,13 +529,17 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (!securityContext.hasPermission(PermissionType.appEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
         try {
+            storage.beginTx();
             ContractBean contract = storage.get(contractId, ContractBean.class);
             if (contract == null)
                 throw ExceptionFactory.contractNotFoundException(contractId);
             storage.delete(contract);
+            storage.commitTx();
         } catch (DoesNotExistException e) {
+            storage.rollbackTx();
             throw ExceptionFactory.contractNotFoundException(contractId);
         } catch (StorageException e) {
+            storage.rollbackTx();
             throw new SystemErrorException(e);
         }        
     }
@@ -497,7 +557,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         getAppVersion(organizationId, applicationId, version);
         
         try {
-            return getQuery().getApplicationContracts(organizationId, applicationId, version);
+            return query.getApplicationContracts(organizationId, applicationId, version);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
@@ -514,7 +574,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw ExceptionFactory.notAuthorizedException();
         
         try {
-            ApplicationVersionBean avb = getQuery().getApplicationVersion(organizationId, applicationId, version);
+            ApplicationVersionBean avb = query.getApplicationVersion(organizationId, applicationId, version);
             if (avb == null)
                 throw ExceptionFactory.applicationVersionNotFoundException(applicationId, version);
         } catch (StorageException e) {
@@ -535,7 +595,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw ExceptionFactory.notAuthorizedException();
         
         try {
-            ApplicationVersionBean avb = getQuery().getApplicationVersion(organizationId, applicationId, version);
+            ApplicationVersionBean avb = query.getApplicationVersion(organizationId, applicationId, version);
             if (avb == null)
                 throw ExceptionFactory.applicationVersionNotFoundException(applicationId, version);
         } catch (StorageException e) {
@@ -555,10 +615,18 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (!securityContext.hasPermission(PermissionType.appEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
 
+        ApplicationVersionBean avb;
         try {
-            ApplicationVersionBean avb = getQuery().getApplicationVersion(organizationId, applicationId, version);
-            if (avb == null)
-                throw ExceptionFactory.applicationVersionNotFoundException(applicationId, version);
+            avb = query.getApplicationVersion(organizationId, applicationId, version);
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+        if (avb == null) {
+            throw ExceptionFactory.applicationVersionNotFoundException(applicationId, version);
+        }
+
+        try {
+            storage.beginTx();
             PolicyBean policy = this.storage.get(policyId, PolicyBean.class);
             if (bean.getName() != null)
                 policy.setName(bean.getName());
@@ -566,10 +634,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 policy.setConfiguration(bean.getConfiguration());
             policy.setModifiedOn(new Date());
             policy.setModifiedBy(this.securityContext.getCurrentUser());
-            this.storage.update(policy);
+            storage.update(policy);
+            storage.commitTx();
         } catch (DoesNotExistException e) {
+            storage.rollbackTx();
             throw ExceptionFactory.policyNotFoundException(policyId);
         } catch (StorageException e) {
+            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -584,15 +655,26 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (!securityContext.hasPermission(PermissionType.appEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
 
+        ApplicationVersionBean avb;
         try {
-            ApplicationVersionBean avb = getQuery().getApplicationVersion(organizationId, applicationId, version);
-            if (avb == null)
-                throw ExceptionFactory.applicationVersionNotFoundException(applicationId, version);
+            avb = query.getApplicationVersion(organizationId, applicationId, version);
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+        if (avb == null) {
+            throw ExceptionFactory.applicationVersionNotFoundException(applicationId, version);
+        }
+
+        try {
+            storage.beginTx();
             PolicyBean policy = this.storage.get(policyId, PolicyBean.class);
-            this.storage.delete(policy);
+            storage.delete(policy);
+            storage.commitTx();
         } catch (DoesNotExistException e) {
+            storage.rollbackTx();
             throw ExceptionFactory.policyNotFoundException(policyId);
         } catch (StorageException e) {
+            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -610,7 +692,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         getAppVersion(organizationId, applicationId, version);
 
         try {
-            return getQuery().getPolicies(organizationId, applicationId, version, PolicyType.Application);
+            return query.getPolicies(organizationId, applicationId, version, PolicyType.Application);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
@@ -627,10 +709,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw ExceptionFactory.notAuthorizedException();
         
         try {
+            storage.beginTx();
             storage.get(organizationId, OrganizationBean.class);
         } catch (DoesNotExistException e) {
+            storage.rollbackTx();
             throw ExceptionFactory.organizationNotFoundException(organizationId);
         } catch (StorageException e) {
+            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
 
@@ -643,10 +728,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         try {
             // Store/persist the new service
             storage.create(bean);
+            storage.commitTx();
             return bean;
         } catch (AlreadyExistsException e) {
+            storage.rollbackTx();
             throw ExceptionFactory.serviceAlreadyExistsException(bean.getName());
         } catch (StorageException e) {
+            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -660,10 +748,15 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
             throw ExceptionFactory.notAuthorizedException();
         try {
-            return storage.get(organizationId, serviceId, ServiceBean.class);
+            storage.beginTx();
+            ServiceBean bean = storage.get(organizationId, serviceId, ServiceBean.class);
+            storage.commitTx();
+            return bean;
         } catch (DoesNotExistException e) {
+            storage.rollbackTx();
             throw ExceptionFactory.serviceNotFoundException(serviceId);
         } catch (StorageException e) {
+            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -676,16 +769,12 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             NotAuthorizedException {
         if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
             throw ExceptionFactory.notAuthorizedException();
-        try {
-            storage.get(organizationId, OrganizationBean.class);
-        } catch (DoesNotExistException e) {
-            throw ExceptionFactory.organizationNotFoundException(organizationId);
-        } catch (StorageException e) {
-            throw new SystemErrorException(e);
-        }
+        
+        // make sure the org exists
+        get(organizationId);
 
         try {
-            return getQuery().getServicesInOrg(organizationId);
+            return query.getServicesInOrg(organizationId);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
@@ -700,12 +789,16 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (!securityContext.hasPermission(PermissionType.svcEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
         try {
+            storage.beginTx();
             bean.setOrganizationId(organizationId);
             bean.setId(serviceId);
             storage.update(bean);
+            storage.commitTx();
         } catch (DoesNotExistException e) {
+            storage.rollbackTx();
             throw ExceptionFactory.serviceNotFoundException(serviceId);
         } catch (StorageException e) {
+            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -719,6 +812,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (!securityContext.hasPermission(PermissionType.svcEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
         try {
+            storage.beginTx();
             ServiceBean service = storage.get(organizationId, serviceId, ServiceBean.class);
             bean.setCreatedBy(securityContext.getCurrentUser());
             bean.setCreatedOn(new Date());
@@ -726,18 +820,22 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             bean.setModifiedOn(new Date());
             bean.setStatus(ServiceStatus.Created);
             bean.setService(service);
-            if (getServiceValidator().isReady(bean)) {
+            if (serviceValidator.isReady(bean)) {
                 bean.setStatus(ServiceStatus.Ready);
             } else {
                 bean.setStatus(ServiceStatus.Created);
             }
             storage.create(bean);
+            storage.commitTx();
             return bean;
         } catch (DoesNotExistException e) {
+            storage.rollbackTx();
             throw ExceptionFactory.serviceNotFoundException(serviceId);
         } catch (StorageException e) {
+            storage.rollbackTx();
             throw new SystemErrorException(e);
         } catch (Exception e) {
+            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -751,7 +849,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
             throw ExceptionFactory.notAuthorizedException();
         try {
-            ServiceVersionBean serviceVersion = getQuery().getServiceVersion(organizationId, serviceId, version);
+            ServiceVersionBean serviceVersion = query.getServiceVersion(organizationId, serviceId, version);
             if (serviceVersion == null)
                 throw ExceptionFactory.serviceVersionNotFoundException(serviceId, version);
             return serviceVersion;
@@ -770,27 +868,45 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throws ServiceVersionNotFoundException, NotAuthorizedException {
         if (!securityContext.hasPermission(PermissionType.svcEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
+        
+        ServiceVersionBean svb = getServiceVersion(organizationId, serviceId, version);
+        if (svb.getStatus() == ServiceStatus.Published || svb.getStatus() == ServiceStatus.Retired) {
+            throw ExceptionFactory.invalidServiceStatusException();
+        }
+        
+        svb.setModifiedBy(securityContext.getCurrentUser());
+        svb.setModifiedOn(new Date());
+        if (bean.getPlans() != null) {
+            svb.getPlans().clear();
+            svb.getPlans().addAll(bean.getPlans());
+        }
+        if (bean.getEndpoint() != null) {
+            svb.setEndpoint(bean.getEndpoint());
+        }
+        if (bean.getEndpointType() != null) {
+            svb.setEndpointType(bean.getEndpointType());
+        }
+        
         try {
-            ServiceVersionBean svb = getServiceVersion(organizationId, serviceId, version);
-            if (svb.getStatus() == ServiceStatus.Published || svb.getStatus() == ServiceStatus.Retired) {
-                throw ExceptionFactory.invalidServiceStatusException();
+            if (serviceValidator.isReady(bean)) {
+                svb.setStatus(ServiceStatus.Ready);
             }
-            bean.setId(svb.getId());
-            bean.setService(svb.getService());
-            bean.setStatus(ServiceStatus.Created);
-            bean.setModifiedBy(securityContext.getCurrentUser());
-            bean.setModifiedOn(new Date());
-            bean.setPublishedOn(null);
-            bean.setRetiredOn(null);
-            if (getServiceValidator().isReady(bean)) {
-                bean.setStatus(ServiceStatus.Ready);
-            }
-            storage.update(bean);
+        } catch (Exception e) {
+            throw new SystemErrorException(e);
+        }
+        
+        try {
+            storage.beginTx();
+            storage.update(svb);
+            storage.commitTx();
         } catch (DoesNotExistException e) {
+            storage.rollbackTx();
             throw ExceptionFactory.serviceNotFoundException(serviceId);
         } catch (StorageException e) {
+            storage.rollbackTx();
             throw new SystemErrorException(e);
         } catch (Exception e) {
+            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -808,7 +924,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         getService(organizationId, serviceId);
         
         try {
-            return getQuery().getServiceVersions(organizationId, serviceId);
+            return query.getServiceVersions(organizationId, serviceId);
         } catch (DoesNotExistException e) {
             throw ExceptionFactory.serviceNotFoundException(serviceId);
         } catch (StorageException e) {
@@ -829,7 +945,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         getServiceVersion(organizationId, serviceId, version);
         
         try {
-            return getQuery().getServiceVersionPlans(organizationId, serviceId, version);
+            return query.getServiceVersionPlans(organizationId, serviceId, version);
         } catch (DoesNotExistException e) {
             throw ExceptionFactory.serviceNotFoundException(serviceId);
         } catch (StorageException e) {
@@ -848,7 +964,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw ExceptionFactory.notAuthorizedException();
         
         try {
-            ServiceVersionBean avb = getQuery().getServiceVersion(organizationId, serviceId, version);
+            ServiceVersionBean avb = query.getServiceVersion(organizationId, serviceId, version);
             if (avb == null)
                 throw ExceptionFactory.serviceVersionNotFoundException(serviceId, version);
         } catch (StorageException e) {
@@ -869,7 +985,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw ExceptionFactory.notAuthorizedException();
         
         try {
-            ServiceVersionBean avb = getQuery().getServiceVersion(organizationId, serviceId, version);
+            ServiceVersionBean avb = query.getServiceVersion(organizationId, serviceId, version);
             if (avb == null)
                 throw ExceptionFactory.serviceVersionNotFoundException(serviceId, version);
         } catch (StorageException e) {
@@ -889,21 +1005,32 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (!securityContext.hasPermission(PermissionType.svcEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
 
+        ServiceVersionBean avb;
         try {
-            ServiceVersionBean avb = getQuery().getServiceVersion(organizationId, serviceId, version);
-            if (avb == null)
-                throw ExceptionFactory.serviceVersionNotFoundException(serviceId, version);
-            PolicyBean policy = this.storage.get(policyId, PolicyBean.class);
+            avb = query.getServiceVersion(organizationId, serviceId, version);
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+        if (avb == null) {
+            throw ExceptionFactory.serviceVersionNotFoundException(serviceId, version);
+        }
+
+        try {
+            storage.beginTx();
+            PolicyBean policy = storage.get(policyId, PolicyBean.class);
             if (bean.getName() != null)
                 policy.setName(bean.getName());
             if (bean.getConfiguration() != null)
                 policy.setConfiguration(bean.getConfiguration());
             policy.setModifiedOn(new Date());
             policy.setModifiedBy(this.securityContext.getCurrentUser());
-            this.storage.update(policy);
+            storage.update(policy);
+            storage.commitTx();
         } catch (DoesNotExistException e) {
+            storage.rollbackTx();
             throw ExceptionFactory.policyNotFoundException(policyId);
         } catch (StorageException e) {
+            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -918,15 +1045,26 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (!securityContext.hasPermission(PermissionType.svcEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
 
+        ServiceVersionBean avb;
         try {
-            ServiceVersionBean avb = getQuery().getServiceVersion(organizationId, serviceId, version);
-            if (avb == null)
-                throw ExceptionFactory.serviceVersionNotFoundException(serviceId, version);
+            avb = query.getServiceVersion(organizationId, serviceId, version);
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+        if (avb == null) {
+            throw ExceptionFactory.serviceVersionNotFoundException(serviceId, version);
+        }
+
+        try {
+            storage.beginTx();
             PolicyBean policy = this.storage.get(policyId, PolicyBean.class);
             this.storage.delete(policy);
+            storage.commitTx();
         } catch (DoesNotExistException e) {
+            storage.rollbackTx();
             throw ExceptionFactory.policyNotFoundException(policyId);
         } catch (StorageException e) {
+            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -944,7 +1082,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         getServiceVersion(organizationId, serviceId, version);
 
         try {
-            return getQuery().getPolicies(organizationId, serviceId, version, PolicyType.Service);
+            return query.getPolicies(organizationId, serviceId, version, PolicyType.Service);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
@@ -974,8 +1112,8 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             if (planVersion == null) {
                 throw ExceptionFactory.planNotFoundException(planId);
             }
-            List<PolicyBean> servicePolicies = getQuery().getPolicies(organizationId, serviceId, version, PolicyType.Service);
-            List<PolicyBean> planPolicies = getQuery().getPolicies(organizationId, planId, planVersion, PolicyType.Plan);
+            List<PolicyBean> servicePolicies = query.getPolicies(organizationId, serviceId, version, PolicyType.Service);
+            List<PolicyBean> planPolicies = query.getPolicies(organizationId, planId, planVersion, PolicyType.Plan);
             
             PolicyChainSummaryBean chain = new PolicyChainSummaryBean();
             chain.getPolicies().addAll(planPolicies);
@@ -997,10 +1135,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw ExceptionFactory.notAuthorizedException();
         
         try {
+            storage.beginTx();
             storage.get(organizationId, OrganizationBean.class);
         } catch (DoesNotExistException e) {
+            storage.rollbackTx();
             throw ExceptionFactory.organizationNotFoundException(organizationId);
         } catch (StorageException e) {
+            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
 
@@ -1013,10 +1154,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         try {
             // Store/persist the new plan
             storage.create(bean);
+            storage.commitTx();
             return bean;
         } catch (AlreadyExistsException e) {
+            storage.rollbackTx();
             throw ExceptionFactory.planAlreadyExistsException(bean.getName());
         } catch (StorageException e) {
+            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -1030,10 +1174,15 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (!securityContext.hasPermission(PermissionType.appView, organizationId))
             throw ExceptionFactory.notAuthorizedException();
         try {
-            return storage.get(organizationId, planId, PlanBean.class);
+            storage.beginTx();
+            PlanBean bean = storage.get(organizationId, planId, PlanBean.class);
+            storage.commitTx();
+            return bean;
         } catch (DoesNotExistException e) {
+            storage.rollbackTx();
             throw ExceptionFactory.planNotFoundException(planId);
         } catch (StorageException e) {
+            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -1046,16 +1195,11 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             NotAuthorizedException {
         if (!securityContext.hasPermission(PermissionType.appView, organizationId))
             throw ExceptionFactory.notAuthorizedException();
-        try {
-            storage.get(organizationId, OrganizationBean.class);
-        } catch (DoesNotExistException e) {
-            throw ExceptionFactory.organizationNotFoundException(organizationId);
-        } catch (StorageException e) {
-            throw new SystemErrorException(e);
-        }
+        
+        get(organizationId);
 
         try {
-            return getQuery().getPlansInOrg(organizationId);
+            return query.getPlansInOrg(organizationId);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
@@ -1070,12 +1214,16 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (!securityContext.hasPermission(PermissionType.appEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
         try {
+            storage.beginTx();
             bean.setOrganizationId(organizationId);
             bean.setId(planId);
             storage.update(bean);
+            storage.commitTx();
         } catch (DoesNotExistException e) {
+            storage.rollbackTx();
             throw ExceptionFactory.planNotFoundException(planId);
         } catch (StorageException e) {
+            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -1086,20 +1234,19 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     @Override
     public SearchResultsBean<PlanBean> searchPlans(String organizationId, SearchCriteriaBean criteria)
             throws OrganizationNotFoundException, InvalidSearchCriteriaException {
-        try {
-            storage.get(organizationId, OrganizationBean.class);
-        } catch (DoesNotExistException e) {
-            throw ExceptionFactory.organizationNotFoundException(organizationId);
-        } catch (StorageException e) {
-            throw new SystemErrorException(e);
-        }
+        
+        get(organizationId);
 
         SearchCriteriaUtil.validateSearchCriteria(criteria);
 
         // TODO only return plans that the user is permitted to see
         try {
-            return storage.find(criteria, PlanBean.class);
+            storage.beginTx();
+            SearchResultsBean<PlanBean> rval = storage.find(criteria, PlanBean.class);
+            storage.commitTx();
+            return rval;
         } catch (StorageException e) {
+            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -1113,6 +1260,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (!securityContext.hasPermission(PermissionType.svcEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
         try {
+            storage.beginTx();
             PlanBean plan = storage.get(organizationId, planId, PlanBean.class);
             bean.setCreatedBy(securityContext.getCurrentUser());
             bean.setCreatedOn(new Date());
@@ -1121,10 +1269,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             bean.setStatus(PlanStatus.Created);
             bean.setPlan(plan);
             storage.create(bean);
+            storage.commitTx();
             return bean;
         } catch (DoesNotExistException e) {
+            storage.rollbackTx();
             throw ExceptionFactory.planNotFoundException(planId);
         } catch (StorageException e) {
+            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -1138,7 +1289,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
             throw ExceptionFactory.notAuthorizedException();
         try {
-            PlanVersionBean planVersion = getQuery().getPlanVersion(organizationId, planId, version);
+            PlanVersionBean planVersion = query.getPlanVersion(organizationId, planId, version);
             if (planVersion == null)
                 throw ExceptionFactory.planVersionNotFoundException(planId, version);
             return planVersion;
@@ -1158,8 +1309,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (!securityContext.hasPermission(PermissionType.svcEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
         // TODO throw error if version is not in the right state
+        PlanVersionBean pvb = getPlanVersion(organizationId, planId, version);
         try {
-            PlanVersionBean pvb = getPlanVersion(organizationId, planId, version);
+            storage.beginTx();
             bean.setId(pvb.getId());
             bean.setPlan(pvb.getPlan());
             bean.setStatus(PlanStatus.Created);
@@ -1167,9 +1319,12 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             bean.setModifiedOn(new Date());
             bean.setLockedOn(null);
             storage.update(bean);
+            storage.commitTx();
         } catch (DoesNotExistException e) {
+            storage.rollbackTx();
             throw ExceptionFactory.planNotFoundException(planId);
         } catch (StorageException e) {
+            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -1187,7 +1342,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         getPlan(organizationId, planId);
         
         try {
-            return getQuery().getPlanVersions(organizationId, planId);
+            return query.getPlanVersions(organizationId, planId);
         } catch (DoesNotExistException e) {
             throw ExceptionFactory.planNotFoundException(planId);
         } catch (StorageException e) {
@@ -1206,7 +1361,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw ExceptionFactory.notAuthorizedException();
         
         try {
-            PlanVersionBean avb = getQuery().getPlanVersion(organizationId, planId, version);
+            PlanVersionBean avb = query.getPlanVersion(organizationId, planId, version);
             if (avb == null)
                 throw ExceptionFactory.planVersionNotFoundException(planId, version);
         } catch (StorageException e) {
@@ -1227,7 +1382,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw ExceptionFactory.notAuthorizedException();
         
         try {
-            PlanVersionBean avb = getQuery().getPlanVersion(organizationId, planId, version);
+            PlanVersionBean avb = query.getPlanVersion(organizationId, planId, version);
             if (avb == null)
                 throw ExceptionFactory.planVersionNotFoundException(planId, version);
         } catch (StorageException e) {
@@ -1247,21 +1402,32 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (!securityContext.hasPermission(PermissionType.appEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
 
+        PlanVersionBean avb;
         try {
-            PlanVersionBean avb = getQuery().getPlanVersion(organizationId, planId, version);
-            if (avb == null)
-                throw ExceptionFactory.planVersionNotFoundException(planId, version);
-            PolicyBean policy = this.storage.get(policyId, PolicyBean.class);
+            avb = query.getPlanVersion(organizationId, planId, version);
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+        if (avb == null) {
+            throw ExceptionFactory.planVersionNotFoundException(planId, version);
+        }
+
+        try {
+            storage.beginTx();
+            PolicyBean policy = storage.get(policyId, PolicyBean.class);
             if (bean.getName() != null)
                 policy.setName(bean.getName());
             if (bean.getConfiguration() != null)
                 policy.setConfiguration(bean.getConfiguration());
             policy.setModifiedOn(new Date());
             policy.setModifiedBy(this.securityContext.getCurrentUser());
-            this.storage.update(policy);
+            storage.update(policy);
+            storage.commitTx();
         } catch (DoesNotExistException e) {
+            storage.rollbackTx();
             throw ExceptionFactory.policyNotFoundException(policyId);
         } catch (StorageException e) {
+            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -1276,15 +1442,26 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (!securityContext.hasPermission(PermissionType.appEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
 
+        PlanVersionBean avb;
         try {
-            PlanVersionBean avb = getQuery().getPlanVersion(organizationId, planId, version);
-            if (avb == null)
-                throw ExceptionFactory.planVersionNotFoundException(planId, version);
+            avb = query.getPlanVersion(organizationId, planId, version);
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+        if (avb == null) {
+            throw ExceptionFactory.planVersionNotFoundException(planId, version);
+        }
+
+        try {
+            storage.beginTx();
             PolicyBean policy = this.storage.get(policyId, PolicyBean.class);
-            this.storage.delete(policy);
+            storage.delete(policy);
+            storage.commitTx();
         } catch (DoesNotExistException e) {
+            storage.rollbackTx();
             throw ExceptionFactory.policyNotFoundException(policyId);
         } catch (StorageException e) {
+            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -1302,7 +1479,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         getPlanVersion(organizationId, planId, version);
 
         try {
-            return getQuery().getPolicies(organizationId, planId, version, PolicyType.Plan);
+            return query.getPolicies(organizationId, planId, version, PolicyType.Plan);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
@@ -1326,11 +1503,14 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             ExceptionFactory.policyDefNotFoundException("null"); //$NON-NLS-1$
         }
         try {
+            storage.beginTx();
             PolicyDefinitionBean def = storage.get(bean.getDefinition().getId(), PolicyDefinitionBean.class);
             bean.setDefinition(def);
         } catch (DoesNotExistException e) {
+            storage.rollbackTx();
             ExceptionFactory.policyDefNotFoundException(bean.getDefinition().getId());
         } catch (StorageException e) {
+            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
         
@@ -1347,8 +1527,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.create(bean);
             
             PolicyTemplateUtil.generatePolicyDescription(bean);
+            storage.commitTx();
             return bean;
         } catch (Exception e) {
+            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -1479,7 +1661,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     protected PolicyBean doGetPolicy(PolicyType type, String organizationId, String entityId,
             String entityVersion, long policyId) throws PolicyNotFoundException {
         try {
+            storage.beginTx();
             PolicyBean policy = storage.get(policyId, PolicyBean.class);
+            storage.commitTx();
             if (policy.getType() != type) {
                 throw ExceptionFactory.policyNotFoundException(policyId);
             }
@@ -1495,10 +1679,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             PolicyTemplateUtil.generatePolicyDescription(policy);
             return policy;
         } catch (DoesNotExistException e) {
+            storage.rollbackTx();
             throw ExceptionFactory.policyNotFoundException(policyId);
         } catch (StorageException e) {
+            storage.rollbackTx();
             throw new SystemErrorException(e);
         } catch (Exception e) {
+            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }

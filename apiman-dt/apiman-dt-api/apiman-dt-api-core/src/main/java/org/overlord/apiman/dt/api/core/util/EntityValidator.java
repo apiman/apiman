@@ -47,14 +47,23 @@ public class EntityValidator implements IServiceValidator, IApplicationValidator
      */
     @Override
     public boolean isReady(ApplicationVersionBean application) throws Exception {
-        boolean ready = true;
+        boolean hasContracts = true;
         
-        List<ContractSummaryBean> contracts = getStorageQuery().getApplicationContracts(application.getApplication().getOrganizationId(), application
+        List<ContractSummaryBean> contracts = storageQuery.getApplicationContracts(application.getApplication().getOrganizationId(), application
                 .getApplication().getId(), application.getVersion());
         if (contracts.isEmpty()) {
-            ready = false;
+            hasContracts = false;
         }
         
+        return isReady(application, hasContracts);
+    }
+    
+    /**
+     * @see org.overlord.apiman.dt.api.core.IApplicationValidator#isReady(org.overlord.apiman.dt.api.beans.apps.ApplicationVersionBean, boolean)
+     */
+    @Override
+    public boolean isReady(ApplicationVersionBean application, boolean hasContracts) throws Exception {
+        boolean ready = hasContracts;
         return ready;
     }
 

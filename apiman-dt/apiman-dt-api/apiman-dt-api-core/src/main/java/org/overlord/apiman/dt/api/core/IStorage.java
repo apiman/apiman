@@ -15,6 +15,8 @@
  */
 package org.overlord.apiman.dt.api.core;
 
+import org.overlord.apiman.dt.api.beans.audit.AuditEntry;
+import org.overlord.apiman.dt.api.beans.search.PagingBean;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
 import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
 import org.overlord.apiman.dt.api.core.exceptions.AlreadyExistsException;
@@ -27,18 +29,113 @@ import org.overlord.apiman.dt.api.core.exceptions.StorageException;
  * @author eric.wittmann@redhat.com
  */
 public interface IStorage {
+    
+    /**
+     * Starts a transaction for the current thread.
+     * @throws StorageException
+     */
+    public void beginTx() throws StorageException;
+    
+    /**
+     * Commits the currently active transaction.
+     * @throws StorageException
+     */
+    public void commitTx() throws StorageException;
+    
+    /**
+     * Rolls back the currently active transaction.
+     * @throws StorageException
+     */
+    public void rollbackTx();
 
+    /**
+     * Creates (stores) an entity.
+     * @param bean
+     * @throws StorageException
+     * @throws AlreadyExistsException
+     */
     public <T> void create(T bean) throws StorageException, AlreadyExistsException;
 
+    /**
+     * Updates an entity in the storage layer.
+     * @param bean
+     * @throws StorageException
+     * @throws DoesNotExistException
+     */
     public <T> void update(T bean) throws StorageException, DoesNotExistException;
 
+    /**
+     * Delets an entity.
+     * @param bean
+     * @throws StorageException
+     * @throws DoesNotExistException
+     */
     public <T> void delete(T bean) throws StorageException, DoesNotExistException;
 
+    /**
+     * Gets an entity by its unique id.
+     * @param id
+     * @param type
+     * @throws StorageException
+     * @throws DoesNotExistException
+     */
     public <T> T get(Long id, Class<T> type) throws StorageException, DoesNotExistException;
 
+    /**
+     * Gets an entity by its unique id.
+     * @param id
+     * @param type
+     * @throws StorageException
+     * @throws DoesNotExistException
+     */
     public <T> T get(String id, Class<T> type) throws StorageException, DoesNotExistException;
 
+    /**
+     * Gets an entity by its organization ID and unique ID.  Use this form when asking
+     * for an entity that cannot be uniquely identified by its ID field alone.
+     * @param organizationId
+     * @param id
+     * @param type
+     * @throws StorageException
+     * @throws DoesNotExistException
+     */
     public <T> T get(String organizationId, String id, Class<T> type) throws StorageException, DoesNotExistException;
 
+    /**
+     * Finds entities by provided criteria.
+     * @param criteria
+     * @param type
+     * @throws StorageException
+     */
     public <T> SearchResultsBean<T> find(SearchCriteriaBean criteria, Class<T> type) throws StorageException;
+    
+    /**
+     * Called to store an audit entry for the given bean.
+     * @param bean
+     * @param entry
+     * @throws StorageException
+     */
+    public void createAuditEntry(AuditEntry entry) throws StorageException;
+    
+    /**
+     * Gets the audit log for an entity.
+     * @param organizationId
+     * @param entityId
+     * @param entityVersion
+     * @param type
+     * @param paging
+     * @throws StorageException
+     */
+    public <T> SearchResultsBean<AuditEntry> auditEntity(String organizationId, String entityId,
+            String entityVersion, Class<T> type, PagingBean paging) throws StorageException;
+
+    /**
+     * Gets the audit log for a user.
+     * @param userId
+     * @param type
+     * @param paging
+     * @return
+     * @throws StorageException
+     */
+    public <T> SearchResultsBean<AuditEntry> auditUser(String userId, Class<T> type, PagingBean paging) throws StorageException;
 }

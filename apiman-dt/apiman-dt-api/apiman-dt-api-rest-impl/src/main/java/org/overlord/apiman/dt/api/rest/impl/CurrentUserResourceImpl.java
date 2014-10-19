@@ -29,7 +29,6 @@ import org.overlord.apiman.dt.api.beans.summary.ApplicationSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.OrganizationSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.ServiceSummaryBean;
 import org.overlord.apiman.dt.api.core.IIdmStorage;
-import org.overlord.apiman.dt.api.core.IStorage;
 import org.overlord.apiman.dt.api.core.IStorageQuery;
 import org.overlord.apiman.dt.api.core.exceptions.AlreadyExistsException;
 import org.overlord.apiman.dt.api.core.exceptions.DoesNotExistException;
@@ -49,8 +48,6 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
     @Inject
     private IIdmStorage idmStorage;
     @Inject
-    private IStorage storage;
-    @Inject
     private IStorageQuery query;
     @Inject
     private ISecurityContext securityContext;
@@ -66,10 +63,10 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
      */
     @Override
     public UserBean getInfo() {
-        String userId = getSecurityContext().getCurrentUser();
+        String userId = securityContext.getCurrentUser();
         try {
-            UserBean user = getIdmStorage().getUser(userId);
-            user.setAdmin(getSecurityContext().isAdmin());
+            UserBean user = idmStorage.getUser(userId);
+            user.setAdmin(securityContext.isAdmin());
             return user;
         } catch (DoesNotExistException e) {
             UserBean user = new UserBean();
@@ -78,7 +75,7 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
             user.setEmail(userId + "@example.org"); //$NON-NLS-1$
             user.setJoinedOn(new Date());
             try {
-                getIdmStorage().createUser(user);
+                idmStorage.createUser(user);
             } catch (AlreadyExistsException e1) {
                 throw new SystemErrorException(e);
             } catch (StorageException e1) {
@@ -95,9 +92,9 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
      */
     @Override
     public List<OrganizationSummaryBean> getOrganizations() {
-        Set<String> permittedOrganizations = getSecurityContext().getPermittedOrganizations(PermissionType.orgView);
+        Set<String> permittedOrganizations = securityContext.getPermittedOrganizations(PermissionType.orgView);
         try {
-            return getQuery().getOrgs(permittedOrganizations);
+            return query.getOrgs(permittedOrganizations);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
@@ -108,9 +105,9 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
      */
     @Override
     public List<ApplicationSummaryBean> getApplications() {
-        Set<String> permittedOrganizations = getSecurityContext().getPermittedOrganizations(PermissionType.orgView);
+        Set<String> permittedOrganizations = securityContext.getPermittedOrganizations(PermissionType.orgView);
         try {
-            return getQuery().getApplicationsInOrgs(permittedOrganizations);
+            return query.getApplicationsInOrgs(permittedOrganizations);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
@@ -121,9 +118,9 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
      */
     @Override
     public List<ServiceSummaryBean> getServices() {
-        Set<String> permittedOrganizations = getSecurityContext().getPermittedOrganizations(PermissionType.orgView);
+        Set<String> permittedOrganizations = securityContext.getPermittedOrganizations(PermissionType.orgView);
         try {
-            return getQuery().getServicesInOrgs(permittedOrganizations);
+            return query.getServicesInOrgs(permittedOrganizations);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
@@ -141,20 +138,6 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
      */
     public void setIdmStorage(IIdmStorage idmStorage) {
         this.idmStorage = idmStorage;
-    }
-
-    /**
-     * @return the storage
-     */
-    public IStorage getStorage() {
-        return storage;
-    }
-
-    /**
-     * @param storage the storage to set
-     */
-    public void setStorage(IStorage storage) {
-        this.storage = storage;
     }
 
     /**

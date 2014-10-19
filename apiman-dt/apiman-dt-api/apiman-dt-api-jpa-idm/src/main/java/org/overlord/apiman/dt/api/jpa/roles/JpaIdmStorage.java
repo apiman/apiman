@@ -40,7 +40,6 @@ import org.overlord.apiman.dt.api.core.exceptions.AlreadyExistsException;
 import org.overlord.apiman.dt.api.core.exceptions.DoesNotExistException;
 import org.overlord.apiman.dt.api.core.exceptions.StorageException;
 import org.overlord.apiman.dt.api.jpa.AbstractJpaStorage;
-import org.overlord.apiman.dt.api.jpa.JpaUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,7 +65,17 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
     @Override
     public void createUser(UserBean user) throws StorageException, AlreadyExistsException {
         user.setJoinedOn(new Date());
-        super.create(user);
+        beginTx();
+        try {
+            super.create(user);
+            commitTx();
+        } catch (AlreadyExistsException e) {
+            rollbackTx();
+            throw e;
+        } catch (StorageException e) {
+            rollbackTx();
+            throw e;
+        }
     }
     
     /**
@@ -74,7 +83,12 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
      */
     @Override
     public UserBean getUser(String userId) throws StorageException, DoesNotExistException {
-        return super.get(userId, UserBean.class);
+        beginTx();
+        try {
+            return super.get(userId, UserBean.class);
+        } finally {
+            commitTx();
+        }
     }
     
     /**
@@ -82,7 +96,12 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
      */
     @Override
     public void updateUser(UserBean user) throws StorageException, DoesNotExistException {
-        super.update(user);
+        beginTx();
+        try {
+            super.update(user);
+        } finally {
+            commitTx();
+        }
     }
     
     /**
@@ -90,7 +109,12 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
      */
     @Override
     public SearchResultsBean<UserBean> findUsers(SearchCriteriaBean criteria) throws StorageException {
-        return super.find(criteria, UserBean.class);
+        beginTx();
+        try {
+            return super.find(criteria, UserBean.class);
+        } finally {
+            commitTx();
+        }
     }
     
     /**
@@ -98,7 +122,12 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
      */
     @Override
     public void createRole(RoleBean role) throws StorageException, AlreadyExistsException {
-        super.create(role);
+        beginTx();
+        try {
+            super.create(role);
+        } finally {
+            commitTx();
+        }
     }
     
     /**
@@ -106,7 +135,12 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
      */
     @Override
     public void updateRole(RoleBean role) throws StorageException, DoesNotExistException {
-        super.update(role);
+        beginTx();
+        try {
+            super.update(role);
+        } finally {
+            commitTx();
+        }
     }
     
     /**
@@ -114,23 +148,23 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
      */
     @Override
     public void deleteRole(RoleBean role) throws StorageException, DoesNotExistException {
-        // First delete all memberships in this role
-        EntityManager entityManager = getEmfAccessor().getEntityManagerFactory().createEntityManager();
+        beginTx();
         try {
-            entityManager.getTransaction().begin();
+            // First delete all memberships in this role
+            EntityManager entityManager = getActiveEntityManager();
             Query query = entityManager.createQuery("DELETE from RoleMembershipBean m WHERE m.roleId = :roleId" ); //$NON-NLS-1$
             query.setParameter("roleId", role.getId()); //$NON-NLS-1$
             query.executeUpdate();
-            entityManager.getTransaction().commit();
+
+            // Then delete the role itself.
+            super.delete(role);
+            
+            commitTx();
         } catch (Throwable t) {
-            JpaUtil.rollbackQuietly(entityManager);
             logger.error(t.getMessage(), t);
+            rollbackTx();
             throw new StorageException(t);
-        } finally {
-            entityManager.close();
         }
-        // Then delete the role itself.
-        super.delete(role);
     }
     
     /**
@@ -138,15 +172,25 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
      */
     @Override
     public RoleBean getRole(String roleId) throws StorageException, DoesNotExistException {
-        return super.get(roleId, RoleBean.class);
+        beginTx();
+        try {
+            return getRoleInternal(roleId);
+        } finally {
+            commitTx();
+        }
     }
-    
+
     /**
      * @see org.overlord.apiman.dt.api.core.IIdmStorage#findRoles(org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean)
      */
     @Override
     public SearchResultsBean<RoleBean> findRoles(SearchCriteriaBean criteria) throws StorageException {
-        return super.find(criteria, RoleBean.class);
+        beginTx();
+        try {
+            return super.find(criteria, RoleBean.class);
+        } finally {
+            commitTx();
+        }
     }
     
     /**
@@ -155,7 +199,12 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
     @Override
     public void createMembership(RoleMembershipBean membership) throws StorageException,
             AlreadyExistsException {
-        super.create(membership);
+        beginTx();
+        try {
+            super.create(membership);
+        } finally {
+            commitTx();
+        }
     }
 
     /**
@@ -164,25 +213,23 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
     @Override
     public void deleteMembership(String userId, String roleId, String organizationId)
             throws StorageException, DoesNotExistException {
-        EntityManager entityManager = getEmfAccessor().getEntityManagerFactory().createEntityManager();
+        beginTx();
         try {
-            entityManager.getTransaction().begin();
+            EntityManager entityManager = getActiveEntityManager();
             Query query = entityManager.createQuery("DELETE FROM RoleMembershipBean m WHERE m.roleId = :roleId AND m.userId = :userId AND m.organizationId = :orgId" ); //$NON-NLS-1$
             query.setParameter("roleId", roleId); //$NON-NLS-1$
             query.setParameter("userId", userId); //$NON-NLS-1$
             query.setParameter("orgId", organizationId); //$NON-NLS-1$
             if (query.executeUpdate() == 0)
                 throw new DoesNotExistException();
-            entityManager.getTransaction().commit();
+            commitTx();
         } catch (DoesNotExistException dne) {
-            JpaUtil.rollbackQuietly(entityManager);
+            rollbackTx();
             throw dne;
         } catch (Throwable t) {
-            JpaUtil.rollbackQuietly(entityManager);
             logger.error(t.getMessage(), t);
+            rollbackTx();
             throw new StorageException(t);
-        } finally {
-            entityManager.close();
         }
     }
 
@@ -191,20 +238,18 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
      */
     @Override
     public void deleteMemberships(String userId, String organizationId) throws StorageException {
-        EntityManager entityManager = getEmfAccessor().getEntityManagerFactory().createEntityManager();
+        beginTx();
         try {
-            entityManager.getTransaction().begin();
+            EntityManager entityManager = getActiveEntityManager();
             Query query = entityManager.createQuery("DELETE FROM RoleMembershipBean m WHERE m.userId = :userId AND m.organizationId = :orgId" ); //$NON-NLS-1$
             query.setParameter("userId", userId); //$NON-NLS-1$
             query.setParameter("orgId", organizationId); //$NON-NLS-1$
             query.executeUpdate();
-            entityManager.getTransaction().commit();
+            commitTx();
         } catch (Throwable t) {
-            JpaUtil.rollbackQuietly(entityManager);
             logger.error(t.getMessage(), t);
+            rollbackTx();
             throw new StorageException(t);
-        } finally {
-            entityManager.close();
         }
     }
     
@@ -214,8 +259,9 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
     @Override
     public Set<RoleMembershipBean> getUserMemberships(String userId) throws StorageException {
         Set<RoleMembershipBean> memberships = new HashSet<RoleMembershipBean>();
-        EntityManager entityManager = getEmfAccessor().getEntityManagerFactory().createEntityManager();
+        beginTx();
         try {
+            EntityManager entityManager = getActiveEntityManager();
             CriteriaBuilder builder = entityManager.getCriteriaBuilder();
             CriteriaQuery<RoleMembershipBean> criteriaQuery = builder.createQuery(RoleMembershipBean.class);
             Root<RoleMembershipBean> from = criteriaQuery.from(RoleMembershipBean.class);
@@ -223,12 +269,12 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
             TypedQuery<RoleMembershipBean> typedQuery = entityManager.createQuery(criteriaQuery);
             List<RoleMembershipBean> resultList = typedQuery.getResultList();
             memberships.addAll(resultList);
+            commitTx();
             return memberships;
         } catch (Throwable t) {
             logger.error(t.getMessage(), t);
+            rollbackTx();
             throw new StorageException(t);
-        } finally {
-            entityManager.close();
         }
     }
     
@@ -238,8 +284,9 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
     @Override
     public Set<RoleMembershipBean> getUserMemberships(String userId, String organizationId) throws StorageException {
         Set<RoleMembershipBean> memberships = new HashSet<RoleMembershipBean>();
-        EntityManager entityManager = getEmfAccessor().getEntityManagerFactory().createEntityManager();
+        beginTx();
         try {
+            EntityManager entityManager = getActiveEntityManager();
             CriteriaBuilder builder = entityManager.getCriteriaBuilder();
             CriteriaQuery<RoleMembershipBean> criteriaQuery = builder.createQuery(RoleMembershipBean.class);
             Root<RoleMembershipBean> from = criteriaQuery.from(RoleMembershipBean.class);
@@ -249,12 +296,12 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
             TypedQuery<RoleMembershipBean> typedQuery = entityManager.createQuery(criteriaQuery);
             List<RoleMembershipBean> resultList = typedQuery.getResultList();
             memberships.addAll(resultList);
+            commitTx();
             return memberships;
         } catch (Throwable t) {
             logger.error(t.getMessage(), t);
+            rollbackTx();
             throw new StorageException(t);
-        } finally {
-            entityManager.close();
         }
     }
     
@@ -264,8 +311,9 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
     @Override
     public Set<RoleMembershipBean> getOrgMemberships(String organizationId) throws StorageException {
         Set<RoleMembershipBean> memberships = new HashSet<RoleMembershipBean>();
-        EntityManager entityManager = getEmfAccessor().getEntityManagerFactory().createEntityManager();
+        beginTx();
         try {
+            EntityManager entityManager = getActiveEntityManager();
             CriteriaBuilder builder = entityManager.getCriteriaBuilder();
             CriteriaQuery<RoleMembershipBean> criteriaQuery = builder.createQuery(RoleMembershipBean.class);
             Root<RoleMembershipBean> from = criteriaQuery.from(RoleMembershipBean.class);
@@ -273,12 +321,12 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
             TypedQuery<RoleMembershipBean> typedQuery = entityManager.createQuery(criteriaQuery);
             List<RoleMembershipBean> resultList = typedQuery.getResultList();
             memberships.addAll(resultList);
+            commitTx();
             return memberships;
         } catch (Throwable t) {
             logger.error(t.getMessage(), t);
+            rollbackTx();
             throw new StorageException(t);
-        } finally {
-            entityManager.close();
         }
     }
     
@@ -288,8 +336,9 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
     @Override
     public Set<PermissionBean> getPermissions(String userId) throws StorageException {
         Set<PermissionBean> permissions = new HashSet<PermissionBean>();
-        EntityManager entityManager = getEmfAccessor().getEntityManagerFactory().createEntityManager();
+        beginTx();
         try {
+            EntityManager entityManager = getActiveEntityManager();
             CriteriaBuilder builder = entityManager.getCriteriaBuilder();
             CriteriaQuery<RoleMembershipBean> criteriaQuery = builder.createQuery(RoleMembershipBean.class);
             Root<RoleMembershipBean> from = criteriaQuery.from(RoleMembershipBean.class);
@@ -297,7 +346,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
             TypedQuery<RoleMembershipBean> typedQuery = entityManager.createQuery(criteriaQuery);
             List<RoleMembershipBean> resultList = typedQuery.getResultList();
             for (RoleMembershipBean membership : resultList) {
-                RoleBean role = getRole(membership.getRoleId());
+                RoleBean role = getRoleInternal(membership.getRoleId());
                 String qualifier = membership.getOrganizationId();
                 for (PermissionType permission : role.getPermissions()) {
                     PermissionBean p = new PermissionBean();
@@ -306,13 +355,23 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
                     permissions.add(p);
                 }
             }
+            commitTx();
             return permissions;
         } catch (Throwable t) {
             logger.error(t.getMessage(), t);
+            rollbackTx();
             throw new StorageException(t);
-        } finally {
-            entityManager.close();
         }
     }
 
+    /**
+     * @param roleId
+     * @return a role by id
+     * @throws StorageException
+     * @throws DoesNotExistException
+     */
+    protected RoleBean getRoleInternal(String roleId) throws StorageException, DoesNotExistException {
+        return super.get(roleId, RoleBean.class);
+    }
+    
 }

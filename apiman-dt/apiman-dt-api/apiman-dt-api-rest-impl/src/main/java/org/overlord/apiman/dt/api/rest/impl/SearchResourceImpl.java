@@ -29,17 +29,13 @@ import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
 import org.overlord.apiman.dt.api.beans.services.ServiceBean;
 import org.overlord.apiman.dt.api.beans.summary.ApplicationSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.ServiceSummaryBean;
-import org.overlord.apiman.dt.api.core.IIdmStorage;
 import org.overlord.apiman.dt.api.core.IStorage;
 import org.overlord.apiman.dt.api.core.exceptions.StorageException;
-import org.overlord.apiman.dt.api.rest.contract.IRoleResource;
 import org.overlord.apiman.dt.api.rest.contract.ISearchResource;
-import org.overlord.apiman.dt.api.rest.contract.IUserResource;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.InvalidSearchCriteriaException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.SystemErrorException;
 import org.overlord.apiman.dt.api.rest.impl.util.SearchCriteriaUtil;
-import org.overlord.apiman.dt.api.security.ISecurityContext;
 
 /**
  * Implementation of the Search API.
@@ -50,12 +46,6 @@ import org.overlord.apiman.dt.api.security.ISecurityContext;
 public class SearchResourceImpl implements ISearchResource {
 
     @Inject IStorage storage;
-    @Inject IIdmStorage idmStorage;
-    
-    @Inject IUserResource users;
-    @Inject IRoleResource roles;
-    
-    @Inject ISecurityContext securityContext;
     
     /**
      * Constructor.
@@ -72,8 +62,12 @@ public class SearchResourceImpl implements ISearchResource {
         // TODO only return organizations that the user is permitted to see?
         try {
             SearchCriteriaUtil.validateSearchCriteria(criteria);
-            return storage.find(criteria, OrganizationBean.class);
+            storage.beginTx();
+            SearchResultsBean<OrganizationBean> rval = storage.find(criteria, OrganizationBean.class);
+            storage.commitTx();
+            return rval;
         } catch (StorageException e) {
+            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -85,8 +79,9 @@ public class SearchResourceImpl implements ISearchResource {
     public SearchResultsBean<ApplicationSummaryBean> searchApps(SearchCriteriaBean criteria)
             throws OrganizationNotFoundException, InvalidSearchCriteriaException {
         // TODO only return applications that the user is permitted to see?
+        SearchCriteriaUtil.validateSearchCriteria(criteria);
         try {
-            SearchCriteriaUtil.validateSearchCriteria(criteria);
+            storage.beginTx();
             SearchResultsBean<ApplicationBean> result = storage.find(criteria, ApplicationBean.class);
             SearchResultsBean<ApplicationSummaryBean> rval = new SearchResultsBean<ApplicationSummaryBean>();
             rval.setTotalSize(result.getTotalSize());
@@ -104,8 +99,10 @@ public class SearchResourceImpl implements ISearchResource {
                 summary.setOrganizationName(organization.getName());
                 rval.getBeans().add(summary);
             }
+            storage.commitTx();
             return rval;
         } catch (StorageException e) {
+            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -117,8 +114,9 @@ public class SearchResourceImpl implements ISearchResource {
     public SearchResultsBean<ServiceSummaryBean> searchServices(SearchCriteriaBean criteria)
             throws OrganizationNotFoundException, InvalidSearchCriteriaException {
         // TODO only return services that the user is permitted to see?
+        SearchCriteriaUtil.validateSearchCriteria(criteria);
         try {
-            SearchCriteriaUtil.validateSearchCriteria(criteria);
+            storage.beginTx();
             SearchResultsBean<ServiceBean> result = storage.find(criteria, ServiceBean.class);
             SearchResultsBean<ServiceSummaryBean> rval = new SearchResultsBean<ServiceSummaryBean>();
             rval.setTotalSize(result.getTotalSize());
@@ -135,8 +133,10 @@ public class SearchResourceImpl implements ISearchResource {
                 summary.setOrganizationName(organization.getName());
                 rval.getBeans().add(summary);
             }
+            storage.commitTx();
             return rval;
         } catch (StorageException e) {
+            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -154,61 +154,4 @@ public class SearchResourceImpl implements ISearchResource {
     public void setStorage(IStorage storage) {
         this.storage = storage;
     }
-
-    /**
-     * @return the idmStorage
-     */
-    public IIdmStorage getIdmStorage() {
-        return idmStorage;
-    }
-
-    /**
-     * @param idmStorage the idmStorage to set
-     */
-    public void setIdmStorage(IIdmStorage idmStorage) {
-        this.idmStorage = idmStorage;
-    }
-
-    /**
-     * @return the users
-     */
-    public IUserResource getUsers() {
-        return users;
-    }
-
-    /**
-     * @param users the users to set
-     */
-    public void setUsers(IUserResource users) {
-        this.users = users;
-    }
-
-    /**
-     * @return the roles
-     */
-    public IRoleResource getRoles() {
-        return roles;
-    }
-
-    /**
-     * @param roles the roles to set
-     */
-    public void setRoles(IRoleResource roles) {
-        this.roles = roles;
-    }
-
-    /**
-     * @return the securityContext
-     */
-    public ISecurityContext getSecurityContext() {
-        return securityContext;
-    }
-
-    /**
-     * @param securityContext the securityContext to set
-     */
-    public void setSecurityContext(ISecurityContext securityContext) {
-        this.securityContext = securityContext;
-    }
-    
 }
