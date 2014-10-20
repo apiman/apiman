@@ -22,7 +22,9 @@ package org.overlord.apiman.dt.api.beans.audit;
  */
 public enum AuditEntryType {
 
-    Create, Edit, Delete, 
+    // Entity events
+    Create, Update, Delete, 
+    // Action events
     Publish, Retire,
     Register, Unregister
     

@@ -26,10 +26,12 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.overlord.apiman.dt.api.beans.apps.ApplicationBean;
 import org.overlord.apiman.dt.api.beans.apps.ApplicationVersionBean;
+import org.overlord.apiman.dt.api.beans.audit.AuditEntryBean;
 import org.overlord.apiman.dt.api.beans.contracts.ContractBean;
 import org.overlord.apiman.dt.api.beans.contracts.NewContractBean;
 import org.overlord.apiman.dt.api.beans.idm.GrantRolesBean;
@@ -90,6 +92,13 @@ public interface IOrganizationResource {
     @Path("{organizationId}")
     @Produces(MediaType.APPLICATION_JSON)
     public void update(@PathParam("organizationId") String organizationId, OrganizationBean bean)
+            throws OrganizationNotFoundException, NotAuthorizedException;
+
+    @GET
+    @Path("{organizationId}/activity")
+    @Produces(MediaType.APPLICATION_JSON)
+    public SearchResultsBean<AuditEntryBean> activity(@PathParam("organizationId") String organizationId,
+            @QueryParam("page") int page, @QueryParam("count") int pageSize)
             throws OrganizationNotFoundException, NotAuthorizedException;
 
     /*

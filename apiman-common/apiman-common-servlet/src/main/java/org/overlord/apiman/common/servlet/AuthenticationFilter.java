@@ -227,12 +227,14 @@ public class AuthenticationFilter implements Filter {
                 request.login(credentials.username, credentials.password);
             } else {
                 request.login(credentials.username, credentials.password);
-            }            
-            doFilterChain(request, response, chain, null);
+            }
         } catch (Exception e) {
             // TODO log this error?
-            sendAuthResponse((HttpServletResponse)response);
+            e.printStackTrace();
+            sendAuthResponse((HttpServletResponse) response);
+            return;
         }
+        doFilterChain(request, response, chain, null);
     }
 
     /**

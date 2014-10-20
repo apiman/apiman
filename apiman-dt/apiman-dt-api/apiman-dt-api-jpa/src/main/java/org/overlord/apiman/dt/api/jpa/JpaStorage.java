@@ -29,7 +29,7 @@ import javax.persistence.Query;
 import org.overlord.apiman.dt.api.beans.apps.ApplicationBean;
 import org.overlord.apiman.dt.api.beans.apps.ApplicationVersionBean;
 import org.overlord.apiman.dt.api.beans.audit.AuditEntityType;
-import org.overlord.apiman.dt.api.beans.audit.AuditEntry;
+import org.overlord.apiman.dt.api.beans.audit.AuditEntryBean;
 import org.overlord.apiman.dt.api.beans.contracts.ContractBean;
 import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
 import org.overlord.apiman.dt.api.beans.plans.PlanBean;
@@ -157,10 +157,10 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     }
 
     /**
-     * @see org.overlord.apiman.dt.api.core.IStorage#createAuditEntry(org.overlord.apiman.dt.api.beans.audit.AuditEntry)
+     * @see org.overlord.apiman.dt.api.core.IStorage#createAuditEntry(org.overlord.apiman.dt.api.beans.audit.AuditEntryBean)
      */
     @Override
-    public void createAuditEntry(AuditEntry entry) throws StorageException {
+    public void createAuditEntry(AuditEntryBean entry) throws StorageException {
         super.create(entry);
     }
 
@@ -168,7 +168,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * @see org.overlord.apiman.dt.api.core.IStorage#auditEntity(java.lang.String, java.lang.String, java.lang.String, java.lang.Class, org.overlord.apiman.dt.api.beans.search.PagingBean)
      */
     @Override
-    public <T> SearchResultsBean<AuditEntry> auditEntity(String organizationId, String entityId, String entityVersion,
+    public <T> SearchResultsBean<AuditEntryBean> auditEntity(String organizationId, String entityId, String entityVersion,
             Class<T> type, PagingBean paging) throws StorageException {
         SearchCriteriaBean criteria = new SearchCriteriaBean();
         if (paging != null) {
@@ -203,14 +203,14 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             }
         }
         
-        return find(criteria, AuditEntry.class);
+        return find(criteria, AuditEntryBean.class);
     }
 
     /**
      * @see org.overlord.apiman.dt.api.core.IStorage#auditUser(java.lang.String, java.lang.Class, org.overlord.apiman.dt.api.beans.search.PagingBean)
      */
     @Override
-    public <T> SearchResultsBean<AuditEntry> auditUser(String userId, Class<T> type, PagingBean paging)
+    public <T> SearchResultsBean<AuditEntryBean> auditUser(String userId, Class<T> type, PagingBean paging)
             throws StorageException {
         SearchCriteriaBean criteria = new SearchCriteriaBean();
         if (paging != null) {
@@ -224,7 +224,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             criteria.addFilter("who", userId, SearchCriteriaFilterBean.OPERATOR_EQ); //$NON-NLS-1$
         }
         
-        return find(criteria, AuditEntry.class);
+        return find(criteria, AuditEntryBean.class);
     }
     
     /**

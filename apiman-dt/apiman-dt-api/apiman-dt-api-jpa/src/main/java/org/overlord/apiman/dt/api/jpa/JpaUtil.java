@@ -17,7 +17,6 @@ package org.overlord.apiman.dt.api.jpa;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
-import javax.persistence.RollbackException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +42,7 @@ public final class JpaUtil {
      * loaded from the DB and exists in the {@link EntityManager}.
      * @param e
      */
-    public static boolean isConstraintViolation(RollbackException e) {
+    public static boolean isConstraintViolation(Exception e) {
         Throwable cause = e;
         while (cause != cause.getCause() && cause.getCause() != null) {
             if (cause.getClass().getSimpleName().equals("ConstraintViolationException")) //$NON-NLS-1$

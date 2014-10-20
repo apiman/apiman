@@ -46,7 +46,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 @Entity
 @Table(name = "auditlog")
-public class AuditEntry implements Serializable {
+public class AuditEntryBean implements Serializable {
 
     private static final long serialVersionUID = -2523995385388505492L;
     
@@ -65,7 +65,7 @@ public class AuditEntry implements Serializable {
     @Column(updatable=false, nullable=false)
     private Date when;
     @Column(updatable=false, nullable=false)
-    private AuditEntryType type;
+    private AuditEntryType what;
     @Lob
     @Basic(fetch=FetchType.LAZY)
     @Column(updatable=false, nullable=true)
@@ -74,7 +74,7 @@ public class AuditEntry implements Serializable {
     /**
      * Constructor.
      */
-    public AuditEntry() {
+    public AuditEntryBean() {
     }
 
     /**
@@ -178,15 +178,15 @@ public class AuditEntry implements Serializable {
     /**
      * @return the type
      */
-    public AuditEntryType getType() {
-        return type;
+    public AuditEntryType getWhat() {
+        return what;
     }
 
     /**
-     * @param type the type to set
+     * @param what the type to set
      */
-    public void setType(AuditEntryType type) {
-        this.type = type;
+    public void setWhat(AuditEntryType what) {
+        this.what = what;
     }
 
     /**

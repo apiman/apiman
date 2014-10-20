@@ -1,0 +1,9 @@
+PUT /organizations/TestOrganization1 admin/admin
+Content-Type: application/json
+
+{
+  "description" : "This is the description of the org."
+}
+
+----
+204

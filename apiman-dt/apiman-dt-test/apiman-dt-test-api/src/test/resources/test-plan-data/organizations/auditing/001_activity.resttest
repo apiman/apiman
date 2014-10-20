@@ -1,0 +1,28 @@
+GET /organizations/TestOrganization1/activity admin/admin
+----
+200
+Content-Type: application/json
+
+{
+  "beans" : [
+    { 
+      "who" : "admin",
+      "organizationId" : "TestOrganization1",
+      "entityType" : "Organization",
+      "entityId" : null,
+      "entityVersion" : null,
+      "what" : "Update",
+      "data" : "{\"changes\":[{\"name\":\"description\",\"before\":null,\"after\":\"This is the description of the org.\"}]}"
+    },
+    {
+      "who" : "admin",
+      "organizationId" : "TestOrganization1",
+      "entityType" : "Organization",
+      "entityId" : null,
+      "entityVersion" : null,
+      "what" : "Create",
+      "data" : null
+    }
+  ],
+  "totalSize" : 2
+}

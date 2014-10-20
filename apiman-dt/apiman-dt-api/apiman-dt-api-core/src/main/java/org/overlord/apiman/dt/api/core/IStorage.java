@@ -15,7 +15,7 @@
  */
 package org.overlord.apiman.dt.api.core;
 
-import org.overlord.apiman.dt.api.beans.audit.AuditEntry;
+import org.overlord.apiman.dt.api.beans.audit.AuditEntryBean;
 import org.overlord.apiman.dt.api.beans.search.PagingBean;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
 import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
@@ -115,7 +115,7 @@ public interface IStorage {
      * @param entry
      * @throws StorageException
      */
-    public void createAuditEntry(AuditEntry entry) throws StorageException;
+    public void createAuditEntry(AuditEntryBean entry) throws StorageException;
     
     /**
      * Gets the audit log for an entity.
@@ -126,7 +126,7 @@ public interface IStorage {
      * @param paging
      * @throws StorageException
      */
-    public <T> SearchResultsBean<AuditEntry> auditEntity(String organizationId, String entityId,
+    public <T> SearchResultsBean<AuditEntryBean> auditEntity(String organizationId, String entityId,
             String entityVersion, Class<T> type, PagingBean paging) throws StorageException;
 
     /**
@@ -137,5 +137,5 @@ public interface IStorage {
      * @return
      * @throws StorageException
      */
-    public <T> SearchResultsBean<AuditEntry> auditUser(String userId, Class<T> type, PagingBean paging) throws StorageException;
+    public <T> SearchResultsBean<AuditEntryBean> auditUser(String userId, Class<T> type, PagingBean paging) throws StorageException;
 }

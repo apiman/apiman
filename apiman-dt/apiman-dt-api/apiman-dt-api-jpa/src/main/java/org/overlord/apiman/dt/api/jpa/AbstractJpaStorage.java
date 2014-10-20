@@ -21,10 +21,12 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceException;
 import javax.persistence.RollbackException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -132,8 +134,35 @@ public abstract class AbstractJpaStorage {
      * @see org.overlord.apiman.dt.api.core.IStorage#create(java.lang.Object)
      */
     public <T> void create(T bean) throws StorageException, AlreadyExistsException {
+        if (bean == null) {
+            return;
+        }
         EntityManager entityManager = getActiveEntityManager();
-        entityManager.persist(bean);
+        try {
+            entityManager.persist(bean);
+        } catch (EntityExistsException e) {
+            logger.error(e.getMessage(), e);
+            throw new AlreadyExistsException();
+        } catch (RollbackException e) {
+            if (JpaUtil.isConstraintViolation(e)) {
+                logger.error(e.getMessage(), e);
+                throw new ConstraintViolationException(e);
+            } else {
+                logger.error(e.getMessage(), e);
+                throw new StorageException(e);
+            }
+        } catch (PersistenceException e) {
+            if (JpaUtil.isConstraintViolation(e)) {
+                logger.error(e.getMessage(), e);
+                throw new ConstraintViolationException(e);
+            } else {
+                logger.error(e.getMessage(), e);
+                throw new StorageException(e);
+            }
+        } catch (Throwable t) {
+            logger.error(t.getMessage(), t);
+            throw new StorageException(t);
+        }
     }
 
     /**
@@ -141,7 +170,23 @@ public abstract class AbstractJpaStorage {
      */
     public <T> void update(T bean) throws StorageException, DoesNotExistException {
         EntityManager entityManager = getActiveEntityManager();
-        entityManager.merge(bean);
+        try {
+            entityManager.merge(bean);
+        } catch (IllegalArgumentException e) {
+            logger.error(e.getMessage(), e);
+            throw new DoesNotExistException();
+        } catch (RollbackException e) {
+            if (JpaUtil.isConstraintViolation(e)) {
+                logger.error(e.getMessage(), e);
+                throw new ConstraintViolationException(e);
+            } else {
+                logger.error(e.getMessage(), e);
+                throw new StorageException(e);
+            }
+        } catch (Throwable t) {
+            logger.error(t.getMessage(), t);
+            throw new StorageException(t);
+        }
     }
 
     /**
@@ -149,7 +194,23 @@ public abstract class AbstractJpaStorage {
      */
     public <T> void delete(T bean) throws StorageException, DoesNotExistException {
         EntityManager entityManager = getActiveEntityManager();
-        entityManager.remove(entityManager.merge(bean));
+        try {
+            entityManager.remove(bean);
+        } catch (IllegalArgumentException e) {
+            logger.error(e.getMessage(), e);
+            throw new DoesNotExistException();
+        } catch (RollbackException e) {
+            if (JpaUtil.isConstraintViolation(e)) {
+                logger.error(e.getMessage(), e);
+                throw new ConstraintViolationException(e);
+            } else {
+                logger.error(e.getMessage(), e);
+                throw new StorageException(e);
+            }
+        } catch (Throwable t) {
+            logger.error(t.getMessage(), t);
+            throw new StorageException(t);
+        }
     }
 
     /**
@@ -278,14 +339,22 @@ public abstract class AbstractJpaStorage {
      * @param query
      * @param from
      */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     protected <T> void applySearchCriteriaToQuery(SearchCriteriaBean criteria, CriteriaBuilder builder,
             CriteriaQuery<?> query, Root<T> from, boolean countOnly) {
+        
         List<SearchCriteriaFilterBean> filters = criteria.getFilters();
         if (filters != null && !filters.isEmpty()) {
             List<Predicate> predicates = new ArrayList<Predicate>();
             for (SearchCriteriaFilterBean filter : filters) {
                 if (filter.getOperator().intern() == SearchCriteriaFilterBean.OPERATOR_EQ) {
-                    predicates.add(builder.equal(from.get(filter.getName()), filter.getValue()));
+                    Path<Object> path = from.get(filter.getName());
+                    Class<?> pathc = path.getJavaType();
+                    if (pathc.isAssignableFrom(String.class)) {
+                        predicates.add(builder.equal(path, filter.getValue()));
+                    } else if (pathc.isEnum()) {
+                        predicates.add(builder.equal(path, Enum.valueOf((Class)pathc, filter.getValue())));
+                    }
                 } else if (filter.getOperator().intern() == SearchCriteriaFilterBean.OPERATOR_BOOL_EQ) {
                     predicates.add(builder.equal(from.<Boolean>get(filter.getName()), Boolean.valueOf(filter.getValue())));
                 } else if (filter.getOperator().intern() == SearchCriteriaFilterBean.OPERATOR_GT) {

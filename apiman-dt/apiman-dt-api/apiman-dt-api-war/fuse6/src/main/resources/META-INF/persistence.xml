@@ -22,6 +22,7 @@
     <class>org.overlord.apiman.dt.api.beans.policies.PolicyDefinitionBean</class>
     <class>org.overlord.apiman.dt.api.beans.policies.PolicyDefinitionTemplateBean</class>
     <class>org.overlord.apiman.dt.api.beans.policies.PolicyBean</class>
+    <class>org.overlord.apiman.dt.api.beans.audit.AuditEntryBean</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
     <properties>

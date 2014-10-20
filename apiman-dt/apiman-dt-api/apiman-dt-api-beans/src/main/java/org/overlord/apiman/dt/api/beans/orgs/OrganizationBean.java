@@ -49,7 +49,11 @@ public class OrganizationBean implements Serializable {
     private String createdBy;
     @Column(updatable=false, nullable=false)
     private Date createdOn;
-    
+    @Column(updatable=true, nullable=false)
+    private String modifiedBy;
+    @Column(updatable=true, nullable=false)
+    private Date modifiedOn;
+
     /**
      * Constructor.
      */
@@ -127,6 +131,34 @@ public class OrganizationBean implements Serializable {
     }
 
     /**
+     * @return the modifiedBy
+     */
+    public String getModifiedBy() {
+        return modifiedBy;
+    }
+
+    /**
+     * @param modifiedBy the modifiedBy to set
+     */
+    public void setModifiedBy(String modifiedBy) {
+        this.modifiedBy = modifiedBy;
+    }
+
+    /**
+     * @return the modifiedOn
+     */
+    public Date getModifiedOn() {
+        return modifiedOn;
+    }
+
+    /**
+     * @param modifiedOn the modifiedOn to set
+     */
+    public void setModifiedOn(Date modifiedOn) {
+        this.modifiedOn = modifiedOn;
+    }
+    
+    /**
      * @see java.lang.Object#hashCode()
      */
     @Override
@@ -156,5 +188,5 @@ public class OrganizationBean implements Serializable {
             return false;
         return true;
     }
-    
+
 }

@@ -123,6 +123,8 @@ public class DtApiDataSeeder extends DefaultTestDataSeeder {
         org.setDescription("Overlord is the umbrella project that will bring governance to the JBoss SOA Platform and eventually beyond."); //$NON-NLS-1$
         org.setCreatedOn(new Date());
         org.setCreatedBy("admin"); //$NON-NLS-1$
+        org.setModifiedOn(new Date());
+        org.setModifiedBy("admin"); //$NON-NLS-1$
         storage.create(org);
         
         // Create Apereo Bedework org
@@ -132,6 +134,8 @@ public class DtApiDataSeeder extends DefaultTestDataSeeder {
         org.setDescription("Bedework is an open-source enterprise calendar system that supports public, personal, and group calendaring."); //$NON-NLS-1$
         org.setCreatedOn(new Date());
         org.setCreatedBy("admin"); //$NON-NLS-1$
+        org.setModifiedOn(new Date());
+        org.setModifiedBy("admin"); //$NON-NLS-1$
         storage.create(org);
         
         storage.commitTx();

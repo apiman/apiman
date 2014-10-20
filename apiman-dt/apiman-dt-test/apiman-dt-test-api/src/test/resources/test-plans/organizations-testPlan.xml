@@ -9,6 +9,13 @@
     <test name="Search for all Orgs">test-plan-data/organizations/orgs/004_search_all.resttest</test>
     <test name="Create Organization 2">test-plan-data/organizations/orgs/005_create_another.resttest</test>
     <test name="Search for all Orgs (2)">test-plan-data/organizations/orgs/006_search_all-2.resttest</test>
+    <test name="Update Organization">test-plan-data/organizations/orgs/007_update.resttest</test>
+    <test name="Get Organization (updated)">test-plan-data/organizations/orgs/008_get.resttest</test>
+  </testGroup>
+
+  <!-- Make sure Organizations are working properly -->
+  <testGroup name="Make sure auditing worked">
+    <test name="Organization Activity">test-plan-data/organizations/auditing/001_activity.resttest</test>
   </testGroup>
 
 </testPlan>

@@ -29,6 +29,8 @@ import org.overlord.apiman.dt.api.beans.BeanUtils;
 import org.overlord.apiman.dt.api.beans.apps.ApplicationBean;
 import org.overlord.apiman.dt.api.beans.apps.ApplicationStatus;
 import org.overlord.apiman.dt.api.beans.apps.ApplicationVersionBean;
+import org.overlord.apiman.dt.api.beans.audit.AuditEntryBean;
+import org.overlord.apiman.dt.api.beans.audit.data.EntityUpdatedData;
 import org.overlord.apiman.dt.api.beans.contracts.ContractBean;
 import org.overlord.apiman.dt.api.beans.contracts.NewContractBean;
 import org.overlord.apiman.dt.api.beans.idm.GrantRolesBean;
@@ -45,6 +47,7 @@ import org.overlord.apiman.dt.api.beans.plans.PlanVersionBean;
 import org.overlord.apiman.dt.api.beans.policies.PolicyBean;
 import org.overlord.apiman.dt.api.beans.policies.PolicyDefinitionBean;
 import org.overlord.apiman.dt.api.beans.policies.PolicyType;
+import org.overlord.apiman.dt.api.beans.search.PagingBean;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaFilterBean;
 import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
@@ -92,6 +95,7 @@ import org.overlord.apiman.dt.api.rest.contract.exceptions.ServiceNotFoundExcept
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ServiceVersionNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.SystemErrorException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.UserNotFoundException;
+import org.overlord.apiman.dt.api.rest.impl.audit.AuditUtils;
 import org.overlord.apiman.dt.api.rest.impl.util.ExceptionFactory;
 import org.overlord.apiman.dt.api.rest.impl.util.SearchCriteriaUtil;
 import org.overlord.apiman.dt.api.security.ISecurityContext;
@@ -131,10 +135,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         bean.setId(BeanUtils.idFromName(bean.getName()));
         bean.setCreatedOn(new Date());
         bean.setCreatedBy(securityContext.getCurrentUser());
+        bean.setModifiedOn(new Date());
+        bean.setModifiedBy(securityContext.getCurrentUser());
         try {
             // Store/persist the new organization
             storage.beginTx();
             storage.create(bean);
+            storage.createAuditEntry(AuditUtils.organizationCreated(bean, securityContext));
             storage.commitTx();
 
             // Auto-grant memberships in roles to the creator of the organization
@@ -195,7 +202,15 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         try {
             bean.setId(organizationId);
             storage.beginTx();
-            storage.update(bean);
+            OrganizationBean ob = storage.get(bean.getId(), OrganizationBean.class);
+            
+            EntityUpdatedData auditData = new EntityUpdatedData();
+            if (AuditUtils.valueChanged(ob.getDescription(), bean.getDescription())) {
+                auditData.addChange("description", ob.getDescription(), bean.getDescription()); //$NON-NLS-1$
+                ob.setDescription(bean.getDescription());
+            }
+            storage.update(ob);
+            storage.createAuditEntry(AuditUtils.organizationUpdated(ob, auditData, securityContext));
             storage.commitTx();
         } catch (DoesNotExistException e) {
             storage.rollbackTx();
@@ -206,6 +221,32 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         }
     }
 
+    /**
+     * @see org.overlord.apiman.dt.api.rest.contract.IOrganizationResource#activity(java.lang.String, int, int)
+     */
+    @Override
+    public SearchResultsBean<AuditEntryBean> activity(String organizationId, int page, int pageSize)
+            throws OrganizationNotFoundException, NotAuthorizedException {
+        if (page <= 1) {
+            page = 1;
+        }
+        if (pageSize == 0) {
+            pageSize = 20;
+        }
+        try {
+            SearchResultsBean<AuditEntryBean> rval = null;
+            storage.beginTx();
+            PagingBean paging = new PagingBean();
+            paging.setPage(page);
+            paging.setPageSize(pageSize);
+            rval = storage.auditEntity(organizationId, null, null, OrganizationBean.class, paging);
+            storage.commitTx();
+            return rval;
+        } catch (StorageException e) {
+            storage.rollbackTx();
+            throw new SystemErrorException(e);
+        }
+    }
 
     /**
      * @see org.overlord.apiman.dt.api.rest.contract.IOrganizationResource#create(java.lang.String, org.overlord.apiman.dt.api.beans.apps.ApplicationBean)

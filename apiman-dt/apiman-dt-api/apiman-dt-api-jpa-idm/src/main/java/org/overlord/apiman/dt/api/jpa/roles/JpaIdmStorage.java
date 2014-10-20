@@ -150,14 +150,17 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
     public void deleteRole(RoleBean role) throws StorageException, DoesNotExistException {
         beginTx();
         try {
-            // First delete all memberships in this role
             EntityManager entityManager = getActiveEntityManager();
+            
+            RoleBean prole = get(role.getId(), RoleBean.class);
+            
+            // First delete all memberships in this role
             Query query = entityManager.createQuery("DELETE from RoleMembershipBean m WHERE m.roleId = :roleId" ); //$NON-NLS-1$
             query.setParameter("roleId", role.getId()); //$NON-NLS-1$
             query.executeUpdate();
 
             // Then delete the role itself.
-            super.delete(role);
+            super.delete(prole);
             
             commitTx();
         } catch (Throwable t) {
