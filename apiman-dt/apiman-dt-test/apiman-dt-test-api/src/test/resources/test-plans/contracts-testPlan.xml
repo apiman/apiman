@@ -34,4 +34,10 @@
     <test name="List Contracts for App 1 (after delete)">test-plan-data/contracts/contracts/008_get-contracts.resttest</test>
   </testGroup>
 
+  <!-- Auditing -->
+  <testGroup name="Ensure Auditing">
+    <test name="Application Activity">test-plan-data/contracts/auditing/001_app_activity.resttest</test>
+    <test name="Service Activity">test-plan-data/contracts/auditing/002_service_activity.resttest</test>
+  </testGroup>
+
 </testPlan>

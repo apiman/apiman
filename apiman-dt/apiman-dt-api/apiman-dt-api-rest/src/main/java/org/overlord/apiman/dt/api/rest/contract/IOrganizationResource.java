@@ -402,6 +402,13 @@ public interface IOrganizationResource {
             NotAuthorizedException;
 
     @GET
+    @Path("{organizationId}/plans/{planId}/activity")
+    @Produces(MediaType.APPLICATION_JSON)
+    public SearchResultsBean<AuditEntryBean> getPlanActivity(@PathParam("organizationId") String organizationId,
+            @PathParam("planId") String planId, @QueryParam("page") int page,
+            @QueryParam("count") int pageSize) throws PlanNotFoundException, NotAuthorizedException;
+
+    @GET
     @Path("{organizationId}/plans")
     @Produces(MediaType.APPLICATION_JSON)
     public List<PlanSummaryBean> listPlans(@PathParam("organizationId") String organizationId)
@@ -434,6 +441,14 @@ public interface IOrganizationResource {
     @Produces(MediaType.APPLICATION_JSON)
     public PlanVersionBean getPlanVersion(@PathParam("organizationId") String organizationId,
             @PathParam("planId") String planId, @PathParam("version") String version)
+            throws PlanVersionNotFoundException, NotAuthorizedException;
+
+    @GET
+    @Path("{organizationId}/plans/{planId}/versions/{version}/activity")
+    @Produces(MediaType.APPLICATION_JSON)
+    public SearchResultsBean<AuditEntryBean> getPlanVersionActivity(@PathParam("organizationId") String organizationId,
+            @PathParam("planId") String planId, @PathParam("version") String version,
+            @QueryParam("page") int page, @QueryParam("count") int pageSize)
             throws PlanVersionNotFoundException, NotAuthorizedException;
 
     @PUT

@@ -31,6 +31,8 @@ import org.overlord.apiman.dt.api.beans.audit.data.MembershipData;
 import org.overlord.apiman.dt.api.beans.audit.data.PolicyData;
 import org.overlord.apiman.dt.api.beans.contracts.ContractBean;
 import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
+import org.overlord.apiman.dt.api.beans.plans.PlanBean;
+import org.overlord.apiman.dt.api.beans.plans.PlanVersionBean;
 import org.overlord.apiman.dt.api.beans.policies.PolicyBean;
 import org.overlord.apiman.dt.api.beans.policies.PolicyType;
 import org.overlord.apiman.dt.api.beans.services.ServiceBean;
@@ -508,6 +510,75 @@ public class AuditUtils {
             first = false;
         }
         return builder.toString();
+    }
+    
+    /**
+     * Creates an audit entry for the 'plan created' event.
+     * @param bean
+     * @param securityContext
+     */
+    public static AuditEntryBean planCreated(PlanBean bean, ISecurityContext securityContext) {
+        AuditEntryBean entry = newEntry(bean.getOrganizationId(), AuditEntityType.Plan, securityContext);
+        entry.setEntityId(bean.getId());
+        entry.setEntityVersion(null);
+        entry.setData(null);
+        entry.setWhat(AuditEntryType.Create);
+        return entry;
+    }
+
+    /**
+     * Creates an audit entry for the 'plan updated' event.
+     * @param bean
+     * @param data
+     * @param securityContext
+     */
+    public static AuditEntryBean planUpdated(PlanBean bean, EntityUpdatedData data,
+            ISecurityContext securityContext) {
+        if (data.getChanges().isEmpty()) {
+            return null;
+        }
+        AuditEntryBean entry = newEntry(bean.getOrganizationId(), AuditEntityType.Plan, securityContext);
+        entry.setEntityId(bean.getId());
+        entry.setEntityVersion(null);
+        entry.setWhat(AuditEntryType.Update);
+        entry.setData(toJSON(data));
+        return entry;
+    }
+
+    /**
+     * Creates an audit entry for the 'plan version created' event.
+     * @param bean
+     * @param securityContext
+     */
+    public static AuditEntryBean planVersionCreated(PlanVersionBean bean,
+            ISecurityContext securityContext) {
+        AuditEntryBean entry = newEntry(bean.getPlan().getOrganizationId(), AuditEntityType.Plan, securityContext);
+        entry.setEntityId(bean.getPlan().getId());
+        entry.setEntityVersion(bean.getVersion());
+        EntityVersionCreatedData data = new EntityVersionCreatedData();
+        data.setVersion(bean.getVersion());
+        entry.setData(toJSON(data));
+        entry.setWhat(AuditEntryType.Create);
+        return entry;
+    }
+
+    /**
+     * Creates an audit entry for the 'plan version updated' event.
+     * @param bean
+     * @param data
+     * @param securityContext
+     */
+    public static AuditEntryBean planVersionUpdated(PlanVersionBean bean, EntityUpdatedData data,
+            ISecurityContext securityContext) {
+        if (data.getChanges().isEmpty()) {
+            return null;
+        }
+        AuditEntryBean entry = newEntry(bean.getPlan().getOrganizationId(), AuditEntityType.Plan, securityContext);
+        entry.setEntityId(bean.getPlan().getId());
+        entry.setEntityVersion(bean.getVersion());
+        entry.setWhat(AuditEntryType.Update);
+        entry.setData(toJSON(data));
+        return entry;
     }
 
 }

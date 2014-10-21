@@ -45,4 +45,10 @@
     <test name="List Policies">test-plan-data/plans/policies/007_list-policies.resttest</test>
   </testGroup>
 
+  <!-- Auditing -->
+  <testGroup name="Ensure Auditing">
+    <test name="Plan Activity">test-plan-data/plans/auditing/001_activity.resttest</test>
+    <test name="Plan Version Activity">test-plan-data/plans/auditing/002_version_activity.resttest</test>
+  </testGroup>
+
 </testPlan>

@@ -1,0 +1,53 @@
+GET /organizations/Organization1/applications/Application1/activity admin/admin
+----
+200
+Content-Type: application/json
+
+{ "beans" : [ { "data" : "{\"appOrgId\":\"Organization1\",\"appId\":\"Application1\",\"appVersion\":\"1.0\",\"serviceOrgId\":\"Organization1\",\"serviceId\":\"Service1\",\"serviceVersion\":\"1.0\",\"planId\":\"Plan1\",\"planVersion\":\"1.0\"}",
+        "entityId" : "Application1",
+        "entityType" : "Application",
+        "entityVersion" : "1.0",
+        "id" : 23,
+        "organizationId" : "Organization1",
+        "what" : "BreakContract",
+        "who" : "admin"
+      },
+      { "data" : "{\"appOrgId\":\"Organization1\",\"appId\":\"Application1\",\"appVersion\":\"1.0\",\"serviceOrgId\":\"Organization2\",\"serviceId\":\"Service2\",\"serviceVersion\":\"1.5\",\"planId\":\"PlanA\",\"planVersion\":\"2.0\"}",
+        "entityId" : "Application1",
+        "entityType" : "Application",
+        "entityVersion" : "1.0",
+        "id" : 21,
+        "organizationId" : "Organization1",
+        "what" : "CreateContract",
+        "who" : "admin"
+      },
+      { "data" : "{\"appOrgId\":\"Organization1\",\"appId\":\"Application1\",\"appVersion\":\"1.0\",\"serviceOrgId\":\"Organization1\",\"serviceId\":\"Service1\",\"serviceVersion\":\"1.0\",\"planId\":\"Plan1\",\"planVersion\":\"1.0\"}",
+        "entityId" : "Application1",
+        "entityType" : "Application",
+        "entityVersion" : "1.0",
+        "id" : 19,
+        "organizationId" : "Organization1",
+        "what" : "CreateContract",
+        "who" : "admin"
+      },
+      { "data" : "{\"version\":\"1.0\"}",
+        "entityId" : "Application1",
+        "entityType" : "Application",
+        "entityVersion" : "1.0",
+        "id" : 3,
+        "organizationId" : "Organization1",
+        "what" : "Create",
+        "who" : "admin"
+      },
+      { "data" : null,
+        "entityId" : "Application1",
+        "entityType" : "Application",
+        "entityVersion" : null,
+        "id" : 2,
+        "organizationId" : "Organization1",
+        "what" : "Create",
+        "who" : "admin"
+      }
+    ],
+  "totalSize" : 5
+}
