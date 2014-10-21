@@ -18,7 +18,7 @@ X-RestTest-BindTo-planpolicy2-id: $.id
   "organizationId" : "TestOrganization",
   "entityId" : "Gold",
   "entityVersion" : "1.0",
-  "name" : "Plan Policy 2",
+  "name" : "Policy Def Two",
   "description" : "Policy Def Two: Plan Policy 2",
   "definition" : {
     "id" : "PolicyDefTwo"

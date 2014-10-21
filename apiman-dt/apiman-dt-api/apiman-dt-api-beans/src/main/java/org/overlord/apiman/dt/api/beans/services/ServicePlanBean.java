@@ -74,6 +74,14 @@ public class ServicePlanBean implements Serializable {
     }
 
     /**
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return planId + "(" + version + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+    }
+
+    /**
      * @see java.lang.Object#hashCode()
      */
     @Override
@@ -81,6 +89,7 @@ public class ServicePlanBean implements Serializable {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((planId == null) ? 0 : planId.hashCode());
+        result = prime * result + ((version == null) ? 0 : version.hashCode());
         return result;
     }
 
@@ -101,15 +110,12 @@ public class ServicePlanBean implements Serializable {
                 return false;
         } else if (!planId.equals(other.planId))
             return false;
+        if (version == null) {
+            if (other.version != null)
+                return false;
+        } else if (!version.equals(other.version))
+            return false;
         return true;
-    }
-    
-    /**
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString() {
-        return planId + "(" + version + ")"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
 }

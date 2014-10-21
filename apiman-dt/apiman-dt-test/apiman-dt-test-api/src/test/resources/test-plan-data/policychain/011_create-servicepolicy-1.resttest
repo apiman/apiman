@@ -18,7 +18,7 @@ X-RestTest-BindTo-servicepolicy1-id: $.id
   "organizationId" : "TestOrganization",
   "entityId" : "foo",
   "entityVersion" : "1.0",
-  "name" : "Service Policy 1",
+  "name" : "Policy Def Three",
   "description" : "Policy Def Three: Service Policy 1",
   "definition" : {
     "id" : "PolicyDefThree"

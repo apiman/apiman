@@ -18,10 +18,8 @@ package org.overlord.apiman.dt.api.beans.audit;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Lob;
@@ -67,7 +65,6 @@ public class AuditEntryBean implements Serializable {
     @Column(updatable=false, nullable=false)
     private AuditEntryType what;
     @Lob
-    @Basic(fetch=FetchType.LAZY)
     @Column(updatable=false, nullable=true)
     private String data;
 

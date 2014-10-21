@@ -21,7 +21,7 @@ Content-Type: application/json
   "organizationId" : "Organization1",
   "entityId" : "Plan1",
   "entityVersion" : "1.0",
-  "name" : "Plan Policy",
+  "name" : "Policy Def One",
   "configuration" : "{ 'kung' : 'foo' }",
   "createdBy" : "admin",
   "modifiedBy" : "admin",

@@ -11,7 +11,7 @@ Content-Type: application/json
       "organizationId" : "TestOrganization",
       "entityId" : "Gold",
       "entityVersion" : "1.0",
-      "name" : "Plan Policy 1",
+      "name" : "Policy Def One",
       "description" : "Policy Def One: Plan Policy 1",
       "configuration" : "{\"message\" : \"Plan Policy 1\"}"
     },
@@ -20,7 +20,7 @@ Content-Type: application/json
       "organizationId" : "TestOrganization",
       "entityId" : "Gold",
       "entityVersion" : "1.0",
-      "name" : "Plan Policy 2",
+      "name" : "Policy Def Two",
       "description" : "Policy Def Two: Plan Policy 2",
       "configuration" : "{\"message\" : \"Plan Policy 2\"}"
     },
@@ -29,7 +29,7 @@ Content-Type: application/json
       "organizationId" : "TestOrganization",
       "entityId" : "foo",
       "entityVersion" : "1.0",
-      "name" : "Service Policy 1",
+      "name" : "Policy Def Three",
       "description" : "Policy Def Three: Service Policy 1",
       "configuration" : "{\"message\" : \"Service Policy 1\"}"
     }

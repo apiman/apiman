@@ -25,7 +25,8 @@ public enum AuditEntryType {
     // Entity events
     Create, Update, Delete, 
     // Action events
+    Grant, Revoke,
     Publish, Retire,
-    Register, Unregister
-    
+    Register, Unregister,
+    AddPolicy, RemovePolicy, UpdatePolicy
 }

@@ -67,4 +67,10 @@
     <test name="Publish Service 1">test-plan-data/services/publish/001_publish-service-1.resttest</test>
   </testGroup>
 
+  <!-- Auditing -->
+  <testGroup name="Ensure Auditing">
+    <test name="Service Activity">test-plan-data/services/auditing/001_activity.resttest</test>
+    <test name="Service Version Activity">test-plan-data/services/auditing/002_version_activity.resttest</test>
+  </testGroup>
+
 </testPlan>

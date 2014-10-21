@@ -21,7 +21,7 @@ Content-Type: application/json
   "organizationId" : "Organization1",
   "entityId" : "Application1",
   "entityVersion" : "1.0",
-  "name" : "Application Policy",
+  "name" : "Policy Def Two",
   "configuration" : "{ 'foo' : 'bar' }",
   "createdBy" : "admin",
   "modifiedBy" : "admin",

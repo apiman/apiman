@@ -9,7 +9,7 @@ Content-Type: application/json
       "organizationId" : "Organization1",
       "entityId" : "Plan1",
       "entityVersion" : "1.0",
-      "name" : "My Test Policy (updated)",
+      "name" : "Policy Def",
       "definition" : {
         "id" : "PolicyDef",
         "name" : "Policy Def",

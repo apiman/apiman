@@ -68,7 +68,7 @@ public abstract class AbstractJpaStorage {
      */
     protected void beginTx() throws StorageException {
         if (activeEM.get() != null) {
-            throw new StorageException("Transaction already active.");
+            throw new StorageException("Transaction already active."); //$NON-NLS-1$
         }
         EntityManager entityManager = emfAccessor.getEntityManagerFactory().createEntityManager();
         activeEM.set(entityManager);
@@ -80,7 +80,7 @@ public abstract class AbstractJpaStorage {
      */
     protected void commitTx() throws StorageException {
         if (activeEM.get() == null) {
-            throw new StorageException("Transaction not active.");
+            throw new StorageException("Transaction not active."); //$NON-NLS-1$
         }
         
         try {
@@ -108,7 +108,7 @@ public abstract class AbstractJpaStorage {
      */
     protected void rollbackTx() {
         if (activeEM.get() == null) {
-            throw new RuntimeException("Transaction not active.");
+            throw new RuntimeException("Transaction not active."); //$NON-NLS-1$
         }
         try {
             JpaUtil.rollbackQuietly(activeEM.get());
@@ -125,7 +125,7 @@ public abstract class AbstractJpaStorage {
     protected EntityManager getActiveEntityManager() throws StorageException {
         EntityManager entityManager = activeEM.get();
         if (entityManager == null) {
-            throw new StorageException("Transaction not active.");
+            throw new StorageException("Transaction not active."); //$NON-NLS-1$
         }
         return entityManager;
     }

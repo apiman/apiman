@@ -49,6 +49,18 @@ public class EntityUpdatedData implements Serializable {
     public void addChange(String name, String before, String after) {
         addChange(new EntityFieldChange(name, before, after));
     }
+
+    /**
+     * Adds a single chnage.
+     * @param name
+     * @param before
+     * @param after
+     */
+    public void addChange(String name, Enum<?> before, Enum<?> after) {
+        String beforeStr = before != null ? before.name() : null;
+        String afterStr = after != null ? after.name() : null;
+        addChange(name, beforeStr, afterStr);
+    }
     
     /**
      * Adds a single change.

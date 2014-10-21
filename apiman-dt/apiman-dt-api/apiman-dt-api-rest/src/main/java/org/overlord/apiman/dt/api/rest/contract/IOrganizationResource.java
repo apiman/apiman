@@ -97,9 +97,9 @@ public interface IOrganizationResource {
     @GET
     @Path("{organizationId}/activity")
     @Produces(MediaType.APPLICATION_JSON)
-    public SearchResultsBean<AuditEntryBean> activity(@PathParam("organizationId") String organizationId,
-            @QueryParam("page") int page, @QueryParam("count") int pageSize)
-            throws OrganizationNotFoundException, NotAuthorizedException;
+    public SearchResultsBean<AuditEntryBean> activity(
+            @PathParam("organizationId") String organizationId, @QueryParam("page") int page,
+            @QueryParam("count") int pageSize) throws OrganizationNotFoundException, NotAuthorizedException;
 
     /*
      * APPLICATIONS
@@ -266,6 +266,14 @@ public interface IOrganizationResource {
             @PathParam("serviceId") String serviceId, ServiceBean bean)
             throws ServiceNotFoundException, NotAuthorizedException;
 
+    @GET
+    @Path("{organizationId}/services/{serviceId}/activity")
+    @Produces(MediaType.APPLICATION_JSON)
+    public SearchResultsBean<AuditEntryBean> getServiceActivity(
+            @PathParam("organizationId") String organizationId, @PathParam("serviceId") String serviceId,
+            @QueryParam("page") int page, @QueryParam("count") int pageSize) throws ServiceNotFoundException,
+            NotAuthorizedException;
+
     @POST
     @Path("{organizationId}/services/{serviceId}/versions")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -294,6 +302,14 @@ public interface IOrganizationResource {
             @PathParam("serviceId") String serviceId, @PathParam("version") String version,
             ServiceVersionBean bean) throws ServiceVersionNotFoundException, NotAuthorizedException,
             InvalidServiceStatusException;
+
+    @GET
+    @Path("{organizationId}/services/{serviceId}/versions/{version}/activity")
+    @Produces(MediaType.APPLICATION_JSON)
+    public SearchResultsBean<AuditEntryBean> getServiceVersionActivity(
+            @PathParam("organizationId") String organizationId, @PathParam("serviceId") String serviceId,
+            @PathParam("version") String version, @QueryParam("page") int page,
+            @QueryParam("count") int pageSize) throws ServiceVersionNotFoundException, NotAuthorizedException;
 
     @GET
     @Path("{organizationId}/services/{serviceId}/versions/{version}/plans")
