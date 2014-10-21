@@ -260,26 +260,17 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (!securityContext.hasPermission(PermissionType.appEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
         
-        try {
-            storage.beginTx();
-            storage.get(organizationId, OrganizationBean.class);
-        } catch (DoesNotExistException e) {
-            storage.rollbackTx();
-            throw ExceptionFactory.organizationNotFoundException(organizationId);
-        } catch (StorageException e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
-        }
-
-        String currentUser = securityContext.getCurrentUser();
+        get(organizationId);
 
         bean.setOrganizationId(organizationId);
         bean.setId(BeanUtils.idFromName(bean.getName()));
         bean.setCreatedOn(new Date());
-        bean.setCreatedBy(currentUser);
+        bean.setCreatedBy(securityContext.getCurrentUser());
         try {
             // Store/persist the new application
+            storage.beginTx();
             storage.create(bean);
+            storage.createAuditEntry(AuditUtils.applicationCreated(bean, securityContext));
             storage.commitTx();
             return bean;
         } catch (AlreadyExistsException e) {
@@ -314,6 +305,35 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
     
     /**
+     * @see org.overlord.apiman.dt.api.rest.contract.IOrganizationResource#getAppActivity(java.lang.String, java.lang.String, int, int)
+     */
+    @Override
+    public SearchResultsBean<AuditEntryBean> getAppActivity(String organizationId, String applicationId,
+            int page, int pageSize) throws ApplicationNotFoundException, NotAuthorizedException {
+        if (!securityContext.hasPermission(PermissionType.appView, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
+        if (page <= 1) {
+            page = 1;
+        }
+        if (pageSize == 0) {
+            pageSize = 20;
+        }
+        try {
+            SearchResultsBean<AuditEntryBean> rval = null;
+            PagingBean paging = new PagingBean();
+            paging.setPage(page);
+            paging.setPageSize(pageSize);
+            storage.beginTx();
+            rval = storage.auditEntity(organizationId, applicationId, null, ApplicationBean.class, paging);
+            storage.commitTx();
+            return rval;
+        } catch (StorageException e) {
+            storage.rollbackTx();
+            throw new SystemErrorException(e);
+        }
+    }
+    
+    /**
      * @see org.overlord.apiman.dt.api.rest.contract.IOrganizationResource#list(java.lang.String)
      */
     @Override
@@ -341,9 +361,14 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw ExceptionFactory.notAuthorizedException();
         try {
             storage.beginTx();
-            bean.setOrganizationId(organizationId);
-            bean.setId(applicationId);
-            storage.update(bean);
+            ApplicationBean app = storage.get(organizationId, applicationId, ApplicationBean.class);
+            EntityUpdatedData auditData = new EntityUpdatedData();
+            if (AuditUtils.valueChanged(app.getDescription(), bean.getDescription())) {
+                auditData.addChange("description", app.getDescription(), bean.getDescription()); //$NON-NLS-1$
+                app.setDescription(bean.getDescription());
+            }            
+            storage.update(app);
+            storage.createAuditEntry(AuditUtils.applicationUpdated(app, auditData, securityContext));
             storage.commitTx();
         } catch (DoesNotExistException e) {
             storage.rollbackTx();
@@ -374,6 +399,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             bean.setStatus(ApplicationStatus.Created);
             bean.setApplication(application);
             storage.create(bean);
+            storage.createAuditEntry(AuditUtils.applicationVersionCreated(bean, securityContext));
             storage.commitTx();
             return bean;
         } catch (DoesNotExistException e) {
@@ -409,6 +435,36 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
     
     /**
+     * @see org.overlord.apiman.dt.api.rest.contract.IOrganizationResource#getAppVersionActivity(java.lang.String, java.lang.String, java.lang.String, int, int)
+     */
+    @Override
+    public SearchResultsBean<AuditEntryBean> getAppVersionActivity(String organizationId,
+            String applicationId, String version, int page, int pageSize)
+            throws ApplicationVersionNotFoundException, NotAuthorizedException {
+        if (!securityContext.hasPermission(PermissionType.appView, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
+        if (page <= 1) {
+            page = 1;
+        }
+        if (pageSize == 0) {
+            pageSize = 20;
+        }
+        try {
+            SearchResultsBean<AuditEntryBean> rval = null;
+            PagingBean paging = new PagingBean();
+            paging.setPage(page);
+            paging.setPageSize(pageSize);
+            storage.beginTx();
+            rval = storage.auditEntity(organizationId, applicationId, version, ApplicationBean.class, paging);
+            storage.commitTx();
+            return rval;
+        } catch (StorageException e) {
+            storage.rollbackTx();
+            throw new SystemErrorException(e);
+        }
+    }
+    
+    /**
      * @see org.overlord.apiman.dt.api.rest.contract.IOrganizationResource#updateVersion(java.lang.String, java.lang.String, java.lang.String, org.overlord.apiman.dt.api.beans.apps.ApplicationVersionBean)
      */
     @Override
@@ -431,10 +487,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         } catch (Exception e) {
             throw new SystemErrorException(e);
         }
-        
+
+        EntityUpdatedData data = new EntityUpdatedData();
+
         try {
             storage.beginTx();
             storage.update(avb);
+            storage.createAuditEntry(AuditUtils.applicationVersionUpdated(avb, data, securityContext));
             storage.commitTx();
         } catch (DoesNotExistException e) {
             storage.rollbackTx();
@@ -526,6 +585,8 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         try {
             storage.beginTx();
             storage.create(contract);
+            storage.createAuditEntry(AuditUtils.contractCreatedFromApp(contract, securityContext));
+            storage.createAuditEntry(AuditUtils.contractCreatedToService(contract, securityContext));
             
             // Update the version with new meta-data (e.g. modified-by)
             avb.setModifiedBy(securityContext.getCurrentUser());
@@ -578,6 +639,8 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             if (contract == null)
                 throw ExceptionFactory.contractNotFoundException(contractId);
             storage.delete(contract);
+            storage.createAuditEntry(AuditUtils.contractBrokenFromApp(contract, securityContext));
+            storage.createAuditEntry(AuditUtils.contractBrokenToService(contract, securityContext));
             storage.commitTx();
         } catch (DoesNotExistException e) {
             storage.rollbackTx();
@@ -672,11 +735,14 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         try {
             storage.beginTx();
             PolicyBean policy = this.storage.get(policyId, PolicyBean.class);
-            if (bean.getConfiguration() != null)
+            if (AuditUtils.valueChanged(policy.getConfiguration(), bean.getConfiguration())) {
                 policy.setConfiguration(bean.getConfiguration());
+                // TODO figure out what changed an include that in the audit entry
+            }
             policy.setModifiedOn(new Date());
             policy.setModifiedBy(this.securityContext.getCurrentUser());
             storage.update(policy);
+            storage.createAuditEntry(AuditUtils.policyUpdated(policy, PolicyType.Application, securityContext));
             storage.commitTx();
         } catch (DoesNotExistException e) {
             storage.rollbackTx();
@@ -711,6 +777,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.beginTx();
             PolicyBean policy = this.storage.get(policyId, PolicyBean.class);
             storage.delete(policy);
+            storage.createAuditEntry(AuditUtils.policyRemoved(policy, PolicyType.Application, securityContext));
             storage.commitTx();
         } catch (DoesNotExistException e) {
             storage.rollbackTx();

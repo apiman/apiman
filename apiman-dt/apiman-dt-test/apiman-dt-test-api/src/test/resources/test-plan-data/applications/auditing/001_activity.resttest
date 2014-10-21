@@ -1,0 +1,80 @@
+GET /organizations/Organization1/applications/Application1/activity admin/admin
+----
+200
+Content-Type: application/json
+
+{ "beans" : [ { "data" : "{\"policyDefId\":\"PolicyDef\"}",
+        "entityId" : "Application1",
+        "entityType" : "Application",
+        "entityVersion" : "1.0",
+        "id" : 12,
+        "organizationId" : "Organization1",
+        "what" : "RemovePolicy",
+        "who" : "admin"
+      },
+      { "data" : "{\"policyDefId\":\"PolicyDef\"}",
+        "entityId" : "Application1",
+        "entityType" : "Application",
+        "entityVersion" : "1.0",
+        "id" : 11,
+        "organizationId" : "Organization1",
+        "what" : "UpdatePolicy",
+        "who" : "admin"
+      },
+      { "data" : "{\"policyDefId\":\"PolicyDef\"}",
+        "entityId" : "Application1",
+        "entityType" : "Application",
+        "entityVersion" : "1.0",
+        "id" : 10,
+        "organizationId" : "Organization1",
+        "what" : "AddPolicy",
+        "who" : "admin"
+      },
+      { "data" : "{\"policyDefId\":\"PolicyDef\"}",
+        "entityId" : "Application1",
+        "entityType" : "Application",
+        "entityVersion" : "1.0",
+        "id" : 9,
+        "organizationId" : "Organization1",
+        "what" : "AddPolicy",
+        "who" : "admin"
+      },
+      { "data" : "{\"version\":\"2.0\"}",
+        "entityId" : "Application1",
+        "entityType" : "Application",
+        "entityVersion" : "2.0",
+        "id" : 8,
+        "organizationId" : "Organization1",
+        "what" : "Create",
+        "who" : "admin"
+      },
+      { "data" : "{\"version\":\"1.0\"}",
+        "entityId" : "Application1",
+        "entityType" : "Application",
+        "entityVersion" : "1.0",
+        "id" : 7,
+        "organizationId" : "Organization1",
+        "what" : "Create",
+        "who" : "admin"
+      },
+      { "data" : "{\"changes\":[{\"name\":\"description\",\"before\":\"This is the description of Application 1.\",\"after\":\"[UPDATED] This is the description of Application 1!\"}]}",
+        "entityId" : "Application1",
+        "entityType" : "Application",
+        "entityVersion" : null,
+        "id" : 5,
+        "organizationId" : "Organization1",
+        "what" : "Update",
+        "who" : "admin2"
+      },
+      { "data" : null,
+        "entityId" : "Application1",
+        "entityType" : "Application",
+        "entityVersion" : null,
+        "id" : 3,
+        "organizationId" : "Organization1",
+        "what" : "Create",
+        "who" : "admin"
+      }
+    ],
+  "totalSize" : 8
+}

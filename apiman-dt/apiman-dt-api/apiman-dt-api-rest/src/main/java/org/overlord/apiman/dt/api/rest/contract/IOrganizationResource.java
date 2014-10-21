@@ -120,6 +120,14 @@ public interface IOrganizationResource {
             NotAuthorizedException;
 
     @GET
+    @Path("{organizationId}/applications/{applicationId}/activity")
+    @Produces(MediaType.APPLICATION_JSON)
+    public SearchResultsBean<AuditEntryBean> getAppActivity(
+            @PathParam("organizationId") String organizationId, @PathParam("applicationId") String applicationId,
+            @QueryParam("page") int page, @QueryParam("count") int pageSize) throws ApplicationNotFoundException,
+            NotAuthorizedException;
+
+    @GET
     @Path("{organizationId}/applications")
     @Produces(MediaType.APPLICATION_JSON)
     public List<ApplicationSummaryBean> listApps(@PathParam("organizationId") String organizationId)
@@ -153,6 +161,14 @@ public interface IOrganizationResource {
     public ApplicationVersionBean getAppVersion(@PathParam("organizationId") String organizationId,
             @PathParam("applicationId") String applicationId, @PathParam("version") String version)
             throws ApplicationVersionNotFoundException, NotAuthorizedException;
+
+    @GET
+    @Path("{organizationId}/applications/{applicationId}/versions/{version}/activity")
+    @Produces(MediaType.APPLICATION_JSON)
+    public SearchResultsBean<AuditEntryBean> getAppVersionActivity(
+            @PathParam("organizationId") String organizationId, @PathParam("applicationId") String applicationId,
+            @PathParam("version") String version, @QueryParam("page") int page,
+            @QueryParam("count") int pageSize) throws ApplicationVersionNotFoundException, NotAuthorizedException;
 
     @PUT
     @Path("{organizationId}/applications/{applicationId}/versions/{version}")

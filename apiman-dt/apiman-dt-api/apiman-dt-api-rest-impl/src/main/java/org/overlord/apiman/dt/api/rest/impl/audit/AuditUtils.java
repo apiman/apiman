@@ -19,13 +19,17 @@ import java.util.Date;
 import java.util.Set;
 
 import org.codehaus.jackson.map.ObjectMapper;
+import org.overlord.apiman.dt.api.beans.apps.ApplicationBean;
+import org.overlord.apiman.dt.api.beans.apps.ApplicationVersionBean;
 import org.overlord.apiman.dt.api.beans.audit.AuditEntityType;
 import org.overlord.apiman.dt.api.beans.audit.AuditEntryBean;
 import org.overlord.apiman.dt.api.beans.audit.AuditEntryType;
+import org.overlord.apiman.dt.api.beans.audit.data.ContractData;
 import org.overlord.apiman.dt.api.beans.audit.data.EntityUpdatedData;
 import org.overlord.apiman.dt.api.beans.audit.data.EntityVersionCreatedData;
 import org.overlord.apiman.dt.api.beans.audit.data.MembershipData;
 import org.overlord.apiman.dt.api.beans.audit.data.PolicyData;
+import org.overlord.apiman.dt.api.beans.contracts.ContractBean;
 import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
 import org.overlord.apiman.dt.api.beans.policies.PolicyBean;
 import org.overlord.apiman.dt.api.beans.policies.PolicyType;
@@ -239,6 +243,135 @@ public class AuditUtils {
         entry.setEntityId(bean.getService().getId());
         entry.setEntityVersion(bean.getVersion());
         entry.setWhat(AuditEntryType.Update);
+        entry.setData(toJSON(data));
+        return entry;
+    }
+
+    /**
+     * Creates an audit entry for the 'application created' event.
+     * @param bean
+     * @param securityContext
+     */
+    public static AuditEntryBean applicationCreated(ApplicationBean bean, ISecurityContext securityContext) {
+        AuditEntryBean entry = newEntry(bean.getOrganizationId(), AuditEntityType.Application, securityContext);
+        entry.setEntityId(bean.getId());
+        entry.setEntityVersion(null);
+        entry.setData(null);
+        entry.setWhat(AuditEntryType.Create);
+        return entry;
+    }
+
+    /**
+     * Creates an audit entry for the 'application updated' event.
+     * @param bean
+     * @param data
+     * @param securityContext
+     */
+    public static AuditEntryBean applicationUpdated(ApplicationBean bean, EntityUpdatedData data,
+            ISecurityContext securityContext) {
+        if (data.getChanges().isEmpty()) {
+            return null;
+        }
+        AuditEntryBean entry = newEntry(bean.getOrganizationId(), AuditEntityType.Application, securityContext);
+        entry.setEntityId(bean.getId());
+        entry.setEntityVersion(null);
+        entry.setWhat(AuditEntryType.Update);
+        entry.setData(toJSON(data));
+        return entry;
+    }
+
+    /**
+     * Creates an audit entry for the 'application version created' event.
+     * @param bean
+     * @param securityContext
+     */
+    public static AuditEntryBean applicationVersionCreated(ApplicationVersionBean bean,
+            ISecurityContext securityContext) {
+        AuditEntryBean entry = newEntry(bean.getApplication().getOrganizationId(), AuditEntityType.Application, securityContext);
+        entry.setEntityId(bean.getApplication().getId());
+        entry.setEntityVersion(bean.getVersion());
+        EntityVersionCreatedData data = new EntityVersionCreatedData();
+        data.setVersion(bean.getVersion());
+        entry.setData(toJSON(data));
+        entry.setWhat(AuditEntryType.Create);
+        return entry;
+    }
+
+    /**
+     * Creates an audit entry for the 'application version updated' event.
+     * @param bean
+     * @param data
+     * @param securityContext
+     */
+    public static AuditEntryBean applicationVersionUpdated(ApplicationVersionBean bean, EntityUpdatedData data,
+            ISecurityContext securityContext) {
+        if (data.getChanges().isEmpty()) {
+            return null;
+        }
+        AuditEntryBean entry = newEntry(bean.getApplication().getOrganizationId(), AuditEntityType.Application, securityContext);
+        entry.setEntityId(bean.getApplication().getId());
+        entry.setEntityVersion(bean.getVersion());
+        entry.setWhat(AuditEntryType.Update);
+        entry.setData(toJSON(data));
+        return entry;
+    }
+
+    /**
+     * Creates an audit entry for the 'contract created' event.
+     * @param bean
+     * @param securityContext
+     */
+    public static AuditEntryBean contractCreatedFromApp(ContractBean bean, ISecurityContext securityContext) {
+        AuditEntryBean entry = newEntry(bean.getApplication().getApplication().getOrganizationId(), AuditEntityType.Application, securityContext);
+        entry.setWhat(AuditEntryType.CreateContract);
+        entry.setEntityId(bean.getApplication().getApplication().getId());
+        entry.setEntityVersion(bean.getApplication().getVersion());
+        ContractData data = new ContractData(bean);
+        entry.setData(toJSON(data));
+        return entry;
+    }
+
+    /**
+     * Creates an audit entry for the 'contract created' event.
+     * @param bean
+     * @param securityContext
+     */
+    public static AuditEntryBean contractCreatedToService(ContractBean bean, ISecurityContext securityContext) {
+        AuditEntryBean entry = newEntry(bean.getService().getService().getOrganizationId(), AuditEntityType.Service, securityContext);
+        entry.setWhat(AuditEntryType.CreateContract);
+        entry.setEntityId(bean.getService().getService().getId());
+        entry.setEntityVersion(bean.getService().getVersion());
+        ContractData data = new ContractData(bean);
+        entry.setData(toJSON(data));
+        return entry;
+    }
+
+    /**
+     * Creates an audit entry for the 'contract broken' event.
+     * @param bean
+     * @param securityContext
+     */
+    public static AuditEntryBean contractBrokenFromApp(ContractBean bean, ISecurityContext securityContext) {
+        AuditEntryBean entry = newEntry(bean.getApplication().getApplication().getOrganizationId(), AuditEntityType.Application, securityContext);
+        entry.setWhat(AuditEntryType.BreakContract);
+        entry.setEntityId(bean.getApplication().getApplication().getId());
+        entry.setEntityVersion(bean.getApplication().getVersion());
+        ContractData data = new ContractData(bean);
+        entry.setData(toJSON(data));
+        return entry;
+    }
+
+    /**
+     * Creates an audit entry for the 'contract broken' event.
+     * @param bean
+     * @param securityContext
+     */
+    public static AuditEntryBean contractBrokenToService(ContractBean bean, ISecurityContext securityContext) {
+        AuditEntryBean entry = newEntry(bean.getService().getService().getOrganizationId(), AuditEntityType.Service, securityContext);
+        entry.setWhat(AuditEntryType.BreakContract);
+        entry.setEntityId(bean.getService().getService().getId());
+        entry.setEntityVersion(bean.getService().getVersion());
+        ContractData data = new ContractData(bean);
         entry.setData(toJSON(data));
         return entry;
     }
