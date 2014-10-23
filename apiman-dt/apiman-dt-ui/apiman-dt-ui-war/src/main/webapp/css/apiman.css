@@ -4,6 +4,10 @@ body {
   font-size: 13px;
 }
 
+.capitalized {
+  text-transform: capitalize;
+}
+
 .italic {
   font-style: italic;
 }
@@ -312,6 +316,25 @@ div.page {
 }
 .apiman-activity .apiman-summaryrow .fa {
   color: #456;
+}
+.apiman-activity .apiman-summaryrow .boxed-row {
+  margin-left: 0px;
+  margin-right: 20px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  background-color: #EFEFFF;
+  border-left: 1px solid #DDDDFF;
+  padding: 5px;
+  font-size: 11px;
+}
+.apiman-activity .apiman-summaryrow .boxed-row div.activity-value {
+  background-color: rgb(255, 251, 230);
+  padding: 3px;
+  border: 1px solid #ddd;
+}
+.apiman-activity .apiman-summaryrow .boxed-row ul {
+  margin-bottom: 0px;
+  padding-left: 20px;
 }
 
 .apiman-divider-20 {

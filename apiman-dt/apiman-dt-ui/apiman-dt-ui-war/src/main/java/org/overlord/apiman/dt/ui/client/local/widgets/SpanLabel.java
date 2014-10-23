@@ -13,43 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.dt.api.beans.audit.data;
+package org.overlord.apiman.dt.ui.client.local.widgets;
 
-import java.io.Serializable;
-
-import org.jboss.errai.common.client.api.annotations.Portable;
+import com.google.gwt.user.client.ui.InlineLabel;
 
 /**
- * The data saved along with the audit entry when a new version of an
- * entity is created.
+ * Same as {@link InlineLabel} but removes the GWT classes.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
-public class EntityVersionCreatedData implements Serializable {
-    
-    private static final long serialVersionUID = -8591318431623507761L;
-    
-    private String version;
+public class SpanLabel extends InlineLabel {
 
     /**
      * Constructor.
      */
-    public EntityVersionCreatedData() {
+    public SpanLabel() {
+        getElement().setClassName(""); //$NON-NLS-1$
     }
-
+    
     /**
-     * @return the version
+     * Constructor.
+     * @param label
      */
-    public String getVersion() {
-        return version;
-    }
-
-    /**
-     * @param version the version to set
-     */
-    public void setVersion(String version) {
-        this.version = version;
+    public SpanLabel(String label) {
+        super(label);
+        getElement().setClassName(""); //$NON-NLS-1$
     }
     
 }

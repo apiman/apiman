@@ -13,8 +13,8 @@
     <test name="Get Organization (updated)">test-plan-data/organizations/orgs/008_get.resttest</test>
   </testGroup>
 
-  <!-- Make sure Organizations are working properly -->
-  <testGroup name="Make sure auditing worked">
+  <!-- Make sure auditing is working properly -->
+  <testGroup name="Organization Auditing">
     <test name="Organization Activity">test-plan-data/organizations/auditing/001_activity.resttest</test>
   </testGroup>
 

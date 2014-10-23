@@ -25,6 +25,7 @@ import org.jboss.errai.common.client.api.Caller;
 import org.overlord.apiman.dt.api.beans.actions.ActionBean;
 import org.overlord.apiman.dt.api.beans.apps.ApplicationBean;
 import org.overlord.apiman.dt.api.beans.apps.ApplicationVersionBean;
+import org.overlord.apiman.dt.api.beans.audit.AuditEntryBean;
 import org.overlord.apiman.dt.api.beans.contracts.ContractBean;
 import org.overlord.apiman.dt.api.beans.contracts.NewContractBean;
 import org.overlord.apiman.dt.api.beans.idm.GrantRolesBean;
@@ -240,7 +241,7 @@ public class RestInvokerService {
         CallbackAdapter<OrganizationBean> adapter = new CallbackAdapter<OrganizationBean>(callback);
         organizations.call(adapter, adapter).get(orgId);
     }
-
+    
     /**
      * Creates a new organization.
      * @param org
@@ -367,7 +368,47 @@ public class RestInvokerService {
         CallbackAdapter<List<PolicyBean>> adapter = new CallbackAdapter<List<PolicyBean>>(callback);
         organizations.call(adapter, adapter).listAppPolicies(organizationId, applicationId, version);
     }
+    
+    /**
+     * Gets the application activity.
+     * @param organizationId
+     * @param applicationId
+     * @param page
+     * @param pageSize
+     * @param callback
+     */
+    public void getApplicationActivity(String organizationId, String applicationId, int page, int pageSize,
+            IRestInvokerCallback<SearchResultsBean<AuditEntryBean>> callback) {
+        CallbackAdapter<SearchResultsBean<AuditEntryBean>> adapter = new CallbackAdapter<SearchResultsBean<AuditEntryBean>>(callback);
+        organizations.call(adapter, adapter).getAppActivity(organizationId, applicationId, page, pageSize);
+    }
+    
+    /**
+     * Gets the application activity.
+     * @param organizationId
+     * @param applicationId
+     * @param version
+     * @param page
+     * @param pageSize
+     * @param callback
+     */
+    public void getApplicationVersionActivity(String organizationId, String applicationId, String version, int page, int pageSize,
+            IRestInvokerCallback<SearchResultsBean<AuditEntryBean>> callback) {
+        CallbackAdapter<SearchResultsBean<AuditEntryBean>> adapter = new CallbackAdapter<SearchResultsBean<AuditEntryBean>>(callback);
+        organizations.call(adapter, adapter).getAppVersionActivity(organizationId, applicationId, version, page, pageSize);
+    }
 
+    /**
+     * Gets the activity for the organization.
+     * @param organizationId
+     * @param callback
+     */
+    public void getOrgActivity(String organizationId, int page, int pageSize,
+            IRestInvokerCallback<SearchResultsBean<AuditEntryBean>> callback) {
+        CallbackAdapter<SearchResultsBean<AuditEntryBean>> adapter = new CallbackAdapter<SearchResultsBean<AuditEntryBean>>(callback);
+        organizations.call(adapter, adapter).activity(organizationId, page, pageSize);
+    }
+    
     /**
      * Gets all applications in the organization.
      * @param organizationId
@@ -477,6 +518,35 @@ public class RestInvokerService {
     }
     
     /**
+     * Gets the activity information for the service.
+     * @param organizationId
+     * @param serviceId
+     * @param page
+     * @param pageSize
+     * @param callback
+     */
+    public void getServiceActivity(String organizationId, String serviceId, int page, int pageSize,
+            IRestInvokerCallback<SearchResultsBean<AuditEntryBean>> callback) {
+        CallbackAdapter<SearchResultsBean<AuditEntryBean>> adapter = new CallbackAdapter<SearchResultsBean<AuditEntryBean>>(callback);
+        organizations.call(adapter, adapter).getServiceActivity(organizationId, serviceId, page, pageSize);
+    }
+
+    /**
+     * Gets the activity information for the service version.
+     * @param organizationId
+     * @param serviceId
+     * @param version
+     * @param page
+     * @param pageSize
+     * @param callback
+     */
+    public void getServiceVersionActivity(String organizationId, String serviceId, String version, int page, int pageSize,
+            IRestInvokerCallback<SearchResultsBean<AuditEntryBean>> callback) {
+        CallbackAdapter<SearchResultsBean<AuditEntryBean>> adapter = new CallbackAdapter<SearchResultsBean<AuditEntryBean>>(callback);
+        organizations.call(adapter, adapter).getServiceVersionActivity(organizationId, serviceId, version, page, pageSize);
+    }
+    
+    /**
      * Gets the policy chain for a particular service + version + plan.  This method
      * can be used to answer the question:  "What policies will be applied if Service X
      * is invoked via Plan Y?"
@@ -570,6 +640,35 @@ public class RestInvokerService {
             IRestInvokerCallback<List<PlanVersionBean>> callback) {
         CallbackAdapter<List<PlanVersionBean>> adapter = new CallbackAdapter<List<PlanVersionBean>>(callback);
         organizations.call(adapter, adapter).listPlanVersions(organizationId, planId);
+    }
+    
+    /**
+     * Gets plan activity information.
+     * @param organizationId
+     * @param planId
+     * @param page
+     * @param pageSize
+     * @param callback
+     */
+    public void getPlanActivity(String organizationId, String planId, int page, int pageSize,
+            IRestInvokerCallback<SearchResultsBean<AuditEntryBean>> callback) {
+        CallbackAdapter<SearchResultsBean<AuditEntryBean>> adapter = new CallbackAdapter<SearchResultsBean<AuditEntryBean>>(callback);
+        organizations.call(adapter, adapter).getPlanActivity(organizationId, planId, page, pageSize);
+    }
+
+    /**
+     * Gets plan version activity information.
+     * @param organizationId
+     * @param planId
+     * @param version
+     * @param page
+     * @param pageSize
+     * @param callback
+     */
+    public void getPlanVersionActivity(String organizationId, String planId, String version, int page, int pageSize,
+            IRestInvokerCallback<SearchResultsBean<AuditEntryBean>> callback) {
+        CallbackAdapter<SearchResultsBean<AuditEntryBean>> adapter = new CallbackAdapter<SearchResultsBean<AuditEntryBean>>(callback);
+        organizations.call(adapter, adapter).getPlanVersionActivity(organizationId, planId, version, page, pageSize);
     }
 
     /**

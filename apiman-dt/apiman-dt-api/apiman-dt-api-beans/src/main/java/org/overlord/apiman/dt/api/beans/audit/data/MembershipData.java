@@ -32,6 +32,7 @@ public class MembershipData implements Serializable {
     
     private static final long serialVersionUID = 3424852746654173415L;
     
+    private String userId;
     private Set<String> roles = new HashSet<String>();
 
     /**
@@ -59,6 +60,20 @@ public class MembershipData implements Serializable {
      */
     public void setRoles(Set<String> roles) {
         this.roles = roles;
+    }
+
+    /**
+     * @return the userId
+     */
+    public String getUserId() {
+        return userId;
+    }
+
+    /**
+     * @param userId the userId to set
+     */
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
 }

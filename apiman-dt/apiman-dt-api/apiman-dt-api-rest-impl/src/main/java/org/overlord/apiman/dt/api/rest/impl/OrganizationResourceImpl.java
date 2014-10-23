@@ -242,7 +242,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             PagingBean paging = new PagingBean();
             paging.setPage(page);
             paging.setPageSize(pageSize);
-            rval = storage.auditEntity(organizationId, null, null, OrganizationBean.class, paging);
+            rval = storage.auditEntity(organizationId, null, null, null, paging);
             storage.commitTx();
             return rval;
         } catch (StorageException e) {
@@ -1782,6 +1782,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         }
 
         MembershipData auditData = new MembershipData();
+        auditData.setUserId(bean.getUserId());
         try {
             for (String roleId : bean.getRoleIds()) {
                 RoleMembershipBean membership = RoleMembershipBean.create(bean.getUserId(), roleId, organizationId);
@@ -1818,6 +1819,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         roles.get(roleId);
 
         MembershipData auditData = new MembershipData();
+        auditData.setUserId(userId);
         boolean revoked = false;
         try {
             idmStorage.deleteMembership(userId, roleId, organizationId);
@@ -1861,6 +1863,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         }
         
         MembershipData auditData = new MembershipData();
+        auditData.setUserId(userId);
         auditData.addRole("*"); //$NON-NLS-1$
         try {
             storage.beginTx();

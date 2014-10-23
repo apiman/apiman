@@ -1,0 +1,62 @@
+GET /organizations/Organization1/activity admin/admin
+----
+200
+Content-Type: application/json
+
+{ "beans" : [ { "data" : "{\"userId\":\"user1\",\"roles\":[\"*\"]}",
+        "entityId" : null,
+        "entityType" : "Organization",
+        "entityVersion" : null,
+        "id" : 7,
+        "organizationId" : "Organization1",
+        "what" : "Revoke",
+        "who" : "admin"
+      },
+      { "data" : "{\"userId\":\"user2\",\"roles\":[\"ServiceDeveloper\"]}",
+        "entityId" : null,
+        "entityType" : "Organization",
+        "entityVersion" : null,
+        "id" : 6,
+        "organizationId" : "Organization1",
+        "what" : "Revoke",
+        "who" : "admin"
+      },
+      { "data" : "{\"userId\":\"user2\",\"roles\":[\"ServiceDeveloper\"]}",
+        "entityId" : null,
+        "entityType" : "Organization",
+        "entityVersion" : null,
+        "id" : 5,
+        "organizationId" : "Organization1",
+        "what" : "Grant",
+        "who" : "admin"
+      },
+      { "data" : "{\"userId\":\"user1\",\"roles\":[\"ServiceDeveloper\"]}",
+        "entityId" : null,
+        "entityType" : "Organization",
+        "entityVersion" : null,
+        "id" : 4,
+        "organizationId" : "Organization1",
+        "what" : "Grant",
+        "who" : "admin"
+      },
+      { "data" : "{\"userId\":\"user1\",\"roles\":[\"ApplicationDeveloper\"]}",
+        "entityId" : null,
+        "entityType" : "Organization",
+        "entityVersion" : null,
+        "id" : 3,
+        "organizationId" : "Organization1",
+        "what" : "Grant",
+        "who" : "admin"
+      },
+      { "data" : null,
+        "entityId" : null,
+        "entityType" : "Organization",
+        "entityVersion" : null,
+        "id" : 1,
+        "organizationId" : "Organization1",
+        "what" : "Create",
+        "who" : "admin"
+      }
+    ],
+  "totalSize" : 6
+}

@@ -35,6 +35,8 @@ public class PlanRedirectPage extends AbstractRedirectPage {
     protected String org;
     @PageState
     protected String plan;
+    @PageState
+    protected String version;
 
     /**
      * Constructor.
@@ -47,7 +49,11 @@ public class PlanRedirectPage extends AbstractRedirectPage {
      */
     @Override
     protected void doRedirect() {
-        nav.goTo(PlanOverviewPage.class, MultimapUtil.fromMultiple("org", org, "plan", plan)); //$NON-NLS-1$ //$NON-NLS-2$
+        if (version == null) {
+            nav.goTo(PlanOverviewPage.class, MultimapUtil.fromMultiple("org", org, "plan", plan)); //$NON-NLS-1$ //$NON-NLS-2$
+        } else {
+            nav.goTo(PlanOverviewPage.class, MultimapUtil.fromMultiple("org", org, "plan", plan, "version", version)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        }
     }
 
 }

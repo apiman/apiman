@@ -318,4 +318,74 @@ public class AppMessages {
     @TranslationKey(defaultValue = "Loading policies...")
     public static final String LOADING_POLICIES = "loading-policies"; //$NON-NLS-1$
 
+    @TranslationKey(defaultValue = "Show Next Items")
+    public static final String SHOW_NEXT_ITEMS = "show-next-items"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "Loading Items...")
+    public static final String LOADING_ITEMS = "loading-items"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "version")
+    public static final String VERSION = "version"; //$NON-NLS-1$
+
+    @TranslationKey(defaultValue = "added a policy to")
+    public static final String ACTIVITY_ADD_POLICY = "activity.add-policy"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "broke a contract with")
+    public static final String ACTIVITY_BREAK_CONTRACT_WITH = "activity.break-contract-with"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "broke a contract for")
+    public static final String ACTIVITY_BREAK_CONTRACT_FOR = "activity.break-contract-for"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "created application")
+    public static final String ACTIVITY_CREATE_APP = "activity.create-app"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "created organization")
+    public static final String ACTIVITY_CREATE_ORG = "activity.create-org"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "created plan")
+    public static final String ACTIVITY_CREATE_PLAN = "activity.create-plan"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "created service")
+    public static final String ACTIVITY_CREATE_SERVICE = "activity.create-service"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "deleted application")
+    public static final String ACTIVITY_DELETE_APP = "activity.delete-app"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "deleted organization")
+    public static final String ACTIVITY_DELETE_ORG = "activity.delete-org"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "deleted plan")
+    public static final String ACTIVITY_DELETE_PLAN = "activity.delete-plan"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "deleted service")
+    public static final String ACTIVITY_DELETE_SERVICE = "activity.delete-service"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "granted membership(s) in")
+    public static final String ACTIVITY_GRANT = "activity.grant"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "published service")
+    public static final String ACTIVITY_PUBLISH = "activity.publish"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "registered application")
+    public static final String ACTIVITY_REGISTER = "activity.register"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "removed a policy from")
+    public static final String ACTIVITY_REMOVE_POLICY = "activity.remove-policy"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "retired service")
+    public static final String ACTIVITY_RETIRE = "activity.retire"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "revoked membership(s) in")
+    public static final String ACTIVITY_REVOKE = "activity.revoke"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "unregistered application")
+    public static final String ACTIVITY_UNREGISTER = "activity.unregister"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "updated application")
+    public static final String ACTIVITY_UPDATE_APP = "activity.update-app"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "updated organization")
+    public static final String ACTIVITY_UPDATE_ORG = "activity.update-org"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "updated plan")
+    public static final String ACTIVITY_UPDATE_PLAN = "activity.update-plan"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "updated service")
+    public static final String ACTIVITY_UPDATE_SERVICE = "activity.update-service"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "updated a policy in")
+    public static final String ACTIVITY_UPDATE_POLICY = "activity.update-policy"; //$NON-NLS-1$
+
+    @TranslationKey(defaultValue = "Policy added:")
+    public static final String ACTIVITY_DATA_POLICY_ADDED = "activity.data.policy-added"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "Policy removed:")
+    public static final String ACTIVITY_DATA_POLICY_REMOVED = "activity.data.policy-removed"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "Policy updated:")
+    public static final String ACTIVITY_DATA_POLICY_UPDATED = "activity.data.policy-updated"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "was given role")
+    public static final String ACTIVITY_DATA_WAS_GIVEN_ROLE = "activity.data.was-given-role"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "All roles")
+    public static final String ACTIVITY_DATA_ALL_ROLES = "activity.data.all-roles"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "were taken away from")
+    public static final String ACTIVITY_DATA_ALL_ROLES_WERE_TAKEN = "activity.data.all-roles-were-taken"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "was taken away from")
+    public static final String ACTIVITY_DATA_ROLE_WAS_TAKEN = "activity.data.role-was-taken"; //$NON-NLS-1$
+    
+    
 }

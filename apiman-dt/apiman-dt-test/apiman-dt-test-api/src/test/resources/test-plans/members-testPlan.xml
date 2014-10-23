@@ -24,4 +24,9 @@
     <test name="Get Org 1 Members (one)">test-plan-data/members/manage/010_get-members.resttest</test>
   </testGroup>
 
+  <!-- Make sure auditing is working properly -->
+  <testGroup name="Membership Auditing">
+    <test name="Organization Activity">test-plan-data/members/auditing/001_activity.resttest</test>
+  </testGroup>
+
 </testPlan>

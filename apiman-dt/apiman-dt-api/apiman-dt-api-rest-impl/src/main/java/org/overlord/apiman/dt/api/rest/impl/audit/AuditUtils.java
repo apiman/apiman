@@ -26,7 +26,6 @@ import org.overlord.apiman.dt.api.beans.audit.AuditEntryBean;
 import org.overlord.apiman.dt.api.beans.audit.AuditEntryType;
 import org.overlord.apiman.dt.api.beans.audit.data.ContractData;
 import org.overlord.apiman.dt.api.beans.audit.data.EntityUpdatedData;
-import org.overlord.apiman.dt.api.beans.audit.data.EntityVersionCreatedData;
 import org.overlord.apiman.dt.api.beans.audit.data.MembershipData;
 import org.overlord.apiman.dt.api.beans.audit.data.PolicyData;
 import org.overlord.apiman.dt.api.beans.contracts.ContractBean;
@@ -223,9 +222,6 @@ public class AuditUtils {
         AuditEntryBean entry = newEntry(bean.getService().getOrganizationId(), AuditEntityType.Service, securityContext);
         entry.setEntityId(bean.getService().getId());
         entry.setEntityVersion(bean.getVersion());
-        EntityVersionCreatedData data = new EntityVersionCreatedData();
-        data.setVersion(bean.getVersion());
-        entry.setData(toJSON(data));
         entry.setWhat(AuditEntryType.Create);
         return entry;
     }
@@ -292,9 +288,6 @@ public class AuditUtils {
         AuditEntryBean entry = newEntry(bean.getApplication().getOrganizationId(), AuditEntityType.Application, securityContext);
         entry.setEntityId(bean.getApplication().getId());
         entry.setEntityVersion(bean.getVersion());
-        EntityVersionCreatedData data = new EntityVersionCreatedData();
-        data.setVersion(bean.getVersion());
-        entry.setData(toJSON(data));
         entry.setWhat(AuditEntryType.Create);
         return entry;
     }
@@ -555,9 +548,6 @@ public class AuditUtils {
         AuditEntryBean entry = newEntry(bean.getPlan().getOrganizationId(), AuditEntityType.Plan, securityContext);
         entry.setEntityId(bean.getPlan().getId());
         entry.setEntityVersion(bean.getVersion());
-        EntityVersionCreatedData data = new EntityVersionCreatedData();
-        data.setVersion(bean.getVersion());
-        entry.setData(toJSON(data));
         entry.setWhat(AuditEntryType.Create);
         return entry;
     }

@@ -35,6 +35,8 @@ public class AppRedirectPage extends AbstractRedirectPage {
     protected String org;
     @PageState
     protected String app;
+    @PageState
+    protected String version;
 
     /**
      * Constructor.
@@ -47,7 +49,11 @@ public class AppRedirectPage extends AbstractRedirectPage {
      */
     @Override
     protected void doRedirect() {
-        nav.goTo(AppOverviewPage.class, MultimapUtil.fromMultiple("org", org, "app", app)); //$NON-NLS-1$ //$NON-NLS-2$
+        if (version == null) {
+            nav.goTo(AppOverviewPage.class, MultimapUtil.fromMultiple("org", org, "app", app)); //$NON-NLS-1$ //$NON-NLS-2$
+        } else {
+            nav.goTo(AppOverviewPage.class, MultimapUtil.fromMultiple("org", org, "app", app, "version", version)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        }
     }
 
 }

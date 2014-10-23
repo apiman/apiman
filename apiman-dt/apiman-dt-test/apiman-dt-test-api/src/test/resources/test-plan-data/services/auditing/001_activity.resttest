@@ -93,7 +93,7 @@ Content-Type: application/json
       "entityId":"Service1",
       "entityVersion":"2.0",
       "what":"Create",
-      "data":"{\"version\":\"2.0\"}"
+      "data":null
     },
     {
       "id":7,
@@ -103,7 +103,7 @@ Content-Type: application/json
       "entityId":"Service1",
       "entityVersion":"1.0",
       "what":"Create",
-      "data":"{\"version\":\"1.0\"}"
+      "data":null
     },
     { 
       "id":5,
