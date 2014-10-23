@@ -132,10 +132,8 @@ public interface IStorage {
     /**
      * Gets the audit log for a user.
      * @param userId
-     * @param type
      * @param paging
-     * @return
      * @throws StorageException
      */
-    public <T> SearchResultsBean<AuditEntryBean> auditUser(String userId, Class<T> type, PagingBean paging) throws StorageException;
+    public <T> SearchResultsBean<AuditEntryBean> auditUser(String userId, PagingBean paging) throws StorageException;
 }

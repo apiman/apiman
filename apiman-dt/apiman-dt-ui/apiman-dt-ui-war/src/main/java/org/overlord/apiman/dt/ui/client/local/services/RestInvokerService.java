@@ -197,6 +197,18 @@ public class RestInvokerService {
     }
 
     /**
+     * Gets the user's recent activity.
+     * @param userId
+     * @param page
+     * @param pageSize
+     * @param callback
+     */
+    public void getUserActivity(String userId, int page, int pageSize, IRestInvokerCallback<SearchResultsBean<AuditEntryBean>> callback) {
+        CallbackAdapter<SearchResultsBean<AuditEntryBean>> adapter = new CallbackAdapter<SearchResultsBean<AuditEntryBean>>(callback);
+        users.call(adapter, adapter).getActivity(userId, page, pageSize);
+    }
+
+    /**
      * Gets info about the current user.
      * @param callback
      */

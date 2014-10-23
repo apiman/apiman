@@ -25,8 +25,10 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import org.overlord.apiman.dt.api.beans.audit.AuditEntryBean;
 import org.overlord.apiman.dt.api.beans.idm.UserBean;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
 import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
@@ -72,8 +74,14 @@ public interface IUserResource {
     public List<ApplicationSummaryBean> getApplications(@PathParam("userId") String userId);
 
     @GET
-    @Path("{userId}/servicess")
+    @Path("{userId}/services")
     @Produces(MediaType.APPLICATION_JSON)
     public List<ServiceSummaryBean> getServices(@PathParam("userId") String userId);
+
+    @GET
+    @Path("{userId}/activity")
+    @Produces(MediaType.APPLICATION_JSON)
+    public SearchResultsBean<AuditEntryBean> getActivity(@PathParam("userId") String userId,
+            @QueryParam("page") int page, @QueryParam("count") int pageSize);
     
 }

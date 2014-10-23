@@ -210,7 +210,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * @see org.overlord.apiman.dt.api.core.IStorage#auditUser(java.lang.String, java.lang.Class, org.overlord.apiman.dt.api.beans.search.PagingBean)
      */
     @Override
-    public <T> SearchResultsBean<AuditEntryBean> auditUser(String userId, Class<T> type, PagingBean paging)
+    public <T> SearchResultsBean<AuditEntryBean> auditUser(String userId, PagingBean paging)
             throws StorageException {
         SearchCriteriaBean criteria = new SearchCriteriaBean();
         if (paging != null) {

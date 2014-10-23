@@ -22,4 +22,8 @@
     <test name="Register Application">test-plan-data/all/publish/002_register-app-1.resttest</test>
   </testGroup>
 
+  <testGroup name="Auditing">
+    <test name="User Activity">test-plan-data/all/auditing/001_user-activity.resttest</test>
+  </testGroup>
+
 </testPlan>

@@ -23,14 +23,17 @@ import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.overlord.apiman.dt.api.beans.audit.AuditEntryBean;
 import org.overlord.apiman.dt.api.beans.idm.RoleMembershipBean;
 import org.overlord.apiman.dt.api.beans.idm.UserBean;
+import org.overlord.apiman.dt.api.beans.search.PagingBean;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
 import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
 import org.overlord.apiman.dt.api.beans.summary.ApplicationSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.OrganizationSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.ServiceSummaryBean;
 import org.overlord.apiman.dt.api.core.IIdmStorage;
+import org.overlord.apiman.dt.api.core.IStorage;
 import org.overlord.apiman.dt.api.core.IStorageQuery;
 import org.overlord.apiman.dt.api.core.exceptions.DoesNotExistException;
 import org.overlord.apiman.dt.api.core.exceptions.StorageException;
@@ -50,6 +53,9 @@ import org.overlord.apiman.dt.api.security.ISecurityContext;
 @ApplicationScoped
 public class UserResourceImpl implements IUserResource {
     
+    @Inject
+    private
+    IStorage storage;
     @Inject
     IIdmStorage idmStorage;
     @Inject
@@ -154,6 +160,32 @@ public class UserResourceImpl implements IUserResource {
             throw new SystemErrorException(e);
         }
     }
+    
+    /**
+     * @see org.overlord.apiman.dt.api.rest.contract.IUserResource#getActivity(java.lang.String, int, int)
+     */
+    @Override
+    public SearchResultsBean<AuditEntryBean> getActivity(String userId, int page, int pageSize) {
+        if (page <= 1) {
+            page = 1;
+        }
+        if (pageSize == 0) {
+            pageSize = 20;
+        }
+        try {
+            SearchResultsBean<AuditEntryBean> rval = null;
+            storage.beginTx();
+            PagingBean paging = new PagingBean();
+            paging.setPage(page);
+            paging.setPageSize(pageSize);
+            rval = storage.auditUser(userId, paging);
+            storage.commitTx();
+            return rval;
+        } catch (StorageException e) {
+            storage.rollbackTx();
+            throw new SystemErrorException(e);
+        }
+    }
 
     /**
      * @return the idmStorage
@@ -195,5 +227,19 @@ public class UserResourceImpl implements IUserResource {
      */
     public void setQuery(IStorageQuery query) {
         this.query = query;
+    }
+
+    /**
+     * @return the storage
+     */
+    public IStorage getStorage() {
+        return storage;
+    }
+
+    /**
+     * @param storage the storage to set
+     */
+    public void setStorage(IStorage storage) {
+        this.storage = storage;
     }
 }
