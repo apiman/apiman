@@ -21,7 +21,7 @@ Content-Type: application/json
         "what" : "Update",
         "who" : "admin"
       },
-      { "data" : "{\"version\":\"1.5\"}",
+      { "data" : null,
         "entityId" : "Service2",
         "entityType" : "Service",
         "entityVersion" : "1.5",
@@ -30,7 +30,7 @@ Content-Type: application/json
         "what" : "Create",
         "who" : "admin"
       },
-      { "data" : "{\"version\":\"1.0\"}",
+      { "data" : null,
         "entityId" : "Service2",
         "entityType" : "Service",
         "entityVersion" : "1.0",

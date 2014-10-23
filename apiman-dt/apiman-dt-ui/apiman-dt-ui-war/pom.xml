@@ -223,11 +223,10 @@
           <strict>true</strict>
           <localWorkers>2</localWorkers>
           <runTarget>index.html</runTarget>
-          <extraJvmArgs>-Xmx512m</extraJvmArgs>
           <soyc>false</soyc>
           <hostedWebapp>src/main/webapp/</hostedWebapp>
           <server>org.jboss.errai.cdi.server.gwt.JettyLauncher</server>
-          <extraJvmArgs>-Xmx512m -Derrai.devel.debugCacheDir=${project.build.outputDirectory}/.errai -Derrai.marshalling.server.classOutput=${project.build.outputDirectory}</extraJvmArgs>
+          <extraJvmArgs>-Xms1G -Xmx1G -XX:PermSize=384m -XX:MaxPermSize=384m -Derrai.devel.debugCacheDir=${project.build.outputDirectory}/.errai -Derrai.marshalling.server.classOutput=${project.build.outputDirectory}</extraJvmArgs>
         </configuration>
         <executions>
           <execution>

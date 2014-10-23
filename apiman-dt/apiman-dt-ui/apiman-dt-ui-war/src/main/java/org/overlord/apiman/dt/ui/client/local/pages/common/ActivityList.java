@@ -39,6 +39,8 @@ import org.overlord.apiman.dt.ui.client.local.pages.ServiceRedirectPage;
 import org.overlord.apiman.dt.ui.client.local.pages.UserRedirectPage;
 import org.overlord.apiman.dt.ui.client.local.pages.common.activity.AbstractDetailPanel;
 import org.overlord.apiman.dt.ui.client.local.pages.common.activity.AddPolicyDetailPanel;
+import org.overlord.apiman.dt.ui.client.local.pages.common.activity.BreakContractDetailPanel;
+import org.overlord.apiman.dt.ui.client.local.pages.common.activity.CreateContractDetailPanel;
 import org.overlord.apiman.dt.ui.client.local.pages.common.activity.GrantDetailPanel;
 import org.overlord.apiman.dt.ui.client.local.pages.common.activity.RemovePolicyDetailPanel;
 import org.overlord.apiman.dt.ui.client.local.pages.common.activity.RevokeDetailPanel;
@@ -95,6 +97,10 @@ public class ActivityList extends FlowPanel implements TakesValue<SearchResultsB
     Instance<RemovePolicyDetailPanel> removePolicyPanelFactory;
     @Inject
     Instance<UpdateDetailPanel> updatePanelFactory;
+    @Inject
+    Instance<CreateContractDetailPanel> createContractPanelFactory;
+    @Inject
+    Instance<BreakContractDetailPanel> breakContractPanelFactory;
     
     private int count;
     private AsyncActionButton moreItemsButton;
@@ -278,8 +284,9 @@ public class ActivityList extends FlowPanel implements TakesValue<SearchResultsB
     }
 
     /**
+     * Creates a string shown to the user that is specific to the type of activity
+     * item being displayed.
      * @param auditEntryBean
-     * @return
      */
     private String createWhat(AuditEntryBean auditEntryBean) {
         switch (auditEntryBean.getWhat()) {
@@ -305,7 +312,11 @@ public class ActivityList extends FlowPanel implements TakesValue<SearchResultsB
                 return "??"; //$NON-NLS-1$
             }
         case CreateContract:
-            break;
+            if (auditEntryBean.getEntityType() == AuditEntityType.Service) {
+                return i18n.format(AppMessages.ACTIVITY_CREATE_CONTRACT_WITH);
+            } else {
+                return i18n.format(AppMessages.ACTIVITY_CREATE_CONTRACT_FOR);
+            }
         case Delete:
             switch (auditEntryBean.getEntityType()) {
             case Application:
@@ -351,7 +362,6 @@ public class ActivityList extends FlowPanel implements TakesValue<SearchResultsB
         default:
             return "??"; //$NON-NLS-1$
         }
-        return null;
     }
 
     /**
@@ -396,6 +406,12 @@ public class ActivityList extends FlowPanel implements TakesValue<SearchResultsB
         }
         if (auditEntryBean.getWhat() == AuditEntryType.Update) {
             panel = updatePanelFactory.get();
+        }
+        if (auditEntryBean.getWhat() == AuditEntryType.CreateContract) {
+            panel = createContractPanelFactory.get();
+        }
+        if (auditEntryBean.getWhat() == AuditEntryType.BreakContract) {
+            panel = breakContractPanelFactory.get();
         }
         
         if (panel != null) {

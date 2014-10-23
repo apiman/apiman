@@ -474,38 +474,6 @@ public class AuditUtils {
     }
 
     /**
-     * Creates an audit entry.
-     * @param orgId
-     * @param type
-     * @param securityContext
-     */
-    private static AuditEntryBean newEntry(String orgId, AuditEntityType type, ISecurityContext securityContext) {
-        AuditEntryBean entry = new AuditEntryBean();
-        entry.setOrganizationId(orgId);
-        entry.setEntityType(type);
-        entry.setWhen(new Date());
-        entry.setWho(securityContext.getCurrentUser());
-        return entry;
-    }
-
-    /**
-     * Converts the list of plans to a string for display/comparison.
-     * @param plans
-     */
-    public static String asString(Set<ServicePlanBean> plans) {
-        StringBuilder builder = new StringBuilder();
-        boolean first = true;
-        for (ServicePlanBean plan : plans) {
-            if (!first) {
-                builder.append(", "); //$NON-NLS-1$
-            }
-            builder.append(plan.getPlanId()).append(":").append(plan.getVersion()); //$NON-NLS-1$
-            first = false;
-        }
-        return builder.toString();
-    }
-    
-    /**
      * Creates an audit entry for the 'plan created' event.
      * @param bean
      * @param securityContext
@@ -571,4 +539,92 @@ public class AuditUtils {
         return entry;
     }
 
+    /**
+     * Creates an audit entry for the 'service published' event.
+     * @param bean
+     * @param securityContext
+     */
+    public static AuditEntryBean servicePublished(ServiceVersionBean bean,
+            ISecurityContext securityContext) {
+        AuditEntryBean entry = newEntry(bean.getService().getOrganizationId(), AuditEntityType.Service, securityContext);
+        entry.setEntityId(bean.getService().getId());
+        entry.setEntityVersion(bean.getVersion());
+        entry.setWhat(AuditEntryType.Publish);
+        return entry;
+    }
+
+    /**
+     * Creates an audit entry for the 'service retired' event.
+     * @param bean
+     * @param securityContext
+     */
+    public static AuditEntryBean serviceRetired(ServiceVersionBean bean,
+            ISecurityContext securityContext) {
+        AuditEntryBean entry = newEntry(bean.getService().getOrganizationId(), AuditEntityType.Service, securityContext);
+        entry.setEntityId(bean.getService().getId());
+        entry.setEntityVersion(bean.getVersion());
+        entry.setWhat(AuditEntryType.Retire);
+        return entry;
+    }
+
+    /**
+     * Creates an audit entry for the 'application registered' event.
+     * @param bean
+     * @param securityContext
+     */
+    public static AuditEntryBean applicationRegistered(ApplicationVersionBean bean,
+            ISecurityContext securityContext) {
+        AuditEntryBean entry = newEntry(bean.getApplication().getOrganizationId(), AuditEntityType.Application, securityContext);
+        entry.setEntityId(bean.getApplication().getId());
+        entry.setEntityVersion(bean.getVersion());
+        entry.setWhat(AuditEntryType.Register);
+        return entry;
+    }
+
+    /**
+     * Creates an audit entry for the 'application unregistered' event.
+     * @param bean
+     * @param securityContext
+     */
+    public static AuditEntryBean applicationUnregistered(ApplicationVersionBean bean,
+            ISecurityContext securityContext) {
+        AuditEntryBean entry = newEntry(bean.getApplication().getOrganizationId(), AuditEntityType.Application, securityContext);
+        entry.setEntityId(bean.getApplication().getId());
+        entry.setEntityVersion(bean.getVersion());
+        entry.setWhat(AuditEntryType.Unregister);
+        return entry;
+    }
+
+    /**
+     * Creates an audit entry.
+     * @param orgId
+     * @param type
+     * @param securityContext
+     */
+    private static AuditEntryBean newEntry(String orgId, AuditEntityType type, ISecurityContext securityContext) {
+        AuditEntryBean entry = new AuditEntryBean();
+        entry.setOrganizationId(orgId);
+        entry.setEntityType(type);
+        entry.setWhen(new Date());
+        entry.setWho(securityContext.getCurrentUser());
+        return entry;
+    }
+
+    /**
+     * Converts the list of plans to a string for display/comparison.
+     * @param plans
+     */
+    public static String asString(Set<ServicePlanBean> plans) {
+        StringBuilder builder = new StringBuilder();
+        boolean first = true;
+        for (ServicePlanBean plan : plans) {
+            if (!first) {
+                builder.append(", "); //$NON-NLS-1$
+            }
+            builder.append(plan.getPlanId()).append(":").append(plan.getVersion()); //$NON-NLS-1$
+            first = false;
+        }
+        return builder.toString();
+    }
+    
 }

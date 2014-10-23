@@ -44,6 +44,7 @@ import org.overlord.apiman.dt.api.rest.contract.IOrganizationResource;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ActionException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ApplicationVersionNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ServiceVersionNotFoundException;
+import org.overlord.apiman.dt.api.rest.impl.audit.AuditUtils;
 import org.overlord.apiman.dt.api.rest.impl.i18n.Messages;
 import org.overlord.apiman.dt.api.rest.impl.util.ExceptionFactory;
 import org.overlord.apiman.dt.api.security.ISecurityContext;
@@ -141,6 +142,7 @@ public class ActionResourceImpl implements IActionResource {
         try {
             storage.beginTx();
             storage.update(versionBean);
+            storage.createAuditEntry(AuditUtils.servicePublished(versionBean, securityContext));
             storage.commitTx();
         } catch (Exception e) {
             storage.rollbackTx();
@@ -215,6 +217,7 @@ public class ActionResourceImpl implements IActionResource {
         try {
             storage.beginTx();
             storage.update(versionBean);
+            storage.createAuditEntry(AuditUtils.applicationRegistered(versionBean, securityContext));
             storage.commitTx();
         } catch (Exception e) {
             storage.rollbackTx();

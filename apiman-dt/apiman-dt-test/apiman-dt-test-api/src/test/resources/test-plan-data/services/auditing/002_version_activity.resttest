@@ -6,6 +6,16 @@ Content-Type: application/json
 {
   "beans" : [
     {
+      "id" : 23,
+      "data" : null,
+      "entityId" : "Service1",
+      "entityType" : "Service",
+      "entityVersion" : "1.0",
+      "organizationId" : "Organization1",
+      "what" : "Publish",
+      "who" : "admin"
+    },
+    {
       "id" : 22,
       "data" : "{\"policyDefId\":\"PolicyDef\"}",
       "entityId" : "Service1",
@@ -96,5 +106,5 @@ Content-Type: application/json
       "data":null
     }
   ],
-  "totalSize":9
+  "totalSize":10
 }

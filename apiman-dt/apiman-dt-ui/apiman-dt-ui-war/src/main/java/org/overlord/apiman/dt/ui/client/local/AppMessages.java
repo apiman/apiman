@@ -327,10 +327,14 @@ public class AppMessages {
 
     @TranslationKey(defaultValue = "added a policy to")
     public static final String ACTIVITY_ADD_POLICY = "activity.add-policy"; //$NON-NLS-1$
-    @TranslationKey(defaultValue = "broke a contract with")
+    @TranslationKey(defaultValue = "contract was broken from application")
     public static final String ACTIVITY_BREAK_CONTRACT_WITH = "activity.break-contract-with"; //$NON-NLS-1$
-    @TranslationKey(defaultValue = "broke a contract for")
+    @TranslationKey(defaultValue = "broke a contract to service")
     public static final String ACTIVITY_BREAK_CONTRACT_FOR = "activity.break-contract-for"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "contract was created with application")
+    public static final String ACTIVITY_CREATE_CONTRACT_WITH = "activity.create-contract-with"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "created a contract to service")
+    public static final String ACTIVITY_CREATE_CONTRACT_FOR = "activity.create-contract-for"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "created application")
     public static final String ACTIVITY_CREATE_APP = "activity.create-app"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "created organization")
@@ -386,6 +390,16 @@ public class AppMessages {
     public static final String ACTIVITY_DATA_ALL_ROLES_WERE_TAKEN = "activity.data.all-roles-were-taken"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "was taken away from")
     public static final String ACTIVITY_DATA_ROLE_WAS_TAKEN = "activity.data.role-was-taken"; //$NON-NLS-1$
-    
-    
+
+    @TranslationKey(defaultValue = "A contract was created between application")
+    public static final String ACTIVITY_DATA_CONTRACT_1_CREATE = "activity.data.contract-1.create"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "A contract was broken between application")
+    public static final String ACTIVITY_DATA_CONTRACT_1_BREAK = "activity.data.contract-1.break"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "and service")
+    public static final String ACTIVITY_DATA_CONTRACT_2 = "activity.data.contract-2"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "through version")
+    public static final String ACTIVITY_DATA_CONTRACT_3 = "activity.data.contract-3"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "of plan")
+    public static final String ACTIVITY_DATA_CONTRACT_4 = "activity.data.contract-4"; //$NON-NLS-1$
+
 }

@@ -39,7 +39,7 @@ Content-Type: application/json
         "what" : "AddPolicy",
         "who" : "admin"
       },
-      { "data" : "{\"version\":\"1.0\"}",
+      { "data" : null,
         "entityId" : "Plan1",
         "entityType" : "Plan",
         "entityVersion" : "1.0",
