@@ -102,6 +102,7 @@ public class AppOverviewPage extends AbstractAppPage {
 
         version.setText(versionBean.getVersion());
         status.setText(versionBean.getStatus().toString());
+        status.setTitle(getStatusDescription(versionBean.getStatus()));
         versionCreatedOn.setText(Formatting.formatShortDate(versionBean.getCreatedOn()));
         versionCreatedBy.setText(versionBean.getCreatedBy());
         toUserHref = navHelper.createHrefToPage(UserAppsPage.class,
@@ -109,27 +110,6 @@ public class AppOverviewPage extends AbstractAppPage {
         versionCreatedBy.setHref(toUserHref);
 
         renderApplicationStatus();
-    }
-
-    /**
-     * Sets the proper CSS class(es) on the label based on the application's status.
-     * @param label
-     * @param status
-     */
-    private static void setStatusLabelClass(InlineLabel label, ApplicationStatus status) {
-        label.getElement().setClassName("apiman-label"); //$NON-NLS-1$
-        switch (status) {
-        case Created:
-        case Ready:
-            label.getElement().addClassName("apiman-label-warning"); //$NON-NLS-1$
-            break;
-        case Registered:
-            label.getElement().addClassName("apiman-label-success"); //$NON-NLS-1$
-            break;
-        case Retired:
-            label.getElement().addClassName("apiman-label-default"); //$NON-NLS-1$
-            break;
-        }
     }
 
     /**
@@ -180,6 +160,46 @@ public class AppOverviewPage extends AbstractAppPage {
                 dataPacketError(error);
             }
         });
+    }
+
+    /**
+     * Sets the proper CSS class(es) on the label based on the application's status.
+     * @param label
+     * @param status
+     */
+    private static void setStatusLabelClass(InlineLabel label, ApplicationStatus status) {
+        label.getElement().setClassName("apiman-label"); //$NON-NLS-1$
+        switch (status) {
+        case Created:
+        case Ready:
+            label.getElement().addClassName("apiman-label-warning"); //$NON-NLS-1$
+            break;
+        case Registered:
+            label.getElement().addClassName("apiman-label-success"); //$NON-NLS-1$
+            break;
+        case Retired:
+            label.getElement().addClassName("apiman-label-default"); //$NON-NLS-1$
+            break;
+        }
+    }
+
+    /**
+     * Gets an explanation of the status.
+     * @param status
+     */
+    private String getStatusDescription(ApplicationStatus status) {
+        switch (status) {
+        case Created:
+            return i18n.format(AppMessages.APP_STATUS_CREATED);
+        case Ready:
+            return i18n.format(AppMessages.APP_STATUS_READY);
+        case Registered:
+            return i18n.format(AppMessages.APP_STATUS_REGISTERED);
+        case Retired:
+            return i18n.format(AppMessages.APP_STATUS_RETIRED);
+        default:
+            return null;
+        }
     }
     
     /**

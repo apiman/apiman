@@ -402,4 +402,22 @@ public class AppMessages {
     @TranslationKey(defaultValue = "of plan")
     public static final String ACTIVITY_DATA_CONTRACT_4 = "activity.data.contract-4"; //$NON-NLS-1$
 
+    @TranslationKey(defaultValue = "The application is not yet ready to be registered.  Try creating at least one Contract...")
+    public static final String APP_STATUS_CREATED = "app.status.created"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "The application has been created and configured.  You can Register it with the gateway at any time.")
+    public static final String APP_STATUS_READY = "app.status.ready"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "The application was registered with the gateway and is ready to be used!")
+    public static final String APP_STATUS_REGISTERED = "app.status.registered"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "The application was retired and can no longer be used.")
+    public static final String APP_STATUS_RETIRED = "app.status.retired"; //$NON-NLS-1$
+
+    @TranslationKey(defaultValue = "The service has not yet been configured.  You must first configure the service (Implementation, Plans) before publishing it to the Gateway.")
+    public static final String SERVICE_STATUS_CREATED = "service.status.created"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "The service has been published to the Gateway and is now ready to be used by applications.")
+    public static final String SERVICE_STATUS_PUBLISHED = "service.status.published"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "The service has been fully configured and can be published to the Gateway (see the Publish button on this page).")
+    public static final String SERVICE_STATUS_READY = "service.status.ready"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "The service was retired from the Gateway and can no longer be used.")
+    public static final String SERVICE_STATUS_RETIRED = "service.status.retired"; //$NON-NLS-1$
+
 }

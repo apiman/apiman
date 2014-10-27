@@ -62,6 +62,7 @@ textarea.form-data {
   padding: 1px 8px;
   color: white;
   border-radius: 3px;
+  border: 1px solid white;
 }
 .apiman-label-default {
   background-color: #999999;
@@ -80,6 +81,33 @@ textarea.form-data {
 }
 .apiman-label-danger {
   background-color: #c90813;
+}
+.apiman-label:hover {
+  cursor: default;
+}
+.apiman-label-default:hover {
+  background-color: #999999;
+  border-color: #666;
+}
+.apiman-label-primary:hover {
+  background-color: #1cace9;
+  border-color: #097BAB;
+}
+.apiman-label-success:hover {
+  background-color: #5cb75c;
+  border-color: #358C35;
+}
+.apiman-label-info:hover {
+  background-color: #27799c;
+  border-color: #0C5F82;
+}
+.apiman-label-warning:hover {
+  background-color: #eb7720;
+  border-color: #B56C19;
+}
+.apiman-label-danger:hover {
+  background-color: #c90813;
+  border-color: #870008;
 }
 
 .form-label {

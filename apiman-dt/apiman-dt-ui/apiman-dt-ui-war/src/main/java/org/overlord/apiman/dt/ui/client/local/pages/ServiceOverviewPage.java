@@ -98,6 +98,7 @@ public class ServiceOverviewPage extends AbstractServicePage {
 
         version.setText(versionBean.getVersion());
         status.setText(versionBean.getStatus().name());
+        status.setTitle(getStatusDescription(versionBean.getStatus()));
         versionCreatedOn.setText(Formatting.formatShortDate(versionBean.getCreatedOn()));
         versionCreatedBy.setText(versionBean.getCreatedBy());
         toUserHref = navHelper.createHrefToPage(UserServicesPage.class,
@@ -106,7 +107,7 @@ public class ServiceOverviewPage extends AbstractServicePage {
 
         renderServiceStatus();
     }
-    
+
     /**
      * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractPage#onPageLoaded()
      */
@@ -178,6 +179,25 @@ public class ServiceOverviewPage extends AbstractServicePage {
         }
     }
 
+    /**
+     * Gets a description of the status.
+     * @param status
+     */
+    private String getStatusDescription(ServiceStatus status) {
+        switch (status) {
+        case Created:
+            return i18n.format(AppMessages.SERVICE_STATUS_CREATED);
+        case Published:
+            return i18n.format(AppMessages.SERVICE_STATUS_PUBLISHED);
+        case Ready:
+            return i18n.format(AppMessages.SERVICE_STATUS_READY);
+        case Retired:
+            return i18n.format(AppMessages.SERVICE_STATUS_RETIRED);
+        default:
+            return null;
+        }
+    }
+    
     /**
      * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractPage#getPageTitle()
      */
