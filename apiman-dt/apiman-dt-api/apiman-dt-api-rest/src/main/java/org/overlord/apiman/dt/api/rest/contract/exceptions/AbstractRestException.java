@@ -26,6 +26,9 @@ public abstract class AbstractRestException extends RuntimeException {
 
     private static final long serialVersionUID = -2406210413693314452L;
     
+    // The stacktrace is only set on the client/UI side
+    private transient String serverStack;
+    
     /**
      * Constructor.
      */
@@ -55,6 +58,20 @@ public abstract class AbstractRestException extends RuntimeException {
      */
     public AbstractRestException(String message, Throwable cause) {
         super(message, cause);
+    }
+
+    /**
+     * @return the stacktrace
+     */
+    public String getServerStack() {
+        return serverStack;
+    }
+
+    /**
+     * @param stacktrace the stacktrace to set
+     */
+    public void setServerStack(String stacktrace) {
+        this.serverStack = stacktrace;
     }
 
     /**

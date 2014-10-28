@@ -25,6 +25,7 @@ import org.overlord.apiman.dt.api.rest.contract.exceptions.SystemErrorException;
 import org.overlord.apiman.dt.ui.client.local.pages.error.AbstractErrorPage;
 import org.overlord.apiman.dt.ui.client.local.pages.error.Error403Page;
 import org.overlord.apiman.dt.ui.client.local.pages.error.Error404Page;
+import org.overlord.apiman.dt.ui.client.local.pages.error.Error409Page;
 import org.overlord.apiman.dt.ui.client.local.pages.error.Error500Page;
 
 import com.google.gwt.dom.client.Style.Display;
@@ -46,6 +47,8 @@ public class PageErrorPanel {
     Instance<Error403Page> error403Factory;
     @Inject
     Instance<Error404Page> error404Factory;
+    @Inject
+    Instance<Error409Page> error409Factory;
     @Inject
     Instance<Error500Page> error500Factory;
     
@@ -96,12 +99,15 @@ public class PageErrorPanel {
             AbstractRestException restError = (AbstractRestException) t;
             int httpCode = restError.getHttpCode();
             AbstractErrorPage errorPage = null;
-            if (httpCode == 403)
+            if (httpCode == 403) {
                 errorPage = error403Factory.get();
-            if (httpCode == 404)
+            } else if (httpCode == 404) {
                 errorPage = error404Factory.get();
-            if (httpCode == 500)
+            } else if (httpCode == 409) {
+                errorPage = error409Factory.get();
+            } else {
                 errorPage = error500Factory.get();
+            }
             errorPage.setValue(restError);
             errorPanel.add(errorPage);
         } else {

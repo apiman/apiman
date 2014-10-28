@@ -923,6 +923,9 @@ ol.breadcrumb {
 .error-404 {
   background-image: url(images/error-404.png);
 }
+.error-409 {
+  background-image: url(images/error-409.png);
+}
 .error-500 {
   background-image: url(images/error-500.png);
 }
@@ -1001,3 +1004,50 @@ div.admin-page .admin-content .apiman-summaryrow .emphasis {
   text-decoration: underline;
 }
 
+#apiman-log-viewer {
+  position: fixed;
+  left: 0px;
+  width: 50%;
+  top: 100px;
+  background-color: #fafafa;
+  border-top: 1px solid #887;
+  border-right: 1px solid #887;
+  border-bottom: 1px solid #887;
+  padding-top: 10px;
+  padding-bottom: 20px;
+  z-index: 1000;
+  box-shadow: 3px 3px 8px #AAA;
+  opacity: 0.75;
+}
+
+#apiman-log-viewer:hover {
+  opacity: 1;
+}
+
+#apiman-log-viewer .settings {
+  border-bottom: 1px solid #887;
+}
+
+#apiman-log-viewer .settings .close {
+  font-size: 26px;
+}
+
+#apiman-log-viewer .settings .settings-label {
+  display: inline-block;
+  position: relative;
+  margin-right: 10px;
+}
+
+#apiman-log-viewer .messages-wrap {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+#apiman-log-viewer .messages {
+  border: 1px solid #887;
+  margin-top: 20px;
+  height: 275px;
+  overflow: auto;
+  background-color: white;
+  padding: 3px;
+}

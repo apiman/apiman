@@ -21,6 +21,7 @@ import javax.inject.Inject;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.AbstractRestException;
+import org.overlord.apiman.dt.ui.client.local.widgets.PreLabel;
 
 import com.google.gwt.user.client.ui.TextBox;
 
@@ -36,6 +37,8 @@ public class Error500Page extends AbstractErrorPage {
     
     @Inject @DataField
     TextBox errorMessage;
+    @Inject @DataField
+    PreLabel errorDetail;
     
     /**
      * Constructor.
@@ -50,6 +53,7 @@ public class Error500Page extends AbstractErrorPage {
     public void setValue(AbstractRestException value, boolean fireEvents) {
         super.setValue(value, fireEvents);
         errorMessage.setValue(value.getMessage());
+        errorDetail.setText(value.getServerStack());
     }
     
 }

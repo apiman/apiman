@@ -44,7 +44,7 @@ public class SystemErrorException extends AbstractSystemException {
      * @param t
      */
     public SystemErrorException(Throwable t) {
-        super(t.getMessage());
+        super(t);
     }
     
     /**

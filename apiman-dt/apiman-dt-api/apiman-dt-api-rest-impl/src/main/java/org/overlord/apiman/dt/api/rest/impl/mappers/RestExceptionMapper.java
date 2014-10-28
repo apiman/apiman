@@ -16,6 +16,8 @@
 
 package org.overlord.apiman.dt.api.rest.impl.mappers;
 
+import java.io.PrintWriter;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
@@ -24,6 +26,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
+import org.apache.commons.io.output.StringBuilderWriter;
 import org.overlord.apiman.dt.api.beans.exceptions.ErrorBean;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.AbstractRestException;
 import org.overlord.apiman.dt.api.security.ISecurityContext;
@@ -57,6 +60,7 @@ public class RestExceptionMapper implements ExceptionMapper<AbstractRestExceptio
         error.setErrorCode(data.getErrorCode());
         error.setMessage(data.getMessage());
         error.setMoreInfoUrl(data.getMoreInfoUrl());
+        error.setStacktrace(getStackTrace(data));
         ResponseBuilder builder = Response.status(data.getHttpCode()).header("X-Apiman-Error", "true"); //$NON-NLS-1$ //$NON-NLS-2$
         if (origin != null) {
             builder = builder
@@ -66,6 +70,17 @@ public class RestExceptionMapper implements ExceptionMapper<AbstractRestExceptio
         }
         builder.type(MediaType.APPLICATION_JSON_TYPE);
         return builder.entity(error).build();
+    }
+
+    /**
+     * Gets the full stack trace for the given exception and returns it as a
+     * string.
+     * @param data
+     */
+    private String getStackTrace(AbstractRestException data) {
+        StringBuilderWriter writer = new StringBuilderWriter();
+        data.printStackTrace(new PrintWriter(writer));
+        return writer.getBuilder().toString();
     }
 
 }

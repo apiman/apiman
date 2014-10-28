@@ -28,6 +28,7 @@ import org.overlord.apiman.dt.api.beans.idm.UserBean;
 import org.overlord.apiman.dt.ui.client.local.PageErrorPanel;
 import org.overlord.apiman.dt.ui.client.local.PageLoadingWidget;
 import org.overlord.apiman.dt.ui.client.local.services.CurrentContextService;
+import org.overlord.apiman.dt.ui.client.local.services.LoggerService;
 import org.overlord.apiman.dt.ui.client.local.services.NavigationHelperService;
 import org.overlord.apiman.dt.ui.client.local.services.RestInvokerService;
 import org.overlord.apiman.dt.ui.client.local.services.rest.IRestInvokerCallback;
@@ -62,6 +63,8 @@ public abstract class AbstractPage extends Composite {
     protected TranslationService i18n;
     @Inject
     protected CurrentContextService currentContext;
+    @Inject
+    protected LoggerService logger;
 
     private int expectedDataPackets;
     private int dataPacketsReceived;
@@ -120,6 +123,7 @@ public abstract class AbstractPage extends Composite {
      * 3) render and display page
      */
     protected void doPageLoadingLifecycle() {
+        logger.debug("Starting page loading lifecycle."); //$NON-NLS-1$
         onPageLoading();
         pageLoadingWidget.show();
         errorPanel.clear();
@@ -184,6 +188,7 @@ public abstract class AbstractPage extends Composite {
      */
     protected void dataPacketLoaded() {
         dataPacketsReceived++;
+        logger.debug("A data packet was loaded.  Count=" + dataPacketsReceived); //$NON-NLS-1$
         if (dataPacketsReceived == expectedDataPackets) {
             showPage();
         }
@@ -195,6 +200,7 @@ public abstract class AbstractPage extends Composite {
      * TODO also support a version of this with additional provided context information - sometimes we know what we were doing when a problem happened
      */
     protected void dataPacketError(Throwable t) {
+        logger.error("Data packet error: " + t.getMessage()); //$NON-NLS-1$
         errorPanel.clear();
         errorPanel.displayError(t);
         pageLoadingWidget.hide();
@@ -207,6 +213,7 @@ public abstract class AbstractPage extends Composite {
      * Called after all data has been loaded.
      */
     protected void showPage() {
+        logger.debug("All data packets received, showing page."); //$NON-NLS-1$
         setPageTitle(getPageTitle());
         renderPage();
         pageLoadingWidget.hide();
@@ -241,7 +248,6 @@ public abstract class AbstractPage extends Composite {
      * Called once all data has been loaded and the page has been rendered.
      */
     protected void onPageLoaded() {
-        
     }
     
     /**

@@ -31,6 +31,7 @@ public class ErrorBean {
     private int errorCode;
     private String message;
     private String moreInfoUrl;
+    private String stacktrace;
     
     /**
      * Constructor.
@@ -92,6 +93,20 @@ public class ErrorBean {
      */
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    /**
+     * @return the stacktrace
+     */
+    public String getStacktrace() {
+        return stacktrace;
+    }
+
+    /**
+     * @param stacktrace the stacktrace to set
+     */
+    public void setStacktrace(String stacktrace) {
+        this.stacktrace = stacktrace;
     }
 
 }

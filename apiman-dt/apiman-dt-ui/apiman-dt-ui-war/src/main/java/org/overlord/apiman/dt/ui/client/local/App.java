@@ -26,8 +26,11 @@ import org.jboss.errai.bus.client.api.TransportErrorHandler;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ui.nav.client.local.Navigation;
 import org.jboss.errai.ui.shared.api.annotations.Bundle;
+import org.overlord.apiman.dt.ui.client.local.services.LoggerService;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
@@ -45,10 +48,20 @@ public class App {
 	private Navigation navigation;
 	@Inject
 	private ClientMessageBus bus;
+	@Inject
+	private LoggerService logger;
 
 	@PostConstruct
 	public void buildUI() {
         rootPanel.add(navigation.getContentPanel());
+        rootPanel.addDomHandler(new KeyPressHandler() {
+            @Override
+            public void onKeyPress(KeyPressEvent event) {
+                if (event.getCharCode() == '`' && event.isControlKeyDown()) {
+                    logger.toggleViewer();
+                }
+            }
+        }, KeyPressEvent.getType());
 		bus.addLifecycleListener(new BusLifecycleAdapter() {
 		    @Override
 		    public void busAssociating(BusLifecycleEvent e) {

@@ -21,14 +21,25 @@ import javax.ws.rs.ext.Provider;
 import org.jboss.errai.enterprise.client.jaxrs.AbstractJSONClientExceptionMapper;
 import org.jboss.errai.enterprise.client.jaxrs.api.ResponseException;
 import org.overlord.apiman.dt.api.beans.exceptions.ErrorBean;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.AbstractRestException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.ActionException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ApplicationAlreadyExistsException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ApplicationNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ApplicationVersionNotFoundException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.ContractAlreadyExistsException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.ContractNotFoundException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.InvalidApplicationStatusException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.InvalidSearchCriteriaException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.InvalidServiceStatusException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.MemberNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.NotAuthorizedException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationAlreadyExistsException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.OrganizationNotFoundException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.PlanAlreadyExistsException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.PlanNotFoundException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.PlanVersionNotFoundException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.PolicyDefinitionAlreadyExistsException;
+import org.overlord.apiman.dt.api.rest.contract.exceptions.PolicyDefinitionNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.RoleAlreadyExistsException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.RoleNotFoundException;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ServiceAlreadyExistsException;
@@ -60,42 +71,65 @@ public class RestClientExceptionMapper extends AbstractJSONClientExceptionMapper
     @SuppressWarnings("nls") // cannot inject into a client exception mapper - so can't get the translation service easily
     @Override
     public Throwable fromResponse(Response response) {
-        String header = response.getHeader("X-Apiman-Error"); //$NON-NLS-1$
-        if (header != null && "true".equals(header)) { //$NON-NLS-1$
+        String header = response.getHeader("X-Apiman-Error");
+        if (header != null && "true".equals(header)) {
             ErrorBean errorBean = fromJSON(response, ErrorBean.class);
             String type = errorBean.getType();
-            if (type.equals("InvalidSearchCriteriaException")) //$NON-NLS-1$
-                return new InvalidSearchCriteriaException(errorBean.getMessage());
-            if (type.equals("NotAuthorizedException")) //$NON-NLS-1$
-                return new NotAuthorizedException(errorBean.getMessage());
-            if (type.equals("OrganizationAlreadyExistsException")) //$NON-NLS-1$
-                return new OrganizationAlreadyExistsException(errorBean.getMessage());
-            if (type.equals("OrganizationNotFoundException")) //$NON-NLS-1$
-                return new OrganizationNotFoundException(errorBean.getMessage());
-            if (type.equals("RoleAlreadyExistsException")) //$NON-NLS-1$
-                return new RoleAlreadyExistsException(errorBean.getMessage());
-            if (type.equals("RoleNotFoundException")) //$NON-NLS-1$
-                return new RoleNotFoundException(errorBean.getMessage());
-            if (type.equals("SystemErrorException")) //$NON-NLS-1$
-                return new SystemErrorException(errorBean.getMessage());
-            if (type.equals("UserNotFoundException")) //$NON-NLS-1$
-                return new UserNotFoundException(errorBean.getMessage());
-            if (type.equals("ApplicationFoundException")) //$NON-NLS-1$
-                return new ApplicationNotFoundException(errorBean.getMessage());
-            if (type.equals("ApplicationAlreadyExistsException")) //$NON-NLS-1$
-                return new ApplicationAlreadyExistsException(errorBean.getMessage());
-            if (type.equals("ApplicationVersionNotFoundException")) //$NON-NLS-1$
-                return new ApplicationVersionNotFoundException(errorBean.getMessage());
-            if (type.equals("ServiceNotFoundException")) //$NON-NLS-1$
-                return new ServiceNotFoundException(errorBean.getMessage());
-            if (type.equals("ServiceAlreadyExistsException")) //$NON-NLS-1$
-                return new ServiceAlreadyExistsException(errorBean.getMessage());
-            if (type.equals("ServiceVersionNotFoundException")) //$NON-NLS-1$
-                return new ServiceVersionNotFoundException(errorBean.getMessage());
-            if (type.equals("MemberNotFoundException")) //$NON-NLS-1$
-                return new MemberNotFoundException(errorBean.getMessage());
-            // Default - simple exception.
-            return new RuntimeException(errorBean.getMessage());
+            AbstractRestException re = null;
+            if (type.equals("PlanAlreadyExistsException"))
+                re = new PlanAlreadyExistsException(errorBean.getMessage());
+            else if (type.equals("ContractAlreadyExistsException"))
+                re = new ContractAlreadyExistsException(errorBean.getMessage());
+            else if (type.equals("PolicyDefinitionAlreadyExistsException"))
+                re = new PolicyDefinitionAlreadyExistsException(errorBean.getMessage());
+            else if (type.equals("InvalidSearchCriteriaException"))
+                re = new InvalidSearchCriteriaException(errorBean.getMessage());
+            else if (type.equals("NotAuthorizedException"))
+                re = new NotAuthorizedException(errorBean.getMessage());
+            else if (type.equals("OrganizationAlreadyExistsException"))
+                re = new OrganizationAlreadyExistsException(errorBean.getMessage());
+            else if (type.equals("OrganizationNotFoundException"))
+                re = new OrganizationNotFoundException(errorBean.getMessage());
+            else if (type.equals("RoleAlreadyExistsException"))
+                re = new RoleAlreadyExistsException(errorBean.getMessage());
+            else if (type.equals("RoleNotFoundException"))
+                re = new RoleNotFoundException(errorBean.getMessage());
+            else if (type.equals("SystemErrorException"))
+                re = new SystemErrorException(errorBean.getMessage());
+            else if (type.equals("UserNotFoundException"))
+                re = new UserNotFoundException(errorBean.getMessage());
+            else if (type.equals("ApplicationFoundException"))
+                re = new ApplicationNotFoundException(errorBean.getMessage());
+            else if (type.equals("ApplicationAlreadyExistsException"))
+                re = new ApplicationAlreadyExistsException(errorBean.getMessage());
+            else if (type.equals("ApplicationVersionNotFoundException"))
+                re = new ApplicationVersionNotFoundException(errorBean.getMessage());
+            else if (type.equals("ServiceNotFoundException"))
+                re = new ServiceNotFoundException(errorBean.getMessage());
+            else if (type.equals("ServiceAlreadyExistsException"))
+                re = new ServiceAlreadyExistsException(errorBean.getMessage());
+            else if (type.equals("ServiceVersionNotFoundException"))
+                re = new ServiceVersionNotFoundException(errorBean.getMessage());
+            else if (type.equals("MemberNotFoundException"))
+                re = new MemberNotFoundException(errorBean.getMessage());
+            else if (type.equals("ContractNotFoundException"))
+                re = new ContractNotFoundException(errorBean.getMessage());
+            else if (type.equals("PlanNotFoundException"))
+                re = new PlanNotFoundException(errorBean.getMessage());
+            else if (type.equals("PolicyDefinitionNotFoundException"))
+                re = new PolicyDefinitionNotFoundException(errorBean.getMessage());
+            else if (type.equals("PlanVersionNotFoundException"))
+                re = new PlanVersionNotFoundException(errorBean.getMessage());
+            else if (type.equals("ActionException"))
+                re = new ActionException(errorBean.getMessage());
+            else if (type.equals("InvalidApplicationStatusException"))
+                re = new InvalidApplicationStatusException(errorBean.getMessage());
+            else if (type.equals("InvalidServiceStatusException"))
+                re = new InvalidServiceStatusException(errorBean.getMessage());
+            else
+                re = new SystemErrorException(errorBean.getMessage());
+            re.setServerStack(errorBean.getStacktrace());
+            return re;
         }
         
         if (response.getStatusCode() == 401) {

@@ -35,6 +35,44 @@
           </div>
         </div>
       </div>
+      <div class="row" style="margin-top: 15px">
+        <div class="col-md-3"></div>
+        <div class="col-md-8">
+          <div class="header" data-i18n-key="error-details">Error Details</div>
+          <div>
+            <pre data-field="errorDetail">javax.servlet.ServletException: Something bad happened
+    at com.example.myproject.OpenSessionInViewFilter.doFilter(OpenSessionInViewFilter.java:60)
+    at org.mortbay.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1157)
+    at com.example.myproject.ExceptionHandlerFilter.doFilter(ExceptionHandlerFilter.java:28)
+    at org.mortbay.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1157)
+    at com.example.myproject.OutputBufferFilter.doFilter(OutputBufferFilter.java:33)
+    at org.mortbay.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1157)
+    at org.mortbay.jetty.servlet.ServletHandler.handle(ServletHandler.java:388)
+    at org.mortbay.jetty.security.SecurityHandler.handle(SecurityHandler.java:216)
+    at org.mortbay.jetty.servlet.SessionHandler.handle(SessionHandler.java:182)
+    at org.mortbay.jetty.handler.ContextHandler.handle(ContextHandler.java:765)
+    at org.mortbay.jetty.webapp.WebAppContext.handle(WebAppContext.java:418)
+    at org.mortbay.jetty.handler.HandlerWrapper.handle(HandlerWrapper.java:152)
+    at org.mortbay.jetty.Server.handle(Server.java:326)
+    at org.mortbay.jetty.HttpConnection.handleRequest(HttpConnection.java:542)
+    at org.mortbay.jetty.HttpConnection$RequestHandler.content(HttpConnection.java:943)
+    at org.mortbay.jetty.HttpParser.parseNext(HttpParser.java:756)
+    at org.mortbay.jetty.HttpParser.parseAvailable(HttpParser.java:218)
+    at org.mortbay.jetty.HttpConnection.handle(HttpConnection.java:404)
+    at org.mortbay.jetty.bio.SocketConnector$Connection.run(SocketConnector.java:228)
+    at org.mortbay.thread.QueuedThreadPool$PoolThread.run(QueuedThreadPool.java:582)
+Caused by: com.example.myproject.MyProjectServletException
+    at com.example.myproject.MyServlet.doPost(MyServlet.java:169)
+    at javax.servlet.http.HttpServlet.service(HttpServlet.java:727)
+    at javax.servlet.http.HttpServlet.service(HttpServlet.java:820)
+    at org.mortbay.jetty.servlet.ServletHolder.handle(ServletHolder.java:511)
+    at org.mortbay.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1166)
+    at com.example.myproject.OpenSessionInViewFilter.doFilter(OpenSessionInViewFilter.java:30)
+    ... 27 more
+            </pre>
+          </div>
+        </div>
+      </div>
     </div>
   </body>
 </html>
