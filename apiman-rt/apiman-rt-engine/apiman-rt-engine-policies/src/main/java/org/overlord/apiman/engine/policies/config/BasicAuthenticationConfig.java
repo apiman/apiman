@@ -16,6 +16,7 @@
 package org.overlord.apiman.engine.policies.config;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.overlord.apiman.engine.policies.config.basicauth.LDAPIdentitySource;
 import org.overlord.apiman.engine.policies.config.basicauth.StaticIdentitySource;
 
 
@@ -31,6 +32,7 @@ public class BasicAuthenticationConfig {
     private String forwardIdentityHttpHeader;
     
     private StaticIdentitySource staticIdentity;
+    private LDAPIdentitySource ldapIdentity;
     
     /**
      * Constructor.
@@ -78,6 +80,20 @@ public class BasicAuthenticationConfig {
      */
     public void setForwardIdentityHttpHeader(String forwardIdentityHttpHeader) {
         this.forwardIdentityHttpHeader = forwardIdentityHttpHeader;
+    }
+
+    /**
+     * @return the ldapIdentity
+     */
+    public LDAPIdentitySource getLdapIdentity() {
+        return ldapIdentity;
+    }
+
+    /**
+     * @param ldapIdentity the ldapIdentity to set
+     */
+    public void setLdapIdentity(LDAPIdentitySource ldapIdentity) {
+        this.ldapIdentity = ldapIdentity;
     }
 
 }

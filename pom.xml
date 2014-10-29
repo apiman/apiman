@@ -81,6 +81,7 @@
     <version.org.apache.geronimo.specs.geronimo-jta_1.1_spec>1.1.1</version.org.apache.geronimo.specs.geronimo-jta_1.1_spec>
     <version.org.apache.geronimo.specs.geronimo-servlet_3.0_spec>1.0</version.org.apache.geronimo.specs.geronimo-servlet_3.0_spec>
     <version.javax.ws.rs-api>2.0</version.javax.ws.rs-api>
+    <version.org.apache.directory.server>1.5.7</version.org.apache.directory.server>
 
     <org.apache.servicemix.bundles.cglib>3.0_1</org.apache.servicemix.bundles.cglib>
     <version.org.ow2.asm>4.0</version.org.ow2.asm>

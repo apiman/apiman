@@ -147,6 +147,10 @@
     width: 400px;
   }
 
+  .form.policy-config input[type=text].form-control {
+    width: 300px;
+  }
+
 }
 
 /* Original iPhone */
@@ -183,6 +187,10 @@
 
   textarea.form-data {
     width: 320px;
+  }
+
+  .form.policy-config input[type=text].form-control {
+    width: 300px;
   }
 
 }

@@ -16,6 +16,7 @@
 package org.overlord.apiman.engine.policies.auth;
 
 import org.overlord.apiman.rt.engine.async.IAsyncHandler;
+import org.overlord.apiman.rt.engine.beans.ServiceRequest;
 import org.overlord.apiman.rt.engine.policy.IPolicyContext;
 
 /**
@@ -29,11 +30,12 @@ public interface IIdentityValidator<C> {
      * Asynchronously validates a user.
      * @param username
      * @param password
+     * @param request
      * @param context
      * @param config
      * @param handler
      */
-    public void validate(String username, String password, IPolicyContext context,
+    public void validate(String username, String password, ServiceRequest request, IPolicyContext context,
             C config, IAsyncHandler<Boolean> handler);
 
 }

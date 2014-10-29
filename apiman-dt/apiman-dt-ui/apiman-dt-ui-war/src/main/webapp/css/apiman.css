@@ -602,7 +602,8 @@ ol.breadcrumb {
 .apiman-entity-new dl.name {
 }
 .apiman-entity-new dt {
-  padding-bottom: 5px;
+  padding-bottom: 0px;
+  margin-top: 8px;
   color: #555;
 }
 .apiman-entity-new .entityname {
@@ -966,6 +967,14 @@ ol.breadcrumb {
   height: 225px;
   text-decoration: none;
 }
+
+.form.policy-config input[type=text].form-control {
+  width: 425px;
+}
+.form.policy-config input[type=text].form-control-small {
+  width: 200px;
+}
+
 
 
 div.admin-page {

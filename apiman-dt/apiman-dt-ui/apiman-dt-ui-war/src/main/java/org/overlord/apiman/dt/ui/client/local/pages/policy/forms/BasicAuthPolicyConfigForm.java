@@ -32,6 +32,7 @@ import org.overlord.apiman.dt.ui.client.local.pages.policy.IPolicyConfigurationF
 import org.overlord.apiman.dt.ui.client.local.pages.policy.forms.widgets.IdentitySourceSelectBox;
 import org.overlord.apiman.dt.ui.client.local.services.BeanMarshallingService;
 import org.overlord.apiman.engine.policies.config.BasicAuthenticationConfig;
+import org.overlord.apiman.engine.policies.config.basicauth.LDAPIdentitySource;
 import org.overlord.apiman.engine.policies.config.basicauth.StaticIdentity;
 import org.overlord.apiman.engine.policies.config.basicauth.StaticIdentitySource;
 
@@ -83,6 +84,12 @@ public class BasicAuthPolicyConfigForm extends Composite implements IPolicyConfi
     TextBox staticPassword;
     @Inject @DataField
     Button staticAdd;
+
+    @Inject @DataField
+    TextBox ldapUrl;
+    @Inject @DataField
+    TextBox ldapDnPattern;
+
     
     private boolean valid = false;
 
@@ -100,11 +107,20 @@ public class BasicAuthPolicyConfigForm extends Composite implements IPolicyConfi
                 checkValidity();
             }
         };
+        ValueChangeHandler<String> valueChangeHandler = new ValueChangeHandler<String>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<String> event) {
+                checkValidity();
+            }
+        };
         realm.addKeyUpHandler(keyUpValidityHandler);
+        realm.addValueChangeHandler(valueChangeHandler);
         authenticatedUserHeader.addKeyUpHandler(keyUpValidityHandler);
+        authenticatedUserHeader.addValueChangeHandler(valueChangeHandler);
         staticIdentities.addChangeHandler(new ChangeHandler() {
             @Override
             public void onChange(ChangeEvent event) {
+                staticRemove.setEnabled(staticIdentities.getSelectedIndex() != -1);
                 checkValidity();
             }
         });
@@ -119,14 +135,9 @@ public class BasicAuthPolicyConfigForm extends Composite implements IPolicyConfi
                 staticAdd.setEnabled(!val.trim().isEmpty());
             }
         });
-        staticIdentities.addChangeHandler(new ChangeHandler() {
-            @Override
-            public void onChange(ChangeEvent event) {
-                staticRemove.setEnabled(staticIdentities.getSelectedIndex() != -1);
-            }
-        });
         ArrayList<String> identitySourceTypes = new ArrayList<String>(4);
         identitySourceTypes.add(null);
+        // TODO i18n
         identitySourceTypes.add("Static"); //$NON-NLS-1$
         identitySourceTypes.add("JDBC"); //$NON-NLS-1$
         identitySourceTypes.add("LDAP"); //$NON-NLS-1$
@@ -138,6 +149,12 @@ public class BasicAuthPolicyConfigForm extends Composite implements IPolicyConfi
                 checkValidity();
             }
         });
+        
+        ldapUrl.addKeyUpHandler(keyUpValidityHandler);
+        ldapUrl.addValueChangeHandler(valueChangeHandler);
+        ldapDnPattern.addKeyUpHandler(keyUpValidityHandler);
+        ldapDnPattern.addValueChangeHandler(valueChangeHandler);
+        
         addAttachHandler(new Handler() {
             @Override
             public void onAttachOrDetach(AttachEvent event) {
@@ -183,25 +200,33 @@ public class BasicAuthPolicyConfigForm extends Composite implements IPolicyConfi
     @Override
     public String getValue() {
         BasicAuthenticationConfig config = new BasicAuthenticationConfig();
-        config.setStaticIdentity(new StaticIdentitySource());
         config.setRealm(realm.getValue());
         if (!authenticatedUserHeader.getValue().trim().isEmpty()) {
             config.setForwardIdentityHttpHeader(authenticatedUserHeader.getValue().trim());
         }
 
-        for (int idx = 0; idx < staticIdentities.getItemCount(); idx++) {
-            String val = staticIdentities.getValue(idx);
-            int div = val.indexOf(':');
-            String username = val.substring(0, div);
-            String password = ""; //$NON-NLS-1$
-            if (div < val.length() - 1) {
-                password = val.substring(div + 1);
+        String identitySourceType = identitySourceSelector.getValue();
+        if ("Static".equals(identitySourceType)) { //$NON-NLS-1$
+            config.setStaticIdentity(new StaticIdentitySource());
+            for (int idx = 0; idx < staticIdentities.getItemCount(); idx++) {
+                String val = staticIdentities.getValue(idx);
+                int div = val.indexOf(':');
+                String username = val.substring(0, div);
+                String password = ""; //$NON-NLS-1$
+                if (div < val.length() - 1) {
+                    password = val.substring(div + 1);
+                }
+                StaticIdentity identity = new StaticIdentity();
+                identity.setUsername(username);
+                identity.setPassword(password);
+                identity.setIsHash(false);
+                config.getStaticIdentity().getIdentities().add(identity);
             }
-            StaticIdentity identity = new StaticIdentity();
-            identity.setUsername(username);
-            identity.setPassword(password);
-            identity.setIsHash(false);
-            config.getStaticIdentity().getIdentities().add(identity);
+        } else if ("JDBC".equals(identitySourceType)) { //$NON-NLS-1$
+        } else if ("LDAP".equals(identitySourceType)) { //$NON-NLS-1$
+            config.setLdapIdentity(new LDAPIdentitySource());
+            config.getLdapIdentity().setUrl(ldapUrl.getValue().trim());
+            config.getLdapIdentity().setDnPattern(ldapDnPattern.getValue().trim());
         }
         
         return marshaller.marshal(config);
@@ -226,6 +251,8 @@ public class BasicAuthPolicyConfigForm extends Composite implements IPolicyConfi
         staticAdd.setEnabled(false);
         staticUsername.setValue(""); //$NON-NLS-1$
         staticPassword.setValue(""); //$NON-NLS-1$
+        ldapDnPattern.setValue(""); //$NON-NLS-1$
+        ldapUrl.setValue(""); //$NON-NLS-1$
         if (value != null && !value.trim().isEmpty()) {
             BasicAuthenticationConfig config = marshaller.unmarshal(value, BasicAuthenticationConfig.class);
             realm.setValue(config.getRealm());
@@ -241,10 +268,18 @@ public class BasicAuthPolicyConfigForm extends Composite implements IPolicyConfi
                 for (String val : sorted) {
                     staticIdentities.addItem(val);
                 }
+                staticClear.setEnabled(true);
                 this.identitySourceSelector.setValue("Static"); //$NON-NLS-1$
                 this.showSubForm("Static"); //$NON-NLS-1$
-                staticClear.setEnabled(true);
             }
+            LDAPIdentitySource ldapIdentity = config.getLdapIdentity();
+            if (ldapIdentity != null) {
+                ldapDnPattern.setValue(ldapIdentity.getDnPattern());
+                ldapUrl.setValue(ldapIdentity.getUrl());
+                this.identitySourceSelector.setValue("LDAP"); //$NON-NLS-1$
+                this.showSubForm("LDAP"); //$NON-NLS-1$
+            }
+            
             IsFormValidEvent.fire(this, Boolean.TRUE);
         } else {
             IsFormValidEvent.fire(this, Boolean.FALSE);
@@ -353,6 +388,9 @@ public class BasicAuthPolicyConfigForm extends Composite implements IPolicyConfi
             }
         } else if ("JDBC".equals(identitySourceType)) { //$NON-NLS-1$
         } else if ("LDAP".equals(identitySourceType)) { //$NON-NLS-1$
+            String url = ldapUrl.getValue();
+            String dn = ldapDnPattern.getValue();
+            validity = !url.trim().isEmpty() && !dn.trim().isEmpty();
         } else {
             validity = Boolean.FALSE;
         }

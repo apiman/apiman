@@ -21,6 +21,7 @@ import org.overlord.apiman.engine.policies.config.basicauth.StaticIdentity;
 import org.overlord.apiman.engine.policies.config.basicauth.StaticIdentitySource;
 import org.overlord.apiman.rt.engine.async.AsyncResultImpl;
 import org.overlord.apiman.rt.engine.async.IAsyncHandler;
+import org.overlord.apiman.rt.engine.beans.ServiceRequest;
 import org.overlord.apiman.rt.engine.policy.IPolicyContext;
 
 /**
@@ -38,10 +39,10 @@ public class StaticIdentityValidator implements IIdentityValidator<StaticIdentit
     }
 
     /**
-     * @see org.overlord.apiman.engine.policies.auth.IIdentityValidator#validate(java.lang.String, java.lang.String, org.overlord.apiman.rt.engine.policy.IPolicyContext, java.lang.Object, org.overlord.apiman.rt.engine.async.IAsyncHandler)
+     * @see org.overlord.apiman.engine.policies.auth.IIdentityValidator#validate(java.lang.String, java.lang.String, org.overlord.apiman.rt.engine.beans.ServiceRequest, org.overlord.apiman.rt.engine.policy.IPolicyContext, java.lang.Object, org.overlord.apiman.rt.engine.async.IAsyncHandler)
      */
     @Override
-    public void validate(String username, String password, IPolicyContext context,
+    public void validate(String username, String password, ServiceRequest request, IPolicyContext context,
             StaticIdentitySource config, IAsyncHandler<Boolean> handler) {
         List<StaticIdentity> identities = config.getIdentities();
         for (StaticIdentity identity : identities) {

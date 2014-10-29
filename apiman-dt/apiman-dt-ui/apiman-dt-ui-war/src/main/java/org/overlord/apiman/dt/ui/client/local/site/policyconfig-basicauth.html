@@ -43,9 +43,7 @@
             <!-- Static Identity Source - Form Fields -->
             <div id="static-form-fields" class="sub-form-fields" style="clear:both">
               <div>
-                <dl>
-                  <dt data-i18n-key="static-identities">Static Identities</dt>
-                </dl>
+                <dt data-i18n-key="static-identities">Static Identities</dt>
               </div>
               <div style="width: 100%; float: left; margin-bottom: 5px;">
                 <select data-field="staticIdentities" multiple class="form-control" style="height: 150px; width: 200px; float: left;" data-role="dummy">
@@ -66,15 +64,26 @@
                 <button data-field="staticAdd" data-i18n-key="add" class="btn btn-default" style="min-width: 75px">Add</button>
               </div>
             </div>
-            
+
             <!-- JDBC Identity Source - Form Fields -->
             <div id="jdbc-form-fields" class="sub-form-fields" style="clear:both">
               <span>Not yet implemented.</span>
             </div>
-            
+
             <!-- LDAP Identity Source - Form Fields -->
             <div id="ldap-form-fields" class="sub-form-fields" style="clear:both">
-              <span>Not yet implemented.</span>
+              <div>
+                <dl>
+                  <dt data-i18n-key="ldap-server-url">LDAP Server URL</dt>
+                  <dd>
+                    <input data-field="ldapUrl" class="form-control" type="text" placeholder="LDAP Url (example: ldap://example.org)"></input>
+                  </dd>
+                  <dt data-i18n-key="ldap-bind-dn">LDAP Bind DN</dt>
+                  <dd>
+                    <input data-field="ldapDnPattern" class="form-control" type="text" placeholder="LDAP Bind DN (example: cn=${username},dc=overlord,dc=org)"></input>
+                  </dd>
+                </dl>
+              </div>
             </div>
           </div>
 

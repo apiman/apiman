@@ -16,6 +16,7 @@
 package org.overlord.apiman.engine.policies;
 
 import org.apache.commons.codec.binary.Base64;
+import org.overlord.apiman.engine.policies.auth.LDAPIdentityValidator;
 import org.overlord.apiman.engine.policies.auth.StaticIdentityValidator;
 import org.overlord.apiman.engine.policies.config.BasicAuthenticationConfig;
 import org.overlord.apiman.engine.policies.i18n.Messages;
@@ -40,6 +41,7 @@ import org.overlord.apiman.rt.engine.policy.IPolicyContext;
 public class BasicAuthenticationPolicy extends AbstractPolicy<BasicAuthenticationConfig> {
     
     private static final StaticIdentityValidator staticIdentityValidator = new StaticIdentityValidator();
+    private static final LDAPIdentityValidator ldapIdentityValidator = new LDAPIdentityValidator();
     
     /**
      * Constructor.
@@ -93,7 +95,7 @@ public class BasicAuthenticationPolicy extends AbstractPolicy<BasicAuthenticatio
         
         // Asynchronously validate the inbound requests's basic auth credentials
         final String forwardedUsername = username;
-        validateCredentials(username, password, context, config, new IAsyncHandler<Boolean>() {
+        validateCredentials(username, password, request, context, config, new IAsyncHandler<Boolean>() {
             @Override
             public void handle(IAsyncResult<Boolean> result) {
                 if (result.isError()) {
@@ -120,14 +122,17 @@ public class BasicAuthenticationPolicy extends AbstractPolicy<BasicAuthenticatio
      * Validate the inbound authentication credentials.
      * @param username
      * @param password
+     * @param request 
      * @param context
      * @param config
      * @param handler
      */
-    private void validateCredentials(String username, String password, IPolicyContext context,
+    private void validateCredentials(String username, String password, ServiceRequest request, IPolicyContext context,
             BasicAuthenticationConfig config, IAsyncHandler<Boolean> handler) {
         if (config.getStaticIdentity() != null) {
-            staticIdentityValidator.validate(username, password, context, config.getStaticIdentity(), handler);
+            staticIdentityValidator.validate(username, password, request, context, config.getStaticIdentity(), handler);
+        } else if (config.getLdapIdentity() != null) {
+            ldapIdentityValidator.validate(username, password, request, context, config.getLdapIdentity(), handler);
         } else {
             handler.handle(AsyncResultImpl.create(Boolean.FALSE));
         }
