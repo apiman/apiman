@@ -16,6 +16,7 @@
 package org.overlord.apiman.engine.policies;
 
 import org.apache.commons.codec.binary.Base64;
+import org.overlord.apiman.engine.policies.auth.JDBCIdentityValidator;
 import org.overlord.apiman.engine.policies.auth.LDAPIdentityValidator;
 import org.overlord.apiman.engine.policies.auth.StaticIdentityValidator;
 import org.overlord.apiman.engine.policies.config.BasicAuthenticationConfig;
@@ -42,6 +43,7 @@ public class BasicAuthenticationPolicy extends AbstractPolicy<BasicAuthenticatio
     
     private static final StaticIdentityValidator staticIdentityValidator = new StaticIdentityValidator();
     private static final LDAPIdentityValidator ldapIdentityValidator = new LDAPIdentityValidator();
+    private static final JDBCIdentityValidator jdbcIdentityValidator = new JDBCIdentityValidator();
     
     /**
      * Constructor.
@@ -133,6 +135,8 @@ public class BasicAuthenticationPolicy extends AbstractPolicy<BasicAuthenticatio
             staticIdentityValidator.validate(username, password, request, context, config.getStaticIdentity(), handler);
         } else if (config.getLdapIdentity() != null) {
             ldapIdentityValidator.validate(username, password, request, context, config.getLdapIdentity(), handler);
+        } else if (config.getJdbcIdentity() != null) {
+            jdbcIdentityValidator.validate(username, password, request, context, config.getJdbcIdentity(), handler);
         } else {
             handler.handle(AsyncResultImpl.create(Boolean.FALSE));
         }

@@ -16,6 +16,7 @@
 package org.overlord.apiman.engine.policies.config;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.overlord.apiman.engine.policies.config.basicauth.JDBCIdentitySource;
 import org.overlord.apiman.engine.policies.config.basicauth.LDAPIdentitySource;
 import org.overlord.apiman.engine.policies.config.basicauth.StaticIdentitySource;
 
@@ -33,6 +34,7 @@ public class BasicAuthenticationConfig {
     
     private StaticIdentitySource staticIdentity;
     private LDAPIdentitySource ldapIdentity;
+    private JDBCIdentitySource jdbcIdentity;
     
     /**
      * Constructor.
@@ -94,6 +96,20 @@ public class BasicAuthenticationConfig {
      */
     public void setLdapIdentity(LDAPIdentitySource ldapIdentity) {
         this.ldapIdentity = ldapIdentity;
+    }
+
+    /**
+     * @return the jdbcIdentity
+     */
+    public JDBCIdentitySource getJdbcIdentity() {
+        return jdbcIdentity;
+    }
+
+    /**
+     * @param jdbcIdentity the jdbcIdentity to set
+     */
+    public void setJdbcIdentity(JDBCIdentitySource jdbcIdentity) {
+        this.jdbcIdentity = jdbcIdentity;
     }
 
 }

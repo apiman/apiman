@@ -307,6 +307,8 @@
                     
                     <!-- Deploy apiman to WildFly 8 -->
                     <copy file="${apiman.resources.dir}/wildfly8/deployments/apiman-ds.xml" todir="${apiman.wildfly.webapps}" overwrite="true" />
+                    <copy file="${apiman.resources.dir}/wildfly8/deployments/authtest-ds.xml" todir="${apiman.wildfly.webapps}" overwrite="true" />
+                    <copy file="${apiman.resources.dir}/wildfly8/deployments/mysql-connector-java-5.1.33-bin.jar" todir="${apiman.wildfly.webapps}" overwrite="true" />
                     <copy file="${apiman.resources.dir}/wildfly8/configuration/application-users.properties" todir="${apiman.wildfly.home}/standalone/configuration" overwrite="true" />
                     <copy file="${apiman.resources.dir}/wildfly8/configuration/application-roles.properties" todir="${apiman.wildfly.home}/standalone/configuration" overwrite="true" />
                     <copy file="${apiman.resources.dir}/wildfly8/configuration/standalone.xml" todir="${apiman.wildfly.home}/standalone/configuration" overwrite="true" />

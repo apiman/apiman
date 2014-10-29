@@ -30,8 +30,10 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.apiman.dt.ui.client.local.events.IsFormValidEvent;
 import org.overlord.apiman.dt.ui.client.local.pages.policy.IPolicyConfigurationForm;
 import org.overlord.apiman.dt.ui.client.local.pages.policy.forms.widgets.IdentitySourceSelectBox;
+import org.overlord.apiman.dt.ui.client.local.pages.policy.forms.widgets.PasswordHashAlgorithmSelectBox;
 import org.overlord.apiman.dt.ui.client.local.services.BeanMarshallingService;
 import org.overlord.apiman.engine.policies.config.BasicAuthenticationConfig;
+import org.overlord.apiman.engine.policies.config.basicauth.JDBCIdentitySource;
 import org.overlord.apiman.engine.policies.config.basicauth.LDAPIdentitySource;
 import org.overlord.apiman.engine.policies.config.basicauth.StaticIdentity;
 import org.overlord.apiman.engine.policies.config.basicauth.StaticIdentitySource;
@@ -49,6 +51,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 
 /**
@@ -84,13 +87,23 @@ public class BasicAuthPolicyConfigForm extends Composite implements IPolicyConfi
     TextBox staticPassword;
     @Inject @DataField
     Button staticAdd;
+    
+    // JDBC form fields
+    ///////////////////////////////////////
+    @Inject @DataField
+    TextBox jdbcDatasource;
+    @Inject @DataField
+    TextArea jdbcSqlQuery;
+    @Inject @DataField
+    PasswordHashAlgorithmSelectBox jdbcHashAlgorithm;
 
+    // LDAP form fields
+    ///////////////////////////////////////
     @Inject @DataField
     TextBox ldapUrl;
     @Inject @DataField
     TextBox ldapDnPattern;
 
-    
     private boolean valid = false;
 
     /**
@@ -154,7 +167,18 @@ public class BasicAuthPolicyConfigForm extends Composite implements IPolicyConfi
         ldapUrl.addValueChangeHandler(valueChangeHandler);
         ldapDnPattern.addKeyUpHandler(keyUpValidityHandler);
         ldapDnPattern.addValueChangeHandler(valueChangeHandler);
-        
+
+        jdbcDatasource.addKeyUpHandler(keyUpValidityHandler);
+        jdbcDatasource.addValueChangeHandler(valueChangeHandler);
+        jdbcSqlQuery.addKeyUpHandler(keyUpValidityHandler);
+        jdbcSqlQuery.addValueChangeHandler(valueChangeHandler);
+        jdbcHashAlgorithm.addChangeHandler(new ChangeHandler() {
+            @Override
+            public void onChange(ChangeEvent event) {
+                checkValidity();
+            }
+        });
+
         addAttachHandler(new Handler() {
             @Override
             public void onAttachOrDetach(AttachEvent event) {
@@ -223,6 +247,10 @@ public class BasicAuthPolicyConfigForm extends Composite implements IPolicyConfi
                 config.getStaticIdentity().getIdentities().add(identity);
             }
         } else if ("JDBC".equals(identitySourceType)) { //$NON-NLS-1$
+            config.setJdbcIdentity(new JDBCIdentitySource());
+            config.getJdbcIdentity().setDatasourcePath(jdbcDatasource.getValue().trim());
+            config.getJdbcIdentity().setQuery(jdbcSqlQuery.getValue().trim());
+            config.getJdbcIdentity().setHashAlgorithm(jdbcHashAlgorithm.getValue());
         } else if ("LDAP".equals(identitySourceType)) { //$NON-NLS-1$
             config.setLdapIdentity(new LDAPIdentitySource());
             config.getLdapIdentity().setUrl(ldapUrl.getValue().trim());
@@ -278,6 +306,14 @@ public class BasicAuthPolicyConfigForm extends Composite implements IPolicyConfi
                 ldapUrl.setValue(ldapIdentity.getUrl());
                 this.identitySourceSelector.setValue("LDAP"); //$NON-NLS-1$
                 this.showSubForm("LDAP"); //$NON-NLS-1$
+            }
+            JDBCIdentitySource jdbcIdentity = config.getJdbcIdentity();
+            if (jdbcIdentity != null) {
+                jdbcDatasource.setValue(jdbcIdentity.getDatasourcePath());
+                jdbcSqlQuery.setValue(jdbcIdentity.getQuery());
+                jdbcHashAlgorithm.setValue(jdbcIdentity.getHashAlgorithm());
+                this.identitySourceSelector.setValue("JDBC"); //$NON-NLS-1$
+                this.showSubForm("JDBC"); //$NON-NLS-1$
             }
             
             IsFormValidEvent.fire(this, Boolean.TRUE);
@@ -387,6 +423,9 @@ public class BasicAuthPolicyConfigForm extends Composite implements IPolicyConfi
                 validity = Boolean.FALSE;
             }
         } else if ("JDBC".equals(identitySourceType)) { //$NON-NLS-1$
+            String ds = jdbcDatasource.getValue();
+            String query = jdbcSqlQuery.getValue();
+            validity = !ds.trim().isEmpty() && !query.trim().isEmpty();
         } else if ("LDAP".equals(identitySourceType)) { //$NON-NLS-1$
             String url = ldapUrl.getValue();
             String dn = ldapDnPattern.getValue();

@@ -49,17 +49,16 @@ public class LDAPIdentityValidator implements IIdentityValidator<LDAPIdentitySou
      * @see org.overlord.apiman.engine.policies.auth.IIdentityValidator#validate(java.lang.String, java.lang.String, org.overlord.apiman.rt.engine.beans.ServiceRequest, org.overlord.apiman.rt.engine.policy.IPolicyContext, java.lang.Object, org.overlord.apiman.rt.engine.async.IAsyncHandler)
      */
     @Override
-    @SuppressWarnings({ "rawtypes", "unchecked", "nls" })
     public void validate(String username, String password, ServiceRequest request, IPolicyContext context,
             LDAPIdentitySource config, IAsyncHandler<Boolean> handler) {
         String url = config.getUrl();
         String dn = formatDn(config.getDnPattern(), username, request);
         
-        Hashtable env = new Hashtable();
-        env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
+        Hashtable<String, String> env = new Hashtable<String, String>();
+        env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory"); //$NON-NLS-1$
         env.put(Context.PROVIDER_URL, url);
 
-        env.put(Context.SECURITY_AUTHENTICATION, "simple");
+        env.put(Context.SECURITY_AUTHENTICATION, "simple"); //$NON-NLS-1$
         env.put(Context.SECURITY_PRINCIPAL, dn);
         env.put(Context.SECURITY_CREDENTIALS, password);
         try {

@@ -67,7 +67,26 @@
 
             <!-- JDBC Identity Source - Form Fields -->
             <div id="jdbc-form-fields" class="sub-form-fields" style="clear:both">
-              <span>Not yet implemented.</span>
+              <div>
+                <dl>
+                  <dt data-i18n-key="jdbc-datasource">JDBC Datasource (JNDI Location)</dt>
+                  <dd>
+                    <input data-field="jdbcDatasource" class="form-control" type="text" placeholder="JNDI Datasource location (example: jdbc/ExampleDS)"></input>
+                  </dd>
+                  <dt data-i18n-key="jdbc-query">SQL Query</dt>
+                  <dd>
+                    <textarea data-field="jdbcSqlQuery" class="form-control" type="text" placeholder="SQL Query (example: SELECT * FROM users WHERE u=? AND p=?)"></textarea>
+                  </dd>
+                  <dt data-i18n-key="jdbc-hash-algorithm">Password Hash Algorithm</dt>
+                  <dd>
+                    <select class="selectpicker" data-live-search="false" data-role="dummy" data-field="jdbcHashAlgorithm">
+                      <option>None</option>
+                      <option>SHA1</option>
+                      <option>MD5</option>
+                    </select>
+                  </dd>
+                </dl>
+              </div>
             </div>
 
             <!-- LDAP Identity Source - Form Fields -->
