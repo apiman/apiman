@@ -359,6 +359,8 @@ public class ActivityList extends FlowPanel implements TakesValue<SearchResultsB
             }
         case UpdatePolicy:
             return i18n.format(AppMessages.ACTIVITY_UPDATE_POLICY);
+        case ReorderPolicies:
+            return i18n.format(AppMessages.ACTIVITY_REORDER_POLICIES);
         default:
             return "??"; //$NON-NLS-1$
         }

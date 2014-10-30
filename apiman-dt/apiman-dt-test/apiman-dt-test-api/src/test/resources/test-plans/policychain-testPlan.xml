@@ -18,6 +18,8 @@
   <!-- Policy Chain -->
   <testGroup name="Policy Chain">
     <test name="Gold Policy Chain">test-plan-data/policychain/020_get-policychain-gold.resttest</test>
+    <test name="Reorder Plan Policies">test-plan-data/policychain/021_reorder-plan-policies.resttest</test>
+    <test name="Gold Policy Chain (reordered)">test-plan-data/policychain/022_get-policychain-gold.resttest</test>
   </testGroup>
 
 </testPlan>

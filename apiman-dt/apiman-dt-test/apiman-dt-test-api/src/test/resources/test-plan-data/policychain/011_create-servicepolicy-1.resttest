@@ -11,7 +11,7 @@ Content-Type: application/json
 ----
 200
 Content-Type: application/json
-X-RestTest-BindTo-servicepolicy1-id: $.id
+X-RestTest-BindTo-servicepolicy1-id: id
 
 {
   "type" : "Service",

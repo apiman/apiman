@@ -49,6 +49,10 @@ import org.codehaus.jackson.node.NumericNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.codehaus.jackson.node.TextNode;
 import org.junit.Assert;
+import org.mvel2.MVEL;
+import org.mvel2.integration.PropertyHandler;
+import org.mvel2.integration.PropertyHandlerFactory;
+import org.mvel2.integration.VariableResolverFactory;
 import org.overlord.apiman.test.common.plan.TestGroupType;
 import org.overlord.apiman.test.common.plan.TestPlan;
 import org.overlord.apiman.test.common.plan.TestType;
@@ -303,30 +307,25 @@ public class TestPlanRunner {
     /**
      * Evaluates the given expression against the given JSON object.
      * 
-     * TODO replace with MVEL
-     * 
      * @param bindExpression
      * @param json
      */
-    private String evaluate(String bindExpression, JsonNode json) {
-        String [] segments = bindExpression.split("\\."); //$NON-NLS-1$
-        JsonNode currentNode = json;
-        for (String segment : segments) {
-            if (segment.startsWith("$[")) { //$NON-NLS-1$
-                throw new RuntimeException("Not yet implemented: bind value in array response."); //$NON-NLS-1$
-            } else if ("$".equals(segment)) { //$NON-NLS-1$
-                currentNode = json;
-            } else {
-                if (segment.contains("[")) { //$NON-NLS-1$
-                    throw new RuntimeException("Not yet implemented: bind value from array."); //$NON-NLS-1$
-                }
-                currentNode = currentNode.get(segment);
-                if (currentNode == null) {
-                    return null;
-                }
+    private String evaluate(String bindExpression, final JsonNode json) {
+        PropertyHandlerFactory.registerPropertyHandler(ObjectNode.class, new PropertyHandler() {
+            @Override
+            public Object setProperty(String name, Object contextObj, VariableResolverFactory variableFactory,
+                    Object value) {
+                throw new RuntimeException("Not supported!"); //$NON-NLS-1$
             }
-        }
-        return currentNode.asText();
+            
+            @Override
+            public Object getProperty(String name, Object contextObj, VariableResolverFactory variableFactory) {
+                ObjectNode node = (ObjectNode) contextObj;
+                TestVariableResolver resolver = new TestVariableResolver(node, name);
+                return resolver.getValue();
+            }
+        });
+        return String.valueOf(MVEL.eval(bindExpression, new TestVariableResolverFactory(json)));
     }
 
     /**

@@ -596,6 +596,51 @@ public class AuditUtils {
     }
 
     /**
+     * Called when the user reorders the policies in a service.
+     * @param svb
+     * @param service
+     * @param securityContext
+     */
+    public static AuditEntryBean policiesReordered(ServiceVersionBean svb, PolicyType service,
+            ISecurityContext securityContext) {
+        AuditEntryBean entry = newEntry(svb.getService().getOrganizationId(), AuditEntityType.Service, securityContext);
+        entry.setEntityId(svb.getService().getId());
+        entry.setEntityVersion(svb.getVersion());
+        entry.setWhat(AuditEntryType.ReorderPolicies);
+        return entry;
+    }
+
+    /**
+     * Called when the user reorders the policies in an application.
+     * @param avb
+     * @param service
+     * @param securityContext
+     */
+    public static AuditEntryBean policiesReordered(ApplicationVersionBean avb, PolicyType service,
+            ISecurityContext securityContext) {
+        AuditEntryBean entry = newEntry(avb.getApplication().getOrganizationId(), AuditEntityType.Application, securityContext);
+        entry.setEntityId(avb.getApplication().getId());
+        entry.setEntityVersion(avb.getVersion());
+        entry.setWhat(AuditEntryType.ReorderPolicies);
+        return entry;
+    }
+
+    /**
+     * Called when the user reorders the policies in a plan.
+     * @param pvb
+     * @param service
+     * @param securityContext
+     */
+    public static AuditEntryBean policiesReordered(PlanVersionBean pvb, PolicyType service,
+            ISecurityContext securityContext) {
+        AuditEntryBean entry = newEntry(pvb.getPlan().getOrganizationId(), AuditEntityType.Plan, securityContext);
+        entry.setEntityId(pvb.getPlan().getId());
+        entry.setEntityVersion(pvb.getVersion());
+        entry.setWhat(AuditEntryType.ReorderPolicies);
+        return entry;
+    }
+    
+    /**
      * Creates an audit entry.
      * @param orgId
      * @param type
@@ -626,5 +671,5 @@ public class AuditUtils {
         }
         return builder.toString();
     }
-    
+
 }

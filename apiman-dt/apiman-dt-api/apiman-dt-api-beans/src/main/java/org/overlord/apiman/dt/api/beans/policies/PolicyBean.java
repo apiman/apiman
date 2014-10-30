@@ -28,6 +28,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Index;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
@@ -72,6 +73,9 @@ public class PolicyBean implements Serializable {
     private Date modifiedOn;
     @ManyToOne(fetch=FetchType.EAGER, optional=false)
     private PolicyDefinitionBean definition;
+    @Column(updatable=true, nullable=false)
+    @Index(name="pol_order")
+    private int orderIndex;
 
     /**
      * Constructor.
@@ -248,6 +252,34 @@ public class PolicyBean implements Serializable {
     }
 
     /**
+     * @return the description
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * @param description the description to set
+     */
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    /**
+     * @return the orderIndex
+     */
+    public int getOrderIndex() {
+        return orderIndex;
+    }
+
+    /**
+     * @param orderIndex the orderIndex to set
+     */
+    public void setOrderIndex(int orderIndex) {
+        this.orderIndex = orderIndex;
+    }
+
+    /**
      * @see java.lang.Object#hashCode()
      */
     @Override
@@ -276,20 +308,6 @@ public class PolicyBean implements Serializable {
         } else if (!id.equals(other.id))
             return false;
         return true;
-    }
-
-    /**
-     * @return the description
-     */
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * @param description the description to set
-     */
-    public void setDescription(String description) {
-        this.description = description;
     }
 
 }

@@ -25,8 +25,10 @@ import org.jboss.errai.ui.nav.client.local.Page;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.apiman.dt.api.beans.policies.PolicyBean;
+import org.overlord.apiman.dt.api.beans.policies.PolicyChainBean;
 import org.overlord.apiman.dt.api.beans.policies.PolicyType;
 import org.overlord.apiman.dt.ui.client.local.AppMessages;
+import org.overlord.apiman.dt.ui.client.local.events.PoliciesReorderedEvent;
 import org.overlord.apiman.dt.ui.client.local.events.RemovePolicyEvent;
 import org.overlord.apiman.dt.ui.client.local.pages.common.PolicyList;
 import org.overlord.apiman.dt.ui.client.local.services.rest.IRestInvokerCallback;
@@ -69,8 +71,14 @@ public class ServicePoliciesPage extends AbstractServicePage {
                 doRemovePolicy(event.getPolicy());
             }
         });
+        policies.addPoliciesReorderedHandler(new PoliciesReorderedEvent.Handler() {
+            @Override
+            public void onPoliciesReordered(PoliciesReorderedEvent event) {
+                doReorderPolicies();
+            }
+        });
     }
-    
+
     /**
      * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractServicePage#doLoadPageData()
      */
@@ -134,6 +142,31 @@ public class ServicePoliciesPage extends AbstractServicePage {
         });
     }
 
+    /**
+     * Reorder the policies according to the user's actions.
+     */
+    protected void doReorderPolicies() {
+        PolicyChainBean chain = new PolicyChainBean();
+        chain.getPolicies().addAll(policies.getValue());
+        int weight = 0;
+        for (PolicyBean policyBean : chain.getPolicies()) {
+            policyBean.setOrderIndex(weight++);
+            // trim it down a bit (info not needed)
+            policyBean.setDefinition(null);
+            policyBean.setDescription(null);
+            policyBean.setConfiguration(null);
+        }
+        rest.reorderServicePolicies(org, versionBean.getService().getId(), versionBean.getVersion(), chain, new IRestInvokerCallback<Void>() {
+            @Override
+            public void onSuccess(Void response) {
+            }
+            @Override
+            public void onError(Throwable error) {
+                dataPacketError(error);
+            }
+        });
+    }
+    
     /**
      * @see org.overlord.apiman.dt.ui.client.local.pages.AbstractPage#getPageTitle()
      */

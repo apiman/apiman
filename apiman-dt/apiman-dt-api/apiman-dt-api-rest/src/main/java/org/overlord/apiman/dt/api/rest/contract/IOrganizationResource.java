@@ -40,6 +40,7 @@ import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
 import org.overlord.apiman.dt.api.beans.plans.PlanBean;
 import org.overlord.apiman.dt.api.beans.plans.PlanVersionBean;
 import org.overlord.apiman.dt.api.beans.policies.PolicyBean;
+import org.overlord.apiman.dt.api.beans.policies.PolicyChainBean;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
 import org.overlord.apiman.dt.api.beans.search.SearchResultsBean;
 import org.overlord.apiman.dt.api.beans.services.ServiceBean;
@@ -47,7 +48,6 @@ import org.overlord.apiman.dt.api.beans.services.ServiceVersionBean;
 import org.overlord.apiman.dt.api.beans.summary.ApplicationSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.ContractSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.PlanSummaryBean;
-import org.overlord.apiman.dt.api.beans.summary.PolicyChainSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.ServicePlanSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.ServiceSummaryBean;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ApplicationAlreadyExistsException;
@@ -250,6 +250,14 @@ public interface IOrganizationResource {
             throws OrganizationNotFoundException, ApplicationVersionNotFoundException,
             NotAuthorizedException;
 
+    @POST
+    @Path("{organizationId}/applications/{applicationId}/versions/{version}/reorderPolicies")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void reorderApplicationPolicies(@PathParam("organizationId") String organizationId,
+            @PathParam("applicationId") String applicationId, @PathParam("version") String version,
+            PolicyChainBean policyChain) throws OrganizationNotFoundException,
+            ApplicationVersionNotFoundException, NotAuthorizedException;
+
     /*
      * SERVICES
      */
@@ -375,10 +383,18 @@ public interface IOrganizationResource {
             throws OrganizationNotFoundException, ServiceVersionNotFoundException,
             NotAuthorizedException;
 
+    @POST
+    @Path("{organizationId}/services/{serviceId}/versions/{version}/reorderPolicies")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void reorderServicePolicies(@PathParam("organizationId") String organizationId,
+            @PathParam("serviceId") String serviceId, @PathParam("version") String version,
+            PolicyChainBean policyChain) throws OrganizationNotFoundException,
+            ServiceVersionNotFoundException, NotAuthorizedException;
+
     @GET
     @Path("{organizationId}/services/{serviceId}/versions/{version}/plans/{planId}/policyChain")
     @Produces(MediaType.APPLICATION_JSON)
-    public PolicyChainSummaryBean getServicePolicyChain(@PathParam("organizationId") String organizationId,
+    public PolicyChainBean getServicePolicyChain(@PathParam("organizationId") String organizationId,
             @PathParam("serviceId") String serviceId, @PathParam("version") String version,
             @PathParam("planId") String planId) throws ServiceVersionNotFoundException,
             NotAuthorizedException;
@@ -505,7 +521,15 @@ public interface IOrganizationResource {
             @PathParam("planId") String planId, @PathParam("version") String version)
             throws OrganizationNotFoundException, PlanVersionNotFoundException,
             NotAuthorizedException;
-    
+
+    @POST
+    @Path("{organizationId}/plans/{planId}/versions/{version}/reorderPolicies")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void reorderPlanPolicies(@PathParam("organizationId") String organizationId,
+            @PathParam("planId") String planId, @PathParam("version") String version,
+            PolicyChainBean policyChain) throws OrganizationNotFoundException,
+            PlanVersionNotFoundException, NotAuthorizedException;
+
     /*
      * MEMBERS
      */

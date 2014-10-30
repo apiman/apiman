@@ -375,6 +375,9 @@ public class AppMessages {
     public static final String ACTIVITY_UPDATE_SERVICE = "activity.update-service"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "updated a policy in")
     public static final String ACTIVITY_UPDATE_POLICY = "activity.update-policy"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "reordered policies in")
+    public static final String ACTIVITY_REORDER_POLICIES = "activity.reorder-policies"; //$NON-NLS-1$
+    
 
     @TranslationKey(defaultValue = "Policy added:")
     public static final String ACTIVITY_DATA_POLICY_ADDED = "activity.data.policy-added"; //$NON-NLS-1$
@@ -420,4 +423,6 @@ public class AppMessages {
     @TranslationKey(defaultValue = "The service was retired from the Gateway and can no longer be used.")
     public static final String SERVICE_STATUS_RETIRED = "service.status.retired"; //$NON-NLS-1$
 
+    @TranslationKey(defaultValue = "Move Policy Here")
+    public static final String MOVE_POLICY = "move-policy"; //$NON-NLS-1$
 }

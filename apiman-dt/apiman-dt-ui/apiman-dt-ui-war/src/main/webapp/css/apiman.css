@@ -8,6 +8,13 @@ body {
   text-transform: capitalize;
 }
 
+.grabber {
+  background-image: url(images/grabber.png);
+  background-repeat: repeat-y;
+  cursor: move;
+  width: 10px;
+}
+
 .italic {
   font-style: italic;
 }
@@ -704,6 +711,28 @@ ol.breadcrumb {
 }
 .apiman-policies .apiman-summaryrow hr {
   clear: both;
+}
+.apiman-policies .row .col {
+  float: left;
+  margin-left: 10px;
+}
+.apiman-policies .row .col-70 {
+  width: 70%;
+}
+.apiman-policies .row .grabber {
+  float: left;
+  margin-right: 10px;
+}
+.apiman-policies .drop-target {
+  padding: 5px 0px 10px 0px;
+}
+.apiman-policies .drop-target div {
+  padding: 10px;
+  text-align: center;
+  font-size: 18px;
+  line-height: 32px;
+  color: rgb(63, 146, 210);
+  border: 1px dashed #987;
 }
 
 .apiman-apis .apiman-summaryrow {

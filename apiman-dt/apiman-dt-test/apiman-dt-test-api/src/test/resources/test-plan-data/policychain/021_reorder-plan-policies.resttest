@@ -1,0 +1,19 @@
+POST /organizations/TestOrganization/plans/Gold/versions/1.0/reorderPolicies admin/admin
+Content-Type: application/json
+
+{
+  "policies" : [
+    {
+      "id" : "${policy-1-id}",
+      "orderIndex" : 10
+    },
+    {
+      "id" : "${policy-2-id}",
+      "orderIndex" : 5
+    }
+  ]
+}
+
+----
+204
+

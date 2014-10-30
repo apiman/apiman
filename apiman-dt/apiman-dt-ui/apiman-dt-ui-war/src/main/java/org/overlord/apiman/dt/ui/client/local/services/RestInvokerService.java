@@ -36,6 +36,7 @@ import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
 import org.overlord.apiman.dt.api.beans.plans.PlanBean;
 import org.overlord.apiman.dt.api.beans.plans.PlanVersionBean;
 import org.overlord.apiman.dt.api.beans.policies.PolicyBean;
+import org.overlord.apiman.dt.api.beans.policies.PolicyChainBean;
 import org.overlord.apiman.dt.api.beans.policies.PolicyDefinitionBean;
 import org.overlord.apiman.dt.api.beans.policies.PolicyType;
 import org.overlord.apiman.dt.api.beans.search.SearchCriteriaBean;
@@ -46,7 +47,6 @@ import org.overlord.apiman.dt.api.beans.summary.ApplicationSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.ContractSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.OrganizationSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.PlanSummaryBean;
-import org.overlord.apiman.dt.api.beans.summary.PolicyChainSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.ServicePlanSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.ServiceSummaryBean;
 import org.overlord.apiman.dt.api.rest.contract.IActionResource;
@@ -380,6 +380,17 @@ public class RestInvokerService {
         CallbackAdapter<List<PolicyBean>> adapter = new CallbackAdapter<List<PolicyBean>>(callback);
         organizations.call(adapter, adapter).listAppPolicies(organizationId, applicationId, version);
     }
+
+    /**
+     * Reorders the application's policies.
+     * @param callback
+     */
+    public void reorderApplicationPolicies(String organizationId, String applicationId, String version, 
+            PolicyChainBean policyChain, IRestInvokerCallback<Void> callback) {
+        CallbackAdapter<Void> adapter = new CallbackAdapter<Void>(callback);
+        organizations.call(adapter, adapter).reorderApplicationPolicies(organizationId, applicationId,
+                version, policyChain);
+    }
     
     /**
      * Gets the application activity.
@@ -528,6 +539,16 @@ public class RestInvokerService {
         CallbackAdapter<List<PolicyBean>> adapter = new CallbackAdapter<List<PolicyBean>>(callback);
         organizations.call(adapter, adapter).listServicePolicies(organizationId, serviceId, version);
     }
+
+    /**
+     * Reorders the service's policies.
+     * @param callback
+     */
+    public void reorderServicePolicies(String organizationId, String serviceId, String version, 
+            PolicyChainBean policyChain, IRestInvokerCallback<Void> callback) {
+        CallbackAdapter<Void> adapter = new CallbackAdapter<Void>(callback);
+        organizations.call(adapter, adapter).reorderServicePolicies(organizationId, serviceId, version, policyChain);
+    }
     
     /**
      * Gets the activity information for the service.
@@ -568,8 +589,8 @@ public class RestInvokerService {
      * @param planId
      */
     public void getServicePlanPolicyChain(String organizationId, String serviceId, String version,
-            String planId, IRestInvokerCallback<PolicyChainSummaryBean> callback) {
-        CallbackAdapter<PolicyChainSummaryBean> adapter = new CallbackAdapter<PolicyChainSummaryBean>(callback);
+            String planId, IRestInvokerCallback<PolicyChainBean> callback) {
+        CallbackAdapter<PolicyChainBean> adapter = new CallbackAdapter<PolicyChainBean>(callback);
         organizations.call(adapter, adapter).getServicePolicyChain(organizationId, serviceId, version, planId);
     }
 
@@ -693,6 +714,16 @@ public class RestInvokerService {
         organizations.call(adapter, adapter).listPlanPolicies(organizationId, planId, version);
     }
 
+    /**
+     * Reorders the plan's policies.
+     * @param callback
+     */
+    public void reorderPlanPolicies(String organizationId, String planId, String version, 
+            PolicyChainBean policyChain, IRestInvokerCallback<Void> callback) {
+        CallbackAdapter<Void> adapter = new CallbackAdapter<Void>(callback);
+        organizations.call(adapter, adapter).reorderPlanPolicies(organizationId, planId, version, policyChain);
+    }
+    
     /**
      * Creates a new plan.
      * @param organizationId

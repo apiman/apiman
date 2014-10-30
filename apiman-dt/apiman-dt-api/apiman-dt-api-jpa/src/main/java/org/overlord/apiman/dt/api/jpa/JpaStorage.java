@@ -174,7 +174,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         if (paging != null) {
             criteria.setPaging(paging);
         } else {
-            criteria.setPage(0);
+            criteria.setPage(1);
             criteria.setPageSize(20);
         }
         criteria.setOrder("when", false); //$NON-NLS-1$
@@ -216,7 +216,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         if (paging != null) {
             criteria.setPaging(paging);
         } else {
-            criteria.setPage(0);
+            criteria.setPage(1);
             criteria.setPageSize(20);
         }
         criteria.setOrder("when", false); //$NON-NLS-1$
@@ -627,19 +627,25 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     /**
      * @see org.overlord.apiman.dt.api.core.IStorageQuery#getPolicies(java.lang.String, java.lang.String, java.lang.String, org.overlord.apiman.dt.api.beans.policies.PolicyType)
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "nls", "unchecked" })
     @Override
     public List<PolicyBean> getPolicies(String organizationId, String entityId, String version,
             PolicyType type) throws StorageException {
         beginTx();
         try {
             EntityManager entityManager = getActiveEntityManager();
-            String jpql = "SELECT p from PolicyBean p WHERE p.organizationId = :orgId AND p.entityId = :entityId AND p.entityVersion = :entityVersion AND p.type = :type"; //$NON-NLS-1$
+            String jpql = 
+                      "SELECT p from PolicyBean p "
+                    + " WHERE p.organizationId = :orgId "
+                    + "   AND p.entityId = :entityId "
+                    + "   AND p.entityVersion = :entityVersion "
+                    + "   AND p.type = :type"
+                    + " ORDER BY p.orderIndex ASC";
             Query query = entityManager.createQuery(jpql);
-            query.setParameter("orgId", organizationId); //$NON-NLS-1$
-            query.setParameter("entityId", entityId); //$NON-NLS-1$
-            query.setParameter("entityVersion", version); //$NON-NLS-1$
-            query.setParameter("type", type); //$NON-NLS-1$
+            query.setParameter("orgId", organizationId);
+            query.setParameter("entityId", entityId);
+            query.setParameter("entityVersion", version);
+            query.setParameter("type", type);
             
             List<PolicyBean> rval = (List<PolicyBean>) query.getResultList();
             for (PolicyBean policyBean : rval) {

@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.dt.api.beans.summary;
+package org.overlord.apiman.dt.api.beans.policies;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.overlord.apiman.dt.api.beans.policies.PolicyBean;
 
 /**
  * Models the list of policies that would get applied if a service were invoked
@@ -29,7 +28,7 @@ import org.overlord.apiman.dt.api.beans.policies.PolicyBean;
  * @author eric.wittmann@redhat.com
  */
 @Portable
-public class PolicyChainSummaryBean implements Serializable {
+public class PolicyChainBean implements Serializable {
 
     private static final long serialVersionUID = -497197512733345793L;
     
@@ -38,7 +37,7 @@ public class PolicyChainSummaryBean implements Serializable {
     /**
      * Constructor.
      */
-    public PolicyChainSummaryBean() {
+    public PolicyChainBean() {
     }
 
     /**

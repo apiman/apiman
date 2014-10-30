@@ -77,13 +77,13 @@
             </div>
             <div class="clearfix"></div>
             <div class="apiman-policies" data-field="policies" data-role="dummy">
-            
                 <div class="container-fluid apiman-summaryrow">
                   <div class="row">
-                    <div class="col-md-1 col-no-padding">
-                      <i class="apiman-policy-icon fa fa-tachometer fa-fw movable"></i>
+                    <div class="grabber" style="height: 48px"></div>
+                    <div class="col">
+                      <i class="apiman-policy-icon fa fa-tachometer fa-fw"></i>
                     </div>
-                    <div class="col-md-9 col-no-padding">
+                    <div class="col col-70">
                       <div>
                         <span class="title"><a href="edit-policy.html">Usage Metering Policy</a></span>
                       </div>
@@ -98,18 +98,24 @@
                         Service usage will be tracked and limited to 1000 requests per day per user.
                       </div>
                     </div>
-                    <div class="col-md-2 col-no-padding">
+                    <div class="col pull-right">
                       <span class="actions"><button class="btn btn-default">Remove</button></span>
                     </div>
                   </div>
                   <hr />
                 </div>
+                
+                <div class="container-fluid drop-target">
+                  <div>Move Policy Here</div>
+                </div>
+                
                 <div class="container-fluid apiman-summaryrow">
                   <div class="row">
-                    <div class="col-md-1 col-no-padding">
+                    <div class="grabber" style="height: 48px"></div>
+                    <div class="col">
                       <i class="apiman-policy-icon fa fa-money fa-fw movable"></i>
                     </div>
-                    <div class="col-md-9 col-no-padding">
+                    <div class="col col-70">
                       <div>
                         <span class="title"><a href="edit-policy.html">Billing Policy</a></span>
                       </div>
@@ -125,7 +131,7 @@
                         at a contracted rate of $5 per month per user, regardless of usage.
                       </div>
                     </div>
-                    <div class="col-md-2 col-no-padding">
+                    <div class="col pull-right">
                       <span class="actions"><button class="btn btn-default">Remove</button></span>
                     </div>
                   </div>

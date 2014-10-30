@@ -27,9 +27,9 @@ import org.jboss.errai.ui.nav.client.local.TransitionTo;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.apiman.dt.api.beans.orgs.OrganizationBean;
+import org.overlord.apiman.dt.api.beans.policies.PolicyChainBean;
 import org.overlord.apiman.dt.api.beans.services.ServiceBean;
 import org.overlord.apiman.dt.api.beans.services.ServiceVersionBean;
-import org.overlord.apiman.dt.api.beans.summary.PolicyChainSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.ServicePlanSummaryBean;
 import org.overlord.apiman.dt.api.rest.contract.exceptions.ServiceVersionNotFoundException;
 import org.overlord.apiman.dt.ui.client.local.AppMessages;
@@ -119,9 +119,9 @@ public class ConsumerServicePage extends AbstractPage {
      * @param planId
      */
     protected void onShowPolicyChain(final String planId) {
-        rest.getServicePlanPolicyChain(organizationBean.getId(), serviceBean.getId(), versionBean.getVersion(), planId, new IRestInvokerCallback<PolicyChainSummaryBean>() {
+        rest.getServicePlanPolicyChain(organizationBean.getId(), serviceBean.getId(), versionBean.getVersion(), planId, new IRestInvokerCallback<PolicyChainBean>() {
             @Override
-            public void onSuccess(PolicyChainSummaryBean response) {
+            public void onSuccess(PolicyChainBean response) {
                 plans.renderPolicyChain(planId, response);
             }
             @Override

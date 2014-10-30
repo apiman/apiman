@@ -46,6 +46,7 @@ import org.overlord.apiman.dt.api.beans.plans.PlanBean;
 import org.overlord.apiman.dt.api.beans.plans.PlanStatus;
 import org.overlord.apiman.dt.api.beans.plans.PlanVersionBean;
 import org.overlord.apiman.dt.api.beans.policies.PolicyBean;
+import org.overlord.apiman.dt.api.beans.policies.PolicyChainBean;
 import org.overlord.apiman.dt.api.beans.policies.PolicyDefinitionBean;
 import org.overlord.apiman.dt.api.beans.policies.PolicyType;
 import org.overlord.apiman.dt.api.beans.search.PagingBean;
@@ -59,7 +60,6 @@ import org.overlord.apiman.dt.api.beans.services.ServiceVersionBean;
 import org.overlord.apiman.dt.api.beans.summary.ApplicationSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.ContractSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.PlanSummaryBean;
-import org.overlord.apiman.dt.api.beans.summary.PolicyChainSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.ServicePlanSummaryBean;
 import org.overlord.apiman.dt.api.beans.summary.ServiceSummaryBean;
 import org.overlord.apiman.dt.api.core.IApiKeyGenerator;
@@ -806,6 +806,42 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw new SystemErrorException(e);
         }
     }
+
+    /**
+     * @see org.overlord.apiman.dt.api.rest.contract.IOrganizationResource#reorderApplicationPolicies(java.lang.String, java.lang.String, java.lang.String, org.overlord.apiman.dt.api.beans.policies.PolicyChainBean)
+     */
+    @Override
+    public void reorderApplicationPolicies(String organizationId, String applicationId, String version,
+            PolicyChainBean policyChain) throws OrganizationNotFoundException,
+            ApplicationVersionNotFoundException, NotAuthorizedException {
+        if (!securityContext.hasPermission(PermissionType.svcEdit, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
+
+        ApplicationVersionBean avb;
+        try {
+            avb = query.getApplicationVersion(organizationId, applicationId, version);
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+        if (avb == null) {
+            throw ExceptionFactory.applicationVersionNotFoundException(applicationId, version);
+        }
+
+        try {
+            storage.beginTx();
+            List<PolicyBean> policies = policyChain.getPolicies();
+            for (PolicyBean incomingPolicy : policies) {
+                PolicyBean storedPolicy = this.storage.get(incomingPolicy.getId(), PolicyBean.class);
+                storedPolicy.setOrderIndex(incomingPolicy.getOrderIndex());
+                storage.update(storedPolicy);
+            }
+            storage.createAuditEntry(AuditUtils.policiesReordered(avb, PolicyType.Application, securityContext));
+            storage.commitTx();
+        } catch (StorageException e) {
+            storage.rollbackTx();
+            throw new SystemErrorException(e);
+        }
+    }
     
     /**
      * @see org.overlord.apiman.dt.api.rest.contract.IOrganizationResource#create(java.lang.String, org.overlord.apiman.dt.api.beans.services.ServiceBean)
@@ -1263,10 +1299,46 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
     
     /**
+     * @see org.overlord.apiman.dt.api.rest.contract.IOrganizationResource#reorderServicePolicies(java.lang.String, java.lang.String, java.lang.String, org.overlord.apiman.dt.api.beans.policies.PolicyChainBean)
+     */
+    @Override
+    public void reorderServicePolicies(String organizationId, String serviceId, String version,
+            PolicyChainBean policyChain) throws OrganizationNotFoundException,
+            ServiceVersionNotFoundException, NotAuthorizedException {
+        if (!securityContext.hasPermission(PermissionType.svcEdit, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
+
+        ServiceVersionBean svb;
+        try {
+            svb = query.getServiceVersion(organizationId, serviceId, version);
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+        if (svb == null) {
+            throw ExceptionFactory.serviceVersionNotFoundException(serviceId, version);
+        }
+
+        try {
+            storage.beginTx();
+            List<PolicyBean> policies = policyChain.getPolicies();
+            for (PolicyBean incomingPolicy : policies) {
+                PolicyBean storedPolicy = this.storage.get(incomingPolicy.getId(), PolicyBean.class);
+                storedPolicy.setOrderIndex(incomingPolicy.getOrderIndex());
+                storage.update(storedPolicy);
+            }
+            storage.createAuditEntry(AuditUtils.policiesReordered(svb, PolicyType.Service, securityContext));
+            storage.commitTx();
+        } catch (StorageException e) {
+            storage.rollbackTx();
+            throw new SystemErrorException(e);
+        }
+    }
+    
+    /**
      * @see org.overlord.apiman.dt.api.rest.contract.IOrganizationResource#getPolicyChain(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
-    public PolicyChainSummaryBean getServicePolicyChain(String organizationId, String serviceId, String version,
+    public PolicyChainBean getServicePolicyChain(String organizationId, String serviceId, String version,
             String planId) throws ServiceVersionNotFoundException, PlanNotFoundException, NotAuthorizedException {
         if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
             throw ExceptionFactory.notAuthorizedException();
@@ -1289,7 +1361,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             List<PolicyBean> servicePolicies = query.getPolicies(organizationId, serviceId, version, PolicyType.Service);
             List<PolicyBean> planPolicies = query.getPolicies(organizationId, planId, planVersion, PolicyType.Plan);
             
-            PolicyChainSummaryBean chain = new PolicyChainSummaryBean();
+            PolicyChainBean chain = new PolicyChainBean();
             chain.getPolicies().addAll(planPolicies);
             chain.getPolicies().addAll(servicePolicies);
             return chain;
@@ -1714,6 +1786,42 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         }
     }
 
+    /**
+     * @see org.overlord.apiman.dt.api.rest.contract.IOrganizationResource#reorderPlanPolicies(java.lang.String, java.lang.String, java.lang.String, org.overlord.apiman.dt.api.beans.policies.PolicyChainBean)
+     */
+    @Override
+    public void reorderPlanPolicies(String organizationId, String planId, String version,
+            PolicyChainBean policyChain) throws OrganizationNotFoundException,
+            PlanVersionNotFoundException, NotAuthorizedException {
+        if (!securityContext.hasPermission(PermissionType.svcEdit, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
+
+        PlanVersionBean pvb;
+        try {
+            pvb = query.getPlanVersion(organizationId, planId, version);
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+        if (pvb == null) {
+            throw ExceptionFactory.planVersionNotFoundException(planId, version);
+        }
+
+        try {
+            storage.beginTx();
+            List<PolicyBean> policies = policyChain.getPolicies();
+            for (PolicyBean incomingPolicy : policies) {
+                PolicyBean storedPolicy = this.storage.get(incomingPolicy.getId(), PolicyBean.class);
+                storedPolicy.setOrderIndex(incomingPolicy.getOrderIndex());
+                storage.update(storedPolicy);
+            }
+            storage.createAuditEntry(AuditUtils.policiesReordered(pvb, PolicyType.Plan, securityContext));
+            storage.commitTx();
+        } catch (StorageException e) {
+            storage.rollbackTx();
+            throw new SystemErrorException(e);
+        }
+    }
+    
 
     /**
      * Creates a policy for the given entity (supports creating policies for applications,
@@ -1745,6 +1853,20 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         }
         
         try {
+            SearchCriteriaBean criteria = new SearchCriteriaBean();
+            criteria.addFilter("organizationId", organizationId, SearchCriteriaFilterBean.OPERATOR_EQ); //$NON-NLS-1$
+            criteria.addFilter("entityId", entityId, SearchCriteriaFilterBean.OPERATOR_EQ); //$NON-NLS-1$
+            criteria.addFilter("entityVersion", entityVersion, SearchCriteriaFilterBean.OPERATOR_EQ); //$NON-NLS-1$
+            criteria.addFilter("type", type.name(), SearchCriteriaFilterBean.OPERATOR_EQ); //$NON-NLS-1$
+            criteria.setOrder("orderIndex", false); //$NON-NLS-1$
+            criteria.setPage(1);
+            criteria.setPageSize(1);
+            SearchResultsBean<PolicyBean> resultsBean = storage.find(criteria, PolicyBean.class);
+            int newIdx = 0;
+            if (!resultsBean.getBeans().isEmpty()) {
+                newIdx = resultsBean.getBeans().get(0).getOrderIndex() + 1;
+            }
+
             bean.setId(null);
             bean.setName(def.getName());
             bean.setCreatedBy(securityContext.getCurrentUser());
@@ -1755,6 +1877,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             bean.setEntityId(entityId);
             bean.setEntityVersion(entityVersion);
             bean.setType(type);
+            bean.setOrderIndex(newIdx);
             storage.create(bean);
             storage.createAuditEntry(AuditUtils.policyAdded(bean, type, securityContext));
             storage.commitTx();

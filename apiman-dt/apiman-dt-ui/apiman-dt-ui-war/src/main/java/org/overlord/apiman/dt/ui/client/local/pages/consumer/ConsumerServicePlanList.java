@@ -26,7 +26,7 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.jboss.errai.ui.client.local.spi.TranslationService;
-import org.overlord.apiman.dt.api.beans.summary.PolicyChainSummaryBean;
+import org.overlord.apiman.dt.api.beans.policies.PolicyChainBean;
 import org.overlord.apiman.dt.api.beans.summary.ServicePlanSummaryBean;
 import org.overlord.apiman.dt.ui.client.local.AppMessages;
 import org.overlord.apiman.dt.ui.client.local.events.CreateContractEvent;
@@ -216,7 +216,7 @@ public class ConsumerServicePlanList extends FlowPanel implements TakesValue<Lis
      * @param planId
      * @param chain
      */
-    public void renderPolicyChain(final String planId, final PolicyChainSummaryBean chain) {
+    public void renderPolicyChain(final String planId, final PolicyChainBean chain) {
         FlowPanel chainPanel = this.chainIndex.get(planId);
         chainPanel.clear();
         PolicyChain policyChain = policyChainFactory.get();
