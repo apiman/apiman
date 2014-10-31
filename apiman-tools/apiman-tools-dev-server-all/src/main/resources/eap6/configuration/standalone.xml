@@ -27,7 +27,7 @@
   </extensions>
   <system-properties>
     <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
-    <property name="hibernate.hbm2ddl.auto" value="create-drop" />
+    <property name="hibernate.hbm2ddl.auto" value="update" />
   </system-properties>
   <management>
     <security-realms>

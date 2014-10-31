@@ -68,7 +68,7 @@ public class DevSeeder implements ServletContextListener {
             runner = new TestPlanRunner("http://localhost:8080/apiman-rt"); //$NON-NLS-1$
             runner.runTestPlan("scripts/seed-runtime-testPlan.xml", getClass().getClassLoader()); //$NON-NLS-1$
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Error: " + e.getMessage()); //$NON-NLS-1$
             System.out.println("Done Seeding (!ERROR!)"); //$NON-NLS-1$
         }
     }

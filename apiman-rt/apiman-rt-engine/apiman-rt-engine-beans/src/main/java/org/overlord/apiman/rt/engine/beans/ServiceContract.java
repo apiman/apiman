@@ -15,6 +15,7 @@
  */
 package org.overlord.apiman.rt.engine.beans;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,8 +25,10 @@ import java.util.List;
  *
  * @author eric.wittmann@redhat.com
  */
-public class ServiceContract {
-    
+public class ServiceContract implements Serializable {
+
+    private static final long serialVersionUID = -4264090614804457252L;
+
     private String apikey;
     private Service service;
     private Application application;

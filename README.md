@@ -33,23 +33,29 @@ We use Maven 3.x to build our software. The following command compiles all the c
 The project can be built and deployed on a variety of runtime platforms, but if you want to see it in 
 action as quickly as possible try this:
 
-    $ mvn clean install -Prun-all-wildfly8
+    $ mvn clean install -Pinstall-all-wildfly8
+    $ cd apiman-tools/apiman-tools-dev-server-all/target/wildfly-8.1.0.Final/
+    $ ./bin/standalone.sh
 
-This maven command will do the following:
+The above maven command will do the following:
 
 1. A full build of apiman
 2. Download WildFly 8.x
 3. Unpack and configure WildFly 8.x
 4. Deploy the WildFly 8.x version of apiman to WildFly
-5. Launch WildFly
 
-If all goes well, you can point your browser to the [API Management UI](http://localhost:8080/apiman-dt-ui/) and log in as
-any of the following users:
+Once WilfFly has started up, and if all went well, you can point your browser to the 
+[API Management UI](http://localhost:8080/apiman-dt-ui/) and log in as any of the following users:
 
 * admin/admin123!
 * bwayne/bwayne123!
 * ckent/ckent123!
 * dprince/dprince123!
+
+Note that this quickstart also deploys a dev-seeder.war which will, after a slight startup delay,
+add a bunch of content to apiman.  This is not strictly necessary, but it does populate the 
+management layer with some data so that it doesn't feel so lonely the first time you log in.
+You're welcome.
 
 ## Contribute fixes and features
 

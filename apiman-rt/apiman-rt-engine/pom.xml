@@ -14,5 +14,6 @@
     <module>apiman-rt-engine-beans</module>
     <module>apiman-rt-engine-policies</module>
     <module>apiman-rt-engine-osgi</module>
+    <module>apiman-rt-engine-ispn</module>
   </modules>
 </project>

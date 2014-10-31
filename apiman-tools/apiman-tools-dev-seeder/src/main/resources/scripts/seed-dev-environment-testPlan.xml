@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testPlan xmlns="urn:org.overlord.apiman.test:2014:02:testPlan">
 
+  <!-- Check if already seeded -->
+  <testGroup name="Seed Check">
+    <test name="Was Seeding Already Done">data/check/001_check.resttest</test>
+  </testGroup>
+
   <!-- Initial IDM setup -->
   <testGroup name="IDM">
     <test name="Create Org Owner">data/idm/001_create-org-owner.resttest</test>

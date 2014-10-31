@@ -315,6 +315,11 @@
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-rt-engine-ispn</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
         <artifactId>apiman-rt-engine-policies</artifactId>
         <version>${project.version}</version>
       </dependency>
