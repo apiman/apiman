@@ -90,6 +90,9 @@ public class LogViewer extends Composite {
     public void addMessage(LoggerSeverity severity, String message) {
         Widget w = createViewerMessage(severity, message);
         getMessages().insert(w, 0);
+        if (getMessages().getWidgetCount() > 200) {
+            getMessages().remove(getMessages().getWidgetCount() - 1);
+        }
     }
 
     /**

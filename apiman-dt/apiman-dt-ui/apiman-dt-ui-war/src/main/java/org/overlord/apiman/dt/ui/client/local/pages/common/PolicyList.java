@@ -365,8 +365,19 @@ public class PolicyList extends FlowPanel implements HasValue<List<PolicyBean>>,
     protected void onDragging(MouseEvent<?> event, PolicyRow row) {
         row.getElement().getStyle().setTop(event.getClientY() - 20, Unit.PX);
         
-        Widget w = getHoverWidget(event);
-        if (w != null && w != dropHolder) {
+        Widget w = getHoverWidget(event, row);
+        if (w == null) {
+            Widget firstRow = getWidget(0);
+            Widget lastRow = getWidget(getWidgetCount() - 1);
+            int top = firstRow.getAbsoluteTop();
+            int y = event.getClientY();
+            if (y <= top) {
+                w = firstRow;
+            } else {
+                w = lastRow;
+            }
+        }
+        if (w != dropHolder) {
             int index = getWidgetIndex(w);
             remove(dropHolder);
             insert(dropHolder, index);
@@ -377,11 +388,15 @@ public class PolicyList extends FlowPanel implements HasValue<List<PolicyBean>>,
      * Figures out which widget in the list is being hovered over (using
      * only the Y coordinate of the event.
      * @param event
+     * @param dragRow
      */
-    private Widget getHoverWidget(MouseEvent<?> event) {
+    private Widget getHoverWidget(MouseEvent<?> event, PolicyRow dragRow) {
         int y = event.getClientY();
         for (int i = 0; i < getWidgetCount(); i++) {
             Widget widget = getWidget(i);
+            if (widget == dragRow) {
+                continue;
+            }
             int widgetTop = widget.getAbsoluteTop();
             int widgetBottom = widgetTop + widget.getOffsetHeight();
             if (y >= widgetTop && y <= widgetBottom) {
@@ -406,7 +421,11 @@ public class PolicyList extends FlowPanel implements HasValue<List<PolicyBean>>,
         int dropIndex = getWidgetIndex(dropHolder);
         remove(dropHolder);
         remove(row);
-        insert(row, dropIndex);
+        if (dropIndex >= getWidgetCount()) {
+            add(row);
+        } else {
+            insert(row, dropIndex);
+        }
         
         PoliciesReorderedEvent.fire(this);
     }
@@ -484,6 +503,22 @@ public class PolicyList extends FlowPanel implements HasValue<List<PolicyBean>>,
         }
 
         /**
+         * @see com.google.gwt.event.dom.client.MouseDownHandler#onMouseDown(com.google.gwt.event.dom.client.MouseDownEvent)
+         */
+        @Override
+        public void onMouseDown(MouseDownEvent event) {
+            if (getWidgetCount() <= 1) {
+                return;
+            }
+            isClicked = true;
+            isDragging = false;
+
+            // Capture mouse and prevent event from going up
+            event.preventDefault();
+            Event.setCapture(dragTarget.getElement());
+        }
+
+        /**
          * @see com.google.gwt.event.dom.client.MouseUpHandler#onMouseUp(com.google.gwt.event.dom.client.MouseUpEvent)
          */
         @Override
@@ -511,21 +546,6 @@ public class PolicyList extends FlowPanel implements HasValue<List<PolicyBean>>,
             }
             
             onDragging(event, dragRow);
-        }
-
-        /**
-         * @see com.google.gwt.event.dom.client.MouseDownHandler#onMouseDown(com.google.gwt.event.dom.client.MouseDownEvent)
-         */
-        @Override
-        public void onMouseDown(MouseDownEvent event) {
-            isClicked = true;
-            isDragging = false;
-
-            // Capture mouse and prevent event from going up
-            event.preventDefault();
-            Event.setCapture(dragTarget.getElement());
-
-            // Initialize other state we need as we drag/drop
         }
     }
 
