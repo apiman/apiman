@@ -175,7 +175,7 @@ public class RateLimitingPolicyConfigForm extends Composite implements IPolicyCo
                 showRow("userRow"); //$NON-NLS-1$
             }
         }
-        IsFormValidEvent.fire(this, Boolean.TRUE);
+        checkValidity();
         if (fireEvents) {
             ValueChangeEvent.fire(this, value);
         }

@@ -315,11 +315,8 @@ public class BasicAuthPolicyConfigForm extends Composite implements IPolicyConfi
                 this.identitySourceSelector.setValue("JDBC"); //$NON-NLS-1$
                 this.showSubForm("JDBC"); //$NON-NLS-1$
             }
-            
-            IsFormValidEvent.fire(this, Boolean.TRUE);
-        } else {
-            IsFormValidEvent.fire(this, Boolean.FALSE);
         }
+        checkValidity();
         if (fireEvents) {
             ValueChangeEvent.fire(this, value);
         }

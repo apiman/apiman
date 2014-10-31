@@ -135,10 +135,8 @@ public class IPListPolicyConfigForm extends Composite implements IPolicyConfigur
             for (String ip : sorted) {
                 ipAddresses.addItem(ip);
             }
-            IsFormValidEvent.fire(this, Boolean.TRUE);
-        } else {
-            IsFormValidEvent.fire(this, Boolean.TRUE);
         }
+        IsFormValidEvent.fire(this, Boolean.TRUE);
     }
 
     /**
