@@ -21,6 +21,7 @@ import org.overlord.apiman.rt.engine.beans.Application;
 import org.overlord.apiman.rt.engine.beans.Service;
 import org.overlord.apiman.rt.engine.beans.exceptions.PublishingException;
 import org.overlord.apiman.rt.engine.beans.exceptions.RegistrationException;
+import org.overlord.apiman.rt.engine.components.IHttpClientComponent;
 import org.overlord.apiman.rt.engine.components.IPolicyFailureFactoryComponent;
 import org.overlord.apiman.rt.engine.components.IRateLimiterComponent;
 import org.overlord.apiman.rt.engine.components.ISharedStateComponent;
@@ -29,6 +30,7 @@ import org.overlord.apiman.rt.engine.impl.InMemoryRegistry;
 import org.overlord.apiman.rt.engine.impl.InMemorySharedStateComponent;
 import org.overlord.apiman.rt.engine.policy.PolicyFactoryImpl;
 import org.overlord.apiman.rt.gateway.servlet.PolicyFailureFactoryComponent;
+import org.overlord.apiman.rt.gateway.servlet.components.HttpClientComponentImpl;
 import org.overlord.apiman.rt.gateway.servlet.connectors.HttpConnectorFactory;
 import org.overlord.apiman.rt.test.server.EchoServer;
 import org.overlord.apiman.rt.test.server.GatewayServer;
@@ -77,6 +79,8 @@ public class AbstractGatewayTest {
                 InMemoryRateLimiterComponent.class.getName());
         System.setProperty(WarEngineConfig.APIMAN_RT_COMPONENT_PREFIX + IPolicyFailureFactoryComponent.class.getSimpleName(), 
                 PolicyFailureFactoryComponent.class.getName());
+        System.setProperty(WarEngineConfig.APIMAN_RT_COMPONENT_PREFIX + IHttpClientComponent.class.getSimpleName(), 
+                HttpClientComponentImpl.class.getName());
     }
 
     @AfterClass

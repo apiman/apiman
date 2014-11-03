@@ -15,7 +15,13 @@
  */
 package org.overlord.apiman.rt.engine.async;
 
+/**
+ * Models the result of an asynchronous operation in apiman-rt.
+ * 
+ * @author eric.wittmann@redhat.com
+ */
 public interface IAsyncResult<T> {
+    
     /**
      * Whether the call was successful.
      * 

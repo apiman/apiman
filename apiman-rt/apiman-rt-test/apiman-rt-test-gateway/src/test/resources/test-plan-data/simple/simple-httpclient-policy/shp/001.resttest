@@ -1,0 +1,17 @@
+GET /gateway/path/to/app/resource
+X-API-Key: 12345
+
+----
+200
+Content-Type: application/json
+
+{
+  "method" : "GET",
+  "resource" : "/path/to/app/resource",
+  "uri" : "/path/to/app/resource",
+  "headers" : {
+      "X-HttpClient-Response-Code" : "200",
+      "X-HttpClient-Response-Message" : "OK",
+      "X-HttpClient-Result" : "Success"
+  }
+}

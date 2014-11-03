@@ -121,10 +121,12 @@ public class TestUtil {
             String [] split = line.split(" "); //$NON-NLS-1$
             rval.setRequestMethod(split[0]);
             rval.setRequestPath(split[1]);
-            String userpass = split[2];
-            split = userpass.split("/"); //$NON-NLS-1$
-            rval.setUsername(split[0]);
-            rval.setPassword(split[1]);
+            if (split.length >= 3) {
+                String userpass = split[2];
+                split = userpass.split("/"); //$NON-NLS-1$
+                rval.setUsername(split[0]);
+                rval.setPassword(split[1]);
+            }
             
             // Request Headers
             line = reader.readLine();
