@@ -6,7 +6,6 @@ Content-Type: application/json
 {
   "beans" : [
     {
-      "id" : 23,
       "data" : null,
       "entityId" : "Service1",
       "entityType" : "Service",
@@ -16,7 +15,6 @@ Content-Type: application/json
       "who" : "admin"
     },
     {
-      "id" : 22,
       "data" : "{\"policyDefId\":\"PolicyDef\"}",
       "entityId" : "Service1",
       "entityType" : "Service",
@@ -26,7 +24,6 @@ Content-Type: application/json
       "who" : "admin"
     },
     {
-      "id" : 21,
       "data" : "{\"policyDefId\":\"PolicyDef\"}",
       "entityId" : "Service1",
       "entityType" : "Service",
@@ -36,7 +33,6 @@ Content-Type: application/json
       "who" : "admin"
     },
     {
-      "id" : 20,
       "data" : "{\"policyDefId\":\"PolicyDef\"}",
       "entityId" : "Service1",
       "entityType" : "Service",
@@ -46,7 +42,6 @@ Content-Type: application/json
       "who" : "admin"
     },
     {
-      "id" : 19,
       "data" : "{\"policyDefId\":\"PolicyDef\"}",
       "entityId" : "Service1",
       "entityType" : "Service",
@@ -56,7 +51,6 @@ Content-Type: application/json
       "who" : "admin"
     },
     {
-      "id" : 17,
       "who":"admin",
       "organizationId":"Organization1",
       "entityType":"Service",
@@ -66,7 +60,6 @@ Content-Type: application/json
       "data":"{\"changes\":[{\"name\":\"plans\",\"before\":\"Plan2:1.1, Plan1:1.0\",\"after\":\"Plan2:1.1\"}]}"
     },
     {
-      "id" : 16,
       "who":"admin",
       "organizationId":"Organization1",
       "entityType":"Service",
@@ -76,7 +69,6 @@ Content-Type: application/json
       "data":"{\"changes\":[{\"name\":\"plans\",\"before\":\"Plan1:1.0\",\"after\":\"Plan2:1.1, Plan1:1.0\"}]}"
     },
     {
-      "id":15,
       "who":"admin",
       "organizationId":"Organization1",
       "entityType":"Service",
@@ -86,7 +78,6 @@ Content-Type: application/json
       "data":"{\"changes\":[{\"name\":\"plans\",\"before\":\"\",\"after\":\"Plan1:1.0\"}]}"
     },
     {
-      "id":9,
       "who":"admin",
       "organizationId":"Organization1",
       "entityType":"Service",
@@ -96,7 +87,6 @@ Content-Type: application/json
       "data":"{\"changes\":[{\"name\":\"endpoint\",\"before\":null,\"after\":\"http://localhost:8080/ping\"},{\"name\":\"endpointType\",\"before\":null,\"after\":\"rest\"}]}"
     },
     {
-      "id":8,
       "who":"admin",
       "organizationId":"Organization1",
       "entityType":"Service",
@@ -106,7 +96,6 @@ Content-Type: application/json
       "data":null
     },
     {
-      "id":7,
       "who":"admin",
       "organizationId":"Organization1",
       "entityType":"Service",
@@ -116,7 +105,6 @@ Content-Type: application/json
       "data":null
     },
     { 
-      "id":5,
       "who":"admin2",
       "organizationId":"Organization1",
       "entityType":"Service",
@@ -126,7 +114,6 @@ Content-Type: application/json
       "data":"{\"changes\":[{\"name\":\"description\",\"before\":\"This is the description of Service 1.\",\"after\":\"[UPDATED] This is the description of Service 1!\"}]}"
     },
     {
-      "id":3,
       "who":"admin",
       "organizationId":"Organization1",
       "entityType":"Service",

@@ -7,7 +7,6 @@ Content-Type: application/json
         "entityId" : "Service2",
         "entityType" : "Service",
         "entityVersion" : "1.5",
-        "id" : 22,
         "organizationId" : "Organization2",
         "what" : "CreateContract",
         "who" : "admin"
@@ -16,7 +15,6 @@ Content-Type: application/json
         "entityId" : "Service2",
         "entityType" : "Service",
         "entityVersion" : "1.5",
-        "id" : 17,
         "organizationId" : "Organization2",
         "what" : "Update",
         "who" : "admin"
@@ -25,7 +23,6 @@ Content-Type: application/json
         "entityId" : "Service2",
         "entityType" : "Service",
         "entityVersion" : "1.5",
-        "id" : 11,
         "organizationId" : "Organization2",
         "what" : "Create",
         "who" : "admin"
@@ -34,7 +31,6 @@ Content-Type: application/json
         "entityId" : "Service2",
         "entityType" : "Service",
         "entityVersion" : "1.0",
-        "id" : 10,
         "organizationId" : "Organization2",
         "what" : "Create",
         "who" : "admin"
@@ -43,7 +39,6 @@ Content-Type: application/json
         "entityId" : "Service2",
         "entityType" : "Service",
         "entityVersion" : null,
-        "id" : 9,
         "organizationId" : "Organization2",
         "what" : "Create",
         "who" : "admin"

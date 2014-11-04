@@ -5,7 +5,6 @@ Content-Type: application/json
 X-RestTest-ArrayOrdering: any
 
 {
-  "id" : 1,
   "service" : {
     "organizationId" : "Organization1",
     "id" : "Service1",

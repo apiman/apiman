@@ -7,7 +7,6 @@ Content-Type: application/json
         "entityId" : "Application1",
         "entityType" : "Application",
         "entityVersion" : "1.0",
-        "id" : 23,
         "organizationId" : "Organization1",
         "what" : "BreakContract",
         "who" : "admin"
@@ -16,7 +15,6 @@ Content-Type: application/json
         "entityId" : "Application1",
         "entityType" : "Application",
         "entityVersion" : "1.0",
-        "id" : 21,
         "organizationId" : "Organization1",
         "what" : "CreateContract",
         "who" : "admin"
@@ -25,7 +23,6 @@ Content-Type: application/json
         "entityId" : "Application1",
         "entityType" : "Application",
         "entityVersion" : "1.0",
-        "id" : 19,
         "organizationId" : "Organization1",
         "what" : "CreateContract",
         "who" : "admin"
@@ -34,7 +31,6 @@ Content-Type: application/json
         "entityId" : "Application1",
         "entityType" : "Application",
         "entityVersion" : "1.0",
-        "id" : 3,
         "organizationId" : "Organization1",
         "what" : "Create",
         "who" : "admin"
@@ -43,7 +39,6 @@ Content-Type: application/json
         "entityId" : "Application1",
         "entityType" : "Application",
         "entityVersion" : null,
-        "id" : 2,
         "organizationId" : "Organization1",
         "what" : "Create",
         "who" : "admin"

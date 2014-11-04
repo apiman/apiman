@@ -7,7 +7,6 @@ Content-Type: application/json
         "entityId" : "Application1",
         "entityType" : "Application",
         "entityVersion" : "1.0",
-        "id" : 11,
         "organizationId" : "Organization1",
         "what" : "Register",
         "who" : "admin"
@@ -16,7 +15,6 @@ Content-Type: application/json
         "entityId" : "Service1",
         "entityType" : "Service",
         "entityVersion" : "1.0",
-        "id" : 10,
         "organizationId" : "Organization1",
         "what" : "Publish",
         "who" : "admin"
@@ -25,7 +23,6 @@ Content-Type: application/json
         "entityId" : "Service1",
         "entityType" : "Service",
         "entityVersion" : "1.0",
-        "id" : 9,
         "organizationId" : "Organization1",
         "what" : "CreateContract",
         "who" : "admin"
@@ -34,7 +31,6 @@ Content-Type: application/json
         "entityId" : "Application1",
         "entityType" : "Application",
         "entityVersion" : "1.0",
-        "id" : 8,
         "organizationId" : "Organization1",
         "what" : "CreateContract",
         "who" : "admin"
@@ -43,7 +39,6 @@ Content-Type: application/json
         "entityId" : "Service1",
         "entityType" : "Service",
         "entityVersion" : "1.0",
-        "id" : 7,
         "organizationId" : "Organization1",
         "what" : "Create",
         "who" : "admin"
@@ -52,7 +47,6 @@ Content-Type: application/json
         "entityId" : "Service1",
         "entityType" : "Service",
         "entityVersion" : null,
-        "id" : 6,
         "organizationId" : "Organization1",
         "what" : "Create",
         "who" : "admin"
@@ -61,7 +55,6 @@ Content-Type: application/json
         "entityId" : "Application1",
         "entityType" : "Application",
         "entityVersion" : "1.0",
-        "id" : 5,
         "organizationId" : "Organization1",
         "what" : "Create",
         "who" : "admin"
@@ -70,7 +63,6 @@ Content-Type: application/json
         "entityId" : "Application1",
         "entityType" : "Application",
         "entityVersion" : null,
-        "id" : 4,
         "organizationId" : "Organization1",
         "what" : "Create",
         "who" : "admin"
@@ -79,7 +71,6 @@ Content-Type: application/json
         "entityId" : "Plan1",
         "entityType" : "Plan",
         "entityVersion" : "1.0",
-        "id" : 3,
         "organizationId" : "Organization1",
         "what" : "Create",
         "who" : "admin"
@@ -88,7 +79,6 @@ Content-Type: application/json
         "entityId" : "Plan1",
         "entityType" : "Plan",
         "entityVersion" : null,
-        "id" : 2,
         "organizationId" : "Organization1",
         "what" : "Create",
         "who" : "admin"
@@ -97,7 +87,6 @@ Content-Type: application/json
         "entityId" : null,
         "entityType" : "Organization",
         "entityVersion" : null,
-        "id" : 1,
         "organizationId" : "Organization1",
         "what" : "Create",
         "who" : "admin"

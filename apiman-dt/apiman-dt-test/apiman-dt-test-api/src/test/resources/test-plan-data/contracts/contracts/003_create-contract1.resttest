@@ -15,7 +15,6 @@ X-RestTest-BindTo-contractId: id
 
 {
   "application" : {
-    "id" : 1,
     "application" : {
       "organizationId" : "Organization1",
       "id" : "Application1",
@@ -29,7 +28,6 @@ X-RestTest-BindTo-contractId: id
   },
   
   "service":{
-    "id" : 1,
     "service" : {
       "organizationId" : "Organization1",
       "id" : "Service1",
@@ -46,7 +44,6 @@ X-RestTest-BindTo-contractId: id
   },
   
   "plan" : {
-    "id":1,
     "plan" : {
       "organizationId" : "Organization1",
       "id" : "Plan1",

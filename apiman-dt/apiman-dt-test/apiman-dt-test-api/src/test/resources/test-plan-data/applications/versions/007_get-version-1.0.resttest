@@ -4,7 +4,6 @@ GET /organizations/Organization1/applications/Application1/versions/1.0 admin/ad
 Content-Type: application/json
 
 {
-  "id" : 1,
   "application" : {
     "organizationId" : "Organization1",
     "id" : "Application1",

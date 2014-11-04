@@ -15,10 +15,6 @@ Content-Type: application/json
   {
     "userId" : "user1",
     "userName" : "User 1",
-    "email" : "user1@example.org",
-    "roles" : [
-      {"roleId":"ApplicationDeveloper", "roleName":"Application Developer"},
-      {"roleId":"ServiceDeveloper", "roleName":"Service Developer"}
-    ]
+    "email" : "user1@example.org"
   }
 ]

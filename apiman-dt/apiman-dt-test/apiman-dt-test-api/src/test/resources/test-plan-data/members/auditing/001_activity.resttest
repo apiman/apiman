@@ -7,7 +7,6 @@ Content-Type: application/json
         "entityId" : null,
         "entityType" : "Organization",
         "entityVersion" : null,
-        "id" : 7,
         "organizationId" : "Organization1",
         "what" : "Revoke",
         "who" : "admin"
@@ -16,7 +15,6 @@ Content-Type: application/json
         "entityId" : null,
         "entityType" : "Organization",
         "entityVersion" : null,
-        "id" : 6,
         "organizationId" : "Organization1",
         "what" : "Revoke",
         "who" : "admin"
@@ -25,7 +23,6 @@ Content-Type: application/json
         "entityId" : null,
         "entityType" : "Organization",
         "entityVersion" : null,
-        "id" : 5,
         "organizationId" : "Organization1",
         "what" : "Grant",
         "who" : "admin"
@@ -34,7 +31,6 @@ Content-Type: application/json
         "entityId" : null,
         "entityType" : "Organization",
         "entityVersion" : null,
-        "id" : 4,
         "organizationId" : "Organization1",
         "what" : "Grant",
         "who" : "admin"
@@ -43,7 +39,6 @@ Content-Type: application/json
         "entityId" : null,
         "entityType" : "Organization",
         "entityVersion" : null,
-        "id" : 3,
         "organizationId" : "Organization1",
         "what" : "Grant",
         "who" : "admin"
@@ -52,7 +47,6 @@ Content-Type: application/json
         "entityId" : null,
         "entityType" : "Organization",
         "entityVersion" : null,
-        "id" : 1,
         "organizationId" : "Organization1",
         "what" : "Create",
         "who" : "admin"
