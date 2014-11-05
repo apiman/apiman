@@ -62,7 +62,9 @@ public class AppMessages {
     public static final String TITLE_EDIT_ROLE = "page.title.edit-role"; //$NON-NLS-1$
     
     @TranslationKey(defaultValue = "APIMan - Import Policy Definition(s)")
-    public static final String TITLE_IMPORT_POLICY_DEF = "page.title.import-policyDef"; //$NON-NLS-1$
+    public static final String TITLE_IMPORT_POLICY_DEF = "page.title.import-policyDefs"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "APIMan - Import Service(s)")
+    public static final String TITLE_IMPORT_SERVICES = "page.title.import-services"; //$NON-NLS-1$
 
     @TranslationKey(defaultValue = "APIMan - {0} (Organizations)")
     public static final String TITLE_USER_ORGS = "page.title.user-orgs"; //$NON-NLS-1$

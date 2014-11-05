@@ -43,12 +43,12 @@ import com.google.gwt.user.client.ui.TextArea;
 
 
 /**
- * Page that lets the user import a new policy definition.
+ * Page that lets the user import a new policy definition (or multiple definitions).
  *
  * @author eric.wittmann@redhat.com
  */
-@Templated("/org/overlord/apiman/dt/ui/client/local/site/import-policyDef.html#page")
-@Page(path="import-policyDef")
+@Templated("/org/overlord/apiman/dt/ui/client/local/site/import-policyDefs.html#page")
+@Page(path="import-policyDefs")
 @Dependent
 public class ImportPolicyDefPage extends AbstractPage {
 

@@ -15,6 +15,19 @@ body {
   width: 10px;
 }
 
+.dropzone {
+  padding: 20px;
+  text-align: center;
+  border: 1px dashed rgb(119, 136, 153);
+  color: rgb(85, 85, 85);
+  font-weight: 700;
+}
+
+.dropzone.dropping {
+  border: 1px dashed rgb(4, 179, 0);
+  background-color: rgb(203, 255, 202);
+}
+
 .italic {
   font-style: italic;
 }

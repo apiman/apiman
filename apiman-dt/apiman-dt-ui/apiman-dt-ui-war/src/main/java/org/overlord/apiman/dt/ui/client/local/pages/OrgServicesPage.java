@@ -50,6 +50,8 @@ public class OrgServicesPage extends AbstractOrgPage {
 
     @Inject @DataField
     TransitionAnchor<NewServicePage> toNewService;
+    @Inject @DataField
+    TransitionAnchor<ImportServicesPage> toImportServices;
 
     @Inject @DataField
     TextBox serviceFilter;
