@@ -105,8 +105,15 @@ public abstract class AbstractPage extends Composite {
                 doPageLoadingLifecycle();
             }
         });
+        onPageShowing();
     }
     
+    /**
+     * Subclasses can implement onPageShowing by overriding this method.
+     */
+    protected void onPageShowing() {
+    }
+
     @PageHiding
     private final void _onPageHiding() {
         pageLoadingWidget.show();

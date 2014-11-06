@@ -35,6 +35,7 @@ import org.overlord.apiman.dt.ui.server.UIConfig;
 import org.overlord.apiman.dt.ui.server.auth.AuthTokenGenerator;
 import org.overlord.apiman.dt.ui.server.servlets.ConfigurationServlet;
 import org.overlord.apiman.dt.ui.server.servlets.TokenRefreshServlet;
+import org.overlord.apiman.dt.ui.server.servlets.UrlFetchProxyServlet;
 import org.overlord.commons.dev.server.DevServerEnvironment;
 import org.overlord.commons.dev.server.ErraiDevServer;
 import org.overlord.commons.dev.server.MultiDefaultServlet;
@@ -170,6 +171,7 @@ public class ApiManDtUiDevServer extends ErraiDevServer {
         apiManDtUI.addServlet(headerDataServlet, "/js/overlord-header-data.nocache.js"); //$NON-NLS-1$
         apiManDtUI.addServlet(ConfigurationServlet.class, "/js/configuration.nocache.js"); //$NON-NLS-1$
         apiManDtUI.addServlet(TokenRefreshServlet.class, "/rest/tokenRefresh"); //$NON-NLS-1$
+        apiManDtUI.addServlet(UrlFetchProxyServlet.class, "/proxies/fetch"); //$NON-NLS-1$
         // File resources
         ServletHolder resources = new ServletHolder(new MultiDefaultServlet());
         resources.setInitParameter("resourceBase", "/"); //$NON-NLS-1$ //$NON-NLS-2$

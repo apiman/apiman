@@ -15,6 +15,7 @@
   <inherits name="org.overlord.apiman.dt.api.rest.Rest" />
   <inherits name="org.overlord.apiman.engine.policies.Policies" />
   <inherits name="com.google.gwt.http.HTTP" />
+  <inherits name="com.google.gwt.xml.XML" />
   
   <set-property name="gwt.logging.popupHandler" value="DISABLED" />
 </module>

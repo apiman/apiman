@@ -986,6 +986,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         try {
             storage.beginTx();
             ServiceBean service = storage.get(organizationId, serviceId, ServiceBean.class);
+            bean.setId(null);
+            bean.setPublishedOn(null);
+            bean.setRetiredOn(null);
             bean.setCreatedBy(securityContext.getCurrentUser());
             bean.setCreatedOn(new Date());
             bean.setModifiedBy(securityContext.getCurrentUser());

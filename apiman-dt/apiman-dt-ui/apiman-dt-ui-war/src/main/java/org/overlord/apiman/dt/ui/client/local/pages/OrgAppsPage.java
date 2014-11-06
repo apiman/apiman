@@ -103,7 +103,7 @@ public class OrgAppsPage extends AbstractOrgPage {
         super.renderPage();
         applications.setValue(apps);
     }
-
+    
     /**
      * Apply a filter to the list of applications.
      */

@@ -70,6 +70,15 @@
     <url-pattern>/rest/tokenRefresh</url-pattern>
   </servlet-mapping>
   
+  <servlet>
+    <servlet-name>FetchProxy</servlet-name>
+    <servlet-class>org.overlord.apiman.dt.ui.server.servlets.UrlFetchProxyServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>FetchProxy</servlet-name>
+    <url-pattern>/proxies/fetch</url-pattern>
+  </servlet-mapping>
+  
   <security-constraint>
     <web-resource-collection>
       <web-resource-name>ApimanDT</web-resource-name>
