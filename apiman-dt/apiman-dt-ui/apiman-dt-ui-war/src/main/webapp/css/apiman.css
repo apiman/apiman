@@ -23,9 +23,14 @@ body {
   font-weight: 700;
 }
 
-.dropzone.dropping {
+.dropzone.dropped {
   border: 1px dashed rgb(4, 179, 0);
   background-color: rgb(203, 255, 202);
+}
+
+.dropzone.dropping {
+  border: 1px dashed rgb(106, 131, 249);
+  background-color: rgb(217, 223, 253);
 }
 
 .italic {

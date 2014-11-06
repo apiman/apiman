@@ -15,6 +15,10 @@
  */
 package org.overlord.apiman.dt.ui.client.local.pages.service;
 
+import javax.inject.Inject;
+
+import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.overlord.apiman.dt.ui.client.local.AppMessages;
 import org.overlord.apiman.dt.ui.client.local.beans.ServiceImportSourceType;
 import org.overlord.apiman.dt.ui.client.local.pages.common.SelectBox;
 
@@ -25,6 +29,9 @@ import org.overlord.apiman.dt.ui.client.local.pages.common.SelectBox;
  */
 public class ServiceImportSourceSelectBox extends SelectBox<ServiceImportSourceType> {
     
+    @Inject
+    private TranslationService i18n;
+
     /**
      * Constructor.
      */
@@ -38,7 +45,7 @@ public class ServiceImportSourceSelectBox extends SelectBox<ServiceImportSourceT
     protected String optionName(ServiceImportSourceType option) {
         switch (option) {
         case Wadl:
-            return "WADL File";
+            return i18n.format(AppMessages.WADL_FILE);
         default:
             return "Unknown"; //$NON-NLS-1$
         }

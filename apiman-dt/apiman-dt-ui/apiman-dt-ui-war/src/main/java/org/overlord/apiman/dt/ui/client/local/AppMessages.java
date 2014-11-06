@@ -272,6 +272,9 @@ public class AppMessages {
     @TranslationKey(defaultValue = "No plans are currently offered by this service.")
     public static final String NO_PLANS_IN_CONSUMER_SERVICE_MESSAGE = "noEntitiesFound.plans-in-consumer-service"; //$NON-NLS-1$
 
+    @TranslationKey(defaultValue = "No services have been found during the import.  Please try again with a different import source.")
+    public static final String NO_SERVICES_IMPORT_MESSAGE = "noEntitiesFound.import-services"; //$NON-NLS-1$
+
     @TranslationKey(defaultValue = "Home")
     public static final String HOME = "home"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "Organizations")
@@ -427,4 +430,15 @@ public class AppMessages {
 
     @TranslationKey(defaultValue = "Move Policy Here")
     public static final String MOVE_POLICY = "move-policy"; //$NON-NLS-1$
+
+    @TranslationKey(defaultValue = "Imported from {0}.")
+    public static String SERVICE_IMPORTED_FROM = "service-imported-from"; //$NON-NLS-1$
+    
+    @TranslationKey(defaultValue = "Failed to fetch the WADL ({0}) : {1}")
+    public static String WADL_FETCH_FAIL = "service-import-wadl-fetch-failed"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "WADL File")
+    public static final String WADL_FILE = "wadl-file"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "File(s) dropped: ")
+    public static final String FILES_DROPPED = "files-dropped"; //$NON-NLS-1$
+
 }

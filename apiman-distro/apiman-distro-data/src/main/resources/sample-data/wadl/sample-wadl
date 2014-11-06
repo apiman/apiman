@@ -1,0 +1,227 @@
+<application xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             xmlns:apigee="http://api.apigee.com/wadl/2010/07/"
+             xmlns="http://wadl.dev.java.net/2009/02"
+             xsi:schemaLocation="http://wadl.dev.java.net/2009/02 http://apigee.com/schemas/wadl-schema.xsd http://api.apigee.com/wadl/2010/07/ http://apigee.com/schemas/apigee-wadl-extensions.xsd">
+    <!-- Base defines the domain and base path of the endpoint -->
+    <resources base="http://api.demo.ez.no/api/ezp/v2">
+        <!-- A resource with a GET method that requires a template parameter, a query parameter and a header -->
+        <resource path="/content/objects/{contentId}">
+            <!-- If a param is required, specify so. Default values can also be supplied. -->
+            <!-- A "query" style denotes a query parameter. "header" is a common alternative. -->
+            <param name="Accept" required="true" type="xsd:string" style="header"
+                   default="application/vnd.ez.api.Content+json">
+                <!-- Docs are optional, but recommended. -->
+                <doc>Response format.</doc>
+                <option value="application/vnd.ez.api.Content+json" mediaType="application/json"/>
+                <option value="application/vnd.ez.api.Content+xml" mediaType="application/xml"/>
+            </param>
+            <param name="contentId" required="true" type="xsd:string" style="template" default="57">
+                <doc>
+                    eZ Publish Content ID
+                </doc>
+            </param>
+            <method id="get-content-objects" name="GET" apigee:displayName="content/objects">
+                <apigee:tags>
+                    <apigee:tag primary="true">Content Resources</apigee:tag>
+                </apigee:tags>
+                <apigee:authentication required="true"/>
+                <apigee:example url="/content/objects/{contentId}"/>
+            </method>
+        </resource>
+        <resource path="/content/objects/{contentId}/locations">
+            <param name="Accept" required="true" type="xsd:string" style="header"
+                   default="application/vnd.ez.api.Content+json">
+                <doc>Response format.</doc>
+                <option value="application/vnd.ez.api.Content+json" mediaType="application/json"/>
+                <option value="application/vnd.ez.api.Content+xml" mediaType="application/xml"/>
+            </param>
+            <param name="contentId" required="true" type="xsd:string" style="template" default="57">
+                <doc>
+                    eZ Publish Content ID
+                </doc>
+            </param>
+            <method id="get-content-objects-locations" name="GET"
+                    apigee:displayName="content/objects/{contentId}/locations">
+                <apigee:tags>
+                    <apigee:tag primary="true">Content Resources</apigee:tag>
+                </apigee:tags>
+                <apigee:authentication required="true"/>
+                <apigee:example url="/content/objects/{contentId}/locations"/>
+            </method>
+        </resource>
+        <resource path="/content/objects/{contentId}">
+            <param name="Accept" required="true" type="xsd:string" style="header"
+                   default="application/vnd.ez.api.Content+json">
+                <doc>Response format.</doc>
+                <option value="application/vnd.ez.api.Content+json" mediaType="application/json"/>
+                <option value="application/vnd.ez.api.Content+xml" mediaType="application/xml"/>
+            </param>
+            <param name="contentId" required="true" type="xsd:string" style="template" default="57">
+                <doc>
+                    eZ Publish Content ID
+                </doc>
+            </param>
+            <method id="delete-content-objects" name="DELETE" apigee:displayName="content/objects">
+                <apigee:tags>
+                    <apigee:tag primary="true">Content Resources</apigee:tag>
+                </apigee:tags>
+                <apigee:authentication required="true"/>
+                <apigee:example url="/content/objects/{contentId}"/>
+            </method>
+        </resource>
+        <resource path="/content/locations/{locationId}">
+            <param name="Accept" required="true" type="xsd:string" style="header"
+                   default="application/vnd.ez.api.Content+json">
+                <doc>Response format.</doc>
+                <option value="application/vnd.ez.api.Content+json" mediaType="application/json"/>
+                <option value="application/vnd.ez.api.Content+xml" mediaType="application/xml"/>
+            </param>
+            <param name="locationId" required="true" type="xsd:string" style="template" default="2">
+                <doc>
+                    eZ Publish Location ID
+                </doc>
+            </param>
+            <method id="get-content-locations" name="GET" apigee:displayName="content/locations">
+                <apigee:tags>
+                    <apigee:tag primary="true">Content Resources</apigee:tag>
+                </apigee:tags>
+                <apigee:authentication required="true"/>
+                <apigee:example url="/content/locations/{locationId}"/>
+            </method>
+        </resource>
+        <resource path="/content/locations/{locationId}/children">
+            <param name="Accept" required="true" type="xsd:string" style="header"
+                   default="application/vnd.ez.api.Content+json">
+                <doc>Response format.</doc>
+                <option value="application/vnd.ez.api.Content+json" mediaType="application/json"/>
+                <option value="application/vnd.ez.api.Content+xml" mediaType="application/xml"/>
+            </param>
+            <param name="locationId" required="true" type="xsd:string" style="template" default="2">
+                <doc>
+                    eZ Publish Location ID
+                </doc>
+            </param>
+            <method id="get-content-locations-children" name="GET"
+                    apigee:displayName="content/locations/{locationId}/children">
+                <apigee:tags>
+                    <apigee:tag primary="true">Content Resources</apigee:tag>
+                </apigee:tags>
+                <apigee:authentication required="true"/>
+                <apigee:example url="/content/locations/{locationId}/children"/>
+            </method>
+        </resource>
+        <resource path="/content/objects">
+            <param name="Accept" required="true" type="xsd:string" style="header"
+                   default="application/vnd.ez.api.Content+json">
+                <doc>Response format.</doc>
+                <option value="application/vnd.ez.api.Content+json" mediaType="application/json"/>
+                <option value="application/vnd.ez.api.Content+xml" mediaType="application/xml"/>
+            </param>
+            <param name="Content-Type" required="true" type="xsd:string" style="header"
+                   default="application/vnd.ez.api.ContentCreate+json">
+                <doc>The ContentCreate schema encoded either in JSON or XML</doc>
+                <option value="application/vnd.ez.api.ContentCreate+json" mediaType="application/json"/>
+                <option value="application/vnd.ez.api.ContentCreate+xml" mediaType="application/xml"/>
+            </param>
+            <method id="post-content-objects" name="POST" apigee:displayName="content/objects">
+                <apigee:tags>
+                    <apigee:tag primary="true">Content Resources</apigee:tag>
+                </apigee:tags>
+                <apigee:authentication required="true"/>
+                <apigee:example url="/content/objects"/>
+                <request>
+                    <!-- This section contains the body representation, e.g. form-encoded parameters, an XML/JSON payload, an attachment etc. -->
+                    <representation>
+                        <!-- This section describes the body content, i.e. the payload. -->
+                        <!-- Set required to true to indicate the content as mandatory in the Console -->
+                        <apigee:payload required="true">
+                            <!-- Body content. -->
+                            <apigee:content>
+                                <![CDATA[
+                    {
+                        "ContentCreate": {
+                            "ContentType": {
+                                "_href": "/content/types/1"
+                            },
+                            "mainLanguageCode": "eng-GB",
+                            "User": {
+                                "_href": "/user/users/14"
+                            },
+                            "LocationCreate": {
+                                "ParentLocation": {
+                                    "_href": "/content/locations/1/2"
+                                },
+                                "priority": "0",
+                                "hidden": "false",
+                                "sortField": "PATH",
+                                "sortOrder": "ASC"
+                            },
+                            "Section": {
+                                "_href": "/content/sections/1"
+                            },
+                            "alwaysAvailable": "true",
+                            "remoteId": "remoteId12345678",
+                            "modificationDate": "2012-10-18T11:00:00",
+                            "fields": {
+                                "field": [
+                                    {
+                                        "fieldDefinitionIdentifier": "name",
+                                        "languageCode": "eng-GB",
+                                        "fieldValue": "New Folder"
+                                    },
+                                    {
+                                        "fieldDefinitionIdentifier": "short_description",
+                                        "languageCode": "eng-GB",
+                                        "fieldValue": {
+                                            "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><section xmlns:image=\"http://ez.no/namespaces/ezpublish3/image/\" xmlns:xhtml=\"http://ez.no/namespaces/ezpublish3/xhtml/\" xmlns:custom=\"http://ez.no/namespaces/ezpublish3/custom/\"><section><paragraph>This is short description</paragraph></section></section>"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ]]>
+                            </apigee:content>
+                        </apigee:payload>
+                    </representation>
+                </request>
+            </method>
+        </resource>
+        <resource path="/content/objects/{contentId}/versions/{versionNo}">
+            <param name="X-HTTP-Method-Override" required="true" type="xsd:string" style="header" default="PUBLISH">
+                <doc>Publish.</doc>
+                <option value="PUBLISH" mediaType=""/>
+            </param>
+            <param name="contentId" required="true" type="xsd:string" style="template" default="">
+                <doc>
+                    eZ Publish Content ID
+                </doc>
+            </param>
+            <param name="versionNo" required="true" type="xsd:string" style="template" default="">
+                <doc>
+                    eZ Publish Version No
+                </doc>
+            </param>
+            <method id="post-publish-content-objects" name="POST"
+                    apigee:displayName="/content/objects/{contentId}/versions/{versionNo}">
+                <apigee:tags>
+                    <apigee:tag primary="true">Content Resources</apigee:tag>
+                </apigee:tags>
+                <apigee:authentication required="true"/>
+                <apigee:example url="/content/objects/114/versions/1"/>
+                <request>
+                    <representation>
+                        <apigee:payload required="false">
+                            <apigee:content>
+                                <![CDATA[
+
+                                        ]]>
+                            </apigee:content>
+                        </apigee:payload>
+                    </representation>
+                </request>
+            </method>
+        </resource>
+    </resources>
+</application>
