@@ -14,8 +14,8 @@
   <packaging>pom</packaging>
 
   <name>apiman</name>
-  <url>http://www.jboss.org/overlord</url>
-  <description>The Overlord API Management project</description>
+  <url>http://apiman.io/</url>
+  <description>Open Source API Management</description>
 
   <organization>
     <name>JBoss, a division of Red Hat</name>
@@ -36,9 +36,9 @@
   </issueManagement>
 
   <scm>
-    <connection>scm:git:git@github.com:Governance/apiman.git</connection>
-    <developerConnection>scm:git:git@github.com:Governance/apiman.git</developerConnection>
-    <url>scm:git:git@github.com:Governance/apiman.git</url>
+    <connection>scm:git:git@github.com:apiman/apiman.git</connection>
+    <developerConnection>scm:git:git@github.com:apiman/apiman.git</developerConnection>
+    <url>scm:git:git@github.com:apiman/apiman.git</url>
   </scm>
 
   <developers>
@@ -54,9 +54,9 @@
       <timezone>-5</timezone>
     </developer>
     <developer>
-      <name>Gary Brown</name>
-      <id>objectiser</id>
-      <email>gbrown@redhat.com</email>
+      <name>Marc Savy</name>
+      <id>msavy</id>
+      <email>msavy@redhat.com</email>
       <organization>Red Hat</organization>
       <roles>
         <role>Developer</role>
