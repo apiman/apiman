@@ -11,23 +11,6 @@
   <name>apiman-tools-dev-server-all</name>
 
   <dependencies>
-    <!-- The EAP 6 version of APIMan -->
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-dt-api-war-eap6</artifactId>
-      <type>war</type>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-dt-ui-war-eap6</artifactId>
-      <type>war</type>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-rt-gateway-war-eap6</artifactId>
-      <type>war</type>
-    </dependency>
-
     <!-- The WildFly 8 version of APIMan -->
     <dependency>
       <groupId>${project.groupId}</groupId>
@@ -145,7 +128,7 @@
                     <echo>Dev Seeder:        ${apiman.apiman-tools-dev-seeder.war}</echo>
                     <echo>Dev Services:      ${apiman.apiman-tools-dev-services.war}</echo>
                     <echo>-------</echo>
-                    <echo>EAP Home:          ${apiman.wildfly.home}</echo>
+                    <echo>WildFly Home:      ${apiman.wildfly.home}</echo>
                     <echo>********************************************************************</echo>
                     <echo></echo>
                     

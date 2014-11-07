@@ -206,18 +206,6 @@
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-dt-api-war-eap6</artifactId>
-        <version>${project.version}</version>
-        <type>war</type>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-dt-api-war-eap6</artifactId>
-        <version>${project.version}</version>
-        <classifier>classes</classifier>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
         <artifactId>apiman-dt-api-war-wildfly8</artifactId>
         <version>${project.version}</version>
         <type>war</type>
@@ -266,18 +254,6 @@
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>apiman-dt-ui-war-fuse6</artifactId>
-        <version>${project.version}</version>
-        <classifier>classes</classifier>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-dt-ui-war-eap6</artifactId>
-        <version>${project.version}</version>
-        <type>war</type>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-dt-ui-war-eap6</artifactId>
         <version>${project.version}</version>
         <classifier>classes</classifier>
       </dependency>
@@ -364,18 +340,6 @@
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>apiman-rt-gateway-war-jetty8</artifactId>
-        <version>${project.version}</version>
-        <classifier>classes</classifier>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-rt-gateway-war-eap6</artifactId>
-        <version>${project.version}</version>
-        <type>war</type>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-rt-gateway-war-eap6</artifactId>
         <version>${project.version}</version>
         <classifier>classes</classifier>
       </dependency>
