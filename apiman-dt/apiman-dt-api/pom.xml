@@ -20,7 +20,6 @@
     <module>apiman-dt-api-rest-impl</module>
     <module>apiman-dt-api-security</module>
     <module>apiman-dt-api-war</module>
-    <module>apiman-dt-api-war/eap6</module>
     <module>apiman-dt-api-war/fuse6</module>
     <module>apiman-dt-api-war/jetty8</module>
     <module>apiman-dt-api-war/wildfly8</module>

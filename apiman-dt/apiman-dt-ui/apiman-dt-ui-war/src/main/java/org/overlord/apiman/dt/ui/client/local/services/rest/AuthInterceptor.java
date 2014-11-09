@@ -92,7 +92,7 @@ public class AuthInterceptor implements RestClientInterceptor {
     }
 
     /**
-     * Implementation of Overlord SAML bearer token auth.
+     * Implementation of SAML bearer token auth.
      * @param context
      * @param auth
      */

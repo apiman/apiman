@@ -35,20 +35,6 @@
     <!-- Overlord Commons -->
     <dependency>
       <groupId>org.overlord</groupId>
-      <artifactId>overlord-commons-uiheader</artifactId>
-      <exclusions>
-        <exclusion>
-          <artifactId>overlord-commons-auth</artifactId>
-          <groupId>org.overlord</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>org.apache.felix.scr.annotations</artifactId>
-          <groupId>org.apache.felix</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.overlord</groupId>
       <artifactId>overlord-commons-gwt</artifactId>
     </dependency>
     <dependency>

@@ -80,6 +80,36 @@ textarea.form-data {
   font-weight: bold;
 }
 
+#apiman-header {
+  border-bottom: 1px solid rgb(238, 238, 238);
+  background-color: rgb(246, 246, 246);
+}
+#apiman-header .main-header {
+  padding-top: 5px;
+}
+#apiman-header .logo {
+  background-image: url(images/logo.png);
+  width: 83px;
+  height: 58px;
+  float: left;
+}
+#apiman-header .search {
+  font-size: 12px;
+  margin-top: 10px;
+  margin-left: 20px;
+  padding: 5px;
+  width: 200px;
+}
+#apiman-header .user-menu {
+  font-size: 15px;
+  margin-top: 10px;
+  list-style-image: none;
+  list-style-position: outside;
+  list-style-type: none;
+}
+#apiman-header .user-menu a {
+}
+
 .apiman-label {
   text-transform: uppercase;
   font-size: 11px;

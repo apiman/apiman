@@ -27,6 +27,7 @@ import org.jboss.errai.ui.nav.client.local.PageShowing;
 import org.overlord.apiman.dt.api.beans.idm.UserBean;
 import org.overlord.apiman.dt.ui.client.local.PageErrorPanel;
 import org.overlord.apiman.dt.ui.client.local.PageLoadingWidget;
+import org.overlord.apiman.dt.ui.client.local.pages.common.PageHeader;
 import org.overlord.apiman.dt.ui.client.local.services.CurrentContextService;
 import org.overlord.apiman.dt.ui.client.local.services.LoggerService;
 import org.overlord.apiman.dt.ui.client.local.services.NavigationHelperService;
@@ -65,6 +66,8 @@ public abstract class AbstractPage extends Composite {
     protected CurrentContextService currentContext;
     @Inject
     protected LoggerService logger;
+    @Inject
+    private PageHeader pageHeader;
 
     private int expectedDataPackets;
     private int dataPacketsReceived;
@@ -162,6 +165,7 @@ public abstract class AbstractPage extends Composite {
                 @Override
                 public void onSuccess(UserBean response) {
                     currentUserBean = response;
+                    pageHeader.setValue(currentUserBean);
                     increaseExpectedDataPackets(doLoadPageData());
                     dataPacketLoaded();
                 }

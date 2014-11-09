@@ -40,13 +40,10 @@ import org.overlord.commons.dev.server.DevServerEnvironment;
 import org.overlord.commons.dev.server.ErraiDevServer;
 import org.overlord.commons.dev.server.MultiDefaultServlet;
 import org.overlord.commons.dev.server.discovery.ErraiWebAppModuleFromMavenDiscoveryStrategy;
-import org.overlord.commons.dev.server.discovery.JarModuleFromIDEDiscoveryStrategy;
-import org.overlord.commons.dev.server.discovery.JarModuleFromMavenDiscoveryStrategy;
 import org.overlord.commons.dev.server.discovery.WebAppModuleFromIDEDiscoveryStrategy;
 import org.overlord.commons.gwt.server.filters.GWTCacheControlFilter;
 import org.overlord.commons.gwt.server.filters.ResourceCacheControlFilter;
 import org.overlord.commons.i18n.server.filters.LocaleFilter;
-import org.overlord.commons.ui.header.OverlordHeaderDataJS;
 
 /**
  * A dev server for APIMan.
@@ -139,9 +136,6 @@ public class ApiManDtUiDevServer extends ErraiDevServer {
         environment.addModule("apiman-dt-ui", //$NON-NLS-1$
                 new WebAppModuleFromIDEDiscoveryStrategy(UIConfig.class),
                 new ErraiWebAppModuleFromMavenDiscoveryStrategy(UIConfig.class));
-        environment.addModule("overlord-commons-uiheader", //$NON-NLS-1$
-                new JarModuleFromIDEDiscoveryStrategy(OverlordHeaderDataJS.class, "src/main/resources/META-INF/resources"), //$NON-NLS-1$
-                new JarModuleFromMavenDiscoveryStrategy(OverlordHeaderDataJS.class, "/META-INF/resources")); //$NON-NLS-1$
     }
 
     /**
@@ -166,17 +160,13 @@ public class ApiManDtUiDevServer extends ErraiDevServer {
         apiManDtUI.addFilter(ResourceCacheControlFilter.class, "/js/*", EnumSet.of(DispatcherType.REQUEST)); //$NON-NLS-1$
         apiManDtUI.addFilter(LocaleFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST)); //$NON-NLS-1$
         // Servlets
-        ServletHolder headerDataServlet = new ServletHolder(OverlordHeaderDataJS.class);
-        headerDataServlet.setInitParameter("app-id", "apiman-dt-ui"); //$NON-NLS-1$ //$NON-NLS-2$
-        apiManDtUI.addServlet(headerDataServlet, "/js/overlord-header-data.nocache.js"); //$NON-NLS-1$
         apiManDtUI.addServlet(ConfigurationServlet.class, "/js/configuration.nocache.js"); //$NON-NLS-1$
         apiManDtUI.addServlet(TokenRefreshServlet.class, "/rest/tokenRefresh"); //$NON-NLS-1$
         apiManDtUI.addServlet(UrlFetchProxyServlet.class, "/proxies/fetch"); //$NON-NLS-1$
         // File resources
         ServletHolder resources = new ServletHolder(new MultiDefaultServlet());
         resources.setInitParameter("resourceBase", "/"); //$NON-NLS-1$ //$NON-NLS-2$
-        resources.setInitParameter("resourceBases", environment.getModuleDir("apiman-dt-ui").getCanonicalPath() //$NON-NLS-1$ //$NON-NLS-2$
-                + "|" + environment.getModuleDir("overlord-commons-uiheader").getCanonicalPath()); //$NON-NLS-1$ //$NON-NLS-2$
+        resources.setInitParameter("resourceBases", environment.getModuleDir("apiman-dt-ui").getCanonicalPath()); //$NON-NLS-1$ //$NON-NLS-2$
         resources.setInitParameter("dirAllowed", "true"); //$NON-NLS-1$ //$NON-NLS-2$
         resources.setInitParameter("pathInfoOnly", "false"); //$NON-NLS-1$ //$NON-NLS-2$
         String[] fileTypes = new String[] { "html", "js", "css", "png", "gif", "woff", "ttf" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$

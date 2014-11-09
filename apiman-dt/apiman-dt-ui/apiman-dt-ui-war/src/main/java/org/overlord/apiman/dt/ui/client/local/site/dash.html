@@ -9,19 +9,45 @@
   <body>
     
     <!-- Top header/nav bar -->
-    <div id="overlord-header">
+    <div id="apiman-header">
+      <div class="main-header container" data-field="header">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="logo" data-field="logo"></div>
+            <input data-field="search" class="search no-phone" type="text" placeholder="Quick service search..."></input>
+            <ul class="user-menu pull-right">
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                  <span class="pficon pficon-user"></span>
+                  <span data-field="username" data-role="dummy">Bruce Wayne</span>
+                  <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a data-field="toUserHome" href="user-orgs.html" data-i18n-key="my-stuff">My Stuff</a>
+                  </li>
+                  <li class="divider"></li>
+                  <li>
+                    <a data-field="toLogout" href="#" data-i18n-key="logout">Logout</a>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Page content -->
     <div class="page container" data-field="page">
       <div class="row">
         <div class="col-md-12">
-          <h1 data-i18n-key="page-heading">Overlord API Management</h1>
+          <h1 data-i18n-key="page-heading">API Management</h1>
           <hr />
         </div>
         <div class="col-md-12 no-phone">
           <span class="description" data-i18n-key="page-description">
-            Welcome to the Overlord API Management application.  Use this software to provide
+            Welcome to apiman, open source API management.  Use this software to provide
             various APIs (Services) to your users (Applications) through a secure, scalable,
             and governed Gateway layer.  API Management allows Service Developers to centralize
             control and analysis of their Services.  It also provides a central locaton for

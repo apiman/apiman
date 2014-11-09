@@ -333,6 +333,8 @@ public class AuditUtils {
      */
     public static AuditEntryBean contractCreatedToService(ContractBean bean, ISecurityContext securityContext) {
         AuditEntryBean entry = newEntry(bean.getService().getService().getOrganizationId(), AuditEntityType.Service, securityContext);
+        // Ensure the order of contract-created events are deterministic by adding 1 ms to this one
+        entry.setWhen(new Date(entry.getWhen().getTime() + 1));
         entry.setWhat(AuditEntryType.CreateContract);
         entry.setEntityId(bean.getService().getService().getId());
         entry.setEntityVersion(bean.getService().getVersion());

@@ -155,12 +155,6 @@
                       <entry key="apiman-rt.components.IRateLimiterComponent" value="org.overlord.apiman.rt.engine.impl.InMemoryRateLimiterComponent" />
                       <entry key="apiman-rt.components.IPolicyFailureFactoryComponent" value="org.overlord.apiman.rt.gateway.servlet.PolicyFailureFactoryComponent" />
                     </propertyfile>
-                    <property name="apiman.uiheader.config.src" value="${apiman.resources.dir}/config/header" />
-                    <property name="apiman.uiheader.config.dest" value="${apiman.wildfly.home}/standalone/configuration/overlord-apps" />
-                    <mkdir dir="${apiman.uiheader.config.dest}" />
-                    <copy todir="${apiman.uiheader.config.dest}">
-                      <fileset dir="${apiman.uiheader.config.src}" />
-                    </copy>
                     
                     <!-- Deploy apiman to WildFly 8 -->
                     <copy file="${apiman.resources.dir}/wildfly8/deployments/apiman-ds.xml" todir="${apiman.wildfly.webapps}" overwrite="true" />

@@ -1,20 +1,4 @@
 
-/**
- * Header data used when viewing the site statically.
- */
-var OVERLORD_HEADER_DATA = {
-  "username" : "eric",
-  "logoutLink" : "http://www.logout.com",
-  "primaryBrand" : "JBoss Overlord",
-  "secondaryBrand" : "API Management",
-  "tabs" : [ {
-    "app-id" : "apiman",
-    "href" : "/apiman-ui/",
-    "label" : "APIMan",
-    "active" : true
-  } ]
-};
-
 
 /**
  * Loads a resource.  The type of resource 
@@ -47,14 +31,10 @@ function loadResource(filename, filetype) {
 function loadAll() {
     loadResource("../../../../../../../../../webapp/bootstrap-3.1.1/css/bootstrap.min.css", "css");
     loadResource("../../../../../../../../../webapp/patternfly-1.0/css/patternfly.min.css", "css");
-    //loadResource("https://rawgithub.com/Governance/overlord-commons/master/overlord-commons-uiheader/src/main/resources/META-INF/resources/css/overlord-header.css", "css");
-    loadResource("../../../../../../../../../../../../../../../overlord-commons/overlord-commons-uiheader/src/main/resources/META-INF/resources/css/overlord-header.css", "css");
     loadResource("../../../../../../../../../webapp/css/apiman.css", "css");
     loadResource("../../../../../../../../../webapp/css/apiman-responsive.css", "css");
     
     loadResource("../../../../../../../../../webapp/jquery-1.10.2/jquery-1.10.2.min.js", "js");
-    //loadResource("https://rawgithub.com/Governance/overlord-commons/master/overlord-commons-uiheader/src/main/resources/META-INF/resources/js/overlord-header.js", "js");
-    loadResource("../../../../../../../../../../../../../../../overlord-commons/overlord-commons-uiheader/src/main/resources/META-INF/resources/js/overlord-header.js", "js");
     setTimeout(function() {
         loadResource("../../../../../../../../../webapp/bootstrap-3.1.1/js/bootstrap.min.js", "js");
         loadResource("../../../../../../../../../webapp/patternfly-1.0/js/patternfly.min.js", "js");
