@@ -14,5 +14,6 @@
     <module>fuse6-rt</module>
     <module>fuse6-rt-embedded</module>
     <module>apiman-distro-data</module>
+    <module>wildfly8</module>
   </modules>
 </project>

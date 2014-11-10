@@ -394,6 +394,11 @@
         <version>${project.version}</version>
         <classifier>classes</classifier>
       </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-distro-data</artifactId>
+        <version>${project.version}</version>
+      </dependency>
 
       <!-- Use Errai 3.0 (temporary override) -->
       <dependency>
