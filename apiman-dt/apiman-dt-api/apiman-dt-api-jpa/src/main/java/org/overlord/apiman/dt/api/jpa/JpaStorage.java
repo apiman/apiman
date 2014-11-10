@@ -417,6 +417,73 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         }
         return plans;
     }
+    
+    /**
+     * @see org.overlord.apiman.dt.api.core.IStorageQuery#getServiceContracts(java.lang.String, java.lang.String, java.lang.String, int, int)
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<ContractSummaryBean> getServiceContracts(String organizationId, String serviceId,
+            String version, int page, int pageSize) throws StorageException {
+        int start = (page - 1) * pageSize;
+        beginTx();
+        try {
+            EntityManager entityManager = getActiveEntityManager();
+            String jpql = 
+                    "SELECT c from ContractBean c " +  //$NON-NLS-1$
+                    "  JOIN c.service svcv " +  //$NON-NLS-1$
+                    "  JOIN svcv.service svc " +  //$NON-NLS-1$
+                    "  JOIN c.application appv " +  //$NON-NLS-1$
+                    "  JOIN appv.application app " +  //$NON-NLS-1$
+                    " WHERE svc.id = :serviceId " +  //$NON-NLS-1$
+                    "   AND svc.organizationId = :orgId " +  //$NON-NLS-1$
+                    "   AND svcv.version = :version " +  //$NON-NLS-1$
+                    " ORDER BY app.organizationId, app.name ASC"; //$NON-NLS-1$
+            Query query = entityManager.createQuery(jpql);
+            query.setParameter("orgId", organizationId); //$NON-NLS-1$
+            query.setParameter("serviceId", serviceId); //$NON-NLS-1$
+            query.setParameter("version", version); //$NON-NLS-1$
+            query.setFirstResult(start);
+            query.setMaxResults(pageSize);
+            List<ContractBean> contracts = (List<ContractBean>) query.getResultList();
+            List<ContractSummaryBean> rval = new ArrayList<ContractSummaryBean>(contracts.size());
+            for (ContractBean contractBean : contracts) {
+                ApplicationBean application = contractBean.getApplication().getApplication();
+                ServiceBean service = contractBean.getService().getService();
+                PlanBean plan = contractBean.getPlan().getPlan();
+                
+                OrganizationBean appOrg = entityManager.find(OrganizationBean.class, application.getOrganizationId());
+                OrganizationBean svcOrg = entityManager.find(OrganizationBean.class, service.getOrganizationId());
+                
+                ContractSummaryBean csb = new ContractSummaryBean();
+                csb.setAppId(application.getId());
+                csb.setKey(contractBean.getKey());
+                csb.setAppOrganizationId(application.getOrganizationId());
+                csb.setAppOrganizationName(appOrg.getName());
+                csb.setAppName(application.getName());
+                csb.setAppVersion(contractBean.getApplication().getVersion());
+                csb.setContractId(contractBean.getId());
+                csb.setCreatedOn(contractBean.getCreatedOn());
+                csb.setPlanId(plan.getId());
+                csb.setPlanName(plan.getName());
+                csb.setPlanVersion(contractBean.getPlan().getVersion());
+                csb.setServiceDescription(service.getDescription());
+                csb.setServiceId(service.getId());
+                csb.setServiceName(service.getName());
+                csb.setServiceOrganizationId(svcOrg.getId());
+                csb.setServiceOrganizationName(svcOrg.getName());
+                csb.setServiceVersion(contractBean.getService().getVersion());
+                
+                rval.add(csb);
+            }
+            return rval;
+        } catch (Throwable t) {
+            logger.error(t.getMessage(), t);
+            throw new StorageException(t);
+        } finally {
+            commitTx();
+        }
+    }
 
     /**
      * @see org.overlord.apiman.dt.api.core.IStorageQuery#getApplicationVersion(java.lang.String, java.lang.String, java.lang.String)

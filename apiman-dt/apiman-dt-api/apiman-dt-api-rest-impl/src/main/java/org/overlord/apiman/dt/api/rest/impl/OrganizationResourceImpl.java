@@ -1372,6 +1372,32 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw new SystemErrorException(e);
         }
     }
+    
+    /**
+     * @see org.overlord.apiman.dt.api.rest.contract.IOrganizationResource#getServiceVersionContracts(java.lang.String, java.lang.String, java.lang.String, int, int)
+     */
+    @Override
+    public List<ContractSummaryBean> getServiceVersionContracts(String organizationId,
+            String serviceId, String version, int page, int pageSize) throws ServiceVersionNotFoundException,
+            NotAuthorizedException {
+        if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
+        if (page <= 1) {
+            page = 1;
+        }
+        if (pageSize == 0) {
+            pageSize = 20;
+        }
+
+        // Try to get the service first - will throw an exception if not found.
+        getServiceVersion(organizationId, serviceId, version);
+        
+        try {
+            return query.getServiceContracts(organizationId, serviceId, version, page, pageSize);
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+    }
 
 
     /**

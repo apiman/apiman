@@ -169,5 +169,16 @@ public interface IStorageQuery {
      */
     public List<PolicyBean> getPolicies(String organizationId, String entityId, String version,
             PolicyType type) throws StorageException;
+
+    /**
+     * Gets a list of contracts for the given service.  This is paged.
+     * @param organizationId
+     * @param serviceId
+     * @param version
+     * @param page
+     * @param pageSize
+     */
+    public List<ContractSummaryBean> getServiceContracts(String organizationId,
+            String serviceId, String version, int page, int pageSize) throws StorageException;
     
 }

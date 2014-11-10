@@ -76,6 +76,8 @@ public abstract class AbstractServicePage extends AbstractPage {
     @Inject @DataField
     Anchor toServicePolicies;
     @Inject @DataField
+    Anchor toServiceContracts;
+    @Inject @DataField
     Anchor toServiceActivity;
 
     /**
@@ -164,12 +166,14 @@ public abstract class AbstractServicePage extends AbstractPage {
         String serviceImplHref = navHelper.createHrefToPage(ServiceImplPage.class, MultimapUtil.fromMultiple("org", org, "service", service, "version", version)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         String servicePlansHref = navHelper.createHrefToPage(ServicePlansPage.class, MultimapUtil.fromMultiple("org", org, "service", service, "version", version)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         String servicePoliciesHref = navHelper.createHrefToPage(ServicePoliciesPage.class, MultimapUtil.fromMultiple("org", org, "service", service, "version", version)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        String serviceContractsHref = navHelper.createHrefToPage(ServiceContractsPage.class, MultimapUtil.fromMultiple("org", org, "service", service, "version", version)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         String serviceActivityHref = navHelper.createHrefToPage(ServiceActivityPage.class, MultimapUtil.fromMultiple("org", org, "service", service, "version", version)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         String newServiceVersionHref = navHelper.createHrefToPage(NewServiceVersionPage.class, MultimapUtil.fromMultiple("org", org, "service", service, "version", version)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         toServiceOverview.setHref(serviceOverviewHref);
         toServiceImpl.setHref(serviceImplHref);
         toServicePlans.setHref(servicePlansHref);
         toServicePolicies.setHref(servicePoliciesHref);
+        toServiceContracts.setHref(serviceContractsHref);
         toServiceActivity.setHref(serviceActivityHref);
         toNewServiceVersion.setHref(newServiceVersionHref);
 

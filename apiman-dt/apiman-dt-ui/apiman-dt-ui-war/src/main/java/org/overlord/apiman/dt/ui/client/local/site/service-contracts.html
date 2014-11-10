@@ -82,12 +82,12 @@
         <div class="col-md-2 apiman-entity-nav">
           <ul class="nav nav-pills nav-stacked">
             <li class="first"><a data-role="dummy">&nbsp;</a></li>
-            <li class="north"><a data-field="toServiceOverview" href="service-overview.html" data-i18n-key="overview">Overview</a></li>
-            <li class="active"><a data-field="toServiceImpl" href="service-impl.html" data-i18n-key="implementation">Implementation</a></li>
-            <li class="south"><a data-field="toServicePlans" href="service-plans.html" data-i18n-key="plans">Plans</a></li>
-            <li class=""><a data-field="toServicePolicies" href="service-policies.html" data-i18n-key="policies">Policies</a></li>
-            <li class=""><a data-field="toServiceContracts" href="service-contracts.html" data-i18n-key="contracts">Contracts</a></li>
-            <li><a data-field="toServiceActivity" href="service-activity.html" data-i18n-key="activity">Activity</a></li>
+            <li class=""><a data-field="toServiceOverview" href="service-overview.html" data-i18n-key="overview">Overview</a></li>
+            <li class=""><a data-field="toServiceImpl" href="service-impl.html" data-i18n-key="implementation">Implementation</a></li>
+            <li class=""><a data-field="toServicePlans" href="service-plans.html" data-i18n-key="plans">Plans</a></li>
+            <li class="north"><a data-field="toServicePolicies" href="service-policies.html" data-i18n-key="policies">Policies</a></li>
+            <li class="active"><a data-field="toServiceContracts" href="service-contracts.html" data-i18n-key="contracts">Contracts</a></li>
+            <li class="south"><a data-field="toServiceActivity" href="service-activity.html" data-i18n-key="activity">Activity</a></li>
             <li class="last"><a data-role="dummy">&nbsp;</a></li>
           </ul>
         </div>
@@ -95,22 +95,40 @@
 
         <!-- Content -->
         <div class="col-md-10 apiman-entity-content">
-          <div class="col-md-8">
-            <div class="title" data-i18n-key="service-impl">Service Implementation</div>
-            <div>
-              <span data-i18n-key="api-endpoint-label">API Endpoint:</span>
-              <input data-field="endpoint" class="form-control" type="text"></input>
-            </div>
-            <div class="apiman-divider-20">
-              <span class="clearfix" data-i18n-key="api-type-label">API Type:</span>
-              <select class="selectpicker" data-field="endpointType" data-role="dummy">
-                <option value="rest">REST</option>
-                <option value="soap">SOAP</option>
-              </select>
-            </div>
-            <div class="actions">
-              <button class="btn btn-primary" data-field="saveButton" data-i18n-key="save" placeholder="Saving..." data-icon="fa-cog">Save</button>
-              <button class="btn btn-default" data-field="cancelButton" data-i18n-key="cancel">Cancel</button>
+          <div class="col-md-9">
+            <div class="title" data-i18n-key="contracts">Service Contracts</div>
+            <div class="description" data-i18n-key="contracts-help">Here is a list of all contracts between all Applications and this Service.  This provides a list of all Applications that may potentially consume this Service.</div>
+          </div>
+          <div class="col-md-12">
+            <table class="table table-responsive" data-field="contracts">
+              <thead>
+                <tr>
+                  <th data-i18n-key="organization" nowrap="nowrap">Organization</th>
+                  <th data-i18n-key="application" nowrap="nowrap">Application</th>
+                  <th data-i18n-key="version" width="1%" nowrap="nowrap">Version</th>
+                  <th data-i18n-key="plan" nowrap="nowrap">Plan</th>
+                  <th data-i18n-key="created-on" nowrap="nowrap">Created On</th>
+                </tr>
+              </thead>
+              <tbody data-role="dummy">
+                <tr>
+                  <td><a href="org-apps.html"><span>JBoss Overlord</span></a></td>
+                  <td><a href="app-overview.html"><span>s-ramp-application</span></a></td>
+                  <td><a href="app-overview.html"><span>1.1</span></a></td>
+                  <td><a href="plan-overview.html"><span>Gold</span></a></td>
+                  <td><span>Oct 19, 2012</span></td>
+                </tr>
+                <tr>
+                  <td><a href="org-apps.html"><span>JBoss Overlord</span></a></td>
+                  <td><a href="app-overview.html"><span>dtgov-be</span></a></td>
+                  <td><a href="app-overview.html"><span>2.0</span></a></td>
+                  <td><a href="plan-overview.html"><span>Silver</span></a></td>
+                  <td><span>June 3, 2013</span></td>
+                </tr>
+              </tbody>
+            </table>
+            <div style="text-align: center">
+              <button class="btn btn-default" data-field="moreButton" data-i18n-key="show-more-contracts" placeholder="Loading..." data-icon="fa-cog">Show More Contracts</button>
             </div>
           </div>
         </div>

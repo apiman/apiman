@@ -565,6 +565,21 @@ public class RestInvokerService {
     }
 
     /**
+     * Gets the service's contracts.
+     * @param organizationId
+     * @param serviceId
+     * @param version
+     * @param page
+     * @param pageSize
+     * @param callback
+     */
+    public void getServiceContracts(String organizationId, String serviceId, String version, int page, int pageSize, 
+            IRestInvokerCallback<List<ContractSummaryBean>> callback) {
+        CallbackAdapter<List<ContractSummaryBean>> adapter = new CallbackAdapter<List<ContractSummaryBean>>(callback);
+        organizations.call(adapter, adapter).getServiceVersionContracts(organizationId, serviceId, version, page, pageSize);
+    }
+
+    /**
      * Gets the activity information for the service version.
      * @param organizationId
      * @param serviceId

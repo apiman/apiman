@@ -399,6 +399,14 @@ public interface IOrganizationResource {
             @PathParam("planId") String planId) throws ServiceVersionNotFoundException,
             NotAuthorizedException;
 
+    @GET
+    @Path("{organizationId}/services/{serviceId}/versions/{version}/contracts")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<ContractSummaryBean> getServiceVersionContracts(
+            @PathParam("organizationId") String organizationId, @PathParam("serviceId") String serviceId,
+            @PathParam("version") String version, @QueryParam("page") int page,
+            @QueryParam("count") int pageSize) throws ServiceVersionNotFoundException, NotAuthorizedException;
+
     /*
      * PLANS
      */

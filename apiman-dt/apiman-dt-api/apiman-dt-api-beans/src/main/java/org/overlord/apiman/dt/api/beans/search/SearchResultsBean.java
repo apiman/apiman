@@ -67,5 +67,5 @@ public class SearchResultsBean<T> implements Serializable {
     public void setTotalSize(int totalSize) {
         this.totalSize = totalSize;
     }
-
+    
 }

@@ -37,6 +37,7 @@ public class Formatting {
      * @param date
      */
     public static final String formatShortDate(Date date) {
+        // TODO localize this via i18n in some manner
         if (date == null)
             return "n/a"; //$NON-NLS-1$
         DateTimeFormat format = DateTimeFormat.getFormat(PredefinedFormat.DATE_SHORT);

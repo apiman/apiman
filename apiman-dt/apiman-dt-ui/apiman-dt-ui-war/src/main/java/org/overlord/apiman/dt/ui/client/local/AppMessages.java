@@ -109,6 +109,8 @@ public class AppMessages {
     public static final String TITLE_SERVICE_POLICIES = "page.title.service-policies"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "apiman - {0} (Activity)")
     public static final String TITLE_SERVICE_ACTIVITY = "page.title.service-activity"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "apiman - {0} (Contracts)")
+    public static final String TITLE_SERVICE_CONTRACTS = "page.title.service-contracts"; //$NON-NLS-1$
 
     @TranslationKey(defaultValue = "apiman - {0} (Overview)")
     public static final String TITLE_PLAN_OVERVIEW = "page.title.plan-overview"; //$NON-NLS-1$
@@ -175,6 +177,9 @@ public class AppMessages {
     @TranslationKey(defaultValue = "No contracts matched the filter criteria.  Please try modifying the filter or else create a new contract using the New Contract button above.")
     public static final String NO_FILTERED_CONTRACTS_FOR_APP_MESSAGE = "noEntitiesFound.contracts-in-app.filtered"; //$NON-NLS-1$
 
+    @TranslationKey(defaultValue = "This service doesn't appear to have any contracts.  This means that there aren't any applications consuming this service.")
+    public static final String NO_CONTRACTS_FOR_SERVICE = "noEntitiesFound.contracts-in-service"; //$NON-NLS-1$
+    
     @TranslationKey(defaultValue = "No organizations found.  Either no organizations matched the query or you haven't queried yet!")
     public static final String NO_ORGANIZATIONS_MESSAGE = "noEntitiesFound.consumer-orgs"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "No services are currently offered by this organization.")
