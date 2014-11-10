@@ -34,12 +34,14 @@ import org.overlord.apiman.dt.ui.client.local.beans.PolicyDefinitionsBean;
 import org.overlord.apiman.dt.ui.client.local.pages.admin.PolicyDefinitionTable;
 import org.overlord.apiman.dt.ui.client.local.services.BeanMarshallingService;
 import org.overlord.apiman.dt.ui.client.local.services.rest.IRestInvokerCallback;
+import org.overlord.apiman.dt.ui.client.local.widgets.DroppableTextArea;
 import org.overlord.commons.gwt.client.local.widgets.AsyncActionButton;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.user.client.ui.TextArea;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 
 
 /**
@@ -59,7 +61,7 @@ public class ImportPolicyDefPage extends AbstractPage {
     TransitionTo<AdminPolicyDefsPage> toPolicyDefs;
     
     @Inject @DataField
-    TextArea data;
+    DroppableTextArea data;
     @Inject @DataField
     PolicyDefinitionTable policyDefs;
     
@@ -88,6 +90,12 @@ public class ImportPolicyDefPage extends AbstractPage {
             }
         };
         data.addKeyUpHandler(kph);
+        data.addValueChangeHandler(new ValueChangeHandler<String>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<String> event) {
+                onFormChanged();
+            }
+        });
         importButton.getElement().removeAttribute("onclick"); //$NON-NLS-1$
     }
 

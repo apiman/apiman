@@ -33,6 +33,11 @@ body {
   background-color: rgb(217, 223, 253);
 }
 
+textarea.dropping {
+  border: 1px dashed rgb(106, 131, 249);
+  background-color: rgb(217, 223, 253);
+}
+
 .italic {
   font-style: italic;
 }
