@@ -15,6 +15,33 @@ body {
   width: 10px;
 }
 
+.login-pf .container {
+    border-top: 1px solid rgb(178, 178, 178);
+    border-bottom: 1px solid rgb(178, 178, 178);
+    background-color: rgba(255, 255, 255, 0.55);
+}
+
+.login-pf body {
+  background: rgb(208, 208, 208);
+  color: #333;
+}
+
+.login-pf #brand .project-name {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.login-pf #brand .tagline {
+  font-size: 15px;
+  margin-left: 20px;
+  font-style: italic;
+}
+
+.login-pf .login-error {
+  font-size: 16px;
+  color: rgb(240, 80, 90);
+}
+
 .dropzone {
   padding: 20px;
   text-align: center;

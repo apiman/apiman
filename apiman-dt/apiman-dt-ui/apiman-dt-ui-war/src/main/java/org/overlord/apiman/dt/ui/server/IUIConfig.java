@@ -57,4 +57,9 @@ public interface IUIConfig {
      */
     public String getManagementApiAuthTokenGenerator();
 
+    /**
+     * Gets the URL to use to logout of the UI.
+     */
+    public String getLogoutUrl();
+
 }

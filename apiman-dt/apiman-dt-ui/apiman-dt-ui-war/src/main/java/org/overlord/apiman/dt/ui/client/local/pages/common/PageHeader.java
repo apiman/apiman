@@ -26,6 +26,7 @@ import org.overlord.apiman.dt.api.beans.idm.UserBean;
 import org.overlord.apiman.dt.ui.client.local.pages.ConsumerServicesPage;
 import org.overlord.apiman.dt.ui.client.local.pages.DashboardPage;
 import org.overlord.apiman.dt.ui.client.local.pages.UserOrgsPage;
+import org.overlord.apiman.dt.ui.client.local.services.ConfigurationService;
 import org.overlord.apiman.dt.ui.client.local.services.NavigationHelperService;
 import org.overlord.apiman.dt.ui.client.local.util.MultimapUtil;
 
@@ -55,6 +56,8 @@ public class PageHeader extends Composite {
     protected TransitionTo<ConsumerServicesPage> toServices;
     @Inject
     protected TransitionTo<DashboardPage> toDashboard;
+    @Inject
+    protected ConfigurationService config;
 
     @Inject @DataField
     Label logo;
@@ -107,6 +110,8 @@ public class PageHeader extends Composite {
         }
         String userOrgsHref = navHelper.createHrefToPage(UserOrgsPage.class, MultimapUtil.singleItemMap("user", uname)); //$NON-NLS-1$
         toUserHome.setHref(userOrgsHref);
+        
+        toLogout.setHref(config.getCurrentConfig().getApiman().getLogoutUrl());
     }
 
 }

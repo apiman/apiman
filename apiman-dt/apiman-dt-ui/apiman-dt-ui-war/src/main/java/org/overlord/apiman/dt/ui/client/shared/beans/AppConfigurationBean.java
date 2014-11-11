@@ -32,6 +32,7 @@ public class AppConfigurationBean implements Serializable {
     
     private String version;
     private String builtOn;
+    private String logoutUrl;
     private String gatewayBaseUrl;
 
     /**
@@ -80,5 +81,19 @@ public class AppConfigurationBean implements Serializable {
      */
     public void setGatewayBaseUrl(String gatewayBaseUrl) {
         this.gatewayBaseUrl = gatewayBaseUrl;
+    }
+
+    /**
+     * @return the logoutUrl
+     */
+    public String getLogoutUrl() {
+        return logoutUrl;
+    }
+
+    /**
+     * @param logoutUrl the logoutUrl to set
+     */
+    public void setLogoutUrl(String logoutUrl) {
+        this.logoutUrl = logoutUrl;
     }
 }

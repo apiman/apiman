@@ -30,6 +30,7 @@ public class FuseUIConfig implements IUIConfig {
     private String apiAuthUsername;
     private String apiAuthPassword;
     private String apiAuthTokenGenerator;
+    private String logoutUrl;
     private String gatewayUrl;
     
     /**
@@ -161,6 +162,21 @@ public class FuseUIConfig implements IUIConfig {
      */
     public void setGatewayUrl(String gatewayUrl) {
         this.gatewayUrl = gatewayUrl;
+    }
+
+    /**
+     * @see org.overlord.apiman.dt.ui.server.IUIConfig#getLogoutUrl()
+     */
+    @Override
+    public String getLogoutUrl() {
+        return logoutUrl;
+    }
+    
+    /**
+     * @param logoutUrl
+     */
+    public void setLogoutUrl(String logoutUrl) {
+        this.logoutUrl = logoutUrl;
     }
 
 }

@@ -36,6 +36,7 @@ public class UIConfig implements IUIConfig {
     public static final String APIMAN_DT_UI_API_AUTH_TOKEN_GENERATOR = "apiman-dt-ui.dt-api.authentication.token.generator"; //$NON-NLS-1$
 
     public static final String APIMAN_DT_UI_GATEWAY_URL = "apiman-dt-ui.gateway.base-url"; //$NON-NLS-1$
+    public static final String APIMAN_DT_UI_LOGOUT_URL = "apiman-dt-ui.logout-url"; //$NON-NLS-1$
 
     private static Configuration config;
     static {
@@ -83,6 +84,14 @@ public class UIConfig implements IUIConfig {
     @Override
     public String getGatewayUrl() {
         return config.getString(UIConfig.APIMAN_DT_UI_GATEWAY_URL, "http://localhost:8080/apiman-rt/gateway"); //$NON-NLS-1$
+    }
+    
+    /**
+     * @see org.overlord.apiman.dt.ui.server.IUIConfig#getLogoutUrl()
+     */
+    @Override
+    public String getLogoutUrl() {
+        return config.getString(UIConfig.APIMAN_DT_UI_LOGOUT_URL, "logout"); //$NON-NLS-1$
     }
     
     /**
