@@ -6,11 +6,9 @@ MAINTAINER Eric Wittmann <eric.wittmann@redhat.com>
 ENV WILDFLY_VERSION 8.1.0.Final
 ENV APIMAN_VERSION 1.0.0.Alpha4
 
-RUN yum -y install wget
-
 RUN cd $HOME \
-    wget http://download.jboss.org/wildfly/$WILDFLY_VERSION/wildfly-$WILDFLY_VERSION.zip \
-    wget http://downloads.jboss.org/overlord/apiman/$APIMAN_VERSION/apiman-distro-wildfly8-$APIMAN_VERSION-overlay.zip \
+    curl http://download.jboss.org/wildfly/$WILDFLY_VERSION/wildfly-$WILDFLY_VERSION.zip -o wildfly-$WILDFLY_VERSION.zip \
+    curl http://downloads.jboss.org/overlord/apiman/$APIMAN_VERSION/apiman-distro-wildfly8-$APIMAN_VERSION-overlay.zip -o apiman-distro-wildfly8-$APIMAN_VERSION-overlay.zip \
     unzip wildfly-$WILDFLY_VERSION.zip \
     unzip apiman-distro-wildfly8-$APIMAN_VERSION-overlay.zip
 
