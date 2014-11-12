@@ -1,0 +1,9 @@
+apiman - Developer Guide
+========================
+:doctype: book
+
+include::Resources.asciidoc[]
+
+include::All.asciidoc[]
+
+:numbered!:
