@@ -10,13 +10,11 @@ RUN cd $HOME \
  && curl http://download.jboss.org/wildfly/$WILDFLY_VERSION/wildfly-$WILDFLY_VERSION.zip -o wildfly-$WILDFLY_VERSION.zip \
  && curl http://downloads.jboss.org/overlord/apiman/$APIMAN_VERSION/apiman-distro-wildfly8-$APIMAN_VERSION-overlay.zip -o apiman-distro-wildfly8-$APIMAN_VERSION-overlay.zip \
  && unzip wildfly-$WILDFLY_VERSION.zip \
- && unzip apiman-distro-wildfly8-$APIMAN_VERSION-overlay.zip
+ && unzip apiman-distro-wildfly8-$APIMAN_VERSION-overlay.zip \
+ && ln -s wildfly-$WILDFLY_VERSION wildfly
 
 # Set the JBOSS_HOME env variable
-ENV JBOSS_HOME /opt/jboss/wildfly-$WILDFLY_VERSION
-
-# Expose the ports we're interested in
-EXPOSE 8080 9990
+ENV JBOSS_HOME /opt/jboss/wildfly
 
 # Set the default command to run on boot
-CMD ["$HOME/wildfly-$WILDFLY_VERSION/bin/standalone.sh", "-b", "0.0.0.0", "-c", "standalone-apiman.xml"]
+CMD ["/opt/jboss/wildfly/bin/standalone.sh", "-b", "0.0.0.0", "-c", "standalone-apiman.xml"]
