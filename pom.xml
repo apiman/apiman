@@ -794,7 +794,6 @@
   <modules>
     <module>apiman-common</module>
     <module>apiman-distro</module>
-    <module>apiman-docs</module>
     <module>apiman-dt</module>
     <module>apiman-rt</module>
     <module>apiman-tools</module>
