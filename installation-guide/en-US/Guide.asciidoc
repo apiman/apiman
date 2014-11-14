@@ -1,9 +1,200 @@
-apiman - Installation Guide
-===========================
+= apiman - Installation Guide
+:homepage: http://apiman.io/
 :doctype: book
 
-Installation Guide
-------------------
-This will be the installation guide.  TBD
+== Installation
+This guide provides detailed information about how to install and configure apiman.
+
+=== Installing in WildFly 8
+The apiman project primarily targets WildFly 8 as a runtime environment.  In order to install
+apiman you will need to download both WildFly 8 and the apiman overlay distribution.  Once
+both are downloaded, it's a simple matter of unpacking both into the same location.
+
+==== Download
+First you will need to download both WildFly 8 and apiman:
+
+* http://download.jboss.org/wildfly/8.1.0.Final/wildfly-8.1.0.Final.zip[Download WildFly 8]
+* http://downloads.jboss.org/overlord/apiman/1.0.0.Alpha4/apiman-distro-wildfly8-1.0.0.Alpha4-overlay.zip[Download apiman 1.0.0.Alpha4]
+
+....
+curl http://download.jboss.org/wildfly/8.1.0.Final/wildfly-8.1.0.Final.zip -o wildfly-8.1.0.Final.zip
+curl http://downloads.jboss.org/overlord/apiman/1.0.0.Alpha4/apiman-distro-wildfly8-1.0.0.Alpha4-overlay.zip -o apiman-distro-wildfly8-1.0.0.Alpha4-overlay.zip
+....
+
+==== Unpack
+Once both files have been downloaded, simply unpack both in the same location.
+
+....
+unzip wildfly-8.1.0.Final.zip
+unzip apiman-distro-wildfly8-1.0.0.Alpha4-overlay.zip
+....
+
+==== Run WildFly 8
+The apiman overlay contains everything needed to run apiman, including:
+
+* apiman binaries (several WAR files)
+* apiman-specific WildFly 8 configuration (*standalone-apiman.xml*)
+* apiman rdbms datasource (h2)
+* pre-configured *admin* user with password *admin123!*
+
+For this reason, there is no additional configuration required to run apiman.  Simply start up
+WildFly using the apiman configuration file:
+
+....
+cd wildfly-8.1.0.Final
+./bin/standalone.sh -c standalone-apiman.xml
+....
+
+
+=== Installing using Docker
+Another option when installing apiman is to use our docker image.  You're probably pretty
+familiar with docker if you're going that route, but here is an example of how to start up
+the apiman docker image:
+
+....
+docker pull apiman/on-wildfly8
+docker run -it -p 8080:8080 apiman/on-wildfly8
+....
+
+[NOTE]
+====
+You can find apiman on https://registry.hub.docker.com/repos/apiman/[docker hub].
+====
+
+== Configuration
+Of course apiman is made up of a number of different components, many of which can be configured
+to use various implementations and/or providers.  When downloading and installing apiman, the 
+default distribution includes reasonable default values for all options.  This section details
+these options and explains the default values.
+
+=== Configuration Properties
+All of the apiman WARs share a common configuration file called *apiman.properties*, which can 
+be found in *standalone/configuration*.  This file therefore contains configuration settings
+for all three applications (API Manager, API Manager UI, API Gateway).
+
+Here is a breakdown of the properties found in this configuration file:
+
+* *apiman-dt-api.gateway.rest-endpoint*
++
+Default Value:: http://localhost:8080/apiman-rt
++
+Description:: The REST configuration endpoint of the API Gateway.  The API Manager uses this endpoint when publishing services to the Gateway.
+
+* *apiman-dt-api.gateway.authentication.basic.user*
++
+Default Value:: admin
++
+Description:: The username to use when connecting to the Gateway REST API.
+
+* *apiman-dt-api.gateway.authentication.basic.password*
++
+Default Value:: admin123!
++
+Description:: The password to use when connecting to the Gatway REST API.
+
+
+* *apiman-dt-ui.dt-api.authentication.type*
++
+Default Value:: authToken
++
+Description:: The type of authentication used by the API Manager UI when communicating with the API Manager.
+
+* *apiman-dt-ui.dt-api.authentication.token.generator*
++
+Default Value:: org.overlord.apiman.dt.ui.server.auth.AuthTokenGenerator
++
+Description:: The class used by the UI to generate authentication tokens (only used for certain types of authentication).
+
+* *apiman-dt-ui.gateway.base-url*
++
+Default Value:: http://localhost:8080/apiman-rt/gateway/
++
+Description:: The base URL of the API Gateway - used by the UI to show URLs for service contracts.
+
+* *apiman-rt.registry*
++
+Default Value:: org.overlord.apiman.rt.engine.ispn.InfinispanRegistry
++
+Description:: The implementation of the service/application registry used by the API Gateway.  By default a persistent Infinispan cache is used.
+
+* *apiman-rt.connector-factory*
++
+Default Value:: org.overlord.apiman.rt.gateway.servlet.connectors.HttpConnectorFactory
++
+Description:: The implementation of a connector factory for API endpoints of type "http".  This factory is used by the Gateway when proxying a request to a back-end endpoint.
+
+* *apiman-rt.policy-factory*
++
+Default Value:: org.overlord.apiman.rt.engine.policy.PolicyFactoryImpl
++
+Description:: The class that the API Gateway will use creating policies.
+
+* *apiman-rt.components.ISharedStateComponent*
++
+Default Value:: org.overlord.apiman.rt.engine.impl.InMemorySharedStateComponent
++
+Description:: The implementation of the shared-state component - a component that can store arbitrary state across request invocations.
+
+* *apiman-rt.components.IRateLimiterComponent*
++
+Default Value:: org.overlord.apiman.rt.engine.impl.InMemoryRateLimiterComponent
++
+Description:: The implementation of the rate limiter component, which is used by the rate limiting policy.
+
+* *apiman-rt.components.IPolicyFailureFactoryComponent
++
+Default Value:: org.overlord.apiman.rt.gateway.servlet.PolicyFailureFactoryComponent
++
+Description:: The implementation class to use for the factory that creates policy failures.
+
+
+=== API Manager Database
+The API Manager, by default, is a typical CDI application and uses JPA/Hibernate to persist its data.  The
+JPA layer requires a data source to connect to a supported database.  When running in WildFly this 
+datasource is made available by deploying the following file:
+
+....
+standalone/deployments/apiman-ds.xml
+....
+
+Out of the box this data source is usually a simple H2 configuration, but you can (of course) change
+it to support whatever database you desire.
+
+....
+<?xml version="1.0" encoding="UTF-8"?>
+<datasources>
+  <datasource jndi-name="jdbc/ApiManDT" pool-name="apiman-dt-api" enabled="true"
+    use-java-context="true">
+    <connection-url>jdbc:h2:${jboss.server.data.dir}${/}h2${/}apiman-dt-api;MVCC=true</connection-url>
+    <driver>h2</driver>
+    <security>
+      <user-name>sa</user-name>
+    </security>
+  </datasource>
+</datasources>
+....
+
+=== API Gateway Registry
+The API Gateway includes a registry that stores the published service and application information.
+This registry is updated whenever a user publishes a service (or registers an application) from 
+within the API Manager UI.  The registry contains just the configuration information necessary for
+the API Gateway to properly apply the appropriate policies to all inbound requests.
+
+Out of the box, the API Gateway is configured to use a persistent Infinispan cache to store the
+published/registered data.  The configuration of the Infinispan cache can be found in 
+*standalone-apiman.xml* and is detailed here:
+
+....
+<subsystem xmlns="urn:jboss:domain:infinispan:2.0">
+  <cache-container name="apiman-rt" default-cache="registry" start="EAGER">
+    <local-cache name="registry" batching="true">
+      <file-store passivation="false" purge="false" />
+    </local-cache>
+  </cache-container>
+</subsystem>
+....
+
+This cache can be configured however you choose, but in all cases should be made persistent.
+
 
 :numbered!:
