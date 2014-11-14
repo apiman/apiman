@@ -1,8 +1,6 @@
-Developer Resources for apiman
-------------------------------
+== Developer Resources
 
-Source Code
-~~~~~~~~~~~
+=== Source Code
 The apiman source code is located in github here:
 
 https://github.com/apiman/apiman
@@ -16,16 +14,14 @@ The docker files are currently here:
 https://github.com/apiman/apiman-docker
 
 
-Issue Tracking
-~~~~~~~~~~~~~~
+=== Issue Tracking
 The apiman project uses JIRA to track issues such as bugs and feature requests.  It's a good place to start
 if you're trying to figure out how to get involved!
 
 https://issues.jboss.org/browse/APIMAN
 
 
-Development Tools
-~~~~~~~~~~~~~~~~~
+=== Development Tools
 We're rather IDE agnostic, so contributors should feel free to use whatever tools they feel most 
 comfortable with.  At the time of this writing, the core apiman developers primarily use Eclipse
 Kepler.

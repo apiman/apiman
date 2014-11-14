@@ -1,31 +1,25 @@
-Developer Guide
----------------
 
+== Building the Project
+TBD
 
-Building the Project
-~~~~~~~~~~~~~~~~~~~~
+== Setting up a Development Environment
+TBD
 
-Reporting Problems
-~~~~~~~~~~~~~~~~~~
+== Architecture
+TBD
 
-Setting up a Development Environment
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+== Plugin Framework
+TBD
 
-Architecture
-~~~~~~~~~~~~
+== Contribution Points
+TBD
 
-Plugin Framework
-~~~~~~~~~~~~~~~~
+=== Policy Implementations
+TBD
 
-Contribution Points
-~~~~~~~~~~~~~~~~~~~
+=== Policy Configuration UI Forms
+TBD
 
-Policy Implementations
-^^^^^^^^^^^^^^^^^^^^^^
-
-Policy Configuration UI Forms
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Components
-^^^^^^^^^^
+== Components
+TBD
 

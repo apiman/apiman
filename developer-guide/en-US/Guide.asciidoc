@@ -1,6 +1,9 @@
-apiman - Developer Guide
-========================
+= apiman - Developer Guide
 :doctype: book
+
+== Introduction
+Are you interested in contributing to the development of apiman?  Maybe you want to embed the 
+project in your own solution?  In either case this is the guide for you.
 
 include::Resources.asciidoc[]
 
