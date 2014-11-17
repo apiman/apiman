@@ -26,7 +26,7 @@ import org.overlord.apiman.rt.engine.beans.ServiceRequest;
 /**
  * Object pool that can be used to get access to {@link ServiceRequest} objects.
  * Consumers must return the borrowed object to the pool when done with it!
- * 
+ *
  * @author eric.wittmann@redhat.com
  */
 public final class ServiceRequestPool extends GenericObjectPool<ServiceRequest> {
@@ -68,7 +68,6 @@ public final class ServiceRequestPool extends GenericObjectPool<ServiceRequest> 
                 ServiceRequest request = p.getObject();
                 request.setApiKey(null);
                 request.setContract(null);
-                request.setBody(null);
                 request.setDestination(null);
                 request.getHeaders().clear();
                 request.setRawRequest(null);

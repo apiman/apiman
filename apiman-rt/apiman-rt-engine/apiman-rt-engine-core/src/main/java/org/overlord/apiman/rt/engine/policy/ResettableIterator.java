@@ -13,21 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.rt.engine;
+package org.overlord.apiman.rt.engine.policy;
 
-import org.overlord.apiman.rt.engine.beans.Service;
+import java.util.Iterator;
 
 /**
- * Implement this interface to create connectors to back end services.
+ * Extended iterator that can be reused by calling {@link #reset()}.
+ * 
+ * @author Marc Savy <msavy@redhat.com>
  *
- * @author eric.wittmann@redhat.com
+ * @param <T> Type
  */
-public interface IServiceConnectorFactory {
-    
-    /**
-     * Creates a connector to a back end service.
-     * @param service the service being invoked
-     */
-    void createConnector(Service service);
+public interface ResettableIterator<T> extends Iterator<T> {
 
+    /**
+     * Reset the iterator.
+     */
+    void reset();
 }

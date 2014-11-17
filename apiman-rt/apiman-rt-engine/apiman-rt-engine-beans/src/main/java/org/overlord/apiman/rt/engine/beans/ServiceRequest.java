@@ -15,7 +15,6 @@
  */
 package org.overlord.apiman.rt.engine.beans;
 
-import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Map;
 
@@ -34,7 +33,6 @@ public class ServiceRequest implements Serializable {
     private String destination;
     private Map<String, String> headers = new HeaderHashMap();
     private String remoteAddr;
-    private InputStream body;
     private Object rawRequest;
 
     /**
@@ -55,20 +53,6 @@ public class ServiceRequest implements Serializable {
      */
     public void setApiKey(String apiKey) {
         this.apiKey = apiKey;
-    }
-
-    /**
-     * @return the body
-     */
-    public InputStream getBody() {
-        return body;
-    }
-
-    /**
-     * @param body the body to set
-     */
-    public void setBody(InputStream body) {
-        this.body = body;
     }
 
     /**

@@ -13,21 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.rt.engine;
-
-import org.overlord.apiman.rt.engine.beans.Service;
+package org.overlord.apiman.rt.engine.async;
 
 /**
- * Implement this interface to create connectors to back end services.
+ * A stream where both read and write aspects can be manipulated.
+ * 
+ * @author Marc Savy <msavy@redhat.com>
  *
- * @author eric.wittmann@redhat.com
+ * @param <H> Head type.
  */
-public interface IServiceConnectorFactory {
-    
-    /**
-     * Creates a connector to a back end service.
-     * @param service the service being invoked
-     */
-    void createConnector(Service service);
-
+public interface IReadWriteStream<H> extends IReadStream<H>, IWriteStream {
 }

@@ -13,21 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.rt.engine;
-
-import org.overlord.apiman.rt.engine.beans.Service;
+package org.overlord.apiman.rt.engine.async;
 
 /**
- * Implement this interface to create connectors to back end services.
- *
- * @author eric.wittmann@redhat.com
+ * Common Stream interface.
+ * 
+ * @author Marc Savy <msavy@redhat.com>
  */
-public interface IServiceConnectorFactory {
-    
+public interface IStream {
     /**
-     * Creates a connector to a back end service.
-     * @param service the service being invoked
+     * Indicates whether the stream has finished.
+     * 
+     * @return true when finished; else false.
      */
-    void createConnector(Service service);
-
+     boolean isFinished();
 }

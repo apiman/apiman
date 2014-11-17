@@ -31,8 +31,7 @@ public class AsyncResultImpl<T> implements IAsyncResult<T> {
      * @param result
      */
     public static final <T> AsyncResultImpl<T> create(T result) {
-        AsyncResultImpl<T> ar = new AsyncResultImpl<T>(result);
-        return ar;
+        return new AsyncResultImpl<T>(result);
     }
     
     /**
@@ -40,8 +39,7 @@ public class AsyncResultImpl<T> implements IAsyncResult<T> {
      * @param t
      */
     public static final <T> AsyncResultImpl<T> create(Throwable t) {
-        AsyncResultImpl<T> ar = new AsyncResultImpl<T>(t);
-        return ar;
+        return new AsyncResultImpl<T>(t);
     }
     
     /**

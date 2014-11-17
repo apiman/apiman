@@ -33,6 +33,6 @@ public interface IPolicyFailureFactoryComponent extends IComponent {
      * @param failureCode
      * @param message
      */
-    public PolicyFailure createFailure(PolicyFailureType type, int failureCode, String message);
+    PolicyFailure createFailure(PolicyFailureType type, int failureCode, String message);
 
 }

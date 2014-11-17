@@ -37,6 +37,6 @@ public interface IRateLimiterComponent extends IComponent {
      * @param bucketId
      * @param limit
      */
-    public void accept(String bucketId, RateBucketPeriod period, int limit, IAsyncHandler<Boolean> handler);
+    void accept(String bucketId, RateBucketPeriod period, int limit, IAsyncHandler<Boolean> handler);
 
 }

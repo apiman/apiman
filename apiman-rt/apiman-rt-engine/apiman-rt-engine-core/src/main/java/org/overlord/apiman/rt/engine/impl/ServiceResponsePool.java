@@ -66,7 +66,6 @@ public final class ServiceResponsePool extends GenericObjectPool<ServiceResponse
             public void passivateObject(PooledObject<ServiceResponse> p) throws Exception {
                 super.passivateObject(p);
                 ServiceResponse response = p.getObject();
-                response.setBody(null);
                 response.setCode(0);
                 response.getHeaders().clear();
                 response.setMessage(null);

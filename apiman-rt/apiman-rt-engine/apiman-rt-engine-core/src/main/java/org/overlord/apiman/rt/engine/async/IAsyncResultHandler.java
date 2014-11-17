@@ -13,21 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.rt.engine;
-
-import org.overlord.apiman.rt.engine.beans.Service;
+package org.overlord.apiman.rt.engine.async;
 
 /**
- * Implement this interface to create connectors to back end services.
+ * Asynchronous handler called when an async operation wrapped in a result
+ * completes.
+ * 
+ * @author Marc Savy <msavy@redhat.com>
  *
- * @author eric.wittmann@redhat.com
+ * @param <T> The event to handle
  */
-public interface IServiceConnectorFactory {
-    
-    /**
-     * Creates a connector to a back end service.
-     * @param service the service being invoked
-     */
-    void createConnector(Service service);
-
+public interface IAsyncResultHandler<T> extends IAsyncHandler<IAsyncResult<T>> {
 }

@@ -28,14 +28,14 @@ public interface IHttpClientRequest {
      * @param headerName
      * @param headerValue
      */
-    public void addHeader(String headerName, String headerValue);
+    void addHeader(String headerName, String headerValue);
 
     /**
      * Removes a header.
      * 
      * @param headerName
      */
-    public void removeHeader(String headerName);
+    void removeHeader(String headerName);
 
     /**
      * Writes some data to the request. This data represents the body of the
@@ -44,7 +44,7 @@ public interface IHttpClientRequest {
      * 
      * @param data
      */
-    public void write(byte[] data);
+    void write(byte[] data);
 
     /**
      * Writes some data to the request, forming the body. Obviously this is
@@ -52,10 +52,10 @@ public interface IHttpClientRequest {
      * 
      * @param body
      */
-    public void write(String body);
+    void write(String body);
 
     /**
      * Called once all headers have been set and all data has been written.
      */
-    public void end();
+    void end();
 }

@@ -15,6 +15,7 @@
  */
 package org.overlord.apiman.rt.engine;
 
+import org.overlord.apiman.rt.engine.async.AbstractStream;
 import org.overlord.apiman.rt.engine.beans.PolicyFailure;
 import org.overlord.apiman.rt.engine.beans.ServiceResponse;
 
@@ -24,15 +25,15 @@ import org.overlord.apiman.rt.engine.beans.ServiceResponse;
  * 
  * @author eric.wittmann@redhat.com
  */
-public class EngineResult {
+public class EngineResultImpl extends AbstractStream<ServiceResponse> implements IEngineResult {
     
-    public ServiceResponse serviceResponse = null;
-    public PolicyFailure policyFailure = null;
+    private ServiceResponse serviceResponse = null;
+    private PolicyFailure policyFailure = null;
     
     /**
      * Constructor.
      */
-    public EngineResult() {
+    public EngineResultImpl() {
     }
     
     /**
@@ -40,7 +41,7 @@ public class EngineResult {
      * 
      * @param serviceResponse the service response
      */
-    public EngineResult(ServiceResponse serviceResponse) {
+    public EngineResultImpl(ServiceResponse serviceResponse) {
         this.serviceResponse = serviceResponse;
     }
 
@@ -48,31 +49,30 @@ public class EngineResult {
      * Construct an unsuccessful EngineResult.
      * @param policyFailure
      */
-    public EngineResult(PolicyFailure policyFailure) {
+    public EngineResultImpl(PolicyFailure policyFailure) {
         this.policyFailure = policyFailure;
     }
 
-    /**
-     * Whether a response has been set.
-     * 
-     * @return true if response set, false if unset.
+    /* (non-Javadoc)
+     * @see org.overlord.apiman.rt.engine.IEngineResult#isResponse()
      */
+    @Override
     public boolean isResponse() {
         return policyFailure == null;
     }
     
-    /**
-     * Whether a failure occurred during engine execution.
-     * 
-     * @return true if failure set, false if unset.
+    /* (non-Javadoc)
+     * @see org.overlord.apiman.rt.engine.IEngineResult#isFailure()
      */
+    @Override
     public boolean isFailure() {
         return policyFailure != null;
     }
 
-    /**
-     * @return the serviceResponse
+    /* (non-Javadoc)
+     * @see org.overlord.apiman.rt.engine.IEngineResult#getServiceResponse()
      */
+    @Override
     public ServiceResponse getServiceResponse() {
         return serviceResponse;
     }
@@ -84,9 +84,10 @@ public class EngineResult {
         this.serviceResponse = serviceResponse;
     }
 
-    /**
-     * @return the policyFailure
+    /* (non-Javadoc)
+     * @see org.overlord.apiman.rt.engine.IEngineResult#getPolicyFailure()
      */
+    @Override
     public PolicyFailure getPolicyFailure() {
         return policyFailure;
     }
@@ -96,5 +97,15 @@ public class EngineResult {
      */
     public void setPolicyFailure(PolicyFailure policyFailure) {
         this.policyFailure = policyFailure;
+    }
+
+    @Override
+    protected void handleHead(ServiceResponse head) {
+        return; // ServiceResponse?
+    }
+
+    @Override
+    public ServiceResponse getHead() {
+        return serviceResponse;
     }
 }

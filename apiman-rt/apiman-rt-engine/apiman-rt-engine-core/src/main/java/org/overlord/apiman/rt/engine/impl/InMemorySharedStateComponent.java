@@ -20,7 +20,6 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
-import org.overlord.apiman.rt.engine.async.AsyncResultImpl;
 import org.overlord.apiman.rt.engine.async.IAsyncHandler;
 import org.overlord.apiman.rt.engine.components.ISharedStateComponent;
 
@@ -57,7 +56,7 @@ public class InMemorySharedStateComponent implements ISharedStateComponent {
         if (value == null) {
             value = defaultValue;
         }
-        handler.handle(AsyncResultImpl.create(value));
+        handler.handle(value);//AsyncResultImpl.create(value));
     }
 
     /**
@@ -72,7 +71,7 @@ public class InMemorySharedStateComponent implements ISharedStateComponent {
             oldValue = (T) sharedState.get(key);
             sharedState.put(key, value);
         }
-        handler.handle(AsyncResultImpl.create(oldValue));
+        handler.handle(oldValue);//(AsyncResultImpl.create(oldValue));
     }
 
     /**
@@ -86,7 +85,7 @@ public class InMemorySharedStateComponent implements ISharedStateComponent {
         synchronized (sharedState) {
             oldValue = (T) sharedState.remove(key);
         }
-        handler.handle(AsyncResultImpl.create(oldValue));
+        handler.handle(oldValue);//(AsyncResultImpl.create(oldValue));
     }
 
     /**

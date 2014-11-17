@@ -18,6 +18,9 @@ package org.overlord.apiman.rt.engine.policy;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.overlord.apiman.rt.engine.policy.AbstractPolicy;
+import org.overlord.apiman.rt.engine.beans.exceptions.ConfigurationParseException;
+import org.overlord.apiman.rt.engine.beans.exceptions.NoSuchPolicyException;
 import org.overlord.apiman.rt.engine.beans.exceptions.PolicyNotFoundException;
 
 /**
@@ -26,8 +29,7 @@ import org.overlord.apiman.rt.engine.beans.exceptions.PolicyNotFoundException;
  * @author eric.wittmann@redhat.com
  */
 public class PolicyFactoryImpl implements IPolicyFactory {
-    
-    private Map<String, IPolicy> policyCache = new HashMap<String, IPolicy>();
+    private Map<String, PolicyWithConfiguration> canonicalCache = new HashMap<String, PolicyWithConfiguration>();
 
     /**
      * Constructor.
@@ -35,21 +37,28 @@ public class PolicyFactoryImpl implements IPolicyFactory {
     public PolicyFactoryImpl() {
     }
 
+    public AbstractPolicy newPolicy(String qualifiedName) throws NoSuchPolicyException {
+        PolicyWithConfiguration pwc = canonicalCache.get(qualifiedName);
+        AbstractPolicy newInstance = createPolicy(pwc.getPolicyClass());
+        newInstance.setConfig(pwc.getConfiguration());
+        return newInstance;
+    }
+
     /**
      * @see org.overlord.apiman.rt.engine.policy.IPolicyFactory#getPolicy(java.lang.String)
      */
     @Override
-    public IPolicy getPolicy(String policyImpl) throws PolicyNotFoundException {
+    public Class<AbstractPolicy> loadPolicyClass(String policyImpl, String jsonConfiguration) throws PolicyNotFoundException, ConfigurationParseException {
         if (policyImpl == null) {
             throw new PolicyNotFoundException(policyImpl);
         }
-        
+
         // Not synchronized - don't care if we create 2 or 3 of these, it's not worth
         // the synchronization overhead to protect against that.
-        if (policyCache.containsKey(policyImpl)) {
-            return policyCache.get(policyImpl);
+        if (canonicalCache.containsKey(policyImpl)) {
+            return canonicalCache.get(policyImpl).getPolicyClass();
         }
-        
+
         // Handle the various policyImpl formats.  Valid formats include:
         //   class:fullyQualifiedClassname - the class is expected to be on the classpath
         if (policyImpl.startsWith("class:")) { //$NON-NLS-1$
@@ -67,21 +76,37 @@ public class PolicyFactoryImpl implements IPolicyFactory {
                 c = Thread.currentThread().getContextClassLoader().loadClass(classname);
             } catch (ClassNotFoundException e) {
             }
-            
+
             if (c == null) {
                 throw new PolicyNotFoundException(classname);
             }
-            
-            try {
-                IPolicy policy = (IPolicy) c.newInstance();
-                policyCache.put(policyImpl, policy);
-                return policy;
-            } catch (Exception e) {
-                throw new RuntimeException("Error loading policy class: " + classname, e); //$NON-NLS-1$
-            }
+
+            @SuppressWarnings("unchecked")
+            Class<AbstractPolicy> policyClass = (Class<AbstractPolicy>) c;
+
+            // Validate config by parsing it.
+            AbstractPolicy validationPolicy = createPolicy(policyClass);
+            Object parsedConfig = validationPolicy.parseConfiguration(jsonConfiguration);
+
+            canonicalCache.put(policyImpl, new PolicyWithConfiguration(policyClass, parsedConfig));
+            return policyClass;
         } else {
             throw new PolicyNotFoundException(policyImpl);
         }
+    }
+
+    private AbstractPolicy createPolicy(Class<AbstractPolicy> clazz) {
+        try {
+            AbstractPolicy policy = (AbstractPolicy) clazz.newInstance();
+            return policy;
+        } catch (Exception e) {
+            throw new RuntimeException("Error instantiating policy class: " + clazz, e); //$NON-NLS-1$
+        }
+    }
+
+    @Override
+    public int size() {
+       return canonicalCache.keySet().size();
     }
 
 }
