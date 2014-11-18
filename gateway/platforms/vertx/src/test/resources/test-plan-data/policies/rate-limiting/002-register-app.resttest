@@ -1,0 +1,24 @@
+PUT /api/applications admin/admin
+Content-Type: application/json
+
+{
+  "organizationId" : "Policy_RateLimitingTest",
+  "applicationId" : "test",
+  "version" : "1.0.0",
+  "contracts" : [
+    {
+      "apiKey" : "12345",
+      "serviceOrgId" : "Policy_RateLimitingTest",
+      "serviceId" : "echo",
+      "serviceVersion" : "1.0.0",
+      "policies" : [
+        {
+          "policyImpl" : "class:io.apiman.gateway.engine.policies.RateLimitingPolicy",
+          "policyJsonConfig" : "{ \"limit\" : 5, \"granularity\" : \"Application\", \"period\" : \"Minute\" }"
+        }
+      ]
+    }
+  ]
+}
+----
+204

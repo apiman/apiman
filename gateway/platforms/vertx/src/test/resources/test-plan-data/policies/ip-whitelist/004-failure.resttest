@@ -1,0 +1,13 @@
+GET /http-gateway/path/to/app/resource admin/admin
+X-API-Key: 12345
+
+----
+500
+Content-Type: application/json
+X-Policy-Failure-Type: Other
+X-Policy-Failure-Code: 10001
+
+{
+    "type" : "Other",
+    "failureCode" : 10001
+}

@@ -1,0 +1,36 @@
+PUT /api/applications admin/admin
+Content-Type: application/json
+
+{
+  "organizationId" : "Policy_IPWhitelistTest",
+  "applicationId" : "test",
+  "version" : "1.0.0",
+  "contracts" : [
+    {
+      "apiKey" : "12345",
+      "serviceOrgId" : "Policy_IPWhitelistTest",
+      "serviceId" : "echo",
+      "serviceVersion" : "1.0.0",
+      "policies" : [
+        {
+          "policyImpl" : "class:io.apiman.gateway.engine.policies.IPWhitelistPolicy",
+          "policyJsonConfig" : "{ \"ipList\" : [ \"1.2.3.4\" ] }"
+        }
+      ]
+    },
+    {
+      "apiKey" : "54321",
+      "serviceOrgId" : "Policy_IPWhitelistTest",
+      "serviceId" : "echo",
+      "serviceVersion" : "1.0.0",
+      "policies" : [
+        {
+          "policyImpl" : "class:io.apiman.gateway.engine.policies.IPWhitelistPolicy",
+          "policyJsonConfig" : "{ \"ipList\": [ \"127.0.0.1\" ] }"
+        }
+      ]
+    }
+  ]
+}
+----
+204

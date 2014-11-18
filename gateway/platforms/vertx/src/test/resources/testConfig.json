@@ -1,0 +1,29 @@
+{
+  "registry": { "class": "io.apiman.gateway.engine.impl.InMemoryRegistry", "config": {} },
+  "connector-factory": { "class": "io.apiman.gateway.vertx.connector.HttpConnectorFactory", "config": {} },
+  "policy-factory": { "class": "io.apiman.gateway.engine.policy.PolicyFactoryImpl", "config": {} },
+  "routes": {
+    "http-dispatcher": 8200,
+    "http-gateway": 8201,
+    "api": 8202
+  },
+  "connectors": {
+    "http-rest": "io.apiman.gateway.connector.HttpConnectorFactory", "config": {}
+
+  },
+  "components": {
+    "IHttpClientComponent": { "class": "io.apiman.gateway.vertx.components.HttpClientComponentImpl", "config": {} },
+
+    "ISharedStateComponent": { "class": "io.apiman.gateway.engine.impl.InMemorySharedStateComponent", "config": {} },
+    "IRateLimiterComponent": { "class": "io.apiman.gateway.engine.impl.InMemoryRateLimiterComponent", "config": {} },
+    "IPolicyFailureFactoryComponent": { "class": "io.apiman.gateway.vertx.components.PolicyFailureFactoryComponent", "config": {} }
+  },
+  "auth": {
+    "file-basic": {
+      "admin" : "jGl25bVBBBW96Qi9Te4V37Fnqchz/Eu4qB9vKrRIqRg="
+    }
+  },
+
+  "authenticated": true,
+  "realm": "apiman-gateway"
+}

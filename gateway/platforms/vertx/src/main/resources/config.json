@@ -1,0 +1,38 @@
+{
+  "registry": { "class": "io.apiman.gateway.engine.impl.InMemoryRegistry", "config": {} },
+  "connector-factory": { "class": "io.apiman.gateway.vertx.connector.HttpConnectorFactory", "config": {} },
+  "policy-factory": { "class": "io.apiman.gateway.engine.policy.PolicyFactoryImpl", "config": {} },
+  
+  "connectors": {
+    "http-rest": "io.apiman.gateway.connector.HttpConnectorFactory", "config": {}
+  },
+  
+  "components": {
+    "IHttpClientComponent": { "class": "io.apiman.gateway.vertx.components.HttpClientComponentImpl", "config": {} },
+
+    "ISharedStateComponent": { "class": "io.apiman.gateway.engine.impl.InMemorySharedStateComponent", "config": {} },
+    "IRateLimiterComponent": { "class": "io.apiman.gateway.engine.impl.InMemoryRateLimiterComponent", "config": {} },
+    "IPolicyFailureFactoryComponent": { "class": "io.apiman.gateway.vertx.components.PolicyFailureFactoryComponent", "config": {} }
+  },
+  
+  // Host-name to bind to for this machine.
+  "hostname": "localhost",
+  
+  // You can force a particular endpoint here (e.g. if you have some clustered setup with exotic DNS setup) 
+  "endpoint": "localhost",
+  
+  "routes": {
+    "http-dispatcher": 8200,
+    "http-gateway": 8201,
+    "api": 8202
+  },
+  
+  "auth": {
+    "file-basic": {
+      "example" : "NhWA8jbnUXSGDx0+LsTGFLsC6UHykp7kgnRiWF5X8KU="
+    }
+  },
+
+  "authenticated": true,
+  "realm": "apiman-gateway"
+}
