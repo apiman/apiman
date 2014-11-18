@@ -12,7 +12,7 @@ The easiest way to get started with the code is to [create your own fork](http:/
 
 	$ git clone git@github.com:<you>/apiman.git
 	$ cd apiman
-	$ git remote add upstream git://github.com/Governance/apiman.git
+	$ git remote add upstream git://github.com/apiman/apiman.git
 	
 At any time, you can pull changes from the upstream and merge them onto your master:
 
