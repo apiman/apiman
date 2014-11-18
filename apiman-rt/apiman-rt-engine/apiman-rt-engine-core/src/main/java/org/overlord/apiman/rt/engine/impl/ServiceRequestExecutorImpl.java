@@ -35,8 +35,8 @@ import org.overlord.apiman.rt.engine.io.ISignalReadStream;
 import org.overlord.apiman.rt.engine.io.ISignalWriteStream;
 import org.overlord.apiman.rt.engine.io.IWriteStream;
 import org.overlord.apiman.rt.engine.policy.Chain;
-import org.overlord.apiman.rt.engine.policy.IPolicy;
 import org.overlord.apiman.rt.engine.policy.IPolicyContext;
+import org.overlord.apiman.rt.engine.policy.PolicyWithConfiguration;
 import org.overlord.apiman.rt.engine.policy.RequestChain;
 import org.overlord.apiman.rt.engine.policy.ResponseChain;
 
@@ -60,7 +60,7 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
     private ServiceRequest request;
     private ServiceContract serviceContract;
     private IPolicyContext context;
-    private List<IPolicy> policies;
+    private List<PolicyWithConfiguration> policies;
     private IConnectorFactory connectorFactory;
     private boolean finished = false;
 
@@ -86,7 +86,7 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
             IAsyncResultHandler<IEngineResult> resultHandler,
             ServiceContract serviceContract,
             IPolicyContext context,
-            List<IPolicy> policies,
+            List<PolicyWithConfiguration> policies,
             IConnectorFactory connectorFactory) {
 
         this.request = serviceRequest;

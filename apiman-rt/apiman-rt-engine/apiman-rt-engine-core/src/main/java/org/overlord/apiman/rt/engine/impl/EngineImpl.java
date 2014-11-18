@@ -40,6 +40,7 @@ import org.overlord.apiman.rt.engine.beans.exceptions.RegistrationException;
 import org.overlord.apiman.rt.engine.policy.IPolicy;
 import org.overlord.apiman.rt.engine.policy.IPolicyFactory;
 import org.overlord.apiman.rt.engine.policy.PolicyContextImpl;
+import org.overlord.apiman.rt.engine.policy.PolicyWithConfiguration;
 
 /**
  * The implementation of the API Management runtime engine.
@@ -165,15 +166,15 @@ public class EngineImpl implements IEngine {
      *
      * @param contract
      */
-    private List<IPolicy> getPolicies(ServiceContract contract) {
+    private List<PolicyWithConfiguration> getPolicies(ServiceContract contract) {
         // accidentally create the list a few times - it's not worth the
         // overhead of the synch block.
-        List<IPolicy> instances = new ArrayList<IPolicy>();
+        List<PolicyWithConfiguration> instances = new ArrayList<PolicyWithConfiguration>();
 
         for (Policy policy : contract.getPolicies()) {
             IPolicy policyImpl = getPolicyFactory().newPolicy(policy.getPolicyImpl());
-            policyImpl.setConfiguration(policy.getPolicyConfig());
-            instances.add(policyImpl);
+            PolicyWithConfiguration pwc = new PolicyWithConfiguration(policyImpl, policy.getPolicyConfig());
+            instances.add(pwc);
         }
 
         return instances;

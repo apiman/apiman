@@ -33,7 +33,7 @@ public class RequestChain extends Chain<ServiceRequest> {
      * @param policies
      * @param context
      */
-    public RequestChain(List<IPolicy> policies, IPolicyContext context) {
+    public RequestChain(List<PolicyWithConfiguration> policies, IPolicyContext context) {
         super(policies, context);
     }
 
@@ -41,7 +41,7 @@ public class RequestChain extends Chain<ServiceRequest> {
      * @see java.lang.Iterable#iterator()
      */
     @Override
-    public Iterator<IPolicy> iterator() {
+    public Iterator<PolicyWithConfiguration> iterator() {
         return new RequestIterator(getPolicies());
     }
 
@@ -50,15 +50,19 @@ public class RequestChain extends Chain<ServiceRequest> {
      */
     @Override
     protected IReadWriteStream<ServiceRequest> getServiceHandler(IPolicy policy) {
-        return policy.getRequestHandler();
+        if (policy instanceof IDataPolicy) {
+            return ((IDataPolicy) policy).getRequestDataHandler(getHead(), getContext());
+        } else {
+            return null;
+        }
     }
-    
+
     /**
-     * @see org.overlord.apiman.rt.engine.policy.Chain#applyPolicy(org.overlord.apiman.rt.engine.policy.IPolicy, org.overlord.apiman.rt.engine.policy.IPolicyContext)
+     * @see org.overlord.apiman.rt.engine.policy.Chain#applyPolicy(org.overlord.apiman.rt.engine.policy.PolicyWithConfiguration, org.overlord.apiman.rt.engine.policy.IPolicyContext)
      */
     @Override
-    protected void applyPolicy(IPolicy policy, IPolicyContext context) {
-        policy.apply(getHead(), context, this);
+    protected void applyPolicy(PolicyWithConfiguration policy, IPolicyContext context) {
+        policy.getPolicy().apply(getHead(), context, policy.getConfiguration(), this);
     }
 
     /**
@@ -66,14 +70,14 @@ public class RequestChain extends Chain<ServiceRequest> {
      * front to back, which is the proper order when applying the policies to
      * the inbound request.
      */
-    private class RequestIterator implements Iterator<IPolicy> {
-        private List<IPolicy> policies;
+    private class RequestIterator implements Iterator<PolicyWithConfiguration> {
+        private List<PolicyWithConfiguration> policies;
         private int index;
 
         /**
          * Constructor.
          */
-        public RequestIterator(List<IPolicy> policies) {
+        public RequestIterator(List<PolicyWithConfiguration> policies) {
             this.policies = policies;
             this.index = 0;
         }
@@ -90,7 +94,7 @@ public class RequestChain extends Chain<ServiceRequest> {
          * @see java.util.Iterator#next()
          */
         @Override
-        public IPolicy next() {
+        public PolicyWithConfiguration next() {
             return policies.get(index++);
         }
 

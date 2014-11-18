@@ -91,7 +91,6 @@ public class RateLimitingPolicyTest {
                 "  \"userHeader\" : \"X-Identity\"\r\n" + 
                 "}";
         Object config = policy.parseConfiguration(json);
-        policy.setConfiguration(config);
         ServiceRequest request = new ServiceRequest();
         request.setContract(createTestContract());
         request.setType("GET");
@@ -112,13 +111,13 @@ public class RateLimitingPolicyTest {
         
         for (int count = 0; count < 10; count++) {
             chain = Mockito.mock(IPolicyChain.class);
-            policy.apply(request, context, chain);
+            policy.apply(request, context, config, chain);
             Mockito.verify(chain).doApply(request);
         }
         
         // Failure - only allow 10 per minute!
         chain = Mockito.mock(IPolicyChain.class);
-        policy.apply(request, context, chain);
+        policy.apply(request, context, config, chain);
         Mockito.verify(chain).doFailure(failure);
     }
 

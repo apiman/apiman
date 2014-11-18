@@ -18,7 +18,6 @@ package org.overlord.apiman.rt.engine.policy;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
 import org.overlord.apiman.rt.engine.beans.ServiceResponse;
 import org.overlord.apiman.rt.engine.beans.exceptions.ConfigurationParseException;
-import org.overlord.apiman.rt.engine.io.IReadWriteStream;
 
 /**
  * All policy implementations must implement this interface.
@@ -36,19 +35,6 @@ public interface IPolicy {
     public Object parseConfiguration(String jsonConfiguration) throws ConfigurationParseException;
     
     /**
-     * @return Policy's configuration.
-     */
-    public Object getConfiguration();
-    
-    /**
-     * Once a single #parseConfiguration has been called, a previously parsed
-     * can be passed in.
-     * 
-     * @param config Policy specific configuration.
-     */
-    public void setConfiguration(Object config);
-
-    /**
      * Applies a policy upon a {@link ServiceRequest} based on information
      * included in the request itself in addition to its context and configuration.
      * 
@@ -57,13 +43,8 @@ public interface IPolicy {
      * @param config the policy's configuration information
      * @param chain the policy chain being invoked
      */
-    public void apply(ServiceRequest request, IPolicyContext context, IPolicyChain<ServiceRequest> chain);
+    public void apply(ServiceRequest request, IPolicyContext context, Object config, IPolicyChain<ServiceRequest> chain);
     
-    /**
-     * @return Request handler to stream request data through the policy.
-     */
-    public IReadWriteStream<ServiceRequest> getRequestHandler();
-
     /**
      * Applies a policy upon a {@link ServiceResponse} based on information
      * included in the response itself in addition to its context and configuration.
@@ -73,11 +54,6 @@ public interface IPolicy {
      * @param config the policy's configuration information
      * @param chain chain the policy chain being invoked
      */
-    public void apply(ServiceResponse response, IPolicyContext context, IPolicyChain<ServiceResponse> chain);
+    public void apply(ServiceResponse response, IPolicyContext context, Object config, IPolicyChain<ServiceResponse> chain);
     
-    /**
-     * @return Response handler to stream request data through the policy.
-     */
-    public IReadWriteStream<ServiceResponse> getResponseHandler();
-
 }

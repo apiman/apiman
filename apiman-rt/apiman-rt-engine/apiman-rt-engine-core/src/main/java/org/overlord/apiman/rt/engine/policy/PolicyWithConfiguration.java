@@ -22,7 +22,7 @@ package org.overlord.apiman.rt.engine.policy;
  */
 public class PolicyWithConfiguration  {
     
-    private Class<IPolicy> policy;
+    private IPolicy policy;
     private Object configuration;
     
     /**
@@ -30,7 +30,7 @@ public class PolicyWithConfiguration  {
      * @param policy
      * @param configuration
      */
-    public PolicyWithConfiguration(Class<IPolicy> policy, Object configuration) {
+    public PolicyWithConfiguration(IPolicy policy, Object configuration) {
         this.setPolicy(policy);
         this.setConfiguration(configuration);
     }
@@ -38,14 +38,14 @@ public class PolicyWithConfiguration  {
     /**
      * @return the policy
      */
-    public Class<IPolicy> getPolicyClass() {
+    public IPolicy getPolicy() {
         return policy;
     }
 
     /**
      * @param policy the policy to set
      */
-    public void setPolicy(Class<IPolicy> policy) {
+    public void setPolicy(IPolicy policy) {
         this.policy = policy;
     }
 

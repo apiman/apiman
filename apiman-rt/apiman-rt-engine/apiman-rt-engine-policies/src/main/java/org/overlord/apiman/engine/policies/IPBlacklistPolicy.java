@@ -46,16 +46,17 @@ public class IPBlacklistPolicy extends AbstractMappedPolicy<IPBlacklistConfig> {
     }
     
     /**
-     * @see org.overlord.apiman.rt.engine.policy.AbstractPolicy#doApply(org.overlord.apiman.rt.engine.beans.ServiceRequest, org.overlord.apiman.rt.engine.policy.IPolicyContext, org.overlord.apiman.rt.engine.policy.IPolicyChain)
+     * @see org.overlord.apiman.engine.policies.AbstractMappedPolicy#doApply(org.overlord.apiman.rt.engine.beans.ServiceRequest, org.overlord.apiman.rt.engine.policy.IPolicyContext, java.lang.Object, org.overlord.apiman.rt.engine.policy.IPolicyChain)
      */
     @Override
-    protected void doApply(ServiceRequest request, IPolicyContext context, IPolicyChain<ServiceRequest> chain) {
-        if (getConfiguration().getIpList().contains(request.getRemoteAddr())) {
+    protected void doApply(ServiceRequest request, IPolicyContext context, IPBlacklistConfig config,
+            IPolicyChain<ServiceRequest> chain) {
+        if (config.getIpList().contains(request.getRemoteAddr())) {
             IPolicyFailureFactoryComponent ffactory = context.getComponent(IPolicyFailureFactoryComponent.class);
             String msg = Messages.i18n.format("IPBlacklistPolicy.NotBlacklisted", request.getRemoteAddr()); //$NON-NLS-1$
             chain.doFailure(ffactory.createFailure(PolicyFailureType.Other, PolicyFailureCodes.IP_BLACKLISTED, msg));
         } else {
-            super.doApply(request, context, chain);
+            super.doApply(request, context, config, chain);
         }
     }
 

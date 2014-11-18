@@ -60,17 +60,18 @@ public class BasicAuthenticationPolicy extends AbstractMappedPolicy<BasicAuthent
     }
     
     /**
-     * @see org.overlord.apiman.rt.engine.policy.AbstractPolicy#doApply(org.overlord.apiman.rt.engine.beans.ServiceRequest, org.overlord.apiman.rt.engine.policy.IPolicyContext, org.overlord.apiman.rt.engine.policy.IPolicyChain)
+     * @see org.overlord.apiman.engine.policies.AbstractMappedPolicy#doApply(org.overlord.apiman.rt.engine.beans.ServiceRequest, org.overlord.apiman.rt.engine.policy.IPolicyContext, java.lang.Object, org.overlord.apiman.rt.engine.policy.IPolicyChain)
      */
     @Override
-    protected void doApply(final ServiceRequest request, final IPolicyContext context, final IPolicyChain<ServiceRequest> chain) {
+    protected void doApply(final ServiceRequest request, final IPolicyContext context, final BasicAuthenticationConfig config,
+            final IPolicyChain<ServiceRequest> chain) {
         String authHeader = request.getHeaders().get("Authorization"); //$NON-NLS-1$
         if (authHeader == null || authHeader.trim().isEmpty()) {
-            sendAuthResponse(context, chain, PolicyFailureCodes.BASIC_AUTH_REQUIRED);
+            sendAuthFailure(context, chain, config, PolicyFailureCodes.BASIC_AUTH_REQUIRED);
             return;
         }
         if (!authHeader.toUpperCase().startsWith("BASIC ")) { //$NON-NLS-1$
-            sendAuthResponse(context, chain, PolicyFailureCodes.BASIC_AUTH_REQUIRED);
+            sendAuthFailure(context, chain, config, PolicyFailureCodes.BASIC_AUTH_REQUIRED);
             return;
         }
 
@@ -90,20 +91,20 @@ public class BasicAuthenticationPolicy extends AbstractMappedPolicy<BasicAuthent
             }
         } catch (Throwable t) {
             // TODO log this error to apiman::logger
-            sendAuthResponse(context, chain, PolicyFailureCodes.BASIC_AUTH_FAILED);
+            sendAuthFailure(context, chain, config, PolicyFailureCodes.BASIC_AUTH_FAILED);
             return;
         }
         
         // Asynchronously validate the inbound requests's basic auth credentials
         final String forwardedUsername = username;
-        validateCredentials(username, password, request, context, getConfiguration(), new IAsyncResultHandler<Boolean>() {
+        validateCredentials(username, password, request, context, config, new IAsyncResultHandler<Boolean>() {
             @Override
             public void handle(IAsyncResult<Boolean> result) {
                 if (result.isError()) {
                     chain.throwError(result.getError());
                 } else {
                     if (result.getResult()) {
-                        String forwardIdentityHttpHeader = getConfiguration().getForwardIdentityHttpHeader();
+                        String forwardIdentityHttpHeader = config.getForwardIdentityHttpHeader();
                         if (forwardIdentityHttpHeader != null && !forwardIdentityHttpHeader.trim().isEmpty()) {
                             request.getHeaders().put(forwardIdentityHttpHeader, forwardedUsername);
                         }
@@ -112,7 +113,7 @@ public class BasicAuthenticationPolicy extends AbstractMappedPolicy<BasicAuthent
                         request.getHeaders().remove("Authorization"); //$NON-NLS-1$
                         chain.doApply(request);
                     } else {
-                        sendAuthResponse(context, chain, PolicyFailureCodes.BASIC_AUTH_FAILED);
+                        sendAuthFailure(context, chain, config, PolicyFailureCodes.BASIC_AUTH_FAILED);
                     }
                 }
             }
@@ -148,10 +149,10 @@ public class BasicAuthenticationPolicy extends AbstractMappedPolicy<BasicAuthent
      * @param config
      * @param reason
      */
-    protected void sendAuthResponse(IPolicyContext context, IPolicyChain<?> chain, int reason) {
+    protected void sendAuthFailure(IPolicyContext context, IPolicyChain<?> chain, BasicAuthenticationConfig config, int reason) {
         IPolicyFailureFactoryComponent pff = context.getComponent(IPolicyFailureFactoryComponent.class);
         PolicyFailure failure = pff.createFailure(PolicyFailureType.Authentication, reason, Messages.i18n.format("BasicAuthenticationPolicy.AuthenticationFailed")); //$NON-NLS-1$
-        String realm = getConfiguration().getRealm();
+        String realm = config.getRealm();
         if (realm == null || realm.trim().isEmpty()) {
             realm = "Service"; //$NON-NLS-1$
         }

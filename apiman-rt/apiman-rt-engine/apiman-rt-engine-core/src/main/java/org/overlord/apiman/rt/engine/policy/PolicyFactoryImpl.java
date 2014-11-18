@@ -26,7 +26,7 @@ import org.overlord.apiman.rt.engine.beans.exceptions.PolicyNotFoundException;
  * @author eric.wittmann@redhat.com
  */
 public class PolicyFactoryImpl implements IPolicyFactory {
-    private Map<String, Class<IPolicy>> canonicalCache = new HashMap<String, Class<IPolicy>>();
+    private Map<String, IPolicy> policyCache = new HashMap<String, IPolicy>();
 
     /**
      * Constructor.
@@ -39,31 +39,21 @@ public class PolicyFactoryImpl implements IPolicyFactory {
      */
     @Override
     public IPolicy newPolicy(String qualifiedName) throws PolicyNotFoundException {
-        Class<IPolicy> policyClass = loadPolicyClass(qualifiedName);
-        IPolicy newInstance = createPolicy(policyClass);
-        return newInstance;
-    }
-
-    /**
-     * Loads a policy class.  Caches the loaded class for efficiency.
-     * @param policyImpl
-     * @throws PolicyNotFoundException
-     */
-    public Class<IPolicy> loadPolicyClass(String policyImpl) throws PolicyNotFoundException {
-        if (policyImpl == null) {
-            throw new PolicyNotFoundException(policyImpl);
+        if (qualifiedName == null) {
+            throw new PolicyNotFoundException(qualifiedName);
         }
 
         // Not synchronized - don't care if we create 2 or 3 of these, it's not worth
         // the synchronization overhead to protect against that.
-        if (canonicalCache.containsKey(policyImpl)) {
-            return canonicalCache.get(policyImpl);
+        if (policyCache.containsKey(qualifiedName)) {
+            return policyCache.get(qualifiedName);
         }
 
+        IPolicy rval = null;
         // Handle the various policyImpl formats.  Valid formats include:
         //   class:fullyQualifiedClassname - the class is expected to be on the classpath
-        if (policyImpl.startsWith("class:")) { //$NON-NLS-1$
-            String classname = policyImpl.substring(6);
+        if (qualifiedName.startsWith("class:")) { //$NON-NLS-1$
+            String classname = qualifiedName.substring(6);
             Class<?> c = null;
             try {
                 c = Class.forName(classname);
@@ -82,25 +72,15 @@ public class PolicyFactoryImpl implements IPolicyFactory {
                 throw new PolicyNotFoundException(classname);
             }
 
-            @SuppressWarnings("unchecked")
-            Class<IPolicy> policyClass = (Class<IPolicy>) c;
-            canonicalCache.put(policyImpl, policyClass);
-            return policyClass;
+            try {
+                rval = (IPolicy) c.newInstance();
+            } catch (InstantiationException | IllegalAccessException e) {
+                throw new PolicyNotFoundException(qualifiedName, e);
+            }
+            policyCache.put(qualifiedName, rval);
+            return rval;
         } else {
-            throw new PolicyNotFoundException(policyImpl);
-        }
-    }
-
-    /**
-     * Creates a policy from the given class.  The class must have a no-arg constructor.
-     * @param clazz
-     */
-    private IPolicy createPolicy(Class<IPolicy> clazz) {
-        try {
-            IPolicy policy = (IPolicy) clazz.newInstance();
-            return policy;
-        } catch (Exception e) {
-            throw new RuntimeException("Error instantiating policy class: " + clazz, e); //$NON-NLS-1$
+            throw new PolicyNotFoundException(qualifiedName);
         }
     }
 

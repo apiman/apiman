@@ -18,7 +18,7 @@ package org.overlord.apiman.rt.engine.impl;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
 import org.overlord.apiman.rt.engine.beans.ServiceResponse;
 import org.overlord.apiman.rt.engine.beans.exceptions.ConfigurationParseException;
-import org.overlord.apiman.rt.engine.policy.AbstractPolicy;
+import org.overlord.apiman.rt.engine.policy.IPolicy;
 import org.overlord.apiman.rt.engine.policy.IPolicyChain;
 import org.overlord.apiman.rt.engine.policy.IPolicyContext;
 
@@ -28,7 +28,7 @@ import org.overlord.apiman.rt.engine.policy.IPolicyContext;
  * @author Marc Savy <msavy@redhat.com>
  */
 @SuppressWarnings("nls")
-public class PassthroughPolicy extends AbstractPolicy {
+public class PassthroughPolicy implements IPolicy {
     
     public static final String QUALIFIED_NAME = "class:" + PassthroughPolicy.class.getCanonicalName();
     private Object config;
@@ -49,30 +49,21 @@ public class PassthroughPolicy extends AbstractPolicy {
         this.config = (Object) jsonConfiguration;
         return config;
     }
-
-    @Override
-    public Object getConfiguration() {
-        return config;
-    }
-
-    @Override
-    public void setConfiguration(Object config) {
-        this.config = config;
-    }
     
     /**
-     * @see org.overlord.apiman.rt.engine.policy.AbstractPolicy#doApply(org.overlord.apiman.rt.engine.beans.ServiceRequest, org.overlord.apiman.rt.engine.policy.IPolicyContext, org.overlord.apiman.rt.engine.policy.IPolicyChain)
+     * @see org.overlord.apiman.rt.engine.policy.IPolicy#apply(org.overlord.apiman.rt.engine.beans.ServiceRequest, org.overlord.apiman.rt.engine.policy.IPolicyContext, java.lang.Object, org.overlord.apiman.rt.engine.policy.IPolicyChain)
      */
     @Override
-    protected void doApply(ServiceRequest request, IPolicyContext context, IPolicyChain<ServiceRequest> chain) {
+    public void apply(ServiceRequest request, IPolicyContext context, Object config,
+            IPolicyChain<ServiceRequest> chain) {
         chain.doApply(request);
     }
     
     /**
-     * @see org.overlord.apiman.rt.engine.policy.AbstractPolicy#doApply(org.overlord.apiman.rt.engine.beans.ServiceResponse, org.overlord.apiman.rt.engine.policy.IPolicyContext, org.overlord.apiman.rt.engine.policy.IPolicyChain)
+     * @see org.overlord.apiman.rt.engine.policy.IPolicy#apply(org.overlord.apiman.rt.engine.beans.ServiceResponse, org.overlord.apiman.rt.engine.policy.IPolicyContext, java.lang.Object, org.overlord.apiman.rt.engine.policy.IPolicyChain)
      */
     @Override
-    protected void doApply(ServiceResponse response, IPolicyContext context,
+    public void apply(ServiceResponse response, IPolicyContext context, Object config,
             IPolicyChain<ServiceResponse> chain) {
         chain.doApply(response);
     }

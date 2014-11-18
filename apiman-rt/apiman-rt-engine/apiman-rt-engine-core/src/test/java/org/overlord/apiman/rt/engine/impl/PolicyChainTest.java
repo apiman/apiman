@@ -33,8 +33,8 @@ import org.overlord.apiman.rt.engine.beans.PolicyFailure;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
 import org.overlord.apiman.rt.engine.beans.ServiceResponse;
 import org.overlord.apiman.rt.engine.io.IBuffer;
-import org.overlord.apiman.rt.engine.policy.IPolicy;
 import org.overlord.apiman.rt.engine.policy.IPolicyContext;
+import org.overlord.apiman.rt.engine.policy.PolicyWithConfiguration;
 import org.overlord.apiman.rt.engine.policy.RequestChain;
 import org.overlord.apiman.rt.engine.policy.ResponseChain;
 
@@ -57,15 +57,19 @@ public class PolicyChainTest {
     private IAsyncHandler<Void> mockEndHandler;
     private PassthroughPolicy policyOne;
     private PassthroughPolicy policyTwo;
+    private PolicyWithConfiguration pwcOne;
+    private PolicyWithConfiguration pwcTwo;
     private IPolicyContext mockContext;
-    private List<IPolicy> policies;
+    private List<PolicyWithConfiguration> policies;
 
     @SuppressWarnings("unchecked")
     @Before
     public void setup() {   
-        policies = new ArrayList<IPolicy>();
+        policies = new ArrayList<PolicyWithConfiguration>();
         policyOne = spy(new PassthroughPolicy("1")); //Refactor to use mock?
         policyTwo = spy(new PassthroughPolicy("2"));
+        pwcOne = new PolicyWithConfiguration(policyOne, new Object());
+        pwcTwo = new PolicyWithConfiguration(policyTwo, new Object());
         
         //mockChain = mock(IPolicyChain.class);
         mockContext = mock(IPolicyContext.class);
@@ -89,8 +93,8 @@ public class PolicyChainTest {
     
     @Test
     public void shouldExecuteRequestChainTwice() {
-        policies.add(policyOne);
-        policies.add(policyTwo);
+        policies.add(pwcOne);
+        policies.add(pwcTwo);
         
         requestChain = new RequestChain(policies, mockContext);
 
@@ -106,14 +110,14 @@ public class PolicyChainTest {
         verify(mockEndHandler, times(1)).handle((Void) null);
         
         InOrder order = inOrder(policyOne, policyTwo);
-        order.verify(policyOne).apply(mockRequest, mockContext, requestChain);
-        order.verify(policyTwo).apply(mockRequest, mockContext, requestChain);
+        order.verify(policyOne).apply(mockRequest, mockContext, pwcOne.getConfiguration(), requestChain);
+        order.verify(policyTwo).apply(mockRequest, mockContext, pwcTwo.getConfiguration(), requestChain);
     }
     
     @Test
     public void shouldExecuteResponseChainTwice() {
-        policies.add(policyOne);
-        policies.add(policyTwo);
+        policies.add(pwcOne);
+        policies.add(pwcTwo);
         
         responseChain = new ResponseChain(policies, mockContext);
         
@@ -129,13 +133,13 @@ public class PolicyChainTest {
         verify(mockEndHandler, times(1)).handle((Void) null);   
         
         InOrder order = inOrder(policyTwo, policyOne);
-        order.verify(policyTwo).apply(mockResponse, mockContext, responseChain);
-        order.verify(policyOne).apply(mockResponse, mockContext, responseChain);
+        order.verify(policyTwo).apply(mockResponse, mockContext, pwcTwo.getConfiguration(), responseChain);
+        order.verify(policyOne).apply(mockResponse, mockContext, pwcOne.getConfiguration(), responseChain);
     }
     
     @Test
     public void shouldExecuteWithoutHandlers() {
-        policies.add(policyOne);
+        policies.add(pwcOne);
         requestChain = new RequestChain(policies, mockContext);
         requestChain.doApply(mockRequest);
         requestChain.end();
@@ -143,7 +147,7 @@ public class PolicyChainTest {
     
     @Test
     public void shouldPreserveBufferOrder() {
-        policies.add(policyOne);
+        policies.add(pwcOne);
         requestChain = new RequestChain(policies, mockContext);
         requestChain.bodyHandler(mockBodyHandler);
         requestChain.endHandler(mockEndHandler);
@@ -188,8 +192,8 @@ public class PolicyChainTest {
     @SuppressWarnings("unchecked")
     @Test
     public void shouldCallFailureHandlerOnDoFail() {
-        policies.add(policyOne);
-        policies.add(policyTwo);
+        policies.add(pwcOne);
+        policies.add(pwcTwo);
         
         requestChain = new RequestChain(policies, mockContext);
         
@@ -216,8 +220,8 @@ public class PolicyChainTest {
     @SuppressWarnings("unchecked")
     @Test
     public void shouldCallErrorHandlerOnThrowError() {
-        policies.add(policyOne);
-        policies.add(policyTwo);
+        policies.add(pwcOne);
+        policies.add(pwcTwo);
         
         requestChain = new RequestChain(policies, mockContext);
         

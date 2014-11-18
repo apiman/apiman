@@ -56,7 +56,7 @@ public class PolicyLoadTest {
     @SuppressWarnings("rawtypes")
     private int getNumPolicies() {
         try {
-            Field field = policyFactory.getClass().getDeclaredField("canonicalCache");
+            Field field = policyFactory.getClass().getDeclaredField("policyCache");
             field.setAccessible(true);
             return ((Map) field.get(policyFactory)).size();
         } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {

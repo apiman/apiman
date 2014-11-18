@@ -90,7 +90,6 @@ public class IPWhitelistPolicyTest {
                 "  ]" + 
                 "}";
         Object config = policy.parseConfiguration(json);
-        policy.setConfiguration(config);
         ServiceRequest request = new ServiceRequest();
         request.setType("GET");
         request.setApiKey("12345");
@@ -100,7 +99,7 @@ public class IPWhitelistPolicyTest {
         IPolicyChain<ServiceRequest> chain = Mockito.mock(IPolicyChain.class);
         
         // Success
-        policy.apply(request, context, chain);
+        policy.apply(request, context, config, chain);
         Mockito.verify(chain).doApply(request);
         
         // Failure
@@ -113,7 +112,7 @@ public class IPWhitelistPolicyTest {
         });
         chain = Mockito.mock(IPolicyChain.class);
         request.setRemoteAddr("9.8.7.6");
-        policy.apply(request, context, chain);
+        policy.apply(request, context, config, chain);
         Mockito.verify(chain).doFailure(failure);
     }
 

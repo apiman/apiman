@@ -44,16 +44,16 @@ import org.overlord.apiman.rt.engine.io.IReadWriteStream;
  *
  * @param <H> Head type
  */
-public abstract class Chain<H> extends AbstractStream<H> implements IAbortable, IPolicyChain<H>, Iterable<IPolicy> {
+public abstract class Chain<H> extends AbstractStream<H> implements IAbortable, IPolicyChain<H>, Iterable<PolicyWithConfiguration> {
 
-    private final List<IPolicy> policies;
+    private final List<PolicyWithConfiguration> policies;
     private final IPolicyContext context;
 
     private IReadWriteStream<H> headPolicyHandler;
     private IAsyncHandler<PolicyFailure> policyFailureHandler;
     private IAsyncHandler<Throwable> policyErrorHandler;
 
-    private Iterator<IPolicy> policyIterator;
+    private Iterator<PolicyWithConfiguration> policyIterator;
     
     private H serviceObject;
 
@@ -62,7 +62,7 @@ public abstract class Chain<H> extends AbstractStream<H> implements IAbortable, 
      * @param policies
      * @param context
      */
-    public Chain(List<IPolicy> policies, IPolicyContext context) {
+    public Chain(List<PolicyWithConfiguration> policies, IPolicyContext context) {
         this.policies = policies;
         this.context = context;
 
@@ -75,9 +75,10 @@ public abstract class Chain<H> extends AbstractStream<H> implements IAbortable, 
      */
     protected void chainPolicyHandlers() {
         IReadWriteStream<H> previousHandler = null;
-        Iterator<IPolicy> iterator = iterator();
+        Iterator<PolicyWithConfiguration> iterator = iterator();
         while (iterator.hasNext()) {
-            final IPolicy policy = iterator.next();
+            final PolicyWithConfiguration pwc = iterator.next();
+            final IPolicy policy = pwc.getPolicy();
             final IReadWriteStream<H> handler = getServiceHandler(policy);
             if (handler == null) {
                 continue;
@@ -139,7 +140,7 @@ public abstract class Chain<H> extends AbstractStream<H> implements IAbortable, 
         try {
             this.serviceObject = serviceObject;
             if (policyIterator.hasNext()) {
-                applyPolicy(policyIterator.next(), context);
+                applyPolicy(policyIterator.next(), getContext());
             } else {
                 handleHead(getHead());
             }
@@ -249,13 +250,20 @@ public abstract class Chain<H> extends AbstractStream<H> implements IAbortable, 
      * @param policy
      * @param context
      */
-    protected abstract void applyPolicy(IPolicy policy, IPolicyContext context);
+    protected abstract void applyPolicy(PolicyWithConfiguration policy, IPolicyContext context);
 
     /**
      * @return the policies
      */
-    public List<IPolicy> getPolicies() {
+    public List<PolicyWithConfiguration> getPolicies() {
         return policies;
+    }
+
+    /**
+     * @return the context
+     */
+    protected IPolicyContext getContext() {
+        return context;
     }
 
 }

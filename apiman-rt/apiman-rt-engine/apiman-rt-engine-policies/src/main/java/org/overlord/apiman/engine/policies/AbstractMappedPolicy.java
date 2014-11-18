@@ -16,15 +16,19 @@
 package org.overlord.apiman.engine.policies;
 
 import org.codehaus.jackson.map.ObjectMapper;
+import org.overlord.apiman.rt.engine.beans.ServiceRequest;
+import org.overlord.apiman.rt.engine.beans.ServiceResponse;
 import org.overlord.apiman.rt.engine.beans.exceptions.ConfigurationParseException;
-import org.overlord.apiman.rt.engine.policy.AbstractPolicy;
+import org.overlord.apiman.rt.engine.policy.IPolicy;
+import org.overlord.apiman.rt.engine.policy.IPolicyChain;
+import org.overlord.apiman.rt.engine.policy.IPolicyContext;
 
 /**
  * A base class for policy impls that use jackson to parse configuration info.
  *
  * @author eric.wittmann@redhat.com
  */
-public abstract class AbstractMappedPolicy<C> extends AbstractPolicy {
+public abstract class AbstractMappedPolicy<C> implements IPolicy {
     
     private static final ObjectMapper mapper = new ObjectMapper();
     
@@ -52,22 +56,44 @@ public abstract class AbstractMappedPolicy<C> extends AbstractPolicy {
      * @return the class to use for JSON configuration deserialization
      */
     protected abstract Class<C> getConfigurationClass();
-    
+
     /**
-     * @see org.overlord.apiman.rt.engine.policy.IPolicy#setConfiguration(java.lang.Object)
+     * @see org.overlord.apiman.rt.engine.policy.IPolicy#apply(org.overlord.apiman.rt.engine.beans.ServiceRequest, org.overlord.apiman.rt.engine.policy.IPolicyContext, java.lang.Object, org.overlord.apiman.rt.engine.policy.IPolicyChain)
      */
     @SuppressWarnings("unchecked")
     @Override
-    public void setConfiguration(Object config) {
-        this.configuration = (C) config;
+    public final void apply(ServiceRequest request, IPolicyContext context, Object config,
+            IPolicyChain<ServiceRequest> chain) {
+        doApply(request, context, (C) config, chain);
     }
-    
+
     /**
-     * @see org.overlord.apiman.rt.engine.policy.IPolicy#getConfiguration()
+     * @param request
+     * @param chain
      */
+    protected void doApply(ServiceRequest request, IPolicyContext context, C config, IPolicyChain<ServiceRequest> chain) {
+        chain.doApply(request);
+    }
+
+    /**
+     * @see org.overlord.apiman.rt.engine.policy.IPolicy#apply(org.overlord.apiman.rt.engine.beans.ServiceResponse, org.overlord.apiman.rt.engine.policy.IPolicyContext, java.lang.Object, org.overlord.apiman.rt.engine.policy.IPolicyChain)
+     */
+    @SuppressWarnings("unchecked")
     @Override
-    public C getConfiguration() {
-        return this.configuration;
+    public final void apply(ServiceResponse response, IPolicyContext context, Object config,
+            IPolicyChain<ServiceResponse> chain) {
+        doApply(response, context, (C) config, chain);
+    }
+
+    /**
+     * Apply the policy to the response.
+     * @param response
+     * @param context
+     * @param config
+     * @param chain
+     */
+    protected void doApply(ServiceResponse response, IPolicyContext context, C config, IPolicyChain<ServiceResponse> chain) {
+        chain.doApply(response);
     }
 
 }

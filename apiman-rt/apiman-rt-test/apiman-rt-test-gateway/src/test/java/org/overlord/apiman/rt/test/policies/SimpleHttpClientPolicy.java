@@ -23,7 +23,6 @@ import org.overlord.apiman.rt.engine.components.IHttpClientComponent;
 import org.overlord.apiman.rt.engine.components.http.HttpMethod;
 import org.overlord.apiman.rt.engine.components.http.IHttpClientRequest;
 import org.overlord.apiman.rt.engine.components.http.IHttpClientResponse;
-import org.overlord.apiman.rt.engine.io.IReadWriteStream;
 import org.overlord.apiman.rt.engine.policy.IPolicy;
 import org.overlord.apiman.rt.engine.policy.IPolicyChain;
 import org.overlord.apiman.rt.engine.policy.IPolicyContext;
@@ -50,17 +49,11 @@ public class SimpleHttpClientPolicy implements IPolicy {
     }
     
     /**
-     * @see org.overlord.apiman.rt.engine.policy.IPolicy#setConfiguration(java.lang.Object)
+     * @see org.overlord.apiman.rt.engine.policy.IPolicy#apply(org.overlord.apiman.rt.engine.beans.ServiceRequest, org.overlord.apiman.rt.engine.policy.IPolicyContext, java.lang.Object, org.overlord.apiman.rt.engine.policy.IPolicyChain)
      */
     @Override
-    public void setConfiguration(Object config) {
-    }
-
-    /**
-     * @see org.overlord.apiman.rt.engine.policy.IPolicy#apply(org.overlord.apiman.rt.engine.beans.ServiceRequest, org.overlord.apiman.rt.engine.policy.IPolicyContext, org.overlord.apiman.rt.engine.policy.IPolicyChain)
-     */
-    @Override
-    public void apply(final ServiceRequest request, final IPolicyContext context, final IPolicyChain<ServiceRequest> chain) {
+    public void apply(final ServiceRequest request, final IPolicyContext context, final Object config,
+            final IPolicyChain<ServiceRequest> chain) {
         final IHttpClientComponent httpClientComponent = context.getComponent(IHttpClientComponent.class);
         String endpoint = System.getProperty("apiman-rt-test-gateway.endpoints.echo"); //$NON-NLS-1$
         IHttpClientRequest clientRequest = httpClientComponent.request(endpoint, HttpMethod.GET, new IAsyncResultHandler<IHttpClientResponse>() {
@@ -84,35 +77,12 @@ public class SimpleHttpClientPolicy implements IPolicy {
     }
 
     /**
-     * @see org.overlord.apiman.rt.engine.policy.IPolicy#apply(org.overlord.apiman.rt.engine.beans.ServiceResponse, org.overlord.apiman.rt.engine.policy.IPolicyContext, org.overlord.apiman.rt.engine.policy.IPolicyChain)
+     * @see org.overlord.apiman.rt.engine.policy.IPolicy#apply(org.overlord.apiman.rt.engine.beans.ServiceResponse, org.overlord.apiman.rt.engine.policy.IPolicyContext, java.lang.Object, org.overlord.apiman.rt.engine.policy.IPolicyChain)
      */
     @Override
-    public void apply(ServiceResponse response, IPolicyContext context, IPolicyChain<ServiceResponse> chain) {
+    public void apply(ServiceResponse response, IPolicyContext context, Object config,
+            IPolicyChain<ServiceResponse> chain) {
         chain.doApply(response);
-    }
-
-    /**
-     * @see org.overlord.apiman.rt.engine.policy.IPolicy#getConfiguration()
-     */
-    @Override
-    public Object getConfiguration() {
-        return null;
-    }
-
-    /**
-     * @see org.overlord.apiman.rt.engine.policy.IPolicy#getRequestHandler()
-     */
-    @Override
-    public IReadWriteStream<ServiceRequest> getRequestHandler() {
-        return null;
-    }
-
-    /**
-     * @see org.overlord.apiman.rt.engine.policy.IPolicy#getResponseHandler()
-     */
-    @Override
-    public IReadWriteStream<ServiceResponse> getResponseHandler() {
-        return null;
     }
 
 }

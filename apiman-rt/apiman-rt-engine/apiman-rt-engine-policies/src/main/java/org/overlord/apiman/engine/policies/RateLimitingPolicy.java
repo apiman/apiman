@@ -52,12 +52,13 @@ public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig>
     }
     
     /**
-     * @see org.overlord.apiman.rt.engine.policy.AbstractPolicy#doApply(org.overlord.apiman.rt.engine.beans.ServiceRequest, org.overlord.apiman.rt.engine.policy.IPolicyContext, org.overlord.apiman.rt.engine.policy.IPolicyChain)
+     * @see org.overlord.apiman.engine.policies.AbstractMappedPolicy#doApply(org.overlord.apiman.rt.engine.beans.ServiceRequest, org.overlord.apiman.rt.engine.policy.IPolicyContext, java.lang.Object, org.overlord.apiman.rt.engine.policy.IPolicyChain)
      */
     @Override
-    protected void doApply(final ServiceRequest request, final IPolicyContext context, final IPolicyChain<ServiceRequest> chain) {
-        String bucketId = createBucketId(request);
-        RateBucketPeriod period = getPeriod();
+    protected void doApply(final ServiceRequest request, final IPolicyContext context, final RateLimitingConfig config,
+            final IPolicyChain<ServiceRequest> chain) {
+        String bucketId = createBucketId(request, config);
+        RateBucketPeriod period = getPeriod(config);
 
         // Couldn't get a bucket id?  It means no user was found.
         if (bucketId == null) {
@@ -68,7 +69,7 @@ public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig>
         }
         
         IRateLimiterComponent rateLimiter = context.getComponent(IRateLimiterComponent.class);
-        rateLimiter.accept(bucketId, period, getConfiguration().getLimit(), new IAsyncResultHandler<Boolean>() {
+        rateLimiter.accept(bucketId, period, config.getLimit(), new IAsyncResultHandler<Boolean>() {
             @Override
             public void handle(IAsyncResult<Boolean> result) {
                 if (result.isError()) {
@@ -92,10 +93,11 @@ public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig>
      * depending on the configuration of the policy.
      * 
      * @param request
+     * @param config
      */
-    private String createBucketId(ServiceRequest request) {
-        if (getConfiguration().getGranularity() == RateLimitingGranularity.User) {
-            String header = getConfiguration().getUserHeader();
+    private String createBucketId(ServiceRequest request, RateLimitingConfig config) {
+        if (config.getGranularity() == RateLimitingGranularity.User) {
+            String header = config.getUserHeader();
             String user = request.getHeaders().get(header);
             if (user == null) {
                 // policy failure
@@ -110,7 +112,7 @@ public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig>
                 builder.append(user);
                 return builder.toString();
             }
-        } else if (getConfiguration().getGranularity() == RateLimitingGranularity.Application) {
+        } else if (config.getGranularity() == RateLimitingGranularity.Application) {
             StringBuilder builder = new StringBuilder();
             builder.append("APP||"); //$NON-NLS-1$
             builder.append(request.getContract().getApplication().getOrganizationId());
@@ -129,9 +131,10 @@ public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig>
 
     /**
      * Gets the appropriate bucket period from the config.
+     * @param config
      */
-    private RateBucketPeriod getPeriod() {
-        RateLimitingPeriod period = getConfiguration().getPeriod();
+    private RateBucketPeriod getPeriod(RateLimitingConfig config) {
+        RateLimitingPeriod period = config.getPeriod();
         switch (period) {
         case Second:
             return RateBucketPeriod.Second;
