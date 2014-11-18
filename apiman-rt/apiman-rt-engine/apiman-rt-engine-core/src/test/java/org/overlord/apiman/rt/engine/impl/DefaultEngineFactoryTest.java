@@ -26,19 +26,15 @@ import org.junit.Test;
 import static org.mockito.BDDMockito.*;
 
 import org.mockito.InOrder;
-import org.overlord.apiman.rt.engine.ApimanBuffer;
 import org.overlord.apiman.rt.engine.IEngineResult;
 import org.overlord.apiman.rt.engine.IConnectorFactory;
 import org.overlord.apiman.rt.engine.IEngine;
-import org.overlord.apiman.rt.engine.IPolicyRequestExecutor;
+import org.overlord.apiman.rt.engine.IServiceRequestExecutor;
 import org.overlord.apiman.rt.engine.IServiceConnector;
 import org.overlord.apiman.rt.engine.async.AbstractSignalStream;
-import org.overlord.apiman.rt.engine.async.ISignalReadStream;
 import org.overlord.apiman.rt.engine.async.IAsyncHandler;
 import org.overlord.apiman.rt.engine.async.IAsyncResult;
 import org.overlord.apiman.rt.engine.async.IAsyncResultHandler;
-import org.overlord.apiman.rt.engine.async.ISignalWriteStream;
-import org.overlord.apiman.rt.engine.async.IWriteStream;
 import org.overlord.apiman.rt.engine.beans.Application;
 import org.overlord.apiman.rt.engine.beans.Contract;
 import org.overlord.apiman.rt.engine.beans.Policy;
@@ -46,6 +42,10 @@ import org.overlord.apiman.rt.engine.beans.Service;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
 import org.overlord.apiman.rt.engine.beans.ServiceResponse;
 import org.overlord.apiman.rt.engine.beans.exceptions.ConnectorException;
+import org.overlord.apiman.rt.engine.io.IBuffer;
+import org.overlord.apiman.rt.engine.io.ISignalReadStream;
+import org.overlord.apiman.rt.engine.io.ISignalWriteStream;
+import org.overlord.apiman.rt.engine.io.IWriteStream;
 
 /**
  * Unit test for the default engine factory.
@@ -56,9 +56,9 @@ import org.overlord.apiman.rt.engine.beans.exceptions.ConnectorException;
 public class DefaultEngineFactoryTest {
 
     private List<Policy> policyList;
-    private ApimanBuffer mockBufferInbound;
-    private ApimanBuffer mockBufferOutbound;
-    private IAsyncHandler<ApimanBuffer> mockBodyHandler;
+    private IBuffer mockBufferInbound;
+    private IBuffer mockBufferOutbound;
+    private IAsyncHandler<IBuffer> mockBodyHandler;
     private IAsyncHandler<Void> mockEndHandler;
     private IAsyncHandler<Void> transmitHandler;
     
@@ -72,16 +72,16 @@ public class DefaultEngineFactoryTest {
         given(policyBean.getPolicyImpl()).willReturn(PassthroughPolicy.QUALIFIED_NAME);
         given(policyBean.getPolicyJsonConfig()).willReturn("{}");
         
-        mockBufferInbound = mock(ApimanBuffer.class);
+        mockBufferInbound = mock(IBuffer.class);
         given(mockBufferInbound.toString()).willReturn("stottie");
         
-        mockBufferOutbound = mock(ApimanBuffer.class);
+        mockBufferOutbound = mock(IBuffer.class);
         given(mockBufferOutbound.toString()).willReturn("bacon");
 
         policyList = new ArrayList<Policy>();   
         policyList.add(policyBean);
         
-        mockBodyHandler = (IAsyncHandler<ApimanBuffer>) mock(IAsyncHandler.class);
+        mockBodyHandler = (IAsyncHandler<IBuffer>) mock(IAsyncHandler.class);
         mockEndHandler = (IAsyncHandler<Void>) mock(IAsyncHandler.class);
     }
 
@@ -114,7 +114,7 @@ public class DefaultEngineFactoryTest {
                                 mockResponseHandler = new AbstractSignalStream<ServiceResponse>() {
 
                                     @Override
-                                    public void write(ApimanBuffer chunk) {
+                                    public void write(IBuffer chunk) {
                                         handleBody(chunk);
                                     }
 
@@ -197,7 +197,7 @@ public class DefaultEngineFactoryTest {
         request.setDestination("/");
         request.setType("TEST");
                         
-        IPolicyRequestExecutor prExecutor = engine.request(request, new IAsyncResultHandler<IEngineResult>() {
+        IServiceRequestExecutor prExecutor = engine.executor(request, new IAsyncResultHandler<IEngineResult>() {
             
             @Override //At this point, we are either saying *fail* or *response connection is ready*
             public void handle(IAsyncResult<IEngineResult> result) {

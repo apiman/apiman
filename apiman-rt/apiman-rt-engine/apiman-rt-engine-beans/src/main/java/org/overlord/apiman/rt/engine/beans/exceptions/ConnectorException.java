@@ -41,4 +41,12 @@ public class ConnectorException extends AbstractEngineException {
         super(message, cause);
     }
 
+    /**
+     * Constructor.
+     * @param cause the root cause
+     */
+    public ConnectorException(Throwable cause) {
+        super(cause.getMessage(), cause);
+    }
+
 }

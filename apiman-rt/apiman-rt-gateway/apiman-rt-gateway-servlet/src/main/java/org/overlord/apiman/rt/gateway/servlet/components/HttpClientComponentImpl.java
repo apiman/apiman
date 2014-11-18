@@ -15,17 +15,7 @@
  */
 package org.overlord.apiman.rt.gateway.servlet.components;
 
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpHead;
-import org.apache.http.client.methods.HttpOptions;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.client.methods.HttpTrace;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.overlord.apiman.rt.engine.async.IAsyncHandler;
+import org.overlord.apiman.rt.engine.async.IAsyncResultHandler;
 import org.overlord.apiman.rt.engine.components.IHttpClientComponent;
 import org.overlord.apiman.rt.engine.components.http.HttpMethod;
 import org.overlord.apiman.rt.engine.components.http.IHttpClientRequest;
@@ -38,8 +28,6 @@ import org.overlord.apiman.rt.engine.components.http.IHttpClientResponse;
  */
 public class HttpClientComponentImpl implements IHttpClientComponent {
     
-    private CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-
     /**
      * Constructor.
      */
@@ -47,37 +35,11 @@ public class HttpClientComponentImpl implements IHttpClientComponent {
     }
     
     /**
-     * @see org.overlord.apiman.rt.engine.components.IHttpClientComponent#request(java.lang.String, org.overlord.apiman.rt.engine.components.http.HttpMethod, org.overlord.apiman.rt.engine.async.IAsyncHandler)
+     * @see org.overlord.apiman.rt.engine.components.IHttpClientComponent#request(java.lang.String, org.overlord.apiman.rt.engine.components.http.HttpMethod, org.overlord.apiman.rt.engine.async.IAsyncResultHandler)
      */
     @Override
-    public IHttpClientRequest request(String endpoint, HttpMethod method, IAsyncHandler<IHttpClientResponse> handler) {
-        HttpRequestBase hrb = null;
-        switch (method) {
-        case DELETE:
-            hrb = new HttpDelete(endpoint);
-            break;
-        case GET:
-            hrb = new HttpGet(endpoint);
-            break;
-        case HEAD:
-            hrb = new HttpHead(endpoint);
-            break;
-        case OPTIONS:
-            hrb = new HttpOptions(endpoint);
-            break;
-        case POST:
-            hrb = new HttpPost(endpoint);
-            break;
-        case PUT:
-            hrb = new HttpPut(endpoint);
-            break;
-        case TRACE:
-            hrb = new HttpTrace(endpoint);
-            break;
-        }
-        
-        IHttpClientRequest request = new HttpClientRequestImpl(httpClient, hrb, handler);
-        return request;
+    public IHttpClientRequest request(String endpoint, HttpMethod method, IAsyncResultHandler<IHttpClientResponse> handler) {
+        return new HttpClientRequestImpl(endpoint, method, handler);
     }
 
 }

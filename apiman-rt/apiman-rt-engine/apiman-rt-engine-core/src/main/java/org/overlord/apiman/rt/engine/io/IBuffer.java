@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.rt.engine;
+package org.overlord.apiman.rt.engine.io;
 
 /**
  * A generic buffer used throughout APIMan, principally for streaming body
@@ -29,9 +29,8 @@ package org.overlord.apiman.rt.engine;
  * reduce repackaging overhead.
  * 
  * @author Marc Savy <msavy@redhat.com>
- * @param <N> Encapsulated native type
  */
-public interface ApimanBuffer {
+public interface IBuffer {
 
     /**
      * Get encapsulated native buffer.
@@ -53,7 +52,7 @@ public interface ApimanBuffer {
      * @param index
      * @param buffer
      */
-    void set(int index, ApimanBuffer buffer);
+    void set(int index, IBuffer buffer);
 
     /**
      * Set ApimanBuffer at given index with buffer at given offset and constrained length.
@@ -63,19 +62,19 @@ public interface ApimanBuffer {
      * @param offset Provided buffer offset index
      * @param length Provided buffer maximum length to set
      */
-    void set(int index, ApimanBuffer buffer, int offset, int length);
+    void set(int index, IBuffer buffer, int offset, int length);
 
     /**
      * @param buffer Buffer to append
      */
-    void append(ApimanBuffer buffer);
+    void append(IBuffer buffer);
 
     /**
      * @param buffer Buffer to append
      * @param offset Provided buffer offset
      * @param length Provided buffer maximum length to append
      */
-    void append(ApimanBuffer buffer, int offset, int length);
+    void append(IBuffer buffer, int offset, int length);
 
     // Byte
 
@@ -107,8 +106,8 @@ public interface ApimanBuffer {
     /**
      * Get ApimanBuffer as byte array constrained by indices.
      * 
-     * @param start Start index
-     * @param end End index
+     * @param start Start index inclusive
+     * @param end End index exclusive
      * @return ApimanBuffer as byte array
      */
     byte[] getBytes(int start, int end);

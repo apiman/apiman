@@ -15,18 +15,17 @@
  */
 package org.overlord.apiman.rt.gateway.servlet.components;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.commons.io.IOUtils;
 import org.overlord.apiman.rt.engine.async.AsyncResultImpl;
-import org.overlord.apiman.rt.engine.async.IAsyncHandler;
+import org.overlord.apiman.rt.engine.async.IAsyncResultHandler;
+import org.overlord.apiman.rt.engine.components.http.HttpMethod;
 import org.overlord.apiman.rt.engine.components.http.IHttpClientRequest;
 import org.overlord.apiman.rt.engine.components.http.IHttpClientResponse;
 
@@ -37,20 +36,23 @@ import org.overlord.apiman.rt.engine.components.http.IHttpClientResponse;
  */
 public class HttpClientRequestImpl implements IHttpClientRequest {
     
-    private CloseableHttpClient httpClient;
-    private HttpRequestBase httpRequest;
-    private IAsyncHandler<IHttpClientResponse> handler;
-    private ByteArrayOutputStream body = new ByteArrayOutputStream();
+    private String endpoint;
+    private HttpMethod method;
+    private Map<String, String> headers = new HashMap<String, String>();
+    private IAsyncResultHandler<IHttpClientResponse> handler;
+    
+    private HttpURLConnection connection;
+    private OutputStream outputStream;
 
     /**
      * Constructor.
-     * @param httpClient
-     * @param httpRequest
+     * @param endpoint
+     * @param method
      * @param handler
      */
-    public HttpClientRequestImpl(CloseableHttpClient httpClient, HttpRequestBase httpRequest, IAsyncHandler<IHttpClientResponse> handler) {
-        this.httpClient = httpClient;
-        this.httpRequest = httpRequest;
+    public HttpClientRequestImpl(String endpoint, HttpMethod method, IAsyncResultHandler<IHttpClientResponse> handler) {
+        this.endpoint = endpoint;
+        this.method = method;
         this.handler = handler;
     }
 
@@ -59,7 +61,7 @@ public class HttpClientRequestImpl implements IHttpClientRequest {
      */
     @Override
     public void addHeader(String headerName, String headerValue) {
-        httpRequest.addHeader(headerName, headerValue);
+        headers.put(headerName, headerValue);
     }
 
     /**
@@ -67,7 +69,7 @@ public class HttpClientRequestImpl implements IHttpClientRequest {
      */
     @Override
     public void removeHeader(String headerName) {
-        httpRequest.removeHeaders(headerName);
+        headers.remove(headerName);
     }
 
     /**
@@ -75,15 +77,31 @@ public class HttpClientRequestImpl implements IHttpClientRequest {
      */
     @Override
     public void write(byte[] data) {
-        try { body.write(data); } catch (IOException e) { throw new RuntimeException(e); }
+        if (connection == null) {
+            connect();
+        }
+        try { 
+            if (outputStream == null) {
+                outputStream = connection.getOutputStream();
+            }
+            connection.getOutputStream().write(data);
+        } catch (IOException e) {
+            connection.disconnect();
+            handler.handle(AsyncResultImpl.<IHttpClientResponse>create(e));
+            throw new RuntimeException(e);
+        }
     }
 
     /**
-     * @see org.overlord.apiman.rt.engine.components.http.IHttpClientRequest#write(java.lang.String)
+     * @see org.overlord.apiman.rt.engine.components.http.IHttpClientRequest#write(java.lang.String, java.lang.String)
      */
     @Override
-    public void write(String data) {
-        try { body.write(data.getBytes("UTF-8")); } catch (IOException e) { throw new RuntimeException(e); } //$NON-NLS-1$
+    public void write(String data, String charsetName) {
+        if (connection == null) {
+            connect();
+        }
+        
+        try { connection.getOutputStream().write(data.getBytes(charsetName)); } catch (IOException e) { throw new RuntimeException(e); }
     }
 
     /**
@@ -91,19 +109,41 @@ public class HttpClientRequestImpl implements IHttpClientRequest {
      */
     @Override
     public void end() {
-        if (body.size() > 0) {
-            ByteArrayEntity entity = new ByteArrayEntity(body.toByteArray());
-            ((HttpEntityEnclosingRequestBase) httpRequest).setEntity(entity);
+        if (connection == null) {
+            connect();
         }
+        if (outputStream != null) {
+            IOUtils.closeQuietly(outputStream);
+            outputStream = null;
+        }
+        IHttpClientResponse clientResponse = new HttpClientResponseImpl(connection);
+        handler.handle(AsyncResultImpl.create(clientResponse));
+    }
+    
+    /**
+     * Connect to the remote server.
+     */
+    private void connect() {
         try {
-            HttpResponse response = httpClient.execute(httpRequest);
-            InputStream content = response.getEntity().getContent();
-            IHttpClientResponse clientResponse = new HttpClientResponseImpl(response, content);
-            handler.handle(AsyncResultImpl.create(clientResponse));
-        } catch (ClientProtocolException e) {
-            handler.handle(AsyncResultImpl.<IHttpClientResponse>create(e));
-        } catch (IOException e) {
-            handler.handle(AsyncResultImpl.<IHttpClientResponse>create(e));
+            URL url = new URL(this.endpoint);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setReadTimeout(15000);
+            connection.setConnectTimeout(10000);
+            connection.setRequestMethod(this.method.name());
+            if (method == HttpMethod.POST || method == HttpMethod.PUT) {
+                connection.setDoOutput(true);
+            } else {
+                connection.setDoOutput(false);
+            }
+            connection.setDoInput(true);
+            connection.setUseCaches(false);
+            for (String headerName : headers.keySet()) {
+                String headerValue = headers.get(headerName);
+                connection.setRequestProperty(headerName, headerValue);
+            }
+            connection.connect();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 

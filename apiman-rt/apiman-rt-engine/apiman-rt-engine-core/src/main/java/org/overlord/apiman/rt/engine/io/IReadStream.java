@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.rt.engine.async;
+package org.overlord.apiman.rt.engine.io;
 
-import org.overlord.apiman.rt.engine.ApimanBuffer;
+import org.overlord.apiman.rt.engine.async.IAsyncHandler;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
 
 /**
@@ -31,7 +31,7 @@ public interface IReadStream<H> extends IStream {
      * 
      * @param bodyHandler
      */
-    public void bodyHandler(IAsyncHandler<ApimanBuffer> bodyHandler);
+    public void bodyHandler(IAsyncHandler<IBuffer> bodyHandler);
 
     /**
      * Handler signals when transmission has completed; no further calls to

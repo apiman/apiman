@@ -16,21 +16,13 @@
 package org.overlord.apiman.rt.engine.async;
 
 /**
- * As {@link IReadStream} but with explicit {@link #transmit()} which indicates to the sender that they may
- * begin transmitting.
- * 
- * Implementors must ensure that no data is sent before {@link #transmit()} is called; when or if the data is
- * ultimately sent is implementation dependent.
+ * An object that can be aborted.
  * 
  * @author Marc Savy <msavy@redhat.com>
- *
- * @param <H> Head type.
  */
-public interface ISignalReadStream<H> extends IReadStream<H>, Abortable {
-
+public interface IAbortable {
     /**
-     * Signal that transmission may begin. No calls to {@link #bodyHandler(IAsyncHandler)} or
-     * {@link #endHandler(IAsyncHandler)} will arrive until this has been invoked.
+     * Signal abort.
      */
-    void transmit();
+    void abort();
 }

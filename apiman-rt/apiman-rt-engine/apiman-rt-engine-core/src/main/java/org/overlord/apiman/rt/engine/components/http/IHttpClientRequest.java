@@ -51,8 +51,9 @@ public interface IHttpClientRequest {
      * optional depending on the type of request being made.
      * 
      * @param body
+     * @param charsetName
      */
-    void write(String body);
+    void write(String body, String charsetName);
 
     /**
      * Called once all headers have been set and all data has been written.

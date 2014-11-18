@@ -27,7 +27,7 @@ import javax.sql.DataSource;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.overlord.apiman.engine.policies.config.basicauth.JDBCIdentitySource;
 import org.overlord.apiman.rt.engine.async.AsyncResultImpl;
-import org.overlord.apiman.rt.engine.async.IAsyncHandler;
+import org.overlord.apiman.rt.engine.async.IAsyncResultHandler;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
 import org.overlord.apiman.rt.engine.policy.IPolicyContext;
 
@@ -50,7 +50,7 @@ public class JDBCIdentityValidator implements IIdentityValidator<JDBCIdentitySou
      */
     @Override
     public void validate(String username, String password, ServiceRequest request, IPolicyContext context,
-            JDBCIdentitySource config, IAsyncHandler<Boolean> handler) {
+            JDBCIdentitySource config, IAsyncResultHandler<Boolean> handler) {
         DataSource ds = lookupDatasource(config);
         String sqlPwd = password;
         switch (config.getHashAlgorithm()) {

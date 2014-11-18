@@ -17,12 +17,10 @@ package org.overlord.apiman.rt.gateway.servlet.components;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.StringBuilderWriter;
-import org.apache.http.Header;
-import org.apache.http.HttpResponse;
-import org.apache.http.util.EntityUtils;
 import org.overlord.apiman.rt.engine.components.http.IHttpClientResponse;
 
 /**
@@ -32,17 +30,14 @@ import org.overlord.apiman.rt.engine.components.http.IHttpClientResponse;
  */
 public class HttpClientResponseImpl implements IHttpClientResponse {
     
-    private HttpResponse response;
-    private InputStream body;
+    private HttpURLConnection connection;
 
     /**
      * Constructor.
-     * @param response
-     * @param content
+     * @param connection
      */
-    public HttpClientResponseImpl(HttpResponse response, InputStream content) {
-        this.response = response;
-        this.body = content;
+    public HttpClientResponseImpl(HttpURLConnection connection) {
+        this.connection = connection;
     }
 
     /**
@@ -50,7 +45,11 @@ public class HttpClientResponseImpl implements IHttpClientResponse {
      */
     @Override
     public int getResponseCode() {
-        return response.getStatusLine().getStatusCode();
+        try {
+            return connection.getResponseCode();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -58,7 +57,11 @@ public class HttpClientResponseImpl implements IHttpClientResponse {
      */
     @Override
     public String getResponseMessage() {
-        return response.getStatusLine().getReasonPhrase();
+        try {
+            return connection.getResponseMessage();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -66,12 +69,7 @@ public class HttpClientResponseImpl implements IHttpClientResponse {
      */
     @Override
     public String getHeader(String headerName) {
-        Header header = response.getFirstHeader(headerName);
-        if (header != null) {
-            return header.getValue();
-        } else {
-            return null;
-        }
+        return connection.getHeaderField(headerName);
     }
 
     /**
@@ -79,16 +77,24 @@ public class HttpClientResponseImpl implements IHttpClientResponse {
      */
     @Override
     public String getBody() {
-        if (body != null) {
-            StringBuilderWriter writer = new StringBuilderWriter();
-            try {
-                IOUtils.copy(body, writer);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+        InputStream body = null;
+        try {
+            body = connection.getInputStream();
+            if (body != null) {
+                StringBuilderWriter writer = new StringBuilderWriter();
+                try {
+                    IOUtils.copy(body, writer);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                return writer.getBuilder().toString();
+            } else {
+                return null;
             }
-            return writer.getBuilder().toString();
-        } else {
-            return null;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            IOUtils.closeQuietly(body);
         }
     }
     
@@ -98,7 +104,8 @@ public class HttpClientResponseImpl implements IHttpClientResponse {
     @Override
     public void close() {
         try {
-            EntityUtils.consume(response.getEntity());
+            IOUtils.closeQuietly(connection.getInputStream());
+            connection.disconnect();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

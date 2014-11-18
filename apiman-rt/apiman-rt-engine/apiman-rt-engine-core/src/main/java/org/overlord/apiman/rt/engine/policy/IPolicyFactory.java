@@ -16,7 +16,6 @@
 package org.overlord.apiman.rt.engine.policy;
 
 import org.overlord.apiman.rt.engine.beans.exceptions.PolicyNotFoundException;
-import org.overlord.apiman.rt.engine.beans.exceptions.NoSuchPolicyException;
 
 
 /**
@@ -27,23 +26,12 @@ import org.overlord.apiman.rt.engine.beans.exceptions.NoSuchPolicyException;
 public interface IPolicyFactory {
     
     /**
-     * Gets a policy using the policy-impl information provided.
-     * @param policyImpl
-     * @throws PolicyNotFoundException
-     */
-    Class<AbstractPolicy> loadPolicyClass(String policyImpl, String jsonConfiguration) throws PolicyNotFoundException;
-    
-    /**
      * Instantiate a new preconfigured policy.
      * 
      * @param policyImpl qualified name
      * @return Instantiated policy
      * @throws NoSuchPolicyException
      */
-    AbstractPolicy newPolicy(String policyImpl) throws NoSuchPolicyException;
+    IPolicy newPolicy(String policyImpl) throws PolicyNotFoundException;
     
-    /**
-     * @return Number of policies held in the factory.
-     */
-    int size();
 }

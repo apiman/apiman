@@ -19,7 +19,8 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.overlord.apiman.rt.engine.async.IAsyncHandler;
+import org.overlord.apiman.rt.engine.async.AsyncResultImpl;
+import org.overlord.apiman.rt.engine.async.IAsyncResultHandler;
 import org.overlord.apiman.rt.engine.components.IRateLimiterComponent;
 import org.overlord.apiman.rt.engine.rates.RateBucketPeriod;
 
@@ -40,10 +41,10 @@ public class InMemoryRateLimiterComponent implements IRateLimiterComponent {
     }
 
     /**
-     * @see org.overlord.apiman.rt.engine.components.IRateLimiterComponent#accept(java.lang.String, org.overlord.apiman.rt.engine.rates.RateBucketPeriod, int, org.overlord.apiman.rt.engine.async.IAsyncHandler)
+     * @see org.overlord.apiman.rt.engine.components.IRateLimiterComponent#accept(java.lang.String, org.overlord.apiman.rt.engine.rates.RateBucketPeriod, int, org.overlord.apiman.rt.engine.async.IAsyncResultHandler)
      */
     @Override
-    public void accept(String bucketId, RateBucketPeriod period, int limit, IAsyncHandler<Boolean> handler) {
+    public void accept(String bucketId, RateBucketPeriod period, int limit, IAsyncResultHandler<Boolean> handler) {
         RateLimiterBucket bucket = null;
         synchronized (buckets) {
             bucket = buckets.get(bucketId);
@@ -56,11 +57,11 @@ public class InMemoryRateLimiterComponent implements IRateLimiterComponent {
         synchronized (bucket.mutex) {
             bucket.resetIfNecessary(period);
             if (bucket.count >= limit) {
-                handler.handle(Boolean.FALSE);
+                handler.handle(AsyncResultImpl.<Boolean>create(Boolean.FALSE));
             } else {
                 bucket.count++;
                 bucket.last = System.currentTimeMillis();
-                handler.handle(Boolean.TRUE);
+                handler.handle(AsyncResultImpl.<Boolean>create(Boolean.TRUE));
             }
         }
     }

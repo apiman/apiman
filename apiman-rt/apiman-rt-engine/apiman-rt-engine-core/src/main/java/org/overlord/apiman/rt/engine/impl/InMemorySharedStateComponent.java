@@ -20,7 +20,8 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
-import org.overlord.apiman.rt.engine.async.IAsyncHandler;
+import org.overlord.apiman.rt.engine.async.AsyncResultImpl;
+import org.overlord.apiman.rt.engine.async.IAsyncResultHandler;
 import org.overlord.apiman.rt.engine.components.ISharedStateComponent;
 
 /**
@@ -42,12 +43,12 @@ public class InMemorySharedStateComponent implements ISharedStateComponent {
     }
 
     /**
-     * @see org.overlord.apiman.rt.engine.components.ISharedStateComponent#getProperty(java.lang.String, java.lang.String, java.lang.Object, org.overlord.apiman.rt.engine.async.IAsyncHandler)
+     * @see org.overlord.apiman.rt.engine.components.ISharedStateComponent#getProperty(java.lang.String, java.lang.String, java.lang.Object, org.overlord.apiman.rt.engine.async.IAsyncResultHandler)
      */
     @SuppressWarnings("unchecked")
     @Override
     public <T> void getProperty(String namespace, String propertyName, T defaultValue,
-            IAsyncHandler<T> handler) {
+            IAsyncResultHandler<T> handler) {
         T value = null;
         synchronized (sharedState) {
             QName key = new QName(namespace, propertyName);
@@ -56,44 +57,44 @@ public class InMemorySharedStateComponent implements ISharedStateComponent {
         if (value == null) {
             value = defaultValue;
         }
-        handler.handle(value);//AsyncResultImpl.create(value));
+        handler.handle(AsyncResultImpl.create(value));
     }
 
     /**
-     * @see org.overlord.apiman.rt.engine.components.ISharedStateComponent#setProperty(java.lang.String, java.lang.String, java.lang.Object, org.overlord.apiman.rt.engine.async.IAsyncHandler)
+     * @see org.overlord.apiman.rt.engine.components.ISharedStateComponent#setProperty(java.lang.String, java.lang.String, java.lang.Object, org.overlord.apiman.rt.engine.async.IAsyncResultHandler)
      */
     @SuppressWarnings("unchecked")
     @Override
-    public <T> void setProperty(String namespace, String propertyName, T value, IAsyncHandler<T> handler) {
+    public <T> void setProperty(String namespace, String propertyName, T value, IAsyncResultHandler<T> handler) {
         QName key = new QName(namespace, propertyName);
         T oldValue = null;
         synchronized (sharedState) {
             oldValue = (T) sharedState.get(key);
             sharedState.put(key, value);
         }
-        handler.handle(oldValue);//(AsyncResultImpl.create(oldValue));
+        handler.handle(AsyncResultImpl.create(oldValue));
     }
 
     /**
-     * @see org.overlord.apiman.rt.engine.components.ISharedStateComponent#clearProperty(java.lang.String, java.lang.String, org.overlord.apiman.rt.engine.async.IAsyncHandler)
+     * @see org.overlord.apiman.rt.engine.components.ISharedStateComponent#clearProperty(java.lang.String, java.lang.String, org.overlord.apiman.rt.engine.async.IAsyncResultHandler)
      */
     @SuppressWarnings("unchecked")
     @Override
-    public <T> void clearProperty(String namespace, String propertyName, IAsyncHandler<T> handler) {
+    public <T> void clearProperty(String namespace, String propertyName, IAsyncResultHandler<T> handler) {
         QName key = new QName(namespace, propertyName);
         T oldValue = null;
         synchronized (sharedState) {
             oldValue = (T) sharedState.remove(key);
         }
-        handler.handle(oldValue);//(AsyncResultImpl.create(oldValue));
+        handler.handle(AsyncResultImpl.create(oldValue));
     }
 
     /**
-     * @see org.overlord.apiman.rt.engine.components.ISharedStateComponent#increment(java.lang.String, java.lang.String, java.lang.Number, org.overlord.apiman.rt.engine.async.IAsyncHandler)
+     * @see org.overlord.apiman.rt.engine.components.ISharedStateComponent#increment(java.lang.String, java.lang.String, java.lang.Number, org.overlord.apiman.rt.engine.async.IAsyncResultHandler)
      */
     @Override
     public <T extends Number> void increment(String namespace, String propertyName, T amount,
-            IAsyncHandler<T> handler) {
+            IAsyncResultHandler<T> handler) {
         // TODO Auto-generated method stub
         
     }

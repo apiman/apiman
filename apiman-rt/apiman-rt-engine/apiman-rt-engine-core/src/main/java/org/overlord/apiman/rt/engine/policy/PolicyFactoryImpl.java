@@ -18,9 +18,6 @@ package org.overlord.apiman.rt.engine.policy;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.overlord.apiman.rt.engine.policy.AbstractPolicy;
-import org.overlord.apiman.rt.engine.beans.exceptions.ConfigurationParseException;
-import org.overlord.apiman.rt.engine.beans.exceptions.NoSuchPolicyException;
 import org.overlord.apiman.rt.engine.beans.exceptions.PolicyNotFoundException;
 
 /**
@@ -29,7 +26,7 @@ import org.overlord.apiman.rt.engine.beans.exceptions.PolicyNotFoundException;
  * @author eric.wittmann@redhat.com
  */
 public class PolicyFactoryImpl implements IPolicyFactory {
-    private Map<String, PolicyWithConfiguration> canonicalCache = new HashMap<String, PolicyWithConfiguration>();
+    private Map<String, Class<IPolicy>> canonicalCache = new HashMap<String, Class<IPolicy>>();
 
     /**
      * Constructor.
@@ -37,18 +34,22 @@ public class PolicyFactoryImpl implements IPolicyFactory {
     public PolicyFactoryImpl() {
     }
 
-    public AbstractPolicy newPolicy(String qualifiedName) throws NoSuchPolicyException {
-        PolicyWithConfiguration pwc = canonicalCache.get(qualifiedName);
-        AbstractPolicy newInstance = createPolicy(pwc.getPolicyClass());
-        newInstance.setConfig(pwc.getConfiguration());
+    /**
+     * @see org.overlord.apiman.rt.engine.policy.IPolicyFactory#newPolicy(java.lang.String)
+     */
+    @Override
+    public IPolicy newPolicy(String qualifiedName) throws PolicyNotFoundException {
+        Class<IPolicy> policyClass = loadPolicyClass(qualifiedName);
+        IPolicy newInstance = createPolicy(policyClass);
         return newInstance;
     }
 
     /**
-     * @see org.overlord.apiman.rt.engine.policy.IPolicyFactory#getPolicy(java.lang.String)
+     * Loads a policy class.  Caches the loaded class for efficiency.
+     * @param policyImpl
+     * @throws PolicyNotFoundException
      */
-    @Override
-    public Class<AbstractPolicy> loadPolicyClass(String policyImpl, String jsonConfiguration) throws PolicyNotFoundException, ConfigurationParseException {
+    public Class<IPolicy> loadPolicyClass(String policyImpl) throws PolicyNotFoundException {
         if (policyImpl == null) {
             throw new PolicyNotFoundException(policyImpl);
         }
@@ -56,7 +57,7 @@ public class PolicyFactoryImpl implements IPolicyFactory {
         // Not synchronized - don't care if we create 2 or 3 of these, it's not worth
         // the synchronization overhead to protect against that.
         if (canonicalCache.containsKey(policyImpl)) {
-            return canonicalCache.get(policyImpl).getPolicyClass();
+            return canonicalCache.get(policyImpl);
         }
 
         // Handle the various policyImpl formats.  Valid formats include:
@@ -82,31 +83,25 @@ public class PolicyFactoryImpl implements IPolicyFactory {
             }
 
             @SuppressWarnings("unchecked")
-            Class<AbstractPolicy> policyClass = (Class<AbstractPolicy>) c;
-
-            // Validate config by parsing it.
-            AbstractPolicy validationPolicy = createPolicy(policyClass);
-            Object parsedConfig = validationPolicy.parseConfiguration(jsonConfiguration);
-
-            canonicalCache.put(policyImpl, new PolicyWithConfiguration(policyClass, parsedConfig));
+            Class<IPolicy> policyClass = (Class<IPolicy>) c;
+            canonicalCache.put(policyImpl, policyClass);
             return policyClass;
         } else {
             throw new PolicyNotFoundException(policyImpl);
         }
     }
 
-    private AbstractPolicy createPolicy(Class<AbstractPolicy> clazz) {
+    /**
+     * Creates a policy from the given class.  The class must have a no-arg constructor.
+     * @param clazz
+     */
+    private IPolicy createPolicy(Class<IPolicy> clazz) {
         try {
-            AbstractPolicy policy = (AbstractPolicy) clazz.newInstance();
+            IPolicy policy = (IPolicy) clazz.newInstance();
             return policy;
         } catch (Exception e) {
             throw new RuntimeException("Error instantiating policy class: " + clazz, e); //$NON-NLS-1$
         }
-    }
-
-    @Override
-    public int size() {
-       return canonicalCache.keySet().size();
     }
 
 }

@@ -29,7 +29,7 @@ import org.overlord.apiman.rt.engine.policy.IPolicyContext;
  *
  * @author eric.wittmann@redhat.com
  */
-public class IPWhitelistPolicy extends AbstractPolicy<IPWhitelistConfig> {
+public class IPWhitelistPolicy extends AbstractMappedPolicy<IPWhitelistConfig> {
     
     /**
      * Constructor.
@@ -38,22 +38,20 @@ public class IPWhitelistPolicy extends AbstractPolicy<IPWhitelistConfig> {
     }
     
     /**
-     * @see org.overlord.apiman.engine.policies.AbstractPolicy#getConfigClass()
+     * @see org.overlord.apiman.rt.engine.policy.AbstractPolicy#getConfigurationClass()
      */
     @Override
-    protected Class<IPWhitelistConfig> getConfigClass() {
+    protected Class<IPWhitelistConfig> getConfigurationClass() {
         return IPWhitelistConfig.class;
     }
     
     /**
-     * @see org.overlord.apiman.engine.policies.AbstractPolicy#doApply(org.overlord.apiman.rt.engine.beans.ServiceRequest, org.overlord.apiman.rt.engine.policy.IPolicyContext, java.lang.Object, org.overlord.apiman.rt.engine.policy.IPolicyChain)
+     * @see org.overlord.apiman.rt.engine.policy.AbstractPolicy#doApply(org.overlord.apiman.rt.engine.beans.ServiceRequest, org.overlord.apiman.rt.engine.policy.IPolicyContext, org.overlord.apiman.rt.engine.policy.IPolicyChain)
      */
     @Override
-    protected void doApply(ServiceRequest request, IPolicyContext context, IPWhitelistConfig config,
-            IPolicyChain chain) {
-        IPWhitelistConfig wc = (IPWhitelistConfig) config;
-        if (wc.getIpList().contains(request.getRemoteAddr())) {
-            super.doApply(request, context, config, chain);
+    protected void doApply(ServiceRequest request, IPolicyContext context, IPolicyChain<ServiceRequest> chain) {
+        if (getConfiguration().getIpList().contains(request.getRemoteAddr())) {
+            super.doApply(request, context, chain);
         } else {
             IPolicyFailureFactoryComponent ffactory = context.getComponent(IPolicyFailureFactoryComponent.class);
             String msg = Messages.i18n.format("IPWhitelistPolicy.NotWhitelisted", request.getRemoteAddr()); //$NON-NLS-1$

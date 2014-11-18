@@ -13,24 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.rt.engine;
+package org.overlord.apiman.rt.engine.impl;
 
 import java.util.List;
 
+import org.overlord.apiman.rt.engine.IConnectorFactory;
+import org.overlord.apiman.rt.engine.IEngineResult;
+import org.overlord.apiman.rt.engine.IServiceConnector;
+import org.overlord.apiman.rt.engine.IServiceRequestExecutor;
 import org.overlord.apiman.rt.engine.async.AsyncResultImpl;
 import org.overlord.apiman.rt.engine.async.IAsyncHandler;
 import org.overlord.apiman.rt.engine.async.IAsyncResult;
 import org.overlord.apiman.rt.engine.async.IAsyncResultHandler;
-import org.overlord.apiman.rt.engine.async.ISignalReadStream;
-import org.overlord.apiman.rt.engine.async.ISignalWriteStream;
-import org.overlord.apiman.rt.engine.async.IWriteStream;
 import org.overlord.apiman.rt.engine.beans.PolicyFailure;
 import org.overlord.apiman.rt.engine.beans.Service;
 import org.overlord.apiman.rt.engine.beans.ServiceContract;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
 import org.overlord.apiman.rt.engine.beans.ServiceResponse;
+import org.overlord.apiman.rt.engine.io.IBuffer;
+import org.overlord.apiman.rt.engine.io.ISignalReadStream;
+import org.overlord.apiman.rt.engine.io.ISignalWriteStream;
+import org.overlord.apiman.rt.engine.io.IWriteStream;
 import org.overlord.apiman.rt.engine.policy.Chain;
-import org.overlord.apiman.rt.engine.policy.AbstractPolicy;
+import org.overlord.apiman.rt.engine.policy.IPolicy;
 import org.overlord.apiman.rt.engine.policy.IPolicyContext;
 import org.overlord.apiman.rt.engine.policy.RequestChain;
 import org.overlord.apiman.rt.engine.policy.ResponseChain;
@@ -50,13 +55,12 @@ import org.overlord.apiman.rt.engine.policy.ResponseChain;
  * opportunity.
  *
  * @author Marc Savy <msavy@redhat.com>
- * @param  Native buffer type
  */
-public class PolicyRequestExecutorImpl implements IPolicyRequestExecutor {
+public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
     private ServiceRequest request;
     private ServiceContract serviceContract;
     private IPolicyContext context;
-    private List<AbstractPolicy> policies;
+    private List<IPolicy> policies;
     private IConnectorFactory connectorFactory;
     private boolean finished = false;
 
@@ -66,22 +70,23 @@ public class PolicyRequestExecutorImpl implements IPolicyRequestExecutor {
 
     private IAsyncHandler<IWriteStream> inboundStreamHandler;
 
-    private Chain<ServiceRequest> requestChainExecutor;
-    private Chain<ServiceResponse> responseChainExecutor;
+    private Chain<ServiceRequest> requestChain;
+    private Chain<ServiceResponse> responseChain;
 
     /**
-     * Constructs a new {@link PolicyRequestExecutorImpl}.
-     * 
-     * @param engine Engine
-     * @param cache Shared cache of Contract to qualified policy name.
-     * @param serviceRequest Service request to be evaluated.
-     * @param resultHandler Handler to receive results.
+     * Constructs a new {@link ServiceRequestExecutorImpl}.
+     * @param serviceRequest
+     * @param resultHandler
+     * @param serviceContract
+     * @param context
+     * @param policies
+     * @param connectorFactory
      */
-    public PolicyRequestExecutorImpl(ServiceRequest serviceRequest, 
+    public ServiceRequestExecutorImpl(ServiceRequest serviceRequest, 
             IAsyncResultHandler<IEngineResult> resultHandler,
             ServiceContract serviceContract,
             IPolicyContext context,
-            List<AbstractPolicy> policies,
+            List<IPolicy> policies,
             IConnectorFactory connectorFactory) {
 
         this.request = serviceRequest;
@@ -94,15 +99,13 @@ public class PolicyRequestExecutorImpl implements IPolicyRequestExecutor {
         this.policyErrorHandler = createPolicyErrorHandler();
     }
 
-    /* (non-Javadoc)
+    /**
      * @see org.overlord.apiman.rt.engine.IPolicyRequestExecutor#execute()
      */
     @Override
     public void execute() {
         // Set up the policy chain request, call #doApply to execute.
-        requestChainExecutor = requestChain(new IAsyncHandler<ServiceRequest>() {
-
-            private ISignalWriteStream requestHandler;
+        requestChain = createRequestChain(new IAsyncHandler<ServiceRequest>() {
 
             @Override
             public void handle(ServiceRequest request) {
@@ -112,23 +115,23 @@ public class PolicyRequestExecutorImpl implements IPolicyRequestExecutor {
 
                 // Open up a connection to the back-end if we're given the OK from the request chain
                 // Attach the response handler here.
-                requestHandler = connector.request(request, createResponseHandler());
+                final ISignalWriteStream connectorRequestStream = connector.request(request, createConnectorResponseHandler());
 
                 // Write the body chunks from the *policy request* into the connector request.
-                requestChainExecutor.bodyHandler(new IAsyncHandler<ApimanBuffer>() {
+                requestChain.bodyHandler(new IAsyncHandler<IBuffer>() {
 
                     @Override
-                    public void handle(ApimanBuffer buffer) {
-                        requestHandler.write(buffer);
+                    public void handle(IBuffer buffer) {
+                        connectorRequestStream.write(buffer);
                     }
                 });
 
                 // Indicate end from policy chain request to connector request.
-                requestChainExecutor.endHandler(new IAsyncHandler<Void>() {
+                requestChain.endHandler(new IAsyncHandler<Void>() {
 
                     @Override
                     public void handle(Void result) {
-                        requestHandler.end();
+                        connectorRequestStream.end();
                     }
                 });
 
@@ -139,25 +142,27 @@ public class PolicyRequestExecutorImpl implements IPolicyRequestExecutor {
             }
         });
 
-        requestChainExecutor.policyFailureHandler(policyFailureHandler);
-        requestChainExecutor.doApply(request);
+        requestChain.policyFailureHandler(policyFailureHandler);
+        requestChain.doApply(request);
     }
 
-    private IAsyncResultHandler<ISignalReadStream<ServiceResponse>> createResponseHandler() {
+    /**
+     * Creates a response handler that is called by the service connector once a connection
+     * to the back end service has been made and a response received.
+     */
+    private IAsyncResultHandler<ISignalReadStream<ServiceResponse>> createConnectorResponseHandler() {
         return new IAsyncResultHandler<ISignalReadStream<ServiceResponse>>() {
-
-            private ISignalReadStream<ServiceResponse> responseHandler;
 
             @Override
             public void handle(IAsyncResult<ISignalReadStream<ServiceResponse>> result) {
                 if (result.isSuccess()) {
                     // The result came back. NB: still need to put it through the response chain.
-                    responseHandler = result.getResult();
-                    ServiceResponse initialResponse = responseHandler.getHead();
-                    context.setAttribute("apiman.engine.serviceResponse", initialResponse); //$NON-NLS-1$
+                    final ISignalReadStream<ServiceResponse> connectorResponseStream = result.getResult();
+                    ServiceResponse serviceResponse = connectorResponseStream.getHead();
+                    context.setAttribute("apiman.engine.serviceResponse", serviceResponse); //$NON-NLS-1$
 
                     // Execute the response chain to evaluate the response.
-                    responseChainExecutor = responseChain(new IAsyncHandler<ServiceResponse>() {
+                    responseChain = createResponseChain(new IAsyncHandler<ServiceResponse>() {
 
                         @Override
                         public void handle(ServiceResponse result) {
@@ -168,15 +173,15 @@ public class PolicyRequestExecutorImpl implements IPolicyRequestExecutor {
                             resultHandler.handle(AsyncResultImpl.<IEngineResult> create(engineResult));
 
                             // We've come all the way through the response chain successfully
-                            responseChainExecutor.bodyHandler(new IAsyncHandler<ApimanBuffer>() {
+                            responseChain.bodyHandler(new IAsyncHandler<IBuffer>() {
 
                                 @Override
-                                public void handle(ApimanBuffer result) {
+                                public void handle(IBuffer result) {
                                     engineResult.write(result);
                                 }
                             });
 
-                            responseChainExecutor.endHandler(new IAsyncHandler<Void>() {
+                            responseChain.endHandler(new IAsyncHandler<Void>() {
 
                                 @Override
                                 public void handle(Void result) {
@@ -186,51 +191,55 @@ public class PolicyRequestExecutorImpl implements IPolicyRequestExecutor {
                             });
 
                             // Signal to the connector that it's safe to start transmitting data.
-                            responseHandler.transmit();
+                            connectorResponseStream.transmit();
                         }
                     });
 
                     // Write data from the back-end response into the response chain.
-                    responseHandler.bodyHandler(new IAsyncHandler<ApimanBuffer>() {
+                    connectorResponseStream.bodyHandler(new IAsyncHandler<IBuffer>() {
 
                         @Override
-                        public void handle(ApimanBuffer buffer) {
-                            responseChainExecutor.write(buffer);
+                        public void handle(IBuffer buffer) {
+                            responseChain.write(buffer);
                         }
                     });
 
                     // Indicate back-end response is finished to the response chain.
-                    responseHandler.endHandler(new IAsyncHandler<Void>() {
+                    connectorResponseStream.endHandler(new IAsyncHandler<Void>() {
 
                         @Override
                         public void handle(Void result) {
-                            responseChainExecutor.end();
+                            responseChain.end();
                         }
                     });
 
-                    responseChainExecutor.doApply(initialResponse);
+                    responseChain.doApply(serviceResponse);
                 }
             }
 
         };
     }
 
+    /**
+     * Called when the service connector is ready to receive data from the inbound
+     * client request.
+     */
     protected void handleStream() {
         inboundStreamHandler.handle(new IWriteStream() {     
             boolean streamFinished = false;
 
             @Override
-            public void write(ApimanBuffer buffer) {
+            public void write(IBuffer buffer) {
                 if (streamFinished) {
                     throw new IllegalStateException("Attempted write after #end() was called."); //$NON-NLS-1$
                 }
 
-                requestChainExecutor.write(buffer);
+                requestChain.write(buffer);
             }
 
             @Override
             public void end() {
-                requestChainExecutor.end();
+                requestChain.end();
                 streamFinished = true;
             }
 
@@ -242,7 +251,7 @@ public class PolicyRequestExecutorImpl implements IPolicyRequestExecutor {
         });
     }
 
-    /* (non-Javadoc)
+    /**
      * @see org.overlord.apiman.rt.engine.IPolicyRequestExecutor#isFinished()
      */
     @Override
@@ -250,7 +259,7 @@ public class PolicyRequestExecutorImpl implements IPolicyRequestExecutor {
         return finished;
     }
 
-    /* (non-Javadoc)
+    /**
      * @see org.overlord.apiman.rt.engine.IPolicyRequestExecutor#streamHandler(org.overlord.apiman.rt.engine.async.IAsyncHandler)
      */
     @Override
@@ -258,7 +267,11 @@ public class PolicyRequestExecutorImpl implements IPolicyRequestExecutor {
         this.inboundStreamHandler = handler;
     }
 
-    private Chain<ServiceRequest> requestChain(IAsyncHandler<ServiceRequest> requestHandler) {
+    /**
+     * Creates the chain used to apply policies in order to the service request.
+     * @param requestHandler
+     */
+    private Chain<ServiceRequest> createRequestChain(IAsyncHandler<ServiceRequest> requestHandler) {
         RequestChain requestChain = new RequestChain(policies, context);
         requestChain.headHandler(requestHandler);
         requestChain.policyFailureHandler(policyFailureHandler);
@@ -266,7 +279,11 @@ public class PolicyRequestExecutorImpl implements IPolicyRequestExecutor {
         return requestChain;
     }
 
-    private Chain<ServiceResponse> responseChain(IAsyncHandler<ServiceResponse> responseHandler) {
+    /**
+     * Creates the chain used to apply policies in reverse order to the service response.
+     * @param responseHandler
+     */
+    private Chain<ServiceResponse> createResponseChain(IAsyncHandler<ServiceResponse> responseHandler) {
         ResponseChain responseChain = new ResponseChain(policies, context);
         responseChain.headHandler(responseHandler);
         responseChain.policyFailureHandler(policyFailureHandler);
@@ -274,6 +291,10 @@ public class PolicyRequestExecutorImpl implements IPolicyRequestExecutor {
         return responseChain;
     }
 
+    /**
+     * Creates the handler to use when a policy failure occurs during processing
+     * of a chain.
+     */
     private IAsyncHandler<PolicyFailure> createPolicyFailureHandler() {
         return new IAsyncHandler<PolicyFailure>() {
             @Override
@@ -286,6 +307,10 @@ public class PolicyRequestExecutorImpl implements IPolicyRequestExecutor {
         };
     }
 
+    /**
+     * Creates the handler to use when an error is detected during the processing
+     * of a chain.
+     */
     private IAsyncHandler<Throwable> createPolicyErrorHandler() {
         return new IAsyncHandler<Throwable>() {
 

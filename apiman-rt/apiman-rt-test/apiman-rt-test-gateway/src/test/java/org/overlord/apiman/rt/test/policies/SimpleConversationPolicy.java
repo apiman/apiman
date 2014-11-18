@@ -17,6 +17,7 @@ package org.overlord.apiman.rt.test.policies;
 
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
 import org.overlord.apiman.rt.engine.beans.ServiceResponse;
+import org.overlord.apiman.rt.engine.io.IReadWriteStream;
 import org.overlord.apiman.rt.engine.policy.IPolicy;
 import org.overlord.apiman.rt.engine.policy.IPolicyChain;
 import org.overlord.apiman.rt.engine.policy.IPolicyContext;
@@ -26,6 +27,7 @@ import org.overlord.apiman.rt.engine.policy.IPolicyContext;
  *
  * @author eric.wittmann@redhat.com
  */
+@SuppressWarnings({ "nls" })
 public class SimpleConversationPolicy implements IPolicy {
     
     /**
@@ -41,23 +43,54 @@ public class SimpleConversationPolicy implements IPolicy {
     public Object parseConfiguration(String jsonConfiguration) {
         return new Object();
     }
-
+    
     /**
-     * @see org.overlord.apiman.rt.engine.policy.IPolicy#apply(org.overlord.apiman.rt.engine.beans.ServiceRequest, org.overlord.apiman.rt.engine.policy.IPolicyContext, java.lang.Object, org.overlord.apiman.rt.engine.policy.IPolicyChain)
+     * @see org.overlord.apiman.rt.engine.policy.IPolicy#setConfiguration(java.lang.Object)
      */
     @Override
-    public void apply(ServiceRequest request, IPolicyContext context, Object config, IPolicyChain chain) {
-        context.setAttribute("X-Conversation-Success", "true"); //$NON-NLS-1$ //$NON-NLS-2$
+    public void setConfiguration(Object config) {
+    }
+    
+    /**
+     * @see org.overlord.apiman.rt.engine.policy.IPolicy#apply(org.overlord.apiman.rt.engine.beans.ServiceRequest, org.overlord.apiman.rt.engine.policy.IPolicyContext, org.overlord.apiman.rt.engine.policy.IPolicyChain)
+     */
+    @Override
+    public void apply(ServiceRequest request, IPolicyContext context, IPolicyChain<ServiceRequest> chain) {
+        context.setAttribute("X-Conversation-Success", "true");
         chain.doApply(request);
+    }
+    
+    /**
+     * @see org.overlord.apiman.rt.engine.policy.IPolicy#apply(org.overlord.apiman.rt.engine.beans.ServiceResponse, org.overlord.apiman.rt.engine.policy.IPolicyContext, org.overlord.apiman.rt.engine.policy.IPolicyChain)
+     */
+    @Override
+    public void apply(ServiceResponse response, IPolicyContext context, IPolicyChain<ServiceResponse> chain) {
+        response.getHeaders().put("X-Conversation-Success", (String) context.getAttribute("X-Conversation-Success", "NOT-FOUND"));
+        chain.doApply(response);
     }
 
     /**
-     * @see org.overlord.apiman.rt.engine.policy.IPolicy#apply(org.overlord.apiman.rt.engine.beans.ServiceResponse, org.overlord.apiman.rt.engine.policy.IPolicyContext, java.lang.Object, org.overlord.apiman.rt.engine.policy.IPolicyChain)
+     * @see org.overlord.apiman.rt.engine.policy.IPolicy#getConfiguration()
      */
     @Override
-    public void apply(ServiceResponse response, IPolicyContext context, Object config, IPolicyChain chain) {
-        response.getHeaders().put("X-Conversation-Success", (String) context.getAttribute("X-Conversation-Success", "NOT-FOUND")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        chain.doApply(response);
+    public Object getConfiguration() {
+        return null;
+    }
+
+    /**
+     * @see org.overlord.apiman.rt.engine.policy.IPolicy#getRequestHandler()
+     */
+    @Override
+    public IReadWriteStream<ServiceRequest> getRequestHandler() {
+        return null;
+    }
+
+    /**
+     * @see org.overlord.apiman.rt.engine.policy.IPolicy#getResponseHandler()
+     */
+    @Override
+    public IReadWriteStream<ServiceResponse> getResponseHandler() {
+        return null;
     }
 
 }

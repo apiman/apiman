@@ -16,18 +16,15 @@
 package org.overlord.apiman.rt.engine.impl;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.overlord.apiman.rt.engine.IComponentRegistry;
 import org.overlord.apiman.rt.engine.IConnectorFactory;
 import org.overlord.apiman.rt.engine.IEngine;
 import org.overlord.apiman.rt.engine.IEngineResult;
-import org.overlord.apiman.rt.engine.IPolicyRequestExecutor;
 import org.overlord.apiman.rt.engine.IRegistry;
-import org.overlord.apiman.rt.engine.PolicyRequestExecutorImpl;
+import org.overlord.apiman.rt.engine.IServiceRequestExecutor;
 import org.overlord.apiman.rt.engine.Version;
 import org.overlord.apiman.rt.engine.async.IAsyncResultHandler;
 import org.overlord.apiman.rt.engine.beans.Application;
@@ -37,11 +34,10 @@ import org.overlord.apiman.rt.engine.beans.Service;
 import org.overlord.apiman.rt.engine.beans.ServiceContract;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
 import org.overlord.apiman.rt.engine.beans.exceptions.ConfigurationParseException;
-import org.overlord.apiman.rt.engine.beans.exceptions.NoSuchPolicyException;
 import org.overlord.apiman.rt.engine.beans.exceptions.PolicyNotFoundException;
 import org.overlord.apiman.rt.engine.beans.exceptions.PublishingException;
 import org.overlord.apiman.rt.engine.beans.exceptions.RegistrationException;
-import org.overlord.apiman.rt.engine.policy.AbstractPolicy;
+import org.overlord.apiman.rt.engine.policy.IPolicy;
 import org.overlord.apiman.rt.engine.policy.IPolicyFactory;
 import org.overlord.apiman.rt.engine.policy.PolicyContextImpl;
 
@@ -56,7 +52,6 @@ public class EngineImpl implements IEngine {
     private IComponentRegistry componentRegistry;
     private IConnectorFactory connectorFactory;
     private IPolicyFactory policyFactory;
-    private Map<ServiceContract, List<String>> cache = new HashMap<ServiceContract, List<String>>();
 
     /**
      * Constructor.
@@ -85,11 +80,11 @@ public class EngineImpl implements IEngine {
      * @see org.overlord.apiman.rt.engine.IEngine#request()
      */
     @Override
-    public IPolicyRequestExecutor request(ServiceRequest request, final IAsyncResultHandler<IEngineResult> resultHandler) {
+    public IServiceRequestExecutor executor(ServiceRequest request, final IAsyncResultHandler<IEngineResult> resultHandler) {
         ServiceContract serviceContract = getContract(request);
         request.setContract(serviceContract);
         
-        return new PolicyRequestExecutorImpl(request, 
+        return new ServiceRequestExecutorImpl(request, 
                 resultHandler,
                 serviceContract,
                 new PolicyContextImpl(getComponentRegistry()),
@@ -129,10 +124,10 @@ public class EngineImpl implements IEngine {
             for (Policy policy : policies) {
                 try {
                     // Load the policy class and validate the policy config.
-                    getPolicyFactory().loadPolicyClass(policy.getPolicyImpl(), policy.getPolicyJsonConfig());
+                    IPolicy policyImpl = getPolicyFactory().newPolicy(policy.getPolicyImpl());
+                    Object policyConfig = policyImpl.parseConfiguration(policy.getPolicyJsonConfig());
+                    policy.setPolicyConfig(policyConfig);
                 } catch (PolicyNotFoundException e) {
-                    throw new RegistrationException(e);
-                } catch (NoSuchPolicyException e) {
                     throw new RegistrationException(e);
                 } catch (ConfigurationParseException e) {
                     throw new RegistrationException(e);
@@ -170,26 +165,15 @@ public class EngineImpl implements IEngine {
      *
      * @param contract
      */
-    private List<AbstractPolicy> getPolicies(ServiceContract contract) {
+    private List<IPolicy> getPolicies(ServiceContract contract) {
         // accidentally create the list a few times - it's not worth the
         // overhead of the synch block.
-        List<String> classNameCache = cache.get(contract);
-        List<AbstractPolicy> instances = new ArrayList<AbstractPolicy>();
+        List<IPolicy> instances = new ArrayList<IPolicy>();
 
-        if (classNameCache == null) {
-            classNameCache = new ArrayList<String>();
-
-            for (Policy policy : contract.getPolicies()) {
-                instances.add(getPolicyFactory().newPolicy(policy.getPolicyImpl()));
-                classNameCache.add(policy.getPolicyImpl());
-            }
-
-            cache.put(contract, classNameCache);
-
-        } else {
-            for (String cachedName : classNameCache) {
-                instances.add(getPolicyFactory().newPolicy(cachedName));
-            }
+        for (Policy policy : contract.getPolicies()) {
+            IPolicy policyImpl = getPolicyFactory().newPolicy(policy.getPolicyImpl());
+            policyImpl.setConfiguration(policy.getPolicyConfig());
+            instances.add(policyImpl);
         }
 
         return instances;

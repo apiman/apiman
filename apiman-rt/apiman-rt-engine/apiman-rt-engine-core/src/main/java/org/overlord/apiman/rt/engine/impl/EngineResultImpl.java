@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.rt.engine;
+package org.overlord.apiman.rt.engine.impl;
 
+import org.overlord.apiman.rt.engine.IEngineResult;
 import org.overlord.apiman.rt.engine.async.AbstractStream;
 import org.overlord.apiman.rt.engine.beans.PolicyFailure;
 import org.overlord.apiman.rt.engine.beans.ServiceResponse;
@@ -53,7 +54,7 @@ public class EngineResultImpl extends AbstractStream<ServiceResponse> implements
         this.policyFailure = policyFailure;
     }
 
-    /* (non-Javadoc)
+    /**
      * @see org.overlord.apiman.rt.engine.IEngineResult#isResponse()
      */
     @Override
@@ -61,7 +62,7 @@ public class EngineResultImpl extends AbstractStream<ServiceResponse> implements
         return policyFailure == null;
     }
     
-    /* (non-Javadoc)
+    /**
      * @see org.overlord.apiman.rt.engine.IEngineResult#isFailure()
      */
     @Override
@@ -69,7 +70,7 @@ public class EngineResultImpl extends AbstractStream<ServiceResponse> implements
         return policyFailure != null;
     }
 
-    /* (non-Javadoc)
+    /**
      * @see org.overlord.apiman.rt.engine.IEngineResult#getServiceResponse()
      */
     @Override
@@ -84,7 +85,7 @@ public class EngineResultImpl extends AbstractStream<ServiceResponse> implements
         this.serviceResponse = serviceResponse;
     }
 
-    /* (non-Javadoc)
+    /**
      * @see org.overlord.apiman.rt.engine.IEngineResult#getPolicyFailure()
      */
     @Override

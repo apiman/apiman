@@ -27,7 +27,7 @@ import javax.naming.directory.InitialDirContext;
 import org.apache.commons.lang.text.StrSubstitutor;
 import org.overlord.apiman.engine.policies.config.basicauth.LDAPIdentitySource;
 import org.overlord.apiman.rt.engine.async.AsyncResultImpl;
-import org.overlord.apiman.rt.engine.async.IAsyncHandler;
+import org.overlord.apiman.rt.engine.async.IAsyncResultHandler;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
 import org.overlord.apiman.rt.engine.policy.IPolicyContext;
 
@@ -50,7 +50,7 @@ public class LDAPIdentityValidator implements IIdentityValidator<LDAPIdentitySou
      */
     @Override
     public void validate(String username, String password, ServiceRequest request, IPolicyContext context,
-            LDAPIdentitySource config, IAsyncHandler<Boolean> handler) {
+            LDAPIdentitySource config, IAsyncResultHandler<Boolean> handler) {
         String url = config.getUrl();
         String dn = formatDn(config.getDnPattern(), username, request);
         

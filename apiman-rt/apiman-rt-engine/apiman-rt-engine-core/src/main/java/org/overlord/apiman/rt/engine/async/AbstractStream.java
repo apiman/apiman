@@ -15,14 +15,16 @@
  */
 package org.overlord.apiman.rt.engine.async;
 
-import org.overlord.apiman.rt.engine.ApimanBuffer;
+import org.overlord.apiman.rt.engine.beans.ServiceRequest;
+import org.overlord.apiman.rt.engine.io.IBuffer;
+import org.overlord.apiman.rt.engine.io.IReadWriteStream;
 
 /**
  * Generic representation of a three part stream: head, body and end, with
  * handlers and operators for each.
  *
  * For example: The head might represent a {@link ServiceRequest}; the body is a
- * stream of {@link ApimanBuffer<N>} chunks; {@link #end()} is used indicate that
+ * stream of {@link IBuffer} chunks; {@link #end()} is used indicate that
  * transmission of the body has completed.
  *
  * The head handler is also used to indicate the result of the operation.
@@ -34,7 +36,7 @@ import org.overlord.apiman.rt.engine.ApimanBuffer;
 public abstract class AbstractStream<H> implements IReadWriteStream<H> {
 
     protected IAsyncHandler<H> headHandler;
-    protected IAsyncHandler<ApimanBuffer> bodyHandler;
+    protected IAsyncHandler<IBuffer> bodyHandler;
     protected IAsyncHandler<Void> endHandler;
     protected boolean finished = false;
 
@@ -43,7 +45,7 @@ public abstract class AbstractStream<H> implements IReadWriteStream<H> {
     }
 
     @Override
-    public void bodyHandler(IAsyncHandler<ApimanBuffer> bodyHandler) {
+    public void bodyHandler(IAsyncHandler<IBuffer> bodyHandler) {
         this.bodyHandler = bodyHandler;
     }
 
@@ -53,7 +55,7 @@ public abstract class AbstractStream<H> implements IReadWriteStream<H> {
     }
 
     @Override
-    public void write(ApimanBuffer chunk) {
+    public void write(IBuffer chunk) {
         if(bodyHandler != null)
             bodyHandler.handle(chunk);
     }
@@ -72,7 +74,7 @@ public abstract class AbstractStream<H> implements IReadWriteStream<H> {
 
     protected abstract void handleHead(H head);
 
-    protected void handleBody(ApimanBuffer chunk) {
+    protected void handleBody(IBuffer chunk) {
         if(bodyHandler != null)
             bodyHandler.handle(chunk);
     }

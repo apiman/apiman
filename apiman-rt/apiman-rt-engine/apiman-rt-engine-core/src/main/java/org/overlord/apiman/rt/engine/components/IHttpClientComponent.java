@@ -16,7 +16,7 @@
 package org.overlord.apiman.rt.engine.components;
 
 import org.overlord.apiman.rt.engine.IComponent;
-import org.overlord.apiman.rt.engine.async.IAsyncHandler;
+import org.overlord.apiman.rt.engine.async.IAsyncResultHandler;
 import org.overlord.apiman.rt.engine.components.http.HttpMethod;
 import org.overlord.apiman.rt.engine.components.http.IHttpClientRequest;
 import org.overlord.apiman.rt.engine.components.http.IHttpClientResponse;
@@ -35,6 +35,6 @@ public interface IHttpClientComponent extends IComponent {
      * @param method
      * @param handler
      */
-    IHttpClientRequest request(String endpoint, HttpMethod method, IAsyncHandler<IHttpClientResponse> handler);
+    IHttpClientRequest request(String endpoint, HttpMethod method, IAsyncResultHandler<IHttpClientResponse> handler);
 
 }

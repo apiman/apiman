@@ -18,26 +18,33 @@ package org.overlord.apiman.rt.gateway.servlet;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.util.Enumeration;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.Future;
 
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.overlord.apiman.rt.engine.EngineResult;
 import org.overlord.apiman.rt.engine.IEngine;
+import org.overlord.apiman.rt.engine.IEngineResult;
+import org.overlord.apiman.rt.engine.IServiceRequestExecutor;
+import org.overlord.apiman.rt.engine.async.IAsyncHandler;
 import org.overlord.apiman.rt.engine.async.IAsyncResult;
+import org.overlord.apiman.rt.engine.async.IAsyncResultHandler;
 import org.overlord.apiman.rt.engine.beans.PolicyFailure;
 import org.overlord.apiman.rt.engine.beans.PolicyFailureType;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
 import org.overlord.apiman.rt.engine.beans.ServiceResponse;
+import org.overlord.apiman.rt.engine.io.IBuffer;
+import org.overlord.apiman.rt.engine.io.IWriteStream;
 import org.overlord.apiman.rt.gateway.servlet.i18n.Messages;
+import org.overlord.apiman.rt.gateway.servlet.io.ByteBuffer;
 
 /**
  * The API Management gateway servlet.  This servlet is responsible for converting inbound
@@ -101,23 +108,77 @@ public abstract class GatewayServlet extends HttpServlet {
      * @param resp
      * @param action 
      */
-    protected void doAction(HttpServletRequest req, HttpServletResponse resp, String action) {
+    protected void doAction(final HttpServletRequest req, final HttpServletResponse resp, String action) {
         try {
             ServiceRequest srequest = readRequest(req);
             srequest.setType(action);
-
-            Future<IAsyncResult<EngineResult>> futureResult = getEngine().execute(srequest);
-            IAsyncResult<EngineResult> asyncResult = futureResult.get();
-            if (asyncResult.isError()) {
-                throw new Exception(asyncResult.getError());
-            } else {
-                EngineResult result = asyncResult.getResult();
-                if (result.isResponse()) {
-                    writeResponse(resp, result.getServiceResponse());
-                } else {
-                    writeFailure(resp, result.getPolicyFailure());
+            
+            IServiceRequestExecutor executor = getEngine().executor(srequest, new IAsyncResultHandler<IEngineResult>() {
+                @Override
+                public void handle(IAsyncResult<IEngineResult> asyncResult) {
+                    if (asyncResult.isSuccess()) {
+                        IEngineResult engineResult = asyncResult.getResult();
+                        if (engineResult.isResponse()) {
+                            try {
+                                writeResponse(resp, engineResult.getServiceResponse());
+                                final ServletOutputStream outputStream = resp.getOutputStream();
+                                engineResult.bodyHandler(new IAsyncHandler<IBuffer>() {
+                                    public void handle(IBuffer chunk) {
+                                        try {
+                                            if (chunk instanceof ByteBuffer) {
+                                                byte [] buffer = (byte []) chunk.getNativeBuffer();
+                                                outputStream.write(buffer, 0, chunk.length());
+                                            } else {
+                                                outputStream.write(chunk.getBytes());
+                                            }
+                                        } catch (IOException e) {
+                                            // TODO - log the error
+                                            throw new RuntimeException(e);
+                                        }
+                                    }
+                                });
+                                engineResult.endHandler(new IAsyncHandler<Void>() {
+                                    @Override
+                                    public void handle(Void result) {
+                                        try {
+                                            resp.flushBuffer();
+                                        } catch (IOException e) {
+                                            // TODO - log the error
+                                            throw new RuntimeException(e);
+                                        }
+                                    }
+                                });
+                            } catch (IOException e) {
+                                // TODO - log the error
+                                throw new RuntimeException(e);
+                            }
+                        } else {
+                            writeFailure(resp, engineResult.getPolicyFailure());
+                        }
+                    } else {
+                        writeError(resp, asyncResult.getError());
+                    }
                 }
-            }
+            });
+            executor.streamHandler(new IAsyncHandler<IWriteStream>() {
+                @Override
+                public void handle(IWriteStream connectorStream) {
+                    try {
+                        final InputStream is = req.getInputStream();
+                        ByteBuffer buffer = new ByteBuffer(2048);
+                        int numBytes = buffer.readFrom(is);
+                        while (numBytes != -1) {
+                            connectorStream.write(buffer);
+                            numBytes = buffer.readFrom(is);
+                        }
+                        connectorStream.end();
+                    } catch (IOException e) {
+                        // TODO - log the error
+                        throw new RuntimeException(e);
+                    }
+                }
+            });
+            executor.execute();
         } catch (Throwable e) {
             writeError(resp, e);
         } finally {
@@ -148,7 +209,6 @@ public abstract class GatewayServlet extends HttpServlet {
         srequest.setApiKey(apiKey);
         srequest.setDestination(getDestination(request));
         readHeaders(srequest, request);
-        srequest.setBody(request.getInputStream());
         srequest.setRawRequest(request);
         srequest.setRemoteAddr(request.getRemoteAddr());
         return srequest;
@@ -228,25 +288,6 @@ public abstract class GatewayServlet extends HttpServlet {
             String hval = entry.getValue();
             response.setHeader(hname, hval);
         }
-        if (sresponse.getBody() != null) {
-            InputStream body = null;
-            OutputStream out = null;
-            try {
-                body = sresponse.getBody();
-                out = response.getOutputStream();
-                IOUtils.copy(body, out);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            } finally {
-                IOUtils.closeQuietly(body);
-                IOUtils.closeQuietly(out);
-            }
-        }
-        try {
-            response.flushBuffer();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
     
     /**
@@ -286,10 +327,20 @@ public abstract class GatewayServlet extends HttpServlet {
     protected void writeError(HttpServletResponse resp, Throwable error) {
         try {
             resp.setHeader("X-Exception", error.getMessage()); //$NON-NLS-1$
-            resp.sendError(500, error.getMessage());
+            resp.setStatus(500);
+            OutputStream outputStream = null;
+            try {
+                outputStream = resp.getOutputStream();
+                PrintWriter writer = new PrintWriter(outputStream);
+                error.printStackTrace(writer);
+                writer.flush();
+                outputStream.flush();
+            } finally {
+                IOUtils.closeQuietly(outputStream);
+            }
         } catch (IOException e1) {
             throw new RuntimeException(error);
         }
     }
-
+    
 }

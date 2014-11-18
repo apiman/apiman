@@ -1,8 +1,8 @@
 package org.overlord.apiman.rt.engine;
 
-import org.overlord.apiman.rt.engine.async.IReadStream;
 import org.overlord.apiman.rt.engine.beans.PolicyFailure;
 import org.overlord.apiman.rt.engine.beans.ServiceResponse;
+import org.overlord.apiman.rt.engine.io.IReadStream;
 
 public interface IEngineResult extends IReadStream<ServiceResponse>  {
 

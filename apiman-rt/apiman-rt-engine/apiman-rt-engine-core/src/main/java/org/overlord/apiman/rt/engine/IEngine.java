@@ -21,6 +21,7 @@ import org.overlord.apiman.rt.engine.beans.Service;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
 import org.overlord.apiman.rt.engine.beans.exceptions.PublishingException;
 import org.overlord.apiman.rt.engine.beans.exceptions.RegistrationException;
+import org.overlord.apiman.rt.engine.impl.EngineResultImpl;
 
 /**
  * The API Management runtime engine.  This engine can either be embedded or used as part
@@ -39,14 +40,12 @@ public interface IEngine {
      * Executes an asynchronous request for a managed service, with the provided
      * handler being passed an {@link EngineResultImpl} with the status and result
      * of the policy chain invocation.
-     * @param <N>
      *
      * @param request a request for a managed service
      * @param handler an async handler called when a response is returned or an
      *            exception is captured.
-     *
      */
-    IPolicyRequestExecutor request(ServiceRequest request, IAsyncResultHandler<IEngineResult> resultHandler);
+    IServiceRequestExecutor executor(ServiceRequest request, IAsyncResultHandler<IEngineResult> resultHandler);
 
     /**
      * Publishes a new {@link Service}.

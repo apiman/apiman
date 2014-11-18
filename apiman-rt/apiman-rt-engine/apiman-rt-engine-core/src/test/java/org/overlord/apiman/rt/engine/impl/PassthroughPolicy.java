@@ -15,13 +15,11 @@
  */
 package org.overlord.apiman.rt.engine.impl;
 
-import org.overlord.apiman.rt.engine.ApimanBuffer;
-import org.overlord.apiman.rt.engine.async.AbstractStream;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
 import org.overlord.apiman.rt.engine.beans.ServiceResponse;
 import org.overlord.apiman.rt.engine.beans.exceptions.ConfigurationParseException;
-import org.overlord.apiman.rt.engine.policy.Chain;
 import org.overlord.apiman.rt.engine.policy.AbstractPolicy;
+import org.overlord.apiman.rt.engine.policy.IPolicyChain;
 import org.overlord.apiman.rt.engine.policy.IPolicyContext;
 
 /**
@@ -35,8 +33,6 @@ public class PassthroughPolicy extends AbstractPolicy {
     public static final String QUALIFIED_NAME = "class:" + PassthroughPolicy.class.getCanonicalName();
     private Object config;
     private String name;
-    private ServiceResponse serviceResponse;
-    private ServiceRequest serviceRequest;
     
     public PassthroughPolicy(){}
 
@@ -55,100 +51,30 @@ public class PassthroughPolicy extends AbstractPolicy {
     }
 
     @Override
-    public Object getConfig() {
+    public Object getConfiguration() {
         return config;
     }
 
     @Override
-    public void setConfig(Object config) {
+    public void setConfiguration(Object config) {
         this.config = config;
     }
-
+    
+    /**
+     * @see org.overlord.apiman.rt.engine.policy.AbstractPolicy#doApply(org.overlord.apiman.rt.engine.beans.ServiceRequest, org.overlord.apiman.rt.engine.policy.IPolicyContext, org.overlord.apiman.rt.engine.policy.IPolicyChain)
+     */
     @Override
-    public void request(ServiceRequest request, IPolicyContext context,
-            Chain<ServiceRequest> chain) {
-        this.serviceRequest = request;
+    protected void doApply(ServiceRequest request, IPolicyContext context, IPolicyChain<ServiceRequest> chain) {
         chain.doApply(request);
     }
-
+    
+    /**
+     * @see org.overlord.apiman.rt.engine.policy.AbstractPolicy#doApply(org.overlord.apiman.rt.engine.beans.ServiceResponse, org.overlord.apiman.rt.engine.policy.IPolicyContext, org.overlord.apiman.rt.engine.policy.IPolicyChain)
+     */
     @Override
-    public AbstractStream<ServiceRequest> getRequestHandler() {
-        return requestHandler;
-    }
-
-    @Override
-    public void response(ServiceResponse response, IPolicyContext context,
-            Chain<ServiceResponse> chain) {
-        this.serviceResponse = response;
+    protected void doApply(ServiceResponse response, IPolicyContext context,
+            IPolicyChain<ServiceResponse> chain) {
         chain.doApply(response);
     }
 
-    @Override
-    public AbstractStream<ServiceResponse> getResponseHandler() {
-        return responseHandler;
-    }
-    
-    private AbstractStream<ServiceRequest> requestHandler = new AbstractStream<ServiceRequest>() {
-
-        @Override
-        public void write(ApimanBuffer chunk) {
-            handleBody(chunk);
-        }
-
-        @Override
-        public void end() {
-            handleEnd();
-        }
-
-        @Override
-        protected void handleHead(ServiceRequest head) {
-            handleHead(head);
-        }
-
-        @Override
-        public ServiceRequest getHead() {
-            return serviceRequest;
-        }
-        
-    };
-    
-    private AbstractStream<ServiceResponse> responseHandler = new AbstractStream<ServiceResponse>() {
-
-        @Override
-        public void write(ApimanBuffer chunk) {
-            handleBody(chunk);
-        }
-
-        @Override
-        public void end() {
-            handleEnd();
-        }
-
-        @Override
-        protected void handleHead(ServiceResponse head) {
-            handleHead(head);
-        }
-
-        @Override
-        public ServiceResponse getHead() {
-            return serviceResponse;
-        }
-        
-    };
-
-    @Override
-    protected ServiceRequest getServiceRequest() {
-        return serviceRequest;
-    }
-
-    @Override
-    protected ServiceResponse getServiceResponse() {
-        return serviceResponse;
-    }
-
-    @Override
-    public void abort() {
-        // TODO Auto-generated method stub
-        
-    }
 }

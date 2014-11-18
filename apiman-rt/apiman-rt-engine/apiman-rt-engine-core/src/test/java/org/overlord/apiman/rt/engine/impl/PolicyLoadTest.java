@@ -15,10 +15,13 @@
  */
 package org.overlord.apiman.rt.engine.impl;
 
+import java.lang.reflect.Field;
+import java.util.Map;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.overlord.apiman.rt.engine.policy.AbstractPolicy;
+import org.overlord.apiman.rt.engine.policy.IPolicy;
 import org.overlord.apiman.rt.engine.policy.IPolicyFactory;
 import org.overlord.apiman.rt.engine.policy.PolicyFactoryImpl;
 
@@ -37,14 +40,27 @@ public class PolicyLoadTest {
     public void setup() {
         policyFactory = new PolicyFactoryImpl();
     }
-        
+
     @Test
-    public void testPolicyLoad() {      
-        policyFactory.loadPolicyClass(PassthroughPolicy.QUALIFIED_NAME, "{a:b}");
-        Assert.assertEquals("Should classload one Policy via class:CanonicalName", policyFactory.size(), 1);
+    public void testPolicyLoad() {
+        policyFactory.newPolicy(PassthroughPolicy.QUALIFIED_NAME);
+        Assert.assertEquals("Should classload one Policy via class:CanonicalName", getNumPolicies(), 1);
         
-        AbstractPolicy policyInstance = policyFactory.newPolicy(PassthroughPolicy.QUALIFIED_NAME);
+        IPolicy policyInstance = policyFactory.newPolicy(PassthroughPolicy.QUALIFIED_NAME);
         Assert.assertNotNull("Should return a new IPolicy instance", policyInstance);
-        Assert.assertEquals("Should return correct parsed configuration", "{a:b}", (String)policyInstance.getConfig());
+    }
+
+    /**
+     * @return the number of policies in the factory
+     */
+    @SuppressWarnings("rawtypes")
+    private int getNumPolicies() {
+        try {
+            Field field = policyFactory.getClass().getDeclaredField("canonicalCache");
+            field.setAccessible(true);
+            return ((Map) field.get(policyFactory)).size();
+        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

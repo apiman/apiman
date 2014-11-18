@@ -15,10 +15,11 @@
  */
 package org.overlord.apiman.rt.engine.policy;
 
+import java.util.Iterator;
 import java.util.List;
 
-import org.overlord.apiman.rt.engine.async.IReadWriteStream;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
+import org.overlord.apiman.rt.engine.io.IReadWriteStream;
 
 /**
  * Request phase policy chain.
@@ -27,55 +28,78 @@ import org.overlord.apiman.rt.engine.beans.ServiceRequest;
  */
 public class RequestChain extends Chain<ServiceRequest> {
 
-    private RequestIterator policyIterator;
-
-    public RequestChain(List<AbstractPolicy> policies, IPolicyContext context) {
-        super(policies, context, 0);
-
-        headPolicyHandler = policies.get(startIndex).getRequestHandler();
-        tailPolicyHandler = policies.get(policies.size() - 1).getRequestHandler();
-        policyIterator = new RequestIterator(startIndex);
-
-        chainPolicyHandlers();
+    /**
+     * Constructor.
+     * @param policies
+     * @param context
+     */
+    public RequestChain(List<IPolicy> policies, IPolicyContext context) {
+        super(policies, context);
     }
 
-    protected IReadWriteStream<ServiceRequest> getServiceHandler(AbstractPolicy policy) {
+    /**
+     * @see java.lang.Iterable#iterator()
+     */
+    @Override
+    public Iterator<IPolicy> iterator() {
+        return new RequestIterator(getPolicies());
+    }
+
+    /**
+     * @see org.overlord.apiman.rt.engine.policy.Chain#getServiceHandler(org.overlord.apiman.rt.engine.policy.IPolicy)
+     */
+    @Override
+    protected IReadWriteStream<ServiceRequest> getServiceHandler(IPolicy policy) {
         return policy.getRequestHandler();
     }
-
-    protected void executePolicy(AbstractPolicy policy) {
-        policy.request(getHead(), context, this);
+    
+    /**
+     * @see org.overlord.apiman.rt.engine.policy.Chain#applyPolicy(org.overlord.apiman.rt.engine.policy.IPolicy, org.overlord.apiman.rt.engine.policy.IPolicyContext)
+     */
+    @Override
+    protected void applyPolicy(IPolicy policy, IPolicyContext context) {
+        policy.apply(getHead(), context, this);
     }
 
-    protected ResettableIterator<AbstractPolicy> policyIterator() {
-        return policyIterator;
-    }
-
-    private class RequestIterator implements ResettableIterator<AbstractPolicy> {
-        private int initial;
+    /**
+     * An iterator over a list of policies - iterates through the policies from
+     * front to back, which is the proper order when applying the policies to
+     * the inbound request.
+     */
+    private class RequestIterator implements Iterator<IPolicy> {
+        private List<IPolicy> policies;
         private int index;
 
-        public RequestIterator(int index) {
-            this.index = index;
+        /**
+         * Constructor.
+         */
+        public RequestIterator(List<IPolicy> policies) {
+            this.policies = policies;
+            this.index = 0;
         }
 
+        /**
+         * @see java.util.Iterator#remove()
+         */
         @Override
         public void remove() {
             throw new UnsupportedOperationException();
         }
 
+        /**
+         * @see java.util.Iterator#next()
+         */
         @Override
-        public AbstractPolicy next() {
+        public IPolicy next() {
             return policies.get(index++);
         }
 
+        /**
+         * @see java.util.Iterator#hasNext()
+         */
         @Override
         public boolean hasNext() {
             return index < policies.size();
-        }
-
-        public void reset() {
-            this.index = initial;
         }
     };
 

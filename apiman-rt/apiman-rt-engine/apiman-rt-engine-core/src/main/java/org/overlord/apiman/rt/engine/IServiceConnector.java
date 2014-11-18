@@ -16,11 +16,11 @@
 package org.overlord.apiman.rt.engine;
 
 import org.overlord.apiman.rt.engine.async.IAsyncResultHandler;
-import org.overlord.apiman.rt.engine.async.ISignalReadStream;
-import org.overlord.apiman.rt.engine.async.ISignalWriteStream;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
 import org.overlord.apiman.rt.engine.beans.ServiceResponse;
 import org.overlord.apiman.rt.engine.beans.exceptions.ConnectorException;
+import org.overlord.apiman.rt.engine.io.ISignalReadStream;
+import org.overlord.apiman.rt.engine.io.ISignalWriteStream;
 
 /**
  * Interface implemented by connectors to back end systems.  The engine uses

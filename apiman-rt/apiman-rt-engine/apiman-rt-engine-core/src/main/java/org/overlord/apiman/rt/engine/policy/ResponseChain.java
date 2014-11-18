@@ -15,10 +15,11 @@
  */
 package org.overlord.apiman.rt.engine.policy;
 
+import java.util.Iterator;
 import java.util.List;
 
-import org.overlord.apiman.rt.engine.async.IReadWriteStream;
 import org.overlord.apiman.rt.engine.beans.ServiceResponse;
+import org.overlord.apiman.rt.engine.io.IReadWriteStream;
 
 /**
  * Response phase policy chain.
@@ -27,56 +28,78 @@ import org.overlord.apiman.rt.engine.beans.ServiceResponse;
  */
 public class ResponseChain extends Chain<ServiceResponse> {
 
-    private ResponseIterator policyIterator;
-
-    public ResponseChain(List<AbstractPolicy> policies, IPolicyContext context) {
-        super(policies, context, policies.size() - 1);
-
-        headPolicyHandler = policies.get(startIndex).getResponseHandler();
-        tailPolicyHandler = policies.get(0).getResponseHandler();
-        policyIterator = new ResponseIterator(startIndex);
-
-        chainPolicyHandlers();
+    /**
+     * Constructor.
+     * @param policies
+     * @param context
+     */
+    public ResponseChain(List<IPolicy> policies, IPolicyContext context) {
+        super(policies, context);
+    }
+    
+    /**
+     * @see java.lang.Iterable#iterator()
+     */
+    @Override
+    public Iterator<IPolicy> iterator() {
+        return new ResponseIterator(getPolicies());
     }
 
-    protected IReadWriteStream<ServiceResponse> getServiceHandler(AbstractPolicy policy) {
+    /**
+     * @see org.overlord.apiman.rt.engine.policy.Chain#getServiceHandler(org.overlord.apiman.rt.engine.policy.IPolicy)
+     */
+    @Override
+    protected IReadWriteStream<ServiceResponse> getServiceHandler(IPolicy policy) {
         return policy.getResponseHandler();
     }
 
-    protected void executePolicy(AbstractPolicy policy) {
-        policy.response(getHead(), context, this);
+    /**
+     * @see org.overlord.apiman.rt.engine.policy.Chain#applyPolicy(org.overlord.apiman.rt.engine.policy.IPolicy, org.overlord.apiman.rt.engine.policy.IPolicyContext)
+     */
+    @Override
+    protected void applyPolicy(IPolicy policy, IPolicyContext context) {
+        policy.apply(getHead(), context, this);
     }
 
-    protected ResettableIterator<AbstractPolicy> policyIterator() {
-        return policyIterator;
-    }
-
-    private class ResponseIterator implements ResettableIterator<AbstractPolicy> {
-        private int initial;
+    /**
+     * An iterator over a list of policies - iterates through the policies from
+     * back to front (in reverse), which is the proper order when applying the 
+     * policies to a response (on the way back out).
+     */
+    private class ResponseIterator implements Iterator<IPolicy> {
+        private List<IPolicy> policies;
         private int index;
 
-        public ResponseIterator(int index) {
-            this.index = index;
-            this.initial = index;
+        /**
+         * Constructor.
+         */
+        public ResponseIterator(List<IPolicy> policies) {
+            this.policies = policies;
+            this.index = policies.size() - 1;
         }
 
+        /**
+         * @see java.util.Iterator#remove()
+         */
         @Override
         public void remove() {
             throw new UnsupportedOperationException();
         }
 
+        /**
+         * @see java.util.Iterator#next()
+         */
         @Override
-        public AbstractPolicy next() {
+        public IPolicy next() {
             return policies.get(index--);
         }
 
+        /**
+         * @see java.util.Iterator#hasNext()
+         */
         @Override
         public boolean hasNext() {
             return index >= 0;
-        }
-
-        public void reset() {
-            this.index = initial;
         }
     };
 }

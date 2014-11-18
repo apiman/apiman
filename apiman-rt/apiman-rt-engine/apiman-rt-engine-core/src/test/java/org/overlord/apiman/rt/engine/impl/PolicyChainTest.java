@@ -15,23 +15,28 @@
  */
 package org.overlord.apiman.rt.engine.impl;
 
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InOrder;
-import org.overlord.apiman.rt.engine.ApimanBuffer;
 import org.overlord.apiman.rt.engine.async.IAsyncHandler;
 import org.overlord.apiman.rt.engine.beans.PolicyFailure;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
 import org.overlord.apiman.rt.engine.beans.ServiceResponse;
-import org.overlord.apiman.rt.engine.policy.AbstractPolicy;
+import org.overlord.apiman.rt.engine.io.IBuffer;
+import org.overlord.apiman.rt.engine.policy.IPolicy;
 import org.overlord.apiman.rt.engine.policy.IPolicyContext;
 import org.overlord.apiman.rt.engine.policy.RequestChain;
 import org.overlord.apiman.rt.engine.policy.ResponseChain;
-
-import static org.mockito.BDDMockito.*;
 
 /**
  * Test {@link RequestChain} and {@link ResponseChain} functionality.
@@ -47,18 +52,18 @@ public class PolicyChainTest {
     private ServiceRequest mockRequest;
     private ServiceResponse mockResponse;
     
-    private ApimanBuffer mockBuffer;
-    private IAsyncHandler<ApimanBuffer> mockBodyHandler;
+    private IBuffer mockBuffer;
+    private IAsyncHandler<IBuffer> mockBodyHandler;
     private IAsyncHandler<Void> mockEndHandler;
     private PassthroughPolicy policyOne;
     private PassthroughPolicy policyTwo;
     private IPolicyContext mockContext;
-    private List<AbstractPolicy> policies;
+    private List<IPolicy> policies;
 
     @SuppressWarnings("unchecked")
     @Before
     public void setup() {   
-        policies = new ArrayList<AbstractPolicy>();
+        policies = new ArrayList<IPolicy>();
         policyOne = spy(new PassthroughPolicy("1")); //Refactor to use mock?
         policyTwo = spy(new PassthroughPolicy("2"));
         
@@ -75,10 +80,10 @@ public class PolicyChainTest {
         given(mockRequest.getDestination()).willReturn("mars"); //$NON-NLS-1$
         given(mockRequest.getType()).willReturn("response"); //$NON-NLS-1$
         
-        mockBuffer = mock(ApimanBuffer.class);
+        mockBuffer = mock(IBuffer.class);
         given(mockBuffer.toString()).willReturn("bananas"); 
         
-        mockBodyHandler = (IAsyncHandler<ApimanBuffer>) mock(IAsyncHandler.class);
+        mockBodyHandler = (IAsyncHandler<IBuffer>) mock(IAsyncHandler.class);
         mockEndHandler = (IAsyncHandler<Void>) mock(IAsyncHandler.class);
     }
     
@@ -101,8 +106,8 @@ public class PolicyChainTest {
         verify(mockEndHandler, times(1)).handle((Void) null);
         
         InOrder order = inOrder(policyOne, policyTwo);
-        order.verify(policyOne).request(mockRequest, mockContext, requestChain);
-        order.verify(policyTwo).request(mockRequest, mockContext, requestChain);
+        order.verify(policyOne).apply(mockRequest, mockContext, requestChain);
+        order.verify(policyTwo).apply(mockRequest, mockContext, requestChain);
     }
     
     @Test
@@ -124,8 +129,8 @@ public class PolicyChainTest {
         verify(mockEndHandler, times(1)).handle((Void) null);   
         
         InOrder order = inOrder(policyTwo, policyOne);
-        order.verify(policyTwo).response(mockResponse, mockContext, responseChain);
-        order.verify(policyOne).response(mockResponse, mockContext, responseChain);
+        order.verify(policyTwo).apply(mockResponse, mockContext, responseChain);
+        order.verify(policyOne).apply(mockResponse, mockContext, responseChain);
     }
     
     @Test
@@ -145,9 +150,9 @@ public class PolicyChainTest {
         
         requestChain.doApply(mockRequest);
         
-        ApimanBuffer buffer1 = (ApimanBuffer) mock(ApimanBuffer.class);
-        ApimanBuffer buffer2 = (ApimanBuffer) mock(ApimanBuffer.class);
-        ApimanBuffer buffer3 = (ApimanBuffer) mock(ApimanBuffer.class);
+        IBuffer buffer1 = (IBuffer) mock(IBuffer.class);
+        IBuffer buffer2 = (IBuffer) mock(IBuffer.class);
+        IBuffer buffer3 = (IBuffer) mock(IBuffer.class);
         
         requestChain.write(buffer1);
         requestChain.write(buffer2);
@@ -161,24 +166,24 @@ public class PolicyChainTest {
         order.verify(mockBodyHandler).handle(buffer3);
         order.verify(mockEndHandler).handle((Void) null);
     }
-    
-    @Test
-    public void shouldSendAbortToAllPolicies() {
-        policies.add(policyOne);
-        policies.add(policyTwo);
-        
-        requestChain = new RequestChain(policies, mockContext);
-        requestChain.bodyHandler(mockBodyHandler);
-        requestChain.endHandler(mockEndHandler);
-        
-        requestChain.doApply(mockRequest);
-
-        requestChain.abort();
-        
-        InOrder order = inOrder(policyOne, policyTwo);
-        order.verify(policyOne, times(1)).abort();
-        order.verify(policyTwo, times(1)).abort();
-    }
+//    
+//    @Test
+//    public void shouldSendAbortToAllPolicies() {
+//        policies.add(policyOne);
+//        policies.add(policyTwo);
+//        
+//        requestChain = new RequestChain(policies, mockContext);
+//        requestChain.bodyHandler(mockBodyHandler);
+//        requestChain.endHandler(mockEndHandler);
+//        
+//        requestChain.doApply(mockRequest);
+//
+//        requestChain.abort();
+//        
+//        InOrder order = inOrder(policyOne, policyTwo);
+//        order.verify(policyOne, times(1)).abort();
+//        order.verify(policyTwo, times(1)).abort();
+//    }
     
     @SuppressWarnings("unchecked")
     @Test
@@ -201,9 +206,9 @@ public class PolicyChainTest {
 
         requestChain.doFailure(mPolicyFailure);
         
-        InOrder order = inOrder(policyOne, policyTwo);
-        order.verify(policyOne, times(1)).abort();
-        order.verify(policyTwo, times(1)).abort();
+//        InOrder order = inOrder(policyOne, policyTwo);
+//        order.verify(policyOne, times(1)).abort();
+//        order.verify(policyTwo, times(1)).abort();
 
         verify(mPolicyFailureHandler).handle(mPolicyFailure);
     }
@@ -229,9 +234,9 @@ public class PolicyChainTest {
 
         requestChain.throwError(mThrowable);
         
-        InOrder order = inOrder(policyOne, policyTwo);
-        order.verify(policyOne, times(1)).abort();
-        order.verify(policyTwo, times(1)).abort();
+//        InOrder order = inOrder(policyOne, policyTwo);
+//        order.verify(policyOne, times(1)).abort();
+//        order.verify(policyTwo, times(1)).abort();
 
         verify(mThrowableFailureHandler).handle(mThrowable);
     }

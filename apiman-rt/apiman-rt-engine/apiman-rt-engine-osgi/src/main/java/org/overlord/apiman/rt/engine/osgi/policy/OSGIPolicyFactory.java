@@ -35,13 +35,13 @@ public class OSGIPolicyFactory implements IPolicyFactory {
      */
     public OSGIPolicyFactory() {
     }
-
+    
     /**
-     * @see org.overlord.apiman.rt.engine.policy.IPolicyFactory#getPolicy(java.lang.String)
+     * @see org.overlord.apiman.rt.engine.policy.IPolicyFactory#newPolicy(java.lang.String)
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
-    public IPolicy getPolicy(String policyImpl) throws PolicyNotFoundException {
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public IPolicy newPolicy(String policyImpl) throws PolicyNotFoundException {
         if (policyImpl == null) {
             throw new PolicyNotFoundException(policyImpl);
         }

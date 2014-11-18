@@ -29,7 +29,7 @@ import org.overlord.apiman.rt.engine.policy.IPolicyContext;
  *
  * @author eric.wittmann@redhat.com
  */
-public class IPBlacklistPolicy extends AbstractPolicy<IPBlacklistConfig> {
+public class IPBlacklistPolicy extends AbstractMappedPolicy<IPBlacklistConfig> {
     
     /**
      * Constructor.
@@ -38,26 +38,24 @@ public class IPBlacklistPolicy extends AbstractPolicy<IPBlacklistConfig> {
     }
 
     /**
-     * @see org.overlord.apiman.engine.policies.AbstractPolicy#getConfigClass()
+     * @see org.overlord.apiman.rt.engine.policy.AbstractPolicy#getConfigurationClass()
      */
     @Override
-    protected Class<IPBlacklistConfig> getConfigClass() {
+    protected Class<IPBlacklistConfig> getConfigurationClass() {
         return IPBlacklistConfig.class;
     }
     
     /**
-     * @see org.overlord.apiman.engine.policies.AbstractPolicy#doApply(org.overlord.apiman.rt.engine.beans.ServiceRequest, org.overlord.apiman.rt.engine.policy.IPolicyContext, java.lang.Object, org.overlord.apiman.rt.engine.policy.IPolicyChain)
+     * @see org.overlord.apiman.rt.engine.policy.AbstractPolicy#doApply(org.overlord.apiman.rt.engine.beans.ServiceRequest, org.overlord.apiman.rt.engine.policy.IPolicyContext, org.overlord.apiman.rt.engine.policy.IPolicyChain)
      */
     @Override
-    protected void doApply(ServiceRequest request, IPolicyContext context, IPBlacklistConfig config,
-            IPolicyChain chain) {
-        IPBlacklistConfig wc = (IPBlacklistConfig) config;
-        if (wc.getIpList().contains(request.getRemoteAddr())) {
+    protected void doApply(ServiceRequest request, IPolicyContext context, IPolicyChain<ServiceRequest> chain) {
+        if (getConfiguration().getIpList().contains(request.getRemoteAddr())) {
             IPolicyFailureFactoryComponent ffactory = context.getComponent(IPolicyFailureFactoryComponent.class);
             String msg = Messages.i18n.format("IPBlacklistPolicy.NotBlacklisted", request.getRemoteAddr()); //$NON-NLS-1$
             chain.doFailure(ffactory.createFailure(PolicyFailureType.Other, PolicyFailureCodes.IP_BLACKLISTED, msg));
         } else {
-            super.doApply(request, context, config, chain);
+            super.doApply(request, context, chain);
         }
     }
 

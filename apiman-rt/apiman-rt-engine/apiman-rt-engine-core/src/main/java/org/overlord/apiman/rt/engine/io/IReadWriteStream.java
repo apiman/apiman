@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.rt.engine;
+package org.overlord.apiman.rt.engine.io;
 
 /**
+ * A stream where both read and write aspects can be manipulated.
  * 
+ * @author Marc Savy <msavy@redhat.com>
  *
- * @author eric.wittmann@redhat.com
+ * @param <H> Head type.
  */
-public interface IServiceInvocationHandler {
-
+public interface IReadWriteStream<H> extends IReadStream<H>, IWriteStream {
 }

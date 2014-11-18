@@ -73,7 +73,6 @@ public class GatewayThreadContext {
     public static final void reset() {
         ServiceRequest request = getServiceRequest();
         request.setApiKey(null);
-        request.setBody(null);
         request.setDestination(null);
         request.getHeaders().clear();
         request.setRawRequest(null);
@@ -81,7 +80,6 @@ public class GatewayThreadContext {
         request.setType(null);
         
         ServiceResponse response = getServiceResponse();
-        response.setBody(null);
         response.setCode(0);
         response.getHeaders().clear();
         response.setMessage(null);

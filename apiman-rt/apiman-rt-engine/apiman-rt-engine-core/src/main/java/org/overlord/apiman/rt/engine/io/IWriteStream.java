@@ -13,12 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.rt.engine.async;
+package org.overlord.apiman.rt.engine.io;
+
 
 /**
- * As {@link IWriteStream} but with {@link #abort()}.
+ * Write into a stream by repeatedly submitting chunks via
+ * {@link #write(IBuffer)}. End of transmission is indicated by
+ * {@link #end()}.
  * 
  * @author Marc Savy <msavy@redhat.com>
  */
-public interface ISignalWriteStream extends IWriteStream, Abortable {
+public interface IWriteStream extends IStream {
+    /**
+     * Write a chunk to the stream. No writes should be made after
+     * {@link #end()} has been signalled.
+     * 
+     * @param chunk
+     */
+     void write(IBuffer chunk);
+
+    /**
+     * Signal transmission has ended. This should only be called once, after
+     * which no further calls to {@link #write(IBuffer)} should be made.
+     */
+     void end();
 }

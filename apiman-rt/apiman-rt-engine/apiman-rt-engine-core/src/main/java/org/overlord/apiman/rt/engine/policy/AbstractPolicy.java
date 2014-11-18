@@ -15,119 +15,73 @@
  */
 package org.overlord.apiman.rt.engine.policy;
 
-import org.overlord.apiman.rt.engine.async.Abortable;
-import org.overlord.apiman.rt.engine.async.AbstractStream;
-import org.overlord.apiman.rt.engine.async.IReadWriteStream;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
 import org.overlord.apiman.rt.engine.beans.ServiceResponse;
-import org.overlord.apiman.rt.engine.beans.exceptions.ConfigurationParseException;
+import org.overlord.apiman.rt.engine.io.IReadWriteStream;
 
 /**
- * A {@link Policy} may inspect a {@link ServiceRequest} and associated {@link ServiceRespose} to indicate
- * whether a given conversation is permitted to continue.
- * 
- * {@link #getRequestHandler()} and {@link #getResponseHandler()} should be overridden if the implementor
- * wishes to inspect or in any way modify the data stream, otherwise a simple pass-through mechanism is
- * assumed.
- * 
- * When an implementation determines the status of a conversation, they must call onto
- * {@link Chain#doApply(Object)} in order to indicate success or failure.
- * 
- * @author Marc Savy <msavy@redhat.com>
+ * A base class for policy impls.
+ *
+ * @author eric.wittmann@redhat.com
  */
-public abstract class AbstractPolicy implements Abortable {
-    
-    private IReadWriteStream<ServiceRequest> defaultRequestHandler;
-    private IReadWriteStream<ServiceResponse> defaultResponseHandler;
+public abstract class AbstractPolicy implements IPolicy {
+
+    /**
+     * Constructor.
+     */
+    public AbstractPolicy() {
+    }
+
+    /**
+     * @see org.overlord.apiman.rt.engine.policy.IPolicy#apply(org.overlord.apiman.rt.engine.beans.ServiceRequest, org.overlord.apiman.rt.engine.policy.IPolicyContext, org.overlord.apiman.rt.engine.policy.IPolicyChain)
+     */
+    @Override
+    public final void apply(ServiceRequest request, IPolicyContext context, IPolicyChain<ServiceRequest> chain) {
+        doApply(request, context, chain);
+    }
+
+    /**
+     * @param request
+     * @param chain
+     */
+    protected void doApply(ServiceRequest request, IPolicyContext context, IPolicyChain<ServiceRequest> chain) {
+        chain.doApply(request);
+    }
     
     /**
-     * Parses the JSON configuration into a policy specific configuration object type.  The
-     * policy implementation can parse the config in any way it chooses, resulting in any
-     * type of object it desires.
-     * @param jsonConfiguration
+     * @see org.overlord.apiman.rt.engine.policy.IPolicy#apply(org.overlord.apiman.rt.engine.beans.ServiceResponse, org.overlord.apiman.rt.engine.policy.IPolicyContext, org.overlord.apiman.rt.engine.policy.IPolicyChain)
      */
-    public abstract Object parseConfiguration(String jsonConfiguration) throws ConfigurationParseException;
-    
+    @Override
+    public final void apply(ServiceResponse response, IPolicyContext context,
+            IPolicyChain<ServiceResponse> chain) {
+        doApply(response, context, chain);
+    }
+
     /**
-     * @return Policy's configuration.
+     * Apply the policy to the response.
+     * @param response
+     * @param context
+     * @param config
+     * @param chain
      */
-    public abstract Object getConfig();
-    
+    protected void doApply(ServiceResponse response, IPolicyContext context, IPolicyChain<ServiceResponse> chain) {
+        chain.doApply(response);
+    }
+
     /**
-     * Once a single #parseConfiguration has been called, a previously parsed
-     * can be passed in.
-     * 
-     * @param config Policy specific configuration.
+     * @see org.overlord.apiman.rt.engine.policy.IPolicy#getRequestHandler()
      */
-    public abstract void setConfig(Object config);
-    
-    /**
-     * Applies a policy upon a {@link ServiceRequest} based on information
-     * included in the request itself in addition to its context and configuration.
-     * 
-     * 
-     * @param request an inbound request to apply to the policy to
-     * @param context contextual information
-     * @param config the policy's configuration information
-     * @param chain the policy chain being invoked
-     */
-    public abstract void request(ServiceRequest request, IPolicyContext context, Chain<ServiceRequest> chain);
-    
-    /**
-     * @return Request handler to stream request data through the policy.
-     */
+    @Override
     public IReadWriteStream<ServiceRequest> getRequestHandler() {
-        if (defaultRequestHandler == null) {
-            defaultRequestHandler = new AbstractStream<ServiceRequest>() {
-
-                @Override
-                public ServiceRequest getHead() {
-                    return getServiceRequest();
-                }
-
-                @Override
-                protected void handleHead(ServiceRequest head) {
-                }
-
-            };
-        }
-
-        return defaultRequestHandler;
+        return null;
     }
-
-    /**
-     * Applies a policy upon a {@link ServiceResponse} based on information
-     * included in the response itself in addition to its context and configuration.
-     * 
-     * @param response an outbound response to apply the policy to
-     * @param context contextual information
-     * @param config the policy's configuration information
-     * @param chain chain the policy chain being invoked
-     */
-    public abstract void response(ServiceResponse response, IPolicyContext context, Chain<ServiceResponse> chain);
     
     /**
-     * @return Response handler to stream request data through the policy.
+     * @see org.overlord.apiman.rt.engine.policy.IPolicy#getResponseHandler()
      */
+    @Override
     public IReadWriteStream<ServiceResponse> getResponseHandler() {
-        if (defaultResponseHandler == null) {
-            defaultResponseHandler = new AbstractStream<ServiceResponse>() {
-
-                @Override
-                public ServiceResponse getHead() {
-                    return getServiceResponse();
-                }
-
-                @Override
-                protected void handleHead(ServiceResponse head) {
-                }
-
-            };
-        }
-
-        return defaultResponseHandler;
+        return null;
     }
-    
-    protected abstract ServiceRequest getServiceRequest();
-    protected abstract ServiceResponse getServiceResponse();
+
 }

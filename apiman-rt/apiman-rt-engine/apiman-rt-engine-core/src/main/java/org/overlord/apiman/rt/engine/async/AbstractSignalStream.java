@@ -15,6 +15,9 @@
  */
 package org.overlord.apiman.rt.engine.async;
 
+import org.overlord.apiman.rt.engine.io.ISignalReadStream;
+import org.overlord.apiman.rt.engine.io.ISignalWriteStream;
+
 /**
  * As {@link AbstractSignalStream} but with {@link #transmit()} to signal body transmission may begin
  * 

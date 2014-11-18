@@ -16,7 +16,7 @@
 package org.overlord.apiman.rt.engine.components;
 
 import org.overlord.apiman.rt.engine.IComponent;
-import org.overlord.apiman.rt.engine.async.IAsyncHandler;
+import org.overlord.apiman.rt.engine.async.IAsyncResultHandler;
 
 /**
  * A component that allows policies to share information across invokations
@@ -45,7 +45,7 @@ public interface ISharedStateComponent extends IComponent {
      * @param defaultValue
      * @param handler
      */
-     <T> void getProperty(String namespace, String propertyName, T defaultValue, IAsyncHandler<T> handler);
+     <T> void getProperty(String namespace, String propertyName, T defaultValue, IAsyncResultHandler<T> handler);
     
     /**
      * Sets a single property in the shared state environment, returning
@@ -55,7 +55,7 @@ public interface ISharedStateComponent extends IComponent {
      * @param value
      * @param handler
      */
-    <T> void setProperty(String namespace, String propertyName, T value, IAsyncHandler<T> handler);
+    <T> void setProperty(String namespace, String propertyName, T value, IAsyncResultHandler<T> handler);
     
     /**
      * Clears a property from the shared state environment, returning the previous 
@@ -64,7 +64,7 @@ public interface ISharedStateComponent extends IComponent {
      * @param propertyName
      * @param handler
      */
-    <T> void clearProperty(String namespace, String propertyName, IAsyncHandler<T> handler);
+    <T> void clearProperty(String namespace, String propertyName, IAsyncResultHandler<T> handler);
 
     /**
      * Increments a value in the shared state environment.  The new value of the 
@@ -75,6 +75,6 @@ public interface ISharedStateComponent extends IComponent {
      * @param amount
      * @param handler
      */
-    <T extends Number> void increment(String namespace, String propertyName, T amount, IAsyncHandler<T> handler);
+    <T extends Number> void increment(String namespace, String propertyName, T amount, IAsyncResultHandler<T> handler);
     
 }

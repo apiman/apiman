@@ -15,14 +15,15 @@
  */
 package org.overlord.apiman.rt.engine.policy;
 
+import java.util.Iterator;
 import java.util.List;
 
-import org.overlord.apiman.rt.engine.ApimanBuffer;
-import org.overlord.apiman.rt.engine.async.Abortable;
-import org.overlord.apiman.rt.engine.async.IAsyncHandler;
 import org.overlord.apiman.rt.engine.async.AbstractStream;
-import org.overlord.apiman.rt.engine.async.IReadWriteStream;
+import org.overlord.apiman.rt.engine.async.IAbortable;
+import org.overlord.apiman.rt.engine.async.IAsyncHandler;
 import org.overlord.apiman.rt.engine.beans.PolicyFailure;
+import org.overlord.apiman.rt.engine.io.IBuffer;
+import org.overlord.apiman.rt.engine.io.IReadWriteStream;
 
 /**
  * Traverses and executes a series of policies according to implementor's
@@ -30,92 +31,115 @@ import org.overlord.apiman.rt.engine.beans.PolicyFailure;
  * policies in arbitrary order.
  *
  * The head handler is the first executed, arriving chunks are passed into
- * {@link #write(ApimanBuffer)}, followed by the {@link #end()} signal.
- * Intermediate policies handlers are chained together, according to the
+ * {@link #write(IBuffer)}, followed by the {@link #end()} signal.
+ * Intermediate policy handlers are chained together, according to the
  * ordering provided by {@link #policyIterator()}.
  *
  * The tail handler is executed last: the result object ({@link #getHead()} is
  * sent to {@link #handleHead(Object)}; chunks are streamed to out
- * {@link #handleBody(ApimanBuffer)}; end of transmission indicated via
+ * {@link #handleBody(IBuffer)}; end of transmission indicated via
  * {@link #handleEnd()}.
  *
  * @author Marc Savy <msavy@redhat.com>
  *
  * @param <H> Head type
  */
-public abstract class Chain<H> extends AbstractStream<H> implements Abortable {
+public abstract class Chain<H> extends AbstractStream<H> implements IAbortable, IPolicyChain<H>, Iterable<IPolicy> {
 
-    protected final List<AbstractPolicy> policies;
-    protected final IPolicyContext context;
+    private final List<IPolicy> policies;
+    private final IPolicyContext context;
 
-    protected IReadWriteStream<H> headPolicyHandler;
-    protected IReadWriteStream<H> tailPolicyHandler;
-    protected IAsyncHandler<PolicyFailure> policyFailureHandler;
-    protected IAsyncHandler<Throwable> policyErrorHandler;
+    private IReadWriteStream<H> headPolicyHandler;
+    private IAsyncHandler<PolicyFailure> policyFailureHandler;
+    private IAsyncHandler<Throwable> policyErrorHandler;
 
-    protected int startIndex;
-    protected H serviceObject;
+    private Iterator<IPolicy> policyIterator;
+    
+    private H serviceObject;
 
-    public Chain(List<AbstractPolicy> policies, IPolicyContext context, int startIndex) {
+    /**
+     * Constructor.
+     * @param policies
+     * @param context
+     */
+    public Chain(List<IPolicy> policies, IPolicyContext context) {
         this.policies = policies;
         this.context = context;
-        this.startIndex = startIndex;
+
+        chainPolicyHandlers();
+        policyIterator = iterator();
     }
 
+    /**
+     * Chain together the body handlers.
+     */
     protected void chainPolicyHandlers() {
         IReadWriteStream<H> previousHandler = null;
-        ResettableIterator<AbstractPolicy> iterator = policyIterator();
-
+        Iterator<IPolicy> iterator = iterator();
         while (iterator.hasNext()) {
-            final AbstractPolicy policy = iterator.next();
-
+            final IPolicy policy = iterator.next();
+            final IReadWriteStream<H> handler = getServiceHandler(policy);
+            if (handler == null) {
+                continue;
+            }
+            
+            if (headPolicyHandler == null) {
+                headPolicyHandler = handler;
+            }
+            
             if (previousHandler != null) {
-
-                previousHandler.bodyHandler(new IAsyncHandler<ApimanBuffer>() {
-
+                previousHandler.bodyHandler(new IAsyncHandler<IBuffer>() {
                     @Override
-                    public void handle(ApimanBuffer result) {
-                        getServiceHandler(policy).write(result);
+                    public void handle(IBuffer result) {
+                        handler.write(result);
                     }
                 });
-
                 previousHandler.endHandler(new IAsyncHandler<Void>() {
-
                     @Override
                     public void handle(Void result) {
-                        getServiceHandler(policy).end();
+                        handler.end();
                     }
-
                 });
             }
 
-            previousHandler = getServiceHandler(policy);
+            previousHandler = handler;
         }
-
-        tailPolicyHandler.bodyHandler(new IAsyncHandler<ApimanBuffer>() {
-
-            @Override
-            public void handle(ApimanBuffer chunk) {
-                handleBody(chunk);
-            }
-        });
-
-        tailPolicyHandler.endHandler(new IAsyncHandler<Void>() {
-
-            @Override
-            public void handle(Void result) {
-                handleEnd();
-            }
-        });
-
-        iterator.reset();
+        
+        IReadWriteStream<H> tailPolicyHandler = previousHandler;
+        
+        // If no policy handlers were found, then just make ourselves the head,
+        // otherwise connect the last policy handler in the chain to ourselves
+        if (headPolicyHandler == null) {
+            // Leave the head and tail policy handlers null - the write() and end() methods
+            // will deal with that case.
+        } else {
+            tailPolicyHandler.bodyHandler(new IAsyncHandler<IBuffer>() {
+    
+                @Override
+                public void handle(IBuffer chunk) {
+                    handleBody(chunk);
+                }
+            });
+    
+            tailPolicyHandler.endHandler(new IAsyncHandler<Void>() {
+    
+                @Override
+                public void handle(Void result) {
+                    handleEnd();
+                }
+            });
+        }
     }
 
+    /**
+     * @see org.overlord.apiman.rt.engine.policy.IPolicyChain#doApply(java.lang.Object)
+     */
+    @Override
     public void doApply(H serviceObject) {
         try {
             this.serviceObject = serviceObject;
-            if (policyIterator().hasNext()) {
-                executePolicy(policyIterator().next());
+            if (policyIterator.hasNext()) {
+                applyPolicy(policyIterator.next(), context);
             } else {
                 handleHead(getHead());
             }
@@ -124,31 +148,55 @@ public abstract class Chain<H> extends AbstractStream<H> implements Abortable {
         }
     }
 
+    /**
+     * @see org.overlord.apiman.rt.engine.async.AbstractStream#write(org.overlord.apiman.rt.engine.io.IBuffer)
+     */
     @Override
-    public void write(ApimanBuffer chunk) {
+    public void write(IBuffer chunk) {
         if (finished) {
             throw new IllegalStateException("Attempted write after #end() was called."); //$NON-NLS-1$
         }
-
-        headPolicyHandler.write(chunk);
+        
+        if (headPolicyHandler != null) {
+            headPolicyHandler.write(chunk);
+        } else {
+            handleBody(chunk);
+        }
     }
 
+    /**
+     * @see org.overlord.apiman.rt.engine.async.AbstractStream#end()
+     */
     @Override
     public void end() {
-        headPolicyHandler.end();
+        if (headPolicyHandler != null) {
+            headPolicyHandler.end();
+        } else {
+            handleEnd();
+        }
     }
 
+    /**
+     * @see org.overlord.apiman.rt.engine.io.IReadStream#getHead()
+     */
     @Override
     public H getHead() {
         return serviceObject;
     }
 
+    /**
+     * @see org.overlord.apiman.rt.engine.async.AbstractStream#handleHead(java.lang.Object)
+     */
     @Override
     protected void handleHead(H service) {
         if (headHandler != null)
             headHandler.handle(service);
     }
 
+    /**
+     * Sets the policy failure handler.
+     * @param failureHandler
+     */
     public void policyFailureHandler(IAsyncHandler<PolicyFailure> failureHandler) {
         this.policyFailureHandler = failureHandler;
     }
@@ -163,6 +211,10 @@ public abstract class Chain<H> extends AbstractStream<H> implements Abortable {
         policyFailureHandler.handle(failure);
     }
 
+    /**
+     * Sets the policy error handler.
+     * @param policyErrorHandler
+     */
     public void policyErrorHandler(IAsyncHandler<Throwable> policyErrorHandler) {
         this.policyErrorHandler = policyErrorHandler;
     }
@@ -181,15 +233,29 @@ public abstract class Chain<H> extends AbstractStream<H> implements Abortable {
      * Send abort signal to all policies.
      */
     public void abort() {
-        for (AbstractPolicy policy : policies) {
-            policy.abort();
-        }
+//        for (IPolicy policy : policies) {
+//            policy.abort();
+//        }
     }
 
-    protected abstract IReadWriteStream<H> getServiceHandler(AbstractPolicy policy);
+    /**
+     * Gets the service handler for the policy.
+     * @param policy
+     */
+    protected abstract IReadWriteStream<H> getServiceHandler(IPolicy policy);
 
-    protected abstract ResettableIterator<AbstractPolicy> policyIterator();
+    /**
+     * Called to apply the given policy to the service object (request or response).
+     * @param policy
+     * @param context
+     */
+    protected abstract void applyPolicy(IPolicy policy, IPolicyContext context);
 
-    protected abstract void executePolicy(AbstractPolicy policy);
+    /**
+     * @return the policies
+     */
+    public List<IPolicy> getPolicies() {
+        return policies;
+    }
 
 }

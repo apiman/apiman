@@ -16,7 +16,7 @@
 package org.overlord.apiman.rt.engine.components;
 
 import org.overlord.apiman.rt.engine.IComponent;
-import org.overlord.apiman.rt.engine.async.IAsyncHandler;
+import org.overlord.apiman.rt.engine.async.IAsyncResultHandler;
 import org.overlord.apiman.rt.engine.rates.RateBucketPeriod;
 
 /**
@@ -37,6 +37,6 @@ public interface IRateLimiterComponent extends IComponent {
      * @param bucketId
      * @param limit
      */
-    void accept(String bucketId, RateBucketPeriod period, int limit, IAsyncHandler<Boolean> handler);
+    void accept(String bucketId, RateBucketPeriod period, int limit, IAsyncResultHandler<Boolean> handler);
 
 }

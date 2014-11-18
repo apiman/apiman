@@ -15,11 +15,12 @@
  */
 package org.overlord.apiman.rt.test.policies;
 
-import org.overlord.apiman.rt.engine.async.IAsyncHandler;
 import org.overlord.apiman.rt.engine.async.IAsyncResult;
+import org.overlord.apiman.rt.engine.async.IAsyncResultHandler;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
 import org.overlord.apiman.rt.engine.beans.ServiceResponse;
 import org.overlord.apiman.rt.engine.components.ISharedStateComponent;
+import org.overlord.apiman.rt.engine.io.IReadWriteStream;
 import org.overlord.apiman.rt.engine.policy.IPolicy;
 import org.overlord.apiman.rt.engine.policy.IPolicyChain;
 import org.overlord.apiman.rt.engine.policy.IPolicyContext;
@@ -29,6 +30,7 @@ import org.overlord.apiman.rt.engine.policy.IPolicyContext;
  *
  * @author eric.wittmann@redhat.com
  */
+@SuppressWarnings({ "nls" })
 public class SimpleSharedStatePolicy implements IPolicy {
     
     /**
@@ -44,22 +46,28 @@ public class SimpleSharedStatePolicy implements IPolicy {
     public Object parseConfiguration(String jsonConfiguration) {
         return new Object();
     }
-
+    
     /**
-     * @see org.overlord.apiman.rt.engine.policy.IPolicy#apply(org.overlord.apiman.rt.engine.beans.ServiceRequest, org.overlord.apiman.rt.engine.policy.IPolicyContext, java.lang.Object, org.overlord.apiman.rt.engine.policy.IPolicyChain)
+     * @see org.overlord.apiman.rt.engine.policy.IPolicy#setConfiguration(java.lang.Object)
      */
     @Override
-    public void apply(final ServiceRequest request, final IPolicyContext context, final Object config,
-            final IPolicyChain chain) {
+    public void setConfiguration(Object config) {
+    }
+    
+    /**
+     * @see org.overlord.apiman.rt.engine.policy.IPolicy#apply(org.overlord.apiman.rt.engine.beans.ServiceRequest, org.overlord.apiman.rt.engine.policy.IPolicyContext, org.overlord.apiman.rt.engine.policy.IPolicyChain)
+     */
+    @Override
+    public void apply(final ServiceRequest request, final IPolicyContext context, final IPolicyChain<ServiceRequest> chain) {
         final ISharedStateComponent sharedState = context.getComponent(ISharedStateComponent.class);
-        final String namespace = "urn:" + getClass().getName(); //$NON-NLS-1$
-        final String propName = "test-property"; //$NON-NLS-1$
-        sharedState.getProperty(namespace, propName, "", new IAsyncHandler<String>() { //$NON-NLS-1$
+        final String namespace = "urn:" + getClass().getName();
+        final String propName = "test-property";
+        sharedState.getProperty(namespace, propName, "", new IAsyncResultHandler<String>() {
             @Override
             public void handle(IAsyncResult<String> result) {
                 String propVal = result.getResult();
-                String newVal = propVal + "+"; //$NON-NLS-1$
-                sharedState.setProperty(namespace, propName, newVal, new IAsyncHandler<String>() {
+                String newVal = propVal + "+";
+                sharedState.setProperty(namespace, propName, newVal, new IAsyncResultHandler<String>() {
                     @Override
                     public void handle(IAsyncResult<String> result) {
                         chain.doApply(request);
@@ -70,22 +78,45 @@ public class SimpleSharedStatePolicy implements IPolicy {
     }
 
     /**
-     * @see org.overlord.apiman.rt.engine.policy.IPolicy#apply(org.overlord.apiman.rt.engine.beans.ServiceResponse, org.overlord.apiman.rt.engine.policy.IPolicyContext, java.lang.Object, org.overlord.apiman.rt.engine.policy.IPolicyChain)
+     * @see org.overlord.apiman.rt.engine.policy.IPolicy#apply(org.overlord.apiman.rt.engine.beans.ServiceResponse, org.overlord.apiman.rt.engine.policy.IPolicyContext, org.overlord.apiman.rt.engine.policy.IPolicyChain)
      */
     @Override
-    public void apply(final ServiceResponse response, final IPolicyContext context, final Object config,
-            final IPolicyChain chain) {
+    public void apply(final ServiceResponse response, final IPolicyContext context, final IPolicyChain<ServiceResponse> chain) {
         final ISharedStateComponent sharedState = context.getComponent(ISharedStateComponent.class);
-        final String namespace = "urn:" + getClass().getName(); //$NON-NLS-1$
-        final String propName = "test-property"; //$NON-NLS-1$
-        sharedState.getProperty(namespace, propName, "NOT_FOUND", new IAsyncHandler<String>() { //$NON-NLS-1$
+        final String namespace = "urn:" + getClass().getName();
+        final String propName = "test-property";
+        sharedState.getProperty(namespace, propName, "NOT_FOUND", new IAsyncResultHandler<String>() {
             @Override
             public void handle(IAsyncResult<String> result) {
                 String propVal = result.getResult();
-                response.getHeaders().put("X-Shared-State-Value", propVal); //$NON-NLS-1$
+                response.getHeaders().put("X-Shared-State-Value", propVal);
                 chain.doApply(response);
             }
         });
+    }
+
+    /**
+     * @see org.overlord.apiman.rt.engine.policy.IPolicy#getConfiguration()
+     */
+    @Override
+    public Object getConfiguration() {
+        return null;
+    }
+
+    /**
+     * @see org.overlord.apiman.rt.engine.policy.IPolicy#getRequestHandler()
+     */
+    @Override
+    public IReadWriteStream<ServiceRequest> getRequestHandler() {
+        return null;
+    }
+
+    /**
+     * @see org.overlord.apiman.rt.engine.policy.IPolicy#getResponseHandler()
+     */
+    @Override
+    public IReadWriteStream<ServiceResponse> getResponseHandler() {
+        return null;
     }
 
 }

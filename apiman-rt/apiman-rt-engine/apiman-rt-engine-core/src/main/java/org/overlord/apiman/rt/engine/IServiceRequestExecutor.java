@@ -1,16 +1,17 @@
 package org.overlord.apiman.rt.engine;
 
 import org.overlord.apiman.rt.engine.async.IAsyncHandler;
-import org.overlord.apiman.rt.engine.async.IWriteStream;
+import org.overlord.apiman.rt.engine.impl.ServiceRequestExecutorImpl;
+import org.overlord.apiman.rt.engine.io.IWriteStream;
 
 /**
  * IPolicyRequestExecutor interface.
  * 
  * @author Marc Savy <msavy@redhat.com>
  *
- * @see PolicyRequestExecutorImpl
+ * @see ServiceRequestExecutorImpl
  */
-public interface IPolicyRequestExecutor {
+public interface IServiceRequestExecutor {
 
     /**
      * Execute the policy chain and request.

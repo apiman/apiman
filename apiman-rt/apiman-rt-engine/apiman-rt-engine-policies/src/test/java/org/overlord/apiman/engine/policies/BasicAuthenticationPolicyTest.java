@@ -44,7 +44,7 @@ import org.overlord.apiman.rt.engine.policy.IPolicyContext;
  *
  * @author eric.wittmann@redhat.com
  */
-@SuppressWarnings("nls")
+@SuppressWarnings({ "nls", "unchecked" })
 public class BasicAuthenticationPolicyTest {
     
     private static final String LDAP_SERVER = "localhost";
@@ -149,6 +149,7 @@ public class BasicAuthenticationPolicyTest {
                 "    }\r\n" + 
                 "}";
         Object config = policy.parseConfiguration(json);
+        policy.setConfiguration(config);
         ServiceRequest request = new ServiceRequest();
         request.setType("GET");
         request.setApiKey("12345");
@@ -162,22 +163,22 @@ public class BasicAuthenticationPolicyTest {
                 return failure;
             }
         });
-        IPolicyChain chain = Mockito.mock(IPolicyChain.class);
+        IPolicyChain<ServiceRequest> chain = Mockito.mock(IPolicyChain.class);
         
         // Failure
-        policy.apply(request, context, config, chain);
+        policy.apply(request, context, chain);
         Mockito.verify(chain).doFailure(failure);
 
         // Failure
         request.getHeaders().put("Authorization", createBasicAuthorization("ckent", "invalid_password"));
         chain = Mockito.mock(IPolicyChain.class);
-        policy.apply(request, context, config, chain);
+        policy.apply(request, context, chain);
         Mockito.verify(chain).doFailure(failure);
         
         // Success
         request.getHeaders().put("Authorization", createBasicAuthorization("ckent", "ckent123!"));
         chain = Mockito.mock(IPolicyChain.class);
-        policy.apply(request, context, config, chain);
+        policy.apply(request, context, chain);
         Mockito.verify(chain).doApply(request);
         Assert.assertEquals("ckent", request.getHeaders().get("X-Authenticated-Identity"));
     }
@@ -198,6 +199,7 @@ public class BasicAuthenticationPolicyTest {
                 "    }\r\n" + 
                 "}";
         Object config = policy.parseConfiguration(json);
+        policy.setConfiguration(config);
         ServiceRequest request = new ServiceRequest();
         request.setType("GET");
         request.setApiKey("12345");
@@ -211,22 +213,22 @@ public class BasicAuthenticationPolicyTest {
                 return failure;
             }
         });
-        IPolicyChain chain = Mockito.mock(IPolicyChain.class);
+        IPolicyChain<ServiceRequest> chain = Mockito.mock(IPolicyChain.class);
         
         // Failure
-        policy.apply(request, context, config, chain);
+        policy.apply(request, context, chain);
         Mockito.verify(chain).doFailure(failure);
 
         // Failure
         request.getHeaders().put("Authorization", createBasicAuthorization(LDAP_USER, "invalid_password"));
         chain = Mockito.mock(IPolicyChain.class);
-        policy.apply(request, context, config, chain);
+        policy.apply(request, context, chain);
         Mockito.verify(chain).doFailure(failure);
         
         // Success
         request.getHeaders().put("Authorization", createBasicAuthorization(LDAP_USER, LDAP_PASSWORD));
         chain = Mockito.mock(IPolicyChain.class);
-        policy.apply(request, context, config, chain);
+        policy.apply(request, context, chain);
         Mockito.verify(chain).doApply(request);
     }
 
@@ -257,6 +259,7 @@ public class BasicAuthenticationPolicyTest {
                 "    }\r\n" + 
                 "}";
         Object config = policy.parseConfiguration(json);
+        policy.setConfiguration(config);
         ServiceRequest request = new ServiceRequest();
         request.setType("GET");
         request.setApiKey("12345");
@@ -270,22 +273,22 @@ public class BasicAuthenticationPolicyTest {
                 return failure;
             }
         });
-        IPolicyChain chain = Mockito.mock(IPolicyChain.class);
+        IPolicyChain<ServiceRequest> chain = Mockito.mock(IPolicyChain.class);
         
         // Failure
-        policy.apply(request, context, config, chain);
+        policy.apply(request, context, chain);
         Mockito.verify(chain).doFailure(failure);
 
         // Failure
         request.getHeaders().put("Authorization", createBasicAuthorization(JDBC_USER, "invalid_password"));
         chain = Mockito.mock(IPolicyChain.class);
-        policy.apply(request, context, config, chain);
+        policy.apply(request, context, chain);
         Mockito.verify(chain).doFailure(failure);
         
         // Success
         request.getHeaders().put("Authorization", createBasicAuthorization(JDBC_USER, JDBC_PASSWORD));
         chain = Mockito.mock(IPolicyChain.class);
-        policy.apply(request, context, config, chain);
+        policy.apply(request, context, chain);
         Mockito.verify(chain).doApply(request);
     }
 
