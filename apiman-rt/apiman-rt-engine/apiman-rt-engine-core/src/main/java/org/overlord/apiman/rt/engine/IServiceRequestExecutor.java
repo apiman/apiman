@@ -2,7 +2,7 @@ package org.overlord.apiman.rt.engine;
 
 import org.overlord.apiman.rt.engine.async.IAsyncHandler;
 import org.overlord.apiman.rt.engine.impl.ServiceRequestExecutorImpl;
-import org.overlord.apiman.rt.engine.io.IWriteStream;
+import org.overlord.apiman.rt.engine.io.ISignalWriteStream;
 
 /**
  * IPolicyRequestExecutor interface.
@@ -30,6 +30,6 @@ public interface IServiceRequestExecutor {
      *
      * @param handler
      */
-    void streamHandler(IAsyncHandler<IWriteStream> handler);
+    void streamHandler(IAsyncHandler<ISignalWriteStream> handler);
 
 }

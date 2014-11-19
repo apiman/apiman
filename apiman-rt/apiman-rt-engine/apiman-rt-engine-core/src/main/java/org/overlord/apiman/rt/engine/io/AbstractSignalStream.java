@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.rt.engine.async;
+package org.overlord.apiman.rt.engine.io;
+
 
 /**
- * An object that can be aborted.
+ * As {@link AbstractSignalStream} but with {@link #transmit()} to signal body transmission may begin
  * 
  * @author Marc Savy <msavy@redhat.com>
+ *
+ * @param <H>
+ * @see ISignalReadStream
  */
-public interface IAbortable {
-    /**
-     * Signal abort.
-     */
-    void abort();
+public abstract class AbstractSignalStream<H> extends AbstractStream<H> implements ISignalReadStream<H>, ISignalWriteStream {
 }

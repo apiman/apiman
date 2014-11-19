@@ -15,11 +15,15 @@
  */
 package org.overlord.apiman.test.common.mock;
 
+import java.io.InputStream;
+import java.security.MessageDigest;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.io.IOUtils;
 
 /**
  * A simple echo response POJO.
@@ -32,13 +36,13 @@ public class EchoResponse {
      * Create an echo response from the inbound information in the http server
      * request.
      * @param request
+     * @param withBody 
      * @return a new echo response
      */
-    public static EchoResponse from(HttpServletRequest request) {
+    public static EchoResponse from(HttpServletRequest request, boolean withBody) {
         EchoResponse response = new EchoResponse();
         response.setMethod(request.getMethod());
         response.setResource(request.getRequestURI());
-        response.setLength(request.getContentLength());
         response.setUri(request.getRequestURI());
         Enumeration<String> headerNames = request.getHeaderNames();
         while (headerNames.hasMoreElements()) {
@@ -46,14 +50,43 @@ public class EchoResponse {
             String value = request.getHeader(name);
             response.getHeaders().put(name, value);
         }
+        if (withBody) {
+            long totalBytes = 0;
+            InputStream is = null;
+            try {
+                is = request.getInputStream();
+                MessageDigest sha1 = MessageDigest.getInstance("SHA1"); //$NON-NLS-1$
+                byte[] data = new byte[1024];
+                int read = 0;
+                while ((read = is.read(data)) != -1) {
+                    sha1.update(data, 0, read);
+                    totalBytes += read;
+                };
+                
+                byte[] hashBytes = sha1.digest();
+                StringBuffer sb = new StringBuffer();
+                for (int i = 0; i < hashBytes.length; i++) {
+                  sb.append(Integer.toString((hashBytes[i] & 0xff) + 0x100, 16).substring(1));
+                }
+                String fileHash = sb.toString();
+                
+                response.setBodyLength(totalBytes);
+                response.setBodySha1(fileHash);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            } finally {
+                IOUtils.closeQuietly(is);
+            }
+        }
         return response;
     }
 
     private String method;
     private String resource;
-    private long length;
     private String uri;
     private Map<String, String> headers = new HashMap<String, String>();
+    private Long bodyLength;
+    private String bodySha1;
     
     /**
      * Constructor.
@@ -104,20 +137,6 @@ public class EchoResponse {
     }
 
     /**
-     * @return the length
-     */
-    public long getLength() {
-        return length;
-    }
-
-    /**
-     * @param length the length to set
-     */
-    public void setLength(long length) {
-        this.length = length;
-    }
-
-    /**
      * @return the uri
      */
     public String getUri() {
@@ -129,5 +148,33 @@ public class EchoResponse {
      */
     public void setUri(String uri) {
         this.uri = uri;
+    }
+
+    /**
+     * @return the bodyLength
+     */
+    public Long getBodyLength() {
+        return bodyLength;
+    }
+
+    /**
+     * @param bodyLength the bodyLength to set
+     */
+    public void setBodyLength(Long bodyLength) {
+        this.bodyLength = bodyLength;
+    }
+
+    /**
+     * @return the bodySha1
+     */
+    public String getBodySha1() {
+        return bodySha1;
+    }
+
+    /**
+     * @param bodySha1 the bodySha1 to set
+     */
+    public void setBodySha1(String bodySha1) {
+        this.bodySha1 = bodySha1;
     }
 }

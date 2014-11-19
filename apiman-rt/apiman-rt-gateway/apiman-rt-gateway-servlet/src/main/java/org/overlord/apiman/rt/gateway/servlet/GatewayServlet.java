@@ -42,7 +42,7 @@ import org.overlord.apiman.rt.engine.beans.PolicyFailureType;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
 import org.overlord.apiman.rt.engine.beans.ServiceResponse;
 import org.overlord.apiman.rt.engine.io.IBuffer;
-import org.overlord.apiman.rt.engine.io.IWriteStream;
+import org.overlord.apiman.rt.engine.io.ISignalWriteStream;
 import org.overlord.apiman.rt.gateway.servlet.i18n.Messages;
 import org.overlord.apiman.rt.gateway.servlet.io.ByteBuffer;
 
@@ -132,7 +132,8 @@ public abstract class GatewayServlet extends HttpServlet {
                                                 outputStream.write(chunk.getBytes());
                                             }
                                         } catch (IOException e) {
-                                            // TODO - log the error
+                                            // This will get caught by the service connector, which will abort the
+                                            // connection to the back-end service.
                                             throw new RuntimeException(e);
                                         }
                                     }
@@ -143,13 +144,17 @@ public abstract class GatewayServlet extends HttpServlet {
                                         try {
                                             resp.flushBuffer();
                                         } catch (IOException e) {
-                                            // TODO - log the error
+                                            // This will get caught by the service connector, which will abort the
+                                            // connection to the back-end service.
                                             throw new RuntimeException(e);
                                         }
                                     }
                                 });
                             } catch (IOException e) {
-                                // TODO - log the error
+                                // this would mean we couldn't get the output stream from the response, so we
+                                // need to abort the engine result (which will let the back-end connection
+                                // close down).
+                                engineResult.abort();
                                 throw new RuntimeException(e);
                             }
                         } else {
@@ -160,9 +165,9 @@ public abstract class GatewayServlet extends HttpServlet {
                     }
                 }
             });
-            executor.streamHandler(new IAsyncHandler<IWriteStream>() {
+            executor.streamHandler(new IAsyncHandler<ISignalWriteStream>() {
                 @Override
-                public void handle(IWriteStream connectorStream) {
+                public void handle(ISignalWriteStream connectorStream) {
                     try {
                         final InputStream is = req.getInputStream();
                         ByteBuffer buffer = new ByteBuffer(2048);
@@ -173,7 +178,7 @@ public abstract class GatewayServlet extends HttpServlet {
                         }
                         connectorStream.end();
                     } catch (IOException e) {
-                        // TODO - log the error
+                        connectorStream.abort();
                         throw new RuntimeException(e);
                     }
                 }

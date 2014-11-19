@@ -30,10 +30,10 @@ import org.overlord.apiman.rt.engine.beans.Service;
 import org.overlord.apiman.rt.engine.beans.ServiceContract;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
 import org.overlord.apiman.rt.engine.beans.ServiceResponse;
+import org.overlord.apiman.rt.engine.beans.exceptions.RequestAbortedException;
 import org.overlord.apiman.rt.engine.io.IBuffer;
 import org.overlord.apiman.rt.engine.io.ISignalReadStream;
 import org.overlord.apiman.rt.engine.io.ISignalWriteStream;
-import org.overlord.apiman.rt.engine.io.IWriteStream;
 import org.overlord.apiman.rt.engine.policy.Chain;
 import org.overlord.apiman.rt.engine.policy.IPolicyContext;
 import org.overlord.apiman.rt.engine.policy.PolicyWithConfiguration;
@@ -68,10 +68,13 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
     private IAsyncHandler<PolicyFailure> policyFailureHandler;
     private IAsyncHandler<Throwable> policyErrorHandler;
 
-    private IAsyncHandler<IWriteStream> inboundStreamHandler;
+    private IAsyncHandler<ISignalWriteStream> inboundStreamHandler;
 
     private Chain<ServiceRequest> requestChain;
     private Chain<ServiceResponse> responseChain;
+
+    private ISignalWriteStream connectorRequestStream;
+    private ISignalReadStream<ServiceResponse> connectorResponseStream;
 
     /**
      * Constructs a new {@link ServiceRequestExecutorImpl}.
@@ -100,7 +103,7 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
     }
 
     /**
-     * @see org.overlord.apiman.rt.engine.IPolicyRequestExecutor#execute()
+     * @see org.overlord.apiman.rt.engine.IServiceRequestExecutor#execute()
      */
     @Override
     public void execute() {
@@ -115,7 +118,7 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
 
                 // Open up a connection to the back-end if we're given the OK from the request chain
                 // Attach the response handler here.
-                final ISignalWriteStream connectorRequestStream = connector.request(request, createConnectorResponseHandler());
+                connectorRequestStream = connector.request(request, createConnectorResponseHandler());
 
                 // Write the body chunks from the *policy request* into the connector request.
                 requestChain.bodyHandler(new IAsyncHandler<IBuffer>() {
@@ -157,7 +160,7 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
             public void handle(IAsyncResult<ISignalReadStream<ServiceResponse>> result) {
                 if (result.isSuccess()) {
                     // The result came back. NB: still need to put it through the response chain.
-                    final ISignalReadStream<ServiceResponse> connectorResponseStream = result.getResult();
+                    connectorResponseStream = result.getResult();
                     ServiceResponse serviceResponse = connectorResponseStream.getHead();
                     context.setAttribute("apiman.engine.serviceResponse", serviceResponse); //$NON-NLS-1$
 
@@ -166,9 +169,9 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
 
                         @Override
                         public void handle(ServiceResponse result) {
-                            
                             // Send the service response to the caller.
                             final EngineResultImpl engineResult = new EngineResultImpl(result);
+                            engineResult.setConnectorResponseStream(connectorResponseStream);
 
                             resultHandler.handle(AsyncResultImpl.<IEngineResult> create(engineResult));
 
@@ -225,7 +228,7 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
      * client request.
      */
     protected void handleStream() {
-        inboundStreamHandler.handle(new IWriteStream() {     
+        inboundStreamHandler.handle(new ISignalWriteStream() {     
             boolean streamFinished = false;
 
             @Override
@@ -233,7 +236,6 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
                 if (streamFinished) {
                     throw new IllegalStateException("Attempted write after #end() was called."); //$NON-NLS-1$
                 }
-
                 requestChain.write(buffer);
             }
 
@@ -241,6 +243,24 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
             public void end() {
                 requestChain.end();
                 streamFinished = true;
+            }
+            
+            /**
+             * @see org.overlord.apiman.rt.engine.io.IAbortable#abort()
+             */
+            @Override
+            public void abort() {
+                // If this is called, it means that something went wrong on the inbound
+                // side of things - so we need to make sure we abort and cleanup the
+                // service connector resources.  We'll also call handle() on the result
+                // handler so that the caller knows something went wrong.
+                streamFinished = true;
+                connectorRequestStream.abort();
+                try {
+                    throw new RequestAbortedException();
+                } catch (RequestAbortedException e) {
+                    resultHandler.handle(AsyncResultImpl.<IEngineResult>create(e));
+                }
             }
 
 
@@ -252,7 +272,7 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
     }
 
     /**
-     * @see org.overlord.apiman.rt.engine.IPolicyRequestExecutor#isFinished()
+     * @see org.overlord.apiman.rt.engine.IServiceRequestExecutor#isFinished()
      */
     @Override
     public boolean isFinished() {
@@ -260,10 +280,10 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
     }
 
     /**
-     * @see org.overlord.apiman.rt.engine.IPolicyRequestExecutor#streamHandler(org.overlord.apiman.rt.engine.async.IAsyncHandler)
+     * @see org.overlord.apiman.rt.engine.IServiceRequestExecutor#streamHandler(org.overlord.apiman.rt.engine.async.IAsyncHandler)
      */
     @Override
-    public void streamHandler(IAsyncHandler<IWriteStream> handler) {
+    public void streamHandler(IAsyncHandler<ISignalWriteStream> handler) {
         this.inboundStreamHandler = handler;
     }
 
@@ -286,8 +306,20 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
     private Chain<ServiceResponse> createResponseChain(IAsyncHandler<ServiceResponse> responseHandler) {
         ResponseChain responseChain = new ResponseChain(policies, context);
         responseChain.headHandler(responseHandler);
-        responseChain.policyFailureHandler(policyFailureHandler);
-        responseChain.policyErrorHandler(policyErrorHandler);
+        responseChain.policyFailureHandler(new IAsyncHandler<PolicyFailure>() {
+            @Override
+            public void handle(PolicyFailure result) {
+                connectorResponseStream.abort();
+                policyFailureHandler.handle(result);
+            }
+        });
+        responseChain.policyErrorHandler(new IAsyncHandler<Throwable>() {
+            @Override
+            public void handle(Throwable result) {
+                connectorResponseStream.abort();
+                policyErrorHandler.handle(result);
+            }
+        });
         return responseChain;
     }
 

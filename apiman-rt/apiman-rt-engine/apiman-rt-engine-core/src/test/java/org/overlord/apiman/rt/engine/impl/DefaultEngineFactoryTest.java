@@ -15,6 +15,12 @@
  */
 package org.overlord.apiman.rt.engine.impl;
 
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -22,16 +28,12 @@ import java.util.concurrent.ExecutionException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.mockito.BDDMockito.*;
-
 import org.mockito.InOrder;
-import org.overlord.apiman.rt.engine.IEngineResult;
 import org.overlord.apiman.rt.engine.IConnectorFactory;
 import org.overlord.apiman.rt.engine.IEngine;
-import org.overlord.apiman.rt.engine.IServiceRequestExecutor;
+import org.overlord.apiman.rt.engine.IEngineResult;
 import org.overlord.apiman.rt.engine.IServiceConnector;
-import org.overlord.apiman.rt.engine.async.AbstractSignalStream;
+import org.overlord.apiman.rt.engine.IServiceRequestExecutor;
 import org.overlord.apiman.rt.engine.async.IAsyncHandler;
 import org.overlord.apiman.rt.engine.async.IAsyncResult;
 import org.overlord.apiman.rt.engine.async.IAsyncResultHandler;
@@ -42,10 +44,10 @@ import org.overlord.apiman.rt.engine.beans.Service;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
 import org.overlord.apiman.rt.engine.beans.ServiceResponse;
 import org.overlord.apiman.rt.engine.beans.exceptions.ConnectorException;
+import org.overlord.apiman.rt.engine.io.AbstractSignalStream;
 import org.overlord.apiman.rt.engine.io.IBuffer;
 import org.overlord.apiman.rt.engine.io.ISignalReadStream;
 import org.overlord.apiman.rt.engine.io.ISignalWriteStream;
-import org.overlord.apiman.rt.engine.io.IWriteStream;
 
 /**
  * Unit test for the default engine factory.
@@ -217,10 +219,10 @@ public class DefaultEngineFactoryTest {
             }
         });
         
-        prExecutor.streamHandler(new IAsyncHandler<IWriteStream>() {
+        prExecutor.streamHandler(new IAsyncHandler<ISignalWriteStream>() {
             
             @Override
-            public void handle(IWriteStream streamWriter) {
+            public void handle(ISignalWriteStream streamWriter) {
                 streamWriter.write(mockBufferInbound);
                 streamWriter.end();
             }

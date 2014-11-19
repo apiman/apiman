@@ -18,10 +18,10 @@ package org.overlord.apiman.rt.engine.policy;
 import java.util.Iterator;
 import java.util.List;
 
-import org.overlord.apiman.rt.engine.async.AbstractStream;
-import org.overlord.apiman.rt.engine.async.IAbortable;
 import org.overlord.apiman.rt.engine.async.IAsyncHandler;
 import org.overlord.apiman.rt.engine.beans.PolicyFailure;
+import org.overlord.apiman.rt.engine.io.AbstractStream;
+import org.overlord.apiman.rt.engine.io.IAbortable;
 import org.overlord.apiman.rt.engine.io.IBuffer;
 import org.overlord.apiman.rt.engine.io.IReadWriteStream;
 
@@ -150,7 +150,7 @@ public abstract class Chain<H> extends AbstractStream<H> implements IAbortable, 
     }
 
     /**
-     * @see org.overlord.apiman.rt.engine.async.AbstractStream#write(org.overlord.apiman.rt.engine.io.IBuffer)
+     * @see org.overlord.apiman.rt.engine.io.AbstractStream#write(org.overlord.apiman.rt.engine.io.IBuffer)
      */
     @Override
     public void write(IBuffer chunk) {
@@ -166,7 +166,7 @@ public abstract class Chain<H> extends AbstractStream<H> implements IAbortable, 
     }
 
     /**
-     * @see org.overlord.apiman.rt.engine.async.AbstractStream#end()
+     * @see org.overlord.apiman.rt.engine.io.AbstractStream#end()
      */
     @Override
     public void end() {
@@ -186,7 +186,7 @@ public abstract class Chain<H> extends AbstractStream<H> implements IAbortable, 
     }
 
     /**
-     * @see org.overlord.apiman.rt.engine.async.AbstractStream#handleHead(java.lang.Object)
+     * @see org.overlord.apiman.rt.engine.io.AbstractStream#handleHead(java.lang.Object)
      */
     @Override
     protected void handleHead(H service) {

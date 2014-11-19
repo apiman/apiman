@@ -155,7 +155,7 @@ public class HttpServiceConnection implements ISignalReadStream<ServiceResponse>
     }
 
     /**
-     * @see org.overlord.apiman.rt.engine.async.IAbortable#abort()
+     * @see org.overlord.apiman.rt.engine.io.IAbortable#abort()
      */
     @Override
     public void abort() {
@@ -167,7 +167,7 @@ public class HttpServiceConnection implements ISignalReadStream<ServiceResponse>
                 connection.disconnect();
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            // TODO log this error but don't rethrow it
         }
     }
 
@@ -188,7 +188,7 @@ public class HttpServiceConnection implements ISignalReadStream<ServiceResponse>
             }
         } catch (IOException e) {
             // TODO log this error.
-            throw new RuntimeException(e);
+            throw new ConnectorException(e);
         }
     }
 
@@ -212,6 +212,7 @@ public class HttpServiceConnection implements ISignalReadStream<ServiceResponse>
             response.setMessage(connection.getResponseMessage());
             responseHandler.handle(AsyncResultImpl.<ISignalReadStream<ServiceResponse>>create(this));
         } catch (Exception e) {
+            // TODO log this error
             throw new ConnectorException(e);
         }
     }
@@ -233,8 +234,13 @@ public class HttpServiceConnection implements ISignalReadStream<ServiceResponse>
             connection.disconnect();
             connected = false;
             endHandler.handle(null);
-        } catch (IOException e) {
-            // TODO log this
+        } catch (Throwable e) {
+            // At this point we're sort of screwed, because we've already sent the response to
+            // the originating client - and we're in the process of sending the body data.  So
+            // I guess the only thing to do is abort() the connection and cross our fingers.
+            if (connected) {
+                abort();
+            }
             throw new RuntimeException(e);
         }
     }

@@ -13,18 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.rt.engine.async;
+package org.overlord.apiman.rt.engine.beans.exceptions;
 
-import org.overlord.apiman.rt.engine.io.ISignalReadStream;
-import org.overlord.apiman.rt.engine.io.ISignalWriteStream;
+import java.io.IOException;
 
 /**
- * As {@link AbstractSignalStream} but with {@link #transmit()} to signal body transmission may begin
- * 
- * @author Marc Savy <msavy@redhat.com>
+ * Thrown when a request is aborted, for example due to an {@link IOException}
+ * when reading data from the client.
  *
- * @param <H>
- * @see ISignalReadStream
+ * @author eric.wittmann@redhat.com
  */
-public abstract class AbstractSignalStream<H> extends AbstractStream<H> implements ISignalReadStream<H>, ISignalWriteStream {
+public class RequestAbortedException extends AbstractEngineException {
+
+    private static final long serialVersionUID = -3731417524954193955L;
+
+    /**
+     * Constructor.
+     * @param message an error message
+     */
+    public RequestAbortedException() {
+    }
+
 }

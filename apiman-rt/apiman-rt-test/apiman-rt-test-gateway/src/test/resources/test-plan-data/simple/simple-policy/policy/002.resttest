@@ -13,7 +13,7 @@ Content-Type: application/json
 {
   "method" : "PUT",
   "resource" : "/path/to/app/resource",
-  "length" : 41,
+  "bodyLength" : 41,
   "uri" : "/path/to/app/resource",
   "headers" : {
     "Content-Type":"application/json"

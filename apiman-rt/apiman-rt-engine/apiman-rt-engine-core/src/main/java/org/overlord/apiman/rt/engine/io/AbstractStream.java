@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.rt.engine.async;
+package org.overlord.apiman.rt.engine.io;
 
+import org.overlord.apiman.rt.engine.async.IAsyncHandler;
 import org.overlord.apiman.rt.engine.beans.ServiceRequest;
-import org.overlord.apiman.rt.engine.io.IBuffer;
-import org.overlord.apiman.rt.engine.io.IReadWriteStream;
 
 /**
  * Generic representation of a three part stream: head, body and end, with
@@ -40,48 +39,82 @@ public abstract class AbstractStream<H> implements IReadWriteStream<H> {
     protected IAsyncHandler<Void> endHandler;
     protected boolean finished = false;
 
+    /**
+     * Sets the head handler.
+     * @param headHandler
+     */
     public void headHandler(IAsyncHandler<H> headHandler) {
         this.headHandler = headHandler;
     }
 
+    /**
+     * @see org.overlord.apiman.rt.engine.io.IReadStream#bodyHandler(org.overlord.apiman.rt.engine.async.IAsyncHandler)
+     */
     @Override
     public void bodyHandler(IAsyncHandler<IBuffer> bodyHandler) {
         this.bodyHandler = bodyHandler;
     }
 
+    /**
+     * @see org.overlord.apiman.rt.engine.io.IReadStream#endHandler(org.overlord.apiman.rt.engine.async.IAsyncHandler)
+     */
     @Override
     public void endHandler(IAsyncHandler<Void> endHandler) {
         this.endHandler = endHandler;
     }
 
+    /**
+     * @see org.overlord.apiman.rt.engine.io.IWriteStream#write(org.overlord.apiman.rt.engine.io.IBuffer)
+     */
     @Override
     public void write(IBuffer chunk) {
-        if(bodyHandler != null)
+        if (bodyHandler != null) {
             bodyHandler.handle(chunk);
+        }
     }
 
+    /**
+     * @see org.overlord.apiman.rt.engine.io.IWriteStream#end()
+     */
     @Override
     public void end() { 
-        if(endHandler != null)
+        if (endHandler != null) {
             endHandler.handle((Void) null);
+        }
         finished = true;
     }
     
+    /**
+     * @see org.overlord.apiman.rt.engine.io.IStream#isFinished()
+     */
     @Override
     public boolean isFinished() {
         return finished;
     }
 
+    /**
+     * Called to handle the head.
+     * @param head
+     */
     protected abstract void handleHead(H head);
 
+    /**
+     * Called to handle a body chunk.
+     * @param chunk
+     */
     protected void handleBody(IBuffer chunk) {
-        if(bodyHandler != null)
+        if (bodyHandler != null) {
             bodyHandler.handle(chunk);
+        }
     }
 
+    /**
+     * Signals the end of the stream.
+     */
     protected void handleEnd() {
-        if(endHandler != null)
+        if (endHandler != null) {
             endHandler.handle((Void) null);
+        }
 
         finished = true;
     }

@@ -15,11 +15,14 @@
  */
 package org.overlord.apiman.rt.engine.io;
 
-
 /**
- * As {@link IWriteStream} but with {@link #abort()}.
+ * An object that can be aborted.
  * 
  * @author Marc Savy <msavy@redhat.com>
  */
-public interface ISignalWriteStream extends IWriteStream, IAbortable {
+public interface IAbortable {
+    /**
+     * Signal abort.
+     */
+    void abort();
 }

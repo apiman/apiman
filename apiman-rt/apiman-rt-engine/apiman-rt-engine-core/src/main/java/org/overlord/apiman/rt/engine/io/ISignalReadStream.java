@@ -15,7 +15,6 @@
  */
 package org.overlord.apiman.rt.engine.io;
 
-import org.overlord.apiman.rt.engine.async.IAbortable;
 import org.overlord.apiman.rt.engine.async.IAsyncHandler;
 
 /**

@@ -16,9 +16,10 @@
 package org.overlord.apiman.rt.engine.impl;
 
 import org.overlord.apiman.rt.engine.IEngineResult;
-import org.overlord.apiman.rt.engine.async.AbstractStream;
 import org.overlord.apiman.rt.engine.beans.PolicyFailure;
 import org.overlord.apiman.rt.engine.beans.ServiceResponse;
+import org.overlord.apiman.rt.engine.io.AbstractStream;
+import org.overlord.apiman.rt.engine.io.ISignalReadStream;
 
 /**
  * The result of a call through the policy engine. Encapsulates either a
@@ -30,6 +31,7 @@ public class EngineResultImpl extends AbstractStream<ServiceResponse> implements
     
     private ServiceResponse serviceResponse = null;
     private PolicyFailure policyFailure = null;
+    private transient ISignalReadStream<ServiceResponse> connectorResponseStream;
     
     /**
      * Constructor.
@@ -108,5 +110,20 @@ public class EngineResultImpl extends AbstractStream<ServiceResponse> implements
     @Override
     public ServiceResponse getHead() {
         return serviceResponse;
+    }
+
+    /**
+     * @see org.overlord.apiman.rt.engine.io.IAbortable#abort()
+     */
+    @Override
+    public void abort() {
+        connectorResponseStream.abort();
+    }
+
+    /**
+     * @param connectorResponseStream the connectorResponseStream to set
+     */
+    public void setConnectorResponseStream(ISignalReadStream<ServiceResponse> connectorResponseStream) {
+        this.connectorResponseStream = connectorResponseStream;
     }
 }

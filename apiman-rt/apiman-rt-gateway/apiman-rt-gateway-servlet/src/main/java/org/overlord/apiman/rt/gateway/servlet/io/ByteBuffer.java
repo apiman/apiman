@@ -36,7 +36,7 @@ public class ByteBuffer implements IBuffer {
      * Constructor.
      */
     public ByteBuffer(int size) {
-        setBuffer(new byte[size]);
+        buffer = new byte[size];
     }
     
     /**
@@ -56,18 +56,18 @@ public class ByteBuffer implements IBuffer {
     }
 
     /**
-     * @see org.overlord.apiman.rt.engine.io.IBuffer#set(int, org.overlord.apiman.rt.engine.io.IBuffer)
+     * @see org.overlord.apiman.rt.engine.io.IBuffer#insert(int, org.overlord.apiman.rt.engine.io.IBuffer)
      */
     @Override
-    public void set(int index, IBuffer buffer) {
+    public void insert(int index, IBuffer buffer) {
         throw new RuntimeException("Not yet implemented");
     }
 
     /**
-     * @see org.overlord.apiman.rt.engine.io.IBuffer#set(int, org.overlord.apiman.rt.engine.io.IBuffer, int, int)
+     * @see org.overlord.apiman.rt.engine.io.IBuffer#insert(int, org.overlord.apiman.rt.engine.io.IBuffer, int, int)
      */
     @Override
-    public void set(int index, IBuffer buffer, int offset, int length) {
+    public void insert(int index, IBuffer buffer, int offset, int length) {
         throw new RuntimeException("Not yet implemented");
     }
 
@@ -91,7 +91,7 @@ public class ByteBuffer implements IBuffer {
      * @see org.overlord.apiman.rt.engine.io.IBuffer#getByte(int)
      */
     @Override
-    public byte getByte(int index) {
+    public byte get(int index) {
         return buffer[index];
     }
 
@@ -108,7 +108,9 @@ public class ByteBuffer implements IBuffer {
      */
     @Override
     public void append(byte b) {
-        throw new RuntimeException("Not yet implemented");
+        byte [] bytes = new byte[1];
+        bytes[0] = b;
+        append(bytes);
     }
 
     /**
@@ -133,18 +135,18 @@ public class ByteBuffer implements IBuffer {
     }
 
     /**
-     * @see org.overlord.apiman.rt.engine.io.IBuffer#set(int, byte[])
+     * @see org.overlord.apiman.rt.engine.io.IBuffer#insert(int, byte[])
      */
     @Override
-    public void set(int index, byte[] b) {
+    public void insert(int index, byte[] b) {
         throw new RuntimeException("Not yet implemented");
     }
 
     /**
-     * @see org.overlord.apiman.rt.engine.io.IBuffer#set(int, byte[], int, int)
+     * @see org.overlord.apiman.rt.engine.io.IBuffer#insert(int, byte[], int, int)
      */
     @Override
-    public void set(int index, byte[] b, int offset, int length) {
+    public void insert(int index, byte[] b, int offset, int length) {
         throw new RuntimeException("Not yet implemented");
     }
 
@@ -153,7 +155,14 @@ public class ByteBuffer implements IBuffer {
      */
     @Override
     public void append(byte[] bytes) {
-        throw new RuntimeException("Not yet implemented");
+        int requiredBytes = bytesInBuffer + bytes.length;
+        if (requiredBytes > buffer.length) {
+            byte [] oldbuffer = buffer;
+            buffer = new byte[requiredBytes];
+            System.arraycopy(oldbuffer, 0, buffer, 0, bytesInBuffer);
+        }
+        System.arraycopy(bytes, 0, buffer, bytesInBuffer, bytes.length);
+        bytesInBuffer = requiredBytes;
     }
 
     /**
@@ -161,7 +170,14 @@ public class ByteBuffer implements IBuffer {
      */
     @Override
     public void append(byte[] bytes, int offset, int length) {
-        throw new RuntimeException("Not yet implemented");
+        int requiredBytes = bytesInBuffer + length;
+        if (requiredBytes > buffer.length) {
+            byte [] oldbuffer = buffer;
+            buffer = new byte[requiredBytes];
+            System.arraycopy(oldbuffer, 0, buffer, 0, bytesInBuffer);
+        }
+        System.arraycopy(bytes, offset, buffer, bytesInBuffer, length);
+        bytesInBuffer = requiredBytes;
     }
 
     /**
@@ -185,18 +201,18 @@ public class ByteBuffer implements IBuffer {
     }
 
     /**
-     * @see org.overlord.apiman.rt.engine.io.IBuffer#set(int, java.lang.String)
+     * @see org.overlord.apiman.rt.engine.io.IBuffer#insert(int, java.lang.String)
      */
     @Override
-    public void set(int index, String string) {
+    public void insert(int index, String string) {
         throw new RuntimeException("Not yet implemented");
     }
 
     /**
-     * @see org.overlord.apiman.rt.engine.io.IBuffer#set(int, java.lang.String, java.lang.String)
+     * @see org.overlord.apiman.rt.engine.io.IBuffer#insert(int, java.lang.String, java.lang.String)
      */
     @Override
-    public void set(int index, String string, String encoding) {
+    public void insert(int index, String string, String encoding) {
         throw new RuntimeException("Not yet implemented");
     }
 
@@ -205,15 +221,17 @@ public class ByteBuffer implements IBuffer {
      */
     @Override
     public void append(String string) {
-        throw new RuntimeException("Not yet implemented");
+        byte[] bytes = string.getBytes();
+        append(bytes);
     }
 
     /**
      * @see org.overlord.apiman.rt.engine.io.IBuffer#append(java.lang.String, java.lang.String)
      */
     @Override
-    public void append(String string, String encoding) {
-        throw new RuntimeException("Not yet implemented");
+    public void append(String string, String encoding) throws UnsupportedEncodingException {
+        byte [] bytes = string.getBytes(encoding);
+        append(bytes);
     }
 
     /**
@@ -234,20 +252,6 @@ public class ByteBuffer implements IBuffer {
     @Override
     public String toString() {
         return new String(buffer, 0, bytesInBuffer);
-    }
-
-    /**
-     * @return the buffer
-     */
-    public byte [] getBuffer() {
-        return buffer;
-    }
-
-    /**
-     * @param buffer the buffer to set
-     */
-    public void setBuffer(byte [] buffer) {
-        this.buffer = buffer;
     }
 
     /**

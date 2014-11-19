@@ -15,6 +15,8 @@
  */
 package org.overlord.apiman.rt.engine.io;
 
+import java.io.UnsupportedEncodingException;
+
 /**
  * A generic buffer used throughout APIMan, principally for streaming body
  * chunks.
@@ -47,22 +49,22 @@ public interface IBuffer {
     // ApimanBuffer
 
     /**
-     * Set ApimanBuffer at given index with buffer.
+     * Inserts data at given index with buffer.
      * 
      * @param index
      * @param buffer
      */
-    void set(int index, IBuffer buffer);
+    void insert(int index, IBuffer buffer);
 
     /**
-     * Set ApimanBuffer at given index with buffer at given offset and constrained length.
+     * Inserts data at the given index with buffer at given offset and constrained length.
      * 
      * @param index ApimanBuffer index
      * @param buffer Provided buffer
      * @param offset Provided buffer offset index
      * @param length Provided buffer maximum length to set
      */
-    void set(int index, IBuffer buffer, int offset, int length);
+    void insert(int index, IBuffer buffer, int offset, int length);
 
     /**
      * @param buffer Buffer to append
@@ -83,7 +85,7 @@ public interface IBuffer {
      * @return byte Value of byte at index
      * @throws IndexOutOfBoundsException
      */
-    byte getByte(int index);
+    byte get(int index);
 
     /**
      * @param index Index of byte to set
@@ -113,22 +115,22 @@ public interface IBuffer {
     byte[] getBytes(int start, int end);
 
     /**
-     * Set ApimanBuffer with byte array, starting at index.
+     * Inserts data from byte array into the index location.
      * 
      * @param index Start index
      * @param b Byte array to set
      */
-    void set(int index, byte[] b);
+    void insert(int index, byte[] b);
 
     /**
-     * Set the ApimanBuffer at index with byte array constrained by offset and length.
+     * Inserts data from the byte array constrained by offset and length.
      * 
      * @param index ApimanBuffer start index
      * @param b Byte Array to set
      * @param offset Byte array start index
      * @param length Byte array maximum length to append
      */
-    void set(int index, byte[] b, int offset, int length);
+    void insert(int index, byte[] b, int offset, int length);
 
     /**
      * @param bytes Byte array to append.
@@ -159,24 +161,24 @@ public interface IBuffer {
      * @param encoding string encoding
      * @return String constrained by start and end indices
      */
-    String getString(int start, int end, String encoding);
+    String getString(int start, int end, String encoding) throws UnsupportedEncodingException;
 
     /**
-     * Set ApimanBuffer at index to value of string.
+     * Inserts data at index from value of string.
      * 
      * @param index ApimanBuffer index
      * @param string String to set as bytes
      */
-    void set(int index, String string);
+    void insert(int index, String string);
 
     /**
-     * Set ApimanBuffer at index to value of string.
+     * Inserts data at index from value of string.
      * 
      * @param index ApimanBuffer index
      * @param string String to set as bytes
      * @param string Encoding of string
      */
-    void set(int index, String string, String encoding);
+    void insert(int index, String string, String encoding) throws UnsupportedEncodingException;
 
     /**
      * @param string String to append
@@ -187,7 +189,7 @@ public interface IBuffer {
      * @param string String to append
      * @param encoding Encoding of string
      */
-    void append(String string, String encoding);
+    void append(String string, String encoding) throws UnsupportedEncodingException;
 
     /**
      * @return String representation of string.
@@ -198,5 +200,5 @@ public interface IBuffer {
      * @param encoding Encoding of string
      * @return String ApimanBuffer as string of given encoding.
      */
-    String toString(String encoding);
+    String toString(String encoding) throws UnsupportedEncodingException;
 }

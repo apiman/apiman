@@ -13,13 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.apiman.rt.engine.io;
+package org.overlord.apiman.rt.test;
 
+import org.junit.Test;
 
 /**
- * As {@link IWriteStream} but with {@link #abort()}.
- * 
- * @author Marc Savy <msavy@redhat.com>
+ * Make sure the gateway and test echo server are working.
+ *
+ * @author eric.wittmann@redhat.com
  */
-public interface ISignalWriteStream extends IWriteStream, IAbortable {
+public class SimpleDataPolicyTest extends AbstractGatewayTest {
+    
+    @Test
+    public void test() throws Exception {
+        runTestPlan("test-plans/simple/simple-data-policy-testPlan.xml"); //$NON-NLS-1$
+    }
+
 }

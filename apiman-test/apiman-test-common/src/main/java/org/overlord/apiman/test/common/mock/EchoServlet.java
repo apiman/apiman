@@ -50,7 +50,7 @@ public class EchoServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
             IOException {
-        doEchoResponse(req, resp);
+        doEchoResponse(req, resp, false);
     }
     
     /**
@@ -59,7 +59,7 @@ public class EchoServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
             IOException {
-        doEchoResponse(req, resp);
+        doEchoResponse(req, resp, true);
     }
     
     /**
@@ -68,7 +68,7 @@ public class EchoServlet extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
             IOException {
-        doEchoResponse(req, resp);
+        doEchoResponse(req, resp, true);
     }
     
     /**
@@ -77,17 +77,19 @@ public class EchoServlet extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        doEchoResponse(req, resp);
+        doEchoResponse(req, resp, false);
     }
 
     /**
      * Responds with a comprehensive echo.  This means bundling up all the
      * information about the inbound request into a java bean and responding
      * with that data as a JSON response.
-     * @param exchange
+     * @param req
+     * @param resp
+     * @param withBody
      */
-    protected void doEchoResponse(HttpServletRequest req, HttpServletResponse resp) {
-        EchoResponse response = EchoResponse.from(req);
+    protected void doEchoResponse(HttpServletRequest req, HttpServletResponse resp, boolean withBody) {
+        EchoResponse response = EchoResponse.from(req, withBody);
         
         resp.setContentType("application/json"); //$NON-NLS-1$
         try {
@@ -96,4 +98,5 @@ public class EchoServlet extends HttpServlet {
             throw new RuntimeException(e);
         }
     }
+    
 }
