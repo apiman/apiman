@@ -8,12 +8,11 @@
     <version>6.0.0.CR14</version>
   </parent>
 
-  <groupId>org.overlord.apiman</groupId>
+  <groupId>io.apiman</groupId>
   <artifactId>apiman</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
-  <name>apiman</name>
   <url>http://apiman.io/</url>
   <description>Open Source API Management</description>
 
@@ -115,7 +114,7 @@
       <!-- Internal Projects -->
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-tools-dev-server-all</artifactId>
+        <artifactId>apiman-tools-server-all</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -130,237 +129,215 @@
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-dt-api-beans</artifactId>
+        <artifactId>apiman-manager-api-beans</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-dt-api-config</artifactId>
+        <artifactId>apiman-manager-api-config</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-dt-api-gateway</artifactId>
+        <artifactId>apiman-manager-api-gateway</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-dt-api-gateway-rest</artifactId>
+        <artifactId>apiman-manager-api-gateway-rest</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-dt-api-jpa</artifactId>
+        <artifactId>apiman-manager-api-jpa</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-dt-api-jpa-idm</artifactId>
+        <artifactId>apiman-manager-api-jpa-idm</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-dt-api-core</artifactId>
+        <artifactId>apiman-manager-api-core</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-dt-api-rest</artifactId>
+        <artifactId>apiman-manager-api-rest</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-dt-api-rest-impl</artifactId>
+        <artifactId>apiman-manager-api-rest-impl</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-dt-api-security</artifactId>
+        <artifactId>apiman-manager-api-security</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-dt-api-war</artifactId>
-        <version>${project.version}</version>
-        <type>war</type>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-dt-api-war</artifactId>
-        <version>${project.version}</version>
-        <classifier>classes</classifier>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-dt-api-war-jetty8</artifactId>
+        <artifactId>apiman-manager-api-war</artifactId>
         <version>${project.version}</version>
         <type>war</type>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-dt-api-war-fuse6</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-dt-api-war-jetty8</artifactId>
+        <artifactId>apiman-manager-api-war</artifactId>
         <version>${project.version}</version>
         <classifier>classes</classifier>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-dt-api-war-wildfly8</artifactId>
+        <artifactId>apiman-manager-api-war-jetty8</artifactId>
         <version>${project.version}</version>
         <type>war</type>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-dt-api-war-wildfly8</artifactId>
+        <artifactId>apiman-manager-api-war-jetty8</artifactId>
         <version>${project.version}</version>
         <classifier>classes</classifier>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-dt-test-api</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-dt-ui-war</artifactId>
+        <artifactId>apiman-manager-api-war-wildfly8</artifactId>
         <version>${project.version}</version>
         <type>war</type>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-dt-ui-war</artifactId>
+        <artifactId>apiman-manager-api-war-wildfly8</artifactId>
         <version>${project.version}</version>
         <classifier>classes</classifier>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-dt-ui-war-jetty8</artifactId>
+        <artifactId>apiman-manager-test-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-manager-ui-war</artifactId>
         <version>${project.version}</version>
         <type>war</type>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-dt-ui-war-fuse6</artifactId>
+        <artifactId>apiman-manager-ui-war</artifactId>
+        <version>${project.version}</version>
+        <classifier>classes</classifier>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-manager-ui-war-jetty8</artifactId>
         <version>${project.version}</version>
         <type>war</type>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-dt-ui-war-jetty8</artifactId>
+        <artifactId>apiman-manager-ui-war-jetty8</artifactId>
         <version>${project.version}</version>
         <classifier>classes</classifier>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-dt-ui-war-fuse6</artifactId>
-        <version>${project.version}</version>
-        <classifier>classes</classifier>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-dt-ui-war-wildfly8</artifactId>
+        <artifactId>apiman-manager-ui-war-wildfly8</artifactId>
         <version>${project.version}</version>
         <type>war</type>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-dt-ui-war-wildfly8</artifactId>
+        <artifactId>apiman-manager-ui-war-wildfly8</artifactId>
         <version>${project.version}</version>
         <classifier>classes</classifier>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-rt-api-rest</artifactId>
+        <artifactId>apiman-gateway-api-rest</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-rt-api-rest-impl</artifactId>
+        <artifactId>apiman-gateway-api-rest-impl</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-rt-engine-beans</artifactId>
+        <artifactId>apiman-gateway-engine-beans</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-rt-engine-core</artifactId>
+        <artifactId>apiman-gateway-engine-core</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-rt-engine-ispn</artifactId>
+        <artifactId>apiman-gateway-engine-ispn</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-rt-engine-policies</artifactId>
+        <artifactId>apiman-gateway-engine-policies</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-rt-engine-osgi</artifactId>
+        <artifactId>apiman-gateway-engine-osgi</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-rt-gateway-undertow</artifactId>
+        <artifactId>apiman-gateway-platforms-undertow</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-rt-gateway-servlet</artifactId>
+        <artifactId>apiman-gateway-platforms-servlet</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-rt-gateway-war</artifactId>
+        <artifactId>apiman-gateway-platforms-war</artifactId>
         <version>${project.version}</version>
         <type>war</type>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-rt-gateway-war</artifactId>
+        <artifactId>apiman-gateway-platforms-war</artifactId>
         <version>${project.version}</version>
         <classifier>classes</classifier>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-rt-gateway-war-fuse6</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-rt-gateway-war-jetty8</artifactId>
+        <artifactId>apiman-gateway-platforms-war-jetty8</artifactId>
         <version>${project.version}</version>
         <type>war</type>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-rt-gateway-war-jetty8</artifactId>
+        <artifactId>apiman-gateway-platforms-war-jetty8</artifactId>
         <version>${project.version}</version>
         <classifier>classes</classifier>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-rt-gateway-war-wildfly8</artifactId>
+        <artifactId>apiman-gateway-platforms-war-wildfly8</artifactId>
         <version>${project.version}</version>
         <type>war</type>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-rt-gateway-war-wildfly8</artifactId>
+        <artifactId>apiman-gateway-platforms-war-wildfly8</artifactId>
         <version>${project.version}</version>
         <classifier>classes</classifier>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-rt-test-gateway</artifactId>
+        <artifactId>apiman-gateway-test</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -370,30 +347,35 @@
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-tools-dev-seeder</artifactId>
+        <artifactId>apiman-tools-seeder</artifactId>
         <version>${project.version}</version>
         <type>war</type>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-tools-dev-seeder</artifactId>
+        <artifactId>apiman-tools-seeder</artifactId>
         <version>${project.version}</version>
         <classifier>classes</classifier>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-tools-dev-server-ui</artifactId>
+        <artifactId>apiman-tools-dev-server-manager-ui</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-tools-dev-services</artifactId>
+        <artifactId>apiman-tools-dev-server-manager-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-tools-services</artifactId>
         <version>${project.version}</version>
         <type>war</type>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-tools-dev-services</artifactId>
+        <artifactId>apiman-tools-services</artifactId>
         <version>${project.version}</version>
         <classifier>classes</classifier>
       </dependency>
@@ -795,12 +777,12 @@
   </distributionManagement>
 
   <modules>
-    <module>apiman-common</module>
-    <module>apiman-distro</module>
-    <module>apiman-dt</module>
-    <module>apiman-rt</module>
-    <module>apiman-tools</module>
-    <module>apiman-test</module>
+    <module>common</module>
+    <module>distro</module>
+    <module>manager</module>
+    <module>gateway</module>
+    <module>tools</module>
+    <module>test</module>
   </modules>
 
 </project>

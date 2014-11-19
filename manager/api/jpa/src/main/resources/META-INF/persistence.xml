@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+  version="2.0">
+  
+  <persistence-unit name="apiman-manager-api-jpa" transaction-type="RESOURCE_LOCAL">
+    <provider>org.hibernate.ejb.HibernatePersistence</provider>
+
+    <jta-data-source>jdbc/ApiManDT</jta-data-source>
+
+    <class>org.overlord.apiman.dt.api.beans.idm.UserBean</class>
+    <class>org.overlord.apiman.dt.api.beans.idm.RoleBean</class>
+    <class>org.overlord.apiman.dt.api.beans.idm.RoleMembershipBean</class>
+    <class>org.overlord.apiman.dt.api.beans.orgs.OrganizationBean</class>
+    <class>org.overlord.apiman.dt.api.beans.apps.ApplicationBean</class>
+    <class>org.overlord.apiman.dt.api.beans.apps.ApplicationVersionBean</class>
+    <class>org.overlord.apiman.dt.api.beans.services.ServiceBean</class>
+    <class>org.overlord.apiman.dt.api.beans.services.ServiceVersionBean</class>
+    <class>org.overlord.apiman.dt.api.beans.services.ServicePlanBean</class>
+    <class>org.overlord.apiman.dt.api.beans.plans.PlanBean</class>
+    <class>org.overlord.apiman.dt.api.beans.plans.PlanVersionBean</class>
+    <class>org.overlord.apiman.dt.api.beans.contracts.ContractBean</class>
+    <class>org.overlord.apiman.dt.api.beans.policies.PolicyDefinitionBean</class>
+    <class>org.overlord.apiman.dt.api.beans.policies.PolicyDefinitionTemplateBean</class>
+    <class>org.overlord.apiman.dt.api.beans.policies.PolicyBean</class>
+    <class>org.overlord.apiman.dt.api.beans.audit.AuditEntryBean</class>
+
+    <properties>
+      <property name="hibernate.show_sql" value="false" />
+      <property name="hibernate.id.new_generator_mappings" value="true" />
+    </properties>
+  </persistence-unit>
+
+</persistence>

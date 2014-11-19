@@ -1,0 +1,80 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>io.apiman</groupId>
+    <artifactId>apiman-gateway-platforms</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <relativePath>../../pom.xml</relativePath>
+  </parent>
+  <artifactId>apiman-gateway-platforms-war-wildfly8</artifactId>
+  <packaging>war</packaging>
+
+  <dependencies>
+    <!-- The base WAR being extended -->
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-gateway-platforms-war</artifactId>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-gateway-platforms-war</artifactId>
+      <type>jar</type>
+      <classifier>classes</classifier>
+    </dependency>
+    
+    <!-- Project Libs -->
+    <dependency>
+      <groupId>io.apiman</groupId>
+      <artifactId>apiman-common-auth</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.apiman</groupId>
+      <artifactId>apiman-common-servlet</artifactId>
+    </dependency>
+
+    <!-- Spec libs -->
+    <dependency>
+      <groupId>org.jboss.spec.javax.servlet</groupId>
+      <artifactId>jboss-servlet-api_3.0_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-war-plugin</artifactId>
+        <configuration>
+          <attachClasses>true</attachClasses>
+          <classesClassifier>classes</classesClassifier>
+          <archive>
+            <manifest>
+              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+              <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+            </manifest>
+          </archive>
+          <overlays>
+            <overlay>
+              <groupId>${project.groupId}</groupId>
+              <artifactId>apiman-gateway-platforms-war</artifactId>
+            </overlay>
+          </overlays>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <!-- Disable this check - this is an overlay project with no direct dependencies -->
+          <execution>
+            <id>enforce-direct-dependencies</id>
+            <phase>non-existant</phase>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

@@ -1,0 +1,182 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>io.apiman</groupId>
+    <artifactId>apiman-tools</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>apiman-tools-server-all</artifactId>
+  <packaging>pom</packaging>
+
+  <dependencies>
+    <!-- The WildFly 8 version of APIMan -->
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-manager-api-war-wildfly8</artifactId>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-manager-ui-war-wildfly8</artifactId>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-gateway-platforms-war-wildfly8</artifactId>
+      <type>war</type>
+    </dependency>
+
+    <!-- The Jetty 8 version of APIMan -->
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-manager-api-war-jetty8</artifactId>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-manager-ui-war-jetty8</artifactId>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-gateway-platforms-war-jetty8</artifactId>
+      <type>war</type>
+    </dependency>
+    
+    <!-- The Dev Environment Seeder -->
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-tools-seeder</artifactId>
+      <type>war</type>
+    </dependency>
+
+    <!-- Some Basic Services for Testing -->
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-tools-services</artifactId>
+      <type>war</type>
+    </dependency>
+    
+    <!-- Data Source Dependencies -->
+    <dependency>
+      <groupId>commons-dbcp</groupId>
+      <artifactId>commons-dbcp</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-pool</groupId>
+      <artifactId>commons-pool</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+    </dependency>
+  </dependencies>
+
+  <profiles>
+    <!-- Install on WildFly 8.1 -->
+    <profile>
+      <id>install-all-wildfly8</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>1.7</version>
+            <dependencies>
+              <dependency>
+                <groupId>org.apache.ant</groupId>
+                <artifactId>ant</artifactId>
+                <version>1.8.2</version>
+              </dependency>
+            </dependencies>
+            <executions>
+              <execution>
+                <id>run-wildfly8</id>
+                <phase>install</phase>
+                <configuration>
+                  <tasks>
+                    <antversion property="antversion" />
+                    <echo>Ant Version: ${antversion}</echo>
+                    
+                    <property name="appserver.id" value="wildfly8" />
+                    <property name="apiman.wildfly.download.url" value="http://download.jboss.org/wildfly/8.1.0.Final/wildfly-8.1.0.Final.zip" />
+                    <property name="apiman.tempdir" value="${project.build.directory}/_tmp" />
+                    <property name="apiman.install.dir" value="${project.build.directory}" />
+                    <property name="apiman.appserver.dir" location="${apiman.install.dir}/wildfly-8.1.0.Final" />
+                    <property name="apiman.wildfly.zip" location="${basedir}/wildfly-8.1.0.Final.zip" />
+                    <property name="apiman.apiman-manager-api-war-wildfly8.war"
+                      value="${maven.dependency.io.apiman.apiman-manager-api-war-wildfly8.war.path}" />
+                    <property name="apiman.apiman-manager-ui-war-wildfly8.war"
+                      value="${maven.dependency.io.apiman.apiman-manager-ui-war-wildfly8.war.path}" />
+                    <property name="apiman.apiman-tools-seeder.war"
+                      value="${maven.dependency.io.apiman.apiman-tools-seeder.war.path}" />
+                    <property name="apiman.apiman-tools-services.war"
+                      value="${maven.dependency.io.apiman.apiman-tools-services.war.path}" />
+                    <property name="apiman.apiman-gateway-platforms-war-wildfly8.war"
+                      value="${maven.dependency.io.apiman.apiman-gateway-platforms-war-wildfly8.war.path}" />
+                    <property name="apiman.wildfly.home" location="${apiman.appserver.dir}" />
+                    <property name="apiman.wildfly.webapps" location="${apiman.appserver.dir}/standalone/deployments" />
+                    <property name="apiman.resources.dir" location="${basedir}/src/main/resources" />
+                    
+                    <echo></echo>
+                    <echo>********************************************************************</echo>
+                    <echo>APIMan DT:         ${apiman.apiman-manager-api-war-wildfly8.war}</echo>
+                    <echo>APIMan DT UI:      ${apiman.apiman-manager-ui-war-wildfly8.war}</echo>
+                    <echo>APIMan Gateway:    ${apiman.apiman-gateway-platforms-war-wildfly8.war}</echo>
+                    <echo>Dev Seeder:        ${apiman.apiman-tools-seeder.war}</echo>
+                    <echo>Dev Services:      ${apiman.apiman-tools-services.war}</echo>
+                    <echo>-------</echo>
+                    <echo>WildFly Home:      ${apiman.wildfly.home}</echo>
+                    <echo>********************************************************************</echo>
+                    <echo></echo>
+                    
+                    <mkdir dir="${apiman.tempdir}" />
+                    
+                    <!-- Download and unpack WildFly 8.1 -->
+                    <get src="${apiman.wildfly.download.url}" dest="${apiman.wildfly.zip}" usetimestamp="true" />
+                    <unzip src="${apiman.wildfly.zip}" dest="${apiman.install.dir}" overwrite="false" />
+                    
+                    <!-- Configure APIMan -->
+                    <property name="apiman.config.file" location="${apiman.wildfly.home}/standalone/configuration/apiman.properties" />
+                    <propertyfile file="${apiman.config.file}" comment=" Configuration information for Overlord API Management">
+                      <entry key="apiman-manager-ui.dt-api.authentication.type" value="authToken" />
+                      <entry key="apiman-manager-ui.dt-api.authentication.token.generator" value="org.overlord.apiman.dt.ui.server.auth.AuthTokenGenerator" />
+                      <entry key="apiman-manager-ui.gateway.base-url" value="http://localhost:8080/apiman-gateway/gateway/" />
+                      <entry key="apiman-manager-api.gateway.rest-endpoint" value="http://localhost:8080/apiman-gateway" />
+                      <entry key="apiman-manager-api.gateway.authentication.basic.user" value="admin" />
+                      <entry key="apiman-manager-api.gateway.authentication.basic.password" value="admin123!" />
+
+                      <entry key="apiman-gateway.registry" value="org.overlord.apiman.rt.engine.ispn.InfinispanRegistry" />
+                      <entry key="apiman-gateway.connector-factory" value="org.overlord.apiman.rt.gateway.servlet.connectors.HttpConnectorFactory" />
+                      <entry key="apiman-gateway.policy-factory" value="org.overlord.apiman.rt.engine.policy.PolicyFactoryImpl" />
+                      <entry key="apiman-gateway.components.ISharedStateComponent" value="org.overlord.apiman.rt.engine.impl.InMemorySharedStateComponent" />
+                      <entry key="apiman-gateway.components.IRateLimiterComponent" value="org.overlord.apiman.rt.engine.impl.InMemoryRateLimiterComponent" />
+                      <entry key="apiman-gateway.components.IPolicyFailureFactoryComponent" value="org.overlord.apiman.rt.gateway.servlet.PolicyFailureFactoryComponent" />
+                    </propertyfile>
+                    
+                    <!-- Deploy apiman to WildFly 8 -->
+                    <copy file="${apiman.resources.dir}/wildfly8/deployments/apiman-ds.xml" todir="${apiman.wildfly.webapps}" overwrite="true" />
+                    <copy file="${apiman.resources.dir}/wildfly8/deployments/authtest-ds.xml" todir="${apiman.wildfly.webapps}" overwrite="true" />
+                    <copy file="${apiman.resources.dir}/wildfly8/deployments/mysql-connector-java-5.1.33-bin.jar" todir="${apiman.wildfly.webapps}" overwrite="true" />
+                    <copy file="${apiman.resources.dir}/wildfly8/configuration/application-users.properties" todir="${apiman.wildfly.home}/standalone/configuration" overwrite="true" />
+                    <copy file="${apiman.resources.dir}/wildfly8/configuration/application-roles.properties" todir="${apiman.wildfly.home}/standalone/configuration" overwrite="true" />
+                    <copy file="${apiman.resources.dir}/wildfly8/configuration/standalone.xml" todir="${apiman.wildfly.home}/standalone/configuration" overwrite="true" />
+                    <copy file="${apiman.apiman-manager-api-war-wildfly8.war}" tofile="${apiman.wildfly.webapps}/apiman-manager-api.war" overwrite="true" />
+                    <copy file="${apiman.apiman-manager-ui-war-wildfly8.war}" tofile="${apiman.wildfly.webapps}/apiman-manager-ui.war" overwrite="true" />
+                    <copy file="${apiman.apiman-tools-seeder.war}" tofile="${apiman.wildfly.webapps}/seeder.war" overwrite="true" />
+                    <copy file="${apiman.apiman-tools-services.war}" tofile="${apiman.wildfly.webapps}/services.war" overwrite="true" />
+                    <copy file="${apiman.apiman-gateway-platforms-war-wildfly8.war}" tofile="${apiman.wildfly.webapps}/apiman-gateway.war" overwrite="true" />
+                  </tasks>
+                </configuration>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>
