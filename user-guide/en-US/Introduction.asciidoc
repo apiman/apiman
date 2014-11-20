@@ -26,7 +26,7 @@ Therefore an API management system tends to provide the following features:
 
 
 === Project Goals
-The goals of the JBoss overlord API management project are to provide an easy to use and powerful API 
+The goals of the JBoss API management project are to provide an easy to use and powerful API 
 Manager as well as a small, fast, low-overhead API Gateway to implement standard API management functionality.
 
 

@@ -101,7 +101,7 @@ Description:: The type of authentication used by the API Manager UI when communi
 
 * *apiman-dt-ui.dt-api.authentication.token.generator*
 +
-Default Value:: org.overlord.apiman.dt.ui.server.auth.AuthTokenGenerator
+Default Value:: io.apiman.manager.ui.server.auth.AuthTokenGenerator
 +
 Description:: The class used by the UI to generate authentication tokens (only used for certain types of authentication).
 
@@ -113,37 +113,37 @@ Description:: The base URL of the API Gateway - used by the UI to show URLs for 
 
 * *apiman-rt.registry*
 +
-Default Value:: org.overlord.apiman.rt.engine.ispn.InfinispanRegistry
+Default Value:: io.apiman.gateway.engine.ispn.InfinispanRegistry
 +
 Description:: The implementation of the service/application registry used by the API Gateway.  By default a persistent Infinispan cache is used.
 
 * *apiman-rt.connector-factory*
 +
-Default Value:: org.overlord.apiman.rt.gateway.servlet.connectors.HttpConnectorFactory
+Default Value:: io.apiman.gateway.platforms.servlet.connectors.HttpConnectorFactory
 +
 Description:: The implementation of a connector factory for API endpoints of type "http".  This factory is used by the Gateway when proxying a request to a back-end endpoint.
 
 * *apiman-rt.policy-factory*
 +
-Default Value:: org.overlord.apiman.rt.engine.policy.PolicyFactoryImpl
+Default Value:: io.apiman.gateway.engine.policy.PolicyFactoryImpl
 +
 Description:: The class that the API Gateway will use creating policies.
 
 * *apiman-rt.components.ISharedStateComponent*
 +
-Default Value:: org.overlord.apiman.rt.engine.impl.InMemorySharedStateComponent
+Default Value:: io.apiman.gateway.engine.impl.InMemorySharedStateComponent
 +
 Description:: The implementation of the shared-state component - a component that can store arbitrary state across request invocations.
 
 * *apiman-rt.components.IRateLimiterComponent*
 +
-Default Value:: org.overlord.apiman.rt.engine.impl.InMemoryRateLimiterComponent
+Default Value:: io.apiman.gateway.engine.impl.InMemoryRateLimiterComponent
 +
 Description:: The implementation of the rate limiter component, which is used by the rate limiting policy.
 
 * *apiman-rt.components.IPolicyFailureFactoryComponent
 +
-Default Value:: org.overlord.apiman.rt.gateway.servlet.PolicyFailureFactoryComponent
+Default Value:: io.apiman.gateway.platforms.servlet.PolicyFailureFactoryComponent
 +
 Description:: The implementation class to use for the factory that creates policy failures.
 
