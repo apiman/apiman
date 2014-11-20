@@ -9,6 +9,8 @@
   </parent>
   <artifactId>apiman-common</artifactId>
   <packaging>pom</packaging>
+  <name>apiman-common</name>
+
   <modules>
     <module>auth</module>
     <module>servlet</module>

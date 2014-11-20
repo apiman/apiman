@@ -8,6 +8,7 @@
   </parent>
   <artifactId>apiman-gateway-platforms-war</artifactId>
   <packaging>war</packaging>
+  <name>apiman-gateway-platforms-war</name>
 
   <dependencies>
     <!-- Project Dependencies -->

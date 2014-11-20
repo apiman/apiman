@@ -8,6 +8,7 @@
   </parent>
   <artifactId>apiman-manager-api-config</artifactId>
   <packaging>bundle</packaging>
+  <name>apiman-manager-api-config</name>
   
   <dependencies>
     <!-- Third Party Dependencies -->

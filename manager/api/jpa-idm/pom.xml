@@ -8,6 +8,8 @@
   </parent>
   <artifactId>apiman-manager-api-jpa-idm</artifactId>
   <packaging>bundle</packaging>
+  <name>apiman-manager-api-jpa-idm</name>
+
   <dependencies>
     <!-- Project Dependencies -->
     <dependency>

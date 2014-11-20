@@ -9,6 +9,7 @@
   </parent>
   <artifactId>apiman-gateway-platforms-war-jetty8</artifactId>
   <packaging>war</packaging>
+  <name>apiman-gateway-platforms-war-jetty8</name>
 
   <dependencies>
     <!-- The base WAR being extended -->

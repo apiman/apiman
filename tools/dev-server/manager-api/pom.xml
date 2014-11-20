@@ -8,6 +8,7 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>apiman-tools-dev-server-manager-api</artifactId>
+  <name>apiman-tools-dev-server-manager-api</name>
 
   <dependencies>
     <dependency>

@@ -7,6 +7,7 @@
   </parent>
   <artifactId>apiman-manager-api-gateway-rest</artifactId>
   <packaging>bundle</packaging>
+  <name>apiman-manager-api-gateway-rest</name>
 
   <dependencies>
     <!-- Project Dependencies -->

@@ -8,6 +8,7 @@
   </parent>
   <artifactId>apiman-tools-seeder</artifactId>
   <packaging>war</packaging>
+  <name>apiman-tools-seeder</name>
   <dependencies>
     <!-- Project Dependencies -->
     <dependency>

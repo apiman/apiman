@@ -8,6 +8,7 @@
   </parent>
   <artifactId>apiman-manager-ui</artifactId>
   <packaging>pom</packaging>
+  <name>apiman-manager-ui</name>
   <modules>
     <module>war</module>
     <module>war/jetty8</module>

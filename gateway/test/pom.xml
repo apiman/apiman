@@ -7,6 +7,7 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
   <artifactId>apiman-gateway-test</artifactId>
+  <name>apiman-gateway-test</name>
 
   <dependencies>
     <!-- Project Dependencies -->

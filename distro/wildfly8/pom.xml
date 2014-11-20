@@ -9,6 +9,7 @@
   </parent>
   <artifactId>apiman-distro-wildfly8</artifactId>
   <packaging>pom</packaging>
+  <name>apiman-distro-wildfly8</name>
 
   <dependencies>
     <!-- The WildFly 8 version of APIMan -->
@@ -34,6 +35,12 @@
       <artifactId>apiman-distro-data</artifactId>
     </dependency>
     
+    <!-- apiman quickstarts -->
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-quickstarts</artifactId>
+      <type>zip</type>
+    </dependency>
   </dependencies>
 
   <build>

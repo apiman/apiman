@@ -7,6 +7,7 @@
   </parent>
   <artifactId>apiman-manager-test</artifactId>
   <packaging>pom</packaging>
+  <name>apiman-manager-test</name>
   <modules>
     <module>api</module>
   </modules>

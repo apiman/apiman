@@ -8,6 +8,7 @@
   </parent>
   <artifactId>apiman-gateway-platforms-servlet</artifactId>
   <packaging>bundle</packaging>
+  <name>apiman-gateway-platforms-servlet</name>
 
   <dependencies>
     <!-- Project Dependencies -->

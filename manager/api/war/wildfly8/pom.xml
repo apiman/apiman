@@ -9,6 +9,7 @@
   </parent>
   <artifactId>apiman-manager-api-war-wildfly8</artifactId>
   <packaging>war</packaging>
+  <name>apiman-manager-api-war-wildfly8</name>
 
   <dependencies>
     <!-- The base WAR being extended -->

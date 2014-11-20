@@ -8,6 +8,7 @@
   </parent>
   <artifactId>apiman-manager-api-war</artifactId>
   <packaging>war</packaging>
+  <name>apiman-manager-api-war</name>
   
   <dependencies>
     <!-- Project JARs -->

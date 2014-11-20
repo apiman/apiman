@@ -8,6 +8,8 @@
   </parent>
   <artifactId>apiman-gateway-platforms</artifactId>
   <packaging>pom</packaging>
+  <name>apiman-gateway-platforms</name>
+
   <modules>
     <module>servlet</module>
     <module>undertow</module>

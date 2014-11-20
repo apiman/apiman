@@ -8,6 +8,8 @@
   </parent>
   <artifactId>apiman-gateway-engine</artifactId>
   <packaging>pom</packaging>
+  <name>apiman-gateway-engine</name>
+
   <modules>
     <module>core</module>
     <module>beans</module>

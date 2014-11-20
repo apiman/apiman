@@ -8,6 +8,7 @@
   </parent>
   <artifactId>apiman-gateway-engine-ispn</artifactId>
   <packaging>bundle</packaging>
+  <name>apiman-gateway-engine-ispn</name>
 
   <dependencies>
     <!-- Project Dependencies -->

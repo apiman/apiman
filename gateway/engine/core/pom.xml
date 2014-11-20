@@ -8,6 +8,8 @@
   </parent>
   <artifactId>apiman-gateway-engine-core</artifactId>
   <packaging>bundle</packaging>
+  <name>apiman-gateway-engine-core</name>
+
   <dependencies>
     <!-- Project Dependencies -->
     <dependency>

@@ -8,6 +8,8 @@
   </parent>
   <artifactId>apiman-distro</artifactId>
   <packaging>pom</packaging>
+  <name>apiman-distro</name>
+
   <modules>
     <module>data</module>
     <module>wildfly8</module>

@@ -8,6 +8,7 @@
   </parent>
   <artifactId>apiman-manager-api-rest-impl</artifactId>
   <packaging>bundle</packaging>
+  <name>apiman-manager-api-rest-impl</name>
 
   <dependencies>
     <!-- Project Dependencies -->

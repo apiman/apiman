@@ -8,6 +8,7 @@
   </parent>
   <artifactId>apiman-tools-dev-server</artifactId>
   <packaging>pom</packaging>
+  <name>apiman-tools-dev-server</name>
   <modules>
     <module>gateway</module>
     <module>manager-api</module>

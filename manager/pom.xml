@@ -8,6 +8,8 @@
   </parent>
   <artifactId>apiman-manager</artifactId>
   <packaging>pom</packaging>
+  <name>apiman-manager</name>
+
   <dependencies>
     <dependency>
       <groupId>org.slf4j</groupId>

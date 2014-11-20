@@ -6,6 +6,7 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
   <artifactId>apiman-test-common</artifactId>
+  <name>apiman-test-common</name>
 
   <dependencies>
     <!-- Required Third Party Libs -->

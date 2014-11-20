@@ -7,6 +7,7 @@
   </parent>
   <artifactId>apiman-tools-services</artifactId>
   <packaging>war</packaging>
+  <name>apiman-tools-services</name>
   <dependencies>
     <!-- Project Dependencies -->
     <dependency>

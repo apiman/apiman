@@ -8,6 +8,7 @@
   </parent>
   <artifactId>apiman-tools-server-all</artifactId>
   <packaging>pom</packaging>
+  <name>apiman-tools-server-all</name>
 
   <dependencies>
     <!-- The WildFly 8 version of APIMan -->

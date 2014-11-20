@@ -8,6 +8,7 @@
   </parent>
   <artifactId>apiman-manager-api-security</artifactId>
   <packaging>bundle</packaging>
+  <name>apiman-manager-api-security</name>
 
   <dependencies>
     <!-- Project Dependencies -->
