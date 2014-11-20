@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <script type="text/javascript" src="site.js"></script>
+  </head>
+
+  <body>
+
+    <!-- Top header/nav bar -->
+    <div id="apiman-header">
+      <div class="main-header container">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="logo"></div>
+            <input class="search no-phone" type="text" placeholder="Quick service search..."></input>
+            <ul class="user-menu pull-right">
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                  <span class="pficon pficon-user"></span>
+                  <span>Bruce Wayne</span>
+                  <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a href="user-orgs.html">Home</a>
+                  </li>
+                  <li class="divider"></li>
+                  <li>
+                    <a href="#">Logout</a>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="form-page" class="container apiman-entity-new page" data-field="page">
+      <div class="row">
+        <h2 class="title" data-i18n-key="import-policy-defs">Import Policy Definition(s)</h2>
+      </div>
+      <div id="dataPage">
+        <!-- Helpful hint -->
+        <div class="row">
+          <p data-i18n-key="import-policy-defs-help-text" class="col-md-6 apiman-label-faded">Import one or more policy definition.  Simply copy/paste the policy definition data into the text area below and click Import - we'll do the rest!  Make sure the data is properly formatted JSON.</p>
+        </div>
+        <!-- HR -->
+        <div class="row hr-row">
+          <hr/>
+        </div>
+        <!-- Choose policyDef name -->
+        <div class="row">
+          <dl>
+            <dt data-i18n-key="policyDef-data">Policy Definition Data</dt>
+            <dd>
+              <textarea data-field="data" class="form-control form-data" width="100%"></textarea>
+            </dd>
+          </dl>
+        </div>
+        <!-- HR -->
+        <div class="row hr-row">
+          <hr/>
+        </div>
+        <!-- Import Button -->
+        <div class="row">
+          <button class="btn btn-primary" data-field="importButton" data-i18n-key="import-policyDef" placeholder="Importing..." data-icon="fa-cog" onclick="$('#dataPage').animate( { 'margin-left' : '-1000px' }, 250, function() { $('#dataPage').hide(); $('#confirmPage').show(); $('#confirmPage').animate( { 'margin-left' : '0px' }, 250); });">Import</button>
+          <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" data-i18n-key="cancel">Cancel</a>
+        </div>
+      </div>
+      <div id="confirmPage" style="margin-left: 1500px; display:none">
+        <div class="row">
+          <table class="table table-responsive" data-field="policyDefs">
+            <thead>
+              <tr>
+                <th data-i18n-key="policy">Policy</th>
+                <th class="no-phone" data-i18n-key="implementation">Implementation</th>
+              </tr>
+            </thead>
+            <tbody data-role="dummy">
+              <tr>
+                <td><a href="edit-policyDef.html"><i class="fa fa-lock fa-fw"></i><span>BASIC Authentication Policy</span></a></td>
+                <td class="no-phone">class:io.apiman.gateway.engine.policies.BasicAuthenticationPolicy</td>
+              </tr>
+              <tr>
+                <td><a href="edit-policyDef.html"><i class="fa fa-thumbs-down fa-fw"></i><span>IP Black-List Policy</span></a></td>
+                <td class="no-phone">class:io.apiman.gateway.engine.policies.IPBlacklistPolicy</td>
+              </tr>
+              <tr>
+                <td><a href="edit-policyDef.html"><i class="fa fa-filter fa-fw"></i><span>IP White-List Policy</span></a></td>
+                <td class="no-phone">class:io.apiman.gateway.engine.policies.IPWhitelistPolicy</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="row">
+          <p data-i18n-key="confirm-import-policyDefs">Really import the policy definition(s) listed above?</p>
+        </div>
+        <!-- Confirm Button -->
+        <div class="row">
+          <button class="btn btn-primary" data-field="yesButton" data-i18n-key="yes" placeholder="Importing..." data-icon="fa-cog">Yes</button>
+          <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="noButton" data-i18n-key="no">No</a>
+        </div>
+      </div>
+    </div> <!-- /container -->
+  </body>
+</html>

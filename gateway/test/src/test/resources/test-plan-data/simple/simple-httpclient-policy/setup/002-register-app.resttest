@@ -13,7 +13,7 @@ Content-Type: application/json
       "serviceVersion" : "1.0.0",
       "policies" : [
         {
-          "policyImpl" : "class:org.overlord.apiman.rt.test.policies.SimpleHttpClientPolicy",
+          "policyImpl" : "class:io.apiman.gateway.test.policies.SimpleHttpClientPolicy",
           "policyJsonConfig" : ""
         }
       ]

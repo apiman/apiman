@@ -5,7 +5,7 @@
       version="3.0">
 
   <listener>
-    <listener-class>org.overlord.apiman.tools.dev.seeder.DevSeeder</listener-class>
+    <listener-class>io.apiman.tools.seeder.DevSeeder</listener-class>
   </listener>
 
 </web-app>

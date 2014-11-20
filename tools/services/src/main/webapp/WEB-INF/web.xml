@@ -6,7 +6,7 @@
 
   <servlet>
     <servlet-name>DateTimeService</servlet-name>
-    <servlet-class>org.overlord.apiman.tools.dev.services.DateTimeService</servlet-class>
+    <servlet-class>io.apiman.tools.services.DateTimeService</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>DateTimeService</servlet-name>
@@ -15,7 +15,7 @@
 
   <servlet>
     <servlet-name>EchoServlet</servlet-name>
-    <servlet-class>org.overlord.apiman.test.common.mock.EchoServlet</servlet-class>
+    <servlet-class>io.apiman.test.common.mock.EchoServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>EchoServlet</servlet-name>

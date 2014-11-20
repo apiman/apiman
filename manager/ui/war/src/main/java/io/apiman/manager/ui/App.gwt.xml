@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 1.6//EN"
+        "http://google-web-toolkit.googlecode.com/svn/releases/1.6/distro-source/core/src/gwt-module.dtd">
+<module rename-to="app">
+  <inherits name="org.jboss.errai.common.ErraiCommon" />
+  <inherits name="org.jboss.errai.bus.ErraiBus" />
+  <inherits name="org.jboss.errai.ioc.Container" />
+  <inherits name="org.jboss.errai.enterprise.CDI" />
+  <inherits name="org.jboss.errai.databinding.DataBinding" />
+  <inherits name="org.jboss.errai.ui.UI" />
+  <inherits name="org.jboss.errai.ui.nav.Navigation" />
+  <inherits name="org.jboss.errai.enterprise.Jaxrs"/>
+  <inherits name="org.overlord.commons.gwt.Overlord" />
+  <inherits name="io.apiman.manager.api.beans.Beans" />
+  <inherits name="io.apiman.manager.api.rest.Rest" />
+  <inherits name="io.apiman.gateway.engine.policies.Policies" />
+  <inherits name="com.google.gwt.http.HTTP" />
+  <inherits name="com.google.gwt.xml.XML" />
+  
+  <set-property name="gwt.logging.popupHandler" value="DISABLED" />
+</module>

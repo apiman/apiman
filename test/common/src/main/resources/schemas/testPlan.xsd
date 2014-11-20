@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsd:schema targetNamespace="urn:org.overlord.apiman.test:2014:02:testPlan" version="1.0"
-  xmlns:tns="urn:org.overlord.apiman.test:2014:02:testPlan" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+<xsd:schema targetNamespace="urn:io.apiman.test:2014:02:testPlan" version="1.0"
+  xmlns:tns="urn:io.apiman.test:2014:02:testPlan" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
   elementFormDefault="qualified">
 
   <!-- 

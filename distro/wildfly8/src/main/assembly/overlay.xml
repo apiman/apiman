@@ -24,7 +24,7 @@
     <dependencySet>
       <outputDirectory>wildfly-8.1.0.Final/apiman</outputDirectory>
       <includes>
-        <include>org.overlord.apiman:apiman-distro-data:jar</include>
+        <include>io.apiman:apiman-distro-data:jar</include>
       </includes>
       <useProjectArtifact>false</useProjectArtifact>
       <useProjectAttachments>false</useProjectAttachments>

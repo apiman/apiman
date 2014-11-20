@@ -2,7 +2,7 @@
     {
       "name" : "BASIC Authentication Policy",
       "description" : "Enables HTTP BASIC Authentication on a service.  Some configuration required.",
-      "policyImpl" : "class:org.overlord.apiman.engine.policies.BasicAuthenticationPolicy",
+      "policyImpl" : "class:io.apiman.gateway.engine.policies.BasicAuthenticationPolicy",
       "icon" : "lock",
       "templates" : [
         {
@@ -14,7 +14,7 @@
     {
       "name" : "IP Whitelist Policy",
       "description" : "Only requests that originate from a specified set of valid IP addresses will be allowed through.",
-      "policyImpl" : "class:org.overlord.apiman.engine.policies.IPWhitelistPolicy",
+      "policyImpl" : "class:io.apiman.gateway.engine.policies.IPWhitelistPolicy",
       "icon" : "filter",
       "templates" : [
         {
@@ -26,7 +26,7 @@
     {
       "name" : "IP Blacklist Policy",
       "description" : "Requests that originate from a specified set of valid IP addresses will be denied access.",
-      "policyImpl" : "class:org.overlord.apiman.engine.policies.IPBlacklistPolicy",
+      "policyImpl" : "class:io.apiman.gateway.engine.policies.IPBlacklistPolicy",
       "icon" : "thumbs-down",
       "templates" : [
         {
@@ -38,7 +38,7 @@
     {
       "name" : "Rate Limiting Policy",
       "description" : "Enforces rate configurable request rate limits on a service.  This ensures that consumers can't overload a service with too many requests.",
-      "policyImpl" : "class:org.overlord.apiman.engine.policies.RateLimitingPolicy",
+      "policyImpl" : "class:io.apiman.gateway.engine.policies.RateLimitingPolicy",
       "icon" : "sliders",
       "templates" : [
         {

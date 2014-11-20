@@ -4,7 +4,7 @@
   version="2.5">
 
   <listener>
-    <listener-class>org.overlord.apiman.rt.war.listeners.WarGatewayBootstrapper</listener-class>
+    <listener-class>io.apiman.gateway.platforms.war.listeners.WarGatewayBootstrapper</listener-class>
   </listener>
 
   <listener>
@@ -24,7 +24,7 @@
   <!-- Gateway Servlet -->
   <servlet>
     <servlet-name>WarGatewayServlet</servlet-name>
-    <servlet-class>org.overlord.apiman.rt.war.servlets.WarGatewayServlet</servlet-class>
+    <servlet-class>io.apiman.gateway.platforms.war.servlets.WarGatewayServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>WarGatewayServlet</servlet-name>
@@ -37,7 +37,7 @@
     <servlet-class>org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher</servlet-class>
     <init-param>
       <param-name>javax.ws.rs.Application</param-name>
-      <param-value>org.overlord.apiman.rt.gateway.webapp.jetty8.JettyRtApiApplication</param-value>
+      <param-value>io.apiman.gateway.platforms.war.jetty8.JettyRtApiApplication</param-value>
     </init-param>
   </servlet>
   <servlet-mapping>
@@ -62,7 +62,7 @@
   </security-constraint>
   <login-config>
     <auth-method>BASIC</auth-method>
-    <realm-name>Overlord</realm-name>
+    <realm-name>apiman</realm-name>
   </login-config>
   <security-role>
     <role-name>apiadmin</role-name>

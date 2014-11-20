@@ -47,7 +47,7 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Export-Package>org.overlord.apiman.rt.engine,org.overlord.apiman.rt.engine.i18n,org.overlord.apiman.rt.engine.async,org.overlord.apiman.rt.engine.components,org.overlord.apiman.rt.engine.impl,org.overlord.apiman.rt.engine.policy</Export-Package>
+            <Export-Package>io.apiman.gateway.engine,io.apiman.gateway.engine.i18n,io.apiman.gateway.engine.async,io.apiman.gateway.engine.components,io.apiman.gateway.engine.impl,io.apiman.gateway.engine.policy</Export-Package>
           </instructions>
         </configuration>
       </plugin>

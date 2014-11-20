@@ -48,7 +48,7 @@
               </execution>
             </executions>
             <configuration>
-              <mainClass>org.overlord.apiman.tools.devsvr.api.DtApiDevServer</mainClass>
+              <mainClass>io.apiman.tools.devsvr.manager.api.DtApiDevServer</mainClass>
             </configuration>
           </plugin>
         </plugins>

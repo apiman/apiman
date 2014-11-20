@@ -64,7 +64,7 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Export-Package>org.overlord.apiman.rt.api.rest.impl*</Export-Package>
+            <Export-Package>io.apiman.gateway.api.rest.impl*</Export-Package>
           </instructions>
         </configuration>
       </plugin>

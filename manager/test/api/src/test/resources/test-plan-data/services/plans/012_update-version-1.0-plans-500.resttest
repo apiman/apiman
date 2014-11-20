@@ -16,6 +16,6 @@ Content-Type: application/json
 { 
   "type" : "SystemErrorException",
   "errorCode" : -1,
-  "message" : "org.overlord.apiman.dt.api.core.exceptions.ConstraintViolationException: javax.persistence.RollbackException: Error while committing the transaction",
+  "message" : "io.apiman.manager.api.core.exceptions.ConstraintViolationException: javax.persistence.RollbackException: Error while committing the transaction",
   "moreInfoUrl" : null
 }

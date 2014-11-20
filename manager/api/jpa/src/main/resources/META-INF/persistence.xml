@@ -8,22 +8,22 @@
 
     <jta-data-source>jdbc/ApiManDT</jta-data-source>
 
-    <class>org.overlord.apiman.dt.api.beans.idm.UserBean</class>
-    <class>org.overlord.apiman.dt.api.beans.idm.RoleBean</class>
-    <class>org.overlord.apiman.dt.api.beans.idm.RoleMembershipBean</class>
-    <class>org.overlord.apiman.dt.api.beans.orgs.OrganizationBean</class>
-    <class>org.overlord.apiman.dt.api.beans.apps.ApplicationBean</class>
-    <class>org.overlord.apiman.dt.api.beans.apps.ApplicationVersionBean</class>
-    <class>org.overlord.apiman.dt.api.beans.services.ServiceBean</class>
-    <class>org.overlord.apiman.dt.api.beans.services.ServiceVersionBean</class>
-    <class>org.overlord.apiman.dt.api.beans.services.ServicePlanBean</class>
-    <class>org.overlord.apiman.dt.api.beans.plans.PlanBean</class>
-    <class>org.overlord.apiman.dt.api.beans.plans.PlanVersionBean</class>
-    <class>org.overlord.apiman.dt.api.beans.contracts.ContractBean</class>
-    <class>org.overlord.apiman.dt.api.beans.policies.PolicyDefinitionBean</class>
-    <class>org.overlord.apiman.dt.api.beans.policies.PolicyDefinitionTemplateBean</class>
-    <class>org.overlord.apiman.dt.api.beans.policies.PolicyBean</class>
-    <class>org.overlord.apiman.dt.api.beans.audit.AuditEntryBean</class>
+    <class>io.apiman.manager.api.beans.idm.UserBean</class>
+    <class>io.apiman.manager.api.beans.idm.RoleBean</class>
+    <class>io.apiman.manager.api.beans.idm.RoleMembershipBean</class>
+    <class>io.apiman.manager.api.beans.orgs.OrganizationBean</class>
+    <class>io.apiman.manager.api.beans.apps.ApplicationBean</class>
+    <class>io.apiman.manager.api.beans.apps.ApplicationVersionBean</class>
+    <class>io.apiman.manager.api.beans.services.ServiceBean</class>
+    <class>io.apiman.manager.api.beans.services.ServiceVersionBean</class>
+    <class>io.apiman.manager.api.beans.services.ServicePlanBean</class>
+    <class>io.apiman.manager.api.beans.plans.PlanBean</class>
+    <class>io.apiman.manager.api.beans.plans.PlanVersionBean</class>
+    <class>io.apiman.manager.api.beans.contracts.ContractBean</class>
+    <class>io.apiman.manager.api.beans.policies.PolicyDefinitionBean</class>
+    <class>io.apiman.manager.api.beans.policies.PolicyDefinitionTemplateBean</class>
+    <class>io.apiman.manager.api.beans.policies.PolicyBean</class>
+    <class>io.apiman.manager.api.beans.audit.AuditEntryBean</class>
 
     <properties>
       <property name="hibernate.show_sql" value="false" />

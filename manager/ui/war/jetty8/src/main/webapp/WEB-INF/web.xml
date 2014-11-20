@@ -12,7 +12,7 @@
     <filter-name>GWTCacheControl</filter-name>
     <url-pattern>/app/*</url-pattern>
   </filter-mapping>
-  
+
   <filter>
     <filter-name>ResourceCacheControl</filter-name>
     <filter-class>org.overlord.commons.gwt.server.filters.ResourceCacheControlFilter</filter-class>
@@ -41,25 +41,43 @@
 
   <servlet>
     <servlet-name>ConfigurationJS</servlet-name>
-    <servlet-class>org.overlord.apiman.dt.ui.server.servlets.ConfigurationServlet</servlet-class>
+    <servlet-class>io.apiman.manager.ui.server.servlets.ConfigurationServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>ConfigurationJS</servlet-name>
     <url-pattern>/js/configuration.nocache.js</url-pattern>
   </servlet-mapping>
-  
+
   <servlet>
     <servlet-name>TokenRefresh</servlet-name>
-    <servlet-class>org.overlord.apiman.dt.ui.server.servlets.TokenRefreshServlet</servlet-class>
+    <servlet-class>io.apiman.manager.ui.server.servlets.TokenRefreshServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>TokenRefresh</servlet-name>
     <url-pattern>/rest/tokenRefresh</url-pattern>
   </servlet-mapping>
-  
+
+  <servlet>
+    <servlet-name>FetchProxy</servlet-name>
+    <servlet-class>io.apiman.manager.ui.server.servlets.UrlFetchProxyServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>FetchProxy</servlet-name>
+    <url-pattern>/proxies/fetch</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>LogoutServlet</servlet-name>
+    <servlet-class>io.apiman.manager.ui.server.servlets.LogoutServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>LogoutServlet</servlet-name>
+    <url-pattern>/logout</url-pattern>
+  </servlet-mapping>
+
   <security-constraint>
     <web-resource-collection>
-      <web-resource-name>ApimanDT</web-resource-name>
+      <web-resource-name>apiman-manager</web-resource-name>
       <url-pattern>/*</url-pattern>
     </web-resource-collection>
     <auth-constraint>
@@ -68,7 +86,7 @@
   </security-constraint>
   <login-config>
     <auth-method>BASIC</auth-method>
-    <realm-name>Overlord</realm-name>
+    <realm-name>apiman</realm-name>
   </login-config>
   <security-role>
     <role-name>apiuser</role-name>

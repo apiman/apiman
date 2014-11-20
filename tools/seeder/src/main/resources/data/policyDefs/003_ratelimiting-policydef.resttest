@@ -4,7 +4,7 @@ Content-Type: application/json
 {
   "name" : "Rate Limiting Policy",
   "description" : "Enforces rate configurable request rate limits on a service.  This ensures that consumers can't overload a service with too many requests.",
-  "policyImpl" : "class:org.overlord.apiman.engine.policies.RateLimitingPolicy",
+  "policyImpl" : "class:io.apiman.gateway.engine.policies.RateLimitingPolicy",
   "icon" : "sliders",
   "templates" : [
     {

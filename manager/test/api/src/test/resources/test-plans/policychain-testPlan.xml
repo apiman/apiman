@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testPlan xmlns="urn:org.overlord.apiman.test:2014:02:testPlan">
+<testPlan xmlns="urn:io.apiman.test:2014:02:testPlan">
 
   <testGroup name="Initial Creates">
     <test name="Create Organization 1">test-plan-data/policychain/001_create-org.resttest</test>

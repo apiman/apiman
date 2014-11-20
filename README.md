@@ -1,14 +1,16 @@
-# The Overlord APIMan project (API Management)
+# The apiman project (Open Source API Management)
 
 ## Summary
 
-This is the official Git repository for the Overlord APIMan project, which is intended to be a part of the [JBoss Overlord](http://www.jboss.org/overlord) umbrella project.
+This is the official Git repository for the apiman project:  http://apiman.io/
 
-The APIMan project is a standalone API Management system that can be either run as a separate system or embedded within existing frameworks.
+The apiman project is a standalone API Management system that can be either run as a separate system or 
+embedded within existing frameworks and platforms.
 
 ## Get the code
 
-The easiest way to get started with the code is to [create your own fork](http://help.github.com/forking/) of this repository, and then clone your fork:
+The easiest way to get started with the code is to [create your own fork](http://help.github.com/forking/) 
+of this repository, and then clone your fork:
 
 	$ git clone git@github.com:<you>/apiman.git
 	$ cd apiman
@@ -22,9 +24,10 @@ At any time, you can pull changes from the upstream and merge them onto your mas
 
 The general idea is to keep your 'master' branch in-sync with the 'upstream/master'.
 
-## Building APIMan
+## Building apiman
 
-We use Maven 3.x to build our software. The following command compiles all the code, installs the JARs into your local Maven repository, and runs all of the unit tests:
+We use Maven 3.x to build our software. The following command compiles all the code, installs the JARs into 
+your local Maven repository, and runs all of the unit tests:
 
 	$ mvn clean install
 	
@@ -59,17 +62,17 @@ You're welcome.
 
 ## Contribute fixes and features
 
-APIMan is open source, and we welcome anybody who wants to participate and contribute!
+apiman is open source, and we welcome anybody who wants to participate and contribute!
 
-If you want to fix a bug or make any changes, please log an issue in the [APIMan JIRA](http://issues.jboss.org/browse/APIMAN) describing the bug
+If you want to fix a bug or make any changes, please log an issue in the [apiman JIRA](http://issues.jboss.org/browse/APIMAN) describing the bug
 or new feature. Then we highly recommend making the changes on a topic branch named with the JIRA issue number. For example, this command creates
 a branch for the APIMAN-1234 issue:
 
 	$ git checkout -b apiman-1234
 
-After you're happy with your changes and a full build (with unit tests) runs successfully, commit your changes on your topic branch
-(using [really good comments](http://community.jboss.org/wiki/OverlordDevelopmentGuidelines#Commits)). Then it's time to check for
-and pull any recent changes that were made in the official repository:
+After you're happy with your changes and a full build (with unit tests) runs successfully, commit your 
+changes on your topic branch. Then it's time to check for and pull any recent changes that were made in 
+the official repository:
 
 	$ git checkout master               # switches to the 'master' branch
 	$ git pull upstream master          # fetches all 'upstream' changes and merges 'upstream/master' onto your 'master' branch
@@ -84,11 +87,10 @@ You can then either [create patches](http://progit.org/book/ch5-2.html) (one fil
 
 and upload them to the JIRA issue, or you can push your topic branch and its changes into your public fork repository
 
-	$ git push origin apiman-1234         # pushes your topic branch into your public fork of APIMan
+	$ git push origin apiman-1234         # pushes your topic branch into your public fork of apiman
 
 and [generate a pull-request](http://help.github.com/pull-requests/) for your changes. 
 
 We prefer pull-requests, because we can review the proposed changes, comment on them,
 discuss them with you, and likely merge the changes right into the official repository.
 
-Please also read the guidelines for contributors: https://github.com/Governance/overlord/wiki/Contributor-Guidelines

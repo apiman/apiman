@@ -6,7 +6,7 @@
   <!-- Authentication Filter -->
   <filter>
     <filter-name>AuthenticationFilter</filter-name>
-    <filter-class>org.overlord.apiman.common.servlet.AuthenticationFilter</filter-class>
+    <filter-class>io.apiman.common.servlet.AuthenticationFilter</filter-class>
     <init-param>
       <param-name>signatureRequired</param-name>
       <param-value>false</param-value>
@@ -40,7 +40,7 @@
   <!-- Security Context Filter -->
   <filter>
     <filter-name>SecurityContext</filter-name>
-    <filter-class>org.overlord.apiman.dt.api.security.impl.DefaultSecurityContextFilter</filter-class>
+    <filter-class>io.apiman.manager.api.security.impl.DefaultSecurityContextFilter</filter-class>
   </filter>
   <filter-mapping>
     <filter-name>SecurityContext</filter-name>

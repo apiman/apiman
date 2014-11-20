@@ -13,7 +13,7 @@ Content-Type: application/json
       "serviceVersion" : "1.0.0",
       "policies" : [
         {
-          "policyImpl" : "class:org.overlord.apiman.engine.policies.RateLimitingPolicy",
+          "policyImpl" : "class:io.apiman.gateway.engine.policies.RateLimitingPolicy",
           "policyJsonConfig" : "{ \"limit\" : 5, \"granularity\" : \"Application\", \"period\" : \"Minute\" }"
         }
       ]

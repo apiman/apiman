@@ -7,12 +7,12 @@
   http://cxf.apache.org/blueprint/jaxrs http://cxf.apache.org/schemas/blueprint/jaxrs.xsd
   http://cxf.apache.org/blueprint/core http://cxf.apache.org/schemas/blueprint/core.xsd">
 
-  <bean id="ipWhiteList" class="org.overlord.apiman.engine.policies.IPWhitelistPolicy" />
-  <bean id="ipBlackList" class="org.overlord.apiman.engine.policies.IPBlacklistPolicy" />
-  <bean id="basicAuth" class="org.overlord.apiman.engine.policies.BasicAuthenticationPolicy" />
+  <bean id="ipWhiteList" class="io.apiman.gateway.engine.policies.IPWhitelistPolicy" />
+  <bean id="ipBlackList" class="io.apiman.gateway.engine.policies.IPBlacklistPolicy" />
+  <bean id="basicAuth" class="io.apiman.gateway.engine.policies.BasicAuthenticationPolicy" />
 
-  <service ref="ipWhiteList" interface="org.overlord.apiman.rt.engine.policy.IPolicy" />
-  <service ref="ipBlackList" interface="org.overlord.apiman.rt.engine.policy.IPolicy" />
-  <service ref="basicAuth" interface="org.overlord.apiman.rt.engine.policy.IPolicy" />
+  <service ref="ipWhiteList" interface="io.apiman.gateway.engine.policy.IPolicy" />
+  <service ref="ipBlackList" interface="io.apiman.gateway.engine.policy.IPolicy" />
+  <service ref="basicAuth" interface="io.apiman.gateway.engine.policy.IPolicy" />
 
 </blueprint>

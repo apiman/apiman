@@ -2,7 +2,7 @@
 <Configure class="org.eclipse.jetty.webapp.WebAppContext">
 
   <Get name="securityHandler">
-    <Set name="realmName">Overlord</Set>
+    <Set name="realmName">apiman</Set>
   </Get>
 
   <Set name="serverClasses">

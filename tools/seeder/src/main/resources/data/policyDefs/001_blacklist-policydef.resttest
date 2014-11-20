@@ -4,7 +4,7 @@ Content-Type: application/json
 {
   "name" : "IP Blacklist Policy",
   "description" : "Requests that originate from a specified set of valid IP addresses will be denied access.",
-  "policyImpl" : "class:org.overlord.apiman.engine.policies.IPBlacklistPolicy",
+  "policyImpl" : "class:io.apiman.gateway.engine.policies.IPBlacklistPolicy",
   "icon" : "thumbs-down",
   "templates" : [
     {

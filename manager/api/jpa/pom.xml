@@ -47,7 +47,7 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Import-Package>org.overlord.apiman.dt.api.beans.idm,!javax.enterprise.context,!javax.enterprise.inject,!javax.inject,*</Import-Package>
+            <Import-Package>io.apiman.manager.api.beans.idm,!javax.enterprise.context,!javax.enterprise.inject,!javax.inject,*</Import-Package>
           </instructions>
         </configuration>
       </plugin>

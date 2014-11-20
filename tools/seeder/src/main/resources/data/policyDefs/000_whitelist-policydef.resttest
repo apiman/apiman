@@ -4,7 +4,7 @@ Content-Type: application/json
 {
   "name" : "IP Whitelist Policy",
   "description" : "Only requests that originate from a specified set of valid IP addresses will be allowed through.",
-  "policyImpl" : "class:org.overlord.apiman.engine.policies.IPWhitelistPolicy",
+  "policyImpl" : "class:io.apiman.gateway.engine.policies.IPWhitelistPolicy",
   "icon" : "filter",
   "templates" : [
     {
