@@ -74,74 +74,74 @@ for all three applications (API Manager, API Manager UI, API Gateway).
 
 Here is a breakdown of the properties found in this configuration file:
 
-* *apiman-dt-api.gateway.rest-endpoint*
+* *apiman-manager-api.gateway.rest-endpoint*
 +
-Default Value:: http://localhost:8080/apiman-rt
+Default Value:: http://localhost:8080/apiman-gateway
 +
 Description:: The REST configuration endpoint of the API Gateway.  The API Manager uses this endpoint when publishing services to the Gateway.
 
-* *apiman-dt-api.gateway.authentication.basic.user*
+* *apiman-manager-api.gateway.authentication.basic.user*
 +
 Default Value:: admin
 +
 Description:: The username to use when connecting to the Gateway REST API.
 
-* *apiman-dt-api.gateway.authentication.basic.password*
+* *apiman-manager-api.gateway.authentication.basic.password*
 +
 Default Value:: admin123!
 +
 Description:: The password to use when connecting to the Gatway REST API.
 
 
-* *apiman-dt-ui.dt-api.authentication.type*
+* *apiman-manager-ui.dt-api.authentication.type*
 +
 Default Value:: authToken
 +
 Description:: The type of authentication used by the API Manager UI when communicating with the API Manager.
 
-* *apiman-dt-ui.dt-api.authentication.token.generator*
+* *apiman-manager-ui.dt-api.authentication.token.generator*
 +
 Default Value:: io.apiman.manager.ui.server.auth.AuthTokenGenerator
 +
 Description:: The class used by the UI to generate authentication tokens (only used for certain types of authentication).
 
-* *apiman-dt-ui.gateway.base-url*
+* *apiman-manager-ui.gateway.base-url*
 +
-Default Value:: http://localhost:8080/apiman-rt/gateway/
+Default Value:: http://localhost:8080/apiman-gateway/gateway/
 +
 Description:: The base URL of the API Gateway - used by the UI to show URLs for service contracts.
 
-* *apiman-rt.registry*
+* *apiman-gateway.registry*
 +
 Default Value:: io.apiman.gateway.engine.ispn.InfinispanRegistry
 +
 Description:: The implementation of the service/application registry used by the API Gateway.  By default a persistent Infinispan cache is used.
 
-* *apiman-rt.connector-factory*
+* *apiman-gateway.connector-factory*
 +
 Default Value:: io.apiman.gateway.platforms.servlet.connectors.HttpConnectorFactory
 +
 Description:: The implementation of a connector factory for API endpoints of type "http".  This factory is used by the Gateway when proxying a request to a back-end endpoint.
 
-* *apiman-rt.policy-factory*
+* *apiman-gateway.policy-factory*
 +
 Default Value:: io.apiman.gateway.engine.policy.PolicyFactoryImpl
 +
 Description:: The class that the API Gateway will use creating policies.
 
-* *apiman-rt.components.ISharedStateComponent*
+* *apiman-gateway.components.ISharedStateComponent*
 +
 Default Value:: io.apiman.gateway.engine.impl.InMemorySharedStateComponent
 +
 Description:: The implementation of the shared-state component - a component that can store arbitrary state across request invocations.
 
-* *apiman-rt.components.IRateLimiterComponent*
+* *apiman-gateway.components.IRateLimiterComponent*
 +
 Default Value:: io.apiman.gateway.engine.impl.InMemoryRateLimiterComponent
 +
 Description:: The implementation of the rate limiter component, which is used by the rate limiting policy.
 
-* *apiman-rt.components.IPolicyFailureFactoryComponent
+* *apiman-gateway.components.IPolicyFailureFactoryComponent
 +
 Default Value:: io.apiman.gateway.platforms.servlet.PolicyFailureFactoryComponent
 +
@@ -163,9 +163,9 @@ it to support whatever database you desire.
 ....
 <?xml version="1.0" encoding="UTF-8"?>
 <datasources>
-  <datasource jndi-name="jdbc/ApiManDT" pool-name="apiman-dt-api" enabled="true"
+  <datasource jndi-name="jdbc/ApiManDT" pool-name="apiman-manager-api" enabled="true"
     use-java-context="true">
-    <connection-url>jdbc:h2:${jboss.server.data.dir}${/}h2${/}apiman-dt-api;MVCC=true</connection-url>
+    <connection-url>jdbc:h2:${jboss.server.data.dir}${/}h2${/}apiman-manager-api;MVCC=true</connection-url>
     <driver>h2</driver>
     <security>
       <user-name>sa</user-name>
@@ -186,7 +186,7 @@ published/registered data.  The configuration of the Infinispan cache can be fou
 
 ....
 <subsystem xmlns="urn:jboss:domain:infinispan:2.0">
-  <cache-container name="apiman-rt" default-cache="registry" start="EAGER">
+  <cache-container name="apiman-gateway" default-cache="registry" start="EAGER">
     <local-cache name="registry" batching="true">
       <file-store passivation="false" purge="false" />
     </local-cache>
