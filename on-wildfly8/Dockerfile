@@ -4,7 +4,7 @@ FROM jboss/base-jdk:7
 MAINTAINER Eric Wittmann <eric.wittmann@redhat.com>
 
 ENV WILDFLY_VERSION 8.1.0.Final
-ENV APIMAN_VERSION 1.0.0.Alpha4
+ENV APIMAN_VERSION 1.0.0.Beta1
 
 RUN cd $HOME \
  && curl http://download.jboss.org/wildfly/$WILDFLY_VERSION/wildfly-$WILDFLY_VERSION.zip -o wildfly-$WILDFLY_VERSION.zip \
