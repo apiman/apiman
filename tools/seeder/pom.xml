@@ -4,7 +4,7 @@
   <parent>
     <groupId>io.apiman</groupId>
     <artifactId>apiman-tools</artifactId>
-    <version>1.0.0.Beta1</version>
+    <version>1.0.0-SNAPSHOT</version>
   </parent>
   <artifactId>apiman-tools-seeder</artifactId>
   <packaging>war</packaging>
