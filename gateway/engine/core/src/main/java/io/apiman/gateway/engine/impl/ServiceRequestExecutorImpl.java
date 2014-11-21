@@ -256,11 +256,7 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
                 // handler so that the caller knows something went wrong.
                 streamFinished = true;
                 connectorRequestStream.abort();
-                try {
-                    throw new RequestAbortedException();
-                } catch (RequestAbortedException e) {
-                    resultHandler.handle(AsyncResultImpl.<IEngineResult>create(e));
-                }
+                resultHandler.handle(AsyncResultImpl.<IEngineResult>create(new RequestAbortedException()));
             }
 
 

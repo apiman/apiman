@@ -77,7 +77,7 @@
     <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots/</jboss.snapshots.repo.url>
 
     <!-- Dependency Versions (not found in parent) -->
-    <version.io.apiman.quickstarts>1.0.0.Alpha4</version.io.apiman.quickstarts>
+    <version.io.apiman.quickstarts>1.0.0.Beta1</version.io.apiman.quickstarts>
     <version.org.overlord.overlord-commons>2.0.11.Final</version.org.overlord.overlord-commons>
     <version.org.overlord.overlord-commons.overlord-commons-maven-plugin>2.0.11.Final</version.org.overlord.overlord-commons.overlord-commons-maven-plugin>
     <org.eclipse.jetty>8.1.9.v20130131</org.eclipse.jetty>
@@ -745,7 +745,7 @@
     <repository>
       <id>jboss-public-repository-group</id>
       <name>JBoss Public Repository Group</name>
-      <url>http://repository.jboss.org/nexus/content/groups/developer/</url>
+      <url>http://repository.jboss.org/nexus/content/groups/public/</url>
       <layout>default</layout>
       <releases>
         <enabled>true</enabled>
@@ -762,7 +762,7 @@
     <pluginRepository>
       <id>jboss-public-repository-group</id>
       <name>JBoss Public Repository Group</name>
-      <url>http://repository.jboss.org/nexus/content/groups/developer/</url>
+      <url>http://repository.jboss.org/nexus/content/groups/public/</url>
       <releases>
         <enabled>true</enabled>
       </releases>
