@@ -32,7 +32,7 @@ import java.io.UnsupportedEncodingException;
  * 
  * @author Marc Savy <msavy@redhat.com>
  */
-public interface IBuffer {
+public interface IApimanBuffer {
 
     /**
      * Get encapsulated native buffer.
@@ -54,7 +54,7 @@ public interface IBuffer {
      * @param index
      * @param buffer
      */
-    void insert(int index, IBuffer buffer);
+    void insert(int index, IApimanBuffer buffer);
 
     /**
      * Inserts data at the given index with buffer at given offset and constrained length.
@@ -64,19 +64,19 @@ public interface IBuffer {
      * @param offset Provided buffer offset index
      * @param length Provided buffer maximum length to set
      */
-    void insert(int index, IBuffer buffer, int offset, int length);
+    void insert(int index, IApimanBuffer buffer, int offset, int length);
 
     /**
      * @param buffer Buffer to append
      */
-    void append(IBuffer buffer);
+    void append(IApimanBuffer buffer);
 
     /**
      * @param buffer Buffer to append
      * @param offset Provided buffer offset
      * @param length Provided buffer maximum length to append
      */
-    void append(IBuffer buffer, int offset, int length);
+    void append(IApimanBuffer buffer, int offset, int length);
 
     // Byte
 

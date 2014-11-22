@@ -18,7 +18,7 @@ package io.apiman.gateway.test.policies;
 import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.beans.ServiceResponse;
 import io.apiman.gateway.engine.io.AbstractStream;
-import io.apiman.gateway.engine.io.IBuffer;
+import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.gateway.engine.io.IReadWriteStream;
 import io.apiman.gateway.engine.policy.IDataPolicy;
 import io.apiman.gateway.engine.policy.IPolicy;
@@ -85,7 +85,7 @@ public class SimpleDataPolicy implements IPolicy, IDataPolicy {
             }
             
             @Override
-            public void write(IBuffer chunk) {
+            public void write(IApimanBuffer chunk) {
                 try {
                     String chunkstr = chunk.toString("UTF-8");
                     if (chunkstr.contains("$NAME")) {

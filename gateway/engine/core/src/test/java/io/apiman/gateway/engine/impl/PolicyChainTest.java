@@ -25,7 +25,7 @@ import io.apiman.gateway.engine.async.IAsyncHandler;
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.beans.ServiceResponse;
-import io.apiman.gateway.engine.io.IBuffer;
+import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.gateway.engine.policy.IPolicyContext;
 import io.apiman.gateway.engine.policy.PolicyWithConfiguration;
 import io.apiman.gateway.engine.policy.RequestChain;
@@ -52,8 +52,8 @@ public class PolicyChainTest {
     private ServiceRequest mockRequest;
     private ServiceResponse mockResponse;
     
-    private IBuffer mockBuffer;
-    private IAsyncHandler<IBuffer> mockBodyHandler;
+    private IApimanBuffer mockBuffer;
+    private IAsyncHandler<IApimanBuffer> mockBodyHandler;
     private IAsyncHandler<Void> mockEndHandler;
     private PassthroughPolicy policyOne;
     private PassthroughPolicy policyTwo;
@@ -84,10 +84,10 @@ public class PolicyChainTest {
         given(mockRequest.getDestination()).willReturn("mars"); //$NON-NLS-1$
         given(mockRequest.getType()).willReturn("response"); //$NON-NLS-1$
         
-        mockBuffer = mock(IBuffer.class);
+        mockBuffer = mock(IApimanBuffer.class);
         given(mockBuffer.toString()).willReturn("bananas"); 
         
-        mockBodyHandler = (IAsyncHandler<IBuffer>) mock(IAsyncHandler.class);
+        mockBodyHandler = (IAsyncHandler<IApimanBuffer>) mock(IAsyncHandler.class);
         mockEndHandler = (IAsyncHandler<Void>) mock(IAsyncHandler.class);
     }
     
@@ -154,9 +154,9 @@ public class PolicyChainTest {
         
         requestChain.doApply(mockRequest);
         
-        IBuffer buffer1 = (IBuffer) mock(IBuffer.class);
-        IBuffer buffer2 = (IBuffer) mock(IBuffer.class);
-        IBuffer buffer3 = (IBuffer) mock(IBuffer.class);
+        IApimanBuffer buffer1 = (IApimanBuffer) mock(IApimanBuffer.class);
+        IApimanBuffer buffer2 = (IApimanBuffer) mock(IApimanBuffer.class);
+        IApimanBuffer buffer3 = (IApimanBuffer) mock(IApimanBuffer.class);
         
         requestChain.write(buffer1);
         requestChain.write(buffer2);

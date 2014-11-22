@@ -37,7 +37,7 @@ import io.apiman.gateway.engine.beans.ServiceResponse;
 import io.apiman.gateway.engine.beans.exceptions.ConnectorException;
 import io.apiman.gateway.engine.impl.DefaultEngineFactory;
 import io.apiman.gateway.engine.io.AbstractSignalStream;
-import io.apiman.gateway.engine.io.IBuffer;
+import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.gateway.engine.io.ISignalReadStream;
 import io.apiman.gateway.engine.io.ISignalWriteStream;
 
@@ -59,9 +59,9 @@ import org.mockito.InOrder;
 public class DefaultEngineFactoryTest {
 
     private List<Policy> policyList;
-    private IBuffer mockBufferInbound;
-    private IBuffer mockBufferOutbound;
-    private IAsyncHandler<IBuffer> mockBodyHandler;
+    private IApimanBuffer mockBufferInbound;
+    private IApimanBuffer mockBufferOutbound;
+    private IAsyncHandler<IApimanBuffer> mockBodyHandler;
     private IAsyncHandler<Void> mockEndHandler;
     private IAsyncHandler<Void> transmitHandler;
     
@@ -75,16 +75,16 @@ public class DefaultEngineFactoryTest {
         given(policyBean.getPolicyImpl()).willReturn(PassthroughPolicy.QUALIFIED_NAME);
         given(policyBean.getPolicyJsonConfig()).willReturn("{}");
         
-        mockBufferInbound = mock(IBuffer.class);
+        mockBufferInbound = mock(IApimanBuffer.class);
         given(mockBufferInbound.toString()).willReturn("stottie");
         
-        mockBufferOutbound = mock(IBuffer.class);
+        mockBufferOutbound = mock(IApimanBuffer.class);
         given(mockBufferOutbound.toString()).willReturn("bacon");
 
         policyList = new ArrayList<Policy>();   
         policyList.add(policyBean);
         
-        mockBodyHandler = (IAsyncHandler<IBuffer>) mock(IAsyncHandler.class);
+        mockBodyHandler = (IAsyncHandler<IApimanBuffer>) mock(IAsyncHandler.class);
         mockEndHandler = (IAsyncHandler<Void>) mock(IAsyncHandler.class);
     }
 
@@ -117,7 +117,7 @@ public class DefaultEngineFactoryTest {
                                 mockResponseHandler = new AbstractSignalStream<ServiceResponse>() {
 
                                     @Override
-                                    public void write(IBuffer chunk) {
+                                    public void write(IApimanBuffer chunk) {
                                         handleBody(chunk);
                                     }
 

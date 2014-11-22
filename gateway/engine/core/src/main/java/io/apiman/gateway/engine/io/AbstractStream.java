@@ -23,7 +23,7 @@ import io.apiman.gateway.engine.beans.ServiceRequest;
  * handlers and operators for each.
  *
  * For example: The head might represent a {@link ServiceRequest}; the body is a
- * stream of {@link IBuffer} chunks; {@link #end()} is used indicate that
+ * stream of {@link IApimanBuffer} chunks; {@link #end()} is used indicate that
  * transmission of the body has completed.
  *
  * The head handler is also used to indicate the result of the operation.
@@ -35,7 +35,7 @@ import io.apiman.gateway.engine.beans.ServiceRequest;
 public abstract class AbstractStream<H> implements IReadWriteStream<H> {
 
     protected IAsyncHandler<H> headHandler;
-    protected IAsyncHandler<IBuffer> bodyHandler;
+    protected IAsyncHandler<IApimanBuffer> bodyHandler;
     protected IAsyncHandler<Void> endHandler;
     protected boolean finished = false;
 
@@ -51,7 +51,7 @@ public abstract class AbstractStream<H> implements IReadWriteStream<H> {
      * @see io.apiman.gateway.engine.io.IReadStream#bodyHandler(io.apiman.gateway.engine.async.IAsyncHandler)
      */
     @Override
-    public void bodyHandler(IAsyncHandler<IBuffer> bodyHandler) {
+    public void bodyHandler(IAsyncHandler<IApimanBuffer> bodyHandler) {
         this.bodyHandler = bodyHandler;
     }
 
@@ -64,10 +64,10 @@ public abstract class AbstractStream<H> implements IReadWriteStream<H> {
     }
 
     /**
-     * @see io.apiman.gateway.engine.io.IWriteStream#write(io.apiman.gateway.engine.io.IBuffer)
+     * @see io.apiman.gateway.engine.io.IWriteStream#write(io.apiman.gateway.engine.io.IApimanBuffer)
      */
     @Override
-    public void write(IBuffer chunk) {
+    public void write(IApimanBuffer chunk) {
         if (bodyHandler != null) {
             bodyHandler.handle(chunk);
         }
@@ -102,7 +102,7 @@ public abstract class AbstractStream<H> implements IReadWriteStream<H> {
      * Called to handle a body chunk.
      * @param chunk
      */
-    protected void handleBody(IBuffer chunk) {
+    protected void handleBody(IApimanBuffer chunk) {
         if (bodyHandler != null) {
             bodyHandler.handle(chunk);
         }

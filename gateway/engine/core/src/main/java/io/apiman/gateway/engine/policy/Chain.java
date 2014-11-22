@@ -19,7 +19,7 @@ import io.apiman.gateway.engine.async.IAsyncHandler;
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.io.AbstractStream;
 import io.apiman.gateway.engine.io.IAbortable;
-import io.apiman.gateway.engine.io.IBuffer;
+import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.gateway.engine.io.IReadWriteStream;
 
 import java.util.Iterator;
@@ -31,13 +31,13 @@ import java.util.List;
  * policies in arbitrary order.
  *
  * The head handler is the first executed, arriving chunks are passed into
- * {@link #write(IBuffer)}, followed by the {@link #end()} signal.
+ * {@link #write(IApimanBuffer)}, followed by the {@link #end()} signal.
  * Intermediate policy handlers are chained together, according to the
  * ordering provided by {@link #policyIterator()}.
  *
  * The tail handler is executed last: the result object ({@link #getHead()} is
  * sent to {@link #handleHead(Object)}; chunks are streamed to out
- * {@link #handleBody(IBuffer)}; end of transmission indicated via
+ * {@link #handleBody(IApimanBuffer)}; end of transmission indicated via
  * {@link #handleEnd()}.
  *
  * @author Marc Savy <msavy@redhat.com>
@@ -89,9 +89,9 @@ public abstract class Chain<H> extends AbstractStream<H> implements IAbortable, 
             }
             
             if (previousHandler != null) {
-                previousHandler.bodyHandler(new IAsyncHandler<IBuffer>() {
+                previousHandler.bodyHandler(new IAsyncHandler<IApimanBuffer>() {
                     @Override
-                    public void handle(IBuffer result) {
+                    public void handle(IApimanBuffer result) {
                         handler.write(result);
                     }
                 });
@@ -114,10 +114,10 @@ public abstract class Chain<H> extends AbstractStream<H> implements IAbortable, 
             // Leave the head and tail policy handlers null - the write() and end() methods
             // will deal with that case.
         } else {
-            tailPolicyHandler.bodyHandler(new IAsyncHandler<IBuffer>() {
+            tailPolicyHandler.bodyHandler(new IAsyncHandler<IApimanBuffer>() {
     
                 @Override
-                public void handle(IBuffer chunk) {
+                public void handle(IApimanBuffer chunk) {
                     handleBody(chunk);
                 }
             });
@@ -150,10 +150,10 @@ public abstract class Chain<H> extends AbstractStream<H> implements IAbortable, 
     }
 
     /**
-     * @see io.apiman.gateway.engine.io.AbstractStream#write(io.apiman.gateway.engine.io.IBuffer)
+     * @see io.apiman.gateway.engine.io.AbstractStream#write(io.apiman.gateway.engine.io.IApimanBuffer)
      */
     @Override
-    public void write(IBuffer chunk) {
+    public void write(IApimanBuffer chunk) {
         if (finished) {
             throw new IllegalStateException("Attempted write after #end() was called."); //$NON-NLS-1$
         }

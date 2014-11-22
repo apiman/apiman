@@ -29,7 +29,7 @@ import io.apiman.gateway.engine.beans.ServiceContract;
 import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.beans.ServiceResponse;
 import io.apiman.gateway.engine.beans.exceptions.RequestAbortedException;
-import io.apiman.gateway.engine.io.IBuffer;
+import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.gateway.engine.io.ISignalReadStream;
 import io.apiman.gateway.engine.io.ISignalWriteStream;
 import io.apiman.gateway.engine.policy.Chain;
@@ -121,10 +121,10 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
                 connectorRequestStream = connector.request(request, createConnectorResponseHandler());
 
                 // Write the body chunks from the *policy request* into the connector request.
-                requestChain.bodyHandler(new IAsyncHandler<IBuffer>() {
+                requestChain.bodyHandler(new IAsyncHandler<IApimanBuffer>() {
 
                     @Override
-                    public void handle(IBuffer buffer) {
+                    public void handle(IApimanBuffer buffer) {
                         connectorRequestStream.write(buffer);
                     }
                 });
@@ -176,10 +176,10 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
                             resultHandler.handle(AsyncResultImpl.<IEngineResult> create(engineResult));
 
                             // We've come all the way through the response chain successfully
-                            responseChain.bodyHandler(new IAsyncHandler<IBuffer>() {
+                            responseChain.bodyHandler(new IAsyncHandler<IApimanBuffer>() {
 
                                 @Override
-                                public void handle(IBuffer result) {
+                                public void handle(IApimanBuffer result) {
                                     engineResult.write(result);
                                 }
                             });
@@ -199,10 +199,10 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
                     });
 
                     // Write data from the back-end response into the response chain.
-                    connectorResponseStream.bodyHandler(new IAsyncHandler<IBuffer>() {
+                    connectorResponseStream.bodyHandler(new IAsyncHandler<IApimanBuffer>() {
 
                         @Override
-                        public void handle(IBuffer buffer) {
+                        public void handle(IApimanBuffer buffer) {
                             responseChain.write(buffer);
                         }
                     });
@@ -232,7 +232,7 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
             boolean streamFinished = false;
 
             @Override
-            public void write(IBuffer buffer) {
+            public void write(IApimanBuffer buffer) {
                 if (streamFinished) {
                     throw new IllegalStateException("Attempted write after #end() was called."); //$NON-NLS-1$
                 }
