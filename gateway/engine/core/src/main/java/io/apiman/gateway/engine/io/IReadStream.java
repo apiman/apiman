@@ -31,7 +31,7 @@ public interface IReadStream<H> extends IStream {
      * 
      * @param bodyHandler
      */
-    public void bodyHandler(IAsyncHandler<IBuffer> bodyHandler);
+    public void bodyHandler(IAsyncHandler<IApimanBuffer> bodyHandler);
 
     /**
      * Handler signals when transmission has completed; no further calls to

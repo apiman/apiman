@@ -25,7 +25,7 @@ import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.PolicyFailureType;
 import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.beans.ServiceResponse;
-import io.apiman.gateway.engine.io.IBuffer;
+import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.gateway.engine.io.ISignalWriteStream;
 import io.apiman.gateway.platforms.servlet.i18n.Messages;
 import io.apiman.gateway.platforms.servlet.io.ByteBuffer;
@@ -123,8 +123,8 @@ public abstract class GatewayServlet extends HttpServlet {
                             try {
                                 writeResponse(resp, engineResult.getServiceResponse());
                                 final ServletOutputStream outputStream = resp.getOutputStream();
-                                engineResult.bodyHandler(new IAsyncHandler<IBuffer>() {
-                                    public void handle(IBuffer chunk) {
+                                engineResult.bodyHandler(new IAsyncHandler<IApimanBuffer>() {
+                                    public void handle(IApimanBuffer chunk) {
                                         try {
                                             if (chunk instanceof ByteBuffer) {
                                                 byte [] buffer = (byte []) chunk.getNativeBuffer();

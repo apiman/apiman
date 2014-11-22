@@ -15,19 +15,19 @@
  */
 package io.apiman.gateway.platforms.servlet.io;
 
-import io.apiman.gateway.engine.io.IBuffer;
+import io.apiman.gateway.engine.io.IApimanBuffer;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
 /**
- * A simple {@link IBuffer} from a byte array.
+ * A simple {@link IApimanBuffer} from a byte array.
  *
  * @author eric.wittmann@redhat.com
  */
 @SuppressWarnings("nls") // TODO finish the implementation of this class!
-public class ByteBuffer implements IBuffer {
+public class ByteBuffer implements IApimanBuffer {
 
     private byte [] buffer;
     private int bytesInBuffer = 0;
@@ -40,7 +40,7 @@ public class ByteBuffer implements IBuffer {
     }
     
     /**
-     * @see io.apiman.gateway.engine.io.IBuffer#getNativeBuffer()
+     * @see io.apiman.gateway.engine.io.IApimanBuffer#getNativeBuffer()
      */
     @Override
     public Object getNativeBuffer() {
@@ -48,7 +48,7 @@ public class ByteBuffer implements IBuffer {
     }
 
     /**
-     * @see io.apiman.gateway.engine.io.IBuffer#length()
+     * @see io.apiman.gateway.engine.io.IApimanBuffer#length()
      */
     @Override
     public int length() {
@@ -56,39 +56,39 @@ public class ByteBuffer implements IBuffer {
     }
 
     /**
-     * @see io.apiman.gateway.engine.io.IBuffer#insert(int, io.apiman.gateway.engine.io.IBuffer)
+     * @see io.apiman.gateway.engine.io.IApimanBuffer#insert(int, io.apiman.gateway.engine.io.IApimanBuffer)
      */
     @Override
-    public void insert(int index, IBuffer buffer) {
+    public void insert(int index, IApimanBuffer buffer) {
         throw new RuntimeException("Not yet implemented");
     }
 
     /**
-     * @see io.apiman.gateway.engine.io.IBuffer#insert(int, io.apiman.gateway.engine.io.IBuffer, int, int)
+     * @see io.apiman.gateway.engine.io.IApimanBuffer#insert(int, io.apiman.gateway.engine.io.IApimanBuffer, int, int)
      */
     @Override
-    public void insert(int index, IBuffer buffer, int offset, int length) {
+    public void insert(int index, IApimanBuffer buffer, int offset, int length) {
         throw new RuntimeException("Not yet implemented");
     }
 
     /**
-     * @see io.apiman.gateway.engine.io.IBuffer#append(io.apiman.gateway.engine.io.IBuffer)
+     * @see io.apiman.gateway.engine.io.IApimanBuffer#append(io.apiman.gateway.engine.io.IApimanBuffer)
      */
     @Override
-    public void append(IBuffer buffer) {
+    public void append(IApimanBuffer buffer) {
         throw new RuntimeException("Not yet implemented");
     }
 
     /**
-     * @see io.apiman.gateway.engine.io.IBuffer#append(io.apiman.gateway.engine.io.IBuffer, int, int)
+     * @see io.apiman.gateway.engine.io.IApimanBuffer#append(io.apiman.gateway.engine.io.IApimanBuffer, int, int)
      */
     @Override
-    public void append(IBuffer buffer, int offset, int length) {
+    public void append(IApimanBuffer buffer, int offset, int length) {
         throw new RuntimeException("Not yet implemented");
     }
 
     /**
-     * @see io.apiman.gateway.engine.io.IBuffer#getByte(int)
+     * @see io.apiman.gateway.engine.io.IApimanBuffer#getByte(int)
      */
     @Override
     public byte get(int index) {
@@ -96,7 +96,7 @@ public class ByteBuffer implements IBuffer {
     }
 
     /**
-     * @see io.apiman.gateway.engine.io.IBuffer#set(int, byte)
+     * @see io.apiman.gateway.engine.io.IApimanBuffer#set(int, byte)
      */
     @Override
     public void set(int index, byte b) {
@@ -104,7 +104,7 @@ public class ByteBuffer implements IBuffer {
     }
 
     /**
-     * @see io.apiman.gateway.engine.io.IBuffer#append(byte)
+     * @see io.apiman.gateway.engine.io.IApimanBuffer#append(byte)
      */
     @Override
     public void append(byte b) {
@@ -114,7 +114,7 @@ public class ByteBuffer implements IBuffer {
     }
 
     /**
-     * @see io.apiman.gateway.engine.io.IBuffer#getBytes()
+     * @see io.apiman.gateway.engine.io.IApimanBuffer#getBytes()
      */
     @Override
     public byte[] getBytes() {
@@ -124,7 +124,7 @@ public class ByteBuffer implements IBuffer {
     }
 
     /**
-     * @see io.apiman.gateway.engine.io.IBuffer#getBytes(int, int)
+     * @see io.apiman.gateway.engine.io.IApimanBuffer#getBytes(int, int)
      */
     @Override
     public byte[] getBytes(int start, int end) {
@@ -135,7 +135,7 @@ public class ByteBuffer implements IBuffer {
     }
 
     /**
-     * @see io.apiman.gateway.engine.io.IBuffer#insert(int, byte[])
+     * @see io.apiman.gateway.engine.io.IApimanBuffer#insert(int, byte[])
      */
     @Override
     public void insert(int index, byte[] b) {
@@ -143,7 +143,7 @@ public class ByteBuffer implements IBuffer {
     }
 
     /**
-     * @see io.apiman.gateway.engine.io.IBuffer#insert(int, byte[], int, int)
+     * @see io.apiman.gateway.engine.io.IApimanBuffer#insert(int, byte[], int, int)
      */
     @Override
     public void insert(int index, byte[] b, int offset, int length) {
@@ -151,7 +151,7 @@ public class ByteBuffer implements IBuffer {
     }
 
     /**
-     * @see io.apiman.gateway.engine.io.IBuffer#append(byte[])
+     * @see io.apiman.gateway.engine.io.IApimanBuffer#append(byte[])
      */
     @Override
     public void append(byte[] bytes) {
@@ -166,7 +166,7 @@ public class ByteBuffer implements IBuffer {
     }
 
     /**
-     * @see io.apiman.gateway.engine.io.IBuffer#append(byte[], int, int)
+     * @see io.apiman.gateway.engine.io.IApimanBuffer#append(byte[], int, int)
      */
     @Override
     public void append(byte[] bytes, int offset, int length) {
@@ -181,7 +181,7 @@ public class ByteBuffer implements IBuffer {
     }
 
     /**
-     * @see io.apiman.gateway.engine.io.IBuffer#getString(int, int)
+     * @see io.apiman.gateway.engine.io.IApimanBuffer#getString(int, int)
      */
     @Override
     public String getString(int start, int end) {
@@ -189,7 +189,7 @@ public class ByteBuffer implements IBuffer {
     }
 
     /**
-     * @see io.apiman.gateway.engine.io.IBuffer#getString(int, int, java.lang.String)
+     * @see io.apiman.gateway.engine.io.IApimanBuffer#getString(int, int, java.lang.String)
      */
     @Override
     public String getString(int start, int end, String encoding) {
@@ -201,7 +201,7 @@ public class ByteBuffer implements IBuffer {
     }
 
     /**
-     * @see io.apiman.gateway.engine.io.IBuffer#insert(int, java.lang.String)
+     * @see io.apiman.gateway.engine.io.IApimanBuffer#insert(int, java.lang.String)
      */
     @Override
     public void insert(int index, String string) {
@@ -209,7 +209,7 @@ public class ByteBuffer implements IBuffer {
     }
 
     /**
-     * @see io.apiman.gateway.engine.io.IBuffer#insert(int, java.lang.String, java.lang.String)
+     * @see io.apiman.gateway.engine.io.IApimanBuffer#insert(int, java.lang.String, java.lang.String)
      */
     @Override
     public void insert(int index, String string, String encoding) {
@@ -217,7 +217,7 @@ public class ByteBuffer implements IBuffer {
     }
 
     /**
-     * @see io.apiman.gateway.engine.io.IBuffer#append(java.lang.String)
+     * @see io.apiman.gateway.engine.io.IApimanBuffer#append(java.lang.String)
      */
     @Override
     public void append(String string) {
@@ -226,7 +226,7 @@ public class ByteBuffer implements IBuffer {
     }
 
     /**
-     * @see io.apiman.gateway.engine.io.IBuffer#append(java.lang.String, java.lang.String)
+     * @see io.apiman.gateway.engine.io.IApimanBuffer#append(java.lang.String, java.lang.String)
      */
     @Override
     public void append(String string, String encoding) throws UnsupportedEncodingException {
@@ -235,7 +235,7 @@ public class ByteBuffer implements IBuffer {
     }
 
     /**
-     * @see io.apiman.gateway.engine.io.IBuffer#toString(java.lang.String)
+     * @see io.apiman.gateway.engine.io.IApimanBuffer#toString(java.lang.String)
      */
     @Override
     public String toString(String encoding) {

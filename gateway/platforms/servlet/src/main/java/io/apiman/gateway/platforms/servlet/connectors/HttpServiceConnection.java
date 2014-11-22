@@ -22,7 +22,7 @@ import io.apiman.gateway.engine.beans.Service;
 import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.beans.ServiceResponse;
 import io.apiman.gateway.engine.beans.exceptions.ConnectorException;
-import io.apiman.gateway.engine.io.IBuffer;
+import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.gateway.engine.io.ISignalReadStream;
 import io.apiman.gateway.engine.io.ISignalWriteStream;
 import io.apiman.gateway.platforms.servlet.GatewayThreadContext;
@@ -63,7 +63,7 @@ public class HttpServiceConnection implements ISignalReadStream<ServiceResponse>
     private HttpURLConnection connection;
     private OutputStream outputStream;
     
-    private IAsyncHandler<IBuffer> bodyHandler;
+    private IAsyncHandler<IApimanBuffer> bodyHandler;
     private IAsyncHandler<Void> endHandler;
     
     private ServiceResponse response;
@@ -127,7 +127,7 @@ public class HttpServiceConnection implements ISignalReadStream<ServiceResponse>
      * @see io.apiman.gateway.engine.io.IReadStream#bodyHandler(io.apiman.gateway.engine.async.IAsyncHandler)
      */
     @Override
-    public void bodyHandler(IAsyncHandler<IBuffer> bodyHandler) {
+    public void bodyHandler(IAsyncHandler<IApimanBuffer> bodyHandler) {
         this.bodyHandler = bodyHandler;
     }
 
@@ -173,10 +173,10 @@ public class HttpServiceConnection implements ISignalReadStream<ServiceResponse>
     }
 
     /**
-     * @see io.apiman.gateway.engine.io.IWriteStream#write(io.apiman.gateway.engine.io.IBuffer)
+     * @see io.apiman.gateway.engine.io.IWriteStream#write(io.apiman.gateway.engine.io.IApimanBuffer)
      */
     @Override
-    public void write(IBuffer chunk) {
+    public void write(IApimanBuffer chunk) {
         try {
             if (outputStream == null) {
                 outputStream = connection.getOutputStream();

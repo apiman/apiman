@@ -18,7 +18,7 @@ package io.apiman.gateway.engine.io;
 
 /**
  * Write into a stream by repeatedly submitting chunks via
- * {@link #write(IBuffer)}. End of transmission is indicated by
+ * {@link #write(IApimanBuffer)}. End of transmission is indicated by
  * {@link #end()}.
  * 
  * @author Marc Savy <msavy@redhat.com>
@@ -30,11 +30,11 @@ public interface IWriteStream extends IStream {
      * 
      * @param chunk
      */
-     void write(IBuffer chunk);
+     void write(IApimanBuffer chunk);
 
     /**
      * Signal transmission has ended. This should only be called once, after
-     * which no further calls to {@link #write(IBuffer)} should be made.
+     * which no further calls to {@link #write(IApimanBuffer)} should be made.
      */
      void end();
 }
