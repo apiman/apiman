@@ -90,9 +90,15 @@ public class UserResourceImpl implements IUserResource {
     public void update(String userId, UserBean user) throws UserNotFoundException, NotAuthorizedException {
         if (!securityContext.isAdmin() && !securityContext.getCurrentUser().equals(userId))
             throw ExceptionFactory.notAuthorizedException();
-        user.setUsername(userId);
         try {
-            idmStorage.updateUser(user);
+            UserBean updatedUser = idmStorage.getUser(userId);
+            if (user.getEmail() != null) {
+                updatedUser.setEmail(user.getEmail());
+            }
+            if (user.getFullName() != null) {
+                updatedUser.setFullName(user.getFullName());
+            }
+            idmStorage.updateUser(updatedUser);
         } catch (DoesNotExistException e) {
             throw ExceptionFactory.userNotFoundException(userId);
         } catch (StorageException e) {

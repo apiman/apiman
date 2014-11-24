@@ -39,7 +39,7 @@ public class TestConfig implements IConfig {
      */
     @Override
     public String getGatewayRestEndpoint() {
-        return System.getProperty(Config.APIMAN_DT_API_GATEWAY_REST_ENDPOINT);
+        return System.getProperty(Config.APIMAN_MANAGER_API_GATEWAY_REST_ENDPOINT);
     }
 
     /**
@@ -47,7 +47,7 @@ public class TestConfig implements IConfig {
      */
     @Override
     public String getGatewayAuthenticationType() {
-        return System.getProperty(Config.APIMAN_DT_API_GATEWAY_AUTH_TYPE);
+        return System.getProperty(Config.APIMAN_MANAGER_API_GATEWAY_AUTH_TYPE);
     }
 
     /**
@@ -55,7 +55,7 @@ public class TestConfig implements IConfig {
      */
     @Override
     public String getGatewayBasicAuthUsername() {
-        return System.getProperty(Config.APIMAN_DT_API_GATEWAY_BASIC_AUTH_USER);
+        return System.getProperty(Config.APIMAN_MANAGER_API_GATEWAY_BASIC_AUTH_USER);
     }
 
     /**
@@ -63,7 +63,7 @@ public class TestConfig implements IConfig {
      */
     @Override
     public String getGatewayBasicAuthPassword() {
-        return System.getProperty(Config.APIMAN_DT_API_GATEWAY_BASIC_AUTH_PASS);
+        return System.getProperty(Config.APIMAN_MANAGER_API_GATEWAY_BASIC_AUTH_PASS);
     }
 
 }

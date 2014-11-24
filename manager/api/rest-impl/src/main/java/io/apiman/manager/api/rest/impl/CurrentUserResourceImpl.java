@@ -88,6 +88,25 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
     }
     
     /**
+     * @see io.apiman.manager.api.rest.contract.ICurrentUserResource#updateInfo(io.apiman.manager.api.beans.idm.UserBean)
+     */
+    @Override
+    public void updateInfo(UserBean info) {
+        try {
+            UserBean user = idmStorage.getUser(securityContext.getCurrentUser());
+            if (info.getEmail() != null) {
+                user.setEmail(info.getEmail());
+            }
+            if (info.getFullName() != null) {
+                user.setFullName(info.getFullName());
+            }
+            idmStorage.updateUser(user);
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+    }
+    
+    /**
      * @see io.apiman.manager.api.rest.contract.ICurrentUserResource#getOrganizations()
      */
     @Override

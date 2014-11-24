@@ -21,13 +21,13 @@ import org.overlord.commons.dev.server.DevServerEnvironment;
  * Holds information about the apiman development runtime environment.
  * @author eric.wittmann@redhat.com
  */
-public class ApiManDtUiDevServerEnvironment extends DevServerEnvironment {
+public class ManagerUiDevServerEnvironment extends DevServerEnvironment {
 
     /**
      * Constructor.
      * @param args
      */
-    public ApiManDtUiDevServerEnvironment(String[] args) {
+    public ManagerUiDevServerEnvironment(String[] args) {
         super(args);
     }
     

@@ -217,6 +217,16 @@ public class RestInvokerService {
         CallbackAdapter<UserBean> adapter = new CallbackAdapter<UserBean>(callback);
         currentUser.call(adapter, adapter).getInfo();
     }
+    
+    /**
+     * Updates the information for the current user.
+     * @param user
+     * @param callback
+     */
+    public void updateCurrentUserInfo(UserBean user, IRestInvokerCallback<Void> callback) {
+        CallbackAdapter<Void> adapter = new CallbackAdapter<Void>(callback);
+        currentUser.call(adapter, adapter).updateInfo(user);
+    }
 
     /**
      * Gets the organizations visible to the current user.

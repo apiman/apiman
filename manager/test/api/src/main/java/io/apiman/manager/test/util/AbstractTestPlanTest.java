@@ -83,10 +83,10 @@ public abstract class AbstractTestPlanTest {
      * Configure some proeprties.
      */
     private void configureSystemProperties() {
-        System.setProperty(Config.APIMAN_DT_API_GATEWAY_AUTH_TYPE, "Basic"); //$NON-NLS-1$
-        System.setProperty(Config.APIMAN_DT_API_GATEWAY_REST_ENDPOINT, "http://localhost:" + getTestServerPort() + "/mock-gateway"); //$NON-NLS-1$ //$NON-NLS-2$
-        System.setProperty(Config.APIMAN_DT_API_GATEWAY_BASIC_AUTH_USER, "admin"); //$NON-NLS-1$
-        System.setProperty(Config.APIMAN_DT_API_GATEWAY_BASIC_AUTH_PASS, "admin"); //$NON-NLS-1$
+        System.setProperty(Config.APIMAN_MANAGER_API_GATEWAY_AUTH_TYPE, "Basic"); //$NON-NLS-1$
+        System.setProperty(Config.APIMAN_MANAGER_API_GATEWAY_REST_ENDPOINT, "http://localhost:" + getTestServerPort() + "/mock-gateway"); //$NON-NLS-1$ //$NON-NLS-2$
+        System.setProperty(Config.APIMAN_MANAGER_API_GATEWAY_BASIC_AUTH_USER, "admin"); //$NON-NLS-1$
+        System.setProperty(Config.APIMAN_MANAGER_API_GATEWAY_BASIC_AUTH_PASS, "admin"); //$NON-NLS-1$
     }
 
     @AfterClass

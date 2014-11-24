@@ -36,19 +36,19 @@ import org.overlord.commons.config.ConfigurationFactory;
  */
 public class WarEngineConfig implements IEngineConfig {
 
-    public static final String APIMAN_RT_CONFIG_FILE_NAME     = "apiman-gateway.config.file.name"; //$NON-NLS-1$
-    public static final String APIMAN_RT_CONFIG_FILE_REFRESH  = "apiman-gateway.config.file.refresh"; //$NON-NLS-1$
+    public static final String APIMAN_GATEWAY_CONFIG_FILE_NAME     = "apiman-gateway.config.file.name"; //$NON-NLS-1$
+    public static final String APIMAN_GATEWAY_CONFIG_FILE_REFRESH  = "apiman-gateway.config.file.refresh"; //$NON-NLS-1$
 
-    public static final String APIMAN_RT_REGISTRY_CLASS = "apiman-gateway.registry"; //$NON-NLS-1$
-    public static final String APIMAN_RT_CONNECTOR_FACTORY_CLASS = "apiman-gateway.connector-factory"; //$NON-NLS-1$
-    public static final String APIMAN_RT_POLICY_FACTORY_CLASS = "apiman-gateway.policy-factory"; //$NON-NLS-1$
+    public static final String APIMAN_GATEWAY_REGISTRY_CLASS = "apiman-gateway.registry"; //$NON-NLS-1$
+    public static final String APIMAN_GATEWAY_CONNECTOR_FACTORY_CLASS = "apiman-gateway.connector-factory"; //$NON-NLS-1$
+    public static final String APIMAN_GATEWAY_POLICY_FACTORY_CLASS = "apiman-gateway.policy-factory"; //$NON-NLS-1$
     
-    public static final String APIMAN_RT_COMPONENT_PREFIX = "apiman-gateway.components."; //$NON-NLS-1$
+    public static final String APIMAN_GATEWAY_COMPONENT_PREFIX = "apiman-gateway.components."; //$NON-NLS-1$
 
     public static Configuration config;
     static {
-        String configFile = System.getProperty(APIMAN_RT_CONFIG_FILE_NAME);
-        String refreshDelayStr = System.getProperty(APIMAN_RT_CONFIG_FILE_REFRESH);
+        String configFile = System.getProperty(APIMAN_GATEWAY_CONFIG_FILE_NAME);
+        String refreshDelayStr = System.getProperty(APIMAN_GATEWAY_CONFIG_FILE_REFRESH);
         Long refreshDelay = 5000l;
         if (refreshDelayStr != null) {
             refreshDelay = new Long(refreshDelayStr);
@@ -79,56 +79,56 @@ public class WarEngineConfig implements IEngineConfig {
      * @return the class to use as the {@link IRegistry}
      */
     public Class<IRegistry> getRegistryClass() {
-        return loadConfigClass(APIMAN_RT_REGISTRY_CLASS, IRegistry.class);
+        return loadConfigClass(APIMAN_GATEWAY_REGISTRY_CLASS, IRegistry.class);
     }
 
     /**
      * @return all properties to be passed to the registry
      */
     public Map<String, String> getRegistryConfig() {
-        return getConfigMap(APIMAN_RT_REGISTRY_CLASS + "."); //$NON-NLS-1$
+        return getConfigMap(APIMAN_GATEWAY_REGISTRY_CLASS + "."); //$NON-NLS-1$
     }
 
     /**
      * @return the class to use as the {@link IConnectorFactory}
      */
     public Class<IConnectorFactory> getConnectorFactoryClass() {
-        return loadConfigClass(APIMAN_RT_CONNECTOR_FACTORY_CLASS, IConnectorFactory.class);
+        return loadConfigClass(APIMAN_GATEWAY_CONNECTOR_FACTORY_CLASS, IConnectorFactory.class);
     }
 
     /**
      * @return all properties to be passed to the factory
      */
     public Map<String, String> getConnectorFactoryConfig() {
-        return getConfigMap(APIMAN_RT_CONNECTOR_FACTORY_CLASS + "."); //$NON-NLS-1$
+        return getConfigMap(APIMAN_GATEWAY_CONNECTOR_FACTORY_CLASS + "."); //$NON-NLS-1$
     }
 
     /**
      * @return the class to use as the {@link IPolicyFactory}
      */
     public Class<IPolicyFactory> getPolicyFactoryClass() {
-        return loadConfigClass(APIMAN_RT_POLICY_FACTORY_CLASS, IPolicyFactory.class);
+        return loadConfigClass(APIMAN_GATEWAY_POLICY_FACTORY_CLASS, IPolicyFactory.class);
     }
 
     /**
      * @return all properties to be passed to the factory
      */
     public Map<String, String> getPolicyFactoryConfig() {
-        return getConfigMap(APIMAN_RT_POLICY_FACTORY_CLASS + "."); //$NON-NLS-1$
+        return getConfigMap(APIMAN_GATEWAY_POLICY_FACTORY_CLASS + "."); //$NON-NLS-1$
     }
 
     /**
      * @return the class to use for the given component
      */
     public <T extends IComponent> Class<T> getComponentClass(Class<T> componentType) {
-        return loadConfigClass(APIMAN_RT_COMPONENT_PREFIX + componentType.getSimpleName(), componentType);
+        return loadConfigClass(APIMAN_GATEWAY_COMPONENT_PREFIX + componentType.getSimpleName(), componentType);
     }
 
     /**
      * @return all properties to be passed to the factory
      */
     public <T extends IComponent> Map<String, String> getComponentConfig(Class<T> componentType) {
-        return getConfigMap(APIMAN_RT_COMPONENT_PREFIX + componentType.getSimpleName() + "."); //$NON-NLS-1$
+        return getConfigMap(APIMAN_GATEWAY_COMPONENT_PREFIX + componentType.getSimpleName() + "."); //$NON-NLS-1$
     }
 
     /**

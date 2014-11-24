@@ -50,16 +50,16 @@ public class GatewayDevServer {
         int gatewayPort = getGatewayPort();
         int echoPort = getEchoPort();
         
-        System.setProperty(WarEngineConfig.APIMAN_RT_REGISTRY_CLASS, InMemoryRegistry.class.getName());
-        System.setProperty(WarEngineConfig.APIMAN_RT_CONNECTOR_FACTORY_CLASS, HttpConnectorFactory.class.getName());
-        System.setProperty(WarEngineConfig.APIMAN_RT_POLICY_FACTORY_CLASS, PolicyFactoryImpl.class.getName());
+        System.setProperty(WarEngineConfig.APIMAN_GATEWAY_REGISTRY_CLASS, InMemoryRegistry.class.getName());
+        System.setProperty(WarEngineConfig.APIMAN_GATEWAY_CONNECTOR_FACTORY_CLASS, HttpConnectorFactory.class.getName());
+        System.setProperty(WarEngineConfig.APIMAN_GATEWAY_POLICY_FACTORY_CLASS, PolicyFactoryImpl.class.getName());
 
         // Register test components
-        System.setProperty(WarEngineConfig.APIMAN_RT_COMPONENT_PREFIX + ISharedStateComponent.class.getSimpleName(), 
+        System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + ISharedStateComponent.class.getSimpleName(), 
                 InMemorySharedStateComponent.class.getName());
-        System.setProperty(WarEngineConfig.APIMAN_RT_COMPONENT_PREFIX + IRateLimiterComponent.class.getSimpleName(), 
+        System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + IRateLimiterComponent.class.getSimpleName(), 
                 InMemoryRateLimiterComponent.class.getName());
-        System.setProperty(WarEngineConfig.APIMAN_RT_COMPONENT_PREFIX + IPolicyFailureFactoryComponent.class.getSimpleName(), 
+        System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + IPolicyFailureFactoryComponent.class.getSimpleName(), 
                 PolicyFailureFactoryComponent.class.getName());
 
         GatewayServer server = new GatewayServer(gatewayPort);

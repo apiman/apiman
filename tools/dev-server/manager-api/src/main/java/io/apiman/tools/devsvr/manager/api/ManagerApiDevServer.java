@@ -25,7 +25,7 @@ import io.apiman.manager.test.server.ISeeder;
  *
  * @author eric.wittmann@redhat.com
  */
-public class DtApiDevServer {
+public class ManagerApiDevServer {
     
     private static final int GATEWAY_PORT  = 6666;
     private static final String APIMAN_RT_GATEWAY_SERVER_PORT = "apiman.gateway.server.port"; //$NON-NLS-1$
@@ -37,12 +37,12 @@ public class DtApiDevServer {
     public static void main(String [] args) throws Exception {
         int gatewayPort = getGatewayPort();
         
-        System.setProperty(Config.APIMAN_DT_API_GATEWAY_REST_ENDPOINT, "http://localhost:" + gatewayPort); //$NON-NLS-1$
-        System.setProperty(Config.APIMAN_DT_API_GATEWAY_AUTH_TYPE, "basic"); //$NON-NLS-1$
-        System.setProperty(Config.APIMAN_DT_API_GATEWAY_BASIC_AUTH_USER, "admin"); //$NON-NLS-1$
-        System.setProperty(Config.APIMAN_DT_API_GATEWAY_BASIC_AUTH_PASS, "admin"); //$NON-NLS-1$
+        System.setProperty(Config.APIMAN_MANAGER_API_GATEWAY_REST_ENDPOINT, "http://localhost:" + gatewayPort); //$NON-NLS-1$
+        System.setProperty(Config.APIMAN_MANAGER_API_GATEWAY_AUTH_TYPE, "basic"); //$NON-NLS-1$
+        System.setProperty(Config.APIMAN_MANAGER_API_GATEWAY_BASIC_AUTH_USER, "admin"); //$NON-NLS-1$
+        System.setProperty(Config.APIMAN_MANAGER_API_GATEWAY_BASIC_AUTH_PASS, "admin"); //$NON-NLS-1$
         
-        System.setProperty(ISeeder.SYSTEM_PROPERTY, DtApiDataSeeder.class.getName());
+        System.setProperty(ISeeder.SYSTEM_PROPERTY, ManagerApiDataSeeder.class.getName());
         DtApiTestServer server = new DtApiTestServer();
         server.start();
     }

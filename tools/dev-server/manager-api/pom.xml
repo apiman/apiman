@@ -49,7 +49,7 @@
               </execution>
             </executions>
             <configuration>
-              <mainClass>io.apiman.tools.devsvr.manager.api.DtApiDevServer</mainClass>
+              <mainClass>io.apiman.tools.devsvr.manager.api.ManagerApiDevServer</mainClass>
             </configuration>
           </plugin>
         </plugins>

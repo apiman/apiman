@@ -51,19 +51,19 @@ import org.overlord.commons.i18n.server.filters.LocaleFilter;
  *
  * @author eric.wittmann@redhat.com
  */
-public class ApiManDtUiDevServer extends ErraiDevServer {
+public class ManagerUiDevServer extends ErraiDevServer {
 
     private static final int API_PORT  = 7070;
     private static final int GATEWAY_PORT  = 6666;
-    private static final String APIMAN_RT_API_SERVER_PORT = "apiman.api.server.port"; //$NON-NLS-1$
-    private static final String APIMAN_RT_GATEWAY_SERVER_PORT = "apiman.gateway.server.port"; //$NON-NLS-1$
+    private static final String APIMAN_API_SERVER_PORT = "apiman.api.server.port"; //$NON-NLS-1$
+    private static final String APIMAN_GATEWAY_SERVER_PORT = "apiman.gateway.server.port"; //$NON-NLS-1$
 
     /**
      * Main entry point.
      * @param args
      */
     public static void main(String [] args) throws Exception {
-        ApiManDtUiDevServer devServer = new ApiManDtUiDevServer(args);
+        ManagerUiDevServer devServer = new ManagerUiDevServer(args);
         devServer.enableDebug();
         devServer.go();
     }
@@ -72,7 +72,7 @@ public class ApiManDtUiDevServer extends ErraiDevServer {
      * Constructor.
      * @param args
      */
-    public ApiManDtUiDevServer(String [] args) {
+    public ManagerUiDevServer(String [] args) {
         super(args);
     }
     
@@ -92,11 +92,11 @@ public class ApiManDtUiDevServer extends ErraiDevServer {
         int apiPort = getApiPort();
         int gatewayPort = getGatewayPort();
         
-        System.setProperty(UIConfig.APIMAN_DT_UI_API_ENDPOINT,
+        System.setProperty(UIConfig.APIMAN_MANAGER_UI_API_ENDPOINT,
                 "http://localhost:" + apiPort + "/apiman"); //$NON-NLS-1$ //$NON-NLS-2$
-        System.setProperty(UIConfig.APIMAN_DT_UI_API_AUTH_TYPE, ApiAuthType.authToken.toString());
-        System.setProperty(UIConfig.APIMAN_DT_UI_API_AUTH_TOKEN_GENERATOR, AuthTokenGenerator.class.getName());
-        System.setProperty(UIConfig.APIMAN_DT_UI_GATEWAY_URL, "http://localhost:" + gatewayPort + "/gateway"); //$NON-NLS-1$ //$NON-NLS-2$
+        System.setProperty(UIConfig.APIMAN_MANAGER_UI_API_AUTH_TYPE, ApiAuthType.authToken.toString());
+        System.setProperty(UIConfig.APIMAN_MANAGER_UI_API_AUTH_TOKEN_GENERATOR, AuthTokenGenerator.class.getName());
+        System.setProperty(UIConfig.APIMAN_MANAGER_UI_GATEWAY_URL, "http://localhost:" + gatewayPort + "/gateway"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**
@@ -104,19 +104,19 @@ public class ApiManDtUiDevServer extends ErraiDevServer {
      */
     private static int getGatewayPort() {
         int port = GATEWAY_PORT;
-        if (System.getProperty(APIMAN_RT_GATEWAY_SERVER_PORT) != null) {
-            port = new Integer(System.getProperty(APIMAN_RT_GATEWAY_SERVER_PORT));
+        if (System.getProperty(APIMAN_GATEWAY_SERVER_PORT) != null) {
+            port = new Integer(System.getProperty(APIMAN_GATEWAY_SERVER_PORT));
         }
         return port;
     }
 
     /**
-     * @return the gateway port to use
+     * @return the API port to use
      */
     private static int getApiPort() {
         int port = API_PORT;
-        if (System.getProperty(APIMAN_RT_API_SERVER_PORT) != null) {
-            port = new Integer(System.getProperty(APIMAN_RT_API_SERVER_PORT));
+        if (System.getProperty(APIMAN_API_SERVER_PORT) != null) {
+            port = new Integer(System.getProperty(APIMAN_API_SERVER_PORT));
         }
         return port;
     }
@@ -125,12 +125,12 @@ public class ApiManDtUiDevServer extends ErraiDevServer {
      * @see org.overlord.commons.dev.server.DevServer#createDevEnvironment()
      */
     @Override
-    protected ApiManDtUiDevServerEnvironment createDevEnvironment() {
-        return new ApiManDtUiDevServerEnvironment(args);
+    protected ManagerUiDevServerEnvironment createDevEnvironment() {
+        return new ManagerUiDevServerEnvironment(args);
     }
 
     /**
-     * @see org.overlord.commons.dev.server.DevServer#addModules(org.overlord.commons.dev.server.ApiManDtUiDevServerEnvironment)
+     * @see org.overlord.commons.dev.server.DevServer#addModules(org.overlord.commons.dev.server.ManagerUiDevServerEnvironment)
      */
     @Override
     protected void addModules(DevServerEnvironment environment) {
@@ -140,7 +140,7 @@ public class ApiManDtUiDevServer extends ErraiDevServer {
     }
 
     /**
-     * @see org.overlord.commons.dev.server.DevServer#addModulesToJetty(org.overlord.commons.dev.server.ApiManDtUiDevServerEnvironment, org.eclipse.jetty.server.handler.ContextHandlerCollection)
+     * @see org.overlord.commons.dev.server.DevServer#addModulesToJetty(org.overlord.commons.dev.server.ManagerUiDevServerEnvironment, org.eclipse.jetty.server.handler.ContextHandlerCollection)
      */
     @Override
     protected void addModulesToJetty(DevServerEnvironment environment, ContextHandlerCollection handlers)
@@ -152,7 +152,7 @@ public class ApiManDtUiDevServer extends ErraiDevServer {
         ServletContextHandler apiManDtUI = new ServletContextHandler(ServletContextHandler.SESSIONS);
         apiManDtUI.setWelcomeFiles(new String[] { "index.html" }); //$NON-NLS-1$
         apiManDtUI.setSecurityHandler(createSecurityHandler());
-        apiManDtUI.setContextPath("/apiman-ui"); //$NON-NLS-1$
+        apiManDtUI.setContextPath("/apiman-manager"); //$NON-NLS-1$
         apiManDtUI.setWelcomeFiles(new String[] { "index.html" }); //$NON-NLS-1$
         apiManDtUI.setResourceBase(environment.getModuleDir("apiman-manager").getCanonicalPath()); //$NON-NLS-1$
         apiManDtUI.addFilter(GWTCacheControlFilter.class, "/app/*", EnumSet.of(DispatcherType.REQUEST)); //$NON-NLS-1$
@@ -180,7 +180,7 @@ public class ApiManDtUiDevServer extends ErraiDevServer {
     }
 
     /**
-     * @see org.overlord.commons.dev.server.DevServer#postStart(org.overlord.commons.dev.server.ApiManDtUiDevServerEnvironment)
+     * @see org.overlord.commons.dev.server.DevServer#postStart(org.overlord.commons.dev.server.ManagerUiDevServerEnvironment)
      */
     @Override
     protected void postStart(DevServerEnvironment environment) throws Exception {

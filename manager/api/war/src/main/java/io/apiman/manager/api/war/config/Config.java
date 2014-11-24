@@ -31,18 +31,18 @@ import org.overlord.commons.config.ConfigurationFactory;
 @ApplicationScoped
 public class Config implements IConfig {
     
-    private static final String APIMAN_DT_API_CONFIG_FILE_NAME     = "apiman-manager-api.config.file.name"; //$NON-NLS-1$
-    private static final String APIMAN_DT_API_CONFIG_FILE_REFRESH  = "apiman-manager-api.config.file.refresh"; //$NON-NLS-1$
+    private static final String APIMAN_MANAGER_API_CONFIG_FILE_NAME     = "apiman-manager-api.config.file.name"; //$NON-NLS-1$
+    private static final String APIMAN_MANAGER_API_CONFIG_FILE_REFRESH  = "apiman-manager-api.config.file.refresh"; //$NON-NLS-1$
 
-    public static final String APIMAN_DT_API_GATEWAY_REST_ENDPOINT = "apiman-manager-api.gateway.rest-endpoint"; //$NON-NLS-1$
-    public static final String APIMAN_DT_API_GATEWAY_AUTH_TYPE = "apiman-manager-api.gateway.authentication.type"; //$NON-NLS-1$
-    public static final String APIMAN_DT_API_GATEWAY_BASIC_AUTH_USER = "apiman-manager-api.gateway.authentication.basic.user"; //$NON-NLS-1$
-    public static final String APIMAN_DT_API_GATEWAY_BASIC_AUTH_PASS = "apiman-manager-api.gateway.authentication.basic.password"; //$NON-NLS-1$
+    public static final String APIMAN_MANAGER_API_GATEWAY_REST_ENDPOINT = "apiman-manager-api.gateway.rest-endpoint"; //$NON-NLS-1$
+    public static final String APIMAN_MANAGER_API_GATEWAY_AUTH_TYPE = "apiman-manager-api.gateway.authentication.type"; //$NON-NLS-1$
+    public static final String APIMAN_MANAGER_API_GATEWAY_BASIC_AUTH_USER = "apiman-manager-api.gateway.authentication.basic.user"; //$NON-NLS-1$
+    public static final String APIMAN_MANAGER_API_GATEWAY_BASIC_AUTH_PASS = "apiman-manager-api.gateway.authentication.basic.password"; //$NON-NLS-1$
 
     private static Configuration config;
     static {
-        String configFile = System.getProperty(APIMAN_DT_API_CONFIG_FILE_NAME);
-        String refreshDelayStr = System.getProperty(APIMAN_DT_API_CONFIG_FILE_REFRESH);
+        String configFile = System.getProperty(APIMAN_MANAGER_API_CONFIG_FILE_NAME);
+        String refreshDelayStr = System.getProperty(APIMAN_MANAGER_API_CONFIG_FILE_REFRESH);
         Long refreshDelay = 5000l;
         if (refreshDelayStr != null) {
             refreshDelay = new Long(refreshDelayStr);
@@ -67,7 +67,7 @@ public class Config implements IConfig {
      */
     @Override
     public String getGatewayRestEndpoint() {
-        return config.getString(APIMAN_DT_API_GATEWAY_REST_ENDPOINT);
+        return config.getString(APIMAN_MANAGER_API_GATEWAY_REST_ENDPOINT);
     }
     
     /**
@@ -75,7 +75,7 @@ public class Config implements IConfig {
      */
     @Override
     public String getGatewayAuthenticationType() {
-        return config.getString(APIMAN_DT_API_GATEWAY_AUTH_TYPE);
+        return config.getString(APIMAN_MANAGER_API_GATEWAY_AUTH_TYPE);
     }
 
     /**
@@ -83,7 +83,7 @@ public class Config implements IConfig {
      */
     @Override
     public String getGatewayBasicAuthUsername() {
-        return config.getString(APIMAN_DT_API_GATEWAY_BASIC_AUTH_USER);
+        return config.getString(APIMAN_MANAGER_API_GATEWAY_BASIC_AUTH_USER);
     }
 
     /**
@@ -91,7 +91,7 @@ public class Config implements IConfig {
      */
     @Override
     public String getGatewayBasicAuthPassword() {
-        return config.getString(APIMAN_DT_API_GATEWAY_BASIC_AUTH_PASS);
+        return config.getString(APIMAN_MANAGER_API_GATEWAY_BASIC_AUTH_PASS);
     }
     
 }

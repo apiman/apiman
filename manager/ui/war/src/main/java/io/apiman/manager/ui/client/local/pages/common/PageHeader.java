@@ -18,6 +18,7 @@ package io.apiman.manager.ui.client.local.pages.common;
 import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.ui.client.local.pages.ConsumerServicesPage;
 import io.apiman.manager.ui.client.local.pages.DashboardPage;
+import io.apiman.manager.ui.client.local.pages.SettingsProfilePage;
 import io.apiman.manager.ui.client.local.pages.UserOrgsPage;
 import io.apiman.manager.ui.client.local.services.ConfigurationService;
 import io.apiman.manager.ui.client.local.services.NavigationHelperService;
@@ -69,6 +70,8 @@ public class PageHeader extends Composite {
     @Inject @DataField
     Anchor toUserHome;
     @Inject @DataField
+    Anchor toProfile;
+    @Inject @DataField
     Anchor toLogout;
     
     /**
@@ -110,7 +113,10 @@ public class PageHeader extends Composite {
             username.setText(uname);
         }
         String userOrgsHref = navHelper.createHrefToPage(UserOrgsPage.class, MultimapUtil.singleItemMap("user", uname)); //$NON-NLS-1$
+        String userProfileHref = navHelper.createHrefToPage(SettingsProfilePage.class, MultimapUtil.emptyMap());
+        
         toUserHome.setHref(userOrgsHref);
+        toProfile.setHref(userProfileHref);
         
         toLogout.setHref(config.getCurrentConfig().getApiman().getLogoutUrl());
     }

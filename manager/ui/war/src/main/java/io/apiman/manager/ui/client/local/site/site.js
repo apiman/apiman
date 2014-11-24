@@ -29,16 +29,16 @@ function loadResource(filename, filetype) {
  * than in every single template file.
  */
 function loadAll() {
-    loadResource("../../../../../../../../../webapp/bootstrap-3.1.1/css/bootstrap.min.css", "css");
-    loadResource("../../../../../../../../../webapp/patternfly-1.0/css/patternfly.min.css", "css");
-    loadResource("../../../../../../../../../webapp/css/apiman.css", "css");
-    loadResource("../../../../../../../../../webapp/css/apiman-responsive.css", "css");
+    loadResource("../../../../../../../../webapp/bootstrap-3.1.1/css/bootstrap.min.css", "css");
+    loadResource("../../../../../../../../webapp/patternfly-1.0/css/patternfly.min.css", "css");
+    loadResource("../../../../../../../../webapp/css/apiman.css", "css");
+    loadResource("../../../../../../../../webapp/css/apiman-responsive.css", "css");
     
-    loadResource("../../../../../../../../../webapp/jquery-1.10.2/jquery-1.10.2.min.js", "js");
+    loadResource("../../../../../../../../webapp/jquery-1.10.2/jquery-1.10.2.min.js", "js");
     setTimeout(function() {
-        loadResource("../../../../../../../../../webapp/bootstrap-3.1.1/js/bootstrap.min.js", "js");
-        loadResource("../../../../../../../../../webapp/patternfly-1.0/js/patternfly.min.js", "js");
-        loadResource("../../../../../../../../../webapp/bootstrap-3.1.1/js/bootstrap-select.min.js", "js");
+        loadResource("../../../../../../../../webapp/bootstrap-3.1.1/js/bootstrap.min.js", "js");
+        loadResource("../../../../../../../../webapp/patternfly-1.0/js/patternfly.min.js", "js");
+        loadResource("../../../../../../../../webapp/bootstrap-3.1.1/js/bootstrap-select.min.js", "js");
         loadResource("init.js", "js");
     }, 500);
 }

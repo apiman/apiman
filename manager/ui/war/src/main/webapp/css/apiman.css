@@ -1169,3 +1169,10 @@ div.admin-page .admin-content .apiman-summaryrow .emphasis {
   background-color: white;
   padding: 3px;
 }
+
+.settings-detail {
+  padding: 20px;
+  border: 1px solid rgb(200, 200, 200);
+  background-color: rgb(249, 249, 249);
+  box-shadow: 2px 2px 3px rgb(221, 221, 221);
+}

@@ -45,12 +45,12 @@ import java.util.HashSet;
  *
  * @author eric.wittmann@redhat.com
  */
-public class DtApiDataSeeder extends DefaultTestDataSeeder {
+public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
     
     /**
      * Constructor.
      */
-    public DtApiDataSeeder() {
+    public ManagerApiDataSeeder() {
     }
     
     /**

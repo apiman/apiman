@@ -126,6 +126,9 @@ public class AppMessages {
     @TranslationKey(defaultValue = "apiman - Admin - Gateways")
     public static final String TITLE_ADMIN_GATEWAYS = "page.title.admin-gateways"; //$NON-NLS-1$
 
+    @TranslationKey(defaultValue = "apiman - User Profile")
+    public static final String TITLE_SETTINGS_PROFILE = "page.title.user-profile"; //$NON-NLS-1$
+
     @TranslationKey(defaultValue = "Configuration service not available.")
     public static final String CONFIG_SERVICE_NOT_AVAILABLE = "authInterceptor.configServiceNotAvailable"; //$NON-NLS-1$
 
