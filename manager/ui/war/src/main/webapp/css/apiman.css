@@ -282,10 +282,15 @@ div.page {
 }
 
 .dash-group {
-  border: 1px solid rgb(238, 238, 238);
+  border: 1px solid rgb(200, 200, 200);
   width: 49%;
   float: left;
   margin-top: 20px;
+  box-shadow: 2px 2px 3px rgb(221, 221, 221);
+}
+.dash-group:hover {
+  border: 1px solid rgb(175, 175, 190);
+  box-shadow: 2px 2px 3px rgb(201, 201, 201);
 }
 .dash-group .title {
   background-color: #f6f6f6;
@@ -293,7 +298,7 @@ div.page {
   color: #666;
   font-weight: bold;
   font-size: 12px;
-  border-bottom: 1px solid rgb(238, 238, 238);
+  border-bottom: 1px solid rgb(200, 200, 200);
 }
 .dash-group .description {
   padding: 10px;
@@ -313,6 +318,10 @@ div.page {
 
 #dash-admin-group {
   border: 1px solid rgb(254, 201, 201);
+}
+#dash-admin-group:hover {
+  border: 1px solid rgb(224, 181, 181);
+  box-shadow: 2px 2px 3px rgb(211, 201, 201);
 }
 #dash-admin-group .title {
   background-color: rgb(254, 227, 227);

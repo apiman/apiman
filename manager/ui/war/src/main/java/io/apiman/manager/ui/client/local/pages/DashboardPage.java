@@ -65,6 +65,8 @@ public class DashboardPage extends AbstractPage {
     Anchor manageRoles;
     @Inject @DataField
     Anchor managePolicyDefs;
+    @Inject @DataField
+    Anchor manageGateways;
 
     /**
      * Constructor.
@@ -95,6 +97,7 @@ public class DashboardPage extends AbstractPage {
         String myAppsHref = navHelper.createHrefToPage(UserAppsPage.class, MultimapUtil.singleItemMap("user", currentUser)); //$NON-NLS-1$
         String manageRolesHref = navHelper.createHrefToPage(AdminRolesPage.class, MultimapUtil.emptyMap());
         String managePolicyDefsHref = navHelper.createHrefToPage(AdminPolicyDefsPage.class, MultimapUtil.emptyMap());
+        String manageGatewaysHref = navHelper.createHrefToPage(AdminGatewaysPage.class, MultimapUtil.emptyMap());
         
         createOrg.setHref(createOrgHref);
         browseOrgs.setHref(browseOrgsHref);
@@ -109,6 +112,7 @@ public class DashboardPage extends AbstractPage {
         
         manageRoles.setHref(manageRolesHref);
         managePolicyDefs.setHref(managePolicyDefsHref);
+        manageGateways.setHref(manageGatewaysHref);
     }
 
     /**

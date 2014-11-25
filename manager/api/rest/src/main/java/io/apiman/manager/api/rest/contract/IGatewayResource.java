@@ -57,6 +57,7 @@ public interface IGatewayResource {
 
     @PUT
     @Path("{gatewayId}")
+    @Consumes(MediaType.APPLICATION_JSON)
     public void update(@PathParam("gatewayId") String gatewayId, GatewayBean bean)
             throws GatewayNotFoundException, NotAuthorizedException;
 

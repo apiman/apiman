@@ -98,6 +98,7 @@ public class EditGatewayPage extends AbstractPage {
                 enableUpdateButtonIfValid();
             }
         };
+        description.addValueChangeHandler(handler);
         httpEndpoint.addValueChangeHandler(handler);
         configEndpoint.addValueChangeHandler(handler);
         username.addValueChangeHandler(handler);
@@ -174,6 +175,9 @@ public class EditGatewayPage extends AbstractPage {
         RestGatewayConfigBean configBean = marshaller.unmarshal(configuration, RestGatewayConfigBean.class);
         configEndpoint.setValue(configBean.getEndpoint());
         username.setValue(configBean.getUsername());
+        password.setValue(configBean.getPassword());
+        passwordConfirm.setValue(configBean.getPassword());
+        updateButton.setEnabled(false);
     }
 
     /**

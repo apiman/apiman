@@ -141,12 +141,8 @@
                     <!-- Configure APIMan -->
                     <property name="apiman.config.file" location="${apiman.wildfly.home}/standalone/configuration/apiman.properties" />
                     <propertyfile file="${apiman.config.file}" comment=" Configuration information for Overlord API Management">
-                      <entry key="apiman-manager-ui.dt-api.authentication.type" value="authToken" />
-                      <entry key="apiman-manager-ui.dt-api.authentication.token.generator" value="io.apiman.manager.ui.server.auth.AuthTokenGenerator" />
-                      <entry key="apiman-manager-ui.gateway.base-url" value="http://localhost:8080/apiman-gateway/gateway/" />
-                      <entry key="apiman-manager-api.gateway.rest-endpoint" value="http://localhost:8080/apiman-gateway" />
-                      <entry key="apiman-manager-api.gateway.authentication.basic.user" value="admin" />
-                      <entry key="apiman-manager-api.gateway.authentication.basic.password" value="admin123!" />
+                      <entry key="apiman-manager-ui.api.authentication.type" value="authToken" />
+                      <entry key="apiman-manager-ui.api.authentication.token.generator" value="io.apiman.manager.ui.server.auth.AuthTokenGenerator" />
 
                       <entry key="apiman-gateway.registry" value="io.apiman.gateway.engine.ispn.InfinispanRegistry" />
                       <entry key="apiman-gateway.connector-factory" value="io.apiman.gateway.platforms.servlet.connectors.HttpConnectorFactory" />

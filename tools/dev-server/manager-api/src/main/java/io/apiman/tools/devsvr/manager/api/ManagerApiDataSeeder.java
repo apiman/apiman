@@ -31,6 +31,7 @@ import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionTemplateBean;
 import io.apiman.manager.api.beans.services.EndpointType;
 import io.apiman.manager.api.beans.services.ServiceBean;
+import io.apiman.manager.api.beans.services.ServiceGatewayBean;
 import io.apiman.manager.api.beans.services.ServicePlanBean;
 import io.apiman.manager.api.beans.services.ServiceStatus;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
@@ -64,11 +65,16 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         super.seed(idmStorage, storage);
         
         GatewayBean gateway = new GatewayBean();
+        gateway.setId("TheGateway");
         gateway.setName("The Gateway");
         gateway.setDescription("The only gateway needed for testing.");
         gateway.setHttpEndpoint("http://localhost:6666/gateway/");
         gateway.setConfiguration("{ \"endpoint\" : \"http://localhost:6666/api/\", \"username\" : \"admin\", \"password\" : \"admin\" }");
         gateway.setType(GatewayType.REST);
+        gateway.setCreatedBy("admin");
+        gateway.setCreatedOn(new Date());
+        gateway.setModifiedBy("admin");
+        gateway.setModifiedOn(new Date());
         storage.beginTx();
         storage.create(gateway);
         storage.commitTx();
@@ -275,6 +281,8 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         service.setCreatedBy("admin");
         storage.create(service);
         ServiceVersionBean svb = new ServiceVersionBean();
+        svb.setGateways(new HashSet<ServiceGatewayBean>());
+        svb.setPlans(new HashSet<ServicePlanBean>());
         svb.setVersion("1.0");
         svb.setStatus(ServiceStatus.Ready);
         svb.setService(service);
