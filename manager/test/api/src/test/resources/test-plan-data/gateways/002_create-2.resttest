@@ -1,0 +1,22 @@
+POST /gateways admin/admin
+Content-Type: application/json
+
+{
+  "name" : "Gateway Two",
+  "description" : "This is the second gateway.",
+  "httpEndpoint" : "http://localhost:6666/gateway/",
+  "type" : "REST",
+  "configuration" : "{}"
+}
+----
+200
+Content-Type: application/json
+
+{
+  "id" : "GatewayTwo",
+  "name" : "Gateway Two",
+  "httpEndpoint" : "http://localhost:6666/gateway/",
+  "description" : "This is the second gateway.",
+  "type" : "REST",
+  "configuration" : "{}"
+}

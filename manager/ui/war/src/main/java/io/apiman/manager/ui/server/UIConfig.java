@@ -30,13 +30,12 @@ public class UIConfig implements IUIConfig {
     public static final String APIMAN_MANAGER_UI_CONFIG_FILE_NAME = "apiman-manager-ui.config.file.name"; //$NON-NLS-1$
     public static final String APIMAN_MANAGER_UI_CONFIG_FILE_REFRESH = "apiman-manager-ui.config.file.refresh"; //$NON-NLS-1$
 
-    public static final String APIMAN_MANAGER_UI_API_ENDPOINT = "apiman-manager-ui.dt-api.endpoint"; //$NON-NLS-1$
-    public static final String APIMAN_MANAGER_UI_API_AUTH_TYPE = "apiman-manager-ui.dt-api.authentication.type"; //$NON-NLS-1$
-    public static final String APIMAN_MANAGER_UI_API_BASIC_AUTH_USER = "apiman-manager-ui.dt-api.authentication.basic.user"; //$NON-NLS-1$
-    public static final String APIMAN_MANAGER_UI_API_BASIC_AUTH_PASS = "apiman-manager-ui.dt-api.authentication.basic.password"; //$NON-NLS-1$
-    public static final String APIMAN_MANAGER_UI_API_AUTH_TOKEN_GENERATOR = "apiman-manager-ui.dt-api.authentication.token.generator"; //$NON-NLS-1$
+    public static final String APIMAN_MANAGER_UI_API_ENDPOINT = "apiman-manager-ui.api.endpoint"; //$NON-NLS-1$
+    public static final String APIMAN_MANAGER_UI_API_AUTH_TYPE = "apiman-manager-ui.api.authentication.type"; //$NON-NLS-1$
+    public static final String APIMAN_MANAGER_UI_API_BASIC_AUTH_USER = "apiman-manager-ui.api.authentication.basic.user"; //$NON-NLS-1$
+    public static final String APIMAN_MANAGER_UI_API_BASIC_AUTH_PASS = "apiman-manager-ui.api.authentication.basic.password"; //$NON-NLS-1$
+    public static final String APIMAN_MANAGER_UI_API_AUTH_TOKEN_GENERATOR = "apiman-manager-ui.api.authentication.token.generator"; //$NON-NLS-1$
 
-    public static final String APIMAN_MANAGER_UI_GATEWAY_URL = "apiman-manager-ui.gateway.base-url"; //$NON-NLS-1$
     public static final String APIMAN_MANAGER_UI_LOGOUT_URL = "apiman-manager-ui.logout-url"; //$NON-NLS-1$
 
     private static Configuration config;
@@ -77,14 +76,6 @@ public class UIConfig implements IUIConfig {
         } catch (Exception e) {
             throw new RuntimeException("Invalid API authentication type: " + at); //$NON-NLS-1$
         }
-    }
-
-    /**
-     * @see io.apiman.manager.ui.server.IUIConfig#getGatewayUrl()
-     */
-    @Override
-    public String getGatewayUrl() {
-        return config.getString(UIConfig.APIMAN_MANAGER_UI_GATEWAY_URL, "http://localhost:8080/apiman-gateway/gateway"); //$NON-NLS-1$
     }
     
     /**

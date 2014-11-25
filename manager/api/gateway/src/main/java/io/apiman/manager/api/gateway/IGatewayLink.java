@@ -58,4 +58,9 @@ public interface IGatewayLink {
      */
     public void unregisterApplication(Application application) throws RegistrationException;
     
+    /**
+     * Close down the gateway link when it's no longer needed.
+     */
+    public void close();
+    
 }

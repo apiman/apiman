@@ -3,6 +3,7 @@
 
   <!-- Create Organizations -->
   <testGroup name="Initial Creates">
+    <test name="Create Gateway">test-plan-data/publishing/create/000_create-gateway.resttest</test>
     <test name="Create Organization 1">test-plan-data/publishing/create/001_create-org1.resttest</test>
     <test name="Create App 1">test-plan-data/publishing/create/002_create-app1.resttest</test>
     <test name="Create App Version 1.0">test-plan-data/publishing/create/003_create-app-version-1.0.resttest</test>

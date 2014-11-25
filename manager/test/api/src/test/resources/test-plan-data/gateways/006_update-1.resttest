@@ -1,0 +1,9 @@
+PUT /gateways/GatewayOne admin/admin
+Content-Type: application/json
+
+{
+  "description" : "This is the first gateway. (updated)",
+  "configuration" : "{ \"updated\" : \"true\"}"
+}
+----
+204

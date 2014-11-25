@@ -134,7 +134,11 @@ public class ServicePlansPage extends AbstractServicePage {
         saveButton.setEnabled(false);
         cancelButton.setEnabled(false);
         plans.setChoices(planBeans, planVersions);
-        plans.setValue(new HashSet<ServicePlanBean>(versionBean.getPlans()));
+        Set<ServicePlanBean> theplans = new HashSet<ServicePlanBean>();
+        if (versionBean.getPlans() != null) {
+            theplans.addAll(versionBean.getPlans());
+        }
+        plans.setValue(theplans);
     }
     
     /**
@@ -155,22 +159,15 @@ public class ServicePlansPage extends AbstractServicePage {
         
         final Set<ServicePlanBean> newplans = plans.getValue();
         versionBean.setPlans(newplans);
-        rest.getServiceVersion(serviceBean.getOrganizationId(), serviceBean.getId(), versionBean.getVersion(), new IRestInvokerCallback<ServiceVersionBean>() {
+        
+        ServiceVersionBean update = new ServiceVersionBean();
+        update.setPlans(newplans);
+        rest.updateServiceVersion(serviceBean.getOrganizationId(), serviceBean.getId(),
+                versionBean.getVersion(), update, new IRestInvokerCallback<Void>() {
             @Override
-            public void onSuccess(final ServiceVersionBean response) {
-                response.setPlans(newplans);
-                rest.updateServiceVersion(serviceBean.getOrganizationId(), serviceBean.getId(),
-                        versionBean.getVersion(), response, new IRestInvokerCallback<Void>() {
-                    @Override
-                    public void onSuccess(Void response) {
-                        saveButton.onActionComplete();
-                        saveButton.setEnabled(false);
-                    }
-                    @Override
-                    public void onError(Throwable error) {
-                        dataPacketError(error);
-                    }
-                });
+            public void onSuccess(Void response) {
+                saveButton.onActionComplete();
+                saveButton.setEnabled(false);
             }
             @Override
             public void onError(Throwable error) {
@@ -187,7 +184,11 @@ public class ServicePlansPage extends AbstractServicePage {
         saveButton.reset();
         saveButton.setEnabled(false);
         cancelButton.setEnabled(false);
-        plans.setValue(new HashSet<ServicePlanBean>(versionBean.getPlans()));
+        Set<ServicePlanBean> resetValues = new HashSet<ServicePlanBean>();
+        if (versionBean.getPlans() != null) {
+            resetValues.addAll(versionBean.getPlans());
+        }
+        plans.setValue(resetValues);
     }
 
 }

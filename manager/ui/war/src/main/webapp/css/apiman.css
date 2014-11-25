@@ -1176,3 +1176,17 @@ div.admin-page .admin-content .apiman-summaryrow .emphasis {
   background-color: rgb(249, 249, 249);
   box-shadow: 2px 2px 3px rgb(221, 221, 221);
 }
+
+.form-table {
+  margin-top: 5px;
+}
+
+.form-table td {
+  padding: 3px;
+}
+
+.form-table .td-label {
+  font-weight: bold;
+  color: #666;
+  padding-left: 10px;
+}

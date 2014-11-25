@@ -25,6 +25,7 @@ import io.apiman.manager.api.beans.audit.data.EntityUpdatedData;
 import io.apiman.manager.api.beans.audit.data.MembershipData;
 import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.contracts.NewContractBean;
+import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.idm.GrantRolesBean;
 import io.apiman.manager.api.beans.idm.PermissionType;
 import io.apiman.manager.api.beans.idm.RoleBean;
@@ -45,6 +46,7 @@ import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaFilterBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.beans.services.ServiceBean;
+import io.apiman.manager.api.beans.services.ServiceGatewayBean;
 import io.apiman.manager.api.beans.services.ServicePlanBean;
 import io.apiman.manager.api.beans.services.ServiceStatus;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
@@ -94,6 +96,7 @@ import io.apiman.manager.api.security.ISecurityContext;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
@@ -550,16 +553,20 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 throw ExceptionFactory.serviceNotFoundException(bean.getServiceId());
             Set<ServicePlanBean> plans = svb.getPlans();
             String planVersion = null;
-            for (ServicePlanBean servicePlanBean : plans) {
-                if (servicePlanBean.getPlanId().equals(bean.getPlanId())) {
-                    planVersion = servicePlanBean.getVersion();
+            if (plans != null) {
+                for (ServicePlanBean servicePlanBean : plans) {
+                    if (servicePlanBean.getPlanId().equals(bean.getPlanId())) {
+                        planVersion = servicePlanBean.getVersion();
+                    }
                 }
             }
-            if (planVersion == null)
+            if (planVersion == null) {
                 throw ExceptionFactory.planNotFoundException(bean.getPlanId());
+            }
             PlanVersionBean pvb = query.getPlanVersion(bean.getServiceOrgId(), bean.getPlanId(), planVersion);
-            if (pvb == null)
+            if (pvb == null) {
                 throw ExceptionFactory.planNotFoundException(bean.getPlanId());
+            }
             
             contract = new ContractBean();
             contract.setApplication(avb);
@@ -995,6 +1002,15 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             bean.setModifiedOn(new Date());
             bean.setStatus(ServiceStatus.Created);
             bean.setService(service);
+            GatewayBean gateway = getSingularGateway();
+            if (gateway != null) {
+                ServiceGatewayBean sgb = new ServiceGatewayBean();
+                sgb.setGatewayId(gateway.getId());
+                if (bean.getGateways() == null) {
+                    bean.setGateways(new HashSet<ServiceGatewayBean>());
+                }
+                bean.getGateways().add(sgb);
+            }
             if (serviceValidator.isReady(bean)) {
                 bean.setStatus(ServiceStatus.Ready);
             } else {
@@ -1084,9 +1100,20 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         svb.setModifiedOn(new Date());
         EntityUpdatedData data = new EntityUpdatedData();
         if (AuditUtils.valueChanged(svb.getPlans(), bean.getPlans())) {
-            data.addChange("plans", AuditUtils.asString(svb.getPlans()), AuditUtils.asString(bean.getPlans())); //$NON-NLS-1$
+            data.addChange("plans", AuditUtils.asString_ServicePlanBeans(svb.getPlans()), AuditUtils.asString_ServicePlanBeans(bean.getPlans())); //$NON-NLS-1$
+            if (svb.getPlans() == null) {
+                svb.setPlans(new HashSet<ServicePlanBean>());
+            }
             svb.getPlans().clear();
             svb.getPlans().addAll(bean.getPlans());
+        }
+        if (AuditUtils.valueChanged(svb.getGateways(), bean.getGateways())) {
+            data.addChange("gateways", AuditUtils.asString_ServiceGatewayBeans(svb.getGateways()), AuditUtils.asString_ServiceGatewayBeans(bean.getGateways())); //$NON-NLS-1$
+            if (svb.getGateways() == null) {
+                svb.setGateways(new HashSet<ServiceGatewayBean>());
+            }
+            svb.getGateways().clear();
+            svb.getGateways().addAll(bean.getGateways());
         }
         if (AuditUtils.valueChanged(svb.getEndpoint(), bean.getEndpoint())) {
             data.addChange("endpoint", svb.getEndpoint(), bean.getEndpoint()); //$NON-NLS-1$
@@ -1098,7 +1125,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         }
         
         try {
-            if (serviceValidator.isReady(bean)) {
+            if (serviceValidator.isReady(svb)) {
                 svb.setStatus(ServiceStatus.Ready);
             }
         } catch (Exception e) {
@@ -1352,10 +1379,12 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         try {
             String planVersion = null;
             Set<ServicePlanBean> plans = svb.getPlans();
-            for (ServicePlanBean servicePlanBean : plans) {
-                if (servicePlanBean.getPlanId().equals(planId)) {
-                    planVersion = servicePlanBean.getVersion();
-                    break;
+            if (plans != null) {
+                for (ServicePlanBean servicePlanBean : plans) {
+                    if (servicePlanBean.getPlanId().equals(planId)) {
+                        planVersion = servicePlanBean.getVersion();
+                        break;
+                    }
                 }
             }
             if (planVersion == null) {
@@ -2108,6 +2137,23 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         } catch (Exception e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);
+        }
+    }
+
+    /**
+     * @return a {@link GatewayBean} iff there is a single configured gateway in the system
+     * @throws StorageException 
+     */
+    private GatewayBean getSingularGateway() throws StorageException {
+        SearchCriteriaBean criteria = new SearchCriteriaBean();
+        criteria.setPage(1);
+        criteria.setPageSize(2);
+        SearchResultsBean<GatewayBean> resultsBean = storage.find(criteria, GatewayBean.class);
+        List<GatewayBean> beans = resultsBean.getBeans();
+        if (beans != null && beans.size() == 1) {
+            return beans.get(0);
+        } else {
+            return null;
         }
     }
 

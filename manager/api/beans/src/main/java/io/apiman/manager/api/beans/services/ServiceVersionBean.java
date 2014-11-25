@@ -17,7 +17,6 @@ package io.apiman.manager.api.beans.services;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -67,7 +66,10 @@ public class ServiceVersionBean implements Serializable {
     private EndpointType endpointType;
     @Embedded
     @ElementCollection(fetch=FetchType.EAGER)
-    private Set<ServicePlanBean> plans = new HashSet<ServicePlanBean>();
+    private Set<ServiceGatewayBean> gateways;
+    @Embedded
+    @ElementCollection(fetch=FetchType.EAGER)
+    private Set<ServicePlanBean> plans;
     @Column(updatable=false)
     @Index(name="svc_vIdx")
     private String version;
@@ -241,7 +243,21 @@ public class ServiceVersionBean implements Serializable {
     public void setPlans(Set<ServicePlanBean> plans) {
         this.plans = plans;
     }
-    
+
+    /**
+     * @return the gateways
+     */
+    public Set<ServiceGatewayBean> getGateways() {
+        return gateways;
+    }
+
+    /**
+     * @param gateways the gateways to set
+     */
+    public void setGateways(Set<ServiceGatewayBean> gateways) {
+        this.gateways = gateways;
+    }
+
     /**
      * @param plan
      */

@@ -1,0 +1,22 @@
+POST /gateways admin/admin123!
+Content-Type: application/json
+
+{
+  "name" : "The Gateway",
+  "description" : "This is the gateway.",
+  "httpEndpoint" : "http://localhost:8080/apiman-gateway/gateway/",
+  "type" : "REST",
+  "configuration" : "{ \"endpoint\" : \"http://localhost:8080/apiman-gateway\", \"username\" : \"admin\", \"password\" : \"admin123!\" }"
+}
+----
+200
+Content-Type: application/json
+
+{
+  "id" : "TheGateway",
+  "name" : "The Gateway",
+  "description" : "This is the gateway.",
+  "httpEndpoint" : "http://localhost:8080/apiman-gateway/gateway/",
+  "type" : "REST",
+  "configuration" : "{ \"endpoint\" : \"http://localhost:8080/apiman-gateway\", \"username\" : \"admin\", \"password\" : \"admin123!\" }"
+}

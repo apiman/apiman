@@ -17,6 +17,7 @@ package io.apiman.manager.ui.client.local.services.rest;
 
 import io.apiman.manager.api.rest.contract.IActionResource;
 import io.apiman.manager.api.rest.contract.ICurrentUserResource;
+import io.apiman.manager.api.rest.contract.IGatewayResource;
 import io.apiman.manager.api.rest.contract.IOrganizationResource;
 import io.apiman.manager.api.rest.contract.IPolicyDefinitionResource;
 import io.apiman.manager.api.rest.contract.IRoleResource;
@@ -46,7 +47,7 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 @ApplicationScoped
 @InterceptsRemoteCall({ ISystemResource.class, ISearchResource.class, ICurrentUserResource.class,
         IUserResource.class, IRoleResource.class, IOrganizationResource.class, IActionResource.class,
-        IPolicyDefinitionResource.class })
+        IPolicyDefinitionResource.class, IGatewayResource.class })
 public class AuthInterceptor implements RestClientInterceptor {
     
     @Inject

@@ -146,11 +146,6 @@
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-manager-api-gateway-rest</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
         <artifactId>apiman-manager-api-jpa</artifactId>
         <version>${project.version}</version>
       </dependency>

@@ -57,10 +57,6 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-manager-api-gateway-rest</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
       <artifactId>apiman-manager-api-war</artifactId>
       <classifier>classes</classifier>
     </dependency>

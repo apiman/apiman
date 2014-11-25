@@ -16,8 +16,7 @@
 package io.apiman.manager.test.util;
 
 import io.apiman.manager.api.core.util.PolicyTemplateUtil;
-import io.apiman.manager.api.war.config.Config;
-import io.apiman.manager.test.server.DtApiTestServer;
+import io.apiman.manager.test.server.ManagerApiTestServer;
 import io.apiman.manager.test.server.MockGatewayServlet;
 import io.apiman.test.common.util.TestPlanRunner;
 
@@ -29,17 +28,19 @@ import org.junit.BeforeClass;
  * 
  * @author eric.wittmann@redhat.com
  */
+@SuppressWarnings("nls")
 public abstract class AbstractTestPlanTest {
 
-    private static DtApiTestServer testServer = new DtApiTestServer();
+    private static ManagerApiTestServer testServer = new ManagerApiTestServer();
     private static final boolean USE_PROXY = false;
+    private static final int PROXY_PORT = 7071;
 
     @BeforeClass
     public static void setup() throws Exception {
-        if (!"true".equals(System.getProperty("apiman.junit.no-server", "false"))) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        if (!"true".equals(System.getProperty("apiman.junit.no-server", "false"))) {
             testServer.start();
         } else {
-            System.out.println("**** APIMan Server suppressed - assuming running tests against a live server. ****"); //$NON-NLS-1$
+            System.out.println("**** APIMan Server suppressed - assuming running tests against a live server. ****");
         }
     }
 
@@ -51,7 +52,7 @@ public abstract class AbstractTestPlanTest {
     protected void runTestPlan(String planPath, ClassLoader classLoader) {
         PolicyTemplateUtil.clearCache();
         MockGatewayServlet.reset();
-        String baseApiUrl = "http://localhost:" + getTestServerPort() + getBaseApiContext(); //$NON-NLS-1$
+        String baseApiUrl = "http://localhost:" + getTestServerPort() + getBaseApiContext();
         TestPlanRunner runner = new TestPlanRunner(baseApiUrl);
         configureSystemProperties();
         runner.runTestPlan(planPath, classLoader);
@@ -61,19 +62,19 @@ public abstract class AbstractTestPlanTest {
      * @return the base context of the DT API
      */
     protected String getBaseApiContext() {
-        return System.getProperty("apiman.junit.server-api-context", "/apiman"); //$NON-NLS-1$ //$NON-NLS-2$
+        return System.getProperty("apiman.junit.server-api-context", "/apiman");
     }
 
     /**
      * @return the port to use when sending requests
      */
     protected int getTestServerPort() {
-        String spPort = System.getProperty("apiman.junit.server-port"); //$NON-NLS-1$
+        String spPort = System.getProperty("apiman.junit.server-port");
         if (spPort != null) {
             return Integer.parseInt(spPort);
         }
         if (USE_PROXY) {
-            return 7071;
+            return PROXY_PORT;
         } else {
             return testServer.serverPort();
         }
@@ -83,15 +84,14 @@ public abstract class AbstractTestPlanTest {
      * Configure some proeprties.
      */
     private void configureSystemProperties() {
-        System.setProperty(Config.APIMAN_MANAGER_API_GATEWAY_AUTH_TYPE, "Basic"); //$NON-NLS-1$
-        System.setProperty(Config.APIMAN_MANAGER_API_GATEWAY_REST_ENDPOINT, "http://localhost:" + getTestServerPort() + "/mock-gateway"); //$NON-NLS-1$ //$NON-NLS-2$
-        System.setProperty(Config.APIMAN_MANAGER_API_GATEWAY_BASIC_AUTH_USER, "admin"); //$NON-NLS-1$
-        System.setProperty(Config.APIMAN_MANAGER_API_GATEWAY_BASIC_AUTH_PASS, "admin"); //$NON-NLS-1$
+        System.setProperty("apiman.test.gateway.endpoint", "http://localhost:" + getTestServerPort() + "/mock-gateway");
+        System.setProperty("apiman.test.gateway.username", "admin");
+        System.setProperty("apiman.test.gateway.password", "admin");
     }
 
     @AfterClass
     public static void shutdown() throws Exception {
-        if (!"true".equals(System.getProperty("apiman.junit.no-server", "false"))) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        if (!"true".equals(System.getProperty("apiman.junit.no-server", "false"))) {
             testServer.stop();
         }
     }

@@ -88,7 +88,6 @@ public class ConfigurationServlet extends AbstractUIServlet {
             configBean.setApi(new ApiConfigurationBean());
             configBean.getApiman().setVersion(version.getVersionString());
             configBean.getApiman().setBuiltOn(version.getVersionDate());
-            configBean.getApiman().setGatewayBaseUrl(getConfig().getGatewayUrl());
             configBean.getApiman().setLogoutUrl(getConfig().getLogoutUrl());
             configBean.getUser().setUsername(request.getRemoteUser());
             configBean.getApi().setEndpoint(endpoint);

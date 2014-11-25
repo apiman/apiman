@@ -268,10 +268,7 @@ public class AppApisList extends FlowPanel implements HasValue<List<ContractSumm
      */
     protected String generateBaseApiUrl(ContractSummaryBean bean) {
         StringBuilder builder = new StringBuilder();
-        String gatewayUrl = config.getCurrentConfig().getApiman().getGatewayBaseUrl();
-        if (gatewayUrl == null) {
-            gatewayUrl = "http://gateway-host:port/gateway/"; //$NON-NLS-1$
-        }
+        String gatewayUrl = "http://localhost:8080/apiman-gateway/gateway/";
         if (!gatewayUrl.endsWith("/")) { //$NON-NLS-1$
             gatewayUrl += "/"; //$NON-NLS-1$
         }

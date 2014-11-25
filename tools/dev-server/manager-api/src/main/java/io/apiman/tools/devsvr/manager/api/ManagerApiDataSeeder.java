@@ -18,6 +18,8 @@ package io.apiman.tools.devsvr.manager.api;
 import io.apiman.manager.api.beans.apps.ApplicationBean;
 import io.apiman.manager.api.beans.apps.ApplicationStatus;
 import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
+import io.apiman.manager.api.beans.gateways.GatewayBean;
+import io.apiman.manager.api.beans.gateways.GatewayType;
 import io.apiman.manager.api.beans.idm.PermissionType;
 import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.idm.RoleMembershipBean;
@@ -45,6 +47,7 @@ import java.util.HashSet;
  *
  * @author eric.wittmann@redhat.com
  */
+@SuppressWarnings("nls")
 public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
     
     /**
@@ -60,13 +63,23 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
     public void seed(IIdmStorage idmStorage, IStorage storage) throws StorageException {
         super.seed(idmStorage, storage);
         
+        GatewayBean gateway = new GatewayBean();
+        gateway.setName("The Gateway");
+        gateway.setDescription("The only gateway needed for testing.");
+        gateway.setHttpEndpoint("http://localhost:6666/gateway/");
+        gateway.setConfiguration("{ \"endpoint\" : \"http://localhost:6666/api/\", \"username\" : \"admin\", \"password\" : \"admin\" }");
+        gateway.setType(GatewayType.REST);
+        storage.beginTx();
+        storage.create(gateway);
+        storage.commitTx();
+        
         // Create Organization Owner role
         RoleBean role = new RoleBean();
-        role.setId("OrganizationOwner"); //$NON-NLS-1$
-        role.setName("Organization Owner"); //$NON-NLS-1$
+        role.setId("OrganizationOwner");
+        role.setName("Organization Owner");
         role.setAutoGrant(true);
-        role.setDescription("This role is automatically given to users when they create an organization.  It grants all permissions."); //$NON-NLS-1$
-        role.setCreatedBy("admin"); //$NON-NLS-1$
+        role.setDescription("This role is automatically given to users when they create an organization.  It grants all permissions.");
+        role.setCreatedBy("admin");
         role.setCreatedOn(new Date());
         role.setPermissions(new HashSet<PermissionType>());
         role.getPermissions().add(PermissionType.orgView);
@@ -85,10 +98,10 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
 
         // Create Application Developer role
         role = new RoleBean();
-        role.setId("ApplicationDeveloper"); //$NON-NLS-1$
-        role.setName("Application Developer"); //$NON-NLS-1$
-        role.setDescription("This role allows users to perform standard application development tasks (manage applications but not services or plans)."); //$NON-NLS-1$
-        role.setCreatedBy("admin"); //$NON-NLS-1$
+        role.setId("ApplicationDeveloper");
+        role.setName("Application Developer");
+        role.setDescription("This role allows users to perform standard application development tasks (manage applications but not services or plans).");
+        role.setCreatedBy("admin");
         role.setCreatedOn(new Date());
         role.setPermissions(new HashSet<PermissionType>());
         role.getPermissions().add(PermissionType.orgView);
@@ -99,10 +112,10 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
 
         // Create Service Developer role
         role = new RoleBean();
-        role.setId("ServiceDeveloper"); //$NON-NLS-1$
-        role.setName("Service Developer"); //$NON-NLS-1$
-        role.setDescription("This role allows users to perform standard service development tasks such as managing services and plans."); //$NON-NLS-1$
-        role.setCreatedBy("admin"); //$NON-NLS-1$
+        role.setId("ServiceDeveloper");
+        role.setName("Service Developer");
+        role.setDescription("This role allows users to perform standard service development tasks such as managing services and plans.");
+        role.setCreatedBy("admin");
         role.setCreatedOn(new Date());
         role.setPermissions(new HashSet<PermissionType>());
         role.getPermissions().add(PermissionType.orgView);
@@ -118,34 +131,34 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         
         // Create JBoss Overlord org
         OrganizationBean org = new OrganizationBean();
-        org.setId("JBossOverlord"); //$NON-NLS-1$
-        org.setName("JBoss Overlord"); //$NON-NLS-1$
-        org.setDescription("Overlord is the umbrella project that will bring governance to the JBoss SOA Platform and eventually beyond."); //$NON-NLS-1$
+        org.setId("JBossOverlord");
+        org.setName("JBoss Overlord");
+        org.setDescription("Overlord is the umbrella project that will bring governance to the JBoss SOA Platform and eventually beyond.");
         org.setCreatedOn(new Date());
-        org.setCreatedBy("admin"); //$NON-NLS-1$
+        org.setCreatedBy("admin");
         org.setModifiedOn(new Date());
-        org.setModifiedBy("admin"); //$NON-NLS-1$
+        org.setModifiedBy("admin");
         storage.create(org);
         
         // Create Apereo Bedework org
         org = new OrganizationBean();
-        org.setId("ApereoBedework"); //$NON-NLS-1$
-        org.setName("Apereo Bedework"); //$NON-NLS-1$
-        org.setDescription("Bedework is an open-source enterprise calendar system that supports public, personal, and group calendaring."); //$NON-NLS-1$
+        org.setId("ApereoBedework");
+        org.setName("Apereo Bedework");
+        org.setDescription("Bedework is an open-source enterprise calendar system that supports public, personal, and group calendaring.");
         org.setCreatedOn(new Date());
-        org.setCreatedBy("admin"); //$NON-NLS-1$
+        org.setCreatedBy("admin");
         org.setModifiedOn(new Date());
-        org.setModifiedBy("admin"); //$NON-NLS-1$
+        org.setModifiedBy("admin");
         storage.create(org);
         
         storage.commitTx();
         
         // Make admin the owner of both orgs
-        RoleMembershipBean membership = RoleMembershipBean.create("admin", "OrganizationOwner", "JBossOverlord"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        RoleMembershipBean membership = RoleMembershipBean.create("admin", "OrganizationOwner", "JBossOverlord");
         membership.setCreatedOn(new Date());
         idmStorage.createMembership(membership);
 
-        membership = RoleMembershipBean.create("admin", "OrganizationOwner", "ApereoBedework"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        membership = RoleMembershipBean.create("admin", "OrganizationOwner", "ApereoBedework");
         membership.setCreatedOn(new Date());
         idmStorage.createMembership(membership);
 
@@ -153,176 +166,176 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         
         // Create some plans
         PlanBean plan = new PlanBean();
-        plan.setId("Platinum"); //$NON-NLS-1$
-        plan.setName("Platinum"); //$NON-NLS-1$
-        plan.setDescription("Provides subscribing applications with full access to the Services in this Organization."); //$NON-NLS-1$
-        plan.setOrganizationId("JBossOverlord"); //$NON-NLS-1$
-        plan.setCreatedBy("admin"); //$NON-NLS-1$
+        plan.setId("Platinum");
+        plan.setName("Platinum");
+        plan.setDescription("Provides subscribing applications with full access to the Services in this Organization.");
+        plan.setOrganizationId("JBossOverlord");
+        plan.setCreatedBy("admin");
         plan.setCreatedOn(new Date());
         storage.create(plan);
         PlanVersionBean pvb = new PlanVersionBean();
-        pvb.setVersion("1.0"); //$NON-NLS-1$
+        pvb.setVersion("1.0");
         pvb.setStatus(PlanStatus.Created);
         pvb.setPlan(plan);
-        pvb.setCreatedBy("admin"); //$NON-NLS-1$
+        pvb.setCreatedBy("admin");
         pvb.setCreatedOn(new Date());
-        pvb.setModifiedBy("admin"); //$NON-NLS-1$
+        pvb.setModifiedBy("admin");
         pvb.setModifiedOn(new Date());
         storage.create(pvb);
 
         plan = new PlanBean();
-        plan.setId("Gold"); //$NON-NLS-1$
-        plan.setName("Gold"); //$NON-NLS-1$
-        plan.setDescription("Provides subscribing applications with full access to a subset of Services. Also allows partial (rate limited) access to the rest."); //$NON-NLS-1$
-        plan.setOrganizationId("JBossOverlord"); //$NON-NLS-1$
-        plan.setCreatedBy("admin"); //$NON-NLS-1$
+        plan.setId("Gold");
+        plan.setName("Gold");
+        plan.setDescription("Provides subscribing applications with full access to a subset of Services. Also allows partial (rate limited) access to the rest.");
+        plan.setOrganizationId("JBossOverlord");
+        plan.setCreatedBy("admin");
         plan.setCreatedOn(new Date());
         storage.create(plan);
         pvb = new PlanVersionBean();
-        pvb.setVersion("1.0"); //$NON-NLS-1$
+        pvb.setVersion("1.0");
         pvb.setStatus(PlanStatus.Created);
         pvb.setPlan(plan);
-        pvb.setCreatedBy("admin"); //$NON-NLS-1$
+        pvb.setCreatedBy("admin");
         pvb.setCreatedOn(new Date());
-        pvb.setModifiedBy("admin"); //$NON-NLS-1$
+        pvb.setModifiedBy("admin");
         pvb.setModifiedOn(new Date());
         storage.create(pvb);
         pvb = new PlanVersionBean();
-        pvb.setVersion("1.2"); //$NON-NLS-1$
+        pvb.setVersion("1.2");
         pvb.setStatus(PlanStatus.Created);
         pvb.setPlan(plan);
-        pvb.setCreatedBy("bwayne"); //$NON-NLS-1$
+        pvb.setCreatedBy("bwayne");
         pvb.setCreatedOn(new Date());
-        pvb.setModifiedBy("bwayne"); //$NON-NLS-1$
+        pvb.setModifiedBy("bwayne");
         pvb.setModifiedOn(new Date());
         storage.create(pvb);
 
         // Create some applications
         ApplicationBean app = new ApplicationBean();
-        app.setId("dtgov"); //$NON-NLS-1$
-        app.setName("dtgov"); //$NON-NLS-1$
-        app.setDescription("This is the official Git repository for the Governance DTGov project, which is intended to be a part of the JBoss Overlord."); //$NON-NLS-1$
-        app.setOrganizationId("JBossOverlord"); //$NON-NLS-1$
-        app.setCreatedBy("admin"); //$NON-NLS-1$
+        app.setId("dtgov");
+        app.setName("dtgov");
+        app.setDescription("This is the official Git repository for the Governance DTGov project, which is intended to be a part of the JBoss Overlord.");
+        app.setOrganizationId("JBossOverlord");
+        app.setCreatedBy("admin");
         app.setCreatedOn(new Date());
         storage.create(app);
         ApplicationVersionBean avb = new ApplicationVersionBean();
-        avb.setVersion("1.0"); //$NON-NLS-1$
+        avb.setVersion("1.0");
         avb.setStatus(ApplicationStatus.Created);
         avb.setApplication(app);
-        avb.setCreatedBy("admin"); //$NON-NLS-1$
+        avb.setCreatedBy("admin");
         avb.setCreatedOn(new Date());
-        avb.setModifiedBy("admin"); //$NON-NLS-1$
+        avb.setModifiedBy("admin");
         avb.setModifiedOn(new Date());
         storage.create(avb);
 
         app = new ApplicationBean();
-        app.setId("rtgov"); //$NON-NLS-1$
-        app.setName("rtgov"); //$NON-NLS-1$
-        app.setDescription("This component provides the infrastructure to capture service activity information and then correlate..."); //$NON-NLS-1$
-        app.setOrganizationId("JBossOverlord"); //$NON-NLS-1$
-        app.setCreatedBy("admin"); //$NON-NLS-1$
+        app.setId("rtgov");
+        app.setName("rtgov");
+        app.setDescription("This component provides the infrastructure to capture service activity information and then correlate...");
+        app.setOrganizationId("JBossOverlord");
+        app.setCreatedBy("admin");
         app.setCreatedOn(new Date());
         storage.create(app);
         avb = new ApplicationVersionBean();
-        avb.setVersion("1.0"); //$NON-NLS-1$
+        avb.setVersion("1.0");
         avb.setStatus(ApplicationStatus.Created);
         avb.setApplication(app);
-        avb.setCreatedBy("admin"); //$NON-NLS-1$
+        avb.setCreatedBy("admin");
         avb.setCreatedOn(new Date());
-        avb.setModifiedBy("admin"); //$NON-NLS-1$
+        avb.setModifiedBy("admin");
         avb.setModifiedOn(new Date());
         storage.create(avb);
 
         app = new ApplicationBean();
-        app.setId("gadget-server"); //$NON-NLS-1$
-        app.setName("gadget-server"); //$NON-NLS-1$
-        app.setDescription("This is a project that builds on the Apache Shindig as the open social gadget containers."); //$NON-NLS-1$
-        app.setOrganizationId("JBossOverlord"); //$NON-NLS-1$
-        app.setCreatedBy("admin"); //$NON-NLS-1$
+        app.setId("gadget-server");
+        app.setName("gadget-server");
+        app.setDescription("This is a project that builds on the Apache Shindig as the open social gadget containers.");
+        app.setOrganizationId("JBossOverlord");
+        app.setCreatedBy("admin");
         app.setCreatedOn(new Date());
         storage.create(app);
         avb = new ApplicationVersionBean();
-        avb.setVersion("1.0"); //$NON-NLS-1$
+        avb.setVersion("1.0");
         avb.setStatus(ApplicationStatus.Created);
         avb.setApplication(app);
-        avb.setCreatedBy("admin"); //$NON-NLS-1$
+        avb.setCreatedBy("admin");
         avb.setCreatedOn(new Date());
-        avb.setModifiedBy("admin"); //$NON-NLS-1$
+        avb.setModifiedBy("admin");
         avb.setModifiedOn(new Date());
         storage.create(avb);
         
         // Create some services
         ServiceBean service = new ServiceBean();
-        service.setId("s-ramp-api"); //$NON-NLS-1$
-        service.setName("s-ramp-api"); //$NON-NLS-1$
-        service.setDescription("Allows S-RAMP repository users to communicate with the repository via an Atom based API."); //$NON-NLS-1$
-        service.setOrganizationId("JBossOverlord"); //$NON-NLS-1$
+        service.setId("s-ramp-api");
+        service.setName("s-ramp-api");
+        service.setDescription("Allows S-RAMP repository users to communicate with the repository via an Atom based API.");
+        service.setOrganizationId("JBossOverlord");
         service.setCreatedOn(new Date());
-        service.setCreatedBy("admin"); //$NON-NLS-1$
+        service.setCreatedBy("admin");
         storage.create(service);
         ServiceVersionBean svb = new ServiceVersionBean();
-        svb.setVersion("1.0"); //$NON-NLS-1$
+        svb.setVersion("1.0");
         svb.setStatus(ServiceStatus.Ready);
         svb.setService(service);
-        svb.setCreatedBy("admin"); //$NON-NLS-1$
+        svb.setCreatedBy("admin");
         svb.setCreatedOn(new Date());
-        svb.setModifiedBy("admin"); //$NON-NLS-1$
+        svb.setModifiedBy("admin");
         svb.setModifiedOn(new Date());
-        svb.setEndpoint("http://localhost:9001/echo/s-ramp-server/"); //$NON-NLS-1$
+        svb.setEndpoint("http://localhost:9001/echo/s-ramp-server/");
         svb.setEndpointType(EndpointType.rest);
         ServicePlanBean spb = new ServicePlanBean();
-        spb.setPlanId("Gold"); //$NON-NLS-1$
-        spb.setVersion("1.0"); //$NON-NLS-1$
+        spb.setPlanId("Gold");
+        spb.setVersion("1.0");
         svb.addPlan(spb);
         storage.create(svb);
         
         // Create some policy definitions
         PolicyDefinitionBean whitelistPolicyDef = new PolicyDefinitionBean();
-        whitelistPolicyDef.setId("IPWhitelistPolicy"); //$NON-NLS-1$
-        whitelistPolicyDef.setName("IP Whitelist Policy"); //$NON-NLS-1$
-        whitelistPolicyDef.setDescription("Only requests that originate from a specified set of valid IP addresses will be allowed through."); //$NON-NLS-1$
-        whitelistPolicyDef.setIcon("filter"); //$NON-NLS-1$
-        whitelistPolicyDef.setPolicyImpl("class:io.apiman.gateway.engine.policies.IPWhitelistPolicy"); //$NON-NLS-1$
+        whitelistPolicyDef.setId("IPWhitelistPolicy");
+        whitelistPolicyDef.setName("IP Whitelist Policy");
+        whitelistPolicyDef.setDescription("Only requests that originate from a specified set of valid IP addresses will be allowed through.");
+        whitelistPolicyDef.setIcon("filter");
+        whitelistPolicyDef.setPolicyImpl("class:io.apiman.gateway.engine.policies.IPWhitelistPolicy");
         PolicyDefinitionTemplateBean templateBean = new PolicyDefinitionTemplateBean();
         templateBean.setLanguage(null);
-        templateBean.setTemplate("Only requests that originate from the set of @{ipList.size()} configured IP address(es) will be allowed to invoke the managed service."); //$NON-NLS-1$
+        templateBean.setTemplate("Only requests that originate from the set of @{ipList.size()} configured IP address(es) will be allowed to invoke the managed service.");
         whitelistPolicyDef.getTemplates().add(templateBean);
         storage.create(whitelistPolicyDef);
 
         PolicyDefinitionBean blacklistPolicyDef = new PolicyDefinitionBean();
-        blacklistPolicyDef.setId("IPBlacklistPolicy"); //$NON-NLS-1$
-        blacklistPolicyDef.setName("IP Blacklist Policy"); //$NON-NLS-1$
-        blacklistPolicyDef.setDescription("Only requests that originate from a specified set of valid IP addresses will be allowed through."); //$NON-NLS-1$
-        blacklistPolicyDef.setIcon("thumbs-down"); //$NON-NLS-1$
-        blacklistPolicyDef.setPolicyImpl("class:io.apiman.gateway.engine.policies.IPBlacklistPolicy"); //$NON-NLS-1$
+        blacklistPolicyDef.setId("IPBlacklistPolicy");
+        blacklistPolicyDef.setName("IP Blacklist Policy");
+        blacklistPolicyDef.setDescription("Only requests that originate from a specified set of valid IP addresses will be allowed through.");
+        blacklistPolicyDef.setIcon("thumbs-down");
+        blacklistPolicyDef.setPolicyImpl("class:io.apiman.gateway.engine.policies.IPBlacklistPolicy");
         templateBean = new PolicyDefinitionTemplateBean();
         templateBean.setLanguage(null);
-        templateBean.setTemplate("Requests that originate from the set of @{ipList.size()} configured IP address(es) will be denied access to the managed service."); //$NON-NLS-1$
+        templateBean.setTemplate("Requests that originate from the set of @{ipList.size()} configured IP address(es) will be denied access to the managed service.");
         blacklistPolicyDef.getTemplates().add(templateBean);
         storage.create(blacklistPolicyDef);
 
         PolicyDefinitionBean basicAuthPolicyDef = new PolicyDefinitionBean();
-        basicAuthPolicyDef.setId("BASICAuthenticationPolicy"); //$NON-NLS-1$
-        basicAuthPolicyDef.setName("BASIC Authentication Policy"); //$NON-NLS-1$
-        basicAuthPolicyDef.setDescription("Enables HTTP BASIC Authentication on a service.  Some configuration required."); //$NON-NLS-1$
-        basicAuthPolicyDef.setIcon("lock"); //$NON-NLS-1$
-        basicAuthPolicyDef.setPolicyImpl("class:io.apiman.gateway.engine.policies.BasicAuthenticationPolicy"); //$NON-NLS-1$
+        basicAuthPolicyDef.setId("BASICAuthenticationPolicy");
+        basicAuthPolicyDef.setName("BASIC Authentication Policy");
+        basicAuthPolicyDef.setDescription("Enables HTTP BASIC Authentication on a service.  Some configuration required.");
+        basicAuthPolicyDef.setIcon("lock");
+        basicAuthPolicyDef.setPolicyImpl("class:io.apiman.gateway.engine.policies.BasicAuthenticationPolicy");
         templateBean = new PolicyDefinitionTemplateBean();
         templateBean.setLanguage(null);
-        templateBean.setTemplate("Access to the service is protected by BASIC Authentication through the '@{realm}' authentication realm.  @if{forwardIdentityHttpHeader != null}Successfully authenticated requests will forward the authenticated identity to the back end service via the '@{forwardIdentityHttpHeader}' custom HTTP header.@end{}"); //$NON-NLS-1$
+        templateBean.setTemplate("Access to the service is protected by BASIC Authentication through the '@{realm}' authentication realm.  @if{forwardIdentityHttpHeader != null}Successfully authenticated requests will forward the authenticated identity to the back end service via the '@{forwardIdentityHttpHeader}' custom HTTP header.@end{}");
         basicAuthPolicyDef.getTemplates().add(templateBean);
         storage.create(basicAuthPolicyDef);
 
         PolicyDefinitionBean rateLimitPolicyDef = new PolicyDefinitionBean();
-        rateLimitPolicyDef.setId("RateLimitingPolicy"); //$NON-NLS-1$
-        rateLimitPolicyDef.setName("Rate Limiting Policy"); //$NON-NLS-1$
-        rateLimitPolicyDef.setDescription("Enforces rate configurable request rate limits on a service.  This ensures that consumers can't overload a service with too many requests."); //$NON-NLS-1$
-        rateLimitPolicyDef.setIcon("sliders"); //$NON-NLS-1$
-        rateLimitPolicyDef.setPolicyImpl("class:io.apiman.gateway.engine.policies.RateLimitingPolicy"); //$NON-NLS-1$
+        rateLimitPolicyDef.setId("RateLimitingPolicy");
+        rateLimitPolicyDef.setName("Rate Limiting Policy");
+        rateLimitPolicyDef.setDescription("Enforces rate configurable request rate limits on a service.  This ensures that consumers can't overload a service with too many requests.");
+        rateLimitPolicyDef.setIcon("sliders");
+        rateLimitPolicyDef.setPolicyImpl("class:io.apiman.gateway.engine.policies.RateLimitingPolicy");
         templateBean = new PolicyDefinitionTemplateBean();
         templateBean.setLanguage(null);
-        templateBean.setTemplate("Consumers are limited to @{limit} requests per @{granularity} per @{period}."); //$NON-NLS-1$
+        templateBean.setTemplate("Consumers are limited to @{limit} requests per @{granularity} per @{period}.");
         rateLimitPolicyDef.getTemplates().add(templateBean);
         storage.create(rateLimitPolicyDef);
         

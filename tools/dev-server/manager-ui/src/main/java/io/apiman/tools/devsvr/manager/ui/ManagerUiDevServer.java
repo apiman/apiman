@@ -54,9 +54,7 @@ import org.overlord.commons.i18n.server.filters.LocaleFilter;
 public class ManagerUiDevServer extends ErraiDevServer {
 
     private static final int API_PORT  = 7070;
-    private static final int GATEWAY_PORT  = 6666;
     private static final String APIMAN_API_SERVER_PORT = "apiman.api.server.port"; //$NON-NLS-1$
-    private static final String APIMAN_GATEWAY_SERVER_PORT = "apiman.gateway.server.port"; //$NON-NLS-1$
 
     /**
      * Main entry point.
@@ -90,24 +88,11 @@ public class ManagerUiDevServer extends ErraiDevServer {
     @Override
     protected void preConfig() {
         int apiPort = getApiPort();
-        int gatewayPort = getGatewayPort();
         
         System.setProperty(UIConfig.APIMAN_MANAGER_UI_API_ENDPOINT,
                 "http://localhost:" + apiPort + "/apiman"); //$NON-NLS-1$ //$NON-NLS-2$
         System.setProperty(UIConfig.APIMAN_MANAGER_UI_API_AUTH_TYPE, ApiAuthType.authToken.toString());
         System.setProperty(UIConfig.APIMAN_MANAGER_UI_API_AUTH_TOKEN_GENERATOR, AuthTokenGenerator.class.getName());
-        System.setProperty(UIConfig.APIMAN_MANAGER_UI_GATEWAY_URL, "http://localhost:" + gatewayPort + "/gateway"); //$NON-NLS-1$ //$NON-NLS-2$
-    }
-
-    /**
-     * @return the gateway port to use
-     */
-    private static int getGatewayPort() {
-        int port = GATEWAY_PORT;
-        if (System.getProperty(APIMAN_GATEWAY_SERVER_PORT) != null) {
-            port = new Integer(System.getProperty(APIMAN_GATEWAY_SERVER_PORT));
-        }
-        return port;
     }
 
     /**

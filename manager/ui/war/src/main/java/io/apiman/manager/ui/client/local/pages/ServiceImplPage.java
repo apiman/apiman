@@ -115,30 +115,22 @@ public class ServiceImplPage extends AbstractServicePage {
         final EndpointType endpointTypeValue = this.endpointType.getValue();
         versionBean.setEndpoint(endpointValue);
         versionBean.setEndpointType(endpointTypeValue);
-        rest.getServiceVersion(serviceBean.getOrganizationId(), serviceBean.getId(), versionBean.getVersion(), new IRestInvokerCallback<ServiceVersionBean>() {
+        
+        ServiceVersionBean update = new ServiceVersionBean();
+        update.setEndpoint(endpointValue);
+        update.setEndpointType(endpointTypeValue);
+        rest.updateServiceVersion(serviceBean.getOrganizationId(), serviceBean.getId(),
+                versionBean.getVersion(), update, new IRestInvokerCallback<Void>() {
             @Override
-            public void onSuccess(final ServiceVersionBean response) {
-                response.setEndpoint(endpointValue);
-                response.setEndpointType(endpointTypeValue);
-                rest.updateServiceVersion(serviceBean.getOrganizationId(), serviceBean.getId(),
-                        versionBean.getVersion(), response, new IRestInvokerCallback<Void>() {
-                    @Override
-                    public void onSuccess(Void response) {
-                        saveButton.onActionComplete();
-                        saveButton.setEnabled(false);
-                    }
-                    @Override
-                    public void onError(Throwable error) {
-                        dataPacketError(error);
-                    }
-                });
+            public void onSuccess(Void response) {
+                saveButton.onActionComplete();
+                saveButton.setEnabled(false);
             }
             @Override
             public void onError(Throwable error) {
                 dataPacketError(error);
             }
         });
-
     }
 
     /**

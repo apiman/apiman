@@ -21,6 +21,7 @@ import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.contracts.NewContractBean;
+import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.idm.GrantRolesBean;
 import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.idm.UserBean;
@@ -44,6 +45,7 @@ import io.apiman.manager.api.beans.summary.ServicePlanSummaryBean;
 import io.apiman.manager.api.beans.summary.ServiceSummaryBean;
 import io.apiman.manager.api.rest.contract.IActionResource;
 import io.apiman.manager.api.rest.contract.ICurrentUserResource;
+import io.apiman.manager.api.rest.contract.IGatewayResource;
 import io.apiman.manager.api.rest.contract.IOrganizationResource;
 import io.apiman.manager.api.rest.contract.IPolicyDefinitionResource;
 import io.apiman.manager.api.rest.contract.IRoleResource;
@@ -86,6 +88,8 @@ public class RestInvokerService {
     private Caller<IOrganizationResource> organizations;
     @Inject
     private Caller<IActionResource> actions;
+    @Inject
+    private Caller<IGatewayResource> gateways;
     
     /**
      * Constructor.
@@ -904,6 +908,55 @@ public class RestInvokerService {
     public void createPolicyDefinition(PolicyDefinitionBean policyDef, IRestInvokerCallback<PolicyDefinitionBean> callback) {
         CallbackAdapter<PolicyDefinitionBean> adapter = new CallbackAdapter<PolicyDefinitionBean>(callback);
         policyDefs.call(adapter, adapter).create(policyDef);
+    }
+
+    /**
+     * Gets a list of all the gateways in the system.
+     * @param callback
+     */
+    public void listGateways(IRestInvokerCallback<List<GatewayBean>> callback) {
+        CallbackAdapter<List<GatewayBean>> adapter = new CallbackAdapter<List<GatewayBean>>(callback);
+        gateways.call(adapter, adapter).list();
+    }
+    
+    /**
+     * Creates a policy definition.
+     * @param gateway
+     * @param callback
+     */
+    public void createGateway(GatewayBean gateway, IRestInvokerCallback<GatewayBean> callback) {
+        CallbackAdapter<GatewayBean> adapter = new CallbackAdapter<GatewayBean>(callback);
+        gateways.call(adapter, adapter).create(gateway);
+    }
+
+    /**
+     * Gets a single gateway by ID.
+     * @param gatewayId
+     * @param callback
+     */
+    public void getGateway(String gatewayId, IRestInvokerCallback<GatewayBean> callback) {
+        CallbackAdapter<GatewayBean> adapter = new CallbackAdapter<GatewayBean>(callback);
+        gateways.call(adapter, adapter).get(gatewayId);
+    }
+    
+    /**
+     * Updates a gateway.
+     * @param gatewayId
+     * @param callback
+     */
+    public void updateGateway(GatewayBean gateway, IRestInvokerCallback<Void> callback) {
+        CallbackAdapter<Void> adapter = new CallbackAdapter<Void>(callback);
+        gateways.call(adapter, adapter).update(gateway.getId(), gateway);
+    }
+
+    /**
+     * Deletes a gateway.  Use with caution!
+     * @param gatewayId
+     * @param callback
+     */
+    public void deleteGateway(GatewayBean gateway, IRestInvokerCallback<Void> callback) {
+        CallbackAdapter<Void> adapter = new CallbackAdapter<Void>(callback);
+        gateways.call(adapter, adapter).delete(gateway.getId());
     }
 
 }

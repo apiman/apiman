@@ -24,9 +24,11 @@ import io.apiman.gateway.engine.beans.exceptions.PublishingException;
 import io.apiman.manager.api.beans.actions.ActionBean;
 import io.apiman.manager.api.beans.apps.ApplicationStatus;
 import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
+import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.idm.PermissionType;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
+import io.apiman.manager.api.beans.services.ServiceGatewayBean;
 import io.apiman.manager.api.beans.services.ServiceStatus;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
 import io.apiman.manager.api.beans.summary.ContractSummaryBean;
@@ -36,10 +38,12 @@ import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.gateway.IGatewayLink;
+import io.apiman.manager.api.gateway.IGatewayLinkFactory;
 import io.apiman.manager.api.rest.contract.IActionResource;
 import io.apiman.manager.api.rest.contract.IOrganizationResource;
 import io.apiman.manager.api.rest.contract.exceptions.ActionException;
 import io.apiman.manager.api.rest.contract.exceptions.ApplicationVersionNotFoundException;
+import io.apiman.manager.api.rest.contract.exceptions.GatewayNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.ServiceVersionNotFoundException;
 import io.apiman.manager.api.rest.impl.audit.AuditUtils;
 import io.apiman.manager.api.rest.impl.i18n.Messages;
@@ -47,8 +51,10 @@ import io.apiman.manager.api.rest.impl.util.ExceptionFactory;
 import io.apiman.manager.api.security.ISecurityContext;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -64,7 +70,8 @@ public class ActionResourceImpl implements IActionResource {
 
     @Inject IStorage storage;
     @Inject IStorageQuery query;
-    @Inject IGatewayLink gatewayLink;
+    @Inject
+    private IGatewayLinkFactory gatewayLinkFactory;
     @Inject IOrganizationResource orgs;
     
     @Inject IServiceValidator serviceValidator;
@@ -132,8 +139,17 @@ public class ActionResourceImpl implements IActionResource {
         gatewaySvc.setServiceId(versionBean.getService().getId());
         gatewaySvc.setVersion(versionBean.getVersion());
         
+        // Publish the service to all relevant gateways
         try {
-            gatewayLink.publishService(gatewaySvc);
+            Set<ServiceGatewayBean> gateways = versionBean.getGateways();
+            if (gateways == null) {
+                throw new PublishingException("No gateways specified for service!"); //$NON-NLS-1$
+            }
+            for (ServiceGatewayBean serviceGatewayBean : gateways) {
+                IGatewayLink gatewayLink = createGatewayLink(serviceGatewayBean.getGatewayId());
+                gatewayLink.publishService(gatewaySvc);
+                gatewayLink.close();
+            }
         } catch (PublishingException e) {
             throw ExceptionFactory.actionException(Messages.i18n.format("PublishError")); //$NON-NLS-1$
         }
@@ -147,6 +163,29 @@ public class ActionResourceImpl implements IActionResource {
         } catch (Exception e) {
             storage.rollbackTx();
             throw ExceptionFactory.actionException(Messages.i18n.format("PublishError")); //$NON-NLS-1$
+        }
+    }
+
+    /**
+     * Creates a gateway link given a gateway id.
+     * @param gatewayId
+     */
+    private IGatewayLink createGatewayLink(String gatewayId) throws PublishingException {
+        try {
+            storage.beginTx();
+            GatewayBean gateway = storage.get(gatewayId, GatewayBean.class);
+            if (gateway == null) {
+                throw new GatewayNotFoundException();
+            }
+            IGatewayLink link = gatewayLinkFactory.create(gateway);
+            storage.commitTx();
+            return link;
+        } catch (GatewayNotFoundException e) {
+            storage.rollbackTx();
+            throw e;
+        } catch (Exception e) {
+            storage.rollbackTx();
+            throw new PublishingException(e.getMessage(), e);
         }
     }
 
@@ -205,11 +244,33 @@ public class ActionResourceImpl implements IActionResource {
             contracts.add(contract);
         }
         application.setContracts(contracts);
-        
+
+        // Next, publish the application to *all* relevant gateways.  This is done by 
+        // looking up all referenced services and getting the gateway information for them.
+        // Each of those gateways must be told about the application.
         try {
-            gatewayLink.registerApplication(application);
+            Map<String, IGatewayLink> links = new HashMap<String, IGatewayLink>();
+            for (Contract contract : application.getContracts()) {
+                ServiceVersionBean svb = query.getServiceVersion(contract.getServiceOrgId(), contract.getServiceId(), contract.getServiceVersion());
+                Set<ServiceGatewayBean> gateways = svb.getGateways();
+                if (gateways == null) {
+                    throw new PublishingException("No gateways specified for service: " + svb.getService().getName()); //$NON-NLS-1$
+                }
+                for (ServiceGatewayBean serviceGatewayBean : gateways) {
+                    if (!links.containsKey(serviceGatewayBean.getGatewayId())) {
+                        IGatewayLink gatewayLink = createGatewayLink(serviceGatewayBean.getGatewayId());
+                        links.put(serviceGatewayBean.getGatewayId(), gatewayLink);
+                    }
+                }
+            }
+            for (IGatewayLink gatewayLink : links.values()) {
+                gatewayLink.registerApplication(application);
+                gatewayLink.close();
+            }
+        } catch (StorageException e) {
+            throw ExceptionFactory.actionException(Messages.i18n.format("PublishError"), e); //$NON-NLS-1$
         } catch (PublishingException e) {
-            throw ExceptionFactory.actionException(Messages.i18n.format("PublishError")); //$NON-NLS-1$
+            throw ExceptionFactory.actionException(Messages.i18n.format("PublishError"), e); //$NON-NLS-1$
         }
         
         versionBean.setStatus(ApplicationStatus.Registered);
@@ -314,20 +375,6 @@ public class ActionResourceImpl implements IActionResource {
     }
 
     /**
-     * @return the gatewayLink
-     */
-    public IGatewayLink getGatewayLink() {
-        return gatewayLink;
-    }
-
-    /**
-     * @param gatewayLink the gatewayLink to set
-     */
-    public void setGatewayLink(IGatewayLink gatewayLink) {
-        this.gatewayLink = gatewayLink;
-    }
-
-    /**
      * @return the serviceValidator
      */
     public IServiceValidator getServiceValidator() {
@@ -381,6 +428,20 @@ public class ActionResourceImpl implements IActionResource {
      */
     public void setOrgs(IOrganizationResource orgs) {
         this.orgs = orgs;
+    }
+
+    /**
+     * @return the gatewayLinkFactory
+     */
+    public IGatewayLinkFactory getGatewayLinkFactory() {
+        return gatewayLinkFactory;
+    }
+
+    /**
+     * @param gatewayLinkFactory the gatewayLinkFactory to set
+     */
+    public void setGatewayLinkFactory(IGatewayLinkFactory gatewayLinkFactory) {
+        this.gatewayLinkFactory = gatewayLinkFactory;
     }
         
 }

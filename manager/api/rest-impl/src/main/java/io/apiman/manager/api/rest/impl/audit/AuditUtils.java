@@ -31,6 +31,7 @@ import io.apiman.manager.api.beans.plans.PlanVersionBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
 import io.apiman.manager.api.beans.services.ServiceBean;
+import io.apiman.manager.api.beans.services.ServiceGatewayBean;
 import io.apiman.manager.api.beans.services.ServicePlanBean;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
 import io.apiman.manager.api.security.ISecurityContext;
@@ -69,30 +70,24 @@ public class AuditUtils {
     }
 
     /**
-     * Returns true only if the plans have changed.
+     * Returns true only if the set has changed.
      * @param before
      * @param after
      */
-    public static boolean valueChanged(Set<ServicePlanBean> before, Set<ServicePlanBean> after) {
-        if (before == null && after == null) {
-            return false;
-        }
-        if (before == null && after != null && after.isEmpty()) {
-            return false;
-        }
+    public static boolean valueChanged(Set<?> before, Set<?> after) {
         if (after == null) {
             return false;
         }
-        if (before == null && after != null && !after.isEmpty()) {
-            return true;
+        if (before == null && after.isEmpty()) {
+            return false;
         }
-        if (after == null && before != null && !before.isEmpty()) {
+        if (before == null && !after.isEmpty()) {
             return true;
         }
         if (before.size() != after.size()) {
             return true;
         }
-        for (ServicePlanBean bean : after) {
+        for (Object bean : after) {
             if (!before.contains(bean)) {
                 return true;
             }
@@ -662,15 +657,37 @@ public class AuditUtils {
      * Converts the list of plans to a string for display/comparison.
      * @param plans
      */
-    public static String asString(Set<ServicePlanBean> plans) {
+    public static String asString_ServicePlanBeans(Set<ServicePlanBean> plans) {
         StringBuilder builder = new StringBuilder();
         boolean first = true;
-        for (ServicePlanBean plan : plans) {
-            if (!first) {
-                builder.append(", "); //$NON-NLS-1$
+        if (plans != null) {
+            for (ServicePlanBean plan : plans) {
+                if (!first) {
+                    builder.append(", "); //$NON-NLS-1$
+                }
+                builder.append(plan.getPlanId()).append(":").append(plan.getVersion()); //$NON-NLS-1$
+                first = false;
             }
-            builder.append(plan.getPlanId()).append(":").append(plan.getVersion()); //$NON-NLS-1$
-            first = false;
+        }
+        return builder.toString();
+    }
+
+
+    /**
+     * Converts the list of gateways to a string for display/comparison.
+     * @param plans
+     */
+    public static String asString_ServiceGatewayBeans(Set<ServiceGatewayBean> gateways) {
+        StringBuilder builder = new StringBuilder();
+        boolean first = true;
+        if (gateways != null) {
+            for (ServiceGatewayBean gateway : gateways) {
+                if (!first) {
+                    builder.append(", "); //$NON-NLS-1$
+                }
+                builder.append(gateway.getGatewayId());
+                first = false;
+            }
         }
         return builder.toString();
     }

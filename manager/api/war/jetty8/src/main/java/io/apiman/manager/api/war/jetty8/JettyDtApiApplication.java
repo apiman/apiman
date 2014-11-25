@@ -15,12 +15,10 @@
  */
 package io.apiman.manager.api.war.jetty8;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import io.apiman.manager.api.rest.impl.ActionResourceImpl;
 import io.apiman.manager.api.rest.impl.CurrentUserResourceImpl;
 import io.apiman.manager.api.rest.impl.DtApiApplication;
+import io.apiman.manager.api.rest.impl.GatewayResourceImpl;
 import io.apiman.manager.api.rest.impl.OrganizationResourceImpl;
 import io.apiman.manager.api.rest.impl.PermissionsResourceImpl;
 import io.apiman.manager.api.rest.impl.PolicyDefinitionResourceImpl;
@@ -29,6 +27,9 @@ import io.apiman.manager.api.rest.impl.SearchResourceImpl;
 import io.apiman.manager.api.rest.impl.SystemResourceImpl;
 import io.apiman.manager.api.rest.impl.UserResourceImpl;
 import io.apiman.manager.api.rest.impl.mappers.RestExceptionMapper;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Useful if jax-rs is not supported by the runtime platform.
@@ -52,6 +53,7 @@ public class JettyDtApiApplication extends DtApiApplication {
         classes.add(PermissionsResourceImpl.class);
         classes.add(OrganizationResourceImpl.class);
         classes.add(PolicyDefinitionResourceImpl.class);
+        classes.add(GatewayResourceImpl.class);
         classes.add(ActionResourceImpl.class);
 
         classes.add(RestExceptionMapper.class);

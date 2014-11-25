@@ -21,6 +21,8 @@ import io.apiman.manager.api.rest.contract.exceptions.ApplicationNotFoundExcepti
 import io.apiman.manager.api.rest.contract.exceptions.ApplicationVersionNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.ContractAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.ContractNotFoundException;
+import io.apiman.manager.api.rest.contract.exceptions.GatewayAlreadyExistsException;
+import io.apiman.manager.api.rest.contract.exceptions.GatewayNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidApplicationStatusException;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidServiceStatusException;
 import io.apiman.manager.api.rest.contract.exceptions.MemberNotFoundException;
@@ -244,6 +246,22 @@ public final class ExceptionFactory {
      */
     public static final PolicyDefinitionNotFoundException policyDefNotFoundException(String policyDefId) {
         return new PolicyDefinitionNotFoundException(Messages.i18n.format("PolicyDefinitionDoesNotExist", policyDefId)); //$NON-NLS-1$
+    }
+
+    /**
+     * Creates an exception from an gateway name.
+     * @param gatewayName
+     */
+    public static final GatewayAlreadyExistsException gatewayAlreadyExistsException(String gatewayName) {
+        return new GatewayAlreadyExistsException(Messages.i18n.format("GatewayAlreadyExists", gatewayName)); //$NON-NLS-1$
+    }
+
+    /**
+     * Creates an exception from an gateway id.
+     * @param gatewayId
+     */
+    public static final GatewayNotFoundException gatewayNotFoundException(String gatewayId) {
+        return new GatewayNotFoundException(Messages.i18n.format("GatewayDoesNotExist", gatewayId)); //$NON-NLS-1$
     }
 
 }

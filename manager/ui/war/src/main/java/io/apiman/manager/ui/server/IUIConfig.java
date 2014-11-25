@@ -35,11 +35,6 @@ public interface IUIConfig {
     public ApiAuthType getManagementApiAuthType();
 
     /**
-     * Gets the base url of the runtime gateway.
-     */
-    public String getGatewayUrl();
-
-    /**
      * Gets the username to use when doing basic auth to the management layer
      * api.
      */

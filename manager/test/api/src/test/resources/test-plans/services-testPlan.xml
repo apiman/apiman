@@ -3,6 +3,7 @@
 
   <!-- Create Organizations -->
   <testGroup name="Initial Creates">
+    <test name="Create Gateway">test-plan-data/services/create/000_create-gateway.resttest</test>
     <test name="Create Organization 1">test-plan-data/services/create/001_create-org1.resttest</test>
     <test name="Create Organization 2">test-plan-data/services/create/002_create-org2.resttest</test>
   </testGroup>

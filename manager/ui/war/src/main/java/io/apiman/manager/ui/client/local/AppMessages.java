@@ -60,6 +60,10 @@ public class AppMessages {
     public static final String TITLE_NEW_ROLE = "page.title.new-role"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "apiman - Edit Role")
     public static final String TITLE_EDIT_ROLE = "page.title.edit-role"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "apiman - New Gateway")
+    public static final String TITLE_NEW_GATEWAY = "page.title.new-gateway"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "apiman - Edit Gateway")
+    public static final String TITLE_EDIT_GATEWAY = "page.title.edit-gateway"; //$NON-NLS-1$
     
     @TranslationKey(defaultValue = "apiman - Import Policy Definition(s)")
     public static final String TITLE_IMPORT_POLICY_DEF = "page.title.import-policyDefs"; //$NON-NLS-1$
@@ -158,7 +162,9 @@ public class AppMessages {
     public static final String NO_POLICY_DEFS_ADMIN_MESSAGE = "noEntitiesFound.admin-policyDefs"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "No policy definitions matched the filter criteria.  Please try modifying the filter or else import at least one Policy Definition that matches it.")
     public static final String NO_FILTERED_POLICY_DEFS_ADMIN_MESSAGE = "noEntitiesFound.admin-policyDefs.filtered"; //$NON-NLS-1$
-    
+
+    @TranslationKey(defaultValue = "No gateways have been created!  You must create at least one policy if you to be able to publish services.")
+    public static final String NO_GATEWAYS_ADMIN_MESSAGE = "noEntitiesFound.admin-gateways"; //$NON-NLS-1$
     
     @TranslationKey(defaultValue = "No organizations found.  This user should be granted membership in an organization or perhaps create a new one with the button above.")
     public static final String NO_ORGS_FOR_USER_MESSAGE = "noEntitiesFound.organizations-for-user"; //$NON-NLS-1$
@@ -232,6 +238,9 @@ public class AppMessages {
 
     @TranslationKey(defaultValue = "Really delete role {0}?")
     public static final String CONFIRM_ROLE_DELETE = "confirm-delete-role"; //$NON-NLS-1$
+
+    @TranslationKey(defaultValue = "Really delete gateway {0}?")
+    public static final String CONFIRM_GATEWAY_DELETE = "confirm-delete-gateway"; //$NON-NLS-1$
 
     @TranslationKey(defaultValue = "Found {0} matching organizations.")
     public static final String ORGANIZATION_COUNT = "organization-count"; //$NON-NLS-1$

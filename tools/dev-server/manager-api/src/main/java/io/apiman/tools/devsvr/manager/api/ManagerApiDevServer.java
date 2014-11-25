@@ -16,9 +16,8 @@
 
 package io.apiman.tools.devsvr.manager.api;
 
-import io.apiman.manager.api.war.config.Config;
-import io.apiman.manager.test.server.DtApiTestServer;
 import io.apiman.manager.test.server.ISeeder;
+import io.apiman.manager.test.server.ManagerApiTestServer;
 
 /**
  * A dev server for APIMan.
@@ -27,35 +26,14 @@ import io.apiman.manager.test.server.ISeeder;
  */
 public class ManagerApiDevServer {
     
-    private static final int GATEWAY_PORT  = 6666;
-    private static final String APIMAN_RT_GATEWAY_SERVER_PORT = "apiman.gateway.server.port"; //$NON-NLS-1$
-
     /**
      * Main entry point.
      * @param args
      */
     public static void main(String [] args) throws Exception {
-        int gatewayPort = getGatewayPort();
-        
-        System.setProperty(Config.APIMAN_MANAGER_API_GATEWAY_REST_ENDPOINT, "http://localhost:" + gatewayPort); //$NON-NLS-1$
-        System.setProperty(Config.APIMAN_MANAGER_API_GATEWAY_AUTH_TYPE, "basic"); //$NON-NLS-1$
-        System.setProperty(Config.APIMAN_MANAGER_API_GATEWAY_BASIC_AUTH_USER, "admin"); //$NON-NLS-1$
-        System.setProperty(Config.APIMAN_MANAGER_API_GATEWAY_BASIC_AUTH_PASS, "admin"); //$NON-NLS-1$
-        
         System.setProperty(ISeeder.SYSTEM_PROPERTY, ManagerApiDataSeeder.class.getName());
-        DtApiTestServer server = new DtApiTestServer();
+        ManagerApiTestServer server = new ManagerApiTestServer();
         server.start();
-    }
-
-    /**
-     * @return the gateway port to use
-     */
-    private static int getGatewayPort() {
-        int port = GATEWAY_PORT;
-        if (System.getProperty(APIMAN_RT_GATEWAY_SERVER_PORT) != null) {
-            port = new Integer(System.getProperty(APIMAN_RT_GATEWAY_SERVER_PORT));
-        }
-        return port;
     }
 
 }

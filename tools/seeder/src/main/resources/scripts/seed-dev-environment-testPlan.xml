@@ -25,6 +25,10 @@
     <test name="Create BASIC Authentication Policy Def">data/policyDefs/003_ratelimiting-policydef.resttest</test>
   </testGroup>
   
+  <!-- Gateways -->
+  <testGroup name="Policy Defs">
+    <test name="Create Gateway">data/gateways/000_gateway.resttest</test>
+  </testGroup>
 
   <!-- Create Organizations -->
   <testGroup name="Create Orgs">

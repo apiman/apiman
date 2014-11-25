@@ -407,14 +407,16 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         
         ServiceVersionBean versionBean = getServiceVersion(organizationId, serviceId, version);
         Set<ServicePlanBean> servicePlans = versionBean.getPlans();
-        for (ServicePlanBean spb : servicePlans) {
-            PlanVersionBean planVersion = getPlanVersion(organizationId, spb.getPlanId(), spb.getVersion());
-            ServicePlanSummaryBean summary = new ServicePlanSummaryBean();
-            summary.setPlanId(planVersion.getPlan().getId());
-            summary.setPlanName(planVersion.getPlan().getName());
-            summary.setPlanDescription(planVersion.getPlan().getDescription());
-            summary.setVersion(spb.getVersion());
-            plans.add(summary);
+        if (servicePlans != null) {
+            for (ServicePlanBean spb : servicePlans) {
+                PlanVersionBean planVersion = getPlanVersion(organizationId, spb.getPlanId(), spb.getVersion());
+                ServicePlanSummaryBean summary = new ServicePlanSummaryBean();
+                summary.setPlanId(planVersion.getPlan().getId());
+                summary.setPlanName(planVersion.getPlan().getName());
+                summary.setPlanDescription(planVersion.getPlan().getDescription());
+                summary.setVersion(spb.getVersion());
+                plans.add(summary);
+            }
         }
         return plans;
     }

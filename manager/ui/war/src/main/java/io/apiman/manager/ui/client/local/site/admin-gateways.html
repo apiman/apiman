@@ -73,11 +73,37 @@
             <div class="row hr-row">
               <hr/>
             </div>
-            
-            <div>
-              <h4>Not yet implemented.</h4>
+            <!-- Filter and Actions -->
+            <div class="row">
+              <div class="apiman-filters apiman-gateways-filters">
+                <a data-field="toNewGateway" href="new-gateway.html" class="btn btn-primary pull-right">New Gateway</a>
+              </div>
             </div>
-            
+            <!-- Table of Gateways -->
+            <div class="row">
+              <table class="table table-responsive" data-field="gateways">
+                <thead>
+                  <tr>
+                    <th data-i18n-key="name">Name</th>
+                    <th data-i18n-key="type">Configuration Type</th>
+                  </tr>
+                </thead>
+                <tbody data-role="dummy">
+                  <tr>
+                    <td><a href="edit-gateway.html"><span>High Volume Gateway</span></a></td>
+                    <td>Standard</td>
+                  </tr>
+                  <tr>
+                    <td><a href="edit-gateway.html"><span>Low Volume Gateway</span></a></td>
+                    <td>Standard</td>
+                  </tr>
+                  <tr>
+                    <td><a href="edit-gateway.html"><span>Internal Service Gateway</span></a></td>
+                    <td>JMS</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>

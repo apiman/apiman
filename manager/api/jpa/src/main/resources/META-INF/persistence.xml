@@ -6,7 +6,7 @@
   <persistence-unit name="apiman-manager-api-jpa" transaction-type="RESOURCE_LOCAL">
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
 
-    <jta-data-source>jdbc/ApiManDT</jta-data-source>
+    <jta-data-source>jdbc/ApiManagerDS</jta-data-source>
 
     <class>io.apiman.manager.api.beans.idm.UserBean</class>
     <class>io.apiman.manager.api.beans.idm.RoleBean</class>
@@ -24,6 +24,7 @@
     <class>io.apiman.manager.api.beans.policies.PolicyDefinitionTemplateBean</class>
     <class>io.apiman.manager.api.beans.policies.PolicyBean</class>
     <class>io.apiman.manager.api.beans.audit.AuditEntryBean</class>
+    <class>io.apiman.manager.api.beans.gateways.GatewayBean</class>
 
     <properties>
       <property name="hibernate.show_sql" value="false" />

@@ -7,6 +7,7 @@
   </testGroup>
 
   <testGroup name="Create Entities">
+    <test name="Create Gateway">test-plan-data/all/creates/000_create-gateway.resttest</test>
     <test name="Create Organization">test-plan-data/all/creates/001_create_org.resttest</test>
     <test name="Create Plan">test-plan-data/all/creates/002_create-plan1.resttest</test>
     <test name="Create Plan Version">test-plan-data/all/creates/003_create-plan1-version-1.0.resttest</test>
