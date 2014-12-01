@@ -182,7 +182,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             criteria.setPage(1);
             criteria.setPageSize(20);
         }
-        criteria.setOrder("when", false); //$NON-NLS-1$
+        criteria.setOrder("id", false); //$NON-NLS-1$
         if (organizationId != null) {
             criteria.addFilter("organizationId", organizationId, SearchCriteriaFilterBean.OPERATOR_EQ); //$NON-NLS-1$
         }
