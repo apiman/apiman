@@ -292,6 +292,10 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         svb.setModifiedOn(new Date());
         svb.setEndpoint("http://localhost:9001/echo/s-ramp-server/");
         svb.setEndpointType(EndpointType.rest);
+        svb.setGateways(new HashSet<ServiceGatewayBean>());
+        ServiceGatewayBean sgb = new ServiceGatewayBean();
+        sgb.setGatewayId("TheGateway");
+        svb.getGateways().add(sgb);
         ServicePlanBean spb = new ServicePlanBean();
         spb.setPlanId("Gold");
         spb.setVersion("1.0");

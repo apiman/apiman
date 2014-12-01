@@ -32,6 +32,7 @@ import javax.inject.Inject;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.nav.client.local.TransitionAnchor;
 import org.jboss.errai.ui.nav.client.local.TransitionAnchorFactory;
+import org.overlord.commons.gwt.client.local.widgets.SpanPanel;
 import org.overlord.commons.gwt.client.local.widgets.TemplatedWidgetTable;
 
 import com.google.gwt.user.client.Element;
@@ -106,24 +107,26 @@ public class ContractsTable extends TemplatedWidgetTable implements TakesValue<L
      * @param bean
      */
     private void addRow(int rowIdx, ContractSummaryBean bean) {
+        SpanPanel sp = new SpanPanel();
         TransitionAnchor<OrgAppsPage> orgLink = toOrg.get(MultimapUtil.singleItemMap("org", bean.getAppOrganizationId())); //$NON-NLS-1$
         orgLink.setText(bean.getAppOrganizationName());
-        add(rowIdx, 0, orgLink);
-        
+        sp.add(orgLink);
+        sp.add(new InlineLabel(" / ")); //$NON-NLS-1$
         TransitionAnchor<AppRedirectPage> appLink = toApp.get(MultimapUtil.fromMultiple("org", bean.getAppOrganizationId(), "app", bean.getAppId())); //$NON-NLS-1$ //$NON-NLS-2$
         appLink.setText(bean.getAppName());
-        add(rowIdx, 1, appLink);
+        sp.add(appLink);
+        add(rowIdx, 0, sp);
         
         TransitionAnchor<AppRedirectPage> appVersionLink = toApp.get(MultimapUtil.fromMultiple("org", bean.getAppOrganizationId(), "app", bean.getAppId(), "version", bean.getAppVersion())); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         appVersionLink.setText(bean.getAppVersion());
-        add(rowIdx, 2, appVersionLink);
+        add(rowIdx, 1, appVersionLink);
         
         TransitionAnchor<PlanRedirectPage> planLink = toPlan.get(MultimapUtil.fromMultiple("org", bean.getServiceOrganizationId(), "plan", bean.getPlanId(), "version", bean.getPlanVersion())); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         planLink.setText(bean.getPlanName());
-        add(rowIdx, 3, planLink);
+        add(rowIdx, 2, planLink);
 
         InlineLabel when = new InlineLabel(Formatting.formatShortDate(bean.getCreatedOn()));
-        add(rowIdx, 4, when);
+        add(rowIdx, 3, when);
     }
 
     /**
