@@ -15,14 +15,19 @@
  */
 package io.apiman.manager.ui.client.local.pages;
 
+import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.services.EndpointType;
+import io.apiman.manager.api.beans.services.ServiceGatewayBean;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
 import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.pages.service.EndpointTypeSelectBox;
+import io.apiman.manager.ui.client.local.pages.service.GatewaySelectBox;
 import io.apiman.manager.ui.client.local.services.rest.IRestInvokerCallback;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -58,10 +63,15 @@ public class ServiceImplPage extends AbstractServicePage {
     @Inject @DataField
     EndpointTypeSelectBox endpointType;
     @Inject @DataField
+    GatewaySelectBox gateway;
+
+    @Inject @DataField
     AsyncActionButton saveButton;
     @Inject @DataField
     Button cancelButton;
     
+    List<GatewayBean> gatewayBeans;
+
     /**
      * Constructor.
      */
@@ -87,7 +97,55 @@ public class ServiceImplPage extends AbstractServicePage {
                 onFormValueChange();
             }
         });
+        gateway.addValueChangeHandler(new ValueChangeHandler<GatewayBean>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<GatewayBean> event) {
+                onFormValueChange();
+            }
+        });
     }
+
+    /**
+     * @see io.apiman.manager.ui.client.local.pages.AbstractServicePage#doLoadPageData()
+     */
+    @Override
+    protected int doLoadPageData() {
+        int rval = super.doLoadPageData();
+        rest.listGateways(new IRestInvokerCallback<List<GatewayBean>>() {
+            @Override
+            public void onSuccess(List<GatewayBean> response) {
+                onGatewaysLoaded(response);
+                dataPacketLoaded();
+            }
+            @Override
+            public void onError(Throwable error) {
+                dataPacketError(error);
+            }
+        });
+        return rval + 1;
+    }
+
+    /**
+     * Called when the gateways are loaded.
+     * @param beans
+     */
+    protected void onGatewaysLoaded(List<GatewayBean> beans) {
+        gatewayBeans = beans;
+        gateway.setOptions(gatewayBeans);
+        if (gatewayBeans.size() > 1) {
+            showGateways();
+        } else {
+            hideGateways();
+        }
+    }
+
+    protected final native void showGateways() /*-{
+        $wnd.jQuery('#gateway-info').show();
+    }-*/;
+
+    protected final native void hideGateways() /*-{
+        $wnd.jQuery('#gateway-info').hide();
+    }-*/;
 
     /**
      * @see io.apiman.manager.ui.client.local.pages.AbstractServicePage#renderPage()
@@ -97,6 +155,9 @@ public class ServiceImplPage extends AbstractServicePage {
         super.renderPage();
         endpoint.setValue(versionBean.getEndpoint());
         endpointType.setValue(versionBean.getEndpointType());
+        if (versionBean.getGateways() != null && versionBean.getGateways().size() > 0) {
+            gateway.selectGatewayById(versionBean.getGateways().iterator().next().getGatewayId());
+        }
         saveButton.reset();
         saveButton.setEnabled(false);
         cancelButton.setEnabled(false);
@@ -115,10 +176,21 @@ public class ServiceImplPage extends AbstractServicePage {
         final EndpointType endpointTypeValue = this.endpointType.getValue();
         versionBean.setEndpoint(endpointValue);
         versionBean.setEndpointType(endpointTypeValue);
-        
+
         ServiceVersionBean update = new ServiceVersionBean();
         update.setEndpoint(endpointValue);
         update.setEndpointType(endpointTypeValue);
+
+        if (gatewayBeans.size() > 1) {
+            GatewayBean gb = gateway.getValue();
+            Set<ServiceGatewayBean> sgateways = new HashSet<ServiceGatewayBean>();
+            ServiceGatewayBean sgb = new ServiceGatewayBean();
+            sgb.setGatewayId(gb.getId());
+            sgateways.add(sgb);
+            versionBean.setGateways(sgateways);
+            update.setGateways(sgateways);
+        }
+        
         rest.updateServiceVersion(serviceBean.getOrganizationId(), serviceBean.getId(),
                 versionBean.getVersion(), update, new IRestInvokerCallback<Void>() {
             @Override
@@ -141,6 +213,10 @@ public class ServiceImplPage extends AbstractServicePage {
     public void onCancel(ClickEvent event) {
         endpoint.setValue(versionBean.getEndpoint());
         endpointType.setValue(versionBean.getEndpointType());
+        if (versionBean.getGateways() != null && versionBean.getGateways().size() > 0) {
+            gateway.selectGatewayById(versionBean.getGateways().iterator().next().getGatewayId());
+        }
+
         saveButton.setEnabled(false);
         cancelButton.setEnabled(false);
     }
@@ -157,7 +233,11 @@ public class ServiceImplPage extends AbstractServicePage {
      * @return true if the values in the form are valid
      */
     private boolean isFormValid() {
-        return true;
+        boolean valid = true;
+        if (endpoint.getValue() == null || endpoint.getValue().trim().isEmpty()) {
+            valid = false;
+        }
+        return valid;
     }
 
     /**

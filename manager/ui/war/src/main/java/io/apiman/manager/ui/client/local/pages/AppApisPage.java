@@ -15,12 +15,10 @@
  */
 package io.apiman.manager.ui.client.local.pages;
 
-import io.apiman.manager.api.beans.summary.ContractSummaryBean;
+import io.apiman.manager.api.beans.summary.ApiRegistryBean;
 import io.apiman.manager.ui.client.local.AppMessages;
-import io.apiman.manager.ui.client.local.pages.app.AppApisList;
+import io.apiman.manager.ui.client.local.pages.app.AppApiRegistryTable;
 import io.apiman.manager.ui.client.local.services.rest.IRestInvokerCallback;
-
-import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -41,10 +39,10 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 @Dependent
 public class AppApisPage extends AbstractAppPage {
 
-    private List<ContractSummaryBean> contractBeans;
+    private ApiRegistryBean apiRegistry;
 
     @Inject @DataField
-    AppApisList apis;
+    AppApiRegistryTable apis;
 
     /**
      * Constructor.
@@ -58,14 +56,14 @@ public class AppApisPage extends AbstractAppPage {
     @PostConstruct
     protected void postConstruct() {
     }
-    
+
     /**
      * @see io.apiman.manager.ui.client.local.pages.AbstractAppPage#doLoadPageData()
      */
     @Override
     protected int doLoadPageData() {
         int rval = super.doLoadPageData();
-        // Return an extra 1 because we'll call getApplicationContracts() later
+        // Return an extra 1 because we'll call getApiRegistry() later
         return rval + 1;
     }
     
@@ -77,10 +75,10 @@ public class AppApisPage extends AbstractAppPage {
         String orgId = org;
         String appId = app;
         String appVersion = versionBean.getVersion();
-        rest.getApplicationContracts(orgId, appId, appVersion, new IRestInvokerCallback<List<ContractSummaryBean>>() {
+        rest.getApiRegistry(orgId, appId, appVersion, new IRestInvokerCallback<ApiRegistryBean>() {
             @Override
-            public void onSuccess(List<ContractSummaryBean> response) {
-                contractBeans = response;
+            public void onSuccess(ApiRegistryBean response) {
+                apiRegistry = response;
                 dataPacketLoaded();
             }
             @Override
@@ -96,7 +94,7 @@ public class AppApisPage extends AbstractAppPage {
     @Override
     protected void renderPage() {
         super.renderPage();
-        apis.setValue(contractBeans);
+        apis.setValue(apiRegistry);
     }
 
     /**

@@ -83,28 +83,30 @@
             </div>
             <!-- Table of Policy Definitions -->
             <div class="row">
-              <table class="table table-responsive" data-field="policyDefs">
-                <thead>
-                  <tr>
-                    <th data-i18n-key="policy">Policy</th>
-                    <th class="no-phone" data-i18n-key="implementation">Implementation</th>
-                  </tr>
-                </thead>
-                <tbody data-role="dummy">
-                  <tr>
-                    <td><a href="edit-policyDef.html"><i class="fa fa-lock fa-fw"></i><span>BASIC Authentication Policy</span></a></td>
-                    <td class="no-phone">class:io.apiman.gateway.engine.policies.BasicAuthenticationPolicy</td>
-                  </tr>
-                  <tr>
-                    <td><a href="edit-policyDef.html"><i class="fa fa-thumbs-down fa-fw"></i><span>IP Black-List Policy</span></a></td>
-                    <td class="no-phone">class:io.apiman.gateway.engine.policies.IPBlacklistPolicy</td>
-                  </tr>
-                  <tr>
-                    <td><a href="edit-policyDef.html"><i class="fa fa-filter fa-fw"></i><span>IP White-List Policy</span></a></td>
-                    <td class="no-phone">class:io.apiman.gateway.engine.policies.IPWhitelistPolicy</td>
-                  </tr>
-                </tbody>
-              </table>
+              <div class="table-responsive">
+                <table class="table table-striped table-bordered table-hover" data-field="policyDefs">
+                  <thead>
+                    <tr>
+                      <th data-i18n-key="policy">Policy</th>
+                      <th class="no-phone" data-i18n-key="implementation">Implementation</th>
+                    </tr>
+                  </thead>
+                  <tbody data-role="dummy">
+                    <tr>
+                      <td><a href="edit-policyDef.html"><i class="fa fa-lock fa-fw"></i><span>BASIC Authentication Policy</span></a></td>
+                      <td class="no-phone">class:io.apiman.gateway.engine.policies.BasicAuthenticationPolicy</td>
+                    </tr>
+                    <tr>
+                      <td><a href="edit-policyDef.html"><i class="fa fa-thumbs-down fa-fw"></i><span>IP Black-List Policy</span></a></td>
+                      <td class="no-phone">class:io.apiman.gateway.engine.policies.IPBlacklistPolicy</td>
+                    </tr>
+                    <tr>
+                      <td><a href="edit-policyDef.html"><i class="fa fa-filter fa-fw"></i><span>IP White-List Policy</span></a></td>
+                      <td class="no-phone">class:io.apiman.gateway.engine.policies.IPWhitelistPolicy</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>

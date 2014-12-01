@@ -32,6 +32,7 @@ import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.beans.services.ServiceBean;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
+import io.apiman.manager.api.beans.summary.ApiRegistryBean;
 import io.apiman.manager.api.beans.summary.ApplicationSummaryBean;
 import io.apiman.manager.api.beans.summary.ContractSummaryBean;
 import io.apiman.manager.api.beans.summary.PlanSummaryBean;
@@ -198,7 +199,14 @@ public interface IOrganizationResource {
     @GET
     @Path("{organizationId}/applications/{applicationId}/versions/{version}/contracts")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<ContractSummaryBean> listContracts(@PathParam("organizationId") String organizationId,
+    public List<ContractSummaryBean> getApplicationVersionContracts(@PathParam("organizationId") String organizationId,
+            @PathParam("applicationId") String applicationId, @PathParam("version") String version)
+            throws ApplicationNotFoundException, NotAuthorizedException;
+
+    @GET
+    @Path("{organizationId}/applications/{applicationId}/versions/{version}/apiregistry")
+    @Produces(MediaType.APPLICATION_JSON)
+    public ApiRegistryBean getApiRegistry(@PathParam("organizationId") String organizationId,
             @PathParam("applicationId") String applicationId, @PathParam("version") String version)
             throws ApplicationNotFoundException, NotAuthorizedException;
 

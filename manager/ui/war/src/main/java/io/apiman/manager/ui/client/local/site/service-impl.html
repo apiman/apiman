@@ -111,7 +111,18 @@
                 <option value="soap">SOAP</option>
               </select>
             </div>
-            <div class="actions">
+            <div id="gateway-info">
+                <div class="title" data-i18n-key="gateway">Gateway</div>
+                <div>
+                  <span class="clearfix" data-i18n-key="publish-to">Publish To:</span>
+                  <select class="selectpicker" data-field="gateway" data-role="dummy">
+                    <option value="hlg">High Load Gateway</option>
+                    <option value="simple">Simple Gateway</option>
+                    <option value="myg">My First Gateway</option>
+                  </select>
+                </div>
+            </div>
+            <div class="actions" style="margin-top: 20px">
               <button class="btn btn-primary" data-field="saveButton" data-i18n-key="save" placeholder="Saving..." data-icon="fa-cog">Save</button>
               <button class="btn btn-default" data-field="cancelButton" data-i18n-key="cancel">Cancel</button>
             </div>

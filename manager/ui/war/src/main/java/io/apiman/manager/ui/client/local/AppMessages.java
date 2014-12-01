@@ -185,6 +185,8 @@ public class AppMessages {
     public static final String NO_APIS_FOR_APP_MESSAGE = "noEntitiesFound.apis-in-app"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "No contracts matched the filter criteria.  Please try modifying the filter or else create a new contract using the New Contract button above.")
     public static final String NO_FILTERED_CONTRACTS_FOR_APP_MESSAGE = "noEntitiesFound.contracts-in-app.filtered"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "No APIs matched the filter criteria.  Please try modifying the filter or else create a new contract from the Contracts tab.")
+    public static final String NO_FILTERED_APIS_FOR_APP_MESSAGE = "noEntitiesFound.apis-in-app.filtered"; //$NON-NLS-1$
 
     @TranslationKey(defaultValue = "This service doesn't appear to have any contracts.  This means that there aren't any applications consuming this service.")
     public static final String NO_CONTRACTS_FOR_SERVICE = "noEntitiesFound.contracts-in-service"; //$NON-NLS-1$
@@ -253,7 +255,7 @@ public class AppMessages {
     public static final String NO_MEMBERS_MESSAGE = "no-members-found"; //$NON-NLS-1$
 
     @TranslationKey(defaultValue = "Please copy the value below (e.g. Ctrl-C).")
-    public static final String APIS_LIST_PLEASE_COPY = "appApisList.please-copy"; //$NON-NLS-1$
+    public static final String APIS_REGISTRY_PLEASE_COPY = "appApiRegistry.please-copy"; //$NON-NLS-1$
     
     @TranslationKey(defaultValue = "No policies matched the filter criteria.  Please try modifying the filter or else create a new policy using the button above.")
     public static final String NO_FILTERED_POLICIES_MESSAGE = "no-filtered-policies"; //$NON-NLS-1$

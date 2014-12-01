@@ -1,0 +1,30 @@
+GET /organizations/Organization1/applications/Application1/versions/1.0/apiregistry admin/admin
+
+----
+200
+Content-Type: application/json
+
+{ "apis" : [
+    {
+        "httpEndpoint" : "http://localhost:6666/gateway/",
+        "planId" : "Plan1",
+        "planName" : "Plan 1",
+        "planVersion" : "1.0",
+        "serviceId" : "Service1",
+        "serviceName" : "Service 1",
+        "serviceOrgId" : "Organization1",
+        "serviceOrgName" : "Organization 1",
+        "serviceVersion" : "1.0"
+    },
+    {
+        "httpEndpoint" : "http://localhost:6666/gateway/",
+        "planId" : "PlanA",
+        "planName" : "Plan A",
+        "planVersion" : "2.0",
+        "serviceId" : "Service2",
+        "serviceName" : "Service 2",
+        "serviceOrgId" : "Organization2",
+        "serviceOrgName" : "Organization 2",
+        "serviceVersion" : "1.5"
+    } ]
+}

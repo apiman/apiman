@@ -20,6 +20,7 @@ import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntityType;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
+import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.beans.plans.PlanBean;
 import io.apiman.manager.api.beans.plans.PlanVersionBean;
@@ -30,8 +31,11 @@ import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaFilterBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.beans.services.ServiceBean;
+import io.apiman.manager.api.beans.services.ServiceGatewayBean;
 import io.apiman.manager.api.beans.services.ServicePlanBean;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
+import io.apiman.manager.api.beans.summary.ApiEntryBean;
+import io.apiman.manager.api.beans.summary.ApiRegistryBean;
 import io.apiman.manager.api.beans.summary.ApplicationSummaryBean;
 import io.apiman.manager.api.beans.summary.ContractSummaryBean;
 import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
@@ -601,6 +605,68 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         return rval;
     }
 
+    /**
+     * @see io.apiman.manager.api.core.IStorageQuery#getApiRegistry(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public ApiRegistryBean getApiRegistry(String organizationId, String applicationId, String version)
+            throws StorageException {
+        ApiRegistryBean rval = new ApiRegistryBean();
+
+        beginTx();
+        try {
+            EntityManager entityManager = getActiveEntityManager();
+            String jpql = 
+                    "SELECT c from ContractBean c " +  //$NON-NLS-1$
+                    "  JOIN c.application appv " +  //$NON-NLS-1$
+                    "  JOIN appv.application app " +  //$NON-NLS-1$
+                    " WHERE app.id = :applicationId " +  //$NON-NLS-1$
+                    "   AND app.organizationId = :orgId " +  //$NON-NLS-1$
+                    "   AND appv.version = :version " +  //$NON-NLS-1$
+                    " ORDER BY c.id ASC"; //$NON-NLS-1$
+            Query query = entityManager.createQuery(jpql);
+            query.setParameter("orgId", organizationId); //$NON-NLS-1$
+            query.setParameter("applicationId", applicationId); //$NON-NLS-1$
+            query.setParameter("version", version); //$NON-NLS-1$
+            @SuppressWarnings("unchecked")
+            List<ContractBean> contracts = (List<ContractBean>) query.getResultList();
+            for (ContractBean contractBean : contracts) {
+                ServiceVersionBean svb = contractBean.getService();
+                ServiceBean service = svb.getService();
+                PlanBean plan = contractBean.getPlan().getPlan();
+                
+                OrganizationBean svcOrg = entityManager.find(OrganizationBean.class, service.getOrganizationId());
+                
+                ApiEntryBean entry = new ApiEntryBean();
+                entry.setServiceId(service.getId());
+                entry.setServiceName(service.getName());
+                entry.setServiceOrgId(svcOrg.getId());
+                entry.setServiceOrgName(svcOrg.getName());
+                entry.setServiceVersion(svb.getVersion());
+                entry.setPlanId(plan.getId());
+                entry.setPlanName(plan.getName());
+                entry.setPlanVersion(contractBean.getPlan().getVersion());
+                entry.setApiKey(contractBean.getKey());
+                
+                Set<ServiceGatewayBean> gateways = svb.getGateways();
+                if (gateways != null && gateways.size() > 0) {
+                    ServiceGatewayBean sgb = gateways.iterator().next();
+                    GatewayBean gateway = entityManager.find(GatewayBean.class, sgb.getGatewayId());
+                    String httpEndpoint = gateway.getHttpEndpoint();
+                    entry.setHttpEndpoint(httpEndpoint);
+                }
+                
+                rval.getApis().add(entry);
+            }
+        } catch (Throwable t) {
+            logger.error(t.getMessage(), t);
+            throw new StorageException(t);
+        } finally {
+            commitTx();
+        }
+        return rval;
+    }
+    
     /**
      * @see io.apiman.manager.api.core.IStorageQuery#getPlansInOrg(java.lang.String)
      */

@@ -50,6 +50,7 @@ import io.apiman.manager.api.beans.services.ServiceGatewayBean;
 import io.apiman.manager.api.beans.services.ServicePlanBean;
 import io.apiman.manager.api.beans.services.ServiceStatus;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
+import io.apiman.manager.api.beans.summary.ApiRegistryBean;
 import io.apiman.manager.api.beans.summary.ApplicationSummaryBean;
 import io.apiman.manager.api.beans.summary.ContractSummaryBean;
 import io.apiman.manager.api.beans.summary.PlanSummaryBean;
@@ -659,10 +660,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#listContracts(java.lang.String, java.lang.String, java.lang.String)
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getApplicationVersionContracts(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
-    public List<ContractSummaryBean> listContracts(String organizationId, String applicationId, String version)
+    public List<ContractSummaryBean> getApplicationVersionContracts(String organizationId, String applicationId, String version)
             throws ApplicationNotFoundException, NotAuthorizedException {
         if (!securityContext.hasPermission(PermissionType.appView, organizationId))
             throw ExceptionFactory.notAuthorizedException();
@@ -672,6 +673,25 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         
         try {
             return query.getApplicationContracts(organizationId, applicationId, version);
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+    }
+    
+    /**
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getApiRegistry(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public ApiRegistryBean getApiRegistry(String organizationId, String applicationId, String version)
+            throws ApplicationNotFoundException, NotAuthorizedException {
+        if (!securityContext.hasPermission(PermissionType.appView, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
+
+        // Try to get the application first - will throw a ApplicationNotFoundException if not found.
+        getAppVersion(organizationId, applicationId, version);
+        
+        try {
+            return query.getApiRegistry(organizationId, applicationId, version);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }

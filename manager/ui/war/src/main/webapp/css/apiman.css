@@ -112,6 +112,24 @@ textarea.form-data {
   font-weight: bold;
 }
 
+.table-with-details form {
+  padding: 10px;
+}
+
+.table-with-details form label {
+  margin-bottom: 0px;
+}
+
+.control-with-copy input {
+  display: inline;
+  width: 100%;
+}
+.control-with-copy button {
+  margin-left: 5px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+
 #apiman-header {
   border-bottom: 1px solid rgb(238, 238, 238);
   background-color: rgb(246, 246, 246);

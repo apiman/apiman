@@ -37,6 +37,7 @@ import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.beans.services.ServiceBean;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
+import io.apiman.manager.api.beans.summary.ApiRegistryBean;
 import io.apiman.manager.api.beans.summary.ApplicationSummaryBean;
 import io.apiman.manager.api.beans.summary.ContractSummaryBean;
 import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
@@ -319,6 +320,7 @@ public class RestInvokerService {
      * @param applicationId
      * @param version
      * @param bean
+     * @param callback
      */
     public void createContract(String organizationId, String applicationId, String version,
             NewContractBean bean, IRestInvokerCallback<ContractBean> callback) {
@@ -378,16 +380,35 @@ public class RestInvokerService {
 
     /**
      * Gets the application's contracts.
+     * @param organizationId
+     * @param applicationId
+     * @param version
      * @param callback
      */
     public void getApplicationContracts(String organizationId, String applicationId, String version, 
             IRestInvokerCallback<List<ContractSummaryBean>> callback) {
         CallbackAdapter<List<ContractSummaryBean>> adapter = new CallbackAdapter<List<ContractSummaryBean>>(callback);
-        organizations.call(adapter, adapter).listContracts(organizationId, applicationId, version);
+        organizations.call(adapter, adapter).getApplicationVersionContracts(organizationId, applicationId, version);
+    }
+    
+    /**
+     * Gets the application's API registry.
+     * @param organizationId
+     * @param applicationId
+     * @param version
+     * @param callback
+     */
+    public void getApiRegistry(String organizationId, String applicationId, String version, 
+            IRestInvokerCallback<ApiRegistryBean> callback) {
+        CallbackAdapter<ApiRegistryBean> adapter = new CallbackAdapter<ApiRegistryBean>(callback);
+        organizations.call(adapter, adapter).getApiRegistry(organizationId, applicationId, version);
     }
 
     /**
      * Gets the application's policies.
+     * @param organizationId
+     * @param applicationId
+     * @param version
      * @param callback
      */
     public void getApplicationPolicies(String organizationId, String applicationId, String version, 
@@ -398,6 +419,10 @@ public class RestInvokerService {
 
     /**
      * Reorders the application's policies.
+     * @param organizationId
+     * @param applicationId
+     * @param version
+     * @param policyChain
      * @param callback
      */
     public void reorderApplicationPolicies(String organizationId, String applicationId, String version, 
@@ -439,6 +464,8 @@ public class RestInvokerService {
     /**
      * Gets the activity for the organization.
      * @param organizationId
+     * @param page
+     * @param pageSize
      * @param callback
      */
     public void getOrgActivity(String organizationId, int page, int pageSize,

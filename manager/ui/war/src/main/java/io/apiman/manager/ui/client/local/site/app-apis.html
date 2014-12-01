@@ -106,56 +106,64 @@
             <div>
               <div class="clearfix"></div>
               <!-- The list of apis -->
-              <div class="apiman-apis" data-field="apis" data-role="dummy">
-                <div class="container-fluid apiman-summaryrow">
-                  <div class="row">
-                    <a href="org-apps.html">JBoss Overlord</a> / <span class="title"><a href="service-overview.html">s-ramp-api</a></span> / <span class=""><a href="plan-overview.html">[Gold]</a></span>
-                    <span class="pull-right apikey"><span class="emphasis">Key:</span> <span>067e6162-3b6f-4ae2-a171-2470b63dff00</span></span>
-                  </div>
-                  <div class="row">
-                    <div class="url">
-                      <a href="#">http://localhost:8080/apiman-gateway/gateway/JBossOverlord/s-ramp-api</a>
-                      <span class="extra-path">
-                        <span>/</span>
-                        <input type="text" class="form-input api-path" placeholder="extra/path/info"></input>
-                        <button class="btn btn-default btn-xs btn-copy">Copy</button>
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="container-fluid apiman-summaryrow">
-                  <div class="row">
-                    <a href="org-apps.html">JBoss Overlord</a> / <span class="title"><a href="service-overview.html">dtgov-deploy</a></span> / <span class=""><a href="plan-overview.html">[Silver]</a></span>
-                    <span class="pull-right apikey"><span class="emphasis">Key:</span> <span>54947df8-0e9e-4471-a2f9-9af509fb5889</span></span>
-                  </div>
-                  <div class="row">
-                    <div class="url">
-                      <a href="#">http://localhost:8080/apiman-gateway/gateway/JBossOverlord/dtgov-deploy</a>
-                      <span class="extra-path">
-                        <span>/</span>
-                        <input type="text" class="form-input api-path" placeholder="extra/path/info"></input>
-                        <button class="btn btn-default btn-xs btn-copy">Copy</button>
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div class="container-fluid apiman-summaryrow">
-                  <div class="row">
-                    <a href="org-apps.html">Apereo Bedework</a> / <span class="title"><a href="service-overview.html">bw-caldav</a></span> / <span class=""><a href="plan-overview.html">[Gold]</a></span>
-                    <span class="pull-right apikey"><span class="emphasis">Key:</span> <span>3494eef8-382-f8a9-a2f9-01250bac5229</span></span>
-                  </div>
-                  <div class="row">
-                    <div class="url">
-                      <a href="#">http://localhost:8080/apiman-gateway/gateway/ApereoBedework/bw-caldav</a>
-                      <span class="extra-path">
-                        <span>/</span>
-                        <input type="text" class="form-input api-path" placeholder="extra/path/info"></input>
-                        <button class="btn btn-default btn-xs btn-copy">Copy</button>
-                      </span>
-                    </div>
-                  </div>
-                </div>
+              <div class="table-responsive">
+                <table class="table table-striped table-bordered table-hover table-with-details" data-field="apis">
+                  <thead>
+                    <tr>
+                      <th nowrap="nowrap" width="1%"></th>
+                      <th data-i18n-key="service" nowrap="nowrap">Service</th>
+                      <th data-i18n-key="version" width="1%" nowrap="nowrap">Version</th>
+                      <th data-i18n-key="plan" nowrap="nowrap">Plan</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr data-role="dummy">
+                      <td><a href="#details1"><i class="fa fa-fw fa-chevron-down"></i></a></td>
+                      <td><span><a href="org-apps.html">JBoss Overlord</a><span> / </span><a href="service-overview.html">s-ramp-api</a></span></td>
+                      <td><span>1.3</span>
+                      <td><a href="plan-overview.html">Gold</a></td>
+                    </tr>
+                    <tr>
+                      <td colspan="4">
+                        <form role="form" data-field="apiDetails">
+                          <div class="form-group">
+                            <label data-i18n-key="api-key">API Key</label>
+                            <input data-field="apiKey" type="text" class="form-control readonly" value="067e6162-3b6f-4ae2-a171-2470b63dff00">
+                          </div>
+                          <div class="form-group">
+                            <label data-i18n-key="http-endpoint">HTTP Endpoint</label>
+                            <div class="control-with-copy">
+                              <table>
+                                <tr>
+                                  <td>
+                                    <input data-field="httpEndpoint" type="text" class="form-control readonly" value="http://localhost:8080/apiman-gateway/gateway/JBossOverlord/s-ramp-api">
+                                  </td>
+                                  <td width="1%">
+                                    <button data-field="copyButton" class="btn btn-default"><i class="fa fa-fw fa-clipboard"></i></button>
+                                  </td>
+                                </tr>
+                              </table>
+                            </div>
+                          </div>
+                        </form>
+                      </td>
+                    </tr>
+                    <tr data-role="dummy">
+                      <td><a href="#"><i class="fa fa-fw fa-chevron-right"></i></a></td>
+                      <td><span><a href="org-apps.html">JBoss Overlord</a><span> / </span><a href="service-overview.html">dtgov-deploy</a></span></td>
+                      <td><span>2.0</span>
+                      <td><a href="plan-overview.html">Platinum</a></td>
+                    </tr>
+                    <tr>
+                    </tr>
+                    <tr data-role="dummy">
+                      <td><a href="#"><i class="fa fa-fw fa-chevron-right"></i></a></td>
+                      <td><span><a href="org-apps.html">Apereo Bedework</a><span> / </span><a href="service-overview.html">bw-caldav</a></span></td>
+                      <td><span>2.1</span>
+                      <td><a href="plan-overview.html">Standard</a></td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
             <!-- /Contract List -->

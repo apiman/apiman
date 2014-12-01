@@ -62,6 +62,13 @@ public abstract class SelectBox<T> extends ListBox implements HasValue<T> {
     }
     
     /**
+     * @return the current options
+     */
+    protected List<T> getOptions() {
+        return options;
+    }
+    
+    /**
      * Sets the select box's options.
      * @param options
      */

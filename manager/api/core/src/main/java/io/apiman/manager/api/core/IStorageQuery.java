@@ -20,6 +20,7 @@ import io.apiman.manager.api.beans.plans.PlanVersionBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
+import io.apiman.manager.api.beans.summary.ApiRegistryBean;
 import io.apiman.manager.api.beans.summary.ApplicationSummaryBean;
 import io.apiman.manager.api.beans.summary.ContractSummaryBean;
 import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
@@ -84,6 +85,16 @@ public interface IStorageQuery {
      * @param version
      */
     public List<ContractSummaryBean> getApplicationContracts(String organizationId, String applicationId, String version)
+            throws StorageException;
+
+
+    /**
+     * Returns the api registry for the given application.
+     * @param organizationId
+     * @param applicationId
+     * @param version
+     */
+    public ApiRegistryBean getApiRegistry(String organizationId, String applicationId, String version)
             throws StorageException;
 
     /**
