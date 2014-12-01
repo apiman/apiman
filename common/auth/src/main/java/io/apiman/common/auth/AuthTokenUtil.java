@@ -16,11 +16,16 @@
 package io.apiman.common.auth;
 
 import java.util.Date;
+import java.util.ServiceLoader;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.StringUtils;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A simple class to generate and consume authentication tokens.  This is a very
@@ -33,7 +38,27 @@ import org.codehaus.jackson.map.ObjectMapper;
  */
 public class AuthTokenUtil {
     
+    private static Logger logger = LoggerFactory.getLogger(AuthTokenUtil.class);
     private static final ObjectMapper mapper = new ObjectMapper();
+    private static ISharedSecretSource sharedSecretSource;
+    static {
+        ServiceLoader<ISharedSecretSource> loader = ServiceLoader.load(ISharedSecretSource.class);
+        for (ISharedSecretSource source : loader) {
+            sharedSecretSource = source;
+            // Just use the first one you find.
+            break;
+        }
+        if (sharedSecretSource == null) {
+            logger.warn("Missing a Shared-Secret source for auth-token style authentication.  Defaulting to insecure, hard-coded value."); //$NON-NLS-1$
+            sharedSecretSource = new ISharedSecretSource() {
+                @Override
+                public String getSharedSecret() {
+                    // Hard coded shared secret.  Should not be used in production (see above warning).
+                    return "2BB6E867BC7564162AB1FD26BE61E49365934FBA9B3E56B1323ABE104C798D5C"; //$NON-NLS-1$
+                }
+            };
+        }
+    }
     
     /**
      * Produce a token suitable for transmission.  This will generate the auth token,
@@ -47,7 +72,7 @@ public class AuthTokenUtil {
         String json = toJSON(authToken);
         return StringUtils.newStringUtf8(Base64.encodeBase64(StringUtils.getBytesUtf8(json)));
     }
-    
+
     /**
      * Consumes an auth token, validating it during the process.  If successful, the
      * {@link AuthToken} is returned.  If the token is invalid (expired or bad 
@@ -61,7 +86,7 @@ public class AuthTokenUtil {
         validateToken(token);
         return token;
     }
-    
+
     /**
      * Validates an auth token.  This checks the expiration time of the token against 
      * the current system time.  It also checks the validity of the signature.
@@ -71,7 +96,10 @@ public class AuthTokenUtil {
         if (token.getExpiresOn().before(new Date())) {
             throw new IllegalArgumentException("Authentication token expired: " + token.getExpiresOn()); //$NON-NLS-1$
         }
-        // TODO validate the signature here
+        String validSig = generateSignature(token);
+        if (token.getSignature() == null || !token.getSignature().equals(validSig)) {
+            throw new IllegalArgumentException("Missing or invalid signature on the auth token."); //$NON-NLS-1$
+        }
     }
 
     /**
@@ -95,9 +123,37 @@ public class AuthTokenUtil {
      * @param token
      */
     public static final void signAuthToken(AuthToken token) {
-        // TODO sign the token here
+        String signature = generateSignature(token);
+        token.setSignature(signature);
     }
-    
+
+    /**
+     * Generates a signature for the given token.
+     * @param token
+     */
+    private static String generateSignature(AuthToken token) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(token.getPrincipal());
+        builder.append("||"); //$NON-NLS-1$
+        builder.append(token.getExpiresOn().getTime());
+        builder.append("||"); //$NON-NLS-1$
+        builder.append(token.getIssuedOn().getTime());
+        builder.append("||"); //$NON-NLS-1$
+        TreeSet<String> roles = new TreeSet<String>(token.getRoles());
+        boolean first = true;
+        for (String role : roles) {
+            if (first) {
+                first = false;
+            } else {
+                builder.append(","); //$NON-NLS-1$
+            }
+            builder.append(role);
+        }
+        builder.append("||"); //$NON-NLS-1$
+        builder.append(sharedSecretSource.getSharedSecret());
+        return DigestUtils.sha256Hex(builder.toString());
+    }
+
     /**
      * Convert the auth token to a JSON string.
      * @param token

@@ -18,6 +18,12 @@
       <artifactId>apiman-manager-api-war</artifactId>
       <type>war</type>
     </dependency>
+    
+    <!-- Project dependencies not included in the base WAR -->
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-manager-api-ispn</artifactId>
+    </dependency>
 
     <!-- Spec libs -->
     <dependency>
