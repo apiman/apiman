@@ -232,6 +232,9 @@
         <local-cache name="registry" batching="true">
           <file-store passivation="false" purge="false" />
         </local-cache>
+        <local-cache name="rate-limiter" batching="true">
+          <file-store passivation="false" purge="false" />
+        </local-cache>
         <local-cache name="shared-state" batching="true">
           <file-store passivation="false" purge="false" />
         </local-cache>
