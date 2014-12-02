@@ -3,6 +3,7 @@ Content-Type: application/json
 
 {
   "name" : "Application Developer",
+  "description" : "Users responsible for creating and managing applications should be granted this role within an Organization.",
   "permissions" : [ "appView", "appEdit", "appAdmin" ]
 }
 ----

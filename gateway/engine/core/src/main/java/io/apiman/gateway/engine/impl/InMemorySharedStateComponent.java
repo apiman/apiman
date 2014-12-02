@@ -89,14 +89,4 @@ public class InMemorySharedStateComponent implements ISharedStateComponent {
         handler.handle(AsyncResultImpl.create(oldValue));
     }
 
-    /**
-     * @see io.apiman.gateway.engine.components.ISharedStateComponent#increment(java.lang.String, java.lang.String, java.lang.Number, io.apiman.gateway.engine.async.IAsyncResultHandler)
-     */
-    @Override
-    public <T extends Number> void increment(String namespace, String propertyName, T amount,
-            IAsyncResultHandler<T> handler) {
-        // TODO Auto-generated method stub
-        
-    }
-
 }

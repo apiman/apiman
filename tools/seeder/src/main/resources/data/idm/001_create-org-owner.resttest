@@ -3,6 +3,7 @@ Content-Type: application/json
 
 {
   "name" : "Organization Owner",
+  "description" : "Automatically granted to the user who creates an Organization.  Grants all privileges.",
   "autoGrant" : true,
   "permissions" : [ 
      "orgView", "orgEdit", "orgAdmin",

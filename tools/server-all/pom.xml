@@ -139,26 +139,15 @@
                     <unzip src="${apiman.wildfly.zip}" dest="${apiman.install.dir}" overwrite="false" />
                     
                     <!-- Configure APIMan -->
-                    <property name="apiman.config.file" location="${apiman.wildfly.home}/standalone/configuration/apiman.properties" />
-                    <propertyfile file="${apiman.config.file}" comment=" Configuration information for Overlord API Management">
-                      <entry key="apiman-manager-ui.api.authentication.type" value="authToken" />
-                      <entry key="apiman-manager-ui.api.authentication.token.generator" value="io.apiman.manager.ui.server.auth.AuthTokenGenerator" />
+                    <copy file="../../distro/wildfly8/src/main/resources/overlay/standalone/configuration/apiman.properties" todir="${apiman.wildfly.home}/standalone/configuration/" />
+                    <copy file="../../distro/wildfly8/src/main/resources/overlay/standalone/configuration/apiman-roles.properties" todir="${apiman.wildfly.home}/standalone/configuration/" />
+                    <copy file="../../distro/wildfly8/src/main/resources/overlay/standalone/configuration/apiman-users.properties" todir="${apiman.wildfly.home}/standalone/configuration/" />
 
-                      <entry key="apiman-gateway.registry" value="io.apiman.gateway.engine.ispn.InfinispanRegistry" />
-                      <entry key="apiman-gateway.connector-factory" value="io.apiman.gateway.platforms.servlet.connectors.HttpConnectorFactory" />
-                      <entry key="apiman-gateway.policy-factory" value="io.apiman.gateway.engine.policy.PolicyFactoryImpl" />
-                      <entry key="apiman-gateway.components.ISharedStateComponent" value="io.apiman.gateway.engine.impl.InMemorySharedStateComponent" />
-                      <entry key="apiman-gateway.components.IRateLimiterComponent" value="io.apiman.gateway.engine.impl.InMemoryRateLimiterComponent" />
-                      <entry key="apiman-gateway.components.IPolicyFailureFactoryComponent" value="io.apiman.gateway.platforms.servlet.PolicyFailureFactoryComponent" />
-                    </propertyfile>
-                    
                     <!-- Deploy apiman to WildFly 8 -->
-                    <copy file="${apiman.resources.dir}/wildfly8/deployments/apiman-ds.xml" todir="${apiman.wildfly.webapps}" overwrite="true" />
+                    <copy file="../../distro/wildfly8/src/main/resources/overlay/standalone/deployments/apiman-ds.xml" todir="${apiman.wildfly.webapps}" overwrite="true" />
                     <copy file="${apiman.resources.dir}/wildfly8/deployments/authtest-ds.xml" todir="${apiman.wildfly.webapps}" overwrite="true" />
                     <copy file="${apiman.resources.dir}/wildfly8/deployments/mysql-connector-java-5.1.33-bin.jar" todir="${apiman.wildfly.webapps}" overwrite="true" />
-                    <copy file="${apiman.resources.dir}/wildfly8/configuration/application-users.properties" todir="${apiman.wildfly.home}/standalone/configuration" overwrite="true" />
-                    <copy file="${apiman.resources.dir}/wildfly8/configuration/application-roles.properties" todir="${apiman.wildfly.home}/standalone/configuration" overwrite="true" />
-                    <copy file="${apiman.resources.dir}/wildfly8/configuration/standalone.xml" todir="${apiman.wildfly.home}/standalone/configuration" overwrite="true" />
+                    <copy file="../../distro/wildfly8/src/main/resources/overlay/standalone/configuration/standalone-apiman.xml" tofile="${apiman.wildfly.home}/standalone/configuration/standalone.xml" overwrite="true" />
                     <copy file="${apiman.apiman-manager-api-war-wildfly8.war}" tofile="${apiman.wildfly.webapps}/apiman-manager-api.war" overwrite="true" />
                     <copy file="${apiman.apiman-manager-ui-war-wildfly8.war}" tofile="${apiman.wildfly.webapps}/apiman-manager-ui.war" overwrite="true" />
                     <copy file="${apiman.apiman-tools-seeder.war}" tofile="${apiman.wildfly.webapps}/seeder.war" overwrite="true" />

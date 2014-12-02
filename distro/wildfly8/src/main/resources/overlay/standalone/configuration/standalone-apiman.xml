@@ -1,5 +1,4 @@
 <?xml version='1.0' encoding='UTF-8'?>
-
 <server xmlns="urn:jboss:domain:2.1">
   <extensions>
     <extension module="org.jboss.as.clustering.infinispan" />
@@ -231,6 +230,9 @@
     <subsystem xmlns="urn:jboss:domain:infinispan:2.0">
       <cache-container name="apiman-gateway" default-cache="registry" start="EAGER">
         <local-cache name="registry" batching="true">
+          <file-store passivation="false" purge="false" />
+        </local-cache>
+        <local-cache name="shared-state" batching="true">
           <file-store passivation="false" purge="false" />
         </local-cache>
       </cache-container>

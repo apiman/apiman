@@ -65,16 +65,5 @@ public interface ISharedStateComponent extends IComponent {
      * @param handler
      */
     <T> void clearProperty(String namespace, String propertyName, IAsyncResultHandler<T> handler);
-
-    /**
-     * Increments a value in the shared state environment.  The new value of the 
-     * property is returned.  There is no 'decrement' method - you can use 
-     * 'increment' with a negative value instead.
-     * @param namespace
-     * @param propertyName
-     * @param amount
-     * @param handler
-     */
-    <T extends Number> void increment(String namespace, String propertyName, T amount, IAsyncResultHandler<T> handler);
     
 }

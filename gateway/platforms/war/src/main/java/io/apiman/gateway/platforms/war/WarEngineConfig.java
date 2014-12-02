@@ -166,7 +166,8 @@ public class WarEngineConfig implements IEngineConfig {
         Iterator<?> keys = config.getKeys(prefix + "."); //$NON-NLS-1$
         while (keys.hasNext()) {
             String key = String.valueOf(keys.next());
-            rval.put(key, config.getString(key));
+            String shortKey = key.substring(prefix.length() + 1);
+            rval.put(shortKey, config.getString(key));
         }
         return rval;
     }

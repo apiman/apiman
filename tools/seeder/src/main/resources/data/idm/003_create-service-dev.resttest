@@ -3,6 +3,7 @@ Content-Type: application/json
 
 {
   "name" : "Service Developer",
+  "description" : "Users responsible for creating and managing services should be granted this role within an Organization.",
   "permissions" : [ "svcView", "svcEdit", "svcAdmin" ]
 }
 ----
