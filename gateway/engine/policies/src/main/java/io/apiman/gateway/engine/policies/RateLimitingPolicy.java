@@ -104,7 +104,8 @@ public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig>
                 return null;
             } else {
                 StringBuilder builder = new StringBuilder();
-                builder.append("USER||"); //$NON-NLS-1$
+                builder.append(request.getApiKey());
+                builder.append("||USER||"); //$NON-NLS-1$
                 builder.append(request.getContract().getApplication().getOrganizationId());
                 builder.append("||"); //$NON-NLS-1$
                 builder.append(request.getContract().getApplication().getApplicationId());
@@ -114,14 +115,16 @@ public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig>
             }
         } else if (config.getGranularity() == RateLimitingGranularity.Application) {
             StringBuilder builder = new StringBuilder();
-            builder.append("APP||"); //$NON-NLS-1$
+            builder.append(request.getApiKey());
+            builder.append("||APP||"); //$NON-NLS-1$
             builder.append(request.getContract().getApplication().getOrganizationId());
             builder.append("||"); //$NON-NLS-1$
             builder.append(request.getContract().getApplication().getApplicationId());
             return builder.toString();
         } else {
             StringBuilder builder = new StringBuilder();
-            builder.append("SERVICE||"); //$NON-NLS-1$
+            builder.append(request.getApiKey());
+            builder.append("||SERVICE||"); //$NON-NLS-1$
             builder.append(request.getContract().getService().getOrganizationId());
             builder.append("||"); //$NON-NLS-1$
             builder.append(request.getContract().getService().getServiceId());

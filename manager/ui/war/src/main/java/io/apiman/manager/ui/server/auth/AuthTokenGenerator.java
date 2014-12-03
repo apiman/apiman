@@ -16,6 +16,7 @@
 package io.apiman.manager.ui.server.auth;
 
 import io.apiman.common.auth.AuthTokenUtil;
+import io.apiman.manager.ui.client.shared.beans.BearerTokenCredentialsBean;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -40,12 +41,14 @@ public class AuthTokenGenerator implements ITokenGenerator {
      */
     public AuthTokenGenerator() {
     }
-
+    
     /**
      * @see io.apiman.manager.ui.server.auth.api.security.ITokenGenerator#generateToken(javax.servlet.http.HttpServletRequest)
      */
     @Override
-    public String generateToken(HttpServletRequest request) {
+    public BearerTokenCredentialsBean generateToken(HttpServletRequest request) {
+        BearerTokenCredentialsBean bean = new BearerTokenCredentialsBean();
+        
         String principal = request.getRemoteUser();
         // TODO create platform specific subclasses of this to get the roles properly
         Set<String> roles = new HashSet<String>();
@@ -53,17 +56,10 @@ public class AuthTokenGenerator implements ITokenGenerator {
         if (request.isUserInRole("apiadmin")) { //$NON-NLS-1$
             roles.add("apiadmin"); //$NON-NLS-1$
         }
-        return AuthTokenUtil.produceToken(principal, roles, TEN_MINUTES);
+        String token = AuthTokenUtil.produceToken(principal, roles, TEN_MINUTES);
+        bean.setToken(token);
+        bean.setRefreshPeriod(NINE_MINUTES);
+        return bean;
     }
-
-    /**
-     * @see io.apiman.manager.ui.server.auth.api.security.ITokenGenerator#getRefreshPeriod()
-     */
-    @Override
-    public int getRefreshPeriod() {
-        return NINE_MINUTES;
-    }
-
-    
 
 }

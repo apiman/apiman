@@ -1,9 +1,0 @@
-POST /organizations/Overlord/roles admin/admin123!
-Content-Type: application/json
-
-{
-  "userId" : "bwayne",
-  "roleIds" : [ "ApplicationDeveloper" ]
-}
-----
-204

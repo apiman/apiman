@@ -20,7 +20,6 @@ import io.apiman.manager.ui.client.shared.beans.ApiAuthType;
 import io.apiman.manager.ui.client.shared.beans.ApiConfigurationBean;
 import io.apiman.manager.ui.client.shared.beans.AppConfigurationBean;
 import io.apiman.manager.ui.client.shared.beans.BasicAuthCredentialsBean;
-import io.apiman.manager.ui.client.shared.beans.BearerTokenCredentialsBean;
 import io.apiman.manager.ui.client.shared.beans.ConfigurationBean;
 import io.apiman.manager.ui.client.shared.beans.UserConfigurationBean;
 import io.apiman.manager.ui.server.UIVersion;
@@ -100,11 +99,7 @@ public class ConfigurationServlet extends AbstractUIServlet {
                         throw new ServletException("No token generator class specified."); //$NON-NLS-1$
                     Class<?> c = Class.forName(tokenGeneratorClassName);
                     ITokenGenerator tokenGenerator = (ITokenGenerator) c.newInstance();
-                    configBean.getApi().getAuth().setBearerToken(new BearerTokenCredentialsBean());
-                    configBean.getApi().getAuth().getBearerToken()
-                            .setToken(tokenGenerator.generateToken(request));
-                    configBean.getApi().getAuth().getBearerToken()
-                            .setRefreshPeriod(tokenGenerator.getRefreshPeriod());
+                    configBean.getApi().getAuth().setBearerToken(tokenGenerator.generateToken(request));
                     break;
                 }
                 case basic: {
@@ -123,11 +118,7 @@ public class ConfigurationServlet extends AbstractUIServlet {
                         throw new ServletException("No token generator class specified."); //$NON-NLS-1$
                     Class<?> c = Class.forName(tokenGeneratorClassName);
                     ITokenGenerator tokenGenerator = (ITokenGenerator) c.newInstance();
-                    configBean.getApi().getAuth().setBearerToken(new BearerTokenCredentialsBean());
-                    configBean.getApi().getAuth().getBearerToken()
-                            .setToken(tokenGenerator.generateToken(request));
-                    configBean.getApi().getAuth().getBearerToken()
-                            .setRefreshPeriod(tokenGenerator.getRefreshPeriod());
+                    configBean.getApi().getAuth().setBearerToken(tokenGenerator.generateToken(request));
                     break;
                 }
                 case samlBearerToken: {
@@ -137,11 +128,7 @@ public class ConfigurationServlet extends AbstractUIServlet {
                         throw new ServletException("No token generator class specified."); //$NON-NLS-1$
                     Class<?> c = Class.forName(tokenGeneratorClassName);
                     ITokenGenerator tokenGenerator = (ITokenGenerator) c.newInstance();
-                    configBean.getApi().getAuth().setBearerToken(new BearerTokenCredentialsBean());
-                    configBean.getApi().getAuth().getBearerToken()
-                            .setToken(tokenGenerator.generateToken(request));
-                    configBean.getApi().getAuth().getBearerToken()
-                            .setRefreshPeriod(tokenGenerator.getRefreshPeriod());
+                    configBean.getApi().getAuth().setBearerToken(tokenGenerator.generateToken(request));
                     break;
                 }
             }

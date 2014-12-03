@@ -1,0 +1,6 @@
+GET /currentuser/info ${apiman.suite.api-username}/${apiman.suite.api-password}
+----
+200
+
+{
+}

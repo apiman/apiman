@@ -1,0 +1,21 @@
+POST /policyDefs ${apiman.suite.api-username}/${apiman.suite.api-password}
+Content-Type: application/json
+
+{
+  "name" : "IP Blacklist Policy",
+  "description" : "Requests that originate from a specified set of valid IP addresses will be denied access.",
+  "policyImpl" : "class:io.apiman.gateway.engine.policies.IPBlacklistPolicy",
+  "icon" : "thumbs-down",
+  "templates" : [
+    {
+      "language" : null,
+      "template" : "Requests that originate from the set of @{ipList.size()} configured IP address(es) will be denied access to the managed service."
+    }
+  ]
+}
+----
+200
+Content-Type: application/json
+
+{
+}

@@ -66,6 +66,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author eric.wittmann@redhat.com
  */
+@SuppressWarnings("nls")
 public class TestPlanRunner {
 
     private static Logger logger = LoggerFactory.getLogger(TestPlanRunner.class);
@@ -79,6 +80,9 @@ public class TestPlanRunner {
      */
     public TestPlanRunner(String baseApiUrl) {
         this.baseApiUrl = baseApiUrl;
+        if (this.baseApiUrl.endsWith("/")) {
+            this.baseApiUrl = this.baseApiUrl.substring(0, this.baseApiUrl.length() - 1);
+        }
     }
 
     /**
@@ -91,34 +95,34 @@ public class TestPlanRunner {
         client = HttpClientBuilder.create().build();
         try {
             TestPlan testPlan = TestUtil.loadTestPlan(resourcePath, cl);
-            log(""); //$NON-NLS-1$
-            log("-------------------------------------------------------------------------------"); //$NON-NLS-1$
-            log("Executing Test Plan: " + resourcePath); //$NON-NLS-1$
-            log("   Base API URL: " + baseApiUrl); //$NON-NLS-1$
-            log("-------------------------------------------------------------------------------"); //$NON-NLS-1$
-            log(""); //$NON-NLS-1$
+            log("");
+            log("-------------------------------------------------------------------------------");
+            log("Executing Test Plan: " + resourcePath);
+            log("   Base API URL: " + baseApiUrl);
+            log("-------------------------------------------------------------------------------");
+            log("");
             for (TestGroupType group : testPlan.getTestGroup()) {
-                log("-----------------------------------------------------------"); //$NON-NLS-1$
-                log("Starting Test Group [{0}]", group.getName()); //$NON-NLS-1$
-                log("-----------------------------------------------------------"); //$NON-NLS-1$
+                log("-----------------------------------------------------------");
+                log("Starting Test Group [{0}]", group.getName());
+                log("-----------------------------------------------------------");
     
                 for (TestType test : group.getTest()) {
                     String rtPath = test.getValue();
-                    log("Executing REST Test [{0}] - {1}", test.getName(), rtPath); //$NON-NLS-1$
+                    log("Executing REST Test [{0}] - {1}", test.getName(), rtPath);
                     RestTest restTest = TestUtil.loadRestTest(rtPath, cl);
                     runTest(restTest);
-                    log("REST Test Completed"); //$NON-NLS-1$
-                    log("+++++++++++++++++++"); //$NON-NLS-1$
+                    log("REST Test Completed");
+                    log("+++++++++++++++++++");
                 }
     
-                log("Test Group [{0}] Completed Successfully", group.getName()); //$NON-NLS-1$
+                log("Test Group [{0}] Completed Successfully", group.getName());
             }
     
-            log(""); //$NON-NLS-1$
-            log("-------------------------------------------------------------------------------"); //$NON-NLS-1$
-            log("Test Plan successfully executed: " + resourcePath); //$NON-NLS-1$
-            log("-------------------------------------------------------------------------------"); //$NON-NLS-1$
-            log(""); //$NON-NLS-1$
+            log("");
+            log("-------------------------------------------------------------------------------");
+            log("Test Plan successfully executed: " + resourcePath);
+            log("-------------------------------------------------------------------------------");
+            log("");
         } finally {
             try { client.close(); } catch (IOException e) { throw new RuntimeException(e); }
             client = null;
@@ -135,39 +139,40 @@ public class TestPlanRunner {
             String requestPath = TestUtil.doPropertyReplacement(restTest.getRequestPath());
             URI uri = getUri(requestPath);
             HttpRequestBase request = null;
-            if (restTest.getRequestMethod().equalsIgnoreCase("GET")) { //$NON-NLS-1$
+            if (restTest.getRequestMethod().equalsIgnoreCase("GET")) {
                 request = new HttpGet();
-            } else if (restTest.getRequestMethod().equalsIgnoreCase("POST")) { //$NON-NLS-1$
+            } else if (restTest.getRequestMethod().equalsIgnoreCase("POST")) {
                 request = new HttpPost();
                 HttpEntity entity = new StringEntity(restTest.getRequestPayload());
                 ((HttpPost) request).setEntity(entity);
-            } else if (restTest.getRequestMethod().equalsIgnoreCase("PUT")) { //$NON-NLS-1$
+            } else if (restTest.getRequestMethod().equalsIgnoreCase("PUT")) {
                 request = new HttpPut();
                 HttpEntity entity = new StringEntity(restTest.getRequestPayload());
                 ((HttpPut) request).setEntity(entity);
-            } else if (restTest.getRequestMethod().equalsIgnoreCase("DELETE")) { //$NON-NLS-1$
+            } else if (restTest.getRequestMethod().equalsIgnoreCase("DELETE")) {
                 request = new HttpDelete();
             }
             if (request == null) {
-                Assert.fail("Unsupported method in REST Test: " + restTest.getRequestMethod()); //$NON-NLS-1$
+                Assert.fail("Unsupported method in REST Test: " + restTest.getRequestMethod());
             }
             request.setURI(uri);
 
             Map<String, String> requestHeaders = restTest.getRequestHeaders();
             for (Entry<String, String> entry : requestHeaders.entrySet()) {
-                request.setHeader(entry.getKey(), entry.getValue());
+                String value = TestUtil.doPropertyReplacement(entry.getValue());
+                request.setHeader(entry.getKey(), value);
             }
 
             // Set up basic auth
             String authorization = createBasicAuthorization(restTest.getUsername(), restTest.getPassword());
             if (authorization != null) {
-                request.setHeader("Authorization", authorization); //$NON-NLS-1$
+                request.setHeader("Authorization", authorization);
             }
 
             HttpResponse response = client.execute(request);
             assertResponse(restTest, response);
         } catch (Error e) {
-            logPlain("[ERROR] " + e.getMessage()); //$NON-NLS-1$
+            logPlain("[ERROR] " + e.getMessage());
             throw e;
         } catch (Exception e) {
             throw new Error(e);
@@ -184,8 +189,10 @@ public class TestPlanRunner {
         if (username == null || username.trim().length() == 0) {
             return null;
         }
-        String val = username + ":" + password; //$NON-NLS-1$
-        return "Basic " + Base64.encodeBase64String(val.getBytes()).trim(); //$NON-NLS-1$
+        username = TestUtil.doPropertyReplacement(username);
+        password = TestUtil.doPropertyReplacement(password);
+        String val = username + ":" + password;
+        return "Basic " + Base64.encodeBase64String(val.getBytes()).trim();
     }
 
     /**
@@ -196,7 +203,7 @@ public class TestPlanRunner {
     private void assertResponse(RestTest restTest, HttpResponse response) {
         int actualStatusCode = response.getStatusLine().getStatusCode();
         try {
-            Assert.assertEquals("Unexpected REST response status code.  Status message: " //$NON-NLS-1$
+            Assert.assertEquals("Unexpected REST response status code.  Status message: "
                     + response.getStatusLine().getReasonPhrase(), restTest.getExpectedStatusCode(),
                     actualStatusCode);
         } catch (Error e) {
@@ -204,9 +211,9 @@ public class TestPlanRunner {
                 try {
                     InputStream content = response.getEntity().getContent();
                     String payload = IOUtils.toString(content);
-                    System.out.println("------ START ERROR PAYLOAD ------"); //$NON-NLS-1$
+                    System.out.println("------ START ERROR PAYLOAD ------");
                     System.out.println(payload);
-                    System.out.println("------ END   ERROR PAYLOAD ------"); //$NON-NLS-1$
+                    System.out.println("------ END   ERROR PAYLOAD ------");
                 } catch (Exception e1) {
                 }
             }
@@ -214,25 +221,25 @@ public class TestPlanRunner {
         }
         for (Entry<String, String> entry : restTest.getExpectedResponseHeaders().entrySet()) {
             String expectedHeaderName = entry.getKey();
-            if (expectedHeaderName.startsWith("X-RestTest-")) //$NON-NLS-1$
+            if (expectedHeaderName.startsWith("X-RestTest-"))
                 continue;
             String expectedHeaderValue = entry.getValue();
             Header header = response.getFirstHeader(expectedHeaderName);
-            Assert.assertNotNull("Expected header to exist but was not found: " + expectedHeaderName, header); //$NON-NLS-1$
+            Assert.assertNotNull("Expected header to exist but was not found: " + expectedHeaderName, header);
             String actualValue = header.getValue();
             Assert.assertEquals(expectedHeaderValue, actualValue);
         }
-        Header ctHeader = response.getFirstHeader("Content-Type"); //$NON-NLS-1$
+        Header ctHeader = response.getFirstHeader("Content-Type");
         if (ctHeader == null) {
             assertNoPayload(restTest, response);
         } else {
             String ct = ctHeader.getValue();
-            if (ct.equals("application/json")) { //$NON-NLS-1$
+            if (ct.equals("application/json")) {
                 assertJsonPayload(restTest, response);
-            } else if (ct.equals("text/plain")) { //$NON-NLS-1$
+            } else if (ct.equals("text/plain")) {
                 assertTextPayload(restTest, response);
             } else {
-                Assert.fail("Unsupported response payload type: " + ct); //$NON-NLS-1$
+                Assert.fail("Unsupported response payload type: " + ct);
             }
         }
     }
@@ -245,7 +252,7 @@ public class TestPlanRunner {
     private void assertNoPayload(RestTest restTest, HttpResponse response) {
         String expectedPayload = restTest.getExpectedResponsePayload();
         if (expectedPayload != null && expectedPayload.trim().length() > 0) {
-            Assert.fail("Expected a payload but didn't get one."); //$NON-NLS-1$
+            Assert.fail("Expected a payload but didn't get one.");
         }
     }
 
@@ -263,14 +270,14 @@ public class TestPlanRunner {
             JsonNode actualJson = jacksonParser.readTree(inputStream);
             bindVariables(actualJson, restTest);
             String expectedPayload = TestUtil.doPropertyReplacement(restTest.getExpectedResponsePayload());
-            Assert.assertNotNull("REST Test missing expected JSON payload.", expectedPayload); //$NON-NLS-1$
+            Assert.assertNotNull("REST Test missing expected JSON payload.", expectedPayload);
             JsonNode expectedJson = jacksonParser.readTree(expectedPayload);
             try {
                 assertJson(restTest, expectedJson, actualJson);
             } catch (Error e) {
-                System.out.println("--- START FAILED JSON PAYLOAD ---"); //$NON-NLS-1$
+                System.out.println("--- START FAILED JSON PAYLOAD ---");
                 System.out.println(actualJson.toString());
-                System.out.println("--- END FAILED JSON PAYLOAD ---"); //$NON-NLS-1$
+                System.out.println("--- END FAILED JSON PAYLOAD ---");
                 throw e;
             }
         } catch (Exception e) {
@@ -288,14 +295,14 @@ public class TestPlanRunner {
      */
     private void bindVariables(JsonNode actualJson, RestTest restTest) {
         for (String headerName : restTest.getExpectedResponseHeaders().keySet()) {
-            if (headerName.startsWith("X-RestTest-BindTo-")) { //$NON-NLS-1$
+            if (headerName.startsWith("X-RestTest-BindTo-")) {
                 String bindExpression = restTest.getExpectedResponseHeaders().get(headerName);
-                String bindVarName = headerName.substring("X-RestTest-BindTo-".length()); //$NON-NLS-1$
+                String bindVarName = headerName.substring("X-RestTest-BindTo-".length());
                 String bindValue = evaluate(bindExpression, actualJson);
-                log("-- Binding value in response --"); //$NON-NLS-1$
-                log("\tExpression: " + bindExpression); //$NON-NLS-1$
-                log("\t    To Var: " + bindVarName); //$NON-NLS-1$
-                log("\t New Value: " + bindValue); //$NON-NLS-1$
+                log("-- Binding value in response --");
+                log("\tExpression: " + bindExpression);
+                log("\t    To Var: " + bindVarName);
+                log("\t New Value: " + bindValue);
                 if (bindValue == null) {
                     System.clearProperty(bindVarName);
                 } else {
@@ -316,7 +323,7 @@ public class TestPlanRunner {
             @Override
             public Object setProperty(String name, Object contextObj, VariableResolverFactory variableFactory,
                     Object value) {
-                throw new RuntimeException("Not supported!"); //$NON-NLS-1$
+                throw new RuntimeException("Not supported!");
             }
             
             @Override
@@ -340,12 +347,12 @@ public class TestPlanRunner {
         if (expectedJson instanceof ArrayNode) {
             JsonNode actualValue = actualJson;
             ArrayNode expectedArray = (ArrayNode) expectedJson;
-            Assert.assertEquals("Expected JSON array but found non-array [" //$NON-NLS-1$
-                    + actualValue.getClass().getSimpleName() + "] instead.", expectedJson.getClass(), //$NON-NLS-1$
+            Assert.assertEquals("Expected JSON array but found non-array ["
+                    + actualValue.getClass().getSimpleName() + "] instead.", expectedJson.getClass(),
                     actualValue.getClass());
             ArrayNode actualArray = (ArrayNode) actualValue;
-            Assert.assertEquals("Array size mismatch.", expectedArray.size(), actualArray.size()); //$NON-NLS-1$
-            String ordering = restTest.getExpectedResponseHeaders().get("X-RestTest-ArrayOrdering"); //$NON-NLS-1$
+            Assert.assertEquals("Array size mismatch.", expectedArray.size(), actualArray.size());
+            String ordering = restTest.getExpectedResponseHeaders().get("X-RestTest-ArrayOrdering");
 
             JsonNode [] expected = new JsonNode[expectedArray.size()];
             JsonNode [] actual = new JsonNode[actualArray.size()];
@@ -354,7 +361,7 @@ public class TestPlanRunner {
                 actual[idx] = actualArray.get(idx);
             }
             // If strict ordering is disabled, then sort both arrays
-            if ("any".equals(ordering)) { //$NON-NLS-1$
+            if ("any".equals(ordering)) {
                 Comparator<? super JsonNode> comparator = new Comparator<JsonNode>() {
                     @Override
                     public int compare(JsonNode o1, JsonNode o2) {
@@ -380,67 +387,67 @@ public class TestPlanRunner {
                     TextNode tn = (TextNode) expectedValue;
                     String expected = tn.getTextValue();
                     JsonNode actualValue = actualJson.get(expectedFieldName);
-                    Assert.assertNotNull("Expected JSON text field '" + expectedFieldName + "' with value '" //$NON-NLS-1$ //$NON-NLS-2$
-                            + expected + "' but was not found.", actualValue); //$NON-NLS-1$
-                    Assert.assertEquals("Expected JSON text field '" + expectedFieldName + "' with value '" //$NON-NLS-1$ //$NON-NLS-2$
-                            + expected + "' but found non-text [" + actualValue.getClass().getSimpleName() //$NON-NLS-1$
-                            + "] field with that name instead.", TextNode.class, actualValue.getClass()); //$NON-NLS-1$
+                    Assert.assertNotNull("Expected JSON text field '" + expectedFieldName + "' with value '"
+                            + expected + "' but was not found.", actualValue);
+                    Assert.assertEquals("Expected JSON text field '" + expectedFieldName + "' with value '"
+                            + expected + "' but found non-text [" + actualValue.getClass().getSimpleName()
+                            + "] field with that name instead.", TextNode.class, actualValue.getClass());
                     String actual = ((TextNode) actualValue).getTextValue();
-                    Assert.assertEquals("Value mismatch for text field '" + expectedFieldName + "'.", expected, //$NON-NLS-1$ //$NON-NLS-2$
+                    Assert.assertEquals("Value mismatch for text field '" + expectedFieldName + "'.", expected,
                             actual);
                 } else if (expectedValue instanceof NumericNode) {
                     NumericNode numeric = (NumericNode) expectedValue;
                     Number expected = numeric.getNumberValue();
                     JsonNode actualValue = actualJson.get(expectedFieldName);
-                    Assert.assertNotNull("Expected JSON numeric field '" + expectedFieldName + "' with value '" //$NON-NLS-1$ //$NON-NLS-2$
-                            + expected + "' but was not found.", actualValue); //$NON-NLS-1$
-                    Assert.assertEquals("Expected JSON numeric field '" + expectedFieldName + "' with value '" //$NON-NLS-1$ //$NON-NLS-2$
-                            + expected + "' but found non-numeric [" + actualValue.getClass().getSimpleName() //$NON-NLS-1$
-                            + "] field with that name instead.", expectedValue.getClass(), actualValue.getClass()); //$NON-NLS-1$
+                    Assert.assertNotNull("Expected JSON numeric field '" + expectedFieldName + "' with value '"
+                            + expected + "' but was not found.", actualValue);
+                    Assert.assertEquals("Expected JSON numeric field '" + expectedFieldName + "' with value '"
+                            + expected + "' but found non-numeric [" + actualValue.getClass().getSimpleName()
+                            + "] field with that name instead.", expectedValue.getClass(), actualValue.getClass());
                     Number actual = ((NumericNode) actualValue).getNumberValue();
-                    Assert.assertEquals("Value mismatch for numeric field '" + expectedFieldName + "'.", expected, //$NON-NLS-1$ //$NON-NLS-2$
+                    Assert.assertEquals("Value mismatch for numeric field '" + expectedFieldName + "'.", expected,
                             actual);
                 } else if (expectedValue instanceof BooleanNode) {
                     BooleanNode bool = (BooleanNode) expectedValue;
                     Boolean expected = bool.getBooleanValue();
                     JsonNode actualValue = actualJson.get(expectedFieldName);
-                    Assert.assertNotNull("Expected JSON boolean field '" + expectedFieldName + "' with value '" //$NON-NLS-1$ //$NON-NLS-2$
-                            + expected + "' but was not found.", actualValue); //$NON-NLS-1$
-                    Assert.assertEquals("Expected JSON boolean field '" + expectedFieldName + "' with value '" //$NON-NLS-1$ //$NON-NLS-2$
-                            + expected + "' but found non-boolean [" + actualValue.getClass().getSimpleName() //$NON-NLS-1$
-                            + "] field with that name instead.", expectedValue.getClass(), actualValue.getClass()); //$NON-NLS-1$
+                    Assert.assertNotNull("Expected JSON boolean field '" + expectedFieldName + "' with value '"
+                            + expected + "' but was not found.", actualValue);
+                    Assert.assertEquals("Expected JSON boolean field '" + expectedFieldName + "' with value '"
+                            + expected + "' but found non-boolean [" + actualValue.getClass().getSimpleName()
+                            + "] field with that name instead.", expectedValue.getClass(), actualValue.getClass());
                     Boolean actual = ((BooleanNode) actualValue).getBooleanValue();
-                    Assert.assertEquals("Value mismatch for boolean field '" + expectedFieldName + "'.", expected, //$NON-NLS-1$ //$NON-NLS-2$
+                    Assert.assertEquals("Value mismatch for boolean field '" + expectedFieldName + "'.", expected,
                             actual);
                 } else if (expectedValue instanceof ObjectNode) {
                     JsonNode actualValue = actualJson.get(expectedFieldName);
-                    Assert.assertNotNull("Expected parent JSON field '" + expectedFieldName //$NON-NLS-1$
-                            + "' but was not found.", actualValue); //$NON-NLS-1$
-                    Assert.assertEquals("Expected parent JSON field '" + expectedFieldName //$NON-NLS-1$
-                            + "' but found field of type '" + actualValue.getClass().getSimpleName() + "'.", //$NON-NLS-1$ //$NON-NLS-2$
+                    Assert.assertNotNull("Expected parent JSON field '" + expectedFieldName
+                            + "' but was not found.", actualValue);
+                    Assert.assertEquals("Expected parent JSON field '" + expectedFieldName
+                            + "' but found field of type '" + actualValue.getClass().getSimpleName() + "'.",
                             ObjectNode.class, actualValue.getClass());
                     assertJson(restTest, expectedValue, actualValue);
                 } else if (expectedValue instanceof ArrayNode) {
                     JsonNode actualValue = actualJson.get(expectedFieldName);
-                    Assert.assertNotNull("Expected JSON array field '" + expectedFieldName //$NON-NLS-1$
-                            + "' but was not found.", actualValue); //$NON-NLS-1$
+                    Assert.assertNotNull("Expected JSON array field '" + expectedFieldName
+                            + "' but was not found.", actualValue);
                     ArrayNode expectedArray = (ArrayNode) expectedValue;
-                    Assert.assertEquals("Expected JSON array field '" + expectedFieldName //$NON-NLS-1$
-                            + "' but found non-array [" + actualValue.getClass().getSimpleName() //$NON-NLS-1$
-                            + "] field with that name instead.", expectedValue.getClass(), actualValue.getClass()); //$NON-NLS-1$
+                    Assert.assertEquals("Expected JSON array field '" + expectedFieldName
+                            + "' but found non-array [" + actualValue.getClass().getSimpleName()
+                            + "] field with that name instead.", expectedValue.getClass(), actualValue.getClass());
                     ArrayNode actualArray = (ArrayNode) actualValue;
-                    Assert.assertEquals("Field '" + expectedFieldName + "' array size mismatch.", //$NON-NLS-1$ //$NON-NLS-2$
+                    Assert.assertEquals("Field '" + expectedFieldName + "' array size mismatch.",
                             expectedArray.size(), actualArray.size());
                     assertJson(restTest, expectedArray, actualArray);
                 } else if (expectedValue instanceof NullNode) {
                     JsonNode actualValue = actualJson.get(expectedFieldName);
-                    Assert.assertNotNull("Expected Null JSON field '" + expectedFieldName //$NON-NLS-1$
-                            + "' but was not found.", actualValue); //$NON-NLS-1$
-                    Assert.assertEquals("Expected Null JSON field '" + expectedFieldName //$NON-NLS-1$
-                            + "' but found field of type '" + actualValue.getClass().getSimpleName() + "'.", //$NON-NLS-1$ //$NON-NLS-2$
+                    Assert.assertNotNull("Expected Null JSON field '" + expectedFieldName
+                            + "' but was not found.", actualValue);
+                    Assert.assertEquals("Expected Null JSON field '" + expectedFieldName
+                            + "' but found field of type '" + actualValue.getClass().getSimpleName() + "'.",
                             NullNode.class, actualValue.getClass());
                 } else {
-                    Assert.fail("Unsupported field type: " + expectedValue.getClass().getSimpleName()); //$NON-NLS-1$
+                    Assert.fail("Unsupported field type: " + expectedValue.getClass().getSimpleName());
                 }
             }
         }
@@ -459,12 +466,12 @@ public class TestPlanRunner {
             List<String> lines = IOUtils.readLines(inputStream);
             StringBuilder builder = new StringBuilder();
             for (String line : lines) {
-                builder.append(line).append("\n"); //$NON-NLS-1$
+                builder.append(line).append("\n");
             }
 
             String actual = builder.toString();
             String expected = restTest.getExpectedResponsePayload();
-            Assert.assertEquals("Response payload (text/plain) mismatch.", expected, actual); //$NON-NLS-1$
+            Assert.assertEquals("Response payload (text/plain) mismatch.", expected, actual);
         } catch (Exception e) {
             throw new Error(e);
         } finally {
@@ -478,7 +485,11 @@ public class TestPlanRunner {
      * @throws URISyntaxException
      */
     public URI getUri(String path) throws URISyntaxException {
-        return new URI(baseApiUrl + path);
+        if (path == null) {
+            return new URI(baseApiUrl);
+        } else {
+            return new URI(baseApiUrl + path);
+        }
     }
 
     /**
@@ -489,7 +500,7 @@ public class TestPlanRunner {
      */
     private void log(String message, Object... params) {
         String outmsg = MessageFormat.format(message, params);
-        logger.info("    >> " + outmsg); //$NON-NLS-1$
+        logger.info("    >> " + outmsg);
     }
 
     /**
@@ -498,7 +509,7 @@ public class TestPlanRunner {
      * @param message
      */
     private void logPlain(String message) {
-        logger.info("    >> " + message); //$NON-NLS-1$
+        logger.info("    >> " + message);
     }
 
 }

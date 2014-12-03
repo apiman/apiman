@@ -1,0 +1,13 @@
+GET /silver
+X-Customer-Header: custom-value
+X-API-Key: ${silver-api-key}
+
+----
+500
+Content-Type: application/json
+
+{
+  "type" : "Other",
+  "failureCode" : 10005,
+  "message" : "Rate limit exceeded."
+}

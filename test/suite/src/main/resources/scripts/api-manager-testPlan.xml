@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testPlan xmlns="urn:io.apiman.test:2014:02:testPlan">
+
+  <!-- Initial IDM setup -->
+  <testGroup name="IDM">
+    <test name="Create Org Owner">data/idm/001_create-org-owner.resttest</test>
+    <test name="Create App Developer">data/idm/002_create-app-dev.resttest</test>
+    <test name="Create Service Developer">data/idm/003_create-service-dev.resttest</test>
+    <test name="Create Admin">data/idm/004_create-admin.resttest</test>
+  </testGroup>
+
+  <!-- Policy Definitions -->
+  <testGroup name="Policy Defs">
+    <test name="Create Whitelist Policy Def">data/policyDefs/000_whitelist-policydef.resttest</test>
+    <test name="Create Blacklist Policy Def">data/policyDefs/001_blacklist-policydef.resttest</test>
+    <test name="Create BASIC Authentication Policy Def">data/policyDefs/002_basicauth-policydef.resttest</test>
+    <test name="Create BASIC Authentication Policy Def">data/policyDefs/003_ratelimiting-policydef.resttest</test>
+  </testGroup>
+  
+  <!-- Gateways -->
+  <testGroup name="Gateways">
+    <test name="Create Gateway">data/gateways/000_gateway.resttest</test>
+  </testGroup>
+
+  <!-- Create Organizations -->
+  <testGroup name="Create Orgs">
+    <test name="Create Test Org">data/orgs/001_create-test.resttest</test>
+  </testGroup>
+
+  <!-- Plans -->
+  <testGroup name="Plans">
+    <test name="Create Gold">data/plans/001_create-gold.resttest</test>
+    <test name="Create Silver">data/plans/002_create-silver.resttest</test>
+    <test name="Create Gold 1.0">data/plans/003_create-gold-version-1.0.resttest</test>
+    <test name="Create Silver 1.0">data/plans/004_create-silver-version-1.0.resttest</test>
+    <test name="Create Gold Policy">data/plans/005_create-gold-policy.resttest</test>
+    <test name="Create Silver Policy">data/plans/006_create-silver-policy.resttest</test>
+  </testGroup>
+
+  <!-- Services -->
+  <testGroup name="Services">
+    <test name="Create echo">data/services/001_create-echo.resttest</test>
+    <test name="Create echo 1.0">data/services/002_create-echo-version-1.0.resttest</test>
+  </testGroup>
+
+  <!-- Applications -->
+  <testGroup name="Applications">
+    <test name="Create app1">data/apps/001_create-app1.resttest</test>
+    <test name="Create app1 (version 1.0)">data/apps/002_create-app1-version-1.0.resttest</test>
+    <test name="Create app1->echo:Gold contract">data/apps/003_create-gold-contract.resttest</test>
+    <test name="Create app1->echo:Silver contract">data/apps/004_create-silver-contract.resttest</test>
+  </testGroup>
+  
+  <!-- Publish -->
+  <testGroup name="Publish">
+    <test name="Publish echo">data/publish/001_publish-echo.resttest</test>
+    <test name="Register app1">data/publish/002_register-app1.resttest</test>
+  </testGroup>
+
+</testPlan>

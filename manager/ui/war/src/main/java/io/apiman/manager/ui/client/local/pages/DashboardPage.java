@@ -17,6 +17,7 @@ package io.apiman.manager.ui.client.local.pages;
 
 import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.services.ConfigurationService;
+import io.apiman.manager.ui.client.local.services.LoggerService;
 import io.apiman.manager.ui.client.local.util.MultimapUtil;
 
 import javax.enterprise.context.Dependent;
@@ -41,6 +42,8 @@ public class DashboardPage extends AbstractPage {
     
     @Inject
     ConfigurationService config;
+    @Inject
+    LoggerService logger;
 
     @Inject @DataField
     Anchor createOrg;
@@ -81,7 +84,11 @@ public class DashboardPage extends AbstractPage {
     protected void renderPage() {
         super.renderPage();
         
-        if (!getCurrentUserBean().isAdmin()) {
+        if (getCurrentUserBean().isAdmin()) {
+            logger.info("User {0} is an admin!", getCurrentUserBean().getUsername()); //$NON-NLS-1$
+            showAdminGroup();
+        } else {
+            logger.info("User {0} is just a regular user.", getCurrentUserBean().getUsername()); //$NON-NLS-1$
             hideAdminGroup();
         }
         
@@ -114,6 +121,13 @@ public class DashboardPage extends AbstractPage {
         managePolicyDefs.setHref(managePolicyDefsHref);
         manageGateways.setHref(manageGatewaysHref);
     }
+
+    /**
+     * Shows the admin group div.
+     */
+    private native void showAdminGroup() /*-{
+        $wnd.jQuery('#dash-admin-group').show();
+    }-*/;
 
     /**
      * Hides the admin group div.

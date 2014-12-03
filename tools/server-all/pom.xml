@@ -14,42 +14,9 @@
     <!-- The WildFly 8 version of APIMan -->
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-manager-api-war-wildfly8</artifactId>
-      <type>war</type>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-manager-ui-war-wildfly8</artifactId>
-      <type>war</type>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-gateway-platforms-war-wildfly8</artifactId>
-      <type>war</type>
-    </dependency>
-
-    <!-- The Jetty 8 version of APIMan -->
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-manager-api-war-jetty8</artifactId>
-      <type>war</type>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-manager-ui-war-jetty8</artifactId>
-      <type>war</type>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-gateway-platforms-war-jetty8</artifactId>
-      <type>war</type>
-    </dependency>
-    
-    <!-- The Dev Environment Seeder -->
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-tools-seeder</artifactId>
-      <type>war</type>
+      <artifactId>apiman-distro-wildfly8</artifactId>
+      <type>zip</type>
+      <classifier>overlay</classifier>
     </dependency>
 
     <!-- Some Basic Services for Testing -->
@@ -58,7 +25,7 @@
       <artifactId>apiman-tools-services</artifactId>
       <type>war</type>
     </dependency>
-    
+
     <!-- Data Source Dependencies -->
     <dependency>
       <groupId>commons-dbcp</groupId>
@@ -75,7 +42,7 @@
   </dependencies>
 
   <profiles>
-    <!-- Install on WildFly 8.1 -->
+    <!-- Install on WildFly 8.2 -->
     <profile>
       <id>install-all-wildfly8</id>
       <build>
@@ -99,60 +66,48 @@
                   <tasks>
                     <antversion property="antversion" />
                     <echo>Ant Version: ${antversion}</echo>
-                    
+
                     <property name="appserver.id" value="wildfly8" />
-                    <property name="apiman.wildfly.download.url" value="http://download.jboss.org/wildfly/8.1.0.Final/wildfly-8.1.0.Final.zip" />
+                    <property name="apiman.wildfly.download.url"
+                      value="http://download.jboss.org/wildfly/8.2.0.Final/wildfly-8.2.0.Final.zip" />
                     <property name="apiman.tempdir" value="${project.build.directory}/_tmp" />
                     <property name="apiman.install.dir" value="${project.build.directory}" />
-                    <property name="apiman.appserver.dir" location="${apiman.install.dir}/wildfly-8.1.0.Final" />
-                    <property name="apiman.wildfly.zip" location="${basedir}/wildfly-8.1.0.Final.zip" />
-                    <property name="apiman.apiman-manager-api-war-wildfly8.war"
-                      value="${maven.dependency.io.apiman.apiman-manager-api-war-wildfly8.war.path}" />
-                    <property name="apiman.apiman-manager-ui-war-wildfly8.war"
-                      value="${maven.dependency.io.apiman.apiman-manager-ui-war-wildfly8.war.path}" />
-                    <property name="apiman.apiman-tools-seeder.war"
-                      value="${maven.dependency.io.apiman.apiman-tools-seeder.war.path}" />
-                    <property name="apiman.apiman-tools-services.war"
-                      value="${maven.dependency.io.apiman.apiman-tools-services.war.path}" />
-                    <property name="apiman.apiman-gateway-platforms-war-wildfly8.war"
-                      value="${maven.dependency.io.apiman.apiman-gateway-platforms-war-wildfly8.war.path}" />
+                    <property name="apiman.appserver.dir" location="${apiman.install.dir}/wildfly-8.2.0.Final" />
+                    <property name="apiman.wildfly.zip" location="${basedir}/wildfly-8.2.0.Final.zip" />
+                    <property name="apiman.apiman-distro-wildfly8.zip" value="${maven.dependency.io.apiman.apiman-distro-wildfly8.overlay.zip.path}" />
+                    <property name="apiman.apiman-tools-services.war" value="${maven.dependency.io.apiman.apiman-tools-services.war.path}" />
                     <property name="apiman.wildfly.home" location="${apiman.appserver.dir}" />
                     <property name="apiman.wildfly.webapps" location="${apiman.appserver.dir}/standalone/deployments" />
                     <property name="apiman.resources.dir" location="${basedir}/src/main/resources" />
-                    
+
                     <echo></echo>
                     <echo>********************************************************************</echo>
-                    <echo>APIMan DT:         ${apiman.apiman-manager-api-war-wildfly8.war}</echo>
-                    <echo>APIMan DT UI:      ${apiman.apiman-manager-ui-war-wildfly8.war}</echo>
-                    <echo>APIMan Gateway:    ${apiman.apiman-gateway-platforms-war-wildfly8.war}</echo>
-                    <echo>Dev Seeder:        ${apiman.apiman-tools-seeder.war}</echo>
-                    <echo>Dev Services:      ${apiman.apiman-tools-services.war}</echo>
+                    <echo>APIMan Dist: ${apiman.apiman-distro-wildfly8.zip}</echo>
+                    <echo>Dev Services: ${apiman.apiman-tools-services.war}</echo>
                     <echo>-------</echo>
-                    <echo>WildFly Home:      ${apiman.wildfly.home}</echo>
+                    <echo>WildFly Home: ${apiman.wildfly.home}</echo>
                     <echo>********************************************************************</echo>
                     <echo></echo>
-                    
+
                     <mkdir dir="${apiman.tempdir}" />
-                    
-                    <!-- Download and unpack WildFly 8.1 -->
+
+                    <!-- Download and unpack WildFly 8.2 -->
                     <get src="${apiman.wildfly.download.url}" dest="${apiman.wildfly.zip}" usetimestamp="true" />
                     <unzip src="${apiman.wildfly.zip}" dest="${apiman.install.dir}" overwrite="false" />
-                    
-                    <!-- Configure APIMan -->
-                    <copy file="../../distro/wildfly8/src/main/resources/overlay/standalone/configuration/apiman.properties" todir="${apiman.wildfly.home}/standalone/configuration/" />
-                    <copy file="../../distro/wildfly8/src/main/resources/overlay/standalone/configuration/apiman-roles.properties" todir="${apiman.wildfly.home}/standalone/configuration/" />
-                    <copy file="../../distro/wildfly8/src/main/resources/overlay/standalone/configuration/apiman-users.properties" todir="${apiman.wildfly.home}/standalone/configuration/" />
 
-                    <!-- Deploy apiman to WildFly 8 -->
-                    <copy file="../../distro/wildfly8/src/main/resources/overlay/standalone/deployments/apiman-ds.xml" todir="${apiman.wildfly.webapps}" overwrite="true" />
-                    <copy file="${apiman.resources.dir}/wildfly8/deployments/authtest-ds.xml" todir="${apiman.wildfly.webapps}" overwrite="true" />
-                    <copy file="${apiman.resources.dir}/wildfly8/deployments/mysql-connector-java-5.1.33-bin.jar" todir="${apiman.wildfly.webapps}" overwrite="true" />
-                    <copy file="../../distro/wildfly8/src/main/resources/overlay/standalone/configuration/standalone-apiman.xml" tofile="${apiman.wildfly.home}/standalone/configuration/standalone.xml" overwrite="true" />
-                    <copy file="${apiman.apiman-manager-api-war-wildfly8.war}" tofile="${apiman.wildfly.webapps}/apiman-manager-api.war" overwrite="true" />
-                    <copy file="${apiman.apiman-manager-ui-war-wildfly8.war}" tofile="${apiman.wildfly.webapps}/apiman-manager-ui.war" overwrite="true" />
-                    <copy file="${apiman.apiman-tools-seeder.war}" tofile="${apiman.wildfly.webapps}/seeder.war" overwrite="true" />
-                    <copy file="${apiman.apiman-tools-services.war}" tofile="${apiman.wildfly.webapps}/services.war" overwrite="true" />
-                    <copy file="${apiman.apiman-gateway-platforms-war-wildfly8.war}" tofile="${apiman.wildfly.webapps}/apiman-gateway.war" overwrite="true" />
+                    <!-- Overlay APIMan on top of WildFly 8.2 -->
+                    <unzip src="${apiman.apiman-distro-wildfly8.zip}" dest="${apiman.install.dir}" overwrite="false" />
+
+                    <!-- Deploy additional stuff -->
+                    <copy file="${apiman.resources.dir}/wildfly8/deployments/authtest-ds.xml" todir="${apiman.wildfly.webapps}"
+                      overwrite="true" />
+                    <copy file="${apiman.resources.dir}/wildfly8/deployments/mysql-connector-java-5.1.33-bin.jar"
+                      todir="${apiman.wildfly.webapps}" overwrite="true" />
+                    <copy
+                      file="../../distro/wildfly8/src/main/resources/overlay/standalone/configuration/standalone-apiman.xml"
+                      tofile="${apiman.wildfly.home}/standalone/configuration/standalone.xml" overwrite="true" />
+                    <copy file="${apiman.apiman-tools-services.war}" tofile="${apiman.wildfly.webapps}/services.war"
+                      overwrite="true" />
                   </tasks>
                 </configuration>
                 <goals>

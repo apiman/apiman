@@ -67,7 +67,7 @@
 
   <servlet>
     <servlet-name>LogoutServlet</servlet-name>
-    <servlet-class>io.apiman.manager.ui.server.servlets.LogoutServlet</servlet-class>
+    <servlet-class>io.apiman.manager.ui.server.wildfly8.KeyCloakLogoutServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>LogoutServlet</servlet-name>
@@ -84,11 +84,8 @@
     </auth-constraint>
   </security-constraint>
   <login-config>
-    <auth-method>FORM</auth-method>
-    <form-login-config>
-      <form-login-page>/_login.html</form-login-page>
-      <form-error-page>/_loginerror.html</form-error-page>
-    </form-login-config>
+    <auth-method>BASIC</auth-method>
+    <realm-name>apiman</realm-name>
   </login-config>
   <security-role>
     <role-name>apiuser</role-name>

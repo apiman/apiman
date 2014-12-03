@@ -1,0 +1,19 @@
+POST /organizations/Test/applications/app1/versions ${apiman.suite.api-username}/${apiman.suite.api-password}
+Content-Type: application/json
+
+{
+  "version" : "1.0"
+}
+----
+200
+Content-Type: application/json
+
+{
+  "application" : {
+    "organizationId" : "Test",
+    "id" : "app1",
+    "name" : "app1"
+  },
+  "status" : "Created",
+  "version" : "1.0"
+}

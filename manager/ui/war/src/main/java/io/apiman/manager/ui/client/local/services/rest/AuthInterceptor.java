@@ -123,8 +123,9 @@ public class AuthInterceptor implements RestClientInterceptor {
      * @param auth
      */
     private void doBearerTokenAuth(RestCallContext context, ApiAuthConfigurationBean auth) {
-        // TODO implement bearer token authentication
-        throw new RuntimeException("Not yet implemented (Bearer Token Auth)."); //$NON-NLS-1$
+        String bearerToken = auth.getBearerToken().getToken();
+        context.getRequestBuilder().setIncludeCredentials(true);
+        context.getRequestBuilder().setHeader("Authorization", "Bearer " + bearerToken); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
 }

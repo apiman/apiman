@@ -54,6 +54,9 @@ public class ConfigurationService {
     @Inject
     InitBallot<ConfigurationService> ballot;
     
+    @Inject
+    LoggerService logger;
+    
     private ConfigurationBean configuration;
 
     /**
@@ -100,27 +103,31 @@ public class ConfigurationService {
                         @Override
                         public void onResponseReceived(Request request, Response response) {
                             if (response.getStatusCode() != 200) {
-                                GWT.log("[001] Authentication token refresh failure: " + url); //$NON-NLS-1$
+                                logger.error("(001) Authentication token refresh failure: {0}", url); //$NON-NLS-1$
                             } else {
                                 BearerTokenCredentialsBean bean = new BearerTokenCredentialsBean();
                                 JSONObject root = JSONParser.parseStrict(response.getText()).isObject();
                                 bean.setToken(root.get("token").isString().stringValue()); //$NON-NLS-1$
                                 bean.setRefreshPeriod((int) root.get("refreshPeriod").isNumber().doubleValue()); //$NON-NLS-1$
                                 configuration.getApi().getAuth().setBearerToken(bean);
+                                logger.debug("Refreshed access token: {0}", bean.getToken()); //$NON-NLS-1$
                             }
                             startTokenRefreshTimer();
                         }
                         @Override
                         public void onError(Request request, Throwable exception) {
-                            GWT.log("[002] Authentication token refresh failure: " + url); //$NON-NLS-1$
+                            logger.error("(002) Authentication token refresh failure: {0}", url); //$NON-NLS-1$
+                            logger.error(exception.getMessage());
                         }
                     });
                 } catch (RequestException e) {
-                    GWT.log("Authentication token refresh failed!"); //$NON-NLS-1$
+                    logger.error("(003) Authentication token refresh failure: {0}", url); //$NON-NLS-1$
+                    logger.error(e.getMessage());
                 }
             }
         };
         timer.schedule(configuration.getApi().getAuth().getBearerToken().getRefreshPeriod() * 1000);
+        logger.debug("Next access token refresh in {0} seconds.", configuration.getApi().getAuth().getBearerToken().getRefreshPeriod()); //$NON-NLS-1$
     }
 
     /**

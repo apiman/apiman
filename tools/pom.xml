@@ -10,7 +10,6 @@
   <name>apiman-tools</name>
   <modules>
     <module>dev-server</module>
-    <module>seeder</module>
     <module>server-all</module>
     <module>services</module>
   </modules>

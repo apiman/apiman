@@ -15,6 +15,8 @@
  */
 package io.apiman.manager.ui.server.auth;
 
+import io.apiman.manager.ui.client.shared.beans.BearerTokenCredentialsBean;
+
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -28,12 +30,6 @@ public interface ITokenGenerator {
      * Generates a token.
      * @param request
      */
-    public String generateToken(HttpServletRequest request);
-    
-    /**
-     * Returns the time (in seconds) the client has before it should ask
-     * for a new token.
-     */
-    public int getRefreshPeriod();
+    public BearerTokenCredentialsBean generateToken(HttpServletRequest request);
     
 }

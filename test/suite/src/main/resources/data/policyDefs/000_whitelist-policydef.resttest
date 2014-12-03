@@ -1,0 +1,21 @@
+POST /policyDefs ${apiman.suite.api-username}/${apiman.suite.api-password}
+Content-Type: application/json
+
+{
+  "name" : "IP Whitelist Policy",
+  "description" : "Only requests that originate from a specified set of valid IP addresses will be allowed through.",
+  "policyImpl" : "class:io.apiman.gateway.engine.policies.IPWhitelistPolicy",
+  "icon" : "filter",
+  "templates" : [
+    {
+      "language" : null,
+      "template" : "Only requests that originate from the set of @{ipList.size()} configured IP address(es) will be allowed to invoke the managed service."
+    }
+  ]
+}
+----
+200
+Content-Type: application/json
+
+{
+}

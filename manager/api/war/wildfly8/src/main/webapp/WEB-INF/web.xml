@@ -3,20 +3,6 @@
   xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
   version="2.5">
 
-  <!-- Authentication Filter -->
-  <filter>
-    <filter-name>AuthenticationFilter</filter-name>
-    <filter-class>io.apiman.common.servlet.AuthenticationFilter</filter-class>
-    <init-param>
-      <param-name>signatureRequired</param-name>
-      <param-value>false</param-value>
-    </init-param>
-  </filter>
-  <filter-mapping>
-    <filter-name>AuthenticationFilter</filter-name>
-    <url-pattern>/*</url-pattern>
-  </filter-mapping>
-
   <!-- Locale Filter -->
   <filter>
     <filter-name>LocaleFilter</filter-name>
@@ -46,5 +32,22 @@
     <filter-name>SecurityContext</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
+
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>apiman</web-resource-name>
+      <url-pattern>/*</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>apiuser</role-name>
+    </auth-constraint>
+  </security-constraint>
+  <login-config>
+    <auth-method>BASIC</auth-method>
+    <realm-name>apiman</realm-name>
+  </login-config>
+  <security-role>
+    <role-name>apiuser</role-name>
+  </security-role>
 
 </web-app>

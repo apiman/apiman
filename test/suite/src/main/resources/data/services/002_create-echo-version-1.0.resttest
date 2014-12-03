@@ -1,0 +1,28 @@
+POST /organizations/Test/services/echo/versions ${apiman.suite.api-username}/${apiman.suite.api-password}
+Content-Type: application/json
+
+{
+  "version" : "1.0",
+  "endpoint" : "${apiman.suite.echo-endpoint}",
+  "endpointType" : "rest",
+  "plans" : [
+    { "planId" : "Gold", "version" : "1.0" },
+    { "planId" : "Silver", "version" : "1.0" }
+  ],
+  "gateways" : [
+    { "gatewayId" : "TheGateway" }
+  ]
+}
+----
+200
+Content-Type: application/json
+
+{
+  "service" : {
+    "organizationId" : "Test",
+    "id" : "echo",
+    "name" : "echo"
+  },
+  "status" : "Ready",
+  "version" : "1.0"
+}
