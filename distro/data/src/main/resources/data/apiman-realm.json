@@ -62,6 +62,12 @@
             "enabled": true,
             "baseUrl": "/apiman",
             "secret": "password"
+        },
+        {
+            "name": "apiman-gateway",
+            "enabled": true,
+            "baseUrl": "/apiman",
+            "secret": "password"
         }
     ]
 }

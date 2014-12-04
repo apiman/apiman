@@ -46,17 +46,17 @@ public class KeyCloakBearerTokenGenerator implements ITokenGenerator {
         KeycloakSecurityContext session = (KeycloakSecurityContext) request.getAttribute(KeycloakSecurityContext.class.getName());
         if (session != null) {
             bean.setToken(session.getTokenString());
+            int nowInSeconds = Time.currentTime();
+            int expiresInSeconds = session.getToken().getExpiration();
+            
+            if (expiresInSeconds <= nowInSeconds) {
+                bean.setRefreshPeriod(1);
+            } else {
+                bean.setRefreshPeriod(expiresInSeconds - nowInSeconds);
+            }
         } else {
-            bean.setToken(""); //$NON-NLS-1$
-        }
-        
-        int nowInSeconds = Time.currentTime();
-        int expiresInSeconds = session.getToken().getExpiration();
-        
-        if (expiresInSeconds <= nowInSeconds) {
-            bean.setRefreshPeriod(1);
-        } else {
-            bean.setRefreshPeriod(expiresInSeconds - nowInSeconds);
+            bean.setToken("LOGGED_OUT"); //$NON-NLS-1$
+            bean.setRefreshPeriod(30);
         }
         
         return bean;

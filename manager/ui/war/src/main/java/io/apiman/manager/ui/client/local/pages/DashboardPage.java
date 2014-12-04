@@ -16,6 +16,7 @@
 package io.apiman.manager.ui.client.local.pages;
 
 import io.apiman.manager.ui.client.local.AppMessages;
+import io.apiman.manager.ui.client.local.pages.dash.AdminDashPanel;
 import io.apiman.manager.ui.client.local.services.ConfigurationService;
 import io.apiman.manager.ui.client.local.services.LoggerService;
 import io.apiman.manager.ui.client.local.util.MultimapUtil;
@@ -65,11 +66,7 @@ public class DashboardPage extends AbstractPage {
     Anchor myApps;
     
     @Inject @DataField
-    Anchor manageRoles;
-    @Inject @DataField
-    Anchor managePolicyDefs;
-    @Inject @DataField
-    Anchor manageGateways;
+    AdminDashPanel adminDashPanel;
 
     /**
      * Constructor.
@@ -84,14 +81,6 @@ public class DashboardPage extends AbstractPage {
     protected void renderPage() {
         super.renderPage();
         
-        if (getCurrentUserBean().isAdmin()) {
-            logger.info("User {0} is an admin!", getCurrentUserBean().getUsername()); //$NON-NLS-1$
-            showAdminGroup();
-        } else {
-            logger.info("User {0} is just a regular user.", getCurrentUserBean().getUsername()); //$NON-NLS-1$
-            hideAdminGroup();
-        }
-        
         String currentUser = config.getCurrentConfig().getUser().getUsername();
 
         String createOrgHref = navHelper.createHrefToPage(NewOrgPage.class, MultimapUtil.emptyMap());
@@ -102,9 +91,6 @@ public class DashboardPage extends AbstractPage {
         String myServicesHref = navHelper.createHrefToPage(UserServicesPage.class, MultimapUtil.singleItemMap("user", currentUser)); //$NON-NLS-1$
         String createAppHref = navHelper.createHrefToPage(NewAppPage.class, MultimapUtil.emptyMap());
         String myAppsHref = navHelper.createHrefToPage(UserAppsPage.class, MultimapUtil.singleItemMap("user", currentUser)); //$NON-NLS-1$
-        String manageRolesHref = navHelper.createHrefToPage(AdminRolesPage.class, MultimapUtil.emptyMap());
-        String managePolicyDefsHref = navHelper.createHrefToPage(AdminPolicyDefsPage.class, MultimapUtil.emptyMap());
-        String manageGatewaysHref = navHelper.createHrefToPage(AdminGatewaysPage.class, MultimapUtil.emptyMap());
         
         createOrg.setHref(createOrgHref);
         browseOrgs.setHref(browseOrgsHref);
@@ -117,24 +103,14 @@ public class DashboardPage extends AbstractPage {
         createApp.setHref(createAppHref);
         myApps.setHref(myAppsHref);
         
-        manageRoles.setHref(manageRolesHref);
-        managePolicyDefs.setHref(managePolicyDefsHref);
-        manageGateways.setHref(manageGatewaysHref);
+        if (getCurrentUserBean().isAdmin()) {
+            logger.info("User {0} is an admin!", getCurrentUserBean().getUsername()); //$NON-NLS-1$
+            adminDashPanel.setVisible(true);
+        } else {
+            logger.info("User {0} is just a regular user.", getCurrentUserBean().getUsername()); //$NON-NLS-1$
+            adminDashPanel.setVisible(false);
+        }
     }
-
-    /**
-     * Shows the admin group div.
-     */
-    private native void showAdminGroup() /*-{
-        $wnd.jQuery('#dash-admin-group').show();
-    }-*/;
-
-    /**
-     * Hides the admin group div.
-     */
-    private native void hideAdminGroup() /*-{
-        $wnd.jQuery('#dash-admin-group').hide();
-    }-*/;
 
     /**
      * @see io.apiman.manager.ui.client.local.pages.AbstractPage#getPageTitle()

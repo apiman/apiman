@@ -334,19 +334,19 @@ div.page {
   padding: 2px;
 }
 
-#dash-admin-group {
+.dash-admin-group {
   border: 1px solid rgb(254, 201, 201);
 }
-#dash-admin-group:hover {
+.dash-admin-group:hover {
   border: 1px solid rgb(224, 181, 181);
   box-shadow: 2px 2px 3px rgb(211, 201, 201);
 }
-#dash-admin-group .title {
+.dash-admin-group .title {
   background-color: rgb(254, 227, 227);
   color: #666;
   border-bottom: 1px solid rgb(254, 201, 201);
 }
-#dash-admin-group a {
+.dash-admin-group a {
   color: rgb(217, 82, 79);
 }
 
