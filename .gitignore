@@ -8,3 +8,6 @@ bin/
 .errai
 gwt-unitCache
 .DS_Store
+*~
+*.iml
+.idea
