@@ -24,8 +24,10 @@ import io.apiman.manager.ui.client.local.services.LoggerService;
 import io.apiman.manager.ui.client.local.services.NavigationHelperService;
 import io.apiman.manager.ui.client.local.services.RestInvokerService;
 import io.apiman.manager.ui.client.local.services.rest.IRestInvokerCallback;
+import io.apiman.manager.ui.client.local.widgets.ConfirmationDialog;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.jboss.errai.bus.client.api.ClientMessageBus;
@@ -69,6 +71,8 @@ public abstract class AbstractPage extends Composite {
     protected LoggerService logger;
     @Inject
     private PageHeader pageHeader;
+    @Inject
+    Instance<ConfirmationDialog> confirmationDialogFactory;
 
     private int expectedDataPackets;
     private int dataPacketsReceived;

@@ -17,8 +17,11 @@ package io.apiman.manager.ui.client.local.pages;
 
 import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.ui.client.local.AppMessages;
+import io.apiman.manager.ui.client.local.events.ConfirmationEvent;
+import io.apiman.manager.ui.client.local.events.ConfirmationEvent.Handler;
 import io.apiman.manager.ui.client.local.pages.admin.PermissionSelector;
 import io.apiman.manager.ui.client.local.services.rest.IRestInvokerCallback;
+import io.apiman.manager.ui.client.local.widgets.ConfirmationDialog;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -33,7 +36,6 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.commons.gwt.client.local.widgets.AsyncActionButton;
 
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.TextBox;
 
@@ -148,24 +150,33 @@ public class EditRolePage extends AbstractPage {
     public void onDelete(ClickEvent event) {
         deleteButton.onActionStarted();
         updateButton.setEnabled(false);
-        if (Window.confirm(i18n.format(AppMessages.CONFIRM_ROLE_DELETE, roleBean.getName()))) {
-            RoleBean role = new RoleBean();
-            role.setId(id);
-            rest.deleteRole(role, new IRestInvokerCallback<Void>() {
-                @Override
-                public void onSuccess(Void response) {
-                    toRoles.go();
-                }
-                @Override
-                public void onError(Throwable error) {
-                    dataPacketError(error);
-                }
-            });
-        } else {
-            deleteButton.reset();
-            updateButton.reset();
-        }
         
+        ConfirmationDialog dialog = confirmationDialogFactory.get();
+        dialog.setDialogTitle(i18n.format(AppMessages.CONFIRM_ROLE_DELETE_TITLE));
+        dialog.setDialogMessage(i18n.format(AppMessages.CONFIRM_ROLE_DELETE_MESSAGE, roleBean.getName()));
+        dialog.addConfirmationHandler(new Handler() {
+            @Override
+            public void onConfirmation(ConfirmationEvent event) {
+                if (event.isConfirmed()) {
+                    RoleBean role = new RoleBean();
+                    role.setId(id);
+                    rest.deleteRole(role, new IRestInvokerCallback<Void>() {
+                        @Override
+                        public void onSuccess(Void response) {
+                            toRoles.go();
+                        }
+                        @Override
+                        public void onError(Throwable error) {
+                            dataPacketError(error);
+                        }
+                    });
+                } else {
+                    deleteButton.reset();
+                    updateButton.reset();
+                }
+            }
+        });
+        dialog.show();
     }
     
     /**

@@ -18,8 +18,11 @@ package io.apiman.manager.ui.client.local.pages;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.gateways.RestGatewayConfigBean;
 import io.apiman.manager.ui.client.local.AppMessages;
+import io.apiman.manager.ui.client.local.events.ConfirmationEvent;
+import io.apiman.manager.ui.client.local.events.ConfirmationEvent.Handler;
 import io.apiman.manager.ui.client.local.services.BeanMarshallingService;
 import io.apiman.manager.ui.client.local.services.rest.IRestInvokerCallback;
+import io.apiman.manager.ui.client.local.widgets.ConfirmationDialog;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -37,7 +40,6 @@ import org.overlord.commons.gwt.client.local.widgets.AsyncActionButton;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 
@@ -219,24 +221,33 @@ public class EditGatewayPage extends AbstractPage {
     public void onDelete(ClickEvent event) {
         deleteButton.onActionStarted();
         updateButton.setEnabled(false);
-        if (Window.confirm(i18n.format(AppMessages.CONFIRM_GATEWAY_DELETE, gatewayBean.getName()))) {
-            GatewayBean gateway = new GatewayBean();
-            gateway.setId(id);
-            rest.deleteGateway(gateway, new IRestInvokerCallback<Void>() {
-                @Override
-                public void onSuccess(Void response) {
-                    toGateways.go();
-                }
-                @Override
-                public void onError(Throwable error) {
-                    dataPacketError(error);
-                }
-            });
-        } else {
-            deleteButton.reset();
-            updateButton.reset();
-        }
         
+        ConfirmationDialog dialog = confirmationDialogFactory.get();
+        dialog.setDialogTitle(i18n.format(AppMessages.CONFIRM_GATEWAY_DELETE_TITLE));
+        dialog.setDialogMessage(i18n.format(AppMessages.CONFIRM_GATEWAY_DELETE_MESSAGE, gatewayBean.getName()));
+        dialog.addConfirmationHandler(new Handler() {
+            @Override
+            public void onConfirmation(ConfirmationEvent event) {
+                if (event.isConfirmed()) {
+                    GatewayBean gateway = new GatewayBean();
+                    gateway.setId(id);
+                    rest.deleteGateway(gateway, new IRestInvokerCallback<Void>() {
+                        @Override
+                        public void onSuccess(Void response) {
+                            toGateways.go();
+                        }
+                        @Override
+                        public void onError(Throwable error) {
+                            dataPacketError(error);
+                        }
+                    });
+                } else {
+                    deleteButton.reset();
+                    updateButton.reset();
+                }
+            }
+        });
+        dialog.show();
     }
     
     /**

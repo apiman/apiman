@@ -100,8 +100,8 @@ public class ActionResourceImpl implements IActionResource {
             case registerApplication:
                 registerApplication(action);
                 return;
-            case deregisterApplication:
-                deregisterApplication(action);
+            case unregisterApplication:
+                unregisterApplication(action);
                 return;
             default:
                 throw ExceptionFactory.actionException("Action type not supported: " + action.getType().toString()); //$NON-NLS-1$
@@ -194,8 +194,51 @@ public class ActionResourceImpl implements IActionResource {
      * @param action
      */
     private void retireService(ActionBean action) throws ActionException {
-        // TODO Auto-generated method stub
-        throw ExceptionFactory.actionException("Not yet implemented."); //$NON-NLS-1$
+        if (!securityContext.hasPermission(PermissionType.svcEdit, action.getOrganizationId()))
+            throw ExceptionFactory.notAuthorizedException();
+
+        ServiceVersionBean versionBean = null;
+        try {
+            versionBean = orgs.getServiceVersion(action.getOrganizationId(), action.getEntityId(), action.getEntityVersion());
+        } catch (ServiceVersionNotFoundException e) {
+            throw ExceptionFactory.actionException(Messages.i18n.format("ServiceNotFound")); //$NON-NLS-1$
+        }
+
+        // Validate that it's ok to perform this action - service must be Ready.
+        if (versionBean.getStatus() != ServiceStatus.Published) {
+            throw ExceptionFactory.actionException(Messages.i18n.format("InvalidServiceStatus")); //$NON-NLS-1$
+        }
+
+        Service gatewaySvc = new Service();
+        gatewaySvc.setOrganizationId(versionBean.getService().getOrganizationId());
+        gatewaySvc.setServiceId(versionBean.getService().getId());
+        gatewaySvc.setVersion(versionBean.getVersion());
+        
+        // Publish the service to all relevant gateways
+        try {
+            Set<ServiceGatewayBean> gateways = versionBean.getGateways();
+            if (gateways == null) {
+                throw new PublishingException("No gateways specified for service!"); //$NON-NLS-1$
+            }
+            for (ServiceGatewayBean serviceGatewayBean : gateways) {
+                IGatewayLink gatewayLink = createGatewayLink(serviceGatewayBean.getGatewayId());
+                gatewayLink.retireService(gatewaySvc);
+                gatewayLink.close();
+            }
+        } catch (PublishingException e) {
+            throw ExceptionFactory.actionException(Messages.i18n.format("PublishError")); //$NON-NLS-1$
+        }
+        
+        versionBean.setStatus(ServiceStatus.Retired);
+        try {
+            storage.beginTx();
+            storage.update(versionBean);
+            storage.createAuditEntry(AuditUtils.serviceRetired(versionBean, securityContext));
+            storage.commitTx();
+        } catch (Exception e) {
+            storage.rollbackTx();
+            throw ExceptionFactory.actionException(Messages.i18n.format("PublishError")); //$NON-NLS-1$
+        }
     }
 
     /**
@@ -245,7 +288,7 @@ public class ActionResourceImpl implements IActionResource {
         }
         application.setContracts(contracts);
 
-        // Next, publish the application to *all* relevant gateways.  This is done by 
+        // Next, register the application with *all* relevant gateways.  This is done by 
         // looking up all referenced services and getting the gateway information for them.
         // Each of those gateways must be told about the application.
         try {
@@ -341,9 +384,73 @@ public class ActionResourceImpl implements IActionResource {
      * De-registers an application that is currently registered with the gateway.
      * @param action
      */
-    private void deregisterApplication(ActionBean action) throws ActionException {
-        // TODO Auto-generated method stub
-        throw ExceptionFactory.actionException("Not yet implemented."); //$NON-NLS-1$
+    private void unregisterApplication(ActionBean action) throws ActionException {
+        if (!securityContext.hasPermission(PermissionType.appEdit, action.getOrganizationId()))
+            throw ExceptionFactory.notAuthorizedException();
+
+        ApplicationVersionBean versionBean = null;
+        List<ContractSummaryBean> contractBeans = null;
+        try {
+            versionBean = orgs.getAppVersion(action.getOrganizationId(), action.getEntityId(), action.getEntityVersion());
+        } catch (ApplicationVersionNotFoundException e) {
+            throw ExceptionFactory.actionException(Messages.i18n.format("ApplicationNotFound")); //$NON-NLS-1$
+        }
+        try {
+            contractBeans = query.getApplicationContracts(action.getOrganizationId(), action.getEntityId(), action.getEntityVersion());
+        } catch (StorageException e) {
+            throw ExceptionFactory.actionException(Messages.i18n.format("ApplicationNotFound"), e); //$NON-NLS-1$
+        }
+
+        // Validate that it's ok to perform this action - application must be Ready.
+        if (versionBean.getStatus() != ApplicationStatus.Registered) {
+            throw ExceptionFactory.actionException(Messages.i18n.format("InvalidApplicationStatus")); //$NON-NLS-1$
+        }
+
+        Application application = new Application();
+        application.setOrganizationId(versionBean.getApplication().getOrganizationId());
+        application.setApplicationId(versionBean.getApplication().getId());
+        application.setVersion(versionBean.getVersion());
+
+        // Next, unregister the application from *all* relevant gateways.  This is done by 
+        // looking up all referenced services and getting the gateway information for them.
+        // Each of those gateways must be told about the application.
+        try {
+            Map<String, IGatewayLink> links = new HashMap<String, IGatewayLink>();
+            for (ContractSummaryBean contractBean : contractBeans) {
+                ServiceVersionBean svb = query.getServiceVersion(contractBean.getServiceOrganizationId(),
+                        contractBean.getServiceId(), contractBean.getServiceVersion());
+                Set<ServiceGatewayBean> gateways = svb.getGateways();
+                if (gateways == null) {
+                    throw new PublishingException("No gateways specified for service: " + svb.getService().getName()); //$NON-NLS-1$
+                }
+                for (ServiceGatewayBean serviceGatewayBean : gateways) {
+                    if (!links.containsKey(serviceGatewayBean.getGatewayId())) {
+                        IGatewayLink gatewayLink = createGatewayLink(serviceGatewayBean.getGatewayId());
+                        links.put(serviceGatewayBean.getGatewayId(), gatewayLink);
+                    }
+                }
+            }
+            for (IGatewayLink gatewayLink : links.values()) {
+                gatewayLink.unregisterApplication(application);
+                gatewayLink.close();
+            }
+        } catch (StorageException e) {
+            throw ExceptionFactory.actionException(Messages.i18n.format("PublishError"), e); //$NON-NLS-1$
+        } catch (PublishingException e) {
+            throw ExceptionFactory.actionException(Messages.i18n.format("PublishError"), e); //$NON-NLS-1$
+        }
+        
+        versionBean.setStatus(ApplicationStatus.Retired);
+
+        try {
+            storage.beginTx();
+            storage.update(versionBean);
+            storage.createAuditEntry(AuditUtils.applicationUnregistered(versionBean, securityContext));
+            storage.commitTx();
+        } catch (Exception e) {
+            storage.rollbackTx();
+            throw ExceptionFactory.actionException(Messages.i18n.format("PublishError")); //$NON-NLS-1$
+        }
     }
 
     /**

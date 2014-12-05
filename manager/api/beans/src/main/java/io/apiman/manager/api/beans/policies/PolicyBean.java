@@ -28,7 +28,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Index;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
@@ -74,7 +73,6 @@ public class PolicyBean implements Serializable {
     @ManyToOne(fetch=FetchType.EAGER, optional=false)
     private PolicyDefinitionBean definition;
     @Column(updatable=true, nullable=false)
-    @Index(name="pol_order")
     private int orderIndex;
 
     /**

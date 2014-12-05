@@ -21,6 +21,7 @@ import io.apiman.gateway.engine.beans.Service;
 import io.apiman.gateway.engine.beans.SystemStatus;
 import io.apiman.gateway.engine.beans.exceptions.PublishingException;
 import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
+import io.apiman.manager.api.gateway.i18n.Messages;
 
 import java.io.InputStream;
 import java.net.URI;
@@ -28,6 +29,7 @@ import java.net.URI;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
@@ -101,7 +103,7 @@ public class GatewayClient /*implements ISystemResource, IServiceResource, IAppl
             HttpResponse response = httpClient.execute(put);
             int actualStatusCode = response.getStatusLine().getStatusCode();
             if (actualStatusCode >= 300) {
-                throw new Exception("Application registration failed: " + actualStatusCode); //$NON-NLS-1$
+                throw new Exception(Messages.i18n.format("GatewayClient.AppRegistrationFailed", actualStatusCode)); //$NON-NLS-1$
             }
         } catch (Exception e) {
             // TODO log this error
@@ -114,7 +116,19 @@ public class GatewayClient /*implements ISystemResource, IServiceResource, IAppl
      */
     public void unregister(String organizationId, String applicationId, String version)
             throws RegistrationException, NotAuthorizedException {
-        throw new RuntimeException("Not yet implemented."); //$NON-NLS-1$
+        try {
+            @SuppressWarnings("nls")
+            URI uri = new URI(this.endpoint + APPLICATIONS + "/" + organizationId + "/" + applicationId + "/" + version);
+            HttpDelete put = new HttpDelete(uri);
+            HttpResponse response = httpClient.execute(put);
+            int actualStatusCode = response.getStatusLine().getStatusCode();
+            if (actualStatusCode >= 300) {
+                throw new Exception(Messages.i18n.format("GatewayClient.AppUnregistrationFailed", actualStatusCode)); //$NON-NLS-1$
+            }
+        } catch (Exception e) {
+            // TODO log this error
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -131,20 +145,32 @@ public class GatewayClient /*implements ISystemResource, IServiceResource, IAppl
             HttpResponse response = httpClient.execute(put);
             int actualStatusCode = response.getStatusLine().getStatusCode();
             if (actualStatusCode >= 300) {
-                throw new Exception("Application registration failed: " + actualStatusCode); //$NON-NLS-1$
+                throw new Exception(Messages.i18n.format("GatewayClient.ServicePublishingFailed", actualStatusCode)); //$NON-NLS-1$
             }
         } catch (Exception e) {
             // TODO log this error
             throw new RuntimeException(e);
         }
     }
-    
+
     /**
      * @see io.apiman.gateway.api.rest.contract.IServiceResource#retire(java.lang.String, java.lang.String, java.lang.String)
      */
     public void retire(String organizationId, String serviceId, String version) throws RegistrationException,
             NotAuthorizedException {
-        throw new RuntimeException("Not yet implemented."); //$NON-NLS-1$
+        try {
+            @SuppressWarnings("nls")
+            URI uri = new URI(this.endpoint + SERVICES + "/" + organizationId + "/" + serviceId + "/" + version);
+            HttpDelete put = new HttpDelete(uri);
+            HttpResponse response = httpClient.execute(put);
+            int actualStatusCode = response.getStatusLine().getStatusCode();
+            if (actualStatusCode >= 300) {
+                throw new Exception(Messages.i18n.format("GatewayClient.ServiceRetiringFailed", actualStatusCode)); //$NON-NLS-1$
+            }
+        } catch (Exception e) {
+            // TODO log this error
+            throw new RuntimeException(e);
+        }
     }
 
 }

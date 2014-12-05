@@ -101,6 +101,16 @@ public class MockGatewayServlet extends HttpServlet {
     }
     
     /**
+     * @see javax.servlet.http.HttpServlet#doDelete(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     */
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
+            IOException {
+        builder.append("DELETE:").append(req.getRequestURI()).append("\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        resp.setStatus(204);
+    }
+    
+    /**
      * Gets the payload body and returns it as a string.
      * @param req
      */

@@ -19,9 +19,12 @@ import io.apiman.manager.api.beans.actions.ActionBean;
 import io.apiman.manager.api.beans.actions.ActionType;
 import io.apiman.manager.api.beans.services.ServiceStatus;
 import io.apiman.manager.ui.client.local.AppMessages;
+import io.apiman.manager.ui.client.local.events.ConfirmationEvent;
+import io.apiman.manager.ui.client.local.events.ConfirmationEvent.Handler;
 import io.apiman.manager.ui.client.local.services.rest.IRestInvokerCallback;
 import io.apiman.manager.ui.client.local.util.Formatting;
 import io.apiman.manager.ui.client.local.util.MultimapUtil;
+import io.apiman.manager.ui.client.local.widgets.ConfirmationDialog;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -47,7 +50,7 @@ import com.google.gwt.user.client.ui.Label;
 @Page(path="service-overview")
 @Dependent
 public class ServiceOverviewPage extends AbstractServicePage {
-    
+
     @Inject @DataField
     Label description;
     @Inject @DataField
@@ -71,6 +74,8 @@ public class ServiceOverviewPage extends AbstractServicePage {
 
     @Inject @DataField
     AsyncActionButton publishButton;
+    @Inject @DataField
+    AsyncActionButton retireButton;
     
     /**
      * Constructor.
@@ -115,6 +120,7 @@ public class ServiceOverviewPage extends AbstractServicePage {
     @Override
     protected void onPageLoaded() {
         publishButton.reset();
+        retireButton.reset();
         renderServiceStatus();
     }
 
@@ -125,9 +131,13 @@ public class ServiceOverviewPage extends AbstractServicePage {
         setStatusLabelClass(status, versionBean.getStatus());
 
         boolean canRegister = versionBean.getStatus() == ServiceStatus.Ready;
-        publishButton.setEnabled(canRegister);
         boolean publishedOrRetired = versionBean.getStatus() == ServiceStatus.Published || versionBean.getStatus() == ServiceStatus.Retired;
+        publishButton.setEnabled(canRegister);
         publishButton.setVisible(!publishedOrRetired);
+
+        boolean canRetire = versionBean.getStatus() == ServiceStatus.Published;
+        retireButton.setEnabled(canRetire);
+        retireButton.setVisible(canRetire);
     }
     
     /**
@@ -157,6 +167,50 @@ public class ServiceOverviewPage extends AbstractServicePage {
                 dataPacketError(error);
             }
         });
+    }
+
+    /**
+     * Called when the user clicks the "Retire" button.
+     * @param event
+     */
+    @EventHandler("retireButton")
+    public void onRetire(ClickEvent event) {
+        retireButton.onActionStarted();
+
+        ConfirmationDialog dialog = confirmationDialogFactory.get();
+        dialog.setDialogTitle(i18n.format(AppMessages.CONFIRM_RETIRE_SERVICE));
+        dialog.setDialogMessage(i18n.format(AppMessages.CONFIRM_RETIRE_SERVICE_MESSAGE, serviceBean.getName()));
+        dialog.addConfirmationHandler(new Handler() {
+            @Override
+            public void onConfirmation(ConfirmationEvent event) {
+                if (event.isConfirmed()) {
+                    retireButton.onActionComplete();
+                    ActionBean action = new ActionBean();
+                    action.setType(ActionType.retireService);
+                    action.setOrganizationId(versionBean.getService().getOrganizationId());
+                    action.setEntityId(versionBean.getService().getId());
+                    action.setEntityVersion(versionBean.getVersion());
+                    rest.performAction(action, new IRestInvokerCallback<Void>() {
+                        @Override
+                        public void onSuccess(Void response) {
+                            versionBean.setStatus(ServiceStatus.Retired);
+                            retireButton.onActionComplete();
+                            status.setText(ServiceStatus.Retired.toString());
+                            renderServiceStatus();
+                        }
+
+                        @Override
+                        public void onError(Throwable error) {
+                            dataPacketError(error);
+                        }
+                    });
+                } else {
+                    retireButton.onActionComplete();
+                }
+            }
+        });
+        dialog.show();
+
     }
 
     /**

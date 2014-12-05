@@ -32,7 +32,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import org.hibernate.annotations.Index;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
@@ -71,7 +70,6 @@ public class ServiceVersionBean implements Serializable {
     @ElementCollection(fetch=FetchType.EAGER)
     private Set<ServicePlanBean> plans;
     @Column(updatable=false)
-    @Index(name="svc_vIdx")
     private String version;
     @Column(updatable=false, nullable=false)
     private String createdBy;

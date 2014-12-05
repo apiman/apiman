@@ -23,6 +23,6 @@ package io.apiman.manager.api.beans.actions;
 public enum ActionType {
     
     publishService, retireService, 
-    registerApplication, deregisterApplication;
+    registerApplication, unregisterApplication;
 
 }

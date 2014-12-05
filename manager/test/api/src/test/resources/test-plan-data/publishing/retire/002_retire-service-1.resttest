@@ -1,0 +1,11 @@
+POST /actions admin/admin
+Content-Type: application/json
+
+{
+  "type" : "retireService",
+  "organizationId" : "Organization1",
+  "entityId" : "Service1",
+  "entityVersion" : "1.0"
+}
+----
+204
