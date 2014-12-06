@@ -31,7 +31,9 @@ public class ManagerApiDevServer {
      * @param args
      */
     public static void main(String [] args) throws Exception {
-        System.setProperty(ISeeder.SYSTEM_PROPERTY, ManagerApiDataSeeder.class.getName());
+        if (System.getProperty(ISeeder.SYSTEM_PROPERTY) == null) {
+            System.setProperty(ISeeder.SYSTEM_PROPERTY, ManagerApiDataSeeder.class.getName());
+        }
         ManagerApiTestServer server = new ManagerApiTestServer();
         server.start();
     }

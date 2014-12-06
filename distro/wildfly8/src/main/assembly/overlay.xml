@@ -6,13 +6,41 @@
   </formats>
   <includeBaseDirectory>false</includeBaseDirectory>
   <dependencySets>
-    <!-- The apiman WARs -->
+    <!-- apiman-manager -->
     <dependencySet>
-      <outputDirectory>wildfly-8.1.0.Final/standalone/deployments</outputDirectory>
+      <outputDirectory>wildfly-8.2.0.Final/standalone/deployments</outputDirectory>
       <includes>
-        <include>*:*:war</include>
+        <include>*:apiman-manager-ui-war-wildfly8:war</include>
       </includes>
-      <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
+      <outputFileNameMapping>apiman-manager.war</outputFileNameMapping>
+      <useProjectArtifact>false</useProjectArtifact>
+      <useProjectAttachments>false</useProjectAttachments>
+      <useTransitiveDependencies>false</useTransitiveDependencies>
+      <useTransitiveFiltering>false</useTransitiveFiltering>
+      <directoryMode>0755</directoryMode>
+      <fileMode>0755</fileMode>
+    </dependencySet>
+    <!-- apiman -->
+    <dependencySet>
+      <outputDirectory>wildfly-8.2.0.Final/standalone/deployments</outputDirectory>
+      <includes>
+        <include>*:apiman-manager-api-war-wildfly8:war</include>
+      </includes>
+      <outputFileNameMapping>apiman.war</outputFileNameMapping>
+      <useProjectArtifact>false</useProjectArtifact>
+      <useProjectAttachments>false</useProjectAttachments>
+      <useTransitiveDependencies>false</useTransitiveDependencies>
+      <useTransitiveFiltering>false</useTransitiveFiltering>
+      <directoryMode>0755</directoryMode>
+      <fileMode>0755</fileMode>
+    </dependencySet>
+    <!-- apiman-gateway -->
+    <dependencySet>
+      <outputDirectory>wildfly-8.2.0.Final/standalone/deployments</outputDirectory>
+      <includes>
+        <include>*:apiman-gateway-platforms-war-wildfly8:war</include>
+      </includes>
+      <outputFileNameMapping>apiman-gateway.war</outputFileNameMapping>
       <useProjectArtifact>false</useProjectArtifact>
       <useProjectAttachments>false</useProjectAttachments>
       <useTransitiveDependencies>false</useTransitiveDependencies>
@@ -22,7 +50,7 @@
     </dependencySet>
     <!-- Seed data -->
     <dependencySet>
-      <outputDirectory>wildfly-8.1.0.Final/apiman</outputDirectory>
+      <outputDirectory>wildfly-8.2.0.Final/apiman</outputDirectory>
       <includes>
         <include>io.apiman:apiman-distro-data:jar</include>
       </includes>
@@ -42,7 +70,7 @@
     </dependencySet>
     <!-- The apiman quickstarts -->
     <dependencySet>
-      <outputDirectory>wildfly-8.1.0.Final/apiman/quickstarts</outputDirectory>
+      <outputDirectory>wildfly-8.2.0.Final/apiman/quickstarts</outputDirectory>
       <includes>
         <include>io.apiman:apiman-quickstarts:zip</include>
       </includes>
@@ -58,10 +86,27 @@
   <fileSets>
     <fileSet>
       <directory>src/main/resources/overlay</directory>
-      <outputDirectory>wildfly-8.1.0.Final</outputDirectory>
-      <filtered>true</filtered>
+      <outputDirectory>wildfly-8.2.0.Final</outputDirectory>
+      <filtered>false</filtered>
       <directoryMode>0755</directoryMode>
       <fileMode>0755</fileMode>
+    </fileSet>
+    <fileSet>
+      <directory>target/keycloak/keycloak-war-dist-all-${version.org.keycloak}</directory>
+      <outputDirectory>wildfly-8.2.0.Final/standalone</outputDirectory>
+      <filtered>false</filtered>
+      <directoryMode>0755</directoryMode>
+      <fileMode>0755</fileMode>
+    </fileSet>
+    <fileSet>
+      <directory>target/keycloak/modules</directory>
+      <outputDirectory>wildfly-8.2.0.Final/modules</outputDirectory>
+      <filtered>false</filtered>
+      <directoryMode>0755</directoryMode>
+      <fileMode>0755</fileMode>
+      <excludes>
+        <exclude>**/aesh/**</exclude>
+      </excludes>
     </fileSet>
   </fileSets>
 </assembly>

@@ -1,0 +1,14 @@
+GET /gold
+X-Custom-Header: custom-value
+X-API-Key: ${gold-api-key}
+
+----
+200
+Content-Type: application/json
+
+{
+  "method" : "GET",
+  "headers" : {
+    "X-Custom-Header" : "custom-value"
+  }
+}

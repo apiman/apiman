@@ -191,6 +191,9 @@ public class TestUtil {
      * @return the line with all properties replaced
      */
     public static String doPropertyReplacement(String line) {
+        if (line == null) {
+            return line;
+        }
         String rval = line;
         int sidx = -1;
         while ( (sidx = rval.indexOf("${")) != -1 ) { //$NON-NLS-1$

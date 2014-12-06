@@ -87,7 +87,7 @@
     <version.source.plugin>2.4</version.source.plugin>
     <version.surefire.plugin>2.17</version.surefire.plugin>
     <version.war.plugin>2.5</version.war.plugin>
-    
+
     <!-- Dependency Versions -->
     <version.com.fasterxml.classmate>0.8.0</version.com.fasterxml.classmate>
     <version.com.google.guava>13.0.1</version.com.google.guava>
@@ -127,6 +127,7 @@
     <version.org.jboss.resteasy>2.3.7.Final</version.org.jboss.resteasy>
     <version.org.jboss.spec.javax.servlet.jboss-servlet-api_3.0_spec>1.0.2.Final</version.org.jboss.spec.javax.servlet.jboss-servlet-api_3.0_spec>
     <version.org.jboss.weld.weld>1.1.23.Final</version.org.jboss.weld.weld>
+    <version.org.keycloak>1.1.0.Beta2-SNAPSHOT</version.org.keycloak>
     <version.org.mockito>1.9.5</version.org.mockito>
     <version.org.mvel>2.2.2.Final</version.org.mvel>
     <version.org.osgi>4.3.1</version.org.osgi>
@@ -374,18 +375,6 @@
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-tools-seeder</artifactId>
-        <version>${project.version}</version>
-        <type>war</type>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-tools-seeder</artifactId>
-        <version>${project.version}</version>
-        <classifier>classes</classifier>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
         <artifactId>apiman-tools-dev-server-manager-ui</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -410,6 +399,13 @@
         <groupId>${project.groupId}</groupId>
         <artifactId>apiman-distro-data</artifactId>
         <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-distro-wildfly8</artifactId>
+        <version>${project.version}</version>
+        <type>zip</type>
+        <classifier>overlay</classifier>
       </dependency>
 
       <!-- apiman Quickstarts -->
@@ -862,6 +858,23 @@
         <groupId>org.mvel</groupId>
         <artifactId>mvel2</artifactId>
         <version>${version.org.mvel}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.keycloak</groupId>
+        <artifactId>keycloak-core</artifactId>
+        <version>${version.org.keycloak}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.keycloak</groupId>
+        <artifactId>keycloak-war-dist-all</artifactId>
+        <version>${version.org.keycloak}</version>
+        <type>zip</type>
+      </dependency>
+      <dependency>
+        <groupId>org.keycloak</groupId>
+        <artifactId>keycloak-wildfly-adapter-dist</artifactId>
+        <version>${version.org.keycloak}</version>
+        <type>zip</type>
       </dependency>
 
       <!-- Test -->

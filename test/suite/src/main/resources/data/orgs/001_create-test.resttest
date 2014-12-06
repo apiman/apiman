@@ -1,0 +1,15 @@
+POST /organizations ${apiman.suite.api-username}/${apiman.suite.api-password}
+Content-Type: application/json
+
+{ 
+  "name" : "Test",
+  "description" : "A test organization used by the full apiman smoke test suite."
+}
+----
+200
+Content-Type: application/json
+
+{
+  "name" : "Test",
+  "id" : "Test"
+}

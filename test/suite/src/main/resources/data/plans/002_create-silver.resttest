@@ -1,0 +1,18 @@
+POST /organizations/Test/plans ${apiman.suite.api-username}/${apiman.suite.api-password}
+Content-Type: application/json
+
+{
+  "name" : "Silver",
+  "organizationId" : "Test",
+  "description" : "The Silver plan allows users a lower level of service."
+}
+----
+200
+Content-Type: application/json
+
+{
+  "name" : "Silver",
+  "organizationId" : "Test",
+  "id" : "Silver",
+  "description" : "The Silver plan allows users a lower level of service."
+}

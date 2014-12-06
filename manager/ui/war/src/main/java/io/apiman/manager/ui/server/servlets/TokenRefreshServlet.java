@@ -51,18 +51,14 @@ public class TokenRefreshServlet extends AbstractUIServlet {
             IOException {
         logger.debug("Refreshing authentication token."); //$NON-NLS-1$
         ITokenGenerator tokenGenerator = getTokenGenerator();
-        String token = tokenGenerator.generateToken(req);
-        int refresh = tokenGenerator.getRefreshPeriod();
-        BearerTokenCredentialsBean btcb = new BearerTokenCredentialsBean();
-        btcb.setToken(token);
-        btcb.setRefreshPeriod(refresh);
+        BearerTokenCredentialsBean tokenBean = tokenGenerator.generateToken(req);
         ObjectMapper mapper = new ObjectMapper();
         resp.setContentType("application/json"); //$NON-NLS-1$
         resp.setDateHeader("Date", System.currentTimeMillis()); //$NON-NLS-1$
         resp.setDateHeader("Expires", System.currentTimeMillis() - 86400000L); //$NON-NLS-1$
         resp.setHeader("Pragma", "no-cache"); //$NON-NLS-1$ //$NON-NLS-2$
         resp.setHeader("Cache-control", "no-cache, no-store, must-revalidate"); //$NON-NLS-1$ //$NON-NLS-2$
-        mapper.writer().writeValue(resp.getOutputStream(), btcb);
+        mapper.writer().writeValue(resp.getOutputStream(), tokenBean);
     }
     
     /**

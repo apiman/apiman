@@ -1,0 +1,17 @@
+POST /gateways ${apiman.suite.api-username}/${apiman.suite.api-password}
+Content-Type: application/json
+
+{
+  "name" : "The Gateway",
+  "description" : "This is the gateway.",
+  "httpEndpoint" : "${apiman.suite.gateway-endpoint}",
+  "type" : "REST",
+  "configuration" : "{ \"endpoint\" : \"${apiman.suite.gateway-config-endpoint}\", \"username\" : \"${apiman.suite.gateway-config-username}\", \"password\" : \"${apiman.suite.gateway-config-password}\" }"
+}
+----
+200
+Content-Type: application/json
+
+{
+  "id" : "TheGateway"
+}

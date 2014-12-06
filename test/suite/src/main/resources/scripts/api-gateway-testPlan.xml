@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testPlan xmlns="urn:io.apiman.test:2014:02:testPlan">
+
+  <testGroup name="Gold Plan">
+    <test name="Successful echo request 1">data/runtime/echo_gold_success.resttest</test>
+    <test name="Successful echo request 2">data/runtime/echo_gold_success.resttest</test>
+    <test name="Successful echo request 3">data/runtime/echo_gold_success.resttest</test>
+    <test name="Successful echo request 4">data/runtime/echo_gold_success.resttest</test>
+    <test name="Successful echo request 5">data/runtime/echo_gold_success.resttest</test>
+    <test name="Successful echo request 6">data/runtime/echo_gold_success.resttest</test>
+    <test name="Successful echo request 7">data/runtime/echo_gold_success.resttest</test>
+    <test name="Successful echo request 8">data/runtime/echo_gold_success.resttest</test>
+    <test name="Successful echo request 9">data/runtime/echo_gold_success.resttest</test>
+    <test name="Successful echo request 10">data/runtime/echo_gold_success.resttest</test>
+    <test name="Successful echo request 11">data/runtime/echo_gold_success.resttest</test>
+  </testGroup>
+
+  <testGroup name="Silver Plan">
+    <test name="Successful echo request 1">data/runtime/echo_silver_success.resttest</test>
+    <test name="Successful echo request 2">data/runtime/echo_silver_success.resttest</test>
+    <test name="Successful echo request 3">data/runtime/echo_silver_success.resttest</test>
+    <test name="Successful echo request 4">data/runtime/echo_silver_success.resttest</test>
+    <test name="Successful echo request 5">data/runtime/echo_silver_success.resttest</test>
+    <test name="Failed echo request (rate limited)">data/runtime/echo_silver_fail.resttest</test>
+  </testGroup>
+
+</testPlan>

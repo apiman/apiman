@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<server xmlns="urn:jboss:domain:2.1">
+<server xmlns="urn:jboss:domain:2.2">
   <extensions>
     <extension module="org.jboss.as.clustering.infinispan" />
     <extension module="org.jboss.as.connector" />
@@ -24,6 +24,7 @@
     <extension module="org.wildfly.extension.batch" />
     <extension module="org.wildfly.extension.io" />
     <extension module="org.wildfly.extension.undertow" />
+    <extension module="org.keycloak.keycloak-subsystem" />
   </extensions>
   <system-properties>
     <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
@@ -43,10 +44,10 @@
       <security-realm name="ApplicationRealm">
         <authentication>
           <local default-user="$local" allowed-users="*" skip-group-loading="true" />
-          <properties path="apiman-users.properties" relative-to="jboss.server.config.dir" />
+          <properties path="application-users.properties" relative-to="jboss.server.config.dir" />
         </authentication>
         <authorization>
-          <properties path="apiman-roles.properties" relative-to="jboss.server.config.dir" />
+          <properties path="application-roles.properties" relative-to="jboss.server.config.dir" />
         </authorization>
       </security-realm>
     </security-realms>
@@ -356,7 +357,7 @@
       <recovery-environment socket-binding="txn-recovery-environment"
         status-socket-binding="txn-status-manager" />
     </subsystem>
-    <subsystem xmlns="urn:jboss:domain:undertow:1.1">
+    <subsystem xmlns="urn:jboss:domain:undertow:1.2">
       <buffer-cache name="default" />
       <server name="default-server">
         <http-listener name="default" socket-binding="http" />
@@ -368,6 +369,7 @@
       </server>
       <servlet-container name="default">
         <jsp-config />
+        <websockets />
       </servlet-container>
       <handlers>
         <file name="welcome-content" path="${jboss.home.dir}/welcome-content" />
@@ -389,6 +391,37 @@
       <client-config name="Standard-Client-Config" />
     </subsystem>
     <subsystem xmlns="urn:jboss:domain:weld:2.0" />
+    <subsystem xmlns="urn:jboss:domain:keycloak:1.0">
+      <kc:realm xmlns:kc="urn:jboss:domain:keycloak:1.0" name="apiman">
+        <kc:realm-public-key>MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCrVrCuTtArbgaZzL1hvh0xtL5mc7o0NqPVnYXkLvgcwiC3BjLGw1tGEGoJaXDuSaRllobm53JBhjx33UNv+5z/UMG4kytBWxheNVKnL6GgqlNabMaFfPLPCF8kAgKnsi79NMo+n6KnSY8YeUmec/p2vjO2NjsSAVcWEQMVhJ31LwIDAQAB</kc:realm-public-key>
+        <kc:auth-server-url>/auth</kc:auth-server-url>
+        <kc:ssl-required>none</kc:ssl-required>
+        <kc:principal-attribute>preferred_username</kc:principal-attribute>
+      </kc:realm>
+      <kc:secure-deployment xmlns:kc="urn:jboss:domain:keycloak:1.0" name="apiman.war">
+        <kc:realm>apiman</kc:realm>
+        <kc:resource>apiman</kc:resource>
+        <kc:credential name="secret">
+          password
+        </kc:credential>
+        <kc:enable-basic-auth>true</kc:enable-basic-auth>
+      </kc:secure-deployment>
+      <kc:secure-deployment xmlns:kc="urn:jboss:domain:keycloak:1.0" name="apiman-manager.war">
+        <kc:realm>apiman</kc:realm>
+        <kc:resource>apiman-manager</kc:resource>
+        <kc:credential name="secret">
+          password
+        </kc:credential>
+      </kc:secure-deployment>
+      <kc:secure-deployment xmlns:kc="urn:jboss:domain:keycloak:1.0" name="apiman-gateway.war">
+        <kc:realm>apiman</kc:realm>
+        <kc:resource>apiman-gateway</kc:resource>
+        <kc:credential name="secret">
+          password
+        </kc:credential>
+        <kc:enable-basic-auth>true</kc:enable-basic-auth>
+      </kc:secure-deployment>
+    </subsystem>
   </profile>
   <interfaces>
     <interface name="management">

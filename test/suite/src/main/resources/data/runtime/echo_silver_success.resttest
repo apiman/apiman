@@ -1,0 +1,14 @@
+GET /silver
+X-Custom-Header: custom-value
+X-API-Key: ${silver-api-key}
+
+----
+200
+Content-Type: application/json
+
+{
+  "method" : "GET",
+  "headers" : {
+    "X-Custom-Header" : "custom-value"
+  }
+}

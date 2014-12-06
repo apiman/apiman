@@ -7,20 +7,6 @@
     <listener-class>io.apiman.gateway.platforms.war.listeners.WarGatewayBootstrapper</listener-class>
   </listener>
 
-  <!-- Authentication Filter -->
-  <filter>
-    <filter-name>AuthenticationFilter</filter-name>
-    <filter-class>io.apiman.common.servlet.AuthenticationFilter</filter-class>
-    <init-param>
-      <param-name>signatureRequired</param-name>
-      <param-value>false</param-value>
-    </init-param>
-  </filter>
-  <filter-mapping>
-    <filter-name>AuthenticationFilter</filter-name>
-    <url-pattern>/api/*</url-pattern>
-  </filter-mapping>
-
   <!-- Locale Filter -->
   <filter>
     <filter-name>LocaleFilter</filter-name>
@@ -40,5 +26,22 @@
     <servlet-name>GatewayServlet</servlet-name>
     <url-pattern>/gateway/*</url-pattern>
   </servlet-mapping>
+
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>apiman-gateway</web-resource-name>
+      <url-pattern>/api/*</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>apiadmin</role-name>
+    </auth-constraint>
+  </security-constraint>
+  <login-config>
+    <auth-method>BASIC</auth-method>
+    <realm-name>apiman</realm-name>
+  </login-config>
+  <security-role>
+    <role-name>apiadmin</role-name>
+  </security-role>
 
 </web-app>
