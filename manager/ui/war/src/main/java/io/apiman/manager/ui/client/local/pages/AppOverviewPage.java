@@ -19,9 +19,12 @@ import io.apiman.manager.api.beans.actions.ActionBean;
 import io.apiman.manager.api.beans.actions.ActionType;
 import io.apiman.manager.api.beans.apps.ApplicationStatus;
 import io.apiman.manager.ui.client.local.AppMessages;
+import io.apiman.manager.ui.client.local.events.ConfirmationEvent;
+import io.apiman.manager.ui.client.local.events.ConfirmationEvent.Handler;
 import io.apiman.manager.ui.client.local.services.rest.IRestInvokerCallback;
 import io.apiman.manager.ui.client.local.util.Formatting;
 import io.apiman.manager.ui.client.local.util.MultimapUtil;
+import io.apiman.manager.ui.client.local.widgets.ConfirmationDialog;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -73,6 +76,8 @@ public class AppOverviewPage extends AbstractAppPage {
 
     @Inject @DataField
     AsyncActionButton registerButton;
+    @Inject @DataField
+    AsyncActionButton unregisterButton;
     
     /**
      * Constructor.
@@ -119,6 +124,7 @@ public class AppOverviewPage extends AbstractAppPage {
     @Override
     protected void onPageLoaded() {
         registerButton.reset();
+        unregisterButton.reset();
         renderApplicationStatus();
     }
 
@@ -129,9 +135,13 @@ public class AppOverviewPage extends AbstractAppPage {
         setStatusLabelClass(status, versionBean.getStatus());
 
         boolean canRegister = versionBean.getStatus() == ApplicationStatus.Ready;
-        registerButton.setEnabled(canRegister);
         boolean registeredOrRetired = versionBean.getStatus() == ApplicationStatus.Registered || versionBean.getStatus() == ApplicationStatus.Retired;
+        registerButton.setEnabled(canRegister);
         registerButton.setVisible(!registeredOrRetired);
+        
+        boolean canRetire = versionBean.getStatus() == ApplicationStatus.Registered;
+        unregisterButton.setEnabled(canRetire);
+        unregisterButton.setVisible(canRetire);
     }
     
     /**
@@ -161,6 +171,49 @@ public class AppOverviewPage extends AbstractAppPage {
                 dataPacketError(error);
             }
         });
+    }
+    
+    /**
+     * Called when the user clicks the "Unregister" button.
+     * @param event
+     */
+    @EventHandler("unregisterButton")
+    public void onUnregister(ClickEvent event) {
+        unregisterButton.onActionStarted();
+        
+        ConfirmationDialog dialog = confirmationDialogFactory.get();
+        dialog.setDialogTitle(i18n.format(AppMessages.CONFIRM_UNREGISTER_APP_TITLE));
+        dialog.setDialogMessage(i18n.format(AppMessages.CONFIRM_UNREGISTER_APP_MESSAGE, applicationBean.getName()));
+        dialog.addConfirmationHandler(new Handler() {
+            @Override
+            public void onConfirmation(ConfirmationEvent event) {
+                if (event.isConfirmed()) {
+                    unregisterButton.onActionComplete();
+                    ActionBean action = new ActionBean();
+                    action.setType(ActionType.unregisterApplication);
+                    action.setOrganizationId(versionBean.getApplication().getOrganizationId());
+                    action.setEntityId(versionBean.getApplication().getId());
+                    action.setEntityVersion(versionBean.getVersion());
+                    rest.performAction(action, new IRestInvokerCallback<Void>() {
+                        @Override
+                        public void onSuccess(Void response) {
+                            unregisterButton.onActionComplete();
+                            versionBean.setStatus(ApplicationStatus.Retired);
+                            status.setText(ApplicationStatus.Retired.toString());
+                            renderApplicationStatus();
+                        }
+
+                        @Override
+                        public void onError(Throwable error) {
+                            dataPacketError(error);
+                        }
+                    });
+                } else {
+                    unregisterButton.onActionComplete();
+                }
+            }
+        });
+        dialog.show();
     }
 
     /**

@@ -19,8 +19,10 @@ import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.members.MemberBean;
 import io.apiman.manager.api.beans.members.MemberRoleBean;
 import io.apiman.manager.ui.client.local.AppMessages;
+import io.apiman.manager.ui.client.local.events.ConfirmationEvent;
 import io.apiman.manager.ui.client.local.pages.common.RoleMultiSelector;
 import io.apiman.manager.ui.client.local.util.Formatting;
+import io.apiman.manager.ui.client.local.widgets.ConfirmationDialog;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -28,6 +30,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.jboss.errai.ui.client.local.spi.TranslationService;
@@ -41,7 +44,6 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
@@ -60,11 +62,10 @@ import com.google.gwt.user.client.ui.Label;
 @Dependent
 public class MemberCard extends Composite implements HasValue<MemberBean> {
     
-    private MemberBean value;
-    private List<RoleBean> roleBeans;
-    
     @Inject
     TranslationService i18n;
+    @Inject
+    Instance<ConfirmationDialog> confirmationDialogFactory;
     
     // Front of card
     
@@ -93,7 +94,10 @@ public class MemberCard extends Composite implements HasValue<MemberBean> {
     AsyncActionButton applyButton;
     @Inject @DataField
     AsyncActionButton revokeButton;
-    
+
+    private MemberBean value;
+    private List<RoleBean> roleBeans;
+
     /**
      * Constructor.
      */
@@ -234,11 +238,19 @@ public class MemberCard extends Composite implements HasValue<MemberBean> {
         cancelButton.setEnabled(false);
         revokeButton.onActionStarted();
 
-        // TODO replace this with a bootstrap modal yes/no dialog!
-        if (Window.confirm("This will remove the user from all roles in the Organization.  Really do this?")) { //$NON-NLS-1$
-            // Firing with a null value is a signal to the page that the user wants to delete the card.
-            ValueChangeEvent.fire(this, null);
-        }
+        ConfirmationDialog dialog = confirmationDialogFactory.get();
+        dialog.setDialogTitle(i18n.format(AppMessages.CONFIRM_REVOKE_ALL_TITLE));
+        dialog.setDialogMessage(i18n.format(AppMessages.CONFIRM_REVOKE_ALL_MESSAGE, value.getUserId()));
+        dialog.addConfirmationHandler(new ConfirmationEvent.Handler() {
+            @Override
+            public void onConfirmation(ConfirmationEvent event) {
+                if (event.isConfirmed()) {
+                    // Firing with a null value is a signal to the page that the user wants to delete the card.
+                    ValueChangeEvent.fire(MemberCard.this, null);
+                }
+            }
+        });
+        dialog.show();
     }
     
     /**

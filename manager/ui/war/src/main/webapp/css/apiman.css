@@ -407,7 +407,8 @@ div.page {
 
 .apiman-entitysummary {
   padding: 5px;
-  border: 1px solid #ddd;
+  border: 1px solid rgb(200, 200, 200);
+  box-shadow: 2px 2px 3px rgb(221, 221, 221);
   padding-top: 15px;
   padding-bottom: 15px;
   margin-bottom: 10px;
@@ -570,8 +571,8 @@ ol.breadcrumb {
 .apiman-entity-breadcrumb {
   margin-bottom: 10px;
   padding-bottom: 10px;
-  border-top: 1px solid rgb(221, 221, 221);
-  border-bottom: 1px solid rgb(221, 221, 221);
+  border: 1px solid rgb(200, 200, 200);
+  box-shadow: 2px 2px 3px rgb(221, 221, 221);
   padding-top: 8px;
 }
 .apiman-entity-breadcrumb .title {
@@ -1216,4 +1217,18 @@ div.admin-page .admin-content .apiman-summaryrow .emphasis {
   font-weight: bold;
   color: #666;
   padding-left: 10px;
+}
+
+.modal-header {
+  border-bottom: 1px solid rgb(238, 238, 238);
+}
+
+.modal-body {
+  padding: 25px;
+}
+
+.modal-footer {
+  border-top: 1px solid rgb(238, 238, 238);
+  margin-top: 0px;
+  padding: 15px;
 }

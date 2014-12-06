@@ -93,7 +93,9 @@ public class HttpServiceConnection implements ISignalReadStream<ServiceResponse>
             if (endpoint.endsWith("/")) { //$NON-NLS-1$
                 endpoint = endpoint.substring(0, endpoint.length() - 1);
             }
-            endpoint += request.getDestination();
+            if (request.getDestination() != null) {
+                endpoint += request.getDestination();
+            }
             URL url = new URL(endpoint);
             connection = (HttpURLConnection) url.openConnection();
             connection.setReadTimeout(15000);

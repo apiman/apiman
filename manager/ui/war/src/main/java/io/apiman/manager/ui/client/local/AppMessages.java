@@ -233,16 +233,8 @@ public class AppMessages {
     public static final String VIA_PLAN = "via-plan"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "entered into on")
     public static final String ENTERED_INTO_ON = "entered-into-on"; //$NON-NLS-1$
-    @TranslationKey(defaultValue = "Really break contract with service {0}?")
-    public static final String CONFIRM_BREAK_CONTRACT = "confirm-break-contract"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "Failed to break contract!")
     public static final String BREAK_CONTRACT_FAILURE = "break-contract-failure"; //$NON-NLS-1$
-
-    @TranslationKey(defaultValue = "Really delete role {0}?")
-    public static final String CONFIRM_ROLE_DELETE = "confirm-delete-role"; //$NON-NLS-1$
-
-    @TranslationKey(defaultValue = "Really delete gateway {0}?")
-    public static final String CONFIRM_GATEWAY_DELETE = "confirm-delete-gateway"; //$NON-NLS-1$
 
     @TranslationKey(defaultValue = "Found {0} matching organizations.")
     public static final String ORGANIZATION_COUNT = "organization-count"; //$NON-NLS-1$
@@ -267,8 +259,6 @@ public class AppMessages {
     public static final String REMOVE = "remove"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "Removing...")
     public static final String REMOVING = "removing"; //$NON-NLS-1$
-    @TranslationKey(defaultValue = "Really remove policy {0}?")
-    public static final String CONFIRM_REMOVE_POLICY = "confirm-remove-policy"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "on")
     public static final String ON = "on"; //$NON-NLS-1$
 
@@ -459,5 +449,40 @@ public class AppMessages {
     public static final String WADL_FILE = "wadl-file"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "File(s) dropped: ")
     public static final String FILES_DROPPED = "files-dropped"; //$NON-NLS-1$
+
+    @TranslationKey(defaultValue = "Confirm Application Unregister")
+    public static final String CONFIRM_UNREGISTER_APP_TITLE = "confirm.application-unregister.title"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "Really unregister application {0}?")
+    public static final String CONFIRM_UNREGISTER_APP_MESSAGE = "confirm.application-unregister.msg"; //$NON-NLS-1$
+
+    @TranslationKey(defaultValue = "Confirm Service Retire")
+    public static final String CONFIRM_RETIRE_SERVICE = "confirm.service-retire.title"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "Really retire service {0}?")
+    public static final String CONFIRM_RETIRE_SERVICE_MESSAGE = "confirm.service-retire.msg"; //$NON-NLS-1$
+
+    @TranslationKey(defaultValue = "Confirm Delete Role")
+    public static final String CONFIRM_ROLE_DELETE_TITLE = "confirm.delete-role.title"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "Really delete role {0}?")
+    public static final String CONFIRM_ROLE_DELETE_MESSAGE = "confirm.delete-role.message"; //$NON-NLS-1$
+
+    @TranslationKey(defaultValue = "Confirm Delete Gateway")
+    public static final String CONFIRM_GATEWAY_DELETE_TITLE = "confirm.delete-gateway.title"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "Really delete gateway {0}?")
+    public static final String CONFIRM_GATEWAY_DELETE_MESSAGE = "confirm.delete-gateway.message"; //$NON-NLS-1$
+
+    @TranslationKey(defaultValue = "Confirm Break Contract")
+    public static final String CONFIRM_BREAK_CONTRACT_TITLE = "confirm.break-contract.title"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "Really break contract with service {0}?")
+    public static final String CONFIRM_BREAK_CONTRACT_MESSAGE = "confirm.break-contract.message"; //$NON-NLS-1$
+
+    @TranslationKey(defaultValue = "Confirm Remove Policy")
+    public static final String CONFIRM_REMOVE_POLICY_TITLE = "confirm.remove-policy.title"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "Really remove policy {0}?")
+    public static final String CONFIRM_REMOVE_POLICY_MESSAGE = "confirm.remove-policy.message"; //$NON-NLS-1$
+
+    @TranslationKey(defaultValue = "Confirm Revoke All")
+    public static final String CONFIRM_REVOKE_ALL_TITLE = "confirm.revoke-all.title"; //$NON-NLS-1$
+    @TranslationKey(defaultValue = "This will remove {0} from all roles in the Organization.  Really do this?")
+    public static final String CONFIRM_REVOKE_ALL_MESSAGE = "confirm.revoke-all.message"; //$NON-NLS-1$
 
 }

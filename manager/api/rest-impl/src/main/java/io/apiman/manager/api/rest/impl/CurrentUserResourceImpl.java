@@ -70,6 +70,7 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
             return user;
         } catch (DoesNotExistException e) {
             UserBean user = new UserBean();
+            user.setAdmin(securityContext.isAdmin());
             user.setUsername(userId);
             user.setFullName(userId);
             user.setEmail(userId + "@example.org"); //$NON-NLS-1$

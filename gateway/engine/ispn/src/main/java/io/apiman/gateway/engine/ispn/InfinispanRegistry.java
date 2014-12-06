@@ -154,6 +154,13 @@ public class InfinispanRegistry implements IRegistry {
         if (contract == null) {
             throw new InvalidContractException(Messages.i18n.format("InfinispanRegistry.NoContractForAPIKey", request.getApiKey())); //$NON-NLS-1$
         }
+        // Has the service been retired?
+        Service service = contract.getService();
+        String serviceKey = getServiceKey(service);
+        if (getCache().get(serviceKey) == null) {
+            throw new InvalidContractException(Messages.i18n.format("InfinispanRegistry.ServiceWasRetired", //$NON-NLS-1$ 
+                    service.getServiceId(), service.getOrganizationId()));
+        };
         return contract;
     }
 

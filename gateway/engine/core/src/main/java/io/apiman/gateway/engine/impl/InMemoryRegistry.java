@@ -125,9 +125,19 @@ public class InMemoryRegistry implements IRegistry {
     @Override
     public ServiceContract getContract(ServiceRequest request) throws InvalidContractException {
         ServiceContract contract = contracts.get(request.getApiKey());
+        
         if (contract == null) {
             throw new InvalidContractException(Messages.i18n.format("InMemoryRegistry.NoContractForAPIKey", request.getApiKey())); //$NON-NLS-1$
         }
+        // Has the service been retired?
+        Service service = contract.getService();
+        String serviceKey = getServiceKey(service);
+        if (services.get(serviceKey) == null) {
+            throw new InvalidContractException(Messages.i18n.format("InMemoryRegistry.ServiceWasRetired", //$NON-NLS-1$ 
+                    service.getServiceId(), service.getOrganizationId()));
+        };
+        
+        
         return contract;
     }
 
@@ -162,6 +172,5 @@ public class InMemoryRegistry implements IRegistry {
     private String getApplicationKey(Application app) {
         return app.getOrganizationId() + "|" + app.getApplicationId() + "|" + app.getVersion(); //$NON-NLS-1$ //$NON-NLS-2$
     }
-
 
 }

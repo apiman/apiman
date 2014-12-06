@@ -28,7 +28,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import org.hibernate.annotations.Index;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
@@ -59,7 +58,6 @@ public class PlanVersionBean implements Serializable {
     @Column(nullable=false)
     private PlanStatus status;
     @Column(updatable=false, nullable=false)
-    @Index(name="pln_vIdx")
     private String version;
     @Column(updatable=false, nullable=false)
     private String createdBy;

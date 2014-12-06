@@ -117,9 +117,9 @@
     <version.org.apache.servicemix.bundles.dom4j>1.6.1_5</version.org.apache.servicemix.bundles.dom4j>
     <version.org.codehaus.jackson>1.9.9</version.org.codehaus.jackson>
     <version.org.eclipse.jetty>8.1.9.v20130131</version.org.eclipse.jetty>
-    <version.org.hibernate.commons.annotations>4.0.2.Final</version.org.hibernate.commons.annotations>
-    <version.org.hibernate.javax.persistence.hibernate-jpa-2.0-api>1.0.1.Final</version.org.hibernate.javax.persistence.hibernate-jpa-2.0-api>
-    <version.org.hibernate>4.2.15.Final</version.org.hibernate>
+    <version.org.hibernate.commons.annotations>4.0.4.Final</version.org.hibernate.commons.annotations>
+    <version.org.hibernate.javax.persistence.hibernate-jpa-2.1-api>1.0.0.Final</version.org.hibernate.javax.persistence.hibernate-jpa-2.1-api>
+    <version.org.hibernate>4.3.7.Final</version.org.hibernate>
     <version.org.infinispan>6.0.2.Final</version.org.infinispan>
     <version.org.jboss.errai>3.0.3.Final</version.org.jboss.errai>
     <version.org.jboss.jandex>1.2.0.Final</version.org.jboss.jandex>
@@ -841,8 +841,8 @@
       </dependency>
       <dependency>
         <groupId>org.hibernate.javax.persistence</groupId>
-        <artifactId>hibernate-jpa-2.0-api</artifactId>
-        <version>${version.org.hibernate.javax.persistence.hibernate-jpa-2.0-api}</version>
+        <artifactId>hibernate-jpa-2.1-api</artifactId>
+        <version>${version.org.hibernate.javax.persistence.hibernate-jpa-2.1-api}</version>
       </dependency>
       <dependency>
         <groupId>org.osgi</groupId>

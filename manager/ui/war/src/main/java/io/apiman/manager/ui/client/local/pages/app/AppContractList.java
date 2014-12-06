@@ -20,6 +20,7 @@ import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.events.BreakContractEvent;
 import io.apiman.manager.ui.client.local.events.BreakContractEvent.Handler;
 import io.apiman.manager.ui.client.local.events.BreakContractEvent.HasBreakContractHandlers;
+import io.apiman.manager.ui.client.local.events.ConfirmationEvent;
 import io.apiman.manager.ui.client.local.pages.OrgServicesPage;
 import io.apiman.manager.ui.client.local.pages.PlanOverviewPage;
 import io.apiman.manager.ui.client.local.pages.ServiceOverviewPage;
@@ -27,10 +28,12 @@ import io.apiman.manager.ui.client.local.pages.common.NoEntitiesWidget;
 import io.apiman.manager.ui.client.local.services.NavigationHelperService;
 import io.apiman.manager.ui.client.local.util.Formatting;
 import io.apiman.manager.ui.client.local.util.MultimapUtil;
+import io.apiman.manager.ui.client.local.widgets.ConfirmationDialog;
 
 import java.util.List;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.jboss.errai.ui.client.local.spi.TranslationService;
@@ -43,7 +46,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
@@ -64,6 +66,8 @@ public class AppContractList extends FlowPanel implements HasValue<List<Contract
     protected NavigationHelperService navHelper;
     @Inject
     protected TranslationService i18n;
+    @Inject
+    Instance<ConfirmationDialog> confirmationDialogFactory;
     
     private List<ContractSummaryBean> contracts;
     private boolean filtered;
@@ -249,10 +253,18 @@ public class AppContractList extends FlowPanel implements HasValue<List<Contract
         aab.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                if (Window.confirm(i18n.format(AppMessages.CONFIRM_BREAK_CONTRACT, bean.getServiceId()))) {
-                    aab.onActionStarted();
-                    BreakContractEvent.fire(AppContractList.this, bean);
-                }
+                ConfirmationDialog dialog = confirmationDialogFactory.get();
+                dialog.setDialogTitle(i18n.format(AppMessages.CONFIRM_BREAK_CONTRACT_TITLE));
+                dialog.setDialogMessage(i18n.format(AppMessages.CONFIRM_BREAK_CONTRACT_MESSAGE));
+                dialog.addConfirmationHandler(new ConfirmationEvent.Handler() {
+                    @Override
+                    public void onConfirmation(ConfirmationEvent event) {
+                        if (event.isConfirmed()) {
+                            aab.onActionStarted();
+                            BreakContractEvent.fire(AppContractList.this, bean);
+                        }
+                    }
+                });
             }
         });
         sp.add(aab);

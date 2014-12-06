@@ -36,20 +36,25 @@ import org.junit.Test;
  *
  * @author eric.wittmann@redhat.com
  */
+@SuppressWarnings("nls")
 public class PublishingTest extends AbstractTestPlanTest {
 
     private static final String EXPECTED_GATEWAY_LOG = 
-            "GET:/mock-gateway/api/system/status\n" +  //$NON-NLS-1$
-            "PUT:/mock-gateway/api/services\n" + //$NON-NLS-1$
-            "GET:/mock-gateway/api/system/status\n" +  //$NON-NLS-1$
-            "PUT:/mock-gateway/api/applications\n"; //$NON-NLS-1$
+            "GET:/mock-gateway/api/system/status\n" +
+            "PUT:/mock-gateway/api/services\n" +
+            "GET:/mock-gateway/api/system/status\n" +
+            "PUT:/mock-gateway/api/applications\n" + 
+            "GET:/mock-gateway/api/system/status\n" + 
+            "DELETE:/mock-gateway/api/applications/Organization1/Application1/1.0\n" + 
+            "GET:/mock-gateway/api/system/status\n" + 
+            "DELETE:/mock-gateway/api/services/Organization1/Service1/1.0\n"; 
     
     private static final String EXPECTED_PUBLISH_PAYLOAD = 
-            "{\"organizationId\":\"Organization1\",\"serviceId\":\"Service1\",\"version\":\"1.0\",\"endpointType\":\"rest\",\"endpoint\":\"http://localhost:8080/ping\",\"endpointProperties\":{}}"; //$NON-NLS-1$
+            "{\"organizationId\":\"Organization1\",\"serviceId\":\"Service1\",\"version\":\"1.0\",\"endpointType\":\"rest\",\"endpoint\":\"http://localhost:8080/ping\",\"endpointProperties\":{}}";
 
     @Test
     public void test() throws JsonParseException, JsonMappingException, UnsupportedEncodingException, IOException {
-        runTestPlan("test-plans/publishing-testPlan.xml", PublishingTest.class.getClassLoader()); //$NON-NLS-1$
+        runTestPlan("test-plans/publishing-testPlan.xml", PublishingTest.class.getClassLoader());
 
         // This test includes publishing of a service to the gateway REST API.  The
         // test framework incldues a mock gateway API to test that the REST calls were
@@ -62,29 +67,29 @@ public class PublishingTest extends AbstractTestPlanTest {
         String registerAppPayload = MockGatewayServlet.getPayloads().get(3);
         
         ObjectMapper mapper = new ObjectMapper();
-        Application app = mapper.readValue(registerAppPayload.getBytes("UTF-8"), Application.class); //$NON-NLS-1$
+        Application app = mapper.readValue(registerAppPayload.getBytes("UTF-8"), Application.class);
         Assert.assertNotNull(app);
-        Assert.assertEquals(app.getOrganizationId(), "Organization1"); //$NON-NLS-1$
-        Assert.assertEquals(app.getApplicationId(), "Application1"); //$NON-NLS-1$
-        Assert.assertEquals(app.getVersion(), "1.0"); //$NON-NLS-1$
+        Assert.assertEquals(app.getOrganizationId(), "Organization1");
+        Assert.assertEquals(app.getApplicationId(), "Application1");
+        Assert.assertEquals(app.getVersion(), "1.0");
         Assert.assertEquals(app.getContracts().size(), 1);
         Contract contract = app.getContracts().iterator().next();
         Assert.assertNotNull(contract);
-        Assert.assertEquals(contract.getServiceOrgId(), "Organization1"); //$NON-NLS-1$
-        Assert.assertEquals(contract.getServiceId(), "Service1"); //$NON-NLS-1$
-        Assert.assertEquals(contract.getServiceVersion(), "1.0"); //$NON-NLS-1$
+        Assert.assertEquals(contract.getServiceOrgId(), "Organization1");
+        Assert.assertEquals(contract.getServiceId(), "Service1");
+        Assert.assertEquals(contract.getServiceVersion(), "1.0");
         List<Policy> policies = contract.getPolicies();
         Assert.assertEquals(policies.size(), 2);
 
         Policy policy2 = policies.get(0);
         Assert.assertNotNull(policy2);
-        Assert.assertEquals(policy2.getPolicyImpl(), "org.example.PolicyDefTwo"); //$NON-NLS-1$
-        Assert.assertEquals(policy2.getPolicyJsonConfig(), "{ 'foo' : 'bar' }"); //$NON-NLS-1$
+        Assert.assertEquals(policy2.getPolicyImpl(), "org.example.PolicyDefTwo");
+        Assert.assertEquals(policy2.getPolicyJsonConfig(), "{ 'foo' : 'bar' }");
         
         Policy policy1 = policies.get(1);
         Assert.assertNotNull(policy1);
-        Assert.assertEquals(policy1.getPolicyImpl(), "org.example.PolicyDefOne"); //$NON-NLS-1$
-        Assert.assertEquals(policy1.getPolicyJsonConfig(), "{ 'kung' : 'foo' }"); //$NON-NLS-1$
+        Assert.assertEquals(policy1.getPolicyImpl(), "org.example.PolicyDefOne");
+        Assert.assertEquals(policy1.getPolicyJsonConfig(), "{ 'kung' : 'foo' }");
     }
 
 }

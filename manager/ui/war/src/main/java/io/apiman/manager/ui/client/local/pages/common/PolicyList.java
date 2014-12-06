@@ -17,10 +17,11 @@ package io.apiman.manager.ui.client.local.pages.common;
 
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.ui.client.local.AppMessages;
+import io.apiman.manager.ui.client.local.events.ConfirmationEvent;
 import io.apiman.manager.ui.client.local.events.PoliciesReorderedEvent;
-import io.apiman.manager.ui.client.local.events.RemovePolicyEvent;
 import io.apiman.manager.ui.client.local.events.PoliciesReorderedEvent.Handler;
 import io.apiman.manager.ui.client.local.events.PoliciesReorderedEvent.HasPoliciesReorderedHandlers;
+import io.apiman.manager.ui.client.local.events.RemovePolicyEvent;
 import io.apiman.manager.ui.client.local.events.RemovePolicyEvent.HasRemovePolicyHandlers;
 import io.apiman.manager.ui.client.local.pages.EditPolicyPage;
 import io.apiman.manager.ui.client.local.pages.UserRedirectPage;
@@ -28,12 +29,14 @@ import io.apiman.manager.ui.client.local.services.LoggerService;
 import io.apiman.manager.ui.client.local.services.NavigationHelperService;
 import io.apiman.manager.ui.client.local.util.Formatting;
 import io.apiman.manager.ui.client.local.util.MultimapUtil;
+import io.apiman.manager.ui.client.local.widgets.ConfirmationDialog;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.jboss.errai.ui.client.local.spi.TranslationService;
@@ -59,7 +62,6 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
@@ -87,6 +89,8 @@ public class PolicyList extends FlowPanel implements HasValue<List<PolicyBean>>,
     protected TransitionAnchorFactory<UserRedirectPage> toUserFactory;
     @Inject
     protected LoggerService logger;
+    @Inject
+    Instance<ConfirmationDialog> confirmationDialogFactory;
 
     private boolean filtered;
     private boolean empty;
@@ -323,10 +327,18 @@ public class PolicyList extends FlowPanel implements HasValue<List<PolicyBean>>,
         aab.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                if (Window.confirm(i18n.format(AppMessages.CONFIRM_REMOVE_POLICY, bean.getName()))) {
-                    aab.onActionStarted();
-                    RemovePolicyEvent.fire(PolicyList.this, bean);
-                }
+                ConfirmationDialog dialog = confirmationDialogFactory.get();
+                dialog.setDialogTitle(i18n.format(AppMessages.CONFIRM_REMOVE_POLICY_TITLE));
+                dialog.setDialogMessage(i18n.format(AppMessages.CONFIRM_REMOVE_POLICY_MESSAGE, bean.getName()));
+                dialog.addConfirmationHandler(new ConfirmationEvent.Handler() {
+                    @Override
+                    public void onConfirmation(ConfirmationEvent event) {
+                        if (event.isConfirmed()) {
+                            aab.onActionStarted();
+                            RemovePolicyEvent.fire(PolicyList.this, bean);
+                        }
+                    }
+                });
             }
         });
         sp.add(aab);
