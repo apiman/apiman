@@ -267,9 +267,12 @@ public abstract class AbstractJpaStorage {
     }
     
     /**
-     * @see io.apiman.manager.api.core.IStorage#find(io.apiman.manager.api.beans.search.SearchCriteriaBean, java.lang.Class)
+     * Get a list of entities based on the provided criteria and entity type.
+     * @param criteria
+     * @param type
+     * @throws StorageException
      */
-    public <T> SearchResultsBean<T> find(SearchCriteriaBean criteria, Class<T> type) throws StorageException {
+    protected <T> SearchResultsBean<T> find(SearchCriteriaBean criteria, Class<T> type) throws StorageException {
         SearchResultsBean<T> results = new SearchResultsBean<T>();
         EntityManager entityManager = getActiveEntityManager();
         try {

@@ -18,7 +18,6 @@ package io.apiman.manager.api.rest.impl;
 
 import io.apiman.manager.api.beans.BeanUtils;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
-import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
@@ -63,11 +62,7 @@ public class GatewayResourceImpl implements IGatewayResource {
     @Override
     public List<GatewayBean> list() throws NotAuthorizedException {
         try {
-            SearchCriteriaBean criteria = new SearchCriteriaBean();
-            criteria.setOrder("name", true); //$NON-NLS-1$
-            criteria.setPage(1);
-            criteria.setPageSize(100);
-            SearchResultsBean<GatewayBean> resultsBean = query.find(criteria, GatewayBean.class);
+            SearchResultsBean<GatewayBean> resultsBean = query.listGateways();
             List<GatewayBean> beans = resultsBean.getBeans();
             return beans;
         } catch (StorageException e) {

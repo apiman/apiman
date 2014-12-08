@@ -18,7 +18,6 @@ package io.apiman.manager.api.rest.impl;
 
 import io.apiman.manager.api.beans.BeanUtils;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
-import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
@@ -62,11 +61,7 @@ public class PolicyDefinitionResourceImpl implements IPolicyDefinitionResource {
     @Override
     public List<PolicyDefinitionBean> list() throws NotAuthorizedException {
         try {
-            SearchCriteriaBean criteria = new SearchCriteriaBean();
-            criteria.setOrder("name", true); //$NON-NLS-1$
-            criteria.setPage(1);
-            criteria.setPageSize(500);
-            SearchResultsBean<PolicyDefinitionBean> resultsBean = query.find(criteria, PolicyDefinitionBean.class);
+            SearchResultsBean<PolicyDefinitionBean> resultsBean = query.listPolicyDefinitions();
             List<PolicyDefinitionBean> beans = resultsBean.getBeans();
             return beans;
         } catch (StorageException e) {

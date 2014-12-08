@@ -25,6 +25,7 @@ import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.beans.plans.PlanBean;
 import io.apiman.manager.api.beans.plans.PlanVersionBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
+import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
 import io.apiman.manager.api.beans.search.PagingBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
@@ -166,6 +167,78 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             commitTx();
         }
     }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorageQuery#findOrganizations(io.apiman.manager.api.beans.search.SearchCriteriaBean)
+     */
+    @Override
+    public SearchResultsBean<OrganizationBean> findOrganizations(SearchCriteriaBean criteria)
+            throws StorageException {
+        SearchResultsBean<OrganizationBean> rval = find(criteria, OrganizationBean.class);
+        return rval;
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorageQuery#findApplications(io.apiman.manager.api.beans.search.SearchCriteriaBean)
+     */
+    @Override
+    public SearchResultsBean<ApplicationSummaryBean> findApplications(SearchCriteriaBean criteria)
+            throws StorageException {
+        SearchResultsBean<ApplicationBean> result = find(criteria, ApplicationBean.class);
+        
+        SearchResultsBean<ApplicationSummaryBean> rval = new SearchResultsBean<ApplicationSummaryBean>();
+        rval.setTotalSize(result.getTotalSize());
+        List<ApplicationBean> beans = result.getBeans();
+        rval.setBeans(new ArrayList<ApplicationSummaryBean>(beans.size()));
+        beginTx();
+        try {
+            for (ApplicationBean application : beans) {
+                ApplicationSummaryBean summary = new ApplicationSummaryBean();
+                OrganizationBean organization = get(application.getOrganizationId(), OrganizationBean.class);
+                summary.setId(application.getId());
+                summary.setName(application.getName());
+                summary.setDescription(application.getDescription());
+                // TODO find the number of contracts
+                summary.setNumContracts(0);
+                summary.setOrganizationId(application.getOrganizationId());
+                summary.setOrganizationName(organization.getName());
+                rval.getBeans().add(summary);
+            }
+        } finally {
+            commitTx();
+        }
+        return rval;
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorageQuery#findServices(io.apiman.manager.api.beans.search.SearchCriteriaBean)
+     */
+    @Override
+    public SearchResultsBean<ServiceSummaryBean> findServices(SearchCriteriaBean criteria)
+            throws StorageException {
+        SearchResultsBean<ServiceBean> result = find(criteria, ServiceBean.class);
+        SearchResultsBean<ServiceSummaryBean> rval = new SearchResultsBean<ServiceSummaryBean>();
+        rval.setTotalSize(result.getTotalSize());
+        List<ServiceBean> beans = result.getBeans();
+        rval.setBeans(new ArrayList<ServiceSummaryBean>(beans.size()));
+        try {
+            beginTx();
+            for (ServiceBean service : beans) {
+                ServiceSummaryBean summary = new ServiceSummaryBean();
+                OrganizationBean organization = get(service.getOrganizationId(), OrganizationBean.class);
+                summary.setId(service.getId());
+                summary.setName(service.getName());
+                summary.setDescription(service.getDescription());
+                summary.setCreatedOn(service.getCreatedOn());
+                summary.setOrganizationId(service.getOrganizationId());
+                summary.setOrganizationName(organization.getName());
+                rval.getBeans().add(summary);
+            }
+        } finally {
+            commitTx();
+        }
+        return rval;
+    }
 
     /**
      * @see io.apiman.manager.api.core.IStorage#createAuditEntry(io.apiman.manager.api.beans.audit.AuditEntryBean)
@@ -236,6 +309,32 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         }
         
         return find(criteria, AuditEntryBean.class);
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorageQuery#listGateways()
+     */
+    @Override
+    public SearchResultsBean<GatewayBean> listGateways() throws StorageException {
+        SearchCriteriaBean criteria = new SearchCriteriaBean();
+        criteria.setOrder("name", true); //$NON-NLS-1$
+        criteria.setPage(1);
+        criteria.setPageSize(100);
+        SearchResultsBean<GatewayBean> resultsBean = find(criteria, GatewayBean.class);
+        return resultsBean;
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorageQuery#listPolicyDefinitions()
+     */
+    @Override
+    public SearchResultsBean<PolicyDefinitionBean> listPolicyDefinitions() throws StorageException {
+        SearchCriteriaBean criteria = new SearchCriteriaBean();
+        criteria.setOrder("name", true); //$NON-NLS-1$
+        criteria.setPage(1);
+        criteria.setPageSize(500);
+        SearchResultsBean<PolicyDefinitionBean> resultsBean = find(criteria, PolicyDefinitionBean.class);
+        return resultsBean;
     }
     
     /**

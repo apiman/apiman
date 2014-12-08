@@ -17,8 +17,11 @@ package io.apiman.manager.api.core;
 
 import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
+import io.apiman.manager.api.beans.gateways.GatewayBean;
+import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.beans.plans.PlanVersionBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
+import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
 import io.apiman.manager.api.beans.search.PagingBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
@@ -45,12 +48,39 @@ import java.util.Set;
 public interface IStorageQuery {
 
     /**
+     * Lists all of the Gateways.
+     * @throws StorageException
+     */
+    public SearchResultsBean<GatewayBean> listGateways() throws StorageException;
+
+    /**
      * Finds entities by provided criteria.
      * @param criteria
      * @param type
      * @throws StorageException
      */
     public <T> SearchResultsBean<T> find(SearchCriteriaBean criteria, Class<T> type) throws StorageException;
+
+    /**
+     * Finds organizations by the provided criteria.
+     * @param criteria
+     * @throws StorageException
+     */
+    public SearchResultsBean<OrganizationBean> findOrganizations(SearchCriteriaBean criteria) throws StorageException;
+    
+    /**
+     * Finds applications by the provided criteria.
+     * @param criteria
+     * @throws StorageException
+     */
+    public SearchResultsBean<ApplicationSummaryBean> findApplications(SearchCriteriaBean criteria) throws StorageException;
+
+    /**
+     * Finds services by the provided criteria.
+     * @param criteria
+     * @throws StorageException
+     */
+    public SearchResultsBean<ServiceSummaryBean> findServices(SearchCriteriaBean criteria) throws StorageException;
     
     /**
      * Gets the audit log for an entity.
@@ -213,6 +243,12 @@ public interface IStorageQuery {
     public List<PolicyBean> getPolicies(String organizationId, String entityId, String version,
             PolicyType type) throws StorageException;
 
+    /**
+     * Lists the policy definitions in the system.
+     * @throws StorageException
+     */
+    public SearchResultsBean<PolicyDefinitionBean> listPolicyDefinitions() throws StorageException;
+    
     /**
      * Gets a list of contracts for the given service.  This is paged.
      * @param organizationId

@@ -16,11 +16,9 @@
 
 package io.apiman.manager.api.rest.impl;
 
-import io.apiman.manager.api.beans.apps.ApplicationBean;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
-import io.apiman.manager.api.beans.services.ServiceBean;
 import io.apiman.manager.api.beans.summary.ApplicationSummaryBean;
 import io.apiman.manager.api.beans.summary.ServiceSummaryBean;
 import io.apiman.manager.api.core.IStorage;
@@ -31,9 +29,6 @@ import io.apiman.manager.api.rest.contract.exceptions.InvalidSearchCriteriaExcep
 import io.apiman.manager.api.rest.contract.exceptions.OrganizationNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.SystemErrorException;
 import io.apiman.manager.api.rest.impl.util.SearchCriteriaUtil;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -61,11 +56,9 @@ public class SearchResourceImpl implements ISearchResource {
     @Override
     public SearchResultsBean<OrganizationBean> searchOrgs(SearchCriteriaBean criteria)
             throws InvalidSearchCriteriaException {
-        // TODO only return organizations that the user is permitted to see?
+        SearchCriteriaUtil.validateSearchCriteria(criteria);
         try {
-            SearchCriteriaUtil.validateSearchCriteria(criteria);
-            SearchResultsBean<OrganizationBean> rval = query.find(criteria, OrganizationBean.class);
-            return rval;
+            return query.findOrganizations(criteria);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
@@ -80,28 +73,8 @@ public class SearchResourceImpl implements ISearchResource {
         // TODO only return applications that the user is permitted to see?
         SearchCriteriaUtil.validateSearchCriteria(criteria);
         try {
-            SearchResultsBean<ApplicationBean> result = query.find(criteria, ApplicationBean.class);
-            SearchResultsBean<ApplicationSummaryBean> rval = new SearchResultsBean<ApplicationSummaryBean>();
-            rval.setTotalSize(result.getTotalSize());
-            List<ApplicationBean> beans = result.getBeans();
-            rval.setBeans(new ArrayList<ApplicationSummaryBean>(beans.size()));
-            storage.beginTx();
-            for (ApplicationBean application : beans) {
-                ApplicationSummaryBean summary = new ApplicationSummaryBean();
-                OrganizationBean organization = storage.get(application.getOrganizationId(), OrganizationBean.class);
-                summary.setId(application.getId());
-                summary.setName(application.getName());
-                summary.setDescription(application.getDescription());
-                // TODO find the number of contracts
-                summary.setNumContracts(0);
-                summary.setOrganizationId(application.getOrganizationId());
-                summary.setOrganizationName(organization.getName());
-                rval.getBeans().add(summary);
-            }
-            storage.commitTx();
-            return rval;
+            return query.findApplications(criteria);
         } catch (StorageException e) {
-            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -112,28 +85,9 @@ public class SearchResourceImpl implements ISearchResource {
     @Override
     public SearchResultsBean<ServiceSummaryBean> searchServices(SearchCriteriaBean criteria)
             throws OrganizationNotFoundException, InvalidSearchCriteriaException {
-        // TODO only return services that the user is permitted to see?
         SearchCriteriaUtil.validateSearchCriteria(criteria);
         try {
-            SearchResultsBean<ServiceBean> result = query.find(criteria, ServiceBean.class);
-            storage.beginTx();
-            SearchResultsBean<ServiceSummaryBean> rval = new SearchResultsBean<ServiceSummaryBean>();
-            rval.setTotalSize(result.getTotalSize());
-            List<ServiceBean> beans = result.getBeans();
-            rval.setBeans(new ArrayList<ServiceSummaryBean>(beans.size()));
-            for (ServiceBean service : beans) {
-                ServiceSummaryBean summary = new ServiceSummaryBean();
-                OrganizationBean organization = storage.get(service.getOrganizationId(), OrganizationBean.class);
-                summary.setId(service.getId());
-                summary.setName(service.getName());
-                summary.setDescription(service.getDescription());
-                summary.setCreatedOn(service.getCreatedOn());
-                summary.setOrganizationId(service.getOrganizationId());
-                summary.setOrganizationName(organization.getName());
-                rval.getBeans().add(summary);
-            }
-            storage.commitTx();
-            return rval;
+            return query.findServices(criteria);
         } catch (StorageException e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);
