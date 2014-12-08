@@ -345,9 +345,9 @@ public class AppMessages {
     public static final String ACTIVITY_BREAK_CONTRACT_WITH = "activity.break-contract-with"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "broke a contract to service")
     public static final String ACTIVITY_BREAK_CONTRACT_FOR = "activity.break-contract-for"; //$NON-NLS-1$
-    @TranslationKey(defaultValue = "contract was created with application")
+    @TranslationKey(defaultValue = "created a contract with service")
     public static final String ACTIVITY_CREATE_CONTRACT_WITH = "activity.create-contract-with"; //$NON-NLS-1$
-    @TranslationKey(defaultValue = "created a contract to service")
+    @TranslationKey(defaultValue = "created a contract from application")
     public static final String ACTIVITY_CREATE_CONTRACT_FOR = "activity.create-contract-for"; //$NON-NLS-1$
     @TranslationKey(defaultValue = "created application")
     public static final String ACTIVITY_CREATE_APP = "activity.create-app"; //$NON-NLS-1$

@@ -70,7 +70,7 @@ public class CreateContractDetailPanel extends AbstractDetailPanel {
         Anchor appOrgAnchor = orgLinkFactory.get("org", data.getAppOrgId()); //$NON-NLS-1$
         appOrgAnchor.setText(data.getAppOrgId());
         add(appOrgAnchor);
-        add(new SpanLabel("/")); //$NON-NLS-1$
+        add(new SpanLabel(" / ")); //$NON-NLS-1$
         Anchor appAnchor = appLinkFactory.get(MultimapUtil.fromMultiple("org", data.getAppOrgId(), "app", data.getAppId())); //$NON-NLS-1$ //$NON-NLS-2$
         appAnchor.setText(data.getAppId());
         add(appAnchor);
