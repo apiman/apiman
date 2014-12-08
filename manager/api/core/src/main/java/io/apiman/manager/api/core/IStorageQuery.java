@@ -19,6 +19,7 @@ import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
+import io.apiman.manager.api.beans.plans.PlanBean;
 import io.apiman.manager.api.beans.plans.PlanVersionBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
@@ -81,6 +82,14 @@ public interface IStorageQuery {
      * @throws StorageException
      */
     public SearchResultsBean<ServiceSummaryBean> findServices(SearchCriteriaBean criteria) throws StorageException;
+    
+    /**
+     * Finds plans (within an organization) with the given criteria.
+     * @param organizationId
+     * @param criteria
+     * @throws StorageException
+     */
+    public SearchResultsBean<PlanBean> findPlans(String organizationId, SearchCriteriaBean criteria) throws StorageException;
     
     /**
      * Gets the audit log for an entity.

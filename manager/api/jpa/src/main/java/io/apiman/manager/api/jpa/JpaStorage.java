@@ -239,6 +239,16 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         }
         return rval;
     }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorageQuery#findPlans(java.lang.String, io.apiman.manager.api.beans.search.SearchCriteriaBean)
+     */
+    @Override
+    public SearchResultsBean<PlanBean> findPlans(String organizationId, SearchCriteriaBean criteria)
+            throws StorageException {
+        criteria.addFilter("organizationId", organizationId, SearchCriteriaFilterBean.OPERATOR_EQ); //$NON-NLS-1$
+        return find(criteria, PlanBean.class);
+    }
 
     /**
      * @see io.apiman.manager.api.core.IStorage#createAuditEntry(io.apiman.manager.api.beans.audit.AuditEntryBean)

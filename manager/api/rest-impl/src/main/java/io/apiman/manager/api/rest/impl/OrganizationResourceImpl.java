@@ -1562,7 +1562,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#search(java.lang.String, io.apiman.manager.api.beans.search.SearchCriteriaBean)
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#searchPlans(java.lang.String, io.apiman.manager.api.beans.search.SearchCriteriaBean)
      */
     @Override
     public SearchResultsBean<PlanBean> searchPlans(String organizationId, SearchCriteriaBean criteria)
@@ -1572,10 +1572,8 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
         SearchCriteriaUtil.validateSearchCriteria(criteria);
 
-        // TODO only return plans that the user is permitted to see
         try {
-            SearchResultsBean<PlanBean> rval = query.find(criteria, PlanBean.class);
-            return rval;
+            return query.findPlans(organizationId, criteria);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
@@ -2145,13 +2143,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
      * @throws StorageException 
      */
     private GatewayBean getSingularGateway() throws StorageException {
-        SearchCriteriaBean criteria = new SearchCriteriaBean();
-        criteria.setPage(1);
-        criteria.setPageSize(2);
-        SearchResultsBean<GatewayBean> resultsBean = query.find(criteria, GatewayBean.class);
-        List<GatewayBean> beans = resultsBean.getBeans();
-        if (beans != null && beans.size() == 1) {
-            return beans.get(0);
+        SearchResultsBean<GatewayBean> gateways = query.listGateways();
+        if (gateways.getBeans().size() == 1) {
+            return gateways.getBeans().get(0);
         } else {
             return null;
         }
