@@ -154,11 +154,17 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     }
     
     /**
-     * @see io.apiman.manager.api.core.IStorage#find(io.apiman.manager.api.beans.search.SearchCriteriaBean, java.lang.Class)
+     * @see io.apiman.manager.api.jpa.AbstractJpaStorage#find(io.apiman.manager.api.beans.search.SearchCriteriaBean, java.lang.Class)
      */
     @Override
     public <T> SearchResultsBean<T> find(SearchCriteriaBean criteria, Class<T> type) throws StorageException {
-        return super.find(criteria, type);
+        beginTx();
+        try {
+            SearchResultsBean<T> rval = super.find(criteria, type);
+            return rval;
+        } finally {
+            commitTx();
+        }
     }
 
     /**
@@ -170,7 +176,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorage#auditEntity(java.lang.String, java.lang.String, java.lang.String, java.lang.Class, io.apiman.manager.api.beans.search.PagingBean)
+     * @see io.apiman.manager.api.core.IStorageQuery#auditEntity(java.lang.String, java.lang.String, java.lang.String, java.lang.Class, io.apiman.manager.api.beans.search.PagingBean)
      */
     @Override
     public <T> SearchResultsBean<AuditEntryBean> auditEntity(String organizationId, String entityId, String entityVersion,
@@ -212,7 +218,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorage#auditUser(java.lang.String, java.lang.Class, io.apiman.manager.api.beans.search.PagingBean)
+     * @see io.apiman.manager.api.core.IStorageQuery#auditUser(java.lang.String, io.apiman.manager.api.beans.search.PagingBean)
      */
     @Override
     public <T> SearchResultsBean<AuditEntryBean> auditUser(String userId, PagingBean paging)

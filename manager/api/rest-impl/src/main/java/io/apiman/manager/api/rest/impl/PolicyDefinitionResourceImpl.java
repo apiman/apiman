@@ -21,6 +21,7 @@ import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.core.IStorage;
+import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.AlreadyExistsException;
 import io.apiman.manager.api.core.exceptions.DoesNotExistException;
 import io.apiman.manager.api.core.exceptions.StorageException;
@@ -46,6 +47,7 @@ import javax.inject.Inject;
 public class PolicyDefinitionResourceImpl implements IPolicyDefinitionResource {
 
     @Inject IStorage storage;
+    @Inject IStorageQuery query;
     @Inject ISecurityContext securityContext;
     
     /**
@@ -60,17 +62,14 @@ public class PolicyDefinitionResourceImpl implements IPolicyDefinitionResource {
     @Override
     public List<PolicyDefinitionBean> list() throws NotAuthorizedException {
         try {
-            storage.beginTx();
             SearchCriteriaBean criteria = new SearchCriteriaBean();
             criteria.setOrder("name", true); //$NON-NLS-1$
             criteria.setPage(1);
             criteria.setPageSize(500);
-            SearchResultsBean<PolicyDefinitionBean> resultsBean = storage.find(criteria, PolicyDefinitionBean.class);
+            SearchResultsBean<PolicyDefinitionBean> resultsBean = query.find(criteria, PolicyDefinitionBean.class);
             List<PolicyDefinitionBean> beans = resultsBean.getBeans();
-            storage.commitTx();
             return beans;
         } catch (StorageException e) {
-            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }

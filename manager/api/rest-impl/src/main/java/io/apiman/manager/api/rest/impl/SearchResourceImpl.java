@@ -24,6 +24,7 @@ import io.apiman.manager.api.beans.services.ServiceBean;
 import io.apiman.manager.api.beans.summary.ApplicationSummaryBean;
 import io.apiman.manager.api.beans.summary.ServiceSummaryBean;
 import io.apiman.manager.api.core.IStorage;
+import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.rest.contract.ISearchResource;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidSearchCriteriaException;
@@ -46,6 +47,7 @@ import javax.inject.Inject;
 public class SearchResourceImpl implements ISearchResource {
 
     @Inject IStorage storage;
+    @Inject IStorageQuery query;
     
     /**
      * Constructor.
@@ -62,12 +64,9 @@ public class SearchResourceImpl implements ISearchResource {
         // TODO only return organizations that the user is permitted to see?
         try {
             SearchCriteriaUtil.validateSearchCriteria(criteria);
-            storage.beginTx();
-            SearchResultsBean<OrganizationBean> rval = storage.find(criteria, OrganizationBean.class);
-            storage.commitTx();
+            SearchResultsBean<OrganizationBean> rval = query.find(criteria, OrganizationBean.class);
             return rval;
         } catch (StorageException e) {
-            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -81,12 +80,12 @@ public class SearchResourceImpl implements ISearchResource {
         // TODO only return applications that the user is permitted to see?
         SearchCriteriaUtil.validateSearchCriteria(criteria);
         try {
-            storage.beginTx();
-            SearchResultsBean<ApplicationBean> result = storage.find(criteria, ApplicationBean.class);
+            SearchResultsBean<ApplicationBean> result = query.find(criteria, ApplicationBean.class);
             SearchResultsBean<ApplicationSummaryBean> rval = new SearchResultsBean<ApplicationSummaryBean>();
             rval.setTotalSize(result.getTotalSize());
             List<ApplicationBean> beans = result.getBeans();
             rval.setBeans(new ArrayList<ApplicationSummaryBean>(beans.size()));
+            storage.beginTx();
             for (ApplicationBean application : beans) {
                 ApplicationSummaryBean summary = new ApplicationSummaryBean();
                 OrganizationBean organization = storage.get(application.getOrganizationId(), OrganizationBean.class);
@@ -116,8 +115,8 @@ public class SearchResourceImpl implements ISearchResource {
         // TODO only return services that the user is permitted to see?
         SearchCriteriaUtil.validateSearchCriteria(criteria);
         try {
+            SearchResultsBean<ServiceBean> result = query.find(criteria, ServiceBean.class);
             storage.beginTx();
-            SearchResultsBean<ServiceBean> result = storage.find(criteria, ServiceBean.class);
             SearchResultsBean<ServiceSummaryBean> rval = new SearchResultsBean<ServiceSummaryBean>();
             rval.setTotalSize(result.getTotalSize());
             List<ServiceBean> beans = result.getBeans();

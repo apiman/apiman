@@ -16,9 +16,13 @@
 package io.apiman.manager.api.core;
 
 import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
+import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.plans.PlanVersionBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
+import io.apiman.manager.api.beans.search.PagingBean;
+import io.apiman.manager.api.beans.search.SearchCriteriaBean;
+import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
 import io.apiman.manager.api.beans.summary.ApiRegistryBean;
 import io.apiman.manager.api.beans.summary.ApplicationSummaryBean;
@@ -39,6 +43,34 @@ import java.util.Set;
  * @author eric.wittmann@redhat.com
  */
 public interface IStorageQuery {
+
+    /**
+     * Finds entities by provided criteria.
+     * @param criteria
+     * @param type
+     * @throws StorageException
+     */
+    public <T> SearchResultsBean<T> find(SearchCriteriaBean criteria, Class<T> type) throws StorageException;
+    
+    /**
+     * Gets the audit log for an entity.
+     * @param organizationId
+     * @param entityId
+     * @param entityVersion
+     * @param type
+     * @param paging
+     * @throws StorageException
+     */
+    public <T> SearchResultsBean<AuditEntryBean> auditEntity(String organizationId, String entityId,
+            String entityVersion, Class<T> type, PagingBean paging) throws StorageException;
+
+    /**
+     * Gets the audit log for a user.
+     * @param userId
+     * @param paging
+     * @throws StorageException
+     */
+    public <T> SearchResultsBean<AuditEntryBean> auditUser(String userId, PagingBean paging) throws StorageException;
     
     /**
      * Returns summary info for all organizations in the given set.

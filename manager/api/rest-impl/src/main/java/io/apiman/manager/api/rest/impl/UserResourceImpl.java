@@ -180,15 +180,12 @@ public class UserResourceImpl implements IUserResource {
         }
         try {
             SearchResultsBean<AuditEntryBean> rval = null;
-            storage.beginTx();
             PagingBean paging = new PagingBean();
             paging.setPage(page);
             paging.setPageSize(pageSize);
-            rval = storage.auditUser(userId, paging);
-            storage.commitTx();
+            rval = query.auditUser(userId, paging);
             return rval;
         } catch (StorageException e) {
-            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }

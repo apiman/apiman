@@ -242,15 +242,12 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         }
         try {
             SearchResultsBean<AuditEntryBean> rval = null;
-            storage.beginTx();
             PagingBean paging = new PagingBean();
             paging.setPage(page);
             paging.setPageSize(pageSize);
-            rval = storage.auditEntity(organizationId, null, null, null, paging);
-            storage.commitTx();
+            rval = query.auditEntity(organizationId, null, null, null, paging);
             return rval;
         } catch (StorageException e) {
-            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -327,12 +324,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             PagingBean paging = new PagingBean();
             paging.setPage(page);
             paging.setPageSize(pageSize);
-            storage.beginTx();
-            rval = storage.auditEntity(organizationId, applicationId, null, ApplicationBean.class, paging);
-            storage.commitTx();
+            rval = query.auditEntity(organizationId, applicationId, null, ApplicationBean.class, paging);
             return rval;
         } catch (StorageException e) {
-            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -458,12 +452,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             PagingBean paging = new PagingBean();
             paging.setPage(page);
             paging.setPageSize(pageSize);
-            storage.beginTx();
-            rval = storage.auditEntity(organizationId, applicationId, version, ApplicationBean.class, paging);
-            storage.commitTx();
+            rval = query.auditEntity(organizationId, applicationId, version, ApplicationBean.class, paging);
             return rval;
         } catch (StorageException e) {
-            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -942,15 +933,12 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         }
         try {
             SearchResultsBean<AuditEntryBean> rval = null;
-            storage.beginTx();
             PagingBean paging = new PagingBean();
             paging.setPage(page);
             paging.setPageSize(pageSize);
-            rval = storage.auditEntity(organizationId, serviceId, null, ServiceBean.class, paging);
-            storage.commitTx();
+            rval = query.auditEntity(organizationId, serviceId, null, ServiceBean.class, paging);
             return rval;
         } catch (StorageException e) {
-            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -1011,6 +999,8 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (!securityContext.hasPermission(PermissionType.svcEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
         try {
+            GatewayBean gateway = getSingularGateway();
+
             storage.beginTx();
             ServiceBean service = storage.get(organizationId, serviceId, ServiceBean.class);
             bean.setId(null);
@@ -1022,7 +1012,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             bean.setModifiedOn(new Date());
             bean.setStatus(ServiceStatus.Created);
             bean.setService(service);
-            GatewayBean gateway = getSingularGateway();
             if (gateway != null) {
                 ServiceGatewayBean sgb = new ServiceGatewayBean();
                 sgb.setGatewayId(gateway.getId());
@@ -1089,15 +1078,12 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         }
         try {
             SearchResultsBean<AuditEntryBean> rval = null;
-            storage.beginTx();
             PagingBean paging = new PagingBean();
             paging.setPage(page);
             paging.setPageSize(pageSize);
-            rval = storage.auditEntity(organizationId, serviceId, version, ServiceBean.class, paging);
-            storage.commitTx();
+            rval = query.auditEntity(organizationId, serviceId, version, ServiceBean.class, paging);
             return rval;
         } catch (StorageException e) {
-            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -1521,12 +1507,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             PagingBean paging = new PagingBean();
             paging.setPage(page);
             paging.setPageSize(pageSize);
-            storage.beginTx();
-            rval = storage.auditEntity(organizationId, planId, null, PlanBean.class, paging);
-            storage.commitTx();
+            rval = query.auditEntity(organizationId, planId, null, PlanBean.class, paging);
             return rval;
         } catch (StorageException e) {
-            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -1591,12 +1574,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
         // TODO only return plans that the user is permitted to see
         try {
-            storage.beginTx();
-            SearchResultsBean<PlanBean> rval = storage.find(criteria, PlanBean.class);
-            storage.commitTx();
+            SearchResultsBean<PlanBean> rval = query.find(criteria, PlanBean.class);
             return rval;
         } catch (StorageException e) {
-            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -1671,12 +1651,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             PagingBean paging = new PagingBean();
             paging.setPage(page);
             paging.setPageSize(pageSize);
-            storage.beginTx();
-            rval = storage.auditEntity(organizationId, planId, version, PlanBean.class, paging);
-            storage.commitTx();
+            rval = query.auditEntity(organizationId, planId, version, PlanBean.class, paging);
             return rval;
         } catch (StorageException e) {
-            storage.rollbackTx();
             throw new SystemErrorException(e);
         }
     }
@@ -1922,6 +1899,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.beginTx();
             def = storage.get(bean.getDefinition().getId(), PolicyDefinitionBean.class);
             bean.setDefinition(def);
+            storage.commitTx();
         } catch (DoesNotExistException e) {
             storage.rollbackTx();
             ExceptionFactory.policyDefNotFoundException(bean.getDefinition().getId());
@@ -1939,7 +1917,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             criteria.setOrder("orderIndex", false); //$NON-NLS-1$
             criteria.setPage(1);
             criteria.setPageSize(1);
-            SearchResultsBean<PolicyBean> resultsBean = storage.find(criteria, PolicyBean.class);
+            SearchResultsBean<PolicyBean> resultsBean = query.find(criteria, PolicyBean.class);
             int newIdx = 0;
             if (!resultsBean.getBeans().isEmpty()) {
                 newIdx = resultsBean.getBeans().get(0).getOrderIndex() + 1;
@@ -1956,6 +1934,8 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             bean.setEntityVersion(entityVersion);
             bean.setType(type);
             bean.setOrderIndex(newIdx);
+            
+            storage.beginTx();
             storage.create(bean);
             storage.createAuditEntry(AuditUtils.policyAdded(bean, type, securityContext));
             storage.commitTx();
@@ -2168,7 +2148,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         SearchCriteriaBean criteria = new SearchCriteriaBean();
         criteria.setPage(1);
         criteria.setPageSize(2);
-        SearchResultsBean<GatewayBean> resultsBean = storage.find(criteria, GatewayBean.class);
+        SearchResultsBean<GatewayBean> resultsBean = query.find(criteria, GatewayBean.class);
         List<GatewayBean> beans = resultsBean.getBeans();
         if (beans != null && beans.size() == 1) {
             return beans.get(0);

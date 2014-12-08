@@ -51,6 +51,7 @@ import io.apiman.manager.api.rest.impl.util.ExceptionFactory;
 import io.apiman.manager.api.security.ISecurityContext;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -230,6 +231,7 @@ public class ActionResourceImpl implements IActionResource {
         }
         
         versionBean.setStatus(ServiceStatus.Retired);
+        versionBean.setRetiredOn(new Date());
         try {
             storage.beginTx();
             storage.update(versionBean);
@@ -441,6 +443,7 @@ public class ActionResourceImpl implements IActionResource {
         }
         
         versionBean.setStatus(ApplicationStatus.Retired);
+        versionBean.setRetiredOn(new Date());
 
         try {
             storage.beginTx();
