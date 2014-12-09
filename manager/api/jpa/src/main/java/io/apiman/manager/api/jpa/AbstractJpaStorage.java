@@ -15,7 +15,8 @@
  */
 package io.apiman.manager.api.jpa;
 
-import io.apiman.manager.api.beans.orgs.OrgBasedCompositeId;
+import io.apiman.manager.api.beans.orgs.OrganizationBasedCompositeId;
+import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.beans.search.OrderByBean;
 import io.apiman.manager.api.beans.search.PagingBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
@@ -255,7 +256,8 @@ public abstract class AbstractJpaStorage {
         T rval = null;
         EntityManager entityManager = getActiveEntityManager();
         try {
-            Object key = new OrgBasedCompositeId(organizationId, id);
+            OrganizationBean orgBean = entityManager.find(OrganizationBean.class, organizationId);
+            Object key = new OrganizationBasedCompositeId(orgBean, id);
             rval = entityManager.find(type, key);
         } catch (Throwable t) {
             logger.error(t.getMessage(), t);

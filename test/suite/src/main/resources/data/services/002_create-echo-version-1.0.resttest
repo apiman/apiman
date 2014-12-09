@@ -19,7 +19,9 @@ Content-Type: application/json
 
 {
   "service" : {
-    "organizationId" : "Test",
+    "organization" : {
+      "id" : "Test"
+    },
     "id" : "echo",
     "name" : "echo"
   },

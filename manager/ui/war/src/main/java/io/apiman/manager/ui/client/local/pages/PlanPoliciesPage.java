@@ -119,7 +119,7 @@ public class PlanPoliciesPage extends AbstractPlanPage {
         super.renderPage();
         
         String newPolicyHref = navHelper.createHrefToPage(NewPolicyPage.class,
-                MultimapUtil.fromMultiple("org", this.planBean.getOrganizationId(), "id", this.planBean.getId(),  //$NON-NLS-1$ //$NON-NLS-2$
+                MultimapUtil.fromMultiple("org", this.planBean.getOrganization().getId(), "id", this.planBean.getId(),  //$NON-NLS-1$ //$NON-NLS-2$
                         "ver", this.versionBean.getVersion(), "type", PolicyType.Plan.toString())); //$NON-NLS-1$ //$NON-NLS-2$
         toNewPolicy.setHref(newPolicyHref);
         policies.setValue(policyBeans);

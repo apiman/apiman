@@ -14,7 +14,10 @@ Content-Type: application/json
 {
   "application" : {
     "application" : {
-      "organizationId" : "Organization1",
+      "organization" : {
+        "id" : "Organization1",
+        "name" : "Organization 1"
+      },
       "id" : "Application1",
       "name" : "Application 1",
       "description" : "This is the description of Application 1.",
@@ -27,7 +30,10 @@ Content-Type: application/json
   
   "service":{
     "service" : {
-      "organizationId" : "Organization1",
+      "organization" : {
+        "id" : "Organization1",
+        "name" : "Organization 1"
+      },
       "id" : "Service1",
       "name" : "Service 1",
       "description" : "This is the description of Service 1.",
@@ -43,7 +49,10 @@ Content-Type: application/json
   
   "plan" : {
     "plan" : {
-      "organizationId" : "Organization1",
+      "organization" : {
+        "id" : "Organization1",
+        "name" : "Organization 1"
+      },
       "id" : "Plan1",
       "name" : "Plan 1",
       "description" : "This is the description of Plan 1.",

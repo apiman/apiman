@@ -3,7 +3,6 @@ Content-Type: application/json
 
 {
   "name" : "Application 2",
-  "organizationId" : "Organization1",
   "description" : "This is the description of Application 2."
 }
 ----
@@ -11,7 +10,9 @@ Content-Type: application/json
 Content-Type: application/json
 
 {
-  "organizationId" : "Organization1",
+  "organization" : {
+    "id" : "Organization1"
+  },
   "id" : "Application2",
   "name" : "Application 2",
   "description" : "This is the description of Application 2.",

@@ -23,6 +23,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
@@ -34,6 +35,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 @Entity
 @Table(name = "organizations")
+@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class OrganizationBean implements Serializable {
     
     private static final long serialVersionUID = -506427154633682906L;

@@ -15,7 +15,8 @@
  */
 package io.apiman.manager.api.beans.plans;
 
-import io.apiman.manager.api.beans.orgs.OrgBasedCompositeId;
+import io.apiman.manager.api.beans.orgs.OrganizationBasedCompositeId;
+import io.apiman.manager.api.beans.orgs.OrganizationBean;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -24,8 +25,12 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
@@ -36,14 +41,18 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 @Entity
 @Table(name = "plans")
-@IdClass(OrgBasedCompositeId.class)
+@IdClass(OrganizationBasedCompositeId.class)
+@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class PlanBean implements Serializable {
     
     private static final long serialVersionUID = -7961331943587584049L;
     
     @Id
-    @Column(nullable=false)
-    private String organizationId;
+    @ManyToOne
+    @JoinColumns({
+        @JoinColumn(name="organizationId", referencedColumnName="id")
+    })
+    private OrganizationBean organization;
     @Id
     @Column(nullable=false)
     private String id;
@@ -113,20 +122,6 @@ public class PlanBean implements Serializable {
     }
 
     /**
-     * @return the organizationId
-     */
-    public String getOrganizationId() {
-        return organizationId;
-    }
-
-    /**
-     * @param organizationId the organizationId to set
-     */
-    public void setOrganizationId(String organizationId) {
-        this.organizationId = organizationId;
-    }
-
-    /**
      * @return the createdBy
      */
     public String getCreatedBy() {
@@ -141,40 +136,17 @@ public class PlanBean implements Serializable {
     }
 
     /**
-     * @see java.lang.Object#hashCode()
+     * @return the organization
      */
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
-        result = prime * result + ((organizationId == null) ? 0 : organizationId.hashCode());
-        return result;
+    public OrganizationBean getOrganization() {
+        return organization;
     }
 
     /**
-     * @see java.lang.Object#equals(java.lang.Object)
+     * @param organization the organization to set
      */
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        PlanBean other = (PlanBean) obj;
-        if (id == null) {
-            if (other.id != null)
-                return false;
-        } else if (!id.equals(other.id))
-            return false;
-        if (organizationId == null) {
-            if (other.organizationId != null)
-                return false;
-        } else if (!organizationId.equals(other.organizationId))
-            return false;
-        return true;
+    public void setOrganization(OrganizationBean organization) {
+        this.organization = organization;
     }
     
 }

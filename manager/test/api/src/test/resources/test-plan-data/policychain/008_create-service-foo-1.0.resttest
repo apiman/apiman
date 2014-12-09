@@ -16,7 +16,9 @@ Content-Type: application/json
 
 {
   "service" : {
-    "organizationId" : "TestOrganization",
+    "organization" : {
+      "id" : "TestOrganization"
+    },
     "id" : "foo",
     "name" : "foo"
   },

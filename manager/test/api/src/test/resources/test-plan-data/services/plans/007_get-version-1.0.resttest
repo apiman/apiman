@@ -5,7 +5,9 @@ Content-Type: application/json
 
 {
   "service" : {
-    "organizationId" : "Organization1",
+    "organization" : {
+      "id" : "Organization1"
+    },
     "id" : "Service1",
     "name" : "Service 1",
     "description" : "[UPDATED] This is the description of Service 1!",
@@ -18,7 +20,5 @@ Content-Type: application/json
     { "planId" : "Plan1", "version" : "1.0" }
   ],
   "version" : "1.0",
-  "createdBy" : "admin",
-  "publishedOn" : null,
-  "retiredOn" : null
+  "createdBy" : "admin"
 }

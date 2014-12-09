@@ -16,7 +16,9 @@ X-RestTest-BindTo-silver-contractId: id
 {
   "application" : {
     "application" : {
-      "organizationId" : "Test",
+      "organization" : {
+        "id" : "Test"
+      },
       "id" : "app1"
     },
     "version" : "1.0"
@@ -24,7 +26,9 @@ X-RestTest-BindTo-silver-contractId: id
   
   "service":{
     "service" : {
-      "organizationId" : "Test",
+      "organization" : {
+        "id" : "Test"
+      },
       "id" : "echo"
     },
     "version" : "1.0"
@@ -32,7 +36,9 @@ X-RestTest-BindTo-silver-contractId: id
   
   "plan" : {
     "plan" : {
-      "organizationId" : "Test",
+      "organization" : {
+        "id" : "Test"
+      },
       "id" : "Silver"
     },
     "version" : "1.0"

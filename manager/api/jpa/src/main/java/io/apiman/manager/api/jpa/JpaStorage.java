@@ -194,13 +194,13 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         try {
             for (ApplicationBean application : beans) {
                 ApplicationSummaryBean summary = new ApplicationSummaryBean();
-                OrganizationBean organization = get(application.getOrganizationId(), OrganizationBean.class);
+                OrganizationBean organization = get(application.getOrganization().getId(), OrganizationBean.class);
                 summary.setId(application.getId());
                 summary.setName(application.getName());
                 summary.setDescription(application.getDescription());
                 // TODO find the number of contracts
                 summary.setNumContracts(0);
-                summary.setOrganizationId(application.getOrganizationId());
+                summary.setOrganizationId(application.getOrganization().getId());
                 summary.setOrganizationName(organization.getName());
                 rval.getBeans().add(summary);
             }
@@ -225,12 +225,12 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             beginTx();
             for (ServiceBean service : beans) {
                 ServiceSummaryBean summary = new ServiceSummaryBean();
-                OrganizationBean organization = get(service.getOrganizationId(), OrganizationBean.class);
+                OrganizationBean organization = get(service.getOrganization().getId(), OrganizationBean.class);
                 summary.setId(service.getId());
                 summary.setName(service.getName());
                 summary.setDescription(service.getDescription());
                 summary.setCreatedOn(service.getCreatedOn());
-                summary.setOrganizationId(service.getOrganizationId());
+                summary.setOrganizationId(service.getOrganization().getId());
                 summary.setOrganizationName(organization.getName());
                 rval.getBeans().add(summary);
             }
@@ -246,7 +246,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     @Override
     public SearchResultsBean<PlanBean> findPlans(String organizationId, SearchCriteriaBean criteria)
             throws StorageException {
-        criteria.addFilter("organizationId", organizationId, SearchCriteriaFilterBean.OPERATOR_EQ); //$NON-NLS-1$
+        criteria.addFilter("organization.id", organizationId, SearchCriteriaFilterBean.OPERATOR_EQ); //$NON-NLS-1$
         return find(criteria, PlanBean.class);
     }
 
@@ -396,7 +396,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         beginTx();
         try {
             EntityManager entityManager = getActiveEntityManager();
-            String jpql = "SELECT a from ApplicationBean a WHERE a.organizationId IN :orgs ORDER BY a.id ASC"; //$NON-NLS-1$
+            String jpql = "SELECT a FROM ApplicationBean a JOIN a.organization o WHERE o.id IN :orgs ORDER BY a.id ASC"; //$NON-NLS-1$
             Query query = entityManager.createQuery(jpql);
             query.setParameter("orgs", orgIds); //$NON-NLS-1$
             @SuppressWarnings("unchecked")
@@ -408,7 +408,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                 summary.setDescription(bean.getDescription());
                 // TODO find the number of contracts
                 summary.setNumContracts(0);
-                OrganizationBean org = entityManager.find(OrganizationBean.class, bean.getOrganizationId());
+                OrganizationBean org = entityManager.find(OrganizationBean.class, bean.getOrganization().getId());
                 summary.setOrganizationId(org.getId());
                 summary.setOrganizationName(org.getName());
                 rval.add(summary);
@@ -441,7 +441,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         beginTx();
         try {
             EntityManager entityManager = getActiveEntityManager();
-            String jpql = "SELECT s from ServiceBean s WHERE s.organizationId IN :orgs ORDER BY s.id ASC"; //$NON-NLS-1$
+            String jpql = "SELECT s FROM ServiceBean s JOIN s.organization o WHERE o.id IN :orgs ORDER BY s.id ASC"; //$NON-NLS-1$
             Query query = entityManager.createQuery(jpql);
             query.setParameter("orgs", orgIds); //$NON-NLS-1$
             @SuppressWarnings("unchecked")
@@ -452,7 +452,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                 summary.setName(bean.getName());
                 summary.setDescription(bean.getDescription());
                 summary.setCreatedOn(bean.getCreatedOn());
-                OrganizationBean org = entityManager.find(OrganizationBean.class, bean.getOrganizationId());
+                OrganizationBean org = entityManager.find(OrganizationBean.class, bean.getOrganization().getId());
                 summary.setOrganizationId(org.getId());
                 summary.setOrganizationName(org.getName());
                 rval.add(summary);
@@ -467,15 +467,14 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     }
     
     /**
-     * @see io.apiman.manager.api.core.IStorageQuery#getServiceVersion(java.lang.String, java.lang.String, java.lang.String)
+     * @see io.apiman.manager.api.core.IStorage#getServiceVersion(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
     public ServiceVersionBean getServiceVersion(String orgId, String serviceId, String version)
             throws StorageException {
-        beginTx();
         try {
             EntityManager entityManager = getActiveEntityManager();
-            String jpql = "SELECT v from ServiceVersionBean v JOIN v.service s WHERE s.organizationId = :orgId AND s.id = :serviceId AND v.version = :version"; //$NON-NLS-1$
+            String jpql = "SELECT v from ServiceVersionBean v JOIN v.service s JOIN s.organization o WHERE o.id = :orgId AND s.id = :serviceId AND v.version = :version"; //$NON-NLS-1$
             Query query = entityManager.createQuery(jpql);
             query.setParameter("orgId", orgId); //$NON-NLS-1$
             query.setParameter("serviceId", serviceId); //$NON-NLS-1$
@@ -487,8 +486,6 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         } catch (Throwable t) {
             logger.error(t.getMessage(), t);
             throw new StorageException(t);
-        } finally {
-            commitTx();
         }
     }
     
@@ -502,7 +499,15 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         beginTx();
         try {
             EntityManager entityManager = getActiveEntityManager();
-            String jpql = "SELECT v from ServiceVersionBean v JOIN v.service s WHERE s.organizationId = :orgId AND s.id = :serviceId ORDER BY v.id DESC"; //$NON-NLS-1$
+            @SuppressWarnings("nls")
+            String jpql = 
+                      "SELECT v "
+                    + "  FROM ServiceVersionBean v"
+                    + "  JOIN v.service s"
+                    + "  JOIN s.organization o"
+                    + " WHERE o.id = :orgId"
+                    + "  AND s.id = :serviceId"
+                    + " ORDER BY v.id DESC";
             Query query = entityManager.createQuery(jpql);
             query.setParameter("orgId", orgId); //$NON-NLS-1$
             query.setParameter("serviceId", serviceId); //$NON-NLS-1$
@@ -524,20 +529,28 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             String version) throws StorageException {
         List<ServicePlanSummaryBean> plans = new ArrayList<ServicePlanSummaryBean>();
         
-        ServiceVersionBean versionBean = getServiceVersion(organizationId, serviceId, version);
-        Set<ServicePlanBean> servicePlans = versionBean.getPlans();
-        if (servicePlans != null) {
-            for (ServicePlanBean spb : servicePlans) {
-                PlanVersionBean planVersion = getPlanVersion(organizationId, spb.getPlanId(), spb.getVersion());
-                ServicePlanSummaryBean summary = new ServicePlanSummaryBean();
-                summary.setPlanId(planVersion.getPlan().getId());
-                summary.setPlanName(planVersion.getPlan().getName());
-                summary.setPlanDescription(planVersion.getPlan().getDescription());
-                summary.setVersion(spb.getVersion());
-                plans.add(summary);
+        beginTx();
+        try {
+            ServiceVersionBean versionBean = getServiceVersion(organizationId, serviceId, version);
+            Set<ServicePlanBean> servicePlans = versionBean.getPlans();
+            if (servicePlans != null) {
+                for (ServicePlanBean spb : servicePlans) {
+                    PlanVersionBean planVersion = getPlanVersion(organizationId, spb.getPlanId(), spb.getVersion());
+                    ServicePlanSummaryBean summary = new ServicePlanSummaryBean();
+                    summary.setPlanId(planVersion.getPlan().getId());
+                    summary.setPlanName(planVersion.getPlan().getName());
+                    summary.setPlanDescription(planVersion.getPlan().getDescription());
+                    summary.setVersion(spb.getVersion());
+                    plans.add(summary);
+                }
             }
+            return plans;
+        } catch (StorageException e) {
+            rollbackTx();
+            throw e;
+        } finally {
+            commitTx();
         }
-        return plans;
     }
     
     /**
@@ -551,15 +564,17 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         beginTx();
         try {
             EntityManager entityManager = getActiveEntityManager();
+            @SuppressWarnings("nls")
             String jpql = 
-                    "SELECT c from ContractBean c " +  //$NON-NLS-1$
-                    "  JOIN c.service svcv " +  //$NON-NLS-1$
-                    "  JOIN svcv.service svc " +  //$NON-NLS-1$
-                    "  JOIN c.application appv " +  //$NON-NLS-1$
-                    "  JOIN appv.application app " +  //$NON-NLS-1$
-                    " WHERE svc.id = :serviceId " +  //$NON-NLS-1$
-                    "   AND svc.organizationId = :orgId " +  //$NON-NLS-1$
-                    "   AND svcv.version = :version " +  //$NON-NLS-1$
+                    "SELECT c from ContractBean c " +
+                    "  JOIN c.service svcv " +
+                    "  JOIN svcv.service svc " +
+                    "  JOIN c.application appv " +
+                    "  JOIN appv.application app " +
+                    "  JOIN svc.organization sorg" +
+                    " WHERE svc.id = :serviceId " +
+                    "   AND sorg.id = :orgId " +
+                    "   AND svcv.version = :version " +
                     " ORDER BY app.organizationId, app.name ASC"; //$NON-NLS-1$
             Query query = entityManager.createQuery(jpql);
             query.setParameter("orgId", organizationId); //$NON-NLS-1$
@@ -574,13 +589,13 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                 ServiceBean service = contractBean.getService().getService();
                 PlanBean plan = contractBean.getPlan().getPlan();
                 
-                OrganizationBean appOrg = entityManager.find(OrganizationBean.class, application.getOrganizationId());
-                OrganizationBean svcOrg = entityManager.find(OrganizationBean.class, service.getOrganizationId());
+                OrganizationBean appOrg = entityManager.find(OrganizationBean.class, application.getOrganization().getId());
+                OrganizationBean svcOrg = entityManager.find(OrganizationBean.class, service.getOrganization().getId());
                 
                 ContractSummaryBean csb = new ContractSummaryBean();
                 csb.setAppId(application.getId());
                 csb.setKey(contractBean.getKey());
-                csb.setAppOrganizationId(application.getOrganizationId());
+                csb.setAppOrganizationId(application.getOrganization().getId());
                 csb.setAppOrganizationName(appOrg.getName());
                 csb.setAppName(application.getName());
                 csb.setAppVersion(contractBean.getApplication().getVersion());
@@ -608,15 +623,14 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorageQuery#getApplicationVersion(java.lang.String, java.lang.String, java.lang.String)
+     * @see io.apiman.manager.api.core.IStorage#getApplicationVersion(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
     public ApplicationVersionBean getApplicationVersion(String orgId, String applicationId, String version)
             throws StorageException {
-        beginTx();
         try {
             EntityManager entityManager = getActiveEntityManager();
-            String jpql = "SELECT v from ApplicationVersionBean v JOIN v.application s WHERE s.organizationId = :orgId AND s.id = :applicationId AND v.version = :version"; //$NON-NLS-1$
+            String jpql = "SELECT v from ApplicationVersionBean v JOIN v.application a JOIN a.organization o WHERE o.id = :orgId AND a.id = :applicationId AND v.version = :version"; //$NON-NLS-1$
             Query query = entityManager.createQuery(jpql);
             query.setParameter("orgId", orgId); //$NON-NLS-1$
             query.setParameter("applicationId", applicationId); //$NON-NLS-1$
@@ -628,8 +642,6 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         } catch (Throwable t) {
             logger.error(t.getMessage(), t);
             throw new StorageException(t);
-        } finally {
-            commitTx();
         }
     }
     
@@ -643,7 +655,15 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         beginTx();
         try {
             EntityManager entityManager = getActiveEntityManager();
-            String jpql = "SELECT v from ApplicationVersionBean v JOIN v.application s WHERE s.organizationId = :orgId AND s.id = :applicationId ORDER BY v.id DESC"; //$NON-NLS-1$
+            @SuppressWarnings("nls")
+            String jpql =
+                      "SELECT v"
+                    + "  FROM ApplicationVersionBean v"
+                    + "  JOIN v.application a"
+                    + "  JOIN a.organization o"
+                    + " WHERE o.id = :orgId"
+                    + "   AND a.id = :applicationId"
+                    + " ORDER BY v.id DESC"; //$NON-NLS-1$
             Query query = entityManager.createQuery(jpql);
             query.setParameter("orgId", orgId); //$NON-NLS-1$
             query.setParameter("applicationId", applicationId); //$NON-NLS-1$
@@ -669,14 +689,16 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         beginTx();
         try {
             EntityManager entityManager = getActiveEntityManager();
+            @SuppressWarnings("nls")
             String jpql = 
-                    "SELECT c from ContractBean c " +  //$NON-NLS-1$
-                    "  JOIN c.application appv " +  //$NON-NLS-1$
-                    "  JOIN appv.application app " +  //$NON-NLS-1$
-                    " WHERE app.id = :applicationId " +  //$NON-NLS-1$
-                    "   AND app.organizationId = :orgId " +  //$NON-NLS-1$
-                    "   AND appv.version = :version " +  //$NON-NLS-1$
-                    " ORDER BY c.id ASC"; //$NON-NLS-1$
+                    "SELECT c from ContractBean c " +
+                    "  JOIN c.application appv " +
+                    "  JOIN appv.application app " +
+                    "  JOIN app.organization aorg" +
+                    " WHERE app.id = :applicationId " +
+                    "   AND aorg.id = :orgId " +
+                    "   AND appv.version = :version " +
+                    " ORDER BY c.id ASC";
             Query query = entityManager.createQuery(jpql);
             query.setParameter("orgId", organizationId); //$NON-NLS-1$
             query.setParameter("applicationId", applicationId); //$NON-NLS-1$
@@ -687,13 +709,13 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                 ServiceBean service = contractBean.getService().getService();
                 PlanBean plan = contractBean.getPlan().getPlan();
                 
-                OrganizationBean appOrg = entityManager.find(OrganizationBean.class, application.getOrganizationId());
-                OrganizationBean svcOrg = entityManager.find(OrganizationBean.class, service.getOrganizationId());
+                OrganizationBean appOrg = entityManager.find(OrganizationBean.class, application.getOrganization().getId());
+                OrganizationBean svcOrg = entityManager.find(OrganizationBean.class, service.getOrganization().getId());
                 
                 ContractSummaryBean csb = new ContractSummaryBean();
                 csb.setAppId(application.getId());
                 csb.setKey(contractBean.getKey());
-                csb.setAppOrganizationId(application.getOrganizationId());
+                csb.setAppOrganizationId(application.getOrganization().getId());
                 csb.setAppOrganizationName(appOrg.getName());
                 csb.setAppName(application.getName());
                 csb.setAppVersion(contractBean.getApplication().getVersion());
@@ -731,14 +753,16 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         beginTx();
         try {
             EntityManager entityManager = getActiveEntityManager();
+            @SuppressWarnings("nls")
             String jpql = 
-                    "SELECT c from ContractBean c " +  //$NON-NLS-1$
-                    "  JOIN c.application appv " +  //$NON-NLS-1$
-                    "  JOIN appv.application app " +  //$NON-NLS-1$
-                    " WHERE app.id = :applicationId " +  //$NON-NLS-1$
-                    "   AND app.organizationId = :orgId " +  //$NON-NLS-1$
-                    "   AND appv.version = :version " +  //$NON-NLS-1$
-                    " ORDER BY c.id ASC"; //$NON-NLS-1$
+                    "SELECT c from ContractBean c " +
+                    "  JOIN c.application appv " +
+                    "  JOIN appv.application app " +
+                    "  JOIN app.organization aorg" +
+                    " WHERE app.id = :applicationId " +
+                    "   AND aorg.id = :orgId " +
+                    "   AND appv.version = :version " +
+                    " ORDER BY c.id ASC";
             Query query = entityManager.createQuery(jpql);
             query.setParameter("orgId", organizationId); //$NON-NLS-1$
             query.setParameter("applicationId", applicationId); //$NON-NLS-1$
@@ -750,7 +774,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                 ServiceBean service = svb.getService();
                 PlanBean plan = contractBean.getPlan().getPlan();
                 
-                OrganizationBean svcOrg = entityManager.find(OrganizationBean.class, service.getOrganizationId());
+                OrganizationBean svcOrg = entityManager.find(OrganizationBean.class, service.getOrganization().getId());
                 
                 ApiEntryBean entry = new ApiEntryBean();
                 entry.setServiceId(service.getId());
@@ -801,7 +825,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         beginTx();
         try {
             EntityManager entityManager = getActiveEntityManager();
-            String jpql = "SELECT p from PlanBean p WHERE p.organizationId IN :orgs ORDER BY p.id ASC"; //$NON-NLS-1$
+            String jpql = "SELECT p FROM PlanBean p JOIN p.organization o WHERE o.id IN :orgs ORDER BY p.id ASC"; //$NON-NLS-1$
             Query query = entityManager.createQuery(jpql);
             query.setParameter("orgs", orgIds); //$NON-NLS-1$
             @SuppressWarnings("unchecked")
@@ -811,7 +835,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                 summary.setId(bean.getId());
                 summary.setName(bean.getName());
                 summary.setDescription(bean.getDescription());
-                OrganizationBean org = entityManager.find(OrganizationBean.class, bean.getOrganizationId());
+                OrganizationBean org = entityManager.find(OrganizationBean.class, bean.getOrganization().getId());
                 summary.setOrganizationId(org.getId());
                 summary.setOrganizationName(org.getName());
                 rval.add(summary);
@@ -826,15 +850,14 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     }
     
     /**
-     * @see io.apiman.manager.api.core.IStorageQuery#getPlanVersion(java.lang.String, java.lang.String, java.lang.String)
+     * @see io.apiman.manager.api.core.IStorage#getPlanVersion(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
     public PlanVersionBean getPlanVersion(String orgId, String planId, String version)
             throws StorageException {
-        beginTx();
         try {
             EntityManager entityManager = getActiveEntityManager();
-            String jpql = "SELECT v from PlanVersionBean v JOIN v.plan s WHERE s.organizationId = :orgId AND s.id = :planId AND v.version = :version"; //$NON-NLS-1$
+            String jpql = "SELECT v from PlanVersionBean v JOIN v.plan p JOIN p.organization o WHERE o.id = :orgId AND p.id = :planId AND v.version = :version"; //$NON-NLS-1$
             Query query = entityManager.createQuery(jpql);
             query.setParameter("orgId", orgId); //$NON-NLS-1$
             query.setParameter("planId", planId); //$NON-NLS-1$
@@ -846,8 +869,6 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         } catch (Throwable t) {
             logger.error(t.getMessage(), t);
             throw new StorageException(t);
-        } finally {
-            commitTx();
         }
     }
     
@@ -861,7 +882,13 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         beginTx();
         try {
             EntityManager entityManager = getActiveEntityManager();
-            String jpql = "SELECT v from PlanVersionBean v JOIN v.plan s WHERE s.organizationId = :orgId AND s.id = :planId ORDER BY v.id DESC"; //$NON-NLS-1$
+            @SuppressWarnings("nls")
+            String jpql = "SELECT v from PlanVersionBean v" + 
+                          "  JOIN v.plan p" +
+                          "  JOIN p.organization o" +
+                          " WHERE o.id = :orgId" + 
+                          "   AND p.id = :planId" + 
+                          " ORDER BY v.id DESC";
             Query query = entityManager.createQuery(jpql);
             query.setParameter("orgId", orgId); //$NON-NLS-1$
             query.setParameter("planId", planId); //$NON-NLS-1$

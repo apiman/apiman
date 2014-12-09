@@ -10,7 +10,9 @@ Content-Type: application/json
 
 {
   "plan" : {
-    "organizationId" : "Test",
+    "organization" : {
+      "id" : "Test"
+    },
     "id" : "Gold",
     "name" : "Gold"
   },

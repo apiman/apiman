@@ -150,7 +150,7 @@ public class ServiceOverviewPage extends AbstractServicePage {
 
         ActionBean action = new ActionBean();
         action.setType(ActionType.publishService);
-        action.setOrganizationId(versionBean.getService().getOrganizationId());
+        action.setOrganizationId(versionBean.getService().getOrganization().getId());
         action.setEntityId(versionBean.getService().getId());
         action.setEntityVersion(versionBean.getVersion());
         rest.performAction(action, new IRestInvokerCallback<Void>() {
@@ -187,7 +187,7 @@ public class ServiceOverviewPage extends AbstractServicePage {
                     retireButton.onActionComplete();
                     ActionBean action = new ActionBean();
                     action.setType(ActionType.retireService);
-                    action.setOrganizationId(versionBean.getService().getOrganizationId());
+                    action.setOrganizationId(versionBean.getService().getOrganization().getId());
                     action.setEntityId(versionBean.getService().getId());
                     action.setEntityVersion(versionBean.getVersion());
                     rest.performAction(action, new IRestInvokerCallback<Void>() {

@@ -21,8 +21,8 @@ import io.apiman.manager.api.beans.services.ServiceBean;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
 import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.beans.JavaScriptFile;
-import io.apiman.manager.ui.client.local.beans.ServiceImportSourceType;
 import io.apiman.manager.ui.client.local.beans.JavaScriptFile.IDataReadHandler;
+import io.apiman.manager.ui.client.local.beans.ServiceImportSourceType;
 import io.apiman.manager.ui.client.local.pages.service.ImportServicesTable;
 import io.apiman.manager.ui.client.local.pages.service.ServiceImportSourceSelectBox;
 import io.apiman.manager.ui.client.local.services.ContextKeys;
@@ -375,7 +375,6 @@ public class ImportServicesPage extends AbstractPage {
         final Set<String> completed = new HashSet<String>();
         for (final ServiceVersionBean serviceV : servicesToCreate) {
             ServiceBean service = serviceV.getService();
-            service.setOrganizationId(org.getId());
             rest.createService(org.getId(), service, new IRestInvokerCallback<ServiceBean>() {
                 @Override
                 public void onSuccess(final ServiceBean serviceResp) {

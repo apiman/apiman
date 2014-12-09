@@ -162,7 +162,7 @@ public class ServicePlansPage extends AbstractServicePage {
         
         ServiceVersionBean update = new ServiceVersionBean();
         update.setPlans(newplans);
-        rest.updateServiceVersion(serviceBean.getOrganizationId(), serviceBean.getId(),
+        rest.updateServiceVersion(serviceBean.getOrganization().getId(), serviceBean.getId(),
                 versionBean.getVersion(), update, new IRestInvokerCallback<Void>() {
             @Override
             public void onSuccess(Void response) {

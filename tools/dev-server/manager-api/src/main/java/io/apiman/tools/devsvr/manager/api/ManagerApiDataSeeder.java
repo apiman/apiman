@@ -145,6 +145,7 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         org.setModifiedOn(new Date());
         org.setModifiedBy("admin");
         storage.create(org);
+        OrganizationBean jbossOrg = org;
         
         // Create Apereo Bedework org
         org = new OrganizationBean();
@@ -175,7 +176,7 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         plan.setId("Platinum");
         plan.setName("Platinum");
         plan.setDescription("Provides subscribing applications with full access to the Services in this Organization.");
-        plan.setOrganizationId("JBossOverlord");
+        plan.setOrganization(jbossOrg);
         plan.setCreatedBy("admin");
         plan.setCreatedOn(new Date());
         storage.create(plan);
@@ -193,7 +194,7 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         plan.setId("Gold");
         plan.setName("Gold");
         plan.setDescription("Provides subscribing applications with full access to a subset of Services. Also allows partial (rate limited) access to the rest.");
-        plan.setOrganizationId("JBossOverlord");
+        plan.setOrganization(jbossOrg);
         plan.setCreatedBy("admin");
         plan.setCreatedOn(new Date());
         storage.create(plan);
@@ -221,7 +222,7 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         app.setId("dtgov");
         app.setName("dtgov");
         app.setDescription("This is the official Git repository for the Governance DTGov project, which is intended to be a part of the JBoss Overlord.");
-        app.setOrganizationId("JBossOverlord");
+        app.setOrganization(jbossOrg);
         app.setCreatedBy("admin");
         app.setCreatedOn(new Date());
         storage.create(app);
@@ -239,7 +240,7 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         app.setId("rtgov");
         app.setName("rtgov");
         app.setDescription("This component provides the infrastructure to capture service activity information and then correlate...");
-        app.setOrganizationId("JBossOverlord");
+        app.setOrganization(jbossOrg);
         app.setCreatedBy("admin");
         app.setCreatedOn(new Date());
         storage.create(app);
@@ -257,7 +258,7 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         app.setId("gadget-server");
         app.setName("gadget-server");
         app.setDescription("This is a project that builds on the Apache Shindig as the open social gadget containers.");
-        app.setOrganizationId("JBossOverlord");
+        app.setOrganization(jbossOrg);
         app.setCreatedBy("admin");
         app.setCreatedOn(new Date());
         storage.create(app);
@@ -276,7 +277,7 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         service.setId("s-ramp-api");
         service.setName("s-ramp-api");
         service.setDescription("Allows S-RAMP repository users to communicate with the repository via an Atom based API.");
-        service.setOrganizationId("JBossOverlord");
+        service.setOrganization(jbossOrg);
         service.setCreatedOn(new Date());
         service.setCreatedBy("admin");
         storage.create(service);

@@ -51,10 +51,10 @@ public class ContractData implements Serializable {
      * @param bean
      */
     public ContractData(ContractBean bean) {
-        setAppOrgId(bean.getApplication().getApplication().getOrganizationId());
+        setAppOrgId(bean.getApplication().getApplication().getOrganization().getId());
         setAppId(bean.getApplication().getApplication().getId());
         setAppVersion(bean.getApplication().getVersion());
-        setServiceOrgId(bean.getService().getService().getOrganizationId());
+        setServiceOrgId(bean.getService().getService().getOrganization().getId());
         setServiceId(bean.getService().getService().getId());
         setServiceVersion(bean.getService().getVersion());
         setPlanId(bean.getPlan().getPlan().getId());

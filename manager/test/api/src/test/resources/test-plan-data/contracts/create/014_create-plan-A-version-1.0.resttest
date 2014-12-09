@@ -10,7 +10,9 @@ Content-Type: application/json
 
 {
   "plan" : {
-    "organizationId" : "Organization2",
+    "organization" : {
+      "id" : "Organization2"
+    },
     "id" : "PlanA",
     "name" : "Plan A",
     "description" : "This is the description of Plan A.",
@@ -18,6 +20,5 @@ Content-Type: application/json
   },
   "status" : "Created",
   "version" : "1.0",
-  "createdBy" : "admin",
-  "lockedOn" : null
+  "createdBy" : "admin"
 }

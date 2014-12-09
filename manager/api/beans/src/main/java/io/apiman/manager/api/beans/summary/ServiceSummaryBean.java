@@ -18,6 +18,7 @@ package io.apiman.manager.api.beans.summary;
 import java.io.Serializable;
 import java.util.Date;
 
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
@@ -27,6 +28,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
  * @author eric.wittmann@redhat.com
  */
 @Portable
+@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class ServiceSummaryBean implements Serializable {
 
     private static final long serialVersionUID = -4213543715123177461L;

@@ -32,6 +32,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
@@ -47,6 +48,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Entity
 @Table(name = "service_versions",
        uniqueConstraints = { @UniqueConstraint(columnNames = { "service_id", "service_orgId", "version" }) })
+@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class ServiceVersionBean implements Serializable {
 
     private static final long serialVersionUID = -2218697175049442690L;

@@ -15,7 +15,10 @@
  */
 package io.apiman.manager.api.core;
 
+import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
+import io.apiman.manager.api.beans.plans.PlanVersionBean;
+import io.apiman.manager.api.beans.services.ServiceVersionBean;
 import io.apiman.manager.api.core.exceptions.AlreadyExistsException;
 import io.apiman.manager.api.core.exceptions.DoesNotExistException;
 import io.apiman.manager.api.core.exceptions.StorageException;
@@ -97,6 +100,36 @@ public interface IStorage {
      * @throws DoesNotExistException
      */
     public <T> T get(String organizationId, String id, Class<T> type) throws StorageException, DoesNotExistException;
+    
+    /**
+     * Gets an application version from the storage.
+     * @param organizationId
+     * @param applicationId
+     * @param version
+     * @throws StorageException
+     * @throws DoesNotExistException
+     */
+    public ApplicationVersionBean getApplicationVersion(String organizationId, String applicationId, String version) throws StorageException, DoesNotExistException;
+
+    /**
+     * Gets a service version from the storage.
+     * @param organizationId
+     * @param serviceId
+     * @param version
+     * @throws StorageException
+     * @throws DoesNotExistException
+     */
+    public ServiceVersionBean getServiceVersion(String organizationId, String serviceId, String version) throws StorageException, DoesNotExistException;
+
+    /**
+     * Gets a plan version from the storage.
+     * @param organizationId
+     * @param planId
+     * @param version
+     * @throws StorageException
+     * @throws DoesNotExistException
+     */
+    public PlanVersionBean getPlanVersion(String organizationId, String planId, String version) throws StorageException, DoesNotExistException;
 
     /**
      * Called to store an audit entry for the given bean.

@@ -23,8 +23,8 @@ import io.apiman.manager.api.beans.summary.ServicePlanSummaryBean;
 import io.apiman.manager.api.rest.contract.exceptions.ServiceVersionNotFoundException;
 import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.events.CreateContractEvent;
-import io.apiman.manager.ui.client.local.events.ShowPolicyChainEvent;
 import io.apiman.manager.ui.client.local.events.CreateContractEvent.Handler;
+import io.apiman.manager.ui.client.local.events.ShowPolicyChainEvent;
 import io.apiman.manager.ui.client.local.pages.common.Breadcrumb;
 import io.apiman.manager.ui.client.local.pages.consumer.ConsumerServicePlanList;
 import io.apiman.manager.ui.client.local.pages.consumer.ServiceCard;
@@ -138,7 +138,7 @@ public class ConsumerServicePage extends AbstractPage {
      */
     protected void onCreateContract(final ServicePlanSummaryBean bean) {
         toNewContract.go(MultimapUtil.fromMultiple(
-                "svcorg", this.serviceBean.getOrganizationId(),  //$NON-NLS-1$
+                "svcorg", this.serviceBean.getOrganization().getId(),  //$NON-NLS-1$
                 "svc", this.serviceBean.getId(), //$NON-NLS-1$
                 "svcv", this.versionBean.getVersion(), //$NON-NLS-1$
                 "planid", bean.getPlanId())); //$NON-NLS-1$

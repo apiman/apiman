@@ -24,6 +24,7 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.Table;
 
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
@@ -35,6 +36,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 @Entity
 @Table(name = "gateways")
+@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class GatewayBean implements Serializable {
 
     private static final long serialVersionUID = 388316225715740602L;

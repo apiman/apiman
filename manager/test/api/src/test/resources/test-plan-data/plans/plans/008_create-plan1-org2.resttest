@@ -10,7 +10,9 @@ Content-Type: application/json
 Content-Type: application/json
 
 {
-  "organizationId" : "Organization2",
+  "organization" : {
+    "id" : "Organization2"
+  },
   "id" : "Plan1",
   "name" : "Plan 1",
   "description" : "This is the description of Plan 1 (in Organization 2).",

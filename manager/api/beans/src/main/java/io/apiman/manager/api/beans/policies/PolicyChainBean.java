@@ -19,6 +19,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
@@ -28,6 +29,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
  * @author eric.wittmann@redhat.com
  */
 @Portable
+@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class PolicyChainBean implements Serializable {
 
     private static final long serialVersionUID = -497197512733345793L;

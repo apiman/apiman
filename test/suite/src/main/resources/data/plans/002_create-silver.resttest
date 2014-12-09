@@ -3,7 +3,6 @@ Content-Type: application/json
 
 {
   "name" : "Silver",
-  "organizationId" : "Test",
   "description" : "The Silver plan allows users a lower level of service."
 }
 ----
@@ -11,8 +10,10 @@ Content-Type: application/json
 Content-Type: application/json
 
 {
+  "organization" : {
+    "id" : "Test"
+  },
   "name" : "Silver",
-  "organizationId" : "Test",
   "id" : "Silver",
   "description" : "The Silver plan allows users a lower level of service."
 }

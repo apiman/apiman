@@ -10,7 +10,9 @@ Content-Type: application/json
 
 {
   "application" : {
-    "organizationId" : "Organization1",
+    "organization" : {
+      "id" : "Organization1"
+    },
     "id" : "Application1",
     "name" : "Application 1",
     "description" : "This is the description of Application 1.",
@@ -18,7 +20,5 @@ Content-Type: application/json
   },
   "status" : "Created",
   "version" : "1.0",
-  "createdBy" : "admin",
-  "publishedOn" : null,
-  "retiredOn" : null
+  "createdBy" : "admin"
 }

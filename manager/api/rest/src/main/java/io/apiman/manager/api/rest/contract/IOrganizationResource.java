@@ -28,7 +28,6 @@ import io.apiman.manager.api.beans.plans.PlanBean;
 import io.apiman.manager.api.beans.plans.PlanVersionBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyChainBean;
-import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.beans.services.ServiceBean;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
@@ -43,7 +42,6 @@ import io.apiman.manager.api.rest.contract.exceptions.ApplicationNotFoundExcepti
 import io.apiman.manager.api.rest.contract.exceptions.ApplicationVersionNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.ContractAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.ContractNotFoundException;
-import io.apiman.manager.api.rest.contract.exceptions.InvalidSearchCriteriaException;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidServiceStatusException;
 import io.apiman.manager.api.rest.contract.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.contract.exceptions.OrganizationAlreadyExistsException;
@@ -489,13 +487,6 @@ public interface IOrganizationResource {
     public void updatePlanVersion(@PathParam("organizationId") String organizationId,
             @PathParam("planId") String planId, @PathParam("version") String version,
             PlanVersionBean bean) throws PlanVersionNotFoundException, NotAuthorizedException;
-
-    @POST
-    @Path("{organizationId}/plans/search")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public SearchResultsBean<PlanBean> searchPlans(@PathParam("organizationId") String organizationId,
-            SearchCriteriaBean criteria) throws OrganizationNotFoundException, InvalidSearchCriteriaException;
 
     @POST
     @Path("{organizationId}/plans/{planId}/versions/{version}/policies")

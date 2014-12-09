@@ -22,41 +22,27 @@ import java.io.Serializable;
  *
  * @author eric.wittmann@redhat.com
  */
-public class OrgBasedCompositeId implements Serializable {
+public class OrganizationBasedCompositeId implements Serializable {
     
-    private static final long serialVersionUID = 1908517963509334989L;
+    private static final long serialVersionUID = 7313295981342740517L;
     
-    private String organizationId;
+    private OrganizationBean organization;
     private String id;
     
     /**
      * Constructor.
      */
-    public OrgBasedCompositeId() {
+    public OrganizationBasedCompositeId() {
     }
 
     /**
      * Constructor.
-     * @param organizationId
+     * @param organization
      * @param id
      */
-    public OrgBasedCompositeId(String organizationId, String id) {
-        this.setOrganizationId(organizationId);
+    public OrganizationBasedCompositeId(OrganizationBean organization, String id) {
+        this.setOrganization(organization);
         this.setId(id);
-    }
-
-    /**
-     * @return the organizationId
-     */
-    public String getOrganizationId() {
-        return organizationId;
-    }
-
-    /**
-     * @param organizationId the organizationId to set
-     */
-    public void setOrganizationId(String organizationId) {
-        this.organizationId = organizationId;
     }
 
     /**
@@ -74,6 +60,20 @@ public class OrgBasedCompositeId implements Serializable {
     }
 
     /**
+     * @return the organization
+     */
+    public OrganizationBean getOrganization() {
+        return organization;
+    }
+
+    /**
+     * @param organization the organization to set
+     */
+    public void setOrganization(OrganizationBean organization) {
+        this.organization = organization;
+    }
+
+    /**
      * @see java.lang.Object#hashCode()
      */
     @Override
@@ -81,7 +81,7 @@ public class OrgBasedCompositeId implements Serializable {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((id == null) ? 0 : id.hashCode());
-        result = prime * result + ((organizationId == null) ? 0 : organizationId.hashCode());
+        result = prime * result + ((organization == null) ? 0 : organization.getId().hashCode());
         return result;
     }
 
@@ -96,18 +96,20 @@ public class OrgBasedCompositeId implements Serializable {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        OrgBasedCompositeId other = (OrgBasedCompositeId) obj;
+        OrganizationBasedCompositeId other = (OrganizationBasedCompositeId) obj;
         if (id == null) {
             if (other.id != null)
                 return false;
         } else if (!id.equals(other.id))
             return false;
-        if (organizationId == null) {
-            if (other.organizationId != null)
+        if (organization == null) {
+            if (other.organization != null)
                 return false;
-        } else if (!organizationId.equals(other.organizationId))
+        } else if (!organization.getId().equals(other.organization.getId()))
             return false;
         return true;
     }
+    
+    
 
 }

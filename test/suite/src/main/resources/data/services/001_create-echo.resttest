@@ -3,7 +3,6 @@ Content-Type: application/json
 
 {
   "name" : "echo",
-  "organizationId" : "Test",
   "description" : "A simple echo REST service."
 }
 ----
@@ -11,7 +10,9 @@ Content-Type: application/json
 Content-Type: application/json
 
 {
-  "organizationId" : "Test",
+  "organization" : {
+    "id" : "Test"
+  },
   "id" : "echo",
   "name" : "echo",
   "description" : "A simple echo REST service."

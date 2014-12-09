@@ -10,13 +10,14 @@ Content-Type: application/json
 
 {
   "plan" : {
-    "organizationId" : "TestOrganization",
+    "organization" : {
+      "id" : "TestOrganization"
+    },
     "id" : "Gold",
     "name" : "Gold",
     "createdBy":"admin"
   },
   "status" : "Created",
   "version" : "1.0",
-  "createdBy" : "admin",
-  "lockedOn" : null
+  "createdBy" : "admin"
 }

@@ -6,7 +6,9 @@ Content-Type: application/json
 [
   {
     "plan" : {
-      "organizationId":"Organization1",
+      "organization" : {
+        "id" : "Organization1"
+      },
       "id":"Plan1",
       "name":"Plan 1",
       "description":"[UPDATED] This is the description of Plan 1!",
@@ -14,12 +16,13 @@ Content-Type: application/json
     },
     "status":"Created",
     "version":"2.0",
-    "createdBy":"admin",
-    "lockedOn":null
+    "createdBy":"admin"
   },
   {
     "plan" : {
-      "organizationId":"Organization1",
+      "organization" : {
+        "id" : "Organization1"
+      },
       "id":"Plan1",
       "name":"Plan 1",
       "description":"[UPDATED] This is the description of Plan 1!",
@@ -27,7 +30,6 @@ Content-Type: application/json
     },
     "status":"Created",
     "version":"1.0",
-    "createdBy":"admin",
-    "lockedOn":null
+    "createdBy":"admin"
   }
 ]

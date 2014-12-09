@@ -4,7 +4,9 @@ GET /organizations/Organization2/services/Service1 admin/admin
 Content-Type: application/json
 
 {
-  "organizationId" : "Organization2",
+  "organization" : {
+    "id" : "Organization2"
+  },
   "id" : "Service1",
   "name" : "Service 1",
   "description" : "This is the description of Service 1 (in Organization 2).",

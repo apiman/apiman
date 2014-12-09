@@ -3,7 +3,6 @@ Content-Type: application/json
 
 {
   "name" : "foo",
-  "organizationId" : "TestOrganization",
   "description" : "Some service for testing policy chains."
 }
 ----
@@ -11,7 +10,9 @@ Content-Type: application/json
 Content-Type: application/json
 
 {
-  "organizationId" : "TestOrganization",
+  "organization" : {
+    "id" : "TestOrganization"
+  },
   "id" : "foo",
   "name" : "foo",
   "description" : "Some service for testing policy chains.",

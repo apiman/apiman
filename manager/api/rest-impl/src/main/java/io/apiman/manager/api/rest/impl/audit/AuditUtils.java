@@ -181,7 +181,7 @@ public class AuditUtils {
      * @param securityContext
      */
     public static AuditEntryBean serviceCreated(ServiceBean bean, ISecurityContext securityContext) {
-        AuditEntryBean entry = newEntry(bean.getOrganizationId(), AuditEntityType.Service, securityContext);
+        AuditEntryBean entry = newEntry(bean.getOrganization().getId(), AuditEntityType.Service, securityContext);
         entry.setEntityId(bean.getId());
         entry.setEntityVersion(null);
         entry.setData(null);
@@ -200,7 +200,7 @@ public class AuditUtils {
         if (data.getChanges().isEmpty()) {
             return null;
         }
-        AuditEntryBean entry = newEntry(bean.getOrganizationId(), AuditEntityType.Service, securityContext);
+        AuditEntryBean entry = newEntry(bean.getOrganization().getId(), AuditEntityType.Service, securityContext);
         entry.setEntityId(bean.getId());
         entry.setEntityVersion(null);
         entry.setWhat(AuditEntryType.Update);
@@ -215,7 +215,7 @@ public class AuditUtils {
      */
     public static AuditEntryBean serviceVersionCreated(ServiceVersionBean bean,
             ISecurityContext securityContext) {
-        AuditEntryBean entry = newEntry(bean.getService().getOrganizationId(), AuditEntityType.Service, securityContext);
+        AuditEntryBean entry = newEntry(bean.getService().getOrganization().getId(), AuditEntityType.Service, securityContext);
         entry.setEntityId(bean.getService().getId());
         entry.setEntityVersion(bean.getVersion());
         entry.setWhat(AuditEntryType.Create);
@@ -233,7 +233,7 @@ public class AuditUtils {
         if (data.getChanges().isEmpty()) {
             return null;
         }
-        AuditEntryBean entry = newEntry(bean.getService().getOrganizationId(), AuditEntityType.Service, securityContext);
+        AuditEntryBean entry = newEntry(bean.getService().getOrganization().getId(), AuditEntityType.Service, securityContext);
         entry.setEntityId(bean.getService().getId());
         entry.setEntityVersion(bean.getVersion());
         entry.setWhat(AuditEntryType.Update);
@@ -247,7 +247,7 @@ public class AuditUtils {
      * @param securityContext
      */
     public static AuditEntryBean applicationCreated(ApplicationBean bean, ISecurityContext securityContext) {
-        AuditEntryBean entry = newEntry(bean.getOrganizationId(), AuditEntityType.Application, securityContext);
+        AuditEntryBean entry = newEntry(bean.getOrganization().getId(), AuditEntityType.Application, securityContext);
         entry.setEntityId(bean.getId());
         entry.setEntityVersion(null);
         entry.setData(null);
@@ -266,7 +266,7 @@ public class AuditUtils {
         if (data.getChanges().isEmpty()) {
             return null;
         }
-        AuditEntryBean entry = newEntry(bean.getOrganizationId(), AuditEntityType.Application, securityContext);
+        AuditEntryBean entry = newEntry(bean.getOrganization().getId(), AuditEntityType.Application, securityContext);
         entry.setEntityId(bean.getId());
         entry.setEntityVersion(null);
         entry.setWhat(AuditEntryType.Update);
@@ -281,7 +281,7 @@ public class AuditUtils {
      */
     public static AuditEntryBean applicationVersionCreated(ApplicationVersionBean bean,
             ISecurityContext securityContext) {
-        AuditEntryBean entry = newEntry(bean.getApplication().getOrganizationId(), AuditEntityType.Application, securityContext);
+        AuditEntryBean entry = newEntry(bean.getApplication().getOrganization().getId(), AuditEntityType.Application, securityContext);
         entry.setEntityId(bean.getApplication().getId());
         entry.setEntityVersion(bean.getVersion());
         entry.setWhat(AuditEntryType.Create);
@@ -299,7 +299,7 @@ public class AuditUtils {
         if (data.getChanges().isEmpty()) {
             return null;
         }
-        AuditEntryBean entry = newEntry(bean.getApplication().getOrganizationId(), AuditEntityType.Application, securityContext);
+        AuditEntryBean entry = newEntry(bean.getApplication().getOrganization().getId(), AuditEntityType.Application, securityContext);
         entry.setEntityId(bean.getApplication().getId());
         entry.setEntityVersion(bean.getVersion());
         entry.setWhat(AuditEntryType.Update);
@@ -313,7 +313,7 @@ public class AuditUtils {
      * @param securityContext
      */
     public static AuditEntryBean contractCreatedFromApp(ContractBean bean, ISecurityContext securityContext) {
-        AuditEntryBean entry = newEntry(bean.getApplication().getApplication().getOrganizationId(), AuditEntityType.Application, securityContext);
+        AuditEntryBean entry = newEntry(bean.getApplication().getApplication().getOrganization().getId(), AuditEntityType.Application, securityContext);
         entry.setWhat(AuditEntryType.CreateContract);
         entry.setEntityId(bean.getApplication().getApplication().getId());
         entry.setEntityVersion(bean.getApplication().getVersion());
@@ -328,7 +328,7 @@ public class AuditUtils {
      * @param securityContext
      */
     public static AuditEntryBean contractCreatedToService(ContractBean bean, ISecurityContext securityContext) {
-        AuditEntryBean entry = newEntry(bean.getService().getService().getOrganizationId(), AuditEntityType.Service, securityContext);
+        AuditEntryBean entry = newEntry(bean.getService().getService().getOrganization().getId(), AuditEntityType.Service, securityContext);
         // Ensure the order of contract-created events are deterministic by adding 1 ms to this one
         entry.setWhen(new Date(entry.getWhen().getTime() + 1));
         entry.setWhat(AuditEntryType.CreateContract);
@@ -345,7 +345,7 @@ public class AuditUtils {
      * @param securityContext
      */
     public static AuditEntryBean contractBrokenFromApp(ContractBean bean, ISecurityContext securityContext) {
-        AuditEntryBean entry = newEntry(bean.getApplication().getApplication().getOrganizationId(), AuditEntityType.Application, securityContext);
+        AuditEntryBean entry = newEntry(bean.getApplication().getApplication().getOrganization().getId(), AuditEntityType.Application, securityContext);
         entry.setWhat(AuditEntryType.BreakContract);
         entry.setEntityId(bean.getApplication().getApplication().getId());
         entry.setEntityVersion(bean.getApplication().getVersion());
@@ -360,7 +360,7 @@ public class AuditUtils {
      * @param securityContext
      */
     public static AuditEntryBean contractBrokenToService(ContractBean bean, ISecurityContext securityContext) {
-        AuditEntryBean entry = newEntry(bean.getService().getService().getOrganizationId(), AuditEntityType.Service, securityContext);
+        AuditEntryBean entry = newEntry(bean.getService().getService().getOrganization().getId(), AuditEntityType.Service, securityContext);
         entry.setWhat(AuditEntryType.BreakContract);
         entry.setEntityId(bean.getService().getService().getId());
         entry.setEntityVersion(bean.getService().getVersion());
@@ -477,7 +477,7 @@ public class AuditUtils {
      * @param securityContext
      */
     public static AuditEntryBean planCreated(PlanBean bean, ISecurityContext securityContext) {
-        AuditEntryBean entry = newEntry(bean.getOrganizationId(), AuditEntityType.Plan, securityContext);
+        AuditEntryBean entry = newEntry(bean.getOrganization().getId(), AuditEntityType.Plan, securityContext);
         entry.setEntityId(bean.getId());
         entry.setEntityVersion(null);
         entry.setData(null);
@@ -496,7 +496,7 @@ public class AuditUtils {
         if (data.getChanges().isEmpty()) {
             return null;
         }
-        AuditEntryBean entry = newEntry(bean.getOrganizationId(), AuditEntityType.Plan, securityContext);
+        AuditEntryBean entry = newEntry(bean.getOrganization().getId(), AuditEntityType.Plan, securityContext);
         entry.setEntityId(bean.getId());
         entry.setEntityVersion(null);
         entry.setWhat(AuditEntryType.Update);
@@ -511,7 +511,7 @@ public class AuditUtils {
      */
     public static AuditEntryBean planVersionCreated(PlanVersionBean bean,
             ISecurityContext securityContext) {
-        AuditEntryBean entry = newEntry(bean.getPlan().getOrganizationId(), AuditEntityType.Plan, securityContext);
+        AuditEntryBean entry = newEntry(bean.getPlan().getOrganization().getId(), AuditEntityType.Plan, securityContext);
         entry.setEntityId(bean.getPlan().getId());
         entry.setEntityVersion(bean.getVersion());
         entry.setWhat(AuditEntryType.Create);
@@ -529,7 +529,7 @@ public class AuditUtils {
         if (data.getChanges().isEmpty()) {
             return null;
         }
-        AuditEntryBean entry = newEntry(bean.getPlan().getOrganizationId(), AuditEntityType.Plan, securityContext);
+        AuditEntryBean entry = newEntry(bean.getPlan().getOrganization().getId(), AuditEntityType.Plan, securityContext);
         entry.setEntityId(bean.getPlan().getId());
         entry.setEntityVersion(bean.getVersion());
         entry.setWhat(AuditEntryType.Update);
@@ -544,7 +544,7 @@ public class AuditUtils {
      */
     public static AuditEntryBean servicePublished(ServiceVersionBean bean,
             ISecurityContext securityContext) {
-        AuditEntryBean entry = newEntry(bean.getService().getOrganizationId(), AuditEntityType.Service, securityContext);
+        AuditEntryBean entry = newEntry(bean.getService().getOrganization().getId(), AuditEntityType.Service, securityContext);
         entry.setEntityId(bean.getService().getId());
         entry.setEntityVersion(bean.getVersion());
         entry.setWhat(AuditEntryType.Publish);
@@ -558,7 +558,7 @@ public class AuditUtils {
      */
     public static AuditEntryBean serviceRetired(ServiceVersionBean bean,
             ISecurityContext securityContext) {
-        AuditEntryBean entry = newEntry(bean.getService().getOrganizationId(), AuditEntityType.Service, securityContext);
+        AuditEntryBean entry = newEntry(bean.getService().getOrganization().getId(), AuditEntityType.Service, securityContext);
         entry.setEntityId(bean.getService().getId());
         entry.setEntityVersion(bean.getVersion());
         entry.setWhat(AuditEntryType.Retire);
@@ -572,7 +572,7 @@ public class AuditUtils {
      */
     public static AuditEntryBean applicationRegistered(ApplicationVersionBean bean,
             ISecurityContext securityContext) {
-        AuditEntryBean entry = newEntry(bean.getApplication().getOrganizationId(), AuditEntityType.Application, securityContext);
+        AuditEntryBean entry = newEntry(bean.getApplication().getOrganization().getId(), AuditEntityType.Application, securityContext);
         entry.setEntityId(bean.getApplication().getId());
         entry.setEntityVersion(bean.getVersion());
         entry.setWhat(AuditEntryType.Register);
@@ -586,7 +586,7 @@ public class AuditUtils {
      */
     public static AuditEntryBean applicationUnregistered(ApplicationVersionBean bean,
             ISecurityContext securityContext) {
-        AuditEntryBean entry = newEntry(bean.getApplication().getOrganizationId(), AuditEntityType.Application, securityContext);
+        AuditEntryBean entry = newEntry(bean.getApplication().getOrganization().getId(), AuditEntityType.Application, securityContext);
         entry.setEntityId(bean.getApplication().getId());
         entry.setEntityVersion(bean.getVersion());
         entry.setWhat(AuditEntryType.Unregister);
@@ -601,7 +601,7 @@ public class AuditUtils {
      */
     public static AuditEntryBean policiesReordered(ServiceVersionBean svb, PolicyType service,
             ISecurityContext securityContext) {
-        AuditEntryBean entry = newEntry(svb.getService().getOrganizationId(), AuditEntityType.Service, securityContext);
+        AuditEntryBean entry = newEntry(svb.getService().getOrganization().getId(), AuditEntityType.Service, securityContext);
         entry.setEntityId(svb.getService().getId());
         entry.setEntityVersion(svb.getVersion());
         entry.setWhat(AuditEntryType.ReorderPolicies);
@@ -616,7 +616,7 @@ public class AuditUtils {
      */
     public static AuditEntryBean policiesReordered(ApplicationVersionBean avb, PolicyType service,
             ISecurityContext securityContext) {
-        AuditEntryBean entry = newEntry(avb.getApplication().getOrganizationId(), AuditEntityType.Application, securityContext);
+        AuditEntryBean entry = newEntry(avb.getApplication().getOrganization().getId(), AuditEntityType.Application, securityContext);
         entry.setEntityId(avb.getApplication().getId());
         entry.setEntityVersion(avb.getVersion());
         entry.setWhat(AuditEntryType.ReorderPolicies);
@@ -631,7 +631,7 @@ public class AuditUtils {
      */
     public static AuditEntryBean policiesReordered(PlanVersionBean pvb, PolicyType service,
             ISecurityContext securityContext) {
-        AuditEntryBean entry = newEntry(pvb.getPlan().getOrganizationId(), AuditEntityType.Plan, securityContext);
+        AuditEntryBean entry = newEntry(pvb.getPlan().getOrganization().getId(), AuditEntityType.Plan, securityContext);
         entry.setEntityId(pvb.getPlan().getId());
         entry.setEntityVersion(pvb.getVersion());
         entry.setWhat(AuditEntryType.ReorderPolicies);

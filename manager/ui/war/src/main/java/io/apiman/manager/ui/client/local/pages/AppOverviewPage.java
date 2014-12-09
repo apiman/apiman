@@ -154,7 +154,7 @@ public class AppOverviewPage extends AbstractAppPage {
 
         ActionBean action = new ActionBean();
         action.setType(ActionType.registerApplication);
-        action.setOrganizationId(versionBean.getApplication().getOrganizationId());
+        action.setOrganizationId(versionBean.getApplication().getOrganization().getId());
         action.setEntityId(versionBean.getApplication().getId());
         action.setEntityVersion(versionBean.getVersion());
         rest.performAction(action, new IRestInvokerCallback<Void>() {
@@ -191,7 +191,7 @@ public class AppOverviewPage extends AbstractAppPage {
                     unregisterButton.onActionComplete();
                     ActionBean action = new ActionBean();
                     action.setType(ActionType.unregisterApplication);
-                    action.setOrganizationId(versionBean.getApplication().getOrganizationId());
+                    action.setOrganizationId(versionBean.getApplication().getOrganization().getId());
                     action.setEntityId(versionBean.getApplication().getId());
                     action.setEntityVersion(versionBean.getVersion());
                     rest.performAction(action, new IRestInvokerCallback<Void>() {

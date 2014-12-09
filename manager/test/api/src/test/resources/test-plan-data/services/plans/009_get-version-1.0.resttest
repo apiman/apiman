@@ -6,11 +6,13 @@ X-RestTest-ArrayOrdering: any
 
 {
   "service" : {
-    "organizationId" : "Organization1",
+    "organization" : {
+      "id" : "Organization1"
+    },
     "id" : "Service1",
     "name" : "Service 1",
     "description" : "[UPDATED] This is the description of Service 1!",
-    "createdBy":"admin"
+    "createdBy" : "admin"
   },
   "status" : "Ready",
   "endpoint" : "http://localhost:8080/ping",
@@ -20,7 +22,5 @@ X-RestTest-ArrayOrdering: any
     { "planId" : "Plan2", "version" : "1.1" }
   ],
   "version" : "1.0",
-  "createdBy" : "admin",
-  "publishedOn" : null,
-  "retiredOn" : null
+  "createdBy" : "admin"
 }

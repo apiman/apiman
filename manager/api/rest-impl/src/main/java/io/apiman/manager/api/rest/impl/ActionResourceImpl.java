@@ -136,12 +136,13 @@ public class ActionResourceImpl implements IActionResource {
         Service gatewaySvc = new Service();
         gatewaySvc.setEndpoint(versionBean.getEndpoint());
         gatewaySvc.setEndpointType(versionBean.getEndpointType().toString());
-        gatewaySvc.setOrganizationId(versionBean.getService().getOrganizationId());
+        gatewaySvc.setOrganizationId(versionBean.getService().getOrganization().getId());
         gatewaySvc.setServiceId(versionBean.getService().getId());
         gatewaySvc.setVersion(versionBean.getVersion());
         
         // Publish the service to all relevant gateways
         try {
+            storage.beginTx();
             Set<ServiceGatewayBean> gateways = versionBean.getGateways();
             if (gateways == null) {
                 throw new PublishingException("No gateways specified for service!"); //$NON-NLS-1$
@@ -151,16 +152,14 @@ public class ActionResourceImpl implements IActionResource {
                 gatewayLink.publishService(gatewaySvc);
                 gatewayLink.close();
             }
-        } catch (PublishingException e) {
-            throw ExceptionFactory.actionException(Messages.i18n.format("PublishError")); //$NON-NLS-1$
-        }
-        
-        versionBean.setStatus(ServiceStatus.Published);
-        try {
-            storage.beginTx();
+
+            versionBean.setStatus(ServiceStatus.Published);
+            
             storage.update(versionBean);
             storage.createAuditEntry(AuditUtils.servicePublished(versionBean, securityContext));
             storage.commitTx();
+        } catch (PublishingException e) {
+            throw ExceptionFactory.actionException(Messages.i18n.format("PublishError")); //$NON-NLS-1$
         } catch (Exception e) {
             storage.rollbackTx();
             throw ExceptionFactory.actionException(Messages.i18n.format("PublishError")); //$NON-NLS-1$
@@ -173,19 +172,15 @@ public class ActionResourceImpl implements IActionResource {
      */
     private IGatewayLink createGatewayLink(String gatewayId) throws PublishingException {
         try {
-            storage.beginTx();
             GatewayBean gateway = storage.get(gatewayId, GatewayBean.class);
             if (gateway == null) {
                 throw new GatewayNotFoundException();
             }
             IGatewayLink link = gatewayLinkFactory.create(gateway);
-            storage.commitTx();
             return link;
         } catch (GatewayNotFoundException e) {
-            storage.rollbackTx();
             throw e;
         } catch (Exception e) {
-            storage.rollbackTx();
             throw new PublishingException(e.getMessage(), e);
         }
     }
@@ -211,12 +206,13 @@ public class ActionResourceImpl implements IActionResource {
         }
 
         Service gatewaySvc = new Service();
-        gatewaySvc.setOrganizationId(versionBean.getService().getOrganizationId());
+        gatewaySvc.setOrganizationId(versionBean.getService().getOrganization().getId());
         gatewaySvc.setServiceId(versionBean.getService().getId());
         gatewaySvc.setVersion(versionBean.getVersion());
         
-        // Publish the service to all relevant gateways
+        // Retire the service from all relevant gateways
         try {
+            storage.beginTx();
             Set<ServiceGatewayBean> gateways = versionBean.getGateways();
             if (gateways == null) {
                 throw new PublishingException("No gateways specified for service!"); //$NON-NLS-1$
@@ -226,17 +222,16 @@ public class ActionResourceImpl implements IActionResource {
                 gatewayLink.retireService(gatewaySvc);
                 gatewayLink.close();
             }
-        } catch (PublishingException e) {
-            throw ExceptionFactory.actionException(Messages.i18n.format("PublishError")); //$NON-NLS-1$
-        }
         
-        versionBean.setStatus(ServiceStatus.Retired);
-        versionBean.setRetiredOn(new Date());
-        try {
-            storage.beginTx();
+            versionBean.setStatus(ServiceStatus.Retired);
+            versionBean.setRetiredOn(new Date());
+            
             storage.update(versionBean);
             storage.createAuditEntry(AuditUtils.serviceRetired(versionBean, securityContext));
             storage.commitTx();
+        } catch (PublishingException e) {
+            storage.rollbackTx();
+            throw ExceptionFactory.actionException(Messages.i18n.format("PublishError")); //$NON-NLS-1$
         } catch (Exception e) {
             storage.rollbackTx();
             throw ExceptionFactory.actionException(Messages.i18n.format("PublishError")); //$NON-NLS-1$
@@ -274,7 +269,7 @@ public class ActionResourceImpl implements IActionResource {
         }
 
         Application application = new Application();
-        application.setOrganizationId(versionBean.getApplication().getOrganizationId());
+        application.setOrganizationId(versionBean.getApplication().getOrganization().getId());
         application.setApplicationId(versionBean.getApplication().getId());
         application.setVersion(versionBean.getVersion());
         
@@ -294,9 +289,10 @@ public class ActionResourceImpl implements IActionResource {
         // looking up all referenced services and getting the gateway information for them.
         // Each of those gateways must be told about the application.
         try {
+            storage.beginTx();
             Map<String, IGatewayLink> links = new HashMap<String, IGatewayLink>();
             for (Contract contract : application.getContracts()) {
-                ServiceVersionBean svb = query.getServiceVersion(contract.getServiceOrgId(), contract.getServiceId(), contract.getServiceVersion());
+                ServiceVersionBean svb = storage.getServiceVersion(contract.getServiceOrgId(), contract.getServiceId(), contract.getServiceVersion());
                 Set<ServiceGatewayBean> gateways = svb.getGateways();
                 if (gateways == null) {
                     throw new PublishingException("No gateways specified for service: " + svb.getService().getName()); //$NON-NLS-1$
@@ -312,9 +308,12 @@ public class ActionResourceImpl implements IActionResource {
                 gatewayLink.registerApplication(application);
                 gatewayLink.close();
             }
+            storage.commitTx();
         } catch (StorageException e) {
+            storage.rollbackTx();
             throw ExceptionFactory.actionException(Messages.i18n.format("PublishError"), e); //$NON-NLS-1$
         } catch (PublishingException e) {
+            storage.rollbackTx();
             throw ExceptionFactory.actionException(Messages.i18n.format("PublishError"), e); //$NON-NLS-1$
         }
         
@@ -409,7 +408,7 @@ public class ActionResourceImpl implements IActionResource {
         }
 
         Application application = new Application();
-        application.setOrganizationId(versionBean.getApplication().getOrganizationId());
+        application.setOrganizationId(versionBean.getApplication().getOrganization().getId());
         application.setApplicationId(versionBean.getApplication().getId());
         application.setVersion(versionBean.getVersion());
 
@@ -417,9 +416,10 @@ public class ActionResourceImpl implements IActionResource {
         // looking up all referenced services and getting the gateway information for them.
         // Each of those gateways must be told about the application.
         try {
+            storage.beginTx();
             Map<String, IGatewayLink> links = new HashMap<String, IGatewayLink>();
             for (ContractSummaryBean contractBean : contractBeans) {
-                ServiceVersionBean svb = query.getServiceVersion(contractBean.getServiceOrganizationId(),
+                ServiceVersionBean svb = storage.getServiceVersion(contractBean.getServiceOrganizationId(),
                         contractBean.getServiceId(), contractBean.getServiceVersion());
                 Set<ServiceGatewayBean> gateways = svb.getGateways();
                 if (gateways == null) {
@@ -432,13 +432,16 @@ public class ActionResourceImpl implements IActionResource {
                     }
                 }
             }
+            storage.commitTx();
             for (IGatewayLink gatewayLink : links.values()) {
                 gatewayLink.unregisterApplication(application);
                 gatewayLink.close();
             }
         } catch (StorageException e) {
+            storage.rollbackTx();
             throw ExceptionFactory.actionException(Messages.i18n.format("PublishError"), e); //$NON-NLS-1$
         } catch (PublishingException e) {
+            storage.rollbackTx();
             throw ExceptionFactory.actionException(Messages.i18n.format("PublishError"), e); //$NON-NLS-1$
         }
         

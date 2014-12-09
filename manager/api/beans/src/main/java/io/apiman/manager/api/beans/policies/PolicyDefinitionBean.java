@@ -28,6 +28,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
@@ -40,6 +41,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 @Entity
 @Table(name = "policydefs")
+@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class PolicyDefinitionBean implements Serializable {
 
     private static final long serialVersionUID = 1801150127602136865L;

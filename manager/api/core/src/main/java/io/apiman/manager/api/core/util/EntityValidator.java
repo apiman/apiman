@@ -49,7 +49,7 @@ public class EntityValidator implements IServiceValidator, IApplicationValidator
     public boolean isReady(ApplicationVersionBean application) throws Exception {
         boolean hasContracts = true;
         
-        List<ContractSummaryBean> contracts = storageQuery.getApplicationContracts(application.getApplication().getOrganizationId(), application
+        List<ContractSummaryBean> contracts = storageQuery.getApplicationContracts(application.getApplication().getOrganization().getId(), application
                 .getApplication().getId(), application.getVersion());
         if (contracts.isEmpty()) {
             hasContracts = false;

@@ -18,7 +18,10 @@ Content-Type: application/json
 
 {
   "service" : {
-    "organizationId" : "Organization1",
+    "organization" : {
+      "id" : "Organization1",
+      "name" : "Organization 1"
+    },
     "id" : "Service1",
     "name" : "Service 1",
     "description" : "This is the description of Service 1.",
@@ -34,7 +37,5 @@ Content-Type: application/json
   "endpoint" : "http://localhost:8080/ping",
   "endpointType" : "rest",
   "version" : "1.0",
-  "createdBy" : "admin",
-  "publishedOn" : null,
-  "retiredOn" : null
+  "createdBy" : "admin"
 }

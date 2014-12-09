@@ -7,13 +7,15 @@ Content-Type: application/json
   {
     "organizationId":"Organization1",
     "organizationName":"Organization 1",
-    "id":"Application1","name":"Application 1",
+    "id":"Application1",
+    "name":"Application 1",
     "description":"[UPDATED] This is the description of Application 1!"
   },
   {
     "organizationId":"Organization1",
     "organizationName":"Organization 1",
-    "id":"Application2","name":"Application 2",
+    "id":"Application2",
+    "name":"Application 2",
     "description":"This is the description of Application 2."
   }
 ]

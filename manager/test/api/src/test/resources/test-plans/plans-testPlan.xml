@@ -13,7 +13,6 @@
     <test name="Get Plan 1">test-plan-data/plans/plans/002_get-plan1.resttest</test>
     <test name="Get Missing App">test-plan-data/plans/plans/003_get-missing-plan.resttest</test>
     <test name="Create Plan 2">test-plan-data/plans/plans/004_create-plan2.resttest</test>
-    <test name="Search Apps">test-plan-data/plans/plans/005_search-plans.resttest</test>
     <test name="Update App 1">test-plan-data/plans/plans/006_update-plan1.resttest</test>
     <test name="Get Plan 1 (updated)">test-plan-data/plans/plans/007_get-plan1.resttest</test>
     <test name="Create Plan 1 (Org 2)">test-plan-data/plans/plans/008_create-plan1-org2.resttest</test>

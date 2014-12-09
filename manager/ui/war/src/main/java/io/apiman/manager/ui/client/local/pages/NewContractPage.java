@@ -190,8 +190,8 @@ public class NewContractPage extends AbstractPage {
                     for (ApplicationVersionBean avb : response) {
                         String avbVersion = avb.getVersion();
                         versions.add(avbVersion);
-                        if (avb.getApplication().getOrganizationId().equals(apporg)
-                                && avb.getApplication().getOrganizationId().equals(apporg)
+                        if (avb.getApplication().getOrganization().getId().equals(apporg)
+                                && avb.getApplication().getOrganization().getId().equals(apporg)
                                 && avbVersion.equals(appv)) {
                             contextVersion = avbVersion;
                         }
@@ -236,7 +236,7 @@ public class NewContractPage extends AbstractPage {
                 for (ServiceVersionBean svb : response) {
                     String svbVersion = svb.getVersion();
                     versions.add(svbVersion);
-                    if (svb.getService().getOrganizationId().equals(svcorg) && svb.getService().getId().equals(svc) && svbVersion.equals(svcv)) {
+                    if (svb.getService().getOrganization().getId().equals(svcorg) && svb.getService().getId().equals(svc) && svbVersion.equals(svcv)) {
                         initialContextServiceVersion = svbVersion;
                     }
                 }
@@ -344,7 +344,7 @@ public class NewContractPage extends AbstractPage {
             ApplicationVersionBean ctxapp = (ApplicationVersionBean) currentContext.getAttribute(ContextKeys.CURRENT_APPLICATION_VERSION);
             if (ctxapp != null) {
                 for (ApplicationSummaryBean appBean : applicationBeans) {
-                    if (appBean.getOrganizationId().equals(ctxapp.getApplication().getOrganizationId())
+                    if (appBean.getOrganizationId().equals(ctxapp.getApplication().getOrganization().getId())
                             && appBean.getId().equals(ctxapp.getApplication().getId())) {
                         return appBean;
                     }
@@ -384,8 +384,8 @@ public class NewContractPage extends AbstractPage {
                 summary.setDescription(response.getDescription());
                 summary.setName(response.getName());
                 summary.setCreatedOn(response.getCreatedOn());
-                summary.setOrganizationId(response.getOrganizationId());
-                summary.setOrganizationName(response.getOrganizationId());
+                summary.setOrganizationId(response.getOrganization().getId());
+                summary.setOrganizationName(response.getOrganization().getId());
                 List<ServiceSummaryBean> svcBeans = new ArrayList<ServiceSummaryBean>();
                 svcBeans.add(summary);
                 services.setServices(svcBeans);

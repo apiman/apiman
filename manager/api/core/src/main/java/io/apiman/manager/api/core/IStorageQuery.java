@@ -133,15 +133,6 @@ public interface IStorageQuery {
     public List<ApplicationSummaryBean> getApplicationsInOrg(String orgId) throws StorageException;
 
     /**
-     * Returns the application version bean with the given info (orgId, appId, version).
-     * @param organizationId
-     * @param applicationId
-     * @param version
-     */
-    public ApplicationVersionBean getApplicationVersion(String organizationId, String applicationId,
-            String version) throws StorageException;
-
-    /**
      * Returns all application versions for a given app.
      * @param organizationId
      * @param applicationId
@@ -183,15 +174,6 @@ public interface IStorageQuery {
     public List<ServiceSummaryBean> getServicesInOrg(String orgId) throws StorageException;
     
     /**
-     * Returns the service version bean with the given info (orgid, serviceid, version).
-     * @param orgId
-     * @param serviceId
-     * @param version
-     * @throws StorageException
-     */
-    public ServiceVersionBean getServiceVersion(String orgId, String serviceId, String version) throws StorageException;
-    
-    /**
      * Returns all service versions for a given service.
      * @param orgId
      * @param serviceId
@@ -221,16 +203,6 @@ public interface IStorageQuery {
      * @throws StorageException
      */
     public List<PlanSummaryBean> getPlansInOrg(String orgId) throws StorageException;
-
-    /**
-     * Returns the plan version bean with the given info (orgId, appId, version).
-     * @param organizationId
-     * @param planId
-     * @param version
-     * @throws StorageException
-     */
-    public PlanVersionBean getPlanVersion(String organizationId, String planId, String version)
-            throws StorageException;
 
     /**
      * Returns all plan versions for a given plan.

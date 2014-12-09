@@ -191,7 +191,7 @@ public class ServiceImplPage extends AbstractServicePage {
             update.setGateways(sgateways);
         }
         
-        rest.updateServiceVersion(serviceBean.getOrganizationId(), serviceBean.getId(),
+        rest.updateServiceVersion(serviceBean.getOrganization().getId(), serviceBean.getId(),
                 versionBean.getVersion(), update, new IRestInvokerCallback<Void>() {
             @Override
             public void onSuccess(Void response) {
