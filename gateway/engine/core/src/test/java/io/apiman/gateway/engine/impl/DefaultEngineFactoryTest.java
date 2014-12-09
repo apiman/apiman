@@ -23,6 +23,8 @@ import static org.mockito.Mockito.verify;
 import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.IEngine;
 import io.apiman.gateway.engine.IEngineResult;
+import io.apiman.gateway.engine.IServiceConnection;
+import io.apiman.gateway.engine.IServiceConnectionResponse;
 import io.apiman.gateway.engine.IServiceConnector;
 import io.apiman.gateway.engine.IServiceRequestExecutor;
 import io.apiman.gateway.engine.async.IAsyncHandler;
@@ -35,10 +37,7 @@ import io.apiman.gateway.engine.beans.Service;
 import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.beans.ServiceResponse;
 import io.apiman.gateway.engine.beans.exceptions.ConnectorException;
-import io.apiman.gateway.engine.impl.DefaultEngineFactory;
-import io.apiman.gateway.engine.io.AbstractSignalStream;
 import io.apiman.gateway.engine.io.IApimanBuffer;
-import io.apiman.gateway.engine.io.ISignalReadStream;
 import io.apiman.gateway.engine.io.ISignalWriteStream;
 
 import java.util.ArrayList;
@@ -65,8 +64,8 @@ public class DefaultEngineFactoryTest {
     private IAsyncHandler<Void> mockEndHandler;
     private IAsyncHandler<Void> transmitHandler;
     
-    private AbstractSignalStream<ServiceRequest> mockRequestHandler;
-    private AbstractSignalStream<ServiceResponse> mockResponseHandler;
+    private MockServiceConnection mockServiceConnection;
+    private MockServiceConnectionResponse mockServiceConnectionResponse;
     
     @SuppressWarnings("unchecked")
     @Before
@@ -104,17 +103,20 @@ public class DefaultEngineFactoryTest {
                         Assert.assertEquals("test", service.getEndpointType());
                         Assert.assertEquals("test:endpoint", service.getEndpoint());
                         IServiceConnector connector = new IServiceConnector() {
-
+                            
+                            /**
+                             * @see io.apiman.gateway.engine.IServiceConnector#connect(io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.async.IAsyncResultHandler)
+                             */
                             @SuppressWarnings("unchecked")
                             @Override
-                            public ISignalWriteStream request(ServiceRequest request,
-                                    IAsyncResultHandler<ISignalReadStream<ServiceResponse>> responseHandler)
-                                            throws ConnectorException {
+                            public IServiceConnection connect(ServiceRequest request,
+                                    IAsyncResultHandler<IServiceConnectionResponse> handler)
+                                    throws ConnectorException {
                                 final ServiceResponse response = new ServiceResponse();
                                 response.setCode(200);
                                 response.setMessage("OK"); //$NON-NLS-1$
 
-                                mockResponseHandler = new AbstractSignalStream<ServiceResponse>() {
+                                mockServiceConnectionResponse = new MockServiceConnectionResponse() {
 
                                     @Override
                                     public void write(IApimanBuffer chunk) {
@@ -146,18 +148,18 @@ public class DefaultEngineFactoryTest {
                                     }
                                 };
                                 
-                                IAsyncResult<ISignalReadStream<ServiceResponse>> mockResponseResultHandler = mock(IAsyncResult.class);
+                                IAsyncResult<IServiceConnectionResponse> mockResponseResultHandler = mock(IAsyncResult.class);
                                 given(mockResponseResultHandler.isSuccess()).willReturn(true);
                                 given(mockResponseResultHandler.isError()).willReturn(false);
-                                given(mockResponseResultHandler.getResult()).willReturn(mockResponseHandler);
+                                given(mockResponseResultHandler.getResult()).willReturn(mockServiceConnectionResponse);
 
-                                mockRequestHandler = mock(AbstractSignalStream.class);
-                                given(mockRequestHandler.getHead()).willReturn(request);
+                                mockServiceConnection = mock(MockServiceConnection.class);
+                                given(mockServiceConnection.getHead()).willReturn(request);
 
                                 // Handle head
-                                responseHandler.handle(mockResponseResultHandler);
+                                handler.handle(mockResponseResultHandler);
 
-                                return mockRequestHandler;
+                                return mockServiceConnection;
                             }
                             
                         };
@@ -235,15 +237,15 @@ public class DefaultEngineFactoryTest {
             public void handle(Void result) {
                 // NB: This is cheating slightly for testing purposes, we don't have real async here.
                 // Only now start writing stuff, so user has had opportunity to set handlers
-                mockResponseHandler.write(mockBufferOutbound);
-                mockResponseHandler.end();
+                mockServiceConnectionResponse.write(mockBufferOutbound);
+                mockServiceConnectionResponse.end();
             }
         };
         
         prExecutor.execute();
         
         // Request handler should receive the mock inbound buffer once only
-        verify(mockRequestHandler, times(1)).write(mockBufferInbound);
+        verify(mockServiceConnection, times(1)).write(mockBufferInbound);
        
         // Ultimately user should receive the contrived response and end in order.
         InOrder order = inOrder(mockBodyHandler, mockEndHandler); 

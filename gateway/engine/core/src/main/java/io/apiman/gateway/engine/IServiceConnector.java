@@ -17,10 +17,7 @@ package io.apiman.gateway.engine;
 
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.ServiceRequest;
-import io.apiman.gateway.engine.beans.ServiceResponse;
 import io.apiman.gateway.engine.beans.exceptions.ConnectorException;
-import io.apiman.gateway.engine.io.ISignalReadStream;
-import io.apiman.gateway.engine.io.ISignalWriteStream;
 
 /**
  * Interface implemented by connectors to back end systems.  The engine uses
@@ -35,9 +32,9 @@ public interface IServiceConnector {
      * Invokes the back-end system.
      *
      * @param request The inbound service request
-     * @param iAsyncResultHandler An async handler to receive stream containing a {@link ServiceResponse}
-     * @return A stream used by caller to pass data to the back-end
+     * @param handler An async handler to receive the service connection response (or a connection error if one occurs)
+     * @return A connection used by caller to pass data to the back-end
      * @throws ConnectorException If a connection error occurs
      */
-    ISignalWriteStream request(ServiceRequest request, IAsyncResultHandler<ISignalReadStream<ServiceResponse>> iAsyncResultHandler) throws ConnectorException;
+    IServiceConnection connect(ServiceRequest request, IAsyncResultHandler<IServiceConnectionResponse> handler) throws ConnectorException;
 }
