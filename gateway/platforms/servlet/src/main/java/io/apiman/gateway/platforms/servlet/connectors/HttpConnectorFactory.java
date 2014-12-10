@@ -16,14 +16,13 @@
 package io.apiman.gateway.platforms.servlet.connectors;
 
 import io.apiman.gateway.engine.IConnectorFactory;
+import io.apiman.gateway.engine.IServiceConnection;
+import io.apiman.gateway.engine.IServiceConnectionResponse;
 import io.apiman.gateway.engine.IServiceConnector;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.Service;
 import io.apiman.gateway.engine.beans.ServiceRequest;
-import io.apiman.gateway.engine.beans.ServiceResponse;
 import io.apiman.gateway.engine.beans.exceptions.ConnectorException;
-import io.apiman.gateway.engine.io.ISignalReadStream;
-import io.apiman.gateway.engine.io.ISignalWriteStream;
 
 /**
  * Connector factory that uses HTTP to invoke back end systems.
@@ -45,12 +44,11 @@ public class HttpConnectorFactory implements IConnectorFactory {
     public IServiceConnector createConnector(ServiceRequest request, final Service service) {
         return new IServiceConnector() {
             /**
-             * @see io.apiman.gateway.engine.IServiceConnector#request(io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.async.IAsyncResultHandler)
+             * @see io.apiman.gateway.engine.IServiceConnector#connect(io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.async.IAsyncResultHandler)
              */
             @Override
-            public ISignalWriteStream request(ServiceRequest request,
-                    IAsyncResultHandler<ISignalReadStream<ServiceResponse>> handler)
-                    throws ConnectorException {
+            public IServiceConnection connect(ServiceRequest request,
+                    IAsyncResultHandler<IServiceConnectionResponse> handler) throws ConnectorException {
                 HttpServiceConnection connection = new HttpServiceConnection(request, service, handler);
                 return connection;
             }

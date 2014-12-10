@@ -15,6 +15,8 @@
  */
 package io.apiman.gateway.platforms.servlet.connectors;
 
+import io.apiman.gateway.engine.IServiceConnection;
+import io.apiman.gateway.engine.IServiceConnectionResponse;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncHandler;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
@@ -23,8 +25,6 @@ import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.beans.ServiceResponse;
 import io.apiman.gateway.engine.beans.exceptions.ConnectorException;
 import io.apiman.gateway.engine.io.IApimanBuffer;
-import io.apiman.gateway.engine.io.ISignalReadStream;
-import io.apiman.gateway.engine.io.ISignalWriteStream;
 import io.apiman.gateway.platforms.servlet.GatewayThreadContext;
 import io.apiman.gateway.platforms.servlet.io.ByteBuffer;
 
@@ -46,7 +46,7 @@ import org.apache.commons.io.IOUtils;
  *
  * @author eric.wittmann@redhat.com
  */
-public class HttpServiceConnection implements ISignalReadStream<ServiceResponse>, ISignalWriteStream {
+public class HttpServiceConnection implements IServiceConnection, IServiceConnectionResponse {
 
     private static final Set<String> SUPPRESSED_HEADERS = new HashSet<String>();
     static {
@@ -57,7 +57,7 @@ public class HttpServiceConnection implements ISignalReadStream<ServiceResponse>
 
     private ServiceRequest request;
     private Service service;
-    private IAsyncResultHandler<ISignalReadStream<ServiceResponse>> responseHandler;
+    private IAsyncResultHandler<IServiceConnectionResponse> responseHandler;
     private boolean connected;
     
     private HttpURLConnection connection;
@@ -76,7 +76,7 @@ public class HttpServiceConnection implements ISignalReadStream<ServiceResponse>
      * @throws ConnectorException
      */
     public HttpServiceConnection(ServiceRequest request, Service service,
-            IAsyncResultHandler<ISignalReadStream<ServiceResponse>> handler) throws ConnectorException {
+            IAsyncResultHandler<IServiceConnectionResponse> handler) throws ConnectorException {
         this.request = request;
         this.service = service;
         this.responseHandler = handler;
@@ -213,7 +213,7 @@ public class HttpServiceConnection implements ISignalReadStream<ServiceResponse>
             }
             response.setCode(connection.getResponseCode());
             response.setMessage(connection.getResponseMessage());
-            responseHandler.handle(AsyncResultImpl.<ISignalReadStream<ServiceResponse>>create(this));
+            responseHandler.handle(AsyncResultImpl.<IServiceConnectionResponse>create(this));
         } catch (Exception e) {
             // TODO log this error
             throw new ConnectorException(e);

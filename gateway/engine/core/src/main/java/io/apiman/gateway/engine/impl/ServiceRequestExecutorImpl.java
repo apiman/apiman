@@ -17,6 +17,8 @@ package io.apiman.gateway.engine.impl;
 
 import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.IEngineResult;
+import io.apiman.gateway.engine.IServiceConnection;
+import io.apiman.gateway.engine.IServiceConnectionResponse;
 import io.apiman.gateway.engine.IServiceConnector;
 import io.apiman.gateway.engine.IServiceRequestExecutor;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
@@ -30,7 +32,6 @@ import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.beans.ServiceResponse;
 import io.apiman.gateway.engine.beans.exceptions.RequestAbortedException;
 import io.apiman.gateway.engine.io.IApimanBuffer;
-import io.apiman.gateway.engine.io.ISignalReadStream;
 import io.apiman.gateway.engine.io.ISignalWriteStream;
 import io.apiman.gateway.engine.policy.Chain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
@@ -73,8 +74,8 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
     private Chain<ServiceRequest> requestChain;
     private Chain<ServiceResponse> responseChain;
 
-    private ISignalWriteStream connectorRequestStream;
-    private ISignalReadStream<ServiceResponse> connectorResponseStream;
+    private IServiceConnection serviceConnection;
+    private IServiceConnectionResponse serviceConnectionResponse;
 
     /**
      * Constructs a new {@link ServiceRequestExecutorImpl}.
@@ -118,14 +119,14 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
 
                 // Open up a connection to the back-end if we're given the OK from the request chain
                 // Attach the response handler here.
-                connectorRequestStream = connector.request(request, createConnectorResponseHandler());
+                serviceConnection = connector.connect(request, createServiceConnectionResponseHandler());
 
                 // Write the body chunks from the *policy request* into the connector request.
                 requestChain.bodyHandler(new IAsyncHandler<IApimanBuffer>() {
 
                     @Override
                     public void handle(IApimanBuffer buffer) {
-                        connectorRequestStream.write(buffer);
+                        serviceConnection.write(buffer);
                     }
                 });
 
@@ -134,7 +135,7 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
 
                     @Override
                     public void handle(Void result) {
-                        connectorRequestStream.end();
+                        serviceConnection.end();
                     }
                 });
 
@@ -153,15 +154,15 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
      * Creates a response handler that is called by the service connector once a connection
      * to the back end service has been made and a response received.
      */
-    private IAsyncResultHandler<ISignalReadStream<ServiceResponse>> createConnectorResponseHandler() {
-        return new IAsyncResultHandler<ISignalReadStream<ServiceResponse>>() {
+    private IAsyncResultHandler<IServiceConnectionResponse> createServiceConnectionResponseHandler() {
+        return new IAsyncResultHandler<IServiceConnectionResponse>() {
 
             @Override
-            public void handle(IAsyncResult<ISignalReadStream<ServiceResponse>> result) {
+            public void handle(IAsyncResult<IServiceConnectionResponse> result) {
                 if (result.isSuccess()) {
                     // The result came back. NB: still need to put it through the response chain.
-                    connectorResponseStream = result.getResult();
-                    ServiceResponse serviceResponse = connectorResponseStream.getHead();
+                    serviceConnectionResponse = result.getResult();
+                    ServiceResponse serviceResponse = serviceConnectionResponse.getHead();
                     context.setAttribute("apiman.engine.serviceResponse", serviceResponse); //$NON-NLS-1$
 
                     // Execute the response chain to evaluate the response.
@@ -171,7 +172,7 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
                         public void handle(ServiceResponse result) {
                             // Send the service response to the caller.
                             final EngineResultImpl engineResult = new EngineResultImpl(result);
-                            engineResult.setConnectorResponseStream(connectorResponseStream);
+                            engineResult.setConnectorResponseStream(serviceConnectionResponse);
 
                             resultHandler.handle(AsyncResultImpl.<IEngineResult> create(engineResult));
 
@@ -194,12 +195,12 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
                             });
 
                             // Signal to the connector that it's safe to start transmitting data.
-                            connectorResponseStream.transmit();
+                            serviceConnectionResponse.transmit();
                         }
                     });
 
                     // Write data from the back-end response into the response chain.
-                    connectorResponseStream.bodyHandler(new IAsyncHandler<IApimanBuffer>() {
+                    serviceConnectionResponse.bodyHandler(new IAsyncHandler<IApimanBuffer>() {
 
                         @Override
                         public void handle(IApimanBuffer buffer) {
@@ -208,7 +209,7 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
                     });
 
                     // Indicate back-end response is finished to the response chain.
-                    connectorResponseStream.endHandler(new IAsyncHandler<Void>() {
+                    serviceConnectionResponse.endHandler(new IAsyncHandler<Void>() {
 
                         @Override
                         public void handle(Void result) {
@@ -255,7 +256,7 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
                 // service connector resources.  We'll also call handle() on the result
                 // handler so that the caller knows something went wrong.
                 streamFinished = true;
-                connectorRequestStream.abort();
+                serviceConnection.abort();
                 resultHandler.handle(AsyncResultImpl.<IEngineResult>create(new RequestAbortedException()));
             }
 
@@ -305,14 +306,14 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
         responseChain.policyFailureHandler(new IAsyncHandler<PolicyFailure>() {
             @Override
             public void handle(PolicyFailure result) {
-                connectorResponseStream.abort();
+                serviceConnectionResponse.abort();
                 policyFailureHandler.handle(result);
             }
         });
         responseChain.policyErrorHandler(new IAsyncHandler<Throwable>() {
             @Override
             public void handle(Throwable result) {
-                connectorResponseStream.abort();
+                serviceConnectionResponse.abort();
                 policyErrorHandler.handle(result);
             }
         });
