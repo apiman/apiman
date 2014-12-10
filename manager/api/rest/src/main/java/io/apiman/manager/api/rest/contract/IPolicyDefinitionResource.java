@@ -17,6 +17,7 @@
 package io.apiman.manager.api.rest.contract;
 
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
+import io.apiman.manager.api.beans.summary.PolicyDefinitionSummaryBean;
 import io.apiman.manager.api.rest.contract.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.contract.exceptions.PolicyDefinitionAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.PolicyDefinitionNotFoundException;
@@ -43,7 +44,7 @@ public interface IPolicyDefinitionResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<PolicyDefinitionBean> list() throws NotAuthorizedException;
+    public List<PolicyDefinitionSummaryBean> list() throws NotAuthorizedException;
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)

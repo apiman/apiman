@@ -6,32 +6,26 @@ Content-Type: application/json
 
 {
   "policies" : [
-    {
-      "type" : "Plan",
-      "organizationId" : "TestOrganization",
-      "entityId" : "Gold",
-      "entityVersion" : "1.0",
-      "name" : "Policy Def Two",
-      "description" : "Policy Def Two: Plan Policy 2",
-      "configuration" : "{\"message\" : \"Plan Policy 2\"}"
-    },
-    {
-      "type" : "Plan",
-      "organizationId" : "TestOrganization",
-      "entityId" : "Gold",
-      "entityVersion" : "1.0",
-      "name" : "Policy Def One",
-      "description" : "Policy Def One: Plan Policy 1",
-      "configuration" : "{\"message\" : \"Plan Policy 1\"}"
-    },
-    {
-      "type" : "Service",
-      "organizationId" : "TestOrganization",
-      "entityId" : "foo",
-      "entityVersion" : "1.0",
-      "name" : "Policy Def Three",
-      "description" : "Policy Def Three: Service Policy 1",
-      "configuration" : "{\"message\" : \"Service Policy 1\"}"
-    }
-  ]
+      {
+        "createdBy" : "admin",
+        "description" : "Policy Def Two: Plan Policy 2",
+        "icon" : "one",
+        "name" : "Policy Def Two",
+        "policyDefinitionId" : "PolicyDefTwo"
+      },
+      {
+        "createdBy" : "admin",
+        "description" : "Policy Def One: Plan Policy 1",
+        "icon" : "one",
+        "name" : "Policy Def One",
+        "policyDefinitionId" : "PolicyDefOne"
+      },
+      {
+        "createdBy" : "admin",
+        "description" : "Policy Def Three: Service Policy 1",
+        "icon" : "one",
+        "name" : "Policy Def Three",
+        "policyDefinitionId" : "PolicyDefThree"
+      }
+   ]
 }

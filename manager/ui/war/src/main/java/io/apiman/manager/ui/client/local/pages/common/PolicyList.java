@@ -15,7 +15,8 @@
  */
 package io.apiman.manager.ui.client.local.pages.common;
 
-import io.apiman.manager.api.beans.policies.PolicyBean;
+import io.apiman.manager.api.beans.policies.PolicyType;
+import io.apiman.manager.api.beans.summary.PolicySummaryBean;
 import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.events.ConfirmationEvent;
 import io.apiman.manager.ui.client.local.events.PoliciesReorderedEvent;
@@ -76,7 +77,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author eric.wittmann@redhat.com
  */
 @Dependent
-public class PolicyList extends FlowPanel implements HasValue<List<PolicyBean>>, HasRemovePolicyHandlers,
+public class PolicyList extends FlowPanel implements HasValue<List<PolicySummaryBean>>, HasRemovePolicyHandlers,
         HasPoliciesReorderedHandlers {
 
     @Inject
@@ -96,11 +97,30 @@ public class PolicyList extends FlowPanel implements HasValue<List<PolicyBean>>,
     private boolean empty;
     private DropPlaceholder dropHolder;
     
+    private String organizationId;
+    private String entityId;
+    private String entityVersion;
+    private PolicyType type;
+    
     /**
      * Constructor.
      */
     public PolicyList() {
         getElement().setClassName("apiman-policies"); //$NON-NLS-1$
+    }
+    
+    /**
+     * Sets some info about the entity we're displaying policies for.
+     * @param organizationId
+     * @param entityId
+     * @param entityVersion
+     * @param type
+     */
+    public void setEntityInfo(String organizationId, String entityId, String entityVersion, PolicyType type) {
+        this.organizationId = organizationId;
+        this.entityId = entityId;
+        this.entityVersion = entityVersion;
+        this.type = type;
     }
     
     @PostConstruct
@@ -112,7 +132,7 @@ public class PolicyList extends FlowPanel implements HasValue<List<PolicyBean>>,
      * @see com.google.gwt.event.logical.shared.HasValueChangeHandlers#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
      */
     @Override
-    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<List<PolicyBean>> handler) {
+    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<List<PolicySummaryBean>> handler) {
         return super.addHandler(handler, ValueChangeEvent.getType());
     }
     
@@ -136,13 +156,12 @@ public class PolicyList extends FlowPanel implements HasValue<List<PolicyBean>>,
      * @see com.google.gwt.user.client.ui.HasValue#getValue()
      */
     @Override
-    public List<PolicyBean> getValue() {
-        List<PolicyBean> policies = new ArrayList<PolicyBean>();
+    public List<PolicySummaryBean> getValue() {
+        List<PolicySummaryBean> policies = new ArrayList<PolicySummaryBean>();
         if (!empty) {
             for (int i = 0; i < getWidgetCount(); i++) {
                 PolicyRow pr = (PolicyRow) getWidget(i);
-                PolicyBean policy = pr.getPolicy();
-//                policy.setIndex(i);
+                PolicySummaryBean policy = pr.getPolicy();
                 policies.add(policy);
             }
         }
@@ -152,7 +171,7 @@ public class PolicyList extends FlowPanel implements HasValue<List<PolicyBean>>,
     /**
      * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object)
      */
-    public void setFilteredValue(List<PolicyBean> value) {
+    public void setFilteredValue(List<PolicySummaryBean> value) {
         filtered = true;
         setValue(value, false);
     }
@@ -161,7 +180,7 @@ public class PolicyList extends FlowPanel implements HasValue<List<PolicyBean>>,
      * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object)
      */
     @Override
-    public void setValue(List<PolicyBean> value) {
+    public void setValue(List<PolicySummaryBean> value) {
         filtered = false;
         setValue(value, false);
     }
@@ -170,7 +189,7 @@ public class PolicyList extends FlowPanel implements HasValue<List<PolicyBean>>,
      * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object, boolean)
      */
     @Override
-    public void setValue(List<PolicyBean> value, boolean fireEvents) {
+    public void setValue(List<PolicySummaryBean> value, boolean fireEvents) {
         clear();
         refresh(value);
     }
@@ -178,9 +197,9 @@ public class PolicyList extends FlowPanel implements HasValue<List<PolicyBean>>,
     /**
      * Refresh the display with the current value.
      */
-    public void refresh(List<PolicyBean> policies) {
+    public void refresh(List<PolicySummaryBean> policies) {
         if (policies != null && !policies.isEmpty()) {
-            for (PolicyBean bean : policies) {
+            for (PolicySummaryBean bean : policies) {
                 Widget row = createPolicyRow(bean);
                 add(row);
             }
@@ -205,7 +224,7 @@ public class PolicyList extends FlowPanel implements HasValue<List<PolicyBean>>,
      * Creates a single policy row.
      * @param bean
      */
-    private Widget createPolicyRow(final PolicyBean bean) {
+    private Widget createPolicyRow(final PolicySummaryBean bean) {
         PolicyRow container = new PolicyRow(bean);
         
         final FlowPanel row = new FlowPanel();
@@ -238,12 +257,12 @@ public class PolicyList extends FlowPanel implements HasValue<List<PolicyBean>>,
      * @param bean
      * @param row
      */
-    protected FlowPanel createIconColumn(final PolicyBean bean, final FlowPanel row) {
+    protected FlowPanel createIconColumn(final PolicySummaryBean bean, final FlowPanel row) {
         FlowPanel col = new FlowPanel();
         row.add(col);
         col.setStyleName("col"); //$NON-NLS-1$
         
-        FontAwesomeIcon icon = new FontAwesomeIcon(bean.getDefinition().getIcon(), true);
+        FontAwesomeIcon icon = new FontAwesomeIcon(bean.getIcon(), true);
         icon.getElement().addClassName("apiman-policy-icon"); //$NON-NLS-1$
         col.add(icon);
         
@@ -255,7 +274,7 @@ public class PolicyList extends FlowPanel implements HasValue<List<PolicyBean>>,
      * @param bean
      * @param row
      */
-    protected void createSummaryColumn(final PolicyBean bean, FlowPanel row) {
+    protected void createSummaryColumn(final PolicySummaryBean bean, FlowPanel row) {
         FlowPanel col = new FlowPanel();
         row.add(col);
         col.getElement().setClassName("col"); //$NON-NLS-1$
@@ -270,10 +289,10 @@ public class PolicyList extends FlowPanel implements HasValue<List<PolicyBean>>,
         titleSpan.getElement().setClassName("title"); //$NON-NLS-1$
 
         TransitionAnchor<EditPolicyPage> titleAnchor = toEditPolicyFactory.get(MultimapUtil.fromMultiple(
-                "org", bean.getOrganizationId(), //$NON-NLS-1$
-                "id", bean.getEntityId(), //$NON-NLS-1$
-                "ver", bean.getEntityVersion(), //$NON-NLS-1$
-                "type", bean.getType().name(), //$NON-NLS-1$
+                "org", this.organizationId, //$NON-NLS-1$
+                "id", this.entityId, //$NON-NLS-1$
+                "ver", this.entityVersion, //$NON-NLS-1$
+                "type", this.type.name(), //$NON-NLS-1$
                 "policy", String.valueOf(bean.getId()) //$NON-NLS-1$
         ));
         titleSpan.add(titleAnchor);
@@ -309,7 +328,7 @@ public class PolicyList extends FlowPanel implements HasValue<List<PolicyBean>>,
      * @param bean
      * @param row
      */
-    protected void createActionColumn(final PolicyBean bean, FlowPanel row) {
+    protected void createActionColumn(final PolicySummaryBean bean, FlowPanel row) {
         FlowPanel col = new FlowPanel();
         row.add(col);
         col.setStyleName("col"); //$NON-NLS-1$
@@ -448,12 +467,12 @@ public class PolicyList extends FlowPanel implements HasValue<List<PolicyBean>>,
      */
     private class PolicyRow extends FlowPanel {
         
-        private PolicyBean policy;
+        private PolicySummaryBean policy;
         
         /**
          * Constructor.
          */
-        public PolicyRow(PolicyBean policy) {
+        public PolicyRow(PolicySummaryBean policy) {
             setPolicy(policy);
             getElement().setClassName("container-fluid"); //$NON-NLS-1$
             getElement().addClassName("apiman-summaryrow"); //$NON-NLS-1$
@@ -462,14 +481,14 @@ public class PolicyList extends FlowPanel implements HasValue<List<PolicyBean>>,
         /**
          * @return the policy
          */
-        public PolicyBean getPolicy() {
+        public PolicySummaryBean getPolicy() {
             return policy;
         }
 
         /**
          * @param policy the policy to set
          */
-        public void setPolicy(PolicyBean policy) {
+        public void setPolicy(PolicySummaryBean policy) {
             this.policy = policy;
         }
     }

@@ -15,7 +15,7 @@
  */
 package io.apiman.manager.ui.client.local.pages.admin;
 
-import io.apiman.manager.api.beans.gateways.GatewayBean;
+import io.apiman.manager.api.beans.summary.GatewaySummaryBean;
 import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.pages.EditGatewayPage;
 import io.apiman.manager.ui.client.local.pages.common.NoEntitiesWidget;
@@ -40,7 +40,7 @@ import com.google.gwt.user.client.ui.InlineLabel;
  * @author eric.wittmann@redhat.com
  */
 @Dependent
-public class GatewayTable extends TemplatedWidgetTable implements TakesValue<List<GatewayBean>> {
+public class GatewayTable extends TemplatedWidgetTable implements TakesValue<List<GatewaySummaryBean>> {
 
     @Inject
     protected TranslationService i18n;
@@ -48,7 +48,7 @@ public class GatewayTable extends TemplatedWidgetTable implements TakesValue<Lis
     @Inject
     protected TransitionAnchorFactory<EditGatewayPage> editGatewayLinkFactory;
 
-    private List<GatewayBean> gateways;
+    private List<GatewaySummaryBean> gateways;
 
     /**
      * Constructor.
@@ -60,7 +60,7 @@ public class GatewayTable extends TemplatedWidgetTable implements TakesValue<Lis
      * @see com.google.gwt.user.client.TakesValue#setValue(java.lang.Object)
      */
     @Override
-    public void setValue(List<GatewayBean> value) {
+    public void setValue(List<GatewaySummaryBean> value) {
         gateways = value;
         clear();
         refresh();
@@ -72,7 +72,7 @@ public class GatewayTable extends TemplatedWidgetTable implements TakesValue<Lis
     public void refresh() {
         if (gateways != null && !gateways.isEmpty()) {
             int rowIdx = 0;
-            for (GatewayBean bean : gateways) {
+            for (GatewaySummaryBean bean : gateways) {
                 addRow(rowIdx++, bean);
             }
         } else {
@@ -86,7 +86,7 @@ public class GatewayTable extends TemplatedWidgetTable implements TakesValue<Lis
      * @param rowIdx
      * @param bean
      */
-    private void addRow(int rowIdx, GatewayBean bean) {
+    private void addRow(int rowIdx, GatewaySummaryBean bean) {
         TransitionAnchor<EditGatewayPage> anchor = editGatewayLinkFactory.get("id", bean.getId()); //$NON-NLS-1$
         anchor.setText(bean.getName());
         add(rowIdx, 0, anchor);
@@ -104,7 +104,7 @@ public class GatewayTable extends TemplatedWidgetTable implements TakesValue<Lis
      * @see com.google.gwt.user.client.TakesValue#getValue()
      */
     @Override
-    public List<GatewayBean> getValue() {
+    public List<GatewaySummaryBean> getValue() {
         return gateways;
     }
 }

@@ -5,31 +5,19 @@ Content-Type: application/json
 
 [
   {
-    "application" : {
-      "organization" : {
-        "id" : "Organization1"
-      },
-      "id":"Application1",
-      "name":"Application 1",
-      "description":"[UPDATED] This is the description of Application 1!",
-      "createdBy":"admin"
-    },
+    "organizationId" : "Organization1",
+    "organizationName" : "Organization 1",
+    "id" : "Application1",
+    "name" : "Application 1",
     "status":"Created",
-    "version":"2.0",
-    "createdBy":"admin"
+    "version":"2.0"
   },
   {
-    "application" : {
-      "organization" : {
-        "id" : "Organization1"
-      },
-      "id":"Application1",
-      "name":"Application 1",
-      "description":"[UPDATED] This is the description of Application 1!",
-      "createdBy":"admin"
-    },
+    "organizationId" : "Organization1",
+    "organizationName" : "Organization 1",
+    "id" : "Application1",
+    "name" : "Application 1",
     "status":"Created",
-    "version":"1.0",
-    "createdBy":"admin"
+    "version":"1.0"
   }
 ]

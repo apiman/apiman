@@ -7,16 +7,12 @@ Content-Type: application/json
     {
       "id" : "GatewayOne",
       "name" : "Gateway One",
-      "description" : "This is the first gateway. (updated)",
-      "httpEndpoint" : "http://localhost:6666/gateway/",
-      "configuration" : "{ \"updated\" : \"true\"}"
+      "description" : "This is the first gateway. (updated)"
     },
     {
       "id" : "GatewayTwo",
       "name" : "Gateway Two",
       "description" : "This is the second gateway.",
-      "httpEndpoint" : "http://localhost:6666/gateway/",
-      "type" : "REST",
-      "configuration" : "{}"
+      "type" : "REST"
     }
 ]

@@ -15,10 +15,10 @@
  */
 package io.apiman.manager.ui.client.local.pages;
 
-import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.services.EndpointType;
 import io.apiman.manager.api.beans.services.ServiceGatewayBean;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
+import io.apiman.manager.api.beans.summary.GatewaySummaryBean;
 import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.pages.service.EndpointTypeSelectBox;
 import io.apiman.manager.ui.client.local.pages.service.GatewaySelectBox;
@@ -70,7 +70,7 @@ public class ServiceImplPage extends AbstractServicePage {
     @Inject @DataField
     Button cancelButton;
     
-    List<GatewayBean> gatewayBeans;
+    List<GatewaySummaryBean> gatewayBeans;
 
     /**
      * Constructor.
@@ -97,9 +97,9 @@ public class ServiceImplPage extends AbstractServicePage {
                 onFormValueChange();
             }
         });
-        gateway.addValueChangeHandler(new ValueChangeHandler<GatewayBean>() {
+        gateway.addValueChangeHandler(new ValueChangeHandler<GatewaySummaryBean>() {
             @Override
-            public void onValueChange(ValueChangeEvent<GatewayBean> event) {
+            public void onValueChange(ValueChangeEvent<GatewaySummaryBean> event) {
                 onFormValueChange();
             }
         });
@@ -111,9 +111,9 @@ public class ServiceImplPage extends AbstractServicePage {
     @Override
     protected int doLoadPageData() {
         int rval = super.doLoadPageData();
-        rest.listGateways(new IRestInvokerCallback<List<GatewayBean>>() {
+        rest.listGateways(new IRestInvokerCallback<List<GatewaySummaryBean>>() {
             @Override
-            public void onSuccess(List<GatewayBean> response) {
+            public void onSuccess(List<GatewaySummaryBean> response) {
                 onGatewaysLoaded(response);
                 dataPacketLoaded();
             }
@@ -129,7 +129,7 @@ public class ServiceImplPage extends AbstractServicePage {
      * Called when the gateways are loaded.
      * @param beans
      */
-    protected void onGatewaysLoaded(List<GatewayBean> beans) {
+    protected void onGatewaysLoaded(List<GatewaySummaryBean> beans) {
         gatewayBeans = beans;
         gateway.setOptions(gatewayBeans);
         if (gatewayBeans.size() > 1) {
@@ -182,7 +182,7 @@ public class ServiceImplPage extends AbstractServicePage {
         update.setEndpointType(endpointTypeValue);
 
         if (gatewayBeans.size() > 1) {
-            GatewayBean gb = gateway.getValue();
+            GatewaySummaryBean gb = gateway.getValue();
             Set<ServiceGatewayBean> sgateways = new HashSet<ServiceGatewayBean>();
             ServiceGatewayBean sgb = new ServiceGatewayBean();
             sgb.setGatewayId(gb.getId());

@@ -15,6 +15,8 @@
  */
 package io.apiman.manager.api.beans.policies;
 
+import io.apiman.manager.api.beans.summary.PolicySummaryBean;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +36,7 @@ public class PolicyChainBean implements Serializable {
 
     private static final long serialVersionUID = -497197512733345793L;
     
-    private List<PolicyBean> policies = new ArrayList<PolicyBean>();
+    private List<PolicySummaryBean> policies = new ArrayList<PolicySummaryBean>();
     
     /**
      * Constructor.
@@ -45,14 +47,14 @@ public class PolicyChainBean implements Serializable {
     /**
      * @return the policies
      */
-    public List<PolicyBean> getPolicies() {
+    public List<PolicySummaryBean> getPolicies() {
         return policies;
     }
 
     /**
      * @param policies the policies to set
      */
-    public void setPolicies(List<PolicyBean> policies) {
+    public void setPolicies(List<PolicySummaryBean> policies) {
         this.policies = policies;
     }
 

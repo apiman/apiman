@@ -15,9 +15,9 @@
  */
 package io.apiman.manager.ui.client.local.pages.service;
 
-import io.apiman.manager.api.beans.plans.PlanVersionBean;
 import io.apiman.manager.api.beans.services.ServicePlanBean;
 import io.apiman.manager.api.beans.summary.PlanSummaryBean;
+import io.apiman.manager.api.beans.summary.PlanVersionSummaryBean;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,7 +53,7 @@ public class ServicePlansSelector extends FlowPanel implements HasValue<Set<Serv
     
     private Set<ServicePlanBean> value;
     private List<PlanSummaryBean> plans;
-    private Map<PlanSummaryBean, List<PlanVersionBean>> versions;
+    private Map<PlanSummaryBean, List<PlanVersionSummaryBean>> versions;
     private Map<PlanSummaryBean, ServicePlanWidget> widgets = new HashMap<PlanSummaryBean, ServicePlanWidget>();
 
     /**
@@ -67,7 +67,7 @@ public class ServicePlansSelector extends FlowPanel implements HasValue<Set<Serv
      * @param plans
      * @param versions
      */
-    public void setChoices(List<PlanSummaryBean> plans, Map<PlanSummaryBean, List<PlanVersionBean>> versions) {
+    public void setChoices(List<PlanSummaryBean> plans, Map<PlanSummaryBean, List<PlanVersionSummaryBean>> versions) {
         clear();
         this.plans = plans;
         this.versions = versions;
@@ -81,9 +81,9 @@ public class ServicePlansSelector extends FlowPanel implements HasValue<Set<Serv
         for (final PlanSummaryBean planSummaryBean : this.plans) {
             final ServicePlanWidget planWidget = widgetFactory.get();
             planWidget.setPlanBean(planSummaryBean);
-            List<PlanVersionBean> versionBeans = versions.get(planSummaryBean);
+            List<PlanVersionSummaryBean> versionBeans = versions.get(planSummaryBean);
             List<String> planVersions = new ArrayList<String>();
-            for (PlanVersionBean planVersionBean : versionBeans) {
+            for (PlanVersionSummaryBean planVersionBean : versionBeans) {
                 planVersions.add(planVersionBean.getVersion());
             }
             planWidget.setVersions(planVersions);

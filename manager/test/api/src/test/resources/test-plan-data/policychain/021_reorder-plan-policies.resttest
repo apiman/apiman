@@ -3,15 +3,16 @@ Content-Type: application/json
 
 {
   "policies" : [
-    {
-      "id" : "${policy-1-id}",
-      "orderIndex" : 10
-    },
-    {
-      "id" : "${policy-2-id}",
-      "orderIndex" : 5
-    }
-  ]
+      {
+        "id" : ${policy-2-id}
+      },
+      {
+        "id" : ${policy-1-id}
+      },
+      {
+        "id" : ${policy-3-id}
+      }
+   ]
 }
 
 ----

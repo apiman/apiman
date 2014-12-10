@@ -33,10 +33,14 @@ import io.apiman.manager.api.beans.services.ServiceBean;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
 import io.apiman.manager.api.beans.summary.ApiRegistryBean;
 import io.apiman.manager.api.beans.summary.ApplicationSummaryBean;
+import io.apiman.manager.api.beans.summary.ApplicationVersionSummaryBean;
 import io.apiman.manager.api.beans.summary.ContractSummaryBean;
 import io.apiman.manager.api.beans.summary.PlanSummaryBean;
+import io.apiman.manager.api.beans.summary.PlanVersionSummaryBean;
+import io.apiman.manager.api.beans.summary.PolicySummaryBean;
 import io.apiman.manager.api.beans.summary.ServicePlanSummaryBean;
 import io.apiman.manager.api.beans.summary.ServiceSummaryBean;
+import io.apiman.manager.api.beans.summary.ServiceVersionSummaryBean;
 import io.apiman.manager.api.rest.contract.exceptions.ApplicationAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.ApplicationNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.ApplicationVersionNotFoundException;
@@ -151,7 +155,7 @@ public interface IOrganizationResource {
     @GET
     @Path("{organizationId}/applications/{applicationId}/versions")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<ApplicationVersionBean> listAppVersions(@PathParam("organizationId") String organizationId,
+    public List<ApplicationVersionSummaryBean> listAppVersions(@PathParam("organizationId") String organizationId,
             @PathParam("applicationId") String applicationId) throws ApplicationNotFoundException, NotAuthorizedException;
 
     @GET
@@ -251,7 +255,7 @@ public interface IOrganizationResource {
     @GET
     @Path("{organizationId}/applications/{applicationId}/versions/{version}/policies")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<PolicyBean> listAppPolicies(@PathParam("organizationId") String organizationId,
+    public List<PolicySummaryBean> listAppPolicies(@PathParam("organizationId") String organizationId,
             @PathParam("applicationId") String applicationId, @PathParam("version") String version)
             throws OrganizationNotFoundException, ApplicationVersionNotFoundException,
             NotAuthorizedException;
@@ -315,7 +319,7 @@ public interface IOrganizationResource {
     @GET
     @Path("{organizationId}/services/{serviceId}/versions")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<ServiceVersionBean> listServiceVersions(@PathParam("organizationId") String organizationId,
+    public List<ServiceVersionSummaryBean> listServiceVersions(@PathParam("organizationId") String organizationId,
             @PathParam("serviceId") String serviceId) throws ServiceNotFoundException, NotAuthorizedException;
 
     @GET
@@ -384,7 +388,7 @@ public interface IOrganizationResource {
     @GET
     @Path("{organizationId}/services/{serviceId}/versions/{version}/policies")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<PolicyBean> listServicePolicies(@PathParam("organizationId") String organizationId,
+    public List<PolicySummaryBean> listServicePolicies(@PathParam("organizationId") String organizationId,
             @PathParam("serviceId") String serviceId, @PathParam("version") String version)
             throws OrganizationNotFoundException, ServiceVersionNotFoundException,
             NotAuthorizedException;
@@ -463,7 +467,7 @@ public interface IOrganizationResource {
     @GET
     @Path("{organizationId}/plans/{planId}/versions")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<PlanVersionBean> listPlanVersions(@PathParam("organizationId") String organizationId,
+    public List<PlanVersionSummaryBean> listPlanVersions(@PathParam("organizationId") String organizationId,
             @PathParam("planId") String planId) throws PlanNotFoundException, NotAuthorizedException;
 
     @GET
@@ -524,7 +528,7 @@ public interface IOrganizationResource {
     @GET
     @Path("{organizationId}/plans/{planId}/versions/{version}/policies")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<PolicyBean> listPlanPolicies(@PathParam("organizationId") String organizationId,
+    public List<PolicySummaryBean> listPlanPolicies(@PathParam("organizationId") String organizationId,
             @PathParam("planId") String planId, @PathParam("version") String version)
             throws OrganizationNotFoundException, PlanVersionNotFoundException,
             NotAuthorizedException;

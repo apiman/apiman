@@ -15,26 +15,25 @@
  */
 package io.apiman.manager.api.core;
 
-import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
-import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
-import io.apiman.manager.api.beans.plans.PlanBean;
-import io.apiman.manager.api.beans.plans.PlanVersionBean;
-import io.apiman.manager.api.beans.policies.PolicyBean;
-import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
 import io.apiman.manager.api.beans.search.PagingBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
-import io.apiman.manager.api.beans.services.ServiceVersionBean;
 import io.apiman.manager.api.beans.summary.ApiRegistryBean;
 import io.apiman.manager.api.beans.summary.ApplicationSummaryBean;
+import io.apiman.manager.api.beans.summary.ApplicationVersionSummaryBean;
 import io.apiman.manager.api.beans.summary.ContractSummaryBean;
+import io.apiman.manager.api.beans.summary.GatewaySummaryBean;
 import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
 import io.apiman.manager.api.beans.summary.PlanSummaryBean;
+import io.apiman.manager.api.beans.summary.PlanVersionSummaryBean;
+import io.apiman.manager.api.beans.summary.PolicyDefinitionSummaryBean;
+import io.apiman.manager.api.beans.summary.PolicySummaryBean;
 import io.apiman.manager.api.beans.summary.ServicePlanSummaryBean;
 import io.apiman.manager.api.beans.summary.ServiceSummaryBean;
+import io.apiman.manager.api.beans.summary.ServiceVersionSummaryBean;
 import io.apiman.manager.api.core.exceptions.StorageException;
 
 import java.util.List;
@@ -52,15 +51,7 @@ public interface IStorageQuery {
      * Lists all of the Gateways.
      * @throws StorageException
      */
-    public SearchResultsBean<GatewayBean> listGateways() throws StorageException;
-
-    /**
-     * Finds entities by provided criteria.
-     * @param criteria
-     * @param type
-     * @throws StorageException
-     */
-    public <T> SearchResultsBean<T> find(SearchCriteriaBean criteria, Class<T> type) throws StorageException;
+    public List<GatewaySummaryBean> listGateways() throws StorageException;
 
     /**
      * Finds organizations by the provided criteria.
@@ -89,7 +80,7 @@ public interface IStorageQuery {
      * @param criteria
      * @throws StorageException
      */
-    public SearchResultsBean<PlanBean> findPlans(String organizationId, SearchCriteriaBean criteria) throws StorageException;
+    public SearchResultsBean<PlanSummaryBean> findPlans(String organizationId, SearchCriteriaBean criteria) throws StorageException;
     
     /**
      * Gets the audit log for an entity.
@@ -137,7 +128,7 @@ public interface IStorageQuery {
      * @param organizationId
      * @param applicationId
      */
-    public List<ApplicationVersionBean> getApplicationVersions(String organizationId, String applicationId)
+    public List<ApplicationVersionSummaryBean> getApplicationVersions(String organizationId, String applicationId)
             throws StorageException;
 
     /**
@@ -179,7 +170,7 @@ public interface IStorageQuery {
      * @param serviceId
      * @throws StorageException
      */
-    public List<ServiceVersionBean> getServiceVersions(String orgId, String serviceId) throws StorageException;
+    public List<ServiceVersionSummaryBean> getServiceVersions(String orgId, String serviceId) throws StorageException;
 
     /**
      * Returns the service plans configured for the given service version.
@@ -210,7 +201,7 @@ public interface IStorageQuery {
      * @param planId
      * @throws StorageException
      */
-    public List<PlanVersionBean> getPlanVersions(String organizationId, String planId)
+    public List<PlanVersionSummaryBean> getPlanVersions(String organizationId, String planId)
             throws StorageException;
 
     /**
@@ -221,14 +212,14 @@ public interface IStorageQuery {
      * @param version
      * @param type
      */
-    public List<PolicyBean> getPolicies(String organizationId, String entityId, String version,
+    public List<PolicySummaryBean> getPolicies(String organizationId, String entityId, String version,
             PolicyType type) throws StorageException;
 
     /**
      * Lists the policy definitions in the system.
      * @throws StorageException
      */
-    public SearchResultsBean<PolicyDefinitionBean> listPolicyDefinitions() throws StorageException;
+    public List<PolicyDefinitionSummaryBean> listPolicyDefinitions() throws StorageException;
     
     /**
      * Gets a list of contracts for the given service.  This is paged.
@@ -240,5 +231,16 @@ public interface IStorageQuery {
      */
     public List<ContractSummaryBean> getServiceContracts(String organizationId,
             String serviceId, String version, int page, int pageSize) throws StorageException;
+
+    /**
+     * Returns the largest order index value for the policies assigned to the
+     * given entity.
+     * @param organizationId
+     * @param entityId
+     * @param entityVersion
+     * @param type
+     */
+    public int getMaxPolicyOrderIndex(String organizationId, String entityId, String entityVersion,
+            PolicyType type) throws StorageException;
     
 }

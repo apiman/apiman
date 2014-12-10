@@ -15,7 +15,6 @@
  */
 package io.apiman.manager.ui.client.local.services;
 
-import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.ui.client.local.pages.policy.DefaultPolicyConfigurationForm;
 import io.apiman.manager.ui.client.local.pages.policy.IPolicyConfigurationForm;
 import io.apiman.manager.ui.client.local.pages.policy.forms.BasicAuthPolicyConfigForm;
@@ -53,19 +52,19 @@ public class PolicyConfigurationFormFactory {
     
     /**
      * Creates a proper configuration form.
-     * @param policyDef
+     * @param policyDefId
      */
-    public IPolicyConfigurationForm createForm(PolicyDefinitionBean policyDef) {
-        if ("IPWhitelistPolicy".equals(policyDef.getId())) { //$NON-NLS-1$
+    public IPolicyConfigurationForm createForm(String policyDefId) {
+        if ("IPWhitelistPolicy".equals(policyDefId)) { //$NON-NLS-1$
             return ipListFormFactory.get();
         }
-        if ("IPBlacklistPolicy".equals(policyDef.getId())) { //$NON-NLS-1$
+        if ("IPBlacklistPolicy".equals(policyDefId)) { //$NON-NLS-1$
             return ipListFormFactory.get();
         }
-        if ("BASICAuthenticationPolicy".equals(policyDef.getId())) { //$NON-NLS-1$
+        if ("BASICAuthenticationPolicy".equals(policyDefId)) { //$NON-NLS-1$
             return basicAuthFormFactory.get();
         }
-        if ("RateLimitingPolicy".equals(policyDef.getId())) { //$NON-NLS-1$
+        if ("RateLimitingPolicy".equals(policyDefId)) { //$NON-NLS-1$
             return rateLimitingFormFactory.get();
         }
         return defaultFormFactory.get();

@@ -18,6 +18,7 @@ package io.apiman.manager.ui.client.local.pages.consumer;
 
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
+import io.apiman.manager.api.beans.summary.ServiceVersionSummaryBean;
 import io.apiman.manager.ui.client.local.pages.ConsumerOrgPage;
 import io.apiman.manager.ui.client.local.services.NavigationHelperService;
 import io.apiman.manager.ui.client.local.util.MultimapUtil;
@@ -112,9 +113,9 @@ public class ServiceCard extends Composite implements TakesValue<ServiceVersionB
      * Sets the list of service versions.
      * @param versions
      */
-    public void setVersions(List<ServiceVersionBean> versions) {
+    public void setVersions(List<ServiceVersionSummaryBean> versions) {
         List<String> versionList = new ArrayList<String>();
-        for (ServiceVersionBean version : versions) {
+        for (ServiceVersionSummaryBean version : versions) {
             versionList.add(version.getVersion());
         }
         versionSelector.setOptions(versionList);

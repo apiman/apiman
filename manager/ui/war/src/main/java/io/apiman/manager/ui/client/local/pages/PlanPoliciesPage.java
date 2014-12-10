@@ -15,9 +15,9 @@
  */
 package io.apiman.manager.ui.client.local.pages;
 
-import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyChainBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
+import io.apiman.manager.api.beans.summary.PolicySummaryBean;
 import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.events.PoliciesReorderedEvent;
 import io.apiman.manager.ui.client.local.events.RemovePolicyEvent;
@@ -48,7 +48,7 @@ import com.google.gwt.user.client.ui.Anchor;
 @Dependent
 public class PlanPoliciesPage extends AbstractPlanPage {
 
-    private List<PolicyBean> policyBeans;
+    private List<PolicySummaryBean> policyBeans;
 
     @Inject @DataField
     Anchor toNewPolicy;
@@ -98,9 +98,9 @@ public class PlanPoliciesPage extends AbstractPlanPage {
         String orgId = org;
         String planId = plan;
         String planVersion = versionBean.getVersion();
-        rest.getPlanPolicies(orgId, planId, planVersion, new IRestInvokerCallback<List<PolicyBean>>() {
+        rest.getPlanPolicies(orgId, planId, planVersion, new IRestInvokerCallback<List<PolicySummaryBean>>() {
             @Override
-            public void onSuccess(List<PolicyBean> response) {
+            public void onSuccess(List<PolicySummaryBean> response) {
                 policyBeans = response;
                 dataPacketLoaded();
             }
@@ -122,6 +122,7 @@ public class PlanPoliciesPage extends AbstractPlanPage {
                 MultimapUtil.fromMultiple("org", this.planBean.getOrganization().getId(), "id", this.planBean.getId(),  //$NON-NLS-1$ //$NON-NLS-2$
                         "ver", this.versionBean.getVersion(), "type", PolicyType.Plan.toString())); //$NON-NLS-1$ //$NON-NLS-2$
         toNewPolicy.setHref(newPolicyHref);
+        policies.setEntityInfo(org, plan, versionBean.getVersion(), PolicyType.Plan);
         policies.setValue(policyBeans);
     }
 
@@ -129,8 +130,8 @@ public class PlanPoliciesPage extends AbstractPlanPage {
      * Called when the user chooses to remove a policy.
      * @param policy
      */
-    protected void doRemovePolicy(final PolicyBean policy) {
-        rest.removePolicy(policy.getType(), org, versionBean.getPlan().getId(), versionBean.getVersion(),
+    protected void doRemovePolicy(final PolicySummaryBean policy) {
+        rest.removePolicy(PolicyType.Plan, org, versionBean.getPlan().getId(), versionBean.getVersion(),
                 policy.getId(), new IRestInvokerCallback<Void>() {
             @Override
             public void onSuccess(Void response) {
@@ -150,14 +151,6 @@ public class PlanPoliciesPage extends AbstractPlanPage {
     protected void doReorderPolicies() {
         PolicyChainBean chain = new PolicyChainBean();
         chain.getPolicies().addAll(policies.getValue());
-        int weight = 0;
-        for (PolicyBean policyBean : chain.getPolicies()) {
-            policyBean.setOrderIndex(weight++);
-            // trim it down a bit (info not needed)
-            policyBean.setDefinition(null);
-            policyBean.setDescription(null);
-            policyBean.setConfiguration(null);
-        }
         rest.reorderPlanPolicies(org, versionBean.getPlan().getId(), versionBean.getVersion(), chain, new IRestInvokerCallback<Void>() {
             @Override
             public void onSuccess(Void response) {

@@ -22,10 +22,11 @@ import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaFilterBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.beans.services.ServiceBean;
-import io.apiman.manager.api.beans.services.ServiceVersionBean;
 import io.apiman.manager.api.beans.summary.ApplicationSummaryBean;
+import io.apiman.manager.api.beans.summary.ApplicationVersionSummaryBean;
 import io.apiman.manager.api.beans.summary.ServicePlanSummaryBean;
 import io.apiman.manager.api.beans.summary.ServiceSummaryBean;
+import io.apiman.manager.api.beans.summary.ServiceVersionSummaryBean;
 import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.pages.common.VersionSelectBox;
 import io.apiman.manager.ui.client.local.pages.contract.ApplicationSelectBox;
@@ -182,16 +183,16 @@ public class NewContractPage extends AbstractPage {
         
         ApplicationSummaryBean app = applicationSelector.getValue();
         if (app != null) {
-            rest.getApplicationVersions(app.getOrganizationId(), app.getId(), new IRestInvokerCallback<List<ApplicationVersionBean>>() {
+            rest.getApplicationVersions(app.getOrganizationId(), app.getId(), new IRestInvokerCallback<List<ApplicationVersionSummaryBean>>() {
                 @Override
-                public void onSuccess(List<ApplicationVersionBean> response) {
+                public void onSuccess(List<ApplicationVersionSummaryBean> response) {
                     List<String> versions = new ArrayList<String>(response.size());
                     String contextVersion = null;
-                    for (ApplicationVersionBean avb : response) {
+                    for (ApplicationVersionSummaryBean avb : response) {
                         String avbVersion = avb.getVersion();
                         versions.add(avbVersion);
-                        if (avb.getApplication().getOrganization().getId().equals(apporg)
-                                && avb.getApplication().getOrganization().getId().equals(apporg)
+                        if (avb.getOrganizationId().equals(apporg)
+                                && avb.getOrganizationId().equals(apporg)
                                 && avbVersion.equals(appv)) {
                             contextVersion = avbVersion;
                         }
@@ -228,15 +229,15 @@ public class NewContractPage extends AbstractPage {
         hideRows(SERVICE_VERSION_ROW, PLAN_ROW);
         showRow(SPINNER_ROW);
         ServiceSummaryBean service = services.getValue();
-        rest.getServiceVersions(service.getOrganizationId(), service.getId(), new IRestInvokerCallback<List<ServiceVersionBean>>() {
+        rest.getServiceVersions(service.getOrganizationId(), service.getId(), new IRestInvokerCallback<List<ServiceVersionSummaryBean>>() {
             @Override
-            public void onSuccess(List<ServiceVersionBean> response) {
+            public void onSuccess(List<ServiceVersionSummaryBean> response) {
                 List<String> versions = new ArrayList<String>(response.size());
                 String initialContextServiceVersion = null;
-                for (ServiceVersionBean svb : response) {
-                    String svbVersion = svb.getVersion();
+                for (ServiceVersionSummaryBean svsb : response) {
+                    String svbVersion = svsb.getVersion();
                     versions.add(svbVersion);
-                    if (svb.getService().getOrganization().getId().equals(svcorg) && svb.getService().getId().equals(svc) && svbVersion.equals(svcv)) {
+                    if (svsb.getOrganizationId().equals(svcorg) && svsb.getId().equals(svc) && svbVersion.equals(svcv)) {
                         initialContextServiceVersion = svbVersion;
                     }
                 }

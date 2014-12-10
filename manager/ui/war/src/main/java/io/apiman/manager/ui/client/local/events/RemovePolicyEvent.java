@@ -16,7 +16,7 @@
 
 package io.apiman.manager.ui.client.local.events;
 
-import io.apiman.manager.api.beans.policies.PolicyBean;
+import io.apiman.manager.api.beans.summary.PolicySummaryBean;
 
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
@@ -64,7 +64,7 @@ public class RemovePolicyEvent extends GwtEvent<RemovePolicyEvent.Handler> {
      * @param source
      * @param policy
      */
-    public static RemovePolicyEvent fire(HasHandlers source, PolicyBean policy) {
+    public static RemovePolicyEvent fire(HasHandlers source, PolicySummaryBean policy) {
         RemovePolicyEvent event = new RemovePolicyEvent(policy);
         if (TYPE != null)
             source.fireEvent(event);
@@ -83,13 +83,13 @@ public class RemovePolicyEvent extends GwtEvent<RemovePolicyEvent.Handler> {
         return TYPE;
     }
 
-    private PolicyBean policy;
+    private PolicySummaryBean policy;
 
     /**
      * Constructor.
      * @param policy
      */
-    public RemovePolicyEvent(PolicyBean policy) {
+    public RemovePolicyEvent(PolicySummaryBean policy) {
         this.setPolicy(policy);
     }
 
@@ -112,14 +112,14 @@ public class RemovePolicyEvent extends GwtEvent<RemovePolicyEvent.Handler> {
     /**
      * @return the policy
      */
-    public PolicyBean getPolicy() {
+    public PolicySummaryBean getPolicy() {
         return policy;
     }
 
     /**
      * @param policy the policy to set
      */
-    public void setPolicy(PolicyBean policy) {
+    public void setPolicy(PolicySummaryBean policy) {
         this.policy = policy;
     }
 }

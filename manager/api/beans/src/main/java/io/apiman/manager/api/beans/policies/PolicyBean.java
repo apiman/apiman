@@ -20,6 +20,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -49,6 +51,7 @@ public class PolicyBean implements Serializable {
     @Id @GeneratedValue
     private Long id;
     @Column(updatable=false, nullable=false)
+    @Enumerated(EnumType.STRING)
     private PolicyType type;
     @Column(updatable=false, nullable=false)
     private String organizationId;

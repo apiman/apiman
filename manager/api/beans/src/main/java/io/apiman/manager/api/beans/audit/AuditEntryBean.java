@@ -20,6 +20,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Lob;
@@ -55,6 +57,7 @@ public class AuditEntryBean implements Serializable {
     @Column(updatable=false, nullable=false)
     private String organizationId;
     @Column(updatable=false, nullable=false)
+    @Enumerated(EnumType.STRING)
     private AuditEntityType entityType;
     @Column(updatable=false)
     private String entityId;
@@ -63,6 +66,7 @@ public class AuditEntryBean implements Serializable {
     @Column(updatable=false, nullable=false)
     private Date when;
     @Column(updatable=false, nullable=false)
+    @Enumerated(EnumType.STRING)
     private AuditEntryType what;
     @Lob
     @Column(updatable=false, nullable=true)

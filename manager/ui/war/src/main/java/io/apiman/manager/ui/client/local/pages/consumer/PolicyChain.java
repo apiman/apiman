@@ -15,7 +15,7 @@
  */
 package io.apiman.manager.ui.client.local.pages.consumer;
 
-import io.apiman.manager.api.beans.policies.PolicyBean;
+import io.apiman.manager.api.beans.summary.PolicySummaryBean;
 import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.pages.common.NoEntitiesWidget;
 
@@ -40,12 +40,12 @@ import com.google.gwt.user.client.ui.Widget;
  * @author eric.wittmann@redhat.com
  */
 @Dependent
-public class PolicyChain extends FlowPanel implements TakesValue<List<PolicyBean>> {
+public class PolicyChain extends FlowPanel implements TakesValue<List<PolicySummaryBean>> {
 
     @Inject
     protected TranslationService i18n;
 
-    private List<PolicyBean> policies;
+    private List<PolicySummaryBean> policies;
     
     /**
      * Constructor.
@@ -58,7 +58,7 @@ public class PolicyChain extends FlowPanel implements TakesValue<List<PolicyBean
      * @see com.google.gwt.user.client.TakesValue#getValue()
      */
     @Override
-    public List<PolicyBean> getValue() {
+    public List<PolicySummaryBean> getValue() {
         return policies;
     }
 
@@ -66,7 +66,7 @@ public class PolicyChain extends FlowPanel implements TakesValue<List<PolicyBean
      * @see com.google.gwt.user.client.TakesValue#setValue(java.lang.Object)
      */
     @Override
-    public void setValue(List<PolicyBean> value) {
+    public void setValue(List<PolicySummaryBean> value) {
         policies = value;
         clear();
         refresh();
@@ -77,7 +77,7 @@ public class PolicyChain extends FlowPanel implements TakesValue<List<PolicyBean
      */
     public void refresh() {
         if (policies != null && !policies.isEmpty()) {
-            for (PolicyBean bean : policies) {
+            for (PolicySummaryBean bean : policies) {
                 Widget row = createPolicyRow(bean);
                 add(row);
             }
@@ -97,7 +97,7 @@ public class PolicyChain extends FlowPanel implements TakesValue<List<PolicyBean
      * Creates a single policy row.
      * @param bean
      */
-    private Widget createPolicyRow(PolicyBean bean) {
+    private Widget createPolicyRow(PolicySummaryBean bean) {
         FlowPanel container = new FlowPanel();
         container.getElement().setClassName("container-fluid"); //$NON-NLS-1$
         container.getElement().addClassName("apiman-summaryrow"); //$NON-NLS-1$
@@ -119,13 +119,13 @@ public class PolicyChain extends FlowPanel implements TakesValue<List<PolicyBean
      * @param bean
      * @param row
      */
-    protected void createIconColumn(PolicyBean bean, FlowPanel row) {
+    protected void createIconColumn(PolicySummaryBean bean, FlowPanel row) {
         FlowPanel col = new FlowPanel();
         row.add(col);
         col.setStyleName("col-md-1"); //$NON-NLS-1$
         col.addStyleName("col-no-padding"); //$NON-NLS-1$
         
-        FontAwesomeIcon icon = new FontAwesomeIcon(bean.getDefinition().getIcon(), true);
+        FontAwesomeIcon icon = new FontAwesomeIcon(bean.getIcon(), true);
         icon.getElement().addClassName("apiman-policy-icon"); //$NON-NLS-1$
         col.add(icon);
     }
@@ -135,7 +135,7 @@ public class PolicyChain extends FlowPanel implements TakesValue<List<PolicyBean
      * @param bean
      * @param row
      */
-    protected void createSummaryColumn(final PolicyBean bean, FlowPanel row) {
+    protected void createSummaryColumn(final PolicySummaryBean bean, FlowPanel row) {
         FlowPanel col = new FlowPanel();
         row.add(col);
         col.setStyleName("col-md-11"); //$NON-NLS-1$

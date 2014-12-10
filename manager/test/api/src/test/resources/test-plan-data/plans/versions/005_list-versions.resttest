@@ -5,31 +5,19 @@ Content-Type: application/json
 
 [
   {
-    "plan" : {
-      "organization" : {
-        "id" : "Organization1"
-      },
-      "id":"Plan1",
-      "name":"Plan 1",
-      "description":"[UPDATED] This is the description of Plan 1!",
-      "createdBy":"admin"
-    },
-    "status":"Created",
-    "version":"2.0",
-    "createdBy":"admin"
+    "organizationId" : "Organization1",
+    "organizationName" : "Organization 1",
+    "id" : "Plan1",
+    "name" : "Plan 1",
+    "status" : "Created",
+    "version" : "2.0"
   },
   {
-    "plan" : {
-      "organization" : {
-        "id" : "Organization1"
-      },
-      "id":"Plan1",
-      "name":"Plan 1",
-      "description":"[UPDATED] This is the description of Plan 1!",
-      "createdBy":"admin"
-    },
-    "status":"Created",
-    "version":"1.0",
-    "createdBy":"admin"
+    "organizationId" : "Organization1",
+    "organizationName" : "Organization 1",
+    "id" : "Plan1",
+    "name" : "Plan 1",
+    "status" : "Created",
+    "version" : "1.0"
   }
 ]

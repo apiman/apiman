@@ -18,7 +18,7 @@ package io.apiman.manager.api.rest.impl;
 
 import io.apiman.manager.api.beans.BeanUtils;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
-import io.apiman.manager.api.beans.search.SearchResultsBean;
+import io.apiman.manager.api.beans.summary.GatewaySummaryBean;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.AlreadyExistsException;
@@ -60,11 +60,9 @@ public class GatewayResourceImpl implements IGatewayResource {
      * @see io.apiman.manager.api.rest.contract.IGatewayResource#list()
      */
     @Override
-    public List<GatewayBean> list() throws NotAuthorizedException {
+    public List<GatewaySummaryBean> list() throws NotAuthorizedException {
         try {
-            SearchResultsBean<GatewayBean> resultsBean = query.listGateways();
-            List<GatewayBean> beans = resultsBean.getBeans();
-            return beans;
+            return query.listGateways();
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }

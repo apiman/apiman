@@ -15,7 +15,7 @@
  */
 package io.apiman.manager.ui.client.local.pages.service;
 
-import io.apiman.manager.api.beans.gateways.GatewayBean;
+import io.apiman.manager.api.beans.summary.GatewaySummaryBean;
 import io.apiman.manager.ui.client.local.pages.common.SelectBox;
 
 import java.util.List;
@@ -25,7 +25,7 @@ import java.util.List;
  *
  * @author eric.wittmann@redhat.com
  */
-public class GatewaySelectBox extends SelectBox<GatewayBean> {
+public class GatewaySelectBox extends SelectBox<GatewaySummaryBean> {
     
     /**
      * Constructor.
@@ -37,7 +37,7 @@ public class GatewaySelectBox extends SelectBox<GatewayBean> {
      * @see io.apiman.manager.ui.client.local.pages.common.SelectBox#optionName(java.lang.Object)
      */
     @Override
-    protected String optionName(GatewayBean option) {
+    protected String optionName(GatewaySummaryBean option) {
         return option.getName();
     }
 
@@ -45,7 +45,7 @@ public class GatewaySelectBox extends SelectBox<GatewayBean> {
      * @see io.apiman.manager.ui.client.local.pages.common.SelectBox#optionValue(java.lang.Object)
      */
     @Override
-    protected String optionValue(GatewayBean option) {
+    protected String optionValue(GatewaySummaryBean option) {
         return option.getId();
     }
 
@@ -53,8 +53,8 @@ public class GatewaySelectBox extends SelectBox<GatewayBean> {
      * @param gatewayId
      */
     public void selectGatewayById(String gatewayId) {
-        List<GatewayBean> theOptions = getOptions();
-        for (GatewayBean gatewayBean : theOptions) {
+        List<GatewaySummaryBean> theOptions = getOptions();
+        for (GatewaySummaryBean gatewayBean : theOptions) {
             if (gatewayBean.getId().equals(gatewayId)) {
                 setValue(gatewayBean);
                 return;

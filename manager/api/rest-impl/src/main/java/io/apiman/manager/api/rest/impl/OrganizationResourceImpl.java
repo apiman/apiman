@@ -52,10 +52,15 @@ import io.apiman.manager.api.beans.services.ServiceStatus;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
 import io.apiman.manager.api.beans.summary.ApiRegistryBean;
 import io.apiman.manager.api.beans.summary.ApplicationSummaryBean;
+import io.apiman.manager.api.beans.summary.ApplicationVersionSummaryBean;
 import io.apiman.manager.api.beans.summary.ContractSummaryBean;
+import io.apiman.manager.api.beans.summary.GatewaySummaryBean;
 import io.apiman.manager.api.beans.summary.PlanSummaryBean;
+import io.apiman.manager.api.beans.summary.PlanVersionSummaryBean;
+import io.apiman.manager.api.beans.summary.PolicySummaryBean;
 import io.apiman.manager.api.beans.summary.ServicePlanSummaryBean;
 import io.apiman.manager.api.beans.summary.ServiceSummaryBean;
+import io.apiman.manager.api.beans.summary.ServiceVersionSummaryBean;
 import io.apiman.manager.api.core.IApiKeyGenerator;
 import io.apiman.manager.api.core.IApplicationValidator;
 import io.apiman.manager.api.core.IIdmStorage;
@@ -288,7 +293,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#get(java.lang.String, java.lang.String)
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getApp(java.lang.String, java.lang.String)
      */
     @Override
     public ApplicationBean getApp(String organizationId, String applicationId)
@@ -336,7 +341,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#list(java.lang.String)
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#listApps(java.lang.String)
      */
     @Override
     public List<ApplicationSummaryBean> listApps(String organizationId) throws OrganizationNotFoundException,
@@ -354,7 +359,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#update(java.lang.String, java.lang.String, io.apiman.manager.api.beans.apps.ApplicationBean)
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#updateApp(java.lang.String, java.lang.String, io.apiman.manager.api.beans.apps.ApplicationBean)
      */
     @Override
     public void updateApp(String organizationId, String applicationId, ApplicationBean bean)
@@ -382,7 +387,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#createVersion(java.lang.String, java.lang.String, io.apiman.manager.api.beans.apps.ApplicationVersionBean)
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#createAppVersion(java.lang.String, java.lang.String, io.apiman.manager.api.beans.apps.ApplicationVersionBean)
      */
     @Override
     public ApplicationVersionBean createAppVersion(String organizationId, String applicationId, ApplicationVersionBean bean)
@@ -421,7 +426,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getVersion(java.lang.String, java.lang.String, java.lang.String)
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getAppVersion(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
     public ApplicationVersionBean getAppVersion(String organizationId, String applicationId, String version)
@@ -475,7 +480,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#updateVersion(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.apps.ApplicationVersionBean)
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#updateAppVersion(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.apps.ApplicationVersionBean)
      */
     @Override
     public void updateAppVersion(String organizationId, String applicationId, String version, ApplicationVersionBean bean)
@@ -518,10 +523,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#listVersions(java.lang.String, java.lang.String)
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#listAppVersions(java.lang.String, java.lang.String)
      */
     @Override
-    public List<ApplicationVersionBean> listAppVersions(String organizationId, String applicationId)
+    public List<ApplicationVersionSummaryBean> listAppVersions(String organizationId, String applicationId)
             throws ApplicationNotFoundException, NotAuthorizedException {
         if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
             throw ExceptionFactory.notAuthorizedException();
@@ -701,7 +706,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#createPolicy(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.policies.PolicyBean)
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#createAppPolicy(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.policies.PolicyBean)
      */
     @Override
     public PolicyBean createAppPolicy(String organizationId, String applicationId, String version,
@@ -717,7 +722,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getPolicy(java.lang.String, java.lang.String, java.lang.String, long)
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getAppPolicy(java.lang.String, java.lang.String, java.lang.String, long)
      */
     @Override
     public PolicyBean getAppPolicy(String organizationId, String applicationId, String version, long policyId)
@@ -733,7 +738,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#updatePolicy(java.lang.String, java.lang.String, java.lang.String, long, io.apiman.manager.api.beans.policies.PolicyBean)
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#updateAppPolicy(java.lang.String, java.lang.String, java.lang.String, long, io.apiman.manager.api.beans.policies.PolicyBean)
      */
     @Override
     public void updateAppPolicy(String organizationId, String applicationId, String version,
@@ -767,7 +772,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#deletePolicy(java.lang.String, java.lang.String, java.lang.String, long)
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#deleteAppPolicy(java.lang.String, java.lang.String, java.lang.String, long)
      */
     @Override
     public void deleteAppPolicy(String organizationId, String applicationId, String version, long policyId)
@@ -795,10 +800,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#listPolicies(java.lang.String, java.lang.String, java.lang.String)
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#listAppPolicies(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
-    public List<PolicyBean> listAppPolicies(String organizationId, String applicationId, String version)
+    public List<PolicySummaryBean> listAppPolicies(String organizationId, String applicationId, String version)
             throws OrganizationNotFoundException, ApplicationVersionNotFoundException, NotAuthorizedException {
         if (!securityContext.hasPermission(PermissionType.appView, organizationId))
             throw ExceptionFactory.notAuthorizedException();
@@ -828,10 +833,11 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
         try {
             storage.beginTx();
-            List<PolicyBean> policies = policyChain.getPolicies();
-            for (PolicyBean incomingPolicy : policies) {
+            List<PolicySummaryBean> policies = policyChain.getPolicies();
+            int orderIndex = 0;
+            for (PolicySummaryBean incomingPolicy : policies) {
                 PolicyBean storedPolicy = this.storage.getPolicy(incomingPolicy.getId());
-                storedPolicy.setOrderIndex(incomingPolicy.getOrderIndex());
+                storedPolicy.setOrderIndex(orderIndex++);
                 storage.updatePolicy(storedPolicy);
             }
             storage.createAuditEntry(AuditUtils.policiesReordered(avb, PolicyType.Application, securityContext));
@@ -843,7 +849,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#create(java.lang.String, io.apiman.manager.api.beans.services.ServiceBean)
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#createService(java.lang.String, io.apiman.manager.api.beans.services.ServiceBean)
      */
     @Override
     public ServiceBean createService(String organizationId, ServiceBean bean)
@@ -879,7 +885,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#get(java.lang.String, java.lang.String)
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getService(java.lang.String, java.lang.String)
      */
     @Override
     public ServiceBean getService(String organizationId, String serviceId)
@@ -927,7 +933,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#list(java.lang.String)
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#listServices(java.lang.String)
      */
     @Override
     public List<ServiceSummaryBean> listServices(String organizationId) throws OrganizationNotFoundException,
@@ -946,7 +952,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#update(java.lang.String, java.lang.String, io.apiman.manager.api.beans.services.ServiceBean)
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#updateService(java.lang.String, java.lang.String, io.apiman.manager.api.beans.services.ServiceBean)
      */
     @Override
     public void updateService(String organizationId, String serviceId, ServiceBean bean)
@@ -974,7 +980,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#createVersion(java.lang.String, java.lang.String, io.apiman.manager.api.beans.services.ServiceVersionBean)
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#createServiceVersion(java.lang.String, java.lang.String, io.apiman.manager.api.beans.services.ServiceVersionBean)
      */
     @Override
     public ServiceVersionBean createServiceVersion(String organizationId, String serviceId, ServiceVersionBean bean)
@@ -982,7 +988,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (!securityContext.hasPermission(PermissionType.svcEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
         try {
-            GatewayBean gateway = getSingularGateway();
+            GatewaySummaryBean gateway = getSingularGateway();
 
             storage.beginTx();
             ServiceBean service = storage.getService(organizationId, serviceId);
@@ -1031,9 +1037,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw new SystemErrorException(e);
         }
     }
-    
+
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getVersion(java.lang.String, java.lang.String, java.lang.String)
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getServiceVersion(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
     public ServiceVersionBean getServiceVersion(String organizationId, String serviceId, String version)
@@ -1088,7 +1094,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#updateVersion(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.services.ServiceVersionBean)
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#updateServiceVersion(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.services.ServiceVersionBean)
      */
     @Override
     public void updateServiceVersion(String organizationId, String serviceId, String version, ServiceVersionBean bean)
@@ -1155,10 +1161,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#listVersions(java.lang.String, java.lang.String)
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#listServiceVersions(java.lang.String, java.lang.String)
      */
     @Override
-    public List<ServiceVersionBean> listServiceVersions(String organizationId, String serviceId)
+    public List<ServiceVersionSummaryBean> listServiceVersions(String organizationId, String serviceId)
             throws ServiceNotFoundException, NotAuthorizedException {
         if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
             throw ExceptionFactory.notAuthorizedException();
@@ -1176,7 +1182,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getVersionPlans(java.lang.String, java.lang.String, java.lang.String)
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getServiceVersionPlans(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
     public List<ServicePlanSummaryBean> getServiceVersionPlans(String organizationId, String serviceId,
@@ -1197,7 +1203,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#createPolicy(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.policies.PolicyBean)
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#createServicePolicy(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.policies.PolicyBean)
      */
     @Override
     public PolicyBean createServicePolicy(String organizationId, String serviceId, String version,
@@ -1213,7 +1219,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getPolicy(java.lang.String, java.lang.String, java.lang.String, long)
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getServicePolicy(java.lang.String, java.lang.String, java.lang.String, long)
      */
     @Override
     public PolicyBean getServicePolicy(String organizationId, String serviceId, String version, long policyId)
@@ -1229,7 +1235,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#updatePolicy(java.lang.String, java.lang.String, java.lang.String, long, io.apiman.manager.api.beans.policies.PolicyBean)
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#updateServicePolicy(java.lang.String, java.lang.String, java.lang.String, long, io.apiman.manager.api.beans.policies.PolicyBean)
      */
     @Override
     public void updateServicePolicy(String organizationId, String serviceId, String version,
@@ -1263,7 +1269,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#deletePolicy(java.lang.String, java.lang.String, java.lang.String, long)
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#deleteServicePolicy(java.lang.String, java.lang.String, java.lang.String, long)
      */
     @Override
     public void deleteServicePolicy(String organizationId, String serviceId, String version, long policyId)
@@ -1291,10 +1297,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#listPolicies(java.lang.String, java.lang.String, java.lang.String)
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#listServicePolicies(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
-    public List<PolicyBean> listServicePolicies(String organizationId, String serviceId, String version)
+    public List<PolicySummaryBean> listServicePolicies(String organizationId, String serviceId, String version)
             throws OrganizationNotFoundException, ServiceVersionNotFoundException, NotAuthorizedException {
         if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
             throw ExceptionFactory.notAuthorizedException();
@@ -1324,10 +1330,11 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
         try {
             storage.beginTx();
-            List<PolicyBean> policies = policyChain.getPolicies();
-            for (PolicyBean incomingPolicy : policies) {
+            List<PolicySummaryBean> policies = policyChain.getPolicies();
+            int orderIndex = 0;
+            for (PolicySummaryBean incomingPolicy : policies) {
                 PolicyBean storedPolicy = this.storage.getPolicy(incomingPolicy.getId());
-                storedPolicy.setOrderIndex(incomingPolicy.getOrderIndex());
+                storedPolicy.setOrderIndex(orderIndex++);
                 storage.updatePolicy(storedPolicy);
             }
             storage.createAuditEntry(AuditUtils.policiesReordered(svb, PolicyType.Service, securityContext));
@@ -1339,7 +1346,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getPolicyChain(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getServicePolicyChain(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
     public PolicyChainBean getServicePolicyChain(String organizationId, String serviceId, String version,
@@ -1364,8 +1371,8 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             if (planVersion == null) {
                 throw ExceptionFactory.planNotFoundException(planId);
             }
-            List<PolicyBean> servicePolicies = query.getPolicies(organizationId, serviceId, version, PolicyType.Service);
-            List<PolicyBean> planPolicies = query.getPolicies(organizationId, planId, planVersion, PolicyType.Plan);
+            List<PolicySummaryBean> servicePolicies = query.getPolicies(organizationId, serviceId, version, PolicyType.Service);
+            List<PolicySummaryBean> planPolicies = query.getPolicies(organizationId, planId, planVersion, PolicyType.Plan);
             
             PolicyChainBean chain = new PolicyChainBean();
             chain.getPolicies().addAll(planPolicies);
@@ -1404,7 +1411,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#create(java.lang.String, io.apiman.manager.api.beans.apps.PlanBean)
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#createPlan(java.lang.String, io.apiman.manager.api.beans.plans.PlanBean)
      */
     @Override
     public PlanBean createPlan(String organizationId, PlanBean bean)
@@ -1440,7 +1447,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#get(java.lang.String, java.lang.String)
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getPlan(java.lang.String, java.lang.String)
      */
     @Override
     public PlanBean getPlan(String organizationId, String planId)
@@ -1488,7 +1495,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#list(java.lang.String)
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#listPlans(java.lang.String)
      */
     @Override
     public List<PlanSummaryBean> listPlans(String organizationId) throws OrganizationNotFoundException,
@@ -1506,7 +1513,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#update(java.lang.String, java.lang.String, io.apiman.manager.api.beans.apps.PlanBean)
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#updatePlan(java.lang.String, java.lang.String, io.apiman.manager.api.beans.plans.PlanBean)
      */
     @Override
     public void updatePlan(String organizationId, String planId, PlanBean bean)
@@ -1535,7 +1542,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#createVersion(java.lang.String, java.lang.String, io.apiman.manager.api.beans.apps.PlanVersionBean)
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#createPlanVersion(java.lang.String, java.lang.String, io.apiman.manager.api.beans.plans.PlanVersionBean)
      */
     @Override
     public PlanVersionBean createPlanVersion(String organizationId, String planId, PlanVersionBean bean)
@@ -1568,7 +1575,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getVersion(java.lang.String, java.lang.String, java.lang.String)
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getPlanVersion(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
     public PlanVersionBean getPlanVersion(String organizationId, String planId, String version)
@@ -1621,9 +1628,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw new SystemErrorException(e);
         }
     }
-    
+
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#updateVersion(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.apps.PlanVersionBean)
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#updatePlanVersion(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.plans.PlanVersionBean)
      */
     @Override
     public void updatePlanVersion(String organizationId, String planId, String version, PlanVersionBean bean)
@@ -1648,10 +1655,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#listVersions(java.lang.String, java.lang.String)
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#listPlanVersions(java.lang.String, java.lang.String)
      */
     @Override
-    public List<PlanVersionBean> listPlanVersions(String organizationId, String planId)
+    public List<PlanVersionSummaryBean> listPlanVersions(String organizationId, String planId)
             throws PlanNotFoundException, NotAuthorizedException {
         if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
             throw ExceptionFactory.notAuthorizedException();
@@ -1669,7 +1676,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#createPolicy(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.policies.PolicyBean)
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#createPlanPolicy(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.policies.PolicyBean)
      */
     @Override
     public PolicyBean createPlanPolicy(String organizationId, String planId, String version,
@@ -1685,7 +1692,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getPolicy(java.lang.String, java.lang.String, java.lang.String, long)
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getPlanPolicy(java.lang.String, java.lang.String, java.lang.String, long)
      */
     @Override
     public PolicyBean getPlanPolicy(String organizationId, String planId, String version, long policyId)
@@ -1701,7 +1708,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#updatePolicy(java.lang.String, java.lang.String, java.lang.String, long, io.apiman.manager.api.beans.policies.PolicyBean)
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#updatePlanPolicy(java.lang.String, java.lang.String, java.lang.String, long, io.apiman.manager.api.beans.policies.PolicyBean)
      */
     @Override
     public void updatePlanPolicy(String organizationId, String planId, String version,
@@ -1735,7 +1742,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#deletePolicy(java.lang.String, java.lang.String, java.lang.String, long)
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#deletePlanPolicy(java.lang.String, java.lang.String, java.lang.String, long)
      */
     @Override
     public void deletePlanPolicy(String organizationId, String planId, String version, long policyId)
@@ -1763,10 +1770,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#listPolicies(java.lang.String, java.lang.String, java.lang.String)
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#listPlanPolicies(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
-    public List<PolicyBean> listPlanPolicies(String organizationId, String planId, String version)
+    public List<PolicySummaryBean> listPlanPolicies(String organizationId, String planId, String version)
             throws OrganizationNotFoundException, PlanVersionNotFoundException, NotAuthorizedException {
         if (!securityContext.hasPermission(PermissionType.appView, organizationId))
             throw ExceptionFactory.notAuthorizedException();
@@ -1796,10 +1803,11 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
         try {
             storage.beginTx();
-            List<PolicyBean> policies = policyChain.getPolicies();
-            for (PolicyBean incomingPolicy : policies) {
+            List<PolicySummaryBean> policies = policyChain.getPolicies();
+            int orderIndex = 0;
+            for (PolicySummaryBean incomingPolicy : policies) {
                 PolicyBean storedPolicy = this.storage.getPolicy(incomingPolicy.getId());
-                storedPolicy.setOrderIndex(incomingPolicy.getOrderIndex());
+                storedPolicy.setOrderIndex(orderIndex++);
                 storage.updatePolicy(storedPolicy);
             }
             storage.createAuditEntry(AuditUtils.policiesReordered(pvb, PolicyType.Plan, securityContext));
@@ -1840,22 +1848,15 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.rollbackTx();
             throw new SystemErrorException(e);
         }
-        
-        try {
-            SearchCriteriaBean criteria = new SearchCriteriaBean();
-            criteria.addFilter("organizationId", organizationId, SearchCriteriaFilterBean.OPERATOR_EQ); //$NON-NLS-1$
-            criteria.addFilter("entityId", entityId, SearchCriteriaFilterBean.OPERATOR_EQ); //$NON-NLS-1$
-            criteria.addFilter("entityVersion", entityVersion, SearchCriteriaFilterBean.OPERATOR_EQ); //$NON-NLS-1$
-            criteria.addFilter("type", type.name(), SearchCriteriaFilterBean.OPERATOR_EQ); //$NON-NLS-1$
-            criteria.setOrder("orderIndex", false); //$NON-NLS-1$
-            criteria.setPage(1);
-            criteria.setPageSize(1);
-            SearchResultsBean<PolicyBean> resultsBean = query.find(criteria, PolicyBean.class);
-            int newIdx = 0;
-            if (!resultsBean.getBeans().isEmpty()) {
-                newIdx = resultsBean.getBeans().get(0).getOrderIndex() + 1;
-            }
 
+        int newIdx = 0;
+        try {
+            newIdx = query.getMaxPolicyOrderIndex(organizationId, entityId, entityVersion, type) + 1;
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+
+        try {
             bean.setId(null);
             bean.setName(def.getName());
             bean.setCreatedBy(securityContext.getCurrentUser());
@@ -1871,8 +1872,8 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.beginTx();
             storage.createPolicy(bean);
             storage.createAuditEntry(AuditUtils.policyAdded(bean, type, securityContext));
-            storage.commitTx();
             PolicyTemplateUtil.generatePolicyDescription(bean);
+            storage.commitTx();
             return bean;
         } catch (Exception e) {
             storage.rollbackTx();
@@ -2077,10 +2078,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
      * @return a {@link GatewayBean} iff there is a single configured gateway in the system
      * @throws StorageException 
      */
-    private GatewayBean getSingularGateway() throws StorageException {
-        SearchResultsBean<GatewayBean> gateways = query.listGateways();
-        if (gateways.getBeans().size() == 1) {
-            return gateways.getBeans().get(0);
+    private GatewaySummaryBean getSingularGateway() throws StorageException {
+        List<GatewaySummaryBean> gateways = query.listGateways();
+        if (gateways != null && gateways.size() == 1) {
+            return gateways.get(0);
         } else {
             return null;
         }

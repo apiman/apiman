@@ -3,33 +3,23 @@ GET /organizations/Organization1/services/Service1/versions admin/admin
 200
 Content-Type: application/json
 
-[
+[ 
   {
-    "service" : {
-      "organization" : {
-        "id" : "Organization1"
-      },
-      "id":"Service1",
-      "name":"Service 1",
-      "description":"[UPDATED] This is the description of Service 1!",
-      "createdBy":"admin"
-    },
-    "status":"Created",
-    "version":"2.0",
-    "createdBy":"admin"
+    "organizationId" : "Organization1",
+    "organizationName" : "Organization 1",
+    "id" : "Service1",
+    "name" : "Service 1",
+    "description" : "[UPDATED] This is the description of Service 1!",
+    "status" : "Created",
+    "version" : "2.0"
   },
   {
-    "service" : {
-      "organization" : {
-        "id" : "Organization1"
-      },
-      "id":"Service1",
-      "name":"Service 1",
-      "description":"[UPDATED] This is the description of Service 1!",
-      "createdBy":"admin"
-    },
-    "status":"Created",
-    "version":"1.0",
-    "createdBy":"admin"
+    "organizationId" : "Organization1",
+    "organizationName" : "Organization 1",
+    "id" : "Service1",
+    "name" : "Service 1",
+    "description" : "[UPDATED] This is the description of Service 1!",
+    "status" : "Created",
+    "version" : "1.0"
   }
 ]

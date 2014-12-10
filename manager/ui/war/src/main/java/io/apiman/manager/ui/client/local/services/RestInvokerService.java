@@ -39,11 +39,17 @@ import io.apiman.manager.api.beans.services.ServiceBean;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
 import io.apiman.manager.api.beans.summary.ApiRegistryBean;
 import io.apiman.manager.api.beans.summary.ApplicationSummaryBean;
+import io.apiman.manager.api.beans.summary.ApplicationVersionSummaryBean;
 import io.apiman.manager.api.beans.summary.ContractSummaryBean;
+import io.apiman.manager.api.beans.summary.GatewaySummaryBean;
 import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
 import io.apiman.manager.api.beans.summary.PlanSummaryBean;
+import io.apiman.manager.api.beans.summary.PlanVersionSummaryBean;
+import io.apiman.manager.api.beans.summary.PolicyDefinitionSummaryBean;
+import io.apiman.manager.api.beans.summary.PolicySummaryBean;
 import io.apiman.manager.api.beans.summary.ServicePlanSummaryBean;
 import io.apiman.manager.api.beans.summary.ServiceSummaryBean;
+import io.apiman.manager.api.beans.summary.ServiceVersionSummaryBean;
 import io.apiman.manager.api.rest.contract.IActionResource;
 import io.apiman.manager.api.rest.contract.ICurrentUserResource;
 import io.apiman.manager.api.rest.contract.IGatewayResource;
@@ -360,8 +366,8 @@ public class RestInvokerService {
      * @param callback
      */
     public void getApplicationVersions(String organizationId, String applicationId, 
-            IRestInvokerCallback<List<ApplicationVersionBean>> callback) {
-        CallbackAdapter<List<ApplicationVersionBean>> adapter = new CallbackAdapter<List<ApplicationVersionBean>>(callback);
+            IRestInvokerCallback<List<ApplicationVersionSummaryBean>> callback) {
+        CallbackAdapter<List<ApplicationVersionSummaryBean>> adapter = new CallbackAdapter<List<ApplicationVersionSummaryBean>>(callback);
         organizations.call(adapter, adapter).listAppVersions(organizationId, applicationId);
     }
 
@@ -412,8 +418,8 @@ public class RestInvokerService {
      * @param callback
      */
     public void getApplicationPolicies(String organizationId, String applicationId, String version, 
-            IRestInvokerCallback<List<PolicyBean>> callback) {
-        CallbackAdapter<List<PolicyBean>> adapter = new CallbackAdapter<List<PolicyBean>>(callback);
+            IRestInvokerCallback<List<PolicySummaryBean>> callback) {
+        CallbackAdapter<List<PolicySummaryBean>> adapter = new CallbackAdapter<List<PolicySummaryBean>>(callback);
         organizations.call(adapter, adapter).listAppPolicies(organizationId, applicationId, version);
     }
 
@@ -540,8 +546,8 @@ public class RestInvokerService {
      * @param callback
      */
     public void getServiceVersions(String organizationId, String serviceId,
-            IRestInvokerCallback<List<ServiceVersionBean>> callback) {
-        CallbackAdapter<List<ServiceVersionBean>> adapter = new CallbackAdapter<List<ServiceVersionBean>>(callback);
+            IRestInvokerCallback<List<ServiceVersionSummaryBean>> callback) {
+        CallbackAdapter<List<ServiceVersionSummaryBean>> adapter = new CallbackAdapter<List<ServiceVersionSummaryBean>>(callback);
         organizations.call(adapter, adapter).listServiceVersions(organizationId, serviceId);
     }
 
@@ -577,8 +583,8 @@ public class RestInvokerService {
      * @param callback
      */
     public void getServicePolicies(String organizationId, String serviceId, String version, 
-            IRestInvokerCallback<List<PolicyBean>> callback) {
-        CallbackAdapter<List<PolicyBean>> adapter = new CallbackAdapter<List<PolicyBean>>(callback);
+            IRestInvokerCallback<List<PolicySummaryBean>> callback) {
+        CallbackAdapter<List<PolicySummaryBean>> adapter = new CallbackAdapter<List<PolicySummaryBean>>(callback);
         organizations.call(adapter, adapter).listServicePolicies(organizationId, serviceId, version);
     }
 
@@ -721,14 +727,27 @@ public class RestInvokerService {
     }
 
     /**
+     * Gets a single version of a plan.
+     * @param organizationId
+     * @param planId
+     * @param version
+     * @param callback
+     */
+    public void getPlanVersion(String organizationId, String planId, String version,
+            IRestInvokerCallback<PlanVersionBean> callback) {
+        CallbackAdapter<PlanVersionBean> adapter = new CallbackAdapter<PlanVersionBean>(callback);
+        organizations.call(adapter, adapter).getPlanVersion(organizationId, planId, version);
+    }
+
+    /**
      * Gets all versions of the plan.
      * @param organizationId
      * @param planId
      * @param callback
      */
     public void getPlanVersions(String organizationId, String planId, 
-            IRestInvokerCallback<List<PlanVersionBean>> callback) {
-        CallbackAdapter<List<PlanVersionBean>> adapter = new CallbackAdapter<List<PlanVersionBean>>(callback);
+            IRestInvokerCallback<List<PlanVersionSummaryBean>> callback) {
+        CallbackAdapter<List<PlanVersionSummaryBean>> adapter = new CallbackAdapter<List<PlanVersionSummaryBean>>(callback);
         organizations.call(adapter, adapter).listPlanVersions(organizationId, planId);
     }
     
@@ -766,8 +785,8 @@ public class RestInvokerService {
      * @param callback
      */
     public void getPlanPolicies(String organizationId, String planId, String version, 
-            IRestInvokerCallback<List<PolicyBean>> callback) {
-        CallbackAdapter<List<PolicyBean>> adapter = new CallbackAdapter<List<PolicyBean>>(callback);
+            IRestInvokerCallback<List<PolicySummaryBean>> callback) {
+        CallbackAdapter<List<PolicySummaryBean>> adapter = new CallbackAdapter<List<PolicySummaryBean>>(callback);
         organizations.call(adapter, adapter).listPlanPolicies(organizationId, planId, version);
     }
 
@@ -922,8 +941,8 @@ public class RestInvokerService {
      * Gets a list of all the policy definitions in the system.
      * @param callback
      */
-    public void listPolicyDefinitions(IRestInvokerCallback<List<PolicyDefinitionBean>> callback) {
-        CallbackAdapter<List<PolicyDefinitionBean>> adapter = new CallbackAdapter<List<PolicyDefinitionBean>>(callback);
+    public void listPolicyDefinitions(IRestInvokerCallback<List<PolicyDefinitionSummaryBean>> callback) {
+        CallbackAdapter<List<PolicyDefinitionSummaryBean>> adapter = new CallbackAdapter<List<PolicyDefinitionSummaryBean>>(callback);
         policyDefs.call(adapter, adapter).list();
     }
     
@@ -941,8 +960,8 @@ public class RestInvokerService {
      * Gets a list of all the gateways in the system.
      * @param callback
      */
-    public void listGateways(IRestInvokerCallback<List<GatewayBean>> callback) {
-        CallbackAdapter<List<GatewayBean>> adapter = new CallbackAdapter<List<GatewayBean>>(callback);
+    public void listGateways(IRestInvokerCallback<List<GatewaySummaryBean>> callback) {
+        CallbackAdapter<List<GatewaySummaryBean>> adapter = new CallbackAdapter<List<GatewaySummaryBean>>(callback);
         gateways.call(adapter, adapter).list();
     }
     

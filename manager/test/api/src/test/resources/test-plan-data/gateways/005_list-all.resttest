@@ -8,24 +8,18 @@ Content-Type: application/json
       "id" : "GatewayOne",
       "name" : "Gateway One",
       "description" : "This is the first gateway.",
-      "httpEndpoint" : "http://localhost:6666/gateway/",
-      "type" : "REST",
-      "configuration" : "{}"
+      "type" : "REST"
     },
     {
       "id" : "GatewayThree",
       "name" : "Gateway Three",
       "description" : "This is the third gateway.",
-      "httpEndpoint" : "http://localhost:6666/gateway/",
-      "type" : "REST",
-      "configuration" : "{}"
+      "type" : "REST"
     },
     {
       "id" : "GatewayTwo",
       "name" : "Gateway Two",
       "description" : "This is the second gateway.",
-      "httpEndpoint" : "http://localhost:6666/gateway/",
-      "type" : "REST",
-      "configuration" : "{}"
+      "type" : "REST"
     }
 ]

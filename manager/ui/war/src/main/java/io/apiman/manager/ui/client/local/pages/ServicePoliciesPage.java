@@ -15,9 +15,9 @@
  */
 package io.apiman.manager.ui.client.local.pages;
 
-import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyChainBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
+import io.apiman.manager.api.beans.summary.PolicySummaryBean;
 import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.events.PoliciesReorderedEvent;
 import io.apiman.manager.ui.client.local.events.RemovePolicyEvent;
@@ -48,7 +48,7 @@ import com.google.gwt.user.client.ui.Anchor;
 @Dependent
 public class ServicePoliciesPage extends AbstractServicePage {
 
-    private List<PolicyBean> policyBeans;
+    private List<PolicySummaryBean> policyBeans;
 
     @Inject @DataField
     Anchor toNewPolicy;
@@ -98,9 +98,9 @@ public class ServicePoliciesPage extends AbstractServicePage {
         String orgId = org;
         String svcId = service;
         String svcVersion = versionBean.getVersion();
-        rest.getServicePolicies(orgId, svcId, svcVersion, new IRestInvokerCallback<List<PolicyBean>>() {
+        rest.getServicePolicies(orgId, svcId, svcVersion, new IRestInvokerCallback<List<PolicySummaryBean>>() {
             @Override
-            public void onSuccess(List<PolicyBean> response) {
+            public void onSuccess(List<PolicySummaryBean> response) {
                 policyBeans = response;
                 dataPacketLoaded();
             }
@@ -121,6 +121,7 @@ public class ServicePoliciesPage extends AbstractServicePage {
         String newPolicyHref = navHelper.createHrefToPage(NewPolicyPage.class,
                 MultimapUtil.fromMultiple("org", org, "id", service, "ver", this.versionBean.getVersion(), "type", PolicyType.Service.toString())); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         toNewPolicy.setHref(newPolicyHref);
+        policies.setEntityInfo(org, service, versionBean.getVersion(), PolicyType.Service);
         policies.setValue(policyBeans);
     }
 
@@ -128,8 +129,8 @@ public class ServicePoliciesPage extends AbstractServicePage {
      * Called when the user chooses to remove a policy.
      * @param policy
      */
-    protected void doRemovePolicy(final PolicyBean policy) {
-        rest.removePolicy(policy.getType(), org, versionBean.getService().getId(), versionBean.getVersion(),
+    protected void doRemovePolicy(final PolicySummaryBean policy) {
+        rest.removePolicy(PolicyType.Service, org, versionBean.getService().getId(), versionBean.getVersion(),
                 policy.getId(), new IRestInvokerCallback<Void>() {
             @Override
             public void onSuccess(Void response) {
@@ -149,14 +150,6 @@ public class ServicePoliciesPage extends AbstractServicePage {
     protected void doReorderPolicies() {
         PolicyChainBean chain = new PolicyChainBean();
         chain.getPolicies().addAll(policies.getValue());
-        int weight = 0;
-        for (PolicyBean policyBean : chain.getPolicies()) {
-            policyBean.setOrderIndex(weight++);
-            // trim it down a bit (info not needed)
-            policyBean.setDefinition(null);
-            policyBean.setDescription(null);
-            policyBean.setConfiguration(null);
-        }
         rest.reorderServicePolicies(org, versionBean.getService().getId(), versionBean.getVersion(), chain, new IRestInvokerCallback<Void>() {
             @Override
             public void onSuccess(Void response) {

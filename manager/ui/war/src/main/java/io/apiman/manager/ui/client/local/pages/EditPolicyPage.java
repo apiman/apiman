@@ -131,7 +131,7 @@ public class EditPolicyPage extends AbstractPage {
     @Override
     protected void renderPage() {
         super.renderPage();
-        policyForm = formFactory.createForm(policyBean.getDefinition());
+        policyForm = formFactory.createForm(policyBean.getDefinition().getId());
         policyForm.addIsFormValidHandler(new Handler() {
             @Override
             public void onIsFormValid(IsFormValidEvent event) {

@@ -15,10 +15,9 @@
  */
 package io.apiman.manager.ui.client.local.pages;
 
-import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.beans.services.ServiceBean;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
-import io.apiman.manager.api.rest.contract.exceptions.ServiceVersionNotFoundException;
+import io.apiman.manager.api.beans.summary.ServiceVersionSummaryBean;
 import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.pages.common.Breadcrumb;
 import io.apiman.manager.ui.client.local.pages.common.VersionSelector;
@@ -53,9 +52,8 @@ public abstract class AbstractServicePage extends AbstractPage {
     @PageState
     protected String version;
     
-    OrganizationBean organizationBean;
     ServiceBean serviceBean;
-    List<ServiceVersionBean> versionBeans;
+    List<ServiceVersionSummaryBean> versionBeans;
     ServiceVersionBean versionBean;
     
     @Inject @DataField
@@ -103,10 +101,14 @@ public abstract class AbstractServicePage extends AbstractPage {
     @Override
     protected int doLoadPageData() {
         int rval = super.doLoadPageData();
-        rest.getOrganization(org, new IRestInvokerCallback<OrganizationBean>() {
+        rest.getServiceVersions(org, service, new IRestInvokerCallback<List<ServiceVersionSummaryBean>>() {
             @Override
-            public void onSuccess(OrganizationBean response) {
-                organizationBean = response;
+            public void onSuccess(List<ServiceVersionSummaryBean> response) {
+                versionBeans = response;
+                // If no version is specified in the URL, use the most recent (first in the list)
+                if (version == null) {
+                    loadServiceVersion(response.get(0).getVersion());
+                }
                 dataPacketLoaded();
             }
             @Override
@@ -114,38 +116,29 @@ public abstract class AbstractServicePage extends AbstractPage {
                 dataPacketError(error);
             }
         });
-        rest.getServiceVersions(org, service, new IRestInvokerCallback<List<ServiceVersionBean>>() {
+        if (version != null) {
+            loadServiceVersion(version);
+        }
+        return rval + 2;
+    }
+
+    /**
+     * Loads the given version of the service.
+     */
+    protected void loadServiceVersion(String version) {
+        rest.getServiceVersion(org, service, version, new IRestInvokerCallback<ServiceVersionBean>() {
             @Override
-            public void onSuccess(List<ServiceVersionBean> response) {
-                versionBeans = response;
-                // If no version is specified in the URL, use the most recent (first in the list)
-                if (version == null) {
-                    versionBean = response.get(0);
-                } else {
-                    for (ServiceVersionBean avb : response) {
-                        if (avb.getVersion().equals(version)) {
-                            versionBean = avb;
-                        }
-                    }
-                }
-                if (versionBean == null) {
-                    try {
-                        throw new ServiceVersionNotFoundException();
-                    } catch (Throwable t) {
-                        dataPacketError(t);
-                    }
-                } else {
-                    serviceBean = versionBean.getService();
-                    dataPacketLoaded();
-                    onServiceVersionLoaded();
-                }
+            public void onSuccess(ServiceVersionBean response) {
+                versionBean = response;
+                serviceBean = versionBean.getService();
+                dataPacketLoaded();
+                onServiceVersionLoaded();
             }
             @Override
             public void onError(Throwable error) {
                 dataPacketError(error);
             }
         });
-        return rval + 2;
     }
 
     /**
@@ -185,7 +178,7 @@ public abstract class AbstractServicePage extends AbstractPage {
         versions.setValue(this.versionBean.getVersion());
         
         breadcrumb.addItem(dashHref, "home", i18n.format(AppMessages.HOME)); //$NON-NLS-1$
-        breadcrumb.addItem(orgServicesHref, "shield", organizationBean.getName()); //$NON-NLS-1$
+        breadcrumb.addItem(orgServicesHref, "shield", versionBean.getService().getOrganization().getName()); //$NON-NLS-1$
         breadcrumb.addActiveItem("puzzle-piece", serviceBean.getName()); //$NON-NLS-1$
     }
 
@@ -194,7 +187,7 @@ public abstract class AbstractServicePage extends AbstractPage {
      */
     private List<String> getVersions() {
         List<String> v = new ArrayList<String>();
-        for (ServiceVersionBean versionBean : versionBeans) {
+        for (ServiceVersionSummaryBean versionBean : versionBeans) {
             v.add(versionBean.getVersion());
         }
         return v;

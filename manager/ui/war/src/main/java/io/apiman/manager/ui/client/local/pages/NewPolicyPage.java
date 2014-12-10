@@ -18,6 +18,7 @@ package io.apiman.manager.ui.client.local.pages;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
+import io.apiman.manager.api.beans.summary.PolicyDefinitionSummaryBean;
 import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.events.IsFormValidEvent;
 import io.apiman.manager.ui.client.local.events.IsFormValidEvent.Handler;
@@ -90,7 +91,7 @@ public class NewPolicyPage extends AbstractPage {
 
     IPolicyConfigurationForm policyForm;
     
-    List<PolicyDefinitionBean> policyDefBeans;
+    List<PolicyDefinitionSummaryBean> policyDefBeans;
     
     /**
      * Constructor.
@@ -104,9 +105,9 @@ public class NewPolicyPage extends AbstractPage {
     @Override
     protected int doLoadPageData() {
         int size = super.doLoadPageData();
-        rest.listPolicyDefinitions(new IRestInvokerCallback<List<PolicyDefinitionBean>>() {
+        rest.listPolicyDefinitions(new IRestInvokerCallback<List<PolicyDefinitionSummaryBean>>() {
             @Override
-            public void onSuccess(List<PolicyDefinitionBean> response) {
+            public void onSuccess(List<PolicyDefinitionSummaryBean> response) {
                 policyDefBeans = response;
                 // Add "null" at entry 0 to indicate no selection
                 policyDefBeans.add(0, null);
@@ -122,9 +123,9 @@ public class NewPolicyPage extends AbstractPage {
     
     @PostConstruct
     protected void postConstruct() {
-        typeSelector.addValueChangeHandler(new ValueChangeHandler<PolicyDefinitionBean>() {
+        typeSelector.addValueChangeHandler(new ValueChangeHandler<PolicyDefinitionSummaryBean>() {
             @Override
-            public void onValueChange(ValueChangeEvent<PolicyDefinitionBean> event) {
+            public void onValueChange(ValueChangeEvent<PolicyDefinitionSummaryBean> event) {
                 onPolicyTypeChange(typeSelector.getValue());
             }
         });
@@ -155,13 +156,13 @@ public class NewPolicyPage extends AbstractPage {
      * Called when the user changes the type of policy she wants to add.
      * @param value
      */
-    protected void onPolicyTypeChange(PolicyDefinitionBean value) {
+    protected void onPolicyTypeChange(PolicyDefinitionSummaryBean value) {
         if (value == null) {
             policyFormWrapper.setVisible(false);
             policyFormWrapper.clear();
             policyHeading.setVisible(false);
         } else {
-            policyForm = formFactory.createForm(value);
+            policyForm = formFactory.createForm(value.getId());
             policyForm.addIsFormValidHandler(new Handler() {
                 @Override
                 public void onIsFormValid(IsFormValidEvent event) {
@@ -187,12 +188,13 @@ public class NewPolicyPage extends AbstractPage {
     public void onCreate(ClickEvent event) {
         createButton.onActionStarted();
         final PolicyType policyType = PolicyType.valueOf(type);
-        final PolicyDefinitionBean policyDef = typeSelector.getValue();
+        final PolicyDefinitionSummaryBean policyDef = typeSelector.getValue();
         
         PolicyBean bean = new PolicyBean();
         bean.setConfiguration(this.policyForm.getValue());
         bean.setName(policyDef.getName());
-        bean.setDefinition(policyDef);
+        bean.setDefinition(new PolicyDefinitionBean());
+        bean.getDefinition().setId(policyDef.getId());
         rest.createPolicy(policyType, org, id, ver, bean, new IRestInvokerCallback<PolicyBean>() {
             @Override
             public void onSuccess(PolicyBean response) {

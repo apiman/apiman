@@ -15,7 +15,7 @@
  */
 package io.apiman.manager.ui.client.local.pages.policy;
 
-import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
+import io.apiman.manager.api.beans.summary.PolicyDefinitionSummaryBean;
 import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.ClientMessages;
 import io.apiman.manager.ui.client.local.pages.common.SelectBox;
@@ -29,7 +29,7 @@ import javax.inject.Inject;
  * @author eric.wittmann@redhat.com
  */
 @Dependent
-public class PolicyDefinitionSelectBox extends SelectBox<PolicyDefinitionBean> {
+public class PolicyDefinitionSelectBox extends SelectBox<PolicyDefinitionSummaryBean> {
     
     @Inject
     private ClientMessages i18n;
@@ -44,7 +44,7 @@ public class PolicyDefinitionSelectBox extends SelectBox<PolicyDefinitionBean> {
      * @see io.apiman.manager.ui.client.local.pages.common.SelectBox#optionName(java.lang.Object)
      */
     @Override
-    protected String optionName(PolicyDefinitionBean option) {
+    protected String optionName(PolicyDefinitionSummaryBean option) {
         if (option == null) {
             return i18n.format(AppMessages.CHOOSE_POLICY_TYPE);
         } else {
@@ -56,7 +56,7 @@ public class PolicyDefinitionSelectBox extends SelectBox<PolicyDefinitionBean> {
      * @see io.apiman.manager.ui.client.local.pages.common.SelectBox#optionValue(java.lang.Object)
      */
     @Override
-    protected String optionValue(PolicyDefinitionBean option) {
+    protected String optionValue(PolicyDefinitionSummaryBean option) {
         if (option == null) {
             return "__null__"; //$NON-NLS-1$
         } else {
@@ -68,7 +68,7 @@ public class PolicyDefinitionSelectBox extends SelectBox<PolicyDefinitionBean> {
      * @see io.apiman.manager.ui.client.local.pages.common.SelectBox#optionDataContent(java.lang.Object)
      */
     @Override
-    protected String optionDataContent(PolicyDefinitionBean option) {
+    protected String optionDataContent(PolicyDefinitionSummaryBean option) {
         StringBuilder builder = new StringBuilder();
         builder.append("<i class='fa fa-inline fa-fw"); //$NON-NLS-1$
         if (option != null && option.getIcon() != null) {

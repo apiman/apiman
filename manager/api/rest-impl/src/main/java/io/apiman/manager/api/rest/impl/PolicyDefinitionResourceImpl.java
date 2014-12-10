@@ -18,7 +18,7 @@ package io.apiman.manager.api.rest.impl;
 
 import io.apiman.manager.api.beans.BeanUtils;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
-import io.apiman.manager.api.beans.search.SearchResultsBean;
+import io.apiman.manager.api.beans.summary.PolicyDefinitionSummaryBean;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.AlreadyExistsException;
@@ -59,11 +59,9 @@ public class PolicyDefinitionResourceImpl implements IPolicyDefinitionResource {
      * @see io.apiman.manager.api.rest.contract.IPolicyDefinitionResource#list()
      */
     @Override
-    public List<PolicyDefinitionBean> list() throws NotAuthorizedException {
+    public List<PolicyDefinitionSummaryBean> list() throws NotAuthorizedException {
         try {
-            SearchResultsBean<PolicyDefinitionBean> resultsBean = query.listPolicyDefinitions();
-            List<PolicyDefinitionBean> beans = resultsBean.getBeans();
-            return beans;
+            return query.listPolicyDefinitions();
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }

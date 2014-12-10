@@ -1,27 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testPlan xmlns="urn:io.apiman.test:2014:02:testPlan">
 
-  <!-- Initial IDM setup -->
-  <testGroup name="IDM">
-    <test name="Create Org Owner">data/idm/001_create-org-owner.resttest</test>
-    <test name="Create App Developer">data/idm/002_create-app-dev.resttest</test>
-    <test name="Create Service Developer">data/idm/003_create-service-dev.resttest</test>
-    <test name="Create Admin">data/idm/004_create-admin.resttest</test>
-  </testGroup>
-
-  <!-- Policy Definitions -->
-  <testGroup name="Policy Defs">
-    <test name="Create Whitelist Policy Def">data/policyDefs/000_whitelist-policydef.resttest</test>
-    <test name="Create Blacklist Policy Def">data/policyDefs/001_blacklist-policydef.resttest</test>
-    <test name="Create BASIC Authentication Policy Def">data/policyDefs/002_basicauth-policydef.resttest</test>
-    <test name="Create BASIC Authentication Policy Def">data/policyDefs/003_ratelimiting-policydef.resttest</test>
-  </testGroup>
-  
-  <!-- Gateways -->
-  <testGroup name="Gateways">
-    <test name="Create Gateway">data/gateways/000_gateway.resttest</test>
-  </testGroup>
-
   <!-- Create Organizations -->
   <testGroup name="Create Orgs">
     <test name="Create Test Org">data/orgs/001_create-test.resttest</test>

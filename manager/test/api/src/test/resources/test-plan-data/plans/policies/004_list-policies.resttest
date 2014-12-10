@@ -4,38 +4,18 @@ GET /organizations/Organization1/plans/Plan1/versions/1.0/policies admin/admin
 Content-Type: application/json
 
 [
-    {
-      "type" : "Plan",
-      "organizationId" : "Organization1",
-      "entityId" : "Plan1",
-      "entityVersion" : "1.0",
-      "name" : "Policy Def",
-      "definition" : {
-        "id" : "PolicyDef",
-        "name" : "Policy Def",
-        "description" : "This is the test policy def.",
-        "policyImpl" : "org.example.policies.PolicyDef",
-        "icon" : "policy-def"
-      },
-      "configuration" : "{\"foo\" : \"bar\"}",
-      "createdBy" : "admin",
-      "modifiedBy" : "admin"
-    },
-    {
-      "type" : "Plan",
-      "organizationId" : "Organization1",
-      "entityId" : "Plan1",
-      "entityVersion" : "1.0",
-      "name" : "Policy Def",
-      "definition" : {
-        "id" : "PolicyDef",
-        "name" : "Policy Def",
-        "description" : "This is the test policy def.",
-        "policyImpl" : "org.example.policies.PolicyDef",
-        "icon" : "policy-def"
-      },
-      "configuration" : "{\"jerk\" : \"store\"}",
-      "createdBy" : "admin",
-      "modifiedBy" : "admin"
-    }
+  {
+    "createdBy" : "admin",
+    "description" : null,
+    "icon" : "policy-def",
+    "name" : "Policy Def",
+    "policyDefinitionId" : "PolicyDef"
+  },
+  {
+    "createdBy" : "admin",
+    "description" : null,
+    "icon" : "policy-def",
+    "name" : "Policy Def",
+    "policyDefinitionId" : "PolicyDef"
+  }
 ]

@@ -20,7 +20,7 @@ import io.apiman.manager.api.beans.policies.PolicyChainBean;
 import io.apiman.manager.api.beans.services.ServiceBean;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
 import io.apiman.manager.api.beans.summary.ServicePlanSummaryBean;
-import io.apiman.manager.api.rest.contract.exceptions.ServiceVersionNotFoundException;
+import io.apiman.manager.api.beans.summary.ServiceVersionSummaryBean;
 import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.events.CreateContractEvent;
 import io.apiman.manager.ui.client.local.events.CreateContractEvent.Handler;
@@ -82,7 +82,7 @@ public class ConsumerServicePage extends AbstractPage {
 
     protected OrganizationBean organizationBean;
     protected ServiceBean serviceBean;
-    protected List<ServiceVersionBean> versionBeans;
+    protected List<ServiceVersionSummaryBean> versionBeans;
     protected ServiceVersionBean versionBean;
     protected List<ServicePlanSummaryBean> planBeans;
 
@@ -158,41 +158,13 @@ public class ConsumerServicePage extends AbstractPage {
     @Override
     protected int doLoadPageData() {
         int rval = super.doLoadPageData();
-        rest.getOrganization(org, new IRestInvokerCallback<OrganizationBean>() {
+        rest.getServiceVersions(org, service, new IRestInvokerCallback<List<ServiceVersionSummaryBean>>() {
             @Override
-            public void onSuccess(OrganizationBean response) {
-                organizationBean = response;
-                dataPacketLoaded();
-            }
-            @Override
-            public void onError(Throwable error) {
-                dataPacketError(error);
-            }
-        });
-        rest.getServiceVersions(org, service, new IRestInvokerCallback<List<ServiceVersionBean>>() {
-            @Override
-            public void onSuccess(List<ServiceVersionBean> response) {
+            public void onSuccess(List<ServiceVersionSummaryBean> response) {
                 versionBeans = response;
                 // If no version is specified in the URL, use the most recent (first in the list)
                 if (version == null) {
-                    versionBean = response.get(0);
-                } else {
-                    for (ServiceVersionBean avb : response) {
-                        if (avb.getVersion().equals(version)) {
-                            versionBean = avb;
-                        }
-                    }
-                }
-                if (versionBean == null) {
-                    try {
-                        throw new ServiceVersionNotFoundException();
-                    } catch (Throwable t) {
-                        dataPacketError(t);
-                    }
-                } else {
-                    serviceBean = versionBean.getService();
-                    dataPacketLoaded();
-                    getPlansForServiceVersion();
+                    loadServiceVersion(response.get(0).getVersion());
                 }
             }
             @Override
@@ -200,7 +172,29 @@ public class ConsumerServicePage extends AbstractPage {
                 dataPacketError(error);
             }
         });
+        if (version != null) {
+            loadServiceVersion(version);
+        }
         return rval + 3;
+    }
+
+    /**
+     * Loads the service version.
+     */
+    protected void loadServiceVersion(String version) {
+        rest.getServiceVersion(org, service, version, new IRestInvokerCallback<ServiceVersionBean>() {
+            @Override
+            public void onSuccess(ServiceVersionBean response) {
+                versionBean = response;
+                serviceBean = versionBean.getService();
+                dataPacketLoaded();
+                getPlansForServiceVersion();
+            }
+            @Override
+            public void onError(Throwable error) {
+                dataPacketError(error);
+            }
+        });
     }
 
     /**

@@ -15,7 +15,7 @@
  */
 package io.apiman.manager.ui.client.local.pages;
 
-import io.apiman.manager.api.beans.gateways.GatewayBean;
+import io.apiman.manager.api.beans.summary.GatewaySummaryBean;
 import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.pages.admin.GatewayTable;
 import io.apiman.manager.ui.client.local.services.rest.IRestInvokerCallback;
@@ -48,7 +48,7 @@ public class AdminGatewaysPage extends AbstractAdminPage {
     @Inject @DataField
     GatewayTable gateways;
 
-    List<GatewayBean> gatewayBeans;
+    List<GatewaySummaryBean> gatewayBeans;
     
     /**
      * Constructor.
@@ -69,9 +69,9 @@ public class AdminGatewaysPage extends AbstractAdminPage {
     @Override
     protected int doLoadPageData() {
         int rval = super.doLoadPageData();
-        rest.listGateways(new IRestInvokerCallback<List<GatewayBean>>() {
+        rest.listGateways(new IRestInvokerCallback<List<GatewaySummaryBean>>() {
             @Override
-            public void onSuccess(List<GatewayBean> response) {
+            public void onSuccess(List<GatewaySummaryBean> response) {
                 gatewayBeans = response;
                 dataPacketLoaded();
             }

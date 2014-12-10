@@ -32,6 +32,7 @@ import io.apiman.manager.api.beans.services.ServiceGatewayBean;
 import io.apiman.manager.api.beans.services.ServiceStatus;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
 import io.apiman.manager.api.beans.summary.ContractSummaryBean;
+import io.apiman.manager.api.beans.summary.PolicySummaryBean;
 import io.apiman.manager.api.core.IApplicationValidator;
 import io.apiman.manager.api.core.IServiceValidator;
 import io.apiman.manager.api.core.IStorage;
@@ -342,9 +343,9 @@ public class ActionResourceImpl implements IActionResource {
             types[0] = PolicyType.Application;
             types[1] = PolicyType.Plan;
             types[2] = PolicyType.Service;
-            for (PolicyType pt : types) {
+            for (PolicyType policyType : types) {
                 String org, id, ver;
-                switch (pt) {
+                switch (policyType) {
                   case Application: {
                       org = contractBean.getAppOrganizationId();
                       id = contractBean.getAppId();
@@ -367,12 +368,18 @@ public class ActionResourceImpl implements IActionResource {
                       throw new RuntimeException("Missing case for switch!"); //$NON-NLS-1$
                   }
                 }
-                List<PolicyBean> appPolicies = query.getPolicies(org, id, ver, pt);
-                for (PolicyBean policyBean : appPolicies) {
-                    Policy policy = new Policy();
-                    policy.setPolicyJsonConfig(policyBean.getConfiguration());
-                    policy.setPolicyImpl(policyBean.getDefinition().getPolicyImpl());
-                    policies.add(policy);
+                List<PolicySummaryBean> appPolicies = query.getPolicies(org, id, ver, policyType);
+                storage.beginTx();
+                try {
+                    for (PolicySummaryBean policySummaryBean : appPolicies) {
+                        PolicyBean policyBean = storage.getPolicy(policySummaryBean.getId());
+                        Policy policy = new Policy();
+                        policy.setPolicyJsonConfig(policyBean.getConfiguration());
+                        policy.setPolicyImpl(policyBean.getDefinition().getPolicyImpl());
+                        policies.add(policy);
+                    }
+                } finally {
+                    storage.commitTx();
                 }
             }
             return policies;

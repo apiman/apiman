@@ -16,6 +16,7 @@
 package io.apiman.manager.ui.client.local.pages;
 
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
+import io.apiman.manager.api.beans.summary.PolicyDefinitionSummaryBean;
 import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.beans.PolicyDefinitionsBean;
 import io.apiman.manager.ui.client.local.pages.admin.PolicyDefinitionTable;
@@ -118,7 +119,17 @@ public class ImportPolicyDefPage extends AbstractPage {
     public void onImport(ClickEvent event) {
         importButton.onActionStarted();
         List<PolicyDefinitionBean> parsedBeans = parseData();
-        policyDefs.setValue(parsedBeans);
+        List<PolicyDefinitionSummaryBean> forDisplay = new ArrayList<PolicyDefinitionSummaryBean>(parsedBeans.size());
+        for (PolicyDefinitionBean policyDefinitionBean : parsedBeans) {
+            PolicyDefinitionSummaryBean pdsb = new PolicyDefinitionSummaryBean();
+            pdsb.setId(policyDefinitionBean.getId());
+            pdsb.setName(policyDefinitionBean.getName());
+            pdsb.setDescription(policyDefinitionBean.getDescription());
+            pdsb.setIcon(policyDefinitionBean.getIcon());
+            pdsb.setPolicyImpl(policyDefinitionBean.getPolicyImpl());
+            forDisplay.add(pdsb);
+        }
+        policyDefs.setValue(forDisplay);
         beansToImport = parsedBeans;
         showConfirmationPage();
     }

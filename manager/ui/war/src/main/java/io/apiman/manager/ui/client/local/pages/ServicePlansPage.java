@@ -15,10 +15,10 @@
  */
 package io.apiman.manager.ui.client.local.pages;
 
-import io.apiman.manager.api.beans.plans.PlanVersionBean;
 import io.apiman.manager.api.beans.services.ServicePlanBean;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
 import io.apiman.manager.api.beans.summary.PlanSummaryBean;
+import io.apiman.manager.api.beans.summary.PlanVersionSummaryBean;
 import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.pages.service.ServicePlansSelector;
 import io.apiman.manager.ui.client.local.services.rest.IRestInvokerCallback;
@@ -56,7 +56,7 @@ import com.google.gwt.user.client.ui.Button;
 public class ServicePlansPage extends AbstractServicePage {
     
     List<PlanSummaryBean> planBeans;
-    Map<PlanSummaryBean, List<PlanVersionBean>> planVersions = new HashMap<PlanSummaryBean, List<PlanVersionBean>>();
+    Map<PlanSummaryBean, List<PlanVersionSummaryBean>> planVersions = new HashMap<PlanSummaryBean, List<PlanVersionSummaryBean>>();
     
     @Inject @DataField
     ServicePlansSelector plans;
@@ -103,9 +103,9 @@ public class ServicePlansPage extends AbstractServicePage {
                 increaseExpectedDataPackets(response.size());
                 dataPacketLoaded();
                 for (final PlanSummaryBean planSummaryBean : response) {
-                    rest.getPlanVersions(org, planSummaryBean.getId(), new IRestInvokerCallback<List<PlanVersionBean>>() {
+                    rest.getPlanVersions(org, planSummaryBean.getId(), new IRestInvokerCallback<List<PlanVersionSummaryBean>>() {
                         @Override
-                        public void onSuccess(List<PlanVersionBean> response) {
+                        public void onSuccess(List<PlanVersionSummaryBean> response) {
                             planVersions.put(planSummaryBean, response);
                             dataPacketLoaded();
                         }

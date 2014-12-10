@@ -97,6 +97,11 @@
 
                     <!-- Overlay APIMan on top of WildFly 8.2 -->
                     <unzip src="${apiman.apiman-distro-wildfly8.zip}" dest="${apiman.install.dir}" overwrite="false" />
+                    
+                    <!-- Make sure to chmod 755 the shell scripts -->
+                    <chmod perm="a+x" dir="${s-ramp.appserver.dir}/bin">
+                      <include name="*.sh" />
+                    </chmod>
 
                     <!-- Deploy additional stuff -->
                     <copy file="${apiman.resources.dir}/wildfly8/deployments/authtest-ds.xml" todir="${apiman.wildfly.webapps}"

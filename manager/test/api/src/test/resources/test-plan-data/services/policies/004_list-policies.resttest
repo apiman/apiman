@@ -4,40 +4,18 @@ GET /organizations/Organization1/services/Service1/versions/1.0/policies admin/a
 Content-Type: application/json
 
 [
-    {
-      "type" : "Service",
-      "organizationId" : "Organization1",
-      "entityId" : "Service1",
-      "entityVersion" : "1.0",
-      "name" : "Policy Def",
-      "description" : "This is a test policy for ServicesTest.",
-      "definition" : {
-        "id" : "PolicyDef",
-        "name" : "Policy Def",
-        "description" : "This is the test policy def.",
-        "policyImpl" : "org.example.policies.PolicyDef",
-        "icon" : "policy-def"
-      },
-      "configuration" : "{\"testName\" : \"ServicesTest\"}",
-      "createdBy" : "admin",
-      "modifiedBy" : "admin"
-    },
-    {
-      "type" : "Service",
-      "organizationId" : "Organization1",
-      "entityId" : "Service1",
-      "entityVersion" : "1.0",
-      "name" : "Policy Def",
-      "description" : "This is a test policy for @{testName}.",
-      "definition" : {
-        "id" : "PolicyDef",
-        "name" : "Policy Def",
-        "description" : "This is the test policy def.",
-        "policyImpl" : "org.example.policies.PolicyDef",
-        "icon" : "policy-def"
-      },
-      "configuration" : "{\"jerk\" : \"store\"}",
-      "createdBy" : "admin",
-      "modifiedBy" : "admin"
-    }
+  {
+    "createdBy" : "admin",
+    "description" : "This is a test policy for ServicesTest.",
+    "icon" : "policy-def",
+    "name" : "Policy Def",
+    "policyDefinitionId" : "PolicyDef"
+  },
+  {
+    "createdBy" : "admin",
+    "description" : "This is a test policy for @{testName}.",
+    "icon" : "policy-def",
+    "name" : "Policy Def",
+    "policyDefinitionId" : "PolicyDef"
+  }
 ]

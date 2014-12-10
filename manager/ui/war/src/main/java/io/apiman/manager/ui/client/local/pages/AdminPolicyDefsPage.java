@@ -15,7 +15,7 @@
  */
 package io.apiman.manager.ui.client.local.pages;
 
-import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
+import io.apiman.manager.api.beans.summary.PolicyDefinitionSummaryBean;
 import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.pages.admin.PolicyDefinitionTable;
 import io.apiman.manager.ui.client.local.services.rest.IRestInvokerCallback;
@@ -54,7 +54,7 @@ public class AdminPolicyDefsPage extends AbstractAdminPage {
     @Inject @DataField
     PolicyDefinitionTable policyDefs;
 
-    List<PolicyDefinitionBean> policyDefBeans;
+    List<PolicyDefinitionSummaryBean> policyDefBeans;
 
     /**
      * Constructor.
@@ -81,9 +81,9 @@ public class AdminPolicyDefsPage extends AbstractAdminPage {
     @Override
     protected int doLoadPageData() {
         int rval = super.doLoadPageData();
-        rest.listPolicyDefinitions(new IRestInvokerCallback<List<PolicyDefinitionBean>>() {
+        rest.listPolicyDefinitions(new IRestInvokerCallback<List<PolicyDefinitionSummaryBean>>() {
             @Override
-            public void onSuccess(List<PolicyDefinitionBean> response) {
+            public void onSuccess(List<PolicyDefinitionSummaryBean> response) {
                 policyDefBeans = response;
                 dataPacketLoaded();
             }
@@ -115,8 +115,8 @@ public class AdminPolicyDefsPage extends AbstractAdminPage {
         if (policyDefFilter.getValue() == null || policyDefFilter.getValue().trim().length() == 0) {
             policyDefs.setValue(policyDefBeans);
         } else {
-            List<PolicyDefinitionBean> filtered = new ArrayList<PolicyDefinitionBean>();
-            for (PolicyDefinitionBean policyDef : policyDefBeans) {
+            List<PolicyDefinitionSummaryBean> filtered = new ArrayList<PolicyDefinitionSummaryBean>();
+            for (PolicyDefinitionSummaryBean policyDef : policyDefBeans) {
                 if (matchesFilter(policyDef)) {
                     filtered.add(policyDef);
                 }
@@ -129,7 +129,7 @@ public class AdminPolicyDefsPage extends AbstractAdminPage {
      * Returns true if the given policyDef matches the current filter.
      * @param policyDef
      */
-    private boolean matchesFilter(PolicyDefinitionBean policyDef) {
+    private boolean matchesFilter(PolicyDefinitionSummaryBean policyDef) {
         if (policyDef.getName().toUpperCase().contains(policyDefFilter.getValue().toUpperCase())) {
             return true;
         }

@@ -17,6 +17,7 @@
 package io.apiman.manager.api.rest.contract;
 
 import io.apiman.manager.api.beans.gateways.GatewayBean;
+import io.apiman.manager.api.beans.summary.GatewaySummaryBean;
 import io.apiman.manager.api.rest.contract.exceptions.GatewayAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.GatewayNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.NotAuthorizedException;
@@ -43,7 +44,7 @@ public interface IGatewayResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<GatewayBean> list() throws NotAuthorizedException;
+    public List<GatewaySummaryBean> list() throws NotAuthorizedException;
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)

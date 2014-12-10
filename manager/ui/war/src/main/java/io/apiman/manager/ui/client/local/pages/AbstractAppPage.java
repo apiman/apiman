@@ -17,8 +17,7 @@ package io.apiman.manager.ui.client.local.pages;
 
 import io.apiman.manager.api.beans.apps.ApplicationBean;
 import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
-import io.apiman.manager.api.beans.orgs.OrganizationBean;
-import io.apiman.manager.api.rest.contract.exceptions.ApplicationVersionNotFoundException;
+import io.apiman.manager.api.beans.summary.ApplicationVersionSummaryBean;
 import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.pages.common.Breadcrumb;
 import io.apiman.manager.ui.client.local.pages.common.VersionSelector;
@@ -54,9 +53,8 @@ public abstract class AbstractAppPage extends AbstractPage {
     @PageState
     protected String version;
     
-    OrganizationBean organizationBean;
     ApplicationBean applicationBean;
-    List<ApplicationVersionBean> versionBeans;
+    List<ApplicationVersionSummaryBean> versionBeans;
     ApplicationVersionBean versionBean;
     
     @Inject @DataField
@@ -102,10 +100,14 @@ public abstract class AbstractAppPage extends AbstractPage {
     @Override
     protected int doLoadPageData() {
         int rval = super.doLoadPageData();
-        rest.getOrganization(org, new IRestInvokerCallback<OrganizationBean>() {
+        rest.getApplicationVersions(org, app, new IRestInvokerCallback<List<ApplicationVersionSummaryBean>>() {
             @Override
-            public void onSuccess(OrganizationBean response) {
-                organizationBean = response;
+            public void onSuccess(List<ApplicationVersionSummaryBean> response) {
+                versionBeans = response;
+                // If no version is specified in the URL, use the most recent (first in the list)
+                if (version == null) {
+                    loadApplicationVersion(response.get(0).getVersion());
+                }
                 dataPacketLoaded();
             }
             @Override
@@ -113,40 +115,32 @@ public abstract class AbstractAppPage extends AbstractPage {
                 dataPacketError(error);
             }
         });
-        rest.getApplicationVersions(org, app, new IRestInvokerCallback<List<ApplicationVersionBean>>() {
+        if (version != null) {
+            loadApplicationVersion(version);
+        }
+        return rval + 2;
+    }
+
+    /**
+     * Loads a specific app version.
+     * @param version 
+     */
+    protected void loadApplicationVersion(String version) {
+        rest.getApplicationVersion(org, app, version, new IRestInvokerCallback<ApplicationVersionBean>() {
             @Override
-            public void onSuccess(List<ApplicationVersionBean> response) {
-                versionBeans = response;
-                // If no version is specified in the URL, use the most recent (first in the list)
-                if (version == null) {
-                    versionBean = response.get(0);
-                } else {
-                    for (ApplicationVersionBean avb : response) {
-                        if (avb.getVersion().equals(version)) {
-                            versionBean = avb;
-                        }
-                    }
-                }
-                if (versionBean == null) {
-                    try {
-                        throw new ApplicationVersionNotFoundException();
-                    } catch (Throwable t) {
-                        dataPacketError(t);
-                    }
-                } else {
-                    applicationBean = versionBean.getApplication();
-                    currentContext.setAttribute(ContextKeys.CURRENT_APPLICATION, applicationBean);
-                    currentContext.setAttribute(ContextKeys.CURRENT_APPLICATION_VERSION, versionBean);
-                    dataPacketLoaded();
-                    onAppVersionLoaded();
-                }
+            public void onSuccess(ApplicationVersionBean response) {
+                versionBean = response;
+                applicationBean = versionBean.getApplication();
+                currentContext.setAttribute(ContextKeys.CURRENT_APPLICATION, applicationBean);
+                currentContext.setAttribute(ContextKeys.CURRENT_APPLICATION_VERSION, versionBean);
+                dataPacketLoaded();
+                onAppVersionLoaded();
             }
             @Override
             public void onError(Throwable error) {
                 dataPacketError(error);
             }
         });
-        return rval + 2;
     }
 
     /**
@@ -184,7 +178,7 @@ public abstract class AbstractAppPage extends AbstractPage {
         versions.setValue(this.versionBean.getVersion());
         
         breadcrumb.addItem(dashHref, "home", i18n.format(AppMessages.HOME)); //$NON-NLS-1$
-        breadcrumb.addItem(orgAppsHref, "shield", organizationBean.getName()); //$NON-NLS-1$
+        breadcrumb.addItem(orgAppsHref, "shield", versionBean.getApplication().getOrganization().getName()); //$NON-NLS-1$
         breadcrumb.addActiveItem("gears", applicationBean.getName()); //$NON-NLS-1$
     }
 
@@ -193,7 +187,7 @@ public abstract class AbstractAppPage extends AbstractPage {
      */
     private List<String> getVersions() {
         List<String> v = new ArrayList<String>();
-        for (ApplicationVersionBean versionBean : versionBeans) {
+        for (ApplicationVersionSummaryBean versionBean : versionBeans) {
             v.add(versionBean.getVersion());
         }
         return v;

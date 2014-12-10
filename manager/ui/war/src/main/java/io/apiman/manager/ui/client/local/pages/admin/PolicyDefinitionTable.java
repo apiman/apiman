@@ -15,7 +15,7 @@
  */
 package io.apiman.manager.ui.client.local.pages.admin;
 
-import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
+import io.apiman.manager.api.beans.summary.PolicyDefinitionSummaryBean;
 import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.pages.common.NoEntitiesWidget;
 
@@ -39,12 +39,12 @@ import com.google.gwt.user.client.ui.InlineLabel;
  * @author eric.wittmann@redhat.com
  */
 @Dependent
-public class PolicyDefinitionTable extends TemplatedWidgetTable implements TakesValue<List<PolicyDefinitionBean>> {
+public class PolicyDefinitionTable extends TemplatedWidgetTable implements TakesValue<List<PolicyDefinitionSummaryBean>> {
 
     @Inject
     protected TranslationService i18n;
 
-    private List<PolicyDefinitionBean> policyDefs;
+    private List<PolicyDefinitionSummaryBean> policyDefs;
     private boolean filtered;
 
     /**
@@ -57,7 +57,7 @@ public class PolicyDefinitionTable extends TemplatedWidgetTable implements Takes
      * Filtered version of setValue().
      * @see com.google.gwt.user.client.TakesValue#setValue(java.lang.Object)
      */
-    public void setFilteredValue(List<PolicyDefinitionBean> value) {
+    public void setFilteredValue(List<PolicyDefinitionSummaryBean> value) {
         filtered = true;
         policyDefs = value;
         clear();
@@ -68,7 +68,7 @@ public class PolicyDefinitionTable extends TemplatedWidgetTable implements Takes
      * @see com.google.gwt.user.client.TakesValue#setValue(java.lang.Object)
      */
     @Override
-    public void setValue(List<PolicyDefinitionBean> value) {
+    public void setValue(List<PolicyDefinitionSummaryBean> value) {
         filtered = false;
         policyDefs = value;
         clear();
@@ -81,7 +81,7 @@ public class PolicyDefinitionTable extends TemplatedWidgetTable implements Takes
     public void refresh() {
         if (policyDefs != null && !policyDefs.isEmpty()) {
             int rowIdx = 0;
-            for (PolicyDefinitionBean bean : policyDefs) {
+            for (PolicyDefinitionSummaryBean bean : policyDefs) {
                 addRow(rowIdx++, bean);
             }
         } else {
@@ -95,7 +95,7 @@ public class PolicyDefinitionTable extends TemplatedWidgetTable implements Takes
      * @param rowIdx
      * @param bean
      */
-    private void addRow(int rowIdx, PolicyDefinitionBean bean) {
+    private void addRow(int rowIdx, PolicyDefinitionSummaryBean bean) {
         AnchorPanel a = new AnchorPanel();
         FontAwesomeIcon icon = new FontAwesomeIcon(bean.getIcon(), true);
         a.add(icon);
@@ -121,7 +121,7 @@ public class PolicyDefinitionTable extends TemplatedWidgetTable implements Takes
      * @see com.google.gwt.user.client.TakesValue#getValue()
      */
     @Override
-    public List<PolicyDefinitionBean> getValue() {
+    public List<PolicyDefinitionSummaryBean> getValue() {
         return policyDefs;
     }
 
