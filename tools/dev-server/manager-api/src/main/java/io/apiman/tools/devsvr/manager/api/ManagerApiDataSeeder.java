@@ -76,7 +76,7 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         gateway.setModifiedBy("admin");
         gateway.setModifiedOn(new Date());
         storage.beginTx();
-        storage.create(gateway);
+        storage.createGateway(gateway);
         storage.commitTx();
         
         // Create Organization Owner role
@@ -144,7 +144,7 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         org.setCreatedBy("admin");
         org.setModifiedOn(new Date());
         org.setModifiedBy("admin");
-        storage.create(org);
+        storage.createOrganization(org);
         OrganizationBean jbossOrg = org;
         
         // Create Apereo Bedework org
@@ -156,7 +156,7 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         org.setCreatedBy("admin");
         org.setModifiedOn(new Date());
         org.setModifiedBy("admin");
-        storage.create(org);
+        storage.createOrganization(org);
         
         storage.commitTx();
         
@@ -179,7 +179,7 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         plan.setOrganization(jbossOrg);
         plan.setCreatedBy("admin");
         plan.setCreatedOn(new Date());
-        storage.create(plan);
+        storage.createPlan(plan);
         PlanVersionBean pvb = new PlanVersionBean();
         pvb.setVersion("1.0");
         pvb.setStatus(PlanStatus.Created);
@@ -188,7 +188,7 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         pvb.setCreatedOn(new Date());
         pvb.setModifiedBy("admin");
         pvb.setModifiedOn(new Date());
-        storage.create(pvb);
+        storage.createPlanVersion(pvb);
 
         plan = new PlanBean();
         plan.setId("Gold");
@@ -197,7 +197,7 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         plan.setOrganization(jbossOrg);
         plan.setCreatedBy("admin");
         plan.setCreatedOn(new Date());
-        storage.create(plan);
+        storage.createPlan(plan);
         pvb = new PlanVersionBean();
         pvb.setVersion("1.0");
         pvb.setStatus(PlanStatus.Created);
@@ -206,7 +206,7 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         pvb.setCreatedOn(new Date());
         pvb.setModifiedBy("admin");
         pvb.setModifiedOn(new Date());
-        storage.create(pvb);
+        storage.createPlanVersion(pvb);
         pvb = new PlanVersionBean();
         pvb.setVersion("1.2");
         pvb.setStatus(PlanStatus.Created);
@@ -215,7 +215,7 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         pvb.setCreatedOn(new Date());
         pvb.setModifiedBy("bwayne");
         pvb.setModifiedOn(new Date());
-        storage.create(pvb);
+        storage.createPlanVersion(pvb);
 
         // Create some applications
         ApplicationBean app = new ApplicationBean();
@@ -225,7 +225,7 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         app.setOrganization(jbossOrg);
         app.setCreatedBy("admin");
         app.setCreatedOn(new Date());
-        storage.create(app);
+        storage.createApplication(app);
         ApplicationVersionBean avb = new ApplicationVersionBean();
         avb.setVersion("1.0");
         avb.setStatus(ApplicationStatus.Created);
@@ -234,7 +234,7 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         avb.setCreatedOn(new Date());
         avb.setModifiedBy("admin");
         avb.setModifiedOn(new Date());
-        storage.create(avb);
+        storage.createApplicationVersion(avb);
 
         app = new ApplicationBean();
         app.setId("rtgov");
@@ -243,7 +243,7 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         app.setOrganization(jbossOrg);
         app.setCreatedBy("admin");
         app.setCreatedOn(new Date());
-        storage.create(app);
+        storage.createApplication(app);
         avb = new ApplicationVersionBean();
         avb.setVersion("1.0");
         avb.setStatus(ApplicationStatus.Created);
@@ -252,7 +252,7 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         avb.setCreatedOn(new Date());
         avb.setModifiedBy("admin");
         avb.setModifiedOn(new Date());
-        storage.create(avb);
+        storage.createApplicationVersion(avb);
 
         app = new ApplicationBean();
         app.setId("gadget-server");
@@ -261,7 +261,7 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         app.setOrganization(jbossOrg);
         app.setCreatedBy("admin");
         app.setCreatedOn(new Date());
-        storage.create(app);
+        storage.createApplication(app);
         avb = new ApplicationVersionBean();
         avb.setVersion("1.0");
         avb.setStatus(ApplicationStatus.Created);
@@ -270,7 +270,7 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         avb.setCreatedOn(new Date());
         avb.setModifiedBy("admin");
         avb.setModifiedOn(new Date());
-        storage.create(avb);
+        storage.createApplicationVersion(avb);
         
         // Create some services
         ServiceBean service = new ServiceBean();
@@ -280,7 +280,7 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         service.setOrganization(jbossOrg);
         service.setCreatedOn(new Date());
         service.setCreatedBy("admin");
-        storage.create(service);
+        storage.createService(service);
         ServiceVersionBean svb = new ServiceVersionBean();
         svb.setGateways(new HashSet<ServiceGatewayBean>());
         svb.setPlans(new HashSet<ServicePlanBean>());
@@ -301,7 +301,7 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         spb.setPlanId("Gold");
         spb.setVersion("1.0");
         svb.addPlan(spb);
-        storage.create(svb);
+        storage.createServiceVersion(svb);
         
         // Create some policy definitions
         PolicyDefinitionBean whitelistPolicyDef = new PolicyDefinitionBean();
@@ -314,7 +314,7 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         templateBean.setLanguage(null);
         templateBean.setTemplate("Only requests that originate from the set of @{ipList.size()} configured IP address(es) will be allowed to invoke the managed service.");
         whitelistPolicyDef.getTemplates().add(templateBean);
-        storage.create(whitelistPolicyDef);
+        storage.createPolicyDefinition(whitelistPolicyDef);
 
         PolicyDefinitionBean blacklistPolicyDef = new PolicyDefinitionBean();
         blacklistPolicyDef.setId("IPBlacklistPolicy");
@@ -326,7 +326,7 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         templateBean.setLanguage(null);
         templateBean.setTemplate("Requests that originate from the set of @{ipList.size()} configured IP address(es) will be denied access to the managed service.");
         blacklistPolicyDef.getTemplates().add(templateBean);
-        storage.create(blacklistPolicyDef);
+        storage.createPolicyDefinition(blacklistPolicyDef);
 
         PolicyDefinitionBean basicAuthPolicyDef = new PolicyDefinitionBean();
         basicAuthPolicyDef.setId("BASICAuthenticationPolicy");
@@ -338,7 +338,7 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         templateBean.setLanguage(null);
         templateBean.setTemplate("Access to the service is protected by BASIC Authentication through the '@{realm}' authentication realm.  @if{forwardIdentityHttpHeader != null}Successfully authenticated requests will forward the authenticated identity to the back end service via the '@{forwardIdentityHttpHeader}' custom HTTP header.@end{}");
         basicAuthPolicyDef.getTemplates().add(templateBean);
-        storage.create(basicAuthPolicyDef);
+        storage.createPolicyDefinition(basicAuthPolicyDef);
 
         PolicyDefinitionBean rateLimitPolicyDef = new PolicyDefinitionBean();
         rateLimitPolicyDef.setId("RateLimitingPolicy");
@@ -350,7 +350,7 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         templateBean.setLanguage(null);
         templateBean.setTemplate("Consumers are limited to @{limit} requests per @{granularity} per @{period}.");
         rateLimitPolicyDef.getTemplates().add(templateBean);
-        storage.create(rateLimitPolicyDef);
+        storage.createPolicyDefinition(rateLimitPolicyDef);
         
         storage.commitTx();
     }

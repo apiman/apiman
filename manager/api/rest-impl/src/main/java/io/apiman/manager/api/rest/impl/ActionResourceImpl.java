@@ -155,7 +155,7 @@ public class ActionResourceImpl implements IActionResource {
 
             versionBean.setStatus(ServiceStatus.Published);
             
-            storage.update(versionBean);
+            storage.updateServiceVersion(versionBean);
             storage.createAuditEntry(AuditUtils.servicePublished(versionBean, securityContext));
             storage.commitTx();
         } catch (PublishingException e) {
@@ -172,7 +172,7 @@ public class ActionResourceImpl implements IActionResource {
      */
     private IGatewayLink createGatewayLink(String gatewayId) throws PublishingException {
         try {
-            GatewayBean gateway = storage.get(gatewayId, GatewayBean.class);
+            GatewayBean gateway = storage.getGateway(gatewayId);
             if (gateway == null) {
                 throw new GatewayNotFoundException();
             }
@@ -226,7 +226,7 @@ public class ActionResourceImpl implements IActionResource {
             versionBean.setStatus(ServiceStatus.Retired);
             versionBean.setRetiredOn(new Date());
             
-            storage.update(versionBean);
+            storage.updateServiceVersion(versionBean);
             storage.createAuditEntry(AuditUtils.serviceRetired(versionBean, securityContext));
             storage.commitTx();
         } catch (PublishingException e) {
@@ -321,7 +321,7 @@ public class ActionResourceImpl implements IActionResource {
         
         try {
             storage.beginTx();
-            storage.update(versionBean);
+            storage.updateApplicationVersion(versionBean);
             storage.createAuditEntry(AuditUtils.applicationRegistered(versionBean, securityContext));
             storage.commitTx();
         } catch (Exception e) {
@@ -450,7 +450,7 @@ public class ActionResourceImpl implements IActionResource {
 
         try {
             storage.beginTx();
-            storage.update(versionBean);
+            storage.updateApplicationVersion(versionBean);
             storage.createAuditEntry(AuditUtils.applicationUnregistered(versionBean, securityContext));
             storage.commitTx();
         } catch (Exception e) {

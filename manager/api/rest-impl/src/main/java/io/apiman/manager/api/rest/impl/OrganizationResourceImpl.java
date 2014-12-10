@@ -144,7 +144,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         try {
             // Store/persist the new organization
             storage.beginTx();
-            storage.create(bean);
+            storage.createOrganization(bean);
             storage.createAuditEntry(AuditUtils.organizationCreated(bean, securityContext));
             storage.commitTx();
 
@@ -183,7 +183,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw ExceptionFactory.notAuthorizedException();
         try {
             storage.beginTx();
-            OrganizationBean organizationBean = storage.get(organizationId, OrganizationBean.class);
+            OrganizationBean organizationBean = storage.getOrganization(organizationId);
             storage.commitTx();
             return organizationBean;
         } catch (DoesNotExistException e) {
@@ -206,15 +206,15 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         try {
             bean.setId(organizationId);
             storage.beginTx();
-            OrganizationBean ob = storage.get(bean.getId(), OrganizationBean.class);
+            OrganizationBean organization = storage.getOrganization(bean.getId());
             
             EntityUpdatedData auditData = new EntityUpdatedData();
-            if (AuditUtils.valueChanged(ob.getDescription(), bean.getDescription())) {
-                auditData.addChange("description", ob.getDescription(), bean.getDescription()); //$NON-NLS-1$
-                ob.setDescription(bean.getDescription());
+            if (AuditUtils.valueChanged(organization.getDescription(), bean.getDescription())) {
+                auditData.addChange("description", organization.getDescription(), bean.getDescription()); //$NON-NLS-1$
+                organization.setDescription(bean.getDescription());
             }
-            storage.update(ob);
-            storage.createAuditEntry(AuditUtils.organizationUpdated(ob, auditData, securityContext));
+            storage.updateOrganization(organization);
+            storage.createAuditEntry(AuditUtils.organizationUpdated(organization, auditData, securityContext));
             storage.commitTx();
         } catch (DoesNotExistException e) {
             storage.rollbackTx();
@@ -269,9 +269,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         try {
             // Store/persist the new application
             storage.beginTx();
-            OrganizationBean org = storage.get(organizationId, OrganizationBean.class);
+            OrganizationBean org = storage.getOrganization(organizationId);
             newApp.setOrganization(org);
-            storage.create(newApp);
+            storage.createApplication(newApp);
             storage.createAuditEntry(AuditUtils.applicationCreated(newApp, securityContext));
             storage.commitTx();
             return newApp;
@@ -297,7 +297,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw ExceptionFactory.notAuthorizedException();
         try {
             storage.beginTx();
-            ApplicationBean applicationBean = storage.get(organizationId, applicationId, ApplicationBean.class);
+            ApplicationBean applicationBean = storage.getApplication(organizationId, applicationId);
             storage.commitTx();
             return applicationBean;
         } catch (DoesNotExistException e) {
@@ -363,13 +363,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw ExceptionFactory.notAuthorizedException();
         try {
             storage.beginTx();
-            ApplicationBean app = storage.get(organizationId, applicationId, ApplicationBean.class);
+            ApplicationBean app = storage.getApplication(organizationId, applicationId);
             EntityUpdatedData auditData = new EntityUpdatedData();
             if (AuditUtils.valueChanged(app.getDescription(), bean.getDescription())) {
                 auditData.addChange("description", app.getDescription(), bean.getDescription()); //$NON-NLS-1$
                 app.setDescription(bean.getDescription());
             }            
-            storage.update(app);
+            storage.updateApplication(app);
             storage.createAuditEntry(AuditUtils.applicationUpdated(app, auditData, securityContext));
             storage.commitTx();
         } catch (DoesNotExistException e) {
@@ -392,7 +392,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
         try {
             storage.beginTx();
-            ApplicationBean application = storage.get(organizationId, applicationId, ApplicationBean.class);
+            ApplicationBean application = storage.getApplication(organizationId, applicationId);
 
             ApplicationVersionBean newVersion = new ApplicationVersionBean();
             newVersion.setApplication(application);
@@ -404,7 +404,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             
             newVersion.setVersion(bean.getVersion());
             
-            storage.create(newVersion);
+            storage.createApplicationVersion(newVersion);
             storage.createAuditEntry(AuditUtils.applicationVersionCreated(newVersion, securityContext));
             storage.commitTx();
             return newVersion;
@@ -502,7 +502,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
         try {
             storage.beginTx();
-            storage.update(avb);
+            storage.updateApplicationVersion(avb);
             storage.createAuditEntry(AuditUtils.applicationVersionUpdated(avb, data, securityContext));
             storage.commitTx();
         } catch (DoesNotExistException e) {
@@ -589,14 +589,14 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 avb.setStatus(ApplicationStatus.Ready);
             }
 
-            storage.create(contract);
+            storage.createContract(contract);
             storage.createAuditEntry(AuditUtils.contractCreatedFromApp(contract, securityContext));
             storage.createAuditEntry(AuditUtils.contractCreatedToService(contract, securityContext));
             
             // Update the version with new meta-data (e.g. modified-by)
             avb.setModifiedBy(securityContext.getCurrentUser());
             avb.setModifiedOn(new Date());
-            storage.update(avb);
+            storage.updateApplicationVersion(avb);
             
             storage.commitTx();
             return contract;
@@ -622,7 +622,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw ExceptionFactory.notAuthorizedException();
         try {
             storage.beginTx();
-            ContractBean contract = storage.get(contractId, ContractBean.class);
+            ContractBean contract = storage.getContract(contractId);
             if (contract == null)
                 throw ExceptionFactory.contractNotFoundException(contractId);
             storage.commitTx();
@@ -646,10 +646,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw ExceptionFactory.notAuthorizedException();
         try {
             storage.beginTx();
-            ContractBean contract = storage.get(contractId, ContractBean.class);
+            ContractBean contract = storage.getContract(contractId);
             if (contract == null)
                 throw ExceptionFactory.contractNotFoundException(contractId);
-            storage.delete(contract);
+            storage.deleteContract(contract);
             storage.createAuditEntry(AuditUtils.contractBrokenFromApp(contract, securityContext));
             storage.createAuditEntry(AuditUtils.contractBrokenToService(contract, securityContext));
             storage.commitTx();
@@ -747,14 +747,14 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
         try {
             storage.beginTx();
-            PolicyBean policy = this.storage.get(policyId, PolicyBean.class);
+            PolicyBean policy = this.storage.getPolicy(policyId);
             if (AuditUtils.valueChanged(policy.getConfiguration(), bean.getConfiguration())) {
                 policy.setConfiguration(bean.getConfiguration());
                 // TODO figure out what changed an include that in the audit entry
             }
             policy.setModifiedOn(new Date());
             policy.setModifiedBy(this.securityContext.getCurrentUser());
-            storage.update(policy);
+            storage.updatePolicy(policy);
             storage.createAuditEntry(AuditUtils.policyUpdated(policy, PolicyType.Application, securityContext));
             storage.commitTx();
         } catch (DoesNotExistException e) {
@@ -781,8 +781,8 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
         try {
             storage.beginTx();
-            PolicyBean policy = this.storage.get(policyId, PolicyBean.class);
-            storage.delete(policy);
+            PolicyBean policy = this.storage.getPolicy(policyId);
+            storage.deletePolicy(policy);
             storage.createAuditEntry(AuditUtils.policyRemoved(policy, PolicyType.Application, securityContext));
             storage.commitTx();
         } catch (DoesNotExistException e) {
@@ -830,9 +830,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.beginTx();
             List<PolicyBean> policies = policyChain.getPolicies();
             for (PolicyBean incomingPolicy : policies) {
-                PolicyBean storedPolicy = this.storage.get(incomingPolicy.getId(), PolicyBean.class);
+                PolicyBean storedPolicy = this.storage.getPolicy(incomingPolicy.getId());
                 storedPolicy.setOrderIndex(incomingPolicy.getOrderIndex());
-                storage.update(storedPolicy);
+                storage.updatePolicy(storedPolicy);
             }
             storage.createAuditEntry(AuditUtils.policiesReordered(avb, PolicyType.Application, securityContext));
             storage.commitTx();
@@ -859,10 +859,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         newService.setCreatedBy(securityContext.getCurrentUser());
         try {
             storage.beginTx();
-            OrganizationBean orgBean = storage.get(organizationId, OrganizationBean.class);
+            OrganizationBean orgBean = storage.getOrganization(organizationId);
             newService.setOrganization(orgBean);
             // Store/persist the new service
-            storage.create(newService);
+            storage.createService(newService);
             storage.createAuditEntry(AuditUtils.serviceCreated(newService, securityContext));
             storage.commitTx();
             return newService;
@@ -888,7 +888,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw ExceptionFactory.notAuthorizedException();
         try {
             storage.beginTx();
-            ServiceBean bean = storage.get(organizationId, serviceId, ServiceBean.class);
+            ServiceBean bean = storage.getService(organizationId, serviceId);
             storage.commitTx();
             return bean;
         } catch (DoesNotExistException e) {
@@ -955,13 +955,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw ExceptionFactory.notAuthorizedException();
         try {
             storage.beginTx();
-            ServiceBean service = storage.get(organizationId, serviceId, ServiceBean.class);
+            ServiceBean service = storage.getService(organizationId, serviceId);
             EntityUpdatedData auditData = new EntityUpdatedData();
             if (AuditUtils.valueChanged(service.getDescription(), bean.getDescription())) {
                 auditData.addChange("description", service.getDescription(), bean.getDescription()); //$NON-NLS-1$
                 service.setDescription(bean.getDescription());
             }
-            storage.update(service);
+            storage.updateService(service);
             storage.createAuditEntry(AuditUtils.serviceUpdated(service, auditData, securityContext));
             storage.commitTx();
         } catch (DoesNotExistException e) {
@@ -985,7 +985,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             GatewayBean gateway = getSingularGateway();
 
             storage.beginTx();
-            ServiceBean service = storage.get(organizationId, serviceId, ServiceBean.class);
+            ServiceBean service = storage.getService(organizationId, serviceId);
 
             ServiceVersionBean newVersion = new ServiceVersionBean();
             newVersion.setCreatedBy(securityContext.getCurrentUser());
@@ -1016,7 +1016,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 newVersion.setStatus(ServiceStatus.Created);
             }
             
-            storage.create(newVersion);
+            storage.createServiceVersion(newVersion);
             storage.createAuditEntry(AuditUtils.serviceVersionCreated(newVersion, securityContext));
             storage.commitTx();
             return newVersion;
@@ -1139,7 +1139,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         
         try {
             storage.beginTx();
-            storage.update(svb);
+            storage.updateServiceVersion(svb);
             storage.createAuditEntry(AuditUtils.serviceVersionUpdated(svb, data, securityContext));
             storage.commitTx();
         } catch (DoesNotExistException e) {
@@ -1243,14 +1243,14 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
         try {
             storage.beginTx();
-            PolicyBean policy = storage.get(policyId, PolicyBean.class);
+            PolicyBean policy = storage.getPolicy(policyId);
             // TODO capture specific change values when auditing policy updates
             if (AuditUtils.valueChanged(policy.getConfiguration(), bean.getConfiguration())) {
                 policy.setConfiguration(bean.getConfiguration());
             }
             policy.setModifiedOn(new Date());
             policy.setModifiedBy(securityContext.getCurrentUser());
-            storage.update(policy);
+            storage.updatePolicy(policy);
             storage.createAuditEntry(AuditUtils.policyUpdated(policy, PolicyType.Service, securityContext));
             storage.commitTx();
         } catch (DoesNotExistException e) {
@@ -1277,8 +1277,8 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
         try {
             storage.beginTx();
-            PolicyBean policy = this.storage.get(policyId, PolicyBean.class);
-            storage.delete(policy);
+            PolicyBean policy = this.storage.getPolicy(policyId);
+            storage.deletePolicy(policy);
             storage.createAuditEntry(AuditUtils.policyRemoved(policy, PolicyType.Service, securityContext));
             storage.commitTx();
         } catch (DoesNotExistException e) {
@@ -1326,9 +1326,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.beginTx();
             List<PolicyBean> policies = policyChain.getPolicies();
             for (PolicyBean incomingPolicy : policies) {
-                PolicyBean storedPolicy = this.storage.get(incomingPolicy.getId(), PolicyBean.class);
+                PolicyBean storedPolicy = this.storage.getPolicy(incomingPolicy.getId());
                 storedPolicy.setOrderIndex(incomingPolicy.getOrderIndex());
-                storage.update(storedPolicy);
+                storage.updatePolicy(storedPolicy);
             }
             storage.createAuditEntry(AuditUtils.policiesReordered(svb, PolicyType.Service, securityContext));
             storage.commitTx();
@@ -1421,9 +1421,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         try {
             // Store/persist the new plan
             storage.beginTx();
-            OrganizationBean orgBean = storage.get(organizationId, OrganizationBean.class);
+            OrganizationBean orgBean = storage.getOrganization(organizationId);
             newPlan.setOrganization(orgBean);
-            storage.create(newPlan);
+            storage.createPlan(newPlan);
             storage.createAuditEntry(AuditUtils.planCreated(newPlan, securityContext));
             storage.commitTx();
             return newPlan;
@@ -1449,7 +1449,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw ExceptionFactory.notAuthorizedException();
         try {
             storage.beginTx();
-            PlanBean bean = storage.get(organizationId, planId, PlanBean.class);
+            PlanBean bean = storage.getPlan(organizationId, planId);
             storage.commitTx();
             return bean;
         } catch (DoesNotExistException e) {
@@ -1516,13 +1516,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         EntityUpdatedData auditData = new EntityUpdatedData();
         try {
             storage.beginTx();
-            PlanBean plan = storage.get(organizationId, planId, PlanBean.class);
+            PlanBean plan = storage.getPlan(organizationId, planId);
             if (AuditUtils.valueChanged(plan.getDescription(), bean.getDescription())) {
                 auditData.addChange("description", plan.getDescription(), bean.getDescription()); //$NON-NLS-1$
                 plan.setDescription(bean.getDescription());
             }            
             // Nothing to update (yet?)
-            storage.update(plan);
+            storage.updatePlan(plan);
             storage.createAuditEntry(AuditUtils.planUpdated(plan, auditData, securityContext));
             storage.commitTx();
         } catch (DoesNotExistException e) {
@@ -1544,7 +1544,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw ExceptionFactory.notAuthorizedException();
         try {
             storage.beginTx();
-            PlanBean plan = storage.get(organizationId, planId, PlanBean.class);
+            PlanBean plan = storage.getPlan(organizationId, planId);
             
             PlanVersionBean newVersion = new PlanVersionBean();
             newVersion.setCreatedBy(securityContext.getCurrentUser());
@@ -1554,7 +1554,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             newVersion.setStatus(PlanStatus.Created);
             newVersion.setPlan(plan);
             newVersion.setVersion(bean.getVersion());
-            storage.create(newVersion);
+            storage.createPlanVersion(newVersion);
             storage.createAuditEntry(AuditUtils.planVersionCreated(newVersion, securityContext));
             storage.commitTx();
             return newVersion;
@@ -1635,7 +1635,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         EntityUpdatedData data = new EntityUpdatedData();
         try {
             storage.beginTx();
-            storage.update(pvb);
+            storage.updatePlanVersion(pvb);
             storage.createAuditEntry(AuditUtils.planVersionUpdated(pvb, data, securityContext));
             storage.commitTx();
         } catch (DoesNotExistException e) {
@@ -1715,14 +1715,14 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
         try {
             storage.beginTx();
-            PolicyBean policy = storage.get(policyId, PolicyBean.class);
+            PolicyBean policy = storage.getPolicy(policyId);
             if (AuditUtils.valueChanged(policy.getConfiguration(), bean.getConfiguration())) {
                 policy.setConfiguration(bean.getConfiguration());
                 // TODO figure out what changed an include that in the audit entry
             }
             policy.setModifiedOn(new Date());
             policy.setModifiedBy(this.securityContext.getCurrentUser());
-            storage.update(policy);
+            storage.updatePolicy(policy);
             storage.createAuditEntry(AuditUtils.policyUpdated(policy, PolicyType.Plan, securityContext));
             storage.commitTx();
         } catch (DoesNotExistException e) {
@@ -1749,8 +1749,8 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
         try {
             storage.beginTx();
-            PolicyBean policy = this.storage.get(policyId, PolicyBean.class);
-            storage.delete(policy);
+            PolicyBean policy = this.storage.getPolicy(policyId);
+            storage.deletePolicy(policy);
             storage.createAuditEntry(AuditUtils.policyRemoved(policy, PolicyType.Plan, securityContext));
             storage.commitTx();
         } catch (DoesNotExistException e) {
@@ -1798,9 +1798,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.beginTx();
             List<PolicyBean> policies = policyChain.getPolicies();
             for (PolicyBean incomingPolicy : policies) {
-                PolicyBean storedPolicy = this.storage.get(incomingPolicy.getId(), PolicyBean.class);
+                PolicyBean storedPolicy = this.storage.getPolicy(incomingPolicy.getId());
                 storedPolicy.setOrderIndex(incomingPolicy.getOrderIndex());
-                storage.update(storedPolicy);
+                storage.updatePolicy(storedPolicy);
             }
             storage.createAuditEntry(AuditUtils.policiesReordered(pvb, PolicyType.Plan, securityContext));
             storage.commitTx();
@@ -1830,7 +1830,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         PolicyDefinitionBean def = null;
         try {
             storage.beginTx();
-            def = storage.get(bean.getDefinition().getId(), PolicyDefinitionBean.class);
+            def = storage.getPolicyDefinition(bean.getDefinition().getId());
             bean.setDefinition(def);
             storage.commitTx();
         } catch (DoesNotExistException e) {
@@ -1869,7 +1869,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             bean.setOrderIndex(newIdx);
             
             storage.beginTx();
-            storage.create(bean);
+            storage.createPolicy(bean);
             storage.createAuditEntry(AuditUtils.policyAdded(bean, type, securityContext));
             storage.commitTx();
             PolicyTemplateUtil.generatePolicyDescription(bean);
@@ -2045,7 +2045,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             String entityVersion, long policyId) throws PolicyNotFoundException {
         try {
             storage.beginTx();
-            PolicyBean policy = storage.get(policyId, PolicyBean.class);
+            PolicyBean policy = storage.getPolicy(policyId);
             storage.commitTx();
             if (policy.getType() != type) {
                 throw ExceptionFactory.policyNotFoundException(policyId);

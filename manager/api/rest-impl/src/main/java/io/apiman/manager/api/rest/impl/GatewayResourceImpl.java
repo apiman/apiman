@@ -88,7 +88,7 @@ public class GatewayResourceImpl implements IGatewayResource {
         try {
             storage.beginTx();
             // Store/persist the new gateway
-            storage.create(bean);
+            storage.createGateway(bean);
             storage.commitTx();
             return bean;
         } catch (AlreadyExistsException e) {
@@ -107,7 +107,7 @@ public class GatewayResourceImpl implements IGatewayResource {
     public GatewayBean get(String gatewayId) throws GatewayNotFoundException, NotAuthorizedException {
         try {
             storage.beginTx();
-            GatewayBean bean = storage.get(gatewayId, GatewayBean.class);
+            GatewayBean bean = storage.getGateway(gatewayId);
             storage.commitTx();
             return bean;
         } catch (DoesNotExistException e) {
@@ -132,7 +132,7 @@ public class GatewayResourceImpl implements IGatewayResource {
             Date now = new Date();
 
             bean.setId(gatewayId);
-            GatewayBean gbean = storage.get(gatewayId, GatewayBean.class);
+            GatewayBean gbean = storage.getGateway(gatewayId);
             gbean.setModifiedBy(securityContext.getCurrentUser());
             gbean.setModifiedOn(now);
             if (bean.getName() != null)
@@ -145,7 +145,7 @@ public class GatewayResourceImpl implements IGatewayResource {
                 gbean.setType(bean.getType());
             if (bean.getConfiguration() != null)
                 gbean.setConfiguration(bean.getConfiguration());
-            storage.update(gbean);
+            storage.updateGateway(gbean);
             storage.commitTx();
         } catch (DoesNotExistException e) {
             storage.rollbackTx();
@@ -166,8 +166,8 @@ public class GatewayResourceImpl implements IGatewayResource {
             throw ExceptionFactory.notAuthorizedException();
         try {
             storage.beginTx();
-            GatewayBean gbean = storage.get(gatewayId, GatewayBean.class);
-            storage.delete(gbean);
+            GatewayBean gbean = storage.getGateway(gatewayId);
+            storage.deleteGateway(gbean);
             storage.commitTx();
         } catch (DoesNotExistException e) {
             storage.rollbackTx();

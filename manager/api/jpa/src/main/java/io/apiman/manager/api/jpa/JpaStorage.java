@@ -21,6 +21,7 @@ import io.apiman.manager.api.beans.audit.AuditEntityType;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
+import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.beans.plans.PlanBean;
 import io.apiman.manager.api.beans.plans.PlanVersionBean;
@@ -106,53 +107,382 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorage#create(java.lang.Object)
+     * @see io.apiman.manager.api.core.IStorage#createApplication(io.apiman.manager.api.beans.apps.ApplicationBean)
      */
     @Override
-    public <T> void create(T bean) throws StorageException, AlreadyExistsException {
-        super.create(bean);
-    }
-
-    /**
-     * @see io.apiman.manager.api.core.IStorage#update(java.lang.Object)
-     */
-    @Override
-    public <T> void update(T bean) throws StorageException, DoesNotExistException {
-        super.update(bean);
-    }
-
-    /**
-     * @see io.apiman.manager.api.core.IStorage#delete(java.lang.Object)
-     */
-    @Override
-    public <T> void delete(T bean) throws StorageException, DoesNotExistException {
-        super.delete(bean);
+    public void createApplication(ApplicationBean application) throws StorageException,
+            AlreadyExistsException {
+        super.create(application);
     }
     
     /**
-     * @see io.apiman.manager.api.core.IStorage#get(java.lang.Long, java.lang.Class)
+     * @see io.apiman.manager.api.core.IStorage#createApplicationVersion(io.apiman.manager.api.beans.apps.ApplicationVersionBean)
      */
     @Override
-    public <T> T get(Long id, Class<T> type) throws StorageException, DoesNotExistException {
-        return super.get(id, type);
-    }
-
-    /**
-     * @see io.apiman.manager.api.core.IStorage#get(java.lang.String, java.lang.Class)
-     */
-    @Override
-    public <T> T get(String id, Class<T> type) throws StorageException, DoesNotExistException {
-        return super.get(id, type);
+    public void createApplicationVersion(ApplicationVersionBean version) throws StorageException,
+            AlreadyExistsException {
+        super.create(version);
     }
     
     /**
-     * @see io.apiman.manager.api.core.IStorage#get(java.lang.String, java.lang.String, java.lang.Class)
+     * @see io.apiman.manager.api.core.IStorage#createContract(io.apiman.manager.api.beans.contracts.ContractBean)
      */
     @Override
-    public <T> T get(String organizationId, String id, Class<T> type) throws StorageException,
+    public void createContract(ContractBean contract) throws StorageException, AlreadyExistsException {
+        super.create(contract);
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#createGateway(io.apiman.manager.api.beans.gateways.GatewayBean)
+     */
+    @Override
+    public void createGateway(GatewayBean gateway) throws StorageException, AlreadyExistsException {
+        super.create(gateway);
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#createOrganization(io.apiman.manager.api.beans.orgs.OrganizationBean)
+     */
+    @Override
+    public void createOrganization(OrganizationBean organization) throws StorageException,
+            AlreadyExistsException {
+        super.create(organization);
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#createPlan(io.apiman.manager.api.beans.plans.PlanBean)
+     */
+    @Override
+    public void createPlan(PlanBean plan) throws StorageException, AlreadyExistsException {
+        super.create(plan);
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#createPlanVersion(io.apiman.manager.api.beans.plans.PlanVersionBean)
+     */
+    @Override
+    public void createPlanVersion(PlanVersionBean version) throws StorageException, AlreadyExistsException {
+        super.create(version);
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#createPolicy(io.apiman.manager.api.beans.policies.PolicyBean)
+     */
+    @Override
+    public void createPolicy(PolicyBean policy) throws StorageException, AlreadyExistsException {
+        super.create(policy);
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#createPolicyDefinition(io.apiman.manager.api.beans.policies.PolicyDefinitionBean)
+     */
+    @Override
+    public void createPolicyDefinition(PolicyDefinitionBean policyDef) throws StorageException,
+            AlreadyExistsException {
+        super.create(policyDef);
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#createRole(io.apiman.manager.api.beans.idm.RoleBean)
+     */
+    @Override
+    public void createRole(RoleBean role) throws StorageException, AlreadyExistsException {
+        super.create(role);
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#createService(io.apiman.manager.api.beans.services.ServiceBean)
+     */
+    @Override
+    public void createService(ServiceBean service) throws StorageException, AlreadyExistsException {
+        super.create(service);
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#createServiceVersion(io.apiman.manager.api.beans.services.ServiceVersionBean)
+     */
+    @Override
+    public void createServiceVersion(ServiceVersionBean version) throws StorageException,
+            AlreadyExistsException {
+        super.create(version);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#updateApplication(io.apiman.manager.api.beans.apps.ApplicationBean)
+     */
+    @Override
+    public void updateApplication(ApplicationBean application) throws StorageException, DoesNotExistException {
+        super.update(application);
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#updateApplicationVersion(io.apiman.manager.api.beans.apps.ApplicationVersionBean)
+     */
+    @Override
+    public void updateApplicationVersion(ApplicationVersionBean version) throws StorageException,
             DoesNotExistException {
-        return super.get(organizationId, id, type);
+        super.update(version);
     }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#updateContract(io.apiman.manager.api.beans.contracts.ContractBean)
+     */
+    @Override
+    public void updateContract(ContractBean contract) throws StorageException, DoesNotExistException {
+        super.update(contract);
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#updateGateway(io.apiman.manager.api.beans.gateways.GatewayBean)
+     */
+    @Override
+    public void updateGateway(GatewayBean gateway) throws StorageException, DoesNotExistException {
+        super.update(gateway);
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#updateOrganization(io.apiman.manager.api.beans.orgs.OrganizationBean)
+     */
+    @Override
+    public void updateOrganization(OrganizationBean organization) throws StorageException,
+            DoesNotExistException {
+        super.update(organization);
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#updatePlan(io.apiman.manager.api.beans.plans.PlanBean)
+     */
+    @Override
+    public void updatePlan(PlanBean plan) throws StorageException, DoesNotExistException {
+        super.update(plan);
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#updatePlanVersion(io.apiman.manager.api.beans.plans.PlanVersionBean)
+     */
+    @Override
+    public void updatePlanVersion(PlanVersionBean version) throws StorageException, DoesNotExistException {
+        super.update(version);
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#updatePolicy(io.apiman.manager.api.beans.policies.PolicyBean)
+     */
+    @Override
+    public void updatePolicy(PolicyBean policy) throws StorageException, DoesNotExistException {
+        super.update(policy);
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#updatePolicyDefinition(io.apiman.manager.api.beans.policies.PolicyDefinitionBean)
+     */
+    @Override
+    public void updatePolicyDefinition(PolicyDefinitionBean policyDef) throws StorageException,
+            DoesNotExistException {
+        super.update(policyDef);
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#updateRole(io.apiman.manager.api.beans.idm.RoleBean)
+     */
+    @Override
+    public void updateRole(RoleBean role) throws StorageException, DoesNotExistException {
+        super.update(role);
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#updateService(io.apiman.manager.api.beans.services.ServiceBean)
+     */
+    @Override
+    public void updateService(ServiceBean service) throws StorageException, DoesNotExistException {
+        super.update(service);
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#updateServiceVersion(io.apiman.manager.api.beans.services.ServiceVersionBean)
+     */
+    @Override
+    public void updateServiceVersion(ServiceVersionBean version) throws StorageException,
+            DoesNotExistException {
+        super.update(version);
+    }
+    
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#deleteOrganization(io.apiman.manager.api.beans.orgs.OrganizationBean)
+     */
+    @Override
+    public void deleteOrganization(OrganizationBean organization) throws StorageException,
+            DoesNotExistException {
+        super.delete(organization);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#deleteApplication(io.apiman.manager.api.beans.apps.ApplicationBean)
+     */
+    @Override
+    public void deleteApplication(ApplicationBean application) throws StorageException, DoesNotExistException {
+        super.delete(application);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#deleteApplicationVersion(io.apiman.manager.api.beans.apps.ApplicationVersionBean)
+     */
+    @Override
+    public void deleteApplicationVersion(ApplicationVersionBean version) throws StorageException,
+            DoesNotExistException {
+        super.delete(version);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#deleteContract(io.apiman.manager.api.beans.contracts.ContractBean)
+     */
+    @Override
+    public void deleteContract(ContractBean contract) throws StorageException, DoesNotExistException {
+        super.delete(contract);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#deleteService(io.apiman.manager.api.beans.services.ServiceBean)
+     */
+    @Override
+    public void deleteService(ServiceBean service) throws StorageException, DoesNotExistException {
+        super.delete(service);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#deleteServiceVersion(io.apiman.manager.api.beans.services.ServiceVersionBean)
+     */
+    @Override
+    public void deleteServiceVersion(ServiceVersionBean version) throws StorageException,
+            DoesNotExistException {
+        super.delete(version);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#deletePlan(io.apiman.manager.api.beans.plans.PlanBean)
+     */
+    @Override
+    public void deletePlan(PlanBean plan) throws StorageException, DoesNotExistException {
+        super.delete(plan);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#deletePlanVersion(io.apiman.manager.api.beans.plans.PlanVersionBean)
+     */
+    @Override
+    public void deletePlanVersion(PlanVersionBean version) throws StorageException, DoesNotExistException {
+        super.delete(version);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#deletePolicy(io.apiman.manager.api.beans.policies.PolicyBean)
+     */
+    @Override
+    public void deletePolicy(PolicyBean policy) throws StorageException, DoesNotExistException {
+        super.delete(policy);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#deleteGateway(io.apiman.manager.api.beans.gateways.GatewayBean)
+     */
+    @Override
+    public void deleteGateway(GatewayBean gateway) throws StorageException, DoesNotExistException {
+        super.delete(gateway);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#deletePolicyDefinition(io.apiman.manager.api.beans.policies.PolicyDefinitionBean)
+     */
+    @Override
+    public void deletePolicyDefinition(PolicyDefinitionBean policyDef) throws StorageException,
+            DoesNotExistException {
+        super.delete(policyDef);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#deleteRole(io.apiman.manager.api.beans.idm.RoleBean)
+     */
+    @Override
+    public void deleteRole(RoleBean role) throws StorageException, DoesNotExistException {
+        super.delete(role);
+    }
+    
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getOrganization(java.lang.String)
+     */
+    @Override
+    public OrganizationBean getOrganization(String id) throws StorageException, DoesNotExistException {
+        return super.get(id, OrganizationBean.class);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getApplication(java.lang.String, java.lang.String)
+     */
+    @Override
+    public ApplicationBean getApplication(String organizationId, String id) throws StorageException,
+            DoesNotExistException {
+        return super.get(organizationId, id, ApplicationBean.class);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getContract(java.lang.Long)
+     */
+    @Override
+    public ContractBean getContract(Long id) throws StorageException, DoesNotExistException {
+        return super.get(id, ContractBean.class);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getService(java.lang.String, java.lang.String)
+     */
+    @Override
+    public ServiceBean getService(String organizationId, String id) throws StorageException,
+            DoesNotExistException {
+        return super.get(organizationId, id, ServiceBean.class);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getPlan(java.lang.String, java.lang.String)
+     */
+    @Override
+    public PlanBean getPlan(String organizationId, String id) throws StorageException, DoesNotExistException {
+        return super.get(organizationId, id, PlanBean.class);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getPolicy(java.lang.Long)
+     */
+    @Override
+    public PolicyBean getPolicy(Long id) throws StorageException, DoesNotExistException {
+        return super.get(id, PolicyBean.class);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getGateway(java.lang.String)
+     */
+    @Override
+    public GatewayBean getGateway(String id) throws StorageException, DoesNotExistException {
+        return super.get(id, GatewayBean.class);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getPolicyDefinition(java.lang.String)
+     */
+    @Override
+    public PolicyDefinitionBean getPolicyDefinition(String id) throws StorageException, DoesNotExistException {
+        return super.get(id, PolicyDefinitionBean.class);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getRole(java.lang.String)
+     */
+    @Override
+    public RoleBean getRole(String id) throws StorageException, DoesNotExistException {
+        return super.get(id, RoleBean.class);
+    }
+
     
     /**
      * @see io.apiman.manager.api.jpa.AbstractJpaStorage#find(io.apiman.manager.api.beans.search.SearchCriteriaBean, java.lang.Class)

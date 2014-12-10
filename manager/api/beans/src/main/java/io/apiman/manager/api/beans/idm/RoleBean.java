@@ -29,11 +29,10 @@ import javax.persistence.Table;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
- * A single, qualified, role granted to the user.  Roles in the system
- * might include things like "Service Owner", "Application Developer", etc.
- * A role is qualified by an Organization ID.  The purpose of a role is
- * to grant permissions to a user.  A role might grant CREATE-APPLICATION 
- * and VIEW-SERVICE permissions for a particular Organization.
+ * A role definition.  The definition of the role determines whether the
+ * role is automatically granted to the user creating an org, as well as
+ * the specific permissions granted to users who are members of organizations
+ * via the role.
  *
  * @author eric.wittmann@redhat.com
  */

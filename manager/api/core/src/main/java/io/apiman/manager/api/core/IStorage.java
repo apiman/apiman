@@ -15,9 +15,18 @@
  */
 package io.apiman.manager.api.core;
 
+import io.apiman.manager.api.beans.apps.ApplicationBean;
 import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
+import io.apiman.manager.api.beans.contracts.ContractBean;
+import io.apiman.manager.api.beans.gateways.GatewayBean;
+import io.apiman.manager.api.beans.idm.RoleBean;
+import io.apiman.manager.api.beans.orgs.OrganizationBean;
+import io.apiman.manager.api.beans.plans.PlanBean;
 import io.apiman.manager.api.beans.plans.PlanVersionBean;
+import io.apiman.manager.api.beans.policies.PolicyBean;
+import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
+import io.apiman.manager.api.beans.services.ServiceBean;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
 import io.apiman.manager.api.core.exceptions.AlreadyExistsException;
 import io.apiman.manager.api.core.exceptions.DoesNotExistException;
@@ -30,113 +39,81 @@ import io.apiman.manager.api.core.exceptions.StorageException;
  */
 public interface IStorage {
     
-    /**
-     * Starts a transaction for the current thread.
-     * @throws StorageException
+    /*
+     * Transaction related methods
      */
+    
     public void beginTx() throws StorageException;
-    
-    /**
-     * Commits the currently active transaction.
-     * @throws StorageException
-     */
     public void commitTx() throws StorageException;
-    
-    /**
-     * Rolls back the currently active transaction.
-     * @throws StorageException
-     */
     public void rollbackTx();
 
-    /**
-     * Creates (stores) an entity.
-     * @param bean
-     * @throws StorageException
-     * @throws AlreadyExistsException
+    /*
+     * Various creation methods.  These are called by the REST layer to create stuff.
      */
-    public <T> void create(T bean) throws StorageException, AlreadyExistsException;
-
-    /**
-     * Updates an entity in the storage layer.
-     * @param bean
-     * @throws StorageException
-     * @throws DoesNotExistException
-     */
-    public <T> void update(T bean) throws StorageException, DoesNotExistException;
-
-    /**
-     * Delets an entity.
-     * @param bean
-     * @throws StorageException
-     * @throws DoesNotExistException
-     */
-    public <T> void delete(T bean) throws StorageException, DoesNotExistException;
-
-    /**
-     * Gets an entity by its unique id.
-     * @param id
-     * @param type
-     * @throws StorageException
-     * @throws DoesNotExistException
-     */
-    public <T> T get(Long id, Class<T> type) throws StorageException, DoesNotExistException;
-
-    /**
-     * Gets an entity by its unique id.
-     * @param id
-     * @param type
-     * @throws StorageException
-     * @throws DoesNotExistException
-     */
-    public <T> T get(String id, Class<T> type) throws StorageException, DoesNotExistException;
-
-    /**
-     * Gets an entity by its organization ID and unique ID.  Use this form when asking
-     * for an entity that cannot be uniquely identified by its ID field alone.
-     * @param organizationId
-     * @param id
-     * @param type
-     * @throws StorageException
-     * @throws DoesNotExistException
-     */
-    public <T> T get(String organizationId, String id, Class<T> type) throws StorageException, DoesNotExistException;
     
-    /**
-     * Gets an application version from the storage.
-     * @param organizationId
-     * @param applicationId
-     * @param version
-     * @throws StorageException
-     * @throws DoesNotExistException
-     */
-    public ApplicationVersionBean getApplicationVersion(String organizationId, String applicationId, String version) throws StorageException, DoesNotExistException;
-
-    /**
-     * Gets a service version from the storage.
-     * @param organizationId
-     * @param serviceId
-     * @param version
-     * @throws StorageException
-     * @throws DoesNotExistException
-     */
-    public ServiceVersionBean getServiceVersion(String organizationId, String serviceId, String version) throws StorageException, DoesNotExistException;
-
-    /**
-     * Gets a plan version from the storage.
-     * @param organizationId
-     * @param planId
-     * @param version
-     * @throws StorageException
-     * @throws DoesNotExistException
-     */
-    public PlanVersionBean getPlanVersion(String organizationId, String planId, String version) throws StorageException, DoesNotExistException;
-
-    /**
-     * Called to store an audit entry for the given bean.
-     * @param bean
-     * @param entry
-     * @throws StorageException
-     */
+    public void createOrganization(OrganizationBean organization) throws StorageException, AlreadyExistsException;
+    public void createApplication(ApplicationBean application) throws StorageException, AlreadyExistsException;
+    public void createApplicationVersion(ApplicationVersionBean version) throws StorageException, AlreadyExistsException;
+    public void createContract(ContractBean contract) throws StorageException, AlreadyExistsException;
+    public void createService(ServiceBean service) throws StorageException, AlreadyExistsException;
+    public void createServiceVersion(ServiceVersionBean version) throws StorageException, AlreadyExistsException;
+    public void createPlan(PlanBean plan) throws StorageException, AlreadyExistsException;
+    public void createPlanVersion(PlanVersionBean version) throws StorageException, AlreadyExistsException;
+    public void createPolicy(PolicyBean policy) throws StorageException, AlreadyExistsException;
+    public void createGateway(GatewayBean gateway) throws StorageException, AlreadyExistsException;
+    public void createPolicyDefinition(PolicyDefinitionBean policyDef) throws StorageException, AlreadyExistsException;
+    public void createRole(RoleBean role) throws StorageException, AlreadyExistsException;
     public void createAuditEntry(AuditEntryBean entry) throws StorageException;
+
+    /*
+     * Various update methods.  These are called by the REST layer to update stuff.
+     */
+
+    public void updateOrganization(OrganizationBean organization) throws StorageException, DoesNotExistException;
+    public void updateApplication(ApplicationBean application) throws StorageException, DoesNotExistException;
+    public void updateApplicationVersion(ApplicationVersionBean version) throws StorageException, DoesNotExistException;
+    public void updateContract(ContractBean contract) throws StorageException, DoesNotExistException;
+    public void updateService(ServiceBean service) throws StorageException, DoesNotExistException;
+    public void updateServiceVersion(ServiceVersionBean version) throws StorageException, DoesNotExistException;
+    public void updatePlan(PlanBean plan) throws StorageException, DoesNotExistException;
+    public void updatePlanVersion(PlanVersionBean version) throws StorageException, DoesNotExistException;
+    public void updatePolicy(PolicyBean policy) throws StorageException, DoesNotExistException;
+    public void updateGateway(GatewayBean gateway) throws StorageException, DoesNotExistException;
+    public void updatePolicyDefinition(PolicyDefinitionBean policyDef) throws StorageException, DoesNotExistException;
+    public void updateRole(RoleBean role) throws StorageException, DoesNotExistException;
+
+    /*
+     * Various delete methods.  These are called by the REST layer to delete stuff.
+     */
+
+    public void deleteOrganization(OrganizationBean organization) throws StorageException, DoesNotExistException;
+    public void deleteApplication(ApplicationBean application) throws StorageException, DoesNotExistException;
+    public void deleteApplicationVersion(ApplicationVersionBean version) throws StorageException, DoesNotExistException;
+    public void deleteContract(ContractBean contract) throws StorageException, DoesNotExistException;
+    public void deleteService(ServiceBean service) throws StorageException, DoesNotExistException;
+    public void deleteServiceVersion(ServiceVersionBean version) throws StorageException, DoesNotExistException;
+    public void deletePlan(PlanBean plan) throws StorageException, DoesNotExistException;
+    public void deletePlanVersion(PlanVersionBean version) throws StorageException, DoesNotExistException;
+    public void deletePolicy(PolicyBean policy) throws StorageException, DoesNotExistException;
+    public void deleteGateway(GatewayBean gateway) throws StorageException, DoesNotExistException;
+    public void deletePolicyDefinition(PolicyDefinitionBean policyDef) throws StorageException, DoesNotExistException;
+    public void deleteRole(RoleBean role) throws StorageException, DoesNotExistException;
+
+    /*
+     * Various get methods.  These are called by the REST layer to get stuff.
+     */
+
+    public OrganizationBean getOrganization(String id) throws StorageException, DoesNotExistException;
+    public ApplicationBean getApplication(String organizationId, String id) throws StorageException, DoesNotExistException;
+    public ApplicationVersionBean getApplicationVersion(String organizationId, String applicationId, String version) throws StorageException, DoesNotExistException;
+    public ContractBean getContract(Long id) throws StorageException, DoesNotExistException;
+    public ServiceBean getService(String organizationId, String id) throws StorageException, DoesNotExistException;
+    public ServiceVersionBean getServiceVersion(String organizationId, String applicationId, String version) throws StorageException, DoesNotExistException;
+    public PlanBean getPlan(String organizationId, String id) throws StorageException, DoesNotExistException;
+    public PlanVersionBean getPlanVersion(String organizationId, String applicationId, String version) throws StorageException, DoesNotExistException;
+    public PolicyBean getPolicy(Long id) throws StorageException, DoesNotExistException;
+    public GatewayBean getGateway(String id) throws StorageException, DoesNotExistException;
+    public PolicyDefinitionBean getPolicyDefinition(String id) throws StorageException, DoesNotExistException;
+    public RoleBean getRole(String id) throws StorageException, DoesNotExistException;
 
 }

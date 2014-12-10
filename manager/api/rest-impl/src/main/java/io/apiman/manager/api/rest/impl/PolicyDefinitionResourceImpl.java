@@ -80,7 +80,7 @@ public class PolicyDefinitionResourceImpl implements IPolicyDefinitionResource {
         try {
             storage.beginTx();
             // Store/persist the new policyDef
-            storage.create(bean);
+            storage.createPolicyDefinition(bean);
             storage.commitTx();
             return bean;
         } catch (AlreadyExistsException e) {
@@ -99,7 +99,7 @@ public class PolicyDefinitionResourceImpl implements IPolicyDefinitionResource {
     public PolicyDefinitionBean get(String policyDefinitionId) throws PolicyDefinitionNotFoundException, NotAuthorizedException {
         try {
             storage.beginTx();
-            PolicyDefinitionBean bean = storage.get(policyDefinitionId, PolicyDefinitionBean.class);
+            PolicyDefinitionBean bean = storage.getPolicyDefinition(policyDefinitionId);
             storage.commitTx();
             return bean;
         } catch (DoesNotExistException e) {
@@ -122,14 +122,14 @@ public class PolicyDefinitionResourceImpl implements IPolicyDefinitionResource {
         try {
             storage.beginTx();
             bean.setId(policyDefinitionId);
-            PolicyDefinitionBean pdb = storage.get(policyDefinitionId, PolicyDefinitionBean.class);
+            PolicyDefinitionBean pdb = storage.getPolicyDefinition(policyDefinitionId);
             if (bean.getName() != null)
                 pdb.setName(bean.getName());
             if (bean.getDescription() != null)
                 pdb.setDescription(bean.getDescription());
             if (bean.getIcon() != null)
                 pdb.setIcon(bean.getIcon());
-            storage.update(pdb);
+            storage.updatePolicyDefinition(pdb);
             storage.commitTx();
         } catch (DoesNotExistException e) {
             storage.rollbackTx();
@@ -150,8 +150,8 @@ public class PolicyDefinitionResourceImpl implements IPolicyDefinitionResource {
             throw ExceptionFactory.notAuthorizedException();
         try {
             storage.beginTx();
-            PolicyDefinitionBean pdb = storage.get(policyDefinitionId, PolicyDefinitionBean.class);
-            storage.delete(pdb);
+            PolicyDefinitionBean pdb = storage.getPolicyDefinition(policyDefinitionId);
+            storage.deletePolicyDefinition(pdb);
             storage.commitTx();
         } catch (DoesNotExistException e) {
             storage.rollbackTx();
