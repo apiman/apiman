@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.ui.client.local.pages;
 
+import io.apiman.manager.api.beans.idm.PermissionType;
 import io.apiman.manager.api.beans.plans.PlanBean;
 import io.apiman.manager.api.beans.plans.PlanVersionBean;
 import io.apiman.manager.api.beans.summary.PlanVersionSummaryBean;
@@ -77,6 +78,22 @@ public abstract class AbstractPlanPage extends AbstractPage {
      * Constructor.
      */
     public AbstractPlanPage() {
+    }
+
+    /**
+     * @see io.apiman.manager.ui.client.local.pages.AbstractPage#isAuthorized()
+     */
+    @Override
+    protected boolean isAuthorized() {
+        return hasPermission(PermissionType.planView);
+    }
+    
+    /**
+     * @see io.apiman.manager.ui.client.local.pages.AbstractPage#getOrganizationId()
+     */
+    @Override
+    protected String getOrganizationId() {
+        return org;
     }
     
     @PostConstruct

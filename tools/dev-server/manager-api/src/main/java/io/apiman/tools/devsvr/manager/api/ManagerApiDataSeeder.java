@@ -145,7 +145,6 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         org.setModifiedOn(new Date());
         org.setModifiedBy("admin");
         storage.createOrganization(org);
-        OrganizationBean jbossOrg = org;
         
         // Create Apereo Bedework org
         org = new OrganizationBean();
@@ -176,7 +175,7 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         plan.setId("Platinum");
         plan.setName("Platinum");
         plan.setDescription("Provides subscribing applications with full access to the Services in this Organization.");
-        plan.setOrganization(jbossOrg);
+        plan.setOrganization(storage.getOrganization("JBossOverlord"));
         plan.setCreatedBy("admin");
         plan.setCreatedOn(new Date());
         storage.createPlan(plan);
@@ -194,7 +193,7 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         plan.setId("Gold");
         plan.setName("Gold");
         plan.setDescription("Provides subscribing applications with full access to a subset of Services. Also allows partial (rate limited) access to the rest.");
-        plan.setOrganization(jbossOrg);
+        plan.setOrganization(storage.getOrganization("JBossOverlord"));
         plan.setCreatedBy("admin");
         plan.setCreatedOn(new Date());
         storage.createPlan(plan);
@@ -217,12 +216,15 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         pvb.setModifiedOn(new Date());
         storage.createPlanVersion(pvb);
 
+        storage.commitTx();
+        storage.beginTx();
+
         // Create some applications
         ApplicationBean app = new ApplicationBean();
         app.setId("dtgov");
         app.setName("dtgov");
         app.setDescription("This is the official Git repository for the Governance DTGov project, which is intended to be a part of the JBoss Overlord.");
-        app.setOrganization(jbossOrg);
+        app.setOrganization(storage.getOrganization("JBossOverlord"));
         app.setCreatedBy("admin");
         app.setCreatedOn(new Date());
         storage.createApplication(app);
@@ -240,7 +242,7 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         app.setId("rtgov");
         app.setName("rtgov");
         app.setDescription("This component provides the infrastructure to capture service activity information and then correlate...");
-        app.setOrganization(jbossOrg);
+        app.setOrganization(storage.getOrganization("JBossOverlord"));
         app.setCreatedBy("admin");
         app.setCreatedOn(new Date());
         storage.createApplication(app);
@@ -258,7 +260,7 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         app.setId("gadget-server");
         app.setName("gadget-server");
         app.setDescription("This is a project that builds on the Apache Shindig as the open social gadget containers.");
-        app.setOrganization(jbossOrg);
+        app.setOrganization(storage.getOrganization("JBossOverlord"));
         app.setCreatedBy("admin");
         app.setCreatedOn(new Date());
         storage.createApplication(app);
@@ -272,12 +274,15 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         avb.setModifiedOn(new Date());
         storage.createApplicationVersion(avb);
         
+        storage.commitTx();
+        storage.beginTx();
+
         // Create some services
         ServiceBean service = new ServiceBean();
         service.setId("s-ramp-api");
         service.setName("s-ramp-api");
         service.setDescription("Allows S-RAMP repository users to communicate with the repository via an Atom based API.");
-        service.setOrganization(jbossOrg);
+        service.setOrganization(storage.getOrganization("JBossOverlord"));
         service.setCreatedOn(new Date());
         service.setCreatedBy("admin");
         storage.createService(service);
@@ -303,6 +308,9 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         svb.addPlan(spb);
         storage.createServiceVersion(svb);
         
+        storage.commitTx();
+        storage.beginTx();
+
         // Create some policy definitions
         PolicyDefinitionBean whitelistPolicyDef = new PolicyDefinitionBean();
         whitelistPolicyDef.setId("IPWhitelistPolicy");

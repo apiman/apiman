@@ -508,9 +508,19 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * @see io.apiman.manager.api.core.IStorageQuery#findOrganizations(io.apiman.manager.api.beans.search.SearchCriteriaBean)
      */
     @Override
-    public SearchResultsBean<OrganizationBean> findOrganizations(SearchCriteriaBean criteria)
+    public SearchResultsBean<OrganizationSummaryBean> findOrganizations(SearchCriteriaBean criteria)
             throws StorageException {
-        SearchResultsBean<OrganizationBean> rval = find(criteria, OrganizationBean.class);
+        SearchResultsBean<OrganizationBean> orgs = find(criteria, OrganizationBean.class);
+        SearchResultsBean<OrganizationSummaryBean> rval = new SearchResultsBean<OrganizationSummaryBean>();
+        rval.setTotalSize(orgs.getTotalSize());
+        List<OrganizationBean> beans = orgs.getBeans();
+        for (OrganizationBean bean : beans) {
+            OrganizationSummaryBean osb = new OrganizationSummaryBean();
+            osb.setId(bean.getId());
+            osb.setName(bean.getName());
+            osb.setDescription(bean.getDescription());
+            rval.getBeans().add(osb);
+        }
         return rval;
     }
     

@@ -15,7 +15,6 @@
  */
 package io.apiman.manager.ui.client.local.pages;
 
-import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaFilterBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
@@ -28,9 +27,7 @@ import io.apiman.manager.ui.client.local.services.rest.IRestInvokerCallback;
 import io.apiman.manager.ui.client.local.util.MultimapUtil;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -79,8 +76,7 @@ public class ConsumerOrgsPage extends AbstractPage {
     @Inject
     TransitionTo<ConsumerOrgsPage> toSelf;
 
-    protected List<OrganizationBean> orgBeans;
-    protected Set<String> memberOrgs = new HashSet<String>();
+    protected List<OrganizationSummaryBean> orgBeans;
 
     /**
      * Constructor.
@@ -112,9 +108,9 @@ public class ConsumerOrgsPage extends AbstractPage {
         int rval = super.doLoadPageData();
         if (query != null && !query.trim().isEmpty()) {
             doQuery(query);
-            rval+=2;
+            rval += 1;
         } else {
-            orgBeans = new ArrayList<OrganizationBean>();
+            orgBeans = new ArrayList<OrganizationSummaryBean>();
         }
         return rval;
     }
@@ -129,9 +125,9 @@ public class ConsumerOrgsPage extends AbstractPage {
         criteria.setPage(1);
         criteria.setOrder("name", true); //$NON-NLS-1$
         criteria.addFilter("name", "*" + query + "*", SearchCriteriaFilterBean.OPERATOR_LIKE); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        rest.findOrganizations(criteria, new IRestInvokerCallback<SearchResultsBean<OrganizationBean>>() {
+        rest.findOrganizations(criteria, new IRestInvokerCallback<SearchResultsBean<OrganizationSummaryBean>>() {
             @Override
-            public void onSuccess(SearchResultsBean<OrganizationBean> response) {
+            public void onSuccess(SearchResultsBean<OrganizationSummaryBean> response) {
                 orgBeans = response.getBeans();
                 dataPacketLoaded();
             }
@@ -140,21 +136,6 @@ public class ConsumerOrgsPage extends AbstractPage {
                 dataPacketError(error);
             }
         });
-        rest.getCurrentUserOrgs(new IRestInvokerCallback<List<OrganizationSummaryBean>>() {
-            @Override
-            public void onSuccess(List<OrganizationSummaryBean> response) {
-                memberOrgs.clear();
-                for (OrganizationSummaryBean org : response) {
-                    memberOrgs.add(org.getId());
-                }
-                dataPacketLoaded();
-            }
-            @Override
-            public void onError(Throwable error) {
-                dataPacketError(error);
-            }
-        });
-
     }
     
     /**
@@ -167,7 +148,7 @@ public class ConsumerOrgsPage extends AbstractPage {
         } else {
             searchBox.setValue(""); //$NON-NLS-1$
         }
-        orgs.setMemberOrgs(memberOrgs);
+        orgs.setMemberOrgs(getCurrentUserOrgs());
         orgs.setValue(orgBeans);
 
         String dashHref = navHelper.createHrefToPage(DashboardPage.class, MultimapUtil.emptyMap());

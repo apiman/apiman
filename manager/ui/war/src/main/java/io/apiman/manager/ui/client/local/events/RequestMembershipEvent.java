@@ -16,7 +16,7 @@
 
 package io.apiman.manager.ui.client.local.events;
 
-import io.apiman.manager.api.beans.orgs.OrganizationBean;
+import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
 
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
@@ -64,7 +64,7 @@ public class RequestMembershipEvent extends GwtEvent<RequestMembershipEvent.Hand
      * @param source
      * @param organization
      */
-    public static RequestMembershipEvent fire(HasHandlers source, OrganizationBean organization) {
+    public static RequestMembershipEvent fire(HasHandlers source, OrganizationSummaryBean organization) {
         RequestMembershipEvent event = new RequestMembershipEvent(organization);
         if (TYPE != null)
             source.fireEvent(event);
@@ -83,13 +83,13 @@ public class RequestMembershipEvent extends GwtEvent<RequestMembershipEvent.Hand
         return TYPE;
     }
 
-    private OrganizationBean organization;
+    private OrganizationSummaryBean organization;
 
     /**
      * Constructor.
      * @param organization
      */
-    public RequestMembershipEvent(OrganizationBean organization) {
+    public RequestMembershipEvent(OrganizationSummaryBean organization) {
         this.setOrganization(organization);
     }
 
@@ -112,14 +112,14 @@ public class RequestMembershipEvent extends GwtEvent<RequestMembershipEvent.Hand
     /**
      * @return the organization
      */
-    public OrganizationBean getOrganization() {
+    public OrganizationSummaryBean getOrganization() {
         return organization;
     }
 
     /**
      * @param organization the organization to set
      */
-    public void setOrganization(OrganizationBean organization) {
+    public void setOrganization(OrganizationSummaryBean organization) {
         this.organization = organization;
     }
 }

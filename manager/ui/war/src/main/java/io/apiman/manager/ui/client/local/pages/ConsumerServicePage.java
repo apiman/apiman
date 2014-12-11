@@ -15,7 +15,6 @@
  */
 package io.apiman.manager.ui.client.local.pages;
 
-import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.beans.policies.PolicyChainBean;
 import io.apiman.manager.api.beans.services.ServiceBean;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
@@ -80,7 +79,6 @@ public class ConsumerServicePage extends AbstractPage {
     @Inject
     private TransitionTo<NewContractPage> toNewContract;
 
-    protected OrganizationBean organizationBean;
     protected ServiceBean serviceBean;
     protected List<ServiceVersionSummaryBean> versionBeans;
     protected ServiceVersionBean versionBean;
@@ -120,7 +118,7 @@ public class ConsumerServicePage extends AbstractPage {
      * @param planId
      */
     protected void onShowPolicyChain(final String planId) {
-        rest.getServicePlanPolicyChain(organizationBean.getId(), serviceBean.getId(), versionBean.getVersion(), planId, new IRestInvokerCallback<PolicyChainBean>() {
+        rest.getServicePlanPolicyChain(org, serviceBean.getId(), versionBean.getVersion(), planId, new IRestInvokerCallback<PolicyChainBean>() {
             @Override
             public void onSuccess(PolicyChainBean response) {
                 plans.renderPolicyChain(planId, response);
@@ -166,6 +164,7 @@ public class ConsumerServicePage extends AbstractPage {
                 if (version == null) {
                     loadServiceVersion(response.get(0).getVersion());
                 }
+                dataPacketLoaded();
             }
             @Override
             public void onError(Throwable error) {
@@ -221,7 +220,7 @@ public class ConsumerServicePage extends AbstractPage {
     @Override
     protected void renderPage() {
         serviceCard.setValue(versionBean);
-        serviceCard.setOrganization(organizationBean);
+        serviceCard.setOrganization(versionBean.getService().getOrganization());
         serviceCard.setVersions(versionBeans);
         serviceCard.selectVersion(versionBean.getVersion());
         

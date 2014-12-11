@@ -50,6 +50,7 @@ import io.apiman.manager.api.beans.services.ServiceGatewayBean;
 import io.apiman.manager.api.beans.services.ServicePlanBean;
 import io.apiman.manager.api.beans.services.ServiceStatus;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
+import io.apiman.manager.api.beans.summary.ApiEntryBean;
 import io.apiman.manager.api.beans.summary.ApiRegistryBean;
 import io.apiman.manager.api.beans.summary.ApplicationSummaryBean;
 import io.apiman.manager.api.beans.summary.ApplicationVersionSummaryBean;
@@ -96,6 +97,7 @@ import io.apiman.manager.api.rest.contract.exceptions.ServiceVersionNotFoundExce
 import io.apiman.manager.api.rest.contract.exceptions.SystemErrorException;
 import io.apiman.manager.api.rest.contract.exceptions.UserNotFoundException;
 import io.apiman.manager.api.rest.impl.audit.AuditUtils;
+import io.apiman.manager.api.rest.impl.i18n.Messages;
 import io.apiman.manager.api.rest.impl.util.ExceptionFactory;
 import io.apiman.manager.api.security.ISecurityContext;
 
@@ -141,6 +143,23 @@ public class OrganizationResourceImpl implements IOrganizationResource {
      */
     @Override
     public OrganizationBean create(OrganizationBean bean) throws OrganizationAlreadyExistsException {
+        List<RoleBean> autoGrantedRoles = null;
+        SearchCriteriaBean criteria = new SearchCriteriaBean();
+        criteria.setPage(1);
+        criteria.setPageSize(100);
+        criteria.addFilter("autoGrant", "true", SearchCriteriaFilterBean.OPERATOR_BOOL_EQ); //$NON-NLS-1$ //$NON-NLS-2$
+        try {
+            autoGrantedRoles = idmStorage.findRoles(criteria).getBeans();
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+        
+        if ("true".equals(System.getProperty("apiman.manager.require-auto-granted-org", "true"))) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            if (autoGrantedRoles.isEmpty()) {
+                throw new SystemErrorException(Messages.i18n.format("OrganizationResourceImpl.NoAutoGrantRoleAvailable")); //$NON-NLS-1$
+            }
+        }
+
         bean.setId(BeanUtils.idFromName(bean.getName()));
         bean.setCreatedOn(new Date());
         bean.setCreatedBy(securityContext.getCurrentUser());
@@ -154,11 +173,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.commitTx();
 
             // Auto-grant memberships in roles to the creator of the organization
-            SearchCriteriaBean criteria = new SearchCriteriaBean();
-            criteria.setPage(1);
-            criteria.setPageSize(100);
-            criteria.addFilter("autoGrant", "true", SearchCriteriaFilterBean.OPERATOR_BOOL_EQ); //$NON-NLS-1$ //$NON-NLS-2$
-            List<RoleBean> autoGrantedRoles = idmStorage.findRoles(criteria).getBeans();
             for (RoleBean roleBean : autoGrantedRoles) {
                 String currentUser = securityContext.getCurrentUser();
                 String orgId = bean.getId();
@@ -184,8 +198,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
      */
     @Override
     public OrganizationBean get(String organizationId) throws OrganizationNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.orgView, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
         try {
             storage.beginTx();
             OrganizationBean organizationBean = storage.getOrganization(organizationId);
@@ -236,8 +248,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     @Override
     public SearchResultsBean<AuditEntryBean> activity(String organizationId, int page, int pageSize)
             throws OrganizationNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.orgView, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
         if (page <= 1) {
             page = 1;
         }
@@ -298,8 +308,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     @Override
     public ApplicationBean getApp(String organizationId, String applicationId)
             throws ApplicationNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.appView, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
         try {
             storage.beginTx();
             ApplicationBean applicationBean = storage.getApplication(organizationId, applicationId);
@@ -320,8 +328,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     @Override
     public SearchResultsBean<AuditEntryBean> getAppActivity(String organizationId, String applicationId,
             int page, int pageSize) throws ApplicationNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.appView, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
         if (page <= 1) {
             page = 1;
         }
@@ -346,9 +352,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     @Override
     public List<ApplicationSummaryBean> listApps(String organizationId) throws OrganizationNotFoundException,
             NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.appView, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
-        
         get(organizationId);
 
         try {
@@ -392,7 +395,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     @Override
     public ApplicationVersionBean createAppVersion(String organizationId, String applicationId, ApplicationVersionBean bean)
             throws ApplicationNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.svcEdit, organizationId))
+        if (!securityContext.hasPermission(PermissionType.appEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
 
         try {
@@ -431,8 +434,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     @Override
     public ApplicationVersionBean getAppVersion(String organizationId, String applicationId, String version)
             throws ApplicationVersionNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
         try {
             storage.beginTx();
             ApplicationVersionBean applicationVersion = storage.getApplicationVersion(organizationId, applicationId, version);
@@ -459,8 +460,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     public SearchResultsBean<AuditEntryBean> getAppVersionActivity(String organizationId,
             String applicationId, String version, int page, int pageSize)
             throws ApplicationVersionNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.appView, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
         if (page <= 1) {
             page = 1;
         }
@@ -485,7 +484,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     @Override
     public void updateAppVersion(String organizationId, String applicationId, String version, ApplicationVersionBean bean)
             throws ApplicationVersionNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.svcEdit, organizationId))
+        if (!securityContext.hasPermission(PermissionType.appEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
         
         ApplicationVersionBean avb = getAppVersion(organizationId, applicationId, version);
@@ -528,9 +527,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     @Override
     public List<ApplicationVersionSummaryBean> listAppVersions(String organizationId, String applicationId)
             throws ApplicationNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
-        
         // Try to get the application first - will throw a ApplicationNotFoundException if not found.
         getApp(organizationId, applicationId);
         
@@ -623,14 +619,20 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     @Override
     public ContractBean getContract(String organizationId, String applicationId, String version,
             Long contractId) throws ApplicationNotFoundException, ContractNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
+        boolean hasPermission = securityContext.hasPermission(PermissionType.appView, organizationId);
         try {
             storage.beginTx();
             ContractBean contract = storage.getContract(contractId);
             if (contract == null)
                 throw ExceptionFactory.contractNotFoundException(contractId);
+            
             storage.commitTx();
+
+            // Hide some data if the user doesn't have the appView permission
+            if (!hasPermission) {
+                contract.setKey(null);
+            }
+
             return contract;
         } catch (DoesNotExistException e) {
             storage.rollbackTx();
@@ -673,14 +675,22 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     @Override
     public List<ContractSummaryBean> getApplicationVersionContracts(String organizationId, String applicationId, String version)
             throws ApplicationNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.appView, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
-        
+        boolean hasPermission = securityContext.hasPermission(PermissionType.appView, organizationId);
+
         // Try to get the application first - will throw a ApplicationNotFoundException if not found.
         getAppVersion(organizationId, applicationId, version);
         
         try {
-            return query.getApplicationContracts(organizationId, applicationId, version);
+            List<ContractSummaryBean> contracts = query.getApplicationContracts(organizationId, applicationId, version);
+
+            // Hide some stuff if the user doesn't have the appView permission
+            if (!hasPermission) {
+                for (ContractSummaryBean contract : contracts) {
+                    contract.setKey(null);
+                }
+            }
+            
+            return contracts;
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
@@ -692,14 +702,22 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     @Override
     public ApiRegistryBean getApiRegistry(String organizationId, String applicationId, String version)
             throws ApplicationNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.appView, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
-
+        boolean hasPermission = securityContext.hasPermission(PermissionType.appView, organizationId);
         // Try to get the application first - will throw a ApplicationNotFoundException if not found.
         getAppVersion(organizationId, applicationId, version);
         
         try {
-            return query.getApiRegistry(organizationId, applicationId, version);
+            ApiRegistryBean apiRegistry = query.getApiRegistry(organizationId, applicationId, version);
+
+            // Hide some stuff if the user doesn't have the appView permission
+            if (!hasPermission) {
+                List<ApiEntryBean> apis = apiRegistry.getApis();
+                for (ApiEntryBean api : apis) {
+                    api.setApiKey(null);
+                }
+            }
+
+            return apiRegistry;
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
@@ -728,13 +746,17 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     public PolicyBean getAppPolicy(String organizationId, String applicationId, String version, long policyId)
             throws OrganizationNotFoundException, ApplicationVersionNotFoundException,
             PolicyNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.appView, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
-        
+        boolean hasPermission = securityContext.hasPermission(PermissionType.appView, organizationId);
         // Make sure the app version exists
         getAppVersion(organizationId, applicationId, version);
 
-        return doGetPolicy(PolicyType.Application, organizationId, applicationId, version, policyId);
+        PolicyBean policy = doGetPolicy(PolicyType.Application, organizationId, applicationId, version, policyId);
+        
+        if (!hasPermission) {
+            policy.setConfiguration(null);
+        }
+        
+        return policy;
     }
 
     /**
@@ -805,9 +827,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     @Override
     public List<PolicySummaryBean> listAppPolicies(String organizationId, String applicationId, String version)
             throws OrganizationNotFoundException, ApplicationVersionNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.appView, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
-
         // Try to get the application first - will throw an exception if not found.
         getAppVersion(organizationId, applicationId, version);
 
@@ -825,7 +844,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     public void reorderApplicationPolicies(String organizationId, String applicationId, String version,
             PolicyChainBean policyChain) throws OrganizationNotFoundException,
             ApplicationVersionNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.svcEdit, organizationId))
+        if (!securityContext.hasPermission(PermissionType.appEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
 
         // Make sure the app version exists.
@@ -890,8 +909,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     @Override
     public ServiceBean getService(String organizationId, String serviceId)
             throws ServiceNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
         try {
             storage.beginTx();
             ServiceBean bean = storage.getService(organizationId, serviceId);
@@ -912,8 +929,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     @Override
     public SearchResultsBean<AuditEntryBean> getServiceActivity(String organizationId, String serviceId,
             int page, int pageSize) throws ServiceNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
         if (page <= 1) {
             page = 1;
         }
@@ -938,9 +953,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     @Override
     public List<ServiceSummaryBean> listServices(String organizationId) throws OrganizationNotFoundException,
             NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
-        
         // make sure the org exists
         get(organizationId);
 
@@ -1044,8 +1056,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     @Override
     public ServiceVersionBean getServiceVersion(String organizationId, String serviceId, String version)
             throws ServiceVersionNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
+        boolean hasPermission = securityContext.hasPermission(PermissionType.svcView, organizationId);
         try {
             storage.beginTx();
             ServiceVersionBean serviceVersion = storage.getServiceVersion(organizationId, serviceId, version);
@@ -1053,6 +1064,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 throw ExceptionFactory.serviceVersionNotFoundException(serviceId, version);
             }
             storage.commitTx();
+            if (!hasPermission) {
+                serviceVersion.setGateways(null);
+            }
             return serviceVersion;
         } catch (ServiceVersionNotFoundException e) {
             storage.rollbackTx();
@@ -1073,8 +1087,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     public SearchResultsBean<AuditEntryBean> getServiceVersionActivity(String organizationId,
             String serviceId, String version, int page, int pageSize) throws ServiceVersionNotFoundException,
             NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
         if (page <= 1) {
             page = 1;
         }
@@ -1136,6 +1148,18 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         }
         
         try {
+            if (svb.getGateways() == null || svb.getGateways().isEmpty()) {
+                GatewaySummaryBean gateway = getSingularGateway();
+                if (gateway != null) {
+                    if (svb.getGateways() == null) {
+                        svb.setGateways(new HashSet<ServiceGatewayBean>());
+                        ServiceGatewayBean sgb = new ServiceGatewayBean();
+                        sgb.setGatewayId(gateway.getId());
+                        svb.getGateways().add(sgb);
+                    }
+                }
+            }
+
             if (serviceValidator.isReady(svb)) {
                 svb.setStatus(ServiceStatus.Ready);
             }
@@ -1166,9 +1190,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     @Override
     public List<ServiceVersionSummaryBean> listServiceVersions(String organizationId, String serviceId)
             throws ServiceNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
-        
         // Try to get the service first - will throw a ServiceNotFoundException if not found.
         getService(organizationId, serviceId);
         
@@ -1187,9 +1208,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     @Override
     public List<ServicePlanSummaryBean> getServiceVersionPlans(String organizationId, String serviceId,
             String version) throws ServiceVersionNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
-        
         // Ensure the version exists first.
         getServiceVersion(organizationId, serviceId, version);
         
@@ -1225,13 +1243,17 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     public PolicyBean getServicePolicy(String organizationId, String serviceId, String version, long policyId)
             throws OrganizationNotFoundException, ServiceVersionNotFoundException,
             PolicyNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
         
         // Make sure the service exists
         getServiceVersion(organizationId, serviceId, version);
 
-        return doGetPolicy(PolicyType.Service, organizationId, serviceId, version, policyId);
+        PolicyBean policy = doGetPolicy(PolicyType.Service, organizationId, serviceId, version, policyId);
+        
+        if (!securityContext.hasPermission(PermissionType.svcView, organizationId)) {
+            policy.setConfiguration(null);
+        }
+        
+        return policy;
     }
 
     /**
@@ -1302,9 +1324,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     @Override
     public List<PolicySummaryBean> listServicePolicies(String organizationId, String serviceId, String version)
             throws OrganizationNotFoundException, ServiceVersionNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
-
         // Try to get the service first - will throw an exception if not found.
         getServiceVersion(organizationId, serviceId, version);
 
@@ -1351,9 +1370,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     @Override
     public PolicyChainBean getServicePolicyChain(String organizationId, String serviceId, String version,
             String planId) throws ServiceVersionNotFoundException, PlanNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
-
         // Try to get the service first - will throw an exception if not found.
         ServiceVersionBean svb = getServiceVersion(organizationId, serviceId, version);
 
@@ -1390,8 +1406,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     public List<ContractSummaryBean> getServiceVersionContracts(String organizationId,
             String serviceId, String version, int page, int pageSize) throws ServiceVersionNotFoundException,
             NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
         if (page <= 1) {
             page = 1;
         }
@@ -1403,7 +1417,15 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         getServiceVersion(organizationId, serviceId, version);
         
         try {
-            return query.getServiceContracts(organizationId, serviceId, version, page, pageSize);
+            List<ContractSummaryBean> contracts = query.getServiceContracts(organizationId, serviceId, version, page, pageSize);
+
+            for (ContractSummaryBean contract : contracts) {
+                if (!securityContext.hasPermission(PermissionType.appView, contract.getAppOrganizationId())) {
+                    contract.setKey(null);
+                }
+            }
+
+            return contracts;
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
@@ -1416,7 +1438,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     @Override
     public PlanBean createPlan(String organizationId, PlanBean bean)
             throws OrganizationNotFoundException, PlanAlreadyExistsException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.appEdit, organizationId))
+        if (!securityContext.hasPermission(PermissionType.planEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
         
         PlanBean newPlan = new PlanBean();
@@ -1452,8 +1474,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     @Override
     public PlanBean getPlan(String organizationId, String planId)
             throws PlanNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.appView, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
         try {
             storage.beginTx();
             PlanBean bean = storage.getPlan(organizationId, planId);
@@ -1474,8 +1494,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     @Override
     public SearchResultsBean<AuditEntryBean> getPlanActivity(String organizationId, String planId, int page, int pageSize)
             throws PlanNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.planView, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
         if (page <= 1) {
             page = 1;
         }
@@ -1500,9 +1518,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     @Override
     public List<PlanSummaryBean> listPlans(String organizationId) throws OrganizationNotFoundException,
             NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.appView, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
-        
         get(organizationId);
 
         try {
@@ -1518,7 +1533,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     @Override
     public void updatePlan(String organizationId, String planId, PlanBean bean)
             throws PlanNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.appEdit, organizationId))
+        if (!securityContext.hasPermission(PermissionType.planEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
         EntityUpdatedData auditData = new EntityUpdatedData();
         try {
@@ -1547,7 +1562,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     @Override
     public PlanVersionBean createPlanVersion(String organizationId, String planId, PlanVersionBean bean)
             throws PlanNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.svcEdit, organizationId))
+        if (!securityContext.hasPermission(PermissionType.planEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
         try {
             storage.beginTx();
@@ -1580,8 +1595,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     @Override
     public PlanVersionBean getPlanVersion(String organizationId, String planId, String version)
             throws PlanVersionNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
         try {
             storage.beginTx();
             PlanVersionBean planVersion = storage.getPlanVersion(organizationId, planId, version);
@@ -1609,8 +1622,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     public SearchResultsBean<AuditEntryBean> getPlanVersionActivity(String organizationId, String planId,
             String version, int page, int pageSize) throws PlanVersionNotFoundException,
             NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.planView, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
         if (page <= 1) {
             page = 1;
         }
@@ -1635,7 +1646,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     @Override
     public void updatePlanVersion(String organizationId, String planId, String version, PlanVersionBean bean)
             throws PlanVersionNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.svcEdit, organizationId))
+        if (!securityContext.hasPermission(PermissionType.planEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
         // TODO throw error if version is not in the right state
         PlanVersionBean pvb = getPlanVersion(organizationId, planId, version);
@@ -1660,9 +1671,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     @Override
     public List<PlanVersionSummaryBean> listPlanVersions(String organizationId, String planId)
             throws PlanNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
-        
         // Try to get the plan first - will throw a PlanNotFoundException if not found.
         getPlan(organizationId, planId);
         
@@ -1682,7 +1690,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     public PolicyBean createPlanPolicy(String organizationId, String planId, String version,
             PolicyBean bean) throws OrganizationNotFoundException, PlanVersionNotFoundException,
             NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.appEdit, organizationId))
+        if (!securityContext.hasPermission(PermissionType.planEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
         
         // Make sure the plan version exists
@@ -1698,13 +1706,18 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     public PolicyBean getPlanPolicy(String organizationId, String planId, String version, long policyId)
             throws OrganizationNotFoundException, PlanVersionNotFoundException,
             PolicyNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.appView, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
-        
+        boolean hasPermission = securityContext.hasPermission(PermissionType.planView, organizationId);
+
         // Make sure the plan version exists
         getPlanVersion(organizationId, planId, version);
 
-        return doGetPolicy(PolicyType.Plan, organizationId, planId, version, policyId);
+        PolicyBean policy = doGetPolicy(PolicyType.Plan, organizationId, planId, version, policyId);
+        
+        if (!hasPermission) {
+            policy.setConfiguration(null);
+        }
+
+        return policy;
     }
 
     /**
@@ -1714,7 +1727,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     public void updatePlanPolicy(String organizationId, String planId, String version,
             long policyId, PolicyBean bean) throws OrganizationNotFoundException,
             PlanVersionNotFoundException, PolicyNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.appEdit, organizationId))
+        if (!securityContext.hasPermission(PermissionType.planEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
 
         // Make sure the plan version exists
@@ -1748,7 +1761,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     public void deletePlanPolicy(String organizationId, String planId, String version, long policyId)
             throws OrganizationNotFoundException, PlanVersionNotFoundException,
             PolicyNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.appEdit, organizationId))
+        if (!securityContext.hasPermission(PermissionType.planEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
 
         // Make sure the plan version exists
@@ -1775,9 +1788,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     @Override
     public List<PolicySummaryBean> listPlanPolicies(String organizationId, String planId, String version)
             throws OrganizationNotFoundException, PlanVersionNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.appView, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
-
         // Try to get the plan first - will throw an exception if not found.
         getPlanVersion(organizationId, planId, version);
 
@@ -1795,7 +1805,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     public void reorderPlanPolicies(String organizationId, String planId, String version,
             PolicyChainBean policyChain) throws OrganizationNotFoundException,
             PlanVersionNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.svcEdit, organizationId))
+        if (!securityContext.hasPermission(PermissionType.planEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
 
         // Make sure the plan version exists
@@ -1887,7 +1897,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     @Override
     public void grant(String organizationId, GrantRolesBean bean) throws OrganizationNotFoundException,
             RoleNotFoundException, UserNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.orgEdit, organizationId))
+        if (!securityContext.hasPermission(PermissionType.orgAdmin, organizationId))
             throw ExceptionFactory.notAuthorizedException();
         // Verify that the references are valid.
         get(organizationId);
@@ -1927,7 +1937,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     public void revoke(String organizationId, String roleId, String userId)
             throws OrganizationNotFoundException, RoleNotFoundException, UserNotFoundException,
             NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.orgEdit, organizationId))
+        if (!securityContext.hasPermission(PermissionType.orgAdmin, organizationId))
             throw ExceptionFactory.notAuthorizedException();
         get(organizationId);
         users.get(userId);
@@ -1964,7 +1974,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     @Override
     public void revokeAll(String organizationId, String userId) throws OrganizationNotFoundException,
             RoleNotFoundException, UserNotFoundException, NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.orgEdit, organizationId))
+        if (!securityContext.hasPermission(PermissionType.orgAdmin, organizationId))
             throw ExceptionFactory.notAuthorizedException();
         get(organizationId);
         users.get(userId);
@@ -1996,8 +2006,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     @Override
     public List<MemberBean> listMembers(String organizationId) throws OrganizationNotFoundException,
             NotAuthorizedException {
-        if (!securityContext.hasPermission(PermissionType.orgView, organizationId))
-            throw ExceptionFactory.notAuthorizedException();
         get(organizationId);
 
         try {

@@ -79,6 +79,22 @@ public abstract class AbstractOrgPage extends AbstractPage {
     }
     
     /**
+     * @see io.apiman.manager.ui.client.local.pages.AbstractPage#isAuthorized()
+     */
+    @Override
+    protected boolean isAuthorized() {
+        return isAdmin() || isMemberOfOrg(org);
+    }
+    
+    /**
+     * @see io.apiman.manager.ui.client.local.pages.AbstractPage#getOrganizationId()
+     */
+    @Override
+    protected String getOrganizationId() {
+        return org;
+    }
+    
+    /**
      * @see io.apiman.manager.ui.client.local.pages.AbstractPage#doLoadPageData()
      */
     @Override

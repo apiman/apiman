@@ -1,4 +1,10 @@
-GET /organizations/TestOrganization1 user1/user1
+POST /organizations/TestOrganization1/applications user1/user1
+Content-Type: application/json
+
+{
+  "name" : "Application 1",
+  "description" : "This is the description of Application 1."
+}
 ----
 403
 Content-Type: application/json

@@ -106,6 +106,9 @@ public class GatewayResourceImpl implements IGatewayResource {
         try {
             storage.beginTx();
             GatewayBean bean = storage.getGateway(gatewayId);
+            if (!securityContext.isAdmin()) {
+                bean.setConfiguration(null);
+            }
             storage.commitTx();
             return bean;
         } catch (DoesNotExistException e) {

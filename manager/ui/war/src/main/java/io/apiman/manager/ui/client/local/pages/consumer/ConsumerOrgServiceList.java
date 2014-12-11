@@ -17,7 +17,7 @@ package io.apiman.manager.ui.client.local.pages.consumer;
 
 import io.apiman.manager.api.beans.summary.ServiceSummaryBean;
 import io.apiman.manager.ui.client.local.AppMessages;
-import io.apiman.manager.ui.client.local.pages.ServiceOverviewPage;
+import io.apiman.manager.ui.client.local.pages.ConsumerServicePage;
 import io.apiman.manager.ui.client.local.pages.common.AbstractServiceList;
 import io.apiman.manager.ui.client.local.pages.common.NoEntitiesWidget;
 import io.apiman.manager.ui.client.local.util.MultimapUtil;
@@ -41,7 +41,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 public class ConsumerOrgServiceList extends AbstractServiceList {
     
     @Inject
-    private TransitionAnchorFactory<ServiceOverviewPage> toServiceDetails;
+    private TransitionAnchorFactory<ConsumerServicePage> toServiceDetails;
 
     /**
      * Constructor.

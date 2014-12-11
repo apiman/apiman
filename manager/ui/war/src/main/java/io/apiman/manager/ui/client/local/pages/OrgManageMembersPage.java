@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.ui.client.local.pages;
 
+import io.apiman.manager.api.beans.idm.PermissionType;
 import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.members.MemberBean;
 import io.apiman.manager.api.beans.members.MemberRoleBean;
@@ -88,6 +89,22 @@ public class OrgManageMembersPage extends AbstractPage {
      * Constructor.
      */
     public OrgManageMembersPage() {
+    }
+    
+    /**
+     * @see io.apiman.manager.ui.client.local.pages.AbstractPage#getOrganizationId()
+     */
+    @Override
+    protected String getOrganizationId() {
+        return org;
+    }
+    
+    /**
+     * @see io.apiman.manager.ui.client.local.pages.AbstractPage#isAuthorized()
+     */
+    @Override
+    protected boolean isAuthorized() {
+        return hasPermission(PermissionType.orgAdmin);
     }
     
     /**

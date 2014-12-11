@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.ui.client.local.pages;
 
+import io.apiman.manager.api.beans.idm.PermissionType;
 import io.apiman.manager.api.beans.services.ServiceBean;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
 import io.apiman.manager.api.beans.summary.ServiceVersionSummaryBean;
@@ -83,6 +84,22 @@ public abstract class AbstractServicePage extends AbstractPage {
      * Constructor.
      */
     public AbstractServicePage() {
+    }
+
+    /**
+     * @see io.apiman.manager.ui.client.local.pages.AbstractPage#isAuthorized()
+     */
+    @Override
+    protected boolean isAuthorized() {
+        return hasPermission(PermissionType.svcView);
+    }
+    
+    /**
+     * @see io.apiman.manager.ui.client.local.pages.AbstractPage#getOrganizationId()
+     */
+    @Override
+    protected String getOrganizationId() {
+        return org;
     }
     
     @PostConstruct

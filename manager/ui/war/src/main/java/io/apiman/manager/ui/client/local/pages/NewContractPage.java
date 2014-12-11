@@ -328,7 +328,8 @@ public class NewContractPage extends AbstractPage {
         createButton.setEnabled(false);
         applicationSelector.setOptions(applicationBeans);
         ApplicationSummaryBean contextApp = getInitialContextApp();
-        applicationSelector.setValue(contextApp);
+        if (contextApp != null)
+            applicationSelector.setValue(contextApp);
         
         onApplicationSelected();
     }

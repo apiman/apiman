@@ -15,7 +15,7 @@
  */
 package io.apiman.manager.ui.client.local.pages.consumer;
 
-import io.apiman.manager.api.beans.orgs.OrganizationBean;
+import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
 import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.events.RequestMembershipEvent;
 import io.apiman.manager.ui.client.local.events.RequestMembershipEvent.Handler;
@@ -57,7 +57,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author eric.wittmann@redhat.com
  */
 @Dependent
-public class OrganizationList extends FlowPanel implements HasValue<List<OrganizationBean>>, HasRequestMembershipHandlers  {
+public class OrganizationList extends FlowPanel implements HasValue<List<OrganizationSummaryBean>>, HasRequestMembershipHandlers  {
     
     @Inject
     protected NavigationHelperService navHelper;
@@ -69,7 +69,7 @@ public class OrganizationList extends FlowPanel implements HasValue<List<Organiz
     @Inject
     protected TransitionAnchorFactory<OrgServicesPage> toOrgServices;
     
-    private List<OrganizationBean> organizations;
+    private List<OrganizationSummaryBean> organizations;
     private Set<String> memberOrgs = new HashSet<String>();
 
     /**
@@ -83,7 +83,7 @@ public class OrganizationList extends FlowPanel implements HasValue<List<Organiz
      * @see com.google.gwt.event.logical.shared.HasValueChangeHandlers#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
      */
     @Override
-    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<List<OrganizationBean>> handler) {
+    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<List<OrganizationSummaryBean>> handler) {
         return super.addHandler(handler, ValueChangeEvent.getType());
     }
 
@@ -91,7 +91,7 @@ public class OrganizationList extends FlowPanel implements HasValue<List<Organiz
      * @see com.google.gwt.user.client.ui.HasValue#getValue()
      */
     @Override
-    public List<OrganizationBean> getValue() {
+    public List<OrganizationSummaryBean> getValue() {
         return organizations;
     }
 
@@ -99,7 +99,7 @@ public class OrganizationList extends FlowPanel implements HasValue<List<Organiz
      * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object)
      */
     @Override
-    public void setValue(List<OrganizationBean> value) {
+    public void setValue(List<OrganizationSummaryBean> value) {
         setValue(value, false);
     }
 
@@ -107,7 +107,7 @@ public class OrganizationList extends FlowPanel implements HasValue<List<Organiz
      * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object, boolean)
      */
     @Override
-    public void setValue(List<OrganizationBean> value, boolean fireEvents) {
+    public void setValue(List<OrganizationSummaryBean> value, boolean fireEvents) {
         organizations = value;
         clear();
         refresh();
@@ -120,7 +120,7 @@ public class OrganizationList extends FlowPanel implements HasValue<List<Organiz
         if (organizations != null && !organizations.isEmpty()) {
             Widget count = createCount();
             add(count);
-            for (OrganizationBean bean : organizations) {
+            for (OrganizationSummaryBean bean : organizations) {
                 Widget row = createOrganizationRow(bean);
                 add(row);
             }
@@ -150,7 +150,7 @@ public class OrganizationList extends FlowPanel implements HasValue<List<Organiz
      * Creates a single organization row.
      * @param bean
      */
-    private Widget createOrganizationRow(OrganizationBean bean) {
+    private Widget createOrganizationRow(OrganizationSummaryBean bean) {
         FlowPanel item = new FlowPanel();
         item.getElement().setClassName("item"); //$NON-NLS-1$
         
@@ -168,7 +168,7 @@ public class OrganizationList extends FlowPanel implements HasValue<List<Organiz
      * @param bean
      * @param item
      */
-    private void createTitleRow(OrganizationBean bean, FlowPanel item) {
+    private void createTitleRow(OrganizationSummaryBean bean, FlowPanel item) {
         FlowPanel title = new FlowPanel();
         item.add(title);
         title.getElement().setClassName("title"); //$NON-NLS-1$
@@ -186,7 +186,7 @@ public class OrganizationList extends FlowPanel implements HasValue<List<Organiz
      * @param bean
      * @param item
      */
-    private void createDescriptionRow(OrganizationBean bean, FlowPanel item) {
+    private void createDescriptionRow(OrganizationSummaryBean bean, FlowPanel item) {
         Label description = new Label();
         item.add(description);
         description.getElement().setClassName("description"); //$NON-NLS-1$
@@ -202,7 +202,7 @@ public class OrganizationList extends FlowPanel implements HasValue<List<Organiz
      * @param bean
      * @param item
      */
-    private void createActionsRow(final OrganizationBean bean, FlowPanel item) {
+    private void createActionsRow(final OrganizationSummaryBean bean, FlowPanel item) {
         FlowPanel actions = new FlowPanel();
         item.add(actions);
         actions.getElement().setClassName("actions"); //$NON-NLS-1$
@@ -224,7 +224,7 @@ public class OrganizationList extends FlowPanel implements HasValue<List<Organiz
      * @param bean
      * @param item
      */
-    private void createIsMemberBadge(OrganizationBean bean, FlowPanel item) {
+    private void createIsMemberBadge(OrganizationSummaryBean bean, FlowPanel item) {
         Anchor a = toOrgServices.get(MultimapUtil.singleItemMap("org", bean.getId())); //$NON-NLS-1$
         item.add(a);
         a.getElement().setClassName("ismember"); //$NON-NLS-1$

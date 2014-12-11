@@ -89,9 +89,9 @@
         <div class="col-md-8">
           <div class="apiman-entitytabs">
             <ul id="entitytabs" class="nav nav-tabs">
-              <li><a href="org-apps.html" data-field="toOrgApps" data-i18n-key="applications">Applications</a></li>
-              <li class="active"><a href="org-services.html" data-field="toOrgServices" data-i18n-key="services">Services</a></li>
-              <li><a href="org-plans.html" data-field="toOrgPlans" data-i18n-key="plans">Plans</a></li>
+              <li data-permission="appView"><a href="org-apps.html" data-field="toOrgApps" data-i18n-key="applications">Applications</a></li>
+              <li data-permission="svcView" class="active"><a href="org-services.html" data-field="toOrgServices" data-i18n-key="services">Services</a></li>
+              <li data-permission="planView"><a href="org-plans.html" data-field="toOrgPlans" data-i18n-key="plans">Plans</a></li>
               <li><a href="org-members.html" data-field="toOrgMembers" data-i18n-key="members">Members</a></li>
               <li class="pull-right"><a href="org-activity.html" data-field="toOrgActivity" data-i18n-key="activity">Activity</a></li>
             </ul>
@@ -102,7 +102,7 @@
                 <div class="apiman-filters apiman-services-filters">
                   <input data-field="serviceFilter" type="text" class="form-control input-search" placeholder="Filter by org or service name..."></input>
                   
-                  <div class="btn-group pull-right">
+                  <div data-permission="svcEdit" class="btn-group pull-right">
                     <a data-field="toNewService" href="new-service.html" class="btn btn-primary" data-i18n-key="new-service">New Service</a>
                     <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
                       <span class="caret"></span>

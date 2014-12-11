@@ -87,6 +87,7 @@ public abstract class AbstractTestPlanTest {
         System.setProperty("apiman.test.gateway.endpoint", "http://localhost:" + getTestServerPort() + "/mock-gateway");
         System.setProperty("apiman.test.gateway.username", "admin");
         System.setProperty("apiman.test.gateway.password", "admin");
+        System.setProperty("apiman.manager.require-auto-granted-org", "false");
     }
 
     @AfterClass

@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.ui.client.local.pages;
 
+import io.apiman.manager.api.beans.idm.PermissionType;
 import io.apiman.manager.api.beans.summary.ServiceSummaryBean;
 import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.pages.org.OrgServiceList;
@@ -63,6 +64,14 @@ public class OrgServicesPage extends AbstractOrgPage {
      * Constructor.
      */
     public OrgServicesPage() {
+    }
+
+    /**
+     * @see io.apiman.manager.ui.client.local.pages.AbstractPage#isAuthorized()
+     */
+    @Override
+    protected boolean isAuthorized() {
+        return hasPermission(PermissionType.svcView);
     }
 
     /**

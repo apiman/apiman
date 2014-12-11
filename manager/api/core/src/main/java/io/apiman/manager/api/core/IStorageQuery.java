@@ -16,7 +16,6 @@
 package io.apiman.manager.api.core;
 
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
-import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
 import io.apiman.manager.api.beans.search.PagingBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
@@ -58,7 +57,7 @@ public interface IStorageQuery {
      * @param criteria
      * @throws StorageException
      */
-    public SearchResultsBean<OrganizationBean> findOrganizations(SearchCriteriaBean criteria) throws StorageException;
+    public SearchResultsBean<OrganizationSummaryBean> findOrganizations(SearchCriteriaBean criteria) throws StorageException;
     
     /**
      * Finds applications by the provided criteria.

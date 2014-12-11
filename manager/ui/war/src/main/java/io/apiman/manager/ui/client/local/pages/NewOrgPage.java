@@ -85,6 +85,9 @@ public class NewOrgPage extends AbstractPage {
             public void onSuccess(OrganizationBean response) {
                 createButton.onActionComplete();
                 String orgId = response.getId();
+                // Clear the current user so that permissions are re-fetched, otherwise we'll get
+                // an 'unauthorized' error when we try to view the new org!
+                clearCurrentUser();
                 // Short circuit page loading lifecycle - redirect to the Org page
                 toOrg.go(MultimapUtil.singleItemMap("org", orgId)); //$NON-NLS-1$
             }

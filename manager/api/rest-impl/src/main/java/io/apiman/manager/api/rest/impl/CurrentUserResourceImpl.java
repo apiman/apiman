@@ -16,6 +16,8 @@
 
 package io.apiman.manager.api.rest.impl;
 
+import io.apiman.manager.api.beans.idm.CurrentUserBean;
+import io.apiman.manager.api.beans.idm.PermissionBean;
 import io.apiman.manager.api.beans.idm.PermissionType;
 import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.beans.summary.ApplicationSummaryBean;
@@ -31,6 +33,7 @@ import io.apiman.manager.api.rest.contract.exceptions.SystemErrorException;
 import io.apiman.manager.api.security.ISecurityContext;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -62,15 +65,18 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
      * @see io.apiman.manager.api.rest.contract.ICurrentUserResource#getInfo()
      */
     @Override
-    public UserBean getInfo() {
+    public CurrentUserBean getInfo() {
         String userId = securityContext.getCurrentUser();
         try {
+            CurrentUserBean rval = new CurrentUserBean();
             UserBean user = idmStorage.getUser(userId);
-            user.setAdmin(securityContext.isAdmin());
-            return user;
+            rval.initFromUser(user);
+            Set<PermissionBean> permissions = idmStorage.getPermissions(userId);
+            rval.setPermissions(permissions);
+            rval.setAdmin(securityContext.isAdmin());
+            return rval;
         } catch (DoesNotExistException e) {
             UserBean user = new UserBean();
-            user.setAdmin(securityContext.isAdmin());
             user.setUsername(userId);
             user.setFullName(userId);
             user.setEmail(userId + "@example.org"); //$NON-NLS-1$
@@ -82,7 +88,12 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
             } catch (StorageException e1) {
                 throw new SystemErrorException(e);
             }
-            return user;
+
+            CurrentUserBean rval = new CurrentUserBean();
+            rval.initFromUser(user);
+            rval.setAdmin(securityContext.isAdmin());
+            rval.setPermissions(new HashSet<PermissionBean>());
+            return rval;
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
@@ -108,24 +119,50 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.ICurrentUserResource#getOrganizations()
+     * @see io.apiman.manager.api.rest.contract.ICurrentUserResource#getAppOrganizations()
      */
     @Override
-    public List<OrganizationSummaryBean> getOrganizations() {
-        Set<String> permittedOrganizations = securityContext.getPermittedOrganizations(PermissionType.orgView);
+    public List<OrganizationSummaryBean> getAppOrganizations() {
+        Set<String> permittedOrganizations = securityContext.getPermittedOrganizations(PermissionType.appEdit);
         try {
             return query.getOrgs(permittedOrganizations);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
     }
-
+    
+    /**
+     * @see io.apiman.manager.api.rest.contract.ICurrentUserResource#getPlanOrganizations()
+     */
+    @Override
+    public List<OrganizationSummaryBean> getPlanOrganizations() {
+        Set<String> permittedOrganizations = securityContext.getPermittedOrganizations(PermissionType.planEdit);
+        try {
+            return query.getOrgs(permittedOrganizations);
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+    }
+    
+    /**
+     * @see io.apiman.manager.api.rest.contract.ICurrentUserResource#getServiceOrganizations()
+     */
+    @Override
+    public List<OrganizationSummaryBean> getServiceOrganizations() {
+        Set<String> permittedOrganizations = securityContext.getPermittedOrganizations(PermissionType.svcEdit);
+        try {
+            return query.getOrgs(permittedOrganizations);
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+    }
+    
     /**
      * @see io.apiman.manager.api.rest.contract.ICurrentUserResource#getApplications()
      */
     @Override
     public List<ApplicationSummaryBean> getApplications() {
-        Set<String> permittedOrganizations = securityContext.getPermittedOrganizations(PermissionType.orgView);
+        Set<String> permittedOrganizations = securityContext.getPermittedOrganizations(PermissionType.appView);
         try {
             return query.getApplicationsInOrgs(permittedOrganizations);
         } catch (StorageException e) {
@@ -138,7 +175,7 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
      */
     @Override
     public List<ServiceSummaryBean> getServices() {
-        Set<String> permittedOrganizations = securityContext.getPermittedOrganizations(PermissionType.orgView);
+        Set<String> permittedOrganizations = securityContext.getPermittedOrganizations(PermissionType.svcView);
         try {
             return query.getServicesInOrgs(permittedOrganizations);
         } catch (StorageException e) {

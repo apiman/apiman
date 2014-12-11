@@ -73,7 +73,7 @@
                   <li><a href="#">1.0</a></li>
                 </ul>
               </div>
-              <a href="new-serviceversion.html" class="btn btn-primary apiman-entity-action" data-field="toNewServiceVersion" data-i18n-key="new-version">New Version</a>
+              <a data-permission="svcEdit" href="new-serviceversion.html" class="btn btn-primary apiman-entity-action" data-field="toNewServiceVersion" data-i18n-key="new-version">New Version</a>
             </div>
           </div>
         </div>
@@ -143,7 +143,7 @@
               </div>
             </div>
             
-            <div class="actions">
+            <div data-permission="svcEdit" class="actions">
               <button class="btn btn-primary" data-field="saveButton" data-i18n-key="save" placeholder="Saving..." data-icon="fa-cog">Save</button>
               <button class="btn btn-default" data-field="cancelButton" data-i18n-key="cancel">Cancel</button>
             </div>

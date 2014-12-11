@@ -16,6 +16,7 @@
 
 package io.apiman.manager.api.rest.contract;
 
+import io.apiman.manager.api.beans.idm.CurrentUserBean;
 import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.beans.summary.ApplicationSummaryBean;
 import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
@@ -42,7 +43,7 @@ public interface ICurrentUserResource {
     @GET
     @Path("info")
     @Produces(MediaType.APPLICATION_JSON)
-    public UserBean getInfo();
+    public CurrentUserBean getInfo();
 
     @PUT
     @Path("info")
@@ -50,9 +51,19 @@ public interface ICurrentUserResource {
     public void updateInfo(UserBean info);
     
     @GET
-    @Path("organizations")
+    @Path("apporgs")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<OrganizationSummaryBean> getOrganizations();
+    public List<OrganizationSummaryBean> getAppOrganizations();
+    
+    @GET
+    @Path("svcorgs")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<OrganizationSummaryBean> getServiceOrganizations();
+    
+    @GET
+    @Path("planorgs")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<OrganizationSummaryBean> getPlanOrganizations();
 
     @GET
     @Path("applications")

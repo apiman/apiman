@@ -50,6 +50,14 @@ public abstract class AbstractAdminPage extends AbstractPage {
     }
     
     /**
+     * @see io.apiman.manager.ui.client.local.pages.AbstractPage#isAuthorized()
+     */
+    @Override
+    protected boolean isAuthorized() {
+        return isAdmin();
+    }
+    
+    /**
      * @see io.apiman.manager.ui.client.local.pages.AbstractPage#renderPage()
      */
     @Override

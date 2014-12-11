@@ -15,7 +15,12 @@
  */
 package io.apiman.manager.ui.client.local.pages;
 
+import io.apiman.manager.api.beans.idm.CurrentUserBean;
+import io.apiman.manager.api.beans.idm.PermissionBean;
+import io.apiman.manager.api.beans.idm.PermissionType;
 import io.apiman.manager.api.beans.idm.UserBean;
+import io.apiman.manager.api.rest.contract.exceptions.NotAuthorizedException;
+import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.PageErrorPanel;
 import io.apiman.manager.ui.client.local.PageLoadingWidget;
 import io.apiman.manager.ui.client.local.pages.common.PageHeader;
@@ -25,6 +30,9 @@ import io.apiman.manager.ui.client.local.services.NavigationHelperService;
 import io.apiman.manager.ui.client.local.services.RestInvokerService;
 import io.apiman.manager.ui.client.local.services.rest.IRestInvokerCallback;
 import io.apiman.manager.ui.client.local.widgets.ConfirmationDialog;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Instance;
@@ -77,7 +85,26 @@ public abstract class AbstractPage extends Composite {
     private int expectedDataPackets;
     private int dataPacketsReceived;
     
-    private static UserBean currentUserBean;
+    static CurrentUserBean currentUserBean;
+    private static Set<String> permissions = new HashSet<String>();
+    private static Set<String> organizations = new HashSet<String>();
+    private static void indexPermissions() {
+        for (PermissionBean permissionBean : currentUserBean.getPermissions()) {
+            String pkey = permissionBean.getName().name() + "||" + permissionBean.getOrganizationId(); //$NON-NLS-1$
+            permissions.add(pkey);
+            organizations.add(permissionBean.getOrganizationId());
+        }
+    }
+    protected static void clearCurrentUser() {
+        currentUserBean = null;
+        permissions.clear();
+        organizations.clear();
+    }
+    protected static Set<String> getCurrentUserOrgs() {
+        return organizations;
+    }
+    
+    private boolean errorFound = false;
 
     /**
      * Constructor.
@@ -166,13 +193,18 @@ public abstract class AbstractPage extends Composite {
      */
     private final int loadPageData() {
         if (currentUserBean == null) {
-            rest.getCurrentUserInfo(new IRestInvokerCallback<UserBean>() {
+            rest.getCurrentUserInfo(new IRestInvokerCallback<CurrentUserBean>() {
                 @Override
-                public void onSuccess(UserBean response) {
+                public void onSuccess(CurrentUserBean response) {
                     currentUserBean = response;
+                    indexPermissions();
                     pageHeader.setValue(currentUserBean);
-                    increaseExpectedDataPackets(doLoadPageData());
-                    dataPacketLoaded();
+                    if (!isAuthorized()) {
+                        dataPacketError(new NotAuthorizedException(i18n.format(AppMessages.NOT_AUTHORIZED)));
+                    } else {
+                        increaseExpectedDataPackets(doLoadPageData());
+                        dataPacketLoaded();
+                    }
                 }
                 @Override
                 public void onError(Throwable error) {
@@ -181,10 +213,63 @@ public abstract class AbstractPage extends Composite {
             });
             return 1;
         } else {
+            if (!isAuthorized()) {
+                dataPacketError(new NotAuthorizedException(i18n.format(AppMessages.NOT_AUTHORIZED)));
+            }
             return doLoadPageData();
         }
     }
+
+    /**
+     * This method is invoked *after* the user bean has been retrieved.
+     * @return true only if the user is authorized to view this page
+     */
+    protected boolean isAuthorized() {
+        return true;
+    }
     
+    /**
+     * @return true if the current user is an admin
+     */
+    protected boolean isAdmin() {
+        return currentUserBean.isAdmin();
+    }
+
+    /**
+     * @return the organization ID of the currently in-scope organization or null if none
+     */
+    protected String getOrganizationId() {
+        return null;
+    }
+
+    /**
+     * @param organizationId
+     * @return true if the current user is a member of the given org
+     */
+    protected boolean isMemberOfOrg(String organizationId) {
+        return organizations.contains(organizationId);
+    }
+
+    /**
+     * Returns true if the currently authenticated user has the 
+     * @param permission
+     */
+    protected boolean hasPermission(PermissionType permission) {
+        if (isAdmin()) {
+            return true;
+        }
+        String pkey = permission.name() + "||" + getOrganizationId(); //$NON-NLS-1$
+        return permissions.contains(pkey);
+    }
+
+    /**
+     * String variant of hasPermission.
+     * @param permission
+     */
+    protected boolean hasPermission(String permission) {
+        return hasPermission(PermissionType.valueOf(permission));
+    }
+
     /**
      * Subclasses may implement this method.  This method represents an opportunity
      * for the page to load its data asynchronously.  The method should return the
@@ -203,6 +288,9 @@ public abstract class AbstractPage extends Composite {
      * call.
      */
     protected void dataPacketLoaded() {
+        if (errorFound) {
+            return;
+        }
         dataPacketsReceived++;
         logger.debug("A data packet was loaded.  Count=" + dataPacketsReceived); //$NON-NLS-1$
         if (dataPacketsReceived == expectedDataPackets) {
@@ -223,6 +311,7 @@ public abstract class AbstractPage extends Composite {
         navigation.getContentPanel().asWidget().getElement().getStyle().setVisibility(Visibility.HIDDEN);
         navigation.getContentPanel().asWidget().getElement().getStyle().setDisplay(Display.NONE);
         errorPanel.show();
+        errorFound = true;
     }
 
     /**
@@ -232,6 +321,7 @@ public abstract class AbstractPage extends Composite {
         logger.debug("All data packets received, showing page."); //$NON-NLS-1$
         setPageTitle(getPageTitle());
         renderPage();
+        hideUnauthorizedElements();
         pageLoadingWidget.hide();
         navigation.getContentPanel().asWidget().getElement().getStyle().clearVisibility();
         navigation.getContentPanel().asWidget().getElement().getStyle().clearDisplay();
@@ -245,6 +335,22 @@ public abstract class AbstractPage extends Composite {
         });
     }
 
+    /**
+     * Finds all elements in the UI that have authorization requirements
+     * and hides the ones that the current user should not see.
+     */
+    private native void hideUnauthorizedElements() /*-{
+        var me = this;
+        $wnd.jQuery("*[data-permission]").each(
+            function( index, element ) {
+                var requiredPermission = element.getAttribute("data-permission");
+                if (!me.@io.apiman.manager.ui.client.local.pages.AbstractPage::hasPermission(Ljava/lang/String;)(requiredPermission)) {
+                    $wnd.jQuery(element).remove();
+                }
+          }
+        );
+    }-*/;
+    
     /**
      * Subclasses can implement this to do any work they need done when the page
      * is about to be shown.

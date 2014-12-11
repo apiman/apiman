@@ -112,7 +112,7 @@ public class NewPlanPage extends AbstractPage {
     @Override
     protected int doLoadPageData() {
         int rval = super.doLoadPageData();
-        rest.getCurrentUserOrgs(new IRestInvokerCallback<List<OrganizationSummaryBean>>() {
+        rest.getCurrentUserPlanOrgs(new IRestInvokerCallback<List<OrganizationSummaryBean>>() {
             @Override
             public void onSuccess(List<OrganizationSummaryBean> response) {
                 organizations = response;

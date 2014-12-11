@@ -17,6 +17,8 @@
 package io.apiman.manager.api.rest.impl;
 
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
+import io.apiman.manager.api.beans.idm.PermissionBean;
+import io.apiman.manager.api.beans.idm.PermissionType;
 import io.apiman.manager.api.beans.idm.RoleMembershipBean;
 import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.beans.search.PagingBean;
@@ -127,8 +129,9 @@ public class UserResourceImpl implements IUserResource {
         Set<String> permittedOrganizations = new HashSet<String>();
         try {
             Set<RoleMembershipBean> memberships = idmStorage.getUserMemberships(userId);
-            for (RoleMembershipBean membership : memberships)
+            for (RoleMembershipBean membership : memberships) {
                 permittedOrganizations.add(membership.getOrganizationId());
+            }
             return query.getOrgs(permittedOrganizations);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
@@ -142,9 +145,12 @@ public class UserResourceImpl implements IUserResource {
     public List<ApplicationSummaryBean> getApplications(String userId) {
         Set<String> permittedOrganizations = new HashSet<String>();
         try {
-            Set<RoleMembershipBean> memberships = idmStorage.getUserMemberships(userId);
-            for (RoleMembershipBean membership : memberships)
-                permittedOrganizations.add(membership.getOrganizationId());
+            Set<PermissionBean> permissions = idmStorage.getPermissions(userId);
+            for (PermissionBean permission : permissions) {
+                if (permission.getName() == PermissionType.appView) {
+                    permittedOrganizations.add(permission.getOrganizationId());
+                }
+            }
             return query.getApplicationsInOrgs(permittedOrganizations);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
@@ -158,13 +164,17 @@ public class UserResourceImpl implements IUserResource {
     public List<ServiceSummaryBean> getServices(String userId) {
         Set<String> permittedOrganizations = new HashSet<String>();
         try {
-            Set<RoleMembershipBean> memberships = idmStorage.getUserMemberships(userId);
-            for (RoleMembershipBean membership : memberships)
-                permittedOrganizations.add(membership.getOrganizationId());
+            Set<PermissionBean> permissions = idmStorage.getPermissions(userId);
+            for (PermissionBean permission : permissions) {
+                if (permission.getName() == PermissionType.svcView) {
+                    permittedOrganizations.add(permission.getOrganizationId());
+                }
+            }
             return query.getServicesInOrgs(permittedOrganizations);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
+
     }
     
     /**

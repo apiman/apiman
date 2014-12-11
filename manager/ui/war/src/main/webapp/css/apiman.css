@@ -541,6 +541,9 @@ div.page {
 .apiman-summaryrow .fa-inline {
   float: none;
 }
+.apiman-summaryrow button .fa {
+  float: none;
+}
 .apiman-summaryrow .title-summary-item {
   font-size: 11px;
   float: left;

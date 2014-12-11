@@ -89,9 +89,9 @@
         <div class="col-md-8">
           <div class="apiman-entitytabs">
             <ul id="entitytabs" class="nav nav-tabs">
-              <li><a href="org-apps.html" data-field="toOrgApps" data-i18n-key="applications">Applications</a></li>
-              <li><a href="org-services.html" data-field="toOrgServices" data-i18n-key="services">Services</a></li>
-              <li class="active"><a href="org-plans.html" data-field="toOrgPlans" data-i18n-key="plans">Plans</a></li>
+              <li data-permission="appView"><a href="org-apps.html" data-field="toOrgApps" data-i18n-key="applications">Applications</a></li>
+              <li data-permission="svcView"><a href="org-services.html" data-field="toOrgServices" data-i18n-key="services">Services</a></li>
+              <li data-permission="planView" class="active"><a href="org-plans.html" data-field="toOrgPlans" data-i18n-key="plans">Plans</a></li>
               <li><a href="org-members.html" data-field="toOrgMembers" data-i18n-key="members">Members</a></li>
               <li class="pull-right"><a href="org-activity.html" data-field="toOrgActivity" data-i18n-key="activity">Activity</a></li>
             </ul>
@@ -101,7 +101,7 @@
               <div class="tab-pane active" id="tab-plans">
                 <div class="apiman-filters apiman-plans-filters">
                   <input data-field="planFilter" type="text" class="form-control input-search" placeholder="Filter by plan name..."></input>
-                  <a data-field="toNewPlan" data-i18n-key="new-plan" href="new-plan.html" class="btn btn-primary pull-right">New Plan</a>
+                  <a data-permission="planEdit" data-field="toNewPlan" data-i18n-key="new-plan" href="new-plan.html" class="btn btn-primary pull-right">New Plan</a>
                 </div>
                 <div class="clearfix"></div>
                 <!-- The list of plans in this organization -->

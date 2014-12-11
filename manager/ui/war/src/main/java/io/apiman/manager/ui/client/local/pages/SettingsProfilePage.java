@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.ui.client.local.pages;
 
+import io.apiman.manager.api.beans.idm.CurrentUserBean;
 import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.services.rest.IRestInvokerCallback;
@@ -54,7 +55,7 @@ public class SettingsProfilePage extends AbstractPage {
     @Inject @DataField
     AsyncActionButton updateButton;
     
-    UserBean userBean;
+    CurrentUserBean userBean;
 
     /**
      * Constructor.
@@ -87,9 +88,9 @@ public class SettingsProfilePage extends AbstractPage {
     @Override
     protected int doLoadPageData() {
         int rval = super.doLoadPageData();
-        rest.getCurrentUserInfo(new IRestInvokerCallback<UserBean>() {
+        rest.getCurrentUserInfo(new IRestInvokerCallback<CurrentUserBean>() {
             @Override
-            public void onSuccess(UserBean response) {
+            public void onSuccess(CurrentUserBean response) {
                 userBean = response;
                 dataPacketLoaded();
             }

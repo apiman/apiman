@@ -1,4 +1,4 @@
-GET /currentuser/organizations user2/user2
+GET /currentuser/apporgs user2/user2
 ----
 200
 Content-Type: application/json

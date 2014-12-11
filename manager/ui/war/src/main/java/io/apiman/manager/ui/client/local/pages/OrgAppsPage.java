@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.ui.client.local.pages;
 
+import io.apiman.manager.api.beans.idm.PermissionType;
 import io.apiman.manager.api.beans.summary.ApplicationSummaryBean;
 import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.pages.org.OrgApplicationList;
@@ -62,7 +63,15 @@ public class OrgAppsPage extends AbstractOrgPage {
      */
     public OrgAppsPage() {
     }
-    
+
+    /**
+     * @see io.apiman.manager.ui.client.local.pages.AbstractPage#isAuthorized()
+     */
+    @Override
+    protected boolean isAuthorized() {
+        return hasPermission(PermissionType.appView);
+    }
+
     /**
      * Called after the bean is created.
      */

@@ -17,6 +17,7 @@ package io.apiman.manager.ui.client.local.pages;
 
 import io.apiman.manager.api.beans.apps.ApplicationBean;
 import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
+import io.apiman.manager.api.beans.idm.PermissionType;
 import io.apiman.manager.api.beans.summary.ApplicationVersionSummaryBean;
 import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.pages.common.Breadcrumb;
@@ -82,6 +83,22 @@ public abstract class AbstractAppPage extends AbstractPage {
      * Constructor.
      */
     public AbstractAppPage() {
+    }
+
+    /**
+     * @see io.apiman.manager.ui.client.local.pages.AbstractPage#isAuthorized()
+     */
+    @Override
+    protected boolean isAuthorized() {
+        return hasPermission(PermissionType.appView);
+    }
+    
+    /**
+     * @see io.apiman.manager.ui.client.local.pages.AbstractPage#getOrganizationId()
+     */
+    @Override
+    protected String getOrganizationId() {
+        return org;
     }
     
     @PostConstruct

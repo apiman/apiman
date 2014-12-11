@@ -36,7 +36,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
@@ -50,6 +49,7 @@ import org.overlord.commons.gwt.client.local.widgets.SpanPanel;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.MouseDownEvent;
@@ -76,8 +76,7 @@ import com.google.gwt.user.client.ui.Widget;
  *
  * @author eric.wittmann@redhat.com
  */
-@Dependent
-public class PolicyList extends FlowPanel implements HasValue<List<PolicySummaryBean>>, HasRemovePolicyHandlers,
+public abstract class PolicyList extends FlowPanel implements HasValue<List<PolicySummaryBean>>, HasRemovePolicyHandlers,
         HasPoliciesReorderedHandlers {
 
     @Inject
@@ -232,6 +231,7 @@ public class PolicyList extends FlowPanel implements HasValue<List<PolicySummary
 
         // Grabber
         Label grabber = new Label();
+        grabber.getElement().setAttribute("data-permission", getRemovePermission()); //$NON-NLS-1$
         grabber.getElement().setDraggable(Element.DRAGGABLE_TRUE);
         grabber.getElement().setClassName("grabber"); //$NON-NLS-1$
         grabber.getElement().getStyle().setHeight(48, Unit.PX);
@@ -240,9 +240,9 @@ public class PolicyList extends FlowPanel implements HasValue<List<PolicySummary
         createIconColumn(bean, row);
         createSummaryColumn(bean, row);
         createActionColumn(bean, row);
-        container.add(new HTMLPanel("<hr/>")); //$NON-NLS-1$
         
         container.add(row);
+        container.add(new HTMLPanel("<hr/>")); //$NON-NLS-1$
 
         PolicyDragHandler handler = new PolicyDragHandler(grabber, container);
         grabber.addMouseDownHandler(handler);
@@ -340,12 +340,15 @@ public class PolicyList extends FlowPanel implements HasValue<List<PolicySummary
         final AsyncActionButton aab = new AsyncActionButton();
         aab.getElement().setClassName("btn"); //$NON-NLS-1$
         aab.getElement().addClassName("btn-default"); //$NON-NLS-1$
+        aab.getElement().setAttribute("data-permission", getRemovePermission()); //$NON-NLS-1$
+        aab.getElement().getStyle().setVisibility(Visibility.VISIBLE);
         aab.setHTML(i18n.format(AppMessages.REMOVE));
         aab.setActionText(i18n.format(AppMessages.REMOVING));
         aab.setIcon("fa-cog"); //$NON-NLS-1$
         aab.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
+                aab.onActionStarted();
                 ConfirmationDialog dialog = confirmationDialogFactory.get();
                 dialog.setDialogTitle(i18n.format(AppMessages.CONFIRM_REMOVE_POLICY_TITLE));
                 dialog.setDialogMessage(i18n.format(AppMessages.CONFIRM_REMOVE_POLICY_MESSAGE, bean.getName()));
@@ -353,15 +356,23 @@ public class PolicyList extends FlowPanel implements HasValue<List<PolicySummary
                     @Override
                     public void onConfirmation(ConfirmationEvent event) {
                         if (event.isConfirmed()) {
-                            aab.onActionStarted();
                             RemovePolicyEvent.fire(PolicyList.this, bean);
+                        } else {
+                            aab.onActionComplete();
+                            aab.getElement().getStyle().clearVisibility();
                         }
                     }
                 });
+                dialog.show();
             }
         });
         sp.add(aab);
     }
+
+    /**
+     * @return the permission required for the user to be allowed to remove a policy
+     */
+    protected abstract String getRemovePermission();
 
     /**
      * @return the filtered

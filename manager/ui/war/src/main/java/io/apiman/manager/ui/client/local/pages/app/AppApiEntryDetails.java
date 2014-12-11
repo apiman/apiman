@@ -66,6 +66,9 @@ public class AppApiEntryDetails extends Composite implements TakesValue<ApiEntry
             @Override
             public void onClick(ClickEvent event) {
                 String fullUrl = value.getHttpEndpoint();
+                if (fullUrl == null) {
+                    return;
+                }
                 if (fullUrl.contains("?")) { //$NON-NLS-1$
                     fullUrl += "&apikey=" + value.getApiKey(); //$NON-NLS-1$
                 } else {

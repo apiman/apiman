@@ -21,7 +21,7 @@ import io.apiman.manager.api.beans.summary.PolicySummaryBean;
 import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.events.PoliciesReorderedEvent;
 import io.apiman.manager.ui.client.local.events.RemovePolicyEvent;
-import io.apiman.manager.ui.client.local.pages.common.PolicyList;
+import io.apiman.manager.ui.client.local.pages.plan.PlanPolicyList;
 import io.apiman.manager.ui.client.local.services.rest.IRestInvokerCallback;
 import io.apiman.manager.ui.client.local.util.MultimapUtil;
 
@@ -53,7 +53,7 @@ public class PlanPoliciesPage extends AbstractPlanPage {
     @Inject @DataField
     Anchor toNewPolicy;
     @Inject @DataField
-    PolicyList policies;
+    PlanPolicyList policies;
     
     /**
      * Constructor.

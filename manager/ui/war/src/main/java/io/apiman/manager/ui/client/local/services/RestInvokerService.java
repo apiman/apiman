@@ -22,6 +22,7 @@ import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.contracts.NewContractBean;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
+import io.apiman.manager.api.beans.idm.CurrentUserBean;
 import io.apiman.manager.api.beans.idm.GrantRolesBean;
 import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.idm.UserBean;
@@ -224,8 +225,8 @@ public class RestInvokerService {
      * Gets info about the current user.
      * @param callback
      */
-    public void getCurrentUserInfo(IRestInvokerCallback<UserBean> callback) {
-        CallbackAdapter<UserBean> adapter = new CallbackAdapter<UserBean>(callback);
+    public void getCurrentUserInfo(IRestInvokerCallback<CurrentUserBean> callback) {
+        CallbackAdapter<CurrentUserBean> adapter = new CallbackAdapter<CurrentUserBean>(callback);
         currentUser.call(adapter, adapter).getInfo();
     }
     
@@ -240,12 +241,30 @@ public class RestInvokerService {
     }
 
     /**
-     * Gets the organizations visible to the current user.
+     * Gets the organizations visible to the current user for app creation.
      * @param callback
      */
-    public void getCurrentUserOrgs(IRestInvokerCallback<List<OrganizationSummaryBean>> callback) {
+    public void getCurrentUserAppOrgs(IRestInvokerCallback<List<OrganizationSummaryBean>> callback) {
         CallbackAdapter<List<OrganizationSummaryBean>> adapter = new CallbackAdapter<List<OrganizationSummaryBean>>(callback);
-        currentUser.call(adapter, adapter).getOrganizations();
+        currentUser.call(adapter, adapter).getAppOrganizations();
+    }
+
+    /**
+     * Gets the organizations visible to the current user for service creation.
+     * @param callback
+     */
+    public void getCurrentUserServiceOrgs(IRestInvokerCallback<List<OrganizationSummaryBean>> callback) {
+        CallbackAdapter<List<OrganizationSummaryBean>> adapter = new CallbackAdapter<List<OrganizationSummaryBean>>(callback);
+        currentUser.call(adapter, adapter).getServiceOrganizations();
+    }
+
+    /**
+     * Gets the organizations visible to the current user for plan creation.
+     * @param callback
+     */
+    public void getCurrentUserPlanOrgs(IRestInvokerCallback<List<OrganizationSummaryBean>> callback) {
+        CallbackAdapter<List<OrganizationSummaryBean>> adapter = new CallbackAdapter<List<OrganizationSummaryBean>>(callback);
+        currentUser.call(adapter, adapter).getPlanOrganizations();
     }
 
     /**
@@ -291,8 +310,8 @@ public class RestInvokerService {
      * @param criteria
      * @param callback
      */
-    public void findOrganizations(SearchCriteriaBean criteria, IRestInvokerCallback<SearchResultsBean<OrganizationBean>> callback) {
-        CallbackAdapter<SearchResultsBean<OrganizationBean>> adapter = new CallbackAdapter<SearchResultsBean<OrganizationBean>>(callback);
+    public void findOrganizations(SearchCriteriaBean criteria, IRestInvokerCallback<SearchResultsBean<OrganizationSummaryBean>> callback) {
+        CallbackAdapter<SearchResultsBean<OrganizationSummaryBean>> adapter = new CallbackAdapter<SearchResultsBean<OrganizationSummaryBean>>(callback);
         search.call(adapter, adapter).searchOrgs(criteria);
     }
 

@@ -41,6 +41,7 @@ import org.overlord.commons.gwt.client.local.widgets.AsyncActionButton;
 import org.overlord.commons.gwt.client.local.widgets.FontAwesomeIcon;
 import org.overlord.commons.gwt.client.local.widgets.SpanPanel;
 
+import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -84,7 +85,7 @@ public class AppContractList extends FlowPanel implements HasValue<List<Contract
      */
     @Override
     public HandlerRegistration addValueChangeHandler(ValueChangeHandler<List<ContractSummaryBean>> handler) {
-        return super.addHandler(handler, ValueChangeEvent.getType());
+        return addHandler(handler, ValueChangeEvent.getType());
     }
 
     /**
@@ -92,7 +93,7 @@ public class AppContractList extends FlowPanel implements HasValue<List<Contract
      */
     @Override
     public HandlerRegistration addBreakContractHandler(Handler handler) {
-        return super.addHandler(handler, BreakContractEvent.getType());
+        return addHandler(handler, BreakContractEvent.getType());
     }
 
     /**
@@ -247,24 +248,30 @@ public class AppContractList extends FlowPanel implements HasValue<List<Contract
         final AsyncActionButton aab = new AsyncActionButton();
         aab.getElement().setClassName("btn"); //$NON-NLS-1$
         aab.getElement().addClassName("btn-default"); //$NON-NLS-1$
+        aab.getElement().setAttribute("data-permission", "appEdit"); //$NON-NLS-1$ //$NON-NLS-2$
         aab.setHTML(i18n.format(AppMessages.BREAK_CONTRACT));
         aab.setActionText(i18n.format(AppMessages.BREAKING));
         aab.setIcon("fa-cog"); //$NON-NLS-1$
         aab.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
+                aab.onActionStarted();
+                aab.getElement().getStyle().setVisibility(Visibility.VISIBLE);
                 ConfirmationDialog dialog = confirmationDialogFactory.get();
                 dialog.setDialogTitle(i18n.format(AppMessages.CONFIRM_BREAK_CONTRACT_TITLE));
-                dialog.setDialogMessage(i18n.format(AppMessages.CONFIRM_BREAK_CONTRACT_MESSAGE));
+                dialog.setDialogMessage(i18n.format(AppMessages.CONFIRM_BREAK_CONTRACT_MESSAGE, bean.getServiceName()));
                 dialog.addConfirmationHandler(new ConfirmationEvent.Handler() {
                     @Override
                     public void onConfirmation(ConfirmationEvent event) {
                         if (event.isConfirmed()) {
-                            aab.onActionStarted();
                             BreakContractEvent.fire(AppContractList.this, bean);
+                        } else {
+                            aab.onActionComplete();
+                            aab.getElement().getStyle().clearVisibility();
                         }
                     }
                 });
+                dialog.show();
             }
         });
         sp.add(aab);
