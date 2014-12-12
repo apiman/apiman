@@ -8,7 +8,7 @@
   <dependencySets>
     <!-- apiman-manager -->
     <dependencySet>
-      <outputDirectory>wildfly-8.2.0.Final/standalone/deployments</outputDirectory>
+      <outputDirectory>standalone/deployments</outputDirectory>
       <includes>
         <include>*:apiman-manager-ui-war-wildfly8:war</include>
       </includes>
@@ -22,7 +22,7 @@
     </dependencySet>
     <!-- apiman -->
     <dependencySet>
-      <outputDirectory>wildfly-8.2.0.Final/standalone/deployments</outputDirectory>
+      <outputDirectory>standalone/deployments</outputDirectory>
       <includes>
         <include>*:apiman-manager-api-war-wildfly8:war</include>
       </includes>
@@ -36,7 +36,7 @@
     </dependencySet>
     <!-- apiman-gateway -->
     <dependencySet>
-      <outputDirectory>wildfly-8.2.0.Final/standalone/deployments</outputDirectory>
+      <outputDirectory>standalone/deployments</outputDirectory>
       <includes>
         <include>*:apiman-gateway-platforms-war-wildfly8:war</include>
       </includes>
@@ -50,7 +50,7 @@
     </dependencySet>
     <!-- Seed data -->
     <dependencySet>
-      <outputDirectory>wildfly-8.2.0.Final/apiman</outputDirectory>
+      <outputDirectory>apiman</outputDirectory>
       <includes>
         <include>io.apiman:apiman-distro-data:jar</include>
       </includes>
@@ -70,7 +70,7 @@
     </dependencySet>
     <!-- The apiman quickstarts -->
     <dependencySet>
-      <outputDirectory>wildfly-8.2.0.Final/apiman/quickstarts</outputDirectory>
+      <outputDirectory>apiman/quickstarts</outputDirectory>
       <includes>
         <include>io.apiman:apiman-quickstarts:zip</include>
       </includes>
@@ -86,21 +86,21 @@
   <fileSets>
     <fileSet>
       <directory>src/main/resources/overlay</directory>
-      <outputDirectory>wildfly-8.2.0.Final</outputDirectory>
+      <outputDirectory>/</outputDirectory>
       <filtered>false</filtered>
       <directoryMode>0755</directoryMode>
       <fileMode>0755</fileMode>
     </fileSet>
     <fileSet>
       <directory>target/keycloak/keycloak-war-dist-all-${version.org.keycloak}</directory>
-      <outputDirectory>wildfly-8.2.0.Final/standalone</outputDirectory>
+      <outputDirectory>standalone</outputDirectory>
       <filtered>false</filtered>
       <directoryMode>0755</directoryMode>
       <fileMode>0755</fileMode>
     </fileSet>
     <fileSet>
       <directory>target/keycloak/modules</directory>
-      <outputDirectory>wildfly-8.2.0.Final/modules</outputDirectory>
+      <outputDirectory>modules</outputDirectory>
       <filtered>false</filtered>
       <directoryMode>0755</directoryMode>
       <fileMode>0755</fileMode>
