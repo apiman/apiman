@@ -15,10 +15,6 @@
  */
 package io.apiman.gateway.test;
 
-import io.apiman.gateway.engine.beans.Application;
-import io.apiman.gateway.engine.beans.Service;
-import io.apiman.gateway.engine.beans.exceptions.PublishingException;
-import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
 import io.apiman.gateway.engine.components.IHttpClientComponent;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.components.IRateLimiterComponent;
@@ -31,7 +27,6 @@ import io.apiman.gateway.platforms.servlet.PolicyFailureFactoryComponent;
 import io.apiman.gateway.platforms.servlet.components.HttpClientComponentImpl;
 import io.apiman.gateway.platforms.servlet.connectors.HttpConnectorFactory;
 import io.apiman.gateway.platforms.war.WarEngineConfig;
-import io.apiman.gateway.platforms.war.WarGateway;
 import io.apiman.gateway.test.server.EchoServer;
 import io.apiman.gateway.test.server.GatewayServer;
 import io.apiman.test.common.util.TestPlanRunner;
@@ -87,22 +82,6 @@ public class AbstractGatewayTest {
     public static void shutdown() throws Exception {
         gatewayServer.stop();
         echoServer.stop();
-    }
-
-    /**
-     * @param service the service to publish
-     * @throws PublishingException 
-     */
-    protected void publishService(Service service) throws PublishingException {
-        WarGateway.engine.publishService(service);
-    }
-    
-    /**
-     * @param application the app to register for the test
-     * @throws RegistrationException 
-     */
-    protected void registerApplication(Application application) throws RegistrationException {
-        WarGateway.engine.registerApplication(application);
     }
 
     /**

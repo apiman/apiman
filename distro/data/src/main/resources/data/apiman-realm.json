@@ -64,9 +64,9 @@
             "secret": "password"
         },
         {
-            "name": "apiman-gateway",
+            "name": "apiman-gateway-api",
             "enabled": true,
-            "baseUrl": "/apiman",
+            "baseUrl": "/apiman-gateway-api",
             "secret": "password"
         }
     ]

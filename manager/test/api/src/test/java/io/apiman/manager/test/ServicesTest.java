@@ -29,8 +29,8 @@ import org.junit.Test;
 public class ServicesTest extends AbstractTestPlanTest {
 
     private static final String EXPECTED_GATEWAY_LOG = 
-            "GET:/mock-gateway/api/system/status\n" +  //$NON-NLS-1$
-            "PUT:/mock-gateway/api/services\n"; //$NON-NLS-1$
+            "GET:/mock-gateway/system/status\n" +  //$NON-NLS-1$
+            "PUT:/mock-gateway/services\n"; //$NON-NLS-1$
     
     private static final String EXPECTED_PAYLOAD = 
             "{\"organizationId\":\"Organization1\",\"serviceId\":\"Service1\",\"version\":\"1.0\",\"endpointType\":\"rest\",\"endpoint\":\"http://localhost:8080/ping\",\"endpointProperties\":{}}"; //$NON-NLS-1$

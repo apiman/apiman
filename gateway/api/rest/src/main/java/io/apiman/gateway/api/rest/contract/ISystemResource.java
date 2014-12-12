@@ -28,7 +28,7 @@ import javax.ws.rs.core.MediaType;
  * 
  * @author eric.wittmann@redhat.com
  */
-@Path("api/system")
+@Path("system")
 public interface ISystemResource {
 
     @GET

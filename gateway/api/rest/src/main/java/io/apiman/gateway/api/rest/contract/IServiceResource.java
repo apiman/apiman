@@ -33,7 +33,7 @@ import javax.ws.rs.core.MediaType;
  * 
  * @author eric.wittmann@redhat.com
  */
-@Path("api/services")
+@Path("services")
 public interface IServiceResource {
 
     @PUT

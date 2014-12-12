@@ -17,7 +17,6 @@ package io.apiman.manager.test.server;
 
 import io.apiman.common.servlet.AuthenticationFilter;
 import io.apiman.manager.api.security.impl.DefaultSecurityContextFilter;
-import io.apiman.manager.api.war.jetty8.JettyDtApiApplication;
 
 import java.sql.Connection;
 import java.sql.Driver;
@@ -170,7 +169,7 @@ public class ManagerApiTestServer {
         apiManServer.addFilter(AuthenticationFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST)); //$NON-NLS-1$
         apiManServer.addFilter(DefaultSecurityContextFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST)); //$NON-NLS-1$
         ServletHolder resteasyServlet = new ServletHolder(new HttpServletDispatcher());
-        resteasyServlet.setInitParameter("javax.ws.rs.Application", JettyDtApiApplication.class.getName()); //$NON-NLS-1$
+        resteasyServlet.setInitParameter("javax.ws.rs.Application", TestManagerApiApplication.class.getName()); //$NON-NLS-1$
         apiManServer.addServlet(resteasyServlet, "/*"); //$NON-NLS-1$
 
         apiManServer.setInitParameter("resteasy.injector.factory", "org.jboss.resteasy.cdi.CdiInjectorFactory"); //$NON-NLS-1$ //$NON-NLS-2$

@@ -43,9 +43,9 @@ import org.codehaus.jackson.map.ObjectMapper;
  */
 public class GatewayClient /*implements ISystemResource, IServiceResource, IApplicationResource*/ {
     
-    private static final String SYSTEM_STATUS = "/api/system/status"; //$NON-NLS-1$
-    private static final String SERVICES = "/api/services"; //$NON-NLS-1$
-    private static final String APPLICATIONS = "/api/applications"; //$NON-NLS-1$
+    private static final String SYSTEM_STATUS = "/system/status"; //$NON-NLS-1$
+    private static final String SERVICES = "/services"; //$NON-NLS-1$
+    private static final String APPLICATIONS = "/applications"; //$NON-NLS-1$
     
     private static final ObjectMapper mapper = new ObjectMapper();
     

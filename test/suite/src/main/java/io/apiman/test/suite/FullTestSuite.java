@@ -62,14 +62,14 @@ public class FullTestSuite {
         String apiEndpoint = param("apiman.suite.api-endpoint", "API Endpoint", "http://localhost:8080/apiman");
         param("apiman.suite.api-username", "  Username", "admin");
         param("apiman.suite.api-password", "  Password", "admin123!");
-        param("apiman.suite.gateway-config-endpoint", "Gateway Config Endpoint", "http://localhost:8080/apiman-gateway");
+        param("apiman.suite.gateway-config-endpoint", "Gateway Config Endpoint", "http://localhost:8080/apiman-gateway-api");
         param("apiman.suite.gateway-config-username", "  Username", "admin");
         param("apiman.suite.gateway-config-password", "  Password", "admin123!");
-        String gatewayEndpoint = param("apiman.suite.gateway-endpoint", "Gateway HTTP Endpoint", "http://localhost:8080/apiman-gateway/gateway");
+        String gatewayEndpoint = param("apiman.suite.gateway-endpoint", "Gateway HTTP Endpoint", "http://localhost:8080/apiman-gateway");
         param("apiman.suite.echo-endpoint", "Echo Service Endpoint", "http://localhost:8080/services/echo");
         
         TestPlanRunner runner = new TestPlanRunner(apiEndpoint);
-        runner.runTestPlan("scripts/api-manager-init-testPlan.xml", FullTestSuite.class.getClassLoader());
+//        runner.runTestPlan("scripts/api-manager-init-testPlan.xml", FullTestSuite.class.getClassLoader());
         runner.runTestPlan("scripts/api-manager-testPlan.xml", FullTestSuite.class.getClassLoader());
         runner = new TestPlanRunner(gatewayEndpoint);
         runner.runTestPlan("scripts/api-gateway-testPlan.xml", FullTestSuite.class.getClassLoader());

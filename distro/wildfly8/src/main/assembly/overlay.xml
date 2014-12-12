@@ -34,11 +34,25 @@
       <directoryMode>0755</directoryMode>
       <fileMode>0755</fileMode>
     </dependencySet>
+    <!-- apiman-gateway-api -->
+    <dependencySet>
+      <outputDirectory>standalone/deployments</outputDirectory>
+      <includes>
+        <include>*:apiman-gateway-platforms-war-wildfly8-api:war</include>
+      </includes>
+      <outputFileNameMapping>apiman-gateway-api.war</outputFileNameMapping>
+      <useProjectArtifact>false</useProjectArtifact>
+      <useProjectAttachments>false</useProjectAttachments>
+      <useTransitiveDependencies>false</useTransitiveDependencies>
+      <useTransitiveFiltering>false</useTransitiveFiltering>
+      <directoryMode>0755</directoryMode>
+      <fileMode>0755</fileMode>
+    </dependencySet>
     <!-- apiman-gateway -->
     <dependencySet>
       <outputDirectory>standalone/deployments</outputDirectory>
       <includes>
-        <include>*:apiman-gateway-platforms-war-wildfly8:war</include>
+        <include>*:apiman-gateway-platforms-war-wildfly8-gateway:war</include>
       </includes>
       <outputFileNameMapping>apiman-gateway.war</outputFileNameMapping>
       <useProjectArtifact>false</useProjectArtifact>
@@ -47,6 +61,20 @@
       <useTransitiveFiltering>false</useTransitiveFiltering>
       <directoryMode>0755</directoryMode>
       <fileMode>0755</fileMode>
+    </dependencySet>
+    <!-- apiman-gateway wildfly8 modules -->
+    <dependencySet>
+      <outputDirectory>/</outputDirectory>
+      <includes>
+        <include>*:apiman-gateway-platforms-war-wildfly8-modules:zip</include>
+      </includes>
+      <useProjectArtifact>false</useProjectArtifact>
+      <useProjectAttachments>false</useProjectAttachments>
+      <useTransitiveDependencies>false</useTransitiveDependencies>
+      <useTransitiveFiltering>false</useTransitiveFiltering>
+      <directoryMode>0755</directoryMode>
+      <fileMode>0755</fileMode>
+      <unpack>true</unpack>
     </dependencySet>
     <!-- Seed data -->
     <dependencySet>

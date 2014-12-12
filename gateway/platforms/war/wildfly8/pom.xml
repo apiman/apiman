@@ -8,63 +8,13 @@
     <relativePath>../../pom.xml</relativePath>
   </parent>
   <artifactId>apiman-gateway-platforms-war-wildfly8</artifactId>
-  <packaging>war</packaging>
+  <packaging>pom</packaging>
   <name>apiman-gateway-platforms-war-wildfly8</name>
-
-  <dependencies>
-    <!-- The base WAR being extended -->
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-gateway-platforms-war</artifactId>
-      <type>war</type>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-gateway-platforms-war</artifactId>
-      <type>jar</type>
-      <classifier>classes</classifier>
-    </dependency>
-    
-    <!-- Project Libs -->
-    <dependency>
-      <groupId>io.apiman</groupId>
-      <artifactId>apiman-common-auth</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.apiman</groupId>
-      <artifactId>apiman-common-servlet</artifactId>
-    </dependency>
-
-    <!-- Spec libs -->
-    <dependency>
-      <groupId>org.jboss.spec.javax.servlet</groupId>
-      <artifactId>jboss-servlet-api_3.0_spec</artifactId>
-      <scope>provided</scope>
-    </dependency>
-  </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <artifactId>maven-war-plugin</artifactId>
-        <configuration>
-          <attachClasses>true</attachClasses>
-          <classesClassifier>classes</classesClassifier>
-          <archive>
-            <manifest>
-              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-              <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-            </manifest>
-          </archive>
-          <overlays>
-            <overlay>
-              <groupId>${project.groupId}</groupId>
-              <artifactId>apiman-gateway-platforms-war</artifactId>
-            </overlay>
-          </overlays>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+  
+  <modules>
+    <module>api</module>
+    <module>gateway</module>
+    <module>modules</module>
+  </modules>
 
 </project>

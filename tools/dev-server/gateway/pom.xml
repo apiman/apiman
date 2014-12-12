@@ -25,8 +25,6 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-gateway-platforms-war</artifactId>
-      <type>jar</type>
-      <classifier>classes</classifier>
     </dependency>
   </dependencies>
 

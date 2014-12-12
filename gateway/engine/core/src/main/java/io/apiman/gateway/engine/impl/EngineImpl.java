@@ -39,7 +39,9 @@ import io.apiman.gateway.engine.policy.PolicyContextImpl;
 import io.apiman.gateway.engine.policy.PolicyWithConfiguration;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -53,6 +55,7 @@ public class EngineImpl implements IEngine {
     private IComponentRegistry componentRegistry;
     private IConnectorFactory connectorFactory;
     private IPolicyFactory policyFactory;
+    private Map<Policy, Object> policyConfigCache = new HashMap<Policy, Object>();
 
     /**
      * Constructor.
@@ -126,8 +129,7 @@ public class EngineImpl implements IEngine {
                 try {
                     // Load the policy class and validate the policy config.
                     IPolicy policyImpl = getPolicyFactory().newPolicy(policy.getPolicyImpl());
-                    Object policyConfig = policyImpl.parseConfiguration(policy.getPolicyJsonConfig());
-                    policy.setPolicyConfig(policyConfig);
+                    policyImpl.parseConfiguration(policy.getPolicyJsonConfig());
                 } catch (PolicyNotFoundException e) {
                     throw new RegistrationException(e);
                 } catch (ConfigurationParseException e) {
@@ -173,11 +175,26 @@ public class EngineImpl implements IEngine {
 
         for (Policy policy : contract.getPolicies()) {
             IPolicy policyImpl = getPolicyFactory().newPolicy(policy.getPolicyImpl());
-            PolicyWithConfiguration pwc = new PolicyWithConfiguration(policyImpl, policy.getPolicyConfig());
+            Object policyConfig = getPolicyConfig(policyImpl, policy);
+            PolicyWithConfiguration pwc = new PolicyWithConfiguration(policyImpl, policyConfig);
             instances.add(pwc);
         }
 
         return instances;
+    }
+
+    /**
+     * Gets the policy config object for the given policy.
+     * @param policyImpl
+     * @param policy
+     */
+    protected Object getPolicyConfig(IPolicy policyImpl, Policy policy) {
+        Object parsedConfig = policyConfigCache.get(policy);
+        if (parsedConfig == null) {
+            parsedConfig = policyImpl.parseConfiguration(policy.getPolicyJsonConfig());
+            policyConfigCache.put(policy, parsedConfig);
+        }
+        return parsedConfig;
     }
 
     /**

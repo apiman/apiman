@@ -14,7 +14,6 @@
     <module>servlet</module>
     <module>undertow</module>
     <module>war</module>
-    <module>war/jetty8</module>
     <module>war/wildfly8</module>
   </modules>
 </project>

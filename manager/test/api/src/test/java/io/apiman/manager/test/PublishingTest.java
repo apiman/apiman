@@ -40,14 +40,14 @@ import org.junit.Test;
 public class PublishingTest extends AbstractTestPlanTest {
 
     private static final String EXPECTED_GATEWAY_LOG = 
-            "GET:/mock-gateway/api/system/status\n" +
-            "PUT:/mock-gateway/api/services\n" +
-            "GET:/mock-gateway/api/system/status\n" +
-            "PUT:/mock-gateway/api/applications\n" + 
-            "GET:/mock-gateway/api/system/status\n" + 
-            "DELETE:/mock-gateway/api/applications/Organization1/Application1/1.0\n" + 
-            "GET:/mock-gateway/api/system/status\n" + 
-            "DELETE:/mock-gateway/api/services/Organization1/Service1/1.0\n"; 
+            "GET:/mock-gateway/system/status\n" +
+            "PUT:/mock-gateway/services\n" +
+            "GET:/mock-gateway/system/status\n" +
+            "PUT:/mock-gateway/applications\n" + 
+            "GET:/mock-gateway/system/status\n" + 
+            "DELETE:/mock-gateway/applications/Organization1/Application1/1.0\n" + 
+            "GET:/mock-gateway/system/status\n" + 
+            "DELETE:/mock-gateway/services/Organization1/Service1/1.0\n"; 
     
     private static final String EXPECTED_PUBLISH_PAYLOAD = 
             "{\"organizationId\":\"Organization1\",\"serviceId\":\"Service1\",\"version\":\"1.0\",\"endpointType\":\"rest\",\"endpoint\":\"http://localhost:8080/ping\",\"endpointProperties\":{}}";

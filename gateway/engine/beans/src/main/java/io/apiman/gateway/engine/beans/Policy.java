@@ -17,8 +17,6 @@ package io.apiman.gateway.engine.beans;
 
 import java.io.Serializable;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
-
 /**
  * Models a policy.
  * 
@@ -27,9 +25,9 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 public class Policy implements Serializable {
 
     private static final long serialVersionUID = -5945877012261045491L;
+    
     private String policyJsonConfig; //config_info json str
     private String policyImpl; //Reference to policy (classname?) we're going to load?
-    private transient Object policyConfig;
 
     /**
      * Constructor.
@@ -66,17 +64,39 @@ public class Policy implements Serializable {
     }
 
     /**
-     * @return the policyConfig
+     * @see java.lang.Object#hashCode()
      */
-    @JsonIgnore
-    public Object getPolicyConfig() {
-        return policyConfig;
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((policyImpl == null) ? 0 : policyImpl.hashCode());
+        result = prime * result + ((policyJsonConfig == null) ? 0 : policyJsonConfig.hashCode());
+        return result;
     }
 
     /**
-     * @param policyConfig the policyConfig to set
+     * @see java.lang.Object#equals(java.lang.Object)
      */
-    public void setPolicyConfig(Object policyConfig) {
-        this.policyConfig = policyConfig;
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Policy other = (Policy) obj;
+        if (policyImpl == null) {
+            if (other.policyImpl != null)
+                return false;
+        } else if (!policyImpl.equals(other.policyImpl))
+            return false;
+        if (policyJsonConfig == null) {
+            if (other.policyJsonConfig != null)
+                return false;
+        } else if (!policyJsonConfig.equals(other.policyJsonConfig))
+            return false;
+        return true;
     }
 }

@@ -7,7 +7,6 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
   <artifactId>apiman-gateway-platforms-war</artifactId>
-  <packaging>war</packaging>
   <name>apiman-gateway-platforms-war</name>
 
   <dependencies>
@@ -27,14 +26,6 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-gateway-engine-policies</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-gateway-api-rest</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-gateway-api-rest-impl</artifactId>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
@@ -86,23 +77,4 @@
       <scope>provided</scope>
     </dependency>
   </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <artifactId>maven-war-plugin</artifactId>
-        <configuration>
-          <attachClasses>true</attachClasses>
-          <classesClassifier>classes</classesClassifier>
-          <warName>${project.artifactId}</warName>
-          <archive>
-            <manifest>
-              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-              <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-            </manifest>
-          </archive>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 </project>

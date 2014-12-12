@@ -25,8 +25,18 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-gateway-platforms-war-wildfly8</artifactId>
+      <artifactId>apiman-gateway-platforms-war-wildfly8-api</artifactId>
       <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-gateway-platforms-war-wildfly8-gateway</artifactId>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-gateway-platforms-war-wildfly8-modules</artifactId>
+      <type>zip</type>
     </dependency>
 
     <!-- apiman data -->

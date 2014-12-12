@@ -25,8 +25,8 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.ui.client.local.spi.TranslationService;
-import org.overlord.commons.gwt.client.local.widgets.AnchorPanel;
 import org.overlord.commons.gwt.client.local.widgets.FontAwesomeIcon;
+import org.overlord.commons.gwt.client.local.widgets.SpanPanel;
 import org.overlord.commons.gwt.client.local.widgets.TemplatedWidgetTable;
 
 import com.google.gwt.user.client.Element;
@@ -96,12 +96,12 @@ public class PolicyDefinitionTable extends TemplatedWidgetTable implements Takes
      * @param bean
      */
     private void addRow(int rowIdx, PolicyDefinitionSummaryBean bean) {
-        AnchorPanel a = new AnchorPanel();
+        SpanPanel s = new SpanPanel();
         FontAwesomeIcon icon = new FontAwesomeIcon(bean.getIcon(), true);
-        a.add(icon);
+        s.add(icon);
         InlineLabel span = new InlineLabel(bean.getName());
-        a.add(span);
-        add(rowIdx, 0, a);
+        s.add(span);
+        add(rowIdx, 0, s);
         
         add(rowIdx, 1, new InlineLabel(bean.getPolicyImpl()));
     }

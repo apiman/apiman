@@ -1,4 +1,4 @@
-12-11 14:55:45 jdbc[2]: exception
+12-12 10:59:32 jdbc[2]: exception
 org.h2.jdbc.JdbcSQLException: Feature not supported: "isWrapperFor" [50100-173]
 	at org.h2.message.DbException.getJdbcSQLException(DbException.java:331)
 	at org.h2.message.DbException.get(DbException.java:171)

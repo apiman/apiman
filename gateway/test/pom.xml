@@ -34,7 +34,6 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-gateway-platforms-war</artifactId>
-      <classifier>classes</classifier>
     </dependency>
 
     <!-- Overlord Commons -->

@@ -16,7 +16,6 @@
 package io.apiman.gateway.test.server;
 
 import io.apiman.gateway.api.rest.impl.ApplicationResourceImpl;
-import io.apiman.gateway.api.rest.impl.RtApiApplication;
 import io.apiman.gateway.api.rest.impl.ServiceResourceImpl;
 import io.apiman.gateway.api.rest.impl.SystemResourceImpl;
 import io.apiman.gateway.api.rest.impl.mappers.RestExceptionMapper;
@@ -25,6 +24,9 @@ import io.apiman.gateway.platforms.war.servlets.WarGatewayServlet;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.core.Application;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
@@ -37,6 +39,7 @@ import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
  * 
  * @author eric.wittmann@redhat.com
  */
+@SuppressWarnings("nls")
 public class GatewayServer {
 
     private Server server;
@@ -55,7 +58,7 @@ public class GatewayServer {
      */
     public void start() throws Exception {
         long startTime = System.currentTimeMillis();
-        System.out.println("**** Starting Server (" + getClass().getSimpleName() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
+        System.out.println("**** Starting Server (" + getClass().getSimpleName() + ")");
         preStart();
 
         ContextHandlerCollection handlers = new ContextHandlerCollection();
@@ -66,7 +69,7 @@ public class GatewayServer {
         server.setHandler(handlers);
         server.start();
         long endTime = System.currentTimeMillis();
-        System.out.println("******* Started in " + (endTime - startTime) + "ms"); //$NON-NLS-1$ //$NON-NLS-2$
+        System.out.println("******* Started in " + (endTime - startTime) + "ms");
     }
     
     /**
@@ -96,20 +99,22 @@ public class GatewayServer {
          * Gateway
          * ************* */
         ServletContextHandler server = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        server.setContextPath("/"); //$NON-NLS-1$
+        server.setContextPath("/");
         server.addEventListener(new WarGatewayBootstrapper());
         ServletHolder servlet = new ServletHolder(new WarGatewayServlet());
-        server.addServlet(servlet, "/gateway/*"); //$NON-NLS-1$
+        server.addServlet(servlet, "/gateway/*");
         servlet = new ServletHolder(new HttpServletDispatcher());
-        servlet.setInitParameter("javax.ws.rs.Application", TestGatewayApplication.class.getName()); //$NON-NLS-1$
+        servlet.setInitParameter("javax.ws.rs.Application", TestGatewayApplication.class.getName());
+        servlet.setInitParameter("resteasy.servlet.mapping.prefix", "/api");
         servlet.setInitOrder(1);
-        server.addServlet(servlet, "/api/*"); //$NON-NLS-1$
+        server.addServlet(servlet, "/api/*");
 
         // Add the web contexts to jetty
         handlers.addHandler(server);
     }
 
-    public static class TestGatewayApplication extends RtApiApplication {
+    @ApplicationPath("/")
+    public static class TestGatewayApplication extends Application {
         
         /**
          * Constructor.

@@ -96,7 +96,7 @@
                     <unzip src="${apiman.wildfly.zip}" dest="${apiman.install.dir}" overwrite="false" />
 
                     <!-- Overlay APIMan on top of WildFly 8.2 -->
-                    <unzip src="${apiman.apiman-distro-wildfly8.zip}" dest="${apiman.install.dir}" overwrite="false" />
+                    <unzip src="${apiman.apiman-distro-wildfly8.zip}" dest="${apiman.install.dir}/wildfly-8.2.0.Final" overwrite="true" />
                     
                     <!-- Make sure to chmod 755 the shell scripts -->
                     <chmod perm="a+x" dir="${s-ramp.appserver.dir}/bin">
