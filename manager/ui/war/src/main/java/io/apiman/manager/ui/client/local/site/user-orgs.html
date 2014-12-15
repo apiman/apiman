@@ -95,7 +95,18 @@
               <!-- Organizations Tab Content -->
               <div class="tab-pane active" id="tab-orgs">
                 <div class="apiman-filters apiman-organizations-filters">
-                  <input data-field="orgFilter" type="text" class="form-control input-search" placeholder="Filter by organization name..."></input>
+                  <table class="search-box input-search" data-field="orgFilter">
+                    <tbody>
+                      <tr>
+                        <td width="99%">
+                          <input data-field="textBox" value="" placeholder="" type="text">
+                        </td>
+                        <td width="1%">
+                          <button data-field="button" class="btn btn-default"><i class="fa fa-fw fa-search"></i></button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                   <a data-field="toNewOrg" href="new-org.html" class="btn btn-primary pull-right" data-i18n-key="new-organization">New Org</a>
                 </div>
                 <div class="clearfix"></div>

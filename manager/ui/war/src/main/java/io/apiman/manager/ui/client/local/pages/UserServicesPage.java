@@ -19,6 +19,7 @@ import io.apiman.manager.api.beans.summary.ServiceSummaryBean;
 import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.pages.user.UserServiceList;
 import io.apiman.manager.ui.client.local.services.rest.IRestInvokerCallback;
+import io.apiman.manager.ui.client.local.widgets.SearchBox;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +35,6 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.ui.TextBox;
 
 
 /**
@@ -53,7 +53,7 @@ public class UserServicesPage extends AbstractUserPage {
     TransitionAnchor<NewServicePage> toNewService;
 
     @Inject @DataField
-    TextBox serviceFilter;
+    SearchBox serviceFilter;
     @Inject @DataField
     UserServiceList services;
 
@@ -74,6 +74,7 @@ public class UserServicesPage extends AbstractUserPage {
                 filterServices();
             }
         });
+        serviceFilter.setPlaceholder(i18n.format(AppMessages.USER_SERVICES_FILTER_PLACEHOLDER));
     }
     
     /**

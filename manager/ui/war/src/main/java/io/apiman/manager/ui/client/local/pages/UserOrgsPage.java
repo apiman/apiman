@@ -19,6 +19,7 @@ import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
 import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.pages.user.UserOrganizationList;
 import io.apiman.manager.ui.client.local.services.rest.IRestInvokerCallback;
+import io.apiman.manager.ui.client.local.widgets.SearchBox;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +35,6 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.ui.TextBox;
 
 
 /**
@@ -50,7 +50,7 @@ public class UserOrgsPage extends AbstractUserPage {
     List<OrganizationSummaryBean> orgs;
     
     @Inject @DataField
-    TextBox orgFilter;
+    SearchBox orgFilter;
     @Inject @DataField
     UserOrganizationList organizations;
     
@@ -74,6 +74,7 @@ public class UserOrgsPage extends AbstractUserPage {
                 filterOrgs();
             }
         });
+        orgFilter.setPlaceholder(i18n.format(AppMessages.USER_ORGS_FILTER_PLACEHOLDER));
     }
 
     /**

@@ -49,12 +49,10 @@ body {
   color: rgb(85, 85, 85);
   font-weight: 700;
 }
-
 .dropzone.dropped {
   border: 1px dashed rgb(4, 179, 0);
   background-color: rgb(203, 255, 202);
 }
-
 .dropzone.dropping {
   border: 1px dashed rgb(106, 131, 249);
   background-color: rgb(217, 223, 253);
@@ -63,6 +61,17 @@ body {
 textarea.dropping {
   border: 1px dashed rgb(106, 131, 249);
   background-color: rgb(217, 223, 253);
+}
+
+.search-box input {
+  width: 100%;
+  padding: 3px;
+  border: 1px solid rgb(183, 183, 183);
+}
+.search-box button.btn {
+  margin-left: 0px;
+  border-left: 0px;
+  box-shadow: none;
 }
 
 .italic {

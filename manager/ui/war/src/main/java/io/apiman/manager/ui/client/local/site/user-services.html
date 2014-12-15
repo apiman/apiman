@@ -95,7 +95,18 @@
               <!-- Services Tab Content -->
               <div class="tab-pane active" id="tab-services">
                 <div class="apiman-filters apiman-services-filters">
-                  <input data-field="serviceFilter" type="text" class="form-control input-search" placeholder="Filter by org or service name..."></input>
+                  <table class="search-box input-search" data-field="serviceFilter">
+                    <tbody>
+                      <tr>
+                        <td width="99%">
+                          <input data-field="textBox" value="" placeholder="" type="text">
+                        </td>
+                        <td width="1%">
+                          <button data-field="button" class="btn btn-default"><i class="fa fa-fw fa-search"></i></button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                   <a data-field="toNewService" data-i18n-key="new-service" href="new-service.html" class="btn btn-primary pull-right">New Service</a>
                 </div>
                 <div class="clearfix"></div>

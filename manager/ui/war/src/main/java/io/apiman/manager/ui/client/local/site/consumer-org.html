@@ -105,7 +105,18 @@
                   <div class="consumer-section">
                     <h3 data-i18n-key="services-offered" class="consumer-header">Services Offered</h3>
                     <div class="apiman-filters apiman-services-filters" style="border-bottom: none; margin-bottom: 0px;">
-                      <input data-field="serviceFilter" data-i18n-key="service-filter" type="text" class="form-control input-search" placeholder="Filter by org or service name..."></input>
+                      <table class="search-box input-search" data-field="serviceFilter">
+                        <tbody>
+                          <tr>
+                            <td width="99%">
+                              <input data-field="textBox" value="" placeholder="" type="text">
+                            </td>
+                            <td width="1%">
+                              <button data-field="button" class="btn btn-default"><i class="fa fa-fw fa-search"></i></button>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
                     </div>
                     <div class="apiman-services consumer-section" data-field="services" data-role="dummy">
                       <div class="container-fluid apiman-summaryrow">

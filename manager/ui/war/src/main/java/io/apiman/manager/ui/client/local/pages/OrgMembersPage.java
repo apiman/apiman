@@ -19,6 +19,7 @@ import io.apiman.manager.api.beans.members.MemberBean;
 import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.pages.org.OrgMemberList;
 import io.apiman.manager.ui.client.local.util.MultimapUtil;
+import io.apiman.manager.ui.client.local.widgets.SearchBox;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +35,6 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.TextBox;
 
 
 /**
@@ -51,7 +51,7 @@ public class OrgMembersPage extends AbstractOrgPage {
     Anchor toManageMembers;
 
     @Inject @DataField
-    TextBox memberFilter;
+    SearchBox memberFilter;
     @Inject @DataField
     OrgMemberList members;
 
@@ -72,6 +72,7 @@ public class OrgMembersPage extends AbstractOrgPage {
                 filterMembers();
             }
         });
+        memberFilter.setPlaceholder(i18n.format(AppMessages.ORG_MEMBERS_FILTER_PLACEHOLDER));
     }
 
     /**

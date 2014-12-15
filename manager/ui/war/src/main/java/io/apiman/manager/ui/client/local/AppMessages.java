@@ -488,5 +488,25 @@ public class AppMessages {
     
     @TranslationKey(defaultValue = "You are not authorized to view this page.")
     public static final String NOT_AUTHORIZED = "not-authorized";
+    
+    @TranslationKey(defaultValue = "Filter by application name...")
+    public static final String ORG_APPS_FILTER_PLACEHOLDER = "org-apps.filter.placeholder";
+    @TranslationKey(defaultValue = "Filter by service name...")
+    public static final String ORG_SERVICES_FILTER_PLACEHOLDER = "org-services.filter.placeholder";
+    @TranslationKey(defaultValue = "Filter by plan name...")
+    public static final String ORG_PLANS_FILTER_PLACEHOLDER = "org-plans.filter.placeholder";
+    @TranslationKey(defaultValue = "Filter by member name...")
+    public static final String ORG_MEMBERS_FILTER_PLACEHOLDER = "org-members.filter.placeholder";
 
+    @TranslationKey(defaultValue = "Filter by organization name...")
+    public static final String USER_ORGS_FILTER_PLACEHOLDER = "user-orgs.filter.placeholder";
+    @TranslationKey(defaultValue = "Filter by org or app name...")
+    public static final String USER_APPS_FILTER_PLACEHOLDER = "user-apps.filter.placeholder";
+    @TranslationKey(defaultValue = "Filter by org or service name...")
+    public static final String USER_SERVICES_FILTER_PLACEHOLDER = "user-services.filter.placeholder";
+
+    @TranslationKey(defaultValue = "Filter by role or permission name...")
+    public static final String ADMIN_ROLES_FILTER_PLACEHOLDER = "admin-roles.filter.placeholder";
+    @TranslationKey(defaultValue = "Filter by policy definition name...")
+    public static final String ADMIN_POLICY_DEFS_FILTER_PLACEHOLDER = "admin-policyDefs.filter.placeholder";
 }

@@ -27,6 +27,7 @@ import io.apiman.manager.ui.client.local.pages.consumer.ConsumerOrgServiceList;
 import io.apiman.manager.ui.client.local.pages.consumer.OrganizationCard;
 import io.apiman.manager.ui.client.local.services.rest.IRestInvokerCallback;
 import io.apiman.manager.ui.client.local.util.MultimapUtil;
+import io.apiman.manager.ui.client.local.widgets.SearchBox;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +43,6 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.ui.TextBox;
 
 
 /**
@@ -71,7 +71,7 @@ public class ConsumerOrgPage extends AbstractPage {
     @Inject @DataField
     private ConsumerOrgServiceList services;
     @Inject @DataField
-    private TextBox serviceFilter;
+    private SearchBox serviceFilter;
 
     protected OrganizationBean orgBean;
     protected List<MemberBean> memberBeans;
@@ -97,6 +97,7 @@ public class ConsumerOrgPage extends AbstractPage {
                 // TODO impl
             }
         });
+        serviceFilter.setPlaceholder("Filter by org or service name...");
     }
     
     /**

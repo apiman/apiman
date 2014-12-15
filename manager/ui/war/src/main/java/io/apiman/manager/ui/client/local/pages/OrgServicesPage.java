@@ -20,6 +20,7 @@ import io.apiman.manager.api.beans.summary.ServiceSummaryBean;
 import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.pages.org.OrgServiceList;
 import io.apiman.manager.ui.client.local.services.rest.IRestInvokerCallback;
+import io.apiman.manager.ui.client.local.widgets.SearchBox;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +36,6 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.ui.TextBox;
 
 
 /**
@@ -56,7 +56,7 @@ public class OrgServicesPage extends AbstractOrgPage {
     TransitionAnchor<ImportServicesPage> toImportServices;
 
     @Inject @DataField
-    TextBox serviceFilter;
+    SearchBox serviceFilter;
     @Inject @DataField
     OrgServiceList services;
 
@@ -85,6 +85,7 @@ public class OrgServicesPage extends AbstractOrgPage {
                 filterServices();
             }
         });
+        serviceFilter.setPlaceholder(i18n.format(AppMessages.ORG_SERVICES_FILTER_PLACEHOLDER));
     }
 
     /**

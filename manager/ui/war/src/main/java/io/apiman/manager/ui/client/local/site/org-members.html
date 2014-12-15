@@ -100,7 +100,18 @@
               <!-- Members Tab Content -->
               <div class="tab-pane active" id="tab-members">
                 <div class="apiman-filters apiman-members-filters">
-                  <input data-field="memberFilter" type="text" class="form-control input-search" placeholder="Filter by member name..."></input>
+                  <table class="search-box input-search" data-field="memberFilter">
+                    <tbody>
+                      <tr>
+                        <td width="99%">
+                          <input data-field="textBox" value="" placeholder="" type="text">
+                        </td>
+                        <td width="1%">
+                          <button data-field="button" class="btn btn-default"><i class="fa fa-fw fa-search"></i></button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                   <a data-permission="orgAdmin" href="org-manage-members.html" class="btn btn-default pull-right" data-field="toManageMembers" data-i18n-key="manage-members">Manage Members</a>
                 </div>
                 <div class="clearfix"></div>

@@ -100,7 +100,18 @@
               <!-- Plans Tab Content -->
               <div class="tab-pane active" id="tab-plans">
                 <div class="apiman-filters apiman-plans-filters">
-                  <input data-field="planFilter" type="text" class="form-control input-search" placeholder="Filter by plan name..."></input>
+                  <table class="search-box input-search" data-field="planFilter">
+                    <tbody>
+                      <tr>
+                        <td width="99%">
+                          <input data-field="textBox" value="" placeholder="" type="text">
+                        </td>
+                        <td width="1%">
+                          <button data-field="button" class="btn btn-default"><i class="fa fa-fw fa-search"></i></button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                   <a data-permission="planEdit" data-field="toNewPlan" data-i18n-key="new-plan" href="new-plan.html" class="btn btn-primary pull-right">New Plan</a>
                 </div>
                 <div class="clearfix"></div>

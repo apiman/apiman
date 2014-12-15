@@ -76,7 +76,18 @@
             <!-- Filter and Actions -->
             <div class="row">
               <div class="apiman-filters apiman-policyDefs-filters">
-                <input data-field="policyDefFilter" type="text" class="form-control input-search" placeholder="Filter by policy definition name..."></input>
+                <table class="search-box input-search" data-field="policyDefFilter">
+                  <tbody>
+                    <tr>
+                      <td width="99%">
+                        <input data-field="textBox" value="" placeholder="" type="text">
+                      </td>
+                      <td width="1%">
+                        <button data-field="button" class="btn btn-default"><i class="fa fa-fw fa-search"></i></button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
 <!--                 <a data-field="toNewPolicyDef" href="new-policyDef.html" class="btn btn-default pull-right">Add Policy</a> -->
                 <a data-field="toImportPolicyDef" href="import-policyDefs.html" class="btn btn-primary pull-right">Import Policy</a>
               </div>

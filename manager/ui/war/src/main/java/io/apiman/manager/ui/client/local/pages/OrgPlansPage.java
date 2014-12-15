@@ -20,6 +20,7 @@ import io.apiman.manager.api.beans.summary.PlanSummaryBean;
 import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.pages.org.OrgPlanList;
 import io.apiman.manager.ui.client.local.services.rest.IRestInvokerCallback;
+import io.apiman.manager.ui.client.local.widgets.SearchBox;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +36,6 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.ui.TextBox;
 
 
 /**
@@ -54,7 +54,7 @@ public class OrgPlansPage extends AbstractOrgPage {
     TransitionAnchor<NewPlanPage> toNewPlan;
 
     @Inject @DataField
-    TextBox planFilter;
+    SearchBox planFilter;
     @Inject @DataField
     OrgPlanList plans;
 
@@ -83,6 +83,7 @@ public class OrgPlansPage extends AbstractOrgPage {
                 filterPlans();
             }
         });
+        planFilter.setPlaceholder(i18n.format(AppMessages.ORG_PLANS_FILTER_PLACEHOLDER));
     }
     
     /**

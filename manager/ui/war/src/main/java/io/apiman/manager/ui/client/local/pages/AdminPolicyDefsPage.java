@@ -20,6 +20,7 @@ import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.pages.admin.PolicyDefinitionTable;
 import io.apiman.manager.ui.client.local.services.rest.IRestInvokerCallback;
 import io.apiman.manager.ui.client.local.util.MultimapUtil;
+import io.apiman.manager.ui.client.local.widgets.SearchBox;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +36,6 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.TextBox;
 
 /**
  * The Role Management admin page.
@@ -48,7 +48,7 @@ import com.google.gwt.user.client.ui.TextBox;
 public class AdminPolicyDefsPage extends AbstractAdminPage {
     
     @Inject @DataField
-    TextBox policyDefFilter;
+    SearchBox policyDefFilter;
     @Inject @DataField
     Anchor toImportPolicyDef;
     @Inject @DataField
@@ -73,6 +73,7 @@ public class AdminPolicyDefsPage extends AbstractAdminPage {
                 filterPolicyDefs();
             }
         });
+        policyDefFilter.setPlaceholder(i18n.format(AppMessages.ADMIN_ROLES_FILTER_PLACEHOLDER));
     }
     
     /**
