@@ -11,6 +11,22 @@ Content-Type: application/json
         "what" : "Register",
         "who" : "admin"
       },
+      { "data" : "{\"appOrgId\":\"Organization1\",\"appId\":\"Application1\",\"appVersion\":\"1.0\",\"serviceOrgId\":\"Organization1\",\"serviceId\":\"Service1\",\"serviceVersion\":\"1.0\",\"planId\":\"Plan1\",\"planVersion\":\"1.0\"}",
+        "entityId" : "Service1",
+        "entityType" : "Service",
+        "entityVersion" : "1.0",
+        "organizationId" : "Organization1",
+        "what" : "CreateContract",
+        "who" : "admin"
+      },
+      { "data" : "{\"appOrgId\":\"Organization1\",\"appId\":\"Application1\",\"appVersion\":\"1.0\",\"serviceOrgId\":\"Organization1\",\"serviceId\":\"Service1\",\"serviceVersion\":\"1.0\",\"planId\":\"Plan1\",\"planVersion\":\"1.0\"}",
+        "entityId" : "Application1",
+        "entityType" : "Application",
+        "entityVersion" : "1.0",
+        "organizationId" : "Organization1",
+        "what" : "CreateContract",
+        "who" : "admin"
+      },
       { "data" : null,
         "entityId" : "Service1",
         "entityType" : "Service",
@@ -19,22 +35,6 @@ Content-Type: application/json
         "what" : "Publish",
         "who" : "admin"
       },
-      { "data" : "{\"appOrgId\":\"Organization1\",\"appId\":\"Application1\",\"appVersion\":\"1.0\",\"serviceOrgId\":\"Organization1\",\"serviceId\":\"Service1\",\"serviceVersion\":\"1.0\",\"planId\":\"Plan1\",\"planVersion\":\"1.0\"}",
-        "entityId" : "Service1",
-        "entityType" : "Service",
-        "entityVersion" : "1.0",
-        "organizationId" : "Organization1",
-        "what" : "CreateContract",
-        "who" : "admin"
-      },
-      { "data" : "{\"appOrgId\":\"Organization1\",\"appId\":\"Application1\",\"appVersion\":\"1.0\",\"serviceOrgId\":\"Organization1\",\"serviceId\":\"Service1\",\"serviceVersion\":\"1.0\",\"planId\":\"Plan1\",\"planVersion\":\"1.0\"}",
-        "entityId" : "Application1",
-        "entityType" : "Application",
-        "entityVersion" : "1.0",
-        "organizationId" : "Organization1",
-        "what" : "CreateContract",
-        "who" : "admin"
-      },
       { "data" : null,
         "entityId" : "Service1",
         "entityType" : "Service",
@@ -65,6 +65,14 @@ Content-Type: application/json
         "entityVersion" : null,
         "organizationId" : "Organization1",
         "what" : "Create",
+        "who" : "admin"
+      },
+      { "data" : null,
+        "entityId" : "Plan1",
+        "entityType" : "Plan",
+        "entityVersion" : "1.0",
+        "organizationId" : "Organization1",
+        "what" : "Lock",
         "who" : "admin"
       },
       { "data" : null,
@@ -92,5 +100,5 @@ Content-Type: application/json
         "who" : "admin"
       }
     ],
-  "totalSize" : 11
+  "totalSize" : 12
 }

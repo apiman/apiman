@@ -3,4 +3,4 @@ GET /organizations/Organization1/plans/Plan1/versions/missing admin/admin
 404
 Content-Type: application/json
 
-{"type":"PlanVersionNotFoundException","errorCode":6003,"message":"Plan Version does not exist: Plan1/missing","moreInfoUrl":null}
+{"type":"PlanVersionNotFoundException","errorCode":6003,"message":"Plan Version does not exist: Plan1:missing","moreInfoUrl":null}

@@ -117,6 +117,10 @@
               <span data-i18n-key="version-label">Version:</span>
               <span class="emphasis" data-field="version" data-role="dummy">2.1</span>
             </div>
+            <div class="entity-info-with-icon">
+              <span data-i18n-key="status-label">Status:</span>
+              <span class="apiman-label apiman-label-warning" data-field="status" data-role="dummy">Created</span>
+            </div>
             <div class="apiman-divider-20"></div>
             <div class="entity-info-with-icon">
               <i class="fa fa-clock-o fa-fw"></i>
@@ -132,6 +136,20 @@
           </div>
           <!-- /Content Summary (left side) -->
 
+          <!-- Actions -->
+          <div data-permission="planEdit" class="col-md-6">
+            <div class="title" data-i18n-key="actions">Actions</div>
+            <div class="apiman-divider-20">
+              <ul>
+                <li><a data-i18n-key="ttdo-new-version" data-field="ttd_toNewVersion" href="new-planversion.html">Create a new version of this Plan (New Version)</a></li>
+              </ul>
+            </div>
+            <!-- The Finalize Action -->
+            <div class="">
+              <button class="btn btn-primary" data-field="lockButton" data-i18n-key="lock" placeholder="Finalizing..." data-icon="fa-cog">Finalize</button>
+            </div>
+          </div>
+          <!-- /Actions -->
         </div>
         <!-- /Content -->
       </div>

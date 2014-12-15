@@ -37,7 +37,7 @@ Content-Type: application/json
       "description" : "This is the description of Service 2.",
       "createdBy" : "admin"
     },
-    "status" : "Ready",
+    "status" : "Published",
     "endpoint" : "http://localhost:8080/ping",
     "endpointType" : "rest",
     "version" : "1.5",
@@ -54,7 +54,7 @@ Content-Type: application/json
       "description" : "This is the description of Plan A.",
       "createdBy" : "admin"
     },
-    "status" : "Created",
+    "status" : "Locked",
     "version" : "2.0",
     "createdBy" : "admin"
   }

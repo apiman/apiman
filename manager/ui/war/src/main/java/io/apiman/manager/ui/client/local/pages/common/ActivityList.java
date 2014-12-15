@@ -341,6 +341,8 @@ public class ActivityList extends FlowPanel implements TakesValue<SearchResultsB
             return i18n.format(AppMessages.ACTIVITY_REMOVE_POLICY);
         case Retire:
             return i18n.format(AppMessages.ACTIVITY_RETIRE);
+        case Lock:
+            return i18n.format(AppMessages.ACTIVITY_LOCK);
         case Revoke:
             return i18n.format(AppMessages.ACTIVITY_REVOKE);
         case Unregister:

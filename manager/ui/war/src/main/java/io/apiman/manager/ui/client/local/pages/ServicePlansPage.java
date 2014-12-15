@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.ui.client.local.pages;
 
+import io.apiman.manager.api.beans.plans.PlanStatus;
 import io.apiman.manager.api.beans.services.ServicePlanBean;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
 import io.apiman.manager.api.beans.summary.PlanSummaryBean;
@@ -23,6 +24,7 @@ import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.pages.service.ServicePlansSelector;
 import io.apiman.manager.ui.client.local.services.rest.IRestInvokerCallback;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -106,7 +108,14 @@ public class ServicePlansPage extends AbstractServicePage {
                     rest.getPlanVersions(org, planSummaryBean.getId(), new IRestInvokerCallback<List<PlanVersionSummaryBean>>() {
                         @Override
                         public void onSuccess(List<PlanVersionSummaryBean> response) {
-                            planVersions.put(planSummaryBean, response);
+                            List<PlanVersionSummaryBean> lockedPlans = new ArrayList<PlanVersionSummaryBean>(response.size());
+                            for (PlanVersionSummaryBean pvsb : response) {
+                                if (pvsb.getStatus() != PlanStatus.Locked) {
+                                    lockedPlans.add(pvsb);
+                                }
+                            }
+                            
+                            planVersions.put(planSummaryBean, lockedPlans);
                             dataPacketLoaded();
                         }
                         @Override

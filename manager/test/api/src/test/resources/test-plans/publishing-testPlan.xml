@@ -11,16 +11,17 @@
     <test name="Create Service Version 1.0">test-plan-data/publishing/create/005_create-service-version-1.0.resttest</test>
     <test name="Create Plan 1">test-plan-data/publishing/create/006_create-plan1.resttest</test>
     <test name="Create Plan Version 1.0">test-plan-data/publishing/create/007_create-plan-version-1.0.resttest</test>
-    <test name="Update Service 1 (add plans)">test-plan-data/publishing/create/008_update-version-1.0-plans.resttest</test>
-    <test name="Create Policy Def 1">test-plan-data/publishing/create/010_create-policyDef-1.resttest</test>
-    <test name="Create Policy Def 2">test-plan-data/publishing/create/011_create-policyDef-2.resttest</test>
-    <test name="Add Policy 2 to App">test-plan-data/publishing/create/012_add-app-policy.resttest</test>
-    <test name="Add Policy 1 to Plan">test-plan-data/publishing/create/013_add-plan-policy.resttest</test>
-    <test name="Create Contract to Service 1">test-plan-data/publishing/create/014_create-contract1.resttest</test>
-  </testGroup>
 
-  <testGroup name="Test Publishing to Gateway">
+    <test name="Create Policy Def 1">test-plan-data/publishing/create/008_create-policyDef-1.resttest</test>
+    <test name="Create Policy Def 2">test-plan-data/publishing/create/009_create-policyDef-2.resttest</test>
+
+    <test name="Add Policy 2 to App">test-plan-data/publishing/create/010_add-app-policy.resttest</test>
+    <test name="Add Policy 1 to Plan">test-plan-data/publishing/create/011_add-plan-policy.resttest</test>
+
+    <test name="Lock Plan Version 1.0">test-plan-data/publishing/publish/003_lock-plan-version-1.0.resttest</test>
+    <test name="Update Service 1 (add plans)">test-plan-data/publishing/create/012_update-version-1.0-plans.resttest</test>
     <test name="Publish Service 1">test-plan-data/publishing/publish/001_publish-service-1.resttest</test>
+    <test name="Create Contract to Service 1">test-plan-data/publishing/create/013_create-contract1.resttest</test>
     <test name="Register Application 1">test-plan-data/publishing/publish/002_register-application-1.resttest</test>
   </testGroup>
 

@@ -29,5 +29,6 @@ public enum AuditEntryType {
     Publish, Retire,
     Register, Unregister,
     AddPolicy, RemovePolicy, UpdatePolicy, ReorderPolicies,
-    CreateContract, BreakContract
+    CreateContract, BreakContract,
+    Lock,
 }

@@ -392,6 +392,8 @@ public class AppMessages {
     public static final String ACTIVITY_UPDATE_POLICY = "activity.update-policy";
     @TranslationKey(defaultValue = "reordered policies in")
     public static final String ACTIVITY_REORDER_POLICIES = "activity.reorder-policies";
+    @TranslationKey(defaultValue = "locked plan")
+    public static final String ACTIVITY_LOCK = "activity.lock";
     
 
     @TranslationKey(defaultValue = "Policy added:")
@@ -428,6 +430,11 @@ public class AppMessages {
     public static final String APP_STATUS_REGISTERED = "app.status.registered";
     @TranslationKey(defaultValue = "The application was retired and can no longer be used.")
     public static final String APP_STATUS_RETIRED = "app.status.retired";
+
+    @TranslationKey(defaultValue = "The plan has not been locked.  You cannot use this plan in your services until it is locked.")
+    public static final String PLAN_STATUS_CREATED = "plan.status.created";
+    @TranslationKey(defaultValue = "The plan has been locked and can now be used in services.")
+    public static final String PLAN_STATUS_LOCKED = "plan.status.locked";
 
     @TranslationKey(defaultValue = "The service has not yet been configured.  You must first configure the service (Implementation, Plans) before publishing it to the Gateway.")
     public static final String SERVICE_STATUS_CREATED = "service.status.created";
@@ -509,4 +516,7 @@ public class AppMessages {
     public static final String ADMIN_ROLES_FILTER_PLACEHOLDER = "admin-roles.filter.placeholder";
     @TranslationKey(defaultValue = "Filter by policy definition name...")
     public static final String ADMIN_POLICY_DEFS_FILTER_PLACEHOLDER = "admin-policyDefs.filter.placeholder";
+
+    @TranslationKey(defaultValue = "Filter by org or service name...")
+    public static final String CONSUMER_ORG_FILTER_PLACEHOLDER = "consumer-org.filter.placeholder";
 }

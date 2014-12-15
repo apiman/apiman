@@ -13,9 +13,7 @@ Content-Type: application/json
 500
 Content-Type: application/json
 
-{ 
-  "type" : "SystemErrorException",
-  "errorCode" : -1,
-  "message" : "io.apiman.manager.api.core.exceptions.ConstraintViolationException: javax.persistence.RollbackException: Error while committing the transaction",
-  "moreInfoUrl" : null
+{ "errorCode" : -1,
+  "message" : "io.apiman.manager.api.core.exceptions.StorageException: Plan Version does not exist: Plan2:null",
+  "type" : "SystemErrorException"
 }

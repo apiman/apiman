@@ -97,7 +97,7 @@ public class ConsumerOrgPage extends AbstractPage {
                 // TODO impl
             }
         });
-        serviceFilter.setPlaceholder("Filter by org or service name...");
+        serviceFilter.setPlaceholder(i18n.format(AppMessages.CONSUMER_ORG_FILTER_PLACEHOLDER));
     }
     
     /**

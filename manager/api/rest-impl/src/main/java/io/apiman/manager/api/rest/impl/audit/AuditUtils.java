@@ -594,6 +594,19 @@ public class AuditUtils {
     }
 
     /**
+     * Creates an audit entry for the 'plan locked' event.
+     * @param bean
+     * @param securityContext
+     */
+    public static AuditEntryBean planLocked(PlanVersionBean bean, ISecurityContext securityContext) {
+        AuditEntryBean entry = newEntry(bean.getPlan().getOrganization().getId(), AuditEntityType.Plan, securityContext);
+        entry.setEntityId(bean.getPlan().getId());
+        entry.setEntityVersion(bean.getVersion());
+        entry.setWhat(AuditEntryType.Lock);
+        return entry;
+    }
+
+    /**
      * Called when the user reorders the policies in a service.
      * @param svb
      * @param service

@@ -108,9 +108,9 @@ public interface IStorage {
     public ApplicationVersionBean getApplicationVersion(String organizationId, String applicationId, String version) throws StorageException, DoesNotExistException;
     public ContractBean getContract(Long id) throws StorageException, DoesNotExistException;
     public ServiceBean getService(String organizationId, String id) throws StorageException, DoesNotExistException;
-    public ServiceVersionBean getServiceVersion(String organizationId, String applicationId, String version) throws StorageException, DoesNotExistException;
+    public ServiceVersionBean getServiceVersion(String organizationId, String serviceId, String version) throws StorageException, DoesNotExistException;
     public PlanBean getPlan(String organizationId, String id) throws StorageException, DoesNotExistException;
-    public PlanVersionBean getPlanVersion(String organizationId, String applicationId, String version) throws StorageException, DoesNotExistException;
+    public PlanVersionBean getPlanVersion(String organizationId, String planId, String version) throws StorageException, DoesNotExistException;
     public PolicyBean getPolicy(Long id) throws StorageException, DoesNotExistException;
     public GatewayBean getGateway(String id) throws StorageException, DoesNotExistException;
     public PolicyDefinitionBean getPolicyDefinition(String id) throws StorageException, DoesNotExistException;

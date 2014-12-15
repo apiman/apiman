@@ -555,11 +555,19 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         try {
             storage.beginTx();
             avb = storage.getApplicationVersion(organizationId, applicationId, version);
-            if (avb == null)
+            if (avb == null) {
                 throw ExceptionFactory.applicationNotFoundException(applicationId);
+            }
+            if (avb.getStatus() == ApplicationStatus.Registered || avb.getStatus() == ApplicationStatus.Retired) {
+                throw ExceptionFactory.invalidApplicationStatusException();
+            }
             ServiceVersionBean svb = storage.getServiceVersion(bean.getServiceOrgId(), bean.getServiceId(), bean.getServiceVersion());
-            if (svb == null)
+            if (svb == null) {
                 throw ExceptionFactory.serviceNotFoundException(bean.getServiceId());
+            }
+            if (svb.getStatus() != ServiceStatus.Published) {
+                throw ExceptionFactory.invalidServiceStatusException();
+            }
             Set<ServicePlanBean> plans = svb.getPlans();
             String planVersion = null;
             if (plans != null) {
@@ -575,6 +583,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             PlanVersionBean pvb = storage.getPlanVersion(bean.getServiceOrgId(), bean.getPlanId(), planVersion);
             if (pvb == null) {
                 throw ExceptionFactory.planNotFoundException(bean.getPlanId());
+            }
+            if (pvb.getStatus() != PlanStatus.Locked) {
+                throw ExceptionFactory.invalidPlanStatusException();
             }
             
             contract = new ContractBean();
@@ -733,8 +744,11 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (!securityContext.hasPermission(PermissionType.appEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
         
-        // Make sure the app version exists.
-        getAppVersion(organizationId, applicationId, version);
+        // Make sure the app version exists and is in the right state.
+        ApplicationVersionBean avb = getAppVersion(organizationId, applicationId, version);
+        if (avb.getStatus() == ApplicationStatus.Registered || avb.getStatus() == ApplicationStatus.Retired) {
+            throw ExceptionFactory.invalidApplicationStatusException();
+        }
         
         return doCreatePolicy(organizationId, applicationId, version, bean, PolicyType.Application);
     }
@@ -1033,6 +1047,21 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             } else {
                 newVersion.setStatus(ServiceStatus.Created);
             }
+
+            // Ensure all of the plans are in the right status (locked)
+            Set<ServicePlanBean> plans = newVersion.getPlans();
+            if (plans != null) {
+                for (ServicePlanBean splanBean : plans) {
+                    String orgId = newVersion.getService().getOrganization().getId();
+                    PlanVersionBean pvb = storage.getPlanVersion(orgId, splanBean.getPlanId(), splanBean.getVersion());
+                    if (pvb == null) {
+                        throw new StorageException(Messages.i18n.format("PlanVersionDoesNotExist", splanBean.getPlanId(), splanBean.getVersion())); //$NON-NLS-1$
+                    }
+                    if (pvb.getStatus() != PlanStatus.Locked) {
+                        throw new StorageException(Messages.i18n.format("PlanNotLocked", splanBean.getPlanId(), splanBean.getVersion())); //$NON-NLS-1$
+                    }
+                }
+            }
             
             storage.createServiceVersion(newVersion);
             storage.createAuditEntry(AuditUtils.serviceVersionCreated(newVersion, securityContext));
@@ -1169,6 +1198,22 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         
         try {
             storage.beginTx();
+            
+            // Ensure all of the plans are in the right status (locked)
+            Set<ServicePlanBean> plans = svb.getPlans();
+            if (plans != null) {
+                for (ServicePlanBean splanBean : plans) {
+                    String orgId = svb.getService().getOrganization().getId();
+                    PlanVersionBean pvb = storage.getPlanVersion(orgId, splanBean.getPlanId(), splanBean.getVersion());
+                    if (pvb == null) {
+                        throw new StorageException(Messages.i18n.format("PlanVersionDoesNotExist", splanBean.getPlanId(), splanBean.getVersion())); //$NON-NLS-1$
+                    }
+                    if (pvb.getStatus() != PlanStatus.Locked) {
+                        throw new StorageException(Messages.i18n.format("PlanNotLocked", splanBean.getPlanId(), splanBean.getVersion())); //$NON-NLS-1$
+                    }
+                }
+            }
+            
             storage.updateServiceVersion(svb);
             storage.createAuditEntry(AuditUtils.serviceVersionUpdated(svb, data, securityContext));
             storage.commitTx();
@@ -1231,7 +1276,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw ExceptionFactory.notAuthorizedException();
         
         // Make sure the service exists
-        getServiceVersion(organizationId, serviceId, version);
+        ServiceVersionBean svb = getServiceVersion(organizationId, serviceId, version);
+        if (svb.getStatus() == ServiceStatus.Published || svb.getStatus() == ServiceStatus.Retired) {
+            throw ExceptionFactory.invalidServiceStatusException();
+        }
         
         return doCreatePolicy(organizationId, serviceId, version, bean, PolicyType.Service);
     }
@@ -1693,8 +1741,11 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (!securityContext.hasPermission(PermissionType.planEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
         
-        // Make sure the plan version exists
-        getPlanVersion(organizationId, planId, version);
+        // Make sure the plan version exists and is in the right state
+        PlanVersionBean pvb = getPlanVersion(organizationId, planId, version);
+        if (pvb.getStatus() == PlanStatus.Locked) {
+            throw ExceptionFactory.invalidPlanStatusException();
+        }
         
         return doCreatePolicy(organizationId, planId, version, bean, PolicyType.Plan);
     }

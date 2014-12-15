@@ -14,12 +14,15 @@
     <test name="Create Silver 1.0">data/plans/004_create-silver-version-1.0.resttest</test>
     <test name="Create Gold Policy">data/plans/005_create-gold-policy.resttest</test>
     <test name="Create Silver Policy">data/plans/006_create-silver-policy.resttest</test>
+    <test name="Lock Gold">data/publish/003_lock-gold.resttest</test>
+    <test name="Lock Silver">data/publish/004_lock-silver.resttest</test>
   </testGroup>
 
   <!-- Services -->
   <testGroup name="Services">
     <test name="Create echo">data/services/001_create-echo.resttest</test>
     <test name="Create echo 1.0">data/services/002_create-echo-version-1.0.resttest</test>
+    <test name="Publish echo">data/publish/001_publish-echo.resttest</test>
   </testGroup>
 
   <!-- Applications -->
@@ -28,12 +31,7 @@
     <test name="Create app1 (version 1.0)">data/apps/002_create-app1-version-1.0.resttest</test>
     <test name="Create app1->echo:Gold contract">data/apps/003_create-gold-contract.resttest</test>
     <test name="Create app1->echo:Silver contract">data/apps/004_create-silver-contract.resttest</test>
-  </testGroup>
-  
-  <!-- Publish -->
-  <testGroup name="Publish">
-    <test name="Publish echo">data/publish/001_publish-echo.resttest</test>
     <test name="Register app1">data/publish/002_register-app1.resttest</test>
   </testGroup>
-
+  
 </testPlan>

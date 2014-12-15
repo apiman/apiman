@@ -41,6 +41,9 @@
     <test name="Create Plan 1, v1.0">test-plan-data/services/plans/003_create-plan1-version-1.0.resttest</test>
     <test name="Create Plan 1, v2.0">test-plan-data/services/plans/004_create-plan1-version-2.0.resttest</test>
     <test name="Create Plan 2, v1.1">test-plan-data/services/plans/005_create-plan2-version-1.1.resttest</test>
+    <test name="Lock Plan 1, v1.0">test-plan-data/services/publish/002_lock-plan-1-v1.resttest</test>
+    <test name="Lock Plan 1, v2.0">test-plan-data/services/publish/003_lock-plan-1-v2.resttest</test>
+    <test name="Lock Plan 2, v1.1">test-plan-data/services/publish/004_lock-plan-2-v1.1.resttest</test>
     <test name="Update Service Plans">test-plan-data/services/plans/006_update-version-1.0-plans.resttest</test>
     <test name="Get Version 1.0 (with 1 plan)">test-plan-data/services/plans/007_get-version-1.0.resttest</test>
     <test name="Update Service Plans 2">test-plan-data/services/plans/008_update-version-1.0-plans.resttest</test>

@@ -82,6 +82,9 @@ public class ServicePlansSelector extends FlowPanel implements HasValue<Set<Serv
             final ServicePlanWidget planWidget = widgetFactory.get();
             planWidget.setPlanBean(planSummaryBean);
             List<PlanVersionSummaryBean> versionBeans = versions.get(planSummaryBean);
+            if (versionBeans.isEmpty()) {
+                continue;
+            }
             List<String> planVersions = new ArrayList<String>();
             for (PlanVersionSummaryBean planVersionBean : versionBeans) {
                 planVersions.add(planVersionBean.getVersion());

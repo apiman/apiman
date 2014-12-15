@@ -176,6 +176,13 @@ public final class ExceptionFactory {
     }
 
     /**
+     * Creates an invalid plan status exception.
+     */
+    public static final InvalidServiceStatusException invalidPlanStatusException() {
+        return new InvalidServiceStatusException(Messages.i18n.format("InvalidPlanStatus")); //$NON-NLS-1$
+    }
+
+    /**
      * Creates an exception from an member id.
      * @param memberId
      */

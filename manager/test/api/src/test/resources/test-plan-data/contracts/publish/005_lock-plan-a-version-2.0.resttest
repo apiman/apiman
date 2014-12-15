@@ -1,0 +1,11 @@
+POST /actions admin/admin
+Content-Type: application/json
+
+{
+  "type" : "lockPlan",
+  "organizationId" : "Organization2",
+  "entityId" : "PlanA",
+  "entityVersion" : "2.0"
+}
+----
+204

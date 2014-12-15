@@ -26,6 +26,8 @@ import io.apiman.manager.api.beans.apps.ApplicationStatus;
 import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.idm.PermissionType;
+import io.apiman.manager.api.beans.plans.PlanStatus;
+import io.apiman.manager.api.beans.plans.PlanVersionBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
 import io.apiman.manager.api.beans.services.ServiceGatewayBean;
@@ -45,6 +47,7 @@ import io.apiman.manager.api.rest.contract.IOrganizationResource;
 import io.apiman.manager.api.rest.contract.exceptions.ActionException;
 import io.apiman.manager.api.rest.contract.exceptions.ApplicationVersionNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.GatewayNotFoundException;
+import io.apiman.manager.api.rest.contract.exceptions.PlanVersionNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.ServiceVersionNotFoundException;
 import io.apiman.manager.api.rest.impl.audit.AuditUtils;
 import io.apiman.manager.api.rest.impl.i18n.Messages;
@@ -104,6 +107,9 @@ public class ActionResourceImpl implements IActionResource {
                 return;
             case unregisterApplication:
                 unregisterApplication(action);
+                return;
+            case lockPlan:
+                lockPlan(action);
                 return;
             default:
                 throw ExceptionFactory.actionException("Action type not supported: " + action.getType().toString()); //$NON-NLS-1$
@@ -466,6 +472,40 @@ public class ActionResourceImpl implements IActionResource {
         }
     }
 
+    /**
+     * Locks the plan.
+     * @param action
+     */
+    private void lockPlan(ActionBean action) throws ActionException {
+        if (!securityContext.hasPermission(PermissionType.planEdit, action.getOrganizationId()))
+            throw ExceptionFactory.notAuthorizedException();
+
+        PlanVersionBean versionBean = null;
+        try {
+            versionBean = orgs.getPlanVersion(action.getOrganizationId(), action.getEntityId(), action.getEntityVersion());
+        } catch (PlanVersionNotFoundException e) {
+            throw ExceptionFactory.actionException(Messages.i18n.format("PlanNotFound")); //$NON-NLS-1$
+        }
+
+        // Validate that it's ok to perform this action - plan must not already be locked
+        if (versionBean.getStatus() == PlanStatus.Locked) {
+            throw ExceptionFactory.actionException(Messages.i18n.format("InvalidPlanStatus")); //$NON-NLS-1$
+        }
+
+        versionBean.setStatus(PlanStatus.Locked);
+        versionBean.setLockedOn(new Date());
+
+        try {
+            storage.beginTx();
+            storage.updatePlanVersion(versionBean);
+            storage.createAuditEntry(AuditUtils.planLocked(versionBean, securityContext));
+            storage.commitTx();
+        } catch (Exception e) {
+            storage.rollbackTx();
+            throw ExceptionFactory.actionException(Messages.i18n.format("PublishError")); //$NON-NLS-1$
+        }
+    }
+    
     /**
      * @return the storage
      */

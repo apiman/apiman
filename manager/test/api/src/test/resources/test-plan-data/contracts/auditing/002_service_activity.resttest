@@ -11,6 +11,14 @@ Content-Type: application/json
         "what" : "CreateContract",
         "who" : "admin"
       },
+      { "data" : null,
+        "entityId" : "Service2",
+        "entityType" : "Service",
+        "entityVersion" : "1.5",
+        "organizationId" : "Organization2",
+        "what" : "Publish",
+        "who" : "admin"
+      },
       { "data" : "{\"changes\":[{\"name\":\"plans\",\"before\":\"\",\"after\":\"PlanA:2.0, PlanB:1.0\"},{\"name\":\"endpoint\",\"before\":null,\"after\":\"http://localhost:8080/ping\"},{\"name\":\"endpointType\",\"before\":null,\"after\":\"rest\"}]}",
         "entityId" : "Service2",
         "entityType" : "Service",
@@ -44,5 +52,5 @@ Content-Type: application/json
         "who" : "admin"
       }
     ],
-  "totalSize" : 5
+  "totalSize" : 6
 }

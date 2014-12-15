@@ -2,7 +2,12 @@ POST /organizations/Organization1/services/Service1/versions admin/admin
 Content-Type: application/json
 
 {
-  "version" : "1.0"
+  "version" : "1.0",
+  "endpoint" : "http://localhost:8080/ping",
+  "endpointType" : "rest",
+  "plans" : [
+    { "planId" : "Plan1", "version" : "1.0" }
+  ]
 }
 ----
 200
@@ -18,7 +23,7 @@ Content-Type: application/json
     "description" : "This is the description of Service 1.",
     "createdBy":"admin"
   },
-  "status" : "Created",
+  "status" : "Ready",
   "version" : "1.0",
   "createdBy" : "admin"
 }

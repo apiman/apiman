@@ -7,10 +7,13 @@
     <test name="Create Organization 1">test-plan-data/contracts/create/001_create-org1.resttest</test>
     <test name="Create App 1">test-plan-data/contracts/create/002_create-app1.resttest</test>
     <test name="Create App Version 1.0">test-plan-data/contracts/create/003_create-app-version-1.0.resttest</test>
-    <test name="Create Service 1">test-plan-data/contracts/create/004_create-service1.resttest</test>
-    <test name="Create Service Version 1.0">test-plan-data/contracts/create/005_create-service-version-1.0.resttest</test>
-    <test name="Create Plan 1">test-plan-data/contracts/create/006_create-plan1.resttest</test>
-    <test name="Create Plan Version 1.0">test-plan-data/contracts/create/007_create-plan-version-1.0.resttest</test>
+    <test name="Create Plan 1">test-plan-data/contracts/create/004_create-plan1.resttest</test>
+    <test name="Create Plan Version 1.0">test-plan-data/contracts/create/005_create-plan-version-1.0.resttest</test>
+    
+    <test name="Lock Plan Version 1.0">test-plan-data/contracts/publish/003_lock-plan-version-1.0.resttest</test>
+    
+    <test name="Create Service 1">test-plan-data/contracts/create/006_create-service1.resttest</test>
+    <test name="Create Service Version 1.0">test-plan-data/contracts/create/007_create-service-version-1.0.resttest</test>
     <test name="Create Org 2">test-plan-data/contracts/create/008_create-org2.resttest</test>
     <test name="Create Org 2 / Service 2">test-plan-data/contracts/create/009_create-service2.resttest</test>
     <test name="Create Service 2 / Version 1.0">test-plan-data/contracts/create/010_create-service-2-version-1.0.resttest</test>
@@ -20,19 +23,25 @@
     <test name="Create Plan A / Version 1.0">test-plan-data/contracts/create/014_create-plan-A-version-1.0.resttest</test>
     <test name="Create Plan A / Version 2.0">test-plan-data/contracts/create/015_create-plan-A-version-2.0.resttest</test>
     <test name="Create Plan B / Version 1.0">test-plan-data/contracts/create/016_create-plan-B-version-1.0.resttest</test>
+
+    <test name="Lock Plan A / Version 1.0">test-plan-data/contracts/publish/004_lock-plan-a-version-1.0.resttest</test>
+    <test name="Lock Plan A / Version 2.0">test-plan-data/contracts/publish/005_lock-plan-a-version-2.0.resttest</test>
+    <test name="Lock Plan B / Version 1.0">test-plan-data/contracts/publish/006_lock-plan-b-version-1.0.resttest</test>
+
     <test name="Update Service 2 Plans">test-plan-data/contracts/create/017_update-svc2-version-1.5-plans.resttest</test>
   </testGroup>
 
   <!-- Test Contract management -->
   <testGroup name="Contract Management">
-    <test name="Create Contract to Service 1 (no plan)">test-plan-data/contracts/contracts/001_create-contract1-404.resttest</test>
-    <test name="Update Service 1 (add plans)">test-plan-data/contracts/contracts/002_update-version-1.0-plans.resttest</test>
+    <test name="Publish Service 1">test-plan-data/contracts/publish/001_publish-service-1.resttest</test>
+    <test name="Publish Service 2">test-plan-data/contracts/publish/002_publish-service-2.resttest</test>
+
     <test name="Create Contract to Service 1">test-plan-data/contracts/contracts/003_create-contract1.resttest</test>
     <test name="List Contracts for App 1">test-plan-data/contracts/contracts/004_get-contracts.resttest</test>
     <test name="Create Contract to Service 2">test-plan-data/contracts/contracts/005_create-contract2.resttest</test>
     <test name="List Contracts for App 1">test-plan-data/contracts/contracts/006_get-contracts.resttest</test>
     <test name="List ApiRegistry for App 1">test-plan-data/contracts/contracts/007_get-apiregistry.resttest</test>
-    <test name="Delete Contract 1">test-plan-data/contracts/contracts/008_delete-contract1.resttest</test>
+    <test name="Break Contract 1">test-plan-data/contracts/contracts/008_delete-contract1.resttest</test>
     <test name="List Contracts for App 1 (after delete)">test-plan-data/contracts/contracts/009_get-contracts.resttest</test>
   </testGroup>
 
