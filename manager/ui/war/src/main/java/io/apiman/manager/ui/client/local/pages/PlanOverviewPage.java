@@ -125,7 +125,7 @@ public class PlanOverviewPage extends AbstractPlanPage {
     protected void renderPlanStatus() {
         setStatusLabelClass(status, versionBean.getStatus());
 
-        boolean canLock = versionBean.getStatus() == PlanStatus.Ready;
+        boolean canLock = versionBean.getStatus() == PlanStatus.Ready || versionBean.getStatus() == PlanStatus.Created;
         boolean locked = versionBean.getStatus() == PlanStatus.Locked;
         lockButton.setEnabled(canLock);
         lockButton.setVisible(!locked);

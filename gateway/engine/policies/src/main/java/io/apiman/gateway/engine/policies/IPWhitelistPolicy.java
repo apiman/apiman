@@ -18,7 +18,7 @@ package io.apiman.gateway.engine.policies;
 import io.apiman.gateway.engine.beans.PolicyFailureType;
 import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
-import io.apiman.gateway.engine.policies.config.IPWhitelistConfig;
+import io.apiman.gateway.engine.policies.config.IPListConfig;
 import io.apiman.gateway.engine.policies.i18n.Messages;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
@@ -29,7 +29,7 @@ import io.apiman.gateway.engine.policy.IPolicyContext;
  *
  * @author eric.wittmann@redhat.com
  */
-public class IPWhitelistPolicy extends AbstractMappedPolicy<IPWhitelistConfig> {
+public class IPWhitelistPolicy extends AbstractIPListPolicy<IPListConfig> {
     
     /**
      * Constructor.
@@ -41,21 +41,22 @@ public class IPWhitelistPolicy extends AbstractMappedPolicy<IPWhitelistConfig> {
      * @see io.apiman.gateway.engine.policy.AbstractPolicy#getConfigurationClass()
      */
     @Override
-    protected Class<IPWhitelistConfig> getConfigurationClass() {
-        return IPWhitelistConfig.class;
+    protected Class<IPListConfig> getConfigurationClass() {
+        return IPListConfig.class;
     }
     
     /**
      * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#doApply(io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
      */
     @Override
-    protected void doApply(ServiceRequest request, IPolicyContext context, IPWhitelistConfig config,
+    protected void doApply(ServiceRequest request, IPolicyContext context, IPListConfig config,
             IPolicyChain<ServiceRequest> chain) {
-        if (config.getIpList().contains(request.getRemoteAddr())) {
+        String remoteAddr = getRemoteAddr(request, config);
+        if (isMatch(config, remoteAddr)) {
             super.doApply(request, context, config, chain);
         } else {
             IPolicyFailureFactoryComponent ffactory = context.getComponent(IPolicyFailureFactoryComponent.class);
-            String msg = Messages.i18n.format("IPWhitelistPolicy.NotWhitelisted", request.getRemoteAddr()); //$NON-NLS-1$
+            String msg = Messages.i18n.format("IPWhitelistPolicy.NotWhitelisted", remoteAddr); //$NON-NLS-1$
             chain.doFailure(ffactory.createFailure(PolicyFailureType.Other, PolicyFailureCodes.IP_NOT_WHITELISTED, msg));
         }
     }

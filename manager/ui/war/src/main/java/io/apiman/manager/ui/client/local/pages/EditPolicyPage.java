@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.ui.client.local.pages;
 
+import io.apiman.manager.api.beans.idm.PermissionType;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
 import io.apiman.manager.ui.client.local.AppMessages;
@@ -40,6 +41,7 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.commons.gwt.client.local.widgets.AsyncActionButton;
 
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
 
 
@@ -78,6 +80,8 @@ public class EditPolicyPage extends AbstractPage {
     FlowPanel policyFormWrapper;
     @Inject @DataField
     AsyncActionButton updateButton;
+    @Inject @DataField
+    Anchor cancelButton;
     
     @Inject
     PolicyConfigurationFormFactory formFactory;
@@ -145,6 +149,20 @@ public class EditPolicyPage extends AbstractPage {
         String heading = policyBean.getName() + " "  + "Configuration"; //$NON-NLS-1$ //$NON-NLS-2$
         policyHeading.setText(heading);
         policyHeading.setVisible(true);
+        
+        final PolicyType policyType = PolicyType.valueOf(type);
+        PermissionType requiredPermission = null;
+        if (policyType == PolicyType.Application) {
+            requiredPermission = PermissionType.appEdit;
+        } else if (policyType == PolicyType.Service) {
+            requiredPermission = PermissionType.svcEdit;
+        } else if (policyType == PolicyType.Plan) {
+            requiredPermission = PermissionType.planEdit;
+        }
+        if (!hasPermission(requiredPermission)) {
+            updateButton.setVisible(false);
+            cancelButton.setVisible(false);
+        }
     }
 
     /**

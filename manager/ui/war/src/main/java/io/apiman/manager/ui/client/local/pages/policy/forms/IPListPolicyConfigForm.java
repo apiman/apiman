@@ -15,7 +15,7 @@
  */
 package io.apiman.manager.ui.client.local.pages.policy.forms;
 
-import io.apiman.gateway.engine.policies.config.IPWhitelistConfig;
+import io.apiman.gateway.engine.policies.config.IPListConfig;
 import io.apiman.manager.ui.client.local.events.IsFormValidEvent;
 import io.apiman.manager.ui.client.local.pages.policy.IPolicyConfigurationForm;
 import io.apiman.manager.ui.client.local.services.BeanMarshallingService;
@@ -55,6 +55,8 @@ public class IPListPolicyConfigForm extends Composite implements IPolicyConfigur
     @Inject
     BeanMarshallingService marshaller;
     
+    @Inject @DataField
+    TextBox httpHeader;
     @Inject @DataField
     ListBox ipAddresses;
 
@@ -99,11 +101,16 @@ public class IPListPolicyConfigForm extends Composite implements IPolicyConfigur
      */
     @Override
     public String getValue() {
-        IPWhitelistConfig config = new IPWhitelistConfig();
+        IPListConfig config = new IPListConfig();
         for (int idx = 0; idx < ipAddresses.getItemCount(); idx++) {
             String val = ipAddresses.getValue(idx);
             config.getIpList().add(val);
         }
+        String header = httpHeader.getValue();
+        if (header.trim().length() == 0) {
+            header = null;
+        }
+        config.setHttpHeader(header);
         return marshaller.marshal(config);
     }
 
@@ -126,7 +133,11 @@ public class IPListPolicyConfigForm extends Composite implements IPolicyConfigur
         add.setEnabled(false);
         ipAddress.setValue(""); //$NON-NLS-1$
         if (value != null && !value.trim().isEmpty()) {
-            IPWhitelistConfig config = marshaller.unmarshal(value, IPWhitelistConfig.class);
+            IPListConfig config = marshaller.unmarshal(value, IPListConfig.class);
+            
+            if (config.getHttpHeader() != null) {
+                httpHeader.setValue(config.getHttpHeader());
+            }
             
             TreeSet<String> sorted = new TreeSet<String>();
             if (config.getIpList() != null && !config.getIpList().isEmpty()) {

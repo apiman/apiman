@@ -21,19 +21,20 @@ import java.util.Set;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
- * Configuration object for the IP blacklist policy.
+ * Configuration object for the IP list policies.
  *
  * @author eric.wittmann@redhat.com
  */
 @Portable
-public class IPBlacklistConfig {
+public class IPListConfig {
     
+    private String httpHeader;
     private Set<String> ipList = new HashSet<String>();
     
     /**
      * Constructor.
      */
-    public IPBlacklistConfig() {
+    public IPListConfig() {
     }
 
     /**
@@ -48,6 +49,20 @@ public class IPBlacklistConfig {
      */
     public void setIpList(Set<String> ipList) {
         this.ipList = ipList;
+    }
+
+    /**
+     * @return the httpHeader
+     */
+    public String getHttpHeader() {
+        return httpHeader;
+    }
+
+    /**
+     * @param httpHeader the httpHeader to set
+     */
+    public void setHttpHeader(String httpHeader) {
+        this.httpHeader = httpHeader;
     }
 
 }

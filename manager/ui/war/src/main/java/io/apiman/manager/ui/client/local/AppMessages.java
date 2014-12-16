@@ -137,6 +137,9 @@ public class AppMessages {
     @TranslationKey(defaultValue = "Configuration service not available.")
     public static final String CONFIG_SERVICE_NOT_AVAILABLE = "authInterceptor.configServiceNotAvailable";
 
+    @TranslationKey(defaultValue = "We couldn't find any available plans in this organization.  Make sure you've got at least one plan in the organization, and it must be locked.")
+    public static final String NO_SERVICE_PLANS_AVAILABLE = "noEntitiesFound.service-plans";
+    
     @TranslationKey(defaultValue = "It looks like there aren't (yet) any applications in this organization! Now might be a good time to click the New App button up above...")
     public static final String NO_APPS_IN_ORG_MESSAGE = "noEntitiesFound.applications-in-org";
     @TranslationKey(defaultValue = "No applications matched the filter criteria.  Please try modifying the filter or else create a new application using the button above.")

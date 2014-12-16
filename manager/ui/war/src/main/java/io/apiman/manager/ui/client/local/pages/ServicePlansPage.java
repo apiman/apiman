@@ -110,7 +110,7 @@ public class ServicePlansPage extends AbstractServicePage {
                         public void onSuccess(List<PlanVersionSummaryBean> response) {
                             List<PlanVersionSummaryBean> lockedPlans = new ArrayList<PlanVersionSummaryBean>(response.size());
                             for (PlanVersionSummaryBean pvsb : response) {
-                                if (pvsb.getStatus() != PlanStatus.Locked) {
+                                if (pvsb.getStatus() == PlanStatus.Locked) {
                                     lockedPlans.add(pvsb);
                                 }
                             }

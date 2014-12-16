@@ -18,6 +18,8 @@ package io.apiman.manager.ui.client.local.pages.service;
 import io.apiman.manager.api.beans.services.ServicePlanBean;
 import io.apiman.manager.api.beans.summary.PlanSummaryBean;
 import io.apiman.manager.api.beans.summary.PlanVersionSummaryBean;
+import io.apiman.manager.ui.client.local.AppMessages;
+import io.apiman.manager.ui.client.local.pages.common.NoEntitiesWidget;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,6 +31,8 @@ import java.util.Set;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -50,6 +54,8 @@ public class ServicePlansSelector extends FlowPanel implements HasValue<Set<Serv
 
     @Inject
     Instance<ServicePlanWidget> widgetFactory;
+    @Inject
+    protected TranslationService i18n;
     
     private Set<ServicePlanBean> value;
     private List<PlanSummaryBean> plans;
@@ -78,6 +84,7 @@ public class ServicePlansSelector extends FlowPanel implements HasValue<Set<Serv
      * Refresh the UI with the new choices.
      */
     private void refresh() {
+        int numAdded = 0;
         for (final PlanSummaryBean planSummaryBean : this.plans) {
             final ServicePlanWidget planWidget = widgetFactory.get();
             planWidget.setPlanBean(planSummaryBean);
@@ -99,6 +106,10 @@ public class ServicePlansSelector extends FlowPanel implements HasValue<Set<Serv
                 }
             });
             add(planWidget);
+            numAdded++;
+        }
+        if (numAdded == 0) {
+            add(new NoEntitiesWidget(i18n.format(AppMessages.NO_SERVICE_PLANS_AVAILABLE), false));
         }
     }
 

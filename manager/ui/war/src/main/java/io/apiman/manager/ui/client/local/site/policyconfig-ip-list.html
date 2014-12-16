@@ -46,10 +46,18 @@
       <div class="row">
         <h3 data-field="policyHeading">IP List Policy Configuration</i></h3>
         <div class="box col-md-9 container">
-        
-        
+
           <div class="form policy-config ip-list" data-field="form">
-            <div data-i18n-key="ip-list-message">Manage the static list of IP addresses in the box below.</div>
+            <div style="width: 100%; float: left">
+              <dl style="margin-bottom: 0px">
+                <dt data-i18n-key="ip-http-header">IP Address HTTP Header</dt>
+                <dd>
+                  <input data-field="httpHeader" class="form-control" style="" type="text" placeholder="HTTP header (optional)..."></input>
+                </dd>
+                <dt data-i18n-key="ip-addresses">IP Addresses</dt>
+              </dl>
+            </div>
+            <div style="width: 300px" data-i18n-key="ip-list-message">Manage the list of IP addresses in the box below.  Wildcards can be used by specifying "*" as one of the components of the IP address, such as "10.0.*.*".</div>
             <div style="width: 100%; float: left; margin-bottom: 5px; margin-top: 5px">
               <select data-field="ipAddresses" multiple class="form-control" style="height: 150px; width: 200px; float: left;" data-role="dummy">
                 <option>127.0.0.1</option>
@@ -65,7 +73,6 @@
             <input data-field="ipAddress" class="form-control" style="width: 200px; float: left; margin-right: 5px" type="text" placeholder="Enter an IP address..."></input>
             <button data-field="add" data-i18n-key="add" class="btn btn-default" style="min-width: 75px">Add</button>
           </div>
-          
           
         </div>
       </div>
