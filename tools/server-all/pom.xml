@@ -99,7 +99,7 @@
                     <unzip src="${apiman.apiman-distro-wildfly8.zip}" dest="${apiman.install.dir}/wildfly-8.2.0.Final" overwrite="true" />
                     
                     <!-- Make sure to chmod 755 the shell scripts -->
-                    <chmod perm="a+x" dir="${s-ramp.appserver.dir}/bin">
+                    <chmod perm="a+x" dir="${apiman.appserver.dir}/bin">
                       <include name="*.sh" />
                     </chmod>
 
