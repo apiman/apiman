@@ -69,8 +69,6 @@ public class EditGatewayPage extends AbstractPage {
     TextArea description;
 
     @Inject @DataField
-    TextBox httpEndpoint;
-    @Inject @DataField
     TextBox configEndpoint;
     @Inject @DataField
     TextBox username;
@@ -101,7 +99,6 @@ public class EditGatewayPage extends AbstractPage {
             }
         };
         description.addValueChangeHandler(handler);
-        httpEndpoint.addValueChangeHandler(handler);
         configEndpoint.addValueChangeHandler(handler);
         username.addValueChangeHandler(handler);
         password.addValueChangeHandler(handler);
@@ -112,15 +109,11 @@ public class EditGatewayPage extends AbstractPage {
      * Enables the update button only if the contents of the form are valid.
      */
     protected void enableUpdateButtonIfValid() {
-        String he = httpEndpoint.getValue();
         String ce = configEndpoint.getValue();
         String u = username.getValue();
         String p1 = password.getValue();
         String p2 = passwordConfirm.getValue();
         boolean valid = true;
-        if (he == null || he.trim().length() == 0) {
-            valid = false;
-        }
         if (ce == null || ce.trim().length() == 0) {
             valid = false;
         }
@@ -172,7 +165,6 @@ public class EditGatewayPage extends AbstractPage {
     protected void renderPage() {
         super.renderPage();
         description.setValue(gatewayBean.getDescription());
-        httpEndpoint.setValue(gatewayBean.getHttpEndpoint());
         String configuration = gatewayBean.getConfiguration();
         RestGatewayConfigBean configBean = marshaller.unmarshal(configuration, RestGatewayConfigBean.class);
         configEndpoint.setValue(configBean.getEndpoint());
@@ -193,7 +185,6 @@ public class EditGatewayPage extends AbstractPage {
         GatewayBean gateway = new GatewayBean();
         gateway.setId(id);
         gateway.setDescription(description.getValue().trim());
-        gateway.setHttpEndpoint(httpEndpoint.getValue().trim());
         RestGatewayConfigBean configBean = new RestGatewayConfigBean();
         configBean.setEndpoint(configEndpoint.getValue().trim());
         configBean.setUsername(username.getValue().trim());

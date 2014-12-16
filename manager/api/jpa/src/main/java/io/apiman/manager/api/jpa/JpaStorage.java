@@ -542,7 +542,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             summary.setId(application.getId());
             summary.setName(application.getName());
             summary.setDescription(application.getDescription());
-            // TODO find the number of contracts
+            // TODO find the number of contracts - probably need native SQL for that
             summary.setNumContracts(0);
             summary.setOrganizationId(application.getOrganization().getId());
             summary.setOrganizationName(organization.getName());
@@ -803,7 +803,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                 summary.setId(bean.getId());
                 summary.setName(bean.getName());
                 summary.setDescription(bean.getDescription());
-                // TODO find the number of contracts
+                // TODO find the number of contracts - probably need a native SQL query to pull that together
                 summary.setNumContracts(0);
                 OrganizationBean org = bean.getOrganization();
                 summary.setOrganizationId(org.getId());
@@ -1198,7 +1198,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                 ServiceBean service = svb.getService();
                 PlanBean plan = contractBean.getPlan().getPlan();
                 
-                OrganizationBean svcOrg = entityManager.find(OrganizationBean.class, service.getOrganization().getId());
+                OrganizationBean svcOrg = service.getOrganization();
                 
                 ApiEntryBean entry = new ApiEntryBean();
                 entry.setServiceId(service.getId());
@@ -1214,9 +1214,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                 Set<ServiceGatewayBean> gateways = svb.getGateways();
                 if (gateways != null && gateways.size() > 0) {
                     ServiceGatewayBean sgb = gateways.iterator().next();
-                    GatewayBean gateway = entityManager.find(GatewayBean.class, sgb.getGatewayId());
-                    String httpEndpoint = gateway.getHttpEndpoint();
-                    entry.setHttpEndpoint(httpEndpoint);
+                    entry.setGatewayId(sgb.getGatewayId());
                 }
                 
                 rval.getApis().add(entry);

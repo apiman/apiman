@@ -57,6 +57,11 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-gateway-engine-beans</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>apiman-gateway-api-rest</artifactId>
       <exclusions>
         <exclusion>
@@ -74,6 +79,13 @@
           <artifactId>apiman-gateway-engine-beans</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+    
+    <!-- Spec Libs -->
+    <dependency>
+      <groupId>org.jboss.spec.javax.servlet</groupId>
+      <artifactId>jboss-servlet-api_3.0_spec</artifactId>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 

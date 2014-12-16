@@ -6,7 +6,17 @@
   <listener>
     <listener-class>io.apiman.gateway.platforms.war.listeners.WarGatewayBootstrapper</listener-class>
   </listener>
-  
+
+  <!-- Request Filter -->
+  <filter>
+    <filter-name>HttpRequestThreadLocalFilter</filter-name>
+    <filter-class>io.apiman.gateway.platforms.war.filters.HttpRequestThreadLocalFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>HttpRequestThreadLocalFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
   <!-- Locale Filter -->
   <filter>
     <filter-name>LocaleFilter</filter-name>

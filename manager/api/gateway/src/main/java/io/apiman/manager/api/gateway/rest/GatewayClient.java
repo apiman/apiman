@@ -18,6 +18,7 @@ package io.apiman.manager.api.gateway.rest;
 import io.apiman.gateway.api.rest.contract.exceptions.NotAuthorizedException;
 import io.apiman.gateway.engine.beans.Application;
 import io.apiman.gateway.engine.beans.Service;
+import io.apiman.gateway.engine.beans.ServiceEndpoint;
 import io.apiman.gateway.engine.beans.SystemStatus;
 import io.apiman.gateway.engine.beans.exceptions.PublishingException;
 import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
@@ -81,6 +82,31 @@ public class GatewayClient /*implements ISystemResource, IServiceResource, IAppl
             }
             is = response.getEntity().getContent();
             return mapper.reader(SystemStatus.class).readValue(is);
+        } catch (Exception e) {
+            // TODO log this error
+            throw new RuntimeException(e);
+        } finally {
+            IOUtils.closeQuietly(is);
+        }
+    }
+
+    /**
+     * @see io.apiman.gateway.api.rest.contract.IServiceResource#getServiceEndpoint(java.lang.String, java.lang.String, java.lang.String)
+     */
+    public ServiceEndpoint getServiceEndpoint(String organizationId, String serviceId, String version)
+            throws NotAuthorizedException {
+        InputStream is = null;
+        try {
+            @SuppressWarnings("nls")
+            URI uri = new URI(this.endpoint + SERVICES + "/" + organizationId + "/" + serviceId + "/" + version + "/endpoint");
+            HttpGet get = new HttpGet(uri);
+            HttpResponse response = httpClient.execute(get);
+            int actualStatusCode = response.getStatusLine().getStatusCode();
+            if (actualStatusCode != 200) {
+                throw new Exception("Failed to get the service endpoint: " + actualStatusCode); //$NON-NLS-1$
+            }
+            is = response.getEntity().getContent();
+            return mapper.reader(ServiceEndpoint.class).readValue(is);
         } catch (Exception e) {
             // TODO log this error
             throw new RuntimeException(e);

@@ -16,6 +16,7 @@
 
 package io.apiman.manager.api.rest.impl;
 
+import io.apiman.gateway.engine.beans.ServiceEndpoint;
 import io.apiman.manager.api.beans.BeanUtils;
 import io.apiman.manager.api.beans.apps.ApplicationBean;
 import io.apiman.manager.api.beans.apps.ApplicationStatus;
@@ -73,6 +74,8 @@ import io.apiman.manager.api.core.exceptions.ConstraintViolationException;
 import io.apiman.manager.api.core.exceptions.DoesNotExistException;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.core.util.PolicyTemplateUtil;
+import io.apiman.manager.api.gateway.IGatewayLink;
+import io.apiman.manager.api.gateway.IGatewayLinkFactory;
 import io.apiman.manager.api.rest.contract.IOrganizationResource;
 import io.apiman.manager.api.rest.contract.IRoleResource;
 import io.apiman.manager.api.rest.contract.IUserResource;
@@ -103,8 +106,10 @@ import io.apiman.manager.api.security.ISecurityContext;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -131,6 +136,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     @Inject IRoleResource roles;
     
     @Inject ISecurityContext securityContext;
+    @Inject IGatewayLinkFactory gatewayLinkFactory;
 
     /**
      * Constructor.
@@ -717,6 +723,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         // Try to get the application first - will throw a ApplicationNotFoundException if not found.
         getAppVersion(organizationId, applicationId, version);
         
+        Map<String, IGatewayLink> gatewayLinks = new HashMap<>();
+        Map<String, GatewayBean> gateways = new HashMap<>();
+        boolean txStarted = false;
         try {
             ApiRegistryBean apiRegistry = query.getApiRegistry(organizationId, applicationId, version);
 
@@ -728,9 +737,38 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 }
             }
 
+            List<ApiEntryBean> apis = apiRegistry.getApis();
+            
+            storage.beginTx();
+            txStarted = true;
+            for (ApiEntryBean api : apis) {
+                String gatewayId = api.getGatewayId();
+                GatewayBean gateway = gateways.get(gatewayId);
+                if (gateway == null) {
+                    gateway = storage.getGateway(gatewayId);
+                    gateways.put(gatewayId, gateway);
+                }
+                IGatewayLink link = gatewayLinks.get(gatewayId);
+                if (link == null) {
+                    link = gatewayLinkFactory.create(gateway);
+                    gatewayLinks.put(gatewayId, link);
+                }
+                
+                ServiceEndpoint se = link.getServiceEndpoint(api.getServiceOrgId(), api.getServiceId(), api.getServiceVersion());
+                String apiEndpoint = se.getEndpoint();
+                api.setHttpEndpoint(apiEndpoint);
+            }
+
             return apiRegistry;
         } catch (StorageException e) {
             throw new SystemErrorException(e);
+        } finally {
+            if (txStarted) {
+                storage.rollbackTx();
+            }
+            for (IGatewayLink link : gatewayLinks.values()) {
+                link.close();
+            }
         }
     }
 

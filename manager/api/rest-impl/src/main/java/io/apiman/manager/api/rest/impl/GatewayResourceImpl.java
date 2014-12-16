@@ -140,8 +140,6 @@ public class GatewayResourceImpl implements IGatewayResource {
                 gbean.setName(bean.getName());
             if (bean.getDescription() != null)
                 gbean.setDescription(bean.getDescription());
-            if (bean.getHttpEndpoint() != null)
-                gbean.setHttpEndpoint(bean.getHttpEndpoint());
             if (bean.getType() != null)
                 gbean.setType(bean.getType());
             if (bean.getConfiguration() != null)

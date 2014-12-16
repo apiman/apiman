@@ -75,8 +75,7 @@ public class ActionResourceImpl implements IActionResource {
 
     @Inject IStorage storage;
     @Inject IStorageQuery query;
-    @Inject
-    private IGatewayLinkFactory gatewayLinkFactory;
+    @Inject IGatewayLinkFactory gatewayLinkFactory;
     @Inject IOrganizationResource orgs;
     
     @Inject IServiceValidator serviceValidator;

@@ -63,8 +63,6 @@ public class NewGatewayPage extends AbstractPage {
     TextArea description;
 
     @Inject @DataField
-    TextBox httpEndpoint;
-    @Inject @DataField
     TextBox configEndpoint;
     @Inject @DataField
     TextBox username;
@@ -91,7 +89,6 @@ public class NewGatewayPage extends AbstractPage {
             }
         };
         configEndpoint.addValueChangeHandler(handler);
-        httpEndpoint.addValueChangeHandler(handler);
         username.addValueChangeHandler(handler);
         password.addValueChangeHandler(handler);
         passwordConfirm.addValueChangeHandler(handler);
@@ -102,16 +99,12 @@ public class NewGatewayPage extends AbstractPage {
      */
     protected void enableCreateButtonIfValid() {
         String n = name.getValue();
-        String he = httpEndpoint.getValue();
         String ce = configEndpoint.getValue();
         String u = username.getValue();
         String p1 = password.getValue();
         String p2 = passwordConfirm.getValue();
         boolean valid = true;
         if (n == null || n.trim().length() == 0) {
-            valid = false;
-        }
-        if (he == null || he.trim().length() == 0) {
             valid = false;
         }
         if (ce == null || ce.trim().length() == 0) {
@@ -150,7 +143,6 @@ public class NewGatewayPage extends AbstractPage {
         GatewayBean gateway = new GatewayBean();
         gateway.setName(name.getValue().trim());
         gateway.setDescription(description.getValue().trim());
-        gateway.setHttpEndpoint(httpEndpoint.getValue().trim());
         gateway.setType(GatewayType.REST);
         RestGatewayConfigBean configBean = new RestGatewayConfigBean();
         configBean.setEndpoint(configEndpoint.getValue().trim());

@@ -15,8 +15,10 @@
  */
 package io.apiman.manager.api.gateway.rest;
 
+import io.apiman.gateway.api.rest.contract.exceptions.NotAuthorizedException;
 import io.apiman.gateway.engine.beans.Application;
 import io.apiman.gateway.engine.beans.Service;
+import io.apiman.gateway.engine.beans.ServiceEndpoint;
 import io.apiman.gateway.engine.beans.SystemStatus;
 import io.apiman.gateway.engine.beans.exceptions.PublishingException;
 import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
@@ -94,6 +96,15 @@ public class RestGatewayLink implements IGatewayLink {
     private boolean isGatewayUp() {
         SystemStatus status = getClient().getStatus();
         return status.isUp();
+    }
+    
+    /**
+     * @see io.apiman.manager.api.gateway.IGatewayLink#getServiceEndpoint(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public ServiceEndpoint getServiceEndpoint(String organizationId, String serviceId, String version)
+            throws NotAuthorizedException {
+        return getClient().getServiceEndpoint(organizationId, serviceId, version);
     }
 
     /**

@@ -42,6 +42,8 @@ public class ApiEntryBean implements Serializable {
     private String httpEndpoint;
     private String apiKey;
     
+    private String gatewayId;
+    
     /**
      * Constructor.
      */
@@ -186,6 +188,20 @@ public class ApiEntryBean implements Serializable {
      */
     public void setApiKey(String apiKey) {
         this.apiKey = apiKey;
+    }
+
+    /**
+     * @return the gatewayId
+     */
+    public String getGatewayId() {
+        return gatewayId;
+    }
+
+    /**
+     * @param gatewayId the gatewayId to set
+     */
+    public void setGatewayId(String gatewayId) {
+        this.gatewayId = gatewayId;
     }
 
 }

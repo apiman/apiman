@@ -62,8 +62,6 @@ public class GatewayBean implements Serializable {
     @Column(updatable=true, nullable=false)
     @Enumerated(EnumType.STRING)
     private GatewayType type;
-    @Column(updatable=true, nullable=false)
-    private String httpEndpoint;
     @Lob
     @Column(updatable=true, nullable=false)
     private String configuration;
@@ -198,20 +196,6 @@ public class GatewayBean implements Serializable {
      */
     public void setConfiguration(String configuration) {
         this.configuration = configuration;
-    }
-
-    /**
-     * @return the httpEndpoint
-     */
-    public String getHttpEndpoint() {
-        return httpEndpoint;
-    }
-
-    /**
-     * @param httpEndpoint the httpEndpoint to set
-     */
-    public void setHttpEndpoint(String httpEndpoint) {
-        this.httpEndpoint = httpEndpoint;
     }
 
 }

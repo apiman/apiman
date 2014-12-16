@@ -15,35 +15,21 @@
  */
 package io.apiman.gateway.api.rest.impl;
 
-import io.apiman.gateway.engine.IEngine;
-
-import org.overlord.commons.services.ServiceRegistryUtil;
 
 /**
- * Base class for all resource implementation classes.
+ * An interface used by the REST services when getting information that must
+ * be provided by the platform.  For example, when the gateway is running
+ * within a WAR (e.g. running on wildfly) then that particular implementation
+ * must provide certain information.  This interface allows the REST impl
+ * itself to not care about those details.
  *
  * @author eric.wittmann@redhat.com
  */
-public abstract class AbstractResourceImpl {
-    
-    /**
-     * Constructor.
-     */
-    public AbstractResourceImpl() {
-    }
-    
-    /**
-     * @return the api management runtime engine
-     */
-    protected IEngine getEngine() {
-        return ServiceRegistryUtil.getSingleService(IEngineAccessor.class).getEngine();
-    }
-    
-    /**
-     * @return the current platform
-     */
-    protected IPlatform getPlatform() {
-        return ServiceRegistryUtil.getSingleService(IPlatformAccessor.class).getPlatform();
-    }
+public interface IPlatformAccessor {
 
+    /**
+     * Gets the platform.
+     * @return the engine
+     */
+    public IPlatform getPlatform();
 }

@@ -7,7 +7,6 @@ Content-Type: application/json
   "id" : "GatewayTwo",
   "name" : "Gateway Two",
   "description" : "This is the second gateway.",
-  "httpEndpoint" : "http://localhost:6666/gateway/",
   "type" : "REST",
   "configuration" : "{}"
 }

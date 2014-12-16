@@ -55,17 +55,16 @@ public class PolicyFactoryImpl implements IPolicyFactory {
         if (qualifiedName.startsWith("class:")) { //$NON-NLS-1$
             String classname = qualifiedName.substring(6);
             Class<?> c = null;
-            try {
-                c = Class.forName(classname);
-            } catch (ClassNotFoundException e) {
+            
+            // First try a simple Class.forName()
+            try { c = Class.forName(classname); } catch (ClassNotFoundException e) { }
+            // Didn't work?  Try using this class's classloader.
+            if (c == null) {
+                try { c = getClass().getClassLoader().loadClass(classname); } catch (ClassNotFoundException e) { }
             }
-            try {
-                c = getClass().getClassLoader().loadClass(classname);
-            } catch (ClassNotFoundException e) {
-            }
-            try {
-                c = Thread.currentThread().getContextClassLoader().loadClass(classname);
-            } catch (ClassNotFoundException e) {
+            // Still didn't work?  Try the thread's context classloader.
+            if (c == null) {
+                try { c = Thread.currentThread().getContextClassLoader().loadClass(classname); } catch (ClassNotFoundException e) { }
             }
 
             if (c == null) {

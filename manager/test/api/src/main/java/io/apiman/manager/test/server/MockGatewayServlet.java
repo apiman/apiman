@@ -73,6 +73,13 @@ public class MockGatewayServlet extends HttpServlet {
             printWriter.println("{ \"up\" : true, \"version\" : \"1.0.Mock\" }"); //$NON-NLS-1$
             printWriter.flush();
             printWriter.close();
+        } else if (req.getRequestURI().contains("/services") && req.getRequestURI().endsWith("/endpoint")) { //$NON-NLS-1$ //$NON-NLS-2$
+            resp.setStatus(200);
+            resp.setContentType("application/json"); //$NON-NLS-1$
+            PrintWriter printWriter = new PrintWriter(resp.getOutputStream());
+            printWriter.println("{ \"endpoint\" : \"http://example.org/endpoint\" }"); //$NON-NLS-1$
+            printWriter.flush();
+            printWriter.close();
         } else {
             resp.setStatus(204);
         }

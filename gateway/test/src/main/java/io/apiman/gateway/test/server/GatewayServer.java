@@ -41,6 +41,8 @@ import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
  */
 @SuppressWarnings("nls")
 public class GatewayServer {
+    
+    static GatewayServer gatewayServer;
 
     private Server server;
     private int port;
@@ -51,6 +53,14 @@ public class GatewayServer {
      */
     public GatewayServer(int port) {
         this.port = port;
+        gatewayServer = this;
+    }
+    
+    /**
+     * @return the server port
+     */
+    public int getPort() {
+        return port;
     }
 
     /**

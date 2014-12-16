@@ -68,7 +68,6 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         gateway.setId("TheGateway");
         gateway.setName("The Gateway");
         gateway.setDescription("The only gateway needed for testing.");
-        gateway.setHttpEndpoint("http://localhost:6666/gateway/");
         gateway.setConfiguration("{ \"endpoint\" : \"http://localhost:6666/api/\", \"username\" : \"admin\", \"password\" : \"admin\" }");
         gateway.setType(GatewayType.REST);
         gateway.setCreatedBy("admin");

@@ -13,37 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.gateway.api.rest.impl;
+package io.apiman.gateway.engine.beans;
 
-import io.apiman.gateway.engine.IEngine;
-
-import org.overlord.commons.services.ServiceRegistryUtil;
+import java.io.Serializable;
 
 /**
- * Base class for all resource implementation classes.
+ * Service endpoint.
  *
  * @author eric.wittmann@redhat.com
  */
-public abstract class AbstractResourceImpl {
+public class ServiceEndpoint implements Serializable {
+
+    private static final long serialVersionUID = -7892423118281500532L;
+
+    private String endpoint;
     
     /**
      * Constructor.
      */
-    public AbstractResourceImpl() {
+    public ServiceEndpoint() {
     }
-    
+
     /**
-     * @return the api management runtime engine
+     * @return the endpoint
      */
-    protected IEngine getEngine() {
-        return ServiceRegistryUtil.getSingleService(IEngineAccessor.class).getEngine();
+    public String getEndpoint() {
+        return endpoint;
     }
-    
+
     /**
-     * @return the current platform
+     * @param endpoint the endpoint to set
      */
-    protected IPlatform getPlatform() {
-        return ServiceRegistryUtil.getSingleService(IPlatformAccessor.class).getPlatform();
+    public void setEndpoint(String endpoint) {
+        this.endpoint = endpoint;
     }
 
 }

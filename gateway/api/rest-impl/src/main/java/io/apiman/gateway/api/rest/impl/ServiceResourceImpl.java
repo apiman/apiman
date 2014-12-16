@@ -19,6 +19,7 @@ package io.apiman.gateway.api.rest.impl;
 import io.apiman.gateway.api.rest.contract.IServiceResource;
 import io.apiman.gateway.api.rest.contract.exceptions.NotAuthorizedException;
 import io.apiman.gateway.engine.beans.Service;
+import io.apiman.gateway.engine.beans.ServiceEndpoint;
 import io.apiman.gateway.engine.beans.exceptions.PublishingException;
 import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
 
@@ -50,6 +51,15 @@ public class ServiceResourceImpl extends AbstractResourceImpl implements IServic
     public void retire(String organizationId, String serviceId, String version) throws RegistrationException,
             NotAuthorizedException {
         getEngine().retireService(organizationId, serviceId, version);
+    }
+    
+    /**
+     * @see io.apiman.gateway.api.rest.contract.IServiceResource#getServiceEndpoint(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public ServiceEndpoint getServiceEndpoint(String organizationId, String serviceId, String version)
+            throws NotAuthorizedException {
+        return getPlatform().getServiceEndpoint(organizationId, serviceId, version);
     }
     
 }

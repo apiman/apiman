@@ -174,6 +174,7 @@ public abstract class AbstractPage extends Composite {
         navigation.getContentPanel().asWidget().getElement().getStyle().setDisplay(Display.NONE);
         dataPacketsReceived = 0;
         expectedDataPackets = loadPageData();
+        logger.debug("Expecting to receive {0} data packets.", expectedDataPackets); //$NON-NLS-1$
         if (expectedDataPackets == 0) {
             showPage();
         }
@@ -186,6 +187,7 @@ public abstract class AbstractPage extends Composite {
      */
     protected void increaseExpectedDataPackets(int additionalExpectedPackets) {
         expectedDataPackets += additionalExpectedPackets;
+        logger.debug("Now expecting to receive {0} data packets.", expectedDataPackets); //$NON-NLS-1$
     }
     
     /**

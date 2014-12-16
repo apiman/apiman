@@ -15,8 +15,10 @@
  */
 package io.apiman.manager.api.gateway;
 
+import io.apiman.gateway.api.rest.contract.exceptions.NotAuthorizedException;
 import io.apiman.gateway.engine.beans.Application;
 import io.apiman.gateway.engine.beans.Service;
+import io.apiman.gateway.engine.beans.ServiceEndpoint;
 import io.apiman.gateway.engine.beans.exceptions.PublishingException;
 import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
 
@@ -57,7 +59,17 @@ public interface IGatewayLink {
      * @throws RegistrationException
      */
     public void unregisterApplication(Application application) throws RegistrationException;
-    
+
+    /**
+     * Gets the service endpoint from the gateway.
+     * @param organizationId
+     * @param serviceId
+     * @param version
+     * @throws NotAuthorizedException
+     */
+    public ServiceEndpoint getServiceEndpoint(String organizationId, String serviceId, String version)
+            throws NotAuthorizedException;
+
     /**
      * Close down the gateway link when it's no longer needed.
      */

@@ -4,7 +4,6 @@ Content-Type: application/json
 {
   "name" : "Gateway One",
   "description" : "This is the first gateway.",
-  "httpEndpoint" : "http://localhost:6666/gateway/",
   "type" : "REST",
   "configuration" : "{}"
 }
@@ -16,7 +15,6 @@ Content-Type: application/json
   "id" : "GatewayOne",
   "name" : "Gateway One",
   "description" : "This is the first gateway.",
-  "httpEndpoint" : "http://localhost:6666/gateway/",
   "type" : "REST",
   "configuration" : "{}"
 }
