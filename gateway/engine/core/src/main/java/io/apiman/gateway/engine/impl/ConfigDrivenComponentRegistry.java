@@ -31,7 +31,7 @@ import java.util.Map;
 public class ConfigDrivenComponentRegistry implements IComponentRegistry {
     
     private IEngineConfig engineConfig;
-    private Map<Class<? extends IComponent>, IComponent> components = new HashMap<Class<? extends IComponent>, IComponent>();
+    private Map<Class<? extends IComponent>, IComponent> components = new HashMap<>();
     
     /**
      * Constructor.
@@ -40,7 +40,7 @@ public class ConfigDrivenComponentRegistry implements IComponentRegistry {
     public ConfigDrivenComponentRegistry(IEngineConfig engineConfig) {
         this.engineConfig = engineConfig;
     }
-
+    
     /**
      * @see io.apiman.gateway.engine.IComponentRegistry#getComponent(java.lang.Class)
      */
@@ -72,5 +72,13 @@ public class ConfigDrivenComponentRegistry implements IComponentRegistry {
             throw new ComponentNotFoundException(componentType.getName());
         }
     }
-
+    
+    /** 
+     * Add a component that may have been instantiated elsewhere.
+     * @param klazz component class
+     * @param component instantiated component of same class
+     */
+    protected void addComponentMapping(Class<? extends IComponent> klazz, IComponent component) {
+        components.put(klazz, component);
+    }
 }
