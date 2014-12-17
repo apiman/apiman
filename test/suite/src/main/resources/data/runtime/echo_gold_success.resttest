@@ -1,4 +1,4 @@
-GET /gold
+GET /Test/echo/1.0
 X-Custom-Header: custom-value
 X-API-Key: ${gold-api-key}
 

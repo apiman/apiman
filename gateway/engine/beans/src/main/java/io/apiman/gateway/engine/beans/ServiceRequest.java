@@ -34,6 +34,14 @@ public class ServiceRequest implements Serializable {
     private Map<String, String> headers = new HeaderHashMap();
     private String remoteAddr;
     private Object rawRequest;
+    
+    /*
+     * Optional fields - set these if you want the APIMan engine to
+     * validate that the apikey is valid for the given service coords.
+     */
+    private String serviceOrgId;
+    private String serviceId;
+    private String serviceVersion;
 
     /**
      * Constructor.
@@ -137,5 +145,47 @@ public class ServiceRequest implements Serializable {
      */
     public void setContract(ServiceContract contract) {
         this.contract = contract;
+    }
+
+    /**
+     * @return the serviceOrgId
+     */
+    public String getServiceOrgId() {
+        return serviceOrgId;
+    }
+
+    /**
+     * @param serviceOrgId the serviceOrgId to set
+     */
+    public void setServiceOrgId(String serviceOrgId) {
+        this.serviceOrgId = serviceOrgId;
+    }
+
+    /**
+     * @return the serviceId
+     */
+    public String getServiceId() {
+        return serviceId;
+    }
+
+    /**
+     * @param serviceId the serviceId to set
+     */
+    public void setServiceId(String serviceId) {
+        this.serviceId = serviceId;
+    }
+
+    /**
+     * @return the serviceVersion
+     */
+    public String getServiceVersion() {
+        return serviceVersion;
+    }
+
+    /**
+     * @param serviceVersion the serviceVersion to set
+     */
+    public void setServiceVersion(String serviceVersion) {
+        this.serviceVersion = serviceVersion;
     }
 }

@@ -210,10 +210,18 @@ public abstract class GatewayServlet extends HttpServlet {
         if (apiKey == null) {
             throw new Exception(Messages.i18n.format("GatewayServlet.MissingAPIKey")); //$NON-NLS-1$
         }
+        
+        ServiceRequestPathInfo pathInfo = parseServiceRequestPath(request.getPathInfo());
+        if (pathInfo.orgId == null) {
+            throw new Exception(Messages.i18n.format("GatewayServlet.InvalidServiceEndpoint")); //$NON-NLS-1$
+        }
 
         ServiceRequest srequest = GatewayThreadContext.getServiceRequest();
         srequest.setApiKey(apiKey);
-        srequest.setDestination(getDestination(request));
+        srequest.setServiceOrgId(pathInfo.orgId);
+        srequest.setServiceId(pathInfo.serviceId);
+        srequest.setServiceVersion(pathInfo.serviceVersion);
+        srequest.setDestination(pathInfo.resource);
         readHeaders(srequest, request);
         srequest.setRawRequest(request);
         srequest.setRemoteAddr(request.getRemoteAddr());
@@ -255,15 +263,6 @@ public abstract class GatewayServlet extends HttpServlet {
         } else {
             return null;
         }
-    }
-
-    /**
-     * Returns the path to the resource.
-     * @param request
-     */
-    protected String getDestination(HttpServletRequest request) {
-        String path = request.getPathInfo();
-        return path;
     }
 
     /**
@@ -347,6 +346,42 @@ public abstract class GatewayServlet extends HttpServlet {
         } catch (IOException e1) {
             throw new RuntimeException(error);
         }
+    }
+    
+    /**
+     * Parse a service request path from servlet path info.
+     * @param pathInfo
+     * @return the path info parsed into its component parts
+     */
+    protected static final ServiceRequestPathInfo parseServiceRequestPath(String pathInfo) {
+        ServiceRequestPathInfo info = new ServiceRequestPathInfo();
+        if (pathInfo != null) {
+            String[] split = pathInfo.split("/"); //$NON-NLS-1$
+            if (split.length >= 4) {
+                info.orgId = split[1];
+                info.serviceId = split[2];
+                info.serviceVersion = split[3];
+                if (split.length > 4) {
+                    StringBuilder resource = new StringBuilder();
+                    for (int idx = 4; idx < split.length; idx++) {
+                        resource.append("/"); //$NON-NLS-1$
+                        resource.append(split[idx]);
+                    }
+                    info.resource = resource.toString();
+                }
+            }
+        }
+        return info;
+    }
+    
+    /**
+     * Parsed service request path information.
+     */
+    protected static class ServiceRequestPathInfo {
+        public String orgId;
+        public String serviceId;
+        public String serviceVersion;
+        public String resource;
     }
     
 }

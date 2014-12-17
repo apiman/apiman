@@ -1,4 +1,4 @@
-POST /gateway/path/to/app/resource admin/admin
+POST /gateway/SimpleEchoTest/echo/1.0.0/path/to/app/resource admin/admin
 Content-Type: text/plain
 X-API-Key: 12345
 

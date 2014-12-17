@@ -30,9 +30,11 @@ import io.apiman.gateway.engine.beans.Service;
 import io.apiman.gateway.engine.beans.ServiceContract;
 import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.beans.exceptions.ConfigurationParseException;
+import io.apiman.gateway.engine.beans.exceptions.InvalidContractException;
 import io.apiman.gateway.engine.beans.exceptions.PolicyNotFoundException;
 import io.apiman.gateway.engine.beans.exceptions.PublishingException;
 import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
+import io.apiman.gateway.engine.i18n.Messages;
 import io.apiman.gateway.engine.policy.IPolicy;
 import io.apiman.gateway.engine.policy.IPolicyFactory;
 import io.apiman.gateway.engine.policy.PolicyContextImpl;
@@ -88,12 +90,43 @@ public class EngineImpl implements IEngine {
         ServiceContract serviceContract = getContract(request);
         request.setContract(serviceContract);
         
+        if (request.getServiceOrgId() != null) {
+            validateRequest(request);
+        }
+        
         return new ServiceRequestExecutorImpl(request, 
                 resultHandler,
                 serviceContract,
                 new PolicyContextImpl(getComponentRegistry()),
                 getPolicies(serviceContract),
                 getConnectorFactory());
+    }
+
+    /**
+     * Validates that the contract being used for the request is valid against the
+     * service information included in the request.  Basically the request includes
+     * information indicating which specific service is being invoked.  This method
+     * ensures that the service information in the contract matches the requested
+     * service.
+     * @param request
+     */
+    protected void validateRequest(ServiceRequest request) throws InvalidContractException {
+        ServiceContract contract = request.getContract();
+        
+        boolean matches = true;
+        if (!contract.getService().getOrganizationId().equals(request.getServiceOrgId())) {
+            matches = false;
+        }
+        if (!contract.getService().getServiceId().equals(request.getServiceId())) {
+            matches = false;
+        }
+        if (!contract.getService().getVersion().equals(request.getServiceVersion())) {
+            matches = false;
+        }
+        if (!matches) {
+            throw new InvalidContractException(Messages.i18n.format("EngineImpl.InvalidContractForService", //$NON-NLS-1$
+                    request.getServiceOrgId(), request.getServiceId(), request.getServiceVersion()));
+        }
     }
 
     /**

@@ -1,4 +1,4 @@
-GET /gateway/path/to/app/resource admin/admin
+GET /gateway/SimplePolicyTest/echo/1.0.0/path/to/app/resource admin/admin
 X-Custom-Header: MyValue
 X-API-Key: 12345
 
