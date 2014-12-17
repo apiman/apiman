@@ -28,5 +28,6 @@ public final class PolicyFailureCodes {
     public static final int BASIC_AUTH_REQUIRED        = 10004;
     public static final int RATE_LIMIT_EXCEEDED        = 10005;
     public static final int NO_USER_FOR_RATE_LIMITING  = 10006;
+	public static final int PATH_TO_IGNORE             = 10007;
 
 }

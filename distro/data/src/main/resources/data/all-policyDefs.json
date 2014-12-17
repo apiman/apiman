@@ -46,5 +46,17 @@
           "template" : "Consumers are limited to @{limit} requests per @{granularity} per @{period}."
         }
       ]
+    },
+    {
+      "name" : "Ignore Resources Policy",
+      "description" : "Requests satisfying the provided regular expression will be ignored.",
+      "policyImpl" : "class:io.apiman.gateway.engine.policies.IgnoreResourcesPolicy",
+      "icon" : "eye-slash",
+      "templates" : [
+        {
+          "language" : null,
+          "template" : "Requests matching the following regular expression @{pathToIgnore} will receive a 404 error code."
+        }
+      ]
     }
 ]
