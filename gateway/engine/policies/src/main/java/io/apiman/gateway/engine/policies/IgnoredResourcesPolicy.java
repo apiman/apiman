@@ -57,7 +57,7 @@ public class IgnoredResourcesPolicy extends AbstractMappedPolicy<IgnoredResource
         } else {
             IPolicyFailureFactoryComponent ffactory = context.getComponent(IPolicyFailureFactoryComponent.class);
             String msg = Messages.i18n.format("IgnoredResourcesConfig.PathToIgnore", request.getDestination()); //$NON-NLS-1$
-            PolicyFailure failure = ffactory.createFailure(PolicyFailureType.Other, PolicyFailureCodes.PATH_TO_IGNORE, msg);
+            PolicyFailure failure = ffactory.createFailure(PolicyFailureType.NotFound, PolicyFailureCodes.PATH_TO_IGNORE, msg);
             chain.doFailure(failure);
         }
     }
