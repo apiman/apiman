@@ -69,7 +69,7 @@ public class FullTestSuite {
         param("apiman.suite.echo-endpoint", "Echo Service Endpoint", "http://localhost:8080/services/echo");
         
         TestPlanRunner runner = new TestPlanRunner(apiEndpoint);
-//        runner.runTestPlan("scripts/api-manager-init-testPlan.xml", FullTestSuite.class.getClassLoader());
+        runner.runTestPlan("scripts/api-manager-init-testPlan.xml", FullTestSuite.class.getClassLoader());
         runner.runTestPlan("scripts/api-manager-testPlan.xml", FullTestSuite.class.getClassLoader());
         runner = new TestPlanRunner(gatewayEndpoint);
         runner.runTestPlan("scripts/api-gateway-testPlan.xml", FullTestSuite.class.getClassLoader());

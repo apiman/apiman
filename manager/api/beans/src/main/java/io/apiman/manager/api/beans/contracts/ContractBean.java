@@ -73,7 +73,7 @@ public class ContractBean implements Serializable {
     @Column(updatable=false, nullable=false)
     private Date createdOn;
     @Column(updatable=false, nullable=false)
-    private String key;
+    private String apikey;
 
     /**
      * Constructor.
@@ -166,17 +166,17 @@ public class ContractBean implements Serializable {
     }
 
     /**
-     * @return the key
+     * @return the apikey
      */
-    public String getKey() {
-        return key;
+    public String getApikey() {
+        return apikey;
     }
 
     /**
-     * @param key the key to set
+     * @param apikey the apikey to set
      */
-    public void setKey(String key) {
-        this.key = key;
+    public void setApikey(String apikey) {
+        this.apikey = apikey;
     }
 
 }

@@ -432,7 +432,7 @@ public class ActivityList extends FlowPanel implements TakesValue<SearchResultsB
      */
     private Label createWhen(AuditEntryBean auditEntryBean) {
         // TODO fix the when string - better formatting
-        Label whenLabel = new Label(auditEntryBean.getWhen().toString());
+        Label whenLabel = new Label(auditEntryBean.getCreatedOn().toString());
         whenLabel.getElement().setClassName("apiman-timestamp"); //$NON-NLS-1$
         return whenLabel;
     }

@@ -165,10 +165,10 @@ public class ActionResourceImpl implements IActionResource {
             storage.createAuditEntry(AuditUtils.servicePublished(versionBean, securityContext));
             storage.commitTx();
         } catch (PublishingException e) {
-            throw ExceptionFactory.actionException(Messages.i18n.format("PublishError")); //$NON-NLS-1$
+            throw ExceptionFactory.actionException(Messages.i18n.format("PublishError"), e); //$NON-NLS-1$
         } catch (Exception e) {
             storage.rollbackTx();
-            throw ExceptionFactory.actionException(Messages.i18n.format("PublishError")); //$NON-NLS-1$
+            throw ExceptionFactory.actionException(Messages.i18n.format("PublishError"), e); //$NON-NLS-1$
         }
     }
 
@@ -282,7 +282,7 @@ public class ActionResourceImpl implements IActionResource {
         Set<Contract> contracts = new HashSet<Contract>();
         for (ContractSummaryBean contractBean : contractBeans) {
             Contract contract = new Contract();
-            contract.setApiKey(contractBean.getKey());
+            contract.setApiKey(contractBean.getApikey());
             contract.setServiceId(contractBean.getServiceId());
             contract.setServiceOrgId(contractBean.getServiceOrganizationId());
             contract.setServiceVersion(contractBean.getServiceVersion());
@@ -389,7 +389,7 @@ public class ActionResourceImpl implements IActionResource {
             }
             return policies;
         } catch (StorageException e) {
-            throw ExceptionFactory.actionException(Messages.i18n.format("PolicyPublishError", contractBean.getKey()), e); //$NON-NLS-1$
+            throw ExceptionFactory.actionException(Messages.i18n.format("PolicyPublishError", contractBean.getApikey()), e); //$NON-NLS-1$
         }
     }
 

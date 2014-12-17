@@ -32,7 +32,7 @@ public class ContractSummaryBean implements Serializable {
     private static final long serialVersionUID = 1412354024017539782L;
     
     private Long contractId;
-    private String key;
+    private String apikey;
     private String appOrganizationId;
     private String appOrganizationName;
     private String appId;
@@ -280,17 +280,17 @@ public class ContractSummaryBean implements Serializable {
     }
 
     /**
-     * @return the key
+     * @return the apikey
      */
-    public String getKey() {
-        return key;
+    public String getApikey() {
+        return apikey;
     }
 
     /**
-     * @param key the key to set
+     * @param apikey the apikey to set
      */
-    public void setKey(String key) {
-        this.key = key;
+    public void setApikey(String apikey) {
+        this.apikey = apikey;
     }
 
     /**

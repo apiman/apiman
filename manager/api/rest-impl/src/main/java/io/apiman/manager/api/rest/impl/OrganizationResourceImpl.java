@@ -600,7 +600,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             contract.setPlan(pvb);
             contract.setCreatedBy(securityContext.getCurrentUser());
             contract.setCreatedOn(new Date());
-            contract.setKey(apiKeyGenerator.generate());
+            contract.setApikey(apiKeyGenerator.generate());
 
             // Validate the state of the application.
             if (applicationValidator.isReady(avb, true)) {
@@ -647,7 +647,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
             // Hide some data if the user doesn't have the appView permission
             if (!hasPermission) {
-                contract.setKey(null);
+                contract.setApikey(null);
             }
 
             return contract;
@@ -703,7 +703,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             // Hide some stuff if the user doesn't have the appView permission
             if (!hasPermission) {
                 for (ContractSummaryBean contract : contracts) {
-                    contract.setKey(null);
+                    contract.setApikey(null);
                 }
             }
             
@@ -1507,7 +1507,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
             for (ContractSummaryBean contract : contracts) {
                 if (!securityContext.hasPermission(PermissionType.appView, contract.getAppOrganizationId())) {
-                    contract.setKey(null);
+                    contract.setApikey(null);
                 }
             }
 

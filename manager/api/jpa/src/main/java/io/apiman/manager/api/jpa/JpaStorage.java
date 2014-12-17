@@ -665,7 +665,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             criteria.setPage(1);
             criteria.setPageSize(20);
         }
-        criteria.setOrder("when", false); //$NON-NLS-1$
+        criteria.setOrder("createdOn", false); //$NON-NLS-1$
         if (userId != null) {
             criteria.addFilter("who", userId, SearchCriteriaFilterBean.OPERATOR_EQ); //$NON-NLS-1$
         }
@@ -1005,7 +1005,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                 
                 ContractSummaryBean csb = new ContractSummaryBean();
                 csb.setAppId(application.getId());
-                csb.setKey(contractBean.getKey());
+                csb.setApikey(contractBean.getApikey());
                 csb.setAppOrganizationId(application.getOrganization().getId());
                 csb.setAppOrganizationName(appOrg.getName());
                 csb.setAppName(application.getName());
@@ -1138,7 +1138,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                 
                 ContractSummaryBean csb = new ContractSummaryBean();
                 csb.setAppId(application.getId());
-                csb.setKey(contractBean.getKey());
+                csb.setApikey(contractBean.getApikey());
                 csb.setAppOrganizationId(application.getOrganization().getId());
                 csb.setAppOrganizationName(appOrg.getName());
                 csb.setAppName(application.getName());
@@ -1209,7 +1209,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                 entry.setPlanId(plan.getId());
                 entry.setPlanName(plan.getName());
                 entry.setPlanVersion(contractBean.getPlan().getVersion());
-                entry.setApiKey(contractBean.getKey());
+                entry.setApiKey(contractBean.getApikey());
                 
                 Set<ServiceGatewayBean> gateways = svb.getGateways();
                 if (gateways != null && gateways.size() > 0) {

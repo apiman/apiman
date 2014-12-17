@@ -19,11 +19,13 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -55,6 +57,7 @@ public class RoleBean implements Serializable {
     @Column(updatable=true, nullable=true)
     private Boolean autoGrant;
     @ElementCollection(fetch=FetchType.EAGER)
+    @CollectionTable(name="permissions", joinColumns=@JoinColumn(name="role_id"))
     private Set<PermissionType> permissions;
     
     /**

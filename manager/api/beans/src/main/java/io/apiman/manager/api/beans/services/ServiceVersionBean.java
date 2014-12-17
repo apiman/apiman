@@ -19,9 +19,9 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -69,11 +69,11 @@ public class ServiceVersionBean implements Serializable {
     private String endpoint;
     @Enumerated(EnumType.STRING)
     private EndpointType endpointType;
-    @Embedded
     @ElementCollection(fetch=FetchType.EAGER)
+    @CollectionTable(name="svc_gateways", joinColumns=@JoinColumn(name="service_version_id"))
     private Set<ServiceGatewayBean> gateways;
-    @Embedded
     @ElementCollection(fetch=FetchType.EAGER)
+    @CollectionTable(name="svc_plans", joinColumns=@JoinColumn(name="service_version_id"))
     private Set<ServicePlanBean> plans;
     @Column(updatable=false)
     private String version;

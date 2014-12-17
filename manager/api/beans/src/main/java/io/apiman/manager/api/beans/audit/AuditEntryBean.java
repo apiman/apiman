@@ -64,7 +64,7 @@ public class AuditEntryBean implements Serializable {
     @Column(updatable=false)
     private String entityVersion;
     @Column(updatable=false, nullable=false)
-    private Date when;
+    private Date createdOn;
     @Column(updatable=false, nullable=false)
     @Enumerated(EnumType.STRING)
     private AuditEntryType what;
@@ -163,20 +163,6 @@ public class AuditEntryBean implements Serializable {
     }
 
     /**
-     * @return the when
-     */
-    public Date getWhen() {
-        return when;
-    }
-
-    /**
-     * @param when the when to set
-     */
-    public void setWhen(Date when) {
-        this.when = when;
-    }
-
-    /**
      * @return the type
      */
     public AuditEntryType getWhat() {
@@ -202,6 +188,20 @@ public class AuditEntryBean implements Serializable {
      */
     public void setData(String data) {
         this.data = data;
+    }
+
+    /**
+     * @return the createdOn
+     */
+    public Date getCreatedOn() {
+        return createdOn;
+    }
+
+    /**
+     * @param createdOn the createdOn to set
+     */
+    public void setCreatedOn(Date createdOn) {
+        this.createdOn = createdOn;
     }
     
 }
