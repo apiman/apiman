@@ -1,0 +1,18 @@
+GET /http-gateway/path/to/app/resource admin/admin
+X-Custom-Header: MyValue
+X-API-Key: 12345
+
+----
+200
+Content-Type: application/json
+
+{
+  "method" : "GET",
+  "resource" : "/path/to/app/resource",
+  "uri" : "/path/to/app/resource",
+  "headers" : {
+    "X-Custom-Header" : "MyValue",
+    "X-SimpleHttpHeaderPolicy-1" : "foo",
+    "X-SimpleHttpHeaderPolicy-2" : "bar"
+  }
+}

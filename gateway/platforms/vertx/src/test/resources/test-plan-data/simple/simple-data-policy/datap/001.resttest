@@ -1,0 +1,94 @@
+PUT /http-gateway/path/to/app/resource admin/admin
+Content-Type: text/plain
+X-API-Key: 12345
+
+Hello $NAME,
+
+Bacon ipsum dolor amet t-bone ad cow jowl ex, flank ham tongue ground round. Sunt commodo 
+beef ribs kielbasa ball tip tri-tip qui veniam reprehenderit jowl. Filet mignon magna meatloaf 
+labore ipsum tongue. Drumstick cupim ribeye jerky ham. Excepteur laborum shankle capicola leberkas 
+in, cillum aute nulla. Sunt boudin salami, ball tip duis doner brisket deserunt incididunt 
+hamburger quis.
+
+Pork belly incididunt flank, laboris short loin ea qui leberkas beef ut laborum. Do tongue irure 
+proident short ribs ullamco occaecat frankfurter cillum in. Flank incididunt ham qui. Nostrud 
+brisket officia tail laborum chuck corned beef nisi ham.
+
+Occaecat strip steak eu t-bone prosciutto. Leberkas drumstick t-bone irure shank short loin 
+chicken sirloin laborum id. Consequat dolore cow, fugiat proident duis ut in pork loin chuck. Et 
+labore officia, capicola chicken venison nulla prosciutto.
+
+Ut turkey ipsum kevin cillum. Tongue sausage meatball pancetta pork chop corned beef sunt strip 
+steak. Salami voluptate elit eiusmod ut. Filet mignon voluptate turkey tri-tip prosciutto cillum. 
+Ribeye commodo boudin shoulder t-bone. Quis esse ea qui, chuck eiusmod minim shank pork loin sed 
+irure aliquip sirloin. Sirloin cow non chicken consequat sausage short loin capicola reprehenderit 
+eiusmod.
+
+Landjaeger pancetta aliquip magna, consequat nisi shankle officia pork. Sirloin pariatur eiusmod, 
+rump filet mignon in aliqua beef ribs duis commodo. Flank ham landjaeger consectetur aliqua pork 
+venison andouille aute veniam cillum. Boudin ham hock beef ribs, incididunt ullamco hamburger 
+chicken beef. Mollit ut elit, sunt pork belly leberkas qui brisket labore kielbasa in irure dolor 
+ipsum veniam. Doner id porchetta andouille ut. Mollit eu ut sausage kevin esse nulla tongue do 
+beef shankle corned beef.
+
+Pork belly incididunt flank, laboris short loin ea qui leberkas beef ut laborum. Do tongue irure 
+proident short ribs ullamco occaecat frankfurter cillum in. Flank incididunt ham qui. Nostrud 
+brisket officia tail laborum chuck corned beef nisi ham.
+
+Occaecat strip steak eu t-bone prosciutto. Leberkas drumstick t-bone irure shank short loin 
+chicken sirloin laborum id. Consequat dolore cow, fugiat proident duis ut in pork loin chuck. Et 
+labore officia, capicola chicken venison nulla prosciutto.
+
+Ut turkey ipsum kevin cillum. Tongue sausage meatball pancetta pork chop corned beef sunt strip 
+steak. Salami voluptate elit eiusmod ut. Filet mignon voluptate turkey tri-tip prosciutto cillum. 
+Ribeye commodo boudin shoulder t-bone. Quis esse ea qui, chuck eiusmod minim shank pork loin sed 
+irure aliquip sirloin. Sirloin cow non chicken consequat sausage short loin capicola reprehenderit 
+eiusmod.
+
+Landjaeger pancetta aliquip magna, consequat nisi shankle officia pork. Sirloin pariatur eiusmod, 
+rump filet mignon in aliqua beef ribs duis commodo. Flank ham landjaeger consectetur aliqua pork 
+venison andouille aute veniam cillum. Boudin ham hock beef ribs, incididunt ullamco hamburger 
+chicken beef. Mollit ut elit, sunt pork belly leberkas qui brisket labore kielbasa in irure dolor 
+ipsum veniam. Doner id porchetta andouille ut. Mollit eu ut sausage kevin esse nulla tongue do 
+beef shankle corned beef.
+
+Pork belly incididunt flank, laboris short loin ea qui leberkas beef ut laborum. Do tongue irure 
+proident short ribs ullamco occaecat frankfurter cillum in. Flank incididunt ham qui. Nostrud 
+brisket officia tail laborum chuck corned beef nisi ham.
+
+Occaecat strip steak eu t-bone prosciutto. Leberkas drumstick t-bone irure shank short loin 
+chicken sirloin laborum id. Consequat dolore cow, fugiat proident duis ut in pork loin chuck. Et 
+labore officia, capicola chicken venison nulla prosciutto.
+
+Ut turkey ipsum kevin cillum. Tongue sausage meatball pancetta pork chop corned beef sunt strip 
+steak. Salami voluptate elit eiusmod ut. Filet mignon voluptate turkey tri-tip prosciutto cillum. 
+Ribeye commodo boudin shoulder t-bone. Quis esse ea qui, chuck eiusmod minim shank pork loin sed 
+irure aliquip sirloin. Sirloin cow non chicken consequat sausage short loin capicola reprehenderit 
+eiusmod.
+
+Landjaeger pancetta aliquip magna, consequat nisi shankle officia pork. Sirloin pariatur eiusmod, 
+rump filet mignon in aliqua beef ribs duis commodo. Flank ham landjaeger consectetur aliqua pork 
+venison andouille aute veniam cillum. Boudin ham hock beef ribs, incididunt ullamco hamburger 
+chicken beef. Mollit ut elit, sunt pork belly leberkas qui brisket labore kielbasa in irure dolor 
+ipsum veniam. Doner id porchetta andouille ut. Mollit eu ut sausage kevin esse nulla tongue do 
+beef shankle corned beef.
+
+So thank you, $NAME, for your interest.
+
+Regards,
+
+The Company
+----
+200
+Content-Type: application/json
+
+{
+  "method" : "PUT",
+  "resource" : "/path/to/app/resource",
+  "uri" : "/path/to/app/resource",
+  "headers" : {
+    "Content-Type":"text/plain"
+  },
+  "bodyLength" : 4745,
+  "bodySha1" : "1dd43072f7ac27dc3bb83620bd4a1b43c6d9d17d"
+}

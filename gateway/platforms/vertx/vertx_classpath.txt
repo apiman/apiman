@@ -1,0 +1,11 @@
+# This file contains information on where to find the resources of your module during development
+# This file is used when running your module as you develop - it tells Vert.x where to find
+# the resources of your module
+
+# Feel free to edit it if you have a non standard project structure and put the resources of your
+# module elsewhere
+
+src/main/resources
+target/classes
+target/dependencies
+bin
