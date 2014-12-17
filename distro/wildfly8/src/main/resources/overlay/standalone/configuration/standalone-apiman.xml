@@ -240,11 +240,6 @@
           <file-store passivation="false" purge="false" />
         </local-cache>
       </cache-container>
-      <cache-container name="apiman-manager" default-cache="auth" start="EAGER">
-        <local-cache name="auth" batching="true">
-          <file-store passivation="false" purge="false" />
-        </local-cache>
-      </cache-container>
       <cache-container name="web" default-cache="passivation" module="org.wildfly.clustering.web.infinispan">
         <local-cache name="passivation" batching="true">
           <file-store passivation="true" purge="false" />
