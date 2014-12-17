@@ -71,7 +71,7 @@ public class PolicyConfigurationFormFactory {
             return rateLimitingFormFactory.get();
         }
         if ("IgnoredResourcesPolicy".equals(policyDefId)) { //$NON-NLS-1$
-        	return ignoredResourcesFormFactory.get();
+            return ignoredResourcesFormFactory.get();
         }
         return defaultFormFactory.get();
     }

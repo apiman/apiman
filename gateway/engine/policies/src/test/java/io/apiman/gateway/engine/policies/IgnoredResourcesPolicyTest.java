@@ -38,56 +38,57 @@ import org.mockito.Mockito;
 @SuppressWarnings({ "unchecked" })
 public class IgnoredResourcesPolicyTest {
 
-	@Test
-	public void testParseConfiguration() {
-		IgnoredResourcesPolicy policy = new IgnoredResourcesPolicy();
-		
-		String config = "{}";
-		Object parsed = policy.parseConfiguration(config);
-		assertNotNull(parsed);
-		assertEquals(IgnoredResourcesConfig.class, parsed.getClass());
-		
-		IgnoredResourcesConfig parsedConfig = (IgnoredResourcesConfig) parsed;
-		assertNotNull(parsedConfig.getPathToIgnore());
-		assertTrue(parsedConfig.getPathToIgnore().isEmpty());
-		
-		String simpleConfig = "{\"pathToIgnore\" : \"/invoices/./items/.\"}";
-		parsed = policy.parseConfiguration(simpleConfig);
-		parsedConfig = (IgnoredResourcesConfig) parsed;
-		assertNotNull(parsedConfig.getPathToIgnore());
-		assertEquals("/invoices/./items/.", parsedConfig.getPathToIgnore());
-	}
-	
-	@Test
-	public void testApply() {
-		IgnoredResourcesPolicy policy = new IgnoredResourcesPolicy();
-		
-		String json = "{\"pathToIgnore\" : \"/invoices/.+/items/.+\"}";
-		Object config = policy.parseConfiguration(json);
-		
-		ServiceRequest request = new ServiceRequest();
-		request.setType("GET");
+    @Test
+    public void testParseConfiguration() {
+        IgnoredResourcesPolicy policy = new IgnoredResourcesPolicy();
+
+        String config = "{}";
+        Object parsed = policy.parseConfiguration(config);
+        assertNotNull(parsed);
+        assertEquals(IgnoredResourcesConfig.class, parsed.getClass());
+
+        IgnoredResourcesConfig parsedConfig = (IgnoredResourcesConfig) parsed;
+        assertNotNull(parsedConfig.getPathToIgnore());
+        assertTrue(parsedConfig.getPathToIgnore().isEmpty());
+
+        String simpleConfig = "{\"pathToIgnore\" : \"/invoices/./items/.\"}";
+        parsed = policy.parseConfiguration(simpleConfig);
+        parsedConfig = (IgnoredResourcesConfig) parsed;
+        assertNotNull(parsedConfig.getPathToIgnore());
+        assertEquals("/invoices/./items/.", parsedConfig.getPathToIgnore());
+    }
+
+    @Test
+    public void testApply() {
+        IgnoredResourcesPolicy policy = new IgnoredResourcesPolicy();
+
+        String json = "{\"pathToIgnore\" : \"/invoices/.+/items/.+\"}";
+        Object config = policy.parseConfiguration(json);
+
+        ServiceRequest request = new ServiceRequest();
+        request.setType("GET");
         request.setApiKey("12345");
         request.setRemoteAddr("1.2.3.4");
         request.setDestination("/invoices/1");
         IPolicyContext context = Mockito.mock(IPolicyContext.class);
         IPolicyChain<ServiceRequest> chain = Mockito.mock(IPolicyChain.class);
-     
+
         // Success
         policy.apply(request, context, config, chain);
         Mockito.verify(chain).doApply(request);
-        
+
         // Failure
         final PolicyFailure failure = new PolicyFailure();
-        Mockito.when(context.getComponent(IPolicyFailureFactoryComponent.class)).thenReturn(new IPolicyFailureFactoryComponent() {
-            @Override
-            public PolicyFailure createFailure(PolicyFailureType type, int failureCode, String message) {
-                return failure;
-            }
-        });
+        Mockito.when(context.getComponent(IPolicyFailureFactoryComponent.class)).thenReturn(
+                new IPolicyFailureFactoryComponent() {
+                    @Override
+                    public PolicyFailure createFailure(PolicyFailureType type, int failureCode, String message) {
+                        return failure;
+                    }
+                });
         chain = Mockito.mock(IPolicyChain.class);
         request.setDestination("/invoices/23/items/43");
         policy.apply(request, context, config, chain);
         Mockito.verify(chain).doFailure(failure);
-	}
+    }
 }

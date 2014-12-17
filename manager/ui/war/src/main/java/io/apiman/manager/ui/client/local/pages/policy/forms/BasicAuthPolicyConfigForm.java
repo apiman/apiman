@@ -70,7 +70,7 @@ public class BasicAuthPolicyConfigForm extends Composite implements IPolicyConfi
     @Inject @DataField
     TextBox realm;
     @Inject @DataField
-	TextBox authenticatedUserHeader;
+    TextBox authenticatedUserHeader;
     @Inject @DataField
     IdentitySourceSelectBox identitySourceSelector;
     
