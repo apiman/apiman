@@ -15,12 +15,12 @@
  */
 package io.apiman.gateway.vertx.http;
 
+import io.apiman.gateway.engine.beans.ServiceRequest;
+import io.apiman.gateway.engine.beans.ServiceResponse;
+
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
-
-import io.apiman.gateway.engine.beans.ServiceRequest;
-import io.apiman.gateway.engine.beans.ServiceResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.vertx.java.core.MultiMap;
@@ -63,7 +63,7 @@ public class HttpServiceFactory {
         parseHeaders(apimanRequest.getHeaders(), req.headers(), Collections.<String>emptySet());
         
         // Remove the gateway's URI from the start of the path if it's there.
-        apimanRequest.setDestination(StringUtils.removeStart(req.path(), "/" + stripFromStart));
+        apimanRequest.setDestination(StringUtils.removeStart(req.path(), "/" + stripFromStart)); //$NON-NLS-1$
         apimanRequest.setRemoteAddr(req.remoteAddress().getAddress().getHostAddress());
         apimanRequest.setType(req.method());
 
@@ -90,7 +90,7 @@ public class HttpServiceFactory {
         String queryString = req.query();
         
         if(queryString == null)
-            return "<none>";
+            return "<none>"; //$NON-NLS-1$
         
         int idx = queryString.indexOf("apikey="); //$NON-NLS-1$
         if (idx >= 0) {

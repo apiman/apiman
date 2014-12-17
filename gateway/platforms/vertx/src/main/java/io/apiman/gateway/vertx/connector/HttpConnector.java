@@ -15,11 +15,6 @@
  */
 package io.apiman.gateway.vertx.connector;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.HashSet;
-import java.util.Set;
-
 import io.apiman.gateway.engine.IServiceConnection;
 import io.apiman.gateway.engine.IServiceConnectionResponse;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
@@ -33,6 +28,11 @@ import io.apiman.gateway.engine.io.ISignalReadStream;
 import io.apiman.gateway.engine.io.ISignalWriteStream;
 import io.apiman.gateway.vertx.http.HttpServiceFactory;
 import io.apiman.gateway.vertx.io.VertxApimanBuffer;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.vertx.java.core.Handler;
@@ -105,7 +105,7 @@ class HttpConnector implements IServiceConnectionResponse, IServiceConnection {
 
        serviceHost = serviceEndpoint.getHost();
        servicePort = serviceEndpoint.getPort();
-       servicePath = StringUtils.removeEnd(serviceEndpoint.getPath(), "/");
+       servicePath = StringUtils.removeEnd(serviceEndpoint.getPath(), "/"); //$NON-NLS-1$
 
        doConnection();
     }

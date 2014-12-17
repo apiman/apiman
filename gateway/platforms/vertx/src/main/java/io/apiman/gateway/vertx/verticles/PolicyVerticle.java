@@ -15,11 +15,6 @@
  */
 package io.apiman.gateway.vertx.verticles;
 
-import io.apiman.gateway.vertx.config.VertxEngineConfig;
-import io.apiman.gateway.vertx.conversation.ServiceRequestListener;
-import io.apiman.gateway.vertx.conversation.ServiceResponseExecutor;
-import io.apiman.gateway.vertx.io.VertxApimanBuffer;
-import io.apiman.gateway.vertx.worker.WorkerHelper;
 import io.apiman.gateway.engine.IEngine;
 import io.apiman.gateway.engine.IEngineResult;
 import io.apiman.gateway.engine.IServiceRequestExecutor;
@@ -29,6 +24,11 @@ import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.gateway.engine.io.ISignalWriteStream;
+import io.apiman.gateway.vertx.config.VertxEngineConfig;
+import io.apiman.gateway.vertx.conversation.ServiceRequestListener;
+import io.apiman.gateway.vertx.conversation.ServiceResponseExecutor;
+import io.apiman.gateway.vertx.io.VertxApimanBuffer;
+import io.apiman.gateway.vertx.worker.WorkerHelper;
 
 import org.vertx.java.core.AsyncResult;
 import org.vertx.java.core.AsyncResultHandler;
@@ -62,7 +62,7 @@ public class PolicyVerticle extends ApimanVerticleWithEngine {
     private void setup() {
         requestHandler();
 
-        if(config.containsField("skip_registration") && config.getBoolean("skip_registration")) {
+        if(config.containsField("skip_registration") && config.getBoolean("skip_registration")) { //$NON-NLS-1$ //$NON-NLS-2$
             logger.debug(uuid + " is not registering (skip_registration flag).");
         } else {
             register();
@@ -190,7 +190,7 @@ public class PolicyVerticle extends ApimanVerticleWithEngine {
 
     @Override
     public String verticleType() {
-        return "policy";
+        return "policy"; //$NON-NLS-1$
     }
 
     public IEngine getEngine() {

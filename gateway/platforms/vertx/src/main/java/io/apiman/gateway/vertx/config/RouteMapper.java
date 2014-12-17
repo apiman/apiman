@@ -56,6 +56,6 @@ public class RouteMapper {
      * For instance /gateway/a/b/c => gateway
      */
     protected String firstPathElem(String path) {
-        return StringUtils.split(path, "/", 2)[0];
+        return StringUtils.split(path, "/", 2)[0]; //$NON-NLS-1$
     }
 }

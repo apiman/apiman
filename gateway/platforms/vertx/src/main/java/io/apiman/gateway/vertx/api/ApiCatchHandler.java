@@ -32,7 +32,7 @@ import org.vertx.java.core.json.impl.Json;
  */
 public abstract class ApiCatchHandler<T> implements Handler<Message<T>> {
 
-    private static final JsonObject OK_STATUS = new JsonObject().putBoolean("status", true);
+    private static final JsonObject OK_STATUS = new JsonObject().putBoolean("status", true); //$NON-NLS-1$
 
     @Override
     public final void handle(Message<T> message) {
@@ -49,8 +49,8 @@ public abstract class ApiCatchHandler<T> implements Handler<Message<T>> {
 
     protected void replyError(Message<T> message, GenericError genericException) {
         JsonObject error = new JsonObject().
-                putBoolean("status", false).
-                putObject("error", new JsonObject(Json.encode(genericException)));
+                putBoolean("status", false). //$NON-NLS-1$
+                putObject("error", new JsonObject(Json.encode(genericException))); //$NON-NLS-1$
 
         message.reply(error);
     }

@@ -15,18 +15,6 @@
  */
 package io.apiman.gateway.vertx.http;
 
-import java.util.Map.Entry;
-
-import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.vertx.java.core.Handler;
-import org.vertx.java.core.Vertx;
-import org.vertx.java.core.buffer.Buffer;
-import org.vertx.java.core.http.HttpHeaders;
-import org.vertx.java.core.http.HttpServerRequest;
-import org.vertx.java.core.http.HttpServerResponse;
-import org.vertx.java.core.logging.Logger;
-import org.vertx.java.platform.Container;
-
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.PolicyFailureType;
 import io.apiman.gateway.engine.beans.ServiceRequest;
@@ -39,6 +27,18 @@ import io.apiman.gateway.vertx.io.ISimpleWriteStream;
 import io.apiman.gateway.vertx.verticles.PolicyVerticle;
 import io.apiman.gateway.vertx.worker.Registrant;
 import io.netty.handler.codec.http.HttpResponseStatus;
+
+import java.util.Map.Entry;
+
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.vertx.java.core.Handler;
+import org.vertx.java.core.Vertx;
+import org.vertx.java.core.buffer.Buffer;
+import org.vertx.java.core.http.HttpHeaders;
+import org.vertx.java.core.http.HttpServerRequest;
+import org.vertx.java.core.http.HttpServerResponse;
+import org.vertx.java.core.logging.Logger;
+import org.vertx.java.platform.Container;
 
 /**
  * Handles an {@link HttpServerRequest}<=>{@link HttpServerResponse} conversation. This involves converting
@@ -160,7 +160,7 @@ public class HttpGatewayStreamer implements Registrant, Handler<HttpServerReques
             public void handle(Throwable error) {
                 response.setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
                 response.setStatusMessage(HttpResponseStatus.INTERNAL_SERVER_ERROR.reasonPhrase());
-                response.headers().add("X-Exception", String.valueOf(error.getMessage()));
+                response.headers().add("X-Exception", String.valueOf(error.getMessage())); //$NON-NLS-1$
                 response.write(ExceptionUtils.getStackTrace(error));
                 end(response);
             }
@@ -170,10 +170,10 @@ public class HttpGatewayStreamer implements Registrant, Handler<HttpServerReques
 
             @Override
             public void handle(PolicyFailure failure, String rawResponse) {
-              response.headers().add("X-Policy-Failure-Type", String.valueOf(failure.getType()));
-              response.headers().add("X-Policy-Failure-Message", failure.getMessage());
-              response.headers().add("X-Policy-Failure-Code", String.valueOf(failure.getFailureCode()));
-              response.headers().add(HttpHeaders.CONTENT_TYPE, "application/json"); //$NON-NLS-N$
+              response.headers().add("X-Policy-Failure-Type", String.valueOf(failure.getType())); //$NON-NLS-1$
+              response.headers().add("X-Policy-Failure-Message", failure.getMessage()); //$NON-NLS-1$
+              response.headers().add("X-Policy-Failure-Code", String.valueOf(failure.getFailureCode())); //$NON-NLS-1$
+              response.headers().add(HttpHeaders.CONTENT_TYPE, "application/json"); //$NON-NLS-1$
 
               HttpResponseStatus status = HttpResponseStatus.INTERNAL_SERVER_ERROR;
 

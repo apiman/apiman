@@ -30,7 +30,7 @@ public class ServiceRequestListener extends AbstractServiceListener<ServiceReque
 
     public ServiceRequestListener(EventBus eb, Logger logger, String address) {
         super(eb, logger, address, ServiceRequest.class);
-        logger.debug(ServiceRequestListener.class.getCanonicalName()+ " on " + address);
+        logger.debug(ServiceRequestListener.class.getCanonicalName()+ " on " + address); //$NON-NLS-1$
     }
 
     @Override

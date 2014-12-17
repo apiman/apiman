@@ -49,6 +49,6 @@ public class HttpGatewayVerticle extends ApimanVerticleBase {
 
     @Override
     public String verticleType() {
-        return "http-gateway";
+        return "http-gateway"; //$NON-NLS-1$
     }
 }

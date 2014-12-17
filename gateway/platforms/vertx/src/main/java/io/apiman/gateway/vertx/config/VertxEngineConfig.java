@@ -68,11 +68,11 @@ public class VertxEngineConfig implements IEngineConfig {
     public static final String APIMAN_API_SERVICES_DELETE = ".apiman.api.services.delete"; //$NON-NLS-1$
     public static final String APIMAN_API_SUBSCRIBE = "apiman.api.subscribe"; //$NON-NLS-1$
 
-    private static final String APIMAN_RT_AUTH_BASIC = "file-basic";
-    private static final String APIMAN_RT_AUTH_ENABLED = "authenticated";
-    private static final String APIMAN_RT_AUTH_REALM = "realm";
-    private static final String APIMAN_RT_HOSTNAME = "hostname";
-    private static final String APIMAN_RT_ENDPOINT = "endpoint";
+    private static final String APIMAN_RT_AUTH_BASIC = "file-basic"; //$NON-NLS-1$
+    private static final String APIMAN_RT_AUTH_ENABLED = "authenticated"; //$NON-NLS-1$
+    private static final String APIMAN_RT_AUTH_REALM = "realm"; //$NON-NLS-1$
+    private static final String APIMAN_RT_HOSTNAME = "hostname"; //$NON-NLS-1$
+    private static final String APIMAN_RT_ENDPOINT = "endpoint"; //$NON-NLS-1$
 
     private RouteMapper routeMap;
     private JsonObject config;
@@ -148,7 +148,7 @@ public class VertxEngineConfig implements IEngineConfig {
     }
 
     public String getRealm() {
-        return stringConfigWithDefault(APIMAN_RT_AUTH_REALM, "apiman-realm");
+        return stringConfigWithDefault(APIMAN_RT_AUTH_REALM, "apiman-realm"); //$NON-NLS-1$
     }
 
     public RouteMapper getRouteMap() {
@@ -156,11 +156,11 @@ public class VertxEngineConfig implements IEngineConfig {
     }
     
     public String hostname() {
-        return stringConfigWithDefault(APIMAN_RT_HOSTNAME, "localhost");
+        return stringConfigWithDefault(APIMAN_RT_HOSTNAME, "localhost"); //$NON-NLS-1$
     }
     
     public String getEndpoint() {
-        return stringConfigWithDefault(APIMAN_RT_ENDPOINT, "localhost");   
+        return stringConfigWithDefault(APIMAN_RT_ENDPOINT, "localhost");    //$NON-NLS-1$
     }
 
     public Map<String, String> loadFileBasicAuth() {

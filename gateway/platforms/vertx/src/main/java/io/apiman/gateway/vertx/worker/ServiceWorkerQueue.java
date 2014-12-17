@@ -54,7 +54,7 @@ public class ServiceWorkerQueue extends WorkerQueue<HttpGatewayStreamer> {
 
             @Override
             public void handle(Message<String> policyVerticleUuid) {
-                logger.debug("New registrant on " + registrationTopic + ": " + policyVerticleUuid.body());
+                logger.debug("New registrant on " + registrationTopic + ": " + policyVerticleUuid.body()); //$NON-NLS-2$
                 add(createStreamer(policyVerticleUuid.body()));
             }
         });
@@ -69,8 +69,8 @@ public class ServiceWorkerQueue extends WorkerQueue<HttpGatewayStreamer> {
         } else {
             final String uuid = UUID.randomUUID().toString();
             JsonObject launchConfig = container.config().copy();
-            launchConfig.putBoolean("skip_registration", true);
-            launchConfig.putString("uuid", uuid);
+            launchConfig.putBoolean("skip_registration", true); //$NON-NLS-1$
+            launchConfig.putString("uuid", uuid); //$NON-NLS-1$
 
             container.deployVerticle(PolicyVerticle.class.getCanonicalName(), launchConfig,
                     new Handler<AsyncResult<String>>() {

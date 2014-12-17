@@ -15,9 +15,9 @@
  */
 package io.apiman.gateway.vertx.verticles;
 
-import java.util.UUID;
-
 import io.apiman.gateway.vertx.config.VertxEngineConfig;
+
+import java.util.UUID;
 
 import org.vertx.java.busmods.BusModBase;
 
@@ -37,15 +37,15 @@ public abstract class ApimanVerticleBase extends BusModBase {
         amanConfig = getEngineConfig();
         
         // If someone provides a UUID we use it, else generate one.
-        if(config.containsField("uuid")) {
-            uuid = config.getString("uuid");
+        if(config.containsField("uuid")) { //$NON-NLS-1$
+            uuid = config.getString("uuid"); //$NON-NLS-1$
         } else {
             uuid = UUID.randomUUID().toString();
         }
 
-        logger.info("Starting verticle: " + this.getClass().getName() + "\n" + 
-                "Type: " + verticleType() + "\n" +
-                "UUID: " + uuid + "\n");
+        logger.info("Starting verticle: " + this.getClass().getName() + "\n" +  //$NON-NLS-2$
+                "Type: " + verticleType() + "\n" + //$NON-NLS-2$
+                "UUID: " + uuid + "\n"); //$NON-NLS-2$
     }
 
     /**

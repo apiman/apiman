@@ -47,6 +47,6 @@ public class InitializerVerticle extends ApimanVerticleBase {
 
     @Override
     public String verticleType() {
-        return "initialiser";
+        return "initialiser"; //$NON-NLS-1$
     }  
 }

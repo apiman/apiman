@@ -85,9 +85,9 @@ public class ApiListener {
                 JsonObject json = message.body();
 
                 try {
-                    engine.unregisterApplication(json.getString("organizationId"),
-                            json.getString("applicationId"),
-                            json.getString("version"));
+                    engine.unregisterApplication(json.getString("organizationId"), //$NON-NLS-1$
+                            json.getString("applicationId"), //$NON-NLS-1$
+                            json.getString("version")); //$NON-NLS-1$
                     //logger.debug(("Deleted app");
                     replyOk(message);
                 } catch (RegistrationException e) {
@@ -126,9 +126,9 @@ public class ApiListener {
 
                 //logger.debug(("retiring service " + json);
                 try {
-                    engine.retireService(json.getString("organizationId"),
-                            json.getString("serviceId"),
-                            json.getString("version"));
+                    engine.retireService(json.getString("organizationId"), //$NON-NLS-1$
+                            json.getString("serviceId"), //$NON-NLS-1$
+                            json.getString("version")); //$NON-NLS-1$
                     replyOk(message);
                 } catch (PublishingException e) {
                     replyError(message, new GenericError(HttpResponseStatus.NOT_FOUND.code(),

@@ -17,6 +17,13 @@ package io.apiman.gateway.vertx.integration.java;
 
 
 
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.vertx.testtools.VertxAssert.assertEquals;
+import static org.vertx.testtools.VertxAssert.assertTrue;
+import static org.vertx.testtools.VertxAssert.testComplete;
 import io.apiman.gateway.engine.IServiceConnection;
 import io.apiman.gateway.engine.IServiceConnectionResponse;
 import io.apiman.gateway.engine.IServiceConnector;
@@ -41,17 +48,15 @@ import org.vertx.java.core.VoidHandler;
 import org.vertx.java.core.buffer.Buffer;
 import org.vertx.java.core.http.HttpServer;
 import org.vertx.java.core.http.HttpServerRequest;
-import org.vertx.testtools.TestVerticle;
 import org.vertx.java.core.logging.Logger;
-
-import static org.mockito.BDDMockito.*;
-import static org.vertx.testtools.VertxAssert.*;
+import org.vertx.testtools.TestVerticle;
 
 /**
  * Test connector factory using a dummy server on localhost that echoes a fixed response.
  *
  * @author Marc Savy <msavy@redhat.com>
  */
+@SuppressWarnings("nls")
 public class ConnectorFactoryTest extends TestVerticle {
 
     private ConnectorFactory factory;

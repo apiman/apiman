@@ -80,7 +80,7 @@ public abstract class AbstractServiceListener<E> implements IResettable {
 
             @Override
             public void handle(Message<Void> signal) {
-                logger.debug("Received finish signal in ServiceListener");
+                logger.debug("Received finish signal in ServiceListener"); //$NON-NLS-1$
                 end();
             }
         });

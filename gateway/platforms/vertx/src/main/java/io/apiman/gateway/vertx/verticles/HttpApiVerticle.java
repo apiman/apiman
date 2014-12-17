@@ -70,7 +70,7 @@ public class HttpApiVerticle extends ApimanVerticleWithEngine {
 
     @Override
     public String verticleType() {
-        return "api";
+        return "api"; //$NON-NLS-1$
     }
 
     private void initializeApi() {
@@ -94,7 +94,7 @@ public class HttpApiVerticle extends ApimanVerticleWithEngine {
         systemApi();
 
         // Default handler
-        routeMatcher.allWithRegEx(".*", new Handler<HttpServerRequest>() {
+        routeMatcher.allWithRegEx(".*", new Handler<HttpServerRequest>() { //$NON-NLS-1$
 
             @Override
             public void handle(HttpServerRequest request) {
@@ -107,7 +107,7 @@ public class HttpApiVerticle extends ApimanVerticleWithEngine {
 
     private void applicationApi() {
         // Register
-        routeMatcher.put("/api/applications", new Handler<HttpServerRequest>() {
+        routeMatcher.put("/api/applications", new Handler<HttpServerRequest>() { //$NON-NLS-1$
 
             @Override
             public void handle(final HttpServerRequest request) {
@@ -134,15 +134,15 @@ public class HttpApiVerticle extends ApimanVerticleWithEngine {
         });
 
         // Unregister
-        routeMatcher.delete("/api/applications/:organizationId/:applicationId/:version",
+        routeMatcher.delete("/api/applications/:organizationId/:applicationId/:version", //$NON-NLS-1$
                 new Handler<HttpServerRequest>() {
 
                     @Override
                     public void handle(final HttpServerRequest request) {
                         JsonObject json = new JsonObject();
-                        json.putString("organizationId", request.params().get("organizationId"));
-                        json.putString("applicationId", request.params().get("applicationId"));
-                        json.putString("version", request.params().get("version"));
+                        json.putString("organizationId", request.params().get("organizationId")); //$NON-NLS-1$ //$NON-NLS-2$
+                        json.putString("applicationId", request.params().get("applicationId")); //$NON-NLS-1$ //$NON-NLS-2$
+                        json.putString("version", request.params().get("version")); //$NON-NLS-1$ //$NON-NLS-2$
 
                         logger.debug(json);
 
@@ -161,19 +161,19 @@ public class HttpApiVerticle extends ApimanVerticleWithEngine {
     private void serviceApi() {
 
         // getServiceEndpoint
-        routeMatcher.get(":organizationId/:serviceId/:version/endpoint", new Handler<HttpServerRequest>() {
+        routeMatcher.get(":organizationId/:serviceId/:version/endpoint", new Handler<HttpServerRequest>() { //$NON-NLS-1$
 
             @Override
             public void handle(HttpServerRequest request) {
                 ServiceEndpoint endpoint = new ServiceEndpoint();
-                endpoint.setEndpoint("http://" + amanConfig.getEndpoint() + ":"
-                        + amanConfig.getRouteMap().getAddress(HttpDispatcherVerticle.VERTICLE_NAME)); //$NON-NLS-N$
+                endpoint.setEndpoint("http://" + amanConfig.getEndpoint() + ":" //$NON-NLS-1$ //$NON-NLS-2$
+                        + amanConfig.getRouteMap().getAddress(HttpDispatcherVerticle.VERTICLE_NAME));
                 request.response().end(Json.encode(endpoint));
             }
         });
 
         // Publish
-        routeMatcher.put("/api/services", new Handler<HttpServerRequest>() {
+        routeMatcher.put("/api/services", new Handler<HttpServerRequest>() { //$NON-NLS-1$
 
             @Override
             public void handle(final HttpServerRequest request) {
@@ -196,15 +196,15 @@ public class HttpApiVerticle extends ApimanVerticleWithEngine {
         });
 
         // Retire
-        routeMatcher.delete("/api/services/:organizationId/:serviceId/:version",
+        routeMatcher.delete("/api/services/:organizationId/:serviceId/:version", //$NON-NLS-1$
                 new Handler<HttpServerRequest>() {
 
                     @Override
                     public void handle(final HttpServerRequest request) {
                         JsonObject json = new JsonObject();
-                        json.putString("organizationId", request.params().get("organizationId"));
-                        json.putString("serviceId", request.params().get("serviceId"));
-                        json.putString("version", request.params().get("version"));
+                        json.putString("organizationId", request.params().get("organizationId")); //$NON-NLS-1$ //$NON-NLS-2$
+                        json.putString("serviceId", request.params().get("serviceId")); //$NON-NLS-1$ //$NON-NLS-2$
+                        json.putString("version", request.params().get("version")); //$NON-NLS-1$ //$NON-NLS-2$
 
                         logger.debug(json);
 
@@ -221,7 +221,7 @@ public class HttpApiVerticle extends ApimanVerticleWithEngine {
     }
 
     private void systemApi() {
-        routeMatcher.get("/api/system", new Handler<HttpServerRequest>() {
+        routeMatcher.get("/api/system", new Handler<HttpServerRequest>() { //$NON-NLS-1$
 
             @Override
             public void handle(HttpServerRequest request) {
@@ -268,7 +268,7 @@ public class HttpApiVerticle extends ApimanVerticleWithEngine {
         public void handle(Message<JsonObject> message) {
             JsonObject json = message.body();
             // Logical and together statuses to ensure all are true.
-            collectiveStatus = collectiveStatus && json.getBoolean("status");
+            collectiveStatus = collectiveStatus && json.getBoolean("status"); //$NON-NLS-1$
             // Call only iff: all responses are successful or on *first* failure.
             // Duplicate failures are ignored to preserve idempotence.
 
@@ -291,10 +291,10 @@ public class HttpApiVerticle extends ApimanVerticleWithEngine {
 
         @Override
         public void handle(JsonObject status) {
-            if (status.getBoolean("status")) {
+            if (status.getBoolean("status")) { //$NON-NLS-1$
                 handler.handle((Void) null);
             } else {
-                GenericError error = Json.decodeValue(status.getObject("error").toString(),
+                GenericError error = Json.decodeValue(status.getObject("error").toString(), //$NON-NLS-1$
                         GenericError.class);
 
                 response.setStatusCode(error.getResponseCode());

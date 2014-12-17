@@ -15,15 +15,15 @@
  */
 package io.apiman.gateway.vertx.api;
 
+import io.apiman.gateway.vertx.config.VertxEngineConfig;
+import io.netty.handler.codec.http.HttpResponseStatus;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 
-import io.apiman.gateway.vertx.config.VertxEngineConfig;
-import io.netty.handler.codec.http.HttpResponseStatus;
-
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.StringUtils;
 import org.vertx.java.core.http.HttpHeaders;
 import org.vertx.java.core.http.HttpServerRequest;
 import org.vertx.java.core.http.HttpServerResponse;
@@ -62,7 +62,7 @@ public class AuthenticatingRouteMatcher extends RouteMatcher {
         if(authString == null)
             return false;
 
-        String[] basicAuth = StringUtils.splitByWholeSeparator(authString, "Basic ");
+        String[] basicAuth = StringUtils.splitByWholeSeparator(authString, "Basic "); //$NON-NLS-1$
 
         if(basicAuth.length == 1) {
             return basicAuth(request, basicAuth[0]);
@@ -74,7 +74,7 @@ public class AuthenticatingRouteMatcher extends RouteMatcher {
     private boolean basicAuth(HttpServerRequest request, String encodedAuth) {
         byte[] authBytes = Base64.decodeBase64(encodedAuth);
         String decodedString = new String(authBytes);
-        String[] splitAuth = StringUtils.split(StringUtils.trim(decodedString), ":");
+        String[] splitAuth = StringUtils.split(StringUtils.trim(decodedString), ":"); //$NON-NLS-1$
 
         if(splitAuth.length != 2)
             return false;
@@ -84,7 +84,7 @@ public class AuthenticatingRouteMatcher extends RouteMatcher {
 
             MessageDigest digest;
             try {
-                digest = MessageDigest.getInstance("SHA-256");
+                digest = MessageDigest.getInstance("SHA-256"); //$NON-NLS-1$
                 digest.update(splitAuth[1].getBytes());
 
                 String receivedHash = new String(digest.digest());
@@ -97,7 +97,7 @@ public class AuthenticatingRouteMatcher extends RouteMatcher {
             }
       }
 
-      request.response().headers().add("WWW-Authenticate", "Basic realm=\""+ config.getRealm() + "\"");
+      request.response().headers().add("WWW-Authenticate", "Basic realm=\""+ config.getRealm() + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
       return false;
     }

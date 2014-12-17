@@ -33,7 +33,7 @@ import org.vertx.java.core.http.HttpServerRequest;
  * @author Marc Savy <msavy@redhat.com>
  */
 public class HttpDispatcherVerticle extends ApimanVerticleBase {
-    public static String VERTICLE_NAME = "http-dispatcher";
+    public static String VERTICLE_NAME = "http-dispatcher"; //$NON-NLS-1$
     
     private RouteMapper routeMapper;
 

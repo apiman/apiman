@@ -1,5 +1,11 @@
 package io.apiman.gateway.vertx.integration.java;
 
+import static org.vertx.testtools.VertxAssert.assertTrue;
+import static org.vertx.testtools.VertxAssert.testComplete;
+import io.apiman.gateway.test.server.EchoServer;
+import io.apiman.gateway.vertx.verticles.InitializerVerticle;
+import io.apiman.test.common.util.TestPlanRunner;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -13,11 +19,7 @@ import org.vertx.java.core.json.JsonObject;
 import org.vertx.java.core.logging.Logger;
 import org.vertx.testtools.TestVerticle;
 
-import io.apiman.gateway.test.server.EchoServer;
-import io.apiman.gateway.vertx.verticles.InitializerVerticle;
-import io.apiman.test.common.util.TestPlanRunner;
-import static org.vertx.testtools.VertxAssert.*;
-
+@SuppressWarnings("nls")
 public abstract class RestTestBase extends TestVerticle {
 
     protected static final int ECHO_PORT = 7654;
