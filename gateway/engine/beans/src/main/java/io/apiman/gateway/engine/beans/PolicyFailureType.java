@@ -24,6 +24,7 @@ public enum PolicyFailureType {
     
     Authentication,
     Authorization,
+    NotFound,
     Other
 
 }
