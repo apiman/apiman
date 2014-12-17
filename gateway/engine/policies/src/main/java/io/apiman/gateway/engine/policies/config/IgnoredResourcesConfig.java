@@ -24,9 +24,9 @@ import org.jboss.errai.common.client.api.annotations.Portable;
  */
 @Portable
 public class IgnoredResourcesConfig {
-    
+
     private String pathToIgnore = "";
-    
+
     /**
      * Constructor.
      */
@@ -37,14 +37,14 @@ public class IgnoredResourcesConfig {
      * @return the pathToIgnore
      */
     public String getPathToIgnore() {
-		return pathToIgnore;
-	}
+        return pathToIgnore;
+    }
 
     /**
      * @param pathToIgnore the pathToIgnore to set
      */
     public void setPathToIgnore(String pathToIgnore) {
-		this.pathToIgnore = pathToIgnore;
-	}
+        this.pathToIgnore = pathToIgnore;
+    }
 
 }
