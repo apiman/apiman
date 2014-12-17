@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testPlan xmlns="urn:io.apiman.test:2014:02:testPlan">
+
+  <testGroup name="Test Policy">
+    <test name="Publish Service">test-plan-data/policies/ignored-resources/001-publish-service.resttest</test>
+    <test name="Register Application">test-plan-data/policies/ignored-resources/002-register-app.resttest</test>
+    <test name="Success">test-plan-data/policies/ignored-resources/003-success.resttest</test>
+    <test name="Failure">test-plan-data/policies/ignored-resources/004-failure.resttest</test>
+  </testGroup>
+
+</testPlan>

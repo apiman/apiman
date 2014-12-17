@@ -1,0 +1,5 @@
+GET /gateway/invoices/12/items/34 admin/admin
+X-API-Key: 54321
+
+----
+404
