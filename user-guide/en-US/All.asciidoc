@@ -53,6 +53,10 @@ might have a Gold plan with a rate limiting policy that restricts consumers to 1
 same organization may then have a Silver plan which is also configured with a rate limiting policy, but which 
 restricts consumers to 500 requests per day.
 
+Once a plan has been fully configured (all desired policies added and configured) it must be locked so that
+it can be used by services.  This is done so that service providers can't change the details of the plan
+out from underneath the application developers who are using it.
+
 ==== Services
 A service represents an external API that is being governed by the API management system. A service consists 
 of a set of metadata including name and description as well as an external endpoint defining the API 
@@ -174,6 +178,11 @@ To add a policy to the plan click the 'Add Policy' button. On the resulting page
 you wish to create and then configure the details for that policy. Once you have configured the details click 
 the 'Add Policy' button to add the policy to the plan.
 
+==== Locking the Plan
+Once all your plan policies are added and configured the way you want them, you will need to Lock the 
+plan.  This can be done from the Plan Overview UI page.  Locking the plan will prevent all future policy
+changes, and make the plan available for use by services.
+
 === Providing Services
 A core capability of API management is for end users to create, manage, and configure services they wish to 
 provide. This section explains the steps necessary for end users to provide those services.
@@ -286,6 +295,44 @@ To view a list of all of these managed endpoints, navigate to the 'APIs' tab on 
 service contract is represented in the list of managed endpoints. You can copy one of the endpoints by 
 hovering your mouse over the appropriate item in the list and clicking the 'Copy' button. Use the copied URL 
 to issue requests to the service.
+
+=== System Administration
+There are several "global" settings that must be configured/managed by an apiman administrator.  These
+global settings are managed by navigating to the *System Administration* section of the API Manager UI.
+
+==== Roles
+Users must become a member of an organization before being allowed to manage any of the plans, services,
+or applications contained within it.  When a user is made a member of an organization, they are granted
+a specific role within that organization.  Typical examples of roles are *Organization Owner*, *Service
+Provider*, and *Application Developer*.  These roles each grant different specific privileges to the 
+user.  For example, a user with the *Application Developer* role will be able to manage the organization's
+applications but not its services or plans.
+
+The roles that are available when adding a member to an organization are managed in the *Roles* section
+of the *System Administration* UI.  The apiman admin can create as many roles as she wishes, giving
+each one a name, description, and the set of permissions it grants.  Additionally, certain roles may be
+automatically granted to users who create new organizations.  At least one such role must be present,
+otherwise organizations cannot be created.
+
+==== Policy Definitions
+The policies available when configuring Services, Plans, and Applications are controlled by the *Policy
+Definitions* known to apiman.  These definitions are stored in the API Manager and are added by the 
+apiman admin.  Typically these are added once and rarely changed.  But as new versions of apiman are
+released, additional policies will be made available.  For each policy, a policy definition must be
+configured in the *System Administration* UI.
+
+==== Gateways
+apiman allows multiple logical Gateways to be configured.  The Gateway is the server that actually applies
+the policies configured in the API Manager to live requests to managed services.  When using apiman, at
+least one Gateway must be running and configured in the API Manager.  However, there is no limit to the
+total number of Gateways that may be running.  The typical reason to have multiple Gateways is when
+some services are very high volume and others are not.  In this case, the high volume services could be
+published to a Gateway that can handle such load, while the low volume services could be published to
+another (perhaps cheaper) Gateway.
+
+In all cases, the apiman admin must configure these Gateways in the *System Administration* UI.  Each
+Gateway has a name, description, and configuration endpoint.  The configuration endpoint is what the
+API Manager will use when publishing services and applications into the Gateway.
 
 == API Gateway
 The runtime layer of apiman consists of a small, lightweight and embeddable API Gateway, whish is responsible

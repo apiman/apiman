@@ -13,20 +13,20 @@ both are downloaded, it's a simple matter of unpacking both into the same locati
 ==== Download
 First you will need to download both WildFly 8 and apiman:
 
-* http://download.jboss.org/wildfly/8.1.0.Final/wildfly-8.1.0.Final.zip[Download WildFly 8]
-* http://downloads.jboss.org/overlord/apiman/1.0.0.Beta1/apiman-distro-wildfly8-1.0.0.Beta1-overlay.zip[Download apiman 1.0.0.Beta1]
+* http://download.jboss.org/wildfly/8.2.0.Final/wildfly-8.2.0.Final.zip[Download WildFly 8]
+* http://downloads.jboss.org/overlord/apiman/1.0.0.Final/apiman-distro-wildfly8-1.0.0.Final-overlay.zip[Download apiman 1.0.0.Final]
 
 ....
-curl http://download.jboss.org/wildfly/8.1.0.Final/wildfly-8.1.0.Final.zip -o wildfly-8.1.0.Final.zip
-curl http://downloads.jboss.org/overlord/apiman/1.0.0.Beta1/apiman-distro-wildfly8-1.0.0.Beta1-overlay.zip -o apiman-distro-wildfly8-1.0.0.Beta1-overlay.zip
+curl http://download.jboss.org/wildfly/8.2.0.Final/wildfly-8.2.0.Final.zip -o wildfly-8.2.0.Final.zip
+curl http://downloads.jboss.org/overlord/apiman/1.0.0.Final/apiman-distro-wildfly8-1.0.0.Final-overlay.zip -o apiman-distro-wildfly8-1.0.0.Final-overlay.zip
 ....
 
 ==== Unpack
 Once both files have been downloaded, simply unpack both in the same location.
 
 ....
-unzip wildfly-8.1.0.Final.zip
-unzip apiman-distro-wildfly8-1.0.0.Beta1-overlay.zip
+unzip wildfly-8.2.0.Final.zip
+unzip -o apiman-distro-wildfly8-1.0.0.Final-overlay.zip -d wildfly-8.2.0.Final
 ....
 
 ==== Run WildFly 8
@@ -36,12 +36,13 @@ The apiman overlay contains everything needed to run apiman, including:
 * apiman-specific WildFly 8 configuration (*standalone-apiman.xml*)
 * apiman rdbms datasource (h2)
 * pre-configured *admin* user with password *admin123!*
+* pre-configured h2 database for the API Manager (populated with default values)
 
 For this reason, there is no additional configuration required to run apiman.  Simply start up
 WildFly using the apiman configuration file:
 
 ....
-cd wildfly-8.1.0.Final
+cd wildfly-8.2.0.Final
 ./bin/standalone.sh -c standalone-apiman.xml
 ....
 
@@ -61,6 +62,23 @@ docker run -it -p 8080:8080 apiman/on-wildfly8
 You can find apiman on https://registry.hub.docker.com/repos/apiman/[docker hub].
 ====
 
+== Logging In
+Once apiman is running, you should be able to log in to the API Manager by pointing your
+browser at the following URL:
+
+....
+http://localhost:8080/apiman-manager
+....
+
+You may log in with credentials *admin/admin123!*.
+[NOTE]
+====
+We strongly advise that you immediately change the Keycloak admin user password, as well
+as the "admin" user found in the "apiman" realm!!  ( you can do that by navigating to
+http://localhost:8080/auth/admin/ )
+====
+
+
 == Configuration
 Of course apiman is made up of a number of different components, many of which can be configured
 to use various implementations and/or providers.  When downloading and installing apiman, the 
@@ -74,76 +92,51 @@ for all three applications (API Manager, API Manager UI, API Gateway).
 
 Here is a breakdown of the properties found in this configuration file:
 
-* *apiman-manager-api.gateway.rest-endpoint*
+* *apiman-manager-ui.api.authentication.type*
 +
-Default Value:: http://localhost:8080/apiman-gateway
-+
-Description:: The REST configuration endpoint of the API Gateway.  The API Manager uses this endpoint when publishing services to the Gateway.
-
-* *apiman-manager-api.gateway.authentication.basic.user*
-+
-Default Value:: admin
-+
-Description:: The username to use when connecting to the Gateway REST API.
-
-* *apiman-manager-api.gateway.authentication.basic.password*
-+
-Default Value:: admin123!
-+
-Description:: The password to use when connecting to the Gatway REST API.
-
-
-* *apiman-manager-ui.dt-api.authentication.type*
-+
-Default Value:: authToken
+Typical Value:: bearerToken
 +
 Description:: The type of authentication used by the API Manager UI when communicating with the API Manager.
 
-* *apiman-manager-ui.dt-api.authentication.token.generator*
+* *apiman-manager-ui.api.authentication.token.generator*
 +
-Default Value:: io.apiman.manager.ui.server.auth.AuthTokenGenerator
+Typical Value:: io.apiman.manager.ui.server.wildfly8.KeyCloakBearerTokenGenerator
 +
 Description:: The class used by the UI to generate authentication tokens (only used for certain types of authentication).
 
-* *apiman-manager-ui.gateway.base-url*
-+
-Default Value:: http://localhost:8080/apiman-gateway/gateway/
-+
-Description:: The base URL of the API Gateway - used by the UI to show URLs for service contracts.
-
 * *apiman-gateway.registry*
 +
-Default Value:: io.apiman.gateway.engine.ispn.InfinispanRegistry
+Typical Value:: io.apiman.gateway.engine.ispn.InfinispanRegistry
 +
 Description:: The implementation of the service/application registry used by the API Gateway.  By default a persistent Infinispan cache is used.
 
 * *apiman-gateway.connector-factory*
 +
-Default Value:: io.apiman.gateway.platforms.servlet.connectors.HttpConnectorFactory
+Typical Value:: io.apiman.gateway.platforms.servlet.connectors.HttpConnectorFactory
 +
 Description:: The implementation of a connector factory for API endpoints of type "http".  This factory is used by the Gateway when proxying a request to a back-end endpoint.
 
 * *apiman-gateway.policy-factory*
 +
-Default Value:: io.apiman.gateway.engine.policy.PolicyFactoryImpl
+Typical Value:: io.apiman.gateway.engine.policy.PolicyFactoryImpl
 +
 Description:: The class that the API Gateway will use creating policies.
 
 * *apiman-gateway.components.ISharedStateComponent*
 +
-Default Value:: io.apiman.gateway.engine.impl.InMemorySharedStateComponent
+Typical Value:: io.apiman.gateway.engine.ispn.InfinispanSharedStateComponent
 +
 Description:: The implementation of the shared-state component - a component that can store arbitrary state across request invocations.
 
 * *apiman-gateway.components.IRateLimiterComponent*
 +
-Default Value:: io.apiman.gateway.engine.impl.InMemoryRateLimiterComponent
+Typical Value:: io.apiman.gateway.engine.ispn.InfinispanRateLimiterComponent
 +
 Description:: The implementation of the rate limiter component, which is used by the rate limiting policy.
 
 * *apiman-gateway.components.IPolicyFailureFactoryComponent
 +
-Default Value:: io.apiman.gateway.platforms.servlet.PolicyFailureFactoryComponent
+Typical Value:: io.apiman.gateway.platforms.servlet.PolicyFailureFactoryComponent
 +
 Description:: The implementation class to use for the factory that creates policy failures.
 
@@ -174,6 +167,19 @@ it to support whatever database you desire.
 </datasources>
 ....
 
+The project comes with a DDL for MySQL, to hopefully make it easy to switch away from H2.  Note
+that switching databases also requires a change to the standalone-apiman.xml file.  The following
+should be changed:
+
+....
+  <system-properties>
+    <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect" />
+    <property name="hibernate.hbm2ddl.auto" value="validate" />
+  </system-properties>
+....
+
+The MySQL 5.x DDL can be found in *apiman/ddls/*.
+
 === API Gateway Registry
 The API Gateway includes a registry that stores the published service and application information.
 This registry is updated whenever a user publishes a service (or registers an application) from 
@@ -195,6 +201,23 @@ published/registered data.  The configuration of the Infinispan cache can be fou
 ....
 
 This cache can be configured however you choose, but in all cases should be made persistent.
+
+
+=== API Gateway Rate Limiter
+Part of the running apiman system is a "Rate Limiter" component.  This component is used by
+apiman policies to enforce rate limits and uses an Infinispan cache to store data.  The
+configuration of the Infinispan cache can be found in *standalone-apiman.xml* and is
+detailed here:
+
+....
+<subsystem xmlns="urn:jboss:domain:infinispan:2.0">
+  <cache-container name="apiman-gateway" default-cache="registry" start="EAGER">
+    <local-cache name="rate-limiter" batching="true">
+      <file-store passivation="false" purge="false"/>
+    </local-cache>
+  </cache-container>
+</subsystem>
+....
 
 
 :numbered!:
