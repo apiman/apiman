@@ -26,7 +26,7 @@ import io.apiman.gateway.engine.policy.IPolicyContext;
 
 /**
  * A simple policy that causes a failure if the paths of the inbound
- * request matching the configured regular expresion.
+ * request matching the configured set of regular expressions.
  *
  * @author rubenrm1@gmail.com
  */
@@ -52,14 +52,30 @@ public class IgnoredResourcesPolicy extends AbstractMappedPolicy<IgnoredResource
     @Override
     protected void doApply(ServiceRequest request, IPolicyContext context, IgnoredResourcesConfig config,
             IPolicyChain<ServiceRequest> chain) {
-        if (!request.getDestination().matches(config.getPathToIgnore())) {
+        if (!satisfiesAnyPath(config, request.getDestination())) {
             super.doApply(request, context, config, chain);
         } else {
             IPolicyFailureFactoryComponent ffactory = context.getComponent(IPolicyFailureFactoryComponent.class);
-            String msg = Messages.i18n.format("IgnoredResourcesConfig.PathToIgnore", request.getDestination()); //$NON-NLS-1$
-            PolicyFailure failure = ffactory.createFailure(PolicyFailureType.NotFound, PolicyFailureCodes.PATH_TO_IGNORE, msg);
+            String msg = Messages.i18n.format("IgnoredResourcesPolicy.PathsToIgnore", request.getDestination()); //$NON-NLS-1$
+            PolicyFailure failure = ffactory.createFailure(PolicyFailureType.NotFound, PolicyFailureCodes.PATHS_TO_IGNORE, msg);
             chain.doFailure(failure);
         }
+    }
+    
+    /**
+     * Evaluates whether the destination provided matches any of the configured pathsToIgnore
+     * 
+     * @param config The {@link IgnoredResourcesConfig} containing the pathsToIgnore
+     * @param destination The destination to evaluate
+     * @return true if any path matches the destination. false otherwise
+     */
+    private boolean satisfiesAnyPath(IgnoredResourcesConfig config, String destination) {
+        for(String pathToIgnore : config.getPathsToIgnore()) {
+            if(destination.matches(pathToIgnore)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

@@ -26,6 +26,10 @@ import io.apiman.gateway.engine.policies.config.IgnoredResourcesConfig;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -48,21 +52,47 @@ public class IgnoredResourcesPolicyTest {
         assertEquals(IgnoredResourcesConfig.class, parsed.getClass());
 
         IgnoredResourcesConfig parsedConfig = (IgnoredResourcesConfig) parsed;
-        assertNotNull(parsedConfig.getPathToIgnore());
-        assertTrue(parsedConfig.getPathToIgnore().isEmpty());
+        assertNotNull(parsedConfig.getPathsToIgnore());
+        assertTrue(parsedConfig.getPathsToIgnore().isEmpty());
 
-        String simpleConfig = "{\"pathToIgnore\" : \"/invoices/./items/.\"}";
-        parsed = policy.parseConfiguration(simpleConfig);
+        // Single Path
+        config = "{" +
+                "  \"pathsToIgnore\" : [" +
+                "    \"/invoices/.+/items/.+\"" +
+                "  ]" +
+                " }";
+        parsed = policy.parseConfiguration(config);
         parsedConfig = (IgnoredResourcesConfig) parsed;
-        assertNotNull(parsedConfig.getPathToIgnore());
-        assertEquals("/invoices/./items/.", parsedConfig.getPathToIgnore());
+        assertNotNull(parsedConfig.getPathsToIgnore());
+        List<String> expectedConfiguration = Arrays.asList("/invoices/.+/items/.+");
+        assertEquals(expectedConfiguration, parsedConfig.getPathsToIgnore());
+        
+        // Multiple Paths
+        config = "{" +
+                "  \"pathsToIgnore\" : [" +
+                "    \"/invoices/.+/items/.+\"," +
+                "    \"/items/.+\"" +
+                "  ]" +
+                " }";
+        parsed = policy.parseConfiguration(config);
+        parsedConfig = (IgnoredResourcesConfig) parsed;
+        assertNotNull(parsedConfig.getPathsToIgnore());
+        expectedConfiguration = new ArrayList<>();
+        expectedConfiguration.add("/invoices/.+/items/.+");
+        expectedConfiguration.add("/items/.+");
+        assertEquals(expectedConfiguration, parsedConfig.getPathsToIgnore());
     }
 
     @Test
     public void testApply() {
         IgnoredResourcesPolicy policy = new IgnoredResourcesPolicy();
 
-        String json = "{\"pathToIgnore\" : \"/invoices/.+/items/.+\"}";
+        String json = "{" +
+                    "  \"pathsToIgnore\" : [" +
+                    "    \"/invoices/.+/items/.+\"," +
+                    "    \"/items/.+\"" +
+                    "  ]" +
+                    " }";
         Object config = policy.parseConfiguration(json);
 
         ServiceRequest request = new ServiceRequest();
@@ -75,8 +105,20 @@ public class IgnoredResourcesPolicyTest {
 
         // Success
         policy.apply(request, context, config, chain);
-        Mockito.verify(chain).doApply(request);
+        
+        // Success
+        request.setDestination("/invoices");
+        policy.apply(request, context, config, chain);
 
+        // Success
+        request.setDestination("/invoices/items");
+        policy.apply(request, context, config, chain);
+  
+        // Success
+        request.setDestination("/invoices/items/13");
+        policy.apply(request, context, config, chain);
+        Mockito.verify(chain, Mockito.times(4)).doApply(request);
+         
         // Failure
         final PolicyFailure failure = new PolicyFailure();
         Mockito.when(context.getComponent(IPolicyFailureFactoryComponent.class)).thenReturn(
@@ -89,6 +131,11 @@ public class IgnoredResourcesPolicyTest {
         chain = Mockito.mock(IPolicyChain.class);
         request.setDestination("/invoices/23/items/43");
         policy.apply(request, context, config, chain);
-        Mockito.verify(chain).doFailure(failure);
+        
+        // Failure
+        request.setDestination("/items/43");
+        policy.apply(request, context, config, chain);
+        Mockito.verify(chain, Mockito.times(2)).doFailure(failure);
     }
+    
 }

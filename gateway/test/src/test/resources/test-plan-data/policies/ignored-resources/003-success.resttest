@@ -1,4 +1,4 @@
-GET /gateway/invoices/12/items admin/admin
+GET /gateway/invoices admin/admin
 X-API-Key: 12345
 
 ----
@@ -7,6 +7,6 @@ Content-Type: application/json
 
 {
   "method" : "GET",
-  "resource" : "/invoices/12/items",
-  "uri" : "/invoices/12/items"
+  "resource" : "/invoices",
+  "uri" : "/invoices"
 }

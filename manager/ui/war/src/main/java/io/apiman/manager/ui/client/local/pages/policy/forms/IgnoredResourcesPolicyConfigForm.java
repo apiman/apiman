@@ -20,19 +20,27 @@ import io.apiman.manager.ui.client.local.events.IsFormValidEvent;
 import io.apiman.manager.ui.client.local.pages.policy.IPolicyConfigurationForm;
 import io.apiman.manager.ui.client.local.services.BeanMarshallingService;
 
+import java.util.TreeSet;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 
 /**
@@ -48,7 +56,17 @@ public class IgnoredResourcesPolicyConfigForm extends Composite implements IPoli
     BeanMarshallingService marshaller;
     
     @Inject @DataField
+    ListBox pathsToIgnore;
+
+    @Inject @DataField
+    Button clear;
+    @Inject @DataField
+    Button remove;
+
+    @Inject @DataField
     TextBox pathToIgnore;
+    @Inject @DataField
+    Button add;
 
     /**
      * Constructor.
@@ -58,20 +76,22 @@ public class IgnoredResourcesPolicyConfigForm extends Composite implements IPoli
     
     @PostConstruct
     protected void postConstruct() {
-        KeyUpHandler keyUpValidityHandler = new KeyUpHandler() {
+        clear.setEnabled(false);
+        remove.setEnabled(false);
+        add.setEnabled(false);
+        pathToIgnore.addKeyUpHandler(new KeyUpHandler() {
             @Override
             public void onKeyUp(KeyUpEvent event) {
-                checkValidity();
+                String val = pathToIgnore.getValue();
+                add.setEnabled(!val.trim().isEmpty());
             }
-        };
-        ValueChangeHandler<String> valueChangeHandler = new ValueChangeHandler<String>() {
+        });
+        pathsToIgnore.addChangeHandler(new ChangeHandler() {
             @Override
-            public void onValueChange(ValueChangeEvent<String> event) {
-                checkValidity();
+            public void onChange(ChangeEvent event) {
+                remove.setEnabled(pathsToIgnore.getSelectedIndex() != -1);
             }
-        };
-        pathToIgnore.addKeyUpHandler(keyUpValidityHandler);
-        pathToIgnore.addValueChangeHandler(valueChangeHandler);
+        });
     }
 
     /**
@@ -80,8 +100,10 @@ public class IgnoredResourcesPolicyConfigForm extends Composite implements IPoli
     @Override
     public String getValue() {
         IgnoredResourcesConfig config = new IgnoredResourcesConfig();
-        config.setPathToIgnore(pathToIgnore.getValue());
-
+        for (int idx = 0; idx < pathsToIgnore.getItemCount(); idx++) {
+            String val = pathsToIgnore.getValue(idx);
+            config.getPathsToIgnore().add(val);
+        }
         return marshaller.marshal(config);
     }
 
@@ -98,14 +120,24 @@ public class IgnoredResourcesPolicyConfigForm extends Composite implements IPoli
      */
     @Override
     public void setValue(String value, boolean fireEvents) {
+        pathsToIgnore.clear();
+        clear.setEnabled(false);
+        remove.setEnabled(false);
+        add.setEnabled(false);
+        pathToIgnore.setValue(""); //$NON-NLS-1$
         if (value != null && !value.trim().isEmpty()) {
-        	IgnoredResourcesConfig config = marshaller.unmarshal(value, IgnoredResourcesConfig.class);
-            pathToIgnore.setValue(config.getPathToIgnore());
+            IgnoredResourcesConfig config = marshaller.unmarshal(value, IgnoredResourcesConfig.class);
+            
+            TreeSet<String> sorted = new TreeSet<String>();
+            if (config.getPathsToIgnore() != null && !config.getPathsToIgnore().isEmpty()) {
+                sorted.addAll(config.getPathsToIgnore());
+                clear.setEnabled(true);
+            }
+            for (String ip : sorted) {
+                pathsToIgnore.addItem(ip);
+            }
         }
-        checkValidity();
-        if (fireEvents) {
-            ValueChangeEvent.fire(this, value);
-        }
+        IsFormValidEvent.fire(this, Boolean.TRUE);
     }
 
     /**
@@ -115,6 +147,60 @@ public class IgnoredResourcesPolicyConfigForm extends Composite implements IPoli
     public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
         return addHandler(handler, ValueChangeEvent.getType());
     }
+    
+    /**
+     * Called when the clear button is clicked.
+     * @param event
+     */
+    @EventHandler("clear")
+    protected void onClear(ClickEvent event) {
+        pathsToIgnore.clear();
+        remove.setEnabled(false);
+        clear.setEnabled(false);
+    }
+    
+    /**
+     * Called when the clear button is clicked.
+     * @param event
+     */
+    @EventHandler("remove")
+    protected void onRemove(ClickEvent event) {
+        for (int idx = pathsToIgnore.getItemCount() - 1; idx >= 0; idx--) {
+            if (pathsToIgnore.isItemSelected(idx)) {
+                pathsToIgnore.removeItem(idx);
+            }
+        }
+        remove.setEnabled(false);
+        clear.setEnabled(pathsToIgnore.getItemCount() > 0);
+    }
+    
+    /**
+     * Called when the clear button is clicked.
+     * @param event
+     */
+    @EventHandler("add")
+    protected void onAdd(ClickEvent event) {
+        String newPath = pathToIgnore.getValue();
+        boolean inserted = false;
+        for (int idx = 0; idx < pathsToIgnore.getItemCount(); idx++) {
+            String v = pathsToIgnore.getValue(idx);
+            if (newPath.compareTo(v) < 0) {
+                pathsToIgnore.insertItem(newPath, idx);
+                pathsToIgnore.setSelectedIndex(idx);
+                inserted = true;
+                break;
+            }
+        }
+        if (!inserted) {
+            pathsToIgnore.addItem(newPath);
+            pathsToIgnore.setSelectedIndex(pathsToIgnore.getItemCount() - 1);
+        }
+        remove.setEnabled(true);
+        clear.setEnabled(true);
+        add.setEnabled(false);
+        pathToIgnore.setValue(""); //$NON-NLS-1$
+        pathToIgnore.setFocus(true);
+    }
 
     /**
      * @see io.apiman.manager.ui.client.local.events.IsFormValidEvent.HasIsFormValidHandlers#addIsFormValidHandler(io.apiman.manager.ui.client.local.events.IsFormValidEvent.Handler)
@@ -122,18 +208,6 @@ public class IgnoredResourcesPolicyConfigForm extends Composite implements IPoli
     @Override
     public HandlerRegistration addIsFormValidHandler(IsFormValidEvent.Handler handler) {
         return addHandler(handler, IsFormValidEvent.getType());
-    }
-
-    /**
-     * Determine whether the form is valid (the user has completed filling out the form).
-     */
-    protected void checkValidity() {
-        Boolean validity = Boolean.TRUE;
-        String path = pathToIgnore.getValue();
-        if (path.trim().isEmpty()) {
-            validity = Boolean.FALSE;
-        }
-        IsFormValidEvent.fire(this, validity);
     }
 
 }
