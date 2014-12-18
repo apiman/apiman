@@ -1,4 +1,4 @@
-GET /gateway/items/34 admin/admin
+GET /gateway/Policy_IgnoredResourcesTest/echo/1.0.0/items/34 admin/admin
 X-API-Key: 12345
 
 ----
