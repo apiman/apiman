@@ -15,6 +15,10 @@
  */
 package io.apiman.gateway.engine.policies.config;
 
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
@@ -25,7 +29,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public class IgnoredResourcesConfig {
 
-    private String pathToIgnore = "";
+    private List<String> pathsToIgnore = new ArrayList<String>();
 
     /**
      * Constructor.
@@ -34,17 +38,17 @@ public class IgnoredResourcesConfig {
     }
 
     /**
-     * @return the pathToIgnore
+     * @return the pathsToIgnore
      */
-    public String getPathToIgnore() {
-        return pathToIgnore;
+    public List<String> getPathsToIgnore() {
+        return pathsToIgnore;
     }
 
     /**
-     * @param pathToIgnore the pathToIgnore to set
+     * @param pathsToIgnore the pathsToIgnore to set
      */
-    public void setPathToIgnore(String pathToIgnore) {
-        this.pathToIgnore = pathToIgnore;
+    public void setPathsToIgnore(List<String> pathsToIgnore) {
+        this.pathsToIgnore = pathsToIgnore;
     }
 
 }

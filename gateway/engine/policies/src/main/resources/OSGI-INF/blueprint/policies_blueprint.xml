@@ -16,5 +16,5 @@
   <service ref="ipBlackList" interface="io.apiman.gateway.engine.policy.IPolicy" />
   <service ref="basicAuth" interface="io.apiman.gateway.engine.policy.IPolicy" />
   <service ref="ignoredRes" interface="io.apiman.gateway.engine.policy.IPolicy" />
-  
+
 </blueprint>
