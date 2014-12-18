@@ -53,11 +53,11 @@ public class HttpGatewayStreamerMultiplexer implements Handler<HttpServerRequest
 
                     @Override
                     public void handle(Void flag) {
-                        logger.debug("Reinserted worker back into the queue (it has finished!)");
+                        logger.debug("Reinserted worker back into the queue (it has finished!)"); //$NON-NLS-1$
                         workerQueue.add(gatewayStreamer);
                     }
                 });
-                logger.debug("Got a request, let's do the business!");
+                logger.debug("Got a request, let's do the business!"); //$NON-NLS-1$
                 gatewayStreamer.handle(request);
             }
         });

@@ -41,7 +41,7 @@ public class HttpDispatcherVerticle extends ApimanVerticleBase {
         super.start();
 
         routeMapper = amanConfig.getRouteMap();
-        logger.debug("Proxied routes " + routeMapper.getRoutes());
+        logger.debug("Proxied routes " + routeMapper.getRoutes()); //$NON-NLS-1$
 
         createDispatcher(routeMapper);
     }

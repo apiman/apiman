@@ -16,6 +16,7 @@
 package io.apiman.gateway.vertx.verticles;
 
 import io.apiman.gateway.vertx.config.VertxEngineConfig;
+import io.apiman.gateway.vertx.i18n.Messages;
 
 import java.util.UUID;
 
@@ -43,9 +44,9 @@ public abstract class ApimanVerticleBase extends BusModBase {
             uuid = UUID.randomUUID().toString();
         }
 
-        logger.info("Starting verticle: " + this.getClass().getName() + "\n" +  //$NON-NLS-2$
-                "Type: " + verticleType() + "\n" + //$NON-NLS-2$
-                "UUID: " + uuid + "\n"); //$NON-NLS-2$
+        logger.info(Messages.getString("ApimanVerticleBase.0") + this.getClass().getName() + "\n" +   //$NON-NLS-1$//$NON-NLS-2$
+                Messages.getString("ApimanVerticleBase.1") + verticleType() + "\n" +  //$NON-NLS-1$//$NON-NLS-2$
+                Messages.getString("ApimanVerticleBase.2") + uuid + "\n");  //$NON-NLS-1$//$NON-NLS-2$
     }
 
     /**

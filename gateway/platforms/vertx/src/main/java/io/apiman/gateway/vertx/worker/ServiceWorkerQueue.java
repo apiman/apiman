@@ -54,7 +54,7 @@ public class ServiceWorkerQueue extends WorkerQueue<HttpGatewayStreamer> {
 
             @Override
             public void handle(Message<String> policyVerticleUuid) {
-                logger.debug("New registrant on " + registrationTopic + ": " + policyVerticleUuid.body()); //$NON-NLS-2$
+                logger.debug("New registrant on " + registrationTopic + ": " + policyVerticleUuid.body());  //$NON-NLS-1$//$NON-NLS-2$
                 add(createStreamer(policyVerticleUuid.body()));
             }
         });
@@ -78,7 +78,7 @@ public class ServiceWorkerQueue extends WorkerQueue<HttpGatewayStreamer> {
                 @Override
                 public void handle(AsyncResult<String> result) {
                     if (result.succeeded()) {
-                        logger.info("Didn't have enough PolicyVerticle, so I deployed a new one! " + uuid);
+                        logger.info("Didn't have enough PolicyVerticle, so I deployed a new one! " + uuid); //$NON-NLS-1$
                         workerHandler.handle(createStreamer(uuid)); // User must return it.
                     } else {
                         throw new RuntimeException(result.cause());

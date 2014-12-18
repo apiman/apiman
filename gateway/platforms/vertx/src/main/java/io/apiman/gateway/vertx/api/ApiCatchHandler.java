@@ -15,6 +15,7 @@
  */
 package io.apiman.gateway.vertx.api;
 
+import io.apiman.gateway.vertx.i18n.Messages;
 import io.netty.handler.codec.http.HttpResponseStatus;
 
 import org.vertx.java.core.Handler;
@@ -43,7 +44,7 @@ public abstract class ApiCatchHandler<T> implements Handler<Message<T>> {
                     e.getLocalizedMessage(), e));
         }  catch(Exception e) {
             replyError(message, new GenericError(HttpResponseStatus.INTERNAL_SERVER_ERROR.code(),
-                    "Unexpected server error: " + e.getLocalizedMessage(), e));
+                    Messages.getString("ApiCatchHandler.0") + e.getLocalizedMessage(), e)); //$NON-NLS-1$
         }
     }
 

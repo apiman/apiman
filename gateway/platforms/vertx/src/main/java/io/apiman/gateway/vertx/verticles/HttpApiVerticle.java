@@ -115,7 +115,7 @@ public class HttpApiVerticle extends ApimanVerticleWithEngine {
 
                     @Override
                     public void handle(Buffer body) {
-                        logger.debug("Got put request for applications register");
+                        logger.debug("Got put request for applications register"); //$NON-NLS-1$
 
                         sendAll(VertxEngineConfig.APIMAN_API_APPLICATIONS_REGISTER, body.toString(),
 

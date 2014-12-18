@@ -57,7 +57,7 @@ public class SimpleHttpClientPolicy implements IPolicy {
             final IPolicyChain<ServiceRequest> chain) {
         final IHttpClientComponent httpClientComponent = context.getComponent(IHttpClientComponent.class);
         // TODO this won't work with just setting a property because vertx is classloader isolated.
-        String endpoint = RestTestBase.getEchoEndpoint(); //$NON-NLS-1$
+        String endpoint = RestTestBase.getEchoEndpoint();
         IHttpClientRequest clientRequest = httpClientComponent.request(endpoint, HttpMethod.GET, new IAsyncResultHandler<IHttpClientResponse>() {
             @Override
             public void handle(IAsyncResult<IHttpClientResponse> result) {

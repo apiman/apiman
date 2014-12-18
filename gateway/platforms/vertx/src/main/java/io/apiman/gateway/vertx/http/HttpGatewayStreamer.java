@@ -112,7 +112,7 @@ public class HttpGatewayStreamer implements Registrant, Handler<HttpServerReques
                     }
                 });
 
-                logger.debug("Resuming GatewayStreamer receive");
+                logger.debug("Resuming GatewayStreamer receive"); //$NON-NLS-1$
                 // As we've now set the handlers, it's safe to resume.
                 request.resume();
             }
@@ -128,8 +128,8 @@ public class HttpGatewayStreamer implements Registrant, Handler<HttpServerReques
 
             @Override
             public void handle(ServiceResponse amanResponse) {
-                logger.debug("Received a response on: " + policyVerticleAddress + " code: "
-                        + amanResponse.getCode() + " with message: " + amanResponse.getMessage());
+                logger.debug("Received a response on: " + policyVerticleAddress + " code: " //$NON-NLS-1$ //$NON-NLS-2$
+                        + amanResponse.getCode() + " with message: " + amanResponse.getMessage()); //$NON-NLS-1$
 
                 HttpServiceFactory.buildResponse(response, amanResponse);
             }
@@ -140,7 +140,7 @@ public class HttpGatewayStreamer implements Registrant, Handler<HttpServerReques
 
             @Override
             public void handle(Buffer buffer) {
-                logger.debug("Received chunk in GatewayStreamer " + buffer.toString());
+                logger.debug("Received chunk in GatewayStreamer " + buffer.toString()); //$NON-NLS-1$
                 response.write(buffer);
             }
         });

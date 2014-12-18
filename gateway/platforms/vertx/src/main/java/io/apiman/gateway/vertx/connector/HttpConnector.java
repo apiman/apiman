@@ -27,6 +27,7 @@ import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.gateway.engine.io.ISignalReadStream;
 import io.apiman.gateway.engine.io.ISignalWriteStream;
 import io.apiman.gateway.vertx.http.HttpServiceFactory;
+import io.apiman.gateway.vertx.i18n.Messages;
 import io.apiman.gateway.vertx.io.VertxApimanBuffer;
 
 import java.net.MalformedURLException;
@@ -124,7 +125,7 @@ class HttpConnector implements IServiceConnectionResponse, IServiceConnection {
             public void handle(final HttpClientResponse vxClientResponse) {
                 clientResponse = vxClientResponse;
 
-                logger.debug("We have a response");
+                logger.debug("We have a response from the backend service in HttpConnector"); //$NON-NLS-1$
 
                 // Pause until we're given permission to xfer the response.
                 vxClientResponse.pause();
@@ -198,13 +199,13 @@ class HttpConnector implements IServiceConnectionResponse, IServiceConnection {
     @Override
     public void write(IApimanBuffer chunk) {
         if (inboundFinished) {
-            throw new IllegalStateException("Attempted write to connector after #end() was called."); //$NON-NLS-1$
+            throw new IllegalStateException(Messages.getString("HttpConnector.0")); //$NON-NLS-1$
         }
 
         if (chunk.getNativeBuffer() instanceof Buffer) {
             clientRequest.write((Buffer) chunk.getNativeBuffer());
         } else {
-            throw new IllegalArgumentException("Chunk not of expected Vert.x Buffer type."); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("HttpConnector.1")); //$NON-NLS-1$
         }
     }
 

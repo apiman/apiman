@@ -42,7 +42,7 @@ public class ServiceResponseListener extends AbstractServiceListener<ServiceResp
 
     @Override
     public void listen() {
-        logger.debug("ServiceResponseListener listening on " + address);
+        logger.debug("ServiceResponseListener listening on " + address); //$NON-NLS-1$
 
         eb.registerHandler(address + VertxEngineConfig.APIMAN_RT_FAILURE_SUFFIX, new Handler<Message<String>>() {
 

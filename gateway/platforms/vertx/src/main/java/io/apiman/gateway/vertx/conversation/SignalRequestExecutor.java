@@ -39,7 +39,7 @@ public class SignalRequestExecutor<H> extends AbstractServiceExecutor<H> impleme
 
     // Signals when the other end is ready to receive blocks.
     public void execute(final H service, final Handler<ISimpleWriteStream> readyHandler) {
-        logger.debug("Listening for ready on: " + address + VertxEngineConfig.APIMAN_RT_READY_SUFFIX);
+        logger.debug("Listening for ready on: " + address + VertxEngineConfig.APIMAN_RT_READY_SUFFIX); //$NON-NLS-1$
 
         eb.registerHandler(address + VertxEngineConfig.APIMAN_RT_READY_SUFFIX, new Handler<Message<Void>>() {
 
