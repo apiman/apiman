@@ -4,7 +4,7 @@
 
   <groupId>io.apiman</groupId>
   <artifactId>apiman</artifactId>
-  <version>1.0.0.Final</version>
+  <version>1.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>apiman</name>
 
