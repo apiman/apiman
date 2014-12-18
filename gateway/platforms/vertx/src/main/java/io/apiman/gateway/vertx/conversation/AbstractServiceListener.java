@@ -16,6 +16,7 @@
 package io.apiman.gateway.vertx.conversation;
 
 import io.apiman.gateway.vertx.config.VertxEngineConfig;
+import io.apiman.gateway.vertx.i18n.Messages;
 import io.apiman.gateway.vertx.io.IResettable;
 
 import org.vertx.java.core.Handler;
@@ -68,7 +69,7 @@ public abstract class AbstractServiceListener<E> implements IResettable {
             @Override
             public void handle(Message<Buffer> event) {
                 if(finished) {
-                    throw new IllegalStateException("Block arrived after #end() was called."); //$NON-NLS-1$
+                    throw new IllegalStateException(Messages.getString("AbstractServiceListener.0")); //$NON-NLS-1$
                 }
 
                 if (bodyHandler != null)

@@ -86,7 +86,10 @@
     <version.resources.plugin>2.7</version.resources.plugin>
     <version.source.plugin>2.4</version.source.plugin>
     <version.surefire.plugin>2.17</version.surefire.plugin>
+    <version.surefire-report.plugin>2.17</version.surefire-report.plugin>
+    <version.failsafe.plugin>2.14</version.failsafe.plugin>
     <version.war.plugin>2.5</version.war.plugin>
+    <version.vertx.plugin>2.0.11-final</version.vertx.plugin>
 
     <!-- Dependency Versions -->
     <version.com.fasterxml.classmate>0.8.0</version.com.fasterxml.classmate>
@@ -104,6 +107,7 @@
     <version.javax.enterprise>1.0-SP4</version.javax.enterprise>
     <version.javax.ws.rs-api>2.0</version.javax.ws.rs-api>
     <version.junit>4.11</version.junit>
+    <version.org.apache.commons.commons-lang3>3.3.2</version.org.apache.commons.commons-lang3>
     <version.org.apache.commons.commons-pool2>2.2</version.org.apache.commons.commons-pool2>
     <version.org.apache.felix.scr.annotations>1.7.0</version.org.apache.felix.scr.annotations>
     <version.org.apache.geronimo.specs.geronimo-jta_1.1_spec>1.1.1</version.org.apache.geronimo.specs.geronimo-jta_1.1_spec>
@@ -135,6 +139,8 @@
     <version.org.overlord.overlord-commons>2.0.11.Final</version.org.overlord.overlord-commons>
     <version.org.ow2.asm>4.0</version.org.ow2.asm>
     <version.org.slf4j>1.7.2</version.org.slf4j>
+    <version.io.vertx>2.1.1</version.io.vertx>
+    <version.io.vertx.testtools>2.0.3-final</version.io.vertx.testtools>
   </properties>
 
   <dependencyManagement>
@@ -349,6 +355,11 @@
         <artifactId>apiman-gateway-platforms-war-wildfly8-modules</artifactId>
         <version>${project.version}</version>
         <type>zip</type>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-gateway-platforms-vertx</artifactId>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
@@ -731,6 +742,11 @@
         <version>${version.commons-lang}</version>
       </dependency>
       <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-lang3</artifactId>
+        <version>${version.org.apache.commons.commons-lang3}</version>
+      </dependency>
+      <dependency>
         <groupId>com.h2database</groupId>
         <artifactId>h2</artifactId>
         <version>${version.com.h2database}</version>
@@ -864,6 +880,29 @@
         <type>zip</type>
       </dependency>
 
+      <!-- Vert.x -->
+      <dependency>
+        <groupId>io.vertx</groupId>
+        <artifactId>vertx-core</artifactId>
+        <version>${version.io.vertx}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.vertx</groupId>
+        <artifactId>vertx-platform</artifactId>
+        <version>${version.io.vertx}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.vertx</groupId>
+        <artifactId>vertx-hazelcast</artifactId>
+        <version>${version.io.vertx}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.vertx</groupId>
+        <artifactId>testtools</artifactId>
+        <version>${version.io.vertx.testtools}</version>
+        <scope>test</scope>
+      </dependency>
+
       <!-- Test -->
       <dependency>
         <groupId>junit</groupId>
@@ -976,6 +1015,29 @@
           <version>${version.com.google.gwt}</version>
         </plugin>
         <plugin>
+          <groupId>io.vertx</groupId>
+	      <artifactId>vertx-maven-plugin</artifactId>
+          <version>${version.vertx.plugin}</version>
+          <dependencies>
+            <dependency>
+              <groupId>io.vertx</groupId>
+              <artifactId>vertx-core</artifactId>
+              <version>${version.io.vertx}</version>
+            </dependency>
+            <dependency>
+              <groupId>io.vertx</groupId>
+              <artifactId>vertx-platform</artifactId>
+              <version>${version.io.vertx}</version>
+            </dependency>
+            <dependency>
+              <groupId>io.vertx</groupId>
+              <artifactId>vertx-hazelcast</artifactId>
+              <version>${version.io.vertx}</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+
+        <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
           <version>${version.surefire.plugin}</version>
@@ -984,6 +1046,16 @@
               <java.io.tmpdir>${project.build.directory}</java.io.tmpdir>
             </systemProperties>
           </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-report-plugin</artifactId>
+          <version>${version.surefire-report.plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <version>${version.failsafe.plugin}</version>
         </plugin>
       </plugins>
     </pluginManagement>

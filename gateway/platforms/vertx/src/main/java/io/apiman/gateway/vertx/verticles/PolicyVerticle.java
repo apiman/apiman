@@ -63,7 +63,7 @@ public class PolicyVerticle extends ApimanVerticleWithEngine {
         requestHandler();
 
         if(config.containsField("skip_registration") && config.getBoolean("skip_registration")) { //$NON-NLS-1$ //$NON-NLS-2$
-            logger.debug(uuid + " is not registering (skip_registration flag).");
+            logger.debug(uuid + " is not registering (skip_registration flag)."); //$NON-NLS-1$
         } else {
             register();
         }
@@ -89,7 +89,7 @@ public class PolicyVerticle extends ApimanVerticleWithEngine {
 
             @Override
             public void handle(ServiceRequest request) {
-                logger.debug("Received a new ServiceRequest!");
+                logger.debug("Received a new ServiceRequest in PolicyVerticle!"); //$NON-NLS-1$
 
                 try {
                     doRequest(request);
@@ -108,7 +108,7 @@ public class PolicyVerticle extends ApimanVerticleWithEngine {
 
             @Override
             public void handle(IAsyncResult<IEngineResult> result) {
-                logger.debug("received result!");
+                logger.debug("Received result from apiman engine in PolicyVerticle!"); //$NON-NLS-1$
 
                 if (result.isSuccess()) {
                     IEngineResult engineResult = result.getResult();

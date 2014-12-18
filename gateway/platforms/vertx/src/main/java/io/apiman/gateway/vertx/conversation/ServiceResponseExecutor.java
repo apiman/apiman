@@ -50,7 +50,7 @@ public class ServiceResponseExecutor implements IResettable {
 
     public void write(Buffer bodyBuffer) {
         if(finished) {
-            throw new IllegalStateException("Attempted write to connector after #end() was called.");
+            throw new IllegalStateException("Attempted write to connector after #end() was called."); //$NON-NLS-1$
         }
 
         eb.send(address + VertxEngineConfig.APIMAN_RT_BODY_SUFFIX, bodyBuffer);

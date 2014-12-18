@@ -34,6 +34,7 @@ import io.apiman.gateway.engine.components.http.HttpMethod;
 import io.apiman.gateway.engine.components.http.IHttpClientRequest;
 import io.apiman.gateway.engine.components.http.IHttpClientResponse;
 import io.apiman.gateway.vertx.config.VertxEngineConfig;
+import io.apiman.gateway.vertx.i18n.Messages;
 
 /**
  * A Vert.x based implementation of {@link IHttpClientComponent}. Ensure that
@@ -146,7 +147,7 @@ public class HttpClientComponentImpl implements IHttpClientComponent {
         @Override
         public void write(byte[] data) {
             if (finished) {
-                throw new IllegalStateException("Attempted write to connector after #end() was called.");
+                throw new IllegalStateException(Messages.getString("HttpClientComponentImpl.0")); //$NON-NLS-1$
             }
 
             request.write(new Buffer(data));
@@ -155,7 +156,7 @@ public class HttpClientComponentImpl implements IHttpClientComponent {
         @Override
         public void write(String body, String charsetName) {
             if (finished) {
-                throw new IllegalStateException("Attempted write to connector after #end() was called.");
+                throw new IllegalStateException(Messages.getString("HttpClientComponentImpl.0")); //$NON-NLS-1$
             }
 
             request.write(new Buffer(body, charsetName));

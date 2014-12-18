@@ -44,8 +44,8 @@ public class ServiceRequestListener extends AbstractServiceListener<ServiceReque
     }
 
     public void ready() {
-        logger.debug("Sending ready flag on the bus - ready to receive data " +
-          address + VertxEngineConfig.APIMAN_RT_READY_SUFFIX);
+        logger.debug("Sending ready flag on the bus - ready to receive data " + //$NON-NLS-1$
+          address + VertxEngineConfig.APIMAN_RT_READY_SUFFIX); 
 
         eb.send(address + VertxEngineConfig.APIMAN_RT_READY_SUFFIX, (Void) null);
     }

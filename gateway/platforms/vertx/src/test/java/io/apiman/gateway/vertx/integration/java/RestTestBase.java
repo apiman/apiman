@@ -103,6 +103,14 @@ public abstract class RestTestBase extends TestVerticle {
 
             @Override
             public void handleDeployment(AsyncResult<String> result) {
+                if(result.failed()) {
+                    logger.error("Vert.x failed to deploy:");
+                    logger.error(result.cause().getMessage());
+                    result.cause().printStackTrace();
+                    
+                    throw new RuntimeException(result.cause());
+                }
+                
                 assertTrue(result.succeeded());
                 
                 
