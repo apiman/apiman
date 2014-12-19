@@ -291,7 +291,7 @@ public abstract class AbstractPage extends Composite {
             String[] split = requiredStatus.split(","); //$NON-NLS-1$
             for (String s : split) {
                 if (s != null && s.trim().length() > 0) {
-                    rstatus.add(s);
+                    rstatus.add(s.trim());
                 }
             }
         } else {

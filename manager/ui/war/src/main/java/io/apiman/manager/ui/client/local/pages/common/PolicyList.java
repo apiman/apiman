@@ -341,6 +341,7 @@ public abstract class PolicyList extends FlowPanel implements HasValue<List<Poli
         aab.getElement().setClassName("btn"); //$NON-NLS-1$
         aab.getElement().addClassName("btn-default"); //$NON-NLS-1$
         aab.getElement().setAttribute("data-permission", getRemovePermission()); //$NON-NLS-1$
+        aab.getElement().setAttribute("data-status", "Created,Ready"); //$NON-NLS-1$ //$NON-NLS-2$
         aab.getElement().getStyle().setVisibility(Visibility.VISIBLE);
         aab.setHTML(i18n.format(AppMessages.REMOVE));
         aab.setActionText(i18n.format(AppMessages.REMOVING));
