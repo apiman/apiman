@@ -10,9 +10,11 @@
   <bean id="ipWhiteList" class="io.apiman.gateway.engine.policies.IPWhitelistPolicy" />
   <bean id="ipBlackList" class="io.apiman.gateway.engine.policies.IPBlacklistPolicy" />
   <bean id="basicAuth" class="io.apiman.gateway.engine.policies.BasicAuthenticationPolicy" />
+  <bean id="ignoredRes" class="io.apiman.gateway.engine.policies.IgnoredResourcesPolicy" />
 
   <service ref="ipWhiteList" interface="io.apiman.gateway.engine.policy.IPolicy" />
   <service ref="ipBlackList" interface="io.apiman.gateway.engine.policy.IPolicy" />
   <service ref="basicAuth" interface="io.apiman.gateway.engine.policy.IPolicy" />
+  <service ref="ignoredRes" interface="io.apiman.gateway.engine.policy.IPolicy" />
 
 </blueprint>

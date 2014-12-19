@@ -1,0 +1,12 @@
+GET /gateway/Policy_IgnoredResourcesTest/echo/1.0.0/invoices admin/admin
+X-API-Key: 12345
+
+----
+200
+Content-Type: application/json
+
+{
+  "method" : "GET",
+  "resource" : "/invoices",
+  "uri" : "/invoices"
+}

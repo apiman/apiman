@@ -19,6 +19,7 @@ import io.apiman.manager.ui.client.local.pages.policy.DefaultPolicyConfiguration
 import io.apiman.manager.ui.client.local.pages.policy.IPolicyConfigurationForm;
 import io.apiman.manager.ui.client.local.pages.policy.forms.BasicAuthPolicyConfigForm;
 import io.apiman.manager.ui.client.local.pages.policy.forms.IPListPolicyConfigForm;
+import io.apiman.manager.ui.client.local.pages.policy.forms.IgnoredResourcesPolicyConfigForm;
 import io.apiman.manager.ui.client.local.pages.policy.forms.RateLimitingPolicyConfigForm;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -43,6 +44,8 @@ public class PolicyConfigurationFormFactory {
     Instance<RateLimitingPolicyConfigForm> rateLimitingFormFactory;
     @Inject
     Instance<DefaultPolicyConfigurationForm> defaultFormFactory;
+    @Inject
+    Instance<IgnoredResourcesPolicyConfigForm> ignoredResourcesFormFactory;
     
     /**
      * Constructor.
@@ -66,6 +69,9 @@ public class PolicyConfigurationFormFactory {
         }
         if ("RateLimitingPolicy".equals(policyDefId)) { //$NON-NLS-1$
             return rateLimitingFormFactory.get();
+        }
+        if ("IgnoredResourcesPolicy".equals(policyDefId)) { //$NON-NLS-1$
+            return ignoredResourcesFormFactory.get();
         }
         return defaultFormFactory.get();
     }

@@ -13,18 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.gateway.engine.beans;
+package io.apiman.gateway.test;
+
+import org.junit.Test;
 
 /**
- * In general, what kind of policy failure are we dealing with?
+ * Make sure the Ignored Resources policy works.
  *
- * @author eric.wittmann@redhat.com
+ * @author rubenrm1@gmail.com
  */
-public enum PolicyFailureType {
+public class Policy_IgnoredResourcesTest extends AbstractGatewayTest {
     
-    Authentication,
-    Authorization,
-    NotFound,
-    Other
+    @Test
+    public void test() throws Exception {
+        runTestPlan("test-plans/policies/ignored-resources-testPlan.xml"); //$NON-NLS-1$
+    }
 
 }
