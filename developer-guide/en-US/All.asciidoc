@@ -23,3 +23,10 @@ TBD
 == Components
 TBD
 
+== Gateway Implementations
+
+At the heart of any apiman gateway implementation is the flexible, lightweight apiman-core. The core serves to execute policies upon the traffic passing through it, determining whether a given conversation should continue or not.
+
+A set of simple, asynchronous interfaces are provided which an implementor should fulfil using the platform's native functionality to allow apiman to interact with its various components and services.
+
+include::Gateway.asciidoc[]

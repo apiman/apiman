@@ -1,0 +1,385 @@
+=== Implementing IApimanBuffer
+
+Before you can send any data through apiman, you must implement the `IApimanBuffer` interface. It provides a set of methods which allow apiman to access your native buffer format as effectively as possible. Any data you pass into apiman must be wrapped in your implementation of `IApimanBuffer`, whilst any data returned to you by apiman will be an `IApimanBuffer` which you can extricate your native buffer from.
+
+Implementation is fairy self explanatory, but a few points are worth noting:
+
+```java
+public class YourApimanBufferImpl implements IApimanBuffer {
+
+  private YourNativeBuffer nativeBuffer;
+
+  public VertxApimanBuffer(YourNativeBuffer nativeBuffer) {
+    this.nativeBuffer = nativeBuffer;
+  }
+
+  // This is your mechanism to efficiently yank your native buffer back
+  @Override
+  public Object getNativeBuffer() {
+    return nativeBuffer;
+  }
+
+  @Override
+  public int length() {
+    return nativeBuffer.length();
+  }
+
+  @Override
+  public void insert(int index, IApimanBuffer buffer) {
+    nativeBuffer.setBuffer(index, (Buffer) buffer.getNativeBuffer());
+  }
+
+  <...>
+}
+```
+
+IMPORTANT: Implementors of `IApimanBuffer` should ensure that the native format is preserved within the instance, this allows it to be retrieved again using `getNativeBuffer`. Any mutation should be on the native buffer.
+
+=== Executing apiman-core
+
+Let's consider the following snippet:
+
+```java
+IEngine engine = new <your engine>.createEngine();
+
+// Request executor, through which we can send chunks and indicate end.
+final IServiceRequestExecutor requestExecutor = engine.executor(request,
+  new IAsyncResultHandler<IEngineResult>() {
+    public void handle(IAsyncResult<IEngineResult> result) { ... }
+  });
+
+// streamHandler called when back-end connector is ready to receive data.
+requestExecutor.streamHandler(new IAsyncHandler<IServiceConnection>() {
+  public void handle(final IServiceConnection writeStream) { ... }
+}
+
+// Execute the request
+executor.execute();
+```
+
+After instantiating your engine implementation, you can call `execute`. This is the main point through which you pipe data into and out of apiman. In order to avoid any buffering you must write body data through `streamHandler`'s `IServiceConnection` which will be called when the connection to the backend service is ready to receive. The result is provided to `executor`'s `IAsyncResultHandler`, which can be evaluated to determine the result of the call, and, if successful, retrieve a `ServiceResponse` and attach handlers to receive response data.
+
+==== Streaming data
+
+Exploring `streamHandler` further:
+
+```java
+requestExecutor.streamHandler(new IAsyncHandler<IServiceConnection>() {
+
+  @Override
+  public void handle(final IServiceConnection writeStream) {
+    // Just for illustrative purposes
+    IApimanBuffer apimanBuffer =
+      new YourApimanBufferImpl(nativeBuffer);
+
+    // Call #write as many times as desired.
+    writeStream.write(apimanBuffer);
+
+    // Call #end only once.
+    writeStream.end();
+  }
+}
+```
+
+Any data flowing into the executor must first be wrapped in your implementation of `IApimanBuffer` before being passed to `write`. You may call `write` an unlimited number of times, and indicate that transmission has completed by signalling `end`.
+
+IMPORTANT: No further calls to `write` should occur after `end` has been called.
+
+==== Handling results
+
+An excerpt of the executor's result handler and considering a successful result:
+
+```java
+engine.executor(request, new IAsyncResultHandler<IEngineResult>() {
+  public void handle(IAsyncResult<IEngineResult> result) {
+    // Did an exception occur?
+    if (result.isSuccess()) {
+      IEngineResult engineResult = result.getResult();
+
+      if (engineResult.isResponse()) {
+        // Our successfully returned service response.
+        ServiceResponse response = engineResult.getServiceResponse();
+
+        // Set a bodyHandler to receive the response's body chunks.
+        engineResult.bodyHandler(new IAsyncHandler<IApimanBuffer>() {
+
+          @Override
+          public void handle(IApimanBuffer chunk) {
+            // Important: for efficiency, retrieve native buffer format directly if possible.
+            if(chunk.getNativeBuffer() instanceof YourNativeBuffer) {
+              YourNativeBuffer buffer = (YourNativeBuffer) chunk.getNativeBuffer();
+            }
+          }
+        });
+
+        // Set an endHandler to receive the end signal.
+        engineResult.endHandler(new IAsyncHandler<Void>() {
+
+          @Override
+          public void handle(Void flag) {
+            // Transmission has now completed.
+          }
+        });
+
+      } else {
+        // Handle policy failure.
+      }
+
+    } else {
+      // Handle exception.
+    }
+  }
+});
+```
+
+After testing `IAsyncResult.isSuccess`, we can be certain that the request completed without an exception occurring. Next, we verify `IEngineResult.isFailure`, which indicates whether there was a policy failure or the response returned successfully.
+
+Upon success the `ServiceResponse` can be extracted, and a `bodyHandler` and `endHandler` can be attached in order to receive the response's associated data as it arrives. At this point the data has exited apiman, and can handled as makes sense for your implementation. For instance, you may wish to translate the `ServiceResponse` into its native equivalent and return it to the requestor.
+
+TIP: Where possible, it is advisable to use `getNativeBuffer` on any `IApimanBuffer` chunks you receive; avoiding any expensive format conversions. You must cast it back to your native format; `instanceof` is helpful to ensure the the correct type has been received.
+
+==== Handling Failures
+
+In the case of errors or policy failures, a variety of information is provided which can be used to construct a sensible response:
+
+```java
+if (result.isSuccess()) {
+  IEngineResult engineResult = result.getResult();
+
+  if (!engineResult.isFailure()) {
+    <...>
+  } else {
+    PolicyFailure policyFailure = engineResult.getPolicyFailure();
+    log.info("Failure type: " + policyFailure.getType());
+    log.info("Failure code: " + policyFailure.getFailureCode());
+    log.info("Failure Message: " + policyFailure.getMessage());
+    log.info("Failure Headers: " + policyFailure.getHeaders());
+  }
+} else {
+  Throwable throwable = engineResult.getError();
+  log.error("Something bad happened: " + throwable);
+}
+```
+
+The appropriate response to failures will vary widely depending upon implementation. For instance, a RESTful platform may wish to transmit an appropriate HTTP error code, message and possibly body.
+
+=== Creating a Service Connector
+
+Connectors enable apiman to transmit and receive data from the backend services under management. For instance, should your system need to connect to an HTTP service, an HTTP connector must be created. The following samples illustrate in general terms how an implementor may go about creating a connector, and although the specifics will vary extremely widely depending upon the platform some general principals should be obeyed.
+
+==== Connector basics
+
+Inside of your `IConnectorFactory` implementation you must return an `IServiceConnector` corresponding to the type of request and service being interacted with:
+
+```java
+public class ConnectorFactory implements IConnectorFactory {
+
+  public IServiceConnector createConnector(ServiceRequest request, Service service) {
+    return new IServiceConnector() {
+    	...
+    }
+  }
+}
+```
+
+Inspecting the `IServiceConnector` more closely, we can see the key interface of a connector:
+
+```java
+public IServiceConnection request(ServiceRequest request,
+  IAsyncResultHandler<IServiceConnectionResponse> resultHandler) {
+  		...
+  }
+}
+```
+
+The `IServiceConnection` you must return is used by apiman to write request chunks; hence, it will be **read** by your connector. Conversely, the `IServiceConnectionResponse` handler must be called in order to send the `ServiceResponse` and its associated data chunks back to apiman once a response has returned from the service; hence, you will **write** data to it.
+
+The `IAsyncResultHandler` is also used to indicate whether an exception has occurred during the conversation with the backend.
+
+==== Creating the IServiceConnection
+
+Generally, an implementor must attempt to return their `IServiceConnection` as soon as it is valid for apiman to write data to the backend. Until you respond, apiman will not fire `IServiceRequestExecutor.streamHandler`, and hence no data will arrive prematurely to your connector. Following this guideline should help to minimise or eliminate any buffering requirements in your connectors.
+
+Looking at an example:
+
+```java
+// Native platform's connector (e.g. HTTP)
+ImaginaryBackendConnector imaginaryConnector = ...;
+	Connection c = imaginaryConnector.establishConnection(service.getEndpoint(), ...);
+
+// Prepare in advance to do something sensible with the response
+// See next section for more detail.
+c.responseHandler(<Handle the response; return an IServiceConnectionResponse>);
+
+// From our perspective IServiceConnection is
+// *inbound data* (i.e. the user writes to us).
+return new IServiceConnection() {
+  boolean finished = false;
+
+  @Override
+  public void write(IApimanBuffer chunk) {
+    // Handle arriving data chunk
+    YourNativeBuffer nativeBuffer =
+      (YourNativeBuffer) chunk.getNativeBuffer();
+
+    imaginaryConnector.write(nativeBuffer);
+  }
+
+  @Override
+  public void end() {
+    // Handle the signal to indicate stream has completed
+    imaginaryConnector.finish_connection();
+    finished = true;
+  }
+
+  @Override
+  public void abort() {
+    // Handle immediate abort, for instance by closing your connection.
+    imaginaryConnector.abort();
+    finished = true;
+  }
+
+
+  @Override
+  public boolean isFinished() {
+    return finished;
+  }
+};
+```
+
+`imaginaryConnector` represents your platform's backend connector. After establishing a connection that can accept data, you should return an `IServiceConnection`, allowing data to be written to your connector. You can extract your native buffer format using `getNativeBuffer` plus a cast. Although we haven't yet explored how to handle a response, we can imagine that the platform's `ImaginaryBackendConnector` would allows us to set a `responseHandler`, which will be fired when a response has arrived; this is point at which we can build an `IServiceConnectionResponse`.
+
+==== Creating the IServiceConnectionResponse
+
+===== Handling a successful response
+
+Apiman's `resultHandler` should be called with an  `IServiceConnectionResponse` when your connector has received a response from the service.
+
+Let's imagine that `responseHandler` is called when the platform's response has arrived, and looks like this:
+
+```java
+c.responseHandler(new Handler<ImaginaryResponse> {
+  public void handle(ImaginaryResponse response) {
+	...
+  }
+});
+```
+
+This is where we must build our apiman response, using the data returned in the platform's response, and attaching appropriate handlers to capture any data that arrives.
+
+In the following example, we expand the response `handle` method to build an `IServiceConnectionResponse`:
+
+```java
+void handle(final ImaginaryResponse response) {
+
+  IServiceConnectionResponse readStream = new IServiceConnectionResponse() {
+    IAsyncHandler<IApimanBuffer> bodyHandler;
+    IAsyncHandler<IApimanBuffer> endHandler;
+    boolean finished = false;
+    ServiceResponse response = YourResponseBuilder.build(response);
+
+    public IServiceConnectionResponse() {
+      doConnection();
+    }
+
+    private void doConnection() {
+      // We stop any data arriving
+      response.pause();
+
+      // This will be called when we resume transmission
+      response.bodyHandler(new Handler<NativeDataChunk>() {
+
+        void handle(NativeDataChunk chunk) {
+          IApimanBuffer apimanBuffer =
+            new YourApimanBufferImpl(nativeBuffer);
+
+          bodyHandler.handle(apimanBuffer);
+        }
+      });
+
+      // Transmission has finished
+      response.endHandler(new Handler<Void>) {
+
+        void handle(Void flag) {
+          endHandler.handle((Void) null);
+          // You may want to close your backend connection here.
+        }
+      }
+    }
+
+    @Override
+    public void bodyHandler(IAsyncHandler<IApimanBuffer> bodyHandler) {
+      this.bodyHandler = bodyHandler;
+    }
+
+    @Override
+    public void endHandler(IAsyncHandler<Void> endHandler) {
+      this.endHandler = endHandler;
+    }
+
+    @Override
+    public ServiceResponse getHead() {
+      return serviceResponse;
+    }
+
+    @Override
+    public boolean isFinished() {
+      return finished;
+    }
+
+    @Override
+    public void abort() {
+      // Abort
+    }
+
+    // We explicitly resume transmission
+    @Override
+    public void transmit() {
+      response.resume();
+    }
+  };
+
+  // We're ready to transmit the response, let apiman know.
+  IAsyncResult result = AsyncResultImpl.
+    <IServiceConnectionResponse> create(readStream);
+
+  resultHandler.handle(result);
+}
+```
+
+We imagine that our `response` object contains what we need to build a `ServiceResponse`, and that handlers can be attached in order to retrieve body data and an end signal. It can be paused using `pause`, which prevents any data from arriving until `resume` is called.
+
+Importantly, data transmission **must not** begin until `transmit` has been called, otherwise the appropriate handlers may not yet have been set, and data will be liable to disappear. Hence, in this example, `resume` is called in `transmit` where we are certain that it's safe to send data.
+
+After `end` has been signalled, clean up on the native connection can be performed, such as closing it. In this example was assume the connection is closed for us.
+
+Once we are sure our stream is ready, we pass it to apiman using `resultHandler.handle` wrapped inside of an IAsyncResult indicating we were successful. Some helpful `create` methods are available in `AsyncResultImpl`.
+
+Whilst a given platform's implementation may look very different, implementors must be careful to preserve the same external behaviour; some platforms may require buffering of data if pause-like functionality is not available. In many cases it may be possible to implement `IServiceConnectionResponse` and `IServiceConnection` in the same class.
+
+IMPORTANT: Do not transmit any response data into apiman until `transmit` has been signalled.
+
+===== Handling an error
+
+If an error occurs, you must return a failure `IAsyncResult`, which may be caused, for instance, by an endpoint being unresolvable. The simplest way to share this is by using `AsyncResultImpl`:
+
+```java
+try { ... }
+catch(Exception e) {
+  IAsyncResult errorResult =
+  	AsyncResultImpl.<IServiceConnectionResponse> create(e);
+
+  resultHandler.handle(errorResult);
+}
+```
+
+TIP: Remember to clean up any resources you may have left open.
+
+==== Implementation strategies
+
+Implementors may notice that the only overlap between the `IServiceConnection` and `IServiceConnectionResponse` interfaces is the `isFinished` method. Hence, it is often possible to implement both interfaces using the same class, which may be a cleaner way to orchestrate the process.
+
+Implementation exemplars:
+
+* link:++https://github.com/apiman/apiman/blob/master/gateway/platforms/servlet/src/main/java/io/apiman/gateway/platforms/servlet/connectors/HttpServiceConnection.java++[Servlet HTTP Connector] is a more traditional synchronous implementations.
+* link:++ https://github.com/apiman/apiman/blob/master/gateway/platforms/vertx/src/main/java/io/apiman/gateway/vertx/connector/HttpConnector.java++[Vert.x HTTP Connector] is an asynchronous HTTP implementation.
