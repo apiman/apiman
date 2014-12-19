@@ -160,6 +160,7 @@ public class ServiceOverviewPage extends AbstractServicePage {
                 publishButton.onActionComplete();
                 status.setText(ServiceStatus.Published.toString());
                 renderServiceStatus();
+                hideElementsBasedOnStatus();
             }
             
             @Override
@@ -197,6 +198,7 @@ public class ServiceOverviewPage extends AbstractServicePage {
                             retireButton.onActionComplete();
                             status.setText(ServiceStatus.Retired.toString());
                             renderServiceStatus();
+                            hideElementsBasedOnStatus();
                         }
 
                         @Override

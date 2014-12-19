@@ -101,6 +101,14 @@ public abstract class AbstractAppPage extends AbstractPage {
         return org;
     }
     
+    /**
+     * @see io.apiman.manager.ui.client.local.pages.AbstractPage#getEntityStatus()
+     */
+    @Override
+    protected String getEntityStatus() {
+        return versionBean.getStatus().name();
+    }
+    
     @PostConstruct
     protected void _aapPostConstruct() {
         versions.addValueChangeHandler(new ValueChangeHandler<String>() {

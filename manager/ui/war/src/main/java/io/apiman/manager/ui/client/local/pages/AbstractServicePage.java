@@ -101,6 +101,14 @@ public abstract class AbstractServicePage extends AbstractPage {
     protected String getOrganizationId() {
         return org;
     }
+
+    /**
+     * @see io.apiman.manager.ui.client.local.pages.AbstractPage#getEntityStatus()
+     */
+    @Override
+    protected String getEntityStatus() {
+        return versionBean.getStatus().name();
+    }
     
     @PostConstruct
     protected void _aapPostConstruct() {

@@ -132,11 +132,11 @@ public class PlanOverviewPage extends AbstractPlanPage {
     }
 
     /**
-     * Called when the user clicks the "Register" button.
+     * Called when the user clicks the "Lock" button.
      * @param event
      */
     @EventHandler("lockButton")
-    public void onRegister(ClickEvent event) {
+    public void onLock(ClickEvent event) {
         lockButton.onActionStarted();
 
         ActionBean action = new ActionBean();
@@ -151,6 +151,7 @@ public class PlanOverviewPage extends AbstractPlanPage {
                 versionBean.setStatus(PlanStatus.Locked);
                 status.setText(PlanStatus.Locked.toString());
                 renderPlanStatus();
+                hideElementsBasedOnStatus();
             }
             
             @Override

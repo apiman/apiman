@@ -164,6 +164,7 @@ public class AppOverviewPage extends AbstractAppPage {
                 versionBean.setStatus(ApplicationStatus.Registered);
                 status.setText(ApplicationStatus.Registered.toString());
                 renderApplicationStatus();
+                hideElementsBasedOnStatus();
             }
             
             @Override
@@ -201,6 +202,7 @@ public class AppOverviewPage extends AbstractAppPage {
                             versionBean.setStatus(ApplicationStatus.Retired);
                             status.setText(ApplicationStatus.Retired.toString());
                             renderApplicationStatus();
+                            hideElementsBasedOnStatus();
                         }
 
                         @Override

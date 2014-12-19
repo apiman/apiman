@@ -104,8 +104,8 @@
             <div class="description" data-i18n-key="policies-help">Here is a list of all Policies defined for this Service.  These Policies will be applied to all invocations of this Service by any Application, regardless of the Plan used in its Contract.</div>
             <hr />
             <!-- The list of policies -->
-            <div class="apiman-filters apiman-policies-filters">
-              <a data-permission="svcEdit" data-field="toNewPolicy" data-i18n-key="add-policy" href="new-policy.html" class="btn btn-primary pull-right">Add Policy</a>
+            <div data-permission="svcEdit" data-status="Created,Ready" class="apiman-filters apiman-policies-filters">
+              <a data-field="toNewPolicy" data-i18n-key="add-policy" href="new-policy.html" class="btn btn-primary pull-right">Add Policy</a>
             </div>
             <div class="clearfix"></div>
             <div class="apiman-policies" data-field="policies" data-role="dummy">

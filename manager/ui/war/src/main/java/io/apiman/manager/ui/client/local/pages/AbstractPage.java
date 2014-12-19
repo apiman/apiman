@@ -243,6 +243,13 @@ public abstract class AbstractPage extends Composite {
     protected String getOrganizationId() {
         return null;
     }
+    
+    /**
+     * @return the status of whatever entity is currently being displayed or null if N/A
+     */
+    protected String getEntityStatus() {
+        return null;
+    }
 
     /**
      * @param organizationId
@@ -270,6 +277,27 @@ public abstract class AbstractPage extends Composite {
      */
     protected boolean hasPermission(String permission) {
         return hasPermission(PermissionType.valueOf(permission));
+    }
+    
+    /**
+     * Returns true if the current page entity has the given status.  Note that
+     * the given status might actually be a list of statuses.  In that case
+     * the current entity status must be in that list.
+     * @param requiredStatus
+     */
+    protected boolean hasStatus(String requiredStatus) {
+        Set<String> rstatus = new HashSet<String>();
+        if (requiredStatus.contains(",")) { //$NON-NLS-1$
+            String[] split = requiredStatus.split(","); //$NON-NLS-1$
+            for (String s : split) {
+                if (s != null && s.trim().length() > 0) {
+                    rstatus.add(s);
+                }
+            }
+        } else {
+            rstatus.add(requiredStatus);
+        }
+        return rstatus.contains(getEntityStatus());
     }
 
     /**
@@ -324,6 +352,7 @@ public abstract class AbstractPage extends Composite {
         setPageTitle(getPageTitle());
         renderPage();
         hideUnauthorizedElements();
+        hideElementsBasedOnStatus();
         pageLoadingWidget.hide();
         navigation.getContentPanel().asWidget().getElement().getStyle().clearVisibility();
         navigation.getContentPanel().asWidget().getElement().getStyle().clearDisplay();
@@ -341,12 +370,28 @@ public abstract class AbstractPage extends Composite {
      * Finds all elements in the UI that have authorization requirements
      * and hides the ones that the current user should not see.
      */
-    private native void hideUnauthorizedElements() /*-{
+    protected native void hideUnauthorizedElements() /*-{
         var me = this;
         $wnd.jQuery("*[data-permission]").each(
             function( index, element ) {
                 var requiredPermission = element.getAttribute("data-permission");
                 if (!me.@io.apiman.manager.ui.client.local.pages.AbstractPage::hasPermission(Ljava/lang/String;)(requiredPermission)) {
+                    $wnd.jQuery(element).remove();
+                }
+          }
+        );
+    }-*/;
+
+    /**
+     * Finds all elements in the UI that have status requirements
+     * and hides the ones that should not be available due to current entity status.
+     */
+    protected native void hideElementsBasedOnStatus() /*-{
+        var me = this;
+        $wnd.jQuery("*[data-status]").each(
+            function( index, element ) {
+                var requiredStatus = element.getAttribute("data-status");
+                if (!me.@io.apiman.manager.ui.client.local.pages.AbstractPage::hasStatus(Ljava/lang/String;)(requiredStatus)) {
                     $wnd.jQuery(element).remove();
                 }
           }
