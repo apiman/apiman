@@ -47,6 +47,16 @@
         <role>Developer</role>
       </roles>
     </developer>
+    <developer>
+      <name>Marc Savy</name>
+      <id>msavy</id>
+      <email>msavy@redhat.com</email>
+      <organization>Red Hat</organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+      <timezone>+1</timezone>
+    </developer>
   </developers>
 
   <properties>
