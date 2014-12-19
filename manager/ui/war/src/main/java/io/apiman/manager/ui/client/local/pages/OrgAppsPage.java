@@ -83,6 +83,7 @@ public class OrgAppsPage extends AbstractOrgPage {
                 filterApps();
             }
         });
+        appFilter.setPlaceholder(i18n.format(AppMessages.ORG_APPS_FILTER_PLACEHOLDER));
     }
     
     /**
