@@ -19,6 +19,7 @@ import org.overlord.commons.gwt.client.local.widgets.ParagraphLabel;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * A widget that can be used when no entities are found.  For example
@@ -30,15 +31,24 @@ import com.google.gwt.user.client.ui.Label;
  */
 public class NoEntitiesWidget extends FlowPanel {
     
-    private String message;
-    private boolean showArrow;
-    
     /**
      * Constructor.
      */
+    /**
+     * Constructor.
+     * @param message
+     * @param showArrow
+     */
     public NoEntitiesWidget(String message, boolean showArrow) {
-        setMessage(message);
-        setShowArrow(showArrow);
+        this(new ParagraphLabel(message), showArrow);
+    }
+
+    /**
+     * Constructor.
+     * @param message
+     * @param showArrow
+     */
+    public NoEntitiesWidget(Widget message, boolean showArrow) {
         getElement().setClassName("apiman-no-content"); //$NON-NLS-1$
         getElement().addClassName("container-fluid"); //$NON-NLS-1$
         
@@ -49,9 +59,8 @@ public class NoEntitiesWidget extends FlowPanel {
         FlowPanel leftCol = new FlowPanel();
         row.add(leftCol);
         leftCol.getElement().setClassName("col-md-9"); //$NON-NLS-1$
-        ParagraphLabel p = new ParagraphLabel(message);
-        leftCol.add(p);
-        p.getElement().setClassName("apiman-no-entities-description"); //$NON-NLS-1$
+        leftCol.add(message);
+        message.getElement().setClassName("apiman-no-entities-description"); //$NON-NLS-1$
         
         FlowPanel rightCol = new FlowPanel();
         row.add(rightCol);
@@ -62,33 +71,4 @@ public class NoEntitiesWidget extends FlowPanel {
             arrow.getElement().setClassName("apiman-no-entities-arrow"); //$NON-NLS-1$
         }
     }
-
-    /**
-     * @return the message
-     */
-    public String getMessage() {
-        return message;
-    }
-
-    /**
-     * @param message the message to set
-     */
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    /**
-     * @return the showArrow
-     */
-    public boolean isShowArrow() {
-        return showArrow;
-    }
-
-    /**
-     * @param showArrow the showArrow to set
-     */
-    public void setShowArrow(boolean showArrow) {
-        this.showArrow = showArrow;
-    }
-
 }
