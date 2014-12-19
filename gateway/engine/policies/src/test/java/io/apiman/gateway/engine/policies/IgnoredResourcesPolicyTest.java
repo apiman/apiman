@@ -39,7 +39,7 @@ import org.mockito.Mockito;
  * @author rubenrm1@gmail.com
  *
  */
-@SuppressWarnings({ "unchecked" })
+@SuppressWarnings({ "unchecked", "nls" })
 public class IgnoredResourcesPolicyTest {
 
     @Test
