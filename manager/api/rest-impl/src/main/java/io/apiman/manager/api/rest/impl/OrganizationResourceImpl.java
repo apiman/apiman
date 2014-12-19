@@ -69,9 +69,6 @@ import io.apiman.manager.api.core.IIdmStorage;
 import io.apiman.manager.api.core.IServiceValidator;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
-import io.apiman.manager.api.core.exceptions.AlreadyExistsException;
-import io.apiman.manager.api.core.exceptions.ConstraintViolationException;
-import io.apiman.manager.api.core.exceptions.DoesNotExistException;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.core.util.PolicyTemplateUtil;
 import io.apiman.manager.api.gateway.IGatewayLink;
@@ -174,6 +171,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         try {
             // Store/persist the new organization
             storage.beginTx();
+            if (storage.getOrganization(bean.getId()) != null) {
+                throw ExceptionFactory.organizationAlreadyExistsException(bean.getName());
+            }
             storage.createOrganization(bean);
             storage.createAuditEntry(AuditUtils.organizationCreated(bean, securityContext));
             storage.commitTx();
@@ -187,13 +187,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 idmStorage.createMembership(membership);
             }
             return bean;
-        } catch (AlreadyExistsException e) {
+        } catch (AbstractRestException e) {
             storage.rollbackTx();
-            throw ExceptionFactory.organizationAlreadyExistsException(bean.getName());
-        } catch (ConstraintViolationException e) {
-            storage.rollbackTx();
-            throw ExceptionFactory.organizationAlreadyExistsException(bean.getName());
-        } catch (StorageException e) {
+            throw e;
+        } catch (Exception e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);
         }
@@ -207,12 +204,15 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         try {
             storage.beginTx();
             OrganizationBean organizationBean = storage.getOrganization(organizationId);
+            if (organizationBean == null) {
+                throw ExceptionFactory.organizationNotFoundException(organizationId);
+            }
             storage.commitTx();
             return organizationBean;
-        } catch (DoesNotExistException e) {
+        } catch (AbstractRestException e) {
             storage.rollbackTx();
-            throw ExceptionFactory.organizationNotFoundException(organizationId);
-        } catch (StorageException e) {
+            throw e;
+        } catch (Exception e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);
         }
@@ -230,6 +230,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             bean.setId(organizationId);
             storage.beginTx();
             OrganizationBean organization = storage.getOrganization(bean.getId());
+            if (organization == null) {
+                throw ExceptionFactory.organizationNotFoundException(organizationId);
+            }
             
             EntityUpdatedData auditData = new EntityUpdatedData();
             if (AuditUtils.valueChanged(organization.getDescription(), bean.getDescription())) {
@@ -239,10 +242,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.updateOrganization(organization);
             storage.createAuditEntry(AuditUtils.organizationUpdated(organization, auditData, securityContext));
             storage.commitTx();
-        } catch (DoesNotExistException e) {
+        } catch (AbstractRestException e) {
             storage.rollbackTx();
-            throw ExceptionFactory.organizationNotFoundException(organizationId);
-        } catch (StorageException e) {
+            throw e;
+        } catch (Exception e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);
         }
@@ -267,7 +270,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             paging.setPageSize(pageSize);
             rval = query.auditEntity(organizationId, null, null, null, paging);
             return rval;
-        } catch (StorageException e) {
+        } catch (AbstractRestException e) {
+            storage.rollbackTx();
+            throw e;
+        } catch (Exception e) {
             throw new SystemErrorException(e);
         }
     }
@@ -291,18 +297,23 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             // Store/persist the new application
             storage.beginTx();
             OrganizationBean org = storage.getOrganization(organizationId);
+            if (org == null) {
+                throw ExceptionFactory.organizationNotFoundException(organizationId);
+            }
             newApp.setOrganization(org);
+
+            if (storage.getApplication(org.getId(), newApp.getId()) != null) {
+                throw ExceptionFactory.organizationAlreadyExistsException(bean.getName());
+            }
+
             storage.createApplication(newApp);
             storage.createAuditEntry(AuditUtils.applicationCreated(newApp, securityContext));
             storage.commitTx();
             return newApp;
-        } catch (DoesNotExistException e) {
+        } catch (AbstractRestException e) {
             storage.rollbackTx();
-            throw ExceptionFactory.organizationNotFoundException(organizationId);
-        } catch (AlreadyExistsException e) {
-            storage.rollbackTx();
-            throw ExceptionFactory.applicationAlreadyExistsException(newApp.getName());
-        } catch (StorageException e) {
+            throw e;
+        } catch (Exception e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);
         }
@@ -317,12 +328,15 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         try {
             storage.beginTx();
             ApplicationBean applicationBean = storage.getApplication(organizationId, applicationId);
+            if (applicationBean == null) {
+                throw ExceptionFactory.applicationNotFoundException(applicationId);
+            }
             storage.commitTx();
             return applicationBean;
-        } catch (DoesNotExistException e) {
+        } catch (AbstractRestException e) {
             storage.rollbackTx();
-            throw ExceptionFactory.applicationNotFoundException(applicationId);
-        } catch (StorageException e) {
+            throw e;
+        } catch (Exception e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);
         }
@@ -347,7 +361,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             paging.setPageSize(pageSize);
             rval = query.auditEntity(organizationId, applicationId, null, ApplicationBean.class, paging);
             return rval;
-        } catch (StorageException e) {
+        } catch (AbstractRestException e) {
+            storage.rollbackTx();
+            throw e;
+        } catch (Exception e) {
             throw new SystemErrorException(e);
         }
     }
@@ -378,6 +395,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         try {
             storage.beginTx();
             ApplicationBean app = storage.getApplication(organizationId, applicationId);
+            if (app == null) {
+                throw ExceptionFactory.applicationNotFoundException(applicationId);
+            }
             EntityUpdatedData auditData = new EntityUpdatedData();
             if (AuditUtils.valueChanged(app.getDescription(), bean.getDescription())) {
                 auditData.addChange("description", app.getDescription(), bean.getDescription()); //$NON-NLS-1$
@@ -386,10 +406,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.updateApplication(app);
             storage.createAuditEntry(AuditUtils.applicationUpdated(app, auditData, securityContext));
             storage.commitTx();
-        } catch (DoesNotExistException e) {
+        } catch (AbstractRestException e) {
             storage.rollbackTx();
-            throw ExceptionFactory.applicationNotFoundException(applicationId);
-        } catch (StorageException e) {
+            throw e;
+        } catch (Exception e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);
         }
@@ -407,6 +427,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         try {
             storage.beginTx();
             ApplicationBean application = storage.getApplication(organizationId, applicationId);
+            if (application == null) {
+                throw ExceptionFactory.applicationNotFoundException(applicationId);
+            }
 
             ApplicationVersionBean newVersion = new ApplicationVersionBean();
             newVersion.setApplication(application);
@@ -422,12 +445,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.createAuditEntry(AuditUtils.applicationVersionCreated(newVersion, securityContext));
             storage.commitTx();
             return newVersion;
-        } catch (DoesNotExistException e) {
+        } catch (AbstractRestException e) {
             storage.rollbackTx();
-            throw ExceptionFactory.applicationNotFoundException(applicationId);
-        } catch (StorageException e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
+            throw e;
         } catch (Exception e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);
@@ -447,13 +467,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 throw ExceptionFactory.applicationVersionNotFoundException(applicationId, version);
             storage.commitTx();
             return applicationVersion;
-        } catch (ApplicationVersionNotFoundException e) {
+        } catch (AbstractRestException e) {
             storage.rollbackTx();
             throw e;
-        } catch (DoesNotExistException e) {
-            storage.rollbackTx();
-            throw ExceptionFactory.applicationNotFoundException(applicationId);
-        } catch (StorageException e) {
+        } catch (Exception e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);
         }
@@ -479,7 +496,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             paging.setPageSize(pageSize);
             rval = query.auditEntity(organizationId, applicationId, version, ApplicationBean.class, paging);
             return rval;
-        } catch (StorageException e) {
+        } catch (AbstractRestException e) {
+            storage.rollbackTx();
+            throw e;
+        } catch (Exception e) {
             throw new SystemErrorException(e);
         }
     }
@@ -515,12 +535,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.updateApplicationVersion(avb);
             storage.createAuditEntry(AuditUtils.applicationVersionUpdated(avb, data, securityContext));
             storage.commitTx();
-        } catch (DoesNotExistException e) {
+        } catch (AbstractRestException e) {
             storage.rollbackTx();
-            throw ExceptionFactory.applicationNotFoundException(applicationId);
-        } catch (StorageException e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
+            throw e;
         } catch (Exception e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);
@@ -538,8 +555,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         
         try {
             return query.getApplicationVersions(organizationId, applicationId);
-        } catch (DoesNotExistException e) {
-            throw ExceptionFactory.applicationNotFoundException(applicationId);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
@@ -621,9 +636,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         } catch (AbstractRestException e) {
             storage.rollbackTx();
             throw e;
-        } catch (StorageException e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
         } catch (Exception e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);
@@ -651,10 +663,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             }
 
             return contract;
-        } catch (DoesNotExistException e) {
+        } catch (AbstractRestException e) {
             storage.rollbackTx();
-            throw ExceptionFactory.contractNotFoundException(contractId);
-        } catch (StorageException e) {
+            throw e;
+        } catch (Exception e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);
         }
@@ -677,10 +689,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.createAuditEntry(AuditUtils.contractBrokenFromApp(contract, securityContext));
             storage.createAuditEntry(AuditUtils.contractBrokenToService(contract, securityContext));
             storage.commitTx();
-        } catch (DoesNotExistException e) {
+        } catch (AbstractRestException e) {
             storage.rollbackTx();
-            throw ExceptionFactory.contractNotFoundException(contractId);
-        } catch (StorageException e) {
+            throw e;
+        } catch (Exception e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);
         }        
@@ -708,7 +720,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             }
             
             return contracts;
-        } catch (StorageException e) {
+        } catch (AbstractRestException e) {
+            storage.rollbackTx();
+            throw e;
+        } catch (Exception e) {
             throw new SystemErrorException(e);
         }
     }
@@ -827,6 +842,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         try {
             storage.beginTx();
             PolicyBean policy = this.storage.getPolicy(policyId);
+            if (policy == null) {
+                throw ExceptionFactory.policyNotFoundException(policyId);
+            }
             if (AuditUtils.valueChanged(policy.getConfiguration(), bean.getConfiguration())) {
                 policy.setConfiguration(bean.getConfiguration());
                 // TODO figure out what changed an include that in the audit entry
@@ -836,10 +854,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.updatePolicy(policy);
             storage.createAuditEntry(AuditUtils.policyUpdated(policy, PolicyType.Application, securityContext));
             storage.commitTx();
-        } catch (DoesNotExistException e) {
+        } catch (AbstractRestException e) {
             storage.rollbackTx();
-            throw ExceptionFactory.policyNotFoundException(policyId);
-        } catch (StorageException e) {
+            throw e;
+        } catch (Exception e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);
         }
@@ -861,13 +879,16 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         try {
             storage.beginTx();
             PolicyBean policy = this.storage.getPolicy(policyId);
+            if (policy == null) {
+                throw ExceptionFactory.policyNotFoundException(policyId);
+            }
             storage.deletePolicy(policy);
             storage.createAuditEntry(AuditUtils.policyRemoved(policy, PolicyType.Application, securityContext));
             storage.commitTx();
-        } catch (DoesNotExistException e) {
+        } catch (AbstractRestException e) {
             storage.rollbackTx();
-            throw ExceptionFactory.policyNotFoundException(policyId);
-        } catch (StorageException e) {
+            throw e;
+        } catch (Exception e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);
         }
@@ -913,7 +934,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             }
             storage.createAuditEntry(AuditUtils.policiesReordered(avb, PolicyType.Application, securityContext));
             storage.commitTx();
-        } catch (StorageException e) {
+        } catch (AbstractRestException e) {
+            storage.rollbackTx();
+            throw e;
+        } catch (Exception e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);
         }
@@ -937,19 +961,22 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         try {
             storage.beginTx();
             OrganizationBean orgBean = storage.getOrganization(organizationId);
+            if (orgBean == null) {
+                throw ExceptionFactory.organizationNotFoundException(organizationId);
+            }
+            if (storage.getService(orgBean.getId(), newService.getId()) != null) {
+                throw ExceptionFactory.serviceAlreadyExistsException(bean.getName());
+            }
             newService.setOrganization(orgBean);
             // Store/persist the new service
             storage.createService(newService);
             storage.createAuditEntry(AuditUtils.serviceCreated(newService, securityContext));
             storage.commitTx();
             return newService;
-        } catch (DoesNotExistException e) {
+        } catch (AbstractRestException e) {
             storage.rollbackTx();
-            throw ExceptionFactory.organizationNotFoundException(organizationId);
-        } catch (AlreadyExistsException e) {
-            storage.rollbackTx();
-            throw ExceptionFactory.serviceAlreadyExistsException(bean.getName());
-        } catch (StorageException e) {
+            throw e;
+        } catch (Exception e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);
         }
@@ -964,12 +991,15 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         try {
             storage.beginTx();
             ServiceBean bean = storage.getService(organizationId, serviceId);
+            if (bean == null) {
+                throw ExceptionFactory.serviceNotFoundException(serviceId);
+            }
             storage.commitTx();
             return bean;
-        } catch (DoesNotExistException e) {
+        } catch (AbstractRestException e) {
             storage.rollbackTx();
-            throw ExceptionFactory.serviceNotFoundException(serviceId);
-        } catch (StorageException e) {
+            throw e;
+        } catch (Exception e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);
         }
@@ -1026,6 +1056,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         try {
             storage.beginTx();
             ServiceBean service = storage.getService(organizationId, serviceId);
+            if (service == null) {
+                throw ExceptionFactory.serviceNotFoundException(serviceId);
+            }
             EntityUpdatedData auditData = new EntityUpdatedData();
             if (AuditUtils.valueChanged(service.getDescription(), bean.getDescription())) {
                 auditData.addChange("description", service.getDescription(), bean.getDescription()); //$NON-NLS-1$
@@ -1034,10 +1067,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.updateService(service);
             storage.createAuditEntry(AuditUtils.serviceUpdated(service, auditData, securityContext));
             storage.commitTx();
-        } catch (DoesNotExistException e) {
+        } catch (AbstractRestException e) {
             storage.rollbackTx();
-            throw ExceptionFactory.serviceNotFoundException(serviceId);
-        } catch (StorageException e) {
+            throw e;
+        } catch (Exception e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);
         }
@@ -1056,6 +1089,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
             storage.beginTx();
             ServiceBean service = storage.getService(organizationId, serviceId);
+            if (service == null) {
+                throw ExceptionFactory.serviceNotFoundException(serviceId);
+            }
 
             ServiceVersionBean newVersion = new ServiceVersionBean();
             newVersion.setCreatedBy(securityContext.getCurrentUser());
@@ -1105,12 +1141,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.createAuditEntry(AuditUtils.serviceVersionCreated(newVersion, securityContext));
             storage.commitTx();
             return newVersion;
-        } catch (DoesNotExistException e) {
+        } catch (AbstractRestException e) {
             storage.rollbackTx();
-            throw ExceptionFactory.serviceNotFoundException(serviceId);
-        } catch (StorageException e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
+            throw e;
         } catch (Exception e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);
@@ -1135,13 +1168,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 serviceVersion.setGateways(null);
             }
             return serviceVersion;
-        } catch (ServiceVersionNotFoundException e) {
+        } catch (AbstractRestException e) {
             storage.rollbackTx();
             throw e;
-        } catch (DoesNotExistException e) {
-            storage.rollbackTx();
-            throw ExceptionFactory.serviceNotFoundException(serviceId);
-        } catch (StorageException e) {
+        } catch (Exception e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);
         }
@@ -1255,12 +1285,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.updateServiceVersion(svb);
             storage.createAuditEntry(AuditUtils.serviceVersionUpdated(svb, data, securityContext));
             storage.commitTx();
-        } catch (DoesNotExistException e) {
+        } catch (AbstractRestException e) {
             storage.rollbackTx();
-            throw ExceptionFactory.serviceNotFoundException(serviceId);
-        } catch (StorageException e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
+            throw e;
         } catch (Exception e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);
@@ -1278,8 +1305,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         
         try {
             return query.getServiceVersions(organizationId, serviceId);
-        } catch (DoesNotExistException e) {
-            throw ExceptionFactory.serviceNotFoundException(serviceId);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
@@ -1296,8 +1321,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         
         try {
             return query.getServiceVersionPlans(organizationId, serviceId, version);
-        } catch (DoesNotExistException e) {
-            throw ExceptionFactory.serviceNotFoundException(serviceId);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
@@ -1358,6 +1381,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         try {
             storage.beginTx();
             PolicyBean policy = storage.getPolicy(policyId);
+            if (policy == null) {
+                throw ExceptionFactory.policyNotFoundException(policyId);
+            }
             // TODO capture specific change values when auditing policy updates
             if (AuditUtils.valueChanged(policy.getConfiguration(), bean.getConfiguration())) {
                 policy.setConfiguration(bean.getConfiguration());
@@ -1367,10 +1393,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.updatePolicy(policy);
             storage.createAuditEntry(AuditUtils.policyUpdated(policy, PolicyType.Service, securityContext));
             storage.commitTx();
-        } catch (DoesNotExistException e) {
+        } catch (AbstractRestException e) {
             storage.rollbackTx();
-            throw ExceptionFactory.policyNotFoundException(policyId);
-        } catch (StorageException e) {
+            throw e;
+        } catch (Exception e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);
         }
@@ -1392,13 +1418,16 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         try {
             storage.beginTx();
             PolicyBean policy = this.storage.getPolicy(policyId);
+            if (policy == null) {
+                throw ExceptionFactory.policyNotFoundException(policyId);
+            }
             storage.deletePolicy(policy);
             storage.createAuditEntry(AuditUtils.policyRemoved(policy, PolicyType.Service, securityContext));
             storage.commitTx();
-        } catch (DoesNotExistException e) {
+        } catch (AbstractRestException e) {
             storage.rollbackTx();
-            throw ExceptionFactory.policyNotFoundException(policyId);
-        } catch (StorageException e) {
+            throw e;
+        } catch (Exception e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);
         }
@@ -1444,7 +1473,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             }
             storage.createAuditEntry(AuditUtils.policiesReordered(svb, PolicyType.Service, securityContext));
             storage.commitTx();
-        } catch (StorageException e) {
+        } catch (AbstractRestException e) {
+            storage.rollbackTx();
+            throw e;
+        } catch (Exception e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);
         }
@@ -1537,18 +1569,21 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             // Store/persist the new plan
             storage.beginTx();
             OrganizationBean orgBean = storage.getOrganization(organizationId);
+            if (orgBean == null) {
+                throw ExceptionFactory.organizationNotFoundException(organizationId);
+            }
+            if (storage.getPlan(orgBean.getId(), newPlan.getId()) != null) {
+                throw ExceptionFactory.planAlreadyExistsException(newPlan.getName());
+            }
             newPlan.setOrganization(orgBean);
             storage.createPlan(newPlan);
             storage.createAuditEntry(AuditUtils.planCreated(newPlan, securityContext));
             storage.commitTx();
             return newPlan;
-        } catch (DoesNotExistException e) {
+        } catch (AbstractRestException e) {
             storage.rollbackTx();
-            throw ExceptionFactory.organizationNotFoundException(organizationId);
-        } catch (AlreadyExistsException e) {
-            storage.rollbackTx();
-            throw ExceptionFactory.planAlreadyExistsException(newPlan.getName());
-        } catch (StorageException e) {
+            throw e;
+        } catch (Exception e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);
         }
@@ -1563,12 +1598,15 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         try {
             storage.beginTx();
             PlanBean bean = storage.getPlan(organizationId, planId);
+            if (bean == null) {
+                throw ExceptionFactory.planNotFoundException(planId);
+            }
             storage.commitTx();
             return bean;
-        } catch (DoesNotExistException e) {
+        } catch (AbstractRestException e) {
             storage.rollbackTx();
-            throw ExceptionFactory.planNotFoundException(planId);
-        } catch (StorageException e) {
+            throw e;
+        } catch (Exception e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);
         }
@@ -1625,18 +1663,20 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         try {
             storage.beginTx();
             PlanBean plan = storage.getPlan(organizationId, planId);
+            if (plan == null) {
+                throw ExceptionFactory.planNotFoundException(planId);
+            }
             if (AuditUtils.valueChanged(plan.getDescription(), bean.getDescription())) {
                 auditData.addChange("description", plan.getDescription(), bean.getDescription()); //$NON-NLS-1$
                 plan.setDescription(bean.getDescription());
-            }            
-            // Nothing to update (yet?)
+            }
             storage.updatePlan(plan);
             storage.createAuditEntry(AuditUtils.planUpdated(plan, auditData, securityContext));
             storage.commitTx();
-        } catch (DoesNotExistException e) {
+        } catch (AbstractRestException e) {
             storage.rollbackTx();
-            throw ExceptionFactory.planNotFoundException(planId);
-        } catch (StorageException e) {
+            throw e;
+        } catch (Exception e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);
         }
@@ -1653,7 +1693,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         try {
             storage.beginTx();
             PlanBean plan = storage.getPlan(organizationId, planId);
-            
+            if (plan == null) {
+                throw ExceptionFactory.planNotFoundException(planId);
+            }
+
             PlanVersionBean newVersion = new PlanVersionBean();
             newVersion.setCreatedBy(securityContext.getCurrentUser());
             newVersion.setCreatedOn(new Date());
@@ -1666,10 +1709,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.createAuditEntry(AuditUtils.planVersionCreated(newVersion, securityContext));
             storage.commitTx();
             return newVersion;
-        } catch (DoesNotExistException e) {
+        } catch (AbstractRestException e) {
             storage.rollbackTx();
-            throw ExceptionFactory.planNotFoundException(planId);
-        } catch (StorageException e) {
+            throw e;
+        } catch (Exception e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);
         }
@@ -1689,13 +1732,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             }
             storage.commitTx();
             return planVersion;
-        } catch (PlanVersionNotFoundException e) {
+        } catch (AbstractRestException e) {
             storage.rollbackTx();
             throw e;
-        } catch (DoesNotExistException e) {
-            storage.rollbackTx();
-            throw ExceptionFactory.planNotFoundException(planId);
-        } catch (StorageException e) {
+        } catch (Exception e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);
         }
@@ -1734,18 +1774,20 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throws PlanVersionNotFoundException, NotAuthorizedException {
         if (!securityContext.hasPermission(PermissionType.planEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
-        // TODO throw error if version is not in the right state
         PlanVersionBean pvb = getPlanVersion(organizationId, planId, version);
+        if (pvb.getStatus() == PlanStatus.Locked) {
+            throw ExceptionFactory.invalidPlanStatusException();
+        }
         EntityUpdatedData data = new EntityUpdatedData();
         try {
             storage.beginTx();
             storage.updatePlanVersion(pvb);
             storage.createAuditEntry(AuditUtils.planVersionUpdated(pvb, data, securityContext));
             storage.commitTx();
-        } catch (DoesNotExistException e) {
+        } catch (AbstractRestException e) {
             storage.rollbackTx();
-            throw ExceptionFactory.planNotFoundException(planId);
-        } catch (StorageException e) {
+            throw e;
+        } catch (Exception e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);
         }
@@ -1762,8 +1804,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         
         try {
             return query.getPlanVersions(organizationId, planId);
-        } catch (DoesNotExistException e) {
-            throw ExceptionFactory.planNotFoundException(planId);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
@@ -1825,6 +1865,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         try {
             storage.beginTx();
             PolicyBean policy = storage.getPolicy(policyId);
+            if (policy == null) {
+                throw ExceptionFactory.policyNotFoundException(policyId);
+            }
             if (AuditUtils.valueChanged(policy.getConfiguration(), bean.getConfiguration())) {
                 policy.setConfiguration(bean.getConfiguration());
                 // TODO figure out what changed an include that in the audit entry
@@ -1834,10 +1877,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.updatePolicy(policy);
             storage.createAuditEntry(AuditUtils.policyUpdated(policy, PolicyType.Plan, securityContext));
             storage.commitTx();
-        } catch (DoesNotExistException e) {
+        } catch (AbstractRestException e) {
             storage.rollbackTx();
-            throw ExceptionFactory.policyNotFoundException(policyId);
-        } catch (StorageException e) {
+            throw e;
+        } catch (Exception e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);
         }
@@ -1859,13 +1902,16 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         try {
             storage.beginTx();
             PolicyBean policy = this.storage.getPolicy(policyId);
+            if (policy == null) {
+                throw ExceptionFactory.policyNotFoundException(policyId);
+            }
             storage.deletePolicy(policy);
             storage.createAuditEntry(AuditUtils.policyRemoved(policy, PolicyType.Plan, securityContext));
             storage.commitTx();
-        } catch (DoesNotExistException e) {
+        } catch (AbstractRestException e) {
             storage.rollbackTx();
-            throw ExceptionFactory.policyNotFoundException(policyId);
-        } catch (StorageException e) {
+            throw e;
+        } catch (Exception e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);
         }
@@ -1911,7 +1957,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             }
             storage.createAuditEntry(AuditUtils.policiesReordered(pvb, PolicyType.Plan, securityContext));
             storage.commitTx();
-        } catch (StorageException e) {
+        } catch (AbstractRestException e) {
+            storage.rollbackTx();
+            throw e;
+        } catch (Exception e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);
         }
@@ -1938,12 +1987,15 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         try {
             storage.beginTx();
             def = storage.getPolicyDefinition(bean.getDefinition().getId());
+            if (def == null) {
+                ExceptionFactory.policyDefNotFoundException(bean.getDefinition().getId());
+            }
             bean.setDefinition(def);
             storage.commitTx();
-        } catch (DoesNotExistException e) {
+        } catch (AbstractRestException e) {
             storage.rollbackTx();
-            ExceptionFactory.policyDefNotFoundException(bean.getDefinition().getId());
-        } catch (StorageException e) {
+            throw e;
+        } catch (Exception e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);
         }
@@ -1974,6 +2026,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             PolicyTemplateUtil.generatePolicyDescription(bean);
             storage.commitTx();
             return bean;
+        } catch (AbstractRestException e) {
+            storage.rollbackTx();
+            throw e;
         } catch (Exception e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);
@@ -2004,8 +2059,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 idmStorage.createMembership(membership);
                 auditData.addRole(roleId);
             }
-        } catch (AlreadyExistsException e) {
-            // Do nothing - re-granting is OK.
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
@@ -2013,7 +2066,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.beginTx();
             storage.createAuditEntry(AuditUtils.membershipGranted(organizationId, auditData, securityContext));
             storage.commitTx();
-        } catch (StorageException e) {
+        } catch (AbstractRestException e) {
+            storage.rollbackTx();
+            throw e;
+        } catch (Exception e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);
         }
@@ -2039,8 +2095,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             idmStorage.deleteMembership(userId, roleId, organizationId);
             auditData.addRole(roleId);
             revoked = true;
-        } catch (DoesNotExistException e) {
-            // Do nothing - revoking something that doesn't exist is OK.
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
@@ -2050,7 +2104,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 storage.beginTx();
                 storage.createAuditEntry(AuditUtils.membershipRevoked(organizationId, auditData, securityContext));
                 storage.commitTx();
-            } catch (StorageException e) {
+            } catch (AbstractRestException e) {
+                storage.rollbackTx();
+                throw e;
+            } catch (Exception e) {
                 storage.rollbackTx();
                 throw new SystemErrorException(e);
             }
@@ -2070,8 +2127,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
         try {
             idmStorage.deleteMemberships(userId, organizationId);
-        } catch (DoesNotExistException e) {
-            // Do nothing - revoking something that doesn't exist is OK.
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
@@ -2083,7 +2138,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.beginTx();
             storage.createAuditEntry(AuditUtils.membershipRevoked(organizationId, auditData, securityContext));
             storage.commitTx();
-        } catch (StorageException e) {
+        } catch (AbstractRestException e) {
+            storage.rollbackTx();
+            throw e;
+        } catch (Exception e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);
         }
@@ -2144,6 +2202,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         try {
             storage.beginTx();
             PolicyBean policy = storage.getPolicy(policyId);
+            if (policy == null) {
+                throw ExceptionFactory.policyNotFoundException(policyId);
+            }
             storage.commitTx();
             if (policy.getType() != type) {
                 throw ExceptionFactory.policyNotFoundException(policyId);
@@ -2159,12 +2220,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             }
             PolicyTemplateUtil.generatePolicyDescription(policy);
             return policy;
-        } catch (DoesNotExistException e) {
+        } catch (AbstractRestException e) {
             storage.rollbackTx();
-            throw ExceptionFactory.policyNotFoundException(policyId);
-        } catch (StorageException e) {
-            storage.rollbackTx();
-            throw new SystemErrorException(e);
+            throw e;
         } catch (Exception e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);

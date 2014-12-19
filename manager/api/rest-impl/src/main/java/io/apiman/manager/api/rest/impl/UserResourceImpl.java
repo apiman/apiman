@@ -30,7 +30,6 @@ import io.apiman.manager.api.beans.summary.ServiceSummaryBean;
 import io.apiman.manager.api.core.IIdmStorage;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
-import io.apiman.manager.api.core.exceptions.DoesNotExistException;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.rest.contract.IUserResource;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidSearchCriteriaException;
@@ -77,9 +76,11 @@ public class UserResourceImpl implements IUserResource {
     @Override
     public UserBean get(String userId) throws UserNotFoundException {
         try {
-            return idmStorage.getUser(userId);
-        } catch (DoesNotExistException e) {
-            throw ExceptionFactory.userNotFoundException(userId);
+            UserBean user = idmStorage.getUser(userId);
+            if (user == null) {
+                throw ExceptionFactory.userNotFoundException(userId);
+            }
+            return user;
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
@@ -94,6 +95,9 @@ public class UserResourceImpl implements IUserResource {
             throw ExceptionFactory.notAuthorizedException();
         try {
             UserBean updatedUser = idmStorage.getUser(userId);
+            if (updatedUser == null) {
+                throw ExceptionFactory.userNotFoundException(userId);
+            }
             if (user.getEmail() != null) {
                 updatedUser.setEmail(user.getEmail());
             }
@@ -101,8 +105,6 @@ public class UserResourceImpl implements IUserResource {
                 updatedUser.setFullName(user.getFullName());
             }
             idmStorage.updateUser(updatedUser);
-        } catch (DoesNotExistException e) {
-            throw ExceptionFactory.userNotFoundException(userId);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }

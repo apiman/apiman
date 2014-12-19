@@ -22,9 +22,6 @@ import io.apiman.manager.api.beans.search.PagingBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaFilterBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
-import io.apiman.manager.api.core.exceptions.AlreadyExistsException;
-import io.apiman.manager.api.core.exceptions.ConstraintViolationException;
-import io.apiman.manager.api.core.exceptions.DoesNotExistException;
 import io.apiman.manager.api.core.exceptions.StorageException;
 
 import java.util.ArrayList;
@@ -33,7 +30,6 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceException;
 import javax.persistence.RollbackException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -90,15 +86,10 @@ public abstract class AbstractJpaStorage {
             activeEM.get().close();
             activeEM.set(null);
         } catch (EntityExistsException e) {
-            throw new AlreadyExistsException();
+            throw new StorageException(e);
         } catch (RollbackException e) {
-            if (JpaUtil.isConstraintViolation(e)) {
-                logger.error(e.getMessage(), e);
-                throw new ConstraintViolationException(e);
-            } else {
-                logger.error(e.getMessage(), e);
-                throw new StorageException(e);
-            }
+            logger.error(e.getMessage(), e);
+            throw new StorageException(e);
         } catch (Throwable t) {
             logger.error(t.getMessage(), t);
             throw new StorageException(t);
@@ -135,32 +126,13 @@ public abstract class AbstractJpaStorage {
     /**
      * @see io.apiman.manager.api.core.IStorage#create(java.lang.Object)
      */
-    public <T> void create(T bean) throws StorageException, AlreadyExistsException {
+    public <T> void create(T bean) throws StorageException {
         if (bean == null) {
             return;
         }
         EntityManager entityManager = getActiveEntityManager();
         try {
             entityManager.persist(bean);
-        } catch (EntityExistsException e) {
-            logger.error(e.getMessage(), e);
-            throw new AlreadyExistsException();
-        } catch (RollbackException e) {
-            if (JpaUtil.isConstraintViolation(e)) {
-                logger.error(e.getMessage(), e);
-                throw new ConstraintViolationException(e);
-            } else {
-                logger.error(e.getMessage(), e);
-                throw new StorageException(e);
-            }
-        } catch (PersistenceException e) {
-            if (JpaUtil.isConstraintViolation(e)) {
-                logger.error(e.getMessage(), e);
-                throw new ConstraintViolationException(e);
-            } else {
-                logger.error(e.getMessage(), e);
-                throw new StorageException(e);
-            }
         } catch (Throwable t) {
             logger.error(t.getMessage(), t);
             throw new StorageException(t);
@@ -170,21 +142,10 @@ public abstract class AbstractJpaStorage {
     /**
      * @see io.apiman.manager.api.core.IStorage#update(java.lang.Object)
      */
-    public <T> void update(T bean) throws StorageException, DoesNotExistException {
+    public <T> void update(T bean) throws StorageException {
         EntityManager entityManager = getActiveEntityManager();
         try {
             entityManager.merge(bean);
-        } catch (IllegalArgumentException e) {
-            logger.error(e.getMessage(), e);
-            throw new DoesNotExistException();
-        } catch (RollbackException e) {
-            if (JpaUtil.isConstraintViolation(e)) {
-                logger.error(e.getMessage(), e);
-                throw new ConstraintViolationException(e);
-            } else {
-                logger.error(e.getMessage(), e);
-                throw new StorageException(e);
-            }
         } catch (Throwable t) {
             logger.error(t.getMessage(), t);
             throw new StorageException(t);
@@ -194,21 +155,10 @@ public abstract class AbstractJpaStorage {
     /**
      * @see io.apiman.manager.api.core.IStorage#delete(java.lang.Object)
      */
-    public <T> void delete(T bean) throws StorageException, DoesNotExistException {
+    public <T> void delete(T bean) throws StorageException {
         EntityManager entityManager = getActiveEntityManager();
         try {
             entityManager.remove(bean);
-        } catch (IllegalArgumentException e) {
-            logger.error(e.getMessage(), e);
-            throw new DoesNotExistException();
-        } catch (RollbackException e) {
-            if (JpaUtil.isConstraintViolation(e)) {
-                logger.error(e.getMessage(), e);
-                throw new ConstraintViolationException(e);
-            } else {
-                logger.error(e.getMessage(), e);
-                throw new StorageException(e);
-            }
         } catch (Throwable t) {
             logger.error(t.getMessage(), t);
             throw new StorageException(t);
@@ -218,7 +168,7 @@ public abstract class AbstractJpaStorage {
     /**
      * @see io.apiman.manager.api.core.IStorage#get(java.lang.Long, java.lang.Class)
      */
-    public <T> T get(Long id, Class<T> type) throws StorageException, DoesNotExistException {
+    public <T> T get(Long id, Class<T> type) throws StorageException {
         T rval = null;
         EntityManager entityManager = getActiveEntityManager();
         try {
@@ -227,15 +177,13 @@ public abstract class AbstractJpaStorage {
             logger.error(t.getMessage(), t);
             throw new StorageException(t);
         }
-        if (rval == null)
-            throw new DoesNotExistException();
         return rval;
     }
     
     /**
      * @see io.apiman.manager.api.core.IStorage#get(java.lang.String, java.lang.Class)
      */
-    public <T> T get(String id, Class<T> type) throws StorageException, DoesNotExistException {
+    public <T> T get(String id, Class<T> type) throws StorageException {
         T rval = null;
         EntityManager entityManager = getActiveEntityManager();
         try {
@@ -244,15 +192,13 @@ public abstract class AbstractJpaStorage {
             logger.error(t.getMessage(), t);
             throw new StorageException(t);
         }
-        if (rval == null)
-            throw new DoesNotExistException();
         return rval;
     }
 
     /**
      * @see io.apiman.manager.api.core.IStorage#get(java.lang.String, java.lang.String, java.lang.Class)
      */
-    public <T> T get(String organizationId, String id, Class<T> type) throws StorageException, DoesNotExistException {
+    public <T> T get(String organizationId, String id, Class<T> type) throws StorageException {
         T rval = null;
         EntityManager entityManager = getActiveEntityManager();
         try {
@@ -263,8 +209,6 @@ public abstract class AbstractJpaStorage {
             logger.error(t.getMessage(), t);
             throw new StorageException(t);
         }
-        if (rval == null)
-            throw new DoesNotExistException();
         return rval;
     }
     

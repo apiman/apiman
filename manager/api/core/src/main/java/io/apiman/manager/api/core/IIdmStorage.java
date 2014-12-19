@@ -21,8 +21,6 @@ import io.apiman.manager.api.beans.idm.RoleMembershipBean;
 import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
-import io.apiman.manager.api.core.exceptions.AlreadyExistsException;
-import io.apiman.manager.api.core.exceptions.DoesNotExistException;
 import io.apiman.manager.api.core.exceptions.StorageException;
 
 import java.util.Set;
@@ -45,25 +43,22 @@ public interface IIdmStorage {
      * Creates a user in the IDM system.
      * @param user
      * @throws StorageException
-     * @throws AlreadyExistsException
      */
-    public void createUser(UserBean user) throws StorageException, AlreadyExistsException;
+    public void createUser(UserBean user) throws StorageException;
     
     /**
      * Gets a user by id.
      * @param userId
      * @throws StorageException
-     * @throws DoesNotExistException
      */
-    public UserBean getUser(String userId) throws StorageException, DoesNotExistException;
+    public UserBean getUser(String userId) throws StorageException;
     
     /**
      * Updates the personal information about a user.
      * @param user
      * @throws StorageException
-     * @throws DoesNotExistException
      */
-    public void updateUser(UserBean user) throws StorageException, DoesNotExistException;
+    public void updateUser(UserBean user) throws StorageException;
 
     /**
      * Returns a list of users that match the given search criteria.
@@ -78,34 +73,30 @@ public interface IIdmStorage {
      * memberhip in those roles will grant.
      * @param role
      * @throws StorageException
-     * @throws AlreadyExistsException
      */
-    public void createRole(RoleBean role) throws StorageException, AlreadyExistsException;
+    public void createRole(RoleBean role) throws StorageException;
     
     /**
      * Gets a role by id.
      * @param roleId
      * @throws StorageException
-     * @throws DoesNotExistException
      */
-    public RoleBean getRole(String roleId) throws StorageException, DoesNotExistException;
+    public RoleBean getRole(String roleId) throws StorageException;
 
     /**
      * Updates a single role (typically with new permissions).
      * @param role
      * @throws StorageException
-     * @throws AlreadyExistsException
      */
-    public void updateRole(RoleBean role) throws StorageException, DoesNotExistException;
+    public void updateRole(RoleBean role) throws StorageException;
 
     /**
      * Deletes a role from the system.  This would also remove all memberships in
      * that role.  This should be done very infrequently!
      * @param role
      * @throws StorageException
-     * @throws DoesNotExistException
      */
-    public void deleteRole(RoleBean role) throws StorageException, DoesNotExistException;
+    public void deleteRole(RoleBean role) throws StorageException;
 
     /**
      * Returns a list of users that match the given search criteria.
@@ -118,9 +109,8 @@ public interface IIdmStorage {
      * Grants membership into a role for a user.
      * @param membership
      * @throws StorageException
-     * @throws AlreadyExistsException
      */
-    public void createMembership(RoleMembershipBean membership) throws StorageException, AlreadyExistsException;
+    public void createMembership(RoleMembershipBean membership) throws StorageException;
     
     /**
      * Deletes a single membership.
@@ -128,9 +118,8 @@ public interface IIdmStorage {
      * @param roleId
      * @param organizationId
      * @throws StorageException
-     * @throws DoesNotExistException
      */
-    public void deleteMembership(String userId, String roleId, String organizationId) throws StorageException, DoesNotExistException;
+    public void deleteMembership(String userId, String roleId, String organizationId) throws StorageException;
     
     /**
      * Deletes all role memberships for a user in a given organization.

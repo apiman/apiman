@@ -21,10 +21,9 @@ import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.summary.PolicyDefinitionSummaryBean;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
-import io.apiman.manager.api.core.exceptions.AlreadyExistsException;
-import io.apiman.manager.api.core.exceptions.DoesNotExistException;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.rest.contract.IPolicyDefinitionResource;
+import io.apiman.manager.api.rest.contract.exceptions.AbstractRestException;
 import io.apiman.manager.api.rest.contract.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.contract.exceptions.PolicyDefinitionAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.PolicyDefinitionNotFoundException;
@@ -77,14 +76,17 @@ public class PolicyDefinitionResourceImpl implements IPolicyDefinitionResource {
         bean.setId(BeanUtils.idFromName(bean.getName()));
         try {
             storage.beginTx();
+            if (storage.getPolicyDefinition(bean.getId()) != null) {
+                throw ExceptionFactory.policyDefAlreadyExistsException(bean.getName());
+            }
             // Store/persist the new policyDef
             storage.createPolicyDefinition(bean);
             storage.commitTx();
             return bean;
-        } catch (AlreadyExistsException e) {
+        } catch (AbstractRestException e) {
             storage.rollbackTx();
-            throw ExceptionFactory.policyDefAlreadyExistsException(bean.getName());
-        } catch (StorageException e) {
+            throw e;
+        } catch (Exception e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);
         }
@@ -98,12 +100,15 @@ public class PolicyDefinitionResourceImpl implements IPolicyDefinitionResource {
         try {
             storage.beginTx();
             PolicyDefinitionBean bean = storage.getPolicyDefinition(policyDefinitionId);
+            if (bean == null) {
+                throw ExceptionFactory.policyDefNotFoundException(policyDefinitionId);
+            }
             storage.commitTx();
             return bean;
-        } catch (DoesNotExistException e) {
+        } catch (AbstractRestException e) {
             storage.rollbackTx();
-            throw ExceptionFactory.policyDefNotFoundException(policyDefinitionId);
-        } catch (StorageException e) {
+            throw e;
+        } catch (Exception e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);
         }
@@ -121,6 +126,9 @@ public class PolicyDefinitionResourceImpl implements IPolicyDefinitionResource {
             storage.beginTx();
             bean.setId(policyDefinitionId);
             PolicyDefinitionBean pdb = storage.getPolicyDefinition(policyDefinitionId);
+            if (pdb == null) {
+                throw ExceptionFactory.policyDefNotFoundException(policyDefinitionId);
+            }
             if (bean.getName() != null)
                 pdb.setName(bean.getName());
             if (bean.getDescription() != null)
@@ -129,10 +137,10 @@ public class PolicyDefinitionResourceImpl implements IPolicyDefinitionResource {
                 pdb.setIcon(bean.getIcon());
             storage.updatePolicyDefinition(pdb);
             storage.commitTx();
-        } catch (DoesNotExistException e) {
+        } catch (AbstractRestException e) {
             storage.rollbackTx();
-            throw ExceptionFactory.policyDefNotFoundException(policyDefinitionId);
-        } catch (StorageException e) {
+            throw e;
+        } catch (Exception e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);
         }
@@ -149,12 +157,15 @@ public class PolicyDefinitionResourceImpl implements IPolicyDefinitionResource {
         try {
             storage.beginTx();
             PolicyDefinitionBean pdb = storage.getPolicyDefinition(policyDefinitionId);
+            if (pdb == null) {
+                throw ExceptionFactory.policyDefNotFoundException(policyDefinitionId);
+            }
             storage.deletePolicyDefinition(pdb);
             storage.commitTx();
-        } catch (DoesNotExistException e) {
+        } catch (AbstractRestException e) {
             storage.rollbackTx();
-            throw ExceptionFactory.policyDefNotFoundException(policyDefinitionId);
-        } catch (StorageException e) {
+            throw e;
+        } catch (Exception e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);
         }

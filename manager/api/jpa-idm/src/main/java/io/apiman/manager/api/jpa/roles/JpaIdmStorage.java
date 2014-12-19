@@ -23,8 +23,6 @@ import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.core.IIdmStorage;
-import io.apiman.manager.api.core.exceptions.AlreadyExistsException;
-import io.apiman.manager.api.core.exceptions.DoesNotExistException;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.jpa.AbstractJpaStorage;
 
@@ -64,15 +62,12 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
      * @see io.apiman.manager.api.core.IIdmStorage#createUser(io.apiman.manager.api.beans.idm.UserBean)
      */
     @Override
-    public void createUser(UserBean user) throws StorageException, AlreadyExistsException {
+    public void createUser(UserBean user) throws StorageException {
         user.setJoinedOn(new Date());
         beginTx();
         try {
             super.create(user);
             commitTx();
-        } catch (AlreadyExistsException e) {
-            rollbackTx();
-            throw e;
         } catch (StorageException e) {
             rollbackTx();
             throw e;
@@ -83,7 +78,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
      * @see io.apiman.manager.api.core.IIdmStorage#getUser(java.lang.String)
      */
     @Override
-    public UserBean getUser(String userId) throws StorageException, DoesNotExistException {
+    public UserBean getUser(String userId) throws StorageException {
         beginTx();
         try {
             return super.get(userId, UserBean.class);
@@ -96,7 +91,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
      * @see io.apiman.manager.api.core.IIdmStorage#updateUser(io.apiman.manager.api.beans.idm.UserBean)
      */
     @Override
-    public void updateUser(UserBean user) throws StorageException, DoesNotExistException {
+    public void updateUser(UserBean user) throws StorageException {
         beginTx();
         try {
             super.update(user);
@@ -122,7 +117,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
      * @see io.apiman.manager.api.core.IIdmStorage#createRole(io.apiman.manager.api.beans.idm.RoleBean)
      */
     @Override
-    public void createRole(RoleBean role) throws StorageException, AlreadyExistsException {
+    public void createRole(RoleBean role) throws StorageException {
         beginTx();
         try {
             super.create(role);
@@ -135,7 +130,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
      * @see io.apiman.manager.api.core.IIdmStorage#updateRole(io.apiman.manager.api.beans.idm.RoleBean)
      */
     @Override
-    public void updateRole(RoleBean role) throws StorageException, DoesNotExistException {
+    public void updateRole(RoleBean role) throws StorageException {
         beginTx();
         try {
             super.update(role);
@@ -148,7 +143,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
      * @see io.apiman.manager.api.core.IIdmStorage#deleteRole(io.apiman.manager.api.beans.idm.RoleBean)
      */
     @Override
-    public void deleteRole(RoleBean role) throws StorageException, DoesNotExistException {
+    public void deleteRole(RoleBean role) throws StorageException {
         beginTx();
         try {
             EntityManager entityManager = getActiveEntityManager();
@@ -175,7 +170,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
      * @see io.apiman.manager.api.core.IIdmStorage#getRole(java.lang.String)
      */
     @Override
-    public RoleBean getRole(String roleId) throws StorageException, DoesNotExistException {
+    public RoleBean getRole(String roleId) throws StorageException {
         beginTx();
         try {
             return getRoleInternal(roleId);
@@ -201,8 +196,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
      * @see io.apiman.manager.api.core.IIdmStorage#createMembership(io.apiman.manager.api.beans.idm.RoleMembershipBean)
      */
     @Override
-    public void createMembership(RoleMembershipBean membership) throws StorageException,
-            AlreadyExistsException {
+    public void createMembership(RoleMembershipBean membership) throws StorageException {
         beginTx();
         try {
             super.create(membership);
@@ -215,8 +209,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
      * @see io.apiman.manager.api.core.IIdmStorage#deleteMembership(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
-    public void deleteMembership(String userId, String roleId, String organizationId)
-            throws StorageException, DoesNotExistException {
+    public void deleteMembership(String userId, String roleId, String organizationId) throws StorageException {
         beginTx();
         try {
             EntityManager entityManager = getActiveEntityManager();
@@ -224,12 +217,8 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
             query.setParameter("roleId", roleId); //$NON-NLS-1$
             query.setParameter("userId", userId); //$NON-NLS-1$
             query.setParameter("orgId", organizationId); //$NON-NLS-1$
-            if (query.executeUpdate() == 0)
-                throw new DoesNotExistException();
+            query.executeUpdate();
             commitTx();
-        } catch (DoesNotExistException dne) {
-            rollbackTx();
-            throw dne;
         } catch (Throwable t) {
             logger.error(t.getMessage(), t);
             rollbackTx();
@@ -374,7 +363,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
      * @throws StorageException
      * @throws DoesNotExistException
      */
-    protected RoleBean getRoleInternal(String roleId) throws StorageException, DoesNotExistException {
+    protected RoleBean getRoleInternal(String roleId) throws StorageException {
         return super.get(roleId, RoleBean.class);
     }
     

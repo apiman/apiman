@@ -25,8 +25,6 @@ import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
 import io.apiman.manager.api.beans.summary.ServiceSummaryBean;
 import io.apiman.manager.api.core.IIdmStorage;
 import io.apiman.manager.api.core.IStorageQuery;
-import io.apiman.manager.api.core.exceptions.AlreadyExistsException;
-import io.apiman.manager.api.core.exceptions.DoesNotExistException;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.rest.contract.ICurrentUserResource;
 import io.apiman.manager.api.rest.contract.exceptions.SystemErrorException;
@@ -70,29 +68,26 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
         try {
             CurrentUserBean rval = new CurrentUserBean();
             UserBean user = idmStorage.getUser(userId);
-            rval.initFromUser(user);
-            Set<PermissionBean> permissions = idmStorage.getPermissions(userId);
-            rval.setPermissions(permissions);
-            rval.setAdmin(securityContext.isAdmin());
-            return rval;
-        } catch (DoesNotExistException e) {
-            UserBean user = new UserBean();
-            user.setUsername(userId);
-            user.setFullName(userId);
-            user.setEmail(userId + "@example.org"); //$NON-NLS-1$
-            user.setJoinedOn(new Date());
-            try {
-                idmStorage.createUser(user);
-            } catch (AlreadyExistsException e1) {
-                throw new SystemErrorException(e);
-            } catch (StorageException e1) {
-                throw new SystemErrorException(e);
+            if (user == null) {
+                user = new UserBean();
+                user.setUsername(userId);
+                user.setFullName(userId);
+                user.setEmail(userId + "@example.org"); //$NON-NLS-1$
+                user.setJoinedOn(new Date());
+                try {
+                    idmStorage.createUser(user);
+                } catch (StorageException e1) {
+                    throw new SystemErrorException(e1);
+                }
+                rval.initFromUser(user);
+                rval.setAdmin(securityContext.isAdmin());
+                rval.setPermissions(new HashSet<PermissionBean>());
+            } else {
+                rval.initFromUser(user);
+                Set<PermissionBean> permissions = idmStorage.getPermissions(userId);
+                rval.setPermissions(permissions);
+                rval.setAdmin(securityContext.isAdmin());
             }
-
-            CurrentUserBean rval = new CurrentUserBean();
-            rval.initFromUser(user);
-            rval.setAdmin(securityContext.isAdmin());
-            rval.setPermissions(new HashSet<PermissionBean>());
             return rval;
         } catch (StorageException e) {
             throw new SystemErrorException(e);
@@ -106,6 +101,9 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
     public void updateInfo(UserBean info) {
         try {
             UserBean user = idmStorage.getUser(securityContext.getCurrentUser());
+            if (user == null) {
+                throw new StorageException("User not found: " + securityContext.getCurrentUser()); //$NON-NLS-1$
+            }
             if (info.getEmail() != null) {
                 user.setEmail(info.getEmail());
             }

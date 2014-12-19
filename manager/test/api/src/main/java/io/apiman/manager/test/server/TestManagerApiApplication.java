@@ -17,7 +17,7 @@ package io.apiman.manager.test.server;
 
 import io.apiman.manager.api.rest.impl.ActionResourceImpl;
 import io.apiman.manager.api.rest.impl.CurrentUserResourceImpl;
-import io.apiman.manager.api.rest.impl.DtApiApplication;
+import io.apiman.manager.api.rest.impl.ApiManagerApplication;
 import io.apiman.manager.api.rest.impl.GatewayResourceImpl;
 import io.apiman.manager.api.rest.impl.OrganizationResourceImpl;
 import io.apiman.manager.api.rest.impl.PermissionsResourceImpl;
@@ -36,7 +36,7 @@ import java.util.Set;
  *
  * @author eric.wittmann@redhat.com
  */
-public class TestManagerApiApplication extends DtApiApplication {
+public class TestManagerApiApplication extends ApiManagerApplication {
 
     private Set<Object> singletons = new HashSet<Object>();
     private Set<Class<?>> classes = new HashSet<Class<?>>();

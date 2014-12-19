@@ -54,8 +54,6 @@ import io.apiman.manager.api.beans.summary.ServiceVersionSummaryBean;
 import io.apiman.manager.api.core.IApiKeyGenerator;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
-import io.apiman.manager.api.core.exceptions.AlreadyExistsException;
-import io.apiman.manager.api.core.exceptions.DoesNotExistException;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.core.util.PolicyTemplateUtil;
 
@@ -117,8 +115,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * @see io.apiman.manager.api.core.IStorage#createApplication(io.apiman.manager.api.beans.apps.ApplicationBean)
      */
     @Override
-    public void createApplication(ApplicationBean application) throws StorageException,
-            AlreadyExistsException {
+    public void createApplication(ApplicationBean application) throws StorageException {
         super.create(application);
     }
     
@@ -126,8 +123,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * @see io.apiman.manager.api.core.IStorage#createApplicationVersion(io.apiman.manager.api.beans.apps.ApplicationVersionBean)
      */
     @Override
-    public void createApplicationVersion(ApplicationVersionBean version) throws StorageException,
-            AlreadyExistsException {
+    public void createApplicationVersion(ApplicationVersionBean version) throws StorageException {
         super.create(version);
     }
     
@@ -135,7 +131,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * @see io.apiman.manager.api.core.IStorage#createContract(io.apiman.manager.api.beans.contracts.ContractBean)
      */
     @Override
-    public void createContract(ContractBean contract) throws StorageException, AlreadyExistsException {
+    public void createContract(ContractBean contract) throws StorageException {
         super.create(contract);
     }
     
@@ -143,7 +139,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * @see io.apiman.manager.api.core.IStorage#createGateway(io.apiman.manager.api.beans.gateways.GatewayBean)
      */
     @Override
-    public void createGateway(GatewayBean gateway) throws StorageException, AlreadyExistsException {
+    public void createGateway(GatewayBean gateway) throws StorageException {
         super.create(gateway);
     }
     
@@ -151,8 +147,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * @see io.apiman.manager.api.core.IStorage#createOrganization(io.apiman.manager.api.beans.orgs.OrganizationBean)
      */
     @Override
-    public void createOrganization(OrganizationBean organization) throws StorageException,
-            AlreadyExistsException {
+    public void createOrganization(OrganizationBean organization) throws StorageException {
         super.create(organization);
     }
     
@@ -160,7 +155,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * @see io.apiman.manager.api.core.IStorage#createPlan(io.apiman.manager.api.beans.plans.PlanBean)
      */
     @Override
-    public void createPlan(PlanBean plan) throws StorageException, AlreadyExistsException {
+    public void createPlan(PlanBean plan) throws StorageException {
         super.create(plan);
     }
     
@@ -168,7 +163,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * @see io.apiman.manager.api.core.IStorage#createPlanVersion(io.apiman.manager.api.beans.plans.PlanVersionBean)
      */
     @Override
-    public void createPlanVersion(PlanVersionBean version) throws StorageException, AlreadyExistsException {
+    public void createPlanVersion(PlanVersionBean version) throws StorageException {
         super.create(version);
     }
     
@@ -176,7 +171,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * @see io.apiman.manager.api.core.IStorage#createPolicy(io.apiman.manager.api.beans.policies.PolicyBean)
      */
     @Override
-    public void createPolicy(PolicyBean policy) throws StorageException, AlreadyExistsException {
+    public void createPolicy(PolicyBean policy) throws StorageException {
         super.create(policy);
     }
     
@@ -184,8 +179,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * @see io.apiman.manager.api.core.IStorage#createPolicyDefinition(io.apiman.manager.api.beans.policies.PolicyDefinitionBean)
      */
     @Override
-    public void createPolicyDefinition(PolicyDefinitionBean policyDef) throws StorageException,
-            AlreadyExistsException {
+    public void createPolicyDefinition(PolicyDefinitionBean policyDef) throws StorageException {
         super.create(policyDef);
     }
     
@@ -193,7 +187,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * @see io.apiman.manager.api.core.IStorage#createRole(io.apiman.manager.api.beans.idm.RoleBean)
      */
     @Override
-    public void createRole(RoleBean role) throws StorageException, AlreadyExistsException {
+    public void createRole(RoleBean role) throws StorageException {
         super.create(role);
     }
     
@@ -201,7 +195,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * @see io.apiman.manager.api.core.IStorage#createService(io.apiman.manager.api.beans.services.ServiceBean)
      */
     @Override
-    public void createService(ServiceBean service) throws StorageException, AlreadyExistsException {
+    public void createService(ServiceBean service) throws StorageException {
         super.create(service);
     }
     
@@ -209,8 +203,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * @see io.apiman.manager.api.core.IStorage#createServiceVersion(io.apiman.manager.api.beans.services.ServiceVersionBean)
      */
     @Override
-    public void createServiceVersion(ServiceVersionBean version) throws StorageException,
-            AlreadyExistsException {
+    public void createServiceVersion(ServiceVersionBean version) throws StorageException {
         super.create(version);
     }
 
@@ -218,7 +211,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * @see io.apiman.manager.api.core.IStorage#updateApplication(io.apiman.manager.api.beans.apps.ApplicationBean)
      */
     @Override
-    public void updateApplication(ApplicationBean application) throws StorageException, DoesNotExistException {
+    public void updateApplication(ApplicationBean application) throws StorageException {
         super.update(application);
     }
     
@@ -226,8 +219,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * @see io.apiman.manager.api.core.IStorage#updateApplicationVersion(io.apiman.manager.api.beans.apps.ApplicationVersionBean)
      */
     @Override
-    public void updateApplicationVersion(ApplicationVersionBean version) throws StorageException,
-            DoesNotExistException {
+    public void updateApplicationVersion(ApplicationVersionBean version) throws StorageException {
         super.update(version);
     }
     
@@ -235,7 +227,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * @see io.apiman.manager.api.core.IStorage#updateContract(io.apiman.manager.api.beans.contracts.ContractBean)
      */
     @Override
-    public void updateContract(ContractBean contract) throws StorageException, DoesNotExistException {
+    public void updateContract(ContractBean contract) throws StorageException {
         super.update(contract);
     }
     
@@ -243,7 +235,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * @see io.apiman.manager.api.core.IStorage#updateGateway(io.apiman.manager.api.beans.gateways.GatewayBean)
      */
     @Override
-    public void updateGateway(GatewayBean gateway) throws StorageException, DoesNotExistException {
+    public void updateGateway(GatewayBean gateway) throws StorageException {
         super.update(gateway);
     }
     
@@ -251,8 +243,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * @see io.apiman.manager.api.core.IStorage#updateOrganization(io.apiman.manager.api.beans.orgs.OrganizationBean)
      */
     @Override
-    public void updateOrganization(OrganizationBean organization) throws StorageException,
-            DoesNotExistException {
+    public void updateOrganization(OrganizationBean organization) throws StorageException {
         super.update(organization);
     }
     
@@ -260,7 +251,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * @see io.apiman.manager.api.core.IStorage#updatePlan(io.apiman.manager.api.beans.plans.PlanBean)
      */
     @Override
-    public void updatePlan(PlanBean plan) throws StorageException, DoesNotExistException {
+    public void updatePlan(PlanBean plan) throws StorageException {
         super.update(plan);
     }
     
@@ -268,7 +259,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * @see io.apiman.manager.api.core.IStorage#updatePlanVersion(io.apiman.manager.api.beans.plans.PlanVersionBean)
      */
     @Override
-    public void updatePlanVersion(PlanVersionBean version) throws StorageException, DoesNotExistException {
+    public void updatePlanVersion(PlanVersionBean version) throws StorageException {
         super.update(version);
     }
     
@@ -276,7 +267,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * @see io.apiman.manager.api.core.IStorage#updatePolicy(io.apiman.manager.api.beans.policies.PolicyBean)
      */
     @Override
-    public void updatePolicy(PolicyBean policy) throws StorageException, DoesNotExistException {
+    public void updatePolicy(PolicyBean policy) throws StorageException {
         super.update(policy);
     }
     
@@ -284,8 +275,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * @see io.apiman.manager.api.core.IStorage#updatePolicyDefinition(io.apiman.manager.api.beans.policies.PolicyDefinitionBean)
      */
     @Override
-    public void updatePolicyDefinition(PolicyDefinitionBean policyDef) throws StorageException,
-            DoesNotExistException {
+    public void updatePolicyDefinition(PolicyDefinitionBean policyDef) throws StorageException {
         super.update(policyDef);
     }
     
@@ -293,7 +283,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * @see io.apiman.manager.api.core.IStorage#updateRole(io.apiman.manager.api.beans.idm.RoleBean)
      */
     @Override
-    public void updateRole(RoleBean role) throws StorageException, DoesNotExistException {
+    public void updateRole(RoleBean role) throws StorageException {
         super.update(role);
     }
     
@@ -301,7 +291,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * @see io.apiman.manager.api.core.IStorage#updateService(io.apiman.manager.api.beans.services.ServiceBean)
      */
     @Override
-    public void updateService(ServiceBean service) throws StorageException, DoesNotExistException {
+    public void updateService(ServiceBean service) throws StorageException {
         super.update(service);
     }
     
@@ -309,8 +299,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * @see io.apiman.manager.api.core.IStorage#updateServiceVersion(io.apiman.manager.api.beans.services.ServiceVersionBean)
      */
     @Override
-    public void updateServiceVersion(ServiceVersionBean version) throws StorageException,
-            DoesNotExistException {
+    public void updateServiceVersion(ServiceVersionBean version) throws StorageException {
         super.update(version);
     }
     
@@ -319,8 +308,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * @see io.apiman.manager.api.core.IStorage#deleteOrganization(io.apiman.manager.api.beans.orgs.OrganizationBean)
      */
     @Override
-    public void deleteOrganization(OrganizationBean organization) throws StorageException,
-            DoesNotExistException {
+    public void deleteOrganization(OrganizationBean organization) throws StorageException {
         super.delete(organization);
     }
 
@@ -328,7 +316,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * @see io.apiman.manager.api.core.IStorage#deleteApplication(io.apiman.manager.api.beans.apps.ApplicationBean)
      */
     @Override
-    public void deleteApplication(ApplicationBean application) throws StorageException, DoesNotExistException {
+    public void deleteApplication(ApplicationBean application) throws StorageException {
         super.delete(application);
     }
 
@@ -336,8 +324,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * @see io.apiman.manager.api.core.IStorage#deleteApplicationVersion(io.apiman.manager.api.beans.apps.ApplicationVersionBean)
      */
     @Override
-    public void deleteApplicationVersion(ApplicationVersionBean version) throws StorageException,
-            DoesNotExistException {
+    public void deleteApplicationVersion(ApplicationVersionBean version) throws StorageException {
         super.delete(version);
     }
 
@@ -345,7 +332,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * @see io.apiman.manager.api.core.IStorage#deleteContract(io.apiman.manager.api.beans.contracts.ContractBean)
      */
     @Override
-    public void deleteContract(ContractBean contract) throws StorageException, DoesNotExistException {
+    public void deleteContract(ContractBean contract) throws StorageException {
         super.delete(contract);
     }
 
@@ -353,7 +340,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * @see io.apiman.manager.api.core.IStorage#deleteService(io.apiman.manager.api.beans.services.ServiceBean)
      */
     @Override
-    public void deleteService(ServiceBean service) throws StorageException, DoesNotExistException {
+    public void deleteService(ServiceBean service) throws StorageException {
         super.delete(service);
     }
 
@@ -361,8 +348,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * @see io.apiman.manager.api.core.IStorage#deleteServiceVersion(io.apiman.manager.api.beans.services.ServiceVersionBean)
      */
     @Override
-    public void deleteServiceVersion(ServiceVersionBean version) throws StorageException,
-            DoesNotExistException {
+    public void deleteServiceVersion(ServiceVersionBean version) throws StorageException {
         super.delete(version);
     }
 
@@ -370,7 +356,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * @see io.apiman.manager.api.core.IStorage#deletePlan(io.apiman.manager.api.beans.plans.PlanBean)
      */
     @Override
-    public void deletePlan(PlanBean plan) throws StorageException, DoesNotExistException {
+    public void deletePlan(PlanBean plan) throws StorageException {
         super.delete(plan);
     }
 
@@ -378,7 +364,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * @see io.apiman.manager.api.core.IStorage#deletePlanVersion(io.apiman.manager.api.beans.plans.PlanVersionBean)
      */
     @Override
-    public void deletePlanVersion(PlanVersionBean version) throws StorageException, DoesNotExistException {
+    public void deletePlanVersion(PlanVersionBean version) throws StorageException {
         super.delete(version);
     }
 
@@ -386,7 +372,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * @see io.apiman.manager.api.core.IStorage#deletePolicy(io.apiman.manager.api.beans.policies.PolicyBean)
      */
     @Override
-    public void deletePolicy(PolicyBean policy) throws StorageException, DoesNotExistException {
+    public void deletePolicy(PolicyBean policy) throws StorageException {
         super.delete(policy);
     }
 
@@ -394,7 +380,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * @see io.apiman.manager.api.core.IStorage#deleteGateway(io.apiman.manager.api.beans.gateways.GatewayBean)
      */
     @Override
-    public void deleteGateway(GatewayBean gateway) throws StorageException, DoesNotExistException {
+    public void deleteGateway(GatewayBean gateway) throws StorageException {
         super.delete(gateway);
     }
 
@@ -402,8 +388,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * @see io.apiman.manager.api.core.IStorage#deletePolicyDefinition(io.apiman.manager.api.beans.policies.PolicyDefinitionBean)
      */
     @Override
-    public void deletePolicyDefinition(PolicyDefinitionBean policyDef) throws StorageException,
-            DoesNotExistException {
+    public void deletePolicyDefinition(PolicyDefinitionBean policyDef) throws StorageException {
         super.delete(policyDef);
     }
 
@@ -411,7 +396,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * @see io.apiman.manager.api.core.IStorage#deleteRole(io.apiman.manager.api.beans.idm.RoleBean)
      */
     @Override
-    public void deleteRole(RoleBean role) throws StorageException, DoesNotExistException {
+    public void deleteRole(RoleBean role) throws StorageException {
         super.delete(role);
     }
     
@@ -420,7 +405,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * @see io.apiman.manager.api.core.IStorage#getOrganization(java.lang.String)
      */
     @Override
-    public OrganizationBean getOrganization(String id) throws StorageException, DoesNotExistException {
+    public OrganizationBean getOrganization(String id) throws StorageException {
         return super.get(id, OrganizationBean.class);
     }
 
@@ -428,8 +413,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * @see io.apiman.manager.api.core.IStorage#getApplication(java.lang.String, java.lang.String)
      */
     @Override
-    public ApplicationBean getApplication(String organizationId, String id) throws StorageException,
-            DoesNotExistException {
+    public ApplicationBean getApplication(String organizationId, String id) throws StorageException {
         return super.get(organizationId, id, ApplicationBean.class);
     }
 
@@ -437,7 +421,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * @see io.apiman.manager.api.core.IStorage#getContract(java.lang.Long)
      */
     @Override
-    public ContractBean getContract(Long id) throws StorageException, DoesNotExistException {
+    public ContractBean getContract(Long id) throws StorageException {
         return super.get(id, ContractBean.class);
     }
 
@@ -445,8 +429,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * @see io.apiman.manager.api.core.IStorage#getService(java.lang.String, java.lang.String)
      */
     @Override
-    public ServiceBean getService(String organizationId, String id) throws StorageException,
-            DoesNotExistException {
+    public ServiceBean getService(String organizationId, String id) throws StorageException {
         return super.get(organizationId, id, ServiceBean.class);
     }
 
@@ -454,7 +437,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * @see io.apiman.manager.api.core.IStorage#getPlan(java.lang.String, java.lang.String)
      */
     @Override
-    public PlanBean getPlan(String organizationId, String id) throws StorageException, DoesNotExistException {
+    public PlanBean getPlan(String organizationId, String id) throws StorageException {
         return super.get(organizationId, id, PlanBean.class);
     }
 
@@ -462,7 +445,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * @see io.apiman.manager.api.core.IStorage#getPolicy(java.lang.Long)
      */
     @Override
-    public PolicyBean getPolicy(Long id) throws StorageException, DoesNotExistException {
+    public PolicyBean getPolicy(Long id) throws StorageException {
         return super.get(id, PolicyBean.class);
     }
 
@@ -470,7 +453,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * @see io.apiman.manager.api.core.IStorage#getGateway(java.lang.String)
      */
     @Override
-    public GatewayBean getGateway(String id) throws StorageException, DoesNotExistException {
+    public GatewayBean getGateway(String id) throws StorageException {
         return super.get(id, GatewayBean.class);
     }
 
@@ -478,7 +461,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * @see io.apiman.manager.api.core.IStorage#getPolicyDefinition(java.lang.String)
      */
     @Override
-    public PolicyDefinitionBean getPolicyDefinition(String id) throws StorageException, DoesNotExistException {
+    public PolicyDefinitionBean getPolicyDefinition(String id) throws StorageException {
         return super.get(id, PolicyDefinitionBean.class);
     }
 
@@ -486,7 +469,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
      * @see io.apiman.manager.api.core.IStorage#getRole(java.lang.String)
      */
     @Override
-    public RoleBean getRole(String id) throws StorageException, DoesNotExistException {
+    public RoleBean getRole(String id) throws StorageException {
         return super.get(id, RoleBean.class);
     }
 

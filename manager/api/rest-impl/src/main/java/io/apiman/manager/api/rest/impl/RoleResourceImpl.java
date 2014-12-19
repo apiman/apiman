@@ -21,8 +21,6 @@ import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.core.IIdmStorage;
-import io.apiman.manager.api.core.exceptions.AlreadyExistsException;
-import io.apiman.manager.api.core.exceptions.DoesNotExistException;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.rest.contract.IRoleResource;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidSearchCriteriaException;
@@ -71,10 +69,11 @@ public class RoleResourceImpl implements IRoleResource {
         bean.setCreatedBy(securityContext.getCurrentUser());
         bean.setCreatedOn(new Date());
         try {
+            if (idmStorage.getRole(bean.getId()) != null) {
+                throw ExceptionFactory.roleAlreadyExistsException(bean.getId());
+            }
             idmStorage.createRole(bean);
             return bean;
-        } catch (AlreadyExistsException e) {
-            throw ExceptionFactory.roleAlreadyExistsException(bean.getId());
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
@@ -86,9 +85,11 @@ public class RoleResourceImpl implements IRoleResource {
     @Override
     public RoleBean get(String roleId) throws RoleNotFoundException, NotAuthorizedException {
         try {
-            return idmStorage.getRole(roleId);
-        } catch (DoesNotExistException e) {
-            throw ExceptionFactory.roleNotFoundException(roleId);
+            RoleBean role = idmStorage.getRole(roleId);
+            if (role == null) {
+                throw ExceptionFactory.roleNotFoundException(roleId);
+            }
+            return role;
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
@@ -103,6 +104,9 @@ public class RoleResourceImpl implements IRoleResource {
             throw ExceptionFactory.notAuthorizedException();
         try {
             RoleBean role = idmStorage.getRole(roleId);
+            if (role == null) {
+                throw ExceptionFactory.roleNotFoundException(roleId);
+            }
             if (bean.getDescription() != null) {
                 role.setDescription(bean.getDescription());
             }
@@ -117,8 +121,6 @@ public class RoleResourceImpl implements IRoleResource {
                 role.getPermissions().addAll(bean.getPermissions());
             }
             idmStorage.updateRole(role);
-        } catch (DoesNotExistException e) {
-            throw ExceptionFactory.roleNotFoundException(roleId);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
@@ -134,8 +136,6 @@ public class RoleResourceImpl implements IRoleResource {
         RoleBean bean = get(roleId);
         try {
             idmStorage.deleteRole(bean);
-        } catch (DoesNotExistException e) {
-            throw ExceptionFactory.roleNotFoundException(roleId);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }

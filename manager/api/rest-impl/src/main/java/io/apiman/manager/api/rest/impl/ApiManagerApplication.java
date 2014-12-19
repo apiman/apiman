@@ -13,21 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.manager.api.core.exceptions;
+
+package io.apiman.manager.api.rest.impl;
+
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.core.Application;
+
 
 /**
- * 
+ * The jax-rs application for the API Manager rest api.
  *
  * @author eric.wittmann@redhat.com
  */
-public class DoesNotExistException extends StorageException {
-
-    private static final long serialVersionUID = -7445754147775177820L;
-    
-    /**
-     * Constructor.
-     */
-    public DoesNotExistException() {
-    }
+@ApplicationPath("/")
+public class ApiManagerApplication extends Application {
 
 }

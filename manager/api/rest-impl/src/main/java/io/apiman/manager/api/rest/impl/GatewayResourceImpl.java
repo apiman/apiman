@@ -21,10 +21,9 @@ import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.summary.GatewaySummaryBean;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
-import io.apiman.manager.api.core.exceptions.AlreadyExistsException;
-import io.apiman.manager.api.core.exceptions.DoesNotExistException;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.rest.contract.IGatewayResource;
+import io.apiman.manager.api.rest.contract.exceptions.AbstractRestException;
 import io.apiman.manager.api.rest.contract.exceptions.GatewayAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.GatewayNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.NotAuthorizedException;
@@ -85,14 +84,17 @@ public class GatewayResourceImpl implements IGatewayResource {
         bean.setModifiedOn(now);
         try {
             storage.beginTx();
+            if (storage.getGateway(bean.getId()) != null) {
+                throw ExceptionFactory.gatewayAlreadyExistsException(bean.getName());
+            }
             // Store/persist the new gateway
             storage.createGateway(bean);
             storage.commitTx();
             return bean;
-        } catch (AlreadyExistsException e) {
+        } catch (AbstractRestException e) {
             storage.rollbackTx();
-            throw ExceptionFactory.gatewayAlreadyExistsException(bean.getName());
-        } catch (StorageException e) {
+            throw e;
+        } catch (Exception e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);
         }
@@ -106,15 +108,18 @@ public class GatewayResourceImpl implements IGatewayResource {
         try {
             storage.beginTx();
             GatewayBean bean = storage.getGateway(gatewayId);
+            if (bean == null) {
+                throw ExceptionFactory.gatewayNotFoundException(gatewayId);
+            }
             if (!securityContext.isAdmin()) {
                 bean.setConfiguration(null);
             }
             storage.commitTx();
             return bean;
-        } catch (DoesNotExistException e) {
+        } catch (AbstractRestException e) {
             storage.rollbackTx();
-            throw ExceptionFactory.gatewayNotFoundException(gatewayId);
-        } catch (StorageException e) {
+            throw e;
+        } catch (Exception e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);
         }
@@ -134,6 +139,9 @@ public class GatewayResourceImpl implements IGatewayResource {
 
             bean.setId(gatewayId);
             GatewayBean gbean = storage.getGateway(gatewayId);
+            if (gbean == null) {
+                throw ExceptionFactory.gatewayNotFoundException(gatewayId);
+            }
             gbean.setModifiedBy(securityContext.getCurrentUser());
             gbean.setModifiedOn(now);
             if (bean.getName() != null)
@@ -146,10 +154,10 @@ public class GatewayResourceImpl implements IGatewayResource {
                 gbean.setConfiguration(bean.getConfiguration());
             storage.updateGateway(gbean);
             storage.commitTx();
-        } catch (DoesNotExistException e) {
+        } catch (AbstractRestException e) {
             storage.rollbackTx();
-            throw ExceptionFactory.gatewayNotFoundException(gatewayId);
-        } catch (StorageException e) {
+            throw e;
+        } catch (Exception e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);
         }
@@ -166,12 +174,15 @@ public class GatewayResourceImpl implements IGatewayResource {
         try {
             storage.beginTx();
             GatewayBean gbean = storage.getGateway(gatewayId);
+            if (gbean == null) {
+                throw ExceptionFactory.gatewayNotFoundException(gatewayId);
+            }
             storage.deleteGateway(gbean);
             storage.commitTx();
-        } catch (DoesNotExistException e) {
+        } catch (AbstractRestException e) {
             storage.rollbackTx();
-            throw ExceptionFactory.gatewayNotFoundException(gatewayId);
-        } catch (StorageException e) {
+            throw e;
+        } catch (Exception e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);
         }
