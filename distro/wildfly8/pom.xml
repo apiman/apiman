@@ -153,4 +153,38 @@
     </plugins>
   </build>
 
+  <profiles>
+    <profile>
+        <id>docker</id>
+        <build>
+            <finalName>${project.artifactId}</finalName>
+            <plugins>
+          <plugin>
+            <groupId>com.spotify</groupId>
+            <artifactId>docker-maven-plugin</artifactId>
+            <version>0.1.1</version>
+            <executions>
+              <execution>
+                <phase>package</phase>
+                <goals>
+                  <goal>build</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <imageName>${project.artifactId}:${project.version}</imageName>
+              <dockerDirectory>${project.basedir}/src/main/docker</dockerDirectory>
+              <resources>
+                <resource>
+                  <targetPath>/</targetPath>
+                  <directory>${project.build.directory}</directory>
+                  <include>${project.artifactId}-overlay.zip</include>
+                </resource>
+              </resources>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
