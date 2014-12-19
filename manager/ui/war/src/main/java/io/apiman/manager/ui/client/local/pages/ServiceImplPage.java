@@ -132,6 +132,9 @@ public class ServiceImplPage extends AbstractServicePage {
     protected void onGatewaysLoaded(List<GatewaySummaryBean> beans) {
         gatewayBeans = beans;
         gateway.setOptions(gatewayBeans);
+        if (beans.size() > 0) {
+            gateway.selectGatewayById(beans.iterator().next().getId());
+        }
         if (gatewayBeans.size() > 1) {
             showGateways();
         } else {
