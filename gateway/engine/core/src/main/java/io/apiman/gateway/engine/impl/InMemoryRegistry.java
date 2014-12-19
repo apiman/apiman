@@ -137,8 +137,16 @@ public class InMemoryRegistry implements IRegistry {
                     service.getServiceId(), service.getOrganizationId()));
         };
         
-        
         return contract;
+    }
+    
+    /**
+     * @see io.apiman.gateway.engine.IRegistry#getService(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public Service getService(String organizationId, String serviceId, String serviceVersion) {
+        String key = getServiceKey(organizationId, serviceId, serviceVersion);
+        return services.get(key);
     }
 
     /**

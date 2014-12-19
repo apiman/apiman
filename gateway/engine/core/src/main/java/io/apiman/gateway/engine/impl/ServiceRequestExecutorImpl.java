@@ -27,7 +27,6 @@ import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.Service;
-import io.apiman.gateway.engine.beans.ServiceContract;
 import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.beans.ServiceResponse;
 import io.apiman.gateway.engine.beans.exceptions.RequestAbortedException;
@@ -59,7 +58,7 @@ import java.util.List;
  */
 public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
     private ServiceRequest request;
-    private ServiceContract serviceContract;
+    private Service service;
     private IPolicyContext context;
     private List<PolicyWithConfiguration> policies;
     private IConnectorFactory connectorFactory;
@@ -81,21 +80,21 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
      * Constructs a new {@link ServiceRequestExecutorImpl}.
      * @param serviceRequest
      * @param resultHandler
-     * @param serviceContract
+     * @param service
      * @param context
      * @param policies
      * @param connectorFactory
      */
     public ServiceRequestExecutorImpl(ServiceRequest serviceRequest, 
             IAsyncResultHandler<IEngineResult> resultHandler,
-            ServiceContract serviceContract,
+            Service service,
             IPolicyContext context,
             List<PolicyWithConfiguration> policies,
             IConnectorFactory connectorFactory) {
 
         this.request = serviceRequest;
         this.resultHandler = resultHandler;
-        this.serviceContract = serviceContract;
+        this.service = service;
         this.context = context;
         this.policies = policies;
         this.connectorFactory = connectorFactory;
@@ -113,8 +112,6 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
 
             @Override
             public void handle(ServiceRequest request) {
-                final Service service = serviceContract.getService();
-
                 IServiceConnector connector = connectorFactory.createConnector(request, service);
 
                 // Open up a connection to the back-end if we're given the OK from the request chain

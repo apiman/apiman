@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testPlan xmlns="urn:io.apiman.test:2014:02:testPlan">
+
+  <testGroup name="Configure the Gateway">
+    <test name="Publish Service">test-plan-data/simple/simple-echo-public/setup/001-publish-service.resttest</test>
+    <test name="Publish Service">test-plan-data/simple/simple-echo-public/setup/002-publish-service-public.resttest</test>
+  </testGroup>
+
+  <testGroup name="Test the Echo Server through the Gateway">
+    <test name="Echo 1 (GET)">test-plan-data/simple/simple-echo-public/echo/001-failure.resttest</test>
+    <test name="Echo 2 (PUT)">test-plan-data/simple/simple-echo-public/echo/002-success.resttest</test>
+  </testGroup>
+
+</testPlan>

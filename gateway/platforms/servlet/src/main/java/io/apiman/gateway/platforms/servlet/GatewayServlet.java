@@ -207,9 +207,6 @@ public abstract class GatewayServlet extends HttpServlet {
      */
     protected ServiceRequest readRequest(HttpServletRequest request) throws Exception {
         String apiKey = getApiKey(request);
-        if (apiKey == null) {
-            throw new Exception(Messages.i18n.format("GatewayServlet.MissingAPIKey")); //$NON-NLS-1$
-        }
         
         ServiceRequestPathInfo pathInfo = parseServiceRequestPath(request.getPathInfo());
         if (pathInfo.orgId == null) {

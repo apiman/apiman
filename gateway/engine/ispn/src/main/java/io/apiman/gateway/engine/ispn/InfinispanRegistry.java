@@ -163,6 +163,15 @@ public class InfinispanRegistry implements IRegistry {
         };
         return contract;
     }
+    
+    /**
+     * @see io.apiman.gateway.engine.IRegistry#getService(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public Service getService(String organizationId, String serviceId, String serviceVersion) {
+        String key = getServiceKey(organizationId, serviceId, serviceVersion);
+        return (Service) cache.get(key);
+    }
 
     /**
      * Generates an in-memory key for an service, used to index the app for later quick

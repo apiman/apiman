@@ -71,4 +71,12 @@ public interface IRegistry {
      */
     public void unregisterApplication(Application application) throws RegistrationException;
 
+    /**
+     * Gets a service by its service coordinates.
+     * @param organizationId
+     * @param serviceId
+     * @param serviceVersion
+     */
+    public Service getService(String organizationId, String serviceId, String serviceVersion);
+
 }

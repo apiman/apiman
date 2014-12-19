@@ -16,7 +16,9 @@
 package io.apiman.gateway.engine.beans;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -28,12 +30,14 @@ public class Service implements Serializable {
 
     private static final long serialVersionUID = -294764695917891050L;
     
+    private boolean publicService;
     private String organizationId;
     private String serviceId;
     private String version;
     private String endpointType;
     private String endpoint;
     private Map<String, String> endpointProperties = new HashMap<String, String>();
+    private List<Policy> servicePolicies = new ArrayList<Policy>();
     
     /**
      * Constructor.
@@ -123,6 +127,34 @@ public class Service implements Serializable {
      */
     public void setVersion(String version) {
         this.version = version;
+    }
+
+    /**
+     * @return the publicService
+     */
+    public boolean isPublicService() {
+        return publicService;
+    }
+
+    /**
+     * @param publicService the publicService to set
+     */
+    public void setPublicService(boolean publicService) {
+        this.publicService = publicService;
+    }
+
+    /**
+     * @return the servicePolicies
+     */
+    public List<Policy> getServicePolicies() {
+        return servicePolicies;
+    }
+
+    /**
+     * @param servicePolicies the servicePolicies to set
+     */
+    public void setServicePolicies(List<Policy> servicePolicies) {
+        this.servicePolicies = servicePolicies;
     }
 
     /**

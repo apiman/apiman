@@ -31,6 +31,7 @@ import io.apiman.gateway.engine.beans.ServiceContract;
 import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.beans.exceptions.ConfigurationParseException;
 import io.apiman.gateway.engine.beans.exceptions.InvalidContractException;
+import io.apiman.gateway.engine.beans.exceptions.InvalidServiceException;
 import io.apiman.gateway.engine.beans.exceptions.PolicyNotFoundException;
 import io.apiman.gateway.engine.beans.exceptions.PublishingException;
 import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
@@ -87,19 +88,46 @@ public class EngineImpl implements IEngine {
      */
     @Override
     public IServiceRequestExecutor executor(ServiceRequest request, final IAsyncResultHandler<IEngineResult> resultHandler) {
-        ServiceContract serviceContract = getContract(request);
-        request.setContract(serviceContract);
+        Service service = null;
+        List<PolicyWithConfiguration> policies = null;
         
-        if (request.getServiceOrgId() != null) {
-            validateRequest(request);
+        // If no API Key provided - the service must be public.  If an API Key *is* provided
+        // then we lookup the Contract and use that.
+        if (request.getApiKey() == null) {
+            service = getService(request.getServiceOrgId(), request.getServiceId(), request.getServiceVersion());
+            if (service == null) {
+                throw new InvalidServiceException(Messages.i18n.format("EngineImpl.ServiceNotFound")); //$NON-NLS-1$
+            }
+            if (!service.isPublicService()) {
+                throw new InvalidServiceException(Messages.i18n.format("EngineImpl.ServiceNotPublic")); //$NON-NLS-1$
+            }
+            policies = getPolicies(service);
+        } else {
+            ServiceContract serviceContract = getContract(request);
+            service = serviceContract.getService();
+            request.setContract(serviceContract);
+            policies = getPolicies(serviceContract);
+            if (request.getServiceOrgId() != null) {
+                validateRequest(request);
+            }
         }
         
         return new ServiceRequestExecutorImpl(request, 
                 resultHandler,
-                serviceContract,
+                service,
                 new PolicyContextImpl(getComponentRegistry()),
-                getPolicies(serviceContract),
+                policies,
                 getConnectorFactory());
+    }
+
+    /**
+     * Gets a published service by its service coordinates.
+     * @param serviceOrgId
+     * @param serviceId
+     * @param serviceVersion
+     */
+    protected Service getService(String serviceOrgId, String serviceId, String serviceVersion) {
+        return getRegistry().getService(serviceOrgId, serviceId, serviceVersion);
     }
 
     /**
@@ -188,7 +216,6 @@ public class EngineImpl implements IEngine {
     
     /**
      * Gets the service contract to use for the given request.
-     *
      * @param request
      */
     private ServiceContract getContract(ServiceRequest request) {
@@ -198,21 +225,32 @@ public class EngineImpl implements IEngine {
     /**
      * Creates the policies that should be applied for this service invocation.
      * This is achieved by using the policy information set on the contract.
-     *
      * @param contract
      */
     private List<PolicyWithConfiguration> getPolicies(ServiceContract contract) {
-        // accidentally create the list a few times - it's not worth the
-        // overhead of the synch block.
-        List<PolicyWithConfiguration> instances = new ArrayList<PolicyWithConfiguration>();
+        return getPolicies(contract.getPolicies());
+    }
 
-        for (Policy policy : contract.getPolicies()) {
+    /**
+     * Creates the policies that should be applied for this service invocation.
+     * @param service
+     */
+    private List<PolicyWithConfiguration> getPolicies(Service service) {
+        return getPolicies(service.getServicePolicies());
+    }
+
+    /**
+     * Get/resolve the list of policies into a list of policies with config.
+     * @param policies
+     */
+    private List<PolicyWithConfiguration> getPolicies(List<Policy> policies) {
+        List<PolicyWithConfiguration> instances = new ArrayList<PolicyWithConfiguration>();
+        for (Policy policy : policies) {
             IPolicy policyImpl = getPolicyFactory().newPolicy(policy.getPolicyImpl());
             Object policyConfig = getPolicyConfig(policyImpl, policy);
             PolicyWithConfiguration pwc = new PolicyWithConfiguration(policyImpl, policyConfig);
             instances.add(pwc);
         }
-
         return instances;
     }
 
