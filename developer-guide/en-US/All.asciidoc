@@ -15,7 +15,10 @@ TBD
 TBD
 
 === Policy Implementations
-TBD
+
+Policies are the mechanism through with the principal functionality of apiman is enforced.
+
+include::Policy.asciidoc[]
 
 === Policy Configuration UI Forms
 TBD
