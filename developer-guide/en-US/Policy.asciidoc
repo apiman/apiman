@@ -9,7 +9,7 @@ void apply(ServiceRequest request, IPolicyContext context, Object config, IPolic
 void apply(ServiceResponse response, IPolicyContext context, Object config, IPolicyChain<ServiceResponse> chain);
 ```
 
-The service objects, respectively, provide abstracted representations the head of a request and response of a given conversation. These can be modified in any manner that the implementor sees fit.
+The service objects, respectively, provide abstracted representations of the head of a request and response for a given conversation. These can be modified in any manner the implementor sees fit.
 
 TIP: Policy instances are bound to a conversation, hence the same object will receive the response corresponding to the request.
 
@@ -19,7 +19,7 @@ If a policy determines that the conversation can continue, `chain.doApply` shoul
 
 ===== Indicating Failures
 
-If it is determined that a conversation should be interrupted for governance reasons (i.e. according to business logic and not exceptional), then `chain.doFailure` should be signalled. A useful `PolicyError` should be provided, which allows gateways to respond in a sensible way to the requestor.
+If it is determined that a conversation should be interrupted for governance reasons (i.e. according to business logic and not exceptional), then `chain.doFailure` should be signalled. A useful `PolicyFailure` should be provided, which allows gateways to respond in a sensible way to the requestor.
 
 TIP: The platform's `PolicyFailureFactoryComponent` can be used to generate failures.
 
