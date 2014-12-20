@@ -1,0 +1,77 @@
+==== Standard IPolicy
+All policies must implement the `IPolicy` interface, consisting of three methods.
+
+The `apply` method with `ServiceRequest` is called during the request phase, and the `apply` with `ServiceResponse` during the response phase:
+
+```java
+void apply(ServiceRequest request, IPolicyContext context, Object config, IPolicyChain<ServiceRequest> chain);
+
+void apply(ServiceResponse response, IPolicyContext context, Object config, IPolicyChain<ServiceResponse> chain);
+```
+
+The service objects, respectively, provide abstracted representations the head of a request and response of a given conversation. These can be modified in any manner that the implementor sees fit.
+
+TIP: Policy instances are bound to a conversation, hence the same object will receive the response corresponding to the request.
+
+===== Indicating Successes
+
+If a policy determines that the conversation can continue, `chain.doApply` should be signalled. Any modifications you wish to pass onto the next policy should be completed and included in the invocation.
+
+===== Indicating Failures
+
+If it is determined that a conversation should be interrupted for governance reasons (i.e. according to business logic and not exceptional), then `chain.doFailure` should be signalled. A useful `PolicyError` should be provided, which allows gateways to respond in a sensible way to the requestor.
+
+TIP: The platform's `PolicyFailureFactoryComponent` can be used to generate failures.
+
+===== Handling Exceptions
+
+As a factor of the asynchronous nature of apiman, any exceptions that may occur during the operation of a policy should be caught and explicitly handed to `chain.doError`. If exceptions are left uncaught, then it is possible that they will be lost.
+
+==== Data Policies
+
+Whilst standard policies are concerned only with the head of the conversation, it is also possible for policies to access and manipulate the body in transit. A data policy must implement the `IDataPolicy` interface.
+
+WARNING: Handling of data streams is a performance sensitive area, implementors should strive to be as efficient as possible and avoid any unnecessary interactions with the stream.
+
+The `getRequestDataHandler` and `getResponseDataHandler` methods are the data corollaries of `apply`. Implementors must return `IReadWriteStream` streams, which apiman uses to write data chunks into policies, and the policies write data to subsequent policies:
+
+```java
+IReadWriteStream<ServiceRequest> getRequestDataHandler(ServiceRequest request, IPolicyContext context);
+
+IReadWriteStream<ServiceResponse> getResponseDataHandler(ServiceResponse response, IPolicyContext context);
+```
+
+IMPORTANT: Do not return an `IApimanBuffer` with a different native type than you received. Use assign and append patterns instead.
+
+Implementors must explicitly hand each chunk onto apiman when they are finished interacting with it. A convenient way to achieve this is via `AbstractStream<H>`:
+
+```java
+@Override
+public IReadWriteStream<ServiceRequest> getRequestDataHandler(final ServiceRequest request, final IPolicyContext context) {
+  return new AbstractStream<ServiceRequest>() {
+    @Override
+    public void write(IApimanBuffer chunk) {
+      // Mutate chunk by appending a string.
+      chunk.append("my modification");
+      // We're finished: write the chunk back to apiman
+      // using super.write().
+      super.write(chunk);
+    }
+  };
+}
+```
+
+IMPORTANT: Do not mutate an `IApimanBuffer` once handed over.
+
+==== Performance Considerations
+
+Policies are amongst the most impactful elements of the system for performance. To minimise the impact of a policy implementors may wish to follow these guidelines:
+
+- [x] Maintain as little state within a policy instance as possible.
+- [x] Call `doApply`, `doFailure` or `doError` as soon as possible.
+- [x] Data policies should interact with the data stream as efficiently as possible and prefer mutating in-place (especially with small changes).
+- [x] If you are contributing a policy to apiman: implement any long-running tasks asynchronously (e.g. database calls); **do not** block the main thread (e.g. blocking futures, wait, sleep); use asynchronous techniques to interact with the outside world, such as callbacks.
+
+==== Loading Policy Implementations
+
+The method of making policies available for loading is platform-specific: refer to your implementation's documentation to discover how to achieve this.
