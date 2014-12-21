@@ -9,9 +9,15 @@ void apply(ServiceRequest request, IPolicyContext context, Object config, IPolic
 void apply(ServiceResponse response, IPolicyContext context, Object config, IPolicyChain<ServiceResponse> chain);
 ```
 
-The service objects, respectively, provide abstracted representations the head of a request and response of a given conversation. These can be modified in any manner that the implementor sees fit.
+The service objects, respectively, provide abstracted representations of the head of a request and response for a given conversation. These can be modified in any manner the implementor sees fit.
 
 TIP: Policy instances are bound to a conversation, hence the same object will receive the response corresponding to the request.
+
+```java
+Object parseConfiguration(String jsonConfiguration) throws ConfigurationParseException;
+```
+
+The final `IPolicy` method is used to parse JSON configuration into an arbitrary object configuration which will be passed in in its parsed form to `doApply`, where the implementor may cast it their native configuration object. This method should be regarded as a static, as it is only called at the point when a policy is registered.
 
 ===== Indicating Successes
 
@@ -19,7 +25,7 @@ If a policy determines that the conversation can continue, `chain.doApply` shoul
 
 ===== Indicating Failures
 
-If it is determined that a conversation should be interrupted for governance reasons (i.e. according to business logic and not exceptional), then `chain.doFailure` should be signalled. A useful `PolicyError` should be provided, which allows gateways to respond in a sensible way to the requestor.
+If it is determined that a conversation should be interrupted for governance reasons (i.e. according to business logic and not exceptional), then `chain.doFailure` should be signalled. A useful `PolicyFailure` should be provided, which allows gateways to respond in a sensible way to the requestor.
 
 TIP: The platform's `PolicyFailureFactoryComponent` can be used to generate failures.
 
@@ -27,7 +33,7 @@ TIP: The platform's `PolicyFailureFactoryComponent` can be used to generate fail
 
 As a factor of the asynchronous nature of apiman, any exceptions that may occur during the operation of a policy should be caught and explicitly handed to `chain.doError`. If exceptions are left uncaught, then it is possible that they will be lost.
 
-==== Data Policies
+==== IData Policy
 
 Whilst standard policies are concerned only with the head of the conversation, it is also possible for policies to access and manipulate the body in transit. A data policy must implement the `IDataPolicy` interface.
 
@@ -57,11 +63,19 @@ public IReadWriteStream<ServiceRequest> getRequestDataHandler(final ServiceReque
       // using super.write().
       super.write(chunk);
     }
+
+    @Override
+    public void end() {
+      // End of stream signalled, do cleanup, etc.
+      super.end();
+    }
   };
 }
 ```
 
 IMPORTANT: Do not mutate an `IApimanBuffer` once handed over.
+
+The request or response body will not begin streaming before the corresponding `doApply` has been called, however, it is still possible to interrupt the conversation during the streaming phase by signalling `doFailure` or `doError`.
 
 ==== Performance Considerations
 
