@@ -96,40 +96,61 @@ public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig>
      * @param config
      */
     private String createBucketId(ServiceRequest request, RateLimitingConfig config) {
-        if (config.getGranularity() == RateLimitingGranularity.User) {
-            String header = config.getUserHeader();
-            String user = request.getHeaders().get(header);
-            if (user == null) {
-                // policy failure
-                return null;
+        StringBuilder builder = new StringBuilder();
+        if (request.getContract() == null) {
+            builder.append("PUBLIC||"); //$NON-NLS-1$
+            builder.append("||"); //$NON-NLS-1$
+            builder.append(request.getServiceOrgId());
+            builder.append("||"); //$NON-NLS-1$
+            builder.append(request.getServiceId());
+            builder.append("||"); //$NON-NLS-1$
+            builder.append(request.getServiceVersion());
+            if (config.getGranularity() == RateLimitingGranularity.User) {
+                String header = config.getUserHeader();
+                String user = request.getHeaders().get(header);
+                if (user == null) {
+                    // policy failure
+                    return null;
+                } else {
+                    builder.append("||"); //$NON-NLS-1$
+                    builder.append(user);
+                }
+            } else if (config.getGranularity() == RateLimitingGranularity.Service) {
             } else {
-                StringBuilder builder = new StringBuilder();
+                // Not valid - don't have application information
+                return null;
+            }
+        } else {
+            builder.append(request.getApiKey());
+            if (config.getGranularity() == RateLimitingGranularity.User) {
+                String header = config.getUserHeader();
+                String user = request.getHeaders().get(header);
+                if (user == null) {
+                    // policy failure
+                    return null;
+                } else {
+                    builder.append("||USER||"); //$NON-NLS-1$
+                    builder.append(request.getContract().getApplication().getOrganizationId());
+                    builder.append("||"); //$NON-NLS-1$
+                    builder.append(request.getContract().getApplication().getApplicationId());
+                    builder.append("||"); //$NON-NLS-1$
+                    builder.append(user);
+                }
+            } else if (config.getGranularity() == RateLimitingGranularity.Application) {
                 builder.append(request.getApiKey());
-                builder.append("||USER||"); //$NON-NLS-1$
+                builder.append("||APP||"); //$NON-NLS-1$
                 builder.append(request.getContract().getApplication().getOrganizationId());
                 builder.append("||"); //$NON-NLS-1$
                 builder.append(request.getContract().getApplication().getApplicationId());
+            } else {
+                builder.append(request.getApiKey());
+                builder.append("||SERVICE||"); //$NON-NLS-1$
+                builder.append(request.getContract().getService().getOrganizationId());
                 builder.append("||"); //$NON-NLS-1$
-                builder.append(user);
-                return builder.toString();
+                builder.append(request.getContract().getService().getServiceId());
             }
-        } else if (config.getGranularity() == RateLimitingGranularity.Application) {
-            StringBuilder builder = new StringBuilder();
-            builder.append(request.getApiKey());
-            builder.append("||APP||"); //$NON-NLS-1$
-            builder.append(request.getContract().getApplication().getOrganizationId());
-            builder.append("||"); //$NON-NLS-1$
-            builder.append(request.getContract().getApplication().getApplicationId());
-            return builder.toString();
-        } else {
-            StringBuilder builder = new StringBuilder();
-            builder.append(request.getApiKey());
-            builder.append("||SERVICE||"); //$NON-NLS-1$
-            builder.append(request.getContract().getService().getOrganizationId());
-            builder.append("||"); //$NON-NLS-1$
-            builder.append(request.getContract().getService().getServiceId());
-            return builder.toString();
         }
+        return builder.toString();
     }
 
     /**

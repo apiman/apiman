@@ -170,7 +170,7 @@ public class InfinispanRegistry implements IRegistry {
     @Override
     public Service getService(String organizationId, String serviceId, String serviceVersion) {
         String key = getServiceKey(organizationId, serviceId, serviceVersion);
-        return (Service) cache.get(key);
+        return (Service) getCache().get(key);
     }
 
     /**

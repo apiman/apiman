@@ -145,6 +145,30 @@ public class ActionResourceImpl implements IActionResource {
         gatewaySvc.setOrganizationId(versionBean.getService().getOrganization().getId());
         gatewaySvc.setServiceId(versionBean.getService().getId());
         gatewaySvc.setVersion(versionBean.getVersion());
+        gatewaySvc.setPublicService(versionBean.isPublicService());
+        boolean hasTx = false;
+        try {
+            if (versionBean.isPublicService()) {
+                List<Policy> policiesToPublish = new ArrayList<Policy>();
+                List<PolicySummaryBean> servicePolicies = query.getPolicies(action.getOrganizationId(), action.getEntityId(), action.getEntityVersion(), PolicyType.Service);
+                storage.beginTx();
+                hasTx = true;
+                for (PolicySummaryBean policySummaryBean : servicePolicies) {
+                    PolicyBean servicePolicy = storage.getPolicy(policySummaryBean.getId());
+                    Policy policyToPublish = new Policy();
+                    policyToPublish.setPolicyJsonConfig(servicePolicy.getConfiguration());
+                    policyToPublish.setPolicyImpl(servicePolicy.getDefinition().getPolicyImpl());
+                    policiesToPublish.add(policyToPublish);
+                }
+                gatewaySvc.setServicePolicies(policiesToPublish);
+            }
+        } catch (StorageException e) {
+            throw ExceptionFactory.actionException(Messages.i18n.format("PublishError"), e); //$NON-NLS-1$
+        } finally {
+            if (hasTx) {
+                storage.rollbackTx();
+            }
+        }
         
         // Publish the service to all relevant gateways
         try {
