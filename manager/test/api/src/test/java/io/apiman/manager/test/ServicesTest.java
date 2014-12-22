@@ -33,7 +33,7 @@ public class ServicesTest extends AbstractTestPlanTest {
             "PUT:/mock-gateway/services\n"; //$NON-NLS-1$
     
     private static final String EXPECTED_PAYLOAD = 
-            "{\"organizationId\":\"Organization1\",\"serviceId\":\"Service1\",\"version\":\"1.0\",\"endpointType\":\"rest\",\"endpoint\":\"http://localhost:8080/ping\",\"endpointProperties\":{}}"; //$NON-NLS-1$
+            "{\"publicService\":false,\"organizationId\":\"Organization1\",\"serviceId\":\"Service1\",\"version\":\"1.0\",\"endpointType\":\"rest\",\"endpoint\":\"http://localhost:8080/ping\",\"endpointProperties\":{},\"servicePolicies\":[]}"; //$NON-NLS-1$
 
     @Test
     public void test() {

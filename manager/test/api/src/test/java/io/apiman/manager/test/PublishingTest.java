@@ -50,7 +50,7 @@ public class PublishingTest extends AbstractTestPlanTest {
             "DELETE:/mock-gateway/services/Organization1/Service1/1.0\n"; 
     
     private static final String EXPECTED_PUBLISH_PAYLOAD = 
-            "{\"organizationId\":\"Organization1\",\"serviceId\":\"Service1\",\"version\":\"1.0\",\"endpointType\":\"rest\",\"endpoint\":\"http://localhost:8080/ping\",\"endpointProperties\":{}}";
+            "{\"publicService\":false,\"organizationId\":\"Organization1\",\"serviceId\":\"Service1\",\"version\":\"1.0\",\"endpointType\":\"rest\",\"endpoint\":\"http://localhost:8080/ping\",\"endpointProperties\":{},\"servicePolicies\":[]}";
 
     @Test
     public void test() throws JsonParseException, JsonMappingException, UnsupportedEncodingException, IOException {

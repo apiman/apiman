@@ -70,6 +70,12 @@ public class GatewayServletTest {
         Assert.assertEquals("Service-99", info.serviceId);
         Assert.assertEquals("2.7", info.serviceVersion);
         Assert.assertEquals("/path/to/resource", info.resource);
+
+        info = GatewayServlet.parseServiceRequestPath("/MyOrg/Service-99/2.7/path/to/resource?query=1234");
+        Assert.assertEquals("MyOrg", info.orgId);
+        Assert.assertEquals("Service-99", info.serviceId);
+        Assert.assertEquals("2.7", info.serviceVersion);
+        Assert.assertEquals("/path/to/resource?query=1234", info.resource);
     }
 
 }

@@ -72,6 +72,8 @@ public class ServiceVersionBean implements Serializable {
     @ElementCollection(fetch=FetchType.EAGER)
     @CollectionTable(name="svc_gateways", joinColumns=@JoinColumn(name="service_version_id"))
     private Set<ServiceGatewayBean> gateways;
+    @Column(updatable=true, nullable=false)
+    private boolean publicService;
     @ElementCollection(fetch=FetchType.EAGER)
     @CollectionTable(name="svc_plans", joinColumns=@JoinColumn(name="service_version_id"))
     private Set<ServicePlanBean> plans;
@@ -295,6 +297,20 @@ public class ServiceVersionBean implements Serializable {
      */
     public void setModifiedOn(Date modifiedOn) {
         this.modifiedOn = modifiedOn;
+    }
+
+    /**
+     * @return the publicService
+     */
+    public boolean isPublicService() {
+        return publicService;
+    }
+
+    /**
+     * @param publicService the publicService to set
+     */
+    public void setPublicService(boolean publicService) {
+        this.publicService = publicService;
     }
 
     /**

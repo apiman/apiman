@@ -99,6 +99,14 @@
         <!-- Content -->
         <div class="col-md-10 apiman-entity-content">
           <div class="col-md-10">
+            <div class="title" data-i18n-key="public-service">Public Service</div>
+            <div>
+              <span data-i18n-key="public-service-help">Select this option if you wish this service to be accessible directly, without a Service Contract.  Typically (but not always) this option is used instead of selecting plan(s).</span>
+            </div>
+            <div style="padding: 8px; margin-bottom: 10px">
+              <input type="checkbox" id="public-service" data-field="publicService"></input>
+              <label for="public-service" data-i18n-key="make-public" style="padding-left: 3px">Make this service public</label>
+            </div>
             <div class="title" data-i18n-key="available-plans">Available Plans</div>
             <div>
               <span data-i18n-key="available-plans-help">Choose which plans should be presented when Applications create a link (Contract) to this Service.</span>

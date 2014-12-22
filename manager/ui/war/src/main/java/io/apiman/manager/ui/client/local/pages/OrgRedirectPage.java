@@ -79,12 +79,12 @@ public class OrgRedirectPage extends AbstractRedirectPage {
      * @param user
      */
     protected void redirectFor(CurrentUserBean user) {
-        if (hasPermission(PermissionType.appView, user)) {
-            nav.goTo(OrgAppsPage.class, MultimapUtil.singleItemMap("org", org)); //$NON-NLS-1$
+        if (hasPermission(PermissionType.planView, user)) {
+            nav.goTo(OrgPlansPage.class, MultimapUtil.singleItemMap("org", org)); //$NON-NLS-1$
         } else if (hasPermission(PermissionType.svcView, user)) {
             nav.goTo(OrgServicesPage.class, MultimapUtil.singleItemMap("org", org)); //$NON-NLS-1$
-        } else if (hasPermission(PermissionType.planView, user)) {
-            nav.goTo(OrgPlansPage.class, MultimapUtil.singleItemMap("org", org)); //$NON-NLS-1$
+        } else if (hasPermission(PermissionType.appView, user)) {
+            nav.goTo(OrgAppsPage.class, MultimapUtil.singleItemMap("org", org)); //$NON-NLS-1$
         } else {
             nav.goTo(OrgMembersPage.class, MultimapUtil.singleItemMap("org", org)); //$NON-NLS-1$
         }

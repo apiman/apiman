@@ -1243,6 +1243,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             data.addChange("endpointType", svb.getEndpointType(), bean.getEndpointType()); //$NON-NLS-1$
             svb.setEndpointType(bean.getEndpointType());
         }
+        if (AuditUtils.valueChanged(String.valueOf(svb.isPublicService()), String.valueOf(bean.isPublicService()))) {
+            data.addChange("publicService", String.valueOf(svb.isPublicService()), String.valueOf(bean.isPublicService())); //$NON-NLS-1$
+            svb.setPublicService(bean.isPublicService());
+        }
         
         try {
             if (svb.getGateways() == null || svb.getGateways().isEmpty()) {

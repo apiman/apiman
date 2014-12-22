@@ -45,6 +45,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.CheckBox;
 
 
 /**
@@ -61,6 +62,8 @@ public class ServicePlansPage extends AbstractServicePage {
     Map<PlanSummaryBean, List<PlanVersionSummaryBean>> planVersions = new HashMap<PlanSummaryBean, List<PlanVersionSummaryBean>>();
     
     @Inject @DataField
+    CheckBox publicService;
+    @Inject @DataField
     ServicePlansSelector plans;
     @Inject @DataField
     AsyncActionButton saveButton;
@@ -74,13 +77,16 @@ public class ServicePlansPage extends AbstractServicePage {
     }
     
     @PostConstruct
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     protected void postConstruct() {
-        plans.addValueChangeHandler(new ValueChangeHandler<Set<ServicePlanBean>>() {
+        ValueChangeHandler handler = new ValueChangeHandler() {
             @Override
-            public void onValueChange(ValueChangeEvent<Set<ServicePlanBean>> event) {
+            public void onValueChange(ValueChangeEvent event) {
                 onPlansChange();
             }
-        });
+        };
+        plans.addValueChangeHandler(handler);
+        publicService.addValueChangeHandler(handler);
     }
 
     /**
@@ -148,6 +154,7 @@ public class ServicePlansPage extends AbstractServicePage {
             theplans.addAll(versionBean.getPlans());
         }
         plans.setValue(theplans);
+        publicService.setValue(versionBean.isPublicService());
     }
     
     /**
@@ -168,9 +175,11 @@ public class ServicePlansPage extends AbstractServicePage {
         
         final Set<ServicePlanBean> newplans = plans.getValue();
         versionBean.setPlans(newplans);
+        versionBean.setPublicService(this.publicService.getValue());
         
         ServiceVersionBean update = new ServiceVersionBean();
         update.setPlans(newplans);
+        update.setPublicService(this.publicService.getValue());
         rest.updateServiceVersion(serviceBean.getOrganization().getId(), serviceBean.getId(),
                 versionBean.getVersion(), update, new IRestInvokerCallback<Void>() {
             @Override
