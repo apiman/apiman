@@ -17,6 +17,7 @@ package io.apiman.gateway.platforms.war.wildfly8.api;
 
 import io.apiman.gateway.api.rest.impl.IPlatform;
 import io.apiman.gateway.engine.beans.ServiceEndpoint;
+import io.apiman.gateway.platforms.war.WarGateway;
 import io.apiman.gateway.platforms.war.filters.HttpRequestThreadLocalFilter;
 
 import javax.servlet.http.HttpServletRequest;
@@ -41,7 +42,7 @@ public class Wildfly8Platform implements IPlatform {
      */
     @Override
     public ServiceEndpoint getServiceEndpoint(String organizationId, String serviceId, String version) {
-        String endpoint = System.getProperty(APIMAN_GATEWAY_ENDPOINT, null);
+        String endpoint = WarGateway.config.getConfigProperty(APIMAN_GATEWAY_ENDPOINT, null);
         StringBuilder builder = new StringBuilder();
         if (endpoint == null) {
             HttpServletRequest currentRequest = HttpRequestThreadLocalFilter.getCurrentRequest();

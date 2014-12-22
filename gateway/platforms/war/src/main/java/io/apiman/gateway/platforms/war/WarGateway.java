@@ -16,7 +16,6 @@
 package io.apiman.gateway.platforms.war;
 
 import io.apiman.gateway.engine.IEngine;
-import io.apiman.gateway.engine.IEngineConfig;
 import io.apiman.gateway.engine.impl.ConfigDrivenEngineFactory;
 
 /**
@@ -27,13 +26,14 @@ import io.apiman.gateway.engine.impl.ConfigDrivenEngineFactory;
  */
 public class WarGateway {
     
+    public static WarEngineConfig config;
     public static IEngine engine;
 
     /**
      * Initialize the gateway.
      */
     public static void init() {
-        IEngineConfig config = new WarEngineConfig();
+        config = new WarEngineConfig();
         ConfigDrivenEngineFactory factory = new ConfigDrivenEngineFactory(config);
         engine = factory.createEngine();
     }

@@ -14,23 +14,19 @@
   <name>apiman-gateway-platforms-vertx</name>
 
   <properties>
-    <!-- Set pullInDeps to true if you want any modules specified in
-    the 'includes' and 'deploys' fields in your mod.json to be automatically
-    pulled in during packaging and added inside your module. Doing this means
-    your module won't download and install those dependencies at run-time when
-    they're first requested. -->
+    <!-- Set pullInDeps to true if you want any modules specified in the 'includes' and 'deploys' fields in your 
+      mod.json to be automatically pulled in during packaging and added inside your module. Doing this means your module 
+      won't download and install those dependencies at run-time when they're first requested. -->
     <vertx.pullInDeps>false</vertx.pullInDeps>
 
-    <!-- Set createFatJar to true if you want to create a fat executable
-    jar which contains the Vert.x binaries along with the module so it can be
-    run with java -jar <jarname> -->
+    <!-- Set createFatJar to true if you want to create a fat executable jar which contains the Vert.x binaries 
+      along with the module so it can be run with java -jar <jarname> -->
     <vertx.createFatJar>false</vertx.createFatJar>
 
     <!--Vertx module name -->
     <module.name>${project.groupId}~${project.artifactId}~${project.version}</module.name>
 
-    <!-- The directory where the module will be assembled - you can override
-    this on the command line with -Dmods.directory=mydir -->
+    <!-- The directory where the module will be assembled - you can override this on the command line with -Dmods.directory=mydir -->
     <mods.directory>target/mods</mods.directory>
   </properties>
 
@@ -236,4 +232,24 @@
       </plugin>
     </plugins>
   </reporting>
+  <profiles>
+    <profile>
+      <activation>
+        <os>
+          <family>windows</family>
+        </os>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <skipTests>true</skipTests>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>

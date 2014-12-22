@@ -25,7 +25,7 @@ import io.apiman.gateway.platforms.war.WarGateway;
  *
  * @author eric.wittmann@redhat.com
  */
-public class EngineAccessor implements IEngineAccessor {
+public class TestEngineAccessor implements IEngineAccessor {
 
     /**
      * @see io.apiman.gateway.api.rest.impl.IEngineAccessor#getEngine()
