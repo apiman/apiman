@@ -5,7 +5,7 @@ Content-Type: application/json
   "name" : "Gateway One",
   "description" : "This is the first gateway.",
   "type" : "REST",
-  "configuration" : "{}"
+  "configuration" : "{\"endpoint\":\"http://localhost:8080/gateway-config/api\",\"username\":\"admin99\",\"password\":\"password\"}"
 }
 ----
 200
@@ -16,5 +16,5 @@ Content-Type: application/json
   "name" : "Gateway One",
   "description" : "This is the first gateway.",
   "type" : "REST",
-  "configuration" : "{}"
+  "configuration" : "{\"endpoint\":\"http://localhost:8080/gateway-config/api\",\"username\":\"admin99\",\"password\":\"password\"}"
 }

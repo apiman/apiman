@@ -12,5 +12,8 @@ Content-Type: application/json
 Content-Type: application/json
 
 {
-  "id" : "TheGateway"
+  "id" : "TheGateway",
+  "description" : "This is the gateway.",
+  "type" : "REST",
+  "configuration" : "{\"endpoint\":\"${apiman.suite.gateway-config-endpoint}\",\"username\":\"${apiman.suite.gateway-config-username}\",\"password\":\"${apiman.suite.gateway-config-password}\"}"
 }

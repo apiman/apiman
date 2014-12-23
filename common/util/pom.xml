@@ -3,17 +3,17 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>io.apiman</groupId>
-    <artifactId>apiman</artifactId>
+    <artifactId>apiman-common</artifactId>
     <version>1.0.1-SNAPSHOT</version>
-    <relativePath>../pom.xml</relativePath>
   </parent>
-  <artifactId>apiman-common</artifactId>
-  <packaging>pom</packaging>
-  <name>apiman-common</name>
+  <artifactId>apiman-common-util</artifactId>
+  <name>apiman-common-util</name>
 
-  <modules>
-    <module>auth</module>
-    <module>servlet</module>
-    <module>util</module>
-  </modules>
+  <dependencies>
+    <!-- Third Party Dependencies -->
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+    </dependency>
+  </dependencies>
 </project>

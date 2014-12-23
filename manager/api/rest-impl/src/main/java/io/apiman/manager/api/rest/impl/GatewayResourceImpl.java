@@ -16,8 +16,11 @@
 
 package io.apiman.manager.api.rest.impl;
 
+import io.apiman.common.util.AesEncrypter;
 import io.apiman.manager.api.beans.BeanUtils;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
+import io.apiman.manager.api.beans.gateways.GatewayType;
+import io.apiman.manager.api.beans.gateways.RestGatewayConfigBean;
 import io.apiman.manager.api.beans.summary.GatewaySummaryBean;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
@@ -37,6 +40,8 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.codehaus.jackson.map.ObjectMapper;
+
 /**
  * Implementation of the Gateway API.
  * 
@@ -48,6 +53,8 @@ public class GatewayResourceImpl implements IGatewayResource {
     @Inject IStorage storage;
     @Inject IStorageQuery query;
     @Inject ISecurityContext securityContext;
+    
+    private static final ObjectMapper mapper = new ObjectMapper();
     
     /**
      * Constructor.
@@ -76,7 +83,7 @@ public class GatewayResourceImpl implements IGatewayResource {
             throw ExceptionFactory.notAuthorizedException();
 
         Date now = new Date();
-
+        
         bean.setId(BeanUtils.idFromName(bean.getName()));
         bean.setCreatedBy(securityContext.getCurrentUser());
         bean.setCreatedOn(now);
@@ -88,9 +95,9 @@ public class GatewayResourceImpl implements IGatewayResource {
                 throw ExceptionFactory.gatewayAlreadyExistsException(bean.getName());
             }
             // Store/persist the new gateway
+            encryptPasswords(bean);
             storage.createGateway(bean);
             storage.commitTx();
-            return bean;
         } catch (AbstractRestException e) {
             storage.rollbackTx();
             throw e;
@@ -98,6 +105,8 @@ public class GatewayResourceImpl implements IGatewayResource {
             storage.rollbackTx();
             throw new SystemErrorException(e);
         }
+        decryptPasswords(bean);
+        return bean;
     }
 
     /**
@@ -113,6 +122,8 @@ public class GatewayResourceImpl implements IGatewayResource {
             }
             if (!securityContext.isAdmin()) {
                 bean.setConfiguration(null);
+            } else {
+                decryptPasswords(bean);
             }
             storage.commitTx();
             return bean;
@@ -152,6 +163,7 @@ public class GatewayResourceImpl implements IGatewayResource {
                 gbean.setType(bean.getType());
             if (bean.getConfiguration() != null)
                 gbean.setConfiguration(bean.getConfiguration());
+            encryptPasswords(gbean);
             storage.updateGateway(gbean);
             storage.commitTx();
         } catch (AbstractRestException e) {
@@ -188,6 +200,42 @@ public class GatewayResourceImpl implements IGatewayResource {
         }
     }
 
+    /**
+     * @param bean
+     */
+    private void encryptPasswords(GatewayBean bean) {
+        if (bean.getConfiguration() == null) {
+            return;
+        }
+        try {
+            if (bean.getType() == GatewayType.REST) {
+                RestGatewayConfigBean configBean = mapper.readValue(bean.getConfiguration(), RestGatewayConfigBean.class);
+                configBean.setPassword(AesEncrypter.encrypt(configBean.getPassword()));
+                bean.setConfiguration(mapper.writeValueAsString(configBean));
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    /**
+     * @param bean
+     */
+    private void decryptPasswords(GatewayBean bean) {
+        if (bean.getConfiguration() == null) {
+            return;
+        }
+        try {
+            if (bean.getType() == GatewayType.REST) {
+                RestGatewayConfigBean configBean = mapper.readValue(bean.getConfiguration(), RestGatewayConfigBean.class);
+                configBean.setPassword(AesEncrypter.decrypt(configBean.getPassword()));
+                bean.setConfiguration(mapper.writeValueAsString(configBean));
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
     /**
      * @return the storage
      */

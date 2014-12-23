@@ -38,8 +38,8 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.commons.gwt.client.local.widgets.AsyncActionButton;
 
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 
@@ -83,6 +83,7 @@ public class EditGatewayPage extends AbstractPage {
     AsyncActionButton deleteButton;
 
     GatewayBean gatewayBean;
+    RestGatewayConfigBean configBean;
     
     /**
      * Constructor.
@@ -92,17 +93,17 @@ public class EditGatewayPage extends AbstractPage {
     
     @PostConstruct
     protected void postConstruct() {
-        ValueChangeHandler<String> handler = new ValueChangeHandler<String>() {
+        KeyUpHandler keyUpHandler = new KeyUpHandler() {
             @Override
-            public void onValueChange(ValueChangeEvent<String> event) {
+            public void onKeyUp(KeyUpEvent event) {
                 enableUpdateButtonIfValid();
             }
         };
-        description.addValueChangeHandler(handler);
-        configEndpoint.addValueChangeHandler(handler);
-        username.addValueChangeHandler(handler);
-        password.addValueChangeHandler(handler);
-        passwordConfirm.addValueChangeHandler(handler);
+        description.addKeyUpHandler(keyUpHandler);
+        configEndpoint.addKeyUpHandler(keyUpHandler);
+        username.addKeyUpHandler(keyUpHandler);
+        password.addKeyUpHandler(keyUpHandler);
+        passwordConfirm.addKeyUpHandler(keyUpHandler);
     }
     
     /**
@@ -125,7 +126,23 @@ public class EditGatewayPage extends AbstractPage {
                 valid = false;
             }
         }
-        updateButton.setEnabled(valid);
+        
+        boolean dirty = false;
+        if (valid) {
+            if (!description.getValue().trim().equals(gatewayBean.getDescription())) {
+                dirty = true;
+            }
+            if (!configEndpoint.getValue().trim().equals(configBean.getEndpoint())) {
+                dirty = true;
+            }
+            if (!username.getValue().trim().equals(configBean.getUsername())) {
+                dirty = true;
+            }
+            if (!password.getValue().trim().equals(configBean.getPassword())) {
+                dirty = true;
+            }
+            updateButton.setEnabled(valid && dirty);
+        }
     }
 
     /**
@@ -138,6 +155,8 @@ public class EditGatewayPage extends AbstractPage {
             @Override
             public void onSuccess(GatewayBean response) {
                 gatewayBean = response;
+                String configuration = gatewayBean.getConfiguration();
+                configBean = marshaller.unmarshal(configuration, RestGatewayConfigBean.class);
                 dataPacketLoaded();
             }
             @Override
@@ -164,9 +183,8 @@ public class EditGatewayPage extends AbstractPage {
     @Override
     protected void renderPage() {
         super.renderPage();
+        name.setValue(gatewayBean.getName());
         description.setValue(gatewayBean.getDescription());
-        String configuration = gatewayBean.getConfiguration();
-        RestGatewayConfigBean configBean = marshaller.unmarshal(configuration, RestGatewayConfigBean.class);
         configEndpoint.setValue(configBean.getEndpoint());
         username.setValue(configBean.getUsername());
         password.setValue(configBean.getPassword());

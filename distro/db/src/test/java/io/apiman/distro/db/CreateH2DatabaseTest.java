@@ -52,6 +52,10 @@ public class CreateH2DatabaseTest extends AbstractTestPlanTest {
         try {
             System.setProperty("apiman.suite.api-username", "admin");
             System.setProperty("apiman.suite.api-password", "admin");
+            System.setProperty("apiman.suite.gateway-config-endpoint", "http://localhost:8080/apiman-gateway-api");
+            System.setProperty("apiman.suite.gateway-config-username", "admin");
+            System.setProperty("apiman.suite.gateway-config-password", "admin123!");
+            
             runTestPlan("scripts/api-manager-init-testPlan.xml", CreateH2DatabaseTest.class.getClassLoader());
         } finally {
             System.clearProperty("apiman.test.h2-output-dir");

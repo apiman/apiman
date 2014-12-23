@@ -1,9 +1,12 @@
-PUT /gateways/GatewayOne admin/admin
+GET /gateways/GatewayOne admin/admin
+----
+200
 Content-Type: application/json
 
 {
+  "id" : "GatewayOne",
+  "name" : "Gateway One",
   "description" : "This is the first gateway. (updated)",
+  "type" : "REST",
   "configuration" : "{\"endpoint\":\"http://localhost:8080/gateway-config/api\",\"username\":\"admin99\",\"password\":\"zoomba19\"}"
 }
-----
-204
