@@ -122,7 +122,7 @@ public class GatewayClient /*implements ISystemResource, IServiceResource, IAppl
         try {
             URI uri = new URI(this.endpoint + APPLICATIONS);
             HttpPut put = new HttpPut(uri);
-            put.setHeader("Content-Type", "application/json"); //$NON-NLS-1$ //$NON-NLS-2$
+            put.setHeader("Content-Type", "application/json; charset=utf-8"); //$NON-NLS-1$ //$NON-NLS-2$
             String jsonPayload = mapper.writer().writeValueAsString(application);
             HttpEntity entity = new StringEntity(jsonPayload);
             put.setEntity(entity);
@@ -164,7 +164,7 @@ public class GatewayClient /*implements ISystemResource, IServiceResource, IAppl
         try {
             URI uri = new URI(this.endpoint + SERVICES);
             HttpPut put = new HttpPut(uri);
-            put.setHeader("Content-Type", "application/json"); //$NON-NLS-1$ //$NON-NLS-2$
+            put.setHeader("Content-Type", "application/json; charset=utf-8"); //$NON-NLS-1$ //$NON-NLS-2$
             String jsonPayload = mapper.writer().writeValueAsString(service);
             HttpEntity entity = new StringEntity(jsonPayload);
             put.setEntity(entity);
