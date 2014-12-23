@@ -18,6 +18,7 @@ package io.apiman.manager.test.server;
 import io.apiman.common.servlet.AuthenticationFilter;
 import io.apiman.manager.api.security.impl.DefaultSecurityContextFilter;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.SQLException;
@@ -110,7 +111,12 @@ public class ManagerApiTestServer {
             InitialContext ctx = new InitialContext();
             ensureCtx(ctx, "java:/comp/env"); //$NON-NLS-1$
             ensureCtx(ctx, "java:/comp/env/jdbc"); //$NON-NLS-1$
-            ds = createInMemoryDatasource();
+            String dbOutputPath = System.getProperty("apiman.test.h2-output-dir", null); //$NON-NLS-1$
+            if (dbOutputPath != null) {
+                ds = createFileDatasource(new File(dbOutputPath));
+            } else {
+                ds = createInMemoryDatasource();
+            }
             ctx.bind("java:/comp/env/jdbc/ApiManagerDS", ds); //$NON-NLS-1$
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -142,6 +148,23 @@ public class ManagerApiTestServer {
         ds.setUsername("sa"); //$NON-NLS-1$
         ds.setPassword(""); //$NON-NLS-1$
         ds.setUrl("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1"); //$NON-NLS-1$
+        Connection connection = ds.getConnection();
+        connection.close();
+        System.out.println("DataSource created and bound to JNDI."); //$NON-NLS-1$
+        return ds;
+    }
+
+    /**
+     * Creates an h2 file based datasource.
+     * @throws SQLException
+     */
+    private static BasicDataSource createFileDatasource(File outputDirectory) throws SQLException {
+        System.setProperty("hibernate.dialect", "org.hibernate.dialect.H2Dialect"); //$NON-NLS-1$ //$NON-NLS-2$
+        BasicDataSource ds = new BasicDataSource();
+        ds.setDriverClassName(Driver.class.getName());
+        ds.setUsername("sa"); //$NON-NLS-1$
+        ds.setPassword(""); //$NON-NLS-1$
+        ds.setUrl("jdbc:h2:" + outputDirectory.toString() + "/apiman-manager-api;MVCC=true"); //$NON-NLS-1$ //$NON-NLS-2$
         Connection connection = ds.getConnection();
         connection.close();
         System.out.println("DataSource created and bound to JNDI."); //$NON-NLS-1$

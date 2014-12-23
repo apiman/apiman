@@ -113,10 +113,6 @@
       <groupId>org.jboss.logging</groupId>
       <artifactId>jboss-logging</artifactId>
     </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-    </dependency>
   </dependencies>
 
 </project>

@@ -38,11 +38,13 @@
       <artifactId>apiman-gateway-platforms-war-wildfly8-modules</artifactId>
       <type>zip</type>
     </dependency>
-
-    <!-- apiman data -->
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-distro-data</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-distro-db</artifactId>
     </dependency>
 
     <!-- apiman quickstarts -->

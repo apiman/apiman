@@ -2,11 +2,11 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>io.apiman</groupId>
-    <artifactId>apiman-test</artifactId>
+    <artifactId>apiman-distro</artifactId>
     <version>1.0.1-SNAPSHOT</version>
   </parent>
-  <artifactId>apiman-test-suite</artifactId>
-  <name>apiman-test-suite</name>
+  <artifactId>apiman-distro-db</artifactId>
+  <name>apiman-distro-db</name>
 
   <dependencies>
     <!-- Project Dependencies -->
@@ -16,7 +16,7 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-distro-db</artifactId>
+      <artifactId>apiman-manager-test-api</artifactId>
     </dependency>
 
     <!-- Third Party Dependencies -->
@@ -43,10 +43,6 @@
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
     </dependency>
   </dependencies>
 </project>

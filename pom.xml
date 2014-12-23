@@ -400,6 +400,11 @@
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-distro-db</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
         <artifactId>apiman-distro-wildfly8</artifactId>
         <version>${project.version}</version>
         <type>zip</type>

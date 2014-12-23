@@ -12,6 +12,7 @@
 
   <modules>
     <module>data</module>
+    <module>db</module>
     <module>wildfly8</module>
   </modules>
 </project>

@@ -37,6 +37,7 @@ public abstract class AbstractTestPlanTest {
 
     @BeforeClass
     public static void setup() throws Exception {
+        System.out.println("AbstractTestPlanTest::setup()");
         if (!"true".equals(System.getProperty("apiman.junit.no-server", "false"))) {
             testServer.start();
         } else {
