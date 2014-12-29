@@ -108,6 +108,8 @@
                       overwrite="true" />
                     <copy file="${apiman.resources.dir}/wildfly8/deployments/mysql-connector-java-5.1.33-bin.jar"
                       todir="${apiman.wildfly.webapps}" overwrite="true" />
+                    <copy file="${apiman.resources.dir}/wildfly8/deployments/postgresql-9.3-1102.jdbc41.jar"
+                      todir="${apiman.wildfly.webapps}" overwrite="true" />                      
                     <copy
                       file="../../distro/wildfly8/src/main/resources/overlay/standalone/configuration/standalone-apiman.xml"
                       tofile="${apiman.wildfly.home}/standalone/configuration/standalone.xml" overwrite="true" />
