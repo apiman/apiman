@@ -31,7 +31,9 @@ import org.overlord.commons.gwt.client.local.widgets.TemplatedWidgetTable;
 
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.TakesValue;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
+import com.google.gwt.user.client.ui.Label;
 
 /**
  * A table of policy definitions.
@@ -101,8 +103,13 @@ public class PolicyDefinitionTable extends TemplatedWidgetTable implements Takes
         s.add(icon);
         InlineLabel span = new InlineLabel(bean.getName());
         s.add(span);
-        add(rowIdx, 0, s);
-        
+        FlowPanel fp = new FlowPanel();
+        fp.add(s);
+        Label description = new Label(bean.getDescription());
+        description.getElement().setClassName("description"); //$NON-NLS-1$
+        description.getElement().addClassName("apiman-label-faded"); //$NON-NLS-1$
+        fp.add(description);
+        add(rowIdx, 0, fp);
         add(rowIdx, 1, new InlineLabel(bean.getPolicyImpl()));
     }
 
