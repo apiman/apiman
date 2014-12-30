@@ -106,6 +106,8 @@ public class PolicyDefinitionTable extends TemplatedWidgetTable implements Takes
         FlowPanel fp = new FlowPanel();
         fp.add(s);
         Label description = new Label(bean.getDescription());
+        description.getElement().setClassName("description"); //$NON-NLS-1$
+        description.getElement().addClassName("apiman-label-faded"); //$NON-NLS-1$
         fp.add(description);
         add(rowIdx, 0, fp);
         add(rowIdx, 1, new InlineLabel(bean.getPolicyImpl()));
