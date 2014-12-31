@@ -55,7 +55,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 public class EditPolicyPage extends AbstractPolicyPage {
 
     @PageState
-    protected String policy;
+    String policy;
     
     @DataField @Inject
     H3Label policyHeading;
