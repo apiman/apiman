@@ -22,7 +22,6 @@ import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.events.IsFormValidEvent;
 import io.apiman.manager.ui.client.local.events.IsFormValidEvent.Handler;
 import io.apiman.manager.ui.client.local.pages.policy.IPolicyConfigurationForm;
-import io.apiman.manager.ui.client.local.services.PolicyConfigurationFormFactory;
 import io.apiman.manager.ui.client.local.services.rest.IRestInvokerCallback;
 import io.apiman.manager.ui.client.local.util.MultimapUtil;
 import io.apiman.manager.ui.client.local.widgets.H3Label;
@@ -34,7 +33,6 @@ import javax.inject.Inject;
 import org.jboss.errai.ui.nav.client.local.Page;
 import org.jboss.errai.ui.nav.client.local.PageShown;
 import org.jboss.errai.ui.nav.client.local.PageState;
-import org.jboss.errai.ui.nav.client.local.TransitionTo;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
@@ -54,23 +52,8 @@ import com.google.gwt.user.client.ui.FlowPanel;
 @Templated("/io/apiman/manager/ui/client/local/site/edit-policy.html#page")
 @Page(path="edit-policy")
 @Dependent
-public class EditPolicyPage extends AbstractPage {
+public class EditPolicyPage extends AbstractPolicyPage {
 
-    @Inject
-    TransitionTo<AppPoliciesPage> toAppPolicies;
-    @Inject
-    TransitionTo<ServicePoliciesPage> toServicePolicies;
-    @Inject
-    TransitionTo<PlanPoliciesPage> toPlanPolicies;
-
-    @PageState
-    String org;
-    @PageState
-    String id;
-    @PageState
-    String ver;
-    @PageState
-    String type;
     @PageState
     String policy;
     
@@ -82,9 +65,6 @@ public class EditPolicyPage extends AbstractPage {
     AsyncActionButton updateButton;
     @Inject @DataField
     Anchor cancelButton;
-    
-    @Inject
-    PolicyConfigurationFormFactory formFactory;
     
     IPolicyConfigurationForm policyForm;
     
