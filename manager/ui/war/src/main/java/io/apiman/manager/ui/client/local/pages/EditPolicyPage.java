@@ -32,6 +32,7 @@ import javax.inject.Inject;
 
 import org.jboss.errai.ui.nav.client.local.Page;
 import org.jboss.errai.ui.nav.client.local.PageShown;
+import org.jboss.errai.ui.nav.client.local.PageState;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
@@ -53,6 +54,9 @@ import com.google.gwt.user.client.ui.FlowPanel;
 @Dependent
 public class EditPolicyPage extends AbstractPolicyPage {
 
+    @PageState
+    protected String policy;
+    
     @DataField @Inject
     H3Label policyHeading;
     @DataField @Inject

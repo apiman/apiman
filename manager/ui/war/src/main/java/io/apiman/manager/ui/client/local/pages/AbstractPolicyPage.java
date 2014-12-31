@@ -44,8 +44,6 @@ public abstract class AbstractPolicyPage extends AbstractPage {
     protected String ver;
     @PageState
     protected String type;
-    @PageState
-    protected String policy;
     
     @Inject
     protected PolicyConfigurationFormFactory formFactory;
