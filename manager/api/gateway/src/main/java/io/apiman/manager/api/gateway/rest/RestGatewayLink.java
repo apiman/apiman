@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.api.gateway.rest;
 
+import io.apiman.common.util.AesEncrypter;
 import io.apiman.gateway.api.rest.contract.exceptions.NotAuthorizedException;
 import io.apiman.gateway.engine.beans.Application;
 import io.apiman.gateway.engine.beans.Service;
@@ -65,6 +66,7 @@ public class RestGatewayLink implements IGatewayLink {
             this.gateway = gateway;
             String cfg = gateway.getConfiguration();
             setConfig((RestGatewayConfigBean) mapper.reader(RestGatewayConfigBean.class).readValue(cfg));
+            getConfig().setPassword(AesEncrypter.decrypt(getConfig().getPassword()));
             httpClient = HttpClientBuilder.create().addInterceptorFirst(new HttpRequestInterceptor() {
                 @Override
                 public void process(HttpRequest request, HttpContext context) throws HttpException, IOException {
