@@ -15,10 +15,16 @@
  */
 package io.apiman.manager.ui.client.local.pages;
 
+import io.apiman.manager.api.beans.policies.PolicyBean;
+import io.apiman.manager.api.beans.policies.PolicyType;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
+import io.apiman.manager.api.beans.summary.PolicySummaryBean;
 import io.apiman.manager.ui.client.local.AppMessages;
+import io.apiman.manager.ui.client.local.services.ContextKeys;
 import io.apiman.manager.ui.client.local.services.rest.IRestInvokerCallback;
 import io.apiman.manager.ui.client.local.util.MultimapUtil;
+
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -36,6 +42,7 @@ import org.overlord.commons.gwt.client.local.widgets.AsyncActionButton;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.user.client.ui.SimpleCheckBox;
 import com.google.gwt.user.client.ui.TextBox;
 
 
@@ -60,8 +67,14 @@ public class NewServiceVersionPage extends AbstractPage {
     @Inject @DataField
     TextBox version;
     @Inject @DataField
+    SimpleCheckBox cloneCB;
+    
+    @Inject @DataField
     AsyncActionButton createButton;
     
+    private int totalPolicies;
+    private int policyCounter;
+
     /**
      * Constructor.
      */
@@ -77,6 +90,13 @@ public class NewServiceVersionPage extends AbstractPage {
             }
         };
         version.addKeyUpHandler(kph);
+        ServiceVersionBean oldService = (ServiceVersionBean) currentContext.getAttribute(ContextKeys.CURRENT_SERVICE_VERSION);
+        if (oldService != null) {
+            cloneCB.setValue(true);
+        } else {
+            cloneCB.setValue(false);
+            cloneCB.setEnabled(false);
+        }
     }
     
     /**
@@ -95,6 +115,95 @@ public class NewServiceVersionPage extends AbstractPage {
      */
     @EventHandler("createButton")
     public void onCreate(ClickEvent event) {
+        createButton.onActionStarted();
+        
+        if (cloneCB.getValue()) {
+            createAndClone();
+        } else {
+            create();
+        }
+    }
+
+    /**
+     * Creates a new cloned version of the service.
+     */
+    private void createAndClone() {
+        ServiceVersionBean clonedVersion = new ServiceVersionBean();
+        final String ver = version.getValue();
+        
+        ServiceVersionBean oldService = (ServiceVersionBean) currentContext.getAttribute(ContextKeys.CURRENT_SERVICE_VERSION);
+        final String oldVer = oldService.getVersion();
+        clonedVersion.setVersion(ver);
+        clonedVersion.setEndpoint(oldService.getEndpoint());
+        clonedVersion.setEndpointType(oldService.getEndpointType());
+        clonedVersion.setGateways(oldService.getGateways());
+        clonedVersion.setPlans(oldService.getPlans());
+        clonedVersion.setPublicService(oldService.isPublicService());
+        rest.createServiceVersion(org, service, clonedVersion, new IRestInvokerCallback<ServiceVersionBean>() {
+            @Override
+            public void onSuccess(ServiceVersionBean response) {
+                rest.getServicePolicies(org, service, oldVer, new IRestInvokerCallback<List<PolicySummaryBean>>() {
+                    @Override
+                    public void onSuccess(List<PolicySummaryBean> response) {
+                        totalPolicies = response.size();
+                        for (PolicySummaryBean policySummaryBean : response) {
+                            clonePolicy(oldVer, policySummaryBean);
+                        }
+                    }
+                    @Override
+                    public void onError(Throwable error) {
+                        dataPacketError(error);
+                    }
+                });
+            }
+            @Override
+            public void onError(Throwable error) {
+                dataPacketError(error);
+            }
+        });
+    }
+
+    /**
+     * Called to clone a single policy.  This fetches the policy and makes a copy of it
+     * in the newly created service.
+     * @param oldVersion
+     * @param policySummaryBean
+     */
+    protected void clonePolicy(String oldVersion, PolicySummaryBean policySummaryBean) {
+        final String ver = version.getValue();
+        rest.getPolicy(PolicyType.Service, org, service, oldVersion, policySummaryBean.getId(), new IRestInvokerCallback<PolicyBean>() {
+            @Override
+            public void onSuccess(PolicyBean response) {
+                PolicyBean clonedPolicy = new PolicyBean();
+                clonedPolicy.setConfiguration(response.getConfiguration());
+                clonedPolicy.setDefinition(response.getDefinition());
+                clonedPolicy.setName(response.getName());
+                clonedPolicy.setOrderIndex(response.getOrderIndex());
+                rest.createPolicy(PolicyType.Service, org, service, ver, clonedPolicy, new IRestInvokerCallback<PolicyBean>() {
+                    @Override
+                    public void onSuccess(PolicyBean response) {
+                        policyCounter++;
+                        if (totalPolicies == policyCounter) {
+                            toService.go(MultimapUtil.fromMultiple("org", org, "service", service, "version", ver)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                        }
+                    }
+                    @Override
+                    public void onError(Throwable error) {
+                        dataPacketError(error);
+                    }
+                });
+            }
+            @Override
+            public void onError(Throwable error) {
+                dataPacketError(error);
+            }
+        });
+    }
+
+    /**
+     * Creates a new empty version of the service.
+     */
+    private void create() {
         createButton.onActionStarted();
         ServiceVersionBean newVersion = new ServiceVersionBean();
         final String ver = version.getValue();

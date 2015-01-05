@@ -25,5 +25,9 @@ public final class ContextKeys {
     public static final String CURRENT_ORGANIZATION = "organizations.current"; //$NON-NLS-1$
     public static final String CURRENT_APPLICATION = "applications.current"; //$NON-NLS-1$
     public static final String CURRENT_APPLICATION_VERSION = "applications.current-version"; //$NON-NLS-1$
+    public static final String CURRENT_PLAN = "plans.current"; //$NON-NLS-1$
+    public static final String CURRENT_PLAN_VERSION = "plans.current-version"; //$NON-NLS-1$
+    public static final String CURRENT_SERVICE = "services.current"; //$NON-NLS-1$
+    public static final String CURRENT_SERVICE_VERSION = "services.current-version"; //$NON-NLS-1$
 
 }

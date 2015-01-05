@@ -53,12 +53,20 @@
       <div class="row hr-row">
         <hr/>
       </div>
-      <!-- Initial Plan Version -->
+      <!-- Plan Version -->
       <div class="row">
         <dl>
           <dt data-i18n-key="initial-version">Version</dt>
           <dd>
             <input data-field="version" type="text" class="form-control version" id="apiman-version" placeholder="Enter version..."></input>
+          </dd>
+        </dl>
+      </div>
+      <div class="row">
+        <dl>
+          <dd>
+            <input type="checkbox" id="cloneCB" data-field="cloneCB"></input>
+            <label for="cloneCB" data-i18n-key="make-clone">Make a clone of the previously selected version (copy all policies and settings)</label>
           </dd>
         </dl>
       </div>

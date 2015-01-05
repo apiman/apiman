@@ -1106,6 +1106,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             newVersion.setVersion(bean.getVersion());
             newVersion.setGateways(bean.getGateways());
             newVersion.setPlans(bean.getPlans());
+            newVersion.setPublicService(bean.isPublicService());
             
             if (gateway != null) {
                 if (newVersion.getGateways() == null) {

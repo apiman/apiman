@@ -22,6 +22,7 @@ import io.apiman.manager.api.beans.summary.ServiceVersionSummaryBean;
 import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.pages.common.Breadcrumb;
 import io.apiman.manager.ui.client.local.pages.common.VersionSelector;
+import io.apiman.manager.ui.client.local.services.ContextKeys;
 import io.apiman.manager.ui.client.local.services.rest.IRestInvokerCallback;
 import io.apiman.manager.ui.client.local.util.MultimapUtil;
 
@@ -156,6 +157,8 @@ public abstract class AbstractServicePage extends AbstractPage {
             public void onSuccess(ServiceVersionBean response) {
                 versionBean = response;
                 serviceBean = versionBean.getService();
+                currentContext.setAttribute(ContextKeys.CURRENT_SERVICE, serviceBean);
+                currentContext.setAttribute(ContextKeys.CURRENT_SERVICE_VERSION, versionBean);
                 dataPacketLoaded();
                 onServiceVersionLoaded();
             }

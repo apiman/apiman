@@ -22,6 +22,7 @@ import io.apiman.manager.api.beans.summary.PlanVersionSummaryBean;
 import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.pages.common.Breadcrumb;
 import io.apiman.manager.ui.client.local.pages.common.VersionSelector;
+import io.apiman.manager.ui.client.local.services.ContextKeys;
 import io.apiman.manager.ui.client.local.services.rest.IRestInvokerCallback;
 import io.apiman.manager.ui.client.local.util.MultimapUtil;
 
@@ -151,6 +152,8 @@ public abstract class AbstractPlanPage extends AbstractPage {
             public void onSuccess(PlanVersionBean response) {
                 versionBean = response;
                 planBean = versionBean.getPlan();
+                currentContext.setAttribute(ContextKeys.CURRENT_PLAN, planBean);
+                currentContext.setAttribute(ContextKeys.CURRENT_PLAN_VERSION, versionBean);
                 dataPacketLoaded();
                 onPlanVersionLoaded();
             }

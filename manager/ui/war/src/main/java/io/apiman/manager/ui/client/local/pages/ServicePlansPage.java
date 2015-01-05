@@ -42,10 +42,11 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.commons.gwt.client.local.widgets.AsyncActionButton;
 
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.SimpleCheckBox;
 
 
 /**
@@ -62,7 +63,7 @@ public class ServicePlansPage extends AbstractServicePage {
     Map<PlanSummaryBean, List<PlanVersionSummaryBean>> planVersions = new HashMap<PlanSummaryBean, List<PlanVersionSummaryBean>>();
     
     @Inject @DataField
-    CheckBox publicService;
+    SimpleCheckBox publicService;
     @Inject @DataField
     ServicePlansSelector plans;
     @Inject @DataField
@@ -86,7 +87,12 @@ public class ServicePlansPage extends AbstractServicePage {
             }
         };
         plans.addValueChangeHandler(handler);
-        publicService.addValueChangeHandler(handler);
+        publicService.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                onPlansChange();
+            }
+        });
     }
 
     /**

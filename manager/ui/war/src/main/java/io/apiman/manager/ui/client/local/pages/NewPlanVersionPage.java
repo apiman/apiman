@@ -16,9 +16,15 @@
 package io.apiman.manager.ui.client.local.pages;
 
 import io.apiman.manager.api.beans.plans.PlanVersionBean;
+import io.apiman.manager.api.beans.policies.PolicyBean;
+import io.apiman.manager.api.beans.policies.PolicyType;
+import io.apiman.manager.api.beans.summary.PolicySummaryBean;
 import io.apiman.manager.ui.client.local.AppMessages;
+import io.apiman.manager.ui.client.local.services.ContextKeys;
 import io.apiman.manager.ui.client.local.services.rest.IRestInvokerCallback;
 import io.apiman.manager.ui.client.local.util.MultimapUtil;
+
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -36,6 +42,7 @@ import org.overlord.commons.gwt.client.local.widgets.AsyncActionButton;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.user.client.ui.SimpleCheckBox;
 import com.google.gwt.user.client.ui.TextBox;
 
 
@@ -60,7 +67,13 @@ public class NewPlanVersionPage extends AbstractPage {
     @Inject @DataField
     TextBox version;
     @Inject @DataField
+    SimpleCheckBox cloneCB;
+    
+    @Inject @DataField
     AsyncActionButton createButton;
+    
+    private int totalPolicies;
+    private int policyCounter;
     
     /**
      * Constructor.
@@ -77,6 +90,13 @@ public class NewPlanVersionPage extends AbstractPage {
             }
         };
         version.addKeyUpHandler(kph);
+        PlanVersionBean oldPlan = (PlanVersionBean) currentContext.getAttribute(ContextKeys.CURRENT_PLAN_VERSION);
+        if (oldPlan != null) {
+            cloneCB.setValue(true);
+        } else {
+            cloneCB.setValue(false);
+            cloneCB.setEnabled(false);
+        }
     }
 
     /**
@@ -96,6 +116,89 @@ public class NewPlanVersionPage extends AbstractPage {
     @EventHandler("createButton")
     public void onCreate(ClickEvent event) {
         createButton.onActionStarted();
+        
+        if (cloneCB.getValue()) {
+            createAndClone();
+        } else {
+            create();
+        }
+    }
+
+    /**
+     * Create a new version of the plan and clone the previous version.
+     */
+    private void createAndClone() {
+        PlanVersionBean newVersion = new PlanVersionBean();
+        final String ver = version.getValue();
+        
+        PlanVersionBean oldPlan = (PlanVersionBean) currentContext.getAttribute(ContextKeys.CURRENT_PLAN_VERSION);
+        final String oldVer = oldPlan.getVersion();
+        newVersion.setVersion(ver);
+        rest.createPlanVersion(org, plan, newVersion, new IRestInvokerCallback<PlanVersionBean>() {
+            @Override
+            public void onSuccess(PlanVersionBean response) {
+                rest.getPlanPolicies(org, plan, oldVer, new IRestInvokerCallback<List<PolicySummaryBean>>() {
+                    @Override
+                    public void onSuccess(List<PolicySummaryBean> response) {
+                        totalPolicies = response.size();
+                        for (PolicySummaryBean policySummaryBean : response) {
+                            clonePolicy(oldVer, policySummaryBean);
+                        }
+                    }
+                    @Override
+                    public void onError(Throwable error) {
+                        dataPacketError(error);
+                    }
+                });
+            }
+            @Override
+            public void onError(Throwable error) {
+                dataPacketError(error);
+            }
+        });
+    }
+
+    /**
+     * Called to clone a single policy.  This fetches the policy and makes a copy of it
+     * in the newly created plan.
+     * @param oldVersion
+     * @param policySummaryBean
+     */
+    protected void clonePolicy(String oldVersion, PolicySummaryBean policySummaryBean) {
+        final String ver = version.getValue();
+        rest.getPolicy(PolicyType.Plan, org, plan, oldVersion, policySummaryBean.getId(), new IRestInvokerCallback<PolicyBean>() {
+            @Override
+            public void onSuccess(PolicyBean response) {
+                PolicyBean clonedPolicy = new PolicyBean();
+                clonedPolicy.setConfiguration(response.getConfiguration());
+                clonedPolicy.setDefinition(response.getDefinition());
+                clonedPolicy.setName(response.getName());
+                clonedPolicy.setOrderIndex(response.getOrderIndex());
+                rest.createPolicy(PolicyType.Plan, org, plan, ver, clonedPolicy, new IRestInvokerCallback<PolicyBean>() {
+                    @Override
+                    public void onSuccess(PolicyBean response) {
+                        policyCounter++;
+                        if (totalPolicies == policyCounter) {
+                            toPlan.go(MultimapUtil.fromMultiple("org", org, "plan", plan, "version", ver)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                        }
+                    }
+                    @Override
+                    public void onError(Throwable error) {
+                        dataPacketError(error);
+                    }
+                });
+            }
+            @Override
+            public void onError(Throwable error) {
+                dataPacketError(error);
+            }
+        });
+    }
+
+    /**
+     * Create a new version of the plan without cloning anything.
+     */
+    private void create() {
         PlanVersionBean newVersion = new PlanVersionBean();
         final String ver = version.getValue();
         newVersion.setVersion(ver);

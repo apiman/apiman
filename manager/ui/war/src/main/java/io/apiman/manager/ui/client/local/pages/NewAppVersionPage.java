@@ -16,9 +16,18 @@
 package io.apiman.manager.ui.client.local.pages;
 
 import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
+import io.apiman.manager.api.beans.contracts.ContractBean;
+import io.apiman.manager.api.beans.contracts.NewContractBean;
+import io.apiman.manager.api.beans.policies.PolicyBean;
+import io.apiman.manager.api.beans.policies.PolicyType;
+import io.apiman.manager.api.beans.summary.ContractSummaryBean;
+import io.apiman.manager.api.beans.summary.PolicySummaryBean;
 import io.apiman.manager.ui.client.local.AppMessages;
+import io.apiman.manager.ui.client.local.services.ContextKeys;
 import io.apiman.manager.ui.client.local.services.rest.IRestInvokerCallback;
 import io.apiman.manager.ui.client.local.util.MultimapUtil;
+
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -36,6 +45,7 @@ import org.overlord.commons.gwt.client.local.widgets.AsyncActionButton;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.user.client.ui.SimpleCheckBox;
 import com.google.gwt.user.client.ui.TextBox;
 
 
@@ -60,8 +70,16 @@ public class NewAppVersionPage extends AbstractPage {
     @Inject @DataField
     TextBox version;
     @Inject @DataField
+    SimpleCheckBox cloneCB;
+    
+    @Inject @DataField
     AsyncActionButton createButton;
     
+    private int totalPolicies;
+    private int policyCounter;
+    private int totalContracts;
+    private int contractCounter;
+
     /**
      * Constructor.
      */
@@ -77,6 +95,13 @@ public class NewAppVersionPage extends AbstractPage {
             }
         };
         version.addKeyUpHandler(kph);
+        ApplicationVersionBean oldApplication = (ApplicationVersionBean) currentContext.getAttribute(ContextKeys.CURRENT_APPLICATION_VERSION);
+        if (oldApplication != null) {
+            cloneCB.setValue(true);
+        } else {
+            cloneCB.setValue(false);
+            cloneCB.setEnabled(false);
+        }
     }
     
     /**
@@ -95,6 +120,149 @@ public class NewAppVersionPage extends AbstractPage {
      */
     @EventHandler("createButton")
     public void onCreate(ClickEvent event) {
+        createButton.onActionStarted();
+        
+        if (cloneCB.getValue()) {
+            createAndClone();
+        } else {
+            create();
+        }
+    }
+
+    /**
+     * Creates a new cloned version of the app.
+     */
+    private void createAndClone() {
+        ApplicationVersionBean clonedVersion = new ApplicationVersionBean();
+        final String ver = version.getValue();
+        
+        ApplicationVersionBean oldApplication = (ApplicationVersionBean) currentContext.getAttribute(ContextKeys.CURRENT_APPLICATION_VERSION);
+        final String oldVer = oldApplication.getVersion();
+        clonedVersion.setVersion(ver);
+        rest.createApplicationVersion(org, app, clonedVersion, new IRestInvokerCallback<ApplicationVersionBean>() {
+            @Override
+            public void onSuccess(ApplicationVersionBean response) {
+                rest.getApplicationPolicies(org, app, oldVer, new IRestInvokerCallback<List<PolicySummaryBean>>() {
+                    @Override
+                    public void onSuccess(List<PolicySummaryBean> response) {
+                        clonePolicies(oldVer, response);
+                    }
+                    @Override
+                    public void onError(Throwable error) {
+                        dataPacketError(error);
+                    }
+                });
+                rest.getApplicationContracts(org, app, oldVer, new IRestInvokerCallback<List<ContractSummaryBean>>() {
+                    @Override
+                    public void onSuccess(List<ContractSummaryBean> response) {
+                        cloneContracts(oldVer, response);
+                    }
+                    @Override
+                    public void onError(Throwable error) {
+                        dataPacketError(error);
+                    }
+                });
+            }
+            @Override
+            public void onError(Throwable error) {
+                dataPacketError(error);
+            }
+        });
+    }
+    
+    /**
+     * Clones the list of policies.
+     * @param oldVersion
+     * @param policies
+     */
+    protected void clonePolicies(final String oldVersion, List<PolicySummaryBean> policies) {
+        totalPolicies = policies.size();
+        policyCounter = 0;
+        for (PolicySummaryBean policySummaryBean : policies) {
+            clonePolicy(oldVersion, policySummaryBean);
+        }
+    }
+
+    /**
+     * Called to clone a single policy.  This fetches the policy and makes a copy of it
+     * in the newly created application.
+     * @param oldVersion
+     * @param policySummaryBean
+     */
+    protected void clonePolicy(String oldVersion, PolicySummaryBean policySummaryBean) {
+        final String ver = version.getValue();
+        rest.getPolicy(PolicyType.Application, org, app, oldVersion, policySummaryBean.getId(), new IRestInvokerCallback<PolicyBean>() {
+            @Override
+            public void onSuccess(PolicyBean response) {
+                PolicyBean clonedPolicy = new PolicyBean();
+                clonedPolicy.setConfiguration(response.getConfiguration());
+                clonedPolicy.setDefinition(response.getDefinition());
+                clonedPolicy.setName(response.getName());
+                clonedPolicy.setOrderIndex(response.getOrderIndex());
+                rest.createPolicy(PolicyType.Application, org, app, ver, clonedPolicy, new IRestInvokerCallback<PolicyBean>() {
+                    @Override
+                    public void onSuccess(PolicyBean response) {
+                        policyCounter++;
+                        if (contractCounter == totalContracts && policyCounter == totalPolicies) {
+                            toApp.go(MultimapUtil.fromMultiple("org", org, "app", app, "version", ver)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                        }
+                    }
+                    @Override
+                    public void onError(Throwable error) {
+                        // Don't care - just do our best.
+                    }
+                });
+            }
+            @Override
+            public void onError(Throwable error) {
+                dataPacketError(error);
+            }
+        });
+    }
+    
+    /**
+     * Clones the app's contracts.
+     * @param oldVersion
+     * @param contracts
+     */
+    private void cloneContracts(String oldVersion, List<ContractSummaryBean> contracts) {
+        totalContracts = contracts.size();
+        contractCounter = 0;
+        for (ContractSummaryBean csb : contracts) {
+            cloneContract(oldVersion, csb);
+        }
+    }
+
+    /**
+     * @param oldVersion
+     * @param csb
+     */
+    private void cloneContract(String oldVersion, ContractSummaryBean contractSummaryBean) {
+        final String ver = version.getValue();
+        NewContractBean contract = new NewContractBean();
+        contract.setPlanId(contractSummaryBean.getPlanId());
+        contract.setServiceId(contractSummaryBean.getServiceId());
+        contract.setServiceOrgId(contractSummaryBean.getServiceOrganizationId());
+        contract.setServiceVersion(contractSummaryBean.getServiceVersion());
+        rest.createContract(org, app, ver, contract, new IRestInvokerCallback<ContractBean>() {
+            @Override
+            public void onSuccess(ContractBean response) {
+                contractCounter++;
+                if (contractCounter == totalContracts && policyCounter == totalPolicies) {
+                    toApp.go(MultimapUtil.fromMultiple("org", org, "app", app, "version", ver)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                }
+            }
+            @Override
+            public void onError(Throwable error) {
+                // Don't care!
+            }
+        });
+    }
+
+    /**
+     * Creates a new empty version of the app.
+     */
+    private void create() {
         createButton.onActionStarted();
         ApplicationVersionBean newVersion = new ApplicationVersionBean();
         final String ver = version.getValue();
