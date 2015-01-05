@@ -16,9 +16,9 @@
 package io.apiman.manager.ui.client.local.pages.app;
 
 import io.apiman.manager.api.beans.summary.ApiEntryBean;
-import io.apiman.manager.ui.client.local.AppMessages;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.jboss.errai.ui.client.local.spi.TranslationService;
@@ -28,7 +28,6 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.TakesValue;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.TextBox;
@@ -52,6 +51,9 @@ public class AppApiEntryDetails extends Composite implements TakesValue<ApiEntry
     @Inject @DataField
     private Button copyButton;
     
+    @Inject
+    private Instance<CopyApiEndpointDialog> dialogFactory;
+    
     private ApiEntryBean value;
     
     /**
@@ -65,16 +67,9 @@ public class AppApiEntryDetails extends Composite implements TakesValue<ApiEntry
         copyButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                String fullUrl = value.getHttpEndpoint();
-                if (fullUrl == null) {
-                    return;
-                }
-                if (fullUrl.contains("?")) { //$NON-NLS-1$
-                    fullUrl += "&apikey=" + value.getApiKey(); //$NON-NLS-1$
-                } else {
-                    fullUrl += "?apikey=" + value.getApiKey(); //$NON-NLS-1$
-                }
-                Window.prompt(i18n.format(AppMessages.APIS_REGISTRY_PLEASE_COPY), fullUrl);
+                CopyApiEndpointDialog dialog = dialogFactory.get();
+                dialog.setApiEntry(value);
+                dialog.show();
             }
         });
     }

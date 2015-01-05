@@ -250,9 +250,6 @@ public class AppMessages {
     @TranslationKey(defaultValue = "No members found")
     public static final String NO_MEMBERS_MESSAGE = "no-members-found";
 
-    @TranslationKey(defaultValue = "Please copy the value below (e.g. Ctrl-C).")
-    public static final String APIS_REGISTRY_PLEASE_COPY = "appApiRegistry.please-copy";
-    
     @TranslationKey(defaultValue = "No policies matched the filter criteria.  Please try modifying the filter or else create a new policy using the button above.")
     public static final String NO_FILTERED_POLICIES_MESSAGE = "no-filtered-policies";
     @TranslationKey(defaultValue = "It looks like there aren't (yet) any policies defined!  That may be exactly what you want (of course) but if not, you may try defining one using the New Policy button above...")
