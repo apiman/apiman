@@ -50,6 +50,7 @@ import org.overlord.commons.gwt.client.local.widgets.AsyncActionButton;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.http.client.Request;
@@ -58,7 +59,7 @@ import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.SimpleCheckBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.Element;
@@ -104,7 +105,7 @@ public class ImportServicesPage extends AbstractPage {
 
     // Confirmation Page
     @Inject @DataField
-    CheckBox servicesSelectAll;
+    SimpleCheckBox servicesSelectAll;
     @Inject @DataField
     ImportServicesTable services;
     @Inject @DataField
@@ -142,10 +143,10 @@ public class ImportServicesPage extends AbstractPage {
                 checkValidityWadl();
             }
         });
-        servicesSelectAll.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+        servicesSelectAll.addClickHandler(new ClickHandler() {
             @Override
-            public void onValueChange(ValueChangeEvent<Boolean> event) {
-                if (event.getValue()) {
+            public void onClick(ClickEvent event) {
+                if (servicesSelectAll.getValue()) {
                     services.selectAll();
                 } else {
                     services.deselectAll();

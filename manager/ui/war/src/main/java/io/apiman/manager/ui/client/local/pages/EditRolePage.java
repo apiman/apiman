@@ -36,7 +36,7 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.commons.gwt.client.local.widgets.AsyncActionButton;
 
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.SimpleCheckBox;
 import com.google.gwt.user.client.ui.TextBox;
 
 
@@ -59,7 +59,7 @@ public class EditRolePage extends AbstractPage {
     @Inject @DataField
     TextBox description;
     @Inject @DataField
-    CheckBox autoGrant;
+    SimpleCheckBox autoGrant;
     @Inject @DataField
     PermissionSelector permissions;
 

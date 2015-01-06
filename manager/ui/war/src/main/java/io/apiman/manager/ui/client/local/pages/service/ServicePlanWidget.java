@@ -30,12 +30,14 @@ import javax.inject.Inject;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.SimpleCheckBox;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SelectionChangeEvent.Handler;
 import com.google.gwt.view.client.SelectionChangeEvent.HasSelectionChangedHandlers;
@@ -53,7 +55,7 @@ public class ServicePlanWidget extends Composite implements HasSelectionChangedH
     protected NavigationHelperService navHelper;
 
     @Inject @DataField
-    CheckBox checkbox;
+    SimpleCheckBox checkbox;
     @Inject @DataField
     Anchor name;
     @Inject @DataField
@@ -67,9 +69,9 @@ public class ServicePlanWidget extends Composite implements HasSelectionChangedH
     
     @PostConstruct
     void postConstruct() {
-        checkbox.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+        checkbox.addClickHandler(new ClickHandler() {
             @Override
-            public void onValueChange(ValueChangeEvent<Boolean> event) {
+            public void onClick(ClickEvent event) {
                 onSomethingChanged();
             }
         });

@@ -112,7 +112,7 @@ public class CopyApiEndpointDialog extends Composite {
      * Show the modal.
      */
     public final native void showModal() /*-{
-        $wnd.jQuery('#apiCopyModal').modal({'keyboard': true});
+        $wnd.jQuery('#apiCopyModal').modal({'keyboard': false, 'backdrop': 'static'});
     }-*/;
 
     /**

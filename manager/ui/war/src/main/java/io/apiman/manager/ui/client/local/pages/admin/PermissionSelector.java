@@ -26,12 +26,14 @@ import javax.inject.Inject;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.SimpleCheckBox;
 
 /**
  * Allows the user to choose permissions for a role.
@@ -42,32 +44,32 @@ import com.google.gwt.user.client.ui.HasValue;
 public class PermissionSelector extends Composite implements HasValue<Set<PermissionType>> {
     
     @Inject @DataField
-    CheckBox orgView;
+    SimpleCheckBox orgView;
     @Inject @DataField
-    CheckBox orgEdit;
+    SimpleCheckBox orgEdit;
     @Inject @DataField
-    CheckBox orgAdmin;
+    SimpleCheckBox orgAdmin;
 
     @Inject @DataField
-    CheckBox planView;
+    SimpleCheckBox planView;
     @Inject @DataField
-    CheckBox planEdit;
+    SimpleCheckBox planEdit;
     @Inject @DataField
-    CheckBox planAdmin;
+    SimpleCheckBox planAdmin;
 
     @Inject @DataField
-    CheckBox svcView;
+    SimpleCheckBox svcView;
     @Inject @DataField
-    CheckBox svcEdit;
+    SimpleCheckBox svcEdit;
     @Inject @DataField
-    CheckBox svcAdmin;
+    SimpleCheckBox svcAdmin;
 
     @Inject @DataField
-    CheckBox appView;
+    SimpleCheckBox appView;
     @Inject @DataField
-    CheckBox appEdit;
+    SimpleCheckBox appEdit;
     @Inject @DataField
-    CheckBox appAdmin;
+    SimpleCheckBox appAdmin;
 
     private Set<PermissionType> value;
     
@@ -82,9 +84,12 @@ public class PermissionSelector extends Composite implements HasValue<Set<Permis
      */
     @PostConstruct
     protected void postConstrct() {
-        ValueChangeHandler<Boolean> handler = new ValueChangeHandler<Boolean>() {
+        ClickHandler handler = new ClickHandler() {
+            /**
+             * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+             */
             @Override
-            public void onValueChange(ValueChangeEvent<Boolean> event) {
+            public void onClick(ClickEvent event) {
                 Set<PermissionType> permissions = new HashSet<PermissionType>();
                 if (orgView.getValue()) { permissions.add(PermissionType.orgView); }
                 if (orgEdit.getValue()) { permissions.add(PermissionType.orgEdit); }
@@ -105,21 +110,21 @@ public class PermissionSelector extends Composite implements HasValue<Set<Permis
                 setValue(permissions, true);
             }
         };
-        orgView.addValueChangeHandler(handler);
-        orgEdit.addValueChangeHandler(handler);
-        orgAdmin.addValueChangeHandler(handler);
+        orgView.addClickHandler(handler);
+        orgEdit.addClickHandler(handler);
+        orgAdmin.addClickHandler(handler);
 
-        planView.addValueChangeHandler(handler);
-        planEdit.addValueChangeHandler(handler);
-        planAdmin.addValueChangeHandler(handler);
+        planView.addClickHandler(handler);
+        planEdit.addClickHandler(handler);
+        planAdmin.addClickHandler(handler);
 
-        svcView.addValueChangeHandler(handler);
-        svcEdit.addValueChangeHandler(handler);
-        svcAdmin.addValueChangeHandler(handler);
+        svcView.addClickHandler(handler);
+        svcEdit.addClickHandler(handler);
+        svcAdmin.addClickHandler(handler);
 
-        appView.addValueChangeHandler(handler);
-        appEdit.addValueChangeHandler(handler);
-        appAdmin.addValueChangeHandler(handler);
+        appView.addClickHandler(handler);
+        appEdit.addClickHandler(handler);
+        appAdmin.addClickHandler(handler);
     }
 
     /**

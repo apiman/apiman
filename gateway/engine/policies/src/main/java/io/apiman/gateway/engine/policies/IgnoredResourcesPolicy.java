@@ -70,8 +70,11 @@ public class IgnoredResourcesPolicy extends AbstractMappedPolicy<IgnoredResource
      * @return true if any path matches the destination. false otherwise
      */
     private boolean satisfiesAnyPath(IgnoredResourcesConfig config, String destination) {
-        for(String pathToIgnore : config.getPathsToIgnore()) {
-            if(destination.matches(pathToIgnore)) {
+        if (destination == null || destination.trim().length() == 0) {
+            destination = "/"; //$NON-NLS-1$
+        }
+        for (String pathToIgnore : config.getPathsToIgnore()) {
+            if (destination.matches(pathToIgnore)) {
                 return true;
             }
         }

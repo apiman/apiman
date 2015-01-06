@@ -126,7 +126,7 @@ public class ConfirmationDialog extends Composite implements HasConfirmationHand
      * Show the modal.
      */
     public final native void showModal() /*-{
-        $wnd.jQuery('#confirmModal').modal({'keyboard': false});
+        $wnd.jQuery('#confirmModal').modal({'keyboard': false, 'backdrop': 'static'});
     }-*/;
 
     /**
