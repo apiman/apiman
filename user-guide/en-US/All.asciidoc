@@ -396,7 +396,7 @@ entities, the user of the API Manager will Publish a Service or Register an Appl
 action occurs, the API Manager invokes one of the relevant API Gateway configuration endpoints listed
 above.
 
-=== Invoking Services
+=== Invoking Managed Services
 Once appropriate configuration has been published/registered with the API Gateway (see the Configuration
 section above), the API Gateway can be used to make managed calls to the Services it knows about.  A
 managed Service can be invoked as though the back-end service were being invoked directly, with the
@@ -410,8 +410,12 @@ Note that all path segments beyond the {version} segment will be proxied on to t
 service endpoint.  Additionally, all HTTP headers and all query parameters (except for the
 API Key) will also be proxied to the back-end service.
 
-Requests to managed endpoints *must* include the API Key so that the Gateway knows which Contract
+Requests to managed endpoints may include the API Key so that the Gateway knows which Contract
 is being used to invoke the Service.  The API Key can be sent in one of the following ways:
 
 * As an HTTP Header named *X-API-Key*
 * As a URL query parameter named *apikey*
+
+If the Service being invoked is a "Public" service, then no API Key should be sent.  However,
+the request should still be sent to the same endpoint as described above.  The endpoint
+itself contains enough information to let the Gateway know what service is being invoked.
