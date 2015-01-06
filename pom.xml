@@ -3,7 +3,7 @@
 
   <groupId>io.apiman</groupId>
   <artifactId>apiman-guides</artifactId>
-  <version>1.0.0.Final</version>
+  <version>1.0.1.Final</version>
   <packaging>pom</packaging>
 
   <name>User and Developer guides for apiman</name>

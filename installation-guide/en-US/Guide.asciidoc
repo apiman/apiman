@@ -14,11 +14,11 @@ both are downloaded, it's a simple matter of unpacking both into the same locati
 First you will need to download both WildFly 8 and apiman:
 
 * http://download.jboss.org/wildfly/8.2.0.Final/wildfly-8.2.0.Final.zip[Download WildFly 8]
-* http://downloads.jboss.org/overlord/apiman/1.0.0.Final/apiman-distro-wildfly8-1.0.0.Final-overlay.zip[Download apiman 1.0.0.Final]
+* http://downloads.jboss.org/overlord/apiman/1.0.1.Final/apiman-distro-wildfly8-1.0.1.Final-overlay.zip[Download apiman 1.0.1.Final]
 
 ....
 curl http://download.jboss.org/wildfly/8.2.0.Final/wildfly-8.2.0.Final.zip -o wildfly-8.2.0.Final.zip
-curl http://downloads.jboss.org/overlord/apiman/1.0.0.Final/apiman-distro-wildfly8-1.0.0.Final-overlay.zip -o apiman-distro-wildfly8-1.0.0.Final-overlay.zip
+curl http://downloads.jboss.org/overlord/apiman/1.0.1.Final/apiman-distro-wildfly8-1.0.1.Final-overlay.zip -o apiman-distro-wildfly8-1.0.1.Final-overlay.zip
 ....
 
 ==== Unpack
@@ -26,7 +26,7 @@ Once both files have been downloaded, simply unpack both in the same location.
 
 ....
 unzip wildfly-8.2.0.Final.zip
-unzip -o apiman-distro-wildfly8-1.0.0.Final-overlay.zip -d wildfly-8.2.0.Final
+unzip -o apiman-distro-wildfly8-1.0.1.Final-overlay.zip -d wildfly-8.2.0.Final
 ....
 
 ==== Run WildFly 8
@@ -81,12 +81,12 @@ http://localhost:8080/auth/admin/ )
 
 == Configuration
 Of course apiman is made up of a number of different components, many of which can be configured
-to use various implementations and/or providers.  When downloading and installing apiman, the 
+to use various implementations and/or providers.  When downloading and installing apiman, the
 default distribution includes reasonable default values for all options.  This section details
 these options and explains the default values.
 
 === Configuration Properties
-All of the apiman WARs share a common configuration file called *apiman.properties*, which can 
+All of the apiman WARs share a common configuration file called *apiman.properties*, which can
 be found in *standalone/configuration*.  This file therefore contains configuration settings
 for all three applications (API Manager, API Manager UI, API Gateway).
 
@@ -143,7 +143,7 @@ Description:: The implementation class to use for the factory that creates polic
 
 === API Manager Database
 The API Manager, by default, is a typical CDI application and uses JPA/Hibernate to persist its data.  The
-JPA layer requires a data source to connect to a supported database.  When running in WildFly this 
+JPA layer requires a data source to connect to a supported database.  When running in WildFly this
 datasource is made available by deploying the following file:
 
 ....
@@ -167,9 +167,9 @@ it to support whatever database you desire.
 </datasources>
 ....
 
-The project comes with a DDL for MySQL, to hopefully make it easy to switch away from H2.  Note
+The project comes with DDLs for MySQL and PostgreSQL, to hopefully make it easy to switch away from H2.  Note
 that switching databases also requires a change to the standalone-apiman.xml file.  The following
-should be changed:
+should be changed to appropriate values for your database:
 
 ....
   <system-properties>
@@ -182,12 +182,12 @@ The MySQL 5.x DDL can be found in *apiman/ddls/*.
 
 === API Gateway Registry
 The API Gateway includes a registry that stores the published service and application information.
-This registry is updated whenever a user publishes a service (or registers an application) from 
+This registry is updated whenever a user publishes a service (or registers an application) from
 within the API Manager UI.  The registry contains just the configuration information necessary for
 the API Gateway to properly apply the appropriate policies to all inbound requests.
 
 Out of the box, the API Gateway is configured to use a persistent Infinispan cache to store the
-published/registered data.  The configuration of the Infinispan cache can be found in 
+published/registered data.  The configuration of the Infinispan cache can be found in
 *standalone-apiman.xml* and is detailed here:
 
 ....

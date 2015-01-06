@@ -39,7 +39,7 @@ system.
 Once you have created a Service, you will need to provide some basic configuration, including:
 
 * Service Implementation
-* One or more Plans
+* One or more Plans (*or* mark the service as "Public")
 
 The Service Implementation is just the REST endpoint location of your back end service (the one
 that will be managed and proxied by the API Gateway).
@@ -51,6 +51,10 @@ for details.
 
 Once you have configured all necessary aspects of the Service, you need to *Publish* the Service
 to the API Gateway.  This can be done from the Service's Overview UI tab.
+
+TIP: A Service can be marked as "Public" if you want to get going even faster.  A "Public" Service
+can be invoked by any client without first creating a Service Contract.  This means you can
+skip all the Plan and Application configuration if you don't need that complexity.
 
 === Consuming Services
 

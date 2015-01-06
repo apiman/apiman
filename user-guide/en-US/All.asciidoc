@@ -72,6 +72,10 @@ Services must be offered through a valid plan configured in the same organizatio
 consume the service through one of those plans. Please see the section on 'Service Contracts' for more
 information.
 
+TIP: Note that, alternatively, Services can be marked as "Public", which means they (once published) can be
+used by any client, without needing a Contract.  To use a public service, simply send requests to the
+appropriate managed endpoint (through the API Gateway) without providing an API Key.
+
 Only once a service is fully configured, including its policies, implementation, and plans can it be
 published to the runtime gateway for consumption by applications.  Once this is done, the service cannot be
 changed. If changes are required, a new version of the service must be created and configured.
@@ -98,6 +102,9 @@ runtime gateway.
 When a service contract is created, the system generates a unique API key specific to that contract. All
 requests made to the service through the API Gateway must include this API key. The API key is used to create
 the runtime policy chain from the policies configured on the service, plan, and application.
+
+Service Contracts can only be created between Applications and published Services which are offered through
+at least one Plan.  A Service Contract cannot be created between an Application and a public Service.
 
 ==== Policy Chain
 A policy chain is an ordered sequence of policies that are applied when a request is made for a service
@@ -206,11 +213,15 @@ Do not forget to click the Save button when you are done making changes.
 
 ==== Available Plans
 Before a service can be consumed by an application, it must make itself available through at least one of
-the organization's plans. This is done by navigating to the 'Plans' tab on the service details page. The
+the organization's plans (or it must be marked as "Public"). Marking a Service as public or making a Service
+available through one or more plan can be done by navigating to the 'Plans' tab on the service details page. The
 'Plans' tab will list all of the available plans defined by the organization. Simply choose one or more plan
-from this list.
+from this list.  If no plans are needed, you can instead mark the Service as "Public", making it available to
+be consumed anonymously by any client.  Although a Service can be *both* Public and available through one or
+more plan, it is unusual to do so.
 
-After you have selected at least one plan, make sure to click the Save button.
+TIP: After you have either marked the Service as "public" or selected at least one plan, make sure to click the
+Save button.
 
 ==== Managing Policies
 Service policies can be added and configured by navigating to the 'Policies' tab on the service details
@@ -232,6 +243,15 @@ available plans. Service policies are optional.
 === Consuming Services
 After the service providers have added a number of services to the API management system, those services
 can be consumed by applications. This section explains how to consume services.
+
+==== Consuming Public Services
+If you have marked a Service as "Public", then consuming it is a simple matter of sending a request to the
+appropriate API Gateway endpoint.  The managed service endpoint may vary depending on the Gateway being
+used, but it typically of the following form:
+
+* http://gatewayhost:port/apiman-gateway/{organizationId}/{serviceId}/{version}/
+
+Simply send requests to the managed service endpoint, and do not include an API Key.
 
 ==== Creating an Application
 In order to consume a service you must first create an application. Applications must exist within the
@@ -292,9 +312,28 @@ you must know the URL of the managed service.  This URL includes the API Key gen
 Contract.
 
 To view a list of all of these managed endpoints, navigate to the 'APIs' tab on the service detail page. Each
-service contract is represented in the list of managed endpoints. You can copy one of the endpoints by
-hovering your mouse over the appropriate item in the list and clicking the 'Copy' button. Use the copied URL
-to issue requests to the service.
+service contract is represented in the list of managed endpoints. You can expand an entry in the managed
+service endpoints table by clicking the '>' icon in the first column.  The resulting details will help you
+figure out the appropriate endpoint to use for a particular managed service.
+
+=== Versioning
+Many of the entities in the API Manager support multiple simultaneous versions.  These include the
+following:
+
+* Plans
+* Services
+* Applications
+
+Typically once an entity is frozen (e.g. Locked, Published, or Registered) it can no longer be
+modified.  But often as things change, modifications to the API Management configuration are necessary.
+For example, as a Service implementation evolves, the policies associated with it in the API Manager
+may need to change.  Versioning allows this to happen, but providing a way for a user to create a new
+version of a particular Service (or Application or Plan) and then making changes to it.
+
+To create a new version of an entity, view the details of the entity and click the "New Version" button
+in the UI.  This will allow you to make a new version of the entity.  You can either make a simple,
+empty new version or you can make a clone of an existing version.  The latter is typically more
+convenient when making incremental changes.
 
 === System Administration
 There are several "global" settings that must be configured/managed by an apiman administrator.  These
