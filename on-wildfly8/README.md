@@ -1,5 +1,4 @@
-
-man on wildfly 8
+apiman on wildfly 8
 ===================
 
 ## Usage
