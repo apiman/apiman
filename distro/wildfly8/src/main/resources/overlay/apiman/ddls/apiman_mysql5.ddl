@@ -30,7 +30,7 @@ CREATE TABLE `plugins` (
   `description` varchar(512) DEFAULT NULL,
   `createdBy` varchar(255) NOT NULL,
   `createdOn` datetime NOT NULL,
-  UNIQUE KEY `UK_plugins_1` (`groupId`, `artifactId`, `version`, `classifier`, `type`),
+  UNIQUE KEY `UK_plugins_1` (`groupId`, `artifactId`),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 

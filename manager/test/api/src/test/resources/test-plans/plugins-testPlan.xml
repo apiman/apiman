@@ -3,12 +3,12 @@
 
   <!-- Make sure Plugins are working properly -->
   <testGroup name="Plugin Management">
-    <test name="Plugin 1">test-plan-data/plugins/001_create-1.resttest</test>
+    <test name="Plugin 1">test-plan-data/plugins/001_create-1_1.0.resttest</test>
     <test name="Plugin 2">test-plan-data/plugins/002_create-2.resttest</test>
-    <test name="Plugin 3">test-plan-data/plugins/003_create-3.resttest</test>
-    <test name="Get Plugin 2">test-plan-data/plugins/004_get-2.resttest</test>
-    <test name="List All Plugins">test-plan-data/plugins/005_list-all.resttest</test>
-    <test name="Delete Plugin 3">test-plan-data/plugins/006_delete-3.resttest</test>
+    <test name="Get Plugin 1">test-plan-data/plugins/003_get-1.resttest</test>
+    <test name="List All Plugins">test-plan-data/plugins/004_list-all.resttest</test>
+    <test name="Delete Plugin 1">test-plan-data/plugins/005_delete-1.resttest</test>
+    <test name="Plugin 1, 2.0">test-plan-data/plugins/006_create-1_2.0.resttest</test>
     <test name="List All Plugins">test-plan-data/plugins/007_list-all.resttest</test>
   </testGroup>
 

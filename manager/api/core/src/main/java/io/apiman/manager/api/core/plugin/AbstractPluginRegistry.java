@@ -21,6 +21,7 @@ import io.apiman.common.plugin.PluginCoordinates;
 import io.apiman.common.plugin.PluginSpec;
 import io.apiman.manager.api.core.IPluginRegistry;
 import io.apiman.manager.api.core.exceptions.InvalidPluginException;
+import io.apiman.manager.api.core.i18n.Messages;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -108,24 +109,24 @@ public abstract class AbstractPluginRegistry implements IPluginRegistry {
         }
         // Still doesn't exist?  That's a failure.
         if (!pluginFile.exists()) {
-            throw new InvalidPluginException("Could not find plugin.  (Not found locally and could not download from remote maven repositories)");
+            throw new InvalidPluginException(Messages.i18n.format("AbstractPluginRegistry.PluginNotFound")); //$NON-NLS-1$
         }
         PluginClassLoader pluginClassLoader;
         try {
             pluginClassLoader = createPluginClassLoader(pluginFile);
         } catch (IOException e) {
-            throw new InvalidPluginException("Invalid plugin file at: " + pluginFile.getAbsolutePath(), e);
+            throw new InvalidPluginException(Messages.i18n.format("AbstractPluginRegistry.InvalidPlugin", pluginFile.getAbsolutePath()), e); //$NON-NLS-1$
         }
         URL specFile = pluginClassLoader.getResource(PLUGIN_SPEC_PATH);
         if (specFile == null) {
-            throw new InvalidPluginException("Missing plugin spec file at: " + PLUGIN_SPEC_PATH);
+            throw new InvalidPluginException(Messages.i18n.format("AbstractPluginRegistry.MissingPluginSpecFile", PLUGIN_SPEC_PATH)); //$NON-NLS-1$
         }
         try {
             PluginSpec spec = (PluginSpec) mapper.reader(PluginSpec.class).readValue(specFile);
             Plugin plugin = new Plugin(spec, coordinates, pluginClassLoader);
             return plugin;
         } catch (Exception e) {
-            throw new InvalidPluginException("Failed to read plugin spec file at: " + PLUGIN_SPEC_PATH, e);
+            throw new InvalidPluginException(Messages.i18n.format("AbstractPluginRegistry.FailedToReadSpecFile", PLUGIN_SPEC_PATH), e); //$NON-NLS-1$
         }
     }
 

@@ -75,17 +75,18 @@ public class PluginResourceImpl implements IPluginResource {
      * @see io.apiman.manager.api.rest.contract.IPluginResource#create(io.apiman.manager.api.beans.orgs.PluginBean)
      */
     @Override
-    public PluginBean create(PluginBean bean) throws PluginAlreadyExistsException {
+    public PluginBean create(PluginBean bean) throws PluginAlreadyExistsException, PluginNotFoundException {
         if (!securityContext.isAdmin())
             throw ExceptionFactory.notAuthorizedException();
 
+        PluginCoordinates coordinates = new PluginCoordinates(bean.getGroupId(), bean.getArtifactId(), bean.getVersion(),
+                bean.getClassifier(), bean.getType());
         try {
-            Plugin plugin = pluginRegistry.loadPlugin(new PluginCoordinates(bean.getGroupId(), bean.getArtifactId(), bean.getVersion(),
-                    bean.getClassifier(), bean.getType()));
+            Plugin plugin = pluginRegistry.loadPlugin(coordinates);
             bean.setName(plugin.getName());
             bean.setDescription(plugin.getDescription());
         } catch (InvalidPluginException e) {
-            throw new SystemErrorException(e);
+            throw new PluginNotFoundException(coordinates.toString());
         }
         
         // TODO auto-discover policy definitions in the plugin and add them to the storage
@@ -96,7 +97,7 @@ public class PluginResourceImpl implements IPluginResource {
         bean.setCreatedOn(now);
         try {
             storage.beginTx();
-            if (storage.getPlugin(bean.getGroupId(), bean.getArtifactId(), bean.getVersion(), bean.getClassifier(), bean.getType()) != null) {
+            if (storage.getPlugin(bean.getGroupId(), bean.getArtifactId()) != null) {
                 throw ExceptionFactory.pluginAlreadyExistsException();
             }
             storage.createPlugin(bean);

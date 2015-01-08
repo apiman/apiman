@@ -65,7 +65,12 @@ public class AppMessages {
     public static final String TITLE_NEW_GATEWAY = "page.title.new-gateway";
     @TranslationKey(defaultValue = "apiman - Edit Gateway")
     public static final String TITLE_EDIT_GATEWAY = "page.title.edit-gateway";
-    
+
+    @TranslationKey(defaultValue = "apiman - New Plugin")
+    public static final String TITLE_NEW_PLUGIN = "page.title.new-plugin";
+    @TranslationKey(defaultValue = "apiman - Plugin Details")
+    public static final String TITLE_EDIT_PLUGIN = "page.title.plugin-details";
+
     @TranslationKey(defaultValue = "apiman - Import Policy Definition(s)")
     public static final String TITLE_IMPORT_POLICY_DEF = "page.title.import-policyDefs";
     @TranslationKey(defaultValue = "apiman - Import Service(s)")
@@ -132,6 +137,8 @@ public class AppMessages {
     public static final String TITLE_ADMIN_POLICY_DEFS = "page.title.policy-defs";
     @TranslationKey(defaultValue = "apiman - Admin - Gateways")
     public static final String TITLE_ADMIN_GATEWAYS = "page.title.admin-gateways";
+    @TranslationKey(defaultValue = "apiman - Admin - Plugins")
+    public static final String TITLE_ADMIN_PLUGINS = "page.title.admin-plugins";
 
     @TranslationKey(defaultValue = "apiman - User Profile")
     public static final String TITLE_SETTINGS_PROFILE = "page.title.user-profile";
@@ -169,9 +176,12 @@ public class AppMessages {
     @TranslationKey(defaultValue = "No policy definitions matched the filter criteria.  Please try modifying the filter or else import at least one Policy Definition that matches it.")
     public static final String NO_FILTERED_POLICY_DEFS_ADMIN_MESSAGE = "noEntitiesFound.admin-policyDefs.filtered";
 
-    @TranslationKey(defaultValue = "No gateways have been created!  You must create at least one policy if you to be able to publish services.")
+    @TranslationKey(defaultValue = "No gateways have been created!  You must create at least one gateway if you to be able to publish services.")
     public static final String NO_GATEWAYS_ADMIN_MESSAGE = "noEntitiesFound.admin-gateways";
-    
+
+    @TranslationKey(defaultValue = "No plugins have been added!  Try adding some plugins by clicking Add Plugin above.")
+    public static final String NO_PLUGINS_ADMIN_MESSAGE = "noEntitiesFound.admin-plugins";
+
     @TranslationKey(defaultValue = "No organizations found.  This user should be granted membership in an organization or perhaps create a new one with the button above.")
     public static final String NO_ORGS_FOR_USER_MESSAGE = "noEntitiesFound.organizations-for-user";
     @TranslationKey(defaultValue = "No organization matches the current filter criteria.  Please try changing the filter criteria or else create a new Organization using the button above.")
@@ -479,6 +489,11 @@ public class AppMessages {
     public static final String CONFIRM_GATEWAY_DELETE_TITLE = "confirm.delete-gateway.title";
     @TranslationKey(defaultValue = "Really delete gateway {0}?")
     public static final String CONFIRM_GATEWAY_DELETE_MESSAGE = "confirm.delete-gateway.message";
+
+    @TranslationKey(defaultValue = "Confirm Delete Plugin")
+    public static final String CONFIRM_PLUGIN_DELETE_TITLE = "confirm.delete-plugin.title";
+    @TranslationKey(defaultValue = "Really delete plugin {0}?")
+    public static final String CONFIRM_PLUGIN_DELETE_MESSAGE = "confirm.delete-plugin.message";
 
     @TranslationKey(defaultValue = "Confirm Break Contract")
     public static final String CONFIRM_BREAK_CONTRACT_TITLE = "confirm.break-contract.title";

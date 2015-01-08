@@ -51,7 +51,7 @@ CREATE TABLE plugins (
 );
 
 ALTER TABLE ONLY plugins
-    ADD CONSTRAINT UK_plugins_1 UNIQUE (groupId, artifactId, version, classifier, type);
+    ADD CONSTRAINT UK_plugins_1 UNIQUE (groupId, artifactId);
 
 ALTER TABLE ONLY plugins
     ADD CONSTRAINT PK_plugins PRIMARY KEY (id);

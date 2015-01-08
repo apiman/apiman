@@ -36,7 +36,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
  */
 @Portable
 @Entity
-@Table(name = "plugins", uniqueConstraints = { @UniqueConstraint(columnNames = { "groupId", "artifactId", "version", "classifier", "type" }) })
+@Table(name = "plugins", uniqueConstraints = { @UniqueConstraint(columnNames = { "groupId", "artifactId" }) })
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class PluginBean implements Serializable {
     

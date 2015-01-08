@@ -48,7 +48,7 @@ public interface IPluginResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public PluginBean create(PluginBean bean) throws PluginAlreadyExistsException, NotAuthorizedException;
+    public PluginBean create(PluginBean bean) throws PluginAlreadyExistsException, PluginNotFoundException, NotAuthorizedException;
     
     @GET
     @Path("{pluginId}")

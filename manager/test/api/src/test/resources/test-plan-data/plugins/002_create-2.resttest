@@ -3,18 +3,18 @@ Content-Type: application/json
 
 {
   "groupId" : "io.apiman.test",
-  "artifactId" : "apiman-test-plugin-1",
-  "version" : "2.0"
+  "artifactId" : "apiman-test-plugin-2",
+  "version" : "1.0"
 }
 ----
 200
 Content-Type: application/json
-X-RestTest-BindTo-plugin-id-2: id
+X-RestTest-BindTo-plugin-id-3: id
 
 {
-  "name" : "Plugin One 2.0",
-  "description" : "This is version 2.0 of Plugin One.",
+  "name" : "Plugin Two",
+  "description" : "This is the second plugin.",
   "groupId" : "io.apiman.test",
-  "artifactId" : "apiman-test-plugin-1",
-  "version" : "2.0"
+  "artifactId" : "apiman-test-plugin-2",
+  "version" : "1.0"
 }

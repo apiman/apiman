@@ -115,7 +115,7 @@ public interface IStorage {
     public PolicyBean getPolicy(Long id) throws StorageException;
     public GatewayBean getGateway(String id) throws StorageException;
     public PluginBean getPlugin(long id) throws StorageException;
-    public PluginBean getPlugin(String groupId, String artifactId, String version, String classifier, String type) throws StorageException;
+    public PluginBean getPlugin(String groupId, String artifactId) throws StorageException;
     public PolicyDefinitionBean getPolicyDefinition(String id) throws StorageException;
     public RoleBean getRole(String id) throws StorageException;
 

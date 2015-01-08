@@ -42,6 +42,8 @@ public abstract class AbstractAdminPage extends AbstractPage {
     Anchor toPolicyDefs;
     @Inject @DataField
     Anchor toGateways;
+    @Inject @DataField
+    Anchor toPlugins;
 
     /**
      * Constructor.
@@ -65,9 +67,11 @@ public abstract class AbstractAdminPage extends AbstractPage {
         String rolesHref = navHelper.createHrefToPage(AdminRolesPage.class, MultimapUtil.emptyMap());
         String policyDefsHref = navHelper.createHrefToPage(AdminPolicyDefsPage.class, MultimapUtil.emptyMap());
         String gatewaysHref = navHelper.createHrefToPage(AdminGatewaysPage.class, MultimapUtil.emptyMap());
+        String pluginsHref = navHelper.createHrefToPage(AdminPluginsPage.class, MultimapUtil.emptyMap());
         toRoles.setHref(rolesHref);
         toPolicyDefs.setHref(policyDefsHref);
         toGateways.setHref(gatewaysHref);
+        toPlugins.setHref(pluginsHref);
 
         String dashHref = navHelper.createHrefToPage(DashboardPage.class, MultimapUtil.emptyMap());
         breadcrumb.addItem(dashHref, "home", i18n.format(AppMessages.HOME)); //$NON-NLS-1$

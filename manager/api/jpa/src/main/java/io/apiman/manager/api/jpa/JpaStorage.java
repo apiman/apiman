@@ -485,11 +485,10 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     }
     
     /**
-     * @see io.apiman.manager.api.core.IStorage#getPlugin(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     * @see io.apiman.manager.api.core.IStorage#getPlugin(java.lang.String, java.lang.String)
      */
     @Override
-    public PluginBean getPlugin(String groupId, String artifactId, String version, String classifier,
-            String type) throws StorageException {
+    public PluginBean getPlugin(String groupId, String artifactId) throws StorageException {
         try {
             EntityManager entityManager = getActiveEntityManager();
             
@@ -497,13 +496,10 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             String sql = 
                     "SELECT p.id, p.artifactId, p.groupId, p.version, p.classifier, p.type, p.name, p.description, p.createdBy, p.createdOn" + 
                     "  FROM plugins p" +
-                    " WHERE p.groupId = ? AND p.artifactId = ? AND p.version = ? AND p.classifier = ? AND p.type = ?";
+                    " WHERE p.groupId = ? AND p.artifactId = ?";
             Query query = entityManager.createNativeQuery(sql);
             query.setParameter(1, groupId);
             query.setParameter(2, artifactId);
-            query.setParameter(3, version);
-            query.setParameter(4, classifier);
-            query.setParameter(5, type);
             @SuppressWarnings("unchecked")
             List<Object[]> rows = (List<Object[]>) query.getResultList();
             if (rows.size() > 0) {

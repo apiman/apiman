@@ -199,5 +199,29 @@ public class PluginCoordinates implements Serializable {
             return false;
         return true;
     }
+    
+    /**
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append(getGroupId());
+        builder.append(':');
+        builder.append(getArtifactId());
+        builder.append(':');
+        builder.append(getVersion());
+        if (getClassifier() != null) {
+            builder.append('-').append(getClassifier());
+        }
+        builder.append(':');
+        if (getType() == null) {
+            builder.append("war"); //$NON-NLS-1$
+        } else {
+            builder.append(getType());
+        }
+
+        return builder.toString();
+    }
 
 }
