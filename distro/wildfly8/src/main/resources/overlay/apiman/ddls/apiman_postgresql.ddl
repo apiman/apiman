@@ -32,6 +32,30 @@ ALTER TABLE ONLY auditlog
 CREATE INDEX IDX_auditlog_1 ON auditlog (who);
 CREATE INDEX IDX_auditlog_2 ON auditlog (organizationId, entityId, entityVersion, entityType);
 
+
+--
+-- Name: plugins
+--
+
+CREATE TABLE plugins (
+    id character varying(255) NOT NULL,
+    groupId character varying(255) NOT NULL,
+    artifactId character varying(255) NOT NULL,
+    version character varying(255) NOT NULL,
+    classifier character varying(255) NOT NULL,
+    type character varying(255) NOT NULL,
+    name character varying(255) NOT NULL,
+    description character varying(512),
+    createdBy character varying(255) NOT NULL,
+    createdOn timestamp without time zone NOT NULL,
+);
+
+ALTER TABLE ONLY plugins
+    ADD CONSTRAINT UK_plugins_1 UNIQUE (groupId, artifactId, version, classifier, type);
+
+ALTER TABLE ONLY plugins
+    ADD CONSTRAINT PK_plugins PRIMARY KEY (id);
+
 --
 -- Name: gateways
 --

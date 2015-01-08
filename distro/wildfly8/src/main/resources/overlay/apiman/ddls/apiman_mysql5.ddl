@@ -19,6 +19,21 @@ CREATE TABLE `auditlog` (
 CREATE INDEX `IDX_auditlog_1` ON `auditlog` (`who`);
 CREATE INDEX `IDX_auditlog_2` ON `auditlog` (`organizationId`, `entityId`, `entityVersion`, `entityType`);
 
+CREATE TABLE `plugins` (
+  `id` bigint(20) NOT NULL,
+  `groupId` varchar(255) NOT NULL,
+  `artifactId` varchar(255) NOT NULL,
+  `version` varchar(255) NOT NULL,
+  `classifier` varchar(255) NOT NULL,
+  `type` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` varchar(512) DEFAULT NULL,
+  `createdBy` varchar(255) NOT NULL,
+  `createdOn` datetime NOT NULL,
+  UNIQUE KEY `UK_plugins_1` (`groupId`, `artifactId`, `version`, `classifier`, `type`),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
 CREATE TABLE `gateways` (
   `id` varchar(255) NOT NULL,
   `configuration` longtext NOT NULL,

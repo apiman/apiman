@@ -57,6 +57,7 @@ import io.apiman.manager.api.rest.contract.IActionResource;
 import io.apiman.manager.api.rest.contract.ICurrentUserResource;
 import io.apiman.manager.api.rest.contract.IGatewayResource;
 import io.apiman.manager.api.rest.contract.IOrganizationResource;
+import io.apiman.manager.api.rest.contract.IPluginResource;
 import io.apiman.manager.api.rest.contract.IPolicyDefinitionResource;
 import io.apiman.manager.api.rest.contract.IRoleResource;
 import io.apiman.manager.api.rest.contract.ISearchResource;
@@ -100,6 +101,8 @@ public class RestInvokerService {
     private Caller<IActionResource> actions;
     @Inject
     private Caller<IGatewayResource> gateways;
+    @Inject
+    private Caller<IPluginResource> plugins;
     
     /**
      * Constructor.

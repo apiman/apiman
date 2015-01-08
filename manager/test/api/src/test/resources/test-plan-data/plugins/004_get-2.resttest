@@ -1,0 +1,12 @@
+GET /plugins/${plugin-id-2} admin/admin
+----
+200
+Content-Type: application/json
+
+{
+  "name" : "Plugin One 2.0",
+  "description" : "This is version 2.0 of Plugin One.",
+  "groupId" : "io.apiman.test",
+  "artifactId" : "apiman-test-plugin-1",
+  "version" : "2.0"
+}

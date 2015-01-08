@@ -26,6 +26,7 @@ import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.beans.plans.PlanBean;
 import io.apiman.manager.api.beans.plans.PlanVersionBean;
+import io.apiman.manager.api.beans.plugins.PluginBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
@@ -46,6 +47,7 @@ import io.apiman.manager.api.beans.summary.GatewaySummaryBean;
 import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
 import io.apiman.manager.api.beans.summary.PlanSummaryBean;
 import io.apiman.manager.api.beans.summary.PlanVersionSummaryBean;
+import io.apiman.manager.api.beans.summary.PluginSummaryBean;
 import io.apiman.manager.api.beans.summary.PolicyDefinitionSummaryBean;
 import io.apiman.manager.api.beans.summary.PolicySummaryBean;
 import io.apiman.manager.api.beans.summary.ServicePlanSummaryBean;
@@ -58,6 +60,7 @@ import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.core.util.PolicyTemplateUtil;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -141,6 +144,14 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     @Override
     public void createGateway(GatewayBean gateway) throws StorageException {
         super.create(gateway);
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#createPlugin(io.apiman.manager.api.beans.plugins.PluginBean)
+     */
+    @Override
+    public void createPlugin(PluginBean plugin) throws StorageException {
+        super.create(plugin);
     }
     
     /**
@@ -383,6 +394,14 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     public void deleteGateway(GatewayBean gateway) throws StorageException {
         super.delete(gateway);
     }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#deletePlugin(io.apiman.manager.api.beans.plugins.PluginBean)
+     */
+    @Override
+    public void deletePlugin(PluginBean plugin) throws StorageException {
+        super.delete(plugin);
+    }
 
     /**
      * @see io.apiman.manager.api.core.IStorage#deletePolicyDefinition(io.apiman.manager.api.beans.policies.PolicyDefinitionBean)
@@ -455,6 +474,59 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     @Override
     public GatewayBean getGateway(String id) throws StorageException {
         return super.get(id, GatewayBean.class);
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getPlugin(long)
+     */
+    @Override
+    public PluginBean getPlugin(long id) throws StorageException {
+        return super.get(id, PluginBean.class);
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getPlugin(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public PluginBean getPlugin(String groupId, String artifactId, String version, String classifier,
+            String type) throws StorageException {
+        try {
+            EntityManager entityManager = getActiveEntityManager();
+            
+            @SuppressWarnings("nls")
+            String sql = 
+                    "SELECT p.id, p.artifactId, p.groupId, p.version, p.classifier, p.type, p.name, p.description, p.createdBy, p.createdOn" + 
+                    "  FROM plugins p" +
+                    " WHERE p.groupId = ? AND p.artifactId = ? AND p.version = ? AND p.classifier = ? AND p.type = ?";
+            Query query = entityManager.createNativeQuery(sql);
+            query.setParameter(1, groupId);
+            query.setParameter(2, artifactId);
+            query.setParameter(3, version);
+            query.setParameter(4, classifier);
+            query.setParameter(5, type);
+            @SuppressWarnings("unchecked")
+            List<Object[]> rows = (List<Object[]>) query.getResultList();
+            if (rows.size() > 0) {
+                Object[] row = rows.get(0);
+                PluginBean plugin = new PluginBean();
+                plugin.setId(((Number) row[0]).longValue());
+                plugin.setArtifactId(String.valueOf(row[1]));
+                plugin.setGroupId(String.valueOf(row[2]));
+                plugin.setVersion(String.valueOf(row[3]));
+                plugin.setClassifier((String) row[4]);
+                plugin.setType((String) row[5]);
+                plugin.setName(String.valueOf(row[6]));
+                plugin.setDescription(String.valueOf(row[7]));
+                plugin.setCreatedBy(String.valueOf(row[8]));
+                plugin.setCreatedOn((Date) row[9]);
+                return plugin;
+            } else {
+                return null;
+            }
+        } catch (Throwable t) {
+            logger.error(t.getMessage(), t);
+            throw new StorageException(t);
+        }
     }
 
     /**
@@ -683,6 +755,47 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                 gateways.add(gateway);
             }
             return gateways;
+        } catch (Throwable t) {
+            logger.error(t.getMessage(), t);
+            throw new StorageException(t);
+        } finally {
+            commitTx();
+        }
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorageQuery#listPlugins()
+     */
+    @Override
+    public List<PluginSummaryBean> listPlugins() throws StorageException {
+        beginTx();
+        try {
+            EntityManager entityManager = getActiveEntityManager();
+            
+            @SuppressWarnings("nls")
+            String sql = 
+                    "SELECT p.id, p.artifactId, p.groupId, p.version, p.classifier, p.type, p.name, p.description, p.createdBy, p.createdOn" + 
+                    "  FROM plugins p" + 
+                    " ORDER BY p.name ASC";
+            Query query = entityManager.createNativeQuery(sql);
+            @SuppressWarnings("unchecked")
+            List<Object[]> rows = (List<Object[]>) query.getResultList();
+            List<PluginSummaryBean> plugins = new ArrayList<PluginSummaryBean>(rows.size());
+            for (Object [] row : rows) {
+                PluginSummaryBean plugin = new PluginSummaryBean();
+                plugin.setId(((Number) row[0]).longValue());
+                plugin.setArtifactId(String.valueOf(row[1]));
+                plugin.setGroupId(String.valueOf(row[2]));
+                plugin.setVersion(String.valueOf(row[3]));
+                plugin.setClassifier((String) row[4]);
+                plugin.setType((String) row[5]);
+                plugin.setName(String.valueOf(row[6]));
+                plugin.setDescription(String.valueOf(row[7]));
+                plugin.setCreatedBy(String.valueOf(row[8]));
+                plugin.setCreatedOn((Date) row[9]);
+                plugins.add(plugin);
+            }
+            return plugins;
         } catch (Throwable t) {
             logger.error(t.getMessage(), t);
             throw new StorageException(t);

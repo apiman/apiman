@@ -32,6 +32,8 @@ import io.apiman.manager.api.rest.contract.exceptions.OrganizationNotFoundExcept
 import io.apiman.manager.api.rest.contract.exceptions.PlanAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.PlanNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.PlanVersionNotFoundException;
+import io.apiman.manager.api.rest.contract.exceptions.PluginAlreadyExistsException;
+import io.apiman.manager.api.rest.contract.exceptions.PluginNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.PolicyDefinitionAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.PolicyDefinitionNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.PolicyNotFoundException;
@@ -269,6 +271,22 @@ public final class ExceptionFactory {
      */
     public static final GatewayNotFoundException gatewayNotFoundException(String gatewayId) {
         return new GatewayNotFoundException(Messages.i18n.format("GatewayDoesNotExist", gatewayId)); //$NON-NLS-1$
+    }
+
+    /**
+     * Creates an exception from an plugin name.
+     * @param pluginName
+     */
+    public static final PluginAlreadyExistsException pluginAlreadyExistsException() {
+        return new PluginAlreadyExistsException(Messages.i18n.format("PluginAlreadyExists")); //$NON-NLS-1$
+    }
+
+    /**
+     * Creates an exception from an plugin id.
+     * @param pluginId
+     */
+    public static final PluginNotFoundException pluginNotFoundException(Long pluginId) {
+        return new PluginNotFoundException(Messages.i18n.format("PluginDoesNotExist", pluginId)); //$NON-NLS-1$
     }
 
 }

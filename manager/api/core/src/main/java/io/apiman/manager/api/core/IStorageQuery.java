@@ -28,6 +28,7 @@ import io.apiman.manager.api.beans.summary.GatewaySummaryBean;
 import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
 import io.apiman.manager.api.beans.summary.PlanSummaryBean;
 import io.apiman.manager.api.beans.summary.PlanVersionSummaryBean;
+import io.apiman.manager.api.beans.summary.PluginSummaryBean;
 import io.apiman.manager.api.beans.summary.PolicyDefinitionSummaryBean;
 import io.apiman.manager.api.beans.summary.PolicySummaryBean;
 import io.apiman.manager.api.beans.summary.ServicePlanSummaryBean;
@@ -45,6 +46,12 @@ import java.util.Set;
  * @author eric.wittmann@redhat.com
  */
 public interface IStorageQuery {
+
+    /**
+     * Lists all of the Plugins.
+     * @throws StorageException
+     */
+    public List<PluginSummaryBean> listPlugins() throws StorageException;
 
     /**
      * Lists all of the Gateways.
