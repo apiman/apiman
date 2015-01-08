@@ -226,4 +226,22 @@ detailed here:
 ....
 
 
+=== API Gateway Shared State
+Part of the running apiman system is a "Shared State" component.  This component is used by
+apiman policies to share interesting state information across multiple requests.  The
+shared state component uses another Infinispan cache to store data.  The
+configuration of the Infinispan cache can be found in *standalone-apiman.xml* and is
+detailed here:
+
+....
+<subsystem xmlns="urn:jboss:domain:infinispan:2.0">
+  <cache-container name="apiman-gateway" default-cache="registry" start="EAGER">
+    <local-cache name="shared-state" batching="true">
+      <file-store passivation="false" purge="false" />
+    </local-cache>
+  </cache-container>
+</subsystem>
+....
+
+
 :numbered!:
