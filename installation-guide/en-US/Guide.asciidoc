@@ -92,6 +92,12 @@ for all three applications (API Manager, API Manager UI, API Gateway).
 
 Here is a breakdown of the properties found in this configuration file:
 
+* *apiman-manager-ui.api.endpoint*
++
+Typical Value:: <empty>
++
+Description:: The public endpoint of the API Manager's REST API.  This is used by the API Manager UI to communicate with the back end.  If ommitted, the UI will assume the back-end is located on the same server as the UI.
+
 * *apiman-manager-ui.api.authentication.type*
 +
 Typical Value:: bearerToken
@@ -134,7 +140,7 @@ Typical Value:: io.apiman.gateway.engine.ispn.InfinispanRateLimiterComponent
 +
 Description:: The implementation of the rate limiter component, which is used by the rate limiting policy.
 
-* *apiman-gateway.components.IPolicyFailureFactoryComponent
+* *apiman-gateway.components.IPolicyFailureFactoryComponent*
 +
 Typical Value:: io.apiman.gateway.platforms.servlet.PolicyFailureFactoryComponent
 +
