@@ -1,0 +1,6 @@
+{
+  "name" : "No-op Policy",
+  "description" : "A policy that can be added but does nothing.  Useful only as a sample or a starting point for implementing real plugin policies.",
+  "policyImpl" : "plugin:${project.groupId}:${project.artifactId}:${project.version}:${project.packaging}/io.apiman.plugins.noop_policy.NoopPolicy",
+  "icon" : "fire"
+}
