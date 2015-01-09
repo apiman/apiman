@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -32,7 +33,7 @@ import org.junit.Test;
 public class PluginClassLoaderTest {
 
     /**
-     * Test method for {@link java.lang.ClassLoader#loadClass(java.lang.String)}.
+     * Test method for {@link io.apiman.common.plugin.PluginClassLoader#loadClass(java.lang.String)}.
      * @throws Exception 
      */
     @Test
@@ -55,7 +56,7 @@ public class PluginClassLoaderTest {
     }
 
     /**
-     * Test method for {@link java.lang.ClassLoader#loadClass(java.lang.String)}.
+     * Test method for {@link io.apiman.common.plugin.PluginClassLoader#loadClass(java.lang.String)}.
      * @throws Exception 
      */
     @Test
@@ -71,7 +72,7 @@ public class PluginClassLoaderTest {
     }
 
     /**
-     * Test method for {@link java.lang.ClassLoader#loadClass(java.lang.String)}.
+     * Test method for {@link io.apiman.common.plugin.PluginClassLoader#getResource(String)}.
      * @throws Exception 
      */
     @Test
@@ -85,6 +86,25 @@ public class PluginClassLoaderTest {
         Assert.assertNotNull(resource);
         resource = classloader.getResource("META-INF/maven/io.apiman/apiman-quickstarts-plugin/not.found");
         Assert.assertNull(resource);
+    }
+
+    /**
+     * Test method for {@link io.apiman.common.plugin.PluginClassLoader#getPolicyDefinitionResources()}.
+     * @throws Exception 
+     */
+    @Test
+    public void testGetPolicyDefinitionResources() throws Exception {
+        File file = new File("src/test/resources/plugin-with-policyDefs.war");
+        if (!file.exists()) {
+            throw new Exception("Failed to find test WAR: plugin-with-policyDefs.war at: " + file.getAbsolutePath());
+        }
+        PluginClassLoader classloader = new TestPluginClassLoader(file);
+        List<URL> resources = classloader.getPolicyDefinitionResources();
+        Assert.assertNotNull(resources);
+        Assert.assertEquals(2, resources.size());
+        URL url = resources.get(0);
+        Assert.assertNotNull(url);
+        Assert.assertTrue(url.toString().contains("META-INF/apiman/policyDefs"));
     }
     
     public static class TestPluginClassLoader extends PluginClassLoader {

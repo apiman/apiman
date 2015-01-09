@@ -12,4 +12,9 @@
     <test name="List All Plugins">test-plan-data/plugins/007_list-all.resttest</test>
   </testGroup>
 
+  <testGroup name="Plugin Management - Auto-Deploy Policy Defs">
+    <test name="No-op Plugin">test-plan-data/plugins/100_create-noop.resttest</test>
+    <test name="List Policy Defs">test-plan-data/plugins/101_list-policy-defs.resttest</test>
+  </testGroup>
+
 </testPlan>

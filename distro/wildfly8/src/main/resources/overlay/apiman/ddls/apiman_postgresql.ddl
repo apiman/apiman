@@ -84,11 +84,17 @@ CREATE TABLE policydefs (
     description character varying(512) NOT NULL,
     icon character varying(255) NOT NULL,
     name character varying(255) NOT NULL,
-    policyimpl character varying(255) NOT NULL
+    policyimpl character varying(255) NOT NULL,
+    policyId character varying(255)
 );
 
 ALTER TABLE ONLY policydefs
     ADD CONSTRAINT PK_policydefs PRIMARY KEY (id);
+
+ALTER TABLE ONLY policydefs
+    ADD CONSTRAINT FK_policydefs_1 FOREIGN KEY (policyId) REFERENCES plugins(id);
+
+CREATE INDEX IDX_FK_policydefs_1 ON policydefs (policyId);
 
 --
 -- Name: pd_templates

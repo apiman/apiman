@@ -18,7 +18,9 @@ package io.apiman.manager.api.rest.impl;
 
 import io.apiman.common.plugin.Plugin;
 import io.apiman.common.plugin.PluginCoordinates;
+import io.apiman.manager.api.beans.BeanUtils;
 import io.apiman.manager.api.beans.plugins.PluginBean;
+import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.summary.PluginSummaryBean;
 import io.apiman.manager.api.core.IPluginRegistry;
 import io.apiman.manager.api.core.IStorage;
@@ -34,11 +36,14 @@ import io.apiman.manager.api.rest.contract.exceptions.SystemErrorException;
 import io.apiman.manager.api.rest.impl.util.ExceptionFactory;
 import io.apiman.manager.api.security.ISecurityContext;
 
+import java.net.URL;
 import java.util.Date;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+
+import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  * Implementation of the Plugin API.
@@ -47,6 +52,8 @@ import javax.inject.Inject;
  */
 @ApplicationScoped
 public class PluginResourceImpl implements IPluginResource {
+
+    private static final ObjectMapper mapper = new ObjectMapper();
 
     @Inject IStorage storage;
     @Inject IStorageQuery query;
@@ -81,15 +88,14 @@ public class PluginResourceImpl implements IPluginResource {
 
         PluginCoordinates coordinates = new PluginCoordinates(bean.getGroupId(), bean.getArtifactId(), bean.getVersion(),
                 bean.getClassifier(), bean.getType());
+        Plugin plugin = null;
         try {
-            Plugin plugin = pluginRegistry.loadPlugin(coordinates);
+            plugin = pluginRegistry.loadPlugin(coordinates);
             bean.setName(plugin.getName());
             bean.setDescription(plugin.getDescription());
         } catch (InvalidPluginException e) {
             throw new PluginNotFoundException(coordinates.toString());
         }
-        
-        // TODO auto-discover policy definitions in the plugin and add them to the storage
         
         Date now = new Date();
         bean.setId(null);
@@ -100,7 +106,22 @@ public class PluginResourceImpl implements IPluginResource {
             if (storage.getPlugin(bean.getGroupId(), bean.getArtifactId()) != null) {
                 throw ExceptionFactory.pluginAlreadyExistsException();
             }
+
             storage.createPlugin(bean);
+
+            // Process any contributed policy definitions.
+            List<URL> policyDefs = plugin.getPolicyDefinitions();
+            for (URL url : policyDefs) {
+                PolicyDefinitionBean policyDef = (PolicyDefinitionBean) mapper.reader(PolicyDefinitionBean.class).readValue(url);
+                policyDef.setPluginId(bean.getId());
+                if (policyDef.getId() == null) {
+                    policyDef.setId(BeanUtils.idFromName(policyDef.getName()));
+                }
+                if (storage.getPolicyDefinition(policyDef.getId()) == null) {
+                    storage.createPolicyDefinition(policyDef);
+                }
+            }
+
             storage.commitTx();
         } catch (AbstractRestException e) {
             storage.rollbackTx();

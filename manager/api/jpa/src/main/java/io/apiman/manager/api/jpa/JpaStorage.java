@@ -811,7 +811,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             
             @SuppressWarnings("nls")
             String sql = 
-                    "SELECT pd.id, pd.policyImpl, pd.name, pd.description, pd.icon" + 
+                    "SELECT pd.id, pd.policyImpl, pd.name, pd.description, pd.icon, pd.pluginId" + 
                     "  FROM policydefs pd" + 
                     " ORDER BY pd.name ASC";
             Query query = entityManager.createNativeQuery(sql);
@@ -825,6 +825,9 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                 gateway.setName(String.valueOf(row[2]));
                 gateway.setDescription(String.valueOf(row[3]));
                 gateway.setIcon(String.valueOf(row[4]));
+                if (row[5] != null) {
+                    gateway.setPluginId(((Number) row[5]).longValue());
+                }
                 gateways.add(gateway);
             }
             return gateways;

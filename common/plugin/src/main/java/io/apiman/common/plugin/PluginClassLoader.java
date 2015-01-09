@@ -276,4 +276,23 @@ public class PluginClassLoader extends ClassLoader {
             zipFile.close();
         }
     }
+
+    /**
+     * @return gets any policy definition resources from the plugin artifact (located in META-INF/apiman/policyDefs/*.json
+     */
+    public List<URL> getPolicyDefinitionResources() {
+        List<URL> resources = new ArrayList<URL>();
+        Enumeration<? extends ZipEntry> entries = this.pluginArtifactZip.entries();
+        while (entries.hasMoreElements()) {
+            ZipEntry zipEntry = entries.nextElement();
+            if (zipEntry.getName().toLowerCase().startsWith("meta-inf/apiman/policydefs/") && zipEntry.getName().toLowerCase().endsWith(".json")) {
+                try {
+                    resources.add(extractResource(zipEntry));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        return resources;
+    }
 }

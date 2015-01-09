@@ -15,6 +15,9 @@
  */
 package io.apiman.common.plugin;
 
+import java.net.URL;
+import java.util.List;
+
 /**
  * An apiman plugin.  This represents a plugin that has been downloaded to some local 
  * registry and successfully loaded.  A plugin must contain at least the following
@@ -102,6 +105,13 @@ public class Plugin {
      */
     public void setSpec(PluginSpec spec) {
         this.spec = spec;
+    }
+
+    /**
+     * @return any policy definitions found in the plugin (META-INF/apiman/policyDefs/*.json
+     */
+    public List<URL> getPolicyDefinitions() {
+        return this.loader.getPolicyDefinitionResources();
     }
 
 }

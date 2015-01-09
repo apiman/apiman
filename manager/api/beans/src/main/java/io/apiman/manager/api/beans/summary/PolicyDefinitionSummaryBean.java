@@ -34,6 +34,7 @@ public class PolicyDefinitionSummaryBean implements Serializable {
     private String name;
     private String description;
     private String icon;
+    private Long pluginId;
 
     /**
      * Constructor.
@@ -109,6 +110,20 @@ public class PolicyDefinitionSummaryBean implements Serializable {
      */
     public void setIcon(String icon) {
         this.icon = icon;
+    }
+
+    /**
+     * @return the pluginId
+     */
+    public Long getPluginId() {
+        return pluginId;
+    }
+
+    /**
+     * @param pluginId the pluginId to set
+     */
+    public void setPluginId(Long pluginId) {
+        this.pluginId = pluginId;
     }
 
 }

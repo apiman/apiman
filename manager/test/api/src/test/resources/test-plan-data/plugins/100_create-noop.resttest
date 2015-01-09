@@ -1,0 +1,19 @@
+POST /plugins admin/admin
+Content-Type: application/json
+
+{
+  "groupId" : "io.apiman",
+  "artifactId" : "apiman-plugins-noop-policy",
+  "version" : "1.0.2-SNAPSHOT"
+}
+----
+200
+Content-Type: application/json
+
+{
+  "name" : "No-op Policy Plugin",
+  "description" : "This plugin doesn't really do anything except contribute a single no-op policy.  This is useful as a starting point for real plugins.",
+  "groupId" : "io.apiman",
+  "artifactId" : "apiman-plugins-noop-policy",
+  "version" : "1.0.2-SNAPSHOT"
+}
