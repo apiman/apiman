@@ -23,7 +23,6 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.Table;
@@ -51,7 +50,7 @@ public class AuditEntryBean implements Serializable {
 
     private static final long serialVersionUID = -2523995385388505492L;
     
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue
     private Long id;
     @Column(updatable=false, nullable=false)
     private String who;

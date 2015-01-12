@@ -24,7 +24,6 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
@@ -49,7 +48,7 @@ public class PolicyBean implements Serializable {
     
     private static final long serialVersionUID = -8534463608508756791L;
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue
     private Long id;
     @Column(updatable=false, nullable=false)
     @Enumerated(EnumType.STRING)
