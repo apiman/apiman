@@ -41,9 +41,11 @@ public class EntityManagerFactoryAccessor implements IEntityManagerFactoryAccess
     
     @PostConstruct
     public void postConstruct() {
-        String autoValue = System.getProperty("hibernate.hbm2ddl.auto", "validate"); //$NON-NLS-1$ //$NON-NLS-2$
+        String autoValue = System.getProperty("apiman.hibernate.hbm2ddl.auto", "validate"); //$NON-NLS-1$ //$NON-NLS-2$
+        String dialect = System.getProperty("apiman.hibernate.dialect", "org.hibernate.dialect.H2Dialect"); //$NON-NLS-1$ //$NON-NLS-2$
         Map<String, String> properties = new HashMap<String, String>();
         properties.put("hibernate.hbm2ddl.auto", autoValue); //$NON-NLS-1$
+        properties.put("hibernate.dialect", dialect); //$NON-NLS-1$
         emf = Persistence.createEntityManagerFactory("apiman-manager-api-jpa", properties); //$NON-NLS-1$
     }
     

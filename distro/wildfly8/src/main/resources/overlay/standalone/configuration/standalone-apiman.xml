@@ -27,8 +27,8 @@
     <extension module="org.keycloak.keycloak-subsystem" />
   </extensions>
   <system-properties>
-    <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
-    <property name="hibernate.hbm2ddl.auto" value="update" />
+    <property name="apiman.hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
+    <property name="apiman.hibernate.hbm2ddl.auto" value="update" />
   </system-properties>
   <management>
     <security-realms>

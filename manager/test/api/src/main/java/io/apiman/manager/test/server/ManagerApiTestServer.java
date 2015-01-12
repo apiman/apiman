@@ -105,7 +105,7 @@ public class ManagerApiTestServer {
      * Stuff to do before the server is started.
      */
     protected void preStart() {
-        System.setProperty("hibernate.hbm2ddl.auto", "create-drop"); //$NON-NLS-1$ //$NON-NLS-2$
+        System.setProperty("apiman.hibernate.hbm2ddl.auto", "create-drop"); //$NON-NLS-1$ //$NON-NLS-2$
 
         try {
             InitialContext ctx = new InitialContext();
@@ -142,7 +142,7 @@ public class ManagerApiTestServer {
      * @throws SQLException
      */
     private static BasicDataSource createInMemoryDatasource() throws SQLException {
-        System.setProperty("hibernate.dialect", "org.hibernate.dialect.H2Dialect"); //$NON-NLS-1$ //$NON-NLS-2$
+        System.setProperty("apiman.hibernate.dialect", "org.hibernate.dialect.H2Dialect"); //$NON-NLS-1$ //$NON-NLS-2$
         BasicDataSource ds = new BasicDataSource();
         ds.setDriverClassName(Driver.class.getName());
         ds.setUsername("sa"); //$NON-NLS-1$
@@ -159,7 +159,7 @@ public class ManagerApiTestServer {
      * @throws SQLException
      */
     private static BasicDataSource createFileDatasource(File outputDirectory) throws SQLException {
-        System.setProperty("hibernate.dialect", "org.hibernate.dialect.H2Dialect"); //$NON-NLS-1$ //$NON-NLS-2$
+        System.setProperty("apiman.hibernate.dialect", "org.hibernate.dialect.H2Dialect"); //$NON-NLS-1$ //$NON-NLS-2$
         BasicDataSource ds = new BasicDataSource();
         ds.setDriverClassName(Driver.class.getName());
         ds.setUsername("sa"); //$NON-NLS-1$
