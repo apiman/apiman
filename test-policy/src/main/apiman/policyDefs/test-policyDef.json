@@ -1,0 +1,6 @@
+{
+  "name" : "Test Policy",
+  "description" : "A policy used for testing - this simply adds a custom header to the inbound request (to verify that the plugin policy gets executed).",
+  "policyImpl" : "plugin:${project.groupId}:${project.artifactId}:${project.version}:${project.packaging}/io.apiman.plugins.test_policy.TestPolicy",
+  "icon" : "fire"
+}
