@@ -17,15 +17,18 @@ package io.apiman.manager.ui.client.local.pages;
 
 import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.gateways.RestGatewayConfigBean;
+import io.apiman.manager.api.beans.summary.GatewayTestResultBean;
 import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.events.ConfirmationEvent;
 import io.apiman.manager.ui.client.local.events.ConfirmationEvent.Handler;
+import io.apiman.manager.ui.client.local.pages.admin.GatewayTestResultDialog;
 import io.apiman.manager.ui.client.local.services.BeanMarshallingService;
 import io.apiman.manager.ui.client.local.services.rest.IRestInvokerCallback;
 import io.apiman.manager.ui.client.local.widgets.ConfirmationDialog;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.jboss.errai.ui.nav.client.local.Page;
@@ -78,10 +81,15 @@ public class EditGatewayPage extends AbstractPage {
     TextBox passwordConfirm;
 
     @Inject @DataField
+    AsyncActionButton testButton;
+    @Inject @DataField
     AsyncActionButton updateButton;
     @Inject @DataField
     AsyncActionButton deleteButton;
 
+    @Inject
+    Instance<GatewayTestResultDialog> resultDialogFactory;
+    
     GatewayBean gatewayBean;
     RestGatewayConfigBean configBean;
     
@@ -142,7 +150,11 @@ public class EditGatewayPage extends AbstractPage {
                 dirty = true;
             }
             updateButton.setEnabled(valid && dirty);
+        } else {
+            updateButton.setEnabled(false);
         }
+        testButton.setEnabled(valid);
+        setTestButtonClass("warning"); //$NON-NLS-1$
     }
 
     /**
@@ -174,6 +186,8 @@ public class EditGatewayPage extends AbstractPage {
     protected void onPageShown() {
         updateButton.reset();
         deleteButton.reset();
+        testButton.reset();
+        testButton.setEnabled(true);
         description.setFocus(true);
     }
 
@@ -193,6 +207,34 @@ public class EditGatewayPage extends AbstractPage {
     }
 
     /**
+     * Called when the user clicks the Test button.
+     * @param event
+     */
+    @EventHandler("testButton")
+    public void onTest(ClickEvent event) {
+        testButton.onActionStarted();
+        GatewayBean gateway = getGatewayFromForm();
+        rest.testGateway(gateway, new IRestInvokerCallback<GatewayTestResultBean>() {
+            @Override
+            public void onSuccess(GatewayTestResultBean response) {
+                testButton.onActionComplete();
+                if (response.isSuccess()) {
+                    setTestButtonClass("success"); //$NON-NLS-1$
+                } else {
+                    setTestButtonClass("danger"); //$NON-NLS-1$
+                    GatewayTestResultDialog dialog = resultDialogFactory.get();
+                    dialog.setResultDetails(response.getDetail());
+                    dialog.show();
+                }
+            }
+            @Override
+            public void onError(Throwable error) {
+                dataPacketError(error);
+            }
+        });
+    }
+
+    /**
      * Called when the user clicks the Update Gateway button.
      * @param event
      */
@@ -200,16 +242,7 @@ public class EditGatewayPage extends AbstractPage {
     public void onUpdate(ClickEvent event) {
         updateButton.onActionStarted();
         deleteButton.setEnabled(false);
-        GatewayBean gateway = new GatewayBean();
-        gateway.setId(id);
-        gateway.setDescription(description.getValue().trim());
-        RestGatewayConfigBean configBean = new RestGatewayConfigBean();
-        configBean.setEndpoint(configEndpoint.getValue().trim());
-        configBean.setUsername(username.getValue().trim());
-        if (password.getValue() != null && password.getValue().trim().length() > 0) {
-            configBean.setPassword(password.getValue().trim());
-        }
-        gateway.setConfiguration(marshaller.marshal(configBean));
+        GatewayBean gateway = getGatewayFromForm();
         rest.updateGateway(gateway, new IRestInvokerCallback<Void>() {
             @Override
             public void onSuccess(Void response) {
@@ -257,6 +290,35 @@ public class EditGatewayPage extends AbstractPage {
             }
         });
         dialog.show();
+    }
+
+    /**
+     * @return a gateway bean from the info the user entered in the form
+     */
+    protected GatewayBean getGatewayFromForm() {
+        GatewayBean gateway = new GatewayBean();
+        gateway.setId(id);
+        gateway.setName(gatewayBean.getName());
+        gateway.setType(gatewayBean.getType());
+        gateway.setDescription(description.getValue().trim());
+        RestGatewayConfigBean configBean = new RestGatewayConfigBean();
+        configBean.setEndpoint(configEndpoint.getValue().trim());
+        configBean.setUsername(username.getValue().trim());
+        if (password.getValue() != null && password.getValue().trim().length() > 0) {
+            configBean.setPassword(password.getValue().trim());
+        }
+        gateway.setConfiguration(marshaller.marshal(configBean));
+        return gateway;
+    }
+
+    /**
+     * @param status
+     */
+    private void setTestButtonClass(String status) {
+        testButton.getElement().removeClassName("btn-success"); //$NON-NLS-1$
+        testButton.getElement().removeClassName("btn-warning"); //$NON-NLS-1$
+        testButton.getElement().removeClassName("btn-danger"); //$NON-NLS-1$
+        testButton.getElement().addClassName("btn-" + status); //$NON-NLS-1$
     }
     
     /**

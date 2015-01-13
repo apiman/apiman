@@ -18,6 +18,7 @@ package io.apiman.manager.api.rest.contract;
 
 import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.summary.GatewaySummaryBean;
+import io.apiman.manager.api.beans.summary.GatewayTestResultBean;
 import io.apiman.manager.api.rest.contract.exceptions.GatewayAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.GatewayNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.NotAuthorizedException;
@@ -41,6 +42,11 @@ import javax.ws.rs.core.MediaType;
  */
 @Path("gateways")
 public interface IGatewayResource {
+    
+    @PUT
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public GatewayTestResultBean test(GatewayBean bean) throws NotAuthorizedException;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)

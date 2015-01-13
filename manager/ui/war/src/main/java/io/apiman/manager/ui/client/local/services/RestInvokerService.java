@@ -43,6 +43,7 @@ import io.apiman.manager.api.beans.summary.ApplicationSummaryBean;
 import io.apiman.manager.api.beans.summary.ApplicationVersionSummaryBean;
 import io.apiman.manager.api.beans.summary.ContractSummaryBean;
 import io.apiman.manager.api.beans.summary.GatewaySummaryBean;
+import io.apiman.manager.api.beans.summary.GatewayTestResultBean;
 import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
 import io.apiman.manager.api.beans.summary.PlanSummaryBean;
 import io.apiman.manager.api.beans.summary.PlanVersionSummaryBean;
@@ -975,6 +976,16 @@ public class RestInvokerService {
         policyDefs.call(adapter, adapter).create(policyDef);
     }
 
+    /**
+     * Tests the gateway configuration to see if it's valid (is the gateway available?).
+     * @param bean
+     * @param callback
+     */
+    public void testGateway(GatewayBean bean, IRestInvokerCallback<GatewayTestResultBean> callback) {
+        CallbackAdapter<GatewayTestResultBean> adapter = new CallbackAdapter<GatewayTestResultBean>(callback);
+        gateways.call(adapter, adapter).test(bean);
+    }
+    
     /**
      * Gets a list of all the gateways in the system.
      * @param callback

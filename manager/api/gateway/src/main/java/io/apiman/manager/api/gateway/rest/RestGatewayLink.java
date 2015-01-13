@@ -101,6 +101,14 @@ public class RestGatewayLink implements IGatewayLink {
     }
     
     /**
+     * @see io.apiman.manager.api.gateway.IGatewayLink#getStatus()
+     */
+    @Override
+    public SystemStatus getStatus() {
+        return getClient().getStatus();
+    }
+    
+    /**
      * @see io.apiman.manager.api.gateway.IGatewayLink#getServiceEndpoint(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override

@@ -18,12 +18,15 @@ package io.apiman.manager.ui.client.local.pages;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.gateways.GatewayType;
 import io.apiman.manager.api.beans.gateways.RestGatewayConfigBean;
+import io.apiman.manager.api.beans.summary.GatewayTestResultBean;
 import io.apiman.manager.ui.client.local.AppMessages;
+import io.apiman.manager.ui.client.local.pages.admin.GatewayTestResultDialog;
 import io.apiman.manager.ui.client.local.services.BeanMarshallingService;
 import io.apiman.manager.ui.client.local.services.rest.IRestInvokerCallback;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.jboss.errai.ui.nav.client.local.Page;
@@ -42,7 +45,7 @@ import com.google.gwt.user.client.ui.TextBox;
 
 
 /**
- * Page that lets the user create a new Organization.
+ * Page that lets the user create a new gateway.
  *
  * @author eric.wittmann@redhat.com
  */
@@ -72,7 +75,12 @@ public class NewGatewayPage extends AbstractPage {
     TextBox passwordConfirm;
 
     @Inject @DataField
+    AsyncActionButton testButton;
+    @Inject @DataField
     AsyncActionButton createButton;
+    
+    @Inject
+    Instance<GatewayTestResultDialog> resultDialogFactory;
     
     /**
      * Constructor.
@@ -121,6 +129,8 @@ public class NewGatewayPage extends AbstractPage {
         } else {
             valid = false;
         }
+        testButton.setEnabled(valid);
+        setTestButtonClass("warning"); //$NON-NLS-1$
         createButton.setEnabled(valid);
     }
 
@@ -132,15 +142,62 @@ public class NewGatewayPage extends AbstractPage {
         name.setFocus(true);
         createButton.reset();
         createButton.setEnabled(false);
+        testButton.reset();
+        testButton.setEnabled(false);
     }
 
     /**
-     * Called when the user clicks the Create Organization button.
+     * Called when the user clicks the Create Gateway button.
      * @param event
      */
     @EventHandler("createButton")
     public void onCreate(ClickEvent event) {
         createButton.onActionStarted();
+        GatewayBean gateway = getGatewayFromForm();
+        rest.createGateway(gateway, new IRestInvokerCallback<GatewayBean>() {
+            @Override
+            public void onSuccess(GatewayBean response) {
+                toGateways.go();
+            }
+            @Override
+            public void onError(Throwable error) {
+                dataPacketError(error);
+            }
+        });
+    }
+    
+    /**
+     * Called when the user clicks the Test button.
+     * @param event
+     */
+    @EventHandler("testButton")
+    public void onTest(ClickEvent event) {
+        testButton.onActionStarted();
+        GatewayBean gateway = getGatewayFromForm();
+        rest.testGateway(gateway, new IRestInvokerCallback<GatewayTestResultBean>() {
+            @Override
+            public void onSuccess(GatewayTestResultBean response) {
+                testButton.onActionComplete();
+                if (response.isSuccess()) {
+                    setTestButtonClass("success"); //$NON-NLS-1$
+                } else {
+                    setTestButtonClass("danger"); //$NON-NLS-1$
+                    GatewayTestResultDialog dialog = resultDialogFactory.get();
+                    dialog.setResultDetails(response.getDetail());
+                    dialog.show();
+                }
+            }
+            @Override
+            public void onError(Throwable error) {
+                dataPacketError(error);
+            }
+        });
+    }
+
+    /**
+     * @return a gateway bean from the info the user entered in the form
+     */
+    protected GatewayBean getGatewayFromForm() {
         GatewayBean gateway = new GatewayBean();
         gateway.setName(name.getValue().trim());
         gateway.setDescription(description.getValue().trim());
@@ -152,16 +209,17 @@ public class NewGatewayPage extends AbstractPage {
             configBean.setPassword(password.getValue().trim());
         }
         gateway.setConfiguration(marshaller.marshal(configBean));
-        rest.createGateway(gateway, new IRestInvokerCallback<GatewayBean>() {
-            @Override
-            public void onSuccess(GatewayBean response) {
-                toGateways.go();
-            }
-            @Override
-            public void onError(Throwable error) {
-                dataPacketError(error);
-            }
-        });
+        return gateway;
+    }
+
+    /**
+     * @param status
+     */
+    private void setTestButtonClass(String status) {
+        testButton.getElement().removeClassName("btn-success"); //$NON-NLS-1$
+        testButton.getElement().removeClassName("btn-warning"); //$NON-NLS-1$
+        testButton.getElement().removeClassName("btn-danger"); //$NON-NLS-1$
+        testButton.getElement().addClassName("btn-" + status); //$NON-NLS-1$
     }
     
     /**

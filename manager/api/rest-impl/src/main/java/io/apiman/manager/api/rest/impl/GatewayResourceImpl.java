@@ -17,14 +17,18 @@
 package io.apiman.manager.api.rest.impl;
 
 import io.apiman.common.util.AesEncrypter;
+import io.apiman.gateway.engine.beans.SystemStatus;
 import io.apiman.manager.api.beans.BeanUtils;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.gateways.GatewayType;
 import io.apiman.manager.api.beans.gateways.RestGatewayConfigBean;
 import io.apiman.manager.api.beans.summary.GatewaySummaryBean;
+import io.apiman.manager.api.beans.summary.GatewayTestResultBean;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
+import io.apiman.manager.api.gateway.IGatewayLink;
+import io.apiman.manager.api.gateway.IGatewayLinkFactory;
 import io.apiman.manager.api.rest.contract.IGatewayResource;
 import io.apiman.manager.api.rest.contract.exceptions.AbstractRestException;
 import io.apiman.manager.api.rest.contract.exceptions.GatewayAlreadyExistsException;
@@ -53,13 +57,37 @@ public class GatewayResourceImpl implements IGatewayResource {
     @Inject IStorage storage;
     @Inject IStorageQuery query;
     @Inject ISecurityContext securityContext;
-    
+    @Inject IGatewayLinkFactory gatewayLinkFactory;
+
     private static final ObjectMapper mapper = new ObjectMapper();
     
     /**
      * Constructor.
      */
     public GatewayResourceImpl() {
+    }
+    
+    /**
+     * @see io.apiman.manager.api.rest.contract.IGatewayResource#test(io.apiman.manager.api.beans.gateways.GatewayBean)
+     */
+    @Override
+    public GatewayTestResultBean test(GatewayBean bean) throws NotAuthorizedException {
+        if (!securityContext.isAdmin())
+            throw ExceptionFactory.notAuthorizedException();
+        GatewayTestResultBean rval = new GatewayTestResultBean();
+
+        try {
+            IGatewayLink gatewayLink = gatewayLinkFactory.create(bean);
+            SystemStatus status = gatewayLink.getStatus();
+            String detail = mapper.writer().writeValueAsString(status);
+            rval.setSuccess(true);
+            rval.setDetail(detail);
+        } catch (Exception e) {
+            rval.setSuccess(false);
+            rval.setDetail(e.getMessage());
+        }
+
+        return rval;
     }
     
     /**

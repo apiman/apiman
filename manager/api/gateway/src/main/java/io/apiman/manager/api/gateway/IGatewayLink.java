@@ -19,6 +19,7 @@ import io.apiman.gateway.api.rest.contract.exceptions.NotAuthorizedException;
 import io.apiman.gateway.engine.beans.Application;
 import io.apiman.gateway.engine.beans.Service;
 import io.apiman.gateway.engine.beans.ServiceEndpoint;
+import io.apiman.gateway.engine.beans.SystemStatus;
 import io.apiman.gateway.engine.beans.exceptions.PublishingException;
 import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
 
@@ -30,6 +31,11 @@ import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
  * @author eric.wittmann@redhat.com
  */
 public interface IGatewayLink {
+
+    /**
+     * Gets the current status of the gateway.
+     */
+    public SystemStatus getStatus();
 
     /**
      * Publishes a new {@link Service}.
