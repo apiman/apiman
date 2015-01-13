@@ -23,7 +23,6 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
@@ -52,7 +51,7 @@ public class ApplicationVersionBean implements Serializable {
 
     private static final long serialVersionUID = -2218697175049442690L;
     
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue
     private Long id;
     @ManyToOne
     @JoinColumns({
