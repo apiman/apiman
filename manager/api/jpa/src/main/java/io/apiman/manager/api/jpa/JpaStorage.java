@@ -734,6 +734,9 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     @Override
     public List<OrganizationSummaryBean> getOrgs(Set<String> orgIds) throws StorageException {
         List<OrganizationSummaryBean> orgs = new ArrayList<OrganizationSummaryBean>();
+        if (orgIds == null || orgIds.isEmpty()) {
+            return orgs;
+        }
         beginTx();
         try {
             EntityManager entityManager = getActiveEntityManager();
