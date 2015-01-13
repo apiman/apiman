@@ -37,6 +37,9 @@ import io.apiman.gateway.engine.rates.RateBucketPeriod;
  */
 public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig> {
     
+    private static final String NO_USER_AVAILABLE = new String();
+    private static final String NO_APPLICATION_AVAILABLE = new String();
+    
     /**
      * Constructor.
      */
@@ -60,10 +63,15 @@ public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig>
         String bucketId = createBucketId(request, config);
         RateBucketPeriod period = getPeriod(config);
 
-        // Couldn't get a bucket id?  It means no user was found.
-        if (bucketId == null) {
+        if (bucketId == NO_USER_AVAILABLE) {
             IPolicyFailureFactoryComponent failureFactory = context.getComponent(IPolicyFailureFactoryComponent.class);
             PolicyFailure failure = failureFactory.createFailure(PolicyFailureType.Other, PolicyFailureCodes.NO_USER_FOR_RATE_LIMITING, Messages.i18n.format("RateLimitingPolicy.NoUser")); //$NON-NLS-1$
+            chain.doFailure(failure);
+            return;
+        }
+        if (bucketId == NO_APPLICATION_AVAILABLE) {
+            IPolicyFailureFactoryComponent failureFactory = context.getComponent(IPolicyFailureFactoryComponent.class);
+            PolicyFailure failure = failureFactory.createFailure(PolicyFailureType.Other, PolicyFailureCodes.NO_APP_FOR_RATE_LIMITING, Messages.i18n.format("RateLimitingPolicy.NoApp")); //$NON-NLS-1$
             chain.doFailure(failure);
             return;
         }
@@ -109,16 +117,14 @@ public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig>
                 String header = config.getUserHeader();
                 String user = request.getHeaders().get(header);
                 if (user == null) {
-                    // policy failure
-                    return null;
+                    return NO_USER_AVAILABLE;
                 } else {
                     builder.append("||"); //$NON-NLS-1$
                     builder.append(user);
                 }
             } else if (config.getGranularity() == RateLimitingGranularity.Service) {
             } else {
-                // Not valid - don't have application information
-                return null;
+                return NO_APPLICATION_AVAILABLE;
             }
         } else {
             builder.append(request.getApiKey());
@@ -126,8 +132,7 @@ public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig>
                 String header = config.getUserHeader();
                 String user = request.getHeaders().get(header);
                 if (user == null) {
-                    // policy failure
-                    return null;
+                    return NO_USER_AVAILABLE;
                 } else {
                     builder.append("||USER||"); //$NON-NLS-1$
                     builder.append(request.getContract().getApplication().getOrganizationId());
