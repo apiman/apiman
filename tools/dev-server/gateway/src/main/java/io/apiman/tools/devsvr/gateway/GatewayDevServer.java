@@ -19,6 +19,7 @@ package io.apiman.tools.devsvr.gateway;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.components.IRateLimiterComponent;
 import io.apiman.gateway.engine.components.ISharedStateComponent;
+import io.apiman.gateway.engine.impl.DefaultPluginRegistry;
 import io.apiman.gateway.engine.impl.InMemoryRateLimiterComponent;
 import io.apiman.gateway.engine.impl.InMemoryRegistry;
 import io.apiman.gateway.engine.impl.InMemorySharedStateComponent;
@@ -28,6 +29,8 @@ import io.apiman.gateway.platforms.servlet.connectors.HttpConnectorFactory;
 import io.apiman.gateway.platforms.war.WarEngineConfig;
 import io.apiman.gateway.test.server.EchoServer;
 import io.apiman.gateway.test.server.GatewayServer;
+
+import java.io.File;
 
 
 /**
@@ -51,8 +54,13 @@ public class GatewayDevServer {
         int echoPort = getEchoPort();
         
         System.setProperty(WarEngineConfig.APIMAN_GATEWAY_REGISTRY_CLASS, InMemoryRegistry.class.getName());
+        System.setProperty(WarEngineConfig.APIMAN_GATEWAY_PLUGIN_REGISTRY_CLASS, DefaultPluginRegistry.class.getName());
         System.setProperty(WarEngineConfig.APIMAN_GATEWAY_CONNECTOR_FACTORY_CLASS, HttpConnectorFactory.class.getName());
         System.setProperty(WarEngineConfig.APIMAN_GATEWAY_POLICY_FACTORY_CLASS, PolicyFactoryImpl.class.getName());
+        
+        if (System.getProperty("apiman.gateway.m2-repository-path") == null) { //$NON-NLS-1$
+            System.setProperty("apiman.gateway.m2-repository-path", new File("src/main/resources/plugin").getAbsolutePath()); //$NON-NLS-1$ //$NON-NLS-2$
+        }
 
         // Register test components
         System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + ISharedStateComponent.class.getSimpleName(), 

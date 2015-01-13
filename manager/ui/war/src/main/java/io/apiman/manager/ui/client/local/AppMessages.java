@@ -204,7 +204,7 @@ public class AppMessages {
     @TranslationKey(defaultValue = "No APIs matched the filter criteria.  Please try modifying the filter or else create a new contract from the Contracts tab.")
     public static final String NO_FILTERED_APIS_FOR_APP_MESSAGE = "noEntitiesFound.apis-in-app.filtered";
 
-    @TranslationKey(defaultValue = "This service doesn't appear to have any contracts.  This means that there aren't any applications consuming this service.")
+    @TranslationKey(defaultValue = "This service doesn't appear to have any contracts.  This means that there aren't any applications consuming this service.  Note: if this is a public service, then no contracts are necessary to invoke the service!")
     public static final String NO_CONTRACTS_FOR_SERVICE = "noEntitiesFound.contracts-in-service";
     
     @TranslationKey(defaultValue = "No organizations found.  Either no organizations matched the query or you haven't queried yet!")

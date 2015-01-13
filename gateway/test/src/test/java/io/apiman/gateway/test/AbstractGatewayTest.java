@@ -19,6 +19,7 @@ import io.apiman.gateway.engine.components.IHttpClientComponent;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.components.IRateLimiterComponent;
 import io.apiman.gateway.engine.components.ISharedStateComponent;
+import io.apiman.gateway.engine.impl.DefaultPluginRegistry;
 import io.apiman.gateway.engine.impl.InMemoryRateLimiterComponent;
 import io.apiman.gateway.engine.impl.InMemoryRegistry;
 import io.apiman.gateway.engine.impl.InMemorySharedStateComponent;
@@ -31,6 +32,8 @@ import io.apiman.gateway.test.server.EchoServer;
 import io.apiman.gateway.test.server.GatewayServer;
 import io.apiman.test.common.util.TestPlanRunner;
 
+import java.io.File;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
@@ -39,6 +42,7 @@ import org.junit.BeforeClass;
  *
  * @author eric.wittmann@redhat.com
  */
+@SuppressWarnings("nls")
 public class AbstractGatewayTest {
     
     protected static final int ECHO_PORT = 7654;
@@ -64,6 +68,8 @@ public class AbstractGatewayTest {
      */
     protected static void configureGateway() {
         System.setProperty(WarEngineConfig.APIMAN_GATEWAY_REGISTRY_CLASS, InMemoryRegistry.class.getName());
+        System.setProperty(WarEngineConfig.APIMAN_GATEWAY_PLUGIN_REGISTRY_CLASS, DefaultPluginRegistry.class.getName());
+        System.setProperty(WarEngineConfig.APIMAN_GATEWAY_PLUGIN_REGISTRY_CLASS + ".pluginsDir", new File("target/plugintmp").getAbsolutePath());
         System.setProperty(WarEngineConfig.APIMAN_GATEWAY_CONNECTOR_FACTORY_CLASS, HttpConnectorFactory.class.getName());
         System.setProperty(WarEngineConfig.APIMAN_GATEWAY_POLICY_FACTORY_CLASS, PolicyFactoryImpl.class.getName());
         
@@ -89,7 +95,7 @@ public class AbstractGatewayTest {
      * @param planPath
      */
     protected void runTestPlan(String planPath) {
-        System.setProperty("apiman-gateway-test.endpoints.echo", getEchoEndpoint()); //$NON-NLS-1$
+        System.setProperty("apiman-gateway-test.endpoints.echo", getEchoEndpoint());
         runTestPlan(planPath, getClass().getClassLoader());
     }
     
@@ -112,7 +118,7 @@ public class AbstractGatewayTest {
         if (USE_PROXY) {
             port = GATEWAY_PROXY_PORT;
         }
-        String baseApiUrl = "http://localhost:" + port; //$NON-NLS-1$
+        String baseApiUrl = "http://localhost:" + port;
         return baseApiUrl;
     }
     
@@ -120,7 +126,7 @@ public class AbstractGatewayTest {
      * @return the echo server endpoint
      */
     protected String getEchoEndpoint() {
-        return "http://localhost:" + ECHO_PORT; //$NON-NLS-1$
+        return "http://localhost:" + ECHO_PORT;
     }
 
 }

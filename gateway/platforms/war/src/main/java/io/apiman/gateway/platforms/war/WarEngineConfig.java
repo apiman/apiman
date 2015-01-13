@@ -18,6 +18,7 @@ package io.apiman.gateway.platforms.war;
 import io.apiman.gateway.engine.IComponent;
 import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.IEngineConfig;
+import io.apiman.gateway.engine.IPluginRegistry;
 import io.apiman.gateway.engine.IRegistry;
 import io.apiman.gateway.engine.policy.IPolicyFactory;
 import io.apiman.gateway.platforms.war.i18n.Messages;
@@ -40,6 +41,7 @@ public class WarEngineConfig implements IEngineConfig {
     public static final String APIMAN_GATEWAY_CONFIG_FILE_REFRESH  = "apiman-gateway.config.file.refresh"; //$NON-NLS-1$
 
     public static final String APIMAN_GATEWAY_REGISTRY_CLASS = "apiman-gateway.registry"; //$NON-NLS-1$
+    public static final String APIMAN_GATEWAY_PLUGIN_REGISTRY_CLASS = "apiman-gateway.plugin-registry"; //$NON-NLS-1$
     public static final String APIMAN_GATEWAY_CONNECTOR_FACTORY_CLASS = "apiman-gateway.connector-factory"; //$NON-NLS-1$
     public static final String APIMAN_GATEWAY_POLICY_FACTORY_CLASS = "apiman-gateway.policy-factory"; //$NON-NLS-1$
     
@@ -97,6 +99,25 @@ public class WarEngineConfig implements IEngineConfig {
      */
     public Map<String, String> getRegistryConfig() {
         return getConfigMap(APIMAN_GATEWAY_REGISTRY_CLASS + "."); //$NON-NLS-1$
+    }
+
+    /**
+     * @return the class to use as the {@link IPluginRegistry}
+     */
+    public Class<IPluginRegistry> getPluginRegistryClass() {
+        return loadConfigClass(APIMAN_GATEWAY_PLUGIN_REGISTRY_CLASS, IPluginRegistry.class);
+    }
+
+    /**
+     * @return all properties to be passed to the registry
+     */
+    public Map<String, String> getPluginRegistryConfig() {
+        Map<String, String> configMap = getConfigMap(APIMAN_GATEWAY_PLUGIN_REGISTRY_CLASS + "."); //$NON-NLS-1$
+        String pluginsDirOverride = System.getProperty(APIMAN_GATEWAY_PLUGIN_REGISTRY_CLASS + ".pluginsDir"); //$NON-NLS-1$
+        if (pluginsDirOverride != null) {
+            configMap.put("pluginsDir", pluginsDirOverride); //$NON-NLS-1$
+        }
+        return configMap;
     }
 
     /**

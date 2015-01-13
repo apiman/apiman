@@ -15,14 +15,10 @@
  */
 package io.apiman.gateway.engine.osgi.policy;
 
-import io.apiman.gateway.engine.beans.exceptions.PolicyNotFoundException;
+import io.apiman.gateway.engine.IPluginRegistry;
+import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.policy.IPolicy;
 import io.apiman.gateway.engine.policy.IPolicyFactory;
-
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.ServiceReference;
 
 /**
  * A version of the policy factory that works in an OSGi environment.
@@ -38,46 +34,27 @@ public class OSGIPolicyFactory implements IPolicyFactory {
     }
     
     /**
-     * @see io.apiman.gateway.engine.policy.IPolicyFactory#newPolicy(java.lang.String)
+     * @see io.apiman.gateway.engine.policy.IPolicyFactory#setPluginRegistry(io.apiman.gateway.engine.IPluginRegistry)
      */
     @Override
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    public IPolicy newPolicy(String policyImpl) throws PolicyNotFoundException {
-        if (policyImpl == null) {
-            throw new PolicyNotFoundException(policyImpl);
-        }
-
-        // Handle the various policyImpl formats. Valid formats include:
-        // class:fullyQualifiedClassname - should be in the OSGi registry mapped to IPolicy
-        try {
-            if (policyImpl.startsWith("class:")) { //$NON-NLS-1$
-                String classname = policyImpl.substring(6);
-                Bundle bundle = FrameworkUtil.getBundle(OSGIPolicyFactory.class);
-                if (bundle != null) {
-                    if (bundle.getState() == Bundle.RESOLVED) {
-                        bundle.start();
-                    }
-                    BundleContext context = bundle.getBundleContext();
-                    if (context != null) {
-                        ServiceReference[] serviceReferences = context.getServiceReferences(IPolicy.class.getName(), null);
-                        if (serviceReferences != null) {
-                            for (ServiceReference serviceReference : serviceReferences) {
-                                IPolicy service = (IPolicy) context.getService(serviceReference);
-                                if (service.getClass().getName().equals(classname)) {
-                                    return service;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                throw new PolicyNotFoundException(classname);
-            } else {
-                throw new PolicyNotFoundException(policyImpl);
-            }
-        } catch (Exception e) {
-            throw new PolicyNotFoundException(policyImpl, e);
-        }
+    public void setPluginRegistry(IPluginRegistry pluginRegistry) {
+        throw new RuntimeException("Not yet implemented."); //$NON-NLS-1$
+    }
+    
+    /**
+     * @see io.apiman.gateway.engine.policy.IPolicyFactory#loadConfig(io.apiman.gateway.engine.policy.IPolicy, java.lang.String)
+     */
+    @Override
+    public Object loadConfig(IPolicy policy, String configData) {
+        throw new RuntimeException("Not yet implemented."); //$NON-NLS-1$
+    }
+    
+    /**
+     * @see io.apiman.gateway.engine.policy.IPolicyFactory#loadPolicy(java.lang.String, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     */
+    @Override
+    public void loadPolicy(String policyImpl, IAsyncResultHandler<IPolicy> handler) {
+        throw new RuntimeException("Not yet implemented."); //$NON-NLS-1$
     }
 
 }

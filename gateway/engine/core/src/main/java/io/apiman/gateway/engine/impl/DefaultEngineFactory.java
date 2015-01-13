@@ -16,6 +16,7 @@
 package io.apiman.gateway.engine.impl;
 
 import io.apiman.gateway.engine.IComponentRegistry;
+import io.apiman.gateway.engine.IPluginRegistry;
 import io.apiman.gateway.engine.IRegistry;
 import io.apiman.gateway.engine.policy.IPolicyFactory;
 import io.apiman.gateway.engine.policy.PolicyFactoryImpl;
@@ -42,6 +43,14 @@ public abstract class DefaultEngineFactory extends AbstractEngineFactory {
     @Override
     protected IRegistry createRegistry() {
         return new InMemoryRegistry();
+    }
+    
+    /**
+     * @see io.apiman.gateway.engine.impl.AbstractEngineFactory#createPluginRegistry()
+     */
+    @Override
+    protected IPluginRegistry createPluginRegistry() {
+        return new DefaultPluginRegistry();
     }
 
     /**

@@ -15,6 +15,13 @@
  */
 package io.apiman.gateway.engine.policy;
 
+import io.apiman.common.plugin.Plugin;
+import io.apiman.common.plugin.PluginClassLoader;
+import io.apiman.common.plugin.PluginCoordinates;
+import io.apiman.gateway.engine.IPluginRegistry;
+import io.apiman.gateway.engine.async.AsyncResultImpl;
+import io.apiman.gateway.engine.async.IAsyncResult;
+import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.exceptions.PolicyNotFoundException;
 
 import java.util.HashMap;
@@ -26,61 +33,142 @@ import java.util.Map;
  * @author eric.wittmann@redhat.com
  */
 public class PolicyFactoryImpl implements IPolicyFactory {
-    private Map<String, IPolicy> policyCache = new HashMap<String, IPolicy>();
+    
+    private IPluginRegistry pluginRegistry;
+    private Map<String, IPolicy> policyCache = new HashMap<>();
+    private Map<String, Object> policyConfigCache = new HashMap<>();
 
     /**
      * Constructor.
      */
     public PolicyFactoryImpl() {
     }
-
+    
     /**
-     * @see io.apiman.gateway.engine.policy.IPolicyFactory#newPolicy(java.lang.String)
+     * @see io.apiman.gateway.engine.policy.IPolicyFactory#setPluginRegistry(io.apiman.gateway.engine.IPluginRegistry)
      */
     @Override
-    public IPolicy newPolicy(String qualifiedName) throws PolicyNotFoundException {
-        if (qualifiedName == null) {
-            throw new PolicyNotFoundException(qualifiedName);
+    public void setPluginRegistry(IPluginRegistry pluginRegistry) {
+        this.pluginRegistry = pluginRegistry;
+    }
+    
+    /**
+     * @see io.apiman.gateway.engine.policy.IPolicyFactory#loadConfig(io.apiman.gateway.engine.policy.IPolicy, java.lang.String)
+     */
+    @Override
+    public Object loadConfig(IPolicy policy, String configData) {
+        if (policyConfigCache.containsKey(configData)) {
+            return policyConfigCache.get(configData);
+        }
+        Object config = policy.parseConfiguration(configData);
+        policyConfigCache.put(configData, config);
+        return config;
+    }
+    
+    /**
+     * @see io.apiman.gateway.engine.policy.IPolicyFactory#loadPolicy(java.lang.String, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     */
+    @Override
+    public void loadPolicy(String policyImpl, IAsyncResultHandler<IPolicy> handler) {
+        if (policyImpl == null) {
+            handler.handle(AsyncResultImpl.<IPolicy>create(new PolicyNotFoundException(policyImpl)));
+            return;
         }
 
         // Not synchronized - don't care if we create 2 or 3 of these, it's not worth
         // the synchronization overhead to protect against that.
-        if (policyCache.containsKey(qualifiedName)) {
-            return policyCache.get(qualifiedName);
+        if (policyCache.containsKey(policyImpl)) {
+            handler.handle(AsyncResultImpl.create(policyCache.get(policyImpl)));
+            return;
         }
 
-        IPolicy rval = null;
         // Handle the various policyImpl formats.  Valid formats include:
         //   class:fullyQualifiedClassname - the class is expected to be on the classpath
-        if (qualifiedName.startsWith("class:")) { //$NON-NLS-1$
-            String classname = qualifiedName.substring(6);
-            Class<?> c = null;
-            
-            // First try a simple Class.forName()
-            try { c = Class.forName(classname); } catch (ClassNotFoundException e) { }
-            // Didn't work?  Try using this class's classloader.
-            if (c == null) {
-                try { c = getClass().getClassLoader().loadClass(classname); } catch (ClassNotFoundException e) { }
-            }
-            // Still didn't work?  Try the thread's context classloader.
-            if (c == null) {
-                try { c = Thread.currentThread().getContextClassLoader().loadClass(classname); } catch (ClassNotFoundException e) { }
-            }
-
-            if (c == null) {
-                throw new PolicyNotFoundException(classname);
-            }
-
-            try {
-                rval = (IPolicy) c.newInstance();
-            } catch (InstantiationException | IllegalAccessException e) {
-                throw new PolicyNotFoundException(qualifiedName, e);
-            }
-            policyCache.put(qualifiedName, rval);
-            return rval;
+        if (policyImpl.startsWith("class:")) { //$NON-NLS-1$
+            doLoadFromClasspath(policyImpl, handler);
+        } else if (policyImpl.startsWith("plugin:")) { //$NON-NLS-1$
+            doLoadFromPlugin(policyImpl, handler);
         } else {
-            throw new PolicyNotFoundException(qualifiedName);
+            handler.handle(AsyncResultImpl.<IPolicy>create(new PolicyNotFoundException(policyImpl)));
         }
+    }
+
+    /**
+     * Loads a policy from a class on the classpath.
+     * @param policyImpl
+     * @param handler
+     */
+    protected void doLoadFromClasspath(String policyImpl, IAsyncResultHandler<IPolicy> handler) {
+        IPolicy rval = null;
+        String classname = policyImpl.substring(6);
+        Class<?> c = null;
+        
+        // First try a simple Class.forName()
+        try { c = Class.forName(classname); } catch (ClassNotFoundException e) { }
+        // Didn't work?  Try using this class's classloader.
+        if (c == null) {
+            try { c = getClass().getClassLoader().loadClass(classname); } catch (ClassNotFoundException e) { }
+        }
+        // Still didn't work?  Try the thread's context classloader.
+        if (c == null) {
+            try { c = Thread.currentThread().getContextClassLoader().loadClass(classname); } catch (ClassNotFoundException e) { }
+        }
+
+        if (c == null) {
+            handler.handle(AsyncResultImpl.<IPolicy>create(new PolicyNotFoundException(classname)));
+            return;
+        }
+
+        try {
+            rval = (IPolicy) c.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            handler.handle(AsyncResultImpl.<IPolicy>create(new PolicyNotFoundException(policyImpl, e)));
+            return;
+        }
+        policyCache.put(policyImpl, rval);
+        handler.handle(AsyncResultImpl.create(rval));
+        return;
+    }
+
+    /**
+     * Loads a policy from a plugin.
+     * @param policyImpl
+     * @param handler
+     */
+    private void doLoadFromPlugin(final String policyImpl, final IAsyncResultHandler<IPolicy> handler) {
+        PluginCoordinates coordinates = PluginCoordinates.fromPolicySpec(policyImpl);
+        if (coordinates == null) {
+            handler.handle(AsyncResultImpl.<IPolicy>create(new PolicyNotFoundException(policyImpl)));
+            return;
+        }
+        int ssidx = policyImpl.indexOf('/');
+        if (ssidx == -1) {
+            handler.handle(AsyncResultImpl.<IPolicy>create(new PolicyNotFoundException(policyImpl)));
+            return;
+        }
+        final String classname = policyImpl.substring(ssidx + 1);
+        this.pluginRegistry.loadPlugin(coordinates, new IAsyncResultHandler<Plugin>() {
+            @Override
+            public void handle(IAsyncResult<Plugin> result) {
+                if (result.isSuccess()) {
+                    IPolicy rval = null;
+                    Plugin plugin = result.getResult();
+                    PluginClassLoader pluginClassLoader = plugin.getLoader();
+                    try {
+                        Class<?> c = pluginClassLoader.loadClass(classname);
+                        rval = (IPolicy) c.newInstance();
+                    } catch (Exception e) {
+                        handler.handle(AsyncResultImpl.<IPolicy>create(new PolicyNotFoundException(policyImpl, e)));
+                        return;
+                    }
+                    
+                    policyCache.put(policyImpl, rval);
+                    handler.handle(AsyncResultImpl.create(rval));
+                } else {
+                    handler.handle(AsyncResultImpl.<IPolicy>create(new PolicyNotFoundException(policyImpl, result.getError())));
+                }
+            }
+        });
     }
 
 }

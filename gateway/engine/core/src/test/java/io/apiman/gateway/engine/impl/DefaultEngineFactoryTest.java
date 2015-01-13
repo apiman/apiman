@@ -51,8 +51,6 @@ import org.mockito.InOrder;
 
 /**
  * Unit test for the default engine factory.
- *
- * @author eric.wittmann@redhat.com
  */
 @SuppressWarnings("nls")
 public class DefaultEngineFactoryTest {

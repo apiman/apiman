@@ -15,23 +15,36 @@
  */
 package io.apiman.gateway.engine.policy;
 
-import io.apiman.gateway.engine.beans.exceptions.PolicyNotFoundException;
+import io.apiman.gateway.engine.IPluginRegistry;
+import io.apiman.gateway.engine.async.IAsyncResultHandler;
 
 
 /**
- * Factory used to create instances of policies.
+ * Factory used to create instances of policies.  This is done asynchronously in case
+ * a policy implementation is being provided via a plugin that has not yet been 
+ * downloaded.
  *
  * @author eric.wittmann@redhat.com
  */
 public interface IPolicyFactory {
+
+    /**
+     * @param pluginRegistry
+     */
+    public void setPluginRegistry(IPluginRegistry pluginRegistry);
     
     /**
-     * Instantiate a new preconfigured policy.
-     * 
-     * @param policyImpl qualified name
-     * @return Instantiated policy
-     * @throws NoSuchPolicyException
+     * Load a policy implementation asynchronously.
+     * @param policyImpl
+     * @param handler
      */
-    IPolicy newPolicy(String policyImpl) throws PolicyNotFoundException;
+    public void loadPolicy(String policyImpl, IAsyncResultHandler<IPolicy> handler);
+
+    /**
+     * Loads the given configuration data into a config object.
+     * @param policy
+     * @param configData
+     */
+    public Object loadConfig(IPolicy policy, String configData);
     
 }

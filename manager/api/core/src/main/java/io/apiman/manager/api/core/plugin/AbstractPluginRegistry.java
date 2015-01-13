@@ -19,6 +19,7 @@ import io.apiman.common.plugin.Plugin;
 import io.apiman.common.plugin.PluginClassLoader;
 import io.apiman.common.plugin.PluginCoordinates;
 import io.apiman.common.plugin.PluginSpec;
+import io.apiman.common.plugin.PluginUtils;
 import io.apiman.manager.api.core.IPluginRegistry;
 import io.apiman.manager.api.core.exceptions.InvalidPluginException;
 import io.apiman.manager.api.core.i18n.Messages;
@@ -28,16 +29,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  * Servces as a common base class for concrete implementations of {@link IPluginRegistry}.
@@ -45,18 +43,6 @@ import org.codehaus.jackson.map.ObjectMapper;
  * @author eric.wittmann@redhat.com
  */
 public abstract class AbstractPluginRegistry implements IPluginRegistry {
-    
-    private static final String PLUGIN_SPEC_PATH = "META-INF/apiman/plugin.json"; //$NON-NLS-1$
-    
-    private static final ObjectMapper mapper = new ObjectMapper();
-    private static final Set<URL> MAVEN_REPOSITORIES = new HashSet<>();
-    static {
-        try {
-            MAVEN_REPOSITORIES.add(new URL("https://repo1.maven.org/maven2/")); //$NON-NLS-1$
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        }
-    }
     
     private File pluginsDir;
     private Map<PluginCoordinates, Plugin> pluginCache = new HashMap<>();
@@ -84,21 +70,8 @@ public abstract class AbstractPluginRegistry implements IPluginRegistry {
             return pluginCache.get(coordinates);
         }
         
-        StringBuilder pluginRelativePath = new StringBuilder();
-        pluginRelativePath.append(coordinates.getGroupId());
-        pluginRelativePath.append("/"); //$NON-NLS-1$
-        pluginRelativePath.append(coordinates.getArtifactId());
-        pluginRelativePath.append("/"); //$NON-NLS-1$
-        pluginRelativePath.append(coordinates.getVersion());
-        pluginRelativePath.append("/"); //$NON-NLS-1$
-        pluginRelativePath.append(coordinates.getArtifactId());
-        if (coordinates.getClassifier() != null) {
-            pluginRelativePath.append("-").append(coordinates.getClassifier()); //$NON-NLS-1$
-        }
-        pluginRelativePath.append("."); //$NON-NLS-1$
-        pluginRelativePath.append(coordinates.getType());
-        
-        File pluginDir = new File(pluginsDir, pluginRelativePath.toString());
+        String pluginRelativePath = PluginUtils.getPluginRelativePath(coordinates);
+        File pluginDir = new File(pluginsDir, pluginRelativePath);
         if (!pluginDir.exists()) {
             pluginDir.mkdirs();
         }
@@ -117,16 +90,16 @@ public abstract class AbstractPluginRegistry implements IPluginRegistry {
         } catch (IOException e) {
             throw new InvalidPluginException(Messages.i18n.format("AbstractPluginRegistry.InvalidPlugin", pluginFile.getAbsolutePath()), e); //$NON-NLS-1$
         }
-        URL specFile = pluginClassLoader.getResource(PLUGIN_SPEC_PATH);
+        URL specFile = pluginClassLoader.getResource(PluginUtils.PLUGIN_SPEC_PATH);
         if (specFile == null) {
-            throw new InvalidPluginException(Messages.i18n.format("AbstractPluginRegistry.MissingPluginSpecFile", PLUGIN_SPEC_PATH)); //$NON-NLS-1$
+            throw new InvalidPluginException(Messages.i18n.format("AbstractPluginRegistry.MissingPluginSpecFile", PluginUtils.PLUGIN_SPEC_PATH)); //$NON-NLS-1$
         }
         try {
-            PluginSpec spec = (PluginSpec) mapper.reader(PluginSpec.class).readValue(specFile);
+            PluginSpec spec = PluginUtils.readPluginSpecFile(specFile);
             Plugin plugin = new Plugin(spec, coordinates, pluginClassLoader);
             return plugin;
         } catch (Exception e) {
-            throw new InvalidPluginException(Messages.i18n.format("AbstractPluginRegistry.FailedToReadSpecFile", PLUGIN_SPEC_PATH), e); //$NON-NLS-1$
+            throw new InvalidPluginException(Messages.i18n.format("AbstractPluginRegistry.FailedToReadSpecFile", PluginUtils.PLUGIN_SPEC_PATH), e); //$NON-NLS-1$
         }
     }
 
@@ -136,7 +109,7 @@ public abstract class AbstractPluginRegistry implements IPluginRegistry {
      * @throws IOException
      */
     protected PluginClassLoader createPluginClassLoader(final File pluginFile) throws IOException {
-        PluginClassLoader cl = new PluginClassLoader(pluginFile) {
+        PluginClassLoader cl = new PluginClassLoader(pluginFile, Thread.currentThread().getContextClassLoader()) {
             @Override
             protected File createWorkDir(File pluginArtifactFile) throws IOException {
                 File workDir = new File(pluginFile.getParentFile(), ".work"); //$NON-NLS-1$
@@ -156,22 +129,16 @@ public abstract class AbstractPluginRegistry implements IPluginRegistry {
      */
     protected void downloadPlugin(File pluginFile, PluginCoordinates coordinates) {
         // First check the .m2 directory
-        String userHome = System.getProperty("user.home"); //$NON-NLS-1$
-        if (userHome != null) {
-            File userHomeDir = new File(userHome);
-            if (userHomeDir.isDirectory()) {
-                File m2Dir = new File(userHome, ".m2/repository"); //$NON-NLS-1$
-                if (m2Dir.isDirectory()) {
-                    File artifactFile = getM2Path(m2Dir, coordinates);
-                    if (artifactFile.isFile()) {
-                        try {
-                            FileUtils.copyFile(artifactFile, pluginFile);
-                            return;
-                        } catch (IOException e) {
-                            artifactFile.delete();
-                            throw new RuntimeException(e);
-                        }
-                    }
+        File m2Dir = PluginUtils.getUserM2Repository();
+        if (m2Dir != null) {
+            File artifactFile = PluginUtils.getM2Path(m2Dir, coordinates);
+            if (artifactFile.isFile()) {
+                try {
+                    FileUtils.copyFile(artifactFile, pluginFile);
+                    return;
+                } catch (IOException e) {
+                    artifactFile.delete();
+                    throw new RuntimeException(e);
                 }
             }
         }
@@ -192,7 +159,7 @@ public abstract class AbstractPluginRegistry implements IPluginRegistry {
      * @param mavenRepoUrl 
      */
     protected boolean downloadFromMavenRepo(File pluginFile, PluginCoordinates coordinates, URL mavenRepoUrl) {
-        String artifactSubPath = getMavenPath(coordinates);
+        String artifactSubPath = PluginUtils.getMavenPath(coordinates);
         InputStream istream = null;
         OutputStream ostream = null;
         try {
@@ -211,45 +178,11 @@ public abstract class AbstractPluginRegistry implements IPluginRegistry {
     }
 
     /**
-     * Find the plugin artifact in the local .m2 directory.
-     * @param m2Dir
-     * @param coordinates
-     */
-    protected File getM2Path(File m2Dir, PluginCoordinates coordinates) {
-        String artifactSubPath = getMavenPath(coordinates);
-        File artifactFile = new File(m2Dir, artifactSubPath);
-        return artifactFile;
-    }
-    
-    /**
-     * Calculates the relative path of the artifact from the given coordinates.
-     * @param coordinates
-     */
-    protected String getMavenPath(PluginCoordinates coordinates) {
-        StringBuilder artifactSubPath = new StringBuilder();
-        artifactSubPath.append(coordinates.getGroupId().replace('.', '/'));
-        artifactSubPath.append('/');
-        artifactSubPath.append(coordinates.getArtifactId());
-        artifactSubPath.append('/');
-        artifactSubPath.append(coordinates.getVersion());
-        artifactSubPath.append('/');
-        artifactSubPath.append(coordinates.getArtifactId());
-        artifactSubPath.append('-');
-        artifactSubPath.append(coordinates.getVersion());
-        if (coordinates.getClassifier() != null) {
-            artifactSubPath.append('-');
-            artifactSubPath.append(coordinates.getClassifier());
-        }
-        artifactSubPath.append('.');
-        artifactSubPath.append(coordinates.getType());
-        return artifactSubPath.toString();
-    }
-
-    /**
      * A valid set of remove maven repository URLs.
      */
     protected Set<URL> getMavenRepositories() {
-        return MAVEN_REPOSITORIES;
+        // TODO make this configurable!
+        return PluginUtils.getDefaultMavenRepositories();
     }
 
     /**

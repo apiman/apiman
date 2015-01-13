@@ -16,6 +16,7 @@
 package io.apiman.manager.test.server;
 
 import io.apiman.common.plugin.PluginCoordinates;
+import io.apiman.common.plugin.PluginUtils;
 import io.apiman.manager.api.core.plugin.AbstractPluginRegistry;
 
 import java.io.File;
@@ -66,7 +67,7 @@ public class ApiManagerTestPluginRegistry extends AbstractPluginRegistry {
             return;
         }
         File testM2Dir = new File(testM2Path).getAbsoluteFile();
-        File pluginArtifactFile = new File(testM2Dir, getMavenPath(coordinates));
+        File pluginArtifactFile = new File(testM2Dir, PluginUtils.getMavenPath(coordinates));
         if (!pluginArtifactFile.isFile()) {
             return;
         }

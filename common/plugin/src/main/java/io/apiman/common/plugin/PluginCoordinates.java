@@ -223,5 +223,37 @@ public class PluginCoordinates implements Serializable {
 
         return builder.toString();
     }
+    
+    /**
+     * Returns the plugin coordinates associated with the given plugin policy specification.  The format
+     * of a plugin policy specification is:
+     * 
+     * plugin:groupId:artifactId:version[:classifier][:type]/org.example.plugins.PluginImpl
+     * 
+     * @param pluginPolicySpec
+     */
+    public static final PluginCoordinates fromPolicySpec(String pluginPolicySpec) {
+        if (pluginPolicySpec == null) {
+            return null;
+        }
+        int startIdx = 7;
+        int endIdx = pluginPolicySpec.indexOf('/');
+        
+        String [] split = pluginPolicySpec.substring(startIdx, endIdx).split(":"); //$NON-NLS-1$
+        String groupId = split[0];
+        String artifactId = split[1];
+        String version = split[2];
+        String classifier = null;
+        String type = null;
+        if (split.length == 4) {
+            type = split[3];
+        }
+        if (split.length == 5) {
+            classifier = split[3];
+            type = split[4];
+        }
+        PluginCoordinates rval = new PluginCoordinates(groupId, artifactId, version, classifier, type);
+        return rval;
+    }
 
 }
