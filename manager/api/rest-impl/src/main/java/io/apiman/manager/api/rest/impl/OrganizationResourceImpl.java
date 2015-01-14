@@ -523,6 +523,8 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         try {
             if (applicationValidator.isReady(avb)) {
                 avb.setStatus(ApplicationStatus.Ready);
+            } else {
+                avb.setStatus(ApplicationStatus.Created);
             }
         } catch (Exception e) {
             throw new SystemErrorException(e);
@@ -1264,6 +1266,8 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
             if (serviceValidator.isReady(svb)) {
                 svb.setStatus(ServiceStatus.Ready);
+            } else {
+                svb.setStatus(ServiceStatus.Created);
             }
         } catch (Exception e) {
             throw new SystemErrorException(e);

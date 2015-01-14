@@ -392,7 +392,9 @@ public abstract class AbstractPage extends Composite {
             function( index, element ) {
                 var requiredStatus = element.getAttribute("data-status");
                 if (!me.@io.apiman.manager.ui.client.local.pages.AbstractPage::hasStatus(Ljava/lang/String;)(requiredStatus)) {
-                    $wnd.jQuery(element).remove();
+                    $wnd.jQuery(element).hide();
+                } else {
+                    $wnd.jQuery(element).show();
                 }
           }
         );

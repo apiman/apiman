@@ -192,6 +192,7 @@ public class ServicePlansPage extends AbstractServicePage {
             public void onSuccess(Void response) {
                 saveButton.onActionComplete();
                 saveButton.setEnabled(false);
+                refreshServiceVersion();
             }
             @Override
             public void onError(Throwable error) {
