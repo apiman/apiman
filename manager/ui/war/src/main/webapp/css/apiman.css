@@ -580,42 +580,59 @@ ol.breadcrumb {
   margin-bottom: 5px;
 }
 
-.apiman-entity-breadcrumb {
-  margin-bottom: 10px;
-  padding-bottom: 10px;
+.apiman-entity-summary {
   border: 1px solid rgb(200, 200, 200);
   box-shadow: 2px 2px 3px rgb(221, 221, 221);
-  padding-top: 8px;
+  margin-bottom: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
-.apiman-entity-breadcrumb .title {
+
+.apiman-entity-summary .apiman-entity-breadcrumb {
+}
+.apiman-entity-summary .apiman-entity-breadcrumb .title {
   font-size: 18px;
   line-height: 48px;
 }
-.apiman-entity-breadcrumb .title .breadcrumb-icon {
+.apiman-entity-summary .apiman-entity-breadcrumb .title .breadcrumb-icon {
   color: rgb(83, 107, 133);
   font-size: 1.5em;
   line-height: 48px;
   float: left;
 }
-.apiman-entity-breadcrumb .title div {
+.apiman-entity-summary .apiman-entity-breadcrumb .title div {
   line-height: 48px;
   float: left;
   margin-left: 8px;
 }
-.apiman-entity-breadcrumb .title .divider {
+.apiman-entity-summary .apiman-entity-breadcrumb .title .divider {
   color: #999;
 }
-.apiman-entity-breadcrumb .title .versions {
+.apiman-entity-summary .apiman-entity-breadcrumb .title .versions {
   float: right;
   line-height: normal;
   padding-top: 5px;
 }
-.apiman-entity-breadcrumb .title .versions .bootstrap-select:not([class*="span"]):not([class*="col-"]):not([class*="form-control"]) {
+.apiman-entity-summary .apiman-entity-breadcrumb .title .versions .bootstrap-select:not([class*="span"]):not([class*="col-"]):not([class*="form-control"]) {
   float: left;
   width: 140px;
 }
-.apiman-entity-breadcrumb .title .versions div {
+.apiman-entity-summary .apiman-entity-breadcrumb .title .versions div {
   float: none;
+}
+.apiman-entity-summary .apiman-entity-breadcrumb hr {
+  margin: 8px;
+}
+
+.apiman-entity-summary .apiman-entity-metadata {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+.apiman-entity-summary .apiman-entity-metadata .title {
+  color: rgb(85, 85, 85);
+  font-weight: bold;
+  font-size: 18px;
+  margin-bottom: -5px;
 }
 
 .apiman-entity-nav {
@@ -633,9 +650,6 @@ ol.breadcrumb {
   color: rgb(34, 34, 34);
 }
 .apiman-entity-nav .nav-pills li a:hover {
-  background-color: white;
-  border-top: 1px solid rgb(221, 221, 221);
-  border-bottom: 1px solid rgb(221, 221, 221);
 }
 .apiman-entity-nav .nav-pills li.active a:hover, .apiman-entity-nav .nav-pills li.first a:hover, .apiman-entity-nav .nav-pills li.last a:hover {
   text-decoration: none;
@@ -655,14 +669,13 @@ ol.breadcrumb {
   border-top: 1px solid transparent;
   border-bottom: 1px solid transparent;
 }
-.apiman-entity-nav .nav-pills li.north a:hover {
-  border-bottom: 1px solid transparent;
-}
-.apiman-entity-nav .nav-pills li.south a:hover {
-  border-top: 1px solid transparent;
-}
 .apiman-entity-nav .nav-pills li.first a:hover, .apiman-entity-nav .nav-pills li.last a:hover {
   background-color: white;
+}
+
+.apiman-entity-overview h2 {
+  font-size: 18px;
+  text-decoration: underline;
 }
 
 .apiman-entity-content {

@@ -15,16 +15,23 @@
  */
 package io.apiman.manager.ui.client.local.pages;
 
+import io.apiman.manager.api.beans.actions.ActionBean;
+import io.apiman.manager.api.beans.actions.ActionType;
 import io.apiman.manager.api.beans.idm.PermissionType;
 import io.apiman.manager.api.beans.services.ServiceBean;
+import io.apiman.manager.api.beans.services.ServiceStatus;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
 import io.apiman.manager.api.beans.summary.ServiceVersionSummaryBean;
 import io.apiman.manager.ui.client.local.AppMessages;
+import io.apiman.manager.ui.client.local.events.ConfirmationEvent;
+import io.apiman.manager.ui.client.local.events.ConfirmationEvent.Handler;
 import io.apiman.manager.ui.client.local.pages.common.Breadcrumb;
 import io.apiman.manager.ui.client.local.pages.common.VersionSelector;
 import io.apiman.manager.ui.client.local.services.ContextKeys;
 import io.apiman.manager.ui.client.local.services.rest.IRestInvokerCallback;
+import io.apiman.manager.ui.client.local.util.Formatting;
 import io.apiman.manager.ui.client.local.util.MultimapUtil;
+import io.apiman.manager.ui.client.local.widgets.ConfirmationDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,10 +41,15 @@ import javax.inject.Inject;
 
 import org.jboss.errai.ui.nav.client.local.PageState;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.EventHandler;
+import org.overlord.commons.gwt.client.local.widgets.AsyncActionButton;
 
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.InlineLabel;
+import com.google.gwt.user.client.ui.Label;
 
 
 /**
@@ -67,6 +79,25 @@ public abstract class AbstractServicePage extends AbstractPage {
     VersionSelector versions;
     @Inject @DataField
     Anchor toNewServiceVersion;
+
+    @Inject @DataField
+    Label description;
+    @Inject @DataField
+    InlineLabel createdOn;
+    @Inject @DataField
+    Anchor createdBy;
+    @Inject @DataField
+    InlineLabel status;
+
+    @Inject @DataField
+    Anchor ttd_toNewContract;
+    @Inject @DataField
+    Anchor ttd_toNewServiceVersion;
+
+    @Inject @DataField
+    AsyncActionButton publishButton;
+    @Inject @DataField
+    AsyncActionButton retireButton;
 
     @Inject @DataField
     Anchor toServiceOverview;
@@ -208,6 +239,30 @@ public abstract class AbstractServicePage extends AbstractPage {
         breadcrumb.addItem(dashHref, "home", i18n.format(AppMessages.HOME)); //$NON-NLS-1$
         breadcrumb.addItem(orgServicesHref, "shield", versionBean.getService().getOrganization().getName()); //$NON-NLS-1$
         breadcrumb.addActiveItem("puzzle-piece", serviceBean.getName()); //$NON-NLS-1$
+
+        String newContractHref = navHelper.createHrefToPage(NewContractPage.class, MultimapUtil.fromMultiple("svcorg", org, "svc", service, "svcv", versionBean.getVersion())); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        ttd_toNewContract.setHref(newContractHref);
+        ttd_toNewServiceVersion.setHref(newServiceVersionHref);
+        
+        description.setText(serviceBean.getDescription());
+        createdOn.setText(Formatting.formatShortDate(versionBean.getCreatedOn()));
+        createdBy.setText(versionBean.getCreatedBy());
+        String toUserHref = navHelper.createHrefToPage(UserServicesPage.class,
+                MultimapUtil.fromMultiple("user", serviceBean.getCreatedBy())); //$NON-NLS-1$
+        createdBy.setHref(toUserHref);
+
+        renderServiceStatus();
+    }
+    
+    /**
+     * @see io.apiman.manager.ui.client.local.pages.AbstractPage#onPageLoaded()
+     */
+    @Override
+    protected void onPageLoaded() {
+        super.onPageLoaded();
+        publishButton.reset();
+        retireButton.reset();
+        renderServiceStatus();
     }
 
     /**
@@ -229,4 +284,160 @@ public abstract class AbstractServicePage extends AbstractPage {
         navigation.goTo(getClass(), MultimapUtil.fromMultiple("org", org, "service", service, "version", value)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
+    /**
+     * Updates various UI bits based on the status of the app.
+     */
+    protected void renderServiceStatus() {
+        status.setText(versionBean.getStatus().name());
+        status.setTitle(getStatusDescription(versionBean.getStatus()));
+
+        setStatusLabelClass(status, versionBean.getStatus());
+
+        boolean canRegister = versionBean.getStatus() == ServiceStatus.Ready;
+        boolean publishedOrRetired = versionBean.getStatus() == ServiceStatus.Published || versionBean.getStatus() == ServiceStatus.Retired;
+        publishButton.setEnabled(canRegister);
+        publishButton.setVisible(!publishedOrRetired);
+
+        boolean canRetire = versionBean.getStatus() == ServiceStatus.Published;
+        retireButton.setEnabled(canRetire);
+        retireButton.setVisible(canRetire);
+    }
+    
+    /**
+     * Called when the user clicks the "Publish" button.
+     * @param event
+     */
+    @EventHandler("publishButton")
+    public void onPublish(ClickEvent event) {
+        publishButton.onActionStarted();
+
+        ActionBean action = new ActionBean();
+        action.setType(ActionType.publishService);
+        action.setOrganizationId(versionBean.getService().getOrganization().getId());
+        action.setEntityId(versionBean.getService().getId());
+        action.setEntityVersion(versionBean.getVersion());
+        rest.performAction(action, new IRestInvokerCallback<Void>() {
+            @Override
+            public void onSuccess(Void response) {
+                versionBean.setStatus(ServiceStatus.Published);
+                publishButton.onActionComplete();
+                status.setText(ServiceStatus.Published.toString());
+                renderServiceStatus();
+                hideElementsBasedOnStatus();
+            }
+            
+            @Override
+            public void onError(Throwable error) {
+                dataPacketError(error);
+            }
+        });
+    }
+
+    /**
+     * Called when the user clicks the "Retire" button.
+     * @param event
+     */
+    @EventHandler("retireButton")
+    public void onRetire(ClickEvent event) {
+        retireButton.onActionStarted();
+
+        ConfirmationDialog dialog = confirmationDialogFactory.get();
+        dialog.setDialogTitle(i18n.format(AppMessages.CONFIRM_RETIRE_SERVICE));
+        dialog.setDialogMessage(i18n.format(AppMessages.CONFIRM_RETIRE_SERVICE_MESSAGE, serviceBean.getName()));
+        dialog.addConfirmationHandler(new Handler() {
+            @Override
+            public void onConfirmation(ConfirmationEvent event) {
+                if (event.isConfirmed()) {
+                    retireButton.onActionComplete();
+                    ActionBean action = new ActionBean();
+                    action.setType(ActionType.retireService);
+                    action.setOrganizationId(versionBean.getService().getOrganization().getId());
+                    action.setEntityId(versionBean.getService().getId());
+                    action.setEntityVersion(versionBean.getVersion());
+                    rest.performAction(action, new IRestInvokerCallback<Void>() {
+                        @Override
+                        public void onSuccess(Void response) {
+                            versionBean.setStatus(ServiceStatus.Retired);
+                            retireButton.onActionComplete();
+                            status.setText(ServiceStatus.Retired.toString());
+                            renderServiceStatus();
+                            hideElementsBasedOnStatus();
+                        }
+
+                        @Override
+                        public void onError(Throwable error) {
+                            dataPacketError(error);
+                        }
+                    });
+                } else {
+                    retireButton.onActionComplete();
+                }
+            }
+        });
+        dialog.show();
+
+    }
+
+    /**
+     * Sets the proper CSS class(es) on the label based on the service's status.
+     * @param label
+     * @param status
+     */
+    private static void setStatusLabelClass(InlineLabel label, ServiceStatus status) {
+        label.getElement().setClassName("apiman-label"); //$NON-NLS-1$
+        switch (status) {
+        case Created:
+        case Ready:
+            label.getElement().addClassName("apiman-label-warning"); //$NON-NLS-1$
+            break;
+        case Published:
+            label.getElement().addClassName("apiman-label-success"); //$NON-NLS-1$
+            break;
+        case Retired:
+            label.getElement().addClassName("apiman-label-default"); //$NON-NLS-1$
+            break;
+        }
+    }
+
+    /**
+     * Gets a description of the status.
+     * @param status
+     */
+    private String getStatusDescription(ServiceStatus status) {
+        switch (status) {
+        case Created:
+            return i18n.format(AppMessages.SERVICE_STATUS_CREATED);
+        case Published:
+            return i18n.format(AppMessages.SERVICE_STATUS_PUBLISHED);
+        case Ready:
+            return i18n.format(AppMessages.SERVICE_STATUS_READY);
+        case Retired:
+            return i18n.format(AppMessages.SERVICE_STATUS_RETIRED);
+        default:
+            return null;
+        }
+    }
+
+    /**
+     * Can be called by a subclass if something about the service version was changed.
+     * This is necessary because a change to the service *may* change the service
+     * status, resulting in the UI becoming out of date.
+     */
+    protected void refreshServiceVersion() {
+        rest.getServiceVersion(org, service, versionBean.getVersion(), new IRestInvokerCallback<ServiceVersionBean>() {
+            @Override
+            public void onSuccess(ServiceVersionBean response) {
+                versionBean = response;
+                serviceBean = versionBean.getService();
+                currentContext.setAttribute(ContextKeys.CURRENT_SERVICE, serviceBean);
+                currentContext.setAttribute(ContextKeys.CURRENT_SERVICE_VERSION, versionBean);
+                renderServiceStatus();
+                hideElementsBasedOnStatus();
+            }
+            @Override
+            public void onError(Throwable error) {
+                dataPacketError(error);
+            }
+        });
+    }
 }

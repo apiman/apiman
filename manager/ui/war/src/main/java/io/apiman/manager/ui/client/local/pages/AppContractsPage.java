@@ -172,6 +172,7 @@ public class AppContractsPage extends AbstractAppPage {
             public void onSuccess(Void response) {
                 contractBeans.remove(contract);
                 filterContracts();
+                refreshApplicationVersion();
             }
             @Override
             public void onError(Throwable error) {

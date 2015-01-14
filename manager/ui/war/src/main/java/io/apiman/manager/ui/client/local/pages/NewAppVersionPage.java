@@ -176,10 +176,15 @@ public class NewAppVersionPage extends AbstractPage {
      * @param policies
      */
     protected void clonePolicies(final String oldVersion, List<PolicySummaryBean> policies) {
+        final String ver = version.getValue();
         totalPolicies = policies.size();
-        policyCounter = 0;
-        for (PolicySummaryBean policySummaryBean : policies) {
-            clonePolicy(oldVersion, policySummaryBean);
+        if (totalPolicies == 0) {
+            toApp.go(MultimapUtil.fromMultiple("org", org, "app", app, "version", ver)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        } else {
+            policyCounter = 0;
+            for (PolicySummaryBean policySummaryBean : policies) {
+                clonePolicy(oldVersion, policySummaryBean);
+            }
         }
     }
 

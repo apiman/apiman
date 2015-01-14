@@ -52,28 +52,63 @@
         </div>
       </div>
       <!-- Entity Summary Row -->
-      <div class="row">
-        <div class="col-md-12 apiman-entity-breadcrumb">
-          <div class="title container-fluid">
-            <i class="breadcrumb-icon fa fa-bar-chart-o"></i>
-            <div class="entity emphasis">
-              <a data-field="thePlan" href="plan-overview.html" data-role="dummy">Platinum</a>
-            </div>
-            <div class="versions">
-              <div class="btn-group apiman-entity-action" data-role="dummy" data-field="versions">
-                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                  Version: 3.0.1 <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu" role="menu">
-                  <li><a href="#">3.0</a></li>
-                  <li><a href="#">2.1.1</a></li>
-                  <li><a href="#">2.1</a></li>
-                  <li><a href="#">2.0.1</a></li>
-                  <li><a href="#">2.0</a></li>
-                  <li><a href="#">1.0</a></li>
-                </ul>
+      <div class="apiman-entity-summary">
+        <div class="row apiman-entity-breadcrumb">
+          <div class="col-md-12">
+            <div class="title container-fluid">
+              <i class="breadcrumb-icon fa fa-bar-chart-o"></i>
+              <div class="entity emphasis">
+                <a data-field="thePlan" href="plan-overview.html" data-role="dummy">Platinum</a>
               </div>
-              <a data-permission="planEdit" href="new-planversion.html" class="btn btn-primary apiman-entity-action" data-field="toNewPlanVersion" data-i18n-key="new-version">New Version</a>
+              <div class="versions">
+                <div class="btn-group apiman-entity-action" data-role="dummy" data-field="versions">
+                  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                    Version: 3.0.1 <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu" role="menu">
+                    <li><a href="#">3.0</a></li>
+                    <li><a href="#">2.1.1</a></li>
+                    <li><a href="#">2.1</a></li>
+                    <li><a href="#">2.0.1</a></li>
+                    <li><a href="#">2.0</a></li>
+                    <li><a href="#">1.0</a></li>
+                  </ul>
+                </div>
+                <a data-permission="planEdit" href="new-planversion.html" class="btn btn-primary apiman-entity-action" data-field="toNewPlanVersion" data-i18n-key="new-version">New Version</a>
+              </div>
+            </div>
+            <hr />
+          </div>
+        </div>
+        <div class="row apiman-entity-metadata">
+          <div class="col-md-7" style="margin-bottom: 8px">
+            <!-- Service Summary -->
+            <div class="description" data-field="description" data-role="dummy">This is a sample description of a plan.</div>
+            <div style="padding: 8px">
+              <div class="entity-info-with-icon">
+                <i class="fa fa-clock-o fa-fw"></i>
+                <span class="apiman-label-faded" data-i18n-key="created-on">Created on</span>
+                <span data-field="createdOn" data-role="dummy" >Feb 3, 2011</span>
+              </div>
+              <div class="entity-info-with-icon">
+                <i class="fa fa-user fa-fw"></i>
+                <span class="apiman-label-faded" data-i18n-key="created-by">Created by</span>
+                <span><a href="user-orgs.html" data-field="createdBy" data-role="dummy">Clark Kent</a></span>
+              </div>
+            </div>
+            <div class="entity-info-with-icon">
+              <span data-i18n-key="status-label">Status:</span>
+              <span class="apiman-label apiman-label-warning" data-field="status" data-role="dummy">Created</span>
+            </div>
+          </div>
+          <div class="col-md-5" data-permission="appEdit">
+            <div>
+              <div><a data-i18n-key="ttdo-new-version" data-field="ttd_toNewVersion" href="new-planversion.html">Create a new version of this Plan (New Version)</a></div>
+            </div>
+            <!-- The Publish Action -->
+            <div class="apiman-divider-40"></div>
+            <div class="">
+              <button class="btn btn-primary" data-field="lockButton" data-i18n-key="lock" placeholder="Locking..." data-icon="fa-cog">Lock Plan</button>
             </div>
           </div>
         </div>
@@ -85,9 +120,9 @@
         <div class="col-md-2 apiman-entity-nav">
           <ul class="nav nav-pills nav-stacked">
             <li class="first"><a data-role="dummy">&nbsp;</a></li>
-            <li class="north"><a data-field="toPlanOverview" href="plan-overview.html" data-i18n-key="overview">Overview</a></li>
+            <li class=""><a data-field="toPlanOverview" href="plan-overview.html" data-i18n-key="overview">Overview</a></li>
             <li class="active"><a data-field="toPlanPolicies" href="plan-policies.html" data-i18n-key="policies">Policies</a></li>
-            <li class="south"><a data-field="toPlanActivity" href="plan-activity.html" data-i18n-key="activity">Activity</a></li>
+            <li class=""><a data-field="toPlanActivity" href="plan-activity.html" data-i18n-key="activity">Activity</a></li>
             <li class="last"><a data-role="dummy">&nbsp;</a></li>
           </ul>
         </div>

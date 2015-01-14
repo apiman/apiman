@@ -52,41 +52,82 @@
         </div>
       </div>
       <!-- Entity Summary Row -->
-      <div class="row">
-        <div class="col-md-12 apiman-entity-breadcrumb">
-          <div class="title container-fluid">
-            <i class="breadcrumb-icon fa fa-puzzle-piece"></i>
-            <div class="entity emphasis">
-              <a data-field="serviceName" href="service-overview.html" data-role="dummy">dtgov-deploy</a>
-            </div>
-            <div class="versions">
-              <div class="btn-group apiman-entity-action" data-role="dummy" data-field="versions">
-                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                  Version: 3.0.1 <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu" role="menu">
-                  <li><a href="#">3.0</a></li>
-                  <li><a href="#">2.1.1</a></li>
-                  <li><a href="#">2.1</a></li>
-                  <li><a href="#">2.0.1</a></li>
-                  <li><a href="#">2.0</a></li>
-                  <li><a href="#">1.0</a></li>
-                </ul>
+      <div class="apiman-entity-summary">
+        <div class="row apiman-entity-breadcrumb">
+          <div class="col-md-12">
+            <div class="title container-fluid">
+              <i class="breadcrumb-icon fa fa-puzzle-piece"></i>
+              <div class="entity emphasis">
+                <a data-field="serviceName" href="service-overview.html" data-role="dummy">dtgov-deploy</a>
               </div>
-              <a data-permission="svcEdit" href="new-serviceversion.html" class="btn btn-primary apiman-entity-action" data-field="toNewServiceVersion" data-i18n-key="new-version">New Version</a>
+              <div class="versions">
+                <div class="btn-group apiman-entity-action" data-role="dummy" data-field="versions">
+                  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                    Version: 3.0.1 <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu" role="menu">
+                    <li><a href="#">3.0</a></li>
+                    <li><a href="#">2.1.1</a></li>
+                    <li><a href="#">2.1</a></li>
+                    <li><a href="#">2.0.1</a></li>
+                    <li><a href="#">2.0</a></li>
+                    <li><a href="#">1.0</a></li>
+                  </ul>
+                </div>
+                <a data-permission="svcEdit" href="new-serviceversion.html" class="btn btn-primary apiman-entity-action" data-field="toNewServiceVersion" data-i18n-key="new-version">New Version</a>
+              </div>
+            </div>
+            <hr />
+          </div>
+        </div>
+        <div class="row apiman-entity-metadata">
+          <div class="col-md-7" style="margin-bottom: 8px">
+            <!-- Service Summary -->
+            <div class="description" data-field="description" data-role="dummy">The API that allows dtgov governance users and workflows to deploy artifacts to a configured runtime environment.</div>
+            <div style="padding: 8px">
+              <div class="entity-info-with-icon">
+                <i class="fa fa-clock-o fa-fw"></i>
+                <span class="apiman-label-faded" data-i18n-key="created-on">Created on</span>
+                <span data-field="createdOn" data-role="dummy" >Feb 3, 2011</span>
+              </div>
+              <div class="entity-info-with-icon">
+                <i class="fa fa-user fa-fw"></i>
+                <span class="apiman-label-faded" data-i18n-key="created-by">Created by</span>
+                <span><a href="user-orgs.html" data-field="createdBy" data-role="dummy">Clark Kent</a></span>
+              </div>
+            </div>
+            <div class="entity-info-with-icon">
+              <span data-i18n-key="status-label">Status:</span>
+              <span class="apiman-label apiman-label-warning" data-field="status" data-role="dummy">Ready</span>
+            </div>
+          </div>
+          <div class="col-md-5" data-permission="svcEdit">
+            <div>
+              <div data-status="Published">
+                <a data-i18n-key="ttdo-new-svc-contract" data-field="ttd_toNewContract" href="new-contract.html">Link my Application to this Service (New Contract)</a>
+              </div>
+              <div>
+                <a data-i18n-key="ttdo-new-svc-version" data-field="ttd_toNewServiceVersion" href="new-serviceversion.html">Create a new version of this Service (New Version)</a>
+              </div>
+            </div>
+            <!-- The Publish Action -->
+            <div class="apiman-divider-40"></div>
+            <div class="">
+              <button class="btn btn-primary" data-field="publishButton" data-i18n-key="publish" placeholder="Publishing..." data-icon="fa-cog">Publish</button>
+              <button class="btn btn-warning" data-field="retireButton" data-i18n-key="retire" placeholder="Retiring..." data-icon="fa-cog">Retire</button>
             </div>
           </div>
         </div>
       </div>
-      
+
       <!-- Navigation + Content Row -->
       <div class="row">
         <!-- Left hand nav -->
         <div class="col-md-2 apiman-entity-nav">
           <ul class="nav nav-pills nav-stacked">
-            <li class="first north"><a data-role="dummy">&nbsp;</a></li>
+            <li class="first"><a data-role="dummy">&nbsp;</a></li>
             <li class="active"><a data-field="toServiceOverview" href="service-overview.html" data-i18n-key="overview">Overview</a></li>
-            <li class="south"><a data-field="toServiceImpl" href="service-impl.html" data-i18n-key="implementation">Implementation</a></li>
+            <li class=""><a data-field="toServiceImpl" href="service-impl.html" data-i18n-key="implementation">Implementation</a></li>
             <li class=""><a data-field="toServicePlans" href="service-plans.html" data-i18n-key="plans">Plans</a></li>
             <li class=""><a data-field="toServicePolicies" href="service-policies.html" data-i18n-key="policies">Policies</a></li>
             <li class=""><a data-field="toServiceContracts" href="service-contracts.html" data-i18n-key="contracts">Contracts</a></li>
@@ -97,66 +138,57 @@
         <!-- /Left hand nav -->
 
         <!-- Content -->
-        <div class="col-md-10 apiman-entity-content">
-          <!-- Content Summary (left side) -->
-          <div class="col-md-6">
-            <!-- Service Summary -->
-            <div class="title" data-i18n-key="service-summary">Service</div>
-            <div class="description" data-field="description" data-role="dummy">The API that allows dtgov governance users and workflows to deploy artifacts to a configured runtime environment.</div>
-            <div class="entity-info-with-icon">
-              <i class="fa fa-clock-o fa-fw"></i>
-              <span class="apiman-label-faded" data-i18n-key="created-on">Created on</span>
-              <span data-field="createdOn" data-role="dummy" >Feb 3, 2011</span>
-            </div>
-            <div class="entity-info-with-icon">
-              <i class="fa fa-user fa-fw"></i>
-              <span class="apiman-label-faded" data-i18n-key="created-by">Created by</span>
-              <span><a href="user-orgs.html" data-field="createdBy" data-role="dummy">Clark Kent</a></span>
-            </div>
-            <div class="apiman-divider-40"></div>
-            <!-- Version Summary -->
-            <div class="title" data-i18n-key="version-summary">Version</div>
-            <div class="entity-info-with-icon">
-              <span data-i18n-key="version-label">Version:</span>
-              <span class="emphasis" data-field="version" data-role="dummy">2.1</span>
-            </div>
-            <div class="entity-info-with-icon">
-              <span data-i18n-key="status-label">Status:</span>
-              <span class="apiman-label apiman-label-warning" data-field="status" data-role="dummy">Ready</span>
-            </div>
-            <div class="apiman-divider-20"></div>
-            <div class="entity-info-with-icon">
-              <i class="fa fa-clock-o fa-fw"></i>
-              <span class="apiman-label-faded" data-i18n-key="created-on">Created on</span>
-              <span data-field="versionCreatedOn" data-role="dummy" >March 17, 2011</span>
-            </div>
-            <div class="entity-info-with-icon">
-              <i class="fa fa-user fa-fw"></i>
-              <span class="apiman-label-faded" data-i18n-key="created-by">Created by</span>
-              <span><a href="user-orgs.html" data-field="versionCreatedBy" data-role="dummy">Bruce Wayne</a></span>
-            </div>
-            <div class="apiman-divider-40"></div>
-          </div>
-          <!-- /Content Summary (left side) -->
-          
-          <!-- Actions -->
-          <div data-permission="svcEdit" class="col-md-6">
-            <div class="title" data-i18n-key="actions">Actions</div>
-            <div class="apiman-divider-20">
-              <ul>
-                <li data-status="Published"><a data-i18n-key="ttdo-new-svc-contract" data-field="ttd_toNewContract" href="new-contract.html">Link my Application to this Service (New Contract)</a></li>
-                <li><a data-i18n-key="ttdo-new-svc-version" data-field="ttd_toNewServiceVersion" href="new-serviceversion.html">Create a new version of this Service (New Version)</a></li>
-              </ul>
-            </div>
-            <!-- The Publish Action -->
-            <div class="apiman-divider-40"></div>
-            <div class="">
-              <button class="btn btn-primary" data-field="publishButton" data-i18n-key="publish" placeholder="Publishing..." data-icon="fa-cog">Publish</button>
-              <button class="btn btn-warning" data-field="retireButton" data-i18n-key="retire" placeholder="Retiring..." data-icon="fa-cog">Retire</button>
-            </div>
-          </div>
-          <!-- /Actions -->
+        <div class="col-md-10 apiman-entity-content apiman-entity-overview">
+          <!-- Content Summary -->
+          <div class="col-md-12">
+            <h1 data-i18n-key="service-details">Service Details</h1>
+            <p data-i18n-key="service-description">
+              This is the service details page.  Use this page to modify the meta-data, plans, and 
+              policies for the service.  There is no need to follow the tabs in order, but note that
+              you will need to fill out a minimum amount of data before the service can be published
+              to the Gateway.  In particular, the Implementation and Plans tabs are important (more
+              information below).
+            </p>
+            
+            <h2 data-i18n-key="impl">Implementation</h2>
+            <p data-i18n-key="impl-description">
+              The 'Implementation' tab is where you go to configure the details of the real service
+              being managed.  This is where you tell apiman where the service is, so that we can 
+              actually invoke it at runtime.
+            </p>
 
+            <h2 data-i18n-key="plans">Plans</h2>
+            <p data-i18n-key="plans-description">
+              The 'Plans' tab is used to configure which Plans (already defined in the Organization)
+              are available when an Application wishes to create a Service Contract with this 
+              Service.  Optionally, a Service can also be marked as "Public", which means that no
+              Service Contract is required (the Service can be invoked without sending an API Key).
+            </p>
+            
+            <h2 data-i18n-key="policies">Policies</h2>
+            <p data-i18n-key="policies-description">
+              The 'Policies' tab is where you go if you wish to configure any policies that should
+              be enforced for *all* requests to the Service, regardless of which user, application,
+              or plan is being used.  In other words, Service-level policies.
+            </p>
+            
+            <h2 data-i18n-key="contracts">Contracts</h2>
+            <p data-i18n-key="contracts-description">
+              The 'Contracts' tab will show a table of all Applications that have created Service
+              Contracts to this Service.  In other words, it shows all of the registered 
+              consumers of the Service.  Note that if the Service is marked as "Public", this tab
+              will likely be empty.
+            </p>
+
+            <h2 data-i18n-key="activity">Activity</h2>
+            <p data-i18n-key="activity-description">
+              The 'Activity' tab shows a history of all the changes made to the Service.  Essentially
+              it is an audit log.
+            </p>
+            
+          </div>
+          <!-- /Content Summary -->
+          
         </div>
         <!-- /Content -->
       </div>

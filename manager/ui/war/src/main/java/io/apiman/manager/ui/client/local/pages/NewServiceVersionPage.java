@@ -146,8 +146,12 @@ public class NewServiceVersionPage extends AbstractPage {
                     @Override
                     public void onSuccess(List<PolicySummaryBean> response) {
                         totalPolicies = response.size();
-                        for (PolicySummaryBean policySummaryBean : response) {
-                            clonePolicy(oldVer, policySummaryBean);
+                        if (totalPolicies == 0) {
+                            toService.go(MultimapUtil.fromMultiple("org", org, "service", service, "version", ver)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                        } else {
+                            for (PolicySummaryBean policySummaryBean : response) {
+                                clonePolicy(oldVer, policySummaryBean);
+                            }
                         }
                     }
                     @Override
