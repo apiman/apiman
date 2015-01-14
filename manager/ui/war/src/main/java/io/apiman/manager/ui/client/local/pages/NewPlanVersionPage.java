@@ -141,8 +141,12 @@ public class NewPlanVersionPage extends AbstractPage {
                     @Override
                     public void onSuccess(List<PolicySummaryBean> response) {
                         totalPolicies = response.size();
-                        for (PolicySummaryBean policySummaryBean : response) {
-                            clonePolicy(oldVer, policySummaryBean);
+                        if (totalPolicies == 0) {
+                            toPlan.go(MultimapUtil.fromMultiple("org", org, "plan", plan, "version", ver)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                        } else {
+                            for (PolicySummaryBean policySummaryBean : response) {
+                                clonePolicy(oldVer, policySummaryBean);
+                            }
                         }
                     }
                     @Override

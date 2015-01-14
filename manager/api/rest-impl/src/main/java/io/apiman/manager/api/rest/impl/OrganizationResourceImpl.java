@@ -685,11 +685,22 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         try {
             storage.beginTx();
             ContractBean contract = storage.getContract(contractId);
-            if (contract == null)
+            if (contract == null) {
                 throw ExceptionFactory.contractNotFoundException(contractId);
+            }
+            if (!contract.getApplication().getApplication().getOrganization().getId().equals(organizationId)) {
+                throw ExceptionFactory.contractNotFoundException(contractId);
+            }
+            if (!contract.getApplication().getApplication().getId().equals(applicationId)) {
+                throw ExceptionFactory.contractNotFoundException(contractId);
+            }
+            if (!contract.getApplication().getVersion().equals(version)) {
+                throw ExceptionFactory.contractNotFoundException(contractId);
+            }
             storage.deleteContract(contract);
             storage.createAuditEntry(AuditUtils.contractBrokenFromApp(contract, securityContext));
             storage.createAuditEntry(AuditUtils.contractBrokenToService(contract, securityContext));
+            
             storage.commitTx();
         } catch (AbstractRestException e) {
             storage.rollbackTx();
