@@ -232,6 +232,7 @@ public abstract class PolicyList extends FlowPanel implements HasValue<List<Poli
         // Grabber
         Label grabber = new Label();
         grabber.getElement().setAttribute("data-permission", getRemovePermission()); //$NON-NLS-1$
+        grabber.getElement().setAttribute("data-status", "Created,Ready"); //$NON-NLS-1$ //$NON-NLS-2$
         grabber.getElement().setDraggable(Element.DRAGGABLE_TRUE);
         grabber.getElement().setClassName("grabber"); //$NON-NLS-1$
         grabber.getElement().getStyle().setHeight(48, Unit.PX);

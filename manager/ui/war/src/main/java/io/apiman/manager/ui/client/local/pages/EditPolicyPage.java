@@ -15,9 +15,12 @@
  */
 package io.apiman.manager.ui.client.local.pages;
 
+import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
 import io.apiman.manager.api.beans.idm.PermissionType;
+import io.apiman.manager.api.beans.plans.PlanVersionBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
+import io.apiman.manager.api.beans.services.ServiceVersionBean;
 import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.events.IsFormValidEvent;
 import io.apiman.manager.ui.client.local.events.IsFormValidEvent.Handler;
@@ -69,11 +72,20 @@ public class EditPolicyPage extends AbstractPolicyPage {
     IPolicyConfigurationForm policyForm;
     
     PolicyBean policyBean;
+    String entityStatus;
     
     /**
      * Constructor.
      */
     public EditPolicyPage() {
+    }
+    
+    /**
+     * @see io.apiman.manager.ui.client.local.pages.AbstractPage#getEntityStatus()
+     */
+    @Override
+    protected String getEntityStatus() {
+        return entityStatus;
     }
     
     /**
@@ -94,7 +106,53 @@ public class EditPolicyPage extends AbstractPolicyPage {
                 dataPacketError(error);
             }
         });
-        return size + 1;
+        if (pt == PolicyType.Application) {
+            rest.getApplicationVersion(org, id, ver, new IRestInvokerCallback<ApplicationVersionBean>() {
+                @Override
+                public void onSuccess(ApplicationVersionBean response) {
+                    entityStatus = response.getStatus().toString();
+                    dataPacketLoaded();
+                }
+                /**
+                 * @see io.apiman.manager.ui.client.local.services.rest.IRestInvokerCallback#onError(java.lang.Throwable)
+                 */
+                @Override
+                public void onError(Throwable error) {
+                    dataPacketError(error);
+                }
+            });
+        } else if (pt == PolicyType.Service) {
+            rest.getServiceVersion(org, id, ver, new IRestInvokerCallback<ServiceVersionBean>() {
+                @Override
+                public void onSuccess(ServiceVersionBean response) {
+                    entityStatus = response.getStatus().toString();
+                    dataPacketLoaded();
+                }
+                /**
+                 * @see io.apiman.manager.ui.client.local.services.rest.IRestInvokerCallback#onError(java.lang.Throwable)
+                 */
+                @Override
+                public void onError(Throwable error) {
+                    dataPacketError(error);
+                }
+            });
+        } else if (pt == PolicyType.Plan) {
+            rest.getPlanVersion(org, id, ver, new IRestInvokerCallback<PlanVersionBean>() {
+                @Override
+                public void onSuccess(PlanVersionBean response) {
+                    entityStatus = response.getStatus().toString();
+                    dataPacketLoaded();
+                }
+                /**
+                 * @see io.apiman.manager.ui.client.local.services.rest.IRestInvokerCallback#onError(java.lang.Throwable)
+                 */
+                @Override
+                public void onError(Throwable error) {
+                    dataPacketError(error);
+                }
+            });
+        }
+        return size + 2;
     }
     
     @PostConstruct
