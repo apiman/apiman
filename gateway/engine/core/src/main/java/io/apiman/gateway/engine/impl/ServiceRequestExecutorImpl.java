@@ -33,6 +33,7 @@ import io.apiman.gateway.engine.beans.exceptions.RequestAbortedException;
 import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.gateway.engine.io.ISignalWriteStream;
 import io.apiman.gateway.engine.policy.Chain;
+import io.apiman.gateway.engine.policy.IConnectorInterceptor;
 import io.apiman.gateway.engine.policy.IPolicyContext;
 import io.apiman.gateway.engine.policy.PolicyWithConfiguration;
 import io.apiman.gateway.engine.policy.RequestChain;
@@ -112,8 +113,14 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
 
             @Override
             public void handle(ServiceRequest request) {
-                IServiceConnector connector = connectorFactory.createConnector(request, service);
-
+                IConnectorInterceptor connectorInterceptor = context.getConnectorInterceptor();
+                IServiceConnector connector = null;
+                if (connectorInterceptor == null) {
+                    connector = connectorFactory.createConnector(request, service);
+                } else {
+                    connector = connectorInterceptor.createConnector();
+                }
+                
                 // Open up a connection to the back-end if we're given the OK from the request chain
                 // Attach the response handler here.
                 serviceConnection = connector.connect(request, createServiceConnectionResponseHandler());
