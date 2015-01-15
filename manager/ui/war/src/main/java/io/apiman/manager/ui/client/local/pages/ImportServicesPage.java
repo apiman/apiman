@@ -16,13 +16,18 @@
 package io.apiman.manager.ui.client.local.pages;
 
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
+import io.apiman.manager.api.beans.plans.PlanStatus;
 import io.apiman.manager.api.beans.services.EndpointType;
 import io.apiman.manager.api.beans.services.ServiceBean;
+import io.apiman.manager.api.beans.services.ServicePlanBean;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
+import io.apiman.manager.api.beans.summary.PlanSummaryBean;
+import io.apiman.manager.api.beans.summary.PlanVersionSummaryBean;
 import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.beans.JavaScriptFile;
 import io.apiman.manager.ui.client.local.beans.JavaScriptFile.IDataReadHandler;
 import io.apiman.manager.ui.client.local.beans.ServiceImportSourceType;
+import io.apiman.manager.ui.client.local.pages.service.ImportServicePlansSelector;
 import io.apiman.manager.ui.client.local.pages.service.ImportServicesTable;
 import io.apiman.manager.ui.client.local.pages.service.ServiceImportSourceSelectBox;
 import io.apiman.manager.ui.client.local.services.ContextKeys;
@@ -32,8 +37,10 @@ import io.apiman.manager.ui.client.local.widgets.DropZone;
 import io.apiman.manager.ui.client.local.widgets.LocalFileChooser;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
@@ -59,6 +66,7 @@ import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
 import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimpleCheckBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.xml.client.Document;
@@ -103,11 +111,25 @@ public class ImportServicesPage extends AbstractPage {
     @Inject @DataField
     AsyncActionButton wadlNext;
 
-    // Confirmation Page
+    // Select Services Page
     @Inject @DataField
     SimpleCheckBox servicesSelectAll;
     @Inject @DataField
     ImportServicesTable services;
+    @Inject @DataField
+    AsyncActionButton selectNext;
+    
+    // Plans Page
+    @Inject @DataField
+    SimpleCheckBox publicService;
+    @Inject @DataField
+    ImportServicePlansSelector plans;
+    @Inject @DataField
+    Anchor plansNext;
+    
+    // Confirmation Page
+    @Inject @DataField
+    Label confirmMessage;
     @Inject @DataField
     AsyncActionButton yesButton;
 
@@ -157,7 +179,7 @@ public class ImportServicesPage extends AbstractPage {
             @Override
             public void onValueChange(ValueChangeEvent<List<ServiceVersionBean>> event) {
                 servicesSelectAll.setValue(services.isAllSelected());
-                yesButton.setEnabled(services.isValid());
+                selectNext.setEnabled(services.isValid());
             }
         });
     }
@@ -233,9 +255,9 @@ public class ImportServicesPage extends AbstractPage {
                         services.setValue(servicesToImport);
                         servicesSelectAll.setValue(Boolean.TRUE);
                         if (servicesToImport.isEmpty()) {
-                            yesButton.setEnabled(false);
+                            selectNext.setEnabled(false);
                         }
-                        showConfirmationPage("wadlPage"); //$NON-NLS-1$
+                        showSelectPage();
                     } else {
                         try {
                             throw new Exception(i18n.format(AppMessages.WADL_FETCH_FAIL, String.valueOf(response.getStatusCode()), response.getStatusText()));
@@ -275,9 +297,9 @@ public class ImportServicesPage extends AbstractPage {
                             services.setValue(servicesToImport);
                             servicesSelectAll.setValue(Boolean.TRUE);
                             if (servicesToImport.isEmpty()) {
-                                yesButton.setEnabled(false);
+                                selectNext.setEnabled(false);
                             }
-                            showConfirmationPage("wadlPage"); //$NON-NLS-1$
+                            showSelectPage();
                         }
                     }
                 });
@@ -343,27 +365,95 @@ public class ImportServicesPage extends AbstractPage {
     }
 
     /**
-     * Native helper method for showing the wadl page.
+     * Called when the user clicks Next to move to plan selection.  Before we move 
+     * to the plan selection screen we need to load the plans.
+     * @param event
      */
-    private native void showWadlPage() /*-{
-        $wnd.jQuery("#importTypePage").animate( { "margin-left" : "-2000px" }, 200, function() { 
-            $wnd.jQuery("#importTypePage").hide();
-            $wnd.jQuery("#wadlPage").show();
-            $wnd.jQuery("#wadlPage").animate( { "margin-left" : "0px" }, 200);
+    @EventHandler("selectNext")
+    public void onSelectNext(ClickEvent event) {
+        final OrganizationBean org = (OrganizationBean) currentContext.getAttribute(ContextKeys.CURRENT_ORGANIZATION);
+        if (org == null) {
+            return;
+        }
+        selectNext.onActionStarted();
+        final List<PlanSummaryBean> planBeans = new ArrayList<PlanSummaryBean>();
+        final Map<PlanSummaryBean, List<PlanVersionSummaryBean>> planVersions = new HashMap<PlanSummaryBean, List<PlanVersionSummaryBean>>();
+        rest.getOrgPlans(org.getId(), new IRestInvokerCallback<List<PlanSummaryBean>>() {
+            @Override
+            public void onSuccess(final List<PlanSummaryBean> response) {
+                final int totalPlans = response.size();
+                if (totalPlans == 0) {
+                    plans.setChoices(planBeans, planVersions);
+                    Set<ServicePlanBean> theplans = new HashSet<ServicePlanBean>();
+                    plans.setValue(theplans);
+                    showPlansPage();
+                } else {
+                    for (final PlanSummaryBean planSummaryBean : response) {
+                        rest.getPlanVersions(org.getId(), planSummaryBean.getId(), new IRestInvokerCallback<List<PlanVersionSummaryBean>>() {
+                            @Override
+                            public void onSuccess(List<PlanVersionSummaryBean> response) {
+                                List<PlanVersionSummaryBean> lockedPlanVersions = new ArrayList<PlanVersionSummaryBean>(response.size());
+                                for (PlanVersionSummaryBean pvsb : response) {
+                                    if (pvsb.getStatus() == PlanStatus.Locked) {
+                                        lockedPlanVersions.add(pvsb);
+                                    }
+                                }
+                                
+                                if (lockedPlanVersions.size() > 0) {
+                                    planBeans.add(planSummaryBean);
+                                }
+                                planVersions.put(planSummaryBean, lockedPlanVersions);
+                                if (planVersions.size() == totalPlans) {
+                                    plans.setChoices(planBeans, planVersions);
+                                    Set<ServicePlanBean> theplans = new HashSet<ServicePlanBean>();
+                                    plans.setValue(theplans);
+                                    showPlansPage();
+                                }
+                            }
+                            @Override
+                            public void onError(Throwable error) {
+                                dataPacketError(error);
+                            }
+                        });
+                    }
+                }
+            }
+            @Override
+            public void onError(Throwable error) {
+                dataPacketError(error);
+            }
         });
-    }-*/;
+    }
     
     /**
-     * Native helper method for showing the confirmation page.
+     * Called when the user clicks Next to move to the confirmation page.
+     * @param event
      */
-    private native void showConfirmationPage(String fromPage) /*-{
-        $wnd.jQuery("#" + fromPage).animate( { "margin-left" : "-2000px" }, 200, function() { 
-            $wnd.jQuery("#" + fromPage).hide();
-            $wnd.jQuery("#confirmPage").show();
-            $wnd.jQuery("#confirmPage").animate( { "margin-left" : "0px" }, 200);
-        });
-    }-*/;
-
+    @EventHandler("plansNext")
+    public void onPlansNext(ClickEvent event) {
+        final List<ServiceVersionBean> servicesToCreate = services.getValue();
+        boolean ispub = publicService.getValue();
+        Set<ServicePlanBean> selectedPlans = plans.getValue();
+        if (selectedPlans == null) {
+            selectedPlans = new HashSet<ServicePlanBean>();
+        }
+        String msg = null;
+        if (selectedPlans.size() > 0 && !ispub) {
+            msg = i18n.format(AppMessages.CONFIRM_IMPORT_SERVICES_1, String.valueOf(servicesToCreate.size()), selectedPlans.size());
+        }
+        if (selectedPlans.size() > 0 && ispub) {
+            msg = i18n.format(AppMessages.CONFIRM_IMPORT_SERVICES_2, String.valueOf(servicesToCreate.size()), selectedPlans.size());
+        }
+        if (selectedPlans.size() == 0 && !ispub) {
+            msg = i18n.format(AppMessages.CONFIRM_IMPORT_SERVICES_3, String.valueOf(servicesToCreate.size()));
+        }
+        if (selectedPlans.size() == 0 && ispub) {
+            msg = i18n.format(AppMessages.CONFIRM_IMPORT_SERVICES_4, String.valueOf(servicesToCreate.size()));
+        }
+        confirmMessage.setText(msg);
+        showConfirmationPage();
+    }
+    
     /**
      * Called when the user clicks Yes to confirm the import.
      * @param event
@@ -373,8 +463,14 @@ public class ImportServicesPage extends AbstractPage {
         yesButton.onActionStarted();
         final OrganizationBean org = (OrganizationBean) currentContext.getAttribute(ContextKeys.CURRENT_ORGANIZATION);
         final List<ServiceVersionBean> servicesToCreate = services.getValue();
+        boolean makePublic = publicService.getValue();
+        Set<ServicePlanBean> selectedPlans = plans.getValue();
         final Set<String> completed = new HashSet<String>();
         for (final ServiceVersionBean serviceV : servicesToCreate) {
+            serviceV.setPublicService(makePublic);
+            if (selectedPlans != null && selectedPlans.size() > 0) {
+                serviceV.setPlans(selectedPlans);
+            }
             ServiceBean service = serviceV.getService();
             rest.createService(org.getId(), service, new IRestInvokerCallback<ServiceBean>() {
                 @Override
@@ -400,6 +496,50 @@ public class ImportServicesPage extends AbstractPage {
             });
         }
     }
+
+    /**
+     * Native helper method for showing the wadl page.
+     */
+    private native void showWadlPage() /*-{
+        $wnd.jQuery("#importTypePage").animate( { "margin-left" : "-2000px" }, 200, function() { 
+            $wnd.jQuery("#importTypePage").hide();
+            $wnd.jQuery("#wadlPage").show();
+            $wnd.jQuery("#wadlPage").animate( { "margin-left" : "0px" }, 200);
+        });
+    }-*/;
+    
+    /**
+     * Native helper method for showing the select services page.
+     */
+    private native void showSelectPage() /*-{
+        $wnd.jQuery("#wadlPage").animate( { "margin-left" : "-2000px" }, 200, function() { 
+            $wnd.jQuery("#wadlPage").hide();
+            $wnd.jQuery("#selectPage").show();
+            $wnd.jQuery("#selectPage").animate( { "margin-left" : "0px" }, 200);
+        });
+    }-*/;
+
+    /**
+     * Native helper method for showing the plans page.
+     */
+    private native void showPlansPage() /*-{
+        $wnd.jQuery("#selectPage").animate( { "margin-left" : "-2000px" }, 200, function() { 
+            $wnd.jQuery("#selectPage").hide();
+            $wnd.jQuery("#plansPage").show();
+            $wnd.jQuery("#plansPage").animate( { "margin-left" : "0px" }, 200);
+        });
+    }-*/;
+
+    /**
+     * Native helper method for showing the confirmation page.
+     */
+    private native void showConfirmationPage() /*-{
+        $wnd.jQuery("#plansPage").animate( { "margin-left" : "-2000px" }, 200, function() { 
+            $wnd.jQuery("#plansPage").hide();
+            $wnd.jQuery("#confirmPage").show();
+            $wnd.jQuery("#confirmPage").animate( { "margin-left" : "0px" }, 200);
+        });
+    }-*/;
 
     /**
      * @see io.apiman.manager.ui.client.local.pages.AbstractPage#getPageTitle()

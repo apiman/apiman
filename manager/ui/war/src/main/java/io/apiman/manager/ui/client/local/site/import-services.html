@@ -117,15 +117,15 @@
         <div class="row">
           <div class="vspacer-20"></div>
         </div>
-        <!-- Confirm Button -->
+        <!-- Next Button -->
         <div class="row">
-          <button class="btn btn-primary" data-field="wadlNext" placeholder="Reading WADL..." data-icon="fa-cog" data-i18n-key="next" onclick="$('#wadlPage').animate( { 'margin-left' : '-2000px' }, 200, function() { $('#wadlPage').hide(); $('#confirmPage').show(); $('#confirmPage').animate( { 'margin-left' : '0px' }, 200); });">Next</button>
+          <button class="btn btn-primary" data-field="wadlNext" placeholder="Reading WADL..." data-icon="fa-cog" data-i18n-key="next" onclick="$('#wadlPage').animate( { 'margin-left' : '-2000px' }, 200, function() { $('#wadlPage').hide(); $('#selectPage').show(); $('#selectPage').animate( { 'margin-left' : '0px' }, 200); });">Next</button>
           <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-i18n-key="cancel">Cancel</a>
         </div>
       </div>
       
       <!-- === Confirmation Page (lists all the services that will be imported) === -->
-      <div id="confirmPage" style="margin-left: 2000px; display:none">
+      <div id="selectPage" style="margin-left: 2000px; display:none">
         <!-- Helpful hint -->
         <div class="row">
           <p data-i18n-key="import-services-confirm-help-text" class="col-md-6 apiman-label-faded">Let us know which of the services we should import.  It might also be a good idea to modify any of the services names we may have gotten wrong!</p>
@@ -167,7 +167,85 @@
           </table>
         </div>
         <div class="row">
-          <p data-i18n-key="confirm-import-services">Really import the service(s) selected above?</p>
+          <p data-i18n-key="choose-services">Choose which services you want to create from the list above.</p>
+        </div>
+        <!-- Next Button -->
+        <div class="row">
+          <button class="btn btn-primary" data-field="selectNext" placeholder="Processing..." data-icon="fa-cog" data-i18n-key="next" onclick="$('#selectPage').animate( { 'margin-left' : '-2000px' }, 200, function() { $('#selectPage').hide(); $('#plansPage').show(); $('#plansPage').animate( { 'margin-left' : '0px' }, 200); });">Next</button>
+          <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-i18n-key="cancel">Cancel</a>
+        </div>
+      </div>
+
+      <!-- === Plans === -->
+      <div id="plansPage" style="margin-left: 2000px; display:none">
+        <!-- Helpful hint -->
+        <div class="row">
+          <p data-i18n-key="import-services-plans-help-text" class="col-md-6 apiman-label-faded">Choose which plans will be available when Applications wish to create Service Contracts for the imported Service(s).  Alternatively you can make the services "Public".  Or else leave everything blank and then configure each imported Service later.</p>
+        </div>
+        <!-- HR -->
+        <div class="row hr-row">
+          <hr/>
+        </div>
+        <div class="row">
+          <div class="col-md-8">
+            <div class="title" data-i18n-key="public-service">Public Service</div>
+            <div style="padding: 8px; padding-top: 0px; margin-bottom: 10px">
+              <input type="checkbox" id="public-service" data-field="publicService"></input>
+              <label for="public-service" data-i18n-key="make-public" style="padding-left: 3px">Make service(s) public</label>
+            </div>
+            <div class="title" data-i18n-key="available-plans">Available Plans</div>
+            <!-- The plans to choose from -->
+            <div class="apiman-plan-selector apiman-divider-40" data-field="plans" data-role="dummy">
+              <div class="container-fluid apiman-summaryrow">
+                <div class="row">
+                  <input data-field="checkbox" type="checkbox"></input>
+                  <span class="">Platinum</span>
+                  <select class="selectpicker pull-right" data-role="dummy" data-field="versions">
+                    <option value="2.0">2.0</option>
+                    <option value="1.7">1.7</option>
+                    <option value="1.0">1.0</option>
+                  </select>
+                </div>
+                <hr>
+              </div>
+              <div class="container-fluid apiman-summaryrow">
+                <div class="row">
+                  <input type="checkbox"></input>
+                  <span class="">Gold</span>
+                  <select class="selectpicker pull-right" data-role="dummy">
+                    <option value="1.3">1.3</option>
+                    <option value="1.1">1.1</option>
+                    <option value="1.0">1.0</option>
+                  </select>
+                </div>
+                <hr>
+              </div>
+              <div class="container-fluid apiman-summaryrow">
+                <div class="row">
+                  <input type="checkbox"></input>
+                  <span class="">Silver</span>
+                  <select class="selectpicker pull-right" data-role="dummy">
+                    <option value="2.2">2.2</option>
+                    <option value="2.0">2.0</option>
+                    <option value="1.0">1.0</option>
+                  </select>
+                </div>
+                <hr>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Next Button -->
+        <div class="row">
+          <button class="btn btn-primary" data-field="plansNext" data-i18n-key="next" onclick="$('#plansPage').animate( { 'margin-left' : '-2000px' }, 200, function() { $('#plansPage').hide(); $('#confirmPage').show(); $('#confirmPage').animate( { 'margin-left' : '0px' }, 200); });">Next</button>
+          <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-i18n-key="cancel">Cancel</a>
+        </div>
+      </div>
+
+      <!-- === Confirmation === -->
+      <div id="confirmPage" style="margin-left: 2000px; display:none">
+        <div class="row" style="margin-bottom: 20px">
+          <div data-field="confirmMessage" class="col-md-6">You have chosen to import {0} services through {1} plans.  Does that sound about right?</div>
         </div>
         <!-- Confirm Button -->
         <div class="row">

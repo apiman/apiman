@@ -86,7 +86,7 @@ public class ServicePlansSelector extends FlowPanel implements HasValue<Set<Serv
     private void refresh() {
         int numAdded = 0;
         for (final PlanSummaryBean planSummaryBean : this.plans) {
-            final ServicePlanWidget planWidget = widgetFactory.get();
+            final ServicePlanWidget planWidget = createPlanWidget();
             planWidget.setPlanBean(planSummaryBean);
             List<PlanVersionSummaryBean> versionBeans = versions.get(planSummaryBean);
             if (versionBeans.isEmpty()) {
@@ -109,8 +109,22 @@ public class ServicePlansSelector extends FlowPanel implements HasValue<Set<Serv
             numAdded++;
         }
         if (numAdded == 0) {
-            add(new NoEntitiesWidget(i18n.format(AppMessages.NO_SERVICE_PLANS_AVAILABLE), false));
+            add(createNoEntitiesWidget());
         }
+    }
+
+    /**
+     * @return the widget to display when no plans are found
+     */
+    protected NoEntitiesWidget createNoEntitiesWidget() {
+        return new NoEntitiesWidget(i18n.format(AppMessages.NO_SERVICE_PLANS_AVAILABLE), false);
+    }
+
+    /**
+     * @return a new plan widget
+     */
+    protected ServicePlanWidget createPlanWidget() {
+        return widgetFactory.get();
     }
 
     /**

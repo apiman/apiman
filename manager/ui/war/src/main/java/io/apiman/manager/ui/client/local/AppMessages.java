@@ -519,4 +519,14 @@ public class AppMessages {
 
     @TranslationKey(defaultValue = "Filter by org or service name...")
     public static final String CONSUMER_ORG_FILTER_PLACEHOLDER = "consumer-org.filter.placeholder";
+
+    @TranslationKey(defaultValue = "You have chosen to import {0} service(s) through {1} plan(s).  Does that sound about right?")
+    public static final String CONFIRM_IMPORT_SERVICES_1 = "import-services.confirm-msg-1";
+    @TranslationKey(defaultValue = "You have chosen to import {0} public service(s) through {1} plan(s).  Does that sound about right?")
+    public static final String CONFIRM_IMPORT_SERVICES_2 = "import-services.confirm-msg-2";
+    @TranslationKey(defaultValue = "You have chosen to import {0} service(s).  Does that sound about right?")
+    public static final String CONFIRM_IMPORT_SERVICES_3 = "import-services.confirm-msg-3";
+    @TranslationKey(defaultValue = "You have chosen to import {0} public service(s).  Does that sound about right?")
+    public static final String CONFIRM_IMPORT_SERVICES_4 = "import-services.confirm-msg-4";
+
 }

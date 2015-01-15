@@ -51,7 +51,7 @@ import com.google.gwt.view.client.SelectionChangeEvent.HasSelectionChangedHandle
 @Templated("/io/apiman/manager/ui/client/local/site/service-plans.html#plan-widget")
 public class ServicePlanWidget extends Composite implements HasSelectionChangedHandlers {
     
-    @Inject 
+    @Inject
     protected NavigationHelperService navHelper;
 
     @Inject @DataField
