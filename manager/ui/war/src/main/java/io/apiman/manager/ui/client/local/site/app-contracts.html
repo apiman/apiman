@@ -143,8 +143,20 @@
             <!-- The list of contracts (filterable) -->
             <div>
               <div class="apiman-filters apiman-contracts-filters">
-                <input data-field="contractFilter" class="form-control input-search" placeholder="Filter by org or service name..." type="text">
+                <table class="search-box input-search" data-field="contractFilter" data-role="dummy">
+                    <tbody>
+                      <tr>
+                        <td width="99%">
+                          <input data-field="textBox" value="" placeholder="Filter by org or service name..." type="text">
+                        </td>
+                        <td width="1%">
+                          <button data-field="button" class="btn btn-default"><i class="fa fa-fw fa-search"></i></button>
+                        </td>
+                      </tr>
+                    </tbody>
+                </table>
                 <a data-permission="appEdit" data-status="Created,Ready" data-field="toNewContract" data-i18n-key="new-contract" href="new-contract.html" class="btn btn-primary pull-right">New Contract</a>
+                <button data-permission="appEdit" data-status="Created,Ready" data-field="breakAllContracts" data-i18n-key="break-all-contracts" placeholder="Breaking..." data-icon="fa-cog" class="btn btn-default pull-right">Break All</button>
               </div>
               <div class="clearfix"></div>
               <!-- The list of contracts -->

@@ -483,6 +483,11 @@ public class AppMessages {
     @TranslationKey(defaultValue = "Really break contract with service {0}?")
     public static final String CONFIRM_BREAK_CONTRACT_MESSAGE = "confirm.break-contract.message";
 
+    @TranslationKey(defaultValue = "Confirm Break All Contracts")
+    public static final String CONFIRM_BREAK_ALL_CONTRACTS_TITLE = "confirm.break-all-contracts.title";
+    @TranslationKey(defaultValue = "This will break all Service Contracts listed below.  Is that really what you want to do?")
+    public static final String CONFIRM_BREAK_ALL_CONTRACTS_MESSAGE = "confirm.break-all-contracts.message";
+
     @TranslationKey(defaultValue = "Confirm Remove Policy")
     public static final String CONFIRM_REMOVE_POLICY_TITLE = "confirm.remove-policy.title";
     @TranslationKey(defaultValue = "Really remove policy {0}?")
@@ -519,6 +524,9 @@ public class AppMessages {
 
     @TranslationKey(defaultValue = "Filter by org or service name...")
     public static final String CONSUMER_ORG_FILTER_PLACEHOLDER = "consumer-org.filter.placeholder";
+
+    @TranslationKey(defaultValue = "Filter by org or service name...")
+    public static final String APP_CONTRACTS_FILTER_PLACEHOLDER = "app-contracts.filter.placeholder";
 
     @TranslationKey(defaultValue = "You have chosen to import {0} service(s) through {1} plan(s).  Does that sound about right?")
     public static final String CONFIRM_IMPORT_SERVICES_1 = "import-services.confirm-msg-1";
