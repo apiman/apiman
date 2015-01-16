@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.ui.client.local.pages;
 
+import io.apiman.manager.api.beans.apps.ApplicationStatus;
 import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.contracts.NewContractBean;
@@ -22,6 +23,7 @@ import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaFilterBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.beans.services.ServiceBean;
+import io.apiman.manager.api.beans.services.ServiceStatus;
 import io.apiman.manager.api.beans.summary.ApplicationSummaryBean;
 import io.apiman.manager.api.beans.summary.ApplicationVersionSummaryBean;
 import io.apiman.manager.api.beans.summary.ServicePlanSummaryBean;
@@ -59,6 +61,7 @@ import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.TextBox;
 
 
@@ -114,7 +117,7 @@ public class NewContractPage extends AbstractPage {
     PlanSelectBox plan;
     
     @Inject @DataField
-    Anchor createButton;
+    Button createButton;
     @Inject @DataField
     Anchor cancelButton;
     @Inject @DataField
@@ -177,7 +180,9 @@ public class NewContractPage extends AbstractPage {
     protected void onApplicationSelected() {
         hideRows(APP_VERSION_ROW, SERVICE_SEARCH_ROW, SERVICE_ROW, SERVICE_VERSION_ROW, PLAN_ROW);
         showRow(SPINNER_ROW);
-        
+
+        createButton.setEnabled(false);
+
         searchBox.setValue(""); //$NON-NLS-1$
         services.clear();
         
@@ -189,6 +194,9 @@ public class NewContractPage extends AbstractPage {
                     List<String> versions = new ArrayList<String>(response.size());
                     String contextVersion = null;
                     for (ApplicationVersionSummaryBean avb : response) {
+                        if (avb.getStatus() == ApplicationStatus.Registered || avb.getStatus() == ApplicationStatus.Retired) {
+                            continue;
+                        }
                         String avbVersion = avb.getVersion();
                         versions.add(avbVersion);
                         if (avb.getOrganizationId().equals(apporg)
@@ -197,9 +205,14 @@ public class NewContractPage extends AbstractPage {
                             contextVersion = avbVersion;
                         }
                     }
+                    if (contextVersion == null && versions.size() > 0) {
+                        contextVersion = versions.get(0);
+                    }
                     applicationVersion.setOptions(versions);
-                    applicationVersion.setValue(contextVersion );
-                    onApplicationVersionSelected();
+                    applicationVersion.setValue(contextVersion);
+                    if (contextVersion != null) {
+                        onApplicationVersionSelected();
+                    }
                     showRow(APP_VERSION_ROW);
                     hideRow(SPINNER_ROW);
                 }
@@ -215,6 +228,7 @@ public class NewContractPage extends AbstractPage {
      * Called when the user selects an application version.
      */
     protected void onApplicationVersionSelected() {
+        createButton.setEnabled(false);
         if (svc != null) {
             getSpecificService();
         } else {
@@ -228,6 +242,7 @@ public class NewContractPage extends AbstractPage {
     protected void onServiceSelected() {
         hideRows(SERVICE_VERSION_ROW, PLAN_ROW);
         showRow(SPINNER_ROW);
+        createButton.setEnabled(false);
         ServiceSummaryBean service = services.getValue();
         rest.getServiceVersions(service.getOrganizationId(), service.getId(), new IRestInvokerCallback<List<ServiceVersionSummaryBean>>() {
             @Override
@@ -235,15 +250,23 @@ public class NewContractPage extends AbstractPage {
                 List<String> versions = new ArrayList<String>(response.size());
                 String initialContextServiceVersion = null;
                 for (ServiceVersionSummaryBean svsb : response) {
+                    if (svsb.getStatus() != ServiceStatus.Published) {
+                        continue;
+                    }
                     String svbVersion = svsb.getVersion();
                     versions.add(svbVersion);
                     if (svsb.getOrganizationId().equals(svcorg) && svsb.getId().equals(svc) && svbVersion.equals(svcv)) {
                         initialContextServiceVersion = svbVersion;
                     }
                 }
+                if (initialContextServiceVersion == null && versions.size() > 0) {
+                    initialContextServiceVersion = versions.get(0);
+                }
                 serviceVersion.setOptions(versions);
                 serviceVersion.setValue(initialContextServiceVersion);
-                onServiceVersionSelected();
+                if (initialContextServiceVersion != null) {
+                    onServiceVersionSelected();
+                }
                 showRow(SERVICE_VERSION_ROW);
                 hideRow(SPINNER_ROW);
             }
@@ -260,6 +283,7 @@ public class NewContractPage extends AbstractPage {
     protected void onServiceVersionSelected() {
         hideRow(PLAN_ROW);
         showRow(SPINNER_ROW);
+        createButton.setEnabled(false);
         ServiceSummaryBean service = services.getValue();
         String version = serviceVersion.getValue();
         rest.getServiceVersionPlans(service.getOrganizationId(), service.getId(), version, new IRestInvokerCallback<List<ServicePlanSummaryBean>>() {

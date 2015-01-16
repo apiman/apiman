@@ -141,8 +141,10 @@ public abstract class SelectBox<T> extends ListBox implements HasValue<T> {
             setSelectedIndex(idx);
             setValue(value, false);
         } else {
-            setSelectedIndex(0);
-            setValue(options.get(0), false);
+            if (options.size() > 0) {
+                setSelectedIndex(0);
+                setValue(options.get(0), false);
+            }
         }
         if (isAttached())
             renderUI(getElement());
