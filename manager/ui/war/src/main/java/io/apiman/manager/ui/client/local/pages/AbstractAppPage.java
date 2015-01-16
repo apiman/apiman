@@ -32,6 +32,7 @@ import io.apiman.manager.ui.client.local.services.rest.IRestInvokerCallback;
 import io.apiman.manager.ui.client.local.util.Formatting;
 import io.apiman.manager.ui.client.local.util.MultimapUtil;
 import io.apiman.manager.ui.client.local.widgets.ConfirmationDialog;
+import io.apiman.manager.ui.client.local.widgets.InlineEditableLabel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +50,6 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.InlineLabel;
-import com.google.gwt.user.client.ui.Label;
 
 
 /**
@@ -81,7 +81,7 @@ public abstract class AbstractAppPage extends AbstractPage {
     Anchor toNewAppVersion;
 
     @Inject @DataField
-    Label description;
+    InlineEditableLabel description;
     @Inject @DataField
     InlineLabel createdOn;
     @Inject @DataField
@@ -150,8 +150,37 @@ public abstract class AbstractAppPage extends AbstractPage {
                 onVersionSelected(event.getValue());
             }
         });
+        description.addValueChangeHandler(new ValueChangeHandler<String>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<String> event) {
+                String newDescription = event.getValue();
+                updateAppDescription(newDescription);
+            }
+        });
+        description.setEmptyValueMessage(i18n.format(AppMessages.NO_DESCRIPTION));
+        description.setEnabled(hasPermission(PermissionType.appEdit));
     }
-    
+
+    /**
+     * @param newDescription
+     */
+    protected void updateAppDescription(final String newDescription) {
+        ApplicationBean update = new ApplicationBean();
+        update.setOrganization(applicationBean.getOrganization());
+        update.setId(applicationBean.getId());
+        update.setDescription(newDescription);;
+        rest.updateApplication(update, new IRestInvokerCallback<Void>() {
+            @Override
+            public void onSuccess(Void response) {
+                applicationBean.setDescription(newDescription);
+            }
+            @Override
+            public void onError(Throwable error) {
+                dataPacketError(error);
+            }
+        });
+    }
+
     /**
      * @see io.apiman.manager.ui.client.local.pages.AbstractPage#doLoadPageData()
      */
@@ -246,7 +275,7 @@ public abstract class AbstractAppPage extends AbstractPage {
         String newVersionHref = navHelper.createHrefToPage(NewAppVersionPage.class, MultimapUtil.fromMultiple("org", org, "app", app)); //$NON-NLS-1$ //$NON-NLS-2$
         ttd_toNewVersion.setHref(newVersionHref);
 
-        description.setText(applicationBean.getDescription());
+        description.setValue(applicationBean.getDescription());
         createdOn.setText(Formatting.formatShortDate(versionBean.getCreatedOn()));
         createdBy.setText(versionBean.getCreatedBy());
         String toUserHref = navHelper.createHrefToPage(UserAppsPage.class,

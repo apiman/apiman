@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.ui.client.local.pages;
 
+import io.apiman.manager.api.beans.idm.PermissionType;
 import io.apiman.manager.api.beans.members.MemberBean;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.ui.client.local.AppMessages;
@@ -23,15 +24,18 @@ import io.apiman.manager.ui.client.local.services.ContextKeys;
 import io.apiman.manager.ui.client.local.services.rest.IRestInvokerCallback;
 import io.apiman.manager.ui.client.local.util.Formatting;
 import io.apiman.manager.ui.client.local.util.MultimapUtil;
+import io.apiman.manager.ui.client.local.widgets.InlineEditableLabel;
 
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import org.jboss.errai.ui.nav.client.local.PageState;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.overlord.commons.gwt.client.local.widgets.ParagraphLabel;
 
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Label;
 
@@ -59,7 +63,7 @@ public abstract class AbstractOrgPage extends AbstractPage {
     @Inject @DataField
     Label numMembers;
     @Inject @DataField
-    ParagraphLabel description;
+    InlineEditableLabel description;
     
     @Inject @DataField
     Anchor toOrgApps;
@@ -77,7 +81,42 @@ public abstract class AbstractOrgPage extends AbstractPage {
      */
     public AbstractOrgPage() {
     }
-    
+
+    /**
+     * Called after the page is constructed.
+     */
+    @PostConstruct
+    private final void _aopPostConstruct() {
+        description.addValueChangeHandler(new ValueChangeHandler<String>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<String> event) {
+                String newDescription = event.getValue();
+                updateOrgDescription(newDescription);
+            }
+        });
+        description.setEmptyValueMessage(i18n.format(AppMessages.NO_DESCRIPTION));
+        description.setEnabled(hasPermission(PermissionType.orgEdit));
+    }
+
+    /**
+     * @param newDescription
+     */
+    protected void updateOrgDescription(final String newDescription) {
+        OrganizationBean update = new OrganizationBean();
+        update.setId(organizationBean.getId());
+        update.setDescription(newDescription);;
+        rest.updateOrganization(update, new IRestInvokerCallback<Void>() {
+            @Override
+            public void onSuccess(Void response) {
+                organizationBean.setDescription(newDescription);
+            }
+            @Override
+            public void onError(Throwable error) {
+                dataPacketError(error);
+            }
+        });
+    }
+
     /**
      * @see io.apiman.manager.ui.client.local.pages.AbstractPage#isAuthorized()
      */
@@ -146,9 +185,9 @@ public abstract class AbstractOrgPage extends AbstractPage {
         createdOn.setText(Formatting.formatShortDate(organizationBean.getCreatedOn()));
         numMembers.setText(String.valueOf(memberBeans.size()));
         if (organizationBean.getDescription() != null) {
-            description.setText(organizationBean.getDescription());
+            description.setValue(organizationBean.getDescription());
         } else {
-            description.setText(""); //$NON-NLS-1$
+            description.setValue(""); //$NON-NLS-1$
         }
         
         String dashHref = navHelper.createHrefToPage(DashboardPage.class, MultimapUtil.emptyMap());

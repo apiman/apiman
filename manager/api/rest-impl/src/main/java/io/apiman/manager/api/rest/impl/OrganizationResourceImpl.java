@@ -229,18 +229,18 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         try {
             bean.setId(organizationId);
             storage.beginTx();
-            OrganizationBean organization = storage.getOrganization(bean.getId());
-            if (organization == null) {
+            OrganizationBean orgForUpdate = storage.getOrganization(bean.getId());
+            if (orgForUpdate == null) {
                 throw ExceptionFactory.organizationNotFoundException(organizationId);
             }
             
             EntityUpdatedData auditData = new EntityUpdatedData();
-            if (AuditUtils.valueChanged(organization.getDescription(), bean.getDescription())) {
-                auditData.addChange("description", organization.getDescription(), bean.getDescription()); //$NON-NLS-1$
-                organization.setDescription(bean.getDescription());
+            if (AuditUtils.valueChanged(orgForUpdate.getDescription(), bean.getDescription())) {
+                auditData.addChange("description", orgForUpdate.getDescription(), bean.getDescription()); //$NON-NLS-1$
+                orgForUpdate.setDescription(bean.getDescription());
             }
-            storage.updateOrganization(organization);
-            storage.createAuditEntry(AuditUtils.organizationUpdated(organization, auditData, securityContext));
+            storage.updateOrganization(orgForUpdate);
+            storage.createAuditEntry(AuditUtils.organizationUpdated(orgForUpdate, auditData, securityContext));
             storage.commitTx();
         } catch (AbstractRestException e) {
             storage.rollbackTx();
@@ -394,17 +394,17 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw ExceptionFactory.notAuthorizedException();
         try {
             storage.beginTx();
-            ApplicationBean app = storage.getApplication(organizationId, applicationId);
-            if (app == null) {
+            ApplicationBean appForUpdate = storage.getApplication(organizationId, applicationId);
+            if (appForUpdate == null) {
                 throw ExceptionFactory.applicationNotFoundException(applicationId);
             }
             EntityUpdatedData auditData = new EntityUpdatedData();
-            if (AuditUtils.valueChanged(app.getDescription(), bean.getDescription())) {
-                auditData.addChange("description", app.getDescription(), bean.getDescription()); //$NON-NLS-1$
-                app.setDescription(bean.getDescription());
+            if (AuditUtils.valueChanged(appForUpdate.getDescription(), bean.getDescription())) {
+                auditData.addChange("description", appForUpdate.getDescription(), bean.getDescription()); //$NON-NLS-1$
+                appForUpdate.setDescription(bean.getDescription());
             }            
-            storage.updateApplication(app);
-            storage.createAuditEntry(AuditUtils.applicationUpdated(app, auditData, securityContext));
+            storage.updateApplication(appForUpdate);
+            storage.createAuditEntry(AuditUtils.applicationUpdated(appForUpdate, auditData, securityContext));
             storage.commitTx();
         } catch (AbstractRestException e) {
             storage.rollbackTx();
@@ -1068,17 +1068,17 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw ExceptionFactory.notAuthorizedException();
         try {
             storage.beginTx();
-            ServiceBean service = storage.getService(organizationId, serviceId);
-            if (service == null) {
+            ServiceBean serviceForUpdate = storage.getService(organizationId, serviceId);
+            if (serviceForUpdate == null) {
                 throw ExceptionFactory.serviceNotFoundException(serviceId);
             }
             EntityUpdatedData auditData = new EntityUpdatedData();
-            if (AuditUtils.valueChanged(service.getDescription(), bean.getDescription())) {
-                auditData.addChange("description", service.getDescription(), bean.getDescription()); //$NON-NLS-1$
-                service.setDescription(bean.getDescription());
+            if (AuditUtils.valueChanged(serviceForUpdate.getDescription(), bean.getDescription())) {
+                auditData.addChange("description", serviceForUpdate.getDescription(), bean.getDescription()); //$NON-NLS-1$
+                serviceForUpdate.setDescription(bean.getDescription());
             }
-            storage.updateService(service);
-            storage.createAuditEntry(AuditUtils.serviceUpdated(service, auditData, securityContext));
+            storage.updateService(serviceForUpdate);
+            storage.createAuditEntry(AuditUtils.serviceUpdated(serviceForUpdate, auditData, securityContext));
             storage.commitTx();
         } catch (AbstractRestException e) {
             storage.rollbackTx();
@@ -1682,16 +1682,16 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         EntityUpdatedData auditData = new EntityUpdatedData();
         try {
             storage.beginTx();
-            PlanBean plan = storage.getPlan(organizationId, planId);
-            if (plan == null) {
+            PlanBean planForUpdate = storage.getPlan(organizationId, planId);
+            if (planForUpdate == null) {
                 throw ExceptionFactory.planNotFoundException(planId);
             }
-            if (AuditUtils.valueChanged(plan.getDescription(), bean.getDescription())) {
-                auditData.addChange("description", plan.getDescription(), bean.getDescription()); //$NON-NLS-1$
-                plan.setDescription(bean.getDescription());
+            if (AuditUtils.valueChanged(planForUpdate.getDescription(), bean.getDescription())) {
+                auditData.addChange("description", planForUpdate.getDescription(), bean.getDescription()); //$NON-NLS-1$
+                planForUpdate.setDescription(bean.getDescription());
             }
-            storage.updatePlan(plan);
-            storage.createAuditEntry(AuditUtils.planUpdated(plan, auditData, securityContext));
+            storage.updatePlan(planForUpdate);
+            storage.createAuditEntry(AuditUtils.planUpdated(planForUpdate, auditData, securityContext));
             storage.commitTx();
         } catch (AbstractRestException e) {
             storage.rollbackTx();

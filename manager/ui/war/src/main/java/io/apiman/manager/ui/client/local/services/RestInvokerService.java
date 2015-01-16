@@ -305,6 +305,16 @@ public class RestInvokerService {
         CallbackAdapter<OrganizationBean> adapter = new CallbackAdapter<OrganizationBean>(callback);
         organizations.call(adapter, adapter).create(org);
     }
+    
+    /**
+     * Updates an organization.
+     * @param org
+     * @param callback
+     */
+    public void updateOrganization(OrganizationBean org, IRestInvokerCallback<Void> callback) {
+        CallbackAdapter<Void> adapter = new CallbackAdapter<Void>(callback);
+        organizations.call(adapter, adapter).update(org.getId(), org);
+    }
 
     /**
      * Finds organizations using the given search criteria.
@@ -325,6 +335,16 @@ public class RestInvokerService {
     public void createApplication(String organizationId, ApplicationBean app, IRestInvokerCallback<ApplicationBean> callback) {
         CallbackAdapter<ApplicationBean> adapter = new CallbackAdapter<ApplicationBean>(callback);
         organizations.call(adapter, adapter).createApp(organizationId, app);
+    }
+    
+    /**
+     * Updates an application.
+     * @param app
+     * @param callback
+     */
+    public void updateApplication(ApplicationBean app, IRestInvokerCallback<Void> callback) {
+        CallbackAdapter<Void> adapter = new CallbackAdapter<Void>(callback);
+        organizations.call(adapter, adapter).updateApp(app.getOrganization().getId(), app.getId(), app);
     }
     
     /**
@@ -521,7 +541,17 @@ public class RestInvokerService {
         CallbackAdapter<ServiceBean> adapter = new CallbackAdapter<ServiceBean>(callback);
         organizations.call(adapter, adapter).createService(organizationId, service);
     }
-    
+
+    /**
+     * Updates a service.
+     * @param service
+     * @param callback
+     */
+    public void updateService(ServiceBean service, IRestInvokerCallback<Void> callback) {
+        CallbackAdapter<Void> adapter = new CallbackAdapter<Void>(callback);
+        organizations.call(adapter, adapter).updateService(service.getOrganization().getId(), service.getId(), service);
+    }
+
     /**
      * Creates a new version of an service.
      * @param organizationId
@@ -830,7 +860,18 @@ public class RestInvokerService {
         CallbackAdapter<PlanBean> adapter = new CallbackAdapter<PlanBean>(callback);
         organizations.call(adapter, adapter).createPlan(organizationId, plan);
     }
-    
+
+    /**
+     * Updates a plan.
+     * @param organizationId
+     * @param plan
+     * @param callback
+     */
+    public void updatePlan(PlanBean plan, IRestInvokerCallback<Void> callback) {
+        CallbackAdapter<Void> adapter = new CallbackAdapter<Void>(callback);
+        organizations.call(adapter, adapter).updatePlan(plan.getOrganization().getId(), plan.getId(), plan);
+    }
+
     /**
      * Creates a new version of an plan.
      * @param organizationId

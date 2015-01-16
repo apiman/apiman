@@ -93,7 +93,7 @@ public interface IOrganizationResource {
 
     @PUT
     @Path("{organizationId}")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     public void update(@PathParam("organizationId") String organizationId, OrganizationBean bean)
             throws OrganizationNotFoundException, NotAuthorizedException;
 

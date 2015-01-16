@@ -537,4 +537,9 @@ public class AppMessages {
     @TranslationKey(defaultValue = "You have chosen to import {0} public service(s).  Does that sound about right?")
     public static final String CONFIRM_IMPORT_SERVICES_4 = "import-services.confirm-msg-4";
 
+    @TranslationKey(defaultValue = "Click to edit...")
+    public static final String CLICK_TO_EDIT = "click-to-edit";
+    @TranslationKey(defaultValue = "<no description>")
+    public static final String NO_DESCRIPTION = "no-description";
+    
 }

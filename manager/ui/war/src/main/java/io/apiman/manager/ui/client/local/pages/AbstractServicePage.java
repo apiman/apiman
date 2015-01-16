@@ -32,6 +32,7 @@ import io.apiman.manager.ui.client.local.services.rest.IRestInvokerCallback;
 import io.apiman.manager.ui.client.local.util.Formatting;
 import io.apiman.manager.ui.client.local.util.MultimapUtil;
 import io.apiman.manager.ui.client.local.widgets.ConfirmationDialog;
+import io.apiman.manager.ui.client.local.widgets.InlineEditableLabel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +50,6 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.InlineLabel;
-import com.google.gwt.user.client.ui.Label;
 
 
 /**
@@ -81,7 +81,7 @@ public abstract class AbstractServicePage extends AbstractPage {
     Anchor toNewServiceVersion;
 
     @Inject @DataField
-    Label description;
+    InlineEditableLabel description;
     @Inject @DataField
     InlineLabel createdOn;
     @Inject @DataField
@@ -143,15 +143,44 @@ public abstract class AbstractServicePage extends AbstractPage {
     }
     
     @PostConstruct
-    protected void _aapPostConstruct() {
+    protected void _aspPostConstruct() {
         versions.addValueChangeHandler(new ValueChangeHandler<String>() {
             @Override
             public void onValueChange(ValueChangeEvent<String> event) {
                 onVersionSelected(event.getValue());
             }
         });
+        description.addValueChangeHandler(new ValueChangeHandler<String>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<String> event) {
+                String newDescription = event.getValue();
+                updateServiceDescription(newDescription);
+            }
+        });
+        description.setEmptyValueMessage(i18n.format(AppMessages.NO_DESCRIPTION));
+        description.setEnabled(hasPermission(PermissionType.svcEdit));
     }
-    
+
+    /**
+     * @param newDescription
+     */
+    protected void updateServiceDescription(final String newDescription) {
+        ServiceBean update = new ServiceBean();
+        update.setOrganization(serviceBean.getOrganization());
+        update.setId(serviceBean.getId());
+        update.setDescription(newDescription);;
+        rest.updateService(update, new IRestInvokerCallback<Void>() {
+            @Override
+            public void onSuccess(Void response) {
+                serviceBean.setDescription(newDescription);
+            }
+            @Override
+            public void onError(Throwable error) {
+                dataPacketError(error);
+            }
+        });
+    }
+
     /**
      * @see io.apiman.manager.ui.client.local.pages.AbstractPage#doLoadPageData()
      */
@@ -244,7 +273,7 @@ public abstract class AbstractServicePage extends AbstractPage {
         ttd_toNewContract.setHref(newContractHref);
         ttd_toNewServiceVersion.setHref(newServiceVersionHref);
         
-        description.setText(serviceBean.getDescription());
+        description.setValue(serviceBean.getDescription());
         createdOn.setText(Formatting.formatShortDate(versionBean.getCreatedOn()));
         createdBy.setText(versionBean.getCreatedBy());
         String toUserHref = navHelper.createHrefToPage(UserServicesPage.class,

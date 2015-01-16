@@ -447,7 +447,7 @@ div.page {
   line-height: 14px;
 }
 .apiman-entitysummary .description {
-  padding-top: 15px;
+  margin-top: 15px;
 }
 
 .apiman-entitytabs .nav-tabs {
@@ -1256,4 +1256,42 @@ div.admin-page .admin-content .apiman-summaryrow .emphasis {
   border-top: 1px solid rgb(238, 238, 238);
   margin-top: 0px;
   padding: 15px;
+}
+
+.apiman-inline-edit-overlay {
+  border: 1px solid rgb(200, 200, 200);
+  border-radius: 3px 0px 0px 3px;
+  padding: 5px;
+  cursor: text;
+}
+.apiman-inline-edit-overlay-edit {
+  border: 1px solid rgb(200, 200, 200);
+  border-left: none;
+  border-radius: 0px 3px 3px 0px;
+  padding: 5px;
+  cursor: pointer;
+  background-color: #eee;
+  background-image: linear-gradient(rgb(250, 250, 250) 0px, rgb(237, 237, 237) 100%);
+  color: #666;
+}
+.apiman-inline-edit-overlay-edit:hover {
+  background-image: none;
+  background-color: rgb(238, 238, 238);
+  color: #333;
+}
+
+.apiman-inline-edit textarea.user-value-edit {
+  border: 1px solid rgb(200, 200, 200);
+  padding: 3px;
+  border-radius: 3px 3px 3px 0px;
+}
+
+.apiman-inline-edit {
+  margin-right: 25px;
+}
+.apiman-inline-edit .btn {
+  border-top: 0px;
+}
+.apiman-inline-edit .inline-save-btn {
+  border-right: 0px;
 }

@@ -412,7 +412,6 @@ public abstract class AbstractPage extends Composite {
      * rendered.
      */
     protected void renderPage() {
-        
     }
     
     /**

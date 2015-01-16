@@ -29,6 +29,7 @@ import io.apiman.manager.ui.client.local.services.ContextKeys;
 import io.apiman.manager.ui.client.local.services.rest.IRestInvokerCallback;
 import io.apiman.manager.ui.client.local.util.Formatting;
 import io.apiman.manager.ui.client.local.util.MultimapUtil;
+import io.apiman.manager.ui.client.local.widgets.InlineEditableLabel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +47,6 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.InlineLabel;
-import com.google.gwt.user.client.ui.Label;
 
 
 /**
@@ -78,7 +78,7 @@ public abstract class AbstractPlanPage extends AbstractPage {
     Anchor toNewPlanVersion;
     
     @Inject @DataField
-    Label description;
+    InlineEditableLabel description;
     @Inject @DataField
     InlineLabel createdOn;
     @Inject @DataField
@@ -129,15 +129,44 @@ public abstract class AbstractPlanPage extends AbstractPage {
     }
     
     @PostConstruct
-    protected void _aapPostConstruct() {
+    protected void _appPostConstruct() {
         versions.addValueChangeHandler(new ValueChangeHandler<String>() {
             @Override
             public void onValueChange(ValueChangeEvent<String> event) {
                 onVersionSelected(event.getValue());
             }
         });
+        description.addValueChangeHandler(new ValueChangeHandler<String>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<String> event) {
+                String newDescription = event.getValue();
+                updatePlanDescription(newDescription);
+            }
+        });
+        description.setEmptyValueMessage(i18n.format(AppMessages.NO_DESCRIPTION));
+        description.setEnabled(hasPermission(PermissionType.planEdit));
     }
-    
+
+    /**
+     * @param newDescription
+     */
+    protected void updatePlanDescription(final String newDescription) {
+        PlanBean update = new PlanBean();
+        update.setOrganization(planBean.getOrganization());
+        update.setId(planBean.getId());
+        update.setDescription(newDescription);;
+        rest.updatePlan(update, new IRestInvokerCallback<Void>() {
+            @Override
+            public void onSuccess(Void response) {
+                planBean.setDescription(newDescription);
+            }
+            @Override
+            public void onError(Throwable error) {
+                dataPacketError(error);
+            }
+        });
+    }
+
     /**
      * @see io.apiman.manager.ui.client.local.pages.AbstractPage#doLoadPageData()
      */
@@ -224,7 +253,7 @@ public abstract class AbstractPlanPage extends AbstractPage {
         String newVersionHref = navHelper.createHrefToPage(NewPlanVersionPage.class, MultimapUtil.fromMultiple("org", org, "plan", plan)); //$NON-NLS-1$ //$NON-NLS-2$
         ttd_toNewVersion.setHref(newVersionHref);
 
-        description.setText(planBean.getDescription());
+        description.setValue(planBean.getDescription());
         createdOn.setText(Formatting.formatShortDate(versionBean.getCreatedOn()));
         createdBy.setText(versionBean.getCreatedBy());
         String toUserHref = navHelper.createHrefToPage(UserServicesPage.class,
