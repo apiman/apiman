@@ -95,7 +95,6 @@ public abstract class AbstractOrgPage extends AbstractPage {
             }
         });
         description.setEmptyValueMessage(i18n.format(AppMessages.NO_DESCRIPTION));
-        description.setEnabled(hasPermission(PermissionType.orgEdit));
     }
 
     /**
@@ -193,6 +192,8 @@ public abstract class AbstractOrgPage extends AbstractPage {
         String dashHref = navHelper.createHrefToPage(DashboardPage.class, MultimapUtil.emptyMap());
         breadcrumb.addItem(dashHref, "home", i18n.format(AppMessages.HOME)); //$NON-NLS-1$
         breadcrumb.addActiveItem("shield", organizationBean.getName()); //$NON-NLS-1$
+
+        description.setEnabled(hasPermission(PermissionType.orgEdit));
     }
 
 }

@@ -62,6 +62,7 @@ import io.apiman.manager.api.beans.summary.PlanVersionSummaryBean;
 import io.apiman.manager.api.beans.summary.PolicySummaryBean;
 import io.apiman.manager.api.beans.summary.ServicePlanSummaryBean;
 import io.apiman.manager.api.beans.summary.ServiceSummaryBean;
+import io.apiman.manager.api.beans.summary.ServiceVersionEndpointSummaryBean;
 import io.apiman.manager.api.beans.summary.ServiceVersionSummaryBean;
 import io.apiman.manager.api.core.IApiKeyGenerator;
 import io.apiman.manager.api.core.IApplicationValidator;
@@ -82,6 +83,8 @@ import io.apiman.manager.api.rest.contract.exceptions.ApplicationNotFoundExcepti
 import io.apiman.manager.api.rest.contract.exceptions.ApplicationVersionNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.ContractAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.ContractNotFoundException;
+import io.apiman.manager.api.rest.contract.exceptions.GatewayNotFoundException;
+import io.apiman.manager.api.rest.contract.exceptions.InvalidServiceStatusException;
 import io.apiman.manager.api.rest.contract.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.contract.exceptions.OrganizationAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.OrganizationNotFoundException;
@@ -1182,6 +1185,45 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 serviceVersion.setGateways(null);
             }
             return serviceVersion;
+        } catch (AbstractRestException e) {
+            storage.rollbackTx();
+            throw e;
+        } catch (Exception e) {
+            storage.rollbackTx();
+            throw new SystemErrorException(e);
+        }
+    }
+    
+    /**
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getServiceVersionEndpointInfo(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public ServiceVersionEndpointSummaryBean getServiceVersionEndpointInfo(String organizationId,
+            String serviceId, String version) throws ServiceVersionNotFoundException,
+            InvalidServiceStatusException, GatewayNotFoundException {
+        try {
+            storage.beginTx();
+            ServiceVersionBean serviceVersion = storage.getServiceVersion(organizationId, serviceId, version);
+            if (serviceVersion == null) {
+                throw ExceptionFactory.serviceVersionNotFoundException(serviceId, version);
+            }
+            if (serviceVersion.getStatus() != ServiceStatus.Published) {
+                throw new InvalidServiceStatusException(Messages.i18n.format("ServiceNotPublished")); //$NON-NLS-1$
+            }
+            Set<ServiceGatewayBean> gateways = serviceVersion.getGateways();
+            if (gateways.isEmpty()) {
+                throw new SystemErrorException("No Gateways for published Service!"); //$NON-NLS-1$
+            }
+            GatewayBean gateway = storage.getGateway(gateways.iterator().next().getGatewayId());
+            if (gateway == null) {
+                throw new GatewayNotFoundException();
+            }
+            IGatewayLink link = gatewayLinkFactory.create(gateway);
+            ServiceEndpoint endpoint = link.getServiceEndpoint(organizationId, serviceId, version);
+            ServiceVersionEndpointSummaryBean rval = new ServiceVersionEndpointSummaryBean();
+            rval.setManagedEndpoint(endpoint.getEndpoint());
+            storage.commitTx();
+            return rval;
         } catch (AbstractRestException e) {
             storage.rollbackTx();
             throw e;

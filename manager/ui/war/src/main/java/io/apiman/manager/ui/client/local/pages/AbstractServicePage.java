@@ -110,6 +110,8 @@ public abstract class AbstractServicePage extends AbstractPage {
     @Inject @DataField
     Anchor toServiceContracts;
     @Inject @DataField
+    Anchor toServiceEndpoint;
+    @Inject @DataField
     Anchor toServiceActivity;
 
     /**
@@ -158,7 +160,6 @@ public abstract class AbstractServicePage extends AbstractPage {
             }
         });
         description.setEmptyValueMessage(i18n.format(AppMessages.NO_DESCRIPTION));
-        description.setEnabled(hasPermission(PermissionType.svcEdit));
     }
 
     /**
@@ -249,6 +250,7 @@ public abstract class AbstractServicePage extends AbstractPage {
         String servicePlansHref = navHelper.createHrefToPage(ServicePlansPage.class, MultimapUtil.fromMultiple("org", org, "service", service, "version", version)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         String servicePoliciesHref = navHelper.createHrefToPage(ServicePoliciesPage.class, MultimapUtil.fromMultiple("org", org, "service", service, "version", version)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         String serviceContractsHref = navHelper.createHrefToPage(ServiceContractsPage.class, MultimapUtil.fromMultiple("org", org, "service", service, "version", version)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        String serviceEndpointHref = navHelper.createHrefToPage(ServiceEndpointPage.class, MultimapUtil.fromMultiple("org", org, "service", service, "version", version)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         String serviceActivityHref = navHelper.createHrefToPage(ServiceActivityPage.class, MultimapUtil.fromMultiple("org", org, "service", service, "version", version)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         String newServiceVersionHref = navHelper.createHrefToPage(NewServiceVersionPage.class, MultimapUtil.fromMultiple("org", org, "service", service, "version", version)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         toServiceOverview.setHref(serviceOverviewHref);
@@ -256,6 +258,7 @@ public abstract class AbstractServicePage extends AbstractPage {
         toServicePlans.setHref(servicePlansHref);
         toServicePolicies.setHref(servicePoliciesHref);
         toServiceContracts.setHref(serviceContractsHref);
+        toServiceEndpoint.setHref(serviceEndpointHref);
         toServiceActivity.setHref(serviceActivityHref);
         toNewServiceVersion.setHref(newServiceVersionHref);
 
@@ -281,6 +284,8 @@ public abstract class AbstractServicePage extends AbstractPage {
         createdBy.setHref(toUserHref);
 
         renderServiceStatus();
+        
+        description.setEnabled(hasPermission(PermissionType.svcEdit));
     }
     
     /**

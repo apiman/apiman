@@ -19,6 +19,7 @@ import io.apiman.manager.api.beans.policies.PolicyChainBean;
 import io.apiman.manager.api.beans.services.ServiceBean;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
 import io.apiman.manager.api.beans.summary.ServicePlanSummaryBean;
+import io.apiman.manager.api.beans.summary.ServiceVersionEndpointSummaryBean;
 import io.apiman.manager.api.beans.summary.ServiceVersionSummaryBean;
 import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.events.CreateContractEvent;
@@ -44,6 +45,7 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.ui.TextArea;
 
 
 /**
@@ -72,6 +74,8 @@ public class ConsumerServicePage extends AbstractPage {
     @Inject @DataField
     private ServiceCard serviceCard;
     @Inject @DataField
+    private TextArea mangedEndpoint;
+    @Inject @DataField
     private ConsumerServicePlanList plans;
     
     @Inject
@@ -83,6 +87,7 @@ public class ConsumerServicePage extends AbstractPage {
     protected List<ServiceVersionSummaryBean> versionBeans;
     protected ServiceVersionBean versionBean;
     protected List<ServicePlanSummaryBean> planBeans;
+    protected ServiceVersionEndpointSummaryBean endpointBean;
 
     /**
      * Constructor.
@@ -186,8 +191,29 @@ public class ConsumerServicePage extends AbstractPage {
             public void onSuccess(ServiceVersionBean response) {
                 versionBean = response;
                 serviceBean = versionBean.getService();
+                if (response.isPublicService()) {
+                    increaseExpectedDataPackets(1);
+                    loadManagedEndpointInfo();
+                }
                 dataPacketLoaded();
                 getPlansForServiceVersion();
+            }
+            @Override
+            public void onError(Throwable error) {
+                dataPacketError(error);
+            }
+        });
+    }
+
+    /**
+     * Loads the managed endpoint info for the service.
+     */
+    protected void loadManagedEndpointInfo() {
+        rest.getServiceVersionEndpointInfo(org, service, versionBean.getVersion(), new IRestInvokerCallback<ServiceVersionEndpointSummaryBean>() {
+            @Override
+            public void onSuccess(ServiceVersionEndpointSummaryBean response) {
+                endpointBean = response;
+                dataPacketLoaded();
             }
             @Override
             public void onError(Throwable error) {
@@ -231,7 +257,17 @@ public class ConsumerServicePage extends AbstractPage {
         breadcrumb.addItem(dashHref, "home", i18n.format(AppMessages.HOME)); //$NON-NLS-1$
         breadcrumb.addItem(consumerServicesHref, "search", i18n.format(AppMessages.SERVICES)); //$NON-NLS-1$
         breadcrumb.addActiveItem("puzzle-piece", serviceBean.getName()); //$NON-NLS-1$
+        
+        if (versionBean.isPublicService()) {
+            mangedEndpoint.setValue(endpointBean.getManagedEndpoint());
+        } else {
+            hideManagedEndpoint();
+        }
     }
+
+    private native void hideManagedEndpoint() /*-{
+      $wnd.jQuery('#managed-endpoint-wrap').hide();
+    }-*/;
 
     /**
      * @see io.apiman.manager.ui.client.local.pages.AbstractPage#getPageTitle()

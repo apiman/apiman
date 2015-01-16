@@ -158,7 +158,6 @@ public abstract class AbstractAppPage extends AbstractPage {
             }
         });
         description.setEmptyValueMessage(i18n.format(AppMessages.NO_DESCRIPTION));
-        description.setEnabled(hasPermission(PermissionType.appEdit));
     }
 
     /**
@@ -283,6 +282,8 @@ public abstract class AbstractAppPage extends AbstractPage {
         createdBy.setHref(toUserHref);
         
         renderApplicationStatus();
+
+        description.setEnabled(hasPermission(PermissionType.appEdit));
     }
     
     /**

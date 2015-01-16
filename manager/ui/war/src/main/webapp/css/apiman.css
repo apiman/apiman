@@ -1295,3 +1295,8 @@ div.admin-page .admin-content .apiman-summaryrow .emphasis {
 .apiman-inline-edit .inline-save-btn {
   border-right: 0px;
 }
+
+textarea.apiman-endpoint {
+  border: 1px solid rgb(200, 200, 200);
+  padding: 5px;
+}

@@ -116,6 +116,8 @@ public class AppMessages {
     public static final String TITLE_SERVICE_ACTIVITY = "page.title.service-activity";
     @TranslationKey(defaultValue = "apiman - {0} (Contracts)")
     public static final String TITLE_SERVICE_CONTRACTS = "page.title.service-contracts";
+    @TranslationKey(defaultValue = "apiman - {0} (Endpoint)")
+    public static final String TITLE_SERVICE_ENDPOINT = "page.title.service-endpoint";
 
     @TranslationKey(defaultValue = "apiman - {0} (Overview)")
     public static final String TITLE_PLAN_OVERVIEW = "page.title.plan-overview";

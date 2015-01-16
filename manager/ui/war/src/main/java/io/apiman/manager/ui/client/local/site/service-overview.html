@@ -130,7 +130,8 @@
             <li class=""><a data-field="toServiceImpl" href="service-impl.html" data-i18n-key="implementation">Implementation</a></li>
             <li class=""><a data-field="toServicePlans" href="service-plans.html" data-i18n-key="plans">Plans</a></li>
             <li class=""><a data-field="toServicePolicies" href="service-policies.html" data-i18n-key="policies">Policies</a></li>
-            <li class=""><a data-field="toServiceContracts" href="service-contracts.html" data-i18n-key="contracts">Contracts</a></li>
+            <li data-status="Published"><a data-field="toServiceContracts" href="service-contracts.html" data-i18n-key="contracts">Contracts</a></li>
+            <li data-status="Published"><a data-field="toServiceEndpoint" href="service-endpoint.html" data-i18n-key="endpoint">Endpoint</a></li>
             <li><a data-field="toServiceActivity" href="service-activity.html" data-i18n-key="activity">Activity</a></li>
             <li class="last"><a data-role="dummy">&nbsp;</a></li>
           </ul>
@@ -178,6 +179,12 @@
               Contracts to this Service.  In other words, it shows all of the registered 
               consumers of the Service.  Note that if the Service is marked as "Public", this tab
               will likely be empty.
+            </p>
+
+            <h2 data-i18n-key="endpoint">Endpoint</h2>
+            <p data-i18n-key="endpoint-description">
+              The 'Endpoint' tab will show you information about how to invoke the Service once
+              it is published to the API Gateway.
             </p>
 
             <h2 data-i18n-key="activity">Activity</h2>

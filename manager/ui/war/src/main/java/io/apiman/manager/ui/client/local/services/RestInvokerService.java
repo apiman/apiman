@@ -51,6 +51,7 @@ import io.apiman.manager.api.beans.summary.PolicyDefinitionSummaryBean;
 import io.apiman.manager.api.beans.summary.PolicySummaryBean;
 import io.apiman.manager.api.beans.summary.ServicePlanSummaryBean;
 import io.apiman.manager.api.beans.summary.ServiceSummaryBean;
+import io.apiman.manager.api.beans.summary.ServiceVersionEndpointSummaryBean;
 import io.apiman.manager.api.beans.summary.ServiceVersionSummaryBean;
 import io.apiman.manager.api.rest.contract.IActionResource;
 import io.apiman.manager.api.rest.contract.ICurrentUserResource;
@@ -587,6 +588,20 @@ public class RestInvokerService {
             IRestInvokerCallback<ServiceVersionBean> callback) {
         CallbackAdapter<ServiceVersionBean> adapter = new CallbackAdapter<ServiceVersionBean>(callback);
         organizations.call(adapter, adapter).getServiceVersion(organizationId, serviceId, version);
+    }
+
+    /**
+     * Gets the service version endpoint information.  This only works if the service has
+     * been published!
+     * @param organizationId
+     * @param serviceId
+     * @param version
+     * @param callback
+     */
+    public void getServiceVersionEndpointInfo(String organizationId, String serviceId, String version,
+            IRestInvokerCallback<ServiceVersionEndpointSummaryBean> callback) {
+        CallbackAdapter<ServiceVersionEndpointSummaryBean> adapter = new CallbackAdapter<ServiceVersionEndpointSummaryBean>(callback);
+        organizations.call(adapter, adapter).getServiceVersionEndpointInfo(organizationId, serviceId, version);
     }
 
     /**

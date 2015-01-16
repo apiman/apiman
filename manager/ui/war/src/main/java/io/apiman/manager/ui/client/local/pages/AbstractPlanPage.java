@@ -144,7 +144,6 @@ public abstract class AbstractPlanPage extends AbstractPage {
             }
         });
         description.setEmptyValueMessage(i18n.format(AppMessages.NO_DESCRIPTION));
-        description.setEnabled(hasPermission(PermissionType.planEdit));
     }
 
     /**
@@ -259,6 +258,8 @@ public abstract class AbstractPlanPage extends AbstractPage {
         String toUserHref = navHelper.createHrefToPage(UserServicesPage.class,
                 MultimapUtil.fromMultiple("user", planBean.getCreatedBy())); //$NON-NLS-1$
         createdBy.setHref(toUserHref);
+        
+        description.setEnabled(hasPermission(PermissionType.planEdit));
     }
 
     /**

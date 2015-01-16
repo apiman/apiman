@@ -84,123 +84,134 @@
                       </select>
                     </div>
                   </div>
-                  
                 </div>
                 
                 <!-- Right column -->
                 <div class="col-md-8">
                   <div class="consumer-section">
-                    <h3 data-i18n-key="available-plans" class="consumer-header">Available Plans</h3>
-                    <div class="apiman-plans consumer-section" data-field="plans" data-role="dummy">
-                    
-                      <div class="container-fluid apiman-summaryrow">
-                        <div class="row">
-                          <div class="col-md-10 col-no-padding">
-                            <i class="fa fa-fw fa-bar-chart-o icon"></i>
-                            <span class="title"><a data-toggle="collapse" href="#collapseOne">Platinum</a></span>
-                            <div class="description">
-                              Provides subscribing applications with full access to the Services in this Organization.
-                            </div>
-                          </div>
-                          <div class="col-md-2 col-no-padding">
-                            <span class="actions"><button class="btn btn-default">Create Contract</button></span>
-                          </div>
-                        </div>
-                        <!-- Sub-section - policy chain -->
-                        <div class="panel-collapse collapse" id="collapseOne" style="margin-top: 15px">
-                            <div class="apiman-policies">
-                              <div class="container-fluid apiman-summaryrow">
-                                <div class="row">
-                                  <div class="col-md-1 col-no-padding">
-                                    <i class="apiman-policy-icon fa fa-lock fa-fw movable"></i>
-                                  </div>
-                                  <div class="col-md-11 col-no-padding">
-                                    <div>
-                                      <span class="title apiman-label-faded">Authentication Policy</span>
-                                    </div>
-                                    <div class="description apiman-label-faded">
-                                      All service invocations must be first authenticated using BASIC auth against the "ldap://dir.mycompany.com" LDAP directory.
-                                    </div>
-                                  </div>
-                                </div>
-                                <hr />
-                              </div>
-                              <div class="container-fluid apiman-summaryrow">
-                                <div class="row">
-                                  <div class="col-md-1 col-no-padding">
-                                    <i class="apiman-policy-icon fa fa-tachometer fa-fw movable"></i>
-                                  </div>
-                                  <div class="col-md-11 col-no-padding">
-                                    <div>
-                                      <span class="title apiman-label-faded">Usage Metering Policy</span>
-                                    </div>
-                                    <div class="description apiman-label-faded">
-                                      Service usage will be tracked and limited to 1000 requests per day per user.
-                                    </div>
-                                  </div>
-                                </div>
-                                <hr />
-                              </div>
-                              <div class="container-fluid apiman-summaryrow">
-                                <div class="row">
-                                  <div class="col-md-1 col-no-padding">
-                                    <i class="apiman-policy-icon fa fa-money fa-fw movable"></i>
-                                  </div>
-                                  <div class="col-md-11 col-no-padding">
-                                    <div>
-                                      <span class="title apiman-label-faded">Billing Policy</span>
-                                    </div>
-                                    <div class="description apiman-label-faded">
-                                      Tracks and records usage for billing purposes.  Aggregate billing information will be recorded and stored 
-                                      at a contracted rate of $5 per month per user, regardless of usage.
-                                    </div>
-                                  </div>
-                                </div>
-                                <hr />
-                              </div>
-                            </div> <!-- /policy chain -->
-                        </div>
-                        <hr />
+                    <div id="managed-endpoint-wrap">
+                      <h3 data-i18n-key="available-plans" class="consumer-header">Managed Endpoint</h3>
+                      <p class="apiman-label-faded">
+                        Because this is a Public Service, it is possible to invoke it directly, without
+                        the need for a Service Contract with an Application.  To directly invoke the
+                        Service, send requests to the API Gateway endpoint below.
+                      </p>
+                      <div style="margin-bottom: 20px;">
+                        <textarea readonly="readonly" class="apiman-endpoint" style="width:100%" data-field="mangedEndpoint">http://localhost:8080/apiman-gateway/my-org/my-service/1.2</textarea>
                       </div>
-                      <div class="container-fluid apiman-summaryrow">
-                        <div class="row">
-                          <div class="col-md-10 col-no-padding">
-                            <i class="fa fa-fw fa-bar-chart-o icon"></i>
-                            <span class="title"><a data-toggle="collapse" href="#collapseTwo">Gold</a></span>
-                            <div class="description">
-                              Provides subscribing applications with full access to a subset of Services. Also allows partial (rate limited) access to the rest. 
-                            </div>
-                          </div>
-                          <div class="col-md-2 col-no-padding">
-                            <span class="actions"><button class="btn btn-default">Create Contract</button></span>
-                          </div>
-                        </div>
-                        <!-- Sub-section - policy chain -->
-                        <div class="panel-collapse collapse" id="collapseTwo" style="margin-top: 15px">
-                          <i class="fa fa-fw fa-refresh fa-spin"></i><span>Loading policies...</span>
-                        </div>
-                        <hr />
-                      </div>
-                      <div class="container-fluid apiman-summaryrow">
-                        <div class="row">
-                          <div class="col-md-10 col-no-padding">
-                            <i class="fa fa-fw fa-bar-chart-o icon"></i>
-                            <span class="title"><a href="#">Silver</a></span>
-                            <div class="description">
-                              Provides subscribing applications with free, but limited access to all Services in this Organization. 
-                            </div>
-                          </div>
-                          <div class="col-md-2 col-no-padding">
-                            <span class="actions"><button class="btn btn-default">Create Contract</button></span>
-                          </div>
-                        </div>
-                        <hr />
-                      </div>
+                    </div>
 
+                    <div id="available-plans-wrap">
+                      <h3 data-i18n-key="available-plans" class="consumer-header">Available Plans</h3>
+                      <div class="apiman-plans consumer-section" data-field="plans" data-role="dummy">
+                      
+                        <div class="container-fluid apiman-summaryrow">
+                          <div class="row">
+                            <div class="col-md-10 col-no-padding">
+                              <i class="fa fa-fw fa-bar-chart-o icon"></i>
+                              <span class="title"><a data-toggle="collapse" href="#collapseOne">Platinum</a></span>
+                              <div class="description">
+                                Provides subscribing applications with full access to the Services in this Organization.
+                              </div>
+                            </div>
+                            <div class="col-md-2 col-no-padding">
+                              <span class="actions"><button class="btn btn-default">Create Contract</button></span>
+                            </div>
+                          </div>
+                          <!-- Sub-section - policy chain -->
+                          <div class="panel-collapse collapse" id="collapseOne" style="margin-top: 15px">
+                              <div class="apiman-policies">
+                                <div class="container-fluid apiman-summaryrow">
+                                  <div class="row">
+                                    <div class="col-md-1 col-no-padding">
+                                      <i class="apiman-policy-icon fa fa-lock fa-fw movable"></i>
+                                    </div>
+                                    <div class="col-md-11 col-no-padding">
+                                      <div>
+                                        <span class="title apiman-label-faded">Authentication Policy</span>
+                                      </div>
+                                      <div class="description apiman-label-faded">
+                                        All service invocations must be first authenticated using BASIC auth against the "ldap://dir.mycompany.com" LDAP directory.
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <hr />
+                                </div>
+                                <div class="container-fluid apiman-summaryrow">
+                                  <div class="row">
+                                    <div class="col-md-1 col-no-padding">
+                                      <i class="apiman-policy-icon fa fa-tachometer fa-fw movable"></i>
+                                    </div>
+                                    <div class="col-md-11 col-no-padding">
+                                      <div>
+                                        <span class="title apiman-label-faded">Usage Metering Policy</span>
+                                      </div>
+                                      <div class="description apiman-label-faded">
+                                        Service usage will be tracked and limited to 1000 requests per day per user.
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <hr />
+                                </div>
+                                <div class="container-fluid apiman-summaryrow">
+                                  <div class="row">
+                                    <div class="col-md-1 col-no-padding">
+                                      <i class="apiman-policy-icon fa fa-money fa-fw movable"></i>
+                                    </div>
+                                    <div class="col-md-11 col-no-padding">
+                                      <div>
+                                        <span class="title apiman-label-faded">Billing Policy</span>
+                                      </div>
+                                      <div class="description apiman-label-faded">
+                                        Tracks and records usage for billing purposes.  Aggregate billing information will be recorded and stored 
+                                        at a contracted rate of $5 per month per user, regardless of usage.
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <hr />
+                                </div>
+                              </div> <!-- /policy chain -->
+                          </div>
+                          <hr />
+                        </div>
+                        <div class="container-fluid apiman-summaryrow">
+                          <div class="row">
+                            <div class="col-md-10 col-no-padding">
+                              <i class="fa fa-fw fa-bar-chart-o icon"></i>
+                              <span class="title"><a data-toggle="collapse" href="#collapseTwo">Gold</a></span>
+                              <div class="description">
+                                Provides subscribing applications with full access to a subset of Services. Also allows partial (rate limited) access to the rest. 
+                              </div>
+                            </div>
+                            <div class="col-md-2 col-no-padding">
+                              <span class="actions"><button class="btn btn-default">Create Contract</button></span>
+                            </div>
+                          </div>
+                          <!-- Sub-section - policy chain -->
+                          <div class="panel-collapse collapse" id="collapseTwo" style="margin-top: 15px">
+                            <i class="fa fa-fw fa-refresh fa-spin"></i><span>Loading policies...</span>
+                          </div>
+                          <hr />
+                        </div>
+                        <div class="container-fluid apiman-summaryrow">
+                          <div class="row">
+                            <div class="col-md-10 col-no-padding">
+                              <i class="fa fa-fw fa-bar-chart-o icon"></i>
+                              <span class="title"><a href="#">Silver</a></span>
+                              <div class="description">
+                                Provides subscribing applications with free, but limited access to all Services in this Organization. 
+                              </div>
+                            </div>
+                            <div class="col-md-2 col-no-padding">
+                              <span class="actions"><button class="btn btn-default">Create Contract</button></span>
+                            </div>
+                          </div>
+                          <hr />
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div> <!-- /right-column -->
-                
                 
             </div>
           </div>
