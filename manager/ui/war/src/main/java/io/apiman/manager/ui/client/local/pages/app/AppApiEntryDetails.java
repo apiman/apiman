@@ -47,9 +47,7 @@ public class AppApiEntryDetails extends Composite implements TakesValue<ApiEntry
     @Inject @DataField
     private TextBox apiKey;
     @Inject @DataField
-    private TextBox httpEndpoint;
-    @Inject @DataField
-    private Button copyButton;
+    private Button detailsButton;
     
     @Inject
     private Instance<CopyApiEndpointDialog> dialogFactory;
@@ -64,7 +62,7 @@ public class AppApiEntryDetails extends Composite implements TakesValue<ApiEntry
     
     @PostConstruct
     protected void postConstruct() {
-        copyButton.addClickHandler(new ClickHandler() {
+        detailsButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 CopyApiEndpointDialog dialog = dialogFactory.get();
@@ -80,9 +78,7 @@ public class AppApiEntryDetails extends Composite implements TakesValue<ApiEntry
     @Override
     public void setValue(ApiEntryBean value) {
         this.value = value;
-        
         apiKey.setValue(value.getApiKey());
-        httpEndpoint.setValue(value.getHttpEndpoint());
     }
 
     /**

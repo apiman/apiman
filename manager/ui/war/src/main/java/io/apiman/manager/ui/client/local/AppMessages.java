@@ -465,6 +465,7 @@ public class AppMessages {
     
     @TranslationKey(defaultValue = "Failed to fetch the WADL ({0}) : {1}")
     public static String WADL_FETCH_FAIL = "service-import-wadl-fetch-failed";
+    
     @TranslationKey(defaultValue = "WADL File")
     public static final String WADL_FILE = "wadl-file";
     @TranslationKey(defaultValue = "File(s) dropped: ")
@@ -558,5 +559,8 @@ public class AppMessages {
     public static final String CLICK_TO_EDIT = "click-to-edit";
     @TranslationKey(defaultValue = "<no description>")
     public static final String NO_DESCRIPTION = "no-description";
-    
+
+    @TranslationKey(defaultValue = "Click for additional details about this Service.")
+    public static String API_MORE_INFO = "app-apis.more-info-about-service";
+
 }

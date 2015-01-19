@@ -42,7 +42,11 @@ public class EchoResponse {
     public static EchoResponse from(HttpServletRequest request, boolean withBody) {
         EchoResponse response = new EchoResponse();
         response.setMethod(request.getMethod());
-        response.setResource(request.getRequestURI());
+        if (request.getQueryString() != null) {
+            response.setResource(request.getRequestURI() + "?" + request.getQueryString()); //$NON-NLS-1$
+        } else {
+            response.setResource(request.getRequestURI());
+        }
         response.setUri(request.getRequestURI());
         Enumeration<String> headerNames = request.getHeaderNames();
         while (headerNames.hasMoreElements()) {

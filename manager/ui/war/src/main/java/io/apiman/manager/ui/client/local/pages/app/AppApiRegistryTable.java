@@ -113,6 +113,7 @@ public class AppApiRegistryTable extends TemplatedWidgetTable implements TakesVa
         entryDetails.setValue(bean);
         
         ChevronToggleAnchor toggle = new ChevronToggleAnchor();
+        toggle.setTitle(i18n.format(AppMessages.API_MORE_INFO));
         toggle.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
             @Override
             public void onValueChange(ValueChangeEvent<Boolean> event) {
