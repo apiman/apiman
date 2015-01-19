@@ -15,16 +15,17 @@
  */
 package io.apiman.gateway.vertx.config;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import io.apiman.gateway.engine.IComponent;
 import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.IEngineConfig;
+import io.apiman.gateway.engine.IPluginRegistry;
 import io.apiman.gateway.engine.IRegistry;
 import io.apiman.gateway.engine.i18n.Messages;
 import io.apiman.gateway.engine.policy.IPolicyFactory;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.vertx.java.core.json.JsonObject;
 
@@ -37,6 +38,7 @@ import org.vertx.java.core.json.JsonObject;
 public class VertxEngineConfig implements IEngineConfig {
 
     public static final String APIMAN_RT_REGISTRY_PREFIX = "registry"; //$NON-NLS-1$
+    public static final String APIMAN_RT_PLUGIN_REGISTRY_PREFIX = "plugin-registry"; //$NON-NLS-1$
     public static final String APIMAN_RT_CONNECTOR_FACTORY_PREFIX = "connector-factory"; //$NON-NLS-1$
     public static final String APIMAN_RT_POLICY_FACTORY_PREFIX = "policy-factory"; //$NON-NLS-1$
 
@@ -100,6 +102,17 @@ public class VertxEngineConfig implements IEngineConfig {
     @Override
     public Map<String, String> getRegistryConfig() {
         return toFlatStringMap(getConfig(config, APIMAN_RT_REGISTRY_PREFIX));
+    }
+
+    @Override
+    public Class<? extends IPluginRegistry> getPluginRegistryClass() {
+        return loadConfigClass(getClassname(config, APIMAN_RT_PLUGIN_REGISTRY_PREFIX),
+                IPluginRegistry.class);
+    }
+
+    @Override
+    public Map<String, String> getPluginRegistryConfig() {
+        return toFlatStringMap(getConfig(config, APIMAN_RT_PLUGIN_REGISTRY_PREFIX));
     }
 
     @Override

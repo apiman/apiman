@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testPlan xmlns="urn:io.apiman.test:2014:02:testPlan">
+
+  <!-- Make sure Plugins are working properly -->
+  <testGroup name="Plugin Management">
+    <test name="Plugin 1">test-plan-data/plugins/001_create-1_1.0.resttest</test>
+    <test name="Plugin 2">test-plan-data/plugins/002_create-2.resttest</test>
+    <test name="Get Plugin 1">test-plan-data/plugins/003_get-1.resttest</test>
+    <test name="List All Plugins">test-plan-data/plugins/004_list-all.resttest</test>
+    <test name="Delete Plugin 1">test-plan-data/plugins/005_delete-1.resttest</test>
+    <test name="Plugin 1, 2.0">test-plan-data/plugins/006_create-1_2.0.resttest</test>
+    <test name="List All Plugins">test-plan-data/plugins/007_list-all.resttest</test>
+  </testGroup>
+
+  <testGroup name="Plugin Management - Auto-Deploy Policy Defs">
+    <test name="No-op Plugin">test-plan-data/plugins/100_create-noop.resttest</test>
+    <test name="List Policy Defs">test-plan-data/plugins/101_list-policy-defs.resttest</test>
+  </testGroup>
+
+</testPlan>

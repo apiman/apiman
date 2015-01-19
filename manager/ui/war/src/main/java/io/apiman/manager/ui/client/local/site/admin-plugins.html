@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <script type="text/javascript" src="site.js"></script>
+  </head>
+
+  <body>
+
+    <!-- Top header/nav bar -->
+    <div id="apiman-header">
+      <div class="main-header container">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="logo"></div>
+            <input class="search no-phone" type="text" placeholder="Quick service search..."></input>
+            <ul class="user-menu pull-right">
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                  <span class="pficon pficon-user"></span>
+                  <span>Bruce Wayne</span>
+                  <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a href="user-orgs.html">Home</a>
+                  </li>
+                  <li class="divider"></li>
+                  <li>
+                    <a data-field="toProfile" href="settings-profile.html" data-i18n-key="profile">Profile</a>
+                  </li>
+                  <li>
+                    <a href="#">Logout</a>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container page admin-page" data-field="page">
+      <div class="row">
+        <div class="col-md-12">
+          <ol class="breadcrumb" data-field="breadcrumb" data-role="dummy">
+            <li><a href="dash.html"><i class="fa fa-home fa-fw"></i><span>Home</span></a></li>
+            <li class="active"><i class="fa fa-gavel fa-fw"></i><span>System Administration</span></li>
+          </ol>
+        </div>
+      </div>
+      <div class="row">
+        <!-- Side Navigation -->
+        <div class="col-md-3">
+         <ul class="side-nav nav nav-pills nav-stacked">
+           <li><a data-field="toRoles" data-i18n-key="admin-nav.admin-roles" href="admin-roles.html">Roles</a></li>
+           <li><a data-field="toPolicyDefs" data-i18n-key="admin-nav.policy-definitions" href="admin-policyDefs.html">Policy Definitions</a></li>
+           <li><a data-field="toGateways" data-i18n-key="admin-nav.gateways" href="admin-gateways.html">Gateways</a></li>
+           <li class="active"><a data-field="toPlugins" data-i18n-key="admin-nav.plugins" href="admin-plugins.html">Plugins</a></li>
+         </ul>
+        </div>
+        <!-- Admin Content -->
+        <div class="col-md-9 admin-content">
+          <div class="container-fluid">
+            <div class="row">
+              <h2 class="title" data-field="heading" data-i18n-key="plugins">Plugins</h2>
+            </div>
+            <!-- Helpful hint -->
+            <div class="row">
+              <p class="col-md-10 apiman-label-faded" data-i18n-key="plugins-help-text" class="apiman-label-faded">Manage the plugins known to this installation of apiman.  Plugins allow additional functionality to be included in the system after it has been installed and configured.</p>
+            </div>
+            <!-- HR -->
+            <div class="row hr-row">
+              <hr/>
+            </div>
+            <!-- Filter and Actions -->
+            <div class="row">
+              <div class="apiman-filters apiman-plugins-filters">
+                <a data-field="toNewPlugin" href="new-plugin.html" class="btn btn-primary pull-right">Add Plugin</a>
+              </div>
+            </div>
+            <!-- Table of Plugins -->
+            <div class="row">
+              <div class="table-responsive">
+                <table class="table table-striped table-bordered table-hover" data-field="plugins">
+                  <thead>
+                    <tr>
+                      <th data-i18n-key="name">Name</th>
+                      <th data-i18n-key="coordinates">Coordinates</th>
+                    </tr>
+                  </thead>
+                  <tbody data-role="dummy">
+                    <tr>
+                      <td>Plugin One</td>
+                      <td><a href="edit-plugin.html"><span>io.apiman.plugins:plugin-one:1.0.1:war</span></a></td>
+                    </tr>
+                    <tr>
+                      <td>Plugin Two</td>
+                      <td><a href="edit-plugin.html"><span>io.apiman.plugins:plugin-two:2.0.7:war</span></a></td>
+                    </tr>
+                    <tr>
+                      <td>My Project's Plugin</td>
+                      <td><a href="edit-plugin.html"><span>io.apiman.plugins:my-project:1.1.1.Final:plugin:war</span></a></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

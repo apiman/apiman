@@ -28,6 +28,7 @@ import io.apiman.manager.api.rest.contract.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.contract.exceptions.PolicyDefinitionAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.PolicyDefinitionNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.SystemErrorException;
+import io.apiman.manager.api.rest.impl.i18n.Messages;
 import io.apiman.manager.api.rest.impl.util.ExceptionFactory;
 import io.apiman.manager.api.security.ISecurityContext;
 
@@ -129,6 +130,9 @@ public class PolicyDefinitionResourceImpl implements IPolicyDefinitionResource {
             if (pdb == null) {
                 throw ExceptionFactory.policyDefNotFoundException(policyDefinitionId);
             }
+            if (pdb.getPluginId() != null) {
+                throw new SystemErrorException(Messages.i18n.format("CannotUpdatePluginPolicyDef")); //$NON-NLS-1$
+            }
             if (bean.getName() != null)
                 pdb.setName(bean.getName());
             if (bean.getDescription() != null)
@@ -159,6 +163,9 @@ public class PolicyDefinitionResourceImpl implements IPolicyDefinitionResource {
             PolicyDefinitionBean pdb = storage.getPolicyDefinition(policyDefinitionId);
             if (pdb == null) {
                 throw ExceptionFactory.policyDefNotFoundException(policyDefinitionId);
+            }
+            if (pdb.getPluginId() != null) {
+                throw new SystemErrorException(Messages.i18n.format("CannotDeletePluginPolicyDef")); //$NON-NLS-1$
             }
             storage.deletePolicyDefinition(pdb);
             storage.commitTx();

@@ -37,6 +37,16 @@ public interface IEngineConfig {
     public Map<String, String> getRegistryConfig();
 
     /**
+     * @return the class to use as the {@link IPluginRegistry}
+     */
+    public Class<? extends IPluginRegistry> getPluginRegistryClass();
+
+    /**
+     * @return all properties to be passed to the plugin registry
+     */
+    public Map<String, String> getPluginRegistryConfig();
+
+    /**
      * @return the class to use as the {@link IConnectorFactory}
      */
     public Class<? extends IConnectorFactory> getConnectorFactoryClass();

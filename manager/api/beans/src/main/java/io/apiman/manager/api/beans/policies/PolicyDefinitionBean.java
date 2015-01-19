@@ -60,6 +60,8 @@ public class PolicyDefinitionBean implements Serializable {
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "pd_templates", joinColumns = @JoinColumn(name = "policydef_id"))
     private Set<PolicyDefinitionTemplateBean> templates = new HashSet<PolicyDefinitionTemplateBean>();
+    @Column(updatable=false, nullable=true)
+    private Long pluginId;
 
     /**
      * Constructor.
@@ -149,6 +151,20 @@ public class PolicyDefinitionBean implements Serializable {
      */
     public void setTemplates(Set<PolicyDefinitionTemplateBean> templates) {
         this.templates = templates;
+    }
+
+    /**
+     * @return the pluginId
+     */
+    public Long getPluginId() {
+        return pluginId;
+    }
+
+    /**
+     * @param pluginId the pluginId to set
+     */
+    public void setPluginId(Long pluginId) {
+        this.pluginId = pluginId;
     }
 
     /**

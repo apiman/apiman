@@ -13,8 +13,20 @@
   <modules>
     <module>servlet</module>
     <module>undertow</module>
-    <module>vertx</module>
     <module>war</module>
     <module>war/wildfly8</module>
   </modules>
+  
+  <profiles>
+    <profile>
+      <id>vertx</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <modules>
+        <module>vertx</module>
+      </modules>
+    </profile>
+  </profiles>
+
 </project>

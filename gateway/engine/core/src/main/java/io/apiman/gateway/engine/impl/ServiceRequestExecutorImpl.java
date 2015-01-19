@@ -25,6 +25,7 @@ import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncHandler;
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
+import io.apiman.gateway.engine.beans.Policy;
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.Service;
 import io.apiman.gateway.engine.beans.ServiceRequest;
@@ -33,12 +34,18 @@ import io.apiman.gateway.engine.beans.exceptions.RequestAbortedException;
 import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.gateway.engine.io.ISignalWriteStream;
 import io.apiman.gateway.engine.policy.Chain;
+import io.apiman.gateway.engine.policy.IPolicy;
 import io.apiman.gateway.engine.policy.IPolicyContext;
+import io.apiman.gateway.engine.policy.IPolicyFactory;
 import io.apiman.gateway.engine.policy.PolicyWithConfiguration;
 import io.apiman.gateway.engine.policy.RequestChain;
 import io.apiman.gateway.engine.policy.ResponseChain;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Manages a single request-response sequence. It is executed in the following
@@ -57,12 +64,16 @@ import java.util.List;
  * @author Marc Savy <msavy@redhat.com>
  */
 public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
+
     private ServiceRequest request;
     private Service service;
     private IPolicyContext context;
-    private List<PolicyWithConfiguration> policies;
+    private List<Policy> policies;
+    private IPolicyFactory policyFactory;
     private IConnectorFactory connectorFactory;
     private boolean finished = false;
+
+    private List<PolicyWithConfiguration> policyImpls;
 
     private IAsyncResultHandler<IEngineResult> resultHandler;
     private IAsyncHandler<PolicyFailure> policyFailureHandler;
@@ -83,13 +94,15 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
      * @param service
      * @param context
      * @param policies
+     * @param policyFactory 
      * @param connectorFactory
      */
     public ServiceRequestExecutorImpl(ServiceRequest serviceRequest, 
             IAsyncResultHandler<IEngineResult> resultHandler,
             Service service,
             IPolicyContext context,
-            List<PolicyWithConfiguration> policies,
+            List<Policy> policies,
+            IPolicyFactory policyFactory, 
             IConnectorFactory connectorFactory) {
 
         this.request = serviceRequest;
@@ -97,9 +110,11 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
         this.service = service;
         this.context = context;
         this.policies = policies;
+        this.policyFactory = policyFactory;
         this.connectorFactory = connectorFactory;
         this.policyFailureHandler = createPolicyFailureHandler();
         this.policyErrorHandler = createPolicyErrorHandler();
+        this.policyImpls = new ArrayList<>(this.policies.size());
     }
 
     /**
@@ -107,44 +122,111 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
      */
     @Override
     public void execute() {
-        // Set up the policy chain request, call #doApply to execute.
-        requestChain = createRequestChain(new IAsyncHandler<ServiceRequest>() {
-
+        loadPolicies(new IAsyncHandler<List<PolicyWithConfiguration>>() {
             @Override
-            public void handle(ServiceRequest request) {
-                IServiceConnector connector = connectorFactory.createConnector(request, service);
-
-                // Open up a connection to the back-end if we're given the OK from the request chain
-                // Attach the response handler here.
-                serviceConnection = connector.connect(request, createServiceConnectionResponseHandler());
-
-                // Write the body chunks from the *policy request* into the connector request.
-                requestChain.bodyHandler(new IAsyncHandler<IApimanBuffer>() {
-
+            public void handle(List<PolicyWithConfiguration> result) {
+                policyImpls = result;
+                // Set up the policy chain request, call #doApply to execute.
+                requestChain = createRequestChain(new IAsyncHandler<ServiceRequest>() {
+        
                     @Override
-                    public void handle(IApimanBuffer buffer) {
-                        serviceConnection.write(buffer);
+                    public void handle(ServiceRequest request) {
+                        IServiceConnector connector = connectorFactory.createConnector(request, service);
+        
+                        // Open up a connection to the back-end if we're given the OK from the request chain
+                        // Attach the response handler here.
+                        serviceConnection = connector.connect(request, createServiceConnectionResponseHandler());
+        
+                        // Write the body chunks from the *policy request* into the connector request.
+                        requestChain.bodyHandler(new IAsyncHandler<IApimanBuffer>() {
+        
+                            @Override
+                            public void handle(IApimanBuffer buffer) {
+                                serviceConnection.write(buffer);
+                            }
+                        });
+        
+                        // Indicate end from policy chain request to connector request.
+                        requestChain.endHandler(new IAsyncHandler<Void>() {
+        
+                            @Override
+                            public void handle(Void result) {
+                                serviceConnection.end();
+                            }
+                        });
+        
+                        // Once we have returned from connector.request, we know it is safe to start
+                        // writing chunks without buffering. At this point, it is the responsibility
+                        // of the implementation as to how they should cope with the chunks.
+                        handleStream();
                     }
                 });
-
-                // Indicate end from policy chain request to connector request.
-                requestChain.endHandler(new IAsyncHandler<Void>() {
-
-                    @Override
-                    public void handle(Void result) {
-                        serviceConnection.end();
-                    }
-                });
-
-                // Once we have returned from connector.request, we know it is safe to start
-                // writing chunks without buffering. At this point, it is the responsibility
-                // of the implementation as to how they should cope with the chunks.
-                handleStream();
+                requestChain.policyFailureHandler(policyFailureHandler);
+                requestChain.doApply(request);
             }
         });
+    }
 
-        requestChain.policyFailureHandler(policyFailureHandler);
-        requestChain.doApply(request);
+    /**
+     * Get/resolve the list of policies into a list of policies with config.  This operation is
+     * done asynchronously so that plugins can be downloaded if needed.  Any errors in resolving
+     * the policies will be reported back via the policyErrorHandler.
+     * @param handler
+     */
+    private void loadPolicies(final IAsyncHandler<List<PolicyWithConfiguration>> handler) {
+        final Set<Integer> totalCounter = new HashSet<>();
+        final Set<Integer> errorCounter = new TreeSet<>();
+        final List<PolicyWithConfiguration> rval = new ArrayList<>(policies.size());
+        final List<Throwable> errors = new ArrayList<>(policies.size());
+        final int numPolicies = policies.size();
+        int index = 0;
+
+        // If there aren't any policies, then no need to asynchronously load them!
+        if (policies.isEmpty()) {
+            handler.handle(policyImpls);
+            return;
+        }
+        
+        for (final Policy policy : policies) {
+            rval.add(null);
+            errors.add(null);
+            final int localIdx = index++;
+            policyFactory.loadPolicy(policy.getPolicyImpl(), new IAsyncResultHandler<IPolicy>() {
+                @Override
+                public void handle(IAsyncResult<IPolicy> result) {
+                    if (result.isSuccess()) {
+                        IPolicy policyImpl = result.getResult();
+                        try {
+                            Object policyConfig = policyFactory.loadConfig(policyImpl, policy.getPolicyJsonConfig());
+                            PolicyWithConfiguration pwc = new PolicyWithConfiguration(policyImpl, policyConfig);
+                            rval.set(localIdx, pwc);
+                        } catch (Throwable t) {
+                            errors.set(localIdx, t);
+                            errorCounter.add(localIdx);
+                        }
+                    } else {
+                        Throwable error = result.getError();
+                        errors.set(localIdx, error);
+                        errorCounter.add(localIdx);
+                    }
+                    totalCounter.add(localIdx);
+                    // Have we done them all?
+                    if (totalCounter.size() == numPolicies) {
+                        // Did we get any errors?  If yes, report the first one. If no, then send back
+                        // the fully resolved list of policies.
+                        if (errorCounter.size() > 0) {
+                            int errorIdx = errorCounter.iterator().next();
+                            Throwable error = errors.get(errorIdx);
+                            // TODO add some logging here to indicate which policy error'd out
+                            //Policy errorPolicy = policies.get(errorIdx);
+                            policyErrorHandler.handle(error);
+                        } else {
+                            handler.handle(rval);
+                        }
+                    }
+                }
+            });
+        }
     }
 
     /**
@@ -286,7 +368,7 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
      * @param requestHandler
      */
     private Chain<ServiceRequest> createRequestChain(IAsyncHandler<ServiceRequest> requestHandler) {
-        RequestChain requestChain = new RequestChain(policies, context);
+        RequestChain requestChain = new RequestChain(policyImpls, context);
         requestChain.headHandler(requestHandler);
         requestChain.policyFailureHandler(policyFailureHandler);
         requestChain.policyErrorHandler(policyErrorHandler);
@@ -298,7 +380,7 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
      * @param responseHandler
      */
     private Chain<ServiceResponse> createResponseChain(IAsyncHandler<ServiceResponse> responseHandler) {
-        ResponseChain responseChain = new ResponseChain(policies, context);
+        ResponseChain responseChain = new ResponseChain(policyImpls, context);
         responseChain.headHandler(responseHandler);
         responseChain.policyFailureHandler(new IAsyncHandler<PolicyFailure>() {
             @Override

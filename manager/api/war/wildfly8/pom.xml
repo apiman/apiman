@@ -24,11 +24,23 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-manager-api-ispn</artifactId>
     </dependency>
+    
+    <!-- Project dependencies in the base WAR but that are also directly used -->
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-manager-api-core</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
     <!-- Spec libs -->
     <dependency>
       <groupId>org.jboss.spec.javax.servlet</groupId>
       <artifactId>jboss-servlet-api_3.0_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
       <scope>provided</scope>
     </dependency>
 

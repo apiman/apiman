@@ -19,33 +19,25 @@ import io.apiman.gateway.engine.IComponentRegistry;
 import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.IEngine;
 import io.apiman.gateway.engine.IEngineResult;
+import io.apiman.gateway.engine.IPluginRegistry;
 import io.apiman.gateway.engine.IRegistry;
 import io.apiman.gateway.engine.IServiceRequestExecutor;
 import io.apiman.gateway.engine.Version;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.Application;
-import io.apiman.gateway.engine.beans.Contract;
 import io.apiman.gateway.engine.beans.Policy;
 import io.apiman.gateway.engine.beans.Service;
 import io.apiman.gateway.engine.beans.ServiceContract;
 import io.apiman.gateway.engine.beans.ServiceRequest;
-import io.apiman.gateway.engine.beans.exceptions.ConfigurationParseException;
 import io.apiman.gateway.engine.beans.exceptions.InvalidContractException;
 import io.apiman.gateway.engine.beans.exceptions.InvalidServiceException;
-import io.apiman.gateway.engine.beans.exceptions.PolicyNotFoundException;
 import io.apiman.gateway.engine.beans.exceptions.PublishingException;
 import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
 import io.apiman.gateway.engine.i18n.Messages;
-import io.apiman.gateway.engine.policy.IPolicy;
 import io.apiman.gateway.engine.policy.IPolicyFactory;
 import io.apiman.gateway.engine.policy.PolicyContextImpl;
-import io.apiman.gateway.engine.policy.PolicyWithConfiguration;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * The implementation of the API Management runtime engine.
@@ -55,24 +47,29 @@ import java.util.Set;
 public class EngineImpl implements IEngine {
 
     private IRegistry registry;
+    private IPluginRegistry pluginRegistry;
     private IComponentRegistry componentRegistry;
     private IConnectorFactory connectorFactory;
     private IPolicyFactory policyFactory;
-    private Map<Policy, Object> policyConfigCache = new HashMap<Policy, Object>();
 
     /**
      * Constructor.
      * @param registry
+     * @param pluginRegistry
      * @param componentRegistry
      * @param connectorFactory
      * @param policyFactory
      */
-    public EngineImpl(final IRegistry registry, final IComponentRegistry componentRegistry,
-            final IConnectorFactory connectorFactory, final IPolicyFactory policyFactory) {
+    public EngineImpl(final IRegistry registry, final IPluginRegistry pluginRegistry,
+            final IComponentRegistry componentRegistry, final IConnectorFactory connectorFactory,
+            final IPolicyFactory policyFactory) {
         setRegistry(registry);
+        setPluginRegistry(pluginRegistry);
         setComponentRegistry(componentRegistry);
         setConnectorFactory(connectorFactory);
         setPolicyFactory(policyFactory);
+        
+        policyFactory.setPluginRegistry(pluginRegistry);
     }
 
     /**
@@ -89,7 +86,7 @@ public class EngineImpl implements IEngine {
     @Override
     public IServiceRequestExecutor executor(ServiceRequest request, final IAsyncResultHandler<IEngineResult> resultHandler) {
         Service service = null;
-        List<PolicyWithConfiguration> policies = null;
+        List<Policy> policies = null;
         
         // If no API Key provided - the service must be public.  If an API Key *is* provided
         // then we lookup the Contract and use that.
@@ -101,12 +98,12 @@ public class EngineImpl implements IEngine {
             if (!service.isPublicService()) {
                 throw new InvalidServiceException(Messages.i18n.format("EngineImpl.ServiceNotPublic")); //$NON-NLS-1$
             }
-            policies = getPolicies(service);
+            policies = service.getServicePolicies();
         } else {
             ServiceContract serviceContract = getContract(request);
             service = serviceContract.getService();
             request.setContract(serviceContract);
-            policies = getPolicies(serviceContract);
+            policies = serviceContract.getPolicies();
             if (request.getServiceOrgId() != null) {
                 validateRequest(request);
             }
@@ -117,6 +114,7 @@ public class EngineImpl implements IEngine {
                 service,
                 new PolicyContextImpl(getComponentRegistry()),
                 policies,
+                policyFactory,
                 getConnectorFactory());
     }
 
@@ -183,21 +181,6 @@ public class EngineImpl implements IEngine {
      */
     @Override
     public void registerApplication(final Application application) throws RegistrationException {
-        Set<Contract> contracts = application.getContracts();
-        for (Contract contract : contracts) {
-            List<Policy> policies = contract.getPolicies();
-            for (Policy policy : policies) {
-                try {
-                    // Load the policy class and validate the policy config.
-                    IPolicy policyImpl = getPolicyFactory().newPolicy(policy.getPolicyImpl());
-                    policyImpl.parseConfiguration(policy.getPolicyJsonConfig());
-                } catch (PolicyNotFoundException e) {
-                    throw new RegistrationException(e);
-                } catch (ConfigurationParseException e) {
-                    throw new RegistrationException(e);
-                }
-            }
-        }
         getRegistry().registerApplication(application);
     }
 
@@ -220,52 +203,6 @@ public class EngineImpl implements IEngine {
      */
     private ServiceContract getContract(ServiceRequest request) {
         return getRegistry().getContract(request);
-    }
-
-    /**
-     * Creates the policies that should be applied for this service invocation.
-     * This is achieved by using the policy information set on the contract.
-     * @param contract
-     */
-    private List<PolicyWithConfiguration> getPolicies(ServiceContract contract) {
-        return getPolicies(contract.getPolicies());
-    }
-
-    /**
-     * Creates the policies that should be applied for this service invocation.
-     * @param service
-     */
-    private List<PolicyWithConfiguration> getPolicies(Service service) {
-        return getPolicies(service.getServicePolicies());
-    }
-
-    /**
-     * Get/resolve the list of policies into a list of policies with config.
-     * @param policies
-     */
-    private List<PolicyWithConfiguration> getPolicies(List<Policy> policies) {
-        List<PolicyWithConfiguration> instances = new ArrayList<PolicyWithConfiguration>();
-        for (Policy policy : policies) {
-            IPolicy policyImpl = getPolicyFactory().newPolicy(policy.getPolicyImpl());
-            Object policyConfig = getPolicyConfig(policyImpl, policy);
-            PolicyWithConfiguration pwc = new PolicyWithConfiguration(policyImpl, policyConfig);
-            instances.add(pwc);
-        }
-        return instances;
-    }
-
-    /**
-     * Gets the policy config object for the given policy.
-     * @param policyImpl
-     * @param policy
-     */
-    protected Object getPolicyConfig(IPolicy policyImpl, Policy policy) {
-        Object parsedConfig = policyConfigCache.get(policy);
-        if (parsedConfig == null) {
-            parsedConfig = policyImpl.parseConfiguration(policy.getPolicyJsonConfig());
-            policyConfigCache.put(policy, parsedConfig);
-        }
-        return parsedConfig;
     }
 
     /**
@@ -322,6 +259,20 @@ public class EngineImpl implements IEngine {
      */
     public void setComponentRegistry(IComponentRegistry componentRegistry) {
         this.componentRegistry = componentRegistry;
+    }
+
+    /**
+     * @return the pluginRegistry
+     */
+    public IPluginRegistry getPluginRegistry() {
+        return pluginRegistry;
+    }
+
+    /**
+     * @param pluginRegistry the pluginRegistry to set
+     */
+    public void setPluginRegistry(IPluginRegistry pluginRegistry) {
+        this.pluginRegistry = pluginRegistry;
     }
 
 }

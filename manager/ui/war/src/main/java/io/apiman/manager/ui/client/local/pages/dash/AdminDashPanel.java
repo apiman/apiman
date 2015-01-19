@@ -16,6 +16,7 @@
 package io.apiman.manager.ui.client.local.pages.dash;
 
 import io.apiman.manager.ui.client.local.pages.AdminGatewaysPage;
+import io.apiman.manager.ui.client.local.pages.AdminPluginsPage;
 import io.apiman.manager.ui.client.local.pages.AdminPolicyDefsPage;
 import io.apiman.manager.ui.client.local.pages.AdminRolesPage;
 
@@ -43,6 +44,8 @@ public class AdminDashPanel extends Composite {
     TransitionAnchor<AdminPolicyDefsPage> managePolicyDefs;
     @Inject @DataField
     TransitionAnchor<AdminGatewaysPage> manageGateways;
+    @Inject @DataField
+    TransitionAnchor<AdminPluginsPage> managePlugins;
 
     /**
      * Constructor.

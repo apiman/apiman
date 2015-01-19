@@ -1,0 +1,14 @@
+GET /gateway/PluginTestPolicyTest/echo/1.0/path/to/app/resource bwayne/bwayne
+
+----
+200
+Content-Type: application/json
+
+{
+  "method" : "GET",
+  "resource" : "/path/to/app/resource",
+  "uri" : "/path/to/app/resource",
+  "headers" : {
+    "Test-Policy" : "true"
+  }
+}

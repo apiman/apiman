@@ -15,6 +15,9 @@
  */
 package io.apiman.gateway.engine.impl;
 
+import io.apiman.gateway.engine.async.IAsyncResult;
+import io.apiman.gateway.engine.async.IAsyncResultHandler;
+import io.apiman.gateway.engine.beans.exceptions.PolicyNotFoundException;
 import io.apiman.gateway.engine.policy.IPolicy;
 import io.apiman.gateway.engine.policy.IPolicyFactory;
 import io.apiman.gateway.engine.policy.PolicyFactoryImpl;
@@ -44,11 +47,31 @@ public class PolicyLoadTest {
 
     @Test
     public void testPolicyLoad() {
-        policyFactory.newPolicy(PassthroughPolicy.QUALIFIED_NAME);
-        Assert.assertEquals("Should classload one Policy via class:CanonicalName", getNumPolicies(), 1);
+        policyFactory.loadPolicy(PassthroughPolicy.QUALIFIED_NAME, new IAsyncResultHandler<IPolicy>() {
+            @Override
+            public void handle(IAsyncResult<IPolicy> result) {
+                Assert.assertEquals("Should classload one Policy via class:CanonicalName", getNumPolicies(), 1);
+            }
+        });
         
-        IPolicy policyInstance = policyFactory.newPolicy(PassthroughPolicy.QUALIFIED_NAME);
-        Assert.assertNotNull("Should return a new IPolicy instance", policyInstance);
+        policyFactory.loadPolicy(PassthroughPolicy.QUALIFIED_NAME, new IAsyncResultHandler<IPolicy>() {
+            @Override
+            public void handle(IAsyncResult<IPolicy> result) {
+                Assert.assertNotNull("Should return a valid async result", result);
+                Assert.assertTrue(result.isSuccess());
+                Assert.assertNotNull("Should return a new IPolicy instance", result.getResult());
+            }
+        });
+        
+        policyFactory.loadPolicy("class:org.example.NotFound", new IAsyncResultHandler<IPolicy>() {
+            @Override
+            public void handle(IAsyncResult<IPolicy> result) {
+                Assert.assertNotNull("Should return a valid async result", result);
+                Assert.assertTrue(result.isError());
+                Assert.assertNotNull("Should return an exception", result.getError());
+                Assert.assertEquals(PolicyNotFoundException.class.getName(), result.getError().getClass().getName());
+            }
+        });
     }
 
     /**

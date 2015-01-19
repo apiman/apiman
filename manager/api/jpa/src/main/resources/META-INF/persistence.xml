@@ -25,6 +25,7 @@
     <class>io.apiman.manager.api.beans.policies.PolicyBean</class>
     <class>io.apiman.manager.api.beans.audit.AuditEntryBean</class>
     <class>io.apiman.manager.api.beans.gateways.GatewayBean</class>
+    <class>io.apiman.manager.api.beans.plugins.PluginBean</class>
 
     <properties>
       <property name="hibernate.show_sql" value="false" />

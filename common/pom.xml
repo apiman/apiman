@@ -13,6 +13,7 @@
 
   <modules>
     <module>auth</module>
+    <module>plugin</module>
     <module>servlet</module>
     <module>util</module>
   </modules>

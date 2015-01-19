@@ -30,6 +30,7 @@ import io.apiman.manager.api.beans.members.MemberBean;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.beans.plans.PlanBean;
 import io.apiman.manager.api.beans.plans.PlanVersionBean;
+import io.apiman.manager.api.beans.plugins.PluginBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyChainBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
@@ -47,6 +48,7 @@ import io.apiman.manager.api.beans.summary.GatewayTestResultBean;
 import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
 import io.apiman.manager.api.beans.summary.PlanSummaryBean;
 import io.apiman.manager.api.beans.summary.PlanVersionSummaryBean;
+import io.apiman.manager.api.beans.summary.PluginSummaryBean;
 import io.apiman.manager.api.beans.summary.PolicyDefinitionSummaryBean;
 import io.apiman.manager.api.beans.summary.PolicySummaryBean;
 import io.apiman.manager.api.beans.summary.ServicePlanSummaryBean;
@@ -57,6 +59,7 @@ import io.apiman.manager.api.rest.contract.IActionResource;
 import io.apiman.manager.api.rest.contract.ICurrentUserResource;
 import io.apiman.manager.api.rest.contract.IGatewayResource;
 import io.apiman.manager.api.rest.contract.IOrganizationResource;
+import io.apiman.manager.api.rest.contract.IPluginResource;
 import io.apiman.manager.api.rest.contract.IPolicyDefinitionResource;
 import io.apiman.manager.api.rest.contract.IRoleResource;
 import io.apiman.manager.api.rest.contract.ISearchResource;
@@ -100,6 +103,8 @@ public class RestInvokerService {
     private Caller<IActionResource> actions;
     @Inject
     private Caller<IGatewayResource> gateways;
+    @Inject
+    private Caller<IPluginResource> plugins;
     
     /**
      * Constructor.
@@ -1089,6 +1094,45 @@ public class RestInvokerService {
     public void deleteGateway(GatewayBean gateway, IRestInvokerCallback<Void> callback) {
         CallbackAdapter<Void> adapter = new CallbackAdapter<Void>(callback);
         gateways.call(adapter, adapter).delete(gateway.getId());
+    }
+
+    /**
+     * Gets a list of all the plugins in the system.
+     * @param callback
+     */
+    public void listPlugins(IRestInvokerCallback<List<PluginSummaryBean>> callback) {
+        CallbackAdapter<List<PluginSummaryBean>> adapter = new CallbackAdapter<List<PluginSummaryBean>>(callback);
+        plugins.call(adapter, adapter).list();
+    }
+    
+    /**
+     * Creates a policy definition.
+     * @param plugin
+     * @param callback
+     */
+    public void createPlugin(PluginBean plugin, IRestInvokerCallback<PluginBean> callback) {
+        CallbackAdapter<PluginBean> adapter = new CallbackAdapter<PluginBean>(callback);
+        plugins.call(adapter, adapter).create(plugin);
+    }
+
+    /**
+     * Gets a single plugin by ID.
+     * @param pluginId
+     * @param callback
+     */
+    public void getPlugin(Long pluginId, IRestInvokerCallback<PluginBean> callback) {
+        CallbackAdapter<PluginBean> adapter = new CallbackAdapter<PluginBean>(callback);
+        plugins.call(adapter, adapter).get(pluginId);
+    }
+
+    /**
+     * Deletes a plugin.  Use with caution!
+     * @param pluginId
+     * @param callback
+     */
+    public void deletePlugin(PluginBean plugin, IRestInvokerCallback<Void> callback) {
+        CallbackAdapter<Void> adapter = new CallbackAdapter<Void>(callback);
+        plugins.call(adapter, adapter).delete(plugin.getId());
     }
 
 }

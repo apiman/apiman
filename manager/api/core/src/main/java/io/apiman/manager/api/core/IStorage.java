@@ -24,6 +24,7 @@ import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.beans.plans.PlanBean;
 import io.apiman.manager.api.beans.plans.PlanVersionBean;
+import io.apiman.manager.api.beans.plugins.PluginBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.services.ServiceBean;
@@ -59,6 +60,7 @@ public interface IStorage {
     public void createPlanVersion(PlanVersionBean version) throws StorageException;
     public void createPolicy(PolicyBean policy) throws StorageException;
     public void createGateway(GatewayBean gateway) throws StorageException;
+    public void createPlugin(PluginBean plugin) throws StorageException;
     public void createPolicyDefinition(PolicyDefinitionBean policyDef) throws StorageException;
     public void createRole(RoleBean role) throws StorageException;
     public void createAuditEntry(AuditEntryBean entry) throws StorageException;
@@ -94,6 +96,7 @@ public interface IStorage {
     public void deletePlanVersion(PlanVersionBean version) throws StorageException;
     public void deletePolicy(PolicyBean policy) throws StorageException;
     public void deleteGateway(GatewayBean gateway) throws StorageException;
+    public void deletePlugin(PluginBean plugin) throws StorageException;
     public void deletePolicyDefinition(PolicyDefinitionBean policyDef) throws StorageException;
     public void deleteRole(RoleBean role) throws StorageException;
 
@@ -111,6 +114,8 @@ public interface IStorage {
     public PlanVersionBean getPlanVersion(String organizationId, String planId, String version) throws StorageException;
     public PolicyBean getPolicy(Long id) throws StorageException;
     public GatewayBean getGateway(String id) throws StorageException;
+    public PluginBean getPlugin(long id) throws StorageException;
+    public PluginBean getPlugin(String groupId, String artifactId) throws StorageException;
     public PolicyDefinitionBean getPolicyDefinition(String id) throws StorageException;
     public RoleBean getRole(String id) throws StorageException;
 

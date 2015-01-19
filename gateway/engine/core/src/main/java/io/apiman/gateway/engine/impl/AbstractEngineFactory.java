@@ -19,6 +19,7 @@ import io.apiman.gateway.engine.IComponentRegistry;
 import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.IEngine;
 import io.apiman.gateway.engine.IEngineFactory;
+import io.apiman.gateway.engine.IPluginRegistry;
 import io.apiman.gateway.engine.IRegistry;
 import io.apiman.gateway.engine.policy.IPolicyFactory;
 
@@ -38,29 +39,32 @@ public abstract class AbstractEngineFactory implements IEngineFactory {
     /**
      * Call this to create a new engine. This method uses the engine
      * config singleton to create the engine.
-     * 
-     * @param engineConfig
      */
     public final IEngine createEngine() {
         IRegistry registry = createRegistry();
+        IPluginRegistry pluginRegistry = createPluginRegistry();
         IComponentRegistry componentRegistry = createComponentRegistry();
         IConnectorFactory cfactory = createConnectorFactory();
         IPolicyFactory pfactory = createPolicyFactory();
         
-        IEngine engine = new EngineImpl(registry, componentRegistry, cfactory, pfactory);
+        IEngine engine = new EngineImpl(registry, pluginRegistry, componentRegistry, cfactory, pfactory);
         return engine;
     }
 
     /**
      * Creates a registry.
-     * @param engineConfig 
      * @return a new registry instance
      */
     protected abstract IRegistry createRegistry();
 
     /**
+     * Creates a plugin registry.
+     * @return a new registry instance
+     */
+    protected abstract IPluginRegistry createPluginRegistry();
+
+    /**
      * Creates a component registry.
-     * @param engineConfig 
      * @return a new registry instance
      */
     protected abstract IComponentRegistry createComponentRegistry();
@@ -73,7 +77,6 @@ public abstract class AbstractEngineFactory implements IEngineFactory {
 
     /**
      * Creates a policy factory.
-     * @param engineConfig 
      * @return a new policy factory
      */
     protected abstract IPolicyFactory createPolicyFactory();

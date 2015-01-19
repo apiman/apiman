@@ -1,0 +1,20 @@
+POST /plugins admin/admin
+Content-Type: application/json
+
+{
+  "groupId" : "io.apiman.test",
+  "artifactId" : "apiman-test-plugin-1",
+  "version" : "2.0"
+}
+----
+200
+Content-Type: application/json
+X-RestTest-BindTo-plugin-id-2: id
+
+{
+  "name" : "Plugin One 2.0",
+  "description" : "This is version 2.0 of Plugin One.",
+  "groupId" : "io.apiman.test",
+  "artifactId" : "apiman-test-plugin-1",
+  "version" : "2.0"
+}
