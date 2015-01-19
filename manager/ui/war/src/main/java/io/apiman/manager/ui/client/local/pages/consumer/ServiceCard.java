@@ -63,6 +63,8 @@ public class ServiceCard extends Composite implements TakesValue<ServiceVersionB
     private Label description;
     @Inject @DataField
     private SimpleVersionSelectBox versionSelector;
+    @Inject @DataField
+    private Label noVersionsMessage;
     
     private ServiceVersionBean value;
 
@@ -74,6 +76,7 @@ public class ServiceCard extends Composite implements TakesValue<ServiceVersionB
     
     @PostConstruct
     protected void postConstruct() {
+        noVersionsMessage.setVisible(false);
     }
 
     /**
@@ -119,6 +122,12 @@ public class ServiceCard extends Composite implements TakesValue<ServiceVersionB
             versionList.add(version.getVersion());
         }
         versionSelector.setOptions(versionList);
+
+        if (versions == null || versions.isEmpty()) {
+            noVersionsMessage.setVisible(true);
+        } else {
+            noVersionsMessage.setVisible(false);
+        }
     }
     
     /**

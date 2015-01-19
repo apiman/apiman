@@ -17,6 +17,7 @@ package io.apiman.manager.ui.client.local.pages;
 
 import io.apiman.manager.api.beans.policies.PolicyChainBean;
 import io.apiman.manager.api.beans.services.ServiceBean;
+import io.apiman.manager.api.beans.services.ServiceStatus;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
 import io.apiman.manager.api.beans.summary.ServicePlanSummaryBean;
 import io.apiman.manager.api.beans.summary.ServiceVersionEndpointSummaryBean;
@@ -31,6 +32,7 @@ import io.apiman.manager.ui.client.local.pages.consumer.ServiceCard;
 import io.apiman.manager.ui.client.local.services.rest.IRestInvokerCallback;
 import io.apiman.manager.ui.client.local.util.MultimapUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -164,9 +166,15 @@ public class ConsumerServicePage extends AbstractPage {
         rest.getServiceVersions(org, service, new IRestInvokerCallback<List<ServiceVersionSummaryBean>>() {
             @Override
             public void onSuccess(List<ServiceVersionSummaryBean> response) {
-                versionBeans = response;
+                versionBeans = new ArrayList<ServiceVersionSummaryBean>();
+                for (ServiceVersionSummaryBean svcv : response) {
+                    if (svcv.getStatus() == ServiceStatus.Published) {
+                        versionBeans.add(svcv);
+                    }
+                }
                 // If no version is specified in the URL, use the most recent (first in the list)
-                if (version == null) {
+                if (version == null && response.size() > 0) {
+                    increaseExpectedDataPackets(1);
                     loadServiceVersion(response.get(0).getVersion());
                 }
                 dataPacketLoaded();
@@ -176,10 +184,12 @@ public class ConsumerServicePage extends AbstractPage {
                 dataPacketError(error);
             }
         });
+        rval++;
         if (version != null) {
+            rval++;
             loadServiceVersion(version);
         }
-        return rval + 3;
+        return rval;
     }
 
     /**
@@ -195,8 +205,9 @@ public class ConsumerServicePage extends AbstractPage {
                     increaseExpectedDataPackets(1);
                     loadManagedEndpointInfo();
                 }
-                dataPacketLoaded();
+                increaseExpectedDataPackets(1);
                 getPlansForServiceVersion();
+                dataPacketLoaded();
             }
             @Override
             public void onError(Throwable error) {

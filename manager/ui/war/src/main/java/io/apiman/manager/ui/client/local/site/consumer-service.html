@@ -75,13 +75,17 @@
                     <div class="description" data-field="description" style="margin-bottom: 10px;">This API allows users to interact with a remote S-RAMP repository.</div>
                     <span class="form-label" data-i18n-key="choose-version">Choose Version:</span>
                     <div class="btn-group apiman-entity-action">
-                      <select class="selectpicker" data-live-search="false" data-role="dummy" data-field="versionSelector">
+                      <select title="[no published versions]" class="selectpicker" data-live-search="false" data-role="dummy" data-field="versionSelector">
                         <option>3.0.1</option>
                         <option>3.0</option>
                         <option>2.1</option>
                         <option>2.0</option>
                         <option>1.0</option>
                       </select>
+                    </div>
+                    <div data-field="noVersionsMessage" class="apiman-label-faded">
+                      No versions of this service have been published.  You will not be able to
+                      consume this service until it has been published by its owner!
                     </div>
                   </div>
                 </div>

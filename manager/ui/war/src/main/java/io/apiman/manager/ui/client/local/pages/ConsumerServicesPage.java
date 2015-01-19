@@ -20,8 +20,6 @@ import io.apiman.manager.api.beans.search.SearchCriteriaFilterBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.beans.summary.ServiceSummaryBean;
 import io.apiman.manager.ui.client.local.AppMessages;
-import io.apiman.manager.ui.client.local.events.CreateContractEvent;
-import io.apiman.manager.ui.client.local.events.CreateContractEvent.Handler;
 import io.apiman.manager.ui.client.local.pages.common.Breadcrumb;
 import io.apiman.manager.ui.client.local.pages.consumer.ServiceList;
 import io.apiman.manager.ui.client.local.services.ConfigurationService;
@@ -77,8 +75,6 @@ public class ConsumerServicesPage extends AbstractPage {
     ConfigurationService config;
     @Inject
     TransitionTo<ConsumerServicesPage> toSelf;
-    @Inject
-    TransitionTo<NewContractPage> toCreateContract;
 
     protected List<ServiceSummaryBean> serviceBeans;
 
@@ -100,12 +96,6 @@ public class ConsumerServicesPage extends AbstractPage {
             @Override
             public void onClick(ClickEvent event) {
                 toSelf.go(MultimapUtil.singleItemMap("query", searchBox.getValue())); //$NON-NLS-1$
-            }
-        });
-        services.addCreateContractHandler(new Handler() {
-            @Override
-            public void onCreateContract(CreateContractEvent event) {
-                ConsumerServicesPage.this.onCreateContract((ServiceSummaryBean) event.getBean());
             }
         });
     }
@@ -165,15 +155,6 @@ public class ConsumerServicesPage extends AbstractPage {
         breadcrumb.addActiveItem("search", i18n.format(AppMessages.SERVICES)); //$NON-NLS-1$
     }
     
-    /**
-     * Event handler for when the user clicks "Create Contract".
-     * @param service
-     */
-    protected void onCreateContract(ServiceSummaryBean service) {
-        toCreateContract.go(MultimapUtil.fromMultiple("svcorg", service.getOrganizationId(), "svc", //$NON-NLS-1$ //$NON-NLS-2$
-                service.getId()));
-    }
-
     /**
      * @see io.apiman.manager.ui.client.local.pages.AbstractPage#getPageTitle()
      */

@@ -17,8 +17,6 @@ package io.apiman.manager.ui.client.local.pages.consumer;
 
 import io.apiman.manager.api.beans.summary.ServiceSummaryBean;
 import io.apiman.manager.ui.client.local.AppMessages;
-import io.apiman.manager.ui.client.local.events.CreateContractEvent;
-import io.apiman.manager.ui.client.local.events.CreateContractEvent.HasCreateContractHandlers;
 import io.apiman.manager.ui.client.local.pages.ConsumerOrgPage;
 import io.apiman.manager.ui.client.local.pages.ConsumerServicePage;
 import io.apiman.manager.ui.client.local.pages.common.NoEntitiesWidget;
@@ -34,12 +32,8 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.nav.client.local.TransitionAnchorFactory;
 import org.overlord.commons.gwt.client.local.widgets.FontAwesomeIcon;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.TakesValue;
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
@@ -53,7 +47,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author eric.wittmann@redhat.com
  */
 @Dependent
-public class ServiceList extends FlowPanel implements TakesValue<List<ServiceSummaryBean>>, HasCreateContractHandlers  {
+public class ServiceList extends FlowPanel implements TakesValue<List<ServiceSummaryBean>> {
     
     @Inject
     protected NavigationHelperService navHelper;
@@ -135,7 +129,6 @@ public class ServiceList extends FlowPanel implements TakesValue<List<ServiceSum
         
         createTitleRow(bean, item);
         createDescriptionRow(bean, item);
-        createActionsRow(bean, item);
         
         return item;
     }
@@ -180,37 +173,6 @@ public class ServiceList extends FlowPanel implements TakesValue<List<ServiceSum
             d = d.substring(0, 70) + "..."; //$NON-NLS-1$
         }
         description.setText(d);
-    }
-
-    /**
-     * @param bean
-     * @param item
-     */
-    private void createActionsRow(final ServiceSummaryBean bean, FlowPanel item) {
-        FlowPanel actions = new FlowPanel();
-        item.add(actions);
-        actions.getElement().setClassName("actions"); //$NON-NLS-1$
-        
-        Button button = new Button();
-        actions.add(button);
-        button.setText(i18n.format(AppMessages.CREATE_CONTRACT));
-        button.getElement().setClassName("btn"); //$NON-NLS-1$
-        button.getElement().addClassName("btn-default"); //$NON-NLS-1$
-        button.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                CreateContractEvent.fire(ServiceList.this, bean);
-            }
-        });
-    }
-    
-    /**
-     * @see io.apiman.manager.ui.client.local.events.CreateContractEvent.HasCreateContractHandlers#addCreateContractHandler(io.apiman.manager.ui.client.local.events.CreateContractEvent.Handler)
-     */
-    @Override
-    public HandlerRegistration addCreateContractHandler(
-            io.apiman.manager.ui.client.local.events.CreateContractEvent.Handler handler) {
-        return addHandler(handler, CreateContractEvent.getType());
     }
 
 }
