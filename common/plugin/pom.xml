@@ -3,18 +3,12 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>io.apiman</groupId>
-    <artifactId>apiman</artifactId>
+    <artifactId>apiman-common</artifactId>
     <version>1.0.2-SNAPSHOT</version>
-    <relativePath>../pom.xml</relativePath>
   </parent>
-  <artifactId>apiman-common</artifactId>
-  <packaging>pom</packaging>
-  <name>apiman-common</name>
+  <artifactId>apiman-common-plugin</artifactId>
+  <name>apiman-common-plugin</name>
 
-  <modules>
-    <module>auth</module>
-    <module>plugin</module>
-    <module>servlet</module>
-    <module>util</module>
-  </modules>
+  <dependencies>
+  </dependencies>
 </project>
