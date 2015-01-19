@@ -10,6 +10,7 @@
     <test name="Echo 1 (GET)">test-plan-data/simple/simple-echo/echo/001.resttest</test>
     <test name="Echo 2 (PUT)">test-plan-data/simple/simple-echo/echo/002.resttest</test>
     <test name="Echo 3 (POST)">test-plan-data/simple/simple-echo/echo/003.resttest</test>
+    <test name="Echo 4 (Query Params)">test-plan-data/simple/simple-echo/echo/004.resttest</test>
   </testGroup>
 
 </testPlan>

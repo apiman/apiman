@@ -16,6 +16,7 @@
 package io.apiman.gateway.engine.beans;
 
 import java.io.Serializable;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -31,6 +32,7 @@ public class ServiceRequest implements Serializable {
     private transient ServiceContract contract;
     private String type;
     private String destination;
+    private Map<String, String> queryParams = new LinkedHashMap<>();
     private Map<String, String> headers = new HeaderHashMap();
     private String remoteAddr;
     private Object rawRequest;
@@ -187,5 +189,19 @@ public class ServiceRequest implements Serializable {
      */
     public void setServiceVersion(String serviceVersion) {
         this.serviceVersion = serviceVersion;
+    }
+
+    /**
+     * @return the queryParams
+     */
+    public Map<String, String> getQueryParams() {
+        return queryParams;
+    }
+
+    /**
+     * @param queryParams the queryParams to set
+     */
+    public void setQueryParams(Map<String, String> queryParams) {
+        this.queryParams = queryParams;
     }
 }

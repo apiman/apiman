@@ -34,7 +34,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.Enumeration;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -206,12 +209,13 @@ public abstract class GatewayServlet extends HttpServlet {
      * @throws IOException 
      */
     protected ServiceRequest readRequest(HttpServletRequest request) throws Exception {
-        String apiKey = getApiKey(request);
-        
         ServiceRequestPathInfo pathInfo = parseServiceRequestPath(request.getPathInfo());
         if (pathInfo.orgId == null) {
             throw new Exception(Messages.i18n.format("GatewayServlet.InvalidServiceEndpoint")); //$NON-NLS-1$
         }
+        Map<String, String> queryParams = parseServiceRequestQueryParams(request.getQueryString());
+
+        String apiKey = getApiKey(request, queryParams);
 
         ServiceRequest srequest = GatewayThreadContext.getServiceRequest();
         srequest.setApiKey(apiKey);
@@ -219,6 +223,7 @@ public abstract class GatewayServlet extends HttpServlet {
         srequest.setServiceId(pathInfo.serviceId);
         srequest.setServiceVersion(pathInfo.serviceVersion);
         srequest.setDestination(pathInfo.resource);
+        srequest.setQueryParams(queryParams);
         readHeaders(srequest, request);
         srequest.setRawRequest(request);
         srequest.setRemoteAddr(request.getRemoteAddr());
@@ -230,36 +235,15 @@ public abstract class GatewayServlet extends HttpServlet {
      * a custom http request header called X-API-Key or else by a query parameter
      * in the URL called apikey.
      * @param request the inbound request
+     * @param queryParams the inbound request query params
      * @return the api key or null if not found
      */
-    protected String getApiKey(HttpServletRequest request) {
+    protected String getApiKey(HttpServletRequest request, Map<String, String> queryParams) {
         String apiKey = request.getHeader("X-API-Key"); //$NON-NLS-1$
         if (apiKey == null || apiKey.trim().length() == 0) {
-            apiKey = getApiKeyFromQuery(request);
+            apiKey = queryParams.get("apikey"); //$NON-NLS-1$
         }
         return apiKey;
-    }
-
-    /**
-     * Gets the API key from the request's query string.
-     * @param request the inbound request
-     * @return the api key or null if not found
-     */
-    protected String getApiKeyFromQuery(HttpServletRequest request) {
-        String queryString = request.getQueryString();
-        if (queryString == null) {
-            return null;
-        }
-        int idx = queryString.indexOf("apikey="); //$NON-NLS-1$
-        if (idx >= 0) {
-            int endIdx = queryString.indexOf('&', idx);
-            if (endIdx == -1) {
-                endIdx = queryString.length();
-            }
-            return queryString.substring(idx + 7, endIdx);
-        } else {
-            return null;
-        }
     }
 
     /**
@@ -371,6 +355,34 @@ public abstract class GatewayServlet extends HttpServlet {
             }
         }
         return info;
+    }
+    
+    /**
+     * Parses the query string into a map.
+     * @param queryString
+     */
+    protected static final Map<String, String> parseServiceRequestQueryParams(String queryString) {
+        Map<String, String> rval = new LinkedHashMap<>();
+        if (queryString != null) {
+            try {
+                queryString = URLDecoder.decode(queryString, "UTF-8"); //$NON-NLS-1$
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException(e);
+            }
+            String[] pairSplit = queryString.split("&"); //$NON-NLS-1$
+            for (String paramPair : pairSplit) {
+                int idx = paramPair.indexOf("="); //$NON-NLS-1$
+                if (idx != -1) {
+                    String key = paramPair.substring(0, idx);
+                    String val = paramPair.substring(idx + 1);
+                    rval.put(key, val);
+                } else {
+                    rval.put(paramPair, null);
+                }
+            }
+        }
+        
+        return rval;
     }
     
     /**

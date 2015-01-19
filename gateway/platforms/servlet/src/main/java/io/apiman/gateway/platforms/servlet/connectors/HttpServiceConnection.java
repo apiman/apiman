@@ -33,6 +33,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -95,6 +96,16 @@ public class HttpServiceConnection implements IServiceConnection, IServiceConnec
             }
             if (request.getDestination() != null) {
                 endpoint += request.getDestination();
+            }
+            if (request.getQueryParams() != null && !request.getQueryParams().isEmpty()) {
+                String delim = "?"; //$NON-NLS-1$
+                for (Entry<String, String> entry : request.getQueryParams().entrySet()) {
+                    endpoint += delim + entry.getKey();
+                    if (entry.getValue() != null) {
+                        endpoint += "=" + URLEncoder.encode(entry.getValue(), "UTF-8"); //$NON-NLS-1$ //$NON-NLS-2$
+                    }
+                    delim = "&"; //$NON-NLS-1$
+                }
             }
             URL url = new URL(endpoint);
             connection = (HttpURLConnection) url.openConnection();
