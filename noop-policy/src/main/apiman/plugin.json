@@ -1,4 +1,6 @@
 {
+  "frameworkVersion" : 1.0,
   "name" : "No-op Policy Plugin",
-  "description" : "This plugin doesn't really do anything except contribute a single no-op policy.  This is useful as a starting point for real plugins."
+  "description" : "This plugin doesn't really do anything except contribute a single no-op policy.  This is useful as a starting point for real plugins.",
+  "version" : "${project.version}"
 }
