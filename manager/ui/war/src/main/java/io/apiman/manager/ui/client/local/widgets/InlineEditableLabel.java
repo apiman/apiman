@@ -16,7 +16,13 @@
 package io.apiman.manager.ui.client.local.widgets;
 
 import io.apiman.manager.ui.client.local.AppMessages;
+import io.apiman.manager.ui.client.local.events.MouseInEvent;
+import io.apiman.manager.ui.client.local.events.MouseInEvent.HasMouseInHandlers;
+import io.apiman.manager.ui.client.local.events.MouseOutEvent;
+import io.apiman.manager.ui.client.local.events.MouseOutEvent.HasMouseOutHandlers;
 import io.apiman.manager.ui.client.local.services.LoggerService;
+import io.apiman.manager.ui.client.local.services.MouseOverService;
+import io.apiman.manager.ui.client.local.services.MouseOverService.WidgetMouseTrackingInfo;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -28,33 +34,14 @@ import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasAllMouseHandlers;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.event.dom.client.MouseDownEvent;
-import com.google.gwt.event.dom.client.MouseDownHandler;
-import com.google.gwt.event.dom.client.MouseMoveEvent;
-import com.google.gwt.event.dom.client.MouseMoveHandler;
-import com.google.gwt.event.dom.client.MouseOutEvent;
-import com.google.gwt.event.dom.client.MouseOutHandler;
-import com.google.gwt.event.dom.client.MouseOverEvent;
-import com.google.gwt.event.dom.client.MouseOverHandler;
-import com.google.gwt.event.dom.client.MouseUpEvent;
-import com.google.gwt.event.dom.client.MouseUpHandler;
-import com.google.gwt.event.dom.client.MouseWheelEvent;
-import com.google.gwt.event.dom.client.MouseWheelHandler;
 import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.event.logical.shared.AttachEvent.Handler;
-import com.google.gwt.event.logical.shared.ResizeEvent;
-import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.Window.ScrollEvent;
-import com.google.gwt.user.client.Window.ScrollHandler;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -77,7 +64,7 @@ import com.google.gwt.user.client.ui.TextArea;
  * @author eric.wittmann@redhat.com
  */
 @Dependent
-public class InlineEditableLabel extends FlowPanel implements HasValue<String>, HasAllMouseHandlers {
+public class InlineEditableLabel extends FlowPanel implements HasValue<String>, HasMouseInHandlers, HasMouseOutHandlers {
     
     @Inject
     LoggerService logger;
@@ -85,6 +72,8 @@ public class InlineEditableLabel extends FlowPanel implements HasValue<String>, 
     TranslationService i18n;
     @Inject
     RootPanel rootPanel;
+    @Inject
+    MouseOverService mouseOverService;
     
     Label valueLabel = new Label();
     TextArea editableValue = new TextArea();
@@ -94,11 +83,8 @@ public class InlineEditableLabel extends FlowPanel implements HasValue<String>, 
     String value;
     
     boolean enabled = true;
-    Label overlay;
+    InlineEditableLabelOverlay overlay;
     Anchor overlayEdit;
-    Timer overlayRemovalTimer = null;
-    HandlerRegistration resizeHandler;
-    HandlerRegistration scrollHandler;
     boolean editing = false;
     FlowPanel buttons = new FlowPanel();
     Button save = new Button();
@@ -131,11 +117,19 @@ public class InlineEditableLabel extends FlowPanel implements HasValue<String>, 
         cancel.setHTML("<i class=\"fa fa-times fa-fw\"></i>"); //$NON-NLS-1$
         buttons.add(save);
         buttons.add(cancel);
-        addMouseOverHandler(new MouseOverHandler() {
+        WidgetMouseTrackingInfo tracking = new WidgetMouseTrackingInfo();
+        tracking.extraRight = 35;
+        mouseOverService.enableMouseEvents(this, tracking);
+        addMouseInHandler(new MouseInEvent.Handler() {
             @Override
-            public void onMouseOver(MouseOverEvent event) {
-                logger.debug("Mouse entered inline editable label, creating overlay."); //$NON-NLS-1$
+            public void onMouseIn(MouseInEvent event) {
                 showOverlay();
+            }
+        });
+        addMouseOutHandler(new MouseOutEvent.Handler() {
+            @Override
+            public void onMouseOut(MouseOutEvent event) {
+                removeOverlay();
             }
         });
         
@@ -144,7 +138,21 @@ public class InlineEditableLabel extends FlowPanel implements HasValue<String>, 
             public void onKeyUp(KeyUpEvent event) {
                 if (event.getNativeKeyCode() == KeyCodes.KEY_ESCAPE) {
                     cancel.click();
+                } else if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER && event.isControlKeyDown()){
+                    save.click();
                 } else {
+                    int offsetHeight = editableValue.getElement().getOffsetHeight();
+                    int scrollHeight = editableValue.getElement().getScrollHeight();
+                    if (scrollHeight > offsetHeight) {
+                        editableValue.getElement().getStyle().setHeight(scrollHeight + 8, Unit.PX);
+                    }
+                }
+            }
+        });
+        editableValue.addAttachHandler(new AttachEvent.Handler() {
+            @Override
+            public void onAttachOrDetach(AttachEvent event) {
+                if (event.isAttached()) {
                     int offsetHeight = editableValue.getElement().getOffsetHeight();
                     int scrollHeight = editableValue.getElement().getScrollHeight();
                     if (scrollHeight > offsetHeight) {
@@ -180,62 +188,25 @@ public class InlineEditableLabel extends FlowPanel implements HasValue<String>, 
         remove(editableValue);
         remove(buttons);
         add(valueLabel);
-        new Timer() {
-            @Override
-            public void run() {
-                editing = false;
-            }
-        }.schedule(1000);
-    }
-
-    /**
-     * Remove any visible overlay.
-     */
-    protected void removeOverlay() {
-        logger.debug("Removing overlay: " + overlay); //$NON-NLS-1$
-        if (overlay != null) {
-            if (overlayRemovalTimer == null) {
-                logger.debug("Creating/scheduling overlay removal timer."); //$NON-NLS-1$
-                overlayRemovalTimer = new Timer() {
-                    @Override
-                    public void run() {
-                        logger.debug("Overlay removal timer fired, removing overlay now."); //$NON-NLS-1$
-                        removeOverlayNow();
-                    }
-
-                };
-                overlayRemovalTimer.schedule(250);
-            }
-        }
+        editing = false;
     }
 
     /**
      * Immediately removes the overlay.
      */
-    protected void removeOverlayNow() {
-        rootPanel.remove(overlay);
-        overlay = null;
-        rootPanel.remove(overlayEdit);
-        overlayEdit = null;
-        resizeHandler.removeHandler();
-        resizeHandler = null;
-        scrollHandler.removeHandler();
-        scrollHandler = null;
-        overlayRemovalTimer = null;
+    protected void removeOverlay() {
+        if (overlay != null) {
+            rootPanel.remove(overlay);
+            overlay = null;
+            rootPanel.remove(overlayEdit);
+            overlayEdit = null;
+        }
     }
     
     /**
      * Create and show an overlay.
      */
     protected void showOverlay() {
-        // If the old one isn't gone yet, just cancel the removal timer.  Otherwise
-        // create a new overlay.
-        if (overlayRemovalTimer != null) {
-            overlayRemovalTimer.cancel();
-            overlayRemovalTimer = null;
-            return;
-        }
-        
         // Already have an overlay?  We don't need another one!
         if (overlay != null) {
             return;
@@ -254,27 +225,13 @@ public class InlineEditableLabel extends FlowPanel implements HasValue<String>, 
         int w = getElement().getAbsoluteRight() - l + 5;
         int h = getElement().getAbsoluteBottom() - t + 5;
         
-        overlay = new Label();
+        overlay = new InlineEditableLabelOverlay();
         overlay.setStyleName("apiman-inline-edit-overlay"); //$NON-NLS-1$
         overlay.getElement().getStyle().setPosition(Position.ABSOLUTE);
         overlay.getElement().getStyle().setTop(t, Unit.PX);
         overlay.getElement().getStyle().setLeft(l, Unit.PX);
         overlay.getElement().getStyle().setWidth(w, Unit.PX);
         overlay.getElement().getStyle().setHeight(h, Unit.PX);
-        overlay.addMouseOverHandler(new MouseOverHandler() {
-            @Override
-            public void onMouseOver(MouseOverEvent event) {
-                logger.debug("Mouse entered overlay, showing overlay."); //$NON-NLS-1$
-                showOverlay();
-            }
-        });
-        overlay.addMouseOutHandler(new MouseOutHandler() {
-            @Override
-            public void onMouseOut(MouseOutEvent event) {
-                logger.debug("Mouse left overlay, removing overlay!"); //$NON-NLS-1$
-                removeOverlay();
-            }
-        });
         overlay.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -290,20 +247,6 @@ public class InlineEditableLabel extends FlowPanel implements HasValue<String>, 
         overlayEdit.getElement().getStyle().setTop(t, Unit.PX);
         overlayEdit.getElement().getStyle().setLeft(getElement().getAbsoluteRight() + 5, Unit.PX);
         overlayEdit.getElement().getStyle().setHeight(h, Unit.PX);
-        overlayEdit.addMouseOverHandler(new MouseOverHandler() {
-            @Override
-            public void onMouseOver(MouseOverEvent event) {
-                logger.debug("Mouse entered overlay-edit, showing overlay."); //$NON-NLS-1$
-                showOverlay();
-            }
-        });
-        overlayEdit.addMouseOutHandler(new MouseOutHandler() {
-            @Override
-            public void onMouseOut(MouseOutEvent event) {
-                logger.debug("Mouse left overlay-edit, removing overlay."); //$NON-NLS-1$
-                removeOverlay();
-            }
-        });
         overlayEdit.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -313,20 +256,6 @@ public class InlineEditableLabel extends FlowPanel implements HasValue<String>, 
         
         rootPanel.add(overlay);
         rootPanel.add(overlayEdit);
-        
-        scrollHandler = Window.addWindowScrollHandler(new ScrollHandler() {
-            @Override
-            public void onWindowScroll(ScrollEvent event) {
-                removeOverlay();
-            }
-        });
-        
-        resizeHandler = Window.addResizeHandler(new ResizeHandler() {
-            @Override
-            public void onResize(ResizeEvent event) {
-                removeOverlay();
-            }
-        });
     }
 
     /**
@@ -335,7 +264,7 @@ public class InlineEditableLabel extends FlowPanel implements HasValue<String>, 
     protected void onEditClicked() {
         logger.debug("User clicked EDIT."); //$NON-NLS-1$
 
-        removeOverlayNow();
+        removeOverlay();
 
         editing = true;
         
@@ -358,30 +287,6 @@ public class InlineEditableLabel extends FlowPanel implements HasValue<String>, 
      */
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
-    }
-
-    public HandlerRegistration addMouseDownHandler(MouseDownHandler handler) {
-      return addDomHandler(handler, MouseDownEvent.getType());
-    }
-
-    public HandlerRegistration addMouseMoveHandler(MouseMoveHandler handler) {
-      return addDomHandler(handler, MouseMoveEvent.getType());
-    }
-
-    public HandlerRegistration addMouseOutHandler(MouseOutHandler handler) {
-      return addDomHandler(handler, MouseOutEvent.getType());
-    }
-
-    public HandlerRegistration addMouseOverHandler(MouseOverHandler handler) {
-      return addDomHandler(handler, MouseOverEvent.getType());
-    }
-
-    public HandlerRegistration addMouseUpHandler(MouseUpHandler handler) {
-      return addDomHandler(handler, MouseUpEvent.getType());
-    }
-
-    public HandlerRegistration addMouseWheelHandler(MouseWheelHandler handler) {
-      return addDomHandler(handler, MouseWheelEvent.getType());
     }
 
     /**
@@ -437,6 +342,24 @@ public class InlineEditableLabel extends FlowPanel implements HasValue<String>, 
      */
     public void setEmptyValueMessage(String emptyValueMessage) {
         this.emptyValueMessage = emptyValueMessage;
+    }
+
+    /**
+     * @see io.apiman.manager.ui.client.local.events.MouseOutEvent.HasMouseOutHandlers#addMouseOutHandler(io.apiman.manager.ui.client.local.events.MouseOutEvent.Handler)
+     */
+    @Override
+    public HandlerRegistration addMouseOutHandler(
+            io.apiman.manager.ui.client.local.events.MouseOutEvent.Handler handler) {
+        return addHandler(handler, io.apiman.manager.ui.client.local.events.MouseOutEvent.getType());
+    }
+
+    /**
+     * @see io.apiman.manager.ui.client.local.events.MouseInEvent.HasMouseInHandlers#addMouseInHandler(io.apiman.manager.ui.client.local.events.MouseInEvent.Handler)
+     */
+    @Override
+    public HandlerRegistration addMouseInHandler(
+            io.apiman.manager.ui.client.local.events.MouseInEvent.Handler handler) {
+        return addHandler(handler, MouseInEvent.getType());
     }
 
 }
