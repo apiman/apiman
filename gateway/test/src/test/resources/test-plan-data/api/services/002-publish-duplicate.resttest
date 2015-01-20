@@ -1,0 +1,19 @@
+PUT /api/services admin/admin
+Content-Type: application/json
+
+{
+  "organizationId" : "GatewayApiTest",
+  "serviceId" : "echo",
+  "version" : "1.0",
+  "endpointType" : "REST",
+  "endpoint" : "${apiman-gateway-test.endpoints.echo}/"
+}
+----
+500
+Content-Type: application/json
+X-API-Gateway-Error: true
+
+{
+  "errorType" : "PublishingException",
+  "message" : "Service already published."
+}

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testPlan xmlns="urn:io.apiman.test:2014:02:testPlan">
+
+  <testGroup name="Test Services">
+    <test name="Publish Service">test-plan-data/api/services/001-publish-service.resttest</test>
+    <test name="Publish Duplicate Service">test-plan-data/api/services/002-publish-duplicate.resttest</test>
+    <test name="Publish Service 2.0">test-plan-data/api/services/003-publish-service-2.0.resttest</test>
+    <test name="Publish Service 3.0">test-plan-data/api/services/004-publish-service-3.0.resttest</test>
+    <test name="Retire Service 3.0">test-plan-data/api/services/005-retire-service-3.0.resttest</test>
+  </testGroup>
+
+  <testGroup name="Test Apps">
+    <test name="Register App">test-plan-data/api/apps/001-register-app.resttest</test>
+    <test name="Register Invalid App">test-plan-data/api/apps/002-register-app-invalid.resttest</test>
+    <test name="Register App (retired)">test-plan-data/api/apps/003-register-app-retired.resttest</test>
+  </testGroup>
+
+</testPlan>

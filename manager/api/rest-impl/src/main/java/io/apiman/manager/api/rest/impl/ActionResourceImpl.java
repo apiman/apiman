@@ -339,10 +339,7 @@ public class ActionResourceImpl implements IActionResource {
                 gatewayLink.close();
             }
             storage.commitTx();
-        } catch (StorageException e) {
-            storage.rollbackTx();
-            throw ExceptionFactory.actionException(Messages.i18n.format("PublishError"), e); //$NON-NLS-1$
-        } catch (PublishingException e) {
+        } catch (Exception e) {
             storage.rollbackTx();
             throw ExceptionFactory.actionException(Messages.i18n.format("PublishError"), e); //$NON-NLS-1$
         }
@@ -473,10 +470,7 @@ public class ActionResourceImpl implements IActionResource {
                 gatewayLink.unregisterApplication(application);
                 gatewayLink.close();
             }
-        } catch (StorageException e) {
-            storage.rollbackTx();
-            throw ExceptionFactory.actionException(Messages.i18n.format("PublishError"), e); //$NON-NLS-1$
-        } catch (PublishingException e) {
+        } catch (Exception e) {
             storage.rollbackTx();
             throw ExceptionFactory.actionException(Messages.i18n.format("PublishError"), e); //$NON-NLS-1$
         }

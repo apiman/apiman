@@ -72,6 +72,7 @@ import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.core.util.PolicyTemplateUtil;
+import io.apiman.manager.api.gateway.GatewayAuthenticationException;
 import io.apiman.manager.api.gateway.IGatewayLink;
 import io.apiman.manager.api.gateway.IGatewayLinkFactory;
 import io.apiman.manager.api.rest.contract.IOrganizationResource;
@@ -791,7 +792,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             }
 
             return apiRegistry;
-        } catch (StorageException e) {
+        } catch (StorageException|GatewayAuthenticationException e) {
             throw new SystemErrorException(e);
         } finally {
             if (txStarted) {

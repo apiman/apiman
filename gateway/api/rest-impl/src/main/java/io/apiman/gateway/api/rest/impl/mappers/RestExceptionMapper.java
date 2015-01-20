@@ -20,13 +20,14 @@ import io.apiman.gateway.api.rest.contract.exceptions.NotAuthorizedException;
 import io.apiman.gateway.engine.beans.exceptions.AbstractEngineException;
 
 import java.io.PrintWriter;
-import java.io.StringWriter;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
+
+import org.apache.commons.io.output.StringBuilderWriter;
 
 /**
  * Provider that maps an error.
@@ -51,11 +52,24 @@ public class RestExceptionMapper implements ExceptionMapper<AbstractEngineExcept
         if (data instanceof NotAuthorizedException) {
             errorCode = 403;
         }
-        ResponseBuilder builder = Response.status(errorCode);
-        builder.type(MediaType.TEXT_PLAIN_TYPE);
-        StringWriter writer = new StringWriter();
-        data.printStackTrace(new PrintWriter(writer));
-        return builder.entity(writer.getBuffer().toString()).build();
+
+        GatewayApiErrorBean error = new GatewayApiErrorBean();
+        error.setErrorType(data.getClass().getSimpleName());
+        error.setMessage(data.getMessage());
+        error.setStacktrace(getStackTrace(data));
+        ResponseBuilder builder = Response.status(errorCode).header("X-API-Gateway-Error", "true"); //$NON-NLS-1$ //$NON-NLS-2$
+        builder.type(MediaType.APPLICATION_JSON_TYPE);
+        return builder.entity(error).build();
     }
 
+    /**
+     * Gets the full stack trace for the given exception and returns it as a
+     * string.
+     * @param data
+     */
+    private String getStackTrace(AbstractEngineException data) {
+        StringBuilderWriter writer = new StringBuilderWriter();
+        data.printStackTrace(new PrintWriter(writer));
+        return writer.getBuilder().toString();
+    }
 }

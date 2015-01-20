@@ -16,7 +16,6 @@
 package io.apiman.manager.api.gateway.rest;
 
 import io.apiman.common.util.AesEncrypter;
-import io.apiman.gateway.api.rest.contract.exceptions.NotAuthorizedException;
 import io.apiman.gateway.engine.beans.Application;
 import io.apiman.gateway.engine.beans.Service;
 import io.apiman.gateway.engine.beans.ServiceEndpoint;
@@ -25,6 +24,7 @@ import io.apiman.gateway.engine.beans.exceptions.PublishingException;
 import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.gateways.RestGatewayConfigBean;
+import io.apiman.manager.api.gateway.GatewayAuthenticationException;
 import io.apiman.manager.api.gateway.IGatewayLink;
 import io.apiman.manager.api.gateway.i18n.Messages;
 
@@ -95,7 +95,7 @@ public class RestGatewayLink implements IGatewayLink {
     /**
      * Checks that the gateway is up.
      */
-    private boolean isGatewayUp() {
+    private boolean isGatewayUp() throws GatewayAuthenticationException {
         SystemStatus status = getClient().getStatus();
         return status.isUp();
     }
@@ -104,7 +104,7 @@ public class RestGatewayLink implements IGatewayLink {
      * @see io.apiman.manager.api.gateway.IGatewayLink#getStatus()
      */
     @Override
-    public SystemStatus getStatus() {
+    public SystemStatus getStatus() throws GatewayAuthenticationException {
         return getClient().getStatus();
     }
     
@@ -113,7 +113,7 @@ public class RestGatewayLink implements IGatewayLink {
      */
     @Override
     public ServiceEndpoint getServiceEndpoint(String organizationId, String serviceId, String version)
-            throws NotAuthorizedException {
+            throws GatewayAuthenticationException {
         return getClient().getServiceEndpoint(organizationId, serviceId, version);
     }
 
@@ -121,7 +121,7 @@ public class RestGatewayLink implements IGatewayLink {
      * @see io.apiman.manager.api.gateway.IGatewayLink#publishService(io.apiman.gateway.engine.beans.Service)
      */
     @Override
-    public void publishService(Service service) throws PublishingException {
+    public void publishService(Service service) throws PublishingException, GatewayAuthenticationException {
         if (!isGatewayUp()) {
             throw new PublishingException(Messages.i18n.format("RestGatewayLink.GatewayNotRunning")); //$NON-NLS-1$
         }
@@ -132,7 +132,7 @@ public class RestGatewayLink implements IGatewayLink {
      * @see io.apiman.manager.api.gateway.IGatewayLink#retireService(io.apiman.gateway.engine.beans.Service)
      */
     @Override
-    public void retireService(Service service) throws PublishingException {
+    public void retireService(Service service) throws PublishingException, GatewayAuthenticationException {
         if (!isGatewayUp()) {
             throw new PublishingException(Messages.i18n.format("RestGatewayLink.GatewayNotRunning")); //$NON-NLS-1$
         }
@@ -143,7 +143,7 @@ public class RestGatewayLink implements IGatewayLink {
      * @see io.apiman.manager.api.gateway.IGatewayLink#registerApplication(io.apiman.gateway.engine.beans.Application)
      */
     @Override
-    public void registerApplication(Application application) throws RegistrationException {
+    public void registerApplication(Application application) throws RegistrationException, GatewayAuthenticationException {
         if (!isGatewayUp()) {
             throw new RegistrationException(Messages.i18n.format("RestGatewayLink.GatewayNotRunning")); //$NON-NLS-1$
         }
@@ -154,7 +154,7 @@ public class RestGatewayLink implements IGatewayLink {
      * @see io.apiman.manager.api.gateway.IGatewayLink#unregisterApplication(io.apiman.gateway.engine.beans.Application)
      */
     @Override
-    public void unregisterApplication(Application application) throws RegistrationException {
+    public void unregisterApplication(Application application) throws RegistrationException, GatewayAuthenticationException {
         if (!isGatewayUp()) {
             throw new RegistrationException(Messages.i18n.format("RestGatewayLink.GatewayNotRunning")); //$NON-NLS-1$
         }

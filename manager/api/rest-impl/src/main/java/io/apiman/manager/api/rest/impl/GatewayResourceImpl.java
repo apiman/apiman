@@ -27,6 +27,7 @@ import io.apiman.manager.api.beans.summary.GatewayTestResultBean;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
+import io.apiman.manager.api.gateway.GatewayAuthenticationException;
 import io.apiman.manager.api.gateway.IGatewayLink;
 import io.apiman.manager.api.gateway.IGatewayLinkFactory;
 import io.apiman.manager.api.rest.contract.IGatewayResource;
@@ -35,6 +36,7 @@ import io.apiman.manager.api.rest.contract.exceptions.GatewayAlreadyExistsExcept
 import io.apiman.manager.api.rest.contract.exceptions.GatewayNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.contract.exceptions.SystemErrorException;
+import io.apiman.manager.api.rest.impl.i18n.Messages;
 import io.apiman.manager.api.rest.impl.util.ExceptionFactory;
 import io.apiman.manager.api.security.ISecurityContext;
 
@@ -82,6 +84,9 @@ public class GatewayResourceImpl implements IGatewayResource {
             String detail = mapper.writer().writeValueAsString(status);
             rval.setSuccess(true);
             rval.setDetail(detail);
+        } catch (GatewayAuthenticationException e) {
+            rval.setSuccess(false);
+            rval.setDetail(Messages.i18n.format("GatewayResourceImpl.AuthenticationFailed")); //$NON-NLS-1$
         } catch (Exception e) {
             rval.setSuccess(false);
             rval.setDetail(e.getMessage());
