@@ -66,6 +66,15 @@
   </servlet-mapping>
 
   <servlet>
+    <servlet-name>ApiManProxy</servlet-name>
+    <servlet-class>io.apiman.manager.ui.server.servlets.ApiManagerProxyServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ApiManProxy</servlet-name>
+    <url-pattern>/proxies/apiman</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
     <servlet-name>LogoutServlet</servlet-name>
     <servlet-class>io.apiman.manager.ui.server.wildfly8.KeyCloakLogoutServlet</servlet-class>
   </servlet>

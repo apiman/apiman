@@ -139,6 +139,7 @@
     <version.org.overlord.overlord-commons>2.0.11.Final</version.org.overlord.overlord-commons>
     <version.org.ow2.asm>4.0</version.org.ow2.asm>
     <version.org.slf4j>1.7.2</version.org.slf4j>
+    <version.xmlunit>1.6</version.xmlunit>
     <version.io.vertx>2.1.1</version.io.vertx>
     <version.io.vertx.testtools>2.0.3-final</version.io.vertx.testtools>
   </properties>
@@ -637,6 +638,11 @@
 
       <!-- Third Party Libraries -->
       <dependency>
+        <groupId>xmlunit</groupId>
+        <artifactId>xmlunit</artifactId>
+        <version>${version.xmlunit}</version>
+      </dependency>
+      <dependency>
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpclient-osgi</artifactId>
         <version>${version.org.apache.httpcomponents.httpclient}</version>
@@ -798,6 +804,11 @@
       <dependency>
         <groupId>org.jboss.resteasy</groupId>
         <artifactId>resteasy-jackson-provider</artifactId>
+        <version>${version.org.jboss.resteasy}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.resteasy</groupId>
+        <artifactId>resteasy-jaxb-provider</artifactId>
         <version>${version.org.jboss.resteasy}</version>
       </dependency>
       <dependency>

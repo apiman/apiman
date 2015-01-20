@@ -16,7 +16,9 @@
 package io.apiman.manager.ui.server.servlets;
 
 import io.apiman.manager.ui.server.IUIConfig;
+import io.apiman.manager.ui.server.auth.ITokenGenerator;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 
 import org.overlord.commons.services.ServiceRegistryUtil;
@@ -31,7 +33,8 @@ public abstract class AbstractUIServlet extends HttpServlet {
     private static final long serialVersionUID = -7455553362628233074L;
 
     private IUIConfig config;
-    
+    private transient ITokenGenerator tokenGenerator;
+
     /**
      * Constructor.
      */
@@ -46,6 +49,24 @@ public abstract class AbstractUIServlet extends HttpServlet {
             config = ServiceRegistryUtil.getSingleService(IUIConfig.class);
         }
         return config;
+    }
+
+    /**
+     * Gets an instance of the configured token generator.
+     */
+    protected ITokenGenerator getTokenGenerator() throws ServletException {
+        if (tokenGenerator == null) {
+            String tokenGeneratorClassName = getConfig().getManagementApiAuthTokenGenerator();
+            if (tokenGeneratorClassName == null)
+                throw new ServletException("No token generator class specified."); //$NON-NLS-1$
+            try {
+                Class<?> c = Class.forName(tokenGeneratorClassName);
+                tokenGenerator = (ITokenGenerator) c.newInstance();
+            } catch (Exception e) {
+                throw new ServletException("Error creating token generator."); //$NON-NLS-1$
+            }
+        }
+        return tokenGenerator;
     }
 
 }

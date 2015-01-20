@@ -700,16 +700,19 @@ ol.breadcrumb {
 .apiman-entity-content .apiman-summaryrow .description {
   margin-bottom: 0px;
 }
+.apiman-entity-content .apiman-input-ro {
+  cursor: auto;
+}
+.apiman-entity-content .actions {
+  text-align: right;
+  margin-bottom: 10px;
+}
 
 .entity-info-with-icon {
   min-height: 16px;
 }
 .entity-info-with-icon .fa {
   color: #456;
-}
-
-.apiman-entity-content .apiman-input-ro {
-  cursor: auto;
 }
 
 .apiman-entity-action {

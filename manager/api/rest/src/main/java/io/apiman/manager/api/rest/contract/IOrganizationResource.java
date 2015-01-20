@@ -208,9 +208,16 @@ public interface IOrganizationResource {
             throws ApplicationNotFoundException, NotAuthorizedException;
 
     @GET
-    @Path("{organizationId}/applications/{applicationId}/versions/{version}/apiregistry")
+    @Path("{organizationId}/applications/{applicationId}/versions/{version}/apiregistry/json")
     @Produces(MediaType.APPLICATION_JSON)
-    public ApiRegistryBean getApiRegistry(@PathParam("organizationId") String organizationId,
+    public ApiRegistryBean getApiRegistryJSON(@PathParam("organizationId") String organizationId,
+            @PathParam("applicationId") String applicationId, @PathParam("version") String version)
+            throws ApplicationNotFoundException, NotAuthorizedException;
+
+    @GET
+    @Path("{organizationId}/applications/{applicationId}/versions/{version}/apiregistry/xml")
+    @Produces(MediaType.APPLICATION_XML)
+    public ApiRegistryBean getApiRegistryXML(@PathParam("organizationId") String organizationId,
             @PathParam("applicationId") String applicationId, @PathParam("version") String version)
             throws ApplicationNotFoundException, NotAuthorizedException;
 

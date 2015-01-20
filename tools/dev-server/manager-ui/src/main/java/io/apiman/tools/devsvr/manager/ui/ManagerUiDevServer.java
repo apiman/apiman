@@ -19,6 +19,7 @@ package io.apiman.tools.devsvr.manager.ui;
 import io.apiman.manager.ui.client.shared.beans.ApiAuthType;
 import io.apiman.manager.ui.server.UIConfig;
 import io.apiman.manager.ui.server.auth.AuthTokenGenerator;
+import io.apiman.manager.ui.server.servlets.ApiManagerProxyServlet;
 import io.apiman.manager.ui.server.servlets.ConfigurationServlet;
 import io.apiman.manager.ui.server.servlets.TokenRefreshServlet;
 import io.apiman.manager.ui.server.servlets.UrlFetchProxyServlet;
@@ -132,23 +133,24 @@ public class ManagerUiDevServer extends ErraiDevServer {
             throws Exception {
         super.addModulesToJetty(environment, handlers);
         /* *************
-         * APIMan DT UI
+         * API Manage UI
          * ************* */
-        ServletContextHandler apiManDtUI = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        apiManDtUI.setWelcomeFiles(new String[] { "index.html" }); //$NON-NLS-1$
-        apiManDtUI.setSecurityHandler(createSecurityHandler());
-        apiManDtUI.setContextPath("/apiman-manager"); //$NON-NLS-1$
-        apiManDtUI.setWelcomeFiles(new String[] { "index.html" }); //$NON-NLS-1$
-        apiManDtUI.setResourceBase(environment.getModuleDir("apiman-manager").getCanonicalPath()); //$NON-NLS-1$
-        apiManDtUI.addFilter(GWTCacheControlFilter.class, "/app/*", EnumSet.of(DispatcherType.REQUEST)); //$NON-NLS-1$
-        apiManDtUI.addFilter(ResourceCacheControlFilter.class, "/css/*", EnumSet.of(DispatcherType.REQUEST)); //$NON-NLS-1$
-        apiManDtUI.addFilter(ResourceCacheControlFilter.class, "/images/*", EnumSet.of(DispatcherType.REQUEST)); //$NON-NLS-1$
-        apiManDtUI.addFilter(ResourceCacheControlFilter.class, "/js/*", EnumSet.of(DispatcherType.REQUEST)); //$NON-NLS-1$
-        apiManDtUI.addFilter(LocaleFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST)); //$NON-NLS-1$
+        ServletContextHandler apiManUI = new ServletContextHandler(ServletContextHandler.SESSIONS);
+        apiManUI.setWelcomeFiles(new String[] { "index.html" }); //$NON-NLS-1$
+        apiManUI.setSecurityHandler(createSecurityHandler());
+        apiManUI.setContextPath("/apiman-manager"); //$NON-NLS-1$
+        apiManUI.setWelcomeFiles(new String[] { "index.html" }); //$NON-NLS-1$
+        apiManUI.setResourceBase(environment.getModuleDir("apiman-manager").getCanonicalPath()); //$NON-NLS-1$
+        apiManUI.addFilter(GWTCacheControlFilter.class, "/app/*", EnumSet.of(DispatcherType.REQUEST)); //$NON-NLS-1$
+        apiManUI.addFilter(ResourceCacheControlFilter.class, "/css/*", EnumSet.of(DispatcherType.REQUEST)); //$NON-NLS-1$
+        apiManUI.addFilter(ResourceCacheControlFilter.class, "/images/*", EnumSet.of(DispatcherType.REQUEST)); //$NON-NLS-1$
+        apiManUI.addFilter(ResourceCacheControlFilter.class, "/js/*", EnumSet.of(DispatcherType.REQUEST)); //$NON-NLS-1$
+        apiManUI.addFilter(LocaleFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST)); //$NON-NLS-1$
         // Servlets
-        apiManDtUI.addServlet(ConfigurationServlet.class, "/js/configuration.nocache.js"); //$NON-NLS-1$
-        apiManDtUI.addServlet(TokenRefreshServlet.class, "/rest/tokenRefresh"); //$NON-NLS-1$
-        apiManDtUI.addServlet(UrlFetchProxyServlet.class, "/proxies/fetch"); //$NON-NLS-1$
+        apiManUI.addServlet(ConfigurationServlet.class, "/js/configuration.nocache.js"); //$NON-NLS-1$
+        apiManUI.addServlet(TokenRefreshServlet.class, "/rest/tokenRefresh"); //$NON-NLS-1$
+        apiManUI.addServlet(UrlFetchProxyServlet.class, "/proxies/fetch"); //$NON-NLS-1$
+        apiManUI.addServlet(ApiManagerProxyServlet.class, "/proxies/apiman/*"); //$NON-NLS-1$
         // File resources
         ServletHolder resources = new ServletHolder(new MultiDefaultServlet());
         resources.setInitParameter("resourceBase", "/"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -157,11 +159,11 @@ public class ManagerUiDevServer extends ErraiDevServer {
         resources.setInitParameter("pathInfoOnly", "false"); //$NON-NLS-1$ //$NON-NLS-2$
         String[] fileTypes = new String[] { "html", "js", "css", "png", "gif", "woff", "ttf" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
         for (String fileType : fileTypes) {
-            apiManDtUI.addServlet(resources, "*." + fileType); //$NON-NLS-1$
+            apiManUI.addServlet(resources, "*." + fileType); //$NON-NLS-1$
         }
 
         // Add the web contexts to jetty
-        handlers.addHandler(apiManDtUI);
+        handlers.addHandler(apiManUI);
     }
 
     /**

@@ -17,6 +17,9 @@ package io.apiman.manager.api.beans.summary;
 
 import java.io.Serializable;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
@@ -25,6 +28,8 @@ import org.jboss.errai.common.client.api.annotations.Portable;
  * @author eric.wittmann@redhat.com
  */
 @Portable
+@XmlRootElement(name = "api")
+@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class ApiEntryBean implements Serializable {
 
     private static final long serialVersionUID = -7578173174922025902L;

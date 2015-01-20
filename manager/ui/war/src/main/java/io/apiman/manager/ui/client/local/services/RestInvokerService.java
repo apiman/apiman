@@ -453,7 +453,7 @@ public class RestInvokerService {
     public void getApiRegistry(String organizationId, String applicationId, String version, 
             IRestInvokerCallback<ApiRegistryBean> callback) {
         CallbackAdapter<ApiRegistryBean> adapter = new CallbackAdapter<ApiRegistryBean>(callback);
-        organizations.call(adapter, adapter).getApiRegistry(organizationId, applicationId, version);
+        organizations.call(adapter, adapter).getApiRegistryJSON(organizationId, applicationId, version);
     }
 
     /**

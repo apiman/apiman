@@ -28,6 +28,9 @@ import org.jboss.errai.ui.nav.client.local.Page;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.ui.Anchor;
+
 
 /**
  * The "Application" page, with the APIs tab displayed.
@@ -40,6 +43,11 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 public class AppApisPage extends AbstractAppPage {
 
     private ApiRegistryBean apiRegistry;
+
+    @Inject @DataField
+    Anchor downloadAsJson;
+    @Inject @DataField
+    Anchor downloadAsXml;
 
     @Inject @DataField
     AppApiRegistryTable apis;
@@ -95,6 +103,31 @@ public class AppApisPage extends AbstractAppPage {
     protected void renderPage() {
         super.renderPage();
         apis.setValue(apiRegistry);
+        downloadAsJson.setHref(buildApiRegistryDownloadUrl("json")); //$NON-NLS-1$
+        downloadAsXml.setHref(buildApiRegistryDownloadUrl("xml")); //$NON-NLS-1$
+    }
+
+    /**
+     * Builds a URL that the user can click on to download the API registry
+     * in the given format.
+     * @param type
+     */
+    private String buildApiRegistryDownloadUrl(String type) {
+        StringBuilder proxyUrl = new StringBuilder();
+        proxyUrl.append(GWT.getHostPageBaseURL());
+        if (!proxyUrl.toString().endsWith("/")) { //$NON-NLS-1$
+            proxyUrl.append('/');
+        }
+        proxyUrl.append("proxies/apiman/organizations/"); //$NON-NLS-1$
+        proxyUrl.append(org);
+        proxyUrl.append("/applications/"); //$NON-NLS-1$
+        proxyUrl.append(app);
+        proxyUrl.append("/versions/"); //$NON-NLS-1$
+        proxyUrl.append(versionBean.getVersion());
+        proxyUrl.append("/apiregistry/"); //$NON-NLS-1$
+        proxyUrl.append(type);
+        
+        return proxyUrl.toString();
     }
 
     /**

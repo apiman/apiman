@@ -19,6 +19,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
@@ -30,10 +35,13 @@ import org.jboss.errai.common.client.api.annotations.Portable;
  * @author eric.wittmann@redhat.com
  */
 @Portable
+@XmlRootElement(name = "apis")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class ApiRegistryBean implements Serializable {
 
     private static final long serialVersionUID = 7369169626368271089L;
     
+    @XmlElement(name = "api")
     private List<ApiEntryBean> apis = new ArrayList<ApiEntryBean>();
 
     /**

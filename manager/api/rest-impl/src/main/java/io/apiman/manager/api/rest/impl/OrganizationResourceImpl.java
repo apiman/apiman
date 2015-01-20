@@ -746,10 +746,32 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getApiRegistry(java.lang.String, java.lang.String, java.lang.String)
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getApiRegistryJSON(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
-    public ApiRegistryBean getApiRegistry(String organizationId, String applicationId, String version)
+    public ApiRegistryBean getApiRegistryJSON(String organizationId, String applicationId, String version)
+            throws ApplicationNotFoundException, NotAuthorizedException {
+        return getApiRegistry(organizationId, applicationId, version);
+    }
+    
+    /**
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getApiRegistryXML(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public ApiRegistryBean getApiRegistryXML(String organizationId, String applicationId, String version)
+            throws ApplicationNotFoundException, NotAuthorizedException {
+        return getApiRegistry(organizationId, applicationId, version);
+    }
+    
+    /**
+     * Gets the API registry.
+     * @param organizationId
+     * @param applicationId
+     * @param version
+     * @throws ApplicationNotFoundException
+     * @throws NotAuthorizedException
+     */
+    protected ApiRegistryBean getApiRegistry(String organizationId, String applicationId, String version)
             throws ApplicationNotFoundException, NotAuthorizedException {
         boolean hasPermission = securityContext.hasPermission(PermissionType.appView, organizationId);
         // Try to get the application first - will throw a ApplicationNotFoundException if not found.
@@ -775,6 +797,8 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             txStarted = true;
             for (ApiEntryBean api : apis) {
                 String gatewayId = api.getGatewayId();
+                // Don't return the gateway id.
+                api.setGatewayId(null);
                 GatewayBean gateway = gateways.get(gatewayId);
                 if (gateway == null) {
                     gateway = storage.getGateway(gatewayId);

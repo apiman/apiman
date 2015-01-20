@@ -1,0 +1,33 @@
+GET /organizations/Organization1/applications/Application1/versions/1.0/apiregistry/xml admin/admin
+
+----
+200
+Content-Type: application/xml
+
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<apis>
+  <api>
+    <apiKey>*</apiKey>
+    <httpEndpoint>http://example.org/endpoint</httpEndpoint>
+    <planId>Plan1</planId>
+    <planName>Plan 1</planName>
+    <planVersion>1.0</planVersion>
+    <serviceId>Service1</serviceId>
+    <serviceName>Service 1</serviceName>
+    <serviceOrgId>Organization1</serviceOrgId>
+    <serviceOrgName>Organization 1</serviceOrgName>
+    <serviceVersion>1.0</serviceVersion>
+  </api>
+  <api>
+    <apiKey>*</apiKey>
+    <httpEndpoint>http://example.org/endpoint</httpEndpoint>
+    <planId>PlanA</planId>
+    <planName>Plan A</planName>
+    <planVersion>2.0</planVersion>
+    <serviceId>Service2</serviceId>
+    <serviceName>Service 2</serviceName>
+    <serviceOrgId>Organization2</serviceOrgId>
+    <serviceOrgName>Organization 2</serviceOrgName>
+    <serviceVersion>1.5</serviceVersion>
+  </api>
+</apis>

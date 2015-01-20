@@ -22,6 +22,7 @@ import io.apiman.test.common.resttest.RestTest;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.MessageFormat;
@@ -53,6 +54,11 @@ import org.codehaus.jackson.node.NullNode;
 import org.codehaus.jackson.node.NumericNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.codehaus.jackson.node.TextNode;
+import org.custommonkey.xmlunit.Diff;
+import org.custommonkey.xmlunit.Difference;
+import org.custommonkey.xmlunit.DifferenceListener;
+import org.custommonkey.xmlunit.XMLAssert;
+import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.Assert;
 import org.mvel2.MVEL;
 import org.mvel2.integration.PropertyHandler;
@@ -60,6 +66,7 @@ import org.mvel2.integration.PropertyHandlerFactory;
 import org.mvel2.integration.VariableResolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Node;
 
 /**
  * Runs a test plan.
@@ -238,6 +245,8 @@ public class TestPlanRunner {
                 assertJsonPayload(restTest, response);
             } else if (ct.equals("text/plain")) {
                 assertTextPayload(restTest, response);
+            } else if (ct.equals("application/xml")) {
+                assertXmlPayload(restTest, response);
             } else {
                 Assert.fail("Unsupported response payload type: " + ct);
             }
@@ -278,6 +287,55 @@ public class TestPlanRunner {
                 System.out.println("--- START FAILED JSON PAYLOAD ---");
                 System.out.println(actualJson.toString());
                 System.out.println("--- END FAILED JSON PAYLOAD ---");
+                throw e;
+            }
+        } catch (Exception e) {
+            throw new Error(e);
+        } finally {
+            IOUtils.closeQuietly(inputStream);
+        }
+    }
+
+    /**
+     * The payload is expected to be XML.  Parse it and then use XmlUnit to compare
+     * the payload with the expected payload (obviously also XML).
+     * @param restTest
+     * @param response
+     */
+    private void assertXmlPayload(RestTest restTest, HttpResponse response) {
+        InputStream inputStream = null;
+        try {
+            inputStream = response.getEntity().getContent();
+            StringWriter writer = new StringWriter();
+            IOUtils.copy(inputStream, writer);
+            String xmlPayload = writer.toString();
+            String expectedPayload = TestUtil.doPropertyReplacement(restTest.getExpectedResponsePayload());
+            Assert.assertNotNull("REST Test missing expected XML payload.", expectedPayload);
+            try {
+                XMLUnit.setIgnoreComments(true);
+                XMLUnit.setIgnoreAttributeOrder(true);
+                XMLUnit.setIgnoreWhitespace(true);
+                XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true);
+                Diff diff = new Diff(expectedPayload, xmlPayload);
+                diff.overrideDifferenceListener(new DifferenceListener() {
+                    @Override
+                    public void skippedComparison(Node control, Node test) {
+                    }
+                    @Override
+                    public int differenceFound(Difference difference) {
+                        String value = difference.getControlNodeDetail().getValue();
+                        if ("*".equals(value)) {
+                            return RETURN_IGNORE_DIFFERENCE_NODES_IDENTICAL;
+                        } else {
+                            return RETURN_ACCEPT_DIFFERENCE;
+                        }
+                    }
+                });
+                XMLAssert.assertXMLEqual(null, diff, true);
+            } catch (Error e) {
+                System.out.println("--- START FAILED XML PAYLOAD ---");
+                System.out.println(xmlPayload);
+                System.out.println("--- END FAILED XML PAYLOAD ---");
                 throw e;
             }
         } catch (Exception e) {

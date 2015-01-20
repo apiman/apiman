@@ -1,4 +1,4 @@
-GET /organizations/Organization1/applications/Application1/versions/1.0/apiregistry admin/admin
+GET /organizations/Organization1/applications/Application1/versions/1.0/apiregistry/json admin/admin
 
 ----
 200

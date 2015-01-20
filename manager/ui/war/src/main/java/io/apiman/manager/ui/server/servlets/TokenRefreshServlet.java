@@ -40,8 +40,6 @@ public class TokenRefreshServlet extends AbstractUIServlet {
 
     private static final long serialVersionUID = 7721708152826837757L;
     private static Logger logger = LoggerFactory.getLogger(TokenRefreshServlet.class);
-
-    private transient ITokenGenerator tokenGenerator;
     
     /**
      * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
@@ -61,22 +59,4 @@ public class TokenRefreshServlet extends AbstractUIServlet {
         mapper.writer().writeValue(resp.getOutputStream(), tokenBean);
     }
     
-    /**
-     * Gets an instance of the configured token generator.
-     */
-    private ITokenGenerator getTokenGenerator() {
-        if (tokenGenerator == null) {
-            String tokenGeneratorClassName = getConfig().getManagementApiAuthTokenGenerator();
-            if (tokenGeneratorClassName == null)
-                throw new RuntimeException("No token generator class specified."); //$NON-NLS-1$
-            try {
-                Class<?> c = Class.forName(tokenGeneratorClassName);
-                tokenGenerator = (ITokenGenerator) c.newInstance();
-            } catch (Exception e) {
-                throw new RuntimeException("Error creating token generator."); //$NON-NLS-1$
-            }
-        }
-        return tokenGenerator;
-    }
-
 }
