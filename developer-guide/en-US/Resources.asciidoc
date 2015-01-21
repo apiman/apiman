@@ -1,4 +1,3 @@
-== Developer Resources
 
 === Source Code
 The apiman source code is located in github here:
@@ -22,7 +21,7 @@ https://issues.jboss.org/browse/APIMAN
 
 
 === Development Tools
-We're rather IDE agnostic, so contributors should feel free to use whatever tools they feel most 
+We're rather IDE agnostic, so contributors should feel free to use whatever tools they feel most
 comfortable with.  At the time of this writing, the core apiman developers primarily use Eclipse
 Kepler.
 
@@ -36,3 +35,39 @@ And of course you'll need to have git installed if you want to check out the cod
 
 http://git-scm.com/
 
+
+=== Building the Project
+Building apiman should be a simple matter of doing a standard Maven build:
+
+....
+mvn clean install
+....
+
+This will do a full build of apiman and execute all unit tests.  However,
+the result will not include a ready-to-run version of apiman.  For that, you
+may want to try the following:
+
+....
+mvn clean install -Pinstall-all-wildfly8
+....
+
+This command will do a full apiman build, but will also download WildFly
+and install apiman into it.  The result will be a fully configured install of
+apiman running in WildFly.  The location of this WildFly install will be here:
+
+....
+apiman/tools/server-all/targe/wildfly-{wildfly.version}/
+....
+
+At this point you can test apiman by simply running WildFly from the above
+location using a command something like this:
+
+....
+./bin/standalone.sh -b 0.0.0.0
+....
+
+
+=== Setting up a Development Environment
+Because apiman is a fairly standard maven project, it should be relatively easy
+to import the project into Eclipse or IntelliJ IDEA.  For now we'll leave this
+as an exercise for the reader.

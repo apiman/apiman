@@ -373,6 +373,24 @@ In all cases, the apiman admin must configure these Gateways in the *System Admi
 Gateway has a name, description, and configuration endpoint.  The configuration endpoint is what the
 API Manager will use when publishing services and applications into the Gateway.
 
+==== Plugins
+apiman supports contributing additional functionality via a simple plugin mechanism.  Plugins can be
+managed by an administrator within the API Manager.  The plugin management administration page allows
+an admin to add and delete plugins.  A plugin is added by clicking on the 'Add Plugin' button and
+providing the "coordinates" of the plugin.  All plugins are actually maven artifacts, and as such
+their coordinates consist of the following maven properties:
+
+* Group ID
+* Artifact ID
+* Version
+* Classifier (optional)
+* Type (optional, defaults to 'war')
+
+Plugins primarily are used to contribute custom policies to apiman.  These policies are automatically
+discovered (if they exist in the plugin) when a plugin is added to the API Manager.  Policies that
+have been contributed via a plugin will appear in the Policy Definitions admin page along with the
+built-in policies.
+
 == API Gateway
 The runtime layer of apiman consists of a small, lightweight and embeddable API Gateway, which is responsible
 for applying the policies configured in the API Manager to all requests to managed APIs.  By default

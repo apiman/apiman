@@ -1,0 +1,385 @@
+=== Creating a Plugin
+An apiman plugin is basically a java web archive (WAR) with a little bit of extra
+sauce.  This approach makes it very easy to build using maven, and should be quite
+familiar to most Java developers.  Because a plugin consists of some resources files,
+compiled java classes, front-end resource such as HTML and javascript, and dependencies
+in the form of JARs, the WAR format is a natural choice.
+
+==== The Plugin Specification File
+In addition to the standard layout of a Java Web Archive, an apiman plugin must contain
+the following plugin specification file (which contains information about the plugin):
+
+```
+META-INF/apiman/plugin.json
+```
+
+This 'plugin.json' file contains the basic meta-data that describes the plugin, and
+should be of the following format:
+
+```json
+{
+  "frameworkVersion" : 1.0,
+  "name" : "Plugin Name",
+  "description" : "A plugin description goes here.",
+  "version" : "3.1.9"
+}
+```
+
+* _frameworkVersion_: Indicates the apiman plugin framework version this plugin is compatible with - this should simply be 1.0 for now (reserved for future use)
+* _name_: The name of the plugin.
+* _description_: The description of the plugin.
+* _version_: The plugin version.
+
+If this 'plugin.json' file is missing from the plugin archive, then the plugin will
+fail to load.
+
+==== Using Maven to Create a Plugin
+One benefit of using WAR as the format of an apiman plugin is that plugins can easily
+be created using Maven.  This section will describe how this can be done.  Note that
+you can use the following simple plugin as a reference if you prefer:
+
+https://github.com/apiman/apiman-plugins/tree/master/noop-policy
+
+In order to create an apiman plugin using maven, simply create a new maven project
+and set its 'packaging' type to *war*.
+
+```xml
+<packaging>war</packaging>
+```
+
+Next, obviously feel free to include any dependencies you might need:
+
+```xml
+<dependencies>
+  <!-- apiman dependencies (must be excluded from the WAR) -->
+  <dependency>
+    <groupId>io.apiman</groupId>
+    <artifactId>apiman-gateway-engine-core</artifactId>
+    <scope>provided</scope>
+  </dependency>
+</dependencies>
+```
+
+You'll want to make any apiman dependencies provided so that there aren't any classloading
+conflicts when executing your code.
+
+Finally, we recommend that you put your plugin.json file in the following location
+in your maven project:
+
+```
+src/main/apiman
+```
+
+Of course, any resoures in that location are not automatially included in the final
+WAR, so you should add the following markup to your pom.xml:
+
+```xml
+<build>
+  <plugins>
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-war-plugin</artifactId>
+      <configuration>
+        <failOnMissingWebXml>false</failOnMissingWebXml>
+        <webResources>
+          <resource>
+            <directory>src/main/apiman</directory>
+            <targetPath>META-INF/apiman</targetPath>
+            <filtering>true</filtering>
+          </resource>
+        </webResources>
+      </configuration>
+    </plugin>
+  </plugins>
+</build>
+```
+
+This markup will ensure that resources in the *src/main/apiman* folder will be included
+in the correct location in the WAR.  Also note that resource filtering is enabled,
+which will make it easier to maintain your *plugin.json* file:
+
+```json
+{
+  "frameworkVersion" : 1.0,
+  "name" : "My Plugin Name",
+  "description" : "My plugin description.",
+  "version" : "${project.version}"
+}
+```
+
+Note that the 'version' of the plugin is set to *${project.version}*, which will get
+automatically changed to the version of your maven project at build time.
+
+==== Making Your Plugin Available to apiman
+Plugins are identified by their Maven coordinates (groupId, artifactId, version,
+classifier, type).  Note that the classifier and type are optional.  If the type is
+not specified when loading a plugin, apiman will assume 'war'.
+
+When loading a plugin for use, apiman will first check for the plugin in the local
+user's .m2 directory.  This is useful when running apiman during development, but
+is unlikely to be available in a production environment.  If the plugin cannot be
+found locally, apiman will attempt to download it from a remote repository such as
+Maven Central.
+
+TIP: You can configure additional remote repositories when you set up apiman.
+Please refer to the Installation Guide for details.
+
+This all means that when testing your plugin locally, you can simply use maven to install
+it into your local .m2 directory and then ask apiman to load it.  In production, the
+plugin will need to be available from a remote maven repository.
+
+=== Contributing a Policy
+Now that you know how to create an apiman plugin, you might be wondering what you can
+actually do with it!  The most important purpose of a plugin is to provide additional
+*Policies* that can be used when configuring Plans, Services, and Applications in
+apiman.  Although apiman comes with a set of useful built-in policies, it is often
+necessary for users to provide their own custom policies.  The best way to do that is
+to create a plugin that provides such policies.
+
+In order to provide a custom policy from a plugin, several things are needed:
+
+* An implementation of IPolicy (Java code)
+* A policy definition (JSON file)
+* Optional UI form to configure the policy in the API Manager
+
+The next few sections explain each of these elements further, but note that they are
+all included in the apiman plugin WAR.
+
+==== Policy Implementation
+A policy implementation is the java code that is executed by the API Gateway when
+a managed service request is made.  This is the bread and butter of the API Gateway; its
+primary purpose.  For each request, the API Gateway creates a chain of policies that
+must be executed before proxying the request to the back-end service implementation.
+Each of the policies in that chain is an implementation of the 'IPolicy' interface.
+
+===== Standard IPolicy
+All policies must implement the `IPolicy` interface, consisting of several methods.
+
+The `apply` method with `ServiceRequest` is called during the request phase, and
+the `apply` with `ServiceResponse` during the response phase:
+
+```java
+void apply(ServiceRequest request, IPolicyContext context, Object config, IPolicyChain<ServiceRequest> chain);
+
+void apply(ServiceResponse response, IPolicyContext context, Object config, IPolicyChain<ServiceResponse> chain);
+```
+
+The service objects, respectively, provide abstracted representations of the head
+of a request and response for a given conversation. These can be modified in any
+manner the implementor sees fit.
+
+TIP: Policy instances are stateless, so it is not a good idea to use fields for any
+reason.  The IPolicyContext can be used to pass information from the request phase
+to the response phase.  Any state that must span multiple requests will need to use
+one of the policy components described in the *Provided Components* section.
+
+```java
+Object parseConfiguration(String jsonConfiguration) throws ConfigurationParseException;
+```
+
+The final `IPolicy` method is used to parse JSON configuration into an arbitrary
+object configuration which will be passed in in its parsed form to `doApply`, where
+the implementor may cast it their native configuration object.  This method will
+be invoked for each unique configuration of the policy.
+
+For mroe information about policy configuration, see the *Policy Configuration* section
+below.
+
+====== Indicating Successes
+If a policy determines that the conversation can continue, `chain.doApply` should
+be signalled. Any modifications you wish to pass onto the next policy should be
+completed and included in the invocation.
+
+====== Indicating Failures
+If it is determined that a conversation should be interrupted for governance reasons
+(i.e. according to business logic and not exceptional), then `chain.doFailure` should
+be signalled. A useful `PolicyFailure` should be provided, which allows gateways to
+respond in a sensible way to the requestor.
+
+TIP: The platform's `IPolicyFailureFactoryComponent` can be used to generate failures.
+See the *Provided Components* section for more details on this component.
+
+====== Handling Exceptions
+As a factor of the asynchronous nature of apiman, any exceptions that may occur during
+the operation of a policy should be caught and explicitly handed to `chain.doError`.
+If exceptions are left uncaught, then it is possible that they will be lost.
+
+===== IData Policy
+Whilst standard policies are concerned only with the head of the conversation, it
+is also possible for policies to access and manipulate the body in transit. A data
+policy must implement the `IDataPolicy` interface.
+
+WARNING: Handling of data streams is a performance sensitive area, implementors
+should strive to be as efficient as possible and avoid any unnecessary interactions
+with the stream.
+
+The `getRequestDataHandler` and `getResponseDataHandler` methods are the data
+corollaries of `apply`. Implementors must return `IReadWriteStream` streams, which
+apiman uses to write data chunks into policies, and the policies write data to
+subsequent policies:
+
+```java
+IReadWriteStream<ServiceRequest> getRequestDataHandler(ServiceRequest request, IPolicyContext context);
+
+IReadWriteStream<ServiceResponse> getResponseDataHandler(ServiceResponse response, IPolicyContext context);
+```
+
+IMPORTANT: Do not return an `IApimanBuffer` with a different native type than you
+received. Use assign and append patterns instead.
+
+Implementors must explicitly hand each chunk onto apiman when they are finished
+interacting with it. A convenient way to achieve this is via `AbstractStream<H>`:
+
+```java
+@Override
+public IReadWriteStream<ServiceRequest> getRequestDataHandler(final ServiceRequest request, final IPolicyContext context) {
+  return new AbstractStream<ServiceRequest>() {
+    @Override
+    public void write(IApimanBuffer chunk) {
+      // Mutate chunk by appending a string.
+      chunk.append("my modification");
+      // We're finished: write the chunk back to apiman
+      // using super.write().
+      super.write(chunk);
+    }
+
+    @Override
+    public void end() {
+      // End of stream signalled, do cleanup, etc.
+      super.end();
+    }
+  };
+}
+```
+
+IMPORTANT: Do not mutate an `IApimanBuffer` once handed over.
+
+The request or response body will not begin streaming before the corresponding `doApply`
+has been called, however, it is still possible to interrupt the conversation during
+the streaming phase by signalling `doFailure` or `doError`.
+
+===== Performance Considerations
+Policies are amongst the most impactful elements of the system for performance. To
+minimise the impact of a policy implementors may wish to follow these guidelines:
+
+- Maintain as little state within a policy instance as possible.
+- Call `doApply`, `doFailure` or `doError` as soon as possible.
+- Data policies should interact with the data stream as efficiently as possible and prefer mutating in-place (especially with small changes).
+- If you are contributing a policy to apiman: implement any long-running tasks asynchronously (e.g. database calls); **do not** block the main thread (e.g. blocking futures, wait, sleep); use asynchronous techniques to interact with the outside world, such as callbacks.
+
+===== Dependencies
+Typically a policy implementation should minimize the number of third party libraries
+it depends on, but often times this is unavoidable.  Plugins are isolated from one
+another, so it is a simple matter of including any required dependencies inside the
+plugin's WAR archive in the standard location of:
+
+```
+WEB-INF/lib
+```
+
+TIP: You should make sure that any apiman dependencies you use (for example the apiman
+core module that contains the IPlugin and other necessary interfaces) are marked
+as 'provided' in your maven project so that they are not included in the plugin
+archive.
+
+===== Provided Components
+All policy implementations have access to various resources at runtime.  These resources
+are primarily accessed through the *IPolicyContext* object that is passed to the policy
+when it is executed.  Along with the ability to set conversation-level attributes, the
+policy context is how you access Policy Components.
+
+A Policy Component is simply a runtime component that a policy implementation may find
+useful.  To access a component, use the 'getComponent' method found on the policy
+context, passing it the interface of the component you wish to use.  The following
+components are available:
+
+* _IPolicyFailureFactoryComponent_: Used to create a policy failure that is needed to call 'doFailure' on the policy chain (indicating that the policy failed).
+* _ISharedStateComponent_: Used to share state information across the conversation boundary.
+* _IHttpClientComponent_: Allows HTTP requests to be made from within a policy.
+* _IRateLimiterComponent_: Supports standard quota/rate limiting behavior, maintaining the current number of requests.
+
+All of the components have asynchronous APIs in order to better support the runtime
+philosophy in the API Gateway.
+
+TIP: For more information about each component, see its javadoc.
+
+==== Policy Definition
+The policy implementation is what allows the API Gateway to execute the policy at runtime.
+But how does the API Manager know about the policy so that users can add it to a Plan,
+Service, or Application from within the User Interface?  The answer is that the plugin
+must also include a Policy Definition JSON file for each policy it is providing.
+
+A plugin definition is a JSON file that must be located within the plugin archive
+here:
+
+```
+META-INF/apiman/policyDefs
+```
+
+The plugin definition file takes the following form:
+
+```json
+{
+  "id" : "policy_name",
+  "name" : "Policy Name",
+  "description" : "A useful description of what the policy does.",
+  "policyImpl" : "plugin:${project.groupId}:${project.artifactId}:${project.version}:${project.packaging}/com.example.plugins.MyFirstPolicy",
+  "icon" : "document"
+}
+```
+
+* _id_: The unique id of the policy.
+* _name_: The name of the policy.
+* _description_: The description of the policy.
+* _policyImpl_: Identifies the java class that implements the policy.
+* _icon_: The icon to use when displaying the policy in the UI (name of a Font Awesome icon).
+
+The most important thing to get right in this file is probably the 'policyImpl'.  This
+is the information that the API Manager will use when it tries to instantiate the
+policy implementation at runtime.  For policies that come from plugins, the format
+of the 'policyImpl' is:
+
+```
+plugin:{pluginGroupId}:{pluginArtifactId}:{pluginVersion}:{pluginType}/{fullyQualifiedClassname}
+```
+
+An example of what this string might look like if you cracked open a valid apiman plugin
+and had a peek at one of its policy definition files is:
+
+```
+plugin:io.apiman.plugins:apiman-plugins-example:6.3.3.Final:war/io.apiman.plugins.example.ExamplePolicy
+```
+
+When building your plugin using the recommended maven configuration documented in the
+*Using Maven to Create a Plugin* section, it is extremely convenient to simply let
+Maven set the values for you:
+
+```
+plugin:${project.groupId}:${project.artifactId}:${project.version}:${project.packaging}/com.example.plugins.ExamplePolicy
+```
+
+==== Policy Configuration
+You may be wondering how configuration information specific to a Plan, Service, or
+Application is managed.  Since the same policy implementation instance is used for all
+requests, unique configuration appropriate to a particular request must be passed to
+the policy implementation when it is executed.  This configuration is created in the
+API Manager user interface when adding the policy to a Plan, Service, or Application.
+
+Policy configuration takes the form of string data that is ultimately included when
+publishing a service to the API Gateway.  That string data is parsed into a Java object
+via the 'parseConfiguration' on the *IPolicy* interface and then passed to the policy
+during execution.
+
+The string data is created in the API Manager user interface, either by interacting with
+a Policy Configuration Form contributed by the plugin, or (if no form is included
+in the plugin) by a default configuration form (a simple text area).
+
+===== Policy Configuration UI Form
+Although it is optional, it is typically wise to include a policy configuration UI form
+in your plugin when contributing a policy.  The reason is that it can be very difficult
+to provide configuration data without a user friendly form.  If no form is included,
+the UI will simply display a text area for the user to enter arbitrary configuration
+info.  This is likely to be very error prone or entirely unusable.
+
+This section details how to create and include a policy configuration UI form in your
+plugin so that your custom policy can be easily configured by end users.

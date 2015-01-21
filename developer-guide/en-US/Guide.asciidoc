@@ -2,11 +2,65 @@
 :doctype: book
 
 == Introduction
-Are you interested in contributing to the development of apiman?  Maybe you want to embed the 
+Are you interested in contributing to the development of apiman?  Maybe you want to embed the
 project in your own solution?  In either case this is the guide for you.
+
+
+== Developer Resources
+This section describes a number of resources that are useful if you wish to contribute
+code to apiman.  It is likely also a good starting point for those wishing to provide
+functionality by implementing a plugin, although more information about plugins can
+be found in the 'Plugins' section.
 
 include::Resources.asciidoc[]
 
-include::All.asciidoc[]
+
+== Architecture
+The basic architecture of apiman is fairly straightforward.  There are several WARs that
+make up the default apiman installation.  These include:
+
+* API Manager back-end (JAX-RS WAR)
+* API Manager UI (GWT/Errai WAR)
+* API Gateway Config (JAX-RS WAR)
+* API Gateway (Servlet WAR)
+
+The API Manager back-end WAR is responsible for exposing a set of REST endpoints that
+make up the API Manager REST interface.  The API Manager UI uses this REST API
+directly when the user manages the various entities in the data model.
+
+The API Manager UI is a client-only GWT/Errai application.  Aside from authentication
+related activities, this WAR only contains HTML, JavaScript, and CSS.  The UI uses
+the browser to make direct, authenticated calls to the REST endpoints exposed by the
+API Manager back-end WAR.
+
+The API Gateway Config exposes the standard apiman Gateway REST API so that the API
+Gateway can be remotely configured.  This is the REST API that the API Manager uses
+whenever a user publishes a Service or registers an Application.  It is responsible
+for configuring the API Gateway's embedded Policy Engine.
+
+The API Gateway is the primary runtime component of apiman and is implemented as a
+servlet that embeds the apiman Policy Engine.  All requests to the API Gateway WAR are
+assumed to be intended for managed Services previously published to it.
+
+
+== Plugins
+The easiest way to extend the functionality of apiman is by implementing an apiman
+plugin.  This section details how this is done and what functionality can be
+extended or provided.
+
+include::Plugins.asciidoc[]
+
+
+== Gateway Implementations
+At the heart of any apiman gateway implementation is the flexible, lightweight
+apiman-core. The core serves to execute policies upon the traffic passing through
+it, determining whether a given conversation should continue or not.
+
+A set of simple, asynchronous interfaces are provided which an implementor should
+fulfill using the platform's native functionality to allow apiman to interact with
+its various components and services.
+
+include::Gateway.asciidoc[]
+
 
 :numbered!:
