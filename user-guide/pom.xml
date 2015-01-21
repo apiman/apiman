@@ -8,9 +8,7 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <groupId>io.apiman</groupId>
   <artifactId>apiman-guides-user-guide</artifactId>
-  <version>1.0.0-Final</version>
   <packaging>jdocbook</packaging>
   <name>User Guide</name>
 
