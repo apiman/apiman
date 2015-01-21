@@ -8,9 +8,7 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <groupId>io.apiman</groupId>
   <artifactId>apiman-guides-installation-guide</artifactId>
-  <version>1.0.0-Final</version>
   <packaging>jdocbook</packaging>
   <name>Installation Guide</name>
 

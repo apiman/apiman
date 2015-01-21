@@ -179,12 +179,14 @@ should be changed to appropriate values for your database:
 
 ....
   <system-properties>
-    <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect" />
-    <property name="hibernate.hbm2ddl.auto" value="validate" />
+    <property name="apiman.hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect" />
+    <property name="apiman.hibernate.hbm2ddl.auto" value="validate" />
   </system-properties>
 ....
 
-The MySQL 5.x DDL can be found in *apiman/ddls/*.
+You can, of course, set the hbm2ddl property to "update" so that hibernate automatically creates the
+database structure when it starts up.  Alternatively, the MySQL and PostgreSQL DDLs can be found in 
+*apiman/ddls/*.
 
 === API Gateway Registry
 The API Gateway includes a registry that stores the published service and application information.
