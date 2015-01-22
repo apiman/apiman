@@ -30,8 +30,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -79,15 +81,35 @@ public class DefaultPluginRegistry implements IPluginRegistry {
             return createTempPluginsDir();
         }
     }
-
+    private static Set<URL> getConfiguredPluginRepositories(Map<String, String> configMap) {
+        Set<URL> rval = new HashSet<URL>();
+        rval.addAll(PluginUtils.getDefaultMavenRepositories());
+        String repositories = configMap.get("pluginRepositories"); //$NON-NLS-1$
+        if (repositories != null) {
+            String[] split = repositories.split(","); //$NON-NLS-1$
+            for (String repository : split) {
+                try {
+                    String trimmedRepo = repository.trim();
+                    if (!trimmedRepo.isEmpty()) {
+                        rval.add(new URL(trimmedRepo));
+                    }
+                } catch (MalformedURLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        return rval;
+    }
+    
     private File pluginsDir;
     private Map<PluginCoordinates, Plugin> pluginCache = new HashMap<>();
+    private Set<URL> pluginRepositories;
 
     /**
      * Constructor.
      */
     public DefaultPluginRegistry() {
-        this(createTempPluginsDir());
+        this(createTempPluginsDir(), PluginUtils.getDefaultMavenRepositories());
     }
     
     /**
@@ -95,15 +117,16 @@ public class DefaultPluginRegistry implements IPluginRegistry {
      * @param configMap
      */
     public DefaultPluginRegistry(Map<String, String> configMap) {
-        this(getConfiguredPluginsDir(configMap));
+        this(getConfiguredPluginsDir(configMap), getConfiguredPluginRepositories(configMap));
     }
 
     /**
      * Constructor.
      * @param pluginsDir
      */
-    public DefaultPluginRegistry(File pluginsDir) {
+    public DefaultPluginRegistry(File pluginsDir, Set<URL> pluginRepositories) {
         this.pluginsDir = pluginsDir;
+        this.pluginRepositories = pluginRepositories;
     }
 
     /**
@@ -217,8 +240,7 @@ public class DefaultPluginRegistry implements IPluginRegistry {
      */
     protected void downloadPlugin(File pluginFile, PluginCoordinates coordinates) {
         // Didn't find it in .m2, so try downloading it.
-        Set<URL> repositories = getMavenRepositories();
-        for (URL mavenRepoUrl : repositories) {
+        for (URL mavenRepoUrl : pluginRepositories) {
             if (downloadFromMavenRepo(pluginFile, coordinates, mavenRepoUrl)) {
                 return;
             }
@@ -249,13 +271,5 @@ public class DefaultPluginRegistry implements IPluginRegistry {
             IOUtils.closeQuietly(ostream);
         }
     }
-
-    /**
-     * A valid set of remove maven repository URLs.
-     */
-    protected Set<URL> getMavenRepositories() {
-        // TODO make this configurable!
-        return PluginUtils.getDefaultMavenRepositories();
-    }
-
+    
 }

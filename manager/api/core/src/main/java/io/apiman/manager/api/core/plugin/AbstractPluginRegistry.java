@@ -181,7 +181,6 @@ public abstract class AbstractPluginRegistry implements IPluginRegistry {
      * A valid set of remove maven repository URLs.
      */
     protected Set<URL> getMavenRepositories() {
-        // TODO make this configurable!
         return PluginUtils.getDefaultMavenRepositories();
     }
 

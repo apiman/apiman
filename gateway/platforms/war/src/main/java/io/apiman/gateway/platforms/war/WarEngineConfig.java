@@ -98,7 +98,7 @@ public class WarEngineConfig implements IEngineConfig {
      * @return all properties to be passed to the registry
      */
     public Map<String, String> getRegistryConfig() {
-        return getConfigMap(APIMAN_GATEWAY_REGISTRY_CLASS + "."); //$NON-NLS-1$
+        return getConfigMap(APIMAN_GATEWAY_REGISTRY_CLASS);
     }
 
     /**
@@ -112,7 +112,7 @@ public class WarEngineConfig implements IEngineConfig {
      * @return all properties to be passed to the registry
      */
     public Map<String, String> getPluginRegistryConfig() {
-        Map<String, String> configMap = getConfigMap(APIMAN_GATEWAY_PLUGIN_REGISTRY_CLASS + "."); //$NON-NLS-1$
+        Map<String, String> configMap = getConfigMap(APIMAN_GATEWAY_PLUGIN_REGISTRY_CLASS);
         String pluginsDirOverride = System.getProperty(APIMAN_GATEWAY_PLUGIN_REGISTRY_CLASS + ".pluginsDir"); //$NON-NLS-1$
         if (pluginsDirOverride != null) {
             configMap.put("pluginsDir", pluginsDirOverride); //$NON-NLS-1$
@@ -131,7 +131,7 @@ public class WarEngineConfig implements IEngineConfig {
      * @return all properties to be passed to the factory
      */
     public Map<String, String> getConnectorFactoryConfig() {
-        return getConfigMap(APIMAN_GATEWAY_CONNECTOR_FACTORY_CLASS + "."); //$NON-NLS-1$
+        return getConfigMap(APIMAN_GATEWAY_CONNECTOR_FACTORY_CLASS);
     }
 
     /**
@@ -145,7 +145,7 @@ public class WarEngineConfig implements IEngineConfig {
      * @return all properties to be passed to the factory
      */
     public Map<String, String> getPolicyFactoryConfig() {
-        return getConfigMap(APIMAN_GATEWAY_POLICY_FACTORY_CLASS + "."); //$NON-NLS-1$
+        return getConfigMap(APIMAN_GATEWAY_POLICY_FACTORY_CLASS);
     }
 
     /**
@@ -159,7 +159,7 @@ public class WarEngineConfig implements IEngineConfig {
      * @return all properties to be passed to the factory
      */
     public <T extends IComponent> Map<String, String> getComponentConfig(Class<T> componentType) {
-        return getConfigMap(APIMAN_GATEWAY_COMPONENT_PREFIX + componentType.getSimpleName() + "."); //$NON-NLS-1$
+        return getConfigMap(APIMAN_GATEWAY_COMPONENT_PREFIX + componentType.getSimpleName());
     }
 
     /**
@@ -194,9 +194,12 @@ public class WarEngineConfig implements IEngineConfig {
      */
     private Map<String, String> getConfigMap(String prefix) {
         Map<String, String> rval = new HashMap<String, String>();
-        Iterator<?> keys = config.getKeys(prefix + "."); //$NON-NLS-1$
+        Iterator<?> keys = config.getKeys(prefix);
         while (keys.hasNext()) {
             String key = String.valueOf(keys.next());
+            if (key.equals(prefix)) {
+                continue;
+            }
             String shortKey = key.substring(prefix.length() + 1);
             rval.put(shortKey, config.getString(key));
         }

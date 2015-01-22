@@ -16,10 +16,15 @@
 package io.apiman.manager.api.war.wildfly8;
 
 import io.apiman.manager.api.core.plugin.AbstractPluginRegistry;
+import io.apiman.manager.api.war.ApiManagerConfig;
 
 import java.io.File;
+import java.net.URL;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 /**
  * A wildfly 8 version of the plugin registry.  This subclass exists in order
@@ -31,6 +36,11 @@ import javax.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class Wildfly8PluginRegistry extends AbstractPluginRegistry {
 
+    @Inject
+    private ApiManagerConfig config;
+    
+    private Set<URL> mavenRepos = null;
+    
     /**
      * Creates the temp directory to use for the plugin registry.  This will put
      * the temp dir in the target directory so it gets cleaned when a maven 
@@ -52,6 +62,27 @@ public class Wildfly8PluginRegistry extends AbstractPluginRegistry {
      */
     public Wildfly8PluginRegistry() {
         super(getTestPluginDir());
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.plugin.AbstractPluginRegistry#getMavenRepositories()
+     */
+    @Override
+    protected Set<URL> getMavenRepositories() {
+        if (mavenRepos == null) {
+            mavenRepos = loadMavenRepositories();
+        }
+        return mavenRepos;
+    }
+
+    /**
+     * @return the maven repositories to use when downloading plugins
+     */
+    protected Set<URL> loadMavenRepositories() {
+        Set<URL> repos = new HashSet<URL>();
+        repos.addAll(super.getMavenRepositories());
+        repos.addAll(config.getPluginRepositories());
+        return repos;
     }
     
 }
