@@ -33,6 +33,7 @@ import io.apiman.manager.api.rest.contract.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.contract.exceptions.PluginAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.PluginNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.SystemErrorException;
+import io.apiman.manager.api.rest.impl.i18n.Messages;
 import io.apiman.manager.api.rest.impl.util.ExceptionFactory;
 import io.apiman.manager.api.security.ISecurityContext;
 
@@ -114,7 +115,7 @@ public class PluginResourceImpl implements IPluginResource {
             for (URL url : policyDefs) {
                 PolicyDefinitionBean policyDef = (PolicyDefinitionBean) mapper.reader(PolicyDefinitionBean.class).readValue(url);
                 if (policyDef.getId() == null || policyDef.getId().trim().isEmpty()) {
-                    throw ExceptionFactory.policyDefInvalidException("Policy Definition {0} missing an 'id'.");
+                    throw ExceptionFactory.policyDefInvalidException(Messages.i18n.format("PluginResourceImpl.MissingPolicyDefId", policyDef.getName())); //$NON-NLS-1$
                 }
                 policyDef.setPluginId(bean.getId());
                 if (policyDef.getId() == null) {
