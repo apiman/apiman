@@ -22,11 +22,12 @@ import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.beans.ServiceResponse;
 import io.apiman.gateway.engine.beans.exceptions.ConnectorException;
-import io.apiman.gateway.engine.io.IApimanBuffer;
+import io.apiman.gateway.engine.impl.MockServiceConnection;
 import io.apiman.gateway.engine.policy.IConnectorInterceptor;
 import io.apiman.gateway.engine.policy.IPolicy;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
+import io.apiman.gateway.test.policies.connectors.CannedResponseServiceConnection;
 
 /**
  * A simple policy used to test connector interceptors.
@@ -60,28 +61,22 @@ public class SimpleConnectorInterceptorPolicy implements IPolicy {
     public void apply(final ServiceRequest request, final IPolicyContext context, final Object config,
             final IPolicyChain<ServiceRequest> chain) {
         
-        final IServiceConnection serviceConnection;
-        if(request.getHeaders().containsKey("key")) {
-            serviceConnection = new CannedResponseServiceConnection();
-        } else {
-            serviceConnection = new EchoServiceConnection();
+        if(request.getHeaders().containsKey("intercept")) { //$NON-NLS-1$
+            context.setConnectorInterceptor(new IConnectorInterceptor() {
+                
+                @Override
+                public IServiceConnector createConnector() {
+                    return new IServiceConnector() {
+                        
+                        @Override
+                        public IServiceConnection connect(ServiceRequest request,
+                                IAsyncResultHandler<IServiceConnectionResponse> handler) throws ConnectorException {
+                            return new CannedResponseServiceConnection(handler);
+                        }
+                    };
+                }
+            });
         }
-        
-        context.setConnectorInterceptor(new IConnectorInterceptor() {
-            
-            @Override
-            public IServiceConnector createConnector() {
-                return new IServiceConnector() {
-                    
-                    @Override
-                    public IServiceConnection connect(ServiceRequest request,
-                            IAsyncResultHandler<IServiceConnectionResponse> handler) throws ConnectorException {
-                        return serviceConnection;
-                    }
-                };
-            }
-        });
-        
         chain.doApply(request);
     }
 
@@ -91,73 +86,7 @@ public class SimpleConnectorInterceptorPolicy implements IPolicy {
     @Override
     public void apply(final ServiceResponse response, IPolicyContext context, Object config,
             final IPolicyChain<ServiceResponse> chain) {
-        response.getHeaders().put("Content-Type", "application/json");
-        if(context.getConnectorInterceptor() != null) {
-            response.setMessage("I won't change my mind!");
-        }
         chain.doApply(response);
     }
     
-    private static class EchoServiceConnection implements IServiceConnection {
-
-        private byte[] result;
-        private boolean ended;
-        private boolean aborted;
-        
-        @Override
-        public void write(IApimanBuffer chunk) {
-            if(result == null) {
-                result = chunk.getBytes();
-            } else {
-                byte[] newResult = new byte[result.length + chunk.getBytes().length];
-                System.arraycopy(result, 0, newResult, 0, result.length);
-                System.arraycopy(chunk.getBytes(), 0, newResult, result.length, chunk.getBytes().length);
-                result = newResult;
-            }
-        }
-
-        @Override
-        public void end() {
-            this.ended = true;
-        }
-
-        @Override
-        public boolean isFinished() {
-            return ended || aborted;
-        }
-
-        @Override
-        public void abort() {
-            this.aborted = true;
-        }
-
-        
-    }
-    
-    private static class CannedResponseServiceConnection implements IServiceConnection {
-
-        private boolean ended;
-        private boolean aborted;
-        
-        @Override
-        public void write(IApimanBuffer chunk) {
-            //Do nothing, it's a canned response
-        }
-
-        @Override
-        public void end() {
-            this.ended = true;
-        }
-
-        @Override
-        public boolean isFinished() {
-            return ended || aborted;
-        }
-
-        @Override
-        public void abort() {
-            this.aborted = true;
-        }
-
-    }
 }

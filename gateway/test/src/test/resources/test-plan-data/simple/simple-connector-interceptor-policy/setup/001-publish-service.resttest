@@ -7,7 +7,7 @@ Content-Type: application/json
   "version" : "1.0",
   "publicService" : true,
   "endpointType" : "REST",
-  "endpoint" : "${apiman-gateway-test.endpoints.connector-interceptor-policy}/",
+  "endpoint" : "${apiman-gateway-test.endpoints.echo}/",
   "servicePolicies" : [
         {
           "policyImpl" : "class:io.apiman.gateway.test.policies.SimpleConnectorInterceptorPolicy",

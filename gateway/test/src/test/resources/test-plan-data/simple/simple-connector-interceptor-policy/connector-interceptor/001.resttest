@@ -12,6 +12,6 @@ Content-Type: application/json
   "headers" : {
     "Content-Type":"application/json"
   },
-  "bodyLength" : 41,
-  "bodySha1" : "9a09002951d1e09e8268b5f0cb4fb89f7f9deb3f"
+  "bodyLength" : 0,
+  "bodySha1" : "da39a3ee5e6b4b0d3255bfef95601890afd80709"
 }
