@@ -74,7 +74,10 @@ public class PolicyDefinitionResourceImpl implements IPolicyDefinitionResource {
     public PolicyDefinitionBean create(PolicyDefinitionBean bean) throws PolicyDefinitionAlreadyExistsException {
         if (!securityContext.isAdmin())
             throw ExceptionFactory.notAuthorizedException();
-        bean.setId(BeanUtils.idFromName(bean.getName()));
+        // Auto-generate an ID if one isn't provided.
+        if (bean.getId() == null || bean.getId().trim().isEmpty()) {
+            bean.setId(BeanUtils.idFromName(bean.getName()));
+        }
         try {
             storage.beginTx();
             if (storage.getPolicyDefinition(bean.getId()) != null) {

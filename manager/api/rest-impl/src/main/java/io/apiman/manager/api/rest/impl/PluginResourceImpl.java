@@ -113,6 +113,9 @@ public class PluginResourceImpl implements IPluginResource {
             List<URL> policyDefs = plugin.getPolicyDefinitions();
             for (URL url : policyDefs) {
                 PolicyDefinitionBean policyDef = (PolicyDefinitionBean) mapper.reader(PolicyDefinitionBean.class).readValue(url);
+                if (policyDef.getId() == null || policyDef.getId().trim().isEmpty()) {
+                    throw ExceptionFactory.policyDefInvalidException("Policy Definition {0} missing an 'id'.");
+                }
                 policyDef.setPluginId(bean.getId());
                 if (policyDef.getId() == null) {
                     policyDef.setId(BeanUtils.idFromName(policyDef.getName()));

@@ -146,9 +146,11 @@ public final class ErrorCodes {
     //
     public static final int POLICY_DEF_ALREADY_EXISTS              = 10001;
     public static final int POLICY_DEF_NOT_FOUND                   = 10002;
+    public static final int POLICY_DEF_INVALID                     = 10003;
     
     public static final String POLICY_DEF_ALREADY_EXISTS_INFO      = null;
     public static final String POLICY_DEF_NOT_FOUND_INFO           = null;
+    public static final String POLICY_DEF_INVALID_INFO             = null;
 
 
     //

@@ -35,6 +35,7 @@ import io.apiman.manager.api.rest.contract.exceptions.PlanVersionNotFoundExcepti
 import io.apiman.manager.api.rest.contract.exceptions.PluginAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.PluginNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.PolicyDefinitionAlreadyExistsException;
+import io.apiman.manager.api.rest.contract.exceptions.PolicyDefinitionInvalidException;
 import io.apiman.manager.api.rest.contract.exceptions.PolicyDefinitionNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.PolicyNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.RoleAlreadyExistsException;
@@ -255,6 +256,14 @@ public final class ExceptionFactory {
      */
     public static final PolicyDefinitionNotFoundException policyDefNotFoundException(String policyDefId) {
         return new PolicyDefinitionNotFoundException(Messages.i18n.format("PolicyDefinitionDoesNotExist", policyDefId)); //$NON-NLS-1$
+    }
+
+    /**
+     * Creates an exception.
+     * @param policyDefId
+     */
+    public static final PolicyDefinitionInvalidException policyDefInvalidException(String message) {
+        return new PolicyDefinitionInvalidException(message);
     }
 
     /**
