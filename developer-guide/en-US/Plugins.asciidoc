@@ -140,7 +140,6 @@ In order to provide a custom policy from a plugin, several things are needed:
 
 * An implementation of IPolicy (Java code)
 * A policy definition (JSON file)
-* Optional UI form to configure the policy in the API Manager
 
 The next few sections explain each of these elements further, but note that they are
 all included in the apiman plugin WAR.
@@ -373,13 +372,3 @@ during execution.
 The string data is created in the API Manager user interface, either by interacting with
 a Policy Configuration Form contributed by the plugin, or (if no form is included
 in the plugin) by a default configuration form (a simple text area).
-
-===== Policy Configuration UI Form
-Although it is optional, it is typically wise to include a policy configuration UI form
-in your plugin when contributing a policy.  The reason is that it can be very difficult
-to provide configuration data without a user friendly form.  If no form is included,
-the UI will simply display a text area for the user to enter arbitrary configuration
-info.  This is likely to be very error prone or entirely unusable.
-
-This section details how to create and include a policy configuration UI form in your
-plugin so that your custom policy can be easily configured by end users.
