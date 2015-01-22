@@ -64,6 +64,12 @@ public class ApiManagerProxyServlet extends AbstractUIServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
             IOException {
         StringBuilder url = new StringBuilder();
+
+        String endpoint = getConfig().getManagementApiEndpoint();
+        if (endpoint == null) {
+            endpoint = getDefaultEndpoint(req);
+        }
+
         url.append(getConfig().getManagementApiEndpoint());
         if (!url.toString().endsWith("/")) { //$NON-NLS-1$
             url.append('/');

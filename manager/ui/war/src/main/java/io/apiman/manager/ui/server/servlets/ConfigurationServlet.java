@@ -141,18 +141,4 @@ public class ConfigurationServlet extends AbstractUIServlet {
             throw new ServletException(e);
         }
     }
-
-    /**
-     * Gets the default API endpoint by using information the current
-     * {@link HttpServletRequest}.
-     * 
-     * @param request
-     */
-    private String getDefaultEndpoint(HttpServletRequest request) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(request.getScheme()).append("://") //$NON-NLS-1$
-                .append(request.getServerName()).append(":") //$NON-NLS-1$
-                .append(request.getServerPort()).append("/apiman"); //$NON-NLS-1$
-        return builder.toString();
-    }
 }

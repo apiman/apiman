@@ -20,6 +20,7 @@ import io.apiman.manager.ui.server.auth.ITokenGenerator;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
 
 import org.overlord.commons.services.ServiceRegistryUtil;
 
@@ -67,6 +68,20 @@ public abstract class AbstractUIServlet extends HttpServlet {
             }
         }
         return tokenGenerator;
+    }
+
+    /**
+     * Gets the default API endpoint by using information the current
+     * {@link HttpServletRequest}.
+     * 
+     * @param request
+     */
+    protected String getDefaultEndpoint(HttpServletRequest request) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(request.getScheme()).append("://") //$NON-NLS-1$
+                .append(request.getServerName()).append(":") //$NON-NLS-1$
+                .append(request.getServerPort()).append("/apiman"); //$NON-NLS-1$
+        return builder.toString();
     }
 
 }
