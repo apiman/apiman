@@ -33,7 +33,7 @@
       <url-pattern>/*</url-pattern>
     </web-resource-collection>
     <auth-constraint>
-      <role-name>apiadmin</role-name>
+      <role-name>apipublisher</role-name>
     </auth-constraint>
   </security-constraint>
   <login-config>
@@ -41,7 +41,7 @@
     <realm-name>apiman</realm-name>
   </login-config>
   <security-role>
-    <role-name>apiadmin</role-name>
+    <role-name>apipublisher</role-name>
   </security-role>
 
 </web-app>
