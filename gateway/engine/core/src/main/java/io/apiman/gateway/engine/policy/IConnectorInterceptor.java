@@ -18,7 +18,8 @@ package io.apiman.gateway.engine.policy;
 import io.apiman.gateway.engine.IServiceConnector;
 
 /**
- * TODO Comment
+ * Connector interceptor to be used for create the {@link IServiceConnector} which will be used
+ * instead of the real connector configured in the gateway
  * 
  * @author rromero
  *

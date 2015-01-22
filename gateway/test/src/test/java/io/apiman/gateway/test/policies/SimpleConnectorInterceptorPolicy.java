@@ -22,7 +22,6 @@ import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.beans.ServiceResponse;
 import io.apiman.gateway.engine.beans.exceptions.ConnectorException;
-import io.apiman.gateway.engine.impl.MockServiceConnection;
 import io.apiman.gateway.engine.policy.IConnectorInterceptor;
 import io.apiman.gateway.engine.policy.IPolicy;
 import io.apiman.gateway.engine.policy.IPolicyChain;

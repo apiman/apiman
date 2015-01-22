@@ -57,14 +57,14 @@ public interface IPolicyContext {
     <T extends IComponent> T getComponent(Class<T> componentClass) throws ComponentNotFoundException;
     
     /**
-     * TODO Document
+     * Sets the {@link IConnectorInterceptor} to be used instead of the real connection.
+     * 
+     * @throws InterceptorAlreadyRegisteredException
      */
     void setConnectorInterceptor(IConnectorInterceptor connectorInterceptor) throws InterceptorAlreadyRegisteredException;
     
     /**
-     * TODO Document
-     * 
-     * @return
+     * @return {@link IConnectorInterceptor} set to the context or null otherwise
      */
     IConnectorInterceptor getConnectorInterceptor();
     
