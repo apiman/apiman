@@ -159,7 +159,7 @@ standalone/deployments/apiman-ds.xml
 Out of the box this data source is usually a simple H2 configuration, but you can (of course) change
 it to support whatever database you desire.
 
-....
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <datasources>
   <datasource jndi-name="jdbc/ApiManDT" pool-name="apiman-manager-api" enabled="true"
@@ -171,18 +171,18 @@ it to support whatever database you desire.
     </security>
   </datasource>
 </datasources>
-....
+```
 
 The project comes with DDLs for MySQL and PostgreSQL, to hopefully make it easy to switch away from H2.  Note
 that switching databases also requires a change to the standalone-apiman.xml file.  The following
 should be changed to appropriate values for your database:
 
-....
+```xml
   <system-properties>
     <property name="apiman.hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect" />
     <property name="apiman.hibernate.hbm2ddl.auto" value="validate" />
   </system-properties>
-....
+```
 
 You can, of course, set the hbm2ddl property to "update" so that hibernate automatically creates the
 database structure when it starts up.  Alternatively, the MySQL and PostgreSQL DDLs can be found in 
@@ -198,7 +198,7 @@ Out of the box, the API Gateway is configured to use a persistent Infinispan cac
 published/registered data.  The configuration of the Infinispan cache can be found in
 *standalone-apiman.xml* and is detailed here:
 
-....
+```xml
 <subsystem xmlns="urn:jboss:domain:infinispan:2.0">
   <cache-container name="apiman-gateway" default-cache="registry" start="EAGER">
     <local-cache name="registry" batching="true">
@@ -206,7 +206,7 @@ published/registered data.  The configuration of the Infinispan cache can be fou
     </local-cache>
   </cache-container>
 </subsystem>
-....
+```
 
 This cache can be configured however you choose, but in all cases should be made persistent.
 
@@ -217,7 +217,7 @@ apiman policies to enforce rate limits and uses an Infinispan cache to store dat
 configuration of the Infinispan cache can be found in *standalone-apiman.xml* and is
 detailed here:
 
-....
+```xml
 <subsystem xmlns="urn:jboss:domain:infinispan:2.0">
   <cache-container name="apiman-gateway" default-cache="registry" start="EAGER">
     <local-cache name="rate-limiter" batching="true">
@@ -225,7 +225,7 @@ detailed here:
     </local-cache>
   </cache-container>
 </subsystem>
-....
+```
 
 
 === API Gateway Shared State
@@ -235,7 +235,7 @@ shared state component uses another Infinispan cache to store data.  The
 configuration of the Infinispan cache can be found in *standalone-apiman.xml* and is
 detailed here:
 
-....
+```xml
 <subsystem xmlns="urn:jboss:domain:infinispan:2.0">
   <cache-container name="apiman-gateway" default-cache="registry" start="EAGER">
     <local-cache name="shared-state" batching="true">
@@ -243,7 +243,7 @@ detailed here:
     </local-cache>
   </cache-container>
 </subsystem>
-....
+```
 
 
 :numbered!:

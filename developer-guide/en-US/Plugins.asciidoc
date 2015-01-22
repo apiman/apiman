@@ -25,10 +25,10 @@ should be of the following format:
 }
 ```
 
-* _frameworkVersion_: Indicates the apiman plugin framework version this plugin is compatible with - this should simply be 1.0 for now (reserved for future use)
-* _name_: The name of the plugin.
-* _description_: The description of the plugin.
-* _version_: The plugin version.
+* *frameworkVersion*: Indicates the apiman plugin framework version this plugin is compatible with - this should simply be 1.0 for now (reserved for future use)
+* *name*: The name of the plugin.
+* *description*: The description of the plugin.
+* *version*: The plugin version.
 
 If this 'plugin.json' file is missing from the plugin archive, then the plugin will
 fail to load.
@@ -293,10 +293,10 @@ useful.  To access a component, use the 'getComponent' method found on the polic
 context, passing it the interface of the component you wish to use.  The following
 components are available:
 
-* _IPolicyFailureFactoryComponent_: Used to create a policy failure that is needed to call 'doFailure' on the policy chain (indicating that the policy failed).
-* _ISharedStateComponent_: Used to share state information across the conversation boundary.
-* _IHttpClientComponent_: Allows HTTP requests to be made from within a policy.
-* _IRateLimiterComponent_: Supports standard quota/rate limiting behavior, maintaining the current number of requests.
+* *IPolicyFailureFactoryComponent*: Used to create a policy failure that is needed to call 'doFailure' on the policy chain (indicating that the policy failed).
+* *ISharedStateComponent*: Used to share state information across the conversation boundary.
+* *IHttpClientComponent*: Allows HTTP requests to be made from within a policy.
+* *IRateLimiterComponent*: Supports standard quota/rate limiting behavior, maintaining the current number of requests.
 
 All of the components have asynchronous APIs in order to better support the runtime
 philosophy in the API Gateway.
@@ -328,11 +328,11 @@ The plugin definition file takes the following form:
 }
 ```
 
-* _id_: The unique id of the policy.
-* _name_: The name of the policy.
-* _description_: The description of the policy.
-* _policyImpl_: Identifies the java class that implements the policy.
-* _icon_: The icon to use when displaying the policy in the UI (name of a Font Awesome icon).
+* *id*: The unique id of the policy.
+* *name*: The name of the policy.
+* *description*: The description of the policy.
+* *policyImpl*: Identifies the java class that implements the policy.
+* *icon*: The icon to use when displaying the policy in the UI (name of a Font Awesome icon).
 
 The most important thing to get right in this file is probably the 'policyImpl'.  This
 is the information that the API Manager will use when it tries to instantiate the
