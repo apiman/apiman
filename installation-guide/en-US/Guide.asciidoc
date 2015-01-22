@@ -185,7 +185,7 @@ should be changed to appropriate values for your database:
 ```
 
 You can, of course, set the hbm2ddl property to "update" so that hibernate automatically creates the
-database structure when it starts up.  Alternatively, the MySQL and PostgreSQL DDLs can be found in 
+database structure when it starts up.  Alternatively, the MySQL and PostgreSQL DDLs can be found in
 *apiman/ddls/*.
 
 === API Gateway Registry
@@ -244,6 +244,13 @@ detailed here:
   </cache-container>
 </subsystem>
 ```
+
+=== Gateway API Authentication
+The Gateway's REST API is what the API Manager invokes when publishing services and applications
+to the Gateway.  This REST API should be protected, often using BASIC authentication.  By default,
+the Gateway REST API requires BASIC authentication credentials, as well as a role of *apipublisher*.
+In other words, the Gateway REST API can only be invoked by a valid user, and that user must have
+the *apipublisher* role.
 
 
 :numbered!:

@@ -373,6 +373,13 @@ In all cases, the apiman admin must configure these Gateways in the *System Admi
 Gateway has a name, description, and configuration endpoint.  The configuration endpoint is what the
 API Manager will use when publishing services and applications into the Gateway.
 
+When configuring an API Gateway you will need to include the authentication credentials required to
+invoke the API Gateway configuration REST API.  Typically this user must have the 'apipublisher' role
+in order to successfully talk to the API Gateway.  The Gateway UI includes a *Test Gateway* button
+which will attempt to contact the Gateway API with the credentials included.  If successful, the
+test button will turn green.  If unsuccessful, details about the failure will be displayed and the
+test button will turn red.
+
 ==== Plugins
 apiman supports contributing additional functionality via a simple plugin mechanism.  Plugins can be
 managed by an administrator within the API Manager.  The plugin management administration page allows
