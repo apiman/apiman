@@ -1,0 +1,19 @@
+PUT /api/services admin/admin
+Content-Type: application/json
+
+{
+  "organizationId" : "SimpleConnectorInterceptorPolicyTest",
+  "serviceId" : "connector-interceptor-policy",
+  "version" : "1.0",
+  "publicService" : true,
+  "endpointType" : "REST",
+  "endpoint" : "${apiman-gateway-test.endpoints.echo}/",
+  "servicePolicies" : [
+        {
+          "policyImpl" : "class:io.apiman.gateway.test.policies.SimpleConnectorInterceptorPolicy",
+          "policyJsonConfig" : ""
+        }
+      ]
+}
+----
+204

@@ -1,0 +1,17 @@
+PUT /gateway/SimpleConnectorInterceptorPolicyTest/connector-interceptor-policy/1.0/path/to/app/resource admin/admin
+Content-Type: application/json
+
+----
+200
+Content-Type: application/json
+
+{
+  "method" : "PUT",
+  "resource" : "/path/to/app/resource",
+  "uri" : "/path/to/app/resource",
+  "headers" : {
+    "Content-Type":"application/json"
+  },
+  "bodyLength" : 0,
+  "bodySha1" : "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+}
