@@ -2,11 +2,7 @@ POST /organizations/Organization1/services/Service1/versions/1.0/policies admin/
 Content-Type: application/json
 
 {
-  "name" : "My Test Policy",
-  "description" : "This is a policy that does nothing but test.",
-  "definition" : {
-    "id" : "PolicyDef"
-  },
+  "definitionId" : "PolicyDef",
   "configuration" : "{\"testName\" : \"ServicesTest\"}"
 }
 ----

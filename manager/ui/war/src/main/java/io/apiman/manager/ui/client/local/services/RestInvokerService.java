@@ -45,10 +45,12 @@ import io.apiman.manager.api.beans.plans.PlanVersionBean;
 import io.apiman.manager.api.beans.plans.UpdatePlanBean;
 import io.apiman.manager.api.beans.plugins.NewPluginBean;
 import io.apiman.manager.api.beans.plugins.PluginBean;
+import io.apiman.manager.api.beans.policies.NewPolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyChainBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
+import io.apiman.manager.api.beans.policies.UpdatePolicyBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.beans.services.NewServiceBean;
@@ -959,7 +961,7 @@ public class RestInvokerService {
      * @param bean
      */
     public void createPolicy(PolicyType policyType, String organizationId, String entityId, String entityVersion,
-            PolicyBean bean, IRestInvokerCallback<PolicyBean> callback) {
+            NewPolicyBean bean, IRestInvokerCallback<PolicyBean> callback) {
         CallbackAdapter<PolicyBean> adapter = new CallbackAdapter<PolicyBean>(callback);
         if (policyType == PolicyType.Application) {
             organizations.call(adapter, adapter).createAppPolicy(organizationId, entityId, entityVersion, bean);
@@ -1022,7 +1024,7 @@ public class RestInvokerService {
      * @param callback
      */
     public void updatePolicy(PolicyType policyType, String organizationId, String entityId,
-            String entityVersion, Long policyId, PolicyBean policy, IRestInvokerCallback<Void> callback) {
+            String entityVersion, Long policyId, UpdatePolicyBean policy, IRestInvokerCallback<Void> callback) {
         CallbackAdapter<Void> adapter = new CallbackAdapter<Void>(callback);
         if (policyType == PolicyType.Application) {
             organizations.call(adapter, adapter).updateAppPolicy(organizationId, entityId, entityVersion, policyId, policy);

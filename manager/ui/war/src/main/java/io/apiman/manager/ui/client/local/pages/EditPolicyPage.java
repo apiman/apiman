@@ -20,6 +20,7 @@ import io.apiman.manager.api.beans.idm.PermissionType;
 import io.apiman.manager.api.beans.plans.PlanVersionBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
+import io.apiman.manager.api.beans.policies.UpdatePolicyBean;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
 import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.events.IsFormValidEvent;
@@ -211,7 +212,7 @@ public class EditPolicyPage extends AbstractPolicyPage {
     public void onUpdate(ClickEvent event) {
         updateButton.onActionStarted();
         final PolicyType policyType = PolicyType.valueOf(type);
-        final PolicyBean updatedPolicyConfig = new PolicyBean();
+        final UpdatePolicyBean updatedPolicyConfig = new UpdatePolicyBean();
         updatedPolicyConfig.setConfiguration(policyForm.getValue());
         
         rest.updatePolicy(policyType, org, id, ver, new Long(policy), updatedPolicyConfig, new IRestInvokerCallback<Void>() {

@@ -34,8 +34,10 @@ import io.apiman.manager.api.beans.plans.NewPlanVersionBean;
 import io.apiman.manager.api.beans.plans.PlanBean;
 import io.apiman.manager.api.beans.plans.PlanVersionBean;
 import io.apiman.manager.api.beans.plans.UpdatePlanBean;
+import io.apiman.manager.api.beans.policies.NewPolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyChainBean;
+import io.apiman.manager.api.beans.policies.UpdatePolicyBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.beans.services.NewServiceBean;
 import io.apiman.manager.api.beans.services.NewServiceVersionBean;
@@ -239,7 +241,7 @@ public interface IOrganizationResource {
     @Produces(MediaType.APPLICATION_JSON)
     public PolicyBean createAppPolicy(@PathParam("organizationId") String organizationId,
             @PathParam("applicationId") String applicationId, @PathParam("version") String version,
-            PolicyBean bean) throws OrganizationNotFoundException, ApplicationVersionNotFoundException,
+            NewPolicyBean bean) throws OrganizationNotFoundException, ApplicationVersionNotFoundException,
             NotAuthorizedException;
 
     @GET
@@ -256,7 +258,7 @@ public interface IOrganizationResource {
     @Produces(MediaType.APPLICATION_JSON)
     public void updateAppPolicy(@PathParam("organizationId") String organizationId,
             @PathParam("applicationId") String applicationId, @PathParam("version") String version,
-            @PathParam("policyId") long policyId, PolicyBean bean) throws OrganizationNotFoundException,
+            @PathParam("policyId") long policyId, UpdatePolicyBean bean) throws OrganizationNotFoundException,
             ApplicationVersionNotFoundException, PolicyNotFoundException, NotAuthorizedException;
 
     @DELETE
@@ -379,7 +381,7 @@ public interface IOrganizationResource {
     @Produces(MediaType.APPLICATION_JSON)
     public PolicyBean createServicePolicy(@PathParam("organizationId") String organizationId,
             @PathParam("serviceId") String serviceId, @PathParam("version") String version,
-            PolicyBean bean) throws OrganizationNotFoundException, ServiceVersionNotFoundException,
+            NewPolicyBean bean) throws OrganizationNotFoundException, ServiceVersionNotFoundException,
             NotAuthorizedException;
 
     @GET
@@ -396,7 +398,7 @@ public interface IOrganizationResource {
     @Produces(MediaType.APPLICATION_JSON)
     public void updateServicePolicy(@PathParam("organizationId") String organizationId,
             @PathParam("serviceId") String serviceId, @PathParam("version") String version,
-            @PathParam("policyId") long policyId, PolicyBean bean) throws OrganizationNotFoundException,
+            @PathParam("policyId") long policyId, UpdatePolicyBean bean) throws OrganizationNotFoundException,
             ServiceVersionNotFoundException, PolicyNotFoundException, NotAuthorizedException;
 
     @DELETE
@@ -512,7 +514,7 @@ public interface IOrganizationResource {
     @Produces(MediaType.APPLICATION_JSON)
     public PolicyBean createPlanPolicy(@PathParam("organizationId") String organizationId,
             @PathParam("planId") String planId, @PathParam("version") String version,
-            PolicyBean bean) throws OrganizationNotFoundException, PlanVersionNotFoundException,
+            NewPolicyBean bean) throws OrganizationNotFoundException, PlanVersionNotFoundException,
             NotAuthorizedException;
 
     @GET
@@ -529,7 +531,7 @@ public interface IOrganizationResource {
     @Produces(MediaType.APPLICATION_JSON)
     public void updatePlanPolicy(@PathParam("organizationId") String organizationId,
             @PathParam("planId") String planId, @PathParam("version") String version,
-            @PathParam("policyId") long policyId, PolicyBean bean) throws OrganizationNotFoundException,
+            @PathParam("policyId") long policyId, UpdatePolicyBean bean) throws OrganizationNotFoundException,
             PlanVersionNotFoundException, PolicyNotFoundException, NotAuthorizedException;
 
     @DELETE

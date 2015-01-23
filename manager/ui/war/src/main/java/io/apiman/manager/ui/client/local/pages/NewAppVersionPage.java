@@ -19,6 +19,7 @@ import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
 import io.apiman.manager.api.beans.apps.NewApplicationVersionBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.contracts.NewContractBean;
+import io.apiman.manager.api.beans.policies.NewPolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
 import io.apiman.manager.api.beans.summary.ContractSummaryBean;
@@ -200,11 +201,9 @@ public class NewAppVersionPage extends AbstractPage {
         rest.getPolicy(PolicyType.Application, org, app, oldVersion, policySummaryBean.getId(), new IRestInvokerCallback<PolicyBean>() {
             @Override
             public void onSuccess(PolicyBean response) {
-                PolicyBean clonedPolicy = new PolicyBean();
+                NewPolicyBean clonedPolicy = new NewPolicyBean();
                 clonedPolicy.setConfiguration(response.getConfiguration());
-                clonedPolicy.setDefinition(response.getDefinition());
-                clonedPolicy.setName(response.getName());
-                clonedPolicy.setOrderIndex(response.getOrderIndex());
+                clonedPolicy.setDefinitionId(response.getDefinition().getId());
                 rest.createPolicy(PolicyType.Application, org, app, ver, clonedPolicy, new IRestInvokerCallback<PolicyBean>() {
                     @Override
                     public void onSuccess(PolicyBean response) {

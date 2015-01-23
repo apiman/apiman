@@ -2,10 +2,7 @@ POST /organizations/TestOrganization/services/foo/versions/1.0/policies admin/ad
 Content-Type: application/json
 
 {
-  "name" : "Service Policy 1",
-  "definition" : {
-    "id" : "PolicyDefThree"
-  },
+  "definitionId" : "PolicyDefThree",
   "configuration" : "{\"message\" : \"Service Policy 1\"}"
 }
 ----

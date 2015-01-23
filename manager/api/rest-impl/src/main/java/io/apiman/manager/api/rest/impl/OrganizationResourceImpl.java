@@ -46,10 +46,12 @@ import io.apiman.manager.api.beans.plans.PlanBean;
 import io.apiman.manager.api.beans.plans.PlanStatus;
 import io.apiman.manager.api.beans.plans.PlanVersionBean;
 import io.apiman.manager.api.beans.plans.UpdatePlanBean;
+import io.apiman.manager.api.beans.policies.NewPolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyChainBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
+import io.apiman.manager.api.beans.policies.UpdatePolicyBean;
 import io.apiman.manager.api.beans.search.PagingBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaFilterBean;
@@ -805,7 +807,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
      */
     @Override
     public PolicyBean createAppPolicy(String organizationId, String applicationId, String version,
-            PolicyBean bean) throws OrganizationNotFoundException, ApplicationVersionNotFoundException,
+            NewPolicyBean bean) throws OrganizationNotFoundException, ApplicationVersionNotFoundException,
             NotAuthorizedException {
         if (!securityContext.hasPermission(PermissionType.appEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
@@ -844,7 +846,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
      */
     @Override
     public void updateAppPolicy(String organizationId, String applicationId, String version,
-            long policyId, PolicyBean bean) throws OrganizationNotFoundException,
+            long policyId, UpdatePolicyBean bean) throws OrganizationNotFoundException,
             ApplicationVersionNotFoundException, PolicyNotFoundException, NotAuthorizedException {
         if (!securityContext.hasPermission(PermissionType.appEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
@@ -1390,7 +1392,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
      */
     @Override
     public PolicyBean createServicePolicy(String organizationId, String serviceId, String version,
-            PolicyBean bean) throws OrganizationNotFoundException, ServiceVersionNotFoundException,
+            NewPolicyBean bean) throws OrganizationNotFoundException, ServiceVersionNotFoundException,
             NotAuthorizedException {
         if (!securityContext.hasPermission(PermissionType.svcEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
@@ -1429,7 +1431,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
      */
     @Override
     public void updateServicePolicy(String organizationId, String serviceId, String version,
-            long policyId, PolicyBean bean) throws OrganizationNotFoundException,
+            long policyId, UpdatePolicyBean bean) throws OrganizationNotFoundException,
             ServiceVersionNotFoundException, PolicyNotFoundException, NotAuthorizedException {
         if (!securityContext.hasPermission(PermissionType.svcEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
@@ -1846,7 +1848,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
      */
     @Override
     public PolicyBean createPlanPolicy(String organizationId, String planId, String version,
-            PolicyBean bean) throws OrganizationNotFoundException, PlanVersionNotFoundException,
+            NewPolicyBean bean) throws OrganizationNotFoundException, PlanVersionNotFoundException,
             NotAuthorizedException {
         if (!securityContext.hasPermission(PermissionType.planEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
@@ -1886,7 +1888,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
      */
     @Override
     public void updatePlanPolicy(String organizationId, String planId, String version,
-            long policyId, PolicyBean bean) throws OrganizationNotFoundException,
+            long policyId, UpdatePolicyBean bean) throws OrganizationNotFoundException,
             PlanVersionNotFoundException, PolicyNotFoundException, NotAuthorizedException {
         if (!securityContext.hasPermission(PermissionType.planEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
@@ -2011,18 +2013,19 @@ public class OrganizationResourceImpl implements IOrganizationResource {
      * @throws NotAuthorizedException
      */
     protected PolicyBean doCreatePolicy(String organizationId, String entityId, String entityVersion,
-            PolicyBean bean, PolicyType type) throws PolicyDefinitionNotFoundException {
-        if (bean.getDefinition() == null) {
+            NewPolicyBean bean, PolicyType type) throws PolicyDefinitionNotFoundException {
+        if (bean.getDefinitionId() == null) {
             ExceptionFactory.policyDefNotFoundException("null"); //$NON-NLS-1$
         }
         PolicyDefinitionBean def = null;
+        PolicyBean policy = new PolicyBean();
         try {
             storage.beginTx();
-            def = storage.getPolicyDefinition(bean.getDefinition().getId());
+            def = storage.getPolicyDefinition(bean.getDefinitionId());
             if (def == null) {
-                ExceptionFactory.policyDefNotFoundException(bean.getDefinition().getId());
+                ExceptionFactory.policyDefNotFoundException(bean.getDefinitionId());
             }
-            bean.setDefinition(def);
+            policy.setDefinition(def);
             storage.commitTx();
         } catch (AbstractRestException e) {
             storage.rollbackTx();
@@ -2040,24 +2043,25 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         }
 
         try {
-            bean.setId(null);
-            bean.setName(def.getName());
-            bean.setCreatedBy(securityContext.getCurrentUser());
-            bean.setCreatedOn(new Date());
-            bean.setModifiedBy(securityContext.getCurrentUser());
-            bean.setModifiedOn(new Date());
-            bean.setOrganizationId(organizationId);
-            bean.setEntityId(entityId);
-            bean.setEntityVersion(entityVersion);
-            bean.setType(type);
-            bean.setOrderIndex(newIdx);
+            policy.setId(null);
+            policy.setName(def.getName());
+            policy.setConfiguration(bean.getConfiguration());
+            policy.setCreatedBy(securityContext.getCurrentUser());
+            policy.setCreatedOn(new Date());
+            policy.setModifiedBy(securityContext.getCurrentUser());
+            policy.setModifiedOn(new Date());
+            policy.setOrganizationId(organizationId);
+            policy.setEntityId(entityId);
+            policy.setEntityVersion(entityVersion);
+            policy.setType(type);
+            policy.setOrderIndex(newIdx);
             
             storage.beginTx();
-            storage.createPolicy(bean);
-            storage.createAuditEntry(AuditUtils.policyAdded(bean, type, securityContext));
-            PolicyTemplateUtil.generatePolicyDescription(bean);
+            storage.createPolicy(policy);
+            storage.createAuditEntry(AuditUtils.policyAdded(policy, type, securityContext));
+            PolicyTemplateUtil.generatePolicyDescription(policy);
             storage.commitTx();
-            return bean;
+            return policy;
         } catch (AbstractRestException e) {
             storage.rollbackTx();
             throw e;

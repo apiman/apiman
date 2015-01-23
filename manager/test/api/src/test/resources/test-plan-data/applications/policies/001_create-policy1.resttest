@@ -2,10 +2,7 @@ POST /organizations/Organization1/applications/Application1/versions/1.0/policie
 Content-Type: application/json
 
 {
-  "definition" : {
-    "name" : "Policy Def",
-    "id" : "PolicyDef"
-  },
+  "definitionId" : "PolicyDef",
   "configuration" : "{\"foo\" : \"bar\"}"
 }
 ----

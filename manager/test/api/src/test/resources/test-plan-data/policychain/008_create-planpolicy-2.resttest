@@ -2,10 +2,7 @@ POST /organizations/TestOrganization/plans/Gold/versions/1.0/policies admin/admi
 Content-Type: application/json
 
 {
-  "name" : "Plan Policy 2",
-  "definition" : {
-    "id" : "PolicyDefTwo"
-  },
+  "definitionId" : "PolicyDefTwo",
   "configuration" : "{\"message\" : \"Plan Policy 2\"}"
 }
 ----

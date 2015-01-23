@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.ui.client.local.pages;
 
+import io.apiman.manager.api.beans.policies.NewPolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
 import io.apiman.manager.api.beans.services.NewServiceVersionBean;
@@ -179,11 +180,9 @@ public class NewServiceVersionPage extends AbstractPage {
         rest.getPolicy(PolicyType.Service, org, service, oldVersion, policySummaryBean.getId(), new IRestInvokerCallback<PolicyBean>() {
             @Override
             public void onSuccess(PolicyBean response) {
-                PolicyBean clonedPolicy = new PolicyBean();
+                NewPolicyBean clonedPolicy = new NewPolicyBean();
                 clonedPolicy.setConfiguration(response.getConfiguration());
-                clonedPolicy.setDefinition(response.getDefinition());
-                clonedPolicy.setName(response.getName());
-                clonedPolicy.setOrderIndex(response.getOrderIndex());
+                clonedPolicy.setDefinitionId(response.getDefinition().getId());
                 rest.createPolicy(PolicyType.Service, org, service, ver, clonedPolicy, new IRestInvokerCallback<PolicyBean>() {
                     @Override
                     public void onSuccess(PolicyBean response) {

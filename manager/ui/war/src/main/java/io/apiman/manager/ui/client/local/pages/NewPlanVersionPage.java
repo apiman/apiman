@@ -17,6 +17,7 @@ package io.apiman.manager.ui.client.local.pages;
 
 import io.apiman.manager.api.beans.plans.NewPlanVersionBean;
 import io.apiman.manager.api.beans.plans.PlanVersionBean;
+import io.apiman.manager.api.beans.policies.NewPolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
 import io.apiman.manager.api.beans.summary.PolicySummaryBean;
@@ -174,11 +175,9 @@ public class NewPlanVersionPage extends AbstractPage {
         rest.getPolicy(PolicyType.Plan, org, plan, oldVersion, policySummaryBean.getId(), new IRestInvokerCallback<PolicyBean>() {
             @Override
             public void onSuccess(PolicyBean response) {
-                PolicyBean clonedPolicy = new PolicyBean();
+                NewPolicyBean clonedPolicy = new NewPolicyBean();
                 clonedPolicy.setConfiguration(response.getConfiguration());
-                clonedPolicy.setDefinition(response.getDefinition());
-                clonedPolicy.setName(response.getName());
-                clonedPolicy.setOrderIndex(response.getOrderIndex());
+                clonedPolicy.setDefinitionId(response.getDefinition().getId());
                 rest.createPolicy(PolicyType.Plan, org, plan, ver, clonedPolicy, new IRestInvokerCallback<PolicyBean>() {
                     @Override
                     public void onSuccess(PolicyBean response) {

@@ -2,15 +2,8 @@ POST /organizations/Organization1/applications/Application1/versions/1.0/policie
 Content-Type: application/json
 
 {
-  "type" : "Application",
-  "organizationId" : "Organization1",
-  "entityId" : "Application1",
-  "entityVersion" : "1.0",
-  "name" : "Application Policy",
   "configuration" : "{ 'foo' : 'bar' }",
-  "definition" : {
-    "id" : "PolicyDefTwo"
-  }
+  "definitionId" : "PolicyDefTwo"
 }
 ----
 200

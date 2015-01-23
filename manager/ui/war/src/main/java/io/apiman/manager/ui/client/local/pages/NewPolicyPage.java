@@ -15,8 +15,8 @@
  */
 package io.apiman.manager.ui.client.local.pages;
 
+import io.apiman.manager.api.beans.policies.NewPolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
-import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
 import io.apiman.manager.api.beans.summary.PolicyDefinitionSummaryBean;
 import io.apiman.manager.ui.client.local.AppMessages;
@@ -168,11 +168,9 @@ public class NewPolicyPage extends AbstractPolicyPage {
         final PolicyType policyType = PolicyType.valueOf(type);
         final PolicyDefinitionSummaryBean policyDef = typeSelector.getValue();
         
-        PolicyBean bean = new PolicyBean();
+        NewPolicyBean bean = new NewPolicyBean();
         bean.setConfiguration(this.policyForm.getValue());
-        bean.setName(policyDef.getName());
-        bean.setDefinition(new PolicyDefinitionBean());
-        bean.getDefinition().setId(policyDef.getId());
+        bean.setDefinitionId(policyDef.getId());
         rest.createPolicy(policyType, org, id, ver, bean, new IRestInvokerCallback<PolicyBean>() {
             @Override
             public void onSuccess(PolicyBean response) {

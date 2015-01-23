@@ -2,9 +2,7 @@ POST /organizations/Test/plans/Silver/versions/1.0/policies ${apiman.suite.api-u
 Content-Type: application/json
 
 {
-  "definition" : {
-    "id" : "RateLimitingPolicy"
-  },
+  "definitionId" : "RateLimitingPolicy",
   "configuration" : "{ \"limit\" : \"5\", \"granularity\" : \"Application\", \"period\" : \"Minute\" }"
 }
 ----

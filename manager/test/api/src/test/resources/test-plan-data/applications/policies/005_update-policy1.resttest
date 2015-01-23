@@ -2,7 +2,6 @@ PUT /organizations/Organization1/applications/Application1/versions/1.0/policies
 Content-Type: application/json
 
 {
-  "name" : "My Test Policy (updated)"
 }
 ----
 204

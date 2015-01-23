@@ -2,10 +2,7 @@ POST /organizations/Organization1/plans/Plan1/versions/1.0/policies admin/admin
 Content-Type: application/json
 
 {
-  "name" : "Test Policy 2",
-  "definition" : {
-    "id" : "PolicyDef"
-  },
+  "definitionId" : "PolicyDef",
   "configuration" : "{\"jerk\" : \"store\"}"
 }
 ----
