@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.ui.client.local.pages;
 
+import io.apiman.manager.api.beans.plugins.NewPluginBean;
 import io.apiman.manager.api.beans.plugins.PluginBean;
 import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.services.rest.IRestInvokerCallback;
@@ -122,7 +123,7 @@ public class NewPluginPage extends AbstractPage {
     @EventHandler("addButton")
     public void onAdd(ClickEvent event) {
         addButton.onActionStarted();
-        PluginBean plugin = new PluginBean();
+        NewPluginBean plugin = new NewPluginBean();
         plugin.setGroupId(groupId.getValue().trim());
         plugin.setArtifactId(artifactId.getValue().trim());
         plugin.setVersion(version.getValue().trim());

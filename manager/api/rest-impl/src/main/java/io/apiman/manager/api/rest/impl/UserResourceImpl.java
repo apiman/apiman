@@ -20,6 +20,7 @@ import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.idm.PermissionBean;
 import io.apiman.manager.api.beans.idm.PermissionType;
 import io.apiman.manager.api.beans.idm.RoleMembershipBean;
+import io.apiman.manager.api.beans.idm.UpdateUserBean;
 import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.beans.search.PagingBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
@@ -87,10 +88,10 @@ public class UserResourceImpl implements IUserResource {
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.IUserResource#update(java.lang.String, io.apiman.manager.api.beans.idm.UserBean)
+     * @see io.apiman.manager.api.rest.contract.IUserResource#update(java.lang.String, io.apiman.manager.api.beans.idm.UpdateUserBean)
      */
     @Override
-    public void update(String userId, UserBean user) throws UserNotFoundException, NotAuthorizedException {
+    public void update(String userId, UpdateUserBean user) throws UserNotFoundException, NotAuthorizedException {
         if (!securityContext.isAdmin() && !securityContext.getCurrentUser().equals(userId))
             throw ExceptionFactory.notAuthorizedException();
         try {

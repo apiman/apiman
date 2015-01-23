@@ -33,7 +33,6 @@ import io.apiman.gateway.test.policies.connectors.CannedResponseServiceConnectio
  *
  * @author rubenrm1@gmail.com
  */
-@SuppressWarnings({ "nls" })
 public class SimpleConnectorInterceptorPolicy implements IPolicy {
     
     /**
@@ -52,7 +51,7 @@ public class SimpleConnectorInterceptorPolicy implements IPolicy {
     
     /**
      * A {@link IConnectorInterceptor} is created which will return an instance of {@link IServiceConnector} 
-     * that when the connect method is invoked, a {@link MockServiceConnection} will be returned
+     * that when the connect method is invoked, a {@link CannedResponseServiceConnection} will be returned
      * 
      * @see io.apiman.gateway.engine.policy.IPolicy#apply(io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
      */

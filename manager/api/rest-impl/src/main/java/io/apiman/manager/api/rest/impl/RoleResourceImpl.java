@@ -17,7 +17,9 @@
 package io.apiman.manager.api.rest.impl;
 
 import io.apiman.manager.api.beans.BeanUtils;
+import io.apiman.manager.api.beans.idm.NewRoleBean;
 import io.apiman.manager.api.beans.idm.RoleBean;
+import io.apiman.manager.api.beans.idm.UpdateRoleBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.core.IIdmStorage;
@@ -58,22 +60,27 @@ public class RoleResourceImpl implements IRoleResource {
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.IRoleResource#create(io.apiman.manager.api.beans.idm.RoleBean)
+     * @see io.apiman.manager.api.rest.contract.IRoleResource#create(io.apiman.manager.api.beans.idm.NewRoleBean)
      */
     @Override
-    public RoleBean create(RoleBean bean) throws RoleAlreadyExistsException, NotAuthorizedException {
+    public RoleBean create(NewRoleBean bean) throws RoleAlreadyExistsException, NotAuthorizedException {
         if (!securityContext.isAdmin())
             throw ExceptionFactory.notAuthorizedException();
 
-        bean.setId(BeanUtils.idFromName(bean.getName()));
-        bean.setCreatedBy(securityContext.getCurrentUser());
-        bean.setCreatedOn(new Date());
+        RoleBean role = new RoleBean();
+        role.setAutoGrant(bean.getAutoGrant());
+        role.setCreatedBy(securityContext.getCurrentUser());
+        role.setCreatedOn(new Date());
+        role.setDescription(bean.getDescription());
+        role.setId(BeanUtils.idFromName(bean.getName()));
+        role.setName(bean.getName());
+        role.setPermissions(bean.getPermissions());
         try {
-            if (idmStorage.getRole(bean.getId()) != null) {
-                throw ExceptionFactory.roleAlreadyExistsException(bean.getId());
+            if (idmStorage.getRole(role.getId()) != null) {
+                throw ExceptionFactory.roleAlreadyExistsException(role.getId());
             }
-            idmStorage.createRole(bean);
-            return bean;
+            idmStorage.createRole(role);
+            return role;
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
@@ -96,10 +103,10 @@ public class RoleResourceImpl implements IRoleResource {
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.IRoleResource#update(java.lang.String, io.apiman.manager.api.beans.idm.RoleBean)
+     * @see io.apiman.manager.api.rest.contract.IRoleResource#update(java.lang.String, io.apiman.manager.api.beans.idm.UpdateRoleBean)
      */
     @Override
-    public void update(String roleId, RoleBean bean) throws RoleNotFoundException, NotAuthorizedException {
+    public void update(String roleId, UpdateRoleBean bean) throws RoleNotFoundException, NotAuthorizedException {
         if (!securityContext.isAdmin())
             throw ExceptionFactory.notAuthorizedException();
         try {

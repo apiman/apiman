@@ -16,7 +16,7 @@
 package io.apiman.manager.ui.client.local.pages;
 
 import io.apiman.manager.api.beans.idm.CurrentUserBean;
-import io.apiman.manager.api.beans.idm.UserBean;
+import io.apiman.manager.api.beans.idm.UpdateUserBean;
 import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.services.rest.IRestInvokerCallback;
 
@@ -122,8 +122,7 @@ public class SettingsProfilePage extends AbstractPage {
     @EventHandler("updateButton")
     public void onUpdate(ClickEvent event) {
         updateButton.onActionStarted();
-        UserBean updatedUser = new UserBean();
-        updatedUser.setUsername(userBean.getUsername());
+        UpdateUserBean updatedUser = new UpdateUserBean();
         updatedUser.setFullName(name.getValue());
         updatedUser.setEmail(email.getValue());
         rest.updateCurrentUserInfo(updatedUser, new IRestInvokerCallback<Void>() {

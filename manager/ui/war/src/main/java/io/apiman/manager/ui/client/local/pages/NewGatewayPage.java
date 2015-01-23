@@ -17,6 +17,7 @@ package io.apiman.manager.ui.client.local.pages;
 
 import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.gateways.GatewayType;
+import io.apiman.manager.api.beans.gateways.NewGatewayBean;
 import io.apiman.manager.api.beans.gateways.RestGatewayConfigBean;
 import io.apiman.manager.api.beans.summary.GatewayTestResultBean;
 import io.apiman.manager.ui.client.local.AppMessages;
@@ -153,7 +154,7 @@ public class NewGatewayPage extends AbstractPage {
     @EventHandler("createButton")
     public void onCreate(ClickEvent event) {
         createButton.onActionStarted();
-        GatewayBean gateway = getGatewayFromForm();
+        NewGatewayBean gateway = getGatewayFromForm();
         rest.createGateway(gateway, new IRestInvokerCallback<GatewayBean>() {
             @Override
             public void onSuccess(GatewayBean response) {
@@ -173,7 +174,7 @@ public class NewGatewayPage extends AbstractPage {
     @EventHandler("testButton")
     public void onTest(ClickEvent event) {
         testButton.onActionStarted();
-        GatewayBean gateway = getGatewayFromForm();
+        NewGatewayBean gateway = getGatewayFromForm();
         rest.testGateway(gateway, new IRestInvokerCallback<GatewayTestResultBean>() {
             @Override
             public void onSuccess(GatewayTestResultBean response) {
@@ -197,8 +198,8 @@ public class NewGatewayPage extends AbstractPage {
     /**
      * @return a gateway bean from the info the user entered in the form
      */
-    protected GatewayBean getGatewayFromForm() {
-        GatewayBean gateway = new GatewayBean();
+    protected NewGatewayBean getGatewayFromForm() {
+        NewGatewayBean gateway = new NewGatewayBean();
         gateway.setName(name.getValue().trim());
         gateway.setDescription(description.getValue().trim());
         gateway.setType(GatewayType.REST);

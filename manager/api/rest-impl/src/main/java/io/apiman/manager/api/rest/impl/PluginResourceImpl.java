@@ -19,6 +19,7 @@ package io.apiman.manager.api.rest.impl;
 import io.apiman.common.plugin.Plugin;
 import io.apiman.common.plugin.PluginCoordinates;
 import io.apiman.manager.api.beans.BeanUtils;
+import io.apiman.manager.api.beans.plugins.NewPluginBean;
 import io.apiman.manager.api.beans.plugins.PluginBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.summary.PluginSummaryBean;
@@ -83,7 +84,7 @@ public class PluginResourceImpl implements IPluginResource {
      * @see io.apiman.manager.api.rest.contract.IPluginResource#create(io.apiman.manager.api.beans.orgs.PluginBean)
      */
     @Override
-    public PluginBean create(PluginBean bean) throws PluginAlreadyExistsException, PluginNotFoundException {
+    public PluginBean create(NewPluginBean bean) throws PluginAlreadyExistsException, PluginNotFoundException {
         if (!securityContext.isAdmin())
             throw ExceptionFactory.notAuthorizedException();
 
@@ -98,17 +99,23 @@ public class PluginResourceImpl implements IPluginResource {
             throw new PluginNotFoundException(coordinates.toString());
         }
         
-        Date now = new Date();
-        bean.setId(null);
-        bean.setCreatedBy(securityContext.getCurrentUser());
-        bean.setCreatedOn(now);
+        PluginBean pluginBean = new PluginBean();
+        pluginBean.setGroupId(bean.getGroupId());
+        pluginBean.setArtifactId(bean.getArtifactId());
+        pluginBean.setVersion(bean.getVersion());
+        pluginBean.setClassifier(bean.getClassifier());
+        pluginBean.setType(bean.getType());
+        pluginBean.setName(bean.getName());
+        pluginBean.setDescription(bean.getDescription());
+        pluginBean.setCreatedBy(securityContext.getCurrentUser());
+        pluginBean.setCreatedOn(new Date());
         try {
             storage.beginTx();
             if (storage.getPlugin(bean.getGroupId(), bean.getArtifactId()) != null) {
                 throw ExceptionFactory.pluginAlreadyExistsException();
             }
 
-            storage.createPlugin(bean);
+            storage.createPlugin(pluginBean);
 
             // Process any contributed policy definitions.
             List<URL> policyDefs = plugin.getPolicyDefinitions();
@@ -117,7 +124,7 @@ public class PluginResourceImpl implements IPluginResource {
                 if (policyDef.getId() == null || policyDef.getId().trim().isEmpty()) {
                     throw ExceptionFactory.policyDefInvalidException(Messages.i18n.format("PluginResourceImpl.MissingPolicyDefId", policyDef.getName())); //$NON-NLS-1$
                 }
-                policyDef.setPluginId(bean.getId());
+                policyDef.setPluginId(pluginBean.getId());
                 if (policyDef.getId() == null) {
                     policyDef.setId(BeanUtils.idFromName(policyDef.getName()));
                 }
@@ -134,7 +141,7 @@ public class PluginResourceImpl implements IPluginResource {
             storage.rollbackTx();
             throw new SystemErrorException(e);
         }
-        return bean;
+        return pluginBean;
     }
 
     /**

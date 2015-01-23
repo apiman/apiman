@@ -16,6 +16,7 @@
 
 package io.apiman.manager.api.rest.contract;
 
+import io.apiman.manager.api.beans.plugins.NewPluginBean;
 import io.apiman.manager.api.beans.plugins.PluginBean;
 import io.apiman.manager.api.beans.summary.PluginSummaryBean;
 import io.apiman.manager.api.rest.contract.exceptions.NotAuthorizedException;
@@ -41,20 +42,63 @@ import javax.ws.rs.core.MediaType;
 @Path("plugins")
 public interface IPluginResource {
 
+    /**
+     * This endpoint returns a list of all plugins that have been added to the
+     * system.
+     * @summary List All Plugins
+     * @statuscode 200 If the list of plugins is successfully returned.
+     * @return A list of plugins.
+     * @throws NotAuthorizedException
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<PluginSummaryBean> list() throws NotAuthorizedException;
 
+    /**
+     * Use this endpoint to add a plugin to apiman.  A plugin consists of the maven
+     * coordinates of an artifact deployed to a remote maven repository (e.g. maven
+     * central).
+     * @summary Add a Plugin
+     * @servicetag admin
+     * @param bean The plugin to add.
+     * @statuscode 200 If the plugin was added successfully.
+     * @return Full details about the plugin that was added.
+     * @throws PluginAlreadyExistsException
+     * @throws PluginNotFoundException
+     * @throws NotAuthorizedException
+     */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public PluginBean create(PluginBean bean) throws PluginAlreadyExistsException, PluginNotFoundException, NotAuthorizedException;
+    public PluginBean create(NewPluginBean bean) throws PluginAlreadyExistsException, PluginNotFoundException, NotAuthorizedException;
     
+    /**
+     * This endpoint can be used to access the full information about an apiman
+     * plugin.  The plugin is retrieved using the ID it was given when it was 
+     * added.  The ID information can be retrieved by listing all plugins or 
+     * remembered when a plugin is first added.
+     * @summary Get Plugin by ID
+     * @servicetag admin
+     * @param pluginId
+     * @statuscode 200 If the plugin exists and is returned.
+     * @return An apiman plugin.
+     * @throws PluginNotFoundException
+     * @throws NotAuthorizedException
+     */
     @GET
     @Path("{pluginId}")
     @Produces(MediaType.APPLICATION_JSON)
     public PluginBean get(@PathParam("pluginId") Long pluginId) throws PluginNotFoundException, NotAuthorizedException;
 
+    /**
+     * Call this endpoint to delete a plugin.
+     * @summary Delete a Plugin by ID
+     * @servicetag admin
+     * @statuscode 204 If the plugin was deleted successfully.
+     * @param pluginId The plugin's ID.
+     * @throws PluginNotFoundException
+     * @throws NotAuthorizedException
+     */
     @DELETE
     @Path("{pluginId}")
     public void delete(@PathParam("pluginId") Long pluginId)

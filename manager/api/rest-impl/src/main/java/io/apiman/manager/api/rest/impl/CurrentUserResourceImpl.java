@@ -19,6 +19,7 @@ package io.apiman.manager.api.rest.impl;
 import io.apiman.manager.api.beans.idm.CurrentUserBean;
 import io.apiman.manager.api.beans.idm.PermissionBean;
 import io.apiman.manager.api.beans.idm.PermissionType;
+import io.apiman.manager.api.beans.idm.UpdateUserBean;
 import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.beans.summary.ApplicationSummaryBean;
 import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
@@ -95,10 +96,10 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.ICurrentUserResource#updateInfo(io.apiman.manager.api.beans.idm.UserBean)
+     * @see io.apiman.manager.api.rest.contract.ICurrentUserResource#updateInfo(io.apiman.manager.api.beans.idm.UpdateUserBean)
      */
     @Override
-    public void updateInfo(UserBean info) {
+    public void updateInfo(UpdateUserBean info) {
         try {
             UserBean user = idmStorage.getUser(securityContext.getCurrentUser());
             if (user == null) {

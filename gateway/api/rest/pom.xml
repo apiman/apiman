@@ -63,4 +63,38 @@
       </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <profile>
+      <id>apidocs</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.qmino</groupId>
+            <artifactId>miredot-plugin</artifactId>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>restdoc</goal>
+                </goals>
+                <configuration>
+                  <output>
+                    <html>
+                      <initialCollapseLevel>1</initialCollapseLevel>
+                      <baseUrl>http://localhost:8080/apiman-gateway-api</baseUrl>
+                      <hideIssuesTab>true</hideIssuesTab>
+                    </html>
+                  </output>
+                </configuration>
+              </execution>
+            </executions>
+            <configuration>
+              <licence>UHJvamVjdHxpby5hcGltYW4uYXBpbWFuLWdhdGV3YXktYXBpLXJlc3R8MjAxNi0wMS0yMnx0cnVlfC0xI01DMENGRkdJeWJ0Skt0S3pVN0F3RDhFbk1yOXVuNm5SQWhVQWc1d0JQMm1oMWpIaWp5dFJHelRRZVhqcUJIaz0=</licence> 
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
 </project>

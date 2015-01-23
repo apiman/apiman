@@ -38,6 +38,16 @@ import javax.ws.rs.core.MediaType;
 @Path("search")
 public interface ISearchResource {
 
+    /**
+     * Use this endpoint to search for organizations.  The search criteria is
+     * provided in the body of the request, including filters, order-by, and paging
+     * information.
+     * @summary Search for Organizations
+     * @param criteria The search criteria.
+     * @statuscode 200 If the search is successful.
+     * @return The search results (a page of organizations).
+     * @throws InvalidSearchCriteriaException
+     */
     @POST
     @Path("organizations")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -45,6 +55,17 @@ public interface ISearchResource {
     public SearchResultsBean<OrganizationSummaryBean> searchOrgs(SearchCriteriaBean criteria)
             throws InvalidSearchCriteriaException;
 
+    /**
+     * Use this endpoint to search for applications.  The search criteria is
+     * provided in the body of the request, including filters, order-by, and paging
+     * information.
+     * @summary Search for Applications
+     * @param criteria The search criteria.
+     * @statuscode 200 If the search is successful.
+     * @return The search results (a page of applications).
+     * @throws OrganizationNotFoundException
+     * @throws InvalidSearchCriteriaException
+     */
     @POST
     @Path("applications")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -52,6 +73,17 @@ public interface ISearchResource {
     public SearchResultsBean<ApplicationSummaryBean> searchApps(SearchCriteriaBean criteria)
             throws OrganizationNotFoundException, InvalidSearchCriteriaException;
 
+    /**
+     * Use this endpoint to search for services.  The search criteria is
+     * provided in the body of the request, including filters, order-by, and paging
+     * information.
+     * @summary Search for Services
+     * @param criteria The search criteria.
+     * @statuscode 200 If the search is successful.
+     * @return The search results (a page of services).
+     * @throws OrganizationNotFoundException
+     * @throws InvalidSearchCriteriaException
+     */
     @POST
     @Path("services")
     @Consumes(MediaType.APPLICATION_JSON)

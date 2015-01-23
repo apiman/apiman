@@ -22,14 +22,20 @@ import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.contracts.NewContractBean;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
+import io.apiman.manager.api.beans.gateways.NewGatewayBean;
+import io.apiman.manager.api.beans.gateways.UpdateGatewayBean;
 import io.apiman.manager.api.beans.idm.CurrentUserBean;
 import io.apiman.manager.api.beans.idm.GrantRolesBean;
+import io.apiman.manager.api.beans.idm.NewRoleBean;
 import io.apiman.manager.api.beans.idm.RoleBean;
+import io.apiman.manager.api.beans.idm.UpdateRoleBean;
+import io.apiman.manager.api.beans.idm.UpdateUserBean;
 import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.beans.members.MemberBean;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.beans.plans.PlanBean;
 import io.apiman.manager.api.beans.plans.PlanVersionBean;
+import io.apiman.manager.api.beans.plugins.NewPluginBean;
 import io.apiman.manager.api.beans.plugins.PluginBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyChainBean;
@@ -126,7 +132,7 @@ public class RestInvokerService {
      * @param roleId
      * @param callback
      */
-    public void createRole(RoleBean role, IRestInvokerCallback<RoleBean> callback) {
+    public void createRole(NewRoleBean role, IRestInvokerCallback<RoleBean> callback) {
         CallbackAdapter<RoleBean> adapter = new CallbackAdapter<RoleBean>(callback);
         roles.call(adapter, adapter).create(role);
     }
@@ -155,9 +161,9 @@ public class RestInvokerService {
      * @param roleId
      * @param callback
      */
-    public void updateRole(RoleBean role, IRestInvokerCallback<Void> callback) {
+    public void updateRole(String roleId, UpdateRoleBean role, IRestInvokerCallback<Void> callback) {
         CallbackAdapter<Void> adapter = new CallbackAdapter<Void>(callback);
-        roles.call(adapter, adapter).update(role.getId(), role);
+        roles.call(adapter, adapter).update(roleId, role);
     }
 
     /**
@@ -242,7 +248,7 @@ public class RestInvokerService {
      * @param user
      * @param callback
      */
-    public void updateCurrentUserInfo(UserBean user, IRestInvokerCallback<Void> callback) {
+    public void updateCurrentUserInfo(UpdateUserBean user, IRestInvokerCallback<Void> callback) {
         CallbackAdapter<Void> adapter = new CallbackAdapter<Void>(callback);
         currentUser.call(adapter, adapter).updateInfo(user);
     }
@@ -1042,7 +1048,7 @@ public class RestInvokerService {
      * @param bean
      * @param callback
      */
-    public void testGateway(GatewayBean bean, IRestInvokerCallback<GatewayTestResultBean> callback) {
+    public void testGateway(NewGatewayBean bean, IRestInvokerCallback<GatewayTestResultBean> callback) {
         CallbackAdapter<GatewayTestResultBean> adapter = new CallbackAdapter<GatewayTestResultBean>(callback);
         gateways.call(adapter, adapter).test(bean);
     }
@@ -1061,7 +1067,7 @@ public class RestInvokerService {
      * @param gateway
      * @param callback
      */
-    public void createGateway(GatewayBean gateway, IRestInvokerCallback<GatewayBean> callback) {
+    public void createGateway(NewGatewayBean gateway, IRestInvokerCallback<GatewayBean> callback) {
         CallbackAdapter<GatewayBean> adapter = new CallbackAdapter<GatewayBean>(callback);
         gateways.call(adapter, adapter).create(gateway);
     }
@@ -1081,9 +1087,9 @@ public class RestInvokerService {
      * @param gatewayId
      * @param callback
      */
-    public void updateGateway(GatewayBean gateway, IRestInvokerCallback<Void> callback) {
+    public void updateGateway(String gatewayId, UpdateGatewayBean gateway, IRestInvokerCallback<Void> callback) {
         CallbackAdapter<Void> adapter = new CallbackAdapter<Void>(callback);
-        gateways.call(adapter, adapter).update(gateway.getId(), gateway);
+        gateways.call(adapter, adapter).update(gatewayId, gateway);
     }
 
     /**
@@ -1110,7 +1116,7 @@ public class RestInvokerService {
      * @param plugin
      * @param callback
      */
-    public void createPlugin(PluginBean plugin, IRestInvokerCallback<PluginBean> callback) {
+    public void createPlugin(NewPluginBean plugin, IRestInvokerCallback<PluginBean> callback) {
         CallbackAdapter<PluginBean> adapter = new CallbackAdapter<PluginBean>(callback);
         plugins.call(adapter, adapter).create(plugin);
     }

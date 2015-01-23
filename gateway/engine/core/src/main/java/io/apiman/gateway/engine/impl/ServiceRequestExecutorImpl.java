@@ -34,11 +34,8 @@ import io.apiman.gateway.engine.beans.exceptions.RequestAbortedException;
 import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.gateway.engine.io.ISignalWriteStream;
 import io.apiman.gateway.engine.policy.Chain;
-<<<<<<< HEAD
-import io.apiman.gateway.engine.policy.IPolicy;
-=======
 import io.apiman.gateway.engine.policy.IConnectorInterceptor;
->>>>>>> 5196e662f7376ecdd382849c8fb4a3e5d151beea
+import io.apiman.gateway.engine.policy.IPolicy;
 import io.apiman.gateway.engine.policy.IPolicyContext;
 import io.apiman.gateway.engine.policy.IPolicyFactory;
 import io.apiman.gateway.engine.policy.PolicyWithConfiguration;

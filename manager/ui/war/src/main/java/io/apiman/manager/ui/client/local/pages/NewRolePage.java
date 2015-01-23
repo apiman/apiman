@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.ui.client.local.pages;
 
+import io.apiman.manager.api.beans.idm.NewRoleBean;
 import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.pages.admin.PermissionSelector;
@@ -101,7 +102,7 @@ public class NewRolePage extends AbstractPage {
     @EventHandler("createButton")
     public void onCreate(ClickEvent event) {
         createButton.onActionStarted();
-        RoleBean newRole = new RoleBean();
+        NewRoleBean newRole = new NewRoleBean();
         newRole.setName(name.getValue().trim());
         newRole.setDescription(description.getValue().trim());
         newRole.setAutoGrant(autoGrant.getValue());

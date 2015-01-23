@@ -16,6 +16,7 @@
 package io.apiman.manager.ui.client.local.pages;
 
 import io.apiman.manager.api.beans.idm.RoleBean;
+import io.apiman.manager.api.beans.idm.UpdateRoleBean;
 import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.events.ConfirmationEvent;
 import io.apiman.manager.ui.client.local.events.ConfirmationEvent.Handler;
@@ -125,12 +126,11 @@ public class EditRolePage extends AbstractPage {
     public void onUpdate(ClickEvent event) {
         updateButton.onActionStarted();
         deleteButton.setEnabled(false);
-        RoleBean role = new RoleBean();
-        role.setId(id);
+        UpdateRoleBean role = new UpdateRoleBean();
         role.setDescription(description.getValue().trim());
         role.setAutoGrant(autoGrant.getValue());
         role.setPermissions(permissions.getValue());
-        rest.updateRole(role, new IRestInvokerCallback<Void>() {
+        rest.updateRole(id, role, new IRestInvokerCallback<Void>() {
             @Override
             public void onSuccess(Void response) {
                 toRoles.go();

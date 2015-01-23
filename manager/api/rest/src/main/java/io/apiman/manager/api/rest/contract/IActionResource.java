@@ -33,6 +33,15 @@ import javax.ws.rs.core.MediaType;
 @Path("actions")
 public interface IActionResource {
 
+    /**
+     * Call this endpoint in order to execute actions for apiman entities such
+     * as Plans, Services, or Applications.  The type of the action must be 
+     * included in the request payload.
+     * @summary Execute an Entity Action
+     * @param action The details about what action to execute.
+     * @statuscode 204 If the action completes successfully.
+     * @throws ActionException
+     */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public void performAction(ActionBean action) throws ActionException;

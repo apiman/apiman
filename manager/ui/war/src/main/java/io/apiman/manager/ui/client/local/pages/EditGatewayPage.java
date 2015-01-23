@@ -16,7 +16,9 @@
 package io.apiman.manager.ui.client.local.pages;
 
 import io.apiman.manager.api.beans.gateways.GatewayBean;
+import io.apiman.manager.api.beans.gateways.NewGatewayBean;
 import io.apiman.manager.api.beans.gateways.RestGatewayConfigBean;
+import io.apiman.manager.api.beans.gateways.UpdateGatewayBean;
 import io.apiman.manager.api.beans.summary.GatewayTestResultBean;
 import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.events.ConfirmationEvent;
@@ -213,8 +215,13 @@ public class EditGatewayPage extends AbstractPage {
     @EventHandler("testButton")
     public void onTest(ClickEvent event) {
         testButton.onActionStarted();
-        GatewayBean gateway = getGatewayFromForm();
-        rest.testGateway(gateway, new IRestInvokerCallback<GatewayTestResultBean>() {
+        UpdateGatewayBean gateway = getGatewayFromForm();
+        NewGatewayBean ngb = new NewGatewayBean();
+        ngb.setName(gatewayBean.getName());
+        ngb.setType(gateway.getType());
+        ngb.setDescription(gateway.getDescription());
+        ngb.setConfiguration(gateway.getConfiguration());
+        rest.testGateway(ngb, new IRestInvokerCallback<GatewayTestResultBean>() {
             @Override
             public void onSuccess(GatewayTestResultBean response) {
                 testButton.onActionComplete();
@@ -242,8 +249,8 @@ public class EditGatewayPage extends AbstractPage {
     public void onUpdate(ClickEvent event) {
         updateButton.onActionStarted();
         deleteButton.setEnabled(false);
-        GatewayBean gateway = getGatewayFromForm();
-        rest.updateGateway(gateway, new IRestInvokerCallback<Void>() {
+        UpdateGatewayBean gateway = getGatewayFromForm();
+        rest.updateGateway(gatewayBean.getId(), gateway, new IRestInvokerCallback<Void>() {
             @Override
             public void onSuccess(Void response) {
                 toGateways.go();
@@ -295,10 +302,8 @@ public class EditGatewayPage extends AbstractPage {
     /**
      * @return a gateway bean from the info the user entered in the form
      */
-    protected GatewayBean getGatewayFromForm() {
-        GatewayBean gateway = new GatewayBean();
-        gateway.setId(id);
-        gateway.setName(gatewayBean.getName());
+    protected UpdateGatewayBean getGatewayFromForm() {
+        UpdateGatewayBean gateway = new UpdateGatewayBean();
         gateway.setType(gatewayBean.getType());
         gateway.setDescription(description.getValue().trim());
         RestGatewayConfigBean configBean = new RestGatewayConfigBean();

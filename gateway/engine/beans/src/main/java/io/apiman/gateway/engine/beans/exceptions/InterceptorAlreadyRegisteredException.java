@@ -26,8 +26,13 @@ public class InterceptorAlreadyRegisteredException extends AbstractEngineExcepti
 
     private static final long serialVersionUID = -4134086341668627517L;
 
+    /**
+     * Constructor.
+     * @param interceptorClass
+     */
+    @SuppressWarnings("nls")
     public InterceptorAlreadyRegisteredException(Class<?> interceptorClass) {
-        super("An Interceptor of type " + interceptorClass + " was already registered in the context"); //$NON-NLS-1$ $NON-NLS-2$
+        super("An Interceptor of type " + interceptorClass + " was already registered in the context");
     }
     
 }

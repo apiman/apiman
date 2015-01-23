@@ -34,12 +34,30 @@ import javax.ws.rs.core.MediaType;
 @Path("permissions")
 public interface IPermissionsResource {
 
+    /**
+     * This endpoint returns all of the permissions assigned to a specific user.
+     * @summary Get User's Permissions
+     * @servicetag admin
+     * @param userId The user's ID.
+     * @statuscode 200 If the permissions are successfully retrieved.
+     * @return All of the user's permissions.
+     * @throws UserNotFoundException
+     * @throws NotAuthorizedException
+     */
     @GET
     @Path("{userId}")
     @Produces(MediaType.APPLICATION_JSON)
     public UserPermissionsBean getPermissionsForUser(@PathParam("userId") String userId)
             throws UserNotFoundException, NotAuthorizedException;
 
+    /**
+     * This endpoint returns all of the permissions assigned to the currently 
+     * authenticated user.
+     * @summary Get Current User's Permissions
+     * @statuscode 200 If the permissions are successfully retrieved.
+     * @return All of the user's permissions.
+     * @throws UserNotFoundException
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public UserPermissionsBean getPermissionsForCurrentUser() throws UserNotFoundException;

@@ -21,7 +21,9 @@ import io.apiman.gateway.engine.beans.SystemStatus;
 import io.apiman.manager.api.beans.BeanUtils;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.gateways.GatewayType;
+import io.apiman.manager.api.beans.gateways.NewGatewayBean;
 import io.apiman.manager.api.beans.gateways.RestGatewayConfigBean;
+import io.apiman.manager.api.beans.gateways.UpdateGatewayBean;
 import io.apiman.manager.api.beans.summary.GatewaySummaryBean;
 import io.apiman.manager.api.beans.summary.GatewayTestResultBean;
 import io.apiman.manager.api.core.IStorage;
@@ -73,13 +75,17 @@ public class GatewayResourceImpl implements IGatewayResource {
      * @see io.apiman.manager.api.rest.contract.IGatewayResource#test(io.apiman.manager.api.beans.gateways.GatewayBean)
      */
     @Override
-    public GatewayTestResultBean test(GatewayBean bean) throws NotAuthorizedException {
+    public GatewayTestResultBean test(NewGatewayBean bean) throws NotAuthorizedException {
         if (!securityContext.isAdmin())
             throw ExceptionFactory.notAuthorizedException();
         GatewayTestResultBean rval = new GatewayTestResultBean();
 
         try {
-            IGatewayLink gatewayLink = gatewayLinkFactory.create(bean);
+            GatewayBean testGateway = new GatewayBean();
+            testGateway.setName(bean.getName());
+            testGateway.setType(bean.getType());
+            testGateway.setConfiguration(bean.getConfiguration());
+            IGatewayLink gatewayLink = gatewayLinkFactory.create(testGateway);
             SystemStatus status = gatewayLink.getStatus();
             String detail = mapper.writer().writeValueAsString(status);
             rval.setSuccess(true);
@@ -108,28 +114,33 @@ public class GatewayResourceImpl implements IGatewayResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IGatewayResource#create(io.apiman.manager.api.beans.orgs.GatewayBean)
+     * @see io.apiman.manager.api.rest.contract.IGatewayResource#create(io.apiman.manager.api.beans.gateways.NewGatewayBean)
      */
     @Override
-    public GatewayBean create(GatewayBean bean) throws GatewayAlreadyExistsException {
+    public GatewayBean create(NewGatewayBean bean) throws GatewayAlreadyExistsException {
         if (!securityContext.isAdmin())
             throw ExceptionFactory.notAuthorizedException();
 
         Date now = new Date();
         
-        bean.setId(BeanUtils.idFromName(bean.getName()));
-        bean.setCreatedBy(securityContext.getCurrentUser());
-        bean.setCreatedOn(now);
-        bean.setModifiedBy(securityContext.getCurrentUser());
-        bean.setModifiedOn(now);
+        GatewayBean gateway = new GatewayBean();
+        gateway.setId(BeanUtils.idFromName(bean.getName()));
+        gateway.setName(bean.getName());
+        gateway.setDescription(bean.getDescription());
+        gateway.setType(bean.getType());
+        gateway.setConfiguration(bean.getConfiguration());
+        gateway.setCreatedBy(securityContext.getCurrentUser());
+        gateway.setCreatedOn(now);
+        gateway.setModifiedBy(securityContext.getCurrentUser());
+        gateway.setModifiedOn(now);
         try {
             storage.beginTx();
-            if (storage.getGateway(bean.getId()) != null) {
-                throw ExceptionFactory.gatewayAlreadyExistsException(bean.getName());
+            if (storage.getGateway(gateway.getId()) != null) {
+                throw ExceptionFactory.gatewayAlreadyExistsException(gateway.getName());
             }
             // Store/persist the new gateway
-            encryptPasswords(bean);
-            storage.createGateway(bean);
+            encryptPasswords(gateway);
+            storage.createGateway(gateway);
             storage.commitTx();
         } catch (AbstractRestException e) {
             storage.rollbackTx();
@@ -138,8 +149,8 @@ public class GatewayResourceImpl implements IGatewayResource {
             storage.rollbackTx();
             throw new SystemErrorException(e);
         }
-        decryptPasswords(bean);
-        return bean;
+        decryptPasswords(gateway);
+        return gateway;
     }
 
     /**
@@ -173,23 +184,20 @@ public class GatewayResourceImpl implements IGatewayResource {
      * @see io.apiman.manager.api.rest.contract.IGatewayResource#update(java.lang.String, io.apiman.manager.api.beans.orgs.GatewayBean)
      */
     @Override
-    public void update(String gatewayId, GatewayBean bean)
-            throws GatewayNotFoundException, NotAuthorizedException {
+    public void update(String gatewayId, UpdateGatewayBean bean) throws GatewayNotFoundException,
+            NotAuthorizedException {
         if (!securityContext.isAdmin())
             throw ExceptionFactory.notAuthorizedException();
         try {
             storage.beginTx();
             Date now = new Date();
 
-            bean.setId(gatewayId);
             GatewayBean gbean = storage.getGateway(gatewayId);
             if (gbean == null) {
                 throw ExceptionFactory.gatewayNotFoundException(gatewayId);
             }
             gbean.setModifiedBy(securityContext.getCurrentUser());
             gbean.setModifiedOn(now);
-            if (bean.getName() != null)
-                gbean.setName(bean.getName());
             if (bean.getDescription() != null)
                 gbean.setDescription(bean.getDescription());
             if (bean.getType() != null)

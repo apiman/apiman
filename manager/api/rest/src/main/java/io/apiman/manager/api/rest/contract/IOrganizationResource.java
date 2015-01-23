@@ -578,9 +578,10 @@ public interface IOrganizationResource {
 
     /**
      * Revoke membership in a role.
-     * @param organizationId
-     * @param roleId
-     * @param userId
+     * @summary Revoke Single Role Membership
+     * @param organizationId The organization ID.
+     * @param roleId The role ID.
+     * @param userId The user ID.
      * @throws OrganizationNotFoundException
      * @throws RoleNotFoundException
      * @throws UserNotFoundException
@@ -595,8 +596,9 @@ public interface IOrganizationResource {
 
     /**
      * Revoke all of a user's role memberships from the org.
-     * @param organizationId
-     * @param userId
+     * @summary Revoke All Role Memberships
+     * @param organizationId The organization ID.
+     * @param userId The user ID.
      * @throws OrganizationNotFoundException
      * @throws RoleNotFoundException
      * @throws UserNotFoundException
@@ -609,8 +611,9 @@ public interface IOrganizationResource {
             UserNotFoundException, NotAuthorizedException;
 
     /**
-     * Lists all members of the organizations.
-     * @param organizationId
+     * Lists all members of the organization.
+     * @summary List Organization Members
+     * @param organizationId The organization ID.
      * @throws OrganizationNotFoundException
      * @throws NotAuthorizedException
      */
