@@ -17,7 +17,7 @@ package io.apiman.manager.ui.client.local.pages;
 
 import io.apiman.manager.api.beans.services.EndpointType;
 import io.apiman.manager.api.beans.services.ServiceGatewayBean;
-import io.apiman.manager.api.beans.services.ServiceVersionBean;
+import io.apiman.manager.api.beans.services.UpdateServiceVersionBean;
 import io.apiman.manager.api.beans.summary.GatewaySummaryBean;
 import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.pages.service.EndpointTypeSelectBox;
@@ -180,7 +180,7 @@ public class ServiceImplPage extends AbstractServicePage {
         versionBean.setEndpoint(endpointValue);
         versionBean.setEndpointType(endpointTypeValue);
 
-        ServiceVersionBean update = new ServiceVersionBean();
+        UpdateServiceVersionBean update = new UpdateServiceVersionBean();
         update.setEndpoint(endpointValue);
         update.setEndpointType(endpointTypeValue);
 

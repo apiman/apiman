@@ -20,6 +20,7 @@ import io.apiman.manager.api.beans.actions.ActionType;
 import io.apiman.manager.api.beans.apps.ApplicationBean;
 import io.apiman.manager.api.beans.apps.ApplicationStatus;
 import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
+import io.apiman.manager.api.beans.apps.UpdateApplicationBean;
 import io.apiman.manager.api.beans.idm.PermissionType;
 import io.apiman.manager.api.beans.summary.ApplicationVersionSummaryBean;
 import io.apiman.manager.ui.client.local.AppMessages;
@@ -164,11 +165,9 @@ public abstract class AbstractAppPage extends AbstractPage {
      * @param newDescription
      */
     protected void updateAppDescription(final String newDescription) {
-        ApplicationBean update = new ApplicationBean();
-        update.setOrganization(applicationBean.getOrganization());
-        update.setId(applicationBean.getId());
-        update.setDescription(newDescription);;
-        rest.updateApplication(update, new IRestInvokerCallback<Void>() {
+        UpdateApplicationBean update = new UpdateApplicationBean();
+        update.setDescription(newDescription);
+        rest.updateApplication(applicationBean.getOrganization().getId(), applicationBean.getId(), update, new IRestInvokerCallback<Void>() {
             @Override
             public void onSuccess(Void response) {
                 applicationBean.setDescription(newDescription);

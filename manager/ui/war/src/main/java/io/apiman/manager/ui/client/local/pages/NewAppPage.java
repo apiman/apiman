@@ -17,6 +17,8 @@ package io.apiman.manager.ui.client.local.pages;
 
 import io.apiman.manager.api.beans.apps.ApplicationBean;
 import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
+import io.apiman.manager.api.beans.apps.NewApplicationBean;
+import io.apiman.manager.api.beans.apps.NewApplicationVersionBean;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
 import io.apiman.manager.ui.client.local.AppMessages;
@@ -165,7 +167,7 @@ public class NewAppPage extends AbstractPage {
         createButton.onActionStarted();
         final String orgId = orgSelector.getValue().getId();
         final String appVersion = version.getValue();
-        ApplicationBean bean = new ApplicationBean();
+        NewApplicationBean bean = new NewApplicationBean();
         bean.setName(name.getValue());
         bean.setDescription(description.getValue());
         // Create the application and then create an initial app version.
@@ -173,7 +175,7 @@ public class NewAppPage extends AbstractPage {
             @Override
             public void onSuccess(final ApplicationBean response) {
                 final String appId = response.getId();
-                ApplicationVersionBean vb = new ApplicationVersionBean();
+                NewApplicationVersionBean vb = new NewApplicationVersionBean();
                 vb.setVersion(appVersion);
                 rest.createApplicationVersion(orgId, appId, vb, new IRestInvokerCallback<ApplicationVersionBean>() {
                     @Override

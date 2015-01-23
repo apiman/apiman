@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.ui.client.local.pages;
 
+import io.apiman.manager.api.beans.orgs.NewOrganizationBean;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.services.rest.IRestInvokerCallback;
@@ -77,7 +78,7 @@ public class NewOrgPage extends AbstractPage {
     @EventHandler("createButton")
     public void onCreate(ClickEvent event) {
         createButton.onActionStarted();
-        OrganizationBean bean = new OrganizationBean();
+        NewOrganizationBean bean = new NewOrganizationBean();
         bean.setName(name.getValue());
         bean.setDescription(description.getValue());
         rest.createOrganization(bean, new IRestInvokerCallback<OrganizationBean>() {

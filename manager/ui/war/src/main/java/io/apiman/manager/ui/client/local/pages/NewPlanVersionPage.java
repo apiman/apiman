@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.ui.client.local.pages;
 
+import io.apiman.manager.api.beans.plans.NewPlanVersionBean;
 import io.apiman.manager.api.beans.plans.PlanVersionBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
@@ -128,7 +129,7 @@ public class NewPlanVersionPage extends AbstractPage {
      * Create a new version of the plan and clone the previous version.
      */
     private void createAndClone() {
-        PlanVersionBean newVersion = new PlanVersionBean();
+        NewPlanVersionBean newVersion = new NewPlanVersionBean();
         final String ver = version.getValue();
         
         PlanVersionBean oldPlan = (PlanVersionBean) currentContext.getAttribute(ContextKeys.CURRENT_PLAN_VERSION);
@@ -203,7 +204,7 @@ public class NewPlanVersionPage extends AbstractPage {
      * Create a new version of the plan without cloning anything.
      */
     private void create() {
-        PlanVersionBean newVersion = new PlanVersionBean();
+        NewPlanVersionBean newVersion = new NewPlanVersionBean();
         final String ver = version.getValue();
         newVersion.setVersion(ver);
         rest.createPlanVersion(org, plan, newVersion, new IRestInvokerCallback<PlanVersionBean>() {

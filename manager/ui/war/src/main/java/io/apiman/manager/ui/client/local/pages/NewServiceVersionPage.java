@@ -17,6 +17,7 @@ package io.apiman.manager.ui.client.local.pages;
 
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
+import io.apiman.manager.api.beans.services.NewServiceVersionBean;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
 import io.apiman.manager.api.beans.summary.PolicySummaryBean;
 import io.apiman.manager.ui.client.local.AppMessages;
@@ -128,7 +129,7 @@ public class NewServiceVersionPage extends AbstractPage {
      * Creates a new cloned version of the service.
      */
     private void createAndClone() {
-        ServiceVersionBean clonedVersion = new ServiceVersionBean();
+        NewServiceVersionBean clonedVersion = new NewServiceVersionBean();
         final String ver = version.getValue();
         
         ServiceVersionBean oldService = (ServiceVersionBean) currentContext.getAttribute(ContextKeys.CURRENT_SERVICE_VERSION);
@@ -209,7 +210,7 @@ public class NewServiceVersionPage extends AbstractPage {
      */
     private void create() {
         createButton.onActionStarted();
-        ServiceVersionBean newVersion = new ServiceVersionBean();
+        NewServiceVersionBean newVersion = new NewServiceVersionBean();
         final String ver = version.getValue();
         newVersion.setVersion(ver);
         rest.createServiceVersion(org, service, newVersion, new IRestInvokerCallback<ServiceVersionBean>() {

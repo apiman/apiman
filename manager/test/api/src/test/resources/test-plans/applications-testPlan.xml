@@ -29,7 +29,6 @@
     <test name="Get Missing Application Version">test-plan-data/applications/versions/003_get-version-missing.resttest</test>
     <test name="Create Application Version 2.0">test-plan-data/applications/versions/004_create-version-2.0.resttest</test>
     <test name="List All Versions">test-plan-data/applications/versions/005_list-versions.resttest</test>
-    <test name="Update Version 1.0">test-plan-data/applications/versions/006_update-version-1.0.resttest</test>
     <test name="Get Version 1.0 (updated)">test-plan-data/applications/versions/007_get-version-1.0.resttest</test>
   </testGroup>
 

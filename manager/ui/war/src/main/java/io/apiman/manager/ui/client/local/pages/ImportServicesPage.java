@@ -18,6 +18,8 @@ package io.apiman.manager.ui.client.local.pages;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.beans.plans.PlanStatus;
 import io.apiman.manager.api.beans.services.EndpointType;
+import io.apiman.manager.api.beans.services.NewServiceBean;
+import io.apiman.manager.api.beans.services.NewServiceVersionBean;
 import io.apiman.manager.api.beans.services.ServiceBean;
 import io.apiman.manager.api.beans.services.ServicePlanBean;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
@@ -472,10 +474,20 @@ public class ImportServicesPage extends AbstractPage {
                 serviceV.setPlans(selectedPlans);
             }
             ServiceBean service = serviceV.getService();
-            rest.createService(org.getId(), service, new IRestInvokerCallback<ServiceBean>() {
+            NewServiceBean newService = new NewServiceBean();
+            newService.setName(service.getName());
+            newService.setDescription(service.getDescription());
+            rest.createService(org.getId(), newService, new IRestInvokerCallback<ServiceBean>() {
                 @Override
                 public void onSuccess(final ServiceBean serviceResp) {
-                    rest.createServiceVersion(org.getId(), serviceResp.getId(), serviceV, new IRestInvokerCallback<ServiceVersionBean>() {
+                    NewServiceVersionBean nsvb = new NewServiceVersionBean();
+                    nsvb.setEndpoint(serviceV.getEndpoint());
+                    nsvb.setEndpointType(serviceV.getEndpointType());
+                    nsvb.setGateways(serviceV.getGateways());
+                    nsvb.setPlans(serviceV.getPlans());
+                    nsvb.setPublicService(serviceV.isPublicService());
+                    nsvb.setVersion(serviceV.getVersion());
+                    rest.createServiceVersion(org.getId(), serviceResp.getId(), nsvb, new IRestInvokerCallback<ServiceVersionBean>() {
                         @Override
                         public void onSuccess(ServiceVersionBean svbResp) {
                             completed.add(serviceResp.getId());

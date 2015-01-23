@@ -18,6 +18,9 @@ package io.apiman.manager.ui.client.local.services;
 import io.apiman.manager.api.beans.actions.ActionBean;
 import io.apiman.manager.api.beans.apps.ApplicationBean;
 import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
+import io.apiman.manager.api.beans.apps.NewApplicationBean;
+import io.apiman.manager.api.beans.apps.NewApplicationVersionBean;
+import io.apiman.manager.api.beans.apps.UpdateApplicationBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.contracts.NewContractBean;
@@ -32,9 +35,14 @@ import io.apiman.manager.api.beans.idm.UpdateRoleBean;
 import io.apiman.manager.api.beans.idm.UpdateUserBean;
 import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.beans.members.MemberBean;
+import io.apiman.manager.api.beans.orgs.NewOrganizationBean;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
+import io.apiman.manager.api.beans.orgs.UpdateOrganizationBean;
+import io.apiman.manager.api.beans.plans.NewPlanBean;
+import io.apiman.manager.api.beans.plans.NewPlanVersionBean;
 import io.apiman.manager.api.beans.plans.PlanBean;
 import io.apiman.manager.api.beans.plans.PlanVersionBean;
+import io.apiman.manager.api.beans.plans.UpdatePlanBean;
 import io.apiman.manager.api.beans.plugins.NewPluginBean;
 import io.apiman.manager.api.beans.plugins.PluginBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
@@ -43,8 +51,12 @@ import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
+import io.apiman.manager.api.beans.services.NewServiceBean;
+import io.apiman.manager.api.beans.services.NewServiceVersionBean;
 import io.apiman.manager.api.beans.services.ServiceBean;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
+import io.apiman.manager.api.beans.services.UpdateServiceBean;
+import io.apiman.manager.api.beans.services.UpdateServiceVersionBean;
 import io.apiman.manager.api.beans.summary.ApiRegistryBean;
 import io.apiman.manager.api.beans.summary.ApplicationSummaryBean;
 import io.apiman.manager.api.beans.summary.ApplicationVersionSummaryBean;
@@ -313,19 +325,20 @@ public class RestInvokerService {
      * @param org
      * @param callback
      */
-    public void createOrganization(OrganizationBean org, IRestInvokerCallback<OrganizationBean> callback) {
+    public void createOrganization(NewOrganizationBean org, IRestInvokerCallback<OrganizationBean> callback) {
         CallbackAdapter<OrganizationBean> adapter = new CallbackAdapter<OrganizationBean>(callback);
         organizations.call(adapter, adapter).create(org);
     }
     
     /**
      * Updates an organization.
+     * @param organizationId
      * @param org
      * @param callback
      */
-    public void updateOrganization(OrganizationBean org, IRestInvokerCallback<Void> callback) {
+    public void updateOrganization(String organizationId, UpdateOrganizationBean org, IRestInvokerCallback<Void> callback) {
         CallbackAdapter<Void> adapter = new CallbackAdapter<Void>(callback);
-        organizations.call(adapter, adapter).update(org.getId(), org);
+        organizations.call(adapter, adapter).update(organizationId, org);
     }
 
     /**
@@ -344,19 +357,22 @@ public class RestInvokerService {
      * @param app
      * @param callback
      */
-    public void createApplication(String organizationId, ApplicationBean app, IRestInvokerCallback<ApplicationBean> callback) {
+    public void createApplication(String organizationId, NewApplicationBean app, IRestInvokerCallback<ApplicationBean> callback) {
         CallbackAdapter<ApplicationBean> adapter = new CallbackAdapter<ApplicationBean>(callback);
         organizations.call(adapter, adapter).createApp(organizationId, app);
     }
     
     /**
      * Updates an application.
+     * @param organizationId
+     * @param applicationId
      * @param app
      * @param callback
      */
-    public void updateApplication(ApplicationBean app, IRestInvokerCallback<Void> callback) {
+    public void updateApplication(String organizationId, String applicationId, UpdateApplicationBean app,
+            IRestInvokerCallback<Void> callback) {
         CallbackAdapter<Void> adapter = new CallbackAdapter<Void>(callback);
-        organizations.call(adapter, adapter).updateApp(app.getOrganization().getId(), app.getId(), app);
+        organizations.call(adapter, adapter).updateApp(organizationId, applicationId, app);
     }
     
     /**
@@ -366,7 +382,7 @@ public class RestInvokerService {
      * @param version
      * @param callback
      */
-    public void createApplicationVersion(String organizationId, String applicationId, ApplicationVersionBean version,
+    public void createApplicationVersion(String organizationId, String applicationId, NewApplicationVersionBean version,
             IRestInvokerCallback<ApplicationVersionBean> callback) {
         CallbackAdapter<ApplicationVersionBean> adapter = new CallbackAdapter<ApplicationVersionBean>(callback);
         organizations.call(adapter, adapter).createAppVersion(organizationId, applicationId, version);
@@ -549,19 +565,21 @@ public class RestInvokerService {
      * @param service
      * @param callback
      */
-    public void createService(String organizationId, ServiceBean service, IRestInvokerCallback<ServiceBean> callback) {
+    public void createService(String organizationId, NewServiceBean service, IRestInvokerCallback<ServiceBean> callback) {
         CallbackAdapter<ServiceBean> adapter = new CallbackAdapter<ServiceBean>(callback);
         organizations.call(adapter, adapter).createService(organizationId, service);
     }
 
     /**
      * Updates a service.
+     * @param organizationId
+     * @param serviceId
      * @param service
      * @param callback
      */
-    public void updateService(ServiceBean service, IRestInvokerCallback<Void> callback) {
+    public void updateService(String organizationId, String serviceId, UpdateServiceBean service, IRestInvokerCallback<Void> callback) {
         CallbackAdapter<Void> adapter = new CallbackAdapter<Void>(callback);
-        organizations.call(adapter, adapter).updateService(service.getOrganization().getId(), service.getId(), service);
+        organizations.call(adapter, adapter).updateService(organizationId, serviceId, service);
     }
 
     /**
@@ -571,7 +589,7 @@ public class RestInvokerService {
      * @param version
      * @param callback
      */
-    public void createServiceVersion(String organizationId, String serviceId, ServiceVersionBean version,
+    public void createServiceVersion(String organizationId, String serviceId, NewServiceVersionBean version,
             IRestInvokerCallback<ServiceVersionBean> callback) {
         CallbackAdapter<ServiceVersionBean> adapter = new CallbackAdapter<ServiceVersionBean>(callback);
         organizations.call(adapter, adapter).createServiceVersion(organizationId, serviceId, version);
@@ -649,7 +667,7 @@ public class RestInvokerService {
      * @param callback
      */
     public void updateServiceVersion(String organizationId, String serviceId, String version,
-            ServiceVersionBean svb, IRestInvokerCallback<Void> callback) {
+            UpdateServiceVersionBean svb, IRestInvokerCallback<Void> callback) {
         CallbackAdapter<Void> adapter = new CallbackAdapter<Void>(callback);
         organizations.call(adapter, adapter).updateServiceVersion(organizationId, serviceId, version, svb);
     }
@@ -882,7 +900,7 @@ public class RestInvokerService {
      * @param plan
      * @param callback
      */
-    public void createPlan(String organizationId, PlanBean plan, IRestInvokerCallback<PlanBean> callback) {
+    public void createPlan(String organizationId, NewPlanBean plan, IRestInvokerCallback<PlanBean> callback) {
         CallbackAdapter<PlanBean> adapter = new CallbackAdapter<PlanBean>(callback);
         organizations.call(adapter, adapter).createPlan(organizationId, plan);
     }
@@ -890,12 +908,13 @@ public class RestInvokerService {
     /**
      * Updates a plan.
      * @param organizationId
+     * @param planId
      * @param plan
      * @param callback
      */
-    public void updatePlan(PlanBean plan, IRestInvokerCallback<Void> callback) {
+    public void updatePlan(String organizationId, String planId, UpdatePlanBean plan, IRestInvokerCallback<Void> callback) {
         CallbackAdapter<Void> adapter = new CallbackAdapter<Void>(callback);
-        organizations.call(adapter, adapter).updatePlan(plan.getOrganization().getId(), plan.getId(), plan);
+        organizations.call(adapter, adapter).updatePlan(organizationId, planId, plan);
     }
 
     /**
@@ -905,7 +924,7 @@ public class RestInvokerService {
      * @param version
      * @param callback
      */
-    public void createPlanVersion(String organizationId, String planId, PlanVersionBean version,
+    public void createPlanVersion(String organizationId, String planId, NewPlanVersionBean version,
             IRestInvokerCallback<PlanVersionBean> callback) {
         CallbackAdapter<PlanVersionBean> adapter = new CallbackAdapter<PlanVersionBean>(callback);
         organizations.call(adapter, adapter).createPlanVersion(organizationId, planId, version);

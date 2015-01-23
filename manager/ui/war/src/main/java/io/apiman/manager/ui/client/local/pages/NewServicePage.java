@@ -16,6 +16,8 @@
 package io.apiman.manager.ui.client.local.pages;
 
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
+import io.apiman.manager.api.beans.services.NewServiceBean;
+import io.apiman.manager.api.beans.services.NewServiceVersionBean;
 import io.apiman.manager.api.beans.services.ServiceBean;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
 import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
@@ -165,7 +167,7 @@ public class NewServicePage extends AbstractPage {
         createButton.onActionStarted();
         final String orgId = orgSelector.getValue().getId();
         final String serviceVersion = version.getValue();
-        ServiceBean bean = new ServiceBean();
+        NewServiceBean bean = new NewServiceBean();
         bean.setName(name.getValue());
         bean.setDescription(description.getValue());
         // Create the service and then create an initial service version.
@@ -173,7 +175,7 @@ public class NewServicePage extends AbstractPage {
             @Override
             public void onSuccess(final ServiceBean response) {
                 final String serviceId = response.getId();
-                ServiceVersionBean vb = new ServiceVersionBean();
+                NewServiceVersionBean vb = new NewServiceVersionBean();
                 vb.setVersion(serviceVersion);
                 rest.createServiceVersion(orgId, serviceId, vb, new IRestInvokerCallback<ServiceVersionBean>() {
                     @Override

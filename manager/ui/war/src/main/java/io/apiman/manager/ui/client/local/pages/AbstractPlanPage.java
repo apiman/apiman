@@ -21,6 +21,7 @@ import io.apiman.manager.api.beans.idm.PermissionType;
 import io.apiman.manager.api.beans.plans.PlanBean;
 import io.apiman.manager.api.beans.plans.PlanStatus;
 import io.apiman.manager.api.beans.plans.PlanVersionBean;
+import io.apiman.manager.api.beans.plans.UpdatePlanBean;
 import io.apiman.manager.api.beans.summary.PlanVersionSummaryBean;
 import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.pages.common.Breadcrumb;
@@ -150,11 +151,9 @@ public abstract class AbstractPlanPage extends AbstractPage {
      * @param newDescription
      */
     protected void updatePlanDescription(final String newDescription) {
-        PlanBean update = new PlanBean();
-        update.setOrganization(planBean.getOrganization());
-        update.setId(planBean.getId());
+        UpdatePlanBean update = new UpdatePlanBean();
         update.setDescription(newDescription);;
-        rest.updatePlan(update, new IRestInvokerCallback<Void>() {
+        rest.updatePlan(planBean.getOrganization().getId(), planBean.getId(), update, new IRestInvokerCallback<Void>() {
             @Override
             public void onSuccess(Void response) {
                 planBean.setDescription(newDescription);

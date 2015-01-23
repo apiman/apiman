@@ -16,6 +16,8 @@
 package io.apiman.manager.ui.client.local.pages;
 
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
+import io.apiman.manager.api.beans.plans.NewPlanBean;
+import io.apiman.manager.api.beans.plans.NewPlanVersionBean;
 import io.apiman.manager.api.beans.plans.PlanBean;
 import io.apiman.manager.api.beans.plans.PlanVersionBean;
 import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
@@ -165,7 +167,7 @@ public class NewPlanPage extends AbstractPage {
         createButton.onActionStarted();
         final String orgId = orgSelector.getValue().getId();
         final String planVersion = version.getValue();
-        PlanBean bean = new PlanBean();
+        NewPlanBean bean = new NewPlanBean();
         bean.setName(name.getValue());
         bean.setDescription(description.getValue());
         // Create the plan and then create an initial plan version.
@@ -173,7 +175,7 @@ public class NewPlanPage extends AbstractPage {
             @Override
             public void onSuccess(final PlanBean response) {
                 final String planId = response.getId();
-                PlanVersionBean vb = new PlanVersionBean();
+                NewPlanVersionBean vb = new NewPlanVersionBean();
                 vb.setVersion(planVersion);
                 rest.createPlanVersion(orgId, planId, vb, new IRestInvokerCallback<PlanVersionBean>() {
                     @Override

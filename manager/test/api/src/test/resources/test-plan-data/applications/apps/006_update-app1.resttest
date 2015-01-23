@@ -2,9 +2,7 @@ PUT /organizations/Organization1/applications/Application1 admin2/admin2
 Content-Type: application/json
 
 {
-  "name" : "Application 1",
-  "description" : "[UPDATED] This is the description of Application 1!",
-  "createdBy" : "admin2"
+  "description" : "[UPDATED] This is the description of Application 1!"
 }
 ----
 204

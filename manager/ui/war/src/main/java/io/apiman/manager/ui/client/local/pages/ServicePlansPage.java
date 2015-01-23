@@ -17,7 +17,7 @@ package io.apiman.manager.ui.client.local.pages;
 
 import io.apiman.manager.api.beans.plans.PlanStatus;
 import io.apiman.manager.api.beans.services.ServicePlanBean;
-import io.apiman.manager.api.beans.services.ServiceVersionBean;
+import io.apiman.manager.api.beans.services.UpdateServiceVersionBean;
 import io.apiman.manager.api.beans.summary.PlanSummaryBean;
 import io.apiman.manager.api.beans.summary.PlanVersionSummaryBean;
 import io.apiman.manager.ui.client.local.AppMessages;
@@ -183,7 +183,7 @@ public class ServicePlansPage extends AbstractServicePage {
         versionBean.setPlans(newplans);
         versionBean.setPublicService(this.publicService.getValue());
         
-        ServiceVersionBean update = new ServiceVersionBean();
+        UpdateServiceVersionBean update = new UpdateServiceVersionBean();
         update.setPlans(newplans);
         update.setPublicService(this.publicService.getValue());
         rest.updateServiceVersion(serviceBean.getOrganization().getId(), serviceBean.getId(),

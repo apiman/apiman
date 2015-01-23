@@ -16,6 +16,7 @@
 package io.apiman.manager.ui.client.local.pages;
 
 import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
+import io.apiman.manager.api.beans.apps.NewApplicationVersionBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.contracts.NewContractBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
@@ -133,7 +134,7 @@ public class NewAppVersionPage extends AbstractPage {
      * Creates a new cloned version of the app.
      */
     private void createAndClone() {
-        ApplicationVersionBean clonedVersion = new ApplicationVersionBean();
+        NewApplicationVersionBean clonedVersion = new NewApplicationVersionBean();
         final String ver = version.getValue();
         
         ApplicationVersionBean oldApplication = (ApplicationVersionBean) currentContext.getAttribute(ContextKeys.CURRENT_APPLICATION_VERSION);
@@ -269,7 +270,7 @@ public class NewAppVersionPage extends AbstractPage {
      */
     private void create() {
         createButton.onActionStarted();
-        ApplicationVersionBean newVersion = new ApplicationVersionBean();
+        NewApplicationVersionBean newVersion = new NewApplicationVersionBean();
         final String ver = version.getValue();
         newVersion.setVersion(ver);
         rest.createApplicationVersion(org, app, newVersion, new IRestInvokerCallback<ApplicationVersionBean>() {

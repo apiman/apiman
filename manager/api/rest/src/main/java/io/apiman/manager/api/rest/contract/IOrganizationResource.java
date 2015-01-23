@@ -18,19 +18,31 @@ package io.apiman.manager.api.rest.contract;
 
 import io.apiman.manager.api.beans.apps.ApplicationBean;
 import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
+import io.apiman.manager.api.beans.apps.NewApplicationBean;
+import io.apiman.manager.api.beans.apps.NewApplicationVersionBean;
+import io.apiman.manager.api.beans.apps.UpdateApplicationBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.contracts.NewContractBean;
 import io.apiman.manager.api.beans.idm.GrantRolesBean;
 import io.apiman.manager.api.beans.members.MemberBean;
+import io.apiman.manager.api.beans.orgs.NewOrganizationBean;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
+import io.apiman.manager.api.beans.orgs.UpdateOrganizationBean;
+import io.apiman.manager.api.beans.plans.NewPlanBean;
+import io.apiman.manager.api.beans.plans.NewPlanVersionBean;
 import io.apiman.manager.api.beans.plans.PlanBean;
 import io.apiman.manager.api.beans.plans.PlanVersionBean;
+import io.apiman.manager.api.beans.plans.UpdatePlanBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyChainBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
+import io.apiman.manager.api.beans.services.NewServiceBean;
+import io.apiman.manager.api.beans.services.NewServiceVersionBean;
 import io.apiman.manager.api.beans.services.ServiceBean;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
+import io.apiman.manager.api.beans.services.UpdateServiceBean;
+import io.apiman.manager.api.beans.services.UpdateServiceVersionBean;
 import io.apiman.manager.api.beans.summary.ApiRegistryBean;
 import io.apiman.manager.api.beans.summary.ApplicationSummaryBean;
 import io.apiman.manager.api.beans.summary.ApplicationVersionSummaryBean;
@@ -86,7 +98,7 @@ public interface IOrganizationResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public OrganizationBean create(OrganizationBean bean) throws OrganizationAlreadyExistsException, NotAuthorizedException;
+    public OrganizationBean create(NewOrganizationBean bean) throws OrganizationAlreadyExistsException, NotAuthorizedException;
     
     @GET
     @Path("{organizationId}")
@@ -96,7 +108,7 @@ public interface IOrganizationResource {
     @PUT
     @Path("{organizationId}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void update(@PathParam("organizationId") String organizationId, OrganizationBean bean)
+    public void update(@PathParam("organizationId") String organizationId, UpdateOrganizationBean bean)
             throws OrganizationNotFoundException, NotAuthorizedException;
 
     @GET
@@ -114,7 +126,7 @@ public interface IOrganizationResource {
     @Path("{organizationId}/applications")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public ApplicationBean createApp(@PathParam("organizationId") String organizationId, ApplicationBean bean)
+    public ApplicationBean createApp(@PathParam("organizationId") String organizationId, NewApplicationBean bean)
             throws OrganizationNotFoundException, ApplicationAlreadyExistsException, NotAuthorizedException;
 
     @GET
@@ -143,7 +155,7 @@ public interface IOrganizationResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public void updateApp(@PathParam("organizationId") String organizationId,
-            @PathParam("applicationId") String applicationId, ApplicationBean bean)
+            @PathParam("applicationId") String applicationId, UpdateApplicationBean bean)
             throws ApplicationNotFoundException, NotAuthorizedException;
 
     @POST
@@ -151,7 +163,7 @@ public interface IOrganizationResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public ApplicationVersionBean createAppVersion(@PathParam("organizationId") String organizationId,
-            @PathParam("applicationId") String applicationId, ApplicationVersionBean bean)
+            @PathParam("applicationId") String applicationId, NewApplicationVersionBean bean)
             throws ApplicationNotFoundException, NotAuthorizedException;
 
     @GET
@@ -174,13 +186,6 @@ public interface IOrganizationResource {
             @PathParam("organizationId") String organizationId, @PathParam("applicationId") String applicationId,
             @PathParam("version") String version, @QueryParam("page") int page,
             @QueryParam("count") int pageSize) throws ApplicationVersionNotFoundException, NotAuthorizedException;
-
-    @PUT
-    @Path("{organizationId}/applications/{applicationId}/versions/{version}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public void updateAppVersion(@PathParam("organizationId") String organizationId,
-            @PathParam("applicationId") String applicationId, @PathParam("version") String version,
-            ApplicationVersionBean bean) throws ApplicationVersionNotFoundException, NotAuthorizedException;
 
     @POST
     @Path("{organizationId}/applications/{applicationId}/versions/{version}/contracts")
@@ -285,7 +290,7 @@ public interface IOrganizationResource {
     @Path("{organizationId}/services")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public ServiceBean createService(@PathParam("organizationId") String organizationId, ServiceBean bean)
+    public ServiceBean createService(@PathParam("organizationId") String organizationId, NewServiceBean bean)
             throws OrganizationNotFoundException, ServiceAlreadyExistsException, NotAuthorizedException;
     
     @GET
@@ -306,7 +311,7 @@ public interface IOrganizationResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public void updateService(@PathParam("organizationId") String organizationId,
-            @PathParam("serviceId") String serviceId, ServiceBean bean)
+            @PathParam("serviceId") String serviceId, UpdateServiceBean bean)
             throws ServiceNotFoundException, NotAuthorizedException;
 
     @GET
@@ -322,7 +327,7 @@ public interface IOrganizationResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public ServiceVersionBean createServiceVersion(@PathParam("organizationId") String organizationId,
-            @PathParam("serviceId") String serviceId, ServiceVersionBean bean)
+            @PathParam("serviceId") String serviceId, NewServiceVersionBean bean)
             throws ServiceNotFoundException, NotAuthorizedException;
 
     @GET
@@ -350,7 +355,7 @@ public interface IOrganizationResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public void updateServiceVersion(@PathParam("organizationId") String organizationId,
             @PathParam("serviceId") String serviceId, @PathParam("version") String version,
-            ServiceVersionBean bean) throws ServiceVersionNotFoundException, NotAuthorizedException,
+            UpdateServiceVersionBean bean) throws ServiceVersionNotFoundException, NotAuthorizedException,
             InvalidServiceStatusException;
 
     @GET
@@ -441,7 +446,7 @@ public interface IOrganizationResource {
     @Path("{organizationId}/plans")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public PlanBean createPlan(@PathParam("organizationId") String organizationId, PlanBean bean)
+    public PlanBean createPlan(@PathParam("organizationId") String organizationId, NewPlanBean bean)
             throws OrganizationNotFoundException, PlanAlreadyExistsException, NotAuthorizedException;
     
     @GET
@@ -469,7 +474,7 @@ public interface IOrganizationResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public void updatePlan(@PathParam("organizationId") String organizationId,
-            @PathParam("planId") String planId, PlanBean bean)
+            @PathParam("planId") String planId, UpdatePlanBean bean)
             throws PlanNotFoundException, NotAuthorizedException;
 
     @POST
@@ -477,7 +482,7 @@ public interface IOrganizationResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public PlanVersionBean createPlanVersion(@PathParam("organizationId") String organizationId,
-            @PathParam("planId") String planId, PlanVersionBean bean)
+            @PathParam("planId") String planId, NewPlanVersionBean bean)
             throws PlanNotFoundException, NotAuthorizedException;
 
     @GET
@@ -500,13 +505,6 @@ public interface IOrganizationResource {
             @PathParam("planId") String planId, @PathParam("version") String version,
             @QueryParam("page") int page, @QueryParam("count") int pageSize)
             throws PlanVersionNotFoundException, NotAuthorizedException;
-
-    @PUT
-    @Path("{organizationId}/plans/{planId}/versions/{version}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public void updatePlanVersion(@PathParam("organizationId") String organizationId,
-            @PathParam("planId") String planId, @PathParam("version") String version,
-            PlanVersionBean bean) throws PlanVersionNotFoundException, NotAuthorizedException;
 
     @POST
     @Path("{organizationId}/plans/{planId}/versions/{version}/policies")

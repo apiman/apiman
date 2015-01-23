@@ -18,6 +18,7 @@ package io.apiman.manager.ui.client.local.pages;
 import io.apiman.manager.api.beans.idm.PermissionType;
 import io.apiman.manager.api.beans.members.MemberBean;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
+import io.apiman.manager.api.beans.orgs.UpdateOrganizationBean;
 import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.pages.common.Breadcrumb;
 import io.apiman.manager.ui.client.local.services.ContextKeys;
@@ -101,10 +102,9 @@ public abstract class AbstractOrgPage extends AbstractPage {
      * @param newDescription
      */
     protected void updateOrgDescription(final String newDescription) {
-        OrganizationBean update = new OrganizationBean();
-        update.setId(organizationBean.getId());
+        UpdateOrganizationBean update = new UpdateOrganizationBean();
         update.setDescription(newDescription);;
-        rest.updateOrganization(update, new IRestInvokerCallback<Void>() {
+        rest.updateOrganization(organizationBean.getId(), update, new IRestInvokerCallback<Void>() {
             @Override
             public void onSuccess(Void response) {
                 organizationBean.setDescription(newDescription);

@@ -21,6 +21,7 @@ import io.apiman.manager.api.beans.idm.PermissionType;
 import io.apiman.manager.api.beans.services.ServiceBean;
 import io.apiman.manager.api.beans.services.ServiceStatus;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
+import io.apiman.manager.api.beans.services.UpdateServiceBean;
 import io.apiman.manager.api.beans.summary.ServiceVersionSummaryBean;
 import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.events.ConfirmationEvent;
@@ -166,11 +167,9 @@ public abstract class AbstractServicePage extends AbstractPage {
      * @param newDescription
      */
     protected void updateServiceDescription(final String newDescription) {
-        ServiceBean update = new ServiceBean();
-        update.setOrganization(serviceBean.getOrganization());
-        update.setId(serviceBean.getId());
+        UpdateServiceBean update = new UpdateServiceBean();
         update.setDescription(newDescription);;
-        rest.updateService(update, new IRestInvokerCallback<Void>() {
+        rest.updateService(serviceBean.getOrganization().getId(), serviceBean.getId(), update, new IRestInvokerCallback<Void>() {
             @Override
             public void onSuccess(Void response) {
                 serviceBean.setDescription(newDescription);
