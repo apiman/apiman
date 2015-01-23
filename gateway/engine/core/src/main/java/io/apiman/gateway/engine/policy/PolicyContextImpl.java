@@ -19,6 +19,7 @@ package io.apiman.gateway.engine.policy;
 import io.apiman.gateway.engine.IComponent;
 import io.apiman.gateway.engine.IComponentRegistry;
 import io.apiman.gateway.engine.beans.exceptions.ComponentNotFoundException;
+import io.apiman.gateway.engine.beans.exceptions.InterceptorAlreadyRegisteredException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,6 +33,7 @@ public class PolicyContextImpl implements IPolicyContext {
     
     private final IComponentRegistry componentRegistry;
     private final Map<String, Object> conversation = new HashMap<String, Object>();
+    private IConnectorInterceptor connectorInterceptor;
     
     /**
      * Constructor.
@@ -77,6 +79,25 @@ public class PolicyContextImpl implements IPolicyContext {
     @Override
     public <T extends IComponent> T getComponent(Class<T> componentClass) throws ComponentNotFoundException {
         return this.componentRegistry.getComponent(componentClass);
+    }
+
+    /**
+     * @see io.apiman.gateway.engine.policy.IPolicyContext#setConnectorInterceptor(IConnectorInterceptor)
+     */
+    @Override
+    public void setConnectorInterceptor(IConnectorInterceptor connectorInterceptor) throws InterceptorAlreadyRegisteredException {
+        if (this.connectorInterceptor != null) {
+            throw new InterceptorAlreadyRegisteredException(connectorInterceptor.getClass());
+        }
+        this.connectorInterceptor = connectorInterceptor;
+    }
+
+    /**
+     * @see io.apiman.gateway.engine.policy.IPolicyContext#getConnectorInterceptor()
+     */
+    @Override
+    public IConnectorInterceptor getConnectorInterceptor() {
+        return connectorInterceptor;
     }
 
 }

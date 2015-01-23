@@ -17,6 +17,7 @@ package io.apiman.gateway.engine.policy;
 
 import io.apiman.gateway.engine.IComponent;
 import io.apiman.gateway.engine.beans.exceptions.ComponentNotFoundException;
+import io.apiman.gateway.engine.beans.exceptions.InterceptorAlreadyRegisteredException;
 
 
 /**
@@ -54,4 +55,17 @@ public interface IPolicyContext {
      * @param componentClass
      */
     <T extends IComponent> T getComponent(Class<T> componentClass) throws ComponentNotFoundException;
+    
+    /**
+     * Sets the {@link IConnectorInterceptor} to be used instead of the real connection.
+     * 
+     * @throws InterceptorAlreadyRegisteredException
+     */
+    void setConnectorInterceptor(IConnectorInterceptor connectorInterceptor) throws InterceptorAlreadyRegisteredException;
+    
+    /**
+     * @return {@link IConnectorInterceptor} set to the context or null otherwise
+     */
+    IConnectorInterceptor getConnectorInterceptor();
+    
 }
