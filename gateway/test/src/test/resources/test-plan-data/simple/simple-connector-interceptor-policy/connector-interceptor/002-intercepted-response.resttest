@@ -1,9 +1,7 @@
 PUT /gateway/SimpleConnectorInterceptorPolicyTest/connector-interceptor-policy/1.0/path/to/app/resource admin/admin
 Content-Type: application/json
+intercept: true
 
-{
-  "intercept" : "true"
-}
 ----
 200
 Content-Type: application/json

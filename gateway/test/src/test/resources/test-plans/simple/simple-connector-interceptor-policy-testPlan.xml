@@ -6,7 +6,8 @@
   </testGroup>
 
   <testGroup name="Test the Connector Interceptor Policy through the Gateway">
-    <test name="Echo 1">test-plan-data/simple/simple-connector-interceptor-policy/connector-interceptor/001.resttest</test>
+    <test name="Echo">test-plan-data/simple/simple-connector-interceptor-policy/connector-interceptor/001.resttest</test>
+    <test name="Intercepted Response">test-plan-data/simple/simple-connector-interceptor-policy/connector-interceptor/002-intercepted-response.resttest</test>
   </testGroup>
 
 </testPlan>
