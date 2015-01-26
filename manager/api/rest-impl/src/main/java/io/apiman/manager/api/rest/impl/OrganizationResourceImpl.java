@@ -328,6 +328,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
             storage.createApplication(newApp);
             storage.createAuditEntry(AuditUtils.applicationCreated(newApp, securityContext));
+            
+            if (bean.getInitialVersion() != null) {
+                NewApplicationVersionBean newAppVersion = new NewApplicationVersionBean();
+                newAppVersion.setVersion(bean.getInitialVersion());
+                createAppVersionInternal(newAppVersion, newApp);
+            }
+            
             storage.commitTx();
             return newApp;
         } catch (AbstractRestException e) {
@@ -451,18 +458,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 throw ExceptionFactory.applicationNotFoundException(applicationId);
             }
 
-            ApplicationVersionBean newVersion = new ApplicationVersionBean();
-            newVersion.setApplication(application);
-            newVersion.setCreatedBy(securityContext.getCurrentUser());
-            newVersion.setCreatedOn(new Date());
-            newVersion.setModifiedBy(securityContext.getCurrentUser());
-            newVersion.setModifiedOn(new Date());
-            newVersion.setStatus(ApplicationStatus.Created);
-            
-            newVersion.setVersion(bean.getVersion());
-            
-            storage.createApplicationVersion(newVersion);
-            storage.createAuditEntry(AuditUtils.applicationVersionCreated(newVersion, securityContext));
+            ApplicationVersionBean newVersion = createAppVersionInternal(bean, application);
             storage.commitTx();
             return newVersion;
         } catch (AbstractRestException e) {
@@ -472,6 +468,28 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.rollbackTx();
             throw new SystemErrorException(e);
         }
+    }
+
+    /**
+     * Creates a new application version.
+     * @param bean
+     * @param application
+     * @throws StorageException
+     */
+    protected ApplicationVersionBean createAppVersionInternal(NewApplicationVersionBean bean,
+            ApplicationBean application) throws StorageException {
+        ApplicationVersionBean newVersion = new ApplicationVersionBean();
+        newVersion.setApplication(application);
+        newVersion.setCreatedBy(securityContext.getCurrentUser());
+        newVersion.setCreatedOn(new Date());
+        newVersion.setModifiedBy(securityContext.getCurrentUser());
+        newVersion.setModifiedOn(new Date());
+        newVersion.setStatus(ApplicationStatus.Created);
+        newVersion.setVersion(bean.getVersion());
+        
+        storage.createApplicationVersion(newVersion);
+        storage.createAuditEntry(AuditUtils.applicationVersionCreated(newVersion, securityContext));
+        return newVersion;
     }
     
     /**
@@ -974,6 +992,8 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         newService.setCreatedOn(new Date());
         newService.setCreatedBy(securityContext.getCurrentUser());
         try {
+            GatewaySummaryBean gateway = getSingularGateway();
+
             storage.beginTx();
             OrganizationBean orgBean = storage.getOrganization(organizationId);
             if (orgBean == null) {
@@ -986,6 +1006,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             // Store/persist the new service
             storage.createService(newService);
             storage.createAuditEntry(AuditUtils.serviceCreated(newService, securityContext));
+            
+            if (bean.getInitialVersion() != null) {
+                NewServiceVersionBean newServiceVersion = new NewServiceVersionBean();
+                newServiceVersion.setVersion(bean.getInitialVersion());
+                createServiceVersionInternal(newServiceVersion, newService, gateway);
+            }
+            
             storage.commitTx();
             return newService;
         } catch (AbstractRestException e) {
@@ -1108,53 +1135,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 throw ExceptionFactory.serviceNotFoundException(serviceId);
             }
 
-            ServiceVersionBean newVersion = new ServiceVersionBean();
-            newVersion.setCreatedBy(securityContext.getCurrentUser());
-            newVersion.setCreatedOn(new Date());
-            newVersion.setModifiedBy(securityContext.getCurrentUser());
-            newVersion.setModifiedOn(new Date());
-            newVersion.setStatus(ServiceStatus.Created);
-            newVersion.setService(service);
-            
-            newVersion.setEndpoint(bean.getEndpoint());
-            newVersion.setEndpointType(bean.getEndpointType());
-            newVersion.setVersion(bean.getVersion());
-            newVersion.setGateways(bean.getGateways());
-            newVersion.setPlans(bean.getPlans());
-            newVersion.setPublicService(bean.isPublicService());
-            
-            if (gateway != null) {
-                if (newVersion.getGateways() == null) {
-                    newVersion.setGateways(new HashSet<ServiceGatewayBean>());
-                    ServiceGatewayBean sgb = new ServiceGatewayBean();
-                    sgb.setGatewayId(gateway.getId());
-                    newVersion.getGateways().add(sgb);
-                }
-            }
-            
-            if (serviceValidator.isReady(newVersion)) {
-                newVersion.setStatus(ServiceStatus.Ready);
-            } else {
-                newVersion.setStatus(ServiceStatus.Created);
-            }
-
-            // Ensure all of the plans are in the right status (locked)
-            Set<ServicePlanBean> plans = newVersion.getPlans();
-            if (plans != null) {
-                for (ServicePlanBean splanBean : plans) {
-                    String orgId = newVersion.getService().getOrganization().getId();
-                    PlanVersionBean pvb = storage.getPlanVersion(orgId, splanBean.getPlanId(), splanBean.getVersion());
-                    if (pvb == null) {
-                        throw new StorageException(Messages.i18n.format("PlanVersionDoesNotExist", splanBean.getPlanId(), splanBean.getVersion())); //$NON-NLS-1$
-                    }
-                    if (pvb.getStatus() != PlanStatus.Locked) {
-                        throw new StorageException(Messages.i18n.format("PlanNotLocked", splanBean.getPlanId(), splanBean.getVersion())); //$NON-NLS-1$
-                    }
-                }
-            }
-            
-            storage.createServiceVersion(newVersion);
-            storage.createAuditEntry(AuditUtils.serviceVersionCreated(newVersion, securityContext));
+            ServiceVersionBean newVersion = createServiceVersionInternal(bean, service, gateway);
             storage.commitTx();
             return newVersion;
         } catch (AbstractRestException e) {
@@ -1164,6 +1145,66 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.rollbackTx();
             throw new SystemErrorException(e);
         }
+    }
+
+    /**
+     * Creates a service version.
+     * @param bean
+     * @param service
+     * @param gateway
+     * @throws Exception
+     * @throws StorageException
+     */
+    protected ServiceVersionBean createServiceVersionInternal(NewServiceVersionBean bean,
+            ServiceBean service, GatewaySummaryBean gateway) throws Exception, StorageException {
+
+        ServiceVersionBean newVersion = new ServiceVersionBean();
+        newVersion.setCreatedBy(securityContext.getCurrentUser());
+        newVersion.setCreatedOn(new Date());
+        newVersion.setModifiedBy(securityContext.getCurrentUser());
+        newVersion.setModifiedOn(new Date());
+        newVersion.setStatus(ServiceStatus.Created);
+        newVersion.setService(service);
+        newVersion.setEndpoint(bean.getEndpoint());
+        newVersion.setEndpointType(bean.getEndpointType());
+        newVersion.setVersion(bean.getVersion());
+        newVersion.setGateways(bean.getGateways());
+        newVersion.setPlans(bean.getPlans());
+        newVersion.setPublicService(bean.isPublicService());
+        
+        if (gateway != null) {
+            if (newVersion.getGateways() == null) {
+                newVersion.setGateways(new HashSet<ServiceGatewayBean>());
+                ServiceGatewayBean sgb = new ServiceGatewayBean();
+                sgb.setGatewayId(gateway.getId());
+                newVersion.getGateways().add(sgb);
+            }
+        }
+        
+        if (serviceValidator.isReady(newVersion)) {
+            newVersion.setStatus(ServiceStatus.Ready);
+        } else {
+            newVersion.setStatus(ServiceStatus.Created);
+        }
+
+        // Ensure all of the plans are in the right status (locked)
+        Set<ServicePlanBean> plans = newVersion.getPlans();
+        if (plans != null) {
+            for (ServicePlanBean splanBean : plans) {
+                String orgId = newVersion.getService().getOrganization().getId();
+                PlanVersionBean pvb = storage.getPlanVersion(orgId, splanBean.getPlanId(), splanBean.getVersion());
+                if (pvb == null) {
+                    throw new StorageException(Messages.i18n.format("PlanVersionDoesNotExist", splanBean.getPlanId(), splanBean.getVersion())); //$NON-NLS-1$
+                }
+                if (pvb.getStatus() != PlanStatus.Locked) {
+                    throw new StorageException(Messages.i18n.format("PlanNotLocked", splanBean.getPlanId(), splanBean.getVersion())); //$NON-NLS-1$
+                }
+            }
+        }
+        
+        storage.createServiceVersion(newVersion);
+        storage.createAuditEntry(AuditUtils.serviceVersionCreated(newVersion, securityContext));
+        return newVersion;
     }
 
     /**
@@ -1639,6 +1680,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             newPlan.setOrganization(orgBean);
             storage.createPlan(newPlan);
             storage.createAuditEntry(AuditUtils.planCreated(newPlan, securityContext));
+            
+            if (bean.getInitialVersion() != null) {
+                NewPlanVersionBean newPlanVersion = new NewPlanVersionBean();
+                newPlanVersion.setVersion(bean.getInitialVersion());
+                createPlanVersionInternal(newPlanVersion, newPlan);
+            }
+            
             storage.commitTx();
             return newPlan;
         } catch (AbstractRestException e) {
@@ -1758,16 +1806,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 throw ExceptionFactory.planNotFoundException(planId);
             }
 
-            PlanVersionBean newVersion = new PlanVersionBean();
-            newVersion.setCreatedBy(securityContext.getCurrentUser());
-            newVersion.setCreatedOn(new Date());
-            newVersion.setModifiedBy(securityContext.getCurrentUser());
-            newVersion.setModifiedOn(new Date());
-            newVersion.setStatus(PlanStatus.Created);
-            newVersion.setPlan(plan);
-            newVersion.setVersion(bean.getVersion());
-            storage.createPlanVersion(newVersion);
-            storage.createAuditEntry(AuditUtils.planVersionCreated(newVersion, securityContext));
+            PlanVersionBean newVersion = createPlanVersionInternal(bean, plan);
             storage.commitTx();
             return newVersion;
         } catch (AbstractRestException e) {
@@ -1777,6 +1816,27 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.rollbackTx();
             throw new SystemErrorException(e);
         }
+    }
+
+    /**
+     * Creates a plan version.
+     * @param bean
+     * @param plan
+     * @throws StorageException
+     */
+    protected PlanVersionBean createPlanVersionInternal(NewPlanVersionBean bean, PlanBean plan)
+            throws StorageException {
+        PlanVersionBean newVersion = new PlanVersionBean();
+        newVersion.setCreatedBy(securityContext.getCurrentUser());
+        newVersion.setCreatedOn(new Date());
+        newVersion.setModifiedBy(securityContext.getCurrentUser());
+        newVersion.setModifiedOn(new Date());
+        newVersion.setStatus(PlanStatus.Created);
+        newVersion.setPlan(plan);
+        newVersion.setVersion(bean.getVersion());
+        storage.createPlanVersion(newVersion);
+        storage.createAuditEntry(AuditUtils.planVersionCreated(newVersion, securityContext));
+        return newVersion;
     }
     
     /**

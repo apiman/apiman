@@ -17,9 +17,7 @@ package io.apiman.manager.ui.client.local.pages;
 
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.beans.plans.NewPlanBean;
-import io.apiman.manager.api.beans.plans.NewPlanVersionBean;
 import io.apiman.manager.api.beans.plans.PlanBean;
-import io.apiman.manager.api.beans.plans.PlanVersionBean;
 import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
 import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.pages.common.OrganizationSelector;
@@ -170,24 +168,14 @@ public class NewPlanPage extends AbstractPage {
         NewPlanBean bean = new NewPlanBean();
         bean.setName(name.getValue());
         bean.setDescription(description.getValue());
+        bean.setInitialVersion(planVersion);
         // Create the plan and then create an initial plan version.
         rest.createPlan(orgId, bean, new IRestInvokerCallback<PlanBean>() {
             @Override
             public void onSuccess(final PlanBean response) {
                 final String planId = response.getId();
-                NewPlanVersionBean vb = new NewPlanVersionBean();
-                vb.setVersion(planVersion);
-                rest.createPlanVersion(orgId, planId, vb, new IRestInvokerCallback<PlanVersionBean>() {
-                    @Override
-                    public void onSuccess(PlanVersionBean response) {
-                        createButton.onActionComplete();
-                        toPlanOverview.go(MultimapUtil.fromMultiple("org", orgId, "plan", planId, "version", planVersion)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                    }
-                    @Override
-                    public void onError(Throwable error) {
-                        dataPacketError(error);
-                    }
-                });
+                createButton.onActionComplete();
+                toPlanOverview.go(MultimapUtil.fromMultiple("org", orgId, "plan", planId, "version", planVersion)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             }
             @Override
             public void onError(Throwable error) {

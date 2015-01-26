@@ -17,9 +17,7 @@ package io.apiman.manager.ui.client.local.pages;
 
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.beans.services.NewServiceBean;
-import io.apiman.manager.api.beans.services.NewServiceVersionBean;
 import io.apiman.manager.api.beans.services.ServiceBean;
-import io.apiman.manager.api.beans.services.ServiceVersionBean;
 import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
 import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.pages.common.OrganizationSelector;
@@ -170,24 +168,13 @@ public class NewServicePage extends AbstractPage {
         NewServiceBean bean = new NewServiceBean();
         bean.setName(name.getValue());
         bean.setDescription(description.getValue());
+        bean.setInitialVersion(serviceVersion);
         // Create the service and then create an initial service version.
         rest.createService(orgId, bean, new IRestInvokerCallback<ServiceBean>() {
             @Override
             public void onSuccess(final ServiceBean response) {
-                final String serviceId = response.getId();
-                NewServiceVersionBean vb = new NewServiceVersionBean();
-                vb.setVersion(serviceVersion);
-                rest.createServiceVersion(orgId, serviceId, vb, new IRestInvokerCallback<ServiceVersionBean>() {
-                    @Override
-                    public void onSuccess(ServiceVersionBean response) {
-                        createButton.onActionComplete();
-                        toServiceOverview.go(MultimapUtil.fromMultiple("org", orgId, "service", serviceId, "version", serviceVersion)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                    }
-                    @Override
-                    public void onError(Throwable error) {
-                        dataPacketError(error);
-                    }
-                });
+                createButton.onActionComplete();
+                toServiceOverview.go(MultimapUtil.fromMultiple("org", orgId, "service", response.getId(), "version", serviceVersion)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             }
             @Override
             public void onError(Throwable error) {

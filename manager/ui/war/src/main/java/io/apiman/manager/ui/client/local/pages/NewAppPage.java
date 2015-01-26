@@ -16,9 +16,7 @@
 package io.apiman.manager.ui.client.local.pages;
 
 import io.apiman.manager.api.beans.apps.ApplicationBean;
-import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
 import io.apiman.manager.api.beans.apps.NewApplicationBean;
-import io.apiman.manager.api.beans.apps.NewApplicationVersionBean;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.beans.summary.OrganizationSummaryBean;
 import io.apiman.manager.ui.client.local.AppMessages;
@@ -170,24 +168,13 @@ public class NewAppPage extends AbstractPage {
         NewApplicationBean bean = new NewApplicationBean();
         bean.setName(name.getValue());
         bean.setDescription(description.getValue());
+        bean.setInitialVersion(appVersion);
         // Create the application and then create an initial app version.
         rest.createApplication(orgId, bean, new IRestInvokerCallback<ApplicationBean>() {
             @Override
             public void onSuccess(final ApplicationBean response) {
-                final String appId = response.getId();
-                NewApplicationVersionBean vb = new NewApplicationVersionBean();
-                vb.setVersion(appVersion);
-                rest.createApplicationVersion(orgId, appId, vb, new IRestInvokerCallback<ApplicationVersionBean>() {
-                    @Override
-                    public void onSuccess(ApplicationVersionBean response) {
-                        createButton.onActionComplete();
-                        toAppOverview.go(MultimapUtil.fromMultiple("org", orgId, "app", appId, "version", appVersion)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                    }
-                    @Override
-                    public void onError(Throwable error) {
-                        dataPacketError(error);
-                    }
-                });
+                createButton.onActionComplete();
+                toAppOverview.go(MultimapUtil.fromMultiple("org", orgId, "app", response.getId(), "version", appVersion)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             }
             @Override
             public void onError(Throwable error) {
