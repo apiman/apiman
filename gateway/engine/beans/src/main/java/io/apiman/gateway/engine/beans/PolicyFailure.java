@@ -30,6 +30,7 @@ public class PolicyFailure implements Serializable {
 
     private PolicyFailureType type;
     private int failureCode;
+    private int responseCode;
     private String message;
     private Map<String, String> headers = new HashMap<String, String>();
 
@@ -105,5 +106,19 @@ public class PolicyFailure implements Serializable {
      */
     public void setHeaders(Map<String, String> headers) {
         this.headers = headers;
+    }
+
+    /**
+     * @return the responseCode
+     */
+    public int getResponseCode() {
+        return responseCode;
+    }
+
+    /**
+     * @param responseCode the responseCode to set
+     */
+    public void setResponseCode(int responseCode) {
+        this.responseCode = responseCode;
     }
 }

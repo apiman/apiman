@@ -89,6 +89,7 @@ public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig>
                     } else {
                         IPolicyFailureFactoryComponent failureFactory = context.getComponent(IPolicyFailureFactoryComponent.class);
                         PolicyFailure failure = failureFactory.createFailure(PolicyFailureType.Other, PolicyFailureCodes.RATE_LIMIT_EXCEEDED, Messages.i18n.format("RateLimitingPolicy.RateExceeded")); //$NON-NLS-1$
+                        failure.setResponseCode(429);
                         chain.doFailure(failure);
                     }
                 }

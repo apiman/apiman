@@ -296,6 +296,10 @@ public abstract class GatewayServlet extends HttpServlet {
             errorCode = 403;
         } else if (policyFailure.getType() == PolicyFailureType.NotFound) {
             errorCode = 404;
+        } if (policyFailure.getType() == PolicyFailureType.Other) {
+            if (policyFailure.getResponseCode() >= 300) {
+                errorCode = policyFailure.getResponseCode();
+            }
         }
         resp.setStatus(errorCode);
         try {
