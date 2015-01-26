@@ -31,7 +31,12 @@ public class RateLimiterBucket implements Serializable {
     
     public int count = 0;
     public long last = System.currentTimeMillis();
-    public transient Object mutex = new Object();
+    
+    /**
+     * Constructor.
+     */
+    public RateLimiterBucket() {
+    }
     
     /**
      * Resets the count if the period boundary has been crossed.
@@ -43,6 +48,16 @@ public class RateLimiterBucket implements Serializable {
             count = 0;
         }
     }
+    
+    /**
+     * Returns the number of millis until the period resets.
+     * @param period
+     */
+    public long getResetMillis(RateBucketPeriod period) {
+        long now = System.currentTimeMillis();
+        long periodBoundary = getPeriodBoundary(now, period);
+        return periodBoundary - now;
+    }
 
     /**
      * Gets the period boundary for the period bounding the last
@@ -50,8 +65,18 @@ public class RateLimiterBucket implements Serializable {
      * @param period
      */
     private long getLastPeriodBoundary(RateBucketPeriod period) {
+        return getPeriodBoundary(last, period);
+    }
+    
+    /**
+     * Gets the boundary timestamp for the given rate bucket period.  In other words,
+     * returns the timestamp associated with when the rate period will reset.
+     * @param timestamp
+     * @param period
+     */
+    private static long getPeriodBoundary(long timestamp, RateBucketPeriod period) {
         Calendar lastCal = Calendar.getInstance();
-        lastCal.setTimeInMillis(last);
+        lastCal.setTimeInMillis(timestamp);
         switch (period) {
         case Second:
             lastCal.set(Calendar.MILLISECOND, 0);

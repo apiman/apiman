@@ -11,6 +11,7 @@
     "IHttpClientComponent": { "class": "io.apiman.gateway.vertx.components.HttpClientComponentImpl", "config": {} },
 
     "ISharedStateComponent": { "class": "io.apiman.gateway.engine.impl.InMemorySharedStateComponent", "config": {} },
+    "IDataStoreComponent": { "class": "io.apiman.gateway.engine.impl.InMemoryDataStoreComponent", "config": {} },
     "IRateLimiterComponent": { "class": "io.apiman.gateway.engine.impl.InMemoryRateLimiterComponent", "config": {} },
     "IPolicyFailureFactoryComponent": { "class": "io.apiman.gateway.vertx.components.PolicyFailureFactoryComponent", "config": {} }
   },

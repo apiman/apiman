@@ -3,7 +3,7 @@ X-Customer-Header: custom-value
 X-API-Key: ${silver-api-key}
 
 ----
-500
+429
 Content-Type: application/json
 
 {

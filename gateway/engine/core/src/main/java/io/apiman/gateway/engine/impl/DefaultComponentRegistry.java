@@ -18,6 +18,7 @@ package io.apiman.gateway.engine.impl;
 import io.apiman.gateway.engine.IComponent;
 import io.apiman.gateway.engine.IComponentRegistry;
 import io.apiman.gateway.engine.beans.exceptions.ComponentNotFoundException;
+import io.apiman.gateway.engine.components.IDataStoreComponent;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.components.IRateLimiterComponent;
 import io.apiman.gateway.engine.components.ISharedStateComponent;
@@ -40,6 +41,7 @@ public class DefaultComponentRegistry implements IComponentRegistry {
      */
     public DefaultComponentRegistry() {
         components.put(ISharedStateComponent.class, new InMemorySharedStateComponent());
+        components.put(IDataStoreComponent.class, new InMemoryDataStoreComponent());
         components.put(IRateLimiterComponent.class, new InMemoryRateLimiterComponent());
         components.put(IPolicyFailureFactoryComponent.class, new DefaultPolicyFailureFactoryComponent());
     }

@@ -17,12 +17,15 @@
 package io.apiman.manager.api.rest.impl;
 
 import io.apiman.common.plugin.Plugin;
+import io.apiman.common.plugin.PluginClassLoader;
 import io.apiman.common.plugin.PluginCoordinates;
 import io.apiman.manager.api.beans.BeanUtils;
 import io.apiman.manager.api.beans.plugins.NewPluginBean;
 import io.apiman.manager.api.beans.plugins.PluginBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.summary.PluginSummaryBean;
+import io.apiman.manager.api.beans.summary.PolicyDefinitionSummaryBean;
+import io.apiman.manager.api.beans.summary.PolicyFormType;
 import io.apiman.manager.api.core.IPluginRegistry;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
@@ -33,11 +36,15 @@ import io.apiman.manager.api.rest.contract.exceptions.AbstractRestException;
 import io.apiman.manager.api.rest.contract.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.contract.exceptions.PluginAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.PluginNotFoundException;
+import io.apiman.manager.api.rest.contract.exceptions.PluginResourceNotFoundException;
+import io.apiman.manager.api.rest.contract.exceptions.PolicyDefinitionNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.SystemErrorException;
 import io.apiman.manager.api.rest.impl.i18n.Messages;
 import io.apiman.manager.api.rest.impl.util.ExceptionFactory;
 import io.apiman.manager.api.security.ISecurityContext;
 
+import java.io.InputStream;
+import java.io.StringWriter;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
@@ -45,6 +52,7 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.apache.commons.io.IOUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 
 /**
@@ -127,6 +135,11 @@ public class PluginResourceImpl implements IPluginResource {
                 policyDef.setPluginId(pluginBean.getId());
                 if (policyDef.getId() == null) {
                     policyDef.setId(BeanUtils.idFromName(policyDef.getName()));
+                } else {
+                    policyDef.setId(BeanUtils.idFromName(policyDef.getId()));
+                }
+                if (policyDef.getFormType() == null) {
+                    policyDef.setFormType(PolicyFormType.Default);
                 }
                 if (storage.getPolicyDefinition(policyDef.getId()) == null) {
                     storage.createPolicyDefinition(policyDef);
@@ -190,6 +203,82 @@ public class PluginResourceImpl implements IPluginResource {
         } catch (Exception e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);
+        }
+    }
+    
+    /**
+     * @see io.apiman.manager.api.rest.contract.IPluginResource#getPolicyDefs(java.lang.Long)
+     */
+    @Override
+    public List<PolicyDefinitionSummaryBean> getPolicyDefs(Long pluginId) throws PluginNotFoundException {
+        get(pluginId);
+        try {
+            return query.listPluginPolicyDefs(pluginId);
+        } catch (StorageException e) {
+            throw new SystemErrorException(e);
+        }
+    }
+    
+    /**
+     * @see io.apiman.manager.api.rest.contract.IPluginResource#getPolicyForm(java.lang.Long, java.lang.String)
+     */
+    @Override
+    public String getPolicyForm(Long pluginId, String policyDefId) throws PluginNotFoundException, 
+            PluginResourceNotFoundException, PolicyDefinitionNotFoundException {
+        PluginBean pbean = null;
+        PolicyDefinitionBean pdBean = null;
+        try {
+            storage.beginTx();
+            pbean = storage.getPlugin(pluginId);
+            if (pbean == null) {
+                throw ExceptionFactory.pluginNotFoundException(pluginId);
+            }
+            pdBean = storage.getPolicyDefinition(policyDefId);
+            storage.commitTx();
+        } catch (AbstractRestException e) {
+            storage.rollbackTx();
+            throw e;
+        } catch (Exception e) {
+            storage.rollbackTx();
+            throw new SystemErrorException(e);
+        }
+        PluginCoordinates coordinates = new PluginCoordinates(pbean.getGroupId(), pbean.getArtifactId(),
+                pbean.getVersion(), pbean.getClassifier(), pbean.getType());
+        try {
+            if (pdBean == null) {
+                throw ExceptionFactory.policyDefNotFoundException(policyDefId);
+            }
+            if (pdBean.getPluginId() == null || !pdBean.getPluginId().equals(pbean.getId())) {
+                throw ExceptionFactory.pluginNotFoundException(pluginId);
+            }
+            if (pdBean.getFormType() == PolicyFormType.JsonSchema && pdBean.getForm() != null) {
+                String formPath = pdBean.getForm();
+                if (!formPath.startsWith("/")) { //$NON-NLS-1$
+                    formPath = "META-INF/apiman/policyDefs/" + formPath; //$NON-NLS-1$
+                } else {
+                    formPath = formPath.substring(1);
+                }
+                Plugin plugin = pluginRegistry.loadPlugin(coordinates);
+                PluginClassLoader loader = plugin.getLoader();
+                InputStream resource = null;
+                try {
+                    resource = loader.getResourceAsStream(formPath);
+                    if (resource == null) {
+                        throw ExceptionFactory.pluginResourceNotFoundException(formPath, coordinates);
+                    }
+                    StringWriter writer = new StringWriter();
+                    IOUtils.copy(resource, writer);
+                    return writer.toString();
+                } finally {
+                    IOUtils.closeQuietly(resource);
+                }
+            } else {
+                throw ExceptionFactory.pluginResourceNotFoundException(null, coordinates);
+            }
+        } catch (AbstractRestException e) {
+            throw e;
+        } catch (Throwable t) {
+            throw new SystemErrorException(t);
         }
     }
 

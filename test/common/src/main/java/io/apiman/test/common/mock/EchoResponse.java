@@ -84,13 +84,14 @@ public class EchoResponse {
         }
         return response;
     }
-
+    
     private String method;
     private String resource;
     private String uri;
     private Map<String, String> headers = new HashMap<String, String>();
     private Long bodyLength;
     private String bodySha1;
+    private Long counter;
     
     /**
      * Constructor.
@@ -181,4 +182,13 @@ public class EchoResponse {
     public void setBodySha1(String bodySha1) {
         this.bodySha1 = bodySha1;
     }
+    
+    public Long getCounter() {
+        return counter;
+    }
+
+    public void setCounter(Long counter) {
+        this.counter = counter;
+    }
+    
 }

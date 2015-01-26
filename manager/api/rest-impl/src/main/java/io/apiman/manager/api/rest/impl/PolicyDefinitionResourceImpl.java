@@ -20,6 +20,7 @@ import io.apiman.manager.api.beans.BeanUtils;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.policies.UpdatePolicyDefinitionBean;
 import io.apiman.manager.api.beans.summary.PolicyDefinitionSummaryBean;
+import io.apiman.manager.api.beans.summary.PolicyFormType;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
@@ -78,11 +79,16 @@ public class PolicyDefinitionResourceImpl implements IPolicyDefinitionResource {
         // Auto-generate an ID if one isn't provided.
         if (bean.getId() == null || bean.getId().trim().isEmpty()) {
             bean.setId(BeanUtils.idFromName(bean.getName()));
+        } else {
+            bean.setId(BeanUtils.idFromName(bean.getId()));
         }
         try {
             storage.beginTx();
             if (storage.getPolicyDefinition(bean.getId()) != null) {
                 throw ExceptionFactory.policyDefAlreadyExistsException(bean.getName());
+            }
+            if (bean.getFormType() == null) {
+                bean.setFormType(PolicyFormType.Default);
             }
             // Store/persist the new policyDef
             storage.createPolicyDefinition(bean);

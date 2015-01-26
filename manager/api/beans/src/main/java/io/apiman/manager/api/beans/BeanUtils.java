@@ -32,4 +32,12 @@ public class BeanUtils {
         return name.replaceAll("[^\\w-\\.]", ""); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
+    /**
+     * Validates that a version string is OK - doesn't contain any
+     * illegal characters.
+     * @param version
+     */
+    public static final boolean isValidVersion(String version) {
+        return idFromName(version).equals(version);
+    }
 }

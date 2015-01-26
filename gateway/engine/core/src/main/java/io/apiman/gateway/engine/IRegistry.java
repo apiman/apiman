@@ -15,6 +15,7 @@
  */
 package io.apiman.gateway.engine;
 
+import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.Application;
 import io.apiman.gateway.engine.beans.Contract;
 import io.apiman.gateway.engine.beans.Service;
@@ -39,44 +40,51 @@ public interface IRegistry {
      * service request.
      * 
      * @param request an inbound service request
+     * @param handler
      * @return a Contract or null if not found
+     * @throws InvalidContractException
      */
-    public ServiceContract getContract(ServiceRequest request) throws InvalidContractException;
+    public void getContract(ServiceRequest request, IAsyncResultHandler<ServiceContract> handler);
 
     /**
      * Publishes a new {@link Service} into the registry.
      * @param service the service being published
+     * @param handler
      * @throws PublishingException
      */
-    public void publishService(Service service) throws PublishingException;
+    public void publishService(Service service, IAsyncResultHandler<Void> handler);
     
     /**
      * Retires (removes) a {@link Service} from the registry.
      * @param service
+     * @param handler
      * @throws PublishingException
      */
-    public void retireService(Service service) throws PublishingException;
+    public void retireService(Service service, IAsyncResultHandler<Void> handler);
     
     /**
      * Registers a new {@link Application} with the registry.
      * @param application the application being registered
+     * @param handler
      * @throws RegistrationException
      */
-    public void registerApplication(Application application) throws RegistrationException;
-    
+    public void registerApplication(Application application, IAsyncResultHandler<Void> handler);
+
     /**
      * Removes an {@link Application} from the registry.
      * @param application the application to remove
+     * @param handler
      * @throws RegistrationException
      */
-    public void unregisterApplication(Application application) throws RegistrationException;
+    public void unregisterApplication(Application application, IAsyncResultHandler<Void> handler);
 
     /**
      * Gets a service by its service coordinates.
      * @param organizationId
      * @param serviceId
      * @param serviceVersion
+     * @param handler
      */
-    public Service getService(String organizationId, String serviceId, String serviceVersion);
+    public void getService(String organizationId, String serviceId, String serviceVersion, IAsyncResultHandler<Service> handler);
 
 }

@@ -18,7 +18,7 @@ package io.apiman.manager.ui.client.local.pages;
 import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
-import io.apiman.manager.api.beans.search.SearchCriteriaFilterBean;
+import io.apiman.manager.api.beans.search.SearchCriteriaFilterOperator;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.pages.common.RoleMultiSelector;
@@ -195,7 +195,7 @@ public class NewMemberPage extends AbstractPage {
         criteria.setPageSize(50);
         criteria.setPage(1);
         criteria.setOrder("fullName", true); //$NON-NLS-1$
-        criteria.addFilter("fullName", "*" + searchBox.getValue() + "*", SearchCriteriaFilterBean.OPERATOR_LIKE); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        criteria.addFilter("fullName", "*" + searchBox.getValue() + "*", SearchCriteriaFilterOperator.like); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         rest.findUsers(criteria, new IRestInvokerCallback<SearchResultsBean<UserBean>>() {
             @Override
             public void onSuccess(SearchResultsBean<UserBean> response) {

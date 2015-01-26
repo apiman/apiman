@@ -15,6 +15,8 @@
  */
 package io.apiman.manager.api.beans.policies;
 
+import io.apiman.manager.api.beans.summary.PolicyFormType;
+
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -23,6 +25,8 @@ import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -62,6 +66,11 @@ public class PolicyDefinitionBean implements Serializable {
     private Set<PolicyDefinitionTemplateBean> templates = new HashSet<PolicyDefinitionTemplateBean>();
     @Column(updatable=false, nullable=true)
     private Long pluginId;
+    @Column(updatable=false, nullable=true)
+    @Enumerated(EnumType.STRING)
+    private PolicyFormType formType;
+    @Column(updatable=false, nullable=true)
+    private String form;
 
     /**
      * Constructor.
@@ -165,6 +174,34 @@ public class PolicyDefinitionBean implements Serializable {
      */
     public void setPluginId(Long pluginId) {
         this.pluginId = pluginId;
+    }
+
+    /**
+     * @return the formType
+     */
+    public PolicyFormType getFormType() {
+        return formType;
+    }
+
+    /**
+     * @param formType the formType to set
+     */
+    public void setFormType(PolicyFormType formType) {
+        this.formType = formType;
+    }
+
+    /**
+     * @return the form
+     */
+    public String getForm() {
+        return form;
+    }
+
+    /**
+     * @param form the form to set
+     */
+    public void setForm(String form) {
+        this.form = form;
     }
 
     /**

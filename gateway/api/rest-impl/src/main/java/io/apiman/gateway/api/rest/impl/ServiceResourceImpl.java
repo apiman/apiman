@@ -18,10 +18,17 @@ package io.apiman.gateway.api.rest.impl;
 
 import io.apiman.gateway.api.rest.contract.IServiceResource;
 import io.apiman.gateway.api.rest.contract.exceptions.NotAuthorizedException;
+import io.apiman.gateway.engine.async.IAsyncResult;
+import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.Service;
 import io.apiman.gateway.engine.beans.ServiceEndpoint;
+import io.apiman.gateway.engine.beans.exceptions.AbstractEngineException;
 import io.apiman.gateway.engine.beans.exceptions.PublishingException;
 import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Implementation of the Service API.
@@ -41,7 +48,30 @@ public class ServiceResourceImpl extends AbstractResourceImpl implements IServic
      */
     @Override
     public void publish(Service service) throws PublishingException, NotAuthorizedException {
-        getEngine().publishService(service);
+        final Set<Throwable> errorHolder = new HashSet<>();
+        final CountDownLatch latch = new CountDownLatch(1);
+        getEngine().getRegistry().publishService(service, new IAsyncResultHandler<Void>() {
+            @Override
+            public void handle(IAsyncResult<Void> result) {
+                if (result.isError()) {
+                    errorHolder.add(result.getError());
+                }
+                latch.countDown();
+            }
+        });
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        if (!errorHolder.isEmpty()) {
+            Throwable error = errorHolder.iterator().next();
+            if (error instanceof AbstractEngineException) {
+                throw (AbstractEngineException) error;
+            } else {
+                throw new RuntimeException(error);
+            }
+        }
     }
     
     /**
@@ -50,7 +80,34 @@ public class ServiceResourceImpl extends AbstractResourceImpl implements IServic
     @Override
     public void retire(String organizationId, String serviceId, String version) throws RegistrationException,
             NotAuthorizedException {
-        getEngine().retireService(organizationId, serviceId, version);
+        final Set<Throwable> errorHolder = new HashSet<>();
+        final CountDownLatch latch = new CountDownLatch(1);
+        Service service = new Service();
+        service.setOrganizationId(organizationId);
+        service.setServiceId(serviceId);
+        service.setVersion(version);
+        getEngine().getRegistry().retireService(service, new IAsyncResultHandler<Void>() {
+            @Override
+            public void handle(IAsyncResult<Void> result) {
+                if (result.isError()) {
+                    errorHolder.add(result.getError());
+                }
+                latch.countDown();
+            }
+        });
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        if (!errorHolder.isEmpty()) {
+            Throwable error = errorHolder.iterator().next();
+            if (error instanceof AbstractEngineException) {
+                throw (AbstractEngineException) error;
+            } else {
+                throw new RuntimeException(error);
+            }
+        }
     }
     
     /**

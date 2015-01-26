@@ -1,0 +1,52 @@
+PUT /organizations/Organization1/services/Service1/versions/2.0/definition admin/admin
+Content-Type: application/wsdl+xml
+
+<definitions name="EndorsementSearch"
+  targetNamespace="http://namespaces.snowboard-info.com"
+  xmlns:es="http://www.snowboard-info.com/EndorsementSearch.wsdl"
+  xmlns:esxsd="http://schemas.snowboard-info.com/EndorsementSearch.xsd"
+  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+  xmlns="http://schemas.xmlsoap.org/wsdl/">
+
+  <message name="GetEndorsingBoarderRequest">
+    <part name="body" element="esxsd:GetEndorsingBoarder"/>
+  </message>
+
+  <message name="GetEndorsingBoarderResponse">
+    <part name="body" element="esxsd:GetEndorsingBoarderResponse"/>
+  </message>
+
+  <portType name="GetEndorsingBoarderPortType">
+    <operation name="GetEndorsingBoarder">
+      <input message="es:GetEndorsingBoarderRequest"/>
+      <output message="es:GetEndorsingBoarderResponse"/>
+      <fault message="es:GetEndorsingBoarderFault"/>
+    </operation>
+  </portType>
+
+  <binding name="EndorsementSearchSoapBinding" type="es:GetEndorsingBoarderPortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="GetEndorsingBoarder">
+      <soap:operation soapAction="http://www.snowboard-info.com/EndorsementSearch"/>
+      <input>
+        <soap:body use="literal" namespace="http://schemas.snowboard-info.com/EndorsementSearch.xsd"/>
+      </input>
+      <output>
+        <soap:body use="literal" namespace="http://schemas.snowboard-info.com/EndorsementSearch.xsd"/>
+      </output>
+      <fault>
+        <soap:body use="literal" namespace="http://schemas.snowboard-info.com/EndorsementSearch.xsd"/>
+      </fault>
+    </operation>
+  </binding>
+
+  <service name="EndorsementSearchService">
+    <documentation>snowboarding-info.com Endorsement Service</documentation> 
+    <port name="GetEndorsingBoarderPort" binding="es:EndorsementSearchSoapBinding">
+      <soap:address location="http://www.snowboard-info.com/EndorsementSearch"/>
+    </port>
+  </service>
+
+</definitions>
+----
+204

@@ -30,18 +30,9 @@ public class SearchCriteriaFilterBean implements Serializable {
     
     private static final long serialVersionUID = -1199180207971619165L;
     
-    public static final String OPERATOR_BOOL_EQ = "bool_eq"; //$NON-NLS-1$
-    public static final String OPERATOR_EQ = "eq"; //$NON-NLS-1$
-    public static final String OPERATOR_NEQ = "neq"; //$NON-NLS-1$
-    public static final String OPERATOR_GT = "gt"; //$NON-NLS-1$
-    public static final String OPERATOR_GTE = "gte"; //$NON-NLS-1$
-    public static final String OPERATOR_LT = "lt"; //$NON-NLS-1$
-    public static final String OPERATOR_LTE = "lte"; //$NON-NLS-1$
-    public static final String OPERATOR_LIKE = "like"; //$NON-NLS-1$
-    
     private String name;
     private String value;
-    private String operator;
+    private SearchCriteriaFilterOperator operator;
     
     /**
      * Constructor.
@@ -80,14 +71,14 @@ public class SearchCriteriaFilterBean implements Serializable {
     /**
      * @return the operator
      */
-    public String getOperator() {
+    public SearchCriteriaFilterOperator getOperator() {
         return operator;
     }
 
     /**
      * @param operator the operator to set
      */
-    public void setOperator(String operator) {
+    public void setOperator(SearchCriteriaFilterOperator operator) {
         this.operator = operator;
     }
 

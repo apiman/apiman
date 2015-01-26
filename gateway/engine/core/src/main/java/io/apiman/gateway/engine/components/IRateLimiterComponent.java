@@ -17,6 +17,7 @@ package io.apiman.gateway.engine.components;
 
 import io.apiman.gateway.engine.IComponent;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
+import io.apiman.gateway.engine.components.rate.RateLimitResponse;
 import io.apiman.gateway.engine.rates.RateBucketPeriod;
 
 /**
@@ -37,6 +38,6 @@ public interface IRateLimiterComponent extends IComponent {
      * @param bucketId
      * @param limit
      */
-    void accept(String bucketId, RateBucketPeriod period, int limit, IAsyncResultHandler<Boolean> handler);
+    void accept(String bucketId, RateBucketPeriod period, int limit, IAsyncResultHandler<RateLimitResponse> handler);
 
 }

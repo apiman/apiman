@@ -38,6 +38,15 @@
     <url-pattern>/*</url-pattern>
   </filter-mapping>
 
+  <filter>
+    <filter-name>CorsFilter</filter-name>
+    <filter-class>org.overlord.commons.gwt.server.filters.SimpleCorsFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>CorsFilter</filter-name>
+    <url-pattern>/app/*</url-pattern>
+  </filter-mapping>
+
   <servlet>
     <servlet-name>ConfigurationJS</servlet-name>
     <servlet-class>io.apiman.manager.ui.server.servlets.ConfigurationServlet</servlet-class>
@@ -62,7 +71,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>FetchProxy</servlet-name>
-    <url-pattern>/proxies/fetch</url-pattern>
+    <url-pattern>/proxies/fetch/*</url-pattern>
   </servlet-mapping>
 
   <servlet>
@@ -71,7 +80,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>ApiManProxy</servlet-name>
-    <url-pattern>/proxies/apiman</url-pattern>
+    <url-pattern>/proxies/apiman/*</url-pattern>
   </servlet-mapping>
 
   <servlet>

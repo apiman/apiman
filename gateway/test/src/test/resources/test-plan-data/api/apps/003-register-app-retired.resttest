@@ -3,7 +3,7 @@ Content-Type: application/json
 
 {
   "organizationId" : "GatewayApiTest",
-  "applicationId" : "invalid-test-app",
+  "applicationId" : "retired-test-app",
   "version" : "1.0",
   "contracts" : [
     {

@@ -22,10 +22,12 @@ import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
 import io.apiman.manager.api.beans.policies.UpdatePolicyBean;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
+import io.apiman.manager.api.beans.summary.PolicyDefinitionSummaryBean;
 import io.apiman.manager.ui.client.local.AppMessages;
 import io.apiman.manager.ui.client.local.events.IsFormValidEvent;
 import io.apiman.manager.ui.client.local.events.IsFormValidEvent.Handler;
 import io.apiman.manager.ui.client.local.pages.policy.IPolicyConfigurationForm;
+import io.apiman.manager.ui.client.local.services.PolicyConfigurationFormFactory.IFormLoadedHandler;
 import io.apiman.manager.ui.client.local.services.rest.IRestInvokerCallback;
 import io.apiman.manager.ui.client.local.util.MultimapUtil;
 import io.apiman.manager.ui.client.local.widgets.H3Label;
@@ -100,7 +102,23 @@ public class EditPolicyPage extends AbstractPolicyPage {
             @Override
             public void onSuccess(PolicyBean response) {
                 policyBean = response;
-                dataPacketLoaded();
+                
+                PolicyDefinitionSummaryBean pdsb = new PolicyDefinitionSummaryBean();
+                pdsb.setFormType(policyBean.getDefinition().getFormType());
+                pdsb.setId(policyBean.getDefinition().getId());
+                pdsb.setPluginId(policyBean.getDefinition().getPluginId());
+
+                formFactory.createForm(pdsb, new IFormLoadedHandler() {
+                    @Override
+                    public void onFormLoaded(IPolicyConfigurationForm form) {
+                        policyForm = form;
+                        dataPacketLoaded();
+                    }
+                    @Override
+                    public void onFormError(Throwable e) {
+                        dataPacketError(e);
+                    }
+                });
             }
             @Override
             public void onError(Throwable error) {
@@ -174,7 +192,6 @@ public class EditPolicyPage extends AbstractPolicyPage {
     @Override
     protected void renderPage() {
         super.renderPage();
-        policyForm = formFactory.createForm(policyBean.getDefinition().getId());
         policyForm.addIsFormValidHandler(new Handler() {
             @Override
             public void onIsFormValid(IsFormValidEvent event) {

@@ -21,6 +21,7 @@ import io.apiman.manager.api.beans.search.OrderByBean;
 import io.apiman.manager.api.beans.search.PagingBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaFilterBean;
+import io.apiman.manager.api.beans.search.SearchCriteriaFilterOperator;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.core.exceptions.StorageException;
 
@@ -297,7 +298,7 @@ public abstract class AbstractJpaStorage {
         if (filters != null && !filters.isEmpty()) {
             List<Predicate> predicates = new ArrayList<Predicate>();
             for (SearchCriteriaFilterBean filter : filters) {
-                if (filter.getOperator().intern() == SearchCriteriaFilterBean.OPERATOR_EQ) {
+                if (filter.getOperator() == SearchCriteriaFilterOperator.eq) {
                     Path<Object> path = from.get(filter.getName());
                     Class<?> pathc = path.getJavaType();
                     if (pathc.isAssignableFrom(String.class)) {
@@ -305,19 +306,19 @@ public abstract class AbstractJpaStorage {
                     } else if (pathc.isEnum()) {
                         predicates.add(builder.equal(path, Enum.valueOf((Class)pathc, filter.getValue())));
                     }
-                } else if (filter.getOperator().intern() == SearchCriteriaFilterBean.OPERATOR_BOOL_EQ) {
+                } else if (filter.getOperator() == SearchCriteriaFilterOperator.bool_eq) {
                     predicates.add(builder.equal(from.<Boolean>get(filter.getName()), Boolean.valueOf(filter.getValue())));
-                } else if (filter.getOperator().intern() == SearchCriteriaFilterBean.OPERATOR_GT) {
+                } else if (filter.getOperator() == SearchCriteriaFilterOperator.gt) {
                     predicates.add(builder.greaterThan(from.<Long>get(filter.getName()), new Long(filter.getValue())));
-                } else if (filter.getOperator().intern() == SearchCriteriaFilterBean.OPERATOR_GTE) {
+                } else if (filter.getOperator() == SearchCriteriaFilterOperator.gte) {
                     predicates.add(builder.greaterThanOrEqualTo(from.<Long>get(filter.getName()), new Long(filter.getValue())));
-                } else if (filter.getOperator().intern() == SearchCriteriaFilterBean.OPERATOR_LT) {
+                } else if (filter.getOperator() == SearchCriteriaFilterOperator.lt) {
                     predicates.add(builder.lessThan(from.<Long>get(filter.getName()), new Long(filter.getValue())));
-                } else if (filter.getOperator().intern() == SearchCriteriaFilterBean.OPERATOR_LTE) {
+                } else if (filter.getOperator() == SearchCriteriaFilterOperator.lte) {
                     predicates.add(builder.lessThanOrEqualTo(from.<Long>get(filter.getName()), new Long(filter.getValue())));
-                } else if (filter.getOperator().intern() == SearchCriteriaFilterBean.OPERATOR_NEQ) {
+                } else if (filter.getOperator() == SearchCriteriaFilterOperator.neq) {
                     predicates.add(builder.notEqual(from.get(filter.getName()), filter.getValue()));
-                } else if (filter.getOperator().intern() == SearchCriteriaFilterBean.OPERATOR_LIKE) {
+                } else if (filter.getOperator() == SearchCriteriaFilterOperator.like) {
                     predicates.add(builder.like(builder.upper(from.<String>get(filter.getName())), filter.getValue().toUpperCase().replace('*', '%')));
                 }
             }

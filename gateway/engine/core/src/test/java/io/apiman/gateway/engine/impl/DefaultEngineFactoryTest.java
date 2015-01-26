@@ -39,6 +39,7 @@ import io.apiman.gateway.engine.beans.ServiceResponse;
 import io.apiman.gateway.engine.beans.exceptions.ConnectorException;
 import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.gateway.engine.io.ISignalWriteStream;
+import io.apiman.gateway.engine.util.PassthroughPolicy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +53,7 @@ import org.mockito.InOrder;
 /**
  * Unit test for the default engine factory.
  */
-@SuppressWarnings("nls")
+@SuppressWarnings({"nls", "unchecked"})
 public class DefaultEngineFactoryTest {
 
     private List<Policy> policyList;
@@ -65,7 +66,6 @@ public class DefaultEngineFactoryTest {
     private MockServiceConnection mockServiceConnection;
     private MockServiceConnectionResponse mockServiceConnectionResponse;
     
-    @SuppressWarnings("unchecked")
     @Before
     public void setup() {
         Policy policyBean = mock(Policy.class);
@@ -78,7 +78,7 @@ public class DefaultEngineFactoryTest {
         mockBufferOutbound = mock(IApimanBuffer.class);
         given(mockBufferOutbound.toString()).willReturn("bacon");
 
-        policyList = new ArrayList<Policy>();   
+        policyList = new ArrayList<>();   
         policyList.add(policyBean);
         
         mockBodyHandler = (IAsyncHandler<IApimanBuffer>) mock(IAsyncHandler.class);
@@ -105,7 +105,6 @@ public class DefaultEngineFactoryTest {
                             /**
                              * @see io.apiman.gateway.engine.IServiceConnector#connect(io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.async.IAsyncResultHandler)
                              */
-                            @SuppressWarnings("unchecked")
                             @Override
                             public IServiceConnection connect(ServiceRequest request,
                                     IAsyncResultHandler<IServiceConnectionResponse> handler)
@@ -192,8 +191,16 @@ public class DefaultEngineFactoryTest {
         app.addContract(contract);
         
         // simple service/app config
-        engine.publishService(service);
-        engine.registerApplication(app);
+        engine.getRegistry().publishService(service, new IAsyncResultHandler<Void>() {
+            @Override
+            public void handle(IAsyncResult<Void> result) {
+            }
+        });
+        engine.getRegistry().registerApplication(app, new IAsyncResultHandler<Void>() {
+            @Override
+            public void handle(IAsyncResult<Void> result) {
+            }
+        });
         
         ServiceRequest request = new ServiceRequest();
         request.setApiKey("12345");

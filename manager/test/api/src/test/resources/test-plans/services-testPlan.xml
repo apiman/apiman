@@ -77,4 +77,17 @@
     <test name="Service Version Activity">test-plan-data/services/auditing/002_version_activity.resttest</test>
   </testGroup>
 
+  <!-- Service Definitions -->
+  <testGroup name="Service Definitions">
+    <test name="Add Service Definition">test-plan-data/services/definitions/001_add-service-definition.resttest</test>
+    <test name="Get Version 2.0 (def)">test-plan-data/services/definitions/002_get-version-2.0.resttest</test>
+    <test name="Get Service Definition">test-plan-data/services/definitions/003_get-service-definition.resttest</test>
+    <test name="Delete Service Definition">test-plan-data/services/definitions/004_delete-service-definition.resttest</test>
+    <test name="Get Service Definition (404)">test-plan-data/services/definitions/005_get-service-definition-2.0-404.resttest</test>
+    <test name="Get Service Definition (404)">test-plan-data/services/definitions/006_get-service-definition-1.0-404.resttest</test>
+    <test name="Add Service Definition (WSDL)">test-plan-data/services/definitions/007_add-service-definition-wsdl.resttest</test>
+    <test name="Get Version 2.0 (def) (WSDL)">test-plan-data/services/definitions/008_get-version-2.0-wsdl.resttest</test>
+    <test name="Get Service Definition (WSDL)">test-plan-data/services/definitions/009_get-service-definition-wsdl.resttest</test>
+  </testGroup>
+
 </testPlan>

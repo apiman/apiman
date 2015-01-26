@@ -26,6 +26,7 @@ import org.jboss.errai.ui.nav.client.local.Page;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextArea;
 
 
@@ -41,6 +42,8 @@ public class ServiceEndpointPage extends AbstractServicePage {
 
     @Inject @DataField
     TextArea mangedEndpoint;
+    @Inject @DataField
+    Label notPublicWarning;
 
     ServiceVersionEndpointSummaryBean endpointBean;
     
@@ -85,6 +88,7 @@ public class ServiceEndpointPage extends AbstractServicePage {
     protected void renderPage() {
         super.renderPage();
         this.mangedEndpoint.setValue(endpointBean.getManagedEndpoint());
+        notPublicWarning.setVisible(!versionBean.isPublicService());
     }
 
     /**

@@ -26,17 +26,18 @@ import org.junit.Test;
  *
  * @author eric.wittmann@redhat.com
  */
+@SuppressWarnings("nls")
 public class AllTest extends AbstractTestPlanTest {
 
     private static final String EXPECTED_GATEWAY_LOG = 
-            "GET:/mock-gateway/system/status\n" +  //$NON-NLS-1$
-            "PUT:/mock-gateway/services\n" + //$NON-NLS-1$
-            "GET:/mock-gateway/system/status\n" +  //$NON-NLS-1$
-            "PUT:/mock-gateway/applications\n"; //$NON-NLS-1$
+            "GET:/mock-gateway/system/status\n" + 
+            "PUT:/mock-gateway/services\n" +
+            "GET:/mock-gateway/system/status\n" + 
+            "PUT:/mock-gateway/applications\n";
 
     @Test
     public void test() {
-        runTestPlan("test-plans/all-testPlan.xml", AllTest.class.getClassLoader()); //$NON-NLS-1$
+        runTestPlan("test-plans/all-testPlan.xml", AllTest.class.getClassLoader());
 
         // This test includes publishing of a service to the gateway REST API.  The
         // test framework incldues a mock gateway API to test that the REST calls were

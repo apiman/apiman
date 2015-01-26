@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.api.rest.impl.util;
 
+import io.apiman.common.plugin.PluginCoordinates;
 import io.apiman.manager.api.rest.contract.exceptions.ActionException;
 import io.apiman.manager.api.rest.contract.exceptions.ApplicationAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.ApplicationNotFoundException;
@@ -34,6 +35,7 @@ import io.apiman.manager.api.rest.contract.exceptions.PlanNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.PlanVersionNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.PluginAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.PluginNotFoundException;
+import io.apiman.manager.api.rest.contract.exceptions.PluginResourceNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.PolicyDefinitionAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.PolicyDefinitionInvalidException;
 import io.apiman.manager.api.rest.contract.exceptions.PolicyDefinitionNotFoundException;
@@ -41,6 +43,7 @@ import io.apiman.manager.api.rest.contract.exceptions.PolicyNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.RoleAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.RoleNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.ServiceAlreadyExistsException;
+import io.apiman.manager.api.rest.contract.exceptions.ServiceDefinitionNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.ServiceNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.ServiceVersionNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.UserNotFoundException;
@@ -172,6 +175,14 @@ public final class ExceptionFactory {
     }
 
     /**
+     * Creates an exception from an service id and version.
+     * @param serviceId
+     */
+    public static final ServiceDefinitionNotFoundException serviceDefinitionNotFoundException(String serviceId, String version) {
+        return new ServiceDefinitionNotFoundException(Messages.i18n.format("ServiceDefinitionDoesNotExist", serviceId, version)); //$NON-NLS-1$
+    }
+
+    /**
      * Creates an invalid service status exception.
      */
     public static final InvalidServiceStatusException invalidServiceStatusException() {
@@ -296,6 +307,17 @@ public final class ExceptionFactory {
      */
     public static final PluginNotFoundException pluginNotFoundException(Long pluginId) {
         return new PluginNotFoundException(Messages.i18n.format("PluginDoesNotExist", pluginId)); //$NON-NLS-1$
+    }
+
+    /**
+     * Creates an exception.
+     * @param resourceName
+     * @param coordinates
+     */
+    public static final PluginResourceNotFoundException pluginResourceNotFoundException(String resourceName,
+            PluginCoordinates coordinates) {
+        return new PluginResourceNotFoundException(Messages.i18n.format(
+                "PluginResourceNotFound", resourceName, coordinates.toString())); //$NON-NLS-1$
     }
 
 }

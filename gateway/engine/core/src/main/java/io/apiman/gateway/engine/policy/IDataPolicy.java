@@ -29,7 +29,7 @@ import io.apiman.gateway.engine.io.IReadWriteStream;
  *
  * @author eric.wittmann@redhat.com
  */
-public interface IDataPolicy {
+public interface IDataPolicy extends IPolicy {
 
     /**
      * This method should return a stream that will be used when piping the request data

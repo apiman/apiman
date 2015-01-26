@@ -16,10 +16,10 @@
 package io.apiman.gateway.vertx.api;
 
 import io.apiman.gateway.engine.IEngine;
+import io.apiman.gateway.engine.async.IAsyncResult;
+import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.Application;
 import io.apiman.gateway.engine.beans.Service;
-import io.apiman.gateway.engine.beans.exceptions.PublishingException;
-import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
 import io.apiman.gateway.vertx.config.VertxEngineConfig;
 import io.netty.handler.codec.http.HttpResponseStatus;
 
@@ -57,23 +57,27 @@ public class ApiListener {
                 new ApiCatchHandler<String>() {
 
             @Override
-            protected void handleApi(Message<String> message) {
-                try {
-                    Application application = Json.decodeValue(message.body(), Application.class);
-                    engine.registerApplication(application);
-                    // Signal that everything seems OK
-                    replyOk(message);
-                    //logger.debug(("registered app " + application.getApplicationId());
-                    //logger.debug(("with contract(s): ");
+            protected void handleApi(final Message<String> message) {
+                Application application = Json.decodeValue(message.body(), Application.class);
+                engine.getRegistry().registerApplication(application, new IAsyncResultHandler<Void>() {
+                    @Override
+                    public void handle(IAsyncResult<Void> result) {
+                        if (result.isSuccess()) {
+                            // Signal that everything seems OK
+                            replyOk(message);
+                        } else {
+                            Throwable e = result.getError();
+                            replyError(message, new GenericError(HttpResponseStatus.NOT_FOUND.code(),
+                                    e.getLocalizedMessage(), e));
+                        }
+                    }
+                });
+                //logger.debug(("registered app " + application.getApplicationId());
+                //logger.debug(("with contract(s): ");
 
-                    // for(Contract c : application.getContracts()) {
-                    //     logger.debug(("API KEY = "  + c.getApiKey());
-                    // }
-
-                } catch (RegistrationException e) {
-                    replyError(message, new GenericError(HttpResponseStatus.NOT_FOUND.code(),
-                            e.getLocalizedMessage(), e));
-                }
+                // for(Contract c : application.getContracts()) {
+                //     logger.debug(("API KEY = "  + c.getApiKey());
+                // }
             };
         });
 
@@ -81,19 +85,28 @@ public class ApiListener {
         eb.registerHandler(uuid + VertxEngineConfig.APIMAN_API_APPLICATIONS_DELETE,
                 new ApiCatchHandler<JsonObject>() {
 
-            protected void handleApi(Message<JsonObject> message) {
+            protected void handleApi(final Message<JsonObject> message) {
                 JsonObject json = message.body();
-
-                try {
-                    engine.unregisterApplication(json.getString("organizationId"), //$NON-NLS-1$
-                            json.getString("applicationId"), //$NON-NLS-1$
-                            json.getString("version")); //$NON-NLS-1$
-                    //logger.debug(("Deleted app");
-                    replyOk(message);
-                } catch (RegistrationException e) {
-                    replyError(message, new GenericError(HttpResponseStatus.NOT_FOUND.code(),
-                            e.getLocalizedMessage(), e));
-                }
+                String orgId = json.getString("organizationId"); //$NON-NLS-1$
+                String appId = json.getString("applicationId"); //$NON-NLS-1$
+                String version = json.getString("version"); //$NON-NLS-1$
+                Application app = new Application();
+                app.setOrganizationId(orgId);
+                app.setApplicationId(appId);
+                app.setVersion(version);
+                engine.getRegistry().unregisterApplication(app, new IAsyncResultHandler<Void>() {
+                    @Override
+                    public void handle(IAsyncResult<Void> result) {
+                        if (result.isSuccess()) {
+                            replyOk(message);
+                        } else {
+                            Throwable e = result.getError();
+                            replyError(message, new GenericError(HttpResponseStatus.NOT_FOUND.code(),
+                                    e.getLocalizedMessage(), e));
+                        }
+                    }
+                });
+                //logger.debug(("Deleted app");
             };
         });
 
@@ -102,18 +115,21 @@ public class ApiListener {
                 new ApiCatchHandler<String>() {
 
             @Override
-            public void handleApi(Message<String> message) {
+            public void handleApi(final Message<String> message) {
                 Service service = Json.decodeValue(message.body(), Service.class);
-
-                try {
-                    engine.publishService(service);
-                    //logger.debug(("registered service " + service.getEndpointType());
-                    replyOk(message);
-                } catch (PublishingException e) {
-                    replyError(message, new GenericError(HttpResponseStatus.CONFLICT.code(),
-                            e.getLocalizedMessage(), e));
-                }
-
+                engine.getRegistry().publishService(service, new IAsyncResultHandler<Void>() {
+                    @Override
+                    public void handle(IAsyncResult<Void> result) {
+                        if (result.isSuccess()) {
+                            replyOk(message);
+                        } else {
+                            Throwable e = result.getError();
+                            replyError(message, new GenericError(HttpResponseStatus.CONFLICT.code(),
+                                    e.getLocalizedMessage(), e));
+                        }
+                    }
+                });
+                //logger.debug(("registered service " + service.getEndpointType());
             };
         });
 
@@ -121,19 +137,27 @@ public class ApiListener {
         eb.registerHandler(uuid + VertxEngineConfig.APIMAN_API_SERVICES_DELETE,
                 new ApiCatchHandler<JsonObject>() {
 
-            public void handleApi(Message<JsonObject> message) {
+            public void handleApi(final Message<JsonObject> message) {
                 JsonObject json = message.body();
-
-                //logger.debug(("retiring service " + json);
-                try {
-                    engine.retireService(json.getString("organizationId"), //$NON-NLS-1$
-                            json.getString("serviceId"), //$NON-NLS-1$
-                            json.getString("version")); //$NON-NLS-1$
-                    replyOk(message);
-                } catch (PublishingException e) {
-                    replyError(message, new GenericError(HttpResponseStatus.NOT_FOUND.code(),
-                            e.getLocalizedMessage(), e));
-                }
+                String orgId = json.getString("organizationId"); //$NON-NLS-1$
+                String svcId = json.getString("serviceId"); //$NON-NLS-1$
+                String version = json.getString("version"); //$NON-NLS-1$
+                Service service = new Service();
+                service.setOrganizationId(orgId);
+                service.setServiceId(svcId);
+                service.setVersion(version);
+                engine.getRegistry().retireService(service, new IAsyncResultHandler<Void>() {
+                    @Override
+                    public void handle(IAsyncResult<Void> result) {
+                        if (result.isSuccess()) {
+                            replyOk(message);
+                        } else {
+                            Throwable e = result.getError();
+                            replyError(message, new GenericError(HttpResponseStatus.NOT_FOUND.code(),
+                                    e.getLocalizedMessage(), e));
+                        }
+                    }
+                });
             };
         });
     }

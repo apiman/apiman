@@ -1,0 +1,15 @@
+GET /plugins/${plugin-id}/policyDefs admin/admin
+----
+200
+Content-Type: application/json
+
+[
+  {
+    "description" : "A policy used to showcase policy configuration.",
+    "formType" : "JsonSchema",
+    "icon" : "sliders",
+    "id" : "config-policy",
+    "name" : "Config Policy",
+    "policyImpl" : "plugin:io.apiman.plugins:apiman-plugins-config-policy:1.0.2-SNAPSHOT:war/io.apiman.plugins.config_policy.ConfigPolicy"
+  }
+]

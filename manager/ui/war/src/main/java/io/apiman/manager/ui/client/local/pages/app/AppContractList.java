@@ -21,9 +21,8 @@ import io.apiman.manager.ui.client.local.events.BreakContractEvent;
 import io.apiman.manager.ui.client.local.events.BreakContractEvent.Handler;
 import io.apiman.manager.ui.client.local.events.BreakContractEvent.HasBreakContractHandlers;
 import io.apiman.manager.ui.client.local.events.ConfirmationEvent;
-import io.apiman.manager.ui.client.local.pages.OrgServicesPage;
-import io.apiman.manager.ui.client.local.pages.PlanOverviewPage;
-import io.apiman.manager.ui.client.local.pages.ServiceOverviewPage;
+import io.apiman.manager.ui.client.local.pages.ConsumerOrgPage;
+import io.apiman.manager.ui.client.local.pages.ConsumerServicePage;
 import io.apiman.manager.ui.client.local.pages.common.NoEntitiesWidget;
 import io.apiman.manager.ui.client.local.services.NavigationHelperService;
 import io.apiman.manager.ui.client.local.util.Formatting;
@@ -191,7 +190,7 @@ public class AppContractList extends FlowPanel implements HasValue<List<Contract
         
         Anchor org = new Anchor(bean.getServiceOrganizationName());
         col.add(org);
-        org.setHref(navHelper.createHrefToPage(OrgServicesPage.class, MultimapUtil.fromMultiple("org", bean.getServiceOrganizationId()))); //$NON-NLS-1$
+        org.setHref(navHelper.createHrefToPage(ConsumerOrgPage.class, MultimapUtil.fromMultiple("org", bean.getServiceOrganizationId()))); //$NON-NLS-1$
         InlineLabel divider = new InlineLabel(" / "); //$NON-NLS-1$
         col.add(divider);
         SpanPanel sp = new SpanPanel();
@@ -199,7 +198,7 @@ public class AppContractList extends FlowPanel implements HasValue<List<Contract
         sp.getElement().setClassName("title"); //$NON-NLS-1$
         Anchor a = new Anchor(bean.getServiceName());
         sp.add(a);
-        a.setHref(navHelper.createHrefToPage(ServiceOverviewPage.class,
+        a.setHref(navHelper.createHrefToPage(ConsumerServicePage.class,
                 MultimapUtil.fromMultiple("org", bean.getServiceOrganizationId(), "service", bean.getServiceId()))); //$NON-NLS-1$ //$NON-NLS-2$
 
         FlowPanel versionAndPlan = new FlowPanel();
@@ -210,15 +209,15 @@ public class AppContractList extends FlowPanel implements HasValue<List<Contract
         versionAndPlan.add(sp);
         a = new Anchor(bean.getServiceVersion());
         sp.add(a);
-        a.setHref(navHelper.createHrefToPage(ServiceOverviewPage.class,
+        a.setHref(navHelper.createHrefToPage(ConsumerServicePage.class,
                 MultimapUtil.fromMultiple("org", bean.getServiceOrganizationId(), "service", bean.getServiceId(), "version", bean.getServiceVersion()))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         versionAndPlan.add(new InlineLabel(" " + i18n.format(AppMessages.VIA_PLAN) + " ")); //$NON-NLS-1$ //$NON-NLS-2$
         sp = new SpanPanel();
         versionAndPlan.add(sp);
         a = new Anchor(bean.getPlanName());
         sp.add(a);
-        a.setHref(navHelper.createHrefToPage(PlanOverviewPage.class,
-                MultimapUtil.fromMultiple("org", bean.getServiceOrganizationId(), "plan", bean.getPlanId(), "version", bean.getPlanVersion()))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+//        a.setHref(navHelper.createHrefToPage(PlanOverviewPage.class,
+//                MultimapUtil.fromMultiple("org", bean.getServiceOrganizationId(), "plan", bean.getPlanId(), "version", bean.getPlanVersion()))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         versionAndPlan.add(new InlineLabel(" " + i18n.format(AppMessages.ENTERED_INTO_ON) + " ")); //$NON-NLS-1$ //$NON-NLS-2$
         FontAwesomeIcon icon = new FontAwesomeIcon("clock-o", true); //$NON-NLS-1$
         versionAndPlan.add(icon);

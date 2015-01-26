@@ -4,7 +4,7 @@
   <parent>
     <groupId>io.apiman</groupId>
     <artifactId>apiman-manager-test</artifactId>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.1.0-SNAPSHOT</version>
   </parent>
   <artifactId>apiman-manager-test-api</artifactId>
   <name>apiman-manager-test-api</name>
@@ -50,6 +50,10 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-manager-api-jpa-idm</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-manager-api-es</artifactId>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
@@ -141,6 +145,10 @@
     </dependency>
 
     <!-- Required Third Party Libs -->
+    <dependency>
+      <groupId>org.elasticsearch</groupId>
+      <artifactId>elasticsearch</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jaxrs</artifactId>

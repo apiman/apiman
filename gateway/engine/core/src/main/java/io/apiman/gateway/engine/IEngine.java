@@ -16,11 +16,7 @@
 package io.apiman.gateway.engine;
 
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
-import io.apiman.gateway.engine.beans.Application;
-import io.apiman.gateway.engine.beans.Service;
 import io.apiman.gateway.engine.beans.ServiceRequest;
-import io.apiman.gateway.engine.beans.exceptions.PublishingException;
-import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
 import io.apiman.gateway.engine.impl.EngineResultImpl;
 
 /**
@@ -46,37 +42,11 @@ public interface IEngine {
      *            exception is captured.
      */
     IServiceRequestExecutor executor(ServiceRequest request, IAsyncResultHandler<IEngineResult> resultHandler);
-
+    
     /**
-     * Publishes a new {@link Service}.
-     * @param service the service being published
-     * @throws PublishingException
+     * Returns the registry that can be used to publish/retire services and
+     * register/unregister applications.
      */
-    void publishService(Service service) throws PublishingException;
+    IRegistry getRegistry();
 
-    /**
-     * Retires (removes) a {@link Service} from the registry.
-     * @param organizationId
-     * @param serviceId
-     * @param version
-     * @throws PublishingException
-     */
-    void retireService(String organizationId, String serviceId, String version) throws PublishingException;
-
-    /**
-     * Registers a new {@link Application}.  An application is ultimately a collection of
-     * contracts to managed services.
-     * @param application the application being registered
-     * @throws PublishingException
-     */
-    void registerApplication(Application application) throws RegistrationException;
-
-    /**
-     * Removes an {@link Application} from the registry.
-     * @param organizationId
-     * @param applicationId
-     * @param version
-     * @throws RegistrationException
-     */
-    void unregisterApplication(String organizationId, String applicationId, String version) throws RegistrationException;
 }

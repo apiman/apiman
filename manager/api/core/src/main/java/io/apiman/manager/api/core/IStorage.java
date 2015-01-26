@@ -20,16 +20,19 @@ import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
-import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.beans.plans.PlanBean;
 import io.apiman.manager.api.beans.plans.PlanVersionBean;
 import io.apiman.manager.api.beans.plugins.PluginBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
+import io.apiman.manager.api.beans.policies.PolicyType;
 import io.apiman.manager.api.beans.services.ServiceBean;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
 import io.apiman.manager.api.core.exceptions.StorageException;
+
+import java.io.InputStream;
+import java.util.List;
 
 /**
  * Represents the persistent storage interface for Apiman DT.
@@ -62,7 +65,6 @@ public interface IStorage {
     public void createGateway(GatewayBean gateway) throws StorageException;
     public void createPlugin(PluginBean plugin) throws StorageException;
     public void createPolicyDefinition(PolicyDefinitionBean policyDef) throws StorageException;
-    public void createRole(RoleBean role) throws StorageException;
     public void createAuditEntry(AuditEntryBean entry) throws StorageException;
 
     /*
@@ -72,15 +74,14 @@ public interface IStorage {
     public void updateOrganization(OrganizationBean organization) throws StorageException;
     public void updateApplication(ApplicationBean application) throws StorageException;
     public void updateApplicationVersion(ApplicationVersionBean version) throws StorageException;
-    public void updateContract(ContractBean contract) throws StorageException;
     public void updateService(ServiceBean service) throws StorageException;
     public void updateServiceVersion(ServiceVersionBean version) throws StorageException;
+    public void updateServiceDefinition(ServiceVersionBean version, InputStream definitionStream) throws StorageException;
     public void updatePlan(PlanBean plan) throws StorageException;
     public void updatePlanVersion(PlanVersionBean version) throws StorageException;
     public void updatePolicy(PolicyBean policy) throws StorageException;
     public void updateGateway(GatewayBean gateway) throws StorageException;
     public void updatePolicyDefinition(PolicyDefinitionBean policyDef) throws StorageException;
-    public void updateRole(RoleBean role) throws StorageException;
 
     /*
      * Various delete methods.  These are called by the REST layer to delete stuff.
@@ -92,13 +93,13 @@ public interface IStorage {
     public void deleteContract(ContractBean contract) throws StorageException;
     public void deleteService(ServiceBean service) throws StorageException;
     public void deleteServiceVersion(ServiceVersionBean version) throws StorageException;
+    public void deleteServiceDefinition(ServiceVersionBean version) throws StorageException;
     public void deletePlan(PlanBean plan) throws StorageException;
     public void deletePlanVersion(PlanVersionBean version) throws StorageException;
     public void deletePolicy(PolicyBean policy) throws StorageException;
     public void deleteGateway(GatewayBean gateway) throws StorageException;
     public void deletePlugin(PluginBean plugin) throws StorageException;
     public void deletePolicyDefinition(PolicyDefinitionBean policyDef) throws StorageException;
-    public void deleteRole(RoleBean role) throws StorageException;
 
     /*
      * Various get methods.  These are called by the REST layer to get stuff.
@@ -110,13 +111,18 @@ public interface IStorage {
     public ContractBean getContract(Long id) throws StorageException;
     public ServiceBean getService(String organizationId, String id) throws StorageException;
     public ServiceVersionBean getServiceVersion(String organizationId, String serviceId, String version) throws StorageException;
+    public InputStream getServiceDefinition(ServiceVersionBean serviceVersion) throws StorageException;
     public PlanBean getPlan(String organizationId, String id) throws StorageException;
     public PlanVersionBean getPlanVersion(String organizationId, String planId, String version) throws StorageException;
-    public PolicyBean getPolicy(Long id) throws StorageException;
+    public PolicyBean getPolicy(PolicyType type, String organizationId, String entityId, String version, Long id) throws StorageException;
     public GatewayBean getGateway(String id) throws StorageException;
     public PluginBean getPlugin(long id) throws StorageException;
     public PluginBean getPlugin(String groupId, String artifactId) throws StorageException;
     public PolicyDefinitionBean getPolicyDefinition(String id) throws StorageException;
-    public RoleBean getRole(String id) throws StorageException;
 
+    /*
+     * Anything that doesn't fall into the above categories!
+     */
+    public void reorderPolicies(PolicyType type, String organizationId, String entityId,
+            String entityVersion, List<Long> newOrder) throws StorageException;
 }

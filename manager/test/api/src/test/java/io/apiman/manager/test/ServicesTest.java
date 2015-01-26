@@ -27,7 +27,7 @@ import org.junit.Test;
  * @author eric.wittmann@redhat.com
  */
 public class ServicesTest extends AbstractTestPlanTest {
-
+    
     private static final String EXPECTED_GATEWAY_LOG = 
             "GET:/mock-gateway/system/status\n" +  //$NON-NLS-1$
             "PUT:/mock-gateway/services\n"; //$NON-NLS-1$

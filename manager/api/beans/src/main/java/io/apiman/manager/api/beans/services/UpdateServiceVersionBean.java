@@ -35,7 +35,7 @@ public class UpdateServiceVersionBean implements Serializable {
     private String endpoint;
     private EndpointType endpointType;
     private Set<ServiceGatewayBean> gateways;
-    private boolean publicService;
+    private Boolean publicService;
     private Set<ServicePlanBean> plans;
     
     /**
@@ -89,14 +89,14 @@ public class UpdateServiceVersionBean implements Serializable {
     /**
      * @return the publicService
      */
-    public boolean isPublicService() {
+    public Boolean getPublicService() {
         return publicService;
     }
 
     /**
      * @param publicService the publicService to set
      */
-    public void setPublicService(boolean publicService) {
+    public void setPublicService(Boolean publicService) {
         this.publicService = publicService;
     }
 

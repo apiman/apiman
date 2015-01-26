@@ -19,9 +19,12 @@ package io.apiman.manager.api.rest.contract;
 import io.apiman.manager.api.beans.plugins.NewPluginBean;
 import io.apiman.manager.api.beans.plugins.PluginBean;
 import io.apiman.manager.api.beans.summary.PluginSummaryBean;
+import io.apiman.manager.api.beans.summary.PolicyDefinitionSummaryBean;
 import io.apiman.manager.api.rest.contract.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.contract.exceptions.PluginAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.PluginNotFoundException;
+import io.apiman.manager.api.rest.contract.exceptions.PluginResourceNotFoundException;
+import io.apiman.manager.api.rest.contract.exceptions.PolicyDefinitionNotFoundException;
 
 import java.util.List;
 
@@ -103,5 +106,43 @@ public interface IPluginResource {
     @Path("{pluginId}")
     public void delete(@PathParam("pluginId") Long pluginId)
             throws PluginNotFoundException, NotAuthorizedException;
+
+    /**
+     * Use this endpoint to get a list of all policy definitions contributed by the plugin.
+     * @summary Get Plugin Policy Definitions
+     * @param pluginId The plugin ID.
+     * @statuscode 200 If the list of policy definitions is returned successfully.
+     * @statuscode 404 If the plugin does not exist.
+     * @return A list of policy definitions.
+     * @throws PluginNotFoundException
+     */
+    @GET
+    @Path("{pluginId}/policyDefs")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<PolicyDefinitionSummaryBean> getPolicyDefs(@PathParam("pluginId") Long pluginId)
+            throws PluginNotFoundException;
+    
+    /**
+     * Use this endpoint to retrieve the form associated with a particular policy
+     * definition.  Plugins may contribute policy definitions to apiman.  Part of that
+     * contribution *may* include a form for the UI to display when configuring an 
+     * instance of the policy.  This endpoint returns this form.
+     * @summary Get Plugin Policy Form
+     * @param pluginId The plugin ID.
+     * @param policyDefId The policy definition ID.
+     * @statuscode 200 If the form is returned successfully.
+     * @statuscode 404 If the plugin does not exist.
+     * @statuscode 404 If the policy definition does not exist.
+     * @statuscode 404 If the form does not exist.
+     * @return A policy configuration form.
+     * @throws PluginNotFoundException
+     * @throws PluginResourceNotFoundException
+     */
+    @GET
+    @Path("{pluginId}/policyDefs/{policyDefId}/form")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getPolicyForm(@PathParam("pluginId") Long pluginId,
+            @PathParam("policyDefId") String policyDefId) throws PluginNotFoundException,
+            PolicyDefinitionNotFoundException, PluginResourceNotFoundException;
 
 }

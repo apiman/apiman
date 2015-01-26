@@ -88,6 +88,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  * The Organization API.
@@ -790,6 +791,28 @@ public interface IOrganizationResource {
     public ServiceVersionBean getServiceVersion(@PathParam("organizationId") String organizationId,
             @PathParam("serviceId") String serviceId, @PathParam("version") String version)
             throws ServiceVersionNotFoundException, NotAuthorizedException;
+    
+    /**
+     * Use this endpoint to retrieve the Service's definition document.  A service
+     * definition document can be several different types, depending on the Service
+     * type and technology used to define the service.  For example, this endpoint
+     * might return a WSDL document, or a Swagger JSON document.
+     * @summary Get Service Definition
+     * @param organizationId The Organization ID.
+     * @param serviceId The Service ID.
+     * @param version The Service version.
+     * @statuscode 200 If the Service definition is successfully returned.
+     * @statuscode 404 If the Service version does not exist.
+     * @return The Service Definition document (e.g. a Swagger JSON file).
+     * @throws ServiceVersionNotFoundException
+     * @throws NotAuthorizedException
+     */
+    @GET
+    @Path("{organizationId}/services/{serviceId}/versions/{version}/definition")
+    @Produces({ MediaType.APPLICATION_JSON, "application/wsdl+xml", "application/x-yaml" })
+    public Response getServiceDefinition(@PathParam("organizationId") String organizationId,
+            @PathParam("serviceId") String serviceId, @PathParam("version") String version)
+            throws ServiceVersionNotFoundException, NotAuthorizedException;
 
     /**
      * Use this endpoint to get information about the Managed Service's gateway 
@@ -833,6 +856,47 @@ public interface IOrganizationResource {
             @PathParam("serviceId") String serviceId, @PathParam("version") String version,
             UpdateServiceVersionBean bean) throws ServiceVersionNotFoundException, NotAuthorizedException,
             InvalidServiceStatusException;
+
+    /**
+     * Use this endpoint to update the Service's definition document.  A service 
+     * definition will vary depending on the type of service, and the type of 
+     * definition used.  For example, it might be a Swagger document or a WSDL file.
+     * To use this endpoint, simply PUT the updated Service Definition document
+     * in its entirety, making sure to set the Content-Type appropriately for the
+     * type of definition document.  The content will be stored and the Service's
+     * "Definition Type" field will be updated.
+     * <br />
+     * Whenever a service's definition is updated, the "definitionType" property of
+     * that service is automatically set based on the request Content-Type.  There
+     * is no other way to set the service's definition type property.  The following 
+     * is a map of Content-Type to service definition type.
+     * 
+     * <table>
+     *   <thead>
+     *     <tr><th>Content Type</th><th>Service Definition Type</th></tr>
+     *   </thead>
+     *   <tbody>
+     *     <tr><td>application/json</td><td>SwaggerJSON</td></tr>
+     *     <tr><td>application/x-yaml</td><td>SwaggerYAML</td></tr>
+     *     <tr><td>application/wsdl+xml</td><td>WSDL</td></tr>
+     *   </tbody>
+     * </table>
+     * @summary Update Service Definition
+     * @param organizationId The Organization ID.
+     * @param serviceId The Service ID.
+     * @param version The Service version.
+     * @statuscode 204 If the Service definition was successfully updated.
+     * @statuscode 404 If the Service does not exist.
+     * @throws ServiceVersionNotFoundException
+     * @throws NotAuthorizedException
+     * @throws InvalidServiceStatusException
+     */
+    @PUT
+    @Path("{organizationId}/services/{serviceId}/versions/{version}/definition")
+    @Consumes({ MediaType.APPLICATION_JSON, "application/wsdl+xml", "application/x-yaml" })
+    public void updateServiceDefinition(@PathParam("organizationId") String organizationId,
+            @PathParam("serviceId") String serviceId, @PathParam("version") String version) 
+            throws ServiceVersionNotFoundException, NotAuthorizedException, InvalidServiceStatusException;
 
     /**
      * Use this endpoint to get audit activity information for a single version of the
@@ -968,6 +1032,26 @@ public interface IOrganizationResource {
             @PathParam("serviceId") String serviceId, @PathParam("version") String version,
             @PathParam("policyId") long policyId) throws OrganizationNotFoundException, ServiceVersionNotFoundException,
             PolicyNotFoundException, NotAuthorizedException;
+
+    /**
+     * Use this endpoint to delete a Service's definition document.  When this 
+     * is done, the "definitionType" field on the Service will be set to None.
+     * @summary Remove Service Definition
+     * @param organizationId The Organization ID.
+     * @param serviceId The Service ID.
+     * @param version The Service version.
+     * @statuscode 204 If the Service definition was successfully deleted.
+     * @statuscode 404 If the Service does not exist.
+     * @throws OrganizationNotFoundException
+     * @throws ServiceVersionNotFoundException
+     * @throws NotAuthorizedException
+     */
+    @DELETE
+    @Path("{organizationId}/services/{serviceId}/versions/{version}/definition")
+    public void deleteServiceDefinition(@PathParam("organizationId") String organizationId,
+            @PathParam("serviceId") String serviceId, @PathParam("version") String version)
+            throws OrganizationNotFoundException, ServiceVersionNotFoundException,
+            NotAuthorizedException;
 
     /**
      * Use this endpoint to list all of the Policies configured for the Service.

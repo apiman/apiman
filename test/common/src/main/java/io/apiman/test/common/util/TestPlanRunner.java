@@ -245,7 +245,7 @@ public class TestPlanRunner {
                 assertJsonPayload(restTest, response);
             } else if (ct.equals("text/plain")) {
                 assertTextPayload(restTest, response);
-            } else if (ct.equals("application/xml")) {
+            } else if (ct.equals("application/xml") || ct.equals("application/wsdl+xml")) {
                 assertXmlPayload(restTest, response);
             } else {
                 Assert.fail("Unsupported response payload type: " + ct);

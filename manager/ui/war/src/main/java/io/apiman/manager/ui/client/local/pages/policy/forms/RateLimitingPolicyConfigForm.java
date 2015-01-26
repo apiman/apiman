@@ -65,6 +65,13 @@ public class RateLimitingPolicyConfigForm extends Composite implements IPolicyCo
     @Inject @DataField
     TextBox userHeader;
 
+    @Inject @DataField
+    TextBox limitHeader;
+    @Inject @DataField
+    TextBox remainingHeader;
+    @Inject @DataField
+    TextBox resetHeader;
+
     /**
      * Constructor.
      */
@@ -143,6 +150,19 @@ public class RateLimitingPolicyConfigForm extends Composite implements IPolicyCo
         if (header != null && !header.trim().isEmpty()) {
             config.setUserHeader(header);
         }
+        
+        String headerLimit = limitHeader.getValue();
+        String headerRemaining = remainingHeader.getValue();
+        String headerReset = resetHeader.getValue();
+        if (headerLimit != null && !headerLimit.trim().isEmpty()) {
+            config.setHeaderLimit(headerLimit);
+        }
+        if (headerRemaining != null && !headerRemaining.trim().isEmpty()) {
+            config.setHeaderRemaining(headerRemaining);
+        }
+        if (headerReset != null && !headerReset.trim().isEmpty()) {
+            config.setHeaderReset(headerReset);
+        }
         return marshaller.marshal(config);
     }
 
@@ -175,6 +195,10 @@ public class RateLimitingPolicyConfigForm extends Composite implements IPolicyCo
                 userHeader.setValue(config.getUserHeader());
                 showRow("userRow"); //$NON-NLS-1$
             }
+            
+            limitHeader.setValue(config.getHeaderLimit());
+            remainingHeader.setValue(config.getHeaderRemaining());
+            resetHeader.setValue(config.getHeaderReset());
         }
         checkValidity();
         if (fireEvents) {

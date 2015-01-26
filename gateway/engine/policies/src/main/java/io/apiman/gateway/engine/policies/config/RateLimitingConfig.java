@@ -32,6 +32,9 @@ public class RateLimitingConfig {
     private RateLimitingGranularity granularity;
     private RateLimitingPeriod period;
     private String userHeader;
+    private String headerRemaining;
+    private String headerLimit;
+    private String headerReset;
     
     /**
      * Constructor.
@@ -93,6 +96,48 @@ public class RateLimitingConfig {
      */
     public void setLimit(int limit) {
         this.limit = limit;
+    }
+
+    /**
+     * @return the headerRemaining
+     */
+    public String getHeaderRemaining() {
+        return headerRemaining;
+    }
+
+    /**
+     * @param headerRemaining the headerRemaining to set
+     */
+    public void setHeaderRemaining(String headerRemaining) {
+        this.headerRemaining = headerRemaining;
+    }
+
+    /**
+     * @return the headerLimit
+     */
+    public String getHeaderLimit() {
+        return headerLimit;
+    }
+
+    /**
+     * @param headerLimit the headerLimit to set
+     */
+    public void setHeaderLimit(String headerLimit) {
+        this.headerLimit = headerLimit;
+    }
+
+    /**
+     * @return the headerReset
+     */
+    public String getHeaderReset() {
+        return headerReset;
+    }
+
+    /**
+     * @param headerReset the headerReset to set
+     */
+    public void setHeaderReset(String headerReset) {
+        this.headerReset = headerReset;
     }
 
 }

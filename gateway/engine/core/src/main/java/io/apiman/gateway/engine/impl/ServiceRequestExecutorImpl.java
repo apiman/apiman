@@ -17,6 +17,7 @@ package io.apiman.gateway.engine.impl;
 
 import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.IEngineResult;
+import io.apiman.gateway.engine.IRegistry;
 import io.apiman.gateway.engine.IServiceConnection;
 import io.apiman.gateway.engine.IServiceConnectionResponse;
 import io.apiman.gateway.engine.IServiceConnector;
@@ -28,9 +29,13 @@ import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.Policy;
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.Service;
+import io.apiman.gateway.engine.beans.ServiceContract;
 import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.beans.ServiceResponse;
+import io.apiman.gateway.engine.beans.exceptions.InvalidContractException;
+import io.apiman.gateway.engine.beans.exceptions.InvalidServiceException;
 import io.apiman.gateway.engine.beans.exceptions.RequestAbortedException;
+import io.apiman.gateway.engine.i18n.Messages;
 import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.gateway.engine.io.ISignalWriteStream;
 import io.apiman.gateway.engine.policy.Chain;
@@ -66,6 +71,7 @@ import java.util.TreeSet;
  */
 public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
 
+    private IRegistry registry;
     private ServiceRequest request;
     private Service service;
     private IPolicyContext context;
@@ -90,32 +96,22 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
 
     /**
      * Constructs a new {@link ServiceRequestExecutorImpl}.
-     * @param serviceRequest
-     * @param resultHandler
-     * @param service
-     * @param context
-     * @param policies
-     * @param policyFactory 
-     * @param connectorFactory
      */
     public ServiceRequestExecutorImpl(ServiceRequest serviceRequest, 
             IAsyncResultHandler<IEngineResult> resultHandler,
-            Service service,
+            IRegistry registry,
             IPolicyContext context,
-            List<Policy> policies,
             IPolicyFactory policyFactory, 
             IConnectorFactory connectorFactory) {
 
         this.request = serviceRequest;
+        this.registry = registry;
         this.resultHandler = resultHandler;
-        this.service = service;
         this.context = context;
-        this.policies = policies;
         this.policyFactory = policyFactory;
         this.connectorFactory = connectorFactory;
         this.policyFailureHandler = createPolicyFailureHandler();
         this.policyErrorHandler = createPolicyErrorHandler();
-        this.policyImpls = new ArrayList<>(this.policies.size());
     }
 
     /**
@@ -123,7 +119,9 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
      */
     @Override
     public void execute() {
-        loadPolicies(new IAsyncHandler<List<PolicyWithConfiguration>>() {
+        // Create the handler that will be called once the policies are asynchronously
+        // loaded (can happen this way due to the plugin framework).
+        final IAsyncHandler<List<PolicyWithConfiguration>> policiesLoadedHandler = new IAsyncHandler<List<PolicyWithConfiguration>>() {
             @Override
             public void handle(List<PolicyWithConfiguration> result) {
                 policyImpls = result;
@@ -172,7 +170,85 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
                 requestChain.policyFailureHandler(policyFailureHandler);
                 requestChain.doApply(request);
             }
-        });
+        };
+        
+        // If no API Key provided - the service must be public.  If an API Key *is* provided
+        // then we lookup the Contract and use that.
+        if (request.getApiKey() == null) {
+            registry.getService(request.getServiceOrgId(), request.getServiceId(), request.getServiceVersion(), 
+                new IAsyncResultHandler<Service>() {
+                    @Override
+                    public void handle(IAsyncResult<Service> result) {
+                        if (result.isSuccess()) {
+                            service = result.getResult();
+                            if (service == null) {
+                                Exception error = new InvalidServiceException(Messages.i18n.format("EngineImpl.ServiceNotFound")); //$NON-NLS-1$
+                                resultHandler.handle(AsyncResultImpl.create(error, IEngineResult.class));
+                            } else if (!service.isPublicService()) {
+                                Exception error = new InvalidServiceException(Messages.i18n.format("EngineImpl.ServiceNotPublic")); //$NON-NLS-1$
+                                resultHandler.handle(AsyncResultImpl.create(error, IEngineResult.class));
+                            } else {
+                                policies = service.getServicePolicies();
+                                policyImpls = new ArrayList<>(policies.size());
+                                loadPolicies(policiesLoadedHandler);
+                            }
+                        } else if (result.isError()) {
+                            resultHandler.handle(AsyncResultImpl.create(result.getError(), IEngineResult.class));
+                        }
+                    }
+                });
+        } else {
+            registry.getContract(request, new IAsyncResultHandler<ServiceContract>() {
+                @Override
+                public void handle(IAsyncResult<ServiceContract> result) {
+                    if (result.isSuccess()) {
+                        ServiceContract serviceContract = result.getResult();
+                        service = serviceContract.getService();
+                        request.setContract(serviceContract);
+                        policies = serviceContract.getPolicies();
+                        policyImpls = new ArrayList<>(policies.size());
+                        if (request.getServiceOrgId() != null) {
+                            try {
+                                validateRequest(request);
+                            } catch (InvalidContractException e) {
+                                resultHandler.handle(AsyncResultImpl.create(result.getError(), IEngineResult.class));
+                                return;
+                            }
+                        }
+                        loadPolicies(policiesLoadedHandler);
+                    } else {
+                        resultHandler.handle(AsyncResultImpl.create(result.getError(), IEngineResult.class));
+                    }
+                }
+            });
+        }
+    }
+
+    /**
+     * Validates that the contract being used for the request is valid against the
+     * service information included in the request.  Basically the request includes
+     * information indicating which specific service is being invoked.  This method
+     * ensures that the service information in the contract matches the requested
+     * service.
+     * @param request
+     */
+    protected void validateRequest(ServiceRequest request) throws InvalidContractException {
+        ServiceContract contract = request.getContract();
+        
+        boolean matches = true;
+        if (!contract.getService().getOrganizationId().equals(request.getServiceOrgId())) {
+            matches = false;
+        }
+        if (!contract.getService().getServiceId().equals(request.getServiceId())) {
+            matches = false;
+        }
+        if (!contract.getService().getVersion().equals(request.getServiceVersion())) {
+            matches = false;
+        }
+        if (!matches) {
+            throw new InvalidContractException(Messages.i18n.format("EngineImpl.InvalidContractForService", //$NON-NLS-1$
+                    request.getServiceOrgId(), request.getServiceId(), request.getServiceVersion()));
+        }
     }
 
     /**

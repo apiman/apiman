@@ -1,0 +1,8 @@
+GET /organizations/Organization1/services/Service1/versions/2.0 admin/admin
+----
+200
+Content-Type: application/json
+
+{
+  "definitionType" : "WSDL"
+}

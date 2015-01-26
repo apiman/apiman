@@ -13,9 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.gateway.platforms.servlet.io;
-
-import io.apiman.gateway.engine.io.IApimanBuffer;
+package io.apiman.gateway.engine.io;
 
 import java.io.IOException;
 import java.io.InputStream;

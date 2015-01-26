@@ -21,6 +21,9 @@ The following is the standard configuration that should be [provided to the modu
 	
 	    "ISharedStateComponent": { "class": "io.apiman.gateway.engine.impl.InMemorySharedStateComponent", 
 	    	"config": {} },
+	
+	    "IDataStoreComponent": { "class": "io.apiman.gateway.engine.impl.InMemoryDataStoreComponent", 
+	    	"config": {} },
 	    	
 	    "IRateLimiterComponent": { "class": "io.apiman.gateway.engine.impl.InMemoryRateLimiterComponent", 
 	    	"config": {} },

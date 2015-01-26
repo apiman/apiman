@@ -199,11 +199,21 @@ CREATE TABLE `service_versions` (
   `retiredOn` datetime DEFAULT NULL,
   `status` varchar(255) NOT NULL,
   `version` varchar(255) DEFAULT NULL,
+  `definitionType` varchar(255) DEFAULT NULL,
   `service_id` varchar(255) DEFAULT NULL,
   `service_orgId` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UK_service_versions_1` (`service_id`,`service_orgId`,`version`),
   CONSTRAINT `FK_service_versions_1` FOREIGN KEY (`service_id`, `service_orgId`) REFERENCES `services` (`id`, `organizationId`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `service_defs` (
+  `id` bigint(20) NOT NULL,
+  `serviceVersionId` bigint(20) NOT NULL,
+  `data` mediumblob NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UK_service_defs_1` (`serviceVersionId`),
+  CONSTRAINT `FK_service_defs_1` FOREIGN KEY (`serviceVersionId`) REFERENCES `service_versions` (`id`)
 ) ENGINE=InnoDB;
 
 CREATE TABLE `svc_gateways` (

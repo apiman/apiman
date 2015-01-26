@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>apiman - JSON Schema Policy Configuration SDK</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+
+    <link rel="icon" type="image/png" href="../webapp/css/images/favicon.png"></link>
+
+    <link href="../webapp/bootstrap-3.1.1/css/bootstrap.min.css" rel="stylesheet" media="screen"></link>
+    <link href="../webapp/patternfly-1.0/css/patternfly.min.css" rel="stylesheet" media="screen"></link>
+    <link href="../webapp/css/apiman.css?iter=4" rel="stylesheet"></link>
+    <link href="../webapp/css/apiman-responsive.css?iter=1" rel="stylesheet"></link>
+    <link href="../webapp/css/branding.css" rel="stylesheet"></link>
+    <style type="text/css" media="screen">
+        #json-schema-editor {
+            position: relative;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            min-height: 475px;
+            border: 1px solid #ccc;
+        }
+        #json-data-editor {
+            position: relative;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            min-height: 325px;
+            border: 1px solid #ccc;
+        }
+    </style>
+
+    <script type="text/javascript" src="../webapp/jquery-1.10.2/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../webapp/bootstrap-3.1.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../webapp/bootstrap-3.1.1/js/bootstrap-select.min.js"></script>
+    <script type="text/javascript" src="../webapp/json-editor-0.7.14/jsoneditor.min.js"></script>
+    <script type="text/javascript" src="../webapp/patternfly-1.0/js/patternfly.min.js"></script>
+    <script>
+      var editor;
+      var aceEditor;
+      var aceEditor2;
+
+      function updateForm() {
+          if (editor) {
+              editor.destroy();
+          }
+          var jsonSchema = aceEditor.getValue();
+          var schema = JSON.parse(jsonSchema);
+          var holder = document.getElementById('editor-holder');
+          editor = new JSONEditor(holder, {
+              // Disable fetching schemas via ajax
+              ajax: false,
+              // The schema for the editor
+              schema: schema,
+              // Disable additional properties
+              no_additional_properties: true,
+              // Require all properties by default
+              required_by_default: true,
+              disable_edit_json: true,
+              disable_properties: true,
+              iconlib: "fontawesome4",
+              theme: "bootstrap3"
+          });
+          editor.on('change', function() {
+              // Get an array of errors from the validator
+              var errors = editor.validate();
+              // Not valid
+              if (errors.length) {
+                  $('#add-policy').prop( "disabled", true);
+              } else {
+                  $('#add-policy').prop( "disabled", false);
+              }
+          });
+      }
+
+      function showFormJson() {
+          var value = JSON.stringify(editor.getValue(), null, '\t');
+          aceEditor2.setValue(value);
+          aceEditor2.selection.clearSelection();
+          $('#jsonModal').modal();
+      }
+      
+      $( document ).ready(function() {
+          aceEditor = ace.edit("json-schema-editor");
+          aceEditor.setTheme("ace/theme/eclipse");
+          aceEditor.getSession().setMode("ace/mode/json");
+          aceEditor.setValue(
+                  JSON.stringify(
+                          {
+                              "title": "Example Schema",
+                              "type": "object",
+                              "properties": {
+                                  "firstName": {
+                                      "title" : "First Name",
+                                      "type": "string"
+                                  },
+                                  "lastName": {
+                                      "title" : "Last Name",
+                                      "type": "string"
+                                  },
+                                  "age": {
+                                      "title" : "Age",
+                                      "type": "integer",
+                                      "minimum": 0
+                                  },
+                                  "gender" : {
+                                      "title" : "Gender",
+                                      "type": "string",
+                                      "enum": ["Male", "Female", "Other"]
+                                  }
+                              }
+                          }, null , '\t'));
+          aceEditor.selection.clearSelection();
+          
+          aceEditor2 = ace.edit("json-data-editor");
+          aceEditor2.setTheme("ace/theme/eclipse");
+          aceEditor2.getSession().setMode("ace/mode/json");
+      });
+    </script>
+  </head>
+
+  <body>
+
+    <div class="dialogs">
+      <div class="modal fade" id="jsonModal" tabindex="-1" role="dialog" aria-labelledby="jsonModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                <span class="pficon pficon-close"></span>
+              </button>
+              <h4 class="modal-title" id="jsonModalLabel"><span>Policy Configuration Data</span></h4>
+            </div>
+            <div class="modal-body">
+              <p>
+                Below is the JSON configuration data that will be given to your policy 
+                implementation if you were to use the current JSON Schema.
+              </p>
+              <div id="json-data-editor">
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div role="tabpanel">
+      <ul class="nav nav-tabs" role="tablist" style="padding-left: 20px; padding-top: 10px; background-color: #f1f1f1">
+        <li role="presentation" class="active"><a id="jsonschema_link" href="#jsonschema" aria-controls="jsonschema" role="tab" data-toggle="tab">JSON Schema</a></li>
+        <li role="presentation"><a id="preview_link" href="#preview" onclick="updateForm()" aria-controls="preview" role="tab" data-toggle="tab">Preview</a></li>
+      </ul>
+      
+      <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active" id="jsonschema">
+
+            <div id="form-page" class="container apiman-new-policy apiman-entity-new page">
+              <div class="row">
+                <h2 class="title">JSON Schema</h2>
+              </div>
+              <div class="row">
+                <p class="col-md-6 apiman-label-faded">
+                  Edit your JSON schema in the text area below.  When you think you're done, click the Preview
+                  tab above to see how it will look and behave in apiman.
+                </p>
+              </div>
+              <div class="row hr-row">
+                <hr/>
+              </div>
+              <div class="row">
+                <div class="col-md-9 container">
+                  <div id="json-schema-editor">
+                  </div>
+                </div>
+              </div>
+              <div class="row hr-row">
+                <hr/>
+              </div>
+              <div class="row">
+                <button class="btn btn-primary" onclick="$('#preview_link').click()">Preview Now</button>
+              </div>
+            </div> <!-- /container -->
+        </div>
+        <div role="tabpanel" class="tab-pane" id="preview">
+            <div id="form-page" class="container apiman-new-policy apiman-entity-new page">
+              <div class="row">
+                <h2 class="title">Add Policy (<b><font size="4">preview</font></b>)</h2>
+              </div>
+              <!-- Helpful hint -->
+              <div class="row">
+                <p class="col-md-6 apiman-label-faded">
+                  Below is a sample form that you might see in apiman when your policy is being configured.  
+                  The form you see below is what will be generated by the UI for the JSON Schema you created
+                  in the "JSON Schema" Tab.  Click the "Add Policy" button to see what the JSON configuration
+                  data will be.
+                </p>
+              </div>
+              <!-- HR -->
+              <div class="row hr-row">
+                <hr/>
+              </div>
+              <!-- Policy Type -->
+              <div class="row policy-type-row">
+                <dl>
+                  <dt>Policy Type</dt>
+                  <dd>
+                    <select class="selectpicker">
+                      <option>User Defined (Custom) Policy</option>
+                    </select>
+                  </dd>
+                </dl>
+              </div>
+              <!-- Policy Type-specific config -->
+              <div class="row">
+                <h3>User Defined Policy Configuration</h3>
+                <div class="box col-md-9 container">
+                  <div class="form policy-config" id="editor-holder">
+                  </div>
+                </div>
+              </div>
+
+              <!-- HR -->
+              <div class="row hr-row">
+                <hr/>
+              </div>
+              <!-- Create Button -->
+              <div class="row">
+                <button class="btn btn-primary" id="add-policy" onclick="showFormJson()">Add Policy</button>
+                <a href="#" class="btn btn-default btn-cancel" onclick="$('#jsonschema_link').click()">Cancel</a>
+              </div>
+            </div> <!-- /container -->
+        </div>
+      </div>
+
+
+  </body>
+</html>

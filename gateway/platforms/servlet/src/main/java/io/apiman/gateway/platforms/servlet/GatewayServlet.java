@@ -25,10 +25,10 @@ import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.PolicyFailureType;
 import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.beans.ServiceResponse;
+import io.apiman.gateway.engine.io.ByteBuffer;
 import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.gateway.engine.io.ISignalWriteStream;
 import io.apiman.gateway.platforms.servlet.i18n.Messages;
-import io.apiman.gateway.platforms.servlet.io.ByteBuffer;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -105,7 +105,35 @@ public abstract class GatewayServlet extends HttpServlet {
             IOException {
         doAction(req, resp, "DELETE"); //$NON-NLS-1$
     }
-
+    
+    
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServlet#doOptions(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     */
+    @Override
+    protected void doOptions(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
+            IOException {
+        doAction(req, resp, "OPTIONS"); //$NON-NLS-1$
+    }
+    
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServlet#doHead(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     */
+    @Override
+    protected void doHead(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
+            IOException {
+        doAction(req, resp, "HEAD"); //$NON-NLS-1$
+    }
+    
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServlet#doTrace(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     */
+    @Override
+    protected void doTrace(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
+            IOException {
+        doAction(req, resp, "TRACE"); //$NON-NLS-1$
+    }
+    
     /**
      * Generic handler for all types of http actions/verbs.
      * @param req
@@ -296,6 +324,10 @@ public abstract class GatewayServlet extends HttpServlet {
             errorCode = 403;
         } else if (policyFailure.getType() == PolicyFailureType.NotFound) {
             errorCode = 404;
+        } if (policyFailure.getType() == PolicyFailureType.Other) {
+            if (policyFailure.getResponseCode() >= 300) {
+                errorCode = policyFailure.getResponseCode();
+            }
         }
         resp.setStatus(errorCode);
         try {

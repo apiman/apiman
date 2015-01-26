@@ -4,6 +4,7 @@ X-API-Key: 12345
 ----
 200
 Content-Type: application/json
+X-RateLimit-Limit: 5
 
 {
   "method" : "GET",
