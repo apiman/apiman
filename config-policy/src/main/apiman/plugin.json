@@ -1,0 +1,6 @@
+{
+  "frameworkVersion" : 1.0,
+  "name" : "Config Policy Plugin",
+  "description" : "This plugin adds a header to the inbound http request and to the outbound http response.  The headers are configurable.",
+  "version" : "${project.version}"
+}

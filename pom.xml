@@ -109,6 +109,7 @@
   </dependencyManagement>
 
   <modules>
+    <module>config-policy</module>
     <module>noop-policy</module>
     <module>test-policy</module>
   </modules>
