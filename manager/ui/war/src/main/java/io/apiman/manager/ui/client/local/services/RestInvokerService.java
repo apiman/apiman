@@ -1162,4 +1162,16 @@ public class RestInvokerService {
         plugins.call(adapter, adapter).delete(plugin.getId());
     }
 
+    /**
+     * Gets the policy definition form configuration schema for a plugin provided
+     * policy.
+     * @param pluginId
+     * @param policyDefId
+     * @param callback
+     */
+    public void getPluginPolicySchema(Long pluginId, String policyDefId, IRestInvokerCallback<String> callback) {
+        CallbackAdapter<String> adapter = new CallbackAdapter<String>(callback);
+        plugins.call(adapter, adapter).getPolicyForm(pluginId, policyDefId);
+    }
+
 }

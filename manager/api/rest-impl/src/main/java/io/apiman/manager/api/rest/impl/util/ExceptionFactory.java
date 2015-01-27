@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.api.rest.impl.util;
 
+import io.apiman.common.plugin.PluginCoordinates;
 import io.apiman.manager.api.rest.contract.exceptions.ActionException;
 import io.apiman.manager.api.rest.contract.exceptions.ApplicationAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.ApplicationNotFoundException;
@@ -34,6 +35,7 @@ import io.apiman.manager.api.rest.contract.exceptions.PlanNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.PlanVersionNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.PluginAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.PluginNotFoundException;
+import io.apiman.manager.api.rest.contract.exceptions.PluginResourceNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.PolicyDefinitionAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.PolicyDefinitionInvalidException;
 import io.apiman.manager.api.rest.contract.exceptions.PolicyDefinitionNotFoundException;
@@ -296,6 +298,17 @@ public final class ExceptionFactory {
      */
     public static final PluginNotFoundException pluginNotFoundException(Long pluginId) {
         return new PluginNotFoundException(Messages.i18n.format("PluginDoesNotExist", pluginId)); //$NON-NLS-1$
+    }
+
+    /**
+     * Creates an exception.
+     * @param resourceName
+     * @param coordinates
+     */
+    public static final PluginResourceNotFoundException pluginResourceNotFoundException(String resourceName,
+            PluginCoordinates coordinates) {
+        return new PluginResourceNotFoundException(Messages.i18n.format(
+                "PluginResourceNotFound", resourceName, coordinates.toString())); //$NON-NLS-1$
     }
 
 }

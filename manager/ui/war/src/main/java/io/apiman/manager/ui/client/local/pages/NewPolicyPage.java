@@ -24,6 +24,7 @@ import io.apiman.manager.ui.client.local.events.IsFormValidEvent;
 import io.apiman.manager.ui.client.local.events.IsFormValidEvent.Handler;
 import io.apiman.manager.ui.client.local.pages.policy.IPolicyConfigurationForm;
 import io.apiman.manager.ui.client.local.pages.policy.PolicyDefinitionSelectBox;
+import io.apiman.manager.ui.client.local.services.PolicyConfigurationFormFactory.IFormLoadedHandler;
 import io.apiman.manager.ui.client.local.services.rest.IRestInvokerCallback;
 import io.apiman.manager.ui.client.local.util.MultimapUtil;
 import io.apiman.manager.ui.client.local.widgets.H3Label;
@@ -134,27 +135,36 @@ public class NewPolicyPage extends AbstractPolicyPage {
      * Called when the user changes the type of policy she wants to add.
      * @param value
      */
-    protected void onPolicyTypeChange(PolicyDefinitionSummaryBean value) {
+    protected void onPolicyTypeChange(final PolicyDefinitionSummaryBean value) {
         if (value == null) {
             policyFormWrapper.setVisible(false);
             policyFormWrapper.clear();
             policyHeading.setVisible(false);
         } else {
-            policyForm = formFactory.createForm(value.getId());
-            policyForm.addIsFormValidHandler(new Handler() {
+            formFactory.createForm(value, new IFormLoadedHandler() {
                 @Override
-                public void onIsFormValid(IsFormValidEvent event) {
-                    createButton.setEnabled(event.isValid());
+                public void onFormLoaded(IPolicyConfigurationForm form) {
+                    policyForm = form;
+                    policyForm.addIsFormValidHandler(new Handler() {
+                        @Override
+                        public void onIsFormValid(IsFormValidEvent event) {
+                            createButton.setEnabled(event.isValid());
+                        }
+                    });
+                    policyForm.setValue(null);
+                    policyFormWrapper.clear();
+                    policyFormWrapper.add(policyForm);
+                    policyFormWrapper.setVisible(true);
+                    
+                    String heading = value.getName() + " "  + "Configuration"; //$NON-NLS-1$ //$NON-NLS-2$
+                    policyHeading.setText(heading);
+                    policyHeading.setVisible(true);
+                }
+                @Override
+                public void onFormError(Throwable e) {
+                    dataPacketError(e);
                 }
             });
-            policyForm.setValue(null);
-            policyFormWrapper.clear();
-            policyFormWrapper.add(policyForm);
-            policyFormWrapper.setVisible(true);
-            
-            String heading = value.getName() + " "  + "Configuration"; //$NON-NLS-1$ //$NON-NLS-2$
-            policyHeading.setText(heading);
-            policyHeading.setVisible(true);
         }
     }
     

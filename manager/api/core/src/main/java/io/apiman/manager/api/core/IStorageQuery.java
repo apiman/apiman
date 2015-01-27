@@ -248,5 +248,12 @@ public interface IStorageQuery {
      */
     public int getMaxPolicyOrderIndex(String organizationId, String entityId, String entityVersion,
             PolicyType type) throws StorageException;
+
+    /**
+     * Lists all of the policy definitions contributed via a particular plugin.
+     * @param pluginId
+     * @throws StorageException 
+     */
+    public List<PolicyDefinitionSummaryBean> listPluginPolicyDefs(Long pluginId) throws StorageException;
     
 }

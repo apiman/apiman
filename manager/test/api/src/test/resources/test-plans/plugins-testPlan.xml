@@ -15,6 +15,9 @@
   <testGroup name="Plugin Management - Auto-Deploy Policy Defs">
     <test name="No-op Plugin">test-plan-data/plugins/100_create-noop.resttest</test>
     <test name="List Policy Defs">test-plan-data/plugins/101_list-policy-defs.resttest</test>
+    <test name="JSON Schema Config Form Plugin">test-plan-data/plugins/102_create-config-plugin.resttest</test>
+    <test name="List Plugin Policy Defs">test-plan-data/plugins/103_list-plugin-policy-defs.resttest</test>
+    <test name="Get JSON Schema Form">test-plan-data/plugins/104_get-config-form.resttest</test>
   </testGroup>
 
 </testPlan>

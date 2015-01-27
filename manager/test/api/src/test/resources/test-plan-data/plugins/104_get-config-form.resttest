@@ -1,0 +1,24 @@
+GET /plugins/${plugin-id}/policyDefs/config-policy/form admin/admin
+----
+200
+Content-Type: application/json
+
+{
+  "title" : "ConfigBean",
+  "description" : "Set the HTTP request header to populate with the value 'true' when the request is made.  Also set the HTTP response header to populate with the value 'true' after the response is received from the back-end service.",
+  "type" : "object",
+  "properties": {
+    "requestHeader": {
+      "title" : "Request Header",
+      "type" : "string",
+      "minLength" : 1,
+      "maxLength" : 64
+    },
+    "responseHeader": {
+      "title" : "Response Header",
+      "type" : "string",
+      "minLength" : 1,
+      "maxLength" : 64
+    }
+  }
+}

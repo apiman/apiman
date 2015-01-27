@@ -168,9 +168,10 @@ public final class ErrorCodes {
     //
     public static final int PLUGIN_ALREADY_EXISTS              = 12001;
     public static final int PLUGIN_NOT_FOUND                   = 12002;
+    public static final int PLUGIN_RESOURCE_NOT_FOUND          = 12003;
     
     public static final String PLUGIN_ALREADY_EXISTS_INFO      = null;
     public static final String PLUGIN_NOT_FOUND_INFO           = null;
-
+    public static final String PLUGIN_RESOURCE_NOT_FOUND_INFO  = null;
     
 }

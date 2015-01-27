@@ -49,6 +49,7 @@ import io.apiman.manager.api.beans.summary.PlanSummaryBean;
 import io.apiman.manager.api.beans.summary.PlanVersionSummaryBean;
 import io.apiman.manager.api.beans.summary.PluginSummaryBean;
 import io.apiman.manager.api.beans.summary.PolicyDefinitionSummaryBean;
+import io.apiman.manager.api.beans.summary.PolicyFormType;
 import io.apiman.manager.api.beans.summary.PolicySummaryBean;
 import io.apiman.manager.api.beans.summary.ServicePlanSummaryBean;
 import io.apiman.manager.api.beans.summary.ServiceSummaryBean;
@@ -811,26 +812,29 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             
             @SuppressWarnings("nls")
             String sql = 
-                    "SELECT pd.id, pd.policyImpl, pd.name, pd.description, pd.icon, pd.pluginId" + 
+                    "SELECT pd.id, pd.policyImpl, pd.name, pd.description, pd.icon, pd.pluginId, pd.formType" + 
                     "  FROM policydefs pd" + 
                     " ORDER BY pd.name ASC";
             Query query = entityManager.createNativeQuery(sql);
             @SuppressWarnings("unchecked")
             List<Object[]> rows = (List<Object[]>) query.getResultList();
-            List<PolicyDefinitionSummaryBean> gateways = new ArrayList<PolicyDefinitionSummaryBean>(rows.size());
+            List<PolicyDefinitionSummaryBean> rval = new ArrayList<PolicyDefinitionSummaryBean>(rows.size());
             for (Object [] row : rows) {
-                PolicyDefinitionSummaryBean gateway = new PolicyDefinitionSummaryBean();
-                gateway.setId(String.valueOf(row[0]));
-                gateway.setPolicyImpl(String.valueOf(row[1]));
-                gateway.setName(String.valueOf(row[2]));
-                gateway.setDescription(String.valueOf(row[3]));
-                gateway.setIcon(String.valueOf(row[4]));
+                PolicyDefinitionSummaryBean bean = new PolicyDefinitionSummaryBean();
+                bean.setId(String.valueOf(row[0]));
+                bean.setPolicyImpl(String.valueOf(row[1]));
+                bean.setName(String.valueOf(row[2]));
+                bean.setDescription(String.valueOf(row[3]));
+                bean.setIcon(String.valueOf(row[4]));
                 if (row[5] != null) {
-                    gateway.setPluginId(((Number) row[5]).longValue());
+                    bean.setPluginId(((Number) row[5]).longValue());
                 }
-                gateways.add(gateway);
+                if (row[6] != null) {
+                    bean.setFormType(PolicyFormType.valueOf(String.valueOf(row[6])));
+                }
+                rval.add(bean);
             }
-            return gateways;
+            return rval;
         } catch (Throwable t) {
             logger.error(t.getMessage(), t);
             throw new StorageException(t);
@@ -1502,6 +1506,49 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         }
     }
 
+    /**
+     * @see io.apiman.manager.api.core.IStorageQuery#listPluginPolicyDefs(java.lang.Long)
+     */
+    @Override
+    public List<PolicyDefinitionSummaryBean> listPluginPolicyDefs(Long pluginId) throws StorageException {
+        beginTx();
+        try {
+            EntityManager entityManager = getActiveEntityManager();
+            
+            @SuppressWarnings("nls")
+            String sql = 
+                    "SELECT pd.id, pd.policyImpl, pd.name, pd.description, pd.icon, pd.pluginId, pd.formType" + 
+                    "  FROM policydefs pd" + 
+                    " WHERE pd.pluginId = ?" +
+                    " ORDER BY pd.name ASC";
+            Query query = entityManager.createNativeQuery(sql);
+            query.setParameter(1, pluginId);
+            @SuppressWarnings("unchecked")
+            List<Object[]> rows = (List<Object[]>) query.getResultList();
+            List<PolicyDefinitionSummaryBean> beans = new ArrayList<PolicyDefinitionSummaryBean>(rows.size());
+            for (Object [] row : rows) {
+                PolicyDefinitionSummaryBean bean = new PolicyDefinitionSummaryBean();
+                bean.setId(String.valueOf(row[0]));
+                bean.setPolicyImpl(String.valueOf(row[1]));
+                bean.setName(String.valueOf(row[2]));
+                bean.setDescription(String.valueOf(row[3]));
+                bean.setIcon(String.valueOf(row[4]));
+                if (row[5] != null) {
+                    bean.setPluginId(((Number) row[5]).longValue());
+                }
+                if (row[6] != null) {
+                    bean.setFormType(PolicyFormType.valueOf(String.valueOf(row[6])));
+                }
+                beans.add(bean);
+            }
+            return beans;
+        } catch (Throwable t) {
+            logger.error(t.getMessage(), t);
+            throw new StorageException(t);
+        } finally {
+            commitTx();
+        }
+    }
     /**
      * @see io.apiman.manager.api.core.IApiKeyGenerator#generate()
      */
