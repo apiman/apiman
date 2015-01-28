@@ -126,16 +126,15 @@ public interface IPluginResource {
      * Use this endpoint to retrieve the form associated with a particular policy
      * definition.  Plugins may contribute policy definitions to apiman.  Part of that
      * contribution *may* include a form for the UI to display when configuring an 
-     * instance of the policy.
-     * This endpoint returns this schema.
-     * @summary Get Plugin Policy Schema
+     * instance of the policy.  This endpoint returns this form.
+     * @summary Get Plugin Policy Form
      * @param pluginId The plugin ID.
      * @param policyDefId The policy definition ID.
-     * @statuscode 200 If the schema is returned successfully.
+     * @statuscode 200 If the form is returned successfully.
      * @statuscode 404 If the plugin does not exist.
      * @statuscode 404 If the policy definition does not exist.
-     * @statuscode 404 If the schema does not exist.
-     * @return An apiman plugin.
+     * @statuscode 404 If the form does not exist.
+     * @return A policy configuration form.
      * @throws PluginNotFoundException
      * @throws PluginResourceNotFoundException
      */
