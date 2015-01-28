@@ -5,8 +5,8 @@ GET /organizations/Organization1/applications/Application1/versions/1.0/apiregis
 Content-Type: application/xml
 
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<apis>
-  <api>
+<apiRegistry>
+  <apis>
     <apiKey>*</apiKey>
     <httpEndpoint>http://example.org/endpoint</httpEndpoint>
     <planId>Plan1</planId>
@@ -17,8 +17,8 @@ Content-Type: application/xml
     <serviceOrgId>Organization1</serviceOrgId>
     <serviceOrgName>Organization 1</serviceOrgName>
     <serviceVersion>1.0</serviceVersion>
-  </api>
-  <api>
+  </apis>
+  <apis>
     <apiKey>*</apiKey>
     <httpEndpoint>http://example.org/endpoint</httpEndpoint>
     <planId>PlanA</planId>
@@ -29,5 +29,5 @@ Content-Type: application/xml
     <serviceOrgId>Organization2</serviceOrgId>
     <serviceOrgName>Organization 2</serviceOrgName>
     <serviceVersion>1.5</serviceVersion>
-  </api>
-</apis>
+  </apis>
+</apiRegistry>

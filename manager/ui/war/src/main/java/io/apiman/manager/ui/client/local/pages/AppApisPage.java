@@ -86,6 +86,7 @@ public class AppApisPage extends AbstractAppPage {
         rest.getApiRegistry(orgId, appId, appVersion, new IRestInvokerCallback<ApiRegistryBean>() {
             @Override
             public void onSuccess(ApiRegistryBean response) {
+                logger.debug("Received {0} APIs from the server.", response.getApis().size()); //$NON-NLS-1$
                 apiRegistry = response;
                 dataPacketLoaded();
             }
@@ -102,6 +103,7 @@ public class AppApisPage extends AbstractAppPage {
     @Override
     protected void renderPage() {
         super.renderPage();
+        logger.debug("Adding {0} APIs to the table.", apiRegistry.getApis().size()); //$NON-NLS-1$
         apis.setValue(apiRegistry);
         downloadAsJson.setHref(buildApiRegistryDownloadUrl("json")); //$NON-NLS-1$
         downloadAsXml.setHref(buildApiRegistryDownloadUrl("xml")); //$NON-NLS-1$

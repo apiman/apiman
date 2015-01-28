@@ -4,7 +4,8 @@ GET /organizations/Organization1/applications/Application1/versions/1.0/apiregis
 200
 Content-Type: application/json
 
-{ "apis" : [
+{ 
+  "apis" : [
     {
         "httpEndpoint" : "http://example.org/endpoint",
         "planId" : "Plan1",
@@ -26,5 +27,6 @@ Content-Type: application/json
         "serviceOrgId" : "Organization2",
         "serviceOrgName" : "Organization 2",
         "serviceVersion" : "1.5"
-    } ]
+    }
+  ]
 }

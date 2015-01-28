@@ -70,7 +70,7 @@ public class ApiManagerProxyServlet extends AbstractUIServlet {
             endpoint = getDefaultEndpoint(req);
         }
 
-        url.append(getConfig().getManagementApiEndpoint());
+        url.append(endpoint);
         if (!url.toString().endsWith("/")) { //$NON-NLS-1$
             url.append('/');
         }
