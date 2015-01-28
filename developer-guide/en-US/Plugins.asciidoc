@@ -140,6 +140,7 @@ In order to provide a custom policy from a plugin, several things are needed:
 
 * An implementation of IPolicy (Java code)
 * A policy definition (JSON file)
+* An optional policy configuration form that the API Manager UI will present to the user when configuring the policy
 
 The next few sections explain each of these elements further, but note that they are
 all included in the apiman plugin WAR.
@@ -323,7 +324,9 @@ The plugin definition file takes the following form:
   "name" : "Policy Name",
   "description" : "A useful description of what the policy does.",
   "policyImpl" : "plugin:${project.groupId}:${project.artifactId}:${project.version}:${project.packaging}/com.example.plugins.MyFirstPolicy",
-  "icon" : "document"
+  "icon" : "document",
+  "formType" : "JsonSchema",
+  "form" : "schemas/policy_name.schema"
 }
 ```
 
@@ -332,6 +335,8 @@ The plugin definition file takes the following form:
 * *description*: The description of the policy.
 * *policyImpl*: Identifies the java class that implements the policy.
 * *icon*: The icon to use when displaying the policy in the UI (name of a Font Awesome icon).
+* *formType*: The type of form to use in the UI when configuring an instance of the policy.  See the Policy Configuration section below for details.  Valid values: _Default_, _JsonSchema_
+* *form*: (_optional_) Path to a UI form that should be used when configuring an instance of the policy.  See the Policy Configuration section below for details.
 
 The most important thing to get right in this file is probably the 'policyImpl'.  This
 is the information that the API Manager will use when it tries to instantiate the
@@ -357,7 +362,7 @@ Maven set the values for you:
 plugin:${project.groupId}:${project.artifactId}:${project.version}:${project.packaging}/com.example.plugins.ExamplePolicy
 ```
 
-==== Policy Configuration
+==== Policy Configuration Form
 You may be wondering how configuration information specific to a Plan, Service, or
 Application is managed.  Since the same policy implementation instance is used for all
 requests, unique configuration appropriate to a particular request must be passed to
@@ -372,3 +377,154 @@ during execution.
 The string data is created in the API Manager user interface, either by interacting with
 a Policy Configuration Form contributed by the plugin, or (if no form is included
 in the plugin) by a default configuration form (a simple text area).
+
+===== Default Policy Configuration
+If the policy definition indicates that the configuration form type is *Default*, then it is
+up to the UI to determine how to display configuration information.  For the policies provided
+by apiman itself, there are UI forms provided.  If the policy is contributed from a plugin,
+then the UI has no way to know the format of the configuration data.  In this case, a simple
+TextArea is presented to the user.
+
+WARNING: This approach is clearly not recommended, because users will likely have no idea what to
+enter into the TextArea presented to them.
+
+===== JSON Schema Policy Configuration
+Alternatively, the policy definition can specify a http://json-schema.org/[JSON Schema] in
+the policy definition JSON file.  For example, the policy definition might include the
+following:
+
+```json
+  "formType" : "JsonSchema",
+  "form" : "schemas/policy_name.schema"
+```
+
+In this case, apiman will look for a file inside the plugin artifact in the following location:
+
+```
+META-INF/apiman/policyDefs/schemas/policy_name.schema
+```
+
+The file in this location must be a JSON Schema file, which describes the JSON format of the
+configuration data expected by the policy implementation.  The UI will use this JSON schema
+to generate an appropriate UI form that can edit the JSON configuration data needed by the
+policy implementation.
+
+Perhaps it's best if we have an example.  The following illustrates a policy contributed from
+a plugin, its JSON Schema file, the resulting form displayed in the UI, and the configuration
+data format that will be passed to the policy implementation at runtime.
+
+.META-INF/apiman/policyDefs/my-policy.json
+```json
+{
+  "id" : "my-policy",
+  "name" : "My First Policy",
+  "description" : "A policy with custom configuration!",
+  "policyImpl" : "plugin:${project.groupId}:${project.artifactId}:${project.version}:${project.packaging}/io.apiman.plugins.config_policy.ConfigPolicy",
+  "icon" : "pie-chart",
+  "formType" : "JsonSchema",
+  "form" : "schemas/config-policyDef.schema"
+}
+```
+
+.META-INF/apiman/policyDefs/schemas/my-policy.schema
+```json
+{
+  "title" : "Configure My Policy",
+  "description" : "Configure all of the necessary properties used by my policy.",
+  "type" : "object",
+  "properties": {
+    "property1": {
+      "title" : "Property 1",
+      "type" : "string",
+      "minLength" : 1,
+      "maxLength" : 64
+      },
+    "property2": {
+      "title" : "Property 2",
+      "type" : "string",
+      "minLength" : 1,
+      "maxLength" : 64
+    }
+  }
+}
+```
+
+.Generated UI Form
+image:images/plugin-policy-config-1.png[Generated UI Form]
+
+.JSON Configuration Data Format
+```json
+{
+  "property1" : "USER_DATA_1",
+  "property2" : "USER_DATA_2"
+}
+```
+
+TIP: You can easily consume the JSON configuration data above in your policy implementation
+by having your policy implementation Java class extend the ```AbstractMappedPolicy``` base class
+provided by apiman (in the _apiman-gateway-engine-policies_ module) and creating a simple Java Bean
+to hold the JSON configuration data.
+
+.Java Bean (Read/Write Configuration JSON Data)
+```java
+public class MyConfigBean implements Serializable {
+
+  private static final long serialVersionUID = 683486516910591477L;
+
+  private String property1;
+  private String property2;
+
+  /**
+   * Constructor.
+   */
+  public MyConfigBean() {
+  }
+
+  public String getProperty1() {
+    return property1;
+  }
+
+  public void setProperty1(String property1) {
+    this.property1 = property1;
+  }
+
+  public String getProperty2() {
+    return property2;
+  }
+
+  public void setProperty2(String property2) {
+    this.property2 = property2;
+  }
+
+}
+```
+
+.Policy Implementation using AbstractMappedPolicy
+```java
+public class MyPolicy extends AbstractMappedPolicy<MyConfigBean> {
+
+  /**
+   * Constructor.
+   */
+  public MyPolicy() {
+  }
+
+  @Override
+  protected Class<MyConfigBean> getConfigurationClass() {
+    return MyConfigBean.class;
+  }
+
+  @Override
+  protected void doApply(ServiceRequest request, IPolicyContext context, MyConfigBean config, IPolicyChain<ServiceRequest> chain) {
+    // Do something with MyConfigBean here?  It has all the configuration data!
+    super.doApply(request, context, My, chain);
+  }
+
+  @Override
+  protected void doApply(ServiceResponse response, IPolicyContext context, MyConfigBean config, IPolicyChain<ServiceResponse> chain) {
+    // Do something with MyConfigBean here?  It has all the configuration data!
+    super.doApply(response, context, config, chain);
+  }
+
+}
+```

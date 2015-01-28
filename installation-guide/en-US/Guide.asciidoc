@@ -92,6 +92,12 @@ for all three applications (API Manager, API Manager UI, API Gateway).
 
 Here is a breakdown of the properties found in this configuration file:
 
+* *apiman.plugins.repositories*
++
+Typical Value:: http://repository.jboss.org/nexus/content/groups/public/
++
+Description:: A comma separated list of maven repositories from which to (try to) download apiman plugins.
+
 * *apiman-manager-ui.api.endpoint*
 +
 Typical Value:: <empty>
