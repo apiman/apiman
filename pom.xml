@@ -104,7 +104,7 @@
     <version.commons-io>2.4</version.commons-io>
     <version.commons-lang>2.6</version.commons-lang>
     <version.commons-pool>1.6</version.commons-pool>
-    <version.io.apiman.quickstarts>${project.version}</version.io.apiman.quickstarts>
+    <version.io.apiman.quickstarts>1.0.2.Final</version.io.apiman.quickstarts>
     <version.io.undertow>1.0.1.Final</version.io.undertow>
     <version.javax.enterprise>1.0-SP4</version.javax.enterprise>
     <version.javax.ws.rs-api>2.0</version.javax.ws.rs-api>
