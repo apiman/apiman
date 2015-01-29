@@ -15,8 +15,8 @@ git push origin master
 
 mvn clean install
 
-git tag -a -m "Tagging release $RELEASE_VERSION" apiman-quickstarts-$RELEASE_VERSION
-git push origin apiman-quickstarts-$RELEASE_VERSION
+git tag -a -m "Tagging release $RELEASE_VERSION" apiman-$RELEASE_VERSION
+git push origin apiman-$RELEASE_VERSION
 
 mvn versions:set -DnewVersion=$DEV_VERSION
 find . -name '*.versionsBackup' -exec rm -f {} \;
