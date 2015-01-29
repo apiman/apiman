@@ -461,11 +461,12 @@ image:images/plugin-policy-config-1.png[Generated UI Form]
 ```
 
 TIP: You can easily consume the JSON configuration data above in your policy implementation
-by having your policy implementation Java class extend the ```AbstractMappedPolicy``` base class
+by having your policy implementation Java class extend the `AbstractMappedPolicy` base class
 provided by apiman (in the _apiman-gateway-engine-policies_ module) and creating a simple Java Bean
 to hold the JSON configuration data.
 
-.Java Bean (Read/Write Configuration JSON Data)
+First, here is the java bean used to (un)marshal the JSON configuration data.
+
 ```java
 public class MyConfigBean implements Serializable {
 
@@ -499,7 +500,8 @@ public class MyConfigBean implements Serializable {
 }
 ```
 
-.Policy Implementation using AbstractMappedPolicy
+Now have a look at how to use that class when extending the `AbstractMappedPolicy`.
+
 ```java
 public class MyPolicy extends AbstractMappedPolicy<MyConfigBean> {
 
