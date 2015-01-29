@@ -285,6 +285,9 @@ public abstract class AbstractServicePage extends AbstractPage {
         renderServiceStatus();
         
         description.setEnabled(hasPermission(PermissionType.svcEdit));
+        
+        publishButton.setTitle(i18n.format(AppMessages.PUBLISH_TOOLTIP));
+        retireButton.setTitle(i18n.format(AppMessages.RETIRE_TOOLTIP));
     }
     
     /**

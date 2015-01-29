@@ -283,6 +283,9 @@ public abstract class AbstractAppPage extends AbstractPage {
         renderApplicationStatus();
 
         description.setEnabled(hasPermission(PermissionType.appEdit));
+        
+        registerButton.setTitle(i18n.format(AppMessages.REGISTER_TOOLTIP));
+        unregisterButton.setTitle(i18n.format(AppMessages.UNREGISTER_TOOLTIP));
     }
     
     /**

@@ -478,6 +478,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
      */
     protected ApplicationVersionBean createAppVersionInternal(NewApplicationVersionBean bean,
             ApplicationBean application) throws StorageException {
+        if (!BeanUtils.isValidVersion(bean.getVersion())) {
+            throw new StorageException("Invalid/illegal application version: " + bean.getVersion()); //$NON-NLS-1$
+        }
+        
         ApplicationVersionBean newVersion = new ApplicationVersionBean();
         newVersion.setApplication(application);
         newVersion.setCreatedBy(securityContext.getCurrentUser());
@@ -1157,6 +1161,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
      */
     protected ServiceVersionBean createServiceVersionInternal(NewServiceVersionBean bean,
             ServiceBean service, GatewaySummaryBean gateway) throws Exception, StorageException {
+        if (!BeanUtils.isValidVersion(bean.getVersion())) {
+            throw new StorageException("Invalid/illegal service version: " + bean.getVersion()); //$NON-NLS-1$
+        }
 
         ServiceVersionBean newVersion = new ServiceVersionBean();
         newVersion.setCreatedBy(securityContext.getCurrentUser());
@@ -1826,6 +1833,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
      */
     protected PlanVersionBean createPlanVersionInternal(NewPlanVersionBean bean, PlanBean plan)
             throws StorageException {
+        if (!BeanUtils.isValidVersion(bean.getVersion())) {
+            throw new StorageException("Invalid/illegal plan version: " + bean.getVersion()); //$NON-NLS-1$
+        }
+
         PlanVersionBean newVersion = new PlanVersionBean();
         newVersion.setCreatedBy(securityContext.getCurrentUser());
         newVersion.setCreatedOn(new Date());

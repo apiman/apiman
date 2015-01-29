@@ -71,8 +71,6 @@ public class OrgManageMembersPage extends AbstractPage {
     Breadcrumb breadcrumb;
 
     @Inject @DataField
-    Anchor organization;
-    @Inject @DataField
     TextBox searchBox;
     @Inject @DataField
     RoleMultiSelector roleSelector;
@@ -174,7 +172,6 @@ public class OrgManageMembersPage extends AbstractPage {
         super.renderPage();
 
         String orgMembersHref = navHelper.createHrefToPage(OrgMembersPage.class, MultimapUtil.singleItemMap("org", org)); //$NON-NLS-1$
-        organization.setHref(orgMembersHref);
         String newMemberHref = navHelper.createHrefToPage(NewMemberPage.class, MultimapUtil.singleItemMap("org", org)); //$NON-NLS-1$
         addMember.setHref(newMemberHref);
 

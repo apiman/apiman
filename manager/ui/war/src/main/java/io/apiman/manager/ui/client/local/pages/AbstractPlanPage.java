@@ -259,6 +259,8 @@ public abstract class AbstractPlanPage extends AbstractPage {
         createdBy.setHref(toUserHref);
         
         description.setEnabled(hasPermission(PermissionType.planEdit));
+        
+        lockButton.setTitle(i18n.format(AppMessages.LOCK_PLAN_TOOLTIP));
     }
 
     /**

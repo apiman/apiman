@@ -53,7 +53,7 @@ public class AppMessages {
     public static final String TITLE_NEW_PLAN_VERSION = "page.title.new-plan-version";
     @TranslationKey(defaultValue = "apiman - New Contract")
     public static final String TITLE_NEW_CONTRACT = "page.title.new-contract";
-    @TranslationKey(defaultValue = "apiman - New Policy")
+    @TranslationKey(defaultValue = "apiman - Add Policy")
     public static final String TITLE_NEW_POLICY = "page.title.new-policy";
     @TranslationKey(defaultValue = "apiman - Edit Policy")
     public static final String TITLE_EDIT_POLICY = "page.title.edit-policy";
@@ -264,7 +264,7 @@ public class AppMessages {
 
     @TranslationKey(defaultValue = "No policies matched the filter criteria.  Please try modifying the filter or else create a new policy using the button above.")
     public static final String NO_FILTERED_POLICIES_MESSAGE = "no-filtered-policies";
-    @TranslationKey(defaultValue = "It looks like there aren't (yet) any policies defined!  That may be exactly what you want (of course) but if not, you may try defining one using the New Policy button above...")
+    @TranslationKey(defaultValue = "It looks like there aren't (yet) any policies defined!  That may be exactly what you want (of course) but if not, you may try defining one using the Add Policy button above...")
     public static final String NO_POLICIES_MESSAGE = "no-policies";
     @TranslationKey(defaultValue = "Policy created by")
     public static final String POLICY_CREATED_BY = "policy-created-by";
@@ -562,5 +562,16 @@ public class AppMessages {
 
     @TranslationKey(defaultValue = "Click for additional details about this Service.")
     public static String API_MORE_INFO = "app-apis.more-info-about-service";
+
+    @TranslationKey(defaultValue = "Locks the Plan so that it can be used in your Services.  Once locked, the Plan is final and cannot be modified.")
+    public static final String LOCK_PLAN_TOOLTIP = "lock-plan.tooltip";
+    @TranslationKey(defaultValue = "Publishes the Service to the Gateway, making it available to be consumed.  Until published, a Service is not available to invoke or create a contract with.")
+    public static final String PUBLISH_TOOLTIP = "publish.tooltip";
+    @TranslationKey(defaultValue = "Retires the Service, removing it from the Gateway and breaking any existing consumers.")
+    public static final String RETIRE_TOOLTIP = "retire.tooltip";
+    @TranslationKey(defaultValue = "Registers the Application with the Gateway, making it possible to invoke its contracted Services.")
+    public static final String REGISTER_TOOLTIP = "register.tooltip";
+    @TranslationKey(defaultValue = "Removes the Application from the Gateway, making it no longer possible to invoke its Services.")
+    public static final String UNREGISTER_TOOLTIP = "unregister.tooltip";
 
 }
