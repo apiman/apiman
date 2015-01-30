@@ -19,7 +19,7 @@
         {
             "username" : "admin",
             "enabled" : true,
-            "email" : "",
+            "email" : "admin@example.org",
             "firstName" : "apiman",
             "lastName" : "admin",
             "credentials" : [
@@ -36,9 +36,9 @@
         {
             "username" : "apimanager",
             "enabled" : true,
-            "email" : "",
-            "firstName" : "apiman",
-            "lastName" : "publisher",
+            "email" : "apimanager@example.org",
+            "firstName" : "api",
+            "lastName" : "manager",
             "credentials" : [
                 {
                     "type" : "password",
