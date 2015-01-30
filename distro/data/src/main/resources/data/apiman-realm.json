@@ -47,7 +47,6 @@
             ],
             "realmRoles" : [ "apipublisher" ],
             "applicationRoles" : {
-                "realm-management" : [ "realm-admin" ]
             }
         }
     ],
