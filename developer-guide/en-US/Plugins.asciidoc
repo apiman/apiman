@@ -530,3 +530,28 @@ public class MyPolicy extends AbstractMappedPolicy<MyConfigBean> {
 
 }
 ```
+
+===== JSON Schema Policy Configuration SDK
+If you are creating a non-trivial JSON Schema (more than just a couple of simple fields)
+it can be difficult to get it right without a few iterations.  For this reason, we have
+created a simple "SDK" to help you create your JSON Schema quickly.  The SDK can be found
+in the apiman github repository at the following location:
+
+```
+manager/ui/war/src/main/sdk/json-schema.html
+```
+
+If you have the apiman source code checked out, you can simply open that file in your browser
+and start using it to author a custom JSON Schema.
+
+Alternatively you can use "rawgit" and just go straight to the following URL:
+
+http://rawgit.com/apiman/apiman/master/manager/ui/war/src/main/sdk/json-schema.html
+
+The SDK provides a way to edit your JSON schema and then see how that schema will look in
+the apiman UI, as well as the format that the policy configuration data will ultimately
+be in when it is sent to your policy at runtime.
+
+TIP: Once you have the JSON Schema finalized, you could also use the online http://www.jsonschema2pojo.org/[jsonschema2pojo]
+tool to generate a good starting point for a Java Bean that can be used to marshal/unmarshal your policy's configuration
+data at runtime.  See the discussion about AbstractMappedPolicy above for additional information.
