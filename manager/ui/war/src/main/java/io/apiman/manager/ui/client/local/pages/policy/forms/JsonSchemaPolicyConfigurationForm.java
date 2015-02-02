@@ -174,7 +174,6 @@ public class JsonSchemaPolicyConfigurationForm extends FlowPanel implements IPol
         editor.on('change', function() {
             // Get an array of errors from the validator
             var errors = editor.validate();
-            var indicator = $doc.getElementById('valid_indicator');
             // Not valid
             if (errors.length) {
                 console.log("invalid");
