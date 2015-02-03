@@ -70,6 +70,24 @@ public class AuditUtils {
     }
 
     /**
+     * Returns true only if the value changed.
+     * @param before
+     * @param after
+     */
+    public static boolean valueChanged(Boolean before, Boolean after) {
+        if (before == null && after == null) {
+            return false;
+        }
+        if (after == null) {
+            return false;
+        }
+        if (before == null && after != null) {
+            return true;
+        }
+        return !before.equals(after);
+    }
+
+    /**
      * Returns true only if the set has changed.
      * @param before
      * @param after
