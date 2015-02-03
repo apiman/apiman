@@ -18,6 +18,7 @@ package io.apiman.gateway.engine.impl;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.components.IRateLimiterComponent;
+import io.apiman.gateway.engine.components.rate.RateLimitResponse;
 import io.apiman.gateway.engine.rates.RateBucketPeriod;
 import io.apiman.gateway.engine.rates.RateLimiterBucket;
 
@@ -44,7 +45,7 @@ public class InMemoryRateLimiterComponent implements IRateLimiterComponent {
      * @see io.apiman.gateway.engine.components.IRateLimiterComponent#accept(java.lang.String, io.apiman.gateway.engine.rates.RateBucketPeriod, int, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
-    public void accept(String bucketId, RateBucketPeriod period, int limit, IAsyncResultHandler<Boolean> handler) {
+    public void accept(String bucketId, RateBucketPeriod period, int limit, IAsyncResultHandler<RateLimitResponse> handler) {
         RateLimiterBucket bucket = null;
         synchronized (buckets) {
             bucket = buckets.get(bucketId);
@@ -53,13 +54,19 @@ public class InMemoryRateLimiterComponent implements IRateLimiterComponent {
                 buckets.put(bucketId, bucket);
             }
             bucket.resetIfNecessary(period);
+
+            RateLimitResponse response = new RateLimitResponse();
             if (bucket.count >= limit) {
-                handler.handle(AsyncResultImpl.<Boolean>create(Boolean.FALSE));
+                response.setAccepted(false);
             } else {
                 bucket.count++;
                 bucket.last = System.currentTimeMillis();
-                handler.handle(AsyncResultImpl.<Boolean>create(Boolean.TRUE));
+                response.setAccepted(true);
             }
+            int reset = (int) (bucket.getResetMillis(period) / 1000L);
+            response.setReset(reset);
+            response.setRemaining(limit - bucket.count);
+            handler.handle(AsyncResultImpl.<RateLimitResponse>create(response));
         }
     }
 

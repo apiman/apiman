@@ -24,7 +24,6 @@ import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.components.IRateLimiterComponent;
 import io.apiman.gateway.engine.impl.InMemoryRateLimiterComponent;
-import io.apiman.gateway.engine.policies.RateLimitingPolicy;
 import io.apiman.gateway.engine.policies.config.RateLimitingConfig;
 import io.apiman.gateway.engine.policies.config.rates.RateLimitingGranularity;
 import io.apiman.gateway.engine.policies.config.rates.RateLimitingPeriod;
@@ -65,8 +64,12 @@ public class RateLimitingPolicyTest {
                 "  \"limit\" : 100,\r\n" + 
                 "  \"granularity\" : \"User\",\r\n" + 
                 "  \"period\" : \"Day\",\r\n" + 
+                "  \"headerRemaining\" : \"X-Rate-Remaining\",\r\n" + 
+                "  \"headerLimit\" : \"X-Rate-Limit\",\r\n" + 
+                "  \"headerReset\" : \"X-Rate-Reset\",\r\n" + 
                 "  \"userHeader\" : \"X-Authenticated-Identity\"\r\n" + 
                 "}";
+
         parsed = policy.parseConfiguration(config);
         parsedConfig = (RateLimitingConfig) parsed;
         Assert.assertNotNull(parsedConfig.getUserHeader());
@@ -78,6 +81,10 @@ public class RateLimitingPolicyTest {
         Assert.assertEquals(RateLimitingGranularity.User, parsedConfig.getGranularity());
         Assert.assertEquals(100, parsedConfig.getLimit());
         Assert.assertEquals(RateLimitingPeriod.Day, parsedConfig.getPeriod());
+
+        Assert.assertEquals("X-Rate-Limit", parsedConfig.getHeaderLimit());
+        Assert.assertEquals("X-Rate-Remaining", parsedConfig.getHeaderRemaining());
+        Assert.assertEquals("X-Rate-Reset", parsedConfig.getHeaderReset());
     }
 
     /**

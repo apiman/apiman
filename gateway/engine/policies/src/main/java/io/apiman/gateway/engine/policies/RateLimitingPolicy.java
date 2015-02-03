@@ -20,8 +20,10 @@ import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.PolicyFailureType;
 import io.apiman.gateway.engine.beans.ServiceRequest;
+import io.apiman.gateway.engine.beans.ServiceResponse;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.components.IRateLimiterComponent;
+import io.apiman.gateway.engine.components.rate.RateLimitResponse;
 import io.apiman.gateway.engine.policies.config.RateLimitingConfig;
 import io.apiman.gateway.engine.policies.config.rates.RateLimitingGranularity;
 import io.apiman.gateway.engine.policies.config.rates.RateLimitingPeriod;
@@ -29,6 +31,9 @@ import io.apiman.gateway.engine.policies.i18n.Messages;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
 import io.apiman.gateway.engine.rates.RateBucketPeriod;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Policy that enforces rate limits.
@@ -39,6 +44,10 @@ public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig>
     
     private static final String NO_USER_AVAILABLE = new String();
     private static final String NO_APPLICATION_AVAILABLE = new String();
+    
+    private static final String DEFAULT_LIMIT_HEADER = "X-RateLimit-Limit"; //$NON-NLS-1$
+    private static final String DEFAULT_REMAINING_HEADER = "X-RateLimit-Remaining"; //$NON-NLS-1$
+    private static final String DEFAULT_RESET_HEADER = "X-RateLimit-Reset"; //$NON-NLS-1$
     
     /**
      * Constructor.
@@ -61,7 +70,7 @@ public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig>
     protected void doApply(final ServiceRequest request, final IPolicyContext context, final RateLimitingConfig config,
             final IPolicyChain<ServiceRequest> chain) {
         String bucketId = createBucketId(request, config);
-        RateBucketPeriod period = getPeriod(config);
+        final RateBucketPeriod period = getPeriod(config);
 
         if (bucketId == NO_USER_AVAILABLE) {
             IPolicyFailureFactoryComponent failureFactory = context.getComponent(IPolicyFailureFactoryComponent.class);
@@ -77,24 +86,57 @@ public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig>
         }
         
         IRateLimiterComponent rateLimiter = context.getComponent(IRateLimiterComponent.class);
-        rateLimiter.accept(bucketId, period, config.getLimit(), new IAsyncResultHandler<Boolean>() {
+        rateLimiter.accept(bucketId, period, config.getLimit(), new IAsyncResultHandler<RateLimitResponse>() {
             @Override
-            public void handle(IAsyncResult<Boolean> result) {
+            public void handle(IAsyncResult<RateLimitResponse> result) {
                 if (result.isError()) {
                     chain.throwError(result.getError());
                 } else {
-                    boolean accepted = result.getResult();
-                    if (accepted) {
+                    RateLimitResponse rtr = result.getResult();
+                    
+                    Map<String, String> responseHeaders = new HashMap<>();
+                    String limitHeader = config.getHeaderLimit();
+                    if (limitHeader == null) {
+                        limitHeader = DEFAULT_LIMIT_HEADER;
+                    }
+                    String remainingHeader = config.getHeaderRemaining();
+                    if (remainingHeader == null) {
+                        remainingHeader = DEFAULT_REMAINING_HEADER;
+                    }
+                    String resetHeader = config.getHeaderReset();
+                    if (resetHeader == null) {
+                        resetHeader = DEFAULT_RESET_HEADER;
+                    }
+                    responseHeaders.put(limitHeader, String.valueOf(config.getLimit()));
+                    responseHeaders.put(remainingHeader, String.valueOf(rtr.getRemaining()));
+                    responseHeaders.put(resetHeader, String.valueOf(rtr.getReset()));
+
+                    if (rtr.isAccepted()) {
+                        context.setAttribute("rate-limit-response-headers", responseHeaders); //$NON-NLS-1$
                         chain.doApply(request);
                     } else {
                         IPolicyFailureFactoryComponent failureFactory = context.getComponent(IPolicyFailureFactoryComponent.class);
                         PolicyFailure failure = failureFactory.createFailure(PolicyFailureType.Other, PolicyFailureCodes.RATE_LIMIT_EXCEEDED, Messages.i18n.format("RateLimitingPolicy.RateExceeded")); //$NON-NLS-1$
+                        failure.getHeaders().putAll(responseHeaders);
                         failure.setResponseCode(429);
                         chain.doFailure(failure);
                     }
                 }
             }
         });
+    }
+    
+    /**
+     * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#doApply(io.apiman.gateway.engine.beans.ServiceResponse, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
+     */
+    @Override
+    protected void doApply(ServiceResponse response, IPolicyContext context, RateLimitingConfig config,
+            IPolicyChain<ServiceResponse> chain) {
+        Map<String, String> headers = context.getAttribute("rate-limit-response-headers", null); //$NON-NLS-1$
+        if (headers != null) {
+            response.getHeaders().putAll(headers);
+        }
+        super.doApply(response, context, config, chain);
     }
 
     /**
