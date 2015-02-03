@@ -31,7 +31,12 @@ public class RateLimiterBucket implements Serializable {
     
     public int count = 0;
     public long last = System.currentTimeMillis();
-    public transient Object mutex = new Object();
+    
+    /**
+     * Constructor.
+     */
+    public RateLimiterBucket() {
+    }
     
     /**
      * Resets the count if the period boundary has been crossed.

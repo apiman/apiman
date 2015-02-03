@@ -52,9 +52,6 @@ public class InMemoryRateLimiterComponent implements IRateLimiterComponent {
                 bucket = new RateLimiterBucket();
                 buckets.put(bucketId, bucket);
             }
-        }
-        
-        synchronized (bucket.mutex) {
             bucket.resetIfNecessary(period);
             if (bucket.count >= limit) {
                 handler.handle(AsyncResultImpl.<Boolean>create(Boolean.FALSE));

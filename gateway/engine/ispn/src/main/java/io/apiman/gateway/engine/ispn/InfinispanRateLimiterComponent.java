@@ -44,6 +44,7 @@ public class InfinispanRateLimiterComponent implements IRateLimiterComponent {
     private String cacheName;
     
     private Cache<Object, Object> cache;
+    private Object mutex = new Object();
     
     /**
      * Constructor.
@@ -92,18 +93,14 @@ public class InfinispanRateLimiterComponent implements IRateLimiterComponent {
      */
     @Override
     public void accept(String bucketId, RateBucketPeriod period, int limit,
-        IAsyncResultHandler<Boolean> handler) {
-    
+            IAsyncResultHandler<Boolean> handler) {
         RateLimiterBucket bucket = null;
-        synchronized (getCache()) {
+        synchronized (mutex) {
             bucket = (RateLimiterBucket) getCache().get(bucketId);
             if (bucket == null) {
                 bucket = new RateLimiterBucket();
                 getCache().put(bucketId, bucket);
             }
-        }
-        
-        synchronized (bucket.mutex) {
             bucket.resetIfNecessary(period);
             if (bucket.count >= limit) {
                 handler.handle(AsyncResultImpl.<Boolean>create(Boolean.FALSE));
@@ -112,6 +109,7 @@ public class InfinispanRateLimiterComponent implements IRateLimiterComponent {
                 bucket.last = System.currentTimeMillis();
                 handler.handle(AsyncResultImpl.<Boolean>create(Boolean.TRUE));
             }
+            getCache().put(bucketId, bucket);
         }
     }
 }
