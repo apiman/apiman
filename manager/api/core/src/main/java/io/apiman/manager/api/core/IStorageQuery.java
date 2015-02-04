@@ -255,5 +255,5 @@ public interface IStorageQuery {
      * @throws StorageException 
      */
     public List<PolicyDefinitionSummaryBean> listPluginPolicyDefs(Long pluginId) throws StorageException;
-    
+
 }

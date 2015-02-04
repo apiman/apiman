@@ -572,7 +572,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             NotAuthorizedException {
         if (!securityContext.hasPermission(PermissionType.appEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
-        
+
         ContractBean contract;
         ApplicationVersionBean avb;
         try {
@@ -640,10 +640,45 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw e;
         } catch (Exception e) {
             storage.rollbackTx();
-            throw new SystemErrorException(e);
+            // Up above we are optimistically creating the contract.  If it fails, check to see
+            // if it failed because it was a duplicate.  If so, throw something sensible.  We 
+            // only do this on failure (we would get a FK contraint failure, for example) to 
+            // reduce overhead on the typical happy path.
+            if (contractAlreadyExists(organizationId, applicationId, version, bean)) {
+                throw ExceptionFactory.contractAlreadyExistsException();
+            } else {
+                throw new SystemErrorException(e);
+            }
         }
     }
     
+    /**
+     * Check to see if the contract already exists, by getting a list of all the 
+     * application's contracts and comparing with the one being created.
+     * @param organizationId
+     * @param applicationId
+     * @param version
+     * @param bean
+     */
+    private boolean contractAlreadyExists(String organizationId, String applicationId, String version,
+            NewContractBean bean) {
+        try {
+            List<ContractSummaryBean> contracts = query.getApplicationContracts(organizationId, applicationId, version);
+            for (ContractSummaryBean contract : contracts) {
+                if (contract.getServiceOrganizationId().equals(bean.getServiceOrgId()) &&
+                    contract.getServiceId().equals(bean.getServiceId()) &&
+                    contract.getServiceVersion().equals(bean.getServiceVersion()) &&
+                    contract.getPlanId().equals(bean.getPlanId())) 
+                {
+                    return true;
+                }
+            }
+            return false;
+        } catch (StorageException e) {
+            return false;
+        }
+    }
+
     /**
      * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getContract(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
      */
