@@ -87,6 +87,13 @@
       <artifactId>jboss-servlet-api_3.0_spec</artifactId>
       <scope>provided</scope>
     </dependency>
+    
+    <!-- Third Party -->
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-gwt</artifactId>
+    </dependency>
+    
   </dependencies>
 
   <build>
