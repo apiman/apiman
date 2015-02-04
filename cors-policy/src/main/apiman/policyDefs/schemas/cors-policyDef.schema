@@ -1,0 +1,65 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "CORS Policy Configuration",
+  "type": "object",
+  "properties": {
+    "errorOnCorsFailure": {
+      "title": "Terminate on CORS error",
+      "description": "When true, any request that fails CORS validation will be terminated with an appropriate error. When false, the request will still be sent to the backend service, but the browser will be left to enforce the CORS failure. In both cases valid CORS headers will be set.",
+      "type": "boolean",
+      "default": true
+    },
+    "allowOrigin": {
+      "title": "Access-Control-Allow-Origin",
+      "description": "List of origins permitted to make CORS requests through the gateway. By default same-origin is permitted, and cross-origin is forbidden. An entry of * permits all CORS requests.",
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type" : "string"
+      }
+    },
+    "allowCredentials": {
+      "title": "Access-Control-Allow-Credentials",
+      "description": "Whether response may be exposed when the `credentials` flag is set to true on the request.",
+      "type": "boolean",
+      "default": false
+    },
+    "exposeHeaders": {
+      "title": "Access-Control-Expose-Headers",
+      "description": "Which non-simple headers the browser may expose during CORS.",
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[^()<>@,;:\\\\<>\\/\\[\\]?={}\\s\\t]+$"
+      }
+    },
+    "allowHeaders": {
+      "title": "Access-Control-Allow-Headers",
+      "description": "In response to preflight request, which headers can be used during actual request.",
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[^()<>@,;:\\\\<>\\/\\[\\]?={}\\s\\t]+$"
+      }
+    },
+    "allowMethods": {
+      "title": "Access-Control-Allow-Methods",
+      "description": "In response to preflight request, which methods can be used during actual request.",
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Z]+$"
+      }
+    },
+    "maxAge": {
+      "title": "Access-Control-Max-Age",
+      "description": "How long preflight request can be cached in delta seconds.",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 2147483647
+    }
+  }
+}

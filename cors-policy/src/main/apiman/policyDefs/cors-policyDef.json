@@ -1,0 +1,15 @@
+{
+  "id" : "cors-policy",
+  "name" : "CORS Policy",
+  "description" : "CORS regulates access resource requests from outside of an originating domain. Configuration required.",
+  "policyImpl" : "plugin:${project.groupId}:${project.artifactId}:${project.version}:${project.packaging}/io.apiman.plugins.cors_policy.CorsPolicy",
+  "icon" : "gavel",
+  "formType" : "JsonSchema",
+  "templates" : [
+    {
+      "language" : null,
+      "template" : "Cross-origin requests from @if{allowOrigin.contains(\"*\")} any @else{} @{allowOrigin.size()} @end{} origin(s) will be permitted upon satisfying method, header and credential constraints. @if{errorOnCorsFailure} Denied requests will be terminated. @end{} Preflight requests will be cached for @{maxAge} delta seconds."
+    }
+  ],
+  "form" : "schemas/cors-policyDef.schema"
+}
