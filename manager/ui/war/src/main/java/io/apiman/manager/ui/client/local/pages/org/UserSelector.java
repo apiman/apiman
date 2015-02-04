@@ -95,13 +95,14 @@ public class UserSelector extends FlowPanel implements HasValue<UserBean> {
      * Creates a row in the output table for each user.
      * @param userBean
      */
+    @SuppressWarnings("nls")
     private Widget createUserRow(final UserBean userBean) {
         final Anchor a = new Anchor();
-        a.getElement().setClassName("item"); //$NON-NLS-1$
+        a.getElement().setClassName("item");
         StringBuilder builder = new StringBuilder();
-        builder.append("<i class=\"fa fa-user fa-fw\"></i> "); //$NON-NLS-1$
-        builder.append("<span class=\"\">" + userBean.getFullName() + "</span> "); //$NON-NLS-1$ //$NON-NLS-2$
-        builder.append("<span>(</span><span>" + userBean.getUsername() + "</span><span>)</span>"); //$NON-NLS-1$ //$NON-NLS-2$
+        builder.append("<i class=\"fa fa-user fa-fw\"></i> ");
+        builder.append("<span class=\"\">" + userBean.getFullName().replace("<", "&lt;") + "</span> ");
+        builder.append("<span>(</span><span>" + userBean.getUsername().replace("<", "&lt;") + "</span><span>)</span>");
         a.setHTML(builder.toString());
         a.addClickHandler(new ClickHandler() {
             @Override

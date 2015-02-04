@@ -109,14 +109,15 @@ public class ServiceSelector extends FlowPanel implements HasValue<ServiceSummar
      * 
      * @param serviceBean
      */
+    @SuppressWarnings("nls")
     private Widget createServiceRow(final ServiceSummaryBean serviceBean) {
         final Anchor a = new Anchor();
-        a.getElement().setClassName("item"); //$NON-NLS-1$
+        a.getElement().setClassName("item");
         StringBuilder builder = new StringBuilder();
-        builder.append("<i class=\"fa fa-puzzle-piece fa-fw\"></i> "); //$NON-NLS-1$
-        builder.append("<span>" + serviceBean.getOrganizationId() + "</span> "); //$NON-NLS-1$ //$NON-NLS-2$
+        builder.append("<i class=\"fa fa-puzzle-piece fa-fw\"></i> ");
+        builder.append("<span>" + serviceBean.getOrganizationId() + "</span> ");
         builder.append("<span> / </span> "); //$NON-NLS-1$
-        builder.append("<span class=\"emphasis\">").append(serviceBean.getName()).append("</span> "); //$NON-NLS-1$ //$NON-NLS-2$
+        builder.append("<span class=\"emphasis\">").append(serviceBean.getName().replace("<", "&lt;")).append("</span> ");
         a.setHTML(builder.toString());
         a.addClickHandler(new ClickHandler() {
             @Override
