@@ -1,0 +1,28 @@
+{
+    "mappings" : {
+        "gateway" : {
+            "properties" : {
+                "name" : {
+                    "type" : "string",
+                    "fields" : { "raw" : { "type" : "string", "index" : "not_analyzed" } }
+                }
+            }
+        },
+        "policyDef" : {
+            "properties" : {
+                "name" : {
+                    "type" : "string",
+                    "fields" : { "raw" : { "type" : "string", "index" : "not_analyzed" } }
+                }
+            }
+        },
+        "plugin" : {
+            "properties" : {
+                "name" : {
+                    "type" : "string",
+                    "fields" : { "raw" : { "type" : "string", "index" : "not_analyzed" } }
+                }
+            }
+        }
+    }
+}

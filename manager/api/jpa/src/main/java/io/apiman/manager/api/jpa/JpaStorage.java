@@ -54,7 +54,6 @@ import io.apiman.manager.api.beans.summary.PolicySummaryBean;
 import io.apiman.manager.api.beans.summary.ServicePlanSummaryBean;
 import io.apiman.manager.api.beans.summary.ServiceSummaryBean;
 import io.apiman.manager.api.beans.summary.ServiceVersionSummaryBean;
-import io.apiman.manager.api.core.IApiKeyGenerator;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
@@ -65,9 +64,9 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Alternative;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
@@ -80,8 +79,8 @@ import org.slf4j.LoggerFactory;
  *
  * @author eric.wittmann@redhat.com
  */
-@ApplicationScoped
-public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorageQuery, IApiKeyGenerator {
+@ApplicationScoped @Alternative
+public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorageQuery {
 
     private static Logger logger = LoggerFactory.getLogger(JpaStorage.class);
 
@@ -1548,13 +1547,6 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         } finally {
             commitTx();
         }
-    }
-    /**
-     * @see io.apiman.manager.api.core.IApiKeyGenerator#generate()
-     */
-    @Override
-    public String generate() {
-        return UUID.randomUUID().toString();
     }
 
 }

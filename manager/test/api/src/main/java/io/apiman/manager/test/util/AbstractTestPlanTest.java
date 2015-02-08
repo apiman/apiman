@@ -39,7 +39,7 @@ public abstract class AbstractTestPlanTest {
     public static void setup() throws Exception {
         System.out.println("AbstractTestPlanTest::setup()");
         if (!"true".equals(System.getProperty("apiman.junit.no-server", "false"))) {
-            testServer.start();
+            startServer();
         } else {
             System.out.println("**** APIMan Server suppressed - assuming running tests against a live server. ****");
         }
@@ -94,8 +94,22 @@ public abstract class AbstractTestPlanTest {
     @AfterClass
     public static void shutdown() throws Exception {
         if (!"true".equals(System.getProperty("apiman.junit.no-server", "false"))) {
-            testServer.stop();
+            stopServer();
         }
+    }
+
+    /**
+     * @throws Exception
+     */
+    protected static void startServer() throws Exception {
+        testServer.start();
+    }
+
+    /**
+     * @throws Exception
+     */
+    protected static void stopServer() throws Exception {
+        testServer.stop();
     }
 
 }

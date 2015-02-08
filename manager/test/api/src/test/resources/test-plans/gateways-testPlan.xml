@@ -7,7 +7,7 @@
     <test name="Gateway 2">test-plan-data/gateways/002_create-2.resttest</test>
     <test name="Gateway 3">test-plan-data/gateways/003_create-3.resttest</test>
     <test name="Get Gateway 2">test-plan-data/gateways/004_get-2.resttest</test>
-    <test name="List All Defs">test-plan-data/gateways/005_list-all.resttest</test>
+    <test name="List All Gateways">test-plan-data/gateways/005_list-all.resttest</test>
     <test name="Update Gateway 1">test-plan-data/gateways/006_update-1.resttest</test>
     <test name="Delete Gateway 3">test-plan-data/gateways/007_delete-3.resttest</test>
     <test name="List All Gateways">test-plan-data/gateways/008_list-all.resttest</test>
