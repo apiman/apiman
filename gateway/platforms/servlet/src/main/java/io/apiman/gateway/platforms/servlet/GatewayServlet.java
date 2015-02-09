@@ -105,7 +105,35 @@ public abstract class GatewayServlet extends HttpServlet {
             IOException {
         doAction(req, resp, "DELETE"); //$NON-NLS-1$
     }
-
+    
+    
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServlet#doOptions(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     */
+    @Override
+    protected void doOptions(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
+            IOException {
+        doAction(req, resp, "OPTIONS"); //$NON-NLS-1$
+    }
+    
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServlet#doHead(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     */
+    @Override
+    protected void doHead(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
+            IOException {
+        doAction(req, resp, "HEAD"); //$NON-NLS-1$
+    }
+    
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServlet#doTrace(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     */
+    @Override
+    protected void doTrace(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
+            IOException {
+        doAction(req, resp, "TRACE"); //$NON-NLS-1$
+    }
+    
     /**
      * Generic handler for all types of http actions/verbs.
      * @param req
