@@ -20,7 +20,6 @@ import io.apiman.manager.api.core.IIdmStorage;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.UuidApiKeyGenerator;
-import io.apiman.manager.api.es.EsIdmStorage;
 import io.apiman.manager.api.es.EsStorage;
 import io.apiman.manager.api.jpa.JpaStorage;
 import io.apiman.manager.api.jpa.roles.JpaIdmStorage;
@@ -52,6 +51,7 @@ public class TestCdiFactory {
         if (testType == TestType.jpa) {
             return jpaStorage;
         } else if (testType == TestType.es) {
+            esStorage.initialize();
             return new TestEsStorageWrapper(esClient, esStorage);
         } else {
             throw new RuntimeException("Unexpected test type: " + testType);
@@ -64,6 +64,7 @@ public class TestCdiFactory {
         if (testType == TestType.jpa) {
             return jpaStorage;
         } else if (testType == TestType.es) {
+            esStorage.initialize();
             return new TestEsStorageQueryWrapper(esClient, esStorage);
         } else {
             throw new RuntimeException("Unexpected test type: " + testType);
@@ -76,12 +77,13 @@ public class TestCdiFactory {
     }
 
     @Produces @ApplicationScoped
-    public static IIdmStorage provideIdmStorage(@New JpaIdmStorage jpaIdmStorage, @New EsIdmStorage esIdmStorage) {
+    public static IIdmStorage provideIdmStorage(@New JpaIdmStorage jpaIdmStorage, @New EsStorage esStorage) {
         TestType testType = ManagerTestUtils.getTestType();
         if (testType == TestType.jpa) {
             return jpaIdmStorage;
         } else if (testType == TestType.es) {
-            return esIdmStorage;
+            esStorage.initialize();
+            return new TestEsIdmStorageWrapper(esClient, esStorage);
         } else {
             throw new RuntimeException("Unexpected test type: " + testType);
         }

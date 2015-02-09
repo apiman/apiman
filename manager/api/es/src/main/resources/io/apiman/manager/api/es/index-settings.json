@@ -23,6 +23,66 @@
                     "fields" : { "raw" : { "type" : "string", "index" : "not_analyzed" } }
                 }
             }
+        },
+        "role" : {
+            "properties" : {
+                "name" : {
+                    "type" : "string",
+                    "fields" : { "raw" : { "type" : "string", "index" : "not_analyzed" } }
+                }
+            }
+        },
+        "user" : {
+            "properties" : {
+                "fullName" : {
+                    "type" : "string",
+                    "fields" : { "raw" : { "type" : "string", "index" : "not_analyzed" } }
+                }
+            }
+        },
+        "organization" : {
+            "properties" : {
+                "name" : {
+                    "type" : "string",
+                    "fields" : { "raw" : { "type" : "string", "index" : "not_analyzed" } }
+                }
+            }
+        },
+        "plan" : {
+            "properties" : {
+                "name" : {
+                    "type" : "string",
+                    "fields" : { "raw" : { "type" : "string", "index" : "not_analyzed" } }
+                },
+                "orgName" : {
+                    "type" : "string",
+                    "fields" : { "raw" : { "type" : "string", "index" : "not_analyzed" } }
+                }
+            }
+        },
+        "service" : {
+            "properties" : {
+                "name" : {
+                    "type" : "string",
+                    "fields" : { "raw" : { "type" : "string", "index" : "not_analyzed" } }
+                },
+                "orgName" : {
+                    "type" : "string",
+                    "fields" : { "raw" : { "type" : "string", "index" : "not_analyzed" } }
+                }
+            }
+        },
+        "application" : {
+            "properties" : {
+                "name" : {
+                    "type" : "string",
+                    "fields" : { "raw" : { "type" : "string", "index" : "not_analyzed" } }
+                },
+                "orgName" : {
+                    "type" : "string",
+                    "fields" : { "raw" : { "type" : "string", "index" : "not_analyzed" } }
+                }
+            }
         }
     }
 }

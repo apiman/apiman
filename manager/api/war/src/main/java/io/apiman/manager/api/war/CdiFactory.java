@@ -20,7 +20,6 @@ import io.apiman.manager.api.core.IIdmStorage;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.UuidApiKeyGenerator;
-import io.apiman.manager.api.es.EsIdmStorage;
 import io.apiman.manager.api.es.EsStorage;
 import io.apiman.manager.api.jpa.JpaStorage;
 import io.apiman.manager.api.jpa.roles.JpaIdmStorage;
@@ -42,12 +41,12 @@ public class CdiFactory {
     private static TransportClient esClient;
 
     @Produces @ApplicationScoped
-    public static IStorage provideStorage(@New JpaStorage jpaStorage, @New EsStorage gitStorage) {
+    public static IStorage provideStorage(@New JpaStorage jpaStorage, @New EsStorage esStorage) {
         return jpaStorage;
     }
 
     @Produces @ApplicationScoped
-    public static IStorageQuery provideStorageQuery(@New JpaStorage jpaStorage, @New EsStorage gitStorage) {
+    public static IStorageQuery provideStorageQuery(@New JpaStorage jpaStorage, @New EsStorage esStorage) {
         return jpaStorage;
     }
 
@@ -57,7 +56,7 @@ public class CdiFactory {
     }
 
     @Produces @ApplicationScoped
-    public static IIdmStorage provideIdmStorage(@New JpaIdmStorage jpaIdmStorage, @New EsIdmStorage gitIdmStorage) {
+    public static IIdmStorage provideIdmStorage(@New JpaIdmStorage jpaIdmStorage, @New EsStorage esStorage) {
         return jpaIdmStorage;
     }
 

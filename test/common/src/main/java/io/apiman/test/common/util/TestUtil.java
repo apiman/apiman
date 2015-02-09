@@ -37,8 +37,6 @@ import org.apache.commons.io.IOUtils;
  */
 public class TestUtil {
     
-    private static final String PAUSE_SYSPROP = "apiman-test.pause-between-tests"; //$NON-NLS-1$
-
     /**
      * Loads a test plan from a classpath resource.
      * @param resourcePath

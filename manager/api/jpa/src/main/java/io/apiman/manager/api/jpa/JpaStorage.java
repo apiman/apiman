@@ -22,7 +22,6 @@ import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.gateways.GatewayType;
-import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.beans.plans.PlanBean;
 import io.apiman.manager.api.beans.plans.PlanVersionBean;
@@ -32,7 +31,7 @@ import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
 import io.apiman.manager.api.beans.search.PagingBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
-import io.apiman.manager.api.beans.search.SearchCriteriaFilterBean;
+import io.apiman.manager.api.beans.search.SearchCriteriaFilterOperator;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.beans.services.ServiceBean;
 import io.apiman.manager.api.beans.services.ServiceGatewayBean;
@@ -193,15 +192,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     public void createPolicyDefinition(PolicyDefinitionBean policyDef) throws StorageException {
         super.create(policyDef);
     }
-    
-    /**
-     * @see io.apiman.manager.api.core.IStorage#createRole(io.apiman.manager.api.beans.idm.RoleBean)
-     */
-    @Override
-    public void createRole(RoleBean role) throws StorageException {
-        super.create(role);
-    }
-    
+
     /**
      * @see io.apiman.manager.api.core.IStorage#createService(io.apiman.manager.api.beans.services.ServiceBean)
      */
@@ -289,15 +280,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     public void updatePolicyDefinition(PolicyDefinitionBean policyDef) throws StorageException {
         super.update(policyDef);
     }
-    
-    /**
-     * @see io.apiman.manager.api.core.IStorage#updateRole(io.apiman.manager.api.beans.idm.RoleBean)
-     */
-    @Override
-    public void updateRole(RoleBean role) throws StorageException {
-        super.update(role);
-    }
-    
+
     /**
      * @see io.apiman.manager.api.core.IStorage#updateService(io.apiman.manager.api.beans.services.ServiceBean)
      */
@@ -410,15 +393,6 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     public void deletePolicyDefinition(PolicyDefinitionBean policyDef) throws StorageException {
         super.delete(policyDef);
     }
-
-    /**
-     * @see io.apiman.manager.api.core.IStorage#deleteRole(io.apiman.manager.api.beans.idm.RoleBean)
-     */
-    @Override
-    public void deleteRole(RoleBean role) throws StorageException {
-        super.delete(role);
-    }
-    
 
     /**
      * @see io.apiman.manager.api.core.IStorage#getOrganization(java.lang.String)
@@ -534,14 +508,6 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorage#getRole(java.lang.String)
-     */
-    @Override
-    public RoleBean getRole(String id) throws StorageException {
-        return super.get(id, RoleBean.class);
-    }
-
-    /**
      * @see io.apiman.manager.api.jpa.AbstractJpaStorage#find(io.apiman.manager.api.beans.search.SearchCriteriaBean, java.lang.Class)
      */
     @Override
@@ -634,7 +600,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     public SearchResultsBean<PlanSummaryBean> findPlans(String organizationId, SearchCriteriaBean criteria)
             throws StorageException {
         
-        criteria.addFilter("organization.id", organizationId, SearchCriteriaFilterBean.OPERATOR_EQ); //$NON-NLS-1$
+        criteria.addFilter("organization.id", organizationId, SearchCriteriaFilterOperator.eq); //$NON-NLS-1$
         SearchResultsBean<PlanBean> result = find(criteria, PlanBean.class);
         SearchResultsBean<PlanSummaryBean> rval = new SearchResultsBean<PlanSummaryBean>();
         rval.setTotalSize(result.getTotalSize());
@@ -676,13 +642,13 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         }
         criteria.setOrder("id", false); //$NON-NLS-1$
         if (organizationId != null) {
-            criteria.addFilter("organizationId", organizationId, SearchCriteriaFilterBean.OPERATOR_EQ); //$NON-NLS-1$
+            criteria.addFilter("organizationId", organizationId, SearchCriteriaFilterOperator.eq); //$NON-NLS-1$
         }
         if (entityId != null) {
-            criteria.addFilter("entityId", entityId, SearchCriteriaFilterBean.OPERATOR_EQ); //$NON-NLS-1$
+            criteria.addFilter("entityId", entityId, SearchCriteriaFilterOperator.eq); //$NON-NLS-1$
         }
         if (entityVersion != null) {
-            criteria.addFilter("entityVersion", entityVersion, SearchCriteriaFilterBean.OPERATOR_EQ); //$NON-NLS-1$
+            criteria.addFilter("entityVersion", entityVersion, SearchCriteriaFilterOperator.eq); //$NON-NLS-1$
         }
         if (type != null) {
             AuditEntityType entityType = null;
@@ -696,7 +662,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                 entityType = AuditEntityType.Plan;
             }
             if (entityType != null) {
-                criteria.addFilter("entityType", entityType.name(), SearchCriteriaFilterBean.OPERATOR_EQ); //$NON-NLS-1$
+                criteria.addFilter("entityType", entityType.name(), SearchCriteriaFilterOperator.eq); //$NON-NLS-1$
             }
         }
         
@@ -718,7 +684,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         }
         criteria.setOrder("createdOn", false); //$NON-NLS-1$
         if (userId != null) {
-            criteria.addFilter("who", userId, SearchCriteriaFilterBean.OPERATOR_EQ); //$NON-NLS-1$
+            criteria.addFilter("who", userId, SearchCriteriaFilterOperator.eq); //$NON-NLS-1$
         }
         
         return find(criteria, AuditEntryBean.class);
@@ -1490,10 +1456,10 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     public int getMaxPolicyOrderIndex(String organizationId, String entityId, String entityVersion,
             PolicyType type) throws StorageException {
         SearchCriteriaBean criteria = new SearchCriteriaBean();
-        criteria.addFilter("organizationId", organizationId, SearchCriteriaFilterBean.OPERATOR_EQ); //$NON-NLS-1$
-        criteria.addFilter("entityId", entityId, SearchCriteriaFilterBean.OPERATOR_EQ); //$NON-NLS-1$
-        criteria.addFilter("entityVersion", entityVersion, SearchCriteriaFilterBean.OPERATOR_EQ); //$NON-NLS-1$
-        criteria.addFilter("type", type.name(), SearchCriteriaFilterBean.OPERATOR_EQ); //$NON-NLS-1$
+        criteria.addFilter("organizationId", organizationId, SearchCriteriaFilterOperator.eq); //$NON-NLS-1$
+        criteria.addFilter("entityId", entityId, SearchCriteriaFilterOperator.eq); //$NON-NLS-1$
+        criteria.addFilter("entityVersion", entityVersion, SearchCriteriaFilterOperator.eq); //$NON-NLS-1$
+        criteria.addFilter("type", type.name(), SearchCriteriaFilterOperator.eq); //$NON-NLS-1$
         criteria.setOrder("orderIndex", false); //$NON-NLS-1$
         criteria.setPage(1);
         criteria.setPageSize(1);

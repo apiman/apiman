@@ -338,6 +338,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
             Root<RoleMembershipBean> from = criteriaQuery.from(RoleMembershipBean.class);
             criteriaQuery.where(builder.equal(from.get("userId"), userId)); //$NON-NLS-1$
             TypedQuery<RoleMembershipBean> typedQuery = entityManager.createQuery(criteriaQuery);
+            typedQuery.setMaxResults(500);
             List<RoleMembershipBean> resultList = typedQuery.getResultList();
             for (RoleMembershipBean membership : resultList) {
                 RoleBean role = getRoleInternal(membership.getRoleId());

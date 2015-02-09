@@ -54,7 +54,7 @@ import io.apiman.manager.api.beans.policies.PolicyType;
 import io.apiman.manager.api.beans.policies.UpdatePolicyBean;
 import io.apiman.manager.api.beans.search.PagingBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
-import io.apiman.manager.api.beans.search.SearchCriteriaFilterBean;
+import io.apiman.manager.api.beans.search.SearchCriteriaFilterOperator;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.beans.services.NewServiceBean;
 import io.apiman.manager.api.beans.services.NewServiceVersionBean;
@@ -168,7 +168,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         SearchCriteriaBean criteria = new SearchCriteriaBean();
         criteria.setPage(1);
         criteria.setPageSize(100);
-        criteria.addFilter("autoGrant", "true", SearchCriteriaFilterBean.OPERATOR_BOOL_EQ); //$NON-NLS-1$ //$NON-NLS-2$
+        criteria.addFilter("autoGrant", "true", SearchCriteriaFilterOperator.bool_eq); //$NON-NLS-1$ //$NON-NLS-2$
         try {
             autoGrantedRoles = idmStorage.findRoles(criteria).getBeans();
         } catch (StorageException e) {

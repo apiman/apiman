@@ -15,8 +15,16 @@
  */
 package io.apiman.manager.api.es;
 
+import io.apiman.manager.api.beans.audit.AuditEntityType;
+import io.apiman.manager.api.beans.audit.AuditEntryBean;
+import io.apiman.manager.api.beans.audit.AuditEntryType;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
 import io.apiman.manager.api.beans.gateways.GatewayType;
+import io.apiman.manager.api.beans.idm.PermissionType;
+import io.apiman.manager.api.beans.idm.RoleBean;
+import io.apiman.manager.api.beans.idm.RoleMembershipBean;
+import io.apiman.manager.api.beans.idm.UserBean;
+import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.beans.plugins.PluginBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionTemplateBean;
@@ -65,6 +73,121 @@ public class EsMarshalling {
                     .field("modifiedBy", bean.getModifiedBy())
                     .field("modifiedOn", bean.getModifiedOn().getTime())
                 .endObject();
+            return builder;
+        } catch (IOException e) {
+            throw new StorageException(e);
+        }
+    }
+
+    /**
+     * Marshals the given bean into the given map.
+     * @param bean
+     * @throws StorageException 
+     */
+    public static XContentBuilder marshall(AuditEntryBean bean) throws StorageException {
+        try {
+            XContentBuilder builder = XContentFactory.jsonBuilder()
+                .startObject()
+                    .field("id", bean.getId())
+                    .field("organizationId", bean.getOrganizationId())
+                    .field("entityId", bean.getEntityId())
+                    .field("entityType", bean.getEntityType())
+                    .field("entityVersion", bean.getEntityVersion())
+                    .field("data", bean.getData())
+                    .field("who", bean.getWho())
+                    .field("what", bean.getWhat())
+                    .field("createdOn", bean.getCreatedOn().getTime())
+                .endObject();
+            return builder;
+        } catch (IOException e) {
+            throw new StorageException(e);
+        }
+    }
+
+    /**
+     * Marshals the given bean into the given map.
+     * @param bean
+     * @throws StorageException 
+     */
+    public static XContentBuilder marshall(OrganizationBean bean) throws StorageException {
+        try {
+            XContentBuilder builder = XContentFactory.jsonBuilder()
+                .startObject()
+                    .field("id", bean.getId())
+                    .field("name", bean.getName())
+                    .field("description", bean.getDescription())
+                    .field("createdBy", bean.getCreatedBy())
+                    .field("createdOn", bean.getCreatedOn().getTime())
+                    .field("modifiedBy", bean.getModifiedBy())
+                    .field("modifiedOn", bean.getModifiedOn().getTime())
+                .endObject();
+            return builder;
+        } catch (IOException e) {
+            throw new StorageException(e);
+        }
+    }
+
+    /**
+     * Marshals the given bean into the given map.
+     * @param bean
+     * @throws StorageException 
+     */
+    public static XContentBuilder marshall(RoleMembershipBean bean) throws StorageException {
+        try {
+            XContentBuilder builder = XContentFactory.jsonBuilder()
+                .startObject()
+                    .field("id", bean.getId())
+                    .field("organizationId", bean.getOrganizationId())
+                    .field("roleId", bean.getRoleId())
+                    .field("userId", bean.getUserId())
+                    .field("createdOn", bean.getCreatedOn().getTime())
+                .endObject();
+            return builder;
+        } catch (IOException e) {
+            throw new StorageException(e);
+        }
+    }
+
+    /**
+     * Marshals the given bean into the given map.
+     * @param bean
+     * @throws StorageException 
+     */
+    public static XContentBuilder marshall(UserBean bean) throws StorageException {
+        try {
+            XContentBuilder builder = XContentFactory.jsonBuilder()
+                .startObject()
+                    .field("username", bean.getUsername())
+                    .field("email", bean.getEmail())
+                    .field("fullName", bean.getFullName())
+                    .field("joinedOn", bean.getJoinedOn())
+                .endObject();
+            return builder;
+        } catch (IOException e) {
+            throw new StorageException(e);
+        }
+    }
+
+    /**
+     * Marshals the given bean into the given map.
+     * @param bean
+     * @throws StorageException 
+     */
+    public static XContentBuilder marshall(RoleBean bean) throws StorageException {
+        try {
+            XContentBuilder builder = XContentFactory.jsonBuilder()
+                .startObject()
+                    .field("id", bean.getId())
+                    .field("name", bean.getName())
+                    .field("description", bean.getDescription())
+                    .field("createdBy", bean.getCreatedBy())
+                    .field("createdOn", bean.getCreatedOn().getTime())
+                    .field("autoGrant", bean.getAutoGrant());
+            Set<PermissionType> permissions = bean.getPermissions();
+            if (permissions != null && !permissions.isEmpty()) {
+                builder.array("permissions", permissions.toArray());
+            }
+            builder.endObject();
             return builder;
         } catch (IOException e) {
             throw new StorageException(e);
@@ -152,6 +275,105 @@ public class EsMarshalling {
         bean.setCreatedOn(asDate(source.get("createdOn")));
         bean.setModifiedBy(asString(source.get("modifiedBy")));
         bean.setModifiedOn(asDate(source.get("modifiedOn")));
+        return bean;
+    }
+
+    /**
+     * Unmarshals the given map source into a bean.
+     * @param source
+     */
+    public static RoleBean unmarshallRole(Map<String, Object> source) {
+        if (source == null) {
+            return null;
+        }
+        RoleBean bean = new RoleBean();
+        bean.setId(asString(source.get("id")));
+        bean.setName(asString(source.get("name")));
+        bean.setDescription(asString(source.get("description")));
+        bean.setCreatedBy(asString(source.get("createdBy")));
+        bean.setCreatedOn(asDate(source.get("createdOn")));
+        bean.setAutoGrant(asBoolean(source.get("autoGrant")));
+        @SuppressWarnings("unchecked")
+        List<Object> permissions = (List<Object>) source.get("permissions");
+        if (permissions != null && !permissions.isEmpty()) {
+            bean.setPermissions(new HashSet<PermissionType>());
+            for (Object permission : permissions) {
+                bean.getPermissions().add(asEnum(permission, PermissionType.class));
+            }
+        }
+        return bean;
+    }
+
+    /**
+     * Unmarshals the given map source into a bean.
+     * @param source
+     */
+    public static UserBean unmarshallUser(Map<String, Object> source) {
+        if (source == null) {
+            return null;
+        }
+        UserBean bean = new UserBean();
+        bean.setUsername(asString(source.get("username")));
+        bean.setEmail(asString(source.get("email")));
+        bean.setFullName(asString(source.get("fullName")));
+        bean.setJoinedOn(asDate(source.get("joinedOn")));
+        return bean;
+    }
+
+    /**
+     * Unmarshals the given map source into a bean.
+     * @param source
+     */
+    public static OrganizationBean unmarshallOrganization(Map<String, Object> source) {
+        if (source == null) {
+            return null;
+        }
+        OrganizationBean bean = new OrganizationBean();
+        bean.setId(asString(source.get("id")));
+        bean.setName(asString(source.get("name")));
+        bean.setDescription(asString(source.get("description")));
+        bean.setCreatedOn(asDate(source.get("createdOn")));
+        bean.setCreatedBy(asString(source.get("createdBy")));
+        bean.setModifiedOn(asDate(source.get("modifiedOn")));
+        bean.setModifiedBy(asString(source.get("modifiedBy")));
+        return bean;
+    }
+
+    /**
+     * Unmarshals the given map source into a bean.
+     * @param source
+     */
+    public static RoleMembershipBean unmarshallRoleMembership(Map<String, Object> source) {
+        if (source == null) {
+            return null;
+        }
+        RoleMembershipBean bean = new RoleMembershipBean();
+        bean.setId(asLong(source.get("id")));
+        bean.setOrganizationId(asString(source.get("organizationId")));
+        bean.setRoleId(asString(source.get("roleId")));
+        bean.setUserId(asString(source.get("userId")));
+        bean.setCreatedOn(asDate(source.get("createdOn")));
+        return bean;
+    }
+
+    /**
+     * Unmarshals the given map source into a bean.
+     * @param source
+     */
+    public static AuditEntryBean unmarshallAuditEntry(Map<String, Object> source) {
+        if (source == null) {
+            return null;
+        }
+        AuditEntryBean bean = new AuditEntryBean();
+        bean.setId(asLong(source.get("id")));
+        bean.setOrganizationId(asString(source.get("organizationId")));
+        bean.setCreatedOn(asDate(source.get("createdOn")));
+        bean.setData(asString(source.get("data")));
+        bean.setEntityId(asString(source.get("entityId")));
+        bean.setEntityType(asEnum(source.get("entityType"), AuditEntityType.class));
+        bean.setEntityVersion(asString(source.get("entityVersion")));
+        bean.setWhat(asEnum(source.get("what"), AuditEntryType.class));
+        bean.setWho(asString(source.get("who")));
         return bean;
     }
 
@@ -315,6 +537,16 @@ public class EsMarshalling {
         }
         Number n = (Number) object;
         return new Date(n.longValue());
+    }
+
+    /**
+     * @param object
+     */
+    private static Boolean asBoolean(Object object) {
+        if (object == null) {
+            return null;
+        }
+        return (Boolean) object;
     }
 
 }

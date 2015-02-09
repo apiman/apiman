@@ -20,7 +20,6 @@ import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
-import io.apiman.manager.api.beans.idm.RoleBean;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.beans.plans.PlanBean;
 import io.apiman.manager.api.beans.plans.PlanVersionBean;
@@ -188,15 +187,6 @@ public class TestEsStorageWrapper implements IStorage {
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorage#createRole(io.apiman.manager.api.beans.idm.RoleBean)
-     */
-    @Override
-    public void createRole(RoleBean role) throws StorageException {
-        this.delegate.createRole(role);
-        
-    }
-
-    /**
      * @see io.apiman.manager.api.core.IStorage#createAuditEntry(io.apiman.manager.api.beans.audit.AuditEntryBean)
      */
     @Override
@@ -301,15 +291,6 @@ public class TestEsStorageWrapper implements IStorage {
     @Override
     public void updatePolicyDefinition(PolicyDefinitionBean policyDef) throws StorageException {
         this.delegate.updatePolicyDefinition(policyDef);
-        
-    }
-
-    /**
-     * @see io.apiman.manager.api.core.IStorage#updateRole(io.apiman.manager.api.beans.idm.RoleBean)
-     */
-    @Override
-    public void updateRole(RoleBean role) throws StorageException {
-        this.delegate.updateRole(role);
         
     }
 
@@ -422,15 +403,6 @@ public class TestEsStorageWrapper implements IStorage {
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorage#deleteRole(io.apiman.manager.api.beans.idm.RoleBean)
-     */
-    @Override
-    public void deleteRole(RoleBean role) throws StorageException {
-        this.delegate.deleteRole(role);
-        
-    }
-
-    /**
      * @see io.apiman.manager.api.core.IStorage#getOrganization(java.lang.String)
      */
     @Override
@@ -536,14 +508,6 @@ public class TestEsStorageWrapper implements IStorage {
     @Override
     public PolicyDefinitionBean getPolicyDefinition(String id) throws StorageException {
         return this.delegate.getPolicyDefinition(id);
-    }
-
-    /**
-     * @see io.apiman.manager.api.core.IStorage#getRole(java.lang.String)
-     */
-    @Override
-    public RoleBean getRole(String id) throws StorageException {
-        return this.delegate.getRole(id);
     }
 
     /**

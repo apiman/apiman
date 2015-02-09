@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.manager.api.es;
+package io.apiman.manager.test.server;
 
 import io.apiman.manager.api.beans.idm.PermissionBean;
 import io.apiman.manager.api.beans.idm.RoleBean;
@@ -26,21 +26,26 @@ import io.apiman.manager.api.core.exceptions.StorageException;
 
 import java.util.Set;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Alternative;
+import org.elasticsearch.action.admin.indices.refresh.RefreshRequest;
+import org.elasticsearch.client.transport.TransportClient;
+
 
 /**
- * A git implementation of the IDM storage interface.
- *
  * @author eric.wittmann@redhat.com
  */
-@ApplicationScoped @Alternative
-public class EsIdmStorage implements IIdmStorage {
-    
+public class TestEsIdmStorageWrapper implements IIdmStorage {
+
+    private TransportClient esClient;
+    private IIdmStorage delegate;
+
     /**
      * Constructor.
+     * @param esClient 
+     * @param delegate
      */
-    public EsIdmStorage() {
+    public TestEsIdmStorageWrapper(TransportClient esClient, IIdmStorage delegate) {
+        this.esClient = esClient;
+        this.delegate = delegate;
     }
 
     /**
@@ -48,7 +53,7 @@ public class EsIdmStorage implements IIdmStorage {
      */
     @Override
     public void createUser(UserBean user) throws StorageException {
-        throw new StorageException("Not yet implemented"); // TODO Auto-generated method stub
+        this.delegate.createUser(user);
     }
 
     /**
@@ -56,8 +61,7 @@ public class EsIdmStorage implements IIdmStorage {
      */
     @Override
     public UserBean getUser(String userId) throws StorageException {
-        throw new StorageException("Not yet implemented"); // TODO Auto-generated method stub
-        
+        return this.delegate.getUser(userId);
     }
 
     /**
@@ -65,8 +69,7 @@ public class EsIdmStorage implements IIdmStorage {
      */
     @Override
     public void updateUser(UserBean user) throws StorageException {
-        throw new StorageException("Not yet implemented"); // TODO Auto-generated method stub
-        
+        this.delegate.updateUser(user);
     }
 
     /**
@@ -74,8 +77,8 @@ public class EsIdmStorage implements IIdmStorage {
      */
     @Override
     public SearchResultsBean<UserBean> findUsers(SearchCriteriaBean criteria) throws StorageException {
-        throw new StorageException("Not yet implemented"); // TODO Auto-generated method stub
-        
+        refresh();
+        return this.delegate.findUsers(criteria);
     }
 
     /**
@@ -83,8 +86,7 @@ public class EsIdmStorage implements IIdmStorage {
      */
     @Override
     public void createRole(RoleBean role) throws StorageException {
-        throw new StorageException("Not yet implemented"); // TODO Auto-generated method stub
-        
+        this.delegate.createRole(role);
     }
 
     /**
@@ -92,8 +94,7 @@ public class EsIdmStorage implements IIdmStorage {
      */
     @Override
     public RoleBean getRole(String roleId) throws StorageException {
-        throw new StorageException("Not yet implemented"); // TODO Auto-generated method stub
-        
+        return this.delegate.getRole(roleId);
     }
 
     /**
@@ -101,8 +102,7 @@ public class EsIdmStorage implements IIdmStorage {
      */
     @Override
     public void updateRole(RoleBean role) throws StorageException {
-        throw new StorageException("Not yet implemented"); // TODO Auto-generated method stub
-        
+        this.delegate.updateRole(role);
     }
 
     /**
@@ -110,8 +110,7 @@ public class EsIdmStorage implements IIdmStorage {
      */
     @Override
     public void deleteRole(RoleBean role) throws StorageException {
-        throw new StorageException("Not yet implemented"); // TODO Auto-generated method stub
-        
+        this.delegate.deleteRole(role);
     }
 
     /**
@@ -119,8 +118,8 @@ public class EsIdmStorage implements IIdmStorage {
      */
     @Override
     public SearchResultsBean<RoleBean> findRoles(SearchCriteriaBean criteria) throws StorageException {
-        throw new StorageException("Not yet implemented"); // TODO Auto-generated method stub
-        
+        refresh();
+        return this.delegate.findRoles(criteria);
     }
 
     /**
@@ -128,8 +127,7 @@ public class EsIdmStorage implements IIdmStorage {
      */
     @Override
     public void createMembership(RoleMembershipBean membership) throws StorageException {
-        throw new StorageException("Not yet implemented"); // TODO Auto-generated method stub
-        
+        this.delegate.createMembership(membership);
     }
 
     /**
@@ -137,8 +135,7 @@ public class EsIdmStorage implements IIdmStorage {
      */
     @Override
     public void deleteMembership(String userId, String roleId, String organizationId) throws StorageException {
-        throw new StorageException("Not yet implemented"); // TODO Auto-generated method stub
-        
+        this.delegate.deleteMembership(userId, roleId, organizationId);
     }
 
     /**
@@ -146,8 +143,7 @@ public class EsIdmStorage implements IIdmStorage {
      */
     @Override
     public void deleteMemberships(String userId, String organizationId) throws StorageException {
-        throw new StorageException("Not yet implemented"); // TODO Auto-generated method stub
-        
+        this.delegate.deleteMemberships(userId, organizationId);
     }
 
     /**
@@ -155,8 +151,8 @@ public class EsIdmStorage implements IIdmStorage {
      */
     @Override
     public Set<RoleMembershipBean> getUserMemberships(String userId) throws StorageException {
-        throw new StorageException("Not yet implemented"); // TODO Auto-generated method stub
-        
+        refresh();
+        return this.delegate.getUserMemberships(userId);
     }
 
     /**
@@ -165,8 +161,8 @@ public class EsIdmStorage implements IIdmStorage {
     @Override
     public Set<RoleMembershipBean> getUserMemberships(String userId, String organizationId)
             throws StorageException {
-        throw new StorageException("Not yet implemented"); // TODO Auto-generated method stub
-        
+        refresh();
+        return this.delegate.getUserMemberships(userId);
     }
 
     /**
@@ -174,8 +170,8 @@ public class EsIdmStorage implements IIdmStorage {
      */
     @Override
     public Set<RoleMembershipBean> getOrgMemberships(String organizationId) throws StorageException {
-        throw new StorageException("Not yet implemented"); // TODO Auto-generated method stub
-        
+        refresh();
+        return this.delegate.getOrgMemberships(organizationId);
     }
 
     /**
@@ -183,8 +179,20 @@ public class EsIdmStorage implements IIdmStorage {
      */
     @Override
     public Set<PermissionBean> getPermissions(String userId) throws StorageException {
-        throw new StorageException("Not yet implemented"); // TODO Auto-generated method stub
-        
+        refresh();
+        return this.delegate.getPermissions(userId);
+    }
+
+    /**
+     * Force a refresh in elasticsearch so that the result of any indexing operations
+     * up to this point will be visible to searches.
+     */
+    private void refresh() {
+        try {
+            esClient.admin().indices().refresh(new RefreshRequest("apiman_manager")).get(); //$NON-NLS-1$
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
