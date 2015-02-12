@@ -132,7 +132,7 @@ public class CorsConnector implements IServiceConnector {
 
         // Is the request an allowed origin? If so, echo back the allowed origin.
         appendMandatory(AC_ALLOW_ORIGIN_KEY, origin,
-                "", config.isAllowedOrigin(origin, host), Messages.getString("CorsConnector.0")); //$NON-NLS-1$ //$NON-NLS-2$
+                "", config.isAllowedOrigin(origin, host), Messages.getString("CorsConnector.origin_not_permitted")); //$NON-NLS-1$ //$NON-NLS-2$
 
         // Do nothing on failure
         appendOptional(AC_ALLOW_CREDENTIALS_KEY, Boolean.TRUE.toString(), config.isAllowCredentials(), null);
@@ -149,12 +149,12 @@ public class CorsConnector implements IServiceConnector {
                 String allowMethods = join(config.getAllowMethods());
 
                 appendMandatory(AC_ALLOW_METHODS_KEY, allowMethods, allowMethods,
-                        config.isAllowedMethod(acRequestMethods), Messages.getString("CorsConnector.1")); //$NON-NLS-1$
+                        config.isAllowedMethod(acRequestMethods), Messages.getString("CorsConnector.requested_method_not_allowed")); //$NON-NLS-1$
 
                 // Append allowed headers even if we return an error.
                 if (!config.getAllowHeaders().isEmpty() && acRequestHeaders != null) {
                     appendOptional(AC_ALLOW_HEADERS_KEY, join(config.getAllowHeaders()),
-                            config.isAllowedHeader(acRequestHeaders), Messages.getString("CorsConnector.2")); //$NON-NLS-1$
+                            config.isAllowedHeader(acRequestHeaders), Messages.getString("CorsConnector.requested_header_not_allowed")); //$NON-NLS-1$
                 }
 
                 appendOptional(AC_MAX_AGE_KEY, config.getMaxAge().toString(), config.getMaxAge() != null,
@@ -165,7 +165,7 @@ public class CorsConnector implements IServiceConnector {
                     shortCircuit = true;
                 }
             } else {
-                doFailure(Messages.getString("CorsConnector.3")); //$NON-NLS-1$
+                doFailure(Messages.getString("CorsConnector.invalid_preflight_request")); //$NON-NLS-1$
             }
         }
     }
