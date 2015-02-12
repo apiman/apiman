@@ -48,6 +48,15 @@
         <role>Developer</role>
       </roles>
     </developer>
+    <developer>
+      <name>Marc Savy</name>
+      <id>msavy</id>
+      <email>msavy@redhat.com</email>
+      <organization>Red Hat</organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
   </developers>
 
   <properties>
@@ -112,6 +121,7 @@
     <module>config-policy</module>
     <module>noop-policy</module>
     <module>test-policy</module>
+    <module>cors-policy</module>
   </modules>
 
   <build>
