@@ -150,11 +150,13 @@ public class ActionResourceImpl implements IActionResource {
         try {
             if (versionBean.isPublicService()) {
                 List<Policy> policiesToPublish = new ArrayList<Policy>();
-                List<PolicySummaryBean> servicePolicies = query.getPolicies(action.getOrganizationId(), action.getEntityId(), action.getEntityVersion(), PolicyType.Service);
+                List<PolicySummaryBean> servicePolicies = query.getPolicies(action.getOrganizationId(),
+                        action.getEntityId(), action.getEntityVersion(), PolicyType.Service);
                 storage.beginTx();
                 hasTx = true;
                 for (PolicySummaryBean policySummaryBean : servicePolicies) {
-                    PolicyBean servicePolicy = storage.getPolicy(policySummaryBean.getId());
+                    PolicyBean servicePolicy = storage.getPolicy(PolicyType.Service, action.getOrganizationId(),
+                            action.getEntityId(), action.getEntityVersion(), policySummaryBean.getId());
                     Policy policyToPublish = new Policy();
                     policyToPublish.setPolicyJsonConfig(servicePolicy.getConfiguration());
                     policyToPublish.setPolicyImpl(servicePolicy.getDefinition().getPolicyImpl());
@@ -398,7 +400,7 @@ public class ActionResourceImpl implements IActionResource {
                 storage.beginTx();
                 try {
                     for (PolicySummaryBean policySummaryBean : appPolicies) {
-                        PolicyBean policyBean = storage.getPolicy(policySummaryBean.getId());
+                        PolicyBean policyBean = storage.getPolicy(policyType, org, id, ver, policySummaryBean.getId());
                         Policy policy = new Policy();
                         policy.setPolicyJsonConfig(policyBean.getConfiguration());
                         policy.setPolicyImpl(policyBean.getDefinition().getPolicyImpl());

@@ -16,7 +16,10 @@
 package io.apiman.manager.test;
 
 import io.apiman.manager.test.util.AbstractTestPlanTest;
+import io.apiman.manager.test.util.ManagerTestUtils;
+import io.apiman.manager.test.util.ManagerTestUtils.TestType;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -25,6 +28,12 @@ import org.junit.Test;
  * @author eric.wittmann@redhat.com
  */
 public class ContractsTest extends AbstractTestPlanTest {
+
+    @BeforeClass
+    public static void setup() throws Exception {
+        ManagerTestUtils.setTestType(TestType.es);
+        AbstractTestPlanTest.setup();
+    }
 
     @Test
     public void test() {

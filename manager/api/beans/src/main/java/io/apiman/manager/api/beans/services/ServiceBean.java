@@ -64,6 +64,12 @@ public class ServiceBean implements Serializable {
     private String createdBy;
     @Column(updatable=false, nullable=false)
     private Date createdOn;
+    
+    /**
+     * Constructor.
+     */
+    public ServiceBean() {
+    }
 
     /**
      * @return the id

@@ -5,7 +5,11 @@
                 "name" : {
                     "type" : "string",
                     "fields" : { "raw" : { "type" : "string", "index" : "not_analyzed" } }
-                }
+                },
+                "id" : { "type" : "string", "index" : "not_analyzed" },
+                "createdBy" : { "type" : "string", "index" : "not_analyzed" },
+                "modifiedBy" : { "type" : "string", "index" : "not_analyzed" },
+                "gatewayType" : { "type" : "string", "index" : "not_analyzed" }
             }
         },
         "policyDef" : {
@@ -13,7 +17,9 @@
                 "name" : {
                     "type" : "string",
                     "fields" : { "raw" : { "type" : "string", "index" : "not_analyzed" } }
-                }
+                },
+                "id" : { "type" : "string", "index" : "not_analyzed" },
+                "formType" : { "type" : "string", "index" : "not_analyzed" }
             }
         },
         "plugin" : {
@@ -21,7 +27,13 @@
                 "name" : {
                     "type" : "string",
                     "fields" : { "raw" : { "type" : "string", "index" : "not_analyzed" } }
-                }
+                },
+                "groupId" : { "type" : "string", "index" : "not_analyzed" },
+                "artifactId" : { "type" : "string", "index" : "not_analyzed" },
+                "version" : { "type" : "string", "index" : "not_analyzed" },
+                "classifier" : { "type" : "string", "index" : "not_analyzed" },
+                "type" : { "type" : "string", "index" : "not_analyzed" },
+                "createdBy" : { "type" : "string", "index" : "not_analyzed" }
             }
         },
         "role" : {
@@ -29,7 +41,9 @@
                 "name" : {
                     "type" : "string",
                     "fields" : { "raw" : { "type" : "string", "index" : "not_analyzed" } }
-                }
+                },
+                "id" : { "type" : "string", "index" : "not_analyzed" },
+                "createdBy" : { "type" : "string", "index" : "not_analyzed" }
             }
         },
         "user" : {
@@ -37,7 +51,15 @@
                 "fullName" : {
                     "type" : "string",
                     "fields" : { "raw" : { "type" : "string", "index" : "not_analyzed" } }
-                }
+                },
+                "username" : { "type" : "string", "index" : "not_analyzed" }
+            }
+        },
+        "roleMembership" : {
+            "properties" : {
+                "organizationId" : { "type" : "string", "index" : "not_analyzed" },
+                "roleId" : { "type" : "string", "index" : "not_analyzed" },
+                "userId" : { "type" : "string", "index" : "not_analyzed" }
             }
         },
         "organization" : {
@@ -45,19 +67,72 @@
                 "name" : {
                     "type" : "string",
                     "fields" : { "raw" : { "type" : "string", "index" : "not_analyzed" } }
-                }
+                },
+                "id" : { "type" : "string", "index" : "not_analyzed" },
+                "createdBy" : { "type" : "string", "index" : "not_analyzed" },
+                "modifiedBy" : { "type" : "string", "index" : "not_analyzed" }
+            }
+        },
+        "auditEntry" : {
+            "properties" : {
+                "id" : { "type" : "long", "index" : "not_analyzed" },
+                "organizationId" : { "type" : "string", "index" : "not_analyzed" },
+                "entityType" : { "type" : "string", "index" : "not_analyzed" },
+                "entityId" : { "type" : "string", "index" : "not_analyzed" },
+                "entityVersion" : { "type" : "string", "index" : "not_analyzed" },
+                "who" : { "type" : "string", "index" : "not_analyzed" },
+                "what" : { "type" : "string", "index" : "not_analyzed" },
+                "data" : { "type" : "string", "index" : "not_analyzed" }
             }
         },
         "plan" : {
             "properties" : {
+                "organizationId" : { "type" : "string", "index" : "not_analyzed" },
+                "organizationName" : {
+                    "type" : "string",
+                    "fields" : { "raw" : { "type" : "string", "index" : "not_analyzed" } }
+                },
+                "id" : { "type" : "string", "index" : "not_analyzed" },
                 "name" : {
                     "type" : "string",
                     "fields" : { "raw" : { "type" : "string", "index" : "not_analyzed" } }
                 },
-                "orgName" : {
+                "createdBy" : { "type" : "string", "index" : "not_analyzed" }
+            }
+        },
+        "planVersion" : {
+            "properties" : {
+                "organizationId" : { "type" : "string", "index" : "not_analyzed" },
+                "organizationName" : {
                     "type" : "string",
                     "fields" : { "raw" : { "type" : "string", "index" : "not_analyzed" } }
-                }
+                },
+                "planId" : { "type" : "string", "index" : "not_analyzed" },
+                "planName" : {
+                    "type" : "string",
+                    "fields" : { "raw" : { "type" : "string", "index" : "not_analyzed" } }
+                },
+                "status" : { "type" : "string", "index" : "not_analyzed" },
+                "version" : { "type" : "string", "index" : "not_analyzed" },
+                "createdBy" : { "type" : "string", "index" : "not_analyzed" },
+                "modifiedBy" : { "type" : "string", "index" : "not_analyzed" }
+            }
+        },
+        "planPolicies" : {
+            "properties" : {
+                "policies" : {
+                    "properties" : {
+                        "name" : { "type" : "string", "index" : "not_analyzed" },
+                        "configuration" : { "type" : "string", "index" : "not_analyzed" },
+                        "createdBy" : { "type" : "string", "index" : "not_analyzed" },
+                        "modifiedBy" : { "type" : "string", "index" : "not_analyzed" },
+                        "definitionId" : { "type" : "string", "index" : "not_analyzed" }
+                    }
+                },
+                "type" : { "type" : "string", "index" : "not_analyzed" },
+                "organizationId" : { "type" : "string", "index" : "not_analyzed" },
+                "entityId" : { "type" : "string", "index" : "not_analyzed" },
+                "entityVersion" : { "type" : "string", "index" : "not_analyzed" }
             }
         },
         "service" : {
@@ -66,22 +141,113 @@
                     "type" : "string",
                     "fields" : { "raw" : { "type" : "string", "index" : "not_analyzed" } }
                 },
-                "orgName" : {
+                "organizationName" : {
                     "type" : "string",
                     "fields" : { "raw" : { "type" : "string", "index" : "not_analyzed" } }
-                }
+                },
+                "organizationId" : { "type" : "string", "index" : "not_analyzed" },
+                "id" : { "type" : "string", "index" : "not_analyzed" },
+                "createdBy" : { "type" : "string", "index" : "not_analyzed" }
+            }
+        },
+        "serviceVersion" : {
+            "properties" : {
+                "organizationId" : { "type" : "string", "index" : "not_analyzed" },
+                "organizationName" : {
+                    "type" : "string",
+                    "fields" : { "raw" : { "type" : "string", "index" : "not_analyzed" } }
+                },
+                "serviceId" : { "type" : "string", "index" : "not_analyzed" },
+                "serviceName" : {
+                    "type" : "string",
+                    "fields" : { "raw" : { "type" : "string", "index" : "not_analyzed" } }
+                },
+                "version" : { "type" : "string", "index" : "not_analyzed" },
+                "status" : { "type" : "string", "index" : "not_analyzed" },
+                "createdBy" : { "type" : "string", "index" : "not_analyzed" },
+                "modifiedBy" : { "type" : "string", "index" : "not_analyzed" }
+            }
+        },
+        "servicePolicies" : {
+            "properties" : {
+                "policies" : {
+                    "properties" : {
+                        "name" : { "type" : "string", "index" : "not_analyzed" },
+                        "configuration" : { "type" : "string", "index" : "not_analyzed" },
+                        "createdBy" : { "type" : "string", "index" : "not_analyzed" },
+                        "modifiedBy" : { "type" : "string", "index" : "not_analyzed" },
+                        "definitionId" : { "type" : "string", "index" : "not_analyzed" }
+                    }
+                },
+                "type" : { "type" : "string", "index" : "not_analyzed" },
+                "organizationId" : { "type" : "string", "index" : "not_analyzed" },
+                "entityId" : { "type" : "string", "index" : "not_analyzed" },
+                "entityVersion" : { "type" : "string", "index" : "not_analyzed" }
             }
         },
         "application" : {
             "properties" : {
+                "organizationId" : { "type" : "string", "index" : "not_analyzed" },
+                "organizationName" : {
+                    "type" : "string",
+                    "fields" : { "raw" : { "type" : "string", "index" : "not_analyzed" } }
+                },
+                "id" : { "type" : "string", "index" : "not_analyzed" },
                 "name" : {
                     "type" : "string",
                     "fields" : { "raw" : { "type" : "string", "index" : "not_analyzed" } }
                 },
-                "orgName" : {
+                "createdBy" : { "type" : "string", "index" : "not_analyzed" }
+            }
+        },
+        "applicationVersion" : {
+            "properties" : {
+                "organizationId" : { "type" : "string", "index" : "not_analyzed" },
+                "organizationName" : {
                     "type" : "string",
                     "fields" : { "raw" : { "type" : "string", "index" : "not_analyzed" } }
-                }
+                },
+                "applicationId" : { "type" : "string", "index" : "not_analyzed" },
+                "applicationName" : {
+                    "type" : "string",
+                    "fields" : { "raw" : { "type" : "string", "index" : "not_analyzed" } }
+                },
+                "version" : { "type" : "string", "index" : "not_analyzed" },
+                "status" : { "type" : "string", "index" : "not_analyzed" },
+                "createdBy" : { "type" : "string", "index" : "not_analyzed" },
+                "modifiedBy" : { "type" : "string", "index" : "not_analyzed" }
+            }
+        },
+        "applicationPolicies" : {
+            "properties" : {
+                "policies" : {
+                    "properties" : {
+                        "name" : { "type" : "string", "index" : "not_analyzed" },
+                        "configuration" : { "type" : "string", "index" : "not_analyzed" },
+                        "createdBy" : { "type" : "string", "index" : "not_analyzed" },
+                        "modifiedBy" : { "type" : "string", "index" : "not_analyzed" },
+                        "definitionId" : { "type" : "string", "index" : "not_analyzed" }
+                    }
+                },
+                "type" : { "type" : "string", "index" : "not_analyzed" },
+                "organizationId" : { "type" : "string", "index" : "not_analyzed" },
+                "entityId" : { "type" : "string", "index" : "not_analyzed" },
+                "entityVersion" : { "type" : "string", "index" : "not_analyzed" }
+            }
+        },
+        "contract" : {
+            "properties" : {
+                "id" : { "type" : "long" },
+                "apikey" : { "type" : "string", "index" : "not_analyzed" },
+                "appOrganizationId" : { "type" : "string", "index" : "not_analyzed" },
+                "appId" : { "type" : "string", "index" : "not_analyzed" },
+                "appVersion" : { "type" : "string", "index" : "not_analyzed" },
+                "serviceOrganizationId" : { "type" : "string", "index" : "not_analyzed" },
+                "serviceId" : { "type" : "string", "index" : "not_analyzed" },
+                "serviceVersion" : { "type" : "string", "index" : "not_analyzed" },
+                "planId" : { "type" : "string", "index" : "not_analyzed" },
+                "planVersion" : { "type" : "string", "index" : "not_analyzed" },
+                "createdBy" : { "type" : "string", "index" : "not_analyzed" }
             }
         }
     }

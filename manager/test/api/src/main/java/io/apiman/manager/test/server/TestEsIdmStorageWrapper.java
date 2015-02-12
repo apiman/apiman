@@ -143,6 +143,7 @@ public class TestEsIdmStorageWrapper implements IIdmStorage {
      */
     @Override
     public void deleteMemberships(String userId, String organizationId) throws StorageException {
+        refresh();
         this.delegate.deleteMemberships(userId, organizationId);
     }
 

@@ -26,10 +26,13 @@ import io.apiman.manager.api.beans.plans.PlanVersionBean;
 import io.apiman.manager.api.beans.plugins.PluginBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
+import io.apiman.manager.api.beans.policies.PolicyType;
 import io.apiman.manager.api.beans.services.ServiceBean;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.exceptions.StorageException;
+
+import java.util.List;
 
 import org.elasticsearch.action.admin.indices.refresh.RefreshRequest;
 import org.elasticsearch.client.transport.TransportClient;
@@ -219,15 +222,6 @@ public class TestEsStorageWrapper implements IStorage {
     @Override
     public void updateApplicationVersion(ApplicationVersionBean version) throws StorageException {
         this.delegate.updateApplicationVersion(version);
-        
-    }
-
-    /**
-     * @see io.apiman.manager.api.core.IStorage#updateContract(io.apiman.manager.api.beans.contracts.ContractBean)
-     */
-    @Override
-    public void updateContract(ContractBean contract) throws StorageException {
-        this.delegate.updateContract(contract);
         
     }
 
@@ -470,11 +464,12 @@ public class TestEsStorageWrapper implements IStorage {
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorage#getPolicy(java.lang.Long)
+     * @see io.apiman.manager.api.core.IStorage#getPolicy(io.apiman.manager.api.beans.policies.PolicyType, java.lang.String, java.lang.String, java.lang.String, java.lang.Long)
      */
     @Override
-    public PolicyBean getPolicy(Long id) throws StorageException {
-        return this.delegate.getPolicy(id);
+    public PolicyBean getPolicy(PolicyType type, String organizationId, String entityId, String version,
+            Long id) throws StorageException {
+        return this.delegate.getPolicy(type, organizationId, entityId, version, id);
     }
 
     /**
@@ -500,6 +495,15 @@ public class TestEsStorageWrapper implements IStorage {
     public PluginBean getPlugin(String groupId, String artifactId) throws StorageException {
         refresh();
         return this.delegate.getPlugin(groupId, artifactId);
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#reorderPolicies(io.apiman.manager.api.beans.policies.PolicyType, java.lang.String, java.lang.String, java.lang.String, java.util.List)
+     */
+    @Override
+    public void reorderPolicies(PolicyType type, String organizationId, String entityId,
+            String entityVersion, List<Long> newOrder) throws StorageException {
+        this.delegate.reorderPolicies(type, organizationId, entityId, entityVersion, newOrder);
     }
 
     /**

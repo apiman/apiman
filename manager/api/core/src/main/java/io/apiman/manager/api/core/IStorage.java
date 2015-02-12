@@ -26,9 +26,12 @@ import io.apiman.manager.api.beans.plans.PlanVersionBean;
 import io.apiman.manager.api.beans.plugins.PluginBean;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
+import io.apiman.manager.api.beans.policies.PolicyType;
 import io.apiman.manager.api.beans.services.ServiceBean;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
 import io.apiman.manager.api.core.exceptions.StorageException;
+
+import java.util.List;
 
 /**
  * Represents the persistent storage interface for Apiman DT.
@@ -70,7 +73,6 @@ public interface IStorage {
     public void updateOrganization(OrganizationBean organization) throws StorageException;
     public void updateApplication(ApplicationBean application) throws StorageException;
     public void updateApplicationVersion(ApplicationVersionBean version) throws StorageException;
-    public void updateContract(ContractBean contract) throws StorageException;
     public void updateService(ServiceBean service) throws StorageException;
     public void updateServiceVersion(ServiceVersionBean version) throws StorageException;
     public void updatePlan(PlanBean plan) throws StorageException;
@@ -108,10 +110,15 @@ public interface IStorage {
     public ServiceVersionBean getServiceVersion(String organizationId, String serviceId, String version) throws StorageException;
     public PlanBean getPlan(String organizationId, String id) throws StorageException;
     public PlanVersionBean getPlanVersion(String organizationId, String planId, String version) throws StorageException;
-    public PolicyBean getPolicy(Long id) throws StorageException;
+    public PolicyBean getPolicy(PolicyType type, String organizationId, String entityId, String version, Long id) throws StorageException;
     public GatewayBean getGateway(String id) throws StorageException;
     public PluginBean getPlugin(long id) throws StorageException;
     public PluginBean getPlugin(String groupId, String artifactId) throws StorageException;
     public PolicyDefinitionBean getPolicyDefinition(String id) throws StorageException;
 
+    /*
+     * Anything that doesn't fall into the above categories!
+     */
+    public void reorderPolicies(PolicyType type, String organizationId, String entityId,
+            String entityVersion, List<Long> newOrder) throws StorageException;
 }

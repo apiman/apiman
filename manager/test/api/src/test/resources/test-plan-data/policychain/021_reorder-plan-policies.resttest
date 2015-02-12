@@ -8,9 +8,6 @@ Content-Type: application/json
       },
       {
         "id" : ${policy-1-id}
-      },
-      {
-        "id" : ${policy-3-id}
       }
    ]
 }

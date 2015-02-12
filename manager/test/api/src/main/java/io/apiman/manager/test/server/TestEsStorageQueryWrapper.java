@@ -268,7 +268,6 @@ public class TestEsStorageQueryWrapper implements IStorageQuery {
     @Override
     public List<PolicySummaryBean> getPolicies(String organizationId, String entityId, String version,
             PolicyType type) throws StorageException {
-        refresh();
         return this.delegate.getPolicies(organizationId, entityId, version, type);
     }
 

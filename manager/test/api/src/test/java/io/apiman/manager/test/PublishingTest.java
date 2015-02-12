@@ -20,6 +20,8 @@ import io.apiman.gateway.engine.beans.Contract;
 import io.apiman.gateway.engine.beans.Policy;
 import io.apiman.manager.test.server.MockGatewayServlet;
 import io.apiman.manager.test.util.AbstractTestPlanTest;
+import io.apiman.manager.test.util.ManagerTestUtils;
+import io.apiman.manager.test.util.ManagerTestUtils.TestType;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -29,6 +31,7 @@ import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -38,6 +41,12 @@ import org.junit.Test;
  */
 @SuppressWarnings("nls")
 public class PublishingTest extends AbstractTestPlanTest {
+
+    @BeforeClass
+    public static void setup() throws Exception {
+        ManagerTestUtils.setTestType(TestType.es);
+        AbstractTestPlanTest.setup();
+    }
 
     private static final String EXPECTED_GATEWAY_LOG = 
             "GET:/mock-gateway/system/status\n" +

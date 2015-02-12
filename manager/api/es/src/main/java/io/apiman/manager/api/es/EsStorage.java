@@ -17,6 +17,7 @@ package io.apiman.manager.api.es;
 
 import io.apiman.manager.api.beans.apps.ApplicationBean;
 import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
+import io.apiman.manager.api.beans.audit.AuditEntityType;
 import io.apiman.manager.api.beans.audit.AuditEntryBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.gateways.GatewayBean;
@@ -39,7 +40,10 @@ import io.apiman.manager.api.beans.search.SearchCriteriaFilterBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaFilterOperator;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.beans.services.ServiceBean;
+import io.apiman.manager.api.beans.services.ServiceGatewayBean;
+import io.apiman.manager.api.beans.services.ServicePlanBean;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
+import io.apiman.manager.api.beans.summary.ApiEntryBean;
 import io.apiman.manager.api.beans.summary.ApiRegistryBean;
 import io.apiman.manager.api.beans.summary.ApplicationSummaryBean;
 import io.apiman.manager.api.beans.summary.ApplicationVersionSummaryBean;
@@ -58,12 +62,14 @@ import io.apiman.manager.api.core.IIdmStorage;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
+import io.apiman.manager.api.core.util.PolicyTemplateUtil;
+import io.apiman.manager.api.es.beans.PoliciesBean;
 
 import java.net.URL;
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -91,8 +97,10 @@ import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.AndFilterBuilder;
 import org.elasticsearch.index.query.BaseQueryBuilder;
 import org.elasticsearch.index.query.FilterBuilders;
+import org.elasticsearch.index.query.FilteredQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.TermsQueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
@@ -108,7 +116,8 @@ import org.elasticsearch.search.sort.SortOrder;
 public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     
     private static final String INDEX_NAME = "apiman_manager"; //$NON-NLS-1$
-    private static final SecureRandom random = new SecureRandom();
+
+    private static int guidCounter = 100;
     
     @Inject
     TransportClient esClient;
@@ -146,7 +155,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
         request.source(source);
         CreateIndexResponse response = esClient.admin().indices().create(request).get();
         if (!response.isAcknowledged()) {
-            throw new StorageException("Failed to create index: " + indexName);
+            throw new StorageException("Failed to create index: " + indexName); //$NON-NLS-1$
         }
     }
 
@@ -187,7 +196,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
      */
     @Override
     public void createApplication(ApplicationBean application) throws StorageException {
-        throw new StorageException("Not yet implemented."); //$NON-NLS-1$ TODO Auto-generated method stub
+        indexEntity("application", id(application.getOrganization().getId(), application.getId()), EsMarshalling.marshall(application)); //$NON-NLS-1$
     }
 
     /**
@@ -195,7 +204,12 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
      */
     @Override
     public void createApplicationVersion(ApplicationVersionBean version) throws StorageException {
-        throw new StorageException("Not yet implemented."); //$NON-NLS-1$ TODO Auto-generated method stub
+        ApplicationBean application = version.getApplication();
+        String id = id(application.getOrganization().getId(), application.getId(), version.getVersion());
+        indexEntity("applicationVersion", id, EsMarshalling.marshall(version)); //$NON-NLS-1$
+        PoliciesBean policies = PoliciesBean.from(PolicyType.Application, application.getOrganization().getId(),
+                application.getId(), version.getVersion());
+        indexEntity("applicationPolicies", id, EsMarshalling.marshall(policies)); //$NON-NLS-1$
     }
 
     /**
@@ -203,7 +217,19 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
      */
     @Override
     public void createContract(ContractBean contract) throws StorageException {
-        throw new StorageException("Not yet implemented."); //$NON-NLS-1$ TODO Auto-generated method stub
+        List<ContractSummaryBean> contracts = getApplicationContracts(contract.getApplication().getApplication().getOrganization().getId(),
+                contract.getApplication().getApplication().getId(), contract.getApplication().getVersion());
+        for (ContractSummaryBean csb : contracts) {
+            if (csb.getServiceOrganizationId().equals(contract.getService().getService().getOrganization().getId()) &&
+                    csb.getServiceId().equals(contract.getService().getService().getId()) &&
+                    csb.getServiceVersion().equals(contract.getService().getVersion()) &&
+                    csb.getPlanId().equals(contract.getPlan().getPlan().getId())) 
+                {
+                    throw new StorageException("Error creating contract: duplicate contract detected."); //$NON-NLS-1$
+                }
+        }
+        contract.setId(generateGuid());
+        indexEntity("contract", String.valueOf(contract.getId()), EsMarshalling.marshall(contract), true); //$NON-NLS-1$
     }
 
     /**
@@ -211,7 +237,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
      */
     @Override
     public void createService(ServiceBean service) throws StorageException {
-        throw new StorageException("Not yet implemented."); //$NON-NLS-1$ TODO Auto-generated method stub
+        indexEntity("service", id(service.getOrganization().getId(), service.getId()), EsMarshalling.marshall(service)); //$NON-NLS-1$
     }
 
     /**
@@ -219,8 +245,12 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
      */
     @Override
     public void createServiceVersion(ServiceVersionBean version) throws StorageException {
-        throw new StorageException("Not yet implemented."); //$NON-NLS-1$ TODO Auto-generated method stub
-        
+        ServiceBean service = version.getService();
+        String id = id(service.getOrganization().getId(), service.getId(), version.getVersion());
+        indexEntity("serviceVersion", id, EsMarshalling.marshall(version)); //$NON-NLS-1$
+        PoliciesBean policies = PoliciesBean.from(PolicyType.Service, service.getOrganization().getId(),
+                service.getId(), version.getVersion());
+        indexEntity("servicePolicies", id, EsMarshalling.marshall(policies)); //$NON-NLS-1$
     }
 
     /**
@@ -228,8 +258,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
      */
     @Override
     public void createPlan(PlanBean plan) throws StorageException {
-        throw new StorageException("Not yet implemented."); //$NON-NLS-1$ TODO Auto-generated method stub
-        
+        indexEntity("plan", id(plan.getOrganization().getId(), plan.getId()), EsMarshalling.marshall(plan)); //$NON-NLS-1$
     }
 
     /**
@@ -237,8 +266,12 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
      */
     @Override
     public void createPlanVersion(PlanVersionBean version) throws StorageException {
-        throw new StorageException("Not yet implemented."); //$NON-NLS-1$ TODO Auto-generated method stub
-        
+        PlanBean plan = version.getPlan();
+        String id = id(plan.getOrganization().getId(), plan.getId(), version.getVersion());
+        indexEntity("planVersion", id, EsMarshalling.marshall(version)); //$NON-NLS-1$
+        PoliciesBean policies = PoliciesBean.from(PolicyType.Plan, plan.getOrganization().getId(),
+                plan.getId(), version.getVersion());
+        indexEntity("planPolicies", id, EsMarshalling.marshall(policies)); //$NON-NLS-1$
     }
 
     /**
@@ -246,7 +279,63 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
      */
     @Override
     public void createPolicy(PolicyBean policy) throws StorageException {
-        throw new StorageException("Not yet implemented."); //$NON-NLS-1$ TODO Auto-generated method stub
+        String docType = getPoliciesDocType(policy.getType());
+        String id = id(policy.getOrganizationId(), policy.getEntityId(), policy.getEntityVersion());
+        Map<String, Object> source = getEntity(docType, id);
+        if (source == null) {
+            throw new StorageException("Failed to create policy (missing PoliciesBean)."); //$NON-NLS-1$
+        }
+        PoliciesBean policies = EsMarshalling.unmarshallPolicies(source);
+        policy.setId(generateGuid());
+        policies.getPolicies().add(policy);
+        orderPolicies(policies);
+        updateEntity(docType, id, EsMarshalling.marshall(policies));
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#reorderPolicies(io.apiman.manager.api.beans.policies.PolicyType, java.lang.String, java.lang.String, java.lang.String, java.util.List)
+     */
+    @Override
+    public void reorderPolicies(PolicyType type, String organizationId, String entityId,
+            String entityVersion, List<Long> newOrder) throws StorageException {
+        String docType = getPoliciesDocType(type);
+        String pid = id(organizationId, entityId, entityVersion);
+        Map<String, Object> source = getEntity(docType, pid);
+        if (source == null) {
+            return;
+        }
+        PoliciesBean policiesBean = EsMarshalling.unmarshallPolicies(source);
+        List<PolicyBean> policies = policiesBean.getPolicies();
+        List<PolicyBean> reordered = new ArrayList<>(policies.size());
+        for (Long policyId : newOrder) {
+            ListIterator<PolicyBean> iterator = policies.listIterator();
+            while (iterator.hasNext()) {
+                PolicyBean policyBean = iterator.next();
+                if (policyBean.getId().equals(policyId)) {
+                    iterator.remove();
+                    reordered.add(policyBean);
+                    break;
+                }
+            }
+        }
+        // Make sure we don't stealth-delete any policies.  Put anything
+        // remaining at the end of the list.
+        for (PolicyBean policyBean : policies) {
+            reordered.add(policyBean);
+        }
+        policiesBean.setPolicies(reordered);
+        updateEntity(docType, pid, EsMarshalling.marshall(policiesBean));
+    }
+
+    /**
+     * Set the order index of all policies.
+     * @param policies
+     */
+    private void orderPolicies(PoliciesBean policies) {
+        int idx = 1;
+        for (PolicyBean policy : policies.getPolicies()) {
+            policy.setOrderIndex(idx++);
+        }
     }
 
     /**
@@ -289,6 +378,8 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     public void createAuditEntry(AuditEntryBean entry) throws StorageException {
         entry.setId(generateGuid());
         indexEntity("auditEntry", String.valueOf(entry.getId()), EsMarshalling.marshall(entry)); //$NON-NLS-1$
+        // Guarantee that no 2 audit entries are at the same ms on the same node
+        try { Thread.sleep(1); } catch (InterruptedException e) { }
     }
 
     /**
@@ -297,6 +388,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     @Override
     public void updateOrganization(OrganizationBean organization) throws StorageException {
         updateEntity("organization", organization.getId(), EsMarshalling.marshall(organization)); //$NON-NLS-1$
+        // TODO also update all entities that inline the organization name, if that has changed!  (bulk api?)
     }
 
     /**
@@ -304,8 +396,8 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
      */
     @Override
     public void updateApplication(ApplicationBean application) throws StorageException {
-        throw new StorageException("Not yet implemented."); //$NON-NLS-1$ TODO Auto-generated method stub
-        
+        updateEntity("application", id(application.getOrganization().getId(), application.getId()), EsMarshalling.marshall(application)); //$NON-NLS-1$
+        // TODO also update the application versions (in case the description changed)  (bulk api?)
     }
 
     /**
@@ -313,17 +405,9 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
      */
     @Override
     public void updateApplicationVersion(ApplicationVersionBean version) throws StorageException {
-        throw new StorageException("Not yet implemented."); //$NON-NLS-1$ TODO Auto-generated method stub
-        
-    }
-
-    /**
-     * @see io.apiman.manager.api.core.IStorage#updateContract(io.apiman.manager.api.beans.contracts.ContractBean)
-     */
-    @Override
-    public void updateContract(ContractBean contract) throws StorageException {
-        throw new StorageException("Not yet implemented."); //$NON-NLS-1$ TODO Auto-generated method stub
-        
+        ApplicationBean application = version.getApplication();
+        updateEntity("applicationVersion", id(application.getOrganization().getId(), application.getId(), version.getVersion()),  //$NON-NLS-1$
+                EsMarshalling.marshall(version));
     }
 
     /**
@@ -331,8 +415,8 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
      */
     @Override
     public void updateService(ServiceBean service) throws StorageException {
-        throw new StorageException("Not yet implemented."); //$NON-NLS-1$ TODO Auto-generated method stub
-        
+        updateEntity("service", id(service.getOrganization().getId(), service.getId()), EsMarshalling.marshall(service)); //$NON-NLS-1$
+        // TODO also update the service versions (in case the description changed)  (bulk api?)
     }
 
     /**
@@ -340,8 +424,9 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
      */
     @Override
     public void updateServiceVersion(ServiceVersionBean version) throws StorageException {
-        throw new StorageException("Not yet implemented."); //$NON-NLS-1$ TODO Auto-generated method stub
-        
+        ServiceBean service = version.getService();
+        updateEntity("serviceVersion", id(service.getOrganization().getId(), service.getId(), version.getVersion()),  //$NON-NLS-1$
+                EsMarshalling.marshall(version));
     }
 
     /**
@@ -349,8 +434,8 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
      */
     @Override
     public void updatePlan(PlanBean plan) throws StorageException {
-        throw new StorageException("Not yet implemented."); //$NON-NLS-1$ TODO Auto-generated method stub
-        
+        updateEntity("plan", id(plan.getOrganization().getId(), plan.getId()), EsMarshalling.marshall(plan)); //$NON-NLS-1$
+        // TODO also update the plan versions (in case the description changed)  (bulk api?)
     }
 
     /**
@@ -358,8 +443,9 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
      */
     @Override
     public void updatePlanVersion(PlanVersionBean version) throws StorageException {
-        throw new StorageException("Not yet implemented."); //$NON-NLS-1$ TODO Auto-generated method stub
-        
+        PlanBean plan = version.getPlan();
+        updateEntity("planVersion", id(plan.getOrganization().getId(), plan.getId(), version.getVersion()),  //$NON-NLS-1$
+                EsMarshalling.marshall(version));
     }
 
     /**
@@ -367,8 +453,31 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
      */
     @Override
     public void updatePolicy(PolicyBean policy) throws StorageException {
-        throw new StorageException("Not yet implemented."); //$NON-NLS-1$ TODO Auto-generated method stub
-        
+        String docType = getPoliciesDocType(policy.getType());
+        String pid = id(policy.getOrganizationId(), policy.getEntityId(), policy.getEntityVersion());
+        Map<String, Object> source = getEntity(docType, pid);
+        if (source == null) {
+            throw new StorageException("Policy not found."); //$NON-NLS-1$
+        }
+        PoliciesBean policies = EsMarshalling.unmarshallPolicies(source);
+        List<PolicyBean> policyBeans = policies.getPolicies();
+        boolean found = false;
+        if (policyBeans != null) {
+            for (PolicyBean policyBean : policyBeans) {
+                if (policyBean.getId().equals(policy.getId())) {
+                    policyBean.setConfiguration(policy.getConfiguration());
+                    policyBean.setModifiedBy(policy.getModifiedBy());
+                    policyBean.setModifiedOn(policy.getModifiedOn());
+                    found = true;
+                    break;
+                }
+            }
+        }
+        if (found) {
+            updateEntity(docType, pid, EsMarshalling.marshall(policies));
+        } else {
+            throw new StorageException("Policy not found."); //$NON-NLS-1$
+        }
     }
 
     /**
@@ -400,8 +509,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
      */
     @Override
     public void deleteOrganization(OrganizationBean organization) throws StorageException {
-        throw new StorageException("Not yet implemented."); //$NON-NLS-1$ TODO Auto-generated method stub
-        
+        deleteEntity("organization", organization.getId()); //$NON-NLS-1$
     }
 
     /**
@@ -409,8 +517,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
      */
     @Override
     public void deleteApplication(ApplicationBean application) throws StorageException {
-        throw new StorageException("Not yet implemented."); //$NON-NLS-1$ TODO Auto-generated method stub
-        
+        deleteEntity("application", id(application.getOrganization().getId(), application.getId())); //$NON-NLS-1$
     }
 
     /**
@@ -418,8 +525,8 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
      */
     @Override
     public void deleteApplicationVersion(ApplicationVersionBean version) throws StorageException {
-        throw new StorageException("Not yet implemented."); //$NON-NLS-1$ TODO Auto-generated method stub
-        
+        ApplicationBean application = version.getApplication();
+        deleteEntity("applicationVersion", id(application.getOrganization().getId(), application.getId(), version.getVersion())); //$NON-NLS-1$
     }
 
     /**
@@ -427,8 +534,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
      */
     @Override
     public void deleteContract(ContractBean contract) throws StorageException {
-        throw new StorageException("Not yet implemented."); //$NON-NLS-1$ TODO Auto-generated method stub
-        
+        deleteEntity("contract", String.valueOf(contract.getId())); //$NON-NLS-1$
     }
 
     /**
@@ -436,8 +542,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
      */
     @Override
     public void deleteService(ServiceBean service) throws StorageException {
-        throw new StorageException("Not yet implemented."); //$NON-NLS-1$ TODO Auto-generated method stub
-        
+        deleteEntity("service", id(service.getOrganization().getId(), service.getId())); //$NON-NLS-1$
     }
 
     /**
@@ -445,8 +550,8 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
      */
     @Override
     public void deleteServiceVersion(ServiceVersionBean version) throws StorageException {
-        throw new StorageException("Not yet implemented."); //$NON-NLS-1$ TODO Auto-generated method stub
-        
+        ServiceBean service = version.getService();
+        deleteEntity("serviceVersion", id(service.getOrganization().getId(), service.getId(), version.getVersion())); //$NON-NLS-1$
     }
 
     /**
@@ -454,8 +559,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
      */
     @Override
     public void deletePlan(PlanBean plan) throws StorageException {
-        throw new StorageException("Not yet implemented."); //$NON-NLS-1$ TODO Auto-generated method stub
-        
+        deleteEntity("plan", id(plan.getOrganization().getId(), plan.getId())); //$NON-NLS-1$
     }
 
     /**
@@ -463,8 +567,8 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
      */
     @Override
     public void deletePlanVersion(PlanVersionBean version) throws StorageException {
-        throw new StorageException("Not yet implemented."); //$NON-NLS-1$ TODO Auto-generated method stub
-        
+        PlanBean plan = version.getPlan();
+        deleteEntity("planVersion", id(plan.getOrganization().getId(), plan.getId(), version.getVersion())); //$NON-NLS-1$
     }
 
     /**
@@ -472,8 +576,29 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
      */
     @Override
     public void deletePolicy(PolicyBean policy) throws StorageException {
-        throw new StorageException("Not yet implemented."); //$NON-NLS-1$ TODO Auto-generated method stub
-        
+        String docType = getPoliciesDocType(policy.getType());
+        String pid = id(policy.getOrganizationId(), policy.getEntityId(), policy.getEntityVersion());
+        Map<String, Object> source = getEntity(docType, pid);
+        if (source == null) {
+            throw new StorageException("Policy not found."); //$NON-NLS-1$
+        }
+        PoliciesBean policies = EsMarshalling.unmarshallPolicies(source);
+        List<PolicyBean> policyBeans = policies.getPolicies();
+        boolean found = false;
+        if (policyBeans != null) {
+            for (PolicyBean policyBean : policyBeans) {
+                if (policyBean.getId().equals(policy.getId())) {
+                    policies.getPolicies().remove(policyBean);
+                    found = true;
+                    break;
+                }
+            }
+        }
+        if (found) {
+            updateEntity(docType, pid, EsMarshalling.marshall(policies));
+        } else {
+            throw new StorageException("Policy not found."); //$NON-NLS-1$
+        }
     }
 
     /**
@@ -522,8 +647,13 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
      */
     @Override
     public ApplicationBean getApplication(String organizationId, String id) throws StorageException {
-        throw new StorageException("Not yet implemented."); //$NON-NLS-1$ TODO Auto-generated method stub
-        
+        Map<String, Object> source = getEntity("application", id(organizationId, id)); //$NON-NLS-1$
+        if (source == null) {
+            return null;
+        }
+        ApplicationBean bean = EsMarshalling.unmarshallApplication(source);
+        bean.setOrganization(getOrganization(organizationId));
+        return bean;
     }
 
     /**
@@ -532,17 +662,38 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     @Override
     public ApplicationVersionBean getApplicationVersion(String organizationId, String applicationId,
             String version) throws StorageException {
-        throw new StorageException("Not yet implemented."); //$NON-NLS-1$ TODO Auto-generated method stub
-        
+        Map<String, Object> source = getEntity("applicationVersion", id(organizationId, applicationId, version)); //$NON-NLS-1$
+        if (source == null) {
+            return null;
+        }
+        ApplicationVersionBean bean = EsMarshalling.unmarshallApplicationVersion(source);
+        bean.setApplication(getApplication(organizationId, applicationId));
+        return bean;
     }
 
     /**
      * @see io.apiman.manager.api.core.IStorage#getContract(java.lang.Long)
      */
+    @SuppressWarnings("nls")
     @Override
     public ContractBean getContract(Long id) throws StorageException {
-        throw new StorageException("Not yet implemented."); //$NON-NLS-1$ TODO Auto-generated method stub
-        
+        Map<String, Object> source = getEntity("contract", String.valueOf(id)); //$NON-NLS-1$
+        ContractBean contract = EsMarshalling.unmarshallContract(source);
+        String appOrgId = (String) source.get("appOrganizationId");
+        String appId = (String) source.get("appId");
+        String appVersion = (String) source.get("appVersion");
+        String svcOrgId = (String) source.get("serviceOrganizationId");
+        String svcId = (String) source.get("serviceId");
+        String svcVersion = (String) source.get("serviceVersion");
+        String planId = (String) source.get("planId");
+        String planVersion = (String) source.get("planVersion");
+        ApplicationVersionBean avb = getApplicationVersion(appOrgId, appId, appVersion);
+        ServiceVersionBean svb = getServiceVersion(svcOrgId, svcId, svcVersion);
+        PlanVersionBean pvb = getPlanVersion(svcOrgId, planId, planVersion);
+        contract.setApplication(avb);
+        contract.setPlan(pvb);
+        contract.setService(svb);
+        return contract;
     }
 
     /**
@@ -550,8 +701,13 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
      */
     @Override
     public ServiceBean getService(String organizationId, String id) throws StorageException {
-        throw new StorageException("Not yet implemented."); //$NON-NLS-1$ TODO Auto-generated method stub
-        
+        Map<String, Object> source = getEntity("service", id(organizationId, id)); //$NON-NLS-1$
+        if (source == null) {
+            return null;
+        }
+        ServiceBean bean = EsMarshalling.unmarshallService(source);
+        bean.setOrganization(getOrganization(organizationId));
+        return bean;
     }
 
     /**
@@ -560,8 +716,13 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     @Override
     public ServiceVersionBean getServiceVersion(String organizationId, String serviceId, String version)
             throws StorageException {
-        throw new StorageException("Not yet implemented."); //$NON-NLS-1$ TODO Auto-generated method stub
-        
+        Map<String, Object> source = getEntity("serviceVersion", id(organizationId, serviceId, version)); //$NON-NLS-1$
+        if (source == null) {
+            return null;
+        }
+        ServiceVersionBean bean = EsMarshalling.unmarshallServiceVersion(source);
+        bean.setService(getService(organizationId, serviceId));
+        return bean;
     }
 
     /**
@@ -569,8 +730,13 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
      */
     @Override
     public PlanBean getPlan(String organizationId, String id) throws StorageException {
-        throw new StorageException("Not yet implemented."); //$NON-NLS-1$ TODO Auto-generated method stub
-        
+        Map<String, Object> source = getEntity("plan", id(organizationId, id)); //$NON-NLS-1$
+        if (source == null) {
+            return null;
+        }
+        PlanBean bean = EsMarshalling.unmarshallPlan(source);
+        bean.setOrganization(getOrganization(organizationId));
+        return bean;
     }
 
     /**
@@ -579,17 +745,39 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     @Override
     public PlanVersionBean getPlanVersion(String organizationId, String planId, String version)
             throws StorageException {
-        throw new StorageException("Not yet implemented."); //$NON-NLS-1$ TODO Auto-generated method stub
-        
+        Map<String, Object> source = getEntity("planVersion", id(organizationId, planId, version)); //$NON-NLS-1$
+        if (source == null) {
+            return null;
+        }
+        PlanVersionBean bean = EsMarshalling.unmarshallPlanVersion(source);
+        bean.setPlan(getPlan(organizationId, planId));
+        return bean;
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorage#getPolicy(java.lang.Long)
+     * @see io.apiman.manager.api.core.IStorage#getPolicy(io.apiman.manager.api.beans.policies.PolicyType, java.lang.String, java.lang.String, java.lang.String, java.lang.Long)
      */
     @Override
-    public PolicyBean getPolicy(Long id) throws StorageException {
-        throw new StorageException("Not yet implemented."); //$NON-NLS-1$ TODO Auto-generated method stub
-        
+    public PolicyBean getPolicy(PolicyType type, String organizationId, String entityId, String version,
+            Long id) throws StorageException {
+        String docType = getPoliciesDocType(type);
+        String pid = id(organizationId, entityId, version);
+        Map<String, Object> source = getEntity(docType, pid);
+        if (source == null) {
+            return null;
+        }
+        PoliciesBean policies = EsMarshalling.unmarshallPolicies(source);
+        List<PolicyBean> policyBeans = policies.getPolicies();
+        if (policyBeans != null) {
+            for (PolicyBean policyBean : policyBeans) {
+                if (policyBean.getId().equals(id)) {
+                    PolicyDefinitionBean def = getPolicyDefinition(policyBean.getDefinition().getId());
+                    policyBean.setDefinition(def);
+                    return policyBean;
+                }
+            }
+        }
+        return null;
     }
 
     /**
@@ -699,8 +887,12 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     @Override
     public SearchResultsBean<OrganizationSummaryBean> findOrganizations(SearchCriteriaBean criteria)
             throws StorageException {
-        throw new StorageException("Not yet implemented."); //$NON-NLS-1$ TODO Auto-generated method stub
-        
+        return find(criteria, "organization", new IUnmarshaller<OrganizationSummaryBean>() { //$NON-NLS-1$
+            @Override
+            public OrganizationSummaryBean unmarshal(Map<String, Object> source) {
+                return EsMarshalling.unmarshallOrganizationSummary(source);
+            }
+        });
     }
 
     /**
@@ -709,8 +901,12 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     @Override
     public SearchResultsBean<ApplicationSummaryBean> findApplications(SearchCriteriaBean criteria)
             throws StorageException {
-        throw new StorageException("Not yet implemented."); //$NON-NLS-1$ TODO Auto-generated method stub
-        
+        return find(criteria, "application", new IUnmarshaller<ApplicationSummaryBean>() { //$NON-NLS-1$
+            @Override
+            public ApplicationSummaryBean unmarshal(Map<String, Object> source) {
+                return EsMarshalling.unmarshallApplicationSummary(source);
+            }
+        });
     }
 
     /**
@@ -719,8 +915,12 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     @Override
     public SearchResultsBean<ServiceSummaryBean> findServices(SearchCriteriaBean criteria)
             throws StorageException {
-        throw new StorageException("Not yet implemented."); //$NON-NLS-1$ TODO Auto-generated method stub
-        
+        return find(criteria, "service", new IUnmarshaller<ServiceSummaryBean>() { //$NON-NLS-1$
+            @Override
+            public ServiceSummaryBean unmarshal(Map<String, Object> source) {
+                return EsMarshalling.unmarshallServiceSummary(source);
+            }
+        });
     }
 
     /**
@@ -729,7 +929,13 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     @Override
     public SearchResultsBean<PlanSummaryBean> findPlans(String organizationId, SearchCriteriaBean criteria)
             throws StorageException {
-        throw new StorageException("Not yet implemented."); //$NON-NLS-1$ TODO Auto-generated method stub
+        criteria.addFilter("organizationId", organizationId, SearchCriteriaFilterOperator.eq); //$NON-NLS-1$
+        return find(criteria, "plan", new IUnmarshaller<PlanSummaryBean>() { //$NON-NLS-1$
+            @Override
+            public PlanSummaryBean unmarshal(Map<String, Object> source) {
+                return EsMarshalling.unmarshallPlanSummary(source);
+            }
+        });
         
     }
 
@@ -739,8 +945,45 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     @Override
     public <T> SearchResultsBean<AuditEntryBean> auditEntity(String organizationId, String entityId,
             String entityVersion, Class<T> type, PagingBean paging) throws StorageException {
-        throw new StorageException("Not yet implemented."); //$NON-NLS-1$ TODO Auto-generated method stub
+        SearchCriteriaBean criteria = new SearchCriteriaBean();
+        if (paging != null) {
+            criteria.setPaging(paging);
+        } else {
+            criteria.setPage(1);
+            criteria.setPageSize(20);
+        }
+        criteria.setOrder("createdOn", false); //$NON-NLS-1$
+        if (organizationId != null) {
+            criteria.addFilter("organizationId", organizationId, SearchCriteriaFilterOperator.eq); //$NON-NLS-1$
+        }
+        if (entityId != null) {
+            criteria.addFilter("entityId", entityId, SearchCriteriaFilterOperator.eq); //$NON-NLS-1$
+        }
+        if (entityVersion != null) {
+            criteria.addFilter("entityVersion", entityVersion, SearchCriteriaFilterOperator.eq); //$NON-NLS-1$
+        }
+        if (type != null) {
+            AuditEntityType entityType = null;
+            if (type == OrganizationBean.class) {
+                entityType = AuditEntityType.Organization;
+            } else if (type == ApplicationBean.class) { 
+                entityType = AuditEntityType.Application;
+            } else if (type == ServiceBean.class) {
+                entityType = AuditEntityType.Service;
+            } else if (type == PlanBean.class) {
+                entityType = AuditEntityType.Plan;
+            }
+            if (entityType != null) {
+                criteria.addFilter("entityType", entityType.name(), SearchCriteriaFilterOperator.eq); //$NON-NLS-1$
+            }
+        }
         
+        return find(criteria, "auditEntry", new IUnmarshaller<AuditEntryBean>() { //$NON-NLS-1$
+            @Override
+            public AuditEntryBean unmarshal(Map<String, Object> source) {
+                return EsMarshalling.unmarshallAuditEntry(source);
+            }
+        });
     }
 
     /**
@@ -749,35 +992,83 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     @Override
     public <T> SearchResultsBean<AuditEntryBean> auditUser(String userId, PagingBean paging)
             throws StorageException {
-        throw new StorageException("Not yet implemented."); //$NON-NLS-1$ TODO Auto-generated method stub
+        SearchCriteriaBean criteria = new SearchCriteriaBean();
+        if (paging != null) {
+            criteria.setPaging(paging);
+        } else {
+            criteria.setPage(1);
+            criteria.setPageSize(20);
+        }
+        criteria.setOrder("createdOn", false); //$NON-NLS-1$
+        if (userId != null) {
+            criteria.addFilter("who", userId, SearchCriteriaFilterOperator.eq); //$NON-NLS-1$
+        }
         
+        return find(criteria, "auditEntry", new IUnmarshaller<AuditEntryBean>() { //$NON-NLS-1$
+            @Override
+            public AuditEntryBean unmarshal(Map<String, Object> source) {
+                return EsMarshalling.unmarshallAuditEntry(source);
+            }
+        });
     }
 
     /**
      * @see io.apiman.manager.api.core.IStorageQuery#getOrgs(java.util.Set)
      */
     @Override
-    public List<OrganizationSummaryBean> getOrgs(Set<String> orgIds) throws StorageException {
-        throw new StorageException("Not yet implemented."); //$NON-NLS-1$ TODO Auto-generated method stub
-        
+    public List<OrganizationSummaryBean> getOrgs(Set<String> organizationIds) throws StorageException {
+        List<OrganizationSummaryBean> orgs = new ArrayList<>();
+        if (organizationIds == null || organizationIds.isEmpty()) {
+            return orgs;
+        }
+        @SuppressWarnings("nls")
+        QueryBuilder query = QueryBuilders.filteredQuery(
+            QueryBuilders.matchAllQuery(),
+            FilterBuilders.termsFilter("id", organizationIds.toArray())
+        );
+        @SuppressWarnings("nls")
+        SearchSourceBuilder builder = new SearchSourceBuilder()
+                .sort("name.raw", SortOrder.ASC)
+                .query(query)
+                .size(500);
+        SearchHits hits = listEntities("organization", builder); //$NON-NLS-1$
+        List<OrganizationSummaryBean> rval = new ArrayList<>((int) hits.totalHits());
+        for (SearchHit hit : hits) {
+            OrganizationSummaryBean bean = EsMarshalling.unmarshallOrganizationSummary(hit.getSource());
+            rval.add(bean);
+        }
+        return rval;
     }
 
     /**
      * @see io.apiman.manager.api.core.IStorageQuery#getApplicationsInOrgs(java.util.Set)
      */
     @Override
-    public List<ApplicationSummaryBean> getApplicationsInOrgs(Set<String> orgIds) throws StorageException {
-        throw new StorageException("Not yet implemented."); //$NON-NLS-1$ TODO Auto-generated method stub
-        
+    public List<ApplicationSummaryBean> getApplicationsInOrgs(Set<String> organizationIds) throws StorageException {
+        @SuppressWarnings("nls")
+        SearchSourceBuilder builder = new SearchSourceBuilder()
+                .sort("organizationName.raw", SortOrder.ASC)
+                .sort("name.raw", SortOrder.ASC)
+                .size(500);
+        TermsQueryBuilder query = QueryBuilders.termsQuery("organizationId", organizationIds.toArray(new String[organizationIds.size()])); //$NON-NLS-1$
+        builder.query(query);
+        SearchHits hits = listEntities("application", builder); //$NON-NLS-1$
+        List<ApplicationSummaryBean> rval = new ArrayList<>((int) hits.totalHits());
+        for (SearchHit hit : hits) {
+            ApplicationSummaryBean bean = EsMarshalling.unmarshallApplicationSummary(hit.getSource());
+            rval.add(bean);
+        }
+        return rval;
     }
 
     /**
      * @see io.apiman.manager.api.core.IStorageQuery#getApplicationsInOrg(java.lang.String)
      */
     @Override
-    public List<ApplicationSummaryBean> getApplicationsInOrg(String orgId) throws StorageException {
-        throw new StorageException("Not yet implemented."); //$NON-NLS-1$ TODO Auto-generated method stub
-        
+    public List<ApplicationSummaryBean> getApplicationsInOrg(String organizationId) throws StorageException {
+        Set<String> orgs = new HashSet<>();
+        orgs.add(organizationId);
+        return getApplicationsInOrgs(orgs);
     }
 
     /**
@@ -786,8 +1077,25 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     @Override
     public List<ApplicationVersionSummaryBean> getApplicationVersions(String organizationId,
             String applicationId) throws StorageException {
-        throw new StorageException("Not yet implemented."); //$NON-NLS-1$ TODO Auto-generated method stub
-        
+        @SuppressWarnings("nls")
+        QueryBuilder query = QueryBuilders.filteredQuery(
+            QueryBuilders.matchAllQuery(),
+            FilterBuilders.andFilter(
+                    FilterBuilders.termFilter("organizationId", organizationId),
+                    FilterBuilders.termFilter("applicationId", applicationId))
+        );
+        @SuppressWarnings("nls")
+        SearchSourceBuilder builder = new SearchSourceBuilder()
+                .sort("createdOn", SortOrder.DESC)
+                .query(query)
+                .size(500);
+        SearchHits hits = listEntities("applicationVersion", builder); //$NON-NLS-1$
+        List<ApplicationVersionSummaryBean> rval = new ArrayList<>((int) hits.totalHits());
+        for (SearchHit hit : hits) {
+            ApplicationVersionSummaryBean bean = EsMarshalling.unmarshallApplicationVersionSummary(hit.getSource());
+            rval.add(bean);
+        }
+        return rval;
     }
 
     /**
@@ -796,8 +1104,25 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     @Override
     public List<ContractSummaryBean> getApplicationContracts(String organizationId, String applicationId,
             String version) throws StorageException {
-        throw new StorageException("Not yet implemented."); //$NON-NLS-1$ TODO Auto-generated method stub
-        
+        @SuppressWarnings("nls")
+        QueryBuilder query = QueryBuilders.filteredQuery(
+            QueryBuilders.matchAllQuery(),
+            FilterBuilders.andFilter(
+                FilterBuilders.termFilter("appOrganizationId", organizationId),
+                FilterBuilders.termFilter("appId", applicationId),
+                FilterBuilders.termFilter("appVersion", version)
+            )
+        );
+        @SuppressWarnings("nls")
+        SearchSourceBuilder builder = new SearchSourceBuilder().sort("id", SortOrder.ASC).query(query)
+                .size(500);
+        SearchHits hits = listEntities("contract", builder); //$NON-NLS-1$
+        List<ContractSummaryBean> rval = new ArrayList<>((int) hits.totalHits());
+        for (SearchHit hit : hits) {
+            ContractSummaryBean bean = EsMarshalling.unmarshallContractSummary(hit.getSource());
+            rval.add(bean);
+        }
+        return rval;
     }
 
     /**
@@ -806,36 +1131,89 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     @Override
     public ApiRegistryBean getApiRegistry(String organizationId, String applicationId, String version)
             throws StorageException {
-        throw new StorageException("Not yet implemented."); //$NON-NLS-1$ TODO Auto-generated method stub
-        
+        @SuppressWarnings("nls")
+        QueryBuilder query = QueryBuilders.filteredQuery(
+            QueryBuilders.matchAllQuery(),
+            FilterBuilders.andFilter(
+                FilterBuilders.termFilter("appOrganizationId", organizationId),
+                FilterBuilders.termFilter("appId", applicationId),
+                FilterBuilders.termFilter("appVersion", version)
+            )
+        );
+        @SuppressWarnings("nls")
+        SearchSourceBuilder builder = new SearchSourceBuilder().sort("id", SortOrder.ASC).query(query)
+                .size(500);
+        SearchHits hits = listEntities("contract", builder); //$NON-NLS-1$
+        ApiRegistryBean registry = new ApiRegistryBean();
+        for (SearchHit hit : hits) {
+            ApiEntryBean bean = EsMarshalling.unmarshallApiEntry(hit.getSource());
+            ServiceVersionBean svb = getServiceVersion(bean.getServiceOrgId(), bean.getServiceId(), bean.getServiceVersion());
+            Set<ServiceGatewayBean> gateways = svb.getGateways();
+            if (gateways != null && gateways.size() > 0) {
+                ServiceGatewayBean sgb = gateways.iterator().next();
+                bean.setGatewayId(sgb.getGatewayId());
+            }
+            registry.getApis().add(bean);
+        }
+        return registry;
     }
 
     /**
      * @see io.apiman.manager.api.core.IStorageQuery#getServicesInOrgs(java.util.Set)
      */
     @Override
-    public List<ServiceSummaryBean> getServicesInOrgs(Set<String> orgIds) throws StorageException {
-        throw new StorageException("Not yet implemented."); //$NON-NLS-1$ TODO Auto-generated method stub
-        
+    public List<ServiceSummaryBean> getServicesInOrgs(Set<String> organizationIds) throws StorageException {
+        @SuppressWarnings("nls")
+        SearchSourceBuilder builder = new SearchSourceBuilder()
+                .sort("organizationName.raw", SortOrder.ASC)
+                .sort("name.raw", SortOrder.ASC)
+                .size(500);
+        TermsQueryBuilder query = QueryBuilders.termsQuery("organizationId", organizationIds.toArray(new String[organizationIds.size()])); //$NON-NLS-1$
+        builder.query(query);
+        SearchHits hits = listEntities("service", builder); //$NON-NLS-1$
+        List<ServiceSummaryBean> rval = new ArrayList<>((int) hits.totalHits());
+        for (SearchHit hit : hits) {
+            ServiceSummaryBean bean = EsMarshalling.unmarshallServiceSummary(hit.getSource());
+            rval.add(bean);
+        }
+        return rval;
     }
 
     /**
      * @see io.apiman.manager.api.core.IStorageQuery#getServicesInOrg(java.lang.String)
      */
     @Override
-    public List<ServiceSummaryBean> getServicesInOrg(String orgId) throws StorageException {
-        throw new StorageException("Not yet implemented."); //$NON-NLS-1$ TODO Auto-generated method stub
-        
+    public List<ServiceSummaryBean> getServicesInOrg(String organizationId) throws StorageException {
+        Set<String> orgs = new HashSet<>();
+        orgs.add(organizationId);
+        return getServicesInOrgs(orgs);
     }
 
     /**
      * @see io.apiman.manager.api.core.IStorageQuery#getServiceVersions(java.lang.String, java.lang.String)
      */
     @Override
-    public List<ServiceVersionSummaryBean> getServiceVersions(String orgId, String serviceId)
+    public List<ServiceVersionSummaryBean> getServiceVersions(String organizationId, String serviceId)
             throws StorageException {
-        throw new StorageException("Not yet implemented."); //$NON-NLS-1$ TODO Auto-generated method stub
-        
+        @SuppressWarnings("nls")
+        QueryBuilder query = QueryBuilders.filteredQuery(
+            QueryBuilders.matchAllQuery(),
+            FilterBuilders.andFilter(
+                    FilterBuilders.termFilter("organizationId", organizationId),
+                    FilterBuilders.termFilter("serviceId", serviceId))
+        );
+        @SuppressWarnings("nls")
+        SearchSourceBuilder builder = new SearchSourceBuilder()
+                .sort("createdOn", SortOrder.DESC)
+                .query(query)
+                .size(500);
+        SearchHits hits = listEntities("serviceVersion", builder); //$NON-NLS-1$
+        List<ServiceVersionSummaryBean> rval = new ArrayList<>((int) hits.totalHits());
+        for (SearchHit hit : hits) {
+            ServiceVersionSummaryBean bean = EsMarshalling.unmarshallServiceVersionSummary(hit.getSource());
+            rval.add(bean);
+        }
+        return rval;
     }
 
     /**
@@ -844,26 +1222,54 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     @Override
     public List<ServicePlanSummaryBean> getServiceVersionPlans(String organizationId, String serviceId,
             String version) throws StorageException {
-        throw new StorageException("Not yet implemented."); //$NON-NLS-1$ TODO Auto-generated method stub
-        
+        List<ServicePlanSummaryBean> rval = new ArrayList<>();
+        ServiceVersionBean versionBean = getServiceVersion(organizationId, serviceId, version);
+        if (versionBean != null) {
+            Set<ServicePlanBean> plans = versionBean.getPlans();
+            if (plans != null) {
+                for (ServicePlanBean spb : plans) {
+                    PlanBean planBean = getPlan(organizationId, spb.getPlanId());
+                    ServicePlanSummaryBean plan = new ServicePlanSummaryBean();
+                    plan.setPlanId(spb.getPlanId());
+                    plan.setVersion(spb.getVersion());
+                    plan.setPlanName(planBean.getName());
+                    plan.setPlanDescription(planBean.getDescription());
+                    rval.add(plan);
+                }
+            }
+        }
+        return rval;
     }
 
     /**
      * @see io.apiman.manager.api.core.IStorageQuery#getPlansInOrgs(java.util.Set)
      */
     @Override
-    public List<PlanSummaryBean> getPlansInOrgs(Set<String> orgIds) throws StorageException {
-        throw new StorageException("Not yet implemented."); //$NON-NLS-1$ TODO Auto-generated method stub
-        
+    public List<PlanSummaryBean> getPlansInOrgs(Set<String> organizationIds) throws StorageException {
+        @SuppressWarnings("nls")
+        SearchSourceBuilder builder = new SearchSourceBuilder()
+                .sort("organizationName.raw", SortOrder.ASC)
+                .sort("name.raw", SortOrder.ASC)
+                .size(500);
+        TermsQueryBuilder query = QueryBuilders.termsQuery("organizationId", organizationIds.toArray(new String[organizationIds.size()])); //$NON-NLS-1$
+        builder.query(query);
+        SearchHits hits = listEntities("plan", builder); //$NON-NLS-1$
+        List<PlanSummaryBean> rval = new ArrayList<>((int) hits.totalHits());
+        for (SearchHit hit : hits) {
+            PlanSummaryBean bean = EsMarshalling.unmarshallPlanSummary(hit.getSource());
+            rval.add(bean);
+        }
+        return rval;
     }
 
     /**
      * @see io.apiman.manager.api.core.IStorageQuery#getPlansInOrg(java.lang.String)
      */
     @Override
-    public List<PlanSummaryBean> getPlansInOrg(String orgId) throws StorageException {
-        throw new StorageException("Not yet implemented."); //$NON-NLS-1$ TODO Auto-generated method stub
-        
+    public List<PlanSummaryBean> getPlansInOrg(String organizationId) throws StorageException {
+        Set<String> orgs = new HashSet<>();
+        orgs.add(organizationId);
+        return getPlansInOrgs(orgs);
     }
 
     /**
@@ -872,8 +1278,25 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     @Override
     public List<PlanVersionSummaryBean> getPlanVersions(String organizationId, String planId)
             throws StorageException {
-        throw new StorageException("Not yet implemented."); //$NON-NLS-1$ TODO Auto-generated method stub
-        
+        @SuppressWarnings("nls")
+        QueryBuilder query = QueryBuilders.filteredQuery(
+            QueryBuilders.matchAllQuery(),
+            FilterBuilders.andFilter(
+                    FilterBuilders.termFilter("organizationId", organizationId),
+                    FilterBuilders.termFilter("planId", planId))
+        );
+        @SuppressWarnings("nls")
+        SearchSourceBuilder builder = new SearchSourceBuilder()
+                .sort("createdOn", SortOrder.DESC)
+                .query(query)
+                .size(500);
+        SearchHits hits = listEntities("planVersion", builder); //$NON-NLS-1$
+        List<PlanVersionSummaryBean> rval = new ArrayList<>((int) hits.totalHits());
+        for (SearchHit hit : hits) {
+            PlanVersionSummaryBean bean = EsMarshalling.unmarshallPlanVersionSummary(hit.getSource());
+            rval.add(bean);
+        }
+        return rval;
     }
 
     /**
@@ -882,8 +1305,36 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     @Override
     public List<PolicySummaryBean> getPolicies(String organizationId, String entityId, String version,
             PolicyType type) throws StorageException {
-        throw new StorageException("Not yet implemented."); //$NON-NLS-1$ TODO Auto-generated method stub
-        
+        try {
+            String docType = getPoliciesDocType(type);
+            String pid = id(organizationId, entityId, version);
+            Map<String, Object> source = getEntity(docType, pid);
+            List<PolicySummaryBean> rval = new ArrayList<>();
+            if (source == null) {
+                return rval;
+            }
+            PoliciesBean policies = EsMarshalling.unmarshallPolicies(source);
+            List<PolicyBean> policyBeans = policies.getPolicies();
+            if (policyBeans != null) {
+                for (PolicyBean policyBean : policyBeans) {
+                    PolicyDefinitionBean def = getPolicyDefinition(policyBean.getDefinition().getId());
+                    policyBean.setDefinition(def);
+                    PolicyTemplateUtil.generatePolicyDescription(policyBean);
+                    PolicySummaryBean psb = new PolicySummaryBean();
+                    psb.setCreatedBy(policyBean.getCreatedBy());
+                    psb.setCreatedOn(policyBean.getCreatedOn());
+                    psb.setDescription(policyBean.getDescription());
+                    psb.setIcon(def.getIcon());
+                    psb.setId(policyBean.getId());
+                    psb.setName(policyBean.getName());
+                    psb.setPolicyDefinitionId(def.getId());
+                    rval.add(psb);
+                }
+            }
+            return rval;
+        } catch (Exception e) {
+            throw new StorageException(e);
+        }
     }
 
     /**
@@ -910,7 +1361,25 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     @Override
     public List<ContractSummaryBean> getServiceContracts(String organizationId, String serviceId,
             String version, int page, int pageSize) throws StorageException {
-        throw new StorageException("Not yet implemented."); //$NON-NLS-1$ TODO Auto-generated method stub
+        @SuppressWarnings("nls")
+        QueryBuilder query = QueryBuilders.filteredQuery(
+            QueryBuilders.matchAllQuery(),
+            FilterBuilders.andFilter(
+                FilterBuilders.termFilter("serviceOrganizationId", organizationId),
+                FilterBuilders.termFilter("serviceId", serviceId),
+                FilterBuilders.termFilter("serviceVersion", version)
+            )
+        );
+        @SuppressWarnings("nls")
+        SearchSourceBuilder builder = new SearchSourceBuilder().sort("id", SortOrder.ASC).query(query)
+                .size(500);
+        SearchHits hits = listEntities("contract", builder); //$NON-NLS-1$
+        List<ContractSummaryBean> rval = new ArrayList<>((int) hits.totalHits());
+        for (SearchHit hit : hits) {
+            ContractSummaryBean bean = EsMarshalling.unmarshallContractSummary(hit.getSource());
+            rval.add(bean);
+        }
+        return rval;
     }
 
     /**
@@ -919,7 +1388,8 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     @Override
     public int getMaxPolicyOrderIndex(String organizationId, String entityId, String entityVersion,
             PolicyType type) throws StorageException {
-        throw new StorageException("Not yet implemented."); //$NON-NLS-1$ TODO Auto-generated method stub
+        // We'll figure this out later, when adding a policy.
+        return -1;
     }
 
     /**
@@ -1003,7 +1473,8 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     @Override
     public void createMembership(RoleMembershipBean membership) throws StorageException {
         membership.setId(generateGuid());
-        indexEntity("roleMembership", String.valueOf(membership.getId()), EsMarshalling.marshall(membership)); //$NON-NLS-1$
+        String id = id(membership.getOrganizationId(), membership.getUserId(), membership.getRoleId());
+        indexEntity("roleMembership", id, EsMarshalling.marshall(membership)); //$NON-NLS-1$
     }
 
     /**
@@ -1011,17 +1482,22 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
      */
     @Override
     public void deleteMembership(String userId, String roleId, String organizationId) throws StorageException {
-        throw new StorageException("Not yet implemented"); // TODO Auto-generated method stub
-        
+        String id = id(organizationId, userId, roleId);
+        deleteEntity("roleMembership", id); //$NON-NLS-1$
     }
 
     /**
      * @see io.apiman.manager.api.core.IIdmStorage#deleteMemberships(java.lang.String, java.lang.String)
      */
     @Override
+    @SuppressWarnings("nls")
     public void deleteMemberships(String userId, String organizationId) throws StorageException {
-        throw new StorageException("Not yet implemented"); // TODO Auto-generated method stub
-        
+        FilteredQueryBuilder query = QueryBuilders.filteredQuery(
+            QueryBuilders.matchAllQuery(),
+            FilterBuilders.andFilter(
+                FilterBuilders.termFilter("organizationId", organizationId),
+                FilterBuilders.termFilter("userId", userId)));
+        esClient.prepareDeleteByQuery(INDEX_NAME).setTypes("roleMembership").setQuery(query).execute().actionGet();
     }
 
     /**
@@ -1029,8 +1505,27 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
      */
     @Override
     public Set<RoleMembershipBean> getUserMemberships(String userId) throws StorageException {
-        throw new StorageException("Not yet implemented"); // TODO Auto-generated method stub
-        
+        try {
+            @SuppressWarnings("nls")
+            QueryBuilder qb = QueryBuilders.filteredQuery(
+                QueryBuilders.matchAllQuery(),
+                FilterBuilders.termFilter("userId", userId)
+            );
+            SearchSourceBuilder builder = new SearchSourceBuilder().query(qb).size(2);
+            SearchRequest request = new SearchRequest(INDEX_NAME);
+            request.types("roleMembership"); //$NON-NLS-1$
+            request.source(builder);
+            SearchResponse response = esClient.search(request).get();
+            SearchHits hits = response.getHits();
+            Set<RoleMembershipBean> rval = new HashSet<>();
+            for (SearchHit hit : hits) {
+                RoleMembershipBean roleMembership = EsMarshalling.unmarshallRoleMembership(hit.getSource());
+                rval.add(roleMembership);
+            }
+            return rval;
+        } catch (Exception e) {
+            throw new StorageException(e);
+        }
     }
 
     /**
@@ -1039,8 +1534,30 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     @Override
     public Set<RoleMembershipBean> getUserMemberships(String userId, String organizationId)
             throws StorageException {
-        throw new StorageException("Not yet implemented"); // TODO Auto-generated method stub
-        
+        try {
+            @SuppressWarnings("nls")
+            QueryBuilder qb = QueryBuilders.filteredQuery(
+                QueryBuilders.matchAllQuery(),
+                FilterBuilders.andFilter(
+                    FilterBuilders.termFilter("userId", userId),
+                    FilterBuilders.termFilter("organizationId", organizationId)
+                )
+            );
+            SearchSourceBuilder builder = new SearchSourceBuilder().query(qb).size(2);
+            SearchRequest request = new SearchRequest(INDEX_NAME);
+            request.types("roleMembership"); //$NON-NLS-1$
+            request.source(builder);
+            SearchResponse response = esClient.search(request).get();
+            SearchHits hits = response.getHits();
+            Set<RoleMembershipBean> rval = new HashSet<>();
+            for (SearchHit hit : hits) {
+                RoleMembershipBean roleMembership = EsMarshalling.unmarshallRoleMembership(hit.getSource());
+                rval.add(roleMembership);
+            }
+            return rval;
+        } catch (Exception e) {
+            throw new StorageException(e);
+        }
     }
 
     /**
@@ -1048,8 +1565,27 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
      */
     @Override
     public Set<RoleMembershipBean> getOrgMemberships(String organizationId) throws StorageException {
-        throw new StorageException("Not yet implemented"); // TODO Auto-generated method stub
-        
+        try {
+            @SuppressWarnings("nls")
+            QueryBuilder qb = QueryBuilders.filteredQuery(
+                QueryBuilders.matchAllQuery(),
+                FilterBuilders.termFilter("organizationId", organizationId)
+            );
+            SearchSourceBuilder builder = new SearchSourceBuilder().query(qb).size(500);
+            SearchRequest request = new SearchRequest(INDEX_NAME);
+            request.types("roleMembership"); //$NON-NLS-1$
+            request.source(builder);
+            SearchResponse response = esClient.search(request).get();
+            SearchHits hits = response.getHits();
+            Set<RoleMembershipBean> rval = new HashSet<>();
+            for (SearchHit hit : hits) {
+                RoleMembershipBean roleMembership = EsMarshalling.unmarshallRoleMembership(hit.getSource());
+                rval.add(roleMembership);
+            }
+            return rval;
+        } catch (Exception e) {
+            throw new StorageException(e);
+        }
     }
 
     /**
@@ -1100,9 +1636,24 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
      * @throws StorageException
      */
     private void indexEntity(String type, String id, XContentBuilder entitySource) throws StorageException {
+        indexEntity(type, id, entitySource, false);
+    }
+
+    /**
+     * Indexes an entity.
+     * @param type
+     * @param id
+     * @param entitySource
+     * @param refresh true if the operation should wait for a refresh before it returns
+     * @throws StorageException
+     */
+    @SuppressWarnings("nls")
+    private void indexEntity(String type, String id, XContentBuilder entitySource, boolean refresh)
+            throws StorageException {
         try {
             IndexRequest request = new IndexRequest(INDEX_NAME, type, id);
             request.create(true);
+            request.refresh(refresh);
             request.contentType(XContentType.JSON);
             request.source(entitySource);
             
@@ -1110,7 +1661,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
             
             IndexResponse response = future.get();
             if (!response.isCreated()) {
-                throw new StorageException("Failed to index document {0} / {1}" /*, type, id */);
+                throw new StorageException("Failed to index document " + id + " of type " + type + ".");
             }
         } catch (StorageException e) {
             throw e;
@@ -1170,7 +1721,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
             ActionFuture<DeleteResponse> future = esClient.delete(request);
             DeleteResponse response = future.get();
             if (!response.isFound()) {
-                throw new StorageException("Document could not be deleted because it did not exist.");
+                throw new StorageException("Document could not be deleted because it did not exist."); //$NON-NLS-1$
             }
         } catch (StorageException e) {
             throw e;
@@ -1286,11 +1837,50 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     /**
      * Generates a (hopefully) unique ID.  Mimics JPA's auto-generated long ID column.
      */
-    private static Long generateGuid() {
+    private static synchronized Long generateGuid() {
         StringBuilder builder = new StringBuilder();
         builder.append(System.currentTimeMillis());
-        builder.append(random.nextInt(10000));
+        builder.append(guidCounter++);
+        // Reset the counter if it gets too high.  It's always a number
+        // between 100 and 999 so that the # of digits in the guid is
+        // always the same.
+        if (guidCounter > 999) {
+            guidCounter = 100;
+        }
         return Long.parseLong(builder.toString());
+    }
+
+    /**
+     * Returns the policies document type to use given the policy type.
+     * @param type
+     */
+    private static String getPoliciesDocType(PolicyType type) {
+        String docType = "planPolicies"; //$NON-NLS-1$
+        if (type == PolicyType.Service) {
+            docType = "servicePolicies"; //$NON-NLS-1$
+        } else if (type == PolicyType.Application) {
+            docType = "applicationPolicies"; //$NON-NLS-1$
+        }
+        return docType;
+    }
+    
+    /**
+     * A composite ID created from an organization ID and entity ID.
+     * @param organizationId
+     * @param entityId
+     */
+    private static String id(String organizationId, String entityId) {
+        return organizationId + ":" + entityId; //$NON-NLS-1$
+    }
+
+    /**
+     * A composite ID created from an organization ID, entity ID, and version.
+     * @param organizationId
+     * @param entityId
+     * @param version
+     */
+    private static String id(String organizationId, String entityId, String version) {
+        return organizationId + ':' + entityId + ':' + version;
     }
     
     private static interface IUnmarshaller<T> {

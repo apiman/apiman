@@ -42,6 +42,7 @@ import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.security.Credential;
+import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.ImmutableSettings.Builder;
@@ -79,8 +80,8 @@ public class ManagerApiTestServer {
     /*
      * The elasticsearch node and client - only if using ES
      */
-    private Node node;
-    private TransportClient client;
+    private Node node = null;
+    private TransportClient client = null;
 
     /**
      * Constructor.
@@ -120,8 +121,9 @@ public class ManagerApiTestServer {
             ctx.unbind("java:comp/env/jdbc/ApiManagerDS");
         }
         if (node != null) {
-            client.close();
-            node.stop();
+            DeleteIndexRequest request = new DeleteIndexRequest("apiman_manager");
+            client.admin().indices().delete(request).actionGet();
+            System.out.println("*** Deleted the ES index.");
         }
     }
 
@@ -153,7 +155,7 @@ public class ManagerApiTestServer {
                 throw new RuntimeException(e);
             }
         }
-        if (ManagerTestUtils.getTestType() == TestType.es) {
+        if (ManagerTestUtils.getTestType() == TestType.es && node == null) {
             System.out.println("Creating the ES node.");
             File esHome = new File("target/es");
             if (esHome.isDirectory()) {
