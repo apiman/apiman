@@ -123,6 +123,7 @@
     <version.org.apache.servicemix.bundles.dom4j>1.6.1_5</version.org.apache.servicemix.bundles.dom4j>
     <version.org.codehaus.jackson>1.9.13</version.org.codehaus.jackson>
     <version.org.eclipse.jetty>8.1.9.v20130131</version.org.eclipse.jetty>
+    <version.org.elasticsearch>1.3.2</version.org.elasticsearch>
     <version.org.hibernate.commons.annotations>4.0.4.Final</version.org.hibernate.commons.annotations>
     <version.org.hibernate.javax.persistence.hibernate-jpa-2.1-api>1.0.0.Final</version.org.hibernate.javax.persistence.hibernate-jpa-2.1-api>
     <version.org.hibernate>4.3.7.Final</version.org.hibernate>
@@ -196,6 +197,11 @@
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>apiman-manager-api-jpa-idm</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-manager-api-es</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -417,6 +423,17 @@
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-distro-db</artifactId>
+        <version>${project.version}</version>
+        <type>test-jar</type>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-distro-db-es</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
         <artifactId>apiman-distro-wildfly8</artifactId>
         <version>${project.version}</version>
         <type>zip</type>
@@ -431,7 +448,7 @@
         <type>zip</type>
       </dependency>
 
-      <!-- Use Errai 3.0 (temporary override) -->
+      <!-- Errai 3.0 -->
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-common</artifactId>
@@ -638,6 +655,11 @@
       </dependency>
 
       <!-- Third Party Libraries -->
+      <dependency>
+        <groupId>org.elasticsearch</groupId>
+        <artifactId>elasticsearch</artifactId>
+        <version>${version.org.elasticsearch}</version>
+      </dependency>
       <dependency>
         <groupId>xmlunit</groupId>
         <artifactId>xmlunit</artifactId>

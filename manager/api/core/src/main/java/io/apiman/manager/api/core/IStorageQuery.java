@@ -110,24 +110,24 @@ public interface IStorageQuery {
     
     /**
      * Returns summary info for all organizations in the given set.
-     * @param orgIds
+     * @param organizationIds
      * @throws StorageException
      */
-    public List<OrganizationSummaryBean> getOrgs(Set<String> orgIds) throws StorageException;
+    public List<OrganizationSummaryBean> getOrgs(Set<String> organizationIds) throws StorageException;
 
     /**
      * Returns summary info for all applications in all organizations in the given set.
-     * @param orgIds
+     * @param organizationIds
      * @throws StorageException
      */
-    public List<ApplicationSummaryBean> getApplicationsInOrgs(Set<String> orgIds) throws StorageException;
+    public List<ApplicationSummaryBean> getApplicationsInOrgs(Set<String> organizationIds) throws StorageException;
 
     /**
      * Returns summary info for all applications in the given organization.
-     * @param orgId
+     * @param organizationId
      * @throws StorageException
      */
-    public List<ApplicationSummaryBean> getApplicationsInOrg(String orgId) throws StorageException;
+    public List<ApplicationSummaryBean> getApplicationsInOrg(String organizationId) throws StorageException;
 
     /**
      * Returns all application versions for a given app.
@@ -158,25 +158,25 @@ public interface IStorageQuery {
 
     /**
      * Returns summary info for all services in all organizations in the given set.
-     * @param orgIds
+     * @param organizationIds
      * @throws StorageException
      */
-    public List<ServiceSummaryBean> getServicesInOrgs(Set<String> orgIds) throws StorageException;
+    public List<ServiceSummaryBean> getServicesInOrgs(Set<String> organizationIds) throws StorageException;
 
     /**
      * Returns summary info for all services in the given organization.
-     * @param orgId
+     * @param organizationId
      * @throws StorageException
      */
-    public List<ServiceSummaryBean> getServicesInOrg(String orgId) throws StorageException;
+    public List<ServiceSummaryBean> getServicesInOrg(String organizationId) throws StorageException;
     
     /**
      * Returns all service versions for a given service.
-     * @param orgId
+     * @param organizationId
      * @param serviceId
      * @throws StorageException
      */
-    public List<ServiceVersionSummaryBean> getServiceVersions(String orgId, String serviceId) throws StorageException;
+    public List<ServiceVersionSummaryBean> getServiceVersions(String organizationId, String serviceId) throws StorageException;
 
     /**
      * Returns the service plans configured for the given service version.
@@ -189,17 +189,17 @@ public interface IStorageQuery {
 
     /**
      * Returns summary info for all plans in all organizations in the given set.
-     * @param orgIds
+     * @param organizationIds
      * @throws StorageException
      */
-    public List<PlanSummaryBean> getPlansInOrgs(Set<String> orgIds) throws StorageException;
+    public List<PlanSummaryBean> getPlansInOrgs(Set<String> organizationIds) throws StorageException;
 
     /**
      * Returns summary info for all plans in the given organization.
-     * @param orgId
+     * @param organizationId
      * @throws StorageException
      */
-    public List<PlanSummaryBean> getPlansInOrg(String orgId) throws StorageException;
+    public List<PlanSummaryBean> getPlansInOrg(String organizationId) throws StorageException;
 
     /**
      * Returns all plan versions for a given plan.

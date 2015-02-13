@@ -25,7 +25,7 @@ import org.junit.Test;
  * @author eric.wittmann@redhat.com
  */
 public class MembersTest extends AbstractTestPlanTest {
-
+    
     @Test
     public void test() {
         runTestPlan("test-plans/members-testPlan.xml", MembersTest.class.getClassLoader()); //$NON-NLS-1$

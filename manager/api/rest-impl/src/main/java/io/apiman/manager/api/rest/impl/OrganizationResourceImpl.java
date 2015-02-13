@@ -54,7 +54,7 @@ import io.apiman.manager.api.beans.policies.PolicyType;
 import io.apiman.manager.api.beans.policies.UpdatePolicyBean;
 import io.apiman.manager.api.beans.search.PagingBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
-import io.apiman.manager.api.beans.search.SearchCriteriaFilterBean;
+import io.apiman.manager.api.beans.search.SearchCriteriaFilterOperator;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.beans.services.NewServiceBean;
 import io.apiman.manager.api.beans.services.NewServiceVersionBean;
@@ -168,7 +168,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         SearchCriteriaBean criteria = new SearchCriteriaBean();
         criteria.setPage(1);
         criteria.setPageSize(100);
-        criteria.addFilter("autoGrant", "true", SearchCriteriaFilterBean.OPERATOR_BOOL_EQ); //$NON-NLS-1$ //$NON-NLS-2$
+        criteria.addFilter("autoGrant", "true", SearchCriteriaFilterOperator.bool_eq); //$NON-NLS-1$ //$NON-NLS-2$
         try {
             autoGrantedRoles = idmStorage.findRoles(criteria).getBeans();
         } catch (StorageException e) {
@@ -913,7 +913,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
         try {
             storage.beginTx();
-            PolicyBean policy = this.storage.getPolicy(policyId);
+            PolicyBean policy = this.storage.getPolicy(PolicyType.Application, organizationId, applicationId, version, policyId);
             if (policy == null) {
                 throw ExceptionFactory.policyNotFoundException(policyId);
             }
@@ -950,7 +950,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
         try {
             storage.beginTx();
-            PolicyBean policy = this.storage.getPolicy(policyId);
+            PolicyBean policy = this.storage.getPolicy(PolicyType.Application, organizationId, applicationId, version, policyId);
             if (policy == null) {
                 throw ExceptionFactory.policyNotFoundException(policyId);
             }
@@ -997,13 +997,11 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
         try {
             storage.beginTx();
-            List<PolicySummaryBean> policies = policyChain.getPolicies();
-            int orderIndex = 0;
-            for (PolicySummaryBean incomingPolicy : policies) {
-                PolicyBean storedPolicy = this.storage.getPolicy(incomingPolicy.getId());
-                storedPolicy.setOrderIndex(orderIndex++);
-                storage.updatePolicy(storedPolicy);
+            List<Long> newOrder = new ArrayList<>(policyChain.getPolicies().size());
+            for (PolicySummaryBean psb : policyChain.getPolicies()) {
+                newOrder.add(psb.getId());
             }
+            storage.reorderPolicies(PolicyType.Application, organizationId, applicationId, version, newOrder);
             storage.createAuditEntry(AuditUtils.policiesReordered(avb, PolicyType.Application, securityContext));
             storage.commitTx();
         } catch (AbstractRestException e) {
@@ -1524,7 +1522,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
         try {
             storage.beginTx();
-            PolicyBean policy = storage.getPolicy(policyId);
+            PolicyBean policy = storage.getPolicy(PolicyType.Service, organizationId, serviceId, version, policyId);
             if (policy == null) {
                 throw ExceptionFactory.policyNotFoundException(policyId);
             }
@@ -1561,7 +1559,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
         try {
             storage.beginTx();
-            PolicyBean policy = this.storage.getPolicy(policyId);
+            PolicyBean policy = this.storage.getPolicy(PolicyType.Service, organizationId, serviceId, version, policyId);
             if (policy == null) {
                 throw ExceptionFactory.policyNotFoundException(policyId);
             }
@@ -1608,13 +1606,11 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
         try {
             storage.beginTx();
-            List<PolicySummaryBean> policies = policyChain.getPolicies();
-            int orderIndex = 0;
-            for (PolicySummaryBean incomingPolicy : policies) {
-                PolicyBean storedPolicy = this.storage.getPolicy(incomingPolicy.getId());
-                storedPolicy.setOrderIndex(orderIndex++);
-                storage.updatePolicy(storedPolicy);
+            List<Long> newOrder = new ArrayList<>(policyChain.getPolicies().size());
+            for (PolicySummaryBean psb : policyChain.getPolicies()) {
+                newOrder.add(psb.getId());
             }
+            storage.reorderPolicies(PolicyType.Service, organizationId, serviceId, version, newOrder);
             storage.createAuditEntry(AuditUtils.policiesReordered(svb, PolicyType.Service, securityContext));
             storage.commitTx();
         } catch (AbstractRestException e) {
@@ -2004,7 +2000,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
         try {
             storage.beginTx();
-            PolicyBean policy = storage.getPolicy(policyId);
+            PolicyBean policy = storage.getPolicy(PolicyType.Plan, organizationId, planId, version, policyId);
             if (policy == null) {
                 throw ExceptionFactory.policyNotFoundException(policyId);
             }
@@ -2041,7 +2037,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
         try {
             storage.beginTx();
-            PolicyBean policy = this.storage.getPolicy(policyId);
+            PolicyBean policy = this.storage.getPolicy(PolicyType.Plan, organizationId, planId, version, policyId);
             if (policy == null) {
                 throw ExceptionFactory.policyNotFoundException(policyId);
             }
@@ -2088,13 +2084,11 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
         try {
             storage.beginTx();
-            List<PolicySummaryBean> policies = policyChain.getPolicies();
-            int orderIndex = 0;
-            for (PolicySummaryBean incomingPolicy : policies) {
-                PolicyBean storedPolicy = this.storage.getPolicy(incomingPolicy.getId());
-                storedPolicy.setOrderIndex(orderIndex++);
-                storage.updatePolicy(storedPolicy);
+            List<Long> newOrder = new ArrayList<>(policyChain.getPolicies().size());
+            for (PolicySummaryBean psb : policyChain.getPolicies()) {
+                newOrder.add(psb.getId());
             }
+            storage.reorderPolicies(PolicyType.Plan, organizationId, planId, version, newOrder);
             storage.createAuditEntry(AuditUtils.policiesReordered(pvb, PolicyType.Plan, securityContext));
             storage.commitTx();
         } catch (AbstractRestException e) {
@@ -2343,7 +2337,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             String entityVersion, long policyId) throws PolicyNotFoundException {
         try {
             storage.beginTx();
-            PolicyBean policy = storage.getPolicy(policyId);
+            PolicyBean policy = storage.getPolicy(type, organizationId, entityId, entityVersion, policyId);
             if (policy == null) {
                 throw ExceptionFactory.policyNotFoundException(policyId);
             }

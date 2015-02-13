@@ -20,7 +20,7 @@ import io.apiman.manager.api.beans.apps.ApplicationVersionBean;
 import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.contracts.NewContractBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
-import io.apiman.manager.api.beans.search.SearchCriteriaFilterBean;
+import io.apiman.manager.api.beans.search.SearchCriteriaFilterOperator;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.beans.services.ServiceBean;
 import io.apiman.manager.api.beans.services.ServiceStatus;
@@ -445,7 +445,7 @@ public class NewContractPage extends AbstractPage {
         criteria.setPageSize(50);
         criteria.setPage(1);
         criteria.setOrder("name", true); //$NON-NLS-1$
-        criteria.addFilter("name", "*" + searchBox.getValue() + "*", SearchCriteriaFilterBean.OPERATOR_LIKE); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        criteria.addFilter("name", "*" + searchBox.getValue() + "*", SearchCriteriaFilterOperator.like); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         rest.findServices(criteria, new IRestInvokerCallback<SearchResultsBean<ServiceSummaryBean>>() {
             @Override
             public void onSuccess(SearchResultsBean<ServiceSummaryBean> response) {

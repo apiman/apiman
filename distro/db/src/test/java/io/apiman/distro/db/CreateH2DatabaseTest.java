@@ -16,6 +16,8 @@
 package io.apiman.distro.db;
 
 import io.apiman.manager.test.util.AbstractTestPlanTest;
+import io.apiman.manager.test.util.ManagerTestUtils;
+import io.apiman.manager.test.util.ManagerTestUtils.TestType;
 
 import java.io.File;
 
@@ -44,6 +46,7 @@ public class CreateH2DatabaseTest extends AbstractTestPlanTest {
         System.out.println("------------------------------------------------");
 
         System.setProperty("apiman.test.h2-output-dir", targetClassesDir.toString());
+        ManagerTestUtils.setTestType(TestType.jpa);
         AbstractTestPlanTest.setup();
     }
     

@@ -47,7 +47,7 @@ public class SearchCriteriaBean implements Serializable {
      * @param value
      * @param operator
      */
-    public void addFilter(String name, String value, String operator) {
+    public void addFilter(String name, String value, SearchCriteriaFilterOperator operator) {
         SearchCriteriaFilterBean filter = new SearchCriteriaFilterBean();
         filter.setName(name);
         filter.setValue(value);

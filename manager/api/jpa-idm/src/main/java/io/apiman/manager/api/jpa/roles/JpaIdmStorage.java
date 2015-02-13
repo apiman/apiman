@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Alternative;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
@@ -47,7 +48,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author eric.wittmann@redhat.com
  */
-@ApplicationScoped
+@ApplicationScoped @Alternative
 public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
     
     private static Logger logger = LoggerFactory.getLogger(JpaIdmStorage.class);
@@ -337,6 +338,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
             Root<RoleMembershipBean> from = criteriaQuery.from(RoleMembershipBean.class);
             criteriaQuery.where(builder.equal(from.get("userId"), userId)); //$NON-NLS-1$
             TypedQuery<RoleMembershipBean> typedQuery = entityManager.createQuery(criteriaQuery);
+            typedQuery.setMaxResults(500);
             List<RoleMembershipBean> resultList = typedQuery.getResultList();
             for (RoleMembershipBean membership : resultList) {
                 RoleBean role = getRoleInternal(membership.getRoleId());

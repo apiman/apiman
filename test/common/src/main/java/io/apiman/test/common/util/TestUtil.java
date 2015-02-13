@@ -36,7 +36,7 @@ import org.apache.commons.io.IOUtils;
  * @author eric.wittmann@redhat.com
  */
 public class TestUtil {
-
+    
     /**
      * Loads a test plan from a classpath resource.
      * @param resourcePath

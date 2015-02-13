@@ -16,7 +16,7 @@
 package io.apiman.manager.api.war.wildfly8;
 
 import io.apiman.manager.api.core.plugin.AbstractPluginRegistry;
-import io.apiman.manager.api.war.ApiManagerConfig;
+import io.apiman.manager.api.war.WarApiManagerConfig;
 
 import java.io.File;
 import java.net.URL;
@@ -37,7 +37,7 @@ import javax.inject.Inject;
 public class Wildfly8PluginRegistry extends AbstractPluginRegistry {
 
     @Inject
-    private ApiManagerConfig config;
+    private WarApiManagerConfig config;
     
     private Set<URL> mavenRepos = null;
     

@@ -248,7 +248,7 @@ public class PluginResourceImpl implements IPluginResource {
             if (pdBean == null) {
                 throw ExceptionFactory.policyDefNotFoundException(policyDefId);
             }
-            if (pdBean.getPluginId() == null || pdBean.getPluginId() != pbean.getId()) {
+            if (pdBean.getPluginId() == null || !pdBean.getPluginId().equals(pbean.getId())) {
                 throw ExceptionFactory.pluginNotFoundException(pluginId);
             }
             if (pdBean.getFormType() == PolicyFormType.JsonSchema && pdBean.getForm() != null) {

@@ -55,7 +55,7 @@ public class RoleBean implements Serializable {
     @Column(updatable=false, nullable=false)
     private Date createdOn;
     @Column(updatable=true, nullable=true)
-    private Boolean autoGrant;
+    private Boolean autoGrant = Boolean.FALSE;
     @ElementCollection(fetch=FetchType.EAGER)
     @CollectionTable(name="permissions", joinColumns=@JoinColumn(name="role_id"))
     private Set<PermissionType> permissions;

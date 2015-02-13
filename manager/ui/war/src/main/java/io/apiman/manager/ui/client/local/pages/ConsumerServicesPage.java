@@ -16,7 +16,7 @@
 package io.apiman.manager.ui.client.local.pages;
 
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
-import io.apiman.manager.api.beans.search.SearchCriteriaFilterBean;
+import io.apiman.manager.api.beans.search.SearchCriteriaFilterOperator;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.beans.summary.ServiceSummaryBean;
 import io.apiman.manager.ui.client.local.AppMessages;
@@ -124,7 +124,7 @@ public class ConsumerServicesPage extends AbstractPage {
         criteria.setPageSize(100);
         criteria.setPage(1);
         criteria.setOrder("name", true); //$NON-NLS-1$
-        criteria.addFilter("name", "*" + query + "*", SearchCriteriaFilterBean.OPERATOR_LIKE); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        criteria.addFilter("name", "*" + query + "*", SearchCriteriaFilterOperator.like); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         rest.findServices(criteria, new IRestInvokerCallback<SearchResultsBean<ServiceSummaryBean>>() {
             @Override
             public void onSuccess(SearchResultsBean<ServiceSummaryBean> response) {

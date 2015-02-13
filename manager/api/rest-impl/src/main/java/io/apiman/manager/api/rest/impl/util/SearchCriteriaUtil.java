@@ -17,6 +17,7 @@ package io.apiman.manager.api.rest.impl.util;
 
 import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaFilterBean;
+import io.apiman.manager.api.beans.search.SearchCriteriaFilterOperator;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidSearchCriteriaException;
 import io.apiman.manager.api.rest.impl.i18n.Messages;
 
@@ -30,15 +31,15 @@ import java.util.Set;
  */
 public final class SearchCriteriaUtil {
     
-    public static final Set<String> validOperators = new HashSet<String>();
+    public static final Set<SearchCriteriaFilterOperator> validOperators = new HashSet<SearchCriteriaFilterOperator>();
     static {
-        validOperators.add(SearchCriteriaFilterBean.OPERATOR_EQ);
-        validOperators.add(SearchCriteriaFilterBean.OPERATOR_GT);
-        validOperators.add(SearchCriteriaFilterBean.OPERATOR_GTE);
-        validOperators.add(SearchCriteriaFilterBean.OPERATOR_LT);
-        validOperators.add(SearchCriteriaFilterBean.OPERATOR_LTE);
-        validOperators.add(SearchCriteriaFilterBean.OPERATOR_NEQ);
-        validOperators.add(SearchCriteriaFilterBean.OPERATOR_LIKE);
+        validOperators.add(SearchCriteriaFilterOperator.eq);
+        validOperators.add(SearchCriteriaFilterOperator.gt);
+        validOperators.add(SearchCriteriaFilterOperator.gte);
+        validOperators.add(SearchCriteriaFilterOperator.lt);
+        validOperators.add(SearchCriteriaFilterOperator.lte);
+        validOperators.add(SearchCriteriaFilterOperator.neq);
+        validOperators.add(SearchCriteriaFilterOperator.like);
     }
 
     /**
