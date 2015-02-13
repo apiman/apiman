@@ -110,7 +110,7 @@ public class TestCdiFactory {
     private static TransportClient createTransportClient() {
         TransportClient client = new TransportClient(ImmutableSettings.settingsBuilder()
                 .put("cluster.name", ManagerApiTestServer.ES_CLUSTER_NAME).build());
-        client.addTransportAddress(new InetSocketTransportAddress("localhost", 9300));
+        client.addTransportAddress(new InetSocketTransportAddress("localhost", 6600));
         return client;
     }
 
