@@ -17,11 +17,8 @@ package io.apiman.manager.test;
 
 import io.apiman.manager.test.server.MockGatewayServlet;
 import io.apiman.manager.test.util.AbstractTestPlanTest;
-import io.apiman.manager.test.util.ManagerTestUtils;
-import io.apiman.manager.test.util.ManagerTestUtils.TestType;
 
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -37,12 +34,6 @@ public class AllTest extends AbstractTestPlanTest {
             "PUT:/mock-gateway/services\n" +
             "GET:/mock-gateway/system/status\n" + 
             "PUT:/mock-gateway/applications\n";
-    
-    @BeforeClass
-    public static void setup() throws Exception {
-        ManagerTestUtils.setTestType(TestType.es);
-        AbstractTestPlanTest.setup();
-    }
 
     @Test
     public void test() {

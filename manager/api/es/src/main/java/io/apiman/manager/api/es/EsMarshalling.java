@@ -442,7 +442,7 @@ public class EsMarshalling {
                     .field("username", bean.getUsername())
                     .field("email", bean.getEmail())
                     .field("fullName", bean.getFullName())
-                    .field("joinedOn", bean.getJoinedOn())
+                    .field("joinedOn", bean.getJoinedOn() == null ? null : bean.getJoinedOn().getTime())
                 .endObject();
             return builder;
         } catch (IOException e) {

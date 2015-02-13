@@ -17,11 +17,8 @@ package io.apiman.manager.test;
 
 import io.apiman.manager.test.server.MockGatewayServlet;
 import io.apiman.manager.test.util.AbstractTestPlanTest;
-import io.apiman.manager.test.util.ManagerTestUtils;
-import io.apiman.manager.test.util.ManagerTestUtils.TestType;
 
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -30,12 +27,6 @@ import org.junit.Test;
  * @author eric.wittmann@redhat.com
  */
 public class ServicesTest extends AbstractTestPlanTest {
-
-    @BeforeClass
-    public static void setup() throws Exception {
-        ManagerTestUtils.setTestType(TestType.es);
-        AbstractTestPlanTest.setup();
-    }
     
     private static final String EXPECTED_GATEWAY_LOG = 
             "GET:/mock-gateway/system/status\n" +  //$NON-NLS-1$

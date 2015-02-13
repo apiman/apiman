@@ -1,13 +1,12 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>io.apiman</groupId>
     <artifactId>apiman-distro</artifactId>
     <version>1.0.3-SNAPSHOT</version>
   </parent>
-  <artifactId>apiman-distro-db</artifactId>
-  <name>apiman-distro-db</name>
+  <artifactId>apiman-distro-db-es</artifactId>
+  <name>apiman-distro-db-es</name>
 
   <dependencies>
     <!-- Project Dependencies -->
@@ -18,6 +17,16 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-manager-test-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-distro-db</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-distro-db</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
     </dependency>
 
     <!-- Third Party Dependencies -->
@@ -46,20 +55,4 @@
       <artifactId>commons-io</artifactId>
     </dependency>
   </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>test-jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
 </project>

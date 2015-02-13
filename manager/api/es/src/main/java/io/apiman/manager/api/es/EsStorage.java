@@ -188,7 +188,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
      */
     @Override
     public void createOrganization(OrganizationBean organization) throws StorageException {
-        indexEntity("organization", organization.getId(), EsMarshalling.marshall(organization)); //$NON-NLS-1$
+        indexEntity("organization", organization.getId(), EsMarshalling.marshall(organization), true); //$NON-NLS-1$
     }
 
     /**
@@ -376,6 +376,9 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
      */
     @Override
     public void createAuditEntry(AuditEntryBean entry) throws StorageException {
+        if (entry == null) {
+            return;
+        }
         entry.setId(generateGuid());
         indexEntity("auditEntry", String.valueOf(entry.getId()), EsMarshalling.marshall(entry)); //$NON-NLS-1$
         // Guarantee that no 2 audit entries are at the same ms on the same node

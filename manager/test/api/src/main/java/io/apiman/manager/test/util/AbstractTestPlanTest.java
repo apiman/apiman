@@ -31,13 +31,12 @@ import org.junit.BeforeClass;
 @SuppressWarnings("nls")
 public abstract class AbstractTestPlanTest {
 
-    private static ManagerApiTestServer testServer = new ManagerApiTestServer();
+    protected static ManagerApiTestServer testServer = new ManagerApiTestServer();
     private static final boolean USE_PROXY = false;
     private static final int PROXY_PORT = 7071;
 
     @BeforeClass
     public static void setup() throws Exception {
-        System.out.println("AbstractTestPlanTest::setup()");
         if (!"true".equals(System.getProperty("apiman.junit.no-server", "false"))) {
             startServer();
         } else {

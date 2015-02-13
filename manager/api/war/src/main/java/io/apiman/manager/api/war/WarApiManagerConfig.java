@@ -31,12 +31,20 @@ import org.overlord.commons.config.ConfigurationFactory;
  * @author eric.wittmann@redhat.com
  */
 @ApplicationScoped
-public class ApiManagerConfig {
+public class WarApiManagerConfig {
 
     public static final String APIMAN_MANAGER_CONFIG_FILE_NAME = "apiman-manager.config.file.name"; //$NON-NLS-1$
     public static final String APIMAN_MANAGER_CONFIG_FILE_REFRESH = "apiman-manager.config.file.refresh"; //$NON-NLS-1$
 
+    public static final String APIMAN_MANAGER_STORAGE_TYPE = "apiman-manager.storage.type"; //$NON-NLS-1$
+    public static final String APIMAN_MANAGER_STORAGE_ES_HOST = "apiman-manager.storage.es.host"; //$NON-NLS-1$
+    public static final String APIMAN_MANAGER_STORAGE_ES_PORT = "apiman-manager.storage.es.port"; //$NON-NLS-1$
+    public static final String APIMAN_MANAGER_STORAGE_ES_CLUSTER_NAME = "apiman-manager.storage.es.cluster-name"; //$NON-NLS-1$
+    public static final String APIMAN_MANAGER_STORAGE_ES_INITIALIZE = "apiman-manager.storage.es.initialize"; //$NON-NLS-1$
+
     public static final String APIMAN_PLUGIN_REPOSITORIES = "apiman.plugins.repositories"; //$NON-NLS-1$
+
+    public static final String DEFAULT_ES_CLUSTER_NAME = "apiman"; //$NON-NLS-1$
 
     private static Configuration config;
     static {
@@ -48,13 +56,13 @@ public class ApiManagerConfig {
         }
 
         config = ConfigurationFactory.createConfig(configFile, "apiman.properties", //$NON-NLS-1$
-                refreshDelay, null, ApiManagerConfig.class);
+                refreshDelay, null, WarApiManagerConfig.class);
     }
 
     /**
      * Constructor.
      */
-    public ApiManagerConfig() {
+    public WarApiManagerConfig() {
     }
     
     /**
@@ -74,6 +82,41 @@ public class ApiManagerConfig {
             }
         }
         return rval;
+    }
+    
+    /**
+     * @return the configured storage type
+     */
+    public String getStorageType() {
+        return config.getString(APIMAN_MANAGER_STORAGE_TYPE, "jpa"); //$NON-NLS-1$
+    }
+    
+    /**
+     * @return the elasticsearch host
+     */
+    public String getESHost() {
+        return config.getString(APIMAN_MANAGER_STORAGE_ES_HOST, "localhost"); //$NON-NLS-1$
+    }
+    
+    /**
+     * @return the elasticsearch port
+     */
+    public int getESPort() {
+        return config.getInt(APIMAN_MANAGER_STORAGE_ES_PORT, 9300);
+    }
+    
+    /**
+     * @return the elasticsearch cluster name
+     */
+    public String getESClusterName() {
+        return config.getString(APIMAN_MANAGER_STORAGE_ES_CLUSTER_NAME, DEFAULT_ES_CLUSTER_NAME);
+    }
+    
+    /**
+     * @return true if the elasticsearch index should be initialized if not found
+     */
+    public boolean isInitializeES() {
+        return config.getBoolean(APIMAN_MANAGER_STORAGE_ES_INITIALIZE, true);
     }
 
     /**

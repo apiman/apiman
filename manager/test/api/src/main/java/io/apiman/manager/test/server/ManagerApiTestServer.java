@@ -65,7 +65,7 @@ import org.overlord.commons.i18n.server.filters.LocaleFilter;
 @SuppressWarnings("nls")
 public class ManagerApiTestServer {
 
-    public static final String ES_CLUSTER_NAME = "_apimantest";
+    public static String ES_CLUSTER_NAME = "_apimantest";
 
     /*
      * The jetty server
@@ -121,9 +121,10 @@ public class ManagerApiTestServer {
             ctx.unbind("java:comp/env/jdbc/ApiManagerDS");
         }
         if (node != null) {
-            DeleteIndexRequest request = new DeleteIndexRequest("apiman_manager");
-            client.admin().indices().delete(request).actionGet();
-            System.out.println("*** Deleted the ES index.");
+            if ("true".equals(System.getProperty("apiman.test.es-delete-index", "true"))) {
+                DeleteIndexRequest request = new DeleteIndexRequest("apiman_manager");
+                client.admin().indices().delete(request).actionGet();
+            }
         }
     }
 
@@ -158,17 +159,23 @@ public class ManagerApiTestServer {
         if (ManagerTestUtils.getTestType() == TestType.es && node == null) {
             System.out.println("Creating the ES node.");
             File esHome = new File("target/es");
+            String esHomeSP = System.getProperty("apiman.test.es-home", null);
+            if (esHomeSP != null) {
+                esHome = new File(esHomeSP);
+            }
             if (esHome.isDirectory()) {
                 FileUtils.deleteDirectory(esHome);
             }
             Builder settings = NodeBuilder.nodeBuilder().settings();
             settings.put("path.home", esHome.getAbsolutePath());
-            node = NodeBuilder.nodeBuilder().client(false).clusterName(ES_CLUSTER_NAME).data(true).local(false).settings(settings).build();
+            String clusterName = System.getProperty("apiman.test.es-cluster-name", ES_CLUSTER_NAME);
+            ES_CLUSTER_NAME = clusterName;
+            node = NodeBuilder.nodeBuilder().client(false).clusterName(clusterName).data(true).local(false).settings(settings).build();
             System.out.println("Starting the ES node.");
             node.start();
             System.out.println("ES node was successfully started.");
 
-            client = new TransportClient(ImmutableSettings.settingsBuilder().put("cluster.name", ES_CLUSTER_NAME)
+            client = new TransportClient(ImmutableSettings.settingsBuilder().put("cluster.name", clusterName)
                     .build());
             client.addTransportAddress(new InetSocketTransportAddress("localhost", 9300));
         }
@@ -287,6 +294,10 @@ public class ManagerApiTestServer {
         csh.setLoginService(l);
 
         return csh;
+    }
+    
+    public Node getESNode() {
+        return node;
     }
 
 }

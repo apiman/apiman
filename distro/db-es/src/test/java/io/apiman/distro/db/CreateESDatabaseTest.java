@@ -21,6 +21,7 @@ import io.apiman.manager.test.util.ManagerTestUtils.TestType;
 
 import java.io.File;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -32,7 +33,7 @@ import org.junit.Test;
  * @author eric.wittmann@redhat.com
  */
 @SuppressWarnings("nls")
-public class CreateH2DatabaseTest extends AbstractTestPlanTest {
+public class CreateESDatabaseTest extends AbstractTestPlanTest {
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -42,11 +43,12 @@ public class CreateH2DatabaseTest extends AbstractTestPlanTest {
         }
 
         System.out.println("------------------------------------------------");
-        System.out.println("Setting H2 db output path: " + targetClassesDir.toString());
+        System.out.println("Setting elasticsearch output path: " + targetClassesDir.toString());
         System.out.println("------------------------------------------------");
 
-        System.setProperty("apiman.test.h2-output-dir", targetClassesDir.toString());
-        ManagerTestUtils.setTestType(TestType.jpa);
+        System.setProperty("apiman.test.es-home", targetClassesDir.toString());
+        System.setProperty("apiman.test.es-cluster-name", "apiman");
+        ManagerTestUtils.setTestType(TestType.es);
         AbstractTestPlanTest.setup();
     }
     
@@ -63,6 +65,13 @@ public class CreateH2DatabaseTest extends AbstractTestPlanTest {
         } finally {
             System.clearProperty("apiman.test.h2-output-dir");
         }
+    }
+
+    @AfterClass
+    public static void shutdown() throws Exception {
+        System.setProperty("apiman.test.es-delete-index", "false");
+        AbstractTestPlanTest.shutdown();
+        testServer.getESNode().close();
     }
 
 }
