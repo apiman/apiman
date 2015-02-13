@@ -69,6 +69,7 @@ public class CreateESDatabaseTest extends AbstractTestPlanTest {
 
     @AfterClass
     public static void shutdown() throws Exception {
+        Thread.sleep(2000); // allow ES time to refresh/index
         System.setProperty("apiman.test.es-delete-index", "false");
         AbstractTestPlanTest.shutdown();
         testServer.getESNode().close();
