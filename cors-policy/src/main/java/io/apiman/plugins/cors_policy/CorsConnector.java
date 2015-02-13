@@ -57,7 +57,7 @@ public class CorsConnector implements IServiceConnector {
     public static final String AC_ALLOW_HEADERS_KEY = "Access-Control-Allow-Headers"; //$NON-NLS-1$
     public static final String AC_ALLOW_CREDENTIALS_KEY = "Access-Control-Allow-Credentials"; //$NON-NLS-1$
 
-    private static final String CONTENT_TYPE = "Content-Type"; //$NON-NLS-1$
+    public static final String CONTENT_TYPE = "Content-Type"; //$NON-NLS-1$
 
     // CORS conversation related fields
     private CorsConfigBean config;
