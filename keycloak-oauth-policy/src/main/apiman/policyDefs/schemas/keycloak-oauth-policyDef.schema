@@ -1,0 +1,29 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "KeyCloak OAuth Policy Configuration",
+  "type": "object",
+  "properties": {
+    "requireOauth": {
+      "title": "Require OAuth",
+      "description": "Terminate request if no OAuth is provided.",
+      "type": "boolean",
+      "default": true
+    },
+    "blacklistUnsafeTokens": {
+      "title": "Blacklist unsafe tokens",
+      "description": "Blacklist any tokens used without transport security to mitigate associated security issues.",
+      "type": "boolean",
+      "default": true
+    },
+    "realm": {
+      "title": "Realm",
+      "description": "Realm name",
+      "type": "string"
+    },
+    "realmCertificateString": {
+      "title": "KeyCloak Realm Certificate",
+      "description": "Certificate to validate OAuth requests. Must be a Base64 DER-encoded X.509 realm certificate. Include bounding strings.",
+      "type": "string"
+    }
+  }
+}
