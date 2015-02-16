@@ -73,6 +73,11 @@
     <maven.compiler.target>1.7</maven.compiler.target>
     <maven.compiler.source>1.7</maven.compiler.source>
 
+    <version.org.mockito>1.9.5</version.org.mockito>
+    <version.junit>4.11</version.junit>
+
+    <version.org.keycloak>1.1.0.Final</version.org.keycloak>
+
     <!-- Distribution URLs -->
     <jboss.releases.repo.url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</jboss.releases.repo.url>
     <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots/</jboss.snapshots.repo.url>
@@ -114,6 +119,23 @@
         <artifactId>apiman-gateway-engine-policies</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <!-- testing -->
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${version.junit}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-all</artifactId>
+        <version>${version.org.mockito}</version>
+      </dependency>
+      <!-- others -->
+      <dependency>
+        <groupId>org.keycloak</groupId>
+        <artifactId>keycloak-core</artifactId>
+        <version>${version.org.keycloak}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -122,6 +144,7 @@
     <module>noop-policy</module>
     <module>test-policy</module>
     <module>cors-policy</module>
+    <module>keycloak-oauth-policy</module>
   </modules>
 
   <build>
