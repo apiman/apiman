@@ -18,23 +18,20 @@
       <artifactId>apiman-gateway-engine-core</artifactId>
       <scope>provided</scope>
     </dependency>
-
     <dependency>
       <groupId>io.apiman</groupId>
       <artifactId>apiman-gateway-engine-policies</artifactId>
       <scope>provided</scope>
     </dependency>
-    
+
+    <!-- Testing -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.11</version>
     </dependency>
-      
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-all</artifactId>
-      <version>1.9.5</version>
     </dependency>
   </dependencies>
 
@@ -45,7 +42,7 @@
         <filtering>false</filtering>
       </resource>
     </resources>
-  
+
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
