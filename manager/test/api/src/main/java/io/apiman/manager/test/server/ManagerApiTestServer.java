@@ -43,6 +43,7 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.security.Credential;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
+import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.ImmutableSettings.Builder;
@@ -65,7 +66,8 @@ import org.overlord.commons.i18n.server.filters.LocaleFilter;
 @SuppressWarnings("nls")
 public class ManagerApiTestServer {
 
-    public static String ES_CLUSTER_NAME = "_apimantest";
+    private static final String ES_CLUSTER_NAME = "_apimantest";
+    public static Client ES_CLIENT = null;
 
     /*
      * The jetty server
@@ -81,7 +83,7 @@ public class ManagerApiTestServer {
      * The elasticsearch node and client - only if using ES
      */
     private Node node = null;
-    private TransportClient client = null;
+    private Client client = null;
 
     /**
      * Constructor.
@@ -178,15 +180,25 @@ public class ManagerApiTestServer {
             }
             
             String clusterName = System.getProperty("apiman.test.es-cluster-name", ES_CLUSTER_NAME);
-            ES_CLUSTER_NAME = clusterName;
-            node = NodeBuilder.nodeBuilder().client(false).clusterName(clusterName).data(true).local(false).settings(settings).build();
+            node = NodeBuilder.nodeBuilder().client(false).clusterName(clusterName).data(true).local(true)
+                    .settings(settings).build();
             System.out.println("Starting the ES node.");
             node.start();
             System.out.println("ES node was successfully started.");
 
-            client = new TransportClient(ImmutableSettings.settingsBuilder().put("cluster.name", clusterName)
-                    .build());
-            client.addTransportAddress(new InetSocketTransportAddress("localhost", 6600));
+            if (!isPersistent) {
+                Node node = NodeBuilder.nodeBuilder().client(true).loadConfigSettings(false)
+                        .clusterName(ES_CLUSTER_NAME).local(true)
+                        .settings(ImmutableSettings.settingsBuilder().build()).node().start();
+                client = node.client();
+            } else {
+                TransportClient tc = new TransportClient(ImmutableSettings.settingsBuilder()
+                        .put("cluster.name", clusterName).build());
+                tc.addTransportAddress(new InetSocketTransportAddress("localhost", 6600));
+                client = tc;
+            }
+            
+            ES_CLIENT = client;
         }
     }
 
@@ -307,6 +319,10 @@ public class ManagerApiTestServer {
     
     public Node getESNode() {
         return node;
+    }
+    
+    public Client getESClient() {
+        return client;
     }
 
 }

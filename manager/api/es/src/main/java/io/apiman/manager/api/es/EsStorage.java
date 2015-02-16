@@ -91,7 +91,7 @@ import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.client.Client;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.AndFilterBuilder;
@@ -120,7 +120,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     private static int guidCounter = 100;
     
     @Inject
-    TransportClient esClient;
+    Client esClient;
     
     /**
      * Constructor.

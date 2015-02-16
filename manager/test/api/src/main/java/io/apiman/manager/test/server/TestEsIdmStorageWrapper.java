@@ -27,7 +27,7 @@ import io.apiman.manager.api.core.exceptions.StorageException;
 import java.util.Set;
 
 import org.elasticsearch.action.admin.indices.refresh.RefreshRequest;
-import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.client.Client;
 
 
 /**
@@ -35,7 +35,7 @@ import org.elasticsearch.client.transport.TransportClient;
  */
 public class TestEsIdmStorageWrapper implements IIdmStorage {
 
-    private TransportClient esClient;
+    private Client esClient;
     private IIdmStorage delegate;
 
     /**
@@ -43,7 +43,7 @@ public class TestEsIdmStorageWrapper implements IIdmStorage {
      * @param esClient 
      * @param delegate
      */
-    public TestEsIdmStorageWrapper(TransportClient esClient, IIdmStorage delegate) {
+    public TestEsIdmStorageWrapper(Client esClient, IIdmStorage delegate) {
         this.esClient = esClient;
         this.delegate = delegate;
     }

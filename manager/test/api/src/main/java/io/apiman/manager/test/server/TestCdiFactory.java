@@ -30,9 +30,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.New;
 import javax.enterprise.inject.Produces;
 
-import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.settings.ImmutableSettings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.client.Client;
 
 /**
  * Attempt to create producer methods for CDI beans.
@@ -43,8 +41,6 @@ import org.elasticsearch.common.transport.InetSocketTransportAddress;
 @SuppressWarnings("nls")
 public class TestCdiFactory {
     
-    private static TransportClient esClient;
-    
     @Produces @ApplicationScoped
     public static IStorage provideStorage(@New JpaStorage jpaStorage, @New EsStorage esStorage) {
         TestType testType = ManagerTestUtils.getTestType();
@@ -52,7 +48,7 @@ public class TestCdiFactory {
             return jpaStorage;
         } else if (testType == TestType.es) {
             esStorage.initialize();
-            return new TestEsStorageWrapper(esClient, esStorage);
+            return new TestEsStorageWrapper(ManagerApiTestServer.ES_CLIENT, esStorage);
         } else {
             throw new RuntimeException("Unexpected test type: " + testType);
         }
@@ -65,7 +61,7 @@ public class TestCdiFactory {
             return jpaStorage;
         } else if (testType == TestType.es) {
             esStorage.initialize();
-            return new TestEsStorageQueryWrapper(esClient, esStorage);
+            return new TestEsStorageQueryWrapper(ManagerApiTestServer.ES_CLIENT, esStorage);
         } else {
             throw new RuntimeException("Unexpected test type: " + testType);
         }
@@ -83,35 +79,22 @@ public class TestCdiFactory {
             return jpaIdmStorage;
         } else if (testType == TestType.es) {
             esStorage.initialize();
-            return new TestEsIdmStorageWrapper(esClient, esStorage);
+            return new TestEsIdmStorageWrapper(ManagerApiTestServer.ES_CLIENT, esStorage);
         } else {
             throw new RuntimeException("Unexpected test type: " + testType);
         }
     }
 
     @Produces @ApplicationScoped
-    public static TransportClient provideTransportClient() {
+    public static Client provideTransportClient() {
         TestType testType = ManagerTestUtils.getTestType();
         if (testType == TestType.jpa) {
             return null;
         } else if (testType == TestType.es) {
-            if (esClient == null) {
-                esClient = createTransportClient();
-            }
-            return esClient;
+            return ManagerApiTestServer.ES_CLIENT;
         } else {
             throw new RuntimeException("Unexpected test type: " + testType);
         }
-    }
-
-    /**
-     * @return create a new test ES transport client
-     */
-    private static TransportClient createTransportClient() {
-        TransportClient client = new TransportClient(ImmutableSettings.settingsBuilder()
-                .put("cluster.name", ManagerApiTestServer.ES_CLUSTER_NAME).build());
-        client.addTransportAddress(new InetSocketTransportAddress("localhost", 6600));
-        return client;
     }
 
 }

@@ -35,7 +35,7 @@ import io.apiman.manager.api.core.exceptions.StorageException;
 import java.util.List;
 
 import org.elasticsearch.action.admin.indices.refresh.RefreshRequest;
-import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.client.Client;
 
 /**
  * Wraps the ES storage impl so that it can "refresh" the indexes 
@@ -45,7 +45,7 @@ import org.elasticsearch.client.transport.TransportClient;
  */
 public class TestEsStorageWrapper implements IStorage {
     
-    private TransportClient esClient;
+    private Client esClient;
     private IStorage delegate;
     
     /**
@@ -53,7 +53,7 @@ public class TestEsStorageWrapper implements IStorage {
      * @param esClient 
      * @param delegate
      */
-    public TestEsStorageWrapper(TransportClient esClient, IStorage delegate) {
+    public TestEsStorageWrapper(Client esClient, IStorage delegate) {
         this.esClient = esClient;
         this.delegate = delegate;
     }

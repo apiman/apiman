@@ -41,14 +41,14 @@ import java.util.List;
 import java.util.Set;
 
 import org.elasticsearch.action.admin.indices.refresh.RefreshRequest;
-import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.client.Client;
 
 /**
  * @author eric.wittmann@redhat.com
  */
 public class TestEsStorageQueryWrapper implements IStorageQuery {
 
-    private TransportClient esClient;
+    private Client esClient;
     private IStorageQuery delegate;
     
     /**
@@ -56,7 +56,7 @@ public class TestEsStorageQueryWrapper implements IStorageQuery {
      * @param esClient 
      * @param delegate
      */
-    public TestEsStorageQueryWrapper(TransportClient esClient, IStorageQuery delegate) {
+    public TestEsStorageQueryWrapper(Client esClient, IStorageQuery delegate) {
         this.esClient = esClient;
         this.delegate = delegate;
     }
