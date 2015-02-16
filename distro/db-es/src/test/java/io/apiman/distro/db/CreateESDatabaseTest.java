@@ -48,6 +48,7 @@ public class CreateESDatabaseTest extends AbstractTestPlanTest {
 
         System.setProperty("apiman.test.es-home", targetClassesDir.toString());
         System.setProperty("apiman.test.es-cluster-name", "apiman");
+        System.setProperty("apiman.test.es-persistence", "true");
         ManagerTestUtils.setTestType(TestType.es);
         AbstractTestPlanTest.setup();
     }

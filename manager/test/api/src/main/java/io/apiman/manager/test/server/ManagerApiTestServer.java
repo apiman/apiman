@@ -171,6 +171,12 @@ public class ManagerApiTestServer {
             settings.put("http.port", "6500-6600");
             settings.put("transport.tcp.port", "6600-6700");
             
+            boolean isPersistent = "true".equals(System.getProperty("apiman.test.es-persistence", "false"));
+            if (!isPersistent) {
+                settings.put("index.store.type", "memory").put("gateway.type", "none")
+                        .put("index.number_of_shards", 1).put("index.number_of_replicas", 1);
+            }
+            
             String clusterName = System.getProperty("apiman.test.es-cluster-name", ES_CLUSTER_NAME);
             ES_CLUSTER_NAME = clusterName;
             node = NodeBuilder.nodeBuilder().client(false).clusterName(clusterName).data(true).local(false).settings(settings).build();
