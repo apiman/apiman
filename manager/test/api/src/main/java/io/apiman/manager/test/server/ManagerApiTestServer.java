@@ -172,16 +172,20 @@ public class ManagerApiTestServer {
             settings.put("path.home", esHome.getAbsolutePath());
             settings.put("http.port", "6500-6600");
             settings.put("transport.tcp.port", "6600-6700");
-            
+
+            String clusterName = System.getProperty("apiman.test.es-cluster-name", ES_CLUSTER_NAME);
+
             boolean isPersistent = "true".equals(System.getProperty("apiman.test.es-persistence", "false"));
             if (!isPersistent) {
                 settings.put("index.store.type", "memory").put("gateway.type", "none")
                         .put("index.number_of_shards", 1).put("index.number_of_replicas", 1);
+                node = NodeBuilder.nodeBuilder().client(false).clusterName(clusterName).data(true).local(true)
+                        .settings(settings).build();
+            } else {
+                node = NodeBuilder.nodeBuilder().client(false).clusterName(clusterName).data(true).local(false)
+                        .settings(settings).build();
             }
             
-            String clusterName = System.getProperty("apiman.test.es-cluster-name", ES_CLUSTER_NAME);
-            node = NodeBuilder.nodeBuilder().client(false).clusterName(clusterName).data(true).local(true)
-                    .settings(settings).build();
             System.out.println("Starting the ES node.");
             node.start();
             System.out.println("ES node was successfully started.");
