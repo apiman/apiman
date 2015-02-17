@@ -22,6 +22,7 @@ import io.apiman.gateway.engine.IServiceConnector;
 import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.policies.AbstractMappedPolicy;
 import io.apiman.gateway.engine.beans.ServiceResponse;
+import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.policy.IConnectorInterceptor;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
@@ -61,7 +62,8 @@ public class CorsPolicy extends AbstractMappedPolicy<CorsConfigBean> {
             final CorsConfigBean config, final IPolicyChain<ServiceRequest> chain) {
         // Is this request CORS enabled? If not, skip.
         if (CorsConnector.candidateCorsRequest(request)) {
-            final CorsConnector corsConnector = new CorsConnector(request, config);
+            final CorsConnector corsConnector = new CorsConnector(request, config,
+                    context.getComponent(IPolicyFailureFactoryComponent.class));
 
             // We only need to set the short-circuit connector if it's a pre-flight request.
             if (corsConnector.isShortcircuit()) {

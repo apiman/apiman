@@ -32,6 +32,7 @@ import io.apiman.gateway.engine.beans.PolicyFailureType;
 import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.beans.ServiceResponse;
 import io.apiman.gateway.engine.beans.exceptions.ConnectorException;
+import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.plugins.cors_policy.util.HttpHelper;
 
@@ -65,15 +66,17 @@ public class CorsConnector implements IServiceConnector {
     private Map<String, String> responseHeaders = new HeaderHashMap();
     private boolean shortCircuit = false;
     private PolicyFailure failure = null;
+    private IPolicyFailureFactoryComponent failureFactory;
 
     /**
      * {@link CorsConnector} determines whether
      * 
      * @author Marc Savy <msavy@redhat.com>
      */
-    public CorsConnector(ServiceRequest request, CorsConfigBean config) {
+    public CorsConnector(ServiceRequest request, CorsConfigBean config, IPolicyFailureFactoryComponent failureFactory) {
         this.request = request;
         this.config = config;
+        this.failureFactory = failureFactory;
 
         requestHeaders = request.getHeaders();
 
@@ -171,8 +174,9 @@ public class CorsConnector implements IServiceConnector {
     }
 
     private void doFailure(String string) {
-        failure = new PolicyFailure(PolicyFailureType.Authorization, 400, "CORS: " + string); //$NON-NLS-1$
+        failure = failureFactory.createFailure(PolicyFailureType.Authorization, 400, "CORS: " + string); //$NON-NLS-1$
         failure.setHeaders(responseHeaders);
+        failure.setResponseCode(400);
     }
 
     /**
