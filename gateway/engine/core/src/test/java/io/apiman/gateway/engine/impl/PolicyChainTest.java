@@ -30,6 +30,7 @@ import io.apiman.gateway.engine.policy.IPolicyContext;
 import io.apiman.gateway.engine.policy.PolicyWithConfiguration;
 import io.apiman.gateway.engine.policy.RequestChain;
 import io.apiman.gateway.engine.policy.ResponseChain;
+import io.apiman.gateway.engine.util.PassthroughPolicy;
 
 import java.util.ArrayList;
 import java.util.List;
