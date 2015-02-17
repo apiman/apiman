@@ -39,6 +39,7 @@ import io.apiman.gateway.engine.beans.ServiceResponse;
 import io.apiman.gateway.engine.beans.exceptions.ConnectorException;
 import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.gateway.engine.io.ISignalWriteStream;
+import io.apiman.gateway.engine.util.PassthroughPolicy;
 
 import java.util.ArrayList;
 import java.util.List;
