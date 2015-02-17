@@ -21,6 +21,7 @@ import io.apiman.gateway.engine.beans.exceptions.PolicyNotFoundException;
 import io.apiman.gateway.engine.policy.IPolicy;
 import io.apiman.gateway.engine.policy.IPolicyFactory;
 import io.apiman.gateway.engine.policy.PolicyFactoryImpl;
+import io.apiman.gateway.engine.util.PassthroughPolicy;
 
 import java.lang.reflect.Field;
 import java.util.Map;

@@ -30,6 +30,7 @@ import io.apiman.gateway.engine.policy.IPolicyContext;
 import io.apiman.gateway.engine.policy.PolicyWithConfiguration;
 import io.apiman.gateway.engine.policy.RequestChain;
 import io.apiman.gateway.engine.policy.ResponseChain;
+import io.apiman.gateway.engine.util.PassthroughPolicy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,11 +63,10 @@ public class PolicyChainTest {
     private IPolicyContext mockContext;
     private List<PolicyWithConfiguration> policies;
 
-    @SuppressWarnings("unchecked")
     @Before
     public void setup() {   
-        policies = new ArrayList<PolicyWithConfiguration>();
-        policyOne = spy(new PassthroughPolicy("1")); //Refactor to use mock?
+        policies = new ArrayList<>();
+        policyOne = spy(new PassthroughPolicy("1"));
         policyTwo = spy(new PassthroughPolicy("2"));
         pwcOne = new PolicyWithConfiguration(policyOne, new Object());
         pwcTwo = new PolicyWithConfiguration(policyTwo, new Object());
@@ -75,14 +75,14 @@ public class PolicyChainTest {
         mockContext = mock(IPolicyContext.class);
         
         mockRequest = mock(ServiceRequest.class);
-        given(mockRequest.getApiKey()).willReturn("bacon"); //$NON-NLS-1$
-        given(mockRequest.getDestination()).willReturn("mars"); //$NON-NLS-1$
-        given(mockRequest.getType()).willReturn("request"); //$NON-NLS-1$
+        given(mockRequest.getApiKey()).willReturn("bacon");
+        given(mockRequest.getDestination()).willReturn("mars");
+        given(mockRequest.getType()).willReturn("request");
         
         mockResponse = mock(ServiceResponse.class);
-        given(mockRequest.getApiKey()).willReturn("bacon"); //$NON-NLS-1$
-        given(mockRequest.getDestination()).willReturn("mars"); //$NON-NLS-1$
-        given(mockRequest.getType()).willReturn("response"); //$NON-NLS-1$
+        given(mockRequest.getApiKey()).willReturn("bacon");
+        given(mockRequest.getDestination()).willReturn("mars");
+        given(mockRequest.getType()).willReturn("response");
         
         mockBuffer = mock(IApimanBuffer.class);
         given(mockBuffer.toString()).willReturn("bananas"); 
@@ -170,26 +170,7 @@ public class PolicyChainTest {
         order.verify(mockBodyHandler).handle(buffer3);
         order.verify(mockEndHandler).handle((Void) null);
     }
-//    
-//    @Test
-//    public void shouldSendAbortToAllPolicies() {
-//        policies.add(policyOne);
-//        policies.add(policyTwo);
-//        
-//        requestChain = new RequestChain(policies, mockContext);
-//        requestChain.bodyHandler(mockBodyHandler);
-//        requestChain.endHandler(mockEndHandler);
-//        
-//        requestChain.doApply(mockRequest);
-//
-//        requestChain.abort();
-//        
-//        InOrder order = inOrder(policyOne, policyTwo);
-//        order.verify(policyOne, times(1)).abort();
-//        order.verify(policyTwo, times(1)).abort();
-//    }
     
-    @SuppressWarnings("unchecked")
     @Test
     public void shouldCallFailureHandlerOnDoFail() {
         policies.add(pwcOne);
@@ -202,22 +183,15 @@ public class PolicyChainTest {
         PolicyFailure mPolicyFailure = mock(PolicyFailure.class);
         
         requestChain.policyFailureHandler(mPolicyFailureHandler);
-        
         requestChain.bodyHandler(mockBodyHandler);
         requestChain.endHandler(mockEndHandler);
         
         requestChain.doApply(mockRequest);
-
         requestChain.doFailure(mPolicyFailure);
-        
-//        InOrder order = inOrder(policyOne, policyTwo);
-//        order.verify(policyOne, times(1)).abort();
-//        order.verify(policyTwo, times(1)).abort();
 
         verify(mPolicyFailureHandler).handle(mPolicyFailure);
     }
     
-    @SuppressWarnings("unchecked")
     @Test
     public void shouldCallErrorHandlerOnThrowError() {
         policies.add(pwcOne);
@@ -230,18 +204,12 @@ public class PolicyChainTest {
         Throwable mThrowable = mock(Throwable.class);
         
         requestChain.policyErrorHandler(mThrowableFailureHandler);
-        
         requestChain.bodyHandler(mockBodyHandler);
         requestChain.endHandler(mockEndHandler);
         
         requestChain.doApply(mockRequest);
-
         requestChain.throwError(mThrowable);
         
-//        InOrder order = inOrder(policyOne, policyTwo);
-//        order.verify(policyOne, times(1)).abort();
-//        order.verify(policyTwo, times(1)).abort();
-
         verify(mThrowableFailureHandler).handle(mThrowable);
     }
 }

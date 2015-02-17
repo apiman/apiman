@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.gateway.engine.impl;
+package io.apiman.gateway.engine.util;
 
 import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.beans.ServiceResponse;
 import io.apiman.gateway.engine.beans.exceptions.ConfigurationParseException;
-import io.apiman.gateway.engine.policy.IPolicy;
+import io.apiman.gateway.engine.io.IReadWriteStream;
+import io.apiman.gateway.engine.policy.IDataPolicy;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
 
@@ -28,15 +29,18 @@ import io.apiman.gateway.engine.policy.IPolicyContext;
  * @author Marc Savy <msavy@redhat.com>
  */
 @SuppressWarnings("nls")
-public class PassthroughPolicy implements IPolicy {
+public class PassthroughDataPolicy implements IDataPolicy {
     
-    public static final String QUALIFIED_NAME = "class:" + PassthroughPolicy.class.getCanonicalName();
+    public static final String QUALIFIED_NAME = "class:" + PassthroughDataPolicy.class.getCanonicalName();
     private Object config;
     private String name;
-    
-    public PassthroughPolicy(){}
+    private IReadWriteStream<ServiceRequest> dataRequestHandler;
 
-    public PassthroughPolicy(String name) {
+    private IReadWriteStream<ServiceResponse> dataResponseHandler;
+    
+    public PassthroughDataPolicy(){}
+
+    public PassthroughDataPolicy(String name) {
         this.name = name;
     }
     
@@ -66,6 +70,32 @@ public class PassthroughPolicy implements IPolicy {
     public void apply(ServiceResponse response, IPolicyContext context, Object config,
             IPolicyChain<ServiceResponse> chain) {
         chain.doApply(response);
+    }
+
+    @Override
+    public IReadWriteStream<ServiceRequest> getRequestDataHandler(ServiceRequest request,
+            IPolicyContext context) {
+        return dataRequestHandler;
+    }
+
+    @Override
+    public IReadWriteStream<ServiceResponse> getResponseDataHandler(ServiceResponse response,
+            IPolicyContext context) {
+        return dataResponseHandler;
+    }
+    
+    /**
+     * @return the dataRequestHandler
+     */
+    public IReadWriteStream<ServiceRequest> getDataRequestHandler() {
+        return dataRequestHandler;
+    }
+
+    /**
+     * @param dataRequestHandler the dataRequestHandler to set
+     */
+    public void setDataRequestHandler(IReadWriteStream<ServiceRequest> dataRequestHandler) {
+        this.dataRequestHandler = dataRequestHandler;
     }
 
 }
