@@ -11,7 +11,7 @@
     },
     "blacklistUnsafeTokens": {
       "title": "Blacklist unsafe tokens",
-      "description": "Blacklist any tokens used without transport security to mitigate associated security issues.",
+      "description": "Any tokens used without transport security will be blackedlisted to mitigate associated security issues.",
       "type": "boolean",
       "default": true
     },
@@ -22,7 +22,7 @@
     },
     "realmCertificateString": {
       "title": "KeyCloak Realm Certificate",
-      "description": "Certificate to validate OAuth requests. Must be a Base64 DER-encoded X.509 realm certificate. Include bounding strings.",
+      "description": "To validate OAuth requests. Must be a PEM-encoded X.509 certificate, including bounding strings.",
       "type": "string"
     }
   }

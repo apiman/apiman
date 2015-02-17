@@ -21,6 +21,7 @@ import org.keycloak.VerificationException;
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.PolicyFailureType;
 import io.apiman.gateway.engine.beans.ServiceRequest;
+import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.policies.AbstractMappedPolicy;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
@@ -48,6 +49,8 @@ public class KeyCloakOauthPolicy extends AbstractMappedPolicy<KeycloakOauthConfi
     @Override
     protected void doApply(ServiceRequest request, IPolicyContext context, 
             KeycloakOauthConfigBean config, IPolicyChain<ServiceRequest> chain) {
+        
+        IPolicyFailureFactoryComponent ff = context.getComponent(IPolicyFailureFactoryComponent.class);
                 
         String tokenString = request.getHeaders().get(AUTHORIZATION_KEY);
         
@@ -56,7 +59,7 @@ public class KeyCloakOauthPolicy extends AbstractMappedPolicy<KeycloakOauthConfi
         }
         
         if(tokenString == null && config.getRequireOauth()) {
-            chain.doFailure(noAuthenticationProvidedFailure());
+            chain.doFailure(noAuthenticationProvidedFailure(ff));
             return;
         }
         
@@ -67,27 +70,22 @@ public class KeyCloakOauthPolicy extends AbstractMappedPolicy<KeycloakOauthConfi
                         
             chain.doApply(request);
         } catch (VerificationException e) {
-            chain.doFailure(verificationExceptionFailure(e));
+            chain.doFailure(verificationExceptionFailure(ff, e));
         }   
     }
 
-    private PolicyFailure noAuthenticationProvidedFailure() {
-        PolicyFailure pf = createUnauthorizedPolicyFailure();
-        pf.setMessage("OAuth AUTHORIZATION header or access_token query parameter must be provided.");
-        pf.setFailureCode(0);
-        return pf;
+    private PolicyFailure noAuthenticationProvidedFailure(IPolicyFailureFactoryComponent ff) {
+        return createUnauthorizedPolicyFailure(ff, 0,
+                "OAuth AUTHORIZATION header or access_token query parameter must be provided.");
     }
 
-    private PolicyFailure verificationExceptionFailure(VerificationException e) {
-        PolicyFailure pf = createUnauthorizedPolicyFailure();
-        pf.setMessage(e.getMessage());
-        pf.setFailureCode(1);
-        return pf;
+    private PolicyFailure verificationExceptionFailure(IPolicyFailureFactoryComponent ff, VerificationException e) {
+        return createUnauthorizedPolicyFailure(ff, 1, e.getMessage());
     }
     
-    private PolicyFailure createUnauthorizedPolicyFailure() {
-        PolicyFailure pf = new PolicyFailure();
-        pf.setType(PolicyFailureType.Authorization);
+    private PolicyFailure createUnauthorizedPolicyFailure(IPolicyFailureFactoryComponent ff, 
+            int failureCode, String message) {
+        PolicyFailure pf = ff.createFailure(PolicyFailureType.Authorization, failureCode, message);
         pf.setResponseCode(HTTP_UNAUTHORIZED);
         return pf;       
     }
