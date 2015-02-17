@@ -63,6 +63,8 @@
     <!-- Instruct the build to use only UTF-8 encoding for source code -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
+    
+    <version.apiman>1.0.3.Final</version.apiman>
 
     <version.javadoc.plugin>2.10.1</version.javadoc.plugin>
     <version.compiler.plugin>3.2</version.compiler.plugin>
@@ -102,22 +104,22 @@
       <dependency>
         <groupId>io.apiman</groupId>
         <artifactId>apiman-common-plugin</artifactId>
-        <version>${project.version}</version>
+        <version>${version.apiman}</version>
       </dependency>
       <dependency>
         <groupId>io.apiman</groupId>
         <artifactId>apiman-gateway-engine-beans</artifactId>
-        <version>${project.version}</version>
+        <version>${version.apiman}</version>
       </dependency>
       <dependency>
         <groupId>io.apiman</groupId>
         <artifactId>apiman-gateway-engine-core</artifactId>
-        <version>${project.version}</version>
+        <version>${version.apiman}</version>
       </dependency>
       <dependency>
         <groupId>io.apiman</groupId>
         <artifactId>apiman-gateway-engine-policies</artifactId>
-        <version>${project.version}</version>
+        <version>${version.apiman}</version>
       </dependency>
       <!-- testing -->
       <dependency>
