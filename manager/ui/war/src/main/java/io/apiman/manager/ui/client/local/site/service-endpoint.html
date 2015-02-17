@@ -150,6 +150,8 @@
                 the Service is public, it can be invoked directly (without an API Key) through
                 the endpoint below.
             </p>
+            <div class="apiman-divider-40"></div>
+            <div style="background-color: rgb(255,213,185)" class="alert alert-warning" data-i18n-key="warning-not-public" data-field="notPublicWarning">Warning: this service is not public - this endpoint will only work if a valid Service Contract API key is included in requests made to it.</div>
             <hr />
             <div class="form-label" data-i18n-key="managed-endpoint">Managed Endpoint</div>
             <textarea readonly="readonly" class="apiman-endpoint" style="width:100%" data-field="mangedEndpoint">http://localhost:8080/apiman-gateway/my-org/my-service/1.2</textarea>
