@@ -66,7 +66,6 @@ public class DefaultEngineFactoryTest {
     private MockServiceConnection mockServiceConnection;
     private MockServiceConnectionResponse mockServiceConnectionResponse;
     
-    @SuppressWarnings("unchecked")
     @Before
     public void setup() {
         Policy policyBean = mock(Policy.class);
@@ -79,7 +78,7 @@ public class DefaultEngineFactoryTest {
         mockBufferOutbound = mock(IApimanBuffer.class);
         given(mockBufferOutbound.toString()).willReturn("bacon");
 
-        policyList = new ArrayList<Policy>();   
+        policyList = new ArrayList<>();   
         policyList.add(policyBean);
         
         mockBodyHandler = (IAsyncHandler<IApimanBuffer>) mock(IAsyncHandler.class);
@@ -106,7 +105,6 @@ public class DefaultEngineFactoryTest {
                             /**
                              * @see io.apiman.gateway.engine.IServiceConnector#connect(io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.async.IAsyncResultHandler)
                              */
-                            @SuppressWarnings("unchecked")
                             @Override
                             public IServiceConnection connect(ServiceRequest request,
                                     IAsyncResultHandler<IServiceConnectionResponse> handler)
