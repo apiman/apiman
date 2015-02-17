@@ -32,6 +32,7 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.commons.gwt.client.local.widgets.AsyncActionButton;
 
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.user.client.ui.Label;
 
 
 /**
@@ -47,10 +48,12 @@ public class ServiceContractsPage extends AbstractServicePage {
     private static final int PAGE_SIZE = 5;
     
     @Inject @DataField
+    Label onlyPublicWarning;
+    @Inject @DataField
     ContractsTable contracts;
     @Inject @DataField
     AsyncActionButton moreButton;
-    
+
     private int currentPage = 1;
     
     /**
@@ -99,6 +102,7 @@ public class ServiceContractsPage extends AbstractServicePage {
     @Override
     protected void renderPage() {
         super.renderPage();
+        onlyPublicWarning.setVisible(versionBean.getPlans().isEmpty());
     }
 
     /**
