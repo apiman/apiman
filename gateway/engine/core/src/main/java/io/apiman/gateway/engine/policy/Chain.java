@@ -56,6 +56,7 @@ public abstract class Chain<H> extends AbstractStream<H> implements IAbortable, 
     private Iterator<PolicyWithConfiguration> policyIterator;
     
     private H serviceObject;
+    private boolean firstElem = true;
 
     /**
      * Constructor.
@@ -66,14 +67,13 @@ public abstract class Chain<H> extends AbstractStream<H> implements IAbortable, 
         this.policies = policies;
         this.context = context;
 
-        chainPolicyHandlers();
         policyIterator = iterator();
     }
 
     /**
      * Chain together the body handlers.
      */
-    protected void chainPolicyHandlers() {
+    public void chainPolicyHandlers() {
         IReadWriteStream<H> previousHandler = null;
         Iterator<PolicyWithConfiguration> iterator = iterator();
         while (iterator.hasNext()) {
@@ -139,6 +139,12 @@ public abstract class Chain<H> extends AbstractStream<H> implements IAbortable, 
     public void doApply(H serviceObject) {
         try {
             this.serviceObject = serviceObject;
+
+            if(firstElem) {
+                chainPolicyHandlers();
+                firstElem = false;
+            }
+            
             if (policyIterator.hasNext()) {
                 applyPolicy(policyIterator.next(), getContext());
             } else {
