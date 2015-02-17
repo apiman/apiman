@@ -31,6 +31,9 @@ import io.apiman.manager.api.beans.services.ServiceBean;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
 import io.apiman.manager.api.core.exceptions.StorageException;
 
+import java.io.InputStream;
+import java.util.List;
+
 /**
  * Represents the persistent storage interface for Apiman DT.
  *
@@ -75,6 +78,7 @@ public interface IStorage {
     public void updateContract(ContractBean contract) throws StorageException;
     public void updateService(ServiceBean service) throws StorageException;
     public void updateServiceVersion(ServiceVersionBean version) throws StorageException;
+    public void updateServiceDefinition(ServiceVersionBean version, InputStream definitionStream) throws StorageException;
     public void updatePlan(PlanBean plan) throws StorageException;
     public void updatePlanVersion(PlanVersionBean version) throws StorageException;
     public void updatePolicy(PolicyBean policy) throws StorageException;
@@ -92,6 +96,7 @@ public interface IStorage {
     public void deleteContract(ContractBean contract) throws StorageException;
     public void deleteService(ServiceBean service) throws StorageException;
     public void deleteServiceVersion(ServiceVersionBean version) throws StorageException;
+    public void deleteServiceDefinition(ServiceVersionBean version) throws StorageException;
     public void deletePlan(PlanBean plan) throws StorageException;
     public void deletePlanVersion(PlanVersionBean version) throws StorageException;
     public void deletePolicy(PolicyBean policy) throws StorageException;
@@ -110,6 +115,7 @@ public interface IStorage {
     public ContractBean getContract(Long id) throws StorageException;
     public ServiceBean getService(String organizationId, String id) throws StorageException;
     public ServiceVersionBean getServiceVersion(String organizationId, String serviceId, String version) throws StorageException;
+    public InputStream getServiceDefinition(ServiceVersionBean serviceVersion) throws StorageException;
     public PlanBean getPlan(String organizationId, String id) throws StorageException;
     public PlanVersionBean getPlanVersion(String organizationId, String planId, String version) throws StorageException;
     public PolicyBean getPolicy(Long id) throws StorageException;

@@ -406,6 +406,10 @@ public class AppMessages {
     public static final String ACTIVITY_REORDER_POLICIES = "activity.reorder-policies";
     @TranslationKey(defaultValue = "locked plan")
     public static final String ACTIVITY_LOCK = "activity.lock";
+    @TranslationKey(defaultValue = "updated the definition of service")
+    public static final String ACTIVITY_UPDATE_DEFINITION = "activity.update-service-definition";
+    @TranslationKey(defaultValue = "deleted the definition from service")
+    public static final String ACTIVITY_DELETE_DEFINITION = "activity.delete-service-definition";
     
 
     @TranslationKey(defaultValue = "Policy added:")

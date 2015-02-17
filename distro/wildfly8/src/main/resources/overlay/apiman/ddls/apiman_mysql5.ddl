@@ -206,6 +206,15 @@ CREATE TABLE `service_versions` (
   CONSTRAINT `FK_service_versions_1` FOREIGN KEY (`service_id`, `service_orgId`) REFERENCES `services` (`id`, `organizationId`)
 ) ENGINE=InnoDB;
 
+CREATE TABLE `service_defs` (
+  `id` bigint(20) NOT NULL,
+  `serviceVersionId` bigint(20) NOT NULL,
+  `data` mediumblob NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UK_service_defs_1` (`serviceVersionId`),
+  CONSTRAINT `FK_service_defs_1` FOREIGN KEY (`serviceVersionId`) REFERENCES `service_versions` (`id`)
+) ENGINE=InnoDB;
+
 CREATE TABLE `svc_gateways` (
   `service_version_id` bigint(20) NOT NULL,
   `gatewayId` varchar(255) NOT NULL,

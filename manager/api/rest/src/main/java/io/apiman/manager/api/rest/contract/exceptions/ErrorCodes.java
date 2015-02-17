@@ -97,11 +97,13 @@ public final class ErrorCodes {
     public static final int SERVICE_NOT_FOUND                   = 5002;
     public static final int SERVICE_VERSION_NOT_FOUND           = 5003;
     public static final int SERVICE_STATUS_ERROR                = 5004;
+    public static final int SERVICE_DEFINITION_NOT_FOUND        = 5005;
     
     public static final String SERVICE_ALREADY_EXISTS_INFO      = null;
     public static final String SERVICE_NOT_FOUND_INFO           = null;
     public static final String SERVICE_VERSION_NOT_FOUND_INFO   = null;
     public static final String SERVICE_STATUS_ERROR_INFO        = null;
+    public static final String SERVICE_DEFINITION_NOT_FOUND_INFO   = null;
 
     
     //

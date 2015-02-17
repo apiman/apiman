@@ -258,6 +258,32 @@ public class AuditUtils {
         entry.setData(toJSON(data));
         return entry;
     }
+    
+    /**
+     * Creates an audit entry when a service definition is updated.
+     * @param bean
+     * @param securityContext
+     */
+    public static AuditEntryBean serviceDefinitionUpdated(ServiceVersionBean bean, ISecurityContext securityContext) {
+        AuditEntryBean entry = newEntry(bean.getService().getOrganization().getId(), AuditEntityType.Service, securityContext);
+        entry.setEntityId(bean.getService().getId());
+        entry.setEntityVersion(bean.getVersion());
+        entry.setWhat(AuditEntryType.UpdateDefinition);
+        return entry;
+    }
+
+    /**
+     * Creates an audit entry when a service definition is deleted.
+     * @param bean
+     * @param securityContext
+     */
+    public static AuditEntryBean serviceDefinitionDeleted(ServiceVersionBean bean, ISecurityContext securityContext) {
+        AuditEntryBean entry = newEntry(bean.getService().getOrganization().getId(), AuditEntityType.Service, securityContext);
+        entry.setEntityId(bean.getService().getId());
+        entry.setEntityVersion(bean.getVersion());
+        entry.setWhat(AuditEntryType.DeleteDefinition);
+        return entry;
+    }
 
     /**
      * Creates an audit entry for the 'application created' event.

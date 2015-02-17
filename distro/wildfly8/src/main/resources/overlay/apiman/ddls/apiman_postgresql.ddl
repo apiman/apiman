@@ -345,6 +345,26 @@ ALTER TABLE ONLY service_versions
 ALTER TABLE ONLY service_versions
     ADD CONSTRAINT FK_service_versions_1 FOREIGN KEY (service_id, service_orgId) REFERENCES services(id, organizationId);
 
+
+--
+-- Name: service_defs
+--
+
+CREATE TABLE service_defs (
+    id bigint NOT NULL,
+    serviceVersionId bigint NOT NULL,
+    data bytea NOT NULL
+);
+
+ALTER TABLE ONLY service_defs
+    ADD CONSTRAINT PK_service_defs PRIMARY KEY (id);
+
+ALTER TABLE ONLY service_defs
+    ADD CONSTRAINT UK_service_defs_1 UNIQUE (serviceVersionId);
+
+ALTER TABLE ONLY service_defs
+    ADD CONSTRAINT FK_service_defs_1 FOREIGN KEY (serviceVersionId) REFERENCES service_versions(id);
+
 --
 -- Name: svc_gateways
 --
