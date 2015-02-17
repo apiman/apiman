@@ -39,6 +39,7 @@ import io.apiman.manager.api.beans.policies.PolicyDefinitionTemplateBean;
 import io.apiman.manager.api.beans.policies.PolicyType;
 import io.apiman.manager.api.beans.services.EndpointType;
 import io.apiman.manager.api.beans.services.ServiceBean;
+import io.apiman.manager.api.beans.services.ServiceDefinitionType;
 import io.apiman.manager.api.beans.services.ServiceGatewayBean;
 import io.apiman.manager.api.beans.services.ServicePlanBean;
 import io.apiman.manager.api.beans.services.ServiceStatus;
@@ -58,6 +59,7 @@ import io.apiman.manager.api.beans.summary.ServiceSummaryBean;
 import io.apiman.manager.api.beans.summary.ServiceVersionSummaryBean;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.es.beans.PoliciesBean;
+import io.apiman.manager.api.es.beans.ServiceDefinitionBean;
 
 import java.io.IOException;
 import java.util.Date;
@@ -135,6 +137,23 @@ public class EsMarshalling {
                     .field("createdOn", bean.getCreatedOn().getTime())
                     .field("modifiedBy", bean.getModifiedBy())
                     .field("modifiedOn", bean.getModifiedOn().getTime())
+                .endObject();
+            return builder;
+        } catch (IOException e) {
+            throw new StorageException(e);
+        }
+    }
+
+    /**
+     * Marshals the given bean into the given map.
+     * @param bean
+     * @throws StorageException 
+     */
+    public static XContentBuilder marshall(ServiceDefinitionBean bean) throws StorageException {
+        try {
+            XContentBuilder builder = XContentFactory.jsonBuilder()
+                .startObject()
+                    .field("data", bean.getData())
                 .endObject();
             return builder;
         } catch (IOException e) {
@@ -278,7 +297,8 @@ public class EsMarshalling {
                     .field("retiredOn", bean.getRetiredOn() != null ? bean.getRetiredOn().getTime() : null)
                     .field("publicService", bean.isPublicService())
                     .field("endpoint", bean.getEndpoint())
-                    .field("endpointType", bean.getEndpointType());
+                    .field("endpointType", bean.getEndpointType())
+                    .field("definitionType", bean.getDefinitionType());
             Set<ServiceGatewayBean> gateways = bean.getGateways();
             if (gateways != null) {
                 builder.startArray("gateways");
@@ -604,6 +624,19 @@ public class EsMarshalling {
      * Unmarshals the given map source into a bean.
      * @param source
      */
+    public static ServiceDefinitionBean unmarshallServiceDefinition(Map<String, Object> source) {
+        if (source == null) {
+            return null;
+        }
+        ServiceDefinitionBean bean = new ServiceDefinitionBean();
+        bean.setData(asString(source.get("data")));
+        return bean;
+    }
+
+    /**
+     * Unmarshals the given map source into a bean.
+     * @param source
+     */
     public static ContractBean unmarshallContract(Map<String, Object> source) {
         if (source == null) {
             return null;
@@ -794,6 +827,7 @@ public class EsMarshalling {
         bean.setEndpoint(asString(source.get("endpoint")));
         bean.setEndpointType(asEnum(source.get("endpointType"), EndpointType.class));
         bean.setPublicService(asBoolean(source.get("publicService")));
+        bean.setDefinitionType(asEnum(source.get("definitionType"), ServiceDefinitionType.class));
         bean.setGateways(new HashSet<ServiceGatewayBean>());
         List<Map<String, Object>> gateways = (List<Map<String, Object>>) source.get("gateways");
         if (gateways != null) {

@@ -64,7 +64,12 @@ import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.core.util.PolicyTemplateUtil;
 import io.apiman.manager.api.es.beans.PoliciesBean;
+import io.apiman.manager.api.es.beans.ServiceDefinitionBean;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -92,6 +97,7 @@ import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.common.Base64;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.AndFilterBuilder;
@@ -431,6 +437,30 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
         updateEntity("serviceVersion", id(service.getOrganization().getId(), service.getId(), version.getVersion()),  //$NON-NLS-1$
                 EsMarshalling.marshall(version));
     }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#updateServiceDefinition(io.apiman.manager.api.beans.services.ServiceVersionBean, java.io.InputStream)
+     */
+    @Override
+    public void updateServiceDefinition(ServiceVersionBean version, InputStream definitionStream)
+            throws StorageException {
+        try {
+            String id = id(version.getService().getOrganization().getId(), version.getService().getId(), version.getVersion()) + ":def"; //$NON-NLS-1$
+            InputStream serviceDefinition = getServiceDefinition(version);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            IOUtils.copy(definitionStream, baos);
+            String data = Base64.encodeBytes(baos.toByteArray());
+            ServiceDefinitionBean definition = new ServiceDefinitionBean();
+            definition.setData(data);
+            if (serviceDefinition == null) {
+                indexEntity("serviceDefinition", id, EsMarshalling.marshall(definition)); //$NON-NLS-1$
+            } else {
+                updateEntity("serviceDefinition", id, EsMarshalling.marshall(definition)); //$NON-NLS-1$
+            }
+        } catch (IOException e) {
+            throw new StorageException(e);
+        }
+    }
 
     /**
      * @see io.apiman.manager.api.core.IStorage#updatePlan(io.apiman.manager.api.beans.plans.PlanBean)
@@ -555,6 +585,15 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     public void deleteServiceVersion(ServiceVersionBean version) throws StorageException {
         ServiceBean service = version.getService();
         deleteEntity("serviceVersion", id(service.getOrganization().getId(), service.getId(), version.getVersion())); //$NON-NLS-1$
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#deleteServiceDefinition(io.apiman.manager.api.beans.services.ServiceVersionBean)
+     */
+    @Override
+    public void deleteServiceDefinition(ServiceVersionBean version) throws StorageException {
+        String id = id(version.getService().getOrganization().getId(), version.getService().getId(), version.getVersion()) + ":def"; //$NON-NLS-1$
+        deleteEntity("serviceDefinition", id); //$NON-NLS-1$
     }
 
     /**
@@ -726,6 +765,25 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
         ServiceVersionBean bean = EsMarshalling.unmarshallServiceVersion(source);
         bean.setService(getService(organizationId, serviceId));
         return bean;
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getServiceDefinition(io.apiman.manager.api.beans.services.ServiceVersionBean)
+     */
+    @Override
+    public InputStream getServiceDefinition(ServiceVersionBean version) throws StorageException {
+        try {
+            String id = id(version.getService().getOrganization().getId(), version.getService().getId(), version.getVersion()) + ":def"; //$NON-NLS-1$
+            Map<String, Object> source = getEntity("serviceDefinition", id); //$NON-NLS-1$
+            if (source == null) {
+                return null;
+            }
+            ServiceDefinitionBean def = EsMarshalling.unmarshallServiceDefinition(source);
+            String data = def.getData();
+            return new ByteArrayInputStream(Base64.decode(data));
+        } catch (IOException e) {
+            throw new StorageException(e);
+        }
     }
 
     /**
