@@ -49,7 +49,7 @@ public class CorsConnectorPreflightTest extends CorsConnectorTestBase {
         
         setRequestMethods(new String[] { "GET" });
 
-        connector = new CorsConnector(request, config);
+        connector = new CorsConnector(request, config, failureFactory);
         Map<String, String> responseHeaders = connector.getResponseHeaders();
 
         Assert.assertTrue(!connector.isFailure());
@@ -65,7 +65,7 @@ public class CorsConnectorPreflightTest extends CorsConnectorTestBase {
         setOrigin("bede");
         setHost("venerable");
         
-        connector = new CorsConnector(request, config);
+        connector = new CorsConnector(request, config, failureFactory);
 
         Assert.assertTrue(connector.isFailure());
         Assert.assertTrue(!connector.isShortcircuit());
@@ -81,7 +81,7 @@ public class CorsConnectorPreflightTest extends CorsConnectorTestBase {
         
         setRequestMethods(new String[] { "DELETE" });
 
-        connector = new CorsConnector(request, config);
+        connector = new CorsConnector(request, config, failureFactory);
         Map<String, String> responseHeaders = connector.getResponseHeaders();
 
         Assert.assertTrue(connector.isFailure());
@@ -101,7 +101,7 @@ public class CorsConnectorPreflightTest extends CorsConnectorTestBase {
         
         setRequestHeaders(new String[] { "x-monument", "x-penshaw" } );
         
-        connector = new CorsConnector(request, config);
+        connector = new CorsConnector(request, config, failureFactory);
         Map<String, String> responseHeaders = connector.getResponseHeaders();
         
         Assert.assertTrue(!connector.isFailure());
@@ -118,7 +118,7 @@ public class CorsConnectorPreflightTest extends CorsConnectorTestBase {
         
         setRequestHeaders(new String[] { "x-penshaw", "x-monument" } );
         
-        connector = new CorsConnector(request, config);
+        connector = new CorsConnector(request, config, failureFactory);
         Map<String, String> responseHeaders = connector.getResponseHeaders();
         
         Assert.assertTrue(connector.isFailure());
@@ -133,7 +133,7 @@ public class CorsConnectorPreflightTest extends CorsConnectorTestBase {
         
         config.setMaxAge(9001);
         
-        connector = new CorsConnector(request, config);
+        connector = new CorsConnector(request, config, failureFactory);
         Map<String, String> responseHeaders = connector.getResponseHeaders();
         
         Assert.assertTrue(!connector.isFailure());

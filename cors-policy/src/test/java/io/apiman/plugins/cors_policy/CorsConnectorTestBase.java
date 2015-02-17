@@ -21,7 +21,10 @@ import java.util.Map;
 import java.util.Set;
 
 import io.apiman.gateway.engine.beans.HeaderHashMap;
+import io.apiman.gateway.engine.beans.PolicyFailure;
+import io.apiman.gateway.engine.beans.PolicyFailureType;
 import io.apiman.gateway.engine.beans.ServiceRequest;
+import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 
 import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
@@ -35,6 +38,14 @@ import org.mockito.MockitoAnnotations;
  */
 @SuppressWarnings("nls")
 public class CorsConnectorTestBase {
+    
+    protected IPolicyFailureFactoryComponent failureFactory = new IPolicyFailureFactoryComponent() {
+        
+        @Override
+        public PolicyFailure createFailure(PolicyFailureType type, int failureCode, String message) {
+           return new PolicyFailure(type, failureCode, message);
+        }
+    };
     
     @Mock
     protected ServiceRequest request;

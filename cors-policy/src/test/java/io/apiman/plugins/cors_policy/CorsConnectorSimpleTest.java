@@ -41,7 +41,7 @@ public class CorsConnectorSimpleTest extends CorsConnectorTestBase {
 
         allowOrigins.add("allowedOrigin");
 
-        connector = new CorsConnector(request, config);
+        connector = new CorsConnector(request, config, failureFactory);
 
         Assert.assertTrue(connector.isFailure());
     }
@@ -56,7 +56,7 @@ public class CorsConnectorSimpleTest extends CorsConnectorTestBase {
         allowOrigins.add("*");
         allowOrigins.add("thiswillbeignored");
 
-        connector = new CorsConnector(request, config);
+        connector = new CorsConnector(request, config, failureFactory);
         Map<String, String> responseHeaders = connector.getResponseHeaders();
 
         Assert.assertTrue(!connector.isFailure());
@@ -73,7 +73,7 @@ public class CorsConnectorSimpleTest extends CorsConnectorTestBase {
 
         allowOrigins.add("someotherorigin");
 
-        connector = new CorsConnector(request, config);
+        connector = new CorsConnector(request, config, failureFactory);
         Map<String, String> responseHeaders = connector.getResponseHeaders();
 
         Assert.assertTrue(!connector.isFailure());
@@ -89,7 +89,7 @@ public class CorsConnectorSimpleTest extends CorsConnectorTestBase {
 
         allowOrigins.add("http://example.com");
 
-        connector = new CorsConnector(request, config);
+        connector = new CorsConnector(request, config, failureFactory);
         Map<String, String> responseHeaders = connector.getResponseHeaders();
 
         Assert.assertTrue(!connector.isFailure());
@@ -105,7 +105,7 @@ public class CorsConnectorSimpleTest extends CorsConnectorTestBase {
 
         allowOrigins.add("http://example.com");
 
-        connector = new CorsConnector(request, config);
+        connector = new CorsConnector(request, config, failureFactory);
 
         Assert.assertTrue(!connector.isFailure());
     }
@@ -121,7 +121,7 @@ public class CorsConnectorSimpleTest extends CorsConnectorTestBase {
 
         setContentType("text/plain");
 
-        connector = new CorsConnector(request, config);
+        connector = new CorsConnector(request, config, failureFactory);
 
         Assert.assertTrue(!connector.isFailure());
     }
@@ -138,7 +138,7 @@ public class CorsConnectorSimpleTest extends CorsConnectorTestBase {
         // hence should be rejected - must use preflight.
         setContentType("text/json");
 
-        connector = new CorsConnector(request, config);
+        connector = new CorsConnector(request, config, failureFactory);
 
         Assert.assertTrue(connector.isFailure());
     }
@@ -152,7 +152,7 @@ public class CorsConnectorSimpleTest extends CorsConnectorTestBase {
 
         allowOrigins.add("http://example.com");
 
-        connector = new CorsConnector(request, config);
+        connector = new CorsConnector(request, config, failureFactory);
 
         Assert.assertTrue(connector.isFailure());
         Assert.assertEquals("Invalid simple request", 400, connector.getFailure().getFailureCode());
@@ -170,7 +170,7 @@ public class CorsConnectorSimpleTest extends CorsConnectorTestBase {
         setOrigin("http://example.com");
         setHost("http://wibble.com");
 
-        connector = new CorsConnector(request, config);
+        connector = new CorsConnector(request, config, failureFactory);
         Map<String, String> responseHeaders = connector.getResponseHeaders();
 
         Assert.assertTrue(!connector.isFailure());
@@ -190,7 +190,7 @@ public class CorsConnectorSimpleTest extends CorsConnectorTestBase {
         setOrigin("russell");
         setHost("philosopher");
 
-        connector = new CorsConnector(request, config);
+        connector = new CorsConnector(request, config, failureFactory);
         Map<String, String> responseHeaders = connector.getResponseHeaders();
 
         Assert.assertTrue(!connector.isFailure());
@@ -209,7 +209,7 @@ public class CorsConnectorSimpleTest extends CorsConnectorTestBase {
         // Should set allow credentials header
         config.setAllowCredentials(true);
 
-        connector = new CorsConnector(request, config);
+        connector = new CorsConnector(request, config, failureFactory);
         Map<String, String> responseHeaders = connector.getResponseHeaders();
 
         Assert.assertTrue(!connector.isFailure());
@@ -228,7 +228,7 @@ public class CorsConnectorSimpleTest extends CorsConnectorTestBase {
         // This is default value, but just to be clear...
         config.setAllowCredentials(false);
 
-        connector = new CorsConnector(request, config);
+        connector = new CorsConnector(request, config, failureFactory);
         Map<String, String> responseHeaders = connector.getResponseHeaders();
 
         Assert.assertTrue(!connector.isFailure());
