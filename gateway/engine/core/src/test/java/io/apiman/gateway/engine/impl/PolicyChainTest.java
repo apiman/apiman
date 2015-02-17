@@ -44,7 +44,7 @@ import org.mockito.InOrder;
  * 
  * @author Marc Savy <msavy@redhat.com>
  */
-@SuppressWarnings("nls")
+@SuppressWarnings({"nls", "unchecked"})
 public class PolicyChainTest {
 
     private RequestChain requestChain;
