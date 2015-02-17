@@ -89,7 +89,9 @@ public class ServiceVersionBean implements Serializable {
     private Date modifiedOn;
     private Date publishedOn;
     private Date retiredOn;
-    
+    @Enumerated(EnumType.STRING)
+    private ServiceDefinitionType definitionType;
+
     /**
      * Constructor.
      */
@@ -311,6 +313,20 @@ public class ServiceVersionBean implements Serializable {
      */
     public void setPublicService(boolean publicService) {
         this.publicService = publicService;
+    }
+
+    /**
+     * @return the definitionType
+     */
+    public ServiceDefinitionType getDefinitionType() {
+        return definitionType;
+    }
+
+    /**
+     * @param definitionType the definitionType to set
+     */
+    public void setDefinitionType(ServiceDefinitionType definitionType) {
+        this.definitionType = definitionType;
     }
 
     /**

@@ -59,6 +59,7 @@ import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.beans.services.NewServiceBean;
 import io.apiman.manager.api.beans.services.NewServiceVersionBean;
 import io.apiman.manager.api.beans.services.ServiceBean;
+import io.apiman.manager.api.beans.services.ServiceDefinitionType;
 import io.apiman.manager.api.beans.services.ServiceGatewayBean;
 import io.apiman.manager.api.beans.services.ServicePlanBean;
 import io.apiman.manager.api.beans.services.ServiceStatus;
@@ -119,6 +120,7 @@ import io.apiman.manager.api.rest.impl.i18n.Messages;
 import io.apiman.manager.api.rest.impl.util.ExceptionFactory;
 import io.apiman.manager.api.security.ISecurityContext;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -128,15 +130,20 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 
 /**
  * Implementation of the Organization API.
  * 
  * @author eric.wittmann@redhat.com
  */
-@ApplicationScoped
+@RequestScoped
 public class OrganizationResourceImpl implements IOrganizationResource {
 
     @Inject IStorage storage;
@@ -152,6 +159,8 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     
     @Inject ISecurityContext securityContext;
     @Inject IGatewayLinkFactory gatewayLinkFactory;
+    
+    @Context HttpServletRequest request;
 
     /**
      * Constructor.
@@ -1275,6 +1284,46 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
     
     /**
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getServiceDefinition(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public Response getServiceDefinition(String organizationId, String serviceId, String version)
+            throws ServiceVersionNotFoundException, NotAuthorizedException {
+        try {
+            storage.beginTx();
+            ServiceVersionBean serviceVersion = storage.getServiceVersion(organizationId, serviceId, version);
+            if (serviceVersion == null) {
+                throw ExceptionFactory.serviceVersionNotFoundException(serviceId, version);
+            }
+            if (serviceVersion.getDefinitionType() == ServiceDefinitionType.None || serviceVersion.getDefinitionType() == null) {
+                throw ExceptionFactory.serviceDefinitionNotFoundException(serviceId, version);
+            }
+            InputStream  definition = storage.getServiceDefinition(serviceVersion);
+            if (definition == null) {
+                throw ExceptionFactory.serviceDefinitionNotFoundException(serviceId, version);
+            }
+            ResponseBuilder builder = Response.ok().entity(definition);
+            if (serviceVersion.getDefinitionType() == ServiceDefinitionType.SwaggerJSON) {
+                builder.type(MediaType.APPLICATION_JSON);
+            } else if (serviceVersion.getDefinitionType() == ServiceDefinitionType.SwaggerYAML) {
+                builder.type("application/x-yaml"); //$NON-NLS-1$
+            } else if (serviceVersion.getDefinitionType() == ServiceDefinitionType.WSDL) {
+                builder.type("application/wsdl+xml"); //$NON-NLS-1$
+            } else {
+                throw new Exception("Service definition type not supported: " + serviceVersion.getDefinitionType()); //$NON-NLS-1$
+            }
+            storage.commitTx();
+            return builder.build();
+        } catch (AbstractRestException e) {
+            storage.rollbackTx();
+            throw e;
+        } catch (Exception e) {
+            storage.rollbackTx();
+            throw new SystemErrorException(e);
+        }
+    }
+
+    /**
      * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getServiceVersionEndpointInfo(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
@@ -1435,6 +1484,47 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw new SystemErrorException(e);
         }
     }
+    
+    /**
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#updateServiceDefinition(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public void updateServiceDefinition(String organizationId, String serviceId, String version)
+            throws ServiceVersionNotFoundException, NotAuthorizedException, InvalidServiceStatusException {
+        if (!securityContext.hasPermission(PermissionType.svcEdit, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
+        try {
+            storage.beginTx();
+            ServiceVersionBean serviceVersion = storage.getServiceVersion(organizationId, serviceId, version);
+            if (serviceVersion == null) {
+                throw ExceptionFactory.serviceVersionNotFoundException(serviceId, version);
+            }
+            ServiceDefinitionType newDefinitionType = null;
+            String ct = request.getContentType();
+            if (ct.toLowerCase().contains("application/json")) { //$NON-NLS-1$
+                newDefinitionType = ServiceDefinitionType.SwaggerJSON;
+            } else if (ct.toLowerCase().contains("application/x-yaml")) { //$NON-NLS-1$
+                newDefinitionType = ServiceDefinitionType.SwaggerYAML;
+            } else if (ct.toLowerCase().contains("application/wsdl+xml")) { //$NON-NLS-1$
+                newDefinitionType = ServiceDefinitionType.WSDL;
+            } else {
+                throw new StorageException(Messages.i18n.format("InvalidServiceDefinitionContentType", ct)); //$NON-NLS-1$
+            }
+            if (serviceVersion.getDefinitionType() != newDefinitionType) {
+                serviceVersion.setDefinitionType(newDefinitionType);
+                storage.updateServiceVersion(serviceVersion);
+            }
+            storage.createAuditEntry(AuditUtils.serviceDefinitionUpdated(serviceVersion, securityContext));
+            storage.updateServiceDefinition(serviceVersion, request.getInputStream());
+            storage.commitTx();
+        } catch (AbstractRestException e) {
+            storage.rollbackTx();
+            throw e;
+        } catch (Exception e) {
+            storage.rollbackTx();
+            throw new SystemErrorException(e);
+        }
+    }
 
     /**
      * @see io.apiman.manager.api.rest.contract.IOrganizationResource#listServiceVersions(java.lang.String, java.lang.String)
@@ -1565,6 +1655,32 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             }
             storage.deletePolicy(policy);
             storage.createAuditEntry(AuditUtils.policyRemoved(policy, PolicyType.Service, securityContext));
+            storage.commitTx();
+        } catch (AbstractRestException e) {
+            storage.rollbackTx();
+            throw e;
+        } catch (Exception e) {
+            storage.rollbackTx();
+            throw new SystemErrorException(e);
+        }
+    }
+    
+    /**
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#deleteServiceDefinition(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public void deleteServiceDefinition(String organizationId, String serviceId, String version)
+            throws OrganizationNotFoundException, ServiceVersionNotFoundException, NotAuthorizedException {
+        if (!securityContext.hasPermission(PermissionType.svcEdit, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
+        try {
+            storage.beginTx();
+            ServiceVersionBean serviceVersion = storage.getServiceVersion(organizationId, serviceId, version);
+            if (serviceVersion == null) {
+                throw ExceptionFactory.serviceVersionNotFoundException(serviceId, version);
+            }
+            storage.createAuditEntry(AuditUtils.serviceDefinitionDeleted(serviceVersion, securityContext));
+            storage.deleteServiceDefinition(serviceVersion);
             storage.commitTx();
         } catch (AbstractRestException e) {
             storage.rollbackTx();

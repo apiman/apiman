@@ -43,6 +43,7 @@ import io.apiman.manager.api.rest.contract.exceptions.PolicyNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.RoleAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.RoleNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.ServiceAlreadyExistsException;
+import io.apiman.manager.api.rest.contract.exceptions.ServiceDefinitionNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.ServiceNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.ServiceVersionNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.UserNotFoundException;
@@ -171,6 +172,14 @@ public final class ExceptionFactory {
      */
     public static final ServiceVersionNotFoundException serviceVersionNotFoundException(String serviceId, String version) {
         return new ServiceVersionNotFoundException(Messages.i18n.format("ServiceVersionDoesNotExist", serviceId, version)); //$NON-NLS-1$
+    }
+
+    /**
+     * Creates an exception from an service id and version.
+     * @param serviceId
+     */
+    public static final ServiceDefinitionNotFoundException serviceDefinitionNotFoundException(String serviceId, String version) {
+        return new ServiceDefinitionNotFoundException(Messages.i18n.format("ServiceDefinitionDoesNotExist", serviceId, version)); //$NON-NLS-1$
     }
 
     /**

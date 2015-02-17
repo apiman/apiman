@@ -32,6 +32,7 @@ import io.apiman.manager.api.beans.services.ServiceVersionBean;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.exceptions.StorageException;
 
+import java.io.InputStream;
 import java.util.List;
 
 import org.elasticsearch.action.admin.indices.refresh.RefreshRequest;
@@ -512,6 +513,31 @@ public class TestEsStorageWrapper implements IStorage {
     @Override
     public PolicyDefinitionBean getPolicyDefinition(String id) throws StorageException {
         return this.delegate.getPolicyDefinition(id);
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#deleteServiceDefinition(io.apiman.manager.api.beans.services.ServiceVersionBean)
+     */
+    @Override
+    public void deleteServiceDefinition(ServiceVersionBean version) throws StorageException {
+        delegate.deleteServiceDefinition(version);
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getServiceDefinition(io.apiman.manager.api.beans.services.ServiceVersionBean)
+     */
+    @Override
+    public InputStream getServiceDefinition(ServiceVersionBean serviceVersion) throws StorageException {
+        return delegate.getServiceDefinition(serviceVersion);
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#updateServiceDefinition(io.apiman.manager.api.beans.services.ServiceVersionBean, java.io.InputStream)
+     */
+    @Override
+    public void updateServiceDefinition(ServiceVersionBean version, InputStream definitionStream)
+            throws StorageException {
+        delegate.updateServiceDefinition(version, definitionStream);
     }
 
     /**

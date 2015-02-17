@@ -34,6 +34,7 @@ import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchCriteriaFilterOperator;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.beans.services.ServiceBean;
+import io.apiman.manager.api.beans.services.ServiceDefinitionBean;
 import io.apiman.manager.api.beans.services.ServiceGatewayBean;
 import io.apiman.manager.api.beans.services.ServicePlanBean;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
@@ -58,6 +59,10 @@ import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.core.util.PolicyTemplateUtil;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -70,6 +75,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -289,6 +295,31 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         super.update(version);
     }
     
+    /**
+     * @see io.apiman.manager.api.core.IStorage#updateServiceDefinition(io.apiman.manager.api.beans.services.ServiceVersionBean, java.io.InputStream)
+     */
+    @Override
+    public void updateServiceDefinition(ServiceVersionBean version, InputStream definitionStream)
+            throws StorageException {
+        try {
+            ServiceDefinitionBean bean = super.get(version.getId(), ServiceDefinitionBean.class);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            IOUtils.copy(definitionStream, baos);
+            byte [] data = baos.toByteArray();
+            if (bean != null) {
+                bean.setData(data);
+                super.update(bean);
+            } else {
+                bean = new ServiceDefinitionBean();
+                bean.setId(version.getId());
+                bean.setData(data);
+                bean.setServiceVersion(version);
+                super.create(bean);
+            }
+        } catch (IOException e) {
+            throw new StorageException(e);
+        }
+    }
 
     /**
      * @see io.apiman.manager.api.core.IStorage#deleteOrganization(io.apiman.manager.api.beans.orgs.OrganizationBean)
@@ -336,6 +367,19 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
     @Override
     public void deleteServiceVersion(ServiceVersionBean version) throws StorageException {
         super.delete(version);
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#deleteServiceDefinition(io.apiman.manager.api.beans.services.ServiceVersionBean)
+     */
+    @Override
+    public void deleteServiceDefinition(ServiceVersionBean version) throws StorageException {
+        ServiceDefinitionBean bean = super.get(version.getId(), ServiceDefinitionBean.class);
+        if (bean != null) {
+            super.delete(bean);
+        } else {
+            throw new StorageException("No definition found."); //$NON-NLS-1$
+        }
     }
 
     /**
@@ -973,6 +1017,19 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
         } catch (Throwable t) {
             logger.error(t.getMessage(), t);
             throw new StorageException(t);
+        }
+    }
+    
+    /**
+     * @see io.apiman.manager.api.core.IStorage#getServiceDefinition(io.apiman.manager.api.beans.services.ServiceVersionBean)
+     */
+    @Override
+    public InputStream getServiceDefinition(ServiceVersionBean serviceVersion) throws StorageException {
+        ServiceDefinitionBean bean = super.get(serviceVersion.getId(), ServiceDefinitionBean.class);
+        if (bean == null) {
+            return null;
+        } else {
+            return new ByteArrayInputStream(bean.getData());
         }
     }
     

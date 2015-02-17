@@ -1,0 +1,3 @@
+DELETE /organizations/Organization1/services/Service1/versions/2.0/definition admin/admin
+----
+204

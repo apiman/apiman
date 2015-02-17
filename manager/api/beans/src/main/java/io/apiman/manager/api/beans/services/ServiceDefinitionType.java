@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 JBoss Inc
+ * Copyright 2015 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,23 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.manager.api.beans.audit;
+package io.apiman.manager.api.beans.services;
 
 /**
- * Indicates type type of auditing event is represented by an audit entry.
+ * The type of definition stored for the service.
  *
  * @author eric.wittmann@redhat.com
  */
-public enum AuditEntryType {
+public enum ServiceDefinitionType {
 
-    // Entity events
-    Create, Update, Delete, 
-    // Action events
-    Grant, Revoke,
-    Publish, Retire,
-    Register, Unregister,
-    AddPolicy, RemovePolicy, UpdatePolicy, ReorderPolicies,
-    CreateContract, BreakContract,
-    Lock,
-    UpdateDefinition, DeleteDefinition
+    None, SwaggerJSON, SwaggerYAML, WSDL
+
 }
