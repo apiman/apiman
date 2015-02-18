@@ -191,8 +191,16 @@ public class DefaultEngineFactoryTest {
         app.addContract(contract);
         
         // simple service/app config
-        engine.publishService(service);
-        engine.registerApplication(app);
+        engine.getRegistry().publishService(service, new IAsyncResultHandler<Void>() {
+            @Override
+            public void handle(IAsyncResult<Void> result) {
+            }
+        });
+        engine.getRegistry().registerApplication(app, new IAsyncResultHandler<Void>() {
+            @Override
+            public void handle(IAsyncResult<Void> result) {
+            }
+        });
         
         ServiceRequest request = new ServiceRequest();
         request.setApiKey("12345");
