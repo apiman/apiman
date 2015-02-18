@@ -858,13 +858,29 @@ public interface IOrganizationResource {
             InvalidServiceStatusException;
 
     /**
-     * Use this endpoint to upadte the Service's definition document.  A service 
+     * Use this endpoint to update the Service's definition document.  A service 
      * definition will vary depending on the type of service, and the type of 
      * definition used.  For example, it might be a Swagger document or a WSDL file.
      * To use this endpoint, simply PUT the updated Service Definition document
      * in its entirety, making sure to set the Content-Type appropriately for the
      * type of definition document.  The content will be stored and the Service's
      * "Definition Type" field will be updated.
+     * <br />
+     * Whenever a service's definition is updated, the "definitionType" property of
+     * that service is automatically set based on the request Content-Type.  There
+     * is no other way to set the service's definition type property.  The following 
+     * is a map of Content-Type to service definition type.
+     * 
+     * <table>
+     *   <thead>
+     *     <tr><th>Content Type</th><th>Service Definition Type</th></tr>
+     *   </thead>
+     *   <tbody>
+     *     <tr><td>application/json</td><td>SwaggerJSON</td></tr>
+     *     <tr><td>application/x-yaml</td><td>SwaggerYAML</td></tr>
+     *     <tr><td>application/wsdl+xml</td><td>WSDL</td></tr>
+     *   </tbody>
+     * </table>
      * @summary Update Service Definition
      * @param organizationId The Organization ID.
      * @param serviceId The Service ID.
