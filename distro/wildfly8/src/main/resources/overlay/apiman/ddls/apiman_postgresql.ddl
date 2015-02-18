@@ -332,6 +332,7 @@ CREATE TABLE service_versions (
     retiredOn timestamp without time zone,
     status character varying(255) NOT NULL,
     version character varying(255),
+    definitionType character varying(255),
     service_id character varying(255),
     service_orgId character varying(255)
 );

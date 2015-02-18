@@ -199,6 +199,7 @@ CREATE TABLE `service_versions` (
   `retiredOn` datetime DEFAULT NULL,
   `status` varchar(255) NOT NULL,
   `version` varchar(255) DEFAULT NULL,
+  `definitionType` varchar(255) DEFAULT NULL,
   `service_id` varchar(255) DEFAULT NULL,
   `service_orgId` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
