@@ -139,12 +139,12 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
      */
     public void initialize() {
         try {
+            esClient.admin().cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet(5000);
             IndicesExistsRequest request = new IndicesExistsRequest(INDEX_NAME);
             IndicesExistsResponse response = esClient.admin().indices().exists(request).get();
             if (!response.isExists()) {
                 createIndex(INDEX_NAME);
             }
-            esClient.admin().cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet(5000);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

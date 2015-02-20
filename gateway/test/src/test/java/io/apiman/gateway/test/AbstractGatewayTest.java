@@ -19,6 +19,7 @@ import io.apiman.gateway.engine.components.IHttpClientComponent;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.components.IRateLimiterComponent;
 import io.apiman.gateway.engine.components.ISharedStateComponent;
+import io.apiman.gateway.engine.es.ESRegistry;
 import io.apiman.gateway.engine.impl.DefaultPluginRegistry;
 import io.apiman.gateway.engine.impl.InMemoryRateLimiterComponent;
 import io.apiman.gateway.engine.impl.InMemoryRegistry;
@@ -30,6 +31,8 @@ import io.apiman.gateway.platforms.servlet.connectors.HttpConnectorFactory;
 import io.apiman.gateway.platforms.war.WarEngineConfig;
 import io.apiman.gateway.test.server.EchoServer;
 import io.apiman.gateway.test.server.GatewayServer;
+import io.apiman.gateway.test.server.GatewayTestType;
+import io.apiman.gateway.test.server.GatewayTestUtils;
 import io.apiman.test.common.util.TestPlanRunner;
 
 import java.io.File;
@@ -67,21 +70,31 @@ public class AbstractGatewayTest {
      * Configures the gateway by settings system properties.
      */
     protected static void configureGateway() {
-        System.setProperty(WarEngineConfig.APIMAN_GATEWAY_REGISTRY_CLASS, InMemoryRegistry.class.getName());
         System.setProperty(WarEngineConfig.APIMAN_GATEWAY_PLUGIN_REGISTRY_CLASS, DefaultPluginRegistry.class.getName());
         System.setProperty(WarEngineConfig.APIMAN_GATEWAY_PLUGIN_REGISTRY_CLASS + ".pluginsDir", new File("target/plugintmp").getAbsolutePath());
         System.setProperty(WarEngineConfig.APIMAN_GATEWAY_CONNECTOR_FACTORY_CLASS, HttpConnectorFactory.class.getName());
         System.setProperty(WarEngineConfig.APIMAN_GATEWAY_POLICY_FACTORY_CLASS, PolicyFactoryImpl.class.getName());
-        
-        // Register test components
-        System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + ISharedStateComponent.class.getSimpleName(), 
-                InMemorySharedStateComponent.class.getName());
-        System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + IRateLimiterComponent.class.getSimpleName(), 
-                InMemoryRateLimiterComponent.class.getName());
         System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + IPolicyFailureFactoryComponent.class.getSimpleName(), 
                 PolicyFailureFactoryComponent.class.getName());
         System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + IHttpClientComponent.class.getSimpleName(), 
                 HttpClientComponentImpl.class.getName());
+        if (GatewayTestUtils.getTestType() == GatewayTestType.memory) {
+            System.setProperty(WarEngineConfig.APIMAN_GATEWAY_REGISTRY_CLASS, InMemoryRegistry.class.getName());
+            System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + ISharedStateComponent.class.getSimpleName(), 
+                    InMemorySharedStateComponent.class.getName());
+            System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + IRateLimiterComponent.class.getSimpleName(), 
+                    InMemoryRateLimiterComponent.class.getName());
+        } else if (GatewayTestUtils.getTestType() == GatewayTestType.es) {
+            System.setProperty(WarEngineConfig.APIMAN_GATEWAY_REGISTRY_CLASS, ESRegistry.class.getName());
+            System.setProperty(WarEngineConfig.APIMAN_GATEWAY_REGISTRY_CLASS + ".client.type", "local");
+            System.setProperty(WarEngineConfig.APIMAN_GATEWAY_REGISTRY_CLASS + ".client.class", GatewayServer.class.getName());
+            System.setProperty(WarEngineConfig.APIMAN_GATEWAY_REGISTRY_CLASS + ".client.field", "ES_CLIENT");
+            
+            System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + ISharedStateComponent.class.getSimpleName(), 
+                    InMemorySharedStateComponent.class.getName());
+            System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + IRateLimiterComponent.class.getSimpleName(), 
+                    InMemoryRateLimiterComponent.class.getName());
+        }
     }
 
     @AfterClass

@@ -101,8 +101,9 @@ public class ConfigDrivenEngineFactory extends AbstractEngineFactory {
         try {
             Constructor<T> constructor = type.getConstructor(Map.class);
             return constructor.newInstance(config);
+        } catch (NoSuchMethodException e) {
         } catch (Exception e) {
-            // Probably doesn't have a map c'tor - so try a no-arg c'tor instead
+            throw new RuntimeException(e);
         }
         try {
             return type.newInstance();

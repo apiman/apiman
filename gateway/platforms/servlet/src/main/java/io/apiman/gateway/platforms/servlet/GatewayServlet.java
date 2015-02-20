@@ -40,6 +40,7 @@ import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.CountDownLatch;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -141,86 +142,97 @@ public abstract class GatewayServlet extends HttpServlet {
      * @param action 
      */
     protected void doAction(final HttpServletRequest req, final HttpServletResponse resp, String action) {
+        // Read the request.
+        ServiceRequest srequest = null;
         try {
-            ServiceRequest srequest = readRequest(req);
+            srequest = readRequest(req);
             srequest.setType(action);
-            
-            IServiceRequestExecutor executor = getEngine().executor(srequest, new IAsyncResultHandler<IEngineResult>() {
-                @Override
-                public void handle(IAsyncResult<IEngineResult> asyncResult) {
-                    if (asyncResult.isSuccess()) {
-                        IEngineResult engineResult = asyncResult.getResult();
-                        if (engineResult.isResponse()) {
-                            try {
-                                writeResponse(resp, engineResult.getServiceResponse());
-                                final ServletOutputStream outputStream = resp.getOutputStream();
-                                engineResult.bodyHandler(new IAsyncHandler<IApimanBuffer>() {
-                                    public void handle(IApimanBuffer chunk) {
-                                        try {
-                                            if (chunk instanceof ByteBuffer) {
-                                                byte [] buffer = (byte []) chunk.getNativeBuffer();
-                                                outputStream.write(buffer, 0, chunk.length());
-                                            } else {
-                                                outputStream.write(chunk.getBytes());
-                                            }
-                                        } catch (IOException e) {
-                                            // This will get caught by the service connector, which will abort the
-                                            // connection to the back-end service.
-                                            throw new RuntimeException(e);
+        } catch (Exception e) {
+            writeError(resp, e);
+            return;
+        }
+        
+        final CountDownLatch latch = new CountDownLatch(1);
+        
+        // Now execute the request via the apiman engine
+        IServiceRequestExecutor executor = getEngine().executor(srequest, new IAsyncResultHandler<IEngineResult>() {
+            @Override
+            public void handle(IAsyncResult<IEngineResult> asyncResult) {
+                if (asyncResult.isSuccess()) {
+                    IEngineResult engineResult = asyncResult.getResult();
+                    if (engineResult.isResponse()) {
+                        try {
+                            writeResponse(resp, engineResult.getServiceResponse());
+                            final ServletOutputStream outputStream = resp.getOutputStream();
+                            engineResult.bodyHandler(new IAsyncHandler<IApimanBuffer>() {
+                                public void handle(IApimanBuffer chunk) {
+                                    try {
+                                        if (chunk instanceof ByteBuffer) {
+                                            byte [] buffer = (byte []) chunk.getNativeBuffer();
+                                            outputStream.write(buffer, 0, chunk.length());
+                                        } else {
+                                            outputStream.write(chunk.getBytes());
                                         }
+                                    } catch (IOException e) {
+                                        // This will get caught by the service connector, which will abort the
+                                        // connection to the back-end service.
+                                        throw new RuntimeException(e);
                                     }
-                                });
-                                engineResult.endHandler(new IAsyncHandler<Void>() {
-                                    @Override
-                                    public void handle(Void result) {
-                                        try {
-                                            resp.flushBuffer();
-                                        } catch (IOException e) {
-                                            // This will get caught by the service connector, which will abort the
-                                            // connection to the back-end service.
-                                            throw new RuntimeException(e);
-                                        }
+                                }
+                            });
+                            engineResult.endHandler(new IAsyncHandler<Void>() {
+                                @Override
+                                public void handle(Void result) {
+                                    try {
+                                        resp.flushBuffer();
+                                    } catch (IOException e) {
+                                        // This will get caught by the service connector, which will abort the
+                                        // connection to the back-end service.
+                                        throw new RuntimeException(e);
+                                    } finally {
+                                        latch.countDown();
                                     }
-                                });
-                            } catch (IOException e) {
-                                // this would mean we couldn't get the output stream from the response, so we
-                                // need to abort the engine result (which will let the back-end connection
-                                // close down).
-                                engineResult.abort();
-                                throw new RuntimeException(e);
-                            }
-                        } else {
-                            writeFailure(resp, engineResult.getPolicyFailure());
+                                }
+                            });
+                        } catch (IOException e) {
+                            // this would mean we couldn't get the output stream from the response, so we
+                            // need to abort the engine result (which will let the back-end connection
+                            // close down).
+                            engineResult.abort();
+                            latch.countDown();
+                            throw new RuntimeException(e);
                         }
                     } else {
-                        writeError(resp, asyncResult.getError());
+                        writeFailure(resp, engineResult.getPolicyFailure());
+                        latch.countDown();
                     }
+                } else {
+                    writeError(resp, asyncResult.getError());
+                    latch.countDown();
                 }
-            });
-            executor.streamHandler(new IAsyncHandler<ISignalWriteStream>() {
-                @Override
-                public void handle(ISignalWriteStream connectorStream) {
-                    try {
-                        final InputStream is = req.getInputStream();
-                        ByteBuffer buffer = new ByteBuffer(2048);
-                        int numBytes = buffer.readFrom(is);
-                        while (numBytes != -1) {
-                            connectorStream.write(buffer);
-                            numBytes = buffer.readFrom(is);
-                        }
-                        connectorStream.end();
-                    } catch (IOException e) {
-                        connectorStream.abort();
-                        throw new RuntimeException(e);
+            }
+        });
+        executor.streamHandler(new IAsyncHandler<ISignalWriteStream>() {
+            @Override
+            public void handle(ISignalWriteStream connectorStream) {
+                try {
+                    final InputStream is = req.getInputStream();
+                    ByteBuffer buffer = new ByteBuffer(2048);
+                    int numBytes = buffer.readFrom(is);
+                    while (numBytes != -1) {
+                        connectorStream.write(buffer);
+                        numBytes = buffer.readFrom(is);
                     }
+                    connectorStream.end();
+                } catch (IOException e) {
+                    connectorStream.abort();
+                    throw new RuntimeException(e);
                 }
-            });
-            executor.execute();
-        } catch (Throwable e) {
-            writeError(resp, e);
-        } finally {
-            GatewayThreadContext.reset();
-        }
+            }
+        });
+        executor.execute();
+        try { latch.await(); } catch (InterruptedException e) { }
+        GatewayThreadContext.reset();
     }
 
     /**

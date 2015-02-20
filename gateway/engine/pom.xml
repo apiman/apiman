@@ -16,5 +16,6 @@
     <module>policies</module>
     <module>osgi</module>
     <module>ispn</module>
+    <module>es</module>
   </modules>
 </project>

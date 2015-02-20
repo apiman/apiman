@@ -1,0 +1,25 @@
+PUT /api/applications admin/admin
+Content-Type: application/json
+
+{
+  "organizationId" : "GatewayApiTest",
+  "applicationId" : "test-app",
+  "version" : "1.0",
+  "contracts" : [
+    {
+      "apiKey" : "12345",
+      "serviceOrgId" : "GatewayApiTest",
+      "serviceId" : "echo",
+      "serviceVersion" : "1.0"
+    }
+  ]
+}
+----
+500
+Content-Type: application/json
+X-API-Gateway-Error: true
+
+{
+  "errorType" : "RegistrationException",
+  "message" : "Application already registered."
+}

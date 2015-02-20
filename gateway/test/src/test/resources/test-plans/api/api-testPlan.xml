@@ -13,6 +13,9 @@
     <test name="Register App">test-plan-data/api/apps/001-register-app.resttest</test>
     <test name="Register Invalid App">test-plan-data/api/apps/002-register-app-invalid.resttest</test>
     <test name="Register App (retired)">test-plan-data/api/apps/003-register-app-retired.resttest</test>
+    <test name="Register Duplicate App">test-plan-data/api/apps/004-register-app-duplicate.resttest</test>
+    <test name="Unregister App">test-plan-data/api/apps/005-unregister-app.resttest</test>
+    <test name="Reregister App">test-plan-data/api/apps/006-reregister-app.resttest</test>
   </testGroup>
 
 </testPlan>
