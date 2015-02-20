@@ -20,6 +20,7 @@ import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.components.IRateLimiterComponent;
 import io.apiman.gateway.engine.components.ISharedStateComponent;
 import io.apiman.gateway.engine.es.ESRegistry;
+import io.apiman.gateway.engine.es.ESSharedStateComponent;
 import io.apiman.gateway.engine.impl.DefaultPluginRegistry;
 import io.apiman.gateway.engine.impl.InMemoryRateLimiterComponent;
 import io.apiman.gateway.engine.impl.InMemoryRegistry;
@@ -91,7 +92,14 @@ public class AbstractGatewayTest {
             System.setProperty(WarEngineConfig.APIMAN_GATEWAY_REGISTRY_CLASS + ".client.field", "ES_CLIENT");
             
             System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + ISharedStateComponent.class.getSimpleName(), 
-                    InMemorySharedStateComponent.class.getName());
+                    ESSharedStateComponent.class.getName());
+            System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + ISharedStateComponent.class.getSimpleName() + ".client.type", 
+                    "local");
+            System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + ISharedStateComponent.class.getSimpleName() + ".client.class", 
+                    GatewayServer.class.getName());
+            System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + ISharedStateComponent.class.getSimpleName() + ".client.field", 
+                    "ES_CLIENT");
+
             System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + IRateLimiterComponent.class.getSimpleName(), 
                     InMemoryRateLimiterComponent.class.getName());
         }

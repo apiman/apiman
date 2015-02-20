@@ -48,22 +48,20 @@ public interface ISharedStateComponent extends IComponent {
      <T> void getProperty(String namespace, String propertyName, T defaultValue, IAsyncResultHandler<T> handler);
     
     /**
-     * Sets a single property in the shared state environment, returning
-     * the previous value of the property or null if it was not previously set.
+     * Sets a single property in the shared state environment.
      * @param namespace
      * @param propertyName
      * @param value
      * @param handler
      */
-    <T> void setProperty(String namespace, String propertyName, T value, IAsyncResultHandler<T> handler);
-    
+    <T> void setProperty(String namespace, String propertyName, T value, IAsyncResultHandler<Void> handler);
+
     /**
-     * Clears a property from the shared state environment, returning the previous 
-     * value of the property or null if it was not previously set.
+     * Clears/removes a property from the shared state environment.
      * @param namespace
      * @param propertyName
      * @param handler
      */
-    <T> void clearProperty(String namespace, String propertyName, IAsyncResultHandler<T> handler);
+    <T> void clearProperty(String namespace, String propertyName, IAsyncResultHandler<Void> handler);
     
 }

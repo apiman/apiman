@@ -60,9 +60,9 @@ public class SimpleSharedStatePolicy implements IPolicy {
             public void handle(IAsyncResult<String> result) {
                 String propVal = result.getResult();
                 String newVal = propVal + "+";
-                sharedState.setProperty(namespace, propName, newVal, new IAsyncResultHandler<String>() {
+                sharedState.setProperty(namespace, propName, newVal, new IAsyncResultHandler<Void>() {
                     @Override
-                    public void handle(IAsyncResult<String> result) {
+                    public void handle(IAsyncResult<Void> result) {
                         chain.doApply(request);
                     }
                 });

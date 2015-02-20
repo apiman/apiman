@@ -92,30 +92,28 @@ public class InfinispanSharedStateComponent implements ISharedStateComponent {
     /**
      * @see io.apiman.gateway.engine.components.ISharedStateComponent#setProperty(java.lang.String, java.lang.String, java.lang.Object, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
-    @SuppressWarnings("unchecked")
     @Override
-    public <T> void setProperty(String namespace, String propertyName, T value, IAsyncResultHandler<T> handler) {
+    public <T> void setProperty(String namespace, String propertyName, T value, IAsyncResultHandler<Void> handler) {
         QName qname = new QName(namespace, propertyName);
         try {
-            T oldValue = (T) getCache().put(qname, value);
-            handler.handle(AsyncResultImpl.create(oldValue));
+            getCache().put(qname, value);
+            handler.handle(AsyncResultImpl.create((Void)null));
         } catch (Exception e) {
-            handler.handle(AsyncResultImpl.<T>create(e));
+            handler.handle(AsyncResultImpl.<Void>create(e));
         }
     }
 
     /**
      * @see io.apiman.gateway.engine.components.ISharedStateComponent#clearProperty(java.lang.String, java.lang.String, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
-    @SuppressWarnings("unchecked")
     @Override
-    public <T> void clearProperty(String namespace, String propertyName, IAsyncResultHandler<T> handler) {
+    public <T> void clearProperty(String namespace, String propertyName, IAsyncResultHandler<Void> handler) {
         QName qname = new QName(namespace, propertyName);
         try {
-            T oldValue = (T) getCache().remove(qname);
-            handler.handle(AsyncResultImpl.create(oldValue));
+            getCache().remove(qname);
+            handler.handle(AsyncResultImpl.create((Void)null));
         } catch (Exception e) {
-            handler.handle(AsyncResultImpl.<T>create(e));
+            handler.handle(AsyncResultImpl.<Void>create(e));
         }
     }
 

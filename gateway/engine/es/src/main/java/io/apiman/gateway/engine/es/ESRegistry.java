@@ -29,28 +29,17 @@ import io.apiman.gateway.engine.beans.exceptions.PublishingException;
 import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
 import io.apiman.gateway.engine.es.i18n.Messages;
 
-import java.lang.reflect.Field;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.action.ActionListener;
-import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
-import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
-import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
-import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.deletebyquery.DeleteByQueryResponse;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.settings.ImmutableSettings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.engine.DocumentAlreadyExistsException;
@@ -66,10 +55,7 @@ import org.elasticsearch.index.query.QueryBuilders;
  */
 public class ESRegistry implements IRegistry {
     
-    private static final String INDEX_NAME = "apiman_gateway"; //$NON-NLS-1$
-
     private Map<String, String> config;
-    private boolean initialized = false;
     private Client esClient;
 
     /**
@@ -79,74 +65,6 @@ public class ESRegistry implements IRegistry {
     public ESRegistry(Map<String, String> config) {
         this.config = config;
     }
-    
-    private Client createClient() {
-        Client client = null;
-        String clientType = config.get("client.type"); //$NON-NLS-1$
-        if ("local".equals(clientType)) { //$NON-NLS-1$
-            String clientLocClassName = config.get("client.class"); //$NON-NLS-1$
-            String clientLocFieldName = config.get("client.field"); //$NON-NLS-1$
-            try {
-                Class<?> clientLocClass = Class.forName(clientLocClassName);
-                Field field = clientLocClass.getField(clientLocFieldName);
-                client = (Client) field.get(null);
-            } catch (ClassNotFoundException | NoSuchFieldException | SecurityException
-                    | IllegalArgumentException | IllegalAccessException e) {
-                throw new RuntimeException("Error using local elasticsearch client.", e); //$NON-NLS-1$
-            }
-        } else if ("transport".equals(clientType)) { //$NON-NLS-1$
-            String clusterName = config.get("client.cluster-name"); //$NON-NLS-1$
-            String host = config.get("client.host"); //$NON-NLS-1$
-            String port = config.get("client.port"); //$NON-NLS-1$
-            if (StringUtils.isBlank(clusterName)) {
-                throw new RuntimeException("Missing client.cluster-name configuration for ESRegistry."); //$NON-NLS-1$
-            }
-            if (StringUtils.isBlank(host)) {
-                throw new RuntimeException("Missing client.host configuration for ESRegistry."); //$NON-NLS-1$
-            }
-            if (StringUtils.isBlank(port)) {
-                throw new RuntimeException("Missing client.port configuration for ESRegistry."); //$NON-NLS-1$
-            }
-            client = new TransportClient(ImmutableSettings.settingsBuilder()
-                    .put("cluster.name", clusterName).build()); //$NON-NLS-1$
-            ((TransportClient) client).addTransportAddress(new InetSocketTransportAddress(host, Integer.parseInt(port)));
-        } else {
-            throw new RuntimeException("Invalid elasticsearch client type: " + clientType); //$NON-NLS-1$
-        }
-        return client;
-    }
-
-    /**
-     * Called to initialize the storage.
-     */
-    private void initialize() {
-        initialized = true;
-        try {
-            getClient().admin().cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet(5000);
-            IndicesExistsRequest request = new IndicesExistsRequest(INDEX_NAME);
-            IndicesExistsResponse response = getClient().admin().indices().exists(request).get();
-            if (!response.isExists()) {
-                createIndex(INDEX_NAME);
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * @param indexName
-     * @throws Exception 
-     */
-    private void createIndex(String indexName) throws Exception {
-        CreateIndexRequest request = new CreateIndexRequest(indexName);
-        URL settings = getClass().getResource("index-settings.json"); //$NON-NLS-1$
-        String source = IOUtils.toString(settings);
-        request.source(source);
-        CreateIndexResponse response = getClient().admin().indices().create(request).get();
-        if (!response.isAcknowledged()) {
-            throw new Exception("Failed to create index: " + indexName); //$NON-NLS-1$
-        }
-    }
 
     /**
      * @see io.apiman.gateway.engine.IRegistry#publishService(io.apiman.gateway.engine.beans.Service, io.apiman.gateway.engine.async.IAsyncResultHandler)
@@ -155,7 +73,7 @@ public class ESRegistry implements IRegistry {
     public void publishService(final Service service, final IAsyncResultHandler<Void> handler) {
         try {
             String id = getServiceId(service);
-            getClient().prepareIndex(INDEX_NAME, "service", id) //$NON-NLS-1$
+            getClient().prepareIndex(ESConstants.INDEX_NAME, "service", id) //$NON-NLS-1$
                 .setSource(ESRegistryMarshalling.marshall(service))
                 .setCreate(true)
                 .setContentType(XContentType.JSON)
@@ -172,7 +90,7 @@ public class ESRegistry implements IRegistry {
                     }
                     @Override
                     public void onFailure(Throwable e) {
-                        if (rootCause(e) instanceof DocumentAlreadyExistsException) {
+                        if (ESUtils.rootCause(e) instanceof DocumentAlreadyExistsException) {
                             handler.handle(AsyncResultImpl.create(
                                     new PublishingException(Messages.i18n.format("ESRegistry.ServiceAlreadyPublished")),  //$NON-NLS-1$
                                     Void.class));
@@ -196,7 +114,7 @@ public class ESRegistry implements IRegistry {
     @Override
     public void retireService(Service service, final IAsyncResultHandler<Void> handler) {
         final String id = getServiceId(service);
-        getClient().prepareDelete(INDEX_NAME, "service", id) //$NON-NLS-1$
+        getClient().prepareDelete(ESConstants.INDEX_NAME, "service", id) //$NON-NLS-1$
             .execute(new ActionListener<DeleteResponse>() {
                 @Override
                 public void onResponse(DeleteResponse response) {
@@ -227,7 +145,7 @@ public class ESRegistry implements IRegistry {
                 } else {
                     String id = getApplicationId(application);
                     try {
-                        getClient().prepareIndex(INDEX_NAME, "application", id) //$NON-NLS-1$
+                        getClient().prepareIndex(ESConstants.INDEX_NAME, "application", id) //$NON-NLS-1$
                             .setSource(ESRegistryMarshalling.marshall(application))
                             .setCreate(true)
                             .setContentType(XContentType.JSON)
@@ -247,7 +165,7 @@ public class ESRegistry implements IRegistry {
                                 
                                 @Override
                                 public void onFailure(Throwable e) {
-                                    if (rootCause(e) instanceof DocumentAlreadyExistsException) {
+                                    if (ESUtils.rootCause(e) instanceof DocumentAlreadyExistsException) {
                                         handler.handle(AsyncResultImpl.create(
                                                 new RegistrationException(Messages.i18n.format("ESRegistry.AppAlreadyRegistered")),  //$NON-NLS-1$
                                                 Void.class));
@@ -349,7 +267,7 @@ public class ESRegistry implements IRegistry {
                 final String contractId = getContractId(contract);
                 
                 XContentBuilder source = ESRegistryMarshalling.marshall(sc);
-                getClient().prepareIndex(INDEX_NAME, "serviceContract", contractId) //$NON-NLS-1$
+                getClient().prepareIndex(ESConstants.INDEX_NAME, "serviceContract", contractId) //$NON-NLS-1$
                     .setSource(source)
                     .setCreate(true)
                     .setContentType(XContentType.JSON)
@@ -366,7 +284,7 @@ public class ESRegistry implements IRegistry {
                         }
                         @Override
                         public void onFailure(Throwable e) {
-                            if (rootCause(e) instanceof DocumentAlreadyExistsException) {
+                            if (ESUtils.rootCause(e) instanceof DocumentAlreadyExistsException) {
                                 handler.handle(AsyncResultImpl.create(
                                         new RegistrationException(Messages.i18n.format("ESRegistry.ContractAlreadyPublished", contractId)),  //$NON-NLS-1$
                                         Void.class));
@@ -392,7 +310,7 @@ public class ESRegistry implements IRegistry {
     @Override
     public void unregisterApplication(final Application application, final IAsyncResultHandler<Void> handler) {
         final String id = getApplicationId(application);
-        getClient().prepareDelete(INDEX_NAME, "application", id) //$NON-NLS-1$
+        getClient().prepareDelete(ESConstants.INDEX_NAME, "application", id) //$NON-NLS-1$
             .execute(new ActionListener<DeleteResponse>() {
                 @Override
                 public void onResponse(DeleteResponse response) {
@@ -423,7 +341,7 @@ public class ESRegistry implements IRegistry {
                         FilterBuilders.termFilter("application.version", application.getVersion()) //$NON-NLS-1$
                 )
             );
-        getClient().prepareDeleteByQuery(INDEX_NAME)
+        getClient().prepareDeleteByQuery(ESConstants.INDEX_NAME)
             .setQuery(qb)
             .setTypes("serviceContract") //$NON-NLS-1$
             .execute(new ActionListener<DeleteByQueryResponse>() {
@@ -444,7 +362,7 @@ public class ESRegistry implements IRegistry {
     @Override
     public void getContract(final ServiceRequest request, final IAsyncResultHandler<ServiceContract> handler) {
         final String id = getContractId(request);
-        getClient().prepareGet(INDEX_NAME, "serviceContract", id) //$NON-NLS-1$
+        getClient().prepareGet(ESConstants.INDEX_NAME, "serviceContract", id) //$NON-NLS-1$
             .setFetchSource(true)
             .execute(new ActionListener<GetResponse>() {
                 @Override
@@ -460,7 +378,7 @@ public class ESRegistry implements IRegistry {
                 }
                 @Override
                 public void onFailure(Throwable e) {
-                    if (rootCause(e) instanceof DocumentAlreadyExistsException) {
+                    if (ESUtils.rootCause(e) instanceof DocumentAlreadyExistsException) {
                         Exception error = new InvalidContractException(Messages.i18n.format("ESRegistry.NoContractForAPIKey", id)); //$NON-NLS-1$
                         handler.handle(AsyncResultImpl.create(error, ServiceContract.class));
                     } else {
@@ -478,7 +396,7 @@ public class ESRegistry implements IRegistry {
     protected void checkService(final ServiceContract contract, final IAsyncResultHandler<ServiceContract> handler) {
         final Service service = contract.getService();
         String id = getServiceId(service);
-        getClient().prepareGet(INDEX_NAME, "service", id) //$NON-NLS-1$
+        getClient().prepareGet(ESConstants.INDEX_NAME, "service", id) //$NON-NLS-1$
             .setFetchSource(false)
             .execute(new ActionListener<GetResponse>() {
                 @Override
@@ -493,7 +411,7 @@ public class ESRegistry implements IRegistry {
                 }
                 @Override
                 public void onFailure(Throwable e) {
-                    if (rootCause(e) instanceof DocumentAlreadyExistsException) {
+                    if (ESUtils.rootCause(e) instanceof DocumentAlreadyExistsException) {
                         Exception error = new InvalidContractException(Messages.i18n.format("ESRegistry.ServiceWasRetired", //$NON-NLS-1$ 
                                 service.getServiceId(), service.getOrganizationId()));
                         handler.handle(AsyncResultImpl.create(error, ServiceContract.class));
@@ -520,7 +438,7 @@ public class ESRegistry implements IRegistry {
      * @param handler
      */
     protected void getService(String id, final IAsyncResultHandler<Service> handler) {
-        getClient().prepareGet(INDEX_NAME, "service", id) //$NON-NLS-1$
+        getClient().prepareGet(ESConstants.INDEX_NAME, "service", id) //$NON-NLS-1$
             .execute(new ActionListener<GetResponse>() {
                 @Override
                 public void onResponse(GetResponse response) {
@@ -534,7 +452,7 @@ public class ESRegistry implements IRegistry {
                 }
                 @Override
                 public void onFailure(Throwable e) {
-                    if (rootCause(e) instanceof DocumentAlreadyExistsException) {
+                    if (ESUtils.rootCause(e) instanceof DocumentAlreadyExistsException) {
                         handler.handle(AsyncResultImpl.create((Service) null));
                     } else {
                         handler.handle(AsyncResultImpl.create(e, Service.class));
@@ -598,26 +516,11 @@ public class ESRegistry implements IRegistry {
     }
 
     /**
-     * Gets the root cause of an exception.
-     * @param e
-     */
-    protected Throwable rootCause(Throwable e) {
-        Throwable cause = e;
-        while (cause.getCause() != null) {
-            cause = e.getCause();
-        }
-        return cause;
-    }
-
-    /**
      * @return the esClient
      */
     public synchronized Client getClient() {
         if (esClient == null) {
-            esClient = createClient();
-        }
-        if (!initialized) {
-            initialize();
+            esClient = ESClientFactory.createClient(config);
         }
         return esClient;
     }

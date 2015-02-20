@@ -63,30 +63,25 @@ public class InMemorySharedStateComponent implements ISharedStateComponent {
     /**
      * @see io.apiman.gateway.engine.components.ISharedStateComponent#setProperty(java.lang.String, java.lang.String, java.lang.Object, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
-    @SuppressWarnings("unchecked")
     @Override
-    public <T> void setProperty(String namespace, String propertyName, T value, IAsyncResultHandler<T> handler) {
+    public <T> void setProperty(String namespace, String propertyName, T value, IAsyncResultHandler<Void> handler) {
         QName key = new QName(namespace, propertyName);
-        T oldValue = null;
         synchronized (sharedState) {
-            oldValue = (T) sharedState.get(key);
             sharedState.put(key, value);
         }
-        handler.handle(AsyncResultImpl.create(oldValue));
+        handler.handle(AsyncResultImpl.create((Void) null));
     }
 
     /**
      * @see io.apiman.gateway.engine.components.ISharedStateComponent#clearProperty(java.lang.String, java.lang.String, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
-    @SuppressWarnings("unchecked")
     @Override
-    public <T> void clearProperty(String namespace, String propertyName, IAsyncResultHandler<T> handler) {
+    public <T> void clearProperty(String namespace, String propertyName, IAsyncResultHandler<Void> handler) {
         QName key = new QName(namespace, propertyName);
-        T oldValue = null;
         synchronized (sharedState) {
-            oldValue = (T) sharedState.remove(key);
+            sharedState.remove(key);
         }
-        handler.handle(AsyncResultImpl.create(oldValue));
+        handler.handle(AsyncResultImpl.create((Void) null));
     }
 
 }
