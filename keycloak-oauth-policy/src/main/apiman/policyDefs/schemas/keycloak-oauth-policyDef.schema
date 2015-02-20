@@ -42,7 +42,7 @@
         "title": "Header",
         "properties": {
           "headers": {
-            "title": "Headers",
+            "title": "Header",
             "type": "string",
             "uniqueItems": true,
             "pattern": "^[^()<>@,;:\\\\<>\\/\\[\\]?={}\\s\\t]+$"
