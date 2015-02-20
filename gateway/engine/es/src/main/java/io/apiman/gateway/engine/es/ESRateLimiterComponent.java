@@ -20,6 +20,10 @@ import io.apiman.gateway.engine.components.IRateLimiterComponent;
 import io.apiman.gateway.engine.components.rate.RateLimitResponse;
 import io.apiman.gateway.engine.rates.RateBucketPeriod;
 
+import java.util.Map;
+
+import org.elasticsearch.client.Client;
+
 /**
  * An elasticsearch implementation of the rate limiter component.
  *
@@ -27,10 +31,15 @@ import io.apiman.gateway.engine.rates.RateBucketPeriod;
  */
 public class ESRateLimiterComponent implements IRateLimiterComponent {
     
+    private Map<String, String> config;
+    private Client esClient;
+
     /**
      * Constructor.
+     * @param config
      */
-    public ESRateLimiterComponent() {
+    public ESRateLimiterComponent(Map<String, String> config) {
+        this.config = config;
     }
 
     /**
@@ -41,6 +50,16 @@ public class ESRateLimiterComponent implements IRateLimiterComponent {
             IAsyncResultHandler<RateLimitResponse> handler) {
         // TODO Auto-generated method stub
         
+    }
+
+    /**
+     * @return the esClient
+     */
+    public synchronized Client getClient() {
+        if (esClient == null) {
+            esClient = ESClientFactory.createClient(config);
+        }
+        return esClient;
     }
 
 }

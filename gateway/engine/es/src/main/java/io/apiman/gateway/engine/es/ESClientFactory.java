@@ -39,6 +39,13 @@ import org.elasticsearch.common.transport.InetSocketTransportAddress;
 public class ESClientFactory {
     
     private static Map<String, Client> clients = new HashMap<>();
+    
+    /**
+     * Clears all the clients from the cache.  Useful for unit testing.
+     */
+    public static void clearClientCache() {
+        clients.clear();
+    }
 
     /**
      * Creates a client from information in the config map.

@@ -1,0 +1,15 @@
+GET /gateway/BeanSharedStatePolicyTest/echo/1.0.0/path/to/app/resource admin/admin
+X-API-Key: 12345
+
+----
+200
+Content-Type: application/json
+X-Property-1: my-value
+X-Property-2: true
+X-Property-3: 42
+
+{
+  "method" : "GET",
+  "resource" : "/path/to/app/resource",
+  "uri" : "/path/to/app/resource"
+}

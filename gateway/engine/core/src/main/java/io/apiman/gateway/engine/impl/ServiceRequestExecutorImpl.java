@@ -211,7 +211,7 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
                             try {
                                 validateRequest(request);
                             } catch (InvalidContractException e) {
-                                resultHandler.handle(AsyncResultImpl.create(result.getError(), IEngineResult.class));
+                                resultHandler.handle(AsyncResultImpl.create(e, IEngineResult.class));
                                 return;
                             }
                         }

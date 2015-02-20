@@ -45,7 +45,7 @@ public class ESSharedStateComponent implements ISharedStateComponent {
     static {
         mapper.configure(Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
-    
+
     private Map<String, String> config;
     private Client esClient;
 

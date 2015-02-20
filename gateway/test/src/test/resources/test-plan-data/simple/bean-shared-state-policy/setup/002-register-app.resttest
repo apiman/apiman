@@ -1,0 +1,24 @@
+PUT /api/applications admin/admin
+Content-Type: application/json
+
+{
+  "organizationId" : "BeanSharedStatePolicyTest",
+  "applicationId" : "test",
+  "version" : "1.0.0",
+  "contracts" : [
+    {
+      "apiKey" : "12345",
+      "serviceOrgId" : "BeanSharedStatePolicyTest",
+      "serviceId" : "echo",
+      "serviceVersion" : "1.0.0",
+      "policies" : [
+        {
+          "policyImpl" : "class:io.apiman.gateway.test.policies.BeanSharedStatePolicy",
+          "policyJsonConfig" : ""
+        }
+      ]
+    }
+  ]
+}
+----
+204

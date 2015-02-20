@@ -19,6 +19,7 @@ import io.apiman.gateway.api.rest.impl.ApplicationResourceImpl;
 import io.apiman.gateway.api.rest.impl.ServiceResourceImpl;
 import io.apiman.gateway.api.rest.impl.SystemResourceImpl;
 import io.apiman.gateway.api.rest.impl.mappers.RestExceptionMapper;
+import io.apiman.gateway.engine.es.ESClientFactory;
 import io.apiman.gateway.platforms.war.listeners.WarGatewayBootstrapper;
 import io.apiman.gateway.platforms.war.servlets.WarGatewayServlet;
 
@@ -164,6 +165,7 @@ public class GatewayServer {
             if ("true".equals(System.getProperty("apiman.test.es-delete-index", "true"))) {
                 DeleteIndexRequest request = new DeleteIndexRequest("apiman_gateway");
                 client.admin().indices().delete(request).actionGet();
+                ESClientFactory.clearClientCache();
             }
         }
     }
