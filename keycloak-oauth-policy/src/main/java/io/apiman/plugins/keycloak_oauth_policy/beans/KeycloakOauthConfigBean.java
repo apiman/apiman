@@ -13,8 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.plugins.keycloak_oauth_policy;
-
+package io.apiman.plugins.keycloak_oauth_policy.beans;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,13 +21,16 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Generated;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.codehaus.jackson.annotate.JsonAnyGetter;
 import org.codehaus.jackson.annotate.JsonAnySetter;
 import org.codehaus.jackson.annotate.JsonIgnore;
@@ -43,42 +45,54 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
  */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 @Generated("org.jsonschema2pojo")
-@JsonPropertyOrder({ "requireOauth", "blacklistUnsafeTokens", "realm", "realmCertificateString" })
+@JsonPropertyOrder({ "requireOauth", "blacklistUnsafeTokens", "stripTokens", "realm",
+        "realmCertificateString", "forwardAuthInfo" })
 public class KeycloakOauthConfigBean {
 
     /**
      * Require OAuth
      * <p>
      * Terminate request if no OAuth is provided.
-     * 
      */
     @JsonProperty("requireOauth")
     private Boolean requireOauth = true;
     /**
      * Blacklist unsafe tokens
      * <p>
-     * Blacklist any tokens used without transport security to mitigate associated security issues.
-     * 
+     * Any tokens used without transport security will be blackedlisted to mitigate associated security risks.
      */
     @JsonProperty("blacklistUnsafeTokens")
     private Boolean blacklistUnsafeTokens = true;
     /**
+     * Strip tokens
+     * <p>
+     * Remove any Authorization header or token query parameter before forwarding traffic to the Service.
+     * 
+     */
+    @JsonProperty("stripTokens")
+    private Boolean stripTokens;
+    /**
      * Realm
      * <p>
      * Realm name
-     * 
      */
     @JsonProperty("realm")
     private String realm;
     /**
-     * KeyCloak Realm Certificate
+     * Keycloak realm certificate
      * <p>
-     * Certificate to validate OAuth requests. Must be a Base64 DER-encoded X.509 realm certificate. Include
-     * bounding strings.
-     * 
+     * To validate OAuth requests. Must be a PEM-encoded X.509 certificate, including bounding strings.
      */
     @JsonProperty("realmCertificateString")
     private String realmCertificateString;
+    /**
+     * Forward Keycloak token information
+     * <p>
+     * Fields from the token can be set as headers and forwarded to the Service. Access_token corresponds to
+     * the full token.
+     */
+    @JsonProperty("forwardAuthInfo")
+    private List<ForwardAuthInfo> forwardAuthInfo = new ArrayList<>();
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<>();
     private Certificate realmCertificate;
@@ -110,7 +124,7 @@ public class KeycloakOauthConfigBean {
     /**
      * Blacklist unsafe tokens
      * <p>
-     * Blacklist any tokens used without transport security to mitigate associated security issues.
+     * Any tokens used without transport security will be blackedlisted to mitigate associated security risks.
      * 
      * @return The blacklistUnsafeTokens
      */
@@ -122,13 +136,37 @@ public class KeycloakOauthConfigBean {
     /**
      * Blacklist unsafe tokens
      * <p>
-     * Blacklist any tokens used without transport security to mitigate associated security issues.
+     * Any tokens used without transport security will be blackedlisted to mitigate associated security risks.
      * 
      * @param blacklistUnsafeTokens The blacklistUnsafeTokens
      */
     @JsonProperty("blacklistUnsafeTokens")
     public void setBlacklistUnsafeTokens(Boolean blacklistUnsafeTokens) {
         this.blacklistUnsafeTokens = blacklistUnsafeTokens;
+    }
+
+    /**
+     * Strip tokens
+     * <p>
+     * Remove any Authorization header or token query parameter before forwarding traffic to the Service.
+     * 
+     * @return The stripTokens
+     */
+    @JsonProperty("stripTokens")
+    public Boolean getStripTokens() {
+        return stripTokens;
+    }
+
+    /**
+     * Strip tokens
+     * <p>
+     * Remove any Authorization header or token query parameter before forwarding traffic to the Service.
+     * 
+     * @param stripTokens The stripTokens
+     */
+    @JsonProperty("stripTokens")
+    public void setStripTokens(Boolean stripTokens) {
+        this.stripTokens = stripTokens;
     }
 
     /**
@@ -156,10 +194,9 @@ public class KeycloakOauthConfigBean {
     }
 
     /**
-     * KeyCloak Realm Certificate
+     * Keycloak realm certificate
      * <p>
-     * Certificate to validate OAuth requests. Must be a Base64 DER-encoded X.509 realm certificate. Include
-     * bounding strings.
+     * To validate OAuth requests. Must be a PEM-encoded X.509 certificate, including bounding strings.
      * 
      * @return The realmCertificateString
      */
@@ -169,10 +206,9 @@ public class KeycloakOauthConfigBean {
     }
 
     /**
-     * KeyCloak Realm Certificate
+     * Keycloak realm certificate
      * <p>
-     * Certificate to validate OAuth requests. Must be a Base64 DER-encoded X.509 realm certificate. Include
-     * bounding strings.
+     * To validate OAuth requests. Must be a PEM-encoded X.509 certificate, including bounding strings.
      * 
      * @param realmCertificateString The realmCertificateString
      */
@@ -180,6 +216,37 @@ public class KeycloakOauthConfigBean {
     public void setRealmCertificateString(String realmCertificateString) {
         this.realmCertificateString = realmCertificateString;
         realmCertificate = generateCertificate(realmCertificateString);
+    }
+
+    /**
+     * Forward Keycloak token information
+     * <p>
+     * Fields from the token can be set as headers and forwarded to the Service. Access_token corresponds to
+     * the full token.
+     * 
+     * @return The forwardAuthInfo
+     */
+    @JsonProperty("forwardAuthInfo")
+    public List<ForwardAuthInfo> getForwardAuthInfo() {
+        return forwardAuthInfo;
+    }
+
+    /**
+     * Forward Keycloak token information
+     * <p>
+     * Fields from the token can be set as headers and forwarded to the Service. Access_token corresponds to
+     * the full token.
+     * 
+     * @param forwardAuthInfo The forwardAuthInfo
+     */
+    @JsonProperty("forwardAuthInfo")
+    public void setForwardAuthInfo(List<ForwardAuthInfo> forwardAuthInfo) {
+        this.forwardAuthInfo = forwardAuthInfo;
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
     }
 
     @JsonAnyGetter
@@ -191,34 +258,35 @@ public class KeycloakOauthConfigBean {
     public void setAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
     }
-    
+
     public Certificate getRealmCertificate() {
         return realmCertificate;
     }
-    
+
     @SuppressWarnings("nls")
     private Certificate generateCertificate(String data) {
         try {
             InputStream is = IOUtils.toInputStream(data, "UTF-8");
             CertificateFactory cf = CertificateFactory.getInstance("X.509");
-            
+
             @SuppressWarnings("unchecked")
-            Collection<X509Certificate> certificates = (Collection<X509Certificate>) cf.generateCertificates(is);
-            
-            if(certificates.size() == 0) {
+            Collection<X509Certificate> certificates = (Collection<X509Certificate>) cf
+                    .generateCertificates(is);
+
+            if (certificates.size() == 0) {
                 throw new RuntimeException("Certificate contains no key.");
             }
-            
-            //TODO find more relevant exceptions
-            if(certificates.size() > 1) {
-                throw new RuntimeException("More than one certificate provided in X.509, please use only one.");
+
+            // TODO find more relevant exceptions
+            if (certificates.size() > 1) {
+                throw new RuntimeException(
+                        "More than one certificate provided in X.509, please use only one.");
             }
-            
+
             return certificates.iterator().next();
 
         } catch (CertificateException | IOException e) {
             throw new RuntimeException(e);
         }
     }
-
 }

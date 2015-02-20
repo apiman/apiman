@@ -1,6 +1,6 @@
 {
   "frameworkVersion" : 1.0,
-  "name" : "KeyCloak OAuth Policy Plugin",
+  "name" : "Keycloak OAuth Policy Plugin",
   "description" : "OAuth authentication",
   "version" : "${project.version}"
 }
