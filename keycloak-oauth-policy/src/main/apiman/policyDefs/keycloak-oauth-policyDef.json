@@ -1,8 +1,8 @@
 {
   "id" : "keycloak-oauth-policy",
-  "name" : "KeyCloak OAuth Policy",
-  "description" : "A KeyCloak specific OAuth policy to regulate access to services. Configuration required.",
-  "policyImpl" : "plugin:${project.groupId}:${project.artifactId}:${project.version}:${project.packaging}/io.apiman.plugins.keycloak_oauth_policy.KeyCloakOauthPolicy",
+  "name" : "Keycloak OAuth Policy",
+  "description" : "A Keycloak specific OAuth policy to regulate access to services. Configuration required.",
+  "policyImpl" : "plugin:${project.groupId}:${project.artifactId}:${project.version}:${project.packaging}/io.apiman.plugins.keycloak_oauth_policy.KeycloakOauthPolicy",
   "icon" : "lock",
   "formType" : "JsonSchema",
   "templates" : [

@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "KeyCloak OAuth Policy Configuration",
+  "title": "Keycloak OAuth Policy Configuration",
   "type": "object",
   "properties": {
     "requireOauth": {
@@ -11,9 +11,14 @@
     },
     "blacklistUnsafeTokens": {
       "title": "Blacklist unsafe tokens",
-      "description": "Any tokens used without transport security will be blackedlisted to mitigate associated security issues.",
+      "description": "Any tokens used without transport security will be blackedlisted to mitigate associated security risks.",
       "type": "boolean",
       "default": true
+    },
+    "stripTokens": {
+      "title": "Strip tokens",
+      "description": "Remove any Authorization header or token query parameter before forwarding traffic to the Service.",
+      "type": "boolean"
     },
     "realm": {
       "title": "Realm",
@@ -21,9 +26,41 @@
       "type": "string"
     },
     "realmCertificateString": {
-      "title": "KeyCloak Realm Certificate",
+      "title": "Keycloak realm certificate",
       "description": "To validate OAuth requests. Must be a PEM-encoded X.509 certificate, including bounding strings.",
-      "type": "string"
+      "type": "string",
+      "format": "textarea"
+    },
+    "forwardAuthInfo": {
+      "title": "Forward Keycloak token information",
+      "description":  "Fields from the token can be set as headers and forwarded to the Service. Access_token corresponds to the full token.",
+      "type": "array",
+      "format": "table",
+
+      "items" : {
+        "type" : "object",
+        "title": "Header",
+        "properties": {
+          "headers": {
+            "title": "Headers",
+            "type": "string",
+            "uniqueItems": true,
+            "pattern": "^[^()<>@,;:\\\\<>\\/\\[\\]?={}\\s\\t]+$"
+          },
+          "field" : {
+            "title": "Field",
+            "type": "string",
+            "enum": [
+              "subject",
+              "username",
+              "email",
+              "name",
+              "access_token"
+            ]
+          }
+        }
+      }
+
     }
   }
 }
