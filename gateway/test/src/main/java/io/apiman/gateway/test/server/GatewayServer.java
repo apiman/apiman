@@ -118,6 +118,7 @@ public class GatewayServer {
             settings.put("path.home", esHome.getAbsolutePath());
             settings.put("http.port", "6500-6600");
             settings.put("transport.tcp.port", "6600-6700");
+            settings.put("script.disable_dynamic", "false");
 
             String clusterName = System.getProperty("apiman.test.es-cluster-name", ES_CLUSTER_NAME);
 

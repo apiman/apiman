@@ -19,6 +19,7 @@ import io.apiman.gateway.engine.components.IHttpClientComponent;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.components.IRateLimiterComponent;
 import io.apiman.gateway.engine.components.ISharedStateComponent;
+import io.apiman.gateway.engine.es.ESRateLimiterComponent;
 import io.apiman.gateway.engine.es.ESRegistry;
 import io.apiman.gateway.engine.es.ESSharedStateComponent;
 import io.apiman.gateway.engine.impl.DefaultPluginRegistry;
@@ -79,13 +80,18 @@ public class AbstractGatewayTest {
                 PolicyFailureFactoryComponent.class.getName());
         System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + IHttpClientComponent.class.getSimpleName(), 
                 HttpClientComponentImpl.class.getName());
+        
         if (GatewayTestUtils.getTestType() == GatewayTestType.memory) {
+            // Configure to run with in-memory components
+            /////////////////////////////////////////////
             System.setProperty(WarEngineConfig.APIMAN_GATEWAY_REGISTRY_CLASS, InMemoryRegistry.class.getName());
             System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + ISharedStateComponent.class.getSimpleName(), 
                     InMemorySharedStateComponent.class.getName());
             System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + IRateLimiterComponent.class.getSimpleName(), 
                     InMemoryRateLimiterComponent.class.getName());
         } else if (GatewayTestUtils.getTestType() == GatewayTestType.es) {
+            // Configure to run with elasticsearch components
+            /////////////////////////////////////////////////
             System.setProperty(WarEngineConfig.APIMAN_GATEWAY_REGISTRY_CLASS, ESRegistry.class.getName());
             System.setProperty(WarEngineConfig.APIMAN_GATEWAY_REGISTRY_CLASS + ".client.type", "local");
             System.setProperty(WarEngineConfig.APIMAN_GATEWAY_REGISTRY_CLASS + ".client.class", GatewayServer.class.getName());
@@ -101,7 +107,13 @@ public class AbstractGatewayTest {
                     "ES_CLIENT");
 
             System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + IRateLimiterComponent.class.getSimpleName(), 
-                    InMemoryRateLimiterComponent.class.getName());
+                    ESRateLimiterComponent.class.getName());
+            System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + IRateLimiterComponent.class.getSimpleName() + ".client.type", 
+                    "local");
+            System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + IRateLimiterComponent.class.getSimpleName() + ".client.class", 
+                    GatewayServer.class.getName());
+            System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + IRateLimiterComponent.class.getSimpleName() + ".client.field", 
+                    "ES_CLIENT");
         }
     }
 

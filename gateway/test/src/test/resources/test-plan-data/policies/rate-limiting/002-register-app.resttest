@@ -14,7 +14,7 @@ Content-Type: application/json
       "policies" : [
         {
           "policyImpl" : "class:io.apiman.gateway.engine.policies.RateLimitingPolicy",
-          "policyJsonConfig" : "{ \"limit\" : 5, \"granularity\" : \"Application\", \"period\" : \"Minute\" }"
+          "policyJsonConfig" : "{ \"limit\" : 5, \"granularity\" : \"Application\", \"period\" : \"Hour\" }"
         }
       ]
     }
