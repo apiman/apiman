@@ -1,0 +1,10 @@
+GET /gateway/Policy_CachingPolicyTest/echo/1.0/path/to/app/resource
+
+----
+200
+Content-Type: application/json
+Response-Counter: 1
+
+{
+  "counter" : 1
+}

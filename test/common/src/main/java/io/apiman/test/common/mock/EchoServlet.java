@@ -38,6 +38,8 @@ public class EchoServlet extends HttpServlet {
         mapper.enable(SerializationConfig.Feature.INDENT_OUTPUT);
     }
     
+    private long servletCounter = 0L;
+    
     /**
      * Constructor.
      */
@@ -90,13 +92,14 @@ public class EchoServlet extends HttpServlet {
      */
     protected void doEchoResponse(HttpServletRequest req, HttpServletResponse resp, boolean withBody) {
         EchoResponse response = EchoResponse.from(req, withBody);
-        
+        response.setCounter(++servletCounter);
         resp.setContentType("application/json"); //$NON-NLS-1$
+        resp.setHeader("Response-Counter", response.getCounter().toString()); //$NON-NLS-1$
         try {
             mapper.writeValue(resp.getOutputStream(), response);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
-    
+
 }
