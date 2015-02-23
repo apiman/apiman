@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testPlan xmlns="urn:io.apiman.test:2014:02:testPlan">
+
+  <testGroup name="Test Policy">
+    <test name="Publish Service">test-plan-data/simple/simple-caching-policy/setup/001-publish-service.resttest</test>
+    <test name="First Remote Request">test-plan-data/simple/simple-caching-policy/caching/001-first-request.resttest</test>
+    <test name="First Cached Response">test-plan-data/simple/simple-caching-policy/caching/002-first-cached-response.resttest</test>
+    <test name="Error Response">test-plan-data/simple/simple-caching-policy/caching/003-error-code.resttest</test>
+    <test name="Second Remote Request">test-plan-data/simple/simple-caching-policy/caching/004-second-request.resttest</test>
+    <test name="First Cached Response">test-plan-data/simple/simple-caching-policy/caching/002-first-cached-response.resttest</test>
+    <test name="Second Cached Response">test-plan-data/simple/simple-caching-policy/caching/005-second-cached-response.resttest</test>
+  </testGroup>
+
+</testPlan>

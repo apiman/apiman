@@ -22,9 +22,9 @@ import io.apiman.gateway.engine.async.IAsyncHandler;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.ServiceResponse;
 import io.apiman.gateway.engine.beans.exceptions.ConnectorException;
+import io.apiman.gateway.engine.io.ByteBuffer;
 import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.gateway.platforms.servlet.GatewayThreadContext;
-import io.apiman.gateway.platforms.servlet.io.ByteBuffer;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -128,12 +128,9 @@ public class CannedResponseServiceConnection implements IServiceConnection, ISer
     public void transmit() {
         try {
             InputStream is = new ByteArrayInputStream(CANNED_RESPONSE);
-            ByteBuffer buffer = new ByteBuffer(2048);
-            int numBytes = buffer.readFrom(is);
-            while (numBytes != -1) {
-                bodyHandler.handle(buffer);
-                numBytes = buffer.readFrom(is);
-            }
+            ByteBuffer buffer = new ByteBuffer(CANNED_RESPONSE.length);
+            buffer.readFrom(is);
+            bodyHandler.handle(buffer);
             IOUtils.closeQuietly(is);
             connected = false;
             endHandler.handle(null);

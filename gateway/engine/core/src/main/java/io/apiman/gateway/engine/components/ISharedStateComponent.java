@@ -19,7 +19,7 @@ import io.apiman.gateway.engine.IComponent;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 
 /**
- * A component that allows policies to share information across invokations
+ * A component that allows policies to share information across invocations
  * and potentially across nodes in a cluster.  The expectation is that policies
  * will use this component to track aggregation information such as metrics,
  * billing, or for throttling.
