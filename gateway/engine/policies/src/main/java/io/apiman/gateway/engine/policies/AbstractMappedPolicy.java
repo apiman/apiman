@@ -33,8 +33,6 @@ public abstract class AbstractMappedPolicy<C> implements IPolicy {
     
     private static final ObjectMapper mapper = new ObjectMapper();
     
-    protected C configuration;
-    
     /**
      * Constructor.
      */

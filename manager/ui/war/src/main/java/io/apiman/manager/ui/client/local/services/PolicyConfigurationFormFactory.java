@@ -20,6 +20,7 @@ import io.apiman.manager.api.beans.summary.PolicyFormType;
 import io.apiman.manager.ui.client.local.pages.policy.DefaultPolicyConfigurationForm;
 import io.apiman.manager.ui.client.local.pages.policy.IPolicyConfigurationForm;
 import io.apiman.manager.ui.client.local.pages.policy.forms.BasicAuthPolicyConfigForm;
+import io.apiman.manager.ui.client.local.pages.policy.forms.CachingPolicyConfigForm;
 import io.apiman.manager.ui.client.local.pages.policy.forms.IPListPolicyConfigForm;
 import io.apiman.manager.ui.client.local.pages.policy.forms.IgnoredResourcesPolicyConfigForm;
 import io.apiman.manager.ui.client.local.pages.policy.forms.JsonSchemaPolicyConfigurationForm;
@@ -54,6 +55,8 @@ public class PolicyConfigurationFormFactory {
     Instance<DefaultPolicyConfigurationForm> defaultFormFactory;
     @Inject
     Instance<IgnoredResourcesPolicyConfigForm> ignoredResourcesFormFactory;
+    @Inject
+    Instance<CachingPolicyConfigForm> cachingPolicyFormFactory;
     
     private Map<PolicyDefinitionSummaryBean, String> policyDefSchemas = new HashMap<PolicyDefinitionSummaryBean, String>();
     
@@ -90,6 +93,8 @@ public class PolicyConfigurationFormFactory {
                 handler.onFormLoaded(rateLimitingFormFactory.get());
             } else if ("IgnoredResourcesPolicy".equals(policyDefId)) { //$NON-NLS-1$
                 handler.onFormLoaded(ignoredResourcesFormFactory.get());
+            } else if ("CachingPolicy".equals(policyDefId)) { //$NON-NLS-1$
+               handler.onFormLoaded(cachingPolicyFormFactory.get());
             } else {
                 handler.onFormLoaded(defaultFormFactory.get());
             }
