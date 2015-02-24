@@ -158,13 +158,12 @@ public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig>
             builder.append(request.getServiceVersion());
             if (config.getGranularity() == RateLimitingGranularity.User) {
                 String header = config.getUserHeader();
-                String user = request.getHeaders().get(header);
-                if (user == null) {
+                if (!request.getHeaders().containsKey(header)) {
                     return NO_USER_AVAILABLE;
-                } else {
-                    builder.append("||"); //$NON-NLS-1$
-                    builder.append(user);
                 }
+                String user = request.getHeaders().get(header);
+                builder.append("||"); //$NON-NLS-1$
+                builder.append(user);
             } else if (config.getGranularity() == RateLimitingGranularity.Service) {
             } else {
                 return NO_APPLICATION_AVAILABLE;
