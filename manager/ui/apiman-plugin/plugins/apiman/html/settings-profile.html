@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <script type="text/javascript" src="site.js"></script>
+  </head>
+
+  <body>
+    
+    <!-- Top header/nav bar -->
+    <div id="apiman-header">
+      <div class="main-header container" data-field="header">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="logo" data-field="logo"></div>
+            <input data-field="search" class="search no-phone" type="text" placeholder="Quick service search..."></input>
+            <ul class="user-menu pull-right">
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                  <span class="pficon pficon-user"></span>
+                  <span data-field="username" data-role="dummy">Bruce Wayne</span>
+                  <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a data-field="toUserHome" href="user-orgs.html" data-i18n-key="my-stuff">My Stuff</a>
+                  </li>
+                  <li class="divider"></li>
+                  <li>
+                    <a data-field="toProfile" href="#" data-i18n-key="profile">Profile</a>
+                  </li>
+                  <li>
+                    <a data-field="toLogout" href="#" data-i18n-key="logout">Logout</a>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Page content -->
+    <div class="page container" data-field="page">
+      <div class="row">
+        <div class="col-md-12">
+          <h1><i class="fa fa-user fa-fw"></i> <span data-i18n-key="page-heading">User Profile</span></h1>
+          <hr />
+        </div>
+      </div>
+      <div class="row settings">
+        <div class="col-md-6">
+          <div class="settings-detail">
+            <form role="form">
+              <div class="form-group">
+                <label data-i18n-key="username" for="usernameInput">Username</label>
+                <input data-field="username" type="text" class="form-control" id="usernameInput" placeholder="Enter email" disabled="disabled" value="bwayne">
+              </div>
+              <div class="form-group">
+                <label data-i18n-key="full-name" for="nameInput">Full Name</label>
+                <input data-field="name" type="text" class="form-control" id="nameInput" placeholder="Enter your full name...">
+              </div>
+              <div class="form-group">
+                <label data-i18n-key="email" for="emailInput">Email</label>
+                <input data-field="email" type="email" class="form-control" id="emailInput" placeholder="Email address...">
+              </div>
+              <button class="btn btn-primary" data-field="updateButton" data-i18n-key="update-profile" placeholder="Updating..." data-icon="fa-cog">Update Profile</button>
+              <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-i18n-key="cancel">Cancel</a>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div> <!-- /container -->
+  </body>
+</html>

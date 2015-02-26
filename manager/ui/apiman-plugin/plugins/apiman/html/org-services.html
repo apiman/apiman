@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <script type="text/javascript" src="site.js"></script>
+  </head>
+
+  <body>
+  <div ng-controller="Apiman.OrgServicesController">
+    <div id="apiman-header" ng-include="'plugins/apiman/html/navbar.html'"></div>
+
+        <div id="apiman-header" ng-include="'plugins/apiman/html/org-lhs.html'"></div>
+        <!-- Center Content -->
+        <div class="col-md-8">
+          <div class="apiman-entitytabs">
+            <ul id="entitytabs" class="nav nav-tabs">
+              <li data-permission="planView"><a href="{{ pluginName }}/org-plans.html?org={{org.id}}" data-field="toOrgPlans" data-i18n-key="plans">Plans</a></li>
+              <li data-permission="svcView" class="active"><a href="{{ pluginName }}/org-services.html?org={{org.id}}" data-field="toOrgServices" data-i18n-key="services">Services</a></li>
+              <li data-permission="appView"><a href="{{ pluginName }}/org-apps.html?org={{org.id}}" data-field="toOrgApps" data-i18n-key="applications">Applications</a></li>
+              <li><a href="{{ pluginName }}/org-members.html?org={{org.id}}" data-field="toOrgMembers" data-i18n-key="members">Members</a></li>
+              <li class="pull-right"><a href="{{ pluginName }}/org-activity.html?org={{org.id}}" data-field="toOrgActivity" data-i18n-key="activity">Activity</a></li>
+            </ul>
+
+            <div id="entitytabsContent" class="tab-content">
+
+              <!-- Services Tab Content -->
+              <div class="tab-pane active" id="tab-services">
+                <div class="apiman-filters apiman-services-filters">
+                  <table class="search-box input-search" data-field="serviceFilter">
+                    <tbody>
+                      <tr>
+                        <td width="99%">
+                          <input data-field="textBox" value="" placeholder="" type="text">
+                        </td>
+                        <td width="1%">
+                          <button data-field="button" class="btn btn-default"><i class="fa fa-fw fa-search"></i></button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div data-permission="svcEdit" class="btn-group pull-right">
+                    <a data-field="toNewService" href="new-service.html" class="btn btn-primary" data-i18n-key="new-service">New Service</a>
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                      <span class="caret"></span>
+                      <span class="sr-only" data-i18n-key="toggle-dropdown">Toggle Dropdown</span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                      <li><a href="import-services.html" data-field="toImportServices" data-i18n-key="import-services">Import Service(s)</a></li>
+                    </ul>
+                  </div>
+<!--                   <a data-field="toNewService" href="new-service.html" class="btn btn-primary pull-right">New Service</a> -->
+                </div>
+                <div class="clearfix"></div>
+                <!-- The list of services the user has access to -->
+                <div class="apiman-services" data-field="services" data-role="dummy" ng-repeat="service in services">
+                  <div class="container-fluid apiman-summaryrow">
+                    <div class="row">
+                      <span class="title"><a href="{{ pluginName }}/service-overview.html">{{ service.name }}</a></span>
+                      <a class="apiman-summaryrow-icon">
+                        <i class="fa fa-clock-o fa-fw"></i>
+                        <span class="title-summary-item">Created on</span>
+                        <span class="title-summary-item">{{ service.createdOn | date:'yyyy-MM-dd' }}</span>
+                      </a>
+                    </div>
+                    <div class="row">
+                      <span class="description">{{ service.description }}
+                      </span>
+                    </div>
+                    <hr/>
+                  </div>
+                </div>
+              </div>
+              <!-- End Services Tab Content -->
+              
+            </div>
+          </div>
+        </div>
+        <!-- /Center Content -->
+        
+      </div>
+    </div> <!-- /container -->
+  </body>
+</html>

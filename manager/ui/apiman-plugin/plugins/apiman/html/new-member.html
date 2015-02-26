@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <script type="text/javascript" src="site.js"></script>
+  </head>
+
+  <body>
+
+    <!-- Top header/nav bar -->
+    <div id="apiman-header">
+      <div class="main-header container">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="logo"></div>
+            <input class="search no-phone" type="text" placeholder="Quick service search..."></input>
+            <ul class="user-menu pull-right">
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                  <span class="pficon pficon-user"></span>
+                  <span>Bruce Wayne</span>
+                  <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a href="user-orgs.html">Home</a>
+                  </li>
+                  <li class="divider"></li>
+                  <li>
+                    <a data-field="toProfile" href="settings-profile.html" data-i18n-key="profile">Profile</a>
+                  </li>
+                  <li>
+                    <a href="#">Logout</a>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="form-page" class="container apiman-entity-new page" data-field="page">
+      <div class="row">
+        <h2 class="title" data-i18n-key="new-member">New Member</h2>
+      </div>
+      <!-- Helpful hint -->
+      <div class="row">
+        <p data-i18n-key="new-member-help-text" class="col-md-6 apiman-label-faded">Add a member to this organization by searching for a User below.  Once the User is located, simply select their roles and click 'Add Member'.</p>
+      </div>
+      <!-- HR -->
+      <div class="row hr-row">
+        <hr/>
+      </div>
+      <!-- User search bar -->
+      <div class="row">
+        <dl>
+          <dt data-i18n-key="find-user">Find a User</dt>
+          <dd>
+            <input data-field="searchBox" type="text" class="form-control input-search" placeholder="Search by user name..."></input>
+            <button class="btn btn-default btn-search" data-field="searchButton" data-i18n-key="search" data-icon="fa-cog" placeholder="Searching">Search</button>
+          </dd>
+        </dl>
+      </div>
+      <!-- User search results -->
+      <div class="row">
+        <div class="panel panel-default input-search-results">
+          <div class="panel-body container-fluid" data-field="users" data-role="dummy">
+            <a href="#" class="item">
+              <i class="fa fa-user fa-fw"></i>
+              <span class="">Bruce Wayne</span>
+              <span>(</span><span class="">bwayne</span><span>)</span>
+            </a>
+            <a href="#" class="item selected">
+              <i class="fa fa-user fa-fw"></i>
+              <span class="">Clark Kent</span>
+              <span>(</span><span>ckent</span><span>)</span>
+            </a>
+            <a href="#" class="item">
+              <i class="fa fa-user fa-fw"></i>
+              <span class="">Diana Prince</span>
+              <span>(</span><span class="">dprince</span><span>)</span>
+            </a>
+          </div>
+        </div>
+      </div>
+      <!-- Role selections -->
+      <div class="row">
+        <dl>
+          <dt data-i18n-key="roles">Role(s)</dt>
+          <dd>
+            <select class="selectpicker" title="Select at least one role..." multiple="" data-field="roles" data-role="dummy">
+              <option>Organization Owner</option>
+              <option>Application Developer</option>
+              <option>Service Developer</option>
+            </select>
+          </dd>
+        </dl>
+      </div>
+      <!-- HR -->
+      <div class="row hr-row">
+        <hr/>
+      </div>
+      <!-- Create Button -->
+      <div class="row">
+        <button class="btn btn-primary" data-field="addButton" data-i18n-key="add-member" data-icon="fa-cog" placeholder="Adding...">Add Member</button>
+        <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-i18n-key="cancel">Cancel</a>
+      </div>
+    </div> <!-- /container -->
+  </body>
+</html>

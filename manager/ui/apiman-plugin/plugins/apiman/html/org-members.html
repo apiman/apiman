@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <script type="text/javascript" src="site.js"></script>
+  </head>
+
+  <body>
+  <div ng-controller="Apiman.OrgMembersController">
+    <div id="apiman-header" ng-include="'plugins/apiman/html/navbar.html'"></div>
+
+        <div id="apiman-header" ng-include="'plugins/apiman/html/org-lhs.html'"></div>
+
+        <!-- Center Content -->
+        <div class="col-md-8">
+          <div class="apiman-entitytabs">
+            <ul id="entitytabs" class="nav nav-tabs">
+              <li data-permission="planView"><a href="{{ pluginName }}/org-plans.html?org={{org.id}}" data-field="toOrgPlans" data-i18n-key="plans">Plans</a></li>
+              <li data-permission="svcView"><a href="{{ pluginName }}/org-services.html?org={{org.id}}" data-field="toOrgServices" data-i18n-key="services">Services</a></li>
+              <li data-permission="appView"><a href="{{ pluginName }}/org-apps.html?org={{org.id}}" data-field="toOrgApps" data-i18n-key="applications">Applications</a></li>
+              <li class="active"><a href="{{ pluginName }}/org-members.html?org={{org.id}}" data-field="toOrgMembers" data-i18n-key="members">Members</a></li>
+              <li class="pull-right"><a href="{{ pluginName }}/org-activity.html?org={{org.id}}" data-field="toOrgActivity" data-i18n-key="activity">Activity</a></li>
+            </ul>
+            <div id="entitytabsContent" class="tab-content">
+
+              <!-- Members Tab Content -->
+              <div class="tab-pane active" id="tab-members">
+                <div class="apiman-filters apiman-members-filters">
+                  <table class="search-box input-search" data-field="memberFilter">
+                    <tbody>
+                      <tr>
+                        <td width="99%">
+                          <input data-field="textBox" value="" placeholder="" type="text">
+                        </td>
+                        <td width="1%">
+                          <button data-field="button" class="btn btn-default"><i class="fa fa-fw fa-search"></i></button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <a data-permission="orgAdmin" href="org-manage-members.html" class="btn btn-default pull-right" data-field="toManageMembers" data-i18n-key="manage-members">Manage Members</a>
+                </div>
+                <div class="clearfix"></div>
+                <!-- The organization's list of members -->
+                <div class="apiman-members" data-field="members" data-role="dummy" ng-repeat="member in members">
+                  <div class="container-fluid apiman-summaryrow">
+                    <div class="row">
+                      <span class="title">
+                        <a href="{{ pluginName }}/user-orgs.html">{{ member.name }}</a>
+                        <span class="secondary">({{ member.id}})</span>
+                      </span>
+                      <a class="apiman-summaryrow-icon">
+                        <i class="fa fa-clock-o fa-fw"></i>
+                        <span class="title-summary-item">Joined on</span>
+                        <span class="title-summary-item">{{ member.joinedOn | date:'yyyy-MM-dd' }}</span>
+                      </a>
+                    </div>
+                    <div class="row">
+                      <span class="description" ng-repeat="role in member.roles">
+                        {{ role.roleName}} {{$last ? '' : ($index==member.roles.length-2) ? ' and ' : ', '}}
+                      </span>
+                    </div>
+                    <hr/>
+                  </div>
+                </div>
+              </div>
+              <!-- End Members Tab Content -->
+              
+            </div>
+          </div>
+        </div>
+        <!-- /Center Content -->
+        
+      </div>
+    </div> <!-- /container -->
+  </div>
+  </body>
+</html>

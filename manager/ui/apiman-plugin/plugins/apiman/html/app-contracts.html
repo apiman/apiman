@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <script type="text/javascript" src="site.js"></script>
+  </head>
+
+  <body>
+  <div ng-controller="Apiman.AppContractsController">
+
+    <div id="apiman-header" ng-include="'plugins/apiman/html/navbar.html'"></div>
+    <div class="container page" data-field="page">
+      <div class="row">
+        <div class="col-md-12">
+          <ol class="breadcrumb" data-field="breadcrumb" data-role="dummy">
+            <li><a href="dash.html"><i class="fa fa-home fa-fw"></i><span>Home</span></a></li>
+            <li><a href="org-apps.html"><i class="fa fa-shield fa-fw"></i><span>JBoss Overlord</span></a></li>
+            <li class="active"><i class="fa fa-gears fa-fw"></i><span>gadget-server</span></li>
+          </ol>
+        </div>
+      </div>
+      <!-- Entity Summary Row -->
+      <div class="apiman-entity-summary">
+        <div class="row apiman-entity-breadcrumb">
+          <div class="col-md-12">
+            <div class="title container-fluid">
+              <i class="breadcrumb-icon fa fa-gears"></i>
+              <div class="entity emphasis">
+                <a data-field="application" href="app-overview.html" data-role="dummy">gadget-server</a>
+              </div>
+              <div class="versions">
+                <div class="btn-group apiman-entity-action" data-role="dummy" data-field="versions">
+                  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                    Version: 3.0.1 <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu" role="menu">
+                    <li><a href="#">3.0</a></li>
+                    <li><a href="#">2.1.1</a></li>
+                    <li><a href="#">2.1</a></li>
+                    <li><a href="#">2.0.1</a></li>
+                    <li><a href="#">2.0</a></li>
+                    <li><a href="#">1.0</a></li>
+                  </ul>
+                </div>
+                <a data-permission="appEdit" href="new-appversion.html" class="btn btn-primary apiman-entity-action" data-field="toNewAppVersion" data-i18n-key="new-version">New Version</a>
+              </div>
+            </div>
+            <hr />
+          </div>
+        </div>
+        <div class="row apiman-entity-metadata">
+          <div class="col-md-7" style="margin-bottom: 8px">
+            <!-- Service Summary -->
+            <div class="description" data-field="description" data-role="dummy">This is a project that builds on the Apache Shindig as the open social gadget containers.</div>
+            <div style="padding: 8px">
+              <div class="entity-info-with-icon">
+                <i class="fa fa-clock-o fa-fw"></i>
+                <span class="apiman-label-faded" data-i18n-key="created-on">Created on</span>
+                <span data-field="createdOn" data-role="dummy" >Feb 3, 2011</span>
+              </div>
+              <div class="entity-info-with-icon">
+                <i class="fa fa-user fa-fw"></i>
+                <span class="apiman-label-faded" data-i18n-key="created-by">Created by</span>
+                <span><a href="user-orgs.html" data-field="createdBy" data-role="dummy">Clark Kent</a></span>
+              </div>
+            </div>
+            <div class="entity-info-with-icon">
+              <span data-i18n-key="status-label">Status:</span>
+              <span class="apiman-label apiman-label-warning" data-field="status" data-role="dummy">Created</span>
+            </div>
+          </div>
+          <div class="col-md-5" data-permission="appEdit">
+            <div>
+              <div data-status="Created,Ready"><a data-i18n-key="ttdo-consume-services" data-field="ttd_toConsumeServices" href="consumer-services.html">Search for Services to consume</a></div>
+              <div data-status="Created,Ready"><a data-i18n-key="ttdo-new-contract" data-field="ttd_toNewContract" href="new-contract.html">Create a new Service Contract for this Application</a></div>
+              <div><a data-i18n-key="ttdo-new-version" data-field="ttd_toNewVersion" href="new-appversion.html">Create a new version of this Application (New Version)</a></div>
+            </div>
+            <!-- The Publish Action -->
+            <div class="apiman-divider-40"></div>
+            <div class="">
+              <button class="btn btn-primary" data-field="registerButton" data-i18n-key="register" placeholder="Registering..." data-icon="fa-cog">Register</button>
+              <button class="btn btn-warning" data-field="unregisterButton" data-i18n-key="unregister" placeholder="Unregistering..." data-icon="fa-cog">Unregister</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Navigation + Content Row -->
+      <div class="row">
+        <!-- Left hand nav -->
+        <div class="col-md-2 apiman-entity-nav">
+          <ul class="nav nav-pills nav-stacked">
+            <li class="first"><a data-role="dummy">&nbsp;</a></li>
+            <li class=""><a data-field="toAppOverview" href="app-overview.html" data-i18n-key="overview">Overview</a></li>
+            <li class="active"><a data-field="toAppContracts" href="app-contracts.html" data-i18n-key="contracts">Contracts</a></li>
+            <li class=""><a data-field="toAppPolicies" href="app-policies.html" data-i18n-key="policies">Policies</a></li>
+            <li data-status="Registered"><a data-field="toAppApis" href="app-apis.html" data-i18n-key="apis">APIs</a></li>
+            <li><a data-field="toAppActivity" href="app-activity.html" data-i18n-key="activity">Activity</a></li>
+            <li class="last"><a data-role="dummy">&nbsp;</a></li>
+          </ul>
+        </div>
+        <!-- /Left hand nav -->
+
+        <!-- Content -->
+        <div class="col-md-10 apiman-entity-content">
+          <div class="col-md-9">
+            <!-- Title and help text -->
+            <div class="title" data-i18n-key="contracts">Service Contracts</div>
+            <div class="description" data-i18n-key="contracts-help">Here is a list of all Services that this Application is currently contracted to utilize.  This provides a list of all Services that Application can potentially invoke.</div>
+            <hr />
+            <!-- The list of contracts (filterable) -->
+            <div>
+              <div class="apiman-filters apiman-contracts-filters">
+                <table class="search-box input-search" data-field="contractFilter" data-role="dummy">
+                    <tbody>
+                      <tr>
+                        <td width="99%">
+                          <input data-field="textBox" value="" placeholder="Filter by org or service name..." type="text">
+                        </td>
+                        <td width="1%">
+                          <button data-field="button" class="btn btn-default"><i class="fa fa-fw fa-search"></i></button>
+                        </td>
+                      </tr>
+                    </tbody>
+                </table>
+                <a data-permission="appEdit" data-status="Created,Ready" data-field="toNewContract" data-i18n-key="new-contract" href="new-contract.html" class="btn btn-primary pull-right">New Contract</a>
+                <button data-permission="appEdit" data-status="Created,Ready" data-field="breakAllContracts" data-i18n-key="break-all-contracts" placeholder="Breaking..." data-icon="fa-cog" class="btn btn-default pull-right">Break All</button>
+              </div>
+              <div class="clearfix"></div>
+              <!-- The list of contracts -->
+              <div class="apiman-contracts" data-field="contracts" data-role="dummy">
+                <div class="container-fluid apiman-summaryrow">
+                  <div class="row">
+                    <div class="col-md-10 col-no-padding">
+                      <a href="org-apps.html">JBoss Overlord</a> / <span class="title"><a href="service-overview.html">s-ramp-api</a></span>
+                      <div class="versionAndPlan">
+                        <span>Service version</span>
+                        <span><a href="#">2.1</a></span>
+                        <span>via plan</span>
+                        <span><a href="#">Platinum</a></span>
+                        <span>entered into on</span>
+                        <i class="fa fa-clock-o fa-fw fa-inline"></i>
+                        <span>Oct 19, 2012</span>
+                      </div>
+                      <div class="description apiman-label-faded">
+                        This API allows users to interact with a remote S-RAMP repository.
+                      </div>
+                    </div>
+                    <div class="col-md-2 col-no-padding">
+                      <span class="actions"><button class="btn btn-default">Break Contract</button></span>
+                    </div>
+                  </div>
+                  <hr />
+                </div>
+                <div class="container-fluid apiman-summaryrow">
+                  <div class="row">
+                    <div class="col-md-10 col-no-padding">
+                      <a href="org-apps.html">JBoss Overlord</a> / <span class="title"><a href="service-overview.html">dtgov-deploy</a></span>
+                      <div class="versionAndPlan">
+                        <span>Service version</span>
+                        <span><a href="#">1.3</a></span>
+                        <span>via plan</span>
+                        <span><a href="#">Gold</a></span>
+                        <span>entered into on</span>
+                        <i class="fa fa-clock-o fa-fw fa-inline"></i>
+                        <span>Dec 3, 2011</span>
+                      </div>
+                      <div class="description apiman-label-faded">
+                        This API provides an automated mechanism to deploy artifacts to running servers.
+                      </div>
+                    </div>
+                    <div class="col-md-2 col-no-padding">
+                      <span class="actions"><button class="btn btn-default">Break Contract</button></span>
+                    </div>
+                  </div>
+                  <hr />
+                </div>
+                <div class="container-fluid apiman-summaryrow">
+                  <div class="row">
+                    <div class="col-md-10 col-no-padding">
+                      <a href="org-apps.html">Apereo Bedework</a> / <span class="title"><a href="service-overview.html">public-calendar</a></span>
+                      <div class="versionAndPlan">
+                        <span>Service version</span>
+                        <span><a href="#">2.6</a></span>
+                        <span>via plan</span>
+                        <span><a href="#">Full</a></span>
+                        <span>entered into on</span>
+                        <i class="fa fa-clock-o fa-fw fa-inline"></i>
+                        <span>Feb 28, 2012</span>
+                      </div>
+                      <div class="description apiman-label-faded">
+                        This allows users to manipulate calendar data in a Bedework calendar system.
+                      </div>
+                    </div>
+                    <div class="col-md-2 col-no-padding">
+                      <span class="actions"><button class="btn btn-default">Break Contract</button></span>
+                    </div>
+                  </div>
+                  <hr />
+                </div>
+              </div>
+            </div>
+            <!-- /Contract List -->
+            
+          </div>
+        </div>
+        <!-- /Content -->
+      </div>
+    </div> <!-- /container -->
+  </div>
+  </body>
+</html>

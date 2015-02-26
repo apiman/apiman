@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <script type="text/javascript" src="site.js"></script>
+  </head>
+
+  <body>
+    <div ng-controller="Apiman.UserOrgsController">
+    <!-- Top header/nav bar -->
+    <div id="apiman-header" ng-include="'plugins/apiman/html/navbar.html'"></div>
+
+    <!-- Page content -->
+    <div class="page container" data-field="page">
+      <div class="row">
+        <div class="col-md-12">
+          <ol class="breadcrumb" data-field="breadcrumb" data-role="dummy">
+            <li><a href="dash.html"><i class="fa fa-home fa-fw"></i><span>Home</span></a></li>
+            <li class="active"><i class="fa fa-user fa-fw"></i><span>eric</span></li>
+          </ol>
+        </div>
+      </div>
+      <div class="row">
+        <!-- Left Hand Side -->
+        <div class="col-md-4 apiman-entitysummary">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-md-12 apiman-header" data-role="dummy" data-field="fullName">Clark Kent</div>
+            </div>
+            <div class="row">
+              <div class="col-md-12 apiman-subheader" data-role="dummy" data-field="userId">ckent</div>
+            </div>
+            <div class="row">
+              <hr />
+            </div>
+            <div class="row">
+              <div class="col-md-12 metadata-with-icon">
+                <i class="fa fa-envelope-o fa-fw"></i>
+                <div><a href="#" data-role="dummy" data-field="email">ckent@dailyplanet.com</a></div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12 metadata-with-icon">
+                <i class="fa fa-clock-o fa-fw"></i>
+                <div class="apiman-label-faded" data-i18n-key="joined-on">Joined on</div>
+                <div data-role="dummy" data-field="joinedOn">Oct 19, 2012</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- /Left Hand Side -->
+
+        <!-- Center Content -->
+        <div class="col-md-8">
+          <div class="apiman-entitytabs">
+            <ul id="entitytabs" class="nav nav-tabs">
+              <li class="active"><a href="{{ pluginName }}/user-orgs.html" data-field="toUserOrgs" data-i18n-key="organizations">Organizations</a></li>
+              <li><a href="{{ pluginName }}/user-apps.html" data-field="toUserApps" data-i18n-key="applications">Applications</a></li>
+              <li><a href="{{ pluginName }}/user-services.html" data-field="toUserServices" data-i18n-key="services">Services</a></li>
+              <li class="pull-right"><a href="{{ pluginName }}/user-activity.html" data-field="toUserActivity" data-i18n-key="activity">Activity</a></li>
+            </ul>
+            <div id="entitytabsContent" class="tab-content">
+              
+              <!-- Organizations Tab Content -->
+              <div class="tab-pane active" id="tab-orgs">
+                <div class="apiman-filters apiman-organizations-filters">
+                  <table class="search-box input-search" data-field="orgFilter">
+                    <tbody>
+                      <tr>
+                        <td width="99%">
+                          <input data-field="textBox" value="" placeholder="" type="text">
+                        </td>
+                        <td width="1%">
+                          <button data-field="button" class="btn btn-default"><i class="fa fa-fw fa-search"></i></button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <a data-field="toNewOrg" href="{{ pluginName }}/new-org.html" class="btn btn-primary pull-right" data-i18n-key="new-organization">New Org</a>
+                </div>
+                <div class="clearfix"></div>
+                <!-- The list of organizations the user belongs to -->
+                <div class="apiman-organizations" data-field="organizations" data-role="dummy" ng-repeat="org in organizations">
+                  <div class="container-fluid apiman-summaryrow">
+                    <div class="row">
+                      <span class="title"><a href="{{ pluginName }}/org-plans.html?org={{ org.id }}">{{ org.name }}</a></span>
+                      <a href="#" data-toggle="popover" data-trigger="hover" data-html="true" data-content="The organization contains <b>{{ org.numMembers }}</b> <em>members</em>." data-placement="top" class="apiman-summaryrow-icon">
+                        <i class="fa fa-user"></i>
+                        <span class="title-summary-item">{{ org.numMembers }}</span>
+                      </a>
+                      <a href="#" data-toggle="popover" data-trigger="hover" data-html="true" data-content="The organization contains <b>{{ org.numServices }}</b> <em>services</em>." data-placement="top" class="apiman-summaryrow-icon">
+                        <i class="fa fa-puzzle-piece"></i>
+                        <span class="title-summary-item">{{ org.numServices }}</span>
+                      </a>
+                      <a href="#" data-toggle="popover" data-trigger="hover" data-html="true" data-content="The organization contains <b>{{ org.numApps }}</b> <em>applications</em>." data-placement="top" class="apiman-summaryrow-icon">
+                        <i class="fa fa-gears"></i>
+                        <span class="title-summary-item">{{ org.numApps }}</span>
+                      </a>
+                    </div>
+                    <hr/>
+                  </div>
+                </div>
+              </div>
+              <!-- End Organizations Tab Content -->
+              
+            </div>
+          </div>
+        </div>
+        <!-- /Center Content -->
+        
+      </div>
+    </div> <!-- /container -->
+  </div>
+  </body>
+</html>

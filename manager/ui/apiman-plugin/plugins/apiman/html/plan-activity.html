@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <script type="text/javascript" src="site.js"></script>
+  </head>
+
+  <body>
+
+    <!-- Top header/nav bar -->
+    <div id="apiman-header">
+      <div class="main-header container">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="logo"></div>
+            <input class="search no-phone" type="text" placeholder="Quick service search..."></input>
+            <ul class="user-menu pull-right">
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                  <span class="pficon pficon-user"></span>
+                  <span>Bruce Wayne</span>
+                  <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a href="user-orgs.html">Home</a>
+                  </li>
+                  <li class="divider"></li>
+                  <li>
+                    <a data-field="toProfile" href="settings-profile.html" data-i18n-key="profile">Profile</a>
+                  </li>
+                  <li>
+                    <a href="#">Logout</a>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container page" data-field="page">
+      <div class="row">
+        <div class="col-md-12">
+          <ol class="breadcrumb" data-field="breadcrumb" data-role="dummy">
+            <li><a href="dash.html"><i class="fa fa-home fa-fw"></i><span>Home</span></a></li>
+            <li><a href="org-plans.html"><i class="fa fa-shield fa-fw"></i><span>JBoss Overlord</span></a></li>
+            <li class="active"><i class="fa fa-bar-chart-o fa-fw"></i><span>Platinum</span></li>
+          </ol>
+        </div>
+      </div>
+      <!-- Entity Summary Row -->
+      <div class="apiman-entity-summary">
+        <div class="row apiman-entity-breadcrumb">
+          <div class="col-md-12">
+            <div class="title container-fluid">
+              <i class="breadcrumb-icon fa fa-bar-chart-o"></i>
+              <div class="entity emphasis">
+                <a data-field="thePlan" href="plan-overview.html" data-role="dummy">Platinum</a>
+              </div>
+              <div class="versions">
+                <div class="btn-group apiman-entity-action" data-role="dummy" data-field="versions">
+                  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                    Version: 3.0.1 <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu" role="menu">
+                    <li><a href="#">3.0</a></li>
+                    <li><a href="#">2.1.1</a></li>
+                    <li><a href="#">2.1</a></li>
+                    <li><a href="#">2.0.1</a></li>
+                    <li><a href="#">2.0</a></li>
+                    <li><a href="#">1.0</a></li>
+                  </ul>
+                </div>
+                <a data-permission="planEdit" href="new-planversion.html" class="btn btn-primary apiman-entity-action" data-field="toNewPlanVersion" data-i18n-key="new-version">New Version</a>
+              </div>
+            </div>
+            <hr />
+          </div>
+        </div>
+        <div class="row apiman-entity-metadata">
+          <div class="col-md-7" style="margin-bottom: 8px">
+            <!-- Service Summary -->
+            <div class="description" data-field="description" data-role="dummy">This is a sample description of a plan.</div>
+            <div style="padding: 8px">
+              <div class="entity-info-with-icon">
+                <i class="fa fa-clock-o fa-fw"></i>
+                <span class="apiman-label-faded" data-i18n-key="created-on">Created on</span>
+                <span data-field="createdOn" data-role="dummy" >Feb 3, 2011</span>
+              </div>
+              <div class="entity-info-with-icon">
+                <i class="fa fa-user fa-fw"></i>
+                <span class="apiman-label-faded" data-i18n-key="created-by">Created by</span>
+                <span><a href="user-orgs.html" data-field="createdBy" data-role="dummy">Clark Kent</a></span>
+              </div>
+            </div>
+            <div class="entity-info-with-icon">
+              <span data-i18n-key="status-label">Status:</span>
+              <span class="apiman-label apiman-label-warning" data-field="status" data-role="dummy">Created</span>
+            </div>
+          </div>
+          <div class="col-md-5" data-permission="appEdit">
+            <div>
+              <div><a data-i18n-key="ttdo-new-version" data-field="ttd_toNewVersion" href="new-planversion.html">Create a new version of this Plan (New Version)</a></div>
+            </div>
+            <!-- The Publish Action -->
+            <div class="apiman-divider-40"></div>
+            <div class="">
+              <button class="btn btn-primary" data-field="lockButton" data-i18n-key="lock" placeholder="Locking..." data-icon="fa-cog">Lock Plan</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation + Content Row -->
+      <div class="row">
+        <!-- Left hand nav -->
+        <div class="col-md-2 apiman-entity-nav">
+          <ul class="nav nav-pills nav-stacked">
+            <li class="first"><a data-role="dummy">&nbsp;</a></li>
+            <li><a data-field="toPlanOverview" href="plan-overview.html" data-i18n-key="overview">Overview</a></li>
+            <li class=""><a data-field="toPlanPolicies" href="plan-policies.html" data-i18n-key="policies">Policies</a></li>
+            <li class="active"><a data-field="toPlanActivity" href="plan-activity.html" data-i18n-key="activity">Activity</a></li>
+            <li class="last"><a data-role="dummy">&nbsp;</a></li>
+          </ul>
+        </div>
+        <!-- /Left hand nav -->
+
+        <!-- Content -->
+        <div class="col-md-10 apiman-entity-content">
+          <div class="apiman-activity" data-field="activity" data-role="dummy">
+            <div class="container-fluid apiman-summaryrow">
+              <div class="row">
+                <a href="userHome.html">Clark Kent</a> 
+                <span>created application</span> 
+                <a href="orgHome.html">JBoss Overlord</a> 
+                <span>/</span> 
+                <a class="emphasis" href="appHome.html">gadget-server</a><span>.</span>
+              </div>
+              <div class="row">
+                <i class="fa fa-fw fa-puzzle-piece"></i>
+                <div class="apiman-timestamp">2 days ago</div>
+              </div>
+              <hr/>
+            </div>
+            <div class="container-fluid apiman-summaryrow">
+              <div class="row">
+                <span class=""><a href="userHome.html">Clark Kent</a> created application <a href="orgHome.html">JBoss Overlord</a> / <a class="emphasis" href="appHome.html">dtgov</a>.</span>
+              </div>
+              <div class="row">
+                <i class="fa fa-fw fa-puzzle-piece"></i>
+                <div class="apiman-timestamp">2 days ago</div>
+              </div>
+              <hr/>
+            </div>
+            <div class="container-fluid apiman-summaryrow">
+              <div class="row">
+                <a href="#user;user=admin" class="gwt-Anchor">admin</a><span> </span><span>added a policy to</span><span> </span><a href="#org;org=MyOrganization" class="gwt-Anchor">MyOrganization</a><span> / </span><a href="#service;service=MyService&amp;org=MyOrganization" class="emphasis">MyService</a><span> </span><span>version</span><span> </span><a href="#service;service=MyService&amp;org=MyOrganization&amp;version=1.0" class="emphasis">1.0</a><span>.</span>
+              </div>
+              <div class="row boxed-row">
+                <span>Policy added: </span><span class="emphasis">IPBlackListPolicy</span></li>
+              </div>
+              <div class="row"><i class="fa fa-puzzle-piece fa-fw"></i><div class="apiman-timestamp">Wed Oct 22 13:13:25 EDT 2014</div></div>
+              <hr />
+            </div>
+            <div class="container-fluid apiman-summaryrow">
+              <div class="row">
+                <span class=""><a href="userHome.html">Clark Kent</a> created organization <a class="emphasis" href="orgHome.html">JBoss Overlord</a>.</span>
+              </div>
+              <div class="row">
+                <i class="fa fa-fw fa-shield"></i>
+                <div class="apiman-timestamp">3 days ago</div>
+              </div>
+              <hr/>
+            </div>
+            <div class="container-fluid apiman-summaryrow">
+              <div class="row">
+                <a href="#user;user=admin" class="gwt-Anchor">admin</a><span> </span><span>updated service</span><span> </span><a href="#org;org=MyOrganization" class="gwt-Anchor">MyOrganization</a><span> / </span><a href="#service;service=MyService&amp;org=MyOrganization" class="emphasis">MyService</a><span> </span><span>version</span><span> </span><a href="#service;service=MyService&amp;org=MyOrganization&amp;version=1.0" class="emphasis">1.0</a><span>.</span>
+              </div>
+              <div class="row boxed-row">
+                <div><span class="emphasis capitalized">description</span></div>
+                <div class="activity-value">This is the new description for this stupid service!</div>
+              </div>
+              <div class="row">
+                <i class="fa fa-puzzle-piece fa-fw"></i>
+                <div class="apiman-timestamp">Wed Oct 22 13:13:11 EDT 2014</div>
+              </div>
+              <div>
+                <hr>
+              </div>
+            </div>
+            <div class="container-fluid apiman-summaryrow">
+              <div class="row">
+                <a href="#user;user=admin" class="gwt-Anchor">admin</a>
+                <span> </span>
+                <span>granted membership(s) in</span>
+                <span> </span>
+                <a href="#org;org=TestOrg" class="emphasis">TestOrg</a>
+                <span>.</span>
+              </div>
+              <div class="row boxed-row">
+                <ul>
+                  <li><span><a href="">Bruce Wayne</a> <span>now has role</span> <span class="emphasis">Application Developer</span></span></li>
+                  <li><span><a href="">Bruce Wayne</a> <span>now has role</span> <span class="emphasis">Service Provider</span></span></li>
+                </ul>
+              </div>
+              <div class="row"><i class="fa fa-shield fa-fw"></i><span>Wed Oct 22 10:40:28 EDT 2014</span></div>
+              <hr/>
+            </div>
+            <div class="container-fluid" style="text-align: center">
+              <button class="btn btn-default">Show Next 20 Items</button>
+            </div>
+          </div>
+        </div>
+        <!-- /Content -->
+      </div>
+    </div> <!-- /container -->
+  </body>
+</html>

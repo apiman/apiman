@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <script type="text/javascript" src="site.js"></script>
+  </head>
+
+  <body>
+  <div ng-controller="Apiman.OrgAppsController">
+    <div id="apiman-header" ng-include="'plugins/apiman/html/navbar.html'"></div>
+
+        <div id="apiman-header" ng-include="'plugins/apiman/html/org-lhs.html'"></div>
+        <!-- Center Content -->
+        <div class="col-md-8">
+          <div class="apiman-entitytabs">
+            <ul id="entitytabs" class="nav nav-tabs">
+              <li data-permission="planView"><a href="{{ pluginName }}/org-plans.html?org={{org.id}}" data-field="toOrgPlans" data-i18n-key="plans">Plans</a></li>
+              <li data-permission="svcView"><a href="{{ pluginName }}/org-services.html?org={{org.id}}" data-field="toOrgServices" data-i18n-key="services">Services</a></li>
+              <li data-permission="appView" class="active"><a href="{{ pluginName }}/org-apps.html?org={{org.id}}" data-field="toOrgApps" data-i18n-key="applications">Applications</a></li>
+              <li><a href="{{ pluginName }}/org-members.html?org={{org.id}}" data-field="toOrgMembers" data-i18n-key="members">Members</a></li>
+              <li class="pull-right"><a href="{{ pluginName }}/org-activity.html?org={{org.id}}" data-field="toOrgActivity" data-i18n-key="activity">Activity</a></li>
+            </ul>
+            <div id="entitytabsContent" class="tab-content">
+
+              <!-- Applications Tab Content -->
+              <div class="tab-pane active" id="tab-apps">
+                <div class="apiman-filters apiman-applications-filters">
+                  <table class="search-box input-search" data-field="appFilter">
+                    <tbody>
+                      <tr>
+                        <td width="99%">
+                          <input data-field="textBox" value="" placeholder="" type="text">
+                        </td>
+                        <td width="1%">
+                          <button data-field="button" class="btn btn-default"><i class="fa fa-fw fa-search"></i></button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <a data-permission="appEdit" data-field="toNewApp" href="new-app.html" class="btn btn-primary pull-right">New App</a>
+                </div>
+                <div class="clearfix"></div>
+                <!-- The list of applications in the org -->
+                <div class="apiman-applications" data-field="applications" data-role="dummy" ng-repeat="app in apps">
+                  <div class="container-fluid apiman-summaryrow">
+                    <div class="row">
+                      <span class="title"><a href="{{ pluginName }}/app-overview.html?org={{org.id}}&app={{app.id}}">{{ app.name }}</a></span>
+                      <a href="#" data-toggle="popover" data-trigger="hover" data-html="true" data-content="This application invokes <b>52</b> <em>services</em>." data-placement="top" class="apiman-summaryrow-icon">
+                        <i class="fa fa-puzzle-piece"></i>
+                        <span class="title-summary-item">52</span>
+                      </a>
+                    </div>
+                    <div class="row">
+                      <span class="description">{{ app.description }}
+                      </span>
+                    </div>
+                    <hr/>
+                  </div>
+                </div>
+              </div>
+              <!-- End Applications Tab Content -->
+              
+            </div>
+          </div>
+        </div>
+        <!-- /Center Content -->
+        
+      </div>
+    </div> <!-- /container -->
+  </div>
+  </body>
+</html>

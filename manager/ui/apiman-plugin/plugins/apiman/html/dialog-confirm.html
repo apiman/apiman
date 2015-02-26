@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <script type="text/javascript" src="site.js"></script>
+  </head>
+
+  <body>
+    
+    <!-- Top header/nav bar -->
+    <div id="apiman-header">
+      <div class="main-header container" data-field="header">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="logo" data-field="logo"></div>
+            <input data-field="search" class="search no-phone" type="text" placeholder="Quick service search..."></input>
+            <ul class="user-menu pull-right">
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                  <span class="pficon pficon-user"></span>
+                  <span data-field="username" data-role="dummy">Bruce Wayne</span>
+                  <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a data-field="toUserHome" href="user-orgs.html" data-i18n-key="my-stuff">My Stuff</a>
+                  </li>
+                  <li class="divider"></li>
+                  <li>
+                    <a data-field="toProfile" href="settings-profile.html" data-i18n-key="profile">Profile</a>
+                  </li>
+                  <li>
+                    <a data-field="toLogout" href="#" data-i18n-key="logout">Logout</a>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+    <div class="dialogs">
+      <div class="modal fade" data-field="dialog" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true" data-field="closeButton">
+                <span class="pficon pficon-close"></span>
+              </button>
+              <h4 class="modal-title" id="confirmModalLabel"><span data-field="title" data-role="dummy">Modal Title</span></h4>
+            </div>
+            <div class="modal-body" data-field="body" data-role="dummy">
+              Do you really want to do that thing you just asked me to do?
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal" data-field="noButton" data-i18n-key="no">No</button>
+              <button type="button" class="btn btn-primary" data-dismiss="modal" data-field="yesButton" data-i18n-key="yes">Yes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+    <!-- Page content -->
+    <div class="page container" data-role="dummy">
+      <div class="row">
+        <div class="col-md-12">
+          <h1 data-role="dummy">Dialogs</h1>
+          <hr />
+          <button class="btn btn-default" data-toggle="modal" data-target="#confirmModal">Launch modal</button>
+        </div>
+      </div>
+    </div> <!-- /container -->
+    
+    
+  </body>
+</html>
