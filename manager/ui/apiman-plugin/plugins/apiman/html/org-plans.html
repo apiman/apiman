@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <script type="text/javascript" src="site.js"></script>
+  </head>
+
+  <body>
+  <div ng-controller="Apiman.OrgPlansController">
+    <div id="apiman-header" ng-include="'plugins/apiman/html/navbar.html'"></div>
+
+        <div id="apiman-header" ng-include="'plugins/apiman/html/org-lhs.html'"></div>
+        <!-- Center Content -->
+        <div class="col-md-8">
+          <div class="apiman-entitytabs">
+            <ul id="entitytabs" class="nav nav-tabs">
+              <li data-permission="planView" class="active"><a href="{{ pluginName }}/org-plans.html?org={{org.id}}" data-field="toOrgPlans" data-i18n-key="plans">Plans</a></li>
+              <li data-permission="svcView"><a href="{{ pluginName }}/org-services.html?org={{org.id}}" data-field="toOrgServices" data-i18n-key="services">Services</a></li>
+              <li data-permission="appView"><a href="{{ pluginName }}/org-apps.html?org={{org.id}}" data-field="toOrgApps" data-i18n-key="applications">Applications</a></li>
+              <li><a href="{{ pluginName }}/org-members.html?org={{org.id}}" data-field="toOrgMembers" data-i18n-key="members">Members</a></li>
+              <li class="pull-right"><a href="{{ pluginName }}/org-activity.html?org={{org.id}}" data-field="toOrgActivity" data-i18n-key="activity">Activity</a></li>
+            </ul>
+            <div id="entitytabsContent" class="tab-content">
+
+              <!-- Plans Tab Content -->
+              <div class="tab-pane active" id="tab-plans">
+                <div class="apiman-filters apiman-plans-filters">
+                  <table class="search-box input-search" data-field="planFilter">
+                    <tbody>
+                      <tr>
+                        <td width="99%">
+                          <input data-field="textBox" value="" placeholder="" type="text">
+                        </td>
+                        <td width="1%">
+                          <button data-field="button" class="btn btn-default"><i class="fa fa-fw fa-search"></i></button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <a data-permission="planEdit" data-field="toNewPlan" data-i18n-key="new-plan" href="new-plan.html" class="btn btn-primary pull-right">New Plan</a>
+                </div>
+                <div class="clearfix"></div>
+                <!-- The list of plans in this organization -->
+                <div class="apiman-plans" data-field="plans" data-role="dummy" ng-repeat="plan in plans">
+                  <div class="container-fluid apiman-summaryrow">
+                    <div class="row">
+                      <span class="title"><a href="{{ pluginName }}/plan-overview.html?org={{ org.id }}&plan={{ plan.id}}">{{ plan.name }}</a></span>
+                    </div>
+                    <div class="row">
+                      <span class="description">{{ plan.description }}
+                      </span>
+                    </div>
+                    <hr/>
+                  </div>
+                </div>
+              </div>
+              <!-- End Plans Tab Content -->
+
+            </div>
+          </div>
+        </div>
+        <!-- /Center Content -->
+        
+      </div>
+    </div> <!-- /container -->
+    </div>
+  </body>
+</html>

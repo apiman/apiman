@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <script type="text/javascript" src="site.js"></script>
+  </head>
+
+  <body>
+
+    <!-- Top header/nav bar -->
+    <div id="apiman-header">
+      <div class="main-header container">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="logo"></div>
+            <input class="search no-phone" type="text" placeholder="Quick service search..."></input>
+            <ul class="user-menu pull-right">
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                  <span class="pficon pficon-user"></span>
+                  <span>Bruce Wayne</span>
+                  <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a href="user-orgs.html">Home</a>
+                  </li>
+                  <li class="divider"></li>
+                  <li>
+                    <a data-field="toProfile" href="settings-profile.html" data-i18n-key="profile">Profile</a>
+                  </li>
+                  <li>
+                    <a href="#">Logout</a>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container page" data-field="page">
+      <div class="row">
+        <div class="col-md-12">
+          <ol class="breadcrumb" data-field="breadcrumb" data-role="dummy">
+            <li><a href="dash.html"><i class="fa fa-home fa-fw"></i><span>Home</span></a></li>
+            <li class="active"><i class="fa fa-search fa-fw"></i><span>Services</span></li>
+          </ol>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <h1 class="consumer-top-header" data-i18n-key="find-service">Find a Service</h1>
+        </div>
+        <div class="col-md-6 no-phone">
+          <p class="description" data-i18n-key="find-service-description">Use this page to find Services you wish to consume.  Use the various search options to find Services, then review them and eventually create Contracts to them.</p>
+        </div>
+        <div class="col-md-6">
+          <input type="text" class="form-control input-search" data-field="searchBox" data-i18n-key="searchfor" placeholder="Search by service name or keyword..."></input>
+          &nbsp;
+          <button class="btn btn-primary" data-i18n-key="search" data-field="searchButton">Search</input>
+        </div>
+        <div class="col-md-12">
+          <hr />
+        </div>
+      </div>
+      
+      <!-- Search results -->
+      <div class="row browse-items">
+        <div class="col-md-12" data-role="dummy" data-field="services">
+          <div class="count">
+            Found 3 matching services.
+          </div>
+
+          <div class="item">
+            <div class="title">
+              <i class="fa fa-puzzle-piece icon"></i><a href="consumer-org.html">JBoss Overlord</a>
+              <span> / </span>
+              <b><a href="consumer-service.html">s-ramp-api</a></b>
+            </div>
+            <div class="description" title="This API allows users to interact with a remote S-RAMP repository. ">This API allows users to interact with a remote S-RAMP repository. </div>
+          </div>
+          <div class="item">
+            <div class="title">
+              <i class="fa fa-puzzle-piece icon"></i><a href="consumer-org.html">Apereo Bedework</a>
+              <span> / </span>
+              <b><a href="consumer-service.html">bw-calendar-api</a></b>
+            </div>
+            <div class="description" title="This allows users to manipulate calendar data in a Bedework calendar system. ">Short description.</div>
+          </div>
+          <div class="item">
+            <div class="title">
+              <i class="fa fa-puzzle-piece icon"></i><a href="consumer-org.html">Justice League</a>
+              <span> / </span>
+              <b><a href="consumer-service.html">ion-cannon</a></b>
+            </div>
+            <div class="description" title="The ion cannon is mounted on the orbiting space station known as the Watchtower, and can fire a beam of energy at the surface of the Earth.">The ion cannon is mounted on the orbiting space station known as the Watchtow...</div>
+          </div>
+
+        </div>
+      </div>
+      
+    </div> <!-- /container -->
+  </body>
+</html>
