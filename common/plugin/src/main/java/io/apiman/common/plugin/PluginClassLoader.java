@@ -216,7 +216,7 @@ public class PluginClassLoader extends ClassLoader {
         Enumeration<? extends ZipEntry> entries = this.pluginArtifactZip.entries();
         while (entries.hasMoreElements()) {
             ZipEntry zipEntry = entries.nextElement();
-            if (zipEntry.getName().equalsIgnoreCase(name)) {
+            if (zipEntry.getName().equalsIgnoreCase(name) || zipEntry.getName().equalsIgnoreCase("WEB-INF/classes/" + name)) {
                 try {
                     return extractResource(zipEntry);
                 } catch (IOException e) {
