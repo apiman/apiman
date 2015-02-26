@@ -6,5 +6,5 @@ module Apiman {
   export var log:Logging.Logger = Logger.get(pluginName);
 
   export var templatePath = "plugins/apiman/html";
-  
+
 }
