@@ -1,0 +1,1305 @@
+
+body {
+  line-height: normal;
+  font-size: 13px;
+}
+
+.capitalized {
+  text-transform: capitalize;
+}
+
+.grabber {
+  background-image: url(images/grabber.png);
+  background-repeat: repeat-y;
+  cursor: move;
+  width: 10px;
+}
+
+.login-pf .container {
+    border-top: 1px solid rgb(178, 178, 178);
+    border-bottom: 1px solid rgb(178, 178, 178);
+    background-color: rgba(255, 255, 255, 0.55);
+}
+
+.login-pf body {
+  background: rgb(208, 208, 208);
+  color: #333;
+}
+
+.login-pf #brand .project-name {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.login-pf #brand .tagline {
+  font-size: 15px;
+  margin-left: 20px;
+  font-style: italic;
+}
+
+.login-pf .login-error {
+  font-size: 16px;
+  color: rgb(240, 80, 90);
+}
+
+.dropzone {
+  padding: 20px;
+  text-align: center;
+  border: 1px dashed rgb(119, 136, 153);
+  color: rgb(85, 85, 85);
+  font-weight: 700;
+}
+.dropzone.dropped {
+  border: 1px dashed rgb(4, 179, 0);
+  background-color: rgb(203, 255, 202);
+}
+.dropzone.dropping {
+  border: 1px dashed rgb(106, 131, 249);
+  background-color: rgb(217, 223, 253);
+}
+
+textarea.dropping {
+  border: 1px dashed rgb(106, 131, 249);
+  background-color: rgb(217, 223, 253);
+}
+
+.search-box input {
+  width: 100%;
+  padding: 3px;
+  border: 1px solid rgb(183, 183, 183);
+}
+.search-box button.btn {
+  margin-left: 0px;
+  border-left: 0px;
+  box-shadow: none;
+}
+
+.italic {
+  font-style: italic;
+}
+
+.vspacer-10, .vspacer-20 {
+  width: 100%;
+  float: left;
+}
+
+.vspacer-10 {
+  height: 10px;
+}
+
+.vspacer-20 {
+  height: 20px;
+}
+
+.movable {
+  cursor: move;
+}
+
+.container-fluid .row .col-no-padding {
+  padding: 0px;
+}
+
+.btn {
+  font-size: 12px;
+}
+
+.dropdown-menu, .form-control {
+  font-size: 13px;
+}
+
+.form-control {
+  height: 28px;
+}
+
+textarea.form-data {
+  width: 780px;
+  height: 400px;
+  font-size: 11px;
+}
+
+.emphasis {
+  font-weight: bold;
+}
+
+.table-with-details form {
+  padding: 10px;
+}
+
+.table-with-details form label {
+  margin-bottom: 0px;
+}
+
+.control-with-copy input {
+  display: inline;
+  width: 100%;
+}
+.control-with-copy button {
+  margin-left: 5px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+
+#apiman-header {
+  border-bottom: 1px solid rgb(238, 238, 238);
+  background-color: rgb(246, 246, 246);
+}
+#apiman-header .main-header {
+  padding-top: 5px;
+}
+#apiman-header .logo {
+  background-image: url(images/logo.png);
+  width: 83px;
+  height: 58px;
+  float: left;
+}
+#apiman-header .search {
+  font-size: 12px;
+  margin-top: 10px;
+  margin-left: 20px;
+  padding: 5px;
+  width: 200px;
+}
+#apiman-header .user-menu {
+  font-size: 15px;
+  margin-top: 10px;
+  list-style-image: none;
+  list-style-position: outside;
+  list-style-type: none;
+}
+#apiman-header .user-menu a {
+}
+
+.apiman-label {
+  text-transform: uppercase;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 1px 8px;
+  color: white;
+  border-radius: 3px;
+  border: 1px solid white;
+}
+.apiman-label-default {
+  background-color: #999999;
+}
+.apiman-label-primary {
+  background-color: #1cace9;
+}
+.apiman-label-success {
+  background-color: #5cb75c;
+}
+.apiman-label-info {
+  background-color: #27799c;
+}
+.apiman-label-warning {
+  background-color: #eb7720;
+}
+.apiman-label-danger {
+  background-color: #c90813;
+}
+.apiman-label:hover {
+  cursor: default;
+}
+.apiman-label-default:hover {
+  background-color: #999999;
+  border-color: #666;
+}
+.apiman-label-primary:hover {
+  background-color: #1cace9;
+  border-color: #097BAB;
+}
+.apiman-label-success:hover {
+  background-color: #5cb75c;
+  border-color: #358C35;
+}
+.apiman-label-info:hover {
+  background-color: #27799c;
+  border-color: #0C5F82;
+}
+.apiman-label-warning:hover {
+  background-color: #eb7720;
+  border-color: #B56C19;
+}
+.apiman-label-danger:hover {
+  background-color: #c90813;
+  border-color: #870008;
+}
+
+.form-label {
+  margin-right: 10px;
+  font-weight: 700;
+  color: rgb(85, 85, 85);
+}
+
+#form-page .bootstrap-select {
+  width: 300px;
+}
+
+#form-page .inline-form-control {
+  display: inline; 
+  margin: 0px 5px;
+  width: auto;
+}
+
+#form-page .inline-form-dropdown {
+  height: 28px;
+  display: inline;
+  float: none;
+  margin: 0px 3px 5px 3px;
+  width: auto;
+}
+
+.dropdown-menu li a:hover {
+  color: rgb(255, 255, 255);
+  background-color: rgb(66, 139, 202);
+}
+
+.table th {
+  color: #666;
+}
+
+.navbar-default {
+  background-color: #0B61A4;
+  border-bottom: 1px solid #FF9200;
+}
+.navbar-default .navbar-brand, .navbar-default .navbar-brand:hover, .navbar-default .navbar-brand:focus {
+  color: white;
+}
+.navbar-default .navbar-nav li a {
+  color: white;
+}
+.navbar-default .navbar-nav li a:hover, .navbar-default .navbar-nav li a:focus {
+  color: #ddd;
+}
+a, .nav li a {
+  color: #3F92D2;
+  text-decoration: none;
+}
+a:hover, a:focus, .nav li a:hover, .nav li a:focus {
+  color: #3F92D2;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+#page-loading {
+  width: 100%;
+  padding: 38px;
+  text-align: center;
+}
+
+#page-loading .center {
+  display: inline-block;
+  height: 33px;
+  font-size: 18px;
+  padding-left: 35px;
+  padding-top: 4px;
+  background-image: url(images/page-spinner.gif);
+  background-position: left top;
+  background-repeat: no-repeat;
+}
+
+.input-search {
+  width: 300px;
+  float: left;
+}
+
+div.page {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.dash-group {
+  border: 1px solid rgb(200, 200, 200);
+  width: 49%;
+  float: left;
+  margin-top: 20px;
+  box-shadow: 2px 2px 3px rgb(221, 221, 221);
+}
+.dash-group:hover {
+  border: 1px solid rgb(175, 175, 190);
+  box-shadow: 2px 2px 3px rgb(201, 201, 201);
+}
+.dash-group .title {
+  background-color: #f6f6f6;
+  padding: 8px;
+  color: #666;
+  font-weight: bold;
+  font-size: 12px;
+  border-bottom: 1px solid rgb(200, 200, 200);
+}
+.dash-group .description {
+  padding: 10px;
+}
+.dash-group .actions {
+  padding: 10px;
+}
+.dash-group .actions ul {
+  margin: 0px;
+  margin-left: 40px;
+  padding: 0px;
+}
+.dash-group .actions ul li {
+  list-style: circle;
+  padding: 2px;
+}
+
+.dash-admin-group {
+  border: 1px solid rgb(254, 201, 201);
+}
+.dash-admin-group:hover {
+  border: 1px solid rgb(224, 181, 181);
+  box-shadow: 2px 2px 3px rgb(211, 201, 201);
+}
+.dash-admin-group .title {
+  background-color: rgb(254, 227, 227);
+  color: #666;
+  border-bottom: 1px solid rgb(254, 201, 201);
+}
+.dash-admin-group a {
+  color: rgb(217, 82, 79);
+}
+
+.browse-items {
+}
+.browse-items .count {
+  margin-bottom: 15px;
+}
+.browse-items .item {
+  position: relative;
+  padding: 10px;
+  width: 330px;
+  border: 1px solid rgb(218, 218, 218);
+  float: left;
+  margin-right: 15px;
+  margin-bottom: 15px;
+}
+.browse-items .item:hover {
+  border: 1px solid rgb(200, 200, 200);
+  background-color: #f9f9f9;
+  box-shadow: 2px 2px 3px #ddd;
+}
+.browse-items .item .title {
+  font-size: 15px;
+  margin-bottom: 8px;
+}
+.browse-items .item .title .icon {
+  margin-right: 5px;
+  color: #666;
+}
+.browse-items .item .description {
+  color: #666;
+  min-height: 40px;
+}
+.browse-items .item .actions {
+  margin-top: 20px;
+  text-align: center;
+}
+.browse-items .item .actions div {
+  text-align: left;
+}
+.browse-items .item .ismember {
+  position: absolute;
+  top: 0;
+  right: 0;
+  border: 0;
+  width: 57px;
+  height: 57px;
+  background-image: url(images/is-member.png);
+}
+
+.apiman-label-faded {
+  color: #789;
+}
+.apiman-label-small {
+  font-size: 10px;
+}
+
+.apiman-entitysummary {
+  padding: 5px;
+  border: 1px solid rgb(200, 200, 200);
+  box-shadow: 2px 2px 3px rgb(221, 221, 221);
+  padding-top: 15px;
+  padding-bottom: 15px;
+  margin-bottom: 10px;
+}
+.apiman-entitysummary .apiman-header {
+  font-size: 19px;
+  font-weight: bold;
+  color: #666;
+}
+.apiman-entitysummary .apiman-subheader {
+  font-size: 16px;
+  color: #666;
+}
+.apiman-entitysummary hr {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.apiman-entitysummary .metadata-with-icon .fa {
+  float: left;
+  line-height: 14px;
+  color: #456;
+}
+.apiman-entitysummary .metadata-with-icon div {
+  float: left;
+  margin-left: 3px;
+  min-height: 16px;
+  line-height: 14px;
+}
+.apiman-entitysummary .description {
+  margin-top: 15px;
+}
+
+.apiman-entitytabs .nav-tabs {
+  font-size: 15px;
+}
+
+.apiman-entitytabs .nav-tabs li a {
+  color: rgb(34, 34, 34);
+}
+
+.apiman-entitytabs .nav-tabs li.active a {
+  color: rgb(0, 153, 211);
+}
+
+.apiman-activity .apiman-summaryrow hr {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.apiman-activity .apiman-summaryrow .fa {
+  color: #456;
+}
+.apiman-activity .apiman-summaryrow .boxed-row {
+  margin-left: 0px;
+  margin-right: 20px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  background-color: #EFEFFF;
+  border-left: 1px solid #DDDDFF;
+  padding: 5px;
+  font-size: 11px;
+}
+.apiman-activity .apiman-summaryrow .boxed-row div.activity-value {
+  background-color: rgb(255, 251, 230);
+  padding: 3px;
+  border: 1px solid #ddd;
+}
+.apiman-activity .apiman-summaryrow .boxed-row ul {
+  margin-bottom: 0px;
+  padding-left: 20px;
+}
+
+.apiman-divider-20 {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.apiman-divider-40 {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.apiman-divider-80 {
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
+
+.apiman-filters {
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgb(221, 221, 221);
+  float: left;
+  width: 100%;
+}
+.apiman-filters .input-search {
+  margin-right: 5px;
+}
+.apiman-filters .btn {
+  margin-left: 8px;
+}
+
+.tab-content {
+  margin-top: 10px;
+}
+
+.apiman-summaryrow-icon {
+  min-width: 45px;
+  padding-left: 5px;
+  padding-right: 5px;
+  float: right;
+  color: #444;
+  text-decoration: none;
+}
+.apiman-summaryrow-icon:hover {
+  color: black;
+  text-decoration: underline;
+}
+
+.apiman-summaryrow .title {
+  font-weight: bold;
+}
+.apiman-summaryrow .title .secondary {
+  color: #333;
+  font-weight: normal;
+  font-style: italic;
+}
+.apiman-summaryrow .fa {
+  float: left;
+  line-height: 14px;
+}
+.apiman-summaryrow .fa-inline {
+  float: none;
+}
+.apiman-summaryrow button .fa {
+  float: none;
+}
+.apiman-summaryrow .title-summary-item {
+  font-size: 11px;
+  float: left;
+  margin-left: 2px;
+  line-height: 14px;
+}
+
+.apiman-services hr, .apiman-applications hr, .apiman-plans hr, .apiman-members hr, .apiman-contracts hr, .apiman-policies hr, .apiman-roles hr {
+  margin: 8px;
+}
+
+.apiman-plans .apiman-policy-chain {
+  max-height: 200px;
+  overflow: auto;
+}
+
+.apiman-timestamp {
+  color: #777;
+  margin-left: 3px;
+  float: left;
+  line-height: 14px;
+}
+
+ol.breadcrumb {
+  margin-bottom: 5px;
+}
+
+.apiman-entity-summary {
+  border: 1px solid rgb(200, 200, 200);
+  box-shadow: 2px 2px 3px rgb(221, 221, 221);
+  margin-bottom: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.apiman-entity-summary .apiman-entity-breadcrumb {
+}
+.apiman-entity-summary .apiman-entity-breadcrumb .title {
+  font-size: 18px;
+  line-height: 48px;
+}
+.apiman-entity-summary .apiman-entity-breadcrumb .title .breadcrumb-icon {
+  color: rgb(83, 107, 133);
+  font-size: 1.5em;
+  line-height: 48px;
+  float: left;
+}
+.apiman-entity-summary .apiman-entity-breadcrumb .title div {
+  line-height: 48px;
+  float: left;
+  margin-left: 8px;
+}
+.apiman-entity-summary .apiman-entity-breadcrumb .title .divider {
+  color: #999;
+}
+.apiman-entity-summary .apiman-entity-breadcrumb .title .versions {
+  float: right;
+  line-height: normal;
+  padding-top: 5px;
+}
+.apiman-entity-summary .apiman-entity-breadcrumb .title .versions .bootstrap-select:not([class*="span"]):not([class*="col-"]):not([class*="form-control"]) {
+  float: left;
+  width: 140px;
+}
+.apiman-entity-summary .apiman-entity-breadcrumb .title .versions div {
+  float: none;
+}
+.apiman-entity-summary .apiman-entity-breadcrumb hr {
+  margin: 8px;
+}
+
+.apiman-entity-summary .apiman-entity-metadata {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+.apiman-entity-summary .apiman-entity-metadata .title {
+  color: rgb(85, 85, 85);
+  font-weight: bold;
+  font-size: 18px;
+  margin-bottom: -5px;
+}
+
+.apiman-entity-nav {
+  font-size: 15px;
+}
+
+.apiman-entity-nav .nav-pills li {
+  margin-top: 0px;
+}
+.apiman-entity-nav .nav-pills li a {
+  border-right: 1px solid rgb(221, 221, 221);
+  border-radius: 0px;
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid transparent;
+  color: rgb(34, 34, 34);
+}
+.apiman-entity-nav .nav-pills li a:hover {
+}
+.apiman-entity-nav .nav-pills li.active a:hover, .apiman-entity-nav .nav-pills li.first a:hover, .apiman-entity-nav .nav-pills li.last a:hover {
+  text-decoration: none;
+}
+.apiman-entity-nav .nav-pills li.active a {
+  background-color: white;
+  color: rgb(0, 153, 211);
+  border-right: 0px;
+  border-top: 1px solid rgb(221, 221, 221);
+  border-bottom: 1px solid rgb(221, 221, 221);
+}
+.apiman-entity-nav .nav-pills li.first a:hover {
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid transparent;
+}
+.apiman-entity-nav .nav-pills li.last a:hover {
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid transparent;
+}
+.apiman-entity-nav .nav-pills li.first a:hover, .apiman-entity-nav .nav-pills li.last a:hover {
+  background-color: white;
+}
+
+.apiman-entity-overview h2 {
+  font-size: 18px;
+  text-decoration: underline;
+}
+
+.apiman-entity-content {
+  padding: 10px;
+}
+.apiman-entity-content .title {
+  color: #555;
+  font-weight: bold;
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+.apiman-entity-content .apiman-summaryrow .title {
+  font-size: 13px;
+}
+.apiman-entity-content .description {
+  color: #243446;
+  margin-bottom: 12px;
+}
+.apiman-entity-content .description.apiman-label-faded {
+  color: #789;
+}
+.apiman-entity-content .apiman-summaryrow .description {
+  margin-bottom: 0px;
+}
+.apiman-entity-content .apiman-input-ro {
+  cursor: auto;
+}
+.apiman-entity-content .actions {
+  text-align: right;
+  margin-bottom: 10px;
+}
+
+.entity-info-with-icon {
+  min-height: 16px;
+}
+.entity-info-with-icon .fa {
+  color: #456;
+}
+
+.apiman-entity-action {
+  margin-top: 5px;
+  margin-left: 5px;
+}
+
+.apiman-entity-new {
+  margin-top: 30px;
+}
+.apiman-entity-new .title {
+  margin-bottom: 20px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid rgb(238, 238, 238);
+  color: rgb(85, 85, 85);
+}
+.apiman-entity-new .divider {
+  float: left;
+  font-size: 22px;
+  color: #999;
+  line-height: normal;
+}
+.apiman-entity-new dl {
+  float: left;
+  margin-bottom: 10px;
+}
+.apiman-entity-new dl.org, .apiman-entity-new dl.slash {
+  margin-right: 10px;
+}
+.apiman-entity-new dl.name {
+}
+.apiman-entity-new dt {
+  padding-bottom: 0px;
+  margin-top: 8px;
+  color: #555;
+}
+.apiman-entity-new .entityname {
+  width: 300px;
+}
+.apiman-entity-new .description {
+  width: 700px;
+}
+.apiman-entity-new .hr-row {
+  margin-top: -10px;
+  padding-top: 0px;
+}
+.apiman-entity-new .btn-cancel {
+  margin-left: 5px;
+}
+.apiman-entity-new .input-search {
+  width: 300px;
+  float: left;
+}
+.apiman-entity-new .input-search-results {
+  max-width: 500px;
+}
+.apiman-entity-new .input-search-results .panel-body {
+  padding: 10px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 200px;
+}
+.apiman-entity-new .input-search-results .item {
+  width: 100%;
+  float: left;
+  line-height: 22px;
+  cursor: pointer;
+  border-top: 1px solid;
+  border-bottom: 1px solid;
+  border-color: transparent;
+}
+.apiman-entity-new .input-search-results .item:hover {
+  border-color: rgb(179, 211, 231);
+  background-color: rgb(212, 237, 250);
+  text-decoration: none;
+}
+.apiman-entity-new .input-search-results .item:focus {
+  text-decoration: none;
+}
+.apiman-entity-new .input-search-results .item.selected {
+  color: white;
+  border-color: rgb(0, 118, 183);
+  background-color: rgb(0, 153, 211);
+}
+.apiman-entity-new .btn-search {
+  float: left;
+  margin-left: 5px;
+}
+.apiman-entity-new h3 hr {
+  margin: 5px 0px 20px 0px;
+  padding: 0px;
+}
+.apiman-entity-new .box {
+  border: 1px solid rgb(222, 222, 222);
+  border-radius: 5px;
+  padding-top: 10px;
+}
+
+.apiman-contracts .apiman-summaryrow .actions {
+  visibility: hidden;
+  float: right;
+}
+.apiman-contracts .apiman-summaryrow:hover .actions {
+  visibility: visible;
+}
+
+.apiman-policies .apiman-summaryrow {
+}
+.apiman-policies .apiman-summaryrow .container-fluid {
+  float: left;
+  width: 90%;
+}
+.apiman-policies .apiman-summaryrow .actions {
+  visibility: hidden;
+  float: right;
+}
+.apiman-policies .apiman-summaryrow:hover .actions {
+  visibility: visible;
+}
+.apiman-policies .apiman-summaryrow .actions span {
+  color: #789;
+}
+.apiman-policies .apiman-summaryrow .apiman-policy-icon {
+  color: rgb(83, 107, 133);
+  float: left;
+  font-size: 34px;
+  padding-right: 8px;
+  line-height: 36px;
+}
+.apiman-policies .apiman-summaryrow .description {
+  margin-bottom: 5px;
+}
+.apiman-policies .apiman-summaryrow hr {
+  clear: both;
+}
+.apiman-policies .row .col {
+  float: left;
+  margin-left: 10px;
+}
+.apiman-policies .row .col-70 {
+  width: 70%;
+}
+.apiman-policies .row .grabber {
+  float: left;
+  margin-right: 10px;
+}
+.apiman-policies .drop-target {
+  padding: 5px 0px 10px 0px;
+}
+.apiman-policies .drop-target div {
+  padding: 10px;
+  text-align: center;
+  font-size: 18px;
+  line-height: 32px;
+  color: rgb(63, 146, 210);
+  border: 1px dashed #987;
+}
+
+.apiman-apis .apiman-summaryrow {
+  margin-bottom: 5px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid rgb(238, 238, 238);
+}
+.apiman-apis .apiman-summaryrow .url {
+  padding-left: 10px;
+}
+.apiman-apis .apiman-summaryrow .apikey {
+  visibility: hidden;
+  font-size: 11px;
+}
+.apiman-apis .apiman-summaryrow:hover .apikey {
+  visibility: visible;
+}
+.apiman-apis .apiman-summaryrow .url .extra-path {
+  visibility: hidden;
+}
+.apiman-apis .apiman-summaryrow .url .extra-path input::-webkit-input-placeholder {
+  color:    #BBB;
+  font-style: italic;
+}
+.apiman-apis .apiman-summaryrow .url .extra-path input::-moz-placeholder {
+  color:    #BBB;
+  font-style: italic;
+  opacity:  1;
+}
+.apiman-apis .apiman-summaryrow .url .extra-path input::-ms-input-placeholder {
+  color:    #BBB;
+  font-style: italic;
+}
+
+.apiman-apis .apiman-summaryrow:hover .url .extra-path {
+  visibility: visible;
+}
+.apiman-apis .apiman-summaryrow .url .extra-path .api-path {
+  font-size: 11px;
+  height: 18px;
+  width: 200px;
+}
+.apiman-apis .apiman-summaryrow .url .extra-path .btn-copy {
+  font-size: 10px;
+  height: 18px;
+  margin-top: -2px;
+  padding-top: 0px; 
+}
+
+.apiman-no-entities-description {
+  margin-top: 20px;
+  padding: 15px;
+  font-size: 13px;
+  font-weight: normal;
+  line-height: 1.3;
+  color: rgb(136, 136, 136);
+  background-color: #F2F2FA;
+  border: 2px solid rgb(204, 204, 204);
+}
+.apiman-no-entities-arrow {
+  float: right;
+  background-image: url(images/new-entity-arrow.png);
+  background-position: top left;
+  width: 69px;
+  height: 69px;
+  margin-right: 25px;
+}
+
+.apiman-cards {
+  padding-left: 0px;
+  padding-right: 0px;
+  margin-top: 10px;
+}
+.apiman-cards div {
+  float: left;
+}
+.apiman-cards .apiman-card {
+  width: 320px;
+  border: 1px solid rgb(204, 204, 204);
+  box-shadow: 2px 2px 3px #ddd;
+  margin-right: 15px;
+  margin-bottom: 15px;
+  min-height: 110px;
+}
+.apiman-cards .apiman-card .front {
+  display: none;
+}
+.apiman-cards .apiman-card .back {
+  display: none;
+}
+.apiman-cards .apiman-card .front.active {
+  display: inherit;
+}
+.apiman-cards .apiman-card .back.active {
+  display: inherit;
+}
+.apiman-cards .apiman-card .title {
+  width: 318px;
+  border-bottom: 1px solid rgb(204, 204, 204);
+  background-color: #fafafa;
+}
+.apiman-cards .apiman-card .title .name {
+  line-height: 24px;
+  margin-left: 5px;
+}
+.apiman-cards .apiman-card .title .actions {
+  line-height: 24px;
+  margin-right: 5px;
+  float: right;
+}
+.apiman-cards .apiman-card .body {
+  width: 318px;
+}
+.apiman-cards .apiman-card .body .card-icon {
+}
+.apiman-cards .apiman-card .body .card-icon i.fa {
+  font-size: 4em;
+  line-height: 75px;
+  color: #bbb;
+  width: 75px;
+  text-align: center;
+}
+.apiman-cards .apiman-card .body .card-details {
+  width: 243px;
+  padding-top: 10px;
+  max-height: 83px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.apiman-cards .apiman-card .body .card-details .card-details-item {
+  width: 243px;
+}
+.apiman-cards .apiman-card .body .card-details .card-details-item i {
+  float: left;
+  line-height: 16px;
+}
+.apiman-cards .apiman-card .body .card-details .card-details-item .apiman-timestamp {
+  line-height: 16px;
+}
+.apiman-cards .apiman-card .body .card-details .card-details-item .card-label {
+}
+.apiman-cards .apiman-card .body .card-details .card-details-item .card-value {
+  margin-left: 5px;
+}
+.apiman-cards .apiman-card .body .card-edit-details {
+  padding: 5px;
+  width: 318px;
+}
+.apiman-cards .apiman-card .title .explanation {
+  line-height: 24px;
+  padding-left: 5px;
+}
+.apiman-cards .apiman-card .body .card-edit-details .roles {
+  padding-top: 5px;
+  width: 308px;
+}
+.apiman-cards .apiman-card .body .card-edit-details .roles .bootstrap-select {
+  width: 306px;
+}
+.apiman-cards .apiman-card .body .card-edit-details .actions {
+  width: 308px;
+}
+.apiman-cards .apiman-card .body .card-edit-details .actions button {
+  float: left;
+  margin-right: 5px;
+}
+.apiman-cards .apiman-card .body .card-edit-details .actions button.btn-revoke-all {
+  float: right;
+  margin-right: 2px;
+}
+
+.apiman-plan-selector {
+  padding: 10px;
+}
+.apiman-plan-selector .title {
+  font-size: 16px;
+  font-weight: normal;
+  margin-left: 6px;
+}
+.apiman-plan-selector hr {
+  margin-top: 0px;
+  margin-bottom: 10px;
+}
+#page-content .apiman-plan-selector div.bootstrap-select {
+  width: 125px;
+}
+
+.error-page {
+  margin-top: 30px;
+}
+.error-page .title {
+  font-size: 18px;
+  font-weight: bold;
+}
+.error-page .description {
+  font-size: 14px;
+  color: #444;
+}
+.error-page .header {
+  font-size: 14px;
+  font-weight: bold;
+  text-decoration: underline;
+}
+.error-page .errorMessage {
+  width: 100%;
+  cursor: auto;
+  margin-top: 5px;
+}
+.error-icon {
+  width: 128px;
+  height: 128px;
+  background-repeat: no-repeat;
+  background-position: top left;
+}
+.error-403 {
+  background-image: url(images/error-403.png);
+}
+.error-404 {
+  background-image: url(images/error-404.png);
+}
+.error-409 {
+  background-image: url(images/error-409.png);
+}
+.error-500 {
+  background-image: url(images/error-500.png);
+}
+
+.consumer-top-header {
+  margin-top: 0px;
+}
+
+.consumer-header {
+  margin-top: 0px;
+  border-bottom: 1px solid rgb(238, 238, 238);
+  padding-bottom: 5px;
+}
+
+.consumer-section {
+  float: left;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.consumer-section .icon {
+  line-height: 18px;
+  color: rgb(63, 146, 210);
+  margin-right: 3px;
+}
+
+.form.policy-config {
+  margin-bottom: 10px;
+}
+.form.policy-config.default {
+  width: 100%;
+}
+.form.policy-config.default span {
+  font-style: italic;
+}
+.form.policy-config.default textarea {
+  width: 100%;
+  height: 225px;
+  text-decoration: none;
+}
+
+.form.policy-config input[type=text].form-control {
+  width: 425px;
+}
+.form.policy-config input[type=text].form-control-small {
+  width: 200px;
+}
+
+
+
+div.admin-page {
+}
+
+div.admin-page .breadcrumb {
+  border-bottom: 1px solid rgb(221, 221, 221);
+  margin-bottom: 15px;
+}
+
+div.admin-page .side-nav {
+  border: 1px solid rgb(221, 221, 221);
+  border-radius: 2px;
+  padding: 2px;
+}
+
+div.admin-page .admin-content h2 {
+  margin-top: 10px;
+}
+
+div.admin-page .admin-content .hr-row hr {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+div.admin-page .admin-content .apiman-summaryrow .permissions {
+  padding-left: 8px;
+  padding-right: 150px;
+}
+
+div.admin-page .admin-content .apiman-summaryrow .emphasis {
+  color: #555;
+}
+
+.table > tbody > tr > td > a:hover {
+  text-decoration: underline;
+}
+
+#apiman-log-viewer {
+  position: fixed;
+  left: 0px;
+  width: 50%;
+  top: 100px;
+  background-color: #fafafa;
+  border-top: 1px solid #887;
+  border-right: 1px solid #887;
+  border-bottom: 1px solid #887;
+  padding-top: 10px;
+  padding-bottom: 20px;
+  z-index: 1000;
+  box-shadow: 3px 3px 8px #AAA;
+  opacity: 0.75;
+}
+
+#apiman-log-viewer:hover {
+  opacity: 1;
+}
+
+#apiman-log-viewer .settings {
+  border-bottom: 1px solid #887;
+}
+
+#apiman-log-viewer .settings .close {
+  font-size: 26px;
+}
+
+#apiman-log-viewer .settings .settings-label {
+  display: inline-block;
+  position: relative;
+  margin-right: 10px;
+}
+
+#apiman-log-viewer .messages-wrap {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+#apiman-log-viewer .messages {
+  border: 1px solid #887;
+  margin-top: 20px;
+  height: 275px;
+  overflow: auto;
+  background-color: white;
+  padding: 3px;
+}
+
+.settings-detail {
+  padding: 20px;
+  border: 1px solid rgb(200, 200, 200);
+  background-color: rgb(249, 249, 249);
+  box-shadow: 2px 2px 3px rgb(221, 221, 221);
+}
+
+.form-table {
+  margin-top: 5px;
+}
+
+.form-table td {
+  padding: 3px;
+}
+
+.form-table .td-label {
+  font-weight: bold;
+  color: #666;
+  padding-left: 10px;
+}
+
+.modal-header {
+  border-bottom: 1px solid rgb(238, 238, 238);
+}
+
+.modal-body {
+  padding: 25px;
+}
+
+.modal-footer {
+  border-top: 1px solid rgb(238, 238, 238);
+  margin-top: 0px;
+  padding: 15px;
+}
+
+.apiman-inline-edit-overlay {
+  border: 1px solid rgb(200, 200, 200);
+  border-radius: 3px 0px 0px 3px;
+  padding: 5px;
+  cursor: text;
+}
+.apiman-inline-edit-overlay-edit {
+  border: 1px solid rgb(200, 200, 200);
+  border-left: none;
+  border-radius: 0px 3px 3px 0px;
+  padding: 5px;
+  cursor: pointer;
+  background-color: #eee;
+  background-image: linear-gradient(rgb(250, 250, 250) 0px, rgb(237, 237, 237) 100%);
+  color: #666;
+}
+.apiman-inline-edit-overlay-edit:hover {
+  background-image: none;
+  background-color: rgb(238, 238, 238);
+  color: #333;
+}
+
+.apiman-inline-edit textarea.user-value-edit {
+  border: 1px solid rgb(200, 200, 200);
+  padding: 3px;
+  border-radius: 3px 3px 3px 0px;
+}
+
+.apiman-inline-edit {
+  margin-right: 25px;
+}
+.apiman-inline-edit .btn {
+  border-top: 0px;
+}
+.apiman-inline-edit .inline-save-btn {
+  border-right: 0px;
+}
+
+textarea.apiman-endpoint {
+  border: 1px solid rgb(200, 200, 200);
+  padding: 5px;
+}
