@@ -15,21 +15,14 @@
  */
 package io.apiman.plugins.keycloak_oauth_policy.beans;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.security.cert.Certificate;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Generated;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.codehaus.jackson.annotate.JsonAnyGetter;
 import org.codehaus.jackson.annotate.JsonAnySetter;
@@ -37,6 +30,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.keycloak.util.PemUtils;
 
 /**
  * KeyCloak OAuth Policy Configuration
@@ -263,30 +257,11 @@ public class KeycloakOauthConfigBean {
         return realmCertificate;
     }
 
-    @SuppressWarnings("nls")
     private Certificate generateCertificate(String data) {
         try {
-            InputStream is = IOUtils.toInputStream(data, "UTF-8");
-            CertificateFactory cf = CertificateFactory.getInstance("X.509");
-
-            @SuppressWarnings("unchecked")
-            Collection<X509Certificate> certificates = (Collection<X509Certificate>) cf
-                    .generateCertificates(is);
-
-            if (certificates.size() == 0) {
-                throw new RuntimeException("Certificate contains no key.");
-            }
-
-            // TODO find more relevant exceptions
-            if (certificates.size() > 1) {
-                throw new RuntimeException(
-                        "More than one certificate provided in X.509, please use only one.");
-            }
-
-            return certificates.iterator().next();
-
-        } catch (CertificateException | IOException e) {
-            throw new RuntimeException(e);
+            return PemUtils.decodeCertificate(data);
+        } catch (Exception e) {
+            throw new RuntimeException(e);  
         }
     }
 }

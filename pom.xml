@@ -77,6 +77,9 @@
     <version.junit>4.11</version.junit>
 
     <version.org.keycloak>1.1.0.Final</version.org.keycloak>
+    <version.org.bouncycastle>1.51</version.org.bouncycastle>
+    <version.net.iharder>2.3.8</version.net.iharder>
+
 
     <!-- Distribution URLs -->
     <jboss.releases.repo.url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</jboss.releases.repo.url>
@@ -135,6 +138,16 @@
         <groupId>org.keycloak</groupId>
         <artifactId>keycloak-core</artifactId>
         <version>${version.org.keycloak}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.bouncycastle</groupId>
+        <artifactId>bcprov-jdk15on</artifactId>
+        <version>${version.org.bouncycastle}</version>
+      </dependency>
+      <dependency>
+        <groupId>net.iharder</groupId>
+        <artifactId>base64</artifactId>
+        <version>${version.net.iharder}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
