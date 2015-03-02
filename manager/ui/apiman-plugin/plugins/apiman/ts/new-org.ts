@@ -6,7 +6,7 @@ module Apiman {
     $scope.saveNewOrg = function() {
         
         OrgSvcs.save($scope.org, function(reply) {
-           $location.path('apiman/dash.html');
+           $location.path('apiman/org-plans.html').search('org',reply.id);
         }, function(error) {
            if (error.status == 409) {
               $location.path('apiman/error-409.html');          
