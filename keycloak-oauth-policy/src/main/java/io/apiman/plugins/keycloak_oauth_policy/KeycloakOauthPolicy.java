@@ -128,7 +128,7 @@ public class KeycloakOauthPolicy extends AbstractMappedPolicy<KeycloakOauthConfi
 
     private PolicyFailure noAuthenticationProvidedFailure(IPolicyFailureFactoryComponent ff) {
         return createUnauthorizedPolicyFailure(ff, 0,
-                "OAuth AUTHORIZATION header or access_token query parameter must be provided."); //$NON-NLS-1$
+                Messages.getString("KeycloakOauthPolicy.no_token_given")); //$NON-NLS-1$
     }
 
     private PolicyFailure verificationExceptionFailure(IPolicyFailureFactoryComponent ff,
