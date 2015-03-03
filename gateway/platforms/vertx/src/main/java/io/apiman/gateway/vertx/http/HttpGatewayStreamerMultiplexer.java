@@ -38,7 +38,7 @@ public class HttpGatewayStreamerMultiplexer implements Handler<HttpServerRequest
     public HttpGatewayStreamerMultiplexer(Vertx vertx, Container container, String stripString) {
         logger = container.logger();
         this.workerQueue = new ServiceWorkerQueue(vertx, container,
-                VertxEngineConfig.APIMAN_RT_EP_GATEWAY_REG_POLICY, stripString);
+                VertxEngineConfig.API_GATEWAY_EP_GATEWAY_REG_POLICY, stripString);
     }
 
     @Override

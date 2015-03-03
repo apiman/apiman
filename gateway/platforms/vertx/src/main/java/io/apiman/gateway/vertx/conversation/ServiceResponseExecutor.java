@@ -15,10 +15,10 @@
  */
 package io.apiman.gateway.vertx.conversation;
 
-import io.apiman.gateway.vertx.config.VertxEngineConfig;
-import io.apiman.gateway.vertx.io.IResettable;
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.ServiceResponse;
+import io.apiman.gateway.vertx.config.VertxEngineConfig;
+import io.apiman.gateway.vertx.io.IResettable;
 
 import org.vertx.java.core.buffer.Buffer;
 import org.vertx.java.core.eventbus.EventBus;
@@ -45,7 +45,7 @@ public class ServiceResponseExecutor implements IResettable {
     }
 
     public void writeResponse(ServiceResponse serviceResponse) {
-        eb.send(address + VertxEngineConfig.APIMAN_RT_HEAD_SUFFIX, Json.encode(serviceResponse));
+        eb.send(address + VertxEngineConfig.API_GATEWAY_HEAD_SUFFIX, Json.encode(serviceResponse));
     }
 
     public void write(Buffer bodyBuffer) {
@@ -53,20 +53,20 @@ public class ServiceResponseExecutor implements IResettable {
             throw new IllegalStateException("Attempted write to connector after #end() was called."); //$NON-NLS-1$
         }
 
-        eb.send(address + VertxEngineConfig.APIMAN_RT_BODY_SUFFIX, bodyBuffer);
+        eb.send(address + VertxEngineConfig.API_GATEWAY_BODY_SUFFIX, bodyBuffer);
     }
 
     public void end() {
-        eb.send(address + VertxEngineConfig.APIMAN_RT_END_SUFFIX, (Void) null);
+        eb.send(address + VertxEngineConfig.API_GATEWAY_END_SUFFIX, (Void) null);
         finished = true;
     }
 
     public void error(Throwable error) {
-        eb.send(address + VertxEngineConfig.APIMAN_RT_ERROR_SUFFIX, Json.encode(error));
+        eb.send(address + VertxEngineConfig.API_GATEWAY_ERROR_SUFFIX, Json.encode(error));
     }
 
     public void failure(PolicyFailure failure) {
-        eb.send(address + VertxEngineConfig.APIMAN_RT_FAILURE_SUFFIX, Json.encode(failure));
+        eb.send(address + VertxEngineConfig.API_GATEWAY_FAILURE_SUFFIX, Json.encode(failure));
     }
 
     public boolean isFinished() {

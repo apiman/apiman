@@ -19,6 +19,7 @@ import io.apiman.gateway.engine.IComponentRegistry;
 import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.IEngine;
 import io.apiman.gateway.engine.IEngineResult;
+import io.apiman.gateway.engine.IMetrics;
 import io.apiman.gateway.engine.IPluginRegistry;
 import io.apiman.gateway.engine.IRegistry;
 import io.apiman.gateway.engine.IServiceRequestExecutor;
@@ -40,6 +41,7 @@ public class EngineImpl implements IEngine {
     private IComponentRegistry componentRegistry;
     private IConnectorFactory connectorFactory;
     private IPolicyFactory policyFactory;
+    private IMetrics metrics;
 
     /**
      * Constructor.
@@ -48,15 +50,17 @@ public class EngineImpl implements IEngine {
      * @param componentRegistry
      * @param connectorFactory
      * @param policyFactory
+     * @param metrics
      */
     public EngineImpl(final IRegistry registry, final IPluginRegistry pluginRegistry,
             final IComponentRegistry componentRegistry, final IConnectorFactory connectorFactory,
-            final IPolicyFactory policyFactory) {
+            final IPolicyFactory policyFactory, final IMetrics metrics) {
         setRegistry(registry);
         setPluginRegistry(pluginRegistry);
         setComponentRegistry(componentRegistry);
         setConnectorFactory(connectorFactory);
         setPolicyFactory(policyFactory);
+        setMetrics(metrics);
         
         policyFactory.setPluginRegistry(pluginRegistry);
     }
@@ -79,7 +83,8 @@ public class EngineImpl implements IEngine {
                 registry,
                 new PolicyContextImpl(getComponentRegistry()),
                 policyFactory,
-                getConnectorFactory());
+                getConnectorFactory(),
+                getMetrics());
     }
 
     /**
@@ -151,6 +156,20 @@ public class EngineImpl implements IEngine {
      */
     public void setPluginRegistry(IPluginRegistry pluginRegistry) {
         this.pluginRegistry = pluginRegistry;
+    }
+
+    /**
+     * @return the metrics
+     */
+    public IMetrics getMetrics() {
+        return metrics;
+    }
+
+    /**
+     * @param metrics the metrics to set
+     */
+    public void setMetrics(IMetrics metrics) {
+        this.metrics = metrics;
     }
 
 }

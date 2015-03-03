@@ -17,6 +17,7 @@ package io.apiman.gateway.engine.impl;
 
 import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.IEngineResult;
+import io.apiman.gateway.engine.IMetrics;
 import io.apiman.gateway.engine.IRegistry;
 import io.apiman.gateway.engine.IServiceConnection;
 import io.apiman.gateway.engine.IServiceConnectionResponse;
@@ -38,6 +39,7 @@ import io.apiman.gateway.engine.beans.exceptions.RequestAbortedException;
 import io.apiman.gateway.engine.i18n.Messages;
 import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.gateway.engine.io.ISignalWriteStream;
+import io.apiman.gateway.engine.metrics.RequestMetric;
 import io.apiman.gateway.engine.policy.Chain;
 import io.apiman.gateway.engine.policy.IConnectorInterceptor;
 import io.apiman.gateway.engine.policy.IPolicy;
@@ -48,6 +50,7 @@ import io.apiman.gateway.engine.policy.RequestChain;
 import io.apiman.gateway.engine.policy.ResponseChain;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -93,25 +96,83 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
 
     private IServiceConnection serviceConnection;
     private IServiceConnectionResponse serviceConnectionResponse;
+    
+    private IMetrics metrics;
+    private RequestMetric requestMetric = new RequestMetric();
 
     /**
      * Constructs a new {@link ServiceRequestExecutorImpl}.
+     * @param serviceRequest
+     * @param resultHandler
+     * @param registry
+     * @param context
+     * @param policyFactory
+     * @param connectorFactory
+     * @param metrics 
      */
-    public ServiceRequestExecutorImpl(ServiceRequest serviceRequest, 
-            IAsyncResultHandler<IEngineResult> resultHandler,
-            IRegistry registry,
-            IPolicyContext context,
-            IPolicyFactory policyFactory, 
-            IConnectorFactory connectorFactory) {
-
+    public ServiceRequestExecutorImpl(ServiceRequest serviceRequest,
+            IAsyncResultHandler<IEngineResult> resultHandler, IRegistry registry, IPolicyContext context,
+            IPolicyFactory policyFactory, IConnectorFactory connectorFactory, IMetrics metrics) {
         this.request = serviceRequest;
         this.registry = registry;
-        this.resultHandler = resultHandler;
+        this.resultHandler = wrapResultHandler(resultHandler);
         this.context = context;
         this.policyFactory = policyFactory;
         this.connectorFactory = connectorFactory;
         this.policyFailureHandler = createPolicyFailureHandler();
         this.policyErrorHandler = createPolicyErrorHandler();
+        this.metrics = metrics;
+    }
+
+    /**
+     * Wraps the result handler so that metrics can be properly recorded.
+     * @param handler
+     */
+    private IAsyncResultHandler<IEngineResult> wrapResultHandler(final IAsyncResultHandler<IEngineResult> handler) {
+        return new IAsyncResultHandler<IEngineResult>() {
+            @Override
+            public void handle(IAsyncResult<IEngineResult> result) {
+                if (result.isError()) {
+                    recordErrorMetrics(result.getError());
+                } else {
+                    IEngineResult engineResult = result.getResult();
+                    if (engineResult.isFailure()) {
+                        recordFailureMetrics(engineResult.getPolicyFailure());
+                    } else {
+                        recordSuccessMetrics(engineResult.getServiceResponse());
+                    }
+                }
+                requestMetric.setRequestEnd(new Date());
+                metrics.record(requestMetric);
+                handler.handle(result);
+            }
+        };
+    }
+
+    /**
+     * @param response
+     */
+    protected void recordSuccessMetrics(ServiceResponse response) {
+        requestMetric.setResponseCode(response.getCode());
+        requestMetric.setResponseMessage(response.getMessage());
+    }
+
+    /**
+     * @param failure
+     */
+    protected void recordFailureMetrics(PolicyFailure failure) {
+        requestMetric.setResponseCode(failure.getResponseCode());
+        requestMetric.setFailureCode(failure.getFailureCode());
+        requestMetric.setFailureReason(failure.getMessage());
+    }
+
+    /**
+     * @param error
+     */
+    protected void recordErrorMetrics(Throwable error) {
+        requestMetric.setResponseCode(500);
+        requestMetric.setError(true);
+        requestMetric.setErrorMessage(error.getMessage());
     }
 
     /**
@@ -119,6 +180,14 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
      */
     @Override
     public void execute() {
+        // Fill out some of the basic metrics structure.
+        requestMetric.setRequestStart(new Date());
+        requestMetric.setResource(request.getDestination());
+        requestMetric.setMethod(request.getType());
+        requestMetric.setServiceOrgId(request.getServiceOrgId());
+        requestMetric.setServiceId(request.getServiceId());
+        requestMetric.setServiceVersion(request.getServiceVersion());
+        
         // Create the handler that will be called once the policies are asynchronously
         // loaded (can happen this way due to the plugin framework).
         final IAsyncHandler<List<PolicyWithConfiguration>> policiesLoadedHandler = new IAsyncHandler<List<PolicyWithConfiguration>>() {
@@ -127,7 +196,6 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
                 policyImpls = result;
                 // Set up the policy chain request, call #doApply to execute.
                 requestChain = createRequestChain(new IAsyncHandler<ServiceRequest>() {
-        
                     @Override
                     public void handle(ServiceRequest request) {
                         IConnectorInterceptor connectorInterceptor = context.getConnectorInterceptor();
@@ -137,30 +205,30 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
                         } else {
                             connector = connectorInterceptor.createConnector();
                         }
+
                         // TODO check for a null connector
-        
+
                         // Open up a connection to the back-end if we're given the OK from the request chain
+                        requestMetric.setServiceStart(new Date());
                         // Attach the response handler here.
                         serviceConnection = connector.connect(request, createServiceConnectionResponseHandler());
-        
+
                         // Write the body chunks from the *policy request* into the connector request.
                         requestChain.bodyHandler(new IAsyncHandler<IApimanBuffer>() {
-        
                             @Override
                             public void handle(IApimanBuffer buffer) {
                                 serviceConnection.write(buffer);
                             }
                         });
-        
+
                         // Indicate end from policy chain request to connector request.
                         requestChain.endHandler(new IAsyncHandler<Void>() {
-        
                             @Override
                             public void handle(Void result) {
                                 serviceConnection.end();
                             }
                         });
-        
+
                         // Once we have returned from connector.request, we know it is safe to start
                         // writing chunks without buffering. At this point, it is the responsibility
                         // of the implementation as to how they should cope with the chunks.
@@ -203,6 +271,12 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
                 public void handle(IAsyncResult<ServiceContract> result) {
                     if (result.isSuccess()) {
                         ServiceContract serviceContract = result.getResult();
+                        requestMetric.setApplicationOrgId(serviceContract.getApplication().getOrganizationId());
+                        requestMetric.setApplicationId(serviceContract.getApplication().getApplicationId());
+                        requestMetric.setApplicationVersion(serviceContract.getApplication().getVersion());
+                        requestMetric.setContractId(request.getApiKey());
+
+                        
                         service = serviceContract.getService();
                         request.setContract(serviceContract);
                         policies = serviceContract.getPolicies();
@@ -319,10 +393,10 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
      */
     private IAsyncResultHandler<IServiceConnectionResponse> createServiceConnectionResponseHandler() {
         return new IAsyncResultHandler<IServiceConnectionResponse>() {
-
             @Override
             public void handle(IAsyncResult<IServiceConnectionResponse> result) {
                 if (result.isSuccess()) {
+                    requestMetric.setServiceEnd(new Date());
                     // The result came back. NB: still need to put it through the response chain.
                     serviceConnectionResponse = result.getResult();
                     ServiceResponse serviceResponse = serviceConnectionResponse.getHead();

@@ -18,6 +18,7 @@ package io.apiman.gateway.vertx.config;
 import io.apiman.gateway.engine.IComponent;
 import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.IEngineConfig;
+import io.apiman.gateway.engine.IMetrics;
 import io.apiman.gateway.engine.IPluginRegistry;
 import io.apiman.gateway.engine.IRegistry;
 import io.apiman.gateway.engine.i18n.Messages;
@@ -37,32 +38,33 @@ import org.vertx.java.core.json.JsonObject;
  */
 public class VertxEngineConfig implements IEngineConfig {
 
-    public static final String APIMAN_RT_REGISTRY_PREFIX = "registry"; //$NON-NLS-1$
-    public static final String APIMAN_RT_PLUGIN_REGISTRY_PREFIX = "plugin-registry"; //$NON-NLS-1$
-    public static final String APIMAN_RT_CONNECTOR_FACTORY_PREFIX = "connector-factory"; //$NON-NLS-1$
-    public static final String APIMAN_RT_POLICY_FACTORY_PREFIX = "policy-factory"; //$NON-NLS-1$
+    public static final String API_GATEWAY_REGISTRY_PREFIX = "registry"; //$NON-NLS-1$
+    public static final String API_GATEWAY_PLUGIN_REGISTRY_PREFIX = "plugin-registry"; //$NON-NLS-1$
+    public static final String API_GATEWAY_CONNECTOR_FACTORY_PREFIX = "connector-factory"; //$NON-NLS-1$
+    public static final String API_GATEWAY_POLICY_FACTORY_PREFIX = "policy-factory"; //$NON-NLS-1$
+    public static final String API_GATEWAY_METRICS_PREFIX = "metrics"; //$NON-NLS-1$
 
-    public static final String APIMAN_RT_COMPONENT_PREFIX = "components"; //$NON-NLS-1$
+    public static final String API_GATEWAY_COMPONENT_PREFIX = "components"; //$NON-NLS-1$
 
-    private static final String APIMAN_RT_AUTH_PREFIX = "auth"; //$NON-NLS-1$
+    private static final String API_GATEWAY_AUTH_PREFIX = "auth"; //$NON-NLS-1$
 
-    public static final String APIMAN_RT_GATEWAY_SERVER_PORT = "server-port"; //$NON-NLS-1$
+    public static final String API_GATEWAY_GATEWAY_SERVER_PORT = "server-port"; //$NON-NLS-1$
 
-    public static final String APIMAN_RT_CONFIG = "config"; //$NON-NLS-1$
-    public static final String APIMAN_RT_CLASS = "class"; //$NON-NLS-1$
+    public static final String API_GATEWAY_CONFIG = "config"; //$NON-NLS-1$
+    public static final String API_GATEWAY_CLASS = "class"; //$NON-NLS-1$
 
-    public static final String APIMAN_RT_EP_SERVICE_REQUEST = ".apiman.gateway.service.request"; //$NON-NLS-1$
-    public static final String APIMAN_RT_EP_SERVICE_RESPONSE = ".apiman.gateway.service.response"; //$NON-NLS-1$
+    public static final String API_GATEWAY_EP_SERVICE_REQUEST = ".apiman.gateway.service.request"; //$NON-NLS-1$
+    public static final String API_GATEWAY_EP_SERVICE_RESPONSE = ".apiman.gateway.service.response"; //$NON-NLS-1$
 
-    public static final String APIMAN_RT_READY_SUFFIX = ".ready"; //$NON-NLS-1$
-    public static final String APIMAN_RT_HEAD_SUFFIX = ".head"; //$NON-NLS-1$
-    public static final String APIMAN_RT_BODY_SUFFIX = ".body"; //$NON-NLS-1$
-    public static final String APIMAN_RT_END_SUFFIX = ".end"; //$NON-NLS-1$
-    public static final String APIMAN_RT_ERROR_SUFFIX = ".error"; //$NON-NLS-1$
-    public static final String APIMAN_RT_FAILURE_SUFFIX = ".failure"; //$NON-NLS-1$
+    public static final String API_GATEWAY_READY_SUFFIX = ".ready"; //$NON-NLS-1$
+    public static final String API_GATEWAY_HEAD_SUFFIX = ".head"; //$NON-NLS-1$
+    public static final String API_GATEWAY_BODY_SUFFIX = ".body"; //$NON-NLS-1$
+    public static final String API_GATEWAY_END_SUFFIX = ".end"; //$NON-NLS-1$
+    public static final String API_GATEWAY_ERROR_SUFFIX = ".error"; //$NON-NLS-1$
+    public static final String API_GATEWAY_FAILURE_SUFFIX = ".failure"; //$NON-NLS-1$
 
-    public static final String APIMAN_RT_GATEWAY_ROUTES = "routes"; //$NON-NLS-1$
-    public static final String APIMAN_RT_EP_GATEWAY_REG_POLICY = "apiman.gateway.register.policy"; //$NON-NLS-1$
+    public static final String API_GATEWAY_GATEWAY_ROUTES = "routes"; //$NON-NLS-1$
+    public static final String API_GATEWAY_EP_GATEWAY_REG_POLICY = "apiman.gateway.register.policy"; //$NON-NLS-1$
 
     public static final String APIMAN_API_APPLICATIONS_REGISTER = ".apiman.api.applications.register"; //$NON-NLS-1$
     public static final String APIMAN_API_APPLICATIONS_DELETE = ".apiman.api.applications.delete"; //$NON-NLS-1$
@@ -70,11 +72,11 @@ public class VertxEngineConfig implements IEngineConfig {
     public static final String APIMAN_API_SERVICES_DELETE = ".apiman.api.services.delete"; //$NON-NLS-1$
     public static final String APIMAN_API_SUBSCRIBE = "apiman.api.subscribe"; //$NON-NLS-1$
 
-    private static final String APIMAN_RT_AUTH_BASIC = "file-basic"; //$NON-NLS-1$
-    private static final String APIMAN_RT_AUTH_ENABLED = "authenticated"; //$NON-NLS-1$
-    private static final String APIMAN_RT_AUTH_REALM = "realm"; //$NON-NLS-1$
-    private static final String APIMAN_RT_HOSTNAME = "hostname"; //$NON-NLS-1$
-    private static final String APIMAN_RT_ENDPOINT = "endpoint"; //$NON-NLS-1$
+    private static final String API_GATEWAY_AUTH_BASIC = "file-basic"; //$NON-NLS-1$
+    private static final String API_GATEWAY_AUTH_ENABLED = "authenticated"; //$NON-NLS-1$
+    private static final String API_GATEWAY_AUTH_REALM = "realm"; //$NON-NLS-1$
+    private static final String API_GATEWAY_HOSTNAME = "hostname"; //$NON-NLS-1$
+    private static final String API_GATEWAY_ENDPOINT = "endpoint"; //$NON-NLS-1$
 
     private RouteMapper routeMap;
     private JsonObject config;
@@ -82,8 +84,8 @@ public class VertxEngineConfig implements IEngineConfig {
     public VertxEngineConfig(JsonObject config) {
         this.config = config;
 
-        if(config.getObject(APIMAN_RT_GATEWAY_ROUTES) != null) {
-            routeMap = new RouteMapper(config.getObject(APIMAN_RT_GATEWAY_ROUTES));
+        if(config.getObject(API_GATEWAY_GATEWAY_ROUTES) != null) {
+            routeMap = new RouteMapper(config.getObject(API_GATEWAY_GATEWAY_ROUTES));
         } else {
             routeMap = new RouteMapper();
         }
@@ -95,73 +97,84 @@ public class VertxEngineConfig implements IEngineConfig {
 
     @Override
     public Class<? extends IRegistry> getRegistryClass() {
-        return loadConfigClass(getClassname(config, APIMAN_RT_REGISTRY_PREFIX),
+        return loadConfigClass(getClassname(config, API_GATEWAY_REGISTRY_PREFIX),
                 IRegistry.class);
     }
 
     @Override
     public Map<String, String> getRegistryConfig() {
-        return toFlatStringMap(getConfig(config, APIMAN_RT_REGISTRY_PREFIX));
+        return toFlatStringMap(getConfig(config, API_GATEWAY_REGISTRY_PREFIX));
     }
 
     @Override
     public Class<? extends IPluginRegistry> getPluginRegistryClass() {
-        return loadConfigClass(getClassname(config, APIMAN_RT_PLUGIN_REGISTRY_PREFIX),
+        return loadConfigClass(getClassname(config, API_GATEWAY_PLUGIN_REGISTRY_PREFIX),
                 IPluginRegistry.class);
     }
 
     @Override
     public Map<String, String> getPluginRegistryConfig() {
-        return toFlatStringMap(getConfig(config, APIMAN_RT_PLUGIN_REGISTRY_PREFIX));
+        return toFlatStringMap(getConfig(config, API_GATEWAY_PLUGIN_REGISTRY_PREFIX));
     }
 
     @Override
     public Class<? extends IConnectorFactory> getConnectorFactoryClass() {
-        return loadConfigClass(getClassname(config, APIMAN_RT_CONNECTOR_FACTORY_PREFIX),
+        return loadConfigClass(getClassname(config, API_GATEWAY_CONNECTOR_FACTORY_PREFIX),
                 IConnectorFactory.class);
     }
 
     @Override
     public Map<String, String> getConnectorFactoryConfig() {
-        return toFlatStringMap(getConfig(config, APIMAN_RT_CONNECTOR_FACTORY_PREFIX));
+        return toFlatStringMap(getConfig(config, API_GATEWAY_CONNECTOR_FACTORY_PREFIX));
     }
 
     @Override
     public Class<? extends IPolicyFactory> getPolicyFactoryClass() {
-        return loadConfigClass(getClassname(config, APIMAN_RT_POLICY_FACTORY_PREFIX),
+        return loadConfigClass(getClassname(config, API_GATEWAY_POLICY_FACTORY_PREFIX),
                 IPolicyFactory.class);
     }
 
     @Override
     public Map<String, String> getPolicyFactoryConfig() {
-        return toFlatStringMap(getConfig(config, APIMAN_RT_POLICY_FACTORY_PREFIX));
+        return toFlatStringMap(getConfig(config, API_GATEWAY_POLICY_FACTORY_PREFIX));
+    }
+    
+    @Override
+    public Class<? extends IMetrics> getMetricsClass() {
+        return loadConfigClass(getClassname(config, API_GATEWAY_METRICS_PREFIX),
+                IMetrics.class);
+    }
+    
+    @Override
+    public Map<String, String> getMetricsConfig() {
+        return toFlatStringMap(getConfig(config, API_GATEWAY_METRICS_PREFIX));
     }
 
     @Override
     public <T extends IComponent> Class<T> getComponentClass(Class<T> componentType) {
-        String className = config.getObject(APIMAN_RT_COMPONENT_PREFIX).
+        String className = config.getObject(API_GATEWAY_COMPONENT_PREFIX).
                 getObject(componentType.getSimpleName()).
-                getString(APIMAN_RT_CLASS);
+                getString(API_GATEWAY_CLASS);
 
         return loadConfigClass(className, componentType);
     }
 
     @Override
     public <T extends IComponent> Map<String, String> getComponentConfig(Class<T> componentType) {
-        JsonObject componentConfig = config.getObject(APIMAN_RT_COMPONENT_PREFIX).
+        JsonObject componentConfig = config.getObject(API_GATEWAY_COMPONENT_PREFIX).
                 getObject(componentType.getSimpleName()).
-                getObject(APIMAN_RT_CONFIG);
+                getObject(API_GATEWAY_CONFIG);
 
         return toFlatStringMap(componentConfig);
     }
 
 
     public Boolean isAuthenticationEnabled() {
-        return boolConfigWithDefault(APIMAN_RT_AUTH_ENABLED, false);
+        return boolConfigWithDefault(API_GATEWAY_AUTH_ENABLED, false);
     }
 
     public String getRealm() {
-        return stringConfigWithDefault(APIMAN_RT_AUTH_REALM, "apiman-realm"); //$NON-NLS-1$
+        return stringConfigWithDefault(API_GATEWAY_AUTH_REALM, "apiman-realm"); //$NON-NLS-1$
     }
 
     public RouteMapper getRouteMap() {
@@ -169,15 +182,15 @@ public class VertxEngineConfig implements IEngineConfig {
     }
     
     public String hostname() {
-        return stringConfigWithDefault(APIMAN_RT_HOSTNAME, "localhost"); //$NON-NLS-1$
+        return stringConfigWithDefault(API_GATEWAY_HOSTNAME, "localhost"); //$NON-NLS-1$
     }
     
     public String getEndpoint() {
-        return stringConfigWithDefault(APIMAN_RT_ENDPOINT, "localhost");    //$NON-NLS-1$
+        return stringConfigWithDefault(API_GATEWAY_ENDPOINT, "localhost");    //$NON-NLS-1$
     }
 
     public Map<String, String> loadFileBasicAuth() {
-        JsonObject pairs = config.getObject(APIMAN_RT_AUTH_PREFIX).getObject(APIMAN_RT_AUTH_BASIC);
+        JsonObject pairs = config.getObject(API_GATEWAY_AUTH_PREFIX).getObject(API_GATEWAY_AUTH_BASIC);
 
         Map<String, String> map = new HashMap<>();
 
@@ -199,11 +212,11 @@ public class VertxEngineConfig implements IEngineConfig {
     }
 
     protected String getClassname(JsonObject obj, String prefix) {
-        return obj.getObject(prefix).getString(APIMAN_RT_CLASS);
+        return obj.getObject(prefix).getString(API_GATEWAY_CLASS);
     }
 
     protected JsonObject getConfig(JsonObject obj, String prefix) {
-        return obj.getObject(prefix).getObject(APIMAN_RT_CONFIG);
+        return obj.getObject(prefix).getObject(API_GATEWAY_CONFIG);
     }
 
     /**

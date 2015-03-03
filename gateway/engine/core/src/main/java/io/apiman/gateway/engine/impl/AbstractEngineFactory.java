@@ -19,6 +19,7 @@ import io.apiman.gateway.engine.IComponentRegistry;
 import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.IEngine;
 import io.apiman.gateway.engine.IEngineFactory;
+import io.apiman.gateway.engine.IMetrics;
 import io.apiman.gateway.engine.IPluginRegistry;
 import io.apiman.gateway.engine.IRegistry;
 import io.apiman.gateway.engine.policy.IPolicyFactory;
@@ -46,8 +47,9 @@ public abstract class AbstractEngineFactory implements IEngineFactory {
         IComponentRegistry componentRegistry = createComponentRegistry();
         IConnectorFactory cfactory = createConnectorFactory();
         IPolicyFactory pfactory = createPolicyFactory();
+        IMetrics metrics = createMetrics();
         
-        IEngine engine = new EngineImpl(registry, pluginRegistry, componentRegistry, cfactory, pfactory);
+        IEngine engine = new EngineImpl(registry, pluginRegistry, componentRegistry, cfactory, pfactory, metrics);
         return engine;
     }
 
@@ -80,5 +82,11 @@ public abstract class AbstractEngineFactory implements IEngineFactory {
      * @return a new policy factory
      */
     protected abstract IPolicyFactory createPolicyFactory();
+
+    /**
+     * Creates the metrics system.
+     * @return the metrics object
+     */
+    protected abstract IMetrics createMetrics();
 
 }

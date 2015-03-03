@@ -37,6 +37,7 @@ import io.apiman.gateway.test.server.EchoServer;
 import io.apiman.gateway.test.server.GatewayServer;
 import io.apiman.gateway.test.server.GatewayTestType;
 import io.apiman.gateway.test.server.GatewayTestUtils;
+import io.apiman.gateway.test.server.TestMetrics;
 import io.apiman.test.common.util.TestPlanRunner;
 
 import java.io.File;
@@ -84,7 +85,8 @@ public class AbstractGatewayTest {
                 HttpClientComponentImpl.class.getName());
         System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + IDataStoreComponent.class.getSimpleName(), 
                 InMemoryDataStoreComponent.class.getName());
-        
+        System.setProperty(WarEngineConfig.APIMAN_GATEWAY_METRICS_CLASS, TestMetrics.class.getName());
+
         if (GatewayTestUtils.getTestType() == GatewayTestType.memory) {
             // Configure to run with in-memory components
             /////////////////////////////////////////////

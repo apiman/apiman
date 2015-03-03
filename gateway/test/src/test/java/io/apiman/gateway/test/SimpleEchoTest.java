@@ -15,6 +15,12 @@
  */
 package io.apiman.gateway.test;
 
+import io.apiman.gateway.engine.metrics.RequestMetric;
+import io.apiman.gateway.test.server.TestMetrics;
+
+import java.util.List;
+
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -22,11 +28,33 @@ import org.junit.Test;
  *
  * @author eric.wittmann@redhat.com
  */
+@SuppressWarnings("nls")
 public class SimpleEchoTest extends AbstractGatewayTest {
     
     @Test
     public void test() throws Exception {
-        runTestPlan("test-plans/simple/simple-echo-testPlan.xml"); //$NON-NLS-1$
+        runTestPlan("test-plans/simple/simple-echo-testPlan.xml");
+        
+        List<RequestMetric> metrics = TestMetrics.getMetrics();
+        Assert.assertNotNull(metrics);
+        Assert.assertEquals(4, metrics.size());
+        RequestMetric metric = metrics.get(0);
+        Assert.assertEquals("SimpleEchoTest", metric.getServiceOrgId());
+        Assert.assertEquals("echo", metric.getServiceId());
+        Assert.assertEquals("1.0.0", metric.getServiceVersion());
+
+        Assert.assertEquals("SimpleEchoTest", metric.getApplicationOrgId());
+        Assert.assertEquals("test", metric.getApplicationId());
+        Assert.assertEquals("1.0.0", metric.getApplicationVersion());
+
+        Assert.assertEquals("12345", metric.getContractId());
+
+        Assert.assertTrue(metric.getRequestDuration() > 0);
+        Assert.assertTrue(metric.getServiceDuration() > 0);
+
+        Assert.assertEquals(200, metric.getResponseCode());
+        Assert.assertEquals("OK", metric.getResponseMessage());
+
     }
 
 }

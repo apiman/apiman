@@ -69,11 +69,11 @@ public class HttpGatewayStreamer implements Registrant, Handler<HttpServerReques
 
         // Handles request related stuff
         requestExecutor = new SignalRequestExecutor<>(vertx, container, policyVerticleAddress
-                + VertxEngineConfig.APIMAN_RT_EP_SERVICE_REQUEST);
+                + VertxEngineConfig.API_GATEWAY_EP_SERVICE_REQUEST);
 
         // Handles response related stuff
         responseListener = new ServiceResponseListener(vertx, container, policyVerticleAddress
-                + VertxEngineConfig.APIMAN_RT_EP_SERVICE_RESPONSE);
+                + VertxEngineConfig.API_GATEWAY_EP_SERVICE_RESPONSE);
     }
 
     @Override

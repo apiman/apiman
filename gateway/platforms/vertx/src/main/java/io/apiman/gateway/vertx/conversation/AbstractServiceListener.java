@@ -52,7 +52,7 @@ public abstract class AbstractServiceListener<E> implements IResettable {
     }
 
     protected void listen() {
-        eb.registerHandler(address + VertxEngineConfig.APIMAN_RT_HEAD_SUFFIX, new Handler<Message<String>>() {
+        eb.registerHandler(address + VertxEngineConfig.API_GATEWAY_HEAD_SUFFIX, new Handler<Message<String>>() {
 
             @Override
             public void handle(Message<String> message) {
@@ -64,7 +64,7 @@ public abstract class AbstractServiceListener<E> implements IResettable {
             }
         });
 
-        eb.registerHandler(address + VertxEngineConfig.APIMAN_RT_BODY_SUFFIX, new Handler<Message<Buffer>>() {
+        eb.registerHandler(address + VertxEngineConfig.API_GATEWAY_BODY_SUFFIX, new Handler<Message<Buffer>>() {
 
             @Override
             public void handle(Message<Buffer> event) {
@@ -77,7 +77,7 @@ public abstract class AbstractServiceListener<E> implements IResettable {
             }
         });
 
-        eb.registerHandler(address + VertxEngineConfig.APIMAN_RT_END_SUFFIX, new Handler<Message<Void>>() {
+        eb.registerHandler(address + VertxEngineConfig.API_GATEWAY_END_SUFFIX, new Handler<Message<Void>>() {
 
             @Override
             public void handle(Message<Void> signal) {
@@ -86,7 +86,7 @@ public abstract class AbstractServiceListener<E> implements IResettable {
             }
         });
 
-        eb.registerHandler(address + VertxEngineConfig.APIMAN_RT_ERROR_SUFFIX, new Handler<Message<String>>() {
+        eb.registerHandler(address + VertxEngineConfig.API_GATEWAY_ERROR_SUFFIX, new Handler<Message<String>>() {
 
             @Override
             public void handle(Message<String> message) {

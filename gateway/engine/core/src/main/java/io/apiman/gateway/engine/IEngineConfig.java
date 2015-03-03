@@ -76,4 +76,14 @@ public interface IEngineConfig {
      */
     public <T extends IComponent> Map<String, String> getComponentConfig(Class<T> componentType);
 
+    /**
+     * @return the class to use as the {@link IMetrics}
+     */
+    public Class<? extends IMetrics> getMetricsClass();
+
+    /**
+     * @return all properties to be passed to the factory
+     */
+    public Map<String, String> getMetricsConfig();
+
 }

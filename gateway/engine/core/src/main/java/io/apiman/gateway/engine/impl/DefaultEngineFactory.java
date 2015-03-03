@@ -16,6 +16,7 @@
 package io.apiman.gateway.engine.impl;
 
 import io.apiman.gateway.engine.IComponentRegistry;
+import io.apiman.gateway.engine.IMetrics;
 import io.apiman.gateway.engine.IPluginRegistry;
 import io.apiman.gateway.engine.IRegistry;
 import io.apiman.gateway.engine.policy.IPolicyFactory;
@@ -67,6 +68,14 @@ public abstract class DefaultEngineFactory extends AbstractEngineFactory {
     @Override
     protected IPolicyFactory createPolicyFactory() {
         return new PolicyFactoryImpl();
+    }
+    
+    /**
+     * @see io.apiman.gateway.engine.impl.AbstractEngineFactory#createMetrics()
+     */
+    @Override
+    protected IMetrics createMetrics() {
+        return new InMemoryMetrics();
     }
 
 }

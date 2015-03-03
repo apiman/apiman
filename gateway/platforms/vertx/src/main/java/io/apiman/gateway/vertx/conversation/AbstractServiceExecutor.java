@@ -45,15 +45,15 @@ public abstract class AbstractServiceExecutor<H> implements ISimpleWriteStream {
 
     // Send head
     protected void execute(H service) {
-        eb.send(address + VertxEngineConfig.APIMAN_RT_HEAD_SUFFIX, Json.encode(service));
+        eb.send(address + VertxEngineConfig.API_GATEWAY_HEAD_SUFFIX, Json.encode(service));
     }
 
     public void write(Buffer chunk) {
-        eb.send(address + VertxEngineConfig.APIMAN_RT_BODY_SUFFIX, chunk);
+        eb.send(address + VertxEngineConfig.API_GATEWAY_BODY_SUFFIX, chunk);
     }
 
     public void end() {
-        eb.send(address + VertxEngineConfig.APIMAN_RT_END_SUFFIX, (Void) null);
+        eb.send(address + VertxEngineConfig.API_GATEWAY_END_SUFFIX, (Void) null);
         finished = true;
     }
 

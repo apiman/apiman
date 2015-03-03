@@ -51,10 +51,10 @@ public class PolicyVerticle extends ApimanVerticleWithEngine {
     @Override
     public void start() {
         super.start();
-        worker = new WorkerHelper(VertxEngineConfig.APIMAN_RT_EP_GATEWAY_REG_POLICY, uuid, eb, logger);
+        worker = new WorkerHelper(VertxEngineConfig.API_GATEWAY_EP_GATEWAY_REG_POLICY, uuid, eb, logger);
 
-        requestHandler = new ServiceRequestListener(eb, logger, worker.getUuid() + VertxEngineConfig.APIMAN_RT_EP_SERVICE_REQUEST);
-        responseExecutor = new ServiceResponseExecutor(eb, logger, worker.getUuid() + VertxEngineConfig.APIMAN_RT_EP_SERVICE_RESPONSE);
+        requestHandler = new ServiceRequestListener(eb, logger, worker.getUuid() + VertxEngineConfig.API_GATEWAY_EP_SERVICE_REQUEST);
+        responseExecutor = new ServiceResponseExecutor(eb, logger, worker.getUuid() + VertxEngineConfig.API_GATEWAY_EP_SERVICE_RESPONSE);
 
         setup();
     }

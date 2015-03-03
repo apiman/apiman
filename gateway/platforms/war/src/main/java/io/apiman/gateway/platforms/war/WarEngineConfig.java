@@ -18,6 +18,7 @@ package io.apiman.gateway.platforms.war;
 import io.apiman.gateway.engine.IComponent;
 import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.IEngineConfig;
+import io.apiman.gateway.engine.IMetrics;
 import io.apiman.gateway.engine.IPluginRegistry;
 import io.apiman.gateway.engine.IRegistry;
 import io.apiman.gateway.engine.policy.IPolicyFactory;
@@ -44,6 +45,7 @@ public class WarEngineConfig implements IEngineConfig {
     public static final String APIMAN_GATEWAY_PLUGIN_REGISTRY_CLASS = "apiman-gateway.plugin-registry"; //$NON-NLS-1$
     public static final String APIMAN_GATEWAY_CONNECTOR_FACTORY_CLASS = "apiman-gateway.connector-factory"; //$NON-NLS-1$
     public static final String APIMAN_GATEWAY_POLICY_FACTORY_CLASS = "apiman-gateway.policy-factory"; //$NON-NLS-1$
+    public static final String APIMAN_GATEWAY_METRICS_CLASS = "apiman-gateway.metrics"; //$NON-NLS-1$
     
     public static final String APIMAN_GATEWAY_COMPONENT_PREFIX = "apiman-gateway.components."; //$NON-NLS-1$
 
@@ -146,6 +148,20 @@ public class WarEngineConfig implements IEngineConfig {
      */
     public Map<String, String> getPolicyFactoryConfig() {
         return getConfigMap(APIMAN_GATEWAY_POLICY_FACTORY_CLASS);
+    }
+
+    /**
+     * @return the class to use as the {@link IMetrics}
+     */
+    public Class<IMetrics> getMetricsClass() {
+        return loadConfigClass(APIMAN_GATEWAY_METRICS_CLASS, IMetrics.class);
+    }
+
+    /**
+     * @return all properties to be passed to the factory
+     */
+    public Map<String, String> getMetricsConfig() {
+        return getConfigMap(APIMAN_GATEWAY_METRICS_CLASS);
     }
 
     /**

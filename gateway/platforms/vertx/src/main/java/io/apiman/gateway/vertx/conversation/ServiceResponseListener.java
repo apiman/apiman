@@ -15,10 +15,10 @@
  */
 package io.apiman.gateway.vertx.conversation;
 
-import io.apiman.gateway.vertx.common.DoubleHandler;
-import io.apiman.gateway.vertx.config.VertxEngineConfig;
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.ServiceResponse;
+import io.apiman.gateway.vertx.common.DoubleHandler;
+import io.apiman.gateway.vertx.config.VertxEngineConfig;
 
 import org.vertx.java.core.Handler;
 import org.vertx.java.core.Vertx;
@@ -44,7 +44,7 @@ public class ServiceResponseListener extends AbstractServiceListener<ServiceResp
     public void listen() {
         logger.debug("ServiceResponseListener listening on " + address); //$NON-NLS-1$
 
-        eb.registerHandler(address + VertxEngineConfig.APIMAN_RT_FAILURE_SUFFIX, new Handler<Message<String>>() {
+        eb.registerHandler(address + VertxEngineConfig.API_GATEWAY_FAILURE_SUFFIX, new Handler<Message<String>>() {
 
             @Override
             public void handle(Message<String> message) {

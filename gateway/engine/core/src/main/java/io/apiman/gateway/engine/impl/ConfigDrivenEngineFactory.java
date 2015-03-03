@@ -18,6 +18,7 @@ package io.apiman.gateway.engine.impl;
 import io.apiman.gateway.engine.IComponentRegistry;
 import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.IEngineConfig;
+import io.apiman.gateway.engine.IMetrics;
 import io.apiman.gateway.engine.IPluginRegistry;
 import io.apiman.gateway.engine.IRegistry;
 import io.apiman.gateway.engine.policy.IPolicyFactory;
@@ -87,6 +88,16 @@ public class ConfigDrivenEngineFactory extends AbstractEngineFactory {
     protected IPolicyFactory createPolicyFactory() {
         Class<? extends IPolicyFactory> c = engineConfig.getPolicyFactoryClass();
         Map<String, String> config = engineConfig.getPolicyFactoryConfig();
+        return create(c, config);
+    }
+    
+    /**
+     * @see io.apiman.gateway.engine.impl.AbstractEngineFactory#createMetrics()
+     */
+    @Override
+    protected IMetrics createMetrics() {
+        Class<? extends IMetrics> c = engineConfig.getMetricsClass();
+        Map<String, String> config = engineConfig.getMetricsConfig();
         return create(c, config);
     }
     
