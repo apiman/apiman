@@ -27,7 +27,7 @@
             <div class="title container-fluid">
               <i class="breadcrumb-icon fa fa-bar-chart-o"></i>
               <div class="entity emphasis">
-                <a data-field="thePlan" href="plan-overview.html" data-role="dummy">{{ plan.name }}</a>
+                <a data-field="thePlan" href="plan-overview.html?org={{plan.organization.id}}&plan={{plan.id}}" data-role="dummy">{{ plan.name }}</a>
               </div>
               <div class="versions">
                 <div class="btn-group apiman-entity-action" data-role="dummy" data-field="versions">
@@ -38,7 +38,7 @@
                     <li ng-repeat="planVersion in versions"><a href="#" ng-click="setVersion( planVersion )">{{ planVersion.version }}</a></li>
                   </ul>
                 </div>
-                <a data-permission="planEdit" href="new-planversion.html" class="btn btn-primary apiman-entity-action" data-field="toNewPlanVersion" data-i18n-key="new-version">New Version</a>
+                <a data-permission="planEdit" href="new-planversion.html?org={{plan.organization.id}}&plan={{plan.id}}&version={{versions[versions.length-1].version}}" class="btn btn-primary apiman-entity-action" data-field="toNewPlanVersion" data-i18n-key="new-version">New Version</a>
               </div>
             </div>
             <hr />
@@ -52,7 +52,7 @@
               <div class="entity-info-with-icon">
                 <i class="fa fa-clock-o fa-fw"></i>
                 <span class="apiman-label-faded" data-i18n-key="created-on">Created on</span>
-                <span data-field="createdOn" data-role="dummy" >{{ plan.createdOn }}</span>
+                <span data-field="createdOn" data-role="dummy" >{{ plan.createdOn | date:'yyyy-MM-dd' }}</span>
               </div>
               <div class="entity-info-with-icon">
                 <i class="fa fa-user fa-fw"></i>

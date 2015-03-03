@@ -7,39 +7,8 @@
   </head>
 
   <body>
-
-    <!-- Top header/nav bar -->
-    <div id="apiman-header">
-      <div class="main-header container">
-        <div class="row">
-          <div class="col-md-12">
-            <div class="logo"></div>
-            <input class="search no-phone" type="text" placeholder="Quick service search..."></input>
-            <ul class="user-menu pull-right">
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                  <span class="pficon pficon-user"></span>
-                  <span>Bruce Wayne</span>
-                  <b class="caret"></b>
-                </a>
-                <ul class="dropdown-menu">
-                  <li>
-                    <a href="user-orgs.html">Home</a>
-                  </li>
-                  <li class="divider"></li>
-                  <li>
-                    <a data-field="toProfile" href="settings-profile.html" data-i18n-key="profile">Profile</a>
-                  </li>
-                  <li>
-                    <a href="#">Logout</a>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
+    <div ng-controller="Apiman.NewPlanController">
+    <div id="apiman-header" ng-include="'plugins/apiman/html/navbar.html'"></div>
 
     <div id="form-page" class="container apiman-entity-new page" data-field="page">
       <div class="row">
@@ -60,11 +29,10 @@
           <dd>
             <div class="btn-group" data-field="orgSelector">
               <button type="button" id="selector-org" class="btn btn-default dropdown-toggle" data-toggle="dropdown" data-field="button">
-                <span data-field="selectorLabel" id="selector-org-value" data-i18n-key="select-org">Select Organization</span> &nbsp;&nbsp;<span class="caret"></span>
+                <span data-field="selectorLabel" id="selector-org-value" data-i18n-key="select-org">{{selectedOrg.name}}</span> &nbsp;&nbsp;<span class="caret"></span>
               </button>
               <ul class="dropdown-menu" data-role="dummy" data-field="organizations">
-                <li><a href="#" onclick="$('#selector-org-value').text('JBoss Overlord'); $('#apiman-entityname').focus()">JBoss Overlord</a></li>
-                <li><a href="#" onclick="$('#selector-org-value').text('Apereo Bedework'); $('#apiman-entityname').focus()">Apereo Bedework</a></li>
+                <li ng-repeat="org in organizations"><a href="#" ng-click="setOrg( org )">{{ org.name }}</a></li>
               </ul>
             </div>
           </dd>
@@ -78,7 +46,7 @@
         <dl class="name">
           <dt data-i18n-key="plan-name">Plan Name</dt>
           <dd>
-            <input data-field="name" type="text" class="form-control entityname" id="apiman-entityname" placeholder="Enter plan name..."></input>
+            <input ng-model="plan.name" data-field="name" type="text" class="form-control entityname" id="apiman-entityname" placeholder="Enter plan name..."></input>
           </dd>
         </dl>
       </div>
@@ -87,7 +55,7 @@
         <dl>
           <dt data-i18n-key="initial-version">Initial Version</dt>
           <dd>
-            <input data-field="version" type="text" class="form-control version" id="apiman-version" value="1.0"></input>
+            <input ng-model="plan.initialVersion" data-field="version" type="text" class="form-control version" id="apiman-version" value="1.0"></input>
           </dd>
         </dl>
       </div>
@@ -96,7 +64,7 @@
         <dl>
           <dt data-i18n-key="description">Description</dt>
           <dd>
-            <input data-field="description" type="text" class="form-control description" id="apiman-description" placeholder="Enter plan description (optional)..."></input>
+            <input ng-model="plan.description" data-field="description" type="text" class="form-control description" id="apiman-description" placeholder="Enter plan description (optional)..."></input>
           </dd>
         </dl>
       </div>
@@ -106,9 +74,10 @@
       </div>
       <!-- Create Button -->
       <div class="row">
-        <button class="btn btn-primary" data-field="createButton" data-i18n-key="create-plan" placeholder="Creating..." data-icon="fa-cog">Create Plan</button>
+        <button class="btn btn-primary" data-field="createButton" data-i18n-key="create-plan" placeholder="Creating..." data-icon="fa-cog"  ng-click="saveNewPlan()">Create Plan</button>
         <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" data-i18n-key="cancel">Cancel</a>
       </div>
     </div> <!-- /container -->
+    </div>
   </body>
 </html>
