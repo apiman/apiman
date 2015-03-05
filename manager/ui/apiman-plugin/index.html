@@ -5,13 +5,11 @@
     <title>apiman-plugin</title>
     <base href='/'></base>
 
-
+    <!-- bower:css -->
     <link rel="stylesheet" href="libs/bootstrap/dist/css/bootstrap.css" />
     <link rel="stylesheet" href="libs/patternfly/dist/css/patternfly.css" />
-    <link rel="stylesheet" href="plugins/apiman/css/apiman.css" />
-
-    <!-- bower:css -->
     <!-- endbower -->
+    <link rel="stylesheet" href="plugins/apiman/css/apiman.css" />
 
     <!-- ES6/ES6 shim -->
     <!--[if IE 8]>
@@ -42,22 +40,13 @@
     <script src="libs/hawtio-utilities/dist/angular-file-upload.js"></script>
     <script src="libs/hawtio-utilities/dist/hawtio-utilities.js"></script>
     <script src="libs/angular-resource/angular-resource.js"></script>
-    <!-- endbower -->
-
     <script src="libs/bootstrap/dist/js/bootstrap.js"></script>
     <script src="libs/patternfly/dist/js/patternfly.js"></script>
-
+    <!-- endbower -->
   </head>
 
   <body>
-    <nav class="navbar navbar-default navbar-pf" role="navigation">
-      <ul class="nav navbar-nav navbar-primary" hawtio-main-nav></ul>
-      <ul class="nav navbar-nav" hawtio-sub-tabs></ul>
-    </nav>
-
-    <div class="container-fluid" ng-view></div>
-
+    <div ng-view></div>
     <script src="dist/apiman-plugin.js"></script>
-
   </body>
 </html>
