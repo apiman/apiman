@@ -90,7 +90,9 @@
     <version.surefire-report.plugin>2.17</version.surefire-report.plugin>
     <version.failsafe.plugin>2.14</version.failsafe.plugin>
     <version.war.plugin>2.5</version.war.plugin>
+    <version.exec.plugin>1.3.2</version.exec.plugin>
     <version.vertx.plugin>2.0.11-final</version.vertx.plugin>
+    <version.docker.plugin>0.11.2</version.docker.plugin>
 
     <!-- Dependency Versions -->
     <version.com.fasterxml.classmate>0.8.0</version.com.fasterxml.classmate>
@@ -1072,6 +1074,16 @@
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>gwt-maven-plugin</artifactId>
           <version>${version.com.google.gwt}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>exec-maven-plugin</artifactId>
+          <version>${version.exec.plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.jolokia</groupId>
+          <artifactId>docker-maven-plugin</artifactId>
+          <version>${version.docker.plugin}</version>
         </plugin>
         <plugin>
           <groupId>io.vertx</groupId>

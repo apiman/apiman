@@ -261,7 +261,7 @@ public class ManagerApiTestServer {
      */
     protected void addModulesToJetty(ContextHandlerCollection handlers) throws Exception {
         /* *************
-         * APIMan DT API
+         * Manager API
          * ************* */
         ServletContextHandler apiManServer = new ServletContextHandler(ServletContextHandler.SESSIONS);
         apiManServer.setSecurityHandler(createSecurityHandler());

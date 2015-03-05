@@ -13,54 +13,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.manager.api.war.wildfly8;
+package io.apiman.manager.api.war.micro;
 
 import io.apiman.manager.api.core.plugin.AbstractPluginRegistry;
-import io.apiman.manager.api.war.WarApiManagerConfig;
 
-import java.io.File;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 /**
- * A wildfly 8 version of the plugin registry.  This subclass exists in order
- * to properly configure the data directory that should be used.  In this case
- * the data directory is $WILDFLY/standalone/data/apiman/plugins
+ * A micro service version of the plugin registry.  This subclass exists in order
+ * to properly configure the data directory that should be used.  The location of
+ * the plugin data directory must be provided via a system property.
  *
  * @author eric.wittmann@redhat.com
  */
 @ApplicationScoped
-public class Wildfly8PluginRegistry extends AbstractPluginRegistry {
+public class ManagerApiMicroServicePluginRegistry extends AbstractPluginRegistry {
 
     @Inject
-    private WarApiManagerConfig config;
+    private ManagerApiMicroServiceConfig config;
     
     private Set<URL> mavenRepos = null;
-    
-    /**
-     * Creates the directory to use for the plugin registry.  The location of
-     * the plugin registry is in the Wildfly data directory.
-     */
-    private static File getPluginDir() {
-        String dataDirPath = System.getProperty("jboss.server.data.dir"); //$NON-NLS-1$
-        File dataDir = new File(dataDirPath);
-        if (!dataDir.isDirectory()) {
-            throw new RuntimeException("Failed to find WildFly data directory at: " + dataDirPath); //$NON-NLS-1$
-        }
-        File pluginsDir = new File(dataDir, "apiman/plugins"); //$NON-NLS-1$
-        return pluginsDir;
-    }
 
     /**
      * Constructor.
-     * @param pluginsDir
      */
-    public Wildfly8PluginRegistry() {
-        super(getPluginDir());
+    public ManagerApiMicroServicePluginRegistry() {
+    }
+    
+    @PostConstruct
+    protected void postConstruct() {
+        setPluginsDir(config.getPluginDirectory());
     }
 
     /**
