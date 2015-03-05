@@ -15,6 +15,6 @@
    var organizationServices = angular.module('organizationServices', ['ngResource']);
    organizationServices.factory('OrgSvcs', ['$resource',
     function($resource){
-      return $resource('http://127.0.0.1/apiman/organizations/:organizationId/:entityType/:entityId/:versionsOrActivity/:version',
-	{organizationId:'@organizationId', entityType:'@entityType', entityId:'@entityId',versionsOrActivity:'@versionsOrActivity', version:'@version'});
+      return $resource('http://127.0.0.1/apiman/organizations/:organizationId/:entityType/:entityId/:versionsOrActivity/:version/:policiesOrActivity/:policyId',
+	{organizationId:'@organizationId', entityType:'@entityType', entityId:'@entityId',versionsOrActivity:'@versionsOrActivity', version:'@version',policiesOrActivity:'@policiesOrActivity', policyId:'@policyId'});
    }]);
