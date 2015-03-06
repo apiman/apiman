@@ -3,8 +3,6 @@ module Apiman {
 
     export var NewPlanController = _module.controller("Apiman.NewPlanController",
         ['$location', '$scope', 'UserSvcs', 'OrgSvcs', ($location, $scope, UserSvcs, OrgSvcs) => {
-            $scope.plan.initialVersion = '1.0';
-            
             UserSvcs.query({ entityType: 'organizations' }, function(userOrgs) {
                 $scope.organizations = userOrgs;
                 $scope.selectedOrg = $scope.organizations[0];
@@ -24,6 +22,10 @@ module Apiman {
                         alert("ERROR=" + error.status + " " + error.statusText);
                     }
                 });
+            };
+            // Initialize the model - the default initial version for a new plan is always 1.0
+            $scope.plan = {
+                initialVersion: '1.0'
             };
         }]);
 
