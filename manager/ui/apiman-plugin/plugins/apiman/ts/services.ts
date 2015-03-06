@@ -3,10 +3,11 @@ module ApimanServices {
 
     export var _module = angular.module("ApimanServices", ['ngResource', 'ApimanConfiguration']);
 
-    export var ActionServices = _module.factory('ActionServices', ['$resource', 'Configuration',
+    export var ApimanServices = _module.factory('ApimanSvcs', ['$resource', 'Configuration',
         function($resource, Configuration) {
-            var endpoint = Configuration.api.endpoint + '/apiman/actions';
-            return $resource(endpoint);
+            var endpoint = Configuration.api.endpoint + '/apiman/:entityType';
+            return $resource(endpoint,
+                { entityType: '@entityType' });
         }]);
 
     export var UserServices = _module.factory('UserSvcs', ['$resource', 'Configuration',
