@@ -7,39 +7,8 @@
   </head>
 
   <body>
-    
-    <!-- Top header/nav bar -->
-    <div id="apiman-header">
-      <div class="main-header container">
-        <div class="row">
-          <div class="col-md-12">
-            <div class="logo"></div>
-            <input class="search no-phone" type="text" placeholder="Quick service search..."></input>
-            <ul class="user-menu pull-right">
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                  <span class="pficon pficon-user"></span>
-                  <span>Bruce Wayne</span>
-                  <b class="caret"></b>
-                </a>
-                <ul class="dropdown-menu">
-                  <li>
-                    <a href="user-orgs.html">Home</a>
-                  </li>
-                  <li class="divider"></li>
-                  <li>
-                    <a data-field="toProfile" href="settings-profile.html" data-i18n-key="profile">Profile</a>
-                  </li>
-                  <li>
-                    <a href="#">Logout</a>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
+  <div ng-controller="Apiman.UserAppsController">
+    <div id="apiman-header" ng-include="'plugins/apiman/html/navbar.html'"></div>   
 
     <!-- Page content -->
     <div class="page container" data-field="page">
@@ -85,10 +54,10 @@
         <div class="col-md-8">
           <div class="apiman-entitytabs">
             <ul id="entitytabs" class="nav nav-tabs">
-              <li><a href="user-orgs.html" data-field="toUserOrgs" data-i18n-key="organizations">Organizations</a></li>
-              <li class="active"><a href="user-apps.html" data-field="toUserApps" data-i18n-key="applications">Applications</a></li>
-              <li><a href="user-services.html" data-field="toUserServices" data-i18n-key="services">Services</a></li>
-              <li class="pull-right"><a href="user-activity.html" data-field="toUserActivity" data-i18n-key="activity">Activity</a></li>
+              <li><a href="{{ pluginName }}/user-orgs.html" data-field="toUserOrgs" data-i18n-key="organizations">Organizations</a></li>
+              <li class="active"><a href="{{ pluginName }}/user-apps.html" data-field="toUserApps" data-i18n-key="applications">Applications</a></li>
+              <li><a href="{{ pluginName }}/user-services.html" data-field="toUserServices" data-i18n-key="services">Services</a></li>
+              <li class="pull-right"><a href="{{ pluginName }}/user-activity.html" data-field="toUserActivity" data-i18n-key="activity">Activity</a></li>
             </ul>
             <div id="entitytabsContent" class="tab-content">
 
@@ -111,10 +80,10 @@
                 </div>
                 <div class="clearfix"></div>
                 <!-- The list of applications the user has access to -->
-                <div class="apiman-applications" data-field="applications" data-role="dummy">
+                <div class="apiman-applications" data-field="applications" data-role="dummy" ng-repeat="app in applications" >
                   <div class="container-fluid apiman-summaryrow">
                     <div class="row">
-                      <a href="org-apps.html">JBoss Overlord</a> / <span class="title"><a href="app-overview.html">gadget-server</a></span>
+                      <a href="{{ plugingName}}/org-apps.html">{{ app.organizationName }}</a> / <span class="title"><a href="{{ pluginName }}/app-overview.html">{{ app.name }}</a></span>
                       <a href="#" data-toggle="popover" data-trigger="hover" data-html="true" data-content="This application invokes <b>52</b> <em>services</em>." data-placement="top" class="apiman-summaryrow-icon">
                         <i class="fa fa-puzzle-piece"></i>
                         <span class="title-summary-item">52</span>
@@ -122,83 +91,7 @@
                     </div>
                     <div class="row">
                       <span class="description">
-                        This is a project that builds on the Apache Shindig as the open social gadget containers.
-                      </span>
-                    </div>
-                    <hr/>
-                  </div>
-                  <div class="container-fluid apiman-summaryrow">
-                    <div class="row">
-                      <a href="org-apps.html">JBoss Overlord</a> / <span class="title"><a href="app-overview.html">rtgov</a></span>
-                      <a href="#" data-toggle="popover" data-trigger="hover" data-html="true" data-content="This application invokes <b>11</b> <em>services</em>." data-placement="top" class="apiman-summaryrow-icon">
-                        <i class="fa fa-puzzle-piece"></i>
-                        <span class="title-summary-item">11</span>
-                      </a>
-                    </div>
-                    <div class="row">
-                      <span class="description">
-                        This component provides the infrastructure to capture service activity information and
-                        then correlate<a href="#" data-toggle="popover" data-placement="bottom" data-trigger="hover" data-html="true" data-content="This component provides the infrastructure to capture service activity information and then correlate, analyse and finally present the information in a form that can be used by a business to police Business/Service Level Agreements, and optimize their business.">...</a>
-                      </span>
-                    </div>
-                    <hr/>
-                  </div>
-                  <div class="container-fluid apiman-summaryrow">
-                    <div class="row">
-                      <a href="org-apps.html">JBoss Overlord</a> / <span class="title"><a href="app-overview.html">dtgov</a></span>
-                      <a href="#" data-toggle="popover" data-trigger="hover" data-html="true" data-content="This application invokes <b>123</b> <em>services</em>." data-placement="top" class="apiman-summaryrow-icon">
-                        <i class="fa fa-puzzle-piece"></i>
-                        <span class="title-summary-item">123</span>
-                      </a>
-                    </div>
-                    <div class="row">
-                      <span class="description">
-                        This component provides the capability to manage the lifecycle of systems from inception through deployment through subsequent change management.
-                      </span>
-                    </div>
-                    <hr/>
-                  </div>
-                  <div class="container-fluid apiman-summaryrow">
-                    <div class="row">
-                      <a href="org-apps.html">JBoss Overlord</a> / <span class="title"><a href="app-overview.html">s-ramp</a></span>
-                      <a href="#" data-toggle="popover" data-trigger="hover" data-html="true" data-content="This application invokes <b>5</b> <em>services</em>." data-placement="top" class="apiman-summaryrow-icon">
-                        <i class="fa fa-puzzle-piece"></i>
-                        <span class="title-summary-item">5</span>
-                      </a>
-                    </div>
-                    <div class="row">
-                      <span class="description">
-                        This component provides a reference implementation for the SOA Repository Artifact Model &amp; Protocol standard.
-                      </span>
-                    </div>
-                    <hr/>
-                  </div>
-                  <div class="container-fluid apiman-summaryrow">
-                    <div class="row">
-                      <a href="org-apps.html">Apereo Bedework</a> / <span class="title"><a href="app-overview.html">bw-synch</a></span>
-                      <a href="#" data-toggle="popover" data-trigger="hover" data-html="true" data-content="This application invokes <b>9</b> <em>services</em>." data-placement="top" class="apiman-summaryrow-icon">
-                        <i class="fa fa-puzzle-piece"></i>
-                        <span class="title-summary-item">9</span>
-                      </a>
-                    </div>
-                    <div class="row">
-                      <span class="description">
-                        The bw-synch application is used to synchronize two calendars in real time.
-                      </span>
-                    </div>
-                    <hr/>
-                  </div>
-                  <div class="container-fluid apiman-summaryrow">
-                    <div class="row">
-                      <a href="org-apps.html">Apereo Bedework</a> / <span class="title"><a href="app-overview.html">bw-timezone-server</a></span>
-                      <a href="#" data-toggle="popover" data-trigger="hover" data-html="true" data-content="This application invokes <b>2</b> <em>services</em>." data-placement="top" class="apiman-summaryrow-icon">
-                        <i class="fa fa-puzzle-piece"></i>
-                        <span class="title-summary-item">2</span>
-                      </a>
-                    </div>
-                    <div class="row">
-                      <span class="description">
-                        The Bedework timezone server provides a canonical source of timezone information.
+                        {{ app.description }}
                       </span>
                     </div>
                     <hr/>
@@ -214,5 +107,6 @@
         
       </div>
     </div> <!-- /container -->
+  </div>
   </body>
 </html>

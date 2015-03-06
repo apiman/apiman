@@ -27,7 +27,8 @@ module Apiman {
     $routeProvider.when('/apiman/org-services.html',     { templateUrl: builder.join(Apiman.templatePath, 'org-services.html')  });
     $routeProvider.when('/apiman/org-apps.html',         { templateUrl: builder.join(Apiman.templatePath, 'org-apps.html')      });
     $routeProvider.when('/apiman/org-members.html',      { templateUrl: builder.join(Apiman.templatePath, 'org-members.html')   });
-    $routeProvider.when('/apiman/plan-overview.html',    { templateUrl: builder.join(Apiman.templatePath, 'plan-overview.html')  });
+    $routeProvider.when('/apiman/service-overview.html', { templateUrl: builder.join(Apiman.templatePath, 'service-overview.html') });
+    $routeProvider.when('/apiman/plan-overview.html',    { templateUrl: builder.join(Apiman.templatePath, 'plan-overview.html') });
     $routeProvider.when('/apiman/user-apps.html',        { templateUrl: builder.join(Apiman.templatePath, 'user-apps.html')     });
     $routeProvider.when('/apiman/user-orgs.html',        { templateUrl: builder.join(Apiman.templatePath, 'user-orgs.html')     });
     $routeProvider.when('/apiman/error-409.html',        { templateUrl: builder.join(Apiman.templatePath, 'error-409.html')     });
