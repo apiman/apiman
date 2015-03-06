@@ -1,7 +1,7 @@
 /// <reference path="apimanPlugin.ts"/>
 module Apiman {
 
-  export var NewAppController = _module.controller("Apiman.NewAppController", ['$location','$scope', 'UserSvcs', 'OrgSvcs',  ($location,$scope, UserSvcs, OrgSvcs) => {
+  export var NewPlanController = _module.controller("Apiman.NewPlanController", ['$location','$scope', 'UserSvcs', 'OrgSvcs',  ($location,$scope, UserSvcs, OrgSvcs) => {
     UserSvcs.query({ entityType: 'organizations' },function(userOrgs) {
         $scope.organizations = userOrgs;
         $scope.selectedOrg = $scope.organizations[0];
@@ -11,9 +11,9 @@ module Apiman {
     $scope.setOrg = function(org) {
       $scope.selectedOrg = org;
     };
-    $scope.saveNewApp = function() {
-        OrgSvcs.save({organizationId: $scope.selectedOrg.id, entityType: 'applications'}, $scope.app, function(reply) {
-           $location.path(Apiman.pluginName + '/app-overview.html').search('org',$scope.selectedOrg.id).search('app',$scope.app.name).search('version',$scope.app.initialVersion);
+    $scope.saveNewPlan = function() {
+        OrgSvcs.save({organizationId: $scope.selectedOrg.id, entityType: 'plans'}, $scope.plan, function(reply) {
+           $location.path(Apiman.pluginName + '/plan-overview.html').search('org',reply.organization.id).search('plan',reply.name).search('version',$scope.plan.initialVersion);
         }, function(error) {
            if (error.status == 409) {
               $location.path('apiman/error-409.html');          
