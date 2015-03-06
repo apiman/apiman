@@ -1,7 +1,7 @@
 /// <reference path="apimanPlugin.ts"/>
 module Apiman {
 
-  export var NewAppController = _module.controller("Apiman.NewAppController", ['$location','$scope', 'UserSvcs', 'OrgSvcs',  ($location,$scope, UserSvcs, OrgSvcs) => {
+  export var NewAppController = _module.controller("Apiman.NewAppController", ['$location', '$scope', 'UserSvcs', 'OrgSvcs',  ($location,$scope, UserSvcs, OrgSvcs) => {
     UserSvcs.query(function(userOrgs) {
         $scope.organizations = userOrgs;
         $scope.selectedOrg = $scope.organizations[0];

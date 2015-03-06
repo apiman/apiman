@@ -10,6 +10,7 @@
   <packaging>pom</packaging>
   <name>apiman-manager-ui</name>
   <modules>
+    <module>apiman-plugin</module>
     <module>war</module>
     <module>war/wildfly8</module>
   </modules>
