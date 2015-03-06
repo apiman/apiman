@@ -2,7 +2,7 @@
 /// <reference path="services.ts"/>
 module Apiman {
 
-  export var PlanOverviewController = _module.controller("Apiman.PlanOverviewController", ['$scope', '$location', 'OrgSvcs', 'ActionServices', ($scope, $location, OrgSvcs, ActionServices) => {
+  export var PlanOverviewController = _module.controller("Apiman.PlanOverviewController", ['$scope', '$location', 'OrgSvcs', 'ApimanSvcs', ($scope, $location, OrgSvcs, ApimanSvcs) => {
     var params = $location.search();
     
     var detail = 'overview';
@@ -36,7 +36,7 @@ module Apiman {
         organizationId: plan.organizationId,
         entityVersion: plan.version
       };
-      ActionServices.save(lockAction,function(reply) {
+      ApimanSvcs.save(lockAction,function(reply) {
         alert("locked");
       } , function(error) {
         alert("ERROR=" + error);
