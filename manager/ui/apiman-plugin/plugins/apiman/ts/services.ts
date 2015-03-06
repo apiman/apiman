@@ -1,23 +1,26 @@
 /// <reference path="../../includes.ts"/>
 module ApimanServices {
 
-    export var _module = angular.module("ApimanServices", ['ngResource']);
+    export var _module = angular.module("ApimanServices", ['ngResource', 'ApimanConfiguration']);
 
-    export var ActionServices = _module.factory('ActionServices', ['$resource',
-        function($resource) {
-            return $resource('http://127.0.0.1/apiman/actions');
+    export var ActionServices = _module.factory('ActionServices', ['$resource', 'Configuration',
+        function($resource, Configuration) {
+            var endpoint = Configuration.api.endpoint + '/apiman/actions';
+            return $resource(endpoint);
         }]);
 
-    export var UserServices = _module.factory('UserSvcs', ['$resource',
-        function($resource) {
-            return $resource('http://127.0.0.1/apiman/users/admin/:entityType',
+    export var UserServices = _module.factory('UserSvcs', ['$resource', 'Configuration',
+        function($resource, Configuration) {
+            var endpoint = Configuration.api.endpoint + '/apiman/users/admin/:entityType';
+            return $resource(endpoint,
                 { entityType: '@entityType' });
         }]);
 
-    export var OrganizationServices = _module.factory('OrgSvcs', ['$resource',
-        function($resource) {
-            return $resource('http://127.0.0.1/apiman/organizations/:organizationId/:entityType/:entityId/:versionsOrActivity/:version',
-                { organizationId: '@organizationId', entityType: '@entityType', entityId: '@entityId', versionsOrActivity: '@versionsOrActivity', version: '@version' });
+    export var OrganizationServices = _module.factory('OrgSvcs', ['$resource', 'Configuration',
+        function($resource, Configuration) {
+            var endpoint = Configuration.api.endpoint + '/apiman/organizations/:organizationId/:entityType/:entityId/:versionsOrActivity/:version/:policiesOrActivity/:policyId';
+            return $resource(endpoint,
+                { organizationId: '@organizationId', entityType: '@entityType', entityId: '@entityId', versionsOrActivity: '@versionsOrActivity', version: '@version', policiesOrActivity: '@policiesOrActivity', policyId: '@policyId' });
         }]);
 
 }

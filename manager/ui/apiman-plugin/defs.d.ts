@@ -4,11 +4,14 @@
 /// <reference path="d.ts\apiman\ts\services.d.ts"/>
 /// <reference path="d.ts\apiman\ts\app-contracts.d.ts"/>
 /// <reference path="d.ts\apiman\ts\app-overview.d.ts"/>
+/// <reference path="d.ts\apiman\ts\configuration.d.ts"/>
 /// <reference path="d.ts\apiman\ts\consumer-orgs.d.ts"/>
 /// <reference path="d.ts\apiman\ts\dash.d.ts"/>
 /// <reference path="d.ts\apiman\ts\logger.d.ts"/>
+/// <reference path="d.ts\apiman\ts\navbar.d.ts"/>
 /// <reference path="d.ts\apiman\ts\new-app.d.ts"/>
 /// <reference path="d.ts\apiman\ts\new-org.d.ts"/>
+/// <reference path="d.ts\apiman\ts\new-plan.d.ts"/>
 /// <reference path="d.ts\apiman\ts\org-applications.d.ts"/>
 /// <reference path="d.ts\apiman\ts\org-members.d.ts"/>
 /// <reference path="d.ts\apiman\ts\org-plans.d.ts"/>

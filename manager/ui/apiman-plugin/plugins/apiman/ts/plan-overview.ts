@@ -4,6 +4,13 @@ module Apiman {
 
   export var PlanOverviewController = _module.controller("Apiman.PlanOverviewController", ['$scope', '$location', 'OrgSvcs', 'ActionServices', ($scope, $location, OrgSvcs, ActionServices) => {
     var params = $location.search();
+    
+    var detail = 'overview';
+    if (params.detail != null) detail = params.detail;
+    if (detail == 'overview') $scope.overviewSelected = 'active';
+    if (detail == 'policies') $scope.policiesSelected = 'active';
+    if (detail == 'activity') $scope.activitySelected = 'active';
+    $scope.include = 'plugins/apiman/html/plan-' + detail + '.include';
 
     OrgSvcs.get({organizationId: params.org}, function(org) {
         $scope.org = org;
@@ -36,6 +43,19 @@ module Apiman {
     });
     }
 
+    $scope.removePolicy = function(policy) {
+        alert("policyId=" + policy.id);
+        OrgSvcs.delete({organizationId: params.org, entityType: 'plans', entityId: params.plan, versionsOrActivity: 'versions', version: params.version, policiesOrActivity: 'policies', policyId: policy.id}, function(reply) {
+           $location.path(Apiman.pluginName + '/plan-overview.html').search('detail',params.detail).search('org',reply.organization.id).search('plan',reply.name).search('version',$scope.plan.initialVersion);
+        }, function(error) {
+           if (error.status == 409) {
+              $location.path('apiman/error-409.html');
+           } else {
+              alert("ERROR=" + error.status + " " + error.statusText);
+           }
+        });
+    };
+
     OrgSvcs.query({organizationId: params.org, entityType: 'plans', entityId: params.plan, versionsOrActivity: 'versions'}, function(versions) {
         $scope.versions = versions;
         if (params.version != null) { 
@@ -56,6 +76,13 @@ module Apiman {
     } , function(error) {
         alert("ERROR=" + error);
     });
+    if (params.version != null) {
+      OrgSvcs.query({organizationId: params.org, entityType: 'plans', entityId: params.plan, versionsOrActivity: 'versions', version: params.version, policiesOrActivity: 'policies'}, function(policies) {
+          $scope.policies = policies;
+      } , function(error) {
+          alert("ERROR=" + error);
+      });
+    }
   }])
   
 

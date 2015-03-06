@@ -15,8 +15,8 @@
         <div class="col-md-12">
           <ol class="breadcrumb" data-field="breadcrumb" data-role="dummy">
             <li><a href="{{ pluginName }}/dash.html"><i class="fa fa-home fa-fw"></i><span>Home</span></a></li>
-            <li><a href="{{ pluginName }}/org-plans.html"><i class="fa fa-shield fa-fw"></i><span>JBoss Overlord</span></a></li>
-            <li class="active"><i class="fa fa-bar-chart-o fa-fw"></i><span>plan.name</span></li>
+            <li><a href="{{ pluginName }}/org-plans.html?org={{ org.id }}"><i class="fa fa-shield fa-fw"></i><span>{{ org.name }}</span></a></li>
+            <li class="active"><i class="fa fa-bar-chart-o fa-fw"></i><span>{{ plan.name }}</span></li>
           </ol>
         </div>
       </div>
@@ -27,7 +27,7 @@
             <div class="title container-fluid">
               <i class="breadcrumb-icon fa fa-bar-chart-o"></i>
               <div class="entity emphasis">
-                <a data-field="thePlan" href="plan-overview.html" data-role="dummy">{{ plan.name }}</a>
+                <a data-field="thePlan" href="plan-overview.html?org={{plan.organization.id}}&plan={{plan.id}}" data-role="dummy">{{ plan.name }}</a>
               </div>
               <div class="versions">
                 <div class="btn-group apiman-entity-action" data-role="dummy" data-field="versions">
@@ -38,7 +38,7 @@
                     <li ng-repeat="planVersion in versions"><a href="#" ng-click="setVersion( planVersion )">{{ planVersion.version }}</a></li>
                   </ul>
                 </div>
-                <a data-permission="planEdit" href="new-planversion.html" class="btn btn-primary apiman-entity-action" data-field="toNewPlanVersion" data-i18n-key="new-version">New Version</a>
+                <a data-permission="planEdit" href="new-planversion.html?org={{plan.organization.id}}&plan={{plan.id}}&version={{versions[versions.length-1].version}}" class="btn btn-primary apiman-entity-action" data-field="toNewPlanVersion" data-i18n-key="new-version">New Version</a>
               </div>
             </div>
             <hr />
@@ -52,7 +52,7 @@
               <div class="entity-info-with-icon">
                 <i class="fa fa-clock-o fa-fw"></i>
                 <span class="apiman-label-faded" data-i18n-key="created-on">Created on</span>
-                <span data-field="createdOn" data-role="dummy" >{{ plan.createdOn }}</span>
+                <span data-field="createdOn" data-role="dummy" >{{ plan.createdOn | date:'yyyy-MM-dd' }}</span>
               </div>
               <div class="entity-info-with-icon">
                 <i class="fa fa-user fa-fw"></i>
@@ -84,38 +84,16 @@
         <div class="col-md-2 apiman-entity-nav">
           <ul class="nav nav-pills nav-stacked">
             <li class="first"><a data-role="dummy">&nbsp;</a></li>
-            <li class="active"><a data-field="toPlanOverview" href="{{ pluginName }}/plan-overview.html?org={{ org.id }}&plan={{ plan.id }}&version={{ selectedPlanVersion.version }}" data-i18n-key="overview">Overview</a></li>
-            <li class=""><a data-field="toPlanPolicies" href="{{ pluginName }}/plan-policies.html?org={{ org.id }}&plan={{ plan.id }}&version={{ selectedPlanVersion.version }}" data-i18n-key="policies">Policies</a></li>
-            <li><a data-field="toPlanActivity" href="{{ pluginName }}/plan-activity.html?org={{ org.id }}&plan={{ plan.id }}&version={{ selectedPlanVersion.version }}" data-i18n-key="activity">Activity</a></li>
+            <li class="{{ overviewSelected }}"><a data-field="toPlanOverview" href="{{ pluginName }}/plan-overview.html?org={{ org.id }}&plan={{ plan.id }}&version={{ selectedPlanVersion.version }}" data-i18n-key="overview">Overview</a></li>
+            <li class="{{ policiesSelected }}"><a data-field="toPlanPolicies" href="{{ pluginName }}/plan-overview.html?detail=policies&org={{ org.id }}&plan={{ plan.id }}&version={{ selectedPlanVersion.version }}" data-i18n-key="policies">Policies</a></li>
+            <li class="{{ activitySelected }}"><a data-field="toPlanActivity" href="{{ pluginName }}/plan-overview.html?detail=activity&org={{ org.id }}&plan={{ plan.id }}&version={{ selectedPlanVersion.version }}" data-i18n-key="activity">Activity</a></li>
             <li class="last"><a data-role="dummy">&nbsp;</a></li>
           </ul>
         </div>
         <!-- /Left hand nav -->
 
         <!-- Content -->
-        <div class="col-md-10 apiman-entity-content apiman-entity-overview">
-          <!-- Content Summary -->
-          <div class="col-md-12">
-            <h1 data-i18n-key="plan-details">Plan Details</h1>
-            <p data-i18n-key="plan-description">
-              This is the plan details page.  Use this page to modify the Plan's meta-data and policies.
-              Once you have fully configured the Plan, don't forget to "Lock" it so that it can be used
-              by Services in the org.
-            </p>
-            
-            <h2 data-i18n-key="policies">Policies</h2>
-            <p data-i18n-key="policies-description">
-              The 'Policies' tab allows you to manage the Policy-level policies that should
-              be applied whenever a request is made to a Service via this Plan.
-            </p>
-            
-            <h2 data-i18n-key="activity">Activity</h2>
-            <p data-i18n-key="activity-description">
-              The 'Activity' tab shows a history of all the changes made to the Plan.  Essentially
-              it is an audit log.
-            </p>
-          </div>
-        </div>
+        <div class="col-md-10 apiman-entity-content apiman-entity-overview" ng-include="include" ></div>
         <!-- /Content -->
       </div>
     </div> <!-- /container -->

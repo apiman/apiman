@@ -1,5 +1,5 @@
     <!-- Top header/nav bar -->
-      <div class="main-header container" data-field="header">
+      <div class="main-header container" data-field="header" ng-controller="Apiman.NavbarController">
         <div class="row">
           <div class="col-md-12">
             <a href="{{ pluginName }}/dash.html">
@@ -10,7 +10,7 @@
               <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                   <span class="pficon pficon-user"></span>
-                  <span data-field="username" data-role="dummy">Bruce Wayne</span>
+                  <span data-field="username" data-role="dummy">{{ username }}</span>
                   <b class="caret"></b>
                 </a>
                 <ul class="dropdown-menu">

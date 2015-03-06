@@ -9,8 +9,10 @@
   <body>
   <div ng-controller="Apiman.OrgServicesController">
     <div id="apiman-header" ng-include="'plugins/apiman/html/navbar.html'"></div>
-
-        <div id="apiman-header" ng-include="'plugins/apiman/html/org-lhs.html'"></div>
+    <div class="page container" data-field="page">
+      <div ng-include="'plugins/apiman/html/org-bc.html'"></div>
+      <div class="row">
+        <div ng-include="'plugins/apiman/html/org-lhs.html'"></div>
         <!-- Center Content -->
         <div class="col-md-8">
           <div class="apiman-entitytabs">
@@ -77,8 +79,8 @@
           </div>
         </div>
         <!-- /Center Content -->
-        
       </div>
     </div> <!-- /container -->
+  </div>
   </body>
 </html>

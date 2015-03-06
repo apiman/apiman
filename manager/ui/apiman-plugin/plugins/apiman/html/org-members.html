@@ -9,9 +9,10 @@
   <body>
   <div ng-controller="Apiman.OrgMembersController">
     <div id="apiman-header" ng-include="'plugins/apiman/html/navbar.html'"></div>
-
-        <div id="apiman-header" ng-include="'plugins/apiman/html/org-lhs.html'"></div>
-
+    <div class="page container" data-field="page">
+      <div ng-include="'plugins/apiman/html/org-bc.html'"></div>
+      <div class="row">
+        <div ng-include="'plugins/apiman/html/org-lhs.html'"></div>
         <!-- Center Content -->
         <div class="col-md-8">
           <div class="apiman-entitytabs">
@@ -47,8 +48,8 @@
                   <div class="container-fluid apiman-summaryrow">
                     <div class="row">
                       <span class="title">
-                        <a href="{{ pluginName }}/user-orgs.html">{{ member.name }}</a>
-                        <span class="secondary">({{ member.id}})</span>
+                        <a href="{{ pluginName }}/user-orgs.html">{{ member.userName }}</a>
+                        <span class="secondary">({{ member.userId}})</span>
                       </span>
                       <a class="apiman-summaryrow-icon">
                         <i class="fa fa-clock-o fa-fw"></i>

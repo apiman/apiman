@@ -9,8 +9,10 @@
   <body>
   <div ng-controller="Apiman.OrgPlansController">
     <div id="apiman-header" ng-include="'plugins/apiman/html/navbar.html'"></div>
-
-        <div id="apiman-header" ng-include="'plugins/apiman/html/org-lhs.html'"></div>
+    <div class="page container" data-field="page">
+      <div ng-include="'plugins/apiman/html/org-bc.html'"></div>
+      <div class="row">
+        <div ng-include="'plugins/apiman/html/org-lhs.html'"></div>
         <!-- Center Content -->
         <div class="col-md-8">
           <div class="apiman-entitytabs">
@@ -38,7 +40,7 @@
                       </tr>
                     </tbody>
                   </table>
-                  <a data-permission="planEdit" data-field="toNewPlan" data-i18n-key="new-plan" href="new-plan.html" class="btn btn-primary pull-right">New Plan</a>
+                  <a data-permission="planEdit" data-field="toNewPlan" data-i18n-key="new-plan" href="apiman/new-plan.html" class="btn btn-primary pull-right">New Plan</a>
                 </div>
                 <div class="clearfix"></div>
                 <!-- The list of plans in this organization -->
@@ -64,6 +66,6 @@
         
       </div>
     </div> <!-- /container -->
-    </div>
+  </div>
   </body>
 </html>

@@ -2,7 +2,7 @@
 /// <reference path="apimanGlobals.ts"/>
 module Apiman {
 
-  export var _module = angular.module(Apiman.pluginName, ['ApimanServices', 'ApimanLogger']);
+  export var _module = angular.module(Apiman.pluginName, ['ApimanServices', 'ApimanLogger', 'ApimanConfiguration']);
 
   var tab = undefined;
 
@@ -15,12 +15,14 @@ module Apiman {
       .build();
     builder.configureRouting($routeProvider, tab);
 
-    $routeProvider.when('/apiman/consumer-orgs.html',    { templateUrl: builder.join(Apiman.templatePath, 'consumer-orgs.html') });
     $routeProvider.when('/apiman/app-overview.html',     { templateUrl: builder.join(Apiman.templatePath, 'app-overview.html')  });
     $routeProvider.when('/apiman/app-contracts.html',    { templateUrl: builder.join(Apiman.templatePath, 'app-contracts.html') });
+    $routeProvider.when('/apiman/consumer-orgs.html',    { templateUrl: builder.join(Apiman.templatePath, 'consumer-orgs.html') });
     $routeProvider.when('/apiman/dash.html',             { templateUrl: builder.join(Apiman.templatePath, 'dash.html')          });
     $routeProvider.when('/apiman/new-app.html',          { templateUrl: builder.join(Apiman.templatePath, 'new-app.html')       });
     $routeProvider.when('/apiman/new-org.html',          { templateUrl: builder.join(Apiman.templatePath, 'new-org.html')       });
+    $routeProvider.when('/apiman/new-plan.html',         { templateUrl: builder.join(Apiman.templatePath, 'new-plan.html')      });
+    $routeProvider.when('/apiman/new-policy.html',       { templateUrl: builder.join(Apiman.templatePath, 'new-policy.html')    });
     $routeProvider.when('/apiman/org-plans.html',        { templateUrl: builder.join(Apiman.templatePath, 'org-plans.html')     });
     $routeProvider.when('/apiman/org-services.html',     { templateUrl: builder.join(Apiman.templatePath, 'org-services.html')  });
     $routeProvider.when('/apiman/org-apps.html',         { templateUrl: builder.join(Apiman.templatePath, 'org-apps.html')      });
@@ -32,10 +34,19 @@ module Apiman {
     $locationProvider.html5Mode(true);
   }]);
 
-  _module.factory('authInterceptor', ['$q', function($q) {
+  _module.factory('authInterceptor', ['$q', 'Configuration', function($q, Configuration) {
       var requestInterceptor = {
           request: function(config) {
-              config.headers.Authorization = 'Basic YWRtaW46YWRtaW4=';
+              if (Configuration.api.auth.type == 'basic') {
+                  var username = Configuration.api.auth.basic.username;
+                  var password = Configuration.api.auth.basic.password;
+                  var enc = btoa(username + ':' + password);
+                  config.headers.Authorization = 'Basic ' + enc;
+              } else if (Configuration.api.auth.type == 'bearerToken') {
+                  // TBD
+              } else if (Configuration.api.auth.type == 'authToken') {
+                  // TBD
+              }
               return config;
           }
       };
