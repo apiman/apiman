@@ -7,46 +7,16 @@
   </head>
 
   <body>
-    
+  <div ng-controller="Apiman.UserServicesController">
     <!-- Top header/nav bar -->
-    <div id="apiman-header">
-      <div class="main-header container">
-        <div class="row">
-          <div class="col-md-12">
-            <div class="logo"></div>
-            <input class="search no-phone" type="text" placeholder="Quick service search..."></input>
-            <ul class="user-menu pull-right">
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                  <span class="pficon pficon-user"></span>
-                  <span>Bruce Wayne</span>
-                  <b class="caret"></b>
-                </a>
-                <ul class="dropdown-menu">
-                  <li>
-                    <a href="user-orgs.html">Home</a>
-                  </li>
-                  <li class="divider"></li>
-                  <li>
-                    <a data-field="toProfile" href="settings-profile.html" data-i18n-key="profile">Profile</a>
-                  </li>
-                  <li>
-                    <a href="#">Logout</a>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
+    <div id="apiman-header" ng-include="'plugins/apiman/html/navbar.html'"></div>
 
     <!-- Page content -->
     <div class="page container" data-field="page">
       <div class="row">
         <div class="col-md-12">
           <ol class="breadcrumb" data-field="breadcrumb" data-role="dummy">
-            <li><a href="dash.html"><i class="fa fa-home fa-fw"></i><span>Home</span></a></li>
+            <li><a href="{{ pluginName }}/dash.html"><i class="fa fa-home fa-fw"></i><span>Home</span></a></li>
             <li class="active"><i class="fa fa-user fa-fw"></i><span>eric</span></li>
           </ol>
         </div>
@@ -85,10 +55,10 @@
         <div class="col-md-8">
           <div class="apiman-entitytabs">
             <ul id="entitytabs" class="nav nav-tabs">
-              <li><a href="user-orgs.html" data-field="toUserOrgs" data-i18n-key="organizations">Organizations</a></li>
-              <li><a href="user-apps.html" data-field="toUserApps" data-i18n-key="applications">Applications</a></li>
-              <li class="active"><a href="user-services.html" data-field="toUserServices" data-field="toUserServices" data-i18n-key="services">Services</a></li>
-              <li class="pull-right"><a href="user-activity.html" data-field="toUserActivity" data-i18n-key="activity">Activity</a></li>
+              <li><a href="{{ pluginName }}/user-orgs.html" data-field="toUserOrgs" data-i18n-key="organizations">Organizations</a></li>
+              <li><a href="{{ pluginName }}/user-apps.html" data-field="toUserApps" data-i18n-key="applications">Applications</a></li>
+              <li class="active"><a href="{{ pluginName }}/user-services.html" data-field="toUserServices" data-field="toUserServices" data-i18n-key="services">Services</a></li>
+              <li class="pull-right"><a href="{{ pluginName }}/user-activity.html" data-field="toUserActivity" data-i18n-key="activity">Activity</a></li>
             </ul>
             <div id="entitytabsContent" class="tab-content">
 
@@ -107,55 +77,23 @@
                       </tr>
                     </tbody>
                   </table>
-                  <a data-field="toNewService" data-i18n-key="new-service" href="new-service.html" class="btn btn-primary pull-right">New Service</a>
+                  <a data-field="toNewService" data-i18n-key="new-service" href="{{ pluginName}}/new-service.html" class="btn btn-primary pull-right">New Service</a>
                 </div>
                 <div class="clearfix"></div>
                 <!-- The list of services the user has access to -->
-                <div class="apiman-services" data-field="services" data-role="dummy">
+                <div class="apiman-services" data-field="services" data-role="dummy" ng-repeat="service in services">
                   <div class="container-fluid apiman-summaryrow">
                     <div class="row">
-                      <a href="org-apps.html">JBoss Overlord</a> / <span class="title"><a href="service-overview.html">s-ramp-api</a></span>
+                      <a href="{{ pluginName }}/org-apps.html">{{ service.organizationName }}</a> / <span class="title"><a href="{{ pluginName }}/service-overview.html">{{ service.name }}</a></span>
                       <a class="apiman-summaryrow-icon">
                         <i class="fa fa-clock-o fa-fw"></i>
                         <span class="title-summary-item">Created on</span>
-                        <span class="title-summary-item">Oct 19, 2012</span>
+                        <span class="title-summary-item">{{ service.createdOn | date:'yyyy-MM-dd' }}</span>
                       </a>
                     </div>
                     <div class="row">
                       <span class="description">
-                        This API allows users to interact with a remote S-RAMP repository.
-                      </span>
-                    </div>
-                    <hr/>
-                  </div>
-                  <div class="container-fluid apiman-summaryrow">
-                    <div class="row">
-                      <a href="org-apps.html">JBoss Overlord</a> / <span class="title"><a href="service-overview.html">dtgov-deploy</a></span>
-                      <a class="apiman-summaryrow-icon">
-                        <i class="fa fa-clock-o fa-fw"></i>
-                        <span class="title-summary-item">Created on</span>
-                        <span class="title-summary-item">Nov 01, 2011</span>
-                      </a>
-                    </div>
-                    <div class="row">
-                      <span class="description">
-                        This API provides an automated mechanism to deploy artifacts to running servers.
-                      </span>
-                    </div>
-                    <hr/>
-                  </div>
-                  <div class="container-fluid apiman-summaryrow">
-                    <div class="row">
-                      <a href="org-apps.html">Apereo Bedework</a> / <span class="title"><a href="service-overview.html">public-calendar</a></span>
-                      <a class="apiman-summaryrow-icon">
-                        <i class="fa fa-clock-o fa-fw"></i>
-                        <span class="title-summary-item">Created on</span>
-                        <span class="title-summary-item">Feb 10, 1076</span>
-                      </a>
-                    </div>
-                    <div class="row">
-                      <span class="description">
-                        This allows users to manipulate calendar data in a Bedework calendar system.
+                        {{ service.description }}
                       </span>
                     </div>
                     <hr/>

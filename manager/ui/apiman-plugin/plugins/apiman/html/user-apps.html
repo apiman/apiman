@@ -76,14 +76,14 @@
                       </tr>
                     </tbody>
                   </table>
-                  <a data-field="toNewApp" href="{{ pluginName}}/new-app.html" class="btn btn-primary pull-right">New App</a>
+                  <a data-field="toNewApp" href="{{ pluginName }}/new-app.html" class="btn btn-primary pull-right">New App</a>
                 </div>
                 <div class="clearfix"></div>
                 <!-- The list of applications the user has access to -->
                 <div class="apiman-applications" data-field="applications" data-role="dummy" ng-repeat="app in applications" >
                   <div class="container-fluid apiman-summaryrow">
                     <div class="row">
-                      <a href="{{ plugingName}}/org-apps.html">{{ app.organizationName }}</a> / <span class="title"><a href="{{ pluginName }}/app-overview.html">{{ app.name }}</a></span>
+                      <a href="{{ plugingName}}/org-apps.html">{{ app.organizationName }}</a> / <span class="title"><a href="{{ pluginName }}/app-overview.html?org={{ app.organizationId }}&app={{ app.id}}">{{ app.name }}</a></span>
                       <a href="#" data-toggle="popover" data-trigger="hover" data-html="true" data-content="This application invokes <b>52</b> <em>services</em>." data-placement="top" class="apiman-summaryrow-icon">
                         <i class="fa fa-puzzle-piece"></i>
                         <span class="title-summary-item">52</span>
