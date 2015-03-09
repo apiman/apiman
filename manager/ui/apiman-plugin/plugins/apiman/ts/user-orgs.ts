@@ -2,12 +2,18 @@
 /// <reference path="services.ts"/>
 module Apiman {
 
-    export var UserOrgsController = _module.controller("Apiman.UserOrgsController", ['$scope', 'UserSvcs', ($scope, UserSvcs) => {
-        UserSvcs.query({ entityType: 'organizations' }, function(userOrgs) {
-            $scope.organizations = userOrgs;
-        }, function(error) {
-            alert("ERROR=" + error);
-        });
+    export var UserOrgsController = _module.controller("Apiman.UserOrgsController",
+        ['$q', '$scope', 'UserSvcs', 'PageLifecycle', ($q, $scope, UserSvcs, PageLifecycle) => {
+            var promise = $q.all({
+                organizations: $q(function(resolve, reject) {
+                    UserSvcs.query({ entityType: 'organizations' }, function(userOrgs) {
+                        resolve(userOrgs);
+                    }, function(error) {
+                        reject(error);
+                    });
+                })
+            });
+            PageLifecycle.loadPage('UserOrgs', promise, $scope);
     }])
 
 }

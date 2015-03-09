@@ -7,12 +7,10 @@
   </head>
 
   <body>
-  <div ng-controller="Apiman.UserServicesController">
-    <!-- Top header/nav bar -->
+  <div>
+    <div ng-include="'plugins/apiman/html/progress.html'"></div>
     <div id="apiman-header" ng-include="'plugins/apiman/html/navbar.html'"></div>
-
-    <!-- Page content -->
-    <div class="page container" data-field="page">
+    <div ng-controller="Apiman.UserServicesController" class="page container" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div class="row">
         <div class="col-md-12">
           <ol class="breadcrumb" data-field="breadcrumb" data-role="dummy">
