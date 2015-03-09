@@ -2,7 +2,7 @@
 /// <reference path="services.ts"/>
 module Apiman {
 
-    export var AppOverviewController = _module.controller("Apiman.AppOverviewController",
+    export var AppContractsController = _module.controller("Apiman.AppContractsController",
         ['$q', '$scope', '$location', 'OrgSvcs', 'PageLifecycle', ($q, $scope, $location, OrgSvcs, PageLifecycle) => {
             var params = $location.search();
             $scope.version = params.version;
