@@ -10,7 +10,7 @@
   <div>
     <div ng-include="'plugins/apiman/html/progress.html'"></div>
     <div id="apiman-header" ng-include="'plugins/apiman/html/navbar.html'"></div>
-    <div ng-controller="Apiman.DashController" class="page container" data-field="page">
+    <div ng-controller="Apiman.DashController" class="page container" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div class="row">
         <div class="col-md-12">
           <h1 data-i18n-key="page-heading">API Management</h1>
