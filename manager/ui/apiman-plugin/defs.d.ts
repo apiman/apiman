@@ -21,3 +21,4 @@
 /// <reference path="d.ts\apiman\ts\plan-overview.d.ts"/>
 /// <reference path="d.ts\apiman\ts\user-apps.d.ts"/>
 /// <reference path="d.ts\apiman\ts\user-orgs.d.ts"/>
+/// <reference path="d.ts/apiman/ts/user-services.d.ts"/>
