@@ -5,6 +5,7 @@
 /// <reference path="d.ts/apiman/ts/admin-gateways.d.ts"/>
 /// <reference path="d.ts/apiman/ts/admin-plugins.d.ts"/>
 /// <reference path="d.ts/apiman/ts/admin-policyDefs.d.ts"/>
+/// <reference path="d.ts/apiman/ts/admin-roles.d.ts"/>
 /// <reference path="d.ts/apiman/ts/app-contracts.d.ts"/>
 /// <reference path="d.ts/apiman/ts/app-overview.d.ts"/>
 /// <reference path="d.ts/apiman/ts/configuration.d.ts"/>
