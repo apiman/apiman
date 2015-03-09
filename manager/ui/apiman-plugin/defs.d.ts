@@ -3,6 +3,7 @@
 /// <reference path="d.ts/apiman/ts/apimanPlugin.d.ts"/>
 /// <reference path="d.ts/apiman/ts/services.d.ts"/>
 /// <reference path="d.ts/apiman/ts/admin-gateways.d.ts"/>
+/// <reference path="d.ts/apiman/ts/admin-plugins.d.ts"/>
 /// <reference path="d.ts/apiman/ts/app-contracts.d.ts"/>
 /// <reference path="d.ts/apiman/ts/app-overview.d.ts"/>
 /// <reference path="d.ts/apiman/ts/configuration.d.ts"/>
