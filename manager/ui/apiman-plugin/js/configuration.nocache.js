@@ -10,10 +10,10 @@ var APIMAN_CONFIG_DATA = {
   "api" : {
     "endpoint" : "http://localhost:7071",
     "auth" : {
-      "type" : "basic",
+      "type" : "none",
       "basic" : {
         "username" : "admin",
-        "password" : "admin"
+        "password" : "admin123!"
       }
     }
   }
