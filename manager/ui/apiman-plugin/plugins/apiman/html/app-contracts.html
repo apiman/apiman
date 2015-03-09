@@ -7,10 +7,10 @@
   </head>
 
   <body>
-  <div ng-controller="Apiman.AppContractsController">
-
+  <div>
+    <div id="progress-indicator" ng-class="{ 'loading': isLoading, 'loaded': isLoaded }"></div>
     <div id="apiman-header" ng-include="'plugins/apiman/html/navbar.html'"></div>
-    <div class="container page" data-field="page">
+    <div ng-controller="Apiman.AppContractsController" class="container page" data-field="page" ng-cloak="" ng-show="isLoaded">
       <div class="row">
         <div class="col-md-12">
           <ol class="breadcrumb" data-field="breadcrumb" data-role="dummy">

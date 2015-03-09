@@ -4,18 +4,6 @@ module Apiman {
 
     export var _module = angular.module(Apiman.pluginName, ['ApimanServices', 'ApimanLogger', 'ApimanConfiguration', 'ApimanPageLifecycle']);
 
-    _module.run(function($rootScope, $location, Logger) {
-        $rootScope.$on("$routeChangeStart", function(event, next, current) {
-            Logger.log("routeChangeStart");
-        });
-        $rootScope.$on("$routeChangeSuccess", function(event, next, current) {
-            Logger.log("routeChangeSuccess");
-        });
-        $rootScope.$on("$routeChangeError", function(event, next, current) {
-            Logger.log("routeChangeError");
-        });
-    });
-
     var tab = undefined;
 
     _module.config(['$locationProvider', '$routeProvider', 'HawtioNavBuilderProvider',

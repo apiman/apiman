@@ -7,11 +7,10 @@
   </head>
 
   <body>
-  <div ng-controller="Apiman.AppOverviewController">
-
+  <div>
+    <div id="progress-indicator" ng-class="{ 'loading': isLoading, 'loaded': isLoaded }"></div>
     <div id="apiman-header" ng-include="'plugins/apiman/html/navbar.html'"></div>
-
-    <div class="container page" data-field="page">
+    <div ng-controller="Apiman.AppOverviewController" class="container page" data-field="page" ng-cloak="" ng-show="isLoaded">
       <div class="row">
         <div class="col-md-12">
           <ol class="breadcrumb" data-field="breadcrumb" data-role="dummy">
@@ -88,8 +87,8 @@
         <div class="col-md-2 apiman-entity-nav">
           <ul class="nav nav-pills nav-stacked">
             <li class="first"><a data-role="dummy">&nbsp;</a></li>
-            <li class="active"><a data-field="toAppOverview" href="app-overview.html" data-i18n-key="overview">Overview</a></li>
-            <li class=""><a data-field="toAppContracts" href="app-contracts.html" data-i18n-key="contracts">Contracts</a></li>
+            <li class="active"><a data-field="toAppOverview" data-i18n-key="overview">Overview</a></li>
+            <li class=""><a data-field="toAppContracts" href="{{ pluginName }}/app-contracts.html?org={{org.id}}&app={{app.id}}&version={{selectedAppVersion.version}}" data-i18n-key="contracts">Contracts</a></li>
             <li><a data-field="toAppPolicies" href="app-policies.html" data-i18n-key="policies">Policies</a></li>
             <li data-status="Registered"><a data-field="toAppApis" href="app-apis.html" data-i18n-key="apis">APIs</a></li>
             <li><a data-field="toAppActivity" href="app-activity.html" data-i18n-key="activity">Activity</a></li>

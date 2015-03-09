@@ -2,23 +2,33 @@
 /// <reference path="services.ts"/>
 module Apiman {
 
-    export var OrgServicesController = _module.controller("Apiman.OrgServicesController", ['$scope', '$location', 'OrgSvcs', ($scope, $location, OrgSvcs) => {
-        var params = $location.search();
-        OrgSvcs.get({ organizationId: params.org, entityType: '' }, function(org) {
-            $scope.org = org;
-        }, function(error) {
-            alert("ERROR=" + error);
-        });
-        OrgSvcs.query({ organizationId: params.org, entityType: 'members' }, function(members) {
-            $scope.members = members;
-        }, function(error) {
-            alert("ERROR=" + error);
-        });
-        OrgSvcs.query({ organizationId: params.org, entityType: 'services' }, function(services) {
-            $scope.services = services;
-        }, function(error) {
-            alert("ERROR=" + error);
-        });
-    }])
+    export var OrgServicesController = _module.controller("Apiman.OrgServicesController",
+        ['$q', '$scope', '$location', 'OrgSvcs', 'PageLifecycle', ($q, $scope, $location, OrgSvcs, PageLifecycle) => {
+            var params = $location.search();
+            var promise = $q.all({
+                org: $q(function(resolve, reject) {
+                    OrgSvcs.get({ organizationId: params.org, entityType: '' }, function(org) {
+                        resolve(org);
+                    }, function(error) {
+                        reject(error);
+                    });
+                }),
+                members: $q(function(resolve, reject) {
+                    OrgSvcs.query({ organizationId: params.org, entityType: 'members' }, function(members) {
+                        resolve(members);
+                    }, function(error) {
+                        reject(error);
+                    });
+                }),
+                services: $q(function(resolve, reject) {
+                    OrgSvcs.query({ organizationId: params.org, entityType: 'services' }, function(services) {
+                        resolve(services);
+                    }, function(error) {
+                        reject(error);
+                    });
+                })
+            });
+            PageLifecycle.loadPage('OrgSvcs', promise, $scope);
+        }])
 
 }

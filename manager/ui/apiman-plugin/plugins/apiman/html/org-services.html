@@ -7,9 +7,10 @@
   </head>
 
   <body>
-  <div ng-controller="Apiman.OrgServicesController">
+  <div>
+    <div id="progress-indicator" ng-class="{ 'loading': isLoading, 'loaded': isLoaded }"></div>
     <div id="apiman-header" ng-include="'plugins/apiman/html/navbar.html'"></div>
-    <div class="page container" data-field="page">
+    <div ng-controller="Apiman.OrgServicesController" class="page container" data-field="page" ng-cloak="" ng-show="isLoaded">
       <div ng-include="'plugins/apiman/html/org-bc.html'"></div>
       <div class="row">
         <div ng-include="'plugins/apiman/html/org-lhs.html'"></div>

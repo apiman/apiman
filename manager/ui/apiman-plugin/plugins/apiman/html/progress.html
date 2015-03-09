@@ -1,0 +1,32 @@
+    <!-- Top header/nav bar -->
+      <div class="main-header container" data-field="header" ng-controller="Apiman.NavbarController">
+        <div class="row">
+          <div class="col-md-12">
+            <a href="{{ pluginName }}/dash.html">
+              <div class="logo" data-field="logo"></div>
+            </a>
+            <input data-field="search" class="search no-phone" type="text" placeholder="Quick service search..."></input>
+            <ul class="user-menu pull-right">
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                  <span class="pficon pficon-user"></span>
+                  <span data-field="username" data-role="dummy">{{ username }}</span>
+                  <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a data-field="toUserHome" href="{{ pluginName }}/user-orgs.html" data-i18n-key="my-stuff">My Stuff</a>
+                  </li>
+                  <li class="divider"></li>
+                  <li>
+                    <a data-field="toProfile" href="{{ pluginName }}/settings-profile.html" data-i18n-key="profile">Profile</a>
+                  </li>
+                  <li>
+                    <a data-field="toLogout" href="#" data-i18n-key="logout">Logout</a>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>

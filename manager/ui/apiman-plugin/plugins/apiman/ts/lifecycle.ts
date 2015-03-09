@@ -23,6 +23,7 @@ module ApimanPageLifecycle {
                 }, function(reason) {
                     $rootScope.isError = true;
                     $rootScope.error = reason;
+                    Logger.error(reason);
                     alert("Page Load Error: " + reason);
                 });
             }
