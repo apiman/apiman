@@ -2,7 +2,7 @@
 module Apiman {
 
     export var NewOrgController = _module.controller("Apiman.NewOrgController",
-        ['$location', '$scope', 'OrgSvcs', ($location, $scope, OrgSvcs) => {
+        ['$q', '$location', '$scope', 'OrgSvcs', 'PageLifecycle', ($q, $location, $scope, OrgSvcs, PageLifecycle) => {
             $scope.saveNewOrg = function() {
                 OrgSvcs.save($scope.org, function(reply) {
                     $location.path('apiman/org-plans.html').search('org', reply.id);
@@ -14,6 +14,8 @@ module Apiman {
                     }
                 });
             };
+            
+            PageLifecycle.loadPage('NewOrg', undefined, $scope);
         }]);
 
 }

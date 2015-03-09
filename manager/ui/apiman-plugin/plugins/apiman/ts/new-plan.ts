@@ -2,13 +2,18 @@
 module Apiman {
 
     export var NewPlanController = _module.controller("Apiman.NewPlanController",
-        ['$location', '$scope', 'UserSvcs', 'OrgSvcs', ($location, $scope, UserSvcs, OrgSvcs) => {
-            UserSvcs.query({ entityType: 'organizations' }, function(userOrgs) {
-                $scope.organizations = userOrgs;
-                $scope.selectedOrg = $scope.organizations[0];
-            }, function(error) {
-                alert("ERROR=" + error);
+        ['$q', '$location', '$scope', 'UserSvcs', 'OrgSvcs', 'PageLifecycle', ($q, $location, $scope, UserSvcs, OrgSvcs, PageLifecycle) => {
+            var promise = $q.all({
+                organizations: $q(function(resolve, reject) {
+                    UserSvcs.query({ entityType: 'organizations' }, function(userOrgs) {
+                        $scope.selectedOrg = userOrgs[0];
+                        resolve(userOrgs);
+                    }, function(error) {
+                        reject(error);
+                    });
+                })
             });
+            
             $scope.setOrg = function(org) {
                 $scope.selectedOrg = org;
             };
@@ -23,10 +28,13 @@ module Apiman {
                     }
                 });
             };
+            
             // Initialize the model - the default initial version for a new plan is always 1.0
             $scope.plan = {
                 initialVersion: '1.0'
             };
+            
+            PageLifecycle.loadPage('NewPlan', promise, $scope);
         }]);
 
 }

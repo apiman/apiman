@@ -8,6 +8,7 @@
 
   <body>
   <div>
+    <div id="progress-indicator" ng-class="{ 'loading': isLoading, 'loaded': isLoaded }"></div>
     <div id="apiman-header" ng-include="'plugins/apiman/html/navbar.html'"></div>
     <div ng-controller="Apiman.DashController" class="page container" data-field="page">
       <div class="row">
