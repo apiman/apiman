@@ -51,6 +51,8 @@ module Apiman {
                 $scope.selectedAppVersion = app;
                 $location.path(Apiman.pluginName + "/app-overview.html").search('org', params.org).search('app', params.app).search('version', app.version);
             };
+            
+            PageLifecycle.loadPage('AppContracts', promise, $scope);
         }])
 
 }
