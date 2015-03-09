@@ -22,7 +22,8 @@ module Apiman {
                     });
                 }),
                 versions: $q(function(resolve, reject) {
-                    OrgSvcs.query({ organizationId: params.org, entityType: 'applications', entityId: params.app, versionsOrActivity: 'versions', version: params.version }, function(versions) {
+                    OrgSvcs.query({ organizationId: params.org, entityType: 'applications', entityId: params.app, versionsOrActivity: 'versions' }, function(versions) {
+                        resolve(versions);
                         if (params.version != null) {
                             for (var i = 0; i < versions.length; i++) {
                                 if (params.version == versions[i].version) {
@@ -33,7 +34,7 @@ module Apiman {
                         } else {
                             $scope.selectedAppVersion = versions[0];
                         }
-                        resolve(versions);
+                        
                     }, function(error) {
                         reject(error);
                     });
