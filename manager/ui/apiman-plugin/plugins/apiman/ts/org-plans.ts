@@ -2,11 +2,10 @@
 /// <reference path="services.ts"/>
 module Apiman {
 
-    export var OrgPlansLoader = _module.factory("OrgPlansLoader",
-        ['$q', '$location', 'OrgSvcs', 'Logger', ($q, $location, OrgSvcs, Logger) => {
-            Logger.log("Loading org-plans data.");
+    export var OrgPlansController = _module.controller("Apiman.OrgPlansController",
+        ['$q', '$scope', '$location', 'Logger', 'OrgSvcs', 'PageLifecycle', ($q, $scope, $location, Logger, OrgSvcs, PageLifecycle) => {
             var params = $location.search();
-            return $q.all({
+            var promise = $q.all({
                 org: $q(function(resolve, reject) {
                     OrgSvcs.get({ organizationId: params.org, entityType: '' }, function(org) {
                         Logger.log("(org-plans) :: Loaded org.");
@@ -32,13 +31,7 @@ module Apiman {
                     });
                 })
             });
-        }]);
-
-    export var OrgPlansController = _module.controller("Apiman.OrgPlansController",
-        ['$q', '$scope', '$location', 'data', ($q, $scope, $location, data) => {
-            $scope.org = data.org;
-            $scope.members = data.members;
-            $scope.plans = data.plans;
+            PageLifecycle.loadPage('OrgPlans', promise, $scope);
         }]);
 
 }

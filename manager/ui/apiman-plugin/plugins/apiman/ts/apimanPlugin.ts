@@ -2,7 +2,7 @@
 /// <reference path="apimanGlobals.ts"/>
 module Apiman {
 
-    export var _module = angular.module(Apiman.pluginName, ['ApimanServices', 'ApimanLogger', 'ApimanConfiguration']);
+    export var _module = angular.module(Apiman.pluginName, ['ApimanServices', 'ApimanLogger', 'ApimanConfiguration', 'ApimanPageLifecycle']);
 
     _module.run(function($rootScope, $location, Logger) {
         $rootScope.$on("$routeChangeStart", function(event, next, current) {

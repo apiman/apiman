@@ -139,6 +139,27 @@ textarea.form-data {
   padding-bottom: 3px;
 }
 
+
+@keyframes progressPulse {
+  from {
+    border-bottom-color: rgb(208, 227, 238);
+  }
+  55% {
+    border-bottom-color: rgb(52, 111, 146);
+  }
+  to {
+    border-bottom-color: rgb(208, 227, 238);
+  }
+}
+#progress-indicator {
+  border-bottom: 2px solid rgb(208, 227, 238);
+}
+#progress-indicator.loading {
+  animation-duration: 1.5s;
+  animation-name: progressPulse;
+  animation-iteration-count: infinite;
+}
+
 #apiman-header {
   border-bottom: 1px solid rgb(238, 238, 238);
   background-color: rgb(246, 246, 246);
