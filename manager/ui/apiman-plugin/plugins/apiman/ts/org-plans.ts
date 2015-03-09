@@ -2,24 +2,43 @@
 /// <reference path="services.ts"/>
 module Apiman {
 
-    export var OrgPlansController = _module.controller("Apiman.OrgPlansController",
-        ['$scope', '$location', 'OrgSvcs', ($scope, $location, OrgSvcs) => {
+    export var OrgPlansLoader = _module.factory("OrgPlansLoader",
+        ['$q', '$location', 'OrgSvcs', 'Logger', ($q, $location, OrgSvcs, Logger) => {
+            Logger.log("Loading org-plans data.");
             var params = $location.search();
-            OrgSvcs.get({ organizationId: params.org, entityType: '' }, function(org) {
-                $scope.org = org;
-            }, function(error) {
-                alert("ERROR=" + error);
+            return $q.all({
+                org: $q(function(resolve, reject) {
+                    OrgSvcs.get({ organizationId: params.org, entityType: '' }, function(org) {
+                        Logger.log("(org-plans) :: Loaded org.");
+                        resolve(org);
+                    }, function(error) {
+                        reject(error);
+                    });
+                }),
+                members: $q(function(resolve, reject) {
+                    OrgSvcs.query({ organizationId: params.org, entityType: 'members' }, function(members) {
+                        Logger.log("(org-plans) :: Loaded members.");
+                        resolve(members);
+                    }, function(error) {
+                        reject(error);
+                    });
+                }),
+                plans: $q(function(resolve, reject) {
+                    OrgSvcs.query({ organizationId: params.org, entityType: 'plans' }, function(plans) {
+                        Logger.log("(org-plans) :: Loaded plans.");
+                        resolve(plans);
+                    }, function(error) {
+                        reject(error);
+                    });
+                })
             });
-            OrgSvcs.query({ organizationId: params.org, entityType: 'members' }, function(members) {
-                $scope.members = members;
-            }, function(error) {
-                alert("ERROR=" + error);
-            });
-            OrgSvcs.query({ organizationId: params.org, entityType: 'plans' }, function(plans) {
-                $scope.plans = plans;
-            }, function(error) {
-                alert("ERROR=" + error);
-            });
-        }])
+        }]);
+
+    export var OrgPlansController = _module.controller("Apiman.OrgPlansController",
+        ['$q', '$scope', '$location', 'data', ($q, $scope, $location, data) => {
+            $scope.org = data.org;
+            $scope.members = data.members;
+            $scope.plans = data.plans;
+        }]);
 
 }

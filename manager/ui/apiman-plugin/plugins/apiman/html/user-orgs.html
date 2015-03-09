@@ -85,18 +85,9 @@
                   <div class="container-fluid apiman-summaryrow">
                     <div class="row">
                       <span class="title"><a href="{{ pluginName }}/org-plans.html?org={{ org.id }}">{{ org.name }}</a></span>
-                      <a href="#" data-toggle="popover" data-trigger="hover" data-html="true" data-content="The organization contains <b>{{ org.numMembers }}</b> <em>members</em>." data-placement="top" class="apiman-summaryrow-icon">
-                        <i class="fa fa-user"></i>
-                        <span class="title-summary-item">{{ org.numMembers }}</span>
-                      </a>
-                      <a href="#" data-toggle="popover" data-trigger="hover" data-html="true" data-content="The organization contains <b>{{ org.numServices }}</b> <em>services</em>." data-placement="top" class="apiman-summaryrow-icon">
-                        <i class="fa fa-puzzle-piece"></i>
-                        <span class="title-summary-item">{{ org.numServices }}</span>
-                      </a>
-                      <a href="#" data-toggle="popover" data-trigger="hover" data-html="true" data-content="The organization contains <b>{{ org.numApps }}</b> <em>applications</em>." data-placement="top" class="apiman-summaryrow-icon">
-                        <i class="fa fa-gears"></i>
-                        <span class="title-summary-item">{{ org.numApps }}</span>
-                      </a>
+                    </div>
+                    <div class="row">
+                      <span class="description">{{ org.description }}</span>
                     </div>
                     <hr/>
                   </div>

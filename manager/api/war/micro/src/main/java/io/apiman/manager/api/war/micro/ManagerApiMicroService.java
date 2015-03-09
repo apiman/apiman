@@ -16,6 +16,7 @@
 package io.apiman.manager.api.war.micro;
 
 import io.apiman.common.servlet.AuthenticationFilter;
+import io.apiman.common.servlet.DisableCachingFilter;
 import io.apiman.manager.api.security.impl.DefaultSecurityContextFilter;
 
 import java.util.EnumSet;
@@ -106,6 +107,7 @@ public class ManagerApiMicroService {
         apiManServer.addEventListener(new ResteasyBootstrap());
         apiManServer.addFilter(LocaleFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
         apiManServer.addFilter(SimpleCorsFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
+        apiManServer.addFilter(DisableCachingFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
         apiManServer.addFilter(AuthenticationFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
         apiManServer.addFilter(DefaultSecurityContextFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
         ServletHolder resteasyServlet = new ServletHolder(new HttpServletDispatcher());

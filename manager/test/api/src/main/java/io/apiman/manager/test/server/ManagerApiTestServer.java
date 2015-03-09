@@ -16,6 +16,7 @@
 package io.apiman.manager.test.server;
 
 import io.apiman.common.servlet.AuthenticationFilter;
+import io.apiman.common.servlet.DisableCachingFilter;
 import io.apiman.manager.api.security.impl.DefaultSecurityContextFilter;
 import io.apiman.manager.test.util.ManagerTestUtils;
 import io.apiman.manager.test.util.ManagerTestUtils.TestType;
@@ -272,6 +273,7 @@ public class ManagerApiTestServer {
         apiManServer.addFilter(DatabaseSeedFilter.class, "/db-seeder", EnumSet.of(DispatcherType.REQUEST));
         apiManServer.addFilter(LocaleFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
         apiManServer.addFilter(SimpleCorsFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
+        apiManServer.addFilter(DisableCachingFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
         apiManServer.addFilter(AuthenticationFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
         apiManServer.addFilter(DefaultSecurityContextFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
         ServletHolder resteasyServlet = new ServletHolder(new HttpServletDispatcher());

@@ -8,7 +8,7 @@ var APIMAN_CONFIG_DATA = {
     "username" : "admin"
   },
   "api" : {
-    "endpoint" : "http://localhost:7070",
+    "endpoint" : "http://localhost:7071",
     "auth" : {
       "type" : "basic",
       "basic" : {
