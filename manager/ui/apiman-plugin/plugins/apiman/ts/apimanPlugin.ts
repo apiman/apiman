@@ -21,6 +21,7 @@ module Apiman {
             $routeProvider.when('/apiman/consumer-orgs.html',     { templateUrl: builder.join(Apiman.templatePath, 'consumer-orgs.html') });
             $routeProvider.when('/apiman/dash.html',              { templateUrl: builder.join(Apiman.templatePath, 'dash.html') });
             $routeProvider.when('/apiman/new-app.html',           { templateUrl: builder.join(Apiman.templatePath, 'new-app.html') });
+            $routeProvider.when('/apiman/new-appversion.html',    { templateUrl: builder.join(Apiman.templatePath, 'new-appversion.html') });
             $routeProvider.when('/apiman/new-org.html',           { templateUrl: builder.join(Apiman.templatePath, 'new-org.html') });
             $routeProvider.when('/apiman/new-plan.html',          { templateUrl: builder.join(Apiman.templatePath, 'new-plan.html') });
             $routeProvider.when('/apiman/new-policy.html',        { templateUrl: builder.join(Apiman.templatePath, 'new-policy.html') });

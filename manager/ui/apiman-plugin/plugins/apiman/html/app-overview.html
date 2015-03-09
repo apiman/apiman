@@ -38,7 +38,7 @@
                     <li ng-repeat="appVersion in versions"><a href="#" ng-click="setVersion( appVersion )">{{ appVersion.version }}</a></li>
                   </ul>
                 </div>
-                <a data-permission="appEdit" href="new-appversion.html" class="btn btn-primary apiman-entity-action" data-field="toNewAppVersion" data-i18n-key="new-version">New Version</a>
+                <a data-permission="appEdit" href="{{ pluginName }}/new-appversion.html?org={{ org.id }}&app={{ app.id}}" class="btn btn-primary apiman-entity-action" data-field="toNewAppVersion" data-i18n-key="new-version">New Version</a>
               </div>
             </div>
             <hr />

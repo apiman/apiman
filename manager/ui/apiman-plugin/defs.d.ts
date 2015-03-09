@@ -11,6 +11,7 @@
 /// <reference path="d.ts/apiman/ts/logger.d.ts"/>
 /// <reference path="d.ts/apiman/ts/navbar.d.ts"/>
 /// <reference path="d.ts/apiman/ts/new-app.d.ts"/>
+/// <reference path="d.ts/apiman/ts/new-appversion.d.ts"/>
 /// <reference path="d.ts/apiman/ts/new-org.d.ts"/>
 /// <reference path="d.ts/apiman/ts/new-plan.d.ts"/>
 /// <reference path="d.ts/apiman/ts/new-policy.d.ts"/>
