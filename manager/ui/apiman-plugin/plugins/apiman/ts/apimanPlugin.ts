@@ -16,6 +16,7 @@ module Apiman {
                 .build();
             builder.configureRouting($routeProvider, tab);
 
+            $routeProvider.when('/apiman/admin-gateways.html',    { templateUrl: builder.join(Apiman.templatePath, 'admin-gateways.html') });
             $routeProvider.when('/apiman/app-overview.html',      { templateUrl: builder.join(Apiman.templatePath, 'app-overview.html') });
             $routeProvider.when('/apiman/app-contracts.html',     { templateUrl: builder.join(Apiman.templatePath, 'app-contracts.html') });
             $routeProvider.when('/apiman/consumer-orgs.html',     { templateUrl: builder.join(Apiman.templatePath, 'consumer-orgs.html') });
