@@ -8,9 +8,9 @@
 
   <body>
   <div>
-    <div id="progress-indicator" ng-class="{ 'loading': isLoading, 'loaded': isLoaded }"></div>
+    <div ng-include="'plugins/apiman/html/progress.html'"></div>
     <div id="apiman-header" ng-include="'plugins/apiman/html/navbar.html'"></div>
-    <div ng-controller="Apiman.OrgAppsController" class="page container" data-field="page" ng-cloak="" ng-show="isLoaded">
+    <div ng-controller="Apiman.OrgAppsController" class="page container" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div ng-include="'plugins/apiman/html/org-bc.html'"></div>
       <div class="row">
         <div ng-include="'plugins/apiman/html/org-lhs.html'"></div>

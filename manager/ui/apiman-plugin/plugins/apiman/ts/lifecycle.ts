@@ -7,8 +7,7 @@ module ApimanPageLifecycle {
         return {
             loadPage: function(pageName, dataPromise, $scope) {
                 Logger.log("|{0}| >> Loading page.", pageName);
-                $rootScope.isLoaded = false;
-                $rootScope.isLoading = true;
+                $rootScope.pageState = 'loading';
                 if (dataPromise) {
                     dataPromise.then(function(data) {
                         var count = 0;
@@ -17,20 +16,16 @@ module ApimanPageLifecycle {
                             this[key] = value;
                             count++;
                         }, $scope);
-                        $rootScope.isLoaded = true;
-                        $rootScope.isLoading = false;
-                        $rootScope.isError = false;
+                        $rootScope.pageState = 'loaded';
                         Logger.log("|{0}| >> Page successfully loaded: {1} data packets loaded", pageName, count);
                     }, function(reason) {
-                        $rootScope.isError = true;
+                        $rootScope.pageState = 'error';
                         $rootScope.error = reason;
                         Logger.error(reason);
                         alert("Page Load Error: " + reason);
                     });
                 } else {
-                    $rootScope.isLoaded = true;
-                    $rootScope.isLoading = false;
-                    $rootScope.isError = false;
+                    $rootScope.pageState = 'loaded';
                     Logger.log("|{0}| >> Page successfully loaded (no packets).", pageName);
                 }
             }
