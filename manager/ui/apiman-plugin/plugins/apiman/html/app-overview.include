@@ -1,0 +1,37 @@
+          <!-- Content Summary -->
+          <div class="col-md-12">
+            <h1 data-i18n-key="app-details">Application Details</h1>
+            <p data-i18n-key="app-description">
+              This is the application details page.  Use this page to modify the Application's meta-data,
+              policies, and contracts.  There is no need to follow the tabs in order, but note that
+              you will need to fill out a minimum amount of data before the Application can be registered
+              with the Gateway.  In particular, the Application must have at least one Service Contract
+              (see the "Contracts" tab).
+            </p>
+            
+            <h2 data-i18n-key="contracts">Contracts</h2>
+            <p data-i18n-key="contracts-description">
+              The 'Contracts' tab is where you can manage all of the Service Contracts for this 
+              Application.  A Service Contract is simply a link between this Application and a provided
+              Service the the Application consumes.
+            </p>
+
+            <h2 data-i18n-key="policies">Policies</h2>
+            <p data-i18n-key="policies-description">
+              The 'Policies' tab allows you to manage the Application-level policies that should
+              be applied whenever a request is made to any Service consumed by this Application.
+            </p>
+
+            <h2 data-i18n-key="apis" data-status="Registered">APIs</h2>
+            <p data-i18n-key="apis-description" data-status="Registered">
+              The 'APIs' tab lists all of the Services consumed by this Application, including 
+              showing the API Key and live endpoint for each.  Go here if you want to figure out
+              how to invoke a Service once you have a Contract for it.
+            </p>
+
+            <h2 data-i18n-key="activity">Activity</h2>
+            <p data-i18n-key="activity-description">
+              The 'Activity' tab shows a history of all the changes made to the Application.  Essentially
+              it is an audit log.
+            </p>
+          </div>
