@@ -21,6 +21,8 @@ module Apiman {
         '/apiman/app-contracts.html'    : { templateUrl: 'app-contracts.html' },
         '/apiman/consumer-org.html'     : { templateUrl: 'consumer-org.html' },
         '/apiman/consumer-orgs.html'    : { templateUrl: 'consumer-orgs.html' },
+        '/apiman/consumer-services.html': { templateUrl: 'consumer-services.html' },
+        '/apiman/consumer-service.html' : { templateUrl: 'consumer-service.html' },
         '/apiman/dash.html'             : { templateUrl: 'dash.html' },
         '/apiman/new-app.html'          : { templateUrl: 'new-app.html' },
         '/apiman/new-appversion.html'   : { templateUrl: 'new-appversion.html' },
@@ -55,7 +57,6 @@ module Apiman {
                 config.resolve = angular.extend({}, config.resolve, commonRouteResolves);
                 this.when(key, config);
             }, $routeProvider);
-
             $locationProvider.html5Mode(true);
         }]);
 
