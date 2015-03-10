@@ -22,6 +22,7 @@ module Apiman {
             $routeProvider.when('/apiman/admin-roles.html',       { templateUrl: builder.join(Apiman.templatePath, 'admin-roles.html') });
             $routeProvider.when('/apiman/app-overview.html',      { templateUrl: builder.join(Apiman.templatePath, 'app-overview.html') });
             $routeProvider.when('/apiman/app-contracts.html',     { templateUrl: builder.join(Apiman.templatePath, 'app-contracts.html') });
+            $routeProvider.when('/apiman/consumer-org.html',      { templateUrl: builder.join(Apiman.templatePath, 'consumer-org.html') });
             $routeProvider.when('/apiman/consumer-orgs.html',     { templateUrl: builder.join(Apiman.templatePath, 'consumer-orgs.html') });
             $routeProvider.when('/apiman/dash.html',              { templateUrl: builder.join(Apiman.templatePath, 'dash.html') });
             $routeProvider.when('/apiman/new-app.html',           { templateUrl: builder.join(Apiman.templatePath, 'new-app.html') });
