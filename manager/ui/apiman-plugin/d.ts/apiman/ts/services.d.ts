@@ -4,4 +4,5 @@ declare module ApimanServices {
     var ApimanServices: ng.IModule;
     var UserServices: ng.IModule;
     var OrganizationServices: ng.IModule;
+    var CurrentUserServices: ng.IModule;
 }

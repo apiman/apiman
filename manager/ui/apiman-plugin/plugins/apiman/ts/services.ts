@@ -24,4 +24,11 @@ module ApimanServices {
                 { organizationId: '@organizationId', entityType: '@entityType', entityId: '@entityId', versionsOrActivity: '@versionsOrActivity', version: '@version', policiesOrActivity: '@policiesOrActivity', policyId: '@policyId' });
         }]);
 
+    export var CurrentUserServices = _module.factory('CurrentUserSvcs', ['$resource', 'Configuration',
+        function($resource, Configuration) {
+            var endpoint = Configuration.api.endpoint + '/apiman/currentuser/:what';
+            return $resource(endpoint,
+                { entityType: '@what' });
+        }]);
+
 }
