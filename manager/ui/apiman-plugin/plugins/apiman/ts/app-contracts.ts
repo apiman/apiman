@@ -5,6 +5,7 @@ module Apiman {
     export var AppContractsController = _module.controller("Apiman.AppContractsController",
         ['$q', '$scope', '$location', 'OrgSvcs', 'PageLifecycle', ($q, $scope, $location, OrgSvcs, PageLifecycle) => {
             var params = $location.search();
+            $scope.organizationId = params.org;
             $scope.version = params.version;
             var promise = $q.all({
                 org: $q(function(resolve, reject) {

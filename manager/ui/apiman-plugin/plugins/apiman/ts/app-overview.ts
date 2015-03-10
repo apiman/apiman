@@ -5,6 +5,7 @@ module Apiman {
     export var AppOverviewController = _module.controller("Apiman.AppOverviewController",
         ['$q', '$scope', '$location', 'OrgSvcs', 'PageLifecycle', ($q, $scope, $location, OrgSvcs, PageLifecycle) => {
             var params = $location.search();
+            $scope.organizationId = params.org;
             $scope.version = params.version;
 
             var detail = 'overview';

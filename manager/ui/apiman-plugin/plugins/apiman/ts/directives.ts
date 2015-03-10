@@ -29,4 +29,26 @@ module Apiman {
             };
         }]);
 
+    
+    _module.directive('apimanPermission',
+        ['Logger', 'CurrentUser', function(Logger, CurrentUser) {
+            return {
+                restrict: 'A',
+                link: function(scope, element, attrs) {
+                    scope.$watch('organizationId', function(newValue, oldValue) {
+                        var orgId = newValue;
+                        if (orgId) {
+                            var permission = attrs.apimanPermission;
+                            Logger.debug('Checking authorization :: permission {0}/{1}.', orgId, permission);
+                            if (!CurrentUser.hasPermission(orgId, permission)) {
+                                $(element).hide();
+                            }
+                        } else {
+                            Logger.debug('Missing organizationId from $scope - authorization disabled.');
+                        }
+                    });
+                }
+            };
+        }]);
+
 }

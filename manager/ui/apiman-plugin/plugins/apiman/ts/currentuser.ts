@@ -9,6 +9,15 @@ module ApimanCurrentUser {
                 CurrentUserSvcs.get({ what: 'info' }, function(currentUser) {
                     Logger.log("Successfully grabbed currentuser/info for {0}.", currentUser.username);
                     $rootScope.currentUser = currentUser;
+                    var permissions = {};
+                    if (currentUser.permissions) {
+                        for (var i = 0; i < currentUser.permissions.length; i++) {
+                            var perm = currentUser.permissions[i];
+                            var permid = perm.organizationId + '||' + perm.name;
+                            permissions[permid] = true;
+                        }
+                    }
+                    $rootScope.permissions = permissions;
                     resolve(currentUser);
                 }, function(error) {
                     reject(error);
@@ -31,6 +40,14 @@ module ApimanCurrentUser {
                       this.push(key);
                     }, rval);
                     return rval;
+                },
+                hasPermission: function(organizationId, permission) {
+                    if (organizationId) {
+                        var permid = organizationId + '||' + permission;
+                        return $rootScope.permissions[permid];
+                    } else {
+                        return false;
+                    }
                 }
             };
         }]);

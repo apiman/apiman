@@ -38,7 +38,7 @@
                     <li ng-repeat="appVersion in versions"><a href="#" ng-click="setVersion( appVersion )">{{ appVersion.version }}</a></li>
                   </ul>
                 </div>
-                <a data-permission="appEdit" href="{{ pluginName }}/new-appversion.html?org={{ org.id }}&app={{ app.id}}" class="btn btn-primary apiman-entity-action" data-field="toNewAppVersion" data-i18n-key="new-version">New Version</a>
+                <a apiman-permission="appEdit" href="{{ pluginName }}/new-appversion.html?org={{ org.id }}&app={{ app.id}}" class="btn btn-primary apiman-entity-action" data-field="toNewAppVersion" data-i18n-key="new-version">New Version</a>
               </div>
             </div>
             <hr />
@@ -65,7 +65,7 @@
               <span class="apiman-label apiman-label-warning" data-field="status" data-role="dummy">Created</span>
             </div>
           </div>
-          <div class="col-md-5" data-permission="appEdit">
+          <div class="col-md-5" apiman-permission="appEdit">
             <div>
               <div data-status="Created,Ready"><a data-i18n-key="ttdo-consume-services" data-field="ttd_toConsumeServices" href="consumer-services.html">Search for Services to consume</a></div>
               <div data-status="Created,Ready"><a data-i18n-key="ttdo-new-contract" data-field="ttd_toNewContract" href="new-contract.html">Create a new Service Contract for this Application</a></div>

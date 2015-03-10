@@ -5,6 +5,7 @@ module Apiman {
     export var OrgAppsController = _module.controller("Apiman.OrgAppsController",
         ['$q', '$scope', '$location', 'OrgSvcs', 'PageLifecycle', ($q, $scope, $location, OrgSvcs, PageLifecycle) => {
             var params = $location.search();
+            $scope.organizationId = params.org;
             var promise = $q.all({
                 org: $q(function(resolve, reject) {
                     OrgSvcs.get({ organizationId: params.org, entityType: '' }, function(org) {

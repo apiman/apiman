@@ -74,7 +74,7 @@
                     <li><a href="#">1.0</a></li>
                   </ul>
                 </div>
-                <a data-permission="svcEdit" href="new-serviceversion.html" class="btn btn-primary apiman-entity-action" data-field="toNewServiceVersion" data-i18n-key="new-version">New Version</a>
+                <a apiman-permission="svcEdit" href="new-serviceversion.html" class="btn btn-primary apiman-entity-action" data-field="toNewServiceVersion" data-i18n-key="new-version">New Version</a>
               </div>
             </div>
             <hr />
@@ -101,7 +101,7 @@
               <span class="apiman-label apiman-label-warning" data-field="status" data-role="dummy">Ready</span>
             </div>
           </div>
-          <div class="col-md-5" data-permission="svcEdit">
+          <div class="col-md-5" apiman-permission="svcEdit">
             <div>
               <div data-status="Published">
                 <a data-i18n-key="ttdo-new-svc-contract" data-field="ttd_toNewContract" href="new-contract.html">Link my Application to this Service (New Contract)</a>
@@ -193,7 +193,7 @@
               </div>
             </div>
             
-            <div data-permission="svcEdit" data-status="Created,Ready" class="actions">
+            <div apiman-permission="svcEdit" data-status="Created,Ready" class="actions">
               <button class="btn btn-primary" data-field="saveButton" data-i18n-key="save" placeholder="Saving..." data-icon="fa-cog">Save</button>
               <button class="btn btn-default" data-field="cancelButton" data-i18n-key="cancel">Cancel</button>
             </div>
