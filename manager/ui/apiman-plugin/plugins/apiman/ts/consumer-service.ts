@@ -39,10 +39,11 @@ module Apiman {
             $scope.setVersion = function(service) {
                 $scope.selectedServiceVersion = service;
                 OrgSvcs.query({ organizationId: params.org, entityType: 'services', entityId: service.id, versionsOrActivity: 'versions', version: service.version, policiesOrActivity: 'plans' }, function(reply) {
-                    for (var i=0; i<reply.beans.length; i++) {
-                        var plan = reply.beans[i];
-                        OrgSvcs.query({ organizationId: params.org, entityType: 'services', entityId: service.id, versionsOrActivity: 'versions', version: service.version, policiesOrActivity: 'plans', policyId: plan.id, policyChain : 'policyChain' }, function(policyReply) {
-                            reply.beans[i].policies = policyReply.beans;  
+                    for (var i=0; i<reply.length; i++) {
+                        var plan = reply[i];
+                        OrgSvcs.query({ organizationId: params.org, entityType: 'services', entityId: service.id, versionsOrActivity: 'versions', version: service.version, policiesOrActivity: 'plans', policyId: plan.planId, policyChain : 'policyChain' }, function(policyReply) {
+                            var policies = policyReply;
+                            reply[i].policies = policies;  
                         }, function(error) {
                             if (error.status == 409) {
                                 $location.path('apiman/error-409.html');
@@ -51,7 +52,7 @@ module Apiman {
                             }
                         });
                     }
-                    $scope.plans = reply.beans;
+                    $scope.plans = reply;
                 }, function(error) {
                     if (error.status == 409) {
                         $location.path('apiman/error-409.html');
