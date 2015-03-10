@@ -27,7 +27,7 @@
           <p class="description" data-i18n-key="find-org-description">Use this page to find Organizations you may wish to join. Use this page to find Organizations you may wish to join. Use this page to find Organizations you may wish to join.</p>
         </div>
         <div class="col-md-6">
-          <input ng-model="orgName" type="text" class="form-control input-search" data-field="searchBox" data-i18n-key="searchfor" placeholder="Enter a word or phrase to search by..."></input>
+          <input ng-model="orgName" ng-change="searchOrg()" type="text" class="form-control input-search" data-field="searchBox" data-i18n-key="searchfor" placeholder="Enter a word or phrase to search by..."></input>
           &nbsp;
           <button class="btn btn-primary" data-i18n-key="search" data-field="searchButton" ng-click="searchOrg()">Search</input>
         </div>

@@ -37,8 +37,6 @@ module Apiman {
                     var matchedServices = [];
                     if ($scope.serviceName != null) {
                         for (var i = 0; i < services.length ; i++) {
-                            var name = services[i].name;
-                            var k = services[i].name.indexOf($scope.serviceName);
                             if (services[i].name.indexOf($scope.serviceName) >= 0) {
                                 matchedServices.push(services[i]);
                             }                     
