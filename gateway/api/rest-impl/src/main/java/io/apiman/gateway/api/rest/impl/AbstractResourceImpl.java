@@ -15,9 +15,8 @@
  */
 package io.apiman.gateway.api.rest.impl;
 
+import io.apiman.common.util.ServiceRegistryUtil;
 import io.apiman.gateway.engine.IEngine;
-
-import org.overlord.commons.services.ServiceRegistryUtil;
 
 /**
  * Base class for all resource implementation classes.

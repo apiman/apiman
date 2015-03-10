@@ -21,12 +21,6 @@
       <artifactId>apiman-gateway-engine-core</artifactId>
     </dependency>
 
-    <!-- Overlord Commons -->
-    <dependency>
-      <groupId>org.overlord</groupId>
-      <artifactId>overlord-commons-i18n</artifactId>
-    </dependency>
-
     <!-- Third Party Dependencies -->
     <dependency>
       <groupId>commons-io</groupId>
