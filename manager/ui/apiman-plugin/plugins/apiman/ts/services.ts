@@ -5,9 +5,9 @@ module ApimanServices {
 
     export var ApimanServices = _module.factory('ApimanSvcs', ['$resource', 'Configuration',
         function($resource, Configuration) {
-            var endpoint = Configuration.api.endpoint + '/apiman/:entityType';
+            var endpoint = Configuration.api.endpoint + '/apiman/:entityType/:secondaryType';
             return $resource(endpoint,
-                { entityType: '@entityType' });
+                { entityType: '@entityType', secondaryType: '@secondaryType' });
         }]);
 
     export var UserServices = _module.factory('UserSvcs', ['$resource', 'Configuration',
