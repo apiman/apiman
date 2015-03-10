@@ -44,7 +44,7 @@
           </div>
 
           <div class="item" ng-repeat="org in orgs">
-            <div class="title"><i class="fa fa-shield icon"></i><a href="{{ pluginName }}/consumer-org.html">{{ org.name }}</a></div>
+            <div class="title"><i class="fa fa-shield icon"></i><a href="{{ pluginName }}/consumer-org.html?org={{ org.id }}">{{ org.name }}</a></div>
             <div class="description" title="{{ org.description }}">{{ org.description }}</div>
             <div class="actions">
               <button class="btn btn-default">Request Membership</button>
