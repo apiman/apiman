@@ -12,7 +12,7 @@ module ApimanServices {
 
     export var UserServices = _module.factory('UserSvcs', ['$resource', 'Configuration',
         function($resource, Configuration) {
-            var endpoint = Configuration.api.endpoint + '/apiman/users/admin/:entityType';
+            var endpoint = Configuration.api.endpoint + '/apiman/users/' + Configuration.user.username + '/:entityType';
             return $resource(endpoint,
                 { entityType: '@entityType' });
         }]);

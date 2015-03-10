@@ -10,6 +10,7 @@
 /// <reference path="d.ts\apiman\ts\app-overview.d.ts"/>
 /// <reference path="d.ts\apiman\ts\configuration.d.ts"/>
 /// <reference path="d.ts\apiman\ts\consumer-orgs.d.ts"/>
+/// <reference path="d.ts\apiman\ts\currentuser.d.ts"/>
 /// <reference path="d.ts\apiman\ts\dash.d.ts"/>
 /// <reference path="d.ts\apiman\ts\directives.d.ts"/>
 /// <reference path="d.ts\apiman\ts\lifecycle.d.ts"/>
