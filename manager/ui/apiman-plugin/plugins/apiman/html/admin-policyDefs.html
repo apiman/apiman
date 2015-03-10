@@ -7,45 +7,14 @@
   </head>
 
   <body>
-
-    <!-- Top header/nav bar -->
-    <div id="apiman-header">
-      <div class="main-header container">
-        <div class="row">
-          <div class="col-md-12">
-            <div class="logo"></div>
-            <input class="search no-phone" type="text" placeholder="Quick service search..."></input>
-            <ul class="user-menu pull-right">
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                  <span class="pficon pficon-user"></span>
-                  <span>Bruce Wayne</span>
-                  <b class="caret"></b>
-                </a>
-                <ul class="dropdown-menu">
-                  <li>
-                    <a href="user-orgs.html">Home</a>
-                  </li>
-                  <li class="divider"></li>
-                  <li>
-                    <a data-field="toProfile" href="settings-profile.html" data-i18n-key="profile">Profile</a>
-                  </li>
-                  <li>
-                    <a href="#">Logout</a>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="container page admin-page" data-field="page">
+  <div>
+    <div ng-include="'plugins/apiman/html/progress.html'"></div>
+    <div id="apiman-header" ng-include="'plugins/apiman/html/navbar.html'"></div>   
+    <div ng-controller="Apiman.AdminPolicyDefsController" class="page container" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div class="row">
         <div class="col-md-12">
           <ol class="breadcrumb" data-field="breadcrumb" data-role="dummy">
-            <li><a href="dash.html"><i class="fa fa-home fa-fw"></i><span>Home</span></a></li>
+            <li><a href="{{ pluginName }}/dash.html"><i class="fa fa-home fa-fw"></i><span>Home</span></a></li>
             <li class="active"><i class="fa fa-gavel fa-fw"></i><span>System Administration</span></li>
           </ol>
         </div>
@@ -54,10 +23,10 @@
         <!-- Side Navigation -->
         <div class="col-md-3">
          <ul class="side-nav nav nav-pills nav-stacked">
-           <li><a data-field="toRoles" data-i18n-key="admin-nav.admin-roles" href="admin-roles.html">Roles</a></li>
-           <li class="active"><a data-field="toPolicyDefs" data-i18n-key="admin-nav.policy-definitions" href="admin-policyDefs.html">Policy Definitions</a></li>
-           <li><a data-field="toGateways" data-i18n-key="admin-nav.gateways" href="admin-gateways.html">Gateways</a></li>
-           <li><a data-field="toPlugins" data-i18n-key="admin-nav.plugins" href="admin-plugins.html">Plugins</a></li>
+           <li><a data-field="toRoles" data-i18n-key="admin-nav.admin-roles" href="{{ pluginName }}/admin-roles.html">Roles</a></li>
+           <li class="active"><a data-field="toPolicyDefs" data-i18n-key="admin-nav.policy-definitions" href="{{ pluginName }}/admin-policyDefs.html">Policy Definitions</a></li>
+           <li><a data-field="toGateways" data-i18n-key="admin-nav.gateways" href="{{ pluginName }}/admin-gateways.html">Gateways</a></li>
+           <li><a data-field="toPlugins" data-i18n-key="admin-nav.plugins" href="{{ pluginName }}/admin-plugins.html">Plugins</a></li>
          </ul>
         </div>
         <!-- Admin Content -->
@@ -90,7 +59,7 @@
                   </tbody>
                 </table>
 <!--                 <a data-field="toNewPolicyDef" href="new-policyDef.html" class="btn btn-default pull-right">Add Policy</a> -->
-                <a data-field="toImportPolicyDef" href="import-policyDefs.html" class="btn btn-primary pull-right">Import Policy</a>
+                <a data-field="toImportPolicyDef" href="{{ pluginName }}/import-policyDefs.html" class="btn btn-primary pull-right">Import Policy</a>
               </div>
             </div>
             <!-- Table of Policy Definitions -->
@@ -104,17 +73,11 @@
                     </tr>
                   </thead>
                   <tbody data-role="dummy">
-                    <tr>
-                      <td><a href="edit-policyDef.html"><i class="fa fa-lock fa-fw"></i><span>BASIC Authentication Policy</span></a></td>
-                      <td class="no-phone">class:io.apiman.gateway.engine.policies.BasicAuthenticationPolicy</td>
-                    </tr>
-                    <tr>
-                      <td><a href="edit-policyDef.html"><i class="fa fa-thumbs-down fa-fw"></i><span>IP Black-List Policy</span></a></td>
-                      <td class="no-phone">class:io.apiman.gateway.engine.policies.IPBlacklistPolicy</td>
-                    </tr>
-                    <tr>
-                      <td><a href="edit-policyDef.html"><i class="fa fa-filter fa-fw"></i><span>IP White-List Policy</span></a></td>
-                      <td class="no-phone">class:io.apiman.gateway.engine.policies.IPWhitelistPolicy</td>
+                    <tr ng-repeat="policyDef in policyDefs">
+                      <td><a href="{{ pluginName }}/edit-policyDef.html"><i class="fa fa-{{ policyDef.icon}} fa-fw"></i><span>{{ policyDef.name }}</span></a>
+                          <div class="description apiman-label-faded">{{ policyDef.description}}</div>
+                      </td>
+                      <td class="no-phone">{{ policyDef.policyImpl}}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -124,5 +87,6 @@
         </div>
       </div>
     </div>
+  </div>
   </body>
 </html>

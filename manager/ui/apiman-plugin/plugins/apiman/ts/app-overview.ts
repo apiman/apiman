@@ -6,6 +6,16 @@ module Apiman {
         ['$q', '$scope', '$location', 'OrgSvcs', 'PageLifecycle', ($q, $scope, $location, OrgSvcs, PageLifecycle) => {
             var params = $location.search();
             $scope.version = params.version;
+
+            var detail = 'overview';
+            if (params.detail != null) detail = params.detail;
+            if (detail == 'overview') $scope.overviewSelected = 'active';
+            if (detail == 'contracts') $scope.contractsSelected = 'active';
+            if (detail == 'policies') $scope.policiesSelected = 'active';
+            if (detail == 'apis') $scope.apisSelected = 'active';
+            if (detail == 'activity') $scope.activitySelected = 'active';
+            $scope.include = 'plugins/apiman/html/app-' + detail + '.include';
+            
             var promise = $q.all({
                 org: $q(function(resolve, reject) {
                     OrgSvcs.get({ organizationId: params.org }, function(org) {
