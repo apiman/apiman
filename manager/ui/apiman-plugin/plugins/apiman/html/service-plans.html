@@ -103,7 +103,7 @@
           </div>
           <div class="col-md-5" apiman-permission="svcEdit">
             <div>
-              <div data-status="Published">
+              <div apiman-status="Published">
                 <a data-i18n-key="ttdo-new-svc-contract" data-field="ttd_toNewContract" href="new-contract.html">Link my Application to this Service (New Contract)</a>
               </div>
               <div>
@@ -130,8 +130,8 @@
             <li class=""><a data-field="toServiceImpl" href="service-impl.html" data-i18n-key="implementation">Implementation</a></li>
             <li class="active"><a data-field="toServicePlans" href="service-plans.html" data-i18n-key="plans">Plans</a></li>
             <li class=""><a data-field="toServicePolicies" href="service-policies.html" data-i18n-key="policies">Policies</a></li>
-            <li data-status="Published"><a data-field="toServiceContracts" href="service-contracts.html" data-i18n-key="contracts">Contracts</a></li>
-            <li data-status="Published"><a data-field="toServiceEndpoint" href="service-endpoint.html" data-i18n-key="endpoint">Endpoint</a></li>
+            <li apiman-status="Published"><a data-field="toServiceContracts" href="service-contracts.html" data-i18n-key="contracts">Contracts</a></li>
+            <li apiman-status="Published"><a data-field="toServiceEndpoint" href="service-endpoint.html" data-i18n-key="endpoint">Endpoint</a></li>
             <li class=""><a data-field="toServiceActivity" href="service-activity.html" data-i18n-key="activity">Activity</a></li>
             <li class="last"><a data-role="dummy">&nbsp;</a></li>
           </ul>
@@ -193,7 +193,7 @@
               </div>
             </div>
             
-            <div apiman-permission="svcEdit" data-status="Created,Ready" class="actions">
+            <div apiman-permission="svcEdit" apiman-status="Created,Ready" class="actions">
               <button class="btn btn-primary" data-field="saveButton" data-i18n-key="save" placeholder="Saving..." data-icon="fa-cog">Save</button>
               <button class="btn btn-default" data-field="cancelButton" data-i18n-key="cancel">Cancel</button>
             </div>

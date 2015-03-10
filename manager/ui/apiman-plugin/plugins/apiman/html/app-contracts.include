@@ -18,8 +18,8 @@
                       </tr>
                     </tbody>
                 </table>
-                <a data-permission="appEdit" data-status="Created,Ready" data-field="toNewContract" data-i18n-key="new-contract" href="new-contract.html" class="btn btn-primary pull-right">New Contract</a>
-                <button data-permission="appEdit" data-status="Created,Ready" data-field="breakAllContracts" data-i18n-key="break-all-contracts" placeholder="Breaking..." data-icon="fa-cog" class="btn btn-default pull-right">Break All</button>
+                <a data-permission="appEdit" apiman-status="Created,Ready" data-field="toNewContract" data-i18n-key="new-contract" href="new-contract.html" class="btn btn-primary pull-right">New Contract</a>
+                <button data-permission="appEdit" apiman-status="Created,Ready" data-field="breakAllContracts" data-i18n-key="break-all-contracts" placeholder="Breaking..." data-icon="fa-cog" class="btn btn-default pull-right">Break All</button>
               </div>
               <div class="clearfix"></div>
               <!-- The list of contracts -->

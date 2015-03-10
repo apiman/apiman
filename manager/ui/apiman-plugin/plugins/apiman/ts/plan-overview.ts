@@ -69,6 +69,7 @@ module Apiman {
                     }
                 } else {
                     $scope.selectedPlanVersion = versions[0];
+                    $scope.entityStatus = $scope.selectedPlanVersion.status;
                 }
             }, function(error) {
                 alert("ERROR=" + error);

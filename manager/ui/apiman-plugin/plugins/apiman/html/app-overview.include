@@ -22,8 +22,8 @@
               be applied whenever a request is made to any Service consumed by this Application.
             </p>
 
-            <h2 data-i18n-key="apis" data-status="Registered">APIs</h2>
-            <p data-i18n-key="apis-description" data-status="Registered">
+            <h2 data-i18n-key="apis" apiman-status="Registered">APIs</h2>
+            <p data-i18n-key="apis-description" apiman-status="Registered">
               The 'APIs' tab lists all of the Services consumed by this Application, including 
               showing the API Key and live endpoint for each.  Go here if you want to figure out
               how to invoke a Service once you have a Contract for it.

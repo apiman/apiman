@@ -44,7 +44,36 @@ module Apiman {
                                 $(element).hide();
                             }
                         } else {
-                            Logger.debug('Missing organizationId from $scope - authorization disabled.');
+                            Logger.error('Missing organizationId from $scope - authorization disabled.');
+                        }
+                    });
+                }
+            };
+        }]);
+
+    
+    _module.directive('apimanStatus',
+        ['Logger', function(Logger) {
+            return {
+                restrict: 'A',
+                link: function(scope, element, attrs) {
+                    scope.$watch('entityStatus', function(newValue, oldValue) {
+                        var entityStatus = newValue;
+                        if (entityStatus) {
+                            var validStatuses = attrs.apimanStatus.split(',');
+                            var statusIsValid = false;
+                            Logger.debug('Checking status {0} against valid statuses {1}.', entityStatus, '' + validStatuses);
+                            for (var i = 0; i < validStatuses.length; i++) {
+                                if (validStatuses[i] == entityStatus) {
+                                    statusIsValid = true;
+                                    break;
+                                }
+                            }
+                            if (!statusIsValid) {
+                                $(element).hide();
+                            }
+                        } else {
+                            Logger.error('Missing entityStatus from $scope - hide/show based on entity status feature is disabled.');
                         }
                     });
                 }

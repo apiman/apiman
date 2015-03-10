@@ -45,7 +45,7 @@ module Apiman {
                         } else {
                             $scope.selectedAppVersion = versions[0];
                         }
-                        
+                        $scope.entityStatus = $scope.selectedAppVersion.status;
                     }, function(error) {
                         reject(error);
                     });
