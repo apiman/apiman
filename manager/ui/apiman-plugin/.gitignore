@@ -2,3 +2,4 @@ node_modules/
 libs/
 dist
 defs.d.ts
+d.ts/
