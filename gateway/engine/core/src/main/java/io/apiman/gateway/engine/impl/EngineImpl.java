@@ -63,6 +63,7 @@ public class EngineImpl implements IEngine {
         setMetrics(metrics);
         
         policyFactory.setPluginRegistry(pluginRegistry);
+        metrics.setComponentRegistry(componentRegistry);
     }
 
     /**

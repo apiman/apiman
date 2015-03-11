@@ -32,5 +32,11 @@ public interface IMetrics {
      * @param metric
      */
     public void record(RequestMetric metric);
-
+    
+    /**
+     * Provides the component registry (before any call to {@link #record(RequestMetric)})
+     * is made. Metrics can then access HTTP client components, etc.
+     * @param registry
+     */
+    public void setComponentRegistry(IComponentRegistry registry); 
 }
