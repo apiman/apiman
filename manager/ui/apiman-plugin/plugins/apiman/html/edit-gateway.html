@@ -8,8 +8,8 @@
 
   <body>
   <div>
-    <div ng-include="'plugins/apiman/html/progress.html'"></div>
-    <div id="apiman-header" ng-include="'plugins/apiman/html/navbar.html'"></div>   
+    <div ng-include="'plugins/apiman/html/progress.include'"></div>
+    <div id="apiman-header" ng-include="'plugins/apiman/html/navbar.include'"></div>   
     <div ng-controller="Apiman.EditGatewayController" id="form-page" class="container apiman-edit-gateway apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div class="row">
         <h2 class="title" data-i18n-key="edit-gateway">Edit Gateway</h2>

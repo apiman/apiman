@@ -7,8 +7,8 @@
 
   <body>
   <div>
-    <div ng-include="'plugins/apiman/html/progress.html'"></div>
-    <div id="apiman-header" ng-include="'plugins/apiman/html/navbar.html'"></div>
+    <div ng-include="'plugins/apiman/html/progress.include'"></div>
+    <div id="apiman-header" ng-include="'plugins/apiman/html/navbar.include'"></div>
     <div ng-controller="Apiman.PlanActivityController" class="container page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div ng-include="'plugins/apiman/html/plan_bc.include'"></div>
       <!-- Entity Summary Row -->
