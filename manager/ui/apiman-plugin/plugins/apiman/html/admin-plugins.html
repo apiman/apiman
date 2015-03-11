@@ -62,7 +62,7 @@
                   <tbody data-role="dummy">
                     <tr ng-repeat="plugin in plugins">
                       <td>{{ plugin.name }}</td>
-                      <td><a href="{{ pluginName }}/edit-plugin.html"><span>{{ plugin.groupId }}:{{ plugin.artifactId }}:{{ plugin.version}}:{{ plugin.type }}</span></a></td>
+                      <td><a href="{{ pluginName }}/edit-plugin.html?plugin={{ plugin.id }}"><span>{{ plugin.groupId }}:{{ plugin.artifactId }}:{{ plugin.version}}:{{ plugin.type }}</span></a></td>
                     </tr>
                   </tbody>
                 </table>
