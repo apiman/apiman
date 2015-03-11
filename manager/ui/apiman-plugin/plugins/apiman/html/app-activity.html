@@ -1,4 +1,29 @@
-         <div class="apiman-activity" data-field="activity" data-role="dummy">
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    
+  </head>
+
+  <body>
+  <div>
+    <div ng-include="'plugins/apiman/html/progress.html'"></div>
+    <div id="apiman-header" ng-include="'plugins/apiman/html/navbar.html'"></div>
+    <div ng-controller="Apiman.AppActivityController" class="container page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+      <div ng-include="'plugins/apiman/html/app_bc.include'"></div>
+      <!-- Entity Summary Row -->
+      <div ng-include="'plugins/apiman/html/app_entity.include'"></div>
+
+      <!-- Navigation + Content Row -->
+      <div class="row">
+        <!-- Left hand nav -->
+        <div ng-include="'plugins/apiman/html/app_tabs.include'"></div>
+        <!-- /Left hand nav -->
+
+        <!-- Content -->
+        <div class="col-md-10 apiman-entity-content apiman-entity-overview">
+          <div class="apiman-activity" data-field="activity" data-role="dummy">
             <div class="container-fluid apiman-summaryrow">
               <div class="row">
                 <a href="userHome.html">Clark Kent</a> 
@@ -88,3 +113,10 @@
               <button class="btn btn-default">Show Next 20 Items</button>
             </div>
           </div>
+        </div>
+        <!-- /Content -->
+      </div>
+    </div> <!-- /container -->
+  </div>
+  </body>
+</html>
