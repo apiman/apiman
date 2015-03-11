@@ -25,6 +25,7 @@ module Apiman {
         '/apiman/consumer-service.html' : { templateUrl: 'consumer-service.html' },
         '/apiman/dash.html'             : { templateUrl: 'dash.html' },
         '/apiman/edit-gateway.html'     : { templateUrl: 'edit-gateway.html' },
+        '/apiman/edit-plugin.html'      : { templateUrl: 'edit-plugin.html' },
         '/apiman/new-app.html'          : { templateUrl: 'new-app.html' },
         '/apiman/new-appversion.html'   : { templateUrl: 'new-appversion.html' },
         '/apiman/new-org.html'          : { templateUrl: 'new-org.html' },

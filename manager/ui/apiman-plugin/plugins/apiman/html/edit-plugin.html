@@ -7,41 +7,10 @@
   </head>
 
   <body>
-
-    <!-- Top header/nav bar -->
-    <div id="apiman-header">
-      <div class="main-header container">
-        <div class="row">
-          <div class="col-md-12">
-            <div class="logo"></div>
-            <input class="search no-phone" type="text" placeholder="Quick service search..."></input>
-            <ul class="user-menu pull-right">
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                  <span class="pficon pficon-user"></span>
-                  <span>Bruce Wayne</span>
-                  <b class="caret"></b>
-                </a>
-                <ul class="dropdown-menu">
-                  <li>
-                    <a href="user-orgs.html">Home</a>
-                  </li>
-                  <li class="divider"></li>
-                  <li>
-                    <a data-field="toProfile" href="settings-profile.html" data-i18n-key="profile">Profile</a>
-                  </li>
-                  <li>
-                    <a href="#">Logout</a>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div id="form-page" class="container apiman-entity-new page" data-field="page">
+  <div>
+    <div ng-include="'plugins/apiman/html/progress.html'"></div>
+    <div id="apiman-header" ng-include="'plugins/apiman/html/navbar.html'"></div>   
+    <div ng-controller="Apiman.EditPluginController" id="form-page" class="container apiman-edit-plugin apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div class="row">
         <h2 class="title" data-i18n-key="plugin-details">Plugin Details</h2>
       </div>
@@ -63,7 +32,7 @@
             <dl>
               <dt data-i18n-key="group-id">Group Id</dt>
               <dd>
-                <span data-field="groupId">io.apiman.sample</span>
+                <span data-field="groupId">{{ plugin.groupId }}</span>
               </dd>
             </dl>
           </div>
@@ -71,7 +40,7 @@
             <dl>
               <dt data-i18n-key="artifact-id">Artifact Id</dt>
               <dd>
-                <span data-field="artifactId">my-plugin</span>
+                <span data-field="artifactId">{{ plugin.artifactId }}</span>
               </dd>
             </dl>
           </div>
@@ -79,7 +48,7 @@
             <dl>
               <dt data-i18n-key="version">Version</dt>
               <dd>
-                <span data-field="version">1.7.1.Final</span>
+                <span data-field="version">{{ plugin.version }}</span>
               </dd>
             </dl>
           </div>
@@ -87,7 +56,7 @@
             <dl>
               <dt data-i18n-key="classifier">Classifier (optional)</dt>
               <dd>
-                <span data-field="classifier"></span>
+                <span data-field="classifier">{{ plugin.classifier }}</span>
               </dd>
             </dl>
           </div>
@@ -95,7 +64,7 @@
             <dl>
               <dt data-i18n-key="type">Type (optional)</dt>
               <dd>
-                <span data-field="type">war</span>
+                <span data-field="type">{{ plugin.type }}</span>
               </dd>
             </dl>
           </div>
@@ -109,7 +78,7 @@
             <dl>
               <dt data-i18n-key="name">Name</dt>
               <dd>
-                <span data-field="name">My Plugin</span>
+                <span data-field="name">{{ plugin.name }}</span>
               </dd>
             </dl>
           </div>
@@ -117,7 +86,7 @@
             <dl>
               <dt data-i18n-key="description">Description</dt>
               <dd>
-                <span data-field="description">My Plugin</span>
+                <span data-field="description">{{ plugin.description }}</span>
               </dd>
             </dl>
           </div>
@@ -130,8 +99,9 @@
       <!-- Create Button -->
       <div class="row">
         <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" data-i18n-key="cancel">Cancel</a>
-        <button class="btn btn-danger" style="margin-left: 100px;" data-field="deleteButton" data-i18n-key="delete-plugin" placeholder="Deleting..." data-icon="fa-cog">Delete Plugin</button>
+        <button class="btn btn-danger" style="margin-left: 100px;" data-field="deleteButton" data-i18n-key="delete-plugin" placeholder="Deleting..." data-icon="fa-cog" ng-click="deletePlugin()">Delete Plugin</button>
       </div>
     </div> <!-- /container -->
+  </div>
   </body>
 </html>
