@@ -1,0 +1,9 @@
+        <div class="col-md-2 apiman-entity-nav">
+          <ul class="nav nav-pills nav-stacked">
+            <li class="first"><a data-role="dummy">&nbsp;</a></li>
+            <li ng-class="{ true: 'active' } [tab == 'overview']"><a data-field="toPlanOverview" href="{{ pluginName }}/plan-overview.html?org={{ org.id }}&plan={{ plan.id }}&version={{ selectedPlanVersion.version }}" data-i18n-key="overview">Overview</a></li>
+            <li ng-class="{ true: 'active' } [tab == 'policies']"><a data-field="toPlanPolicies" href="{{ pluginName }}/plan-policies.html?detail=policies&org={{ org.id }}&plan={{ plan.id }}&version={{ selectedPlanVersion.version }}" data-i18n-key="policies">Policies</a></li>
+            <li ng-class="{ true: 'active' } [tab == 'activity']"><a data-field="toPlanActivity" href="{{ pluginName }}/plan-activity.html?detail=activity&org={{ org.id }}&plan={{ plan.id }}&version={{ selectedPlanVersion.version }}" data-i18n-key="activity">Activity</a></li>
+            <li class="last"><a data-role="dummy">&nbsp;</a></li>
+          </ul>
+        </div>

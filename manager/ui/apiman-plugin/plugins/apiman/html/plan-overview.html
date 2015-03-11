@@ -3,97 +3,47 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
-    
   </head>
 
   <body>
-  <div ng-controller="Apiman.PlanOverviewController">
-
+  <div>
+    <div ng-include="'plugins/apiman/html/progress.html'"></div>
     <div id="apiman-header" ng-include="'plugins/apiman/html/navbar.html'"></div>
-    <div class="container page" data-field="page">
-      <div class="row">
-        <div class="col-md-12">
-          <ol class="breadcrumb" data-field="breadcrumb" data-role="dummy">
-            <li><a href="{{ pluginName }}/dash.html"><i class="fa fa-home fa-fw"></i><span>Home</span></a></li>
-            <li><a href="{{ pluginName }}/org-plans.html?org={{ org.id }}"><i class="fa fa-shield fa-fw"></i><span>{{ org.name }}</span></a></li>
-            <li class="active"><i class="fa fa-bar-chart-o fa-fw"></i><span>{{ plan.name }}</span></li>
-          </ol>
-        </div>
-      </div>
+    <div ng-controller="Apiman.PlanOverviewController" class="container page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+      <div ng-include="'plugins/apiman/html/plan_bc.include'"></div>
       <!-- Entity Summary Row -->
-      <div class="apiman-entity-summary">
-        <div class="row apiman-entity-breadcrumb">
-          <div class="col-md-12">
-            <div class="title container-fluid">
-              <i class="breadcrumb-icon fa fa-bar-chart-o"></i>
-              <div class="entity emphasis">
-                <a data-field="thePlan" href="plan-overview.html?org={{plan.organization.id}}&plan={{plan.id}}" data-role="dummy">{{ plan.name }}</a>
-              </div>
-              <div class="versions">
-                <div class="btn-group apiman-entity-action" data-role="dummy" data-field="versions">
-                  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                    {{ selectedPlanVersion.version }}<span class="caret"></span>
-                  </button>
-                  <ul class="dropdown-menu" role="menu">
-                    <li ng-repeat="planVersion in versions"><a href="#" ng-click="setVersion( planVersion )">{{ planVersion.version }}</a></li>
-                  </ul>
-                </div>
-                <a apiman-permission="planEdit" href="new-planversion.html?org={{plan.organization.id}}&plan={{plan.id}}&version={{versions[versions.length-1].version}}" class="btn btn-primary apiman-entity-action" data-field="toNewPlanVersion" data-i18n-key="new-version">New Version</a>
-              </div>
-            </div>
-            <hr />
-          </div>
-        </div>
-        <div class="row apiman-entity-metadata">
-          <div class="col-md-7" style="margin-bottom: 8px">
-            <!-- Service Summary -->
-            <div class="description" data-field="description" data-role="dummy">{{ plan.description }}</div>
-            <div style="padding: 8px">
-              <div class="entity-info-with-icon">
-                <i class="fa fa-clock-o fa-fw"></i>
-                <span class="apiman-label-faded" data-i18n-key="created-on">Created on</span>
-                <span data-field="createdOn" data-role="dummy" >{{ plan.createdOn | date:'yyyy-MM-dd' }}</span>
-              </div>
-              <div class="entity-info-with-icon">
-                <i class="fa fa-user fa-fw"></i>
-                <span class="apiman-label-faded" data-i18n-key="created-by">Created by</span>
-                <span><a href="user-orgs.html" data-field="createdBy" data-role="dummy">{{ plan.createdBy }}</a></span>
-              </div>
-            </div>
-            <div class="entity-info-with-icon">
-              <span data-i18n-key="status-label">Status:</span>
-              <span class="apiman-label apiman-label-warning" data-field="status" data-role="dummy">{{ plan.status }}</span>
-            </div>
-          </div>
-          <div class="col-md-5" apiman-permission="appEdit">
-            <div>
-              <div><a data-i18n-key="ttdo-new-version" data-field="ttd_toNewVersion" href="{{ plugainName }}/new-planversion.html?org={{ org.id }}&plan={{ plan.id }}">Create a new version of this Plan (New Version)</a></div>
-            </div>
-            <!-- The Publish Action -->
-            <div class="apiman-divider-40"></div>
-            <div class="">
-              <button class="btn btn-primary" data-field="lockButton" data-i18n-key="lock" placeholder="Locking..." data-icon="fa-cog"  ng-click="lockPlan( selectedPlanVersion )">Lock Plan</button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <div ng-include="'plugins/apiman/html/plan_entity.include'"></div>
 
       <!-- Navigation + Content Row -->
       <div class="row">
         <!-- Left hand nav -->
-        <div class="col-md-2 apiman-entity-nav">
-          <ul class="nav nav-pills nav-stacked">
-            <li class="first"><a data-role="dummy">&nbsp;</a></li>
-            <li class="{{ overviewSelected }}"><a data-field="toPlanOverview" href="{{ pluginName }}/plan-overview.html?org={{ org.id }}&plan={{ plan.id }}&version={{ selectedPlanVersion.version }}" data-i18n-key="overview">Overview</a></li>
-            <li class="{{ policiesSelected }}"><a data-field="toPlanPolicies" href="{{ pluginName }}/plan-overview.html?detail=policies&org={{ org.id }}&plan={{ plan.id }}&version={{ selectedPlanVersion.version }}" data-i18n-key="policies">Policies</a></li>
-            <li class="{{ activitySelected }}"><a data-field="toPlanActivity" href="{{ pluginName }}/plan-overview.html?detail=activity&org={{ org.id }}&plan={{ plan.id }}&version={{ selectedPlanVersion.version }}" data-i18n-key="activity">Activity</a></li>
-            <li class="last"><a data-role="dummy">&nbsp;</a></li>
-          </ul>
-        </div>
+        <div ng-include="'plugins/apiman/html/plan_tabs.include'"></div>
         <!-- /Left hand nav -->
 
         <!-- Content -->
-        <div class="col-md-10 apiman-entity-content apiman-entity-overview" ng-include="include" ></div>
+        <div class="col-md-10 apiman-entity-content apiman-entity-overview" >
+          <!-- Content Summary -->
+          <div class="col-md-12">
+            <h1 data-i18n-key="plan-details">Plan Details</h1>
+            <p data-i18n-key="plan-description">
+              This is the plan details page.  Use this page to modify the Plan's meta-data and policies.
+              Once you have fully configured the Plan, don't forget to "Lock" it so that it can be used
+              by Services in the org.
+            </p>
+
+            <h2 data-i18n-key="policies">Policies</h2>
+            <p data-i18n-key="policies-description">
+              The 'Policies' tab allows you to manage the Policy-level policies that should
+              be applied whenever a request is made to a Service via this Plan.
+            </p>
+
+            <h2 data-i18n-key="activity">Activity</h2>
+            <p data-i18n-key="activity-description">
+              The 'Activity' tab shows a history of all the changes made to the Plan.  Essentially
+              it is an audit log.
+            </p>
+          </div>
+        </div>
         <!-- /Content -->
       </div>
     </div> <!-- /container -->

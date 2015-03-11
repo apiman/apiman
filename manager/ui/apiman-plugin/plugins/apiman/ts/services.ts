@@ -31,4 +31,10 @@ module ApimanServices {
                 { entityType: '@what' });
         }]);
 
+    export var ActionServices = _module.factory('ActionSvcs', ['$resource', 'Configuration',
+        function($resource, Configuration) {
+            var endpoint = Configuration.api.endpoint + '/apiman/actions';
+            return $resource(endpoint);
+        }]);
+
 }
