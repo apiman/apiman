@@ -74,7 +74,7 @@
                   </thead>
                   <tbody data-role="dummy">
                     <tr ng-repeat="policyDef in policyDefs">
-                      <td><a href="{{ pluginName }}/edit-policyDef.html"><i class="fa fa-{{ policyDef.icon}} fa-fw"></i><span>{{ policyDef.name }}</span></a>
+                      <td><a href="{{ pluginName }}/edit-policyDef.html?policyDef={{policyDef.id}}"><i class="fa fa-{{ policyDef.icon}} fa-fw"></i><span>{{ policyDef.name }}</span></a>
                           <div class="description apiman-label-faded">{{ policyDef.description}}</div>
                       </td>
                       <td class="no-phone">{{ policyDef.policyImpl}}</td>
