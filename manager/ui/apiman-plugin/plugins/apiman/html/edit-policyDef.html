@@ -7,41 +7,11 @@
   </head>
 
   <body>
+  <div>
+    <div ng-include="'plugins/apiman/html/progress.html'"></div>
+    <div id="apiman-header" ng-include="'plugins/apiman/html/navbar.html'"></div>   
+    <div ng-controller="Apiman.EditPolicyDefController" id="form-page" class="container apiman-edit-policy apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
 
-    <!-- Top header/nav bar -->
-    <div id="apiman-header">
-      <div class="main-header container">
-        <div class="row">
-          <div class="col-md-12">
-            <div class="logo"></div>
-            <input class="search no-phone" type="text" placeholder="Quick service search..."></input>
-            <ul class="user-menu pull-right">
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                  <span class="pficon pficon-user"></span>
-                  <span>Bruce Wayne</span>
-                  <b class="caret"></b>
-                </a>
-                <ul class="dropdown-menu">
-                  <li>
-                    <a href="user-orgs.html">Home</a>
-                  </li>
-                  <li class="divider"></li>
-                  <li>
-                    <a data-field="toProfile" href="settings-profile.html" data-i18n-key="profile">Profile</a>
-                  </li>
-                  <li>
-                    <a href="#">Logout</a>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div id="form-page" class="container apiman-edit-policy apiman-entity-new page" data-field="page">
       <div class="row">
         <h2 class="title" data-field="heading" data-i18n-key="edit-policy">Edit Policy</h2>
       </div>
@@ -59,7 +29,7 @@
         <div class="box col-md-9 container" data-field="policyFormWrapper" data-role="dummy">
           <div class="form policy-config default">
             <span>Please manually configure your policy's JSON configuration below.</span>
-            <textarea></textarea>
+            <textarea ng-model="policyDefJSON">{{ policyDefJSON }}</textarea>
           </div>
         </div>
       </div>
@@ -70,9 +40,10 @@
       </div>
       <!-- Update Button -->
       <div class="row" apiman-status="Created,Ready">
-        <button class="btn btn-primary" data-field="updateButton" data-i18n-key="update-policy" placeholder="Updating..." data-icon="fa-cog">Update Policy</button>
+        <button class="btn btn-primary" data-field="updateButton" data-i18n-key="update-policy" placeholder="Updating..." data-icon="fa-cog" ng-click="updatePolicyDef()">Update Policy</button>
         <a data-field="cancelButton" href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" data-i18n-key="cancel">Cancel</a>
       </div>
     </div> <!-- /container -->
+  </div>
   </body>
 </html>
