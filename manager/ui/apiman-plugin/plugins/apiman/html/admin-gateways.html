@@ -61,7 +61,7 @@
                   </thead>
                   <tbody data-role="dummy" ng-repeat="gateway in gateways">
                     <tr>
-                      <td><a href="{{ pluginName}}/edit-gateway.html"><span>{{ gateway.name}}</span></a></td>
+                      <td><a href="{{ pluginName}}/edit-gateway.html?gateway={{ gateway.id }}"><span>{{ gateway.name}}</span></a></td>
                       <td>{{ gateway.type}}</td>
                     </tr>
                   </tbody>

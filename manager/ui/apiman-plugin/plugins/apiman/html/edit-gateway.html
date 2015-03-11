@@ -7,41 +7,10 @@
   </head>
 
   <body>
-
-    <!-- Top header/nav bar -->
-    <div id="apiman-header">
-      <div class="main-header container">
-        <div class="row">
-          <div class="col-md-12">
-            <div class="logo"></div>
-            <input class="search no-phone" type="text" placeholder="Quick service search..."></input>
-            <ul class="user-menu pull-right">
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                  <span class="pficon pficon-user"></span>
-                  <span>Bruce Wayne</span>
-                  <b class="caret"></b>
-                </a>
-                <ul class="dropdown-menu">
-                  <li>
-                    <a href="user-orgs.html">Home</a>
-                  </li>
-                  <li class="divider"></li>
-                  <li>
-                    <a data-field="toProfile" href="settings-profile.html" data-i18n-key="profile">Profile</a>
-                  </li>
-                  <li>
-                    <a href="#">Logout</a>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div id="form-page" class="container apiman-edit-gateway apiman-entity-new page" data-field="page">
+  <div>
+    <div ng-include="'plugins/apiman/html/progress.html'"></div>
+    <div id="apiman-header" ng-include="'plugins/apiman/html/navbar.html'"></div>   
+    <div ng-controller="Apiman.EditGatewayController" id="form-page" class="container apiman-edit-gateway apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div class="row">
         <h2 class="title" data-i18n-key="edit-gateway">Edit Gateway</h2>
       </div>
@@ -58,7 +27,7 @@
         <dl>
           <dt data-i18n-key="gateway-name">Gateway Name</dt>
           <dd>
-            <input data-field="name" type="text" class="form-control name entityname" placeholder="Enter gateway name..." value="Existing Gateway" disabled="disabled"></input>
+            <input ng-model="gateway.name" data-field="name" type="text" class="form-control name entityname" placeholder="Enter gateway name..." value="Existing Gateway" disabled="disabled"></input>
           </dd>
         </dl>
       </div>
@@ -67,7 +36,7 @@
         <dl>
           <dt data-i18n-key="description">Description</dt>
           <dd>
-            <textarea data-field="description" type="text" class="form-control description" id="apiman-description" placeholder="Enter gateway description (optional)..."></textarea>
+            <textarea ng-model="gateway.description" data-field="description" type="text" class="form-control description" id="apiman-description" placeholder="Enter gateway description (optional)..."></textarea>
           </dd>
         </dl>
       </div>
@@ -76,7 +45,7 @@
         <dl>
           <dt data-i18n-key="config-endpoint">Configuration Endpoint</dt>
           <dd>
-            <input data-field="configEndpoint" type="text" class="form-control description" id="config-endpoint" placeholder="Enter configuration endpoint..."></input>
+            <input ng-model="configuration.endpoint" data-field="configEndpoint" type="text" class="form-control description" id="config-endpoint" placeholder="Enter configuration endpoint..."></input>
           </dd>
         </dl>
       </div>
@@ -91,7 +60,7 @@
                   <span data-i18n-key="username">Username:</span>
                 </td>
                 <td>
-                  <input data-field="username" type="text" class="form-control name entityname" placeholder="Username..."></input>
+                  <input ng-model="configuration.username" data-field="username" type="text" class="form-control name entityname" placeholder="Username..."></input>
                 </td>
               </tr>
               <tr>
@@ -99,13 +68,13 @@
                   <span data-i18n-key="password">Password:</span>
                 </td>
                 <td>
-                  <input data-field="password" type="password" class="form-control name entityname" placeholder="Password..."></input>
+                  <input ng-model="configuration.password" data-field="password" type="password" class="form-control name entityname" placeholder="Password..."></input>
                 </td>
               </tr>
               <tr>
                 <td></td>
                 <td>
-                  <input data-field="passwordConfirm" type="password" class="form-control name entityname" placeholder="Confirm Password..."></input>
+                  <input ng-model="configuration.password" data-field="passwordConfirm" type="password" class="form-control name entityname" placeholder="Confirm Password..."></input>
                 </td>
               </tr>
             </table>
@@ -121,10 +90,11 @@
       </div>
       <!-- Update Button -->
       <div class="row">
-        <button class="btn btn-primary" data-field="updateButton" data-i18n-key="update-gateway" placeholder="Updating..." data-icon="fa-cog">Update Gateway</button>
+        <button class="btn btn-primary" data-field="updateButton" data-i18n-key="update-gateway" placeholder="Updating..." data-icon="fa-cog" ng-click="updateGateway()">Update Gateway</button>
         <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" data-i18n-key="cancel">Cancel</a>
-        <button class="btn btn-danger" style="margin-left: 100px;" data-field="deleteButton" data-i18n-key="delete-gateway" placeholder="Deleting..." data-icon="fa-cog">Delete Gateway</button>
+        <button class="btn btn-danger" style="margin-left: 100px;" data-field="deleteButton" data-i18n-key="delete-gateway" placeholder="Deleting..." data-icon="fa-cog" ng-click="deleteGateway()">Delete Gateway</button>
       </div>
     </div> <!-- /container -->
+  </div>
   </body>
 </html>
