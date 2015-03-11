@@ -15,6 +15,7 @@
  */
 package io.apiman.gateway.test.server;
 
+import io.apiman.gateway.engine.IComponentRegistry;
 import io.apiman.gateway.engine.IMetrics;
 import io.apiman.gateway.engine.metrics.RequestMetric;
 
@@ -29,6 +30,7 @@ import java.util.List;
 public class TestMetrics implements IMetrics {
 
     private static List<RequestMetric> metrics = new ArrayList<>();
+    private IComponentRegistry registry;
 
     /**
      * Constructor.
@@ -52,4 +54,12 @@ public class TestMetrics implements IMetrics {
         return metrics;
     }
 
+    @Override
+    public void setComponentRegistry(IComponentRegistry registry) {
+        this.registry = registry;
+    }
+    
+    public IComponentRegistry getComponentRegistry() {
+        return registry;
+    }
 }

@@ -15,6 +15,7 @@
  */
 package io.apiman.gateway.engine.impl;
 
+import io.apiman.gateway.engine.IComponentRegistry;
 import io.apiman.gateway.engine.IMetrics;
 import io.apiman.gateway.engine.metrics.RequestMetric;
 
@@ -24,7 +25,6 @@ import io.apiman.gateway.engine.metrics.RequestMetric;
  * @author eric.wittmann@redhat.com
  */
 public class InMemoryMetrics implements IMetrics {
-    
     /**
      * Constructor.
      */
@@ -38,4 +38,10 @@ public class InMemoryMetrics implements IMetrics {
     public void record(RequestMetric metric) {
     }
 
+    /* (non-Javadoc)
+     * @see io.apiman.gateway.engine.IMetrics#setComponentRegistry(io.apiman.gateway.engine.IComponentRegistry)
+     */
+    @Override
+    public void setComponentRegistry(IComponentRegistry registry) {
+    }
 }
