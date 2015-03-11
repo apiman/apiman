@@ -7,7 +7,10 @@ module ApimanServices {
         function($resource, Configuration) {
             var endpoint = Configuration.api.endpoint + '/apiman/:entityType/:secondaryType';
             return $resource(endpoint,
-                { entityType: '@entityType', secondaryType: '@secondaryType' });
+                { entityType: '@entityType', secondaryType: '@secondaryType' }, {
+                update: {
+                  method: 'PUT' // this method issues a PUT request
+                }});
         }]);
 
     export var UserServices = _module.factory('UserSvcs', ['$resource', 'Configuration',
