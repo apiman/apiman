@@ -25,22 +25,22 @@
         <div class="row apiman-entity-metadata">
           <div class="col-md-7" style="margin-bottom: 8px">
             <!-- Service Summary -->
-            <div class="description" data-field="description" data-role="dummy">This is a project that builds on the Apache Shindig as the open social gadget containers.</div>
+            <div class="description" data-field="description" data-role="dummy">{{ app.description }}</div>
             <div style="padding: 8px">
               <div class="entity-info-with-icon">
                 <i class="fa fa-clock-o fa-fw"></i>
                 <span class="apiman-label-faded" data-i18n-key="created-on">Created on</span>
-                <span data-field="createdOn" data-role="dummy" >Feb 3, 2011</span>
+                <span data-field="createdOn" data-role="dummy" >{{ app.createdOn | date:'yyyy-MM-dd' }}</span>
               </div>
               <div class="entity-info-with-icon">
                 <i class="fa fa-user fa-fw"></i>
                 <span class="apiman-label-faded" data-i18n-key="created-by">Created by</span>
-                <span><a href="user-orgs.html" data-field="createdBy" data-role="dummy">Clark Kent</a></span>
+                <span><a href="user-orgs.html" data-field="createdBy" data-role="dummy">{{ app.createdBy }}</a></span>
               </div>
             </div>
             <div class="entity-info-with-icon">
               <span data-i18n-key="status-label">Status:</span>
-              <span class="apiman-label apiman-label-warning" data-field="status" data-role="dummy">Created</span>
+              <span apiman-entity-status="" />
             </div>
           </div>
           <div class="col-md-5" apiman-permission="appEdit">

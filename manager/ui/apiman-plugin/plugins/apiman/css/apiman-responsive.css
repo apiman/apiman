@@ -1,0 +1,196 @@
+/* Global Responsive Styles */
+
+/* Huge Desktop */
+@media ( min-width : 1900px) {
+}
+
+/* Small Desktop */
+@media (max-width: 991px) {
+  .apiman-entity-nav {
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgb(221, 221, 221);
+  }
+  .apiman-entity-nav .nav li.first, .apiman-entity-nav .nav li.last {
+    display: none;
+  }
+  .apiman-entity-nav .nav-pills li a {
+    border-right: 1px solid transparent;
+  }
+  .apiman-entity-nav .nav-pills li a:hover {
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid transparent;
+  }
+  .apiman-entity-nav .nav-pills li.active a {
+    background-color: rgb(102, 102, 102);
+    color: white;
+    border-right: 0px none;
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid transparent;
+  }
+  
+  .apiman-entity-new .description {
+    width: 500px;
+  }
+  
+  .apiman-no-entities-arrow {
+    display: none;
+    visibility: hidden;
+  }
+}
+
+/* Mobile */
+@media ( max-width : 767px) {
+  div.page {
+    margin-top: 5px;
+  }
+
+  .apiman-policies .apiman-summaryrow .actions {
+    visibility: visible;
+  }
+
+  .apiman-contracts .apiman-summaryrow .actions {
+    visibility: visible;
+  }
+
+  .apiman-policy-icon {
+    display: none;
+  }
+  
+  .apiman-entity-new {
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+  
+  .apiman-entitysummary {
+    border: 0px;
+    border-bottom: 1px solid rgb(221, 221, 221);
+    box-shadow: none;
+  }
+  
+  .apiman-entitytabs .nav-tabs li {
+    float: none;
+  }
+  .apiman-entitytabs .nav-tabs li.pull-right {
+    float: none !important;
+  }
+  .apiman-entitytabs .nav-tabs li a {
+  }
+  .apiman-entitytabs .nav-tabs li a:hover {
+    border: 1px solid transparent;
+  }
+  .apiman-entitytabs .nav-tabs li.active a, .apiman-entitytabs .nav-tabs li.active a:hover {
+    border-color: transparent;
+    border-bottom-color: transparent;
+    background-color: rgb(102, 102, 102);
+    color: white;
+  }
+  
+  div.admin-page .admin-content .apiman-summaryrow .permissions {
+    padding-right: 50px;
+  }
+
+  textarea.form-data {
+    width: 640px;
+  }
+
+}
+
+/* Smart Phones */
+@media ( max-width : 480px) {
+  .no-phone {
+    display: none;
+  }
+
+  .dash-group {
+    width: 100%;
+  }
+
+  .dash-group .description {
+    display: none;
+  }
+
+  .browse-items .item {
+    width: 100%;
+  }
+
+  .input-search {
+    width: 220px;
+  }
+  
+  .apiman-entity-new .description {
+    width: 300px;
+  }
+  
+  .apiman-entity-breadcrumb .title .versions {
+    float: left;
+    padding-top: 0px;
+  }
+  
+  .apiman-apis .apiman-summaryrow .apikey {
+    display: none;
+  }
+  .apiman-apis .apiman-summaryrow .url .extra-path {
+    display: none;
+  }
+
+  .apiman-contracts .apiman-summaryrow .actions, .apiman-policies .apiman-summaryrow .actions {
+    clear: both;
+    float: none;
+    display: block;
+  }
+
+  div.admin-page .admin-content .apiman-summaryrow .permissions {
+    padding-right: 50px;
+  }
+
+  textarea.form-data {
+    width: 400px;
+  }
+
+  .form.policy-config input[type=text].form-control {
+    width: 300px;
+  }
+
+}
+
+/* Original iPhone */
+@media ( max-width : 360px) {
+  
+  .apiman-entity-breadcrumb .title {
+    font-size: 16px;
+  }
+  .apiman-entity-breadcrumb .title div {
+    line-height: 24px;
+  }
+  .apiman-entity-breadcrumb .title .breadcrumb-icon {
+    display: none;
+  }
+  .apiman-members-filters .input-search {
+    margin-bottom: 10px;
+  }
+
+  .apiman-entity-new .divider {
+    display: none;
+    visibility: hidden;
+  }
+  .apiman-entity-new .input-search {
+    width: 240px;
+  }
+  
+  .apiman-filters .input-search {
+    width: 180px;
+  }
+
+  div.admin-page .admin-content .apiman-summaryrow .permissions {
+    padding-right: 10px;
+  }
+
+  textarea.form-data {
+    width: 320px;
+  }
+
+  .form.policy-config input[type=text].form-control {
+    width: 300px;
+  }
+
+}

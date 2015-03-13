@@ -4,6 +4,9 @@ module Apiman {
     export var NewAppVersionController = _module.controller("Apiman.NewAppVersionController",
         ['$q', '$location', '$scope', 'OrgSvcs', 'PageLifecycle', ($q, $location, $scope, OrgSvcs, PageLifecycle) => {
             var params = $location.search();
+            $scope.appversion = {
+                clone: true
+            };
             $scope.saveNewAppVersion = function() {
                 $scope.createButton.state = 'in-progress';
                 OrgSvcs.save({ organizationId: params.org, entityType: 'applications', entityId: params.app, versionsOrActivity: 'versions', version: ''}, $scope.appversion, function(reply) {

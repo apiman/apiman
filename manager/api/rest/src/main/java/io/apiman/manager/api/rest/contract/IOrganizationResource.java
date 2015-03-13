@@ -471,6 +471,23 @@ public interface IOrganizationResource {
             throws ApplicationNotFoundException, NotAuthorizedException;
 
     /**
+     * Use this endpoint to break all contracts between this application and its services.
+     * @summary Break All Contracts
+     * @param organizationId The Organization ID.
+     * @param applicationId The Application ID.
+     * @param version The Application version.
+     * @statuscode 200 If the operation is successful.
+     * @statuscode 404 If the Application does not exist.
+     * @throws ApplicationNotFoundException
+     * @throws NotAuthorizedException
+     */
+    @DELETE
+    @Path("{organizationId}/applications/{applicationId}/versions/{version}/contracts")
+    public void deleteAllContracts(@PathParam("organizationId") String organizationId,
+            @PathParam("applicationId") String applicationId, @PathParam("version") String version)
+            throws ApplicationNotFoundException, NotAuthorizedException;
+
+    /**
      * Use this endpoint to break a Contract with a Service.
      * @summary Break Contract
      * @param organizationId The Organization ID.
@@ -479,6 +496,7 @@ public interface IOrganizationResource {
      * @param contractId The Contract ID.
      * @statuscode 200 If the Contract is successfully broken.
      * @statuscode 404 If the Application does not exist.
+     * @statuscode 404 If the Contract does not exist.
      * @throws ApplicationNotFoundException
      * @throws ContractNotFoundException
      * @throws NotAuthorizedException

@@ -1,16 +1,15 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
-    
   </head>
 
   <body>
   <div>
     <div id="progress-indicator" ng-class="{ 'loading': isLoading, 'loaded': isLoaded }"></div>
     <div id="apiman-header" ng-include="'plugins/apiman/html/navbar.include'"></div>
-    <div ng-controller="Apiman.NewAppVersionController" id="form-page" class="container apiman-entity-new page" data-field="page" ng-cloak="" ng-show="isLoaded">
+    <div ng-controller="Apiman.NewAppVersionController" id="form-page" class="container apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div class="row">
         <h2 class="title" data-i18n-key="new-app">New Application Version</h2>
       </div>
@@ -34,8 +33,12 @@
       <div class="row">
         <dl>
           <dd>
-            <input type="checkbox" id="cloneCB" data-field="cloneCB"></input>
-            <label for="cloneCB" data-i18n-key="make-clone">Make a clone of the previously selected version (copy all policies and settings)</label>
+            <table>
+              <tr>
+                <td><input ng-model="appversion.clone" type="checkbox" id="cloneCB" data-field="cloneCB"></input></td>
+                <td><label style="margin-left: 4px; padding-top: 2px" for="cloneCB" data-i18n-key="make-clone">Make a clone of the previously selected version (copy all policies and settings)</label></td>
+              </tr>
+            </table>
           </dd>
         </dl>
       </div>

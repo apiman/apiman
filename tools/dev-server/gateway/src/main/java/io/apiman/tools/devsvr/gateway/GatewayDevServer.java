@@ -22,6 +22,7 @@ import io.apiman.gateway.engine.components.IRateLimiterComponent;
 import io.apiman.gateway.engine.components.ISharedStateComponent;
 import io.apiman.gateway.engine.impl.DefaultPluginRegistry;
 import io.apiman.gateway.engine.impl.InMemoryDataStoreComponent;
+import io.apiman.gateway.engine.impl.InMemoryMetrics;
 import io.apiman.gateway.engine.impl.InMemoryRateLimiterComponent;
 import io.apiman.gateway.engine.impl.InMemoryRegistry;
 import io.apiman.gateway.engine.impl.InMemorySharedStateComponent;
@@ -59,6 +60,7 @@ public class GatewayDevServer {
         System.setProperty(WarEngineConfig.APIMAN_GATEWAY_PLUGIN_REGISTRY_CLASS, DefaultPluginRegistry.class.getName());
         System.setProperty(WarEngineConfig.APIMAN_GATEWAY_CONNECTOR_FACTORY_CLASS, HttpConnectorFactory.class.getName());
         System.setProperty(WarEngineConfig.APIMAN_GATEWAY_POLICY_FACTORY_CLASS, PolicyFactoryImpl.class.getName());
+        System.setProperty(WarEngineConfig.APIMAN_GATEWAY_METRICS_CLASS, InMemoryMetrics.class.getName());
         
         if (System.getProperty("apiman.gateway.m2-repository-path") == null) { //$NON-NLS-1$
             System.setProperty("apiman.gateway.m2-repository-path", new File("src/main/resources/plugin").getAbsolutePath()); //$NON-NLS-1$ //$NON-NLS-2$

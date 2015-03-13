@@ -39,6 +39,23 @@ public class PluginNotFoundException extends AbstractNotFoundException {
     public PluginNotFoundException(String message) {
         super(message);
     }
+
+    /**
+     * Constructor.
+     * @param cause
+     */
+    public PluginNotFoundException(Throwable cause) {
+        super(cause);
+    }
+    
+    /**
+     * Constructor.
+     * @param message
+     * @param cause
+     */
+    public PluginNotFoundException(String message, Throwable cause) {
+        super(message, cause);
+    }
     
     /**
      * @see io.apiman.manager.api.rest.contract.exceptions.AbstractRestException#getErrorCode()

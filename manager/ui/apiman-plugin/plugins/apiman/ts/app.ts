@@ -39,13 +39,6 @@ module Apiman {
                             }, function(error) {
                                 reject(error);
                             });
-                        }),
-                        members: $q(function(resolve, reject) {
-                            OrgSvcs.query({ organizationId: params.org, entityType: 'members' }, function(members) {
-                                resolve(members);
-                            }, function(error) {
-                                reject(error);
-                            });
                         })
                     };
                 }
@@ -70,7 +63,7 @@ module Apiman {
                     entityVersion: app.version
                 };
                 ActionSvcs.save(registerAction, function(reply) {
-                    $scope.selectedAppVersion.status = 'Locked';
+                    $scope.selectedAppVersion.status = 'Registered';
                     $scope.registerButton.state = 'complete';
                     $scope.entityStatus = $scope.selectedAppVersion.status;
                 }, function(error) {
@@ -88,7 +81,7 @@ module Apiman {
                     entityVersion: app.version
                 };
                 ActionSvcs.save(unregisterAction, function(reply) {
-                    $scope.selectedAppVersion.status = 'Locked';
+                    $scope.selectedAppVersion.status = 'Retired';
                     $scope.unregisterButton.state = 'complete';
                     $scope.entityStatus = $scope.selectedAppVersion.status;
                 }, function(error) {

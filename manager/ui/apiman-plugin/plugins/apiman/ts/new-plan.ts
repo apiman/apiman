@@ -2,11 +2,17 @@
 module Apiman {
 
     export var NewPlanController = _module.controller("Apiman.NewPlanController",
-        ['$q', '$location', '$scope', 'UserSvcs', 'OrgSvcs', 'PageLifecycle', ($q, $location, $scope, UserSvcs, OrgSvcs, PageLifecycle) => {
+        ['$q', '$location', '$scope', 'UserSvcs', 'OrgSvcs', 'PageLifecycle', '$rootScope',
+        ($q, $location, $scope, UserSvcs, OrgSvcs, PageLifecycle, $rootScope) => {
+            var recentOrg = $rootScope.mruOrg;
             var promise = $q.all({
                 organizations: $q(function(resolve, reject) {
                     UserSvcs.query({ entityType: 'organizations' }, function(userOrgs) {
-                        $scope.selectedOrg = userOrgs[0];
+                        if (recentOrg) {
+                            $scope.selectedOrg = recentOrg;
+                        } else {
+                            $scope.selectedOrg = userOrgs[0];
+                        }
                         resolve(userOrgs);
                     }, function(error) {
                         reject(error);

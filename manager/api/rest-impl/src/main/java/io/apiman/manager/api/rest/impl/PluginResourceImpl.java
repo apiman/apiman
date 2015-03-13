@@ -104,7 +104,7 @@ public class PluginResourceImpl implements IPluginResource {
             bean.setName(plugin.getName());
             bean.setDescription(plugin.getDescription());
         } catch (InvalidPluginException e) {
-            throw new PluginNotFoundException(coordinates.toString());
+            throw new PluginNotFoundException(coordinates.toString(), e);
         }
         
         PluginBean pluginBean = new PluginBean();

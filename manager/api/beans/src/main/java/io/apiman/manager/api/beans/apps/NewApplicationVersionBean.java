@@ -32,6 +32,7 @@ public class NewApplicationVersionBean implements Serializable {
     private static final long serialVersionUID = 960818800225855945L;
     
     private String version;
+    private boolean clone;
     
     /**
      * Constructor.
@@ -51,6 +52,20 @@ public class NewApplicationVersionBean implements Serializable {
      */
     public void setVersion(String version) {
         this.version = version;
+    }
+
+    /**
+     * @return the clone
+     */
+    public boolean isClone() {
+        return clone;
+    }
+
+    /**
+     * @param clone the clone to set
+     */
+    public void setClone(boolean clone) {
+        this.clone = clone;
     }
 
 }

@@ -719,6 +719,16 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
     
     /**
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#deleteAllContracts(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public void deleteAllContracts(String organizationId, String applicationId, String version)
+            throws ApplicationNotFoundException, NotAuthorizedException {
+        // TODO implement this method!
+        throw new RuntimeException("Not yet implemented!");
+    }
+    
+    /**
      * @see io.apiman.manager.api.rest.contract.IOrganizationResource#deleteContract(java.lang.String, java.lang.String, java.lang.String, java.lang.Long)
      */
     @Override

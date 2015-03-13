@@ -80,4 +80,84 @@ module Apiman {
             };
         }]);
 
+    
+    _module.directive('apimanEntityStatus',
+        ['Logger', function(Logger) {
+            return {
+                restrict: 'A',
+                link: function(scope, element, attrs) {
+                    var toWatch = attrs.apimanEntityStatus;
+                    if (!toWatch) {
+                        toWatch = 'entityStatus';
+                    }
+                    scope.$watch(toWatch, function(newValue, oldValue) {
+                        var entityStatus = newValue;
+                        if (entityStatus) {
+                            $(element).html(entityStatus);
+                            $(element).removeClass();
+                            $(element).addClass('apiman-label');
+                            
+                            if (entityStatus == 'Created' || entityStatus == 'Ready') {
+                                $(element).addClass('apiman-label-warning');
+                            } else if (entityStatus == 'Retired') {
+                                $(element).addClass('apiman-label-default');
+                            } else {
+                                $(element).addClass('apiman-label-success');
+                            }
+                        }
+                    });
+                }
+            };
+        }]);
+
+    
+    _module.directive('apimanSearchBox',
+        ['Logger', function(Logger) {
+            return {
+                restrict: 'E',
+                templateUrl: 'plugins/apiman/html/directives/searchBox.html',
+                scope: {
+                    searchFunction: '=function'
+                },
+                link: function(scope, element, attrs) {
+                    scope.placeholder = attrs.placeholder;
+                    scope.doSearch = function() {
+                        $(element).find('button i').removeClass('fa-search');
+                        $(element).find('button i').removeClass('fa-close');
+                        if (scope.value) {
+                            $(element).find('button i').addClass('fa-close');
+                        } else {
+                            $(element).find('button i').addClass('fa-search');
+                        }
+                        scope.searchFunction(scope.value);
+                    };
+                    scope.onClick = function() {
+                        if (scope.value) {
+                            scope.value = '';
+                            $(element).find('button i').removeClass('fa-search');
+                            $(element).find('button i').removeClass('fa-close');
+                            $(element).find('button i').addClass('fa-search');
+                        }
+                        scope.searchFunction(scope.value);
+                    };
+                }
+            };
+        }]);
+
+    _module.directive('apimanConfirmModal',
+        ['Logger', function(Logger) {
+            return {
+                templateUrl: 'plugins/apiman/html/directives/confirmModal.html',
+                restrict: 'E',
+                transclude: true,
+                link: function(scope, element, attrs) {
+                    scope.title = attrs.title;
+
+                    $(element).on('hidden.bs.modal', function() {
+                        Logger.debug('hidden.bs.modal fired');
+                        $(element).remove();
+                    });
+                }
+            };
+        }]);
 }

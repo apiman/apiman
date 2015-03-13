@@ -39,7 +39,7 @@
             </div>
             <div class="entity-info-with-icon">
               <span data-i18n-key="status-label">Status:</span>
-              <span class="apiman-label apiman-label-warning" data-field="status" data-role="dummy">{{ selectedPlanVersion.status }}</span>
+              <span apiman-entity-status="" />
             </div>
           </div>
           <div class="col-md-5" apiman-permission="planEdit">

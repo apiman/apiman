@@ -30,6 +30,7 @@ public class NewPlanVersionBean implements Serializable {
     private static final long serialVersionUID = 1828038441268775749L;
     
     private String version;
+    private boolean clone;
     
     /**
      * Constructor.
@@ -49,6 +50,20 @@ public class NewPlanVersionBean implements Serializable {
      */
     public void setVersion(String version) {
         this.version = version;
+    }
+
+    /**
+     * @return the clone
+     */
+    public boolean isClone() {
+        return clone;
+    }
+
+    /**
+     * @param clone the clone to set
+     */
+    public void setClone(boolean clone) {
+        this.clone = clone;
     }
 
 }

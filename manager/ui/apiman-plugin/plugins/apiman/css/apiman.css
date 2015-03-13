@@ -1268,6 +1268,10 @@ div.admin-page .admin-content .apiman-summaryrow .emphasis {
   padding-left: 10px;
 }
 
+.modal-dialog {
+  z-index: 1050;
+}
+
 .modal-header {
   border-bottom: 1px solid rgb(238, 238, 238);
 }
