@@ -15,6 +15,9 @@
  */
 package io.apiman.gateway.engine.impl;
 
+import java.lang.reflect.InvocationTargetException;
+
+import io.apiman.common.util.ReflectionUtils;
 import io.apiman.gateway.engine.IComponentRegistry;
 import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.IEngine;
@@ -64,6 +67,8 @@ public class EngineImpl implements IEngine {
         
         policyFactory.setPluginRegistry(pluginRegistry);
         metrics.setComponentRegistry(componentRegistry);
+        
+        initialize(registry, pluginRegistry, componentRegistry, connectorFactory, policyFactory, metrics);
     }
 
     /**
@@ -172,5 +177,15 @@ public class EngineImpl implements IEngine {
     public void setMetrics(IMetrics metrics) {
         this.metrics = metrics;
     }
-
+    
+    private void initialize(Object... m) {
+        try {
+            for(Object o : m) {
+                ReflectionUtils.callIfExists(o, "initialize"); //$NON-NLS-1$
+            }
+        } catch (SecurityException | IllegalAccessException
+                | IllegalArgumentException | InvocationTargetException e) {
+            throw new RuntimeException(e); // If anything breaks at this point, we can't fix it.
+        }
+    }
 }
