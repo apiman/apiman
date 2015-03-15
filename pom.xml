@@ -158,6 +158,7 @@
     <module>test-policy</module>
     <module>cors-policy</module>
     <module>keycloak-oauth-policy</module>
+    <module>http-security-policy</module>
   </modules>
 
   <build>
