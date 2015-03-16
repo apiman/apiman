@@ -56,7 +56,7 @@ module Apiman {
                     }
                     scope.$on('$destroy', function() {
                         $timeout(function() {
-                            element.selectpicker('destroy');
+                            $(element)['selectpicker']('destroy');
                         });
                     });
                 }
@@ -185,13 +185,26 @@ module Apiman {
                 restrict: 'E',
                 transclude: true,
                 link: function(scope, element, attrs) {
-                    scope.title = attrs.title;
-
+                    scope.title = attrs.modalTitle;
                     $(element).on('hidden.bs.modal', function() {
-                        Logger.debug('hidden.bs.modal fired');
                         $(element).remove();
                     });
                 }
             };
         }]);
+
+    _module.directive('apimanSelectServiceModal',
+        ['Logger', function(Logger) {
+            return {
+                templateUrl: 'plugins/apiman/html/directives/selectServiceModal.html',
+                restrict: 'E',
+                link: function(scope, element, attrs) {
+                    scope.title = attrs.modalTitle;
+                    $(element).on('hidden.bs.modal', function() {
+                        $(element).remove();
+                    });
+                }
+            };
+        }]);
+    
 }

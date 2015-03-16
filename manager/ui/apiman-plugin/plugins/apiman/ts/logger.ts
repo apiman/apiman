@@ -17,6 +17,9 @@ module ApimanLogger {
     export var Logger = _module.factory('Logger', 
         function() {
             return {
+                info: function() {
+                    console.info(_formatMessage(arguments));
+                },
                 log: function() {
                     console.info(_formatMessage(arguments));
                 },

@@ -66,7 +66,7 @@
                 Use the drop-down below to choose one of the Plans made available by the selected Service.
               </p>
               <div class="center-content" ng-show="plans">
-                <select ng-model="selectedPlan" apiman-select-picker="" class="selectpicker" title="[no plans found]" ng-options="plan.name for plan in plans">
+                <select ng-model="selectedPlan" apiman-select-picker="" class="selectpicker" title="[no plans found]" ng-options="plan.planName for plan in plans">
                 </select>
               </div>
             </div>
@@ -82,7 +82,7 @@
         <div class="clearfix"></div>
 
         <div class="col-md-6">
-          <div class="service">
+          <div class="service" ng-class="{ selected : selectedService }">
             <div class="title"><i class="fa fa-puzzle-piece fa-fw"></i> <span>To Service</span></div>
             <div class="body">
               <p data-i18n-key="new-contract.service-description">
@@ -90,16 +90,18 @@
                 "target" of this Service Contract).
               </p>
               <div class="center-content">
-                <button class="btn btn-default btn-svc" ng-show="selectedService">
+                <button ng-click="selectService()" class="btn btn-default btn-svc" ng-show="selectedService">
                   <span>{{ selectedService.organizationName }}</span>
                   <span> / </span>
                   <span class="emphasis">{{ selectedService.name }}</span>
                   <span class="">&#8680;</span>
                   <span>{{ selectedService.version }}</span>
                 </button>
-                <button class="btn btn-default btn-svc btn-primary" ng-show="!selectedService">
+                <button ng-click="selectService()" class="btn btn-default btn-svc btn-primary" ng-show="!selectedService">
                   <span data-i18n-key="select-service">Select a Service</span>
                 </button>
+                <div class="clearfix" />
+                <span style="font-size: 10px" ng-show="selectedService">(click to change)</span>
               </div>
             </div>
           </div>

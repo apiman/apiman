@@ -794,50 +794,6 @@ ol.breadcrumb {
   width: 300px;
   float: left;
 }
-.apiman-entity-new .input-search-results {
-  max-width: 500px;
-}
-.apiman-entity-new .input-search-results .panel-body {
-  padding: 10px;
-  overflow-y: auto;
-  overflow-x: hidden;
-  max-height: 200px;
-}
-.apiman-entity-new .input-search-results .item {
-  width: 100%;
-  float: left;
-  line-height: 22px;
-  cursor: pointer;
-  border-top: 1px solid;
-  border-bottom: 1px solid;
-  border-color: transparent;
-}
-.apiman-entity-new .input-search-results .item:hover {
-  border-color: rgb(179, 211, 231);
-  background-color: rgb(212, 237, 250);
-  text-decoration: none;
-}
-.apiman-entity-new .input-search-results .item:focus {
-  text-decoration: none;
-}
-.apiman-entity-new .input-search-results .item.selected {
-  color: white;
-  border-color: rgb(0, 118, 183);
-  background-color: rgb(0, 153, 211);
-}
-.apiman-entity-new .btn-search {
-  float: left;
-  margin-left: 5px;
-}
-.apiman-entity-new h3 hr {
-  margin: 5px 0px 20px 0px;
-  padding: 0px;
-}
-.apiman-entity-new .box {
-  border: 1px solid rgb(222, 222, 222);
-  border-radius: 5px;
-  padding-top: 10px;
-}
 
 .apiman-contracts .apiman-summaryrow .actions {
   visibility: hidden;
@@ -1397,4 +1353,65 @@ textarea.apiman-endpoint {
 }
 .center-content * {
   text-align: left;
+}
+
+.modal-select-service .panel {
+  margin-top: 10px;
+}
+.modal-select-service .input-search-results {
+  width: 100%;
+}
+.modal-select-service .input-search-results .panel-body {
+  padding: 10px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: 175px;
+}
+.modal-select-service .input-search-results .item {
+  width: 100%;
+  float: left;
+  line-height: 22px;
+  cursor: pointer;
+  border-top: 1px solid;
+  border-bottom: 1px solid;
+  border-color: transparent;
+}
+.modal-select-service .input-search-results .item:hover {
+  border-color: rgb(179, 211, 231);
+  background-color: rgb(212, 237, 250);
+  text-decoration: none;
+}
+.modal-select-service .input-search-results .item:focus {
+  text-decoration: none;
+}
+.modal-select-service .input-search-results .item.selected {
+  color: white;
+  border-color: rgb(0, 118, 183);
+  background-color: rgb(0, 153, 211);
+}
+.modal-select-service .btn-search {
+  float: left;
+  margin-left: 5px;
+  line-height: 22px;
+}
+.apiman-entity-new h3 hr {
+  margin: 5px 0px 20px 0px;
+  padding: 0px;
+}
+.modal-select-service .box {
+  border: 1px solid rgb(222, 222, 222);
+  border-radius: 5px;
+  padding-top: 10px;
+}
+
+.modal .form-label {
+  font-size: 12px;
+  margin-right: 10px;
+  line-height: 24px;
+  display: block;
+}
+
+#selectServiceModal .version {
+  display: block;
+  width: auto;
 }
