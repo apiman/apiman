@@ -1,0 +1,15 @@
+{
+  "id" : "http-security-policy",
+  "name" : "HTTP Security Policy",
+  "description" : "Security-related HTTP headers can be set, such as HSTS, CSP and XSS protection.",
+  "policyImpl" : "plugin:${project.groupId}:${project.artifactId}:${project.version}:${project.packaging}/io.apiman.plugins.httpsecuritypolicy.HttpSecurityPolicy",
+  "icon" : "bullhorn",
+  "formType" : "JsonSchema",
+  "templates" : [
+    {
+      "language" : null,
+      "template" : "HTTP security headers have been set."
+    }
+  ],
+  "form" : "schemas/http-security-policyDef.schema"
+}
