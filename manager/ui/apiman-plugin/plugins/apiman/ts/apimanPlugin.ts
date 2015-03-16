@@ -33,6 +33,7 @@ module Apiman {
         '/apiman/edit-role.html'        : { templateUrl: 'edit-role.html' },
         '/apiman/new-app.html'          : { templateUrl: 'new-app.html' },
         '/apiman/new-appversion.html'   : { templateUrl: 'new-appversion.html' },
+        '/apiman/new-contract.html'     : { templateUrl: 'new-contract.html' },
         '/apiman/new-org.html'          : { templateUrl: 'new-org.html' },
         '/apiman/new-plan.html'         : { templateUrl: 'new-plan.html' },
         '/apiman/new-policy.html'       : { templateUrl: 'new-policy.html' },

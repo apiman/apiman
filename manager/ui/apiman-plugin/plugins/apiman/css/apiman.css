@@ -190,6 +190,13 @@ textarea.form-data {
 #apiman-header .user-menu a {
 }
 
+.alert-warning {
+  background-color: rgb(255,213,185)
+}
+.alert-warning .pficon {
+  color: rgb(236, 122, 8);
+}
+
 .apiman-label {
   text-transform: uppercase;
   font-size: 11px;
@@ -1327,4 +1334,67 @@ div.admin-page .admin-content .apiman-summaryrow .emphasis {
 textarea.apiman-endpoint {
   border: 1px solid rgb(200, 200, 200);
   padding: 5px;
+}
+
+
+#new-contract-form .bootstrap-select {
+  width: auto;
+}
+
+#new-contract-form .slash {
+  font-size: 28px;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+#new-contract-form .title {
+  background-color: #999;
+  color: white;
+  font-weight: bold;
+  margin: 0px;
+  padding: 5px;
+}
+
+#new-contract-form .body {
+  padding: 10px;
+}
+
+#new-contract-form .application, #new-contract-form .plan, #new-contract-form .service {
+  border: 1px solid #999;
+  border-radius: 5px;
+}
+#new-contract-form .application.selected, #new-contract-form .plan.selected, #new-contract-form .service.selected {
+  border: 1px solid #3776ab;
+  border-radius: 5px;
+}
+#new-contract-form .application.selected .title, #new-contract-form .plan.selected .title, #new-contract-form .service.selected .title {
+  background-color: #3776ab;
+}
+#new-contract-form .application:hover, #new-contract-form .plan:hover, #new-contract-form .service:hover {
+  box-shadow: 3px 3px 5px #ccc;
+}
+#new-contract-form .plan {
+  margin-left: 40px;
+  margin-right: 40px;
+}
+
+#new-contract-form .to-plan-arrow {
+  height: 40px;
+  background-image: url(images/new-contract-arrow-top.png);
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+#new-contract-form .to-service-arrow {
+  height: 60px;
+  background-image: url(images/new-contract-arrow-bottom.png);
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.center-content {
+  text-align: center;
+}
+.center-content * {
+  text-align: left;
 }

@@ -3,7 +3,7 @@
 module Apiman {
 
     export var AppEntityLoader = _module.factory('AppEntityLoader', 
-        ['$q', 'OrgSvcs', 'Logger', ($q, OrgSvcs, Logger) => {
+        ['$q', 'OrgSvcs', 'Logger', '$rootScope', ($q, OrgSvcs, Logger, $rootScope) => {
             return {
                 getCommonData: function($scope, $location) {
                     var params = $location.search();
@@ -35,6 +35,7 @@ module Apiman {
                                 } else {
                                     $scope.selectedAppVersion = versions[0];
                                 }
+                                $rootScope.mruApp = $scope.selectedAppVersion;
                                 $scope.entityStatus = $scope.selectedAppVersion.status;
                             }, function(error) {
                                 reject(error);

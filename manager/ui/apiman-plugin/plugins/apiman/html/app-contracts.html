@@ -64,6 +64,11 @@
                   <hr />
                 </div>
               </div>
+              
+              <div class="apiman-no-content container-fluid" ng-show="filteredContracts.length == 0">
+                <p class="apiman-no-entities-description">This application doesn't appear to have any service contracts (or perhaps none that match your filter above).  Try creating a new Contract to a Service - if you do it will get listed here!</p>
+              </div>              
+              
             </div>
           </div>
         </div>

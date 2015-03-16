@@ -724,8 +724,12 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     @Override
     public void deleteAllContracts(String organizationId, String applicationId, String version)
             throws ApplicationNotFoundException, NotAuthorizedException {
-        // TODO implement this method!
-        throw new RuntimeException("Not yet implemented!");
+        if (!securityContext.hasPermission(PermissionType.appEdit, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
+        List<ContractSummaryBean> contracts = getApplicationVersionContracts(organizationId, applicationId, version);
+        for (ContractSummaryBean contract : contracts) {
+            deleteContract(organizationId, applicationId, version, contract.getContractId());
+        }
     }
     
     /**

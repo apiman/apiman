@@ -30,6 +30,40 @@ module Apiman {
         }]);
 
     
+    _module.directive('apimanSelectPicker',
+        ['Logger', '$timeout', '$parse', function(Logger, $timeout, $parse) {
+            return {
+                restrict: 'A',
+                link: function(scope, element, attrs) {
+                    function refresh(newVal) {
+                        scope.$applyAsync(function() {
+                            $(element)['selectpicker']('refresh');
+                        });
+                    }
+                    $timeout(function() {
+                        $(element)['selectpicker']();
+                        $(element)['selectpicker']('refresh');
+                    });
+                    scope.$watch(
+                        function() { return element[0].childNodes.length; },
+                        refresh
+                    );
+                    if (attrs.ngModel) {
+                        scope.$watch(attrs.ngModel, refresh, true);
+                    }
+                    if (attrs.ngDisabled) {
+                        scope.$watch(attrs.ngDisabled, refresh, true);
+                    }
+                    scope.$on('$destroy', function() {
+                        $timeout(function() {
+                            element.selectpicker('destroy');
+                        });
+                    });
+                }
+            };
+        }]);
+
+    
     _module.directive('apimanPermission',
         ['Logger', 'CurrentUser', function(Logger, CurrentUser) {
             return {

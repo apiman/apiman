@@ -7,7 +7,7 @@ module ApimanDialogs {
         function(Logger, $compile, $rootScope, $timeout) {
             return {
                 confirm: function(title, message, yesCallback, noCallback) {
-                    var modalScope = $rootScope.$new();
+                    var modalScope = $rootScope.$new(true);
                     modalScope.onYes = function() {
                         if (yesCallback) { yesCallback(); }
                     };
