@@ -7,45 +7,14 @@
   </head>
 
   <body>
-
-    <!-- Top header/nav bar -->
-    <div id="apiman-header">
-      <div class="main-header container">
-        <div class="row">
-          <div class="col-md-12">
-            <div class="logo"></div>
-            <input class="search no-phone" type="text" placeholder="Quick service search..."></input>
-            <ul class="user-menu pull-right">
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                  <span class="pficon pficon-user"></span>
-                  <span>Bruce Wayne</span>
-                  <b class="caret"></b>
-                </a>
-                <ul class="dropdown-menu">
-                  <li>
-                    <a href="user-orgs.html">Home</a>
-                  </li>
-                  <li class="divider"></li>
-                  <li>
-                    <a data-field="toProfile" href="settings-profile.html" data-i18n-key="profile">Profile</a>
-                  </li>
-                  <li>
-                    <a href="#">Logout</a>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div id="form-page" class="container apiman-entity-new page" data-field="page">
+  <div>
+    <div ng-include="'plugins/apiman/html/progress.include'"></div>
+    <div id="apiman-header" ng-include="'plugins/apiman/html/navbar.include'"></div>   
+    <div ng-controller="Apiman.ImportPolicyDefsController" id="form-page" class="container apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div class="row">
         <h2 class="title" data-i18n-key="import-policy-defs">Import Policy Definition(s)</h2>
       </div>
-      <div id="dataPage">
+      <div id="dataPage" ng-show="isData">
         <!-- Helpful hint -->
         <div class="row">
           <p data-i18n-key="import-policy-defs-help-text" class="col-md-6 apiman-label-faded">Import one or more policy definition.  Simply copy/paste the policy definition data into the text area below and click Import - we'll do the rest!  Make sure the data is properly formatted JSON.</p>
@@ -59,7 +28,7 @@
           <dl>
             <dt data-i18n-key="policyDef-data">Policy Definition Data</dt>
             <dd>
-              <textarea data-field="data" class="form-control form-data" width="100%"></textarea>
+              <textarea ng-model="policyDefsJSON" data-field="data" class="form-control form-data" width="100%"></textarea>
             </dd>
           </dl>
         </div>
@@ -69,11 +38,12 @@
         </div>
         <!-- Import Button -->
         <div class="row">
-          <button class="btn btn-primary" data-field="importButton" data-i18n-key="import-policyDef" placeholder="Importing..." data-icon="fa-cog" onclick="$('#dataPage').animate( { 'margin-left' : '-1000px' }, 250, function() { $('#dataPage').hide(); $('#confirmPage').show(); $('#confirmPage').animate( { 'margin-left' : '0px' }, 250); });">Import</button>
+          <button class="btn btn-primary" data-field="importButton" data-i18n-key="import-policyDef" placeholder="Importing..." data-icon="fa-cog"  ng-click="parseJSON()">Parse JSON</button>
           <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" data-i18n-key="cancel">Cancel</a>
         </div>
       </div>
-      <div id="confirmPage" style="margin-left: 1500px; display:none">
+     
+      <div id="confirmPage" ng-show="isConfirm">
         <div class="row">
           <table class="table table-responsive" data-field="policyDefs">
             <thead>
@@ -82,18 +52,10 @@
                 <th class="no-phone" data-i18n-key="implementation">Implementation</th>
               </tr>
             </thead>
-            <tbody data-role="dummy">
+            <tbody data-role="dummy" ng-repeat="policyDef in policyDefs">
               <tr>
-                <td><a href="edit-policyDef.html"><i class="fa fa-lock fa-fw"></i><span>BASIC Authentication Policy</span></a></td>
-                <td class="no-phone">class:io.apiman.gateway.engine.policies.BasicAuthenticationPolicy</td>
-              </tr>
-              <tr>
-                <td><a href="edit-policyDef.html"><i class="fa fa-thumbs-down fa-fw"></i><span>IP Black-List Policy</span></a></td>
-                <td class="no-phone">class:io.apiman.gateway.engine.policies.IPBlacklistPolicy</td>
-              </tr>
-              <tr>
-                <td><a href="edit-policyDef.html"><i class="fa fa-filter fa-fw"></i><span>IP White-List Policy</span></a></td>
-                <td class="no-phone">class:io.apiman.gateway.engine.policies.IPWhitelistPolicy</td>
+                <td><i class="fa fa-{{policyDef.icon}} fa-fw"></i><span>{{ policyDef.name }}</span></td>
+                <td class="no-phone">{{ policyDef.policyImpl }}</td>
               </tr>
             </tbody>
           </table>
@@ -101,12 +63,14 @@
         <div class="row">
           <p data-i18n-key="confirm-import-policyDefs">Really import the policy definition(s) listed above?</p>
         </div>
-        <!-- Confirm Button -->
+        <!-- Confirm Button  -->
         <div class="row">
-          <button class="btn btn-primary" data-field="yesButton" data-i18n-key="yes" placeholder="Importing..." data-icon="fa-cog">Yes</button>
+          <button class="btn btn-primary" data-field="yesButton" data-i18n-key="yes" placeholder="Importing..." data-icon="fa-cog" ng-click="importPolicyDefs()">Yes</button>
           <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="noButton" data-i18n-key="no">No</a>
         </div>
+       
       </div>
     </div> <!-- /container -->
+  </div>
   </body>
 </html>
