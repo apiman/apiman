@@ -39,8 +39,6 @@ module Apiman {
                                     $scope.selectedApp = app;
                                 }
                             }
-                        } else if (apps.length > 0) {
-                            $scope.selectedApp = apps[0];
                         } else {
                             $scope.selectedApp = undefined;
                         }
@@ -109,7 +107,7 @@ module Apiman {
                                 }
                             }
                         } else {
-                            $scope.selectedPlan = plans[0];
+                            $scope.selectedPlan = undefined;
                         }
                     } else {
                         $scope.plans = undefined;

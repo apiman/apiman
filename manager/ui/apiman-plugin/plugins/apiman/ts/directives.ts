@@ -45,13 +45,18 @@ module Apiman {
                         $(element)['selectpicker']();
                         $(element)['selectpicker']('refresh');
                     });
-                    scope.$watch(
-                        function() { return element[0].childNodes.length; },
-                        function(newVal, oldVal) {
-                            Logger.debug('Refreshing due to childNodes length change {0} -> {1}.', oldVal, newVal);
-                            refresh(newVal);
-                        }
-                    );
+                    
+                    if (attrs.ngOptions && / in /.test(attrs.ngOptions)) {
+                        var refreshModel = attrs.ngOptions.split(' in ')[1];
+                        Logger.debug('Watching model {0} for {1}.', refreshModel, attrs.ngModel);
+                        scope.$watch(refreshModel, function() {
+                            scope.$applyAsync(function() {
+                                Logger.debug('Refreshing {0} due to watch model update.', attrs.ngModel);
+                                $(element)['selectpicker']('refresh');
+                            });
+                        }, true);
+                    }
+
                     if (attrs.apimanSelectPicker) {
                         Logger.debug('Watching {0}.', attrs.apimanSelectPicker);
                         scope.$watch(attrs.apimanSelectPicker + '.length', refresh, true);
