@@ -18,19 +18,7 @@
       <!-- Navigation + Content Row -->
       <div class="row">
         <!-- Left hand nav -->
-        <div class="col-md-2 apiman-entity-nav">
-          <ul class="nav nav-pills nav-stacked">
-            <li class="first"><a data-role="dummy">&nbsp;</a></li>
-            <li class="active"><a data-field="toServiceOverview" href="service-overview.html" data-i18n-key="overview">Overview</a></li>
-            <li class=""><a data-field="toServiceImpl" href="service-impl.html" data-i18n-key="implementation">Implementation</a></li>
-            <li class=""><a data-field="toServicePlans" href="service-plans.html" data-i18n-key="plans">Plans</a></li>
-            <li class=""><a data-field="toServicePolicies" href="service-policies.html" data-i18n-key="policies">Policies</a></li>
-            <li apiman-status="Published"><a data-field="toServiceContracts" href="service-contracts.html" data-i18n-key="contracts">Contracts</a></li>
-            <li apiman-status="Published"><a data-field="toServiceEndpoint" href="service-endpoint.html" data-i18n-key="endpoint">Endpoint</a></li>
-            <li><a data-field="toServiceActivity" href="service-activity.html" data-i18n-key="activity">Activity</a></li>
-            <li class="last"><a data-role="dummy">&nbsp;</a></li>
-          </ul>
-        </div>
+        <div ng-include="'plugins/apiman/html/service_tabs.include'"></div>
         <!-- /Left hand nav -->
 
         <!-- Content -->
