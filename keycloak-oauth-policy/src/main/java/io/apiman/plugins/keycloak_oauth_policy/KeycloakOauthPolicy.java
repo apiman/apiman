@@ -15,6 +15,7 @@
  */
 package io.apiman.plugins.keycloak_oauth_policy;
 
+import org.apache.commons.lang.StringUtils;
 import org.keycloak.RSATokenVerifier;
 import org.keycloak.VerificationException;
 import org.keycloak.representations.AccessToken;
@@ -84,9 +85,11 @@ public class KeycloakOauthPolicy extends AbstractMappedPolicy<KeycloakOauthConfi
     }
 
     private String getRawAuthToken(ServiceRequest request) {
-        String rawToken = request.getHeaders().get(AUTHORIZATION_KEY);
+        String rawToken = StringUtils.strip(request.getHeaders().get(AUTHORIZATION_KEY));
 
-        if (rawToken == null) {
+        if (rawToken != null && StringUtils.startsWith(rawToken, "Bearer ")) { //$NON-NLS-1$
+            rawToken = StringUtils.removeStart(rawToken, "Bearer "); //$NON-NLS-1$
+        } else {
             rawToken = request.getQueryParams().get(ACCESS_TOKEN_QUERY_KEY);
         }
 
