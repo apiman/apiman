@@ -1,0 +1,74 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "addHeaders": {
+      "title": "Add Headers",
+      "type": "array",
+      "format": "table",
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "title": "Header",
+        "properties": {
+          "headerName": {
+            "title": "Header Name",
+            "type": "string",
+            "pattern": "^[^()<>@,;:\\\\<>\\/\\[\\]?={}\\s\\t]+$"
+          },
+          "headerValue": {
+            "title": "Header Value",
+            "type": "string"
+          },
+          "applyTo": {
+            "type": "string",
+            "title": "Apply To",
+            "enum": [
+              "Request",
+              "Response",
+              "Both"
+            ]
+          },
+          "overwrite": {
+            "type": "boolean",
+            "title": "Overwrite Existing",
+            "default": false
+          }
+        }
+      }
+    },
+    "stripHeaders": {
+      "title": "Strip Headers",
+      "description": "Removes header key and value pairs when pattern matches.",
+      "type": "array",
+      "format": "table",
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "title": "Strip Headers",
+        "properties": {
+          "stripType": {
+            "title": "Strip Header(s) That Match",
+            "type": "string",
+            "enum": [
+              "Key",
+              "Value"
+            ]
+          },
+          "with": {
+            "title": "With Matcher Type",
+            "type": "string",
+            "enum": [
+              "String",
+              "Regex"
+            ]
+          },
+          "pattern": {
+            "title": "Pattern",
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

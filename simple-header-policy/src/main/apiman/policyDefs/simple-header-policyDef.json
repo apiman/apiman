@@ -1,0 +1,15 @@
+{
+  "id" : "simple-header-policy",
+  "name" : "Simple Header Policy",
+  "description" : "Allows the granular addition and removal of headers.",
+  "policyImpl" : "plugin:${project.groupId}:${project.artifactId}:${project.version}:${project.packaging}/io.apiman.plugins.simpleheaderpolicy.SimpleHeaderPolicy",
+  "icon" : "header",
+  "formType" : "JsonSchema",
+  "templates" : [
+    {
+      "language" : null,
+      "template" : "@{addHeaders.size()} addition rules and @{stripHeaders.size()} deletion rules are active."
+    }
+  ],
+  "form" : "schemas/simple-header-policyDef.schema"
+}

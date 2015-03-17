@@ -63,7 +63,7 @@
     <!-- Instruct the build to use only UTF-8 encoding for source code -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
-    
+
     <version.apiman>1.0.3.Final</version.apiman>
 
     <version.javadoc.plugin>2.10.1</version.javadoc.plugin>
@@ -161,6 +161,7 @@
     <module>cors-policy</module>
     <module>keycloak-oauth-policy</module>
     <module>http-security-policy</module>
+    <module>simple-header-policy</module>
   </modules>
 
   <build>
