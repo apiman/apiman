@@ -31,6 +31,7 @@ module Apiman {
         '/apiman/edit-plugin.html'      : { templateUrl: 'edit-plugin.html' },
         '/apiman/edit-policyDef.html'   : { templateUrl: 'edit-policyDef.html' },
         '/apiman/edit-role.html'        : { templateUrl: 'edit-role.html' },
+        '/apiman/import-policyDefs.html': { templateUrl: 'import-policyDefs.html' },
         '/apiman/new-app.html'          : { templateUrl: 'new-app.html' },
         '/apiman/new-appversion.html'   : { templateUrl: 'new-appversion.html' },
         '/apiman/new-contract.html'     : { templateUrl: 'new-contract.html' },
