@@ -9,8 +9,8 @@ module Apiman {
                     var params = $location.search();
                     return {
                         service: $q(function(resolve, reject) {
-                            OrgSvcs.get({ organizationId: params.org, entityType: 'services', entityId: params.service }, function(app) {
-                                resolve(app);
+                            OrgSvcs.get({ organizationId: params.org, entityType: 'services', entityId: params.service }, function(service) {
+                                resolve(service);
                             }, function(error) {
                                 reject(error);
                             });
@@ -28,7 +28,7 @@ module Apiman {
                                 } else {
                                     $scope.selectedServiceVersion = versions[0];
                                 }
-                                $rootScope.mruService = $scope.selectedServiceVersion;
+                                $scope.version = $scope.selectedServiceVersion.version;
                                 $scope.entityStatus = $scope.selectedServiceVersion.status;
                             }, function(error) {
                                 reject(error);
