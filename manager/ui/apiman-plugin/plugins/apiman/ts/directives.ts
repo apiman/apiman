@@ -37,6 +37,7 @@ module Apiman {
                 link: function(scope, element, attrs) {
                     function refresh(newVal) {
                         scope.$applyAsync(function() {
+                            Logger.debug('Refreshing selectpicker {0} with {1} children.', attrs.ngModel, element[0].childNodes.length);
                             $(element)['selectpicker']('refresh');
                         });
                     }
@@ -46,8 +47,15 @@ module Apiman {
                     });
                     scope.$watch(
                         function() { return element[0].childNodes.length; },
-                        refresh
+                        function(newVal, oldVal) {
+                            Logger.debug('Refreshing due to childNodes length change {0} -> {1}.', oldVal, newVal);
+                            refresh(newVal);
+                        }
                     );
+                    if (attrs.apimanSelectPicker) {
+                        Logger.debug('Watching {0}.', attrs.apimanSelectPicker);
+                        scope.$watch(attrs.apimanSelectPicker + '.length', refresh, true);
+                    }
                     if (attrs.ngModel) {
                         scope.$watch(attrs.ngModel, refresh, true);
                     }

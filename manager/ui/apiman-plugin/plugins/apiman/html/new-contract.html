@@ -31,9 +31,9 @@
                 of your available Applications below, and then choose an application version.
               </p>
               <div class="center-content" ng-show="apps.length > 0">
-                <select ng-model="selectedApp" apiman-select-picker="" class="selectpicker" data-live-search="true" title="[no applications found]" ng-options="(app.organizationName + ' / ' + app.name) for app in apps"></select>
+                <select ng-model="selectedApp" apiman-select-picker="" class="selectpicker" data-live-search="true" title="Select an Application" ng-options="(app.organizationName + ' / ' + app.name) for app in apps"></select>
                 <span class="slash">&#8680;</span>
-                <select ng-model="selectedAppVersion" apiman-select-picker="" class="selectpicker" title="[no versions found]" ng-options="version for version in appVersions">
+                <select ng-model="selectedAppVersion" apiman-select-picker="appVersions" class="selectpicker" title="Select a Version" ng-options="version for version in appVersions">
                 </select>
               </div>
               <div class="alert alert-warning" ng-show="apps.length == 0">
@@ -66,7 +66,7 @@
                 Use the drop-down below to choose one of the Plans made available by the selected Service.
               </p>
               <div class="center-content" ng-show="plans">
-                <select ng-model="selectedPlan" apiman-select-picker="" class="selectpicker" title="[no plans found]" ng-options="plan.planName for plan in plans">
+                <select ng-model="selectedPlan" apiman-select-picker="" class="selectpicker" title="Select a Plan" ng-options="plan.planName for plan in plans">
                 </select>
               </div>
             </div>
@@ -113,7 +113,7 @@
       </div>
 
       <div class="row">
-        <button ng-click="createContract()" apiman-action-btn="" ng-disabled="!selectedApp || !selectedAppVersion || !selectedPlan || !selectedService" class="btn btn-primary" data-field="createButton" data-i18n-key="create-contract">Create Contract</button>
+        <button ng-click="createContract()" apiman-action-btn="" ng-disabled="!selectedApp || !selectedAppVersion || !selectedPlan || !selectedService" class="btn btn-primary" data-field="createButton" data-i18n-key="create-contract" placeholder="Creating..." data-icon="fa-cog">Create Contract</button>
         <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" data-i18n-key="cancel">Cancel</a>
       </div>
 

@@ -4,6 +4,12 @@ module Apiman {
     export var NewContractController = _module.controller("Apiman.NewContractController",
         ['$q', '$location', '$scope', 'OrgSvcs', 'CurrentUserSvcs', 'PageLifecycle', 'Logger', '$rootScope', 'Dialogs',
         ($q, $location, $scope, OrgSvcs, CurrentUserSvcs, PageLifecycle, Logger, $rootScope, Dialogs) => {
+            var params = $location.search();
+            var svcId = params.svc;
+            var svcOrgId = params.svcorg;
+            var svcVer = params.svcv;
+            var planId = params.planid;
+            
             $scope.refreshAppVersions = function(organizationId, appId, onSuccess, onError) {
                 OrgSvcs.query({ organizationId: organizationId, entityType: 'applications', entityId: appId, versionsOrActivity: 'versions' }, function(versions) {
                     var plainVersions = new Array();
@@ -33,15 +39,29 @@ module Apiman {
                                     $scope.selectedApp = app;
                                 }
                             }
+                        } else if (apps.length > 0) {
+                            $scope.selectedApp = apps[0];
                         } else {
-                            if (apps.length > 0) {
-                                $scope.selectedApp = apps[0];
-                            }
+                            $scope.selectedApp = undefined;
                         }
                         resolve(apps);
                     }, function(error) {
                         reject(error);
                     });
+                }),
+                selectedService: $q(function(resolve, reject) {
+                    if (svcId && svcOrgId && svcVer) {
+                        Logger.debug('Loading service {0}/{1} version {2}.', svcOrgId, svcId, svcVer);
+                        OrgSvcs.get({ organizationId: svcOrgId, entityType: 'services', entityId: svcId, versionsOrActivity: 'versions', version: svcVer }, function(serviceVersion) {
+                            serviceVersion.organizationName = serviceVersion.service.organization.name;
+                            serviceVersion.organizationId = serviceVersion.service.organization.id;
+                            serviceVersion.name = serviceVersion.service.name;
+                            serviceVersion.id = serviceVersion.service.id;
+                            resolve(serviceVersion);
+                        }, reject);
+                    } else {
+                        resolve(undefined);
+                    }
                 })
             });
 
@@ -72,12 +92,27 @@ module Apiman {
             };
 
             $scope.$watch('selectedService', function(newValue) {
+                if (!newValue) {
+                    $scope.plans = undefined;
+                    $scope.selectedPlan = undefined;
+                    return;
+                }
                 Logger.debug('Service selection made, fetching plans.');
                 OrgSvcs.query({ organizationId: newValue.organizationId, entityType: 'services', entityId: newValue.id, versionsOrActivity: 'versions', version: newValue.version, policiesOrActivity: 'plans' }, function(plans) {
                     $scope.plans = plans;
                     Logger.debug("Found {0} plans: {1}.", plans.length, plans);
                     if (plans.length > 0) {
-                        $scope.selectedPlan = plans[0];
+                        if (planId) {
+                            for (var i = 0; i < plans.length; i++) {
+                                if (plans[i].planId == planId) {
+                                    $scope.selectedPlan = plans[i];
+                                }
+                            }
+                        } else {
+                            $scope.selectedPlan = plans[0];
+                        }
+                    } else {
+                        $scope.plans = undefined;
                     }
                 }, function(error) {
                     // TODO handle the error here
@@ -90,7 +125,7 @@ module Apiman {
                         $scope.selectedApp.organizationName, $scope.selectedApp.name, $scope.selectedAppVersion,
                         $scope.selectedService.organizationName, $scope.selectedService.name, $scope.selectedService.version,
                         $scope.selectedPlan.planName);
-                $scope.createButton.status = 'in-progress';
+                $scope.createButton.state = 'in-progress';
                 var newContract = {
                     serviceOrgId : $scope.selectedService.organizationId,
                     serviceId : $scope.selectedService.id,
@@ -104,6 +139,7 @@ module Apiman {
                         'version' : $scope.selectedAppVersion
                     });
                 }, function(error) {
+                    $scope.createButton.state = 'error';
                     // TODO handle the error appropriately!
                     Logger.error(error);
                 });
