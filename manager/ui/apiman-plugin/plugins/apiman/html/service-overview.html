@@ -7,47 +7,16 @@
   </head>
 
   <body>
-
-    <!-- Top header/nav bar -->
-    <div id="apiman-header">
-      <div class="main-header container">
-        <div class="row">
-          <div class="col-md-12">
-            <div class="logo"></div>
-            <input class="search no-phone" type="text" placeholder="Quick service search..."></input>
-            <ul class="user-menu pull-right">
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                  <span class="pficon pficon-user"></span>
-                  <span>Bruce Wayne</span>
-                  <b class="caret"></b>
-                </a>
-                <ul class="dropdown-menu">
-                  <li>
-                    <a href="user-orgs.html">Home</a>
-                  </li>
-                  <li class="divider"></li>
-                  <li>
-                    <a data-field="toProfile" href="settings-profile.html" data-i18n-key="profile">Profile</a>
-                  </li>
-                  <li>
-                    <a href="#">Logout</a>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="container page" data-field="page">
+  <div>
+    <div ng-include="'plugins/apiman/html/progress.include'"></div>
+    <div id="apiman-header" ng-include="'plugins/apiman/html/navbar.include'"></div>
+    <div ng-controller="Apiman.ServiceOverviewController" class="page container" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div class="row">
         <div class="col-md-12">
           <ol class="breadcrumb" data-field="breadcrumb" data-role="dummy">
-            <li><a href="dash.html"><i class="fa fa-home fa-fw"></i><span>Home</span></a></li>
-            <li><a href="org-services.html"><i class="fa fa-shield fa-fw"></i><span>JBoss Overlord</span></a></li>
-            <li class="active"><i class="fa fa-puzzle-piece fa-fw"></i><span>dtgov-deploy</span></li>
+            <li><a href="{{ pluginName }}/dash.html"><i class="fa fa-home fa-fw"></i><span>Home</span></a></li>
+            <li><a href="{{ pluginName }}/org-services.html?org={{ service.organization.id }}"><i class="fa fa-shield fa-fw"></i><span>{{ service.organization.name }}</span></a></li>
+            <li class="active"><i class="fa fa-puzzle-piece fa-fw"></i><span>{{ service.name }}</span></li>
           </ol>
         </div>
       </div>
@@ -200,5 +169,6 @@
         <!-- /Content -->
       </div>
     </div> <!-- /container -->
+  </div>
   </body>
 </html>
