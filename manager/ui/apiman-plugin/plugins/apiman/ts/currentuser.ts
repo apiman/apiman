@@ -5,7 +5,7 @@ module ApimanCurrentUser {
 
     export var CurrentUser = _module.factory('CurrentUser', ['$q', '$rootScope', 'CurrentUserSvcs', 'Logger',
         function($q, $rootScope, CurrentUserSvcs, Logger) {
-            var promise = $q(function(resolve, reject) {
+            var getUser = function(handler, errorHandler) {
                 CurrentUserSvcs.get({ what: 'info' }, function(currentUser) {
                     Logger.log("Successfully grabbed currentuser/info for {0}.", currentUser.username);
                     $rootScope.currentUser = currentUser;
@@ -18,10 +18,17 @@ module ApimanCurrentUser {
                         }
                     }
                     $rootScope.permissions = permissions;
-                    resolve(currentUser);
+                    handler(currentUser);
                 }, function(error) {
-                    reject(error);
+                    if (errorHandler) {
+                        errorHandler(error);
+                    } else {
+                        handler(error);
+                    }
                 });
+            };
+            var promise = $q(function(resolve, reject) {
+                getUser(resolve, reject);
             });
             return {
                 promise: promise,
@@ -48,6 +55,9 @@ module ApimanCurrentUser {
                     } else {
                         return false;
                     }
+                },
+                refresh: function(handler, errorHandler) {
+                    getUser(handler, errorHandler);
                 }
             };
         }]);

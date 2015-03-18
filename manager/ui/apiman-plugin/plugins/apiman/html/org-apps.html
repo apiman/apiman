@@ -33,7 +33,7 @@
                     <tbody>
                       <tr>
                         <td width="99%">
-                          <input data-field="textBox" value="" placeholder="" type="text">
+                          <input data-field="textBox" value="" placeholder="Filter by application name..." type="text">
                         </td>
                         <td width="1%">
                           <button data-field="button" class="btn btn-default"><i class="fa fa-fw fa-search"></i></button>
@@ -45,8 +45,20 @@
                 </div>
                 <div class="clearfix"></div>
                 <!-- The list of applications in the org -->
-                <div class="apiman-applications" data-field="applications" data-role="dummy" ng-repeat="app in apps">
-                  <div class="container-fluid apiman-summaryrow">
+                <div class="apiman-applications" data-field="applications">
+
+                  <div class="apiman-no-content container-fluid" ng-hide="apps.length > 0">
+                    <div class="row">
+                      <div class="col-md-9">
+                        <p class="apiman-no-entities-description" data-i18n-key="no-orgs-found-for-user">It looks like there aren't (yet) any applications in this organization! Now might be a good time to click the New App button up above...</p>
+                      </div>
+                      <div class="col-md-3">
+                        <div class="apiman-no-entities-arrow"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="container-fluid apiman-summaryrow" ng-repeat="app in apps">
                     <div class="row">
                       <span class="title"><a href="{{ pluginName }}/app-overview.html?org={{org.id}}&app={{app.id}}">{{ app.name }}</a></span>
                     </div>

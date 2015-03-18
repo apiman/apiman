@@ -34,7 +34,7 @@
                     <tbody>
                       <tr>
                         <td width="99%">
-                          <input data-field="textBox" value="" placeholder="" type="text">
+                          <input data-field="textBox" value="" placeholder="Filter by service name..." type="text">
                         </td>
                         <td width="1%">
                           <button data-field="button" class="btn btn-default"><i class="fa fa-fw fa-search"></i></button>
@@ -52,12 +52,23 @@
                       <li><a href="import-services.html" data-field="toImportServices" data-i18n-key="import-services">Import Service(s)</a></li>
                     </ul>
                   </div>
-<!--                   <a data-field="toNewService" href="new-service.html" class="btn btn-primary pull-right">New Service</a> -->
                 </div>
                 <div class="clearfix"></div>
                 <!-- The list of services the user has access to -->
-                <div class="apiman-services" data-field="services" data-role="dummy" ng-repeat="service in services">
-                  <div class="container-fluid apiman-summaryrow">
+                <div class="apiman-services" data-field="services">
+
+                  <div class="apiman-no-content container-fluid" ng-hide="services.length > 0">
+                    <div class="row">
+                      <div class="col-md-9">
+                        <p class="apiman-no-entities-description" data-i18n-key="no-orgs-found-for-user">We couldn't find any services in this organization. Probably because none exist. We hope. Try creating one using the New Service button.</p>
+                      </div>
+                      <div class="col-md-3">
+                        <div class="apiman-no-entities-arrow"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="container-fluid apiman-summaryrow" ng-repeat="service in services">
                     <div class="row">
                       <span class="title"><a href="{{ pluginName }}/service-overview.html?org={{ service.organizationId }}&service={{ service.id }}">{{ service.name }}</a></span>
                       <a class="apiman-summaryrow-icon">
