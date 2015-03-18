@@ -2,7 +2,8 @@
 module Apiman {
 
     export var NewPolicyController = _module.controller("Apiman.NewPolicyController",
-        ['$q', '$location', '$scope', 'UserSvcs', 'OrgSvcs', 'ApimanSvcs', 'PageLifecycle', ($q, $location, $scope, UserSvcs, OrgSvcs, ApimanSvcs, PageLifecycle) => {
+        ['$q', '$location', '$scope', 'OrgSvcs', 'ApimanSvcs', 'PageLifecycle', 
+        ($q, $location, $scope, OrgSvcs, ApimanSvcs, PageLifecycle) => {
             var promise = $q.all({
                 policyDefs: $q(function(resolve, reject) {
                     ApimanSvcs.query({ entityType: 'policyDefs' }, function(policyDefs) {

@@ -11,53 +11,16 @@
     <div ng-include="'plugins/apiman/html/progress.include'"></div>
     <div id="apiman-header" ng-include="'plugins/apiman/html/navbar.include'"></div>
     <div ng-controller="Apiman.UserServicesController" class="page container" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
-      <div class="row">
-        <div class="col-md-12">
-          <ol class="breadcrumb" data-field="breadcrumb" data-role="dummy">
-            <li><a href="{{ pluginName }}/dash.html"><i class="fa fa-home fa-fw"></i><span>Home</span></a></li>
-            <li class="active"><i class="fa fa-user fa-fw"></i><span>eric</span></li>
-          </ol>
-        </div>
-      </div>
+      <div ng-include="'plugins/apiman/html/user_bc.include'"></div>
       <div class="row">
         <!-- Left Hand Side -->
-        <div class="col-md-4 apiman-entitysummary">
-          <div class="container-fluid">
-            <div class="row">
-              <div class="col-md-12 apiman-header" data-role="dummy" data-field="fullName">Clark Kent</div>
-            </div>
-            <div class="row">
-              <div class="col-md-12 apiman-subheader" data-role="dummy" data-field="userId">ckent</div>
-            </div>
-            <div class="row">
-              <hr />
-            </div>
-            <div class="row">
-              <div class="col-md-12 metadata-with-icon">
-                <i class="fa fa-envelope-o fa-fw"></i>
-                <div><a href="#" data-role="dummy" data-field="email">ckent@dailyplanet.com</a></div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12 metadata-with-icon">
-                <i class="fa fa-clock-o fa-fw"></i>
-                <div class="apiman-label-faded" data-i18n-key="joined-on">Joined on</div>
-                <div data-role="dummy" data-field="joinedOn">Oct 19, 2012</div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <div ng-include="'plugins/apiman/html/user_entity.include'"></div>
         <!-- /Left Hand Side -->
 
         <!-- Center Content -->
         <div class="col-md-8">
           <div class="apiman-entitytabs">
-            <ul id="entitytabs" class="nav nav-tabs">
-              <li><a href="{{ pluginName }}/user-orgs.html" data-field="toUserOrgs" data-i18n-key="organizations">Organizations</a></li>
-              <li><a href="{{ pluginName }}/user-apps.html" data-field="toUserApps" data-i18n-key="applications">Applications</a></li>
-              <li class="active"><a href="{{ pluginName }}/user-services.html" data-field="toUserServices" data-field="toUserServices" data-i18n-key="services">Services</a></li>
-              <li class="pull-right"><a href="{{ pluginName }}/user-activity.html" data-field="toUserActivity" data-i18n-key="activity">Activity</a></li>
-            </ul>
+            <div ng-include="'plugins/apiman/html/user_tabs.include'"></div>
             <div id="entitytabsContent" class="tab-content">
 
               <!-- Services Tab Content -->
@@ -79,8 +42,20 @@
                 </div>
                 <div class="clearfix"></div>
                 <!-- The list of services the user has access to -->
-                <div class="apiman-services" data-field="services" data-role="dummy" ng-repeat="service in services">
-                  <div class="container-fluid apiman-summaryrow">
+                <div class="apiman-services" data-field="services" data-role="dummy">
+                  
+                  <div class="apiman-no-content container-fluid" ng-hide="applications.length > 0">
+                    <div class="row">
+                      <div class="col-md-9">
+                        <p class="apiman-no-entities-description" data-i18n-key="no-apps-found-for-user">It looks like this user isn't responsible for any services. Maybe she's just all about the applications? If not, maybe she could log in and try creating a New Service.</p>
+                      </div>
+                      <div class="col-md-3">
+                        <div class="apiman-no-entities-arrow"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="container-fluid apiman-summaryrow" ng-repeat="service in services">
                     <div class="row">
                       <a href="{{ pluginName }}/org-apps.html?org={{ service.organizationId }}">{{ service.organizationName }}</a> / <span class="title"><a href="{{ pluginName }}/service-overview.html?org={{ service.organizationId }}&service={{ service.id }}">{{ service.name }}</a></span>
                       <a class="apiman-summaryrow-icon">

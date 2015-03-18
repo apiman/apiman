@@ -15,9 +15,9 @@ module ApimanServices {
 
     export var UserServices = _module.factory('UserSvcs', ['$resource', 'Configuration',
         function($resource, Configuration) {
-            var endpoint = Configuration.api.endpoint + '/apiman/users/' + Configuration.user.username + '/:entityType';
+            var endpoint = Configuration.api.endpoint + '/apiman/users/:user/:entityType';
             return $resource(endpoint,
-                { entityType: '@entityType' });
+                { user: '@user', entityType: '@entityType' });
         }]);
 
     export var OrganizationServices = _module.factory('OrgSvcs', ['$resource', 'Configuration',
@@ -60,6 +60,18 @@ module ApimanServices {
                     organizationId: '@organizationId',
                     entityType: '@entityType',
                     entityId: '@entityId',
+                    
+                    page: '@page',
+                    count: '@count'
+                });
+        }]);
+
+    export var UserAuditServices = _module.factory('UserAuditSvcs', ['$resource', 'Configuration',
+        function($resource, Configuration) {
+            var endpoint = Configuration.api.endpoint + '/apiman/users/:user/activity';
+            return $resource(endpoint,
+                {
+                    user: '@user',
                     
                     page: '@page',
                     count: '@count'

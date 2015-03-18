@@ -32,10 +32,10 @@ public class RequestMetric implements Serializable {
     
     private Date requestStart;
     private Date requestEnd;
-    private long requestDuration;
+    private long requestDuration = -1;
     private Date serviceStart;
     private Date serviceEnd;
-    private long serviceDuration;
+    private long serviceDuration = 1;
     private String resource;
     private String method;
     private String serviceOrgId;

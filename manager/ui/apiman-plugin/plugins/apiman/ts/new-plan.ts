@@ -5,9 +5,11 @@ module Apiman {
         ['$q', '$location', '$scope', 'UserSvcs', 'OrgSvcs', 'PageLifecycle', '$rootScope',
         ($q, $location, $scope, UserSvcs, OrgSvcs, PageLifecycle, $rootScope) => {
             var recentOrg = $rootScope.mruOrg;
+            var params = $location.search();
+
             var promise = $q.all({
                 organizations: $q(function(resolve, reject) {
-                    UserSvcs.query({ entityType: 'organizations' }, function(userOrgs) {
+                    UserSvcs.query({ user: params.user, entityType: 'organizations' }, function(userOrgs) {
                         if (recentOrg) {
                             $scope.selectedOrg = recentOrg;
                         } else {

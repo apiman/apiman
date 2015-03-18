@@ -3,185 +3,29 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
-    
   </head>
 
   <body>
-    
-    <!-- Top header/nav bar -->
-    <div id="apiman-header">
-      <div class="main-header container">
-        <div class="row">
-          <div class="col-md-12">
-            <div class="logo"></div>
-            <input class="search no-phone" type="text" placeholder="Quick service search..."></input>
-            <ul class="user-menu pull-right">
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                  <span class="pficon pficon-user"></span>
-                  <span>Bruce Wayne</span>
-                  <b class="caret"></b>
-                </a>
-                <ul class="dropdown-menu">
-                  <li>
-                    <a href="user-orgs.html">Home</a>
-                  </li>
-                  <li class="divider"></li>
-                  <li>
-                    <a data-field="toProfile" href="settings-profile.html" data-i18n-key="profile">Profile</a>
-                  </li>
-                  <li>
-                    <a href="#">Logout</a>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Page content -->
-    <div class="page container" data-field="page">
-      <div class="row">
-        <div class="col-md-12">
-          <ol class="breadcrumb" data-field="breadcrumb" data-role="dummy">
-            <li><a href="dash.html"><i class="fa fa-home fa-fw"></i><span>Home</span></a></li>
-            <li class="active"><i class="fa fa-user fa-fw"></i><span>eric</span></li>
-          </ol>
-        </div>
-      </div>
+    <div ng-include="'plugins/apiman/html/progress.include'"></div>
+    <div id="apiman-header" ng-include="'plugins/apiman/html/navbar.include'"></div>
+    <div ng-controller="Apiman.UserActivityController" class="page container" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+      <div ng-include="'plugins/apiman/html/user_bc.include'"></div>
       <div class="row">
         <!-- Left Hand Side -->
-        <div class="col-md-4 apiman-entitysummary">
-          <div class="container-fluid">
-            <div class="row">
-              <div class="col-md-12 apiman-header" data-role="dummy" data-field="fullName">Clark Kent</div>
-            </div>
-            <div class="row">
-              <div class="col-md-12 apiman-subheader" data-role="dummy" data-field="userId">ckent</div>
-            </div>
-            <div class="row">
-              <hr />
-            </div>
-            <div class="row">
-              <div class="col-md-12 metadata-with-icon">
-                <i class="fa fa-envelope-o fa-fw"></i>
-                <div><a href="#" data-role="dummy" data-field="email">ckent@dailyplanet.com</a></div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12 metadata-with-icon">
-                <i class="fa fa-clock-o fa-fw"></i>
-                <div class="apiman-label-faded" data-i18n-key="joined-on">Joined on</div>
-                <div data-role="dummy" data-field="joinedOn">Oct 19, 2012</div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <div ng-include="'plugins/apiman/html/user_entity.include'"></div>
         <!-- /Left Hand Side -->
 
         <!-- Center Content -->
         <div class="col-md-8">
           <div class="apiman-entitytabs">
-            <ul id="entitytabs" class="nav nav-tabs">
-              <li><a href="user-orgs.html" data-field="toUserOrgs" data-i18n-key="organizations">Organizations</a></li>
-              <li><a href="user-apps.html" data-field="toUserApps" data-i18n-key="applications">Applications</a></li>
-              <li><a href="user-services.html" data-field="toUserServices" data-i18n-key="services">Services</a></li>
-              <li class="active pull-right"><a href="user-activity.html" data-field="toUserActivity" data-i18n-key="activity">Activity</a></li>
-            </ul>
+            <div ng-include="'plugins/apiman/html/user_tabs.include'"></div>
             <div id="entitytabsContent" class="tab-content">
 
               <!-- Activity Tab Content -->
               <div class="tab-pane active" id="tab-activity">
-<!--                 <div class="apiman-filters apiman-activity-filters"> -->
-<!--                   <input type="text" class="form-control input-search" placeholder="Filter..."></input> -->
-<!--                 </div> -->
                 <div class="clearfix"></div>
                 <!-- The user's activity stream -->
-                <div class="apiman-activity" data-field="activity" data-role="dummy">
-                  <div class="container-fluid apiman-summaryrow">
-                    <div class="row">
-                      <a href="userHome.html">Clark Kent</a> 
-                      <span>created application</span> 
-                      <a href="orgHome.html">JBoss Overlord</a> 
-                      <span>/</span> 
-                      <a class="emphasis" href="appHome.html">gadget-server</a><span>.</span>
-                    </div>
-                    <div class="row">
-                      <i class="fa fa-fw fa-puzzle-piece"></i>
-                      <div class="apiman-timestamp">2 days ago</div>
-                    </div>
-                    <hr/>
-                  </div>
-                  <div class="container-fluid apiman-summaryrow">
-                    <div class="row">
-                      <span class=""><a href="userHome.html">Clark Kent</a> created application <a href="orgHome.html">JBoss Overlord</a> / <a class="emphasis" href="appHome.html">dtgov</a>.</span>
-                    </div>
-                    <div class="row">
-                      <i class="fa fa-fw fa-puzzle-piece"></i>
-                      <div class="apiman-timestamp">2 days ago</div>
-                    </div>
-                    <hr/>
-                  </div>
-                  <div class="container-fluid apiman-summaryrow">
-                    <div class="row">
-                      <a href="#user;user=admin" class="gwt-Anchor">admin</a><span> </span><span>added a policy to</span><span> </span><a href="#org;org=MyOrganization" class="gwt-Anchor">MyOrganization</a><span> / </span><a href="#service;service=MyService&amp;org=MyOrganization" class="emphasis">MyService</a><span> </span><span>version</span><span> </span><a href="#service;service=MyService&amp;org=MyOrganization&amp;version=1.0" class="emphasis">1.0</a><span>.</span>
-                    </div>
-                    <div class="row boxed-row">
-                      <span>Policy added: </span><span class="emphasis">IPBlackListPolicy</span></li>
-                    </div>
-                    <div class="row"><i class="fa fa-puzzle-piece fa-fw"></i><div class="apiman-timestamp">Wed Oct 22 13:13:25 EDT 2014</div></div>
-                    <hr />
-                  </div>
-                  <div class="container-fluid apiman-summaryrow">
-                    <div class="row">
-                      <span class=""><a href="userHome.html">Clark Kent</a> created organization <a class="emphasis" href="orgHome.html">JBoss Overlord</a>.</span>
-                    </div>
-                    <div class="row">
-                      <i class="fa fa-fw fa-shield"></i>
-                      <div class="apiman-timestamp">3 days ago</div>
-                    </div>
-                    <hr/>
-                  </div>
-                  <div class="container-fluid apiman-summaryrow">
-                    <div class="row">
-                      <a href="#user;user=admin" class="gwt-Anchor">admin</a><span> </span><span>updated service</span><span> </span><a href="#org;org=MyOrganization" class="gwt-Anchor">MyOrganization</a><span> / </span><a href="#service;service=MyService&amp;org=MyOrganization" class="emphasis">MyService</a><span> </span><span>version</span><span> </span><a href="#service;service=MyService&amp;org=MyOrganization&amp;version=1.0" class="emphasis">1.0</a><span>.</span>
-                    </div>
-                    <div class="row boxed-row">
-                      <div><span class="emphasis capitalized">description</span></div>
-                      <div class="activity-value">This is the new description for this stupid service!</div>
-                    </div>
-                    <div class="row">
-                      <i class="fa fa-puzzle-piece fa-fw"></i>
-                      <div class="apiman-timestamp">Wed Oct 22 13:13:11 EDT 2014</div>
-                    </div>
-                    <div>
-                      <hr>
-                    </div>
-                  </div>
-                  <div class="container-fluid apiman-summaryrow">
-                    <div class="row">
-                      <a href="#user;user=admin" class="gwt-Anchor">admin</a>
-                      <span> </span>
-                      <span>granted membership(s) in</span>
-                      <span> </span>
-                      <a href="#org;org=TestOrg" class="emphasis">TestOrg</a>
-                      <span>.</span>
-                    </div>
-                    <div class="row boxed-row">
-                      <ul>
-                        <li><span><a href="">Bruce Wayne</a> <span>now has role</span> <span class="emphasis">Application Developer</span></span></li>
-                        <li><span><a href="">Bruce Wayne</a> <span>now has role</span> <span class="emphasis">Service Provider</span></span></li>
-                      </ul>
-                    </div>
-                    <div class="row"><i class="fa fa-shield fa-fw"></i><span>Wed Oct 22 10:40:28 EDT 2014</span></div>
-                    <hr/>
-                  </div>
-                  <div class="container-fluid" style="text-align: center">
-                    <button class="btn btn-default">Show Next 20 Items</button>
-                  </div>
-                </div>
+                <apiman-activity model="auditEntries" next="getNextPage"/>
               </div>
               <!-- End Activity Tab Content -->
               

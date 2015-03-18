@@ -2,7 +2,7 @@
 module Apiman {
 
     export var ConsumerSvcsController = _module.controller("Apiman.ConsumerSvcsController",
-        ['$q', '$location', '$scope', 'UserSvcs', 'ApimanSvcs', 'PageLifecycle', ($q, $location, $scope, UserSvcs, ApimanSvcs, PageLifecycle) => {
+        ['$q', '$location', '$scope', 'ApimanSvcs', 'PageLifecycle', ($q, $location, $scope, ApimanSvcs, PageLifecycle) => {
 
             $scope.services = [];
             

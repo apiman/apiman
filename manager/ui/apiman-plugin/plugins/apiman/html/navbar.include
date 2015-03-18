@@ -15,7 +15,7 @@
                 </a>
                 <ul class="dropdown-menu">
                   <li>
-                    <a data-field="toUserHome" href="{{ pluginName }}/user-orgs.html" data-i18n-key="my-stuff">My Stuff</a>
+                    <a data-field="toUserHome" href="{{ pluginName }}/user-orgs.html?user={{ username }}" data-i18n-key="my-stuff">My Stuff</a>
                   </li>
                   <li class="divider"></li>
                   <li>

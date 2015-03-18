@@ -83,13 +83,21 @@
             "name" : "apiman",
             "enabled" : true,
             "baseUrl" : "/apiman",
-            "secret" : "password"
+            "redirectUris" : [
+                "/apiman/*"
+            ],
+            "secret" : "password",
+            "webOrigins" : [ "*" ]
         },
         {
             "name" : "apiman-gateway-api",
             "enabled" : true,
             "baseUrl" : "/apiman-gateway-api",
-            "secret" : "password"
+            "redirectUris" : [
+                "/apiman-gateway-api/*"
+            ],
+            "secret" : "password",
+            "webOrigins" : [ "*" ]
         }
     ]
 }

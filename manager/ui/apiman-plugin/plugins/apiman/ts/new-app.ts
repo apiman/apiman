@@ -2,10 +2,13 @@
 module Apiman {
 
     export var NewAppController = _module.controller("Apiman.NewAppController",
-        ['$q', '$location', '$scope', 'UserSvcs', 'OrgSvcs', 'PageLifecycle', ($q, $location, $scope, UserSvcs, OrgSvcs, PageLifecycle) => {
+        ['$q', '$location', '$scope', 'UserSvcs', 'OrgSvcs', 'PageLifecycle', 
+        ($q, $location, $scope, UserSvcs, OrgSvcs, PageLifecycle) => {
+            var params = $location.search();
+
             var promise = $q.all({
                 organizations: $q(function(resolve, reject) {
-                    UserSvcs.query({ entityType: 'organizations' }, function(userOrgs) {
+                    UserSvcs.query({ user: params.user, entityType: 'organizations' }, function(userOrgs) {
                         $scope.selectedOrg = userOrgs[0];
                         resolve(userOrgs);
                     }, function(error) {

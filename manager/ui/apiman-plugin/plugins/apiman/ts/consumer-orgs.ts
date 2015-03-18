@@ -2,7 +2,7 @@
 module Apiman {
 
     export var ConsumerOrgsController = _module.controller("Apiman.ConsumerOrgsController",
-        ['$q', '$location', '$scope', 'UserSvcs', 'ApimanSvcs', 'PageLifecycle', ($q, $location, $scope, UserSvcs, ApimanSvcs, PageLifecycle) => {
+        ['$q', '$location', '$scope', 'ApimanSvcs', 'PageLifecycle', ($q, $location, $scope, ApimanSvcs, PageLifecycle) => {
 
             $scope.orgs = [];
             

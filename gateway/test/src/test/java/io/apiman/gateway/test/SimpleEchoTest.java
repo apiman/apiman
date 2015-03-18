@@ -49,8 +49,8 @@ public class SimpleEchoTest extends AbstractGatewayTest {
 
         Assert.assertEquals("12345", metric.getContractId());
 
-        Assert.assertTrue(metric.getRequestDuration() > 0);
-        Assert.assertTrue(metric.getServiceDuration() > 0);
+        Assert.assertTrue("Expected the request duration to be at least 0 ms.", metric.getRequestDuration() > 0);
+        Assert.assertTrue("Expected the service duration to be at least 0 ms.", metric.getServiceDuration() > 0);
 
         Assert.assertEquals(200, metric.getResponseCode());
         Assert.assertEquals("OK", metric.getResponseMessage());
