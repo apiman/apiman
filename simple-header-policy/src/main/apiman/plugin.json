@@ -1,0 +1,6 @@
+{
+  "frameworkVersion" : 1.0,
+  "name" : "HTTP Header Policy Plugin",
+  "description" : "Allows the granular addition and removal of headers.",
+  "version" : "${project.version}"
+}
