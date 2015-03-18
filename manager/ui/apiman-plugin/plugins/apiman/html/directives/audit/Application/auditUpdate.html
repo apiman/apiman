@@ -1,0 +1,22 @@
+<div class="row">
+  <a href="{{ pluginName }}/user-orgs.html?user={{ entry.who }}">{{ entry.who }}</a>
+  <span>updated application</span>
+  <a href="{{ pluginName }}/org-plans.html?org={{ entry.organizationId }}">{{ entry.organizationId }}</a>
+  <span>/</span>
+  <a class="emphasis" href="{{ pluginName }}/app-overview.html?org={{ entry.organizationId }}&amp;app={{ entry.entityId }}">{{ entry.entityId }}</a>
+  <span ng-show="entry.entityVersion">
+    <span>version</span>
+    <a class="emphasis" href="{{ pluginName }}/app-overview.html?org={{ entry.organizationId }}&amp;app={{ entry.entityId }}&amp;version={{ entry.entityVersion }}">{{ entry.entityVersion }}</a>
+  </span>
+  <span>.</span>
+</div>
+<div class="row boxed-row">
+  <div ng-repeat="item in data.changes">
+    <div>
+      <span class="capitalized emphasis">{{ item.name }}</span>
+    </div>
+    <div class="activity-value">
+      <span>{{ item.after }}</span>
+    </div>
+  </div>
+</div>

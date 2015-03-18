@@ -6,6 +6,8 @@ module ApimanDialogs {
     export var Dialogs = _module.factory('Dialogs', ['Logger', '$compile', '$rootScope', '$timeout', 'ApimanSvcs', 'OrgSvcs',
         function(Logger, $compile, $rootScope, $timeout, ApimanSvcs, OrgSvcs) {
             return {
+                // A standard confirmation dialog
+                /////////////////////////////////
                 confirm: function(title, message, yesCallback, noCallback) {
                     var modalScope = $rootScope.$new(true);
                     modalScope.onYes = function() {
@@ -21,6 +23,9 @@ module ApimanDialogs {
                         $('#confirmModal')['modal']({'keyboard': true, 'backdrop': 'static'});
                     }, 1);
                 },
+                
+                // A simple "Select a Service" dialog (allows selecting a single service + version
+                //////////////////////////////////////////////////////////////////////////////////
                 selectService: function(title, handler) {
                     var modalScope = $rootScope.$new(true);
                     modalScope.selectedService = undefined;

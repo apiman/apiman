@@ -1,0 +1,15 @@
+<div class="row">
+  <a href="{{ pluginName }}/user-orgs.html?user={{ entry.who }}">{{ entry.who }}</a>
+  <span>updated organization</span>
+  <a class="emphasis" href="{{ pluginName }}/org-plans.html?org={{ entry.organizationId }}">{{ entry.organizationId }}</a><span>.</span>
+</div>
+<div class="row boxed-row">
+  <div ng-repeat="item in data.changes">
+    <div>
+      <span class="capitalized emphasis">{{ item.name }}</span>
+    </div>
+    <div class="activity-value">
+      <span>{{ item.after }}</span>
+    </div>
+  </div>
+</div>

@@ -3,13 +3,30 @@
 module Apiman {
 
     export var AppActivityController = _module.controller("Apiman.AppActivityController",
-        ['$q', '$scope', '$location', 'PageLifecycle', 'AppEntityLoader', ($q, $scope, $location, PageLifecycle, AppEntityLoader) => {
+        ['$q', '$scope', '$location', 'Logger', 'PageLifecycle', 'AppEntityLoader', 'AuditSvcs', 
+        ($q, $scope, $location, Logger, PageLifecycle, AppEntityLoader, AuditSvcs) => {
             var params = $location.search();
             $scope.organizationId = params.org;
             $scope.tab = 'activity';
             $scope.version = params.version;
+
+            var getNextPage = function(successHandler, errorHandler) {
+                $scope.currentPage = $scope.currentPage + 1;
+                AuditSvcs.get({ organizationId: params.org, entityType: 'applications', entityId: params.app, page: $scope.currentPage, count: 20 }, function(results) {
+                    var entries = results.beans;
+                    successHandler(entries);
+                }, errorHandler);
+            };
+
             var dataLoad = AppEntityLoader.getCommonData($scope, $location);
+            dataLoad = angular.extend(dataLoad, {
+                auditEntries: $q(function(resolve, reject) {
+                    $scope.currentPage = 0;
+                    getNextPage(resolve, reject);
+                })
+            });
             var promise = $q.all(dataLoad);
+            $scope.getNextPage = getNextPage;
             PageLifecycle.loadPage('AppActivity', promise, $scope);
         }])
 

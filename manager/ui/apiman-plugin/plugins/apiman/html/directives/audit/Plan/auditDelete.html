@@ -1,0 +1,12 @@
+<div class="row">
+  <a href="{{ pluginName }}/user-orgs.html?user={{ entry.who }}">{{ entry.who }}</a>
+  <span>deleted plan</span>
+  <a href="{{ pluginName }}/org-plans.html?org={{ entry.organizationId }}">{{ entry.organizationId }}</a>
+  <span>/</span>
+  <a class="emphasis" href="{{ pluginName }}/plan-overview.html?org={{ entry.organizationId }}&amp;plan={{ entry.entityId }}">{{ entry.entityId }}</a>
+  <span ng-show="entry.entityVersion">
+    <span>version</span>
+    <a class="emphasis" href="{{ pluginName }}/plan-overview.html?org={{ entry.organizationId }}&amp;plan={{ entry.entityId }}&amp;version={{ entry.entityVersion }}">{{ entry.entityVersion }}</a>
+  </span>
+  <span>.</span>
+</div>

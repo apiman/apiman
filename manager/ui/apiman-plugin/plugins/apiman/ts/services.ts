@@ -49,4 +49,18 @@ module ApimanServices {
             return $resource(endpoint);
         }]);
 
+    export var AuditServices = _module.factory('AuditSvcs', ['$resource', 'Configuration',
+        function($resource, Configuration) {
+            var endpoint = Configuration.api.endpoint + '/apiman/organizations/:organizationId/:entityType/:entityId/activity';
+            return $resource(endpoint,
+                {
+                    organizationId: '@organizationId',
+                    entityType: '@entityType',
+                    entityId: '@entityId',
+                    
+                    page: '@page',
+                    count: '@count'
+                });
+        }]);
+
 }

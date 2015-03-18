@@ -1,6 +1,6 @@
 /// <reference path="../../includes.ts"/>
 module Apiman {
-
+    
     _module.directive('apimanActionBtn',
         ['Logger', function(Logger) {
             return {
@@ -195,6 +195,7 @@ module Apiman {
         ['Logger', function(Logger) {
             return {
                 templateUrl: 'plugins/apiman/html/directives/confirmModal.html',
+                replace: true,
                 restrict: 'E',
                 transclude: true,
                 link: function(scope, element, attrs) {
@@ -210,6 +211,7 @@ module Apiman {
         ['Logger', function(Logger) {
             return {
                 templateUrl: 'plugins/apiman/html/directives/selectServiceModal.html',
+                replace: true,
                 restrict: 'E',
                 link: function(scope, element, attrs) {
                     scope.title = attrs.modalTitle;
@@ -217,6 +219,60 @@ module Apiman {
                         $(element).remove();
                     });
                 }
+            };
+        }]);
+
+    var entryTypeClasses = {
+        Organization : 'fa-shield',
+        Application : 'fa-gears',
+        Plan : 'fa-bar-chart-o',
+        Service : 'fa-puzzle-piece'
+    };
+
+    _module.directive('apimanActivity',
+        ['Logger', '$rootScope', function(Logger, $rootScope) {
+            return {
+                templateUrl: 'plugins/apiman/html/directives/activity.html',
+                restrict: 'E',
+                replace: true,
+                scope: {
+                    auditEntries: '=model',
+                    next: '=next'
+                },
+                link: function(scope, element, attrs) {
+                    scope.pluginName = $rootScope.pluginName;
+                    scope.hasMore = true;
+                    scope.entryTypeClasses = entryTypeClasses;
+                    scope.getMore = function() {
+                        scope.getMoreButton.state = 'in-progress';
+                        scope.next(function(newEntries) {
+                            scope.auditEntries = scope.auditEntries.concat(newEntries);
+                            scope.hasMore = newEntries.length >= 20;
+                            scope.getMoreButton.state = 'complete';
+                        }, function(error) {
+                            scope.getMoreButton.state = 'error';
+                            // TODO handle the load error somehow
+                        });
+                    };
+                }
+            };
+        }]);
+    
+    _module.directive('apimanAuditEntry',
+        ['Logger', '$rootScope', function(Logger, $rootScope) {
+            return {
+                restrict: 'E',
+                scope: {
+                    entry: '=model'
+                },
+                link: function(scope, element, attrs) {
+                    scope.pluginName = $rootScope.pluginName;
+                    scope.template = 'plugins/apiman/html/directives/audit/' + scope.entry.entityType + '/audit' + scope.entry.what + '.html';
+                    if (scope.entry.data) {
+                        scope.data = JSON.parse(scope.entry.data);
+                    }
+                },
+                template: '<div ng-include="template"></div>'
             };
         }]);
     

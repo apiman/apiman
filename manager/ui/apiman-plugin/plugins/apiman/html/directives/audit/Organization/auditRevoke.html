@@ -1,0 +1,22 @@
+<div class="row">
+  <a href="{{ pluginName }}/user-orgs.html?user={{ entry.who }}">{{ entry.who }}</a>
+  <span>revoked membership(s) in </span>
+  <a class="emphasis" href="{{ pluginName }}/org-plans.html?org={{ entry.organizationId }}">{{ entry.organizationId }}</a><span>.</span>
+</div>
+<div class="row boxed-row">
+  <ul>
+    <li ng-repeat="role in data.roles" ng-show="data.roles[0] != '*'">
+      <span>
+        <span>Role</span>
+        <span class="emphasis">{{ role }}</span>
+        <span>was taken away from</span>
+        <a href="{{ pluginName }}/user-apps.html?user={{ data.userId }}">{{ data.userId }}</a><span>.</span>
+      </span>
+    </li>
+  </ul>
+  <span ng-show="data.roles[0] == '*'">
+    <span class="emphasis">All roles</span>
+    <span>were taken away from</span>
+    <a href="{{ pluginName }}/user-apps.html?user={{ data.userId }}">{{ data.userId }}</a><span>.</span>
+  </span>
+</div>

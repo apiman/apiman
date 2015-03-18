@@ -1,0 +1,15 @@
+          <div class="apiman-activity">
+            <div class="container-fluid apiman-summaryrow" ng-repeat="entry in auditEntries">
+              <div>
+                <apiman-audit-entry model="entry" entity-type="{{ entry.what }}" other="{{ entryTypeClasses[entry.entityType] }}" />
+              </div>
+              <div class="row">
+                <i class="fa fa-fw {{ entryTypeClasses[entry.entityType] }}"></i>
+                <div class="apiman-timestamp">{{ entry.createdOn | date : "yyyy-MM-dd '@' h:mm:ss a" }}</div>
+              </div>
+              <hr/>
+            </div>
+            <div class="container-fluid" style="text-align: center">
+              <button ng-show="hasMore" apiman-action-btn="" data-field="getMoreButton" data-i18n-key="activity.show-more" placeholder="Loading More..." data-icon="fa-cog" ng-click="getMore()" class="btn btn-default">Show Next 20 Items</button>
+            </div>
+          </div>

@@ -1,0 +1,13 @@
+<div class="row">
+  <a href="{{ pluginName }}/user-orgs.html?user={{ entry.who }}">{{ entry.who }}</a>
+  <span>updated a policy in</span>
+  <a href="{{ pluginName }}/org-plans.html?org={{ entry.organizationId }}">{{ entry.organizationId }}</a>
+  <span>/</span>
+  <a class="emphasis" href="{{ pluginName }}/app-overview.html?org={{ entry.organizationId }}&amp;app={{ entry.entityId }}">{{ entry.entityId }}</a>
+  <span>version</span>
+  <a class="emphasis" href="{{ pluginName }}/app-overview.html?org={{ entry.organizationId }}&amp;app={{ entry.entityId }}&amp;version={{ entry.entityVersion }}">{{ entry.entityVersion }}</a><span>.</span>
+</div>
+<div class="row boxed-row">
+  <span class="">Policy updated:</span>
+  <span class="emphasis">{{ data.policyDefId }}</span>
+</div>
