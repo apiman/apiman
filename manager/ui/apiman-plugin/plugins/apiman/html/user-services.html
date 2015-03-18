@@ -82,7 +82,7 @@
                 <div class="apiman-services" data-field="services" data-role="dummy" ng-repeat="service in services">
                   <div class="container-fluid apiman-summaryrow">
                     <div class="row">
-                      <a href="{{ pluginName }}/org-apps.html">{{ service.organizationName }}</a> / <span class="title"><a href="{{ pluginName }}/service-overview.html">{{ service.name }}</a></span>
+                      <a href="{{ pluginName }}/org-apps.html?org={{ service.organizationId }}">{{ service.organizationName }}</a> / <span class="title"><a href="{{ pluginName }}/service-overview.html?org={{ service.organizationId }}&service={{ service.id }}">{{ service.name }}</a></span>
                       <a class="apiman-summaryrow-icon">
                         <i class="fa fa-clock-o fa-fw"></i>
                         <span class="title-summary-item">Created on</span>

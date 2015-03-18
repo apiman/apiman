@@ -33,7 +33,10 @@ module ApimanServices {
                     policiesOrActivity: '@policiesOrActivity', 
                     policyId: '@policyId', 
                     chain: '@policyChain' 
-                });
+                }, {
+                update: {
+                  method: 'PUT' // update issues a PUT request
+                }});
         }]);
 
     export var CurrentUserServices = _module.factory('CurrentUserSvcs', ['$resource', 'Configuration',
