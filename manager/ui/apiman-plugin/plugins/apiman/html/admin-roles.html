@@ -46,25 +46,33 @@
             <!-- Filter and Actions -->
             <div class="row">
               <div class="apiman-filters apiman-roles-filters">
-                <table class="search-box input-search" data-field="roleFilter">
-                  <tbody>
-                    <tr>
-                      <td width="99%">
-                        <input data-field="textBox" value="" placeholder="" type="text">
-                      </td>
-                      <td width="1%">
-                        <button data-field="button" class="btn btn-default"><i class="fa fa-fw fa-search"></i></button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+                <div>
+                  <apiman-search-box function="filterRoles" placeholder="Filter by role name..." />
+                </div>
                 <a data-field="toNewRole" href="{{ pluginName }}/new-role.html" class="btn btn-primary pull-right">New Role</a>
               </div>
             </div>
             <!-- The Roles -->
             <div class="row">
-              <div class="apiman-roles" data-field="roles" data-role="dummy" ng-repeat="role in roles">
-                  <div class="container-fluid apiman-summaryrow">
+              <div class="apiman-roles">
+
+                  <div class="apiman-no-content container-fluid" ng-hide="roles.length > 0">
+                    <div class="row">
+                      <div class="col-md-8">
+                        <p class="apiman-no-entities-description" data-i18n-key="no-roles-found">No roles have been created.  Until at least one "auto-grant" role is created, users will not be able to use apiman.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="apiman-no-content container-fluid" ng-show="roles.length > 0 && filteredRoles.length == 0">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <p class="apiman-no-entities-description" data-i18n-key="no-roles-found-for-filter">No roles found matching your filter criteria - please try searching for something different.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="container-fluid apiman-summaryrow" ng-repeat="role in filteredRoles">
                     <div class="row">
                       <span class="title"><a href="{{ pluginName }}/edit-role.html?role={{ role.id }}">{{ role.name }}</a></span>
                       
@@ -74,7 +82,7 @@
                       </a>
                     </div>
                     <div class="row" style="margin-bottom: 8px;">
-                      <span class="description">
+                      <span class="description apiman-label-faded">
                         {{ role.description }}
                       </span>
                     </div>

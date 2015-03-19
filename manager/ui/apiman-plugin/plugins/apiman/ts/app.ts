@@ -58,10 +58,10 @@ module Apiman {
             $scope.registerApp = function(app) {
                 $scope.registerButton.state = 'in-progress';
                 var registerAction = {
-                    type: 'registerApp',
-                    entityId: app.id,
-                    organizationId: app.organizationId,
-                    entityVersion: app.version
+                    type: 'registerApplication',
+                    entityId: params.app,
+                    organizationId: params.org,
+                    entityVersion: params.version
                 };
                 ActionSvcs.save(registerAction, function(reply) {
                     $scope.selectedAppVersion.status = 'Registered';
@@ -76,10 +76,10 @@ module Apiman {
             $scope.unregisterApp = function(app) {
                 $scope.unregisterButton.state = 'in-progress';
                 var unregisterAction = {
-                    type: 'unregisterApp',
-                    entityId: app.id,
-                    organizationId: app.organizationId,
-                    entityVersion: app.version
+                    type: 'unregisterApplication',
+                    entityId: params.app,
+                    organizationId: params.org,
+                    entityVersion: params.version
                 };
                 ActionSvcs.save(unregisterAction, function(reply) {
                     $scope.selectedAppVersion.status = 'Retired';
