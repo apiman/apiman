@@ -51,6 +51,8 @@ module Apiman {
         '/apiman/plan-activity.html'    : { templateUrl: 'plan-activity.html' },
         '/apiman/service-overview.html' : { templateUrl: 'service-overview.html' },
         '/apiman/service-impl.html'     : { templateUrl: 'service-impl.html' },
+        '/apiman/service-plans.html'    : { templateUrl: 'service-plans.html' },
+        '/apiman/service-policies.html' : { templateUrl: 'service-policies.html' },
         '/apiman/user-activity.html'    : { templateUrl: 'user-activity.html' },
         '/apiman/user-apps.html'        : { templateUrl: 'user-apps.html' },
         '/apiman/user-orgs.html'        : { templateUrl: 'user-orgs.html' },

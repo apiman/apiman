@@ -7,135 +7,18 @@
   </head>
 
   <body>
-
-    <!-- Top header/nav bar -->
-    <div id="apiman-header">
-      <div class="main-header container">
-        <div class="row">
-          <div class="col-md-12">
-            <div class="logo"></div>
-            <input class="search no-phone" type="text" placeholder="Quick service search..."></input>
-            <ul class="user-menu pull-right">
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                  <span class="pficon pficon-user"></span>
-                  <span>Bruce Wayne</span>
-                  <b class="caret"></b>
-                </a>
-                <ul class="dropdown-menu">
-                  <li>
-                    <a href="user-orgs.html">Home</a>
-                  </li>
-                  <li class="divider"></li>
-                  <li>
-                    <a data-field="toProfile" href="settings-profile.html" data-i18n-key="profile">Profile</a>
-                  </li>
-                  <li>
-                    <a href="#">Logout</a>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div id="page-content" class="container page" data-field="page">
-      <div class="row">
-        <div class="col-md-12">
-          <ol class="breadcrumb" data-field="breadcrumb" data-role="dummy">
-            <li><a href="dash.html"><i class="fa fa-home fa-fw"></i><span>Home</span></a></li>
-            <li><a href="org-services.html"><i class="fa fa-shield fa-fw"></i><span>JBoss Overlord</span></a></li>
-            <li class="active"><i class="fa fa-puzzle-piece fa-fw"></i><span>dtgov-deploy</span></li>
-          </ol>
-        </div>
-      </div>
+  <div>
+    <div ng-include="'plugins/apiman/html/progress.include'"></div>
+    <div id="apiman-header" ng-include="'plugins/apiman/html/navbar.include'"></div>
+    <div ng-controller="Apiman.ServicePlansController" class="page container" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+      <div ng-include="'plugins/apiman/html/service_bc.include'"></div>
       <!-- Entity Summary Row -->
-      <div class="apiman-entity-summary">
-        <div class="row apiman-entity-breadcrumb">
-          <div class="col-md-12">
-            <div class="title container-fluid">
-              <i class="breadcrumb-icon fa fa-puzzle-piece"></i>
-              <div class="entity emphasis">
-                <a data-field="serviceName" href="service-overview.html" data-role="dummy">dtgov-deploy</a>
-              </div>
-              <div class="versions">
-                <div class="btn-group apiman-entity-action" data-role="dummy" data-field="versions">
-                  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                    Version: 3.0.1 <span class="caret"></span>
-                  </button>
-                  <ul class="dropdown-menu" role="menu">
-                    <li><a href="#">3.0</a></li>
-                    <li><a href="#">2.1.1</a></li>
-                    <li><a href="#">2.1</a></li>
-                    <li><a href="#">2.0.1</a></li>
-                    <li><a href="#">2.0</a></li>
-                    <li><a href="#">1.0</a></li>
-                  </ul>
-                </div>
-                <a apiman-permission="svcEdit" href="new-serviceversion.html" class="btn btn-primary apiman-entity-action" data-field="toNewServiceVersion" data-i18n-key="new-version">New Version</a>
-              </div>
-            </div>
-            <hr />
-          </div>
-        </div>
-        <div class="row apiman-entity-metadata">
-          <div class="col-md-7" style="margin-bottom: 8px">
-            <!-- Service Summary -->
-            <div class="description" data-field="description" data-role="dummy">The API that allows dtgov governance users and workflows to deploy artifacts to a configured runtime environment.</div>
-            <div style="padding: 8px">
-              <div class="entity-info-with-icon">
-                <i class="fa fa-clock-o fa-fw"></i>
-                <span class="apiman-label-faded" data-i18n-key="created-on">Created on</span>
-                <span data-field="createdOn" data-role="dummy" >Feb 3, 2011</span>
-              </div>
-              <div class="entity-info-with-icon">
-                <i class="fa fa-user fa-fw"></i>
-                <span class="apiman-label-faded" data-i18n-key="created-by">Created by</span>
-                <span><a href="user-orgs.html" data-field="createdBy" data-role="dummy">Clark Kent</a></span>
-              </div>
-            </div>
-            <div class="entity-info-with-icon">
-              <span data-i18n-key="status-label">Status:</span>
-              <span class="apiman-label apiman-label-warning" data-field="status" data-role="dummy">Ready</span>
-            </div>
-          </div>
-          <div class="col-md-5" apiman-permission="svcEdit">
-            <div>
-              <div apiman-status="Published">
-                <a data-i18n-key="ttdo-new-svc-contract" data-field="ttd_toNewContract" href="new-contract.html">Link my Application to this Service (New Contract)</a>
-              </div>
-              <div>
-                <a data-i18n-key="ttdo-new-svc-version" data-field="ttd_toNewServiceVersion" href="new-serviceversion.html">Create a new version of this Service (New Version)</a>
-              </div>
-            </div>
-            <!-- The Publish Action -->
-            <div class="apiman-divider-40"></div>
-            <div class="">
-              <button class="btn btn-primary" data-field="publishButton" data-i18n-key="publish" placeholder="Publishing..." data-icon="fa-cog">Publish</button>
-              <button class="btn btn-warning" data-field="retireButton" data-i18n-key="retire" placeholder="Retiring..." data-icon="fa-cog">Retire</button>
-            </div>
-          </div>
-        </div>
-      </div>
-      
+      <div ng-include="'plugins/apiman/html/service_entity.include'"></div>
+
       <!-- Navigation + Content Row -->
       <div class="row">
         <!-- Left hand nav -->
-        <div class="col-md-2 apiman-entity-nav">
-          <ul class="nav nav-pills nav-stacked">
-            <li class="first"><a data-role="dummy">&nbsp;</a></li>
-            <li><a data-field="toServiceOverview" href="service-overview.html" data-i18n-key="overview">Overview</a></li>
-            <li class=""><a data-field="toServiceImpl" href="service-impl.html" data-i18n-key="implementation">Implementation</a></li>
-            <li class="active"><a data-field="toServicePlans" href="service-plans.html" data-i18n-key="plans">Plans</a></li>
-            <li class=""><a data-field="toServicePolicies" href="service-policies.html" data-i18n-key="policies">Policies</a></li>
-            <li apiman-status="Published"><a data-field="toServiceContracts" href="service-contracts.html" data-i18n-key="contracts">Contracts</a></li>
-            <li apiman-status="Published"><a data-field="toServiceEndpoint" href="service-endpoint.html" data-i18n-key="endpoint">Endpoint</a></li>
-            <li class=""><a data-field="toServiceActivity" href="service-activity.html" data-i18n-key="activity">Activity</a></li>
-            <li class="last"><a data-role="dummy">&nbsp;</a></li>
-          </ul>
-        </div>
+        <div ng-include="'plugins/apiman/html/service_tabs.include'"></div>
         <!-- /Left hand nav -->
 
         <!-- Content -->
@@ -146,55 +29,35 @@
               <span data-i18n-key="public-service-help">Select this option if you wish this service to be accessible directly, without a Service Contract.  Typically (but not always) this option is used instead of selecting plan(s).</span>
             </div>
             <div style="padding: 8px; margin-bottom: 10px">
-              <input type="checkbox" id="public-service" data-field="publicService"></input>
+              <input ng-model="selectedService.publicService" type="checkbox" id="public-service" data-field="publicService"></input>
               <label for="public-service" data-i18n-key="make-public" style="padding-left: 3px">Make this service public</label>
             </div>
             <div class="title" data-i18n-key="available-plans">Available Plans</div>
             <div>
-              <span data-i18n-key="available-plans-help">Choose which plans should be presented when Applications create a link (Contract) to this Service.</span>
+              <span data-i18n-key="available-plans-help">Choose which plans should be presented when Applications create a link (Contract) to this Service. Note that only plans in a 'Locked' state show up in this list.</span>
             </div>
             <!-- The plans to choose from -->
-            <div class="apiman-plan-selector apiman-divider-40" data-field="plans">
-              <div class="container-fluid apiman-summaryrow" data-field="plan-widget">
+            <div class="apiman-plan-selector apiman-divider-40" data-field="plans" >
+              <div class="container-fluid apiman-summaryrow" data-field="plan-widget" ng-repeat="lockedPlan in lockedPlans">
                 <div class="row">
-                  <input data-field="checkbox" type="checkbox"></input>
-                  <span class="title"><a href="plan-overview.html" data-field="name" title="Provides subscribing applications with full access to the Services in this Organization.">Platinum</a></span>
-                  <select class="selectpicker pull-right" data-role="dummy" data-field="versions">
-                    <option value="2.0">2.0</option>
-                    <option value="1.7">1.7</option>
-                    <option value="1.0">1.0</option>
+                  <input ng-model="lockedPlan.checked" data-field="checkbox" type="checkbox"></input>
+                  <span class="title"><a href="{{ pluginName }}/plan-overview.html?org={{ lockedPlan.organizationId }}&plan={{ lockedPlan.id }}" data-field="name" title="{{ lockedPlan.description }}">{{ lockedPlan.name }}</a></span>
+                  <select ng-model="lockedPlan.selectedVersion" 
+                          ng-options="version for version in lockedPlan.lockedVersions"
+                  		class="selectpicker pull-right" data-role="dummy" data-field="versions">
+                  		<option>--</option>
+                  		<!-- 
+                    <option ng-repeat="version in lockedPlan.lockedVersions" value="{{version}}">{{ version }}</option>
+                     -->
                   </select>
                 </div>
                 <hr>
               </div>
-              <div class="container-fluid apiman-summaryrow">
-                <div class="row">
-                  <input type="checkbox"></input>
-                  <span class="title"><a href="plan-overview.html" title="Provides subscribing applications with full access to a subset of Services.  Also allows partial (rate limited) access to the rest.">Gold</a></span>
-                  <select class="selectpicker pull-right" data-role="dummy">
-                    <option value="1.3">1.3</option>
-                    <option value="1.1">1.1</option>
-                    <option value="1.0">1.0</option>
-                  </select>
-                </div>
-                <hr>
-              </div>
-              <div class="container-fluid apiman-summaryrow">
-                <div class="row">
-                  <input type="checkbox"></input>
-                  <span class="title"><a href="plan-overview.html" title="Provides subscribing applications with free, but limited access to all Services in this Organization.">Silver</a></span>
-                  <select class="selectpicker pull-right" data-role="dummy">
-                    <option value="2.2">2.2</option>
-                    <option value="2.0">2.0</option>
-                    <option value="1.0">1.0</option>
-                  </select>
-                </div>
-                <hr>
-              </div>
+              
             </div>
             
             <div apiman-permission="svcEdit" apiman-status="Created,Ready" class="actions">
-              <button class="btn btn-primary" data-field="saveButton" data-i18n-key="save" placeholder="Saving..." data-icon="fa-cog">Save</button>
+              <button ng-click="saveService()" class="btn btn-primary" data-field="saveButton" data-i18n-key="save" placeholder="Saving..." data-icon="fa-cog">Save</button>
               <button class="btn btn-default" data-field="cancelButton" data-i18n-key="cancel">Cancel</button>
             </div>
             
@@ -203,5 +66,6 @@
         <!-- /Content -->
       </div>
     </div> <!-- /container -->
+  </div>
   </body>
 </html>
