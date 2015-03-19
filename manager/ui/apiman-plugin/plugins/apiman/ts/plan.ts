@@ -65,7 +65,10 @@ module Apiman {
                 ActionSvcs.save(lockAction, function(reply) {
                     $scope.selectedPlanVersion.status = 'Locked';
                     $scope.lockButton.state = 'complete';
-                    $scope.entityStatus = $scope.selectedPlanVersion.status;
+                    // need to set the entity status up a couple of scopes to get proper
+                    // full-page propagation of the change event (this controller has its 
+                    // own scope plus a scope from the ng-include)
+                    $scope.$parent.$parent.entityStatus = $scope.selectedPlanVersion.status;
                 }, function(error) {
                     $scope.lockButton.state = 'error';
                     alert("ERROR=" + error);

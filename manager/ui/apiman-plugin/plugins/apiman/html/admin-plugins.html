@@ -3,7 +3,6 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
-    
   </head>
 
   <body>
@@ -13,7 +12,7 @@
     <div ng-controller="Apiman.AdminPluginsController" class="page container admin-page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div class="row">
         <div class="col-md-12">
-          <ol class="breadcrumb" data-field="breadcrumb" data-role="dummy">
+          <ol class="breadcrumb" data-field="breadcrumb">
             <li><a href="{{ pluginName }}/dash.html"><i class="fa fa-home fa-fw"></i><span>Home</span></a></li>
             <li class="active"><i class="fa fa-gavel fa-fw"></i><span>System Administration</span></li>
           </ol>
@@ -59,7 +58,18 @@
                       <th data-i18n-key="coordinates">Coordinates</th>
                     </tr>
                   </thead>
-                  <tbody data-role="dummy">
+                  <tbody >
+                    <tr ng-hide="plugins.length > 0">
+                      <td colspan="2">
+                        <div class="apiman-no-content container-fluid">
+                          <div class="row">
+                            <div class="col-md-12">
+                              <p class="apiman-no-entities-description" data-i18n-key="no-plugins-found">No plugins have been added! Try adding some plugins by clicking Add Plugin above.</p>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
                     <tr ng-repeat="plugin in plugins">
                       <td>{{ plugin.name }}</td>
                       <td><a href="{{ pluginName }}/edit-plugin.html?plugin={{ plugin.id }}"><span>{{ plugin.groupId }}:{{ plugin.artifactId }}:{{ plugin.version}}:{{ plugin.type }}</span></a></td>

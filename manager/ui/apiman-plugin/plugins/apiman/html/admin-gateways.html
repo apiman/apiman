@@ -59,8 +59,19 @@
                       <th data-i18n-key="type">Configuration Type</th>
                     </tr>
                   </thead>
-                  <tbody data-role="dummy" ng-repeat="gateway in gateways">
-                    <tr>
+                  <tbody data-role="dummy">
+                    <tr ng-hide="gateways.length > 0">
+                      <td colspan="2">
+                        <div class="apiman-no-content container-fluid">
+                          <div class="row">
+                            <div class="col-md-12">
+                              <p class="apiman-no-entities-description" data-i18n-key="no-gateways-found">No gateways have been added! Try adding a Gateway by clicking 'New Gateway' above - you'll need at least one, otherwise users will not be able to publish their Services.</p>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr ng-repeat="gateway in gateways">
                       <td><a href="{{ pluginName}}/edit-gateway.html?gateway={{ gateway.id }}"><span>{{ gateway.name}}</span></a></td>
                       <td>{{ gateway.type}}</td>
                     </tr>

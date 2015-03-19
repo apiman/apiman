@@ -66,7 +66,10 @@ module Apiman {
                 ActionSvcs.save(registerAction, function(reply) {
                     $scope.selectedAppVersion.status = 'Registered';
                     $scope.registerButton.state = 'complete';
-                    $scope.entityStatus = $scope.selectedAppVersion.status;
+                    // need to set the entity status up a couple of scopes to get proper
+                    // full-page propagation of the change event (this controller has its 
+                    // own scope plus a scope from the ng-include)
+                    $scope.$parent.$parent.entityStatus = $scope.selectedAppVersion.status;
                 }, function(error) {
                     $scope.registerButton.state = 'error';
                     alert("ERROR=" + error);
@@ -84,7 +87,10 @@ module Apiman {
                 ActionSvcs.save(unregisterAction, function(reply) {
                     $scope.selectedAppVersion.status = 'Retired';
                     $scope.unregisterButton.state = 'complete';
-                    $scope.entityStatus = $scope.selectedAppVersion.status;
+                    // need to set the entity status up a couple of scopes to get proper
+                    // full-page propagation of the change event (this controller has its 
+                    // own scope plus a scope from the ng-include)
+                    $scope.$parent.$parent.entityStatus = $scope.selectedAppVersion.status;
                 }, function(error) {
                     $scope.unregisterButton.state = 'error';
                     alert("ERROR=" + error);
