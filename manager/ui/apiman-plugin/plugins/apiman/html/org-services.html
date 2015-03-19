@@ -30,18 +30,9 @@
               <!-- Services Tab Content -->
               <div class="tab-pane active" id="tab-services">
                 <div class="apiman-filters apiman-services-filters">
-                  <table class="search-box input-search" data-field="serviceFilter">
-                    <tbody>
-                      <tr>
-                        <td width="99%">
-                          <input data-field="textBox" value="" placeholder="Filter by service name..." type="text">
-                        </td>
-                        <td width="1%">
-                          <button data-field="button" class="btn btn-default"><i class="fa fa-fw fa-search"></i></button>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+                  <div>
+                    <apiman-search-box function="filterServices" placeholder="Filter by service name..." />
+                  </div>
                   <div apiman-permission="svcEdit" class="btn-group pull-right">
                     <a data-field="toNewService" href="new-service.html" class="btn btn-primary" data-i18n-key="new-service">New Service</a>
                     <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
@@ -60,7 +51,7 @@
                   <div class="apiman-no-content container-fluid" ng-hide="services.length > 0">
                     <div class="row">
                       <div class="col-md-9">
-                        <p class="apiman-no-entities-description" data-i18n-key="no-orgs-found-for-user">We couldn't find any services in this organization. Probably because none exist. We hope. Try creating one using the New Service button.</p>
+                        <p class="apiman-no-entities-description" data-i18n-key="no-services-found-for-org">We couldn't find any services in this organization. Probably because none exist. We hope. Try creating one using the New Service button.</p>
                       </div>
                       <div class="col-md-3">
                         <div class="apiman-no-entities-arrow"></div>
@@ -68,7 +59,15 @@
                     </div>
                   </div>
 
-                  <div class="container-fluid apiman-summaryrow" ng-repeat="service in services">
+                  <div class="apiman-no-content container-fluid" ng-show="services.length > 0 && filteredServices.length == 0">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <p class="apiman-no-entities-description" data-i18n-key="no-services-found-for-filter">No services found matching your filter criteria - please try searching for something different.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="container-fluid apiman-summaryrow" ng-repeat="service in filteredServices">
                     <div class="row">
                       <span class="title"><a href="{{ pluginName }}/service-overview.html?org={{ service.organizationId }}&service={{ service.id }}">{{ service.name }}</a></span>
                       <a class="apiman-summaryrow-icon">

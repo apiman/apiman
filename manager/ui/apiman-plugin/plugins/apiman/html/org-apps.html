@@ -29,19 +29,10 @@
               <!-- Applications Tab Content -->
               <div class="tab-pane active" id="tab-apps">
                 <div class="apiman-filters apiman-applications-filters">
-                  <table class="search-box input-search" data-field="appFilter">
-                    <tbody>
-                      <tr>
-                        <td width="99%">
-                          <input data-field="textBox" value="" placeholder="Filter by application name..." type="text">
-                        </td>
-                        <td width="1%">
-                          <button data-field="button" class="btn btn-default"><i class="fa fa-fw fa-search"></i></button>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                  <a apiman-permission="appEdit" data-field="toNewApp" href="new-app.html" class="btn btn-primary pull-right">New App</a>
+                  <div>
+                    <apiman-search-box function="filterApps" placeholder="Filter by application name..." />
+                  </div>
+                  <a apiman-permission="appEdit" data-field="toNewApp" href="{{ pluginName }}/new-app.html" class="btn btn-primary pull-right">New App</a>
                 </div>
                 <div class="clearfix"></div>
                 <!-- The list of applications in the org -->
@@ -50,7 +41,7 @@
                   <div class="apiman-no-content container-fluid" ng-hide="apps.length > 0">
                     <div class="row">
                       <div class="col-md-9">
-                        <p class="apiman-no-entities-description" data-i18n-key="no-orgs-found-for-user">It looks like there aren't (yet) any applications in this organization! Now might be a good time to click the New App button up above...</p>
+                        <p class="apiman-no-entities-description" data-i18n-key="no-apps-found-for-org">It looks like there aren't (yet) any applications in this organization! Now might be a good time to click the New App button up above...</p>
                       </div>
                       <div class="col-md-3">
                         <div class="apiman-no-entities-arrow"></div>
@@ -58,7 +49,15 @@
                     </div>
                   </div>
 
-                  <div class="container-fluid apiman-summaryrow" ng-repeat="app in apps">
+                  <div class="apiman-no-content container-fluid" ng-show="apps.length > 0 && filteredApps.length == 0">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <p class="apiman-no-entities-description" data-i18n-key="no-apps-found-for-filter">No applications found matching your filter criteria - please try searching for something different.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="container-fluid apiman-summaryrow" ng-repeat="app in filteredApps">
                     <div class="row">
                       <span class="title"><a href="{{ pluginName }}/app-overview.html?org={{org.id}}&app={{app.id}}">{{ app.name }}</a></span>
                     </div>

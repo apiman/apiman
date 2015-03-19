@@ -16,7 +16,7 @@
                     <li ng-repeat="appVersion in versions"><a href="#" ng-click="setVersion( appVersion )">{{ appVersion.version }}</a></li>
                   </ul>
                 </div>
-                <a apiman-permission="appEdit" href="{{ pluginName }}/new-appversion.html?org={{ org.id }}&app={{ app.id}}" class="btn btn-primary apiman-entity-action" data-field="toNewAppVersion" data-i18n-key="new-version">New Version</a>
+                <a apiman-permission="appEdit" href="{{ pluginName }}/new-appversion.html?org={{ org.id }}&app={{ app.id}}&version={{versions[versions.length-1].version}}" class="btn btn-primary apiman-entity-action" data-field="toNewAppVersion" data-i18n-key="new-version">New Version</a>
               </div>
             </div>
             <hr />
@@ -45,9 +45,9 @@
           </div>
           <div class="col-md-5" apiman-permission="appEdit">
             <div>
-              <div apiman-status="Created,Ready"><a data-i18n-key="ttdo-consume-services" data-field="ttd_toConsumeServices" href="consumer-services.html">Search for Services to consume</a></div>
-              <div apiman-status="Created,Ready"><a data-i18n-key="ttdo-new-contract" data-field="ttd_toNewContract" href="new-contract.html">Create a new Service Contract for this Application</a></div>
-              <div><a data-i18n-key="ttdo-new-version" data-field="ttd_toNewVersion" href="new-appversion.html">Create a new version of this Application (New Version)</a></div>
+              <div apiman-status="Created,Ready"><a data-i18n-key="ttdo-consume-services" data-field="ttd_toConsumeServices" href="{{ pluginName }}/consumer-services.html">Search for Services to consume</a></div>
+              <div apiman-status="Created,Ready"><a data-i18n-key="ttdo-new-contract" data-field="ttd_toNewContract" href="{{ pluginName }}/new-contract.html">Create a new Service Contract for this Application</a></div>
+              <div><a data-i18n-key="ttdo-new-version" data-field="ttd_toNewVersion" href="{{ pluginName }}/new-appversion.html?org={{ org.id }}&app={{ app.id}}&version={{versions[versions.length-1].version}}">Create a new version of this Application (New Version)</a></div>
             </div>
             <!-- The Publish Action -->
             <div class="apiman-divider-40"></div>

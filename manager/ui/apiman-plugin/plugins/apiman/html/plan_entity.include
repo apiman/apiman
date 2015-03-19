@@ -15,7 +15,7 @@
                     <li ng-repeat="planVersion in versions"><a href="#" ng-click="setVersion( planVersion )">{{ planVersion.version }}</a></li>
                   </ul>
                 </div>
-                <a apiman-permission="planEdit" href="new-planversion.html?org={{plan.organization.id}}&plan={{plan.id}}&version={{versions[versions.length-1].version}}" class="btn btn-primary apiman-entity-action" data-field="toNewPlanVersion" data-i18n-key="new-version">New Version</a>
+                <a apiman-permission="planEdit" href="{{ pluginName }}/new-planversion.html?org={{plan.organization.id}}&plan={{plan.id}}&version={{versions[versions.length-1].version}}" class="btn btn-primary apiman-entity-action" data-field="toNewPlanVersion" data-i18n-key="new-version">New Version</a>
               </div>
             </div>
             <hr />
@@ -44,7 +44,7 @@
           </div>
           <div class="col-md-5" apiman-permission="planEdit">
             <div>
-              <div><a data-i18n-key="ttdo-new-version" data-field="ttd_toNewVersion" href="{{ plugainName }}/new-planversion.html?org={{ org.id }}&plan={{ plan.id }}">Create a new version of this Plan (New Version)</a></div>
+              <div><a data-i18n-key="ttdo-new-version" data-field="ttd_toNewVersion" href="{{ pluginName }}/new-planversion.html?org={{ org.id }}&plan={{ plan.id }}&version={{versions[versions.length-1].version}}">Create a new version of this Plan (New Version)</a></div>
             </div>
             <!-- The Publish Action -->
             <div class="apiman-divider-40"></div>

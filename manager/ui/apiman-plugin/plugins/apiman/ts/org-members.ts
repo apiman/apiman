@@ -7,6 +7,22 @@ module Apiman {
         ($q, $scope, $location, OrgSvcs, PageLifecycle, $rootScope) => {
             var params = $location.search();
             $scope.organizationId = params.org;
+            
+            $scope.filterMembers = function(value) {
+                if (!value) {
+                    $scope.filteredMembers = $scope.members;
+                } else {
+                    var filtered = [];
+                    for (var i = 0; i < $scope.members.length; i++) {
+                        var member = $scope.members[i];
+                        if (member.userName.toLowerCase().indexOf(value) > -1 || member.userId.toLowerCase().indexOf(value) > -1) {
+                            filtered.push(member);
+                        }
+                    }
+                    $scope.filteredMembers = filtered;
+                }
+            };
+            
             var promise = $q.all({
                 org: $q(function(resolve, reject) {
                     OrgSvcs.get({ organizationId: params.org, entityType: '' }, function(org) {
@@ -18,6 +34,7 @@ module Apiman {
                 }),
                 members: $q(function(resolve, reject) {
                     OrgSvcs.query({ organizationId: params.org, entityType: 'members' }, function(members) {
+                        $scope.filteredMembers = members;
                         resolve(members);
                     }, function(error) {
                         reject(error);

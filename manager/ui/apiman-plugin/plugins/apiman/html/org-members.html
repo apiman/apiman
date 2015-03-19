@@ -29,38 +29,46 @@
               <!-- Members Tab Content -->
               <div class="tab-pane active" id="tab-members">
                 <div class="apiman-filters apiman-members-filters">
-                  <table class="search-box input-search" data-field="memberFilter">
-                    <tbody>
-                      <tr>
-                        <td width="99%">
-                          <input data-field="textBox" value="" placeholder="Filter by member name..." type="text">
-                        </td>
-                        <td width="1%">
-                          <button data-field="button" class="btn btn-default"><i class="fa fa-fw fa-search"></i></button>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+                  <div>
+                    <apiman-search-box function="filterMembers" placeholder="Filter by member name..." />
+                  </div>
                   <a apiman-permission="orgAdmin" href="org-manage-members.html" class="btn btn-default pull-right" data-field="toManageMembers" data-i18n-key="manage-members">Manage Members</a>
                 </div>
                 <div class="clearfix"></div>
                 <!-- The organization's list of members -->
-                <div class="apiman-members" data-field="members" data-role="dummy" ng-repeat="member in members">
-                  <div class="container-fluid apiman-summaryrow">
+                <div class="apiman-members" data-field="members">
+
+                  <div class="apiman-no-content container-fluid" ng-hide="members.length > 0">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <p class="apiman-no-entities-description" data-i18n-key="no-members-found-for-org">This is very strange, but apparently this Organization has no members!  Highly irregular!</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="apiman-no-content container-fluid" ng-show="members.length > 0 && filteredMembers.length == 0">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <p class="apiman-no-entities-description" data-i18n-key="no-members-found-for-filter">No members found matching your filter criteria - please try searching for something different.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="container-fluid apiman-summaryrow" ng-repeat="member in filteredMembers">
                     <div class="row">
                       <span class="title">
-                        <a href="{{ pluginName }}/user-orgs.html">{{ member.userName }}</a>
+                        <a href="{{ pluginName }}/user-orgs.html?user={{ member.userId }}">{{ member.userName }}</a>
                         <span class="secondary">({{ member.userId}})</span>
                       </span>
                       <a class="apiman-summaryrow-icon">
                         <i class="fa fa-clock-o fa-fw"></i>
-                        <span class="title-summary-item">Joined on</span>
+                        <span data-18n-key="joined-on" class="title-summary-item">Joined on</span>
                         <span class="title-summary-item">{{ member.joinedOn | date:'yyyy-MM-dd' }}</span>
                       </a>
                     </div>
                     <div class="row">
                       <span class="description" ng-repeat="role in member.roles">
-                        {{ role.roleName}} {{$last ? '' : ($index==member.roles.length-2) ? ' and ' : ', '}}
+                        {{ role.roleName}} {{ $last ? '' : ($index==member.roles.length-2) ? ' and ' : ', ' }}
                       </span>
                     </div>
                     <hr/>

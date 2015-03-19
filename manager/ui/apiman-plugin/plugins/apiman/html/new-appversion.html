@@ -6,12 +6,11 @@
   </head>
 
   <body>
-  <div>
     <div id="progress-indicator" ng-class="{ 'loading': isLoading, 'loaded': isLoaded }"></div>
     <div id="apiman-header" ng-include="'plugins/apiman/html/navbar.include'"></div>
     <div ng-controller="Apiman.NewAppVersionController" id="form-page" class="container apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div class="row">
-        <h2 class="title" data-i18n-key="new-app">New Application Version</h2>
+        <h2 class="title" data-i18n-key="new-app-version">New Application Version</h2>
       </div>
       <!-- Helpful hint -->
       <div class="row">
@@ -24,9 +23,9 @@
       <!-- Application Version -->
       <div class="row">
         <dl>
-          <dt data-i18n-key="initial-version">Version</dt>
+          <dt data-i18n-key="version">Version</dt>
           <dd>
-            <input ng-model="appversion.version"  "data-field="version" type="text" class="form-control version" id="apiman-version" placeholder="Enter version..."></input>
+            <input ng-model="appversion.version" type="text" class="form-control version" id="apiman-version" placeholder="Enter version..."></input>
           </dd>
         </dl>
       </div>
@@ -48,10 +47,9 @@
       </div>
       <!-- Create Button -->
       <div class="row">
-        <button apiman-action-btn="" class="btn btn-primary" data-field="createButton" data-i18n-key="create-version" placeholder="Creating..." data-icon="fa-cog" ng-click="saveNewAppVersion()">Create Version</button>
+        <button ng-disabled="!appversion.version" apiman-action-btn="" class="btn btn-primary" data-field="createButton" data-i18n-key="create-version" placeholder="Creating..." data-icon="fa-cog" ng-click="saveNewAppVersion()">Create Version</button>
         <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" data-i18n-key="cancel">Cancel</a>
       </div>
     </div> <!-- /container -->
-  </div>
   </body>
 </html>

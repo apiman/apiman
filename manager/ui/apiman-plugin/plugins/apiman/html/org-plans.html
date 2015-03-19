@@ -28,18 +28,9 @@
               <!-- Plans Tab Content -->
               <div class="tab-pane active" id="tab-plans">
                 <div class="apiman-filters apiman-plans-filters">
-                  <table class="search-box input-search" data-field="planFilter">
-                    <tbody>
-                      <tr>
-                        <td width="99%">
-                          <input data-field="textBox" value="" placeholder="Filter by plan name..." type="text">
-                        </td>
-                        <td width="1%">
-                          <button data-field="button" class="btn btn-default"><i class="fa fa-fw fa-search"></i></button>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+                  <div>
+                    <apiman-search-box function="filterPlans" placeholder="Filter by plan name..." />
+                  </div>
                   <a apiman-permission="planEdit" data-field="toNewPlan" data-i18n-key="new-plan" href="apiman/new-plan.html" class="btn btn-primary pull-right">New Plan</a>
                 </div>
                 <div class="clearfix"></div>
@@ -49,7 +40,7 @@
                   <div class="apiman-no-content container-fluid" ng-hide="plans.length > 0">
                     <div class="row">
                       <div class="col-md-9">
-                        <p class="apiman-no-entities-description" data-i18n-key="no-orgs-found-for-user">There aren't any plans configured for this organization. That means all published services in this organization must be public.</p>
+                        <p class="apiman-no-entities-description" data-i18n-key="no-plans-found-for-org">There aren't any plans configured for this organization. That means all published services in this organization must be public.</p>
                       </div>
                       <div class="col-md-3">
                         <div class="apiman-no-entities-arrow"></div>
@@ -57,7 +48,15 @@
                     </div>
                   </div>
 
-                  <div class="container-fluid apiman-summaryrow" ng-repeat="plan in plans">
+                  <div class="apiman-no-content container-fluid" ng-show="plans.length > 0 && filteredPlans.length == 0">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <p class="apiman-no-entities-description" data-i18n-key="no-plans-found-for-filter">No plans found matching your filter criteria - please try searching for something different.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="container-fluid apiman-summaryrow" ng-repeat="plan in filteredPlans">
                     <div class="row">
                       <span class="title"><a href="{{ pluginName }}/plan-overview.html?org={{ org.id }}&plan={{ plan.id}}">{{ plan.name }}</a></span>
                     </div>
