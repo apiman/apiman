@@ -42,8 +42,13 @@
                 <div class="row">
                   <input ng-model="lockedPlan.checked" data-field="checkbox" type="checkbox"></input>
                   <span class="title"><a href="{{ pluginName }}/plan-overview.html?org={{ lockedPlan.organizationId }}&plan={{ lockedPlan.id }}" data-field="name" title="{{ lockedPlan.description }}">{{ lockedPlan.name }}</a></span>
-                  <select ng-model="lockedPlan.selectedVersion" class="selectpicker pull-right" data-role="dummy" data-field="versions">
+                  <select ng-model="lockedPlan.selectedVersion" 
+                          ng-options="version for version in lockedPlan.lockedVersions"
+                  		class="selectpicker pull-right" data-role="dummy" data-field="versions">
+                  		<option>--</option>
+                  		<!-- 
                     <option ng-repeat="version in lockedPlan.lockedVersions" value="{{version}}">{{ version }}</option>
+                     -->
                   </select>
                 </div>
                 <hr>
