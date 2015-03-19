@@ -38,6 +38,7 @@ module Apiman {
         '/apiman/new-org.html'          : { templateUrl: 'new-org.html' },
         '/apiman/new-plan.html'         : { templateUrl: 'new-plan.html' },
         '/apiman/new-planversion.html'  : { templateUrl: 'new-planversion.html' },
+        '/apiman/new-plugin.html'       : { templateUrl: 'new-plugin.html' },
         '/apiman/new-policy.html'       : { templateUrl: 'new-policy.html' },
         '/apiman/new-role.html'         : { templateUrl: 'new-role.html' },
         '/apiman/org-plans.html'        : { templateUrl: 'org-plans.html' },

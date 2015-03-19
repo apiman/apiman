@@ -3,11 +3,9 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
-    
   </head>
 
   <body>
-  <div>
     <div ng-include="'plugins/apiman/html/progress.include'"></div>
     <div id="apiman-header" ng-include="'plugins/apiman/html/navbar.include'"></div>   
     <div ng-controller="Apiman.EditPluginController" id="form-page" class="container apiman-edit-plugin apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
@@ -99,9 +97,8 @@
       <!-- Create Button -->
       <div class="row">
         <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" data-i18n-key="cancel">Cancel</a>
-        <button class="btn btn-danger" style="margin-left: 100px;" data-field="deleteButton" data-i18n-key="delete-plugin" placeholder="Deleting..." data-icon="fa-cog" ng-click="deletePlugin()">Delete Plugin</button>
+        <button apiman-action-btn="" class="btn btn-danger" style="margin-left: 100px;" data-field="deleteButton" data-i18n-key="delete-plugin" placeholder="Deleting..." data-icon="fa-cog" ng-click="deletePlugin()">Delete Plugin</button>
       </div>
     </div> <!-- /container -->
-  </div>
   </body>
 </html>

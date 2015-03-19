@@ -55,17 +55,17 @@
                 <div class="col-md-3">
                   <div class="checkbox">
                     <label>
-                      <input ng-model="permissions['orgView']" data-field="orgView" type="checkbox"></input> <span data-i18n-key="permission.orgView">Organization View</span>
+                      <input ng-model="rolePermissions['orgView']" data-field="orgView" type="checkbox"></input> <span data-i18n-key="permission.orgView">Organization View</span>
                     </label>
                   </div>
                   <div class="checkbox">
                     <label>
-                      <input ng-model="permissions['orgEdit']" data-field="orgEdit" type="checkbox"></input> <span data-i18n-key="permission.orgEdit">Organization Edit</span>
+                      <input ng-model="rolePermissions['orgEdit']" data-field="orgEdit" type="checkbox"></input> <span data-i18n-key="permission.orgEdit">Organization Edit</span>
                     </label>
                   </div>
                   <div class="checkbox">
                     <label>
-                      <input ng-model="permissions['orgAdmin']" data-field="orgAdmin" type="checkbox"></input> <span data-i18n-key="permission.orgAdmin">Organization Admin</span>
+                      <input ng-model="rolePermissions['orgAdmin']" data-field="orgAdmin" type="checkbox"></input> <span data-i18n-key="permission.orgAdmin">Organization Admin</span>
                     </label>
                   </div>
                 </div>
@@ -131,9 +131,9 @@
       </div>
       <!-- Create Button -->
       <div class="row">
-        <button class="btn btn-primary" data-field="updateButton" data-i18n-key="update-role" placeholder="Updating..." data-icon="fa-cog" ng-click="updateRole()">Update Role</button>
+        <button ng-disabled="!isValid" apiman-action-btn="" class="btn btn-primary" data-field="updateButton" data-i18n-key="update-role" placeholder="Updating..." data-icon="fa-cog" ng-click="updateRole()">Update Role</button>
         <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" data-i18n-key="cancel">Cancel</a>
-        <button class="btn btn-danger" style="margin-left: 100px;" data-field="deleteButton" data-i18n-key="delete-role" placeholder="Deleting..." data-icon="fa-cog" ng-click="deleteRole()">Delete Role</button>
+        <button apiman-action-btn="" class="btn btn-danger" style="margin-left: 100px;" data-field="deleteButton" data-i18n-key="delete-role" placeholder="Deleting..." data-icon="fa-cog" ng-click="deleteRole()">Delete Role</button>
       </div>
     </div> <!-- /container -->
   </div>

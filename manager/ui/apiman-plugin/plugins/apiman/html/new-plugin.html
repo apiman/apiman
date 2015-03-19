@@ -3,45 +3,13 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
-    
   </head>
 
   <body>
-
-    <!-- Top header/nav bar -->
-    <div id="apiman-header">
-      <div class="main-header container">
-        <div class="row">
-          <div class="col-md-12">
-            <div class="logo"></div>
-            <input class="search no-phone" type="text" placeholder="Quick service search..."></input>
-            <ul class="user-menu pull-right">
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                  <span class="pficon pficon-user"></span>
-                  <span>Bruce Wayne</span>
-                  <b class="caret"></b>
-                </a>
-                <ul class="dropdown-menu">
-                  <li>
-                    <a href="user-orgs.html">Home</a>
-                  </li>
-                  <li class="divider"></li>
-                  <li>
-                    <a data-field="toProfile" href="settings-profile.html" data-i18n-key="profile">Profile</a>
-                  </li>
-                  <li>
-                    <a href="#">Logout</a>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div id="form-page" class="container apiman-entity-new page" data-field="page">
+    <div ng-include="'plugins/apiman/html/progress.include'"></div>
+    <div id="apiman-header" ng-include="'plugins/apiman/html/navbar.include'"></div>   
+    <div ng-controller="Apiman.NewPluginController" id="form-page" class="container apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+    <div id="form-page" class="" data-field="page">
       <div class="row">
         <h2 class="title" data-i18n-key="new-plugin">Add Plugin</h2>
       </div>
@@ -60,7 +28,7 @@
         <dl>
           <dt data-i18n-key="group-id">Group Id</dt>
           <dd>
-            <input data-field="groupId" type="text" class="form-control entityname" placeholder="Enter groupId..."></input>
+            <input ng-model="plugin.groupId" id="NewPluginController" data-field="groupId" type="text" class="form-control entityname" placeholder="Enter groupId..."></input>
           </dd>
         </dl>
       </div>
@@ -68,7 +36,7 @@
         <dl>
           <dt data-i18n-key="artifact-id">Artifact Id</dt>
           <dd>
-            <input data-field="artifactId" type="text" class="form-control entityname" placeholder="Enter artifactId..."></input>
+            <input ng-model="plugin.artifactId" type="text" class="form-control entityname" placeholder="Enter artifactId..."></input>
           </dd>
         </dl>
       </div>
@@ -76,7 +44,7 @@
         <dl>
           <dt data-i18n-key="version">Version</dt>
           <dd>
-            <input data-field="version" type="text" class="form-control entityname" placeholder="Enter version (e.g. 1.0)..." style="width: 175px"></input>
+            <input ng-model="plugin.version" type="text" class="form-control entityname" placeholder="Enter version (e.g. 1.0)..." style="width: 175px"></input>
           </dd>
         </dl>
       </div>
@@ -84,7 +52,7 @@
         <dl>
           <dt data-i18n-key="classifier">Classifier (optional)</dt>
           <dd>
-            <input data-field="classifier" type="text" class="form-control entityname" placeholder="Enter classifier..."></input>
+            <input ng-model="plugin.classifier" type="text" class="form-control entityname" placeholder="Enter classifier..."></input>
           </dd>
         </dl>
       </div>
@@ -92,7 +60,7 @@
         <dl>
           <dt data-i18n-key="type">Type (optional)</dt>
           <dd>
-            <input data-field="type" type="text" class="form-control entityname" placeholder="Enter type (e.g. jar)..." style="width: 175px"></input>
+            <input ng-model="plugin.type" type="text" class="form-control entityname" placeholder="Enter type (e.g. jar)..." style="width: 175px"></input>
           </dd>
         </dl>
       </div>
@@ -102,7 +70,7 @@
       </div>
       <!-- Create Button -->
       <div class="row">
-        <button apiman-action-btn="" class="btn btn-primary" data-field="addButton" data-i18n-key="add-plugin" placeholder="Creating..." data-icon="fa-cog">Add Plugin</button>
+        <button ng-disabled="!isValid" apiman-action-btn="" class="btn btn-primary" data-field="addButton" data-i18n-key="add-plugin" placeholder="Creating..." data-icon="fa-cog" ng-click="addPlugin()">Add Plugin</button>
         <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" data-i18n-key="cancel">Cancel</a>
       </div>
     </div> <!-- /container -->
