@@ -64,7 +64,7 @@ public class SimpleHeaderPolicyTest {
         AddHeaderBean header = new AddHeaderBean();
         header.setHeaderName("X-Clacks-Overhead");
         header.setHeaderValue("GNU Terry Pratchett");
-        header.setOverwrite(false);
+        header.setOverwrite(true);
         header.setApplyTo(ApplyTo.REQUEST);
         config.getAddHeaders().add(header);
 
