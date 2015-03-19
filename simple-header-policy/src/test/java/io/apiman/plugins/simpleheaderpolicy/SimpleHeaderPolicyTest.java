@@ -64,7 +64,7 @@ public class SimpleHeaderPolicyTest {
         AddHeaderBean header = new AddHeaderBean();
         header.setHeaderName("X-Clacks-Overhead");
         header.setHeaderValue("GNU Terry Pratchett");
-        header.setOverwrite(false);
+        header.setOverwrite(true);
         header.setApplyTo(ApplyTo.REQUEST);
         config.getAddHeaders().add(header);
 
@@ -227,6 +227,44 @@ public class SimpleHeaderPolicyTest {
 
         assertFalse(request.getHeaders().containsKey("vetinari"));
         assertTrue(request.getHeaders().isEmpty());
+    }
+    
+    @Test
+    public void shouldNotOverwrite() {
+        request.getHeaders().put("nobby", "nobbs");
+        
+        AddHeaderBean ahb = new AddHeaderBean();
+        ahb.setHeaderName("nobby");
+        ahb.setHeaderValue("sgt-detritus");
+        ahb.setApplyTo(ApplyTo.REQUEST);
+        
+        ahb.setOverwrite(false); // DO NOT OVERWRITE
+        
+        config.getAddHeaders().add(ahb);
+        
+        policy.apply(request, mContext, config, mRequestChain);
+        
+        assertEquals("nobbs", request.getHeaders().get("nobby"));
+        assertEquals(1, request.getHeaders().size());
+    }
+    
+    @Test
+    public void shouldOverwrite() {
+        request.getHeaders().put("nobby", "nobbs");
+        
+        AddHeaderBean ahb = new AddHeaderBean();
+        ahb.setHeaderName("nobby");
+        ahb.setHeaderValue("sgt-detritus");
+        ahb.setApplyTo(ApplyTo.REQUEST);
+        
+        ahb.setOverwrite(true); // OVERWRITE
+        
+        config.getAddHeaders().add(ahb);
+        
+        policy.apply(request, mContext, config, mRequestChain);
+        
+        assertEquals("sgt-detritus", request.getHeaders().get("nobby"));
+        assertEquals(1, request.getHeaders().size());
     }
 
     // @Test
