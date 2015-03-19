@@ -15,6 +15,8 @@
  */
 package io.apiman.gateway.engine.beans;
 
+import io.apiman.common.util.SimpleStringUtils;
+
 import java.util.HashMap;
 
 /**
@@ -42,7 +44,8 @@ public class HeaderHashMap extends HashMap<String, String> {
     public String get(Object key) {
         String rval = super.get(key);
         if (rval == null) {
-            rval = caseInsensitiveIndex.get(((String) key).toLowerCase());
+            String trimmedKey = SimpleStringUtils.trim((String)key);
+            rval = caseInsensitiveIndex.get(trimmedKey.toLowerCase());
         }
         return rval;
     }
@@ -54,7 +57,8 @@ public class HeaderHashMap extends HashMap<String, String> {
     public boolean containsKey(Object key) {
         boolean rval = super.containsKey(key);
         if (!rval) {
-            rval = caseInsensitiveIndex.containsKey(((String) key).toLowerCase());
+            String trimmedKey = SimpleStringUtils.trim((String)key);
+            rval = caseInsensitiveIndex.containsKey(trimmedKey.toLowerCase());
         }
         return rval;
     }
@@ -64,8 +68,10 @@ public class HeaderHashMap extends HashMap<String, String> {
      */
     @Override
     public String put(String key, String value) {
-        String rval = super.put(key, value);
-        caseInsensitiveIndex.put(key.toLowerCase(), value);
+        String trimmedKey = SimpleStringUtils.trim(key);
+        String trimmedValue = SimpleStringUtils.trim(value);
+        String rval = super.put(trimmedKey, trimmedValue);
+        caseInsensitiveIndex.put(trimmedKey.toLowerCase(), trimmedValue);
         return rval;
     }
     
@@ -74,8 +80,9 @@ public class HeaderHashMap extends HashMap<String, String> {
      */
     @Override
     public String remove(Object key) {
-        caseInsensitiveIndex.remove(((String) key).toLowerCase());
-        return super.remove(key);
+        String trimmedKey = SimpleStringUtils.trim((String)key);
+        caseInsensitiveIndex.remove(trimmedKey.toLowerCase());
+        return super.remove(trimmedKey);
     }
     
 }

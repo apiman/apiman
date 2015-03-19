@@ -16,6 +16,10 @@
       <artifactId>jackson-core-asl</artifactId>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>io.apiman</groupId>
+      <artifactId>apiman-common-util</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
