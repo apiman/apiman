@@ -7,6 +7,21 @@ module Apiman {
         ($q, $scope, $location, UserSvcs, PageLifecycle) => {
             var params = $location.search();
             $scope.tab = 'services';
+            
+            $scope.filterServices = function(value) {
+                if (!value) {
+                    $scope.filteredServices = $scope.services;
+                } else {
+                    var filtered = [];
+                    for (var i = 0; i < $scope.services.length; i++) {
+                        var svc = $scope.services[i];
+                        if (svc.name.toLowerCase().indexOf(value) > -1 || svc.organizationName.toLowerCase().indexOf(value) > -1) {
+                            filtered.push(svc);
+                        }
+                    }
+                    $scope.filteredServices = filtered;
+                }
+            };
 
             var promise = $q.all({
                 user: $q(function(resolve, reject) {
@@ -21,6 +36,7 @@ module Apiman {
                 }),
                 services: $q(function(resolve, reject) {
                     UserSvcs.query({ user: params.user, entityType: 'services' }, function(userServices) {
+                        $scope.filteredServices = userServices;
                         resolve(userServices);
                     }, function(error) {
                         reject(error);

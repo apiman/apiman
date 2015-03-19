@@ -22,6 +22,7 @@ module Apiman {
             };
             
             PageLifecycle.loadPage('NewAppVersion', undefined, $scope);
+            $('#apiman-version').focus();
         }]);
 
 }

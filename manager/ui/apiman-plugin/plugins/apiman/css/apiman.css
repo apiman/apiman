@@ -588,7 +588,7 @@ div.page {
   line-height: 14px;
 }
 
-.apiman-services hr, .apiman-applications hr, .apiman-plans hr, .apiman-members hr, .apiman-contracts hr, .apiman-policies hr, .apiman-roles hr {
+.apiman-organizations hr, .apiman-services hr, .apiman-applications hr, .apiman-plans hr, .apiman-members hr, .apiman-contracts hr, .apiman-policies hr, .apiman-roles hr {
   margin: 8px;
 }
 

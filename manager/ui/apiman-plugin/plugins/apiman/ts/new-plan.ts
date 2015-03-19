@@ -2,20 +2,19 @@
 module Apiman {
 
     export var NewPlanController = _module.controller("Apiman.NewPlanController",
-        ['$q', '$location', '$scope', 'UserSvcs', 'OrgSvcs', 'PageLifecycle', '$rootScope',
-        ($q, $location, $scope, UserSvcs, OrgSvcs, PageLifecycle, $rootScope) => {
+        ['$q', '$location', '$scope', 'CurrentUserSvcs', 'OrgSvcs', 'PageLifecycle', '$rootScope',
+        ($q, $location, $scope, CurrentUserSvcs, OrgSvcs, PageLifecycle, $rootScope) => {
             var recentOrg = $rootScope.mruOrg;
-            var params = $location.search();
 
             var promise = $q.all({
                 organizations: $q(function(resolve, reject) {
-                    UserSvcs.query({ user: params.user, entityType: 'organizations' }, function(userOrgs) {
+                    CurrentUserSvcs.query({ what: 'planorgs' }, function(orgs) {
                         if (recentOrg) {
                             $scope.selectedOrg = recentOrg;
-                        } else {
-                            $scope.selectedOrg = userOrgs[0];
+                        } else if (orgs.length > 0) {
+                            $scope.selectedOrg = orgs[0];
                         }
-                        resolve(userOrgs);
+                        resolve(orgs);
                     }, function(error) {
                         reject(error);
                     });
@@ -45,6 +44,7 @@ module Apiman {
             };
             
             PageLifecycle.loadPage('NewPlan', promise, $scope);
+            $('#apiman-entityname').focus();
         }]);
 
 }
