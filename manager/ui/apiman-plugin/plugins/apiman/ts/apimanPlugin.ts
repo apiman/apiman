@@ -51,6 +51,7 @@ module Apiman {
         '/apiman/plan-activity.html'    : { templateUrl: 'plan-activity.html' },
         '/apiman/service-activity.html' : { templateUrl: 'service-activity.html' },
         '/apiman/service-contracts.html': { templateUrl: 'service-contracts.html' },
+        '/apiman/service-endpoint.html' : { templateUrl: 'service-endpoint.html' },
         '/apiman/service-overview.html' : { templateUrl: 'service-overview.html' },
         '/apiman/service-impl.html'     : { templateUrl: 'service-impl.html' },
         '/apiman/service-plans.html'    : { templateUrl: 'service-plans.html' },
