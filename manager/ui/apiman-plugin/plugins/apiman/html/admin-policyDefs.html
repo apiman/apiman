@@ -3,7 +3,6 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
-    
   </head>
 
   <body>
@@ -46,17 +45,9 @@
             <!-- Filter and Actions -->
             <div class="row">
               <div class="apiman-filters apiman-policyDefs-filters">
-                <table class="search-box input-search" data-field="policyDefFilter">
-                  <tbody>
-                    <tr>
-                      <td width="99%">
-                        <input data-field="textBox" value="" placeholder="" type="text">
-                      </td>
-                      <td width="1%">
-                        <button data-field="button" class="btn btn-default"><i class="fa fa-fw fa-search"></i></button>
-                      </td>
-                    </tr>
-                  </tbody>
+                <div>
+                  <apiman-search-box function="filterPolicies" placeholder="Filter by policy name..." />
+                </div>
                 </table>
 <!--                 <a data-field="toNewPolicyDef" href="new-policyDef.html" class="btn btn-default pull-right">Add Policy</a> -->
                 <a data-field="toImportPolicyDef" href="{{ pluginName }}/import-policyDefs.html" class="btn btn-primary pull-right">Import Policy</a>
@@ -72,8 +63,33 @@
                       <th class="no-phone" data-i18n-key="implementation">Implementation</th>
                     </tr>
                   </thead>
-                  <tbody data-role="dummy">
-                    <tr ng-repeat="policyDef in policyDefs">
+                  <tbody>
+
+                    <tr ng-hide="policyDefs.length > 0">
+                      <td colspan="2">
+                        <div class="apiman-no-content container-fluid">
+                          <div class="row">
+                            <div class="col-md-12">
+                              <p class="apiman-no-entities-description" data-i18n-key="no-policy-defs-found">No policy definitions have been added!  Without at least one policy definition users will not be able to add policies to their Services, Plans, and Applications.</p>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+
+                    <tr ng-show="policyDefs.length > 0 && filteredPolicyDefs.length == 0">
+                      <td colspan="2">
+                        <div class="apiman-no-content container-fluid">
+                          <div class="row">
+                            <div class="col-md-12">
+                              <p class="apiman-no-entities-description" data-i18n-key="no-policy-defs-for-filter">No policy definitions matched your filter criteria.  Try something different!</p>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+
+                    <tr ng-repeat="policyDef in filteredPolicyDefs">
                       <td><a href="{{ pluginName }}/edit-policyDef.html?policyDef={{policyDef.id}}"><i class="fa fa-{{ policyDef.icon}} fa-fw"></i><span>{{ policyDef.name }}</span></a>
                           <div class="description apiman-label-faded">{{ policyDef.description}}</div>
                       </td>
