@@ -35,6 +35,7 @@ module Apiman {
         '/apiman/new-app.html'          : { templateUrl: 'new-app.html' },
         '/apiman/new-appversion.html'   : { templateUrl: 'new-appversion.html' },
         '/apiman/new-contract.html'     : { templateUrl: 'new-contract.html' },
+        '/apiman/new-gateway.html'      : { templateUrl: 'new-gateway.html' },
         '/apiman/new-org.html'          : { templateUrl: 'new-org.html' },
         '/apiman/new-plan.html'         : { templateUrl: 'new-plan.html' },
         '/apiman/new-planversion.html'  : { templateUrl: 'new-planversion.html' },
