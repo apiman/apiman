@@ -23,6 +23,7 @@ import io.apiman.gateway.engine.policy.IPolicyContext;
 import io.apiman.plugins.simpleheaderpolicy.beans.AddHeaderBean;
 import io.apiman.plugins.simpleheaderpolicy.beans.StripHeaderBean;
 import io.apiman.plugins.simpleheaderpolicy.beans.AddHeaderBean.ApplyTo;
+import io.apiman.plugins.simpleheaderpolicy.beans.AddHeaderBean.ValueType;
 import io.apiman.plugins.simpleheaderpolicy.beans.StripHeaderBean.StripType;
 import io.apiman.plugins.simpleheaderpolicy.beans.SimpleHeaderPolicyDefBean;
 import io.apiman.plugins.simpleheaderpolicy.beans.StripHeaderBean.With;
@@ -30,6 +31,9 @@ import io.apiman.plugins.simpleheaderpolicy.beans.StripHeaderBean.With;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+
+import static org.mockito.BDDMockito.*;
+
 import org.mockito.MockitoAnnotations;
 
 /**
@@ -66,6 +70,7 @@ public class SimpleHeaderPolicyTest {
         header.setHeaderValue("GNU Terry Pratchett");
         header.setOverwrite(true);
         header.setApplyTo(ApplyTo.REQUEST);
+        header.setValueType(ValueType.STRING);
         config.getAddHeaders().add(header);
 
         policy.apply(request, mContext, config, mRequestChain);
@@ -81,6 +86,7 @@ public class SimpleHeaderPolicyTest {
         header.setHeaderValue("GNU Terry Pratchett");
         header.setOverwrite(false);
         header.setApplyTo(ApplyTo.RESPONSE);
+        header.setValueType(ValueType.STRING);
         config.getAddHeaders().add(header);
 
         policy.apply(response, mContext, config, mResponseChain);
@@ -96,6 +102,7 @@ public class SimpleHeaderPolicyTest {
         header.setHeaderValue("Weatherwax");
         header.setOverwrite(false);
         header.setApplyTo(ApplyTo.BOTH);
+        header.setValueType(ValueType.STRING);
         config.getAddHeaders().add(header);
 
         policy.apply(request, mContext, config, mRequestChain);
@@ -118,6 +125,7 @@ public class SimpleHeaderPolicyTest {
         header.setHeaderValue("GNU Terry Pratchett");
         header.setOverwrite(true);
         header.setApplyTo(ApplyTo.REQUEST);
+        header.setValueType(ValueType.STRING);
         config.getAddHeaders().add(header);
 
         policy.apply(request, mContext, config, mRequestChain);
@@ -135,11 +143,51 @@ public class SimpleHeaderPolicyTest {
         header.setHeaderValue("GNU Terry Pratchett");
         header.setOverwrite(false);
         header.setApplyTo(ApplyTo.REQUEST);
+        header.setValueType(ValueType.STRING);
         config.getAddHeaders().add(header);
 
         policy.apply(request, mContext, config, mRequestChain);
 
         assertEquals("Ridcully", request.getHeaders().get("X-Clacks-Overhead"));
+        assertEquals(1, request.getHeaders().size());
+    }
+    
+
+    @Test
+    public void shouldGetValueFromEnvironment() {   
+        AddHeaderBean header = spy(new AddHeaderBean());
+        
+        header.setHeaderName("the-meaning-of-life");
+        header.setHeaderValue("KEY_TO_THE_ENVIRONMENT");
+        header.setOverwrite(false);
+        header.setApplyTo(ApplyTo.REQUEST);
+        header.setValueType(ValueType.ENV);
+        config.getAddHeaders().add(header);
+        
+        given(header.getResolvedHeaderValue()).willReturn("42");
+
+        policy.apply(request, mContext, config, mRequestChain);
+
+        assertEquals("42", request.getHeaders().get("the-meaning-of-life"));
+        assertEquals(1, request.getHeaders().size());
+    }
+    
+    @Test
+    public void shouldGetValueFromSystemProperties() {
+        System.setProperty("PROPERTIES_KEY", "42");
+
+        AddHeaderBean header = spy(new AddHeaderBean());
+        
+        header.setHeaderName("the-meaning-of-life");
+        header.setHeaderValue("PROPERTIES_KEY");
+        header.setOverwrite(false);
+        header.setApplyTo(ApplyTo.REQUEST);
+        header.setValueType(ValueType.SYS);
+        config.getAddHeaders().add(header);
+        
+        policy.apply(request, mContext, config, mRequestChain);
+
+        assertEquals("42", request.getHeaders().get("the-meaning-of-life"));
         assertEquals(1, request.getHeaders().size());
     }
 
@@ -227,44 +275,6 @@ public class SimpleHeaderPolicyTest {
 
         assertFalse(request.getHeaders().containsKey("vetinari"));
         assertTrue(request.getHeaders().isEmpty());
-    }
-    
-    @Test
-    public void shouldNotOverwrite() {
-        request.getHeaders().put("nobby", "nobbs");
-        
-        AddHeaderBean ahb = new AddHeaderBean();
-        ahb.setHeaderName("nobby");
-        ahb.setHeaderValue("sgt-detritus");
-        ahb.setApplyTo(ApplyTo.REQUEST);
-        
-        ahb.setOverwrite(false); // DO NOT OVERWRITE
-        
-        config.getAddHeaders().add(ahb);
-        
-        policy.apply(request, mContext, config, mRequestChain);
-        
-        assertEquals("nobbs", request.getHeaders().get("nobby"));
-        assertEquals(1, request.getHeaders().size());
-    }
-    
-    @Test
-    public void shouldOverwrite() {
-        request.getHeaders().put("nobby", "nobbs");
-        
-        AddHeaderBean ahb = new AddHeaderBean();
-        ahb.setHeaderName("nobby");
-        ahb.setHeaderValue("sgt-detritus");
-        ahb.setApplyTo(ApplyTo.REQUEST);
-        
-        ahb.setOverwrite(true); // OVERWRITE
-        
-        config.getAddHeaders().add(ahb);
-        
-        policy.apply(request, mContext, config, mRequestChain);
-        
-        assertEquals("sgt-detritus", request.getHeaders().get("nobby"));
-        assertEquals(1, request.getHeaders().size());
     }
 
     // @Test

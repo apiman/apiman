@@ -23,6 +23,7 @@ import io.apiman.gateway.engine.policies.AbstractMappedPolicy;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
 import io.apiman.plugins.simpleheaderpolicy.beans.AddHeaderBean;
+import io.apiman.plugins.simpleheaderpolicy.beans.AddHeaderBean.ApplyTo;
 import io.apiman.plugins.simpleheaderpolicy.beans.SimpleHeaderPolicyDefBean;
 
 /**
@@ -40,7 +41,7 @@ public class SimpleHeaderPolicy extends AbstractMappedPolicy<SimpleHeaderPolicyD
     @Override
     protected void doApply(ServiceRequest request, IPolicyContext context, SimpleHeaderPolicyDefBean config,
             IPolicyChain<ServiceRequest> chain) {
-        setHeaders(request.getHeaders(), config, AddHeaderBean.ApplyTo.REQUEST);
+        setHeaders(request.getHeaders(), config, ApplyTo.REQUEST);
         stripHeaders(request.getHeaders(), config);
         chain.doApply(request);
     }
@@ -48,17 +49,16 @@ public class SimpleHeaderPolicy extends AbstractMappedPolicy<SimpleHeaderPolicyD
     @Override
     protected void doApply(ServiceResponse response, IPolicyContext context,
             SimpleHeaderPolicyDefBean config, IPolicyChain<ServiceResponse> chain) {
-        setHeaders(response.getHeaders(), config, AddHeaderBean.ApplyTo.RESPONSE);
+        setHeaders(response.getHeaders(), config, ApplyTo.RESPONSE);
         stripHeaders(response.getHeaders(), config);
         chain.doApply(response);
     }
 
-    private void setHeaders(Map<String, String> headers, SimpleHeaderPolicyDefBean config,
-            AddHeaderBean.ApplyTo applyTo) {
+    private void setHeaders(Map<String, String> headers, SimpleHeaderPolicyDefBean config, ApplyTo applyTo) {
         for (AddHeaderBean header : config.getAddHeaders()) {
-            if ((header.getApplyTo() == applyTo || header.getApplyTo() == AddHeaderBean.ApplyTo.BOTH)) {
+            if ((header.getApplyTo() == applyTo || header.getApplyTo() == ApplyTo.BOTH)) {
                 if (header.getOverwrite() || !headers.containsKey(header.getHeaderName())) {
-                    headers.put(header.getHeaderName(), header.getHeaderValue());
+                    headers.put(header.getHeaderName(), header.getResolvedHeaderValue());
                 }
             }
         }
