@@ -29,11 +29,23 @@
             <hr />
             <!-- The list of policies -->
             <div data-permission="planEdit" apiman-status="Created,Ready" class="apiman-filters apiman-policies-filters">
-              <a data-field="toNewPolicy" data-i18n-key="add-policy" href="{{ pluginName }}/new-policy.html?org={{ org.id }}&plan={{ plan.id }}&version={{ selectedPlanVersion.version }}" class="btn btn-primary pull-right">Add Policy</a>
+              <a data-field="toNewPolicy" data-i18n-key="add-policy" href="{{ pluginName }}/new-policy.html?type=plans&amp;org={{ org.id }}&amp;id={{ plan.id }}&amp;ver={{ selectedPlanVersion.version }}" class="btn btn-primary pull-right">Add Policy</a>
             </div>
             <div class="clearfix"></div>
-            <div class="apiman-policies" data-field="policies" data-role="dummy" ng-repeat="policy in policies">
-              <div class="container-fluid apiman-summaryrow">
+            <div class="apiman-policies" data-field="policies">
+
+              <div class="apiman-no-content container-fluid" ng-hide="policies.length > 0">
+                <div class="row">
+                  <div class="col-md-9">
+                    <p class="apiman-no-entities-description" data-i18n-key="no-policies-for-plan">It looks like there aren't any policies defined! That may be exactly what you want (of course) but if not, you may try defining one using the Add Policy button above...</p>
+                  </div>
+                  <div data-permission="planEdit" apiman-status="Created,Ready" class="col-md-3">
+                    <div class="apiman-no-entities-arrow"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="container-fluid apiman-summaryrow" ng-repeat="policy in policies">
                 <div class="row">
                   <div class="grabber" style="height: 48px"></div>
                   <div class="col">

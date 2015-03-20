@@ -3,7 +3,6 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
-    
   </head>
 
   <body>
@@ -27,27 +26,31 @@
         <dl>
           <dt data-i18n-key="policy-type">Policy Type</dt>
           <dd>
-             <div class="btn-group" data-field="defSelector">
-              <button type="button" id="selector-def" class="btn btn-default dropdown-toggle" data-toggle="dropdown" data-field="button">
-                <span class="filter-option pull-left">
-                 <i class="fa fa-inline fa-fw fa-{{selectedDef.icon}}"></i>
-                 <span data-field="selectorLabel" id="selector-def-value" data-i18n-key="select-def">{{selectedDef.name}}</span>
-                  &nbsp;&nbsp;<span class="caret"></span>
-                </span>
-              </button>
-              <ul class="dropdown-menu" data-role="dummy" data-field="policyDefs">
-                 <li ng-repeat="def in policyDefs"><a href="#" ng-click="setPolicyDef( def )"><i class="fa fa-inline fa-fw fa-{{def.icon}}"></i> &nbsp; {{ def.name }}</a></li>
-              </ul>
-            </div>
+            <select ng-model="selectedDefId" apiman-select-picker="" class="selectpicker" data-live-search="true" title="Choose a policy type...">
+              <option value="__null__" data-content="<i class='fa fa-inline fa-fw'></i> <span class='apiman-label-faded'>Choose a policy type...</span>">Choose a policy type...</option>
+              <option value="{{ def.id }}" ng-repeat="def in policyDefs | orderBy : 'name.toLowerCase()'" data-content="<i class='fa fa-inline fa-fw fa-{{ def.icon }}'></i> <span>{{ def.name }}</span>">{{ def.name }}</option>
+            </select>
           </dd>
         </dl>
       </div>
 
-      <div id="form-page" class="container apiman-new-policy apiman-entity-new page" ng-include="include">
-      </div>     
+      <!-- Policy Type-specific config -->
+      <div class="row" ng-show="include">
+        <h3 data-field="policyHeading">{{ selectedDef.name }} Configuration</h3>
+        <div class="box col-md-9 container">
+          <div ng-include="include"></div>
+        </div>
+      </div>
+
       <!-- HR -->
       <div class="row hr-row">
         <hr/>
+      </div>
+
+      <!-- Create Button -->
+      <div class="row">
+        <button ng-disabled="!isValid" apiman-action-btn="" class="btn btn-primary" data-field="createButton" data-i18n-key="create-policy" placeholder="Adding..." data-icon="fa-cog" ng-click="addPolicy()">Add Policy</button>
+        <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" data-i18n-key="cancel">Cancel</a>
       </div>
     </div> <!-- /container -->
     </div>

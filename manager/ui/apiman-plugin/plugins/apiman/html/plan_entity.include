@@ -4,7 +4,7 @@
             <div class="title container-fluid">
               <i class="breadcrumb-icon fa fa-bar-chart-o"></i>
               <div class="entity emphasis">
-                <a data-field="thePlan" href="plan-overview.html?org={{plan.organization.id}}&plan={{plan.id}}" data-role="dummy">{{ plan.name }}</a>
+                <a data-field="thePlan" href="{{ pluginName }}/plan-overview.html?org={{plan.organization.id}}&plan={{plan.id}}" data-role="dummy">{{ plan.name }}</a>
               </div>
               <div class="versions">
                 <div class="btn-group apiman-entity-action" data-role="dummy" data-field="versions">
@@ -34,7 +34,7 @@
               <div class="entity-info-with-icon">
                 <i class="fa fa-user fa-fw"></i>
                 <span class="apiman-label-faded" data-i18n-key="created-by">Created by</span>
-                <span><a href="user-orgs.html" data-field="createdBy" data-role="dummy">{{ plan.createdBy }}</a></span>
+                <span><a href="{{ pluginName }}/user-orgs.html?user={{ plan.createdBy }}" data-field="createdBy" data-role="dummy">{{ plan.createdBy }}</a></span>
               </div>
             </div>
             <div class="entity-info-with-icon">

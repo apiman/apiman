@@ -794,6 +794,50 @@ ol.breadcrumb {
   width: 300px;
   float: left;
 }
+.apiman-entity-new .input-search-results {
+  max-width: 500px;
+}
+.apiman-entity-new .input-search-results .panel-body {
+  padding: 10px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 200px;
+}
+.apiman-entity-new .input-search-results .item {
+  width: 100%;
+  float: left;
+  line-height: 22px;
+  cursor: pointer;
+  border-top: 1px solid;
+  border-bottom: 1px solid;
+  border-color: transparent;
+}
+.apiman-entity-new .input-search-results .item:hover {
+  border-color: rgb(179, 211, 231);
+  background-color: rgb(212, 237, 250);
+  text-decoration: none;
+}
+.apiman-entity-new .input-search-results .item:focus {
+  text-decoration: none;
+}
+.apiman-entity-new .input-search-results .item.selected {
+  color: white;
+  border-color: rgb(0, 118, 183);
+  background-color: rgb(0, 153, 211);
+}
+.apiman-entity-new .btn-search {
+  float: left;
+  margin-left: 5px;
+}
+.apiman-entity-new h3 hr {
+  margin: 5px 0px 20px 0px;
+  padding: 0px;
+}
+.apiman-entity-new .box {
+  border: 1px solid rgb(222, 222, 222);
+  border-radius: 5px;
+  padding-top: 10px;
+}
 
 .apiman-contracts .apiman-summaryrow .actions {
   visibility: hidden;

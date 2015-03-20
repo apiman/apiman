@@ -4,7 +4,7 @@
             <div class="title container-fluid">
               <i class="breadcrumb-icon fa fa-gears"></i>
               <div class="entity emphasis">
-                <a data-field="application" href="{{ pluginName }}/app-overview.html?org={{ org.id }}" data-role="dummy">{{ app.name }}</a>
+                <a data-field="application" href="{{ pluginName }}/app-overview.html?org={{ org.id }}&amp;app={{ app.id }}" data-role="dummy">{{ app.name }}</a>
               </div>
               <div class="versions">
                 <div class="btn-group apiman-entity-action" data-role="dummy" data-field="versions">

@@ -1,0 +1,4 @@
+<div class="form policy-config default">
+  <span>Please manually configure your policy's JSON configuration below.</span>
+  <textarea></textarea>
+</div>
