@@ -10,6 +10,7 @@
       "items": {
         "type": "object",
         "title": "Header",
+        "description": "Set headers on request, response or both. A value type of 'String' sets the value literally; 'Env' treats the value as a key to the environment; 'System Properties' treats the value as a key to the JVM's System Properties.",
         "properties": {
           "headerName": {
             "title": "Header Name",
@@ -19,6 +20,15 @@
           "headerValue": {
             "title": "Header Value",
             "type": "string"
+          },
+          "valueType": {
+            "type": "string",
+            "title": "Value Type",
+            "enum": [
+              "String",
+              "Env",
+              "System Properties"
+            ]
           },
           "applyTo": {
             "type": "string",

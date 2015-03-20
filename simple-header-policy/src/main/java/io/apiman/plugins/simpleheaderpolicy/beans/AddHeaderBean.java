@@ -17,7 +17,9 @@ package io.apiman.plugins.simpleheaderpolicy.beans;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.annotation.Generated;
+
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -37,7 +39,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
  */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 @Generated("org.jsonschema2pojo")
-@JsonPropertyOrder({ "headerName", "headerValue", "applyTo", "overwrite" })
+@JsonPropertyOrder({ "headerName", "headerValue", "valueType", "applyTo", "overwrite" })
 @SuppressWarnings("nls")
 public class AddHeaderBean {
 
@@ -46,14 +48,21 @@ public class AddHeaderBean {
      */
     @JsonProperty("headerName")
     private String headerName;
+
     /**
      * Header Value
-     * 
      */
     @JsonProperty("headerValue")
     private String headerValue;
+
     /**
-     * Apply To 
+     * Value Type
+     */
+    @JsonProperty("valueType")
+    private AddHeaderBean.ValueType valueType;
+
+    /**
+     * Apply To
      */
     @JsonProperty("applyTo")
     private AddHeaderBean.ApplyTo applyTo;
@@ -111,6 +120,30 @@ public class AddHeaderBean {
     @JsonProperty("headerValue")
     public void setHeaderValue(String headerValue) {
         this.headerValue = headerValue;
+    }
+
+    /**
+     * Value Type
+     * <p>
+     * 
+     * 
+     * @return The valueType
+     */
+    @JsonProperty("valueType")
+    public AddHeaderBean.ValueType getValueType() {
+        return valueType;
+    }
+
+    /**
+     * Value Type
+     * <p>
+     * 
+     * 
+     * @param valueType The valueType
+     */
+    @JsonProperty("valueType")
+    public void setValueType(AddHeaderBean.ValueType valueType) {
+        this.valueType = valueType;
     }
 
     /**
@@ -231,4 +264,54 @@ public class AddHeaderBean {
 
     }
 
+    public static enum ValueType {
+
+        STRING("String"), ENV("Env"), SYS("System Properties");
+        private final String value;
+        private static Map<String, AddHeaderBean.ValueType> constants = new HashMap<>();
+
+        static {
+            for (AddHeaderBean.ValueType c : values()) {
+                constants.put(c.value, c);
+            }
+        }
+
+        private ValueType(String value) {
+            this.value = value;
+        }
+
+        @JsonValue
+        @Override
+        public String toString() {
+            return this.value;
+        }
+
+        @JsonCreator
+        public static AddHeaderBean.ValueType fromValue(String value) {
+            AddHeaderBean.ValueType constant = constants.get(value);
+            if (constant == null) {
+                throw new IllegalArgumentException(value);
+            } else {
+                return constant;
+            }
+        }
+
+    }
+
+    public String getResolvedHeaderValue() {
+        String rVal = null;
+
+        switch (getValueType()) {
+        case ENV:
+            rVal = System.getenv(headerValue);
+            break;
+        case SYS:
+            rVal = System.getProperty(headerValue);
+            break;
+        case STRING:
+            rVal = headerValue;
+        }
+
+        return (rVal == null) ? "" : rVal;
+    }
 }
