@@ -12,7 +12,7 @@ module Apiman {
             $scope.removePolicy = function(policy) {
                 alert("policyId=" + policy.id);
                 OrgSvcs.delete({ organizationId: params.org, entityType: 'plans', entityId: params.plan, versionsOrActivity: 'versions', version: params.version, policiesOrActivity: 'policies', policyId: policy.id }, function(reply) {
-                    $location.path(Apiman.pluginName + '/plan-overview.html').search('detail', params.detail).search('org', reply.organization.id).search('plan', reply.name).search('version', $scope.plan.initialVersion);
+                    $location.path(Apiman.pluginName + '/plan-overview.html').search('org', reply.organization.id).search('plan', reply.name).search('version', $scope.plan.initialVersion);
                 }, function(error) {
                     if (error.status == 409) {
                         $location.path('apiman/error-409.html');
