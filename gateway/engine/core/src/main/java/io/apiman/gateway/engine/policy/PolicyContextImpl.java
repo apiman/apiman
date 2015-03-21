@@ -32,7 +32,7 @@ import java.util.Map;
 public class PolicyContextImpl implements IPolicyContext {
     
     private final IComponentRegistry componentRegistry;
-    private final Map<String, Object> conversation = new HashMap<String, Object>();
+    private final Map<String, Object> conversation = new HashMap<>();
     private IConnectorInterceptor connectorInterceptor;
     
     /**

@@ -32,7 +32,7 @@ public class Contract implements Serializable {
     private String serviceOrgId;
     private String serviceId;
     private String serviceVersion;
-    private List<Policy> policies = new ArrayList<Policy>();
+    private List<Policy> policies = new ArrayList<>();
     
     /**
      * Constructor.

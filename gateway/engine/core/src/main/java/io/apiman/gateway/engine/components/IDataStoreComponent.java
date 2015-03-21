@@ -41,7 +41,7 @@ public interface IDataStoreComponent extends IComponent {
      * Checks whether the requested property exists in the Data Store
      * @param namespace
      * @param propertyName
-     * @return
+     * @return true if has property; else false.
      */
     <T> boolean hasProperty(String namespace, String propertyName); 
     

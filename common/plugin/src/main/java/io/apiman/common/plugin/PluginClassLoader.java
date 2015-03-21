@@ -232,7 +232,7 @@ public class PluginClassLoader extends ClassLoader {
      */
     @Override
     protected Enumeration<URL> findResources(String name) throws IOException {
-        List<URL> resources = new ArrayList<URL>();
+        List<URL> resources = new ArrayList<>();
         Enumeration<? extends ZipEntry> entries = this.pluginArtifactZip.entries();
         while (entries.hasMoreElements()) {
             ZipEntry zipEntry = entries.nextElement();
@@ -281,7 +281,7 @@ public class PluginClassLoader extends ClassLoader {
      * @return gets any policy definition resources from the plugin artifact (located in META-INF/apiman/policyDefs/*.json
      */
     public List<URL> getPolicyDefinitionResources() {
-        List<URL> resources = new ArrayList<URL>();
+        List<URL> resources = new ArrayList<>();
         Enumeration<? extends ZipEntry> entries = this.pluginArtifactZip.entries();
         while (entries.hasMoreElements()) {
             ZipEntry zipEntry = entries.nextElement();

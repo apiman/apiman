@@ -36,7 +36,7 @@ public class InitialContextFactoryForTest implements InitialContextFactory {
     static {
         try {
             context = new InitialContext(true) {
-                Map<String, Object> bindings = new HashMap<String, Object>();
+                Map<String, Object> bindings = new HashMap<>();
 
                 @Override
                 public void bind(String name, Object obj) throws NamingException {

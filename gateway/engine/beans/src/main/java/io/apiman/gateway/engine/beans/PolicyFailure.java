@@ -32,7 +32,7 @@ public class PolicyFailure implements Serializable {
     private int failureCode;
     private int responseCode;
     private String message;
-    private Map<String, String> headers = new HashMap<String, String>();
+    private Map<String, String> headers = new HashMap<>();
 
     /**
      * Constructor.

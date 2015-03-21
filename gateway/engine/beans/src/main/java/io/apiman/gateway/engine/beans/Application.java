@@ -31,7 +31,7 @@ public class Application implements Serializable {
     private String organizationId;
     private String applicationId;
     private String version;
-    private Set<Contract> contracts = new HashSet<Contract>();
+    private Set<Contract> contracts = new HashSet<>();
     
     /**
      * Constructor.

@@ -41,7 +41,6 @@ public interface IRegistry {
      * 
      * @param request an inbound service request
      * @param handler
-     * @return a Contract or null if not found
      * @throws InvalidContractException
      */
     public void getContract(ServiceRequest request, IAsyncResultHandler<ServiceContract> handler);

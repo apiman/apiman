@@ -34,10 +34,10 @@ public class AbstractMessages {
 
     public static final List<String> FORMATS = Collections.unmodifiableList(Arrays.asList("java.properties")); //$NON-NLS-1$
 
-    private static Map<String, ResourceBundle> bundles = new HashMap<String, ResourceBundle>();
+    private static Map<String, ResourceBundle> bundles = new HashMap<>();
 
     private Class<? extends AbstractMessages> clazz;
-    private static ThreadLocal<Locale> tlocale = new ThreadLocal<Locale>();
+    private static ThreadLocal<Locale> tlocale = new ThreadLocal<>();
     public static void setLocale(Locale locale) {
         tlocale.set(locale);
     }

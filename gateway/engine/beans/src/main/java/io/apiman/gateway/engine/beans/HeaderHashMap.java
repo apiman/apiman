@@ -27,7 +27,7 @@ public class HeaderHashMap extends HashMap<String, String> {
     
     private static final long serialVersionUID = -8627183971399152775L;
 
-    private HashMap<String, String> caseInsensitiveIndex = new HashMap<String, String>();
+    private HashMap<String, String> caseInsensitiveIndex = new HashMap<>();
     
     /**
      * Constructor.

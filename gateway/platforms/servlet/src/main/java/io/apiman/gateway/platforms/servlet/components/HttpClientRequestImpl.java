@@ -39,7 +39,7 @@ public class HttpClientRequestImpl implements IHttpClientRequest {
     
     private String endpoint;
     private HttpMethod method;
-    private Map<String, String> headers = new HashMap<String, String>();
+    private Map<String, String> headers = new HashMap<>();
     private IAsyncResultHandler<IHttpClientResponse> handler;
     
     private HttpURLConnection connection;

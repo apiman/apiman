@@ -139,7 +139,7 @@ public class AuthTokenUtil {
         builder.append("||"); //$NON-NLS-1$
         builder.append(token.getIssuedOn().getTime());
         builder.append("||"); //$NON-NLS-1$
-        TreeSet<String> roles = new TreeSet<String>(token.getRoles());
+        TreeSet<String> roles = new TreeSet<>(token.getRoles());
         boolean first = true;
         for (String role : roles) {
             if (first) {

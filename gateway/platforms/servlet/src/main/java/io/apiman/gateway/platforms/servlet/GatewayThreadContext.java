@@ -26,10 +26,9 @@ import io.apiman.gateway.engine.beans.ServiceResponse;
  * @author eric.wittmann@redhat.com
  */
 public class GatewayThreadContext {
-
-    private static final ThreadLocal<ServiceRequest> serviceRequest = new ThreadLocal<ServiceRequest>();
-    private static final ThreadLocal<ServiceResponse> serviceResponse = new ThreadLocal<ServiceResponse>();
-    private static final ThreadLocal<PolicyFailure> policyFailure = new ThreadLocal<PolicyFailure>();
+    private static final ThreadLocal<ServiceRequest> serviceRequest = new ThreadLocal<>();
+    private static final ThreadLocal<ServiceResponse> serviceResponse = new ThreadLocal<>();
+    private static final ThreadLocal<PolicyFailure> policyFailure = new ThreadLocal<>();
 
     /**
      * @return the thread-local service request

@@ -81,7 +81,7 @@ public class GatewayServletTest {
     }
     
     /**
-     * Test method for {@link io.apiman.gateway.platforms.servlet.GatewayServlet#parseServiceRequestQueryParams(String)
+     * Test method for {@link io.apiman.gateway.platforms.servlet.GatewayServlet#parseServiceRequestQueryParams(String)}
      */
     @Test
     public void testParseServiceRequestQueryParams() {

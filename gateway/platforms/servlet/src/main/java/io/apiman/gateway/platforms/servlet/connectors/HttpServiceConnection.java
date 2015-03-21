@@ -49,7 +49,7 @@ import org.apache.commons.io.IOUtils;
  */
 public class HttpServiceConnection implements IServiceConnection, IServiceConnectionResponse {
 
-    private static final Set<String> SUPPRESSED_HEADERS = new HashSet<String>();
+    private static final Set<String> SUPPRESSED_HEADERS = new HashSet<>();
     static {
         SUPPRESSED_HEADERS.add("Transfer-Encoding"); //$NON-NLS-1$
         SUPPRESSED_HEADERS.add("Content-Length"); //$NON-NLS-1$

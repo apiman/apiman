@@ -32,7 +32,7 @@ public class ServiceContract implements Serializable {
     private String apikey;
     private Service service;
     private Application application;
-    private List<Policy> policies = new ArrayList<Policy>();
+    private List<Policy> policies = new ArrayList<>();
     
     /**
      * Constructor.

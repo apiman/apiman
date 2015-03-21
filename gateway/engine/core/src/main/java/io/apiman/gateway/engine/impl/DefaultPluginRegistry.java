@@ -82,7 +82,7 @@ public class DefaultPluginRegistry implements IPluginRegistry {
         }
     }
     private static Set<URL> getConfiguredPluginRepositories(Map<String, String> configMap) {
-        Set<URL> rval = new HashSet<URL>();
+        Set<URL> rval = new HashSet<>();
         rval.addAll(PluginUtils.getDefaultMavenRepositories());
         String repositories = configMap.get("pluginRepositories"); //$NON-NLS-1$
         if (repositories != null) {

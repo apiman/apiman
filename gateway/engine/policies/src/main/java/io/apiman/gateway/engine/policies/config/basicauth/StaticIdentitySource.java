@@ -33,7 +33,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public class StaticIdentitySource {
     
-    private List<StaticIdentity> identities = new ArrayList<StaticIdentity>();
+    private List<StaticIdentity> identities = new ArrayList<>();
     
     /**
      * Constructor.

@@ -29,7 +29,7 @@ import java.util.Set;
  */
 public class ServiceRegistryUtil {
 
-    private static Map<Class<?>, Set<?>> servicesCache = new HashMap<Class<?>, Set<?>>();
+    private static Map<Class<?>, Set<?>> servicesCache = new HashMap<>();
 
     /**
      * Gets a single service by its interface.
@@ -61,7 +61,7 @@ public class ServiceRegistryUtil {
                 return (Set<T>) servicesCache.get(serviceInterface);
             }
     
-            Set<T> services = new LinkedHashSet<T>();
+            Set<T> services = new LinkedHashSet<>();
             try {
                 for (T service : ServiceLoader.load(serviceInterface)) {
                     services.add(service);

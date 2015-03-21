@@ -209,7 +209,7 @@ public class WarEngineConfig implements IEngineConfig {
      * @return all prefixed properties
      */
     private Map<String, String> getConfigMap(String prefix) {
-        Map<String, String> rval = new HashMap<String, String>();
+        Map<String, String> rval = new HashMap<>();
         Iterator<?> keys = config.getKeys(prefix);
         while (keys.hasNext()) {
             String key = String.valueOf(keys.next());

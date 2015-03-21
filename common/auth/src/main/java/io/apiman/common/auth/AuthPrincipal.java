@@ -28,7 +28,7 @@ import java.util.Set;
 public class AuthPrincipal implements Principal {
     
     private String username;
-    private Set<String> roles = new HashSet<String>();
+    private Set<String> roles = new HashSet<>();
     
     /**
      * Constructor.
