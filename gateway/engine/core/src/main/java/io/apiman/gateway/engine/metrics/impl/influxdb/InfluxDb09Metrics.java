@@ -22,6 +22,7 @@ import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.exceptions.ConfigurationParseException;
 import io.apiman.gateway.engine.components.IHttpClientComponent;
+import io.apiman.gateway.engine.i18n.Messages;
 import io.apiman.gateway.engine.metrics.RequestMetric;
 import io.apiman.gateway.engine.metrics.impl.influxdb.InfluxDb09Driver.InfluxException;
 
@@ -95,9 +96,9 @@ public class InfluxDb09Metrics implements IMetrics {
 
     public void initialize() {
         driver = new InfluxDb09Driver(httpClient, influxEndpoint, username, password);
-        
+
         if (!listDatabases().contains(dbName)) {
-            throw new ConfigurationParseException("Database " + dbName + " does not exist.");
+            throw new ConfigurationParseException(Messages.i18n.format("InfluxDb09Metrics.databaseDoesNotExist", dbName)); //$NON-NLS-1$
         }
     }
 
@@ -200,10 +201,10 @@ public class InfluxDb09Metrics implements IMetrics {
     @SuppressWarnings("nls")
     private String getMandatoryString(String keyname) {
         String value = config.get(keyname);
-
+        
         if (value == null) {
-            throw new ConfigurationParseException(getClass().getCanonicalName() + 
-                    " requires " + keyname + " to be set");
+            throw new ConfigurationParseException(Messages.i18n.format(
+                    "InfluxDb09Metrics.mandatoryConfigMustBeSet", getClass().getCanonicalName(), keyname));
         }
 
         return keyname;
