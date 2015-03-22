@@ -207,7 +207,8 @@ public class DefaultEngineFactoryTest {
         request.setDestination("/");
         request.setType("TEST");
                         
-        IServiceRequestExecutor prExecutor = engine.executor(request, new IAsyncResultHandler<IEngineResult>() {
+        IServiceRequestExecutor prExecutor = engine.executor(request, false, 
+                new IAsyncResultHandler<IEngineResult>() {
             
             @Override //At this point, we are either saying *fail* or *response connection is ready*
             public void handle(IAsyncResult<IEngineResult> result) {

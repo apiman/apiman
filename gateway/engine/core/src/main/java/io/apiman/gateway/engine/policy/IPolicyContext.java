@@ -18,14 +18,14 @@ package io.apiman.gateway.engine.policy;
 import io.apiman.gateway.engine.IComponent;
 import io.apiman.gateway.engine.beans.exceptions.ComponentNotFoundException;
 import io.apiman.gateway.engine.beans.exceptions.InterceptorAlreadyRegisteredException;
-
+import io.apiman.gateway.engine.io.ITransportSecurityStatus;
 
 /**
  * Context information provided to an executing policy.
  * 
  * @author Marc Savy <msavy@redhat.com>
  */
-public interface IPolicyContext {
+public interface IPolicyContext extends ITransportSecurityStatus {
 
     /**
      * Sets a conversation-scoped attribute, allowing policies to pass interesting

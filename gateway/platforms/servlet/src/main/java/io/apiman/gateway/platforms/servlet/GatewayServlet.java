@@ -155,7 +155,8 @@ public abstract class GatewayServlet extends HttpServlet {
         final CountDownLatch latch = new CountDownLatch(1);
         
         // Now execute the request via the apiman engine
-        IServiceRequestExecutor executor = getEngine().executor(srequest, new IAsyncResultHandler<IEngineResult>() {
+        IServiceRequestExecutor executor = getEngine().executor(srequest,
+                new IAsyncResultHandler<IEngineResult>() {
             @Override
             public void handle(IAsyncResult<IEngineResult> asyncResult) {
                 if (asyncResult.isSuccess()) {

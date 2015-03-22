@@ -43,8 +43,8 @@ import io.apiman.gateway.engine.metrics.RequestMetric;
 import io.apiman.gateway.engine.policy.Chain;
 import io.apiman.gateway.engine.policy.IConnectorInterceptor;
 import io.apiman.gateway.engine.policy.IPolicy;
-import io.apiman.gateway.engine.policy.IPolicyContext;
 import io.apiman.gateway.engine.policy.IPolicyFactory;
+import io.apiman.gateway.engine.policy.ISettablePolicyContext;
 import io.apiman.gateway.engine.policy.PolicyWithConfiguration;
 import io.apiman.gateway.engine.policy.RequestChain;
 import io.apiman.gateway.engine.policy.ResponseChain;
@@ -77,7 +77,7 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
     private IRegistry registry;
     private ServiceRequest request;
     private Service service;
-    private IPolicyContext context;
+    private ISettablePolicyContext context;
     private List<Policy> policies;
     private IPolicyFactory policyFactory;
     private IConnectorFactory connectorFactory;
@@ -111,7 +111,7 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
      * @param metrics 
      */
     public ServiceRequestExecutorImpl(ServiceRequest serviceRequest,
-            IAsyncResultHandler<IEngineResult> resultHandler, IRegistry registry, IPolicyContext context,
+            IAsyncResultHandler<IEngineResult> resultHandler, IRegistry registry, ISettablePolicyContext context,
             IPolicyFactory policyFactory, IConnectorFactory connectorFactory, IMetrics metrics) {
         this.request = serviceRequest;
         this.registry = registry;

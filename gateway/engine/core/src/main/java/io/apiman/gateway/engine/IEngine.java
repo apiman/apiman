@@ -41,7 +41,8 @@ public interface IEngine {
      * @param handler an async handler called when a response is returned or an
      *            exception is captured.
      */
-    IServiceRequestExecutor executor(ServiceRequest request, IAsyncResultHandler<IEngineResult> resultHandler);
+    IServiceRequestExecutor executor(ServiceRequest request, boolean isTransportSecure,
+            IAsyncResultHandler<IEngineResult> resultHandler);
     
     /**
      * Returns the registry that can be used to publish/retire services and

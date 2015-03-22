@@ -83,11 +83,11 @@ public class EngineImpl implements IEngine {
      * @see io.apiman.gateway.engine.IEngine#request()
      */
     @Override
-    public IServiceRequestExecutor executor(ServiceRequest request, final IAsyncResultHandler<IEngineResult> resultHandler) {
+    public IServiceRequestExecutor executor(ServiceRequest request, boolean isTransportSecure, final IAsyncResultHandler<IEngineResult> resultHandler) {
         return new ServiceRequestExecutorImpl(request, 
                 resultHandler,
                 registry,
-                new PolicyContextImpl(getComponentRegistry()),
+                new PolicyContextImpl(getComponentRegistry(), isTransportSecure),
                 policyFactory,
                 getConnectorFactory(),
                 getMetrics());
