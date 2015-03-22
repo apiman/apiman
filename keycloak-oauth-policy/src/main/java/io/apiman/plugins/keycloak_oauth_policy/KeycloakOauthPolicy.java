@@ -20,9 +20,12 @@ import org.keycloak.RSATokenVerifier;
 import org.keycloak.VerificationException;
 import org.keycloak.representations.AccessToken;
 
+import io.apiman.gateway.engine.async.IAsyncResult;
+import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.PolicyFailureType;
 import io.apiman.gateway.engine.beans.ServiceRequest;
+import io.apiman.gateway.engine.components.IDataStoreComponent;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.policies.AbstractMappedPolicy;
 import io.apiman.gateway.engine.policy.IPolicyChain;
@@ -41,9 +44,7 @@ public class KeycloakOauthPolicy extends AbstractMappedPolicy<KeycloakOauthConfi
     private final String AUTHORIZATION_KEY = "Authorization"; //$NON-NLS-1$
     private final String ACCESS_TOKEN_QUERY_KEY = "access_token"; //$NON-NLS-1$
 
-    /*
-     * (non-Javadoc)
-     * 
+    /**
      * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#getConfigurationClass()
      */
     @Override
@@ -51,26 +52,66 @@ public class KeycloakOauthPolicy extends AbstractMappedPolicy<KeycloakOauthConfi
         return KeycloakOauthConfigBean.class;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#doApply(io.apiman.gateway.engine.beans.
-     * ServiceRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object,
-     * io.apiman.gateway.engine.policy.IPolicyChain)
+    /**
+     * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#doApply(io.apiman.gateway.engine.beans.ServiceRequest,
+     *      io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object,
+     *      io.apiman.gateway.engine.policy.IPolicyChain)
      */
     @Override
-    protected void doApply(ServiceRequest request, IPolicyContext context, KeycloakOauthConfigBean config,
-            IPolicyChain<ServiceRequest> chain) {
+    protected void doApply(final ServiceRequest request, final IPolicyContext context,
+            final KeycloakOauthConfigBean config, final IPolicyChain<ServiceRequest> chain) {
 
-        IPolicyFailureFactoryComponent ff = context.getComponent(IPolicyFailureFactoryComponent.class);
+        final String rawToken = getRawAuthToken(request);
 
-        String rawToken = getRawAuthToken(request);
+        if (rawToken == null) {
+            if (config.getRequireOauth()) {
+                chain.doFailure(noAuthenticationProvidedFailure(context));
+                return;
+            }
+        } else {
+            if (config.getRequireTransportSecurity() && !request.isTransportSecure()) {
+                // If we've detected a situation where we should blacklist a token
+                if (config.getBlacklistUnsafeTokens()) {
+                    blacklistToken(context, rawToken, new IAsyncResultHandler<Boolean>() {
 
-        if (rawToken == null && config.getRequireOauth()) {
-            chain.doFailure(noAuthenticationProvidedFailure(ff));
-            return;
+                        @Override
+                        public void handle(IAsyncResult<Boolean> result) {
+                            if (result.isError()) {
+                                chain.throwError(result.getError());
+                            } else {
+                                chain.doFailure(noTransportSecurityFailure(context));
+                            }
+                        }
+                    });
+                } else {
+                    chain.doFailure(noTransportSecurityFailure(context));
+                }
+                return;
+            }
+
+            if (config.getBlacklistUnsafeTokens()) {
+                isBlacklistedToken(context, rawToken, new IAsyncResultHandler<Boolean>() {
+
+                    @Override
+                    public void handle(IAsyncResult<Boolean> result) {
+                        if (result.isError()) {
+                            chain.throwError(result.getError());
+                        } else if (result.getResult()) {
+                            chain.doFailure(blacklistedTokenFailure(context));
+                        } else {
+                            doTokenAuth(request, context, config, chain, rawToken);
+                        }
+                    }
+                });
+                return;
+            }
+            
+            doTokenAuth(request, context, config, chain, rawToken);
         }
+    }
 
+    private void doTokenAuth(ServiceRequest request, IPolicyContext context, KeycloakOauthConfigBean config,
+            IPolicyChain<ServiceRequest> chain, String rawToken) {
         try {
             AccessToken parsedToken = RSATokenVerifier.verifyToken(rawToken, config.getRealmCertificate()
                     .getPublicKey(), config.getRealm());
@@ -80,7 +121,7 @@ public class KeycloakOauthPolicy extends AbstractMappedPolicy<KeycloakOauthConfi
 
             chain.doApply(request);
         } catch (VerificationException e) {
-            chain.doFailure(verificationExceptionFailure(ff, e));
+            chain.doFailure(verificationExceptionFailure(context, e));
         }
     }
 
@@ -129,20 +170,52 @@ public class KeycloakOauthPolicy extends AbstractMappedPolicy<KeycloakOauthConfi
         }
     }
 
-    private PolicyFailure noAuthenticationProvidedFailure(IPolicyFailureFactoryComponent ff) {
-        return createUnauthorizedPolicyFailure(ff, 0,
-                Messages.getString("KeycloakOauthPolicy.no_token_given")); //$NON-NLS-1$
+    private PolicyFailure noAuthenticationProvidedFailure(IPolicyContext context) {
+        return createUnauthorizedPolicyFailure(context, 0,
+                Messages.getString("KeycloakOauthPolicy.NoTokenGiven")); //$NON-NLS-1$
     }
 
-    private PolicyFailure verificationExceptionFailure(IPolicyFailureFactoryComponent ff,
-            VerificationException e) {
-        return createUnauthorizedPolicyFailure(ff, 1, e.getMessage());
+    private PolicyFailure verificationExceptionFailure(IPolicyContext context, VerificationException e) {
+        return createUnauthorizedPolicyFailure(context, 1, e.getMessage());
     }
 
-    private PolicyFailure createUnauthorizedPolicyFailure(IPolicyFailureFactoryComponent ff, int failureCode,
+    private PolicyFailure noTransportSecurityFailure(IPolicyContext context) {
+        return createUnauthorizedPolicyFailure(context, 2,
+                Messages.getString("KeycloakOauthPolicy.NoTransportSecurity")); //$NON-NLS-1$
+    }
+
+    private PolicyFailure blacklistedTokenFailure(IPolicyContext context) {
+        return createUnauthorizedPolicyFailure(context, 3,
+                Messages.getString("KeycloakOauthPolicy.BlacklistedToken")); //$NON-NLS-1$
+    }
+
+    private PolicyFailure createUnauthorizedPolicyFailure(IPolicyContext context, int failureCode,
             String message) {
-        PolicyFailure pf = ff.createFailure(PolicyFailureType.Authorization, failureCode, message);
+        PolicyFailure pf = getFailureFactory(context).createFailure(PolicyFailureType.Authorization,
+                failureCode, message);
         pf.setResponseCode(HTTP_UNAUTHORIZED);
         return pf;
+    }
+
+    private void isBlacklistedToken(IPolicyContext context, String rawToken,
+            final IAsyncResultHandler<Boolean> resultHandler) {
+        IDataStoreComponent dataStore = getDataStore(context);
+        dataStore.<Boolean> getProperty("apiman-keycloak-blacklist", rawToken, false, //$NON-NLS-1$
+                resultHandler);
+    }
+
+    private void blacklistToken(IPolicyContext context, String rawToken,
+            final IAsyncResultHandler<Boolean> resultHandler) {
+        IDataStoreComponent dataStore = getDataStore(context);
+        dataStore.<Boolean> setProperty("apiman-keycloak-blacklist", rawToken, true, //$NON-NLS-1$
+                resultHandler);
+    }
+
+    private IDataStoreComponent getDataStore(IPolicyContext context) {
+        return context.getComponent(IDataStoreComponent.class);
+    }
+
+    private IPolicyFailureFactoryComponent getFailureFactory(IPolicyContext context) {
+        return context.getComponent(IPolicyFailureFactoryComponent.class);
     }
 }

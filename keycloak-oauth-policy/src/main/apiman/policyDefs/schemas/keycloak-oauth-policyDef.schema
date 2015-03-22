@@ -9,14 +9,20 @@
       "type": "boolean",
       "default": true
     },
-    "blacklistUnsafeTokens": {
-      "title": "Blacklist unsafe tokens",
-      "description": "Any tokens used without transport security will be blackedlisted to mitigate associated security risks.",
+    "requireTransportSecurity": {
+      "title": "Require Transport Security",
+      "description": "Any request used without transport security will be rejected. OAuth2 requires transport security (e.g. TLS, SSL) to provide protection against replay attacks. It is strongly advised for this option to be switched on.",
       "type": "boolean",
       "default": true
     },
+    "blacklistUnsafeTokens": {
+      "title": "Blacklist Unsafe Tokens",
+      "description": "Any tokens used without transport security will be blackedlisted in all gateways to mitigate associated security risks. Uses distributed data store to share blacklist.",
+      "type": "boolean",
+      "default": false
+    },
     "stripTokens": {
-      "title": "Strip tokens",
+      "title": "Strip Tokens",
       "description": "Remove any Authorization header or token query parameter before forwarding traffic to the Service.",
       "type": "boolean"
     },
@@ -26,13 +32,13 @@
       "type": "string"
     },
     "realmCertificateString": {
-      "title": "Keycloak realm certificate",
+      "title": "Keycloak Realm Certificate",
       "description": "To validate OAuth requests. Must be a PEM-encoded X.509 certificate, including bounding strings.",
       "type": "string",
       "format": "textarea"
     },
     "forwardAuthInfo": {
-      "title": "Forward Keycloak token information",
+      "title": "Forward Keycloak Token Information",
       "description":  "Fields from the token can be set as headers and forwarded to the Service. Access_token corresponds to the full token.",
       "type": "array",
       "format": "table",
@@ -60,7 +66,6 @@
           }
         }
       }
-
     }
   }
 }

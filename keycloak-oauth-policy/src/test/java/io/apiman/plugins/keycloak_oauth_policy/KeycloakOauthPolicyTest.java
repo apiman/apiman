@@ -50,7 +50,7 @@ import org.mockito.MockitoAnnotations;
  *
  * @author Marc Savy <msavy@redhat.com>
  */
-@SuppressWarnings("nls")
+@SuppressWarnings({"nls", "deprecation"})
 public class KeycloakOauthPolicyTest {
 
     private static X509Certificate[] idpCertificates;
@@ -112,6 +112,8 @@ public class KeycloakOauthPolicyTest {
         config = new KeycloakOauthConfigBean();
         config.setRequireOauth(true);
         config.setStripTokens(false);
+        config.setBlacklistUnsafeTokens(false);
+        config.setRequireTransportSecurity(false);
 
         serviceRequest = new ServiceRequest();
 
@@ -174,6 +176,21 @@ public class KeycloakOauthPolicyTest {
 
         keycloakOauthPolicy.apply(serviceRequest, mContext, config, mChain);
 
+        verify(mChain, times(1)).doFailure(any(PolicyFailure.class));
+        verify(mChain, never()).doApply(any(ServiceRequest.class));
+    }
+    
+    @Test
+    public void shouldFailOnInsecureConnection() throws CertificateEncodingException, IOException {
+        // Set the connection as insecure
+        config.setRequireTransportSecurity(true);
+        serviceRequest.setTransportSecure(false);
+        
+        String encoded = setupValidRequest();
+        serviceRequest.getHeaders().put("Authorization", "Bearer " + encoded);
+
+        keycloakOauthPolicy.apply(serviceRequest, mContext, config, mChain);
+        
         verify(mChain, times(1)).doFailure(any(PolicyFailure.class));
         verify(mChain, never()).doApply(any(ServiceRequest.class));
     }
