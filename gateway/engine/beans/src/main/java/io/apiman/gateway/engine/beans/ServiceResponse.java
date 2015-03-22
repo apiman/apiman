@@ -25,14 +25,14 @@ import java.util.Map;
  *
  * @author eric.wittmann@redhat.com
  */
-public class ServiceResponse implements Serializable {
+public class ServiceResponse implements IServiceObjectBean, Serializable {
 
     private static final long serialVersionUID = -7245095046846226241L;
     
     private int code;
     private String message;
     private Map<String, String> headers = new HeaderHashMap();
-    private Map<String, Object> attributes = new HashMap<String, Object>();
+    private Map<String, Object> attributes = new HashMap<>();
 
     /**
      * Constructor.
@@ -41,15 +41,17 @@ public class ServiceResponse implements Serializable {
     }
 
     /**
-     * @return the headers
+     * @see io.apiman.gateway.engine.beans.IServiceObjectBean#getHeaders()
      */
+    @Override
     public Map<String, String> getHeaders() {
         return headers;
     }
 
     /**
-     * @param headers the headers to set
+     * @see io.apiman.gateway.engine.beans.IServiceObjectBean#setHeaders(java.util.Map)
      */
+    @Override
     public void setHeaders(Map<String, String> headers) {
         this.headers = headers;
     }
@@ -111,5 +113,4 @@ public class ServiceResponse implements Serializable {
     public Object getAttribute(String name) {
         return this.attributes.get(name);
     }
-
 }

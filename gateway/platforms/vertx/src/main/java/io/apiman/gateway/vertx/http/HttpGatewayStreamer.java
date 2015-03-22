@@ -89,7 +89,7 @@ public class HttpGatewayStreamer implements Registrant, Handler<HttpServerReques
 
         handleResponse(request.response());
 
-        ServiceRequest serviceRequest = HttpServiceFactory.build(request, stripString);
+        ServiceRequest serviceRequest = HttpServiceFactory.build(request, stripString, false);
 
         // Received a request, handler called when #ready has been indicated.
         requestExecutor.execute(serviceRequest, new Handler<ISimpleWriteStream>() {

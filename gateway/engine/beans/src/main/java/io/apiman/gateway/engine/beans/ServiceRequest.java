@@ -24,7 +24,7 @@ import java.util.Map;
  *
  * @author eric.wittmann@redhat.com
  */
-public class ServiceRequest implements Serializable {
+public class ServiceRequest implements IServiceObjectBean, Serializable {
     
     private static final long serialVersionUID = 8024669261165845962L;
 
@@ -36,6 +36,7 @@ public class ServiceRequest implements Serializable {
     private Map<String, String> headers = new HeaderHashMap();
     private String remoteAddr;
     private Object rawRequest;
+    private boolean transportSecurity = false;
     
     /*
      * Optional fields - set these if you want the APIMan engine to
@@ -94,14 +95,14 @@ public class ServiceRequest implements Serializable {
     }
 
     /**
-     * @return the headers
+     * @see io.apiman.gateway.engine.beans.IServiceObjectBean#getHeaders()
      */
     public Map<String, String> getHeaders() {
         return headers;
     }
 
     /**
-     * @param headers the headers to set
+     * @see io.apiman.gateway.engine.beans.IServiceObjectBean#setHeaders(java.util.Map)
      */
     public void setHeaders(Map<String, String> headers) {
         this.headers = headers;
@@ -203,5 +204,23 @@ public class ServiceRequest implements Serializable {
      */
     public void setQueryParams(Map<String, String> queryParams) {
         this.queryParams = queryParams;
+    }
+
+    /**
+     * Indicates whether service request or response was made with transport security.
+     *
+     * @return true if transport is secure; else false.
+     */
+    public boolean isTransportSecure() {
+        return transportSecurity;
+    }
+
+    /**
+     * Set whether service request/response was made with transport security.
+     * 
+     * @param bool transport security status
+     */
+    public void setTransportSecure(boolean isSecure) {
+        this.transportSecurity = isSecure;
     }
 }
