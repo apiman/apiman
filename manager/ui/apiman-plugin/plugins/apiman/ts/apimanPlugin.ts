@@ -29,6 +29,7 @@ module Apiman {
         '/apiman/dash.html'             : { templateUrl: 'dash.html' },
         '/apiman/edit-gateway.html'     : { templateUrl: 'edit-gateway.html' },
         '/apiman/edit-plugin.html'      : { templateUrl: 'edit-plugin.html' },
+        '/apiman/edit-policy.html'      : { templateUrl: 'edit-policy.html' },
         '/apiman/edit-policyDef.html'   : { templateUrl: 'edit-policyDef.html' },
         '/apiman/edit-role.html'        : { templateUrl: 'edit-role.html' },
         '/apiman/import-policyDefs.html': { templateUrl: 'import-policyDefs.html' },

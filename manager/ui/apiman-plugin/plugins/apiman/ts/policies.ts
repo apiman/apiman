@@ -46,6 +46,7 @@ module Apiman {
                             $scope.setValid(false);
                         } else {
                             $scope.setValid(true);
+                            $scope.setConfig($scope.editor.getValue());
                         }
                     });
                 });
@@ -66,6 +67,7 @@ module Apiman {
             PluginSvcs.getPolicyForm(pluginId, policyDefId, function(schema) {
                 Logger.debug("Schema: {0}", schema);
                 initEditor(schema);
+                $scope.editor.setValue($scope.config);
                 $scope.schemaState = 'loaded';
             }, function (error) {
                 // TODO handle the error here!
@@ -213,18 +215,29 @@ module Apiman {
             };
             $scope.$watch('config', validate, true);
             
+            if ($scope.config.staticIdentity) {
+                $scope.identitySourceType = 'static';
+            } else if ($scope.config.ldapIdentity) {
+                $scope.identitySourceType = 'ldap';
+            } else if ($scope.config.jdbcIdentity) {
+                $scope.identitySourceType = 'jdbc';
+            }
+            
             $scope.$watch('identitySourceType', function(newValue) {
                 if (newValue) {
-                    delete $scope.config.staticIdentity;
-                    delete $scope.config.ldapIdentity;
-                    delete $scope.config.jdbcIdentity;
-                    if (newValue == 'static') {
+                    if (newValue == 'static' && !$scope.config.staticIdentity) {
                         $scope.config.staticIdentity = new Object();
-                    } else if (newValue == 'jdbc') {
+                        delete $scope.config.ldapIdentity;
+                        delete $scope.config.jdbcIdentity;
+                    } else if (newValue == 'jdbc' && !$scope.config.jdbcIdentity) {
                         $scope.config.jdbcIdentity = new Object();
                         $scope.config.jdbcIdentity.hashAlgorithm = 'SHA1';
-                    } else if (newValue == 'ldap') {
+                        delete $scope.config.staticIdentity;
+                        delete $scope.config.ldapIdentity;
+                    } else if (newValue == 'ldap' && !$scope.config.ldapIdentity) {
                         $scope.config.ldapIdentity = new Object();
+                        delete $scope.config.staticIdentity;
+                        delete $scope.config.jdbcIdentity;
                     }
                 }
             });

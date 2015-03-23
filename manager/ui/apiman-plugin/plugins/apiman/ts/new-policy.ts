@@ -57,6 +57,10 @@ module Apiman {
             $scope.setValid = function(valid) {
                 $scope.isValid = valid;
             };
+
+            $scope.setConfig = function(config) {
+                $scope.config = config;
+            };
             
             $scope.addPolicy = function() {
                 $scope.createButton.state = 'in-progress';
