@@ -1,4 +1,4 @@
-<div class="form policy-config default">
+<div class="form policy-config default" ng-controller="Apiman.DefaultPolicyConfigFormController">
   <span>Please manually configure your policy's JSON configuration below.</span>
-  <textarea></textarea>
+  <textarea ng-model="rawConfig"></textarea>
 </div>

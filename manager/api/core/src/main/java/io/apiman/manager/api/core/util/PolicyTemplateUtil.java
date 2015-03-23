@@ -73,6 +73,7 @@ public class PolicyTemplateUtil {
             String jsonConfig = policy.getConfiguration();
             @SuppressWarnings("unchecked")
             Map<String, Object> configMap = mapper.readValue(jsonConfig, Map.class);
+            configMap = new PolicyConfigMap(configMap);
             String desc = (String) TemplateRuntime.execute(template, configMap);
             policy.setDescription(desc);
         } catch (Exception e) {

@@ -16,7 +16,7 @@ X-RestTest-BindTo-policy-id-2: id
   "entityId" : "Service1",
   "entityVersion" : "1.0",
   "name" : "Policy Def",
-  "description" : "This is a test policy for @{testName}.",
+  "description" : "This is a test policy for null.",
   "definition" : {
     "id" : "PolicyDef",
     "name" : "Policy Def",

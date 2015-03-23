@@ -13,7 +13,7 @@ Content-Type: application/json
   },
   {
     "createdBy" : "admin",
-    "description" : "This is a test policy for @{testName}.",
+    "description" : "This is a test policy for null.",
     "icon" : "policy-def",
     "name" : "Policy Def",
     "policyDefinitionId" : "PolicyDef"
