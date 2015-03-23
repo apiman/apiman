@@ -34,7 +34,7 @@ public interface IPeriodicComponent {
      * @param initialDelayMillis delta milliseconds to call handler for first iteration
      * @param periodicHandler handler with unique timer ID
      */
-    int setPeriodicTimer(long periodMillis, long initialDelayMillis, IAsyncHandler<Integer> periodicHandler);
+    long setPeriodicTimer(long periodMillis, long initialDelayMillis, IAsyncHandler<Long> periodicHandler);
 
     /**
      * Calls handler only once after the specified {@code long deltaMillis} milliseconds has elapsed.
@@ -42,7 +42,7 @@ public interface IPeriodicComponent {
      * @param deltaMillis delta milliseconds
      * @param timerHandler handler with unique timer ID
      */
-    int setOneshotTimer(long deltaMillis, IAsyncHandler<Integer> timerHandler);
+    long setOneshotTimer(long deltaMillis, IAsyncHandler<Long> timerHandler);
 
     /**
      * Cancel a timer using its ID. This deschedules any executions pending for that ID, including those that
@@ -50,7 +50,7 @@ public interface IPeriodicComponent {
      * 
      * @param timerId Unique ID of timer to be cancelled
      */
-    void cancelTimer(int timerId);
+    void cancelTimer(long timerId);
     
     /**
      * Cancel all timers.
