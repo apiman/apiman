@@ -15,17 +15,18 @@
  */
 package io.apiman.gateway.platforms.servlet.components;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import io.apiman.gateway.engine.async.IAsyncHandler;
 import io.apiman.gateway.engine.components.IPeriodicComponent;
 
 /**
- * Servlet implementation of {@link IPeriodicComponent} aiming to be non-blocking.
+ * Servlet implementation of {@link IPeriodicComponent}.
  * 
  * A unique IDs are generated for each timer via a non-blocking {@link AtomicInteger}, with the (unlikely to
  * be achieved) limitation that these will eventually start overwriting once the bounds of {@link Long} are
@@ -35,7 +36,7 @@ import io.apiman.gateway.engine.components.IPeriodicComponent;
  */
 public class PeriodicComponentImpl implements IPeriodicComponent {
     private Timer timer = new Timer();
-    private Map<Long, TimerTask> timerTaskMap = new LinkedHashMap<>();
+    private ConcurrentMap<Long, TimerTask> timerTaskMap = new ConcurrentHashMap<>();
     private AtomicInteger id = new AtomicInteger(0);
 
     public PeriodicComponentImpl() {
@@ -99,9 +100,8 @@ public class PeriodicComponentImpl implements IPeriodicComponent {
      */
     @Override
     public void cancelAll() {
-        for (TimerTask timer : timerTaskMap.values()) {
-            timer.cancel();
+        for (Entry<Long, TimerTask> e : timerTaskMap.entrySet()) {
+            timerTaskMap.remove(e).cancel();
         }
-        timerTaskMap.clear();
     }
 }
