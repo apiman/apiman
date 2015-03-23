@@ -46,15 +46,15 @@
                         <a href="{{ pluginName }}/app-overview.html?org={{ contract.appOrganizationId }}&app={{contract.appId}}"><span>{{ contract.appName }}</span></a>
                       </span>
                     </td>
-                    <td><a href="{{ pluginName }}/app-overview.html?org={{ contract.appOrganizationId }}&app={{contract.appId}}&version={{ contract.appVersion }}"><span>contract.appVersion</span></a></td>
-                    <td><a href="{{ pluginName }}/plan-overview.html?org={{ contract.appOrganizationId }}&plan={{contract.planId}}"><span>{contract.planName}}</span></a></td>
+                    <td><a href="{{ pluginName }}/app-overview.html?org={{ contract.appOrganizationId }}&app={{contract.appId}}&version={{ contract.appVersion }}"><span>{{ contract.appVersion }}</span></a></td>
+                    <td><a href="{{ pluginName }}/plan-overview.html?org={{ contract.appOrganizationId }}&plan={{contract.planId}}"><span>{{ contract.planName }}</span></a></td>
                     <td><span>{{ contract.createdOn | date:'yyyy-MM-dd' }}</span></td>
                   </tr>
                 </tbody>
               </table>
             </div>
-            <div style="text-align: center">
-              <button class="btn btn-default" data-field="moreButton" data-i18n-key="show-more-contracts" placeholder="Loading..." data-icon="fa-cog">Show More Contracts</button>
+            <div style="text-align: center" ng-hide="contracts.length == 0">
+              <button ng-show="hasMore" ng-click="getNextPage()" class="btn btn-default" data-field="moreButton" data-i18n-key="show-more-contracts" placeholder="Loading..." data-icon="fa-cog">Show More Contracts</button>
             </div>
           </div>
         </div>

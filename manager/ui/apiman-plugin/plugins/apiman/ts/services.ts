@@ -32,7 +32,10 @@ module ApimanServices {
                     version: '@version', 
                     policiesOrActivity: '@policiesOrActivity', 
                     policyId: '@policyId', 
-                    chain: '@policyChain' 
+                    chain: '@policyChain',
+                    
+                    page: '@page',
+                    count: '@count'
                 }, {
                 update: {
                   method: 'PUT' // update issues a PUT request
