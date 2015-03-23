@@ -1,7 +1,6 @@
 /// <reference path="apimanPlugin.ts"/>
 /// <reference path="services.ts"/>
 module Apiman {
-
     
     _module.controller("Apiman.DefaultPolicyConfigFormController",
         ['$scope', 'Logger',
@@ -17,6 +16,62 @@ module Apiman {
                 $scope.setValid(valid);
             };
             $scope.$watch('rawConfig', validateRaw);
+        }]);
+
+    _module.controller("Apiman.JsonSchemaPolicyConfigFormController",
+        ['$scope', 'Logger', 'PluginSvcs',
+        ($scope, Logger, PluginSvcs) => {
+            var initEditor = function(schema) {
+                var holder = document.getElementById('json-editor-holder');
+                var editor = new window['JSONEditor'](holder, {
+                    // Disable fetching schemas via ajax
+                    ajax: false,
+                    // The schema for the editor
+                    schema: schema,
+                    // Disable additional properties
+                    no_additional_properties: true,
+                    // Require all properties by default
+                    required_by_default: true,
+                    disable_edit_json: true,
+                    disable_properties: true,
+                    iconlib: "fontawesome4",
+                    theme: "bootstrap3"
+                });
+                editor.on('change', function() {
+                    $scope.$apply(function() {
+                        // Get an array of errors from the validator
+                        var errors = editor.validate();
+                        // Not valid
+                        if (errors.length) {
+                            $scope.setValid(false);
+                        } else {
+                            $scope.setValid(true);
+                        }
+                    });
+                });
+                $scope.editor = editor;
+            };
+            var destroyEditor = function() {
+                $scope.editor.destroy();
+            };
+            
+            $scope.$on('$destroy', function() {
+                Logger.debug('Destroying the json-editor!');
+                destroyEditor();
+            });
+            
+            $scope.schemaState = 'loading';
+            var pluginId = $scope.selectedDef.pluginId;
+            var policyDefId = $scope.selectedDef.id;
+            PluginSvcs.getPolicyForm(pluginId, policyDefId, function(schema) {
+                Logger.debug("Schema: {0}", schema);
+                initEditor(schema);
+                $scope.schemaState = 'loaded';
+            }, function (error) {
+                // TODO handle the error here!
+                Logger.error(error);
+                $scope.schemaState = 'loaded';
+            });
         }]);
 
     _module.controller("Apiman.RateLimitingFormController",

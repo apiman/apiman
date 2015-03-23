@@ -34,8 +34,8 @@
                 <div>
                   <apiman-search-box function="filterContracts" placeholder="Filter by org or service name..." />
                 </div>
-                <a data-permission="appEdit" apiman-status="Created,Ready" data-field="toNewContract" data-i18n-key="new-contract" href="{{ pluginName }}/new-contract.html" class="btn btn-primary pull-right">New Contract</a>
-                <button ng-click="breakAll()" apiman-action-btn="" ng-disabled="!contracts.length" data-permission="appEdit" apiman-status="Created,Ready" data-field="breakAllContracts" data-i18n-key="break-all-contracts" placeholder="Breaking..." data-icon="fa-cog" class="btn btn-default pull-right">Break All</button>
+                <a apiman-permission="appEdit" apiman-status="Created,Ready" data-field="toNewContract" data-i18n-key="new-contract" href="{{ pluginName }}/new-contract.html" class="btn btn-primary pull-right">New Contract</a>
+                <button ng-click="breakAll()" apiman-action-btn="" ng-disabled="!contracts.length" apiman-permission="appEdit" apiman-status="Created,Ready" data-field="breakAllContracts" data-i18n-key="break-all-contracts" placeholder="Breaking..." data-icon="fa-cog" class="btn btn-default pull-right">Break All</button>
               </div>
               <div class="clearfix"></div>
               <!-- The list of contracts -->
@@ -58,7 +58,7 @@
                       </div>
                     </div>
                     <div class="col-md-2 col-no-padding">
-                      <span class="actions"><button apiman-status="Created,Ready" data-permission="appEdit" ng-click="break(contract)" class="btn btn-default">Break Contract</button></span>
+                      <span class="actions"><button apiman-status="Created,Ready" apiman-permission="appEdit" ng-click="break(contract)" class="btn btn-default">Break Contract</button></span>
                     </div>
                   </div>
                   <hr />

@@ -28,7 +28,7 @@
             <div class="description" data-i18n-key="policies-help">Here is a list of all Policies defined for this Plan.  These Policies will be applied to all Service invocations made by Applications using this Plan in a Contract (in addition to whatever Policies are defined individually by the Application and/or Service).</div>
             <hr />
             <!-- The list of policies -->
-            <div data-permission="planEdit" apiman-status="Created,Ready" class="apiman-filters apiman-policies-filters">
+            <div apiman-permission="planEdit" apiman-status="Created,Ready" class="apiman-filters apiman-policies-filters">
               <a data-field="toNewPolicy" data-i18n-key="add-policy" href="{{ pluginName }}/new-policy.html?type=plans&amp;org={{ org.id }}&amp;id={{ plan.id }}&amp;ver={{ selectedPlanVersion.version }}" class="btn btn-primary pull-right">Add Policy</a>
             </div>
             <div class="clearfix"></div>
@@ -39,7 +39,7 @@
                   <div class="col-md-9">
                     <p class="apiman-no-entities-description" data-i18n-key="no-policies-for-plan">It looks like there aren't any policies defined! That may be exactly what you want (of course) but if not, you may try defining one using the Add Policy button above...</p>
                   </div>
-                  <div data-permission="planEdit" apiman-status="Created,Ready" class="col-md-3">
+                  <div apiman-permission="planEdit" apiman-status="Created,Ready" class="col-md-3">
                     <div class="apiman-no-entities-arrow"></div>
                   </div>
                 </div>
@@ -47,9 +47,9 @@
 
               <div class="container-fluid apiman-summaryrow" ng-repeat="policy in policies">
                 <div class="row">
-                  <div class="grabber" style="height: 48px"></div>
+                  <div apiman-permission="planEdit" apiman-status="Created,Ready" class="grabber" style="height: 48px"></div>
                   <div class="col">
-                    <i class="apiman-policy-icon fa fa-{{ policy.icon }} fa-fw movable"></i>
+                    <i class="apiman-policy-icon fa fa-{{ policy.icon }} fa-fw"></i>
                   </div>
                   <div class="col col-70">
                     <div>

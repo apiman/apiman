@@ -81,4 +81,17 @@ module ApimanServices {
                 });
         }]);
 
+    
+    export var PluginServices = _module.factory('PluginSvcs', ['$resource', 'Configuration',
+        function($resource, Configuration) {
+            return {
+                getPolicyForm: function(pluginId, policyDefId, handler, errorHandler) {
+                    var endpoint = Configuration.api.endpoint + '/apiman/plugins/:pluginId/policyDefs/:policyDefId/form';
+                    $resource(endpoint, { pluginId: '@pluginId', policyDefId: '@policyDefId' }).get(
+                        {pluginId: pluginId, policyDefId: policyDefId}, 
+                        handler, errorHandler);
+                }
+            }
+        }]);
+
 }

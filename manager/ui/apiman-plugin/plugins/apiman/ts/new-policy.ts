@@ -41,19 +41,23 @@ module Apiman {
                 if (!newValue) {
                     $scope.include = undefined;
                 } else {
-                    $scope.config = {};
-                    var inc = ConfigForms[$scope.selectedDef.id];
-                    if (!inc) {
-                        inc = 'Default.include';
+                    $scope.config = new Object();
+                    if ($scope.selectedDef.formType == 'JsonSchema') {
+                        $scope.include = 'plugins/apiman/html/policyForms/JsonSchema.include';
+                    } else {
+                        var inc = ConfigForms[$scope.selectedDef.id];
+                        if (!inc) {
+                            inc = 'Default.include';
+                        }
+                        $scope.include = 'plugins/apiman/html/policyForms/' + inc;
                     }
-                    $scope.include = 'plugins/apiman/html/policyForms/' + inc;
                 }
             });
             
             $scope.setValid = function(valid) {
                 $scope.isValid = valid;
             };
-
+            
             $scope.addPolicy = function() {
                 $scope.createButton.state = 'in-progress';
                 var newPolicy = {

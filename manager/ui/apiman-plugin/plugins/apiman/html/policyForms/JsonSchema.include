@@ -1,0 +1,8 @@
+<div class="form policy-config json-schema" ng-controller="Apiman.JsonSchemaPolicyConfigFormController">
+  <div ng-show="schemaState == 'loading'">
+    <div class="spinner spinner-sm pull-left"></div>
+    <span data-i18n-key="loading-policy-config-schema" style="margin-left: 5px">Loading policy configuration schema...</span>
+  </div>
+  <div id="json-editor-holder">
+  </div>
+</div>
