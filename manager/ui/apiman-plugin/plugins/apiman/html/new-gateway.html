@@ -11,6 +11,8 @@
     <div ng-include="'plugins/apiman/html/progress.include'"></div>
     <div id="apiman-header" ng-include="'plugins/apiman/html/navbar.include'"></div>   
     <div ng-controller="Apiman.NewGatewayController" id="form-page" class="container apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+      <form name="gateway_form" novalidate ng-submit="gatewayForm()">
+      <fieldset>
       <div class="row">
         <h2 class="title" data-i18n-key="new-gateway">New Gateway</h2>
       </div>
@@ -27,7 +29,11 @@
         <dl>
           <dt data-i18n-key="gateway-name">Gateway Name</dt>
           <dd>
-            <input ng-model="gateway.name" data-field="name" type="text" class="form-control name entityname" placeholder="Enter gateway name..."></input>
+            <input ng-model="gateway.name" required name="name" type="text" class="form-control name entityname" placeholder="Enter gateway name..."></input>
+            <small class="error" 
+			        ng-show="gateway_form.name.$dirty && gateway_form.name.$invalid">
+			        The Gateway Name is required.
+			      </small>
           </dd>
         </dl>
       </div>
@@ -45,7 +51,7 @@
         <dl>
           <dt data-i18n-key="config-endpoint">Configuration Endpoint</dt>
           <dd>
-            <input ng-model="configuration.endpoint" data-field="configEndpoint" type="text" class="form-control description" id="config-endpoint" placeholder="Enter configuration endpoint..."></input>
+            <input ng-model="configuration.endpoint" required name="configEndpoint" type="text" class="form-control description" id="config-endpoint" placeholder="Enter configuration endpoint..."></input>
           </dd>
         </dl>
       </div>
@@ -60,7 +66,11 @@
                   <span data-i18n-key="username">Username:</span>
                 </td>
                 <td>
-                  <input ng-model="configuration.username" data-field="username" type="text" class="form-control name entityname" placeholder="Username..."></input>
+                  <input ng-model="configuration.username" name="username" type="text" class="form-control name entityname" placeholder="Username..."></input>
+                  <small class="error" 
+			        ng-show="gateway_form.username.$dirty && gateway_form.username.$invalid">
+			        Username is required.
+			      </small>
                 </td>
               </tr>
               <tr>
@@ -68,13 +78,13 @@
                   <span data-i18n-key="password">Password:</span>
                 </td>
                 <td>
-                  <input ng-model="configuration.password" data-field="password" type="password" class="form-control name entityname" placeholder="Password..."></input>
+                  <input ng-model="configuration.password" data-field="password" type="password" class="form-control name entityname" placeholder="Password..." ng-keyup="passwordMatch()"></input>
                 </td>
               </tr>
               <tr>
                 <td></td>
                 <td>
-                  <input ng-model="configuration.password" data-field="passwordConfirm" type="password" class="form-control name entityname" placeholder="Confirm Password..."></input>
+                  <input ng-model="passwordConfirm" data-field="passwordConfirm" type="password" class="form-control name entityname" placeholder="Confirm Password..." ng-keyup="passwordMatch()"></input>
                 </td>
               </tr>
             </table>
@@ -82,7 +92,8 @@
         </dl>
       </div>
       <div class="row">
-        <button class="btn btn-warning" data-field="testButton" data-i18n-key="test-gateway" placeholder="Testing..." data-icon="fa-cog">Test Gateway</button>
+        <button ng-click="testGateway()" class="btn btn-{{testButton.state}}" name="testButton" data-i18n-key="test-gateway" placeholder="Testing..." data-icon="fa-cog">Test Gateway</button>
+        <span ng-show="errorStatus!=null" data-i18n-key="errorStatus">{{ errorStatus }}</span>
       </div>
       <!-- HR -->
       <div class="row hr-row">
@@ -90,9 +101,11 @@
       </div>
       <!-- Create Button -->
       <div class="row">
-        <button class="btn btn-primary" data-field="createButton" data-i18n-key="create-gateway" placeholder="Creating..." data-icon="fa-cog" ng-click="createGateway()>Create Gateway</button>
+        <button type="submit" class="btn btn-primary" name="createButton" data-i18n-key="create-gateway" placeholder="Creating..." data-icon="fa-cog" ng-click="createGateway()">Create Gateway</button>
         <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" data-i18n-key="cancel">Cancel</a>
       </div>
+      </fieldset>
+      </form>
     </div> <!-- /container -->
   </body>
 </html>
