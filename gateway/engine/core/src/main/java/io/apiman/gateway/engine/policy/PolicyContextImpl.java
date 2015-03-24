@@ -29,18 +29,20 @@ import java.util.Map;
  *
  * @author eric.wittmann@redhat.com
  */
-public class PolicyContextImpl implements IPolicyContext {
+public class PolicyContextImpl implements ISettablePolicyContext {
     
     private final IComponentRegistry componentRegistry;
     private final Map<String, Object> conversation = new HashMap<String, Object>();
     private IConnectorInterceptor connectorInterceptor;
+    private boolean transportSecurity = false;
     
     /**
      * Constructor.
      * @param componentRegistry
      */
-    public PolicyContextImpl(IComponentRegistry componentRegistry) {
+    public PolicyContextImpl(IComponentRegistry componentRegistry, boolean transportSecurity) {
         this.componentRegistry = componentRegistry;
+        this.transportSecurity = transportSecurity;
     }
 
     /**
@@ -100,4 +102,19 @@ public class PolicyContextImpl implements IPolicyContext {
         return connectorInterceptor;
     }
 
+    /**
+     * @see io.apiman.gateway.engine.io.ITransportSecurityStatus#isTransportSecure()
+     */
+    @Override
+    public boolean isTransportSecure() {
+        return transportSecurity;
+    }
+
+    /**
+     * @see io.apiman.gateway.engine.io.ITransportSecurityStatusSet#setTransportSecure(boolean)
+     */
+    @Override
+    public void setTransportSecure(boolean isSecure) {
+       this.transportSecurity = isSecure;
+    }
 }

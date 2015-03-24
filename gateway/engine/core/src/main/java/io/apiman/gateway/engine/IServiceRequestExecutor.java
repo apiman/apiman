@@ -3,6 +3,8 @@ package io.apiman.gateway.engine;
 import io.apiman.gateway.engine.async.IAsyncHandler;
 import io.apiman.gateway.engine.impl.ServiceRequestExecutorImpl;
 import io.apiman.gateway.engine.io.ISignalWriteStream;
+import io.apiman.gateway.engine.io.ITransportSecurityStatus;
+import io.apiman.gateway.engine.io.ITransportSecurityStatusSet;
 
 /**
  * IPolicyRequestExecutor interface.
@@ -31,5 +33,4 @@ public interface IServiceRequestExecutor {
      * @param handler
      */
     void streamHandler(IAsyncHandler<ISignalWriteStream> handler);
-
 }
