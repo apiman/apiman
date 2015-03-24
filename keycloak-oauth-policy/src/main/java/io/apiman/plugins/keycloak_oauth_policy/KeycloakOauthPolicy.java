@@ -66,8 +66,10 @@ public class KeycloakOauthPolicy extends AbstractMappedPolicy<KeycloakOauthConfi
         if (rawToken == null) {
             if (config.getRequireOauth()) {
                 chain.doFailure(noAuthenticationProvidedFailure(context));
-                return;
+            } else {
+                chain.doApply(request);
             }
+            return;
         } else {
             if (config.getRequireTransportSecurity() && !request.isTransportSecure()) {
                 // If we've detected a situation where we should blacklist a token
@@ -105,7 +107,7 @@ public class KeycloakOauthPolicy extends AbstractMappedPolicy<KeycloakOauthConfi
                 });
                 return;
             }
-            
+       
             doTokenAuth(request, context, config, chain, rawToken);
         }
     }

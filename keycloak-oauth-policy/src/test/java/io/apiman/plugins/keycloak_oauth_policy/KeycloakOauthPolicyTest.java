@@ -6,9 +6,11 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import io.apiman.gateway.engine.beans.PolicyFailure;
-import io.apiman.gateway.engine.beans.PolicyFailureType;
 import io.apiman.gateway.engine.beans.ServiceRequest;
+import io.apiman.gateway.engine.components.IDataStoreComponent;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
+import io.apiman.gateway.engine.impl.DefaultPolicyFailureFactoryComponent;
+import io.apiman.gateway.engine.impl.InMemoryDataStoreComponent;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
 import io.apiman.plugins.keycloak_oauth_policy.beans.KeycloakOauthConfigBean;
@@ -50,7 +52,7 @@ import org.mockito.MockitoAnnotations;
  *
  * @author Marc Savy <msavy@redhat.com>
  */
-@SuppressWarnings({"nls", "deprecation"})
+@SuppressWarnings({ "nls", "deprecation" })
 public class KeycloakOauthPolicyTest {
 
     private static X509Certificate[] idpCertificates;
@@ -62,12 +64,12 @@ public class KeycloakOauthPolicyTest {
     private KeycloakOauthPolicy keycloakOauthPolicy;
     private KeycloakOauthConfigBean config;
     private ServiceRequest serviceRequest;
+    private InMemoryDataStoreComponent imDataStoreComponent;
 
     @Mock
     private IPolicyChain<ServiceRequest> mChain;
     @Mock
     private IPolicyContext mContext;
-    private IPolicyFailureFactoryComponent sFailureFactory = new SimpleFailureFactory();
 
     static {
         if (Security.getProvider("BC") == null)
@@ -118,7 +120,12 @@ public class KeycloakOauthPolicyTest {
         serviceRequest = new ServiceRequest();
 
         // Set up components.
-        given(mContext.getComponent(IPolicyFailureFactoryComponent.class)).willReturn(sFailureFactory);
+        // Failure factory
+        given(mContext.getComponent(IPolicyFailureFactoryComponent.class)).willReturn(
+                new DefaultPolicyFailureFactoryComponent());
+        // Data store
+        imDataStoreComponent = new InMemoryDataStoreComponent();
+        given(mContext.getComponent(IDataStoreComponent.class)).willReturn(imDataStoreComponent);
     }
 
     private String setupValidRequest() throws CertificateEncodingException, IOException {
@@ -153,6 +160,13 @@ public class KeycloakOauthPolicyTest {
     }
 
     @Test
+    public void shouldPassthroughOnNullTokenIfOAuthNotRequired() {
+        config.setRequireOauth(false);
+        keycloakOauthPolicy.apply(serviceRequest, mContext, config, mChain);
+        verify(mChain).doApply(any(ServiceRequest.class));
+    }
+
+    @Test
     public void shouldFailIfNoToken() throws CertificateEncodingException, IOException {
         config.setRealm("apiman-realm");
         config.setRealmCertificateString(certificateAsPem(idpCertificates[0]));
@@ -179,19 +193,58 @@ public class KeycloakOauthPolicyTest {
         verify(mChain, times(1)).doFailure(any(PolicyFailure.class));
         verify(mChain, never()).doApply(any(ServiceRequest.class));
     }
-    
+
     @Test
     public void shouldFailOnInsecureConnection() throws CertificateEncodingException, IOException {
-        // Set the connection as insecure
+        // Require transport security
         config.setRequireTransportSecurity(true);
+        // But set the connection as insecure
         serviceRequest.setTransportSecure(false);
-        
+
         String encoded = setupValidRequest();
         serviceRequest.getHeaders().put("Authorization", "Bearer " + encoded);
 
         keycloakOauthPolicy.apply(serviceRequest, mContext, config, mChain);
-        
+
         verify(mChain, times(1)).doFailure(any(PolicyFailure.class));
+        verify(mChain, never()).doApply(any(ServiceRequest.class));
+    }
+
+    @Test
+    public void shouldBlacklistUnsafeToken() throws CertificateEncodingException, IOException {
+        // Require transport security
+        config.setRequireTransportSecurity(true);
+        // Blacklist invalidly used tokens
+        config.setBlacklistUnsafeTokens(true);
+        // But set the connection as insecure
+        serviceRequest.setTransportSecure(false);
+
+        String encoded = setupValidRequest();
+        serviceRequest.getHeaders().put("Authorization", "Bearer " + encoded);
+
+        keycloakOauthPolicy.apply(serviceRequest, mContext, config, mChain);
+
+        verify(mChain, times(1)).doFailure(any(PolicyFailure.class));
+        verify(mChain, never()).doApply(any(ServiceRequest.class));
+    }
+
+    @Test
+    public void shouldTerminateOnBlacklistedToken() throws CertificateEncodingException, IOException {
+        config.setRequireTransportSecurity(true);
+        config.setBlacklistUnsafeTokens(true);
+        serviceRequest.setTransportSecure(false);
+
+        // First, do a request that causes the token to be blacklisted.
+        String encoded = setupValidRequest();
+        serviceRequest.getHeaders().put("Authorization", "Bearer " + encoded);
+        keycloakOauthPolicy.apply(serviceRequest, mContext, config, mChain);
+
+        // Second, do the request again with the blacklisted token *with secure*.
+        // It *must* still be blocked.
+        serviceRequest.setTransportSecure(true);
+        keycloakOauthPolicy.apply(serviceRequest, mContext, config, mChain);
+
+        verify(mChain, times(2)).doFailure(any(PolicyFailure.class));
         verify(mChain, never()).doApply(any(ServiceRequest.class));
     }
 
@@ -208,13 +261,5 @@ public class KeycloakOauthPolicyTest {
             writer.close();
         }
         return sw.toString();
-    }
-
-    private final static class SimpleFailureFactory implements IPolicyFailureFactoryComponent {
-
-        @Override
-        public PolicyFailure createFailure(PolicyFailureType type, int failureCode, String message) {
-            return new PolicyFailure(type, failureCode, message);
-        }
     }
 }
