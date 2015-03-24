@@ -25,8 +25,8 @@ import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.PolicyFailureType;
 import io.apiman.gateway.engine.beans.ServiceRequest;
-import io.apiman.gateway.engine.components.IDataStoreComponent;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
+import io.apiman.gateway.engine.components.ISharedStateComponent;
 import io.apiman.gateway.engine.policies.AbstractMappedPolicy;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
@@ -74,10 +74,10 @@ public class KeycloakOauthPolicy extends AbstractMappedPolicy<KeycloakOauthConfi
             if (config.getRequireTransportSecurity() && !request.isTransportSecure()) {
                 // If we've detected a situation where we should blacklist a token
                 if (config.getBlacklistUnsafeTokens()) {
-                    blacklistToken(context, rawToken, new IAsyncResultHandler<Boolean>() {
+                    blacklistToken(context, rawToken, new IAsyncResultHandler<Void>() {
 
                         @Override
-                        public void handle(IAsyncResult<Boolean> result) {
+                        public void handle(IAsyncResult<Void> result) {
                             if (result.isError()) {
                                 chain.throwError(result.getError());
                             } else {
@@ -201,20 +201,20 @@ public class KeycloakOauthPolicy extends AbstractMappedPolicy<KeycloakOauthConfi
 
     private void isBlacklistedToken(IPolicyContext context, String rawToken,
             final IAsyncResultHandler<Boolean> resultHandler) {
-        IDataStoreComponent dataStore = getDataStore(context);
+        ISharedStateComponent dataStore = getDataStore(context);
         dataStore.<Boolean> getProperty("apiman-keycloak-blacklist", rawToken, false, //$NON-NLS-1$
                 resultHandler);
     }
 
     private void blacklistToken(IPolicyContext context, String rawToken,
-            final IAsyncResultHandler<Boolean> resultHandler) {
-        IDataStoreComponent dataStore = getDataStore(context);
+            final IAsyncResultHandler<Void> resultHandler) {
+        ISharedStateComponent dataStore = getDataStore(context);
         dataStore.<Boolean> setProperty("apiman-keycloak-blacklist", rawToken, true, //$NON-NLS-1$
                 resultHandler);
     }
 
-    private IDataStoreComponent getDataStore(IPolicyContext context) {
-        return context.getComponent(IDataStoreComponent.class);
+    private ISharedStateComponent getDataStore(IPolicyContext context) {
+        return context.getComponent(ISharedStateComponent.class);
     }
 
     private IPolicyFailureFactoryComponent getFailureFactory(IPolicyContext context) {

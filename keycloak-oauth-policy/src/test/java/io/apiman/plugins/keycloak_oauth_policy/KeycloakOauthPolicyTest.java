@@ -7,10 +7,10 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.ServiceRequest;
-import io.apiman.gateway.engine.components.IDataStoreComponent;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
+import io.apiman.gateway.engine.components.ISharedStateComponent;
 import io.apiman.gateway.engine.impl.DefaultPolicyFailureFactoryComponent;
-import io.apiman.gateway.engine.impl.InMemoryDataStoreComponent;
+import io.apiman.gateway.engine.impl.InMemorySharedStateComponent;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
 import io.apiman.plugins.keycloak_oauth_policy.beans.KeycloakOauthConfigBean;
@@ -57,14 +57,10 @@ public class KeycloakOauthPolicyTest {
 
     private static X509Certificate[] idpCertificates;
     private static KeyPair idpPair;
-    private static KeyPair badPair;
-    private static KeyPair clientPair;
-    private static X509Certificate[] clientCertificateChain;
     private AccessToken token;
     private KeycloakOauthPolicy keycloakOauthPolicy;
     private KeycloakOauthConfigBean config;
     private ServiceRequest serviceRequest;
-    private InMemoryDataStoreComponent imDataStoreComponent;
 
     @Mock
     private IPolicyChain<ServiceRequest> mChain;
@@ -94,12 +90,8 @@ public class KeycloakOauthPolicyTest {
     @BeforeClass
     public static void setupCerts() throws NoSuchAlgorithmException, InvalidKeyException,
             NoSuchProviderException, SignatureException {
-        badPair = KeyPairGenerator.getInstance("RSA").generateKeyPair();
         idpPair = KeyPairGenerator.getInstance("RSA").generateKeyPair();
         idpCertificates = new X509Certificate[] { generateTestCertificate("CN=IDP", "CN=IDP", idpPair) };
-        clientPair = KeyPairGenerator.getInstance("RSA").generateKeyPair();
-        clientCertificateChain = new X509Certificate[] { generateTestCertificate("CN=Client", "CN=IDP",
-                idpPair) };
     }
 
     @Before
@@ -121,11 +113,11 @@ public class KeycloakOauthPolicyTest {
 
         // Set up components.
         // Failure factory
-        given(mContext.getComponent(IPolicyFailureFactoryComponent.class)).willReturn(
-                new DefaultPolicyFailureFactoryComponent());
+        given(mContext.getComponent(IPolicyFailureFactoryComponent.class)).
+            willReturn(new DefaultPolicyFailureFactoryComponent());
         // Data store
-        imDataStoreComponent = new InMemoryDataStoreComponent();
-        given(mContext.getComponent(IDataStoreComponent.class)).willReturn(imDataStoreComponent);
+        given(mContext.getComponent(ISharedStateComponent.class)).
+            willReturn(new InMemorySharedStateComponent());
     }
 
     private String setupValidRequest() throws CertificateEncodingException, IOException {
