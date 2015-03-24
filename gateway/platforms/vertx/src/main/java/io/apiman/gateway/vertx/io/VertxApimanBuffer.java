@@ -30,8 +30,24 @@ public class VertxApimanBuffer implements IApimanBuffer {
 
     private Buffer nativeBuffer;
     
+    public VertxApimanBuffer() {
+        this.nativeBuffer = new Buffer();
+    }
+    
     public VertxApimanBuffer(Buffer nativeBuffer) {
         this.nativeBuffer = nativeBuffer;
+    }
+
+    public VertxApimanBuffer(String stringData) {
+        this.nativeBuffer = new Buffer(stringData);
+    }
+
+    public VertxApimanBuffer(String stringData, String enc) {
+        this.nativeBuffer = new Buffer(stringData, enc);
+    }
+
+    public VertxApimanBuffer(byte[] byteData) {
+        this.nativeBuffer = new Buffer(byteData);
     }
 
     @Override

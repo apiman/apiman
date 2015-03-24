@@ -20,6 +20,7 @@ import io.apiman.gateway.engine.io.IApimanBuffer;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
 
 /**
  * A simple {@link IApimanBuffer} from a byte array.
@@ -34,11 +35,44 @@ public class ByteBuffer implements IApimanBuffer {
     
     /**
      * Constructor.
+     * 
+     * @param size initial size
      */
     public ByteBuffer(int size) {
         buffer = new byte[size];
     }
     
+    /**
+     * Constructor.
+     * 
+     * @param stringData String data
+     */
+    public ByteBuffer(String stringData) {
+        buffer = stringData.getBytes();
+        bytesInBuffer = buffer.length;
+    }
+
+    /**
+     * Constructor.
+     * 
+     * @param stringData String data
+     * @param enc String data encoding
+     */
+    public ByteBuffer(String stringData, String enc) {
+        try {
+            buffer = stringData.getBytes(enc);
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * @param byteData
+     */
+    public ByteBuffer(byte[] byteData) {
+        buffer = Arrays.copyOf(byteData, byteData.length);
+    }
+
     /**
      * @see io.apiman.gateway.engine.io.IApimanBuffer#getNativeBuffer()
      */
