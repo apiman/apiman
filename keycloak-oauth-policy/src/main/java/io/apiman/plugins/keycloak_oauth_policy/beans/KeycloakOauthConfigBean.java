@@ -31,7 +31,6 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.keycloak.util.PemUtils;
-import org.omg.PortableInterceptor.TRANSPORT_RETRY;
 
 /**
  * KeyCloak OAuth Policy Configuration
