@@ -19,10 +19,10 @@ import java.util.Map;
 
 /**
  * Represents common elements of {@link ServiceRequest} and {@link ServiceResponse}.
- * 
+ *
  * @author Marc Savy <msavy@redhat.com>
  */
-public interface IServiceObjectBean {
+public interface IServiceObject {
 
     /**
      * @return the headers
