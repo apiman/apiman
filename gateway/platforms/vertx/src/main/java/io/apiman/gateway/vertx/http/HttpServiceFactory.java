@@ -44,20 +44,14 @@ public class HttpServiceFactory {
         
         return apimanResponse;
     }
-    
-    public static ServiceResponse buildResponse(HttpServerResponse response) {
-        return buildResponse(response, new ServiceResponse());
-    }
-    
-    public static ServiceResponse buildResponse(HttpServerResponse response, ServiceResponse amanResponse) {
+
+    public static void buildResponse(HttpServerResponse response, ServiceResponse amanResponse) {
         response.headers().add(amanResponse.getHeaders());
         response.setStatusCode(amanResponse.getCode());
         response.setStatusMessage(amanResponse.getMessage());
-        
-        return amanResponse;
     }
     
-    public static ServiceRequest build(HttpServerRequest req, String stripFromStart) {
+    public static ServiceRequest build(HttpServerRequest req, String stripFromStart, boolean isTransportSecure) {
         ServiceRequest apimanRequest = new ServiceRequest();
         apimanRequest.setApiKey(parseApiKey(req));
         parseHeaders(apimanRequest.getHeaders(), req.headers(), Collections.<String>emptySet());
@@ -66,6 +60,7 @@ public class HttpServiceFactory {
         apimanRequest.setDestination(StringUtils.removeStart(req.path(), "/" + stripFromStart)); //$NON-NLS-1$
         apimanRequest.setRemoteAddr(req.remoteAddress().getAddress().getHostAddress());
         apimanRequest.setType(req.method());
+        apimanRequest.setTransportSecure(isTransportSecure);
 
         return apimanRequest;
     }

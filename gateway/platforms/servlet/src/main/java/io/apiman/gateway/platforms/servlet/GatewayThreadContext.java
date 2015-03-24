@@ -26,11 +26,11 @@ import io.apiman.gateway.engine.beans.ServiceResponse;
  * @author eric.wittmann@redhat.com
  */
 public class GatewayThreadContext {
-    
+
     private static final ThreadLocal<ServiceRequest> serviceRequest = new ThreadLocal<ServiceRequest>();
     private static final ThreadLocal<ServiceResponse> serviceResponse = new ThreadLocal<ServiceResponse>();
     private static final ThreadLocal<PolicyFailure> policyFailure = new ThreadLocal<PolicyFailure>();
-    
+
     /**
      * @return the thread-local service request
      */
@@ -66,7 +66,7 @@ public class GatewayThreadContext {
         }
         return request;
     }
-    
+
     /**
      * Resets all thread local objects.
      */
@@ -78,13 +78,14 @@ public class GatewayThreadContext {
         request.setRawRequest(null);
         request.setRemoteAddr(null);
         request.setType(null);
-        
+        request.setTransportSecure(false);
+
         ServiceResponse response = getServiceResponse();
         response.setCode(0);
         response.getHeaders().clear();
         response.setMessage(null);
         response.getAttributes().clear();
-        
+
         PolicyFailure failure = getPolicyFailure();
         failure.setFailureCode(0);
         failure.setMessage(null);
