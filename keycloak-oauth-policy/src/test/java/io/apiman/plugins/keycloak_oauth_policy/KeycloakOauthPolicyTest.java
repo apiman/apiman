@@ -6,9 +6,11 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import io.apiman.gateway.engine.beans.PolicyFailure;
-import io.apiman.gateway.engine.beans.PolicyFailureType;
 import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
+import io.apiman.gateway.engine.components.ISharedStateComponent;
+import io.apiman.gateway.engine.impl.DefaultPolicyFailureFactoryComponent;
+import io.apiman.gateway.engine.impl.InMemorySharedStateComponent;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
 import io.apiman.plugins.keycloak_oauth_policy.beans.KeycloakOauthConfigBean;
@@ -50,14 +52,11 @@ import org.mockito.MockitoAnnotations;
  *
  * @author Marc Savy <msavy@redhat.com>
  */
-@SuppressWarnings("nls")
+@SuppressWarnings({ "nls", "deprecation" })
 public class KeycloakOauthPolicyTest {
 
     private static X509Certificate[] idpCertificates;
     private static KeyPair idpPair;
-    private static KeyPair badPair;
-    private static KeyPair clientPair;
-    private static X509Certificate[] clientCertificateChain;
     private AccessToken token;
     private KeycloakOauthPolicy keycloakOauthPolicy;
     private KeycloakOauthConfigBean config;
@@ -67,7 +66,6 @@ public class KeycloakOauthPolicyTest {
     private IPolicyChain<ServiceRequest> mChain;
     @Mock
     private IPolicyContext mContext;
-    private IPolicyFailureFactoryComponent sFailureFactory = new SimpleFailureFactory();
 
     static {
         if (Security.getProvider("BC") == null)
@@ -92,12 +90,8 @@ public class KeycloakOauthPolicyTest {
     @BeforeClass
     public static void setupCerts() throws NoSuchAlgorithmException, InvalidKeyException,
             NoSuchProviderException, SignatureException {
-        badPair = KeyPairGenerator.getInstance("RSA").generateKeyPair();
         idpPair = KeyPairGenerator.getInstance("RSA").generateKeyPair();
         idpCertificates = new X509Certificate[] { generateTestCertificate("CN=IDP", "CN=IDP", idpPair) };
-        clientPair = KeyPairGenerator.getInstance("RSA").generateKeyPair();
-        clientCertificateChain = new X509Certificate[] { generateTestCertificate("CN=Client", "CN=IDP",
-                idpPair) };
     }
 
     @Before
@@ -112,11 +106,18 @@ public class KeycloakOauthPolicyTest {
         config = new KeycloakOauthConfigBean();
         config.setRequireOauth(true);
         config.setStripTokens(false);
+        config.setBlacklistUnsafeTokens(false);
+        config.setRequireTransportSecurity(false);
 
         serviceRequest = new ServiceRequest();
 
         // Set up components.
-        given(mContext.getComponent(IPolicyFailureFactoryComponent.class)).willReturn(sFailureFactory);
+        // Failure factory
+        given(mContext.getComponent(IPolicyFailureFactoryComponent.class)).
+            willReturn(new DefaultPolicyFailureFactoryComponent());
+        // Data store
+        given(mContext.getComponent(ISharedStateComponent.class)).
+            willReturn(new InMemorySharedStateComponent());
     }
 
     private String setupValidRequest() throws CertificateEncodingException, IOException {
@@ -151,6 +152,13 @@ public class KeycloakOauthPolicyTest {
     }
 
     @Test
+    public void shouldPassthroughOnNullTokenIfOAuthNotRequired() {
+        config.setRequireOauth(false);
+        keycloakOauthPolicy.apply(serviceRequest, mContext, config, mChain);
+        verify(mChain).doApply(any(ServiceRequest.class));
+    }
+
+    @Test
     public void shouldFailIfNoToken() throws CertificateEncodingException, IOException {
         config.setRealm("apiman-realm");
         config.setRealmCertificateString(certificateAsPem(idpCertificates[0]));
@@ -178,6 +186,60 @@ public class KeycloakOauthPolicyTest {
         verify(mChain, never()).doApply(any(ServiceRequest.class));
     }
 
+    @Test
+    public void shouldFailOnInsecureConnection() throws CertificateEncodingException, IOException {
+        // Require transport security
+        config.setRequireTransportSecurity(true);
+        // But set the connection as insecure
+        serviceRequest.setTransportSecure(false);
+
+        String encoded = setupValidRequest();
+        serviceRequest.getHeaders().put("Authorization", "Bearer " + encoded);
+
+        keycloakOauthPolicy.apply(serviceRequest, mContext, config, mChain);
+
+        verify(mChain, times(1)).doFailure(any(PolicyFailure.class));
+        verify(mChain, never()).doApply(any(ServiceRequest.class));
+    }
+
+    @Test
+    public void shouldBlacklistUnsafeToken() throws CertificateEncodingException, IOException {
+        // Require transport security
+        config.setRequireTransportSecurity(true);
+        // Blacklist invalidly used tokens
+        config.setBlacklistUnsafeTokens(true);
+        // But set the connection as insecure
+        serviceRequest.setTransportSecure(false);
+
+        String encoded = setupValidRequest();
+        serviceRequest.getHeaders().put("Authorization", "Bearer " + encoded);
+
+        keycloakOauthPolicy.apply(serviceRequest, mContext, config, mChain);
+
+        verify(mChain, times(1)).doFailure(any(PolicyFailure.class));
+        verify(mChain, never()).doApply(any(ServiceRequest.class));
+    }
+
+    @Test
+    public void shouldTerminateOnBlacklistedToken() throws CertificateEncodingException, IOException {
+        config.setRequireTransportSecurity(true);
+        config.setBlacklistUnsafeTokens(true);
+        serviceRequest.setTransportSecure(false);
+
+        // First, do a request that causes the token to be blacklisted.
+        String encoded = setupValidRequest();
+        serviceRequest.getHeaders().put("Authorization", "Bearer " + encoded);
+        keycloakOauthPolicy.apply(serviceRequest, mContext, config, mChain);
+
+        // Second, do the request again with the blacklisted token *with secure*.
+        // It *must* still be blocked.
+        serviceRequest.setTransportSecure(true);
+        keycloakOauthPolicy.apply(serviceRequest, mContext, config, mChain);
+
+        verify(mChain, times(2)).doFailure(any(PolicyFailure.class));
+        verify(mChain, never()).doApply(any(ServiceRequest.class));
+    }
+
     private String certificateAsPem(X509Certificate x509) throws CertificateEncodingException, IOException {
         StringWriter sw = new StringWriter();
         PemWriter writer = new PemWriter(sw);
@@ -191,13 +253,5 @@ public class KeycloakOauthPolicyTest {
             writer.close();
         }
         return sw.toString();
-    }
-
-    private final static class SimpleFailureFactory implements IPolicyFailureFactoryComponent {
-
-        @Override
-        public PolicyFailure createFailure(PolicyFailureType type, int failureCode, String message) {
-            return new PolicyFailure(type, failureCode, message);
-        }
     }
 }

@@ -39,8 +39,8 @@ import org.keycloak.util.PemUtils;
  */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 @Generated("org.jsonschema2pojo")
-@JsonPropertyOrder({ "requireOauth", "blacklistUnsafeTokens", "stripTokens", "realm",
-        "realmCertificateString", "forwardAuthInfo" })
+@JsonPropertyOrder({ "requireOauth", "requireTransportSecurity", "blacklistUnsafeTokens", 
+    "stripTokens", "realm", "realmCertificateString", "forwardAuthInfo" })
 public class KeycloakOauthConfigBean {
 
     /**
@@ -50,6 +50,16 @@ public class KeycloakOauthConfigBean {
      */
     @JsonProperty("requireOauth")
     private Boolean requireOauth = true;
+    
+    /**
+     * Require Transport Security
+     * <p>
+     * OAuth2 requires transport security such as TLS or SSL in order to be secure.
+     * Terminate request if none provided.
+     */
+    @JsonProperty("requireTransportSecurity")
+    private boolean requireTransportSecurity;
+    
     /**
      * Blacklist unsafe tokens
      * <p>
@@ -91,6 +101,7 @@ public class KeycloakOauthConfigBean {
     private Map<String, Object> additionalProperties = new HashMap<>();
     private Certificate realmCertificate;
 
+
     /**
      * Require OAuth
      * <p>
@@ -106,13 +117,37 @@ public class KeycloakOauthConfigBean {
     /**
      * Require OAuth
      * <p>
-     * Terminate request if no OAuth is provided.
-     * 
+     * Any request used without transport security will be rejected. OAuth2 requires transport security (e.g.
+     * TLS, SSL) to provide protection against replay attacks. It is strongly advised for this option to be
+     * switched on.
+     *  
      * @param requireOauth The requireOauth
      */
     @JsonProperty("requireOauth")
     public void setRequireOauth(Boolean requireOauth) {
         this.requireOauth = requireOauth;
+    }
+
+    /**
+     * Require Transport Security
+     * <p>
+     * Any request used without transport security will be rejected. OAuth2 requires transport security (e.g.
+     * TLS, SSL) to provide protection against replay attacks. It is strongly advised for this option to be
+     * switched on.
+     * 
+     * @return whether transport security is required
+     */
+    @JsonProperty("requireTransportSecurity")
+    public boolean getRequireTransportSecurity() {
+        return requireTransportSecurity;
+    }
+    
+    /**
+     * @param requireTransportSecurity status
+     */
+    @JsonProperty("requireTransportSecurity")
+    public void setRequireTransportSecurity(boolean requireTransportSecurity) {
+        this.requireTransportSecurity = requireTransportSecurity;
     }
 
     /**
