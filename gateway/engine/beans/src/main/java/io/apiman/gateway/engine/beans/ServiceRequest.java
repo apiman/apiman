@@ -24,7 +24,7 @@ import java.util.Map;
  *
  * @author eric.wittmann@redhat.com
  */
-public class ServiceRequest implements IServiceObjectBean, Serializable {
+public class ServiceRequest implements IServiceObject, Serializable {
     
     private static final long serialVersionUID = 8024669261165845962L;
 
