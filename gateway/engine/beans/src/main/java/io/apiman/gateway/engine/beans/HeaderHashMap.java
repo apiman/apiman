@@ -15,8 +15,6 @@
  */
 package io.apiman.gateway.engine.beans;
 
-import io.apiman.common.util.SimpleStringUtils;
-
 import java.util.HashMap;
 
 /**
@@ -44,7 +42,7 @@ public class HeaderHashMap extends HashMap<String, String> {
     public String get(Object key) {
         String rval = super.get(key);
         if (rval == null) {
-            String trimmedKey = SimpleStringUtils.trim((String)key);
+            String trimmedKey = trim((String)key);
             rval = caseInsensitiveIndex.get(trimmedKey.toLowerCase());
         }
         return rval;
@@ -57,7 +55,7 @@ public class HeaderHashMap extends HashMap<String, String> {
     public boolean containsKey(Object key) {
         boolean rval = super.containsKey(key);
         if (!rval) {
-            String trimmedKey = SimpleStringUtils.trim((String)key);
+            String trimmedKey = trim((String)key);
             rval = caseInsensitiveIndex.containsKey(trimmedKey.toLowerCase());
         }
         return rval;
@@ -68,8 +66,8 @@ public class HeaderHashMap extends HashMap<String, String> {
      */
     @Override
     public String put(String key, String value) {
-        String trimmedKey = SimpleStringUtils.trim(key);
-        String trimmedValue = SimpleStringUtils.trim(value);
+        String trimmedKey = trim(key);
+        String trimmedValue = trim(value);
         String rval = super.put(trimmedKey, trimmedValue);
         caseInsensitiveIndex.put(trimmedKey.toLowerCase(), trimmedValue);
         return rval;
@@ -80,9 +78,18 @@ public class HeaderHashMap extends HashMap<String, String> {
      */
     @Override
     public String remove(Object key) {
-        String trimmedKey = SimpleStringUtils.trim((String)key);
+        String trimmedKey = trim((String)key);
         caseInsensitiveIndex.remove(trimmedKey.toLowerCase());
         return super.remove(trimmedKey);
     }
     
+    /**
+     * Trim string of whitespace.
+     * 
+     * @param string string to trim
+     * @return trimmed string, or null if null was provided.
+     */
+    public static String trim(String string) {
+        return string == null ? null : string.trim();
+    }
 }
