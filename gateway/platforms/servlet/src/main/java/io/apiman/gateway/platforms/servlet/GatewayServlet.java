@@ -267,6 +267,7 @@ public abstract class GatewayServlet extends HttpServlet {
         readHeaders(srequest, request);
         srequest.setRawRequest(request);
         srequest.setRemoteAddr(request.getRemoteAddr());
+        srequest.setTransportSecure(request.isSecure());
         return srequest;
     }
 
