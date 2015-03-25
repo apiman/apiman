@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    
+  </head>
+
+  <body>
+  <div>
+    <div ng-include="'plugins/apiman/html/progress.include'"></div>
+    <div id="apiman-header" ng-include="'plugins/apiman/html/navbar.include'"></div>
+    <div ng-controller="Apiman.ServiceImplController" class="page container" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+      <div ng-include="'plugins/apiman/html/service/service_bc.include'"></div>
+      <!-- Entity Summary Row -->
+      <div ng-include="'plugins/apiman/html/service/service_entity.include'"></div>
+
+      <!-- Navigation + Content Row -->
+      <div class="row">
+        <!-- Left hand nav -->
+        <div ng-include="'plugins/apiman/html/service/service_tabs.include'"></div>
+        <!-- /Left hand nav -->
+
+        <!-- Content -->
+        <div class="col-md-10 apiman-entity-content">
+          <div class="col-md-8">
+            <div class="title" data-i18n-key="service-impl">Service Implementation</div>
+            <div class="apiman-label-faded">
+              <p data-i18n-key="service-impl-explanation">
+                Please provide us with details about the back-end service implementation
+                so that the API Gateway can successfully proxy Service requests.
+              </p>
+            </div>
+            <div>
+              <span data-i18n-key="api-endpoint-label">API Endpoint:</span>
+              <input ng-model="selectedService.endpoint" data-field="endpoint" class="form-control" type="text"></input>
+            </div>
+            <div class="apiman-divider-20">
+              <span class="clearfix" data-i18n-key="api-type-label">API Type:</span>
+              <select ng-model="selectedService.endpointType" class="selectpicker" data-field="endpointType">
+              	<option ng-repeat="type in typeOptions" value="{{type}}">{{type}}</option>
+              </select>
+            </div>
+            <!-- TBD
+            <div id="gateway-info">
+                <div class="title" data-i18n-key="gateway">Gateway</div>
+                <div>
+                  <span class="clearfix" data-i18n-key="publish-to">Publish To:</span>
+                  <select ng-model="gatewayId"  class="selectpicker" data-field="gateway">
+                    <option ng-repeat="gateway in gateways" value="{{gateway.id}}">{{ gateway.id }}</option>
+                  </select>
+                </div>
+            </div>
+            -->
+            <div apiman-permission="svcEdit" apiman-status="Created,Ready" class="actions" style="margin-top: 20px">
+              <button ng-click="saveService()" class="btn btn-primary" data-field="saveButton" data-i18n-key="save" placeholder="Saving..." data-icon="fa-cog" >Save</button>
+              <button class="btn btn-default" data-field="cancelButton" data-i18n-key="cancel">Cancel</button>
+            </div>
+          </div>
+        </div>
+        <!-- /Content -->
+      </div>
+    </div> <!-- /container -->
+  </div>
+  </body>
+</html>

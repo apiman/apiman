@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    
+  </head>
+
+  <body>
+  <div>
+    <div ng-include="'plugins/apiman/html/progress.include'"></div>
+    <div id="apiman-header" ng-include="'plugins/apiman/html/navbar.include'"></div>
+    <div ng-controller="Apiman.ServicePoliciesController" class="page container" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+      <div ng-include="'plugins/apiman/html/service/service_bc.include'"></div>
+      <!-- Entity Summary Row -->
+      <div ng-include="'plugins/apiman/html/service/service_entity.include'"></div>
+
+      <!-- Navigation + Content Row -->
+      <div class="row">
+        <!-- Left hand nav -->
+        <div ng-include="'plugins/apiman/html/service/service_tabs.include'"></div>
+        <!-- /Left hand nav -->
+        
+        <!-- Content -->
+        <div class="col-md-10 apiman-entity-content">
+          <div class="col-md-9">
+            <!-- Title and help text -->
+            <div class="title" data-i18n-key="service-policies">Service Policies</div>
+            <div class="description" data-i18n-key="policies-help">Here is a list of all Policies defined for this Service.  These Policies will be applied to all invocations of this Service by any Application, regardless of the Plan used in its Contract.</div>
+            <hr />
+            <!-- The list of policies -->
+            <div apiman-permission="svcEdit" apiman-status="Created,Ready" class="apiman-filters apiman-policies-filters">
+              <a data-field="toNewPolicy" data-i18n-key="add-policy" href="{{ pluginName }}/new-policy.html" class="btn btn-primary pull-right">Add Policy</a>
+            </div>
+            <div class="clearfix"></div>
+            <div class="apiman-policies" data-field="policies" ng-repeat="policy in policies">
+            
+                <div class="container-fluid apiman-summaryrow">
+                  <div class="row">
+                    <div class="col-md-1 col-no-padding">
+                      <i class="apiman-policy-icon fa fa-lock fa-fw movable"></i>
+                    </div>
+                    <div class="col-md-9 col-no-padding">
+                      <div>
+                        <span class="title"><a href="{{ pluginName }}/edit-policy.html?org={{ service.organization.id}}&policy={{ policy.id }}">{{ policy.name }}</a></span>
+                      </div>
+                      <div class="metaData">
+                        <span>Policy created by </span>
+                        <span><a href="{{ pluginName }}/user-orgs.html">{{ policy.createdBy }}</a></span>
+                        <span> on </span>
+                        <i class="fa fa-clock-o fa-inline"></i>
+                        <span>{{ policy.createdOn | date:'yyyy-MM-dd' }}</span>
+                      </div>
+                      <div class="description apiman-label-faded">
+                        {{ policy.description }}
+                      </div>
+                    </div>
+                    <div class="col-md-2 col-no-padding">
+                      <span class="actions"><button class="btn btn-default" ng-click="removePolicy( policy )">Remove</button></span>
+                    </div>
+                  </div>
+                  <hr />
+                </div>
+            
+            </div>
+          </div>
+        </div>
+        <!-- /Content -->
+      </div>
+    </div> <!-- /container -->
+  </div>
+  </body>
+</html>

@@ -2,8 +2,7 @@
         <div class="col-md-12">
           <ol class="breadcrumb" data-field="breadcrumb">
             <li><a href="{{ pluginName }}/dash.html"><i class="fa fa-home fa-fw"></i><span>Home</span></a></li>
-            <li><a href="{{ pluginName }}/org-plans.html?org={{ org.id }}"><i class="fa fa-shield fa-fw"></i><span>{{ org.name }}</span></a></li>
-            <li class="active"><i class="fa fa-bar-chart-o fa-fw"></i><span>{{ plan.name }}</span></li>
+            <li class="active"><i class="fa fa-shield fa-fw"></i><span>{{ org.name }}</span></li>
           </ol>
         </div>
       </div>

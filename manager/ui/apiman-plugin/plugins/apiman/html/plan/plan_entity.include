@@ -4,10 +4,10 @@
             <div class="title container-fluid">
               <i class="breadcrumb-icon fa fa-bar-chart-o"></i>
               <div class="entity emphasis">
-                <a data-field="thePlan" href="{{ pluginName }}/plan-overview.html?org={{plan.organization.id}}&plan={{plan.id}}" data-role="dummy">{{ plan.name }}</a>
+                <a data-field="thePlan" href="{{ pluginName }}/plan-overview.html?org={{plan.organization.id}}&plan={{plan.id}}">{{ plan.name }}</a>
               </div>
               <div class="versions">
-                <div class="btn-group apiman-entity-action" data-role="dummy" data-field="versions">
+                <div class="btn-group apiman-entity-action" data-field="versions">
                   <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                     Version: {{ selectedPlanVersion.version }}<span class="caret"></span>
                   </button>
@@ -24,17 +24,17 @@
         <div class="row apiman-entity-metadata">
           <div class="col-md-7" style="margin-bottom: 8px">
             <!-- Service Summary -->
-            <div class="description" data-field="description" data-role="dummy">{{ plan.description }}</div>
+            <div class="description" data-field="description">{{ plan.description }}</div>
             <div style="padding: 8px">
               <div class="entity-info-with-icon">
                 <i class="fa fa-clock-o fa-fw"></i>
                 <span class="apiman-label-faded" data-i18n-key="created-on">Created on</span>
-                <span data-field="createdOn" data-role="dummy" >{{ plan.createdOn | date:'yyyy-MM-dd' }}</span>
+                <span data-field="createdOn" >{{ plan.createdOn | date:'yyyy-MM-dd' }}</span>
               </div>
               <div class="entity-info-with-icon">
                 <i class="fa fa-user fa-fw"></i>
                 <span class="apiman-label-faded" data-i18n-key="created-by">Created by</span>
-                <span><a href="{{ pluginName }}/user-orgs.html?user={{ plan.createdBy }}" data-field="createdBy" data-role="dummy">{{ plan.createdBy }}</a></span>
+                <span><a href="{{ pluginName }}/user-orgs.html?user={{ plan.createdBy }}" data-field="createdBy">{{ plan.createdBy }}</a></span>
               </div>
             </div>
             <div class="entity-info-with-icon">
