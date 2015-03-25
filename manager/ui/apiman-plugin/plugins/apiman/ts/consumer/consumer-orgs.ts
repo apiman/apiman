@@ -6,6 +6,10 @@ module Apiman {
         ($q, $location, $scope, ApimanSvcs, PageLifecycle, Logger, CurrentUser) => {
             var params = $location.search();
             
+            if (params.q) {
+                $scope.orgName = params.q;
+            }
+            
             $scope.searchOrg = function(value) {
                 $location.search('q', value);
             };

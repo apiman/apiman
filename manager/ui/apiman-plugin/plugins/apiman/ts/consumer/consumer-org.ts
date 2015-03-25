@@ -3,12 +3,29 @@
 module Apiman {
 
     export var ConsumerOrgController = _module.controller("Apiman.ConsumerOrgController",
-        ['$q', '$scope', '$location', 'OrgSvcs', 'PageLifecycle', ($q, $scope, $location, OrgSvcs, PageLifecycle) => {
+        ['$q', '$scope', '$location', 'OrgSvcs', 'PageLifecycle', 'CurrentUser', 
+        ($q, $scope, $location, OrgSvcs, PageLifecycle, CurrentUser) => {
             var params = $location.search();
+            
+            $scope.filterServices = function(value) {
+                if (!value) {
+                    $scope.filteredServices = $scope.services;
+                } else {
+                    var filtered = [];
+                    for (var i = 0; i < $scope.services.length; i++) {
+                        var service = $scope.services[i];
+                        if (service.name.toLowerCase().indexOf(value) > -1) {
+                            filtered.push(service);
+                        }
+                    }
+                    $scope.filteredServices = filtered;
+                }
+            };
             
             var promise = $q.all({
                 org: $q(function(resolve, reject) {
                     OrgSvcs.get({ organizationId: params.org, entityType: '' }, function(org) {
+                        org.isMember = CurrentUser.isMember(org.id);
                         resolve(org);
                     }, function(error) {
                         reject(error);
@@ -23,31 +40,13 @@ module Apiman {
                 }),
                 services: $q(function(resolve, reject) {
                     OrgSvcs.query({ organizationId: params.org, entityType: 'services' }, function(services) {
+                        $scope.filteredServices = services;
                         resolve(services);
                     }, function(error) {
                         reject(error);
                     });
                 })
             });
-            
-            $scope.filterServices = function() {
-                OrgSvcs.query({ organizationId: params.org, entityType: 'services' }, function(services) {
-                    var matchedServices = [];
-                    if ($scope.serviceName != null) {
-                        for (var i = 0; i < services.length ; i++) {
-                            if (services[i].name.indexOf($scope.serviceName) >= 0) {
-                                matchedServices.push(services[i]);
-                            }                     
-                        }
-                        $scope.services = matchedServices;
-                    } else {
-                        $scope.services = services;
-                    }
-                }, function(error) {
-                    alert (error);
-                });
-                
-            }
             
             PageLifecycle.loadPage('ConsumerOrg', promise, $scope);
         }])
