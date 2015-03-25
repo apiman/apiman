@@ -10,14 +10,17 @@ module ApimanCurrentUser {
                     Logger.log("Successfully grabbed currentuser/info for {0}.", currentUser.username);
                     $rootScope.currentUser = currentUser;
                     var permissions = {};
+                    var memberships = {};
                     if (currentUser.permissions) {
                         for (var i = 0; i < currentUser.permissions.length; i++) {
                             var perm = currentUser.permissions[i];
                             var permid = perm.organizationId + '||' + perm.name;
                             permissions[permid] = true;
+                            memberships[perm.organizationId] = true;
                         }
                     }
                     $rootScope.permissions = permissions;
+                    $rootScope.memberships = memberships;
                     handler(currentUser);
                 }, function(error) {
                     if (errorHandler) {
@@ -52,6 +55,13 @@ module ApimanCurrentUser {
                     if (organizationId) {
                         var permid = organizationId + '||' + permission;
                         return $rootScope.permissions[permid];
+                    } else {
+                        return false;
+                    }
+                },
+                isMember: function(organizationId) {
+                    if (organizationId) {
+                        return $rootScope.memberships[organizationId];
                     } else {
                         return false;
                     }

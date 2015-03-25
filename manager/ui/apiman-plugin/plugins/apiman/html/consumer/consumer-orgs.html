@@ -3,7 +3,6 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
-    
   </head>
 
   <body>
@@ -27,9 +26,10 @@
           <p class="description" data-i18n-key="find-org-description">Use this page to find Organizations you may wish to join. Use this page to find Organizations you may wish to join. Use this page to find Organizations you may wish to join.</p>
         </div>
         <div class="col-md-6">
-          <input ng-model="orgName" ng-change="searchOrg()" type="text" class="form-control input-search" data-field="searchBox" data-i18n-key="searchfor" placeholder="Enter a word or phrase to search by..."></input>
-          &nbsp;
-          <button class="btn btn-primary" data-i18n-key="search" data-field="searchButton" ng-click="searchOrg()">Search</input>
+          <form ng-submit="searchOrg(orgName)">
+            <input ng-model="orgName" type="text" class="form-control input-search" data-field="searchBox" data-i18n-key="searchfor" placeholder="Enter a word or phrase to search by..."></input>
+            <button type="submit" class="btn btn-default btn-search" data-i18n-key="search" data-field="searchButton"">Search</input>
+          </form>
         </div>
         <div class="col-md-12">
           <hr />
@@ -39,19 +39,29 @@
       <!-- Search results -->
       <div class="row browse-items">
         <div class="col-md-12" data-field="orgs">
-          <div class="count">
-            Found {{ orgs.length }} matching organizations.
-          </div>
 
-          <div class="item" ng-repeat="org in orgs">
-            <div class="title"><i class="fa fa-shield icon"></i><a href="{{ pluginName }}/consumer-org.html?org={{ org.id }}">{{ org.name }}</a></div>
-            <div class="description" title="{{ org.description }}">{{ org.description }}</div>
-            <div class="actions">
-              <button class="btn btn-default">Request Membership</button>
+          <div class="apiman-no-content container-fluid" ng-hide="orgs.length > 0">
+            <div class="row">
+              <div class="col-md-9">
+                <p data-i18n-key="consumer-no-orgs-found" class="apiman-no-entities-description">No organizations found. Either no organizations matched the query or you haven't queried yet!</p>
+              </div>
+              <div class="col-md-3"></div>
             </div>
-            <a href="{{ pluginName }}/org-services.html" class="ismember" title="You are already a member of this Organization."></a>
           </div>
 
+          <div ng-show="orgs.length > 0">
+	        <div class="count">
+	          Found {{ orgs.length }} matching organizations.
+	        </div>
+	        <div class="item" ng-repeat="org in orgs">
+	          <div class="title"><i class="fa fa-shield icon"></i><a href="{{ pluginName }}/consumer-org.html?org={{ org.id }}">{{ org.name }}</a></div>
+	          <div class="description" title="{{ org.description }}">{{ org.description }}</div>
+<!-- 	          <div class="actions"> -->
+<!-- 	            <button class="btn btn-default">Request Membership</button> -->
+<!-- 	          </div> -->
+	          <a ng-show="org.isMember" href="{{ pluginName }}/org-plans.html?org={{ org.id }}" class="ismember" title="You are already a member of this Organization."></a>
+	        </div>
+          </div>
         </div>
       </div>
       

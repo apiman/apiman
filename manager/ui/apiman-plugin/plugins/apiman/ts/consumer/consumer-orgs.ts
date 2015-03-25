@@ -2,28 +2,34 @@
 module Apiman {
 
     export var ConsumerOrgsController = _module.controller("Apiman.ConsumerOrgsController",
-        ['$q', '$location', '$scope', 'ApimanSvcs', 'PageLifecycle', ($q, $location, $scope, ApimanSvcs, PageLifecycle) => {
-
-            $scope.orgs = [];
+        ['$q', '$location', '$scope', 'ApimanSvcs', 'PageLifecycle', 'Logger', 'CurrentUser',
+        ($q, $location, $scope, ApimanSvcs, PageLifecycle, Logger, CurrentUser) => {
+            var params = $location.search();
             
-            $scope.searchOrg = function() { 
-                var body:any = {};
-                body.filters = [];
-                body.filters.push( {"name": "name", "value": $scope.orgName + "%", "operator": "like"});
-                var searchStr = JSON.stringify(body);
-                
-                ApimanSvcs.save({ entityType: 'search', secondaryType: 'organizations' }, searchStr, function(reply) {
-                    $scope.orgs = reply.beans;
-                }, function(error) {
-                    if (error.status == 409) {
-                        $location.path('apiman/error-409.html');
-                    } else {
-                        alert("ERROR=" + error.status + " " + error.statusText);
-                    }
-                });
+            $scope.searchOrg = function(value) {
+                $location.search('q', value);
             };
             
-            PageLifecycle.loadPage('ConsumerOrgs', undefined, $scope);
+            var promise = $q.all({
+                orgs: $q(function(resolve, reject) {
+                    if (params.q) {
+                        var body:any = {};
+                        body.filters = [];
+                        body.filters.push( {"name": "name", "value": params.q + "%", "operator": "like"});
+                        var searchStr = JSON.stringify(body);
+                        ApimanSvcs.save({ entityType: 'search', secondaryType: 'organizations' }, searchStr, function(result) { 
+                            angular.forEach(result.beans, function(org) {
+                                org.isMember = CurrentUser.isMember(org.id);
+                            });
+                            resolve(result.beans);
+                        }, reject);
+                    } else {
+                        resolve([]);
+                    }
+                })
+            });
+            
+            PageLifecycle.loadPage('ConsumerOrgs', promise, $scope);
         }]);
 
 }

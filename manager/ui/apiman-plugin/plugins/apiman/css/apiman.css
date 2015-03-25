@@ -8,6 +8,11 @@ body {
   text-transform: capitalize;
 }
 
+.btn-search {
+  margin-left: 5px;
+  line-height: 22px;
+}
+
 .grabber {
   background-image: url(images/grabber.png);
   background-repeat: repeat-y;
@@ -827,7 +832,6 @@ ol.breadcrumb {
 }
 .apiman-entity-new .btn-search {
   float: left;
-  margin-left: 5px;
 }
 .apiman-entity-new h3 hr {
   margin: 5px 0px 20px 0px;
@@ -1435,8 +1439,6 @@ textarea.apiman-endpoint {
 }
 .modal-select-service .btn-search {
   float: left;
-  margin-left: 5px;
-  line-height: 22px;
 }
 .apiman-entity-new h3 hr {
   margin: 5px 0px 20px 0px;
