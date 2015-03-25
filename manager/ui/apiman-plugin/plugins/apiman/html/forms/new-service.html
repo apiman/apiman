@@ -7,41 +7,9 @@
   </head>
 
   <body>
-
-    <!-- Top header/nav bar -->
-    <div id="apiman-header">
-      <div class="main-header container">
-        <div class="row">
-          <div class="col-md-12">
-            <div class="logo"></div>
-            <input class="search no-phone" type="text" placeholder="Quick service search..."></input>
-            <ul class="user-menu pull-right">
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                  <span class="pficon pficon-user"></span>
-                  <span>Bruce Wayne</span>
-                  <b class="caret"></b>
-                </a>
-                <ul class="dropdown-menu">
-                  <li>
-                    <a href="user-orgs.html">Home</a>
-                  </li>
-                  <li class="divider"></li>
-                  <li>
-                    <a data-field="toProfile" href="settings-profile.html" data-i18n-key="profile">Profile</a>
-                  </li>
-                  <li>
-                    <a href="#">Logout</a>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="container apiman-entity-new page" data-field="page">
+    <div ng-include="'plugins/apiman/html/progress.include'"></div>
+    <div id="apiman-header" ng-include="'plugins/apiman/html/navbar.include'"></div>
+    <div ng-controller="Apiman.NewServiceController" class="container apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div class="row">
         <h2 class="title" data-i18n-key="new-service">New Service</h2>
       </div>
@@ -54,51 +22,59 @@
         <hr/>
       </div>
       <!-- Choose org and service name -->
-      <div class="row">
-        <dl class="org">
-          <dt data-i18n-key="organization">Organization</dt>
-          <dd>
-            <div class="btn-group" data-field="orgSelector">
-              <button type="button" id="selector-org" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                <span data-field="selectorLabel" id="selector-org-value" data-i18n-key="select-org">Select Organization</span> &nbsp;&nbsp;<span class="caret"></span>
-              </button>
-              <ul class="dropdown-menu" data-field="organizations">
-                <li><a href="#" onclick="$('#selector-org-value').text('JBoss Overlord'); $('#apiman-entityname').focus()">JBoss Overlord</a></li>
-                <li><a href="#" onclick="$('#selector-org-value').text('Apereo Bedework'); $('#apiman-entityname').focus()">Apereo Bedework</a></li>
-              </ul>
-            </div>
-          </dd>
-        </dl>
-        <dl class="slash">
-          <dt>&nbsp;</dt>
-          <dd>
-            <span class="divider">/</span>
-          </dd>
-        </dl>
-        <dl class="name">
-          <dt data-i18n-key="service-name">Service Name</dt>
-          <dd>
-            <input data-field="name" type="text" class="form-control entityname" id="apiman-entityname" placeholder="Enter service name..."></input>
-          </dd>
-        </dl>
+      <div ng-show="organizations.length > 0">
+        <div class="row">
+          <dl class="org">
+            <dt data-i18n-key="organization">Organization</dt>
+            <dd>
+              <div class="btn-group" data-field="orgSelector">
+                <button type="button" id="selector-org" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                  <span data-field="selectorLabel" id="selector-org-value" data-i18n-key="select-org">{{selectedOrg.name}}</span> &nbsp;&nbsp;<span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" data-field="organizations">
+                   <li ng-repeat="org in organizations"><a href="#" ng-click="setOrg( org )">{{ org.name }}</a></li>
+                </ul>
+              </div>
+            </dd>
+          </dl>
+          <dl class="slash">
+            <dt>&nbsp;</dt>
+            <dd>
+              <span class="divider">/</span>
+            </dd>
+          </dl>
+          <dl class="name">
+            <dt data-i18n-key="service-name">Service Name</dt>
+            <dd>
+              <input ng-model="service.name" data-field="name" type="text" class="form-control entityname" id="apiman-entityname" placeholder="Enter service name..."></input>
+            </dd>
+          </dl>
+        </div>
+        <!-- Initial Service Version -->
+        <div class="row">
+          <dl>
+            <dt data-i18n-key="initial-version">Initial Version</dt>
+            <dd>
+              <input ng-model="service.initialVersion" data-field="version" type="text" class="form-control version" id="apiman-version" value="1.0"></input>
+            </dd>
+          </dl>
+        </div>
+        <!-- Description of service -->
+        <div class="row">
+          <dl>
+            <dt data-i18n-key="description">Description</dt>
+            <dd>
+              <input ng-model="service.description" data-field="description" type="text" class="form-control description" id="apiman-description" placeholder="Enter service description (optional)..."></input>
+            </dd>
+          </dl>
+        </div>
       </div>
-      <!-- Initial Service Version -->
-      <div class="row">
-        <dl>
-          <dt data-i18n-key="initial-version">Initial Version</dt>
-          <dd>
-            <input data-field="version" type="text" class="form-control version" id="apiman-version" value="1.0"></input>
-          </dd>
-        </dl>
-      </div>
-      <!-- Description of service -->
-      <div class="row">
-        <dl>
-          <dt data-i18n-key="description">Description</dt>
-          <dd>
-            <input data-field="description" type="text" class="form-control description" id="apiman-description" placeholder="Enter service description (optional)..."></input>
-          </dd>
-        </dl>
+      <div ng-hide="organizations.length > 0" class="apiman-no-content container-fluid">
+        <div class="row">
+          <div class="col-md-12">
+            <p class="apiman-no-entities-description">You don't have permission to create a Service in any of your Organizations (or you aren't in any orgs)!  Please become a member of an existing Organization or create a new one before trying to create a Service.</p>
+          </div>
+        </div>
       </div>
       <!-- HR -->
       <div class="row hr-row">
@@ -106,7 +82,7 @@
       </div>
       <!-- Create Button -->
       <div class="row">
-        <button apiman-action-btn="" class="btn btn-primary" data-field="createButton" data-i18n-key="create-service" placeholder="Creating..." data-icon="fa-cog">Create Service</button>
+        <button ng-disabled="!service.name || !service.initialVersion || !selectedOrg" apiman-action-btn="" class="btn btn-primary" data-field="createButton" data-i18n-key="create-service" placeholder="Creating..." data-icon="fa-cog" ng-click="saveNewService()">Create Service</button>
         <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" data-i18n-key="cancel">Cancel</a>
       </div>
     </div> <!-- /container -->
