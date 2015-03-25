@@ -3,8 +3,8 @@
 module Apiman {
 
     export var EditRoleController = _module.controller("Apiman.EditRoleController",
-        ['$q', '$scope', '$location', 'ApimanSvcs', 'PageLifecycle', 'Logger',
-        ($q, $scope, $location, ApimanSvcs, PageLifecycle, Logger) => {
+        ['$q', '$scope', '$location', 'ApimanSvcs', 'PageLifecycle', 'Logger', 'Dialogs',
+        ($q, $scope, $location, ApimanSvcs, PageLifecycle, Logger, Dialogs) => {
             var params = $location.search();
             var allPermissions     = ['orgView', 'orgEdit', 'orgAdmin',
                                       'planView','planEdit','planAdmin',
@@ -70,15 +70,19 @@ module Apiman {
             
             $scope.deleteRole  = function() {
                 $scope.deleteButton.state = 'in-progress';
-                ApimanSvcs.delete({ entityType: 'roles', secondaryType: $scope.role.id }, function(reply) {
-                    $location.path(pluginName + '/admin-roles.html');
-                }, function(error) {
-                    if (error.status == 409) {
-                        $location.path('apiman/error-409.html');
-                    } else {
-                        alert("ERROR=" + error.status + " " + error.statusText);
-                    }
-                    $scope.deleteButton.state = 'error';
+                Dialogs.confirm('Confirm Delete Role', 'Do you really want to delete this role?', function() {
+                    ApimanSvcs.delete({ entityType: 'roles', secondaryType: $scope.role.id }, function(reply) {
+                        $location.path(pluginName + '/admin-roles.html');
+                    }, function(error) {
+                        if (error.status == 409) {
+                            $location.path('apiman/error-409.html');
+                        } else {
+                            alert("ERROR=" + error.status + " " + error.statusText);
+                        }
+                        $scope.deleteButton.state = 'error';
+                    });
+                }, function() {
+                    $scope.deleteButton.state = 'complete';
                 });
             }
             

@@ -969,7 +969,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw ExceptionFactory.notAuthorizedException();
 
         // Make sure the app version exists;
-        getAppVersion(organizationId, applicationId, version);
+        ApplicationVersionBean app = getAppVersion(organizationId, applicationId, version);
+        if (app.getStatus() == ApplicationStatus.Registered || app.getStatus() == ApplicationStatus.Retired) {
+            throw ExceptionFactory.invalidApplicationStatusException();
+        }
 
         try {
             storage.beginTx();
@@ -1659,7 +1662,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw ExceptionFactory.notAuthorizedException();
 
         // Make sure the service exists
-        getServiceVersion(organizationId, serviceId, version);
+        ServiceVersionBean service = getServiceVersion(organizationId, serviceId, version);
+        if (service.getStatus() == ServiceStatus.Published || service.getStatus() == ServiceStatus.Retired) {
+            throw ExceptionFactory.invalidServiceStatusException();
+        }
 
         try {
             storage.beginTx();
@@ -2163,7 +2169,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw ExceptionFactory.notAuthorizedException();
 
         // Make sure the plan version exists
-        getPlanVersion(organizationId, planId, version);
+        PlanVersionBean plan = getPlanVersion(organizationId, planId, version);
+        if (plan.getStatus() == PlanStatus.Locked) {
+            throw ExceptionFactory.invalidPlanStatusException();
+        }
 
         try {
             storage.beginTx();
