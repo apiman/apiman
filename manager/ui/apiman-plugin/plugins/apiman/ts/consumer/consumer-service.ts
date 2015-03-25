@@ -5,66 +5,68 @@ module Apiman {
     export var ConsumerSvcController = _module.controller("Apiman.ConsumerSvcController",
         ['$q', '$scope', '$location', 'OrgSvcs', 'PageLifecycle', ($q, $scope, $location, OrgSvcs, PageLifecycle) => {
             var params = $location.search();
-            $scope.hasVersions = false;
-            var promise = $q.all({
-                service: $q(function(resolve, reject) {
-                    OrgSvcs.get({ organizationId: params.org, entityType: 'services', entityId: params.service }, function(service) {
-                        resolve(service);
-                    }, function(error) {
-                        reject(error);
-                    });
-                }),
-                versions: $q(function(resolve, reject) {
-                    OrgSvcs.query({ organizationId: params.org, entityType: 'services', entityId: params.service, versionsOrActivity: 'versions' }, function(versions) {
-                        resolve(versions);
-                        if (versions.length > 0) {
-                            $scope.hasVersions = true;
-                            if (params.version != null) {
-                                for (var i = 0; i < versions.length; i++) {
-                                    if (params.version == versions[i].version) {
-                                        $scope.setVersion(versions[i]);
-                                        break;
-                                    }
-                                }
-                            } else {
-                                $scope.setVersion(versions[0]);
-                            }
-                        }
-                    }, function(error) {
-                        reject(error);
-                    });
-                }),
-            });
+            $scope.params = params;
+            $scope.chains = {};
             
-            $scope.setVersion = function(service) {
-                $scope.selectedServiceVersion = service;
-                OrgSvcs.query({ organizationId: params.org, entityType: 'services', entityId: service.id, versionsOrActivity: 'versions', version: service.version, policiesOrActivity: 'plans' }, function(reply) {
-                    for (var i=0; i<reply.length; i++) {
-                        var plan = reply[i];
-                        OrgSvcs.query({ organizationId: params.org, entityType: 'services', entityId: service.id, versionsOrActivity: 'versions', version: service.version, policiesOrActivity: 'plans', policyId: plan.planId, policyChain : 'policyChain' }, function(policyReply) {
-                            var policies = policyReply;
-                            reply[i].policies = policies;  
-                        }, function(error) {
-                            if (error.status == 409) {
-                                $location.path('apiman/error-409.html');
-                            } else {
-                                alert("ERROR=" + error.status + " " + error.statusText);
-                            }
-                        });
-                    }
-                    $scope.plans = reply;
-                }, function(error) {
-                    if (error.status == 409) {
-                        $location.path('apiman/error-409.html');
-                    } else {
-                        alert("ERROR=" + error.status + " " + error.statusText);
-                    }
-                });
-                
-                $location.path(Apiman.pluginName + "/consumer-service.html").search('org', params.org).search('service', params.service).search('version', service.version);
+            $scope.getPolicyChain = function(plan) {
+                var planId = plan.planId;
+                if (!$scope.chains[planId]) {
+                    OrgSvcs.get({ organizationId: params.org, entityType: 'services', entityId: params.service, versionsOrActivity: 'versions', version: params.version, policiesOrActivity: 'plans', policyId: plan.planId, policyChain : 'policyChain' }, function(policyReply) {
+                        $scope.chains[planId] = policyReply.policies;
+                    }, function(error) {
+                        $scope.chains[planId] = [];
+                    });
+                }
             };
             
-            PageLifecycle.loadPage('ConsumerSvc', promise, $scope);
+            var dataPackets:any = {
+                service: $q(function(resolve, reject) {
+                    OrgSvcs.get({ organizationId: params.org, entityType: 'services', entityId: params.service }, resolve, reject);
+                })
+            };
+            var promise = undefined;
+            if (params.version) {
+                dataPackets.version = $q(function(resolve, reject) {
+                    OrgSvcs.get({ organizationId: params.org, entityType: 'services', entityId: params.service, versionsOrActivity: 'versions', version: params.version }, resolve, reject);
+                });
+                dataPackets.versions = $q(function(resolve, reject) {
+                    OrgSvcs.query({ organizationId: params.org, entityType: 'services', entityId: params.service, versionsOrActivity: 'versions' }, function(versions) {
+                        angular.forEach(versions, function(version) {
+                            if (params.version == version.version) {
+                                $scope.selectedServiceVersion = version;
+                            }
+                        });
+                        resolve(versions);
+                    }, reject);
+                });
+                dataPackets.publicEndpoint = $q(function(resolve, reject) {
+                    OrgSvcs.get({ organizationId: params.org, entityType: 'services', entityId: params.service, versionsOrActivity: 'versions', version: params.version, policiesOrActivity: 'endpoint' }, resolve, function(error) {
+                        resolve({
+                            managedEndpoint: 'Not available.'
+                        });
+                    });
+                });
+                dataPackets.plans = $q(function(resolve, reject) {
+                    OrgSvcs.query({ organizationId: params.org, entityType: 'services', entityId: params.service, versionsOrActivity: 'versions', version: params.version, policiesOrActivity: 'plans' }, resolve, reject);
+                });
+            } else {
+                dataPackets.versions = $q(function(resolve, reject) {
+                    OrgSvcs.query({ organizationId: params.org, entityType: 'services', entityId: params.service, versionsOrActivity: 'versions' }, function(versions) {
+                        if (versions.length > 0) {
+                            $location.search('version', versions[0].version).replace();
+                        }
+                        resolve(versions);
+                    }, reject);
+                });
+            }
+            
+            $scope.setVersion = function(serviceVersion) {
+                $location.search('version', serviceVersion.version);
+            };
+
+            var promise = $q.all(dataPackets);
+            
+            PageLifecycle.loadPage('ConsumerService', promise, $scope);
         }])
 
 }
