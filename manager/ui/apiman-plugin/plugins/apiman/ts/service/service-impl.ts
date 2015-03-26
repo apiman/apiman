@@ -17,9 +17,6 @@ module Apiman {
                 dataLoad = angular.extend(dataLoad, {
                     serviceVersion: $q(function(resolve, reject) {
                         OrgSvcs.get({ organizationId: params.org, entityType: 'services', entityId: params.service, versionsOrActivity: 'versions', version: params.version }, function(serviceVersion) {
-                            $scope.updatedService.endpoint = serviceVersion.endpoint;
-                            $scope.updatedService.endpointType = serviceVersion.endpointType;
-                            $scope.isDirty = false;
                             resolve(serviceVersion);
                         }, function(error) {
                             reject(error);
@@ -49,6 +46,7 @@ module Apiman {
             $scope.reset = function() {
                 $scope.updatedService.endpoint = $scope.serviceVersion.endpoint;
                 $scope.updatedService.endpointType = $scope.serviceVersion.endpointType;
+                $scope.isDirty = false;
             };
              
             $scope.saveService = function() {
@@ -69,7 +67,7 @@ module Apiman {
                 });
             };
             
-            PageLifecycle.loadPage('ServiceImpl', promise, $scope);
+            PageLifecycle.loadPage('ServiceImpl', promise, $scope, $scope.reset);
         }])
 
 }
