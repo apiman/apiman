@@ -245,8 +245,10 @@ module Apiman {
                 },
                 link: function(scope, element, attrs) {
                     scope.pluginName = $rootScope.pluginName;
-                    scope.hasMore = scope.auditEntries.length >= 20;
-                    scope.entryTypeClasses = entryTypeClasses;
+                    scope.hasMore = true;
+                    scope.getEntryIcon = function(entry) {
+                        return entryTypeClasses[entry.entityType];
+                    };
                     scope.getMore = function() {
                         scope.getMoreButton.state = 'in-progress';
                         scope.next(function(newEntries) {
