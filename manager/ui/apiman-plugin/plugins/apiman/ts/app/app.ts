@@ -56,7 +56,7 @@ module Apiman {
             
             $scope.setVersion = function(app) {
                 $scope.selectedAppVersion = app;
-                $location.url(Apiman.pluginName + "/app-overview.html").search('org', params.org).search('app', params.app).search('version', app.version);
+                $location.search('version', app.version);
             };
 
             $scope.registerApp = function(app) {

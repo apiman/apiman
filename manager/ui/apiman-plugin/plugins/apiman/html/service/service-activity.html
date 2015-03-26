@@ -3,7 +3,6 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
-    
   </head>
 
   <body>
@@ -23,6 +22,10 @@
 
         <!-- Content -->
         <div class="col-md-10 apiman-entity-content">
+          <!-- Title and help text -->
+          <div class="title" data-i18n-key="service-activity">Service Activity</div>
+          <div class="description" data-i18n-key="service-activity-help">The list below is all of the activity (configuration changes made by apiman users) associated with this Service.</div>
+          <hr />
           <apiman-activity model="auditEntries" next="getNextPage"/> 
         </div>
         <!-- /Content -->
