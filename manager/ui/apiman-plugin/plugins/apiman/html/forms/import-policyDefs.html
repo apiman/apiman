@@ -38,22 +38,22 @@
         </div>
         <!-- Import Button -->
         <div class="row">
-          <button class="btn btn-primary" data-field="importButton" data-i18n-key="import-policyDef" placeholder="Importing..." data-icon="fa-cog"  ng-click="parseJSON()">Parse JSON</button>
+          <button class="btn btn-primary" data-i18n-key="import" placeholder="Importing..." data-icon="fa-cog"  ng-click="parseJSON()">Import</button>
           <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" data-i18n-key="cancel">Cancel</a>
         </div>
       </div>
      
       <div id="confirmPage" ng-show="isConfirm">
         <div class="row">
-          <table class="table table-responsive" data-field="policyDefs">
+          <table class="table table-striped table-bordered table-hover table-responsive" data-field="policyDefs">
             <thead>
               <tr>
                 <th data-i18n-key="policy">Policy</th>
                 <th class="no-phone" data-i18n-key="implementation">Implementation</th>
               </tr>
             </thead>
-            <tbody ng-repeat="policyDef in policyDefs">
-              <tr>
+            <tbody>
+              <tr ng-repeat="policyDef in policyDefs">
                 <td><i class="fa fa-{{policyDef.icon}} fa-fw"></i><span>{{ policyDef.name }}</span></td>
                 <td class="no-phone">{{ policyDef.policyImpl }}</td>
               </tr>
@@ -65,7 +65,7 @@
         </div>
         <!-- Confirm Button  -->
         <div class="row">
-          <button class="btn btn-primary" data-field="yesButton" data-i18n-key="yes" placeholder="Importing..." data-icon="fa-cog" ng-click="importPolicyDefs()">Yes</button>
+          <button apiman-action-btn="" class="btn btn-primary" data-field="yesButton" data-i18n-key="yes" placeholder="Importing..." data-icon="fa-cog" ng-click="importPolicyDefs()">Yes</button>
           <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="noButton" data-i18n-key="no">No</a>
         </div>
        

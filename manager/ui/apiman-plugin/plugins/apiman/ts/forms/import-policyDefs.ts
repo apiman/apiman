@@ -3,8 +3,8 @@
 module Apiman {
 
     export var ImportPolicyDefsController = _module.controller("Apiman.ImportPolicyDefsController",
-        ['$q', '$scope', '$location', 'ApimanSvcs', 'PageLifecycle', ($q, $scope, $location, ApimanSvcs, PageLifecycle) => {
-            
+        ['$q', '$scope', '$location', 'ApimanSvcs', 'PageLifecycle',
+        ($q, $scope, $location, ApimanSvcs, PageLifecycle) => {
             var params = $location.search();
             $scope.isData = true;
             $scope.isConfirm = false;
@@ -23,19 +23,19 @@ module Apiman {
             }
             
             $scope.importPolicyDefs = function() {
-                for (var i=0; i<$scope.policyDefs.length; i++) {
-                    ApimanSvcs.save({ entityType: 'policyDefs'}, $scope.policyDefs[i], function(reply) {
-                       
-                    }, function(error) {
-                        if (error.status == 409) {
-                            $location.url('apiman/error-409.html');
-                        } else {
-                            $scope.createButton.state = 'error';
-                            alert("ERROR=" + error.status + " " + error.statusText);
-                        }
-                    });
+                $scope.yesButton.state = 'in-progress';
+                var promises = [];
+                angular.forEach($scope.policyDefs, function(def) {
+                    promises.push($q(function(resolve, reject) {
+                        ApimanSvcs.save({ entityType: 'policyDefs'}, def, resolve, reject);
+                    }));
+                });
+                $q.all(promises).then(function() {
                     $location.url(pluginName + '/admin-policyDefs.html');
-                }
+                }, function(error) {
+                    $scope.yesButton.state = 'error';
+                    // TODO handle ther error here
+                });
             }
             
             PageLifecycle.loadPage('ImportPolicyDefs', undefined, $scope);
