@@ -5,7 +5,6 @@ module Apiman {
         ['$q', '$location', '$scope', 'ApimanSvcs', 'PageLifecycle', 'Logger', 'CurrentUser',
         ($q, $location, $scope, ApimanSvcs, PageLifecycle, Logger, CurrentUser) => {
             var params = $location.search();
-            
             if (params.q) {
                 $scope.orgName = params.q;
             }
@@ -19,7 +18,7 @@ module Apiman {
                     if (params.q) {
                         var body:any = {};
                         body.filters = [];
-                        body.filters.push( {"name": "name", "value": params.q + "%", "operator": "like"});
+                        body.filters.push( {"name": "name", "value": "%" + params.q + "%", "operator": "like"});
                         var searchStr = JSON.stringify(body);
                         ApimanSvcs.save({ entityType: 'search', secondaryType: 'organizations' }, searchStr, function(result) { 
                             angular.forEach(result.beans, function(org) {
