@@ -3,8 +3,8 @@
 module Apiman {
 
  export var ServicePoliciesController = _module.controller("Apiman.ServicePoliciesController",
-        ['$q', '$scope', '$location', '$route', 'PageLifecycle', 'ServiceEntityLoader', 'OrgSvcs', 'ApimanSvcs', 'Dialogs',
-        ($q, $scope, $location, $route, PageLifecycle, ServiceEntityLoader, OrgSvcs, ApimanSvcs, Dialogs) => {
+        ['$q', '$scope', '$location', 'PageLifecycle', 'ServiceEntityLoader', 'OrgSvcs', 'Dialogs',
+        ($q, $scope, $location, PageLifecycle, ServiceEntityLoader, OrgSvcs, Dialogs) => {
             var params = $location.search();
             $scope.organizationId = params.org;
             $scope.tab = 'policies';

@@ -104,10 +104,11 @@ module Apiman {
             };
             $scope.$watch('config', validate, true);
             
+            if (!$scope.config.ipList) {
+                $scope.config.ipList = [];
+            }
+            
             $scope.add = function(ip) {
-                if (!$scope.config.ipList) {
-                    $scope.config.ipList = [];
-                }
                 $scope.remove(ip);
                 $scope.config.ipList.push(ip);
                 $scope.selectedIP =  [ ip ];
