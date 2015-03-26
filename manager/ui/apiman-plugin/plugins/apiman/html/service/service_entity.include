@@ -16,7 +16,7 @@
                     <li ng-repeat="serviceVersion in versions"><a href="#" ng-click="setVersion( serviceVersion )">{{ serviceVersion.version }}</a></li>
                   </ul>
                 </div>
-                <a apiman-permission="appEdit" href="{{ pluginName }}/new-serviceversion.html?org={{ org.id }}&service={{ service.id}}" class="btn btn-primary apiman-entity-action" data-field="toNewServiceVersion" data-i18n-key="new-version">New Version</a>
+                <a apiman-permission="appEdit" href="{{ pluginName }}/new-serviceversion.html?org={{ service.organization.id }}&service={{ service.id}}&amp;version={{versions[versions.length-1].version}}" class="btn btn-primary apiman-entity-action" data-i18n-key="new-version">New Version</a>
               </div>
             </div>
             <hr />
@@ -40,23 +40,23 @@
             </div>
             <div class="entity-info-with-icon">
               <span data-i18n-key="status-label">Status:</span>
-              <span class="apiman-label apiman-label-warning" data-field="status">{{ selectedServiceVersion.status }}</span>
+              <span apiman-entity-status="" />
             </div>
           </div>
           <div class="col-md-5" apiman-permission="svcEdit">
             <div>
               <div apiman-status="Published">
-                <a data-i18n-key="ttdo-new-svc-contract" data-field="ttd_toNewContract" href="new-contract.html">Link my Application to this Service (New Contract)</a>
+                <a data-i18n-key="ttdo-new-svc-contract" data-field="ttd_toNewContract" href="{{ pluginName }}/new-contract.html?svc={{ params.service }}&amp;svcorg={{ params.org }}&amp;svcv={{ params.version }}">Link my Application to this Service (New Contract)</a>
               </div>
               <div>
-                <a data-i18n-key="ttdo-new-svc-version" data-field="ttd_toNewServiceVersion" href="new-serviceversion.html">Create a new version of this Service (New Version)</a>
+                <a data-i18n-key="ttdo-new-svc-version" data-field="ttd_toNewServiceVersion" href="{{ pluginName }}/new-serviceversion.html?org={{ service.organization.id }}&service={{ service.id}}&amp;version={{versions[versions.length-1].version}}">Create a new version of this Service (New Version)</a>
               </div>
             </div>
             <!-- The Publish Action -->
             <div class="apiman-divider-40"></div>
             <div class="">
-              <button class="btn btn-primary" data-field="publishButton" data-i18n-key="publish" placeholder="Publishing..." data-icon="fa-cog">Publish</button>
-              <button class="btn btn-warning" data-field="retireButton" data-i18n-key="retire" placeholder="Retiring..." data-icon="fa-cog">Retire</button>
+              <button ng-disabled="entityStatus == 'Created'" apiman-action-btn="" apiman-status="Created,Ready" class="btn btn-primary" data-field="publishButton" data-i18n-key="publish" placeholder="Publishing..." data-icon="fa-cog" ng-click="publishService(service)">Publish</button>
+              <button apiman-action-btn="" apiman-status="Published" class="btn btn-warning" data-field="retireButton" data-i18n-key="retire" placeholder="Retiring..." data-icon="fa-cog" ng-click="retireService(service)">Retire</button>
             </div>
           </div>
         </div>

@@ -7,6 +7,9 @@ module Apiman {
             return {
                 getCommonData: function($scope, $location) {
                     var params = $location.search();
+                    $scope.setEntityStatus = function(status) {
+                        $scope.entityStatus = status;
+                    };
                     return {
                         org: $q(function(resolve, reject) {
                             OrgSvcs.get({ organizationId: params.org }, function(org) {
@@ -36,7 +39,7 @@ module Apiman {
                                     $scope.selectedAppVersion = versions[0];
                                 }
                                 $rootScope.mruApp = $scope.selectedAppVersion;
-                                $scope.entityStatus = $scope.selectedAppVersion.status;
+                                $scope.setEntityStatus($scope.selectedAppVersion.status);
                             }, function(error) {
                                 reject(error);
                             });
@@ -47,7 +50,8 @@ module Apiman {
         }]);
 
     export var AppEntityController = _module.controller("Apiman.AppEntityController",
-        ['$q', '$scope', '$location', 'ActionSvcs', 'Logger', ($q, $scope, $location, ActionSvcs, Logger) => {
+        ['$q', '$scope', '$location', 'ActionSvcs', 'Logger', 'Dialogs', 
+        ($q, $scope, $location, ActionSvcs, Logger, Dialogs) => {
             var params = $location.search();
             
             $scope.setVersion = function(app) {
@@ -66,10 +70,7 @@ module Apiman {
                 ActionSvcs.save(registerAction, function(reply) {
                     $scope.selectedAppVersion.status = 'Registered';
                     $scope.registerButton.state = 'complete';
-                    // need to set the entity status up a couple of scopes to get proper
-                    // full-page propagation of the change event (this controller has its 
-                    // own scope plus a scope from the ng-include)
-                    $scope.$parent.$parent.entityStatus = $scope.selectedAppVersion.status;
+                    $scope.setEntityStatus($scope.selectedAppVersion.status);
                 }, function(error) {
                     $scope.registerButton.state = 'error';
                     alert("ERROR=" + error);
@@ -78,22 +79,23 @@ module Apiman {
             
             $scope.unregisterApp = function(app) {
                 $scope.unregisterButton.state = 'in-progress';
-                var unregisterAction = {
-                    type: 'unregisterApplication',
-                    entityId: params.app,
-                    organizationId: params.org,
-                    entityVersion: params.version
-                };
-                ActionSvcs.save(unregisterAction, function(reply) {
-                    $scope.selectedAppVersion.status = 'Retired';
+                Dialogs.confirm('Confirm Unregister App', 'Do you really want to unregister the application?  This cannot be undone.', function() {
+                    var unregisterAction = {
+                        type: 'unregisterApplication',
+                        entityId: params.app,
+                        organizationId: params.org,
+                        entityVersion: params.version
+                    };
+                    ActionSvcs.save(unregisterAction, function(reply) {
+                        $scope.selectedAppVersion.status = 'Retired';
+                        $scope.unregisterButton.state = 'complete';
+                        $scope.setEntityStatus($scope.selectedAppVersion.status);
+                    }, function(error) {
+                        $scope.unregisterButton.state = 'error';
+                        alert("ERROR=" + error);
+                    });
+                }, function() {
                     $scope.unregisterButton.state = 'complete';
-                    // need to set the entity status up a couple of scopes to get proper
-                    // full-page propagation of the change event (this controller has its 
-                    // own scope plus a scope from the ng-include)
-                    $scope.$parent.$parent.entityStatus = $scope.selectedAppVersion.status;
-                }, function(error) {
-                    $scope.unregisterButton.state = 'error';
-                    alert("ERROR=" + error);
                 });
             };
             

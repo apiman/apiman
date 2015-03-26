@@ -7,6 +7,9 @@ module Apiman {
             return {
                 getCommonData: function($scope, $location) {
                     var params = $location.search();
+                    $scope.setEntityStatus = function(status) {
+                        $scope.entityStatus = status;
+                    };
                     return {
                         service: $q(function(resolve, reject) {
                             OrgSvcs.get({ organizationId: params.org, entityType: 'services', entityId: params.service }, function(service) {
@@ -29,7 +32,7 @@ module Apiman {
                                     $scope.selectedServiceVersion = versions[0];
                                 }
                                 $scope.version = $scope.selectedServiceVersion.version;
-                                $scope.entityStatus = $scope.selectedServiceVersion.status;
+                                $scope.setEntityStatus($scope.selectedServiceVersion.status);
                             }, function(error) {
                                 reject(error);
                             });
@@ -40,49 +43,55 @@ module Apiman {
         }]);
 
     export var ServiceEntityController = _module.controller("Apiman.ServiceEntityController",
-        ['$q', '$scope', '$location', 'ActionSvcs', 'Logger', ($q, $scope, $location, ActionSvcs, Logger) => {
+        ['$q', '$scope', '$location', 'ActionSvcs', 'Logger', 'Dialogs',
+        ($q, $scope, $location, ActionSvcs, Logger, Dialogs) => {
             var params = $location.search();
+            $scope.params = params;
             
             $scope.setVersion = function(service) {
                 $scope.selectedServiceVersion = service;
                 $location.path(Apiman.pluginName + "/service-overview.html").search('org', params.org).search('service', params.service).search('version', service.version);
             };
 
-//            $scope.registerApp = function(app) {
-//                $scope.registerButton.state = 'in-progress';
-//                var registerAction = {
-//                    type: 'registerApp',
-//                    entityId: app.id,
-//                    organizationId: app.organizationId,
-//                    entityVersion: app.version
-//                };
-//                ActionSvcs.save(registerAction, function(reply) {
-//                    $scope.selectedAppVersion.status = 'Registered';
-//                    $scope.registerButton.state = 'complete';
-//                    $scope.entityStatus = $scope.selectedAppVersion.status;
-//                }, function(error) {
-//                    $scope.registerButton.state = 'error';
-//                    alert("ERROR=" + error);
-//                });
-//            };
-//            
-//            $scope.unregisterApp = function(app) {
-//                $scope.unregisterButton.state = 'in-progress';
-//                var unregisterAction = {
-//                    type: 'unregisterApp',
-//                    entityId: app.id,
-//                    organizationId: app.organizationId,
-//                    entityVersion: app.version
-//                };
-//                ActionSvcs.save(unregisterAction, function(reply) {
-//                    $scope.selectedAppVersion.status = 'Retired';
-//                    $scope.unregisterButton.state = 'complete';
-//                    $scope.entityStatus = $scope.selectedAppVersion.status;
-//                }, function(error) {
-//                    $scope.unregisterButton.state = 'error';
-//                    alert("ERROR=" + error);
-//                });
-//            };
+            $scope.publishService = function(service) {
+                $scope.publishButton.state = 'in-progress';
+                var publishAction = {
+                    type: 'publishService',
+                    entityId: params.service,
+                    organizationId: params.org,
+                    entityVersion: params.version
+                };
+                ActionSvcs.save(publishAction, function(reply) {
+                    $scope.selectedServiceVersion.status = 'Published';
+                    $scope.publishButton.state = 'complete';
+                    $scope.setEntityStatus($scope.selectedServiceVersion.status);
+                }, function(error) {
+                    $scope.publishButton.state = 'error';
+                    alert("ERROR=" + error);
+                });
+            };
+            
+            $scope.retireService = function(service) {
+                $scope.retireButton.state = 'in-progress';
+                Dialogs.confirm('Confirm Retire Service', 'Do you really want to retire this service?  This action cannot be undone.', function() {
+                    var retireAction = {
+                        type: 'retireService',
+                        entityId: params.service,
+                        organizationId: params.org,
+                        entityVersion: params.version
+                    };
+                    ActionSvcs.save(retireAction, function(reply) {
+                        $scope.selectedServiceVersion.status = 'Retired';
+                        $scope.retireButton.state = 'complete';
+                        $scope.setEntityStatus($scope.selectedServiceVersion.status);
+                    }, function(error) {
+                        $scope.retireButton.state = 'error';
+                        alert("ERROR=" + error);
+                    });
+                }, function() {
+                    $scope.retireButton.state = 'complete';
+                });
+            };
             
         }])
 

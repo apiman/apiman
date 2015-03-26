@@ -106,10 +106,12 @@ module Apiman {
                 link: function(scope, element, attrs) {
                     scope.$watch('entityStatus', function(newValue, oldValue) {
                         var entityStatus = newValue;
+                        var elem = element;
                         if (entityStatus) {
                             var validStatuses = attrs.apimanStatus.split(',');
                             var statusIsValid = false;
-                            Logger.debug('Checking status {0} against valid statuses {1}.', entityStatus, '' + validStatuses);
+//                            Logger.debug('Checking status {0} against valid statuses {1}:  {2}', entityStatus, '' + validStatuses, 
+//                                    element[0].outerHTML);
                             for (var i = 0; i < validStatuses.length; i++) {
                                 if (validStatuses[i] == entityStatus) {
                                     statusIsValid = true;
@@ -118,6 +120,8 @@ module Apiman {
                             }
                             if (!statusIsValid) {
                                 $(element).hide();
+                            } else {
+                                $(element).show();
                             }
                         } else {
                             Logger.error('Missing entityStatus from $scope - hide/show based on entity status feature is disabled.');

@@ -44,6 +44,7 @@ module Apiman {
         '/apiman/new-policy.html'       : { templateUrl: 'forms/new-policy.html' },
         '/apiman/new-role.html'         : { templateUrl: 'forms/new-role.html' },
         '/apiman/new-service.html'      : { templateUrl: 'forms/new-service.html' },
+        '/apiman/new-serviceversion.html'   : { templateUrl: 'forms/new-serviceversion.html' },
         '/apiman/org-plans.html'        : { templateUrl: 'org/org-plans.html' },
         '/apiman/org-services.html'     : { templateUrl: 'org/org-services.html' },
         '/apiman/org-apps.html'         : { templateUrl: 'org/org-apps.html' },

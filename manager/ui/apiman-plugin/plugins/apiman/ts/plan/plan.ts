@@ -7,6 +7,9 @@ module Apiman {
             return {
                 getCommonData: function($scope, $location) {
                     var params = $location.search();
+                    $scope.setEntityStatus = function(status) {
+                        $scope.entityStatus = status;
+                    };
                     return {
                         org: $q(function(resolve, reject) {
                             OrgSvcs.get({ organizationId: params.org }, function(org) {
@@ -34,7 +37,7 @@ module Apiman {
                                 } else {
                                     $scope.selectedPlanVersion = versions[0];
                                 }
-                                $scope.entityStatus = $scope.selectedPlanVersion.status;
+                                $scope.setEntityStatus($scope.selectedPlanVersion.status);
                                 resolve(versions);
                             }, function(error) {
                                 reject(error);
@@ -65,10 +68,7 @@ module Apiman {
                 ActionSvcs.save(lockAction, function(reply) {
                     $scope.selectedPlanVersion.status = 'Locked';
                     $scope.lockButton.state = 'complete';
-                    // need to set the entity status up a couple of scopes to get proper
-                    // full-page propagation of the change event (this controller has its 
-                    // own scope plus a scope from the ng-include)
-                    $scope.$parent.$parent.entityStatus = $scope.selectedPlanVersion.status;
+                    $scope.setEntityStatus($scope.selectedPlanVersion.status);
                 }, function(error) {
                     $scope.lockButton.state = 'error';
                     alert("ERROR=" + error);
