@@ -1,0 +1,12 @@
+<div class="row">
+  <div class="col-md-12">
+    <ol class="breadcrumb">
+      <li><a href="{{ pluginName }}/dash.html"><i class="fa fa-home fa-fw"></i><span>Home</span></a></li>
+      <li><a href="{{ pluginName }}/org-members.html?org={{organizationId}}"><i class="fa fa-shield fa-fw"></i><span>{{ org.name }}</span></a></li>
+      <li class="active"><span>Manage Members</span></li>
+    </ol>
+  </div>
+</div>
+<div class="row">
+  <div class="apiman-divider-20"></div>
+</div>
