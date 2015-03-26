@@ -27,10 +27,10 @@ module Apiman {
             $scope.saveNewService = function() {
                 $scope.createButton.state = 'in-progress';
                 OrgSvcs.save({ organizationId: $scope.selectedOrg.id, entityType: 'services' }, $scope.service, function(reply) {
-                    $location.path(Apiman.pluginName + '/service-overview.html').search('org', $scope.selectedOrg.id).search('service', $scope.service.name).search('version', $scope.service.initialVersion);
+                    $location.url(Apiman.pluginName + '/service-overview.html').search('org', $scope.selectedOrg.id).search('service', $scope.service.name).search('version', $scope.service.initialVersion);
                 }, function(error) {
                     if (error.status == 409) {
-                        $location.path('apiman/error-409.html');
+                        $location.url('apiman/error-409.html');
                     } else {
                         $scope.createButton.state = 'error';
                         alert("ERROR=" + error.status + " " + error.statusText);

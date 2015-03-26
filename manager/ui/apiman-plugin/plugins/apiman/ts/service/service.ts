@@ -11,6 +11,13 @@ module Apiman {
                         $scope.entityStatus = status;
                     };
                     return {
+                        org: $q(function(resolve, reject) {
+                            OrgSvcs.get({ organizationId: params.org }, function(org) {
+                                resolve(org);
+                            }, function(error) {
+                                reject(error);
+                            });
+                        }),
                         service: $q(function(resolve, reject) {
                             OrgSvcs.get({ organizationId: params.org, entityType: 'services', entityId: params.service }, function(service) {
                                 resolve(service);
@@ -50,7 +57,7 @@ module Apiman {
             
             $scope.setVersion = function(service) {
                 $scope.selectedServiceVersion = service;
-                $location.path(Apiman.pluginName + "/service-overview.html").search('org', params.org).search('service', params.service).search('version', service.version);
+                $location.url(Apiman.pluginName + "/service-overview.html").search('org', params.org).search('service', params.service).search('version', service.version);
             };
 
             $scope.publishService = function(service) {

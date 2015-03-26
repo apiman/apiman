@@ -46,10 +46,10 @@ module Apiman {
                 role.permissions = permissions;
                 role.autoGrant = $scope.role.autoGrant;
                 ApimanSvcs.save({ entityType: 'roles' }, role, function(reply) {
-                     $location.path(pluginName + '/admin-roles.html');
+                     $location.url(pluginName + '/admin-roles.html');
                 }, function(error) {
                     if (error.status == 409) {
-                        $location.path('apiman/error-409.html');
+                        $location.url('apiman/error-409.html');
                     } else {
                         $scope.createButton.state = 'error';
                         alert("ERROR=" + error.status + " " + error.statusText);

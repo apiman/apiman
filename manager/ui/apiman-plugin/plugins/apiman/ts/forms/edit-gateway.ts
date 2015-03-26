@@ -51,7 +51,7 @@ module Apiman {
                         }
                     }, function(error) {
                         if (error.status == 409) {
-                            $location.path('apiman/error-409.html');
+                            $location.url('apiman/error-409.html');
                         } else {
                             $scope.testButton.state = 'error';
                             alert("ERROR=" + error.status + " " + error.statusText);
@@ -67,10 +67,10 @@ module Apiman {
                     gateway.type = $scope.gateway.type;
                     gateway.description = $scope.gateway.description;
                     ApimanSvcs.update({ entityType: 'gateways', secondaryType: $scope.gateway.id }, gateway, function(reply) {
-                         $location.path(pluginName + '/admin-gateways.html');
+                         $location.url(pluginName + '/admin-gateways.html');
                     }, function(error) {
                         if (error.status == 409) {
-                            $location.path('apiman/error-409.html');
+                            $location.url('apiman/error-409.html');
                         } else {
                             $scope.createButton.state = 'error';
                             alert("ERROR=" + error.status + " " + error.statusText);
@@ -81,10 +81,10 @@ module Apiman {
             
             $scope.deleteGateway  = function() {
                 ApimanSvcs.delete({ entityType: 'gateways', secondaryType: $scope.gateway.id }, function(reply) {
-                     $location.path(pluginName + '/admin-gateways.html');
+                     $location.url(pluginName + '/admin-gateways.html');
                 }, function(error) {
                     if (error.status == 409) {
-                        $location.path('apiman/error-409.html');
+                        $location.url('apiman/error-409.html');
                     } else {
                         $scope.createButton.state = 'error';
                         alert("ERROR=" + error.status + " " + error.statusText);

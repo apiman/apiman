@@ -22,10 +22,10 @@ module Apiman {
                 $scope.deleteButton.state = 'in-progress';
                 Dialogs.confirm('Confirm Delete Plugin', 'Do you really want to delete this plugin?', function() {
                     ApimanSvcs.delete({ entityType: 'plugins', secondaryType: $scope.plugin.id }, function(reply) {
-                         $location.path(pluginName + '/admin-plugins.html');
+                         $location.url(pluginName + '/admin-plugins.html');
                     }, function(error) {
                         if (error.status == 409) {
-                            $location.path('apiman/error-409.html');
+                            $location.url('apiman/error-409.html');
                         } else {
                             $scope.createButton.state = 'error';
                             alert("ERROR=" + error.status + " " + error.statusText);

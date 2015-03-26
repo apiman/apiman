@@ -131,7 +131,7 @@ module Apiman {
                     planId : $scope.selectedPlan.planId
                 };
                 OrgSvcs.save({ organizationId: $scope.selectedApp.organizationId, entityType: 'applications', entityId: $scope.selectedApp.id, versionsOrActivity: 'versions', version: $scope.selectedAppVersion, policiesOrActivity: 'contracts' }, newContract, function(reply) {
-                    $location.path(Apiman.pluginName + '/app-contracts.html').search({
+                    $location.url(Apiman.pluginName + '/app-contracts.html').search({
                         'org' : $scope.selectedApp.organizationId,
                         'app' : $scope.selectedApp.id,
                         'version' : $scope.selectedAppVersion

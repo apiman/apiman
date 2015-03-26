@@ -63,14 +63,23 @@ module Apiman {
                     policiesOrActivity: 'policies', 
                     policyId: params.policy
                 }, updatedPolicy, function() {
-                    $scope.updateButton.state = 'error';
-                    $location.path(Apiman.pluginName + '/plan-policies.html').
-                        search('org', params.org).
-                        search('plan', params.id).
-                        search('version', params.ver);
+                    var toPage = '/plan-policies.html';
+                    var entityParam = 'plan';
+                    if (params.type == 'services') {
+                        toPage = '/service-policies.html';
+                        entityParam = 'service';
+                    }
+                    if (params.type == 'applications') {
+                        toPage = '/app-policies.html';
+                        entityParam = 'app';
+                    }
+                    $location.url(Apiman.pluginName + toPage)
+                        .search('org', params.org)
+                        .search(entityParam, params.id)
+                        .search('version', params.ver);
                 }, function(error) {
                     if (error.status == 409) {
-                        $location.path('apiman/error-409.html');
+                        $location.url('apiman/error-409.html');
                     } else {
                         alert("ERROR=" + error.status + " " + error.statusText);
                     }

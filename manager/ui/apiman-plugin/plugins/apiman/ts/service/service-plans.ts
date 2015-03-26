@@ -130,7 +130,7 @@ module Apiman {
                     $scope.saveButton.state = 'complete';
                 }, function(error) {
                     if (error.status == 409) {
-                        $location.path('apiman/error-409.html');
+                        $location.url('apiman/error-409.html');
                     } else {
                         alert("ERROR=" + error.status + " " + error.statusText);
                     }

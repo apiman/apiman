@@ -3,7 +3,6 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
-    
   </head>
 
   <body>
@@ -30,38 +29,49 @@
             <hr />
             <!-- The list of policies -->
             <div apiman-permission="svcEdit" apiman-status="Created,Ready" class="apiman-filters apiman-policies-filters">
-              <a data-field="toNewPolicy" data-i18n-key="add-policy" href="{{ pluginName }}/new-policy.html" class="btn btn-primary pull-right">Add Policy</a>
+              <a data-field="toNewPolicy" data-i18n-key="add-policy" href="{{ pluginName }}/new-policy.html?type=services&amp;org={{ org.id }}&amp;id={{ service.id }}&amp;ver={{ selectedServiceVersion.version }}" class="btn btn-primary pull-right">Add Policy</a>
             </div>
             <div class="clearfix"></div>
-            <div class="apiman-policies" data-field="policies" ng-repeat="policy in policies">
+            <div class="apiman-policies" data-field="policies">
             
-                <div class="container-fluid apiman-summaryrow">
-                  <div class="row">
-                    <div class="col-md-1 col-no-padding">
-                      <i class="apiman-policy-icon fa fa-lock fa-fw movable"></i>
+              <div class="apiman-no-content container-fluid" ng-hide="policies.length > 0">
+                <div class="row">
+                  <div class="col-md-9">
+                    <p class="apiman-no-entities-description" data-i18n-key="no-policies-for-service">It looks like there aren't any policies defined! That may be exactly what you want (of course) but if not, you may try defining one using the Add Policy button above...</p>
+                  </div>
+                  <div apiman-permission="svcEdit" apiman-status="Created,Ready" class="col-md-3">
+                    <div class="apiman-no-entities-arrow"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="container-fluid apiman-summaryrow" ng-repeat="policy in policies">
+                <div class="row">
+                  <div apiman-permission="svcEdit" apiman-status="Created,Ready" class="grabber" style="height: 48px"></div>
+                  <div class="col-md-1 col-no-padding">
+                    <i class="apiman-policy-icon fa fa-{{ policy.icon }} fa-fw"></i>
+                  </div>
+                  <div class="col-md-9 col-no-padding">
+                    <div>
+                      <span class="title"><a href="{{ pluginName }}/edit-policy.html?type=services&amp;org={{ org.id }}&amp;id={{ service.id }}&amp;ver={{ selectedServiceVersion.version }}&amp;policy={{ policy.id }}">{{ policy.name }}</a></span>
                     </div>
-                    <div class="col-md-9 col-no-padding">
-                      <div>
-                        <span class="title"><a href="{{ pluginName }}/edit-policy.html?org={{ service.organization.id}}&policy={{ policy.id }}">{{ policy.name }}</a></span>
-                      </div>
-                      <div class="metaData">
-                        <span>Policy created by </span>
-                        <span><a href="{{ pluginName }}/user-orgs.html">{{ policy.createdBy }}</a></span>
-                        <span> on </span>
-                        <i class="fa fa-clock-o fa-inline"></i>
-                        <span>{{ policy.createdOn | date:'yyyy-MM-dd' }}</span>
-                      </div>
-                      <div class="description apiman-label-faded">
-                        {{ policy.description }}
-                      </div>
+                    <div class="metaData">
+                      <span>Policy created by </span>
+                      <span><a href="{{ pluginName }}/user-orgs.html?user={{ policy.createdBy }}">{{ policy.createdBy }}</a></span>
+                      <span> on </span>
+                      <i class="fa fa-clock-o fa-inline"></i>
+                      <span>{{ policy.createdOn | date:'yyyy-MM-dd' }}</span>
                     </div>
-                    <div class="col-md-2 col-no-padding">
-                      <span class="actions"><button class="btn btn-default" ng-click="removePolicy( policy )">Remove</button></span>
+                    <div class="description apiman-label-faded">
+                      {{ policy.description }}
                     </div>
                   </div>
-                  <hr />
+                  <div class="col pull-right">
+                    <button class="btn btn-default" apiman-status="Created,Ready" ng-click="removePolicy( policy )">Remove</button>
+                  </div>
                 </div>
-            
+                <hr />
+              </div>
             </div>
           </div>
         </div>

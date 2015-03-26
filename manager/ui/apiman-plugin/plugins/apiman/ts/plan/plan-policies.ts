@@ -8,6 +8,7 @@ module Apiman {
             var params = $location.search();
             $scope.organizationId = params.org;
             $scope.tab = 'policies';
+            $scope.version = params.version;
             
             var removePolicy = function(policy) {
                 angular.forEach($scope.policies, function(p, index) {
@@ -23,7 +24,7 @@ module Apiman {
                         removePolicy(policy);
                     }, function(error) {
                         if (error.status == 409) {
-                            $location.path('apiman/error-409.html');
+                            $location.url('apiman/error-409.html');
                         } else {
                             alert("ERROR=" + error.status + " " + error.statusText);
                         }
@@ -44,6 +45,5 @@ module Apiman {
             var promise = $q.all(dataLoad);
             PageLifecycle.loadPage('PlanPolicies', promise, $scope);
         }])
-
 
 }

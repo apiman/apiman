@@ -57,10 +57,10 @@ module Apiman {
                 role.permissions = permissions;
                 role.autoGrant = $scope.role.autoGrant;
                 ApimanSvcs.update({ entityType: 'roles', secondaryType: $scope.role.id }, role, function(reply) {
-                     $location.path(pluginName + '/admin-roles.html');
+                     $location.url(pluginName + '/admin-roles.html');
                 }, function(error) {
                     if (error.status == 409) {
-                        $location.path('apiman/error-409.html');
+                        $location.url('apiman/error-409.html');
                     } else {
                         alert("ERROR=" + error.status + " " + error.statusText);
                     }
@@ -72,10 +72,10 @@ module Apiman {
                 $scope.deleteButton.state = 'in-progress';
                 Dialogs.confirm('Confirm Delete Role', 'Do you really want to delete this role?', function() {
                     ApimanSvcs.delete({ entityType: 'roles', secondaryType: $scope.role.id }, function(reply) {
-                        $location.path(pluginName + '/admin-roles.html');
+                        $location.url(pluginName + '/admin-roles.html');
                     }, function(error) {
                         if (error.status == 409) {
-                            $location.path('apiman/error-409.html');
+                            $location.url('apiman/error-409.html');
                         } else {
                             alert("ERROR=" + error.status + " " + error.statusText);
                         }

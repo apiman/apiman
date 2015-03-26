@@ -28,10 +28,10 @@ module Apiman {
             $scope.addPlugin  = function() {
                 $scope.addButton.state = 'in-progress';
                 ApimanSvcs.save({ entityType: 'plugins' }, $scope.plugin, function(reply) {
-                     $location.path(pluginName + '/admin-plugins.html');
+                     $location.url(pluginName + '/admin-plugins.html');
                 }, function(error) {
                     if (error.status == 409) {
-                        $location.path('apiman/error-409.html');
+                        $location.url('apiman/error-409.html');
                     } else {
                         alert("ERROR=" + error.status + " " + error.statusText);
                     }

@@ -26,10 +26,10 @@ module Apiman {
                 policyDefUpdate.icon = policyDef.icon;
                 
                 ApimanSvcs.update({ entityType: 'policyDefs', secondaryType: $scope.policyDef.id }, policyDefUpdate, function(reply) {
-                     $location.path(pluginName + '/admin-policyDefs.html');
+                     $location.url(pluginName + '/admin-policyDefs.html');
                 }, function(error) {
                     if (error.status == 409) {
-                        $location.path('apiman/error-409.html');
+                        $location.url('apiman/error-409.html');
                     } else {
                         $scope.createButton.state = 'error';
                         alert("ERROR=" + error.status + " " + error.statusText);

@@ -54,7 +54,7 @@ module Apiman {
             
             $scope.setVersion = function(plan) {
                 $scope.selectedPlanVersion = plan;
-                $location.path(Apiman.pluginName + "/plan-overview.html").search('org', params.org).search('plan', params.plan).search('version', plan.version);
+                $location.url(Apiman.pluginName + "/plan-overview.html").search('org', params.org).search('plan', params.plan).search('version', plan.version);
             };
 
             $scope.lockPlan = function(plan) {

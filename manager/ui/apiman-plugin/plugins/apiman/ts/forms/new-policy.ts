@@ -69,10 +69,23 @@ module Apiman {
                     configuration: JSON.stringify($scope.config)
                 };
                 OrgSvcs.save({ organizationId: params.org, entityType: params.type, entityId: params.id, versionsOrActivity: 'versions', version: params.ver, policiesOrActivity: 'policies' }, newPolicy, function(reply) {
-                    $location.path(Apiman.pluginName + '/plan-policies.html').search('org', reply.organizationId).search('plan', reply.entityId).search('version', reply.entityVersion);
+                    var toPage = '/plan-policies.html';
+                    var entityParam = 'plan';
+                    if (params.type == 'services') {
+                        toPage = '/service-policies.html';
+                        entityParam = 'service';
+                    }
+                    if (params.type == 'applications') {
+                        toPage = '/app-policies.html';
+                        entityParam = 'app';
+                    }
+                    $location.url(Apiman.pluginName + toPage)
+                        .search('org', reply.organizationId)
+                        .search(entityParam, reply.entityId)
+                        .search('version', reply.entityVersion);
                 }, function(error) {
                     if (error.status == 409) {
-                        $location.path('apiman/error-409.html');
+                        $location.url('apiman/error-409.html');
                     } else {
                         alert("ERROR=" + error.status + " " + error.statusText);
                     }

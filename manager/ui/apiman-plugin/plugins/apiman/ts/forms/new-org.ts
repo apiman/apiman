@@ -8,11 +8,11 @@ module Apiman {
                 $scope.createButton.state = 'in-progress';
                 OrgSvcs.save($scope.org, function(reply) {
                     CurrentUser.refresh(function() {
-                        $location.path('apiman/org-plans.html').search('org', reply.id);
+                        $location.url('apiman/org-plans.html').search('org', reply.id);
                     });
                 }, function(error) {
                     if (error.status == 409) {
-                        $location.path('apiman/error-409.html');
+                        $location.url('apiman/error-409.html');
                     } else {
                         alert("ERROR=" + error.status + " " + error.statusText);
                         $scope.createButton.state = 'error';

@@ -58,7 +58,7 @@ module Apiman {
                     $scope.serviceVersion.endpointType = $scope.updatedService.endpointType;
                 }, function(error) {
                     if (error.status == 409) {
-                        $location.path('apiman/error-409.html');
+                        $location.url('apiman/error-409.html');
                     } else {
                         //$scope.saveButton.state = 'error';
                         alert("ERROR=" + error.status + " " + error.statusText);
