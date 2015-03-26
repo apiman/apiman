@@ -33,12 +33,11 @@
             </div>
             <div>
               <span data-i18n-key="api-endpoint-label">API Endpoint:</span>
-              <input ng-model="selectedService.endpoint" data-field="endpoint" class="form-control" type="text"></input>
+              <input ng-model="updatedService.endpoint" data-field="endpoint" class="form-control" type="text"></input>
             </div>
             <div class="apiman-divider-20">
               <span class="clearfix" data-i18n-key="api-type-label">API Type:</span>
-              <select ng-model="selectedService.endpointType" class="selectpicker" data-field="endpointType">
-              	<option ng-repeat="type in typeOptions" value="{{type}}">{{type}}</option>
+              <select title="Choose a type..." apiman-select-picker="" ng-model="updatedService.endpointType" class="selectpicker" ng-options="type.toUpperCase() for type in typeOptions">
               </select>
             </div>
             <!-- TBD
@@ -53,8 +52,8 @@
             </div>
             -->
             <div apiman-permission="svcEdit" apiman-status="Created,Ready" class="actions" style="margin-top: 20px">
-              <button ng-click="saveService()" class="btn btn-primary" data-field="saveButton" data-i18n-key="save" placeholder="Saving..." data-icon="fa-cog" >Save</button>
-              <button class="btn btn-default" data-field="cancelButton" data-i18n-key="cancel">Cancel</button>
+              <button ng-disabled="!isDirty" apiman-action-btn="" ng-click="saveService()" class="btn btn-primary" data-field="saveButton" data-i18n-key="save" placeholder="Saving..." data-icon="fa-cog" >Save</button>
+              <button ng-disabled="!isDirty" ng-click="reset()" class="btn btn-default" data-field="cancelButton" data-i18n-key="cancel">Cancel</button>
             </div>
           </div>
         </div>

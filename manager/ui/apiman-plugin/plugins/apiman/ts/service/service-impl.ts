@@ -4,21 +4,23 @@ module Apiman {
 
  export var ServiceImplController = _module.controller("Apiman.ServiceImplController",
         ['$q', '$scope', '$location', 'PageLifecycle', 'ServiceEntityLoader', 'OrgSvcs', 'ApimanSvcs',
-         ($q, $scope, $location, PageLifecycle, ServiceEntityLoader, OrgSvcs, ApimanSvcs) => {
+        ($q, $scope, $location, PageLifecycle, ServiceEntityLoader, OrgSvcs, ApimanSvcs) => {
             var params = $location.search();
             $scope.organizationId = params.org;
             $scope.tab = 'impl';
             $scope.version = params.version;
             $scope.typeOptions = ["rest","soap"];
+            $scope.updatedService = new Object();
             
             var dataLoad = ServiceEntityLoader.getCommonData($scope, $location);
             if (params.version != null) {
                 dataLoad = angular.extend(dataLoad, {
-                    selectedService: $q(function(resolve, reject) {
-                        OrgSvcs.get({ organizationId: params.org, entityType: 'services', entityId: params.service, versionsOrActivity: 'versions', version: params.version }, function(selectedService) {
-                            $scope.gatewayId = selectedService.gateways[0].gatewayId;
-                            resolve(selectedService);
-                            
+                    serviceVersion: $q(function(resolve, reject) {
+                        OrgSvcs.get({ organizationId: params.org, entityType: 'services', entityId: params.service, versionsOrActivity: 'versions', version: params.version }, function(serviceVersion) {
+                            $scope.updatedService.endpoint = serviceVersion.endpoint;
+                            $scope.updatedService.endpointType = serviceVersion.endpointType;
+                            $scope.isDirty = false;
+                            resolve(serviceVersion);
                         }, function(error) {
                             reject(error);
                         });
@@ -33,18 +35,29 @@ module Apiman {
                 });
             }
             var promise = $q.all(dataLoad);
+            
+            $scope.$watch('updatedService', function(newValue) {
+                if ($scope.serviceVersion) {
+                    if (newValue.endpoint == $scope.serviceVersion.endpoint && newValue.endpointType == $scope.serviceVersion.endpointType) {
+                        $scope.isDirty = false;
+                    } else {
+                        $scope.isDirty = true;
+                    }
+                }
+            }, true);
+            
+            $scope.reset = function() {
+                $scope.updatedService.endpoint = $scope.serviceVersion.endpoint;
+                $scope.updatedService.endpointType = $scope.serviceVersion.endpointType;
+            };
              
             $scope.saveService = function() {
-                //$scope.saveButton.state = 'Saving...';
-                var updatedService:any = {};
-                updatedService.endpoint = $scope.selectedService.endpoint;
-                updatedService.gateways = $scope.selectedService.gateways; //TBD
-                updatedService.plans = $scope.selectedService.plans;
-                updatedService.endpointType = $scope.selectedService.endpointType;
-                updatedService.publicService = $scope.selectedService.publicService;
-                
-                OrgSvcs.update({ organizationId: params.org, entityType: 'services', entityId:params.service, versionsOrActivity: 'versions', version: params.version }, updatedService, function(reply) {
-                    //$scope.saveButton.state = 'Save';
+                $scope.saveButton.state = 'in-progress';
+                OrgSvcs.update({ organizationId: params.org, entityType: 'services', entityId:params.service, versionsOrActivity: 'versions', version: params.version }, $scope.updatedService, function(reply) {
+                    $scope.isDirty = false;
+                    $scope.saveButton.state = 'complete';
+                    $scope.serviceVersion.endpoint = $scope.updatedService.endpoint;
+                    $scope.serviceVersion.endpointType = $scope.updatedService.endpointType;
                 }, function(error) {
                     if (error.status == 409) {
                         $location.path('apiman/error-409.html');
@@ -52,6 +65,7 @@ module Apiman {
                         //$scope.saveButton.state = 'error';
                         alert("ERROR=" + error.status + " " + error.statusText);
                     }
+                    $scope.saveButton.state = 'error';
                 });
             };
             
