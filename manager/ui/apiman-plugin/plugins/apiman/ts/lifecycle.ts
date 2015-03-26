@@ -5,7 +5,7 @@ module ApimanPageLifecycle {
 
     export var PageLifecycle = _module.factory('PageLifecycle', ['Logger', '$rootScope', function(Logger, $rootScope) {
         return {
-            loadPage: function(pageName, dataPromise, $scope) {
+            loadPage: function(pageName, dataPromise, $scope, handler) {
                 Logger.log("|{0}| >> Loading page.", pageName);
                 $rootScope.pageState = 'loading';
                 if (dataPromise) {
@@ -17,6 +17,9 @@ module ApimanPageLifecycle {
                             count++;
                         }, $scope);
                         $rootScope.pageState = 'loaded';
+                        if (handler) {
+                            handler();
+                        }
                         Logger.log("|{0}| >> Page successfully loaded: {1} data packets loaded", pageName, count);
                     }, function(reason) {
                         $rootScope.pageState = 'error';
@@ -27,6 +30,9 @@ module ApimanPageLifecycle {
                 } else {
                     $rootScope.pageState = 'loaded';
                     Logger.log("|{0}| >> Page successfully loaded (no packets).", pageName);
+                    if (handler) {
+                        handler();
+                    }
                 }
             }
         }
