@@ -29,8 +29,10 @@ module Apiman {
                     }
                 })
             });
-            
-            PageLifecycle.loadPage('ConsumerSvcs', promise, $scope);
+
+            PageLifecycle.loadPage('ConsumerSvcs', promise, $scope, function() {
+                $('#apiman-search').focus();
+            });
         }]);
 
 }

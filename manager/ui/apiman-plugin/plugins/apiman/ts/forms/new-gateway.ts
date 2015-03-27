@@ -39,7 +39,6 @@ module Apiman {
                 var gateway = $scope.gateway;
                 gateway.configuration = JSON.stringify($scope.configuration);
                 gateway.type = 'REST';
-                gateway.description = $scope.gateway.description;
                 return gateway;
             };
 
@@ -49,7 +48,7 @@ module Apiman {
                 ApimanSvcs.update({ entityType: 'gateways' }, gateway, function(reply) {
                     $scope.testButton.state = 'complete';
                     if (reply.success == true) {
-                        Logger.info('Failed to connect to Gateway: {0}', reply.detail);
+                        Logger.info('Connected successfully to Gateway: {0}', reply.detail);
                         $scope.testResult = 'success';
                     } else {
                         Logger.info('Failed to connect to Gateway: {0}', reply.detail);
