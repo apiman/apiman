@@ -2,70 +2,83 @@
 module Apiman {
 
     export var NewGatewayController = _module.controller("Apiman.NewGatewayController",
-        ['$q', '$location', '$scope', 'ApimanSvcs', 'PageLifecycle', 'CurrentUser',
-        ($q, $location, $scope, ApimanSvcs, PageLifecycle, CurrentUser) => {
-           
-            $scope.testButton = {};
-            $scope.testButton.state = 'warning';
-            $scope.errorStatus = null;
+        ['$q', '$location', '$scope', 'ApimanSvcs', 'PageLifecycle', 'CurrentUser', 'Logger',
+        ($q, $location, $scope, ApimanSvcs, PageLifecycle, CurrentUser, Logger) => {
+            $scope.isValid = false;
+            $scope.gateway = {};
+            $scope.configuration = {
+                endpoint: 'http://localhost:8080/apiman-gateway-api/'
+            };
             
-            var passwordMatch = function() {
+            var validate = function() {
+                $scope.testResult = 'none';
+                var valid = true;
+                if (!$scope.gateway.name) {
+                    valid = false;
+                }
+                if (!$scope.configuration.endpoint) {
+                    valid = false;
+                }
+                if (!$scope.configuration.username) {
+                    valid = false;
+                }
+                if (!$scope.configuration.password) {
+                    valid = false;
+                }
                 if ($scope.configuration.password != $scope.passwordConfirm) {
-                    $scope.isMatch = false;
-                    $scope.errorStatus = "Passwords don't match";
-                } else {
-                    $scope.isMatch = true;
-                    $scope.errorStatus = null;
+                    valid = false;
                 }
-            }
+                $scope.isValid = valid;
+            };
             
-            var testGateway  = function() {
-                passwordMatch();
-                if ($scope.errorStatus==null) {
-                    var gateway:any = {};
-                    gateway.configuration = JSON.stringify($scope.configuration);
-                    gateway.type = $scope.gateway.type;
-                    gateway.description = $scope.gateway.description;
-                    ApimanSvcs.update({ entityType: 'gateways' }, gateway, function(reply) {
-                        if (reply.success == true) {
-                            $scope.errorStatus = null;
-                            $scope.testButton.state = 'success';
-                        } else {
-                            $scope.errorStatus = "Cannot connect to gateway: " + reply.detail;
-                            $scope.testButton.state = 'danger';
-                        }
-                    }, function(error) {
-                        if (error.status == 409) {
-                            $location.url('apiman/error-409.html');
-                        } else {
-                            $scope.testButton.state = 'error';
-                            alert("ERROR=" + error.status + " " + error.statusText);
-                        }
-                    });
-                }
-            }
+            $scope.$watch('gateway', validate, true);
+            $scope.$watch('configuration', validate, true);
+            $scope.$watch('passwordConfirm', validate);
             
-            
-            $scope.createGateway = function() {
+            var Gateway = function() {
                 var gateway = $scope.gateway;
                 gateway.configuration = JSON.stringify($scope.configuration);
-                gateway.type = "REST";
-                
+                gateway.type = 'REST';
+                gateway.description = $scope.gateway.description;
+                return gateway;
+            };
+
+            var testGateway  = function() {
+                $scope.testButton.state = 'in-progress';
+                var gateway = Gateway();
+                ApimanSvcs.update({ entityType: 'gateways' }, gateway, function(reply) {
+                    $scope.testButton.state = 'complete';
+                    if (reply.success == true) {
+                        Logger.info('Failed to connect to Gateway: {0}', reply.detail);
+                        $scope.testResult = 'success';
+                    } else {
+                        Logger.info('Failed to connect to Gateway: {0}', reply.detail);
+                        $scope.testResult = 'error';
+                        $scope.testErrorMessage = reply.detail;
+                    }
+                }, function(error) {
+                    alert(error);
+                    // TODO handle this error
+                    $scope.testButton.state = 'error';
+                });
+            }
+            
+            $scope.createGateway = function() {
+                $scope.createButton.state = 'in-progress';
+                var gateway = Gateway();
                 ApimanSvcs.save({ entityType: 'gateways' }, gateway, function(reply) {
                     $location.url(pluginName + '/admin-gateways.html');
                 }, function(error) {
-                    if (error.status == 409) {
-                        $location.url('apiman/error-409.html');
-                    } else {
-                        alert("ERROR=" + error.status + " " + error.statusText);
-                    }
+                    // TODO handle error here
+                    alert(error);
+                    $scope.createButton.state = 'error';
                 });
             };
             
-            $scope.passwordMatch = passwordMatch;
             $scope.testGateway = testGateway;
-            PageLifecycle.loadPage('NewGateway', undefined, $scope);
-            $('#name').focus();
+            PageLifecycle.loadPage('NewGateway', undefined, $scope, function() {
+                $('#apiman-gateway-name').focus();
+            });
         }]);
 
 }

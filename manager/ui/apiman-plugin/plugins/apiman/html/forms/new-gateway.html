@@ -3,15 +3,12 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
-    
   </head>
 
-  <body>
   <body>
     <div ng-include="'plugins/apiman/html/progress.include'"></div>
     <div id="apiman-header" ng-include="'plugins/apiman/html/navbar.include'"></div>   
     <div ng-controller="Apiman.NewGatewayController" id="form-page" class="container apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
-      <form name="gateway_form" novalidate ng-submit="gatewayForm()">
       <fieldset>
       <div class="row">
         <h2 class="title" data-i18n-key="new-gateway">New Gateway</h2>
@@ -29,11 +26,7 @@
         <dl>
           <dt data-i18n-key="gateway-name">Gateway Name</dt>
           <dd>
-            <input ng-model="gateway.name" required name="name" type="text" class="form-control name entityname" placeholder="Enter gateway name..."></input>
-            <small class="error" 
-			        ng-show="gateway_form.name.$dirty && gateway_form.name.$invalid">
-			        The Gateway Name is required.
-			      </small>
+            <input id="apiman-gateway-name" ng-model="gateway.name" name="name" type="text" class="form-control name entityname" placeholder="Enter gateway name..."></input>
           </dd>
         </dl>
       </div>
@@ -51,7 +44,7 @@
         <dl>
           <dt data-i18n-key="config-endpoint">Configuration Endpoint</dt>
           <dd>
-            <input ng-model="configuration.endpoint" required name="configEndpoint" type="text" class="form-control description" id="config-endpoint" placeholder="Enter configuration endpoint..."></input>
+            <input ng-model="configuration.endpoint" type="url" name="configEndpoint" type="text" class="form-control description" id="config-endpoint" placeholder="Enter configuration endpoint..."></input>
           </dd>
         </dl>
       </div>
@@ -67,10 +60,6 @@
                 </td>
                 <td>
                   <input ng-model="configuration.username" name="username" type="text" class="form-control name entityname" placeholder="Username..."></input>
-                  <small class="error" 
-			        ng-show="gateway_form.username.$dirty && gateway_form.username.$invalid">
-			        Username is required.
-			      </small>
                 </td>
               </tr>
               <tr>
@@ -78,13 +67,13 @@
                   <span data-i18n-key="password">Password:</span>
                 </td>
                 <td>
-                  <input ng-model="configuration.password" data-field="password" type="password" class="form-control name entityname" placeholder="Password..." ng-keyup="passwordMatch()"></input>
+                  <input ng-model="configuration.password" data-field="password" type="password" class="form-control name entityname" placeholder="Password..."></input>
                 </td>
               </tr>
               <tr>
                 <td></td>
                 <td>
-                  <input ng-model="passwordConfirm" data-field="passwordConfirm" type="password" class="form-control name entityname" placeholder="Confirm Password..." ng-keyup="passwordMatch()"></input>
+                  <input ng-model="passwordConfirm" data-field="passwordConfirm" type="password" class="form-control name entityname" placeholder="Confirm Password..."></input>
                 </td>
               </tr>
             </table>
@@ -92,8 +81,27 @@
         </dl>
       </div>
       <div class="row">
-        <button ng-click="testGateway()" class="btn btn-{{testButton.state}}" name="testButton" data-i18n-key="test-gateway" placeholder="Testing..." data-icon="fa-cog">Test Gateway</button>
-        <span ng-show="errorStatus!=null" data-i18n-key="errorStatus">{{ errorStatus }}</span>
+        <button ng-disabled="!isValid" apiman-action-btn="" data-field="testButton" ng-click="testGateway()" class="btn btn-default" name="testButton" data-i18n-key="test-gateway" placeholder="Testing..." data-icon="fa-cog">Test Gateway</button>
+      </div>
+      <div class="row" ng-show="testResult == 'success'">
+        <div class="alert alert-success description" style="margin-top: 10px">
+          <span class="pficon pficon-ok"></span>
+          <strong>Gateway Configuration Valid</strong> 
+          <div>Your Gateway configuration is correct.  Great job!</div>
+        </div>
+      </div>
+      <div class="row" ng-show="testResult == 'error'">
+        <div class="alert alert-danger description" style="margin-top: 10px">
+          <span class="pficon-layered">
+            <span class="pficon pficon-error-octagon"></span>
+            <span class="pficon pficon-error-exclamation"></span>
+          </span>
+          <strong>Gateway Configuration Invalid</strong>
+          <div>Something has gone wrong when testing the Gateway.  Hopefully the details (below) will help you figure out what.</div>
+          <div style="margin-top: 8px">
+            <pre>{{ testErrorMessage }}</pre>
+          </div>
+        </div>
       </div>
       <!-- HR -->
       <div class="row hr-row">
@@ -101,11 +109,10 @@
       </div>
       <!-- Create Button -->
       <div class="row">
-        <button type="submit" class="btn btn-primary" name="createButton" data-i18n-key="create-gateway" placeholder="Creating..." data-icon="fa-cog" ng-click="createGateway()">Create Gateway</button>
-        <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" data-i18n-key="cancel">Cancel</a>
+        <button ng-disabled="!isValid" apiman-action-btn="" class="btn btn-primary" data-field="createButton" name="createButton" data-i18n-key="create-gateway" placeholder="Creating..." data-icon="fa-cog" ng-click="createGateway()">Create Gateway</button>
+        <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-i18n-key="cancel">Cancel</a>
       </div>
       </fieldset>
-      </form>
     </div> <!-- /container -->
   </body>
 </html>
