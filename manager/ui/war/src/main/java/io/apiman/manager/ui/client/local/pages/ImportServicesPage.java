@@ -481,11 +481,11 @@ public class ImportServicesPage extends AbstractPage {
                 @Override
                 public void onSuccess(final ServiceBean serviceResp) {
                     NewServiceVersionBean nsvb = new NewServiceVersionBean();
-                    nsvb.setEndpoint(serviceV.getEndpoint());
-                    nsvb.setEndpointType(serviceV.getEndpointType());
-                    nsvb.setGateways(serviceV.getGateways());
-                    nsvb.setPlans(serviceV.getPlans());
-                    nsvb.setPublicService(serviceV.isPublicService());
+//                    nsvb.setEndpoint(serviceV.getEndpoint());
+//                    nsvb.setEndpointType(serviceV.getEndpointType());
+//                    nsvb.setGateways(serviceV.getGateways());
+//                    nsvb.setPlans(serviceV.getPlans());
+//                    nsvb.setPublicService(serviceV.isPublicService());
                     nsvb.setVersion(serviceV.getVersion());
                     rest.createServiceVersion(org.getId(), serviceResp.getId(), nsvb, new IRestInvokerCallback<ServiceVersionBean>() {
                         @Override

@@ -90,4 +90,12 @@
     <test name="Get Service Definition (WSDL)">test-plan-data/services/definitions/009_get-service-definition-wsdl.resttest</test>
   </testGroup>
 
+  <!-- Cloning -->
+  <testGroup name="Test Cloning">
+    <test name="Clone 2.0 --> 2.1">test-plan-data/services/cloning/001_clone-version-2.1.resttest</test>
+    <test name="List All Versions">test-plan-data/services/cloning/002_list-versions.resttest</test>
+    <test name="Get Version 2.1">test-plan-data/services/cloning/003_get-version-2.1.resttest</test>
+    <test name="List Policies">test-plan-data/services/cloning/004_list-policies.resttest</test>
+  </testGroup>
+
 </testPlan>

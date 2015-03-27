@@ -6,7 +6,8 @@ module Apiman {
         ($q, $location, $scope, OrgSvcs, PageLifecycle, Logger) => {
             var params = $location.search();
             $scope.svcversion = {
-                clone: true
+                clone: true,
+                cloneVersion: params.version
             };
             $scope.saveNewServiceVersion = function() {
                 $scope.createButton.state = 'in-progress';

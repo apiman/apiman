@@ -16,7 +16,6 @@
 package io.apiman.manager.api.beans.services;
 
 import java.io.Serializable;
-import java.util.Set;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -32,88 +31,14 @@ public class NewServiceVersionBean implements Serializable {
 
     private static final long serialVersionUID = 7207058698209555294L;
     
-    private String endpoint;
-    private EndpointType endpointType;
-    private Set<ServiceGatewayBean> gateways;
-    private boolean publicService;
-    private Set<ServicePlanBean> plans;
     private String version;
     private boolean clone;
-    
+    private String cloneVersion;
+
     /**
      * Constructor.
      */
     public NewServiceVersionBean() {
-    }
-
-    /**
-     * @return the endpoint
-     */
-    public String getEndpoint() {
-        return endpoint;
-    }
-
-    /**
-     * @param endpoint the endpoint to set
-     */
-    public void setEndpoint(String endpoint) {
-        this.endpoint = endpoint;
-    }
-
-    /**
-     * @return the endpointType
-     */
-    public EndpointType getEndpointType() {
-        return endpointType;
-    }
-
-    /**
-     * @param endpointType the endpointType to set
-     */
-    public void setEndpointType(EndpointType endpointType) {
-        this.endpointType = endpointType;
-    }
-
-    /**
-     * @return the gateways
-     */
-    public Set<ServiceGatewayBean> getGateways() {
-        return gateways;
-    }
-
-    /**
-     * @param gateways the gateways to set
-     */
-    public void setGateways(Set<ServiceGatewayBean> gateways) {
-        this.gateways = gateways;
-    }
-
-    /**
-     * @return the publicService
-     */
-    public boolean isPublicService() {
-        return publicService;
-    }
-
-    /**
-     * @param publicService the publicService to set
-     */
-    public void setPublicService(boolean publicService) {
-        this.publicService = publicService;
-    }
-
-    /**
-     * @return the plans
-     */
-    public Set<ServicePlanBean> getPlans() {
-        return plans;
-    }
-
-    /**
-     * @param plans the plans to set
-     */
-    public void setPlans(Set<ServicePlanBean> plans) {
-        this.plans = plans;
     }
 
     /**
@@ -142,6 +67,20 @@ public class NewServiceVersionBean implements Serializable {
      */
     public void setClone(boolean clone) {
         this.clone = clone;
+    }
+
+    /**
+     * @return the cloneVersion
+     */
+    public String getCloneVersion() {
+        return cloneVersion;
+    }
+
+    /**
+     * @param cloneVersion the cloneVersion to set
+     */
+    public void setCloneVersion(String cloneVersion) {
+        this.cloneVersion = cloneVersion;
     }
 
 }

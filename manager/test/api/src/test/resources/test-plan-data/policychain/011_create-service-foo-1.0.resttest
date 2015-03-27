@@ -2,13 +2,7 @@ POST /organizations/TestOrganization/services/foo/versions admin/admin
 Content-Type: application/json
 
 {
-  "version" : "1.0",
-  "plans" : [
-    {
-      "planId" : "Gold",
-      "version" : "1.0"
-    }
-  ]
+  "version" : "1.0"
 }
 ----
 200

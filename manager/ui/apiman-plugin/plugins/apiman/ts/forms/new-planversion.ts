@@ -6,7 +6,8 @@ module Apiman {
         ($q, $location, $scope, OrgSvcs, PageLifecycle) => {
             var params = $location.search();
             $scope.planversion = {
-                clone: true
+                clone: true,
+                cloneVersion: params.version
             };
             $scope.saveNewPlanVersion = function() {
                 $scope.createButton.state = 'in-progress';

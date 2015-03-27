@@ -50,4 +50,12 @@
     <test name="App Version Activity">test-plan-data/applications/auditing/002_version_activity.resttest</test>
   </testGroup>
 
+  <!-- Cloning -->
+  <testGroup name="Test Cloning">
+    <test name="Clone 2.0 --> 2.1">test-plan-data/applications/cloning/001_clone-version-2.1.resttest</test>
+    <test name="List All Versions">test-plan-data/applications/cloning/002_list-versions.resttest</test>
+    <test name="Get Version 2.1">test-plan-data/applications/cloning/003_get-version-2.1.resttest</test>
+    <test name="List Policies">test-plan-data/applications/cloning/004_list-policies.resttest</test>
+  </testGroup>
+
 </testPlan>

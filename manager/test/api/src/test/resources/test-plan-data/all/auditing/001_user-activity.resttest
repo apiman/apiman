@@ -35,6 +35,15 @@ Content-Type: application/json
         "what" : "Publish",
         "who" : "admin"
       },
+      { 
+        "data" : "{\"changes\":[{\"name\":\"plans\",\"before\":\"\",\"after\":\"Plan1:1.0\"},{\"name\":\"endpoint\",\"before\":null,\"after\":\"http://localhost:8080/ping\"},{\"name\":\"endpointType\",\"before\":null,\"after\":\"rest\"}]}",
+        "entityId" : "Service1",
+        "entityType" : "Service",
+        "entityVersion" : "1.0",
+        "organizationId" : "Organization1",
+        "what" : "Update",
+        "who" : "admin"
+      },
       { "data" : null,
         "entityId" : "Service1",
         "entityType" : "Service",
@@ -100,5 +109,5 @@ Content-Type: application/json
         "who" : "admin"
       }
     ],
-  "totalSize" : 12
+  "totalSize" : 13
 }

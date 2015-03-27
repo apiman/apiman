@@ -33,6 +33,7 @@ public class NewApplicationVersionBean implements Serializable {
     
     private String version;
     private boolean clone;
+    private String cloneVersion;
     
     /**
      * Constructor.
@@ -66,6 +67,20 @@ public class NewApplicationVersionBean implements Serializable {
      */
     public void setClone(boolean clone) {
         this.clone = clone;
+    }
+
+    /**
+     * @return the cloneVersion
+     */
+    public String getCloneVersion() {
+        return cloneVersion;
+    }
+
+    /**
+     * @param cloneVersion the cloneVersion to set
+     */
+    public void setCloneVersion(String cloneVersion) {
+        this.cloneVersion = cloneVersion;
     }
 
 }

@@ -136,11 +136,11 @@ public class NewServiceVersionPage extends AbstractPage {
         ServiceVersionBean oldService = (ServiceVersionBean) currentContext.getAttribute(ContextKeys.CURRENT_SERVICE_VERSION);
         final String oldVer = oldService.getVersion();
         clonedVersion.setVersion(ver);
-        clonedVersion.setEndpoint(oldService.getEndpoint());
-        clonedVersion.setEndpointType(oldService.getEndpointType());
-        clonedVersion.setGateways(oldService.getGateways());
-        clonedVersion.setPlans(oldService.getPlans());
-        clonedVersion.setPublicService(oldService.isPublicService());
+//        clonedVersion.setEndpoint(oldService.getEndpoint());
+//        clonedVersion.setEndpointType(oldService.getEndpointType());
+//        clonedVersion.setGateways(oldService.getGateways());
+//        clonedVersion.setPlans(oldService.getPlans());
+//        clonedVersion.setPublicService(oldService.isPublicService());
         rest.createServiceVersion(org, service, clonedVersion, new IRestInvokerCallback<ServiceVersionBean>() {
             @Override
             public void onSuccess(ServiceVersionBean response) {

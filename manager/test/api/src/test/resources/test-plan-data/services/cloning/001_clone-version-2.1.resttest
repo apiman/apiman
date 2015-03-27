@@ -2,7 +2,9 @@ POST /organizations/Organization1/services/Service1/versions admin/admin
 Content-Type: application/json
 
 {
-  "version" : "1.0"
+  "version" : "2.1",
+  "clone" : true,
+  "cloneVersion" : "1.0"
 }
 ----
 200
@@ -13,12 +15,9 @@ Content-Type: application/json
     "organization" : {
       "id" : "Organization1"
     },
-    "id" : "Service1",
-    "name" : "Service 1",
-    "description" : "This is the description of Service 1.",
-    "createdBy":"admin"
+    "id" : "Service1"
   },
   "status" : "Created",
-  "version" : "1.0",
+  "version" : "2.1",
   "createdBy" : "admin"
 }

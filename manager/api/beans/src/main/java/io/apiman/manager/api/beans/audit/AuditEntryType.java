@@ -23,7 +23,7 @@ package io.apiman.manager.api.beans.audit;
 public enum AuditEntryType {
 
     // Entity events
-    Create, Update, Delete, 
+    Create, Update, Delete, Clone, 
     // Action events
     Grant, Revoke,
     Publish, Retire,
