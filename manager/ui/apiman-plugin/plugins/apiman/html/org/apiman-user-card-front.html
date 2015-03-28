@@ -1,0 +1,34 @@
+<!-- One card per member -->
+<div class="apiman-card" data-field="card">
+  <div class="front active">
+    <div class="title">
+      <div class="name" data-field="fullName" data-role="dummy">{{member.userName}}</div>
+      <div class="name" data-field="userId" data-role="dummy">({{member.userId}})</div>
+      <div class="actions">
+        <a href="#" data-field="editButton" ng-click="flipCard(back)">Edit</a>
+      </div>
+    </div>
+    <div class="body">
+      <div class="card-icon">
+        <i class="fa fa-user"></i>
+      </div>
+      <div class="card-details">
+        <div class="card-details-item">
+          <div class="card-label" data-i18n-key="email-label">Email:</div>
+          <div class="card-value"><a href="mailto:{{member.email}}" data-field="email">{{member.email}}</a></div>
+        </div>
+        <div class="card-details-item">
+          <div class="card-label" data-i18n-key="roles-label">Role(s):</div>
+          <div class="card-value" data-field="roles">
+            {{ joinRoles(member.roles) }}
+          </div>
+        </div>
+        <div class="card-details-item">
+          <i class="fa fa-clock-o"></i>
+          <div class="apiman-label-faded card-value" data-i18n-key="joined-on">Joined on</div>
+          <div class="card-value" data-field="joinedOn" data-role="dummy">Oct 19, 2012</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

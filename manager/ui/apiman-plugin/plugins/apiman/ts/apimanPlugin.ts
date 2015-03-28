@@ -49,6 +49,7 @@ module Apiman {
         '/apiman/org-services.html'     : { templateUrl: 'org/org-services.html' },
         '/apiman/org-apps.html'         : { templateUrl: 'org/org-apps.html' },
         '/apiman/org-members.html'      : { templateUrl: 'org/org-members.html' },
+        '/apiman/org-manage-members.html'   : { templateUrl: 'org/org-manage-members.html' },
         '/apiman/org-activity.html'     : { templateUrl: 'org/org-activity.html' },
         '/apiman/plan-overview.html'    : { templateUrl: 'plan/plan-overview.html' },
         '/apiman/plan-policies.html'    : { templateUrl: 'plan/plan-policies.html' },
@@ -76,7 +77,7 @@ module Apiman {
                 .subPath("Home", "dash.html", builder.join(Apiman.templatePath, 'dash.html'))
                 .build();
             builder.configureRouting($routeProvider, tab);
-            
+
             // Map all the routes into the route provider.
             angular.forEach(routes, function(config, key) {
                 config.templateUrl = builder.join(Apiman.templatePath, config.templateUrl);

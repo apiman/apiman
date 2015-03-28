@@ -1,70 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
-    
-  </head>
 
-  <body>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+</head>
 
-    <!-- Top header/nav bar -->
-    <div id="apiman-header">
-      <div class="main-header container">
-        <div class="row">
-          <div class="col-md-12">
-            <div class="logo"></div>
-            <input class="search no-phone" type="text" placeholder="Quick service search..."></input>
-            <ul class="user-menu pull-right">
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                  <span class="pficon pficon-user"></span>
-                  <span>Bruce Wayne</span>
-                  <b class="caret"></b>
-                </a>
-                <ul class="dropdown-menu">
-                  <li>
-                    <a href="user-orgs.html">Home</a>
-                  </li>
-                  <li class="divider"></li>
-                  <li>
-                    <a data-field="toProfile" href="settings-profile.html" data-i18n-key="profile">Profile</a>
-                  </li>
-                  <li>
-                    <a href="#">Logout</a>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="container page" data-field="page">
-      <div class="row">
-        <div class="col-md-12">
-          <ol class="breadcrumb" data-field="breadcrumb">
-            <li><a href="dash.html"><i class="fa fa-home fa-fw"></i><span>Home</span></a></li>
-            <li><a href="org-members.html"><i class="fa fa-shield fa-fw"></i><span>JBoss Overlord</span></a></li>
-            <li class="active">Manage Members</li>
-          </ol>
-        </div>
-      </div>
-      <div class="row">
-        <div class="apiman-divider-20"></div>
-      </div>
-      <!-- Search for Members by name -->
+<body>
+  <div>
+    <div ng-include="'plugins/apiman/html/progress.include'"></div>
+    <div id="apiman-header" ng-include="'plugins/apiman/html/navbar.include'"></div>
+    <div ng-controller="Apiman.OrgManageMembersController as membersCtrl" class="container page" ng-cloak="" ng-show="pageState == 'loaded'">
+      <div ng-include="'plugins/apiman/html/org/org-manage-members_bc.include'"></div>
       <div class="row">
         <div class="col-md-12">
           <div class="apiman-filters apiman-members-filters">
-            <input data-field="searchBox" type="text" class="form-control input-search" placeholder="Filter by member name or id..."></input>
-            <select class="selectpicker" title="Filter by role(s)..." multiple="" data-field="roleSelector">
-              <option>Organization Owner</option>
-              <option>Application Developer</option>
-              <option>Service Developer</option>
+            <div>
+              <!-- Search for Members by name -->
+              <apiman-search-box function="filterMembers" placeholder="Filter by member name or id..."></apiman-search-box>
+            </div>
+            <select title="Filter by role(s)..." ng-options="role.id as role.name for role in roles" ng-model="selectedRoles" class="selectpicker" apiman-select-picker="" multiple ng-change="filterMembers(filterValue)">
             </select>
-            <a href="new-member.html" class="btn btn-primary pull-right" data-field="addMember" data-i18n-key="add-member">Add Member</a>
+            <a href="{{ pluginName }}/new-member.html" class="btn btn-primary pull-right" data-i18n-key="add-member">Add Member</a>
           </div>
         </div>
       </div>
@@ -72,120 +29,14 @@
       <div class="row">
         <div class="col-md-12 apiman-manage-members">
           <div class="container-fluid apiman-cards" data-field="cards">
-            <!-- One card per member -->
-            <div class="apiman-card" data-field="card">
-              <div class="front active">
-                <div class="title">
-                  <div class="name" data-field="fullName">Clark Kent</div>
-                  <div class="name" data-field="userId">(ckent)</div>
-                  <div class="actions">
-                    <a href="#" data-field="editButton">Edit</a>
-                  </div>
-                </div>
-                <div class="body">
-                  <div class="card-icon">
-                    <i class="fa fa-user"></i>
-                  </div>
-                  <div class="card-details">
-                    <div class="card-details-item">
-                      <div class="card-label" data-i18n-key="email-label">Email:</div>
-                      <div class="card-value"><a href="mailto:ckent@dailyplanet.com" data-field="email">ckent@dailyplanet.com</a></div>
-                    </div>
-                    <div class="card-details-item">
-                      <div class="card-label" data-i18n-key="roles-label">Role(s):</div>
-                      <div class="card-value" data-field="roles">
-                        Organization Owner, Application Developer, Service Developer
-                      </div>
-                    </div>
-                    <div class="card-details-item">
-                      <i class="fa fa-clock-o"></i>
-                      <div class="apiman-label-faded card-value" data-i18n-key="joined-on">Joined on</div>
-                      <div class="card-value" data-field="joinedOn">Oct 19, 2012</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="back">
-                <div class="title">
-                  <div class="explanation" data-field="editExplanation">Assign roles to Clark Kent.</div>
-                </div>
-                <div class="body">
-                  <div class="card-edit-details">
-                    <div class="roles">
-                      <select data-field="editRolesSelector" class="selectpicker" title="Select at least one role..." multiple="">
-                        <option>Organization Owner</option>
-                        <option>Application Developer</option>
-                        <option>Service Developer</option>
-                      </select>
-                    </div>
-                    <div class="actions">
-                      <button class="btn btn-primary btn-xs btn-apply" data-field="applyButton" data-i18n-key="apply" placeholder="Applying..." data-icon="fa-cog">Apply</button>
-                      <button class="btn btn-default btn-xs btn-cancel" data-field="cancelButton" data-i18n-key="cancel">Cancel</button>
-                      <button class="btn btn-danger btn-xs btn-revoke-all" data-field="revokeButton" data-i18n-key="revoke-all" placeholder="Revoking..." data-icon="fa-cog">Revoke All</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            <div ng-repeat="member in filteredMembers">
+              <apiman-user-card member="member" roles="roles" org-id="{{organizationId}}"></apiman-user-card>
             </div>
-            <!-- Card while editing -->
-           <div class="apiman-card">
-              <div class="front">
-                <div class="title">
-                  <div class="name">Bruce Wayne</div>
-                  <div class="name">(bwayne)</div>
-                  <div class="actions">
-                    <a href="#" onclick="$(this).closest('.apiman-card').find('.front').toggleClass('active'); $(this).closest('.apiman-card').find('.back').toggleClass('active')">Edit</a>
-                  </div>
-                </div>
-                <div class="body">
-                  <div class="card-icon">
-                    <i class="fa fa-user"></i>
-                  </div>
-                  <div class="card-details">
-                    <div class="card-details-item">
-                      <div class="card-label">Email:</div>
-                      <div class="card-value"><a href="mailto:bwayne@gotham.org">bwayne@gotham.org</a></div>
-                    </div>
-                    <div class="card-details-item">
-                      <div class="card-label">Role(s):</div>
-                      <div class="card-value">
-                        Organization Owner, Application Developer
-                      </div>
-                    </div>
-                    <div class="card-details-item">
-                      <i class="fa fa-clock-o"></i>
-                      <div class="apiman-label-faded card-value" data-i18n-key="joined-on">Joined on</div>
-                      <div class="card-value" data-field="joinedOn">Oct 19, 2012</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="back active">
-                <div class="title">
-                  <div class="explanation">Assign roles to <span class="emphasis">Bruce Wayne</span>.</div>
-                </div>
-                <div class="body">
-                  <div class="card-edit-details">
-                    <div class="roles">
-                      <select data-field="editRoles" class="selectpicker" title="Select at least one role..." multiple="">
-                        <option>Organization Owner</option>
-                        <option>Application Developer</option>
-                        <option>Service Developer</option>
-                      </select>
-                    </div>
-                    <div class="actions">
-                      <button class="btn btn-primary btn-xs btn-apply">Apply</button>
-                      <button class="btn btn-default btn-xs btn-cancel" onclick="$(this).closest('.apiman-card').find('.front').toggleClass('active'); $(this).closest('.apiman-card').find('.back').toggleClass('active')">Cancel</button>
-                      <button class="btn btn-danger btn-xs btn-revoke-all">Revoke All</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-          </div> <!-- apiman-cards -->
+          </div>
         </div>
       </div>
-    </div> <!-- /container -->
-  </body>
+    </div>
+  </div>
+</body>
+
 </html>
