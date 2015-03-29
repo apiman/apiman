@@ -21,7 +21,7 @@
             </div>
             <select title="Filter by role(s)..." ng-options="role.id as role.name for role in roles" ng-model="selectedRoles" class="selectpicker" apiman-select-picker="" multiple ng-change="filterMembers(filterValue)">
             </select>
-            <a href="{{ pluginName }}/new-member.html" class="btn btn-primary pull-right" data-i18n-key="add-member">Add Member</a>
+            <a href="{{ pluginName }}/org-new-member.html?org={{ organizationId }}" class="btn btn-primary pull-right" data-i18n-key="add-member">Add Member</a>
           </div>
         </div>
       </div>
@@ -30,7 +30,7 @@
         <div class="col-md-12 apiman-manage-members">
           <div class="container-fluid apiman-cards" data-field="cards">
             <div ng-repeat="member in filteredMembers">
-              <apiman-user-card member="member" roles="roles" org-id="{{organizationId}}"></apiman-user-card>
+              <apiman-user-card member="member" roles="roles" org-id="{{ organizationId }}"></apiman-user-card>
             </div>
           </div>
         </div>
