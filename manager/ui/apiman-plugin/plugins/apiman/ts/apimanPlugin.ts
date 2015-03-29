@@ -50,6 +50,7 @@ module Apiman {
         '/apiman/org-apps.html'         : { templateUrl: 'org/org-apps.html' },
         '/apiman/org-members.html'      : { templateUrl: 'org/org-members.html' },
         '/apiman/org-manage-members.html'   : { templateUrl: 'org/org-manage-members.html' },
+        '/apiman/org-new-member.html'  : { templateUrl: 'org/org-new-member.html' },
         '/apiman/org-activity.html'     : { templateUrl: 'org/org-activity.html' },
         '/apiman/plan-overview.html'    : { templateUrl: 'plan/plan-overview.html' },
         '/apiman/plan-policies.html'    : { templateUrl: 'plan/plan-policies.html' },

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <script type="text/javascript" src="site.js"></script>
+  </head>
+
+  <body>
+    <div ng-include="'plugins/apiman/html/progress.include'"></div>
+    <div id="apiman-header" ng-include="'plugins/apiman/html/navbar.include'"></div>
+
+    <div id="form-page" class="container apiman-entity-new page" ng-controller="Apiman.OrgNewMemberController as onmCtrl">
+      <div class="row">
+        <h2 class="title" data-i18n-key="new-member">New Member</h2>
+      </div>
+      <!-- Helpful hint -->
+      <div class="row">
+        <p data-i18n-key="new-member-help-text" class="col-md-6 apiman-label-faded">Add a member to this organization by searching for a User below.  Once the User is located, simply select their roles and click 'Add Member'.</p>
+      </div>
+      <!-- HR -->
+      <div class="row hr-row">
+        <hr/>
+      </div>
+      <!-- User search bar -->
+      <div class="row">
+        <dl>
+          <dt data-i18n-key="find-user">Find a User</dt>
+          <dd>
+            <div class="" style="line-height: normal">
+              <apiman-search-box function="findUsers" placeholder="Search by username..."></apiman-search-box>
+            </div>
+          </dd>
+        </dl>
+      </div>
+      <!-- User search results -->
+      <div class="row">
+        <div class="panel panel-default input-search-results">
+          <div class="panel-body container-fluid">
+            <div ng-hide="searchBoxValue.length>0">(Search for users above)</div>
+            <apiman-user-entry user="user" selected-users="selectedUsers" ng-repeat="user in queriedUsers"></apiman-user-entry>
+          </div>
+        </div>
+      </div>
+      <!-- Role selections -->
+      <div class="row">
+        <dl>
+          <dt data-i18n-key="roles">Role(s)</dt>
+          <dd>
+            <div>
+              <select title="Select role(s)..." ng-options="role.id as role.name for role in roles"
+                ng-model="selectedRoles" class="selectpicker" apiman-select-picker=""
+                multiple>
+              </select>
+            </div>
+          </dd>
+        </dl>
+      </div>
+      <!-- HR -->
+      <div class="row hr-row">
+        <hr/>
+      </div>
+      <!-- Create Button -->
+      <div class="row">
+        <button class="btn btn-primary" data-i18n-key="add-member" data-icon="fa-cog" placeholder="Adding..."
+                ng-click="addMembers()" data-field="addMembersButton" apiman-action-btn
+                ng-disabled="selectedRoles.length === 0 || countObjectKeys(selectedUsers) === 0">
+          Add Member(s)
+        </button>
+        <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-i18n-key="cancel">Cancel</a>
+      </div>
+    </div> <!-- /container -->
+  </body>
+</html>
