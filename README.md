@@ -56,10 +56,7 @@ Once WildFly has started up, and if all went well, you can point your browser to
 * ckent/ckent123!
 * dprince/dprince123!
 
-Note that this quickstart also deploys a seeder.war which will, after a slight startup delay,
-add a bunch of content to apiman.  This is not strictly necessary, but it does populate the 
-API Manager with some data so that it doesn't feel so lonely the first time you log in.
-You're welcome.
+Note that this quickstart seeds a bunch of content into apiman. This is not strictly necessary, but it does populate the API Manager with some data so that it doesn't feel so lonely the first time you log in. You're welcome.
 
 ## Contribute fixes and features
 

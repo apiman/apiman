@@ -3,9 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
-    
   </head>
-
   <body>
   <div>
     <div ng-include="'plugins/apiman/html/progress.include'"></div>
@@ -32,7 +30,7 @@
                   <div>
                     <apiman-search-box function="filterMembers" placeholder="Filter by member name..." />
                   </div>
-                  <a apiman-permission="orgAdmin" href="org-manage-members.html" class="btn btn-default pull-right" data-field="toManageMembers" data-i18n-key="manage-members">Manage Members</a>
+                  <a apiman-permission="orgAdmin" href="{{ pluginName}}/org-manage-members.html?org={{org.id}}" class="btn btn-default pull-right" data-field="toManageMembers" data-i18n-key="manage-members">Manage Members</a>
                 </div>
                 <div class="clearfix"></div>
                 <!-- The organization's list of members -->
@@ -76,12 +74,12 @@
                 </div>
               </div>
               <!-- End Members Tab Content -->
-              
+
             </div>
           </div>
         </div>
         <!-- /Center Content -->
-        
+
       </div>
     </div> <!-- /container -->
   </div>
