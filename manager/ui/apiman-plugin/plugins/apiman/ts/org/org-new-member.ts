@@ -98,7 +98,7 @@ module Apiman {
     PageLifecycle.loadPage('OrgNewMember', promise, $scope);
   }])
 
-  OrgMembersController.directive('apimanUserEntry', ['Logger', function($log) {
+  OrgNewMemberController.directive('apimanUserEntry', ['Logger', function($log) {
     return {
       scope: {
         user: '=',
