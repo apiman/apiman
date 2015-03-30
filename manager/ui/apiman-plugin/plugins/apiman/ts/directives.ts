@@ -280,12 +280,16 @@ module Apiman {
             };
         }]);
 
-    _module.directive('apimanDropText', 
-        ['Logger', 
+    _module.directive('apimanDropText',
+        ['Logger',
         (Logger) => {
             return {
                 restrict: 'A',
-                link: function($scope, $elem, $attrs) {
+                require : 'ngModel',
+                scope: {
+                    ngModel: '='
+                },
+                link: function($scope, $elem, $attrs, ngModel) {
                     $elem.on('dragover', function(e) {
                         e.preventDefault();
                         if (e.dataTransfer) {
@@ -309,6 +313,7 @@ module Apiman {
                         $elem.removeClass('dropping');
                         return false;
                     });
+
                     $elem.on('drop', function(e) {
                         e.preventDefault();
                         $elem.removeClass('dropping');
@@ -322,6 +327,7 @@ module Apiman {
                             reader.onload = (function(theFile) {
                                 return function(result) {
                                     $elem.val(result.target.result);
+                                    ngModel.$setViewValue(result.target.result);
                                 };
                             })(firstFile);
 
