@@ -3,7 +3,6 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
-    
   </head>
 
   <body>
@@ -32,8 +31,8 @@
             <div>
               <div class="clearfix"></div>
               <div class="actions">
-                <a class="btn btn-default" data-field="downloadAsJson" data-i18n-key="download-as-json">Download as JSON</a>
-                <a class="btn btn-default" data-field="downloadAsXml" data-i18n-key="download-as-xml">Download as XML</a>
+                <a href="{{ downloadAsJson }}" class="btn btn-default" data-field="downloadAsJson" data-i18n-key="download-as-json">Download as JSON</a>
+                <a href="{{ downloadAsXml }}" class="btn btn-default" data-field="downloadAsXml" data-i18n-key="download-as-xml">Download as XML</a>
               </div>
               <div class="clearfix"></div>
               <!-- The list of apis -->
@@ -48,40 +47,30 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td><a href="#details1"><i class="fa fa-fw fa-chevron-down"></i></a></td>
-                      <td><span><a href="org-apps.html">JBoss Overlord</a><span> / </span><a href="service-overview.html">s-ramp-api</a></span></td>
-                      <td><span>1.3</span>
-                      <td><a href="plan-overview.html">Gold</a></td>
+                    <tr ng-repeat-start="api in apiRegistry.apis">
+                      <td><a ng-click="toggle(api)" href="javascript:return false;"><i class="fa fa-fw {{ api.expanded ? 'fa-chevron-down' : 'fa-chevron-right' }}"></i></a></td>
+                      <td>
+                        <span><a href="{{ pluginName }}/consumer-org.html?org={{ api.serviceOrgId }}">{{ api.serviceOrgName }}</a>
+                        <span>/</span>
+                        <a href="{{ pluginName }}/consumer-service.html?org={{ api.serviceOrgId }}&amp;service={{ api.serviceName }}&amp;version={{ api.serviceVersion }}"><span class="emphasis">{{ api.serviceName }}</span></a></span>
+                      </td>
+                      <td><span>{{ api.serviceVersion }}</span></td>
+                      <td>{{ api.planName }}</td>
                     </tr>
-                    <tr>
+                    <tr ng-repeat-end ng-show="api.expanded">
                       <td colspan="4">
-                        <form role="form" data-field="apiDetails">
+                        <form role="form">
                           <div class="form-group">
                             <label data-i18n-key="api-key">API Key</label>
-                            <input data-field="apiKey" type="text" class="form-control readonly" value="067e6162-3b6f-4ae2-a171-2470b63dff00">
+                            <input readonly type="text" class="form-control readonly apiman-readonly" value="{{ api.apiKey }}">
                           </div>
                           <div class="form-group">
                             <div>
-                              <button title="Click for details on how to invoke this managed service." data-field="detailsButton" class="btn btn-default" data-i18n-key="how-to-invoke">How to invoke...</button>
+                              <button title="Click for details on how to invoke this managed service." data-field="detailsButton" class="btn btn-default" data-i18n-key="how-to-invoke" ng-click="howToInvoke(api)">How to invoke...</button>
                             </div>
                           </div>
                         </form>
                       </td>
-                    </tr>
-                    <tr>
-                      <td><a href="#"><i class="fa fa-fw fa-chevron-right"></i></a></td>
-                      <td><span><a href="org-apps.html">JBoss Overlord</a><span> / </span><a href="service-overview.html">dtgov-deploy</a></span></td>
-                      <td><span>2.0</span>
-                      <td><a href="plan-overview.html">Platinum</a></td>
-                    </tr>
-                    <tr>
-                    </tr>
-                    <tr>
-                      <td><a href="#"><i class="fa fa-fw fa-chevron-right"></i></a></td>
-                      <td><span><a href="org-apps.html">Apereo Bedework</a><span> / </span><a href="service-overview.html">bw-caldav</a></span></td>
-                      <td><span>2.1</span>
-                      <td><a href="plan-overview.html">Standard</a></td>
                     </tr>
                   </tbody>
                 </table>

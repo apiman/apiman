@@ -4,6 +4,10 @@ body {
   font-size: 13px;
 }
 
+.form-control[readonly] {
+  cursor: auto;
+}
+
 .capitalized {
   text-transform: capitalize;
 }
