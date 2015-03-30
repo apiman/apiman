@@ -280,11 +280,38 @@ module Apiman {
             };
         }]);
 
-        _module.directive('apimanDropText', () => {
+    _module.directive('apimanDropText', 
+        ['Logger', 
+        (Logger) => {
             return {
                 restrict: 'A',
                 link: function($scope, $elem, $attrs) {
+                    $elem.on('dragover', function(e) {
+                        e.preventDefault();
+                        if (e.dataTransfer) {
+                            e.dataTransfer.effectAllowed = 'copy';
+                        }
+                        if (!$elem.hasClass('dropping')) {
+                            $elem.addClass('dropping');
+                        }
+                        return false;
+                    });
+                    $elem.on('dragenter', function(e) {
+                        e.preventDefault();
+                        if (e.dataTransfer) {
+                            e.dataTransfer.effectAllowed = 'copy';
+                        }
+                        $elem.addClass('dropping');
+                        return false;
+                    });
+                    $elem.on('dragleave', function(e) {
+                        e.preventDefault();
+                        $elem.removeClass('dropping');
+                        return false;
+                    });
                     $elem.on('drop', function(e) {
+                        e.preventDefault();
+                        $elem.removeClass('dropping');
                         if (e.originalEvent.dataTransfer && e.originalEvent.dataTransfer.files.length){
                             if (e.preventDefault) e.preventDefault();
                             if (e.stopPropagation) e.stopPropagation();
@@ -303,6 +330,5 @@ module Apiman {
                     });
                 }
             }
-        }
-    );
+        }]);
 }
