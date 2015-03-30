@@ -1134,7 +1134,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                     " WHERE svc.id = :serviceId " +
                     "   AND sorg.id = :orgId " +
                     "   AND svcv.version = :version " +
-                    " ORDER BY aorg.id, app.name ASC"; //$NON-NLS-1$
+                    " ORDER BY sorg.id, svc.id ASC"; //$NON-NLS-1$
             Query query = entityManager.createQuery(jpql);
             query.setParameter("orgId", organizationId); //$NON-NLS-1$
             query.setParameter("serviceId", serviceId); //$NON-NLS-1$
@@ -1271,7 +1271,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                     " WHERE app.id = :applicationId " +
                     "   AND aorg.id = :orgId " +
                     "   AND appv.version = :version " +
-                    " ORDER BY c.id ASC";
+                    " ORDER BY aorg.id, app.id ASC";
             Query query = entityManager.createQuery(jpql);
             query.setParameter("orgId", organizationId); //$NON-NLS-1$
             query.setParameter("applicationId", applicationId); //$NON-NLS-1$
