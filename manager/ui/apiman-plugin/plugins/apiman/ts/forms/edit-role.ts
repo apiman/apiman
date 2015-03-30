@@ -37,9 +37,7 @@ module Apiman {
                             $scope.rolePermissions[name] = true;
                         });
                         resolve(role);
-                    }, function(error) {
-                        reject(error);
-                    });
+                    }, reject);
                 })
             });
             
@@ -58,14 +56,7 @@ module Apiman {
                 role.autoGrant = $scope.role.autoGrant;
                 ApimanSvcs.update({ entityType: 'roles', secondaryType: $scope.role.id }, role, function(reply) {
                      $location.url(pluginName + '/admin-roles.html');
-                }, function(error) {
-                    if (error.status == 409) {
-                        $location.url('apiman/error-409.html');
-                    } else {
-                        alert("ERROR=" + error.status + " " + error.statusText);
-                    }
-                    $scope.updateButton.state = 'error';
-                });
+                }, PageLifecycle.handleError);
             }
             
             $scope.deleteRole  = function() {
@@ -73,14 +64,7 @@ module Apiman {
                 Dialogs.confirm('Confirm Delete Role', 'Do you really want to delete this role?', function() {
                     ApimanSvcs.delete({ entityType: 'roles', secondaryType: $scope.role.id }, function(reply) {
                         $location.url(pluginName + '/admin-roles.html');
-                    }, function(error) {
-                        if (error.status == 409) {
-                            $location.url('apiman/error-409.html');
-                        } else {
-                            alert("ERROR=" + error.status + " " + error.statusText);
-                        }
-                        $scope.deleteButton.state = 'error';
-                    });
+                    }, PageLifecycle.handleError);
                 }, function() {
                     $scope.deleteButton.state = 'complete';
                 });

@@ -14,16 +14,12 @@ module Apiman {
                         org: $q(function(resolve, reject) {
                             OrgSvcs.get({ organizationId: params.org }, function(org) {
                                 resolve(org);
-                            }, function(error) {
-                                reject(error);
-                            });
+                            }, reject);
                         }),
                         app: $q(function(resolve, reject) {
                             OrgSvcs.get({ organizationId: params.org, entityType: 'applications', entityId: params.app }, function(app) {
                                 resolve(app);
-                            }, function(error) {
-                                reject(error);
-                            });
+                            }, reject);
                         }),
                         versions: $q(function(resolve, reject) {
                             OrgSvcs.query({ organizationId: params.org, entityType: 'applications', entityId: params.app, versionsOrActivity: 'versions' }, function(versions) {
@@ -40,9 +36,7 @@ module Apiman {
                                 }
                                 $rootScope.mruApp = $scope.selectedAppVersion;
                                 $scope.setEntityStatus($scope.selectedAppVersion.status);
-                            }, function(error) {
-                                reject(error);
-                            });
+                            }, reject);
                         })
                     };
                 }
@@ -50,8 +44,8 @@ module Apiman {
         }]);
 
     export var AppEntityController = _module.controller("Apiman.AppEntityController",
-        ['$q', '$scope', '$location', 'ActionSvcs', 'Logger', 'Dialogs', 
-        ($q, $scope, $location, ActionSvcs, Logger, Dialogs) => {
+        ['$q', '$scope', '$location', 'ActionSvcs', 'Logger', 'Dialogs', 'PageLifecycle',
+        ($q, $scope, $location, ActionSvcs, Logger, Dialogs, PageLifecycle) => {
             var params = $location.search();
             
             $scope.setVersion = function(app) {
@@ -71,10 +65,7 @@ module Apiman {
                     $scope.selectedAppVersion.status = 'Registered';
                     $scope.registerButton.state = 'complete';
                     $scope.setEntityStatus($scope.selectedAppVersion.status);
-                }, function(error) {
-                    $scope.registerButton.state = 'error';
-                    alert("ERROR=" + error);
-                });
+                }, PageLifecycle.handleError);
             };
             
             $scope.unregisterApp = function(app) {
@@ -90,10 +81,7 @@ module Apiman {
                         $scope.selectedAppVersion.status = 'Retired';
                         $scope.unregisterButton.state = 'complete';
                         $scope.setEntityStatus($scope.selectedAppVersion.status);
-                    }, function(error) {
-                        $scope.unregisterButton.state = 'error';
-                        alert("ERROR=" + error);
-                    });
+                    }, PageLifecycle.handleError);
                 }, function() {
                     $scope.unregisterButton.state = 'complete';
                 });

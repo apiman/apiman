@@ -501,7 +501,6 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 }
             } catch (Exception e) {
                 // TODO it's ok if the clone fails - we did our best
-                e.printStackTrace();
             }
         }
 

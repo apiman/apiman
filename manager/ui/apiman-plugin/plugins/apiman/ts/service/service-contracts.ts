@@ -32,9 +32,7 @@ module Apiman {
                 serviceVersion: $q(function(resolve, reject) {
                     OrgSvcs.get({ organizationId: params.org, entityType: 'services', entityId: params.service, versionsOrActivity: 'versions', version: params.version }, function(serviceVersion) {
                         resolve(serviceVersion);
-                    }, function(error) {
-                        reject(error);
-                    });
+                    }, reject);
                 })
             });
             var promise = $q.all(dataLoad);

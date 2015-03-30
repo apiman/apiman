@@ -61,9 +61,7 @@ module Apiman {
                         $scope.originalConfig = angular.copy($scope.configuration);
                         $scope.isDirty = false;
                         resolve(gateway);
-                    }, function(error) {
-                        reject(error);
-                    });
+                    }, reject);
                 })
             });
             
@@ -92,11 +90,7 @@ module Apiman {
                 var gateway = Gateway();
                 ApimanSvcs.update({ entityType: 'gateways', secondaryType: $scope.gateway.id }, gateway, function() {
                      $location.url(pluginName + '/admin-gateways.html');
-                }, function(error) {
-                    alert(error);
-                    // TODO handle this error better
-                    $scope.updateButton.state = 'error';
-                });
+                }, PageLifecycle.handleError);
             }
             
             $scope.deleteGateway  = function() {
@@ -104,11 +98,7 @@ module Apiman {
                 Dialogs.confirm('Confirm Delete Gateway', 'Do you really want to permanently delete this gateway?  This can be very destructive to any Service published to it.', function() {
                     ApimanSvcs.delete({ entityType: 'gateways', secondaryType: $scope.gateway.id }, function(reply) {
                         $location.url(pluginName + '/admin-gateways.html');
-                    }, function(error) {
-                        alert(error);
-                        // TODO handle this error better
-                        $scope.deleteButton.state = 'error';
-                    });
+                    }, PageLifecycle.handleError);
                 }, function() {
                     $scope.deleteButton.state = 'complete';
                 });

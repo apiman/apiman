@@ -26,9 +26,7 @@ module Apiman {
                     ApimanSvcs.query({ entityType: 'roles' }, function(adminRoles) {
                         $scope.filteredRoles = adminRoles;
                         resolve(adminRoles);
-                    }, function(error) {
-                        reject(error);
-                    });
+                    }, reject);
                 })
             });
             PageLifecycle.loadPage('AdminRoles', promise, $scope, function() {

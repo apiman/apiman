@@ -56,25 +56,19 @@ module Apiman {
         OrgSvcs.get({ organizationId: params.org, entityType: '' }, function(org) {
           $rootScope.mruOrg = org;
           resolve(org);
-        }, function(error) {
-          reject(error);
-        });
+        }, reject);
       }),
       members: $q(function(resolve, reject) {
         OrgSvcs.query({ organizationId: params.org, entityType: 'members' }, function(members) {
           $scope.filteredMembers = members;
           resolve(members);
-        }, function(error) {
-          reject(error);
-        });
+        }, reject);
       }),
       roles: $q(function(resolve, reject) {
         ApimanSvcs.query({ entityType: 'roles' }, function(adminRoles) {
           $scope.filteredRoles = adminRoles;
           resolve(adminRoles);
-        }, function(error) {
-          reject(error);
-        });
+        }, reject);
       })
     });
     PageLifecycle.loadPage('OrgManageMembers', promise, $scope, function() {
@@ -82,8 +76,8 @@ module Apiman {
     });
   }])
 
-  OrgManageMembersController.directive('apimanUserCard', ['OrgSvcs', 'Dialogs', 'Logger',
-  (OrgSvcs, Dialogs, $log) => {
+  OrgManageMembersController.directive('apimanUserCard', ['OrgSvcs', 'Dialogs', 'Logger', 'PageLifecycle',
+  (OrgSvcs, Dialogs, $log, PageLifecycle) => {
     return {
       restrict: 'E',
       scope: {
@@ -128,9 +122,7 @@ module Apiman {
           OrgSvcs.save({ organizationId: $scope.orgId, entityType: 'roles' }, grantRolesBean, function() { // Success
             $log.info('Successfully Saved: ' + JSON.stringify(grantRolesBean));
             $scope.flipCard($scope.front);
-          }, function(error) { // Err TODO handle error better.
-            $log.info('Error: ' + JSON.stringify(error));
-          });
+          }, PageLifecycle.handleError);
 
           _reassignRoles(selectedRoles);
         }
@@ -150,10 +142,7 @@ module Apiman {
           OrgSvcs.delete({ organizationId: orgId, entityType: 'members', entityId: userId },
           function() {
             $log.debug('Successfully revoked all roles for ' + userId);
-          },
-          function(error) {
-            $log.debug('Error: ' + error);
-          });
+          }, PageLifecycle.handleError);
         }
 
         // Now we've modified the roles, we can update to reflect.

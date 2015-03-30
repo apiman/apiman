@@ -19,9 +19,7 @@ module Apiman {
                     ApimanSvcs.query({ entityType: 'policyDefs' }, function(policyDefs) {
                         $scope.selectedDefId = '__null__';
                         resolve(policyDefs);
-                    }, function(error) {
-                        reject(error);
-                    });
+                    }, reject);
                 })
             });
             
@@ -83,14 +81,7 @@ module Apiman {
                         .search('org', reply.organizationId)
                         .search(entityParam, reply.entityId)
                         .search('version', reply.entityVersion);
-                }, function(error) {
-                    if (error.status == 409) {
-                        $location.url('apiman/error-409.html');
-                    } else {
-                        alert("ERROR=" + error.status + " " + error.statusText);
-                    }
-                    $scope.createButton.state = 'error';
-                });
+                }, PageLifecycle.handleError);
             };
             
             PageLifecycle.loadPage('NewPolicy', promise, $scope, function() {

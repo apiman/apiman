@@ -47,15 +47,7 @@ module Apiman {
                 role.autoGrant = $scope.role.autoGrant;
                 ApimanSvcs.save({ entityType: 'roles' }, role, function(reply) {
                      $location.url(pluginName + '/admin-roles.html');
-                }, function(error) {
-                    if (error.status == 409) {
-                        $location.url('apiman/error-409.html');
-                    } else {
-                        $scope.createButton.state = 'error';
-                        alert("ERROR=" + error.status + " " + error.statusText);
-                    }
-                    $scope.createButton.state = 'error';
-                });
+                }, PageLifecycle.handleError);
             }
             
             PageLifecycle.loadPage('NewRole', undefined, $scope, function() {

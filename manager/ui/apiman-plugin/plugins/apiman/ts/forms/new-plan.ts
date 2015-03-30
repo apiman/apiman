@@ -15,9 +15,7 @@ module Apiman {
                             $scope.selectedOrg = orgs[0];
                         }
                         resolve(orgs);
-                    }, function(error) {
-                        reject(error);
-                    });
+                    }, reject);
                 })
             });
             
@@ -28,14 +26,7 @@ module Apiman {
                 $scope.createButton.state = 'in-progress';
                 OrgSvcs.save({ organizationId: $scope.selectedOrg.id, entityType: 'plans' }, $scope.plan, function(reply) {
                     $location.url(Apiman.pluginName + '/plan-overview.html').search('org', reply.organization.id).search('plan', reply.name).search('version', $scope.plan.initialVersion);
-                }, function(error) {
-                    if (error.status == 409) {
-                        $location.url('apiman/error-409.html');
-                    } else {
-                        $scope.createButton.state = 'error';
-                        alert("ERROR=" + error.status + " " + error.statusText);
-                    }
-                });
+                }, PageLifecycle.handleError);
             };
             
             // Initialize the model - the default initial version for a new plan is always 1.0
@@ -45,7 +36,9 @@ module Apiman {
             
             PageLifecycle.loadPage('NewPlan', promise, $scope, function() {
                 PageLifecycle.setPageTitle('new-plan');
-                $('#apiman-entityname').focus();
+                $scope.$applyAsync(function() {
+                    $('#apiman-entityname').focus();
+                });
             });
         }]);
 

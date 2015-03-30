@@ -15,9 +15,7 @@ module Apiman {
                     OrgSvcs.query({ organizationId: params.org, entityType: 'applications', entityId: params.app, versionsOrActivity: 'versions', version: params.version, policiesOrActivity: 'contracts' }, function(contracts) {
                         $scope.filteredContracts = contracts;
                         resolve(contracts);
-                    }, function(error) {
-                        reject(error);
-                    });
+                    }, reject);
                 })
             });
             var promise = $q.all(dataLoad);
@@ -56,9 +54,7 @@ module Apiman {
                     OrgSvcs.delete({ organizationId: params.org, entityType: 'applications', entityId: params.app, versionsOrActivity: 'versions', version: params.version, policiesOrActivity: 'contracts' }, function() {
                         $scope.contracts = [];
                         $scope.filteredContracts = [];
-                    }, function(error) {
-                        alert(error);
-                    });
+                    }, PageLifecycle.handleError);
                 });
             };
             
@@ -68,9 +64,7 @@ module Apiman {
                     OrgSvcs.delete({ organizationId: params.org, entityType: 'applications', entityId: params.app, versionsOrActivity: 'versions', version: params.version, policiesOrActivity: 'contracts', policyId: contract.contractId }, function() {
                         removeContractFromArray(contract, $scope.contracts);
                         removeContractFromArray(contract, $scope.filteredContracts);
-                    }, function(error) {
-                        alert(error);
-                    });
+                    }, PageLifecycle.handleError);
                 });
             };
             

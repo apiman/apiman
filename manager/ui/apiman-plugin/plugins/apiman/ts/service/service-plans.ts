@@ -32,9 +32,7 @@ module Apiman {
                     serviceVersion: $q(function(resolve, reject) {
                         OrgSvcs.get({ organizationId: params.org, entityType: 'services', entityId: params.service, versionsOrActivity: 'versions', version: params.version }, function(serviceVersion) {
                             resolve(serviceVersion);
-                        }, function(error) {
-                            reject(error);
-                        });
+                        }, reject);
                     }),
                     plans: $q(function(resolve, reject) {
                         OrgSvcs.query({ organizationId: params.org, entityType: 'plans' }, function(plans) {
@@ -57,9 +55,7 @@ module Apiman {
                                            lockedPlans.push(plan);
                                        }
                                        resolve(planVersions);
-                                    }, function(error) {
-                                       reject(error);
-                                    });
+                                    }, reject);
                                 }))
                             });
                             $q.all(promises).then(function() {
@@ -74,9 +70,7 @@ module Apiman {
                                 });
                                 resolve(lockedPlans);
                             });
-                        }, function(error) {
-                            reject(error);
-                        });
+                        }, reject);
                     })
                 });
             }
@@ -128,14 +122,7 @@ module Apiman {
                     $scope.serviceVersion.publicService = $scope.updatedService.publicService;
                     $scope.isDirty = false;
                     $scope.saveButton.state = 'complete';
-                }, function(error) {
-                    if (error.status == 409) {
-                        $location.url('apiman/error-409.html');
-                    } else {
-                        alert("ERROR=" + error.status + " " + error.statusText);
-                    }
-                    $scope.saveButton.state = 'error';
-                });
+                }, PageLifecycle.handleError);
             };
             
             PageLifecycle.loadPage('ServicePlans', promise, $scope, function() {

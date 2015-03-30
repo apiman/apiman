@@ -12,9 +12,7 @@ module Apiman {
                     ApimanSvcs.get({ entityType: 'policyDefs', secondaryType: params.policyDef }, function(policyDef) {
                         resolve(policyDef);
                         $scope.policyDefJSON = JSON.stringify(policyDef, null, 2);
-                    }, function(error) {
-                        reject(error);
-                    });
+                    }, reject);
                 })
             });
             
@@ -27,14 +25,7 @@ module Apiman {
                 
                 ApimanSvcs.update({ entityType: 'policyDefs', secondaryType: $scope.policyDef.id }, policyDefUpdate, function(reply) {
                      $location.url(pluginName + '/admin-policyDefs.html');
-                }, function(error) {
-                    if (error.status == 409) {
-                        $location.url('apiman/error-409.html');
-                    } else {
-                        $scope.createButton.state = 'error';
-                        alert("ERROR=" + error.status + " " + error.statusText);
-                    }
-                });
+                }, PageLifecycle.handleError);
             }
             
             PageLifecycle.loadPage('EditPolicyDef', promise, $scope, function() {

@@ -10,19 +10,14 @@ module Apiman {
                     CurrentUser.refresh(function() {
                         $location.url('apiman/org-plans.html').search('org', reply.id);
                     });
-                }, function(error) {
-                    if (error.status == 409) {
-                        $location.url('apiman/error-409.html');
-                    } else {
-                        alert("ERROR=" + error.status + " " + error.statusText);
-                        $scope.createButton.state = 'error';
-                    }
-                });
+                }, PageLifecycle.handleError);
             };
             
             PageLifecycle.loadPage('NewOrg', undefined, $scope, function() {
                 PageLifecycle.setPageTitle('new-org');
-                $('#apiman-entityname').focus();
+                $scope.$applyAsync(function() {
+                    $('#apiman-entityname').focus();
+                });
             });
         }]);
 

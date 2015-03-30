@@ -8,9 +8,7 @@ module Apiman {
                 plugins: $q(function(resolve, reject) {
                     ApimanSvcs.query({ entityType: 'plugins' }, function(adminPlugins) {
                         resolve(adminPlugins);
-                    }, function(error) {
-                        reject(error);
-                    });
+                    }, reject);
                 })
             });
             PageLifecycle.loadPage('AdminPlugins', promise, $scope, function() {

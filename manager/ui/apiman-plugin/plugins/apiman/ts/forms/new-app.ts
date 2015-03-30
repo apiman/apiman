@@ -15,9 +15,7 @@ module Apiman {
                             $scope.selectedOrg = orgs[0];
                         }
                         resolve(orgs);
-                    }, function(error) {
-                        reject(error);
-                    });
+                    }, reject);
                 }),
             });
 
@@ -28,14 +26,7 @@ module Apiman {
                 $scope.createButton.state = 'in-progress';
                 OrgSvcs.save({ organizationId: $scope.selectedOrg.id, entityType: 'applications' }, $scope.app, function(reply) {
                     $location.url(Apiman.pluginName + '/app-overview.html').search('org', $scope.selectedOrg.id).search('app', $scope.app.name).search('version', $scope.app.initialVersion);
-                }, function(error) {
-                    if (error.status == 409) {
-                        $location.url('apiman/error-409.html');
-                    } else {
-                        $scope.createButton.state = 'error';
-                        alert("ERROR=" + error.status + " " + error.statusText);
-                    }
-                });
+                }, PageLifecycle.handleError);
             };
             
             $scope.app = {
@@ -44,7 +35,9 @@ module Apiman {
             
             PageLifecycle.loadPage('NewApp', promise, $scope, function() {
                 PageLifecycle.setPageTitle('new-app');
-                $('#apiman-entityname').focus();
+                $scope.$applyAsync(function() {
+                    $('#apiman-entityname').focus();
+                });
             });
         }]);
 

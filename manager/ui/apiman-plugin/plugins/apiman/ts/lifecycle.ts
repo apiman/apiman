@@ -57,7 +57,8 @@ module ApimanPageLifecycle {
         "page.title.user-apps": "apiman - {0} (Applications)",
         "page.title.user-orgs": "apiman - {0} (Organizations)",
         "page.title.user-profile": "apiman - User Profile",
-        "page.title.user-services": "apiman - {0} (Services)"
+        "page.title.user-services": "apiman - {0} (Services)",
+        "page.title.error": "apiman - {0} Error",
     };
     
     var formatMessage = function(theArgs) {
@@ -73,51 +74,73 @@ module ApimanPageLifecycle {
 
     export var _module = angular.module("ApimanPageLifecycle", []);
 
-    export var PageLifecycle = _module.factory('PageLifecycle', ['Logger', '$rootScope', function(Logger, $rootScope) {
-        return {
-            setPageTitle: function(titleKey, params) {
-                var pattern = pageTitles['page.title.' + titleKey];
-                if (pattern) {
-                    var args = [];
-                    args.push(pattern);
-                    args = args.concat(params);
-                    var title = formatMessage(args);
-                    document.title = title;
+    export var PageLifecycle = _module.factory('PageLifecycle', 
+        ['Logger', '$rootScope', '$location',
+        (Logger, $rootScope, $location) => {
+            var handleError = function(error) {
+                $rootScope.pageState = 'error';
+                $rootScope.pageError = error;
+                $rootScope.previousPage = $location.url();
+                if (error.status == 400) {
+                    Logger.info('Detected an error {0}, redirecting to 400.html.', error.status);
+                    $location.url(Apiman.pluginName + '/errors/400.html').replace();
+                } else if (error.status == 403) {
+                    Logger.info('Detected an error {0}, redirecting to 403.html.', error.status);
+                    $location.url(Apiman.pluginName + '/errors/403.html').replace();
+                } else if (error.status == 404) {
+                    Logger.info('Detected an error {0}, redirecting to 404.html.', error.status);
+                    $location.url(Apiman.pluginName + '/errors/404.html').replace();
+                } else if (error.status == 409) {
+                    Logger.info('Detected an error {0}, redirecting to 409.html.', error.status);
+                    $location.url(Apiman.pluginName + '/errors/409.html').replace();
                 } else {
-                    document.title = pattern;
+                    Logger.info('Detected an error {0}, redirecting to 500.html.', error.status);
+                    $location.url(Apiman.pluginName + '/errors/500.html').replace();
                 }
-            },
-            loadPage: function(pageName, dataPromise, $scope, handler) {
-                Logger.log("|{0}| >> Loading page.", pageName);
-                $rootScope.pageState = 'loading';
-                if (dataPromise) {
-                    dataPromise.then(function(data) {
-                        var count = 0;
-                        angular.forEach(data, function(value, key) {
-                            Logger.debug("|{0}| >> Binding {1} to $scope.", pageName, key);
-                            this[key] = value;
-                            count++;
-                        }, $scope);
+            };
+            return {
+                setPageTitle: function(titleKey, params) {
+                    var pattern = pageTitles['page.title.' + titleKey];
+                    if (pattern) {
+                        var args = [];
+                        args.push(pattern);
+                        args = args.concat(params);
+                        var title = formatMessage(args);
+                        document.title = title;
+                    } else {
+                        document.title = pattern;
+                    }
+                },
+                handleError: handleError,
+                loadPage: function(pageName, dataPromise, $scope, handler) {
+                    Logger.log("|{0}| >> Loading page.", pageName);
+                    $rootScope.pageState = 'loading';
+                    if (dataPromise) {
+                        dataPromise.then(function(data) {
+                            var count = 0;
+                            angular.forEach(data, function(value, key) {
+                                Logger.debug("|{0}| >> Binding {1} to $scope.", pageName, key);
+                                this[key] = value;
+                                count++;
+                            }, $scope);
+                            $rootScope.pageState = 'loaded';
+                            if (handler) {
+                                handler();
+                            }
+                            Logger.log("|{0}| >> Page successfully loaded: {1} data packets loaded", pageName, count);
+                        }, function(reason) {
+                            Logger.error("|{0}| >> Page load failed: {1}", pageName, reason);
+                            handleError(reason);
+                        });
+                    } else {
                         $rootScope.pageState = 'loaded';
+                        Logger.log("|{0}| >> Page successfully loaded (no packets).", pageName);
                         if (handler) {
                             handler();
                         }
-                        Logger.log("|{0}| >> Page successfully loaded: {1} data packets loaded", pageName, count);
-                    }, function(reason) {
-                        $rootScope.pageState = 'error';
-                        $rootScope.error = reason;
-                        Logger.error(reason);
-                        alert("Page Load Error: " + reason);
-                    });
-                } else {
-                    $rootScope.pageState = 'loaded';
-                    Logger.log("|{0}| >> Page successfully loaded (no packets).", pageName);
-                    if (handler) {
-                        handler();
                     }
                 }
             }
-        }
-    }]);
+        }]);
 
 }

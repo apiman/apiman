@@ -14,16 +14,12 @@ module Apiman {
                         org: $q(function(resolve, reject) {
                             OrgSvcs.get({ organizationId: params.org }, function(org) {
                                 resolve(org);
-                            }, function(error) {
-                                reject(error);
-                            });
+                            }, reject);
                         }),
                         plan: $q(function(resolve, reject) {
                             OrgSvcs.get({ organizationId: params.org, entityType: 'plans', entityId: params.plan }, function(plan) {
                                 resolve(plan);
-                            }, function(error) {
-                                reject(error);
-                            });
+                            }, reject);
                         }),
                         versions: $q(function(resolve, reject) {
                             OrgSvcs.query({ organizationId: params.org, entityType: 'plans', entityId: params.plan, versionsOrActivity: 'versions' }, function(versions) {
@@ -39,9 +35,7 @@ module Apiman {
                                 }
                                 $scope.setEntityStatus($scope.selectedPlanVersion.status);
                                 resolve(versions);
-                            }, function(error) {
-                                reject(error);
-                            });
+                            }, reject);
                         })
                     };
                 }
@@ -49,7 +43,8 @@ module Apiman {
         }]);
 
     export var PlanEntityController = _module.controller("Apiman.PlanEntityController",
-        ['$q', '$scope', '$location', 'ActionSvcs', 'Logger', ($q, $scope, $location, ActionSvcs, Logger) => {
+        ['$q', '$scope', '$location', 'ActionSvcs', 'Logger', 'PageLifecycle',
+        ($q, $scope, $location, ActionSvcs, Logger, PageLifecycle) => {
             var params = $location.search();
             
             $scope.setVersion = function(plan) {
@@ -69,10 +64,7 @@ module Apiman {
                     $scope.selectedPlanVersion.status = 'Locked';
                     $scope.lockButton.state = 'complete';
                     $scope.setEntityStatus($scope.selectedPlanVersion.status);
-                }, function(error) {
-                    $scope.lockButton.state = 'error';
-                    alert("ERROR=" + error);
-                });
+                }, PageLifecycle.handleError);
             }
         }])
 

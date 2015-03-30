@@ -29,17 +29,13 @@ module Apiman {
                     OrgSvcs.get({ organizationId: params.org, entityType: '' }, function(org) {
                         $rootScope.mruOrg = org;
                         resolve(org);
-                    }, function(error) {
-                        reject(error);
-                    });
+                    }, reject);
                 }),
                 members: $q(function(resolve, reject) {
                     OrgSvcs.query({ organizationId: params.org, entityType: 'members' }, function(members) {
                         $scope.filteredMembers = members;
                         resolve(members);
-                    }, function(error) {
-                        reject(error);
-                    });
+                    }, reject);
                 })
             });
             PageLifecycle.loadPage('OrgMembers', promise, $scope, function() {

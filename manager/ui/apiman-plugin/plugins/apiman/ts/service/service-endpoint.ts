@@ -16,16 +16,12 @@ module Apiman {
                     serviceVersion: $q(function(resolve, reject) {
                         OrgSvcs.get({ organizationId: params.org, entityType: 'services', entityId: params.service, versionsOrActivity: 'versions', version: params.version }, function(serviceVersion) {
                             resolve(serviceVersion);
-                        }, function(error) {
-                            reject(error);
-                        });
+                        }, reject);
                     }),
                     managedEndpoint: $q(function(resolve, reject) {
                         OrgSvcs.get({ organizationId: params.org, entityType: 'services', entityId: params.service, versionsOrActivity: 'versions', version: params.version, policiesOrActivity: 'endpoint' }, function(managedEndpoint) {
                            resolve(managedEndpoint);
-                        }, function(error) {
-                            reject(error);
-                        });
+                        }, reject);
                     })
                 });
             }

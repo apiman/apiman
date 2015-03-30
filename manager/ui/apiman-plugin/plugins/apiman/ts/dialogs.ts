@@ -73,7 +73,8 @@ module ApimanDialogs {
                                 modalScope.selectedServiceVersion = versions[0];
                             }
                         }, function(error) {
-                            // TODO do something interesting with the error
+                            modalScope.serviceVersions = [];
+                            modalScope.selectedServiceVersion = undefined;
                         });
                     };
                     modalScope.onOK = function() {

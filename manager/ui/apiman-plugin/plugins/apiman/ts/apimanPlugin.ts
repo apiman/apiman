@@ -66,7 +66,11 @@ module Apiman {
         '/apiman/user-apps.html'        : { templateUrl: 'user/user-apps.html' },
         '/apiman/user-orgs.html'        : { templateUrl: 'user/user-orgs.html' },
         '/apiman/user-services.html'    : { templateUrl: 'user/user-services.html' },
-        '/apiman/error-409.html'        : { templateUrl: 'error-409.html' }
+        '/apiman/errors/400.html'       : { templateUrl: 'errors/400.html' },
+        '/apiman/errors/403.html'       : { templateUrl: 'errors/403.html' },
+        '/apiman/errors/404.html'       : { templateUrl: 'errors/404.html' },
+        '/apiman/errors/409.html'       : { templateUrl: 'errors/409.html' },
+        '/apiman/errors/500.html'       : { templateUrl: 'errors/500.html' }
     };
 
     _module.config(['$locationProvider', '$routeProvider', 'HawtioNavBuilderProvider',

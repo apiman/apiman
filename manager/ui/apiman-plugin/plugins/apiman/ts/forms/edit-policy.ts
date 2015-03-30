@@ -35,9 +35,7 @@ module Apiman {
                         }
                         $scope.selectedDef = policy.definition;
                         resolve(policy);
-                    }, function(error) {
-                        reject(error);
-                    });
+                    }, reject);
                 })
             });
             
@@ -77,15 +75,7 @@ module Apiman {
                         .search('org', params.org)
                         .search(entityParam, params.id)
                         .search('version', params.ver);
-                }, function(error) {
-                    if (error.status == 409) {
-                        $location.url('apiman/error-409.html');
-                    } else {
-                        alert("ERROR=" + error.status + " " + error.statusText);
-                    }
-                    // TODO handle error better here
-                    $scope.updateButton.state = 'error';
-                });
+                }, PageLifecycle.handleError);
             };
             
             PageLifecycle.loadPage('EditPolicy', promise, $scope, function() {

@@ -32,10 +32,7 @@ module Apiman {
                 });
                 $q.all(promises).then(function() {
                     $location.url(pluginName + '/admin-policyDefs.html');
-                }, function(error) {
-                    $scope.yesButton.state = 'error';
-                    // TODO handle ther error here
-                });
+                }, PageLifecycle.handleError);
             }
             
             PageLifecycle.loadPage('ImportPolicyDefs', undefined, $scope, function() {

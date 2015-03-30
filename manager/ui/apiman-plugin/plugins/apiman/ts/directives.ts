@@ -234,7 +234,8 @@ module Apiman {
     };
 
     _module.directive('apimanActivity',
-        ['Logger', '$rootScope', function(Logger, $rootScope) {
+        ['Logger', '$rootScope', 'PageLifecycle',
+        (Logger, $rootScope, PageLifecycle) => {
             return {
                 templateUrl: 'plugins/apiman/html/directives/activity.html',
                 restrict: 'E',
@@ -255,10 +256,7 @@ module Apiman {
                             scope.auditEntries = scope.auditEntries.concat(newEntries);
                             scope.hasMore = newEntries.length >= 20;
                             scope.getMoreButton.state = 'complete';
-                        }, function(error) {
-                            scope.getMoreButton.state = 'error';
-                            // TODO handle the load error somehow
-                        });
+                        }, PageLifecycle.handleError);
                     };
                 }
             };

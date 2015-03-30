@@ -67,11 +67,7 @@ module Apiman {
                 var gateway = Gateway();
                 ApimanSvcs.save({ entityType: 'gateways' }, gateway, function(reply) {
                     $location.url(pluginName + '/admin-gateways.html');
-                }, function(error) {
-                    // TODO handle error here
-                    alert(error);
-                    $scope.createButton.state = 'error';
-                });
+                }, PageLifecycle.handleError);
             };
             
             $scope.testGateway = testGateway;

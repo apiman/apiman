@@ -23,9 +23,7 @@ module Apiman {
                             user.fullName = user.username;
                         }
                         resolve(user);
-                    }, function(error) {
-                        reject(error);
-                    });
+                    }, reject);
                 }),
                 auditEntries: $q(function(resolve, reject) {
                     $scope.currentPage = 0;

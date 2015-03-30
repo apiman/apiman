@@ -28,10 +28,7 @@ module Apiman {
               $log.debug('Successfully Saved: {0}', grantRolesBean);
               $scope.addMembersButton.state = 'complete';
               $location.url(pluginName + '/org-manage-members.html').search({ org: params.org });
-            }, function(error) { // Err TODO handle error better.
-              $scope.addMembersButton.state = 'error';
-              $log.debug('Error: {0}', error);
-          });
+            }, PageLifecycle.handleError);
         });
       }
     }
@@ -73,25 +70,19 @@ module Apiman {
         OrgSvcs.get({ organizationId: params.org, entityType: '' }, function(org) {
           $rootScope.mruOrg = org;
           resolve(org);
-        }, function(error) {
-          reject(error);
-        });
+        }, reject);
       }),
       members: $q(function(resolve, reject) {
         OrgSvcs.query({ organizationId: params.org, entityType: 'members' }, function(members) {
           $scope.filteredMembers = members;
           resolve(members);
-        }, function(error) {
-          reject(error);
-        });
+        }, reject);
       }),
       roles: $q(function(resolve, reject) {
         ApimanSvcs.query({ entityType: 'roles' }, function(adminRoles) {
           $scope.filteredRoles = adminRoles;
           resolve(adminRoles);
-        }, function(error) {
-          reject(error);
-        });
+        }, reject);
       })
     });
 

@@ -70,7 +70,7 @@ module Apiman {
                 $scope.editor.setValue($scope.config);
                 $scope.schemaState = 'loaded';
             }, function (error) {
-                // TODO handle the error here!
+                // TODO handle the error better here!
                 Logger.error(error);
                 $scope.schemaState = 'loaded';
             });

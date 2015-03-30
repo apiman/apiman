@@ -29,14 +29,7 @@ module Apiman {
                 $scope.addButton.state = 'in-progress';
                 ApimanSvcs.save({ entityType: 'plugins' }, $scope.plugin, function(reply) {
                      $location.url(pluginName + '/admin-plugins.html');
-                }, function(error) {
-                    if (error.status == 409) {
-                        $location.url('apiman/error-409.html');
-                    } else {
-                        alert("ERROR=" + error.status + " " + error.statusText);
-                    }
-                    $scope.addButton.state = 'error';
-                });
+                }, PageLifecycle.handleError);
             }
             
             PageLifecycle.loadPage('NewPlugin', undefined, $scope, function() {

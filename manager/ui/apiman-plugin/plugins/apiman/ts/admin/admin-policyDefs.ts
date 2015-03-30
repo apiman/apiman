@@ -25,9 +25,7 @@ module Apiman {
                     ApimanSvcs.query({ entityType: 'policyDefs' }, function(policyDefs) {
                         $scope.filteredPolicyDefs = policyDefs;
                         resolve(policyDefs);
-                    }, function(error) {
-                        reject(error);
-                    });
+                    }, reject);
                 })
             });
             PageLifecycle.loadPage('AdminPolicyDefs', promise, $scope, function() {

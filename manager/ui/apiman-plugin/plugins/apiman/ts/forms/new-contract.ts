@@ -20,13 +20,7 @@ module Apiman {
                     if (onSuccess) {
                         onSuccess(plainVersions);
                     }
-                }, function(error) {
-                    if (onError) {
-                        onError(error);
-                    } else {
-                        // nothing provided - do something interesting?
-                    }
-                });
+                }, PageLifecycle.handleError);
             };
             
             var promise = $q.all({
@@ -43,9 +37,7 @@ module Apiman {
                             $scope.selectedApp = undefined;
                         }
                         resolve(apps);
-                    }, function(error) {
-                        reject(error);
-                    });
+                    }, reject);
                 }),
                 selectedService: $q(function(resolve, reject) {
                     if (svcId && svcOrgId && svcVer) {
@@ -112,10 +104,7 @@ module Apiman {
                     } else {
                         $scope.plans = undefined;
                     }
-                }, function(error) {
-                    // TODO handle the error here
-                    Logger.error(error);
-                });
+                }, PageLifecycle.handleError);
             });
 
             $scope.createContract = function() {
@@ -136,11 +125,7 @@ module Apiman {
                         'app' : $scope.selectedApp.id,
                         'version' : $scope.selectedAppVersion
                     });
-                }, function(error) {
-                    $scope.createButton.state = 'error';
-                    // TODO handle the error appropriately!
-                    Logger.error(error);
-                });
+                }, PageLifecycle.handleError);
             };
             
             PageLifecycle.loadPage('NewContract', promise, $scope, function() {

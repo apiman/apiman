@@ -21,16 +21,12 @@ module Apiman {
                     OrgSvcs.get({ organizationId: params.org, entityType: '' }, function(org) {
                         $rootScope.mruOrg = org;
                         resolve(org);
-                    }, function(error) {
-                        reject(error);
-                    });
+                    }, reject);
                 }),
                 members: $q(function(resolve, reject) {
                     OrgSvcs.query({ organizationId: params.org, entityType: 'members' }, function(members) {
                         resolve(members);
-                    }, function(error) {
-                        reject(error);
-                    });
+                    }, reject);
                 }),
                 auditEntries: $q(function(resolve, reject) {
                     $scope.currentPage = 0;

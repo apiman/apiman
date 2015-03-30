@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+  </head>
+
+  <body>
+    <div ng-include="'plugins/apiman/html/progress.include'"></div>
+    <div id="apiman-header" ng-include="'plugins/apiman/html/navbar.include'"></div>
+    <div ng-controller="Apiman.Error403Controller" class="container error-page" data-field="error-page" ng-cloak="" ng-show="pageState == 'loaded'">
+      <div class="row">
+        <div class="col-md-3">
+          <div class="error-icon error-403 pull-right"></div>
+        </div>
+        <div class="col-md-8">
+          <div class="title" data-i18n-key="title">Not Allowed!</div>
+          <div class="description" data-i18n-key="error-403-description">Uh oh, it looks like you tried to access something you aren't allowed to see.  Since you aren't that kind of person it was probably our fault. Maybe you should let someone know?</div>
+          <div style="margin-top: 20px">
+            <a href="{{ previousPage }}" class="btn btn-default btn-cancel" data-i18n-key="go-back">OK, Go Back</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

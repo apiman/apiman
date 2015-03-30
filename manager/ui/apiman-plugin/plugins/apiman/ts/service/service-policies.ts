@@ -22,13 +22,7 @@ module Apiman {
                 Dialogs.confirm('Confirm Remove Policy', 'Do you really want to remove this policy from the service?', function() {
                     OrgSvcs.delete({ organizationId: params.org, entityType: 'services', entityId:params.service, versionsOrActivity: 'versions', version: params.version, policiesOrActivity: 'policies', policyId: policy.id }, function(reply) {
                         removePolicy(policy);
-                    }, function(error) {
-                        if (error.status == 409) {
-                            $location.url('apiman/error-409.html');
-                        } else {
-                            alert("ERROR=" + error.status + " " + error.statusText);
-                        }
-                    });
+                    }, PageLifecycle.handleError);
                 });
             };
             
@@ -37,9 +31,7 @@ module Apiman {
                 policies: $q(function(resolve, reject) {
                     OrgSvcs.query({ organizationId: params.org, entityType: 'services', entityId: params.service, versionsOrActivity: 'versions', version: params.version, policiesOrActivity: 'policies' }, function(policies) {
                         resolve(policies);
-                    }, function(error) {
-                        reject(error);
-                    });
+                    }, reject);
                 })
             });
             var promise = $q.all(dataLoad);

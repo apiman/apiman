@@ -18,16 +18,12 @@ module Apiman {
                     serviceVersion: $q(function(resolve, reject) {
                         OrgSvcs.get({ organizationId: params.org, entityType: 'services', entityId: params.service, versionsOrActivity: 'versions', version: params.version }, function(serviceVersion) {
                             resolve(serviceVersion);
-                        }, function(error) {
-                            reject(error);
-                        });
+                        }, reject);
                     }),
                     gateways: $q(function(resolve, reject) {
                     ApimanSvcs.query({ entityType: 'gateways' }, function(gateways) {
                         resolve(gateways);
-                    }, function(error) {
-                        reject(error);
-                    });
+                    }, reject);
                 })
                 });
             }
@@ -56,15 +52,7 @@ module Apiman {
                     $scope.saveButton.state = 'complete';
                     $scope.serviceVersion.endpoint = $scope.updatedService.endpoint;
                     $scope.serviceVersion.endpointType = $scope.updatedService.endpointType;
-                }, function(error) {
-                    if (error.status == 409) {
-                        $location.url('apiman/error-409.html');
-                    } else {
-                        //$scope.saveButton.state = 'error';
-                        alert("ERROR=" + error.status + " " + error.statusText);
-                    }
-                    $scope.saveButton.state = 'error';
-                });
+                }, PageLifecycle.handleError);
             };
             
             PageLifecycle.loadPage('ServiceImpl', promise, $scope, function() {

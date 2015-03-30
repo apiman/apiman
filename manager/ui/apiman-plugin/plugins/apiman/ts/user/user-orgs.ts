@@ -30,17 +30,13 @@ module Apiman {
                             user.fullName = user.username;
                         }
                         resolve(user);
-                    }, function(error) {
-                        reject(error);
-                    });
+                    }, reject);
                 }),
                 organizations: $q(function(resolve, reject) {
                     UserSvcs.query({ user: params.user, entityType: 'organizations' }, function(userOrgs) {
                         $scope.filteredOrgs = userOrgs;
                         resolve(userOrgs);
-                    }, function(error) {
-                        reject(error);
-                    });
+                    }, reject);
                 })
             });
             PageLifecycle.loadPage('UserOrgs', promise, $scope, function() {

@@ -28,24 +28,18 @@ module Apiman {
                     OrgSvcs.get({ organizationId: params.org, entityType: '' }, function(org) {
                         $rootScope.mruOrg = org;
                         resolve(org);
-                    }, function(error) {
-                        reject(error);
-                    });
+                    }, reject);
                 }),
                 members: $q(function(resolve, reject) {
                     OrgSvcs.query({ organizationId: params.org, entityType: 'members' }, function(members) {
                         resolve(members);
-                    }, function(error) {
-                        reject(error);
-                    });
+                    }, reject);
                 }),
                 apps: $q(function(resolve, reject) {
                     OrgSvcs.query({ organizationId: params.org, entityType: 'applications' }, function(apps) {
                         $scope.filteredApps = apps;
                         resolve(apps);
-                    }, function(error) {
-                        reject(error);
-                    });
+                    }, reject);
                 })
             });
             PageLifecycle.loadPage('OrgApps', promise, $scope, function() {

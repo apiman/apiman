@@ -14,16 +14,12 @@ module Apiman {
                         org: $q(function(resolve, reject) {
                             OrgSvcs.get({ organizationId: params.org }, function(org) {
                                 resolve(org);
-                            }, function(error) {
-                                reject(error);
-                            });
+                            }, reject);
                         }),
                         service: $q(function(resolve, reject) {
                             OrgSvcs.get({ organizationId: params.org, entityType: 'services', entityId: params.service }, function(service) {
                                 resolve(service);
-                            }, function(error) {
-                                reject(error);
-                            });
+                            }, reject);
                         }),
                         versions: $q(function(resolve, reject) {
                             OrgSvcs.query({ organizationId: params.org, entityType: 'services', entityId: params.service, versionsOrActivity: 'versions' }, function(versions) {
@@ -40,9 +36,7 @@ module Apiman {
                                 }
                                 $scope.version = $scope.selectedServiceVersion.version;
                                 $scope.setEntityStatus($scope.selectedServiceVersion.status);
-                            }, function(error) {
-                                reject(error);
-                            });
+                            }, reject);
                         })
                     };
                 }
@@ -50,8 +44,8 @@ module Apiman {
         }]);
 
     export var ServiceEntityController = _module.controller("Apiman.ServiceEntityController",
-        ['$q', '$scope', '$location', 'ActionSvcs', 'Logger', 'Dialogs',
-        ($q, $scope, $location, ActionSvcs, Logger, Dialogs) => {
+        ['$q', '$scope', '$location', 'ActionSvcs', 'Logger', 'Dialogs', 'PageLifecycle',
+        ($q, $scope, $location, ActionSvcs, Logger, Dialogs, PageLifecycle) => {
             var params = $location.search();
             $scope.params = params;
             
@@ -72,10 +66,7 @@ module Apiman {
                     $scope.selectedServiceVersion.status = 'Published';
                     $scope.publishButton.state = 'complete';
                     $scope.setEntityStatus($scope.selectedServiceVersion.status);
-                }, function(error) {
-                    $scope.publishButton.state = 'error';
-                    alert("ERROR=" + error);
-                });
+                }, PageLifecycle.handleError);
             };
             
             $scope.retireService = function(service) {
@@ -91,15 +82,10 @@ module Apiman {
                         $scope.selectedServiceVersion.status = 'Retired';
                         $scope.retireButton.state = 'complete';
                         $scope.setEntityStatus($scope.selectedServiceVersion.status);
-                    }, function(error) {
-                        $scope.retireButton.state = 'error';
-                        alert("ERROR=" + error);
-                    });
+                    }, PageLifecycle.handleError);
                 }, function() {
                     $scope.retireButton.state = 'complete';
                 });
             };
-            
         }])
-
 }

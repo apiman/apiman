@@ -8,9 +8,7 @@ module Apiman {
                 gateways: $q(function(resolve, reject) {
                     ApimanSvcs.query({ entityType: 'gateways' }, function(adminGateways) {
                         resolve(adminGateways);
-                    }, function(error) {
-                        reject(error);
-                    });
+                    }, reject);
                 })
             });
             PageLifecycle.loadPage('AdminGateways', promise, $scope, function() {
