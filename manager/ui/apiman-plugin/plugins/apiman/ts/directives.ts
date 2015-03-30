@@ -1,6 +1,6 @@
 /// <reference path="../../includes.ts"/>
 module Apiman {
-    
+
     _module.directive('apimanActionBtn',
         ['Logger', function(Logger) {
             return {
@@ -29,7 +29,7 @@ module Apiman {
             };
         }]);
 
-    
+
     _module.directive('apimanSelectPicker',
         ['Logger', '$timeout', '$parse', function(Logger, $timeout, $parse) {
             return {
@@ -45,7 +45,7 @@ module Apiman {
                         $(element)['selectpicker']();
                         $(element)['selectpicker']('refresh');
                     });
-                    
+
                     if (attrs.ngOptions && / in /.test(attrs.ngOptions)) {
                         var refreshModel = attrs.ngOptions.split(' in ')[1];
                         Logger.debug('Watching model {0} for {1}.', refreshModel, attrs.ngModel);
@@ -76,7 +76,7 @@ module Apiman {
             };
         }]);
 
-    
+
     _module.directive('apimanPermission',
         ['Logger', 'CurrentUser', function(Logger, CurrentUser) {
             return {
@@ -98,7 +98,7 @@ module Apiman {
             };
         }]);
 
-    
+
     _module.directive('apimanStatus',
         ['Logger', function(Logger) {
             return {
@@ -110,7 +110,7 @@ module Apiman {
                         if (entityStatus) {
                             var validStatuses = attrs.apimanStatus.split(',');
                             var statusIsValid = false;
-//                            Logger.debug('Checking status {0} against valid statuses {1}:  {2}', entityStatus, '' + validStatuses, 
+//                            Logger.debug('Checking status {0} against valid statuses {1}:  {2}', entityStatus, '' + validStatuses,
 //                                    element[0].outerHTML);
                             for (var i = 0; i < validStatuses.length; i++) {
                                 if (validStatuses[i] == entityStatus) {
@@ -131,7 +131,7 @@ module Apiman {
             };
         }]);
 
-    
+
     _module.directive('apimanEntityStatus',
         ['Logger', function(Logger) {
             return {
@@ -147,7 +147,7 @@ module Apiman {
                             $(element).html(entityStatus);
                             $(element).removeClass();
                             $(element).addClass('apiman-label');
-                            
+
                             if (entityStatus == 'Created' || entityStatus == 'Ready') {
                                 $(element).addClass('apiman-label-warning');
                             } else if (entityStatus == 'Retired') {
@@ -161,7 +161,7 @@ module Apiman {
             };
         }]);
 
-    
+
     _module.directive('apimanSearchBox',
         ['Logger', function(Logger) {
             return {
@@ -263,7 +263,7 @@ module Apiman {
                 }
             };
         }]);
-    
+
     _module.directive('apimanAuditEntry',
         ['Logger', '$rootScope', function(Logger, $rootScope) {
             return {
@@ -281,5 +281,30 @@ module Apiman {
                 template: '<div ng-include="template"></div>'
             };
         }]);
-    
+
+        _module.directive('apimanDropText', () => {
+            return {
+                restrict: 'A',
+                link: function($scope, $elem, $attrs) {
+                    $elem.on('drop', function(e) {
+                        if (e.originalEvent.dataTransfer && e.originalEvent.dataTransfer.files.length){
+                            if (e.preventDefault) e.preventDefault();
+                            if (e.stopPropagation) e.stopPropagation();
+
+                            var firstFile = e.originalEvent.dataTransfer.files[0];
+                            var reader = new FileReader();
+
+                            reader.onload = (function(theFile) {
+                                return function(result) {
+                                    $elem.val(result.target.result);
+                                };
+                            })(firstFile);
+
+                            reader.readAsText(firstFile);
+                        }
+                    });
+                }
+            }
+        }
+    );
 }
