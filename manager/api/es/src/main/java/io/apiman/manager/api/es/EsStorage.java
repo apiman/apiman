@@ -1175,8 +1175,8 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
             )
         );
         @SuppressWarnings("nls")
-        SearchSourceBuilder builder = new SearchSourceBuilder().sort("id", SortOrder.ASC).query(query)
-                .size(500);
+        SearchSourceBuilder builder = new SearchSourceBuilder().sort("serviceOrganizationId", SortOrder.ASC)
+                .sort("serviceId", SortOrder.ASC).query(query).size(500);
         SearchHits hits = listEntities("contract", builder); //$NON-NLS-1$
         List<ContractSummaryBean> rval = new ArrayList<>((int) hits.totalHits());
         for (SearchHit hit : hits) {
@@ -1432,8 +1432,8 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
             )
         );
         @SuppressWarnings("nls")
-        SearchSourceBuilder builder = new SearchSourceBuilder().sort("id", SortOrder.ASC).query(query)
-                .size(500);
+        SearchSourceBuilder builder = new SearchSourceBuilder().sort("appOrganizationId", SortOrder.ASC)
+                .sort("appId", SortOrder.ASC).query(query).size(500);
         SearchHits hits = listEntities("contract", builder); //$NON-NLS-1$
         List<ContractSummaryBean> rval = new ArrayList<>((int) hits.totalHits());
         for (SearchHit hit : hits) {
