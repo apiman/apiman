@@ -1,3 +1,5 @@
+/// <reference path="../apimanPlugin.ts"/>
+/// <reference path="../services.ts"/>
 module Apiman {
 
   export var getRoleIds = function(member) {
@@ -75,7 +77,9 @@ module Apiman {
         });
       })
     });
-    PageLifecycle.loadPage('OrgManageMembers', promise, $scope);
+    PageLifecycle.loadPage('OrgManageMembers', promise, $scope, function() {
+      PageLifecycle.setPageTitle('org-manage-members', [ $scope.org.name ]);
+    });
   }])
 
   OrgManageMembersController.directive('apimanUserCard', ['OrgSvcs', 'Dialogs', 'Logger',

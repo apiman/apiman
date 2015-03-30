@@ -4,7 +4,7 @@ module Apiman {
 
   export var OrgNewMemberController = _module.controller("Apiman.OrgNewMemberController",
     ['$q', '$scope', '$location', 'OrgSvcs', 'PageLifecycle', '$rootScope', 'ApimanSvcs', 'Logger',
-  ($q, $scope, $location, OrgSvcs, PageLifecycle, $rootScope, ApimanSvcs, $log) => {
+    ($q, $scope, $location, OrgSvcs, PageLifecycle, $rootScope, ApimanSvcs, $log) => {
     var params = $location.search();
     $scope.organizationId = params.org;
     $scope.selectedUsers = {};
@@ -95,7 +95,9 @@ module Apiman {
       })
     });
 
-    PageLifecycle.loadPage('OrgNewMember', promise, $scope);
+    PageLifecycle.loadPage('OrgNewMember', promise, $scope, function() {
+        PageLifecycle.setPageTitle('new-member');
+    });
   }])
 
   OrgNewMemberController.directive('apimanUserEntry', ['Logger', function($log) {
