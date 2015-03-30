@@ -27,7 +27,9 @@ module Apiman {
             });
             var promise = $q.all(dataLoad);
             $scope.getNextPage = getNextPage;
-            PageLifecycle.loadPage('AppActivity', promise, $scope);
+            PageLifecycle.loadPage('AppActivity', promise, $scope, function() {
+                PageLifecycle.setPageTitle('app-activity', [ $scope.app.name ]);
+            });
         }])
 
 }

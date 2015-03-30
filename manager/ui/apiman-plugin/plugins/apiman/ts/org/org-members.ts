@@ -41,7 +41,9 @@ module Apiman {
                     });
                 })
             });
-            PageLifecycle.loadPage('OrgMembers', promise, $scope);
+            PageLifecycle.loadPage('OrgMembers', promise, $scope, function() {
+                PageLifecycle.setPageTitle('org-members', [ $scope.org.name ]);
+            });
         }])
 
 }

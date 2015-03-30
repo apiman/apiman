@@ -33,7 +33,10 @@ module Apiman {
                 })
             });
             $scope.getNextPage = getNextPage;
-            PageLifecycle.loadPage('UserActivity', promise, $scope);
+            PageLifecycle.loadPage('UserActivity', promise, $scope, function() {
+                PageLifecycle.setPageTitle('user-activity', [ $scope.user.fullName ]);
+            });
+            
     }])
 
 }

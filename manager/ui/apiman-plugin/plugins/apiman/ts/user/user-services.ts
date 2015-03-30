@@ -43,7 +43,9 @@ module Apiman {
                     });
                 })
             });
-            PageLifecycle.loadPage('UserServices', promise, $scope);
+            PageLifecycle.loadPage('UserServices', promise, $scope, function() {
+                PageLifecycle.setPageTitle('user-services', [ $scope.user.fullName ]);
+            });
     }])
 
 }

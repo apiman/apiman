@@ -32,6 +32,7 @@ module Apiman {
 
             PageLifecycle.loadPage('ConsumerSvcs', promise, $scope, function() {
                 $('#apiman-search').focus();
+                PageLifecycle.setPageTitle('consumer-services');
             });
         }]);
 

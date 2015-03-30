@@ -115,6 +115,7 @@ module Apiman {
             }
             $scope.testGateway = testGateway;
             PageLifecycle.loadPage('EditGateway', promise, $scope, function() {
+                PageLifecycle.setPageTitle('edit-gateway');
                 $scope.$watch('gateway', validate, true);
                 $scope.$watch('configuration', validate, true);
                 $scope.$watch('passwordConfirm', validate);

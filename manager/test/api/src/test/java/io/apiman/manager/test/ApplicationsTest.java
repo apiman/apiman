@@ -29,6 +29,7 @@ public class ApplicationsTest extends AbstractTestPlanTest {
     @Test
     public void test() {
         runTestPlan("test-plans/applications-testPlan.xml", ApplicationsTest.class.getClassLoader()); //$NON-NLS-1$
+        System.out.println("Done!"); //$NON-NLS-1$
     }
 
 }

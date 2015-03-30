@@ -31,7 +31,9 @@ module Apiman {
             }
             var promise = $q.all(dataLoad);
 
-            PageLifecycle.loadPage('ServiceEndpoint', promise, $scope);
+            PageLifecycle.loadPage('ServiceEndpoint', promise, $scope, function() {
+                PageLifecycle.setPageTitle('service-endpoint', [ $scope.service.name ]);
+            });
         }])
 
 }

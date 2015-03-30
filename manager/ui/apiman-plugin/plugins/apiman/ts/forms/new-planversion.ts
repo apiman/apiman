@@ -23,8 +23,10 @@ module Apiman {
                 });
             };
             
-            PageLifecycle.loadPage('NewPlanVersion', undefined, $scope);
-            $('#apiman-version').focus();
+            PageLifecycle.loadPage('NewPlanVersion', undefined, $scope, function() {
+                PageLifecycle.setPageTitle('new-plan-version');
+                $('#apiman-version').focus();
+            });
         }]);
 
 }

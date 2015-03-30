@@ -44,7 +44,9 @@ module Apiman {
             });
             var promise = $q.all(dataLoad);
 
-            PageLifecycle.loadPage('ServicePolicies', promise, $scope);
+            PageLifecycle.loadPage('ServicePolicies', promise, $scope, function() {
+                PageLifecycle.setPageTitle('service-policies', [ $scope.service.name ]);
+            });
         }])
 
 }

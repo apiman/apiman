@@ -37,7 +37,9 @@ module Apiman {
                 });
             }
             
-            PageLifecycle.loadPage('EditPolicyDef', promise, $scope);
+            PageLifecycle.loadPage('EditPolicyDef', promise, $scope, function() {
+                PageLifecycle.setPageTitle('edit-policyDef');
+            });
     }])
 
 }

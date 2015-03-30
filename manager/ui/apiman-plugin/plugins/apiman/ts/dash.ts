@@ -6,6 +6,7 @@ module Apiman {
             $scope.isAdmin = CurrentUser.getCurrentUser().admin;
             $scope.currentUser = CurrentUser.getCurrentUser();
             PageLifecycle.loadPage('Dash', undefined, $scope);
+            PageLifecycle.setPageTitle('dashboard');
         }]);
 
 }

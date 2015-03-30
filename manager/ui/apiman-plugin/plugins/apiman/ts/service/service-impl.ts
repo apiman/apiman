@@ -67,7 +67,10 @@ module Apiman {
                 });
             };
             
-            PageLifecycle.loadPage('ServiceImpl', promise, $scope, $scope.reset);
+            PageLifecycle.loadPage('ServiceImpl', promise, $scope, function() {
+                $scope.reset();
+                PageLifecycle.setPageTitle('service-impl', [ $scope.service.name ]);
+            });
         }])
 
 }

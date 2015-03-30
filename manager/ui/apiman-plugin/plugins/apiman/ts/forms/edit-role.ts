@@ -86,7 +86,10 @@ module Apiman {
                 });
             }
             
-            PageLifecycle.loadPage('EditRole', promise, $scope);
+            PageLifecycle.loadPage('EditRole', promise, $scope, function() {
+                PageLifecycle.setPageTitle('edit-role');
+                $('#apiman-description').focus();
+            });
     }])
 
 }

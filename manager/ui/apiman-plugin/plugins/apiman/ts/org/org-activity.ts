@@ -38,7 +38,9 @@ module Apiman {
                 })
             });
             $scope.getNextPage = getNextPage;
-            PageLifecycle.loadPage('OrgActivity', promise, $scope);
+            PageLifecycle.loadPage('OrgActivity', promise, $scope, function() {
+                PageLifecycle.setPageTitle('org-activity', [ $scope.org.name ]);
+            });
         }])
 
 }

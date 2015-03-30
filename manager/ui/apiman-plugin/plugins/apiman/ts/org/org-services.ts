@@ -48,7 +48,9 @@ module Apiman {
                     });
                 })
             });
-            PageLifecycle.loadPage('OrgSvcs', promise, $scope);
+            PageLifecycle.loadPage('OrgSvcs', promise, $scope, function() {
+                PageLifecycle.setPageTitle('org-services', [ $scope.org.name ]);
+            });
         }])
 
 }

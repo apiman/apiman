@@ -140,6 +140,7 @@ module Apiman {
             
             PageLifecycle.loadPage('ServicePlans', promise, $scope, function() {
                 $scope.reset();
+                PageLifecycle.setPageTitle('service-plans', [ $scope.service.name ]);
             });
         }])
 

@@ -58,8 +58,10 @@ module Apiman {
                 });
             }
             
-            PageLifecycle.loadPage('NewRole', undefined, $scope);
-            $('#apiman-entityname').focus();
+            PageLifecycle.loadPage('NewRole', undefined, $scope, function() {
+                PageLifecycle.setPageTitle('new-role');
+                $('#apiman-entityname').focus();
+            });
         }]);
 
 }

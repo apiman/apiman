@@ -39,8 +39,11 @@ module Apiman {
                 });
             }
             
-            PageLifecycle.loadPage('NewPlugin', undefined, $scope);
-            $('#NewPluginController').focus();
+            PageLifecycle.loadPage('NewPlugin', undefined, $scope, function() {
+                PageLifecycle.setPageTitle('new-plugin');
+                $('#apiman-group-id').focus();
+            });
+            
     }])
 
 }

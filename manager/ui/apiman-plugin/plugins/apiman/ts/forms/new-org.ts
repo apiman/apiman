@@ -20,8 +20,10 @@ module Apiman {
                 });
             };
             
-            PageLifecycle.loadPage('NewOrg', undefined, $scope);
-            $('#apiman-entityname').focus();
+            PageLifecycle.loadPage('NewOrg', undefined, $scope, function() {
+                PageLifecycle.setPageTitle('new-org');
+                $('#apiman-entityname').focus();
+            });
         }]);
 
 }

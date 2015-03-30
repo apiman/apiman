@@ -48,7 +48,9 @@ module Apiman {
                     });
                 })
             });
-            PageLifecycle.loadPage('OrgPlans', promise, $scope);
+            PageLifecycle.loadPage('OrgPlans', promise, $scope, function() {
+                PageLifecycle.setPageTitle('org-plans', [ $scope.org.name ]);
+            });
         }]);
 
 }

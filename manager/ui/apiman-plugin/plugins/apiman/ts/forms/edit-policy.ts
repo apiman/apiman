@@ -88,7 +88,10 @@ module Apiman {
                 });
             };
             
-            PageLifecycle.loadPage('EditPolicy', promise, $scope);
+            PageLifecycle.loadPage('EditPolicy', promise, $scope, function() {
+                PageLifecycle.setPageTitle('edit-policy');
+                $('#apiman-description').focus();
+            });
         }]);
 
 }

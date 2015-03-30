@@ -9,7 +9,9 @@ module Apiman {
             $scope.tab = 'overview';
             var dataLoad = PlanEntityLoader.getCommonData($scope, $location);
             var promise = $q.all(dataLoad);
-            PageLifecycle.loadPage('PlanOverview', promise, $scope);
+            PageLifecycle.loadPage('PlanOverview', promise, $scope, function() {
+                PageLifecycle.setPageTitle('plan-overview', [ $scope.plan.name ]);
+            });
         }])
 
 

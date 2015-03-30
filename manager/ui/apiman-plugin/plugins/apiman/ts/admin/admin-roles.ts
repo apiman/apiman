@@ -31,7 +31,9 @@ module Apiman {
                     });
                 })
             });
-            PageLifecycle.loadPage('AdminRoles', promise, $scope);
+            PageLifecycle.loadPage('AdminRoles', promise, $scope, function() {
+                PageLifecycle.setPageTitle('admin-roles');
+            });
     }])
 
 }

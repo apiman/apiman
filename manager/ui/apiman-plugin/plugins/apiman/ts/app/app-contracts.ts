@@ -74,7 +74,9 @@ module Apiman {
                 });
             };
             
-            PageLifecycle.loadPage('AppContracts', promise, $scope);
+            PageLifecycle.loadPage('AppContracts', promise, $scope, function() {
+                PageLifecycle.setPageTitle('app-contracts', [ $scope.app.name ]);
+            });
         }])
 
 }

@@ -43,7 +43,9 @@ module Apiman {
                 })
             });
             var promise = $q.all(dataLoad);
-            PageLifecycle.loadPage('PlanPolicies', promise, $scope);
+            PageLifecycle.loadPage('PlanPolicies', promise, $scope, function() {
+                PageLifecycle.setPageTitle('plan-policies', [ $scope.plan.name ]);
+            });
         }])
 
 }

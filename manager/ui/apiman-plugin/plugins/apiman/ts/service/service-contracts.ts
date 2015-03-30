@@ -47,6 +47,7 @@ module Apiman {
                         $scope.isPublicOnly = true;
                     }
                 }
+                PageLifecycle.setPageTitle('service-contracts', [ $scope.service.name ]);
             });
         }])
 

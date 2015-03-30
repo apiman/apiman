@@ -13,7 +13,9 @@ module Apiman {
                     });
                 })
             });
-            PageLifecycle.loadPage('AdminPlugins', promise, $scope);
+            PageLifecycle.loadPage('AdminPlugins', promise, $scope, function() {
+                PageLifecycle.setPageTitle('admin-plugins');
+            });
     }])
 
 }

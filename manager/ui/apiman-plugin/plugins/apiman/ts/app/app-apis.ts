@@ -10,7 +10,9 @@ module Apiman {
             $scope.version = params.version;
             var dataLoad = AppEntityLoader.getCommonData($scope, $location);
             var promise = $q.all(dataLoad);
-            PageLifecycle.loadPage('AppApis', promise, $scope);
+            PageLifecycle.loadPage('AppApis', promise, $scope, function() {
+                PageLifecycle.setPageTitle('app-apis', [ $scope.app.name ]);
+            });
         }])
 
 }

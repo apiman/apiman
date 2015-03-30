@@ -42,8 +42,11 @@ module Apiman {
                 initialVersion: '1.0'
             };
             
-            PageLifecycle.loadPage('NewService', promise, $scope);
-            $('#apiman-entityname').focus();
+            PageLifecycle.loadPage('NewService', promise, $scope, function() {
+                PageLifecycle.setPageTitle('new-service');
+                $('#apiman-entityname').focus();
+            });
+            
         }]);
 
 }

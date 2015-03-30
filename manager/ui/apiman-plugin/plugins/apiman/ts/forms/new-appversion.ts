@@ -22,8 +22,10 @@ module Apiman {
                 });
             };
             
-            PageLifecycle.loadPage('NewAppVersion', undefined, $scope);
-            $('#apiman-version').focus();
+            PageLifecycle.loadPage('NewAppVersion', undefined, $scope, function() {
+                PageLifecycle.setPageTitle('new-app-version');
+                $('#apiman-version').focus();
+            });
         }]);
 
 }

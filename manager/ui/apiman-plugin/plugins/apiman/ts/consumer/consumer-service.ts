@@ -3,7 +3,8 @@
 module Apiman {
 
     export var ConsumerSvcController = _module.controller("Apiman.ConsumerSvcController",
-        ['$q', '$scope', '$location', 'OrgSvcs', 'PageLifecycle', ($q, $scope, $location, OrgSvcs, PageLifecycle) => {
+        ['$q', '$scope', '$location', 'OrgSvcs', 'PageLifecycle', 
+        ($q, $scope, $location, OrgSvcs, PageLifecycle) => {
             var params = $location.search();
             $scope.params = params;
             $scope.chains = {};
@@ -66,7 +67,9 @@ module Apiman {
 
             var promise = $q.all(dataPackets);
             
-            PageLifecycle.loadPage('ConsumerService', promise, $scope);
+            PageLifecycle.loadPage('ConsumerService', promise, $scope, function() {
+                PageLifecycle.setPageTitle('consumer-service', [ $scope.service.name ]);
+            });
         }])
 
 }

@@ -143,7 +143,9 @@ module Apiman {
                 });
             };
             
-            PageLifecycle.loadPage('NewContract', promise, $scope);
+            PageLifecycle.loadPage('NewContract', promise, $scope, function() {
+                PageLifecycle.setPageTitle('new-contract');
+            });
         }]);
 
 }

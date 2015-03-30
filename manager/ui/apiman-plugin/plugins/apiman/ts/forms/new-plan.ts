@@ -43,8 +43,10 @@ module Apiman {
                 initialVersion: '1.0'
             };
             
-            PageLifecycle.loadPage('NewPlan', promise, $scope);
-            $('#apiman-entityname').focus();
+            PageLifecycle.loadPage('NewPlan', promise, $scope, function() {
+                PageLifecycle.setPageTitle('new-plan');
+                $('#apiman-entityname').focus();
+            });
         }]);
 
 }

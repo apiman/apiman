@@ -37,7 +37,9 @@ module Apiman {
                 });
             }
             
-            PageLifecycle.loadPage('EditPlugin', promise, $scope);
+            PageLifecycle.loadPage('EditPlugin', promise, $scope, function() {
+                PageLifecycle.setPageTitle('plugin-details');
+            });
     }])
 
 }
