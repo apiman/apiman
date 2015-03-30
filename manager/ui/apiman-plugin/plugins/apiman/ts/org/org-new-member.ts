@@ -16,7 +16,7 @@ module Apiman {
         $scope.addMembersButton.state = 'in-progress';
         // Iterate over object like map (k:v)
         jQuery.each($scope.selectedUsers, function(k, user) {
-          $log.debug('Adding user: ' + JSON.stringify(user));
+          $log.debug('Adding user: {0}', user);
 
           var grantRolesBean = {
             userId: user.username,
@@ -25,12 +25,12 @@ module Apiman {
 
           OrgSvcs.save({ organizationId: $scope.organizationId, entityType: 'roles' },
             grantRolesBean, function() { // Success
-              $log.debug('Successfully Saved: ' + JSON.stringify(grantRolesBean));
+              $log.debug('Successfully Saved: {0}', grantRolesBean);
               $scope.addMembersButton.state = 'complete';
               $location.url(pluginName + '/org-manage-members.html').search({ org: params.org });
             }, function(error) { // Err TODO handle error better.
               $scope.addMembersButton.state = 'error';
-              $log.debug('Error: ' + JSON.stringify(error));
+              $log.debug('Error: {0}', error);
           });
         });
       }
@@ -56,10 +56,10 @@ module Apiman {
         }
       }
 
-      $log.debug('Query: ' + JSON.stringify(queryBean));
+      $log.debug('Query: {0}', queryBean);
 
       ApimanSvcs.save({ entityType: 'users', secondaryType: 'search' }, queryBean, function(reply) {
-        $log.debug('Reply: ' + JSON.stringify(reply));
+        $log.debug('Reply: {0}', reply);
         $scope.queriedUsers = reply.beans;
       });
     }
@@ -95,10 +95,10 @@ module Apiman {
       })
     });
 
-    PageLifecycle.loadPage('OrgNewMembers', promise, $scope);
+    PageLifecycle.loadPage('OrgNewMember', promise, $scope);
   }])
 
-  OrgMembersController.directive('apimanUserEntry', ['$log', function($log) {
+  OrgMembersController.directive('apimanUserEntry', ['Logger', function($log) {
     return {
       scope: {
         user: '=',
@@ -116,8 +116,8 @@ module Apiman {
           } else {
             delete $scope.selectedUsers[$scope.user.username];
           }
-          $log.debug("Selected " + $scope.user.username);
-          $log.debug("Global $scope.selectedUsers " + JSON.stringify($scope.selectedUsers));
+          $log.debug("Selected {0}", $scope.user.username);
+          $log.debug("Global $scope.selectedUsers {0}", $scope.selectedUsers);
         }
       }
     };
