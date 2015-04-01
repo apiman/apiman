@@ -46,7 +46,7 @@
           <div class="col-md-5" apiman-permission="appEdit">
             <div>
               <div apiman-status="Created,Ready"><a data-i18n-key="ttdo-consume-services" data-field="ttd_toConsumeServices" href="{{ pluginName }}/browse/services">Search for Services to consume</a></div>
-              <div apiman-status="Created,Ready"><a data-i18n-key="ttdo-new-contract" data-field="ttd_toNewContract" href="{{ pluginName }}/new-contract.html">Create a new Service Contract for this Application</a></div>
+              <div apiman-status="Created,Ready"><a data-i18n-key="ttdo-new-contract" data-field="ttd_toNewContract" href="{{ pluginName }}/new-contract">Create a new Service Contract for this Application</a></div>
               <div><a data-i18n-key="ttdo-new-version" data-field="ttd_toNewVersion" href="{{ pluginName }}/orgs/{{ org.id }}/apps/{{ app.id}}/{{ version.version }}/new-version">Create a new version of this Application (New Version)</a></div>
             </div>
             <!-- The Publish Action -->

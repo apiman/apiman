@@ -13,47 +13,17 @@ module Apiman {
       }
     };
     
-    // /apiman/admin/*
-
-    // /apiman/new-org
-    // /apiman/new-app
-    // /apiman/new-service
-    // /apiman/new-plan
-
-    // /apiman/orgs/{orgId} (redirect only)
-    // /apiman/orgs/{orgId}/apps
-    // /apiman/orgs/{orgId}/services
-    // /apiman/orgs/{orgId}/plans
-
-    // /apiman/orgs/{orgId}/apps/{appId}  (redirect only)
-    // /apiman/orgs/{orgId}/apps/{appId}/{version}
-    // /apiman/orgs/{orgId}/apps/{appId}/{version}/contracts
-    // /apiman/orgs/{orgId}/apps/{appId}/{version}/apis
-    // /apiman/orgs/{orgId}/apps/{appId}/{version}/policies
-    // /apiman/orgs/{orgId}/apps/{appId}/{version}/activity
-
-    // /apiman/orgs/{orgId}/services/{svcId}  (redirect only)
-    // /apiman/orgs/{orgId}/services/{svcId}/{version}
-    // /apiman/orgs/{orgId}/services/{svcId}/{version}/impl
-    // /apiman/orgs/{orgId}/services/{svcId}/{version}/plans
-    // /apiman/orgs/{orgId}/services/{svcId}/{version}/policies
-    // /apiman/orgs/{orgId}/services/{svcId}/{version}/contracts
-    // /apiman/orgs/{orgId}/services/{svcId}/{version}/endpoint
-    // /apiman/orgs/{orgId}/services/{svcId}/{version}/activity
-
-    // /apiman/orgs/{orgId}/plans/{planId}  (redirect only)
-    // /apiman/orgs/{orgId}/plans/{planId}/{version}
-    // /apiman/orgs/{orgId}/plans/{planId}/{version}/policies
-    // /apiman/orgs/{orgId}/plans/{planId}/{version}/activity
-
-
     var routes = {
         '/dash'                     : { templateUrl: 'dash.html' },
 
-        '/admin-gateways.html'      : { templateUrl: 'admin/admin-gateways.html' },
-        '/admin-plugins.html'       : { templateUrl: 'admin/admin-plugins.html' },
-        '/admin-policyDefs.html'    : { templateUrl: 'admin/admin-policyDefs.html' },
-        '/admin-roles.html'         : { templateUrl: 'admin/admin-roles.html' },
+        '/admin/gateways'      : { templateUrl: 'admin/admin-gateways.html' },
+        '/admin/plugins'       : { templateUrl: 'admin/admin-plugins.html' },
+        '/admin/policyDefs'    : { templateUrl: 'admin/admin-policyDefs.html' },
+        '/admin/roles'         : { templateUrl: 'admin/admin-roles.html' },
+        '/admin/gateways/:gateway'      : { templateUrl: 'forms/edit-gateway.html' },
+        '/admin/plugins/:plugin'        : { templateUrl: 'forms/edit-plugin.html' },
+        '/admin/policyDefs/:policyDef'  : { templateUrl: 'forms/edit-policyDef.html' },
+        '/admin/roles/:role'            : { templateUrl: 'forms/edit-role.html' },
 
         '/orgs/:org/:type/:id/:ver/policies/:policy' : { templateUrl: 'forms/edit-policy.html' },
         '/orgs/:org/:type/:id/:ver/new-policy'       : { templateUrl: 'forms/new-policy.html' },
@@ -88,19 +58,15 @@ module Apiman {
         '/browse/orgs/:org/:service'          : { templateUrl: 'consumer/consumer-service-redirect.html' },
         '/browse/orgs/:org/:service/:version' : { templateUrl: 'consumer/consumer-service.html' },
 
-        '/edit-gateway.html'        : { templateUrl: 'forms/edit-gateway.html' },
-        '/edit-plugin.html'         : { templateUrl: 'forms/edit-plugin.html' },
-        '/edit-policyDef.html'      : { templateUrl: 'forms/edit-policyDef.html' },
-        '/edit-role.html'           : { templateUrl: 'forms/edit-role.html' },
-        '/import-policyDefs.html'   : { templateUrl: 'forms/import-policyDefs.html' },
-        '/new-app.html'             : { templateUrl: 'forms/new-app.html' },
-        '/new-contract.html'        : { templateUrl: 'forms/new-contract.html' },
-        '/new-gateway.html'         : { templateUrl: 'forms/new-gateway.html' },
-        '/new-org.html'             : { templateUrl: 'forms/new-org.html' },
-        '/new-plan.html'            : { templateUrl: 'forms/new-plan.html' },
-        '/new-plugin.html'          : { templateUrl: 'forms/new-plugin.html' },
-        '/new-role.html'            : { templateUrl: 'forms/new-role.html' },
-        '/new-service.html'         : { templateUrl: 'forms/new-service.html' },
+        '/new-app'                  : { templateUrl: 'forms/new-app.html' },
+        '/new-contract'             : { templateUrl: 'forms/new-contract.html' },
+        '/new-gateway'              : { templateUrl: 'forms/new-gateway.html' },
+        '/new-org'                  : { templateUrl: 'forms/new-org.html' },
+        '/new-plan'                 : { templateUrl: 'forms/new-plan.html' },
+        '/new-plugin'               : { templateUrl: 'forms/new-plugin.html' },
+        '/new-role'                 : { templateUrl: 'forms/new-role.html' },
+        '/new-service'              : { templateUrl: 'forms/new-service.html' },
+        '/import-policyDefs'        : { templateUrl: 'forms/import-policyDefs.html' },
 
         '/orgs/:org'                : { templateUrl: 'org/org.html' },
         '/orgs/:org/plans'          : { templateUrl: 'org/org-plans.html' },
@@ -117,11 +83,11 @@ module Apiman {
         '/users/:user/orgs'         : { templateUrl: 'user/user-orgs.html' },
         '/users/:user/services'     : { templateUrl: 'user/user-services.html' },
         
-        '/errors/400.html'          : { templateUrl: 'errors/400.html' },
-        '/errors/403.html'          : { templateUrl: 'errors/403.html' },
-        '/errors/404.html'          : { templateUrl: 'errors/404.html' },
-        '/errors/409.html'          : { templateUrl: 'errors/409.html' },
-        '/errors/500.html'          : { templateUrl: 'errors/500.html' }
+        '/errors/400'          : { templateUrl: 'errors/400.html' },
+        '/errors/403'          : { templateUrl: 'errors/403.html' },
+        '/errors/404'          : { templateUrl: 'errors/404.html' },
+        '/errors/409'          : { templateUrl: 'errors/409.html' },
+        '/errors/500'          : { templateUrl: 'errors/500.html' }
     };
 
     _module.config(['$locationProvider', '$routeProvider', 'HawtioNavBuilderProvider',

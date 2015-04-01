@@ -3,10 +3,9 @@
 module Apiman {
 
     export var EditPluginController = _module.controller("Apiman.EditPluginController",
-        ['$q', '$scope', '$location', 'ApimanSvcs', 'PageLifecycle', 'Dialogs',
-        ($q, $scope, $location, ApimanSvcs, PageLifecycle, Dialogs) => {
-            
-            var params = $location.search();
+        ['$q', '$scope', '$location', 'ApimanSvcs', 'PageLifecycle', 'Dialogs', '$routeParams',
+        ($q, $scope, $location, ApimanSvcs, PageLifecycle, Dialogs, $routeParams) => {
+            var params = $routeParams;
             
             var promise = $q.all({
                 plugin: $q(function(resolve, reject) {
@@ -20,7 +19,7 @@ module Apiman {
                 $scope.deleteButton.state = 'in-progress';
                 Dialogs.confirm('Confirm Delete Plugin', 'Do you really want to delete this plugin?', function() {
                     ApimanSvcs.delete({ entityType: 'plugins', secondaryType: $scope.plugin.id }, function(reply) {
-                         $location.url(pluginName + '/admin-plugins.html');
+                         PageLifecycle.redirectTo('/admin/plugins');
                     }, PageLifecycle.handleError);
                 }, function() {
                     $scope.deleteButton.state = 'complete';

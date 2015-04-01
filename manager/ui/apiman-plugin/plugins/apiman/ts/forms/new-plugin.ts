@@ -28,7 +28,7 @@ module Apiman {
             $scope.addPlugin  = function() {
                 $scope.addButton.state = 'in-progress';
                 ApimanSvcs.save({ entityType: 'plugins' }, $scope.plugin, function(reply) {
-                     $location.url(pluginName + '/admin-plugins.html');
+                     PageLifecycle.redirectTo('/admin/plugins');
                 }, PageLifecycle.handleError);
             }
             

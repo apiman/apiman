@@ -3,9 +3,9 @@
 module Apiman {
 
     export var EditPolicyDefController = _module.controller("Apiman.EditPolicyDefController",
-        ['$q', '$scope', '$location', 'ApimanSvcs', 'PageLifecycle', ($q, $scope, $location, ApimanSvcs, PageLifecycle) => {
-            
-            var params = $location.search();
+        ['$q', '$scope', '$location', 'ApimanSvcs', 'PageLifecycle', '$routeParams',
+        ($q, $scope, $location, ApimanSvcs, PageLifecycle, $routeParams) => {
+            var params = $routeParams;
             
             var promise = $q.all({
                 policyDef: $q(function(resolve, reject) {
@@ -24,7 +24,7 @@ module Apiman {
                 policyDefUpdate.icon = policyDef.icon;
                 
                 ApimanSvcs.update({ entityType: 'policyDefs', secondaryType: $scope.policyDef.id }, policyDefUpdate, function(reply) {
-                     $location.url(pluginName + '/admin-policyDefs.html');
+                     PageLifecycle.redirectTo('/admin/policyDefs');
                 }, PageLifecycle.handleError);
             }
             

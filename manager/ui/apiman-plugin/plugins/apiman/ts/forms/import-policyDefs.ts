@@ -5,7 +5,6 @@ module Apiman {
     export var ImportPolicyDefsController = _module.controller("Apiman.ImportPolicyDefsController",
         ['$q', '$scope', '$location', 'ApimanSvcs', 'PageLifecycle',
         ($q, $scope, $location, ApimanSvcs, PageLifecycle) => {
-            var params = $location.search();
             $scope.isData = true;
             $scope.isConfirm = false;
             
@@ -31,7 +30,7 @@ module Apiman {
                     }));
                 });
                 $q.all(promises).then(function() {
-                    $location.url(pluginName + '/admin-policyDefs.html');
+                    PageLifecycle.redirectTo('/admin/policyDefs');
                 }, PageLifecycle.handleError);
             }
             

@@ -67,7 +67,6 @@ module Apiman {
             
             $scope.setVersion = function(serviceVersion) {
                 PageLifecycle.redirectTo('/browse/orgs/{0}/{1}/{2}', $routeParams.org, $routeParams.service, $routeParams.version);
-                $location.search('version', serviceVersion.version);
             };
 
             PageLifecycle.loadPage('ConsumerService', promise, $scope, function() {

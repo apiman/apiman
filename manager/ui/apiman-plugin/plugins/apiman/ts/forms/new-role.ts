@@ -46,7 +46,7 @@ module Apiman {
                 role.permissions = permissions;
                 role.autoGrant = $scope.role.autoGrant;
                 ApimanSvcs.save({ entityType: 'roles' }, role, function(reply) {
-                     $location.url(pluginName + '/admin-roles.html');
+                     PageLifecycle.redirectTo('/admin/roles');
                 }, PageLifecycle.handleError);
             }
             

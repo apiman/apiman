@@ -3,10 +3,10 @@
 module Apiman {
 
     export var EditGatewayController = _module.controller("Apiman.EditGatewayController",
-        ['$q', '$scope', '$location', 'ApimanSvcs', 'PageLifecycle', 'Dialogs',
-        ($q, $scope, $location, ApimanSvcs, PageLifecycle, Dialogs) => {
+        ['$q', '$scope', '$location', 'ApimanSvcs', 'PageLifecycle', 'Dialogs', '$routeParams',
+        ($q, $scope, $location, ApimanSvcs, PageLifecycle, Dialogs, $routeParams) => {
             $scope.isValid = false;
-            var params = $location.search();
+            var params = $routeParams;
             
             var validate = function() {
                 $scope.testResult = 'none';
@@ -89,7 +89,7 @@ module Apiman {
                 $scope.updateButton.state = 'in-progress';
                 var gateway = Gateway();
                 ApimanSvcs.update({ entityType: 'gateways', secondaryType: $scope.gateway.id }, gateway, function() {
-                     $location.url(pluginName + '/admin-gateways.html');
+                    PageLifecycle.redirectTo('/admin/gateways');
                 }, PageLifecycle.handleError);
             }
             
@@ -97,7 +97,7 @@ module Apiman {
                 $scope.deleteButton.state = 'in-progress';
                 Dialogs.confirm('Confirm Delete Gateway', 'Do you really want to permanently delete this gateway?  This can be very destructive to any Service published to it.', function() {
                     ApimanSvcs.delete({ entityType: 'gateways', secondaryType: $scope.gateway.id }, function(reply) {
-                        $location.url(pluginName + '/admin-gateways.html');
+                        PageLifecycle.redirectTo('/admin/gateways');
                     }, PageLifecycle.handleError);
                 }, function() {
                     $scope.deleteButton.state = 'complete';

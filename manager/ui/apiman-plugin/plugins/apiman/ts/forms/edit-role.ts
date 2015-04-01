@@ -3,9 +3,9 @@
 module Apiman {
 
     export var EditRoleController = _module.controller("Apiman.EditRoleController",
-        ['$q', '$scope', '$location', 'ApimanSvcs', 'PageLifecycle', 'Logger', 'Dialogs',
-        ($q, $scope, $location, ApimanSvcs, PageLifecycle, Logger, Dialogs) => {
-            var params = $location.search();
+        ['$q', '$scope', '$location', 'ApimanSvcs', 'PageLifecycle', 'Logger', 'Dialogs', '$routeParams',
+        ($q, $scope, $location, ApimanSvcs, PageLifecycle, Logger, Dialogs, $routeParams) => {
+            var params = $routeParams;
             var allPermissions     = ['orgView', 'orgEdit', 'orgAdmin',
                                       'planView','planEdit','planAdmin',
                                       'svcView', 'svcEdit', 'svcAdmin',
@@ -55,7 +55,7 @@ module Apiman {
                 role.permissions = permissions;
                 role.autoGrant = $scope.role.autoGrant;
                 ApimanSvcs.update({ entityType: 'roles', secondaryType: $scope.role.id }, role, function(reply) {
-                     $location.url(pluginName + '/admin-roles.html');
+                     PageLifecycle.redirectTo('/admin/roles');
                 }, PageLifecycle.handleError);
             }
             
@@ -63,7 +63,7 @@ module Apiman {
                 $scope.deleteButton.state = 'in-progress';
                 Dialogs.confirm('Confirm Delete Role', 'Do you really want to delete this role?', function() {
                     ApimanSvcs.delete({ entityType: 'roles', secondaryType: $scope.role.id }, function(reply) {
-                        $location.url(pluginName + '/admin-roles.html');
+                        PageLifecycle.redirectTo('/admin/roles');
                     }, PageLifecycle.handleError);
                 }, function() {
                     $scope.deleteButton.state = 'complete';

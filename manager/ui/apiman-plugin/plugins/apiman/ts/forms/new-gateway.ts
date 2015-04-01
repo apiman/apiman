@@ -66,7 +66,7 @@ module Apiman {
                 $scope.createButton.state = 'in-progress';
                 var gateway = Gateway();
                 ApimanSvcs.save({ entityType: 'gateways' }, gateway, function(reply) {
-                    $location.url(pluginName + '/admin-gateways.html');
+                    PageLifecycle.redirectTo('/admin/gateways');
                 }, PageLifecycle.handleError);
             };
             

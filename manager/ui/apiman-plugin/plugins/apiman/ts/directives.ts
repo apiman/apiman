@@ -321,7 +321,14 @@ module Apiman {
 
                             reader.onload = (function(theFile) {
                                 return function(result) {
-                                    $elem.val(result.target.result);
+                                    $scope.$applyAsync(function() {
+                                        if ($attrs.ngModel) {
+                                            var model = $attrs.ngModel;
+                                            $scope[model] = result.target.result;
+                                        } else {
+                                            $elem.val(result.target.result);
+                                        }
+                                    });
                                 };
                             })(firstFile);
 

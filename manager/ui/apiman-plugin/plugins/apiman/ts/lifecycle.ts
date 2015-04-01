@@ -82,20 +82,20 @@ module ApimanPageLifecycle {
                 $rootScope.pageError = error;
                 $rootScope.previousPage = $location.url();
                 if (error.status == 400) {
-                    Logger.info('Detected an error {0}, redirecting to 400.html.', error.status);
-                    $location.url(Apiman.pluginName + '/errors/400.html').replace();
+                    Logger.info('Detected an error {0}, redirecting to 400.', error.status);
+                    $location.url(Apiman.pluginName + '/errors/400').replace();
                 } else if (error.status == 403) {
-                    Logger.info('Detected an error {0}, redirecting to 403.html.', error.status);
-                    $location.url(Apiman.pluginName + '/errors/403.html').replace();
+                    Logger.info('Detected an error {0}, redirecting to 403.', error.status);
+                    $location.url(Apiman.pluginName + '/errors/403').replace();
                 } else if (error.status == 404) {
-                    Logger.info('Detected an error {0}, redirecting to 404.html.', error.status);
-                    $location.url(Apiman.pluginName + '/errors/404.html').replace();
+                    Logger.info('Detected an error {0}, redirecting to 404.', error.status);
+                    $location.url(Apiman.pluginName + '/errors/404').replace();
                 } else if (error.status == 409) {
-                    Logger.info('Detected an error {0}, redirecting to 409.html.', error.status);
-                    $location.url(Apiman.pluginName + '/errors/409.html').replace();
+                    Logger.info('Detected an error {0}, redirecting to 409.', error.status);
+                    $location.url(Apiman.pluginName + '/errors/409').replace();
                 } else {
-                    Logger.info('Detected an error {0}, redirecting to 500.html.', error.status);
-                    $location.url(Apiman.pluginName + '/errors/500.html').replace();
+                    Logger.info('Detected an error {0}, redirecting to 500.', error.status);
+                    $location.url(Apiman.pluginName + '/errors/500').replace();
                 }
             };
             return {
