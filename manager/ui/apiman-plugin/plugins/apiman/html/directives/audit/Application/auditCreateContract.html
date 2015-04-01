@@ -1,5 +1,5 @@
 <div class="row">
-  <a href="{{ pluginName }}/users/{{ entry.who }}/orgs">{{ entry.who }}</a>
+  <a href="{{ pluginName }}/users/{{ entry.who }}">{{ entry.who }}</a>
   <span>created a contract from application</span>
   <a href="{{ pluginName }}/orgs/{{ entry.organizationId }}/apps">{{ entry.organizationId }}</a>
   <span>/</span>
@@ -17,12 +17,12 @@
   <span>and service</span>
   <a href="{{ pluginName }}/orgs/{{ data.serviceOrgId }}/services">{{ data.serviceOrgId }}</a>
   <span>/</span>
-  <a href="{{ pluginName }}/service-overview.html?org={{ data.serviceOrgId }}&amp;service={{ data.serviceId }}">{{ data.serviceId }}</a>
+  <a href="{{ pluginName }}/orgs/{{ data.serviceOrgId }}/services/{{ data.serviceId }}">{{ data.serviceId }}</a>
   <span>:</span>
-  <a href="{{ pluginName }}/service-overview.html?org={{ data.serviceOrgId }}&amp;service={{ data.serviceId }}&amp;version={{ data.serviceVersion }}">{{ data.serviceVersion }}</a>
+  <a href="{{ pluginName }}/orgs/{{ data.serviceOrgId }}/services/{{ data.serviceId }}/{{ data.serviceVersion }}">{{ data.serviceVersion }}</a>
   <span>through version</span>
-  <a href="{{ pluginName }}/plan-overview.html?org={{ data.planOrgId }}&amp;plan={{ data.planId }}&amp;version={{ data.planVersion }}">{{ data.planVersion }}</a>
+  <a href="{{ pluginName }}/orgs/{{ data.planOrgId }}/plans/{{ data.planId }}/{{ data.planVersion }}">{{ data.planVersion }}</a>
   <span>of plan</span>
-  <a href="{{ pluginName }}/plan-overview.html?org={{ data.planOrgId }}&amp;plan={{ data.planId }}">{{ data.planId }}</a>
+  <a href="{{ pluginName }}/orgs/{{ data.planOrgId }}/plans/{{ data.planId }}">{{ data.planId }}</a>
   <span>.</span>
 </div>

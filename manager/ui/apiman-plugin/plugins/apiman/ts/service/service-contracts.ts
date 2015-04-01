@@ -3,9 +3,9 @@
 module Apiman {
 
     export var ServiceContractsController = _module.controller("Apiman.ServiceContractsController",
-        ['$q', '$scope', '$location', 'PageLifecycle', 'ServiceEntityLoader', 'OrgSvcs', 'Logger',
-        ($q, $scope, $location, PageLifecycle, ServiceEntityLoader, OrgSvcs, Logger) => {
-            var params = $location.search();
+        ['$q', '$scope', '$location', 'PageLifecycle', 'ServiceEntityLoader', 'OrgSvcs', 'Logger', '$routeParams',
+        ($q, $scope, $location, PageLifecycle, ServiceEntityLoader, OrgSvcs, Logger, $routeParams) => {
+            var params = $routeParams;
             $scope.organizationId = params.org;
             $scope.tab = 'contracts';
             $scope.version = params.version;
@@ -28,20 +28,15 @@ module Apiman {
                 contracts: $q(function(resolve, reject) {
                     $scope.currentPage = 0;
                     getNextPage(resolve, reject);
-                }),
-                serviceVersion: $q(function(resolve, reject) {
-                    OrgSvcs.get({ organizationId: params.org, entityType: 'services', entityId: params.service, versionsOrActivity: 'versions', version: params.version }, function(serviceVersion) {
-                        resolve(serviceVersion);
-                    }, reject);
                 })
             });
             var promise = $q.all(dataLoad);
             $scope.getNextPage = getNextPage;
             PageLifecycle.loadPage('ServiceContracts', promise, $scope, function() {
-                Logger.debug("::: is public: {0}", $scope.serviceVersion.publicService);
-                if ($scope.serviceVersion.publicService) {
-                    Logger.debug("::: num plans: {0}", $scope.serviceVersion.plans.length);
-                    if ($scope.serviceVersion.plans.length == 0) {
+                Logger.debug("::: is public: {0}", $scope.version.publicService);
+                if ($scope.version.publicService) {
+                    Logger.debug("::: num plans: {0}", $scope.version.plans.length);
+                    if ($scope.version.plans.length == 0) {
                         $scope.isPublicOnly = true;
                     }
                 }

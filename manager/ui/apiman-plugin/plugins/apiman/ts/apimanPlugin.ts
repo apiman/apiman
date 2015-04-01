@@ -66,6 +66,22 @@ module Apiman {
         '/orgs/:org/apps/:app/:version/activity'    : { templateUrl: 'app/app-activity.html' },
         '/orgs/:org/apps/:app/:version/new-version' : { templateUrl: 'forms/new-appversion.html' },
 
+        '/orgs/:org/plans/:plan'                      : { templateUrl: 'plan/plan.html' },
+        '/orgs/:org/plans/:plan/:version'             : { templateUrl: 'plan/plan-overview.html' },
+        '/orgs/:org/plans/:plan/:version/policies'    : { templateUrl: 'plan/plan-policies.html' },
+        '/orgs/:org/plans/:plan/:version/activity'    : { templateUrl: 'plan/plan-activity.html' },
+        '/orgs/:org/plans/:plan/:version/new-version' : { templateUrl: 'forms/new-planversion.html' },
+
+        '/orgs/:org/services/:service'                      : { templateUrl: 'service/service.html' },
+        '/orgs/:org/services/:service/:version'             : { templateUrl: 'service/service-overview.html' },
+        '/orgs/:org/services/:service/:version/impl'        : { templateUrl: 'service/service-impl.html' },
+        '/orgs/:org/services/:service/:version/plans'       : { templateUrl: 'service/service-plans.html' },
+        '/orgs/:org/services/:service/:version/policies'    : { templateUrl: 'service/service-policies.html' },
+        '/orgs/:org/services/:service/:version/endpoint'    : { templateUrl: 'service/service-endpoint.html' },
+        '/orgs/:org/services/:service/:version/contracts'   : { templateUrl: 'service/service-contracts.html' },
+        '/orgs/:org/services/:service/:version/activity'    : { templateUrl: 'service/service-activity.html' },
+        '/orgs/:org/services/:service/:version/new-version' : { templateUrl: 'forms/new-serviceversion.html' },
+
         '/browse/orgs'                        : { templateUrl: 'consumer/consumer-orgs.html' },
         '/browse/services'                    : { templateUrl: 'consumer/consumer-services.html' },
         '/browse/orgs/:org'                   : { templateUrl: 'consumer/consumer-org.html' },
@@ -82,11 +98,9 @@ module Apiman {
         '/new-gateway.html'         : { templateUrl: 'forms/new-gateway.html' },
         '/new-org.html'             : { templateUrl: 'forms/new-org.html' },
         '/new-plan.html'            : { templateUrl: 'forms/new-plan.html' },
-        '/new-planversion.html'     : { templateUrl: 'forms/new-planversion.html' },
         '/new-plugin.html'          : { templateUrl: 'forms/new-plugin.html' },
         '/new-role.html'            : { templateUrl: 'forms/new-role.html' },
         '/new-service.html'         : { templateUrl: 'forms/new-service.html' },
-        '/new-serviceversion.html'  : { templateUrl: 'forms/new-serviceversion.html' },
 
         '/orgs/:org'                : { templateUrl: 'org/org.html' },
         '/orgs/:org/plans'          : { templateUrl: 'org/org-plans.html' },
@@ -96,18 +110,6 @@ module Apiman {
         '/orgs/:org/manage-members' : { templateUrl: 'org/org-manage-members.html' },
         '/orgs/:org/activity'       : { templateUrl: 'org/org-activity.html' },
         '/orgs/:org/new-member'     : { templateUrl: 'org/org-new-member.html' },
-        
-        '/plan-overview.html'       : { templateUrl: 'plan/plan-overview.html' },
-        '/plan-policies.html'       : { templateUrl: 'plan/plan-policies.html' },
-        '/plan-activity.html'       : { templateUrl: 'plan/plan-activity.html' },
-        
-        '/service-activity.html'    : { templateUrl: 'service/service-activity.html' },
-        '/service-contracts.html'   : { templateUrl: 'service/service-contracts.html' },
-        '/service-endpoint.html'    : { templateUrl: 'service/service-endpoint.html' },
-        '/service-overview.html'    : { templateUrl: 'service/service-overview.html' },
-        '/service-impl.html'        : { templateUrl: 'service/service-impl.html' },
-        '/service-plans.html'       : { templateUrl: 'service/service-plans.html' },
-        '/service-policies.html'    : { templateUrl: 'service/service-policies.html' },
         
         '/users/:user'              : { templateUrl: 'user/user.html' },
         '/users/:user/activity'     : { templateUrl: 'user/user-activity.html' },

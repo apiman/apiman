@@ -3,8 +3,9 @@
 module Apiman {
 
     export var PlanOverviewController = _module.controller("Apiman.PlanOverviewController",
-        ['$q', '$scope', '$location', 'PageLifecycle', 'PlanEntityLoader', ($q, $scope, $location, PageLifecycle, PlanEntityLoader) => {
-            var params = $location.search();
+        ['$q', '$scope', '$location', 'PageLifecycle', 'PlanEntityLoader', '$routeParams',
+        ($q, $scope, $location, PageLifecycle, PlanEntityLoader, $routeParams) => {
+            var params = $routeParams;
             $scope.organizationId = params.org;
             $scope.tab = 'overview';
             var dataLoad = PlanEntityLoader.getCommonData($scope, $location);

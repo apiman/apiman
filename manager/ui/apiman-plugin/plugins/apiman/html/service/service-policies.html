@@ -29,7 +29,7 @@
             <hr />
             <!-- The list of policies -->
             <div apiman-permission="svcEdit" apiman-status="Created,Ready" class="apiman-filters apiman-policies-filters">
-              <a data-i18n-key="add-policy" href="{{ pluginName }}/new-policy.html?type=services&amp;org={{ org.id }}&amp;id={{ service.id }}&amp;ver={{ selectedServiceVersion.version }}" class="btn btn-primary pull-right">Add Policy</a>
+              <a data-i18n-key="add-policy" href="{{ pluginName }}/orgs/{{ org.id }}/services/{{ service.id }}/{{ version.version }}/new-policy" class="btn btn-primary pull-right">Add Policy</a>
             </div>
             <div class="clearfix"></div>
             <div class="apiman-policies" data-field="policies">
@@ -57,7 +57,7 @@
                     </div>
                     <div class="metaData">
                       <span>Policy created by </span>
-                      <span><a href="{{ pluginName }}/users/{{ policy.createdBy }}/orgs">{{ policy.createdBy }}</a></span>
+                      <span><a href="{{ pluginName }}/users/{{ policy.createdBy }}">{{ policy.createdBy }}</a></span>
                       <span> on </span>
                       <i class="fa fa-clock-o fa-inline"></i>
                       <span>{{ policy.createdOn | date:'yyyy-MM-dd' }}</span>

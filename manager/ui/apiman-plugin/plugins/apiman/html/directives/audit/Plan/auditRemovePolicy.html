@@ -1,11 +1,11 @@
 <div class="row">
-  <a href="{{ pluginName }}/users/{{ entry.who }}/orgs">{{ entry.who }}</a>
+  <a href="{{ pluginName }}/users/{{ entry.who }}">{{ entry.who }}</a>
   <span>removed a policy from</span>
   <a href="{{ pluginName }}/orgs/{{ entry.organizationId }}/plans">{{ entry.organizationId }}</a>
   <span>/</span>
-  <a class="emphasis" href="{{ pluginName }}/plan-overview.html?org={{ entry.organizationId }}&amp;plan={{ entry.entityId }}">{{ entry.entityId }}</a>
+  <a class="emphasis" href="{{ pluginName }}/orgs/{{ entry.organizationId }}/plans/{{ entry.entityId }}">{{ entry.entityId }}</a>
   <span>version</span>
-  <a class="emphasis" href="{{ pluginName }}/plan-overview.html?org={{ entry.organizationId }}&amp;plan={{ entry.entityId }}&amp;version={{ entry.entityVersion }}">{{ entry.entityVersion }}</a><span>.</span>
+  <a class="emphasis" href="{{ pluginName }}/orgs/{{ entry.organizationId }}/plans/{{ entry.entityId }}/{{ entry.entityVersion }}">{{ entry.entityVersion }}</a><span>.</span>
 </div>
 <div class="row boxed-row">
   <span class="">Policy removed:</span>

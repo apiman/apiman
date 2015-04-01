@@ -2,9 +2,9 @@
 module Apiman {
 
     export var NewPlanVersionController = _module.controller("Apiman.NewPlanVersionController",
-        ['$q', '$location', '$scope', 'OrgSvcs', 'PageLifecycle', 
-        ($q, $location, $scope, OrgSvcs, PageLifecycle) => {
-            var params = $location.search();
+        ['$q', '$location', '$scope', 'OrgSvcs', 'PageLifecycle', '$routeParams',
+        ($q, $location, $scope, OrgSvcs, PageLifecycle, $routeParams) => {
+            var params = $routeParams;
             $scope.planversion = {
                 clone: true,
                 cloneVersion: params.version
@@ -12,7 +12,7 @@ module Apiman {
             $scope.saveNewPlanVersion = function() {
                 $scope.createButton.state = 'in-progress';
                 OrgSvcs.save({ organizationId: params.org, entityType: 'plans', entityId: params.plan, versionsOrActivity: 'versions', version: ''}, $scope.planversion, function(reply) {
-                    $location.url(Apiman.pluginName + '/plan-overview.html').search('org', params.org).search('plan', params.plan).search('version', reply.version);
+                    PageLifecycle.redirectTo('/orgs/{0}/plans/{1}/{2}', params.org, params.plan, reply.version);
                 }, PageLifecycle.handleError);
             };
             

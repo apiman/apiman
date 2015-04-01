@@ -40,7 +40,7 @@
               <div class="container-fluid apiman-summaryrow" ng-repeat="plan in plans">
                 <div class="row">
                   <input ng-model="plan.checked" data-field="checkbox" type="checkbox"></input>
-                  <span class="title"><a href="{{ pluginName }}/plan-overview.html?org={{ plan.organizationId }}&plan={{ plan.id }}" data-field="name" title="{{ plan.description }}">{{ plan.name }}</a></span>
+                  <span class="title"><a href="{{ pluginName }}/orgs/{{ plan.organizationId }}/plans/{{ plan.id }}" data-field="name" title="{{ plan.description }}">{{ plan.name }}</a></span>
                   <select apiman-select-picker="" ng-model="plan.selectedVersion" ng-options="version for version in plan.lockedVersions" class="selectpicker pull-right">
                   </select>
                 </div>

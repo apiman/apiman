@@ -3,9 +3,9 @@
 module Apiman {
 
  export var ServicePlansController = _module.controller("Apiman.ServicePlansController",
-        ['$q', '$scope', '$location', 'PageLifecycle', 'ServiceEntityLoader', 'OrgSvcs', 'ApimanSvcs',
-        ($q, $scope, $location, PageLifecycle, ServiceEntityLoader, OrgSvcs, ApimanSvcs) => {
-            var params = $location.search();
+        ['$q', '$scope', '$location', 'PageLifecycle', 'ServiceEntityLoader', 'OrgSvcs', 'ApimanSvcs', '$routeParams',
+        ($q, $scope, $location, PageLifecycle, ServiceEntityLoader, OrgSvcs, ApimanSvcs, $routeParams) => {
+            var params = $routeParams;
             $scope.organizationId = params.org;
             $scope.tab = 'plans';
             $scope.version = params.version;
@@ -29,11 +29,6 @@ module Apiman {
             var dataLoad = ServiceEntityLoader.getCommonData($scope, $location);
             if (params.version != null) {
                 dataLoad = angular.extend(dataLoad, {
-                    serviceVersion: $q(function(resolve, reject) {
-                        OrgSvcs.get({ organizationId: params.org, entityType: 'services', entityId: params.service, versionsOrActivity: 'versions', version: params.version }, function(serviceVersion) {
-                            resolve(serviceVersion);
-                        }, reject);
-                    }),
                     plans: $q(function(resolve, reject) {
                         OrgSvcs.query({ organizationId: params.org, entityType: 'plans' }, function(plans) {
                             //for each plan find the versions that are locked
@@ -78,15 +73,15 @@ module Apiman {
             
             $scope.$watch('updatedService', function(newValue) {
                 var dirty = false;
-                if (newValue.publicService != $scope.serviceVersion.publicService) {
+                if (newValue.publicService != $scope.version.publicService) {
                     dirty = true;
                 }
-                if (newValue.plans.length != $scope.serviceVersion.plans.length) {
+                if (newValue.plans.length != $scope.version.plans.length) {
                     dirty = true;
                 } else {
                     for (var i = 0 ; i < newValue.plans.length; i++) {
                         var p1 = newValue.plans[i];
-                        var p2 = $scope.serviceVersion.plans[i];
+                        var p2 = $scope.version.plans[i];
                         if (p1.planId != p2.planId || p1.version != p2.version) {
                             dirty = true;
                         }
@@ -100,13 +95,13 @@ module Apiman {
             }, true);
             
             $scope.reset = function() {
-                $scope.updatedService.publicService = $scope.serviceVersion.publicService;
+                $scope.updatedService.publicService = $scope.version.publicService;
                 for (var i = 0; i < lockedPlans.length; i++) {
                     lockedPlans[i].selectedVersion = lockedPlans[i].lockedVersions[0];
-                    for (var j = 0; j < $scope.serviceVersion.plans.length; j++) {
-                        if (lockedPlans[i].id == $scope.serviceVersion.plans[j].planId) {
+                    for (var j = 0; j < $scope.version.plans.length; j++) {
+                        if (lockedPlans[i].id == $scope.version.plans[j].planId) {
                             lockedPlans[i].checked = true;
-                            lockedPlans[i].selectedVersion = $scope.serviceVersion.plans[j].version;
+                            lockedPlans[i].selectedVersion = $scope.version.plans[j].version;
                             break;
                         }
                     }
@@ -119,7 +114,7 @@ module Apiman {
                 $scope.saveButton.state = 'in-progress';
                 
                 OrgSvcs.update({ organizationId: params.org, entityType: 'services', entityId: params.service, versionsOrActivity: 'versions', version: params.version }, $scope.updatedService, function(reply) {
-                    $scope.serviceVersion.publicService = $scope.updatedService.publicService;
+                    $scope.version.publicService = $scope.updatedService.publicService;
                     $scope.isDirty = false;
                     $scope.saveButton.state = 'complete';
                 }, PageLifecycle.handleError);

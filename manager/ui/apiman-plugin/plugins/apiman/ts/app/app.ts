@@ -59,7 +59,7 @@ module Apiman {
                 PageLifecycle.redirectTo('/orgs/{0}/apps/{1}/{2}', params.org, params.app, app.version);
             };
 
-            $scope.registerApp = function(app) {
+            $scope.registerApp = function() {
                 $scope.registerButton.state = 'in-progress';
                 var registerAction = {
                     type: 'registerApplication',
@@ -74,7 +74,7 @@ module Apiman {
                 }, PageLifecycle.handleError);
             };
             
-            $scope.unregisterApp = function(app) {
+            $scope.unregisterApp = function() {
                 $scope.unregisterButton.state = 'in-progress';
                 Dialogs.confirm('Confirm Unregister App', 'Do you really want to unregister the application?  This cannot be undone.', function() {
                     var unregisterAction = {

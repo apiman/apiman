@@ -52,8 +52,8 @@
             <!-- The Publish Action -->
             <div class="apiman-divider-40"></div>
             <div class="">
-              <button ng-disabled="entityStatus == 'Created'" apiman-action-btn="" apiman-status="Created,Ready" class="btn btn-primary" data-field="registerButton" data-i18n-key="register" placeholder="Registering..." data-icon="fa-cog" ng-click="registerApp(app)">Register</button>
-              <button apiman-action-btn="" apiman-status="Registered" class="btn btn-warning" data-field="unregisterButton" data-i18n-key="unregister" placeholder="Unregistering..." data-icon="fa-cog" ng-click="unregisterApp(app)">Unregister</button>
+              <button ng-disabled="entityStatus == 'Created'" apiman-action-btn="" apiman-status="Created,Ready" class="btn btn-primary" data-field="registerButton" data-i18n-key="register" placeholder="Registering..." data-icon="fa-cog" ng-click="registerApp()">Register</button>
+              <button apiman-action-btn="" apiman-status="Registered" class="btn btn-warning" data-field="unregisterButton" data-i18n-key="unregister" placeholder="Unregistering..." data-icon="fa-cog" ng-click="unregisterApp()">Unregister</button>
             </div>
           </div>
         </div>

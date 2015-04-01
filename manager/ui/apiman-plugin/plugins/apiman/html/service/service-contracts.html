@@ -57,9 +57,9 @@
                   <tr ng-repeat="contract in contracts">
                     <td>
                       <span>
-                        <a href="{{ pluginName }}/browse/orgs/{{ contract.appOrganizationId }}"><span class="emphasis">{{ contract.appOrganizationName }}</span></a>
+                        <a href="{{ pluginName }}/browse/orgs/{{ contract.appOrganizationId }}"><span>{{ contract.appOrganizationName }}</span></a>
                         <span>/</span>
-                        <span>{{ contract.appName }}</span>
+                        <span class="emphasis">{{ contract.appName }}</span>
                         <span>&#8680;</span>
                         <span>{{ contract.appVersion }}</span>
                       </span>

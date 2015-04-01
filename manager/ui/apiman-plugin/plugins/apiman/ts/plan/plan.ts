@@ -2,40 +2,47 @@
 /// <reference path="../services.ts"/>
 module Apiman {
 
+    export var PlanRedirectController = _module.controller("Apiman.PlanRedirectController",
+        ['$q', '$scope', '$location', 'OrgSvcs', 'PageLifecycle', '$rootScope', 'CurrentUser', '$routeParams',
+        ($q, $scope, $location, OrgSvcs, PageLifecycle, $rootScope, CurrentUser, $routeParams) => {
+            var orgId = $routeParams.org;
+            var planId = $routeParams.plan;
+            var promise = $q.all({
+                versions: $q(function(resolve, reject) {
+                    OrgSvcs.query({ organizationId: orgId, entityType: 'plans', entityId: planId, versionsOrActivity: 'versions' }, resolve, reject);
+                })
+            });
+            
+            PageLifecycle.loadPage('PlanRedirect', promise, $scope, function() {
+                var version = $scope.versions[0].version;
+                if (!version) {
+                    PageLifecycle.handleError({ status: 404 });
+                } else {
+                    PageLifecycle.forwardTo('/orgs/{0}/plans/{1}/{2}', orgId, planId, version);
+                }
+            });
+        }]);
+
     export var PlanEntityLoader = _module.factory('PlanEntityLoader', 
-        ['$q', 'OrgSvcs', 'Logger', ($q, OrgSvcs, Logger) => {
+        ['$q', 'OrgSvcs', 'Logger', '$rootScope', '$routeParams', 
+        ($q, OrgSvcs, Logger, $rootScope, $routeParams) => {
             return {
                 getCommonData: function($scope, $location) {
-                    var params = $location.search();
+                    var params = $routeParams;
                     $scope.setEntityStatus = function(status) {
                         $scope.entityStatus = status;
                     };
                     return {
-                        org: $q(function(resolve, reject) {
-                            OrgSvcs.get({ organizationId: params.org }, function(org) {
-                                resolve(org);
-                            }, reject);
-                        }),
-                        plan: $q(function(resolve, reject) {
-                            OrgSvcs.get({ organizationId: params.org, entityType: 'plans', entityId: params.plan }, function(plan) {
-                                resolve(plan);
+                        version: $q(function(resolve, reject) {
+                            OrgSvcs.get({ organizationId: params.org, entityType: 'plans', entityId: params.plan, versionsOrActivity: 'versions', version: params.version }, function(version) {
+                                $scope.org = version.plan.organization;
+                                $scope.plan = version.plan;
+                                $scope.setEntityStatus(version.status);
+                                resolve(version);
                             }, reject);
                         }),
                         versions: $q(function(resolve, reject) {
-                            OrgSvcs.query({ organizationId: params.org, entityType: 'plans', entityId: params.plan, versionsOrActivity: 'versions' }, function(versions) {
-                                if (params.version != null) {
-                                    for (var i = 0; i < versions.length; i++) {
-                                        if (params.version == versions[i].version) {
-                                            $scope.selectedPlanVersion = versions[i];
-                                            break;
-                                        }
-                                    }
-                                } else {
-                                    $scope.selectedPlanVersion = versions[0];
-                                }
-                                $scope.setEntityStatus($scope.selectedPlanVersion.status);
-                                resolve(versions);
-                            }, reject);
+                            OrgSvcs.query({ organizationId: params.org, entityType: 'plans', entityId: params.plan, versionsOrActivity: 'versions' }, resolve, reject);
                         })
                     };
                 }
@@ -43,27 +50,26 @@ module Apiman {
         }]);
 
     export var PlanEntityController = _module.controller("Apiman.PlanEntityController",
-        ['$q', '$scope', '$location', 'ActionSvcs', 'Logger', 'PageLifecycle',
-        ($q, $scope, $location, ActionSvcs, Logger, PageLifecycle) => {
-            var params = $location.search();
+        ['$q', '$scope', '$location', 'ActionSvcs', 'Logger', 'PageLifecycle', '$routeParams',
+        ($q, $scope, $location, ActionSvcs, Logger, PageLifecycle, $routeParams) => {
+            var params = $routeParams;
             
             $scope.setVersion = function(plan) {
-                $scope.selectedPlanVersion = plan;
-                $location.search('version', plan.version);
+                PageLifecycle.redirectTo('/orgs/{0}/plans/{1}/{2}', params.org, params.plan, plan.version);
             };
 
-            $scope.lockPlan = function(plan) {
+            $scope.lockPlan = function() {
                 $scope.lockButton.state = 'in-progress';
                 var lockAction = {
                     type: 'lockPlan',
-                    entityId: plan.id,
-                    organizationId: plan.organizationId,
-                    entityVersion: plan.version
+                    entityId: params.plan,
+                    organizationId: params.org,
+                    entityVersion: params.version
                 };
                 ActionSvcs.save(lockAction, function(reply) {
-                    $scope.selectedPlanVersion.status = 'Locked';
+                    $scope.version.status = 'Locked';
                     $scope.lockButton.state = 'complete';
-                    $scope.setEntityStatus($scope.selectedPlanVersion.status);
+                    $scope.setEntityStatus($scope.version.status);
                 }, PageLifecycle.handleError);
             }
         }])

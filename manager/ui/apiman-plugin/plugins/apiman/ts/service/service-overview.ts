@@ -3,8 +3,9 @@
 module Apiman {
 
  export var ServiceOverviewController = _module.controller("Apiman.ServiceOverviewController",
-        ['$q', '$scope', '$location', 'PageLifecycle', 'ServiceEntityLoader', ($q, $scope, $location, PageLifecycle, ServiceEntityLoader) => {
-            var params = $location.search();
+        ['$q', '$scope', '$location', 'PageLifecycle', 'ServiceEntityLoader', '$routeParams',
+        ($q, $scope, $location, PageLifecycle, ServiceEntityLoader, $routeParams) => {
+            var params = $routeParams;
             $scope.organizationId = params.org;
             $scope.tab = 'overview';
             $scope.version = params.version;

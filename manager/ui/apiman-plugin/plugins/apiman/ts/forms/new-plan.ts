@@ -25,7 +25,7 @@ module Apiman {
             $scope.saveNewPlan = function() {
                 $scope.createButton.state = 'in-progress';
                 OrgSvcs.save({ organizationId: $scope.selectedOrg.id, entityType: 'plans' }, $scope.plan, function(reply) {
-                    $location.url(Apiman.pluginName + '/plan-overview.html').search('org', reply.organization.id).search('plan', reply.name).search('version', $scope.plan.initialVersion);
+                    PageLifecycle.redirectTo('/orgs/{0}/plans/{1}/{2}', reply.organization.id, reply.id, $scope.plan.initialVersion);
                 }, PageLifecycle.handleError);
             };
             

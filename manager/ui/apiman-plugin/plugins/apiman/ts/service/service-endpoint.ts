@@ -3,9 +3,9 @@
 module Apiman {
 
  export var ServiceEndpointController = _module.controller("Apiman.ServiceEndpointController",
-        ['$q', '$scope', '$location', 'PageLifecycle', 'ServiceEntityLoader', 'OrgSvcs', 'ApimanSvcs',
-        ($q, $scope, $location, PageLifecycle, ServiceEntityLoader, OrgSvcs, ApimanSvcs) => {
-            var params = $location.search();
+        ['$q', '$scope', '$location', 'PageLifecycle', 'ServiceEntityLoader', 'OrgSvcs', 'ApimanSvcs', '$routeParams',
+        ($q, $scope, $location, PageLifecycle, ServiceEntityLoader, OrgSvcs, ApimanSvcs, $routeParams) => {
+            var params = $routeParams;
             $scope.organizationId = params.org;
             $scope.tab = 'endpoint';
             $scope.version = params.version;
@@ -13,15 +13,8 @@ module Apiman {
             var dataLoad = ServiceEntityLoader.getCommonData($scope, $location);
             if (params.version != null) {
                 dataLoad = angular.extend(dataLoad, {
-                    serviceVersion: $q(function(resolve, reject) {
-                        OrgSvcs.get({ organizationId: params.org, entityType: 'services', entityId: params.service, versionsOrActivity: 'versions', version: params.version }, function(serviceVersion) {
-                            resolve(serviceVersion);
-                        }, reject);
-                    }),
                     managedEndpoint: $q(function(resolve, reject) {
-                        OrgSvcs.get({ organizationId: params.org, entityType: 'services', entityId: params.service, versionsOrActivity: 'versions', version: params.version, policiesOrActivity: 'endpoint' }, function(managedEndpoint) {
-                           resolve(managedEndpoint);
-                        }, reject);
+                        OrgSvcs.get({ organizationId: params.org, entityType: 'services', entityId: params.service, versionsOrActivity: 'versions', version: params.version, policiesOrActivity: 'endpoint' }, resolve, reject);
                     })
                 });
             }
