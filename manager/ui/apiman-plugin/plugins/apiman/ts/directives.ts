@@ -337,4 +337,25 @@ module Apiman {
                 }
             }
         }]);
+
+    _module.directive('policyList',
+        ['Logger', function(Logger) {
+            return {
+                restrict: 'E',
+                scope: {
+                    policies: "=ngModel",
+                    remove: "=removeFunction"
+                },
+                controller: function($scope) {
+                    $scope.policyListOptions = {
+                        //containment: '#draggable-ctr',
+                        containerPositioning: 'relative'
+                    };
+                },
+                controllerAs: 'ctrl',
+                bindToController: true,
+                templateUrl: 'plugins/apiman/html/directives/policyList.html'
+            }
+        }
+    ]);
 }

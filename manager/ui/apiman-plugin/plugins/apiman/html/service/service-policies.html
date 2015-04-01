@@ -19,7 +19,7 @@
         <!-- Left hand nav -->
         <div ng-include="'plugins/apiman/html/service/service_tabs.include'"></div>
         <!-- /Left hand nav -->
-        
+
         <!-- Content -->
         <div class="col-md-10 apiman-entity-content">
           <div class="col-md-9">
@@ -33,7 +33,7 @@
             </div>
             <div class="clearfix"></div>
             <div class="apiman-policies" data-field="policies">
-            
+
               <div class="apiman-no-content container-fluid" ng-hide="policies.length > 0">
                 <div class="row">
                   <div class="col-md-9">
@@ -44,34 +44,8 @@
                   </div>
                 </div>
               </div>
-
-              <div class="container-fluid apiman-summaryrow" ng-repeat="policy in policies">
-                <div class="row">
-                  <div apiman-permission="svcEdit" apiman-status="Created,Ready" class="grabber" style="height: 48px"></div>
-                  <div class="col-md-1 col-no-padding">
-                    <i class="apiman-policy-icon fa fa-{{ policy.icon }} fa-fw"></i>
-                  </div>
-                  <div class="col-md-9 col-no-padding">
-                    <div>
-                      <span class="title"><a href="{{ pluginName }}/edit-policy.html?type=services&amp;org={{ org.id }}&amp;id={{ service.id }}&amp;ver={{ selectedServiceVersion.version }}&amp;policy={{ policy.id }}">{{ policy.name }}</a></span>
-                    </div>
-                    <div class="metaData">
-                      <span>Policy created by </span>
-                      <span><a href="{{ pluginName }}/user-orgs.html?user={{ policy.createdBy }}">{{ policy.createdBy }}</a></span>
-                      <span> on </span>
-                      <i class="fa fa-clock-o fa-inline"></i>
-                      <span>{{ policy.createdOn | date:'yyyy-MM-dd' }}</span>
-                    </div>
-                    <div class="description apiman-label-faded">
-                      {{ policy.description }}
-                    </div>
-                  </div>
-                  <div class="col pull-right">
-                    <button class="btn btn-default" apiman-status="Created,Ready" ng-click="removePolicy( policy )">Remove</button>
-                  </div>
-                </div>
-                <hr />
-              </div>
+              <div class="clearfix"></div>
+              <policy-list ng-model="policies" remove-function="removePolicy"></policy-list>
             </div>
           </div>
         </div>
