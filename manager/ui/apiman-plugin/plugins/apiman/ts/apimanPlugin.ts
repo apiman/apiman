@@ -3,7 +3,7 @@
 module Apiman {
 
     export var _module = angular.module(Apiman.pluginName,
-        ['ApimanServices', 'ApimanLogger', 'ApimanConfiguration', 'ApimanPageLifecycle', 'ApimanCurrentUser', 'ApimanDialogs']);
+        ['ApimanServices', 'ApimanLogger', 'ApimanConfiguration', 'ApimanPageLifecycle', 'ApimanCurrentUser', 'ApimanDialogs', 'ui.sortable']);
 
     var tab = undefined;
 
@@ -14,7 +14,8 @@ module Apiman {
     };
     
     var routes = {
-        '/dash'                     : { templateUrl: 'dash.html' },
+        '/dash'                : { templateUrl: 'dash.html' },
+        '/profile'             : { tempalteUrl: 'profile.html' },
 
         '/admin/gateways'      : { templateUrl: 'admin/admin-gateways.html' },
         '/admin/plugins'       : { templateUrl: 'admin/admin-plugins.html' },

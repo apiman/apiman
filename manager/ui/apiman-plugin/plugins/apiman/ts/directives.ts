@@ -280,12 +280,16 @@ module Apiman {
             };
         }]);
 
-    _module.directive('apimanDropText', 
-        ['Logger', 
+    _module.directive('apimanDropText',
+        ['Logger',
         (Logger) => {
             return {
                 restrict: 'A',
-                link: function($scope, $elem, $attrs) {
+                require : 'ngModel',
+                scope: {
+                    ngModel: '='
+                },
+                link: function($scope, $elem, $attrs, ngModel) {
                     $elem.on('dragover', function(e) {
                         e.preventDefault();
                         if (e.dataTransfer) {
@@ -309,6 +313,7 @@ module Apiman {
                         $elem.removeClass('dropping');
                         return false;
                     });
+
                     $elem.on('drop', function(e) {
                         e.preventDefault();
                         $elem.removeClass('dropping');
@@ -321,14 +326,8 @@ module Apiman {
 
                             reader.onload = (function(theFile) {
                                 return function(result) {
-                                    $scope.$applyAsync(function() {
-                                        if ($attrs.ngModel) {
-                                            var model = $attrs.ngModel;
-                                            $scope[model] = result.target.result;
-                                        } else {
-                                            $elem.val(result.target.result);
-                                        }
-                                    });
+                                    $elem.val(result.target.result);
+                                    ngModel.$setViewValue(result.target.result);
                                 };
                             })(firstFile);
 
@@ -338,4 +337,31 @@ module Apiman {
                 }
             }
         }]);
+
+    _module.directive('apimanPolicyList',
+        ['Logger', function(Logger) {
+            return {
+                restrict: 'E',
+                scope: {
+                    policies: "=ngModel",
+                    remove: "=removeFunction",
+                    type: "@",
+                    org: "@orgId",
+                    id: "@pageId",
+                    version: "@"
+                },
+                controller: function($scope) {
+                    $scope.policyListOptions = {
+                        //containment: '#draggable-ctr',
+                        containerPositioning: 'relative'
+                    };
+
+                    $scope.pluginName = $scope.$parent.pluginName;
+                },
+                controllerAs: 'ctrl',
+                bindToController: true,
+                templateUrl: 'plugins/apiman/html/directives/policyList.html'
+            }
+        }
+    ]);
 }

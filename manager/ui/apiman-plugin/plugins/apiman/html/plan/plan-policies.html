@@ -44,34 +44,8 @@
                   </div>
                 </div>
               </div>
-
-              <div class="container-fluid apiman-summaryrow" ng-repeat="policy in policies">
-                <div class="row">
-                  <div apiman-permission="planEdit" apiman-status="Created,Ready" class="grabber" style="height: 48px"></div>
-                  <div class="col">
-                    <i class="apiman-policy-icon fa fa-{{ policy.icon }} fa-fw"></i>
-                  </div>
-                  <div class="col col-70">
-                    <div>
-                      <span class="title"><a href="{{ pluginName }}/orgs/{{ org.id }}/plans/{{ plan.id }}/{{ version.version }}/policies/{{ policy.id }}">{{ policy.name }}</a></span>
-                    </div>
-                    <div class="metaData">
-                      <span>Policy created by </span>
-                      <span><a href="{{ pluginName }}/users/{{ policy.createdBy }}">{{ policy.createdBy }}</a></span>
-                      <span> on </span>
-                      <i class="fa fa-clock-o fa-inline"></i>
-                      <span>{{ policy.createdOn | date:'yyyy-MM-dd' }}</span>
-                    </div>
-                    <div class="description apiman-label-faded">
-                       {{ policy.description }}
-                    </div>
-                  </div>
-                  <div class="col pull-right">
-                    <button class="btn btn-default" apiman-status="Created,Ready" ng-click="removePolicy( policy )">Remove</button>
-                  </div>
-                </div>
-                <hr />
-              </div>
+              <div class="clearfix"></div>
+              <apiman-policy-list ng-model="policies" remove-function="removePolicy" type="plans" org-id="{{ org.id }}" page-id="{{ plan.id }}" version="{{ version.version }}"></policy-list>
             </div>
           </div>
         </div>

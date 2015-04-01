@@ -1,0 +1,29 @@
+<div class="apiman-policies" id='draggable-ctr' as-sortable="policyListOptions" ng-model="ctrl.policies">
+    <div class="container-fluid apiman-summaryrow" ng-repeat="policy in ctrl.policies" as-sortable-item>
+        <div class="row" >
+            <div as-sortable-item-handle apiman-permission="svcEdit" apiman-status="Created,Ready" class="grabber" style="height: 48px"></div>
+            <div class="col-md-1 col-no-padding">
+                <i class="apiman-policy-icon fa fa-{{ policy.icon }} fa-fw"></i>
+            </div>
+            <div class="col-md-9 col-no-padding">
+                <div>
+                    <span class="title"><a href="{{ pluginName }}/orgs/:org/{{ ctrl.type == 'applications' ? 'apps' : ctrl.type }}/{{ ctrl.id }}/{{ ctrl.version }}/policies/{{ policy.id }}">{{ policy.name }}</a></span>
+                </div>
+                <div class="metaData">
+                    <span>Policy created by </span>
+                    <span><a href="{{ pluginName }}/users/{{ policy.createdBy }}">{{ policy.createdBy }}</a></span>
+                    <span> on </span>
+                    <i class="fa fa-clock-o fa-inline"></i>
+                    <span>{{ policy.createdOn | date:'yyyy-MM-dd' }}</span>
+                </div>
+                <div class="description apiman-label-faded">
+                    {{ policy.description }}
+                </div>
+            </div>
+            <div class="col pull-right">
+                <button class="btn btn-default" apiman-status="Created,Ready" ng-click="ctrl.remove( policy )">Remove</button>
+            </div>
+        </div>
+        <hr />
+    </div>
+</div>

@@ -25,9 +25,9 @@ body {
 }
 
 .login-pf .container {
-    border-top: 1px solid rgb(178, 178, 178);
-    border-bottom: 1px solid rgb(178, 178, 178);
-    background-color: rgba(255, 255, 255, 0.55);
+  border-top: 1px solid rgb(178, 178, 178);
+  border-bottom: 1px solid rgb(178, 178, 178);
+  background-color: rgba(255, 255, 255, 0.55);
 }
 
 .login-pf body {
@@ -895,18 +895,28 @@ ol.breadcrumb {
   float: left;
   margin-right: 10px;
 }
-.apiman-policies .drop-target {
+.apiman-policies .as-sortable-placeholder {
   padding: 5px 0px 10px 0px;
 }
-.apiman-policies .drop-target div {
+.apiman-policies .as-sortable-placeholder {
   padding: 10px;
   text-align: center;
   font-size: 18px;
   line-height: 32px;
   color: rgb(63, 146, 210);
   border: 1px dashed #987;
+  opacity: 0.9;
 }
-
+.apiman-policies .as-sortable-item {
+  -ms-touch-action: none;
+  touch-action: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
 .apiman-apis .apiman-summaryrow {
   margin-bottom: 5px;
   padding-bottom: 5px;
