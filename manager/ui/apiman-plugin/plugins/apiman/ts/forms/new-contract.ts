@@ -29,7 +29,7 @@ module Apiman {
                         if ($rootScope.mruApp) {
                             for (var i = 0; i < apps.length; i++) {
                                 var app = apps[i];
-                                if (app.organizationId == $rootScope.mruApp.organizationId && app.id == $rootScope.mruApp.id) {
+                                if (app.organizationId == $rootScope.mruApp.application.organization.id && app.id == $rootScope.mruApp.application.id) {
                                     $scope.selectedApp = app;
                                 }
                             }
@@ -63,7 +63,7 @@ module Apiman {
                     $scope.refreshAppVersions(newValue.organizationId, newValue.id, function(versions) {
                         Logger.debug("Versions: {0}", versions);
                         if ($rootScope.mruApp) {
-                            if ($rootScope.mruApp.organizationId == newValue.organizationId && $rootScope.mruApp.id == newValue.id) {
+                            if ($rootScope.mruApp.application.organization.id == newValue.organizationId && $rootScope.mruApp.application.id == newValue.id) {
                                 $scope.selectedAppVersion = $rootScope.mruApp.version;
                             }
                         } else {
@@ -120,11 +120,7 @@ module Apiman {
                     planId : $scope.selectedPlan.planId
                 };
                 OrgSvcs.save({ organizationId: $scope.selectedApp.organizationId, entityType: 'applications', entityId: $scope.selectedApp.id, versionsOrActivity: 'versions', version: $scope.selectedAppVersion, policiesOrActivity: 'contracts' }, newContract, function(reply) {
-                    $location.url(Apiman.pluginName + '/app-contracts.html').search({
-                        'org' : $scope.selectedApp.organizationId,
-                        'app' : $scope.selectedApp.id,
-                        'version' : $scope.selectedAppVersion
-                    });
+                    PageLifecycle.redirectTo('/orgs/{0}/apps/{1}/{2}/contracts', $scope.selectedApp.organizationId, $scope.selectedApp.id, $scope.selectedAppVersion);
                 }, PageLifecycle.handleError);
             };
             

@@ -11,9 +11,9 @@
   <span>A contract was created between application</span>
   <a href="{{ pluginName }}/orgs/{{ data.appOrgId }}/apps">{{ data.appOrgId }}</a>
   <span>/</span>
-  <a href="{{ pluginName }}/app-overview.html?org={{ data.appOrgId }}&amp;app={{ data.appId }}">{{ data.appId }}</a>
+  <a href="{{ pluginName }}/orgs/{{ data.appOrgId }}/apps/{{ data.appId }}">{{ data.appId }}</a>
   <span>:</span>
-  <a href="{{ pluginName }}/app-overview.html?org={{ data.appOrgId }}&amp;app={{ data.appId }}&amp;version={{ data.appVersion }}">{{ data.appVersion }}</a>
+  <a href="{{ pluginName }}/orgs/{{ data.appOrgId }}/apps/{{ data.appId }}/{{ data.appVersion }}">{{ data.appVersion }}</a>
   <span>and service</span>
   <a href="{{ pluginName }}/orgs/{{ data.serviceOrgId }}/apps">{{ data.serviceOrgId }}</a>
   <span>/</span>

@@ -25,7 +25,7 @@ module Apiman {
             $scope.saveNewApp = function() {
                 $scope.createButton.state = 'in-progress';
                 OrgSvcs.save({ organizationId: $scope.selectedOrg.id, entityType: 'applications' }, $scope.app, function(reply) {
-                    $location.url(Apiman.pluginName + '/app-overview.html').search('org', $scope.selectedOrg.id).search('app', $scope.app.name).search('version', $scope.app.initialVersion);
+                    PageLifecycle.redirectTo('/orgs/{0}/apps/{1}/{2}', $scope.selectedOrg.id, $scope.app.name, $scope.app.initialVersion);
                 }, PageLifecycle.handleError);
             };
             

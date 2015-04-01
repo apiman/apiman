@@ -3,9 +3,9 @@
 module Apiman {
     
     export var AppContractsController = _module.controller("Apiman.AppContractsController",
-        ['$q', '$scope', '$location', 'PageLifecycle', 'AppEntityLoader', 'OrgSvcs', 'Logger', 'Dialogs',
-        ($q, $scope, $location, PageLifecycle, AppEntityLoader, OrgSvcs, Logger, Dialogs) => {
-            var params = $location.search();
+        ['$q', '$scope', '$location', 'PageLifecycle', 'AppEntityLoader', 'OrgSvcs', 'Logger', 'Dialogs', '$routeParams',
+        ($q, $scope, $location, PageLifecycle, AppEntityLoader, OrgSvcs, Logger, Dialogs, $routeParams) => {
+            var params = $routeParams;
             $scope.organizationId = params.org;
             $scope.tab = 'contracts';
             $scope.version = params.version;

@@ -10,9 +10,9 @@ module Apiman {
     };
 
     export var NewPolicyController = _module.controller("Apiman.NewPolicyController",
-        ['$q', '$location', '$scope', 'OrgSvcs', 'ApimanSvcs', 'PageLifecycle', 'Logger',
-        ($q, $location, $scope, OrgSvcs, ApimanSvcs, PageLifecycle, Logger) => {
-            var params = $location.search();
+        ['$q', '$location', '$scope', 'OrgSvcs', 'ApimanSvcs', 'PageLifecycle', 'Logger', '$routeParams',
+        ($q, $location, $scope, OrgSvcs, ApimanSvcs, PageLifecycle, Logger, $routeParams) => {
+            var params = $routeParams;
             
             var promise = $q.all({
                 policyDefs: $q(function(resolve, reject) {
@@ -66,21 +66,12 @@ module Apiman {
                     definitionId: $scope.selectedDefId,
                     configuration: JSON.stringify($scope.config)
                 };
-                OrgSvcs.save({ organizationId: params.org, entityType: params.type, entityId: params.id, versionsOrActivity: 'versions', version: params.ver, policiesOrActivity: 'policies' }, newPolicy, function(reply) {
-                    var toPage = '/plan-policies.html';
-                    var entityParam = 'plan';
-                    if (params.type == 'services') {
-                        toPage = '/service-policies.html';
-                        entityParam = 'service';
-                    }
-                    if (params.type == 'applications') {
-                        toPage = '/app-policies.html';
-                        entityParam = 'app';
-                    }
-                    $location.url(Apiman.pluginName + toPage)
-                        .search('org', reply.organizationId)
-                        .search(entityParam, reply.entityId)
-                        .search('version', reply.entityVersion);
+                var etype = params.type;
+                if (etype == 'apps') {
+                    etype = 'applications';
+                }
+                OrgSvcs.save({ organizationId: params.org, entityType: etype, entityId: params.id, versionsOrActivity: 'versions', version: params.ver, policiesOrActivity: 'policies' }, newPolicy, function(reply) {
+                    PageLifecycle.redirectTo('/orgs/{0}/{1}/{2}/{3}/policies', params.org, params.type, params.id, params.ver);
                 }, PageLifecycle.handleError);
             };
             

@@ -59,7 +59,7 @@
 
                   <div class="container-fluid apiman-summaryrow" ng-repeat="app in filteredApps">
                     <div class="row">
-                      <span class="title"><a href="{{ pluginName }}/app-overview.html?org={{org.id}}&app={{app.id}}">{{ app.name }}</a></span>
+                      <span class="title"><a href="{{ pluginName }}/orgs/{{org.id}}/apps/{{app.id}}">{{ app.name }}</a></span>
                     </div>
                     <div class="row">
                       <span class="description">{{ app.description }}

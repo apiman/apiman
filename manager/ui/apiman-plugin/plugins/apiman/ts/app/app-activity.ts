@@ -3,9 +3,9 @@
 module Apiman {
 
     export var AppActivityController = _module.controller("Apiman.AppActivityController",
-        ['$q', '$scope', '$location', 'Logger', 'PageLifecycle', 'AppEntityLoader', 'AuditSvcs', 
-        ($q, $scope, $location, Logger, PageLifecycle, AppEntityLoader, AuditSvcs) => {
-            var params = $location.search();
+        ['$q', '$scope', '$location', 'Logger', 'PageLifecycle', 'AppEntityLoader', 'AuditSvcs', '$routeParams',
+        ($q, $scope, $location, Logger, PageLifecycle, AppEntityLoader, AuditSvcs, $routeParams) => {
+            var params = $routeParams;
             $scope.organizationId = params.org;
             $scope.tab = 'activity';
             $scope.version = params.version;

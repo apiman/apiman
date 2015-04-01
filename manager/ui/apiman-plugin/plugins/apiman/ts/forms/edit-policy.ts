@@ -2,15 +2,19 @@
 module Apiman {
     
     export var EditPolicyController = _module.controller("Apiman.EditPolicyController",
-        ['$q', '$location', '$scope', 'OrgSvcs', 'ApimanSvcs', 'PageLifecycle', 'Logger',
-        ($q, $location, $scope, OrgSvcs, ApimanSvcs, PageLifecycle, Logger) => {
-            var params = $location.search();
+        ['$q', '$location', '$scope', 'OrgSvcs', 'ApimanSvcs', 'PageLifecycle', 'Logger', '$routeParams',
+        ($q, $location, $scope, OrgSvcs, ApimanSvcs, PageLifecycle, Logger, $routeParams) => {
+            var params = $routeParams;
             
             var promise = $q.all({
                 policy: $q(function(resolve, reject) {
+                var etype = params.type;
+                    if (etype == 'apps') {
+                        etype = 'applications';
+                    }
                     OrgSvcs.get({
                         organizationId: params.org,
-                        entityType: params.type,
+                        entityType: etype,
                         entityId: params.id,
                         versionsOrActivity: 'versions', 
                         version: params.ver,
@@ -52,29 +56,20 @@ module Apiman {
                 var updatedPolicy = {
                     configuration: JSON.stringify($scope.config)
                 };
+                var etype = params.type;
+                if (etype == 'apps') {
+                    etype = 'applications';
+                }
                 OrgSvcs.update({
                     organizationId: params.org,
-                    entityType: params.type,
+                    entityType: etype,
                     entityId: params.id,
                     versionsOrActivity: 'versions', 
                     version: params.ver,
                     policiesOrActivity: 'policies', 
                     policyId: params.policy
                 }, updatedPolicy, function() {
-                    var toPage = '/plan-policies.html';
-                    var entityParam = 'plan';
-                    if (params.type == 'services') {
-                        toPage = '/service-policies.html';
-                        entityParam = 'service';
-                    }
-                    if (params.type == 'applications') {
-                        toPage = '/app-policies.html';
-                        entityParam = 'app';
-                    }
-                    $location.url(Apiman.pluginName + toPage)
-                        .search('org', params.org)
-                        .search(entityParam, params.id)
-                        .search('version', params.ver);
+                    PageLifecycle.redirectTo('/orgs/{0}/{1}/{2}/{3}/policies', params.org, params.type, params.id, params.ver);
                 }, PageLifecycle.handleError);
             };
             

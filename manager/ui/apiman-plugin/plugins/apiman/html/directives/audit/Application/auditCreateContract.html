@@ -3,19 +3,19 @@
   <span>created a contract from application</span>
   <a href="{{ pluginName }}/orgs/{{ entry.organizationId }}/apps">{{ entry.organizationId }}</a>
   <span>/</span>
-  <a class="emphasis" href="{{ pluginName }}/app-overview.html?org={{ entry.organizationId }}&amp;app={{ entry.entityId }}">{{ entry.entityId }}</a>
+  <a class="emphasis" href="{{ pluginName }}/orgs/{{ entry.organizationId }}/apps/{{ entry.entityId }}">{{ entry.entityId }}</a>
   <span>version</span>
-  <a class="emphasis" href="{{ pluginName }}/app-overview.html?org={{ entry.organizationId }}&amp;app={{ entry.entityId }}&amp;version={{ entry.entityVersion }}">{{ entry.entityVersion }}</a><span>.</span>
+  <a class="emphasis" href="{{ pluginName }}/orgs/{{ entry.organizationId }}/apps/{{ entry.entityId }}/{{ entry.entityVersion }}">{{ entry.entityVersion }}</a><span>.</span>
 </div>
 <div class="row boxed-row">
   <span>A contract was created between application</span>
   <a href="{{ pluginName }}/orgs/{{ data.appOrgId }}/apps">{{ data.appOrgId }}</a>
   <span>/</span>
-  <a href="{{ pluginName }}/app-overview.html?org={{ data.appOrgId }}&amp;app={{ data.appId }}">{{ data.appId }}</a>
+  <a href="{{ pluginName }}/orgs/{{ data.appOrgId }}/apps/{{ data.appId }}">{{ data.appId }}</a>
   <span>:</span>
-  <a href="{{ pluginName }}/app-overview.html?org={{ data.appOrgId }}&amp;app={{ data.appId }}&amp;version={{ data.appVersion }}">{{ data.appVersion }}</a>
+  <a href="{{ pluginName }}/orgs/{{ data.appOrgId }}/apps/{{ data.appId }}/{{ data.appVersion }}">{{ data.appVersion }}</a>
   <span>and service</span>
-  <a href="{{ pluginName }}/orgs/{{ data.serviceOrgId }}/apps">{{ data.serviceOrgId }}</a>
+  <a href="{{ pluginName }}/orgs/{{ data.serviceOrgId }}/services">{{ data.serviceOrgId }}</a>
   <span>/</span>
   <a href="{{ pluginName }}/service-overview.html?org={{ data.serviceOrgId }}&amp;service={{ data.serviceId }}">{{ data.serviceId }}</a>
   <span>:</span>

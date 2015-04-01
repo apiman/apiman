@@ -29,7 +29,7 @@
             <hr />
             <!-- The list of policies -->
             <div apiman-permission="appEdit" apiman-status="Created,Ready" class="apiman-filters apiman-policies-filters">
-              <a data-i18n-key="add-policy" href="{{ pluginName }}/new-policy.html?type=applications&amp;org={{ org.id }}&amp;id={{ app.id }}&amp;ver={{ selectedAppVersion.version }}" class="btn btn-primary pull-right">Add Policy</a>
+              <a data-i18n-key="add-policy" href="{{ pluginName }}/orgs/{{ org.id }}/apps/{{ app.id }}/{{ version.version }}/new-policy" class="btn btn-primary pull-right">Add Policy</a>
             </div>
             <div class="clearfix"></div>
             <div class="apiman-policies" data-field="policies">
@@ -53,7 +53,7 @@
                   </div>
                   <div class="col-md-9 col-no-padding">
                     <div>
-                      <span class="title"><a href="{{ pluginName }}/edit-policy.html?type=applications&amp;org={{ org.id }}&amp;id={{ app.id }}&amp;ver={{ selectedAppVersion.version }}&amp;policy={{ policy.id }}">{{ policy.name }}</a></span>
+                      <span class="title"><a href="{{ pluginName }}/orgs/{{ org.id }}/apps/{{ app.id }}/{{ version.version }}/policies/{{ policy.id }}">{{ policy.name }}</a></span>
                     </div>
                     <div class="metaData">
                       <span>Policy created by </span>

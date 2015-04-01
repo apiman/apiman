@@ -3,9 +3,9 @@
 module Apiman {
 
     export var AppPoliciesController = _module.controller("Apiman.AppPoliciesController",
-        ['$q', '$scope', '$location', 'PageLifecycle', 'AppEntityLoader', 'OrgSvcs', 'Dialogs', 
-        ($q, $scope, $location, PageLifecycle, AppEntityLoader, OrgSvcs, Dialogs) => {
-            var params = $location.search();
+        ['$q', '$scope', '$location', 'PageLifecycle', 'AppEntityLoader', 'OrgSvcs', 'Dialogs', '$routeParams',
+        ($q, $scope, $location, PageLifecycle, AppEntityLoader, OrgSvcs, Dialogs, $routeParams) => {
+            var params = $routeParams;
             $scope.organizationId = params.org;
             $scope.tab = 'policies';
             $scope.version = params.version;

@@ -16,15 +16,11 @@ module Apiman {
             if (params.version != null) {
                 dataLoad = angular.extend(dataLoad, {
                     serviceVersion: $q(function(resolve, reject) {
-                        OrgSvcs.get({ organizationId: params.org, entityType: 'services', entityId: params.service, versionsOrActivity: 'versions', version: params.version }, function(serviceVersion) {
-                            resolve(serviceVersion);
-                        }, reject);
+                        OrgSvcs.get({ organizationId: params.org, entityType: 'services', entityId: params.service, versionsOrActivity: 'versions', version: params.version }, resolve, reject);
                     }),
                     gateways: $q(function(resolve, reject) {
-                    ApimanSvcs.query({ entityType: 'gateways' }, function(gateways) {
-                        resolve(gateways);
-                    }, reject);
-                })
+                        ApimanSvcs.query({ entityType: 'gateways' }, resolve, reject);
+                    })
                 });
             }
             var promise = $q.all(dataLoad);

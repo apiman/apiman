@@ -2,41 +2,48 @@
 /// <reference path="../services.ts"/>
 module Apiman {
 
+    export var AppRedirectController = _module.controller("Apiman.AppRedirectController",
+        ['$q', '$scope', '$location', 'OrgSvcs', 'PageLifecycle', '$rootScope', 'CurrentUser', '$routeParams',
+        ($q, $scope, $location, OrgSvcs, PageLifecycle, $rootScope, CurrentUser, $routeParams) => {
+            var orgId = $routeParams.org;
+            var appId = $routeParams.app;
+            var promise = $q.all({
+                versions: $q(function(resolve, reject) {
+                    OrgSvcs.query({ organizationId: orgId, entityType: 'applications', entityId: appId, versionsOrActivity: 'versions' }, resolve, reject);
+                })
+            });
+            
+            PageLifecycle.loadPage('AppRedirect', promise, $scope, function() {
+                var version = $scope.versions[0].version;
+                if (!version) {
+                    PageLifecycle.handleError({ status: 404 });
+                } else {
+                    PageLifecycle.forwardTo('/orgs/{0}/apps/{1}/{2}', orgId, appId, version);
+                }
+            });
+        }]);
+
     export var AppEntityLoader = _module.factory('AppEntityLoader', 
-        ['$q', 'OrgSvcs', 'Logger', '$rootScope', ($q, OrgSvcs, Logger, $rootScope) => {
+        ['$q', 'OrgSvcs', 'Logger', '$rootScope', '$routeParams',
+        ($q, OrgSvcs, Logger, $rootScope, $routeParams) => {
             return {
                 getCommonData: function($scope, $location) {
-                    var params = $location.search();
+                    var params = $routeParams;
                     $scope.setEntityStatus = function(status) {
                         $scope.entityStatus = status;
                     };
                     return {
-                        org: $q(function(resolve, reject) {
-                            OrgSvcs.get({ organizationId: params.org }, function(org) {
-                                resolve(org);
-                            }, reject);
-                        }),
-                        app: $q(function(resolve, reject) {
-                            OrgSvcs.get({ organizationId: params.org, entityType: 'applications', entityId: params.app }, function(app) {
-                                resolve(app);
+                        version: $q(function(resolve, reject) {
+                            OrgSvcs.get({ organizationId: params.org, entityType: 'applications', entityId: params.app, versionsOrActivity: 'versions', version: params.version }, function(version) {
+                                $scope.org = version.application.organization;
+                                $scope.app = version.application;
+                                $rootScope.mruApp = version;
+                                $scope.setEntityStatus(version.status);
+                                resolve(version);
                             }, reject);
                         }),
                         versions: $q(function(resolve, reject) {
-                            OrgSvcs.query({ organizationId: params.org, entityType: 'applications', entityId: params.app, versionsOrActivity: 'versions' }, function(versions) {
-                                resolve(versions);
-                                if (params.version != null) {
-                                    for (var i = 0; i < versions.length; i++) {
-                                        if (params.version == versions[i].version) {
-                                            $scope.selectedAppVersion = versions[i];
-                                            break;
-                                        }
-                                    }
-                                } else {
-                                    $scope.selectedAppVersion = versions[0];
-                                }
-                                $rootScope.mruApp = $scope.selectedAppVersion;
-                                $scope.setEntityStatus($scope.selectedAppVersion.status);
-                            }, reject);
+                            OrgSvcs.query({ organizationId: params.org, entityType: 'applications', entityId: params.app, versionsOrActivity: 'versions' }, resolve, reject);
                         })
                     };
                 }
@@ -44,13 +51,12 @@ module Apiman {
         }]);
 
     export var AppEntityController = _module.controller("Apiman.AppEntityController",
-        ['$q', '$scope', '$location', 'ActionSvcs', 'Logger', 'Dialogs', 'PageLifecycle',
-        ($q, $scope, $location, ActionSvcs, Logger, Dialogs, PageLifecycle) => {
-            var params = $location.search();
+        ['$q', '$scope', '$location', 'ActionSvcs', 'Logger', 'Dialogs', 'PageLifecycle', '$routeParams',
+        ($q, $scope, $location, ActionSvcs, Logger, Dialogs, PageLifecycle, $routeParams) => {
+            var params = $routeParams;
             
             $scope.setVersion = function(app) {
-                $scope.selectedAppVersion = app;
-                $location.search('version', app.version);
+                PageLifecycle.redirectTo('/orgs/{0}/apps/{1}/{2}', params.org, params.app, app.version);
             };
 
             $scope.registerApp = function(app) {
@@ -62,9 +68,9 @@ module Apiman {
                     entityVersion: params.version
                 };
                 ActionSvcs.save(registerAction, function(reply) {
-                    $scope.selectedAppVersion.status = 'Registered';
+                    $scope.version.status = 'Registered';
                     $scope.registerButton.state = 'complete';
-                    $scope.setEntityStatus($scope.selectedAppVersion.status);
+                    $scope.setEntityStatus($scope.version.status);
                 }, PageLifecycle.handleError);
             };
             
@@ -78,9 +84,9 @@ module Apiman {
                         entityVersion: params.version
                     };
                     ActionSvcs.save(unregisterAction, function(reply) {
-                        $scope.selectedAppVersion.status = 'Retired';
+                        $scope.version.status = 'Retired';
                         $scope.unregisterButton.state = 'complete';
-                        $scope.setEntityStatus($scope.selectedAppVersion.status);
+                        $scope.setEntityStatus($scope.version.status);
                     }, PageLifecycle.handleError);
                 }, function() {
                     $scope.unregisterButton.state = 'complete';

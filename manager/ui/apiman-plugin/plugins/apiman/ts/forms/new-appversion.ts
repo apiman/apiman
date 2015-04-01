@@ -2,8 +2,9 @@
 module Apiman {
 
     export var NewAppVersionController = _module.controller("Apiman.NewAppVersionController",
-        ['$q', '$location', '$scope', 'OrgSvcs', 'PageLifecycle', ($q, $location, $scope, OrgSvcs, PageLifecycle) => {
-            var params = $location.search();
+        ['$q', '$location', '$scope', 'OrgSvcs', 'PageLifecycle', '$routeParams',
+        ($q, $location, $scope, OrgSvcs, PageLifecycle, $routeParams) => {
+            var params = $routeParams;
             $scope.appversion = {
                 clone: true,
                 cloneVersion: params.version
@@ -11,7 +12,7 @@ module Apiman {
             $scope.saveNewAppVersion = function() {
                 $scope.createButton.state = 'in-progress';
                 OrgSvcs.save({ organizationId: params.org, entityType: 'applications', entityId: params.app, versionsOrActivity: 'versions', version: ''}, $scope.appversion, function(reply) {
-                    $location.url(Apiman.pluginName + '/app-overview.html').search('org', params.org).search('app', params.app).search('version', reply.version);
+                    PageLifecycle.redirectTo('/orgs/{0}/apps/{1}/{2}', params.org, params.app, reply.version);
                 }, PageLifecycle.handleError);
             };
             

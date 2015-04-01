@@ -3,9 +3,9 @@
 module Apiman {
 
     export var AppApisController = _module.controller("Apiman.AppApisController",
-        ['$q', '$scope', '$location', 'PageLifecycle', 'AppEntityLoader', 'Logger', 'OrgSvcs', '$rootScope', '$compile', '$timeout',
-        ($q, $scope, $location, PageLifecycle, AppEntityLoader, Logger, OrgSvcs, $rootScope, $compile, $timeout) => {
-            var params = $location.search();
+        ['$q', '$scope', '$location', 'PageLifecycle', 'AppEntityLoader', 'Logger', 'OrgSvcs', '$rootScope', '$compile', '$timeout', '$routeParams',
+        ($q, $scope, $location, PageLifecycle, AppEntityLoader, Logger, OrgSvcs, $rootScope, $compile, $timeout, $routeParams) => {
+            var params = $routeParams;
             $scope.organizationId = params.org;
             $scope.tab = 'apis';
             $scope.version = params.version;

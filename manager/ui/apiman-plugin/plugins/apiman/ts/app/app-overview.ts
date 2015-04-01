@@ -3,8 +3,9 @@
 module Apiman {
 
     export var AppOverviewController = _module.controller("Apiman.AppOverviewController",
-        ['$q', '$scope', '$location', 'PageLifecycle', 'AppEntityLoader', ($q, $scope, $location, PageLifecycle, AppEntityLoader) => {
-            var params = $location.search();
+        ['$q', '$scope', '$location', 'PageLifecycle', 'AppEntityLoader', '$routeParams',
+        ($q, $scope, $location, PageLifecycle, AppEntityLoader, $routeParams) => {
+            var params = $routeParams;
             $scope.organizationId = params.org;
             $scope.tab = 'overview';
             $scope.version = params.version;
