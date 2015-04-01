@@ -8,7 +8,7 @@ module Apiman {
                 $scope.createButton.state = 'in-progress';
                 OrgSvcs.save($scope.org, function(reply) {
                     CurrentUser.refresh(function() {
-                        $location.url('apiman/org-plans.html').search('org', reply.id);
+                        PageLifecycle.redirectTo('/orgs/{0}/plans', reply.id);
                     });
                 }, PageLifecycle.handleError);
             };

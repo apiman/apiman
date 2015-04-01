@@ -3,9 +3,9 @@
 module Apiman {
 
     export var OrgPlansController = _module.controller("Apiman.OrgPlansController",
-        ['$q', '$scope', '$location', 'OrgSvcs', 'PageLifecycle', '$rootScope', 
-        ($q, $scope, $location, OrgSvcs, PageLifecycle, $rootScope) => {
-            var params = $location.search();
+        ['$q', '$scope', '$location', 'OrgSvcs', 'PageLifecycle', '$rootScope', '$routeParams',
+        ($q, $scope, $location, OrgSvcs, PageLifecycle, $rootScope, $routeParams) => {
+            var params = $routeParams;
             $scope.organizationId = params.org;
             
             $scope.filterPlans = function(value) {

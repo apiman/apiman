@@ -13,7 +13,7 @@
       <div class="row">
         <div class="col-md-12">
           <ol class="breadcrumb" data-field="breadcrumb">
-            <li><a href="{{ pluginName }}/dash.html"><i class="fa fa-home fa-fw"></i><span>Home</span></a></li>
+            <li><a href="{{ pluginName }}/dash"><i class="fa fa-home fa-fw"></i><span>Home</span></a></li>
             <li class="active"><i class="fa fa-search fa-fw"></i><span>Organizations</span></li>
           </ol>
         </div>
@@ -27,7 +27,7 @@
         </div>
         <div class="col-md-6">
           <form ng-submit="searchOrg(orgName)">
-            <input ng-model="orgName" type="text" class="form-control input-search" data-i18n-key="searchfor-orgs" placeholder="Enter a word or phrase to search by..."></input>
+            <input id="apiman-search" ng-model="orgName" type="text" class="form-control input-search" data-i18n-key="searchfor-orgs" placeholder="Enter a word or phrase to search by..."></input>
             <button type="submit" class="btn btn-default btn-search" data-i18n-key="search" data-field="searchButton"">Search</input>
           </form>
         </div>
@@ -54,12 +54,12 @@
 	          Found {{ orgs.length }} matching organizations.
 	        </div>
 	        <div class="item" ng-repeat="org in orgs">
-	          <div class="title"><i class="fa fa-shield icon"></i><a href="{{ pluginName }}/consumer-org.html?org={{ org.id }}">{{ org.name }}</a></div>
+	          <div class="title"><i class="fa fa-shield icon"></i><a href="{{ pluginName }}/browse/orgs/{{ org.id }}">{{ org.name }}</a></div>
 	          <div class="description" title="{{ org.description }}">{{ org.description }}</div>
 <!-- 	          <div class="actions"> -->
 <!-- 	            <button class="btn btn-default">Request Membership</button> -->
 <!-- 	          </div> -->
-	          <a ng-show="org.isMember" href="{{ pluginName }}/org-plans.html?org={{ org.id }}" class="ismember" title="You are already a member of this Organization."></a>
+	          <a ng-show="org.isMember" href="{{ pluginName }}/orgs/{{ org.id }}/plans" class="ismember" title="You are already a member of this Organization."></a>
 	        </div>
           </div>
         </div>

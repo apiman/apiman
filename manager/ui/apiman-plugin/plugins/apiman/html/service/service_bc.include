@@ -1,8 +1,8 @@
       <div class="row">
         <div class="col-md-12">
           <ol class="breadcrumb" data-field="breadcrumb">
-            <li><a href="{{ pluginName }}/dash.html"><i class="fa fa-home fa-fw"></i><span>Home</span></a></li>
-            <li><a href="{{ pluginName }}/org-services.html?org={{ service.organization.id }}"><i class="fa fa-shield fa-fw"></i><span>{{ service.organization.name }}</span></a></li>
+            <li><a href="{{ pluginName }}/dash"><i class="fa fa-home fa-fw"></i><span>Home</span></a></li>
+            <li><a href="{{ pluginName }}/orgs/{{ service.organization.id }}/services"><i class="fa fa-shield fa-fw"></i><span>{{ service.organization.name }}</span></a></li>
             <li class="active"><i class="fa fa-puzzle-piece fa-fw"></i><span>{{ service.name }}</span></li>
           </ol>
         </div>

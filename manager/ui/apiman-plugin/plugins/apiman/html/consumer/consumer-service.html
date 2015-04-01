@@ -14,8 +14,8 @@
       <div class="row">
         <div class="col-md-12">
           <ol class="breadcrumb" data-field="breadcrumb">
-            <li><a href="{{ pluginName }}/dash.html"><i class="fa fa-home fa-fw"></i><span>Home</span></a></li>
-            <li><a href="{{ pluginName }}/consumer-services.html"><i class="fa fa-search fa-fw"></i><span>Services</span></a></li>
+            <li><a href="{{ pluginName }}/dash"><i class="fa fa-home fa-fw"></i><span>Home</span></a></li>
+            <li><a href="{{ pluginName }}/browse/services"><i class="fa fa-search fa-fw"></i><span>Services</span></a></li>
             <li class="active"><i class="fa fa-puzzle-piece fa-fw"></i><span>{{ service.name }}</span></li>
           </ol>
         </div>
@@ -34,7 +34,7 @@
         <div class="col-md-4 browse-items">
           <div class="item" style="width: 100%; margin-bottom: 20px;" data-field="serviceCard">
             <div class="title">
-              <i class="fa fa-puzzle-piece icon"></i><a href="{{ pluginName }}/consumer-org.html?org={{ service.organization.id }}" data-field="titleOrg">{{ service.organization.name }}</a>
+              <i class="fa fa-puzzle-piece icon"></i><a href="{{ pluginName }}/browse/orgs/{{ service.organization.id }}" data-field="titleOrg">{{ service.organization.name }}</a>
               <span> / </span>
               <span class="emphasis" data-field="titleService">{{ service.name }}</span>
             </div>

@@ -17,11 +17,11 @@
         <div class="col-md-8">
           <div class="apiman-entitytabs">
             <ul id="entitytabs" class="nav nav-tabs">
-              <li apiman-permission="planView"><a href="{{ pluginName }}/org-plans.html?org={{org.id}}" data-field="toOrgPlans" data-i18n-key="plans">Plans</a></li>
-              <li apiman-permission="svcView"><a href="{{ pluginName }}/org-services.html?org={{org.id}}" data-field="toOrgServices" data-i18n-key="services">Services</a></li>
-              <li apiman-permission="appView"><a href="{{ pluginName }}/org-apps.html?org={{org.id}}" data-field="toOrgApps" data-i18n-key="applications">Applications</a></li>
-              <li><a href="{{ pluginName }}/org-members.html?org={{org.id}}" data-field="toOrgMembers" data-i18n-key="members">Members</a></li>
-              <li class="pull-right active"><a href="{{ pluginName }}/org-activity.html?org={{org.id}}" data-field="toOrgActivity" data-i18n-key="activity">Activity</a></li>
+              <li apiman-permission="planView"><a href="{{ pluginName }}/orgs/{{org.id}}/plans" data-field="toOrgPlans" data-i18n-key="plans">Plans</a></li>
+              <li apiman-permission="svcView"><a href="{{ pluginName }}/orgs/{{org.id}}/services" data-field="toOrgServices" data-i18n-key="services">Services</a></li>
+              <li apiman-permission="appView"><a href="{{ pluginName }}/orgs/{{org.id}}/apps" data-field="toOrgApps" data-i18n-key="applications">Applications</a></li>
+              <li><a href="{{ pluginName }}/orgs/{{org.id}}/members" data-field="toOrgMembers" data-i18n-key="members">Members</a></li>
+              <li class="pull-right active"><a href="{{ pluginName }}/orgs/{{org.id}}/activity" data-field="toOrgActivity" data-i18n-key="activity">Activity</a></li>
             </ul>
             <div id="entitytabsContent" class="tab-content">
 

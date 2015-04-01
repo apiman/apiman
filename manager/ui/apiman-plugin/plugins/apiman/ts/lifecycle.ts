@@ -112,6 +112,16 @@ module ApimanPageLifecycle {
                     }
                 },
                 handleError: handleError,
+                forwardTo: function() {
+                    var path = '/' + Apiman.pluginName + formatMessage(arguments);
+                    Logger.info('Forwarding to page {0}', path);
+                    $location.url(path).replace();
+                },
+                redirectTo: function() {
+                    var path = '/' + Apiman.pluginName + formatMessage(arguments);
+                    Logger.info('Redirecting to page {0}', path);
+                    $location.url(path);
+                },
                 loadPage: function(pageName, dataPromise, $scope, handler) {
                     Logger.log("|{0}| >> Loading page.", pageName);
                     $rootScope.pageState = 'loading';

@@ -3,9 +3,8 @@
 module Apiman {
 
     export var UserOrgsController = _module.controller("Apiman.UserOrgsController",
-        ['$q', '$scope', '$location', 'UserSvcs', 'PageLifecycle', 
-        ($q, $scope, $location, UserSvcs, PageLifecycle) => {
-            var params = $location.search();
+        ['$q', '$scope', '$location', 'UserSvcs', 'PageLifecycle', '$routeParams',
+        ($q, $scope, $location, UserSvcs, PageLifecycle, $routeParams) => {
             $scope.tab = 'organizations';
 
             $scope.filterOrgs = function(value) {
@@ -25,7 +24,7 @@ module Apiman {
             
             var promise = $q.all({
                 user: $q(function(resolve, reject) {
-                    UserSvcs.get({ user: params.user }, function(user) {
+                    UserSvcs.get({ user: $routeParams.user }, function(user) {
                         if (!user.fullName) {
                             user.fullName = user.username;
                         }
@@ -33,7 +32,7 @@ module Apiman {
                     }, reject);
                 }),
                 organizations: $q(function(resolve, reject) {
-                    UserSvcs.query({ user: params.user, entityType: 'organizations' }, function(userOrgs) {
+                    UserSvcs.query({ user: $routeParams.user, entityType: 'organizations' }, function(userOrgs) {
                         $scope.filteredOrgs = userOrgs;
                         resolve(userOrgs);
                     }, reject);

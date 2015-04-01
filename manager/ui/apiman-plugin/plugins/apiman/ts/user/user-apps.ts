@@ -3,9 +3,8 @@
 module Apiman {
 
     export var UserAppsController = _module.controller("Apiman.UserAppsController",
-        ['$q', '$scope', '$location', 'UserSvcs', 'PageLifecycle', 'Logger',
-        ($q, $scope, $location, UserSvcs, PageLifecycle, Logger) => {
-            var params = $location.search();
+        ['$q', '$scope', '$location', 'UserSvcs', 'PageLifecycle', 'Logger', '$routeParams',
+        ($q, $scope, $location, UserSvcs, PageLifecycle, Logger, $routeParams) => {
             $scope.tab = 'applications';
             
             $scope.filterApps = function(value) {
@@ -25,7 +24,7 @@ module Apiman {
 
             var promise = $q.all({
                 user: $q(function(resolve, reject) {
-                    UserSvcs.get({ user: params.user }, function(user) {
+                    UserSvcs.get({ user: $routeParams.user }, function(user) {
                         if (!user.fullName) {
                             user.fullName = user.username;
                         }
@@ -33,7 +32,7 @@ module Apiman {
                     }, reject);
                 }),
                 applications: $q(function(resolve, reject) {
-                    UserSvcs.query({ user: params.user, entityType: 'applications' }, function(userApps) {
+                    UserSvcs.query({ user: $routeParams.user, entityType: 'applications' }, function(userApps) {
                         $scope.filteredApps = userApps;
                         resolve(userApps);
                     }, reject);

@@ -35,7 +35,7 @@
               <div class="entity-info-with-icon">
                 <i class="fa fa-user fa-fw"></i>
                 <span class="apiman-label-faded" data-i18n-key="created-by">Created by</span>
-                <span><a href="{{ pluginName }}/user-orgs.html?user={{ app.createdBy }}" data-field="createdBy">{{ app.createdBy }}</a></span>
+                <span><a href="{{ pluginName }}/users/{{ app.createdBy }}" data-field="createdBy">{{ app.createdBy }}</a></span>
               </div>
             </div>
             <div class="entity-info-with-icon">
@@ -45,7 +45,7 @@
           </div>
           <div class="col-md-5" apiman-permission="appEdit">
             <div>
-              <div apiman-status="Created,Ready"><a data-i18n-key="ttdo-consume-services" data-field="ttd_toConsumeServices" href="{{ pluginName }}/consumer-services.html">Search for Services to consume</a></div>
+              <div apiman-status="Created,Ready"><a data-i18n-key="ttdo-consume-services" data-field="ttd_toConsumeServices" href="{{ pluginName }}/browse/services">Search for Services to consume</a></div>
               <div apiman-status="Created,Ready"><a data-i18n-key="ttdo-new-contract" data-field="ttd_toNewContract" href="{{ pluginName }}/new-contract.html">Create a new Service Contract for this Application</a></div>
               <div><a data-i18n-key="ttdo-new-version" data-field="ttd_toNewVersion" href="{{ pluginName }}/new-appversion.html?org={{ org.id }}&app={{ app.id}}&version={{versions[versions.length-1].version}}">Create a new version of this Application (New Version)</a></div>
             </div>

@@ -2,7 +2,7 @@
       <div class="main-header container" data-field="header" ng-controller="Apiman.NavbarController">
         <div class="row">
           <div class="col-md-12">
-            <a href="{{ pluginName }}/dash.html">
+            <a href="{{ pluginName }}/dash">
               <div class="logo" data-field="logo"></div>
             </a>
             <input data-field="search" class="search no-phone" type="text" placeholder="Quick service search..."></input>
@@ -15,7 +15,7 @@
                 </a>
                 <ul class="dropdown-menu">
                   <li>
-                    <a data-field="toUserHome" href="{{ pluginName }}/user-orgs.html?user={{ username }}" data-i18n-key="my-stuff">My Stuff</a>
+                    <a data-field="toUserHome" href="{{ pluginName }}/users/{{ username }}/orgs" data-i18n-key="my-stuff">My Stuff</a>
                   </li>
                   <li class="divider"></li>
                   <li>

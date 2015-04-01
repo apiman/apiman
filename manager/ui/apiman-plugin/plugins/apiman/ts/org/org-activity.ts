@@ -3,9 +3,9 @@
 module Apiman {
 
     export var OrgActivityController = _module.controller("Apiman.OrgActivityController",
-        ['$q', '$scope', '$location', 'OrgSvcs', 'PageLifecycle', '$rootScope', 'AuditSvcs',
-        ($q, $scope, $location, OrgSvcs, PageLifecycle, $rootScope, AuditSvcs) => {
-            var params = $location.search();
+        ['$q', '$scope', '$location', 'OrgSvcs', 'PageLifecycle', '$rootScope', 'AuditSvcs', '$routeParams',
+        ($q, $scope, $location, OrgSvcs, PageLifecycle, $rootScope, AuditSvcs, $routeParams) => {
+            var params = $routeParams;
             $scope.organizationId = params.org;
             
             var getNextPage = function(successHandler, errorHandler) {

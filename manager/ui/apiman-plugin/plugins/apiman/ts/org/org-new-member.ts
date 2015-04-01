@@ -3,9 +3,9 @@
 module Apiman {
 
   export var OrgNewMemberController = _module.controller("Apiman.OrgNewMemberController",
-    ['$q', '$scope', '$location', 'OrgSvcs', 'PageLifecycle', '$rootScope', 'ApimanSvcs', 'Logger',
-    ($q, $scope, $location, OrgSvcs, PageLifecycle, $rootScope, ApimanSvcs, $log) => {
-    var params = $location.search();
+    ['$q', '$scope', '$location', 'OrgSvcs', 'PageLifecycle', '$rootScope', 'ApimanSvcs', 'Logger', '$routeParams',
+    ($q, $scope, $location, OrgSvcs, PageLifecycle, $rootScope, ApimanSvcs, $log, $routeParams) => {
+    var params = $routeParams;
     $scope.organizationId = params.org;
     $scope.selectedUsers = {};
     $scope.selectedRoles = [];
@@ -27,7 +27,7 @@ module Apiman {
             grantRolesBean, function() { // Success
               $log.debug('Successfully Saved: {0}', grantRolesBean);
               $scope.addMembersButton.state = 'complete';
-              $location.url(pluginName + '/org-manage-members.html').search({ org: params.org });
+              PageLifecycle.redirectTo('/orgs/{0}/manage-members', params.org);
             }, PageLifecycle.handleError);
         });
       }

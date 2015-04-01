@@ -34,7 +34,7 @@
               <div class="entity-info-with-icon">
                 <i class="fa fa-user fa-fw"></i>
                 <span class="apiman-label-faded" data-i18n-key="created-by">Created by</span>
-                <span><a href="{{ pluginName }}/user-orgs.html?user={{ plan.createdBy }}" data-field="createdBy">{{ plan.createdBy }}</a></span>
+                <span><a href="{{ pluginName }}/users/{{ plan.createdBy }}/orgs" data-field="createdBy">{{ plan.createdBy }}</a></span>
               </div>
             </div>
             <div class="entity-info-with-icon">

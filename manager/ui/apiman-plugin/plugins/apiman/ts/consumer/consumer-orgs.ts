@@ -34,6 +34,9 @@ module Apiman {
             
             PageLifecycle.loadPage('ConsumerOrgs', promise, $scope, function() {
                 PageLifecycle.setPageTitle('consumer-orgs');
+                $scope.$applyAsync(function() {
+                    $('#apiman-search').focus();
+                });
             });
         }]);
 

@@ -43,10 +43,10 @@
                 <div class="container-fluid apiman-summaryrow">
                   <div class="row">
                     <div class="col-md-10 col-no-padding">
-                      <a href="{{ pluginName }}/consumer-org.html?org={{ contract.serviceOrganizationId }}">{{ contract.serviceOrganizationName }}</a> / <span class="title"><a href="{{ pluginName }}/consumer-service.html?org={{ contract.serviceOrganizationId }}&amp;service={{ contract.serviceId }}&amp;version={{ contract.serviceVersion }}">{{ contract.serviceName }}</a></span>
+                      <a href="{{ pluginName }}/browse/orgs/{{ contract.serviceOrganizationId }}">{{ contract.serviceOrganizationName }}</a> / <span class="title"><a href="{{ pluginName }}/browse/orgs/{{ contract.serviceOrganizationId }}/{{ contract.serviceId }}/{{ contract.serviceVersion }}">{{ contract.serviceName }}</a></span>
                       <div class="versionAndPlan">
                         <span>Service version</span>
-                        <span><a href="{{ pluginName }}/consumer-service.html?org={{ contract.serviceOrganizationId }}&amp;service={{ contract.serviceId }}&amp;version={{ contract.serviceVersion }}">{{ contract.serviceVersion }}</a></span>
+                        <span><a href="{{ pluginName }}/browse/orgs/{{ contract.serviceOrganizationId }}/{{ contract.serviceId }}/{{ contract.serviceVersion }}">{{ contract.serviceVersion }}</a></span>
                         <span>via plan</span>
                         <span><a>{{ contract.planName }}</a></span>
                         <span>entered into on</span>

@@ -3,9 +3,9 @@
 module Apiman {
 
     export var OrgAppsController = _module.controller("Apiman.OrgAppsController",
-        ['$q', '$scope', '$location', 'OrgSvcs', 'PageLifecycle', '$rootScope', 
-        ($q, $scope, $location, OrgSvcs, PageLifecycle, $rootScope) => {
-            var params = $location.search();
+        ['$q', '$scope', '$location', 'OrgSvcs', 'PageLifecycle', '$rootScope', '$routeParams',
+        ($q, $scope, $location, OrgSvcs, PageLifecycle, $rootScope, $routeParams) => {
+            var params = $routeParams;
             $scope.organizationId = params.org;
             
             $scope.filterApps = function(value) {

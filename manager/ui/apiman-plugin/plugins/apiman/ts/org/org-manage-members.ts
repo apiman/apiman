@@ -9,9 +9,9 @@ module Apiman {
   };
 
   export var OrgManageMembersController = _module.controller("Apiman.OrgManageMembersController",
-  ['$q', '$scope', '$location', 'ApimanSvcs', 'OrgSvcs', 'PageLifecycle', '$rootScope', 'Logger',
-  ($q, $scope, $location, ApimanSvcs, OrgSvcs, PageLifecycle, $rootScope, $log) => {
-    var params = $location.search();
+  ['$q', '$scope', '$location', 'ApimanSvcs', 'OrgSvcs', 'PageLifecycle', '$rootScope', 'Logger', '$routeParams',
+  ($q, $scope, $location, ApimanSvcs, OrgSvcs, PageLifecycle, $rootScope, $log, $routeParams) => {
+    var params = $routeParams;
     $scope.organizationId = params.org;
     $scope.filteredMembers = [];
     $scope.filterValue = "";

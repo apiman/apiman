@@ -1,6 +1,6 @@
             <ul id="entitytabs" class="nav nav-tabs">
-              <li ng-class="{ true: 'active' } [tab == 'organizations']"><a href="{{ pluginName }}/user-orgs.html?user={{ user.username }}" data-i18n-key="organizations">Organizations</a></li>
-              <li ng-class="{ true: 'active' } [tab == 'applications']"><a href="{{ pluginName }}/user-apps.html?user={{ user.username }}" data-i18n-key="applications">Applications</a></li>
-              <li ng-class="{ true: 'active' } [tab == 'services']"><a href="{{ pluginName }}/user-services.html?user={{ user.username }}" data-i18n-key="services">Services</a></li>
-              <li ng-class="{ true: 'active' } [tab == 'activity']" class="pull-right"><a href="{{ pluginName }}/user-activity.html?user={{ user.username }}" data-i18n-key="activity">Activity</a></li>
+              <li ng-class="{ true: 'active' } [tab == 'organizations']"><a href="{{ pluginName }}/users/{{ user.username }}/orgs" data-i18n-key="organizations">Organizations</a></li>
+              <li ng-class="{ true: 'active' } [tab == 'applications']"><a href="{{ pluginName }}/users/{{ user.username }}/apps" data-i18n-key="applications">Applications</a></li>
+              <li ng-class="{ true: 'active' } [tab == 'services']"><a href="{{ pluginName }}/users/{{ user.username }}/services" data-i18n-key="services">Services</a></li>
+              <li ng-class="{ true: 'active' } [tab == 'activity']" class="pull-right"><a href="{{ pluginName }}/users/{{ user.username }}/activity" data-i18n-key="activity">Activity</a></li>
             </ul>

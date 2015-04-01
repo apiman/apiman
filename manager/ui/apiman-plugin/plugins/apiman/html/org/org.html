@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+  </head>
+
+  <body>
+  <div>
+    <div ng-include="'plugins/apiman/html/progress.include'"></div>
+    <div id="apiman-header" ng-include="'plugins/apiman/html/navbar.include'"></div>
+    <div ng-controller="Apiman.OrgRedirectController" class="page container" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+    </div> <!-- /container -->
+  </div>
+  </body>
+</html>

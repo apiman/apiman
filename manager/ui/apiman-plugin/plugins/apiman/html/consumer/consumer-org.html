@@ -14,8 +14,8 @@
       <div class="row">
         <div class="col-md-12">
           <ol class="breadcrumb" data-field="breadcrumb">
-            <li><a href="dash.html"><i class="fa fa-home fa-fw"></i><span>Home</span></a></li>
-            <li><a href="{{ pluginName }}/consumer-orgs.html"><i class="fa fa-search fa-fw"></i><span>Organizations</span></a></li>
+            <li><a href="{{ pluginName }}/dash"><i class="fa fa-home fa-fw"></i><span>Home</span></a></li>
+            <li><a href="{{ pluginName }}/browse/orgs"><i class="fa fa-search fa-fw"></i><span>Organizations</span></a></li>
             <li class="active"><span><i class="fa fa-shield fa-fw"></i><span>{{ org.name }}</span></span></li>
           </ol>
         </div>
@@ -39,7 +39,7 @@
             <div class="actions" style="display:none">
               <button class="btn btn-default" style="display:none" data-field="requestMembership" data-i18n-key="request-membership">Request Membership</button>
             </div>
-            <a ng-show="org.isMember" class="ismember" title="You are already a member of this Organization." href="{{ pluginName }}/org-plans.html?org={{ org.id }}" data-field="isMemberLink" data-i18n-key="is-member"></a>
+            <a ng-show="org.isMember" class="ismember" title="You are already a member of this Organization." href="{{ pluginName }}/orgs/{{ org.id }}/plans" data-field="isMemberLink" data-i18n-key="is-member"></a>
           </div>
           
           <div class="consumer-section">
@@ -49,7 +49,7 @@
                 <div class="row">
                   <span class="title">
                     <i class="fa fa-fw fa-user icon"></i>
-                    <a href="{{ pluginName }}/user-orgs.html?user={{ member.userId }}">{{ member.userName }}</a>
+                    <a href="{{ pluginName }}/users/{{ member.userId }}/orgs">{{ member.userName }}</a>
                     <span class="secondary">({{ member.userId }})</span>
                   </span>
                 </div>
@@ -77,7 +77,7 @@
               <div class="container-fluid apiman-summaryrow" ng-repeat="service in filteredServices">
                 <div class="row">
                   <i class="fa fa-fw fa-puzzle-piece icon"></i>
-                  <span class="title"><a href="{{ pluginName }}/consumer-service.html?org={{ org.id }}&service={{ service.id }}">{{ service.name }}</a></span>
+                  <span class="title"><a href="{{ pluginName }}/browse/orgs/{{ org.id }}/{{ service.id }}">{{ service.name }}</a></span>
                 </div>
                 <div class="row">
                   <span class="description">

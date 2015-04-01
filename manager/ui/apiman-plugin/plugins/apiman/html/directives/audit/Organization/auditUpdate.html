@@ -1,7 +1,7 @@
 <div class="row">
-  <a href="{{ pluginName }}/user-orgs.html?user={{ entry.who }}">{{ entry.who }}</a>
+  <a href="{{ pluginName }}/users/{{ entry.who }}/orgs">{{ entry.who }}</a>
   <span>updated organization</span>
-  <a class="emphasis" href="{{ pluginName }}/org-plans.html?org={{ entry.organizationId }}">{{ entry.organizationId }}</a><span>.</span>
+  <a class="emphasis" href="{{ pluginName }}/orgs/{{ entry.organizationId }}/plans">{{ entry.organizationId }}</a><span>.</span>
 </div>
 <div class="row boxed-row">
   <div ng-repeat="item in data.changes">

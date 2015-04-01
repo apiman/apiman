@@ -1,7 +1,7 @@
 <div class="row">
-  <a href="{{ pluginName }}/user-orgs.html?user={{ entry.who }}">{{ entry.who }}</a>
+  <a href="{{ pluginName }}/users/{{ entry.who }}/orgs">{{ entry.who }}</a>
   <span>broke a contract with service</span>
-  <a href="{{ pluginName }}/org-services.html?org={{ entry.organizationId }}">{{ entry.organizationId }}</a>
+  <a href="{{ pluginName }}/orgs/{{ entry.organizationId }}/services">{{ entry.organizationId }}</a>
   <span>/</span>
   <a class="emphasis" href="{{ pluginName }}/service-overview.html?org={{ entry.organizationId }}&amp;service={{ entry.entityId }}">{{ entry.entityId }}</a>
   <span>version</span>
@@ -9,13 +9,13 @@
 </div>
 <div class="row boxed-row">
   <span>A contract was broken between application</span>
-  <a href="{{ pluginName }}/org-apps.html?org={{ data.appOrgId }}">{{ data.appOrgId }}</a>
+  <a href="{{ pluginName }}/orgs/{{ data.appOrgId }}/apps">{{ data.appOrgId }}</a>
   <span>/</span>
   <a href="{{ pluginName }}/app-overview.html?org={{ data.appOrgId }}&amp;app={{ data.appId }}">{{ data.appId }}</a>
   <span>:</span>
   <a href="{{ pluginName }}/app-overview.html?org={{ data.appOrgId }}&amp;app={{ data.appId }}&amp;version={{ data.appVersion }}">{{ data.appVersion }}</a>
   <span>and service</span>
-  <a href="{{ pluginName }}/org-apps.html?org={{ data.serviceOrgId }}">{{ data.serviceOrgId }}</a>
+  <a href="{{ pluginName }}/orgs/{{ data.serviceOrgId }}/apps">{{ data.serviceOrgId }}</a>
   <span>/</span>
   <a href="{{ pluginName }}/service-overview.html?org={{ data.serviceOrgId }}&amp;service={{ data.serviceId }}">{{ data.serviceId }}</a>
   <span>:</span>
