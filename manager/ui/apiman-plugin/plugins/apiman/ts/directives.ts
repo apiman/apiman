@@ -338,19 +338,25 @@ module Apiman {
             }
         }]);
 
-    _module.directive('policyList',
+    _module.directive('apimanPolicyList',
         ['Logger', function(Logger) {
             return {
                 restrict: 'E',
                 scope: {
                     policies: "=ngModel",
-                    remove: "=removeFunction"
+                    remove: "=removeFunction",
+                    type: "@",
+                    org: "@orgId",
+                    id: "@pageId",
+                    version: "@"
                 },
                 controller: function($scope) {
                     $scope.policyListOptions = {
                         //containment: '#draggable-ctr',
                         containerPositioning: 'relative'
                     };
+
+                    $scope.pluginName = $scope.$parent.pluginName;
                 },
                 controllerAs: 'ctrl',
                 bindToController: true,
