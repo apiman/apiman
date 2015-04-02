@@ -38,7 +38,7 @@ module ApimanCurrentUser {
                         return false;
                     }
                 },
-                refresh: function(handler, errorHandler) {
+                clear: function() {
                     $rootScope.currentUser = undefined;
                 }
             };

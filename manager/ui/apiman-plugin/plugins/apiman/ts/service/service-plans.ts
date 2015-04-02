@@ -70,7 +70,6 @@ module Apiman {
                 });
             }
             
-            
             $scope.$watch('updatedService', function(newValue) {
                 var dirty = false;
                 if (newValue.publicService != $scope.version.publicService) {
@@ -117,6 +116,8 @@ module Apiman {
                     $scope.version.publicService = $scope.updatedService.publicService;
                     $scope.isDirty = false;
                     $scope.saveButton.state = 'complete';
+                    $scope.version = reply;
+                    $scope.entityStatus = reply.status;
                 }, PageLifecycle.handleError);
             };
             

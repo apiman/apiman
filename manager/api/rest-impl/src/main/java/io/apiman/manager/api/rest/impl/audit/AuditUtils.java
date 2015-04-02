@@ -702,6 +702,10 @@ public class AuditUtils {
      * @param securityContext
      */
     private static AuditEntryBean newEntry(String orgId, AuditEntityType type, ISecurityContext securityContext) {
+        // Wait for 1 ms to guarantee that two audit entries are never created at the same moment in time (which would
+        // result in non-deterministic sorting by the storage layer)
+        try { Thread.sleep(1); } catch (InterruptedException e) { throw new RuntimeException(e); }
+
         AuditEntryBean entry = new AuditEntryBean();
         entry.setOrganizationId(orgId);
         entry.setEntityType(type);

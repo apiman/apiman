@@ -1491,7 +1491,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
      * @see io.apiman.manager.api.rest.contract.IOrganizationResource#updateServiceVersion(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.services.ServiceVersionBean)
      */
     @Override
-    public void updateServiceVersion(String organizationId, String serviceId, String version, UpdateServiceVersionBean bean)
+    public ServiceVersionBean updateServiceVersion(String organizationId, String serviceId, String version, UpdateServiceVersionBean bean)
             throws ServiceVersionNotFoundException, NotAuthorizedException {
         if (!securityContext.hasPermission(PermissionType.svcEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
@@ -1576,6 +1576,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.updateServiceVersion(svb);
             storage.createAuditEntry(AuditUtils.serviceVersionUpdated(svb, data, securityContext));
             storage.commitTx();
+            return svb;
         } catch (AbstractRestException e) {
             storage.rollbackTx();
             throw e;

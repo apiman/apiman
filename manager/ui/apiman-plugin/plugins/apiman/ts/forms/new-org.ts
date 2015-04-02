@@ -7,9 +7,8 @@ module Apiman {
             $scope.saveNewOrg = function() {
                 $scope.createButton.state = 'in-progress';
                 OrgSvcs.save($scope.org, function(reply) {
-                    CurrentUser.refresh(function() {
-                        PageLifecycle.redirectTo('/orgs/{0}/plans', reply.id);
-                    });
+                    CurrentUser.clear();
+                    PageLifecycle.redirectTo('/orgs/{0}/plans', reply.id);
                 }, PageLifecycle.handleError);
             };
             

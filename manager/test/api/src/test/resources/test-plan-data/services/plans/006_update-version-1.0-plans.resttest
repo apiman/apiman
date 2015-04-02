@@ -9,4 +9,10 @@ Content-Type: application/json
   ]
 }
 ----
-204
+200
+Content-Type: application/json
+
+{
+  "endpoint" : "http://localhost:8080/ping",
+  "endpointType" : "rest"
+}

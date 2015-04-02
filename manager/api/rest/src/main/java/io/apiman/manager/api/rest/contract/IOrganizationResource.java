@@ -799,7 +799,7 @@ public interface IOrganizationResource {
      * @param version The Service version.
      * @statuscode 200 If the Service version is successfully returned.
      * @statuscode 404 If the Service version does not exist.
-     * @return An Service version.
+     * @return A Service version.
      * @throws ServiceVersionNotFoundException
      * @throws NotAuthorizedException
      */
@@ -861,6 +861,7 @@ public interface IOrganizationResource {
      * @param serviceId The Service ID.
      * @param version The Service version.
      * @param bean Updated information about the Service version.
+     * @return The updated Service Version.
      * @statuscode 204 If the Service version information was successfully updated.
      * @statuscode 404 If the Service does not exist.
      * @throws ServiceVersionNotFoundException
@@ -870,7 +871,8 @@ public interface IOrganizationResource {
     @PUT
     @Path("{organizationId}/services/{serviceId}/versions/{version}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void updateServiceVersion(@PathParam("organizationId") String organizationId,
+    @Produces(MediaType.APPLICATION_JSON)
+    public ServiceVersionBean updateServiceVersion(@PathParam("organizationId") String organizationId,
             @PathParam("serviceId") String serviceId, @PathParam("version") String version,
             UpdateServiceVersionBean bean) throws ServiceVersionNotFoundException, NotAuthorizedException,
             InvalidServiceStatusException;

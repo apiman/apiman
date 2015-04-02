@@ -387,8 +387,6 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
         }
         entry.setId(generateGuid());
         indexEntity("auditEntry", String.valueOf(entry.getId()), EsMarshalling.marshall(entry)); //$NON-NLS-1$
-        // Guarantee that no 2 audit entries are at the same ms on the same node
-        try { Thread.sleep(1); } catch (InterruptedException e) { }
     }
 
     /**

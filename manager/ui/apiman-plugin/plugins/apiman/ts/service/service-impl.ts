@@ -43,8 +43,8 @@ module Apiman {
                 OrgSvcs.update({ organizationId: params.org, entityType: 'services', entityId:params.service, versionsOrActivity: 'versions', version: params.version }, $scope.updatedService, function(reply) {
                     $scope.isDirty = false;
                     $scope.saveButton.state = 'complete';
-                    $scope.version.endpoint = $scope.updatedService.endpoint;
-                    $scope.version.endpointType = $scope.updatedService.endpointType;
+                    $scope.version = reply;
+                    $scope.entityStatus = reply.status;
                 }, PageLifecycle.handleError);
             };
             

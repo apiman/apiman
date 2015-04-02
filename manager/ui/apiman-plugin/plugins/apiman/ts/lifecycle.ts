@@ -89,6 +89,7 @@ module ApimanPageLifecycle {
                         memberships[perm.organizationId] = true;
                     }
                 }
+                Logger.info('Updating permissions now {0}', permissions);
                 $rootScope.permissions = permissions;
                 $rootScope.memberships = memberships;
                 

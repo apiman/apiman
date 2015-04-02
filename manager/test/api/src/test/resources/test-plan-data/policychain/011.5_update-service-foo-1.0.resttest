@@ -10,4 +10,14 @@ Content-Type: application/json
   ]
 }
 ----
-204
+200
+Content-Type: application/json
+
+{
+  "plans" : [
+    {
+      "planId" : "Gold",
+      "version" : "1.0"
+    }
+  ]
+}
