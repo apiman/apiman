@@ -10,7 +10,7 @@ Content-Type: application/json
     },
     "id" : "Service1"
   },
-  "status" : "Created",
+  "status" : "Ready",
   "version" : "2.1",
   "createdBy" : "admin",
   "endpoint" : "http://localhost:8080/ping",

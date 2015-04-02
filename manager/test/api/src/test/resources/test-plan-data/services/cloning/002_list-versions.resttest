@@ -9,7 +9,7 @@ Content-Type: application/json
     "organizationName" : "Organization 1",
     "id" : "Service1",
     "name" : "Service 1",
-    "status" : "Created",
+    "status" : "Ready",
     "version" : "2.1"
   },
   {

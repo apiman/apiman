@@ -1259,18 +1259,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 ServiceVersionBean cloneSource = getServiceVersion(organizationId, serviceId, bean.getCloneVersion());
                 
                 // Clone primary attributes of the service version
-                newVersion.setEndpoint(cloneSource.getEndpoint());
-                newVersion.setEndpointType(cloneSource.getEndpointType());
-                newVersion.setGateways(cloneSource.getGateways());
-                newVersion.setPlans(cloneSource.getPlans());
-                newVersion.setPublicService(cloneSource.isPublicService());
-                storage.beginTx();
-                try {
-                    storage.updateServiceVersion(newVersion);
-                    storage.commitTx();
-                } catch (Exception e) {
-                    storage.rollbackTx();
-                }
+                UpdateServiceVersionBean updatedService = new UpdateServiceVersionBean();
+                updatedService.setEndpoint(cloneSource.getEndpoint());
+                updatedService.setEndpointType(cloneSource.getEndpointType());
+                updatedService.setGateways(cloneSource.getGateways());
+                updatedService.setPlans(cloneSource.getPlans());
+                updatedService.setPublicService(cloneSource.isPublicService());
+                newVersion = updateServiceVersion(organizationId, serviceId, bean.getVersion(), updatedService );
                 
                 // Clone the service definition document
                 try {
