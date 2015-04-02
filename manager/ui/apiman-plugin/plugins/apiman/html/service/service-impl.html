@@ -40,17 +40,20 @@
               <select title="Choose a type..." apiman-select-picker="" ng-model="updatedService.endpointType" class="selectpicker" ng-options="type.toUpperCase() for type in typeOptions">
               </select>
             </div>
-            <!-- TBD
-            <div id="gateway-info">
-                <div class="title" data-i18n-key="gateway">Gateway</div>
-                <div>
-                  <span class="clearfix" data-i18n-key="publish-to">Publish To:</span>
-                  <select ng-model="gatewayId"  class="selectpicker" data-field="gateway">
-                    <option ng-repeat="gateway in gateways" value="{{gateway.id}}">{{ gateway.id }}</option>
-                  </select>
-                </div>
+            <div id="gateway-info" ng-show="gateways.length > 1">
+              <div class="title" data-i18n-key="gateway">Gateway</div>
+              <div class="apiman-label-faded">
+                <p data-i18n-key="service-impl-gateway-explanation">
+                  There are multiple API Gateways configured - you'll need to tell us which one you
+                  want to use for this service.
+                </p>
+              </div>
+              <div>
+                <span class="clearfix" data-i18n-key="publish-to">Publish To:</span>
+                <select ng-model="selectedGateway" apiman-select-picker="" class="selectpicker" ng-options="gateway.name for gateway in gateways | orderBy: name">
+                </select>
+              </div>
             </div>
-            -->
             <div apiman-permission="svcEdit" apiman-status="Created,Ready" class="actions" style="margin-top: 20px">
               <button ng-disabled="!isDirty" apiman-action-btn="" ng-click="saveService()" class="btn btn-primary" data-field="saveButton" data-i18n-key="save" placeholder="Saving..." data-icon="fa-cog" >Save</button>
               <button ng-disabled="!isDirty" ng-click="reset()" class="btn btn-default" data-field="cancelButton" data-i18n-key="cancel">Cancel</button>

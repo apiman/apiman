@@ -2,14 +2,14 @@
 /// <reference path="../services.ts"/>
 module Apiman {
 
- export var ServiceImplController = _module.controller("Apiman.ServiceImplController",
-        ['$q', '$scope', '$location', 'PageLifecycle', 'ServiceEntityLoader', 'OrgSvcs', 'ApimanSvcs', '$routeParams',
-        ($q, $scope, $location, PageLifecycle, ServiceEntityLoader, OrgSvcs, ApimanSvcs, $routeParams) => {
+    export var ServiceImplController = _module.controller("Apiman.ServiceImplController",
+        ['$q', '$scope', '$location', 'PageLifecycle', 'ServiceEntityLoader', 'OrgSvcs', 'ApimanSvcs', '$routeParams', 'Logger',
+        ($q, $scope, $location, PageLifecycle, ServiceEntityLoader, OrgSvcs, ApimanSvcs, $routeParams, Logger) => {
             var params = $routeParams;
             $scope.organizationId = params.org;
             $scope.tab = 'impl';
             $scope.version = params.version;
-            $scope.typeOptions = ["rest","soap"];
+            $scope.typeOptions = ["rest", "soap"];
             $scope.updatedService = new Object();
             
             var pageData = ServiceEntityLoader.getCommonData($scope, $location);
@@ -21,20 +21,41 @@ module Apiman {
                 });
             }
             
-            
             $scope.$watch('updatedService', function(newValue) {
                 if ($scope.version) {
-                    if (newValue.endpoint == $scope.version.endpoint && newValue.endpointType == $scope.version.endpointType) {
-                        $scope.isDirty = false;
-                    } else {
-                        $scope.isDirty = true;
+                    var dirty = false;
+                    if (newValue.endpoint != $scope.version.endpoint || newValue.endpointType != $scope.version.endpointType) {
+                        dirty = true;
+                    } else if (newValue.gateways && newValue.gateways.length > 0) {
+                        Logger.debug('Dirty because of gateways!');
+                        dirty = true;
                     }
+                    $scope.isDirty = dirty;
                 }
             }, true);
+            $scope.$watch('selectedGateway', function(newValue) {
+                Logger.info('New gateway selected: {0}', newValue);
+                var alreadySet = false;
+                if ($scope.version.gateways[0].gatewayId == newValue.id) {
+                    alreadySet = true;
+                }
+                if (!alreadySet) {
+                    $scope.updatedService.gateways = [ { gatewayId: newValue.id } ];
+                } else {
+                    delete $scope.updatedService.gateways;
+                }
+            });
             
             $scope.reset = function() {
                 $scope.updatedService.endpoint = $scope.version.endpoint;
                 $scope.updatedService.endpointType = $scope.version.endpointType;
+                delete $scope.updatedService.gateways;
+                angular.forEach($scope.gateways, function(gateway) {
+                    // TODO support multiple gateway assignments here
+                    if (gateway.id == $scope.version.gateways[0].gatewayId) {
+                        $scope.selectedGateway = gateway;
+                    }
+                });
                 $scope.isDirty = false;
             };
              
