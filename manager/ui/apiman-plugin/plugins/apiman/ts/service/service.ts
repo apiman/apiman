@@ -12,7 +12,7 @@ module Apiman {
                     OrgSvcs.query({ organizationId: orgId, entityType: 'services', entityId: serviceId, versionsOrActivity: 'versions' }, resolve, reject);
                 })
             };
-            
+
             PageLifecycle.loadPage('ServiceRedirect', pageData, $scope, function() {
                 var version = $scope.versions[0].version;
                 if (!version) {
@@ -23,15 +23,20 @@ module Apiman {
             });
         }]);
 
-    export var ServiceEntityLoader = _module.factory('ServiceEntityLoader', 
-        ['$q', 'OrgSvcs', 'Logger', '$rootScope', '$routeParams', 
-        ($q, OrgSvcs, Logger, $rootScope, $routeParams) => {
+    export var ServiceEntityLoader = _module.factory('ServiceEntityLoader',
+        ['$q', 'OrgSvcs', 'Logger', '$rootScope', '$routeParams', 'EntityStatusService',
+        ($q, OrgSvcs, Logger, $rootScope, $routeParams, EntityStatusService) => {
             return {
                 getCommonData: function($scope, $location) {
                     var params = $routeParams;
                     $scope.setEntityStatus = function(status) {
-                        $scope.entityStatus = status;
+                        EntityStatusService.setEntityStatus(status);
                     };
+
+                    $scope.getEntityStatus = function(){
+                        return EntityStatusService.getEntityStatus();
+                    };
+
                     return {
                         version: $q(function(resolve, reject) {
                             OrgSvcs.get({ organizationId: params.org, entityType: 'services', entityId: params.service, versionsOrActivity: 'versions', version: params.version }, function(version) {
@@ -55,7 +60,7 @@ module Apiman {
         ($q, $scope, $location, ActionSvcs, Logger, Dialogs, PageLifecycle, $routeParams) => {
             var params = $routeParams;
             $scope.params = params;
-            
+
             $scope.setVersion = function(service) {
                 PageLifecycle.redirectTo('/orgs/{0}/services/{1}/{2}', params.org, params.service, service.version);
             };
@@ -74,7 +79,7 @@ module Apiman {
                     $scope.setEntityStatus($scope.version.status);
                 }, PageLifecycle.handleError);
             };
-            
+
             $scope.retireService = function() {
                 $scope.retireButton.state = 'in-progress';
                 Dialogs.confirm('Confirm Retire Service', 'Do you really want to retire this service?  This action cannot be undone.', function() {

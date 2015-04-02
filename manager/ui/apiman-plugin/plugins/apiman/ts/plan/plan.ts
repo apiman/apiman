@@ -12,7 +12,7 @@ module Apiman {
                     OrgSvcs.query({ organizationId: orgId, entityType: 'plans', entityId: planId, versionsOrActivity: 'versions' }, resolve, reject);
                 })
             };
-            
+
             PageLifecycle.loadPage('PlanRedirect', pageData, $scope, function() {
                 var version = $scope.versions[0].version;
                 if (!version) {
@@ -23,14 +23,14 @@ module Apiman {
             });
         }]);
 
-    export var PlanEntityLoader = _module.factory('PlanEntityLoader', 
-        ['$q', 'OrgSvcs', 'Logger', '$rootScope', '$routeParams', 
-        ($q, OrgSvcs, Logger, $rootScope, $routeParams) => {
+    export var PlanEntityLoader = _module.factory('PlanEntityLoader',
+        ['$q', 'OrgSvcs', 'Logger', '$rootScope', '$routeParams', 'EntityStatusService',
+        ($q, OrgSvcs, Logger, $rootScope, $routeParams, EntityStatusService) => {
             return {
                 getCommonData: function($scope, $location) {
                     var params = $routeParams;
                     $scope.setEntityStatus = function(status) {
-                        $scope.entityStatus = status;
+                        EntityStatusService.setEntityStatus(status);
                     };
                     return {
                         version: $q(function(resolve, reject) {
@@ -53,7 +53,7 @@ module Apiman {
         ['$q', '$scope', '$location', 'ActionSvcs', 'Logger', 'PageLifecycle', '$routeParams',
         ($q, $scope, $location, ActionSvcs, Logger, PageLifecycle, $routeParams) => {
             var params = $routeParams;
-            
+
             $scope.setVersion = function(plan) {
                 PageLifecycle.redirectTo('/orgs/{0}/plans/{1}/{2}', params.org, params.plan, plan.version);
             };

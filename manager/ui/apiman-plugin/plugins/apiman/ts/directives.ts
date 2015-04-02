@@ -104,11 +104,13 @@ module Apiman {
 
 
     _module.directive('apimanStatus',
-        ['Logger', function(Logger) {
+        ['Logger', 'EntityStatusService', function(Logger, EntityStatusService) {
             return {
                 restrict: 'A',
                 link: function(scope, element, attrs) {
-                    scope.$watch('entityStatus', function(newValue, oldValue) {
+                    scope.$watch(function($scope) {
+                        return EntityStatusService.getEntityStatus();
+                    }, function(newValue, oldValue) {
                         var entityStatus = newValue;
                         var elem = element;
                         if (entityStatus) {
@@ -135,17 +137,29 @@ module Apiman {
             };
         }]);
 
+    _module.factory('EntityStatusService', ['$rootScope',
+        function($rootScope) {
+            var entityStatus = null;
+
+            return {
+                setEntityStatus: function(status) {
+                    entityStatus = status;
+                },
+
+                getEntityStatus: function() {
+                    return entityStatus;
+                }
+            };
+        }]);
 
     _module.directive('apimanEntityStatus',
-        ['Logger', function(Logger) {
+        ['Logger', 'EntityStatusService', function(Logger, EntityStatusService) {
             return {
                 restrict: 'A',
                 link: function(scope, element, attrs) {
-                    var toWatch = attrs.apimanEntityStatus;
-                    if (!toWatch) {
-                        toWatch = 'entityStatus';
-                    }
-                    scope.$watch(toWatch, function(newValue, oldValue) {
+                    scope.$watch(function($scope) {
+                        return EntityStatusService.getEntityStatus();
+                    }, function(newValue, oldValue) {
                         var entityStatus = newValue;
                         if (entityStatus) {
                             $(element).html(entityStatus);
@@ -164,7 +178,6 @@ module Apiman {
                 }
             };
         }]);
-
 
     _module.directive('apimanSearchBox',
         ['Logger', function(Logger) {

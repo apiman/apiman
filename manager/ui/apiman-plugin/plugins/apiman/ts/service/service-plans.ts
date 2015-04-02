@@ -3,14 +3,14 @@
 module Apiman {
 
  export var ServicePlansController = _module.controller("Apiman.ServicePlansController",
-        ['$q', '$scope', '$location', 'PageLifecycle', 'ServiceEntityLoader', 'OrgSvcs', 'ApimanSvcs', '$routeParams',
-        ($q, $scope, $location, PageLifecycle, ServiceEntityLoader, OrgSvcs, ApimanSvcs, $routeParams) => {
+        ['$q', '$scope', '$location', 'PageLifecycle', 'ServiceEntityLoader', 'OrgSvcs', 'ApimanSvcs', '$routeParams', 'EntityStatusService',
+        ($q, $scope, $location, PageLifecycle, ServiceEntityLoader, OrgSvcs, ApimanSvcs, $routeParams, EntityStatusService) => {
             var params = $routeParams;
             $scope.organizationId = params.org;
             $scope.tab = 'plans';
             $scope.version = params.version;
             $scope.updatedService = new Object();
-            
+
             var lockedPlans = [];
             var getSelectedPlans = function() {
                 var selectedPlans = [];
@@ -25,7 +25,7 @@ module Apiman {
                 }
                 return selectedPlans;
             };
-            
+
             var pageData = ServiceEntityLoader.getCommonData($scope, $location);
             if (params.version != null) {
                 pageData = angular.extend(pageData, {
@@ -69,7 +69,7 @@ module Apiman {
                     })
                 });
             }
-            
+
             $scope.$watch('updatedService', function(newValue) {
                 var dirty = false;
                 if (newValue.publicService != $scope.version.publicService) {
@@ -88,11 +88,11 @@ module Apiman {
                 }
                 $scope.isDirty = dirty;
             }, true);
-            
+
             $scope.$watch('plans', function(newValue) {
                 $scope.updatedService.plans = getSelectedPlans();
             }, true);
-            
+
             $scope.reset = function() {
                 $scope.updatedService.publicService = $scope.version.publicService;
                 for (var i = 0; i < lockedPlans.length; i++) {
@@ -108,19 +108,19 @@ module Apiman {
                 $scope.updatedService.plans = getSelectedPlans();
                 $scope.isDirty = false;
             };
-            
+
             $scope.saveService = function() {
                 $scope.saveButton.state = 'in-progress';
-                
+
                 OrgSvcs.update({ organizationId: params.org, entityType: 'services', entityId: params.service, versionsOrActivity: 'versions', version: params.version }, $scope.updatedService, function(reply) {
                     $scope.version.publicService = $scope.updatedService.publicService;
                     $scope.isDirty = false;
                     $scope.saveButton.state = 'complete';
                     $scope.version = reply;
-                    $scope.entityStatus = reply.status;
+                    EntityStatusService.setEntityStatus(reply.status);
                 }, PageLifecycle.handleError);
             };
-            
+
             PageLifecycle.loadPage('ServicePlans', pageData, $scope, function() {
                 $scope.reset();
                 PageLifecycle.setPageTitle('service-plans', [ $scope.service.name ]);

@@ -2,16 +2,16 @@
 /// <reference path="../services.ts"/>
 module Apiman {
 
-    export var ServiceImplController = _module.controller("Apiman.ServiceImplController",
-        ['$q', '$scope', '$location', 'PageLifecycle', 'ServiceEntityLoader', 'OrgSvcs', 'ApimanSvcs', '$routeParams', 'Logger',
-        ($q, $scope, $location, PageLifecycle, ServiceEntityLoader, OrgSvcs, ApimanSvcs, $routeParams, Logger) => {
+ export var ServiceImplController = _module.controller("Apiman.ServiceImplController",
+        ['$q', '$scope', '$location', 'PageLifecycle', 'ServiceEntityLoader', 'OrgSvcs', 'ApimanSvcs', '$routeParams', 'EntityStatusService',
+        ($q, $scope, $location, PageLifecycle, ServiceEntityLoader, OrgSvcs, ApimanSvcs, $routeParams, EntityStatusService) => {
             var params = $routeParams;
             $scope.organizationId = params.org;
             $scope.tab = 'impl';
             $scope.version = params.version;
             $scope.typeOptions = ["rest", "soap"];
             $scope.updatedService = new Object();
-            
+
             var pageData = ServiceEntityLoader.getCommonData($scope, $location);
             if (params.version != null) {
                 pageData = angular.extend(pageData, {
@@ -20,7 +20,7 @@ module Apiman {
                     })
                 });
             }
-            
+
             $scope.$watch('updatedService', function(newValue) {
                 if ($scope.version) {
                     var dirty = false;
@@ -33,6 +33,7 @@ module Apiman {
                     $scope.isDirty = dirty;
                 }
             }, true);
+
             $scope.$watch('selectedGateway', function(newValue) {
                 Logger.info('New gateway selected: {0}', newValue);
                 var alreadySet = false;
@@ -45,7 +46,7 @@ module Apiman {
                     delete $scope.updatedService.gateways;
                 }
             });
-            
+
             $scope.reset = function() {
                 $scope.updatedService.endpoint = $scope.version.endpoint;
                 $scope.updatedService.endpointType = $scope.version.endpointType;
@@ -58,17 +59,17 @@ module Apiman {
                 });
                 $scope.isDirty = false;
             };
-             
+
             $scope.saveService = function() {
                 $scope.saveButton.state = 'in-progress';
                 OrgSvcs.update({ organizationId: params.org, entityType: 'services', entityId:params.service, versionsOrActivity: 'versions', version: params.version }, $scope.updatedService, function(reply) {
                     $scope.isDirty = false;
                     $scope.saveButton.state = 'complete';
                     $scope.version = reply;
-                    $scope.entityStatus = reply.status;
+                    EntityStatusService.setEntityStatus(reply.status);
                 }, PageLifecycle.handleError);
             };
-            
+
             PageLifecycle.loadPage('ServiceImpl', pageData, $scope, function() {
                 $scope.reset();
                 PageLifecycle.setPageTitle('service-impl', [ $scope.service.name ]);

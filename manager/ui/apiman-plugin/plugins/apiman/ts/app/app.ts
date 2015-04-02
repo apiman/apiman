@@ -12,7 +12,7 @@ module Apiman {
                     OrgSvcs.query({ organizationId: orgId, entityType: 'applications', entityId: appId, versionsOrActivity: 'versions' }, resolve, reject);
                 })
             };
-            
+
             PageLifecycle.loadPage('AppRedirect', pageData, $scope, function() {
                 var version = $scope.versions[0].version;
                 if (!version) {
@@ -23,14 +23,14 @@ module Apiman {
             });
         }]);
 
-    export var AppEntityLoader = _module.factory('AppEntityLoader', 
-        ['$q', 'OrgSvcs', 'Logger', '$rootScope', '$routeParams',
-        ($q, OrgSvcs, Logger, $rootScope, $routeParams) => {
+    export var AppEntityLoader = _module.factory('AppEntityLoader',
+        ['$q', 'OrgSvcs', 'Logger', '$rootScope', '$routeParams', 'EntityStatusService',
+        ($q, OrgSvcs, Logger, $rootScope, $routeParams, EntityStatusService) => {
             return {
                 getCommonData: function($scope, $location) {
                     var params = $routeParams;
                     $scope.setEntityStatus = function(status) {
-                        $scope.entityStatus = status;
+                        EntityStatusService.setEntityStatus(status);
                     };
                     return {
                         version: $q(function(resolve, reject) {
@@ -54,7 +54,7 @@ module Apiman {
         ['$q', '$scope', '$location', 'ActionSvcs', 'Logger', 'Dialogs', 'PageLifecycle', '$routeParams',
         ($q, $scope, $location, ActionSvcs, Logger, Dialogs, PageLifecycle, $routeParams) => {
             var params = $routeParams;
-            
+
             $scope.setVersion = function(app) {
                 PageLifecycle.redirectTo('/orgs/{0}/apps/{1}/{2}', params.org, params.app, app.version);
             };
@@ -73,7 +73,7 @@ module Apiman {
                     $scope.setEntityStatus($scope.version.status);
                 }, PageLifecycle.handleError);
             };
-            
+
             $scope.unregisterApp = function() {
                 $scope.unregisterButton.state = 'in-progress';
                 Dialogs.confirm('Confirm Unregister App', 'Do you really want to unregister the application?  This cannot be undone.', function() {
@@ -92,7 +92,7 @@ module Apiman {
                     $scope.unregisterButton.state = 'complete';
                 });
             };
-            
+
         }])
 
 }
