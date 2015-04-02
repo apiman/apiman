@@ -2,16 +2,7 @@ POST /organizations/Test/services/echo/versions ${apiman.suite.api-username}/${a
 Content-Type: application/json
 
 {
-  "version" : "1.0",
-  "endpoint" : "${apiman.suite.echo-endpoint}",
-  "endpointType" : "rest",
-  "plans" : [
-    { "planId" : "Gold", "version" : "1.0" },
-    { "planId" : "Silver", "version" : "1.0" }
-  ],
-  "gateways" : [
-    { "gatewayId" : "TheGateway" }
-  ]
+  "version" : "1.0"
 }
 ----
 200
@@ -25,6 +16,6 @@ Content-Type: application/json
     "id" : "echo",
     "name" : "echo"
   },
-  "status" : "Ready",
+  "status" : "Created",
   "version" : "1.0"
 }
