@@ -15,7 +15,7 @@ module Apiman {
     
     var routes = {
         '/dash'                : { templateUrl: 'dash.html' },
-        '/profile'             : { tempalteUrl: 'profile.html' },
+        '/profile'             : { templateUrl: 'profile.html' },
 
         '/admin/gateways'      : { templateUrl: 'admin/admin-gateways.html' },
         '/admin/plugins'       : { templateUrl: 'admin/admin-plugins.html' },

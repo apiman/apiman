@@ -46,7 +46,10 @@ module ApimanServices {
         function($resource, Configuration) {
             var endpoint = Configuration.api.endpoint + '/apiman/currentuser/:what';
             return $resource(endpoint,
-                { entityType: '@what' });
+                { entityType: '@what' }, {
+                update: {
+                  method: 'PUT' // this method issues a PUT request
+                }});
         }]);
 
     export var ActionServices = _module.factory('ActionSvcs', ['$resource', 'Configuration',
