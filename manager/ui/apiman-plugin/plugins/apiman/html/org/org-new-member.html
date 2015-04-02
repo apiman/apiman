@@ -27,7 +27,10 @@
           <dt data-i18n-key="find-user">Find a User</dt>
           <dd>
             <div class="" style="line-height: normal">
-              <apiman-search-box function="findUsers" placeholder="Search by username..."></apiman-search-box>
+              <form ng-submit="findUsers(searchText)">
+                <input ng-model="searchText" type="text" class="form-control input-search" placeholder="Search by user name..."></input>
+                <button type="submit" apiman-action-btn="" class="btn btn-default btn-search" data-field="searchButton" data-i18n-key="search" data-icon="fa-cog" placeholder="Searching">Search</button>
+              </form>
             </div>
           </dd>
         </dl>
@@ -36,7 +39,8 @@
       <div class="row">
         <div class="panel panel-default input-search-results">
           <div class="panel-body container-fluid">
-            <div ng-hide="searchBoxValue.length>0">(Search for users above)</div>
+            <div ng-hide="searchBoxValue.length > 0">(Search for users above)</div>
+            <div ng-show="searchBoxValue.length > 0 && queriedUsers.length == 0">(No users found)</div>
             <apiman-user-entry user="user" selected-users="selectedUsers" ng-repeat="user in queriedUsers"></apiman-user-entry>
           </div>
         </div>
