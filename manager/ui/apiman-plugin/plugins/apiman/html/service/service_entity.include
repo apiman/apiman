@@ -40,7 +40,7 @@
             </div>
             <div class="entity-info-with-icon">
               <span data-i18n-key="status-label">Status:</span>
-              <span apiman-entity-status="" />
+              <span apiman-entity-status />
             </div>
           </div>
           <div class="col-md-5" apiman-permission="svcEdit">
@@ -55,7 +55,7 @@
             <!-- The Publish Action -->
             <div class="apiman-divider-40"></div>
             <div class="">
-              <button ng-disabled="entityStatus == 'Created'" apiman-action-btn="" apiman-status="Created,Ready" class="btn btn-primary" data-field="publishButton" data-i18n-key="publish" placeholder="Publishing..." data-icon="fa-cog" ng-click="publishService()">Publish</button>
+              <button ng-disabled="getEntityStatus() == 'Created'" apiman-action-btn="" apiman-status="Created,Ready" class="btn btn-primary" data-field="publishButton" data-i18n-key="publish" placeholder="Publishing..." data-icon="fa-cog" ng-click="publishService()">Publish</button>
               <button apiman-action-btn="" apiman-status="Published" class="btn btn-warning" data-field="retireButton" data-i18n-key="retire" placeholder="Retiring..." data-icon="fa-cog" ng-click="retireService()">Retire</button>
             </div>
           </div>

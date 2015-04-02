@@ -40,7 +40,7 @@
             </div>
             <div class="entity-info-with-icon">
               <span data-i18n-key="status-label">Status:</span>
-              <span apiman-entity-status="" />
+              <span apiman-entity-status />
             </div>
           </div>
           <div class="col-md-5" apiman-permission="appEdit">
@@ -52,7 +52,7 @@
             <!-- The Publish Action -->
             <div class="apiman-divider-40"></div>
             <div class="">
-              <button ng-disabled="entityStatus == 'Created'" apiman-action-btn="" apiman-status="Created,Ready" class="btn btn-primary" data-field="registerButton" data-i18n-key="register" placeholder="Registering..." data-icon="fa-cog" ng-click="registerApp()">Register</button>
+              <button ng-disabled="getEntityStatus() == 'Created'" apiman-action-btn="" apiman-status="Created,Ready" class="btn btn-primary" data-field="registerButton" data-i18n-key="register" placeholder="Registering..." data-icon="fa-cog" ng-click="registerApp()">Register</button>
               <button apiman-action-btn="" apiman-status="Registered" class="btn btn-warning" data-field="unregisterButton" data-i18n-key="unregister" placeholder="Unregistering..." data-icon="fa-cog" ng-click="unregisterApp()">Unregister</button>
             </div>
           </div>
