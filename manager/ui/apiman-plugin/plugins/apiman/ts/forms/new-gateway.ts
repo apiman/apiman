@@ -56,9 +56,9 @@ module Apiman {
                         $scope.testErrorMessage = reply.detail;
                     }
                 }, function(error) {
-                    alert(error);
-                    // TODO handle this error
                     $scope.testButton.state = 'error';
+                    $scope.testResult = 'error';
+                    $scope.testErrorMessage = error;
                 });
             }
             
