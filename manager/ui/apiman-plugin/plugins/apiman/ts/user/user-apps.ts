@@ -22,7 +22,7 @@ module Apiman {
                 }
             };
 
-            var promise = $q.all({
+            var pageData = {
                 user: $q(function(resolve, reject) {
                     UserSvcs.get({ user: $routeParams.user }, function(user) {
                         if (!user.fullName) {
@@ -37,8 +37,8 @@ module Apiman {
                         resolve(userApps);
                     }, reject);
                 })
-            });
-            PageLifecycle.loadPage('UserApps', promise, $scope, function() {
+            };
+            PageLifecycle.loadPage('UserApps', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('user-apps', [ $scope.user.fullName ]);
             });
     }])

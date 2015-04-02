@@ -7,13 +7,13 @@ module Apiman {
         ($q, $scope, $location, OrgSvcs, PageLifecycle, $rootScope, CurrentUser, $routeParams) => {
             var orgId = $routeParams.org;
             var serviceId = $routeParams.service;
-            var promise = $q.all({
+            var pageData = {
                 versions: $q(function(resolve, reject) {
                     OrgSvcs.query({ organizationId: orgId, entityType: 'services', entityId: serviceId, versionsOrActivity: 'versions' }, resolve, reject);
                 })
-            });
+            };
             
-            PageLifecycle.loadPage('ServiceRedirect', promise, $scope, function() {
+            PageLifecycle.loadPage('ServiceRedirect', pageData, $scope, function() {
                 var version = $scope.versions[0].version;
                 if (!version) {
                     PageLifecycle.handleError({ status: 404 });

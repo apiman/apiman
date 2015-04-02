@@ -7,14 +7,14 @@ module Apiman {
         ($q, $scope, $location, ApimanSvcs, PageLifecycle, $routeParams) => {
             var params = $routeParams;
             
-            var promise = $q.all({
+            var pageData = {
                 policyDef: $q(function(resolve, reject) {
                     ApimanSvcs.get({ entityType: 'policyDefs', secondaryType: params.policyDef }, function(policyDef) {
                         resolve(policyDef);
                         $scope.policyDefJSON = JSON.stringify(policyDef, null, 2);
                     }, reject);
                 })
-            });
+            };
             
             $scope.updatePolicyDef  = function() {
                 var policyDefUpdate:any = {};
@@ -28,7 +28,7 @@ module Apiman {
                 }, PageLifecycle.handleError);
             }
             
-            PageLifecycle.loadPage('EditPolicyDef', promise, $scope, function() {
+            PageLifecycle.loadPage('EditPolicyDef', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('edit-policyDef');
             });
     }])

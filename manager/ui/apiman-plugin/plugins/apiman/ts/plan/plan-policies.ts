@@ -26,16 +26,16 @@ module Apiman {
                 });
             };
 
-            var dataLoad = PlanEntityLoader.getCommonData($scope, $location);
-            angular.extend(dataLoad, {
+            var pageData = PlanEntityLoader.getCommonData($scope, $location);
+            angular.extend(pageData, {
                 policies: $q(function(resolve, reject) {
                     OrgSvcs.query({ organizationId: params.org, entityType: 'plans', entityId: params.plan, versionsOrActivity: 'versions', version: params.version, policiesOrActivity: 'policies' }, function(policies) {
                         resolve(policies);
                     }, reject);
                 })
             });
-            var promise = $q.all(dataLoad);
-            PageLifecycle.loadPage('PlanPolicies', promise, $scope, function() {
+            
+            PageLifecycle.loadPage('PlanPolicies', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('plan-policies', [ $scope.plan.name ]);
             });
         }])

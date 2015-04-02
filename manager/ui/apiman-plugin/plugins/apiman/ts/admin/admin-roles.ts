@@ -21,15 +21,15 @@ module Apiman {
                 }
             };
             
-            var promise = $q.all({
+            var pageData = {
                 roles: $q(function(resolve, reject) {
                     ApimanSvcs.query({ entityType: 'roles' }, function(adminRoles) {
                         $scope.filteredRoles = adminRoles;
                         resolve(adminRoles);
                     }, reject);
                 })
-            });
-            PageLifecycle.loadPage('AdminRoles', promise, $scope, function() {
+            };
+            PageLifecycle.loadPage('AdminRoles', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('admin-roles');
             });
     }])

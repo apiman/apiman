@@ -6,7 +6,7 @@ module Apiman {
         ($q, $location, $scope, CurrentUserSvcs, OrgSvcs, PageLifecycle, $rootScope) => {
             var recentOrg = $rootScope.mruOrg;
 
-            var promise = $q.all({
+            var pageData = {
                 organizations: $q(function(resolve, reject) {
                     CurrentUserSvcs.query({ what: 'svcorgs' }, function(orgs) {
                         if (recentOrg) {
@@ -17,7 +17,7 @@ module Apiman {
                         resolve(orgs);
                     }, reject);
                 }),
-            });
+            };
 
             $scope.setOrg = function(org) {
                 $scope.selectedOrg = org;
@@ -33,7 +33,7 @@ module Apiman {
                 initialVersion: '1.0'
             };
             
-            PageLifecycle.loadPage('NewService', promise, $scope, function() {
+            PageLifecycle.loadPage('NewService', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('new-service');
                 $scope.$applyAsync(function() {
                     $('#apiman-entityname').focus();

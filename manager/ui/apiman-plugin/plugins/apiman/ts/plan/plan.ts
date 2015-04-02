@@ -7,13 +7,13 @@ module Apiman {
         ($q, $scope, $location, OrgSvcs, PageLifecycle, $rootScope, CurrentUser, $routeParams) => {
             var orgId = $routeParams.org;
             var planId = $routeParams.plan;
-            var promise = $q.all({
+            var pageData = {
                 versions: $q(function(resolve, reject) {
                     OrgSvcs.query({ organizationId: orgId, entityType: 'plans', entityId: planId, versionsOrActivity: 'versions' }, resolve, reject);
                 })
-            });
+            };
             
-            PageLifecycle.loadPage('PlanRedirect', promise, $scope, function() {
+            PageLifecycle.loadPage('PlanRedirect', pageData, $scope, function() {
                 var version = $scope.versions[0].version;
                 if (!version) {
                     PageLifecycle.handleError({ status: 404 });

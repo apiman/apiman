@@ -3,38 +3,10 @@ module ApimanCurrentUser {
 
     export var _module = angular.module('ApimanCurrentUser', ['ApimanServices']);
 
-    export var CurrentUser = _module.factory('CurrentUser', ['$q', '$rootScope', 'CurrentUserSvcs', 'Logger',
-        function($q, $rootScope, CurrentUserSvcs, Logger) {
-            var getUser = function(handler, errorHandler) {
-                CurrentUserSvcs.get({ what: 'info' }, function(currentUser) {
-                    Logger.log("Successfully grabbed currentuser/info for {0}.", currentUser.username);
-                    $rootScope.currentUser = currentUser;
-                    var permissions = {};
-                    var memberships = {};
-                    if (currentUser.permissions) {
-                        for (var i = 0; i < currentUser.permissions.length; i++) {
-                            var perm = currentUser.permissions[i];
-                            var permid = perm.organizationId + '||' + perm.name;
-                            permissions[permid] = true;
-                            memberships[perm.organizationId] = true;
-                        }
-                    }
-                    $rootScope.permissions = permissions;
-                    $rootScope.memberships = memberships;
-                    handler(currentUser);
-                }, function(error) {
-                    if (errorHandler) {
-                        errorHandler(error);
-                    } else {
-                        handler(error);
-                    }
-                });
-            };
-            var promise = $q(function(resolve, reject) {
-                getUser(resolve, reject);
-            });
+    export var CurrentUser = _module.factory('CurrentUser', 
+        ['$q', '$rootScope', 'CurrentUserSvcs', 'Logger',
+        ($q, $rootScope, CurrentUserSvcs, Logger) => {
             return {
-                promise: promise,
                 getCurrentUser: function() {
                     return $rootScope.currentUser;
                 },
@@ -52,7 +24,7 @@ module ApimanCurrentUser {
                     return rval;
                 },
                 hasPermission: function(organizationId, permission) {
-                    if (organizationId) {
+                    if (organizationId && $rootScope.permissions) {
                         var permid = organizationId + '||' + permission;
                         return $rootScope.permissions[permid];
                     } else {
@@ -67,7 +39,7 @@ module ApimanCurrentUser {
                     }
                 },
                 refresh: function(handler, errorHandler) {
-                    getUser(handler, errorHandler);
+                    $rootScope.currentUser = undefined;
                 }
             };
         }]);

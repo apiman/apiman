@@ -8,9 +8,9 @@ module Apiman {
             var params = $routeParams;
             $scope.organizationId = params.org;
             $scope.tab = 'overview';
-            var dataLoad = PlanEntityLoader.getCommonData($scope, $location);
-            var promise = $q.all(dataLoad);
-            PageLifecycle.loadPage('PlanOverview', promise, $scope, function() {
+            var pageData = PlanEntityLoader.getCommonData($scope, $location);
+            
+            PageLifecycle.loadPage('PlanOverview', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('plan-overview', [ $scope.plan.name ]);
             });
         }])

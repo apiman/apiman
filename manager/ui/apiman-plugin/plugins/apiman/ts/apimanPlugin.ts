@@ -7,12 +7,6 @@ module Apiman {
 
     var tab = undefined;
 
-    var commonRouteResolves = {
-      'CurrentUser' : function(CurrentUser) {
-          return CurrentUser.promise;
-      }
-    };
-    
     var routes = {
         '/dash'                : { templateUrl: 'dash.html' },
         '/profile'             : { templateUrl: 'profile.html' },
@@ -104,7 +98,6 @@ module Apiman {
             // Map all the routes into the route provider.
             angular.forEach(routes, function(config, key) {
                 config.templateUrl = builder.join(Apiman.templatePath, config.templateUrl);
-                config.resolve = angular.extend({}, config.resolve, commonRouteResolves);
                 this.when('/' + Apiman.pluginName + key, config);
             }, $routeProvider);
             $locationProvider.html5Mode(true);

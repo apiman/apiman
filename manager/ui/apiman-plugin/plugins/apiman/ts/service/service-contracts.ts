@@ -23,16 +23,16 @@ module Apiman {
                 }, errorHandler);
             };
 
-            var dataLoad = ServiceEntityLoader.getCommonData($scope, $location);
-            dataLoad = angular.extend(dataLoad, {
+            var pageData = ServiceEntityLoader.getCommonData($scope, $location);
+            pageData = angular.extend(pageData, {
                 contracts: $q(function(resolve, reject) {
                     $scope.currentPage = 0;
                     getNextPage(resolve, reject);
                 })
             });
-            var promise = $q.all(dataLoad);
+            
             $scope.getNextPage = getNextPage;
-            PageLifecycle.loadPage('ServiceContracts', promise, $scope, function() {
+            PageLifecycle.loadPage('ServiceContracts', pageData, $scope, function() {
                 Logger.debug("::: is public: {0}", $scope.version.publicService);
                 if ($scope.version.publicService) {
                     Logger.debug("::: num plans: {0}", $scope.version.plans.length);

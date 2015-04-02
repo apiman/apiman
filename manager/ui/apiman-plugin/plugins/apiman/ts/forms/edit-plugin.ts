@@ -7,13 +7,13 @@ module Apiman {
         ($q, $scope, $location, ApimanSvcs, PageLifecycle, Dialogs, $routeParams) => {
             var params = $routeParams;
             
-            var promise = $q.all({
+            var pageData = {
                 plugin: $q(function(resolve, reject) {
                     ApimanSvcs.get({ entityType: 'plugins', secondaryType: params.plugin }, function(plugin) {
                         resolve(plugin);
                     }, reject);
                 })
-            });
+            };
             
             $scope.deletePlugin  = function() {
                 $scope.deleteButton.state = 'in-progress';
@@ -26,7 +26,7 @@ module Apiman {
                 });
             }
             
-            PageLifecycle.loadPage('EditPlugin', promise, $scope, function() {
+            PageLifecycle.loadPage('EditPlugin', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('plugin-details');
             });
     }])

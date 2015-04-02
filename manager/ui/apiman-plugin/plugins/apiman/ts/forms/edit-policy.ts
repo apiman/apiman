@@ -6,7 +6,7 @@ module Apiman {
         ($q, $location, $scope, OrgSvcs, ApimanSvcs, PageLifecycle, Logger, $routeParams) => {
             var params = $routeParams;
             
-            var promise = $q.all({
+            var pageData = {
                 policy: $q(function(resolve, reject) {
                 var etype = params.type;
                     if (etype == 'apps') {
@@ -41,7 +41,7 @@ module Apiman {
                         resolve(policy);
                     }, reject);
                 })
-            });
+            };
             
             $scope.setValid = function(valid) {
                 $scope.isValid = valid;
@@ -73,7 +73,7 @@ module Apiman {
                 }, PageLifecycle.handleError);
             };
             
-            PageLifecycle.loadPage('EditPolicy', promise, $scope, function() {
+            PageLifecycle.loadPage('EditPolicy', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('edit-policy');
                 $('#apiman-description').focus();
             });

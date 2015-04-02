@@ -14,14 +14,14 @@ module Apiman {
         ($q, $location, $scope, OrgSvcs, ApimanSvcs, PageLifecycle, Logger, $routeParams) => {
             var params = $routeParams;
             
-            var promise = $q.all({
+            var pageData = {
                 policyDefs: $q(function(resolve, reject) {
                     ApimanSvcs.query({ entityType: 'policyDefs' }, function(policyDefs) {
                         $scope.selectedDefId = '__null__';
                         resolve(policyDefs);
                     }, reject);
                 })
-            });
+            };
             
             $scope.$watch('selectedDefId', function(newValue) {
                 if (newValue) {
@@ -75,7 +75,7 @@ module Apiman {
                 }, PageLifecycle.handleError);
             };
             
-            PageLifecycle.loadPage('NewPolicy', promise, $scope, function() {
+            PageLifecycle.loadPage('NewPolicy', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('new-policy');
             });
         }]);

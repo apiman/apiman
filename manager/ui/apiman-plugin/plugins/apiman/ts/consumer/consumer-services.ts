@@ -13,7 +13,7 @@ module Apiman {
                 $location.search('q', value);
             };
             
-            var promise = $q.all({
+            var pageData = {
                 services: $q(function(resolve, reject) {
                     if (params.q) {
                         var body:any = {};
@@ -28,9 +28,9 @@ module Apiman {
                         resolve([]);
                     }
                 })
-            });
+            };
 
-            PageLifecycle.loadPage('ConsumerSvcs', promise, $scope, function() {
+            PageLifecycle.loadPage('ConsumerSvcs', pageData, $scope, function() {
                 $('#apiman-search').focus();
                 PageLifecycle.setPageTitle('consumer-services');
             });

@@ -3,17 +3,17 @@
 module Apiman {
 
     export var AppRedirectController = _module.controller("Apiman.AppRedirectController",
-        ['$q', '$scope', '$location', 'OrgSvcs', 'PageLifecycle', '$rootScope', 'CurrentUser', '$routeParams',
-        ($q, $scope, $location, OrgSvcs, PageLifecycle, $rootScope, CurrentUser, $routeParams) => {
+        ['$q', '$scope', '$location', 'OrgSvcs', 'PageLifecycle', '$rootScope', '$routeParams',
+        ($q, $scope, $location, OrgSvcs, PageLifecycle, $rootScope, $routeParams) => {
             var orgId = $routeParams.org;
             var appId = $routeParams.app;
-            var promise = $q.all({
+            var pageData = {
                 versions: $q(function(resolve, reject) {
                     OrgSvcs.query({ organizationId: orgId, entityType: 'applications', entityId: appId, versionsOrActivity: 'versions' }, resolve, reject);
                 })
-            });
+            };
             
-            PageLifecycle.loadPage('AppRedirect', promise, $scope, function() {
+            PageLifecycle.loadPage('AppRedirect', pageData, $scope, function() {
                 var version = $scope.versions[0].version;
                 if (!version) {
                     PageLifecycle.handleError({ status: 404 });

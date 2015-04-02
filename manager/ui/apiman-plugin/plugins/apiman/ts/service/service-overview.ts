@@ -9,9 +9,9 @@ module Apiman {
             $scope.organizationId = params.org;
             $scope.tab = 'overview';
             $scope.version = params.version;
-            var dataLoad = ServiceEntityLoader.getCommonData($scope, $location);
-            var promise = $q.all(dataLoad);
-            PageLifecycle.loadPage('ServiceOverview', promise, $scope, function() {
+            var pageData = ServiceEntityLoader.getCommonData($scope, $location);
+            
+            PageLifecycle.loadPage('ServiceOverview', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('service-overview', [ $scope.service.name ]);
             });
         }])

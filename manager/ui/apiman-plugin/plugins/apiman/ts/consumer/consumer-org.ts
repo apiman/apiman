@@ -21,27 +21,21 @@ module Apiman {
                 }
             };
             
-            var promise = $q.all({
+            var pageData = {
                 org: $q(function(resolve, reject) {
-                    OrgSvcs.get({ organizationId: $routeParams.org, entityType: '' }, function(org) {
-                        org.isMember = CurrentUser.isMember(org.id);
-                        resolve(org);
-                    }, reject);
+                    OrgSvcs.get({ organizationId: $routeParams.org, entityType: '' }, resolve, reject);
                 }),
                 members: $q(function(resolve, reject) {
-                    OrgSvcs.query({ organizationId: $routeParams.org, entityType: 'members' }, function(members) {
-                        resolve(members);
-                    }, reject);
+                    OrgSvcs.query({ organizationId: $routeParams.org, entityType: 'members' }, resolve, reject);
                 }),
                 services: $q(function(resolve, reject) {
-                    OrgSvcs.query({ organizationId: $routeParams.org, entityType: 'services' }, function(services) {
-                        $scope.filteredServices = services;
-                        resolve(services);
-                    }, reject);
+                    OrgSvcs.query({ organizationId: $routeParams.org, entityType: 'services' }, resolve, reject);
                 })
-            });
+            };
             
-            PageLifecycle.loadPage('ConsumerOrg', promise, $scope, function() {
+            PageLifecycle.loadPage('ConsumerOrg', pageData, $scope, function() {
+                $scope.org.isMember = CurrentUser.isMember($scope.org.id);
+                $scope.filteredServices = $scope.services;
                 PageLifecycle.setPageTitle('consumer-org', [ $scope.org.name ]);
             });
         }])

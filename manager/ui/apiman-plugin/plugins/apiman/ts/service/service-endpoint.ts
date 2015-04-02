@@ -10,17 +10,17 @@ module Apiman {
             $scope.tab = 'endpoint';
             $scope.version = params.version;
             
-            var dataLoad = ServiceEntityLoader.getCommonData($scope, $location);
+            var pageData = ServiceEntityLoader.getCommonData($scope, $location);
             if (params.version != null) {
-                dataLoad = angular.extend(dataLoad, {
+                pageData = angular.extend(pageData, {
                     managedEndpoint: $q(function(resolve, reject) {
                         OrgSvcs.get({ organizationId: params.org, entityType: 'services', entityId: params.service, versionsOrActivity: 'versions', version: params.version, policiesOrActivity: 'endpoint' }, resolve, reject);
                     })
                 });
             }
-            var promise = $q.all(dataLoad);
+            
 
-            PageLifecycle.loadPage('ServiceEndpoint', promise, $scope, function() {
+            PageLifecycle.loadPage('ServiceEndpoint', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('service-endpoint', [ $scope.service.name ]);
             });
         }])

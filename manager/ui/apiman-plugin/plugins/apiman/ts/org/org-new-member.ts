@@ -65,7 +65,7 @@ module Apiman {
       return Object.keys(object).length;
     }
 
-    var promise = $q.all({
+    var pageData = {
       org: $q(function(resolve, reject) {
         OrgSvcs.get({ organizationId: params.org, entityType: '' }, function(org) {
           $rootScope.mruOrg = org;
@@ -84,9 +84,9 @@ module Apiman {
           resolve(adminRoles);
         }, reject);
       })
-    });
+    };
 
-    PageLifecycle.loadPage('OrgNewMember', promise, $scope, function() {
+    PageLifecycle.loadPage('OrgNewMember', pageData, $scope, function() {
         PageLifecycle.setPageTitle('new-member');
     });
   }])

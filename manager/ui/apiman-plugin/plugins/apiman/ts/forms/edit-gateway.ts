@@ -51,7 +51,7 @@ module Apiman {
                 };
             };
 
-            var promise = $q.all({
+            var pageData = {
                 gateway: $q(function(resolve, reject) {
                     ApimanSvcs.get({ entityType: 'gateways', secondaryType: params.gateway }, function(gateway) {
                         $scope.gateway = gateway;
@@ -63,7 +63,7 @@ module Apiman {
                         resolve(gateway);
                     }, reject);
                 })
-            });
+            };
             
             var testGateway  = function() {
                 $scope.testButton.state = 'in-progress';
@@ -104,7 +104,7 @@ module Apiman {
                 });
             }
             $scope.testGateway = testGateway;
-            PageLifecycle.loadPage('EditGateway', promise, $scope, function() {
+            PageLifecycle.loadPage('EditGateway', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('edit-gateway');
                 $scope.$watch('gateway', validate, true);
                 $scope.$watch('configuration', validate, true);

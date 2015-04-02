@@ -9,8 +9,8 @@ module Apiman {
             $scope.organizationId = params.org;
             $scope.tab = 'contracts';
             $scope.version = params.version;
-            var dataLoad = AppEntityLoader.getCommonData($scope, $location);
-            dataLoad = angular.extend(dataLoad, {
+            var pageData = AppEntityLoader.getCommonData($scope, $location);
+            pageData = angular.extend(pageData, {
                 contracts: $q(function(resolve, reject) {
                     OrgSvcs.query({ organizationId: params.org, entityType: 'applications', entityId: params.app, versionsOrActivity: 'versions', version: params.version, policiesOrActivity: 'contracts' }, function(contracts) {
                         $scope.filteredContracts = contracts;
@@ -18,7 +18,6 @@ module Apiman {
                     }, reject);
                 })
             });
-            var promise = $q.all(dataLoad);
             
             function removeContractFromArray(contract, carray) {
                 var idx = -1;
@@ -68,7 +67,7 @@ module Apiman {
                 });
             };
             
-            PageLifecycle.loadPage('AppContracts', promise, $scope, function() {
+            PageLifecycle.loadPage('AppContracts', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('app-contracts', [ $scope.app.name ]);
             });
         }])

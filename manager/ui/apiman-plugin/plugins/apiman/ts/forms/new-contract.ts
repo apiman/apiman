@@ -23,7 +23,7 @@ module Apiman {
                 }, PageLifecycle.handleError);
             };
             
-            var promise = $q.all({
+            var pageData = {
                 apps: $q(function(resolve, reject) {
                     CurrentUserSvcs.query({ what: 'applications' }, function(apps) {
                         if ($rootScope.mruApp) {
@@ -53,7 +53,7 @@ module Apiman {
                         resolve(undefined);
                     }
                 })
-            });
+            };
 
             $scope.$watch('selectedApp', function(newValue) {
                 Logger.debug("App selected: {0}", newValue);
@@ -124,7 +124,7 @@ module Apiman {
                 }, PageLifecycle.handleError);
             };
             
-            PageLifecycle.loadPage('NewContract', promise, $scope, function() {
+            PageLifecycle.loadPage('NewContract', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('new-contract');
             });
         }]);

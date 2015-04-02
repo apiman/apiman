@@ -30,14 +30,13 @@ module Apiman {
 
             };
             
-            var dataLoad = AppEntityLoader.getCommonData($scope, $location);
-            dataLoad = angular.extend(dataLoad, {
+            var pageData = AppEntityLoader.getCommonData($scope, $location);
+            pageData = angular.extend(pageData, {
                 apiRegistry: $q(function(resolve, reject) {
                     OrgSvcs.get({ organizationId: params.org, entityType: 'applications', entityId: params.app, versionsOrActivity: 'versions', version: params.version, policiesOrActivity: 'apiregistry', policyId: 'json' }, resolve, reject);
                 })
             });
-            var promise = $q.all(dataLoad);
-            PageLifecycle.loadPage('AppApis', promise, $scope, function() {
+            PageLifecycle.loadPage('AppApis', pageData, $scope, function() {
                 Logger.info("API Registry: {0}", $scope.apiRegistry);
                 PageLifecycle.setPageTitle('app-apis', [ $scope.app.name ]);
             });

@@ -20,15 +20,15 @@ module Apiman {
                 }
             };
             
-            var promise = $q.all({
+            var pageData = {
                 policyDefs: $q(function(resolve, reject) {
                     ApimanSvcs.query({ entityType: 'policyDefs' }, function(policyDefs) {
                         $scope.filteredPolicyDefs = policyDefs;
                         resolve(policyDefs);
                     }, reject);
                 })
-            });
-            PageLifecycle.loadPage('AdminPolicyDefs', promise, $scope, function() {
+            };
+            PageLifecycle.loadPage('AdminPolicyDefs', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('admin-policyDefs');
             });
     }])

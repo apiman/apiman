@@ -26,9 +26,9 @@ module Apiman {
                 return selectedPlans;
             };
             
-            var dataLoad = ServiceEntityLoader.getCommonData($scope, $location);
+            var pageData = ServiceEntityLoader.getCommonData($scope, $location);
             if (params.version != null) {
-                dataLoad = angular.extend(dataLoad, {
+                pageData = angular.extend(pageData, {
                     plans: $q(function(resolve, reject) {
                         OrgSvcs.query({ organizationId: params.org, entityType: 'plans' }, function(plans) {
                             //for each plan find the versions that are locked
@@ -69,7 +69,7 @@ module Apiman {
                     })
                 });
             }
-            var promise = $q.all(dataLoad);
+            
             
             $scope.$watch('updatedService', function(newValue) {
                 var dirty = false;
@@ -120,7 +120,7 @@ module Apiman {
                 }, PageLifecycle.handleError);
             };
             
-            PageLifecycle.loadPage('ServicePlans', promise, $scope, function() {
+            PageLifecycle.loadPage('ServicePlans', pageData, $scope, function() {
                 $scope.reset();
                 PageLifecycle.setPageTitle('service-plans', [ $scope.service.name ]);
             });

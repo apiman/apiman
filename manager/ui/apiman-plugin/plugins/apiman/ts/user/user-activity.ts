@@ -15,7 +15,7 @@ module Apiman {
                 }, errorHandler);
             };
 
-            var promise = $q.all({
+            var pageData = {
                 user: $q(function(resolve, reject) {
                     UserSvcs.get({ user: $routeParams.user }, function(user) {
                         if (!user.fullName) {
@@ -28,9 +28,9 @@ module Apiman {
                     $scope.currentPage = 0;
                     getNextPage(resolve, reject);
                 })
-            });
+            };
             $scope.getNextPage = getNextPage;
-            PageLifecycle.loadPage('UserActivity', promise, $scope, function() {
+            PageLifecycle.loadPage('UserActivity', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('user-activity', [ $scope.user.fullName ]);
             });
             

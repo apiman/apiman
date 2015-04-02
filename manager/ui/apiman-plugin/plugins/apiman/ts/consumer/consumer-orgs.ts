@@ -13,7 +13,7 @@ module Apiman {
                 $location.search('q', value);
             };
             
-            var promise = $q.all({
+            var pageData = {
                 orgs: $q(function(resolve, reject) {
                     if (params.q) {
                         var body:any = {};
@@ -21,20 +21,20 @@ module Apiman {
                         body.filters.push( {"name": "name", "value": "%" + params.q + "%", "operator": "like"});
                         var searchStr = JSON.stringify(body);
                         ApimanSvcs.save({ entityType: 'search', secondaryType: 'organizations' }, searchStr, function(result) { 
-                            angular.forEach(result.beans, function(org) {
-                                org.isMember = CurrentUser.isMember(org.id);
-                            });
                             resolve(result.beans);
                         }, reject);
                     } else {
                         resolve([]);
                     }
                 })
-            });
+            };
             
-            PageLifecycle.loadPage('ConsumerOrgs', promise, $scope, function() {
+            PageLifecycle.loadPage('ConsumerOrgs', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('consumer-orgs');
                 $scope.$applyAsync(function() {
+                    angular.forEach($scope.orgs, function(org) {
+                        org.isMember = CurrentUser.isMember(org.id);
+                    });
                     $('#apiman-search').focus();
                 });
             });

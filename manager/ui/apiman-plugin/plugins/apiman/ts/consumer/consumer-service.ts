@@ -7,12 +7,12 @@ module Apiman {
         ($q, $scope, $location, OrgSvcs, PageLifecycle, $routeParams) => {
             var orgId = $routeParams.org;
             var serviceId = $routeParams.service;
-            var promise = $q.all({
+            var pageData = {
                 versions: $q(function(resolve, reject) {
                     OrgSvcs.query({ organizationId: orgId, entityType: 'services', entityId: serviceId, versionsOrActivity: 'versions' }, resolve, reject);
                 })
-            });
-            PageLifecycle.loadPage('ConsumerServiceRedirect', promise, $scope, function() {
+            };
+            PageLifecycle.loadPage('ConsumerServiceRedirect', pageData, $scope, function() {
                 var version = $scope.versions[0].version;
                 PageLifecycle.forwardTo('/browse/orgs/{0}/{1}/{2}', orgId, serviceId, version);
             });
@@ -36,7 +36,7 @@ module Apiman {
                 }
             };
             
-            var promise = $q.all({
+            var pageData = {
                 service: $q(function(resolve, reject) {
                     OrgSvcs.get({ organizationId: $routeParams.org, entityType: 'services', entityId: $routeParams.service }, resolve, reject);
                 }),
@@ -63,13 +63,13 @@ module Apiman {
                 plans: $q(function(resolve, reject) {
                     OrgSvcs.query({ organizationId: $routeParams.org, entityType: 'services', entityId: $routeParams.service, versionsOrActivity: 'versions', version: $routeParams.version, policiesOrActivity: 'plans' }, resolve, reject);
                 })
-            });
+            };
             
             $scope.setVersion = function(serviceVersion) {
                 PageLifecycle.redirectTo('/browse/orgs/{0}/{1}/{2}', $routeParams.org, $routeParams.service, $routeParams.version);
             };
 
-            PageLifecycle.loadPage('ConsumerService', promise, $scope, function() {
+            PageLifecycle.loadPage('ConsumerService', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('consumer-service', [ $scope.service.name ]);
             });
         }])

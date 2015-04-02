@@ -26,15 +26,15 @@ module Apiman {
                 });
             };
             
-            var dataLoad = ServiceEntityLoader.getCommonData($scope, $location);
-            dataLoad = angular.extend(dataLoad, {
+            var pageData = ServiceEntityLoader.getCommonData($scope, $location);
+            pageData = angular.extend(pageData, {
                 policies: $q(function(resolve, reject) {
                     OrgSvcs.query({ organizationId: params.org, entityType: 'services', entityId: params.service, versionsOrActivity: 'versions', version: params.version, policiesOrActivity: 'policies' }, resolve, reject);
                 })
             });
-            var promise = $q.all(dataLoad);
+            
 
-            PageLifecycle.loadPage('ServicePolicies', promise, $scope, function() {
+            PageLifecycle.loadPage('ServicePolicies', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('service-policies', [ $scope.service.name ]);
             });
         }])

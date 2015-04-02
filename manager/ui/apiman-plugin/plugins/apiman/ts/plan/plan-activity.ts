@@ -18,16 +18,16 @@ module Apiman {
                 }, errorHandler);
             };
 
-            var dataLoad = PlanEntityLoader.getCommonData($scope, $location);
-            dataLoad = angular.extend(dataLoad, {
+            var pageData = PlanEntityLoader.getCommonData($scope, $location);
+            pageData = angular.extend(pageData, {
                 auditEntries: $q(function(resolve, reject) {
                     $scope.currentPage = 0;
                     getNextPage(resolve, reject);
                 })
             });
-            var promise = $q.all(dataLoad);
+            
             $scope.getNextPage = getNextPage;
-            PageLifecycle.loadPage('PlanActivity', promise, $scope, function() {
+            PageLifecycle.loadPage('PlanActivity', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('plan-activity', [ $scope.plan.name ]);
             });
         }])

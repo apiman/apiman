@@ -5,11 +5,11 @@ module Apiman {
     export var UserProfileController = _module.controller("Apiman.UserProfileController",
         ['$q', '$scope', '$location', 'CurrentUserSvcs', 'PageLifecycle',
         ($q, $scope, $location, CurrentUserSvcs, PageLifecycle) => {
-            var promise = $q.all({
+            var pageData = {
                 user: $q(function(resolve, reject) {
                     CurrentUserSvcs.get({ what: 'info' }, resolve, reject);
                 })
-            });
+            };
 
             $scope.isDirty = false;
             $scope.isValid = true;
@@ -49,7 +49,7 @@ module Apiman {
                 }, PageLifecycle.handleError);
             }
             
-            PageLifecycle.loadPage('UserProfile', promise, $scope, function() {
+            PageLifecycle.loadPage('UserProfile', pageData, $scope, function() {
                 $scope.updatedUser.fullName = $scope.user.fullName;
                 $scope.updatedUser.email = $scope.user.email;
                 PageLifecycle.setPageTitle('user-profile');

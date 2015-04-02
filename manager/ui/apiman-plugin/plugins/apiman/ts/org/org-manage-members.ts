@@ -51,7 +51,7 @@ module Apiman {
       }
     };
 
-    var promise = $q.all({
+    var pageData = {
       org: $q(function(resolve, reject) {
         OrgSvcs.get({ organizationId: params.org, entityType: '' }, function(org) {
           $rootScope.mruOrg = org;
@@ -70,8 +70,8 @@ module Apiman {
           resolve(adminRoles);
         }, reject);
       })
-    });
-    PageLifecycle.loadPage('OrgManageMembers', promise, $scope, function() {
+    };
+    PageLifecycle.loadPage('OrgManageMembers', pageData, $scope, function() {
       PageLifecycle.setPageTitle('org-manage-members', [ $scope.org.name ]);
     });
   }])

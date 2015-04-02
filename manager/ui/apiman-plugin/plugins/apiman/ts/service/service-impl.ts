@@ -12,15 +12,15 @@ module Apiman {
             $scope.typeOptions = ["rest","soap"];
             $scope.updatedService = new Object();
             
-            var dataLoad = ServiceEntityLoader.getCommonData($scope, $location);
+            var pageData = ServiceEntityLoader.getCommonData($scope, $location);
             if (params.version != null) {
-                dataLoad = angular.extend(dataLoad, {
+                pageData = angular.extend(pageData, {
                     gateways: $q(function(resolve, reject) {
                         ApimanSvcs.query({ entityType: 'gateways' }, resolve, reject);
                     })
                 });
             }
-            var promise = $q.all(dataLoad);
+            
             
             $scope.$watch('updatedService', function(newValue) {
                 if ($scope.version) {
@@ -48,7 +48,7 @@ module Apiman {
                 }, PageLifecycle.handleError);
             };
             
-            PageLifecycle.loadPage('ServiceImpl', promise, $scope, function() {
+            PageLifecycle.loadPage('ServiceImpl', pageData, $scope, function() {
                 $scope.reset();
                 PageLifecycle.setPageTitle('service-impl', [ $scope.service.name ]);
             });

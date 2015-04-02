@@ -75,8 +75,24 @@ module ApimanPageLifecycle {
     export var _module = angular.module("ApimanPageLifecycle", []);
 
     export var PageLifecycle = _module.factory('PageLifecycle', 
-        ['Logger', '$rootScope', '$location',
-        (Logger, $rootScope, $location) => {
+        ['$q', 'Logger', '$rootScope', '$location', 'CurrentUserSvcs',
+        ($q, Logger, $rootScope, $location, CurrentUserSvcs) => {
+            var processCurrentUser = function(currentUser) {
+                $rootScope.currentUser = currentUser;
+                var permissions = {};
+                var memberships = {};
+                if (currentUser.permissions) {
+                    for (var i = 0; i < currentUser.permissions.length; i++) {
+                        var perm = currentUser.permissions[i];
+                        var permid = perm.organizationId + '||' + perm.name;
+                        permissions[permid] = true;
+                        memberships[perm.organizationId] = true;
+                    }
+                }
+                $rootScope.permissions = permissions;
+                $rootScope.memberships = memberships;
+                
+            };
             var handleError = function(error) {
                 $rootScope.pageState = 'error';
                 $rootScope.pageError = error;
@@ -122,33 +138,53 @@ module ApimanPageLifecycle {
                     Logger.info('Redirecting to page {0}', path);
                     $location.url(path);
                 },
-                loadPage: function(pageName, dataPromise, $scope, handler) {
+                loadPage: function(pageName, pageData, $scope, handler) {
                     Logger.log("|{0}| >> Loading page.", pageName);
                     $rootScope.pageState = 'loading';
-                    if (dataPromise) {
-                        dataPromise.then(function(data) {
-                            var count = 0;
-                            angular.forEach(data, function(value, key) {
-                                Logger.debug("|{0}| >> Binding {1} to $scope.", pageName, key);
-                                this[key] = value;
-                                count++;
-                            }, $scope);
-                            $rootScope.pageState = 'loaded';
-                            if (handler) {
-                                handler();
+                    
+                    // Every page gets the current user.
+                    var allData = undefined;
+                    var commonData = {
+                        currentUser: $q(function(resolve, reject) {
+                            if ($rootScope.currentUser) {
+                                Logger.log("|{0}| >> Using cached current user from $rootScope.");
+                                resolve($rootScope.currentUser);
+                            } else {
+                                CurrentUserSvcs.get({ what: 'info' }, function(currentUser) {
+                                    processCurrentUser(currentUser);
+                                    resolve(currentUser);
+                                }, reject);
                             }
-                            Logger.log("|{0}| >> Page successfully loaded: {1} data packets loaded", pageName, count);
-                        }, function(reason) {
-                            Logger.error("|{0}| >> Page load failed: {1}", pageName, reason);
-                            handleError(reason);
-                        });
+                        })
+                    };
+                    
+                    // If some additional page data is requested, merge it into the common data
+                    if (pageData) {
+                        allData = angular.extend({}, commonData, pageData);
                     } else {
+                        allData = commonData;
+                    }
+
+                    // Now resolve the data as a promise (wait for all data packets to be fetched)
+                    var promise = $q.all(allData);
+                    promise.then(function(data) {
+                        var count = 0;
+                        angular.forEach(data, function(value, key) {
+                            Logger.debug("|{0}| >> Binding {1} to $scope.", pageName, key);
+                            this[key] = value;
+                            count++;
+                        }, $scope);
                         $rootScope.pageState = 'loaded';
-                        Logger.log("|{0}| >> Page successfully loaded (no packets).", pageName);
                         if (handler) {
                             handler();
                         }
-                    }
+                        Logger.log("|{0}| >> Page successfully loaded: {1} data packets loaded", pageName, count);
+                    }, function(reason) {
+                        Logger.error("|{0}| >> Page load failed: {1}", pageName, reason);
+                        handleError(reason);
+                    });
+                
+                
                 }
             }
         }]);

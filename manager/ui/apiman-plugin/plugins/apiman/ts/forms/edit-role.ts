@@ -30,7 +30,7 @@ module Apiman {
                 $scope.isValid = validate();
             }, true);
             
-            var promise = $q.all({
+            var pageData = {
                 role: $q(function(resolve, reject) {
                     ApimanSvcs.get({ entityType: 'roles', secondaryType: params.role }, function(role) {
                         angular.forEach(role.permissions, function(name) {
@@ -39,7 +39,7 @@ module Apiman {
                         resolve(role);
                     }, reject);
                 })
-            });
+            };
             
             $scope.updateRole  = function() {
                 $scope.updateButton.state = 'in-progress';
@@ -70,7 +70,7 @@ module Apiman {
                 });
             }
             
-            PageLifecycle.loadPage('EditRole', promise, $scope, function() {
+            PageLifecycle.loadPage('EditRole', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('edit-role');
                 $('#apiman-description').focus();
             });
