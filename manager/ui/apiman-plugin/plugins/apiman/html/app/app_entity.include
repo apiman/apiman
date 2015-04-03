@@ -25,7 +25,8 @@
         <div class="row apiman-entity-metadata">
           <div class="col-md-7" style="margin-bottom: 8px">
             <!-- Service Summary -->
-            <div class="description" data-field="description">{{ app.description }}</div>
+            <apiman-editable-description description="app.description" callback="updateAppDescription"
+                default-value="no description"></apiman-editable-description>
             <div style="padding: 8px">
               <div class="entity-info-with-icon">
                 <i class="fa fa-clock-o fa-fw"></i>

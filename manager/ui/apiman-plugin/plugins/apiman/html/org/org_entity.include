@@ -1,5 +1,5 @@
         <!-- Left Hand Side -->
-        <div class="col-md-4 apiman-entitysummary">
+        <div class="col-md-4 apiman-entitysummary" ng-controller="Apiman.OrgSidebarController">
           <div class="container-fluid">
             <div class="row">
               <div class="col-md-12 apiman-header" data-field="name">{{ org.name }}</div>
@@ -23,8 +23,8 @@
             </div>
             <div class="row">
               <div class="col-md-12">
-                <div class="description" data-field="description">{{ org.description }}
-                </div>
+                <apiman-editable-description description="org.description" callback="updateOrgDescription"
+                    default-value="no description"></apiman-editable-description>
               </div>
             </div>
           </div>
