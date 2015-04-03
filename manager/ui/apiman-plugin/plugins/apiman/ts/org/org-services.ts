@@ -3,11 +3,11 @@
 module Apiman {
 
     export var OrgServicesController = _module.controller("Apiman.OrgServicesController",
-        ['$q', '$scope', '$location', 'OrgSvcs', 'PageLifecycle', '$rootScope', '$routeParams', 
+        ['$q', '$scope', '$location', 'OrgSvcs', 'PageLifecycle', '$rootScope', '$routeParams',
         ($q, $scope, $location, OrgSvcs, PageLifecycle, $rootScope, $routeParams) => {
             var params = $routeParams;
             $scope.organizationId = params.org;
-            
+
             $scope.filterServices = function(value) {
                 if (!value) {
                     $scope.filteredServices = $scope.services;
@@ -22,7 +22,7 @@ module Apiman {
                     $scope.filteredServices = filtered;
                 }
             };
-            
+
             var pageData = {
                 org: $q(function(resolve, reject) {
                     OrgSvcs.get({ organizationId: params.org, entityType: '' }, function(org) {

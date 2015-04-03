@@ -51,8 +51,8 @@ module Apiman {
         }]);
 
     export var AppEntityController = _module.controller("Apiman.AppEntityController",
-        ['$q', '$scope', '$location', 'ActionSvcs', 'Logger', 'Dialogs', 'PageLifecycle', '$routeParams',
-        ($q, $scope, $location, ActionSvcs, Logger, Dialogs, PageLifecycle, $routeParams) => {
+        ['$q', '$scope', '$location', 'ActionSvcs', 'Logger', 'Dialogs', 'PageLifecycle', '$routeParams', 'OrgSvcs',
+        ($q, $scope, $location, ActionSvcs, Logger, Dialogs, PageLifecycle, $routeParams, OrgSvcs) => {
             var params = $routeParams;
 
             $scope.setVersion = function(app) {
@@ -90,6 +90,24 @@ module Apiman {
                     }, PageLifecycle.handleError);
                 }, function() {
                     $scope.unregisterButton.state = 'complete';
+                });
+            };
+
+            $scope.updateAppDescription = function(updatedDescription) {
+                var updateAppBean = {
+                    description: updatedDescription
+                }
+
+                OrgSvcs.update({
+                    organizationId: $scope.organizationId,
+                    entityType: 'applications',
+                    entityId: $scope.app.id
+                },
+                updateAppBean,
+                function(success) {
+                },
+                function(error) {
+                    Logger.error("Unable to update app description: {0}", error);
                 });
             };
 
