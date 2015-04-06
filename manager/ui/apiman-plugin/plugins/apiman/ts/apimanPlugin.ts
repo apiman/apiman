@@ -3,7 +3,8 @@
 module Apiman {
 
     export var _module = angular.module(Apiman.pluginName,
-        ['ApimanServices', 'ApimanLogger', 'ApimanConfiguration', 'ApimanPageLifecycle', 'ApimanCurrentUser', 'ApimanDialogs', 'ui.sortable']);
+        ['ApimanServices', 'ApimanLogger', 'ApimanConfiguration', 'ApimanPageLifecycle',
+         'ApimanCurrentUser', 'ApimanDialogs', 'ui.sortable', 'xeditable']);
 
     var tab = undefined;
 
@@ -71,13 +72,13 @@ module Apiman {
         '/orgs/:org/manage-members' : { templateUrl: 'org/org-manage-members.html' },
         '/orgs/:org/activity'       : { templateUrl: 'org/org-activity.html' },
         '/orgs/:org/new-member'     : { templateUrl: 'org/org-new-member.html' },
-        
+
         '/users/:user'              : { templateUrl: 'user/user.html' },
         '/users/:user/activity'     : { templateUrl: 'user/user-activity.html' },
         '/users/:user/apps'         : { templateUrl: 'user/user-apps.html' },
         '/users/:user/orgs'         : { templateUrl: 'user/user-orgs.html' },
         '/users/:user/services'     : { templateUrl: 'user/user-services.html' },
-        
+
         '/errors/400'          : { templateUrl: 'errors/400.html' },
         '/errors/403'          : { templateUrl: 'errors/403.html' },
         '/errors/404'          : { templateUrl: 'errors/404.html' },

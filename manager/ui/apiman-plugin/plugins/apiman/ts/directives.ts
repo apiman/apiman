@@ -381,4 +381,30 @@ module Apiman {
             }
         }
     ]);
-}
+
+    _module.directive('apimanEditableDescription',
+        ['Logger', function(Logger) {
+            return {
+                restrict: 'E',
+                scope: {
+                    description: '=',
+                    callback: '='
+                },
+                controller: function($scope) {
+                    // If description is updated, call updateFunction.
+                    $scope.$watch(function() {
+                        return $scope.description;
+                    },
+                    function(new_value, old_value) {
+                        if (old_value !== new_value && typeof old_value !== 'undefined') $scope.callback(new_value || '');
+                    });
+                },
+                link: function($scope, $elem, $attrs) {
+                    $scope.defaultValue = $attrs.defaultValue;
+                },
+                template: '<div class="description" editable-text="description">' +
+                            '{{ description || defaultValue }}' +
+                          '</div>'
+            }
+        }]);
+    }

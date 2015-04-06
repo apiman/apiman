@@ -24,8 +24,10 @@
         <div class="row apiman-entity-metadata">
           <div class="col-md-7" style="margin-bottom: 8px">
             <!-- Service Summary -->
-            <div class="description" data-field="description">{{ plan.description }}</div>
             <div style="padding: 8px">
+              <apiman-editable-description description="plan.description" callback="updatePlanDescription"
+                default-value="no description"></apiman-editable-description>
+
               <div class="entity-info-with-icon">
                 <i class="fa fa-clock-o fa-fw"></i>
                 <span class="apiman-label-faded" data-i18n-key="created-on">Created on</span>

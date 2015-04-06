@@ -50,8 +50,8 @@ module Apiman {
         }]);
 
     export var PlanEntityController = _module.controller("Apiman.PlanEntityController",
-        ['$q', '$scope', '$location', 'ActionSvcs', 'Logger', 'PageLifecycle', '$routeParams',
-        ($q, $scope, $location, ActionSvcs, Logger, PageLifecycle, $routeParams) => {
+        ['$q', '$scope', '$location', 'ActionSvcs', 'Logger', 'PageLifecycle', '$routeParams', 'OrgSvcs',
+        ($q, $scope, $location, ActionSvcs, Logger, PageLifecycle, $routeParams, OrgSvcs) => {
             var params = $routeParams;
 
             $scope.setVersion = function(plan) {
@@ -71,6 +71,24 @@ module Apiman {
                     $scope.lockButton.state = 'complete';
                     $scope.setEntityStatus($scope.version.status);
                 }, PageLifecycle.handleError);
+            }
+
+            $scope.updatePlanDescription = function(updatedDescription) {
+                var updatePlanBean = {
+                    description: updatedDescription
+                }
+
+                OrgSvcs.update({
+                        organizationId: $scope.organizationId,
+                        entityType: 'plans',
+                        entityId: $scope.plan.id
+                    },
+                    updatePlanBean,
+                    function(success) {
+                    },
+                    function(error) {
+                        Logger.error("Unable to update plan description:  {0}", error);
+                    });
             }
         }])
 

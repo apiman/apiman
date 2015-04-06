@@ -56,8 +56,8 @@ module Apiman {
         }]);
 
     export var ServiceEntityController = _module.controller("Apiman.ServiceEntityController",
-        ['$q', '$scope', '$location', 'ActionSvcs', 'Logger', 'Dialogs', 'PageLifecycle', '$routeParams',
-        ($q, $scope, $location, ActionSvcs, Logger, Dialogs, PageLifecycle, $routeParams) => {
+        ['$q', '$scope', '$location', 'ActionSvcs', 'Logger', 'Dialogs', 'PageLifecycle', '$routeParams', 'OrgSvcs',
+        ($q, $scope, $location, ActionSvcs, Logger, Dialogs, PageLifecycle, $routeParams, OrgSvcs) => {
             var params = $routeParams;
             $scope.params = params;
 
@@ -96,6 +96,25 @@ module Apiman {
                     }, PageLifecycle.handleError);
                 }, function() {
                     $scope.retireButton.state = 'complete';
+                });
+            };
+
+            $scope.updateServiceDescription = function(updatedDescription) {
+                var updateServiceBean = {
+                    description: updatedDescription
+                }
+
+                OrgSvcs.update({
+                    organizationId: $scope.organizationId,
+                    entityType: 'services',
+                    entityId: $scope.service.id,
+                },
+                updateServiceBean,
+                function(success) {
+                    Logger.info("Updated sucessfully");
+                },
+                function(error) {
+                    Logger.error("Unable to update service description:  {0}", error);
                 });
             };
         }])
