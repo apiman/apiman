@@ -396,7 +396,7 @@ module Apiman {
                         return $scope.description;
                     },
                     function(new_value, old_value) {
-                        if (old_value != new_value) $scope.callback(new_value || '');
+                        if (old_value !== new_value && typeof old_value !== 'undefined') $scope.callback(new_value || '');
                     });
                 },
                 link: function($scope, $elem, $attrs) {
