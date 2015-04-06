@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+  </head>
+
+  <body>
+  <div>
+    <div ng-include="'plugins/api-manager/html/progress.include'"></div>
+    <div id="apiman-header" ng-include="'plugins/api-manager/html/navbar.include'"></div>
+    <div ng-controller="Apiman.DashController" class="page container" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+      <div class="row">
+        <div class="col-md-12">
+          <h1 data-i18n-key="page-heading">API Management</h1>
+          <hr />
+        </div>
+        <div class="col-md-12 no-phone">
+          <span class="description" data-i18n-key="page-description">
+            Welcome to apiman, open source API management.  Use this software to provide
+            various APIs (Services) to your users (Applications) through a secure, scalable,
+            and governed Gateway layer.  API Management allows Service Developers to centralize
+            control and analysis of their Services.  It also provides a central locaton for
+            Application Developers to find and consume available APIs.
+          </span>
+          <hr />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+        
+          <div class="dash-group">
+            <div class="title">
+              <i class="fa fa-shield"></i>
+              <span data-i18n-key="organizations">Organizations</span>
+            </div>
+            <div class="description" data-i18n-key="orgs-description">
+              All services and applications must be managed within the context of an 
+              Organization.  You can be a member of multiple Organizations at the same
+              time, with different roles in each:  you can be an Application
+              Developer in one organization and a Service Developer in another.
+            </div>
+            <div class="actions">
+              <ul>
+                <li><a href="{{ pluginName }}/new-org" data-i18n-key="actions.create-new-org" data-field="createOrg">Create a New Organization</a></li>
+                <li><a href="{{ pluginName }}/browse/orgs" data-i18n-key="actions.browse-orgs" data-field="browseOrgs">Browse/Find an Organization</a></li>
+                <li><a href="{{ pluginName }}/users/{{ currentUser.username }}/orgs" data-i18n-key="actions.my-orgs" data-field="myOrgs">Go to My Organizations</a></li>
+              </ul>
+            </div>
+          </div>
+          
+          <div class="dash-group pull-right">
+            <div class="title">
+              <i class="fa fa-puzzle-piece"></i>
+              <span data-i18n-key="services">Services</span>
+            </div>
+            <div class="description" data-i18n-key="services-description">
+              Create, find, or manage Services.  A Service is also known as an API - anything
+              that can be invoked remotely by some sort of client (Application).  This platform
+              simply provides a way to expose existing APIs by defining them as Services and
+              attaching value-added policies to them.
+            </div>
+            <div class="actions">
+              <ul>
+                <li><a href="{{ pluginName }}/browse/services" data-i18n-key="actions.find-service" data-field="browseServices">Find/Consume a Service</a></li>
+                <li><a href="{{ pluginName }}/users/{{ currentUser.username }}/services" data-i18n-key="actions.my-services" data-field="myServices">Manage My Services</a></li>
+                <li><a href="{{ pluginName }}/new-service" data-i18n-key="actions.create-service" data-field="createService">Create a New Service</a></li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="dash-group">
+            <div class="title">
+              <i class="fa fa-gears"></i>
+              <span data-i18n-key="applications">Applications</span>
+            </div>
+            <div class="description" data-i18n-key="applications-description">
+              Create and manage your Applications.  An Application is the thing that consumes
+              APIs (Services).  These consumers must be defined in this platform so that 
+              contracts can be created between them and the Services they wish to consume.
+            </div>
+            <div class="actions">
+              <ul>
+                <li><a href="{{ pluginName }}/users/{{ currentUser.username }}/apps" data-i18n-key="actions.my-apps" data-field="myApps">Manage My Applications</a></li>
+                <li><a href="{{ pluginName }}/new-app" data-i18n-key="actions.new-app" data-field="createApp">Create a New Application</a></li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="dash-group dash-admin-group pull-right" data-field="adminDashPanel" ng-show="isAdmin">
+            <div class="title">
+              <i class="fa fa-gavel"></i>
+              <span data-i18n-key="system-administration">System Administration</span>
+            </div>
+            <div class="description" data-i18n-key="applications-description">
+              Hey it looks like you're an administrator!  Here are some things only you can do.
+              These are system-wide settings you're thinking about modifying, so please proceed
+              with caution.
+            </div>
+            <div class="actions">
+              <ul>
+                <li><a href="{{ pluginName }}/admin/roles" data-i18n-key="actions.manage-roles" data-field="manageRoles">Manage Roles/Permissions</a></li>
+                <li><a href="{{ pluginName }}/admin/policyDefs" data-i18n-key="actions.manage-policyDefs" data-field="managePolicyDefs">Manage Policy Definitions</a></li>
+                <li><a href="{{ pluginName }}/admin/gateways" data-i18n-key="actions.manage-gateways" data-field="manageGateways">Manage Gateways</a></li>
+                <li><a href="{{ pluginName }}/admin/plugins" data-i18n-key="actions.manage-plugins" data-field="managePlugins">Manage Plugins</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div> <!-- /container -->
+  </div>
+  </body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+  </head>
+
+  <body>
+  <div>
+    <div ng-include="'plugins/api-manager/html/progress.include'"></div>
+    <div id="apiman-header" ng-include="'plugins/api-manager/html/navbar.include'"></div>
+    <div ng-controller="Apiman.OrgPlansController" class="page container" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+      <div ng-include="'plugins/api-manager/html/org/org_bc.include'"></div>
+      <div class="row">
+        <div ng-include="'plugins/api-manager/html/org/org_entity.include'"></div>
+        <!-- Center Content -->
+        <div class="col-md-8">
+          <div class="apiman-entitytabs">
+            <ul id="entitytabs" class="nav nav-tabs">
+              <li apiman-permission="planView" class="active"><a href="{{ pluginName }}/orgs/{{org.id}}/plans" data-field="toOrgPlans" data-i18n-key="plans">Plans</a></li>
+              <li apiman-permission="svcView"><a href="{{ pluginName }}/orgs/{{org.id}}/services" data-field="toOrgServices" data-i18n-key="services">Services</a></li>
+              <li apiman-permission="appView"><a href="{{ pluginName }}/orgs/{{org.id}}/apps" data-field="toOrgApps" data-i18n-key="applications">Applications</a></li>
+              <li><a href="{{ pluginName }}/orgs/{{org.id}}/members" data-field="toOrgMembers" data-i18n-key="members">Members</a></li>
+              <li class="pull-right"><a href="{{ pluginName }}/orgs/{{org.id}}/activity" data-field="toOrgActivity" data-i18n-key="activity">Activity</a></li>
+            </ul>
+            <div id="entitytabsContent" class="tab-content">
+
+              <!-- Plans Tab Content -->
+              <div class="tab-pane active" id="tab-plans">
+                <div class="apiman-filters apiman-plans-filters">
+                  <div>
+                    <apiman-search-box function="filterPlans" placeholder="Filter by plan name..." />
+                  </div>
+                  <a apiman-permission="planEdit" data-field="toNewPlan" data-i18n-key="new-plan" href="{{ pluginName }}/new-plan" class="btn btn-primary pull-right">New Plan</a>
+                </div>
+                <div class="clearfix"></div>
+                <!-- The list of plans in this organization -->
+                <div class="apiman-plans" data-field="plans">
+
+                  <div class="apiman-no-content container-fluid" ng-hide="plans.length > 0">
+                    <div class="row">
+                      <div class="col-md-9">
+                        <p class="apiman-no-entities-description" data-i18n-key="no-plans-found-for-org">There aren't any plans configured for this organization. That means all published services in this organization must be public.</p>
+                      </div>
+                      <div class="col-md-3">
+                        <div class="apiman-no-entities-arrow"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="apiman-no-content container-fluid" ng-show="plans.length > 0 && filteredPlans.length == 0">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <p class="apiman-no-entities-description" data-i18n-key="no-plans-found-for-filter">No plans found matching your filter criteria - please try searching for something different.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="container-fluid apiman-summaryrow" ng-repeat="plan in filteredPlans">
+                    <div class="row">
+                      <span class="title"><a href="{{ pluginName }}/orgs/{{ org.id }}/plans/{{ plan.id}}">{{ plan.name }}</a></span>
+                    </div>
+                    <div class="row">
+                      <span class="description">{{ plan.description }}
+                      </span>
+                    </div>
+                    <hr/>
+                  </div>
+                </div>
+              </div>
+              <!-- End Plans Tab Content -->
+
+            </div>
+          </div>
+        </div>
+        <!-- /Center Content -->
+        
+      </div>
+    </div> <!-- /container -->
+  </div>
+  </body>
+</html>

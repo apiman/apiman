@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    
+  </head>
+
+  <body>
+  <div>
+    <div ng-include="'plugins/api-manager/html/progress.include'"></div>
+    <div id="apiman-header" ng-include="'plugins/api-manager/html/navbar.include'"></div>
+    <div ng-controller="Apiman.UserServicesController" class="page container" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+      <div ng-include="'plugins/api-manager/html/user/user_bc.include'"></div>
+      <div class="row">
+        <!-- Left Hand Side -->
+        <div ng-include="'plugins/api-manager/html/user/user_entity.include'"></div>
+        <!-- /Left Hand Side -->
+
+        <!-- Center Content -->
+        <div class="col-md-8">
+          <div class="apiman-entitytabs">
+            <div ng-include="'plugins/api-manager/html/user/user_tabs.include'"></div>
+            <div id="entitytabsContent" class="tab-content">
+
+              <!-- Services Tab Content -->
+              <div class="tab-pane active" id="tab-services">
+                <div class="apiman-filters apiman-services-filters">
+                  <div>
+                    <apiman-search-box function="filterServices" placeholder="Filter by org or service name..." />
+                  </div>
+                  <a data-field="toNewService" data-i18n-key="new-service" href="{{ pluginName}}/new-service" class="btn btn-primary pull-right">New Service</a>
+                </div>
+                <div class="clearfix"></div>
+                <!-- The list of services the user has access to -->
+                <div class="apiman-services" data-field="services">
+                  
+                  <div class="apiman-no-content container-fluid" ng-hide="services.length > 0">
+                    <div class="row">
+                      <div class="col-md-9">
+                        <p class="apiman-no-entities-description" data-i18n-key="no-apps-found-for-user">It looks like this user isn't responsible for any services. Maybe she's just all about the applications? If not, maybe she could log in and try creating a New Service.</p>
+                      </div>
+                      <div class="col-md-3">
+                        <div class="apiman-no-entities-arrow"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="apiman-no-content container-fluid" ng-show="services.length > 0 && filteredServices.length == 0">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <p class="apiman-no-entities-description" data-i18n-key="no-apps-found-for-filter">No services found matching your filter criteria - please try searching for something different.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="container-fluid apiman-summaryrow" ng-repeat="service in filteredServices">
+                    <div class="row">
+                      <a href="{{ pluginName }}/orgs/{{ service.organizationId }}/services">{{ service.organizationName }}</a>
+                      <span>/</span>
+                      <span class="title"><a href="{{ pluginName }}/orgs/{{ service.organizationId }}/services/{{ service.id }}">{{ service.name }}</a></span>
+                      <a class="apiman-summaryrow-icon">
+                        <i class="fa fa-clock-o fa-fw"></i>
+                        <span class="title-summary-item">Created on</span>
+                        <span class="title-summary-item">{{ service.createdOn | date:'yyyy-MM-dd' }}</span>
+                      </a>
+                    </div>
+                    <div class="row">
+                      <span class="description">
+                        {{ service.description }}
+                      </span>
+                    </div>
+                    <hr/>
+                  </div>
+                </div>
+              </div>
+              <!-- End Services Tab Content -->
+              
+            </div>
+          </div>
+        </div>
+        <!-- /Center Content -->
+        
+      </div>
+    </div> <!-- /container -->
+  </body>
+</html>

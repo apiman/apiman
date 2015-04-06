@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    
+  </head>
+
+  <body>
+  <div>
+    <div ng-include="'plugins/api-manager/html/progress.include'"></div>
+    <div id="apiman-header" ng-include="'plugins/api-manager/html/navbar.include'"></div>
+    <div ng-controller="Apiman.OrgServicesController" class="page container" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+      <div ng-include="'plugins/api-manager/html/org/org_bc.include'"></div>
+      <div class="row">
+        <div ng-include="'plugins/api-manager/html/org/org_entity.include'"></div>
+        <!-- Center Content -->
+        <div class="col-md-8">
+          <div class="apiman-entitytabs">
+            <ul id="entitytabs" class="nav nav-tabs">
+              <li apiman-permission="planView"><a href="{{ pluginName }}/orgs/{{org.id}}/plans" data-field="toOrgPlans" data-i18n-key="plans">Plans</a></li>
+              <li apiman-permission="svcView" class="active"><a href="{{ pluginName }}/orgs/{{org.id}}/services" data-field="toOrgServices" data-i18n-key="services">Services</a></li>
+              <li apiman-permission="appView"><a href="{{ pluginName }}/orgs/{{org.id}}/apps" data-field="toOrgApps" data-i18n-key="applications">Applications</a></li>
+              <li><a href="{{ pluginName }}/orgs/{{org.id}}/members" data-field="toOrgMembers" data-i18n-key="members">Members</a></li>
+              <li class="pull-right"><a href="{{ pluginName }}/orgs/{{org.id}}/activity" data-field="toOrgActivity" data-i18n-key="activity">Activity</a></li>
+            </ul>
+
+            <div id="entitytabsContent" class="tab-content">
+
+              <!-- Services Tab Content -->
+              <div class="tab-pane active" id="tab-services">
+                <div class="apiman-filters apiman-services-filters">
+                  <div>
+                    <apiman-search-box function="filterServices" placeholder="Filter by service name..." />
+                  </div>
+                  <div apiman-permission="svcEdit" class="btn-group pull-right">
+                    <a data-field="toNewService" href="{{ pluginName }}/new-service" class="btn btn-primary" data-i18n-key="new-service">New Service</a>
+<!--                     <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"> -->
+<!--                       <span class="caret"></span> -->
+<!--                       <span class="sr-only" data-i18n-key="toggle-dropdown">Toggle Dropdown</span> -->
+<!--                     </button> -->
+<!--                     <ul class="dropdown-menu" role="menu"> -->
+<!--                       <li><a href="import-services.html" disabled="disabled" data-field="toImportServices" data-i18n-key="import-services">Import Service(s)</a></li> -->
+<!--                     </ul> -->
+                  </div>
+                </div>
+                <div class="clearfix"></div>
+                <!-- The list of services the user has access to -->
+                <div class="apiman-services" data-field="services">
+
+                  <div class="apiman-no-content container-fluid" ng-hide="services.length > 0">
+                    <div class="row">
+                      <div class="col-md-9">
+                        <p class="apiman-no-entities-description" data-i18n-key="no-services-found-for-org">We couldn't find any services in this organization. Probably because none exist. We hope. Try creating one using the New Service button.</p>
+                      </div>
+                      <div class="col-md-3">
+                        <div class="apiman-no-entities-arrow"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="apiman-no-content container-fluid" ng-show="services.length > 0 && filteredServices.length == 0">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <p class="apiman-no-entities-description" data-i18n-key="no-services-found-for-filter">No services found matching your filter criteria - please try searching for something different.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="container-fluid apiman-summaryrow" ng-repeat="service in filteredServices">
+                    <div class="row">
+                      <span class="title"><a href="{{ pluginName }}/orgs/{{ service.organizationId }}/services/{{ service.id }}">{{ service.name }}</a></span>
+                      <a class="apiman-summaryrow-icon">
+                        <i class="fa fa-clock-o fa-fw"></i>
+                        <span class="title-summary-item">Created on</span>
+                        <span class="title-summary-item">{{ service.createdOn | date:'yyyy-MM-dd' }}</span>
+                      </a>
+                    </div>
+                    <div class="row">
+                      <span class="description">{{ service.description }}
+                      </span>
+                    </div>
+                    <hr/>
+                  </div>
+                </div>
+              </div>
+              <!-- End Services Tab Content -->
+              
+            </div>
+          </div>
+        </div>
+        <!-- /Center Content -->
+      </div>
+    </div> <!-- /container -->
+  </div>
+  </body>
+</html>

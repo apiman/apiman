@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    
+  </head>
+
+  <body>
+  <div>
+    <div ng-include="'plugins/api-manager/html/progress.include'"></div>
+    <div id="apiman-header" ng-include="'plugins/api-manager/html/navbar.include'"></div>   
+    <div ng-controller="Apiman.UserAppsController" class="page container" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+      <div ng-include="'plugins/api-manager/html/user/user_bc.include'"></div>
+      <div class="row">
+        <!-- Left Hand Side -->
+        <div ng-include="'plugins/api-manager/html/user/user_entity.include'"></div>
+        <!-- /Left Hand Side -->
+
+        <!-- Center Content -->
+        <div class="col-md-8">
+          <div class="apiman-entitytabs">
+            <div ng-include="'plugins/api-manager/html/user/user_tabs.include'"></div>
+            <div id="entitytabsContent" class="tab-content">
+
+              <!-- Applications Tab Content -->
+              <div class="tab-pane active" id="tab-apps">
+                <div class="apiman-filters apiman-applications-filters">
+                  <div>
+                    <apiman-search-box function="filterApps" placeholder="Filter by org or app name..." />
+                  </div>
+                  <a data-field="toNewApp" href="{{ pluginName }}/new-app" class="btn btn-primary pull-right">New App</a>
+                </div>
+                <div class="clearfix"></div>
+                <!-- The list of applications the user has access to -->
+                <div class="apiman-applications" data-field="applications">
+                  
+                  <div class="apiman-no-content container-fluid" ng-hide="applications.length > 0">
+                    <div class="row">
+                      <div class="col-md-9">
+                        <p class="apiman-no-entities-description" data-i18n-key="no-apps-found-for-user">User is not managing any applications. Perhaps that's just not her thing. But if it is, she can create a new Application using the New App button above.</p>
+                      </div>
+                      <div class="col-md-3">
+                        <div class="apiman-no-entities-arrow"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="apiman-no-content container-fluid" ng-show="applications.length > 0 && filteredApps.length == 0">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <p class="apiman-no-entities-description" data-i18n-key="no-apps-found-for-filter">No applications found matching your filter criteria - please try searching for something different.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="container-fluid apiman-summaryrow" ng-repeat="app in filteredApps">
+                    <div class="row">
+                      <a href="{{ pluginName}}/orgs/{{ app.organizationId }}/apps">{{ app.organizationName }}</a>
+                      <span>/</span>
+                      <span class="title"><a href="{{ pluginName }}/orgs/{{ app.organizationId }}/apps/{{ app.id}}">{{ app.name }}</a></span>
+                    </div>
+                    <div class="row">
+                      <span class="description">
+                        {{ app.description }}
+                      </span>
+                    </div>
+                    <hr/>
+                  </div>
+                </div>
+              </div>
+              <!-- End Applications Tab Content -->
+              
+            </div>
+          </div>
+        </div>
+        <!-- /Center Content -->
+        
+      </div>
+    </div> <!-- /container -->
+  </div>
+  </body>
+</html>

@@ -10,9 +10,9 @@
     <dependencySet>
       <outputDirectory>standalone/deployments</outputDirectory>
       <includes>
-        <include>*:apiman-manager-ui-war-wildfly8:war</include>
+        <include>*:apiman-manager-ui-hawtio-wildfly8:war</include>
       </includes>
-      <outputFileNameMapping>apiman-manager.war</outputFileNameMapping>
+      <outputFileNameMapping>apimanui.war</outputFileNameMapping>
       <useProjectArtifact>false</useProjectArtifact>
       <useProjectAttachments>false</useProjectAttachments>
       <useTransitiveDependencies>false</useTransitiveDependencies>

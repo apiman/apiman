@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+  </head>
+
+  <body>
+    <div ng-include="'plugins/api-manager/html/progress.include'"></div>
+    <div id="apiman-header" ng-include="'plugins/api-manager/html/navbar.include'"></div>
+    <div ng-controller="Apiman.NewContractController" id="form-page" class="container apiman-new-contract apiman-entity-new page" data-field="page">
+      <div class="row">
+        <h2 class="title" data-i18n-key="new-contract">New Contract</h2>
+      </div>
+      <!-- Helpful hint -->
+      <div class="row">
+        <p class="col-md-6 apiman-label-faded" data-i18n-key="new-contract-help-text" class="apiman-label-faded">Creating a Contract allows you to connect an Application to a Service via a particular Plan offered by the Service.  You would want to do this so that your Application can invoke the Service successfully.  Note that this is not necessary if the Service is public.</p>
+      </div>
+      <!-- HR -->
+      <div class="row hr-row">
+        <hr/>
+      </div>
+
+      <div id="new-contract-form" class="row">
+        <div class="col-md-6">
+          <div class="application" ng-class="{ selected : selectedAppVersion }">
+            <div class="title"><i class="fa fa-gears fa-fw"></i> <span>From Application</span></div>
+            <div class="body">
+              <p data-i18n-key="new-contract.app-description">
+                The Application that will be used as the source of the new Service Contract.  Choose one 
+                of your available Applications below, and then choose an application version.
+              </p>
+              <div class="center-content" ng-show="apps.length > 0">
+                <select ng-model="selectedApp" apiman-select-picker="" class="selectpicker" data-live-search="true" title="Select an Application" ng-options="(app.organizationName + ' / ' + app.name) for app in apps"></select>
+                <span class="slash">&#8680;</span>
+                <select ng-model="selectedAppVersion" apiman-select-picker="appVersions" class="selectpicker" title="Select a Version" ng-options="version for version in appVersions">
+                </select>
+              </div>
+              <div class="alert alert-warning" ng-show="apps.length == 0">
+                 <span class="pficon pficon-info"></span>
+                 We couldn't find any Applications for you - you must have at least one (not yet registered)
+                 Application in order to create a Contract.
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="clearfix"></div>
+
+        <div class="col-md-6">
+          <div class="arrow to-plan-arrow">&nbsp;</div>
+        </div>
+
+        <div class="clearfix"></div>
+      
+        <div class="col-md-6">
+          <div class="plan" ng-class="{ selected : selectedPlan }">
+            <div class="title"><i class="fa fa-bar-chart-o fa-fw"></i> <span>Using Plan</span></div>
+            <div class="body">
+              <p ng-show="!plans">
+                 Please choose a valid Service below before selecting the Plan you wish to use for
+                 this Contract (either you have not selected a Service or the Service has no 
+                 available plans).
+              </p>
+              <p data-i18n-key="new-contract.plan-description" ng-show="plans">
+                Use the drop-down below to choose one of the Plans made available by the selected Service.
+              </p>
+              <div class="center-content" ng-show="plans">
+                <select ng-model="selectedPlan" apiman-select-picker="" class="selectpicker" title="Select a Plan" ng-options="plan.planName for plan in plans">
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="clearfix"></div>
+
+        <div class="col-md-6">
+          <div class="arrow to-service-arrow">&nbsp;</div>
+        </div>
+
+        <div class="clearfix"></div>
+
+        <div class="col-md-6">
+          <div class="service" ng-class="{ selected : selectedService }">
+            <div class="title"><i class="fa fa-puzzle-piece fa-fw"></i> <span>To Service</span></div>
+            <div class="body">
+              <p data-i18n-key="new-contract.service-description">
+                Use this section to choose what Service the Application will be consuming (aka the
+                "target" of this Service Contract).
+              </p>
+              <div class="center-content">
+                <button ng-click="selectService()" class="btn btn-default btn-svc" ng-show="selectedService">
+                  <span>{{ selectedService.organizationName }}</span>
+                  <span> / </span>
+                  <span class="emphasis">{{ selectedService.name }}</span>
+                  <span>&#8680;</span>
+                  <span>{{ selectedService.version }}</span>
+                </button>
+                <button ng-click="selectService()" class="btn btn-default btn-svc btn-primary" ng-show="!selectedService">
+                  <span data-i18n-key="select-service">Select a Service</span>
+                </button>
+                <div class="clearfix" />
+                <span style="font-size: 10px" ng-show="selectedService">(click to change)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> <!-- /new-contract-form -->
+      
+      <div class="row hr-row">
+        <hr/>
+      </div>
+
+      <div class="row">
+        <button ng-click="createContract()" apiman-action-btn="" ng-disabled="!selectedApp || !selectedAppVersion || !selectedPlan || !selectedService" class="btn btn-primary" data-field="createButton" data-i18n-key="create-contract" placeholder="Creating..." data-icon="fa-cog">Create Contract</button>
+        <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" data-i18n-key="cancel">Cancel</a>
+      </div>
+
+    </div> <!-- /container -->
+  </body>
+</html>

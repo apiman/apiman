@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    
+  </head>
+
+  <body>
+  <div>
+    <div ng-include="'plugins/api-manager/html/progress.include'"></div>
+    <div id="apiman-header" ng-include="'plugins/api-manager/html/navbar.include'"></div>
+    <div ng-controller="Apiman.ServiceContractsController" class="page container" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+      <div ng-include="'plugins/api-manager/html/service/service_bc.include'"></div>
+      <!-- Entity Summary Row -->
+      <div ng-include="'plugins/api-manager/html/service/service_entity.include'"></div>
+
+      <!-- Navigation + Content Row -->
+      <div class="row">
+        <!-- Left hand nav -->
+        <div ng-include="'plugins/api-manager/html/service/service_tabs.include'"></div>
+        <!-- /Left hand nav -->
+
+        <!-- Content -->
+        <div class="col-md-10 apiman-entity-content">
+          <div class="col-md-9">
+            <div class="title" data-i18n-key="contracts">Service Contracts</div>
+            <div class="description" data-i18n-key="contracts-help">Here is a list of all contracts between all Applications and this Service.  This provides a list of all Applications that may potentially consume this Service.</div>
+          </div>
+          <div class="col-md-12" ng-show="isPublicOnly">
+            <div aria-hidden="false" style="background-color: rgb(255, 213, 185);" data-i18n-key="warning-public-only" data-field="onlyPublicWarning" class="alert alert-warning">Warning: this service is exclusively public, which means that it is impossible for Applications to create Service Contracts with it.</div>
+          </div>
+          <div class="col-md-12">
+            <div class="table-responsive">
+              <table class="table table-striped table-bordered table-hover" data-field="contracts">
+                <thead>
+                  <tr>
+                    <th width="70%" data-i18n-key="application" nowrap="nowrap">Application</th>
+                    <th data-i18n-key="plan" nowrap="nowrap">Plan</th>
+                    <th data-i18n-key="created-on" nowrap="nowrap">Created On</th>
+                  </tr>
+                </thead>
+                <tbody>
+
+                  <tr ng-hide="contracts.length > 0">
+                    <td colspan="4">
+                      <div class="apiman-no-content container-fluid">
+                        <div class="row">
+                          <div class="col-md-12">
+                            <p class="apiman-no-entities-description" data-i18n-key="no-service-contracts">This service doesn't appear to have any contracts. This means that there aren't any applications consuming this service.  Note: if this is a public service, then no contracts are necessary to invoke the service!</p>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <tr ng-repeat="contract in contracts">
+                    <td>
+                      <span>
+                        <a href="{{ pluginName }}/browse/orgs/{{ contract.appOrganizationId }}"><span>{{ contract.appOrganizationName }}</span></a>
+                        <span>/</span>
+                        <span class="emphasis">{{ contract.appName }}</span>
+                        <span>&#8680;</span>
+                        <span>{{ contract.appVersion }}</span>
+                      </span>
+                    </td>
+                    <td><span>{{ contract.planName }}</span></td>
+                    <td><span>{{ contract.createdOn | date:'yyyy-MM-dd' }}</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div style="text-align: center" ng-hide="contracts.length == 0">
+              <button ng-show="hasMore" ng-click="getNextPage()" class="btn btn-default" data-field="moreButton" data-i18n-key="show-more-contracts" placeholder="Loading..." data-icon="fa-cog">Show More Contracts</button>
+            </div>
+          </div>
+        </div>
+        <!-- /Content -->
+      </div>
+    </div> <!-- /container -->
+  </div>
+  </body>
+</html>

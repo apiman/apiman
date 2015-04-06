@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    
+  </head>
+
+  <body>
+  <div>
+    <div ng-include="'plugins/api-manager/html/progress.include'"></div>
+    <div id="apiman-header" ng-include="'plugins/api-manager/html/navbar.include'"></div>   
+    <div ng-controller="Apiman.EditRoleController" id="form-page" class="container apiman-edit-role apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+      <div class="row">
+        <h2 class="title" data-i18n-key="edit-role">Edit Role</h2>
+      </div>
+      <!-- Helpful hint -->
+      <div class="row">
+        <p data-i18n-key="edit-role-help-text" class="col-md-6 apiman-label-faded">Update this role's definition, including description and assigned permissions.</p>
+      </div>
+      <!-- HR -->
+      <div class="row hr-row">
+        <hr/>
+      </div>
+      <!-- Description of role -->
+      <div class="row">
+        <dl>
+          <dt data-i18n-key="description">Description</dt>
+          <dd>
+            <input ng-model="role.description" type="text" class="form-control description" id="apiman-description" placeholder="Role description (optional)..."></input>
+          </dd>
+        </dl>
+      </div>
+      <!-- Auto-grant this role -->
+      <div class="row">
+        <dl>
+          <dt data-i18n-key="auto-grant">Auto-Grant Role</dt>
+          <dd>
+             <div class="checkbox">
+               <label>
+                 <input ng-model="role.autoGrant" data-field="autoGrant" type="checkbox"></input> 
+                 <span data-i18n-key="grant-role-automatically">Grant this role automatically when creating a new Organization</span>
+               </label>
+             </div>
+          </dd>
+        </dl>
+      </div>
+      <!-- Permissions -->
+      <div class="row">
+        <dl>
+          <dt data-i18n-key="permissions">Permissions</dt>
+          <dd>
+            <div class="container">
+              <div class="row" data-field="permissions">
+                <div class="col-md-3">
+                  <div class="checkbox">
+                    <label>
+                      <input ng-model="rolePermissions['orgView']" data-field="orgView" type="checkbox"></input> <span data-i18n-key="permission.orgView">Organization View</span>
+                    </label>
+                  </div>
+                  <div class="checkbox">
+                    <label>
+                      <input ng-model="rolePermissions['orgEdit']" data-field="orgEdit" type="checkbox"></input> <span data-i18n-key="permission.orgEdit">Organization Edit</span>
+                    </label>
+                  </div>
+                  <div class="checkbox">
+                    <label>
+                      <input ng-model="rolePermissions['orgAdmin']" data-field="orgAdmin" type="checkbox"></input> <span data-i18n-key="permission.orgAdmin">Organization Admin</span>
+                    </label>
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <div class="checkbox">
+                    <label>
+                      <input ng-model="rolePermissions['planView']" data-field="planView" type="checkbox"></input> <span data-i18n-key="permission.planView">Plan View</span>
+                    </label>
+                  </div>
+                  <div class="checkbox">
+                    <label>
+                      <input ng-model="rolePermissions['planEdit']" data-field="planEdit" type="checkbox"></input> <span data-i18n-key="permission.planEdit">Plan Edit</span>
+                    </label>
+                  </div>
+                  <div class="checkbox">
+                    <label>
+                      <input ng-model="rolePermissions['planAdmin']" data-field="planAdmin" type="checkbox"></input> <span data-i18n-key="permission.planAdmin">Plan Admin</span>
+                    </label>
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <div class="checkbox">
+                    <label>
+                      <input ng-model="rolePermissions['svcView']" data-field="svcView" type="checkbox"></input> <span data-i18n-key="permission.svcView">Service View</span>
+                    </label>
+                  </div>
+                  <div class="checkbox">
+                    <label>
+                      <input ng-model="rolePermissions['svcEdit']" data-field="svcEdit" type="checkbox"></input> <span data-i18n-key="permission.svcEdit">Service Edit</span>
+                    </label>
+                  </div>
+                  <div class="checkbox">
+                    <label>
+                      <input ng-model="rolePermissions['svcAdmin']" data-field="svcAdmin" type="checkbox"></input> <span data-i18n-key="permission.svcAdmin">Service Admin</span>
+                    </label>
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <div class="checkbox">
+                    <label>
+                      <input ng-model="rolePermissions['appView']" data-field="appView" type="checkbox"></input> <span data-i18n-key="permission.appView">Application View</span>
+                    </label>
+                  </div>
+                  <div class="checkbox">
+                    <label>
+                      <input ng-model="rolePermissions['appEdit']" data-field="appEdit" type="checkbox"></input> <span data-i18n-key="permission.appEdit">Application Edit</span>
+                    </label>
+                  </div>
+                  <div class="checkbox">
+                    <label>
+                      <input ng-model="rolePermissions['appAdmin']" data-field="appAdmin" type="checkbox"></input> <span data-i18n-key="permission.appAdmin">Application Admin</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </dd>
+        </dl>
+      </div>
+      <!-- HR -->
+      <div class="row hr-row">
+        <hr/>
+      </div>
+      <!-- Create Button -->
+      <div class="row">
+        <button ng-disabled="!isValid" apiman-action-btn="" class="btn btn-primary" data-field="updateButton" data-i18n-key="update-role" placeholder="Updating..." data-icon="fa-cog" ng-click="updateRole()">Update Role</button>
+        <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" data-i18n-key="cancel">Cancel</a>
+        <button apiman-action-btn="" class="btn btn-danger" style="margin-left: 100px;" data-field="deleteButton" data-i18n-key="delete-role" placeholder="Deleting..." data-icon="fa-cog" ng-click="deleteRole()">Delete Role</button>
+      </div>
+    </div> <!-- /container -->
+  </div>
+  </body>
+</html>

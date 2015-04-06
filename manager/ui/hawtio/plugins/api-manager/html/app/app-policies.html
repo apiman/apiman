@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+  </head>
+
+  <body>
+  <div>
+    <div ng-include="'plugins/api-manager/html/progress.include'"></div>
+    <div id="apiman-header" ng-include="'plugins/api-manager/html/navbar.include'"></div>
+    <div ng-controller="Apiman.AppPoliciesController" class="container page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+      <div ng-include="'plugins/api-manager/html/app/app_bc.include'"></div>
+      <!-- Entity Summary Row -->
+      <div ng-include="'plugins/api-manager/html/app/app_entity.include'"></div>
+
+      <!-- Navigation + Content Row -->
+      <div class="row">
+        <!-- Left hand nav -->
+        <div ng-include="'plugins/api-manager/html/app/app_tabs.include'"></div>
+        <!-- /Left hand nav -->
+
+        <!-- Content -->
+        <div class="col-md-10 apiman-entity-content">
+          <div class="col-md-9">
+            <!-- Title and help text -->
+            <div class="title" data-i18n-key="app-policies">Application Policies</div>
+            <div class="description" data-i18n-key="policies-help">Here is a list of all Policies defined for this Application.  These Policies will be applied to all Service invocations made by the Application, in addition to whatever Policies are defined by the Service itself.</div>
+            <hr />
+            <!-- The list of policies -->
+            <div apiman-permission="appEdit" apiman-status="Created,Ready" class="apiman-filters apiman-policies-filters">
+              <a data-i18n-key="add-policy" href="{{ pluginName }}/orgs/{{ org.id }}/apps/{{ app.id }}/{{ version.version }}/new-policy" class="btn btn-primary pull-right">Add Policy</a>
+            </div>
+            <div class="clearfix"></div>
+            <div class="apiman-policies" data-field="policies">
+
+              <div class="apiman-no-content container-fluid" ng-hide="policies.length > 0">
+                <div class="row">
+                  <div class="col-md-9">
+                    <p class="apiman-no-entities-description" data-i18n-key="no-policies-for-app">It looks like there aren't any policies defined! That may be exactly what you want (of course) but if not, you may try defining one using the Add Policy button above...</p>
+                  </div>
+                  <div apiman-permission="svcEdit" apiman-status="Created,Ready" class="col-md-3">
+                    <div class="apiman-no-entities-arrow"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="clearfix"></div>
+              <apiman-policy-list ng-model="policies" remove-function="removePolicy" type="applications" org-id="{{ org.id }}" page-id="{{ app.id }}" version="{{ version.version }}"></policy-list>
+            </div>
+          </div>
+        </div>
+        <!-- /Content -->
+      </div>
+    </div> <!-- /container -->
+  </div>
+  </body>
+</html>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+  version="3.0">
+
+  <servlet>
+    <servlet-name>AngularServlet</servlet-name>
+    <servlet-class>io.apiman.manager.ui.server.AngularServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>AngularServlet</servlet-name>
+    <url-pattern>/api-manager/*</url-pattern>
+  </servlet-mapping>
+
+<!--   <servlet> -->
+<!--     <servlet-name>ConfigurationJS</servlet-name> -->
+<!--     <servlet-class>io.apiman.manager.ui.server.servlets.ConfigurationServlet</servlet-class> -->
+<!--   </servlet> -->
+<!--   <servlet-mapping> -->
+<!--     <servlet-name>ConfigurationJS</servlet-name> -->
+<!--     <url-pattern>/js/configuration.nocache.js</url-pattern> -->
+<!--   </servlet-mapping> -->
+
+<!--   <servlet> -->
+<!--     <servlet-name>TokenRefresh</servlet-name> -->
+<!--     <servlet-class>io.apiman.manager.ui.server.servlets.TokenRefreshServlet</servlet-class> -->
+<!--   </servlet> -->
+<!--   <servlet-mapping> -->
+<!--     <servlet-name>TokenRefresh</servlet-name> -->
+<!--     <url-pattern>/rest/tokenRefresh</url-pattern> -->
+<!--   </servlet-mapping> -->
+
+<!--   <servlet> -->
+<!--     <servlet-name>FetchProxy</servlet-name> -->
+<!--     <servlet-class>io.apiman.manager.ui.server.servlets.UrlFetchProxyServlet</servlet-class> -->
+<!--   </servlet> -->
+<!--   <servlet-mapping> -->
+<!--     <servlet-name>FetchProxy</servlet-name> -->
+<!--     <url-pattern>/proxies/fetch/*</url-pattern> -->
+<!--   </servlet-mapping> -->
+
+<!--   <servlet> -->
+<!--     <servlet-name>ApiManProxy</servlet-name> -->
+<!--     <servlet-class>io.apiman.manager.ui.server.servlets.ApiManagerProxyServlet</servlet-class> -->
+<!--   </servlet> -->
+<!--   <servlet-mapping> -->
+<!--     <servlet-name>ApiManProxy</servlet-name> -->
+<!--     <url-pattern>/proxies/apiman/*</url-pattern> -->
+<!--   </servlet-mapping> -->
+
+<!--   <servlet> -->
+<!--     <servlet-name>LogoutServlet</servlet-name> -->
+<!--     <servlet-class>io.apiman.manager.ui.server.wildfly8.KeyCloakLogoutServlet</servlet-class> -->
+<!--   </servlet> -->
+<!--   <servlet-mapping> -->
+<!--     <servlet-name>LogoutServlet</servlet-name> -->
+<!--     <url-pattern>/logout</url-pattern> -->
+<!--   </servlet-mapping> -->
+
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>apimanui</web-resource-name>
+      <url-pattern>/*</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>apiuser</role-name>
+    </auth-constraint>
+  </security-constraint>
+  <login-config>
+    <auth-method>BASIC</auth-method>
+    <realm-name>apiman</realm-name>
+  </login-config>
+  <security-role>
+    <role-name>apiuser</role-name>
+  </security-role>
+
+</web-app>

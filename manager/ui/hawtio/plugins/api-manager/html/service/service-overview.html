@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    
+  </head>
+
+  <body>
+  <div>
+    <div ng-include="'plugins/api-manager/html/progress.include'"></div>
+    <div id="apiman-header" ng-include="'plugins/api-manager/html/navbar.include'"></div>
+    <div ng-controller="Apiman.ServiceOverviewController" class="page container" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+      <div ng-include="'plugins/api-manager/html/service/service_bc.include'"></div>
+      <!-- Entity Summary Row -->
+      <div ng-include="'plugins/api-manager/html/service/service_entity.include'"></div>
+
+      <!-- Navigation + Content Row -->
+      <div class="row">
+        <!-- Left hand nav -->
+        <div ng-include="'plugins/api-manager/html/service/service_tabs.include'"></div>
+        <!-- /Left hand nav -->
+
+        <!-- Content -->
+        <div class="col-md-10 apiman-entity-content apiman-entity-overview">
+          <!-- Content Summary -->
+          <div class="col-md-12">
+            <h1 data-i18n-key="service-details">Service Details</h1>
+            <p data-i18n-key="service-description">
+              This is the service details page.  Use this page to modify the meta-data, plans, and 
+              policies for the service.  There is no need to follow the tabs in order, but note that
+              you will need to fill out a minimum amount of data before the service can be published
+              to the Gateway.  In particular, the Implementation and Plans tabs are important (more
+              information below).
+            </p>
+            
+            <h2 data-i18n-key="impl">Implementation</h2>
+            <p data-i18n-key="impl-description">
+              The 'Implementation' tab is where you go to configure the details of the real service
+              being managed.  This is where you tell apiman where the service is, so that we can 
+              actually invoke it at runtime.
+            </p>
+
+            <h2 data-i18n-key="plans">Plans</h2>
+            <p data-i18n-key="plans-description">
+              The 'Plans' tab is used to configure which Plans (already defined in the Organization)
+              are available when an Application wishes to create a Service Contract with this 
+              Service.  Optionally, a Service can also be marked as "Public", which means that no
+              Service Contract is required (the Service can be invoked without sending an API Key).
+            </p>
+            
+            <h2 data-i18n-key="policies">Policies</h2>
+            <p data-i18n-key="policies-description">
+              The 'Policies' tab is where you go if you wish to configure any policies that should
+              be enforced for *all* requests to the Service, regardless of which user, application,
+              or plan is being used.  In other words, Service-level policies.
+            </p>
+            
+            <h2 data-i18n-key="contracts">Contracts</h2>
+            <p data-i18n-key="contracts-description">
+              The 'Contracts' tab will show a table of all Applications that have created Service
+              Contracts to this Service.  In other words, it shows all of the registered 
+              consumers of the Service.  Note that if the Service is marked as "Public", this tab
+              will likely be empty.
+            </p>
+
+            <h2 data-i18n-key="endpoint">Endpoint</h2>
+            <p data-i18n-key="endpoint-description">
+              The 'Endpoint' tab will show you information about how to invoke the Service once
+              it is published to the API Gateway.
+            </p>
+
+            <h2 data-i18n-key="activity">Activity</h2>
+            <p data-i18n-key="activity-description">
+              The 'Activity' tab shows a history of all the changes made to the Service.  Essentially
+              it is an audit log.
+            </p>
+            
+          </div>
+          <!-- /Content Summary -->
+          
+        </div>
+        <!-- /Content -->
+      </div>
+    </div> <!-- /container -->
+  </div>
+  </body>
+</html>
