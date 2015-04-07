@@ -47,7 +47,7 @@ public class KeyCloakLogoutServlet extends HttpServlet {
         if (req.getSession() != null && !req.getSession().isNew()) {
             req.getSession().invalidate();
         }
-        resp.sendRedirect("/apiman-manager"); //$NON-NLS-1$
+        resp.sendRedirect("/apimanui"); //$NON-NLS-1$
     }
 
 }

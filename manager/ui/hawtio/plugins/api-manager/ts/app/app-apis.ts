@@ -9,8 +9,8 @@ module Apiman {
             $scope.organizationId = params.org;
             $scope.tab = 'apis';
             $scope.version = params.version;
-            $scope.downloadAsJson = pluginName + '/proxies/api-manager/organizations/' + params.org + '/applications/' + params.app + '/versions/' + params.version + '/apiregistry/json';
-            $scope.downloadAsXml = pluginName + '/proxies/api-manager/organizations/' + params.org + '/applications/' + params.app + '/versions/' + params.version + '/apiregistry/xml';
+            $scope.downloadAsJson = 'proxies/apiman/organizations/' + params.org + '/applications/' + params.app + '/versions/' + params.version + '/apiregistry/json';
+            $scope.downloadAsXml = 'proxies/apiman/organizations/' + params.org + '/applications/' + params.app + '/versions/' + params.version + '/apiregistry/xml';
 
             $scope.toggle = function(api) {
                 api.expanded = !api.expanded;

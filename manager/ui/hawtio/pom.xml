@@ -33,11 +33,6 @@
                 <include>libs/**</include>
                 <include>dist/**</include>
                 <include>plugins/**</include>
-
-
-                <include>js/**</include>
-
-
               </includes>
             </resource>
           </webResources>

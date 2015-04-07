@@ -6,6 +6,7 @@ module Apiman {
     {
         Logger.log("Current user is {0}.", Configuration.user.username);
         $scope.username = Configuration.user.username;
+        $scope.logoutUrl = Configuration.apiman.logoutUrl;
     }]);
 
 }

@@ -15,14 +15,13 @@
  */
 package io.apiman.manager.ui.server.servlets;
 
+import io.apiman.common.util.ServiceRegistryUtil;
 import io.apiman.manager.ui.server.IUIConfig;
 import io.apiman.manager.ui.server.auth.ITokenGenerator;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
-
-import org.overlord.commons.services.ServiceRegistryUtil;
 
 /**
  * Base class for UI servlets.

@@ -104,24 +104,46 @@ module Apiman {
             $locationProvider.html5Mode(true);
         }]);
 
-    _module.factory('authInterceptor', ['$q', 'Configuration', function($q, Configuration) {
-        var requestInterceptor = {
-            request: function(config) {
-                if (Configuration.api.auth.type == 'basic') {
-                    var username = Configuration.api.auth.basic.username;
-                    var password = Configuration.api.auth.basic.password;
-                    var enc = btoa(username + ':' + password);
-                    config.headers.Authorization = 'Basic ' + enc;
-                } else if (Configuration.api.auth.type == 'bearerToken') {
-                    // TBD
-                } else if (Configuration.api.auth.type == 'authToken') {
-                    // TBD
-                }
-                return config;
+    _module.factory('authInterceptor', 
+        ['$q', '$timeout', 'Configuration', 'Logger',
+        ($q, $timeout, Configuration, Logger) => {
+            var refreshBearerToken = function() {
+                Logger.info('Refreshing bearer token now.');
+                // Note: we need to use jquery directly for this call, otherwise we will have
+                // a circular dependency in angular.
+                $.get('rest/tokenRefresh', function(reply) {
+                    Logger.info('Bearer token successfully refreshed: {0}', reply);
+                    Configuration.api.auth.bearerToken.token = reply.token;
+                    var refreshPeriod = reply.refreshPeriod;
+                    $timeout(refreshBearerToken, refreshPeriod * 1000);
+                }).fail(function(error) {
+                    Logger.error('Failed to refresh bearer token: {0}', error);
+                });
+            };
+            if (Configuration.api.auth.type == 'bearerToken') {
+                var refreshPeriod = Configuration.api.auth.bearerToken.refreshPeriod;
+                $timeout(refreshBearerToken, refreshPeriod * 1000);
             }
-        };
-        return requestInterceptor;
-    }]);
+            var requestInterceptor = {
+                request: function(config) {
+                    if (Configuration.api.auth.type == 'basic') {
+                        var username = Configuration.api.auth.basic.username;
+                        var password = Configuration.api.auth.basic.password;
+                        var enc = btoa(username + ':' + password);
+                        config.headers.Authorization = 'Basic ' + enc;
+                    } else if (Configuration.api.auth.type == 'bearerToken') {
+                        var token = Configuration.api.auth.bearerToken.token;
+                        config.headers.Authorization = 'Bearer ' + token;
+                    } else if (Configuration.api.auth.type == 'authToken') {
+                        var token = Configuration.api.auth.bearerToken.token;
+                        config.headers.Authorization = 'AUTH-TOKEN ' + token;
+                    }
+                    return config;
+                }
+            };
+            return requestInterceptor;
+        }]);
+    
     _module.config(['$httpProvider', function($httpProvider) {
         $httpProvider.interceptors.push('authInterceptor');
     }]);

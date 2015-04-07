@@ -28,21 +28,19 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-common-servlet</artifactId>
     </dependency>
-
-    <!-- Overlord Commons -->
     <dependency>
-      <groupId>org.overlord</groupId>
-      <artifactId>overlord-commons-services</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.overlord</groupId>
-      <artifactId>overlord-commons-config</artifactId>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-common-util</artifactId>
     </dependency>
 
     <!-- Third Party Dependencies -->
     <dependency>
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
     </dependency>
     <dependency>
       <groupId>commons-configuration</groupId>

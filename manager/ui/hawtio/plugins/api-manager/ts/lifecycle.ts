@@ -97,7 +97,6 @@ module ApimanPageLifecycle {
             var handleError = function(error) {
                 $rootScope.pageState = 'error';
                 $rootScope.pageError = error;
-                $rootScope.previousPage = $location.url();
                 if (error.status == 400) {
                     Logger.info('Detected an error {0}, redirecting to 400.', error.status);
                     $location.url(Apiman.pluginName + '/errors/400').replace();

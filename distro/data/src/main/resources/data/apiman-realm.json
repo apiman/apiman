@@ -71,11 +71,11 @@
     ],
     "applications" : [
         {
-            "name" : "apiman-manager",
+            "name" : "apimanui",
             "enabled" : true,
-            "baseUrl" : "/apiman-manager",
+            "baseUrl" : "/apimanui",
             "redirectUris" : [
-                "/apiman-manager/*"
+                "/apimanui/*"
             ],
             "secret" : "password"
         },

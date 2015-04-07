@@ -16,9 +16,14 @@
 package io.apiman.manager.ui.server;
 
 import io.apiman.manager.ui.server.beans.ApiAuthType;
+import io.apiman.manager.ui.server.servlets.SystemPropertiesConfiguration;
 
+import java.io.File;
+
+import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.Configuration;
-import org.overlord.commons.config.ConfigurationFactory;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
 
 /**
  * Global access to configuration information.
@@ -26,9 +31,6 @@ import org.overlord.commons.config.ConfigurationFactory;
  * @author eric.wittmann@redhat.com
  */
 public class UIConfig implements IUIConfig {
-
-    public static final String APIMAN_MANAGER_UI_CONFIG_FILE_NAME = "apiman-manager-ui.config.file.name"; //$NON-NLS-1$
-    public static final String APIMAN_MANAGER_UI_CONFIG_FILE_REFRESH = "apiman-manager-ui.config.file.refresh"; //$NON-NLS-1$
 
     public static final String APIMAN_MANAGER_UI_API_ENDPOINT = "apiman-manager-ui.api.endpoint"; //$NON-NLS-1$
     public static final String APIMAN_MANAGER_UI_API_AUTH_TYPE = "apiman-manager-ui.api.authentication.type"; //$NON-NLS-1$
@@ -40,15 +42,37 @@ public class UIConfig implements IUIConfig {
 
     private static Configuration config;
     static {
-        String configFile = System.getProperty(APIMAN_MANAGER_UI_CONFIG_FILE_NAME);
-        String refreshDelayStr = System.getProperty(APIMAN_MANAGER_UI_CONFIG_FILE_REFRESH);
-        Long refreshDelay = 5000l;
-        if (refreshDelayStr != null) {
-            refreshDelay = new Long(refreshDelayStr);
+        CompositeConfiguration compositeConfig = new CompositeConfiguration();
+        // System properties always win - add that first
+        compositeConfig.addConfiguration(new SystemPropertiesConfiguration());
+
+        // Next, check for the apiman.properties file in wildfly
+        File configFile = null;
+        String jbossConfigDir = System.getProperty("jboss.server.config.dir"); //$NON-NLS-1$
+        if (jbossConfigDir != null) {
+            File dirFile = new File(jbossConfigDir);
+            File confFile = new File(dirFile, "apiman.properties"); //$NON-NLS-1$
+            if (confFile.isFile()) {
+                configFile = confFile;
+            }
+        }
+        String jbossConfigUrl = System.getProperty("jboss.server.config.url"); //$NON-NLS-1$
+        if (jbossConfigUrl != null) {
+            File dirFile = new File(jbossConfigUrl);
+            File confFile = new File(dirFile, "apiman.properties"); //$NON-NLS-1$
+            if (confFile.isFile()) {
+                configFile = confFile;
+            }
+        }
+        if (configFile != null && configFile.isFile()) {
+            try {
+                compositeConfig.addConfiguration(new PropertiesConfiguration(configFile));
+            } catch (ConfigurationException e) {
+                throw new RuntimeException(e);
+            }
         }
 
-        config = ConfigurationFactory.createConfig(configFile, "apiman.properties", //$NON-NLS-1$
-                refreshDelay, null, UIConfig.class);
+        config = compositeConfig;
     }
 
     /**
@@ -83,7 +107,7 @@ public class UIConfig implements IUIConfig {
      */
     @Override
     public String getLogoutUrl() {
-        return config.getString(UIConfig.APIMAN_MANAGER_UI_LOGOUT_URL, "logout"); //$NON-NLS-1$
+        return config.getString(UIConfig.APIMAN_MANAGER_UI_LOGOUT_URL, "/apimanui/logout"); //$NON-NLS-1$
     }
     
     /**
