@@ -29,15 +29,12 @@ module Apiman {
             return {
                 getCommonData: function($scope, $location) {
                     var params = $routeParams;
-                    $scope.setEntityStatus = function(status) {
-                        EntityStatusService.setEntityStatus(status);
-                    };
                     return {
                         version: $q(function(resolve, reject) {
                             OrgSvcs.get({ organizationId: params.org, entityType: 'plans', entityId: params.plan, versionsOrActivity: 'versions', version: params.version }, function(version) {
                                 $scope.org = version.plan.organization;
                                 $scope.plan = version.plan;
-                                $scope.setEntityStatus(version.status);
+                                EntityStatusService.setEntityStatus(version.status);
                                 resolve(version);
                             }, reject);
                         }),
@@ -50,9 +47,16 @@ module Apiman {
         }]);
 
     export var PlanEntityController = _module.controller("Apiman.PlanEntityController",
-        ['$q', '$scope', '$location', 'ActionSvcs', 'Logger', 'PageLifecycle', '$routeParams', 'OrgSvcs',
-        ($q, $scope, $location, ActionSvcs, Logger, PageLifecycle, $routeParams, OrgSvcs) => {
+        ['$q', '$scope', '$location', 'ActionSvcs', 'Logger', 'PageLifecycle', '$routeParams', 'OrgSvcs', 'EntityStatusService',
+        ($q, $scope, $location, ActionSvcs, Logger, PageLifecycle, $routeParams, OrgSvcs, EntityStatusService) => {
             var params = $routeParams;
+
+            $scope.setEntityStatus = function(status) {
+                EntityStatusService.setEntityStatus(status);
+            };
+            $scope.getEntityStatus = function(){
+                return EntityStatusService.getEntityStatus();
+            };
 
             $scope.setVersion = function(plan) {
                 PageLifecycle.redirectTo('/orgs/{0}/plans/{1}/{2}', params.org, params.plan, plan.version);

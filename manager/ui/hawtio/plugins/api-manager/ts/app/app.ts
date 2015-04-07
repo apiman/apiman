@@ -29,16 +29,13 @@ module Apiman {
             return {
                 getCommonData: function($scope, $location) {
                     var params = $routeParams;
-                    $scope.setEntityStatus = function(status) {
-                        EntityStatusService.setEntityStatus(status);
-                    };
                     return {
                         version: $q(function(resolve, reject) {
                             OrgSvcs.get({ organizationId: params.org, entityType: 'applications', entityId: params.app, versionsOrActivity: 'versions', version: params.version }, function(version) {
                                 $scope.org = version.application.organization;
                                 $scope.app = version.application;
                                 $rootScope.mruApp = version;
-                                $scope.setEntityStatus(version.status);
+                                EntityStatusService.setEntityStatus(version.status);
                                 resolve(version);
                             }, reject);
                         }),
@@ -51,9 +48,16 @@ module Apiman {
         }]);
 
     export var AppEntityController = _module.controller("Apiman.AppEntityController",
-        ['$q', '$scope', '$location', 'ActionSvcs', 'Logger', 'Dialogs', 'PageLifecycle', '$routeParams', 'OrgSvcs',
-        ($q, $scope, $location, ActionSvcs, Logger, Dialogs, PageLifecycle, $routeParams, OrgSvcs) => {
+        ['$q', '$scope', '$location', 'ActionSvcs', 'Logger', 'Dialogs', 'PageLifecycle', '$routeParams', 'OrgSvcs', 'EntityStatusService',
+        ($q, $scope, $location, ActionSvcs, Logger, Dialogs, PageLifecycle, $routeParams, OrgSvcs, EntityStatusService) => {
             var params = $routeParams;
+
+            $scope.setEntityStatus = function(status) {
+                EntityStatusService.setEntityStatus(status);
+            };
+            $scope.getEntityStatus = function(){
+                return EntityStatusService.getEntityStatus();
+            };
 
             $scope.setVersion = function(app) {
                 PageLifecycle.redirectTo('/orgs/{0}/apps/{1}/{2}', params.org, params.app, app.version);

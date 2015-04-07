@@ -26,7 +26,7 @@
           <div class="col-md-7" style="margin-bottom: 8px">
             <!-- Service Summary -->
             <apiman-editable-description description="app.description" callback="updateAppDescription"
-                default-value="no description"></api-manager-editable-description>
+                default-value="no description"></apiman-editable-description>
             <div style="padding: 8px">
               <div class="entity-info-with-icon">
                 <i class="fa fa-clock-o fa-fw"></i>

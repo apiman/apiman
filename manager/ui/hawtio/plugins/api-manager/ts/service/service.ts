@@ -29,21 +29,13 @@ module Apiman {
             return {
                 getCommonData: function($scope, $location) {
                     var params = $routeParams;
-                    $scope.setEntityStatus = function(status) {
-                        EntityStatusService.setEntityStatus(status);
-                    };
-
-                    $scope.getEntityStatus = function(){
-                        return EntityStatusService.getEntityStatus();
-                    };
-
                     return {
                         version: $q(function(resolve, reject) {
                             OrgSvcs.get({ organizationId: params.org, entityType: 'services', entityId: params.service, versionsOrActivity: 'versions', version: params.version }, function(version) {
                                 $scope.org = version.service.organization;
                                 $scope.service = version.service;
                                 $rootScope.mruService = version;
-                                $scope.setEntityStatus(version.status);
+                                EntityStatusService.setEntityStatus(version.status);
                                 resolve(version);
                             }, reject);
                         }),
@@ -56,10 +48,17 @@ module Apiman {
         }]);
 
     export var ServiceEntityController = _module.controller("Apiman.ServiceEntityController",
-        ['$q', '$scope', '$location', 'ActionSvcs', 'Logger', 'Dialogs', 'PageLifecycle', '$routeParams', 'OrgSvcs',
-        ($q, $scope, $location, ActionSvcs, Logger, Dialogs, PageLifecycle, $routeParams, OrgSvcs) => {
+        ['$q', '$scope', '$location', 'ActionSvcs', 'Logger', 'Dialogs', 'PageLifecycle', '$routeParams', 'OrgSvcs', 'EntityStatusService',
+        ($q, $scope, $location, ActionSvcs, Logger, Dialogs, PageLifecycle, $routeParams, OrgSvcs, EntityStatusService) => {
             var params = $routeParams;
             $scope.params = params;
+
+            $scope.setEntityStatus = function(status) {
+                EntityStatusService.setEntityStatus(status);
+            };
+            $scope.getEntityStatus = function(){
+                return EntityStatusService.getEntityStatus();
+            };
 
             $scope.setVersion = function(service) {
                 PageLifecycle.redirectTo('/orgs/{0}/services/{1}/{2}', params.org, params.service, service.version);
