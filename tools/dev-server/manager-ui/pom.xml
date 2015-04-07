@@ -30,26 +30,6 @@
     <!-- APIMan -->
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-manager-ui-war</artifactId>
-      <type>war</type>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-manager-ui-war</artifactId>
-      <classifier>classes</classifier>
-      <exclusions>
-        <exclusion>
-          <artifactId>jboss-logging</artifactId>
-          <groupId>org.jboss.logging</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>slf4j-api</artifactId>
-          <groupId>org.slf4j</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
       <artifactId>apiman-manager-api-beans</artifactId>
     </dependency>
     <dependency>

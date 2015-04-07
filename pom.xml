@@ -275,18 +275,6 @@
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-manager-ui-war</artifactId>
-        <version>${project.version}</version>
-        <type>war</type>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-manager-ui-war</artifactId>
-        <version>${project.version}</version>
-        <classifier>classes</classifier>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
         <artifactId>apiman-manager-ui-hawtio</artifactId>
         <version>${project.version}</version>
         <type>war</type>
@@ -306,30 +294,6 @@
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>apiman-manager-ui-hawtio-wildfly8</artifactId>
-        <version>${project.version}</version>
-        <classifier>classes</classifier>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-manager-ui-war-jetty8</artifactId>
-        <version>${project.version}</version>
-        <type>war</type>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-manager-ui-war-jetty8</artifactId>
-        <version>${project.version}</version>
-        <classifier>classes</classifier>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-manager-ui-war-wildfly8</artifactId>
-        <version>${project.version}</version>
-        <type>war</type>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-manager-ui-war-wildfly8</artifactId>
         <version>${project.version}</version>
         <classifier>classes</classifier>
       </dependency>
