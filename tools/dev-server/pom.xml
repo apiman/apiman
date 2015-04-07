@@ -12,6 +12,5 @@
   <modules>
     <module>gateway</module>
     <module>manager-api</module>
-    <module>manager-ui</module>
   </modules>
 </project>
