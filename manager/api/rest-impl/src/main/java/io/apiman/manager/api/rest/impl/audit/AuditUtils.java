@@ -57,15 +57,14 @@ public class AuditUtils {
      * @param after
      */
     public static boolean valueChanged(String before, String after) {
-        if (before == null && after == null) {
+        if ((before == null && after == null) || after == null) {
             return false;
         }
-        if (after == null) {
-            return false;
-        }
-        if (before == null && after != null) {
+
+        if (before == null) {
             return true;
         }
+        
         return !before.trim().equals(after.trim());
     }
 
@@ -75,42 +74,44 @@ public class AuditUtils {
      * @param after
      */
     public static boolean valueChanged(Boolean before, Boolean after) {
-        if (before == null && after == null) {
+        if ((before == null && after == null) || after == null) {
             return false;
         }
-        if (after == null) {
-            return false;
-        }
-        if (before == null && after != null) {
+
+        if (before == null) {
             return true;
         }
+        
         return !before.equals(after);
     }
 
     /**
      * Returns true only if the set has changed.
+     * 
      * @param before
      * @param after
      */
     public static boolean valueChanged(Set<?> before, Set<?> after) {
-        if (after == null) {
+        if ((before == null && after == null) || after == null) {
             return false;
         }
-        if (before == null && after.isEmpty()) {
-            return false;
-        }
-        if (before == null && !after.isEmpty()) {
-            return true;
-        }
-        if (before.size() != after.size()) {
-            return true;
-        }
-        for (Object bean : after) {
-            if (!before.contains(bean)) {
+        if (before == null) {
+            if (after.isEmpty()) {
+                return false;
+            } else {
                 return true;
             }
+        } else {
+            if (before.size() != after.size()) {
+                return true;
+            }
+            for (Object bean : after) {
+                if (!before.contains(bean)) {
+                    return true;
+                }
+            }
         }
-        return false;
+        return false;      
     }
 
     /**
