@@ -151,17 +151,17 @@ textarea.form-data {
 
 @keyframes progressPulse {
   from {
-    border-bottom-color: rgb(208, 227, 238);
+    border-bottom-color: rgb(25, 157, 222);
   }
   55% {
-    border-bottom-color: rgb(52, 111, 146);
+    border-bottom-color: #89d7ff;
   }
   to {
-    border-bottom-color: rgb(208, 227, 238);
+    border-bottom-color: rgb(25, 157, 222);
   }
 }
 #progress-indicator {
-  border-bottom: 2px solid rgb(208, 227, 238);
+  border-bottom: 2px solid rgb(25, 157, 222);
 }
 #progress-indicator.loading {
   animation-duration: 1.5s;
@@ -170,16 +170,17 @@ textarea.form-data {
 }
 
 #apiman-header {
-  border-bottom: 1px solid rgb(238, 238, 238);
-  background-color: rgb(246, 246, 246);
+  background-color: rgb(36, 52, 70);
+  border-bottom: 1px solid black;
 }
 #apiman-header .main-header {
   padding-top: 5px;
 }
 #apiman-header .logo {
-  background-image: url(images/logo.png);
-  width: 83px;
-  height: 58px;
+  background-image: url(images/logo-header.png);
+  margin-top: 3px;
+  width: 120px;
+  height: 30px;
   float: left;
 }
 #apiman-header .search {
@@ -188,6 +189,10 @@ textarea.form-data {
   margin-left: 20px;
   padding: 5px;
   width: 200px;
+}
+#apiman-header .dropdown-toggle {
+  color: #eee;
+  font-size: 13px;
 }
 #apiman-header .user-menu {
   font-size: 15px;

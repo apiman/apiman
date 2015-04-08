@@ -3,14 +3,4 @@
   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
   version="3.0">
 
-  <servlet>
-    <servlet-name>AngularServlet</servlet-name>
-    <servlet-class>io.apiman.manager.ui.server.AngularServlet</servlet-class>
-  </servlet>
-
-  <servlet-mapping>
-    <servlet-name>AngularServlet</servlet-name>
-    <url-pattern>/api-manager/*</url-pattern>
-  </servlet-mapping>
-
 </web-app>
