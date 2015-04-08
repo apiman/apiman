@@ -31,7 +31,7 @@ import java.util.Set;
  */
 public final class SearchCriteriaUtil {
     
-    public static final Set<SearchCriteriaFilterOperator> validOperators = new HashSet<SearchCriteriaFilterOperator>();
+    public static final Set<SearchCriteriaFilterOperator> validOperators = new HashSet<>();
     static {
         validOperators.add(SearchCriteriaFilterOperator.eq);
         validOperators.add(SearchCriteriaFilterOperator.gt);

@@ -63,7 +63,7 @@ public class SystemPropertiesConfiguration extends AbstractConfiguration {
      */
     @Override
     public Iterator<String> getKeys() {
-        Set<String> keys = new HashSet<String>();
+        Set<String> keys = new HashSet<>();
         Set<Object> keySet = System.getProperties().keySet();
         for (Object object : keySet) {
             keys.add(String.valueOf(object));

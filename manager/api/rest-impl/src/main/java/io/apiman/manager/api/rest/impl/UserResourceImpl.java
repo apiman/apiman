@@ -129,7 +129,7 @@ public class UserResourceImpl implements IUserResource {
      */
     @Override
     public List<OrganizationSummaryBean> getOrganizations(String userId) {
-        Set<String> permittedOrganizations = new HashSet<String>();
+        Set<String> permittedOrganizations = new HashSet<>();
         try {
             Set<RoleMembershipBean> memberships = idmStorage.getUserMemberships(userId);
             for (RoleMembershipBean membership : memberships) {
@@ -146,7 +146,7 @@ public class UserResourceImpl implements IUserResource {
      */
     @Override
     public List<ApplicationSummaryBean> getApplications(String userId) {
-        Set<String> permittedOrganizations = new HashSet<String>();
+        Set<String> permittedOrganizations = new HashSet<>();
         try {
             Set<PermissionBean> permissions = idmStorage.getPermissions(userId);
             for (PermissionBean permission : permissions) {
@@ -165,7 +165,7 @@ public class UserResourceImpl implements IUserResource {
      */
     @Override
     public List<ServiceSummaryBean> getServices(String userId) {
-        Set<String> permittedOrganizations = new HashSet<String>();
+        Set<String> permittedOrganizations = new HashSet<>();
         try {
             Set<PermissionBean> permissions = idmStorage.getPermissions(userId);
             for (PermissionBean permission : permissions) {

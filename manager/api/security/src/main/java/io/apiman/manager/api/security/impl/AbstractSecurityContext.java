@@ -39,7 +39,7 @@ public abstract class AbstractSecurityContext implements ISecurityContext {
 
     private static Logger logger = LoggerFactory.getLogger(AbstractSecurityContext.class);
     
-    private static final ThreadLocal<IndexedPermissions> permissions = new ThreadLocal<IndexedPermissions>();
+    private static final ThreadLocal<IndexedPermissions> permissions = new ThreadLocal<>();
 
     @Inject
     private IIdmStorage idmStorage;

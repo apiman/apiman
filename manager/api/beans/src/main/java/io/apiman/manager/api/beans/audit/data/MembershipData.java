@@ -33,7 +33,7 @@ public class MembershipData implements Serializable {
     private static final long serialVersionUID = 3424852746654173415L;
     
     private String userId;
-    private Set<String> roles = new HashSet<String>();
+    private Set<String> roles = new HashSet<>();
 
     /**
      * Constructor.

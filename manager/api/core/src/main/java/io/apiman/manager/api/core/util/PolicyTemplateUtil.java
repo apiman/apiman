@@ -41,7 +41,7 @@ public class PolicyTemplateUtil {
 
     private static final ObjectMapper mapper = new ObjectMapper();
     // Cache a MVEL 2.0 compiled template - the key is PolicyDefId::language
-    private static final Map<String, CompiledTemplate> templateCache = new HashMap<String, CompiledTemplate>();
+    private static final Map<String, CompiledTemplate> templateCache = new HashMap<>();
     
     /**
      * Clears out the template cache.
@@ -71,7 +71,6 @@ public class PolicyTemplateUtil {
         }
         try {
             String jsonConfig = policy.getConfiguration();
-            @SuppressWarnings("unchecked")
             Map<String, Object> configMap = mapper.readValue(jsonConfig, Map.class);
             configMap = new PolicyConfigMap(configMap);
             String desc = (String) TemplateRuntime.execute(template, configMap);

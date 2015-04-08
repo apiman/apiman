@@ -54,7 +54,7 @@ public abstract class AbstractJpaStorage {
     @Inject
     private IEntityManagerFactoryAccessor emfAccessor;
     
-    private static ThreadLocal<EntityManager> activeEM = new ThreadLocal<EntityManager>();
+    private static ThreadLocal<EntityManager> activeEM = new ThreadLocal<>();
 
     /**
      * Constructor.
@@ -220,7 +220,7 @@ public abstract class AbstractJpaStorage {
      * @throws StorageException
      */
     protected <T> SearchResultsBean<T> find(SearchCriteriaBean criteria, Class<T> type) throws StorageException {
-        SearchResultsBean<T> results = new SearchResultsBean<T>();
+        SearchResultsBean<T> results = new SearchResultsBean<>();
         EntityManager entityManager = getActiveEntityManager();
         try {
             // Set some default in the case that paging information was not included in the request.
@@ -296,7 +296,7 @@ public abstract class AbstractJpaStorage {
         
         List<SearchCriteriaFilterBean> filters = criteria.getFilters();
         if (filters != null && !filters.isEmpty()) {
-            List<Predicate> predicates = new ArrayList<Predicate>();
+            List<Predicate> predicates = new ArrayList<>();
             for (SearchCriteriaFilterBean filter : filters) {
                 if (filter.getOperator() == SearchCriteriaFilterOperator.eq) {
                     Path<Object> path = from.get(filter.getName());

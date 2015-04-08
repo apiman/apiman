@@ -65,7 +65,7 @@ public class ManagerApiMicroServiceConfig {
      * @return the configured plugin repositories
      */
     public Set<URL> getPluginRepositories() {
-        Set<URL> rval = new HashSet<URL>();
+        Set<URL> rval = new HashSet<>();
         String repositories = config.getString(APIMAN_PLUGIN_REPOSITORIES);
         if (repositories != null) {
             String[] split = repositories.split(","); //$NON-NLS-1$

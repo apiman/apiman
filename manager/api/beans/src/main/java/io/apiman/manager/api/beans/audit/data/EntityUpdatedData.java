@@ -32,7 +32,7 @@ public class EntityUpdatedData implements Serializable {
 
     private static final long serialVersionUID = 3009506122267996076L;
     
-    private List<EntityFieldChange> changes = new ArrayList<EntityFieldChange>();
+    private List<EntityFieldChange> changes = new ArrayList<>();
 
     /**
      * Constructor.

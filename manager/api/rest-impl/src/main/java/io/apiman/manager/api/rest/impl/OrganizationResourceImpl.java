@@ -2548,7 +2548,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
         try {
             Set<RoleMembershipBean> memberships = idmStorage.getOrgMemberships(organizationId);
-            TreeMap<String, MemberBean> members = new TreeMap<String, MemberBean>();
+            TreeMap<String, MemberBean> members = new TreeMap<>();
             for (RoleMembershipBean membershipBean : memberships) {
                 String userId = membershipBean.getUserId();
                 MemberBean member = members.get(userId);
@@ -2571,7 +2571,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                     member.setJoinedOn(membershipBean.getCreatedOn());
                 }
             }
-            return new ArrayList<MemberBean>(members.values());
+            return new ArrayList<>(members.values());
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }

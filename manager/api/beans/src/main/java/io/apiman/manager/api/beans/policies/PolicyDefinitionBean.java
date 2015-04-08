@@ -63,7 +63,7 @@ public class PolicyDefinitionBean implements Serializable {
     private String icon;
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "pd_templates", joinColumns = @JoinColumn(name = "policydef_id"))
-    private Set<PolicyDefinitionTemplateBean> templates = new HashSet<PolicyDefinitionTemplateBean>();
+    private Set<PolicyDefinitionTemplateBean> templates = new HashSet<>();
     @Column(updatable=false, nullable=true)
     private Long pluginId;
     @Column(updatable=false, nullable=true)

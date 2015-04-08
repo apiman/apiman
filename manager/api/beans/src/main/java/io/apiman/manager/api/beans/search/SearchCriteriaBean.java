@@ -31,7 +31,7 @@ public class SearchCriteriaBean implements Serializable {
     
     private static final long serialVersionUID = 5103776179000907112L;
     
-    private List<SearchCriteriaFilterBean> filters = new ArrayList<SearchCriteriaFilterBean>();
+    private List<SearchCriteriaFilterBean> filters = new ArrayList<>();
     private OrderByBean orderBy;
     private PagingBean paging;
     

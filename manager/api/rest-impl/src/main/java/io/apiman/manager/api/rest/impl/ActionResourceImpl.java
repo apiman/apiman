@@ -149,7 +149,7 @@ public class ActionResourceImpl implements IActionResource {
         boolean hasTx = false;
         try {
             if (versionBean.isPublicService()) {
-                List<Policy> policiesToPublish = new ArrayList<Policy>();
+                List<Policy> policiesToPublish = new ArrayList<>();
                 List<PolicySummaryBean> servicePolicies = query.getPolicies(action.getOrganizationId(),
                         action.getEntityId(), action.getEntityVersion(), PolicyType.Service);
                 storage.beginTx();
@@ -305,7 +305,7 @@ public class ActionResourceImpl implements IActionResource {
         application.setApplicationId(versionBean.getApplication().getId());
         application.setVersion(versionBean.getVersion());
         
-        Set<Contract> contracts = new HashSet<Contract>();
+        Set<Contract> contracts = new HashSet<>();
         for (ContractSummaryBean contractBean : contractBeans) {
             Contract contract = new Contract();
             contract.setApiKey(contractBean.getApikey());
@@ -322,7 +322,7 @@ public class ActionResourceImpl implements IActionResource {
         // Each of those gateways must be told about the application.
         try {
             storage.beginTx();
-            Map<String, IGatewayLink> links = new HashMap<String, IGatewayLink>();
+            Map<String, IGatewayLink> links = new HashMap<>();
             for (Contract contract : application.getContracts()) {
                 ServiceVersionBean svb = storage.getServiceVersion(contract.getServiceOrgId(), contract.getServiceId(), contract.getServiceVersion());
                 Set<ServiceGatewayBean> gateways = svb.getGateways();
@@ -366,7 +366,7 @@ public class ActionResourceImpl implements IActionResource {
      */
     private List<Policy> aggregateContractPolicies(ContractSummaryBean contractBean) {
         try {
-            List<Policy> policies = new ArrayList<Policy>();
+            List<Policy> policies = new ArrayList<>();
             PolicyType [] types = new PolicyType[3];
             types[0] = PolicyType.Application;
             types[1] = PolicyType.Plan;
@@ -452,7 +452,7 @@ public class ActionResourceImpl implements IActionResource {
         // Each of those gateways must be told about the application.
         try {
             storage.beginTx();
-            Map<String, IGatewayLink> links = new HashMap<String, IGatewayLink>();
+            Map<String, IGatewayLink> links = new HashMap<>();
             for (ContractSummaryBean contractBean : contractBeans) {
                 ServiceVersionBean svb = storage.getServiceVersion(contractBean.getServiceOrganizationId(),
                         contractBean.getServiceId(), contractBean.getServiceVersion());

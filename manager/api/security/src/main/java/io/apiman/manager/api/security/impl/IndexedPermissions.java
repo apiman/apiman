@@ -34,8 +34,8 @@ public class IndexedPermissions implements Serializable {
     
     private static final long serialVersionUID = -474966481686691421L;
     
-    private Set<String> qualifiedPermissions = new HashSet<String>();
-    private Map<PermissionType, Set<String>> permissionToOrgsMap = new HashMap<PermissionType, Set<String>>();
+    private Set<String> qualifiedPermissions = new HashSet<>();
+    private Map<PermissionType, Set<String>> permissionToOrgsMap = new HashMap<>();
 
     /**
      * Constructor.
@@ -59,7 +59,6 @@ public class IndexedPermissions implements Serializable {
      * Given a permission name, returns all organization qualifiers.
      * @param permissionName
      */
-    @SuppressWarnings("unchecked")
     public Set<String> getOrgQualifiers(PermissionType permissionName) {
         Set<String> orgs = permissionToOrgsMap.get(permissionName);
         if (orgs == null)
@@ -79,7 +78,7 @@ public class IndexedPermissions implements Serializable {
             qualifiedPermissions.add(qualifiedPermission);
             Set<String> orgs = permissionToOrgsMap.get(permissionName);
             if (orgs == null) {
-                orgs = new HashSet<String>();
+                orgs = new HashSet<>();
                 permissionToOrgsMap.put(permissionName, orgs);
             }
             orgs.add(orgQualifier);

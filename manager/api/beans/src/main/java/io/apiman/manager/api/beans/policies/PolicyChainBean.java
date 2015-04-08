@@ -36,7 +36,7 @@ public class PolicyChainBean implements Serializable {
 
     private static final long serialVersionUID = -497197512733345793L;
     
-    private List<PolicySummaryBean> policies = new ArrayList<PolicySummaryBean>();
+    private List<PolicySummaryBean> policies = new ArrayList<>();
     
     /**
      * Constructor.

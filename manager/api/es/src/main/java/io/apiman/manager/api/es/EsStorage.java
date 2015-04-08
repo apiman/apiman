@@ -1820,7 +1820,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     private <T> SearchResultsBean<T> find(SearchCriteriaBean criteria, String type,
             IUnmarshaller<T> unmarshaller) throws StorageException {
         try {
-            SearchResultsBean<T> rval = new SearchResultsBean<T>();
+            SearchResultsBean<T> rval = new SearchResultsBean<>();
 
             // Set some default in the case that paging information was not included in the request.
             PagingBean paging = criteria.getPaging();

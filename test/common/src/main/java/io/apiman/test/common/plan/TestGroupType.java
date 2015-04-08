@@ -70,7 +70,7 @@ public class TestGroupType {
      */
     public List<TestType> getTest() {
         if (test == null) {
-            test = new ArrayList<TestType>();
+            test = new ArrayList<>();
         }
         return this.test;
     }

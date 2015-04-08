@@ -49,7 +49,7 @@ public class ApiManagerProxyServlet extends AbstractUIServlet {
     
     private static final long serialVersionUID = -4532742030638806510L;
 
-    private static Set<String> EXCLUDE_HEADERS = new HashSet<String>();
+    private static Set<String> EXCLUDE_HEADERS = new HashSet<>();
     static {
         EXCLUDE_HEADERS.add("ETag"); //$NON-NLS-1$
         EXCLUDE_HEADERS.add("Last-Modified"); //$NON-NLS-1$

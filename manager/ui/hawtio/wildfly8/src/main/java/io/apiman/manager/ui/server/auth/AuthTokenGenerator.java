@@ -51,7 +51,7 @@ public class AuthTokenGenerator implements ITokenGenerator {
         
         String principal = request.getRemoteUser();
         // TODO create platform specific subclasses of this to get the roles properly
-        Set<String> roles = new HashSet<String>();
+        Set<String> roles = new HashSet<>();
         roles.add("apiuser"); //$NON-NLS-1$
         if (request.isUserInRole("apiadmin")) { //$NON-NLS-1$
             roles.add("apiadmin"); //$NON-NLS-1$

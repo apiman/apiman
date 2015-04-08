@@ -33,7 +33,7 @@ public class GrantRolesBean implements Serializable {
     private static final long serialVersionUID = -1509983712261196134L;
     
     private String userId;
-    private Set<String> roleIds = new HashSet<String>();
+    private Set<String> roleIds = new HashSet<>();
 
     /**
      * Constructor.

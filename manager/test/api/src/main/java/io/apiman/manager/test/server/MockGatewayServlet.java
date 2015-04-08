@@ -40,7 +40,7 @@ public class MockGatewayServlet extends HttpServlet {
     private static final long serialVersionUID = 4814869997856449004L;
     
     private static StringBuilder builder = new StringBuilder();
-    private static List<String> payloads = new ArrayList<String>();
+    private static List<String> payloads = new ArrayList<>();
     public static void reset() {
         builder = new StringBuilder();
         payloads.clear();

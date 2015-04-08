@@ -40,7 +40,7 @@ public class ApiRegistryBean implements Serializable {
 
     private static final long serialVersionUID = 7369169626368271089L;
     
-    private List<ApiEntryBean> apis = new ArrayList<ApiEntryBean>();
+    private List<ApiEntryBean> apis = new ArrayList<>();
 
     /**
      * Constructor.
