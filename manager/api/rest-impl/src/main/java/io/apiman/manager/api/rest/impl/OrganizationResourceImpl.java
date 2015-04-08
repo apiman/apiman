@@ -2376,7 +2376,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.beginTx();
             def = storage.getPolicyDefinition(bean.getDefinitionId());
             if (def == null) {
-                ExceptionFactory.policyDefNotFoundException(bean.getDefinitionId());
+                throw ExceptionFactory.policyDefNotFoundException(bean.getDefinitionId());
             }
             storage.commitTx();
         } catch (AbstractRestException e) {
