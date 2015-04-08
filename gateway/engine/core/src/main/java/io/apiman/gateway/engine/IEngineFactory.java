@@ -26,7 +26,7 @@ public interface IEngineFactory {
     /**
      * Call this to create a new engine.
      * 
-     * @param engineConfig
+     * @return engine instance
      */
     public IEngine createEngine();
 

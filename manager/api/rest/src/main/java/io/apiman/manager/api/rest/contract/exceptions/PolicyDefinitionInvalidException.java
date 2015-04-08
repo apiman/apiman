@@ -28,7 +28,7 @@ public class PolicyDefinitionInvalidException extends AbstractNotFoundException 
 
     /**
      * Constructor.
-     * @param message
+     * @param message the exception message
      */
     public PolicyDefinitionInvalidException(String message) {
         super(message);
@@ -43,7 +43,7 @@ public class PolicyDefinitionInvalidException extends AbstractNotFoundException 
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.exceptions.AbstractRestException#getMoreInfo()
+     * @see io.apiman.manager.api.rest.contract.exceptions.AbstractRestException#getMoreInfoUrl()
      */
     @Override
     public String getMoreInfoUrl() {

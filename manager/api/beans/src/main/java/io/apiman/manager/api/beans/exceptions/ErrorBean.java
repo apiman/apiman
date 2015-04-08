@@ -75,7 +75,7 @@ public class ErrorBean {
     }
 
     /**
-     * @param moreInfo the moreInfo to set
+     * @param moreInfoUrl the moreInfo to set
      */
     public void setMoreInfoUrl(String moreInfoUrl) {
         this.moreInfoUrl = moreInfoUrl;

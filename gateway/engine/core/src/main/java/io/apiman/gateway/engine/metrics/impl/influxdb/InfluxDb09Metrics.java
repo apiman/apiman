@@ -83,6 +83,7 @@ public class InfluxDb09Metrics implements IMetrics {
 
     /**
      * Constructor.
+     * @param config plugin configuration options
      */
     public InfluxDb09Metrics(Map<String, String> config) {
         this.config = config;

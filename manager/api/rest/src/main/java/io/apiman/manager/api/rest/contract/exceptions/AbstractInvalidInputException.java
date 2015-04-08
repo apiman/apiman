@@ -33,7 +33,7 @@ public abstract class AbstractInvalidInputException extends AbstractUserExceptio
 
     /**
      * Constructor.
-     * @param message
+     * @param message the exception message
      */
     public AbstractInvalidInputException(String message) {
         super(message);
@@ -41,7 +41,7 @@ public abstract class AbstractInvalidInputException extends AbstractUserExceptio
     
     /**
      * Constructor.
-     * @param cause
+     * @param cause the exception cause the exception cause
      */
     public AbstractInvalidInputException(Throwable cause) {
         super(cause);

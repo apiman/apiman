@@ -19,7 +19,7 @@ package io.apiman.manager.api.rest.contract.exceptions;
 
 
 /**
- * Thrown when trying to get, update, or delete an plan that does not exist.
+ * Thrown when trying to get, update, or delete a plan that does not exist.
  *
  * @author eric.wittmann@redhat.com
  */
@@ -35,7 +35,7 @@ public class PlanNotFoundException extends AbstractNotFoundException {
     
     /**
      * Constructor.
-     * @param message
+     * @param message exception message
      */
     public PlanNotFoundException(String message) {
         super(message);
@@ -50,7 +50,7 @@ public class PlanNotFoundException extends AbstractNotFoundException {
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.exceptions.AbstractRestException#getMoreInfo()
+     * @see io.apiman.manager.api.rest.contract.exceptions.AbstractRestException#getMoreInfoUrl()
      */
     @Override
     public String getMoreInfoUrl() {

@@ -40,8 +40,8 @@ public class ESRegistryMarshalling {
 
     /**
      * Marshals the given bean into the given map.
-     * @param bean
-     * @throws StorageException 
+     * @param bean the service bean
+     * @throws Exception 
      */
     public static XContentBuilder marshall(Service bean) throws Exception {
         XContentBuilder builder = XContentFactory.jsonBuilder();
@@ -119,8 +119,8 @@ public class ESRegistryMarshalling {
 
     /**
      * Marshals the given bean into the given map.
-     * @param bean
-     * @throws StorageException 
+     * @param bean the application bean
+     * @throws Exception 
      */
     public static XContentBuilder marshall(Application bean) throws Exception {
         XContentBuilder builder = XContentFactory.jsonBuilder();
@@ -204,9 +204,8 @@ public class ESRegistryMarshalling {
 
     /**
      * Marshals the given bean into the given map.
-     * @param bean
-     * @param app 
-     * @throws StorageException 
+     * @param bean 
+     * @throws Exception  
      */
     @SuppressWarnings("nls")
     public static XContentBuilder marshall(ServiceContract bean) throws Exception {

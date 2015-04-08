@@ -36,7 +36,7 @@ public class GenericError extends RuntimeException {
      * Constructor
      * @param responseCode a response code
      * @param message an error message
-     * @param cause the exception that caused the problem
+     * @param cause the exception cause the exception that caused the problem
      */
     public GenericError(int responseCode, String message, Throwable cause) {
         super(message, cause);
@@ -72,7 +72,7 @@ public class GenericError extends RuntimeException {
     }
     
     /**
-     * @param cause cause of the exception
+     * @param cause the exception cause cause of the exception
      */
     public void setCause(Throwable cause) {
         this.cause = cause;

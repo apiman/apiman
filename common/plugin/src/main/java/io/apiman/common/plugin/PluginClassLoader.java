@@ -46,8 +46,8 @@ public class PluginClassLoader extends ClassLoader {
 
     /**
      * Constructor.
-     * @param pluginArtifactFile
-     * @throws IOException
+     * @param pluginArtifactFile plugin artifact
+     * @throws IOException if an I/O error has occurred
      */
     public PluginClassLoader(File pluginArtifactFile) throws IOException {
         super();
@@ -58,8 +58,9 @@ public class PluginClassLoader extends ClassLoader {
 
     /**
      * Constructor.
-     * @param pluginArtifactFile
-     * @param parent
+     * @param pluginArtifactFile plugin artifact
+     * @param parent parent classloader
+     * @throws IOException if an I/O error has occurred
      */
     public PluginClassLoader(File pluginArtifactFile, ClassLoader parent) throws IOException {
         super(parent);
@@ -71,8 +72,8 @@ public class PluginClassLoader extends ClassLoader {
     /**
      * Creates a work directory into which various resources discovered in the plugin
      * artifact can be extracted.
-     * @param pluginArtifactFile
-     * @throws IOException
+     * @param pluginArtifactFile plugin artifact
+     * @throws IOException if an I/O error has occurred
      */
     protected File createWorkDir(File pluginArtifactFile) throws IOException {
         File tempDir = File.createTempFile(pluginArtifactFile.getName(), "");
@@ -84,7 +85,7 @@ public class PluginClassLoader extends ClassLoader {
     /**
      * Indexes the content of the plugin artifact.  This includes discovering all of the
      * dependency JARs as well as any configuration resources such as plugin definitions.
-     * @throws IOException 
+     * @throws IOException if an I/O error has occurred
      */
     private void indexPluginArtifact() throws IOException {
         dependencyZips = new ArrayList<>();
@@ -104,8 +105,8 @@ public class PluginClassLoader extends ClassLoader {
      * Extracts a dependency from the plugin artifact ZIP and saves it to the work
      * directory.  If the dependency has already been extracted (we're re-using the
      * work directory) then this simply returns what is already there.
-     * @param zipEntry
-     * @throws IOException 
+     * @param zipEntry a ZIP file entry
+     * @throws IOException if an I/O error has occurred
      */
     private ZipFile extractDependency(ZipEntry zipEntry) throws IOException {
         File dependencyWorkDir = new File(workDir, "lib");
@@ -136,8 +137,8 @@ public class PluginClassLoader extends ClassLoader {
      * Extracts a resource from the plugin artifact ZIP and saves it to the work
      * directory.  If the resource has already been extracted (we're re-using the
      * work directory) then this simply returns what is already there.
-     * @param zipEntry
-     * @throws IOException 
+     * @param zipEntry a ZIP file entry
+     * @throws IOException if an I/O error has occurred
      */
     private URL extractResource(ZipEntry zipEntry) throws IOException {
         File resourceWorkDir = new File(workDir, "resources");
@@ -189,8 +190,8 @@ public class PluginClassLoader extends ClassLoader {
     /**
      * Searches the plugin artifact ZIP and all dependency ZIPs for a zip entry for
      * the given fully qualified class name.
-     * @param entryName
-     * @throws IOException 
+     * @param className name of class
+     * @throws IOException if an I/O error has occurred
      */
     protected InputStream findClassContent(String className) throws IOException {
         String primaryArtifactEntryName = "WEB-INF/classes/" + className.replace('.', '/') + ".class";
@@ -268,7 +269,7 @@ public class PluginClassLoader extends ClassLoader {
 
     /**
      * Closes any resources the plugin classloader is holding open.
-     * @throws IOException 
+     * @throws IOException if an I/O error has occurred
      */
     public void close() throws IOException {
         this.pluginArtifactZip.close();

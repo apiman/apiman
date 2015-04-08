@@ -19,6 +19,7 @@ package io.apiman.gateway.engine.async;
  * Models the result of an asynchronous operation in the API Gateway.
  * 
  * @author eric.wittmann@redhat.com
+ * @param <T> Result type
  */
 public interface IAsyncResult<T> {
     

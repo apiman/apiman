@@ -104,8 +104,8 @@ public interface IOrganizationResource {
      * @param bean Information about the new Organization.
      * @statuscode 200 If the Organization was successfully created.
      * @return Full details about the Organization that was created.
-     * @throws OrganizationAlreadyExistsException
-     * @throws NotAuthorizedException
+     * @throws OrganizationAlreadyExistsException when trying to create an Organization that already exists
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -120,8 +120,8 @@ public interface IOrganizationResource {
      * @statuscode 200 If the Organization was successfully returned.
      * @statuscode 404 If the Organization does not exist.
      * @return The Organization.
-     * @throws OrganizationNotFoundException
-     * @throws NotAuthorizedException
+     * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
     @Path("{organizationId}")
@@ -135,8 +135,8 @@ public interface IOrganizationResource {
      * @param bean Updated Organization information.
      * @statuscode 200 If the Organization meta-data is successfully updated.
      * @statuscode 404 If the Organization does not exist.
-     * @throws OrganizationNotFoundException
-     * @throws NotAuthorizedException
+     * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @PUT
     @Path("{organizationId}")
@@ -155,8 +155,8 @@ public interface IOrganizationResource {
      * @statuscode 200 If the audit information is successfully returned.
      * @statuscode 404 If the Organization does not exist.
      * @return List of audit/activity entries.
-     * @throws OrganizationNotFoundException
-     * @throws NotAuthorizedException
+     * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
     @Path("{organizationId}/activity")
@@ -181,9 +181,9 @@ public interface IOrganizationResource {
      * @statuscode 200 If the Application is successfully created.
      * @statuscode 404 If the Organization does not exist.
      * @return Full details about the newly created Application.
-     * @throws OrganizationNotFoundException
-     * @throws ApplicationAlreadyExistsException
-     * @throws NotAuthorizedException
+     * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
+     * @throws ApplicationAlreadyExistsException when trying to create an Application that already exists
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @POST
     @Path("{organizationId}/applications")
@@ -203,8 +203,8 @@ public interface IOrganizationResource {
      * @statuscode 404 If the Organization does not exist.
      * @statuscode 404 If the Application does not exist.
      * @return An Application.
-     * @throws ApplicationNotFoundException
-     * @throws NotAuthorizedException
+     * @throws ApplicationNotFoundException when trying to get, update, or delete an application that does not exist when trying to get, update, or delete an application that does not exist.
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
     @Path("{organizationId}/applications/{applicationId}")
@@ -224,8 +224,8 @@ public interface IOrganizationResource {
      * @statuscode 404 If the Organization does not exist.
      * @statuscode 404 If the Application does not exist.
      * @return A list of audit activity entries.
-     * @throws ApplicationNotFoundException
-     * @throws NotAuthorizedException
+     * @throws ApplicationNotFoundException when trying to get, update, or delete an application that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
     @Path("{organizationId}/applications/{applicationId}/activity")
@@ -242,8 +242,8 @@ public interface IOrganizationResource {
      * @statuscode 200 If the list of Applications is successfully returned.
      * @statuscode 404 If the Organization does not exist.
      * @return A list of Applications.
-     * @throws OrganizationNotFoundException
-     * @throws NotAuthorizedException
+     * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
     @Path("{organizationId}/applications")
@@ -259,8 +259,8 @@ public interface IOrganizationResource {
      * @param bean Updated Application information.
      * @statuscode 204 If the Application is updated successfully.
      * @statuscode 404 If the Application does not exist.
-     * @throws ApplicationNotFoundException
-     * @throws NotAuthorizedException
+     * @throws ApplicationNotFoundException when trying to get, update, or delete an application that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @PUT
     @Path("{organizationId}/applications/{applicationId}")
@@ -279,8 +279,8 @@ public interface IOrganizationResource {
      * @statuscode 200 If the Application version is created successfully.
      * @statuscode 404 If the Application does not exist.
      * @return Full details about the newly created Application version.
-     * @throws ApplicationNotFoundException
-     * @throws NotAuthorizedException
+     * @throws ApplicationNotFoundException when trying to get, update, or delete an application that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @POST
     @Path("{organizationId}/applications/{applicationId}/versions")
@@ -297,8 +297,8 @@ public interface IOrganizationResource {
      * @param applicationId The Application ID.
      * @statuscode 200 If the list of Application versions is successfully returned.
      * @return A list of Applications.
-     * @throws ApplicationNotFoundException
-     * @throws NotAuthorizedException
+     * @throws ApplicationNotFoundException when trying to get, update, or delete an application that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
     @Path("{organizationId}/applications/{applicationId}/versions")
@@ -316,8 +316,8 @@ public interface IOrganizationResource {
      * @statuscode 200 If the Application version is successfully returned.
      * @statuscode 404 If the Application version does not exist.
      * @return An Application version.
-     * @throws ApplicationVersionNotFoundException
-     * @throws NotAuthorizedException
+     * @throws ApplicationVersionNotFoundException when trying to get, update, or delete a application version that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
     @Path("{organizationId}/applications/{applicationId}/versions/{version}")
@@ -338,8 +338,8 @@ public interface IOrganizationResource {
      * @statuscode 200 If the audit activity entries are successfully returned.
      * @statuscode 404 If the Application version does not exist.
      * @return A list of audit entries.
-     * @throws ApplicationVersionNotFoundException
-     * @throws NotAuthorizedException
+     * @throws ApplicationVersionNotFoundException when trying to get, update, or delete a application version that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
     @Path("{organizationId}/applications/{applicationId}/versions/{version}/activity")
@@ -362,12 +362,13 @@ public interface IOrganizationResource {
      * @statuscode 200 If the Contract is successfully created.
      * @statuscode 404 If the Application version does not exist.
      * @return Full details about the newly created Contract.
-     * @throws OrganizationNotFoundException
-     * @throws ApplicationNotFoundException
-     * @throws ServiceNotFoundException
-     * @throws PlanNotFoundException
-     * @throws ContractAlreadyExistsException
-     * @throws NotAuthorizedException
+     * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
+     * @throws ApplicationNotFoundException when trying to get, update, or delete an application that does not exist
+     * @throws ServiceNotFoundException when trying to get, update, or delete an service that does not exist
+     * when trying to get, update, or delete an plan that does not exist
+     * @throws PlanNotFoundException when trying to get, update, or delete an plan that does not exist 
+     * @throws ContractAlreadyExistsException when trying to create an Contract that already exists
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @POST
     @Path("{organizationId}/applications/{applicationId}/versions/{version}/contracts")
@@ -391,9 +392,9 @@ public interface IOrganizationResource {
      * @statuscode 404 If the Application version does not exist.
      * @statuscode 404 If the Contract is not found.
      * @return Details about a single Contract.
-     * @throws ApplicationNotFoundException
-     * @throws ContractNotFoundException
-     * @throws NotAuthorizedException
+     * @throws ApplicationNotFoundException when trying to get, update, or delete an application that does not exist
+     * @throws ContractNotFoundException when trying to get, update, or delete a contract that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
     @Path("{organizationId}/applications/{applicationId}/versions/{version}/contracts/{contractId}")
@@ -412,8 +413,8 @@ public interface IOrganizationResource {
      * @statuscode 200 If the list of Contracts is successfully returned.
      * @statuscode 404 If the Application is not found.
      * @return A list of Contracts.
-     * @throws ApplicationNotFoundException
-     * @throws NotAuthorizedException
+     * @throws ApplicationNotFoundException when trying to get, update, or delete an application that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
     @Path("{organizationId}/applications/{applicationId}/versions/{version}/contracts")
@@ -436,8 +437,8 @@ public interface IOrganizationResource {
      * @statuscode 200 If the API Registry information is successfully returned.
      * @statuscode 404 If the Application does not exist.
      * @return API Registry information.
-     * @throws ApplicationNotFoundException
-     * @throws NotAuthorizedException
+     * @throws ApplicationNotFoundException when trying to get, update, or delete an application that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
     @Path("{organizationId}/applications/{applicationId}/versions/{version}/apiregistry/json")
@@ -460,8 +461,8 @@ public interface IOrganizationResource {
      * @statuscode 200 If the API Registry information is successfully returned.
      * @statuscode 404 If the Application does not exist.
      * @return API Registry information.
-     * @throws ApplicationNotFoundException
-     * @throws NotAuthorizedException
+     * @throws ApplicationNotFoundException when trying to get, update, or delete an application that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
     @Path("{organizationId}/applications/{applicationId}/versions/{version}/apiregistry/xml")
@@ -478,8 +479,8 @@ public interface IOrganizationResource {
      * @param version The Application version.
      * @statuscode 200 If the operation is successful.
      * @statuscode 404 If the Application does not exist.
-     * @throws ApplicationNotFoundException
-     * @throws NotAuthorizedException
+     * @throws ApplicationNotFoundException when trying to get, update, or delete an application that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @DELETE
     @Path("{organizationId}/applications/{applicationId}/versions/{version}/contracts")
@@ -497,9 +498,9 @@ public interface IOrganizationResource {
      * @statuscode 200 If the Contract is successfully broken.
      * @statuscode 404 If the Application does not exist.
      * @statuscode 404 If the Contract does not exist.
-     * @throws ApplicationNotFoundException
-     * @throws ContractNotFoundException
-     * @throws NotAuthorizedException
+     * @throws ApplicationNotFoundException when trying to get, update, or delete an application that does not exist
+     * @throws ContractNotFoundException when trying to get, update, or delete a contract that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @DELETE
     @Path("{organizationId}/applications/{applicationId}/versions/{version}/contracts/{contractId}")
@@ -518,9 +519,9 @@ public interface IOrganizationResource {
      * @statuscode 200 If the Policy is successfully added.
      * @statuscode 404 If the Application does not exist.
      * @return Full details about the newly added Policy.
-     * @throws OrganizationNotFoundException
-     * @throws ApplicationVersionNotFoundException
-     * @throws NotAuthorizedException
+     * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
+     * @throws ApplicationVersionNotFoundException when trying to get, update, or delete a application version that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @POST
     @Path("{organizationId}/applications/{applicationId}/versions/{version}/policies")
@@ -541,10 +542,10 @@ public interface IOrganizationResource {
      * @statuscode 200 If the Policy is successfully returned.
      * @statuscode 404 If the Application does not exist.
      * @return Full information about the Policy.
-     * @throws OrganizationNotFoundException
-     * @throws ApplicationVersionNotFoundException
-     * @throws PolicyNotFoundException
-     * @throws NotAuthorizedException
+     * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
+     * @throws ApplicationVersionNotFoundException when trying to get, update, or delete a application version that does not exist
+     * @throws PolicyNotFoundException when trying to get, update, or delete a policy that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
     @Path("{organizationId}/applications/{applicationId}/versions/{version}/policies/{policyId}")
@@ -565,10 +566,10 @@ public interface IOrganizationResource {
      * @statuscode 204 If the Policy was successfully updated.
      * @statuscode 404 If the Application does not exist.
      * @statuscode 404 If the Policy does not exist.
-     * @throws OrganizationNotFoundException
-     * @throws ApplicationVersionNotFoundException
-     * @throws PolicyNotFoundException
-     * @throws NotAuthorizedException
+     * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
+     * @throws ApplicationVersionNotFoundException when trying to get, update, or delete a application version that does not exist
+     * @throws PolicyNotFoundException when trying to get, update, or delete a policy that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @PUT
     @Path("{organizationId}/applications/{applicationId}/versions/{version}/policies/{policyId}")
@@ -589,10 +590,10 @@ public interface IOrganizationResource {
      * @statuscode 204 If the Policy was successfully deleted.
      * @statuscode 404 If the Application does not exist.
      * @statuscode 404 If the Policy does not exist.
-     * @throws OrganizationNotFoundException
-     * @throws ApplicationVersionNotFoundException
-     * @throws PolicyNotFoundException
-     * @throws NotAuthorizedException
+     * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
+     * @throws ApplicationVersionNotFoundException when trying to get, update, or delete a application version that does not exist
+     * @throws PolicyNotFoundException when trying to get, update, or delete a policy that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @DELETE
     @Path("{organizationId}/applications/{applicationId}/versions/{version}/policies/{policyId}")
@@ -610,9 +611,9 @@ public interface IOrganizationResource {
      * @statuscode 200 If the list of Policies is successfully returned.
      * @statuscode 404 If the Application does not exist.
      * @return A List of Policies.
-     * @throws OrganizationNotFoundException
-     * @throws ApplicationVersionNotFoundException
-     * @throws NotAuthorizedException
+     * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
+     * @throws ApplicationVersionNotFoundException when trying to get, update, or delete a application version that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
     @Path("{organizationId}/applications/{applicationId}/versions/{version}/policies")
@@ -637,9 +638,9 @@ public interface IOrganizationResource {
      * @param policyChain The Policies in the desired order.
      * @statuscode 204 If the re-ordering of Policies was successful.
      * @statuscode 404 If the Application does not exist.
-     * @throws OrganizationNotFoundException
-     * @throws ApplicationVersionNotFoundException
-     * @throws NotAuthorizedException
+     * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
+     * @throws ApplicationVersionNotFoundException when trying to get, update, or delete a application version that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @POST
     @Path("{organizationId}/applications/{applicationId}/versions/{version}/reorderPolicies")
@@ -665,9 +666,9 @@ public interface IOrganizationResource {
      * @statuscode 200 If the Service is successfully created.
      * @statuscode 404 If the Organization does not exist.
      * @return Full details about the newly created Service.
-     * @throws OrganizationNotFoundException
-     * @throws ServiceAlreadyExistsException
-     * @throws NotAuthorizedException
+     * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
+     * @throws ServiceAlreadyExistsException when trying to create an Service that already exists
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @POST
     @Path("{organizationId}/services")
@@ -687,8 +688,8 @@ public interface IOrganizationResource {
      * @statuscode 404 If the Organization does not exist.
      * @statuscode 404 If the Service does not exist.
      * @return A Service.
-     * @throws ServiceNotFoundException
-     * @throws NotAuthorizedException
+     * @throws ServiceNotFoundException when trying to get, update, or delete an service that does not exist when trying to get, update, or delete an service that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
     @Path("{organizationId}/services/{serviceId}")
@@ -704,8 +705,8 @@ public interface IOrganizationResource {
      * @statuscode 200 If the list of Services is successfully returned.
      * @statuscode 404 If the Organization does not exist.
      * @return A list of Services.
-     * @throws OrganizationNotFoundException
-     * @throws NotAuthorizedException
+     * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
     @Path("{organizationId}/services")
@@ -721,8 +722,8 @@ public interface IOrganizationResource {
      * @param bean Updated Service information.
      * @statuscode 204 If the Service is updated successfully.
      * @statuscode 404 If the Service does not exist.
-     * @throws ServiceNotFoundException
-     * @throws NotAuthorizedException
+     * @throws ServiceNotFoundException when trying to get, update, or delete an service that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @PUT
     @Path("{organizationId}/services/{serviceId}")
@@ -743,8 +744,8 @@ public interface IOrganizationResource {
      * @statuscode 404 If the Organization does not exist.
      * @statuscode 404 If the Service does not exist.
      * @return A list of audit activity entries.
-     * @throws ServiceNotFoundException
-     * @throws NotAuthorizedException
+     * @throws ServiceNotFoundException when trying to get, update, or delete an service that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
     @Path("{organizationId}/services/{serviceId}/activity")
@@ -763,8 +764,8 @@ public interface IOrganizationResource {
      * @statuscode 200 If the Service version is created successfully.
      * @statuscode 404 If the Service does not exist.
      * @return Full details about the newly created Service version.
-     * @throws ServiceNotFoundException
-     * @throws NotAuthorizedException
+     * @throws ServiceNotFoundException when trying to get, update, or delete an service that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @POST
     @Path("{organizationId}/services/{serviceId}/versions")
@@ -781,8 +782,8 @@ public interface IOrganizationResource {
      * @param serviceId The Service ID.
      * @statuscode 200 If the list of Service versions is successfully returned.
      * @return A list of Services.
-     * @throws ServiceNotFoundException
-     * @throws NotAuthorizedException
+     * @throws ServiceNotFoundException when trying to get, update, or delete an service that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
     @Path("{organizationId}/services/{serviceId}/versions")
@@ -800,8 +801,8 @@ public interface IOrganizationResource {
      * @statuscode 200 If the Service version is successfully returned.
      * @statuscode 404 If the Service version does not exist.
      * @return A Service version.
-     * @throws ServiceVersionNotFoundException
-     * @throws NotAuthorizedException
+     * @throws ServiceVersionNotFoundException when trying to get, update, or delete a service version that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
     @Path("{organizationId}/services/{serviceId}/versions/{version}")
@@ -822,8 +823,8 @@ public interface IOrganizationResource {
      * @statuscode 200 If the Service definition is successfully returned.
      * @statuscode 404 If the Service version does not exist.
      * @return The Service Definition document (e.g. a Swagger JSON file).
-     * @throws ServiceVersionNotFoundException
-     * @throws NotAuthorizedException
+     * @throws ServiceVersionNotFoundException when trying to get, update, or delete a service version that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
     @Path("{organizationId}/services/{serviceId}/versions/{version}/definition")
@@ -843,9 +844,9 @@ public interface IOrganizationResource {
      * @statuscode 200 If the endpoint information is successfully returned.
      * @statuscode 404 If the Service does not exist.
      * @return The live Service endpoint information.
-     * @throws ServiceVersionNotFoundException
-     * @throws InvalidServiceStatusException
-     * @throws GatewayNotFoundException
+     * @throws ServiceVersionNotFoundException when trying to get, update, or delete a service version that does not exist
+     * @throws InvalidServiceStatusException when the user attempts some action on the service when it is not in an appropriate state/status
+     * @throws GatewayNotFoundException when trying to get, update, or delete a gateay that does not exist
      */
     @GET
     @Path("{organizationId}/services/{serviceId}/versions/{version}/endpoint")
@@ -864,9 +865,9 @@ public interface IOrganizationResource {
      * @return The updated Service Version.
      * @statuscode 204 If the Service version information was successfully updated.
      * @statuscode 404 If the Service does not exist.
-     * @throws ServiceVersionNotFoundException
-     * @throws NotAuthorizedException
-     * @throws InvalidServiceStatusException
+     * @throws ServiceVersionNotFoundException when trying to get, update, or delete a service version that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
+     * @throws InvalidServiceStatusException when the user attempts some action on the service when it is not in an appropriate state/status
      */
     @PUT
     @Path("{organizationId}/services/{serviceId}/versions/{version}")
@@ -907,9 +908,9 @@ public interface IOrganizationResource {
      * @param version The Service version.
      * @statuscode 204 If the Service definition was successfully updated.
      * @statuscode 404 If the Service does not exist.
-     * @throws ServiceVersionNotFoundException
-     * @throws NotAuthorizedException
-     * @throws InvalidServiceStatusException
+     * @throws ServiceVersionNotFoundException when trying to get, update, or delete a service version that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
+     * @throws InvalidServiceStatusException when the user attempts some action on the service when it is not in an appropriate state/status
      */
     @PUT
     @Path("{organizationId}/services/{serviceId}/versions/{version}/definition")
@@ -930,8 +931,8 @@ public interface IOrganizationResource {
      * @statuscode 200 If the audit activity entries are successfully returned.
      * @statuscode 404 If the Service version does not exist.
      * @return A list of audit entries.
-     * @throws ServiceVersionNotFoundException
-     * @throws NotAuthorizedException
+     * @throws ServiceVersionNotFoundException when trying to get, update, or delete a service version that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
     @Path("{organizationId}/services/{serviceId}/versions/{version}/activity")
@@ -950,8 +951,8 @@ public interface IOrganizationResource {
      * @statuscode 200 If the Service plans are successfully returned.
      * @statuscode 404 If the Service cannot be found.
      * @return A list of Service plans.
-     * @throws ServiceVersionNotFoundException
-     * @throws NotAuthorizedException
+     * @throws ServiceVersionNotFoundException when trying to get, update, or delete a service version that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
     @Path("{organizationId}/services/{serviceId}/versions/{version}/plans")
@@ -970,9 +971,9 @@ public interface IOrganizationResource {
      * @statuscode 200 If the Policy is successfully added.
      * @statuscode 404 If the Service does not exist.
      * @return Full details about the newly added Policy.
-     * @throws OrganizationNotFoundException
-     * @throws ServiceVersionNotFoundException
-     * @throws NotAuthorizedException
+     * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
+     * @throws ServiceVersionNotFoundException when trying to get, update, or delete a service version that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @POST
     @Path("{organizationId}/services/{serviceId}/versions/{version}/policies")
@@ -993,10 +994,10 @@ public interface IOrganizationResource {
      * @statuscode 200 If the Policy is successfully returned.
      * @statuscode 404 If the Service does not exist.
      * @return Full information about the Policy.
-     * @throws OrganizationNotFoundException
-     * @throws ServiceVersionNotFoundException
-     * @throws PolicyNotFoundException
-     * @throws NotAuthorizedException
+     * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
+     * @throws ServiceVersionNotFoundException when trying to get, update, or delete a service version that does not exist
+     * @throws PolicyNotFoundException when trying to get, update, or delete a policy that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
     @Path("{organizationId}/services/{serviceId}/versions/{version}/policies/{policyId}")
@@ -1017,10 +1018,10 @@ public interface IOrganizationResource {
      * @statuscode 204 If the Policy was successfully updated.
      * @statuscode 404 If the Service does not exist.
      * @statuscode 404 If the Policy does not exist.
-     * @throws OrganizationNotFoundException
-     * @throws ServiceVersionNotFoundException
-     * @throws PolicyNotFoundException
-     * @throws NotAuthorizedException
+     * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
+     * @throws ServiceVersionNotFoundException when trying to get, update, or delete a service version that does not exist
+     * @throws PolicyNotFoundException when trying to get, update, or delete a policy that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @PUT
     @Path("{organizationId}/services/{serviceId}/versions/{version}/policies/{policyId}")
@@ -1041,10 +1042,10 @@ public interface IOrganizationResource {
      * @statuscode 204 If the Policy was successfully deleted.
      * @statuscode 404 If the Service does not exist.
      * @statuscode 404 If the Policy does not exist.
-     * @throws OrganizationNotFoundException
-     * @throws ServiceVersionNotFoundException
-     * @throws PolicyNotFoundException
-     * @throws NotAuthorizedException
+     * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
+     * @throws ServiceVersionNotFoundException when trying to get, update, or delete a service version that does not exist
+     * @throws PolicyNotFoundException when trying to get, update, or delete a policy that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @DELETE
     @Path("{organizationId}/services/{serviceId}/versions/{version}/policies/{policyId}")
@@ -1062,9 +1063,9 @@ public interface IOrganizationResource {
      * @param version The Service version.
      * @statuscode 204 If the Service definition was successfully deleted.
      * @statuscode 404 If the Service does not exist.
-     * @throws OrganizationNotFoundException
-     * @throws ServiceVersionNotFoundException
-     * @throws NotAuthorizedException
+     * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
+     * @throws ServiceVersionNotFoundException when trying to get, update, or delete a service version that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @DELETE
     @Path("{organizationId}/services/{serviceId}/versions/{version}/definition")
@@ -1082,9 +1083,9 @@ public interface IOrganizationResource {
      * @statuscode 200 If the list of Policies is successfully returned.
      * @statuscode 404 If the Service does not exist.
      * @return A List of Policies.
-     * @throws OrganizationNotFoundException
-     * @throws ServiceVersionNotFoundException
-     * @throws NotAuthorizedException
+     * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
+     * @throws ServiceVersionNotFoundException when trying to get, update, or delete a service version that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
     @Path("{organizationId}/services/{serviceId}/versions/{version}/policies")
@@ -1109,9 +1110,9 @@ public interface IOrganizationResource {
      * @param policyChain The Policies in the desired order.
      * @statuscode 204 If the re-ordering of Policies was successful.
      * @statuscode 404 If the Service does not exist.
-     * @throws OrganizationNotFoundException
-     * @throws ServiceVersionNotFoundException
-     * @throws NotAuthorizedException
+     * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
+     * @throws ServiceVersionNotFoundException when trying to get, update, or delete a service version that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @POST
     @Path("{organizationId}/services/{serviceId}/versions/{version}/reorderPolicies")
@@ -1135,8 +1136,8 @@ public interface IOrganizationResource {
      * @statuscode 200 If the Policy Chain is successfully returned.
      * @statuscode 404 If the Service does not exist.
      * @return A Policy Chain.
-     * @throws ServiceVersionNotFoundException
-     * @throws NotAuthorizedException
+     * @throws ServiceVersionNotFoundException when trying to get, update, or delete a service version that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
     @Path("{organizationId}/services/{serviceId}/versions/{version}/plans/{planId}/policyChain")
@@ -1158,8 +1159,8 @@ public interface IOrganizationResource {
      * @statuscode 200 If the list of Contracts is successfully returned.
      * @statuscode 404 If the Service does not exist.
      * @return A list of Contracts.
-     * @throws ServiceVersionNotFoundException
-     * @throws NotAuthorizedException
+     * @throws ServiceVersionNotFoundException when trying to get, update, or delete a service version that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
     @Path("{organizationId}/services/{serviceId}/versions/{version}/contracts")
@@ -1185,9 +1186,9 @@ public interface IOrganizationResource {
      * @statuscode 200 If the Plan is successfully created.
      * @statuscode 404 If the Organization does not exist.
      * @return Full details about the newly created Plan.
-     * @throws OrganizationNotFoundException
-     * @throws PlanAlreadyExistsException
-     * @throws NotAuthorizedException
+     * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
+     * @throws PlanAlreadyExistsException when trying to create an Plan that already exists
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @POST
     @Path("{organizationId}/plans")
@@ -1207,8 +1208,9 @@ public interface IOrganizationResource {
      * @statuscode 404 If the Organization does not exist.
      * @statuscode 404 If the Plan does not exist.
      * @return An Plan.
-     * @throws PlanNotFoundException
-     * @throws NotAuthorizedException
+     * when trying to get, update, or delete an plan that does not exist
+     * @throws PlanNotFoundException when trying to get, update, or delete an plan that does not exist 
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
     @Path("{organizationId}/plans/{planId}")
@@ -1228,8 +1230,9 @@ public interface IOrganizationResource {
      * @statuscode 404 If the Organization does not exist.
      * @statuscode 404 If the Plan does not exist.
      * @return A list of audit activity entries.
-     * @throws PlanNotFoundException
-     * @throws NotAuthorizedException
+     * when trying to get, update, or delete an plan that does not exist
+     * @throws PlanNotFoundException when trying to get, update, or delete an plan that does not exist 
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
     @Path("{organizationId}/plans/{planId}/activity")
@@ -1245,8 +1248,8 @@ public interface IOrganizationResource {
      * @statuscode 200 If the list of Plans is successfully returned.
      * @statuscode 404 If the Organization does not exist.
      * @return A list of Plans.
-     * @throws OrganizationNotFoundException
-     * @throws NotAuthorizedException
+     * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
     @Path("{organizationId}/plans")
@@ -1260,10 +1263,11 @@ public interface IOrganizationResource {
      * @param organizationId The Organization ID.
      * @param planId The Plan ID.
      * @param bean Updated Plan information.
+     * @throws PlanNotFoundException  when trying to get, update, or delete a plan that does not exist
      * @statuscode 204 If the Plan is updated successfully.
      * @statuscode 404 If the Plan does not exist.
-     * @throws PlanNotFoundException
-     * @throws NotAuthorizedException
+     * when trying to get, update, or delete an plan that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @PUT
     @Path("{organizationId}/plans/{planId}")
@@ -1282,8 +1286,9 @@ public interface IOrganizationResource {
      * @statuscode 200 If the Plan version is created successfully.
      * @statuscode 404 If the Plan does not exist.
      * @return Full details about the newly created Plan version.
-     * @throws PlanNotFoundException
-     * @throws NotAuthorizedException
+     * when trying to get, update, or delete an plan that does not exist
+     * @throws PlanNotFoundException when trying to get, update, or delete an plan that does not exist 
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @POST
     @Path("{organizationId}/plans/{planId}/versions")
@@ -1300,8 +1305,9 @@ public interface IOrganizationResource {
      * @param planId The Plan ID.
      * @statuscode 200 If the list of Plan versions is successfully returned.
      * @return A list of Plans.
-     * @throws PlanNotFoundException
-     * @throws NotAuthorizedException
+     * when trying to get, update, or delete an plan that does not exist
+     * @throws PlanNotFoundException when trying to get, update, or delete an plan that does not exist 
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
     @Path("{organizationId}/plans/{planId}/versions")
@@ -1319,8 +1325,8 @@ public interface IOrganizationResource {
      * @statuscode 200 If the Plan version is successfully returned.
      * @statuscode 404 If the Plan version does not exist.
      * @return An Plan version.
-     * @throws PlanVersionNotFoundException
-     * @throws NotAuthorizedException
+     * @throws PlanVersionNotFoundException when trying to get, update, or delete a plan version that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
     @Path("{organizationId}/plans/{planId}/versions/{version}")
@@ -1341,8 +1347,8 @@ public interface IOrganizationResource {
      * @statuscode 200 If the audit activity entries are successfully returned.
      * @statuscode 404 If the Plan version does not exist.
      * @return A list of audit entries.
-     * @throws PlanVersionNotFoundException
-     * @throws NotAuthorizedException
+     * @throws PlanVersionNotFoundException when trying to get, update, or delete a plan version that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
     @Path("{organizationId}/plans/{planId}/versions/{version}/activity")
@@ -1362,9 +1368,9 @@ public interface IOrganizationResource {
      * @statuscode 200 If the Policy is successfully added.
      * @statuscode 404 If the Plan does not exist.
      * @return Full details about the newly added Policy.
-     * @throws OrganizationNotFoundException
-     * @throws PlanVersionNotFoundException
-     * @throws NotAuthorizedException
+     * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
+     * @throws PlanVersionNotFoundException when trying to get, update, or delete a plan version that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @POST
     @Path("{organizationId}/plans/{planId}/versions/{version}/policies")
@@ -1385,10 +1391,10 @@ public interface IOrganizationResource {
      * @statuscode 200 If the Policy is successfully returned.
      * @statuscode 404 If the Plan does not exist.
      * @return Full information about the Policy.
-     * @throws OrganizationNotFoundException
-     * @throws PlanVersionNotFoundException
-     * @throws PolicyNotFoundException
-     * @throws NotAuthorizedException
+     * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
+     * @throws PlanVersionNotFoundException when trying to get, update, or delete a plan version that does not exist
+     * @throws PolicyNotFoundException when trying to get, update, or delete a policy that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
     @Path("{organizationId}/plans/{planId}/versions/{version}/policies/{policyId}")
@@ -1409,10 +1415,10 @@ public interface IOrganizationResource {
      * @statuscode 204 If the Policy was successfully updated.
      * @statuscode 404 If the Plan does not exist.
      * @statuscode 404 If the Policy does not exist.
-     * @throws OrganizationNotFoundException
-     * @throws PlanVersionNotFoundException
-     * @throws PolicyNotFoundException
-     * @throws NotAuthorizedException
+     * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
+     * @throws PlanVersionNotFoundException when trying to get, update, or delete a plan version that does not exist
+     * @throws PolicyNotFoundException when trying to get, update, or delete a policy that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @PUT
     @Path("{organizationId}/plans/{planId}/versions/{version}/policies/{policyId}")
@@ -1433,10 +1439,10 @@ public interface IOrganizationResource {
      * @statuscode 204 If the Policy was successfully deleted.
      * @statuscode 404 If the Plan does not exist.
      * @statuscode 404 If the Policy does not exist.
-     * @throws OrganizationNotFoundException
-     * @throws PlanVersionNotFoundException
-     * @throws PolicyNotFoundException
-     * @throws NotAuthorizedException
+     * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
+     * @throws PlanVersionNotFoundException when trying to get, update, or delete a plan version that does not exist
+     * @throws PolicyNotFoundException when trying to get, update, or delete a policy that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @DELETE
     @Path("{organizationId}/plans/{planId}/versions/{version}/policies/{policyId}")
@@ -1454,9 +1460,9 @@ public interface IOrganizationResource {
      * @statuscode 200 If the list of Policies is successfully returned.
      * @statuscode 404 If the Plan does not exist.
      * @return A List of Policies.
-     * @throws OrganizationNotFoundException
-     * @throws PlanVersionNotFoundException
-     * @throws NotAuthorizedException
+     * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
+     * @throws PlanVersionNotFoundException when trying to get, update, or delete a plan version that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
     @Path("{organizationId}/plans/{planId}/versions/{version}/policies")
@@ -1481,9 +1487,9 @@ public interface IOrganizationResource {
      * @param policyChain The Policies in the desired order.
      * @statuscode 204 If the re-ordering of Policies was successful.
      * @statuscode 404 If the Plan does not exist.
-     * @throws OrganizationNotFoundException
-     * @throws PlanVersionNotFoundException
-     * @throws NotAuthorizedException
+     * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
+     * @throws PlanVersionNotFoundException when trying to get, update, or delete a plan version that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @POST
     @Path("{organizationId}/plans/{planId}/versions/{version}/reorderPolicies")
@@ -1503,10 +1509,10 @@ public interface IOrganizationResource {
      * @param organizationId The Organization ID.
      * @param bean Roles to grant, and the ID of the user.
      * @statuscode 204 If the membership(s) were successfully granted.
-     * @throws OrganizationNotFoundException
-     * @throws RoleNotFoundException
-     * @throws UserNotFoundException
-     * @throws NotAuthorizedException
+     * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
+     * @throws RoleNotFoundException when a request is sent for a role that does not exist
+     * @throws UserNotFoundException when a request is sent for a user who does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @POST
     @Path("{organizationId}/roles")
@@ -1521,10 +1527,10 @@ public interface IOrganizationResource {
      * @param roleId The role ID.
      * @param userId The user ID.
      * @statuscode 204 If the membership was successfully revoked.
-     * @throws OrganizationNotFoundException
-     * @throws RoleNotFoundException
-     * @throws UserNotFoundException
-     * @throws NotAuthorizedException
+     * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
+     * @throws RoleNotFoundException when a request is sent for a role that does not exist
+     * @throws UserNotFoundException when a request is sent for a user who does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @DELETE
     @Path("{organizationId}/roles/{roleId}/{userId}")
@@ -1540,10 +1546,10 @@ public interface IOrganizationResource {
      * @param userId The user ID.
      * @statuscode 204 If the user's memberships were successfully revoked.
      * @statuscode 404 If the user does not exist.
-     * @throws OrganizationNotFoundException
-     * @throws RoleNotFoundException
-     * @throws UserNotFoundException
-     * @throws NotAuthorizedException
+     * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
+     * @throws RoleNotFoundException when a request is sent for a role that does not exist
+     * @throws UserNotFoundException when a request is sent for a user who does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @DELETE
     @Path("{organizationId}/members/{userId}")
@@ -1557,8 +1563,8 @@ public interface IOrganizationResource {
      * @param organizationId The organization ID.
      * @statuscode 200 If the list of members is returned successfully.
      * @return List of members.
-     * @throws OrganizationNotFoundException
-     * @throws NotAuthorizedException
+     * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
     @Path("{organizationId}/members")

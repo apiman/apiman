@@ -42,10 +42,10 @@ public class ServiceContract implements Serializable {
 
     /**
      * Constructor.
-     * @param apikey
-     * @param service
-     * @param application
-     * @param policies
+     * @param apikey the api key
+     * @param service the service
+     * @param application the application
+     * @param policies the list of policies
      */
     public ServiceContract(String apikey, Service service, Application application, List<Policy> policies) {
         setApikey(apikey);

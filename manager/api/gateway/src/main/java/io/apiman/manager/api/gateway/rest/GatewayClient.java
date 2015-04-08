@@ -56,8 +56,8 @@ public class GatewayClient /*implements ISystemResource, IServiceResource, IAppl
     
     /**
      * Constructor.
-     * @param gatewayEndpoint
-     * @param httpClient
+     * @param endpoint the endpoint
+     * @param httpClient the http client
      */
     public GatewayClient(String endpoint, CloseableHttpClient httpClient) {
         this.endpoint = endpoint;

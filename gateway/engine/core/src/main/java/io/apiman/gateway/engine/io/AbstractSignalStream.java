@@ -21,7 +21,7 @@ package io.apiman.gateway.engine.io;
  * 
  * @author Marc Savy <msavy@redhat.com>
  *
- * @param <H>
+ * @param <H> head type
  * @see ISignalReadStream
  */
 public abstract class AbstractSignalStream<H> extends AbstractStream<H> implements ISignalReadStream<H>, ISignalWriteStream {

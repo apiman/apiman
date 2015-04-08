@@ -32,7 +32,7 @@ public class StorageException extends Exception {
     
     /**
      * Constructor.
-     * @param message
+     * @param message the exception message
      */
     public StorageException(String message) {
         super(message);
@@ -40,7 +40,7 @@ public class StorageException extends Exception {
     
     /**
      * Constructor.
-     * @param cause
+     * @param cause the exception cause the exception cause
      */
     public StorageException(Throwable cause) {
         super(cause);

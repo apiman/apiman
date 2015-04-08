@@ -22,6 +22,7 @@ import io.apiman.gateway.engine.beans.PolicyFailure;
  * signal when events occur.
  *
  * @author eric.wittmann@redhat.com
+ * @param <T> Service object type
  */
 public interface IPolicyChain<T> {
 

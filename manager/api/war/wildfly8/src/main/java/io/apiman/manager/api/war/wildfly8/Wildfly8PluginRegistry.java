@@ -57,7 +57,6 @@ public class Wildfly8PluginRegistry extends AbstractPluginRegistry {
 
     /**
      * Constructor.
-     * @param pluginsDir
      */
     public Wildfly8PluginRegistry() {
         super(getPluginDir());

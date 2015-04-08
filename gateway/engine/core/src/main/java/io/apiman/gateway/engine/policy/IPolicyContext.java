@@ -39,12 +39,14 @@ public interface IPolicyContext {
      * Fetches an attribute value from the conversation.
      * @param name
      * @param defaultValue
+     * @return attribute if present, else default value
      */
     <T> T getAttribute(String name, T defaultValue);
 
     /**
      * Removes an attribute from the conversation.
      * @param name
+     * @return whether attribute was removed
      */
     boolean removeAttribute(String name);
     
@@ -53,11 +55,14 @@ public interface IPolicyContext {
      * use by policies during their execution.  Examples of components include the
      * Shared State Component and the HTTP Client Component.
      * @param componentClass
+     * @return the component of type T
+     * @throws ComponentNotFoundException 
      */
     <T extends IComponent> T getComponent(Class<T> componentClass) throws ComponentNotFoundException;
     
     /**
      * Sets the {@link IConnectorInterceptor} to be used instead of the real connection.
+     * @param connectorInterceptor the connector interceptor  
      * 
      * @throws InterceptorAlreadyRegisteredException
      */

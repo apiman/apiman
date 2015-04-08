@@ -50,9 +50,7 @@ public class CannedResponseServiceConnection implements IServiceConnection, ISer
 
     /**
      * Constructor.
-     * @param request
-     * @param service
-     * @param handler
+     * @param handler the Service Connection Response handler
      * @throws ConnectorException
      */
     public CannedResponseServiceConnection(IAsyncResultHandler<IServiceConnectionResponse> handler) throws ConnectorException {

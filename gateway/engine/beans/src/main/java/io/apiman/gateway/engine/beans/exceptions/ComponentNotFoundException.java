@@ -28,7 +28,7 @@ public class ComponentNotFoundException extends AbstractEngineException {
 
     /**
      * Constructor.
-     * @param componentType
+     * @param componentType the component type
      */
     public ComponentNotFoundException(String componentType) {
         super("Component not found: " + componentType); //$NON-NLS-1$
@@ -36,8 +36,8 @@ public class ComponentNotFoundException extends AbstractEngineException {
 
     /**
      * Constructor.
-     * @param componentType
-     * @param cause the root cause
+     * @param componentType the component type
+     * @param cause the exception cause the root cause
      */
     public ComponentNotFoundException(String componentType, Throwable cause) {
         super("Component not found: " + componentType, cause); //$NON-NLS-1$

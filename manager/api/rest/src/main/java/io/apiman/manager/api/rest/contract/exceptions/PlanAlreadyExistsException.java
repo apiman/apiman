@@ -34,7 +34,7 @@ public class PlanAlreadyExistsException extends AbstractAlreadyExistsException {
     
     /**
      * Constructor.
-     * @param message
+     * @param message the exception message
      */
     public PlanAlreadyExistsException(String message) {
         super(message);
@@ -49,7 +49,7 @@ public class PlanAlreadyExistsException extends AbstractAlreadyExistsException {
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.exceptions.AbstractRestException#getMoreInfo()
+     * @see io.apiman.manager.api.rest.contract.exceptions.AbstractRestException#getMoreInfoUrl()
      */
     @Override
     public String getMoreInfoUrl() {

@@ -32,6 +32,7 @@ public class ByteBuffer implements IApimanBuffer {
     
     /**
      * Constructor.
+     * @param size size of buffer
      */
     public ByteBuffer(int size) {
         buffer = new byte[size];
@@ -86,7 +87,7 @@ public class ByteBuffer implements IApimanBuffer {
     }
 
     /**
-     * @see io.apiman.gateway.engine.io.IApimanBuffer#getByte(int)
+     * @see io.apiman.gateway.engine.io.IApimanBuffer#get(int)
      */
     @Override
     public byte get(int index) {
@@ -261,8 +262,9 @@ public class ByteBuffer implements IApimanBuffer {
     
     /**
      * Reads from the input stream.
-     * @param stream
-     * @throws IOException
+     * @param stream the input stream
+     * @return bytes in buffer
+     * @throws IOException I/O exception has occurred
      */
     public int readFrom(InputStream stream) throws IOException {
         bytesInBuffer = stream.read(buffer);

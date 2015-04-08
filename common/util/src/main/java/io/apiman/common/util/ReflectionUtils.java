@@ -28,10 +28,10 @@ public class ReflectionUtils {
      * Call a method if it exists. Use very sparingly and generally prefer interfaces.
      * @param object The object
      * @param methodName Method name to call on the object
-     * @throws SecurityException
-     * @throws IllegalAccessException
-     * @throws IllegalArgumentException
-     * @throws InvocationTargetException
+     * @throws SecurityException reflection - security manager to indicate a security violation
+     * @throws IllegalAccessException reflection - does not allow access
+     * @throws IllegalArgumentException reflection - argument not allowed
+     * @throws InvocationTargetException reflection - exception thrown by an invoked method or constructor
      */
     public static <T> void callIfExists(T object, String methodName) throws SecurityException, IllegalAccessException, 
     IllegalArgumentException, InvocationTargetException {

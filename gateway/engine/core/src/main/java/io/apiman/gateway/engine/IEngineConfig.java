@@ -67,11 +67,13 @@ public interface IEngineConfig {
     public Map<String, String> getPolicyFactoryConfig();
 
     /**
+     * @param componentType the component type
      * @return the class to use for the given component
      */
     public <T extends IComponent> Class<T> getComponentClass(Class<T> componentType);
 
     /**
+     * @param componentType the component type
      * @return all properties to be passed to the factory
      */
     public <T extends IComponent> Map<String, String> getComponentConfig(Class<T> componentType);

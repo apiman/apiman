@@ -52,6 +52,7 @@ public class RateLimiterBucket implements Serializable {
     /**
      * Returns the number of millis until the period resets.
      * @param period
+     * @return millis until period resets
      */
     public long getResetMillis(RateBucketPeriod period) {
         long now = System.currentTimeMillis();

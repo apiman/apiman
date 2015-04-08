@@ -18,7 +18,7 @@ package io.apiman.gateway.engine.components;
 import io.apiman.gateway.engine.async.IAsyncHandler;
 
 /**
- * Simple timers, either periodic ({@link #setPeriodicTimer(long, IAsyncHandler)}) or one-off
+ * Simple timers, either periodic ({@link #setPeriodicTimer(long, long, IAsyncHandler)}) or one-off
  * {@link #setOneshotTimer(long, IAsyncHandler)}. They can be cancelled using the returned id (via method call
  * or handler). Cancellations must be idempotent.
  * 
@@ -33,6 +33,7 @@ public interface IPeriodicComponent {
      * @param periodMillis periodic frequency to call handler in delta milliseconds
      * @param initialDelayMillis delta milliseconds to call handler for first iteration
      * @param periodicHandler handler with unique timer ID
+     * @return timer ID
      */
     long setPeriodicTimer(long periodMillis, long initialDelayMillis, IAsyncHandler<Long> periodicHandler);
 
@@ -41,6 +42,7 @@ public interface IPeriodicComponent {
      * 
      * @param deltaMillis delta milliseconds
      * @param timerHandler handler with unique timer ID
+     * @return timer ID
      */
     long setOneshotTimer(long deltaMillis, IAsyncHandler<Long> timerHandler);
 

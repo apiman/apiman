@@ -27,7 +27,7 @@ public class PolicyNotFoundException extends AbstractEngineException {
 
     /**
      * Constructor.
-     * @param componentType
+     * @param componentType the component type
      */
     public PolicyNotFoundException(String componentType) {
         super("Policy not found: " + componentType); //$NON-NLS-1$
@@ -35,8 +35,8 @@ public class PolicyNotFoundException extends AbstractEngineException {
 
     /**
      * Constructor.
-     * @param componentType
-     * @param cause the root cause
+     * @param componentType the component type
+     * @param cause the exception cause the root cause
      */
     public PolicyNotFoundException(String componentType, Throwable cause) {
         super("Policy not found: " + componentType, cause); //$NON-NLS-1$

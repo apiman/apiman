@@ -36,6 +36,7 @@ public interface IApplicationValidator {
      * </ul>
      * 
      * @param application
+     * @return true if ready, else false
      * @throws Exception
      */
     boolean isReady(ApplicationVersionBean application) throws Exception;
@@ -59,6 +60,7 @@ public interface IApplicationValidator {
      * 
      * @param application
      * @param hasContracts
+     * @return true if ready, else false
      * @throws Exception
      */
     boolean isReady(ApplicationVersionBean application, boolean hasContracts) throws Exception;

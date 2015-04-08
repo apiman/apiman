@@ -114,7 +114,7 @@ public class DefaultPluginRegistry implements IPluginRegistry {
     
     /**
      * Constructor.
-     * @param configMap
+     * @param configMap the configuration map
      */
     public DefaultPluginRegistry(Map<String, String> configMap) {
         this(getConfiguredPluginsDir(configMap), getConfiguredPluginRepositories(configMap));
@@ -122,7 +122,8 @@ public class DefaultPluginRegistry implements IPluginRegistry {
 
     /**
      * Constructor.
-     * @param pluginsDir
+     * @param pluginsDir the plugins directory
+     * @param pluginRepositories the plugin repositories
      */
     public DefaultPluginRegistry(File pluginsDir, Set<URL> pluginRepositories) {
         this.pluginsDir = pluginsDir;

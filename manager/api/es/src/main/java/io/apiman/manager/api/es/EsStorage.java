@@ -370,7 +370,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorage#createRole(io.apiman.manager.api.beans.idm.RoleBean)
+     * @see io.apiman.manager.api.core.IIdmStorage#createRole(io.apiman.manager.api.beans.idm.RoleBean)
      */
     @Override
     public void createRole(RoleBean role) throws StorageException {
@@ -527,8 +527,9 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
         updateEntity("policyDef", policyDef.getId(), EsMarshalling.marshall(policyDef)); //$NON-NLS-1$
     }
 
+    
     /**
-     * @see io.apiman.manager.api.core.IStorage#updateRole(io.apiman.manager.api.beans.idm.RoleBean)
+     * @see io.apiman.manager.api.core.IIdmStorage#updateRole(io.apiman.manager.api.beans.idm.RoleBean)
      */
     @Override
     public void updateRole(RoleBean role) throws StorageException {
@@ -665,8 +666,8 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
         deleteEntity("policyDef", policyDef.getId()); //$NON-NLS-1$
     }
 
-    /**
-     * @see io.apiman.manager.api.core.IStorage#deleteRole(io.apiman.manager.api.beans.idm.RoleBean)
+    /* (non-Javadoc)
+     * @see io.apiman.manager.api.core.IIdmStorage#deleteRole(io.apiman.manager.api.beans.idm.RoleBean)
      */
     @Override
     public void deleteRole(RoleBean role) throws StorageException {
@@ -897,7 +898,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorage#getRole(java.lang.String)
+     * @see io.apiman.manager.api.core.IIdmStorage#getRole(java.lang.String)
      */
     @Override
     public RoleBean getRole(String id) throws StorageException {

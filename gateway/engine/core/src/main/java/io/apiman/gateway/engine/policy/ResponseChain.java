@@ -76,6 +76,7 @@ public class ResponseChain extends Chain<ServiceResponse> {
 
         /**
          * Constructor.
+         * @param policies list of configured policies
          */
         public ResponseIterator(List<PolicyWithConfiguration> policies) {
             this.policies = policies;

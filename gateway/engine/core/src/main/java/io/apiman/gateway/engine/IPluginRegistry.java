@@ -32,6 +32,7 @@ public interface IPluginRegistry {
     /**
      * Asynchronously loads a plugin.
      * @param coordinates
+     * @param handler result handler
      */
     public void loadPlugin(PluginCoordinates coordinates, IAsyncResultHandler<Plugin> handler);
 

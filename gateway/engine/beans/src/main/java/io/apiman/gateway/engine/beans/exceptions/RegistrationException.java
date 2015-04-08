@@ -35,7 +35,7 @@ public class RegistrationException extends AbstractEngineException {
     /**
      * Constructor.
      * @param message an error message
-     * @param cause the underlying cause
+     * @param cause the exception cause the underlying cause
      */
     public RegistrationException(String message, Throwable cause) {
         super(message, cause);
@@ -43,7 +43,7 @@ public class RegistrationException extends AbstractEngineException {
 
     /**
      * Constructor.
-     * @param cause the underlying cause
+     * @param cause the exception cause the underlying cause
      */
     public RegistrationException(Exception cause) {
         super(cause);

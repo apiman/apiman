@@ -40,7 +40,8 @@ public final class JpaUtil {
      * when the row already exists.  However, this is not always the case, based on
      * experience.  Or perhaps it only throws the exception if the entity is already
      * loaded from the DB and exists in the {@link EntityManager}.
-     * @param e
+     * @param e the exception
+     * @return whether a constraint violation occurred
      */
     public static boolean isConstraintViolation(Exception e) {
         Throwable cause = e;
@@ -54,7 +55,7 @@ public final class JpaUtil {
 
     /**
      * Rolls back a transaction.  Tries to be smart and quiet about it.
-     * @param entityManager
+     * @param entityManager the entity manager
      */
     public static void rollbackQuietly(EntityManager entityManager) {
         if (entityManager.getTransaction().isActive() && entityManager.getTransaction().getRollbackOnly()) {

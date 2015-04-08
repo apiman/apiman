@@ -122,7 +122,7 @@ public class ByteBuffer implements IApimanBuffer {
     }
 
     /**
-     * @see io.apiman.gateway.engine.io.IApimanBuffer#getByte(int)
+     * @see io.apiman.gateway.engine.io.IApimanBuffer#get(int)
      */
     @Override
     public byte get(int index) {

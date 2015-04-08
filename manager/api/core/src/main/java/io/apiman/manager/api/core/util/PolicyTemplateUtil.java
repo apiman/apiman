@@ -55,7 +55,8 @@ public class PolicyTemplateUtil {
      * result on the policy bean instance.  This should be done prior
      * to returning the policybean back to the user for a REST call to the
      * management API.
-     * @param policy
+     * @param policy the policy
+     * @throws Exception any exception
      */
     public static void generatePolicyDescription(PolicyBean policy) throws Exception {
         PolicyDefinitionBean def = policy.getDefinition();

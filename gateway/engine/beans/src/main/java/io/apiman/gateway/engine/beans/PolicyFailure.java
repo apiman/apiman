@@ -42,9 +42,9 @@ public class PolicyFailure implements Serializable {
     
     /**
      * Constructor.
-     * @param type
-     * @param failureCode
-     * @param message
+     * @param type the policy failure type
+     * @param failureCode the failure code
+     * @param message the failure message
      */
     public PolicyFailure(PolicyFailureType type, int failureCode, String message) {
         this.type = type;

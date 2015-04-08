@@ -28,7 +28,7 @@ public class InterceptorAlreadyRegisteredException extends AbstractEngineExcepti
 
     /**
      * Constructor.
-     * @param interceptorClass
+     * @param interceptorClass the interceptor class
      */
     @SuppressWarnings("nls")
     public InterceptorAlreadyRegisteredException(Class<?> interceptorClass) {

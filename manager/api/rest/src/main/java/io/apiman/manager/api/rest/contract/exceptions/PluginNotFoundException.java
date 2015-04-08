@@ -34,15 +34,15 @@ public class PluginNotFoundException extends AbstractNotFoundException {
     
     /**
      * Constructor.
-     * @param message
-     */
+     * @param message the exception message
+     */ 
     public PluginNotFoundException(String message) {
         super(message);
     }
 
     /**
      * Constructor.
-     * @param cause
+     * @param cause the exception cause
      */
     public PluginNotFoundException(Throwable cause) {
         super(cause);
@@ -50,8 +50,8 @@ public class PluginNotFoundException extends AbstractNotFoundException {
     
     /**
      * Constructor.
-     * @param message
-     * @param cause
+     * @param message the exception message
+     * @param cause the exception cause
      */
     public PluginNotFoundException(String message, Throwable cause) {
         super(message, cause);
@@ -66,7 +66,7 @@ public class PluginNotFoundException extends AbstractNotFoundException {
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.exceptions.AbstractRestException#getMoreInfo()
+     * @see io.apiman.manager.api.rest.contract.exceptions.AbstractRestException#getMoreInfoUrl()
      */
     @Override
     public String getMoreInfoUrl() {

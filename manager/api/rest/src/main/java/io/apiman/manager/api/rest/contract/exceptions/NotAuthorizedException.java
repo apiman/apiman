@@ -29,7 +29,7 @@ public class NotAuthorizedException extends AbstractUserException {
 
     /**
      * Constructor.
-     * @param message
+     * @param message the exception message
      */
     public NotAuthorizedException(String message) {
         super(message);
@@ -52,7 +52,7 @@ public class NotAuthorizedException extends AbstractUserException {
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.exceptions.AbstractRestException#getMoreInfo()
+     * @see io.apiman.manager.api.rest.contract.exceptions.AbstractRestException#getMoreInfoUrl()
      */
     @Override
     public String getMoreInfoUrl() {

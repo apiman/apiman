@@ -57,8 +57,8 @@ public interface IRoleResource {
      * @param bean The new role.
      * @statuscode 200 If the role is created successfully.
      * @return Full information about the created role.
-     * @throws RoleAlreadyExistsException
-     * @throws NotAuthorizedException
+     * @throws RoleAlreadyExistsException when role already exists
+     * @throws NotAuthorizedException when not authorized to invoke this method
      */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -70,7 +70,7 @@ public interface IRoleResource {
      * @summary List all Roles
      * @statuscode 200 If the role list is returned successfully.
      * @return A list of roles.
-     * @throws NotAuthorizedException
+     * @throws NotAuthorizedException when not authorized to invoke this method
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -83,8 +83,8 @@ public interface IRoleResource {
      * @param roleId The role ID.
      * @statuscode 200 If the role is returned successfully.
      * @return A role.
-     * @throws RoleNotFoundException
-     * @throws NotAuthorizedException
+     * @throws RoleNotFoundException when a request is sent for a role that does not exist
+     * @throws NotAuthorizedException when not authorized to invoke this method
      */
     @GET
     @Path("{roleId}")
@@ -99,8 +99,8 @@ public interface IRoleResource {
      * @param roleId The role ID.
      * @param bean Updated role information.
      * @statuscode 204 If the role is updated successfully.
-     * @throws RoleNotFoundException
-     * @throws NotAuthorizedException
+     * @throws RoleNotFoundException when a request is sent for a role that does not exist
+     * @throws NotAuthorizedException when not authorized to invoke this method
      */
     @PUT
     @Path("{roleId}")
@@ -114,8 +114,8 @@ public interface IRoleResource {
      * @servicetag admin
      * @param roleId The role ID.
      * @statuscode 204 If the role is deleted.
-     * @throws RoleNotFoundException
-     * @throws NotAuthorizedException
+     * @throws RoleNotFoundException when a request is sent for a role that does not exist
+     * @throws NotAuthorizedException when not authorized to invoke this method
      */
     @DELETE
     @Path("{roleId}")
@@ -129,8 +129,8 @@ public interface IRoleResource {
      * @param criteria The search criteria.
      * @statuscode 200 If the search completes successfully.
      * @return The search results (a page of roles).
-     * @throws InvalidSearchCriteriaException
-     * @throws NotAuthorizedException
+     * @throws InvalidSearchCriteriaException when provided criteria are invalid
+     * @throws NotAuthorizedException when not authorized to invoke this method
      */
     @POST
     @Path("search")

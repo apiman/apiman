@@ -59,7 +59,9 @@ public class InfluxDb09Driver {
     /**
      * Simple write to "/write". Must be valid Influx JSON.
      * 
-     * @param jsonDocument
+     * @param jsonDocument document to write, as string
+     * @param encoding encoding of string
+     * @param failureHandler handler in case of failure
      */
     public void write(String jsonDocument, String encoding,
             final IAsyncHandler<InfluxException> failureHandler) {

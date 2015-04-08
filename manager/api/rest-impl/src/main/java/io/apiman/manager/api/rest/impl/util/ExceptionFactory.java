@@ -66,7 +66,6 @@ public final class ExceptionFactory {
 
     /**
      * Creates a not authorized exception.
-     * @param username
      */
     public static final NotAuthorizedException notAuthorizedException() {
         return new NotAuthorizedException(Messages.i18n.format("AccessDenied")); //$NON-NLS-1$
@@ -239,7 +238,7 @@ public final class ExceptionFactory {
     /**
      * Creates an action exception.
      * @param message
-     * @param cause
+     * @param cause the exception cause
      */
     public static ActionException actionException(String message, Exception cause) {
         return new ActionException(message, cause);
@@ -247,7 +246,7 @@ public final class ExceptionFactory {
 
     /**
      * Creates an exception from a policy id.
-     * @param applicationId
+     * @param policyId
      */
     public static final PolicyNotFoundException policyNotFoundException(long policyId) {
         return new PolicyNotFoundException(Messages.i18n.format("PolicyDoesNotExist", policyId)); //$NON-NLS-1$
@@ -271,7 +270,7 @@ public final class ExceptionFactory {
 
     /**
      * Creates an exception.
-     * @param policyDefId
+     * @param message
      */
     public static final PolicyDefinitionInvalidException policyDefInvalidException(String message) {
         return new PolicyDefinitionInvalidException(message);
@@ -295,7 +294,6 @@ public final class ExceptionFactory {
 
     /**
      * Creates an exception from an plugin name.
-     * @param pluginName
      */
     public static final PluginAlreadyExistsException pluginAlreadyExistsException() {
         return new PluginAlreadyExistsException(Messages.i18n.format("PluginAlreadyExists")); //$NON-NLS-1$

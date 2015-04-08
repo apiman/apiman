@@ -46,7 +46,7 @@ public interface ISearchResource {
      * @param criteria The search criteria.
      * @statuscode 200 If the search is successful.
      * @return The search results (a page of organizations).
-     * @throws InvalidSearchCriteriaException
+     * @throws InvalidSearchCriteriaException when provided criteria are invalid when provided criteria are invalid 
      */
     @POST
     @Path("organizations")
@@ -63,8 +63,8 @@ public interface ISearchResource {
      * @param criteria The search criteria.
      * @statuscode 200 If the search is successful.
      * @return The search results (a page of applications).
-     * @throws OrganizationNotFoundException
-     * @throws InvalidSearchCriteriaException
+     * @throws OrganizationNotFoundException when provided organization is not found
+     * @throws InvalidSearchCriteriaException when provided criteria are invalid
      */
     @POST
     @Path("applications")
@@ -81,8 +81,8 @@ public interface ISearchResource {
      * @param criteria The search criteria.
      * @statuscode 200 If the search is successful.
      * @return The search results (a page of services).
-     * @throws OrganizationNotFoundException
-     * @throws InvalidSearchCriteriaException
+     * @throws OrganizationNotFoundException when provided organization is not found
+     * @throws InvalidSearchCriteriaException when provided criteria are invalid
      */
     @POST
     @Path("services")

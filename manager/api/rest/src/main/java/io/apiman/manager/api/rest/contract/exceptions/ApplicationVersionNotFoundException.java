@@ -35,7 +35,7 @@ public class ApplicationVersionNotFoundException extends AbstractNotFoundExcepti
     
     /**
      * Constructor.
-     * @param message
+     * @param message the message
      */
     public ApplicationVersionNotFoundException(String message) {
         super(message);
@@ -50,7 +50,7 @@ public class ApplicationVersionNotFoundException extends AbstractNotFoundExcepti
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.exceptions.AbstractRestException#getMoreInfo()
+     * @see io.apiman.manager.api.rest.contract.exceptions.AbstractRestException#getMoreInfoUrl()
      */
     @Override
     public String getMoreInfoUrl() {

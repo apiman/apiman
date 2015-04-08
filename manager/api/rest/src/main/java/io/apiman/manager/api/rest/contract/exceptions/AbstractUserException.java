@@ -35,7 +35,7 @@ public abstract class AbstractUserException extends AbstractRestException {
 
     /**
      * Constructor.
-     * @param message
+     * @param message the exception message
      */
     public AbstractUserException(String message) {
         super(message);
@@ -43,7 +43,7 @@ public abstract class AbstractUserException extends AbstractRestException {
     
     /**
      * Constructor.
-     * @param cause
+     * @param cause the exception cause
      */
     public AbstractUserException(Throwable cause) {
         super(cause);
@@ -51,8 +51,8 @@ public abstract class AbstractUserException extends AbstractRestException {
 
     /**
      * Constructor.
-     * @param message
-     * @param cause
+     * @param message the exception message
+     * @param cause the exception cause
      */
     public AbstractUserException(String message, Throwable cause) {
         super(message, cause);

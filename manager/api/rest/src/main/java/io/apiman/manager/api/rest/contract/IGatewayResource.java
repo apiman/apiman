@@ -55,7 +55,7 @@ public interface IGatewayResource {
      * @param bean Details of the Gateway for testing.
      * @statuscode 200 If the test is performed (regardless of the outcome of the test).
      * @return The result of testing the Gateway settings.
-     * @throws NotAuthorizedException
+     * @throws NotAuthorizedException when attempt to do something user is not authorized to do 
      */
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
@@ -67,7 +67,7 @@ public interface IGatewayResource {
      * @summary List All Gateways
      * @statuscode 200 If the gateways are successfully returned.
      * @return A list of configured Gateways.
-     * @throws NotAuthorizedException
+     * @throws NotAuthorizedException when attempt to do something user is not authorized to do
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -80,8 +80,8 @@ public interface IGatewayResource {
      * @param bean The details of the new Gateway.
      * @statuscode 200 If the Gateway is created successfully.
      * @return The newly created Gateway.
-     * @throws GatewayAlreadyExistsException
-     * @throws NotAuthorizedException
+     * @throws GatewayAlreadyExistsException when the gateway already exists
+     * @throws NotAuthorizedException when attempt to do something user is not authorized to do
      */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -94,8 +94,8 @@ public interface IGatewayResource {
      * @param gatewayId The ID of the Gateway to get.
      * @statuscode If the Gateway is returned successfully.
      * @return The Gateway identified by {gatewayId}
-     * @throws GatewayNotFoundException
-     * @throws NotAuthorizedException
+     * @throws GatewayNotFoundException when gateway is not found
+     * @throws NotAuthorizedException when attempt to do something user is not authorized to do
      */
     @GET
     @Path("{gatewayId}")
@@ -112,8 +112,8 @@ public interface IGatewayResource {
      * @param gatewayId The ID of the Gateway to update.
      * @param bean The Gateway information to update.  All fields are optional.
      * @statuscode 204 If the update is successful.
-     * @throws GatewayNotFoundException
-     * @throws NotAuthorizedException
+     * @throws GatewayNotFoundException when gateway is not found
+     * @throws NotAuthorizedException when attempt to do something user is not authorized to do
      */
     @PUT
     @Path("{gatewayId}")
@@ -127,8 +127,8 @@ public interface IGatewayResource {
      * @servicetag admin
      * @param gatewayId The ID of the Gateway to delete.
      * @statuscode 204 If the delete is successful.
-     * @throws GatewayNotFoundException
-     * @throws NotAuthorizedException
+     * @throws GatewayNotFoundException when gateway is not found
+     * @throws NotAuthorizedException when attempt to do something user is not authorized to do
      */
     @DELETE
     @Path("{gatewayId}")

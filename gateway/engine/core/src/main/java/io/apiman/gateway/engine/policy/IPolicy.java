@@ -31,6 +31,8 @@ public interface IPolicy {
      * policy implementation can parse the config in any way it chooses, resulting in any
      * type of object it desires.
      * @param jsonConfiguration
+     * @return the parsed configuration
+     * @throws ConfigurationParseException when unable to parse config
      */
     public Object parseConfiguration(String jsonConfiguration) throws ConfigurationParseException;
     

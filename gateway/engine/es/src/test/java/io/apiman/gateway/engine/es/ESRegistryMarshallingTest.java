@@ -182,7 +182,7 @@ public class ESRegistryMarshallingTest {
     }
 
     /**
-     * Test method for {@link io.apiman.gateway.engine.es.ESRegistryMarshalling#marshall(Contract)}.
+     * Test method for {@link io.apiman.gateway.engine.es.ESRegistryMarshalling#marshall(ServiceContract)}
      */
     @SuppressWarnings("nls")
     @Test

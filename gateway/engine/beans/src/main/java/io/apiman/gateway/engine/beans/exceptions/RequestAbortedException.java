@@ -29,7 +29,6 @@ public class RequestAbortedException extends AbstractEngineException {
 
     /**
      * Constructor.
-     * @param message an error message
      */
     public RequestAbortedException() {
     }

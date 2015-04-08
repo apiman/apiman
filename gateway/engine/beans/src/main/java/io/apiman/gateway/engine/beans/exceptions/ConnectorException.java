@@ -35,7 +35,7 @@ public class ConnectorException extends AbstractEngineException {
     /**
      * Constructor.
      * @param message an error message
-     * @param cause the root cause
+     * @param cause the exception cause the root cause
      */
     public ConnectorException(String message, Throwable cause) {
         super(message, cause);
@@ -43,7 +43,7 @@ public class ConnectorException extends AbstractEngineException {
 
     /**
      * Constructor.
-     * @param cause the root cause
+     * @param cause the exception cause the root cause
      */
     public ConnectorException(Throwable cause) {
         super(cause.getMessage(), cause);

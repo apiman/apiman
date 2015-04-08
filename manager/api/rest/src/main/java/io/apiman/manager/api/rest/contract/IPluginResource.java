@@ -51,7 +51,7 @@ public interface IPluginResource {
      * @summary List All Plugins
      * @statuscode 200 If the list of plugins is successfully returned.
      * @return A list of plugins.
-     * @throws NotAuthorizedException
+     * @throws NotAuthorizedException when not authorized to invoke this method
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -66,9 +66,10 @@ public interface IPluginResource {
      * @param bean The plugin to add.
      * @statuscode 200 If the plugin was added successfully.
      * @return Full details about the plugin that was added.
-     * @throws PluginAlreadyExistsException
-     * @throws PluginNotFoundException
-     * @throws NotAuthorizedException
+     * @throws PluginAlreadyExistsException when attempting to create a plugin that 
+     * already exists
+     * @throws PluginNotFoundException when specified plugin not found
+     * @throws NotAuthorizedException when not authorized to invoke this method
      */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -82,11 +83,11 @@ public interface IPluginResource {
      * remembered when a plugin is first added.
      * @summary Get Plugin by ID
      * @servicetag admin
-     * @param pluginId
+     * @param pluginId the plugin id
      * @statuscode 200 If the plugin exists and is returned.
      * @return An apiman plugin.
-     * @throws PluginNotFoundException
-     * @throws NotAuthorizedException
+     * @throws PluginNotFoundException when specified plugin not found
+     * @throws NotAuthorizedException when not authorized to invoke this method
      */
     @GET
     @Path("{pluginId}")
@@ -98,9 +99,9 @@ public interface IPluginResource {
      * @summary Delete a Plugin by ID
      * @servicetag admin
      * @statuscode 204 If the plugin was deleted successfully.
-     * @param pluginId The plugin's ID.
-     * @throws PluginNotFoundException
-     * @throws NotAuthorizedException
+     * @param pluginId the plugin id The plugin's ID.
+     * @throws PluginNotFoundException when specified plugin not found
+     * @throws NotAuthorizedException when not authorized to invoke this method
      */
     @DELETE
     @Path("{pluginId}")
@@ -110,11 +111,11 @@ public interface IPluginResource {
     /**
      * Use this endpoint to get a list of all policy definitions contributed by the plugin.
      * @summary Get Plugin Policy Definitions
-     * @param pluginId The plugin ID.
+     * @param pluginId the plugin id The plugin ID.
      * @statuscode 200 If the list of policy definitions is returned successfully.
      * @statuscode 404 If the plugin does not exist.
      * @return A list of policy definitions.
-     * @throws PluginNotFoundException
+     * @throws PluginNotFoundException when specified plugin not found
      */
     @GET
     @Path("{pluginId}/policyDefs")
@@ -128,15 +129,17 @@ public interface IPluginResource {
      * contribution *may* include a form for the UI to display when configuring an 
      * instance of the policy.  This endpoint returns this form.
      * @summary Get Plugin Policy Form
-     * @param pluginId The plugin ID.
+     * @param pluginId the plugin id The plugin ID.
      * @param policyDefId The policy definition ID.
      * @statuscode 200 If the form is returned successfully.
      * @statuscode 404 If the plugin does not exist.
      * @statuscode 404 If the policy definition does not exist.
      * @statuscode 404 If the form does not exist.
      * @return A policy configuration form.
-     * @throws PluginNotFoundException
-     * @throws PluginResourceNotFoundException
+     * @throws PluginNotFoundException when specified plugin not found
+     * @throws PolicyDefinitionNotFoundException when trying to get, update, or delete 
+     * a policy definition that does not exist
+     * @throws PluginResourceNotFoundException when plugin resource not found
      */
     @GET
     @Path("{pluginId}/policyDefs/{policyDefId}/form")

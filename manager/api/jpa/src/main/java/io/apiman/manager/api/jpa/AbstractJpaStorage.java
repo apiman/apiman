@@ -114,7 +114,7 @@ public abstract class AbstractJpaStorage {
     
     /**
      * @return the thread's entity manager
-     * @throws StorageException
+     * @throws StorageException if a storage problem occurs while storing a bean
      */
     protected EntityManager getActiveEntityManager() throws StorageException {
         EntityManager entityManager = activeEM.get();
@@ -125,7 +125,8 @@ public abstract class AbstractJpaStorage {
     }
     
     /**
-     * @see io.apiman.manager.api.core.IStorage#create(java.lang.Object)
+     * @param bean the bean to create
+     * @throws StorageException if a storage problem occurs while storing a bean 
      */
     public <T> void create(T bean) throws StorageException {
         if (bean == null) {
@@ -141,7 +142,8 @@ public abstract class AbstractJpaStorage {
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorage#update(java.lang.Object)
+     * @param bean the bean to update
+     * @throws StorageException if a storage problem occurs while storing a bean
      */
     public <T> void update(T bean) throws StorageException {
         EntityManager entityManager = getActiveEntityManager();
@@ -154,7 +156,10 @@ public abstract class AbstractJpaStorage {
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorage#delete(java.lang.Object)
+     * Delete using bean
+     * 
+     * @param bean the bean to delete
+     * @throws StorageException if a storage problem occurs while storing a bean
      */
     public <T> void delete(T bean) throws StorageException {
         EntityManager entityManager = getActiveEntityManager();
@@ -167,7 +172,12 @@ public abstract class AbstractJpaStorage {
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorage#get(java.lang.Long, java.lang.Class)
+     * Get object of type T
+     * 
+     * @param id identity key
+     * @param type class of type T
+     * @return Instance of type T
+     * @throws StorageException if a storage problem occurs while storing a bean
      */
     public <T> T get(Long id, Class<T> type) throws StorageException {
         T rval = null;
@@ -182,7 +192,12 @@ public abstract class AbstractJpaStorage {
     }
     
     /**
-     * @see io.apiman.manager.api.core.IStorage#get(java.lang.String, java.lang.Class)
+     * Get object of type T
+     * 
+     * @param id identity key
+     * @param type class of type T
+     * @return Instance of type T
+     * @throws StorageException if a storage problem occurs while storing a bean
      */
     public <T> T get(String id, Class<T> type) throws StorageException {
         T rval = null;
@@ -197,7 +212,13 @@ public abstract class AbstractJpaStorage {
     }
 
     /**
-     * @see io.apiman.manager.api.core.IStorage#get(java.lang.String, java.lang.String, java.lang.Class)
+     * Get object of type T
+     * 
+     * @param organizationId org id
+     * @param id identity
+     * @param type class of type T
+     * @return Instance of type T
+     * @throws StorageException if a storage problem occurs while storing a bean
      */
     public <T> T get(String organizationId, String id, Class<T> type) throws StorageException {
         T rval = null;
@@ -217,7 +238,7 @@ public abstract class AbstractJpaStorage {
      * Get a list of entities based on the provided criteria and entity type.
      * @param criteria
      * @param type
-     * @throws StorageException
+     * @throws StorageException if a storage problem occurs while storing a bean
      */
     protected <T> SearchResultsBean<T> find(SearchCriteriaBean criteria, Class<T> type) throws StorageException {
         SearchResultsBean<T> results = new SearchResultsBean<>();

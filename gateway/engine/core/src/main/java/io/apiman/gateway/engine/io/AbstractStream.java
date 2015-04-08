@@ -41,7 +41,7 @@ public abstract class AbstractStream<H> implements IReadWriteStream<H> {
 
     /**
      * Sets the head handler.
-     * @param headHandler
+     * @param headHandler head handler
      */
     public void headHandler(IAsyncHandler<H> headHandler) {
         this.headHandler = headHandler;

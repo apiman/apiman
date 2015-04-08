@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.ui.server.auth;
 
+import io.apiman.common.auth.AuthToken;
 import io.apiman.common.auth.AuthTokenUtil;
 import io.apiman.manager.ui.server.beans.BearerTokenCredentialsBean;
 
@@ -43,7 +44,7 @@ public class AuthTokenGenerator implements ITokenGenerator {
     }
     
     /**
-     * @see io.apiman.manager.ui.server.auth.api.security.ITokenGenerator#generateToken(javax.servlet.http.HttpServletRequest)
+     * @see io.apiman.manager.ui.server.auth.ITokenGenerator#generateToken(javax.servlet.http.HttpServletRequest)
      */
     @Override
     public BearerTokenCredentialsBean generateToken(HttpServletRequest request) {

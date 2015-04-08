@@ -36,7 +36,9 @@ public interface IRateLimiterComponent extends IComponent {
      * Adds another request to the given rate bucket.  Sends a true signal if the 
      * request should be accepted or false if it should be rejected.
      * @param bucketId
+     * @param period 
      * @param limit
+     * @param handler 
      */
     void accept(String bucketId, RateBucketPeriod period, int limit, IAsyncResultHandler<RateLimitResponse> handler);
 

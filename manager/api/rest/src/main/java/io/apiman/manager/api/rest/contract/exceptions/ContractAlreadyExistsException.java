@@ -34,7 +34,7 @@ public class ContractAlreadyExistsException extends AbstractAlreadyExistsExcepti
     
     /**
      * Constructor.
-     * @param message
+     * @param message the message
      */
     public ContractAlreadyExistsException(String message) {
         super(message);
@@ -49,7 +49,7 @@ public class ContractAlreadyExistsException extends AbstractAlreadyExistsExcepti
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.exceptions.AbstractRestException#getMoreInfo()
+     * @see io.apiman.manager.api.rest.contract.exceptions.AbstractRestException#getMoreInfoUrl()
      */
     @Override
     public String getMoreInfoUrl() {

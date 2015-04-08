@@ -29,7 +29,7 @@ public class NotAuthorizedException extends AbstractRestException {
 
     /**
      * Constructor.
-     * @param message
+     * @param message the exception message
      */
     public NotAuthorizedException(String message) {
         super(message);

@@ -36,6 +36,7 @@ public class AbstractPluginRegistryTest {
 
     /**
      * Test method for {@link io.apiman.manager.api.core.plugin.AbstractPluginRegistry#loadPlugin(io.apiman.common.plugin.PluginCoordinates)}.
+     * @throws Exception any exception
      */
     @Test
     public void testLoadPlugin() throws Exception {
@@ -53,7 +54,7 @@ public class AbstractPluginRegistryTest {
 
         /**
          * Constructor.
-         * @param pluginsDir
+         * @param pluginsDir the plugin's directory
          */
         public TestPluginRegistry(File pluginsDir) {
             super(pluginsDir);

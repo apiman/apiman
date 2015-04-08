@@ -55,7 +55,7 @@ public abstract class AbstractPluginRegistry implements IPluginRegistry {
     
     /**
      * Constructor.
-     * @param pluginsDir
+     * @param pluginsDir the plugin's directory
      */
     public AbstractPluginRegistry(File pluginsDir) {
         this.setPluginsDir(pluginsDir);

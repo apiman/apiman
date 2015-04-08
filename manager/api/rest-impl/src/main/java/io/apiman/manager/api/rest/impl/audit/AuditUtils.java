@@ -737,7 +737,7 @@ public class AuditUtils {
 
     /**
      * Converts the list of gateways to a string for display/comparison.
-     * @param plans
+     * @param gateways
      */
     public static String asString_ServiceGatewayBeans(Set<ServiceGatewayBean> gateways) {
         StringBuilder builder = new StringBuilder();

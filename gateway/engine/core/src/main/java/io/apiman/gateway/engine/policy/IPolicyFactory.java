@@ -44,6 +44,7 @@ public interface IPolicyFactory {
      * Loads the given configuration data into a config object.
      * @param policy
      * @param configData
+     * @return config object
      */
     public Object loadConfig(IPolicy policy, String configData);
     

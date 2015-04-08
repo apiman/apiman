@@ -30,8 +30,9 @@ public interface IComponentRegistry {
     
     /**
      * Gets a specific type of component from the registry.
-     * @param componentType
-     * @throws ComponentNotFoundException
+     * @param componentType the component type
+     * @return the component
+     * @throws ComponentNotFoundException when component not found
      */
     public <T extends IComponent> T getComponent(Class<T> componentType) throws ComponentNotFoundException;
 
