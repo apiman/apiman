@@ -110,10 +110,9 @@ public abstract class Chain<H> extends AbstractStream<H> implements IAbortable, 
         
         // If no policy handlers were found, then just make ourselves the head,
         // otherwise connect the last policy handler in the chain to ourselves
-        if (headPolicyHandler == null) {
-            // Leave the head and tail policy handlers null - the write() and end() methods
-            // will deal with that case.
-        } else {
+        // Leave the head and tail policy handlers null - the write() and end() methods
+        // will deal with that case.
+        if (headPolicyHandler != null && tailPolicyHandler != null) {
             tailPolicyHandler.bodyHandler(new IAsyncHandler<IApimanBuffer>() {
     
                 @Override
