@@ -67,7 +67,7 @@ public class ByteBuffer implements IApimanBuffer {
     }
 
     /**
-     * @param byteData
+     * @param byteData the byte data to initialize buffer
      */
     public ByteBuffer(byte[] byteData) {
         buffer = Arrays.copyOf(byteData, byteData.length);
@@ -297,8 +297,9 @@ public class ByteBuffer implements IApimanBuffer {
     
     /**
      * Reads from the input stream.
-     * @param stream
-     * @throws IOException
+     * @param stream the input stream to read from
+     * @throws IOException I/O error when reading from buffer
+     * @return bytes read from buffer
      */
     public int readFrom(InputStream stream) throws IOException {
         bytesInBuffer = stream.read(buffer);

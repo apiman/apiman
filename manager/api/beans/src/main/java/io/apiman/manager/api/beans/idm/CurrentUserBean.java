@@ -53,7 +53,7 @@ public class CurrentUserBean extends UserBean {
     }
     
     /**
-     * @param user
+     * @param user the user
      */
     public void initFromUser(UserBean user) {
         setEmail(user.getEmail());

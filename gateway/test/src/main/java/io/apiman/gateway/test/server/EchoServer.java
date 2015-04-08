@@ -29,6 +29,7 @@ import org.eclipse.jetty.servlet.ServletHolder;
  *
  * @author eric.wittmann@redhat.com
  */
+@SuppressWarnings("javadoc")
 public class EchoServer {
     
     private Server server;
@@ -36,6 +37,8 @@ public class EchoServer {
 
     /**
      * Constructor.
+     * 
+     * @param port the port to listen on
      */
     public EchoServer(int port) {
         this.port = port;

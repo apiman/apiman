@@ -51,7 +51,7 @@ import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
  * 
  * @author eric.wittmann@redhat.com
  */
-@SuppressWarnings("nls")
+@SuppressWarnings({"nls", "javadoc"})
 public class GatewayServer {
     
     public static GatewayServer gatewayServer;

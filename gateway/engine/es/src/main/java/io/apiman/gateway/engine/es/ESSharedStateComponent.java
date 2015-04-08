@@ -51,7 +51,7 @@ public class ESSharedStateComponent implements ISharedStateComponent {
 
     /**
      * Constructor.
-     * @param config
+     * @param config the configuration
      */
     public ESSharedStateComponent(Map<String, String> config) {
         this.config = config;

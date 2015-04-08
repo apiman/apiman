@@ -83,8 +83,9 @@ public class EsMarshalling {
 
     /**
      * Marshals the given bean into the given map.
-     * @param bean
-     * @throws StorageException 
+     * @param bean the bean
+     * @return the content builder
+     * @throws StorageException when a storage problem occurs while storing a bean
      */
     public static XContentBuilder marshall(PoliciesBean bean) throws StorageException {
         try {
@@ -121,8 +122,9 @@ public class EsMarshalling {
 
     /**
      * Marshals the given bean into the given map.
-     * @param bean
-     * @throws StorageException 
+     * @param bean the bean
+     * @return the content builder
+     * @throws StorageException when a storage problem occurs while storing a bean
      */
     public static XContentBuilder marshall(GatewayBean bean) throws StorageException {
         try {
@@ -146,8 +148,9 @@ public class EsMarshalling {
 
     /**
      * Marshals the given bean into the given map.
-     * @param bean
-     * @throws StorageException 
+     * @param bean the bean
+     * @return the content builder
+     * @throws StorageException when a storage problem occurs while storing a bean
      */
     public static XContentBuilder marshall(ServiceDefinitionBean bean) throws StorageException {
         try {
@@ -163,8 +166,9 @@ public class EsMarshalling {
 
     /**
      * Marshals the given bean into the given map.
-     * @param bean
-     * @throws StorageException 
+     * @param bean the bean
+     * @return the content builder
+     * @throws StorageException when a storage problem occurs while storing a bean
      */
     public static XContentBuilder marshall(ContractBean bean) throws StorageException {
         try {
@@ -197,8 +201,9 @@ public class EsMarshalling {
 
     /**
      * Marshals the given bean into the given map.
-     * @param bean
-     * @throws StorageException 
+     * @param bean the bean
+     * @return the content builder
+     * @throws StorageException when a storage problem occurs while storing a bean
      */
     public static XContentBuilder marshall(PlanBean bean) throws StorageException {
         try {
@@ -220,8 +225,9 @@ public class EsMarshalling {
 
     /**
      * Marshals the given bean into the given map.
-     * @param bean
-     * @throws StorageException 
+     * @param bean the bean
+     * @return the content builder
+     * @throws StorageException when a storage problem occurs while storing a bean
      */
     public static XContentBuilder marshall(PlanVersionBean bean) throws StorageException {
         try {
@@ -250,8 +256,9 @@ public class EsMarshalling {
 
     /**
      * Marshals the given bean into the given map.
-     * @param bean
-     * @throws StorageException 
+     * @param bean the bean
+     * @return the content builder
+     * @throws StorageException when a storage problem occurs while storing a bean
      */
     public static XContentBuilder marshall(ServiceBean bean) throws StorageException {
         try {
@@ -273,8 +280,9 @@ public class EsMarshalling {
 
     /**
      * Marshals the given bean into the given map.
-     * @param bean
-     * @throws StorageException 
+     * @param bean the bean
+     * @return the content builder
+     * @throws StorageException when a storage problem occurs while storing a bean
      */
     public static XContentBuilder marshall(ServiceVersionBean bean) throws StorageException {
         try {
@@ -329,8 +337,9 @@ public class EsMarshalling {
 
     /**
      * Marshals the given bean into the given map.
-     * @param bean
-     * @throws StorageException 
+     * @param bean the bean
+     * @return the content builder
+     * @throws StorageException when a storage problem occurs while storing a bean
      */
     public static XContentBuilder marshall(ApplicationBean bean) throws StorageException {
         try {
@@ -352,8 +361,9 @@ public class EsMarshalling {
 
     /**
      * Marshals the given bean into the given map.
-     * @param bean
-     * @throws StorageException 
+     * @param bean the bean
+     * @return the content builder
+     * @throws StorageException when a storage problem occurs while storing a bean
      */
     public static XContentBuilder marshall(ApplicationVersionBean bean) throws StorageException {
         try {
@@ -383,8 +393,9 @@ public class EsMarshalling {
 
     /**
      * Marshals the given bean into the given map.
-     * @param bean
-     * @throws StorageException 
+     * @param bean the bean
+     * @return the content builder
+     * @throws StorageException when a storage problem occurs while storing a bean
      */
     public static XContentBuilder marshall(AuditEntryBean bean) throws StorageException {
         try {
@@ -408,8 +419,9 @@ public class EsMarshalling {
 
     /**
      * Marshals the given bean into the given map.
-     * @param bean
-     * @throws StorageException 
+     * @param bean the bean
+     * @return the content builder
+     * @throws StorageException when a storage problem occurs while storing a bean
      */
     public static XContentBuilder marshall(OrganizationBean bean) throws StorageException {
         try {
@@ -431,8 +443,9 @@ public class EsMarshalling {
 
     /**
      * Marshals the given bean into the given map.
-     * @param bean
-     * @throws StorageException 
+     * @param bean the bean
+     * @return the content builder
+     * @throws StorageException when a storage problem occurs while storing a bean
      */
     public static XContentBuilder marshall(RoleMembershipBean bean) throws StorageException {
         try {
@@ -452,8 +465,9 @@ public class EsMarshalling {
 
     /**
      * Marshals the given bean into the given map.
-     * @param bean
-     * @throws StorageException 
+     * @param bean the bean
+     * @return the content builder
+     * @throws StorageException when a storage problem occurs while storing a bean
      */
     public static XContentBuilder marshall(UserBean bean) throws StorageException {
         try {
@@ -472,8 +486,9 @@ public class EsMarshalling {
 
     /**
      * Marshals the given bean into the given map.
-     * @param bean
-     * @throws StorageException 
+     * @param bean the bean
+     * @return the content builder
+     * @throws StorageException when a storage problem occurs while storing a bean
      */
     public static XContentBuilder marshall(RoleBean bean) throws StorageException {
         try {
@@ -498,8 +513,9 @@ public class EsMarshalling {
 
     /**
      * Marshals the given bean into the given map.
-     * @param bean
-     * @throws StorageException 
+     * @param bean the bean
+     * @return the content builder
+     * @throws StorageException when a storage problem occurs while storing a bean
      */
     public static XContentBuilder marshall(PolicyDefinitionBean bean) throws StorageException {
         try {
@@ -535,8 +551,9 @@ public class EsMarshalling {
 
     /**
      * Marshals the given bean into the given map.
-     * @param bean
-     * @throws StorageException 
+     * @param bean the bean
+     * @return the content builder
+     * @throws StorageException when a storage problem occurs while storing a bean
      */
     public static XContentBuilder marshall(PluginBean bean) throws StorageException {
         try {
@@ -561,7 +578,8 @@ public class EsMarshalling {
 
     /**
      * Unmarshals the given map source into a bean.
-     * @param source
+     * @param source the source
+     * @return the policy beans
      */
     @SuppressWarnings("unchecked")
     public static PoliciesBean unmarshallPolicies(Map<String, Object> source) {
@@ -601,7 +619,8 @@ public class EsMarshalling {
 
     /**
      * Unmarshals the given map source into a bean.
-     * @param source
+     * @param source the source
+     * @return the gateway bean
      */
     public static GatewayBean unmarshallGateway(Map<String, Object> source) {
         if (source == null) {
@@ -622,7 +641,7 @@ public class EsMarshalling {
 
     /**
      * Unmarshals the given map source into a bean.
-     * @param source
+     * @param source the source
      */
     public static ServiceDefinitionBean unmarshallServiceDefinition(Map<String, Object> source) {
         if (source == null) {
@@ -635,7 +654,7 @@ public class EsMarshalling {
 
     /**
      * Unmarshals the given map source into a bean.
-     * @param source
+     * @param source the source
      */
     public static ContractBean unmarshallContract(Map<String, Object> source) {
         if (source == null) {
@@ -651,7 +670,7 @@ public class EsMarshalling {
 
     /**
      * Unmarshals the given map source into a bean.
-     * @param source
+     * @param source the source
      */
     public static ContractSummaryBean unmarshallContractSummary(Map<String, Object> source) {
         if (source == null) {
@@ -680,7 +699,7 @@ public class EsMarshalling {
 
     /**
      * Unmarshals the given map source into a bean.
-     * @param source
+     * @param source the source
      */
     public static ApiEntryBean unmarshallApiEntry(Map<String, Object> source) {
         if (source == null) {
@@ -701,7 +720,7 @@ public class EsMarshalling {
 
     /**
      * Unmarshals the given map source into a bean.
-     * @param source
+     * @param source the source
      */
     public static PlanBean unmarshallPlan(Map<String, Object> source) {
         if (source == null) {
@@ -718,7 +737,7 @@ public class EsMarshalling {
 
     /**
      * Unmarshals the given map source into a bean.
-     * @param source
+     * @param source the source
      */
     public static PlanSummaryBean unmarshallPlanSummary(Map<String, Object> source) {
         if (source == null) {
@@ -735,7 +754,7 @@ public class EsMarshalling {
 
     /**
      * Unmarshals the given map source into a bean.
-     * @param source
+     * @param source the source
      */
     public static PlanVersionBean unmarshallPlanVersion(Map<String, Object> source) {
         if (source == null) {
@@ -754,7 +773,7 @@ public class EsMarshalling {
 
     /**
      * Unmarshals the given map source into a bean.
-     * @param source
+     * @param source the source
      */
     public static PlanVersionSummaryBean unmarshallPlanVersionSummary(Map<String, Object> source) {
         if (source == null) {
@@ -773,7 +792,7 @@ public class EsMarshalling {
 
     /**
      * Unmarshals the given map source into a bean.
-     * @param source
+     * @param source the source
      */
     public static ServiceBean unmarshallService(Map<String, Object> source) {
         if (source == null) {
@@ -790,7 +809,7 @@ public class EsMarshalling {
 
     /**
      * Unmarshals the given map source into a bean.
-     * @param source
+     * @param source the source
      */
     public static ServiceSummaryBean unmarshallServiceSummary(Map<String, Object> source) {
         if (source == null) {
@@ -808,7 +827,7 @@ public class EsMarshalling {
 
     /**
      * Unmarshals the given map source into a bean.
-     * @param source
+     * @param source the source
      */
     @SuppressWarnings("unchecked")
     public static ServiceVersionBean unmarshallServiceVersion(Map<String, Object> source) {
@@ -853,7 +872,7 @@ public class EsMarshalling {
 
     /**
      * Unmarshals the given map source into a bean.
-     * @param source
+     * @param source the source
      */
     public static ServiceVersionSummaryBean unmarshallServiceVersionSummary(Map<String, Object> source) {
         if (source == null) {
@@ -872,7 +891,7 @@ public class EsMarshalling {
 
     /**
      * Unmarshals the given map source into a bean.
-     * @param source
+     * @param source the source
      */
     public static ApplicationBean unmarshallApplication(Map<String, Object> source) {
         if (source == null) {
@@ -889,7 +908,7 @@ public class EsMarshalling {
 
     /**
      * Unmarshals the given map source into a bean.
-     * @param source
+     * @param source the source
      */
     public static ApplicationSummaryBean unmarshallApplicationSummary(Map<String, Object> source) {
         if (source == null) {
@@ -906,7 +925,7 @@ public class EsMarshalling {
 
     /**
      * Unmarshals the given map source into a bean.
-     * @param source
+     * @param source the source
      */
     public static ApplicationVersionBean unmarshallApplicationVersion(Map<String, Object> source) {
         if (source == null) {
@@ -926,7 +945,7 @@ public class EsMarshalling {
 
     /**
      * Unmarshals the given map source into a bean.
-     * @param source
+     * @param source the source
      */
     public static ApplicationVersionSummaryBean unmarshallApplicationVersionSummary(Map<String, Object> source) {
         if (source == null) {
@@ -945,7 +964,7 @@ public class EsMarshalling {
     
     /**
      * Unmarshals the given map source into a bean.
-     * @param source
+     * @param source the source
      */
     public static RoleBean unmarshallRole(Map<String, Object> source) {
         if (source == null) {
@@ -971,7 +990,7 @@ public class EsMarshalling {
 
     /**
      * Unmarshals the given map source into a bean.
-     * @param source
+     * @param source the source
      */
     public static UserBean unmarshallUser(Map<String, Object> source) {
         if (source == null) {
@@ -987,7 +1006,7 @@ public class EsMarshalling {
 
     /**
      * Unmarshals the given map source into a bean.
-     * @param source
+     * @param source the source
      */
     public static OrganizationBean unmarshallOrganization(Map<String, Object> source) {
         if (source == null) {
@@ -1006,7 +1025,7 @@ public class EsMarshalling {
 
     /**
      * Unmarshals the given map source into a bean.
-     * @param source
+     * @param source the source
      */
     public static OrganizationSummaryBean unmarshallOrganizationSummary(Map<String, Object> source) {
         if (source == null) {
@@ -1021,7 +1040,7 @@ public class EsMarshalling {
 
     /**
      * Unmarshals the given map source into a bean.
-     * @param source
+     * @param source the source
      */
     public static RoleMembershipBean unmarshallRoleMembership(Map<String, Object> source) {
         if (source == null) {
@@ -1038,7 +1057,7 @@ public class EsMarshalling {
 
     /**
      * Unmarshals the given map source into a bean.
-     * @param source
+     * @param source the source
      */
     public static AuditEntryBean unmarshallAuditEntry(Map<String, Object> source) {
         if (source == null) {
@@ -1074,7 +1093,7 @@ public class EsMarshalling {
 
     /**
      * Unmarshals the given map source into a bean.
-     * @param source
+     * @param source the source
      */
     public static PolicyDefinitionBean unmarshallPolicyDefinition(Map<String, Object> source) {
         if (source == null) {
@@ -1130,7 +1149,7 @@ public class EsMarshalling {
 
     /**
      * Unmarshals the given map source into a bean.
-     * @param source
+     * @param source the source
      */
     public static PluginBean unmarshallPlugin(Map<String, Object> source) {
         if (source == null) {

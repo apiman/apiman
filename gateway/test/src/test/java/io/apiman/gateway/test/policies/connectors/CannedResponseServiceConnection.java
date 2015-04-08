@@ -51,7 +51,7 @@ public class CannedResponseServiceConnection implements IServiceConnection, ISer
     /**
      * Constructor.
      * @param handler the Service Connection Response handler
-     * @throws ConnectorException
+     * @throws ConnectorException when failed to connect to back-end
      */
     public CannedResponseServiceConnection(IAsyncResultHandler<IServiceConnectionResponse> handler) throws ConnectorException {
         this.responseHandler = handler;

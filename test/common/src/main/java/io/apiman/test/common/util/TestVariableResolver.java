@@ -26,6 +26,7 @@ import org.mvel2.integration.VariableResolver;
  *
  * @author eric.wittmann@redhat.com
  */
+@SuppressWarnings("javadoc")
 public class TestVariableResolver implements VariableResolver {
     
     private static final long serialVersionUID = 1L;

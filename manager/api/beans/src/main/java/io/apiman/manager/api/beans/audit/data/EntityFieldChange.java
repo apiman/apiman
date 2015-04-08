@@ -37,9 +37,9 @@ public class EntityFieldChange {
 
     /**
      * Constructor.
-     * @param name
-     * @param before
-     * @param after
+     * @param name the name
+     * @param before the before state
+     * @param after the after state
      */
     public EntityFieldChange(String name, String before, String after) {
         this.name = name;

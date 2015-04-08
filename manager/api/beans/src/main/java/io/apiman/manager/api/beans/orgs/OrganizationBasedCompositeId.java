@@ -37,8 +37,8 @@ public class OrganizationBasedCompositeId implements Serializable {
 
     /**
      * Constructor.
-     * @param organization
-     * @param id
+     * @param organization the organization
+     * @param id the id
      */
     public OrganizationBasedCompositeId(OrganizationBean organization, String id) {
         this.setOrganization(organization);

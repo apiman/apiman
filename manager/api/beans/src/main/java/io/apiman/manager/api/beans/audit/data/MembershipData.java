@@ -42,7 +42,7 @@ public class MembershipData implements Serializable {
     }
     
     /**
-     * @param role
+     * @param role the role
      */
     public void addRole(String role) {
         getRoles().add(role);

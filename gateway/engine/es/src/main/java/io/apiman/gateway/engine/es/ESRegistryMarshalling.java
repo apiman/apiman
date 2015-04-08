@@ -41,7 +41,8 @@ public class ESRegistryMarshalling {
     /**
      * Marshals the given bean into the given map.
      * @param bean the service bean
-     * @throws Exception 
+     * @return the content builder
+     * @throws Exception when json marshalling fails 
      */
     public static XContentBuilder marshall(Service bean) throws Exception {
         XContentBuilder builder = XContentFactory.jsonBuilder();
@@ -89,7 +90,8 @@ public class ESRegistryMarshalling {
 
     /**
      * Unmarshals the given map source into a bean.
-     * @param source
+     * @param source the source mappings
+     * @return the service
      */
     @SuppressWarnings("nls")
     public static Service unmarshallService(Map<String, Object> source) {
@@ -120,7 +122,8 @@ public class ESRegistryMarshalling {
     /**
      * Marshals the given bean into the given map.
      * @param bean the application bean
-     * @throws Exception 
+     * @return the content builder
+     * @throws Exception when json marshalling fails 
      */
     public static XContentBuilder marshall(Application bean) throws Exception {
         XContentBuilder builder = XContentFactory.jsonBuilder();
@@ -129,8 +132,8 @@ public class ESRegistryMarshalling {
     }
 
     /**
-     * @param bean
-     * @param builder
+     * @param bean the bean
+     * @param builder the content builder
      */
     @SuppressWarnings("nls")
     private static void marshallInto(Application bean, XContentBuilder builder) throws IOException {
@@ -167,7 +170,8 @@ public class ESRegistryMarshalling {
 
     /**
      * Unmarshals the given map source into a bean.
-     * @param source
+     * @param source the source mappings
+     * @return the application
      */
     @SuppressWarnings({ "nls", "unchecked" })
     public static Application unmarshallApplication(Map<String, Object> source) {
@@ -204,8 +208,9 @@ public class ESRegistryMarshalling {
 
     /**
      * Marshals the given bean into the given map.
-     * @param bean 
-     * @throws Exception  
+     * @param bean the service contract 
+     * @throws Exception when json marshalling fails
+     * @return the content builder
      */
     @SuppressWarnings("nls")
     public static XContentBuilder marshall(ServiceContract bean) throws Exception {
@@ -232,7 +237,8 @@ public class ESRegistryMarshalling {
 
     /**
      * Unmarshals the given map source into a bean.
-     * @param source
+     * @param source the source mappings
+     * @return the service contract 
      */
     @SuppressWarnings({ "nls", "unchecked" })
     public static ServiceContract unmarshallServiceContract(Map<String, Object> source) {

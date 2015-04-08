@@ -25,6 +25,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
  * Models a set of beans returned as a result of a search.
  *
  * @author eric.wittmann@redhat.com
+ * @param <T> the bean type
  */
 @Portable
 public class SearchResultsBean<T> implements Serializable {

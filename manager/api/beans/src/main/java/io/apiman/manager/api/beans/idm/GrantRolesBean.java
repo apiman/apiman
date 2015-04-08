@@ -42,7 +42,7 @@ public class GrantRolesBean implements Serializable {
     }
     
     /**
-     * @param roleId
+     * @param roleId the role
      */
     public void addRoleId(String roleId) {
         roleIds.add(roleId);

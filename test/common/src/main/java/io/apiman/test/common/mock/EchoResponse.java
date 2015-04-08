@@ -35,8 +35,8 @@ public class EchoResponse {
     /**
      * Create an echo response from the inbound information in the http server
      * request.
-     * @param request
-     * @param withBody 
+     * @param request the request
+     * @param withBody if request is with body
      * @return a new echo response
      */
     public static EchoResponse from(HttpServletRequest request, boolean withBody) {

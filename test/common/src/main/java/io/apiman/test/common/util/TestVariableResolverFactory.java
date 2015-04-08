@@ -34,6 +34,8 @@ public class TestVariableResolverFactory extends BaseVariableResolverFactory {
 
     /**
      * Constructor.
+     * 
+     * @param node the json node
      */
     public TestVariableResolverFactory(JsonNode node) {
         this.node = node;

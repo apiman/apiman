@@ -49,7 +49,8 @@ public class ESClientFactory {
 
     /**
      * Creates a client from information in the config map.
-     * @param config
+     * @param config the configuration 
+     * @return the ES client
      */
     public static Client createClient(Map<String, String> config) {
         Client client = null;
@@ -66,7 +67,8 @@ public class ESClientFactory {
 
     /**
      * Creates a transport client from a configuration map.
-     * @param config
+     * @param config the configuration 
+     * @return the ES client
      */
     public static Client createTransportClient(Map<String, String> config) {
         String clusterName = config.get("client.cluster-name"); //$NON-NLS-1$
@@ -86,7 +88,8 @@ public class ESClientFactory {
     
     /**
      * Creates a local client from a configuration map.
-     * @param config
+     * @param config the configuration 
+     * @return the ES client
      */
     public static Client createLocalClient(Map<String, String> config) {
         String clientLocClassName = config.get("client.class"); //$NON-NLS-1$
@@ -96,9 +99,10 @@ public class ESClientFactory {
     
     /**
      * Creates and caches a transport client from host, port, and cluster name info.
-     * @param host
-     * @param port
-     * @param clusterName
+     * @param host the host
+     * @param port the port
+     * @param clusterName the cluster name
+     * @return the ES client
      */
     public static Client createTransportClient(String host, int port, String clusterName) {
         String clientKey = "transport:" + host + ':' + port + '/' + clusterName; //$NON-NLS-1$
@@ -119,8 +123,9 @@ public class ESClientFactory {
     /**
      * Creates a cache by looking it up in a static field.  Typically used for
      * testing.
-     * @param className
-     * @param fieldName
+     * @param className the class name
+     * @param fieldName the field name
+     * @return the ES client
      */
     public static Client createLocalClient(String className, String fieldName) {
         String clientKey = "local:" + className + '/' + fieldName; //$NON-NLS-1$
