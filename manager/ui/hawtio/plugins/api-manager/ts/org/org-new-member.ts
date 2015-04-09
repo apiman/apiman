@@ -10,6 +10,7 @@ module Apiman {
             $scope.selectedUsers = {};
             $scope.selectedRoles = [];
             $scope.queriedUsers = [];
+            $scope.searchBoxValue = '';
 
             $scope.addMembers = function() {
                 if ($scope.selectedRoles) {
@@ -37,7 +38,11 @@ module Apiman {
                 $scope.searchButton.state = 'in-progress';
                 
                 $scope.searchBoxValue = searchBoxValue;
-                if (searchBoxValue.length == 0) return $scope.queriedUsers = [];
+                if (!searchBoxValue || searchBoxValue.length == 0) {
+                    $scope.queriedUsers = [];
+                    $scope.searchButton.state = 'complete';
+                    return;
+                }
 
                 var queryBean = {
                     filters: [{

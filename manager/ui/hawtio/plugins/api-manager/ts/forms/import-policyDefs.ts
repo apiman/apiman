@@ -7,6 +7,7 @@ module Apiman {
         ($q, $scope, $location, ApimanSvcs, PageLifecycle) => {
             $scope.isData = true;
             $scope.isConfirm = false;
+            $scope.isValid = false;
             
             $scope.parseJSON  = function() {
                 var policiesImport = JSON.parse($scope.policyDefsJSON);
@@ -15,11 +16,20 @@ module Apiman {
                     policyDefs = policiesImport;
                 } else {
                     policyDefs.push(policiesImport);
-                } 
+                }
                 $scope.policyDefs = policyDefs;
                 $scope.isData = false;
                 $scope.isConfirm = true;
             }
+            
+            $scope.$watch('policyDefsJSON', function(newValue) {
+                try {
+                    JSON.parse($scope.policyDefsJSON);
+                    $scope.isValid = true;
+                } catch (e) {
+                    $scope.isValid = false;
+                }
+            });
             
             $scope.importPolicyDefs = function() {
                 $scope.yesButton.state = 'in-progress';

@@ -26,7 +26,7 @@
         <div class="card-details-item">
           <i class="fa fa-clock-o"></i>
           <div class="apiman-label-faded card-value" data-i18n-key="joined-on">Joined on</div>
-          <div class="card-value" data-field="joinedOn" data-role="dummy">Oct 19, 2012</div>
+          <div class="card-value" data-field="joinedOn" data-role="dummy">{{ member.joinedOn | date:'yyyy-MM-dd' }}</div>
         </div>
       </div>
     </div>

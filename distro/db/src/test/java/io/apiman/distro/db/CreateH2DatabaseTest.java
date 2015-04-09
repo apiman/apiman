@@ -46,6 +46,7 @@ public class CreateH2DatabaseTest extends AbstractTestPlanTest {
         System.out.println("------------------------------------------------");
 
         System.setProperty("apiman.test.h2-output-dir", targetClassesDir.toString());
+        System.setProperty("apiman.test.admin-user-only", "true");
         ManagerTestUtils.setTestType(TestType.jpa);
         AbstractTestPlanTest.setup();
     }
@@ -61,6 +62,7 @@ public class CreateH2DatabaseTest extends AbstractTestPlanTest {
             
             runTestPlan("scripts/api-manager-init-testPlan.xml", CreateH2DatabaseTest.class.getClassLoader());
         } finally {
+            System.clearProperty("apiman.test.admin-user-only");
             System.clearProperty("apiman.test.h2-output-dir");
         }
     }

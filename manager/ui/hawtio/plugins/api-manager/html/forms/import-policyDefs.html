@@ -3,7 +3,6 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
-
   </head>
 
   <body>
@@ -29,6 +28,10 @@
             <dt data-i18n-key="policyDef-data">Policy Definition Data</dt>
             <dd>
               <textarea apiman-drop-text ng-model="policyDefsJSON" data-field="data" class="form-control form-data" width="100%"></textarea>
+              <div class="alert alert-warning" ng-show="!isValid && policyDefsJSON" style="margin-top: 15px">
+                 <span class="pficon pficon-info"></span>
+                 <span data-i18n-key="invalid-policy-def-data-message">The policy definition data above is not valid.  Please make sure to type/copy a valid Policy Definition JSON document.</span>
+              </div>
             </dd>
           </dl>
         </div>
@@ -38,7 +41,7 @@
         </div>
         <!-- Import Button -->
         <div class="row">
-          <button class="btn btn-primary" data-i18n-key="import" placeholder="Importing..." data-icon="fa-cog"  ng-click="parseJSON()">Import</button>
+          <button ng-disabled="!isValid" class="btn btn-primary" data-i18n-key="import" placeholder="Importing..." data-icon="fa-cog"  ng-click="parseJSON()">Import</button>
           <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" data-i18n-key="cancel">Cancel</a>
         </div>
       </div>
