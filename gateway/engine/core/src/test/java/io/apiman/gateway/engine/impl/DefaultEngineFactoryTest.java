@@ -53,7 +53,7 @@ import org.mockito.InOrder;
 /**
  * Unit test for the default engine factory.
  */
-@SuppressWarnings({"nls", "javadoc"})
+@SuppressWarnings({ "nls", "javadoc", "unchecked" })
 public class DefaultEngineFactoryTest {
 
     private List<Policy> policyList;

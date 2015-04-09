@@ -85,6 +85,7 @@ import org.slf4j.LoggerFactory;
  * @author eric.wittmann@redhat.com
  */
 @ApplicationScoped @Alternative
+@SuppressWarnings("unchecked")
 public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorageQuery {
 
     private static Logger logger = LoggerFactory.getLogger(JpaStorage.class);

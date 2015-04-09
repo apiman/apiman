@@ -58,6 +58,7 @@ public class PolicyTemplateUtil {
      * @param policy the policy
      * @throws Exception any exception
      */
+    @SuppressWarnings("unchecked")
     public static void generatePolicyDescription(PolicyBean policy) throws Exception {
         PolicyDefinitionBean def = policy.getDefinition();
         PolicyDefinitionTemplateBean templateBean = getTemplateBean(def);

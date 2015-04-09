@@ -19,7 +19,6 @@ import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.PolicyFailureType;
 import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
-import io.apiman.gateway.engine.policies.BasicAuthenticationPolicy;
 import io.apiman.gateway.engine.policies.config.BasicAuthenticationConfig;
 import io.apiman.gateway.engine.policies.config.basicauth.PasswordHashAlgorithmType;
 import io.apiman.gateway.engine.policy.IPolicyChain;
@@ -46,7 +45,7 @@ import org.mockito.Mockito;
  *
  * @author eric.wittmann@redhat.com
  */
-@SuppressWarnings({ "nls", "javadoc" })
+@SuppressWarnings({ "nls", "javadoc", "unchecked" })
 public class BasicAuthenticationPolicyTest {
     
     private static final String LDAP_SERVER = "localhost";
