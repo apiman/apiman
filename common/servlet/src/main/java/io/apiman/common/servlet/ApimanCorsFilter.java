@@ -74,7 +74,8 @@ public class ApimanCorsFilter implements Filter {
 
     /**
      * Determines whether the request is a CORS preflight request.
-     * @param httpReq
+     * @param httpReq the http servlet request
+     * @return true if preflight, else false
      */
     protected boolean isPreflightRequest(HttpServletRequest httpReq) {
         return isOptionsMethod(httpReq) && hasOriginHeader(httpReq);
@@ -82,7 +83,8 @@ public class ApimanCorsFilter implements Filter {
 
     /**
      * Returns true if it's an OPTIONS http request.
-     * @param httpReq
+     * @param httpReq the http servlet request
+     * @return true if options method, else false
      */
     protected boolean isOptionsMethod(HttpServletRequest httpReq) {
         return "OPTIONS".equals(httpReq.getMethod()); //$NON-NLS-1$
@@ -90,7 +92,8 @@ public class ApimanCorsFilter implements Filter {
 
     /**
      * Returns true if the Origin request header is present.
-     * @param httpReq
+     * @param httpReq the http servlet request
+     * @return true if has origin header, else false
      */
     protected boolean hasOriginHeader(HttpServletRequest httpReq) {
         String origin = httpReq.getHeader("Origin"); //$NON-NLS-1$

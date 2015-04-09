@@ -59,7 +59,7 @@ public class RestGatewayLink implements IGatewayLink {
 
     /**
      * Constructor.
-     * @param gateway
+     * @param gateway the gateway
      */
     public RestGatewayLink(final GatewayBean gateway) {
         try {

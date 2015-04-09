@@ -71,10 +71,10 @@ public class HttpServiceConnection implements IServiceConnection, IServiceConnec
 
     /**
      * Constructor.
-     * @param request
-     * @param service
-     * @param handler
-     * @throws ConnectorException
+     * @param request the request
+     * @param service the service
+     * @param handler the result handler
+     * @throws ConnectorException when unable to connect
      */
     public HttpServiceConnection(ServiceRequest request, Service service,
             IAsyncResultHandler<IServiceConnectionResponse> handler) throws ConnectorException {

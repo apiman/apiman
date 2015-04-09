@@ -39,7 +39,7 @@ public class IndexedPermissions implements Serializable {
 
     /**
      * Constructor.
-     * @param permissions
+     * @param permissions the permissions
      */
     public IndexedPermissions(Set<PermissionBean> permissions) {
         index(permissions);
@@ -47,8 +47,9 @@ public class IndexedPermissions implements Serializable {
 
     /**
      * Returns true if the qualified permission exists.
-     * @param permissionName
-     * @param orgQualifier
+     * @param permissionName the permission name
+     * @param orgQualifier the org qualifier
+     * @return true if has qualified permission
      */
     public boolean hasQualifiedPermission(PermissionType permissionName, String orgQualifier) {
         String key = createQualifiedPermissionKey(permissionName, orgQualifier);
@@ -57,7 +58,8 @@ public class IndexedPermissions implements Serializable {
     
     /**
      * Given a permission name, returns all organization qualifiers.
-     * @param permissionName
+     * @param permissionName the permission type
+     * @return set of org qualifiers
      */
     public Set<String> getOrgQualifiers(PermissionType permissionName) {
         Set<String> orgs = permissionToOrgsMap.get(permissionName);
@@ -87,8 +89,8 @@ public class IndexedPermissions implements Serializable {
 
     /**
      * Creates an indexed key for the permission + org qualifier.
-     * @param permissionName
-     * @param orgQualifier
+     * @param permissionName the permission name
+     * @param orgQualifier the org qualifier
      */
     protected String createQualifiedPermissionKey(PermissionType permissionName, String orgQualifier) {
         return permissionName.name() + "||" + orgQualifier; //$NON-NLS-1$

@@ -28,7 +28,8 @@ public interface ITokenGenerator {
 
     /**
      * Generates a token.
-     * @param request
+     * @param request the servlet request
+     * @return the bearer token credentials
      */
     public BearerTokenCredentialsBean generateToken(HttpServletRequest request);
     

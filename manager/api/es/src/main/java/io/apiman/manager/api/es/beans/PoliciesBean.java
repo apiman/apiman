@@ -44,7 +44,8 @@ public class PoliciesBean {
     
     /**
      * Create a new Policies object from the given policy bean instance.
-     * @param policy
+     * @param policy the policy
+     * @return the policies
      */
     public static final PoliciesBean from(PolicyBean policy) {
         PoliciesBean rval = new PoliciesBean();
@@ -58,10 +59,11 @@ public class PoliciesBean {
     
     /**
      * Creates a new, empty {@link PoliciesBean} from some basic information.
-     * @param type
-     * @param organizationId
-     * @param entityId
-     * @param entityVersion
+     * @param type the policy type
+     * @param organizationId the organization id
+     * @param entityId the entity id
+     * @param entityVersion the entity version
+     * @return the policies
      */
     public static final PoliciesBean from(PolicyType type, String organizationId, String entityId, String entityVersion) {
         PoliciesBean rval = new PoliciesBean();

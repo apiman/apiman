@@ -82,8 +82,9 @@ public class WarEngineConfig implements IEngineConfig {
     /**
      * Returns the given configuration property name or the provided default
      * value if not found.
-     * @param propertyName
-     * @param defaultValue
+     * @param propertyName the property name
+     * @param defaultValue the default value
+     * @return the config property
      */
     public String getConfigProperty(String propertyName, String defaultValue) {
         return getConfig().getString(propertyName, defaultValue);

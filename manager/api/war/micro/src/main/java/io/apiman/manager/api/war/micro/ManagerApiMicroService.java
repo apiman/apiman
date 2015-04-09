@@ -58,6 +58,7 @@ public class ManagerApiMicroService {
     
     /**
      * Start/run the server.
+     * @throws Exception when any exception occurs
      */
     public void start() throws Exception {
         long startTime = System.currentTimeMillis();
@@ -77,14 +78,14 @@ public class ManagerApiMicroService {
     
     /**
      * Stop the server.
-     * @throws Exception
+     * @throws Exception when any exception occurs
      */
     public void stop() throws Exception {
         server.stop();
     }
 
     /**
-     * The server port.
+     * @return the server port.
      */
     public int serverPort() {
         return Integer.parseInt(System.getProperty("apiman-manager.api.port", "7070"));
@@ -145,7 +146,7 @@ public class ManagerApiMicroService {
     }
     
     /**
-     * @throws InterruptedException 
+     * @throws InterruptedException when interrupted
      */
     public void join() throws InterruptedException {
         server.join();

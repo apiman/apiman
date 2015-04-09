@@ -40,7 +40,7 @@ public class RateLimiterBucket implements Serializable {
     
     /**
      * Resets the count if the period boundary has been crossed.
-     * @param period
+     * @param period the period
      */
     public void resetIfNecessary(RateBucketPeriod period) {
         long periodBoundary = getLastPeriodBoundary(period);
@@ -51,7 +51,7 @@ public class RateLimiterBucket implements Serializable {
     
     /**
      * Returns the number of millis until the period resets.
-     * @param period
+     * @param period the period
      * @return millis until period resets
      */
     public long getResetMillis(RateBucketPeriod period) {

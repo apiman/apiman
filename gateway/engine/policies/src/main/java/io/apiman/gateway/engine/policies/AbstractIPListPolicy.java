@@ -23,13 +23,14 @@ import io.apiman.gateway.engine.policies.config.IPListConfig;
  * Base class for the ip whitelist and blacklist policies.
  *
  * @author eric.wittmann@redhat.com
+ * @param <C> the config type
  */
 public abstract class AbstractIPListPolicy<C> extends AbstractMappedPolicy<C> {
 
     /**
      * Gets the remote address for comparison.
-     * @param request
-     * @param config
+     * @param request the request
+     * @param config the config
      */
     protected String getRemoteAddr(ServiceRequest request, IPListConfig config) {
         String httpHeader = config.getHttpHeader();
@@ -45,8 +46,8 @@ public abstract class AbstractIPListPolicy<C> extends AbstractMappedPolicy<C> {
     /**
      * Returns true if the remote address is a match for the configured
      * values in the IP List.
-     * @param config
-     * @param remoteAddr
+     * @param config the config
+     * @param remoteAddr the remote address
      */
     protected boolean isMatch(IPListConfig config, String remoteAddr) {
         if (config.getIpList().contains(remoteAddr)) {

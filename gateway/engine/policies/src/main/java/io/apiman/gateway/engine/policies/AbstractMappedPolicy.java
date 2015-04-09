@@ -28,6 +28,7 @@ import org.codehaus.jackson.map.ObjectMapper;
  * A base class for policy impls that use jackson to parse configuration info.
  *
  * @author eric.wittmann@redhat.com
+ * @param <C> the config type
  */
 public abstract class AbstractMappedPolicy<C> implements IPolicy {
     

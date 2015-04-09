@@ -90,6 +90,7 @@ class HttpConnector implements IServiceConnectionResponse, IServiceConnection {
      * given instance.
      *
      * @param vertx a vertx
+     * @param container a container
      * @param service a service
      * @param request a request with fields filled
      * @param resultHandler a handler, called when reading is permitted

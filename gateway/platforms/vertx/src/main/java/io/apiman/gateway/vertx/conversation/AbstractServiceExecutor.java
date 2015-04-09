@@ -27,6 +27,7 @@ import org.vertx.java.core.logging.Logger;
  * Execute a service
  *
  * @author Marc Savy <msavy@redhat.com>
+ * @param <H> the head type
  */
 public abstract class AbstractServiceExecutor<H> implements ISimpleWriteStream {
 

@@ -27,8 +27,8 @@ public class PolicyWithConfiguration  {
     
     /**
      * Constructor.
-     * @param policy
-     * @param configuration
+     * @param policy the policy
+     * @param configuration the configuration
      */
     public PolicyWithConfiguration(IPolicy policy, Object configuration) {
         this.setPolicy(policy);

@@ -44,7 +44,8 @@ public final class SearchCriteriaUtil {
 
     /**
      * Validates that the search criteria bean is complete and makes sense.
-     * @param criteria
+     * @param criteria the search criteria
+     * @throws InvalidSearchCriteriaException when the search criteria is not valid
      */
     public static final void validateSearchCriteria(SearchCriteriaBean criteria) throws InvalidSearchCriteriaException {
         if (criteria.getPaging() != null) {

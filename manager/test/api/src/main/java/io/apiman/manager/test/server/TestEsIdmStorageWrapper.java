@@ -33,6 +33,7 @@ import org.elasticsearch.client.Client;
 /**
  * @author eric.wittmann@redhat.com
  */
+@SuppressWarnings("javadoc")
 public class TestEsIdmStorageWrapper implements IIdmStorage {
 
     private Client esClient;

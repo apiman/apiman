@@ -66,7 +66,7 @@ public class TestPlan {
      * Objects of the following type(s) are allowed in the list
      * {@link TestGroupType }
      * 
-     * 
+     * @return the list of test group
      */
     public List<TestGroupType> getTestGroup() {
         if (testGroup == null) {

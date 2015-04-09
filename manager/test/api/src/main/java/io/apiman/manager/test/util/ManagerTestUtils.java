@@ -29,7 +29,7 @@ public class ManagerTestUtils {
     public static final String TEST_TYPE = "apiman-test.type"; //$NON-NLS-1$
 
     /**
-     * @param type
+     * @param type the test type
      */
     public static final void setTestType(TestType type) {
         System.setProperty(TEST_TYPE, type.name());

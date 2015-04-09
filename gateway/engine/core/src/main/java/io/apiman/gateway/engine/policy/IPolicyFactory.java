@@ -29,22 +29,22 @@ import io.apiman.gateway.engine.async.IAsyncResultHandler;
 public interface IPolicyFactory {
 
     /**
-     * @param pluginRegistry
+     * @param pluginRegistry the plugin registry
      */
     public void setPluginRegistry(IPluginRegistry pluginRegistry);
     
     /**
      * Load a policy implementation asynchronously.
-     * @param policyImpl
-     * @param handler
+     * @param policyImpl the policy implementation
+     * @param handler the result handler
      */
     public void loadPolicy(String policyImpl, IAsyncResultHandler<IPolicy> handler);
 
     /**
      * Loads the given configuration data into a config object.
-     * @param policy
-     * @param configData
-     * @return config object
+     * @param policy the policy
+     * @param configData the config data
+     * @return config the loaded config object
      */
     public Object loadConfig(IPolicy policy, String configData);
     

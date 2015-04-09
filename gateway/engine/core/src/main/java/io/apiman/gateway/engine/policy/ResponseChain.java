@@ -30,8 +30,8 @@ public class ResponseChain extends Chain<ServiceResponse> {
 
     /**
      * Constructor.
-     * @param policies
-     * @param context
+     * @param policies the policies
+     * @param context the context
      */
     public ResponseChain(List<PolicyWithConfiguration> policies, IPolicyContext context) {
         super(policies, context);

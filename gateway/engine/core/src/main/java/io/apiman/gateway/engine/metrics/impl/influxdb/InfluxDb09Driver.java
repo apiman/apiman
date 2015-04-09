@@ -84,7 +84,7 @@ public class InfluxDb09Driver {
     /**
      * List all databases
      * 
-     * @param handler
+     * @param handler the result handler
      */
     @SuppressWarnings("nls")
     public void listDatabases(final IAsyncResultHandler<List<String>> handler) {

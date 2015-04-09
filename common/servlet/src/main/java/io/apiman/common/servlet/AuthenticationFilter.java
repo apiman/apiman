@@ -206,12 +206,12 @@ public class AuthenticationFilter implements Filter {
     /**
      * Handle BASIC authentication.  Delegates this to the container by invoking 'login'
      * on the inbound http servlet request object.
-     * @param credentials
-     * @param request
-     * @param response
-     * @param chain
-     * @throws IOException
-     * @throws ServletException
+     * @param credentials the credentials
+     * @param request the http servlet request
+     * @param response the http servlet respose
+     * @param chain the filter chain
+     * @throws IOException when I/O failure occurs in filter chain
+     * @throws ServletException when servlet exception occurs during auth
      */
     protected void doBasicAuth(Creds credentials, HttpServletRequest request, HttpServletResponse response,
             FilterChain chain) throws IOException, ServletException {
@@ -241,9 +241,12 @@ public class AuthenticationFilter implements Filter {
     /**
      * Implements token based authentication.  This simply creates a principal from the {@link AuthToken}
      * and then calls doFilterChain.
-     * @param token
-     * @param req
-     * @param response
+     * @param token the token
+     * @param request the request
+     * @param response the response
+     * @param chain the filterchain
+     * @throws IOException when I/O failure occurs in filter chain
+     * @throws ServletException when servlet exception occurs during auth
      */
     protected void doTokenAuth(AuthToken token, HttpServletRequest request, HttpServletResponse response,
             FilterChain chain) throws IOException, ServletException {
@@ -254,12 +257,12 @@ public class AuthenticationFilter implements Filter {
 
     /**
      * Further process the filter chain.
-     * @param request
-     * @param response
-     * @param chain
-     * @param principal
-     * @throws IOException
-     * @throws ServletException
+     * @param request the request
+     * @param response the response
+     * @param chain the filter chain
+     * @param principal the auth principal
+     * @throws IOException when I/O failure occurs in filter chain
+     * @throws ServletException when servlet exception occurs during auth
      */
     protected void doFilterChain(ServletRequest request, ServletResponse response, FilterChain chain,
             AuthPrincipal principal) throws IOException, ServletException {
@@ -274,8 +277,8 @@ public class AuthenticationFilter implements Filter {
 
     /**
      * Wrap the request to provide the principal.
-     * @param request
-     * @param principal
+     * @param request the request
+     * @param principal the principal 
      */
     private HttpServletRequest wrapTheRequest(final ServletRequest request, final AuthPrincipal principal) {
         HttpServletRequestWrapper wrapper = new HttpServletRequestWrapper((HttpServletRequest) request) {
@@ -299,7 +302,7 @@ public class AuthenticationFilter implements Filter {
 
     /**
      * Parses the Authorization request header into a username and password.
-     * @param authHeader
+     * @param authHeader the auth header
      */
     private Creds parseAuthorizationBasic(String authHeader) {
         String userpassEncoded = authHeader.substring(6);
@@ -316,7 +319,7 @@ public class AuthenticationFilter implements Filter {
 
     /**
      * Parses the Authorization request to retrieve the Base64 encoded auth token.
-     * @param authHeader
+     * @param authHeader the auth header
      */
     private AuthToken parseAuthorizationToken(String authHeader) {
         try {
@@ -330,8 +333,8 @@ public class AuthenticationFilter implements Filter {
 
     /**
      * Sends a response that tells the client that authentication is required.
-     * @param response
-     * @throws IOException 
+     * @param response the response
+     * @throws IOException when an error cannot be sent
      */
     private void sendAuthResponse(HttpServletResponse response) throws IOException {
         response.setHeader("WWW-Authenticate", String.format("BASIC realm=\"%1$s\"", realm)); //$NON-NLS-1$ //$NON-NLS-2$
@@ -355,6 +358,9 @@ public class AuthenticationFilter implements Filter {
         
         /**
          * Constructor.
+         * 
+         * @param username the username
+         * @param password the password
          */
         public Creds(String username, String password) {
             this.username = username;

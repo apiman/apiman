@@ -29,14 +29,14 @@ public interface IMetrics {
     /**
      * Records the metrics for a single request.  Most implementations will likely
      * asynchronously process this information.
-     * @param metric
+     * @param metric the request metric
      */
     public void record(RequestMetric metric);
     
     /**
      * Provides the component registry (before any call to {@link #record(RequestMetric)})
      * is made. Metrics can then access HTTP client components, etc.
-     * @param registry
+     * @param registry the component registry
      */
     public void setComponentRegistry(IComponentRegistry registry); 
 }

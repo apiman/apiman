@@ -35,7 +35,7 @@ public class Messages {
 
     /**
      * Gets a string from the bundle.
-     * @param key
+     * @param key the key
      * @return the resolved string or !key! if missing
      */
     public static String getString(String key) {

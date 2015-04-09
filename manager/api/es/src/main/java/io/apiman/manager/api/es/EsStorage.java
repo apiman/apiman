@@ -1946,7 +1946,8 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     private static interface IUnmarshaller<T> {
         /**
          * Unmarshal the source map into an entity.
-         * @param source
+         * @param source the source map
+         * @return the unmarshalled instance of <T>
          */
         public T unmarshal(Map<String, Object> source);
     }

@@ -55,7 +55,7 @@ public class InfinispanDataStoreComponent implements IDataStoreComponent {
 
     /**
      * Constructor.
-     * @param config
+     * @param config the config
      */
     public InfinispanDataStoreComponent(Map<String, String> config) {
         cacheContainer = DEFAULT_CACHE_CONTAINER;

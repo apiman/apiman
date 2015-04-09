@@ -50,6 +50,7 @@ public class ConnectorFactory implements IConnectorFactory {
     /**
      * Constructor
      * @param vertx a vertx instance
+     * @param container the container
      */
     public ConnectorFactory(Vertx vertx, Container container) {
         this.vertx = vertx;

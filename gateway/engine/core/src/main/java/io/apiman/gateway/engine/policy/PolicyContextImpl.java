@@ -37,7 +37,7 @@ public class PolicyContextImpl implements IPolicyContext {
     
     /**
      * Constructor.
-     * @param componentRegistry
+     * @param componentRegistry the component registry
      */
     public PolicyContextImpl(IComponentRegistry componentRegistry) {
         this.componentRegistry = componentRegistry;

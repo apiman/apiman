@@ -23,17 +23,18 @@ import io.apiman.gateway.engine.policy.IPolicyContext;
  * Interface used to validate an inbound user.
  * 
  * @author eric.wittmann@redhat.com
+ * @param <C> the config type
  */
 public interface IIdentityValidator<C> {
 
     /**
      * Asynchronously validates a user.
-     * @param username
-     * @param password
-     * @param request
-     * @param context
-     * @param config
-     * @param handler
+     * @param username the username
+     * @param password the password
+     * @param request the service request
+     * @param context the policy context
+     * @param config the config
+     * @param handler the result handler
      */
     public void validate(String username, String password, ServiceRequest request, IPolicyContext context,
             C config, IAsyncResultHandler<Boolean> handler);

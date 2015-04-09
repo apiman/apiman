@@ -57,7 +57,7 @@ public class InfinispanRateLimiterComponent implements IRateLimiterComponent {
 
     /**
      * Constructor.
-     * @param config
+     * @param config the config
      */
     public InfinispanRateLimiterComponent(Map<String, String> config) {
         cacheContainer = DEFAULT_CACHE_CONTAINER;

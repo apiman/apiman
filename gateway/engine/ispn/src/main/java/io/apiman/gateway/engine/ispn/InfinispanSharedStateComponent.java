@@ -54,7 +54,7 @@ public class InfinispanSharedStateComponent implements ISharedStateComponent {
 
     /**
      * Constructor.
-     * @param config
+     * @param config the config
      */
     public InfinispanSharedStateComponent(Map<String, String> config) {
         cacheContainer = DEFAULT_CACHE_CONTAINER;

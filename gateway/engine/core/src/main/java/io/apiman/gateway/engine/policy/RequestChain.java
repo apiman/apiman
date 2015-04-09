@@ -30,8 +30,8 @@ public class RequestChain extends Chain<ServiceRequest> {
 
     /**
      * Constructor.
-     * @param policies
-     * @param context
+     * @param policies the policies
+     * @param context the context
      */
     public RequestChain(List<PolicyWithConfiguration> policies, IPolicyContext context) {
         super(policies, context);

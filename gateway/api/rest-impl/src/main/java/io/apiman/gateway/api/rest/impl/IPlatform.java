@@ -31,9 +31,10 @@ public interface IPlatform {
     /**
      * Gets the endpoint for the given service.  It is up to the platform to determine
      * this endpoint.
-     * @param organizationId
-     * @param serviceId
-     * @param version
+     * @param organizationId the org id
+     * @param serviceId the service id
+     * @param version the version id
+     * @return the service endpoint
      */
     public ServiceEndpoint getServiceEndpoint(String organizationId, String serviceId, String version);
 

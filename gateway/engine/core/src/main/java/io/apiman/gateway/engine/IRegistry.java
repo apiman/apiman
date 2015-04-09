@@ -40,49 +40,49 @@ public interface IRegistry {
      * service request.
      * 
      * @param request an inbound service request
-     * @param handler
-     * @throws InvalidContractException
+     * @param handler the result handler
+     * @throws InvalidContractException when contract is invalid
      */
     public void getContract(ServiceRequest request, IAsyncResultHandler<ServiceContract> handler);
 
     /**
      * Publishes a new {@link Service} into the registry.
      * @param service the service being published
-     * @param handler
-     * @throws PublishingException
+     * @param handler the result handler
+     * @throws PublishingException when unable to publish service
      */
     public void publishService(Service service, IAsyncResultHandler<Void> handler);
     
     /**
      * Retires (removes) a {@link Service} from the registry.
-     * @param service
-     * @param handler
-     * @throws PublishingException
+     * @param service the service
+     * @param handler the result handler
+     * @throws PublishingException when unable to retire service
      */
     public void retireService(Service service, IAsyncResultHandler<Void> handler);
     
     /**
      * Registers a new {@link Application} with the registry.
      * @param application the application being registered
-     * @param handler
-     * @throws RegistrationException
+     * @param handler the result handler
+     * @throws RegistrationException when unable to register entity
      */
     public void registerApplication(Application application, IAsyncResultHandler<Void> handler);
 
     /**
      * Removes an {@link Application} from the registry.
      * @param application the application to remove
-     * @param handler
-     * @throws RegistrationException
+     * @param handler the result handler
+     * @throws RegistrationException when unable to register entity
      */
     public void unregisterApplication(Application application, IAsyncResultHandler<Void> handler);
 
     /**
      * Gets a service by its service coordinates.
-     * @param organizationId
-     * @param serviceId
-     * @param serviceVersion
-     * @param handler
+     * @param organizationId the org id
+     * @param serviceId the service id
+     * @param serviceVersion the service version
+     * @param handler the result handler
      */
     public void getService(String organizationId, String serviceId, String serviceVersion, IAsyncResultHandler<Service> handler);
 

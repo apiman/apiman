@@ -46,6 +46,7 @@ import org.elasticsearch.client.Client;
 /**
  * @author eric.wittmann@redhat.com
  */
+@SuppressWarnings("javadoc")
 public class TestEsStorageQueryWrapper implements IStorageQuery {
 
     private Client esClient;

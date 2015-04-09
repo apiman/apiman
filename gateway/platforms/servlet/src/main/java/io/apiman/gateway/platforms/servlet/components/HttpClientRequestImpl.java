@@ -47,9 +47,9 @@ public class HttpClientRequestImpl implements IHttpClientRequest {
 
     /**
      * Constructor.
-     * @param endpoint
-     * @param method
-     * @param handler
+     * @param endpoint the endpoint
+     * @param method the method
+     * @param handler the result handler
      */
     public HttpClientRequestImpl(String endpoint, HttpMethod method, IAsyncResultHandler<IHttpClientResponse> handler) {
         this.endpoint = endpoint;

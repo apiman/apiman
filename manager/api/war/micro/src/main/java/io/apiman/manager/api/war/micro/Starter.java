@@ -24,8 +24,8 @@ public class Starter {
 
     /**
      * Main entry point for the API Manager micro service.
-     * @param args
-     * @throws Exception 
+     * @param args the arguments
+     * @throws Exception when any unhandled exception occurs
      */
     public static final void main(String [] args) throws Exception {
         ManagerApiMicroService microService = new ManagerApiMicroService();

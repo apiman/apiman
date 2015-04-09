@@ -26,6 +26,7 @@ import java.io.File;
  *
  * @author eric.wittmann@redhat.com
  */
+@SuppressWarnings("javadoc")
 public class ManagerApiDevServer {
     
     /**

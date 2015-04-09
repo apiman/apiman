@@ -30,6 +30,7 @@ import org.vertx.java.core.logging.Logger;
  * Listen for something.
  *
  * @author Marc Savy <msavy@redhat.com>
+ * @param <E> the class to decode to
  */
 public abstract class AbstractServiceListener<E> implements IResettable {
 

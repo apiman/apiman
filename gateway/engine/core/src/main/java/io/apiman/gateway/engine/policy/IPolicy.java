@@ -30,7 +30,7 @@ public interface IPolicy {
      * Parses the JSON configuration into a policy specific configuration object type.  The
      * policy implementation can parse the config in any way it chooses, resulting in any
      * type of object it desires.
-     * @param jsonConfiguration
+     * @param jsonConfiguration the json configuration
      * @return the parsed configuration
      * @throws ConfigurationParseException when unable to parse config
      */

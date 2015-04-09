@@ -33,8 +33,8 @@ public class EntityFieldChange {
 
     /**
      * Constructor.
-     * @param before
-     * @param after
+     * @param before the before state
+     * @param after the after state
      */
     public EntityFieldChange(String before, String after) {
         this.setBefore(before);
