@@ -10,6 +10,12 @@
   <artifactId>apiman-manager-ui-hawtio-wildfly8</artifactId>
   <packaging>war</packaging>
   <name>apiman-manager-ui-hawtio-wildfly8</name>
+  
+  <properties>
+    <ui.webcontext>/apimanui/</ui.webcontext>
+    <timestamp>${maven.build.timestamp}</timestamp>
+    <maven.build.timestamp.format>yyyyMMdd_HHmm</maven.build.timestamp.format>
+  </properties>
 
   <dependencies>
     <!-- The base WAR being extended -->
@@ -92,6 +98,49 @@
           </overlays>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant</artifactId>
+            <version>1.8.2</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <id>transform-indexhtml</id>
+            <phase>generate-sources</phase>
+            <configuration>
+              <target>
+                <antversion property="antversion" />
+                <echo>Ant Version: ${antversion}</echo>
+
+                <echo></echo>
+                <echo>********************************************************************</echo>
+                <echo>Generating WildFly API Manager index.html file</echo>
+                <echo>********************************************************************</echo>
+                <echo></echo>
+
+                <delete file="${basedir}/src/main/webapp/index.html" />
+                <copy file="${basedir}/../index.html" tofile="${basedir}/src/main/webapp/index.html" overwrite="true" />
+                <replaceregexp file="${basedir}/src/main/webapp/index.html"
+                  match="&lt;base.href....&gt;&lt;.base&gt;" replace="&lt;base href=&apos;${ui.webcontext}&apos;&gt;&lt;/base&gt;" byline="true" />
+                <replaceregexp file="${basedir}/src/main/webapp/index.html"
+                  match="&lt;script.src=&quot;([\w\/\.\-]+)&quot;" replace="&lt;script src=&quot;\1?cid=${timestamp}&quot;" byline="true" />
+                <replaceregexp file="${basedir}/src/main/webapp/index.html"
+                  match="&lt;link.rel=&quot;stylesheet&quot;.href=&quot;([\w\/\.\-]+)&quot;" replace="&lt;link rel=&quot;stylesheet&quot; href=&quot;\1?cid=${timestamp}&quot;" byline="true" />
+                <echo>Successfully processed file ${project.build.directory}/${project.artifactId}-${project.version}/index.html</echo>
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
     </plugins>
   </build>
 
