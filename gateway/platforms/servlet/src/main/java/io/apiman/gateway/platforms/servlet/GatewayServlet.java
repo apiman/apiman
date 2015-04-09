@@ -392,8 +392,11 @@ public abstract class GatewayServlet extends HttpServlet {
                 if (split.length > 4) {
                     StringBuilder resource = new StringBuilder();
                     for (int idx = 4; idx < split.length; idx++) {
-                        resource.append("/"); //$NON-NLS-1$
+                        resource.append('/');
                         resource.append(split[idx]);
+                    }
+                    if (pathInfo.endsWith("/")) { //$NON-NLS-1$
+                        resource.append('/');
                     }
                     info.resource = resource.toString();
                 }
