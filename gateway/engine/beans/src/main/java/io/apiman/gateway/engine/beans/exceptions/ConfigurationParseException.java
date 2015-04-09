@@ -36,7 +36,7 @@ public class ConfigurationParseException extends AbstractEngineException {
     /**
      * Constructor.
      * @param message an error message
-     * @param cause the underlying cause
+     * @param cause the exception cause the underlying cause
      */
     public ConfigurationParseException(String message, Throwable cause) {
         super(message, cause);
@@ -44,7 +44,7 @@ public class ConfigurationParseException extends AbstractEngineException {
 
     /**
      * Constructor.
-     * @param cause
+     * @param cause the exception cause
      */
     public ConfigurationParseException(Throwable cause) {
         super(cause);

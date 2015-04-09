@@ -32,6 +32,8 @@ public class CacheMapWrapper implements Map<String, Object> {
     
     /**
      * Constructor.
+     * 
+     * @param cache the cache
      */
     public CacheMapWrapper(Cache<Object,Object> cache) {
         this.cache = cache;

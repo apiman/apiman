@@ -29,7 +29,7 @@ public interface ISimpleWriteStream {
     /**
      * Write a chunk
      * 
-     * @param buffer data chunk
+     * @param chunk the buffer data chunk
      */
     void write(Buffer chunk);
     

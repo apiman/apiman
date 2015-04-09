@@ -34,7 +34,7 @@ public class PolicyDefinitionAlreadyExistsException extends AbstractAlreadyExist
     
     /**
      * Constructor.
-     * @param message
+     * @param message the exception message
      */
     public PolicyDefinitionAlreadyExistsException(String message) {
         super(message);
@@ -49,7 +49,7 @@ public class PolicyDefinitionAlreadyExistsException extends AbstractAlreadyExist
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.exceptions.AbstractRestException#getMoreInfo()
+     * @see io.apiman.manager.api.rest.contract.exceptions.AbstractRestException#getMoreInfoUrl()
      */
     @Override
     public String getMoreInfoUrl() {

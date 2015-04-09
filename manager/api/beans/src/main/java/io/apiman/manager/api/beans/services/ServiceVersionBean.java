@@ -267,7 +267,7 @@ public class ServiceVersionBean implements Serializable {
     }
 
     /**
-     * @param plan
+     * @param plan the plan
      */
     public void addPlan(ServicePlanBean plan) {
         this.plans.add(plan);

@@ -31,7 +31,7 @@ public class PolicyConfigMap implements Map<String, Object> {
     
     /**
      * Constructor.
-     * @param delegate
+     * @param delegate the delegate map
      */
     public PolicyConfigMap(Map<String, Object> delegate) {
         this.delegate = delegate;

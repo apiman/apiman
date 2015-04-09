@@ -93,17 +93,19 @@ public class ServiceRequest implements IServiceObject, Serializable {
     public void setType(String type) {
         this.type = type;
     }
-
+   
     /**
-     * @see io.apiman.gateway.engine.beans.IServiceObjectBean#getHeaders()
+     * @see io.apiman.gateway.engine.beans.IServiceObject#getHeaders()
      */
+    @Override
     public Map<String, String> getHeaders() {
         return headers;
     }
-
+    
     /**
-     * @see io.apiman.gateway.engine.beans.IServiceObjectBean#setHeaders(java.util.Map)
+     * @see io.apiman.gateway.engine.beans.IServiceObject#setHeaders(java.util.Map)
      */
+    @Override
     public void setHeaders(Map<String, String> headers) {
         this.headers = headers;
     }
@@ -218,7 +220,7 @@ public class ServiceRequest implements IServiceObject, Serializable {
     /**
      * Set whether service request/response was made with transport security.
      * 
-     * @param bool transport security status
+     * @param isSecure transport security status
      */
     public void setTransportSecure(boolean isSecure) {
         this.transportSecurity = isSecure;

@@ -31,7 +31,7 @@ public class SearchCriteriaBean implements Serializable {
     
     private static final long serialVersionUID = 5103776179000907112L;
     
-    private List<SearchCriteriaFilterBean> filters = new ArrayList<SearchCriteriaFilterBean>();
+    private List<SearchCriteriaFilterBean> filters = new ArrayList<>();
     private OrderByBean orderBy;
     private PagingBean paging;
     
@@ -43,9 +43,9 @@ public class SearchCriteriaBean implements Serializable {
     
     /**
      * Adds a single filter to the criteria.
-     * @param name
-     * @param value
-     * @param operator
+     * @param name the filter name
+     * @param value the filter value
+     * @param operator the operator type
      */
     public void addFilter(String name, String value, SearchCriteriaFilterOperator operator) {
         SearchCriteriaFilterBean filter = new SearchCriteriaFilterBean();
@@ -56,7 +56,7 @@ public class SearchCriteriaBean implements Serializable {
     }
     
     /**
-     * @param page
+     * @param page the page
      */
     public void setPage(int page) {
         if (this.paging == null)
@@ -65,7 +65,7 @@ public class SearchCriteriaBean implements Serializable {
     }
     
     /**
-     * @param pageSize
+     * @param pageSize size of page
      */
     public void setPageSize(int pageSize) {
         if (this.paging == null)
@@ -74,8 +74,8 @@ public class SearchCriteriaBean implements Serializable {
     }
     
     /**
-     * @param name
-     * @param ascending
+     * @param name the name
+     * @param ascending whether is ascending
      */
     public void setOrder(String name, boolean ascending) {
         if (this.orderBy == null)

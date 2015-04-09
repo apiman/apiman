@@ -35,7 +35,7 @@ public class ConfigDrivenComponentRegistry implements IComponentRegistry {
     
     /**
      * Constructor.
-     * @param engineConfig 
+     * @param engineConfig the engine config
      */
     public ConfigDrivenComponentRegistry(IEngineConfig engineConfig) {
         this.engineConfig = engineConfig;
@@ -56,8 +56,10 @@ public class ConfigDrivenComponentRegistry implements IComponentRegistry {
 
     /**
      * Creates the component and registers it in the registry.
-     * @param componentType
-     * @throws ComponentNotFoundException
+     * @param componentType the component type
+     * @return the component
+     * @throws ComponentNotFoundException when a policy tries to get a component from 
+     * the context but the component doesn't exist or is otherwise not available.
      */
     public <T extends IComponent> T createAndRegisterComponent(Class<T> componentType) throws ComponentNotFoundException {
         try {

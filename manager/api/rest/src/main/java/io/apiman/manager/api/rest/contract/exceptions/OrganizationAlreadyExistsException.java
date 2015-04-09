@@ -35,7 +35,7 @@ public class OrganizationAlreadyExistsException extends AbstractAlreadyExistsExc
     
     /**
      * Constructor.
-     * @param message
+     * @param message the exception message
      */
     public OrganizationAlreadyExistsException(String message) {
         super(message);
@@ -50,7 +50,7 @@ public class OrganizationAlreadyExistsException extends AbstractAlreadyExistsExc
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.exceptions.AbstractRestException#getMoreInfo()
+     * @see io.apiman.manager.api.rest.contract.exceptions.AbstractRestException#getMoreInfoUrl()
      */
     @Override
     public String getMoreInfoUrl() {

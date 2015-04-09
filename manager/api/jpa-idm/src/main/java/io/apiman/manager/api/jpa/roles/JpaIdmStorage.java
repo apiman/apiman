@@ -252,7 +252,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
      */
     @Override
     public Set<RoleMembershipBean> getUserMemberships(String userId) throws StorageException {
-        Set<RoleMembershipBean> memberships = new HashSet<RoleMembershipBean>();
+        Set<RoleMembershipBean> memberships = new HashSet<>();
         beginTx();
         try {
             EntityManager entityManager = getActiveEntityManager();
@@ -277,7 +277,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
      */
     @Override
     public Set<RoleMembershipBean> getUserMemberships(String userId, String organizationId) throws StorageException {
-        Set<RoleMembershipBean> memberships = new HashSet<RoleMembershipBean>();
+        Set<RoleMembershipBean> memberships = new HashSet<>();
         beginTx();
         try {
             EntityManager entityManager = getActiveEntityManager();
@@ -304,7 +304,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
      */
     @Override
     public Set<RoleMembershipBean> getOrgMemberships(String organizationId) throws StorageException {
-        Set<RoleMembershipBean> memberships = new HashSet<RoleMembershipBean>();
+        Set<RoleMembershipBean> memberships = new HashSet<>();
         beginTx();
         try {
             EntityManager entityManager = getActiveEntityManager();
@@ -329,7 +329,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
      */
     @Override
     public Set<PermissionBean> getPermissions(String userId) throws StorageException {
-        Set<PermissionBean> permissions = new HashSet<PermissionBean>();
+        Set<PermissionBean> permissions = new HashSet<>();
         beginTx();
         try {
             EntityManager entityManager = getActiveEntityManager();

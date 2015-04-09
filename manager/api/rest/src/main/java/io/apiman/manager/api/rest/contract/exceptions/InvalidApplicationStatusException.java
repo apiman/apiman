@@ -27,7 +27,7 @@ public class InvalidApplicationStatusException extends AbstractUserException {
 
     /**
      * Constructor.
-     * @param message
+     * @param message the exception message
      */
     public InvalidApplicationStatusException(String message) {
         super(message);

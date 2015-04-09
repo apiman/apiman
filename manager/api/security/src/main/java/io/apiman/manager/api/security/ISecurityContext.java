@@ -29,33 +29,37 @@ import java.util.Set;
 public interface ISecurityContext {
     
     /**
-     * Returns the currently authentiated user.
+     * @return the currently authentiated user.
      */
     public String getCurrentUser();
 
     /**
      * Returns true if the current user is an administrator.
+     * @return true if admin, else false
      */
     public boolean isAdmin();
 
     /**
      * Returns true if the current user has permission to perform a particular
      * action for the provided organization.
-     * @param permission
-     * @param organizationId
+     * @param permission the permission type
+     * @param organizationId the org id
+     * @return true if has permission, else false
      */
     public boolean hasPermission(PermissionType permission, String organizationId);
     
     /**
      * Returns the set of organizations for which the current user is allowed
      * to perform a given action.
-     * @param permission
+     * @param permission the permission type
+     * @return set of permitted organizations
      */
     public Set<String> getPermittedOrganizations(PermissionType permission);
     
     /**
      * Gets a request header from the current in-scope request.
-     * @param headerName
+     * @param headerName the header name
+     * @return the request header
      */
     public String getRequestHeader(String headerName);
 

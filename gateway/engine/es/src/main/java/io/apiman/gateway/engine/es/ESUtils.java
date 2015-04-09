@@ -24,7 +24,8 @@ public class ESUtils {
 
     /**
      * Gets the root cause of an exception.
-     * @param e
+     * @param e the root cause
+     * @return the throwable
      */
     public static final Throwable rootCause(Throwable e) {
         Throwable cause = e;

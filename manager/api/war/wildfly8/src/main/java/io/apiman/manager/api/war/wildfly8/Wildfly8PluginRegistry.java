@@ -57,7 +57,6 @@ public class Wildfly8PluginRegistry extends AbstractPluginRegistry {
 
     /**
      * Constructor.
-     * @param pluginsDir
      */
     public Wildfly8PluginRegistry() {
         super(getPluginDir());
@@ -78,7 +77,7 @@ public class Wildfly8PluginRegistry extends AbstractPluginRegistry {
      * @return the maven repositories to use when downloading plugins
      */
     protected Set<URL> loadMavenRepositories() {
-        Set<URL> repos = new HashSet<URL>();
+        Set<URL> repos = new HashSet<>();
         repos.addAll(super.getMavenRepositories());
         repos.addAll(config.getPluginRepositories());
         return repos;

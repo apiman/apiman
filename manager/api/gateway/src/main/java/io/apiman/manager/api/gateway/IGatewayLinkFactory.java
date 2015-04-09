@@ -27,7 +27,8 @@ public interface IGatewayLinkFactory {
     /**
      * Creates an appropriate gateway link for the given gateway bean.  Allows 
      * publishing of services to the given gateway.
-     * @param gateway
+     * @param gateway the gateway
+     * @return the gateway link
      */
     public IGatewayLink create(GatewayBean gateway);
 

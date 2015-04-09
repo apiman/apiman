@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.ui.server.auth;
 
+import io.apiman.common.auth.AuthToken;
 import io.apiman.common.auth.AuthTokenUtil;
 import io.apiman.manager.ui.server.beans.BearerTokenCredentialsBean;
 
@@ -43,7 +44,7 @@ public class AuthTokenGenerator implements ITokenGenerator {
     }
     
     /**
-     * @see io.apiman.manager.ui.server.auth.api.security.ITokenGenerator#generateToken(javax.servlet.http.HttpServletRequest)
+     * @see io.apiman.manager.ui.server.auth.ITokenGenerator#generateToken(javax.servlet.http.HttpServletRequest)
      */
     @Override
     public BearerTokenCredentialsBean generateToken(HttpServletRequest request) {
@@ -51,7 +52,7 @@ public class AuthTokenGenerator implements ITokenGenerator {
         
         String principal = request.getRemoteUser();
         // TODO create platform specific subclasses of this to get the roles properly
-        Set<String> roles = new HashSet<String>();
+        Set<String> roles = new HashSet<>();
         roles.add("apiuser"); //$NON-NLS-1$
         if (request.isUserInRole("apiadmin")) { //$NON-NLS-1$
             roles.add("apiadmin"); //$NON-NLS-1$

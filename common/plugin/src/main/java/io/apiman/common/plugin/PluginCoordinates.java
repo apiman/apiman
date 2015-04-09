@@ -47,9 +47,9 @@ public class PluginCoordinates implements Serializable {
 
     /**
      * Constructor.
-     * @param groupId
-     * @param artifactId
-     * @param version
+     * @param groupId Maven group id
+     * @param artifactId Maven artifact id 
+     * @param version Maven version
      */
     public PluginCoordinates(String groupId, String artifactId, String version) {
         setGroupId(groupId);
@@ -59,11 +59,11 @@ public class PluginCoordinates implements Serializable {
 
     /**
      * Constructor.
-     * @param groupId
-     * @param artifactId
-     * @param version
-     * @param classifier
-     * @param type
+     * @param groupId  Maven group id
+     * @param artifactId Maven artifact id 
+     * @param version Maven version
+     * @param classifier Maven classifier
+     * @param type Maven type
      */
     public PluginCoordinates(String groupId, String artifactId, String version, String classifier, String type) {
         setGroupId(groupId);
@@ -230,7 +230,8 @@ public class PluginCoordinates implements Serializable {
      * 
      * plugin:groupId:artifactId:version[:classifier][:type]/org.example.plugins.PluginImpl
      * 
-     * @param pluginPolicySpec
+     * @param pluginPolicySpec the policy specification
+     * @return plugin coordinates
      */
     public static final PluginCoordinates fromPolicySpec(String pluginPolicySpec) {
         if (pluginPolicySpec == null) {

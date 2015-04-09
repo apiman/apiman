@@ -33,7 +33,7 @@ import java.util.Map;
  */
 public class InMemoryRateLimiterComponent implements IRateLimiterComponent {
     
-    private Map<String, RateLimiterBucket> buckets = new HashMap<String, RateLimiterBucket>();
+    private Map<String, RateLimiterBucket> buckets = new HashMap<>();
 
     /**
      * Constructor.

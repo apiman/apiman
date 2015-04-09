@@ -33,7 +33,7 @@ public abstract class AbstractAlreadyExistsException extends AbstractUserExcepti
 
     /**
      * Constructor.
-     * @param message
+     * @param message the message
      */
     public AbstractAlreadyExistsException(String message) {
         super(message);

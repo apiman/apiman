@@ -29,7 +29,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 public class IPListConfig {
     
     private String httpHeader;
-    private Set<String> ipList = new HashSet<String>();
+    private Set<String> ipList = new HashSet<>();
     
     /**
      * Constructor.

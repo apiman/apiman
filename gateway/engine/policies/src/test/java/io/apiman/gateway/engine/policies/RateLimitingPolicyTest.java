@@ -39,7 +39,7 @@ import org.mockito.Mockito;
  *
  * @author eric.wittmann@redhat.com
  */
-@SuppressWarnings({ "nls", "unchecked" })
+@SuppressWarnings({ "nls" })
 public class RateLimitingPolicyTest {
 
     /**

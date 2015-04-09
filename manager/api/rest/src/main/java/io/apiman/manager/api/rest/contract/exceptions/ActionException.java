@@ -34,7 +34,7 @@ public class ActionException extends AbstractUserException {
     
     /**
      * Constructor.
-     * @param message
+     * @param message the exception message
      */
     public ActionException(String message) {
         super(message);
@@ -42,8 +42,8 @@ public class ActionException extends AbstractUserException {
 
     /**
      * Constructor.
-     * @param message
-     * @param cause
+     * @param message the exception message
+     * @param cause the exception cause
      */
     public ActionException(String message, Throwable cause) {
         super(message, cause);
@@ -58,7 +58,7 @@ public class ActionException extends AbstractUserException {
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.exceptions.AbstractRestException#getMoreInfo()
+     * @see io.apiman.manager.api.rest.contract.exceptions.AbstractRestException#getMoreInfoUrl()
      */
     @Override
     public String getMoreInfoUrl() {

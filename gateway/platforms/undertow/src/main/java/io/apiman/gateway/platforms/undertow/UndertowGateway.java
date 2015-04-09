@@ -196,7 +196,7 @@ public class UndertowGateway {
 
     /**
      * Main entry point for the Undertow Gateway.
-     * @param args
+     * @param args the args
      */
     public static final void main(String [] args) {
         UndertowGateway gateway = new UndertowGateway();

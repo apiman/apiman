@@ -35,7 +35,7 @@ public abstract class AbstractSystemException extends AbstractRestException {
 
     /**
      * Constructor.
-     * @param message
+     * @param message the exception message
      */
     public AbstractSystemException(String message) {
         super(message);
@@ -43,7 +43,7 @@ public abstract class AbstractSystemException extends AbstractRestException {
     
     /**
      * Constructor.
-     * @param cause
+     * @param cause the exception cause
      */
     public AbstractSystemException(Throwable cause) {
         super(cause);

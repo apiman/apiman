@@ -50,7 +50,7 @@ public class EngineResultImpl extends AbstractStream<ServiceResponse> implements
 
     /**
      * Construct an unsuccessful EngineResult.
-     * @param policyFailure
+     * @param policyFailure the policy failure
      */
     public EngineResultImpl(PolicyFailure policyFailure) {
         this.policyFailure = policyFailure;

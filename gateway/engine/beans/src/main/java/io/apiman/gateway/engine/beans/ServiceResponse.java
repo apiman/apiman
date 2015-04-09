@@ -41,7 +41,7 @@ public class ServiceResponse implements IServiceObject, Serializable {
     }
 
     /**
-     * @see io.apiman.gateway.engine.beans.IServiceObjectBean#getHeaders()
+     * @see io.apiman.gateway.engine.beans.IServiceObject#getHeaders()
      */
     @Override
     public Map<String, String> getHeaders() {
@@ -49,7 +49,7 @@ public class ServiceResponse implements IServiceObject, Serializable {
     }
 
     /**
-     * @see io.apiman.gateway.engine.beans.IServiceObjectBean#setHeaders(java.util.Map)
+     * @see io.apiman.gateway.engine.beans.IServiceObject#setHeaders(java.util.Map)
      */
     @Override
     public void setHeaders(Map<String, String> headers) {

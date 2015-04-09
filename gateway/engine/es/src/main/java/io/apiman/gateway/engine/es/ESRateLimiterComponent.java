@@ -45,7 +45,7 @@ public class ESRateLimiterComponent implements IRateLimiterComponent {
 
     /**
      * Constructor.
-     * @param config
+     * @param config the configuration 
      */
     public ESRateLimiterComponent(Map<String, String> config) {
         this.config = config;

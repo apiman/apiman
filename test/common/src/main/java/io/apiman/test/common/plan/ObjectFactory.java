@@ -39,6 +39,7 @@ public class ObjectFactory {
     /**
      * Create an instance of {@link TestType }
      * 
+     * @return the test type
      */
     public TestType createTestType() {
         return new TestType();
@@ -47,6 +48,7 @@ public class ObjectFactory {
     /**
      * Create an instance of {@link TestPlan }
      * 
+     * @return the test plan
      */
     public TestPlan createTestPlan() {
         return new TestPlan();
@@ -55,6 +57,7 @@ public class ObjectFactory {
     /**
      * Create an instance of {@link TestGroupType }
      * 
+     * @return the test group type
      */
     public TestGroupType createTestGroupType() {
         return new TestGroupType();

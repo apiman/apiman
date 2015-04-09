@@ -35,6 +35,7 @@ import org.apache.commons.io.IOUtils;
  * 
  * @author eric.wittmann@redhat.com
  */
+@SuppressWarnings({"nls", "javadoc"})
 public class TestUtil {
     
     /**
@@ -46,7 +47,7 @@ public class TestUtil {
         try {
             URL url = cl.getResource(resourcePath);
             if (url == null)
-                throw new RuntimeException("Test Plan not found: " + resourcePath); //$NON-NLS-1$
+                throw new RuntimeException("Test Plan not found: " + resourcePath);
             JAXBContext jaxbContext = JAXBContext.newInstance(TestPlan.class);
             Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
             TestPlan plan = (TestPlan) jaxbUnmarshaller.unmarshal(url.openStream());
@@ -63,7 +64,7 @@ public class TestUtil {
     public static final TestPlan loadTestPlan(File planFile) {
         try {
             if (!planFile.isFile())
-                throw new RuntimeException("Test Plan not found: " + planFile.getCanonicalPath()); //$NON-NLS-1$
+                throw new RuntimeException("Test Plan not found: " + planFile.getCanonicalPath()); 
             JAXBContext jaxbContext = JAXBContext.newInstance(TestPlan.class);
             Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
             TestPlan plan = (TestPlan) jaxbUnmarshaller.unmarshal(planFile);
@@ -83,7 +84,7 @@ public class TestUtil {
         try {
             URL url = cl.getResource(resourcePath);
             if (url == null)
-                throw new RuntimeException("Rest Test not found: " + resourcePath); //$NON-NLS-1$
+                throw new RuntimeException("Rest Test not found: " + resourcePath); 
             is = url.openStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(is));
             return parseRestTest(reader);
@@ -119,19 +120,19 @@ public class TestUtil {
         try {
             // METHOD, Path, Username/Password
             String line = reader.readLine();
-            String [] split = line.split(" "); //$NON-NLS-1$
+            String [] split = line.split(" "); 
             rval.setRequestMethod(split[0]);
             rval.setRequestPath(split[1]);
             if (split.length >= 3) {
                 String userpass = split[2];
-                split = userpass.split("/"); //$NON-NLS-1$
+                split = userpass.split("/"); 
                 rval.setUsername(split[0]);
                 rval.setPassword(split[1]);
             }
             
             // Request Headers
             line = reader.readLine();
-            if (!line.trim().startsWith("----")) { //$NON-NLS-1$
+            if (!line.trim().startsWith("----")) { 
                 while (line.trim().length() > 0) {
                     int idx = line.indexOf(':');
                     String headerName = line.substring(0, idx).trim();
@@ -143,8 +144,8 @@ public class TestUtil {
                 // Request payload
                 StringBuilder builder = new StringBuilder();
                 line = reader.readLine();
-                while (!line.trim().startsWith("----")) { //$NON-NLS-1$
-                    builder.append(line).append("\n"); //$NON-NLS-1$
+                while (!line.trim().startsWith("----")) { 
+                    builder.append(line).append("\n"); 
                     line = reader.readLine();
                     line = doPropertyReplacement(line);
                 }
@@ -170,14 +171,14 @@ public class TestUtil {
             if (line != null) {
                 StringBuilder builder = new StringBuilder();
                 line = reader.readLine();
-                while (line != null && !line.trim().startsWith("----")) { //$NON-NLS-1$
-                    builder.append(line).append("\n"); //$NON-NLS-1$
+                while (line != null && !line.trim().startsWith("----")) { 
+                    builder.append(line).append("\n"); 
                     line = reader.readLine();
                 }
                 rval.setExpectedResponsePayload(builder.toString());
             }
         } catch (Throwable t) {
-            throw new IOException("Error while parsing Rest Test", t); //$NON-NLS-1$
+            throw new IOException("Error while parsing Rest Test", t); 
         }
         
         return rval;
@@ -196,12 +197,12 @@ public class TestUtil {
         }
         String rval = line;
         int sidx = -1;
-        while ( (sidx = rval.indexOf("${")) != -1 ) { //$NON-NLS-1$
+        while ( (sidx = rval.indexOf("${")) != -1 ) { 
             int eidx = rval.indexOf('}', sidx);
             String substring = rval.substring(sidx + 2, eidx);
             String propName = substring.trim();
-            String propVal = System.getProperty(propName, ""); //$NON-NLS-1$
-            rval = rval.replace("${" + substring + "}", propVal); //$NON-NLS-1$ //$NON-NLS-2$
+            String propVal = System.getProperty(propName, ""); 
+            rval = rval.replace("${" + substring + "}", propVal);
         }
         return rval;
     }

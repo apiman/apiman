@@ -26,6 +26,7 @@ import org.vertx.java.core.logging.Logger;
  * Contains a queue of {@link Registrant} workers, which are collected by {@link #collectRegistrations()},
  * 
  * @author Marc Savy <msavy@redhat.com>
+ * @param <T> the registrant type
  */
 public abstract class WorkerQueue<T extends Registrant> {
     protected Deque<T> policyWorkers;

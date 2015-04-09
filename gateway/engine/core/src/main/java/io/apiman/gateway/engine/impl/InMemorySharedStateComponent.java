@@ -34,7 +34,7 @@ import javax.xml.namespace.QName;
  */
 public class InMemorySharedStateComponent implements ISharedStateComponent {
     
-    private Map<QName, Object> sharedState = new HashMap<QName, Object>();
+    private Map<QName, Object> sharedState = new HashMap<>();
     
     /**
      * Constructor.

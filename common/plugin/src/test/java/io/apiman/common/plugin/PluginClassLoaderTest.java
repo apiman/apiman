@@ -34,7 +34,7 @@ public class PluginClassLoaderTest {
 
     /**
      * Test method for {@link io.apiman.common.plugin.PluginClassLoader#loadClass(java.lang.String)}.
-     * @throws Exception 
+     * @throws Exception exception catch-all
      */
     @Test
     public void testLoadClass() throws Exception {
@@ -57,7 +57,7 @@ public class PluginClassLoaderTest {
 
     /**
      * Test method for {@link io.apiman.common.plugin.PluginClassLoader#loadClass(java.lang.String)}.
-     * @throws Exception 
+     * @throws Exception exception catch-all
      */
     @Test
     public void testLoadClassWithDeps() throws Exception {
@@ -73,7 +73,7 @@ public class PluginClassLoaderTest {
 
     /**
      * Test method for {@link io.apiman.common.plugin.PluginClassLoader#getResource(String)}.
-     * @throws Exception 
+     * @throws Exception exception catch-all
      */
     @Test
     public void testGetResource() throws Exception {
@@ -90,7 +90,7 @@ public class PluginClassLoaderTest {
 
     /**
      * Test method for {@link io.apiman.common.plugin.PluginClassLoader#getPolicyDefinitionResources()}.
-     * @throws Exception 
+     * @throws Exception exception catch-all
      */
     @Test
     public void testGetPolicyDefinitionResources() throws Exception {
@@ -111,8 +111,8 @@ public class PluginClassLoaderTest {
 
         /**
          * Constructor.
-         * @param pluginArtifactFile
-         * @throws IOException
+         * @param pluginArtifactFile plugin artifact
+         * @throws IOException if an I/O exception occurs
          */
         public TestPluginClassLoader(File pluginArtifactFile) throws IOException {
             super(pluginArtifactFile);

@@ -49,7 +49,7 @@ public interface IPolicyDefinitionResource {
      * @summary List Policy Definitions
      * @statuscode 200 If the policy definition list is successfully returned.
      * @return A list of policy definitions.
-     * @throws NotAuthorizedException
+     * @throws NotAuthorizedException when not authorized to invoke this method
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -64,8 +64,8 @@ public interface IPolicyDefinitionResource {
      * @param bean The policy definition to add.
      * @statuscode 200 If the policy definition is added successfully.
      * @return Details about the policy definition that was added.
-     * @throws PolicyDefinitionAlreadyExistsException
-     * @throws NotAuthorizedException
+     * @throws PolicyDefinitionAlreadyExistsException when trying to create a Policy Definition that already exists
+     * @throws NotAuthorizedException when not authorized to invoke this method
      */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -78,8 +78,8 @@ public interface IPolicyDefinitionResource {
      * @param policyDefinitionId The ID of the policy definition.
      * @statuscode 200 If the policy definition is returned successfully.
      * @return A policy definition if found.
-     * @throws PolicyDefinitionNotFoundException
-     * @throws NotAuthorizedException
+     * @throws PolicyDefinitionNotFoundException when trying to get, update, or delete a policy definition that does not exist
+     * @throws NotAuthorizedException when not authorized to invoke this method
      */
     @GET
     @Path("{policyDefinitionId}")
@@ -93,8 +93,8 @@ public interface IPolicyDefinitionResource {
      * @param policyDefinitionId The policy definition ID.
      * @param bean New meta-data for the policy definition.
      * @statuscode 204 If the update was successful.
-     * @throws PolicyDefinitionNotFoundException
-     * @throws NotAuthorizedException
+     * @throws PolicyDefinitionNotFoundException when trying to get, update, or delete a policy definition that does not exist
+     * @throws NotAuthorizedException when not authorized to invoke this method
      */
     @PUT
     @Path("{policyDefinitionId}")
@@ -109,8 +109,8 @@ public interface IPolicyDefinitionResource {
      * @servicetag admin
      * @param policyDefinitionId The policy definition ID.
      * @statuscode 204 If the policy definition is successfully deleted.
-     * @throws PolicyDefinitionNotFoundException
-     * @throws NotAuthorizedException
+     * @throws PolicyDefinitionNotFoundException when trying to get, update, or delete a policy definition that does not exist
+     * @throws NotAuthorizedException when not authorized to invoke this method
      */
     @DELETE
     @Path("{policyDefinitionId}")

@@ -54,7 +54,7 @@ public class CachedResponse {
     }
     
     public void setHeaders(Map<String, String> headers) {
-        this.headers = new HashMap<String, String>(headers.size());
+        this.headers = new HashMap<>(headers.size());
         for(Map.Entry<String, String> entry : headers.entrySet()) {
             this.headers.put(entry.getKey(), entry.getValue());
         }

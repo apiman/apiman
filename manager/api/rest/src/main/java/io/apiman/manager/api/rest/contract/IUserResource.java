@@ -54,7 +54,7 @@ public interface IUserResource {
      * @param userId The user ID.
      * @statuscode 200 If the user exists and information is returned.
      * @return Full user information.
-     * @throws UserNotFoundException
+     * @throws UserNotFoundException when specified user not found
      */
     @GET
     @Path("{userId}")
@@ -69,8 +69,8 @@ public interface IUserResource {
      * @param userId The user ID.
      * @param user Updated user information.
      * @statuscode 204 If the user information is successfully updated.
-     * @throws UserNotFoundException
-     * @throws NotAuthorizedException
+     * @throws UserNotFoundException when specified user not found
+     * @throws NotAuthorizedException when not authorized to invoke this method
      */
     @PUT
     @Path("{userId}")
@@ -85,7 +85,7 @@ public interface IUserResource {
      * @param criteria The search criteria.
      * @statuscode 200 If the search is successful.
      * @return The search results (a page of organizations).
-     * @throws InvalidSearchCriteriaException
+     * @throws InvalidSearchCriteriaException when provided criteria are invalid
      */
     @POST
     @Path("search")

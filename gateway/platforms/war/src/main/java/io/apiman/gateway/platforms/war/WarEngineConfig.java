@@ -82,8 +82,9 @@ public class WarEngineConfig implements IEngineConfig {
     /**
      * Returns the given configuration property name or the provided default
      * value if not found.
-     * @param propertyName
-     * @param defaultValue
+     * @param propertyName the property name
+     * @param defaultValue the default value
+     * @return the config property
      */
     public String getConfigProperty(String propertyName, String defaultValue) {
         return getConfig().getString(propertyName, defaultValue);
@@ -209,7 +210,7 @@ public class WarEngineConfig implements IEngineConfig {
      * @return all prefixed properties
      */
     private Map<String, String> getConfigMap(String prefix) {
-        Map<String, String> rval = new HashMap<String, String>();
+        Map<String, String> rval = new HashMap<>();
         Iterator<?> keys = config.getKeys(prefix);
         while (keys.hasNext()) {
             String key = String.valueOf(keys.next());

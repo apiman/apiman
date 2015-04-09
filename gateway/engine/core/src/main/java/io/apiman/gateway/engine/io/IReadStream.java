@@ -29,7 +29,7 @@ public interface IReadStream<H> extends IStream {
     /**
      * Handler called when a body chunk has arrived.
      * 
-     * @param bodyHandler
+     * @param bodyHandler the handler
      */
     public void bodyHandler(IAsyncHandler<IApimanBuffer> bodyHandler);
 
@@ -38,7 +38,7 @@ public interface IReadStream<H> extends IStream {
      * {@link #bodyHandler(IAsyncHandler)} should occur after this has been
      * invoked.
      * 
-     * @param endHandler
+     * @param endHandler the handler
      */
     public void endHandler(IAsyncHandler<Void> endHandler);
 

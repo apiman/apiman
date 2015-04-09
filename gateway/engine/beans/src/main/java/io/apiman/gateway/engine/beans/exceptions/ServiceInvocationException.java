@@ -35,7 +35,7 @@ public class ServiceInvocationException extends AbstractEngineException {
     /**
      * Constructor.
      * @param message an error message
-     * @param cause the underlying cause
+     * @param cause the exception cause the underlying cause
      */
     public ServiceInvocationException(String message, Throwable cause) {
         super(message, cause);

@@ -37,9 +37,9 @@ public class PeriodicComponentImpl implements IPeriodicComponent {
     private long id = 0;
 
     /**
-     * @param vertx
-     * @param engineConfig
-     * @param config
+     * @param vertx the vertx instance
+     * @param engineConfig the engine config
+     * @param config the config
      */
     public PeriodicComponentImpl(Vertx vertx, VertxEngineConfig engineConfig, Map<String, String> config) {
         this.vertx = vertx;

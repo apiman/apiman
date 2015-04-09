@@ -32,7 +32,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class HttpRequestThreadLocalFilter implements Filter {
     
-    private static final ThreadLocal<HttpServletRequest> currentRequest = new ThreadLocal<HttpServletRequest>();
+    private static final ThreadLocal<HttpServletRequest> currentRequest = new ThreadLocal<>();
     private static final void setCurrentRequest(HttpServletRequest request) {
         currentRequest.set(request);
     }

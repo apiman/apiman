@@ -36,7 +36,7 @@ public abstract class AbstractRestException extends AbstractEngineException {
     
     /**
      * Constructor.
-     * @param message
+     * @param message the exception message
      */
     public AbstractRestException(String message) {
         super(message);
@@ -44,7 +44,7 @@ public abstract class AbstractRestException extends AbstractEngineException {
     
     /**
      * Constructor.
-     * @param cause
+     * @param cause the exception cause
      */
     public AbstractRestException(Throwable cause) {
         super(cause);

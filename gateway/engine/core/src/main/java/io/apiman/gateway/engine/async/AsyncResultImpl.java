@@ -20,6 +20,7 @@ package io.apiman.gateway.engine.async;
  * creation of result instances.
  * 
  * @author Marc Savy <msavy@redhat.com>
+ * @param <T> A type T to return as result
  */
 public class AsyncResultImpl<T> implements IAsyncResult<T> {
     
@@ -28,27 +29,30 @@ public class AsyncResultImpl<T> implements IAsyncResult<T> {
     
     /**
      * Convenience method for creating an async result.
-     * @param result
+     * @param result the result
+     * @return result of type T
      */
     public static final <T> AsyncResultImpl<T> create(T result) {
-        return new AsyncResultImpl<T>(result);
+        return new AsyncResultImpl<>(result);
     }
     
     /**
      * Convenience method for creating an async result.
-     * @param t
+     * @param t the throwable
+     * @return result of type T
      */
     public static final <T> AsyncResultImpl<T> create(Throwable t) {
-        return new AsyncResultImpl<T>(t);
+        return new AsyncResultImpl<>(t);
     }
     
     /**
      * Convenience method for creating an async result.
-     * @param t
-     * @param type
+     * @param t the throwable
+     * @param type the type
+     * @return result of type T
      */
     public static final <T> AsyncResultImpl<T> create(Throwable t, Class<T> type) {
-        return new AsyncResultImpl<T>(t);
+        return new AsyncResultImpl<>(t);
     }
 
     /**

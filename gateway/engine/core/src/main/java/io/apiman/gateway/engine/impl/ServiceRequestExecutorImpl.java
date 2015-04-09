@@ -102,13 +102,13 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
 
     /**
      * Constructs a new {@link ServiceRequestExecutorImpl}.
-     * @param serviceRequest
-     * @param resultHandler
-     * @param registry
-     * @param context
-     * @param policyFactory
-     * @param connectorFactory
-     * @param metrics 
+     * @param serviceRequest the service request
+     * @param resultHandler the result handler
+     * @param registry the registry
+     * @param context the context
+     * @param policyFactory the policy factory
+     * @param connectorFactory the connector factory
+     * @param metrics the metrics instance
      */
     public ServiceRequestExecutorImpl(ServiceRequest serviceRequest,
             IAsyncResultHandler<IEngineResult> resultHandler, IRegistry registry, IPolicyContext context,

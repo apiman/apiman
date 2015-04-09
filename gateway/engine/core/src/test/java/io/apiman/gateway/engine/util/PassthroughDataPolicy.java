@@ -24,7 +24,7 @@ import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
 
 /**
- * A pass-through {@link AbstractPolicy} impl for testing purposes.
+ * A pass-through {@link IDataPolicy} impl for testing purposes.
  * 
  * @author Marc Savy <msavy@redhat.com>
  */

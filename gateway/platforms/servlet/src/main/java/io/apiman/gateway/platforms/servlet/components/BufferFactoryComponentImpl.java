@@ -15,8 +15,6 @@
  */
 package io.apiman.gateway.platforms.servlet.components;
 
-import java.io.UnsupportedEncodingException;
-
 import io.apiman.gateway.engine.components.IBufferFactoryComponent;
 import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.gateway.platforms.servlet.io.ByteBuffer;
@@ -45,7 +43,6 @@ public class BufferFactoryComponentImpl implements IBufferFactoryComponent {
     }
 
     /**
-     * @throws UnsupportedEncodingException
      * @see io.apiman.gateway.engine.components.IBufferFactoryComponent#createBuffer(java.lang.String,
      *      java.lang.String)
      */

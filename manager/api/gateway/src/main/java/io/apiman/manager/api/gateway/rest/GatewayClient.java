@@ -43,6 +43,7 @@ import org.codehaus.jackson.map.ObjectMapper;
  * 
  * @author eric.wittmann@redhat.com
  */
+@SuppressWarnings("javadoc") // class is temporarily delinked from its interfaces
 public class GatewayClient /*implements ISystemResource, IServiceResource, IApplicationResource*/ {
     
     private static final String SYSTEM_STATUS = "/system/status"; //$NON-NLS-1$
@@ -56,8 +57,8 @@ public class GatewayClient /*implements ISystemResource, IServiceResource, IAppl
     
     /**
      * Constructor.
-     * @param gatewayEndpoint
-     * @param httpClient
+     * @param endpoint the endpoint
+     * @param httpClient the http client
      */
     public GatewayClient(String endpoint, CloseableHttpClient httpClient) {
         this.endpoint = endpoint;

@@ -63,9 +63,10 @@ public class AuthTokenUtil {
     /**
      * Produce a token suitable for transmission.  This will generate the auth token,
      * then serialize it to a JSON string, then Base64 encode the JSON.
-     * @param principal
-     * @param roles
-     * @param expiresInMillis
+     * @param principal the auth principal
+     * @param roles the auth roles
+     * @param expiresInMillis the number of millis to expiry
+     * @return the token
      */
     public static final String produceToken(String principal, Set<String> roles, int expiresInMillis) {
         AuthToken authToken = createAuthToken(principal, roles, expiresInMillis);
@@ -78,7 +79,10 @@ public class AuthTokenUtil {
      * {@link AuthToken} is returned.  If the token is invalid (expired or bad 
      * signature) then an {@link IllegalArgumentException} is thrown.  Any other 
      * error will result in a runtime exception.
-     * @param encodedJson
+     * @param encodedJson the raw token
+     * @return the token
+     * @throws IllegalArgumentException indicate that a method has been passed an 
+     * illegal or inappropriate argument
      */
     public static final AuthToken consumeToken(String encodedJson) throws IllegalArgumentException {
         String json = StringUtils.newStringUtf8(Base64.decodeBase64(encodedJson));
@@ -90,7 +94,8 @@ public class AuthTokenUtil {
     /**
      * Validates an auth token.  This checks the expiration time of the token against 
      * the current system time.  It also checks the validity of the signature.
-     * @param token
+     * @param token the authentication token
+     * @throws IllegalArgumentException when the token is invalid
      */
     public static final void validateToken(AuthToken token) throws IllegalArgumentException {
         if (token.getExpiresOn().before(new Date())) {
@@ -104,9 +109,10 @@ public class AuthTokenUtil {
 
     /**
      * Creates an auth token.
-     * @param principal
-     * @param roles
-     * @param expiresInMillis
+     * @param principal the auth principal
+     * @param roles the auth roles
+     * @param expiresInMillis the number of millis to expiry
+     * @return the auth token
      */
     public static final AuthToken createAuthToken(String principal, Set<String> roles, int expiresInMillis) {
         AuthToken token = new AuthToken();
@@ -120,7 +126,7 @@ public class AuthTokenUtil {
 
     /**
      * Adds a digital signature to the auth token.
-     * @param token
+     * @param token the auth token
      */
     public static final void signAuthToken(AuthToken token) {
         String signature = generateSignature(token);
@@ -139,7 +145,7 @@ public class AuthTokenUtil {
         builder.append("||"); //$NON-NLS-1$
         builder.append(token.getIssuedOn().getTime());
         builder.append("||"); //$NON-NLS-1$
-        TreeSet<String> roles = new TreeSet<String>(token.getRoles());
+        TreeSet<String> roles = new TreeSet<>(token.getRoles());
         boolean first = true;
         for (String role : roles) {
             if (first) {
@@ -156,7 +162,8 @@ public class AuthTokenUtil {
 
     /**
      * Convert the auth token to a JSON string.
-     * @param token
+     * @param token the auth token
+     * @return the token as json
      */
     public static final String toJSON(AuthToken token) {
         try {
@@ -168,7 +175,8 @@ public class AuthTokenUtil {
     
     /**
      * Read the auth token from the JSON string.
-     * @param json
+     * @param json the token as a json string
+     * @return the token
      */
     public static final AuthToken fromJSON(String json) {
         try {

@@ -60,7 +60,7 @@ public class ESRegistry implements IRegistry {
 
     /**
      * Constructor.
-     * @param client
+     * @param config map of configuration options
      */
     public ESRegistry(Map<String, String> config) {
         this.config = config;

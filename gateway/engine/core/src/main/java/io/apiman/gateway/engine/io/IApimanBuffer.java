@@ -160,6 +160,7 @@ public interface IApimanBuffer {
      * @param end end index
      * @param encoding string encoding
      * @return String constrained by start and end indices
+     * @throws UnsupportedEncodingException 
      */
     String getString(int start, int end, String encoding) throws UnsupportedEncodingException;
 
@@ -176,7 +177,8 @@ public interface IApimanBuffer {
      * 
      * @param index ApimanBuffer index
      * @param string String to set as bytes
-     * @param string Encoding of string
+     * @param encoding Encoding of string
+     * @throws UnsupportedEncodingException 
      */
     void insert(int index, String string, String encoding) throws UnsupportedEncodingException;
 
@@ -188,6 +190,7 @@ public interface IApimanBuffer {
     /**
      * @param string String to append
      * @param encoding Encoding of string
+     * @throws UnsupportedEncodingException 
      */
     void append(String string, String encoding) throws UnsupportedEncodingException;
 
@@ -199,6 +202,7 @@ public interface IApimanBuffer {
     /**
      * @param encoding Encoding of string
      * @return String ApimanBuffer as string of given encoding.
+     * @throws UnsupportedEncodingException 
      */
     String toString(String encoding) throws UnsupportedEncodingException;
 }

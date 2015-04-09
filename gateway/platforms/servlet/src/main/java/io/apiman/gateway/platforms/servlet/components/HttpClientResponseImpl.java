@@ -35,7 +35,7 @@ public class HttpClientResponseImpl implements IHttpClientResponse {
 
     /**
      * Constructor.
-     * @param connection
+     * @param connection the connection
      */
     public HttpClientResponseImpl(HttpURLConnection connection) {
         this.connection = connection;

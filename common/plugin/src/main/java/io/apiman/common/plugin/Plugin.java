@@ -41,9 +41,9 @@ public class Plugin {
     
     /**
      * Constructor.
-     * @param spec
-     * @param coordinates
-     * @param loader
+     * @param spec the plugin's specification
+     * @param coordinates the plugin's coordinates
+     * @param loader the plugin's classloader
      */
     public Plugin(PluginSpec spec, PluginCoordinates coordinates, PluginClassLoader loader) {
         setSpec(spec);

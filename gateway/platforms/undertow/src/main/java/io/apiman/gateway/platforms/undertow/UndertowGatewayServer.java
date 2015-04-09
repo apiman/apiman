@@ -33,6 +33,8 @@ public abstract class UndertowGatewayServer {
 
     /**
      * Constructor.
+     * 
+     * @param port the port
      */
     public UndertowGatewayServer(int port) {
         server = Undertow.builder()

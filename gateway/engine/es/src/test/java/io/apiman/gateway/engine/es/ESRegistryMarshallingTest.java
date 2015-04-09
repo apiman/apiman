@@ -33,12 +33,12 @@ import org.junit.Test;
 /**
  * @author eric.wittmann@redhat.com
  */
+@SuppressWarnings({"nls", "javadoc"})
 public class ESRegistryMarshallingTest {
 
     /**
      * Test method for {@link io.apiman.gateway.engine.es.ESRegistryMarshalling#marshall(io.apiman.gateway.engine.beans.Service)}.
      */
-    @SuppressWarnings("nls")
     @Test
     public void testMarshall_Service() throws Exception {
         Service service = new Service();
@@ -109,7 +109,6 @@ public class ESRegistryMarshallingTest {
     /**
      * Test method for {@link io.apiman.gateway.engine.es.ESRegistryMarshalling#marshall(io.apiman.gateway.engine.beans.Application)}.
      */
-    @SuppressWarnings("nls")
     @Test
     public void testMarshall_Application() throws Exception {
         Application app = new Application();
@@ -182,9 +181,8 @@ public class ESRegistryMarshallingTest {
     }
 
     /**
-     * Test method for {@link io.apiman.gateway.engine.es.ESRegistryMarshalling#marshall(Contract))}.
+     * Test method for {@link io.apiman.gateway.engine.es.ESRegistryMarshalling#marshall(ServiceContract)}
      */
-    @SuppressWarnings("nls")
     @Test
     public void testMarshall_ServiceContract() throws Exception {
         ServiceContract sc = new ServiceContract();
@@ -250,7 +248,6 @@ public class ESRegistryMarshallingTest {
     /**
      * Test method for {@link io.apiman.gateway.engine.es.ESRegistryMarshalling#unmarshallService(java.util.Map)}.
      */
-    @SuppressWarnings("nls")
     @Test
     public void testUnmarshall_Service() throws Exception {
         Map<String, Object> data = new HashMap<>();
@@ -293,7 +290,6 @@ public class ESRegistryMarshallingTest {
     /**
      * Test method for {@link io.apiman.gateway.engine.es.ESRegistryMarshalling#unmarshallApplication(Map)}.
      */
-    @SuppressWarnings("nls")
     @Test
     public void testUnmarshall_App() throws Exception {
         Map<String, Object> data = new HashMap<>();

@@ -37,6 +37,7 @@ public interface IServiceValidator {
      * </ul>
      * 
      * @param service
+     * @return true if ready, else false
      * @throws Exception
      */
     boolean isReady(ServiceVersionBean service) throws Exception;

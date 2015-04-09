@@ -28,10 +28,12 @@ import java.util.Set;
 public class AuthPrincipal implements Principal {
     
     private String username;
-    private Set<String> roles = new HashSet<String>();
+    private Set<String> roles = new HashSet<>();
     
     /**
      * Constructor.
+     * 
+     * @param username the username
      */
     public AuthPrincipal(String username) {
         this.username = username;
@@ -47,7 +49,7 @@ public class AuthPrincipal implements Principal {
     
     /**
      * Adds a role.
-     * @param role
+     * @param role the role
      */
     public void addRole(String role) {
         roles.add(role);
@@ -55,7 +57,7 @@ public class AuthPrincipal implements Principal {
     
     /**
      * Adds multiple roles.
-     * @param roles
+     * @param roles the roles
      */
     public void addRoles(Set<String> roles) {
         this.roles.addAll(roles);

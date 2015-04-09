@@ -39,8 +39,8 @@ import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 
 /**
  * Generates the initial configuration JSON used by the UI when it first loads
- * up. This initial JSON is loaded into the client-side
- * {@link io.apiman.manager.ui.client.local.services.ConfigurationService}.
+ * up. This initial JSON is loaded into the client-side.
+ * 
  * Also responsible for pushing updated configuration to the client if it
  * changes.
  * 

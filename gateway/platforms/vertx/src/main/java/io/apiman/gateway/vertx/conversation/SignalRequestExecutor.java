@@ -30,6 +30,7 @@ import org.vertx.java.platform.Container;
  * Send a {@link ServiceRequest} over the {@link EventBus}.
  *
  * @author Marc Savy <msavy@redhat.com>
+ * @param <H> the head type
  */
 public class SignalRequestExecutor<H> extends AbstractServiceExecutor<H> implements IReadyExecute<H, ISimpleWriteStream> {
 
@@ -38,6 +39,7 @@ public class SignalRequestExecutor<H> extends AbstractServiceExecutor<H> impleme
     }
 
     // Signals when the other end is ready to receive blocks.
+    @Override
     public void execute(final H service, final Handler<ISimpleWriteStream> readyHandler) {
         logger.debug("Listening for ready on: " + address + VertxEngineConfig.API_GATEWAY_READY_SUFFIX); //$NON-NLS-1$
 
@@ -53,6 +55,7 @@ public class SignalRequestExecutor<H> extends AbstractServiceExecutor<H> impleme
         super.execute(service);
     }
 
+    @Override
     public void reset() {
         super.reset();
     }

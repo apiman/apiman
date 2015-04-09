@@ -34,7 +34,7 @@ public class GatewayNotFoundException extends AbstractNotFoundException {
     
     /**
      * Constructor.
-     * @param message
+     * @param message the message
      */
     public GatewayNotFoundException(String message) {
         super(message);
@@ -49,7 +49,7 @@ public class GatewayNotFoundException extends AbstractNotFoundException {
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.exceptions.AbstractRestException#getMoreInfo()
+     * @see io.apiman.manager.api.rest.contract.exceptions.AbstractRestException#getMoreInfoUrl()
      */
     @Override
     public String getMoreInfoUrl() {

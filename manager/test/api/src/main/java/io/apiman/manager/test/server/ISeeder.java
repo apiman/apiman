@@ -30,9 +30,9 @@ public interface ISeeder {
     public static final String SYSTEM_PROPERTY = "apiman-manager.seeder.class"; //$NON-NLS-1$
     
     /**
-     * @param idmStorage
-     * @param storage
-     * @throws StorageException
+     * @param idmStorage the IDM storage
+     * @param storage the storage
+     * @throws StorageException when storage attempt fails
      */
     public void seed(IIdmStorage idmStorage, IStorage storage) throws StorageException;
 

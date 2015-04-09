@@ -29,13 +29,14 @@ import java.util.Set;
  */
 public class ServiceRegistryUtil {
 
-    private static Map<Class<?>, Set<?>> servicesCache = new HashMap<Class<?>, Set<?>>();
+    private static Map<Class<?>, Set<?>> servicesCache = new HashMap<>();
 
     /**
      * Gets a single service by its interface.
-     * @param serviceInterface
-     * @throws IllegalStateException
+     * @param serviceInterface the service interface
+     * @throws IllegalStateException method has been invoked at an illegal or inappropriate time
      */
+    @SuppressWarnings("javadoc")
     public static <T> T getSingleService(Class<T> serviceInterface) throws IllegalStateException {
         // Cached single service values are derived from the values cached when checking
         // for multiple services
@@ -52,7 +53,8 @@ public class ServiceRegistryUtil {
 
     /**
      * Get a set of service implementations for a given interface.
-     * @param serviceInterface
+     * @param serviceInterface the service interface
+     * @return the set of services
      */
     @SuppressWarnings("unchecked")
     public static <T> Set<T> getServices(Class<T> serviceInterface) {
@@ -61,7 +63,7 @@ public class ServiceRegistryUtil {
                 return (Set<T>) servicesCache.get(serviceInterface);
             }
     
-            Set<T> services = new LinkedHashSet<T>();
+            Set<T> services = new LinkedHashSet<>();
             try {
                 for (T service : ServiceLoader.load(serviceInterface)) {
                     services.add(service);

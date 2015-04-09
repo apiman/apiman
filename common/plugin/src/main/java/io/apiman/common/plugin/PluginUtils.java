@@ -56,7 +56,8 @@ public class PluginUtils {
      * 
      * io.apiman.sample/sample-plugin/1.0.1/sample-plugin-classifier.war/
      * 
-     * @param coordinates
+     * @param coordinates the coordinates
+     * @return plugin's relative path
      */
     public static String getPluginRelativePath(PluginCoordinates coordinates) {
         StringBuilder pluginRelativePath = new StringBuilder();
@@ -77,8 +78,9 @@ public class PluginUtils {
     
     /**
      * Reads a plugin spec file and returns a {@link PluginSpec}.
-     * @param pluginSpec
-     * @throws Exception
+     * @param pluginSpec the plugin spec
+     * @throws Exception when an unhandled exception occurs
+     * @return plugin's specification
      */
     public static PluginSpec readPluginSpecFile(URL pluginSpec) throws Exception {
         PluginSpec spec = (PluginSpec) mapper.reader(PluginSpec.class).readValue(pluginSpec);
@@ -87,6 +89,8 @@ public class PluginUtils {
 
     /**
      * Gets the user's local m2 directory or null if not found.
+     * 
+     * @return user's M2 repo
      */
     public static File getUserM2Repository() {
         String userHome = System.getProperty("user.home"); //$NON-NLS-1$
@@ -104,8 +108,9 @@ public class PluginUtils {
 
     /**
      * Find the plugin artifact in the local .m2 directory.
-     * @param m2Dir
-     * @param coordinates
+     * @param m2Dir the maven m2 directory
+     * @param coordinates the coordinates
+     * @return the M2 path
      */
     public static File getM2Path(File m2Dir, PluginCoordinates coordinates) {
         String artifactSubPath = getMavenPath(coordinates);
@@ -115,7 +120,8 @@ public class PluginUtils {
     
     /**
      * Calculates the relative path of the artifact from the given coordinates.
-     * @param coordinates
+     * @param coordinates the coordinates
+     * @return the maven path
      */
     public static String getMavenPath(PluginCoordinates coordinates) {
         StringBuilder artifactSubPath = new StringBuilder();

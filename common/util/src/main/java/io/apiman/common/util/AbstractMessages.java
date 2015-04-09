@@ -34,10 +34,10 @@ public class AbstractMessages {
 
     public static final List<String> FORMATS = Collections.unmodifiableList(Arrays.asList("java.properties")); //$NON-NLS-1$
 
-    private static Map<String, ResourceBundle> bundles = new HashMap<String, ResourceBundle>();
+    private static Map<String, ResourceBundle> bundles = new HashMap<>();
 
     private Class<? extends AbstractMessages> clazz;
-    private static ThreadLocal<Locale> tlocale = new ThreadLocal<Locale>();
+    private static ThreadLocal<Locale> tlocale = new ThreadLocal<>();
     public static void setLocale(Locale locale) {
         tlocale.set(locale);
     }
@@ -47,6 +47,7 @@ public class AbstractMessages {
 
     /**
      * Constructor.
+     * @param c the class
      */
     public AbstractMessages(Class<? extends AbstractMessages> c) {
         clazz = c;
@@ -94,6 +95,7 @@ public class AbstractMessages {
     /**
      * Gets the locale to use when finding a bundle.  The locale to use is either from the
      * thread local value, if set, or else the system default locale.
+     * @return the locale
      */
     public Locale getLocale() {
         if (tlocale.get() != null) {
@@ -106,8 +108,9 @@ public class AbstractMessages {
     /**
      * Look up a message in the i18n resource message bundle by key, then format the
      * message with the given params and return the result.
-     * @param key
-     * @param params
+     * @param key the key
+     * @param params the parameters
+     * @return formatted string
      */
     public String format(String key, Object ... params) {
         ResourceBundle bundle = getBundle();

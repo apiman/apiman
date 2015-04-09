@@ -27,6 +27,8 @@ public class InvalidSearchCriteriaException extends AbstractInvalidInputExceptio
     
     /**
      * Constructor.
+     * 
+     * @param message the exception message
      */
     public InvalidSearchCriteriaException(String message) {
         super(message);

@@ -29,12 +29,12 @@ public class RestTest {
     private String requestMethod;
     private String requestPath;
     private String requestPayload;
-    private Map<String, String> requestHeaders = new HashMap<String, String>();
+    private Map<String, String> requestHeaders = new HashMap<>();
     private String username;
     private String password;
     
     private int expectedStatusCode;
-    private Map<String, String> expectedResponseHeaders = new HashMap<String, String>();
+    private Map<String, String> expectedResponseHeaders = new HashMap<>();
     private String expectedResponsePayload;
     
     /**

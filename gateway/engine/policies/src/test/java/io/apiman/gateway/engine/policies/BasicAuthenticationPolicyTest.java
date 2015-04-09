@@ -46,7 +46,7 @@ import org.mockito.Mockito;
  *
  * @author eric.wittmann@redhat.com
  */
-@SuppressWarnings({ "nls", "unchecked" })
+@SuppressWarnings({ "nls", "javadoc" })
 public class BasicAuthenticationPolicyTest {
     
     private static final String LDAP_SERVER = "localhost";

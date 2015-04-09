@@ -48,12 +48,12 @@ public class EngineImpl implements IEngine {
 
     /**
      * Constructor.
-     * @param registry
-     * @param pluginRegistry
-     * @param componentRegistry
-     * @param connectorFactory
-     * @param policyFactory
-     * @param metrics
+     * @param registry the registry
+     * @param pluginRegistry the plugin registry
+     * @param componentRegistry the component registry
+     * @param connectorFactory the connector factory
+     * @param policyFactory the policy factory
+     * @param metrics the metrics implementation
      */
     public EngineImpl(final IRegistry registry, final IPluginRegistry pluginRegistry,
             final IComponentRegistry componentRegistry, final IConnectorFactory connectorFactory,
@@ -80,7 +80,7 @@ public class EngineImpl implements IEngine {
     }
 
     /**
-     * @see io.apiman.gateway.engine.IEngine#request()
+     * @see io.apiman.gateway.engine.IEngine#executor(ServiceRequest, IAsyncResultHandler)
      */
     @Override
     public IServiceRequestExecutor executor(ServiceRequest request, final IAsyncResultHandler<IEngineResult> resultHandler) {

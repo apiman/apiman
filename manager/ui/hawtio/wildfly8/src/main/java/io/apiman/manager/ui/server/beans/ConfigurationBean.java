@@ -21,9 +21,7 @@ import java.io.Serializable;
 
 /**
  * Encapsulates initial app configuration data sent from the server (via the
- * {@link ConfigurationServlet} servlet) to the client (via the
- * {@link io.apiman.manager.ui.client.local.services.ConfigurationService}
- * service).
+ * {@link ConfigurationServlet} servlet) to the client.
  * 
  * @author eric.wittmann@redhat.com
  */

@@ -72,7 +72,7 @@ public class GatewayResourceImpl implements IGatewayResource {
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.IGatewayResource#test(io.apiman.manager.api.beans.gateways.GatewayBean)
+     * @see io.apiman.manager.api.rest.contract.IGatewayResource#test(io.apiman.manager.api.beans.gateways.NewGatewayBean)
      */
     @Override
     public GatewayTestResultBean test(NewGatewayBean bean) throws NotAuthorizedException {
@@ -181,7 +181,7 @@ public class GatewayResourceImpl implements IGatewayResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IGatewayResource#update(java.lang.String, io.apiman.manager.api.beans.orgs.GatewayBean)
+     * @see io.apiman.manager.api.rest.contract.IGatewayResource#update(java.lang.String, io.apiman.manager.api.beans.gateways.UpdateGatewayBean)
      */
     @Override
     public void update(String gatewayId, UpdateGatewayBean bean) throws GatewayNotFoundException,

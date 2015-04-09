@@ -66,11 +66,11 @@ public class TestGroupType {
      * Objects of the following type(s) are allowed in the list
      * {@link TestType }
      * 
-     * 
+     * @return the list of tests
      */
     public List<TestType> getTest() {
         if (test == null) {
-            test = new ArrayList<TestType>();
+            test = new ArrayList<>();
         }
         return this.test;
     }

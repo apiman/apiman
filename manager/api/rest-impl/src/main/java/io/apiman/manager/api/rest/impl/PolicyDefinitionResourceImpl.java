@@ -126,7 +126,7 @@ public class PolicyDefinitionResourceImpl implements IPolicyDefinitionResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IPolicyDefinitionResource#update(java.lang.String, io.apiman.manager.api.beans.orgs.PolicyDefinitionBean)
+     * @see io.apiman.manager.api.rest.contract.IPolicyDefinitionResource#update(java.lang.String, io.apiman.manager.api.beans.policies.UpdatePolicyDefinitionBean)
      */
     @Override
     public void update(String policyDefinitionId, UpdatePolicyDefinitionBean bean)

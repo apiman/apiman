@@ -94,7 +94,7 @@ public abstract class RestTestBase extends TestVerticle {
 
     /**
      * Runs the given test plan.
-     * @param planPath
+     * @param planPath the plan path
      */
     public void runTestPlan(final String planPath) {
 

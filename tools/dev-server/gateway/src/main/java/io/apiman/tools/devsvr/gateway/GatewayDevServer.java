@@ -50,7 +50,8 @@ public class GatewayDevServer {
 
     /**
      * Main entry point.
-     * @param args
+     * @param args the arguments
+     * @throws Exception when any exception occurs
      */
     public static void main(String [] args) throws Exception {
         int gatewayPort = getGatewayPort();

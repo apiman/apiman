@@ -29,7 +29,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public class IgnoredResourcesConfig {
 
-    private List<String> pathsToIgnore = new ArrayList<String>();
+    private List<String> pathsToIgnore = new ArrayList<>();
 
     /**
      * Constructor.

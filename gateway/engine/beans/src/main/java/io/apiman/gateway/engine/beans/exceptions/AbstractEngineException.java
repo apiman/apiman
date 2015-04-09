@@ -32,7 +32,7 @@ public class AbstractEngineException extends RuntimeException {
     
     /**
      * Constructor.
-     * @param message
+     * @param message the exception message
      */
     public AbstractEngineException(String message) {
         super(message);
@@ -40,7 +40,7 @@ public class AbstractEngineException extends RuntimeException {
     
     /**
      * Constructor.
-     * @param cause
+     * @param cause the exception cause
      */
     public AbstractEngineException(Throwable cause) {
         super(cause);
@@ -48,8 +48,8 @@ public class AbstractEngineException extends RuntimeException {
 
     /**
      * Constructor.
-     * @param message
-     * @param cause
+     * @param message the exception message
+     * @param cause the exception cause
      */
     public AbstractEngineException(String message, Throwable cause) {
         super(message, cause);

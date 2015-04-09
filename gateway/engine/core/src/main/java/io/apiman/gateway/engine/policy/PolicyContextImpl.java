@@ -32,12 +32,12 @@ import java.util.Map;
 public class PolicyContextImpl implements IPolicyContext {
     
     private final IComponentRegistry componentRegistry;
-    private final Map<String, Object> conversation = new HashMap<String, Object>();
+    private final Map<String, Object> conversation = new HashMap<>();
     private IConnectorInterceptor connectorInterceptor;
     
     /**
      * Constructor.
-     * @param componentRegistry
+     * @param componentRegistry the component registry
      */
     public PolicyContextImpl(IComponentRegistry componentRegistry) {
         this.componentRegistry = componentRegistry;

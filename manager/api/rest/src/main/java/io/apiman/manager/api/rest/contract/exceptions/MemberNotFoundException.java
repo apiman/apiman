@@ -33,7 +33,7 @@ public class MemberNotFoundException extends AbstractNotFoundException {
     
     /**
      * Constructor.
-     * @param message
+     * @param message the exception message
      */
     public MemberNotFoundException(String message) {
         super(message);
@@ -48,7 +48,7 @@ public class MemberNotFoundException extends AbstractNotFoundException {
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.exceptions.AbstractRestException#getMoreInfo()
+     * @see io.apiman.manager.api.rest.contract.exceptions.AbstractRestException#getMoreInfoUrl()
      */
     @Override
     public String getMoreInfoUrl() {

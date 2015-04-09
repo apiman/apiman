@@ -38,14 +38,17 @@ public interface IEngine {
      * of the policy chain invocation.
      *
      * @param request a request for a managed service
+     * @param resultHandler 
      * @param handler an async handler called when a response is returned or an
      *            exception is captured.
+     * @return a service request executor
      */
     IServiceRequestExecutor executor(ServiceRequest request, IAsyncResultHandler<IEngineResult> resultHandler);
     
     /**
      * Returns the registry that can be used to publish/retire services and
      * register/unregister applications.
+     * @return the registry
      */
     IRegistry getRegistry();
 

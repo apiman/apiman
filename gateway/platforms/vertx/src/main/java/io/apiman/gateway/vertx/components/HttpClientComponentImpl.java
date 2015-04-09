@@ -38,7 +38,7 @@ import io.apiman.gateway.vertx.i18n.Messages;
 
 /**
  * A Vert.x based implementation of {@link IHttpClientComponent}. Ensure that
- * {@link IHttpClientRequest#close()} is called after writing is finished, or your data may never be sent, and
+ * {@link IHttpClientRequest#end()} is called after writing is finished, or your data may never be sent, and
  * the connection will be left hanging.
  * 
  * @author Marc Savy <msavy@redhat.com>

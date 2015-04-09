@@ -22,13 +22,14 @@ import io.apiman.gateway.engine.beans.PolicyFailure;
  * signal when events occur.
  *
  * @author eric.wittmann@redhat.com
+ * @param <T> Service object type
  */
 public interface IPolicyChain<T> {
 
     /**
      * Called by a policy when it has successfully completed applying itself.  This 
      * triggers the next policy in the chain.
-     * @param serviceObject
+     * @param serviceObject the service object
      */
     public void doApply(T serviceObject);
 
@@ -36,13 +37,13 @@ public interface IPolicyChain<T> {
      * Called by a policy when it has detected a violation or failure in the policy.  This
      * will stop the processing of policies and immediately return an failure response to
      * the originating client.
-     * @param failure
+     * @param failure the policy failure
      */
     public void doFailure(PolicyFailure failure);
 
     /**
      * Called by a policy when an unexpected and unrecoverable error is encountered.
-     * @param error
+     * @param error the error thrown
      */
     public void throwError(Throwable error);
 

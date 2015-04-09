@@ -34,7 +34,7 @@ import java.util.Map;
  */
 public class DefaultComponentRegistry implements IComponentRegistry {
     
-    private Map<Class<? extends IComponent>, IComponent> components = new HashMap<Class<? extends IComponent>, IComponent>();
+    private Map<Class<? extends IComponent>, IComponent> components = new HashMap<>();
     
     /**
      * Constructor.

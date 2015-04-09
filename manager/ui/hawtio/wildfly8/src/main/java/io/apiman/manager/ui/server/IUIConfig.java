@@ -26,34 +26,40 @@ public interface IUIConfig {
 
     /**
      * Gets the management layer's API endpoint.
+     * @return the management api endpoint
      */
     public String getManagementApiEndpoint();
 
     /**
      * Gets the management layer's API authentication type.
+     * @return the api auth type
      */
     public ApiAuthType getManagementApiAuthType();
 
     /**
      * Gets the username to use when doing basic auth to the management layer
      * api.
+     * @return the management api auth username
      */
     public String getManagementApiAuthUsername();
 
     /**
      * Gets the password to use when doing basic auth to the management layer
      * api.
+     * @return the management api auth password
      */
     public String getManagementApiAuthPassword();
 
     /**
      * Gets the classname of the token generator to use when doing token auth to
      * the management layer api.
+     * @return the management api auth token generator
      */
     public String getManagementApiAuthTokenGenerator();
 
     /**
      * Gets the URL to use to logout of the UI.
+     * @return the logout url
      */
     public String getLogoutUrl();
 

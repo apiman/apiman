@@ -40,7 +40,7 @@ public interface IActionResource {
      * @summary Execute an Entity Action
      * @param action The details about what action to execute.
      * @statuscode 204 If the action completes successfully.
-     * @throws ActionException
+     * @throws ActionException action is performed but an error occurs during processing
      */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)

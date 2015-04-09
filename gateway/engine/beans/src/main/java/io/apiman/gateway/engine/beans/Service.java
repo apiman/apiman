@@ -36,8 +36,8 @@ public class Service implements Serializable {
     private String version;
     private String endpointType;
     private String endpoint;
-    private Map<String, String> endpointProperties = new HashMap<String, String>();
-    private List<Policy> servicePolicies = new ArrayList<Policy>();
+    private Map<String, String> endpointProperties = new HashMap<>();
+    private List<Policy> servicePolicies = new ArrayList<>();
     
     /**
      * Constructor.

@@ -33,7 +33,7 @@ import java.util.List;
  * The head handler is the first executed, arriving chunks are passed into
  * {@link #write(IApimanBuffer)}, followed by the {@link #end()} signal.
  * Intermediate policy handlers are chained together, according to the
- * ordering provided by {@link #policyIterator()}.
+ * ordering provided by {@link #iterator()}.
  *
  * The tail handler is executed last: the result object ({@link #getHead()} is
  * sent to {@link #handleHead(Object)}; chunks are streamed to out
@@ -60,8 +60,8 @@ public abstract class Chain<H> extends AbstractStream<H> implements IAbortable, 
 
     /**
      * Constructor.
-     * @param policies
-     * @param context
+     * @param policies the policies
+     * @param context the context
      */
     public Chain(List<PolicyWithConfiguration> policies, IPolicyContext context) {
         this.policies = policies;
@@ -110,10 +110,9 @@ public abstract class Chain<H> extends AbstractStream<H> implements IAbortable, 
         
         // If no policy handlers were found, then just make ourselves the head,
         // otherwise connect the last policy handler in the chain to ourselves
-        if (headPolicyHandler == null) {
-            // Leave the head and tail policy handlers null - the write() and end() methods
-            // will deal with that case.
-        } else {
+        // Leave the head and tail policy handlers null - the write() and end() methods
+        // will deal with that case.
+        if (headPolicyHandler != null && tailPolicyHandler != null) {
             tailPolicyHandler.bodyHandler(new IAsyncHandler<IApimanBuffer>() {
     
                 @Override
@@ -202,7 +201,7 @@ public abstract class Chain<H> extends AbstractStream<H> implements IAbortable, 
 
     /**
      * Sets the policy failure handler.
-     * @param failureHandler
+     * @param failureHandler the failure handler
      */
     public void policyFailureHandler(IAsyncHandler<PolicyFailure> failureHandler) {
         this.policyFailureHandler = failureHandler;
@@ -220,7 +219,7 @@ public abstract class Chain<H> extends AbstractStream<H> implements IAbortable, 
 
     /**
      * Sets the policy error handler.
-     * @param policyErrorHandler
+     * @param policyErrorHandler the policy error handler
      */
     public void policyErrorHandler(IAsyncHandler<Throwable> policyErrorHandler) {
         this.policyErrorHandler = policyErrorHandler;
@@ -229,7 +228,7 @@ public abstract class Chain<H> extends AbstractStream<H> implements IAbortable, 
     /**
      * Called when an unexpected and unrecoverable error is encountered.
      * 
-     * @param error
+     * @param error the error
      */
     public void throwError(Throwable error) {
         abort();

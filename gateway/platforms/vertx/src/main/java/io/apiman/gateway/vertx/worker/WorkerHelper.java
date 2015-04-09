@@ -43,6 +43,7 @@ public class WorkerHelper {
     /**
      * Register with a gateway (TODO consider how we handle registration with
      * many different gw types).
+     * @param handler the result handler
      */
     public void register(AsyncResultHandler<Message<String>> handler) {
         eb.sendWithTimeout(endpoint, uuid, eb.getDefaultReplyTimeout(), handler);

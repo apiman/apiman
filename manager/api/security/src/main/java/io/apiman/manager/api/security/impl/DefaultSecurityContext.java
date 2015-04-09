@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 @ApplicationScoped
 public class DefaultSecurityContext extends AbstractSecurityContext {
 
-    private static final ThreadLocal<HttpServletRequest> servletRequest = new ThreadLocal<HttpServletRequest>();
+    private static final ThreadLocal<HttpServletRequest> servletRequest = new ThreadLocal<>();
     
     /**
      * Constructor.

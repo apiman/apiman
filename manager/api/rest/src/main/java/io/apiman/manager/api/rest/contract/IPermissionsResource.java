@@ -41,8 +41,8 @@ public interface IPermissionsResource {
      * @param userId The user's ID.
      * @statuscode 200 If the permissions are successfully retrieved.
      * @return All of the user's permissions.
-     * @throws UserNotFoundException
-     * @throws NotAuthorizedException
+     * @throws UserNotFoundException when a request is sent for a user who does not exist
+     * @throws NotAuthorizedException when the user is not authorized to perform this action
      */
     @GET
     @Path("{userId}")
@@ -56,7 +56,7 @@ public interface IPermissionsResource {
      * @summary Get Current User's Permissions
      * @statuscode 200 If the permissions are successfully retrieved.
      * @return All of the user's permissions.
-     * @throws UserNotFoundException
+     * @throws UserNotFoundException when a request is sent for a user who does not exist
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)

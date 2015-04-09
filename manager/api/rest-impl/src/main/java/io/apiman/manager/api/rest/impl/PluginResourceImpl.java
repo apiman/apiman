@@ -89,7 +89,7 @@ public class PluginResourceImpl implements IPluginResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IPluginResource#create(io.apiman.manager.api.beans.orgs.PluginBean)
+     * @see io.apiman.manager.api.rest.contract.IPluginResource#create(io.apiman.manager.api.beans.plugins.NewPluginBean)
      */
     @Override
     public PluginBean create(NewPluginBean bean) throws PluginAlreadyExistsException, PluginNotFoundException {
@@ -158,7 +158,7 @@ public class PluginResourceImpl implements IPluginResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IPluginResource#get(java.lang.String)
+     * @see io.apiman.manager.api.rest.contract.IPluginResource#get(java.lang.Long)
      */
     @Override
     public PluginBean get(Long pluginId) throws PluginNotFoundException, NotAuthorizedException {
@@ -182,7 +182,7 @@ public class PluginResourceImpl implements IPluginResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IPluginResource#delete(java.lang.String)
+     * @see io.apiman.manager.api.rest.contract.IPluginResource#delete(java.lang.Long)
      */
     @Override
     public void delete(Long pluginId) throws PluginNotFoundException,

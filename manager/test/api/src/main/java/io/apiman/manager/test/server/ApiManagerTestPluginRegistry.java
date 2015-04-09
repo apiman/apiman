@@ -51,7 +51,6 @@ public class ApiManagerTestPluginRegistry extends AbstractPluginRegistry {
 
     /**
      * Constructor.
-     * @param pluginsDir
      */
     public ApiManagerTestPluginRegistry() {
         super(getTestPluginDir());

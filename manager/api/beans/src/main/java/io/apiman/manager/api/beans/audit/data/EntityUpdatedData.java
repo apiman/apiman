@@ -32,7 +32,7 @@ public class EntityUpdatedData implements Serializable {
 
     private static final long serialVersionUID = 3009506122267996076L;
     
-    private List<EntityFieldChange> changes = new ArrayList<EntityFieldChange>();
+    private List<EntityFieldChange> changes = new ArrayList<>();
 
     /**
      * Constructor.
@@ -41,20 +41,20 @@ public class EntityUpdatedData implements Serializable {
     }
     
     /**
-     * Adds a single chnage.
-     * @param name
-     * @param before
-     * @param after
+     * Adds a single change.
+     * @param name the name
+     * @param before the before state
+     * @param after the after state
      */
     public void addChange(String name, String before, String after) {
         addChange(new EntityFieldChange(name, before, after));
     }
 
     /**
-     * Adds a single chnage.
-     * @param name
-     * @param before
-     * @param after
+     * Adds a single change.
+     * @param name the name
+     * @param before the before state
+     * @param after the after state
      */
     public void addChange(String name, Enum<?> before, Enum<?> after) {
         String beforeStr = before != null ? before.name() : null;

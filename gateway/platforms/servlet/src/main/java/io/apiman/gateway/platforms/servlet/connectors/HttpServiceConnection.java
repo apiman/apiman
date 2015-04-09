@@ -49,7 +49,7 @@ import org.apache.commons.io.IOUtils;
  */
 public class HttpServiceConnection implements IServiceConnection, IServiceConnectionResponse {
 
-    private static final Set<String> SUPPRESSED_HEADERS = new HashSet<String>();
+    private static final Set<String> SUPPRESSED_HEADERS = new HashSet<>();
     static {
         SUPPRESSED_HEADERS.add("Transfer-Encoding"); //$NON-NLS-1$
         SUPPRESSED_HEADERS.add("Content-Length"); //$NON-NLS-1$
@@ -71,10 +71,10 @@ public class HttpServiceConnection implements IServiceConnection, IServiceConnec
 
     /**
      * Constructor.
-     * @param request
-     * @param service
-     * @param handler
-     * @throws ConnectorException
+     * @param request the request
+     * @param service the service
+     * @param handler the result handler
+     * @throws ConnectorException when unable to connect
      */
     public HttpServiceConnection(ServiceRequest request, Service service,
             IAsyncResultHandler<IServiceConnectionResponse> handler) throws ConnectorException {

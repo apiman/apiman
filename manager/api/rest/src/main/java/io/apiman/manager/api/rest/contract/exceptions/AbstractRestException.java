@@ -37,7 +37,7 @@ public abstract class AbstractRestException extends RuntimeException {
     
     /**
      * Constructor.
-     * @param message
+     * @param message the exception message
      */
     public AbstractRestException(String message) {
         super(message);
@@ -45,7 +45,7 @@ public abstract class AbstractRestException extends RuntimeException {
     
     /**
      * Constructor.
-     * @param cause
+     * @param cause the exception cause
      */
     public AbstractRestException(Throwable cause) {
         super(cause);
@@ -53,8 +53,8 @@ public abstract class AbstractRestException extends RuntimeException {
 
     /**
      * Constructor.
-     * @param message
-     * @param cause
+     * @param message the exception message
+     * @param cause the exception cause
      */
     public AbstractRestException(String message, Throwable cause) {
         super(message, cause);

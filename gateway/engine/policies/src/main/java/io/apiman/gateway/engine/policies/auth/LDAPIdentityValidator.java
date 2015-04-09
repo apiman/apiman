@@ -47,7 +47,7 @@ public class LDAPIdentityValidator implements IIdentityValidator<LDAPIdentitySou
     }
 
     /**
-     * @see io.apiman.gateway.engine.policies.auth.IIdentityValidator#validate(java.lang.String, java.lang.String, io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.async.IAsyncHandler)
+     * @see io.apiman.gateway.engine.policies.auth.IIdentityValidator#validate(java.lang.String, java.lang.String, io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
     public void validate(String username, String password, ServiceRequest request, IPolicyContext context,
@@ -55,7 +55,7 @@ public class LDAPIdentityValidator implements IIdentityValidator<LDAPIdentitySou
         String url = config.getUrl();
         String dn = formatDn(config.getDnPattern(), username, request);
         
-        Hashtable<String, String> env = new Hashtable<String, String>();
+        Hashtable<String, String> env = new Hashtable<>();
         env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory"); //$NON-NLS-1$
         env.put(Context.PROVIDER_URL, url);
 
@@ -79,7 +79,7 @@ public class LDAPIdentityValidator implements IIdentityValidator<LDAPIdentitySou
      * @param request
      */
     private String formatDn(String dnPattern, String username, ServiceRequest request) {
-        Map<String, String> valuesMap = new HashMap<String, String>();
+        Map<String, String> valuesMap = new HashMap<>();
         valuesMap.putAll(request.getHeaders());
         valuesMap.put("username", username); //$NON-NLS-1$
         StrSubstitutor sub = new StrSubstitutor(valuesMap);

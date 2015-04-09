@@ -51,7 +51,7 @@ import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
  * 
  * @author eric.wittmann@redhat.com
  */
-@SuppressWarnings("nls")
+@SuppressWarnings({"nls", "javadoc"})
 public class GatewayServer {
     
     public static GatewayServer gatewayServer;
@@ -206,7 +206,7 @@ public class GatewayServer {
 
         @Override
         public Set<Class<?>> getClasses() {
-            HashSet<Class<?>> classes = new HashSet<Class<?>>();
+            HashSet<Class<?>> classes = new HashSet<>();
             classes.add(SystemResourceImpl.class);
             classes.add(ServiceResourceImpl.class);
             classes.add(ApplicationResourceImpl.class);

@@ -64,7 +64,7 @@ import org.overlord.commons.i18n.server.filters.LocaleFilter;
  *
  * @author eric.wittmann@redhat.com
  */
-@SuppressWarnings("nls")
+@SuppressWarnings({"nls", "javadoc"})
 public class ManagerApiTestServer {
 
     private static final String ES_CLUSTER_NAME = "_apimantest";

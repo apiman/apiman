@@ -53,8 +53,8 @@ public class InfinispanRegistry extends InMemoryRegistry {
     
     /**
      * Constructor.
-     * @param cacheContainer
-     * @param cacheName
+     * @param cacheContainer the cache container
+     * @param cacheName the cache name
      */
     public InfinispanRegistry(String cacheContainer, String cacheName) {
         this.cacheContainer = cacheContainer;

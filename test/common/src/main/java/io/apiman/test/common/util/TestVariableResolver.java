@@ -26,6 +26,7 @@ import org.mvel2.integration.VariableResolver;
  *
  * @author eric.wittmann@redhat.com
  */
+@SuppressWarnings("javadoc")
 public class TestVariableResolver implements VariableResolver {
     
     private static final long serialVersionUID = 1L;
@@ -62,7 +63,6 @@ public class TestVariableResolver implements VariableResolver {
     /**
      * @see org.mvel2.integration.VariableResolver#setStaticType(java.lang.Class)
      */
-    @SuppressWarnings("rawtypes")
     @Override
     public void setStaticType(Class type) {
     }
@@ -84,7 +84,7 @@ public class TestVariableResolver implements VariableResolver {
         if (varNode.isObject()) {
             return varNode;
         } else if (varNode.isArray()) {
-            List<Object> rval = new ArrayList<Object>();
+            List<Object> rval = new ArrayList<>();
             for (int idx = 0; idx < varNode.size(); idx++) {
                 JsonNode idxNode = varNode.get(idx);
                 rval.add(idxNode);

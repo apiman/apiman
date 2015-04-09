@@ -16,7 +16,7 @@
 package io.apiman.manager.api.core.exceptions;
 
 /**
- * Thrown if a storage problem occurs while storing a bean.
+ * Thrown if the plugin is invalid
  *
  * @author eric.wittmann@redhat.com
  */
@@ -32,7 +32,7 @@ public class InvalidPluginException extends Exception {
     
     /**
      * Constructor.
-     * @param message
+     * @param message the exception message
      */
     public InvalidPluginException(String message) {
         super(message);
@@ -40,7 +40,7 @@ public class InvalidPluginException extends Exception {
 
     /**
      * Constructor.
-     * @param cause
+     * @param cause the exception cause cause of the exception
      */
     public InvalidPluginException(Throwable cause) {
         super(cause);
@@ -48,8 +48,8 @@ public class InvalidPluginException extends Exception {
     
     /**
      * Constructor.
-     * @param message
-     * @param cause
+     * @param message the exception message
+     * @param cause the exception cause cause of the exception
      */
     public InvalidPluginException(String message, Throwable cause) {
         super(cause);

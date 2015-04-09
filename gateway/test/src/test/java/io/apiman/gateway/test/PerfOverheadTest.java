@@ -30,6 +30,7 @@ import org.junit.Test;
  * 
  * @author eric.wittmann@redhat.com
  */
+@SuppressWarnings("javadoc")
 public class PerfOverheadTest extends AbstractGatewayTest {
 
     @Test

@@ -48,7 +48,7 @@ public class ContractData implements Serializable {
 
     /**
      * Constructor.
-     * @param bean
+     * @param bean the contract
      */
     public ContractData(ContractBean bean) {
         setAppOrgId(bean.getApplication().getApplication().getOrganization().getId());

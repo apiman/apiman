@@ -53,70 +53,75 @@ public class AuditUtils {
 
     /**
      * Returns true only if the value changed.
-     * @param before
-     * @param after
+     * @param before the value before change
+     * @param after the value after change
+     * @return true if value changed, else false
      */
     public static boolean valueChanged(String before, String after) {
-        if (before == null && after == null) {
+        if ((before == null && after == null) || after == null) {
             return false;
         }
-        if (after == null) {
-            return false;
-        }
-        if (before == null && after != null) {
+
+        if (before == null) {
             return true;
         }
+        
         return !before.trim().equals(after.trim());
     }
 
     /**
      * Returns true only if the value changed.
-     * @param before
-     * @param after
+     * @param before the value before change
+     * @param after the value after change
+     * @return true if value changed, else false
      */
     public static boolean valueChanged(Boolean before, Boolean after) {
-        if (before == null && after == null) {
+        if ((before == null && after == null) || after == null) {
             return false;
         }
-        if (after == null) {
-            return false;
-        }
-        if (before == null && after != null) {
+
+        if (before == null) {
             return true;
         }
+        
         return !before.equals(after);
     }
 
     /**
      * Returns true only if the set has changed.
-     * @param before
-     * @param after
+     * 
+     * @param before the value before change
+     * @param after the value after change
+     * @return true if value changed, else false
      */
     public static boolean valueChanged(Set<?> before, Set<?> after) {
-        if (after == null) {
+        if ((before == null && after == null) || after == null) {
             return false;
         }
-        if (before == null && after.isEmpty()) {
-            return false;
-        }
-        if (before == null && !after.isEmpty()) {
-            return true;
-        }
-        if (before.size() != after.size()) {
-            return true;
-        }
-        for (Object bean : after) {
-            if (!before.contains(bean)) {
+        if (before == null) {
+            if (after.isEmpty()) {
+                return false;
+            } else {
                 return true;
             }
+        } else {
+            if (before.size() != after.size()) {
+                return true;
+            }
+            for (Object bean : after) {
+                if (!before.contains(bean)) {
+                    return true;
+                }
+            }
         }
-        return false;
+        return false;      
     }
 
     /**
      * Returns true only if the value changed.
-     * @param before
-     * @param after
+     * @param before the value before change
+     * @param after the value after change
+     * @return true if value changed, else false
      */
     public static boolean valueChanged(Enum<?> before, Enum<?> after) {
         if (before == null && after == null) {
@@ -133,8 +138,9 @@ public class AuditUtils {
 
     /**
      * Creates an {@link AuditEntryBean} for the 'organization created' event.
-     * @param bean
-     * @param securityContext
+     * @param bean the bean
+     * @param securityContext the security context
+     * @return the audit entry
      */
     public static AuditEntryBean organizationCreated(OrganizationBean bean, ISecurityContext securityContext) {
         AuditEntryBean entry = newEntry(bean.getId(), AuditEntityType.Organization, securityContext);
@@ -146,9 +152,10 @@ public class AuditUtils {
 
     /**
      * Creates an audit entry for the 'organization updated' event.
-     * @param bean
-     * @param data
-     * @param securityContext
+     * @param bean the bean
+     * @param data the update
+     * @param securityContext the security context
+     * @return the audit entry
      */
     public static AuditEntryBean organizationUpdated(OrganizationBean bean, EntityUpdatedData data,
             ISecurityContext securityContext) {
@@ -165,8 +172,10 @@ public class AuditUtils {
 
     /**
      * Creates an audit entry for the 'membership granted' even.
-     * @param organizationId
-     * @param securityContext
+     * @param organizationId the organization id
+     * @param data the membership data
+     * @param securityContext the security context
+     * @return the audit entry
      */
     public static AuditEntryBean membershipGranted(String organizationId, MembershipData data,
             ISecurityContext securityContext) {
@@ -180,8 +189,10 @@ public class AuditUtils {
 
     /**
      * Creates an audit entry for the 'membership revoked' even.
-     * @param organizationId
-     * @param securityContext
+     * @param organizationId the organization id
+     * @param data the membership data
+     * @param securityContext the security context
+     * @return the audit entry
      */
     public static AuditEntryBean membershipRevoked(String organizationId, MembershipData data,
             ISecurityContext securityContext) {
@@ -195,8 +206,9 @@ public class AuditUtils {
 
     /**
      * Creates an audit entry for the 'service created' event.
-     * @param bean
-     * @param securityContext
+     * @param bean the bean
+     * @param securityContext the security context
+     * @return the audit entry
      */
     public static AuditEntryBean serviceCreated(ServiceBean bean, ISecurityContext securityContext) {
         AuditEntryBean entry = newEntry(bean.getOrganization().getId(), AuditEntityType.Service, securityContext);
@@ -209,9 +221,10 @@ public class AuditUtils {
 
     /**
      * Creates an audit entry for the 'service updated' event.
-     * @param bean
-     * @param data
-     * @param securityContext
+     * @param bean the bean
+     * @param data the updated data
+     * @param securityContext the security context
+     * @return the audit entry
      */
     public static AuditEntryBean serviceUpdated(ServiceBean bean, EntityUpdatedData data,
             ISecurityContext securityContext) {
@@ -228,8 +241,9 @@ public class AuditUtils {
 
     /**
      * Creates an audit entry for the 'service version created' event.
-     * @param bean
-     * @param securityContext
+     * @param bean the bean
+     * @param securityContext the security context
+     * @return the audit entry
      */
     public static AuditEntryBean serviceVersionCreated(ServiceVersionBean bean,
             ISecurityContext securityContext) {
@@ -242,9 +256,10 @@ public class AuditUtils {
 
     /**
      * Creates an audit entry for the 'service version updated' event.
-     * @param bean
-     * @param data
-     * @param securityContext
+     * @param bean the bean
+     * @param data the updated data
+     * @param securityContext the security context
+     * @return the audit entry
      */
     public static AuditEntryBean serviceVersionUpdated(ServiceVersionBean bean, EntityUpdatedData data,
             ISecurityContext securityContext) {
@@ -261,8 +276,9 @@ public class AuditUtils {
     
     /**
      * Creates an audit entry when a service definition is updated.
-     * @param bean
-     * @param securityContext
+     * @param bean the bean
+     * @param securityContext the security context
+     * @return the audit entry
      */
     public static AuditEntryBean serviceDefinitionUpdated(ServiceVersionBean bean, ISecurityContext securityContext) {
         AuditEntryBean entry = newEntry(bean.getService().getOrganization().getId(), AuditEntityType.Service, securityContext);
@@ -274,8 +290,9 @@ public class AuditUtils {
 
     /**
      * Creates an audit entry when a service definition is deleted.
-     * @param bean
-     * @param securityContext
+     * @param bean the bean
+     * @param securityContext the security context
+     * @return the audit entry
      */
     public static AuditEntryBean serviceDefinitionDeleted(ServiceVersionBean bean, ISecurityContext securityContext) {
         AuditEntryBean entry = newEntry(bean.getService().getOrganization().getId(), AuditEntityType.Service, securityContext);
@@ -287,8 +304,9 @@ public class AuditUtils {
 
     /**
      * Creates an audit entry for the 'application created' event.
-     * @param bean
-     * @param securityContext
+     * @param bean the bean
+     * @param securityContext the security context
+     * @return the audit entry
      */
     public static AuditEntryBean applicationCreated(ApplicationBean bean, ISecurityContext securityContext) {
         AuditEntryBean entry = newEntry(bean.getOrganization().getId(), AuditEntityType.Application, securityContext);
@@ -301,9 +319,10 @@ public class AuditUtils {
 
     /**
      * Creates an audit entry for the 'application updated' event.
-     * @param bean
-     * @param data
-     * @param securityContext
+     * @param bean the bean
+     * @param data the updated data
+     * @param securityContext the security context
+     * @return the audit entry
      */
     public static AuditEntryBean applicationUpdated(ApplicationBean bean, EntityUpdatedData data,
             ISecurityContext securityContext) {
@@ -320,8 +339,9 @@ public class AuditUtils {
 
     /**
      * Creates an audit entry for the 'application version created' event.
-     * @param bean
-     * @param securityContext
+     * @param bean the bean
+     * @param securityContext the security context
+     * @return the audit entry
      */
     public static AuditEntryBean applicationVersionCreated(ApplicationVersionBean bean,
             ISecurityContext securityContext) {
@@ -334,9 +354,10 @@ public class AuditUtils {
 
     /**
      * Creates an audit entry for the 'application version updated' event.
-     * @param bean
-     * @param data
-     * @param securityContext
+     * @param bean the bean
+     * @param data the updated data
+     * @param securityContext the security context
+     * @return the audit entry
      */
     public static AuditEntryBean applicationVersionUpdated(ApplicationVersionBean bean, EntityUpdatedData data,
             ISecurityContext securityContext) {
@@ -353,8 +374,9 @@ public class AuditUtils {
 
     /**
      * Creates an audit entry for the 'contract created' event.
-     * @param bean
-     * @param securityContext
+     * @param bean the bean
+     * @param securityContext the security context
+     * @return the audit entry
      */
     public static AuditEntryBean contractCreatedFromApp(ContractBean bean, ISecurityContext securityContext) {
         AuditEntryBean entry = newEntry(bean.getApplication().getApplication().getOrganization().getId(), AuditEntityType.Application, securityContext);
@@ -368,8 +390,9 @@ public class AuditUtils {
 
     /**
      * Creates an audit entry for the 'contract created' event.
-     * @param bean
-     * @param securityContext
+     * @param bean the bean
+     * @param securityContext the security context
+     * @return the audit entry
      */
     public static AuditEntryBean contractCreatedToService(ContractBean bean, ISecurityContext securityContext) {
         AuditEntryBean entry = newEntry(bean.getService().getService().getOrganization().getId(), AuditEntityType.Service, securityContext);
@@ -385,8 +408,9 @@ public class AuditUtils {
 
     /**
      * Creates an audit entry for the 'contract broken' event.
-     * @param bean
-     * @param securityContext
+     * @param bean the bean
+     * @param securityContext the security context
+     * @return the audit entry
      */
     public static AuditEntryBean contractBrokenFromApp(ContractBean bean, ISecurityContext securityContext) {
         AuditEntryBean entry = newEntry(bean.getApplication().getApplication().getOrganization().getId(), AuditEntityType.Application, securityContext);
@@ -400,8 +424,9 @@ public class AuditUtils {
 
     /**
      * Creates an audit entry for the 'contract broken' event.
-     * @param bean
-     * @param securityContext
+     * @param bean the bean
+     * @param securityContext the security context
+     * @return the audit entry
      */
     public static AuditEntryBean contractBrokenToService(ContractBean bean, ISecurityContext securityContext) {
         AuditEntryBean entry = newEntry(bean.getService().getService().getOrganization().getId(), AuditEntityType.Service, securityContext);
@@ -416,9 +441,10 @@ public class AuditUtils {
     /**
      * Creates an audit entry for the 'policy added' event.  Works for all
      * three kinds of policies.
-     * @param bean
-     * @param type
-     * @param securityContext
+     * @param bean the bean
+     * @param type the policy type
+     * @param securityContext the security context
+     * @return the audit entry
      */
     public static AuditEntryBean policyAdded(PolicyBean bean, PolicyType type,
             ISecurityContext securityContext) {
@@ -446,9 +472,10 @@ public class AuditUtils {
     /**
      * Creates an audit entry for the 'policy removed' event.  Works for all
      * three kinds of policies.
-     * @param bean
-     * @param type
-     * @param securityContext
+     * @param bean the bean
+     * @param type the policy type
+     * @param securityContext the security context
+     * @return the audit entry
      */
     public static AuditEntryBean policyRemoved(PolicyBean bean, PolicyType type,
             ISecurityContext securityContext) {
@@ -476,9 +503,10 @@ public class AuditUtils {
     /**
      * Creates an audit entry for the 'policy updated' event.  Works for all
      * three kinds of policies.
-     * @param bean
-     * @param type
-     * @param securityContext
+     * @param bean the bean
+     * @param type the policy type
+     * @param securityContext the security context
+     * @return the audit entry
      */
     public static AuditEntryBean policyUpdated(PolicyBean bean, PolicyType type,
             ISecurityContext securityContext) {
@@ -517,8 +545,9 @@ public class AuditUtils {
 
     /**
      * Creates an audit entry for the 'plan created' event.
-     * @param bean
-     * @param securityContext
+     * @param bean the bean
+     * @param securityContext the security context
+     * @return the audit entry
      */
     public static AuditEntryBean planCreated(PlanBean bean, ISecurityContext securityContext) {
         AuditEntryBean entry = newEntry(bean.getOrganization().getId(), AuditEntityType.Plan, securityContext);
@@ -531,9 +560,10 @@ public class AuditUtils {
 
     /**
      * Creates an audit entry for the 'plan updated' event.
-     * @param bean
-     * @param data
-     * @param securityContext
+     * @param bean the bean
+     * @param data the updated data
+     * @param securityContext the security context
+     * @return the audit entry
      */
     public static AuditEntryBean planUpdated(PlanBean bean, EntityUpdatedData data,
             ISecurityContext securityContext) {
@@ -550,8 +580,9 @@ public class AuditUtils {
 
     /**
      * Creates an audit entry for the 'plan version created' event.
-     * @param bean
-     * @param securityContext
+     * @param bean the bean
+     * @param securityContext the security context
+     * @return the audit entry
      */
     public static AuditEntryBean planVersionCreated(PlanVersionBean bean,
             ISecurityContext securityContext) {
@@ -564,9 +595,10 @@ public class AuditUtils {
 
     /**
      * Creates an audit entry for the 'plan version updated' event.
-     * @param bean
-     * @param data
-     * @param securityContext
+     * @param bean the bean
+     * @param data the updated data
+     * @param securityContext the security context
+     * @return the audit entry
      */
     public static AuditEntryBean planVersionUpdated(PlanVersionBean bean, EntityUpdatedData data,
             ISecurityContext securityContext) {
@@ -583,8 +615,9 @@ public class AuditUtils {
 
     /**
      * Creates an audit entry for the 'service published' event.
-     * @param bean
-     * @param securityContext
+     * @param bean the bean
+     * @param securityContext the security context
+     * @return the audit entry
      */
     public static AuditEntryBean servicePublished(ServiceVersionBean bean,
             ISecurityContext securityContext) {
@@ -597,8 +630,9 @@ public class AuditUtils {
 
     /**
      * Creates an audit entry for the 'service retired' event.
-     * @param bean
-     * @param securityContext
+     * @param bean the bean
+     * @param securityContext the security context
+     * @return the audit entry
      */
     public static AuditEntryBean serviceRetired(ServiceVersionBean bean,
             ISecurityContext securityContext) {
@@ -611,8 +645,9 @@ public class AuditUtils {
 
     /**
      * Creates an audit entry for the 'application registered' event.
-     * @param bean
-     * @param securityContext
+     * @param bean the bean
+     * @param securityContext the security context
+     * @return the audit entry
      */
     public static AuditEntryBean applicationRegistered(ApplicationVersionBean bean,
             ISecurityContext securityContext) {
@@ -625,8 +660,9 @@ public class AuditUtils {
 
     /**
      * Creates an audit entry for the 'application unregistered' event.
-     * @param bean
-     * @param securityContext
+     * @param bean the bean
+     * @param securityContext the security context
+     * @return the audit entry 
      */
     public static AuditEntryBean applicationUnregistered(ApplicationVersionBean bean,
             ISecurityContext securityContext) {
@@ -639,8 +675,9 @@ public class AuditUtils {
 
     /**
      * Creates an audit entry for the 'plan locked' event.
-     * @param bean
-     * @param securityContext
+     * @param bean the bean
+     * @param securityContext the security context
+     * @return the audit entry  
      */
     public static AuditEntryBean planLocked(PlanVersionBean bean, ISecurityContext securityContext) {
         AuditEntryBean entry = newEntry(bean.getPlan().getOrganization().getId(), AuditEntityType.Plan, securityContext);
@@ -652,9 +689,10 @@ public class AuditUtils {
 
     /**
      * Called when the user reorders the policies in a service.
-     * @param svb
-     * @param service
-     * @param securityContext
+     * @param svb the service and version
+     * @param service the service type
+     * @param securityContext the security context
+     * @return the audit entry 
      */
     public static AuditEntryBean policiesReordered(ServiceVersionBean svb, PolicyType service,
             ISecurityContext securityContext) {
@@ -667,9 +705,10 @@ public class AuditUtils {
 
     /**
      * Called when the user reorders the policies in an application.
-     * @param avb
-     * @param service
-     * @param securityContext
+     * @param avb the application and version
+     * @param service the service type
+     * @param securityContext the security context
+     * @return the audit entry 
      */
     public static AuditEntryBean policiesReordered(ApplicationVersionBean avb, PolicyType service,
             ISecurityContext securityContext) {
@@ -682,9 +721,10 @@ public class AuditUtils {
 
     /**
      * Called when the user reorders the policies in a plan.
-     * @param pvb
-     * @param service
-     * @param securityContext
+     * @param pvb the plan and version
+     * @param service the service type
+     * @param securityContext the security context
+     * @return the audit entry 
      */
     public static AuditEntryBean policiesReordered(PlanVersionBean pvb, PolicyType service,
             ISecurityContext securityContext) {
@@ -697,9 +737,10 @@ public class AuditUtils {
     
     /**
      * Creates an audit entry.
-     * @param orgId
+     * @param orgId the organization id
      * @param type
-     * @param securityContext
+     * @param securityContext the security context
+     * @return the audit entry 
      */
     private static AuditEntryBean newEntry(String orgId, AuditEntityType type, ISecurityContext securityContext) {
         // Wait for 1 ms to guarantee that two audit entries are never created at the same moment in time (which would
@@ -716,7 +757,8 @@ public class AuditUtils {
 
     /**
      * Converts the list of plans to a string for display/comparison.
-     * @param plans
+     * @param plans the plans
+     * @return the service plans as a string
      */
     public static String asString_ServicePlanBeans(Set<ServicePlanBean> plans) {
         StringBuilder builder = new StringBuilder();
@@ -736,7 +778,8 @@ public class AuditUtils {
 
     /**
      * Converts the list of gateways to a string for display/comparison.
-     * @param plans
+     * @param gateways set of gateways
+     * @return the gateways as a string
      */
     public static String asString_ServiceGatewayBeans(Set<ServiceGatewayBean> gateways) {
         StringBuilder builder = new StringBuilder();

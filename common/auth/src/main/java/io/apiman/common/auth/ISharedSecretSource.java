@@ -24,7 +24,7 @@ package io.apiman.common.auth;
 public interface ISharedSecretSource {
     
     /**
-     * Returns the shared secret.
+     * @return the shared secret.
      */
     public String getSharedSecret();
 

@@ -33,7 +33,7 @@ import javax.xml.namespace.QName;
  */
 public class InMemoryDataStoreComponent implements IDataStoreComponent {
 
-    private Map<QName, Object> sharedState = new HashMap<QName, Object>();
+    private Map<QName, Object> sharedState = new HashMap<>();
 
     /**
      * Constructor.

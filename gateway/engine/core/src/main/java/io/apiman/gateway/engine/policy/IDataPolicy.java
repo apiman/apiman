@@ -34,8 +34,8 @@ public interface IDataPolicy extends IPolicy {
     /**
      * This method should return a stream that will be used when piping the request data
      * from the client to the back-end service.
-     * @param request
-     * @param context
+     * @param request the request
+     * @param context the context
      * @return Request handler to stream request data through the policy.
      */
     public IReadWriteStream<ServiceRequest> getRequestDataHandler(ServiceRequest request, IPolicyContext context);
@@ -43,8 +43,8 @@ public interface IDataPolicy extends IPolicy {
     /**
      * This method should return a stream that will be used when piping the response data
      * from the back-end service to the client.
-     * @param response
-     * @param context
+     * @param response the response
+     * @param context the context
      * @return Response handler to stream request data through the policy.
      */
     public IReadWriteStream<ServiceResponse> getResponseDataHandler(ServiceResponse response, IPolicyContext context);

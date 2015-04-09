@@ -29,7 +29,9 @@ public interface IPluginRegistry {
     
     /**
      * Loads a plugin with the given coordinates.
-     * @param coordinates
+     * @param coordinates plugin coordinates
+     * @return the loaded plugin
+     * @throws InvalidPluginException the plugin is invalid
      */
     public Plugin loadPlugin(PluginCoordinates coordinates) throws InvalidPluginException;
 

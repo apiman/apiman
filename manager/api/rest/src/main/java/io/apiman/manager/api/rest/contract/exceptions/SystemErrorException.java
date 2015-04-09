@@ -33,7 +33,7 @@ public class SystemErrorException extends AbstractSystemException {
     
     /**
      * Constructor.
-     * @param message
+     * @param message the exception message
      */
     public SystemErrorException(String message) {
         super(message);
@@ -41,7 +41,7 @@ public class SystemErrorException extends AbstractSystemException {
     
     /**
      * Constructor.
-     * @param t
+     * @param t the cause t
      */
     public SystemErrorException(Throwable t) {
         super(t);
@@ -64,7 +64,7 @@ public class SystemErrorException extends AbstractSystemException {
     }
     
     /**
-     * @see io.apiman.manager.api.rest.contract.exceptions.AbstractRestException#getMoreInfo()
+     * @see io.apiman.manager.api.rest.contract.exceptions.AbstractRestException#getMoreInfoUrl()
      */
     @Override
     public String getMoreInfoUrl() {

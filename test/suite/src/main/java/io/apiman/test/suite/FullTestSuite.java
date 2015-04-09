@@ -50,7 +50,7 @@ import java.io.InputStreamReader;
  *
  * @author eric.wittmann@redhat.com
  */
-@SuppressWarnings("nls")
+@SuppressWarnings({"nls", "javadoc"})
 public class FullTestSuite {
     
     /**

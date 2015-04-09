@@ -25,13 +25,14 @@ import org.jboss.errai.common.client.api.annotations.Portable;
  * Models a set of beans returned as a result of a search.
  *
  * @author eric.wittmann@redhat.com
+ * @param <T> the bean type
  */
 @Portable
 public class SearchResultsBean<T> implements Serializable {
 
     private static final long serialVersionUID = -1672829715471947181L;
     
-    private List<T> beans = new ArrayList<T>();
+    private List<T> beans = new ArrayList<>();
     private int totalSize;
 
     /**

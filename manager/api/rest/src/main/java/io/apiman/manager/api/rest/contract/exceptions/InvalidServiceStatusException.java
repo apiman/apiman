@@ -27,7 +27,7 @@ public class InvalidServiceStatusException extends AbstractUserException {
     
     /**
      * Constructor.
-     * @param message
+     * @param message the exception message
      */
     public InvalidServiceStatusException(String message) {
         super(message);

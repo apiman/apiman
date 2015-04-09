@@ -35,6 +35,7 @@ public class PolicyTemplateUtilTest {
 
     /**
      * Test method for {@link io.apiman.manager.api.core.util.PolicyTemplateUtil#generatePolicyDescription(io.apiman.manager.api.beans.policies.PolicyBean)}.
+     * @throws Exception any exception
      */
     @Test
     public void testGeneratePolicyDescription_novars() throws Exception {
@@ -52,6 +53,7 @@ public class PolicyTemplateUtilTest {
 
     /**
      * Test method for {@link io.apiman.manager.api.core.util.PolicyTemplateUtil#generatePolicyDescription(io.apiman.manager.api.beans.policies.PolicyBean)}.
+     * @throws Exception any exception
      */
     @Test
     public void testGeneratePolicyDescription_simplevar() throws Exception {
@@ -69,6 +71,7 @@ public class PolicyTemplateUtilTest {
 
     /**
      * Test method for {@link io.apiman.manager.api.core.util.PolicyTemplateUtil#generatePolicyDescription(io.apiman.manager.api.beans.policies.PolicyBean)}.
+     * @throws Exception any exception
      */
     @Test
     public void testGeneratePolicyDescription_nested() throws Exception {
@@ -86,6 +89,7 @@ public class PolicyTemplateUtilTest {
 
     /**
      * Test method for {@link io.apiman.manager.api.core.util.PolicyTemplateUtil#generatePolicyDescription(io.apiman.manager.api.beans.policies.PolicyBean)}.
+     * @throws Exception any exception
      */
     @Test
     public void testGeneratePolicyDescription_arrays() throws Exception {
@@ -103,6 +107,7 @@ public class PolicyTemplateUtilTest {
 
     /**
      * Test method for {@link io.apiman.manager.api.core.util.PolicyTemplateUtil#generatePolicyDescription(io.apiman.manager.api.beans.policies.PolicyBean)}.
+     * @throws Exception any exception
      */
     @Test
     public void testGeneratePolicyDescription_nested2() throws Exception {
@@ -120,6 +125,7 @@ public class PolicyTemplateUtilTest {
 
     /**
      * Test method for {@link io.apiman.manager.api.core.util.PolicyTemplateUtil#generatePolicyDescription(io.apiman.manager.api.beans.policies.PolicyBean)}.
+     * @throws Exception any exception
      */
     @Test
     public void testGeneratePolicyDescription_missingvar() throws Exception {
@@ -137,6 +143,7 @@ public class PolicyTemplateUtilTest {
 
     /**
      * Test method for {@link io.apiman.manager.api.core.util.PolicyTemplateUtil#generatePolicyDescription(io.apiman.manager.api.beans.policies.PolicyBean)}.
+     * @throws Exception any exception
      */
     @Test
     public void testGeneratePolicyDescription_blacklist() throws Exception {
@@ -154,6 +161,7 @@ public class PolicyTemplateUtilTest {
 
     /**
      * Test method for {@link io.apiman.manager.api.core.util.PolicyTemplateUtil#generatePolicyDescription(io.apiman.manager.api.beans.policies.PolicyBean)}.
+     * @throws Exception any exception
      */
     @Test
     public void testGeneratePolicyDescription_basicauth() throws Exception {
@@ -171,6 +179,7 @@ public class PolicyTemplateUtilTest {
 
     /**
      * Test method for {@link io.apiman.manager.api.core.util.PolicyTemplateUtil#generatePolicyDescription(io.apiman.manager.api.beans.policies.PolicyBean)}.
+     * @throws Exception any exception
      */
     @Test
     public void testGeneratePolicyDescription_i18n() throws Exception {
