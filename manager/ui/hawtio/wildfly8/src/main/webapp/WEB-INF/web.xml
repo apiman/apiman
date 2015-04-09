@@ -3,6 +3,23 @@
   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
   version="3.0">
 
+  <filter>
+    <filter-name>ResourceCacheControl</filter-name>
+    <filter-class>io.apiman.common.servlet.ResourceCacheControlFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>ResourceCacheControl</filter-name>
+    <url-pattern>/libs/*</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>ResourceCacheControl</filter-name>
+    <url-pattern>/plugins/*</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>ResourceCacheControl</filter-name>
+    <url-pattern>/dist/*</url-pattern>
+  </filter-mapping>
+
   <servlet>
     <servlet-name>AngularServlet</servlet-name>
     <servlet-class>io.apiman.manager.ui.server.servlets.AngularServlet</servlet-class>
