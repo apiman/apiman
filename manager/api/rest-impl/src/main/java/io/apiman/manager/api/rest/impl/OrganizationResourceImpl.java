@@ -1797,8 +1797,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             if (serviceVersion == null) {
                 throw ExceptionFactory.serviceVersionNotFoundException(serviceId, version);
             }
+            serviceVersion.setDefinitionType(ServiceDefinitionType.None);
             storage.createAuditEntry(AuditUtils.serviceDefinitionDeleted(serviceVersion, securityContext));
             storage.deleteServiceDefinition(serviceVersion);
+            storage.updateServiceVersion(serviceVersion);
             storage.commitTx();
         } catch (AbstractRestException e) {
             storage.rollbackTx();
