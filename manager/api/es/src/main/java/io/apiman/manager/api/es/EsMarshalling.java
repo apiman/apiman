@@ -898,6 +898,7 @@ public class EsMarshalling {
         bean.setOrganizationName(asString(source.get("organizationName")));
         bean.setStatus(asEnum(source.get("status"), ServiceStatus.class));
         bean.setVersion(asString(source.get("version")));
+        bean.setPublicService(asBoolean(source.get("publicService")));
         return bean;
     }
 

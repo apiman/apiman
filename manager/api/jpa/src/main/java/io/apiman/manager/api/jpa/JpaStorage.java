@@ -1066,6 +1066,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
                 svsb.setDescription(serviceVersion.getService().getDescription());
                 svsb.setVersion(serviceVersion.getVersion());
                 svsb.setStatus(serviceVersion.getStatus());
+                svsb.setPublicService(serviceVersion.isPublicService());
                 rval.add(svsb);
             }
             return rval;

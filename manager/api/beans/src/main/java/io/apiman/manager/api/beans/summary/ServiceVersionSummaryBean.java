@@ -39,6 +39,7 @@ public class ServiceVersionSummaryBean implements Serializable {
     private String description;
     private ServiceStatus status;
     private String version;
+    private boolean publicService;
 
     /**
      * Constructor.
@@ -142,6 +143,20 @@ public class ServiceVersionSummaryBean implements Serializable {
      */
     public void setVersion(String version) {
         this.version = version;
+    }
+
+    /**
+     * @return the publicService
+     */
+    public boolean isPublicService() {
+        return publicService;
+    }
+
+    /**
+     * @param publicService the publicService to set
+     */
+    public void setPublicService(boolean publicService) {
+        this.publicService = publicService;
     }
 
 }
