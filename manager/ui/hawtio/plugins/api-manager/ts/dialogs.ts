@@ -26,7 +26,7 @@ module ApimanDialogs {
                 
                 // A simple "Select a Service" dialog (allows selecting a single service + version
                 //////////////////////////////////////////////////////////////////////////////////
-                selectService: function(title, handler) {
+                selectService: function(title, handler, publishedOnly) {
                     var modalScope = $rootScope.$new(true);
                     modalScope.selectedService = undefined;
                     modalScope.selectedServiceVersion = undefined;
@@ -68,9 +68,19 @@ module ApimanDialogs {
                         service.selected = true;
                         modalScope.selectedServiceVersion = undefined;
                         OrgSvcs.query({ organizationId: service.organizationId, entityType: 'services', entityId: service.id, versionsOrActivity: 'versions' }, function(versions) {
-                            modalScope.serviceVersions = versions;
-                            if (versions.length > 0) {
-                                modalScope.selectedServiceVersion = versions[0];
+                            if (publishedOnly) {
+                                var validVersions = [];
+                                angular.forEach(versions, function(version) {
+                                    if (version.status == 'Published') {
+                                        validVersions.push(version);
+                                    }
+                                });
+                                modalScope.serviceVersions = validVersions;
+                            } else {
+                                modalScope.serviceVersions = versions;
+                            }
+                            if (modalScope.serviceVersions.length > 0) {
+                                modalScope.selectedServiceVersion = modalScope.serviceVersions[0];
                             }
                         }, function(error) {
                             modalScope.serviceVersions = [];

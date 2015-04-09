@@ -36,6 +36,11 @@
                 <select ng-model="selectedAppVersion" apiman-select-picker="appVersions" class="selectpicker" title="Select a Version" ng-options="version for version in appVersions">
                 </select>
               </div>
+              <div class="alert alert-warning" ng-show="apps.length > 0 && selectedApp && appVersions.length == 0">
+                 <span class="pficon pficon-info"></span>
+                 There are no (unregistered) versions of the selected application.  Note: you may only create
+                 Contracts in Applications that have not yet been registered.
+              </div>
               <div class="alert alert-warning" ng-show="apps.length == 0">
                  <span class="pficon pficon-info"></span>
                  We couldn't find any Applications for you - you must have at least one (not yet registered)

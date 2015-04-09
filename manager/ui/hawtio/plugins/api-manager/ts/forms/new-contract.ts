@@ -12,10 +12,12 @@ module Apiman {
             
             $scope.refreshAppVersions = function(organizationId, appId, onSuccess, onError) {
                 OrgSvcs.query({ organizationId: organizationId, entityType: 'applications', entityId: appId, versionsOrActivity: 'versions' }, function(versions) {
-                    var plainVersions = new Array();
-                    for (var i = 0; i < versions.length; i++) {
-                        plainVersions.push(versions[i].version);
-                    }
+                    var plainVersions = [];
+                    angular.forEach(versions, function(version) {
+                        if (version.status == 'Created' || version.status == 'Ready') {
+                            plainVersions.push(version.version);
+                        }
+                    });
                     $scope.appVersions = plainVersions;
                     if (onSuccess) {
                         onSuccess(plainVersions);
@@ -78,7 +80,7 @@ module Apiman {
             $scope.selectService = function() {
                 Dialogs.selectService('Select a Service', function(serviceVersion) {
                     $scope.selectedService = serviceVersion;
-                });
+                }, true);
             };
 
             $scope.$watch('selectedService', function(newValue) {
