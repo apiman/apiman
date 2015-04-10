@@ -1,6 +1,6 @@
 <div style="margin-top: 15px; position: relative;">
     <div class="description" editable-textarea="descr" e-ng-focus="focusOnDescription($event)" e-ng-change="changeOnDescription()"
-        e-class="autoExpand" e-placeholder="{{descr}}" ng-mouseover="descriptionMouseOver($event)" ng-mouseout="descriptionMouseOut($event)"
+        e-class="autoExpand" ng-mouseover="descriptionMouseOver($event)" ng-mouseout="descriptionMouseOut($event)"
         id="descriptionWrapper">
             {{ descr || "&lt;" + defaultValue + "&gt;" }}
             <a href="#" class="apiman-inline-edit-overlay-edit" ng-show="showPencil" style="position:absolute"

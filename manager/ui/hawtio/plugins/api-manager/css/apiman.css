@@ -1339,6 +1339,7 @@ div.editable-click:hover {
   border-radius: 3px 0px 0px 3px;
   padding: 5px;
   cursor: text;
+  color: black;
 }
 
 .editable-wrap {
