@@ -387,7 +387,7 @@ module Apiman {
             return {
                 restrict: 'E',
                 scope: {
-                    description: '=',
+                    descr: '=description',
                     callback: '='
                 },
                 controller: function($scope) {
@@ -401,10 +401,71 @@ module Apiman {
                 },
                 link: function($scope, $elem, $attrs) {
                     $scope.defaultValue = $attrs.defaultValue;
+
+                    var previousRows = null;
+                    var elem = null;
+                    var savedValue = null;
+                    var savedScrollHeight = null;
+
+                    $scope.topPosition = 0;
+                    $scope.leftPosition = 0;
+                    $scope.height = 40;
+
+                    $scope.focusOnDescription = function(event) {
+                        elem = event.target;
+                        savedValue = elem.value;
+                        elem.value = $scope.descr;
+                        elem.rows = previousRows || 1;
+
+                        // Logger.log("elem.rows=" + elem.rows);
+                        // The scroll height at the point of focus
+                        savedScrollHeight = elem.scrollHeight;
+                    };
+
+                    $scope.descriptionMouseOver = function(event) {
+                        $scope.showPencil = true;
+                        var elem = event.target;
+                        var position = elem.getBoundingClientRect();
+
+                        // Calculate position of pen
+                        console.log("elem.top " + position.top);
+                        console.log("elem.bottom " + position.bottom);
+                        console.log("elem.left " + position.left);
+                        console.log("elem.right " + position.right);
+
+                        if (position.right != 0) {
+                            $scope.leftPosition = (position.right - position.left);
+                            $scope.height = (position.bottom - position.top);
+                        }
+
+
+                        //$scope.topPosition = position.bottom;
+                    }
+
+                    $scope.descriptionMouseOut = function(event) {
+                        $scope.showPencil = false;
+                    }
+
+                    $scope.changeOnDescription = function() {
+                        // Logger.log("elem.scrollHeight "  + elem.scrollHeight);
+                        // Logger.log("savedScrollHeight "  + savedScrollHeight);
+                        var minRows = 1;
+                        var rows = Math.ceil((elem.scrollHeight - savedScrollHeight) / 17);
+                        elem.rows = rows < minRows ? minRows : rows;
+                        previousRows = elem.rows;
+                    };
                 },
-                template: '<div class="description" editable-text="description">' +
-                            '{{ description || defaultValue }}' +
-                          '</div>'
+                templateUrl: 'plugins/api-manager/html/directives/editDescription.html'
             }
         }]);
-    }
+
+    _module.run(function(editableOptions, editableThemes) {
+      editableOptions.theme = 'default';
+
+      // overwrite templates
+      editableThemes['default'].submitTpl = '<button class="btn btn-default inline-save-btn" type="submit"><i class="fa fa-check fa-fw"></i></button>';
+      editableThemes['default'].cancelTpl = '<button class="btn btn-default" type="button" ng-click="$form.$cancel()"><i class="fa fa-times fa-fw"></i></button>';
+      editableThemes['default'].buttonsTpl = '<div></div>';
+      editableThemes['default'].formTpl = '<form class="editable-wrap description apiman-inline-edit"></form>';
+    });
+}

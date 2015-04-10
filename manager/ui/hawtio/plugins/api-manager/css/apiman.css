@@ -1317,12 +1317,43 @@ div.admin-page .admin-content .apiman-summaryrow .emphasis {
   padding: 15px;
 }
 
+#wrapper {
+     width: 100%;
+     margin: 0 auto;
+     padding-left: 0;
+     padding-top: 0;
+     padding-bottom: 0;
+     padding-right: 20px;
+     overflow: auto;
+     height: auto;
+}
+
+div.editable-click { 
+  color: black;
+  border-bottom: hidden;
+  padding: 5px;
+  border: 1px solid white;
+}
+
+div.editable-click:hover { 
+  border: 1px solid rgb(200, 200, 200);
+  border-radius: 3px 0px 0px 3px;
+  padding: 5px;
+  cursor: text;
+}
+
+.editable-wrap {
+    width: 100% !important;
+    overflow: hidden;
+}
+
 .apiman-inline-edit-overlay {
   border: 1px solid rgb(200, 200, 200);
   border-radius: 3px 0px 0px 3px;
   padding: 5px;
   cursor: text;
 }
+
 .apiman-inline-edit-overlay-edit {
   border: 1px solid rgb(200, 200, 200);
   border-left: none;
@@ -1339,10 +1370,11 @@ div.admin-page .admin-content .apiman-summaryrow .emphasis {
   color: #333;
 }
 
-.apiman-inline-edit textarea.user-value-edit {
+.apiman-inline-edit textarea.editable-input {
   border: 1px solid rgb(200, 200, 200);
   padding: 3px;
   border-radius: 3px 3px 3px 0px;
+  width: 100%;
 }
 
 .apiman-inline-edit {
