@@ -1318,20 +1318,19 @@ div.admin-page .admin-content .apiman-summaryrow .emphasis {
 }
 
 #wrapper {
-     width: 100%;
-     margin: 0 auto;
-     padding-left: 0;
-     padding-top: 0;
-     padding-bottom: 0;
-     padding-right: 20px;
-     overflow: auto;
-     height: auto;
+  width: 100%;
+  margin: 0 auto;
+  padding-left: 5px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-right: 20px;
+  overflow: auto;
+  height: auto;
 }
 
 div.editable-click { 
   color: black;
   border-bottom: hidden;
-  padding: 5px;
   border: 1px solid white;
 }
 

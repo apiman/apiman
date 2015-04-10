@@ -402,10 +402,12 @@ module Apiman {
                 link: function($scope, $elem, $attrs) {
                     $scope.defaultValue = $attrs.defaultValue;
 
-                    var previousRows = null;
+                    //var previousHeight = null;
                     var elem = null;
                     var savedValue = null;
-                    var savedScrollHeight = null;
+                    var savedScrollHeight = null
+
+                    var previousRows = 1;
 
                     $scope.topPosition = 0;
                     $scope.leftPosition = 0;
@@ -415,7 +417,8 @@ module Apiman {
                         elem = event.target;
                         savedValue = elem.value;
                         elem.value = $scope.descr;
-                        elem.rows = previousRows || 1;
+                        elem.rows = previousRows;
+                        //$(elem).height(elem.scrollHeight);
 
                         // The scroll height at the point of focus
                         savedScrollHeight = elem.scrollHeight;
@@ -424,6 +427,8 @@ module Apiman {
                     $scope.changeOnDescription = function() {
                         $(elem).css('height', 'auto');
                         $(elem).height(elem.scrollHeight);
+                        //previousHeight = elem.scrollHeight;
+                        previousRows = elem.rows;
                     };
 
                     $scope.descriptionMouseOver = function(event) {
@@ -438,12 +443,9 @@ module Apiman {
                         console.log("elem.right " + position.right);
 
                         if (position.right != 0) {
-                            $scope.leftPosition = (position.right - position.left);
+                            $scope.leftPosition = (position.right - position.left) - 15;
                             $scope.height = (position.bottom - position.top);
                         }
-
-
-                        //$scope.topPosition = position.bottom;
                     }
 
                     $scope.descriptionMouseOut = function(event) {
