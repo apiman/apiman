@@ -14,11 +14,11 @@ both are downloaded, it's a simple matter of unpacking both into the same locati
 First you will need to download both WildFly 8 and apiman:
 
 * http://download.jboss.org/wildfly/8.2.0.Final/wildfly-8.2.0.Final.zip[Download WildFly 8]
-* http://downloads.jboss.org/overlord/apiman/1.0.3.Final/apiman-distro-wildfly8-1.0.3.Final-overlay.zip[Download apiman 1.0.3.Final]
+* http://downloads.jboss.org/overlord/apiman/1.1.0.Final/apiman-distro-wildfly8-1.1.0.Final-overlay.zip[Download apiman 1.1.0.Final]
 
 ....
 curl http://download.jboss.org/wildfly/8.2.0.Final/wildfly-8.2.0.Final.zip -o wildfly-8.2.0.Final.zip
-curl http://downloads.jboss.org/overlord/apiman/1.0.3.Final/apiman-distro-wildfly8-1.0.3.Final-overlay.zip -o apiman-distro-wildfly8-1.0.3.Final-overlay.zip
+curl http://downloads.jboss.org/overlord/apiman/1.1.0.Final/apiman-distro-wildfly8-1.1.0.Final-overlay.zip -o apiman-distro-wildfly8-1.1.0.Final-overlay.zip
 ....
 
 ==== Unpack
@@ -26,7 +26,7 @@ Once both files have been downloaded, simply unpack both in the same location.
 
 ....
 unzip wildfly-8.2.0.Final.zip
-unzip -o apiman-distro-wildfly8-1.0.3.Final-overlay.zip -d wildfly-8.2.0.Final
+unzip -o apiman-distro-wildfly8-1.1.0.Final-overlay.zip -d wildfly-8.2.0.Final
 ....
 
 ==== Run WildFly 8
@@ -67,7 +67,7 @@ Once apiman is running, you should be able to log in to the API Manager by point
 browser at the following URL:
 
 ....
-http://localhost:8080/apiman-manager
+http://localhost:8080/apimanui/
 ....
 
 You may log in with credentials *admin/admin123!*.
@@ -79,7 +79,7 @@ http://localhost:8080/auth/admin/ )
 ====
 
 
-== Configuration
+== General Configuration
 Of course apiman is made up of a number of different components, many of which can be configured
 to use various implementations and/or providers.  When downloading and installing apiman, the
 default distribution includes reasonable default values for all options.  This section details
@@ -257,6 +257,149 @@ to the Gateway.  This REST API should be protected, often using BASIC authentica
 the Gateway REST API requires BASIC authentication credentials, as well as a role of *apipublisher*.
 In other words, the Gateway REST API can only be invoked by a valid user, and that user must have
 the *apipublisher* role.
+
+
+== HowTos
+This section contains specific instructions for how to configure apiman for specific scenarios. 
+For example, it is possible to use Elasticsearch instead of Infinispan for certain API Gateway
+components.  This section details how to make these sorts of changes.
+
+=== How To:  Use Elasticsearch instead of an RDBMS in the API Manager
+The apiman quickstart is configured (by default) to use JPA as the persistence technology for
+storing all of its data.  But this isn't the only persistence technology supported.  Another
+option is to use Elasticsearch instead.  This section details how to set up apiman for this
+use-case.
+
+==== High Level Overview
+1. Download and install https://www.elastic.co/downloads/elasticsearch[Elasticsearch]
+2. Make changes to "apiman.properties" to switch from JPA to Elasticsearch
+3. (Re)start apiman!
+4. Perform standard admin configuration of apiman (the database will of course be empty!)
+
+==== Download and install Elasticsearch
+This part is pretty easy - download the Elasticsearch software and get it running.  A very good
+resource for this can be found here:
+
+http://www.elastic.co/guide/en/elasticsearch/guide/master/getting-started.html
+
+==== Make changes to "apiman.properties"
+Once Elasticsearch is running smoothly, you must make some changes to the *apiman.properties*
+file in order to tell apiman to use ES instead of a database.  You should modify the 
+apiman.properties file to have the following properties set:
+
+----
+apiman.es.host=
+apiman.es.port=
+apiman.es.cluster-name=
+apiman-manager.storage.type=es
+apiman-manager.storage.es.host=${apiman.es.host}
+apiman-manager.storage.es.port=${apiman.es.port}
+apiman-manager.storage.es.cluster-name=${apiman.es.cluster-name}
+apiman-manager.storage.es.initialize=true
+----
+
+Make sure you enter appropriate values for the apiman.es.host, apiman.es.port, and apiman.es.cluster-name
+properties.  These values should reflect the settings of your Elasticsearch installation.
+
+==== (Re)start apiman
+If apiman was running, you should stop it now.  Once everything is shutdown, and the changes
+to apiman.properties have been made, go ahead and start apiman up again.  It will pick up the
+new settings in apiman.properties and attempt to use Elasticsearch instead of the database!
+
+.Perform standard admin configuration
+Note that the apiman quickstart comes pre-configured with a number of settings, including:
+
+* Installed policy definitions
+* Default configured roles (Organization Owner, Service Developer, Appliation Developer)
+* A default configured Gateway
+
+This built-in configuration will be lost when you switch from JPA to Elasticsearch.  You will
+need to use the apiman admin UI to reconfigure these settings.  Refer to the "System Administration"
+section of the User Guide for more information on this.
+
+
+=== How To:  Use Elasticsearch instead of Infinispan in the API Gateway
+The apiman quickstart ships by default with an Infinispan based provider for various
+runtime components in the API Gateway.  This includes, for example, the Rate Limiter
+component which is used to track limits across a potential cluster of API Gateway 
+nodes (ensuring that the limits are consistent and effective despite traffic being
+split across API Gateway nodes in a cluster).
+
+The following components currently use Infinispan and can be switched to Elasticsearch:
+
+* API Gateway Registry (used to store the gateway configuration)
+* Rate Limiter Component (used to track limits)
+* Shared State Component (used by policies to share state across multiple requests)
+
+Each of these components can be configured separately.  So you can use Infinispan for
+the last two but Elasticsearch for the first one, for example.
+
+==== High Level Overview
+1. Download and install https://www.elastic.co/downloads/elasticsearch[Elasticsearch]
+2. Make changes to "apiman.properties" to switch from JPA to Elasticsearch
+3. (Re)start apiman!
+
+==== Download and install Elasticsearch
+This part is pretty easy - download the Elasticsearch software and get it running.  A very good
+resource for this can be found here:
+
+http://www.elastic.co/guide/en/elasticsearch/guide/master/getting-started.html
+
+==== Make changes to "apiman.properties"
+Once Elasticsearch is running smoothly, you must make some changes to the *apiman.properties*
+file in order to tell apiman to use ES for the runtime components.
+
+First, it's often useful to set a common set of properties for the Elasticsearch
+host, port, and cluster-name.  This way these properties can be re-used for the 
+configuration of each of the components.
+
+----
+apiman-gateway.es.host=
+apiman-gateway.es.port=
+apiman-gateway.es.cluster-name=
+----
+
+Make sure you enter appropriate values for the apiman.es.host, apiman.es.port, and apiman.es.cluster-name
+properties.  These values should reflect the settings of your Elasticsearch installation.
+
+Next, each of the components can be configured by changing/adding the following properties
+in *apiman.properties*.  Make sure any of the properties below which already have values
+are removed before the ones below are copied in.
+
+===== API Gateway Registry
+Here is how you switch the API Gateway Registry over to Elasticsearch.
+----
+apiman-gateway.registry=io.apiman.gateway.engine.es.ESRegistry
+apiman-gateway.registry.client.type=transport
+apiman-gateway.registry.client.cluster-name=${apiman-gateway.es.cluster-name}
+apiman-gateway.registry.client.host=${apiman-gateway.es.host}
+apiman-gateway.registry.client.port=${apiman-gateway.es.port}
+----
+
+===== Rate Limiter Component
+Here is how you switch the Rate Limiter Component over to Elasticsearch.
+----
+apiman-gateway.components.IRateLimiterComponent=io.apiman.gateway.engine.es.ESRateLimiterComponent
+apiman-gateway.components.IRateLimiterComponent.client.type=transport
+apiman-gateway.components.IRateLimiterComponent.client.cluster-name=${apiman-gateway.es.cluster-name}
+apiman-gateway.components.IRateLimiterComponent.client.host=${apiman-gateway.es.host}
+apiman-gateway.components.IRateLimiterComponent.client.port=${apiman-gateway.es.port}
+----
+
+===== Shared State Component
+Here is how you switch the Shared State Component over to Elasticsearch.
+----
+apiman-gateway.components.ISharedStateComponent=io.apiman.gateway.engine.es.ESSharedStateComponent
+apiman-gateway.components.ISharedStateComponent.client.type=transport
+apiman-gateway.components.ISharedStateComponent.client.cluster-name=${apiman-gateway.es.cluster-name}
+apiman-gateway.components.ISharedStateComponent.client.host=${apiman-gateway.es.host}
+apiman-gateway.components.ISharedStateComponent.client.port=${apiman-gateway.es.port}
+----
+
+==== (Re)start apiman
+If apiman was running, you should stop it now.  Once everything is shutdown, and the changes
+to apiman.properties have been made, go ahead and start apiman up again.  It will pick up the
+new settings in apiman.properties and attempt to use Elasticsearch instead of Infinispan.
 
 
 :numbered!:

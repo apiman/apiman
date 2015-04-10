@@ -20,7 +20,7 @@ The basic architecture of apiman is fairly straightforward.  There are several W
 make up the default apiman installation.  These include:
 
 * API Manager back-end (JAX-RS WAR)
-* API Manager UI (GWT/Errai WAR)
+* API Manager UI (AngularJS/Hawtio WAR)
 * API Gateway Config (JAX-RS WAR)
 * API Gateway (Servlet WAR)
 
@@ -28,7 +28,7 @@ The API Manager back-end WAR is responsible for exposing a set of REST endpoints
 make up the API Manager REST interface.  The API Manager UI uses this REST API
 directly when the user manages the various entities in the data model.
 
-The API Manager UI is a client-only GWT/Errai application.  Aside from authentication
+The API Manager UI is a client-only AngularJS application.  Aside from authentication
 related activities, this WAR only contains HTML, JavaScript, and CSS.  The UI uses
 the browser to make direct, authenticated calls to the REST endpoints exposed by the
 API Manager back-end WAR.
