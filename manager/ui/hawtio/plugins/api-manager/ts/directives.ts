@@ -393,7 +393,7 @@ module Apiman {
                 controller: function($scope) {
                     // If description is updated, call updateFunction.
                     $scope.$watch(function() {
-                        return $scope.description;
+                        return $scope.descr;
                     },
                     function(new_value, old_value) {
                         if (old_value !== new_value && typeof old_value !== 'undefined') $scope.callback(new_value || '');
@@ -409,7 +409,7 @@ module Apiman {
 
                     $scope.topPosition = 0;
                     $scope.leftPosition = 0;
-                    $scope.height = 40;
+                    $scope.height = 60;
 
                     $scope.focusOnDescription = function(event) {
                         elem = event.target;
