@@ -1,14 +1,17 @@
 .login-pf .container {
     padding-top: 40px;
-    background-color: white;
-    border-top: 1px solid #666;
-    border-bottom: 1px solid #666;
+    background-color: rgb(36, 52, 70);
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+    color: white;
 }
 
 .login-pf body {
     background: rgb(246, 246, 246);
     background-size: 100% auto;
     color: #666;
+    background-image: url("../img/apiman-bg.png");
+    background-repeat: repeat;
 }
 
 .login-pf .container .details {
@@ -21,6 +24,14 @@
 
 #kc-logo {
     width: 100%;
+}
+
+#kc-logo-wrapper {
+    background-image: url("../img/apiman-logo.png");
+    background-repeat: no-repeat;
+    background-position: top right;
+    height: 200px;
+    margin: 30px;
 }
 
 #kc-header {

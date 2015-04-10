@@ -49,14 +49,14 @@ The above maven command will do the following:
 4. Deploy the WildFly 8.x version of apiman to WildFly
 
 Once WildFly has started up, and if all went well, you can point your browser to the 
-[API Manager](http://localhost:8080/apiman-manager/) and log in as any of the following users:
+[API Manager](http://localhost:8080/apimanui/) and log in (either register a new user
+or log in as the admin):
 
 * admin/admin123!
-* bwayne/bwayne123!
-* ckent/ckent123!
-* dprince/dprince123!
 
-Note that this quickstart seeds a bunch of content into apiman. This is not strictly necessary, but it does populate the API Manager with some data so that it doesn't feel so lonely the first time you log in. You're welcome.
+Note that this quickstart seeds a bunch of content into apiman. This is not strictly necessary, but it 
+does populate the API Manager with some data so that it doesn't feel so lonely the first time you log in. 
+You're welcome.
 
 ## Contribute fixes and features
 
