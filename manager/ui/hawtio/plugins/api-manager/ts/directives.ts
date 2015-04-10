@@ -417,9 +417,13 @@ module Apiman {
                         elem.value = $scope.descr;
                         elem.rows = previousRows || 1;
 
-                        // Logger.log("elem.rows=" + elem.rows);
                         // The scroll height at the point of focus
                         savedScrollHeight = elem.scrollHeight;
+                    };
+
+                    $scope.changeOnDescription = function() {
+                        $(elem).css('height', 'auto');
+                        $(elem).height(elem.scrollHeight);
                     };
 
                     $scope.descriptionMouseOver = function(event) {
@@ -446,14 +450,6 @@ module Apiman {
                         $scope.showPencil = false;
                     }
 
-                    $scope.changeOnDescription = function() {
-                        // Logger.log("elem.scrollHeight "  + elem.scrollHeight);
-                        // Logger.log("savedScrollHeight "  + savedScrollHeight);
-                        var minRows = 1;
-                        var rows = Math.ceil((elem.scrollHeight - savedScrollHeight) / 17);
-                        elem.rows = rows < minRows ? minRows : rows;
-                        previousRows = elem.rows;
-                    };
                 },
                 templateUrl: 'plugins/api-manager/html/directives/editDescription.html'
             }
