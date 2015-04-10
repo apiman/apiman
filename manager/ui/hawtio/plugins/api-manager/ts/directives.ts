@@ -391,44 +391,39 @@ module Apiman {
                     callback: '='
                 },
                 controller: function($scope) {
-                    // If description is updated, call updateFunction.
-                    $scope.$watch(function() {
-                        return $scope.descr;
-                    },
-                    function(new_value, old_value) {
-                        if (old_value !== new_value && typeof old_value !== 'undefined') $scope.callback(new_value || '');
-                    });
+
                 },
                 link: function($scope, $elem, $attrs) {
                     $scope.defaultValue = $attrs.defaultValue;
 
-                    //var previousHeight = null;
                     var elem = null;
-                    var savedValue = null;
-                    var savedScrollHeight = null
-
                     var previousRows = 1;
 
                     $scope.topPosition = 0;
                     $scope.leftPosition = 0;
                     $scope.height = 60;
 
+                    // If description is updated, call updateFunction.
+                    $scope.$watch(function() {
+                        return $scope.descr;
+                    },
+                    function(new_value, old_value) {
+                        if (old_value !== new_value && typeof old_value !== 'undefined') {
+                             $scope.callback(new_value || '');
+                         }
+                    });
+
                     $scope.focusOnDescription = function(event) {
                         elem = event.target;
-                        savedValue = elem.value;
                         elem.value = $scope.descr;
-                        elem.rows = previousRows;
-                        //$(elem).height(elem.scrollHeight);
 
-                        // The scroll height at the point of focus
-                        savedScrollHeight = elem.scrollHeight;
+                        $(elem).css('height', 'auto');
+                        $(elem).height(elem.scrollHeight);
                     };
 
                     $scope.changeOnDescription = function() {
                         $(elem).css('height', 'auto');
                         $(elem).height(elem.scrollHeight);
-                        //previousHeight = elem.scrollHeight;
-                        previousRows = elem.rows;
                     };
 
                     $scope.descriptionMouseOver = function(event) {
@@ -437,10 +432,10 @@ module Apiman {
                         var position = elem.getBoundingClientRect();
 
                         // Calculate position of pen
-                        console.log("elem.top " + position.top);
-                        console.log("elem.bottom " + position.bottom);
-                        console.log("elem.left " + position.left);
-                        console.log("elem.right " + position.right);
+                        // console.log("elem.top " + position.top);
+                        // console.log("elem.bottom " + position.bottom);
+                        // console.log("elem.left " + position.left);
+                        // console.log("elem.right " + position.right);
 
                         if (position.right != 0) {
                             $scope.leftPosition = (position.right - position.left) - 15;
