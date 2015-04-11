@@ -387,24 +387,78 @@ module Apiman {
             return {
                 restrict: 'E',
                 scope: {
-                    description: '=',
+                    descr: '=description',
                     callback: '='
                 },
                 controller: function($scope) {
-                    // If description is updated, call updateFunction.
-                    $scope.$watch(function() {
-                        return $scope.description;
-                    },
-                    function(new_value, old_value) {
-                        if (old_value !== new_value && typeof old_value !== 'undefined') $scope.callback(new_value || '');
-                    });
+
                 },
                 link: function($scope, $elem, $attrs) {
                     $scope.defaultValue = $attrs.defaultValue;
+
+                    var elem = null;
+                    var previousRows = 1;
+
+                    $scope.topPosition = 0;
+                    $scope.leftPosition = 0;
+                    $scope.height = 60;
+
+                    // If description is updated, call updateFunction.
+                    $scope.$watch(function() {
+                        return $scope.descr;
+                    },
+                    function(new_value, old_value) {
+                        if (old_value !== new_value && typeof old_value !== 'undefined') {
+                             $scope.callback(new_value || '');
+                         }
+                    });
+
+                    $scope.focusOnDescription = function(event) {
+                        elem = event.target;
+                        elem.value = $scope.descr;
+
+                        $(elem).css('height', 'auto');
+                        $(elem).height(elem.scrollHeight);
+                    };
+
+                    $scope.changeOnDescription = function() {
+                        $(elem).css('height', 'auto');
+                        $(elem).height(elem.scrollHeight);
+                    };
+
+                    $scope.descriptionMouseOver = function(event) {
+                        $scope.showPencil = true;
+                        var elem = event.target;
+                        var position = elem.getBoundingClientRect();
+
+                        // Calculate position of pen
+                        // console.log("elem.top " + position.top);
+                        // console.log("elem.bottom " + position.bottom);
+                        // console.log("elem.left " + position.left);
+                        // console.log("elem.right " + position.right);
+
+                        if (position.right != 0) {
+                            $scope.leftPosition = (position.right - position.left) - 15;
+                            $scope.height = (position.bottom - position.top);
+                        }
+                    }
+
+                    $scope.descriptionMouseOut = function(event) {
+                        $scope.showPencil = false;
+                    }
+
                 },
-                template: '<div class="description" editable-text="description">' +
-                            '{{ description || defaultValue }}' +
-                          '</div>'
+                templateUrl: 'plugins/api-manager/html/directives/editDescription.html'
             }
         }]);
-    }
+
+    _module.run(function(editableOptions, editableThemes) {
+      editableOptions.theme = 'default';
+
+      // overwrite templates
+      editableThemes['default'].submitTpl = '<button class="btn btn-default inline-save-btn" type="submit"><i class="fa fa-check fa-fw"></i></button>';
+      editableThemes['default'].cancelTpl = '<button class="btn btn-default" type="button" ng-click="$form.$cancel()"><i class="fa fa-times fa-fw"></i></button>';
+      editableThemes['default'].buttonsTpl = '<div></div>';
+      editableThemes['default'].formTpl = '<form class="editable-wrap description apiman-inline-edit"></form>';
+    });
+}
