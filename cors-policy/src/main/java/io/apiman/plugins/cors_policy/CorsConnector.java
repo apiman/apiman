@@ -37,7 +37,7 @@ import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.plugins.cors_policy.util.HttpHelper;
 
 /**
- * CORS validator and connector.
+ * CORS validator and connector. Implements http://www.w3.org/TR/2014/REC-cors-20140116/.
  * 
  * @author Marc Savy <msavy@redhat.com>
  */
@@ -69,9 +69,9 @@ public class CorsConnector implements IServiceConnector {
     private IPolicyFailureFactoryComponent failureFactory;
 
     /**
-     * {@link CorsConnector} determines whether
-     * 
-     * @author Marc Savy <msavy@redhat.com>
+     * @param request the request
+     * @param config the provided configuration
+     * @param failureFactory the failure factory
      */
     public CorsConnector(ServiceRequest request, CorsConfigBean config, IPolicyFailureFactoryComponent failureFactory) {
         this.request = request;
@@ -121,7 +121,7 @@ public class CorsConnector implements IServiceConnector {
     /**
      * Is the request related to CORS? Helps avoid unnecessary object creation.
      * 
-     * @param request
+     * @param request the request
      * @return true if CORS is a request
      */
     public static boolean candidateCorsRequest(ServiceRequest request) {
