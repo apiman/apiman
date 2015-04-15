@@ -54,7 +54,7 @@ public abstract class Chain<H> extends AbstractStream<H> implements IAbortable, 
     private IAsyncHandler<Throwable> policyErrorHandler;
 
     private Iterator<PolicyWithConfiguration> policyIterator;
-    
+
     private H serviceObject;
     private boolean firstElem = true;
 
@@ -83,11 +83,11 @@ public abstract class Chain<H> extends AbstractStream<H> implements IAbortable, 
             if (handler == null) {
                 continue;
             }
-            
+
             if (headPolicyHandler == null) {
                 headPolicyHandler = handler;
             }
-            
+
             if (previousHandler != null) {
                 previousHandler.bodyHandler(new IAsyncHandler<IApimanBuffer>() {
                     @Override
@@ -105,24 +105,24 @@ public abstract class Chain<H> extends AbstractStream<H> implements IAbortable, 
 
             previousHandler = handler;
         }
-        
+
         IReadWriteStream<H> tailPolicyHandler = previousHandler;
-        
+
         // If no policy handlers were found, then just make ourselves the head,
         // otherwise connect the last policy handler in the chain to ourselves
         // Leave the head and tail policy handlers null - the write() and end() methods
         // will deal with that case.
         if (headPolicyHandler != null && tailPolicyHandler != null) {
             tailPolicyHandler.bodyHandler(new IAsyncHandler<IApimanBuffer>() {
-    
+
                 @Override
                 public void handle(IApimanBuffer chunk) {
                     handleBody(chunk);
                 }
             });
-    
+
             tailPolicyHandler.endHandler(new IAsyncHandler<Void>() {
-    
+
                 @Override
                 public void handle(Void result) {
                     handleEnd();
@@ -143,7 +143,7 @@ public abstract class Chain<H> extends AbstractStream<H> implements IAbortable, 
                 chainPolicyHandlers();
                 firstElem = false;
             }
-            
+
             if (policyIterator.hasNext()) {
                 applyPolicy(policyIterator.next(), getContext());
             } else {
@@ -162,7 +162,7 @@ public abstract class Chain<H> extends AbstractStream<H> implements IAbortable, 
         if (finished) {
             throw new IllegalStateException("Attempted write after #end() was called."); //$NON-NLS-1$
         }
-        
+
         if (headPolicyHandler != null) {
             headPolicyHandler.write(chunk);
         } else {
@@ -209,9 +209,10 @@ public abstract class Chain<H> extends AbstractStream<H> implements IAbortable, 
 
     /**
      * Handle a policy failure.
-     * 
+     *
      * @param failure the policy failure
      */
+    @Override
     public void doFailure(PolicyFailure failure) {
         abort();
         policyFailureHandler.handle(failure);
@@ -227,9 +228,10 @@ public abstract class Chain<H> extends AbstractStream<H> implements IAbortable, 
 
     /**
      * Called when an unexpected and unrecoverable error is encountered.
-     * 
+     *
      * @param error the error
      */
+    @Override
     public void throwError(Throwable error) {
         abort();
         policyErrorHandler.handle(error);
@@ -238,6 +240,7 @@ public abstract class Chain<H> extends AbstractStream<H> implements IAbortable, 
     /**
      * Send abort signal to all policies.
      */
+    @Override
     public void abort() {
 //        for (IPolicy policy : policies) {
 //            policy.abort();

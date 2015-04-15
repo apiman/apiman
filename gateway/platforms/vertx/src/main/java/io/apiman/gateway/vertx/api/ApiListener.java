@@ -85,6 +85,7 @@ public class ApiListener {
         eb.registerHandler(uuid + VertxEngineConfig.APIMAN_API_APPLICATIONS_DELETE,
                 new ApiCatchHandler<JsonObject>() {
 
+            @Override
             protected void handleApi(final Message<JsonObject> message) {
                 JsonObject json = message.body();
                 String orgId = json.getString("organizationId"); //$NON-NLS-1$
@@ -137,6 +138,7 @@ public class ApiListener {
         eb.registerHandler(uuid + VertxEngineConfig.APIMAN_API_SERVICES_DELETE,
                 new ApiCatchHandler<JsonObject>() {
 
+            @Override
             public void handleApi(final Message<JsonObject> message) {
                 JsonObject json = message.body();
                 String orgId = json.getString("organizationId"); //$NON-NLS-1$

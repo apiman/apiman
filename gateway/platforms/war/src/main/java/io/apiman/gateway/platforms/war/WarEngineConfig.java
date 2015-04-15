@@ -46,7 +46,7 @@ public class WarEngineConfig implements IEngineConfig {
     public static final String APIMAN_GATEWAY_CONNECTOR_FACTORY_CLASS = "apiman-gateway.connector-factory"; //$NON-NLS-1$
     public static final String APIMAN_GATEWAY_POLICY_FACTORY_CLASS = "apiman-gateway.policy-factory"; //$NON-NLS-1$
     public static final String APIMAN_GATEWAY_METRICS_CLASS = "apiman-gateway.metrics"; //$NON-NLS-1$
-    
+
     public static final String APIMAN_GATEWAY_COMPONENT_PREFIX = "apiman-gateway.components."; //$NON-NLS-1$
 
     public static Configuration config;
@@ -93,6 +93,7 @@ public class WarEngineConfig implements IEngineConfig {
     /**
      * @return the class to use as the {@link IRegistry}
      */
+    @Override
     public Class<IRegistry> getRegistryClass() {
         return loadConfigClass(APIMAN_GATEWAY_REGISTRY_CLASS, IRegistry.class);
     }
@@ -100,6 +101,7 @@ public class WarEngineConfig implements IEngineConfig {
     /**
      * @return all properties to be passed to the registry
      */
+    @Override
     public Map<String, String> getRegistryConfig() {
         return getConfigMap(APIMAN_GATEWAY_REGISTRY_CLASS);
     }
@@ -107,6 +109,7 @@ public class WarEngineConfig implements IEngineConfig {
     /**
      * @return the class to use as the {@link IPluginRegistry}
      */
+    @Override
     public Class<IPluginRegistry> getPluginRegistryClass() {
         return loadConfigClass(APIMAN_GATEWAY_PLUGIN_REGISTRY_CLASS, IPluginRegistry.class);
     }
@@ -114,6 +117,7 @@ public class WarEngineConfig implements IEngineConfig {
     /**
      * @return all properties to be passed to the registry
      */
+    @Override
     public Map<String, String> getPluginRegistryConfig() {
         Map<String, String> configMap = getConfigMap(APIMAN_GATEWAY_PLUGIN_REGISTRY_CLASS);
         String pluginsDirOverride = System.getProperty(APIMAN_GATEWAY_PLUGIN_REGISTRY_CLASS + ".pluginsDir"); //$NON-NLS-1$
@@ -126,6 +130,7 @@ public class WarEngineConfig implements IEngineConfig {
     /**
      * @return the class to use as the {@link IConnectorFactory}
      */
+    @Override
     public Class<IConnectorFactory> getConnectorFactoryClass() {
         return loadConfigClass(APIMAN_GATEWAY_CONNECTOR_FACTORY_CLASS, IConnectorFactory.class);
     }
@@ -133,6 +138,7 @@ public class WarEngineConfig implements IEngineConfig {
     /**
      * @return all properties to be passed to the factory
      */
+    @Override
     public Map<String, String> getConnectorFactoryConfig() {
         return getConfigMap(APIMAN_GATEWAY_CONNECTOR_FACTORY_CLASS);
     }
@@ -140,6 +146,7 @@ public class WarEngineConfig implements IEngineConfig {
     /**
      * @return the class to use as the {@link IPolicyFactory}
      */
+    @Override
     public Class<IPolicyFactory> getPolicyFactoryClass() {
         return loadConfigClass(APIMAN_GATEWAY_POLICY_FACTORY_CLASS, IPolicyFactory.class);
     }
@@ -147,6 +154,7 @@ public class WarEngineConfig implements IEngineConfig {
     /**
      * @return all properties to be passed to the factory
      */
+    @Override
     public Map<String, String> getPolicyFactoryConfig() {
         return getConfigMap(APIMAN_GATEWAY_POLICY_FACTORY_CLASS);
     }
@@ -154,6 +162,7 @@ public class WarEngineConfig implements IEngineConfig {
     /**
      * @return the class to use as the {@link IMetrics}
      */
+    @Override
     public Class<IMetrics> getMetricsClass() {
         return loadConfigClass(APIMAN_GATEWAY_METRICS_CLASS, IMetrics.class);
     }
@@ -161,6 +170,7 @@ public class WarEngineConfig implements IEngineConfig {
     /**
      * @return all properties to be passed to the factory
      */
+    @Override
     public Map<String, String> getMetricsConfig() {
         return getConfigMap(APIMAN_GATEWAY_METRICS_CLASS);
     }
@@ -168,6 +178,7 @@ public class WarEngineConfig implements IEngineConfig {
     /**
      * @return the class to use for the given component
      */
+    @Override
     public <T extends IComponent> Class<T> getComponentClass(Class<T> componentType) {
         return loadConfigClass(APIMAN_GATEWAY_COMPONENT_PREFIX + componentType.getSimpleName(), componentType);
     }
@@ -175,6 +186,7 @@ public class WarEngineConfig implements IEngineConfig {
     /**
      * @return all properties to be passed to the factory
      */
+    @Override
     public <T extends IComponent> Map<String, String> getComponentConfig(Class<T> componentType) {
         return getConfigMap(APIMAN_GATEWAY_COMPONENT_PREFIX + componentType.getSimpleName());
     }

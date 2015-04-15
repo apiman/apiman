@@ -49,10 +49,12 @@ public abstract class AbstractServiceExecutor<H> implements ISimpleWriteStream {
         eb.send(address + VertxEngineConfig.API_GATEWAY_HEAD_SUFFIX, Json.encode(service));
     }
 
+    @Override
     public void write(Buffer chunk) {
         eb.send(address + VertxEngineConfig.API_GATEWAY_BODY_SUFFIX, chunk);
     }
 
+    @Override
     public void end() {
         eb.send(address + VertxEngineConfig.API_GATEWAY_END_SUFFIX, (Void) null);
         finished = true;

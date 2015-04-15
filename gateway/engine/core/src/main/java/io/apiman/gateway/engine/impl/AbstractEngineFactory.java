@@ -26,21 +26,22 @@ import io.apiman.gateway.engine.policy.IPolicyFactory;
 
 /**
  * Base class useful for creating engine factories.
- * 
+ *
  * @author eric.wittmann@redhat.com
  */
 public abstract class AbstractEngineFactory implements IEngineFactory {
-    
+
     /**
      * Constructor.
      */
     public AbstractEngineFactory() {
     }
-    
+
     /**
      * Call this to create a new engine. This method uses the engine
      * config singleton to create the engine.
      */
+    @Override
     public final IEngine createEngine() {
         IRegistry registry = createRegistry();
         IPluginRegistry pluginRegistry = createPluginRegistry();
@@ -48,7 +49,7 @@ public abstract class AbstractEngineFactory implements IEngineFactory {
         IConnectorFactory cfactory = createConnectorFactory();
         IPolicyFactory pfactory = createPolicyFactory();
         IMetrics metrics = createMetrics();
-        
+
         IEngine engine = new EngineImpl(registry, pluginRegistry, componentRegistry, cfactory, pfactory, metrics);
         return engine;
     }

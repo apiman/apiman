@@ -17,21 +17,21 @@ package io.apiman.gateway.vertx.api;
 
 /**
  * A serializable (with jackson) error, which can be easily transmitted over the bus
- * 
+ *
  * @author Marc Savy <msavy@redhat.com>
  */
 public class GenericError extends RuntimeException {
-    
+
     private static final long serialVersionUID = -3910654049532937590L;
     private int responseCode;
     private String message;
     private Throwable cause;
-    
+
     /**
      * Empty constructor for Jackson
      */
     public GenericError() {}
-    
+
     /**
      * Constructor
      * @param responseCode a response code
@@ -44,43 +44,44 @@ public class GenericError extends RuntimeException {
         this.message = message;
         this.responseCode = responseCode;
     }
-    
+
     /**
      * @return response code
      */
     public int getResponseCode() {
         return responseCode;
     }
-    
+
     /**
      * @param message error message
      */
     public void setMessage(String message) {
         this.message = message;
     }
-    
+
     @Override
     public String getMessage() {
         return message;
     }
-    
+
     /**
      * @param responseCode set a response code
      */
     public void setResponseCode(int responseCode) {
         this.responseCode = responseCode;
     }
-    
+
     /**
      * @param cause the exception cause cause of the exception
      */
     public void setCause(Throwable cause) {
         this.cause = cause;
     }
-    
+
     /**
      * The cause of the exception
      */
+    @Override
     public Throwable getCause() {
         return cause;
     }

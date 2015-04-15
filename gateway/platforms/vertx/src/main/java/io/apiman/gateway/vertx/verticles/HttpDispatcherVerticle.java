@@ -34,9 +34,10 @@ import org.vertx.java.core.http.HttpServerRequest;
  */
 public class HttpDispatcherVerticle extends ApimanVerticleBase {
     public static String VERTICLE_NAME = "http-dispatcher"; //$NON-NLS-1$
-    
+
     private RouteMapper routeMapper;
 
+    @Override
     public void start() {
         super.start();
 
@@ -90,6 +91,7 @@ public class HttpDispatcherVerticle extends ApimanVerticleBase {
                 });
 
                 pResponse.endHandler(new VoidHandler() {
+                    @Override
                     public void handle() {
                         iRequest.response().end();
                     }
@@ -101,12 +103,14 @@ public class HttpDispatcherVerticle extends ApimanVerticleBase {
         pRequest.setChunked(true);
 
         iRequest.dataHandler(new Handler<Buffer>() {
+            @Override
             public void handle(Buffer data) {
                 pRequest.write(data);
             }
         });
 
         iRequest.endHandler(new VoidHandler() {
+            @Override
             public void handle() {
                 pRequest.end();
             }
