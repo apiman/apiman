@@ -20,23 +20,23 @@ import org.apache.commons.io.IOUtils;
  * connection but what will do is to retrieve an existing
  * {@link CachedResponse} from the {@link IDataStoreComponent} and generate
  * the {@link IServiceConnectionResponse}
- * 
+ *
  * @author rubenrm1@gmail.com
  *
  */
 public class CachedResponseConnection implements IServiceConnection, IServiceConnectionResponse {
-    
+
     private CachedResponse cachedResponse;
     private IAsyncHandler<IApimanBuffer> bodyHandler;
     private IAsyncHandler<Void> endHandler;
     private boolean connected;
     private ServiceResponse response;
-    
+
     public CachedResponseConnection(IPolicyContext context) {
         connected = true;
         cachedResponse = context.getAttribute(CachingPolicy.CACHED_RESPONSE, null);
     }
-    
+
     /**
      * @see io.apiman.gateway.engine.io.IReadStream#getHead()
      */
@@ -49,7 +49,7 @@ public class CachedResponseConnection implements IServiceConnection, IServiceCon
 
         return response;
     }
-    
+
     /**
      * @see io.apiman.gateway.engine.io.IReadStream#bodyHandler(io.apiman.gateway.engine.async.IAsyncHandler)
      */
@@ -57,7 +57,7 @@ public class CachedResponseConnection implements IServiceConnection, IServiceCon
     public void bodyHandler(IAsyncHandler<IApimanBuffer> bodyHandler) {
         this.bodyHandler = bodyHandler;
     }
-    
+
     /**
      * @see io.apiman.gateway.engine.io.IReadStream#endHandler(io.apiman.gateway.engine.async.IAsyncHandler)
      */
@@ -65,7 +65,7 @@ public class CachedResponseConnection implements IServiceConnection, IServiceCon
     public void endHandler(IAsyncHandler<Void> endHandler) {
         this.endHandler = endHandler;
     }
-    
+
     /**
      * @see io.apiman.gateway.engine.io.IStream#isFinished()
      */
@@ -73,7 +73,7 @@ public class CachedResponseConnection implements IServiceConnection, IServiceCon
     public boolean isFinished() {
         return !connected;
     }
-    
+
     /**
      * @see io.apiman.gateway.engine.io.IAbortable#abort()
      */
@@ -81,7 +81,8 @@ public class CachedResponseConnection implements IServiceConnection, IServiceCon
     public void abort() {
         connected = false;
     }
-   
+
+    @Override
     public void transmit() {
         try {
             InputStream is = cachedResponse.getInputStream();
@@ -112,5 +113,5 @@ public class CachedResponseConnection implements IServiceConnection, IServiceCon
     @Override
     public void end() {
     }
-    
+
 }

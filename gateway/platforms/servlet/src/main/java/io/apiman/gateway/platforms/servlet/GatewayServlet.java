@@ -53,8 +53,8 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  * The API Management gateway servlet.  This servlet is responsible for converting inbound
- * http servlet requests into {@link ServiceRequest}s so that they can be fed into the 
- * API Management machinery.  It also is responsible for converting the resulting 
+ * http servlet requests into {@link ServiceRequest}s so that they can be fed into the
+ * API Management machinery.  It also is responsible for converting the resulting
  * {@link ServiceResponse} into an HTTP Servlet Response that is suitable for returning
  * to the caller.
  *
@@ -64,13 +64,13 @@ public abstract class GatewayServlet extends HttpServlet {
 
     private static final long serialVersionUID = 958726685958622333L;
     private static final ObjectMapper mapper = new ObjectMapper();
-    
+
     /**
      * Constructor.
      */
     public GatewayServlet() {
     }
-    
+
     /**
      * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
@@ -88,7 +88,7 @@ public abstract class GatewayServlet extends HttpServlet {
             IOException {
         doAction(req, resp, "POST"); //$NON-NLS-1$
     }
-    
+
     /**
      * @see javax.servlet.http.HttpServlet#doPut(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
@@ -97,7 +97,7 @@ public abstract class GatewayServlet extends HttpServlet {
             IOException {
         doAction(req, resp, "PUT"); //$NON-NLS-1$
     }
-    
+
     /**
      * @see javax.servlet.http.HttpServlet#doDelete(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
@@ -106,8 +106,8 @@ public abstract class GatewayServlet extends HttpServlet {
             IOException {
         doAction(req, resp, "DELETE"); //$NON-NLS-1$
     }
-    
-    
+
+
     /* (non-Javadoc)
      * @see javax.servlet.http.HttpServlet#doOptions(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
@@ -116,7 +116,7 @@ public abstract class GatewayServlet extends HttpServlet {
             IOException {
         doAction(req, resp, "OPTIONS"); //$NON-NLS-1$
     }
-    
+
     /* (non-Javadoc)
      * @see javax.servlet.http.HttpServlet#doHead(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
@@ -125,7 +125,7 @@ public abstract class GatewayServlet extends HttpServlet {
             IOException {
         doAction(req, resp, "HEAD"); //$NON-NLS-1$
     }
-    
+
     /* (non-Javadoc)
      * @see javax.servlet.http.HttpServlet#doTrace(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
@@ -134,12 +134,12 @@ public abstract class GatewayServlet extends HttpServlet {
             IOException {
         doAction(req, resp, "TRACE"); //$NON-NLS-1$
     }
-    
+
     /**
      * Generic handler for all types of http actions/verbs.
      * @param req
      * @param resp
-     * @param action 
+     * @param action
      */
     protected void doAction(final HttpServletRequest req, final HttpServletResponse resp, String action) {
         // Read the request.
@@ -151,9 +151,9 @@ public abstract class GatewayServlet extends HttpServlet {
             writeError(resp, e);
             return;
         }
-        
+
         final CountDownLatch latch = new CountDownLatch(1);
-        
+
         // Now execute the request via the apiman engine
         IServiceRequestExecutor executor = getEngine().executor(srequest, new IAsyncResultHandler<IEngineResult>() {
             @Override
@@ -165,6 +165,7 @@ public abstract class GatewayServlet extends HttpServlet {
                             writeResponse(resp, engineResult.getServiceResponse());
                             final ServletOutputStream outputStream = resp.getOutputStream();
                             engineResult.bodyHandler(new IAsyncHandler<IApimanBuffer>() {
+                                @Override
                                 public void handle(IApimanBuffer chunk) {
                                     try {
                                         if (chunk instanceof ByteBuffer) {
@@ -246,7 +247,7 @@ public abstract class GatewayServlet extends HttpServlet {
      * portion of the http request.
      * @param request the undertow http server request
      * @return a valid {@link ServiceRequest}
-     * @throws IOException 
+     * @throws IOException
      */
     protected ServiceRequest readRequest(HttpServletRequest request) throws Exception {
         ServiceRequestPathInfo pathInfo = parseServiceRequestPath(request.getPathInfo());
@@ -316,7 +317,7 @@ public abstract class GatewayServlet extends HttpServlet {
             response.setHeader(hname, hval);
         }
     }
-    
+
     /**
      * Writes a policy failure to the http response.
      * @param resp
@@ -375,7 +376,7 @@ public abstract class GatewayServlet extends HttpServlet {
             throw new RuntimeException(error);
         }
     }
-    
+
     /**
      * Parse a service request path from servlet path info.
      * @param pathInfo
@@ -404,7 +405,7 @@ public abstract class GatewayServlet extends HttpServlet {
         }
         return info;
     }
-    
+
     /**
      * Parses the query string into a map.
      * @param queryString
@@ -429,10 +430,10 @@ public abstract class GatewayServlet extends HttpServlet {
                 }
             }
         }
-        
+
         return rval;
     }
-    
+
     /**
      * Parsed service request path information.
      */
@@ -442,5 +443,5 @@ public abstract class GatewayServlet extends HttpServlet {
         public String serviceVersion;
         public String resource;
     }
-    
+
 }

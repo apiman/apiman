@@ -30,7 +30,7 @@ import javax.persistence.Persistence;
  */
 @ApplicationScoped
 public class EntityManagerFactoryAccessor implements IEntityManagerFactoryAccessor {
-    
+
     private EntityManagerFactory emf;
 
     /**
@@ -38,7 +38,7 @@ public class EntityManagerFactoryAccessor implements IEntityManagerFactoryAccess
      */
     public EntityManagerFactoryAccessor() {
     }
-    
+
     @PostConstruct
     public void postConstruct() {
         String autoValue = System.getProperty("apiman.hibernate.hbm2ddl.auto", "validate"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -48,12 +48,13 @@ public class EntityManagerFactoryAccessor implements IEntityManagerFactoryAccess
         properties.put("hibernate.dialect", dialect); //$NON-NLS-1$
         emf = Persistence.createEntityManagerFactory("apiman-manager-api-jpa", properties); //$NON-NLS-1$
     }
-    
+
     /**
      * @see io.apiman.manager.api.jpa.IEntityManagerFactoryAccessor#getEntityManagerFactory()
      */
+    @Override
     public EntityManagerFactory getEntityManagerFactory() {
         return emf;
     }
-    
+
 }
