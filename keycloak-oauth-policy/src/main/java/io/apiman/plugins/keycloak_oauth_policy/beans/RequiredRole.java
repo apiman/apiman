@@ -41,7 +41,7 @@ public class RequiredRole {
     private Map<String, Object> additionalProperties = new HashMap<>();
 
     /**
-     *
+     * Role name
      * @return The name
      */
     @JsonProperty("name")
@@ -50,7 +50,7 @@ public class RequiredRole {
     }
 
     /**
-     *
+     * Role name
      * @param name
      *            The name
      */

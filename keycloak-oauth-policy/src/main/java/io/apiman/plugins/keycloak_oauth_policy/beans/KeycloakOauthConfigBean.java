@@ -18,8 +18,10 @@ package io.apiman.plugins.keycloak_oauth_policy.beans;
 import java.security.cert.Certificate;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Generated;
 
@@ -29,6 +31,7 @@ import org.codehaus.jackson.annotate.JsonAnySetter;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
+import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.keycloak.util.PemUtils;
 
@@ -40,7 +43,8 @@ import org.keycloak.util.PemUtils;
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 @Generated("org.jsonschema2pojo")
 @JsonPropertyOrder({ "requireOauth", "requireTransportSecurity", "blacklistUnsafeTokens",
-    "stripTokens", "realm", "realmCertificateString", "roleMappings", "forwardAuthInfo" })
+    "stripTokens", "realm", "realmCertificateString", "applicationRoleMappings",
+    "realmRoleMappings", "forwardAuthInfo" })
 public class KeycloakOauthConfigBean {
 
     /**
@@ -91,13 +95,22 @@ public class KeycloakOauthConfigBean {
     private String realmCertificateString;
 
     /**
-     * Required Roles
+     * Required Application Roles
      * <p>
-     * Keycloak role(s) that a user must hold. These are configured via the KeyCloak console or API.
+     * Keycloak application role(s) that a user must hold. These are configured via the KeyCloak console or API.
      *
      */
-    @JsonProperty("roleMappings")
-    private List<RoleMapping> roleMappings = new ArrayList<>();
+    @JsonProperty("applicationRoleMappings")
+    private List<ApplicationRoleMapping> applicationRoleMappings = new ArrayList<>();
+    /**
+     * Required Realm Roles
+     * <p>
+     * Keycloak realm role(s) that a user must hold. These are configured via the KeyCloak console or API.
+     *
+     */
+    @JsonProperty("realmRoleMappings")
+    @JsonDeserialize(as = java.util.LinkedHashSet.class)
+    private Set<String> realmRoleMappings = new LinkedHashSet<>();
 
     /**
      * Forward Keycloak token information
@@ -257,29 +270,55 @@ public class KeycloakOauthConfigBean {
     }
 
     /**
-     * Required Roles
+     * Required Application Roles
      * <p>
-     * Keycloak role(s) that a user must hold. These are configured via the KeyCloak console or API.
+     * Keycloak application role(s) that a user must hold. These are configured via the KeyCloak console or API.
      *
      * @return
-     *     The roleMappings
+     *     The applicationRoleMappings
      */
-    @JsonProperty("roleMappings")
-    public List<RoleMapping> getRoleMappings() {
-        return roleMappings;
+    @JsonProperty("applicationRoleMappings")
+    public List<ApplicationRoleMapping> getApplicationRoleMappings() {
+        return applicationRoleMappings;
     }
 
     /**
-     * Required Roles
+     * Required Application Roles
      * <p>
-     * Keycloak role(s) that a user must hold. These are configured via the KeyCloak console or API.
+     * Keycloak application role(s) that a user must hold. These are configured via the KeyCloak console or API.
      *
-     * @param roleMappings
-     *     The roleMappings
+     * @param applicationRoleMappings
+     *     The applicationRoleMappings
      */
-    @JsonProperty("roleMappings")
-    public void setRoleMappings(List<RoleMapping> roleMappings) {
-        this.roleMappings = roleMappings;
+    @JsonProperty("applicationRoleMappings")
+    public void setApplicationRoleMappings(List<ApplicationRoleMapping> applicationRoleMappings) {
+        this.applicationRoleMappings = applicationRoleMappings;
+    }
+
+    /**
+     * Required Realm Roles
+     * <p>
+     * Keycloak realm role(s) that a user must hold. These are configured via the KeyCloak console or API.
+     *
+     * @return
+     *     The realmRoleMappings
+     */
+    @JsonProperty("realmRoleMappings")
+    public Set<String> getRealmRoleMappings() {
+        return realmRoleMappings;
+    }
+
+    /**
+     * Required Realm Roles
+     * <p>
+     * Keycloak realm role(s) that a user must hold. These are configured via the KeyCloak console or API.
+     *
+     * @param realmRoleMappings
+     *     The realmRoleMappings
+     */
+    @JsonProperty("realmRoleMappings")
+    public void setRealmRoleMappings(Set<String> realmRoleMappings) {
+        this.realmRoleMappings = realmRoleMappings;
     }
 
 

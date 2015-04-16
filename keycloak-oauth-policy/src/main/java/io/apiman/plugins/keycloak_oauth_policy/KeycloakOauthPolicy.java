@@ -23,9 +23,9 @@ import io.apiman.gateway.engine.components.ISharedStateComponent;
 import io.apiman.gateway.engine.policies.AbstractMappedPolicy;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
+import io.apiman.plugins.keycloak_oauth_policy.beans.ApplicationRoleMapping;
 import io.apiman.plugins.keycloak_oauth_policy.beans.ForwardAuthInfo;
 import io.apiman.plugins.keycloak_oauth_policy.beans.KeycloakOauthConfigBean;
-import io.apiman.plugins.keycloak_oauth_policy.beans.RoleMapping;
 import io.apiman.plugins.keycloak_oauth_policy.failures.PolicyFailureFactory;
 import io.apiman.plugins.keycloak_oauth_policy.util.Holder;
 
@@ -135,10 +135,10 @@ public class KeycloakOauthPolicy extends AbstractMappedPolicy<KeycloakOauthConfi
             forwardHeaders(request, config, rawToken, parsedToken);
             stripAuthTokens(request, config);
 
-            if (config.getRoleMappings().size() > 0 && !doTokenRoleAuth(config, parsedToken)) {
-                doFailure(isFailedHolder, chain, failureFactory.doesNotHoldRequiredRoles(context));
-            } else {
+            if (doTokenRoleAuth(config, parsedToken)) {
                 return isFailedHolder.setValue(true);
+            } else {
+                doFailure(isFailedHolder, chain, failureFactory.doesNotHoldRequiredRoles(context));
             }
 
         } catch (VerificationException e) {
@@ -150,20 +150,26 @@ public class KeycloakOauthPolicy extends AbstractMappedPolicy<KeycloakOauthConfi
     private boolean doTokenRoleAuth(KeycloakOauthConfigBean config, AccessToken parsedToken) {
         boolean result = true;
 
-        for (RoleMapping role : config.getRoleMappings()) {
-            Access access = parsedToken.getResourceAccess(role.getApplication());
+        if (config.getApplicationRoleMappings().size() > 0) {
+            for (ApplicationRoleMapping role : config.getApplicationRoleMappings()) {
+                Access access = parsedToken.getResourceAccess(role.getApplication());
 
-            if (access != null) {
-                // System.out.println(access.getRoles());
-                // System.out.println(role.getRequiredRoles());
-                // System.out.println(access.getRoles().containsAll(role.getRequiredRoles()));
-
-                result = result && access.getRoles().containsAll(role.getRequiredRoles());
-                if (!result)
-                    return false;
+                if (access != null) {
+                    // System.out.println(access.getRoles());
+                    // System.out.println(role.getRequiredRoles());
+                    // System.out.println(access.getRoles().containsAll(role.getRequiredRoles()));
+                    result = result && access.getRoles().containsAll(role.getRequiredRoles());
+                    if (!result)
+                        return false;
+                }
             }
         }
-        return true;
+        // System.out.println("config.getRealmRoleMappings() " + config.getRealmRoleMappings());
+        // System.out.println("parsedToken.getRealmAccess().getRoles() + parsedToken.getRealmAccess().getRoles());
+        if (config.getRealmRoleMappings().size() > 0)
+            result = result && parsedToken.getRealmAccess().getRoles().containsAll(config.getRealmRoleMappings());
+
+        return result;
     }
 
     private String getRawAuthToken(ServiceRequest request) {
@@ -193,10 +199,6 @@ public class KeycloakOauthPolicy extends AbstractMappedPolicy<KeycloakOauthConfi
         for (ForwardAuthInfo entry : config.getForwardAuthInfo()) {
             String fieldValue = null;
 
-            // TODO consider allowing any field to be specified by using string
-            // + reflection or MethodHandle
-            // There are significant potential performance issues with this,
-            // however.
             switch (entry.getField()) {
             case ACCESS_TOKEN:
                 fieldValue = rawToken;

@@ -31,13 +31,13 @@ import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
- * A role mapping
+ * Application role mappings
  *
  * @author Marc Savy <msavy@redhat.com>
  */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 @JsonPropertyOrder({ "application", "requiredRoles" })
-public class RoleMapping {
+public class ApplicationRoleMapping {
 
     /**
      * Application
@@ -122,10 +122,10 @@ public class RoleMapping {
         if (other == this) {
             return true;
         }
-        if ((other instanceof RoleMapping) == false) {
+        if ((other instanceof ApplicationRoleMapping) == false) {
             return false;
         }
-        RoleMapping rhs = ((RoleMapping) other);
+        ApplicationRoleMapping rhs = ((ApplicationRoleMapping) other);
         return new EqualsBuilder().append(application, rhs.application)
                 .append(requiredRoles, rhs.requiredRoles)
                 .append(additionalProperties, rhs.additionalProperties).isEquals();
