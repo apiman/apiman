@@ -28,14 +28,46 @@
     },
     "realm": {
       "title": "Realm",
-      "description": "Realm name",
+      "description": "Realm name.",
       "type": "string"
     },
     "realmCertificateString": {
       "title": "Keycloak Realm Certificate",
-      "description": "To validate OAuth requests. Must be a PEM-encoded X.509 certificate, including bounding strings.",
+      "description": "To validate OAuth2 requests. Must be a PEM-encoded X.509 certificate.",
       "type": "string",
       "format": "textarea"
+    },
+    "roleMappings": {
+      "title": "Required Roles",
+      "description": "Keycloak role(s) that a user must hold. These are configured via the KeyCloak console or API.",
+      "type": "array",
+      "format": "table",
+
+      "items": {
+        "type" : "object",
+        "title": "Application",
+        "properties": {
+          "application": {
+            "type": "string",
+            "title": "Application",
+            "uniqueItems": true
+          },
+          "requiredRoles": {
+            "type": "array",
+            "title": "Required Roles",
+            "format": "table",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "uniqueItems": true
+                }
+              }
+            }
+          }
+        }
+      }
     },
     "forwardAuthInfo": {
       "title": "Forward Keycloak Token Information",
