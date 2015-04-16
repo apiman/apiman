@@ -14,6 +14,8 @@ import io.apiman.gateway.engine.impl.InMemorySharedStateComponent;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
 import io.apiman.plugins.keycloak_oauth_policy.beans.KeycloakOauthConfigBean;
+import io.apiman.plugins.keycloak_oauth_policy.beans.RequiredRole;
+import io.apiman.plugins.keycloak_oauth_policy.beans.RoleMapping;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -27,6 +29,7 @@ import java.security.Security;
 import java.security.SignatureException;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
+import java.util.Arrays;
 import java.util.Date;
 
 import javax.security.auth.x500.X500Principal;
@@ -100,7 +103,7 @@ public class KeycloakOauthPolicyTest {
 
         token = new AccessToken();
         token.subject("CN=Client").issuer("apiman-realm") // KC seems to use issuer for realm?
-                .addAccess("apiman-service").addRole("apiman-gateway-user");
+                .addAccess("apiman-service").addRole("apiman-gateway-user-role");
 
         keycloakOauthPolicy = new KeycloakOauthPolicy();
         config = new KeycloakOauthConfigBean();
@@ -237,6 +240,54 @@ public class KeycloakOauthPolicyTest {
         keycloakOauthPolicy.apply(serviceRequest, mContext, config, mChain);
 
         verify(mChain, times(2)).doFailure(any(PolicyFailure.class));
+        verify(mChain, never()).doApply(any(ServiceRequest.class));
+    }
+
+    @Test
+    public void shouldSucceedWithAuthorizedRoles() throws Exception {
+        // Create a role that we expect in config
+        RequiredRole rr = new RequiredRole();
+        rr.setName("apiman-gateway-user-role");
+
+        // An application that we expect to see
+        RoleMapping mapping = new RoleMapping();
+        mapping.setApplication("apiman-service");
+        mapping.setRequiredRoles(Arrays.asList(new RequiredRole[] { rr }));
+
+        // In essence - { apiman-service: [apiman-gateway-user-role] }
+        config.setRoleMappings(Arrays.asList(new RoleMapping[] { mapping }));
+
+        // Create a valid token and set it in the header
+        String encoded = setupValidRequest();
+        serviceRequest.getHeaders().put("Authorization", "Bearer " + encoded);
+
+        keycloakOauthPolicy.apply(serviceRequest, mContext, config, mChain);
+
+        verify(mChain, never()).doFailure(any(PolicyFailure.class));
+        verify(mChain, times(1)).doApply(any(ServiceRequest.class));
+    }
+
+    @Test
+    public void shouldFailWithoutAuthorizedRoles() throws Exception {
+        // Create a role that we expect in config
+        RequiredRole rr = new RequiredRole();
+        rr.setName("you-dont-have-this-role");
+
+        // An application that we expect to see
+        RoleMapping mapping = new RoleMapping();
+        mapping.setApplication("apiman-service");
+        mapping.setRequiredRoles(Arrays.asList(new RequiredRole[] { rr }));
+
+        // In essence - { apiman-service: [apiman-gateway-user-role] }
+        config.setRoleMappings(Arrays.asList(new RoleMapping[] { mapping }));
+
+        // Create a valid token and set it in the header
+        String encoded = setupValidRequest();
+        serviceRequest.getHeaders().put("Authorization", "Bearer " + encoded);
+
+        keycloakOauthPolicy.apply(serviceRequest, mContext, config, mChain);
+
+        verify(mChain, times(1)).doFailure(any(PolicyFailure.class));
         verify(mChain, never()).doApply(any(ServiceRequest.class));
     }
 
