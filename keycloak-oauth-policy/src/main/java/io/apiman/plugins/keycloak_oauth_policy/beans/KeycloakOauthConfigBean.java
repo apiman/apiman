@@ -18,8 +18,10 @@ package io.apiman.plugins.keycloak_oauth_policy.beans;
 import java.security.cert.Certificate;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Generated;
 
@@ -29,18 +31,20 @@ import org.codehaus.jackson.annotate.JsonAnySetter;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
+import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.keycloak.util.PemUtils;
 
 /**
- * KeyCloak OAuth Policy Configuration
- * 
+ * Keycloak OAuth Policy Configuration
+ *
  * @author Marc Savy <msavy@redhat.com>
  */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 @Generated("org.jsonschema2pojo")
-@JsonPropertyOrder({ "requireOauth", "requireTransportSecurity", "blacklistUnsafeTokens", 
-    "stripTokens", "realm", "realmCertificateString", "forwardAuthInfo" })
+@JsonPropertyOrder({ "requireOauth", "requireTransportSecurity", "blacklistUnsafeTokens",
+    "stripTokens", "realm", "realmCertificateString", "applicationRoleMappings",
+    "realmRoleMappings", "forwardAuthInfo" })
 public class KeycloakOauthConfigBean {
 
     /**
@@ -50,7 +54,7 @@ public class KeycloakOauthConfigBean {
      */
     @JsonProperty("requireOauth")
     private Boolean requireOauth = true;
-    
+
     /**
      * Require Transport Security
      * <p>
@@ -58,20 +62,20 @@ public class KeycloakOauthConfigBean {
      * Terminate request if none provided.
      */
     @JsonProperty("requireTransportSecurity")
-    private boolean requireTransportSecurity;
-    
+    private boolean requireTransportSecurity = true;
+
     /**
      * Blacklist unsafe tokens
      * <p>
      * Any tokens used without transport security will be blackedlisted to mitigate associated security risks.
      */
     @JsonProperty("blacklistUnsafeTokens")
-    private Boolean blacklistUnsafeTokens = true;
+    private Boolean blacklistUnsafeTokens = false;
     /**
      * Strip tokens
      * <p>
      * Remove any Authorization header or token query parameter before forwarding traffic to the Service.
-     * 
+     *
      */
     @JsonProperty("stripTokens")
     private Boolean stripTokens;
@@ -89,6 +93,25 @@ public class KeycloakOauthConfigBean {
      */
     @JsonProperty("realmCertificateString")
     private String realmCertificateString;
+
+    /**
+     * Required Application Roles
+     * <p>
+     * Keycloak application role(s) that a user must hold. These are configured via the KeyCloak console or API.
+     *
+     */
+    @JsonProperty("applicationRoleMappings")
+    private List<ApplicationRoleMapping> applicationRoleMappings = new ArrayList<>();
+    /**
+     * Required Realm Roles
+     * <p>
+     * Keycloak realm role(s) that a user must hold. These are configured via the KeyCloak console or API.
+     *
+     */
+    @JsonProperty("realmRoleMappings")
+    @JsonDeserialize(as = java.util.LinkedHashSet.class)
+    private Set<String> realmRoleMappings = new LinkedHashSet<>();
+
     /**
      * Forward Keycloak token information
      * <p>
@@ -101,12 +124,11 @@ public class KeycloakOauthConfigBean {
     private Map<String, Object> additionalProperties = new HashMap<>();
     private Certificate realmCertificate;
 
-
     /**
      * Require OAuth
      * <p>
      * Terminate request if no OAuth is provided.
-     * 
+     *
      * @return The requireOauth
      */
     @JsonProperty("requireOauth")
@@ -120,7 +142,7 @@ public class KeycloakOauthConfigBean {
      * Any request used without transport security will be rejected. OAuth2 requires transport security (e.g.
      * TLS, SSL) to provide protection against replay attacks. It is strongly advised for this option to be
      * switched on.
-     *  
+     *
      * @param requireOauth The requireOauth
      */
     @JsonProperty("requireOauth")
@@ -134,14 +156,14 @@ public class KeycloakOauthConfigBean {
      * Any request used without transport security will be rejected. OAuth2 requires transport security (e.g.
      * TLS, SSL) to provide protection against replay attacks. It is strongly advised for this option to be
      * switched on.
-     * 
+     *
      * @return whether transport security is required
      */
     @JsonProperty("requireTransportSecurity")
     public boolean getRequireTransportSecurity() {
         return requireTransportSecurity;
     }
-    
+
     /**
      * @param requireTransportSecurity status
      */
@@ -154,7 +176,7 @@ public class KeycloakOauthConfigBean {
      * Blacklist unsafe tokens
      * <p>
      * Any tokens used without transport security will be blackedlisted to mitigate associated security risks.
-     * 
+     *
      * @return The blacklistUnsafeTokens
      */
     @JsonProperty("blacklistUnsafeTokens")
@@ -166,7 +188,7 @@ public class KeycloakOauthConfigBean {
      * Blacklist unsafe tokens
      * <p>
      * Any tokens used without transport security will be blackedlisted to mitigate associated security risks.
-     * 
+     *
      * @param blacklistUnsafeTokens The blacklistUnsafeTokens
      */
     @JsonProperty("blacklistUnsafeTokens")
@@ -178,7 +200,7 @@ public class KeycloakOauthConfigBean {
      * Strip tokens
      * <p>
      * Remove any Authorization header or token query parameter before forwarding traffic to the Service.
-     * 
+     *
      * @return The stripTokens
      */
     @JsonProperty("stripTokens")
@@ -190,7 +212,7 @@ public class KeycloakOauthConfigBean {
      * Strip tokens
      * <p>
      * Remove any Authorization header or token query parameter before forwarding traffic to the Service.
-     * 
+     *
      * @param stripTokens The stripTokens
      */
     @JsonProperty("stripTokens")
@@ -202,7 +224,7 @@ public class KeycloakOauthConfigBean {
      * Realm
      * <p>
      * Realm name
-     * 
+     *
      * @return The realm
      */
     @JsonProperty("realm")
@@ -214,7 +236,7 @@ public class KeycloakOauthConfigBean {
      * Realm
      * <p>
      * Realm name
-     * 
+     *
      * @param realm The realm
      */
     @JsonProperty("realm")
@@ -226,7 +248,7 @@ public class KeycloakOauthConfigBean {
      * Keycloak realm certificate
      * <p>
      * To validate OAuth requests. Must be a PEM-encoded X.509 certificate, including bounding strings.
-     * 
+     *
      * @return The realmCertificateString
      */
     @JsonProperty("realmCertificateString")
@@ -238,7 +260,7 @@ public class KeycloakOauthConfigBean {
      * Keycloak realm certificate
      * <p>
      * To validate OAuth requests. Must be a PEM-encoded X.509 certificate, including bounding strings.
-     * 
+     *
      * @param realmCertificateString The realmCertificateString
      */
     @JsonProperty("realmCertificateString")
@@ -248,11 +270,64 @@ public class KeycloakOauthConfigBean {
     }
 
     /**
+     * Required Application Roles
+     * <p>
+     * Keycloak application role(s) that a user must hold. These are configured via the KeyCloak console or API.
+     *
+     * @return
+     *     The applicationRoleMappings
+     */
+    @JsonProperty("applicationRoleMappings")
+    public List<ApplicationRoleMapping> getApplicationRoleMappings() {
+        return applicationRoleMappings;
+    }
+
+    /**
+     * Required Application Roles
+     * <p>
+     * Keycloak application role(s) that a user must hold. These are configured via the KeyCloak console or API.
+     *
+     * @param applicationRoleMappings
+     *     The applicationRoleMappings
+     */
+    @JsonProperty("applicationRoleMappings")
+    public void setApplicationRoleMappings(List<ApplicationRoleMapping> applicationRoleMappings) {
+        this.applicationRoleMappings = applicationRoleMappings;
+    }
+
+    /**
+     * Required Realm Roles
+     * <p>
+     * Keycloak realm role(s) that a user must hold. These are configured via the KeyCloak console or API.
+     *
+     * @return
+     *     The realmRoleMappings
+     */
+    @JsonProperty("realmRoleMappings")
+    public Set<String> getRealmRoleMappings() {
+        return realmRoleMappings;
+    }
+
+    /**
+     * Required Realm Roles
+     * <p>
+     * Keycloak realm role(s) that a user must hold. These are configured via the KeyCloak console or API.
+     *
+     * @param realmRoleMappings
+     *     The realmRoleMappings
+     */
+    @JsonProperty("realmRoleMappings")
+    public void setRealmRoleMappings(Set<String> realmRoleMappings) {
+        this.realmRoleMappings = realmRoleMappings;
+    }
+
+
+    /**
      * Forward Keycloak token information
      * <p>
      * Fields from the token can be set as headers and forwarded to the Service. Access_token corresponds to
      * the full token.
-     * 
+     *
      * @return The forwardAuthInfo
      */
     @JsonProperty("forwardAuthInfo")
@@ -265,13 +340,14 @@ public class KeycloakOauthConfigBean {
      * <p>
      * Fields from the token can be set as headers and forwarded to the Service. Access_token corresponds to
      * the full token.
-     * 
+     *
      * @param forwardAuthInfo The forwardAuthInfo
      */
     @JsonProperty("forwardAuthInfo")
     public void setForwardAuthInfo(List<ForwardAuthInfo> forwardAuthInfo) {
         this.forwardAuthInfo = forwardAuthInfo;
     }
+
 
     @Override
     public String toString() {
@@ -296,7 +372,7 @@ public class KeycloakOauthConfigBean {
         try {
             return PemUtils.decodeCertificate(data);
         } catch (Exception e) {
-            throw new RuntimeException(e);  
+            throw new RuntimeException(e);
         }
     }
 }

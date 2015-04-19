@@ -15,34 +15,36 @@
  */
 package io.apiman.plugins.keycloak_oauth_policy;
 
-import org.apache.commons.lang.StringUtils;
-import org.keycloak.RSATokenVerifier;
-import org.keycloak.VerificationException;
-import org.keycloak.representations.AccessToken;
-
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.PolicyFailure;
-import io.apiman.gateway.engine.beans.PolicyFailureType;
 import io.apiman.gateway.engine.beans.ServiceRequest;
-import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.components.ISharedStateComponent;
 import io.apiman.gateway.engine.policies.AbstractMappedPolicy;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
+import io.apiman.plugins.keycloak_oauth_policy.beans.ApplicationRoleMapping;
 import io.apiman.plugins.keycloak_oauth_policy.beans.ForwardAuthInfo;
 import io.apiman.plugins.keycloak_oauth_policy.beans.KeycloakOauthConfigBean;
+import io.apiman.plugins.keycloak_oauth_policy.failures.PolicyFailureFactory;
+import io.apiman.plugins.keycloak_oauth_policy.util.Holder;
+
+import org.apache.commons.lang.StringUtils;
+import org.keycloak.RSATokenVerifier;
+import org.keycloak.VerificationException;
+import org.keycloak.representations.AccessToken;
+import org.keycloak.representations.AccessToken.Access;
 
 /**
  * A Keycloak OAuth policy.
- * 
+ *
  * @author Marc Savy <msavy@redhat.com>
  */
 public class KeycloakOauthPolicy extends AbstractMappedPolicy<KeycloakOauthConfigBean> {
 
-    private static final int HTTP_UNAUTHORIZED = 401;
     private final String AUTHORIZATION_KEY = "Authorization"; //$NON-NLS-1$
     private final String ACCESS_TOKEN_QUERY_KEY = "access_token"; //$NON-NLS-1$
+    private final PolicyFailureFactory failureFactory = new PolicyFailureFactory();
 
     /**
      * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#getConfigurationClass()
@@ -62,58 +64,70 @@ public class KeycloakOauthPolicy extends AbstractMappedPolicy<KeycloakOauthConfi
             final KeycloakOauthConfigBean config, final IPolicyChain<ServiceRequest> chain) {
 
         final String rawToken = getRawAuthToken(request);
+        final Holder<Boolean> successStatus = new Holder<>(true);
 
         if (rawToken == null) {
             if (config.getRequireOauth()) {
-                chain.doFailure(noAuthenticationProvidedFailure(context));
+                doFailure(successStatus, chain, failureFactory.noAuthenticationProvided(context));
             } else {
                 chain.doApply(request);
             }
-            return;
-        } else {
+        } else if (doTokenAuth(successStatus, request, context, config, chain, rawToken).getValue()) {
+            // Transport security check
             if (config.getRequireTransportSecurity() && !request.isTransportSecure()) {
-                // If we've detected a situation where we should blacklist a token
+                // If we've detected a situation where we should blacklist a
+                // token
                 if (config.getBlacklistUnsafeTokens()) {
                     blacklistToken(context, rawToken, new IAsyncResultHandler<Void>() {
 
                         @Override
                         public void handle(IAsyncResult<Void> result) {
                             if (result.isError()) {
-                                chain.throwError(result.getError());
-                            } else {
-                                chain.doFailure(noTransportSecurityFailure(context));
+                                throwError(successStatus, chain, result.getError());
                             }
                         }
                     });
-                } else {
-                    chain.doFailure(noTransportSecurityFailure(context));
                 }
+
+                doFailure(successStatus, chain, failureFactory.noTransportSecurity(context));
                 return;
             }
 
+            // If enabled we check against the blacklist
             if (config.getBlacklistUnsafeTokens()) {
                 isBlacklistedToken(context, rawToken, new IAsyncResultHandler<Boolean>() {
 
                     @Override
                     public void handle(IAsyncResult<Boolean> result) {
                         if (result.isError()) {
-                            chain.throwError(result.getError());
+                            throwError(successStatus, chain, result.getError());
                         } else if (result.getResult()) {
-                            chain.doFailure(blacklistedTokenFailure(context));
+                            doFailure(successStatus, chain, failureFactory.blacklistedToken(context));
                         } else {
-                            doTokenAuth(request, context, config, chain, rawToken);
+                            chain.doApply(request);
                         }
                     }
                 });
-                return;
+            } else {
+                if (successStatus.getValue())
+                    chain.doApply(request);
             }
-       
-            doTokenAuth(request, context, config, chain, rawToken);
         }
     }
 
-    private void doTokenAuth(ServiceRequest request, IPolicyContext context, KeycloakOauthConfigBean config,
-            IPolicyChain<ServiceRequest> chain, String rawToken) {
+    private void doFailure(Holder<Boolean> isFailedHolder, IPolicyChain<?> chain, PolicyFailure failure) {
+        chain.doFailure(failure);
+        isFailedHolder.setValue(false);
+    }
+
+    private void throwError(Holder<Boolean> isFailedHolder, IPolicyChain<?> chain, Throwable error) {
+        chain.throwError(error);
+        isFailedHolder.setValue(false);
+    }
+
+    private Holder<Boolean> doTokenAuth(Holder<Boolean> isFailedHolder, ServiceRequest request,
+            IPolicyContext context, KeycloakOauthConfigBean config, IPolicyChain<ServiceRequest> chain,
+            String rawToken) {
         try {
             AccessToken parsedToken = RSATokenVerifier.verifyToken(rawToken, config.getRealmCertificate()
                     .getPublicKey(), config.getRealm());
@@ -121,10 +135,41 @@ public class KeycloakOauthPolicy extends AbstractMappedPolicy<KeycloakOauthConfi
             forwardHeaders(request, config, rawToken, parsedToken);
             stripAuthTokens(request, config);
 
-            chain.doApply(request);
+            if (doTokenRoleAuth(config, parsedToken)) {
+                return isFailedHolder.setValue(true);
+            } else {
+                doFailure(isFailedHolder, chain, failureFactory.doesNotHoldRequiredRoles(context));
+            }
+
         } catch (VerificationException e) {
-            chain.doFailure(verificationExceptionFailure(context, e));
+            chain.doFailure(failureFactory.verificationException(context, e));
         }
+        return isFailedHolder.setValue(false);
+    }
+
+    private boolean doTokenRoleAuth(KeycloakOauthConfigBean config, AccessToken parsedToken) {
+        boolean result = true;
+
+        if (config.getApplicationRoleMappings().size() > 0) {
+            for (ApplicationRoleMapping role : config.getApplicationRoleMappings()) {
+                Access access = parsedToken.getResourceAccess(role.getApplication());
+
+                if (access != null) {
+                    // System.out.println(access.getRoles());
+                    // System.out.println(role.getRequiredRoles());
+                    // System.out.println(access.getRoles().containsAll(role.getRequiredRoles()));
+                    result = result && access.getRoles().containsAll(role.getRequiredRoles());
+                    if (!result)
+                        return false;
+                }
+            }
+        }
+        // System.out.println("config.getRealmRoleMappings() " + config.getRealmRoleMappings());
+        // System.out.println("parsedToken.getRealmAccess().getRoles() + parsedToken.getRealmAccess().getRoles());
+        if (config.getRealmRoleMappings().size() > 0)
+            result = result && parsedToken.getRealmAccess().getRoles().containsAll(config.getRealmRoleMappings());
+
+        return result;
     }
 
     private String getRawAuthToken(ServiceRequest request) {
@@ -154,8 +199,6 @@ public class KeycloakOauthPolicy extends AbstractMappedPolicy<KeycloakOauthConfi
         for (ForwardAuthInfo entry : config.getForwardAuthInfo()) {
             String fieldValue = null;
 
-            // TODO consider allowing any field to be specified by using string + reflection or MethodHandle
-            // There are significant potential performance issues with this, however.
             switch (entry.getField()) {
             case ACCESS_TOKEN:
                 fieldValue = rawToken;
@@ -170,33 +213,6 @@ public class KeycloakOauthPolicy extends AbstractMappedPolicy<KeycloakOauthConfi
             }
             request.getHeaders().put(entry.getHeader(), fieldValue);
         }
-    }
-
-    private PolicyFailure noAuthenticationProvidedFailure(IPolicyContext context) {
-        return createUnauthorizedPolicyFailure(context, 0,
-                Messages.getString("KeycloakOauthPolicy.NoTokenGiven")); //$NON-NLS-1$
-    }
-
-    private PolicyFailure verificationExceptionFailure(IPolicyContext context, VerificationException e) {
-        return createUnauthorizedPolicyFailure(context, 1, e.getMessage());
-    }
-
-    private PolicyFailure noTransportSecurityFailure(IPolicyContext context) {
-        return createUnauthorizedPolicyFailure(context, 2,
-                Messages.getString("KeycloakOauthPolicy.NoTransportSecurity")); //$NON-NLS-1$
-    }
-
-    private PolicyFailure blacklistedTokenFailure(IPolicyContext context) {
-        return createUnauthorizedPolicyFailure(context, 3,
-                Messages.getString("KeycloakOauthPolicy.BlacklistedToken")); //$NON-NLS-1$
-    }
-
-    private PolicyFailure createUnauthorizedPolicyFailure(IPolicyContext context, int failureCode,
-            String message) {
-        PolicyFailure pf = getFailureFactory(context).createFailure(PolicyFailureType.Authorization,
-                failureCode, message);
-        pf.setResponseCode(HTTP_UNAUTHORIZED);
-        return pf;
     }
 
     private void isBlacklistedToken(IPolicyContext context, String rawToken,
@@ -215,9 +231,5 @@ public class KeycloakOauthPolicy extends AbstractMappedPolicy<KeycloakOauthConfi
 
     private ISharedStateComponent getDataStore(IPolicyContext context) {
         return context.getComponent(ISharedStateComponent.class);
-    }
-
-    private IPolicyFailureFactoryComponent getFailureFactory(IPolicyContext context) {
-        return context.getComponent(IPolicyFailureFactoryComponent.class);
     }
 }

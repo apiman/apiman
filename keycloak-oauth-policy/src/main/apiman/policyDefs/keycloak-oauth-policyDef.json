@@ -8,7 +8,7 @@
   "templates" : [
     {
       "language" : null,
-      "template" : ""
+      "template" : "Keycloak OAuth2 is @if{requireOauth} required @else{} enabled @end{}, and @if{requireTransportSecurity} requires @else{} does not require @end{} transport security."
     }
   ],
   "form" : "schemas/keycloak-oauth-policyDef.schema"

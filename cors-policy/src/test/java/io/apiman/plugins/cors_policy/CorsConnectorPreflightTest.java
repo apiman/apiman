@@ -32,8 +32,9 @@ import org.junit.Test;
  */
 @SuppressWarnings("nls")
 public class CorsConnectorPreflightTest extends CorsConnectorTestBase {
-    
+
     @Before
+    @Override
     public void before() {
         super.before();
         given(request.getType()).willReturn(HttpHelper.OPTIONS);

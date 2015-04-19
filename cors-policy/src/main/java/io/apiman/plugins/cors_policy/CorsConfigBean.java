@@ -283,8 +283,8 @@ public class CorsConfigBean implements Serializable {
     /**
      * Is allowed if: * (any), host == origin (not all browsers do this), is on allowed list.
      * 
-     * @param host
-     * @param origin
+     * @param host the host
+     * @param origin the origin of request
      * @return true if origin is allowed
      */
     public boolean isAllowedOrigin(String origin, String host) {
@@ -294,7 +294,7 @@ public class CorsConfigBean implements Serializable {
     /**
      * A simple method as defined by the spec.
      * 
-     * @param method
+     * @param method the methods
      * @return true if simple method(s)
      */
     public boolean isAllowedMethod(String... method) {
@@ -305,7 +305,7 @@ public class CorsConfigBean implements Serializable {
      * Is an allowed header, either by user definition or the spec. Generally browsers should not ask for
      * fields which are always allowed but we handle that anyway.
      * 
-     * @param header
+     * @param header the headers
      * @return true if simple header(s)
      */
     public boolean isAllowedHeader(String... header) {

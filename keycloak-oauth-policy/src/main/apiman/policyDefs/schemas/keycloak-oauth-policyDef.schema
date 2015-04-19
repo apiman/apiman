@@ -24,27 +24,69 @@
     "stripTokens": {
       "title": "Strip Tokens",
       "description": "Remove any Authorization header or token query parameter before forwarding traffic to the Service.",
-      "type": "boolean"
+      "type": "boolean",
+      "default": false
     },
     "realm": {
       "title": "Realm",
-      "description": "Realm name",
+      "description": "Realm name.",
       "type": "string"
     },
     "realmCertificateString": {
       "title": "Keycloak Realm Certificate",
-      "description": "To validate OAuth requests. Must be a PEM-encoded X.509 certificate, including bounding strings.",
+      "description": "To validate OAuth2 requests. Must be a PEM-encoded X.509 certificate.",
       "type": "string",
       "format": "textarea"
     },
-    "forwardAuthInfo": {
-      "title": "Forward Keycloak Token Information",
-      "description":  "Fields from the token can be set as headers and forwarded to the Service. Access_token corresponds to the full token.",
+    "applicationRoleMappings": {
+      "title": "Required Application Roles",
+      "description": "Keycloak application role(s) that a user must hold. These are configured via the KeyCloak console or API.",
       "type": "array",
       "format": "table",
-
-      "items" : {
-        "type" : "object",
+      "items": {
+        "type": "object",
+        "title": "Application",
+        "uniqueItems": true,
+        "properties": {
+          "application": {
+            "type": "string",
+            "title": "Application",
+            "uniqueItems": true
+          },
+          "requiredRoles": {
+            "type": "array",
+            "title": "Required Roles",
+            "format": "table",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "title": "Role",
+                  "type": "string",
+                  "uniqueItems": true
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "realmRoleMappings": {
+      "title": "Required Realm Roles",
+      "description": "Keycloak realm role(s) that a user must hold. These are configured via the KeyCloak console or API.",
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string"
+      }
+    },
+    "forwardAuthInfo": {
+      "title": "Forward Keycloak Token Information",
+      "description": "Fields from the token can be set as headers and forwarded to the Service. Access_token corresponds to the full token.",
+      "type": "array",
+      "format": "table",
+      "items": {
+        "type": "object",
         "title": "Header",
         "properties": {
           "headers": {
@@ -53,7 +95,7 @@
             "uniqueItems": true,
             "pattern": "^[^()<>@,;:\\\\<>\\/\\[\\]?={}\\s\\t]+$"
           },
-          "field" : {
+          "field": {
             "title": "Field",
             "type": "string",
             "enum": [
