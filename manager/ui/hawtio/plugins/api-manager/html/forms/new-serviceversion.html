@@ -10,7 +10,7 @@
     <div id="apiman-header" ng-include="'plugins/api-manager/html/navbar.include'"></div>
     <div ng-controller="Apiman.NewServiceVersionController" class="container apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div class="row">
-        <h2 class="title" data-i18n-key="new-service">New Service Version</h2>
+        <h2 class="title" data-i18n-key="new-service-version">New Service Version</h2>
       </div>
       <!-- Helpful hint -->
       <div class="row">
@@ -23,7 +23,7 @@
       <!-- Service Version -->
       <div class="row">
         <dl>
-          <dt data-i18n-key="initial-version">Version</dt>
+          <dt data-i18n-key="version">Version</dt>
           <dd>
             <input ng-model="svcversion.version" data-field="version" type="text" class="form-control version" id="apiman-version" placeholder="Enter version..."></input>
           </dd>

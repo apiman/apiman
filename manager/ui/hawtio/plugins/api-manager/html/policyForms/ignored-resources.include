@@ -1,5 +1,5 @@
 <div class="form policy-config ip-list" data-field="form" ng-controller="Apiman.IgnoredResourcesFormController">
-  <div data-i18n-key="ip-list-message">Manage the list of regular expressions to be ignored in the box below.</div>
+  <div data-i18n-key="ignored-resources-message">Manage the list of regular expressions to be ignored in the box below.</div>
   <div style="width: 100%; float: left; margin-bottom: 5px; margin-top: 5px">
     <select ng-model="selectedPath" data-field="pathsToIgnore" multiple class="form-control" style="height: 150px; width: 200px; float: left;" ng-options="item for item in config.pathsToIgnore | orderBy: 'toString()'">
     </select>

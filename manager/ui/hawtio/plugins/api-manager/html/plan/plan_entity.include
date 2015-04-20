@@ -46,7 +46,7 @@
           </div>
           <div class="col-md-5" apiman-permission="planEdit">
             <div>
-              <div><a data-i18n-key="ttdo-new-version" data-field="ttd_toNewVersion" href="{{ pluginName }}/orgs/{{ org.id }}/plans/{{ plan.id }}/{{version.version}}/new-version">Create a new version of this Plan (New Version)</a></div>
+              <div><a data-i18n-key="ttdo-new-plan-version" data-field="ttd_toNewVersion" href="{{ pluginName }}/orgs/{{ org.id }}/plans/{{ plan.id }}/{{version.version}}/new-version">Create a new version of this Plan (New Version)</a></div>
             </div>
             <!-- The Publish Action -->
             <div class="apiman-divider-40"></div>

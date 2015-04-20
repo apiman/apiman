@@ -38,7 +38,7 @@
               <div class="clearfix"></div>
               <table ng-show="serviceVersions">
                 <tr>
-                  <td><span data-i18n-key="choose-version" class="form-label">Choose Service Version:</span></td>
+                  <td><span data-i18n-key="choose-svc-version" class="form-label">Choose Service Version:</span></td>
                   <td>
                     <select ng-model="selectedServiceVersion" apiman-select-picker="" class="selectpicker version" title="[no versions found]" ng-options="svcVersion.version for svcVersion in serviceVersions">
                   </td>
@@ -51,7 +51,7 @@
               
             </div>
             <div class="modal-footer">
-              <button data-dismiss="modal" type="button" class="btn btn-default" data-i18n-key="no">Cancel</button>
+              <button data-dismiss="modal" type="button" class="btn btn-default" data-i18n-key="cancel">Cancel</button>
               <button ng-disabled="!selectedServiceVersion" ng-click="onOK()" data-dismiss="modal" type="button" class="btn btn-primary" data-i18n-key="ok">OK</button>
             </div>
           </div>

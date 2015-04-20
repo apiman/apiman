@@ -10,6 +10,7 @@
   <name>apiman-tools</name>
   <modules>
     <module>dev-server</module>
+    <module>i18n</module>
     <module>server-all</module>
     <module>services</module>
   </modules>
