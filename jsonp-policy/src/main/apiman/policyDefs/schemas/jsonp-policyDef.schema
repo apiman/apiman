@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "JSONP Policy Configuration",
+  "type": "object",
+  "properties": {
+    "callbackParamName": {
+      "title": "Callback Parameter Name",
+      "description": "Parameter name used to specify the callback function.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "default": "callback"
+    }
+  }
+}

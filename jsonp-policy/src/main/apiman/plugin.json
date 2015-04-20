@@ -1,0 +1,6 @@
+{
+  "frameworkVersion" : 1.0,
+  "name" : "JSONP Policy Plugin",
+  "description" : "This plugin turns an endpoint into a JSONP compatible endpoint.",
+  "version" : "${project.version}"
+}
