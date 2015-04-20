@@ -179,6 +179,7 @@
     <module>keycloak-oauth-policy</module>
     <module>http-security-policy</module>
     <module>simple-header-policy</module>
+    <module>jsonp-policy</module>
   </modules>
 
   <build>
