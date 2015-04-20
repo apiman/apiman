@@ -8,13 +8,13 @@
               <h4 class="modal-title"><span>{{ title }}</span></h4>
             </div>
             <div class="modal-body modal-select-service">
-              <p data-i18n-key="select-service-help">
+              <p apiman-i18n-key="select-service-help">
                 Select a service by searching for a service by name (or part of a name) and choosing one of the
                 matches.
               </p>
               <form ng-submit="search()">
                 <input ng-model="searchText" type="text" class="form-control input-search" placeholder="Search by service name..."></input>
-                <button type="submit" apiman-action-btn="" class="btn btn-default btn-search" data-field="searchButton" data-i18n-key="search" data-icon="fa-cog" placeholder="Searching">Search</button>
+                <button type="submit" apiman-action-btn="" class="btn btn-default btn-search" data-field="searchButton" apiman-i18n-key="search" data-icon="fa-cog" placeholder="Searching">Search</button>
               </form>
               <div class="clearfix"></div>
               <div class="panel panel-default input-search-results">
@@ -27,18 +27,18 @@
                   </a>
                   <div class="alert alert-info" ng-show="!services && criteria">
                      <span class="pficon pficon-info"></span>
-                     <span data-i18n-key="no-services-matched">No services found matching your search.  Please try a different search.</span>
+                     <span apiman-i18n-key="no-services-matched">No services found matching your search.  Please try a different search.</span>
                   </div>
                   <div class="alert alert-info" ng-show="!services && !criteria">
                      <span class="pficon pficon-info"></span>
-                     <span data-i18n-key="no-service-search-criteria">Enter some search criteria above and click Search to find a Service.</span>
+                     <span apiman-i18n-key="no-service-search-criteria">Enter some search criteria above and click Search to find a Service.</span>
                   </div>
                 </div>
               </div>
               <div class="clearfix"></div>
               <table ng-show="serviceVersions">
                 <tr>
-                  <td><span data-i18n-key="choose-svc-version" class="form-label">Choose Service Version:</span></td>
+                  <td><span apiman-i18n-key="choose-svc-version" class="form-label">Choose Service Version:</span></td>
                   <td>
                     <select ng-model="selectedServiceVersion" apiman-select-picker="" class="selectpicker version" title="[no versions found]" ng-options="svcVersion.version for svcVersion in serviceVersions">
                   </td>
@@ -46,13 +46,13 @@
               </table>
               <div class="alert alert-warning" ng-show="serviceVersions && serviceVersions.length == 0" style="margin-top: 15px">
                  <span class="pficon pficon-info"></span>
-                 <span data-i18n-key="no-valid-service-versions">No valid versions of the selected Service were found.</span>
+                 <span apiman-i18n-key="no-valid-service-versions">No valid versions of the selected Service were found.</span>
               </div>
               
             </div>
             <div class="modal-footer">
-              <button data-dismiss="modal" type="button" class="btn btn-default" data-i18n-key="cancel">Cancel</button>
-              <button ng-disabled="!selectedServiceVersion" ng-click="onOK()" data-dismiss="modal" type="button" class="btn btn-primary" data-i18n-key="ok">OK</button>
+              <button data-dismiss="modal" type="button" class="btn btn-default" apiman-i18n-key="cancel">Cancel</button>
+              <button ng-disabled="!selectedServiceVersion" ng-click="onOK()" data-dismiss="modal" type="button" class="btn btn-primary" apiman-i18n-key="ok">OK</button>
             </div>
           </div>
         </div>

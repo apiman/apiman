@@ -21,7 +21,7 @@
             </div>
             <select title="Filter by role(s)..." ng-options="role.id as role.name for role in roles" ng-model="selectedRoles" class="selectpicker" apiman-select-picker="" multiple ng-change="filterMembers(filterValue)">
             </select>
-            <a href="{{ pluginName }}/orgs/{{ organizationId }}/new-member" class="btn btn-primary pull-right" data-i18n-key="add-member">Add Member</a>
+            <a href="{{ pluginName }}/orgs/{{ organizationId }}/new-member" class="btn btn-primary pull-right" apiman-i18n-key="add-member">Add Member</a>
           </div>
         </div>
       </div>

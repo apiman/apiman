@@ -15,14 +15,14 @@
           <div class="error-icon error-500 pull-right"></div>
         </div>
         <div class="col-md-8">
-          <div class="title" data-i18n-key="error-500-title">Server Error!</div>
-          <div class="description" data-i18n-key="error-500-message">Oh boy.  This one is totally on us.  Something really unexpected happened on the server and caused an error.  It's not you, it's me.  Really.  You could probably just try it again and see what happens.  If it keeps on happening you may need to contact someone about it.</div>
+          <div class="title" apiman-i18n-key="error-500-title">Server Error!</div>
+          <div class="description" apiman-i18n-key="error-500-message">Oh boy.  This one is totally on us.  Something really unexpected happened on the server and caused an error.  It's not you, it's me.  Really.  You could probably just try it again and see what happens.  If it keeps on happening you may need to contact someone about it.</div>
         </div>
       </div>
       <div class="row" ng-show="error.data" style="margin-top: 20px">
         <div class="col-md-3"></div>
         <div class="col-md-8">
-          <div class="header" data-i18n-key="error-message">Error Message</div>
+          <div class="header" apiman-i18n-key="error-message">Error Message</div>
           <div>
             <input data-field="errorMessage" class="form-control errorMessage" readonly="readonly" value="{{ error.data.message }}" type="text"></input>
           </div>
@@ -31,7 +31,7 @@
       <div class="row" style="margin-top: 15px" ng-show="error.data">
         <div class="col-md-3"></div>
         <div class="col-md-8">
-          <div class="header" data-i18n-key="error-details">Error Details</div>
+          <div class="header" apiman-i18n-key="error-details">Error Details</div>
           <div>
             <pre data-field="errorDetail">{{ error.data.stacktrace }}</pre>
           </div>

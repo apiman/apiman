@@ -1,15 +1,15 @@
 <div class="form policy-config basic-auth" data-field="form" ng-controller="Apiman.BasicAuthFormController">
   <div>
     <dl>
-      <dt data-i18n-key="auth-realm">Authentication Realm</dt>
+      <dt apiman-i18n-key="auth-realm">Authentication Realm</dt>
       <dd>
         <input ng-model="config.realm" data-field="realm" class="form-control" style="" type="text" placeholder="Realm..."></input>
       </dd>
-      <dt data-i18n-key="forward-authenticated-user">Forward Authenticated Username as HTTP Header</dt>
+      <dt apiman-i18n-key="forward-authenticated-user">Forward Authenticated Username as HTTP Header</dt>
       <dd>
         <input ng-model="forwardIdentityHttpHeader" data-field="authenticatedUserHeader" class="form-control" style="" type="text" placeholder="HTTP header or leave blank to disable..."></input>
       </dd>
-      <dt data-i18n-key="identity-source">Identity Source</dt>
+      <dt apiman-i18n-key="identity-source">Identity Source</dt>
       <dd>
         <select ng-model="identitySourceType" apiman-select-picker="" class="selectpicker" data-live-search="false" data-field="identitySourceSelector">
           <option value="" selected="selected" data-content="<span class='apiman-label-faded'>Choose an Identity Source...</span>">Choose an Identity Source...</option>
@@ -27,22 +27,22 @@
       <p>The "static" identity source is typically only useful for testing - you probably don't want to use it in production!</p>
     </div>
     <div>
-      <dt data-i18n-key="static-identities">Static Identities</dt>
+      <dt apiman-i18n-key="static-identities">Static Identities</dt>
     </div>
     <div style="width: 100%; float: left; margin-bottom: 5px;">
       <select ng-model="selectedIdentity" multiple class="form-control" style="height: 150px; width: 200px; float: left;" ng-options="(item.username + ':' + item.password) for item in config.staticIdentity.identities | orderBy: 'username'">
       </select>
       <div style="margin-left: 5px; float: left">
-        <button ng-click="clear()" ng-disabled="!config.staticIdentity.identities" data-field="staticClear" data-i18n-key="clear" class="btn btn-default" style="min-width: 75px">Clear</button>
+        <button ng-click="clear()" ng-disabled="!config.staticIdentity.identities" data-field="staticClear" apiman-i18n-key="clear" class="btn btn-default" style="min-width: 75px">Clear</button>
         <div class="clear:both"></div>
-        <button ng-click="remove(selectedIdentity)" ng-disabled="!selectedIdentity" data-field="staticRemove" data-i18n-key="remove" class="btn btn-default" style="min-width: 75px; margin-top: 5px;">Remove</button>
+        <button ng-click="remove(selectedIdentity)" ng-disabled="!selectedIdentity" data-field="staticRemove" apiman-i18n-key="remove" class="btn btn-default" style="min-width: 75px; margin-top: 5px;">Remove</button>
       </div>
     </div>
     <div style="width: 100%; float: left; margin-bottom: 10px; margin-top: 5px">
       <input ng-model="username" data-field="staticUsername" class="form-control" style="width: 85px; float: left; margin-right: 5px" type="text" placeholder="Username..."></input>
       <div style="width: 8px; float: left; line-height: 28px"> : </div>
       <input ng-model="password" data-field="staticPassword" class="form-control" style="width: 102px; float: left; margin-right: 5px" type="text" placeholder="Password..."></input>
-      <button ng-disabled="!username || !password" ng-click="add(username, password)" data-field="staticAdd" data-i18n-key="add" class="btn btn-default" style="min-width: 75px">Add</button>
+      <button ng-disabled="!username || !password" ng-click="add(username, password)" data-field="staticAdd" apiman-i18n-key="add" class="btn btn-default" style="min-width: 75px">Add</button>
     </div>
   </div>
 
@@ -50,15 +50,15 @@
   <div id="jdbc-form-fields" class="sub-form-fields" style="clear:both" ng-show="identitySourceType == 'jdbc'">
     <div>
       <dl>
-        <dt data-i18n-key="jdbc-datasource">JDBC Datasource (JNDI Location)</dt>
+        <dt apiman-i18n-key="jdbc-datasource">JDBC Datasource (JNDI Location)</dt>
         <dd>
           <input ng-model="config.jdbcIdentity.datasourcePath" data-field="jdbcDatasource" class="form-control" type="text" placeholder="JNDI Datasource location (example: jdbc/ExampleDS)"></input>
         </dd>
-        <dt data-i18n-key="jdbc-query">SQL Query</dt>
+        <dt apiman-i18n-key="jdbc-query">SQL Query</dt>
         <dd>
           <textarea ng-model="config.jdbcIdentity.query" data-field="jdbcSqlQuery" class="form-control" type="text" placeholder="SQL Query (example: SELECT * FROM users WHERE u=? AND p=?)"></textarea>
         </dd>
-        <dt data-i18n-key="jdbc-hash-algorithm">Password Hash Algorithm</dt>
+        <dt apiman-i18n-key="jdbc-hash-algorithm">Password Hash Algorithm</dt>
         <dd>
           <select ng-model="config.jdbcIdentity.hashAlgorithm" apiman-select-picker="" class="selectpicker" data-live-search="false">
             <option value=None"">None</option>
@@ -77,11 +77,11 @@
   <div id="ldap-form-fields" class="sub-form-fields" style="clear:both" ng-show="identitySourceType == 'ldap'">
     <div>
       <dl>
-        <dt data-i18n-key="ldap-server-url">LDAP Server URL</dt>
+        <dt apiman-i18n-key="ldap-server-url">LDAP Server URL</dt>
         <dd>
           <input ng-model="config.ldapIdentity.url" data-field="ldapUrl" class="form-control" type="text" placeholder="LDAP Url (example: ldap://example.org)"></input>
         </dd>
-        <dt data-i18n-key="ldap-bind-dn">LDAP Bind DN</dt>
+        <dt apiman-i18n-key="ldap-bind-dn">LDAP Bind DN</dt>
         <dd>
           <input ng-model="config.ldapIdentity.dnPattern" data-field="ldapDnPattern" class="form-control" type="text" placeholder="LDAP Bind DN (example: cn=${username},dc=overlord,dc=org)"></input>
         </dd>

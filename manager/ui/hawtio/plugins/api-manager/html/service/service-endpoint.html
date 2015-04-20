@@ -25,8 +25,8 @@
         <div class="col-md-10 apiman-entity-content apiman-entity-overview">
           <!-- Content Summary -->
           <div class="col-md-12">
-            <div class="title" data-i18n-key="managed-endpoint-impl">Managed Endpoint Information</div>
-            <p class="explanation" data-i18n-key="managed-endpoint-explanation">
+            <div class="title" apiman-i18n-key="managed-endpoint-impl">Managed Endpoint Information</div>
+            <p class="explanation" apiman-i18n-key="managed-endpoint-explanation">
                 To successfully invoke this managed service, a client must send the request 
                 to the appropriate API Gateway endpoint.  When invoking the Service through
                 a Service Contract, a valid API Key must be included in each request.  If 
@@ -35,10 +35,10 @@
             </p>
             <div ng-show="!version.publicService">
               <div class="apiman-divider-40"></div>
-              <div data-i18n-key="warning-not-public" class="alert alert-warning">Warning: this Service is not public - this endpoint will only work if a valid Service Contract API key is included in requests made to it.</div>
+              <div apiman-i18n-key="warning-not-public" class="alert alert-warning">Warning: this Service is not public - this endpoint will only work if a valid Service Contract API key is included in requests made to it.</div>
             </div>
             <hr />
-            <div class="form-label" data-i18n-key="managed-endpoint">Managed Endpoint</div>
+            <div class="form-label" apiman-i18n-key="managed-endpoint">Managed Endpoint</div>
             <textarea readonly="readonly" class="apiman-endpoint" style="width:100%" data-field="mangedEndpoint">{{ managedEndpoint.managedEndpoint }}</textarea>
           </div>
           <!-- /Content Summary -->

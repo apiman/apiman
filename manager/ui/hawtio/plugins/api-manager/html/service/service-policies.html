@@ -24,12 +24,12 @@
         <div class="col-md-10 apiman-entity-content">
           <div class="col-md-9">
             <!-- Title and help text -->
-            <div class="title" data-i18n-key="service-policies">Service Policies</div>
-            <div class="description" data-i18n-key="service-policies-help">Here is a list of all Policies defined for this Service.  These Policies will be applied to all invocations of this Service by any Application, regardless of the Plan used in its Contract.</div>
+            <div class="title" apiman-i18n-key="service-policies">Service Policies</div>
+            <div class="description" apiman-i18n-key="service-policies-help">Here is a list of all Policies defined for this Service.  These Policies will be applied to all invocations of this Service by any Application, regardless of the Plan used in its Contract.</div>
             <hr />
             <!-- The list of policies -->
             <div apiman-permission="svcEdit" apiman-status="Created,Ready" class="apiman-filters apiman-policies-filters">
-              <a data-i18n-key="add-policy" href="{{ pluginName }}/orgs/{{ org.id }}/services/{{ service.id }}/{{ version.version }}/new-policy" class="btn btn-primary pull-right">Add Policy</a>
+              <a apiman-i18n-key="add-policy" href="{{ pluginName }}/orgs/{{ org.id }}/services/{{ service.id }}/{{ version.version }}/new-policy" class="btn btn-primary pull-right">Add Policy</a>
             </div>
             <div class="clearfix"></div>
             <div class="apiman-policies" data-field="policies">
@@ -37,7 +37,7 @@
               <div class="apiman-no-content container-fluid" ng-hide="policies.length > 0">
                 <div class="row">
                   <div class="col-md-9">
-                    <p class="apiman-no-entities-description" data-i18n-key="no-policies-for-service">It looks like there aren't any policies defined! That may be exactly what you want (of course) but if not, you may try defining one using the Add Policy button above...</p>
+                    <p class="apiman-no-entities-description" apiman-i18n-key="no-policies-for-service">It looks like there aren't any policies defined! That may be exactly what you want (of course) but if not, you may try defining one using the Add Policy button above...</p>
                   </div>
                   <div apiman-permission="svcEdit" apiman-status="Created,Ready" class="col-md-3">
                     <div class="apiman-no-entities-arrow"></div>

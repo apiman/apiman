@@ -24,15 +24,15 @@
         <div class="col-md-10 apiman-entity-content apiman-entity-overview">
           <div class="col-md-11">
             <!-- Title and help text -->
-            <div class="title" data-i18n-key="application-apis">Application APIs</div>
-            <div class="description" data-i18n-key="apis-help">Below is a list of all the APIs this application consumes.  This information is derived from the set of Service Contracts the Application has entered into.  Manage these Contracts by switching to the "Contracts" tab.</div>
+            <div class="title" apiman-i18n-key="application-apis">Application APIs</div>
+            <div class="description" apiman-i18n-key="apis-help">Below is a list of all the APIs this application consumes.  This information is derived from the set of Service Contracts the Application has entered into.  Manage these Contracts by switching to the "Contracts" tab.</div>
             <hr />
             <!-- The list of apis (filterable) -->
             <div>
               <div class="clearfix"></div>
               <div class="actions">
-                <a href="{{ downloadAsJson }}" class="btn btn-default" target="_self" data-i18n-key="download-as-json">Download as JSON</a>
-                <a href="{{ downloadAsXml }}" class="btn btn-default" target="_self" data-i18n-key="download-as-xml">Download as XML</a>
+                <a href="{{ downloadAsJson }}" class="btn btn-default" target="_self" apiman-i18n-key="download-as-json">Download as JSON</a>
+                <a href="{{ downloadAsXml }}" class="btn btn-default" target="_self" apiman-i18n-key="download-as-xml">Download as XML</a>
               </div>
               <div class="clearfix"></div>
               <!-- The list of apis -->
@@ -41,9 +41,9 @@
                   <thead>
                     <tr>
                       <th nowrap="nowrap" width="1%"></th>
-                      <th data-i18n-key="service" nowrap="nowrap">Service</th>
-                      <th data-i18n-key="version" width="1%" nowrap="nowrap">Version</th>
-                      <th data-i18n-key="plan" nowrap="nowrap">Plan</th>
+                      <th apiman-i18n-key="service" nowrap="nowrap">Service</th>
+                      <th apiman-i18n-key="version" width="1%" nowrap="nowrap">Version</th>
+                      <th apiman-i18n-key="plan" nowrap="nowrap">Plan</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -61,12 +61,12 @@
                       <td colspan="4">
                         <form role="form">
                           <div class="form-group">
-                            <label data-i18n-key="api-key">API Key</label>
+                            <label apiman-i18n-key="api-key">API Key</label>
                             <input readonly type="text" class="form-control readonly apiman-readonly" value="{{ api.apiKey }}">
                           </div>
                           <div class="form-group">
                             <div>
-                              <button title="Click for details on how to invoke this managed service." data-field="detailsButton" class="btn btn-default" data-i18n-key="how-to-invoke" ng-click="howToInvoke(api)">How to invoke...</button>
+                              <button title="Click for details on how to invoke this managed service." data-field="detailsButton" class="btn btn-default" apiman-i18n-key="how-to-invoke" ng-click="howToInvoke(api)">How to invoke...</button>
                             </div>
                           </div>
                         </form>

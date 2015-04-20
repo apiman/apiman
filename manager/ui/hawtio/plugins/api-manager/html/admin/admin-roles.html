@@ -22,21 +22,21 @@
         <!-- Side Navigation -->
         <div class="col-md-3">
          <ul class="side-nav nav nav-pills nav-stacked">
-           <li class="active"><a data-field="toRoles" data-i18n-key="admin-nav.admin-roles" href="{{ pluginName }}/admin/roles">Roles</a></li>
-           <li><a data-field="toPolicyDefs" data-i18n-key="admin-nav.policy-definitions" href="{{ pluginName }}/admin/policyDefs">Policy Definitions</a></li>
-           <li><a data-field="toGateways" data-i18n-key="admin-nav.gateways" href="{{ pluginName }}/admin/gateways">Gateways</a></li>
-           <li><a data-field="toPlugins" data-i18n-key="admin-nav.plugins" href="{{ pluginName }}/admin/plugins">Plugins</a></li>
+           <li class="active"><a data-field="toRoles" apiman-i18n-key="admin-nav.admin-roles" href="{{ pluginName }}/admin/roles">Roles</a></li>
+           <li><a data-field="toPolicyDefs" apiman-i18n-key="admin-nav.policy-definitions" href="{{ pluginName }}/admin/policyDefs">Policy Definitions</a></li>
+           <li><a data-field="toGateways" apiman-i18n-key="admin-nav.gateways" href="{{ pluginName }}/admin/gateways">Gateways</a></li>
+           <li><a data-field="toPlugins" apiman-i18n-key="admin-nav.plugins" href="{{ pluginName }}/admin/plugins">Plugins</a></li>
          </ul>
         </div>
         <!-- Admin Content -->
         <div class="col-md-9 admin-content">
           <div class="container-fluid">
             <div class="row">
-              <h2 class="title" data-field="heading" data-i18n-key="role-management">Role Management</h2>
+              <h2 class="title" data-field="heading" apiman-i18n-key="role-management">Role Management</h2>
             </div>
             <!-- Helpful hint -->
             <div class="row">
-              <p class="col-md-10 apiman-label-faded" data-i18n-key="role-management-help-text" class="apiman-label-faded">Create and modify roles that users can be granted membership in for any organization.  Each role grants the user a set of permissions, allowing her to do specific things within the organization.</p>
+              <p class="col-md-10 apiman-label-faded" apiman-i18n-key="role-management-help-text" class="apiman-label-faded">Create and modify roles that users can be granted membership in for any organization.  Each role grants the user a set of permissions, allowing her to do specific things within the organization.</p>
             </div>
             <!-- HR -->
             <div class="row hr-row">
@@ -58,7 +58,7 @@
                   <div class="apiman-no-content container-fluid" ng-hide="roles.length > 0">
                     <div class="row">
                       <div class="col-md-8">
-                        <p class="apiman-no-entities-description" data-i18n-key="no-roles-found">No roles have been created.  Until at least one "auto-grant" role is created, users will not be able to use apiman.</p>
+                        <p class="apiman-no-entities-description" apiman-i18n-key="no-roles-found">No roles have been created.  Until at least one "auto-grant" role is created, users will not be able to use apiman.</p>
                       </div>
                     </div>
                   </div>
@@ -66,7 +66,7 @@
                   <div class="apiman-no-content container-fluid" ng-show="roles.length > 0 && filteredRoles.length == 0">
                     <div class="row">
                       <div class="col-md-12">
-                        <p class="apiman-no-entities-description" data-i18n-key="no-roles-found-for-filter">No roles found matching your filter criteria - please try searching for something different.</p>
+                        <p class="apiman-no-entities-description" apiman-i18n-key="no-roles-found-for-filter">No roles found matching your filter criteria - please try searching for something different.</p>
                       </div>
                     </div>
                   </div>

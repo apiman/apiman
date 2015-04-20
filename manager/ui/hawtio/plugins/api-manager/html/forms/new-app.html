@@ -12,11 +12,11 @@
     <div id="apiman-header" ng-include="'plugins/api-manager/html/navbar.include'"></div>
     <div ng-controller="Apiman.NewAppController" id="form-page" class="container apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div class="row">
-        <h2 class="title" data-i18n-key="new-application">New Application</h2>
+        <h2 class="title" apiman-i18n-key="new-application">New Application</h2>
       </div>
       <!-- Helpful hint -->
       <div class="row">
-        <p data-i18n-key="new-app-help-text" class="col-md-6 apiman-label-faded">Create a new Application within the specified Organization, allowing you to begin connecting provided Services with your Application.</p>
+        <p apiman-i18n-key="new-app-help-text" class="col-md-6 apiman-label-faded">Create a new Application within the specified Organization, allowing you to begin connecting provided Services with your Application.</p>
       </div>
       <!-- HR -->
       <div class="row hr-row">
@@ -26,11 +26,11 @@
       <div ng-show="organizations.length > 0">
         <div class="row">
           <dl class="org">
-            <dt data-i18n-key="organization">Organization</dt>
+            <dt apiman-i18n-key="organization">Organization</dt>
             <dd>
               <div class="btn-group" data-field="orgSelector">
                 <button type="button" id="selector-org" class="btn btn-default dropdown-toggle" data-toggle="dropdown" data-field="button">
-                  <span data-field="selectorLabel" id="selector-org-value" data-i18n-key="select-org">{{selectedOrg.name}}</span> &nbsp;&nbsp;<span class="caret"></span>
+                  <span data-field="selectorLabel" id="selector-org-value" apiman-i18n-key="select-org">{{selectedOrg.name}}</span> &nbsp;&nbsp;<span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu" data-field="organizations">
                    <li ng-repeat="org in organizations"><a href="#" ng-click="setOrg( org )">{{ org.name }}</a></li>
@@ -45,7 +45,7 @@
             </dd>
           </dl>
           <dl class="name">
-            <dt data-i18n-key="application-name">Application Name</dt>
+            <dt apiman-i18n-key="application-name">Application Name</dt>
             <dd>
               <input ng-model="app.name" data-field="name" type="text" class="form-control entityname" id="apiman-entityname" placeholder="Enter application name..."></input>
             </dd>
@@ -54,7 +54,7 @@
         <!-- Initial Application Version -->
         <div class="row">
           <dl>
-            <dt data-i18n-key="initial-version">Initial Version</dt>
+            <dt apiman-i18n-key="initial-version">Initial Version</dt>
             <dd>
               <input ng-model="app.initialVersion" data-field="version" type="text" class="form-control version" id="apiman-version"></input>
             </dd>
@@ -63,7 +63,7 @@
         <!-- Description of app -->
         <div class="row">
           <dl>
-            <dt data-i18n-key="description">Description</dt>
+            <dt apiman-i18n-key="description">Description</dt>
             <dd>
               <input ng-model="app.description" data-field="description" type="text" class="form-control description" id="apiman-description" placeholder="Enter application description (optional)..."></input>
             </dd>
@@ -83,8 +83,8 @@
       </div>
       <!-- Create Button -->
       <div class="row">
-        <button ng-disabled="!app.name || !app.initialVersion || !selectedOrg" apiman-action-btn="" class="btn btn-primary" data-field="createButton" data-i18n-key="create-application" placeholder="Creating..." data-icon="fa-cog" ng-click="saveNewApp()">Create Application</button>
-        <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" data-i18n-key="cancel">Cancel</a>
+        <button ng-disabled="!app.name || !app.initialVersion || !selectedOrg" apiman-action-btn="" class="btn btn-primary" data-field="createButton" apiman-i18n-key="create-application" placeholder="Creating..." data-icon="fa-cog" ng-click="saveNewApp()">Create Application</button>
+        <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" apiman-i18n-key="cancel">Cancel</a>
       </div>
     </div> <!-- /container -->
   </div>

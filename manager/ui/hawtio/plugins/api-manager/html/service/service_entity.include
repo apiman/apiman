@@ -16,7 +16,7 @@
                     <li ng-repeat="serviceVersion in versions"><a href="#" ng-click="setVersion( serviceVersion )">{{ serviceVersion.version }}</a></li>
                   </ul>
                 </div>
-                <a apiman-permission="svcEdit" href="{{ pluginName }}/orgs/{{ org.id }}/services/{{ service.id}}/{{ version.version }}/new-version" class="btn btn-primary apiman-entity-action" data-i18n-key="new-version">New Version</a>
+                <a apiman-permission="svcEdit" href="{{ pluginName }}/orgs/{{ org.id }}/services/{{ service.id}}/{{ version.version }}/new-version" class="btn btn-primary apiman-entity-action" apiman-i18n-key="new-version">New Version</a>
               </div>
             </div>
             <hr />
@@ -30,34 +30,34 @@
             <div style="padding: 8px">
               <div class="entity-info-with-icon">
                 <i class="fa fa-clock-o fa-fw"></i>
-                <span class="apiman-label-faded" data-i18n-key="created-on">Created on</span>
+                <span class="apiman-label-faded" apiman-i18n-key="created-on">Created on</span>
                 <span data-field="createdOn" >{{ service.createdOn | date:'yyyy-MM-dd' }}</span>
               </div>
               <div class="entity-info-with-icon">
                 <i class="fa fa-user fa-fw"></i>
-                <span class="apiman-label-faded" data-i18n-key="created-by">Created by</span>
+                <span class="apiman-label-faded" apiman-i18n-key="created-by">Created by</span>
                 <span><a href="{{ pluginName }}/users/{{ service.createdBy }}" data-field="createdBy">{{ service.createdBy }}</a></span>
               </div>
             </div>
             <div class="entity-info-with-icon">
-              <span data-i18n-key="status-label">Status:</span>
+              <span apiman-i18n-key="status-label">Status:</span>
               <span apiman-entity-status />
             </div>
           </div>
           <div class="col-md-5" apiman-permission="svcEdit">
             <div>
               <div apiman-status="Published">
-                <a data-i18n-key="ttdo-new-svc-contract" data-field="ttd_toNewContract" href="{{ pluginName }}/new-contract?svc={{ params.service }}&amp;svcorg={{ params.org }}&amp;svcv={{ params.version }}">Link my Application to this Service (New Contract)</a>
+                <a apiman-i18n-key="ttdo-new-svc-contract" data-field="ttd_toNewContract" href="{{ pluginName }}/new-contract?svc={{ params.service }}&amp;svcorg={{ params.org }}&amp;svcv={{ params.version }}">Link my Application to this Service (New Contract)</a>
               </div>
               <div>
-                <a data-i18n-key="ttdo-new-svc-version" data-field="ttd_toNewServiceVersion" href="{{ pluginName }}/orgs/{{ org.id }}/services/{{ service.id}}/{{ version.version }}/new-version">Create a new version of this Service (New Version)</a>
+                <a apiman-i18n-key="ttdo-new-svc-version" data-field="ttd_toNewServiceVersion" href="{{ pluginName }}/orgs/{{ org.id }}/services/{{ service.id}}/{{ version.version }}/new-version">Create a new version of this Service (New Version)</a>
               </div>
             </div>
             <!-- The Publish Action -->
             <div class="apiman-divider-40"></div>
             <div class="">
-              <button ng-disabled="getEntityStatus() == 'Created'" apiman-action-btn="" apiman-status="Created,Ready" class="btn btn-primary" data-field="publishButton" data-i18n-key="publish" placeholder="Publishing..." data-icon="fa-cog" ng-click="publishService()">Publish</button>
-              <button apiman-action-btn="" apiman-status="Published" class="btn btn-warning" data-field="retireButton" data-i18n-key="retire" placeholder="Retiring..." data-icon="fa-cog" ng-click="retireService()">Retire</button>
+              <button ng-disabled="getEntityStatus() == 'Created'" apiman-action-btn="" apiman-status="Created,Ready" class="btn btn-primary" data-field="publishButton" apiman-i18n-key="publish" placeholder="Publishing..." data-icon="fa-cog" ng-click="publishService()">Publish</button>
+              <button apiman-action-btn="" apiman-status="Published" class="btn btn-warning" data-field="retireButton" apiman-i18n-key="retire" placeholder="Retiring..." data-icon="fa-cog" ng-click="retireService()">Retire</button>
             </div>
           </div>
         </div>

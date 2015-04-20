@@ -22,7 +22,7 @@
       </div>
       <div class="row">
         <div class="col-md-12">
-          <h1 class="consumer-top-header" data-i18n-key="organization-details">Organization Details</h1>
+          <h1 class="consumer-top-header" apiman-i18n-key="organization-details">Organization Details</h1>
         </div>
         <div class="col-md-12">
           <div class="vspacer-10" />
@@ -37,13 +37,13 @@
             <div class="title"><i class="fa fa-shield icon"></i><span data-field="title">{{ org.name }}</span></div>
             <div class="description" data-field="description">{{ org.description }}</div>
             <div class="actions" style="display:none">
-              <button class="btn btn-default" style="display:none" data-field="requestMembership" data-i18n-key="request-membership">Request Membership</button>
+              <button class="btn btn-default" style="display:none" data-field="requestMembership" apiman-i18n-key="request-membership">Request Membership</button>
             </div>
-            <a ng-show="org.isMember" class="ismember" title="You are already a member of this Organization." href="{{ pluginName }}/orgs/{{ org.id }}" data-field="isMemberLink" data-i18n-key="is-member"></a>
+            <a ng-show="org.isMember" class="ismember" title="You are already a member of this Organization." href="{{ pluginName }}/orgs/{{ org.id }}" data-field="isMemberLink" apiman-i18n-key="is-member"></a>
           </div>
           
           <div class="consumer-section">
-            <h3 data-i18n-key="current-members" class="consumer-header">Current Members</h3>
+            <h3 apiman-i18n-key="current-members" class="consumer-header">Current Members</h3>
             <div class="apiman-members" data-field="members">
               <div class="container-fluid apiman-summaryrow" ng-repeat="member in members">
                 <div class="row">
@@ -60,18 +60,18 @@
         <!-- Right column -->
         <div class="col-md-8">
           <div class="consumer-section">
-            <h3 data-i18n-key="services-offered" class="consumer-header">Services Offered</h3>
+            <h3 apiman-i18n-key="services-offered" class="consumer-header">Services Offered</h3>
             <div class="apiman-filters apiman-services-filters">
               <apiman-search-box function="filterServices" placeholder="Filter by service name..." />
             </div>
             <div class="apiman-services consumer-section" data-field="services">
 
               <div class="apiman-no-content" ng-hide="services.length > 0">
-                <p class="apiman-no-entities-description" data-i18n-key="consumer-no-services-found-for-org">No services are currently offered by this organization.</p>
+                <p class="apiman-no-entities-description" apiman-i18n-key="consumer-no-services-found-for-org">No services are currently offered by this organization.</p>
               </div>
 
               <div class="apiman-no-content" ng-show="services.length > 0 && filteredServices.length == 0">
-                <p class="apiman-no-entities-description" data-i18n-key="consumer-no-services-found-for-filter">No services matched the current filter criteria.</p>
+                <p class="apiman-no-entities-description" apiman-i18n-key="consumer-no-services-found-for-filter">No services matched the current filter criteria.</p>
               </div>
 
               <div class="container-fluid apiman-summaryrow" ng-repeat="service in filteredServices">

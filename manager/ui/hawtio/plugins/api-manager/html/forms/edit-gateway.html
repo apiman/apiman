@@ -13,11 +13,11 @@
     <div ng-controller="Apiman.EditGatewayController" id="form-page" class="container apiman-edit-gateway apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <fieldset>
       <div class="row">
-        <h2 class="title" data-i18n-key="edit-gateway">Edit Gateway</h2>
+        <h2 class="title" apiman-i18n-key="edit-gateway">Edit Gateway</h2>
       </div>
       <!-- Helpful hint -->
       <div class="row">
-        <p data-i18n-key="edit-gateway-help-text" class="col-md-6 apiman-label-faded">Update this gateway's details, useful when a Gateway's endpoint or authentication information is changed.</p>
+        <p apiman-i18n-key="edit-gateway-help-text" class="col-md-6 apiman-label-faded">Update this gateway's details, useful when a Gateway's endpoint or authentication information is changed.</p>
       </div>
       <!-- HR -->
       <div class="row hr-row">
@@ -26,7 +26,7 @@
       <!-- Choose gateway name -->
       <div class="row">
         <dl>
-          <dt data-i18n-key="gateway-name">Gateway Name</dt>
+          <dt apiman-i18n-key="gateway-name">Gateway Name</dt>
           <dd>
             <input id="apiman-gateway-name" ng-model="gateway.name" data-field="name" type="text" class="form-control name entityname" placeholder="Enter gateway name..." value="Existing Gateway" disabled="disabled"></input>
           </dd>
@@ -35,7 +35,7 @@
       <!-- Description of gateway -->
       <div class="row">
         <dl>
-          <dt data-i18n-key="description">Description</dt>
+          <dt apiman-i18n-key="description">Description</dt>
           <dd>
             <textarea ng-model="gateway.description" data-field="description" type="text" class="form-control description" id="apiman-gateway-description" placeholder="Enter gateway description (optional)..."></textarea>
           </dd>
@@ -44,7 +44,7 @@
       <!-- Configuration Endpoint -->
       <div class="row">
         <dl>
-          <dt data-i18n-key="config-endpoint">Configuration Endpoint</dt>
+          <dt apiman-i18n-key="config-endpoint">Configuration Endpoint</dt>
           <dd>
             <input ng-model="configuration.endpoint" data-field="configEndpoint" type="text" class="form-control description" id="config-endpoint" placeholder="Enter configuration endpoint..."></input>
           </dd>
@@ -53,12 +53,12 @@
       <!-- Authentication Credentials -->
       <div class="row">
         <dl>
-          <dt data-i18n-key="credentials">Configuration Endpoint Credentials</dt>
+          <dt apiman-i18n-key="credentials">Configuration Endpoint Credentials</dt>
           <dd>
             <table class="form-table">
               <tr>
                 <td class="td-label">
-                  <span data-i18n-key="username">Username:</span>
+                  <span apiman-i18n-key="username">Username:</span>
                 </td>
                 <td>
                   <input ng-model="configuration.username" name="username" type="text" class="form-control name entityname" placeholder="Username..."></input>
@@ -66,7 +66,7 @@
               </tr>
               <tr>
                 <td class="td-label">
-                  <span data-i18n-key="password">Password:</span>
+                  <span apiman-i18n-key="password">Password:</span>
                 </td>
                 <td>
                   <input ng-model="configuration.password" name="password" type="password" class="form-control name entityname" placeholder="Password..."></input>
@@ -83,7 +83,7 @@
         </dl>
       </div>
       <div class="row">
-        <button ng-disabled="!isValid" ng-click="testGateway()" apiman-action-btn="" class="btn btn-default" data-field="testButton" data-i18n-key="test-gateway" placeholder="Testing..." data-icon="fa-cog">Test Gateway</button>
+        <button ng-disabled="!isValid" ng-click="testGateway()" apiman-action-btn="" class="btn btn-default" data-field="testButton" apiman-i18n-key="test-gateway" placeholder="Testing..." data-icon="fa-cog">Test Gateway</button>
       </div>
       <div class="row" ng-show="testResult == 'success'">
         <div class="alert alert-success description" style="margin-top: 10px">
@@ -111,9 +111,9 @@
       </div>
       <!-- Update Button -->
       <div class="row">
-        <button ng-disabled="!isValid || !isDirty" apiman-action-btn="" class="btn btn-primary" data-field="updateButton" data-i18n-key="update-gateway" placeholder="Updating..." data-icon="fa-cog" ng-click="updateGateway()">Update Gateway</button>
-        <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" data-i18n-key="cancel">Cancel</a>
-        <button apiman-action-btn="" class="btn btn-danger" style="margin-left: 100px;" data-field="deleteButton" data-i18n-key="delete-gateway" placeholder="Deleting..." data-icon="fa-cog" ng-click="deleteGateway()">Delete Gateway</button>
+        <button ng-disabled="!isValid || !isDirty" apiman-action-btn="" class="btn btn-primary" data-field="updateButton" apiman-i18n-key="update-gateway" placeholder="Updating..." data-icon="fa-cog" ng-click="updateGateway()">Update Gateway</button>
+        <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" apiman-i18n-key="cancel">Cancel</a>
+        <button apiman-action-btn="" class="btn btn-danger" style="margin-left: 100px;" data-field="deleteButton" apiman-i18n-key="delete-gateway" placeholder="Deleting..." data-icon="fa-cog" ng-click="deleteGateway()">Delete Gateway</button>
       </div>
   	  </fieldset>
     </div> <!-- /container -->

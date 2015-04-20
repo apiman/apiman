@@ -14,14 +14,14 @@
                 </a>
                 <ul class="dropdown-menu">
                   <li>
-                    <a href="{{ pluginName }}/users/{{ username }}/orgs" data-i18n-key="my-stuff">My Stuff</a>
+                    <a href="{{ pluginName }}/users/{{ username }}/orgs" apiman-i18n-key="my-stuff">My Stuff</a>
                   </li>
                   <li class="divider"></li>
                   <li>
-                    <a href="{{ pluginName }}/profile" data-i18n-key="profile">Profile</a>
+                    <a href="{{ pluginName }}/profile" apiman-i18n-key="profile">Profile</a>
                   </li>
                   <li>
-                    <a href="{{ logoutUrl }}" target="_self" data-i18n-key="logout">Logout</a>
+                    <a href="{{ logoutUrl }}" target="_self" apiman-i18n-key="logout">Logout</a>
                   </li>
                 </ul>
               </li>

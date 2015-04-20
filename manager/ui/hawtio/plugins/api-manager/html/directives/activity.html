@@ -3,7 +3,7 @@
   <div class="apiman-no-content container-fluid" ng-hide="auditEntries.length > 0">
     <div class="row">
       <div class="col-md-12">
-        <p class="apiman-no-entities-description" data-i18n-key="no-activity-found-for-user">No activity was found.  I guess someone should do something first!</p>
+        <p class="apiman-no-entities-description" apiman-i18n-key="no-activity-found-for-user">No activity was found.  I guess someone should do something first!</p>
       </div>
     </div>
   </div>
@@ -19,6 +19,6 @@
     <hr/>
   </div>
   <div class="container-fluid" style="text-align: center" ng-hide="auditEntries.length == 0">
-    <button ng-show="hasMore && auditEntries.length >= 20" apiman-action-btn="" data-field="getMoreButton" data-i18n-key="activity.show-more" placeholder="Loading More..." data-icon="fa-cog" ng-click="getMore()" class="btn btn-default">Show Next 20 Items</button>
+    <button ng-show="hasMore && auditEntries.length >= 20" apiman-action-btn="" data-field="getMoreButton" apiman-i18n-key="activity.show-more" placeholder="Loading More..." data-icon="fa-cog" ng-click="getMore()" class="btn btn-default">Show Next 20 Items</button>
   </div>
 </div>

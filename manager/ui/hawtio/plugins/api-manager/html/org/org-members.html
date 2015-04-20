@@ -16,11 +16,11 @@
         <div class="col-md-8">
           <div class="apiman-entitytabs">
             <ul id="entitytabs" class="nav nav-tabs">
-              <li apiman-permission="planView"><a href="{{ pluginName }}/orgs/{{org.id}}/plans" data-field="toOrgPlans" data-i18n-key="plans">Plans</a></li>
-              <li apiman-permission="svcView"><a href="{{ pluginName }}/orgs/{{org.id}}/services" data-field="toOrgServices" data-i18n-key="services">Services</a></li>
-              <li apiman-permission="appView"><a href="{{ pluginName }}/orgs/{{org.id}}/apps" data-field="toOrgApps" data-i18n-key="applications">Applications</a></li>
-              <li class="active"><a href="{{ pluginName }}/orgs/{{org.id}}/members" data-field="toOrgMembers" data-i18n-key="members">Members</a></li>
-              <li class="pull-right"><a href="{{ pluginName }}/orgs/{{org.id}}/activity" data-field="toOrgActivity" data-i18n-key="activity">Activity</a></li>
+              <li apiman-permission="planView"><a href="{{ pluginName }}/orgs/{{org.id}}/plans" data-field="toOrgPlans" apiman-i18n-key="plans">Plans</a></li>
+              <li apiman-permission="svcView"><a href="{{ pluginName }}/orgs/{{org.id}}/services" data-field="toOrgServices" apiman-i18n-key="services">Services</a></li>
+              <li apiman-permission="appView"><a href="{{ pluginName }}/orgs/{{org.id}}/apps" data-field="toOrgApps" apiman-i18n-key="applications">Applications</a></li>
+              <li class="active"><a href="{{ pluginName }}/orgs/{{org.id}}/members" data-field="toOrgMembers" apiman-i18n-key="members">Members</a></li>
+              <li class="pull-right"><a href="{{ pluginName }}/orgs/{{org.id}}/activity" data-field="toOrgActivity" apiman-i18n-key="activity">Activity</a></li>
             </ul>
             <div id="entitytabsContent" class="tab-content">
 
@@ -30,7 +30,7 @@
                   <div>
                     <apiman-search-box function="filterMembers" placeholder="Filter by member name..." />
                   </div>
-                  <a apiman-permission="orgAdmin" href="{{ pluginName }}/orgs/{{org.id}}/manage-members" class="btn btn-default pull-right" data-field="toManageMembers" data-i18n-key="manage-members">Manage Members</a>
+                  <a apiman-permission="orgAdmin" href="{{ pluginName }}/orgs/{{org.id}}/manage-members" class="btn btn-default pull-right" data-field="toManageMembers" apiman-i18n-key="manage-members">Manage Members</a>
                 </div>
                 <div class="clearfix"></div>
                 <!-- The organization's list of members -->
@@ -39,7 +39,7 @@
                   <div class="apiman-no-content container-fluid" ng-hide="members.length > 0">
                     <div class="row">
                       <div class="col-md-12">
-                        <p class="apiman-no-entities-description" data-i18n-key="no-members-found-for-org">This is very strange, but apparently this Organization has no members!  Highly irregular!</p>
+                        <p class="apiman-no-entities-description" apiman-i18n-key="no-members-found-for-org">This is very strange, but apparently this Organization has no members!  Highly irregular!</p>
                       </div>
                     </div>
                   </div>
@@ -47,7 +47,7 @@
                   <div class="apiman-no-content container-fluid" ng-show="members.length > 0 && filteredMembers.length == 0">
                     <div class="row">
                       <div class="col-md-12">
-                        <p class="apiman-no-entities-description" data-i18n-key="no-members-found-for-filter">No members found matching your filter criteria - please try searching for something different.</p>
+                        <p class="apiman-no-entities-description" apiman-i18n-key="no-members-found-for-filter">No members found matching your filter criteria - please try searching for something different.</p>
                       </div>
                     </div>
                   </div>

@@ -22,7 +22,7 @@
       </div>
       <div class="row">
         <div class="col-md-12">
-          <h1 class="consumer-top-header" data-i18n-key="service-details">Service Details</h1>
+          <h1 class="consumer-top-header" apiman-i18n-key="service-details">Service Details</h1>
         </div>
         <div class="col-md-12">
           <div class="vspacer-10" />
@@ -39,7 +39,7 @@
               <span class="emphasis" data-field="titleService">{{ service.name }}</span>
             </div>
             <div class="description" data-field="description" style="margin-bottom: 10px;">{{ service.description }}</div>
-            <span class="form-label" data-i18n-key="choose-version">Choose Version:</span>
+            <span class="form-label" apiman-i18n-key="choose-version">Choose Version:</span>
             <div class="btn-group apiman-entity-action" ng-show="versions.length > 0">
               <select apiman-select-picker="" ng-model="selectedServiceVersion" ng-change="setVersion( selectedServiceVersion )" 
                 title="" class="selectpicker" data-live-search="false"
@@ -57,7 +57,7 @@
         <div class="col-md-8">
           <div class="consumer-section">
             <div id="managed-endpoint-wrap" ng-show="version.publicService">
-              <h3 data-i18n-key="public-endpoint" class="consumer-header">Public Endpoint</h3>
+              <h3 apiman-i18n-key="public-endpoint" class="consumer-header">Public Endpoint</h3>
               <p class="apiman-label-faded">
                 Because this is a Public Service, it is possible to invoke it directly, without
                 the need for a Service Contract with an Application.  To directly invoke the
@@ -69,7 +69,7 @@
             </div>
 
             <div id="available-plans-wrap">
-              <h3 data-i18n-key="available-plans" class="consumer-header">Available Plans</h3>
+              <h3 apiman-i18n-key="available-plans" class="consumer-header">Available Plans</h3>
               <div class="apiman-plans consumer-section" data-field="plans">
 
                 <div class="apiman-no-content" ng-hide="plans.length > 0">
@@ -94,7 +94,7 @@
                   
                     <div ng-hide="chains[plan.planId]">
                       <div class="spinner spinner-sm pull-left"></div>
-                      <span data-i18n-key="loading-policy-chain" style="margin-left: 5px">Loading policy chain...</span>
+                      <span apiman-i18n-key="loading-policy-chain" style="margin-left: 5px">Loading policy chain...</span>
                     </div>
                   
                     <div class="apiman-policies" ng-show="chains[plan.planId]">

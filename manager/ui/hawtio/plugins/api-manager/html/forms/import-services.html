@@ -28,7 +28,7 @@
                   </li>
                   <li class="divider"></li>
                   <li>
-                    <a data-field="toProfile" href="settings-profile.html" data-i18n-key="profile">Profile</a>
+                    <a data-field="toProfile" href="settings-profile.html" apiman-i18n-key="profile">Profile</a>
                   </li>
                   <li>
                     <a href="#">Logout</a>
@@ -43,14 +43,14 @@
     
     <div id="form-page" class="container apiman-entity-new page" data-field="page">
       <div class="row">
-        <h2 class="title" data-i18n-key="import-services">Import Service(s)</h2>
+        <h2 class="title" apiman-i18n-key="import-services">Import Service(s)</h2>
       </div>
       
       <!-- === Import Type === -->
       <div id="importTypePage">
         <!-- Helpful hint -->
         <div class="row">
-          <p data-i18n-key="import-services-help-text" class="col-md-6 apiman-label-faded">Use this wizard to import one or more services into the Organization.  First please choose a source of data to use for the import.</p>
+          <p apiman-i18n-key="import-services-help-text" class="col-md-6 apiman-label-faded">Use this wizard to import one or more services into the Organization.  First please choose a source of data to use for the import.</p>
         </div>
         <!-- HR -->
         <div class="row hr-row">
@@ -59,7 +59,7 @@
         <!-- Choose import source -->
         <div class="row">
           <dl>
-            <dt data-i18n-key="import-source">Import Source</dt>
+            <dt apiman-i18n-key="import-source">Import Source</dt>
             <dd>
               <select data-field="importSource" class="selectpicker">
                 <option>WADL File</option>
@@ -74,8 +74,8 @@
         </div>
         <!-- Next Button -->
         <div class="row">
-          <button class="btn btn-primary" data-field="importTypeNext" data-i18n-key="next" onclick="$('#importTypePage').animate( { 'margin-left' : '-2000px' }, 200, function() { $('#importTypePage').hide(); $('#wadlPage').show(); $('#wadlPage').animate( { 'margin-left' : '0px' }, 200); });">Next</button>
-          <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-i18n-key="cancel">Cancel</a>
+          <button class="btn btn-primary" data-field="importTypeNext" apiman-i18n-key="next" onclick="$('#importTypePage').animate( { 'margin-left' : '-2000px' }, 200, function() { $('#importTypePage').hide(); $('#wadlPage').show(); $('#wadlPage').animate( { 'margin-left' : '0px' }, 200); });">Next</button>
+          <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" apiman-i18n-key="cancel">Cancel</a>
         </div>
       </div>
 
@@ -83,7 +83,7 @@
       <div id="wadlPage" style="margin-left: 2000px; display:none">
         <!-- Helpful hint -->
         <div class="row">
-          <p data-i18n-key="import-services-wadl-help-text" class="col-md-6 apiman-label-faded">Tell us where your WADL file is located so we can load it up!  We only need you to fill out *one* of the sections below.</p>
+          <p apiman-i18n-key="import-services-wadl-help-text" class="col-md-6 apiman-label-faded">Tell us where your WADL file is located so we can load it up!  We only need you to fill out *one* of the sections below.</p>
         </div>
         <!-- HR -->
         <div class="row hr-row">
@@ -91,36 +91,36 @@
         </div>
         <div class="row">
           <dl style="width: 100%">
-            <dt data-i18n-key="wadl-url">WADL Url</dt>
+            <dt apiman-i18n-key="wadl-url">WADL Url</dt>
             <dd>
               <input type="text" class="form-control" data-field="wadlUrl" placeholder="Enter a valid URL to a WADL..." style="width: 75%"></input>
             </dd>
           </dl>
         </div>
         <div class="row">
-          <div data-i18n-key="or-divider" style="margin: 5px; font-size: 16px; color: rgb(119, 136, 153); text-align: center; width: 75%">-- OR --</div>
+          <div apiman-i18n-key="or-divider" style="margin: 5px; font-size: 16px; color: rgb(119, 136, 153); text-align: center; width: 75%">-- OR --</div>
         </div>
         <div class="row">
           <dl style="width: 100%">
-            <dt data-i18n-key="wadl-file">WADL File(s)</dt>
+            <dt apiman-i18n-key="wadl-file">WADL File(s)</dt>
             <dd>
               <input type="file" data-field="wadlFile" multiple style="width: 75%"></input>
             </dd>
           </dl>
         </div>
         <div class="row">
-          <div data-i18n-key="or-divider" style="margin: 5px; margin-bottom: 10px; font-size: 18px; color: rgb(119, 136, 153); text-align: center; width: 75%">-- OR --</div>
+          <div apiman-i18n-key="or-divider" style="margin: 5px; margin-bottom: 10px; font-size: 18px; color: rgb(119, 136, 153); text-align: center; width: 75%">-- OR --</div>
         </div>
         <div class="row">
-          <div data-i18n-key="drop-wadl-file-here" data-field="wadlDropZone" class="dropzone" style="width: 75%; line-height: 128px">Drop WADL File(s) Here</div>
+          <div apiman-i18n-key="drop-wadl-file-here" data-field="wadlDropZone" class="dropzone" style="width: 75%; line-height: 128px">Drop WADL File(s) Here</div>
         </div>
         <div class="row">
           <div class="vspacer-20"></div>
         </div>
         <!-- Next Button -->
         <div class="row">
-          <button class="btn btn-primary" data-field="wadlNext" placeholder="Reading WADL..." data-icon="fa-cog" data-i18n-key="next" onclick="$('#wadlPage').animate( { 'margin-left' : '-2000px' }, 200, function() { $('#wadlPage').hide(); $('#selectPage').show(); $('#selectPage').animate( { 'margin-left' : '0px' }, 200); });">Next</button>
-          <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-i18n-key="cancel">Cancel</a>
+          <button class="btn btn-primary" data-field="wadlNext" placeholder="Reading WADL..." data-icon="fa-cog" apiman-i18n-key="next" onclick="$('#wadlPage').animate( { 'margin-left' : '-2000px' }, 200, function() { $('#wadlPage').hide(); $('#selectPage').show(); $('#selectPage').animate( { 'margin-left' : '0px' }, 200); });">Next</button>
+          <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" apiman-i18n-key="cancel">Cancel</a>
         </div>
       </div>
       
@@ -128,7 +128,7 @@
       <div id="selectPage" style="margin-left: 2000px; display:none">
         <!-- Helpful hint -->
         <div class="row">
-          <p data-i18n-key="import-services-confirm-help-text" class="col-md-6 apiman-label-faded">Let us know which of the services we should import.  It might also be a good idea to modify any of the services names we may have gotten wrong!</p>
+          <p apiman-i18n-key="import-services-confirm-help-text" class="col-md-6 apiman-label-faded">Let us know which of the services we should import.  It might also be a good idea to modify any of the services names we may have gotten wrong!</p>
         </div>
         <!-- HR -->
         <div class="row hr-row">
@@ -139,9 +139,9 @@
             <thead>
               <tr>
                 <th width="1%"><input type="checkbox" data-field="servicesSelectAll"></input></th>
-                <th width="1%" data-i18n-key="service-name" nowrap="nowrap">Service Name</th>
-                <th width="1%" data-i18n-key="initial-version" nowrap="nowrap">Initial Version</th>
-                <th data-i18n-key="endpoint">Endpoint</th>
+                <th width="1%" apiman-i18n-key="service-name" nowrap="nowrap">Service Name</th>
+                <th width="1%" apiman-i18n-key="initial-version" nowrap="nowrap">Initial Version</th>
+                <th apiman-i18n-key="endpoint">Endpoint</th>
               </tr>
             </thead>
             <tbody>
@@ -167,12 +167,12 @@
           </table>
         </div>
         <div class="row">
-          <p data-i18n-key="choose-services">Choose which services you want to create from the list above.</p>
+          <p apiman-i18n-key="choose-services">Choose which services you want to create from the list above.</p>
         </div>
         <!-- Next Button -->
         <div class="row">
-          <button class="btn btn-primary" data-field="selectNext" placeholder="Processing..." data-icon="fa-cog" data-i18n-key="next" onclick="$('#selectPage').animate( { 'margin-left' : '-2000px' }, 200, function() { $('#selectPage').hide(); $('#plansPage').show(); $('#plansPage').animate( { 'margin-left' : '0px' }, 200); });">Next</button>
-          <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-i18n-key="cancel">Cancel</a>
+          <button class="btn btn-primary" data-field="selectNext" placeholder="Processing..." data-icon="fa-cog" apiman-i18n-key="next" onclick="$('#selectPage').animate( { 'margin-left' : '-2000px' }, 200, function() { $('#selectPage').hide(); $('#plansPage').show(); $('#plansPage').animate( { 'margin-left' : '0px' }, 200); });">Next</button>
+          <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" apiman-i18n-key="cancel">Cancel</a>
         </div>
       </div>
 
@@ -180,7 +180,7 @@
       <div id="plansPage" style="margin-left: 2000px; display:none">
         <!-- Helpful hint -->
         <div class="row">
-          <p data-i18n-key="import-services-plans-help-text" class="col-md-6 apiman-label-faded">Choose which plans will be available when Applications wish to create Service Contracts for the imported Service(s).  Alternatively you can make the services "Public".  Or else leave everything blank and then configure each imported Service later.</p>
+          <p apiman-i18n-key="import-services-plans-help-text" class="col-md-6 apiman-label-faded">Choose which plans will be available when Applications wish to create Service Contracts for the imported Service(s).  Alternatively you can make the services "Public".  Or else leave everything blank and then configure each imported Service later.</p>
         </div>
         <!-- HR -->
         <div class="row hr-row">
@@ -188,12 +188,12 @@
         </div>
         <div class="row">
           <div class="col-md-8">
-            <div class="title" data-i18n-key="public-service">Public Service</div>
+            <div class="title" apiman-i18n-key="public-service">Public Service</div>
             <div style="padding: 8px; padding-top: 0px; margin-bottom: 10px">
               <input type="checkbox" id="public-service" data-field="publicService"></input>
-              <label for="public-service" data-i18n-key="make-public" style="padding-left: 3px">Make service(s) public</label>
+              <label for="public-service" apiman-i18n-key="make-public" style="padding-left: 3px">Make service(s) public</label>
             </div>
-            <div class="title" data-i18n-key="available-plans">Available Plans</div>
+            <div class="title" apiman-i18n-key="available-plans">Available Plans</div>
             <!-- The plans to choose from -->
             <div class="apiman-plan-selector apiman-divider-40" data-field="plans">
               <div class="container-fluid apiman-summaryrow">
@@ -237,8 +237,8 @@
         </div>
         <!-- Next Button -->
         <div class="row">
-          <button class="btn btn-primary" data-field="plansNext" data-i18n-key="next" onclick="$('#plansPage').animate( { 'margin-left' : '-2000px' }, 200, function() { $('#plansPage').hide(); $('#confirmPage').show(); $('#confirmPage').animate( { 'margin-left' : '0px' }, 200); });">Next</button>
-          <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-i18n-key="cancel">Cancel</a>
+          <button class="btn btn-primary" data-field="plansNext" apiman-i18n-key="next" onclick="$('#plansPage').animate( { 'margin-left' : '-2000px' }, 200, function() { $('#plansPage').hide(); $('#confirmPage').show(); $('#confirmPage').animate( { 'margin-left' : '0px' }, 200); });">Next</button>
+          <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" apiman-i18n-key="cancel">Cancel</a>
         </div>
       </div>
 
@@ -249,8 +249,8 @@
         </div>
         <!-- Confirm Button -->
         <div class="row">
-          <button class="btn btn-primary" data-field="yesButton" data-i18n-key="yes" placeholder="Importing..." data-icon="fa-cog">Yes</button>
-          <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="noButton" data-i18n-key="no">No</a>
+          <button class="btn btn-primary" data-field="yesButton" apiman-i18n-key="yes" placeholder="Importing..." data-icon="fa-cog">Yes</button>
+          <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="noButton" apiman-i18n-key="no">No</a>
         </div>
       </div>
 

@@ -10,7 +10,7 @@
             <div class="row">
               <div class="col-md-12 metadata-with-icon">
                 <i class="fa fa-clock-o fa-fw"></i>
-                <div class="apiman-label-faded" data-i18n-key="created-on">Created on</div>
+                <div class="apiman-label-faded" apiman-i18n-key="created-on">Created on</div>
                 <div data-field="createdOn">{{ org.createdOn | date:'yyyy-MM-dd' }}</div>
               </div>
             </div>
@@ -18,7 +18,7 @@
               <div class="col-md-12 metadata-with-icon">
                 <i class="fa fa-users fa-fw"></i>
                 <div data-field="numMembers">{{ members.length }}</div>
-                <div class="apiman-label-faded" data-i18n-key="members">Members</div>
+                <div class="apiman-label-faded" apiman-i18n-key="members">Members</div>
               </div>
             </div>
             <div class="row">

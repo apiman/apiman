@@ -25,8 +25,8 @@
         <div class="col-md-10 apiman-entity-content apiman-entity-overview">
           <div class="col-md-9">
             <!-- Title and help text -->
-            <div class="title" data-i18n-key="service-contracts">Service Contracts</div>
-            <div class="description" data-i18n-key="contracts-help">Here is a list of all Services that this Application is currently contracted to utilize.  This provides a list of all Services that Application can potentially invoke.</div>
+            <div class="title" apiman-i18n-key="service-contracts">Service Contracts</div>
+            <div class="description" apiman-i18n-key="contracts-help">Here is a list of all Services that this Application is currently contracted to utilize.  This provides a list of all Services that Application can potentially invoke.</div>
             <hr />
             <!-- The list of contracts (filterable) -->
             <div>
@@ -34,8 +34,8 @@
                 <div>
                   <apiman-search-box function="filterContracts" placeholder="Filter by org or service name..." />
                 </div>
-                <a apiman-permission="appEdit" apiman-status="Created,Ready" data-field="toNewContract" data-i18n-key="new-contract" href="{{ pluginName }}/new-contract" class="btn btn-primary pull-right">New Contract</a>
-                <button ng-click="breakAll()" apiman-action-btn="" ng-disabled="!contracts.length" apiman-permission="appEdit" apiman-status="Created,Ready" data-field="breakAllContracts" data-i18n-key="break-all-contracts" placeholder="Breaking..." data-icon="fa-cog" class="btn btn-default pull-right">Break All</button>
+                <a apiman-permission="appEdit" apiman-status="Created,Ready" data-field="toNewContract" apiman-i18n-key="new-contract" href="{{ pluginName }}/new-contract" class="btn btn-primary pull-right">New Contract</a>
+                <button ng-click="breakAll()" apiman-action-btn="" ng-disabled="!contracts.length" apiman-permission="appEdit" apiman-status="Created,Ready" data-field="breakAllContracts" apiman-i18n-key="break-all-contracts" placeholder="Breaking..." data-icon="fa-cog" class="btn btn-default pull-right">Break All</button>
               </div>
               <div class="clearfix"></div>
               <!-- The list of contracts -->

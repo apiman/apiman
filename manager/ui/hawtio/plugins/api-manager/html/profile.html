@@ -11,7 +11,7 @@
     <div ng-controller="Apiman.UserProfileController" class="page container" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div class="row">
         <div class="col-md-12">
-          <h1><i class="fa fa-user fa-fw"></i> <span data-i18n-key="user-profile">User Profile</span></h1>
+          <h1><i class="fa fa-user fa-fw"></i> <span apiman-i18n-key="user-profile">User Profile</span></h1>
           <hr />
         </div>
       </div>
@@ -20,19 +20,19 @@
           <div class="settings-detail">
             <form role="form">
               <div class="form-group">
-                <label data-i18n-key="profile.username" for="usernameInput">Username</label>
+                <label apiman-i18n-key="profile.username" for="usernameInput">Username</label>
                 <input ng-model="user.username" type="text" class="form-control" id="apiman-username" placeholder="Enter email" disabled="disabled">
               </div>
               <div class="form-group">
-                <label data-i18n-key="profile.full-name" for="nameInput">Full Name</label>
+                <label apiman-i18n-key="profile.full-name" for="nameInput">Full Name</label>
                 <input ng-model="updatedUser.fullName" type="text" class="form-control" id="apiman-name" placeholder="Enter your full name...">
               </div>
               <div class="form-group">
-                <label data-i18n-key="profile.email" for="emailInput">Email</label>
+                <label apiman-i18n-key="profile.email" for="emailInput">Email</label>
                 <input ng-model="updatedUser.email" type="email" class="form-control" id="apiman-email" placeholder="Email address...">
               </div>
-              <button ng-disabled="!isDirty || !isValid" apiman-action-btn="" class="btn btn-primary" data-field="updateButton" data-i18n-key="update-profile" placeholder="Updating..." data-icon="fa-cog" ng-click="save()">Update Profile</button>
-              <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-i18n-key="cancel">Cancel</a>
+              <button ng-disabled="!isDirty || !isValid" apiman-action-btn="" class="btn btn-primary" data-field="updateButton" apiman-i18n-key="update-profile" placeholder="Updating..." data-icon="fa-cog" ng-click="save()">Update Profile</button>
+              <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" apiman-i18n-key="cancel">Cancel</a>
             </form>
           </div>
         </div>

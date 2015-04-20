@@ -18,11 +18,11 @@
         <div class="col-md-8">
           <div class="apiman-entitytabs">
             <ul id="entitytabs" class="nav nav-tabs">
-              <li apiman-permission="planView"><a href="{{ pluginName }}/orgs/{{org.id}}/plans" data-field="toOrgPlans" data-i18n-key="plans">Plans</a></li>
-              <li apiman-permission="svcView"><a href="{{ pluginName }}/orgs/{{org.id}}/services" data-field="toOrgServices" data-i18n-key="services">Services</a></li>
-              <li apiman-permission="appView" class="active"><a href="{{ pluginName }}/orgs/{{org.id}}/apps" data-field="toOrgApps" data-i18n-key="applications">Applications</a></li>
-              <li><a href="{{ pluginName }}/orgs/{{org.id}}/members" data-field="toOrgMembers" data-i18n-key="members">Members</a></li>
-              <li class="pull-right"><a href="{{ pluginName }}/orgs/{{org.id}}/activity" data-field="toOrgActivity" data-i18n-key="activity">Activity</a></li>
+              <li apiman-permission="planView"><a href="{{ pluginName }}/orgs/{{org.id}}/plans" data-field="toOrgPlans" apiman-i18n-key="plans">Plans</a></li>
+              <li apiman-permission="svcView"><a href="{{ pluginName }}/orgs/{{org.id}}/services" data-field="toOrgServices" apiman-i18n-key="services">Services</a></li>
+              <li apiman-permission="appView" class="active"><a href="{{ pluginName }}/orgs/{{org.id}}/apps" data-field="toOrgApps" apiman-i18n-key="applications">Applications</a></li>
+              <li><a href="{{ pluginName }}/orgs/{{org.id}}/members" data-field="toOrgMembers" apiman-i18n-key="members">Members</a></li>
+              <li class="pull-right"><a href="{{ pluginName }}/orgs/{{org.id}}/activity" data-field="toOrgActivity" apiman-i18n-key="activity">Activity</a></li>
             </ul>
             <div id="entitytabsContent" class="tab-content">
 
@@ -41,7 +41,7 @@
                   <div class="apiman-no-content container-fluid" ng-hide="apps.length > 0">
                     <div class="row">
                       <div class="col-md-9">
-                        <p class="apiman-no-entities-description" data-i18n-key="no-apps-found-for-org">It looks like there aren't (yet) any applications in this organization! Now might be a good time to click the New App button up above...</p>
+                        <p class="apiman-no-entities-description" apiman-i18n-key="no-apps-found-for-org">It looks like there aren't (yet) any applications in this organization! Now might be a good time to click the New App button up above...</p>
                       </div>
                       <div class="col-md-3">
                         <div class="apiman-no-entities-arrow"></div>
@@ -52,7 +52,7 @@
                   <div class="apiman-no-content container-fluid" ng-show="apps.length > 0 && filteredApps.length == 0">
                     <div class="row">
                       <div class="col-md-12">
-                        <p class="apiman-no-entities-description" data-i18n-key="no-apps-found-for-filter">No applications found matching your filter criteria - please try searching for something different.</p>
+                        <p class="apiman-no-entities-description" apiman-i18n-key="no-apps-found-for-filter">No applications found matching your filter criteria - please try searching for something different.</p>
                       </div>
                     </div>
                   </div>

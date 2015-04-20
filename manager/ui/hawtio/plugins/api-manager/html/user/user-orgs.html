@@ -28,7 +28,7 @@
                   <div>
                     <apiman-search-box function="filterOrgs" placeholder="Filter by organization name..." />
                   </div>
-                  <a data-field="toNewOrg" href="{{ pluginName }}/new-org" class="btn btn-primary pull-right" data-i18n-key="new-org">New Org</a>
+                  <a data-field="toNewOrg" href="{{ pluginName }}/new-org" class="btn btn-primary pull-right" apiman-i18n-key="new-org">New Org</a>
                 </div>
                 <div class="clearfix"></div>
                 <!-- The list of organizations the user belongs to -->
@@ -37,7 +37,7 @@
                   <div class="apiman-no-content container-fluid" ng-hide="organizations.length > 0">
                     <div class="row">
                       <div class="col-md-9">
-                        <p class="apiman-no-entities-description" data-i18n-key="no-orgs-found-for-user">No organizations found. This user should be granted membership in an organization or perhaps she can create a new one with the button above.</p>
+                        <p class="apiman-no-entities-description" apiman-i18n-key="no-orgs-found-for-user">No organizations found. This user should be granted membership in an organization or perhaps she can create a new one with the button above.</p>
                       </div>
                       <div class="col-md-3">
                         <div class="apiman-no-entities-arrow"></div>
@@ -48,7 +48,7 @@
                   <div class="apiman-no-content container-fluid" ng-show="organizations.length > 0 && filteredOrgs.length == 0">
                     <div class="row">
                       <div class="col-md-12">
-                        <p class="apiman-no-entities-description" data-i18n-key="no-orgs-found-for-filter">No organizations found matching your filter criteria - please try searching for something different.</p>
+                        <p class="apiman-no-entities-description" apiman-i18n-key="no-orgs-found-for-filter">No organizations found matching your filter criteria - please try searching for something different.</p>
                       </div>
                     </div>
                   </div>

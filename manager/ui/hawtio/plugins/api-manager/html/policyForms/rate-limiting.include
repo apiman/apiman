@@ -1,15 +1,15 @@
 <div class="form policy-config rates" data-field="form" ng-controller="Apiman.RateLimitingFormController">
   <div>
-    <span data-i18n-key="config-sentence-preamble">I want to limit request rates to</span>
+    <span apiman-i18n-key="config-sentence-preamble">I want to limit request rates to</span>
     <input ng-model="config.limit" class="form-control inline-form-control" style="width: 100px" type="number" placeholder="# of requests"></input>
-    <span data-i18n-key="requests-per">requests per</span>
+    <span apiman-i18n-key="requests-per">requests per</span>
     <select ng-model="config.granularity" apiman-select-picker="" data-field="granularity" class="selectpicker inline-line inline-form-dropdown" data-style="btn-default inline-form-dropdown" style="width: 100px">
       <option value="" data-content="<span class='apiman-label-faded'>Granularity</span>">Granularity</option>
       <option value="Application">Application</option>
       <option value="User">User</option>
       <option value="Service">Service</option>
     </select>
-    <span data-i18n-key="per">per</span>
+    <span apiman-i18n-key="per">per</span>
     <select ng-model="config.period" apiman-select-picker="" data-field="period" class="selectpicker inline-line inline-form-dropdown" data-style="btn-default inline-form-dropdown" style="width: 100px">
       <option value="" data-content="<span class='apiman-label-faded'>Period</span>">Period</option>
       <option value="Second">Second</option>
@@ -21,12 +21,12 @@
     </select>
   </div>
   <div style="margin-top: 8px;" id="userRow">
-    <span data-i18n-key="get-user-id-from">Get the user's id from:</span>
+    <span apiman-i18n-key="get-user-id-from">Get the user's id from:</span>
     <input ng-model="config.userHeader" data-field="userHeader" class="form-control inline-form-control" style="width: 250px" type="text" placeholder="Enter header (e.g. X-Identity)..."></input>
   </div>
   <hr/>
   <div>
-    <p data-i18n-key="rate-limit-headers-help">
+    <p apiman-i18n-key="rate-limit-headers-help">
       Configure the rate limiting related response headers below - these headers will 
       convey useful information to clients such as imposed limits and when the rate
       period will be reset.  You may override the default header names by supplying 
@@ -35,15 +35,15 @@
   </div>
   <div>
     <dl>
-      <dt data-i18n-key="limit-header">Limit Response Header</dt>
+      <dt apiman-i18n-key="limit-header">Limit Response Header</dt>
       <dd>
         <input ng-model="config.headerLimit" data-field="limitHeader" class="form-control" style="" type="text" placeholder="X-RateLimit-Limit"></input>
       </dd>
-      <dt data-i18n-key="remaining-header">Remaining Response Header</dt>
+      <dt apiman-i18n-key="remaining-header">Remaining Response Header</dt>
       <dd>
         <input ng-model="config.headerRemaining" data-field="remainingHeader" class="form-control" style="" type="text" placeholder="X-Rate-Limit-Remaining"></input>
       </dd>
-      <dt data-i18n-key="reset-header">Reset Response Header</dt>
+      <dt apiman-i18n-key="reset-header">Reset Response Header</dt>
       <dd>
         <input ng-model="config.headerReset" data-field="resetHeader" class="form-control" style="" type="text" placeholder="X-Rate-Limit-Reset"></input>
       </dd>

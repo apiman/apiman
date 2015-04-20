@@ -97,9 +97,9 @@ public class TemplateScanner {
      */
     private static void scanFile(File file, TreeMap<String, String> strings) throws IOException {
         Document doc = Jsoup.parse(file, "UTF-8");
-        Elements elements = doc.select("*[data-i18n-key]");
+        Elements elements = doc.select("*[apiman-i18n-key]");
         for (Element element : elements) {
-            String i18nKey = element.attr("data-i18n-key");
+            String i18nKey = element.attr("apiman-i18n-key");
             String elementVal = element.text();
             if (strings.containsKey(i18nKey)) {
                 String currentValue = strings.get(i18nKey);

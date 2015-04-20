@@ -1,13 +1,13 @@
         <div class="col-md-2 apiman-entity-nav">
           <ul class="nav nav-pills nav-stacked">
             <li class="first"><a>&nbsp;</a></li>
-            <li ng-class="{ true: 'active' } [tab == 'overview']"><a data-field="toServiceOverview" href="{{ pluginName }}/orgs/{{ service.organization.id }}/services/{{ service.id }}/{{ version.version }}" data-i18n-key="overview">Overview</a></li>
-            <li ng-class="{ true: 'active' } [tab == 'impl']"><a data-field="toServiceImpl" href="{{ pluginName }}/orgs/{{ service.organization.id }}/services/{{ service.id }}/{{ version.version }}/impl" data-i18n-key="implementation.tab">Implementation</a></li>
-            <li ng-class="{ true: 'active' } [tab == 'plans']"><a data-field="toServicePlans" href="{{ pluginName }}/orgs/{{ service.organization.id }}/services/{{ service.id }}/{{ version.version }}/plans" data-i18n-key="plans">Plans</a></li>
-            <li ng-class="{ true: 'active' } [tab == 'policies']"><a data-field="toServicePolicies" href="{{ pluginName }}/orgs/{{ service.organization.id }}/services/{{ service.id }}/{{ version.version }}/policies" data-i18n-key="policies">Policies</a></li>
-            <li ng-class="{ true: 'active' } [tab == 'contracts']" apiman-status="Published"><a data-field="toServiceContracts" href="{{ pluginName }}/orgs/{{ service.organization.id }}/services/{{ service.id }}/{{ version.version }}/contracts" data-i18n-key="contracts">Contracts</a></li>
-            <li ng-class="{ true: 'active' } [tab == 'endpoint']" apiman-status="Published"><a data-field="toServiceEndpoint" href="{{ pluginName }}/orgs/{{ service.organization.id }}/services/{{ service.id }}/{{ version.version }}/endpoint" data-i18n-key="endpoint">Endpoint</a></li>
-            <li ng-class="{ true: 'active' } [tab == 'activity']"><a data-field="toServiceActivity" href="{{ pluginName }}/orgs/{{ service.organization.id }}/services/{{ service.id }}/{{ version.version }}/activity" data-i18n-key="activity">Activity</a></li>
+            <li ng-class="{ true: 'active' } [tab == 'overview']"><a data-field="toServiceOverview" href="{{ pluginName }}/orgs/{{ service.organization.id }}/services/{{ service.id }}/{{ version.version }}" apiman-i18n-key="overview">Overview</a></li>
+            <li ng-class="{ true: 'active' } [tab == 'impl']"><a data-field="toServiceImpl" href="{{ pluginName }}/orgs/{{ service.organization.id }}/services/{{ service.id }}/{{ version.version }}/impl" apiman-i18n-key="implementation.tab">Implementation</a></li>
+            <li ng-class="{ true: 'active' } [tab == 'plans']"><a data-field="toServicePlans" href="{{ pluginName }}/orgs/{{ service.organization.id }}/services/{{ service.id }}/{{ version.version }}/plans" apiman-i18n-key="plans">Plans</a></li>
+            <li ng-class="{ true: 'active' } [tab == 'policies']"><a data-field="toServicePolicies" href="{{ pluginName }}/orgs/{{ service.organization.id }}/services/{{ service.id }}/{{ version.version }}/policies" apiman-i18n-key="policies">Policies</a></li>
+            <li ng-class="{ true: 'active' } [tab == 'contracts']" apiman-status="Published"><a data-field="toServiceContracts" href="{{ pluginName }}/orgs/{{ service.organization.id }}/services/{{ service.id }}/{{ version.version }}/contracts" apiman-i18n-key="contracts">Contracts</a></li>
+            <li ng-class="{ true: 'active' } [tab == 'endpoint']" apiman-status="Published"><a data-field="toServiceEndpoint" href="{{ pluginName }}/orgs/{{ service.organization.id }}/services/{{ service.id }}/{{ version.version }}/endpoint" apiman-i18n-key="endpoint">Endpoint</a></li>
+            <li ng-class="{ true: 'active' } [tab == 'activity']"><a data-field="toServiceActivity" href="{{ pluginName }}/orgs/{{ service.organization.id }}/services/{{ service.id }}/{{ version.version }}/activity" apiman-i18n-key="activity">Activity</a></li>
             <li class="last"><a>&nbsp;</a></li>
           </ul>
         </div>

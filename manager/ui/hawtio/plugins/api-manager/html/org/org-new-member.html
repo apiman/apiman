@@ -11,11 +11,11 @@
     <div id="apiman-header" ng-include="'plugins/api-manager/html/navbar.include'"></div>
     <div id="form-page" class="container apiman-entity-new page" ng-controller="Apiman.OrgNewMemberController as onmCtrl" ng-cloak="" ng-show="pageState == 'loaded'">
       <div class="row">
-        <h2 class="title" data-i18n-key="new-member">New Member</h2>
+        <h2 class="title" apiman-i18n-key="new-member">New Member</h2>
       </div>
       <!-- Helpful hint -->
       <div class="row">
-        <p data-i18n-key="new-member-help-text" class="col-md-6 apiman-label-faded">Add a member to this organization by searching for a User below.  Once the User is located, simply select their roles and click 'Add Member'.</p>
+        <p apiman-i18n-key="new-member-help-text" class="col-md-6 apiman-label-faded">Add a member to this organization by searching for a User below.  Once the User is located, simply select their roles and click 'Add Member'.</p>
       </div>
       <!-- HR -->
       <div class="row hr-row">
@@ -24,12 +24,12 @@
       <!-- User search bar -->
       <div class="row">
         <dl>
-          <dt data-i18n-key="find-user">Find a User</dt>
+          <dt apiman-i18n-key="find-user">Find a User</dt>
           <dd>
             <div class="" style="line-height: normal">
               <form ng-submit="findUsers(searchText)">
                 <input ng-model="searchText" type="text" class="form-control input-search" placeholder="Search by user name..."></input>
-                <button type="submit" apiman-action-btn="" class="btn btn-default btn-search" data-field="searchButton" data-i18n-key="search" data-icon="fa-cog" placeholder="Searching">Search</button>
+                <button type="submit" apiman-action-btn="" class="btn btn-default btn-search" data-field="searchButton" apiman-i18n-key="search" data-icon="fa-cog" placeholder="Searching">Search</button>
               </form>
             </div>
           </dd>
@@ -48,7 +48,7 @@
       <!-- Role selections -->
       <div class="row">
         <dl>
-          <dt data-i18n-key="roles">Role(s)</dt>
+          <dt apiman-i18n-key="roles">Role(s)</dt>
           <dd>
             <div>
               <select title="Select role(s)..." ng-options="role.id as role.name for role in roles"
@@ -65,12 +65,12 @@
       </div>
       <!-- Create Button -->
       <div class="row">
-        <button class="btn btn-primary" data-i18n-key="add-members" data-icon="fa-cog" placeholder="Adding..."
+        <button class="btn btn-primary" apiman-i18n-key="add-members" data-icon="fa-cog" placeholder="Adding..."
                 ng-click="addMembers()" data-field="addMembersButton" apiman-action-btn
                 ng-disabled="selectedRoles.length === 0 || countObjectKeys(selectedUsers) === 0">
           Add Member(s)
         </button>
-        <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-i18n-key="cancel">Cancel</a>
+        <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" apiman-i18n-key="cancel">Cancel</a>
       </div>
     </div> <!-- /container -->
   </body>

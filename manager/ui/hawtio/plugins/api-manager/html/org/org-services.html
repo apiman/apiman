@@ -18,11 +18,11 @@
         <div class="col-md-8">
           <div class="apiman-entitytabs">
             <ul id="entitytabs" class="nav nav-tabs">
-              <li apiman-permission="planView"><a href="{{ pluginName }}/orgs/{{org.id}}/plans" data-field="toOrgPlans" data-i18n-key="plans">Plans</a></li>
-              <li apiman-permission="svcView" class="active"><a href="{{ pluginName }}/orgs/{{org.id}}/services" data-field="toOrgServices" data-i18n-key="services">Services</a></li>
-              <li apiman-permission="appView"><a href="{{ pluginName }}/orgs/{{org.id}}/apps" data-field="toOrgApps" data-i18n-key="applications">Applications</a></li>
-              <li><a href="{{ pluginName }}/orgs/{{org.id}}/members" data-field="toOrgMembers" data-i18n-key="members">Members</a></li>
-              <li class="pull-right"><a href="{{ pluginName }}/orgs/{{org.id}}/activity" data-field="toOrgActivity" data-i18n-key="activity">Activity</a></li>
+              <li apiman-permission="planView"><a href="{{ pluginName }}/orgs/{{org.id}}/plans" data-field="toOrgPlans" apiman-i18n-key="plans">Plans</a></li>
+              <li apiman-permission="svcView" class="active"><a href="{{ pluginName }}/orgs/{{org.id}}/services" data-field="toOrgServices" apiman-i18n-key="services">Services</a></li>
+              <li apiman-permission="appView"><a href="{{ pluginName }}/orgs/{{org.id}}/apps" data-field="toOrgApps" apiman-i18n-key="applications">Applications</a></li>
+              <li><a href="{{ pluginName }}/orgs/{{org.id}}/members" data-field="toOrgMembers" apiman-i18n-key="members">Members</a></li>
+              <li class="pull-right"><a href="{{ pluginName }}/orgs/{{org.id}}/activity" data-field="toOrgActivity" apiman-i18n-key="activity">Activity</a></li>
             </ul>
 
             <div id="entitytabsContent" class="tab-content">
@@ -34,13 +34,13 @@
                     <apiman-search-box function="filterServices" placeholder="Filter by service name..." />
                   </div>
                   <div apiman-permission="svcEdit" class="btn-group pull-right">
-                    <a data-field="toNewService" href="{{ pluginName }}/new-service" class="btn btn-primary" data-i18n-key="new-service">New Service</a>
+                    <a data-field="toNewService" href="{{ pluginName }}/new-service" class="btn btn-primary" apiman-i18n-key="new-service">New Service</a>
 <!--                     <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"> -->
 <!--                       <span class="caret"></span> -->
-<!--                       <span class="sr-only" data-i18n-key="toggle-dropdown">Toggle Dropdown</span> -->
+<!--                       <span class="sr-only" apiman-i18n-key="toggle-dropdown">Toggle Dropdown</span> -->
 <!--                     </button> -->
 <!--                     <ul class="dropdown-menu" role="menu"> -->
-<!--                       <li><a href="import-services.html" disabled="disabled" data-field="toImportServices" data-i18n-key="import-services">Import Service(s)</a></li> -->
+<!--                       <li><a href="import-services.html" disabled="disabled" data-field="toImportServices" apiman-i18n-key="import-services">Import Service(s)</a></li> -->
 <!--                     </ul> -->
                   </div>
                 </div>
@@ -51,7 +51,7 @@
                   <div class="apiman-no-content container-fluid" ng-hide="services.length > 0">
                     <div class="row">
                       <div class="col-md-9">
-                        <p class="apiman-no-entities-description" data-i18n-key="no-services-found-for-org">We couldn't find any services in this organization. Probably because none exist. We hope. Try creating one using the New Service button.</p>
+                        <p class="apiman-no-entities-description" apiman-i18n-key="no-services-found-for-org">We couldn't find any services in this organization. Probably because none exist. We hope. Try creating one using the New Service button.</p>
                       </div>
                       <div class="col-md-3">
                         <div class="apiman-no-entities-arrow"></div>
@@ -62,7 +62,7 @@
                   <div class="apiman-no-content container-fluid" ng-show="services.length > 0 && filteredServices.length == 0">
                     <div class="row">
                       <div class="col-md-12">
-                        <p class="apiman-no-entities-description" data-i18n-key="no-services-found-for-filter">No services found matching your filter criteria - please try searching for something different.</p>
+                        <p class="apiman-no-entities-description" apiman-i18n-key="no-services-found-for-filter">No services found matching your filter criteria - please try searching for something different.</p>
                       </div>
                     </div>
                   </div>

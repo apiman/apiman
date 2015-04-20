@@ -10,11 +10,11 @@
     <div id="apiman-header" ng-include="'plugins/api-manager/html/navbar.include'"></div>   
     <div ng-controller="Apiman.EditPluginController" id="form-page" class="container apiman-edit-plugin apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div class="row">
-        <h2 class="title" data-i18n-key="plugin-details">Plugin Details</h2>
+        <h2 class="title" apiman-i18n-key="plugin-details">Plugin Details</h2>
       </div>
       <!-- Helpful hint -->
       <div class="row">
-        <p data-i18n-key="plugin-details-help-text" class="col-md-6 apiman-label-faded">Plugins cannot be edited, but details about the plugin can be viewed on this page.  Additionally, the plugin can be deleted via the Delete button below.</p>
+        <p apiman-i18n-key="plugin-details-help-text" class="col-md-6 apiman-label-faded">Plugins cannot be edited, but details about the plugin can be viewed on this page.  Additionally, the plugin can be deleted via the Delete button below.</p>
       </div>
       <!-- HR -->
       <div class="row hr-row">
@@ -24,11 +24,11 @@
         <!-- Left column -->
         <div class="col-md-6 container">
           <div class="row">
-            <h3 class="" data-i18n-key="plugin-coordinates">Plugin Coordinates</h3>
+            <h3 class="" apiman-i18n-key="plugin-coordinates">Plugin Coordinates</h3>
           </div>
           <div class="row">
             <dl>
-              <dt data-i18n-key="group-id">Group Id</dt>
+              <dt apiman-i18n-key="group-id">Group Id</dt>
               <dd>
                 <span data-field="groupId">{{ plugin.groupId }}</span>
               </dd>
@@ -36,7 +36,7 @@
           </div>
           <div class="row">
             <dl>
-              <dt data-i18n-key="artifact-id">Artifact Id</dt>
+              <dt apiman-i18n-key="artifact-id">Artifact Id</dt>
               <dd>
                 <span data-field="artifactId">{{ plugin.artifactId }}</span>
               </dd>
@@ -44,7 +44,7 @@
           </div>
           <div class="row">
             <dl>
-              <dt data-i18n-key="version">Version</dt>
+              <dt apiman-i18n-key="version">Version</dt>
               <dd>
                 <span data-field="version">{{ plugin.version }}</span>
               </dd>
@@ -52,7 +52,7 @@
           </div>
           <div class="row">
             <dl>
-              <dt data-i18n-key="classifier.optional">Classifier (optional)</dt>
+              <dt apiman-i18n-key="classifier.optional">Classifier (optional)</dt>
               <dd>
                 <span data-field="classifier">{{ plugin.classifier }}</span>
               </dd>
@@ -60,7 +60,7 @@
           </div>
           <div class="row">
             <dl>
-              <dt data-i18n-key="type.optional">Type (optional)</dt>
+              <dt apiman-i18n-key="type.optional">Type (optional)</dt>
               <dd>
                 <span data-field="type">{{ plugin.type }}</span>
               </dd>
@@ -70,11 +70,11 @@
         <!-- Right column -->
         <div class="col-md-6 container">
           <div class="row">
-            <h3 class="" data-i18n-key="plugin-info">Plugin Info</h3>
+            <h3 class="" apiman-i18n-key="plugin-info">Plugin Info</h3>
           </div>
           <div class="row">
             <dl>
-              <dt data-i18n-key="name">Name</dt>
+              <dt apiman-i18n-key="name">Name</dt>
               <dd>
                 <span data-field="name">{{ plugin.name }}</span>
               </dd>
@@ -82,7 +82,7 @@
           </div>
           <div class="row">
             <dl>
-              <dt data-i18n-key="description">Description</dt>
+              <dt apiman-i18n-key="description">Description</dt>
               <dd>
                 <span data-field="description">{{ plugin.description }}</span>
               </dd>
@@ -96,8 +96,8 @@
       </div>
       <!-- Create Button -->
       <div class="row">
-        <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" data-i18n-key="cancel">Cancel</a>
-        <button apiman-action-btn="" class="btn btn-danger" style="margin-left: 100px;" data-field="deleteButton" data-i18n-key="delete-plugin" placeholder="Deleting..." data-icon="fa-cog" ng-click="deletePlugin()">Delete Plugin</button>
+        <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" apiman-i18n-key="cancel">Cancel</a>
+        <button apiman-action-btn="" class="btn btn-danger" style="margin-left: 100px;" data-field="deleteButton" apiman-i18n-key="delete-plugin" placeholder="Deleting..." data-icon="fa-cog" ng-click="deletePlugin()">Delete Plugin</button>
       </div>
     </div> <!-- /container -->
   </body>

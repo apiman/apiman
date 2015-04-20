@@ -14,18 +14,18 @@
       </div>
       <div class="card-details">
         <div class="card-details-item">
-          <div class="card-label" data-i18n-key="email-label">Email:</div>
+          <div class="card-label" apiman-i18n-key="email-label">Email:</div>
           <div class="card-value"><a href="mailto:{{member.email}}" data-field="email">{{member.email}}</a></div>
         </div>
         <div class="card-details-item">
-          <div class="card-label" data-i18n-key="roles-label">Role(s):</div>
+          <div class="card-label" apiman-i18n-key="roles-label">Role(s):</div>
           <div class="card-value" data-field="roles">
             {{ joinRoles(member.roles) }}
           </div>
         </div>
         <div class="card-details-item">
           <i class="fa fa-clock-o"></i>
-          <div class="apiman-label-faded card-value" data-i18n-key="joined-on">Joined on</div>
+          <div class="apiman-label-faded card-value" apiman-i18n-key="joined-on">Joined on</div>
           <div class="card-value" data-field="joinedOn" data-role="dummy">{{ member.joinedOn | date:'yyyy-MM-dd' }}</div>
         </div>
       </div>

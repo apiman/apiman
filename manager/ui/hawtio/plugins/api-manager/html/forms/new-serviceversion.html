@@ -10,11 +10,11 @@
     <div id="apiman-header" ng-include="'plugins/api-manager/html/navbar.include'"></div>
     <div ng-controller="Apiman.NewServiceVersionController" class="container apiman-entity-new page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
       <div class="row">
-        <h2 class="title" data-i18n-key="new-service-version">New Service Version</h2>
+        <h2 class="title" apiman-i18n-key="new-service-version">New Service Version</h2>
       </div>
       <!-- Helpful hint -->
       <div class="row">
-        <p data-i18n-key="new-serviceversion-help-text" class="col-md-6 apiman-label-faded">Create a new version of this Service, allowing multiple different versions of the Service to be managed at the same time.</p>
+        <p apiman-i18n-key="new-serviceversion-help-text" class="col-md-6 apiman-label-faded">Create a new version of this Service, allowing multiple different versions of the Service to be managed at the same time.</p>
       </div>
       <!-- HR -->
       <div class="row hr-row">
@@ -23,7 +23,7 @@
       <!-- Service Version -->
       <div class="row">
         <dl>
-          <dt data-i18n-key="version">Version</dt>
+          <dt apiman-i18n-key="version">Version</dt>
           <dd>
             <input ng-model="svcversion.version" data-field="version" type="text" class="form-control version" id="apiman-version" placeholder="Enter version..."></input>
           </dd>
@@ -33,7 +33,7 @@
         <dl>
           <dd>
             <input ng-model="svcversion.clone" type="checkbox" id="cloneCB" data-field="cloneCB"></input>
-            <label for="cloneCB" data-i18n-key="make-clone">Make a clone of the previously selected version (copy all policies and settings)</label>
+            <label for="cloneCB" apiman-i18n-key="make-clone">Make a clone of the previously selected version (copy all policies and settings)</label>
           </dd>
         </dl>
       </div>
@@ -43,8 +43,8 @@
       </div>
       <!-- Create Button -->
       <div class="row">
-        <button ng-disabled="!svcversion.version" apiman-action-btn="" class="btn btn-primary" data-field="createButton" data-i18n-key="create-version" placeholder="Creating..." data-icon="fa-cog" ng-click="saveNewServiceVersion()">Create Version</button>
-        <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" data-i18n-key="cancel">Cancel</a>
+        <button ng-disabled="!svcversion.version" apiman-action-btn="" class="btn btn-primary" data-field="createButton" apiman-i18n-key="create-version" placeholder="Creating..." data-icon="fa-cog" ng-click="saveNewServiceVersion()">Create Version</button>
+        <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" apiman-i18n-key="cancel">Cancel</a>
       </div>
     </div> <!-- /container -->
   </body>
