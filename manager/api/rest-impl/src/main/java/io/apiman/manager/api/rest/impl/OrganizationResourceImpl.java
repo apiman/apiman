@@ -111,7 +111,6 @@ import io.apiman.manager.api.rest.contract.exceptions.PolicyDefinitionNotFoundEx
 import io.apiman.manager.api.rest.contract.exceptions.PolicyNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.RoleNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.ServiceAlreadyExistsException;
-import io.apiman.manager.api.rest.contract.exceptions.ServiceDefinitionNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.ServiceNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.ServiceVersionNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.SystemErrorException;
@@ -1272,8 +1271,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                     Response response = getServiceDefinition(organizationId, serviceId, bean.getCloneVersion());
                     InputStream definition = (InputStream) response.getEntity();
                     storeServiceDefinition(organizationId, serviceId, newVersion.getVersion(),
-                            newVersion.getDefinitionType(), definition);
-                } catch (ServiceDefinitionNotFoundException sdnfe) {
+                            cloneSource.getDefinitionType(), definition);
+                } catch (Exception sdnfe) {
+                    sdnfe.printStackTrace();
                 }
                 
                 // Clone all service policies

@@ -92,10 +92,12 @@
 
   <!-- Cloning -->
   <testGroup name="Test Cloning">
-    <test name="Clone 2.0 --> 2.1">test-plan-data/services/cloning/001_clone-version-2.1.resttest</test>
+    <test name="Add Service Definition to 1.0">test-plan-data/services/cloning/000_add-service-definition-1.0.resttest</test>
+    <test name="Clone 1.0 --> 2.1">test-plan-data/services/cloning/001_clone-version-2.1.resttest</test>
     <test name="List All Versions">test-plan-data/services/cloning/002_list-versions.resttest</test>
     <test name="Get Version 2.1">test-plan-data/services/cloning/003_get-version-2.1.resttest</test>
     <test name="List Policies">test-plan-data/services/cloning/004_list-policies.resttest</test>
+    <test name="List Policies">test-plan-data/services/cloning/005_get-cloned-service-definition.resttest</test>
   </testGroup>
 
 </testPlan>
