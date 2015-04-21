@@ -58,17 +58,5 @@
           "template" : "Requests matching any of the @{pathsToIgnore.size()} regular expressions provided will receive a 404 error code."
         }
       ]
-    },
-    {
-      "name" : "Caching Policy",
-      "description" : "Enables caching for back-end responses.",
-      "policyImpl" : "class:io.apiman.gateway.engine.policies.CachingPolicy",
-      "icon" : "database",
-      "templates" : [
-        {
-          "language" : null,
-          "template" : "Back-end responses will be cached for @{ttl} seconds."
-        }
-      ]
     }
 ]

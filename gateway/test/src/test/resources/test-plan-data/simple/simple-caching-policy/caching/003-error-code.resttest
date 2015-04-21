@@ -1,4 +1,0 @@
-GET /gateway/Policy_CachingPolicyTest/echo/1.0.0/path/to/error
-
-----
-500
