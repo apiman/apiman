@@ -63,7 +63,6 @@ public class TestVariableResolver implements VariableResolver {
     /**
      * @see org.mvel2.integration.VariableResolver#setStaticType(java.lang.Class)
      */
-    @SuppressWarnings("rawtypes")
     @Override
     public void setStaticType(Class type) {
     }

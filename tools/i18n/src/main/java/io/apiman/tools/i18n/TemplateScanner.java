@@ -76,7 +76,7 @@ public class TemplateScanner {
         String[] extensions = { "html", "include" };
         Collection<File> files = FileUtils.listFiles(templateDir, extensions, true);
         
-        TreeMap<String, String> strings = new TreeMap<String, String>();
+        TreeMap<String, String> strings = new TreeMap<>();
         
         for (File file : files) {
             System.out.println("\tScanning file: " + file);

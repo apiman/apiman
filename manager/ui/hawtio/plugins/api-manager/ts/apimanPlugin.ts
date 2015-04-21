@@ -3,7 +3,7 @@
 module Apiman {
 
     export var _module = angular.module(Apiman.pluginName,
-        ['ApimanServices', 'ApimanLogger', 'ApimanConfiguration', 'ApimanPageLifecycle',
+        ['ApimanServices', 'ApimanLogger', 'ApimanConfiguration', 'ApimanTranslation', 'ApimanPageLifecycle',
          'ApimanCurrentUser', 'ApimanDialogs', 'ui.sortable', 'xeditable']);
 
     var tab = undefined;

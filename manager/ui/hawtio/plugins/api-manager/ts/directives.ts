@@ -461,4 +461,21 @@ module Apiman {
       editableThemes['default'].buttonsTpl = '<div></div>';
       editableThemes['default'].formTpl = '<form class="editable-wrap description apiman-inline-edit"></form>';
     });
+
+    _module.directive('apimanI18nKey',
+        ['Logger', 'TranslationService',
+        function(Logger, TranslationService) {
+            return {
+                restrict: 'A',
+                link: function(scope, element, attrs) {
+                    var translationKey = attrs.apimanI18nKey;
+                    var defaultValue = $(element).text();
+                    if (translationKey) {
+                        var translatedValue = TranslationService.translate(translationKey, defaultValue);
+                        $(element).text(translatedValue);
+                    }
+                }
+            };
+        }]);
+
 }

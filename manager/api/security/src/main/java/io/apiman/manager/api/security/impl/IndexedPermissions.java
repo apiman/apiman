@@ -61,7 +61,6 @@ public class IndexedPermissions implements Serializable {
      * @param permissionName the permission type
      * @return set of org qualifiers
      */
-    @SuppressWarnings("unchecked")
     public Set<String> getOrgQualifiers(PermissionType permissionName) {
         Set<String> orgs = permissionToOrgsMap.get(permissionName);
         if (orgs == null)
