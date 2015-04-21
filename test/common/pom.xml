@@ -10,6 +10,11 @@
   <name>apiman-test-common</name>
 
   <dependencies>
+    <!-- Required apiman components -->
+    <dependency>
+      <groupId>io.apiman</groupId>
+      <artifactId>apiman-gateway-engine-core</artifactId>
+    </dependency>
     <!-- Required Third Party Libs -->
     <dependency>
       <groupId>xmlunit</groupId>
