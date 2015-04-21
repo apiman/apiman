@@ -40,6 +40,15 @@
   </servlet-mapping>
 
   <servlet>
+    <servlet-name>TranslationJS</servlet-name>
+    <servlet-class>io.apiman.manager.ui.server.servlets.TranslationServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>TranslationJS</servlet-name>
+    <url-pattern>/js/translations.nocache.js</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
     <servlet-name>TokenRefresh</servlet-name>
     <servlet-class>io.apiman.manager.ui.server.servlets.TokenRefreshServlet</servlet-class>
   </servlet>
@@ -48,14 +57,14 @@
     <url-pattern>/rest/tokenRefresh</url-pattern>
   </servlet-mapping>
 
-<!--   <servlet> -->
-<!--     <servlet-name>FetchProxy</servlet-name> -->
-<!--     <servlet-class>io.apiman.manager.ui.server.servlets.UrlFetchProxyServlet</servlet-class> -->
-<!--   </servlet> -->
-<!--   <servlet-mapping> -->
-<!--     <servlet-name>FetchProxy</servlet-name> -->
-<!--     <url-pattern>/proxies/fetch/*</url-pattern> -->
-<!--   </servlet-mapping> -->
+  <servlet>
+    <servlet-name>FetchProxy</servlet-name>
+    <servlet-class>io.apiman.manager.ui.server.servlets.UrlFetchProxyServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>FetchProxy</servlet-name>
+    <url-pattern>/proxies/fetch/*</url-pattern>
+  </servlet-mapping>
 
   <servlet>
     <servlet-name>ApiManProxy</servlet-name>

@@ -18,12 +18,14 @@ package io.apiman.common.util;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
+import java.util.TreeMap;
 
 /**
  * Base class for i18n messages classes.
@@ -120,6 +122,20 @@ public class AbstractMessages {
         } else {
             return MessageFormat.format("!!{0}!!", key); //$NON-NLS-1$
         }
+    }
+    
+    /**
+     * @return all strings in the bundle
+     */
+    public Map<String, String> all() {
+        Map<String, String> rval = new TreeMap<>();
+        ResourceBundle bundle = getBundle();
+        Enumeration<String> keys = bundle.getKeys();
+        while (keys.hasMoreElements()) {
+            String key = keys.nextElement();
+            rval.put(key, bundle.getString(key));
+        }
+        return rval;
     }
 
 }
