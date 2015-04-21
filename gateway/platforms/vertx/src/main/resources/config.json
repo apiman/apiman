@@ -13,7 +13,8 @@
     "ISharedStateComponent": { "class": "io.apiman.gateway.engine.impl.InMemorySharedStateComponent", "config": {} },
     "IDataStoreComponent": { "class": "io.apiman.gateway.engine.impl.InMemoryDataStoreComponent", "config": {} },
     "IRateLimiterComponent": { "class": "io.apiman.gateway.engine.impl.InMemoryRateLimiterComponent", "config": {} },
-    "IPolicyFailureFactoryComponent": { "class": "io.apiman.gateway.vertx.components.PolicyFailureFactoryComponent", "config": {} }
+    "IPolicyFailureFactoryComponent": { "class": "io.apiman.gateway.vertx.components.PolicyFailureFactoryComponent", "config": {} },
+    "IBufferFactoryComponent": { "class": "io.apiman.gateway.vertx.components.BufferFactoryComponentImpl", "config": {} }
   },
   
   // Host-name to bind to for this machine.
