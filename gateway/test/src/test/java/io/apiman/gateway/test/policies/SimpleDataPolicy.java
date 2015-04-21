@@ -17,8 +17,8 @@ package io.apiman.gateway.test.policies;
 
 import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.beans.ServiceResponse;
+import io.apiman.gateway.engine.components.IBufferFactoryComponent;
 import io.apiman.gateway.engine.io.AbstractStream;
-import io.apiman.gateway.engine.io.ByteBuffer;
 import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.gateway.engine.io.IReadWriteStream;
 import io.apiman.gateway.engine.policy.IDataPolicy;
@@ -35,7 +35,7 @@ import java.io.UnsupportedEncodingException;
  */
 @SuppressWarnings("nls")
 public class SimpleDataPolicy implements IPolicy, IDataPolicy {
-    
+
     /**
      * Constructor.
      */
@@ -49,7 +49,7 @@ public class SimpleDataPolicy implements IPolicy, IDataPolicy {
     public Object parseConfiguration(String jsonConfiguration) {
         return new Object();
     }
-    
+
     /**
      * @see io.apiman.gateway.engine.policy.IPolicy#apply(io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
      */
@@ -67,7 +67,7 @@ public class SimpleDataPolicy implements IPolicy, IDataPolicy {
             IPolicyChain<ServiceResponse> chain) {
         chain.doApply(response);
     }
-    
+
     /**
      * @see io.apiman.gateway.engine.policy.IDataPolicy#getRequestDataHandler(io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.policy.IPolicyContext)
      */
@@ -79,20 +79,20 @@ public class SimpleDataPolicy implements IPolicy, IDataPolicy {
             public ServiceRequest getHead() {
                 return request;
             }
-            
+
             @Override
             protected void handleHead(ServiceRequest head) {
             }
-            
+
             @Override
             public void write(IApimanBuffer chunk) {
                 try {
                     String chunkstr = chunk.toString("UTF-8");
                     if (chunkstr.contains("$NAME")) {
                         chunkstr = chunkstr.replaceAll("\\$NAME", "Barry Allen");
-                        ByteBuffer buffer = new ByteBuffer(chunkstr.length());
-                        buffer.append(chunkstr);
-                        super.write(buffer);
+                        IBufferFactoryComponent bufferFactory = context.<IBufferFactoryComponent>getComponent(IBufferFactoryComponent.class);
+
+                        super.write(bufferFactory.createBuffer(chunkstr));
                     } else {
                         super.write(chunk);
                     }
@@ -102,7 +102,7 @@ public class SimpleDataPolicy implements IPolicy, IDataPolicy {
             }
         };
     }
-    
+
     /**
      * @see io.apiman.gateway.engine.policy.IDataPolicy#getResponseDataHandler(io.apiman.gateway.engine.beans.ServiceResponse, io.apiman.gateway.engine.policy.IPolicyContext)
      */

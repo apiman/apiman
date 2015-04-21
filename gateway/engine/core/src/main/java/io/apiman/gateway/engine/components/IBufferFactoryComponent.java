@@ -15,6 +15,7 @@
  */
 package io.apiman.gateway.engine.components;
 
+import io.apiman.gateway.engine.IComponent;
 import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.gateway.engine.policy.IPolicy;
 
@@ -25,7 +26,7 @@ import io.apiman.gateway.engine.policy.IPolicy;
  * 
  * @author Marc Savy <msavy@redhat.com>
  */
-public interface IBufferFactoryComponent {
+public interface IBufferFactoryComponent extends IComponent {
 
     /**
      * Instantiate an {@link IApimanBuffer}.
