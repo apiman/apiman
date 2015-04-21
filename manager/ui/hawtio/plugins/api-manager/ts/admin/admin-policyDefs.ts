@@ -10,12 +10,11 @@ module Apiman {
                     $scope.filteredPolicyDefs = $scope.policyDefs;
                 } else {
                     var filtered = [];
-                    for (var i = 0; i < $scope.policyDefs.length; i++) {
-                        var policyDef = $scope.policyDefs[i];
-                        if (policyDef.name.toLowerCase().indexOf(value) > -1) {
+                    angular.forEach($scope.policyDefs, function(policyDef) {
+                        if (policyDef.name.toLowerCase().indexOf(value.toLowerCase()) > -1) {
                             filtered.push(policyDef);
                         }
-                    }
+                    });
                     $scope.filteredPolicyDefs = filtered;
                 }
             };

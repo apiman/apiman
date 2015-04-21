@@ -13,13 +13,11 @@ module Apiman {
                     $scope.filteredMembers = $scope.members;
                 } else {
                     var filtered = [];
-                    for (var i = 0; i < $scope.members.length; i++) {
-                        var member = $scope.members[i];
-                        if (member.userName.toLowerCase().indexOf(value.toLowerCase()) > -1
-                          || member.userId.toLowerCase().indexOf(value.toLowerCase()) > -1) {
+                    angular.forEach($scope.members, function(member) {
+                        if (member.userName.toLowerCase().indexOf(value.toLowerCase()) > -1 || member.userId.toLowerCase().indexOf(value.toLowerCase()) > -1) {
                             filtered.push(member);
                         }
-                    }
+                    });
                     $scope.filteredMembers = filtered;
                 }
             };

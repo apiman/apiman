@@ -13,12 +13,11 @@ module Apiman {
                     $scope.filteredApps = $scope.apps;
                 } else {
                     var filtered = [];
-                    for (var i = 0; i < $scope.apps.length; i++) {
-                        var app = $scope.apps[i];
-                        if (app.name.toLowerCase().indexOf(value) > -1) {
+                    angular.forEach($scope.apps, function(app) {
+                        if (app.name.toLowerCase().indexOf(value.toLowerCase()) > -1) {
                             filtered.push(app);
                         }
-                    }
+                    });
                     $scope.filteredApps = filtered;
                 }
             };

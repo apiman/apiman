@@ -12,12 +12,11 @@ module Apiman {
                     $scope.filteredServices = $scope.services;
                 } else {
                     var filtered = [];
-                    for (var i = 0; i < $scope.services.length; i++) {
-                        var svc = $scope.services[i];
-                        if (svc.name.toLowerCase().indexOf(value) > -1 || svc.organizationName.toLowerCase().indexOf(value) > -1) {
+                    angular.forEach($scope.services, function(svc) {
+                        if (svc.name.toLowerCase().indexOf(value.toLowerCase()) > -1 || svc.organizationName.toLowerCase().indexOf(value.toLowerCase()) > -1) {
                             filtered.push(svc);
                         }
-                    }
+                    });
                     $scope.filteredServices = filtered;
                 }
             };

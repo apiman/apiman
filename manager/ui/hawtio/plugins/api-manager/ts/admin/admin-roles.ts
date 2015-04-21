@@ -11,12 +11,11 @@ module Apiman {
                     $scope.filteredRoles = $scope.roles;
                 } else {
                     var filtered = [];
-                    for (var i = 0; i < $scope.roles.length; i++) {
-                        var role = $scope.roles[i];
-                        if (role.name.toLowerCase().indexOf(value) > -1) {
+                    angular.forEach($scope.roles, function(role) {
+                        if (role.name.toLowerCase().indexOf(value.toLowerCase()) > -1) {
                             filtered.push(role);
                         }
-                    }
+                    });
                     $scope.filteredRoles = filtered;
                 }
             };

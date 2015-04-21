@@ -38,12 +38,11 @@ module Apiman {
                     $scope.filteredContracts = $scope.contracts;
                 } else {
                     var fc = [];
-                    for (var i = 0; i < $scope.contracts.length; i++) {
-                        var contract = $scope.contracts[i];
-                        if (contract.serviceOrganizationName.toLowerCase().indexOf(value) > -1 || contract.serviceName.toLowerCase().indexOf(value) > -1) {
+                    angular.forEach($scope.contracts, function(contract) {
+                        if (contract.serviceOrganizationName.toLowerCase().indexOf(value.toLowerCase()) > -1 || contract.serviceName.toLowerCase().indexOf(value.toLowerCase()) > -1) {
                             fc.push(contract);
                         }
-                    }
+                    });
                     $scope.filteredContracts = fc;
                 }
             };

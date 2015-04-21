@@ -11,14 +11,13 @@ module Apiman {
                 if (!value) {
                     $scope.filteredOrgs = $scope.organizations;
                 } else {
-                    var fo = [];
-                    for (var i = 0; i < $scope.organizations.length; i++) {
-                        var org = $scope.organizations[i];
-                        if (org.name.toLowerCase().indexOf(value) > -1) {
-                            fo.push(org);
+                    var filtered = [];
+                    angular.forEach($scope.organizations, function(org) {
+                        if (org.name.toLowerCase().indexOf(value.toLowerCase()) > -1) {
+                            filtered.push(org);
                         }
-                    }
-                    $scope.filteredOrgs = fo;
+                    });
+                    $scope.filteredOrgs = filtered;
                 }
             };
             
