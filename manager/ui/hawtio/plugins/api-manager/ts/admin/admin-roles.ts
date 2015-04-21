@@ -5,7 +5,7 @@ module Apiman {
     export var AdminRolesController = _module.controller("Apiman.AdminRolesController",
         ['$q', '$scope', 'ApimanSvcs', 'PageLifecycle', 
         ($q, $scope, ApimanSvcs, PageLifecycle) => {
-            
+            $scope.tab = 'roles';
             $scope.filterRoles = function(value) {
                 if (!value) {
                     $scope.filteredRoles = $scope.roles;

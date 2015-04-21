@@ -22,7 +22,7 @@
                   <a ng-click="onServiceSelected(service)" href="#" class="item" ng-repeat="service in services" ng-class="{ selected : service.selected }">
                     <i class="fa fa-puzzle-piece fa-fw"></i>
                     <span class="">{{ service.organizationName }}</span>
-                    <span> / </span>
+                    <span apiman-i18n-skip> / </span>
                     <span class="emphasis">{{ service.name }}</span>
                   </a>
                   <div class="alert alert-info" ng-show="!services && criteria">

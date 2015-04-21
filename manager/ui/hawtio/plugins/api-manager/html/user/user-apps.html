@@ -29,7 +29,7 @@
                   <div>
                     <apiman-search-box function="filterApps" placeholder="Filter by org or app name..." />
                   </div>
-                  <a data-field="toNewApp" href="{{ pluginName }}/new-app" class="btn btn-primary pull-right">New App</a>
+                  <a apiman-i18n-key="new-app" data-field="toNewApp" href="{{ pluginName }}/new-app" class="btn btn-primary pull-right">New App</a>
                 </div>
                 <div class="clearfix"></div>
                 <!-- The list of applications the user has access to -->
@@ -57,7 +57,7 @@
                   <div class="container-fluid apiman-summaryrow" ng-repeat="app in filteredApps">
                     <div class="row">
                       <a href="{{ pluginName}}/orgs/{{ app.organizationId }}/apps">{{ app.organizationName }}</a>
-                      <span>/</span>
+                      <span apiman-i18n-skip>/</span>
                       <span class="title"><a href="{{ pluginName }}/orgs/{{ app.organizationId }}/apps/{{ app.id}}">{{ app.name }}</a></span>
                     </div>
                     <div class="row">

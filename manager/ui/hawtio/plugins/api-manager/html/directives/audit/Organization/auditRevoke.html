@@ -1,22 +1,22 @@
 <div class="row">
   <a href="{{ pluginName }}/users/{{ entry.who }}">{{ entry.who }}</a>
-  <span>revoked membership(s) in </span>
-  <a class="emphasis" href="{{ pluginName }}/orgs/{{ entry.organizationId }}/plans">{{ entry.organizationId }}</a><span>.</span>
+  <span apiman-i18n-key="audit.revoked-memberships">revoked membership(s) in </span>
+  <a class="emphasis" href="{{ pluginName }}/orgs/{{ entry.organizationId }}/plans">{{ entry.organizationId }}</a><span apiman-i18n-skip>.</span>
 </div>
 <div class="row boxed-row">
   <ul>
     <li ng-repeat="role in data.roles" ng-show="data.roles[0] != '*'">
       <span>
-        <span>Role</span>
+        <span apiman-i18n-key="audit.role">Role</span>
         <span class="emphasis">{{ role }}</span>
-        <span>was taken away from</span>
-        <a href="{{ pluginName }}/users/{{ data.userId }}/apps">{{ data.userId }}</a><span>.</span>
+        <span apiman-i18n-key="audit.was-taken-away-from">was taken away from</span>
+        <a href="{{ pluginName }}/users/{{ data.userId }}/apps">{{ data.userId }}</a><span apiman-i18n-skip>.</span>
       </span>
     </li>
   </ul>
   <span ng-show="data.roles[0] == '*'">
-    <span class="emphasis">All roles</span>
-    <span>were taken away from</span>
-    <a href="{{ pluginName }}/users/{{ data.userId }}/apps">{{ data.userId }}</a><span>.</span>
+    <span class="emphasis" apiman-i18n-key="audit.all-roles">All roles</span>
+    <span apiman-i18n-key="audit.were-taken-away-from">were taken away from</span>
+    <a href="{{ pluginName }}/users/{{ data.userId }}/apps">{{ data.userId }}</a><span apiman-i18n-skip>.</span>
   </span>
 </div>

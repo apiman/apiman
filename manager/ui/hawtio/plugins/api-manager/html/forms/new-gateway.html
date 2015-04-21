@@ -86,8 +86,8 @@
       <div class="row" ng-show="testResult == 'success'">
         <div class="alert alert-success description" style="margin-top: 10px">
           <span class="pficon pficon-ok"></span>
-          <strong>Gateway Configuration Valid</strong> 
-          <div>Your Gateway configuration is correct.  Great job!</div>
+          <strong apiman-i18n-key="gateway-config-valid.title">Gateway Configuration Valid</strong> 
+          <div apiman-i18n-key="gateway-config-valid.msg">Your Gateway configuration is correct.  Great job!</div>
         </div>
       </div>
       <div class="row" ng-show="testResult == 'error'">
@@ -96,8 +96,8 @@
             <span class="pficon pficon-error-octagon"></span>
             <span class="pficon pficon-error-exclamation"></span>
           </span>
-          <strong>Gateway Configuration Invalid</strong>
-          <div>Something has gone wrong when testing the Gateway.  Hopefully the details (below) will help you figure out what.</div>
+          <strong apiman-i18n-key="gateway-config-invalid.title">Gateway Configuration Invalid</strong>
+          <div apiman-i18n-key="gateway-config-invalid.msg">Something has gone wrong when testing the Gateway.  Hopefully the details (below) will help you figure out what.</div>
           <div style="margin-top: 8px">
             <pre>{{ testErrorMessage }}</pre>
           </div>

@@ -9,7 +9,7 @@
               <div class="versions">
                 <div class="btn-group apiman-entity-action" data-field="versions">
                   <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                    Version: {{version.version}}
+                    <span apiman-i18n-key="version_">Version:</span> {{version.version}}
                     <span class="caret"></span>
                   </button>
                   <ul class="dropdown-menu" role="menu">

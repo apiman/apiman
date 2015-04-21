@@ -4,29 +4,29 @@
     <input ng-model="config.limit" class="form-control inline-form-control" style="width: 100px" type="number" placeholder="# of requests"></input>
     <span apiman-i18n-key="requests-per">requests per</span>
     <select ng-model="config.granularity" apiman-select-picker="" data-field="granularity" class="selectpicker inline-line inline-form-dropdown" data-style="btn-default inline-form-dropdown" style="width: 100px">
-      <option value="" data-content="<span class='apiman-label-faded'>Granularity</span>">Granularity</option>
-      <option value="Application">Application</option>
-      <option value="User">User</option>
-      <option value="Service">Service</option>
+      <option value="" data-content="<span class='apiman-label-faded'>Granularity</span>" apiman-i18n-key="granularity">Granularity</option>
+      <option value="Application" apiman-i18n-key="rate-limiting.application">Application</option>
+      <option value="User" apiman-i18n-key="rate-limiting.user">User</option>
+      <option value="Service" apiman-i18n-key="rate-limiting.service">Service</option>
     </select>
     <span apiman-i18n-key="per">per</span>
     <select ng-model="config.period" apiman-select-picker="" data-field="period" class="selectpicker inline-line inline-form-dropdown" data-style="btn-default inline-form-dropdown" style="width: 100px">
-      <option value="" data-content="<span class='apiman-label-faded'>Period</span>">Period</option>
-      <option value="Second">Second</option>
-      <option value="Minute">Minute</option>
-      <option value="Hour">Hour</option>
-      <option value="Day">Day</option>
-      <option value="Month">Month</option>
-      <option value="Year">Year</option>
+      <option value="" data-content="<span class='apiman-label-faded'>Period</span>" apiman-i18n-key="rate-limiting.period">Period</option>
+      <option value="Second" apiman-i18n-key="rate-limiting.second">Second</option>
+      <option value="Minute" apiman-i18n-key="rate-limiting.minute">Minute</option>
+      <option value="Hour" apiman-i18n-key="rate-limiting.hour">Hour</option>
+      <option value="Day" apiman-i18n-key="rate-limiting.day">Day</option>
+      <option value="Month" apiman-i18n-key="rate-limiting.month">Month</option>
+      <option value="Year" apiman-i18n-key="rate-limiting.year">Year</option>
     </select>
   </div>
   <div style="margin-top: 8px;" id="userRow">
-    <span apiman-i18n-key="get-user-id-from">Get the user's id from:</span>
+    <span apiman-i18n-key="reate-limiting.get-user-id-from">Get the user's id from:</span>
     <input ng-model="config.userHeader" data-field="userHeader" class="form-control inline-form-control" style="width: 250px" type="text" placeholder="Enter header (e.g. X-Identity)..."></input>
   </div>
   <hr/>
   <div>
-    <p apiman-i18n-key="rate-limit-headers-help">
+    <p apiman-i18n-key="rate-limiting.rate-limit-headers-help">
       Configure the rate limiting related response headers below - these headers will 
       convey useful information to clients such as imposed limits and when the rate
       period will be reset.  You may override the default header names by supplying 
@@ -35,15 +35,15 @@
   </div>
   <div>
     <dl>
-      <dt apiman-i18n-key="limit-header">Limit Response Header</dt>
+      <dt apiman-i18n-key="rate-limiting.limit-header">Limit Response Header</dt>
       <dd>
         <input ng-model="config.headerLimit" data-field="limitHeader" class="form-control" style="" type="text" placeholder="X-RateLimit-Limit"></input>
       </dd>
-      <dt apiman-i18n-key="remaining-header">Remaining Response Header</dt>
+      <dt apiman-i18n-key="rate-limiting.remaining-header">Remaining Response Header</dt>
       <dd>
         <input ng-model="config.headerRemaining" data-field="remainingHeader" class="form-control" style="" type="text" placeholder="X-Rate-Limit-Remaining"></input>
       </dd>
-      <dt apiman-i18n-key="reset-header">Reset Response Header</dt>
+      <dt apiman-i18n-key="rate-limiting.reset-header">Reset Response Header</dt>
       <dd>
         <input ng-model="config.headerReset" data-field="resetHeader" class="form-control" style="" type="text" placeholder="X-Rate-Limit-Reset"></input>
       </dd>

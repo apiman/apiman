@@ -1,12 +1,12 @@
 <div class="row">
   <a href="{{ pluginName }}/users/{{ entry.who }}">{{ entry.who }}</a>
-  <span>deleted plan</span>
+  <span apiman-i18n-key="audit.deleted-plan">deleted plan</span>
   <a href="{{ pluginName }}/orgs/{{ entry.organizationId }}/plans">{{ entry.organizationId }}</a>
-  <span>/</span>
+  <span apiman-i18n-skip>/</span>
   <a class="emphasis" href="{{ pluginName }}/orgs/{{ entry.organizationId }}/plans/{{ entry.entityId }}">{{ entry.entityId }}</a>
   <span ng-show="entry.entityVersion">
-    <span>version</span>
+    <span apiman-i18n-key="audit.version">version</span>
     <a class="emphasis" href="{{ pluginName }}/orgs/{{ entry.organizationId }}/plans/{{ entry.entityId }}/{{ entry.entityVersion }}">{{ entry.entityVersion }}</a>
   </span>
-  <span>.</span>
+  <span apiman-i18n-skip>.</span>
 </div>

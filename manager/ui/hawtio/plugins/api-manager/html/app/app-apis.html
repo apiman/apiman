@@ -51,7 +51,7 @@
                       <td><a ng-click="toggle(api)" href="javascript:return false;"><i class="fa fa-fw {{ api.expanded ? 'fa-chevron-down' : 'fa-chevron-right' }}"></i></a></td>
                       <td>
                         <span><a href="{{ pluginName }}/browse/orgs/{{ api.serviceOrgId }}">{{ api.serviceOrgName }}</a>
-                        <span>/</span>
+                        <span apiman-i18n-skip>/</span>
                         <a href="{{ pluginName }}/browse/orgs/{{ api.serviceOrgId }}/{{ api.serviceName }}/{{ api.serviceVersion }}"><span class="emphasis">{{ api.serviceName }}</span></a></span>
                       </td>
                       <td><span>{{ api.serviceVersion }}</span></td>

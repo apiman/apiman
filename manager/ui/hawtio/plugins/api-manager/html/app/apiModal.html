@@ -10,13 +10,13 @@
         </h4>
       </div>
       <div class="modal-body">
-        <p class="explanation" apiman-i18n-key="dialog-explanation">To successfully invoke the managed service for this service contract, you must provide the appropriate API Key with each request. The API Key can be provided either by sending it as an HTTP Request Header named X-API-Key, or you can send it as a URL query parameter.</p>
+        <p class="explanation" apiman-i18n-key="api-dialog-explanation">To successfully invoke the managed service for this service contract, you must provide the appropriate API Key with each request. The API Key can be provided either by sending it as an HTTP Request Header named X-API-Key, or you can send it as a URL query parameter.</p>
         <hr style="margin-left: -25px; margin-right: -25px">
         <div class="form-label" apiman-i18n-key="as-query-param">As Query Parameter</div>
-        <textarea readonly style="width: 100%" class="gwt-TextArea">{{ asQueryParam }}</textarea>
-        <p>&nbsp;</p>
+        <textarea readonly style="width: 100%">{{ asQueryParam }}</textarea>
+        <p apiman-i18n-skip>&nbsp;</p>
         <div class="form-label" apiman-i18n-key="as-request-header">As HTTP Request Header</div>
-        <textarea readonly style="width: 100%" class="gwt-TextArea">{{ asRequestHeader }}</textarea>
+        <textarea readonly style="width: 100%">{{ asRequestHeader }}</textarea>
       </div>
       <div class="modal-footer">
         <button data-dismiss="modal" apiman-i18n-key="done" class="btn btn-default" type="button">Done</button>

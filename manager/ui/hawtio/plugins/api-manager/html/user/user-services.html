@@ -29,7 +29,7 @@
                   <div>
                     <apiman-search-box function="filterServices" placeholder="Filter by org or service name..." />
                   </div>
-                  <a data-field="toNewService" apiman-i18n-key="new-service" href="{{ pluginName}}/new-service" class="btn btn-primary pull-right">New Service</a>
+                  <a apiman-i18n-key="new-service" data-field="toNewService" apiman-i18n-key="new-service" href="{{ pluginName}}/new-service" class="btn btn-primary pull-right">New Service</a>
                 </div>
                 <div class="clearfix"></div>
                 <!-- The list of services the user has access to -->
@@ -57,11 +57,11 @@
                   <div class="container-fluid apiman-summaryrow" ng-repeat="service in filteredServices">
                     <div class="row">
                       <a href="{{ pluginName }}/orgs/{{ service.organizationId }}/services">{{ service.organizationName }}</a>
-                      <span>/</span>
+                      <span apiman-i18n-skip>/</span>
                       <span class="title"><a href="{{ pluginName }}/orgs/{{ service.organizationId }}/services/{{ service.id }}">{{ service.name }}</a></span>
                       <a class="apiman-summaryrow-icon">
                         <i class="fa fa-clock-o fa-fw"></i>
-                        <span class="title-summary-item">Created on</span>
+                        <span class="title-summary-item" apiman-i18n-key="created-on">Created on</span>
                         <span class="title-summary-item">{{ service.createdOn | date:'yyyy-MM-dd' }}</span>
                       </a>
                     </div>

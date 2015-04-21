@@ -4,7 +4,7 @@ module Apiman {
 
     export var AdminPolicyDefsController = _module.controller("Apiman.AdminPolicyDefsController",
         ['$q', '$scope', 'ApimanSvcs', 'PageLifecycle', ($q, $scope, ApimanSvcs, PageLifecycle) => {
-            
+            $scope.tab = 'policyDefs';
             $scope.filterPolicies = function(value) {
                 if (!value) {
                     $scope.filteredPolicyDefs = $scope.policyDefs;

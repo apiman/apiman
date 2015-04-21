@@ -45,11 +45,11 @@
                     <div class="col-md-10 col-no-padding">
                       <a href="{{ pluginName }}/browse/orgs/{{ contract.serviceOrganizationId }}">{{ contract.serviceOrganizationName }}</a> / <span class="title"><a href="{{ pluginName }}/browse/orgs/{{ contract.serviceOrganizationId }}/{{ contract.serviceId }}/{{ contract.serviceVersion }}">{{ contract.serviceName }}</a></span>
                       <div class="versionAndPlan">
-                        <span>Service version</span>
+                        <span apiman-i18n-key="app-contract.detail.service-version">Service version</span>
                         <span><a href="{{ pluginName }}/browse/orgs/{{ contract.serviceOrganizationId }}/{{ contract.serviceId }}/{{ contract.serviceVersion }}">{{ contract.serviceVersion }}</a></span>
-                        <span>via plan</span>
+                        <span apiman-i18n-key="app-contract.detail.via-plan">via plan</span>
                         <span><a>{{ contract.planName }}</a></span>
-                        <span>entered into on</span>
+                        <span apiman-i18n-key="app-contract.detail.entered-into">entered into on</span>
                         <i class="fa fa-clock-o fa-fw fa-inline"></i>
                         <span>{{ contract.createdOn | date: 'yyyy-MM-dd' }}</span>
                       </div>
@@ -58,7 +58,7 @@
                       </div>
                     </div>
                     <div class="col-md-2 col-no-padding">
-                      <span class="actions"><button apiman-status="Created,Ready" apiman-permission="appEdit" ng-click="break(contract)" class="btn btn-default">Break Contract</button></span>
+                      <span class="actions"><button apiman-i18n-key="break-contract" apiman-status="Created,Ready" apiman-permission="appEdit" ng-click="break(contract)" class="btn btn-default">Break Contract</button></span>
                     </div>
                   </div>
                   <hr />
@@ -66,7 +66,7 @@
               </div>
               
               <div class="apiman-no-content container-fluid" ng-show="filteredContracts.length == 0">
-                <p class="apiman-no-entities-description">This application doesn't appear to have any service contracts (or perhaps none that match your filter above).  Try creating a new Contract to a Service - if you do it will get listed here!</p>
+                <p class="apiman-no-entities-description" apiman-i18n-key="no-app-service-contracts.message">This application doesn't appear to have any service contracts (or perhaps none that match your filter above).  Try creating a new Contract to a Service - if you do it will get listed here!</p>
               </div>              
               
             </div>

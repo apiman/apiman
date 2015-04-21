@@ -21,13 +21,17 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import org.apache.commons.io.FileUtils;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Comment;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
+import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 
 /**
@@ -36,7 +40,7 @@ import org.jsoup.select.Elements;
  * all of the strings that require translation. This should then be compared
  * with the messages.properties file included in the API Manager UI project to
  * see if anything is missing.
- * 
+ *
  * TODO: integrate this into a maven plugin of some kind to automatically detect
  * missing strings during the build
  */
@@ -53,12 +57,12 @@ public class TemplateScanner {
             System.out.println("Template directory not provided (provided path is not a directory).");
             System.exit(1);
         }
-        
+
         if (!new File(templateDir, "dash.html").isFile()) {
             System.out.println("Template directory not provided (dash.html not found).");
             System.exit(1);
         }
-        
+
         File outputDir = new File(templateDir, "../../../../../../tools/i18n/target");
         if (!outputDir.isDirectory()) {
             System.out.println("Output directory not found: " + outputDir);
@@ -72,19 +76,19 @@ public class TemplateScanner {
 
         System.out.println("Starting scan.");
         System.out.println("Scanning template directory: " + templateDir.getAbsolutePath());
-        
+
         String[] extensions = { "html", "include" };
         Collection<File> files = FileUtils.listFiles(templateDir, extensions, true);
-        
+
         TreeMap<String, String> strings = new TreeMap<>();
-        
+
         for (File file : files) {
             System.out.println("\tScanning file: " + file);
             scanFile(file, strings);
         }
 
         outputMessages(strings, outputFile);
-        
+
         System.out.println("Scan complete.  Scanned " + files.size() + " files and discovered " + strings.size() + " translation strings.");
     }
 
@@ -93,10 +97,12 @@ public class TemplateScanner {
      * done by finding all elements with a "apiman-i18n-key" attribute.
      * @param file
      * @param strings
-     * @throws IOException 
+     * @throws IOException
      */
     private static void scanFile(File file, TreeMap<String, String> strings) throws IOException {
         Document doc = Jsoup.parse(file, "UTF-8");
+
+        // First, scan for elements with the 'apiman-i18n-key' attribute.  These require translating.
         Elements elements = doc.select("*[apiman-i18n-key]");
         for (Element element : elements) {
             String i18nKey = element.attr("apiman-i18n-key");
@@ -112,13 +118,44 @@ public class TemplateScanner {
                 strings.put(i18nKey, elementVal);
             }
         }
+
+        // Next, scan all elements to see if the element *should* be marked for translation
+        elements = doc.select("*");
+        for (Element element : elements) {
+            if (element.hasAttr("apiman-i18n-key") || element.hasAttr("apiman-i18n-skip")) {
+                continue;
+            }
+            if (hasNoChildren(element)) {
+                String value = element.text();
+                if (value != null && value.trim().length() > 0) {
+                    if (!value.contains("{{")) {
+                        throw new IOException("Found an element in '" + file.getName() + "' that should be translated:  " + element);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * @param element
+     * @return true if the element doesn't have any child elements
+     */
+    private static boolean hasNoChildren(Element element) {
+        List<Node> childNodes = element.childNodes();
+        for (Node node : childNodes) {
+            if (node instanceof TextNode || node instanceof Comment) {
+            } else {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
      * Output the sorted map of strings to the specified output file.
      * @param strings
      * @param outputFile
-     * @throws FileNotFoundException 
+     * @throws FileNotFoundException
      */
     private static void outputMessages(TreeMap<String, String> strings, File outputFile) throws FileNotFoundException {
         PrintWriter writer = new PrintWriter(new FileOutputStream(outputFile));

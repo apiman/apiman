@@ -12,10 +12,10 @@
       <dt apiman-i18n-key="identity-source">Identity Source</dt>
       <dd>
         <select ng-model="identitySourceType" apiman-select-picker="" class="selectpicker" data-live-search="false" data-field="identitySourceSelector">
-          <option value="" selected="selected" data-content="<span class='apiman-label-faded'>Choose an Identity Source...</span>">Choose an Identity Source...</option>
-          <option value="static" data-content="<span>Static</span>">Static</option>
-          <option value="jdbc" data-content="<span>JDBC</span>">JDBC</option>
-          <option value="ldap" data-content="<span>LDAP</span>">LDAP</option>
+          <option value="" selected="selected" data-content="<span class='apiman-label-faded'>Choose an Identity Source...</span>" apiman-i18n-key="basic-auth.choose-identity-source">Choose an Identity Source...</option>
+          <option value="static" apiman-i18n-key="basic-auth.static" data-content="<span>Static</span>">Static</option>
+          <option value="jdbc" apiman-i18n-key="basic-auth.jdbc" data-content="<span>JDBC</span>">JDBC</option>
+          <option value="ldap" apiman-i18n-key="basic-auth.ldap" data-content="<span>LDAP</span>">LDAP</option>
         </select>
       </dd>
     </dl>
@@ -24,7 +24,7 @@
   <!-- Static Identity Source - Form Fields -->
   <div id="static-form-fields" class="sub-form-fields" style="clear:both" ng-show="identitySourceType == 'static'">
     <div class="alert alert-warning" role="alert">
-      <p>The "static" identity source is typically only useful for testing - you probably don't want to use it in production!</p>
+      <p apiman-i18n-key="basic-auth.static-type-warning">The "static" identity source is typically only useful for testing - you probably don't want to use it in production!</p>
     </div>
     <div>
       <dt apiman-i18n-key="static-identities">Static Identities</dt>
@@ -40,7 +40,7 @@
     </div>
     <div style="width: 100%; float: left; margin-bottom: 10px; margin-top: 5px">
       <input ng-model="username" data-field="staticUsername" class="form-control" style="width: 85px; float: left; margin-right: 5px" type="text" placeholder="Username..."></input>
-      <div style="width: 8px; float: left; line-height: 28px"> : </div>
+      <div style="width: 8px; float: left; line-height: 28px" apiman-i18n-skip>:</div>
       <input ng-model="password" data-field="staticPassword" class="form-control" style="width: 102px; float: left; margin-right: 5px" type="text" placeholder="Password..."></input>
       <button ng-disabled="!username || !password" ng-click="add(username, password)" data-field="staticAdd" apiman-i18n-key="add" class="btn btn-default" style="min-width: 75px">Add</button>
     </div>
@@ -61,12 +61,12 @@
         <dt apiman-i18n-key="jdbc-hash-algorithm">Password Hash Algorithm</dt>
         <dd>
           <select ng-model="config.jdbcIdentity.hashAlgorithm" apiman-select-picker="" class="selectpicker" data-live-search="false">
-            <option value=None"">None</option>
-            <option value="SHA1">SHA1</option>
-            <option value="MD5">MD5</option>
-            <option value="SHA256">SHA256</option>
-            <option value="SHA384">SHA384</option>
-            <option value="SHA512">SHA512</option>
+            <option value=None" apiman-i18n-key="basic-auth.none">None</option>
+            <option value="SHA1" apiman-i18n-key="basic-auth.sha1">SHA1</option>
+            <option value="MD5" apiman-i18n-key="basic-auth.md5">MD5</option>
+            <option value="SHA256" apiman-i18n-key="basic-auth.sha256">SHA256</option>
+            <option value="SHA384" apiman-i18n-key="basic-auth.sha384">SHA384</option>
+            <option value="SHA512" apiman-i18n-key="basic-auth.sha512">SHA512</option>
           </select>
         </dd>
       </dl>

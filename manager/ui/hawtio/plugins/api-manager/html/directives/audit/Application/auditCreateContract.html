@@ -1,28 +1,28 @@
 <div class="row">
   <a href="{{ pluginName }}/users/{{ entry.who }}">{{ entry.who }}</a>
-  <span>created a contract from application</span>
+  <span apiman-i18n-key="audit.created-contract-from-app">created a contract from application</span>
   <a href="{{ pluginName }}/orgs/{{ entry.organizationId }}/apps">{{ entry.organizationId }}</a>
-  <span>/</span>
+  <span apiman-i18n-skip>/</span>
   <a class="emphasis" href="{{ pluginName }}/orgs/{{ entry.organizationId }}/apps/{{ entry.entityId }}">{{ entry.entityId }}</a>
-  <span>version</span>
-  <a class="emphasis" href="{{ pluginName }}/orgs/{{ entry.organizationId }}/apps/{{ entry.entityId }}/{{ entry.entityVersion }}">{{ entry.entityVersion }}</a><span>.</span>
+  <span apiman-i18n-key="audit.version">version</span>
+  <a class="emphasis" href="{{ pluginName }}/orgs/{{ entry.organizationId }}/apps/{{ entry.entityId }}/{{ entry.entityVersion }}">{{ entry.entityVersion }}</a><span apiman-i18n-skip>.</span>
 </div>
 <div class="row boxed-row">
-  <span>A contract was created between application</span>
+  <span apiman-i18n-key="audit.contract-created-between-app">A contract was created between application</span>
   <a href="{{ pluginName }}/orgs/{{ data.appOrgId }}/apps">{{ data.appOrgId }}</a>
-  <span>/</span>
+  <span apiman-i18n-skip>/</span>
   <a href="{{ pluginName }}/orgs/{{ data.appOrgId }}/apps/{{ data.appId }}">{{ data.appId }}</a>
-  <span>:</span>
+  <span apiman-i18n-skip>:</span>
   <a href="{{ pluginName }}/orgs/{{ data.appOrgId }}/apps/{{ data.appId }}/{{ data.appVersion }}">{{ data.appVersion }}</a>
-  <span>and service</span>
+  <span apiman-i18n-key="audit.and-service">and service</span>
   <a href="{{ pluginName }}/orgs/{{ data.serviceOrgId }}/services">{{ data.serviceOrgId }}</a>
-  <span>/</span>
+  <span apiman-i18n-skip>/</span>
   <a href="{{ pluginName }}/orgs/{{ data.serviceOrgId }}/services/{{ data.serviceId }}">{{ data.serviceId }}</a>
-  <span>:</span>
+  <span apiman-i18n-skip>:</span>
   <a href="{{ pluginName }}/orgs/{{ data.serviceOrgId }}/services/{{ data.serviceId }}/{{ data.serviceVersion }}">{{ data.serviceVersion }}</a>
-  <span>through version</span>
+  <span apiman-i18n-key="audit.through-version">through version</span>
   <a href="{{ pluginName }}/orgs/{{ data.planOrgId }}/plans/{{ data.planId }}/{{ data.planVersion }}">{{ data.planVersion }}</a>
-  <span>of plan</span>
+  <span apiman-i18n-key="audit.of-plan">of plan</span>
   <a href="{{ pluginName }}/orgs/{{ data.planOrgId }}/plans/{{ data.planId }}">{{ data.planId }}</a>
-  <span>.</span>
+  <span apiman-i18n-skip>.</span>
 </div>
