@@ -35,6 +35,11 @@
       <artifactId>mockito-all</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>io.apiman</groupId>
+      <artifactId>apiman-test-common</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
   <build>
     <resources>
