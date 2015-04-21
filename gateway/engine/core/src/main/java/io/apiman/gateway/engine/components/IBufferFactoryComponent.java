@@ -34,6 +34,14 @@ public interface IBufferFactoryComponent extends IComponent {
      * @return A new empty buffer
      */
     IApimanBuffer createBuffer();
+    
+    /**
+     * Instantiate an {@link IApimanBuffer} of given size.
+     * 
+     * @param size buffer size
+     * @return A new empty buffer of size
+     */
+    IApimanBuffer createBuffer(int size);
 
     /**
      * Instantiate an {@link IApimanBuffer} with {@link String}.

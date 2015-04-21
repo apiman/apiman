@@ -50,6 +50,10 @@ public class VertxApimanBuffer implements IApimanBuffer {
         this.nativeBuffer = new Buffer(byteData);
     }
 
+    public VertxApimanBuffer(int sizeHint) {
+        this.nativeBuffer = new Buffer(sizeHint);
+    }
+
     @Override
     public Object getNativeBuffer() {
         return nativeBuffer;
