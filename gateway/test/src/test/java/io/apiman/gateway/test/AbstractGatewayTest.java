@@ -15,6 +15,7 @@
  */
 package io.apiman.gateway.test;
 
+import io.apiman.gateway.engine.components.IBufferFactoryComponent;
 import io.apiman.gateway.engine.components.IDataStoreComponent;
 import io.apiman.gateway.engine.components.IHttpClientComponent;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
@@ -30,6 +31,7 @@ import io.apiman.gateway.engine.impl.InMemoryRegistry;
 import io.apiman.gateway.engine.impl.InMemorySharedStateComponent;
 import io.apiman.gateway.engine.policy.PolicyFactoryImpl;
 import io.apiman.gateway.platforms.servlet.PolicyFailureFactoryComponent;
+import io.apiman.gateway.platforms.servlet.components.BufferFactoryComponentImpl;
 import io.apiman.gateway.platforms.servlet.components.HttpClientComponentImpl;
 import io.apiman.gateway.platforms.servlet.connectors.HttpConnectorFactory;
 import io.apiman.gateway.platforms.war.WarEngineConfig;
@@ -85,6 +87,8 @@ public class AbstractGatewayTest {
                 HttpClientComponentImpl.class.getName());
         System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + IDataStoreComponent.class.getSimpleName(), 
                 InMemoryDataStoreComponent.class.getName());
+        System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + IBufferFactoryComponent.class.getSimpleName(), 
+                BufferFactoryComponentImpl.class.getName());
         System.setProperty(WarEngineConfig.APIMAN_GATEWAY_METRICS_CLASS, TestMetrics.class.getName());
 
         if (GatewayTestUtils.getTestType() == GatewayTestType.memory) {

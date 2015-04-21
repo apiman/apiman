@@ -24,9 +24,9 @@ import io.apiman.gateway.engine.beans.Service;
 import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.beans.ServiceResponse;
 import io.apiman.gateway.engine.beans.exceptions.ConnectorException;
-import io.apiman.gateway.engine.io.ByteBuffer;
 import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.gateway.platforms.servlet.GatewayThreadContext;
+import io.apiman.gateway.platforms.servlet.io.ByteBuffer;
 
 import java.io.IOException;
 import java.io.InputStream;

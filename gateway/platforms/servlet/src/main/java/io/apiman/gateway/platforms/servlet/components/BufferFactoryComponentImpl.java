@@ -58,4 +58,12 @@ public class BufferFactoryComponentImpl implements IBufferFactoryComponent {
     public IApimanBuffer createBuffer(byte[] byteData) {
         return new ByteBuffer(byteData);
     }
+
+    /**
+     * @see io.apiman.gateway.engine.components.IBufferFactoryComponent#createBuffer(int)
+     */
+    @Override
+    public IApimanBuffer createBuffer(int sizeHint) {
+        return new ByteBuffer(sizeHint);
+    }
 }

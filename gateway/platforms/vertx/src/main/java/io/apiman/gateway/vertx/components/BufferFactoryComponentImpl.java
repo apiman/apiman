@@ -58,4 +58,12 @@ public class BufferFactoryComponentImpl implements IBufferFactoryComponent {
     public IApimanBuffer createBuffer(byte[] byteData) {
         return new VertxApimanBuffer(byteData);
     }
+
+    /**
+     * @see io.apiman.gateway.engine.components.IBufferFactoryComponent#createBuffer(int)
+     */
+    @Override
+    public IApimanBuffer createBuffer(int size) {
+        return new VertxApimanBuffer(size);
+    }
 }
