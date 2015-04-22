@@ -52,7 +52,7 @@ public class PolicyFailureFactory {
     }
 
     public PolicyFailure doesNotHoldRequiredRoles(IPolicyContext context) {
-        return createAuthorizationPolicyFailure(context, 4, Messages.getString("KeycloakOauthPolicy.DoesNotHoldRequiredRoles"));
+        return createAuthorizationPolicyFailure(context, 4, Messages.getString("KeycloakOauthPolicy.DoesNotHoldRequiredRoles")); //$NON-NLS-1$
     }
 
     private PolicyFailure createAuthenticationPolicyFailure(IPolicyContext context, int failureCode,
