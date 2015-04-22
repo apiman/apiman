@@ -14,14 +14,14 @@
   </filter-mapping>
 
   <!-- CORS Filter -->
-<!--   <filter> -->
-<!--     <filter-name>CorsFilter</filter-name> -->
-<!--     <filter-class>io.apiman.common.servlet.ApimanCorsFilter</filter-class> -->
-<!--   </filter> -->
-<!--   <filter-mapping> -->
-<!--     <filter-name>CorsFilter</filter-name> -->
-<!--     <url-pattern>/*</url-pattern> -->
-<!--   </filter-mapping> -->
+  <filter>
+    <filter-name>CorsFilter</filter-name>
+    <filter-class>io.apiman.common.servlet.ApimanCorsFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>CorsFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
 
   <!-- Disable Caching Filter -->
   <filter>
@@ -32,7 +32,7 @@
     <filter-name>NoCacheFilter</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
-  
+
   <!-- Security Context Filter -->
   <filter>
     <filter-name>SecurityContext</filter-name>
