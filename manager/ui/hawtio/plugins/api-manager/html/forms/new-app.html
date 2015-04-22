@@ -30,7 +30,7 @@
             <dd>
               <div class="btn-group" data-field="orgSelector">
                 <button type="button" id="selector-org" class="btn btn-default dropdown-toggle" data-toggle="dropdown" data-field="button">
-                  <span data-field="selectorLabel" id="selector-org-value" apiman-i18n-key="select-org">{{selectedOrg.name}}</span> &nbsp;&nbsp;<span class="caret"></span>
+                  <span id="selector-org-value">{{selectedOrg.name}}</span> &nbsp;&nbsp;<span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu" data-field="organizations">
                    <li ng-repeat="org in organizations"><a href="#" ng-click="setOrg( org )">{{ org.name }}</a></li>
@@ -47,7 +47,7 @@
           <dl class="name">
             <dt apiman-i18n-key="application-name">Application Name</dt>
             <dd>
-              <input ng-model="app.name" data-field="name" type="text" class="form-control entityname" id="apiman-entityname" placeholder="Enter application name..."></input>
+              <input ng-model="app.name" data-field="name" type="text" class="form-control entityname" id="apiman-entityname" apiman-i18n-key="enter-app-name" placeholder="Enter application name..."></input>
             </dd>
           </dl>
         </div>
@@ -65,7 +65,7 @@
           <dl>
             <dt apiman-i18n-key="description">Description</dt>
             <dd>
-              <input ng-model="app.description" data-field="description" type="text" class="form-control description" id="apiman-description" placeholder="Enter application description (optional)..."></input>
+              <input ng-model="app.description" data-field="description" type="text" class="form-control description" id="apiman-description" apiman-i18n-key="enter-app-description" placeholder="Enter application description (optional)..."></input>
             </dd>
           </dl>
         </div>

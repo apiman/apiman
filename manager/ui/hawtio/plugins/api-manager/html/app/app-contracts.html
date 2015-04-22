@@ -32,7 +32,7 @@
             <div>
               <div class="apiman-filters apiman-contracts-filters">
                 <div>
-                  <apiman-search-box function="filterContracts" placeholder="Filter by org or service name..." />
+                  <apiman-search-box apiman-i18n-key="filter-app-contracts" function="filterContracts" placeholder="Filter by org or service name..." />
                 </div>
                 <a apiman-permission="appEdit" apiman-status="Created,Ready" data-field="toNewContract" apiman-i18n-key="new-contract" href="{{ pluginName }}/new-contract" class="btn btn-primary pull-right">New Contract</a>
                 <button ng-click="breakAll()" apiman-action-btn="" ng-disabled="!contracts.length" apiman-permission="appEdit" apiman-status="Created,Ready" data-field="breakAllContracts" apiman-i18n-key="break-all-contracts" placeholder="Breaking..." data-icon="fa-cog" class="btn btn-default pull-right">Break All</button>

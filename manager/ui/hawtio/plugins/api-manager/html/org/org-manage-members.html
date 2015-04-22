@@ -17,9 +17,9 @@
           <div class="apiman-filters apiman-members-filters">
             <div>
               <!-- Search for Members by name -->
-              <apiman-search-box function="filterMembers" placeholder="Filter by member name or id..."></api-manager-search-box>
+              <apiman-search-box apiman-i18n-key="filter-members" function="filterMembers" placeholder="Filter by member name or id..."></api-manager-search-box>
             </div>
-            <select title="Filter by role(s)..." ng-options="role.id as role.name for role in roles" ng-model="selectedRoles" class="selectpicker" apiman-select-picker="" multiple ng-change="filterMembers(filterValue)">
+            <select apiman-i18n-key="manage-members.filter-by-roles" title="Filter by role(s)..." ng-options="role.id as role.name for role in roles" ng-model="selectedRoles" class="selectpicker" apiman-select-picker="" multiple ng-change="filterMembers(filterValue)">
             </select>
             <a href="{{ pluginName }}/orgs/{{ organizationId }}/new-member" class="btn btn-primary pull-right" apiman-i18n-key="add-member">Add Member</a>
           </div>

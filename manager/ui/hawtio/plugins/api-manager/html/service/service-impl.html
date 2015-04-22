@@ -37,7 +37,7 @@
             </div>
             <div class="apiman-divider-20">
               <span class="clearfix" apiman-i18n-key="api-type-label">API Type:</span>
-              <select title="Choose a type..." apiman-select-picker="" ng-model="updatedService.endpointType" class="selectpicker" ng-options="type.toUpperCase() for type in typeOptions">
+              <select apiman-i18n-key="service-impl.choose-type" title="Choose a type..." apiman-select-picker="" ng-model="updatedService.endpointType" class="selectpicker" ng-options="type.toUpperCase() for type in typeOptions">
               </select>
             </div>
             <div id="gateway-info" ng-show="gateways.length > 1">

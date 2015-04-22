@@ -6,7 +6,7 @@
     <div class="body">
       <div class="card-edit-details">
         <div class="roles">
-          <select class="selectpicker" ng-model="updatedRoles" title="Select at least one role..."
+          <select class="selectpicker" ng-model="updatedRoles" apiman-i18n-key="select-member-role" title="Select at least one role..."
                   apiman-select-picker="" multiple ng-options="role.id as role.name for role in roles"
                   ng-select="member.roles">
           </select>

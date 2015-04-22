@@ -21,15 +21,15 @@
             <form role="form">
               <div class="form-group">
                 <label apiman-i18n-key="profile.username" for="usernameInput">Username</label>
-                <input ng-model="user.username" type="text" class="form-control" id="apiman-username" placeholder="Enter email" disabled="disabled">
+                <input ng-model="user.username" type="text" class="form-control" id="apiman-username" disabled="disabled">
               </div>
               <div class="form-group">
                 <label apiman-i18n-key="profile.full-name" for="nameInput">Full Name</label>
-                <input ng-model="updatedUser.fullName" type="text" class="form-control" id="apiman-name" placeholder="Enter your full name...">
+                <input ng-model="updatedUser.fullName" type="text" class="form-control" id="apiman-name" apiman-i18n-key="profile.enter-full-name" placeholder="Enter your full name...">
               </div>
               <div class="form-group">
                 <label apiman-i18n-key="profile.email" for="emailInput">Email</label>
-                <input ng-model="updatedUser.email" type="email" class="form-control" id="apiman-email" placeholder="Email address...">
+                <input ng-model="updatedUser.email" type="email" class="form-control" id="apiman-email" apiman-i18n-key="profile.enter-email" placeholder="Email address...">
               </div>
               <button ng-disabled="!isDirty || !isValid" apiman-action-btn="" class="btn btn-primary" data-field="updateButton" apiman-i18n-key="update-profile" placeholder="Updating..." data-icon="fa-cog" ng-click="save()">Update Profile</button>
               <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" apiman-i18n-key="cancel">Cancel</a>

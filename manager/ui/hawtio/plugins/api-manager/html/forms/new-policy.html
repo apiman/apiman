@@ -26,7 +26,7 @@
         <dl>
           <dt apiman-i18n-key="policy-type">Policy Type</dt>
           <dd>
-            <select ng-model="selectedDefId" apiman-select-picker="" class="selectpicker" data-live-search="true" title="Choose a policy type...">
+            <select ng-model="selectedDefId" apiman-select-picker="" class="selectpicker" data-live-search="true" apiman-i18n-key="new-policy.choose-policy-type" title="Choose a policy type...">
               <option value="__null__" data-content="<i class='fa fa-inline fa-fw'></i> <span class='apiman-label-faded'>Choose a policy type...</span>" apiman-i18n-key="new-policy.choose-policy-type">Choose a policy type...</option>
               <option value="{{ def.id }}" ng-repeat="def in policyDefs | orderBy : 'name.toLowerCase()'" data-content="<i class='fa fa-inline fa-fw fa-{{ def.icon }}'></i> <span>{{ def.name }}</span>">{{ def.name }}</option>
             </select>

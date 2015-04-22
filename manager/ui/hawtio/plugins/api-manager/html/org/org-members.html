@@ -28,7 +28,7 @@
               <div class="tab-pane active" id="tab-members">
                 <div class="apiman-filters apiman-members-filters">
                   <div>
-                    <apiman-search-box function="filterMembers" placeholder="Filter by member name..." />
+                    <apiman-search-box apiman-i18n-key="filter-members" function="filterMembers" apiman-i18n-key="org-members.filter-by-member-name" placeholder="Filter by member name..." />
                   </div>
                   <a apiman-permission="orgAdmin" href="{{ pluginName }}/orgs/{{org.id}}/manage-members" class="btn btn-default pull-right" data-field="toManageMembers" apiman-i18n-key="manage-members">Manage Members</a>
                 </div>

@@ -21,17 +21,17 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
 
 import org.apache.commons.io.FileUtils;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Comment;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
-import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 
 /**
@@ -46,6 +46,12 @@ import org.jsoup.select.Elements;
  */
 @SuppressWarnings("nls")
 public class TemplateScanner {
+
+    private static final Set<String> TRANSLATABLE_ATTRIBUTES = new HashSet<>();
+    static {
+        TRANSLATABLE_ATTRIBUTES.add("title");
+        TRANSLATABLE_ATTRIBUTES.add("placeholder");
+    }
 
     public static void main(String[] args) throws IOException {
         if (args == null || args.length != 1) {
@@ -106,16 +112,56 @@ public class TemplateScanner {
         Elements elements = doc.select("*[apiman-i18n-key]");
         for (Element element : elements) {
             String i18nKey = element.attr("apiman-i18n-key");
-            String elementVal = element.text();
+            boolean isNecessary = false;
+
+            // Process the element text (if the element has no children)
             if (strings.containsKey(i18nKey)) {
-                String currentValue = strings.get(i18nKey);
-                if (currentValue.equals(elementVal)) {
-                    strings.put(i18nKey, elementVal);
-                } else {
-                    throw new IOException("Duplicate i18n key found with different default values.  Key=" + i18nKey + "  Value1=" + elementVal + "  Value2=" + currentValue);
+                if (hasNoChildren(element)) {
+                    isNecessary = true;
+                    String elementVal = element.text();
+                    if (elementVal.trim().length() > 0 && !elementVal.contains("{{")) {
+                        String currentValue = strings.get(i18nKey);
+                        if (!currentValue.equals(elementVal)) {
+                            throw new IOException("Duplicate i18n key found with different default values.  Key=" + i18nKey + "  Value1=" + elementVal + "  Value2=" + currentValue);
+                        }
+                    }
                 }
             } else {
-                strings.put(i18nKey, elementVal);
+                if (hasNoChildren(element)) {
+                    String elementVal = element.text();
+                    if (elementVal.trim().length() > 0 && !elementVal.contains("{{")) {
+                        isNecessary = true;
+                        strings.put(i18nKey, elementVal);
+                    }
+                }
+            }
+
+            // Process the translatable attributes
+            for (String tattr : TRANSLATABLE_ATTRIBUTES) {
+                if (element.hasAttr(tattr)) {
+                    String attrValue = element.attr(tattr);
+                    if (attrValue.contains("{{")) {
+                        continue;
+                    }
+                    String attrI18nKey = i18nKey + '.' + tattr;
+                    String currentAttrValue = strings.get(attrI18nKey);
+                    if (currentAttrValue == null) {
+                        isNecessary = true;
+                        strings.put(attrI18nKey, attrValue);
+                    } else if (!currentAttrValue.equals(attrValue)) {
+                        throw new IOException(
+                                "Duplicate i18n key found with different default values (for attribute '"
+                                        + tattr + "').  Key=" + attrI18nKey + "  Value1=" + attrValue
+                                        + "  Value2=" + currentAttrValue);
+                    } else {
+                        isNecessary = true;
+                    }
+                }
+            }
+
+            if (!isNecessary) {
+                throw new IOException("Detected an unnecessary apiman-i18n-key attribute in file '"
+                        + file.getName() + "' on element: " + element);
             }
         }
 
@@ -134,6 +180,21 @@ public class TemplateScanner {
                 }
             }
         }
+
+        // Next scan elements with a translatable attribute and fail if any of those elements
+        // are missing the apiman-i18n-key attribute.
+        for (String tattr : TRANSLATABLE_ATTRIBUTES) {
+            elements = doc.select("*[" + tattr + "]");
+            for (Element element : elements) {
+                if (element.hasAttr("apiman-i18n-key") || element.hasAttr("apiman-i18n-skip") || element.attr(tattr).contains("{{")) {
+                    continue;
+                } else {
+                    throw new IOException("In template '" + file.getName() + "', found an element with a '"
+                            + tattr + "' attribute but missing 'apiman-i18n-key': " + element);
+                }
+            }
+        }
+
     }
 
     /**
@@ -143,8 +204,7 @@ public class TemplateScanner {
     private static boolean hasNoChildren(Element element) {
         List<Node> childNodes = element.childNodes();
         for (Node node : childNodes) {
-            if (node instanceof TextNode || node instanceof Comment) {
-            } else {
+            if (node instanceof Element) {
                 return false;
             }
         }

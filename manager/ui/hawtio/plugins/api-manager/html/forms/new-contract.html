@@ -31,9 +31,9 @@
                 of your available Applications below, and then choose an application version.
               </p>
               <div class="center-content" ng-show="apps.length > 0">
-                <select ng-model="selectedApp" apiman-select-picker="" class="selectpicker" data-live-search="true" title="Select an Application" ng-options="(app.organizationName + ' / ' + app.name) for app in apps"></select>
+                <select ng-model="selectedApp" apiman-select-picker="" class="selectpicker" data-live-search="true" apiman-i18n-key="select-app" title="Select an Application" ng-options="(app.organizationName + ' / ' + app.name) for app in apps"></select>
                 <span class="slash" apiman-i18n-skip>&#8680;</span>
-                <select ng-model="selectedAppVersion" apiman-select-picker="appVersions" class="selectpicker" title="Select a Version" ng-options="version for version in appVersions">
+                <select ng-model="selectedAppVersion" apiman-select-picker="appVersions" class="selectpicker" apiman-i18n-key="select-app-version" title="Select a Version" ng-options="version for version in appVersions">
                 </select>
               </div>
               <div class="alert alert-warning" ng-show="apps.length > 0 && selectedApp && appVersions.length == 0">
@@ -75,7 +75,7 @@
                 Use the drop-down below to choose one of the Plans made available by the selected Service.
               </p>
               <div class="center-content" ng-show="plans">
-                <select ng-model="selectedPlan" apiman-select-picker="" class="selectpicker" title="Select a Plan" ng-options="plan.planName for plan in plans">
+                <select ng-model="selectedPlan" apiman-select-picker="" class="selectpicker" apiman-i18n-key="select-plan" title="Select a Plan" ng-options="plan.planName for plan in plans">
                 </select>
               </div>
             </div>

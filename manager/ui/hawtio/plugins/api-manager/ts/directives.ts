@@ -31,16 +31,17 @@ module Apiman {
 
 
     _module.directive('apimanSelectPicker',
-        ['Logger', '$timeout', '$parse', function(Logger, $timeout, $parse) {
+        ['Logger', '$timeout', '$parse', 'TranslationService', 
+        function(Logger, $timeout, $parse, TranslationService) {
             return {
                 restrict: 'A',
                 link: function(scope, element, attrs) {
                     function refresh(newVal) {
                         scope.$applyAsync(function() {
-                            Logger.debug('Refreshing selectpicker {0} with {1} children.', attrs.ngModel, element[0].childNodes.length);
                             $(element)['selectpicker']('refresh');
                         });
                     }
+                    
                     $timeout(function() {
                         $(element)['selectpicker']();
                         $(element)['selectpicker']('refresh');
@@ -72,6 +73,10 @@ module Apiman {
                             $(element)['selectpicker']('destroy');
                         });
                     });
+                    
+                    $timeout(function() {
+                        $(element)['selectpicker']('refresh');
+                    }, 200);
                 }
             };
         }]);
@@ -180,15 +185,24 @@ module Apiman {
         }]);
 
     _module.directive('apimanSearchBox',
-        ['Logger', function(Logger) {
+        ['Logger', 'TranslationService', function(Logger, TranslationService) {
             return {
                 restrict: 'E',
+                replace: true,
                 templateUrl: 'plugins/api-manager/html/directives/searchBox.html',
                 scope: {
                     searchFunction: '=function'
                 },
                 link: function(scope, element, attrs) {
                     scope.placeholder = attrs.placeholder;
+
+                    if (attrs.apimanI18nKey) {
+                        var translationKey = attrs.apimanI18nKey + ".placeholder";
+                        var defaultValue = scope.placeholder;
+                        var translatedValue = TranslationService.translate(translationKey, defaultValue);
+                        scope.placeholder = translatedValue;
+                    }
+
                     scope.doSearch = function() {
                         $(element).find('button i').removeClass('fa-search');
                         $(element).find('button i').removeClass('fa-close');
@@ -468,11 +482,38 @@ module Apiman {
             return {
                 restrict: 'A',
                 link: function(scope, element, attrs) {
-                    var translationKey = attrs.apimanI18nKey;
-                    var defaultValue = $(element).text();
-                    if (translationKey) {
-                        var translatedValue = TranslationService.translate(translationKey, defaultValue);
+                    if (!attrs.apimanI18nKey) {
+                        return;
+                    }
+                    
+                    var translationKey, defaultValue, translatedValue;
+                    
+                    // Process the text of the element only if it has no child elements
+                    if ($(element).children().length == 0) {
+                        translationKey = attrs.apimanI18nKey;
+                        defaultValue = $(element).text();
+                        translatedValue = TranslationService.translate(translationKey, defaultValue);
                         $(element).text(translatedValue);
+                    }
+                    
+                    // Now process the placeholder attribute.
+                    if ($(element).attr('placeholder')) {
+                        translationKey = attrs.apimanI18nKey + '.placeholder';
+                        defaultValue = $(element).attr('placeholder');
+                        translatedValue = TranslationService.translate(translationKey, defaultValue);
+                        Logger.debug('Translating placeholder attr.  Key: {2}  default value: {0}  translated: {1}', defaultValue, translatedValue, translationKey);
+                        $(element).prop('placeholder', translatedValue);
+                        $(element).attr('placeholder', translatedValue);
+                    }
+                    
+                    // Now process the title attribute.
+                    if ($(element).attr('title')) {
+                        translationKey = attrs.apimanI18nKey + '.title';
+                        defaultValue = $(element).attr('title');
+                        translatedValue = TranslationService.translate(translationKey, defaultValue);
+                        Logger.debug('Translating title attr.  Key: {2}  default value: {0}  translated: {1}', defaultValue, translatedValue, translationKey);
+                        $(element).prop('title', translatedValue);
+                        $(element).attr('title', translatedValue);
                     }
                 }
             };
