@@ -36,19 +36,21 @@ import io.apiman.manager.api.beans.services.ServicePlanBean;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
 import io.apiman.manager.api.security.ISecurityContext;
 
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  * Contains a number of methods useful to create and manage audit entries for
  * actions taken by users in the management layer REST API.
- * 
+ *
  * @author eric.wittmann@redhat.com
  */
 public class AuditUtils {
-    
+
     private static final ObjectMapper mapper = new ObjectMapper();
 
     /**
@@ -65,7 +67,7 @@ public class AuditUtils {
         if (before == null) {
             return true;
         }
-        
+
         return !before.trim().equals(after.trim());
     }
 
@@ -83,13 +85,13 @@ public class AuditUtils {
         if (before == null) {
             return true;
         }
-        
+
         return !before.equals(after);
     }
 
     /**
      * Returns true only if the set has changed.
-     * 
+     *
      * @param before the value before change
      * @param after the value after change
      * @return true if value changed, else false
@@ -114,7 +116,7 @@ public class AuditUtils {
                 }
             }
         }
-        return false;      
+        return false;
     }
 
     /**
@@ -273,7 +275,7 @@ public class AuditUtils {
         entry.setData(toJSON(data));
         return entry;
     }
-    
+
     /**
      * Creates an audit entry when a service definition is updated.
      * @param bean the bean
@@ -662,7 +664,7 @@ public class AuditUtils {
      * Creates an audit entry for the 'application unregistered' event.
      * @param bean the bean
      * @param securityContext the security context
-     * @return the audit entry 
+     * @return the audit entry
      */
     public static AuditEntryBean applicationUnregistered(ApplicationVersionBean bean,
             ISecurityContext securityContext) {
@@ -677,7 +679,7 @@ public class AuditUtils {
      * Creates an audit entry for the 'plan locked' event.
      * @param bean the bean
      * @param securityContext the security context
-     * @return the audit entry  
+     * @return the audit entry
      */
     public static AuditEntryBean planLocked(PlanVersionBean bean, ISecurityContext securityContext) {
         AuditEntryBean entry = newEntry(bean.getPlan().getOrganization().getId(), AuditEntityType.Plan, securityContext);
@@ -692,7 +694,7 @@ public class AuditUtils {
      * @param svb the service and version
      * @param service the service type
      * @param securityContext the security context
-     * @return the audit entry 
+     * @return the audit entry
      */
     public static AuditEntryBean policiesReordered(ServiceVersionBean svb, PolicyType service,
             ISecurityContext securityContext) {
@@ -708,7 +710,7 @@ public class AuditUtils {
      * @param avb the application and version
      * @param service the service type
      * @param securityContext the security context
-     * @return the audit entry 
+     * @return the audit entry
      */
     public static AuditEntryBean policiesReordered(ApplicationVersionBean avb, PolicyType service,
             ISecurityContext securityContext) {
@@ -724,7 +726,7 @@ public class AuditUtils {
      * @param pvb the plan and version
      * @param service the service type
      * @param securityContext the security context
-     * @return the audit entry 
+     * @return the audit entry
      */
     public static AuditEntryBean policiesReordered(PlanVersionBean pvb, PolicyType service,
             ISecurityContext securityContext) {
@@ -734,13 +736,13 @@ public class AuditUtils {
         entry.setWhat(AuditEntryType.ReorderPolicies);
         return entry;
     }
-    
+
     /**
      * Creates an audit entry.
      * @param orgId the organization id
      * @param type
      * @param securityContext the security context
-     * @return the audit entry 
+     * @return the audit entry
      */
     private static AuditEntryBean newEntry(String orgId, AuditEntityType type, ISecurityContext securityContext) {
         // Wait for 1 ms to guarantee that two audit entries are never created at the same moment in time (which would
@@ -761,10 +763,20 @@ public class AuditUtils {
      * @return the service plans as a string
      */
     public static String asString_ServicePlanBeans(Set<ServicePlanBean> plans) {
+        TreeSet<ServicePlanBean> sortedPlans = new TreeSet<>(new Comparator<ServicePlanBean>() {
+            @Override
+            public int compare(ServicePlanBean o1, ServicePlanBean o2) {
+                String p1 = o1.getPlanId() + ":" + o1.getVersion(); //$NON-NLS-1$
+                String p2 = o2.getPlanId() + ":" + o2.getVersion(); //$NON-NLS-1$
+                return p1.compareTo(p2);
+            }
+        });
+        sortedPlans.addAll(plans);
+
         StringBuilder builder = new StringBuilder();
         boolean first = true;
         if (plans != null) {
-            for (ServicePlanBean plan : plans) {
+            for (ServicePlanBean plan : sortedPlans) {
                 if (!first) {
                     builder.append(", "); //$NON-NLS-1$
                 }
@@ -782,10 +794,18 @@ public class AuditUtils {
      * @return the gateways as a string
      */
     public static String asString_ServiceGatewayBeans(Set<ServiceGatewayBean> gateways) {
+        TreeSet<ServiceGatewayBean> sortedGateways = new TreeSet<>(new Comparator<ServiceGatewayBean>() {
+            @Override
+            public int compare(ServiceGatewayBean o1, ServiceGatewayBean o2) {
+                return o1.getGatewayId().compareTo(o2.getGatewayId());
+            }
+        });
+        sortedGateways.addAll(gateways);
+
         StringBuilder builder = new StringBuilder();
         boolean first = true;
         if (gateways != null) {
-            for (ServiceGatewayBean gateway : gateways) {
+            for (ServiceGatewayBean gateway : sortedGateways) {
                 if (!first) {
                     builder.append(", "); //$NON-NLS-1$
                 }
