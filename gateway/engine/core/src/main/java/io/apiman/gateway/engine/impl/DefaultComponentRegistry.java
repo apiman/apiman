@@ -18,7 +18,6 @@ package io.apiman.gateway.engine.impl;
 import io.apiman.gateway.engine.IComponent;
 import io.apiman.gateway.engine.IComponentRegistry;
 import io.apiman.gateway.engine.beans.exceptions.ComponentNotFoundException;
-import io.apiman.gateway.engine.components.IDataStoreComponent;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.components.IRateLimiterComponent;
 import io.apiman.gateway.engine.components.ISharedStateComponent;
@@ -27,23 +26,53 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A default component registry, useful primarily for testing and 
+ * A default component registry, useful primarily for testing and
  * bootstrapping.
  *
  * @author eric.wittmann@redhat.com
  */
 public class DefaultComponentRegistry implements IComponentRegistry {
-    
+
     private Map<Class<? extends IComponent>, IComponent> components = new HashMap<>();
-    
+
     /**
      * Constructor.
      */
     public DefaultComponentRegistry() {
-        components.put(ISharedStateComponent.class, new InMemorySharedStateComponent());
-        components.put(IDataStoreComponent.class, new InMemoryDataStoreComponent());
-        components.put(IRateLimiterComponent.class, new InMemoryRateLimiterComponent());
-        components.put(IPolicyFailureFactoryComponent.class, new DefaultPolicyFailureFactoryComponent());
+        registerSharedStateComponent();
+        registerRateLimiterComponent();
+        registerPolicyFailureFactoryComponent();
+        registerHttpClientComponent();
+        registerBufferFactoryComponent();
+    }
+
+    protected void registerHttpClientComponent() {
+        // there's no platform-independent impl of this
+    }
+
+    protected void registerBufferFactoryComponent() {
+        // there's no platform-independent impl of this
+    }
+
+    protected void registerPolicyFailureFactoryComponent() {
+        addComponent(IPolicyFailureFactoryComponent.class, new DefaultPolicyFailureFactoryComponent());
+    }
+
+    protected void registerRateLimiterComponent() {
+        addComponent(IRateLimiterComponent.class, new InMemoryRateLimiterComponent());
+    }
+
+    protected void registerSharedStateComponent() {
+        addComponent(ISharedStateComponent.class, new InMemorySharedStateComponent());
+    }
+
+    /**
+     * Adds a component to the registry.
+     * @param componentType
+     * @param component
+     */
+    protected <T extends IComponent> void addComponent(Class<T> componentType, T component) {
+        components.put(componentType, component);
     }
 
     /**

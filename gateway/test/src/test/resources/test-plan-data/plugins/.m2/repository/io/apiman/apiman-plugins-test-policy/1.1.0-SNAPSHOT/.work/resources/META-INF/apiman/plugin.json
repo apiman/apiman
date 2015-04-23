@@ -1,0 +1,4 @@
+{
+  "name" : "Test Policy Plugin",
+  "description" : "This plugin adds a header to the inbound http request.  This can be checked during testing to verify that it was properly invoked."
+}

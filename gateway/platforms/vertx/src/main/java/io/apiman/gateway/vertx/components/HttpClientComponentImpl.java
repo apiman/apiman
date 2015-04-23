@@ -15,9 +15,16 @@
  */
 package io.apiman.gateway.vertx.components;
 
+import io.apiman.gateway.engine.async.AsyncResultImpl;
+import io.apiman.gateway.engine.async.IAsyncResultHandler;
+import io.apiman.gateway.engine.components.IHttpClientComponent;
+import io.apiman.gateway.engine.components.http.HttpMethod;
+import io.apiman.gateway.engine.components.http.IHttpClientRequest;
+import io.apiman.gateway.engine.components.http.IHttpClientResponse;
+import io.apiman.gateway.vertx.i18n.Messages;
+
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Map;
 
 import org.vertx.java.core.Handler;
 import org.vertx.java.core.Vertx;
@@ -27,20 +34,11 @@ import org.vertx.java.core.http.HttpClient;
 import org.vertx.java.core.http.HttpClientRequest;
 import org.vertx.java.core.http.HttpClientResponse;
 
-import io.apiman.gateway.engine.async.AsyncResultImpl;
-import io.apiman.gateway.engine.async.IAsyncResultHandler;
-import io.apiman.gateway.engine.components.IHttpClientComponent;
-import io.apiman.gateway.engine.components.http.HttpMethod;
-import io.apiman.gateway.engine.components.http.IHttpClientRequest;
-import io.apiman.gateway.engine.components.http.IHttpClientResponse;
-import io.apiman.gateway.vertx.config.VertxEngineConfig;
-import io.apiman.gateway.vertx.i18n.Messages;
-
 /**
  * A Vert.x based implementation of {@link IHttpClientComponent}. Ensure that
  * {@link IHttpClientRequest#end()} is called after writing is finished, or your data may never be sent, and
  * the connection will be left hanging.
- * 
+ *
  * @author Marc Savy <msavy@redhat.com>
  */
 public class HttpClientComponentImpl implements IHttpClientComponent {
@@ -48,7 +46,7 @@ public class HttpClientComponentImpl implements IHttpClientComponent {
     private Vertx vertx;
     private IAsyncResultHandler<IHttpClientResponse> responseHandler;
 
-    public HttpClientComponentImpl(Vertx vertx, VertxEngineConfig engineConfig, Map<String, String> config) {
+    public HttpClientComponentImpl(Vertx vertx) {
         this.vertx = vertx;
     }
 
@@ -63,7 +61,7 @@ public class HttpClientComponentImpl implements IHttpClientComponent {
                 setHost(pEndpoint.getHost()).
                 setPort(pEndpoint.getPort());
 
-        HttpClientRequest request = client.request(method.toString(), 
+        HttpClientRequest request = client.request(method.toString(),
                 pEndpoint.getPath(),
                 new HttpClientResponseImpl());
 

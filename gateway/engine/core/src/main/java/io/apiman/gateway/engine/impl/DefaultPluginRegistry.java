@@ -22,6 +22,7 @@ import io.apiman.common.plugin.PluginSpec;
 import io.apiman.common.plugin.PluginUtils;
 import io.apiman.gateway.engine.IPluginRegistry;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
+import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.i18n.Messages;
 
@@ -30,22 +31,23 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 /**
  * A simple plugin registry that stores plugins in a temporary location.  This
  * implementation shouldn't really be used except for testing and perhaps getting
- * started with embedding the policy engine.  The reasons to not use this 
+ * started with embedding the policy engine.  The reasons to not use this
  * implementation include:
- * 
+ *
  * 1) not truly asynchronous (not good if embedding in a true async platform)
  * 2) stores downloaded plugins in java.io.tmp
  * 3) does not remember where it put plugins, so will re-download them often
@@ -53,7 +55,7 @@ import org.apache.commons.io.IOUtils;
  * @author eric.wittmann@redhat.com
  */
 public class DefaultPluginRegistry implements IPluginRegistry {
-    
+
     private static File createTempPluginsDir() {
         // TODO log a warning here
         try {
@@ -66,7 +68,7 @@ public class DefaultPluginRegistry implements IPluginRegistry {
             throw new RuntimeException(e);
         }
     }
-    
+
     private static File getConfiguredPluginsDir(Map<String, String> configMap) {
         String pluginsDirPath = configMap.get("pluginsDir"); //$NON-NLS-1$
         if (pluginsDirPath != null) {
@@ -100,9 +102,10 @@ public class DefaultPluginRegistry implements IPluginRegistry {
         }
         return rval;
     }
-    
+
     private File pluginsDir;
     private Map<PluginCoordinates, Plugin> pluginCache = new HashMap<>();
+    private Map<PluginCoordinates, Throwable> errorCache = new HashMap<>();
     private Set<URL> pluginRepositories;
 
     /**
@@ -111,13 +114,21 @@ public class DefaultPluginRegistry implements IPluginRegistry {
     public DefaultPluginRegistry() {
         this(createTempPluginsDir(), PluginUtils.getDefaultMavenRepositories());
     }
-    
+
     /**
      * Constructor.
      * @param configMap the configuration map
      */
     public DefaultPluginRegistry(Map<String, String> configMap) {
         this(getConfiguredPluginsDir(configMap), getConfiguredPluginRepositories(configMap));
+    }
+
+    /**
+     * Constructor.
+     * @param pluginsDir the plugins directory
+     */
+    public DefaultPluginRegistry(File pluginsDir) {
+        this(pluginsDir, PluginUtils.getDefaultMavenRepositories());
     }
 
     /**
@@ -134,59 +145,124 @@ public class DefaultPluginRegistry implements IPluginRegistry {
      * @see io.apiman.gateway.engine.IPluginRegistry#loadPlugin(io.apiman.common.plugin.PluginCoordinates, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
-    public void loadPlugin(PluginCoordinates coordinates, IAsyncResultHandler<Plugin> handler) {
-        // 0) check if the plugin is in the cache - if found return it immediately
-        // 1) check to see if the plugin is located in the pluginsDir
-        // 2) if not, try to "download" it from the local .m2 directory
-        // 3) if not found, try to download it from available remote repositories
-        // 4) if still not found, report an error
-        // 5) if found, load the plugin, cache it, and return it
-        Plugin plugin = null;
-        Throwable error = null;
+    public void loadPlugin(final PluginCoordinates coordinates, final IAsyncResultHandler<Plugin> userHandler) {
+        // Wrap the user provided handler so we can hook into the response.  We want to cache
+        // the result (regardless of whether it's a success or failure)
+        final IAsyncResultHandler<Plugin> handler = new IAsyncResultHandler<Plugin>() {
+            @Override
+            public void handle(IAsyncResult<Plugin> result) {
+                if (result.isError()) {
+                    errorCache.put(coordinates, result.getError());
+                } else {
+                    pluginCache.put(coordinates, result.getResult());
+                }
+                userHandler.handle(result);
+            }
+        };
+
         synchronized (pluginCache) {
+            boolean handled = false;
+
+            // First check the cache.
             if (pluginCache.containsKey(coordinates)) {
-                plugin = pluginCache.get(coordinates);
-            } else {
+                // Invoke the user handler directly - we know we don't need to re-cache it.
+                userHandler.handle(AsyncResultImpl.create(pluginCache.get(coordinates)));
+                handled = true;
+            }
+
+            // Check the error cache - don't keep trying again and again for a failure.
+            if (!handled) {
+                if (errorCache.containsKey(coordinates)) {
+                    // Invoke the user handle directly - we know we don't need to re-cache it.
+                    userHandler.handle(AsyncResultImpl.create(errorCache.get(coordinates), Plugin.class));
+                    handled = true;
+                }
+            }
+
+            // Next try to load it from the plugin file registry
+            if (!handled) {
                 String pluginRelativePath = PluginUtils.getPluginRelativePath(coordinates);
                 File pluginDir = new File(pluginsDir, pluginRelativePath);
                 if (!pluginDir.exists()) {
                     pluginDir.mkdirs();
                 }
                 File pluginFile = new File(pluginDir, "plugin." + coordinates.getType()); //$NON-NLS-1$
-                // Doesn't exist?  Try to copy it from <user>/.m2/repository
-                if (!pluginFile.exists()) {
-                    copyFromM2(pluginFile, coordinates);
-                }
-                // Doesn't exist?  Better download it
-                if (!pluginFile.exists()) {
-                    downloadPlugin(pluginFile, coordinates);
-                }
-                // Still doesn't exist?  That's a failure.
-                if (!pluginFile.exists()) {
-                    error = new Exception(Messages.i18n.format("DefaultPluginRegistry.PluginNotFound")); //$NON-NLS-1$
-                } else {
+                if (pluginFile.isFile()) {
+                    handled = true;
                     try {
-                        PluginClassLoader pluginClassLoader = createPluginClassLoader(pluginFile);
-                        URL specFile = pluginClassLoader.getResource(PluginUtils.PLUGIN_SPEC_PATH);
-                        if (specFile == null) {
-                            error = new Exception(Messages.i18n.format("DefaultPluginRegistry.MissingPluginSpecFile", PluginUtils.PLUGIN_SPEC_PATH)); //$NON-NLS-1$
-                        } else {
-                            PluginSpec spec = PluginUtils.readPluginSpecFile(specFile);
-                            plugin = new Plugin(spec, coordinates, pluginClassLoader);
-                            pluginCache.put(coordinates, plugin);
-                        }
-                    } catch (Exception e) {
-                        error = new Exception(Messages.i18n.format("DefaultPluginRegistry.InvalidPlugin", pluginFile.getAbsolutePath()), e); //$NON-NLS-1$
+                        handler.handle(AsyncResultImpl.create(readPluginFile(coordinates, pluginFile)));
+                    } catch (Exception error) {
+                        handler.handle(AsyncResultImpl.<Plugin>create(error));
                     }
                 }
             }
+
+            // Next try to load it from the user's .m2 directory
+            if (!handled) {
+                File m2Dir = PluginUtils.getUserM2Repository();
+                String m2Override = System.getProperty("apiman.gateway.m2-repository-path"); //$NON-NLS-1$
+                if (m2Override != null) {
+                    m2Dir = new File(m2Override).getAbsoluteFile();
+                }
+                if (m2Dir != null) {
+                    File pluginFile = PluginUtils.getM2Path(m2Dir, coordinates);
+                    if (pluginFile.isFile()) {
+                        handled = true;
+                        try {
+                            handler.handle(AsyncResultImpl.create(readPluginFile(coordinates, pluginFile)));
+                        } catch (Exception error) {
+                            handler.handle(AsyncResultImpl.<Plugin>create(error));
+                        }
+                    }
+                }
+            }
+
+            // Last effort - try to download it from a remote maven repository.  If this fails, then
+            // we have to simply report "plugin not found".
+            if (!handled) {
+                downloadPlugin(coordinates, new IAsyncResultHandler<File>() {
+                    @Override
+                    public void handle(IAsyncResult<File> result) {
+                        if (result.isSuccess()) {
+                            File pluginFile = result.getResult();
+                            if (pluginFile == null || !pluginFile.isFile()) {
+                                handler.handle(AsyncResultImpl.<Plugin>create(new Exception(Messages.i18n.format("DefaultPluginRegistry.PluginNotFound")))); //$NON-NLS-1$
+                            } else {
+                                try {
+                                    handler.handle(AsyncResultImpl.create(readPluginFile(coordinates, pluginFile)));
+                                } catch (Exception error) {
+                                    handler.handle(AsyncResultImpl.<Plugin>create(error));
+                                }
+                            }
+                        } else {
+                            handler.handle(AsyncResultImpl.<Plugin>create(result.getError()));
+                        }
+                    }
+                });
+            }
         }
-        if (error != null) {
-            handler.handle(AsyncResultImpl.<Plugin>create(error));
-        } else if (plugin != null) {
-            handler.handle(AsyncResultImpl.create(plugin));
-        } else {
-            handler.handle(AsyncResultImpl.<Plugin>create(new Exception("Failed to load plugin (unknown reason)."))); //$NON-NLS-1$
+    }
+
+    /**
+     * Reads the plugin into an object.  This method will fail if the plugin is not valid.
+     * This could happen if the file is not a java archive, or if the plugin spec file is
+     * missing from the archive, etc.
+     * @param coordinates
+     * @param pluginFile
+     */
+    protected Plugin readPluginFile(PluginCoordinates coordinates, File pluginFile) throws Exception {
+        try {
+            PluginClassLoader pluginClassLoader = createPluginClassLoader(pluginFile);
+            URL specFile = pluginClassLoader.getResource(PluginUtils.PLUGIN_SPEC_PATH);
+            if (specFile == null) {
+                throw new Exception(Messages.i18n.format("DefaultPluginRegistry.MissingPluginSpecFile", PluginUtils.PLUGIN_SPEC_PATH)); //$NON-NLS-1$
+            } else {
+                PluginSpec spec = PluginUtils.readPluginSpecFile(specFile);
+                Plugin plugin = new Plugin(spec, coordinates, pluginClassLoader);
+                return plugin;
+            }
+        } catch (Exception e) {
+            throw new Exception(Messages.i18n.format("DefaultPluginRegistry.InvalidPlugin", pluginFile.getAbsolutePath()), e); //$NON-NLS-1$
         }
     }
 
@@ -208,69 +284,85 @@ public class DefaultPluginRegistry implements IPluginRegistry {
     }
 
     /**
-     * Try to copy the plugin from the current user's .m2 directory.  In production this should 
-     * typically not do anything.
-     * @param pluginFile
+     * Downloads the plugin via its maven GAV information.  This will first look in the local
+     * .m2 directory.  If the plugin is not found there, then it will try to download the
+     * plugin from one of the configured remote maven repositories.
      * @param coordinates
+     * @param handler
      */
-    protected void copyFromM2(File pluginFile, PluginCoordinates coordinates) {
-        File m2Dir = PluginUtils.getUserM2Repository();
-        String m2Override = System.getProperty("apiman.gateway.m2-repository-path"); //$NON-NLS-1$
-        if (m2Override != null) {
-            m2Dir = new File(m2Override).getAbsoluteFile();
+    protected void downloadPlugin(final PluginCoordinates coordinates, final IAsyncResultHandler<File> handler) {
+        if (pluginRepositories.isEmpty()) {
+            // Didn't find it - no repositories configured!
+            handler.handle(AsyncResultImpl.create((File) null));
+            return;
         }
-        if (m2Dir != null) {
-            File artifactFile = PluginUtils.getM2Path(m2Dir, coordinates);
-            if (artifactFile.isFile()) {
-                try {
-                    FileUtils.copyFile(artifactFile, pluginFile);
-                    return;
-                } catch (IOException e) {
-                    artifactFile.delete();
+
+        final Iterator<URL> iterator = pluginRepositories.iterator();
+        URL repoUrl = iterator.next();
+        final IAsyncResultHandler<File> handler2 = new IAsyncResultHandler<File>() {
+            @Override
+            public void handle(IAsyncResult<File> result) {
+                if (result.isSuccess() && result.getResult() == null && iterator.hasNext()) {
+                    downloadFromMavenRepo(coordinates, iterator.next(), this);
+                } else {
+                    handler.handle(result);
                 }
             }
-        }
-    }
-
-    /**
-     * Downloads the plugin via its maven GAV information.  This will first look in the local
-     * .m2 directory.  If the plugin is not found there, then it will try to download the 
-     * plugin from one of the configured remote maven repositories.
-     * @param pluginFile
-     * @param coordinates
-     */
-    protected void downloadPlugin(File pluginFile, PluginCoordinates coordinates) {
-        // Didn't find it in .m2, so try downloading it.
-        for (URL mavenRepoUrl : pluginRepositories) {
-            if (downloadFromMavenRepo(pluginFile, coordinates, mavenRepoUrl)) {
-                return;
-            }
-        }
+        };
+        downloadFromMavenRepo(coordinates, repoUrl, handler2);
     }
 
     /**
      * Tries to download the plugin from the given remote maven repository.
-     * @param pluginFile
      * @param coordinates
-     * @param mavenRepoUrl 
+     * @param mavenRepoUrl
+     * @param handler
      */
-    protected boolean downloadFromMavenRepo(File pluginFile, PluginCoordinates coordinates, URL mavenRepoUrl) {
+    protected void downloadFromMavenRepo(PluginCoordinates coordinates, URL mavenRepoUrl, IAsyncResultHandler<File> handler) {
         String artifactSubPath = PluginUtils.getMavenPath(coordinates);
+        try {
+            String pluginRelativePath = PluginUtils.getPluginRelativePath(coordinates);
+            File pluginDir = new File(pluginsDir, pluginRelativePath);
+            if (!pluginDir.exists()) {
+                pluginDir.mkdirs();
+            }
+            File pluginFile = new File(pluginDir, "plugin." + coordinates.getType()); //$NON-NLS-1$
+            URL artifactUrl = new URL(mavenRepoUrl, artifactSubPath);
+
+            downloadArtifactTo(artifactUrl, pluginFile, handler);
+        } catch (Exception e) {
+            handler.handle(AsyncResultImpl.<File>create(e));
+        }
+    }
+
+    /**
+     * Download the artifact at the given URL and store it locally into the given
+     * plugin file path.
+     * @param artifactUrl
+     * @param pluginFile
+     * @param handler
+     */
+    protected void downloadArtifactTo(URL artifactUrl, File pluginFile, IAsyncResultHandler<File> handler) {
         InputStream istream = null;
         OutputStream ostream = null;
         try {
-            URL artifactUrl = new URL(mavenRepoUrl, artifactSubPath);
-            istream = artifactUrl.openStream();
-            ostream = new FileOutputStream(pluginFile);
-            IOUtils.copy(istream, ostream);
-            ostream.flush();
-            return true;
+            HttpURLConnection connection = (HttpURLConnection) artifactUrl.openConnection();
+            connection.connect();
+            if (connection.getResponseCode() == 200) {
+                istream = connection.getInputStream();
+                ostream = new FileOutputStream(pluginFile);
+                IOUtils.copy(istream, ostream);
+                ostream.flush();
+                handler.handle(AsyncResultImpl.create(pluginFile));
+            } else {
+                handler.handle(AsyncResultImpl.create(pluginFile));
+            }
         } catch (Exception e) {
-            return false;
+            handler.handle(AsyncResultImpl.<File>create(e));
         } finally {
             IOUtils.closeQuietly(istream);
             IOUtils.closeQuietly(ostream);
         }
     }
-    
+
 }
