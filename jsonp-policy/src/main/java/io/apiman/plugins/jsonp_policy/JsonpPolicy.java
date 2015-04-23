@@ -23,9 +23,11 @@ import io.apiman.plugins.jsonp_policy.beans.JsonpConfigBean;
  */
 public class JsonpPolicy extends AbstractMappedPolicy<JsonpConfigBean> implements IDataPolicy {
 
-    private static final String OPEN_PARENTHESES = "("; //$NON-NLS-1$
+	private static final String OPEN_PARENTHESES = "("; //$NON-NLS-1$
     private static final String CLOSE_PARENTHESES = ")"; //$NON-NLS-1$
 	static final String CALLBACK_FUNCTION_NAME = "callbackFunctionName"; //$NON-NLS-1$
+	private static final String APPLICATION_JAVASCRIPT = "application/javascript"; //$NON-NLS-1$
+	private static final String CONTENT_TYPE = "Content-Type"; //$NON-NLS-1$
 
     @Override
     protected Class<JsonpConfigBean> getConfigurationClass() {
@@ -56,7 +58,9 @@ public class JsonpPolicy extends AbstractMappedPolicy<JsonpConfigBean> implement
         final String callbackFunctionName = (String) context.getAttribute(CALLBACK_FUNCTION_NAME, null);
 
         if (callbackFunctionName != null) {
-        	response.getHeaders().put("Content-Type", "application/javascript"); //$NON-NLS-1$ //$NON-NLS-2$
+        	//response.getHeaders()
+        	response.getHeaders().put(CONTENT_TYPE, APPLICATION_JAVASCRIPT); //$NON-NLS-1$ //$NON-NLS-2$
+        	
         	final IBufferFactoryComponent bufferFactory = context.getComponent(IBufferFactoryComponent.class);
 
             return new AbstractStream<ServiceResponse>() {
