@@ -40,6 +40,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 /**
@@ -179,14 +180,15 @@ public class DefaultPluginRegistry implements IPluginRegistry {
                 }
             }
 
+            String pluginRelativePath = PluginUtils.getPluginRelativePath(coordinates);
+            File pluginDir = new File(pluginsDir, pluginRelativePath);
+            if (!pluginDir.exists()) {
+                pluginDir.mkdirs();
+            }
+            File pluginFile = new File(pluginDir, "plugin." + coordinates.getType()); //$NON-NLS-1$
+
             // Next try to load it from the plugin file registry
             if (!handled) {
-                String pluginRelativePath = PluginUtils.getPluginRelativePath(coordinates);
-                File pluginDir = new File(pluginsDir, pluginRelativePath);
-                if (!pluginDir.exists()) {
-                    pluginDir.mkdirs();
-                }
-                File pluginFile = new File(pluginDir, "plugin." + coordinates.getType()); //$NON-NLS-1$
                 if (pluginFile.isFile()) {
                     handled = true;
                     try {
@@ -197,7 +199,8 @@ public class DefaultPluginRegistry implements IPluginRegistry {
                 }
             }
 
-            // Next try to load it from the user's .m2 directory
+            // Next try to load it from the user's .m2 directory (copy it into the plugin file
+            // registry first though)
             if (!handled) {
                 File m2Dir = PluginUtils.getUserM2Repository();
                 String m2Override = System.getProperty("apiman.gateway.m2-repository-path"); //$NON-NLS-1$
@@ -205,10 +208,11 @@ public class DefaultPluginRegistry implements IPluginRegistry {
                     m2Dir = new File(m2Override).getAbsoluteFile();
                 }
                 if (m2Dir != null) {
-                    File pluginFile = PluginUtils.getM2Path(m2Dir, coordinates);
-                    if (pluginFile.isFile()) {
+                    File artifactFile = PluginUtils.getM2Path(m2Dir, coordinates);
+                    if (artifactFile.isFile()) {
                         handled = true;
                         try {
+                            FileUtils.copyFile(artifactFile, pluginFile);
                             handler.handle(AsyncResultImpl.create(readPluginFile(coordinates, pluginFile)));
                         } catch (Exception error) {
                             handler.handle(AsyncResultImpl.<Plugin>create(error));
