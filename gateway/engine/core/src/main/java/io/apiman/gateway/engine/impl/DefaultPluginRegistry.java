@@ -228,11 +228,22 @@ public class DefaultPluginRegistry implements IPluginRegistry {
                     @Override
                     public void handle(IAsyncResult<File> result) {
                         if (result.isSuccess()) {
-                            File pluginFile = result.getResult();
-                            if (pluginFile == null || !pluginFile.isFile()) {
+                            File downloadedArtifactFile = result.getResult();
+                            if (downloadedArtifactFile == null || !downloadedArtifactFile.isFile()) {
                                 handler.handle(AsyncResultImpl.<Plugin>create(new Exception(Messages.i18n.format("DefaultPluginRegistry.PluginNotFound")))); //$NON-NLS-1$
                             } else {
                                 try {
+                                    String pluginRelativePath = PluginUtils.getPluginRelativePath(coordinates);
+                                    File pluginDir = new File(pluginsDir, pluginRelativePath);
+                                    if (!pluginDir.exists()) {
+                                        pluginDir.mkdirs();
+                                    }
+                                    File pluginFile = new File(pluginDir, "plugin." + coordinates.getType()); //$NON-NLS-1$
+                                    if (!pluginFile.exists()) {
+                                        FileUtils.moveFile(downloadedArtifactFile, pluginFile);
+                                    } else {
+                                        FileUtils.deleteQuietly(downloadedArtifactFile);
+                                    }
                                     handler.handle(AsyncResultImpl.create(readPluginFile(coordinates, pluginFile)));
                                 } catch (Exception error) {
                                     handler.handle(AsyncResultImpl.<Plugin>create(error));
@@ -325,15 +336,9 @@ public class DefaultPluginRegistry implements IPluginRegistry {
     protected void downloadFromMavenRepo(PluginCoordinates coordinates, URL mavenRepoUrl, IAsyncResultHandler<File> handler) {
         String artifactSubPath = PluginUtils.getMavenPath(coordinates);
         try {
-            String pluginRelativePath = PluginUtils.getPluginRelativePath(coordinates);
-            File pluginDir = new File(pluginsDir, pluginRelativePath);
-            if (!pluginDir.exists()) {
-                pluginDir.mkdirs();
-            }
-            File pluginFile = new File(pluginDir, "plugin." + coordinates.getType()); //$NON-NLS-1$
+            File tempArtifactFile = File.createTempFile("_plugin", "dwn"); //$NON-NLS-1$ //$NON-NLS-2$
             URL artifactUrl = new URL(mavenRepoUrl, artifactSubPath);
-
-            downloadArtifactTo(artifactUrl, pluginFile, handler);
+            downloadArtifactTo(artifactUrl, tempArtifactFile, handler);
         } catch (Exception e) {
             handler.handle(AsyncResultImpl.<File>create(e));
         }

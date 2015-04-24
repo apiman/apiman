@@ -24,6 +24,7 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.vertx.testtools.TestVerticle;
+import org.vertx.testtools.VertxAssert;
 
 /**
  * Test the vertx version of the plugin registry.
@@ -34,7 +35,7 @@ public class VertxPluginRegistryTest extends TestVerticle {
     public void before() {
     }
 
-    // TODO enablet his test to do on-demand testing of the vertx plugin registry - don't enable by default since we don't want to depend on a remote server for unit tests
+    // TODO enable this test to do on-demand testing of the vertx plugin registry - don't enable by default since we don't want to depend on a remote server for unit tests
     @Test @Ignore
     public void testPluginRegistry() {
         VertxPluginRegistry registry = new VertxPluginRegistry(vertx);
@@ -46,6 +47,7 @@ public class VertxPluginRegistryTest extends TestVerticle {
                 Assert.assertNotNull(result.getResult());
                 Assert.assertEquals("No-op Policy Plugin", result.getResult().getName());
                 System.out.println("Test passed.");
+                VertxAssert.testComplete();
             }
         });
     }
