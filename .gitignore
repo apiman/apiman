@@ -11,4 +11,6 @@ gwt-unitCache
 *~
 *.iml
 .idea
-\#*\#
+\#*\#/jsonp-policy/
+/cors-policy/
+/jsonp-policy/
