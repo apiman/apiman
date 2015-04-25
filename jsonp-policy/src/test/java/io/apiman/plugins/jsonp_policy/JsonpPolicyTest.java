@@ -65,7 +65,24 @@ public class JsonpPolicyTest {
     }
 
     @Test
-    public void shouldSaveCallbackParamNameInContext() throws Exception {
+    public void shouldNotSaveCallbackFunctionNameInContextWhenNotPresent() throws Exception {
+        // given
+        JsonpConfigBean config = new JsonpConfigBean();
+        config.setCallbackParamName("testParam");
+        Map<String, String> queryParams = new HashMap<>();
+        ServiceRequest request = new ServiceRequest();
+        request.setQueryParams(queryParams);
+
+        IPolicyChain<ServiceRequest> chain = mock(IPolicyChain.class);
+        // when
+        jsonpPolicy.doApply(request, sContext, config, chain);
+        // then
+        assertNull(sContext.getAttribute("callbackFunctionName", null));
+        verify(chain).doApply(request);
+    }
+
+    @Test
+    public void shouldSaveCallbackParamNameInContextWhenPresent() throws Exception {
         // given
         JsonpConfigBean config = new JsonpConfigBean();
         config.setCallbackParamName("testParam");

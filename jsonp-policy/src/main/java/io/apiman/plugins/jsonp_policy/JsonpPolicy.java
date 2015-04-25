@@ -11,23 +11,28 @@ import io.apiman.gateway.engine.policy.IDataPolicy;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
 import io.apiman.plugins.jsonp_policy.beans.JsonpConfigBean;
+import io.apiman.plugins.jsonp_policy.http.HttpHeaders;
+
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /**
- * Policy that turns an endpoint into a JSONP compatible endpoint. It removes the callback
- * function param from the request and uses it to wrap the response. The content type is set
- * to <code>application/javascript</code>.
+ * Policy that turns an endpoint into a JSONP compatible endpoint. It removes
+ * the callback function param from the request and uses it to wrap the
+ * response. The content type is set to <code>application/javascript</code>.
  *
- * @see <a href="http://en.wikipedia.org/wiki/JSONP" target="_blank">JSONP - Wikipedia</a>
+ * @see <a href="http://en.wikipedia.org/wiki/JSONP" target="_blank">JSONP -
+ *      Wikipedia</a>
  *
  * @author Alexandre Kieling <alex.kieling@gmail.com>
  */
 public class JsonpPolicy extends AbstractMappedPolicy<JsonpConfigBean> implements IDataPolicy {
 
-	private static final String OPEN_PARENTHESES = "("; //$NON-NLS-1$
+    private static final String OPEN_PARENTHESES = "("; //$NON-NLS-1$
     private static final String CLOSE_PARENTHESES = ")"; //$NON-NLS-1$
-	static final String CALLBACK_FUNCTION_NAME = "callbackFunctionName"; //$NON-NLS-1$
-	private static final String APPLICATION_JAVASCRIPT = "application/javascript"; //$NON-NLS-1$
-	private static final String CONTENT_TYPE = "Content-Type"; //$NON-NLS-1$
+    static final String CALLBACK_FUNCTION_NAME = "callbackFunctionName"; //$NON-NLS-1$
+    private static final String APPLICATION_JAVASCRIPT = "application/javascript"; //$NON-NLS-1$
 
     @Override
     protected Class<JsonpConfigBean> getConfigurationClass() {
@@ -38,11 +43,9 @@ public class JsonpPolicy extends AbstractMappedPolicy<JsonpConfigBean> implement
     protected void doApply(ServiceRequest request, IPolicyContext context, JsonpConfigBean config,
             IPolicyChain<ServiceRequest> chain) {
         String callbackParamName = config.getCallbackParamName();
-        if (callbackParamName != null) {
-        	String callbackFunctionName = request.getQueryParams().remove(callbackParamName);
-        	if (callbackFunctionName != null) {
-        		context.setAttribute(CALLBACK_FUNCTION_NAME, callbackFunctionName);
-        	}
+        String callbackFunctionName = request.getQueryParams().remove(callbackParamName);
+        if (callbackFunctionName != null) {
+            context.setAttribute(CALLBACK_FUNCTION_NAME, callbackFunctionName);
         }
         super.doApply(request, context, config, chain);
     }
@@ -58,8 +61,11 @@ public class JsonpPolicy extends AbstractMappedPolicy<JsonpConfigBean> implement
         final String callbackFunctionName = (String) context.getAttribute(CALLBACK_FUNCTION_NAME, null);
 
         if (callbackFunctionName != null) {
-        	//response.getHeaders()
-        	response.getHeaders().put(CONTENT_TYPE, APPLICATION_JAVASCRIPT); //$NON-NLS-1$ //$NON-NLS-2$
+            HttpHeaders httpHeaders = new HttpHeaders(response.getHeaders());
+            final String encoding = httpHeaders.getCharsetFromContentType(StandardCharsets.UTF_8.name());
+            
+            // JSONP responses should have the Content-Type header set to "application/javascript"
+            httpHeaders.setContentType(APPLICATION_JAVASCRIPT);
         	
         	final IBufferFactoryComponent bufferFactory = context.getComponent(IBufferFactoryComponent.class);
 
@@ -80,8 +86,12 @@ public class JsonpPolicy extends AbstractMappedPolicy<JsonpConfigBean> implement
                     if (firstChunk) {
                         IApimanBuffer buffer = bufferFactory.
                                 createBuffer(callbackFunctionName.length() + OPEN_PARENTHESES.length());
-                        buffer.append(callbackFunctionName);
-                        buffer.append(OPEN_PARENTHESES);
+                        try {
+                            buffer.append(callbackFunctionName, encoding);
+                            buffer.append(OPEN_PARENTHESES, encoding);
+                        } catch (UnsupportedEncodingException e) {
+                            throw new RuntimeException(e);
+                        }
                         // Write callbackFunctionName(
                         super.write(buffer);
                         firstChunk = false;
@@ -93,7 +103,12 @@ public class JsonpPolicy extends AbstractMappedPolicy<JsonpConfigBean> implement
                 public void end() {
                     // Write close parenth ) on end if something has been written
                     if (!firstChunk) {
-                        IApimanBuffer buffer = bufferFactory.createBuffer(CLOSE_PARENTHESES);
+                        IApimanBuffer buffer = bufferFactory.createBuffer(CLOSE_PARENTHESES.length());
+                        try {
+                            buffer.append(CLOSE_PARENTHESES, encoding);
+                        } catch (UnsupportedEncodingException e) {
+                            throw new RuntimeException(e);
+                        }
                         super.write(buffer);
                     }
                     super.end();
@@ -102,4 +117,5 @@ public class JsonpPolicy extends AbstractMappedPolicy<JsonpConfigBean> implement
         }
         return null;
     }
+
 }
