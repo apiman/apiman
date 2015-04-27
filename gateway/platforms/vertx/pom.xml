@@ -94,7 +94,19 @@
 
   <build>
     <plugins>
-      <!-- The vert.x Maven plugin -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <skipTests>true</skipTests>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <!-- 
+  <build>
+    <plugins>
       <plugin>
         <groupId>io.vertx</groupId>
         <artifactId>vertx-maven-plugin</artifactId>
@@ -227,4 +239,5 @@
       </plugin>
     </plugins>
   </reporting>
+   -->
 </project>

@@ -13,6 +13,7 @@
   <modules>
     <module>servlet</module>
     <module>undertow</module>
+    <module>vertx</module>
     <module>war</module>
     <module>war/wildfly8</module>
   </modules>
