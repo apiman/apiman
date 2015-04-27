@@ -4,7 +4,7 @@
   <parent>
     <groupId>io.apiman</groupId>
     <artifactId>apiman-distro</artifactId>
-    <version>1.1.2-SNAPSHOT</version>
+    <version>1.1.2.Preview1</version>
   </parent>
   <artifactId>apiman-distro-db</artifactId>
   <name>apiman-distro-db</name>
