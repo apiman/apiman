@@ -36,7 +36,7 @@ import org.codehaus.jackson.JsonGenerator;
  * @author eric.wittmann@redhat.com
  */
 public class TranslationServlet extends AbstractUIServlet {
-    
+
     private static final long serialVersionUID = -7209551552522960775L;
 
     /**
@@ -54,8 +54,8 @@ public class TranslationServlet extends AbstractUIServlet {
         Messages.setLocale(request.getLocale());
         try {
             Map<String, String> strings = Messages.i18n.all();
-            
-            response.getOutputStream().write("var APIMAN_TRANSLATION_DATA = ".getBytes("UTF-8")); //$NON-NLS-1$ //$NON-NLS-2$
+
+            response.getOutputStream().write("window.APIMAN_TRANSLATION_DATA = ".getBytes("UTF-8")); //$NON-NLS-1$ //$NON-NLS-2$
             JsonFactory f = new JsonFactory();
             JsonGenerator g = f.createJsonGenerator(response.getOutputStream(), JsonEncoding.UTF8);
             g.useDefaultPrettyPrinter();

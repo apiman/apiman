@@ -22,6 +22,7 @@
               <directory>.</directory>
               <includes>
                 <include>index.html</include>
+                <include>bower.json</include>
                 <include>favicon.ico</include>
                 <include>libs/**</include>
                 <include>dist/**</include>

@@ -1,11 +1,13 @@
 {
-  "name": "apiman-plugin",
-  "version": "0.1.0",
+  "name": "apiman-manager",
+  "version": "v1.0.0",
   "keywords": [
     "hawtio"
   ],
   "main": [
-    "dist/apiman-plugin.js"
+    "dist/apiman-manager.js",
+    "dist/apiman.css",
+    "dist/apiman-responsive.css"
   ],
   "ignore": [
     "**/.*",

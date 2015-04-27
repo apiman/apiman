@@ -1,5 +1,5 @@
     <!-- Top header/nav bar -->
-      <div class="main-header container" ng-controller="Apiman.NavbarController">
+      <div class="main-header container" ng-controller="Apiman.NavbarController" ng-show="showHeader">
         <div class="row">
           <div class="col-md-12">
             <a href="{{ pluginName }}/dash">

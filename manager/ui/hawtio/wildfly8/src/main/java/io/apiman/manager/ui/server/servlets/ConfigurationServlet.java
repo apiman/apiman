@@ -40,10 +40,10 @@ import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 /**
  * Generates the initial configuration JSON used by the UI when it first loads
  * up. This initial JSON is loaded into the client-side.
- * 
+ *
  * Also responsible for pushing updated configuration to the client if it
  * changes.
- * 
+ *
  * @author eric.wittmann@redhat.com
  */
 public class ConfigurationServlet extends AbstractUIServlet {
@@ -65,7 +65,7 @@ public class ConfigurationServlet extends AbstractUIServlet {
             IOException {
 
         try {
-            response.getOutputStream().write("var APIMAN_CONFIG_DATA = ".getBytes("UTF-8")); //$NON-NLS-1$ //$NON-NLS-2$
+            response.getOutputStream().write("window.APIMAN_CONFIG_DATA = ".getBytes("UTF-8")); //$NON-NLS-1$ //$NON-NLS-2$
             JsonFactory f = new JsonFactory();
             JsonGenerator g = f.createJsonGenerator(response.getOutputStream(), JsonEncoding.UTF8);
             ObjectMapper mapper = new ObjectMapper();

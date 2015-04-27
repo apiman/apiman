@@ -18,7 +18,7 @@ body {
 }
 
 .grabber {
-  background-image: url(images/grabber.png);
+  background-image: url(../img/grabber.png);
   background-repeat: repeat-y;
   cursor: move;
   width: 10px;
@@ -177,7 +177,7 @@ textarea.form-data {
   padding-top: 5px;
 }
 #apiman-header .logo {
-  background-image: url(images/logo-header.png);
+  background-image: url(../img/logo-header.png);
   margin-top: 3px;
   width: 120px;
   height: 30px;
@@ -335,7 +335,7 @@ a:hover {
   font-size: 18px;
   padding-left: 35px;
   padding-top: 4px;
-  background-image: url(images/page-spinner.gif);
+  background-image: url(../img/page-spinner.gif);
   background-position: left top;
   background-repeat: no-repeat;
 }
@@ -446,7 +446,7 @@ div.page {
   border: 0;
   width: 57px;
   height: 57px;
-  background-image: url(images/is-member.png);
+  background-image: url(../img/is-member.png);
 }
 
 .apiman-label-faded {
@@ -981,7 +981,7 @@ ol.breadcrumb {
 }
 .apiman-no-entities-arrow {
   float: right;
-  background-image: url(images/new-entity-arrow.png);
+  background-image: url(../img/new-entity-arrow.png);
   background-position: top left;
   width: 69px;
   height: 69px;
@@ -1136,16 +1136,16 @@ ol.breadcrumb {
   background-position: top left;
 }
 .error-403 {
-  background-image: url(images/error-403.png);
+  background-image: url(../img/error-403.png);
 }
 .error-404 {
-  background-image: url(images/error-404.png);
+  background-image: url(../img/error-404.png);
 }
 .error-409 {
-  background-image: url(images/error-409.png);
+  background-image: url(../img/error-409.png);
 }
 .error-500 {
-  background-image: url(images/error-500.png);
+  background-image: url(../img/error-500.png);
 }
 
 .consumer-top-header {
@@ -1436,14 +1436,14 @@ textarea.apiman-endpoint {
 
 #new-contract-form .to-plan-arrow {
   height: 40px;
-  background-image: url(images/new-contract-arrow-top.png);
+  background-image: url(../img/new-contract-arrow-top.png);
   background-repeat: no-repeat;
   background-position: center;
 }
 
 #new-contract-form .to-service-arrow {
   height: 60px;
-  background-image: url(images/new-contract-arrow-bottom.png);
+  background-image: url(../img/new-contract-arrow-bottom.png);
   background-repeat: no-repeat;
   background-position: center;
 }

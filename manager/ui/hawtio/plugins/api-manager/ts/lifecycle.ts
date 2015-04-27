@@ -75,8 +75,13 @@ module ApimanPageLifecycle {
     export var _module = angular.module("ApimanPageLifecycle", []);
 
     export var PageLifecycle = _module.factory('PageLifecycle', 
-        ['$q', 'Logger', '$rootScope', '$location', 'CurrentUserSvcs',
-        ($q, Logger, $rootScope, $location, CurrentUserSvcs) => {
+        ['$q', 'Logger', '$rootScope', '$location', 'CurrentUserSvcs', 'Configuration',
+        ($q, Logger, $rootScope, $location, CurrentUserSvcs, Configuration) => {
+            $rootScope.showHeader = true;
+            if (Configuration['ui'] && Configuration.ui.header == false) {
+                $rootScope.showHeader = false;
+            }
+
             var processCurrentUser = function(currentUser) {
                 $rootScope.currentUser = currentUser;
                 var permissions = {};
@@ -141,7 +146,7 @@ module ApimanPageLifecycle {
                 loadPage: function(pageName, pageData, $scope, handler) {
                     Logger.log("|{0}| >> Loading page.", pageName);
                     $rootScope.pageState = 'loading';
-                    
+
                     // Every page gets the current user.
                     var allData = undefined;
                     var commonData = {

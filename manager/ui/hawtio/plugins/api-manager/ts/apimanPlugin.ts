@@ -154,5 +154,24 @@ module Apiman {
         log.debug("loaded");
     }]);
 
+    hawtioPluginLoader.registerPreBootstrapTask((next) => {
+        // Load the configuration jsonp script
+        $.getScript('js/configuration.nocache.js').done((script, textStatus) => {
+            log.info("Loaded the configuration.nocache.js config!");
+        }).fail((response) => {
+            log.debug("Error fetching configuration: ", response);
+        }).always(() => {
+            // Load the i18n jsonp script
+            $.getScript('js/translations.nocache.js').done((script, textStatus) => {
+                log.info("Loaded the translations.nocache.js bundle!");
+            }).fail((response) => {
+                log.debug("Error fetching translations: ", response);
+            }).always(() => {
+                next();
+            });
+        });
+        
+    }, true);
+
     hawtioPluginLoader.addModule(Apiman.pluginName);
 }

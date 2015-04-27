@@ -6,8 +6,8 @@ a quick Getting Started guide for that!
 1. Install node.js:  http://nodejs.org/
 2. Install some stuff using *npm*
     npm install -g bower gulp slush slush-hawtio-javascript slush-hawtio-typescript typescript
-3. Change directory into apiman/manager/ui/apiman-plugin
-    cd ~/git/apiman/manager/ui/apiman-plugin
+3. Change directory into apiman/manager/ui/hawtio
+    cd ~/git/apiman/manager/ui/hawtio
 4. Use *npm* and *bower* to pull in all dependencies
     npm install
     bower update
@@ -16,7 +16,7 @@ a quick Getting Started guide for that!
 7. Run gulp
     gulp
 8. Point your browser wherver gulp tells you!  For example:
-    [15:09:24] Using gulpfile /home/ewittman/git/apiman/manager/ui/apiman-plugin/gulpfile.js
+    [15:09:24] Using gulpfile /home/ewittman/git/apiman/manager/ui/hawtio/gulpfile.js
     [15:09:24] Starting 'bower'...
     [15:09:24] Finished 'bower' after 8.45 ms
     [15:09:24] Starting 'path-adjust'...
