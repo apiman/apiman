@@ -141,7 +141,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 
 /**
  * Implementation of the Organization API.
- * 
+ *
  * @author eric.wittmann@redhat.com
  */
 @RequestScoped
@@ -150,17 +150,17 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     @Inject IStorage storage;
     @Inject IIdmStorage idmStorage;
     @Inject IStorageQuery query;
-    
+
     @Inject IApplicationValidator applicationValidator;
     @Inject IServiceValidator serviceValidator;
     @Inject IApiKeyGenerator apiKeyGenerator;
 
     @Inject IUserResource users;
     @Inject IRoleResource roles;
-    
+
     @Inject ISecurityContext securityContext;
     @Inject IGatewayLinkFactory gatewayLinkFactory;
-    
+
     @Context HttpServletRequest request;
 
     /**
@@ -184,7 +184,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
-        
+
         if ("true".equals(System.getProperty("apiman.manager.require-auto-granted-org", "true"))) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             if (autoGrantedRoles.isEmpty()) {
                 throw new SystemErrorException(Messages.i18n.format("OrganizationResourceImpl.NoAutoGrantRoleAvailable")); //$NON-NLS-1$
@@ -226,7 +226,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw new SystemErrorException(e);
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.IOrganizationResource#get(java.lang.String)
      */
@@ -248,7 +248,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw new SystemErrorException(e);
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.IOrganizationResource#update(java.lang.String, io.apiman.manager.api.beans.orgs.UpdateOrganizationBean)
      */
@@ -263,7 +263,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             if (orgForUpdate == null) {
                 throw ExceptionFactory.organizationNotFoundException(organizationId);
             }
-            
+
             EntityUpdatedData auditData = new EntityUpdatedData();
             if (AuditUtils.valueChanged(orgForUpdate.getDescription(), bean.getDescription())) {
                 auditData.addChange("description", orgForUpdate.getDescription(), bean.getDescription()); //$NON-NLS-1$
@@ -316,7 +316,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throws OrganizationNotFoundException, ApplicationAlreadyExistsException, NotAuthorizedException {
         if (!securityContext.hasPermission(PermissionType.appEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
-        
+
         ApplicationBean newApp = new ApplicationBean();
         newApp.setId(BeanUtils.idFromName(bean.getName()));
         newApp.setName(bean.getName());
@@ -338,13 +338,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
             storage.createApplication(newApp);
             storage.createAuditEntry(AuditUtils.applicationCreated(newApp, securityContext));
-            
+
             if (bean.getInitialVersion() != null) {
                 NewApplicationVersionBean newAppVersion = new NewApplicationVersionBean();
                 newAppVersion.setVersion(bean.getInitialVersion());
                 createAppVersionInternal(newAppVersion, newApp);
             }
-            
+
             storage.commitTx();
             return newApp;
         } catch (AbstractRestException e) {
@@ -355,7 +355,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw new SystemErrorException(e);
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getApp(java.lang.String, java.lang.String)
      */
@@ -378,7 +378,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw new SystemErrorException(e);
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getAppActivity(java.lang.String, java.lang.String, int, int)
      */
@@ -405,7 +405,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw new SystemErrorException(e);
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.IOrganizationResource#listApps(java.lang.String)
      */
@@ -420,7 +420,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw new SystemErrorException(e);
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.IOrganizationResource#updateApp(java.lang.String, java.lang.String, io.apiman.manager.api.beans.apps.UpdateApplicationBean)
      */
@@ -439,7 +439,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             if (AuditUtils.valueChanged(appForUpdate.getDescription(), bean.getDescription())) {
                 auditData.addChange("description", appForUpdate.getDescription(), bean.getDescription()); //$NON-NLS-1$
                 appForUpdate.setDescription(bean.getDescription());
-            }            
+            }
             storage.updateApplication(appForUpdate);
             storage.createAuditEntry(AuditUtils.applicationUpdated(appForUpdate, auditData, securityContext));
             storage.commitTx();
@@ -478,7 +478,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.rollbackTx();
             throw new SystemErrorException(e);
         }
-        
+
         if (bean.isClone() && bean.getCloneVersion() != null) {
             try {
                 List<ContractSummaryBean> contracts = getApplicationVersionContracts(organizationId, applicationId, bean.getCloneVersion());
@@ -496,7 +496,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                     NewPolicyBean npb = new NewPolicyBean();
                     npb.setDefinitionId(policy.getDefinition().getId());
                     npb.setConfiguration(policy.getConfiguration());
-                    createAppPolicy(organizationId, applicationId, newVersion.getVersion(), npb); 
+                    createAppPolicy(organizationId, applicationId, newVersion.getVersion(), npb);
                 }
             } catch (Exception e) {
                 // TODO it's ok if the clone fails - we did our best
@@ -517,7 +517,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (!BeanUtils.isValidVersion(bean.getVersion())) {
             throw new StorageException("Invalid/illegal application version: " + bean.getVersion()); //$NON-NLS-1$
         }
-        
+
         ApplicationVersionBean newVersion = new ApplicationVersionBean();
         newVersion.setApplication(application);
         newVersion.setCreatedBy(securityContext.getCurrentUser());
@@ -526,13 +526,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         newVersion.setModifiedOn(new Date());
         newVersion.setStatus(ApplicationStatus.Created);
         newVersion.setVersion(bean.getVersion());
-        
+
         storage.createApplicationVersion(newVersion);
         storage.createAuditEntry(AuditUtils.applicationVersionCreated(newVersion, securityContext));
-        
+
         return newVersion;
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getAppVersion(java.lang.String, java.lang.String, java.lang.String)
      */
@@ -554,7 +554,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw new SystemErrorException(e);
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getAppVersionActivity(java.lang.String, java.lang.String, java.lang.String, int, int)
      */
@@ -582,7 +582,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw new SystemErrorException(e);
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.IOrganizationResource#listAppVersions(java.lang.String, java.lang.String)
      */
@@ -591,14 +591,14 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throws ApplicationNotFoundException, NotAuthorizedException {
         // Try to get the application first - will throw a ApplicationNotFoundException if not found.
         getApp(organizationId, applicationId);
-        
+
         try {
             return query.getApplicationVersions(organizationId, applicationId);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.IOrganizationResource#createContract(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.contracts.NewContractBean)
      */
@@ -613,7 +613,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         try {
             storage.beginTx();
             ContractBean contract = createContractInternal(organizationId, applicationId, version, bean);
-            
+
             storage.commitTx();
             return contract;
         } catch (AbstractRestException e) {
@@ -622,8 +622,8 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         } catch (Exception e) {
             storage.rollbackTx();
             // Up above we are optimistically creating the contract.  If it fails, check to see
-            // if it failed because it was a duplicate.  If so, throw something sensible.  We 
-            // only do this on failure (we would get a FK contraint failure, for example) to 
+            // if it failed because it was a duplicate.  If so, throw something sensible.  We
+            // only do this on failure (we would get a FK contraint failure, for example) to
             // reduce overhead on the typical happy path.
             if (contractAlreadyExists(organizationId, applicationId, version, bean)) {
                 throw ExceptionFactory.contractAlreadyExistsException();
@@ -679,7 +679,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (pvb.getStatus() != PlanStatus.Locked) {
             throw ExceptionFactory.invalidPlanStatusException();
         }
-        
+
         contract = new ContractBean();
         contract.setApplication(avb);
         contract.setService(svb);
@@ -696,16 +696,16 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         storage.createContract(contract);
         storage.createAuditEntry(AuditUtils.contractCreatedFromApp(contract, securityContext));
         storage.createAuditEntry(AuditUtils.contractCreatedToService(contract, securityContext));
-        
+
         // Update the version with new meta-data (e.g. modified-by)
         avb.setModifiedBy(securityContext.getCurrentUser());
         avb.setModifiedOn(new Date());
         storage.updateApplicationVersion(avb);
         return contract;
     }
-    
+
     /**
-     * Check to see if the contract already exists, by getting a list of all the 
+     * Check to see if the contract already exists, by getting a list of all the
      * application's contracts and comparing with the one being created.
      * @param organizationId
      * @param applicationId
@@ -720,7 +720,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 if (contract.getServiceOrganizationId().equals(bean.getServiceOrgId()) &&
                     contract.getServiceId().equals(bean.getServiceId()) &&
                     contract.getServiceVersion().equals(bean.getServiceVersion()) &&
-                    contract.getPlanId().equals(bean.getPlanId())) 
+                    contract.getPlanId().equals(bean.getPlanId()))
                 {
                     return true;
                 }
@@ -743,7 +743,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             ContractBean contract = storage.getContract(contractId);
             if (contract == null)
                 throw ExceptionFactory.contractNotFoundException(contractId);
-            
+
             storage.commitTx();
 
             // Hide some data if the user doesn't have the appView permission
@@ -760,7 +760,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw new SystemErrorException(e);
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.IOrganizationResource#deleteAllContracts(java.lang.String, java.lang.String, java.lang.String)
      */
@@ -774,7 +774,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             deleteContract(organizationId, applicationId, version, contract.getContractId());
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.IOrganizationResource#deleteContract(java.lang.String, java.lang.String, java.lang.String, java.lang.Long)
      */
@@ -801,7 +801,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.deleteContract(contract);
             storage.createAuditEntry(AuditUtils.contractBrokenFromApp(contract, securityContext));
             storage.createAuditEntry(AuditUtils.contractBrokenToService(contract, securityContext));
-            
+
             storage.commitTx();
         } catch (AbstractRestException e) {
             storage.rollbackTx();
@@ -809,9 +809,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         } catch (Exception e) {
             storage.rollbackTx();
             throw new SystemErrorException(e);
-        }        
+        }
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getApplicationVersionContracts(java.lang.String, java.lang.String, java.lang.String)
      */
@@ -822,7 +822,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
         // Try to get the application first - will throw a ApplicationNotFoundException if not found.
         getAppVersion(organizationId, applicationId, version);
-        
+
         try {
             List<ContractSummaryBean> contracts = query.getApplicationContracts(organizationId, applicationId, version);
 
@@ -832,7 +832,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                     contract.setApikey(null);
                 }
             }
-            
+
             return contracts;
         } catch (AbstractRestException e) {
             storage.rollbackTx();
@@ -841,7 +841,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw new SystemErrorException(e);
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getApiRegistryJSON(java.lang.String, java.lang.String, java.lang.String)
      */
@@ -850,7 +850,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throws ApplicationNotFoundException, NotAuthorizedException {
         return getApiRegistry(organizationId, applicationId, version);
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getApiRegistryXML(java.lang.String, java.lang.String, java.lang.String)
      */
@@ -859,7 +859,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throws ApplicationNotFoundException, NotAuthorizedException {
         return getApiRegistry(organizationId, applicationId, version);
     }
-    
+
     /**
      * Gets the API registry.
      * @param organizationId
@@ -873,7 +873,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         boolean hasPermission = securityContext.hasPermission(PermissionType.appView, organizationId);
         // Try to get the application first - will throw a ApplicationNotFoundException if not found.
         getAppVersion(organizationId, applicationId, version);
-        
+
         Map<String, IGatewayLink> gatewayLinks = new HashMap<>();
         Map<String, GatewayBean> gateways = new HashMap<>();
         boolean txStarted = false;
@@ -889,7 +889,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             }
 
             List<ApiEntryBean> apis = apiRegistry.getApis();
-            
+
             storage.beginTx();
             txStarted = true;
             for (ApiEntryBean api : apis) {
@@ -906,7 +906,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                     link = gatewayLinkFactory.create(gateway);
                     gatewayLinks.put(gatewayId, link);
                 }
-                
+
                 ServiceEndpoint se = link.getServiceEndpoint(api.getServiceOrgId(), api.getServiceId(), api.getServiceVersion());
                 String apiEndpoint = se.getEndpoint();
                 api.setHttpEndpoint(apiEndpoint);
@@ -934,13 +934,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             NotAuthorizedException {
         if (!securityContext.hasPermission(PermissionType.appEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
-        
+
         // Make sure the app version exists and is in the right state.
         ApplicationVersionBean avb = getAppVersion(organizationId, applicationId, version);
         if (avb.getStatus() == ApplicationStatus.Registered || avb.getStatus() == ApplicationStatus.Retired) {
             throw ExceptionFactory.invalidApplicationStatusException();
         }
-        
+
         return doCreatePolicy(organizationId, applicationId, version, bean, PolicyType.Application);
     }
 
@@ -956,11 +956,11 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         getAppVersion(organizationId, applicationId, version);
 
         PolicyBean policy = doGetPolicy(PolicyType.Application, organizationId, applicationId, version, policyId);
-        
+
         if (!hasPermission) {
             policy.setConfiguration(null);
         }
-        
+
         return policy;
     }
 
@@ -1081,7 +1081,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw new SystemErrorException(e);
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.IOrganizationResource#createService(java.lang.String, io.apiman.manager.api.beans.services.NewServiceBean)
      */
@@ -1090,7 +1090,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throws OrganizationNotFoundException, ServiceAlreadyExistsException, NotAuthorizedException {
         if (!securityContext.hasPermission(PermissionType.svcEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
-        
+
         ServiceBean newService = new ServiceBean();
         newService.setName(bean.getName());
         newService.setDescription(bean.getDescription());
@@ -1112,13 +1112,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             // Store/persist the new service
             storage.createService(newService);
             storage.createAuditEntry(AuditUtils.serviceCreated(newService, securityContext));
-            
+
             if (bean.getInitialVersion() != null) {
                 NewServiceVersionBean newServiceVersion = new NewServiceVersionBean();
                 newServiceVersion.setVersion(bean.getInitialVersion());
                 createServiceVersionInternal(newServiceVersion, newService, gateway);
             }
-            
+
             storage.commitTx();
             return newService;
         } catch (AbstractRestException e) {
@@ -1129,7 +1129,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw new SystemErrorException(e);
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getService(java.lang.String, java.lang.String)
      */
@@ -1192,7 +1192,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw new SystemErrorException(e);
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.IOrganizationResource#updateService(java.lang.String, java.lang.String, io.apiman.manager.api.beans.services.UpdateServiceBean)
      */
@@ -1232,7 +1232,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throws ServiceNotFoundException, NotAuthorizedException {
         if (!securityContext.hasPermission(PermissionType.svcEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
-        
+
         ServiceVersionBean newVersion = null;
         try {
             GatewaySummaryBean gateway = getSingularGateway();
@@ -1256,7 +1256,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (bean.isClone() && bean.getCloneVersion() != null) {
             try {
                 ServiceVersionBean cloneSource = getServiceVersion(organizationId, serviceId, bean.getCloneVersion());
-                
+
                 // Clone primary attributes of the service version
                 UpdateServiceVersionBean updatedService = new UpdateServiceVersionBean();
                 updatedService.setEndpoint(cloneSource.getEndpoint());
@@ -1265,17 +1265,20 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 updatedService.setPlans(cloneSource.getPlans());
                 updatedService.setPublicService(cloneSource.isPublicService());
                 newVersion = updateServiceVersion(organizationId, serviceId, bean.getVersion(), updatedService );
-                
+
                 // Clone the service definition document
                 try {
                     Response response = getServiceDefinition(organizationId, serviceId, bean.getCloneVersion());
                     InputStream definition = (InputStream) response.getEntity();
                     storeServiceDefinition(organizationId, serviceId, newVersion.getVersion(),
                             cloneSource.getDefinitionType(), definition);
+                } catch (ServiceVersionNotFoundException svnfe) {
+                    // This is ok - it just means the service doesn't have one, so do nothing.
                 } catch (Exception sdnfe) {
+                    // TODO log this instead of printing the stack trace!
                     sdnfe.printStackTrace();
                 }
-                
+
                 // Clone all service policies
                 List<PolicySummaryBean> policies = listServicePolicies(organizationId, serviceId, bean.getCloneVersion());
                 for (PolicySummaryBean policySummary : policies) {
@@ -1283,7 +1286,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                     NewPolicyBean npb = new NewPolicyBean();
                     npb.setDefinitionId(policy.getDefinition().getId());
                     npb.setConfiguration(policy.getConfiguration());
-                    createServicePolicy(organizationId, serviceId, newVersion.getVersion(), npb); 
+                    createServicePolicy(organizationId, serviceId, newVersion.getVersion(), npb);
                 }
             } catch (Exception e) {
                 // TODO it's ok if the clone fails - we did our best
@@ -1315,7 +1318,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         newVersion.setModifiedOn(new Date());
         newVersion.setStatus(ServiceStatus.Created);
         newVersion.setService(service);
-        
+
         if (gateway != null) {
             if (newVersion.getGateways() == null) {
                 newVersion.setGateways(new HashSet<ServiceGatewayBean>());
@@ -1324,7 +1327,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 newVersion.getGateways().add(sgb);
             }
         }
-        
+
         if (serviceValidator.isReady(newVersion)) {
             newVersion.setStatus(ServiceStatus.Ready);
         } else {
@@ -1345,7 +1348,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 }
             }
         }
-        
+
         storage.createServiceVersion(newVersion);
         storage.createAuditEntry(AuditUtils.serviceVersionCreated(newVersion, securityContext));
         return newVersion;
@@ -1377,7 +1380,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw new SystemErrorException(e);
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getServiceDefinition(java.lang.String, java.lang.String, java.lang.String)
      */
@@ -1490,12 +1493,12 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throws ServiceVersionNotFoundException, NotAuthorizedException {
         if (!securityContext.hasPermission(PermissionType.svcEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
-        
+
         ServiceVersionBean svb = getServiceVersion(organizationId, serviceId, version);
         if (svb.getStatus() == ServiceStatus.Published || svb.getStatus() == ServiceStatus.Retired) {
             throw ExceptionFactory.invalidServiceStatusException();
         }
-        
+
         svb.setModifiedBy(securityContext.getCurrentUser());
         svb.setModifiedOn(new Date());
         EntityUpdatedData data = new EntityUpdatedData();
@@ -1527,7 +1530,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             data.addChange("publicService", String.valueOf(svb.isPublicService()), String.valueOf(bean.getPublicService())); //$NON-NLS-1$
             svb.setPublicService(bean.getPublicService());
         }
-        
+
         try {
             if (svb.getGateways() == null || svb.getGateways().isEmpty()) {
                 GatewaySummaryBean gateway = getSingularGateway();
@@ -1549,10 +1552,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         } catch (Exception e) {
             throw new SystemErrorException(e);
         }
-        
+
         try {
             storage.beginTx();
-            
+
             // Ensure all of the plans are in the right status (locked)
             Set<ServicePlanBean> plans = svb.getPlans();
             if (plans != null) {
@@ -1567,7 +1570,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                     }
                 }
             }
-            
+
             storage.updateServiceVersion(svb);
             storage.createAuditEntry(AuditUtils.serviceVersionUpdated(svb, data, securityContext));
             storage.commitTx();
@@ -1580,7 +1583,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw new SystemErrorException(e);
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.IOrganizationResource#updateServiceDefinition(java.lang.String, java.lang.String, java.lang.String)
      */
@@ -1611,8 +1614,8 @@ public class OrganizationResourceImpl implements IOrganizationResource {
      * @param organizationId
      * @param serviceId
      * @param version
-     * @param contentType 
-     * @param data 
+     * @param contentType
+     * @param data
      */
     protected void storeServiceDefinition(String organizationId, String serviceId, String version,
             ServiceDefinitionType definitionType, InputStream data) {
@@ -1648,14 +1651,14 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throws ServiceNotFoundException, NotAuthorizedException {
         // Try to get the service first - will throw a ServiceNotFoundException if not found.
         getService(organizationId, serviceId);
-        
+
         try {
             return query.getServiceVersions(organizationId, serviceId);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getServiceVersionPlans(java.lang.String, java.lang.String, java.lang.String)
      */
@@ -1664,14 +1667,14 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             String version) throws ServiceVersionNotFoundException, NotAuthorizedException {
         // Ensure the version exists first.
         getServiceVersion(organizationId, serviceId, version);
-        
+
         try {
             return query.getServiceVersionPlans(organizationId, serviceId, version);
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.IOrganizationResource#createServicePolicy(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.policies.NewPolicyBean)
      */
@@ -1681,13 +1684,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             NotAuthorizedException {
         if (!securityContext.hasPermission(PermissionType.svcEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
-        
+
         // Make sure the service exists
         ServiceVersionBean svb = getServiceVersion(organizationId, serviceId, version);
         if (svb.getStatus() == ServiceStatus.Published || svb.getStatus() == ServiceStatus.Retired) {
             throw ExceptionFactory.invalidServiceStatusException();
         }
-        
+
         return doCreatePolicy(organizationId, serviceId, version, bean, PolicyType.Service);
     }
 
@@ -1698,16 +1701,16 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     public PolicyBean getServicePolicy(String organizationId, String serviceId, String version, long policyId)
             throws OrganizationNotFoundException, ServiceVersionNotFoundException,
             PolicyNotFoundException, NotAuthorizedException {
-        
+
         // Make sure the service exists
         getServiceVersion(organizationId, serviceId, version);
 
         PolicyBean policy = doGetPolicy(PolicyType.Service, organizationId, serviceId, version, policyId);
-        
+
         if (!securityContext.hasPermission(PermissionType.svcView, organizationId)) {
             policy.setConfiguration(null);
         }
-        
+
         return policy;
     }
 
@@ -1782,7 +1785,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw new SystemErrorException(e);
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.IOrganizationResource#deleteServiceDefinition(java.lang.String, java.lang.String, java.lang.String)
      */
@@ -1826,7 +1829,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw new SystemErrorException(e);
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.IOrganizationResource#reorderServicePolicies(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.policies.PolicyChainBean)
      */
@@ -1857,7 +1860,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw new SystemErrorException(e);
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getServicePolicyChain(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
      */
@@ -1883,7 +1886,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             }
             List<PolicySummaryBean> servicePolicies = query.getPolicies(organizationId, serviceId, version, PolicyType.Service);
             List<PolicySummaryBean> planPolicies = query.getPolicies(organizationId, planId, planVersion, PolicyType.Plan);
-            
+
             PolicyChainBean chain = new PolicyChainBean();
             chain.getPolicies().addAll(planPolicies);
             chain.getPolicies().addAll(servicePolicies);
@@ -1892,7 +1895,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw new SystemErrorException(e);
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getServiceVersionContracts(java.lang.String, java.lang.String, java.lang.String, int, int)
      */
@@ -1909,7 +1912,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
         // Try to get the service first - will throw an exception if not found.
         getServiceVersion(organizationId, serviceId, version);
-        
+
         try {
             List<ContractSummaryBean> contracts = query.getServiceContracts(organizationId, serviceId, version, page, pageSize);
 
@@ -1934,7 +1937,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throws OrganizationNotFoundException, PlanAlreadyExistsException, NotAuthorizedException {
         if (!securityContext.hasPermission(PermissionType.planEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
-        
+
         PlanBean newPlan = new PlanBean();
         newPlan.setName(bean.getName());
         newPlan.setDescription(bean.getDescription());
@@ -1954,13 +1957,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             newPlan.setOrganization(orgBean);
             storage.createPlan(newPlan);
             storage.createAuditEntry(AuditUtils.planCreated(newPlan, securityContext));
-            
+
             if (bean.getInitialVersion() != null) {
                 NewPlanVersionBean newPlanVersion = new NewPlanVersionBean();
                 newPlanVersion.setVersion(bean.getInitialVersion());
                 createPlanVersionInternal(newPlanVersion, newPlan);
             }
-            
+
             storage.commitTx();
             return newPlan;
         } catch (AbstractRestException e) {
@@ -1971,7 +1974,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw new SystemErrorException(e);
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getPlan(java.lang.String, java.lang.String)
      */
@@ -1994,7 +1997,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw new SystemErrorException(e);
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getPlanActivity(java.lang.String, java.lang.String, int, int)
      */
@@ -2018,7 +2021,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw new SystemErrorException(e);
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.IOrganizationResource#listPlans(java.lang.String)
      */
@@ -2065,7 +2068,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw new SystemErrorException(e);
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.IOrganizationResource#createPlanVersion(java.lang.String,
      *      java.lang.String, io.apiman.manager.api.beans.plans.NewPlanVersionBean)
@@ -2075,7 +2078,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throws PlanNotFoundException, NotAuthorizedException {
         if (!securityContext.hasPermission(PermissionType.planEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
-        
+
         PlanVersionBean newVersion = null;
         try {
             storage.beginTx();
@@ -2102,7 +2105,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                     NewPolicyBean npb = new NewPolicyBean();
                     npb.setDefinitionId(policy.getDefinition().getId());
                     npb.setConfiguration(policy.getConfiguration());
-                    createPlanPolicy(organizationId, planId, newVersion.getVersion(), npb); 
+                    createPlanPolicy(organizationId, planId, newVersion.getVersion(), npb);
                 }
             } catch (Exception e) {
                 // TODO it's ok if the clone fails - we did our best
@@ -2136,7 +2139,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         storage.createAuditEntry(AuditUtils.planVersionCreated(newVersion, securityContext));
         return newVersion;
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getPlanVersion(java.lang.String, java.lang.String, java.lang.String)
      */
@@ -2193,7 +2196,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throws PlanNotFoundException, NotAuthorizedException {
         // Try to get the plan first - will throw a PlanNotFoundException if not found.
         getPlan(organizationId, planId);
-        
+
         try {
             return query.getPlanVersions(organizationId, planId);
         } catch (StorageException e) {
@@ -2211,13 +2214,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             NotAuthorizedException {
         if (!securityContext.hasPermission(PermissionType.planEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
-        
+
         // Make sure the plan version exists and is in the right state
         PlanVersionBean pvb = getPlanVersion(organizationId, planId, version);
         if (pvb.getStatus() == PlanStatus.Locked) {
             throw ExceptionFactory.invalidPlanStatusException();
         }
-        
+
         return doCreatePolicy(organizationId, planId, version, bean, PolicyType.Plan);
     }
 
@@ -2234,7 +2237,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         getPlanVersion(organizationId, planId, version);
 
         PolicyBean policy = doGetPolicy(PolicyType.Plan, organizationId, planId, version, policyId);
-        
+
         if (!hasPermission) {
             policy.setConfiguration(null);
         }
@@ -2360,12 +2363,12 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw new SystemErrorException(e);
         }
     }
-    
+
 
     /**
      * Creates a policy for the given entity (supports creating policies for applications,
      * services, and plans).
-     * 
+     *
      * @param organizationId
      * @param entityId
      * @param entityVersion
@@ -2496,7 +2499,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
-        
+
         if (revoked) {
             try {
                 storage.beginTx();
@@ -2511,7 +2514,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             }
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.IOrganizationResource#revokeAll(java.lang.String, java.lang.String)
      */
@@ -2528,7 +2531,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }
-        
+
         MembershipData auditData = new MembershipData();
         auditData.setUserId(userId);
         auditData.addRole("*"); //$NON-NLS-1$
@@ -2629,7 +2632,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
     /**
      * @return a {@link GatewayBean} iff there is a single configured gateway in the system
-     * @throws StorageException 
+     * @throws StorageException
      */
     private GatewaySummaryBean getSingularGateway() throws StorageException {
         List<GatewaySummaryBean> gateways = query.listGateways();
@@ -2765,5 +2768,5 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     public void setApiKeyGenerator(IApiKeyGenerator apiKeyGenerator) {
         this.apiKeyGenerator = apiKeyGenerator;
     }
-    
+
 }

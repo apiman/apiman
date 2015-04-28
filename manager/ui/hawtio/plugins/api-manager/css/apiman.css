@@ -489,7 +489,7 @@ div.page {
   line-height: 14px;
 }
 .apiman-entitysummary .description {
-  margin-top: 15px;
+  margin-top: 8px;
 }
 
 .apiman-entitytabs .nav-tabs {
@@ -1372,7 +1372,7 @@ div.editable-click:hover {
 
 .apiman-inline-edit textarea.editable-input {
   border: 1px solid rgb(200, 200, 200);
-  padding: 3px;
+  padding: 5px;
   border-radius: 3px 3px 3px 0px;
   width: 100%;
 }

@@ -2,16 +2,25 @@
 module Apiman {
     
     export var EditPolicyController = _module.controller("Apiman.EditPolicyController",
-        ['$q', '$location', '$scope', 'OrgSvcs', 'ApimanSvcs', 'PageLifecycle', 'Logger', '$routeParams',
-        ($q, $location, $scope, OrgSvcs, ApimanSvcs, PageLifecycle, Logger, $routeParams) => {
+        ['$q', '$location', '$scope', 'OrgSvcs', 'ApimanSvcs', 'PageLifecycle', 'Logger', '$routeParams', 'EntityStatusService', 'CurrentUser',
+        ($q, $location, $scope, OrgSvcs, ApimanSvcs, PageLifecycle, Logger, $routeParams, EntityStatusService, CurrentUser) => {
             var params = $routeParams;
+            $scope.organizationId = params.org;
+            var requiredPermissionMap = {
+                applications: 'appEdit',
+                services: 'svcEdit',
+                plans: 'planEdit'
+            };
+            var etype = params.type;
+            if (etype == 'apps') {
+                etype = 'applications';
+            }
             
             var pageData = {
+                version: $q(function(resolve, reject) {
+                    OrgSvcs.get({ organizationId: params.org, entityType: etype, entityId: params.id, versionsOrActivity: 'versions', version: params.ver }, resolve, reject);
+                }),
                 policy: $q(function(resolve, reject) {
-                var etype = params.type;
-                    if (etype == 'apps') {
-                        etype = 'applications';
-                    }
                     OrgSvcs.get({
                         organizationId: params.org,
                         entityType: etype,
@@ -74,6 +83,11 @@ module Apiman {
             };
             
             PageLifecycle.loadPage('EditPolicy', pageData, $scope, function() {
+                EntityStatusService.setEntityStatus($scope.version.status);
+                // Note: not using the apiman-permission directive in the template for this page because
+                // we cannot hard-code the required permission.  The required permission changes depending
+                // on the entity type of the parent of the policy.  Instead we figure it out and set it here.
+                $scope.hasPermission = CurrentUser.hasPermission(params.org, requiredPermissionMap[etype]);
                 PageLifecycle.setPageTitle('edit-policy');
                 $('#apiman-description').focus();
             });

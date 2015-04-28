@@ -30,12 +30,12 @@
       </div>
 
       <!-- HR -->
-      <div class="row hr-row" data-status="Created,Ready">
+      <div class="row hr-row">
         <hr/>
       </div>
       <!-- Update Button -->
-      <div class="row" data-status="Created,Ready">
-        <button apiman-action-btn="" ng-click="updatePolicy()" ng-disabled="!isValid" class="btn btn-primary" data-field="updateButton" apiman-i18n-key="update-policy" placeholder="Updating..." data-icon="fa-cog">Update Policy</button>
+      <div class="row">
+        <button apiman-status="Created,Ready" ng-show="hasPermission" apiman-action-btn="" ng-click="updatePolicy()" ng-disabled="!isValid" class="btn btn-primary" data-field="updateButton" apiman-i18n-key="update-policy" placeholder="Updating..." data-icon="fa-cog">Update Policy</button>
         <a data-field="cancelButton" href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" apiman-i18n-key="cancel">Cancel</a>
       </div>
     </div> <!-- /container -->

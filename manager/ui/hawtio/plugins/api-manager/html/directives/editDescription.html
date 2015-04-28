@@ -1,5 +1,5 @@
-<div style="margin-top: 15px; position: relative;">
-    <div class="description" editable-textarea="descr" e-ng-focus="focusOnDescription($event)" e-ng-change="changeOnDescription()"
+<div style="position: relative;" class="description">
+    <div editable-textarea="descr" e-ng-focus="focusOnDescription($event)" e-ng-change="changeOnDescription()"
         e-class="autoExpand" ng-mouseover="descriptionMouseOver($event)" ng-mouseout="descriptionMouseOut($event)"
         id="descriptionWrapper">
             {{ descr || "&lt;" + defaultValue + "&gt;" }}
