@@ -12,12 +12,12 @@ public class HttpHeadersTest {
 
     private static final String CONTENT_TYPE = "Content-Type"; //$NON-NLS-1$
     private Map<String, String> headers;
-    
+
     @Before
     public void setUp() {
         headers = new HashMap<String, String>();
     }
-    
+
     @Test
     public void shouldReturnDefaultCharsetWhenContentTypeHeaderDoesNotExist() {
         // given

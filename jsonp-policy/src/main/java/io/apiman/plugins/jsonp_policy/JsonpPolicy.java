@@ -14,16 +14,13 @@ import io.apiman.plugins.jsonp_policy.beans.JsonpConfigBean;
 import io.apiman.plugins.jsonp_policy.http.HttpHeaders;
 
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 /**
- * Policy that turns an endpoint into a JSONP compatible endpoint. It removes
- * the callback function param from the request and uses it to wrap the
- * response. The content type is set to <code>application/javascript</code>.
+ * Policy that turns an endpoint into a JSONP compatible endpoint. It removes the callback function param from the
+ * request and uses it to wrap the response. The content type is set to <code>application/javascript</code>.
  *
- * @see <a href="http://en.wikipedia.org/wiki/JSONP" target="_blank">JSONP -
- *      Wikipedia</a>
+ * @see <a href="http://en.wikipedia.org/wiki/JSONP" target="_blank">JSONP - Wikipedia</a>
  *
  * @author Alexandre Kieling <alex.kieling@gmail.com>
  */
@@ -63,11 +60,11 @@ public class JsonpPolicy extends AbstractMappedPolicy<JsonpConfigBean> implement
         if (callbackFunctionName != null) {
             HttpHeaders httpHeaders = new HttpHeaders(response.getHeaders());
             final String encoding = httpHeaders.getCharsetFromContentType(StandardCharsets.UTF_8.name());
-            
+
             // JSONP responses should have the Content-Type header set to "application/javascript"
             httpHeaders.setContentType(APPLICATION_JAVASCRIPT);
-        	
-        	final IBufferFactoryComponent bufferFactory = context.getComponent(IBufferFactoryComponent.class);
+
+            final IBufferFactoryComponent bufferFactory = context.getComponent(IBufferFactoryComponent.class);
 
             return new AbstractStream<ServiceResponse>() {
                 private boolean firstChunk = true;
@@ -84,12 +81,13 @@ public class JsonpPolicy extends AbstractMappedPolicy<JsonpConfigBean> implement
                 @Override
                 public void write(IApimanBuffer chunk) {
                     if (firstChunk) {
-                        IApimanBuffer buffer = bufferFactory.
-                                createBuffer(callbackFunctionName.length() + OPEN_PARENTHESES.length());
+                        IApimanBuffer buffer = bufferFactory.createBuffer(callbackFunctionName.length()
+                                + OPEN_PARENTHESES.length());
                         try {
                             buffer.append(callbackFunctionName, encoding);
                             buffer.append(OPEN_PARENTHESES, encoding);
                         } catch (UnsupportedEncodingException e) {
+                            // TODO Review the exception handling. A better approach might be throwing an IOException.
                             throw new RuntimeException(e);
                         }
                         // Write callbackFunctionName(
@@ -107,6 +105,7 @@ public class JsonpPolicy extends AbstractMappedPolicy<JsonpConfigBean> implement
                         try {
                             buffer.append(CLOSE_PARENTHESES, encoding);
                         } catch (UnsupportedEncodingException e) {
+                            // TODO Review the exception handling. A better approach might be throwing an IOException.
                             throw new RuntimeException(e);
                         }
                         super.write(buffer);

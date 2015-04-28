@@ -121,7 +121,7 @@ public class JsonpPolicyTest {
     public void changeResponseWhenCallbackParamNameIsSavedInContext() throws Exception {
         // given
         String functionName = "testFunction";
-		sContext.setAttribute(JsonpPolicy.CALLBACK_FUNCTION_NAME, functionName);
+        sContext.setAttribute(JsonpPolicy.CALLBACK_FUNCTION_NAME, functionName);
         ServiceResponse response = new ServiceResponse();
         String json = "{\"name\": \"test\"}";
         IApimanBuffer chunk = new ByteBuffer(json.getBytes().length);

@@ -4,7 +4,7 @@ import java.util.Map;
 
 /**
  * Utility class to get and set data into headers.
- *  
+ * 
  * @author Alexandre Kieling <alex.kieling@gmail.com>
  */
 public class HttpHeaders {
@@ -14,14 +14,16 @@ public class HttpHeaders {
 
     /**
      * Constructor.
+     * 
      * @param headers headers map
      */
     public HttpHeaders(Map<String, String> headers) {
         this.headers = headers;
-    } 
-    
+    }
+
     /**
      * Extract the charset from the Content-Type header. When not present, the default charset is returned.
+     * 
      * @param defaultCharset the default charset
      * @return charset
      */
@@ -35,7 +37,8 @@ public class HttpHeaders {
     }
 
     /**
-     * Set the type/subtype value of the Content-Type header. 
+     * Set the type/subtype value of the Content-Type header.
+     * 
      * @param typeSubtype the type/subtype value
      */
     public void setContentType(String typeSubtype) {
@@ -48,5 +51,5 @@ public class HttpHeaders {
             headers.put(CONTENT_TYPE, typeSubtype);
         }
     }
-    
+
 }
