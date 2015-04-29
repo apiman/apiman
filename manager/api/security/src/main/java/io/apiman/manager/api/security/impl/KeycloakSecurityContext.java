@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 JBoss Inc
+ * Copyright 2015 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,19 +20,17 @@ import javax.enterprise.inject.Alternative;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * The basic/default implementation of a security context.
+ * An alternative security context used when protected by keycloak.
  *
  * @author eric.wittmann@redhat.com
  */
 @ApplicationScoped @Alternative
-public class DefaultSecurityContext extends AbstractSecurityContext {
-
-    public static final ThreadLocal<HttpServletRequest> servletRequest = new ThreadLocal<>();
+public class KeycloakSecurityContext extends AbstractSecurityContext {
 
     /**
      * Constructor.
      */
-    public DefaultSecurityContext() {
+    public KeycloakSecurityContext() {
     }
 
     /**
@@ -40,7 +38,7 @@ public class DefaultSecurityContext extends AbstractSecurityContext {
      */
     @Override
     public String getRequestHeader(String headerName) {
-        return servletRequest.get().getHeader(headerName);
+        return DefaultSecurityContext.servletRequest.get().getHeader(headerName);
     }
 
     /**
@@ -48,23 +46,35 @@ public class DefaultSecurityContext extends AbstractSecurityContext {
      */
     @Override
     public String getCurrentUser() {
-        return servletRequest.get().getRemoteUser();
+        return DefaultSecurityContext.servletRequest.get().getRemoteUser();
     }
 
     /**
-     * @see io.apiman.manager.api.security.ISecurityContext#getEmail()
-     */
-    @Override
-    public String getEmail() {
-        return null;
-    }
-
-    /**
-     * @see io.apiman.manager.api.security.ISecurityContext#getFullName()
+     * @see io.apiman.manager.api.security.impl.DefaultSecurityContext#getFullName()
      */
     @Override
     public String getFullName() {
-        return null;
+        HttpServletRequest request = DefaultSecurityContext.servletRequest.get();
+        org.keycloak.KeycloakSecurityContext session = (org.keycloak.KeycloakSecurityContext) request.getAttribute(org.keycloak.KeycloakSecurityContext.class.getName());
+        if (session != null) {
+            return session.getToken().getName();
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @see io.apiman.manager.api.security.impl.DefaultSecurityContext#getEmail()
+     */
+    @Override
+    public String getEmail() {
+        HttpServletRequest request = DefaultSecurityContext.servletRequest.get();
+        org.keycloak.KeycloakSecurityContext session = (org.keycloak.KeycloakSecurityContext) request.getAttribute(org.keycloak.KeycloakSecurityContext.class.getName());
+        if (session != null) {
+            return session.getToken().getEmail();
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -73,29 +83,7 @@ public class DefaultSecurityContext extends AbstractSecurityContext {
     @Override
     public boolean isAdmin() {
         // TODO warning - hard coded role value here
-        return servletRequest.get().isUserInRole("apiadmin"); //$NON-NLS-1$
-    }
-
-    /**
-     * Called to set the current context http servlet request.
-     * @param request
-     */
-    protected static void setServletRequest(HttpServletRequest request) {
-        servletRequest.set(request);
-    }
-
-    /**
-     * Called to clear the current thread local permissions bean.
-     */
-    protected static void clearPermissions() {
-        AbstractSecurityContext.clearPermissions();
-    }
-
-    /**
-     * Called to clear the context http servlet request.
-     */
-    protected static void clearServletRequest() {
-        servletRequest.remove();
+        return DefaultSecurityContext.servletRequest.get().isUserInRole("apiadmin"); //$NON-NLS-1$
     }
 
 }

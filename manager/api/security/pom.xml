@@ -43,6 +43,13 @@
       <artifactId>hibernate-jpa-2.1-api</artifactId>
       <scope>provided</scope>
     </dependency>
+
+    <!-- Provided Dependencies -->
+    <dependency>
+      <groupId>org.keycloak</groupId>
+      <artifactId>keycloak-core</artifactId>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
 
   <build>

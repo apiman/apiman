@@ -37,7 +37,7 @@
       <artifactId>apiman-manager-api-core</artifactId>
       <scope>provided</scope>
     </dependency>
-
+    
     <!-- Spec libs -->
     <dependency>
       <groupId>org.jboss.spec.javax.servlet</groupId>

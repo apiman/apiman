@@ -27,11 +27,21 @@ import java.util.Set;
  * @author eric.wittmann@redhat.com
  */
 public interface ISecurityContext {
-    
+
     /**
      * @return the currently authentiated user.
      */
     public String getCurrentUser();
+
+    /**
+     * @return the currently authenticated user's full name
+     */
+    public String getFullName();
+
+    /**
+     * @return the currently authenticated user's email address
+     */
+    public String getEmail();
 
     /**
      * Returns true if the current user is an administrator.
@@ -47,7 +57,7 @@ public interface ISecurityContext {
      * @return true if has permission, else false
      */
     public boolean hasPermission(PermissionType permission, String organizationId);
-    
+
     /**
      * Returns the set of organizations for which the current user is allowed
      * to perform a given action.
@@ -55,7 +65,7 @@ public interface ISecurityContext {
      * @return set of permitted organizations
      */
     public Set<String> getPermittedOrganizations(PermissionType permission);
-    
+
     /**
      * Gets a request header from the current in-scope request.
      * @param headerName the header name

@@ -41,12 +41,12 @@ import javax.inject.Inject;
 
 /**
  * Implementation of the Current User API.
- * 
+ *
  * @author eric.wittmann@redhat.com
  */
 @ApplicationScoped
 public class CurrentUserResourceImpl implements ICurrentUserResource {
-    
+
     @Inject
     private IIdmStorage idmStorage;
     @Inject
@@ -59,7 +59,7 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
      */
     public CurrentUserResourceImpl() {
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.ICurrentUserResource#getInfo()
      */
@@ -72,8 +72,16 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
             if (user == null) {
                 user = new UserBean();
                 user.setUsername(userId);
-                user.setFullName(userId);
-                user.setEmail(userId + "@example.org"); //$NON-NLS-1$
+                if (securityContext.getFullName() != null) {
+                    user.setFullName(securityContext.getFullName());
+                } else {
+                    user.setFullName(userId);
+                }
+                if (securityContext.getEmail() != null) {
+                    user.setEmail(securityContext.getEmail());
+                } else {
+                    user.setEmail(userId + "@example.org"); //$NON-NLS-1$
+                }
                 user.setJoinedOn(new Date());
                 try {
                     idmStorage.createUser(user);
@@ -94,7 +102,7 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
             throw new SystemErrorException(e);
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.ICurrentUserResource#updateInfo(io.apiman.manager.api.beans.idm.UpdateUserBean)
      */
@@ -116,7 +124,7 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
             throw new SystemErrorException(e);
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.ICurrentUserResource#getAppOrganizations()
      */
@@ -129,7 +137,7 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
             throw new SystemErrorException(e);
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.ICurrentUserResource#getPlanOrganizations()
      */
@@ -142,7 +150,7 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
             throw new SystemErrorException(e);
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.ICurrentUserResource#getServiceOrganizations()
      */
@@ -155,7 +163,7 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
             throw new SystemErrorException(e);
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.ICurrentUserResource#getApplications()
      */
@@ -168,7 +176,7 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
             throw new SystemErrorException(e);
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.ICurrentUserResource#getServices()
      */

@@ -42,6 +42,8 @@ public class WarApiManagerConfig {
     public static final String APIMAN_MANAGER_STORAGE_ES_CLUSTER_NAME = "apiman-manager.storage.es.cluster-name"; //$NON-NLS-1$
     public static final String APIMAN_MANAGER_STORAGE_ES_INITIALIZE = "apiman-manager.storage.es.initialize"; //$NON-NLS-1$
 
+    public static final String APIMAN_MANAGER_SECURITY_CONTEXT_TYPE = "apiman-manager.security-context.type"; //$NON-NLS-1$
+
     public static final String APIMAN_PLUGIN_REPOSITORIES = "apiman.plugins.repositories"; //$NON-NLS-1$
 
     public static final String DEFAULT_ES_CLUSTER_NAME = "apiman"; //$NON-NLS-1$
@@ -64,7 +66,7 @@ public class WarApiManagerConfig {
      */
     public WarApiManagerConfig() {
     }
-    
+
     /**
      * @return the configured plugin repositories
      */
@@ -83,35 +85,39 @@ public class WarApiManagerConfig {
         }
         return rval;
     }
-    
+
+    public String getSecurityContextType() {
+        return config.getString(APIMAN_MANAGER_SECURITY_CONTEXT_TYPE, "default"); //$NON-NLS-1$
+    }
+
     /**
      * @return the configured storage type
      */
     public String getStorageType() {
         return config.getString(APIMAN_MANAGER_STORAGE_TYPE, "jpa"); //$NON-NLS-1$
     }
-    
+
     /**
      * @return the elasticsearch host
      */
     public String getESHost() {
         return config.getString(APIMAN_MANAGER_STORAGE_ES_HOST, "localhost"); //$NON-NLS-1$
     }
-    
+
     /**
      * @return the elasticsearch port
      */
     public int getESPort() {
         return config.getInt(APIMAN_MANAGER_STORAGE_ES_PORT, 9300);
     }
-    
+
     /**
      * @return the elasticsearch cluster name
      */
     public String getESClusterName() {
         return config.getString(APIMAN_MANAGER_STORAGE_ES_CLUSTER_NAME, DEFAULT_ES_CLUSTER_NAME);
     }
-    
+
     /**
      * @return true if the elasticsearch index should be initialized if not found
      */

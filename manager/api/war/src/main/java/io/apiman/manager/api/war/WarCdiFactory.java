@@ -23,6 +23,9 @@ import io.apiman.manager.api.core.UuidApiKeyGenerator;
 import io.apiman.manager.api.es.EsStorage;
 import io.apiman.manager.api.jpa.JpaStorage;
 import io.apiman.manager.api.jpa.roles.JpaIdmStorage;
+import io.apiman.manager.api.security.ISecurityContext;
+import io.apiman.manager.api.security.impl.DefaultSecurityContext;
+import io.apiman.manager.api.security.impl.KeycloakSecurityContext;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.New;
@@ -39,9 +42,21 @@ import org.elasticsearch.common.transport.InetSocketTransportAddress;
  */
 @ApplicationScoped
 public class WarCdiFactory {
-    
+
     private static TransportClient sESClient;
     private static EsStorage sESStorage;
+
+    @Produces @ApplicationScoped
+    public static ISecurityContext provideSecurityContext(WarApiManagerConfig config,
+            @New DefaultSecurityContext defaultSC, @New KeycloakSecurityContext keycloakSC) {
+        if ("default".equals(config.getSecurityContextType())) { //$NON-NLS-1$
+            return defaultSC;
+        } else if ("keycloak".equals(config.getSecurityContextType())) { //$NON-NLS-1$
+            return keycloakSC;
+        } else {
+            throw new RuntimeException("Unknown security context type: " + config.getSecurityContextType()); //$NON-NLS-1$
+        }
+    }
 
     @Produces @ApplicationScoped
     public static IStorage provideStorage(WarApiManagerConfig config, @New JpaStorage jpaStorage, @New EsStorage esStorage) {
@@ -92,7 +107,7 @@ public class WarCdiFactory {
     }
 
     /**
-     * @param config 
+     * @param config
      * @return create a new test ES transport client
      */
     private static TransportClient createTransportClient(WarApiManagerConfig config) {
