@@ -111,6 +111,7 @@ import io.apiman.manager.api.rest.contract.exceptions.PolicyDefinitionNotFoundEx
 import io.apiman.manager.api.rest.contract.exceptions.PolicyNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.RoleNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.ServiceAlreadyExistsException;
+import io.apiman.manager.api.rest.contract.exceptions.ServiceDefinitionNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.ServiceNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.ServiceVersionNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.SystemErrorException;
@@ -1272,7 +1273,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                     InputStream definition = (InputStream) response.getEntity();
                     storeServiceDefinition(organizationId, serviceId, newVersion.getVersion(),
                             cloneSource.getDefinitionType(), definition);
-                } catch (ServiceVersionNotFoundException svnfe) {
+                } catch (ServiceDefinitionNotFoundException svnfe) {
                     // This is ok - it just means the service doesn't have one, so do nothing.
                 } catch (Exception sdnfe) {
                     // TODO log this instead of printing the stack trace!

@@ -34,11 +34,19 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.security.cert.X509Certificate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import org.apache.commons.io.IOUtils;
 
@@ -49,24 +57,51 @@ import org.apache.commons.io.IOUtils;
  */
 public class HttpServiceConnection implements IServiceConnection, IServiceConnectionResponse {
 
+    private static SSLContext sslContext;
+    private static HostnameVerifier allHostsValid;
     private static final Set<String> SUPPRESSED_HEADERS = new HashSet<>();
     static {
         SUPPRESSED_HEADERS.add("Transfer-Encoding"); //$NON-NLS-1$
         SUPPRESSED_HEADERS.add("Content-Length"); //$NON-NLS-1$
         SUPPRESSED_HEADERS.add("X-API-Key"); //$NON-NLS-1$
+
+        TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+            @Override
+            public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                return null;
+            }
+            @Override
+            public void checkClientTrusted(X509Certificate[] certs, String authType) {
+            }
+            @Override
+            public void checkServerTrusted(X509Certificate[] certs, String authType) {
+            }
+        } };
+        try {
+            sslContext = SSLContext.getInstance("SSL"); //$NON-NLS-1$
+            sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        allHostsValid = new HostnameVerifier() {
+            @Override
+            public boolean verify(String hostname, SSLSession session) {
+                return true;
+            }
+        };
     }
 
     private ServiceRequest request;
     private Service service;
     private IAsyncResultHandler<IServiceConnectionResponse> responseHandler;
     private boolean connected;
-    
+
     private HttpURLConnection connection;
     private OutputStream outputStream;
-    
+
     private IAsyncHandler<IApimanBuffer> bodyHandler;
     private IAsyncHandler<Void> endHandler;
-    
+
     private ServiceResponse response;
 
     /**
@@ -81,7 +116,7 @@ public class HttpServiceConnection implements IServiceConnection, IServiceConnec
         this.request = request;
         this.service = service;
         this.responseHandler = handler;
-        
+
         connect();
     }
 
@@ -109,6 +144,13 @@ public class HttpServiceConnection implements IServiceConnection, IServiceConnec
             }
             URL url = new URL(endpoint);
             connection = (HttpURLConnection) url.openConnection();
+            // Disable the SSL trust manager so we can connect to any SSL endpoint.
+            // TODO make this optional at some level.  also allow individual certs to be somehow configured
+            if (connection instanceof HttpsURLConnection) {
+                HttpsURLConnection https = (HttpsURLConnection) connection;
+                https.setSSLSocketFactory(sslContext.getSocketFactory());
+                https.setHostnameVerifier(allHostsValid);
+            }
             connection.setReadTimeout(15000);
             connection.setConnectTimeout(10000);
             if (request.getType().equalsIgnoreCase("PUT") || request.getType().equalsIgnoreCase("POST")) { //$NON-NLS-1$ //$NON-NLS-2$
@@ -128,7 +170,7 @@ public class HttpServiceConnection implements IServiceConnection, IServiceConnec
                     connection.setRequestProperty(hname, hval);
                 }
             }
-            
+
             connection.connect();
             connected = true;
         } catch (IOException e) {

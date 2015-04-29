@@ -25,7 +25,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Unit test that creates an H2 database file by firing up the API Manager and sending a 
+ * Unit test that creates an H2 database file by firing up the API Manager and sending a
  * bunch of REST requests to configure it.  When this test is complete there should be a
  * valid H2 database located in target/classes (and thus be included in the JAR).
  *
@@ -50,16 +50,16 @@ public class CreateH2DatabaseTest extends AbstractTestPlanTest {
         ManagerTestUtils.setTestType(TestType.jpa);
         AbstractTestPlanTest.setup();
     }
-    
+
     @Test
     public void test() {
         try {
             System.setProperty("apiman.suite.api-username", "admin");
             System.setProperty("apiman.suite.api-password", "admin");
-            System.setProperty("apiman.suite.gateway-config-endpoint", "http://localhost:8080/apiman-gateway-api");
+            System.setProperty("apiman.suite.gateway-config-endpoint", "https://localhost:8443/apiman-gateway-api");
             System.setProperty("apiman.suite.gateway-config-username", "apimanager");
             System.setProperty("apiman.suite.gateway-config-password", "apiman123!");
-            
+
             runTestPlan("scripts/api-manager-init-testPlan.xml", CreateH2DatabaseTest.class.getClassLoader());
         } finally {
             System.clearProperty("apiman.test.admin-user-only");

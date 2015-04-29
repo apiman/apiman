@@ -32,6 +32,13 @@
   </system-properties>
   <management>
     <security-realms>
+      <security-realm name="UndertowRealm">
+        <server-identities>
+          <ssl>
+            <keystore path="apiman.jks" relative-to="jboss.server.config.dir" keystore-password="secret" alias="apimancert" key-password="secret"/>
+          </ssl>
+        </server-identities>
+      </security-realm>
       <security-realm name="ManagementRealm">
         <authentication>
           <local default-user="$local" skip-group-loading="true" />
@@ -356,6 +363,7 @@
       <buffer-cache name="default" />
       <server name="default-server">
         <http-listener name="default" socket-binding="http" />
+        <https-listener name="https" socket-binding="https" security-realm="UndertowRealm"/>
         <host name="default-host" alias="localhost">
           <location name="/" handler="welcome-content" />
           <filter-ref name="server-header" />
@@ -401,6 +409,7 @@
           password
         </kc:credential>
         <kc:enable-basic-auth>true</kc:enable-basic-auth>
+        <kc:disable-trust-manager>true</kc:disable-trust-manager>
       </kc:secure-deployment>
       <kc:secure-deployment xmlns:kc="urn:jboss:domain:keycloak:1.0" name="apimanui.war">
         <kc:realm>apiman</kc:realm>
@@ -408,6 +417,7 @@
         <kc:credential name="secret">
           password
         </kc:credential>
+        <kc:disable-trust-manager>true</kc:disable-trust-manager>
       </kc:secure-deployment>
       <kc:secure-deployment xmlns:kc="urn:jboss:domain:keycloak:1.0" name="apiman-gateway-api.war">
         <kc:realm>apiman</kc:realm>
@@ -416,6 +426,7 @@
           password
         </kc:credential>
         <kc:enable-basic-auth>true</kc:enable-basic-auth>
+        <kc:disable-trust-manager>true</kc:disable-trust-manager>
       </kc:secure-deployment>
     </subsystem>
   </profile>

@@ -30,11 +30,19 @@ import io.apiman.manager.api.gateway.i18n.Messages;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLSession;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.HttpException;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpRequestInterceptor;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLContextBuilder;
+import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.protocol.HttpContext;
@@ -42,15 +50,37 @@ import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
 /**
- * An implementation of a Gateway Link that uses the Gateway's simple REST 
+ * An implementation of a Gateway Link that uses the Gateway's simple REST
  * API to publish Services.
  *
  * @author eric.wittmann@redhat.com
  */
 public class RestGatewayLink implements IGatewayLink {
-    
+
     private static final ObjectMapper mapper = new ObjectMapper();
-    
+    private static HostnameVerifier allHostsValid;
+    private static SSLConnectionSocketFactory sslConnectionFactory;
+    static {
+        allHostsValid = new HostnameVerifier() {
+            @Override
+            public boolean verify(String hostname, SSLSession session) {
+                return true;
+            }
+        };
+        try {
+            SSLContextBuilder builder = new SSLContextBuilder();
+            builder.loadTrustMaterial(null, new TrustStrategy() {
+                @Override
+                public boolean isTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+                    return true;
+                }
+            });
+            sslConnectionFactory = new SSLConnectionSocketFactory(builder.build(), allHostsValid);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @SuppressWarnings("unused")
     private GatewayBean gateway;
     private CloseableHttpClient httpClient;
@@ -67,19 +97,23 @@ public class RestGatewayLink implements IGatewayLink {
             String cfg = gateway.getConfiguration();
             setConfig((RestGatewayConfigBean) mapper.reader(RestGatewayConfigBean.class).readValue(cfg));
             getConfig().setPassword(AesEncrypter.decrypt(getConfig().getPassword()));
-            httpClient = HttpClientBuilder.create().addInterceptorFirst(new HttpRequestInterceptor() {
-                @Override
-                public void process(HttpRequest request, HttpContext context) throws HttpException, IOException {
-                    configureBasicAuth(request);
-                }
-            }).build();
+            httpClient = HttpClientBuilder.create()
+                    .setSSLHostnameVerifier(allHostsValid)
+                    .setSSLSocketFactory(sslConnectionFactory)
+                    .addInterceptorFirst(new HttpRequestInterceptor() {
+                        @Override
+                        public void process(HttpRequest request, HttpContext context) throws HttpException,
+                                IOException {
+                            configureBasicAuth(request);
+                        }
+                    }).build();
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.gateway.IGatewayLink#close()
      */
@@ -99,7 +133,7 @@ public class RestGatewayLink implements IGatewayLink {
         SystemStatus status = getClient().getStatus();
         return status.isUp();
     }
-    
+
     /**
      * @see io.apiman.manager.api.gateway.IGatewayLink#getStatus()
      */
@@ -107,7 +141,7 @@ public class RestGatewayLink implements IGatewayLink {
     public SystemStatus getStatus() throws GatewayAuthenticationException {
         return getClient().getStatus();
     }
-    
+
     /**
      * @see io.apiman.manager.api.gateway.IGatewayLink#getServiceEndpoint(java.lang.String, java.lang.String, java.lang.String)
      */
