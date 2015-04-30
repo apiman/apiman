@@ -2458,7 +2458,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             for (String roleId : bean.getRoleIds()) {
                 RoleMembershipBean membership = RoleMembershipBean.create(bean.getUserId(), roleId, organizationId);
                 membership.setCreatedOn(new Date());
-                idmStorage.createMembership(membership);
+                // If the membership already exists, that's fine!
+                if (idmStorage.getMembership(bean.getUserId(), roleId, organizationId) == null) {
+                    idmStorage.createMembership(membership);
+                }
                 auditData.addRole(roleId);
             }
         } catch (StorageException e) {

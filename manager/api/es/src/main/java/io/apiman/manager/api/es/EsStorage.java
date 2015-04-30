@@ -120,20 +120,20 @@ import org.elasticsearch.search.sort.SortOrder;
  */
 @ApplicationScoped @Alternative
 public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
-    
+
     private static final String INDEX_NAME = "apiman_manager"; //$NON-NLS-1$
 
     private static int guidCounter = 100;
-    
+
     @Inject
     Client esClient;
-    
+
     /**
      * Constructor.
      */
     public EsStorage() {
     }
-    
+
     /**
      * Called to initialize the storage.
      */
@@ -152,7 +152,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
 
     /**
      * @param indexName
-     * @throws Exception 
+     * @throws Exception
      */
     private void createIndex(String indexName) throws Exception {
         CreateIndexRequest request = new CreateIndexRequest(indexName);
@@ -229,7 +229,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
             if (csb.getServiceOrganizationId().equals(contract.getService().getService().getOrganization().getId()) &&
                     csb.getServiceId().equals(contract.getService().getService().getId()) &&
                     csb.getServiceVersion().equals(contract.getService().getVersion()) &&
-                    csb.getPlanId().equals(contract.getPlan().getPlan().getId())) 
+                    csb.getPlanId().equals(contract.getPlan().getPlan().getId()))
                 {
                     throw new StorageException("Error creating contract: duplicate contract detected."); //$NON-NLS-1$
                 }
@@ -297,7 +297,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
         orderPolicies(policies);
         updateEntity(docType, id, EsMarshalling.marshall(policies));
     }
-    
+
     /**
      * @see io.apiman.manager.api.core.IStorage#reorderPolicies(io.apiman.manager.api.beans.policies.PolicyType, java.lang.String, java.lang.String, java.lang.String, java.util.List)
      */
@@ -435,7 +435,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
         updateEntity("serviceVersion", id(service.getOrganization().getId(), service.getId(), version.getVersion()),  //$NON-NLS-1$
                 EsMarshalling.marshall(version));
     }
-    
+
     /**
      * @see io.apiman.manager.api.core.IStorage#updateServiceDefinition(io.apiman.manager.api.beans.services.ServiceVersionBean, java.io.InputStream)
      */
@@ -527,7 +527,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
         updateEntity("policyDef", policyDef.getId(), EsMarshalling.marshall(policyDef)); //$NON-NLS-1$
     }
 
-    
+
     /**
      * @see io.apiman.manager.api.core.IIdmStorage#updateRole(io.apiman.manager.api.beans.idm.RoleBean)
      */
@@ -585,7 +585,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
         ServiceBean service = version.getService();
         deleteEntity("serviceVersion", id(service.getOrganization().getId(), service.getId(), version.getVersion())); //$NON-NLS-1$
     }
-    
+
     /**
      * @see io.apiman.manager.api.core.IStorage#deleteServiceDefinition(io.apiman.manager.api.beans.services.ServiceVersionBean)
      */
@@ -765,7 +765,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
         bean.setService(getService(organizationId, serviceId));
         return bean;
     }
-    
+
     /**
      * @see io.apiman.manager.api.core.IStorage#getServiceDefinition(io.apiman.manager.api.beans.services.ServiceVersionBean)
      */
@@ -996,7 +996,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
                 return EsMarshalling.unmarshallPlanSummary(source);
             }
         });
-        
+
     }
 
     /**
@@ -1026,7 +1026,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
             AuditEntityType entityType = null;
             if (type == OrganizationBean.class) {
                 entityType = AuditEntityType.Organization;
-            } else if (type == ApplicationBean.class) { 
+            } else if (type == ApplicationBean.class) {
                 entityType = AuditEntityType.Application;
             } else if (type == ServiceBean.class) {
                 entityType = AuditEntityType.Service;
@@ -1037,7 +1037,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
                 criteria.addFilter("entityType", entityType.name(), SearchCriteriaFilterOperator.eq); //$NON-NLS-1$
             }
         }
-        
+
         return find(criteria, "auditEntry", new IUnmarshaller<AuditEntryBean>() { //$NON-NLS-1$
             @Override
             public AuditEntryBean unmarshal(Map<String, Object> source) {
@@ -1063,7 +1063,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
         if (userId != null) {
             criteria.addFilter("who", userId, SearchCriteriaFilterOperator.eq); //$NON-NLS-1$
         }
-        
+
         return find(criteria, "auditEntry", new IUnmarshaller<AuditEntryBean>() { //$NON-NLS-1$
             @Override
             public AuditEntryBean unmarshal(Map<String, Object> source) {
@@ -1538,6 +1538,20 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     }
 
     /**
+     * @see io.apiman.manager.api.core.IIdmStorage#getMembership(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public RoleMembershipBean getMembership(String userId, String roleId, String organizationId) throws StorageException {
+        String id = id(organizationId, userId, roleId);
+        Map<String, Object> source = getEntity("roleMembership", id); //$NON-NLS-1$
+        if (source == null) {
+            return null;
+        } else {
+            return EsMarshalling.unmarshallRoleMembership(source);
+        }
+    }
+
+    /**
      * @see io.apiman.manager.api.core.IIdmStorage#deleteMembership(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
@@ -1716,9 +1730,9 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
             request.refresh(refresh);
             request.contentType(XContentType.JSON);
             request.source(entitySource);
-            
+
             ActionFuture<IndexResponse> future = esClient.index(request);
-            
+
             IndexResponse response = future.get();
             if (!response.isCreated()) {
                 throw new StorageException("Failed to index document " + id + " of type " + type + ".");
@@ -1749,7 +1763,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
             throw new StorageException(e);
         }
     }
-    
+
     /**
      * Returns a list of entities.
      * @param type
@@ -1789,7 +1803,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
             throw new StorageException(e);
         }
     }
-    
+
     /**
      * Updates a single entity.
      * @param type
@@ -1803,14 +1817,14 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
             request.create(false);
             request.contentType(XContentType.JSON);
             request.source(source);
-            
+
             ActionFuture<IndexResponse> future = esClient.index(request);
             future.get();
         } catch (Exception e) {
             throw new StorageException(e);
         }
     }
-    
+
     /**
      * Finds entities using a generic search criteria bean.
      * @param criteria
@@ -1854,7 +1868,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
             List<SearchCriteriaFilterBean> filters = criteria.getFilters();
             BaseQueryBuilder q = QueryBuilders.matchAllQuery();
             if (filters != null && !filters.isEmpty()) {
-                
+
                 AndFilterBuilder andFilter = FilterBuilders.andFilter();
                 int filterCount = 0;
                 for (SearchCriteriaFilterBean filter : filters) {
@@ -1869,13 +1883,13 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
                     }
                     // TODO implement the other filter operators here!
                 }
-                
+
                 if (filterCount > 0) {
                     q = QueryBuilders.filteredQuery(q, andFilter);
                 }
             }
             builder.query(q);
-            
+
             SearchRequest request = new SearchRequest(INDEX_NAME);
             request.types(type);
             request.source(builder);
@@ -1887,7 +1901,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
                 T bean = unmarshaller.unmarshal(sourceAsMap);
                 rval.getBeans().add(bean);
             }
-            
+
             return rval;
         } catch (Exception e) {
             throw new StorageException(e);
@@ -1923,7 +1937,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
         }
         return docType;
     }
-    
+
     /**
      * A composite ID created from an organization ID and entity ID.
      * @param organizationId
@@ -1942,7 +1956,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     private static String id(String organizationId, String entityId, String version) {
         return organizationId + ':' + entityId + ':' + version;
     }
-    
+
     private static interface IUnmarshaller<T> {
         /**
          * Unmarshal the source map into an entity.

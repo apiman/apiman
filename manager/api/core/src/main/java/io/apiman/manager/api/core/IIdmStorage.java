@@ -30,22 +30,22 @@ import java.util.Set;
  * {@link IStorage} interface so that roles can be stored using a different
  * strategy. An obvious example is that the users and roles may be stored in an
  * LDAP directory while the core apiman data is stored in a database.
- * 
+ *
  * Depending on implementation, various methods in this interface may not
- * be supported.  For example, if the IDM system being used is read only 
+ * be supported.  For example, if the IDM system being used is read only
  * (perhaps because it is backed by some centrally managed LDAP system).
- * 
+ *
  * @author eric.wittmann@redhat.com
  */
 public interface IIdmStorage {
-    
+
     /**
      * Creates a user in the IDM system.
      * @param user the user
      * @throws StorageException if an exception occurs during storage attempt
      */
     public void createUser(UserBean user) throws StorageException;
-    
+
     /**
      * Gets a user by id.
      * @param userId user's id
@@ -53,7 +53,7 @@ public interface IIdmStorage {
      * @throws StorageException if an exception occurs during storage attempt
      */
     public UserBean getUser(String userId) throws StorageException;
-    
+
     /**
      * Updates the personal information about a user.
      * @param user the user
@@ -77,7 +77,7 @@ public interface IIdmStorage {
      * @throws StorageException  if an exception occurs during storage attempt
      */
     public void createRole(RoleBean role) throws StorageException;
-    
+
     /**
      * Gets a role by id.
      * @param roleId the role id
@@ -115,16 +115,25 @@ public interface IIdmStorage {
      * @throws StorageException if an exception occurs during storage attempt
      */
     public void createMembership(RoleMembershipBean membership) throws StorageException;
-    
+
     /**
-     * Deletes a single membership. 
+     * Returns a single membership or null if one does not exist.
+     * @param userId the user id
+     * @param roleId the role id
+     * @param organizationId the organization id
+     * @throws StorageException if an exception occurs during storage attempt
+     */
+    public RoleMembershipBean getMembership(String userId, String roleId, String organizationId) throws StorageException;
+
+    /**
+     * Deletes a single membership.
      * @param userId the user's id
      * @param roleId the role's id
      * @param organizationId the organization's id
      * @throws StorageException if an exception occurs during storage attempt
      */
     public void deleteMembership(String userId, String roleId, String organizationId) throws StorageException;
-    
+
     /**
      * Deletes all role memberships for a user in a given organization.
      * @param userId the user's id
@@ -132,7 +141,7 @@ public interface IIdmStorage {
      * @throws StorageException if an exception occurs during storage attempt
      */
     public void deleteMemberships(String userId, String organizationId) throws StorageException;
-    
+
     /**
      * Gets all the user's memberships.
      * @param userId the user's id
@@ -149,7 +158,7 @@ public interface IIdmStorage {
      * @throws StorageException if an exception occurs during storage attempt
      */
     public Set<RoleMembershipBean> getUserMemberships(String userId, String organizationId) throws StorageException;
-    
+
     /**
      * Gets all the memberships configured for a particular organization.
      * @param organizationId the organization's id

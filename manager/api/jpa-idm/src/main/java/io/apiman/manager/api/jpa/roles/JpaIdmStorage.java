@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
  */
 @ApplicationScoped @Alternative
 public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
-    
+
     private static Logger logger = LoggerFactory.getLogger(JpaIdmStorage.class);
 
     /**
@@ -58,7 +58,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
      */
     public JpaIdmStorage() {
     }
-    
+
     /**
      * @see io.apiman.manager.api.core.IIdmStorage#createUser(io.apiman.manager.api.beans.idm.UserBean)
      */
@@ -74,7 +74,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
             throw e;
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.core.IIdmStorage#getUser(java.lang.String)
      */
@@ -87,7 +87,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
             commitTx();
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.core.IIdmStorage#updateUser(io.apiman.manager.api.beans.idm.UserBean)
      */
@@ -100,7 +100,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
             commitTx();
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.core.IIdmStorage#findUsers(io.apiman.manager.api.beans.search.SearchCriteriaBean)
      */
@@ -113,7 +113,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
             commitTx();
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.core.IIdmStorage#createRole(io.apiman.manager.api.beans.idm.RoleBean)
      */
@@ -126,7 +126,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
             commitTx();
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.core.IIdmStorage#updateRole(io.apiman.manager.api.beans.idm.RoleBean)
      */
@@ -139,7 +139,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
             commitTx();
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.core.IIdmStorage#deleteRole(io.apiman.manager.api.beans.idm.RoleBean)
      */
@@ -148,9 +148,9 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
         beginTx();
         try {
             EntityManager entityManager = getActiveEntityManager();
-            
+
             RoleBean prole = get(role.getId(), RoleBean.class);
-            
+
             // First delete all memberships in this role
             Query query = entityManager.createQuery("DELETE from RoleMembershipBean m WHERE m.roleId = :roleId" ); //$NON-NLS-1$
             query.setParameter("roleId", role.getId()); //$NON-NLS-1$
@@ -158,7 +158,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
 
             // Then delete the role itself.
             super.delete(prole);
-            
+
             commitTx();
         } catch (Throwable t) {
             logger.error(t.getMessage(), t);
@@ -166,7 +166,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
             throw new StorageException(t);
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.core.IIdmStorage#getRole(java.lang.String)
      */
@@ -192,7 +192,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
             commitTx();
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.core.IIdmStorage#createMembership(io.apiman.manager.api.beans.idm.RoleMembershipBean)
      */
@@ -203,6 +203,32 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
             super.create(membership);
         } finally {
             commitTx();
+        }
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IIdmStorage#getMembership(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public RoleMembershipBean getMembership(String userId, String roleId, String organizationId) throws StorageException {
+        beginTx();
+        try {
+            EntityManager entityManager = getActiveEntityManager();
+            Query query = entityManager.createQuery("SELECT m FROM RoleMembershipBean m WHERE m.roleId = :roleId AND m.userId = :userId AND m.organizationId = :orgId" ); //$NON-NLS-1$
+            query.setParameter("roleId", roleId); //$NON-NLS-1$
+            query.setParameter("userId", userId); //$NON-NLS-1$
+            query.setParameter("orgId", organizationId); //$NON-NLS-1$
+            RoleMembershipBean bean = null;
+            List<?> resultList = query.getResultList();
+            if (!resultList.isEmpty()) {
+                bean = (RoleMembershipBean) resultList.iterator().next();
+            }
+            commitTx();
+            return bean;
+        } catch (Throwable t) {
+            logger.error(t.getMessage(), t);
+            rollbackTx();
+            throw new StorageException(t);
         }
     }
 
@@ -246,7 +272,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
             throw new StorageException(t);
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.core.IIdmStorage#getUserMemberships(java.lang.String)
      */
@@ -271,7 +297,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
             throw new StorageException(t);
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.core.IIdmStorage#getUserMemberships(java.lang.String, java.lang.String)
      */
@@ -298,7 +324,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
             throw new StorageException(t);
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.core.IIdmStorage#getOrgMemberships(java.lang.String)
      */
@@ -323,7 +349,7 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
             throw new StorageException(t);
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.core.IIdmStorage#getPermissions(java.lang.String)
      */
@@ -368,5 +394,5 @@ public class JpaIdmStorage extends AbstractJpaStorage implements IIdmStorage {
     protected RoleBean getRoleInternal(String roleId) throws StorageException {
         return super.get(roleId, RoleBean.class);
     }
-    
+
 }

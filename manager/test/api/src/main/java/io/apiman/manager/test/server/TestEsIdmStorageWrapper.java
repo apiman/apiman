@@ -41,7 +41,7 @@ public class TestEsIdmStorageWrapper implements IIdmStorage {
 
     /**
      * Constructor.
-     * @param esClient 
+     * @param esClient
      * @param delegate
      */
     public TestEsIdmStorageWrapper(Client esClient, IIdmStorage delegate) {
@@ -129,6 +129,14 @@ public class TestEsIdmStorageWrapper implements IIdmStorage {
     @Override
     public void createMembership(RoleMembershipBean membership) throws StorageException {
         this.delegate.createMembership(membership);
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IIdmStorage#getMembership(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public RoleMembershipBean getMembership(String userId, String roleId, String organizationId) throws StorageException {
+        return this.delegate.getMembership(userId, roleId, organizationId);
     }
 
     /**
