@@ -36,7 +36,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>ConfigurationJS</servlet-name>
-    <url-pattern>/js/configuration.nocache.js</url-pattern>
+    <url-pattern>/apiman/config.js</url-pattern>
   </servlet-mapping>
 
   <servlet>
@@ -45,7 +45,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>TranslationJS</servlet-name>
-    <url-pattern>/js/translations.nocache.js</url-pattern>
+    <url-pattern>/apiman/translations.js</url-pattern>
   </servlet-mapping>
 
   <servlet>

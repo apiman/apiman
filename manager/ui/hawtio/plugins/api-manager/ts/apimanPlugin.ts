@@ -156,14 +156,14 @@ module Apiman {
 
     hawtioPluginLoader.registerPreBootstrapTask((next) => {
         // Load the configuration jsonp script
-        $.getScript('js/configuration.nocache.js').done((script, textStatus) => {
-            log.info("Loaded the configuration.nocache.js config!");
+        $.getScript('apiman/config.js').done((script, textStatus) => {
+            log.info("Loaded the config.js config!");
         }).fail((response) => {
             log.debug("Error fetching configuration: ", response);
         }).always(() => {
             // Load the i18n jsonp script
-            $.getScript('js/translations.nocache.js').done((script, textStatus) => {
-                log.info("Loaded the translations.nocache.js bundle!");
+            $.getScript('apiman/translations.js').done((script, textStatus) => {
+                log.info("Loaded the translations.js bundle!");
             }).fail((response) => {
                 log.debug("Error fetching translations: ", response);
             }).always(() => {
