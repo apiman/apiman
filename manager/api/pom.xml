@@ -22,7 +22,6 @@
     <module>rest-impl</module>
     <module>security</module>
     <module>war</module>
-    <module>war/micro</module>
     <module>war/wildfly8</module>
   </modules>
 </project>
