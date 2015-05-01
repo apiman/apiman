@@ -121,6 +121,7 @@
     <version.org.apache.httpcomponents.httpclient>4.4-beta1</version.org.apache.httpcomponents.httpclient>
     <version.org.apache.httpcomponents.httpcore>4.3.2</version.org.apache.httpcomponents.httpcore>
     <version.org.apache.httpcomponents.httpcore>4.4-beta1</version.org.apache.httpcomponents.httpcore>
+    <version.org.apache.logging.log4j>2.2</version.org.apache.logging.log4j>
     <version.org.apache.servicemix.bundles.antlr>2.7.7_5</version.org.apache.servicemix.bundles.antlr>
     <version.org.apache.servicemix.bundles.cglib>3.0_1</version.org.apache.servicemix.bundles.cglib>
     <version.org.apache.servicemix.bundles.dom4j>1.6.1_5</version.org.apache.servicemix.bundles.dom4j>
@@ -760,6 +761,16 @@
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
         <version>${version.com.google.guava}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-api</artifactId>
+        <version>${version.org.apache.logging.log4j}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-core</artifactId>
+        <version>${version.org.apache.logging.log4j}</version>
       </dependency>
 
       <!-- Spec Libraries -->

@@ -38,7 +38,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 /**
- * Servces as a common base class for concrete implementations of {@link IPluginRegistry}.
+ * Serves as a common base class for concrete implementations of {@link IPluginRegistry}.
  *
  * @author eric.wittmann@redhat.com
  */

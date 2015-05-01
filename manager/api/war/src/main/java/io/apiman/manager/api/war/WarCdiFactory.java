@@ -20,6 +20,12 @@ import io.apiman.manager.api.core.IIdmStorage;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.UuidApiKeyGenerator;
+import io.apiman.manager.api.core.i18n.Messages;
+import io.apiman.manager.api.core.logging.ApimanLogger;
+import io.apiman.manager.api.core.logging.IApimanDelegateLogger;
+import io.apiman.manager.api.core.logging.IApimanLogger;
+import io.apiman.manager.api.core.logging.JsonLoggerImpl;
+import io.apiman.manager.api.core.logging.StandardLoggerImpl;
 import io.apiman.manager.api.es.EsStorage;
 import io.apiman.manager.api.jpa.JpaStorage;
 import io.apiman.manager.api.jpa.roles.JpaIdmStorage;
@@ -30,7 +36,9 @@ import io.apiman.manager.api.security.impl.KeycloakSecurityContext;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.New;
 import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.InjectionPoint;
 
+import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
@@ -45,6 +53,18 @@ public class WarCdiFactory {
 
     private static TransportClient sESClient;
     private static EsStorage sESStorage;
+
+    @Produces @ApimanLogger
+    public static IApimanLogger provideLogger(WarApiManagerConfig config, InjectionPoint injectionPoint) {
+        try {
+            ApimanLogger logger = injectionPoint.getAnnotated().getAnnotation(ApimanLogger.class);
+            Class<?> klazz = logger.value();
+            return getDelegate(config).newInstance().createLogger(klazz);
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException(String.format(
+                    Messages.i18n.format("LoggerFactory.InstantiationFailed")), e); //$NON-NLS-1$
+        }
+    }
 
     @Produces @ApplicationScoped
     public static ISecurityContext provideSecurityContext(WarApiManagerConfig config,
@@ -132,4 +152,31 @@ public class WarCdiFactory {
         return sESStorage;
     }
 
+    private static Class<? extends IApimanDelegateLogger> getDelegate(WarApiManagerConfig config) {
+        if(config.getLoggerName() == null || StringUtils.isEmpty(config.getLoggerName())) {
+            System.err.println(Messages.i18n.format("LoggerFactory.NoLoggerSpecified")); //$NON-NLS-1$
+            return StandardLoggerImpl.class;
+        }
+
+        switch(config.getLoggerName().toLowerCase()) {
+            case "json": //$NON-NLS-1$
+                return JsonLoggerImpl.class;
+            case "standard": //$NON-NLS-1$
+                return StandardLoggerImpl.class;
+            default:
+                return loadByFQDN(config.getLoggerName());
+        }
+
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Class<? extends IApimanDelegateLogger> loadByFQDN(String fqdn) {
+        try {
+            return (Class<? extends IApimanDelegateLogger>) Class.forName(fqdn);
+        } catch (ClassNotFoundException e) {
+            System.err.println(String.format(Messages.i18n.format("LoggerFactory.LoggerNotFoundOnClasspath"), //$NON-NLS-1$
+                    fqdn));
+            return StandardLoggerImpl.class;
+        }
+    }
 }
