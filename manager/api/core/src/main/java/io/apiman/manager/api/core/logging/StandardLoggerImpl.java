@@ -45,18 +45,8 @@ public class StandardLoggerImpl implements IApimanDelegateLogger {
     }
 
     @Override
-    public void info(String message, Throwable throwable) {
-        delegatedLogger.info(message, throwable);
-    }
-
-    @Override
     public void debug(String message) {
         delegatedLogger.debug(message);
-    }
-
-    @Override
-    public void debug(String message, Throwable throwable) {
-        delegatedLogger.debug(message, throwable);
     }
 
     @Override
@@ -65,17 +55,17 @@ public class StandardLoggerImpl implements IApimanDelegateLogger {
     }
 
     @Override
-    public void trace(String message, Throwable throwable) {
-        delegatedLogger.trace(message, throwable);
-    }
-
-    @Override
     public void warn(String message) {
         delegatedLogger.warn(message);
     }
 
     @Override
-    public void warn(String message, Throwable throwable) {
-        delegatedLogger.warn(message, throwable);
+    public void error(Throwable error) {
+        delegatedLogger.error(error.getMessage(), error);
+    }
+
+    @Override
+    public void error(String message, Throwable error) {
+        delegatedLogger.error(message, error);
     }
 }

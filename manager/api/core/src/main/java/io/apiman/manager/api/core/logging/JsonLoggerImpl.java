@@ -109,7 +109,7 @@ public class JsonLoggerImpl implements IApimanDelegateLogger {
      *
      */
     private enum LogLevel {
-        INFO, DEBUG, WARN, TRACE
+        INFO, DEBUG, WARN, TRACE, ERROR
     }
 
     private static Time time = new DefaultTimeImpl();
@@ -161,18 +161,8 @@ public class JsonLoggerImpl implements IApimanDelegateLogger {
     }
 
     @Override
-    public void info(String message, Throwable throwable) {
-        delegatedLogger.info(jsonify(message, LogLevel.INFO, throwable));
-    }
-
-    @Override
     public void warn(String message) {
         delegatedLogger.warn(jsonify(message, LogLevel.WARN));
-    }
-
-    @Override
-    public void warn(String message, Throwable throwable) {
-        delegatedLogger.warn(jsonify(message, LogLevel.WARN, throwable));
     }
 
     @Override
@@ -181,18 +171,18 @@ public class JsonLoggerImpl implements IApimanDelegateLogger {
     }
 
     @Override
-    public void debug(String message, Throwable throwable) {
-        delegatedLogger.debug(jsonify(message, LogLevel.DEBUG, throwable));
-    }
-
-    @Override
     public void trace(String message) {
         delegatedLogger.trace(jsonify(message, LogLevel.TRACE));
     }
 
     @Override
-    public void trace(String message, Throwable throwable) {
-        delegatedLogger.trace(jsonify(message, LogLevel.TRACE, throwable));
+    public void error(String message, Throwable error) {
+        delegatedLogger.error(jsonify(message, LogLevel.ERROR, error));
+    }
+
+    @Override
+    public void error(Throwable error) {
+        delegatedLogger.error(jsonify(error.getMessage(), LogLevel.ERROR, error));
     }
 
     private String jsonify(String message, LogLevel level) {

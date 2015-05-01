@@ -18,7 +18,6 @@ package io.apiman.manager.api.core.logging;
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.PARAMETER;
-import static java.lang.annotation.ElementType.TYPE;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -37,7 +36,7 @@ import org.apache.commons.lang.ObjectUtils.Null;
  */
 @Qualifier
 @Retention(RetentionPolicy.RUNTIME)
-@Target({METHOD, FIELD, PARAMETER, TYPE})
+@Target({METHOD, FIELD, PARAMETER})
 public @interface ApimanLogger {
     /**
      * @return the requesting class

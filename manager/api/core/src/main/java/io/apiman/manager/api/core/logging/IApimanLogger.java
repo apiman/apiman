@@ -30,27 +30,11 @@ public interface IApimanLogger {
     void info(String message);
 
     /**
-     * Log an info level message and error
-     *
-     * @param message the message
-     * @param throwable the throwable cause
-     */
-    void info(String message, Throwable throwable);
-
-    /**
      * Log a warning
      *
      * @param message the message
      */
     void warn(String message);
-
-    /**
-     * Log a warning and error
-     *
-     * @param message the message
-     * @param throwable the throwable cause
-     */
-    void warn(String message, Throwable throwable);
 
     /**
      * Log a debug level message
@@ -60,14 +44,6 @@ public interface IApimanLogger {
     void debug(String message);
 
     /**
-     * Log a debug level message and error
-     *
-     * @param message the message
-     * @param throwable the throwable cause
-     */
-    void debug(String message, Throwable throwable);
-
-    /**
      * Log a trace level message
      *
      * @param message the message
@@ -75,10 +51,17 @@ public interface IApimanLogger {
     void trace(String message);
 
     /**
-     * Log a trace level message and error
+     * Log an error level message.
      *
-     * @param message the message
-     * @param throwable the throwable cause
+     * @param error
      */
-    void trace(String message, Throwable throwable);
+    void error(Throwable error);
+
+    /**
+     * Log an error level message.
+     *
+     * @param message
+     * @param error
+     */
+    void error(String message, Throwable error);
 }

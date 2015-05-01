@@ -22,7 +22,7 @@ import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.UuidApiKeyGenerator;
 import io.apiman.manager.api.core.logging.ApimanLogger;
 import io.apiman.manager.api.core.logging.IApimanLogger;
-import io.apiman.manager.api.core.logging.JsonLoggerImpl;
+import io.apiman.manager.api.core.logging.StandardLoggerImpl;
 import io.apiman.manager.api.es.EsStorage;
 import io.apiman.manager.api.jpa.JpaStorage;
 import io.apiman.manager.api.jpa.roles.JpaIdmStorage;
@@ -51,7 +51,7 @@ public class TestCdiFactory {
     public static IApimanLogger provideLogger(InjectionPoint injectionPoint) {
         ApimanLogger logger = injectionPoint.getAnnotated().getAnnotation(ApimanLogger.class);
         Class<?> klazz = logger.value();
-        return new JsonLoggerImpl().createLogger(klazz);
+        return new StandardLoggerImpl().createLogger(klazz);
     }
 
     @Produces @ApplicationScoped

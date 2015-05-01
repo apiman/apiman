@@ -18,5 +18,5 @@ Content-Type: application/json
 Content-Type: application/json
 
 {
-  "id" : "IgnoredResourcesPolicy"
+  "id" : "AuthorizationPolicy"
 }
