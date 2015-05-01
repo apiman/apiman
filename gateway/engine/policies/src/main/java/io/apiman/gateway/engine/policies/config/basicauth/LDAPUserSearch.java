@@ -13,39 +13,50 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.manager.api.beans.summary;
-
-import java.io.Serializable;
+package io.apiman.gateway.engine.policies.config.basicauth;
 
 /**
- * Returns managed endpoint information.
+ * Models information about the user search.
  *
  * @author eric.wittmann@redhat.com
  */
-public class ServiceVersionEndpointSummaryBean implements Serializable {
+public class LDAPUserSearch {
 
-    private static final long serialVersionUID = -4655383228161917800L;
-
-    private String managedEndpoint;
+    private String baseDn;
+    private String expression;
 
     /**
      * Constructor.
      */
-    public ServiceVersionEndpointSummaryBean() {
+    public LDAPUserSearch() {
     }
 
     /**
-     * @return the managedEndpoint
+     * @return the baseDn
      */
-    public String getManagedEndpoint() {
-        return managedEndpoint;
+    public String getBaseDn() {
+        return baseDn;
     }
 
     /**
-     * @param managedEndpoint the managedEndpoint to set
+     * @param baseDn the baseDn to set
      */
-    public void setManagedEndpoint(String managedEndpoint) {
-        this.managedEndpoint = managedEndpoint;
+    public void setBaseDn(String baseDn) {
+        this.baseDn = baseDn;
+    }
+
+    /**
+     * @return the expression
+     */
+    public String getExpression() {
+        return expression;
+    }
+
+    /**
+     * @param expression the expression to set
+     */
+    public void setExpression(String expression) {
+        this.expression = expression;
     }
 
 }

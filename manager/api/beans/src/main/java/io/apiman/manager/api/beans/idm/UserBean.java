@@ -25,20 +25,17 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 /**
  * Models a single user.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 @Entity
 @Table(name = "users")
 public class UserBean implements Serializable {
-    
+
     private static final long serialVersionUID = 865765107251347714L;
-    
+
     @Id
     @Column(updatable=false, nullable=false)
     private String username;
@@ -46,11 +43,11 @@ public class UserBean implements Serializable {
     private String email;
     @Column(updatable=false)
     private Date joinedOn;
-    
+
     // Used only when returning information about the current user
     @Transient
     private boolean admin;
-    
+
     /**
      * Constructor.
      */

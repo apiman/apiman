@@ -19,16 +19,13 @@ import io.apiman.manager.api.beans.contracts.ContractBean;
 
 import java.io.Serializable;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 /**
  * The data saved along with the audit entry when a contract is created.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 public class ContractData implements Serializable {
-    
+
     private static final long serialVersionUID = -937575521565548994L;
 
     private String appOrgId;
@@ -39,7 +36,7 @@ public class ContractData implements Serializable {
     private String serviceVersion;
     private String planId;
     private String planVersion;
-    
+
     /**
      * Constructor.
      */
@@ -172,5 +169,5 @@ public class ContractData implements Serializable {
     public void setPlanVersion(String planVersion) {
         this.planVersion = planVersion;
     }
-    
+
 }

@@ -15,26 +15,27 @@
  */
 package io.apiman.gateway.engine.policies.config.basicauth;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
  * Information about the LDAP server to use to authenticate an inbound
  * user.  The DN pattern can be (for example) of the following form:
- * 
+ *
  *   cn=${username},dc=${X-Authentication-Domain},dc=org
- * 
- * Supported properties for interpolation/replacement in the pattern 
+ *
+ * Supported properties for interpolation/replacement in the pattern
  * include the BASIC authentication "username" and any header found
  * in the inbound service request.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 public class LDAPIdentitySource {
-    
+
     private String url;
     private String dnPattern;
-    
+    private LDAPBindAsType bindAs;
+    private LDAPCredentials credentials;
+    private LDAPUserSearch userSearch;
+
     /**
      * Constructor.
      */
@@ -67,6 +68,48 @@ public class LDAPIdentitySource {
      */
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    /**
+     * @return the bindAs
+     */
+    public LDAPBindAsType getBindAs() {
+        return bindAs;
+    }
+
+    /**
+     * @param bindAs the bindAs to set
+     */
+    public void setBindAs(LDAPBindAsType bindAs) {
+        this.bindAs = bindAs;
+    }
+
+    /**
+     * @return the credentials
+     */
+    public LDAPCredentials getCredentials() {
+        return credentials;
+    }
+
+    /**
+     * @param credentials the credentials to set
+     */
+    public void setCredentials(LDAPCredentials credentials) {
+        this.credentials = credentials;
+    }
+
+    /**
+     * @return the userSearch
+     */
+    public LDAPUserSearch getUserSearch() {
+        return userSearch;
+    }
+
+    /**
+     * @param userSearch the userSearch to set
+     */
+    public void setUserSearch(LDAPUserSearch userSearch) {
+        this.userSearch = userSearch;
     }
 
 }

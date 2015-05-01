@@ -20,8 +20,6 @@ import io.apiman.gateway.engine.policies.BasicAuthenticationPolicy;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 /**
  * A simple static set of identities used to perform basic authentication
  * by the {@link BasicAuthenticationPolicy} implementation.  This is likely
@@ -30,11 +28,10 @@ import org.jboss.errai.common.client.api.annotations.Portable;
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 public class StaticIdentitySource {
-    
+
     private List<StaticIdentity> identities = new ArrayList<>();
-    
+
     /**
      * Constructor.
      */

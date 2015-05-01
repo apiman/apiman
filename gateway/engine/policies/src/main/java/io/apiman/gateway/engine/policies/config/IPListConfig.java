@@ -18,19 +18,16 @@ package io.apiman.gateway.engine.policies.config;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 /**
  * Configuration object for the IP list policies.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 public class IPListConfig {
-    
+
     private String httpHeader;
     private Set<String> ipList = new HashSet<>();
-    
+
     /**
      * Constructor.
      */

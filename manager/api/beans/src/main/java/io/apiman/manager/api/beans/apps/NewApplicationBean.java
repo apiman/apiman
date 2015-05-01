@@ -18,23 +18,21 @@ package io.apiman.manager.api.beans.apps;
 import java.io.Serializable;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
  * Bean used when creating an application.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class NewApplicationBean implements Serializable {
-    
+
     private static final long serialVersionUID = 5833699118241379535L;
-    
+
     private String name;
     private String description;
     private String initialVersion;
-    
+
     /**
      * Constructor.
      */

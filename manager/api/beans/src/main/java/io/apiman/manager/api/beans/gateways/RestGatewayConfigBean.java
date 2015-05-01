@@ -15,16 +15,14 @@
  */
 package io.apiman.manager.api.beans.gateways;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
  * Models the configuration of a REST gateway.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 public class RestGatewayConfigBean {
-    
+
     private String endpoint;
     private String username;
     private String password;
@@ -76,5 +74,5 @@ public class RestGatewayConfigBean {
     public void setPassword(String password) {
         this.password = password;
     }
-    
+
 }

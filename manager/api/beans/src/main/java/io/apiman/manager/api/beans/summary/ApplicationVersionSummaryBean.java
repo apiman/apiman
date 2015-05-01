@@ -19,19 +19,16 @@ import io.apiman.manager.api.beans.apps.ApplicationStatus;
 
 import java.io.Serializable;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 
 /**
  * A summary of an individual application version.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 public class ApplicationVersionSummaryBean implements Serializable {
 
     private static final long serialVersionUID = 2047101278864994250L;
-    
+
     private String organizationId;
     private String organizationName;
     private String id;

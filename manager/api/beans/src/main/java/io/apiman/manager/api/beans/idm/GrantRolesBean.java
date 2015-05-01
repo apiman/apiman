@@ -19,19 +19,16 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 /**
  * Bean used to grant role membership for a given user (qualified
  * by organization).
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 public class GrantRolesBean implements Serializable {
 
     private static final long serialVersionUID = -1509983712261196134L;
-    
+
     private String userId;
     private Set<String> roleIds = new HashSet<>();
 
@@ -40,7 +37,7 @@ public class GrantRolesBean implements Serializable {
      */
     public GrantRolesBean() {
     }
-    
+
     /**
      * @param roleId the role
      */

@@ -17,8 +17,6 @@ package io.apiman.manager.api.beans.search;
 
 import java.io.Serializable;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 /**
  * Encapsulates paging information.  Useful when listing beans or searching
  * for beans.  In these cases the criteria might match a large number of
@@ -26,11 +24,10 @@ import org.jboss.errai.common.client.api.annotations.Portable;
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 public class PagingBean implements Serializable {
-    
+
     private static final long serialVersionUID = -7218662169900773534L;
-    
+
     private int page;
     private int pageSize;
 

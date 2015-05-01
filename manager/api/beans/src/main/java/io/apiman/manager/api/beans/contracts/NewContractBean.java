@@ -17,14 +17,11 @@ package io.apiman.manager.api.beans.contracts;
 
 import java.io.Serializable;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 /**
  * The bean used to create a new contract.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 public class NewContractBean implements Serializable {
 
     private static final long serialVersionUID = -2326957716478467884L;
@@ -32,7 +29,7 @@ public class NewContractBean implements Serializable {
     private String serviceOrgId;
     private String serviceId;
     private String serviceVersion;
-    
+
     private String planId;
 
     /**

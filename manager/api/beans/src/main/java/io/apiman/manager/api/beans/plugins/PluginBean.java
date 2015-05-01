@@ -27,21 +27,19 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
  * Models a single plugin configured by an admin.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 @Entity
 @Table(name = "plugins", uniqueConstraints = { @UniqueConstraint(columnNames = { "groupId", "artifactId" }) })
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class PluginBean implements Serializable {
-    
+
     private static final long serialVersionUID = 2932636903455749308L;
-    
+
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(updatable=false, nullable=false)
@@ -63,7 +61,7 @@ public class PluginBean implements Serializable {
     private String createdBy;
     @Column(updatable=false, nullable=false)
     private Date createdOn;
-    
+
     /**
      * Constructor.
      */

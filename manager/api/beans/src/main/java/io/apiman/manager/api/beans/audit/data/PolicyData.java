@@ -17,19 +17,16 @@ package io.apiman.manager.api.beans.audit.data;
 
 import java.io.Serializable;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 /**
- * The data saved along with the audit entry when a policy is added to 
+ * The data saved along with the audit entry when a policy is added to
  * an entity.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 public class PolicyData implements Serializable {
-    
+
     private static final long serialVersionUID = 2160450121494494714L;
-    
+
     private String policyDefId;
 
     /**
@@ -51,5 +48,5 @@ public class PolicyData implements Serializable {
     public void setPolicyDefId(String policyDefId) {
         this.policyDefId = policyDefId;
     }
-    
+
 }

@@ -39,7 +39,7 @@ import org.apache.commons.codec.digest.DigestUtils;
  * @author eric.wittmann@redhat.com
  */
 public class JDBCIdentityValidator implements IIdentityValidator<JDBCIdentitySource> {
-    
+
     /**
      * Constructor.
      */
@@ -52,7 +52,13 @@ public class JDBCIdentityValidator implements IIdentityValidator<JDBCIdentitySou
     @Override
     public void validate(String username, String password, ServiceRequest request, IPolicyContext context,
             JDBCIdentitySource config, IAsyncResultHandler<Boolean> handler) {
-        DataSource ds = lookupDatasource(config);
+        DataSource ds = null;
+        try {
+            ds = lookupDatasource(config);
+        } catch (Throwable t) {
+            handler.handle(AsyncResultImpl.create(t, Boolean.class));
+            return;
+        }
         String sqlPwd = password;
         switch (config.getHashAlgorithm()) {
         case MD5:
@@ -88,15 +94,14 @@ public class JDBCIdentityValidator implements IIdentityValidator<JDBCIdentitySou
                 validated = true;
             }
             resultSet.close();
+            handler.handle(AsyncResultImpl.create(validated));
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            handler.handle(AsyncResultImpl.create(e, Boolean.class));
         } finally {
             if (conn != null) {
                 try { conn.close(); } catch (SQLException e) { }
             }
         }
-        
-        handler.handle(AsyncResultImpl.create(validated));
     }
 
     /**
@@ -114,7 +119,7 @@ public class JDBCIdentityValidator implements IIdentityValidator<JDBCIdentitySou
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        
+
         if (ds == null) {
             throw new RuntimeException("Datasource not found: " + config.getDatasourcePath()); //$NON-NLS-1$
         }

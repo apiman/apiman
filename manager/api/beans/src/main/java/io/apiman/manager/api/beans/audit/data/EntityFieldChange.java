@@ -15,20 +15,18 @@
  */
 package io.apiman.manager.api.beans.audit.data;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
  * Models a change in an entity field's value for auditing purposes.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 public class EntityFieldChange {
-    
+
     private String name;
     private String before;
     private String after;
-    
+
     /**
      * Constructor.
      */

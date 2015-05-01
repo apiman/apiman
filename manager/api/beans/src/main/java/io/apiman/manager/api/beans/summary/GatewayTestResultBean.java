@@ -17,21 +17,18 @@ package io.apiman.manager.api.beans.summary;
 
 import java.io.Serializable;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 /**
- * The result of testing a gateway configuration. 
+ * The result of testing a gateway configuration.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 public class GatewayTestResultBean implements Serializable {
-    
+
     private static final long serialVersionUID = -7750899323194993811L;
-    
+
     private boolean success;
     private String detail;
-    
+
     /**
      * Constructor.
      */

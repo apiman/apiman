@@ -25,23 +25,20 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 /**
  * A single, qualified, role granted to the user.  Roles in the system
  * might include things like "Service Owner", "Application Developer", etc.
  * A role is qualified by an Organization ID.  The purpose of a role is
- * to grant permissions to a user.  A role might grant CREATE-APPLICATION 
+ * to grant permissions to a user.  A role might grant CREATE-APPLICATION
  * and VIEW-SERVICE permissions for a particular Organization.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 @Entity
 @Table(name = "memberships",
        uniqueConstraints={@UniqueConstraint(columnNames={"user_id","role_id","org_id"})})
 public class RoleMembershipBean implements Serializable {
-    
+
     private static final long serialVersionUID = 7798709783947356888L;
 
     public static final RoleMembershipBean create(String userId, String roleId, String organizationId) {

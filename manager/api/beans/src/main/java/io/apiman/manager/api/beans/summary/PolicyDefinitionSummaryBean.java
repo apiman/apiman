@@ -17,18 +17,15 @@ package io.apiman.manager.api.beans.summary;
 
 import java.io.Serializable;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 /**
  * A summary of a policy definition.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 public class PolicyDefinitionSummaryBean implements Serializable {
 
     private static final long serialVersionUID = 6297595620199835022L;
-    
+
     private String id;
     private String policyImpl;
     private String name;

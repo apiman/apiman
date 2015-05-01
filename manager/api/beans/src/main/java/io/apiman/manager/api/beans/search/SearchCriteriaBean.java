@@ -19,28 +19,25 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 /**
  * Generic search criteria used when searching for beans.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 public class SearchCriteriaBean implements Serializable {
-    
+
     private static final long serialVersionUID = 5103776179000907112L;
-    
+
     private List<SearchCriteriaFilterBean> filters = new ArrayList<>();
     private OrderByBean orderBy;
     private PagingBean paging;
-    
+
     /**
      * Constructor.
      */
     public SearchCriteriaBean() {
     }
-    
+
     /**
      * Adds a single filter to the criteria.
      * @param name the filter name
@@ -54,7 +51,7 @@ public class SearchCriteriaBean implements Serializable {
         filter.setOperator(operator);
         filters.add(filter);
     }
-    
+
     /**
      * @param page the page
      */
@@ -63,7 +60,7 @@ public class SearchCriteriaBean implements Serializable {
             this.paging = new PagingBean();
         getPaging().setPage(page);
     }
-    
+
     /**
      * @param pageSize size of page
      */
@@ -72,7 +69,7 @@ public class SearchCriteriaBean implements Serializable {
             this.paging = new PagingBean();
         getPaging().setPageSize(pageSize);
     }
-    
+
     /**
      * @param name the name
      * @param ascending whether is ascending

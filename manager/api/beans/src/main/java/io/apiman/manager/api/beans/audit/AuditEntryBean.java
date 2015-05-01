@@ -27,14 +27,12 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.Table;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 /**
  * A single audit entry - these are created whenever something interesting
- * happens to an entity in the management layer.  For example, when the 
- * implementation of a Service is changed, an AuditEntry would be created 
+ * happens to an entity in the management layer.  For example, when the
+ * implementation of a Service is changed, an AuditEntry would be created
  * to indicate:
- * 
+ *
  * 1) who made the change
  * 2) when the change was made
  * 3) what changed
@@ -43,13 +41,12 @@ import org.jboss.errai.common.client.api.annotations.Portable;
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 @Entity
 @Table(name = "auditlog")
 public class AuditEntryBean implements Serializable {
 
     private static final long serialVersionUID = -2523995385388505492L;
-    
+
     @Id @GeneratedValue
     private Long id;
     @Column(updatable=false, nullable=false)
@@ -203,5 +200,5 @@ public class AuditEntryBean implements Serializable {
     public void setCreatedOn(Date createdOn) {
         this.createdOn = createdOn;
     }
-    
+
 }

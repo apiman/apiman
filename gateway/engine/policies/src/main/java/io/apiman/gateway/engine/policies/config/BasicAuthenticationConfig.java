@@ -19,24 +19,21 @@ import io.apiman.gateway.engine.policies.config.basicauth.JDBCIdentitySource;
 import io.apiman.gateway.engine.policies.config.basicauth.LDAPIdentitySource;
 import io.apiman.gateway.engine.policies.config.basicauth.StaticIdentitySource;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 
 /**
  * Configuration object for the IP blacklist policy.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 public class BasicAuthenticationConfig {
-    
+
     private String realm;
     private String forwardIdentityHttpHeader;
-    
+
     private StaticIdentitySource staticIdentity;
     private LDAPIdentitySource ldapIdentity;
     private JDBCIdentitySource jdbcIdentity;
-    
+
     /**
      * Constructor.
      */

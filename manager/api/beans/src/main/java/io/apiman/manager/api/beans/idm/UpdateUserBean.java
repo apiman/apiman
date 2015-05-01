@@ -18,21 +18,18 @@ package io.apiman.manager.api.beans.idm;
 
 import java.io.Serializable;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 /**
  * The bean used when updating a user.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 public class UpdateUserBean implements Serializable {
-    
+
     private static final long serialVersionUID = 7773886494093983234L;
-    
+
     private String fullName;
     private String email;
-    
+
     /**
      * Constructor.
      */

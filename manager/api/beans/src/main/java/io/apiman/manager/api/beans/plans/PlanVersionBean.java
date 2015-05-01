@@ -30,8 +30,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 /**
  * Models a single version of a plan "version".  Every plan in
  * APIMan has basic meta-data stored in {@link PlanBean}.  All
@@ -41,14 +39,13 @@ import org.jboss.errai.common.client.api.annotations.Portable;
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 @Entity
 @Table(name = "plan_versions",
        uniqueConstraints = { @UniqueConstraint(columnNames = { "plan_id", "plan_orgId", "version" }) })
 public class PlanVersionBean implements Serializable {
 
     private static final long serialVersionUID = -2218697175049442690L;
-    
+
     @Id @GeneratedValue
     private Long id;
     @ManyToOne
@@ -71,7 +68,7 @@ public class PlanVersionBean implements Serializable {
     @Column(updatable=true, nullable=false)
     private Date modifiedOn;
     private Date lockedOn;
-    
+
     /**
      * Constructor.
      */

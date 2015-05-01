@@ -17,22 +17,19 @@ package io.apiman.manager.api.beans.plans;
 
 import java.io.Serializable;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 /**
  * Bean used when creating a new version of a plan.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 public class NewPlanVersionBean implements Serializable {
 
     private static final long serialVersionUID = 1828038441268775749L;
-    
+
     private String version;
     private boolean clone;
     private String cloneVersion;
-    
+
     /**
      * Constructor.
      */

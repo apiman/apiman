@@ -20,22 +20,19 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 /**
  * Models a gateway that a service should be published to.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 @Embeddable
 public class ServiceGatewayBean implements Serializable {
-    
+
     private static final long serialVersionUID = 3128363408009800282L;
-    
+
     @Column(nullable=false)
     private String gatewayId;
-    
+
     /**
      * Constructor.
      */

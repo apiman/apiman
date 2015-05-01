@@ -18,10 +18,8 @@ package io.apiman.manager.api.beans.policies;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 /**
- * Models a policy definition description template.  A policy definition 
+ * Models a policy definition description template.  A policy definition
  * template is an MVEL template used to dynamically generate a description
  * of a policy instance.  This allows policies to have different descriptions
  * depending on their configuration information.
@@ -29,13 +27,12 @@ import org.jboss.errai.common.client.api.annotations.Portable;
  * @author eric.wittmann@redhat.com
  */
 @Embeddable
-@Portable
 public class PolicyDefinitionTemplateBean {
-    
+
     private String language;
     @Column(length=2048)
     private String template;
-    
+
     /**
      * Constructor.
      */

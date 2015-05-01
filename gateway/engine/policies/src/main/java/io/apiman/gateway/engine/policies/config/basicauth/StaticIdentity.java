@@ -15,20 +15,18 @@
  */
 package io.apiman.gateway.engine.policies.config.basicauth;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
  * A single static identity used for basic authentication.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 public class StaticIdentity {
-    
+
     private String username;
     private String password;
     private boolean isHash;
-    
+
     /**
      * Constructor.
      */

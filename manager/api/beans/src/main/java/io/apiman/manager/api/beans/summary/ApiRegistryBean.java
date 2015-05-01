@@ -23,8 +23,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 /**
  * Models the entire API registry for a single application version.  This is typically
  * used to get a list of all APIs that can be consumed by a single version of a single
@@ -33,13 +31,12 @@ import org.jboss.errai.common.client.api.annotations.Portable;
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 @XmlRootElement(name = "apiRegistry")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ApiRegistryBean implements Serializable {
 
     private static final long serialVersionUID = 7369169626368271089L;
-    
+
     private List<ApiEntryBean> apis = new ArrayList<>();
 
     /**

@@ -18,19 +18,16 @@ package io.apiman.manager.api.beans.summary;
 import java.io.Serializable;
 import java.util.Date;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 /**
- * Models a single gateway configured by an admin.  When publishing services, 
+ * Models a single gateway configured by an admin.  When publishing services,
  * the user must specific which Plugin to publish to.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 public class PluginSummaryBean implements Serializable {
 
     private static final long serialVersionUID = 7157863269972852063L;
-    
+
     private Long id;
     private String groupId;
     private String artifactId;
@@ -41,7 +38,7 @@ public class PluginSummaryBean implements Serializable {
     private String description;
     private String createdBy;
     private Date createdOn;
-    
+
     /**
      * Constructor.
      */

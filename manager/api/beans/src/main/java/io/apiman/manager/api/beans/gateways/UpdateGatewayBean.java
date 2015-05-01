@@ -17,23 +17,20 @@ package io.apiman.manager.api.beans.gateways;
 
 import java.io.Serializable;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 
 /**
  * The bean used when updating an existing Gateway.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 public class UpdateGatewayBean implements Serializable {
-    
+
     private static final long serialVersionUID = 4301970694825472031L;
-    
+
     private String description;
     private GatewayType type;
     private String configuration;
-    
+
     /**
      * Constructor.
      */
@@ -81,5 +78,5 @@ public class UpdateGatewayBean implements Serializable {
     public void setConfiguration(String configuration) {
         this.configuration = configuration;
     }
-    
+
 }

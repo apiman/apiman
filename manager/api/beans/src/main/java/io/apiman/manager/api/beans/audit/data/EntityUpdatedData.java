@@ -19,19 +19,16 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 /**
  * The data saved along with the audit entry when an entity is
  * updated.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 public class EntityUpdatedData implements Serializable {
 
     private static final long serialVersionUID = 3009506122267996076L;
-    
+
     private List<EntityFieldChange> changes = new ArrayList<>();
 
     /**
@@ -39,7 +36,7 @@ public class EntityUpdatedData implements Serializable {
      */
     public EntityUpdatedData() {
     }
-    
+
     /**
      * Adds a single change.
      * @param name the name
@@ -61,7 +58,7 @@ public class EntityUpdatedData implements Serializable {
         String afterStr = after != null ? after.name() : null;
         addChange(name, beforeStr, afterStr);
     }
-    
+
     /**
      * Adds a single change.
      * @param change change to add
@@ -83,5 +80,5 @@ public class EntityUpdatedData implements Serializable {
     public void setChanges(List<EntityFieldChange> changes) {
         this.changes = changes;
     }
-    
+
 }

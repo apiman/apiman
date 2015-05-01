@@ -17,18 +17,15 @@ package io.apiman.manager.api.beans.system;
 
 import java.io.Serializable;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 /**
  * A simple bean used to return system status information.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 public class SystemStatusBean implements Serializable {
-    
+
     private static final long serialVersionUID = -7099876167335105162L;
-    
+
     private boolean up;
     private String version;
 

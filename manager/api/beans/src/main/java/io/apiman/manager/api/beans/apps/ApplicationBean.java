@@ -31,22 +31,20 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
  * Models an application.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 @Entity
 @Table(name = "applications")
 @IdClass(OrganizationBasedCompositeId.class)
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class ApplicationBean implements Serializable {
-    
+
     private static final long serialVersionUID = -197129444021040365L;
-    
+
     @Id
     @ManyToOne
     @JoinColumns({
@@ -92,7 +90,7 @@ public class ApplicationBean implements Serializable {
     public void setOrganization(OrganizationBean organization) {
         this.organization = organization;
     }
-    
+
     /**
      * @return the name
      */

@@ -18,14 +18,11 @@ package io.apiman.manager.api.beans.summary;
 import java.io.Serializable;
 import java.util.Date;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 /**
  * Summary of policy info.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 public class PolicySummaryBean implements Serializable {
 
     private static final long serialVersionUID = 1208106756423327108L;

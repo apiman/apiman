@@ -18,7 +18,6 @@ package io.apiman.manager.api.beans.summary;
 import java.io.Serializable;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
  * A bean modeling a summary of an Application.  Typically used when listing
@@ -26,19 +25,18 @@ import org.jboss.errai.common.client.api.annotations.Portable;
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class ApplicationSummaryBean implements Serializable {
 
     private static final long serialVersionUID = -4213543715123177461L;
-    
+
     private String organizationId;
     private String organizationName;
     private String id;
     private String name;
     private String description;
     private int numContracts;
-    
+
     /**
      * Constructor.
      */

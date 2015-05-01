@@ -18,19 +18,17 @@ package io.apiman.manager.api.beans.orgs;
 import java.io.Serializable;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
  * Bean used when updating an organization.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class UpdateOrganizationBean implements Serializable {
-    
+
     private static final long serialVersionUID = 2687797041244565943L;
-    
+
     private String description;
 
     /**

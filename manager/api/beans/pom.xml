@@ -13,11 +13,6 @@
   <dependencies>
     <!-- Third Party Dependencies -->
     <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-common</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
       <groupId>org.hibernate.javax.persistence</groupId>
       <artifactId>hibernate-jpa-2.1-api</artifactId>
       <scope>provided</scope>

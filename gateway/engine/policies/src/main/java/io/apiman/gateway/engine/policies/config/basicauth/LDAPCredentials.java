@@ -13,39 +13,50 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.manager.api.beans.summary;
-
-import java.io.Serializable;
+package io.apiman.gateway.engine.policies.config.basicauth;
 
 /**
- * Returns managed endpoint information.
+ * The credentials to use when binding to ldap via a service account.
  *
  * @author eric.wittmann@redhat.com
  */
-public class ServiceVersionEndpointSummaryBean implements Serializable {
+public class LDAPCredentials {
 
-    private static final long serialVersionUID = -4655383228161917800L;
-
-    private String managedEndpoint;
+    private String username;
+    private String password;
 
     /**
      * Constructor.
      */
-    public ServiceVersionEndpointSummaryBean() {
+    public LDAPCredentials() {
     }
 
     /**
-     * @return the managedEndpoint
+     * @return the username
      */
-    public String getManagedEndpoint() {
-        return managedEndpoint;
+    public String getUsername() {
+        return username;
     }
 
     /**
-     * @param managedEndpoint the managedEndpoint to set
+     * @param username the username to set
      */
-    public void setManagedEndpoint(String managedEndpoint) {
-        this.managedEndpoint = managedEndpoint;
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    /**
+     * @return the password
+     */
+    public String getPassword() {
+        return password;
+    }
+
+    /**
+     * @param password the password to set
+     */
+    public void setPassword(String password) {
+        this.password = password;
     }
 
 }

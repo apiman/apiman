@@ -17,18 +17,15 @@ package io.apiman.manager.api.beans.actions;
 
 import java.io.Serializable;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 /**
  * The bean used to peform an action on an entity.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 public class ActionBean implements Serializable {
 
     private static final long serialVersionUID = -540487411892625007L;
-    
+
     private ActionType type;
     private String organizationId;
     private String entityId;

@@ -31,7 +31,6 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
  * A Policy is the primary unit of work for the runtime engine, which is
@@ -40,12 +39,11 @@ import org.jboss.errai.common.client.api.annotations.Portable;
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 @Entity
 @Table(name = "policies")
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class PolicyBean implements Serializable {
-    
+
     private static final long serialVersionUID = -8534463608508756791L;
 
     @Id @GeneratedValue

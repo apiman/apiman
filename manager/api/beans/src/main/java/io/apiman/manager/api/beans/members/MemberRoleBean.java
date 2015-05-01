@@ -17,21 +17,18 @@ package io.apiman.manager.api.beans.members;
 
 import java.io.Serializable;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 /**
  * Models a user's membership in a role for a given organization.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 public class MemberRoleBean implements Serializable {
 
     private static final long serialVersionUID = 7645338035552144540L;
-    
+
     private String roleId;
     private String roleName;
-    
+
     /**
      * Constructor.
      */

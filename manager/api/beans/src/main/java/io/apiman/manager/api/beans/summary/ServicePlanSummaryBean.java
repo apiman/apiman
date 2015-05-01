@@ -17,24 +17,21 @@ package io.apiman.manager.api.beans.summary;
 
 import java.io.Serializable;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 /**
  * Models a plan+version that is available for use with a particular Service.  Also
  * includes extra information such as the plan name.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 public class ServicePlanSummaryBean implements Serializable {
 
     private static final long serialVersionUID = 2380693193992732580L;
-    
+
     private String planId;
     private String planName;
     private String planDescription;
     private String version;
-    
+
     /**
      * Constructor.
      */
@@ -113,7 +110,7 @@ public class ServicePlanSummaryBean implements Serializable {
             return false;
         return true;
     }
-    
+
     /**
      * @see java.lang.Object#toString()
      */

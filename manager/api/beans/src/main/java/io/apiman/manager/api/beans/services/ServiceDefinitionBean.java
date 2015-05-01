@@ -25,20 +25,17 @@ import javax.persistence.Lob;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 /**
  * Bean used to store a service definition.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 @Entity
 @Table(name = "service_defs")
 public class ServiceDefinitionBean implements Serializable {
 
     private static final long serialVersionUID = 7744514362366320690L;
-    
+
     @Id
     private long id;
     @OneToOne(fetch=FetchType.LAZY)

@@ -16,23 +16,21 @@
 
 package io.apiman.manager.api.beans.exceptions;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
- * Simple error bean used to serialize error information to JSON when 
+ * Simple error bean used to serialize error information to JSON when
  * responding to a REST call with an error.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 public class ErrorBean {
-    
+
     private String type;
     private int errorCode;
     private String message;
     private String moreInfoUrl;
     private String stacktrace;
-    
+
     /**
      * Constructor.
      */

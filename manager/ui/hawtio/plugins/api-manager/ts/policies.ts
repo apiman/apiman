@@ -203,6 +203,14 @@ module Apiman {
                     if (!config.ldapIdentity.dnPattern) {
                         valid = false;
                     }
+                    if (config.ldapIdentity.bindAs == 'ServiceAccount') {
+                        if (!config.ldapIdentity.credentials || !config.ldapIdentity.credentials.username || !config.ldapIdentity.credentials.password) {
+                            valid = false;
+                        }
+                        if (!config.ldapIdentity.userSearch || !config.ldapIdentity.userSearch.baseDn || !config.ldapIdentity.userSearch.expression) {
+                            valid = false;
+                        }
+                    }
                 }
                 if (config.jdbcIdentity) {
                     if (!config.jdbcIdentity.datasourcePath) {
@@ -237,6 +245,7 @@ module Apiman {
                         delete $scope.config.ldapIdentity;
                     } else if (newValue == 'ldap' && !$scope.config.ldapIdentity) {
                         $scope.config.ldapIdentity = new Object();
+                        $scope.config.ldapIdentity.bindAs = 'UserAccount';
                         delete $scope.config.staticIdentity;
                         delete $scope.config.jdbcIdentity;
                     }

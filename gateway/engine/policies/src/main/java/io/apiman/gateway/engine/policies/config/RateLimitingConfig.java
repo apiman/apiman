@@ -18,16 +18,13 @@ package io.apiman.gateway.engine.policies.config;
 import io.apiman.gateway.engine.policies.config.rates.RateLimitingGranularity;
 import io.apiman.gateway.engine.policies.config.rates.RateLimitingPeriod;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 /**
  * Configuration object for the rate limiting policy.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 public class RateLimitingConfig {
-    
+
     private int limit;
     private RateLimitingGranularity granularity;
     private RateLimitingPeriod period;
@@ -35,7 +32,7 @@ public class RateLimitingConfig {
     private String headerRemaining;
     private String headerLimit;
     private String headerReset;
-    
+
     /**
      * Constructor.
      */

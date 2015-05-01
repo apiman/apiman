@@ -19,14 +19,11 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 /**
  * Models a user as a member of an organization.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 public class MemberBean implements Serializable {
 
     private static final long serialVersionUID = -6731054525814345766L;
@@ -36,7 +33,7 @@ public class MemberBean implements Serializable {
     private String email;
     private Date joinedOn;
     private List<MemberRoleBean> roles;
-    
+
     /**
      * Constructor.
      */

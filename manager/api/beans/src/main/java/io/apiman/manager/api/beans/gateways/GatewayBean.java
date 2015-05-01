@@ -27,22 +27,20 @@ import javax.persistence.Lob;
 import javax.persistence.Table;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
- * Models a single gateway configured by an admin.  When publishing services, 
+ * Models a single gateway configured by an admin.  When publishing services,
  * the user must specific which Gateway to publish to.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 @Entity
 @Table(name = "gateways")
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class GatewayBean implements Serializable {
 
     private static final long serialVersionUID = 388316225715740602L;
-    
+
     @Id
     @Column(nullable=false)
     private String id;
@@ -58,14 +56,14 @@ public class GatewayBean implements Serializable {
     private String modifiedBy;
     @Column(updatable=true, nullable=false)
     private Date modifiedOn;
-    
+
     @Column(updatable=true, nullable=false)
     @Enumerated(EnumType.STRING)
     private GatewayType type;
     @Lob
     @Column(updatable=true, nullable=false)
     private String configuration;
-    
+
     /**
      * Constructor.
      */

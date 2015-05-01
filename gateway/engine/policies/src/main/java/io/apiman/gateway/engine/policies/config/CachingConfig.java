@@ -15,7 +15,6 @@
  */
 package io.apiman.gateway.engine.policies.config;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
 
 
 /**
@@ -23,11 +22,10 @@ import org.jboss.errai.common.client.api.annotations.Portable;
  *
  * @author rubenrm1@gmail.com
  */
-@Portable
 public class CachingConfig {
-    
+
     private long ttl;
-    
+
     /**
      * Constructor.
      */
@@ -40,7 +38,7 @@ public class CachingConfig {
     public long getTtl() {
         return ttl;
     }
-    
+
     /**
      * @param ttl the ttl to set
      */

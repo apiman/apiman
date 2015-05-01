@@ -17,26 +17,23 @@ package io.apiman.manager.api.beans.summary;
 
 import java.io.Serializable;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 /**
  * A bean modeling a summary of an Organization.  Typically used when listing
  * all Organizations visible to a user.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 public class OrganizationSummaryBean implements Serializable {
 
     private static final long serialVersionUID = -7969484509928874072L;
-    
+
     private String id;
     private String name;
     private String description;
     private int numApps;
     private int numServices;
     private int numMembers;
-    
+
     /**
      * Constructor.
      */

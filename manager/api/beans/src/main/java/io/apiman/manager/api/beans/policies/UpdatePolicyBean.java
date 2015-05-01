@@ -17,18 +17,15 @@ package io.apiman.manager.api.beans.policies;
 
 import java.io.Serializable;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 /**
  * Bean used when updating a policy.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 public class UpdatePolicyBean implements Serializable {
-    
+
     private static final long serialVersionUID = 1625082587625332040L;
-    
+
     private String configuration;
 
     /**

@@ -18,23 +18,20 @@ package io.apiman.manager.api.beans.idm;
 import java.io.Serializable;
 import java.util.Set;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 /**
  * Bean used when creating a new role.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 public class NewRoleBean implements Serializable {
 
     private static final long serialVersionUID = -3926221739472762893L;
-    
+
     private String name;
     private String description;
     private Boolean autoGrant;
     private Set<PermissionType> permissions;
-    
+
     /**
      * Constructor.
      */
@@ -96,5 +93,5 @@ public class NewRoleBean implements Serializable {
     public void setAutoGrant(Boolean autoGrant) {
         this.autoGrant = autoGrant;
     }
-    
+
 }

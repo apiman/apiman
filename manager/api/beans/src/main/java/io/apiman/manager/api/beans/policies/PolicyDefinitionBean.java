@@ -33,23 +33,21 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
- * A Policy Definition describes a type of policy that can be added to 
+ * A Policy Definition describes a type of policy that can be added to
  * an application, service, or plan.  A policy cannot be added unless a
  * definition is first created for it.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 @Entity
 @Table(name = "policydefs")
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class PolicyDefinitionBean implements Serializable {
 
     private static final long serialVersionUID = 1801150127602136865L;
-    
+
     @Id
     @Column(nullable=false)
     private String id;

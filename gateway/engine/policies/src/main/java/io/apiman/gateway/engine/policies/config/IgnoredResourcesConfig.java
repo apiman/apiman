@@ -19,14 +19,11 @@ package io.apiman.gateway.engine.policies.config;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 /**
  * Configuration object for the Ignored Resources policy.
  *
  * @author rubenrm1@gmail.com
  */
-@Portable
 public class IgnoredResourcesConfig {
 
     private List<String> pathsToIgnore = new ArrayList<>();

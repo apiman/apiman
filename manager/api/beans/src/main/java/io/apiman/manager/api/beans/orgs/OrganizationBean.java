@@ -24,7 +24,6 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
  * An APIMan Organization.  This is an important top level entity in the APIMan
@@ -32,14 +31,13 @@ import org.jboss.errai.common.client.api.annotations.Portable;
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 @Entity
 @Table(name = "organizations")
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class OrganizationBean implements Serializable {
-    
+
     private static final long serialVersionUID = -506427154633682906L;
-    
+
     @Id
     @Column(nullable=false)
     private String id;
@@ -159,7 +157,7 @@ public class OrganizationBean implements Serializable {
     public void setModifiedOn(Date modifiedOn) {
         this.modifiedOn = modifiedOn;
     }
-    
+
     /**
      * @see java.lang.Object#hashCode()
      */

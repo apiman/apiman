@@ -43,13 +43,6 @@
       <artifactId>jackson-mapper-asl</artifactId>
     </dependency>
 
-    <!-- Provided dependencies -->
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-common</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    
     <!-- Test dependencies -->
     <dependency>
       <groupId>commons-dbcp</groupId>
@@ -90,7 +83,7 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Import-Package>!org.jboss.errai.common.client.api.annotations,*</Import-Package>
+            <Import-Package>*</Import-Package>
           </instructions>
         </configuration>
       </plugin>

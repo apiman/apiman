@@ -18,21 +18,18 @@ package io.apiman.manager.api.beans.idm;
 import java.io.Serializable;
 import java.util.Set;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 /**
  * All of a user's permissions.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 public class UserPermissionsBean implements Serializable {
 
     private static final long serialVersionUID = -3148877050712405169L;
-    
+
     private String userId;
     private Set<PermissionBean> permissions;
-    
+
     /**
      * Constructor.
      */

@@ -17,21 +17,18 @@ package io.apiman.manager.api.beans.search;
 
 import java.io.Serializable;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 /**
  * Models order-by for a search.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 public class OrderByBean implements Serializable {
-    
+
     private static final long serialVersionUID = -7569401325900866820L;
-    
+
     private boolean ascending;
     private String name;
-    
+
     /**
      * Constructor.
      */

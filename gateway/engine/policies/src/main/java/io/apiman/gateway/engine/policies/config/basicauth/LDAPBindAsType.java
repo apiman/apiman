@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 JBoss Inc
+ * Copyright 2015 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.manager.api.beans.idm;
-
+package io.apiman.gateway.engine.policies.config.basicauth;
 
 /**
- * Bean used when updating a role.
+ * How to bind to the ldap server.
  *
  * @author eric.wittmann@redhat.com
  */
-public class UpdateRoleBean extends NewRoleBean {
-
-    private static final long serialVersionUID = -7447928599059983445L;
-
+public enum LDAPBindAsType {
+    UserAccount, ServiceAccount;
 }

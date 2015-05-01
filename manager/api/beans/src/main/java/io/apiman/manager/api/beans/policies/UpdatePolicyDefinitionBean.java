@@ -18,14 +18,12 @@ package io.apiman.manager.api.beans.policies;
 import java.io.Serializable;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
  * The bean/model used when updating a new policy definition.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class UpdatePolicyDefinitionBean implements Serializable {
 

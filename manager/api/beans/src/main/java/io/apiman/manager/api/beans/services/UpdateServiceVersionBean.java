@@ -19,25 +19,23 @@ import java.io.Serializable;
 import java.util.Set;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
  * Bean used when updating a version of a service.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class UpdateServiceVersionBean implements Serializable {
-    
+
     private static final long serialVersionUID = 4126848584932708146L;
-    
+
     private String endpoint;
     private EndpointType endpointType;
     private Set<ServiceGatewayBean> gateways;
     private Boolean publicService;
     private Set<ServicePlanBean> plans;
-    
+
     /**
      * Constructor.
      */

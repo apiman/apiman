@@ -19,19 +19,16 @@ import io.apiman.manager.api.beans.plans.PlanStatus;
 
 import java.io.Serializable;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 
 /**
  * A summary of an individual plan version.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 public class PlanVersionSummaryBean implements Serializable {
 
     private static final long serialVersionUID = 2047101278864994250L;
-    
+
     private String organizationId;
     private String organizationName;
     private String id;
@@ -39,7 +36,7 @@ public class PlanVersionSummaryBean implements Serializable {
     private String description;
     private PlanStatus status;
     private String version;
-    
+
     /**
      * Constructor.
      */

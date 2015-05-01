@@ -18,21 +18,19 @@ package io.apiman.manager.api.beans.services;
 import java.io.Serializable;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
  * Bean used when updating a service.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class UpdateServiceBean implements Serializable {
 
     private static final long serialVersionUID = 8811488441452291116L;
-    
+
     private String description;
-    
+
     /**
      * Constructor.
      */
@@ -52,5 +50,5 @@ public class UpdateServiceBean implements Serializable {
     public void setDescription(String description) {
         this.description = description;
     }
-    
+
 }

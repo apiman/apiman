@@ -18,19 +18,17 @@ package io.apiman.manager.api.beans.plugins;
 import java.io.Serializable;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
  * Models a single plugin when creating.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class NewPluginBean implements Serializable {
-    
+
     private static final long serialVersionUID = 3246882829241218365L;
-    
+
     private String groupId;
     private String artifactId;
     private String version;
@@ -39,7 +37,7 @@ public class NewPluginBean implements Serializable {
 
     private String name;
     private String description;
-    
+
     /**
      * Constructor.
      */

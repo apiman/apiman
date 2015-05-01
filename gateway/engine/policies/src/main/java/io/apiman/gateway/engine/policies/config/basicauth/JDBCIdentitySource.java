@@ -15,27 +15,25 @@
  */
 package io.apiman.gateway.engine.policies.config.basicauth;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
  * Information about the LDAP server to use to authenticate an inbound
  * user.  The DN pattern can be (for example) of the following form:
- * 
+ *
  *   cn=${username},dc=${X-Authentication-Domain},dc=org
- * 
- * Supported properties for interpolation/replacement in the pattern 
+ *
+ * Supported properties for interpolation/replacement in the pattern
  * include the BASIC authentication "username" and any header found
  * in the inbound service request.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 public class JDBCIdentitySource {
 
     private String datasourcePath;
     private String query;
     private PasswordHashAlgorithmType hashAlgorithm;
-    
+
     /**
      * Constructor.
      */

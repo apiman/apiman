@@ -18,6 +18,7 @@ package io.apiman.gateway.engine.policies.auth;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.ServiceRequest;
+import io.apiman.gateway.engine.policies.config.basicauth.LDAPBindAsType;
 import io.apiman.gateway.engine.policies.config.basicauth.LDAPIdentitySource;
 import io.apiman.gateway.engine.policy.IPolicyContext;
 
@@ -39,7 +40,7 @@ import org.apache.commons.lang.text.StrSubstitutor;
  * @author eric.wittmann@redhat.com
  */
 public class LDAPIdentityValidator implements IIdentityValidator<LDAPIdentitySource> {
-    
+
     /**
      * Constructor.
      */
@@ -54,7 +55,11 @@ public class LDAPIdentityValidator implements IIdentityValidator<LDAPIdentitySou
             LDAPIdentitySource config, IAsyncResultHandler<Boolean> handler) {
         String url = config.getUrl();
         String dn = formatDn(config.getDnPattern(), username, request);
-        
+
+        if (config.getBindAs() == LDAPBindAsType.ServiceAccount) {
+            handler.handle(AsyncResultImpl.create(new Exception("'Service Account' LDAP support not yet implemented."), Boolean.class)); //$NON-NLS-1$
+        }
+
         Hashtable<String, String> env = new Hashtable<>();
         env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory"); //$NON-NLS-1$
         env.put(Context.PROVIDER_URL, url);
@@ -68,7 +73,7 @@ public class LDAPIdentityValidator implements IIdentityValidator<LDAPIdentitySou
         } catch (AuthenticationException e) {
             handler.handle(AsyncResultImpl.create(Boolean.FALSE));
         } catch (NamingException e) {
-            throw new RuntimeException(e);
+            handler.handle(AsyncResultImpl.create(e, Boolean.class));
         }
     }
 

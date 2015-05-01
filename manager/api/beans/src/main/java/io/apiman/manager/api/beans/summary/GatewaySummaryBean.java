@@ -20,23 +20,20 @@ import io.apiman.manager.api.beans.gateways.GatewayType;
 
 import java.io.Serializable;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 /**
  * A summary bean for {@link GatewayBean}.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 public class GatewaySummaryBean implements Serializable {
-    
+
     private static final long serialVersionUID = 2781650785786597040L;
-    
+
     private String id;
     private String name;
     private String description;
     private GatewayType type;
-    
+
     /**
      * Constructor.
      */
@@ -98,5 +95,5 @@ public class GatewaySummaryBean implements Serializable {
     public void setType(GatewayType type) {
         this.type = type;
     }
-    
+
 }

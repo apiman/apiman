@@ -19,19 +19,16 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 /**
  * The data saved along with the audit entry when membership is modified
  * for a user+organization.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 public class MembershipData implements Serializable {
-    
+
     private static final long serialVersionUID = 3424852746654173415L;
-    
+
     private String userId;
     private Set<String> roles = new HashSet<>();
 
@@ -40,7 +37,7 @@ public class MembershipData implements Serializable {
      */
     public MembershipData() {
     }
-    
+
     /**
      * @param role the role
      */

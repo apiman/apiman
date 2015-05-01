@@ -32,23 +32,20 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 /**
  * A Contract links an application version to a service version through
  * a plan version.  :)
- * 
+ *
  * This is how application owners/developers configure their application
  * to allow it to invoke managed services.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 @Entity
 @Table(name = "contracts",
        uniqueConstraints = { @UniqueConstraint(columnNames = { "appv_id", "svcv_id", "planv_id" }) })
 public class ContractBean implements Serializable {
-    
+
     private static final long serialVersionUID = -8534463608508756791L;
 
     @Id @GeneratedValue

@@ -17,8 +17,6 @@ package io.apiman.manager.api.beans.idm;
 
 import java.io.Serializable;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 /**
  * Models a single qualified permission assigned to a user.  All permissions
  * are granted to users by membership in one or more roles.  Membership in a
@@ -27,14 +25,13 @@ import org.jboss.errai.common.client.api.annotations.Portable;
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 public class PermissionBean implements Serializable {
-    
+
     private static final long serialVersionUID = 6005936454144731711L;
-    
+
     private PermissionType name;
     private String organizationId;
-    
+
     /**
      * Constructor.
      */

@@ -18,19 +18,16 @@ package io.apiman.manager.api.beans.summary;
 import java.io.Serializable;
 import java.util.Date;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 /**
- * A summary bean for a contract.  Includes information useful for displaying 
+ * A summary bean for a contract.  Includes information useful for displaying
  * the contract in a list in a UI.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 public class ContractSummaryBean implements Serializable {
-    
+
     private static final long serialVersionUID = 1412354024017539782L;
-    
+
     private Long contractId;
     private String apikey;
     private String appOrganizationId;

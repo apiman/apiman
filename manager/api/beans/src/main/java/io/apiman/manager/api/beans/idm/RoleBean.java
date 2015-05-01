@@ -28,8 +28,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 /**
  * A role definition.  The definition of the role determines whether the
  * role is automatically granted to the user creating an org, as well as
@@ -38,13 +36,12 @@ import org.jboss.errai.common.client.api.annotations.Portable;
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 @Entity
 @Table(name = "roles")
 public class RoleBean implements Serializable {
 
     private static final long serialVersionUID = -646534082583069712L;
-    
+
     @Id
     private String id;
     private String name;
@@ -59,7 +56,7 @@ public class RoleBean implements Serializable {
     @ElementCollection(fetch=FetchType.EAGER)
     @CollectionTable(name="permissions", joinColumns=@JoinColumn(name="role_id"))
     private Set<PermissionType> permissions;
-    
+
     /**
      * Constructor.
      */
@@ -194,5 +191,5 @@ public class RoleBean implements Serializable {
     public void setAutoGrant(Boolean autoGrant) {
         this.autoGrant = autoGrant;
     }
-    
+
 }

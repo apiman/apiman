@@ -20,35 +20,33 @@ import java.io.Serializable;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
  * A single entry in the {@link ApiRegistryBean}.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 @XmlRootElement(name = "api")
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class ApiEntryBean implements Serializable {
 
     private static final long serialVersionUID = -7578173174922025902L;
-    
+
     private String serviceOrgId;
     private String serviceOrgName;
     private String serviceId;
     private String serviceName;
     private String serviceVersion;
-    
+
     private String planId;
     private String planName;
     private String planVersion;
-    
+
     private String httpEndpoint;
     private String apiKey;
-    
+
     private String gatewayId;
-    
+
     /**
      * Constructor.
      */

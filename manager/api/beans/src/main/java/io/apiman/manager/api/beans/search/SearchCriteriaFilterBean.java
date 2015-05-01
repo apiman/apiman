@@ -17,23 +17,20 @@ package io.apiman.manager.api.beans.search;
 
 import java.io.Serializable;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 /**
  * Represents a single filter or search criteria.  This is used when searching
  * for beans.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 public class SearchCriteriaFilterBean implements Serializable {
-    
+
     private static final long serialVersionUID = -1199180207971619165L;
-    
+
     private String name;
     private String value;
     private SearchCriteriaFilterOperator operator;
-    
+
     /**
      * Constructor.
      */

@@ -20,25 +20,22 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 /**
  * Models a plan+version that is available for use with a particular Service.  This
  * makes the Plan available when forming a Contract between an app and a Service.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 @Embeddable
 public class ServicePlanBean implements Serializable {
 
     private static final long serialVersionUID = 7972763768594076697L;
-    
+
     @Column(nullable=false)
     private String planId;
     @Column(nullable=false)
     private String version;
-    
+
     /**
      * Constructor.
      */

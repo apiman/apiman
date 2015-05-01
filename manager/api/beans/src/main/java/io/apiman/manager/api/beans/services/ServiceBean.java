@@ -31,14 +31,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
  * Models an service.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 @Entity
 @Table(name = "services")
 @IdClass(OrganizationBasedCompositeId.class)
@@ -46,7 +44,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 public class ServiceBean implements Serializable {
 
     private static final long serialVersionUID = 1526742536153467539L;
-    
+
     @Id
     @ManyToOne
     @JoinColumns({
@@ -64,7 +62,7 @@ public class ServiceBean implements Serializable {
     private String createdBy;
     @Column(updatable=false, nullable=false)
     private Date createdOn;
-    
+
     /**
      * Constructor.
      */

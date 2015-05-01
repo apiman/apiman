@@ -17,21 +17,18 @@ package io.apiman.manager.api.beans.idm;
 
 import java.util.Set;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 /**
  * Models the currently authenticated user.  This bean extends the simple
  * user bean but also includes all of the user's permissions.
  *
  * @author eric.wittmann@redhat.com
  */
-@Portable
 public class CurrentUserBean extends UserBean {
 
     private static final long serialVersionUID = -5687453720494525865L;
-    
+
     private Set<PermissionBean> permissions;
-    
+
     /**
      * Constructor.
      */
@@ -51,7 +48,7 @@ public class CurrentUserBean extends UserBean {
     public void setPermissions(Set<PermissionBean> permissions) {
         this.permissions = permissions;
     }
-    
+
     /**
      * @param user the user
      */
