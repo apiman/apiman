@@ -1,0 +1,22 @@
+POST /policyDefs ${apiman.suite.api-username}/${apiman.suite.api-password}
+Content-Type: application/json
+
+{
+      "name" : "Authorization Policy",
+      "description" : "Enables fine grained authorization to API resources based on authenticated user roles.",
+      "policyImpl" : "class:io.apiman.gateway.engine.policies.AuthorizationPolicy",
+      "icon" : "users",
+      "templates" : [
+        {
+          "language" : null,
+          "template" : "Appropriate authorization roles are required.  There are @{rules.size()} authorization rules defined."
+        }
+      ]
+}
+----
+200
+Content-Type: application/json
+
+{
+  "id" : "IgnoredResourcesPolicy"
+}

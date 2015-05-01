@@ -290,4 +290,46 @@ module Apiman {
 
         }]);
 
+    _module.controller("Apiman.AuthorizationFormController",
+        ['$scope', 'Logger',
+        ($scope, Logger) => {
+            var validate = function(config) {
+                var valid = config.rules && config.rules.length > 0;
+                $scope.setValid(valid);
+            };
+            $scope.$watch('config', validate, true);
+            
+            $scope.add = function(path, verb, role) {
+                if (!$scope.config.rules) {
+                    $scope.config.rules = [];
+                }
+                var rule = {
+                    "verb" : verb,
+                    "pathPattern" : path,
+                    "role" : role
+                };
+                $scope.config.rules.push(rule);
+                $scope.path = undefined;
+                $scope.verb = undefined;
+                $scope.role = undefined;
+                $('#path').focus();
+            };
+            
+            $scope.remove = function(selectedRule) {
+                var idx = -1;
+                angular.forEach($scope.config.rules, function(item, index) {
+                    if (item == selectedRule) {
+                        idx = index;
+                    }
+                });
+                if (idx != -1) {
+                    $scope.config.rules.splice(idx, 1);
+                }
+            };
+            
+            $scope.clear = function() {
+                $scope.config.rules = [];
+            };
+        }]);
+
 }

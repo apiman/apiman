@@ -1,0 +1,80 @@
+<div class="form policy-config authorization-form" data-field="form" ng-controller="Apiman.AuthorizationFormController">
+  <style>
+    .authorization-form .help {
+      margin-bottom: 15px;
+    }
+    .authorization-form table {
+      width: 100%;
+      margin-bottom: 10px;
+    }
+    .authorization-form .panel {
+    }
+    .authorization-form .panel span {
+      padding-left: 3px;
+      padding-right: 3px;
+      margin-top: 4px;
+    }
+    .authorization-form .panel button {
+      margin-top: 15px;
+    }
+    .authorization-form .panel input.form-control[type="text"] {
+      display: inline;
+      width: 120px;
+      margin-top: 4px;
+    }
+  </style>
+  <div class="help" apiman-i18n-key="authorization-message">Manage the list of fine-grained authorization rules in the box below.  If you want a single required role to protect your entire API, simply add one item with a path of ".*" and a verb of "*".</div>
+  
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title" apiman-i18n-key="add-authorization-rule">Add Authorization Rule</h3>
+    </div>
+    <div class="panel-body">
+      <span apiman-i18n-key="authorization.to-access">To access resource</span>
+      <input id="path" ng-model="path" class="form-control" style="" type="text" apiman-i18n-key="authorization.enter-path" placeholder="(/path/to/.*)"></input>
+      <span apiman-i18n-key="authorization.using-verb">using verb/action</span>
+      <input id="verb" ng-model="verb" class="form-control" style="" type="text" apiman-i18n-key="authorization.enter-verb" placeholder="(verb)"></input>
+      <span apiman-i18n-key="authorization.must-have-role">the user must have role</span>
+      <input id="role" ng-model="role" class="form-control" style="" type="text" apiman-i18n-key="authorization.enter-role" placeholder="(required role)"></input>
+      <span apiman-i18n-key="authorization.period">.</span>
+      <div>
+        <button ng-disabled="!path || !verb || !role" ng-click="add(path, verb, role)" apiman-i18n-key="add" class="btn btn-default" style="min-width: 75px">Add</button>
+      </div>
+    </div>
+  </div>
+  
+  <div>
+    <dl>
+      <dt apiman-i18n-key="configured-authorization-rules">Configured Authorization Rules</dt>
+    </dl>
+  </div>
+  
+  <table class="table table-striped table-bordered">
+    <thead>
+      <tr>
+        <th width="60%" apiman-i18n-key="path">Path</th>
+        <th width="20%" apiman-i18n-key="verb">Verb</th>
+        <th width="20%" apiman-i18n-key="required-role">Required Role</th>
+        <th width="1%"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="item in config.rules | orderBy: 'pathPattern'">
+        <td>{{ item.pathPattern }}</td>
+        <td>{{ item.verb }}</td>
+        <td>{{ item.role }}</td>
+        <td>
+          <button ng-click="remove(item)" class="btn btn-default"><i class="fa fa-times fa-fw"></i></button>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="4" ng-show="!config.rules.length">
+          <div class="apiman-no-content">
+            <p class="apiman-no-entities-description" apiman-i18n-key="authorization.no-authentication-rules">No authorization rules have been added!  You'll need at least one, otherwise no authorization will be performed.</p>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>

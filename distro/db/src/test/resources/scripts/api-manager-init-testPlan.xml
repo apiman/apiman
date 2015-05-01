@@ -15,7 +15,8 @@
     <test name="Create Blacklist Policy Def">data/policyDefs/001_blacklist-policydef.resttest</test>
     <test name="Create BASIC Authentication Policy Def">data/policyDefs/002_basicauth-policydef.resttest</test>
     <test name="Create BASIC Authentication Policy Def">data/policyDefs/003_ratelimiting-policydef.resttest</test>
-    <test name="Create Ignored Resources Policy Def">data/policyDefs/04_ignoredresources-policydef.resttest</test>
+    <test name="Create Ignored Resources Policy Def">data/policyDefs/004_ignoredresources-policydef.resttest</test>
+    <test name="Create Authorization Policy Def">data/policyDefs/005_authorization-policydef.resttest</test>
   </testGroup>
   
   <!-- Gateways -->

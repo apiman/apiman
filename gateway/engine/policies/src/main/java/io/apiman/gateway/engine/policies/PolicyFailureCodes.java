@@ -30,5 +30,6 @@ public final class PolicyFailureCodes {
     public static final int NO_USER_FOR_RATE_LIMITING  = 10006;
     public static final int PATHS_TO_IGNORE            = 10007;
     public static final int NO_APP_FOR_RATE_LIMITING   = 10008;
+    public static final int USER_NOT_AUTHORIZED        = 10009;
 
 }

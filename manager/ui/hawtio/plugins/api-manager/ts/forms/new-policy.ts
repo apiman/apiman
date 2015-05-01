@@ -6,7 +6,8 @@ module Apiman {
         IgnoredResourcesPolicy: 'ignored-resources.include',
         IPBlacklistPolicy: 'ip-list.include',
         IPWhitelistPolicy: 'ip-list.include',
-        RateLimitingPolicy: 'rate-limiting.include'
+        RateLimitingPolicy: 'rate-limiting.include',
+        AuthorizationPolicy: 'authorization.include',
     };
 
     export var NewPolicyController = _module.controller("Apiman.NewPolicyController",

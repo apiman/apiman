@@ -50,20 +50,20 @@ import java.util.HashSet;
  */
 @SuppressWarnings("nls")
 public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
-    
+
     /**
      * Constructor.
      */
     public ManagerApiDataSeeder() {
     }
-    
+
     /**
      * @see io.apiman.manager.test.server.DefaultTestDataSeeder#seed(io.apiman.manager.api.core.IIdmStorage, io.apiman.manager.api.core.IStorage)
      */
     @Override
     public void seed(IIdmStorage idmStorage, IStorage storage) throws StorageException {
         super.seed(idmStorage, storage);
-        
+
         GatewayBean gateway = new GatewayBean();
         gateway.setId("TheGateway");
         gateway.setName("The Gateway");
@@ -77,7 +77,7 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         storage.beginTx();
         storage.createGateway(gateway);
         storage.commitTx();
-        
+
         // Create Organization Owner role
         RoleBean role = new RoleBean();
         role.setId("OrganizationOwner");
@@ -131,9 +131,9 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         role.getPermissions().add(PermissionType.planEdit);
         role.getPermissions().add(PermissionType.planAdmin);
         idmStorage.createRole(role);
-        
+
         storage.beginTx();
-        
+
         // Create JBoss Overlord org
         OrganizationBean org = new OrganizationBean();
         org.setId("JBossOverlord");
@@ -144,7 +144,7 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         org.setModifiedOn(new Date());
         org.setModifiedBy("admin");
         storage.createOrganization(org);
-        
+
         // Create Apereo Bedework org
         org = new OrganizationBean();
         org.setId("ApereoBedework");
@@ -155,9 +155,9 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         org.setModifiedOn(new Date());
         org.setModifiedBy("admin");
         storage.createOrganization(org);
-        
+
         storage.commitTx();
-        
+
         // Make admin the owner of both orgs
         RoleMembershipBean membership = RoleMembershipBean.create("admin", "OrganizationOwner", "JBossOverlord");
         membership.setCreatedOn(new Date());
@@ -168,7 +168,7 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         idmStorage.createMembership(membership);
 
         storage.beginTx();
-        
+
         // Create some plans
         PlanBean plan = new PlanBean();
         plan.setId("Platinum");
@@ -272,7 +272,7 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         avb.setModifiedBy("admin");
         avb.setModifiedOn(new Date());
         storage.createApplicationVersion(avb);
-        
+
         storage.commitTx();
         storage.beginTx();
 
@@ -306,7 +306,7 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         spb.setVersion("1.0");
         svb.addPlan(spb);
         storage.createServiceVersion(svb);
-        
+
         storage.commitTx();
         storage.beginTx();
 
@@ -358,7 +358,19 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         templateBean.setTemplate("Consumers are limited to @{limit} requests per @{granularity} per @{period}.");
         rateLimitPolicyDef.getTemplates().add(templateBean);
         storage.createPolicyDefinition(rateLimitPolicyDef);
-        
+
+        PolicyDefinitionBean authorizationPolicyDef = new PolicyDefinitionBean();
+        authorizationPolicyDef.setId("AuthorizationPolicy");
+        authorizationPolicyDef.setName("Authorization Policy");
+        authorizationPolicyDef.setDescription("Enables fine grained authorization to API resources based on authenticated user roles.");
+        authorizationPolicyDef.setIcon("users");
+        authorizationPolicyDef.setPolicyImpl("class:io.apiman.gateway.engine.policies.AuthorizationPolicy");
+        templateBean = new PolicyDefinitionTemplateBean();
+        templateBean.setLanguage(null);
+        templateBean.setTemplate("Appropriate authorization roles are required.  There are @{rules.size()} authorization rules defined.");
+        authorizationPolicyDef.getTemplates().add(templateBean);
+        storage.createPolicyDefinition(authorizationPolicyDef);
+
         storage.commitTx();
     }
 
