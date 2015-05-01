@@ -24,7 +24,7 @@ import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.map.ObjectMapper;
 
 /**
- * Simple JSON logger, see {@link #jsonify(String, Throwable)}. Aims to provide
+ * Simple JSON logger, see {@link #jsonify(String, LogLevel, Throwable)}. Aims to provide
  *
  * Jackson's pojo2json functionality is used on Throwables to create an easily parseable exception structure.
  *
@@ -104,21 +104,23 @@ import org.codehaus.jackson.map.ObjectMapper;
  * @author Marc Savy <msavy@redhat.com>
  */
 public class JsonLoggerImpl implements IApimanDelegateLogger {
-    private Time time = new Time() {
+    /**
+     * @author Marc Savy <msavy@redhat.com>
+     *
+     */
+    private enum LogLevel {
+        INFO, DEBUG, WARN, TRACE
+    }
 
-        @Override
-        public long currentTimeMillis() {
-            return System.currentTimeMillis();
-        }
-    };
+    private static Time time = new DefaultTimeImpl();
+    private static ObjectMapper mapper = new ObjectMapper();
 
-    ObjectMapper mapper = new ObjectMapper();
-
-    {
+    static {
         //mapper.set TODO set pretty print?
     }
 
     private Logger delegatedLogger;
+    private Class<?> klazz;
 
     /**
      * Instantiate a JsonLogger
@@ -128,6 +130,7 @@ public class JsonLoggerImpl implements IApimanDelegateLogger {
     @Override
     public IApimanLogger createLogger(Class <?> klazz) {
         delegatedLogger = LogManager.getLogger(klazz);
+        this.klazz = klazz;
         return this;
     }
 
@@ -142,12 +145,62 @@ public class JsonLoggerImpl implements IApimanDelegateLogger {
         return this;
     }
 
-    private String jsonify(String message) {
-        return jsonify(message, null);
+    /**
+     * Set the time implementation.
+     * Particularly useful for testing.
+     *
+     * @param timeImpl the time implementation.
+     */
+    public static void setTimeImpl(Time timeImpl) {
+        time = timeImpl;
+    }
+
+    @Override
+    public void info(String message) {
+        delegatedLogger.info(jsonify(message, LogLevel.INFO));
+    }
+
+    @Override
+    public void info(String message, Throwable throwable) {
+        delegatedLogger.info(jsonify(message, LogLevel.INFO, throwable));
+    }
+
+    @Override
+    public void warn(String message) {
+        delegatedLogger.warn(jsonify(message, LogLevel.WARN));
+    }
+
+    @Override
+    public void warn(String message, Throwable throwable) {
+        delegatedLogger.warn(jsonify(message, LogLevel.WARN, throwable));
+    }
+
+    @Override
+    public void debug(String message) {
+        delegatedLogger.debug(jsonify(message, LogLevel.DEBUG));
+    }
+
+    @Override
+    public void debug(String message, Throwable throwable) {
+        delegatedLogger.debug(jsonify(message, LogLevel.DEBUG, throwable));
+    }
+
+    @Override
+    public void trace(String message) {
+        delegatedLogger.trace(jsonify(message, LogLevel.TRACE));
+    }
+
+    @Override
+    public void trace(String message, Throwable throwable) {
+        delegatedLogger.trace(jsonify(message, LogLevel.TRACE, throwable));
+    }
+
+    private String jsonify(String message, LogLevel level) {
+        return jsonify(message, level, null);
     }
 
     @SuppressWarnings("nls")
-    private String jsonify(String message, Throwable t) {
+    private String jsonify(String message, LogLevel level, Throwable t) {
         try { // TODO something more accurate for guessing SW length
             int traceLen = t == null ? 0 :  t.getStackTrace().length * 800;
 
@@ -155,7 +208,10 @@ public class JsonLoggerImpl implements IApimanDelegateLogger {
             JsonGenerator generator = mapper.getJsonFactory().createJsonGenerator(sw);
 
             generator.writeStartObject();
-            generator.writeNumberField("@timestamp", time.currentTimeMillis());
+            generator.writeStringField("@timestamp", time.currentTimeIso8601());
+            generator.writeStringField("level", level.toString());
+            generator.writeStringField("loggerName", klazz.getCanonicalName());
+            generator.writeStringField("thread", Thread.currentThread().getName());
             generator.writeStringField("message", message);
 
             if (t != null) {
@@ -172,40 +228,5 @@ public class JsonLoggerImpl implements IApimanDelegateLogger {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @Override
-    public void info(String message) {
-        delegatedLogger.info(jsonify(message));
-    }
-
-    @Override
-    public void info(String message, Throwable throwable) {
-        delegatedLogger.info(jsonify(message, throwable));
-    }
-
-    @Override
-    public void debug(String message) {
-        delegatedLogger.debug(jsonify(message));
-    }
-
-    @Override
-    public void debug(String message, Throwable throwable) {
-        delegatedLogger.debug(jsonify(message, throwable));
-    }
-
-    @Override
-    public void trace(String message) {
-        delegatedLogger.trace(jsonify(message));
-    }
-
-    @Override
-    public void trace(String message, Throwable throwable) {
-        delegatedLogger.trace(jsonify(message, throwable));
-    }
-
-    @Override
-    public void setTimeImpl(Time timeImpl) {
-        this.time = timeImpl;
     }
 }
