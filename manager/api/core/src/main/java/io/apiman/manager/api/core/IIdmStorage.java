@@ -122,6 +122,7 @@ public interface IIdmStorage {
      * @param roleId the role id
      * @param organizationId the organization id
      * @throws StorageException if an exception occurs during storage attempt
+     * @return the membership
      */
     public RoleMembershipBean getMembership(String userId, String roleId, String organizationId) throws StorageException;
 
