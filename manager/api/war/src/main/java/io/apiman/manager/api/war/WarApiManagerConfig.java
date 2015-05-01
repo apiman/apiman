@@ -15,6 +15,8 @@
  */
 package io.apiman.manager.api.war;
 
+import io.apiman.manager.api.core.logging.IApimanLogger;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashSet;
@@ -35,6 +37,7 @@ public class WarApiManagerConfig {
 
     public static final String APIMAN_MANAGER_CONFIG_FILE_NAME = "apiman-manager.config.file.name"; //$NON-NLS-1$
     public static final String APIMAN_MANAGER_CONFIG_FILE_REFRESH = "apiman-manager.config.file.refresh"; //$NON-NLS-1$
+    public static final String APIMAN_MANAGER_CONFIG_LOGGER = "apiman-manager.config.logger"; //$NON-NLS-1$
 
     public static final String APIMAN_MANAGER_STORAGE_TYPE = "apiman-manager.storage.type"; //$NON-NLS-1$
     public static final String APIMAN_MANAGER_STORAGE_ES_HOST = "apiman-manager.storage.es.host"; //$NON-NLS-1$
@@ -130,6 +133,15 @@ public class WarApiManagerConfig {
      */
     public Configuration getConfig() {
         return config;
+    }
+
+    /**
+     * 'Simple', 'JSON' or FQDN with {@link IApimanLogger} implementation.
+     *
+     * @return Logger name or FQDN
+     */
+    public String getLoggerName() {
+        return config.getString(APIMAN_MANAGER_CONFIG_LOGGER);
     }
 
 }

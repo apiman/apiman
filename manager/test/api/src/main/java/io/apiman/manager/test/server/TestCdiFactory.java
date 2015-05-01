@@ -20,6 +20,9 @@ import io.apiman.manager.api.core.IIdmStorage;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.UuidApiKeyGenerator;
+import io.apiman.manager.api.core.logging.ApimanLogger;
+import io.apiman.manager.api.core.logging.IApimanLogger;
+import io.apiman.manager.api.core.logging.JsonLoggerImpl;
 import io.apiman.manager.api.es.EsStorage;
 import io.apiman.manager.api.jpa.JpaStorage;
 import io.apiman.manager.api.jpa.roles.JpaIdmStorage;
@@ -29,6 +32,8 @@ import io.apiman.manager.test.util.ManagerTestUtils.TestType;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.New;
 import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.inject.Named;
 
 import org.elasticsearch.client.Client;
 
@@ -39,8 +44,16 @@ import org.elasticsearch.client.Client;
  */
 @ApplicationScoped
 @SuppressWarnings("nls")
+@Named("ApimanLogFactory")
 public class TestCdiFactory {
-    
+
+    @Produces @ApimanLogger
+    public static IApimanLogger provideLogger(InjectionPoint injectionPoint) {
+        ApimanLogger logger = injectionPoint.getAnnotated().getAnnotation(ApimanLogger.class);
+        Class<?> klazz = logger.value();
+        return new JsonLoggerImpl().createLogger(klazz);
+    }
+
     @Produces @ApplicationScoped
     public static IStorage provideStorage(@New JpaStorage jpaStorage, @New EsStorage esStorage) {
         TestType testType = ManagerTestUtils.getTestType();
@@ -96,5 +109,4 @@ public class TestCdiFactory {
             throw new RuntimeException("Unexpected test type: " + testType);
         }
     }
-
 }
