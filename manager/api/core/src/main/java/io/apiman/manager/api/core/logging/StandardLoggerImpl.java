@@ -70,7 +70,12 @@ public class StandardLoggerImpl implements IApimanDelegateLogger {
     }
 
     @Override
-    public void setTimeImpl(Time timeImpl) {
-        // In this impl, do nothing.
+    public void warn(String message) {
+        delegatedLogger.warn(message);
+    }
+
+    @Override
+    public void warn(String message, Throwable throwable) {
+        delegatedLogger.warn(message, throwable);
     }
 }

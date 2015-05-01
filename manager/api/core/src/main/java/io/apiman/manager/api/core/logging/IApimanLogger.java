@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package io.apiman.manager.api.core.logging;
+
 /**
  * Simple logging interfaces. Later we'll add the ability to pass context info.
  *
@@ -35,6 +36,21 @@ public interface IApimanLogger {
      * @param throwable the throwable cause
      */
     void info(String message, Throwable throwable);
+
+    /**
+     * Log a warning
+     *
+     * @param message the message
+     */
+    void warn(String message);
+
+    /**
+     * Log a warning and error
+     *
+     * @param message the message
+     * @param throwable the throwable cause
+     */
+    void warn(String message, Throwable throwable);
 
     /**
      * Log a debug level message
@@ -65,12 +81,4 @@ public interface IApimanLogger {
      * @param throwable the throwable cause
      */
     void trace(String message, Throwable throwable);
-
-    /**
-     * Set the time implementation.
-     * Particularly useful for testing.
-     *
-     * @param timeImpl the time implementation.
-     */
-    void setTimeImpl(Time timeImpl);
 }
