@@ -134,15 +134,9 @@ public class BasicAuthLDAPTest extends AbstractLdapTestUnit {
      * Test method for {@link io.apiman.gateway.engine.policies.BasicAuthenticationPolicy#apply(ServiceRequest, IPolicyContext, Object, IPolicyChain)}.
      */
     @Test
-    public void testApplyAdmin() throws Exception {
-        doTest(null, null, PolicyFailureCodes.BASIC_AUTH_REQUIRED);
-        doTest("admin", "invalid_password", PolicyFailureCodes.BASIC_AUTH_FAILED);
-        doTest("admin", "secret", null);
-    }
-
-    // pass null if you expect success
-    private void doTest(String username, String password, Integer expectedFailureCode) throws Exception {
-        BasicAuthenticationPolicy policy = new BasicAuthenticationPolicy();
+    public void testApply() throws Exception {
+        // Test using a direct bind to the user account
+        //////////////////////////////////////////////////
         String json = "{\r\n" +
                 "    \"realm\" : \"TestRealm\",\r\n" +
                 "    \"forwardIdentityHttpHeader\" : \"X-Authenticated-Identity\",\r\n" +
@@ -151,6 +145,37 @@ public class BasicAuthLDAPTest extends AbstractLdapTestUnit {
                 "        \"dnPattern\" : \"uid=${username},ou=system\"\r\n" +
                 "    }\r\n" +
                 "}";
+        doTest(json, null, null, PolicyFailureCodes.BASIC_AUTH_REQUIRED);
+        doTest(json, "admin", "invalid_password", PolicyFailureCodes.BASIC_AUTH_FAILED);
+        doTest(json, "admin", "secret", null);
+
+        // Test using a service account with user search
+        //////////////////////////////////////////////////
+        json = "{\r\n" +
+                "  \"realm\" : \"TestRealm\",\r\n" +
+                "  \"ldapIdentity\" : {\r\n" +
+                "    \"url\" : \"ldap://" + LDAP_SERVER + ":" + ldapServer.getPort() + "\",\r\n" +
+                "    \"dnPattern\" : \"uid=${username},ou=system\",\r\n" +
+                "    \"bindAs\" : \"ServiceAccount\",\r\n" +
+                "    \"credentials\" : {\r\n" +
+                "      \"username\" : \"admin\",\r\n" +
+                "      \"password\" : \"secret\"\r\n" +
+                "    },\r\n" +
+                "    \"userSearch\" : {\r\n" +
+                "      \"baseDn\" : \"ou=people,o=apiman\",\r\n" +
+                "      \"expression\" : \"(uid=${username})\"\r\n" +
+                "    }\r\n" +
+                "  }\r\n" +
+                "}";
+        doTest(json, null, null, PolicyFailureCodes.BASIC_AUTH_REQUIRED);
+        doTest(json, "ewittman", "invalid_password", PolicyFailureCodes.BASIC_AUTH_FAILED);
+        doTest(json, "unknown_user", "password", PolicyFailureCodes.BASIC_AUTH_FAILED);
+        doTest(json, "ewittman", "ewittman", null);
+    }
+
+    // pass null if you expect success
+    private void doTest(String json, String username, String password, Integer expectedFailureCode) throws Exception {
+        BasicAuthenticationPolicy policy = new BasicAuthenticationPolicy();
         Object config = policy.parseConfiguration(json);
         ServiceRequest request = new ServiceRequest();
         request.setType("GET");

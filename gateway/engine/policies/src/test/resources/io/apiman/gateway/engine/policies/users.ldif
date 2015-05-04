@@ -20,6 +20,7 @@ ou: groups
 dn: cn=ewittman,ou=developers,ou=people,o=apiman
 cn: Eric Wittmann
 cn: ewittman
+uid: ewittman
 objectClass: top
 objectClass: person
 objectClass: organizationalPerson
@@ -31,6 +32,7 @@ userPassword: {SHA}FLLpfR82kzsamBUxEXOlEb9xN7Y=
 dn: cn=msavy,ou=developers,ou=people,o=apiman
 cn: Marc Savy
 cn: msavy
+uid: msavy
 objectClass: top
 objectClass: person
 objectClass: organizationalPerson
@@ -42,6 +44,7 @@ userPassword: {SHA}L/s7Xi5V0rxlZodhVRo+pN+i+I0=
 dn: cn=sbunciak,ou=qe,ou=people,o=apiman
 cn: Stefan Bunciak
 cn: sbunciak
+uid: sbunciak
 objectClass: top
 objectClass: person
 objectClass: organizationalPerson

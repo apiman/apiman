@@ -28,8 +28,12 @@ import java.util.Map;
 
 import javax.naming.AuthenticationException;
 import javax.naming.Context;
+import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
+import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
+import javax.naming.directory.SearchControls;
+import javax.naming.directory.SearchResult;
 
 import org.apache.commons.lang.text.StrSubstitutor;
 
@@ -54,26 +58,78 @@ public class LDAPIdentityValidator implements IIdentityValidator<LDAPIdentitySou
     public void validate(String username, String password, ServiceRequest request, IPolicyContext context,
             LDAPIdentitySource config, IAsyncResultHandler<Boolean> handler) {
         String url = config.getUrl();
-        String dn = formatDn(config.getDnPattern(), username, request);
+        String bindDN = formatDn(config.getDnPattern(), username, request);
+        String bindDNPwd = password;
 
         if (config.getBindAs() == LDAPBindAsType.ServiceAccount) {
-            handler.handle(AsyncResultImpl.create(new Exception("'Service Account' LDAP support not yet implemented."), Boolean.class)); //$NON-NLS-1$
+            bindDN = formatDn(config.getDnPattern(), config.getCredentials().getUsername(), request);
+            bindDNPwd = config.getCredentials().getPassword();
         }
 
         Hashtable<String, String> env = new Hashtable<>();
         env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory"); //$NON-NLS-1$
         env.put(Context.PROVIDER_URL, url);
-
         env.put(Context.SECURITY_AUTHENTICATION, "simple"); //$NON-NLS-1$
-        env.put(Context.SECURITY_PRINCIPAL, dn);
-        env.put(Context.SECURITY_CREDENTIALS, password);
+        env.put(Context.SECURITY_PRINCIPAL, bindDN);
+        env.put(Context.SECURITY_CREDENTIALS, bindDNPwd);
         try {
-            new InitialDirContext(env);
-            handler.handle(AsyncResultImpl.create(Boolean.TRUE));
+            InitialDirContext dirContext = new InitialDirContext(env);
+
+            // If we're using a service account to search for the actual UserDN,
+            // then do the search and, if found, rebind.  Otherwise just return true.
+            if (config.getBindAs() == LDAPBindAsType.ServiceAccount) {
+                validateAsServiceAccount(username, password, request, context, config, handler, dirContext);
+            } else {
+                handler.handle(AsyncResultImpl.create(Boolean.TRUE));
+            }
         } catch (AuthenticationException e) {
             handler.handle(AsyncResultImpl.create(Boolean.FALSE));
         } catch (NamingException e) {
             handler.handle(AsyncResultImpl.create(e, Boolean.class));
+        }
+    }
+
+    /**
+     * Validate by searching for the user node in LDAP, then (if found) rebinding
+     * using the provided password.
+     * @param username
+     * @param password
+     * @param request
+     * @param context
+     * @param config
+     * @param handler
+     * @param dirContext
+     * @throws NamingException
+     */
+    private void validateAsServiceAccount(String username, String password, ServiceRequest request,
+            IPolicyContext context, LDAPIdentitySource config, IAsyncResultHandler<Boolean> handler,
+            DirContext dirContext) throws NamingException {
+
+        SearchControls controls = new SearchControls();
+        controls.setSearchScope(SearchControls.SUBTREE_SCOPE);
+        String searchBaseDN = formatDn(config.getUserSearch().getBaseDn(), username, request);
+        String searchExpr = formatDn(config.getUserSearch().getExpression(), username, request);
+        NamingEnumeration<SearchResult> result = dirContext.search(searchBaseDN, searchExpr, controls);
+        if (result == null || !result.hasMore()) {
+            handler.handle(AsyncResultImpl.create(Boolean.FALSE));
+        } else {
+            SearchResult element = result.nextElement();
+            String userDN = element.getNameInNamespace();
+            // Multiple results?
+            if (result.hasMore()) {
+                throw new NamingException("Found multiple entries for the same username: " + username); //$NON-NLS-1$
+            }
+
+            // We have the userDN and the password - rebind now
+            String url = config.getUrl();
+            Hashtable<String, String> env = new Hashtable<>();
+            env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory"); //$NON-NLS-1$
+            env.put(Context.PROVIDER_URL, url);
+            env.put(Context.SECURITY_AUTHENTICATION, "simple"); //$NON-NLS-1$
+            env.put(Context.SECURITY_PRINCIPAL, userDN);
+            env.put(Context.SECURITY_CREDENTIALS, password);
+            new InitialDirContext(env);
+            handler.handle(AsyncResultImpl.create(Boolean.TRUE));
         }
     }
 
