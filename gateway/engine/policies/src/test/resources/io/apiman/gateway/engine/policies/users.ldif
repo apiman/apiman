@@ -1,0 +1,52 @@
+dn: ou=people,o=apiman
+objectClass: organizationalUnit
+objectClass: top
+ou: people
+
+dn: ou=developers,ou=people,o=apiman
+objectClass: organizationalUnit
+objectClass: top
+ou: developers
+
+dn: ou=qe,ou=people,o=apiman
+objectClass: organizationalUnit
+objectClass: top
+ou: qe
+
+dn: ou=groups,o=apiman
+objectClass: organizationalUnit
+ou: groups
+
+dn: cn=ewittman,ou=developers,ou=people,o=apiman
+cn: Eric Wittmann
+cn: ewittman
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+sn: Eric
+givenName: Wittmann
+userPassword: {SHA}FLLpfR82kzsamBUxEXOlEb9xN7Y=
+
+dn: cn=msavy,ou=developers,ou=people,o=apiman
+cn: Marc Savy
+cn: msavy
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+sn: Marc
+givenName: Savy
+userPassword: {SHA}L/s7Xi5V0rxlZodhVRo+pN+i+I0=
+
+dn: cn=sbunciak,ou=qe,ou=people,o=apiman
+cn: Stefan Bunciak
+cn: sbunciak
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+sn: Stefan
+givenName: Bunciak
+userPassword: {SHA}K+BXsg+iwyhZ0YRmxoLEaRu1r8I=
+

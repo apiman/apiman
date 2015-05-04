@@ -171,7 +171,7 @@ public class AuthorizationPolicyTest {
         IPolicyContext context = Mockito.mock(IPolicyContext.class);
         IPolicyChain<ServiceRequest> chain = Mockito.mock(IPolicyChain.class);
 
-        Mockito.when(context.getAttribute(AuthorizationPolicy.AUTHENTICATED_USER_ROLES, new HashSet<String>())).thenReturn(userRoles);
+        Mockito.when(context.getAttribute(AuthorizationPolicy.AUTHENTICATED_USER_ROLES, (HashSet<String>) null)).thenReturn(userRoles);
         final PolicyFailure failure = new PolicyFailure();
         Mockito.when(context.getComponent(IPolicyFailureFactoryComponent.class)).thenReturn(
                 new IPolicyFailureFactoryComponent() {

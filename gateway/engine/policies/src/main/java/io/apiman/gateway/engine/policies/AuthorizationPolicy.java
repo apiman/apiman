@@ -66,9 +66,19 @@ public class AuthorizationPolicy extends AbstractMappedPolicy<AuthorizationConfi
     @Override
     protected void doApply(ServiceRequest request, IPolicyContext context, AuthorizationConfig config,
             IPolicyChain<ServiceRequest> chain) {
-        Set<String> userRoles = context.getAttribute(AUTHENTICATED_USER_ROLES, new HashSet<String>());
+        Set<String> userRoles = context.getAttribute(AUTHENTICATED_USER_ROLES, (HashSet<String>) null);
         String verb = request.getType();
         String resource = request.getDestination();
+
+        // If no roles are set in the context - then fail with a configuration error
+        if (userRoles == null) {
+            String msg = Messages.i18n.format("AuthorizationPolicy.MissingRoles"); //$NON-NLS-1$
+            PolicyFailure failure = context.getComponent(IPolicyFailureFactoryComponent.class).createFailure(
+                    PolicyFailureType.Other, PolicyFailureCodes.CONFIGURATION_ERROR, msg);
+            chain.doFailure(failure);
+            return;
+        }
+
         if (isAuthorized(config, verb, resource, userRoles)) {
             chain.doApply(request);
         } else {

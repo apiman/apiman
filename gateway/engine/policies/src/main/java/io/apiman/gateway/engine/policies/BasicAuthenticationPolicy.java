@@ -41,17 +41,17 @@ import org.apache.commons.codec.binary.Base64;
  * @author eric.wittmann@redhat.com
  */
 public class BasicAuthenticationPolicy extends AbstractMappedPolicy<BasicAuthenticationConfig> {
-    
+
     private static final StaticIdentityValidator staticIdentityValidator = new StaticIdentityValidator();
     private static final LDAPIdentityValidator ldapIdentityValidator = new LDAPIdentityValidator();
     private static final JDBCIdentityValidator jdbcIdentityValidator = new JDBCIdentityValidator();
-    
+
     /**
      * Constructor.
      */
     public BasicAuthenticationPolicy() {
     }
-    
+
     /**
      * @see io.apiman.gateway.engine.policy.AbstractPolicy#getConfigurationClass()
      */
@@ -59,7 +59,7 @@ public class BasicAuthenticationPolicy extends AbstractMappedPolicy<BasicAuthent
     protected Class<BasicAuthenticationConfig> getConfigurationClass() {
         return BasicAuthenticationConfig.class;
     }
-    
+
     /**
      * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#doApply(io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
      */
@@ -74,6 +74,11 @@ public class BasicAuthenticationPolicy extends AbstractMappedPolicy<BasicAuthent
         if (!authHeader.toUpperCase().startsWith("BASIC ")) { //$NON-NLS-1$
             sendAuthFailure(context, chain, config, PolicyFailureCodes.BASIC_AUTH_REQUIRED);
             return;
+        }
+
+        // Check transport security
+        if (config.isRequireTransportSecurity() && !request.isTransportSecure()) {
+            sendAuthFailure(context, chain, config, PolicyFailureCodes.TRANSPORT_SECURITY_REQUIRED);
         }
 
         // Parse the Authorization http header.
@@ -95,7 +100,7 @@ public class BasicAuthenticationPolicy extends AbstractMappedPolicy<BasicAuthent
             sendAuthFailure(context, chain, config, PolicyFailureCodes.BASIC_AUTH_FAILED);
             return;
         }
-        
+
         // Asynchronously validate the inbound requests's basic auth credentials
         final String forwardedUsername = username;
         validateCredentials(username, password, request, context, config, new IAsyncResultHandler<Boolean>() {
@@ -125,7 +130,7 @@ public class BasicAuthenticationPolicy extends AbstractMappedPolicy<BasicAuthent
      * Validate the inbound authentication credentials.
      * @param username
      * @param password
-     * @param request 
+     * @param request
      * @param context
      * @param config
      * @param handler
@@ -160,6 +165,5 @@ public class BasicAuthenticationPolicy extends AbstractMappedPolicy<BasicAuthent
         failure.getHeaders().put("WWW-Authenticate", String.format("BASIC realm=\"%1$s\"", realm)); //$NON-NLS-1$ //$NON-NLS-2$
         chain.doFailure(failure);
     }
-
 
 }

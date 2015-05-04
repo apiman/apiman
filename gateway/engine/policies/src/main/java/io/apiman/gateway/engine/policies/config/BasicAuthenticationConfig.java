@@ -29,6 +29,7 @@ public class BasicAuthenticationConfig {
 
     private String realm;
     private String forwardIdentityHttpHeader;
+    private boolean requireTransportSecurity;
 
     private StaticIdentitySource staticIdentity;
     private LDAPIdentitySource ldapIdentity;
@@ -108,6 +109,20 @@ public class BasicAuthenticationConfig {
      */
     public void setJdbcIdentity(JDBCIdentitySource jdbcIdentity) {
         this.jdbcIdentity = jdbcIdentity;
+    }
+
+    /**
+     * @return the requireTransportSecurity
+     */
+    public boolean isRequireTransportSecurity() {
+        return requireTransportSecurity;
+    }
+
+    /**
+     * @param requireTransportSecurity the requireTransportSecurity to set
+     */
+    public void setRequireTransportSecurity(boolean requireTransportSecurity) {
+        this.requireTransportSecurity = requireTransportSecurity;
     }
 
 }

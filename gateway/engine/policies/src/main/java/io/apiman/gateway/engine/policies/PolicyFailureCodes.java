@@ -22,14 +22,16 @@ package io.apiman.gateway.engine.policies;
  */
 public final class PolicyFailureCodes {
 
-    public static final int IP_NOT_WHITELISTED         = 10001;
-    public static final int IP_BLACKLISTED             = 10002;
-    public static final int BASIC_AUTH_FAILED          = 10003;
-    public static final int BASIC_AUTH_REQUIRED        = 10004;
-    public static final int RATE_LIMIT_EXCEEDED        = 10005;
-    public static final int NO_USER_FOR_RATE_LIMITING  = 10006;
-    public static final int PATHS_TO_IGNORE            = 10007;
-    public static final int NO_APP_FOR_RATE_LIMITING   = 10008;
-    public static final int USER_NOT_AUTHORIZED        = 10009;
+    public static final int IP_NOT_WHITELISTED          = 10001;
+    public static final int IP_BLACKLISTED              = 10002;
+    public static final int BASIC_AUTH_FAILED           = 10003;
+    public static final int BASIC_AUTH_REQUIRED         = 10004;
+    public static final int RATE_LIMIT_EXCEEDED         = 10005;
+    public static final int NO_USER_FOR_RATE_LIMITING   = 10006;
+    public static final int PATHS_TO_IGNORE             = 10007;
+    public static final int NO_APP_FOR_RATE_LIMITING    = 10008;
+    public static final int USER_NOT_AUTHORIZED         = 10009;
+    public static final int CONFIGURATION_ERROR         = 10010;
+    public static final int TRANSPORT_SECURITY_REQUIRED = 10011;
 
 }

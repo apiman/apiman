@@ -45,6 +45,11 @@
 
     <!-- Test dependencies -->
     <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>commons-dbcp</groupId>
       <artifactId>commons-dbcp</artifactId>
       <scope>test</scope>
@@ -59,7 +64,16 @@
       <artifactId>h2</artifactId>
       <scope>test</scope>
     </dependency>
-    
+    <dependency>
+      <groupId>org.apache.directory.server</groupId>
+      <artifactId>apacheds-test-framework</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.directory.server</groupId>
+      <artifactId>apacheds-server-integ</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
