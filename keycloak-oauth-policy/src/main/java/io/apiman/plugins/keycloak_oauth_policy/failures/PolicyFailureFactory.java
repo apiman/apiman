@@ -32,27 +32,33 @@ public class PolicyFailureFactory {
 
     private static final int HTTP_UNAUTHORIZED = 401;
 
+    private static final int AUTH_MISSING_ROLE = 11001;
+    private static final int AUTH_BLACKLISTED_TOKEN = 11002;
+    private static final int AUTH_NO_TRANSPORT_SECURITY = 11003;
+    private static final int AUTH_VERIFICATION_ERROR = 11004;
+    private static final int AUTH_NOT_PROVIDED = 11005;
+
     public PolicyFailure noAuthenticationProvided(IPolicyContext context) {
-        return createAuthenticationPolicyFailure(context, 0,
+        return createAuthenticationPolicyFailure(context, AUTH_NOT_PROVIDED,
                 Messages.getString("KeycloakOauthPolicy.NoTokenGiven")); //$NON-NLS-1$
     }
 
     public PolicyFailure verificationException(IPolicyContext context, VerificationException e) {
-        return createAuthenticationPolicyFailure(context, 1, e.getMessage());
+        return createAuthenticationPolicyFailure(context, AUTH_VERIFICATION_ERROR, e.getMessage());
     }
 
     public PolicyFailure noTransportSecurity(IPolicyContext context) {
-        return createAuthenticationPolicyFailure(context, 2,
+        return createAuthenticationPolicyFailure(context, AUTH_NO_TRANSPORT_SECURITY,
                 Messages.getString("KeycloakOauthPolicy.NoTransportSecurity")); //$NON-NLS-1$
     }
 
     public PolicyFailure blacklistedToken(IPolicyContext context) {
-        return createAuthenticationPolicyFailure(context, 3,
+        return createAuthenticationPolicyFailure(context, AUTH_BLACKLISTED_TOKEN,
                 Messages.getString("KeycloakOauthPolicy.BlacklistedToken")); //$NON-NLS-1$
     }
 
     public PolicyFailure doesNotHoldRequiredRoles(IPolicyContext context) {
-        return createAuthorizationPolicyFailure(context, 4, Messages.getString("KeycloakOauthPolicy.DoesNotHoldRequiredRoles")); //$NON-NLS-1$
+        return createAuthorizationPolicyFailure(context, AUTH_MISSING_ROLE, Messages.getString("KeycloakOauthPolicy.DoesNotHoldRequiredRoles")); //$NON-NLS-1$
     }
 
     private PolicyFailure createAuthenticationPolicyFailure(IPolicyContext context, int failureCode,

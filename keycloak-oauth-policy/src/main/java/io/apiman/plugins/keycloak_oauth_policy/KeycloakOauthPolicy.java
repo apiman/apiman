@@ -79,11 +79,10 @@ public class KeycloakOauthPolicy extends AbstractMappedPolicy<KeycloakOauthConfi
                 // token
                 if (config.getBlacklistUnsafeTokens()) {
                     blacklistToken(context, rawToken, new IAsyncResultHandler<Void>() {
-
                         @Override
                         public void handle(IAsyncResult<Void> result) {
                             if (result.isError()) {
-                                throwError(successStatus, chain, result.getError());
+                                // TODO log the error (need a policy logger)
                             }
                         }
                     });
@@ -96,7 +95,6 @@ public class KeycloakOauthPolicy extends AbstractMappedPolicy<KeycloakOauthConfi
             // If enabled we check against the blacklist
             if (config.getBlacklistUnsafeTokens()) {
                 isBlacklistedToken(context, rawToken, new IAsyncResultHandler<Boolean>() {
-
                     @Override
                     public void handle(IAsyncResult<Boolean> result) {
                         if (result.isError()) {
@@ -109,8 +107,9 @@ public class KeycloakOauthPolicy extends AbstractMappedPolicy<KeycloakOauthConfi
                     }
                 });
             } else {
-                if (successStatus.getValue())
+                if (successStatus.getValue()) {
                     chain.doApply(request);
+                }
             }
         }
     }
@@ -166,8 +165,9 @@ public class KeycloakOauthPolicy extends AbstractMappedPolicy<KeycloakOauthConfi
         }
         // System.out.println("config.getRealmRoleMappings() " + config.getRealmRoleMappings());
         // System.out.println("parsedToken.getRealmAccess().getRoles() + parsedToken.getRealmAccess().getRoles());
-        if (config.getRealmRoleMappings().size() > 0)
+        if (config.getRealmRoleMappings().size() > 0) {
             result = result && parsedToken.getRealmAccess().getRoles().containsAll(config.getRealmRoleMappings());
+        }
 
         return result;
     }
@@ -193,8 +193,9 @@ public class KeycloakOauthPolicy extends AbstractMappedPolicy<KeycloakOauthConfi
 
     private void forwardHeaders(ServiceRequest request, KeycloakOauthConfigBean config, String rawToken,
             AccessToken parsedToken) {
-        if (config.getForwardAuthInfo().size() == 0)
+        if (config.getForwardAuthInfo().size() == 0) {
             return;
+        }
 
         for (ForwardAuthInfo entry : config.getForwardAuthInfo()) {
             String fieldValue = null;
