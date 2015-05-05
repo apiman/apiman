@@ -358,4 +358,17 @@ public class ServiceVersionBean implements Serializable {
         return true;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    @SuppressWarnings("nls")
+    public String toString() {
+        return "ServiceVersionBean [id=" + id + ", service=" + service + ", status=" + status + ", endpoint="
+                + endpoint + ", endpointType=" + endpointType + ", gateways=" + gateways + ", publicService="
+                + publicService + ", plans=" + plans + ", version=" + version + ", createdBy=" + createdBy
+                + ", createdOn=" + createdOn + ", modifiedBy=" + modifiedBy + ", modifiedOn=" + modifiedOn
+                + ", publishedOn=" + publishedOn + ", retiredOn=" + retiredOn + ", definitionType="
+                + definitionType + "]";
+    }
 }

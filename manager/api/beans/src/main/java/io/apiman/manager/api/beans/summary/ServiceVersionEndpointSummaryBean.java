@@ -48,4 +48,13 @@ public class ServiceVersionEndpointSummaryBean implements Serializable {
         this.managedEndpoint = managedEndpoint;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    @SuppressWarnings("nls")
+    public String toString() {
+        return "ServiceVersionEndpointSummaryBean [managedEndpoint=" + managedEndpoint + "]";
+    }
+
 }

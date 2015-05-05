@@ -75,4 +75,14 @@ public class RestGatewayConfigBean {
         this.password = password;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    @SuppressWarnings("nls")
+    public String toString() {
+        return "RestGatewayConfigBean [endpoint=" + endpoint + ", username=" + username + ", password="
+                + password + "]";
+    }
+
 }

@@ -201,4 +201,15 @@ public class AuditEntryBean implements Serializable {
         this.createdOn = createdOn;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    @SuppressWarnings("nls")
+    public String toString() {
+        return "AuditEntryBean [id=" + id + ", who=" + who + ", organizationId=" + organizationId
+                + ", entityType=" + entityType + ", entityId=" + entityId + ", entityVersion="
+                + entityVersion + ", createdOn=" + createdOn + ", what=" + what + ", data=" + data + "]";
+    }
+
 }

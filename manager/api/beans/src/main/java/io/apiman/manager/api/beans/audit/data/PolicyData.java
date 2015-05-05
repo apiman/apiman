@@ -49,4 +49,13 @@ public class PolicyData implements Serializable {
         this.policyDefId = policyDefId;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    @SuppressWarnings("nls")
+    public String toString() {
+        return "PolicyData [policyDefId=" + policyDefId + "]";
+    }
+
 }

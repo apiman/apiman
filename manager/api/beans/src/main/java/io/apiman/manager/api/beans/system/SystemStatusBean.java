@@ -63,4 +63,13 @@ public class SystemStatusBean implements Serializable {
         this.up = up;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    @SuppressWarnings("nls")
+    public String toString() {
+        return "SystemStatusBean [up=" + up + ", version=" + version + "]";
+    }
+
 }

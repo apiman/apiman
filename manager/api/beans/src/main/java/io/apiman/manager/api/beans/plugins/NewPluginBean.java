@@ -142,4 +142,15 @@ public class NewPluginBean implements Serializable {
         this.type = type;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    @SuppressWarnings("nls")
+    public String toString() {
+        return "NewPluginBean [groupId=" + groupId + ", artifactId=" + artifactId + ", version=" + version
+                + ", classifier=" + classifier + ", type=" + type + ", name=" + name + ", description="
+                + description + "]";
+    }
+
 }

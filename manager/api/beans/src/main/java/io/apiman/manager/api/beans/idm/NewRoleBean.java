@@ -94,4 +94,14 @@ public class NewRoleBean implements Serializable {
         this.autoGrant = autoGrant;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    @SuppressWarnings("nls")
+    public String toString() {
+        return "NewRoleBean [name=" + name + ", description=" + description + ", autoGrant=" + autoGrant
+                + ", permissions=" + permissions + "]";
+    }
+
 }

@@ -192,4 +192,15 @@ public class RoleBean implements Serializable {
         this.autoGrant = autoGrant;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    @SuppressWarnings("nls")
+    public String toString() {
+        return "RoleBean [id=" + id + ", name=" + name + ", description=" + description + ", createdBy="
+                + createdBy + ", createdOn=" + createdOn + ", autoGrant=" + autoGrant + ", permissions="
+                + permissions + "]";
+    }
+
 }

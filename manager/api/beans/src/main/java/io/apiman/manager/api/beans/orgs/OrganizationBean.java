@@ -189,4 +189,14 @@ public class OrganizationBean implements Serializable {
         return true;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    @SuppressWarnings("nls")
+    public String toString() {
+        return "OrganizationBean [id=" + id + ", name=" + name + ", description=" + description
+                + ", createdBy=" + createdBy + ", createdOn=" + createdOn + ", modifiedBy=" + modifiedBy
+                + ", modifiedOn=" + modifiedOn + "]";
+    }
 }

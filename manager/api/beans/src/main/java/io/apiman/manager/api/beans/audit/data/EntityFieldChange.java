@@ -87,4 +87,14 @@ public class EntityFieldChange {
         this.name = name;
     }
 
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    @SuppressWarnings("nls")
+    public String toString() {
+        return "EntityFieldChange [name=" + name + ", before=" + before + ", after=" + after + "]";
+    }
+
 }

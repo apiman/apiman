@@ -321,4 +321,20 @@ public class ContractSummaryBean implements Serializable {
         return true;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    @SuppressWarnings("nls")
+    public String toString() {
+        return "ContractSummaryBean [contractId=" + contractId + ", apikey=" + apikey
+                + ", appOrganizationId=" + appOrganizationId + ", appOrganizationName=" + appOrganizationName
+                + ", appId=" + appId + ", appName=" + appName + ", appVersion=" + appVersion
+                + ", serviceOrganizationId=" + serviceOrganizationId + ", serviceOrganizationName="
+                + serviceOrganizationName + ", serviceId=" + serviceId + ", serviceName=" + serviceName
+                + ", serviceVersion=" + serviceVersion + ", serviceDescription=" + serviceDescription
+                + ", planName=" + planName + ", planId=" + planId + ", planVersion=" + planVersion
+                + ", createdOn=" + createdOn + "]";
+    }
+
 }

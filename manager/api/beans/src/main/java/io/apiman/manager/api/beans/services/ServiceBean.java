@@ -152,4 +152,15 @@ public class ServiceBean implements Serializable {
     public void setOrganization(OrganizationBean organization) {
         this.organization = organization;
     }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    @SuppressWarnings("nls")
+    public String toString() {
+        return "ServiceBean [organization=" + organization + ", id=" + id + ", name=" + name
+                + ", description=" + description + ", createdBy=" + createdBy + ", createdOn=" + createdOn
+                + "]";
+    }
 }

@@ -16,6 +16,8 @@
 package io.apiman.manager.api.beans.services;
 
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.Set;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
@@ -110,6 +112,32 @@ public class UpdateServiceVersionBean implements Serializable {
      */
     public void setPlans(Set<ServicePlanBean> plans) {
         this.plans = plans;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    @SuppressWarnings("nls")
+    public String toString() {
+        final int maxLen = 10;
+        return "UpdateServiceVersionBean [endpoint=" + endpoint + ", endpointType=" + endpointType
+                + ", gateways=" + (gateways != null ? toString(gateways, maxLen) : null) + ", publicService="
+                + publicService + ", plans=" + (plans != null ? toString(plans, maxLen) : null) + "]";
+    }
+
+    @SuppressWarnings("nls")
+    private String toString(Collection<?> collection, int maxLen) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("[");
+        int i = 0;
+        for (Iterator<?> iterator = collection.iterator(); iterator.hasNext() && i < maxLen; i++) {
+            if (i > 0)
+                builder.append(", ");
+            builder.append(iterator.next());
+        }
+        builder.append("]");
+        return builder.toString();
     }
 
 }
