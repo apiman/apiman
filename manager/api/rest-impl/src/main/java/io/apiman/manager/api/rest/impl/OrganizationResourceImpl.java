@@ -86,6 +86,8 @@ import io.apiman.manager.api.core.IServiceValidator;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
+import io.apiman.manager.api.core.logging.ApimanLogger;
+import io.apiman.manager.api.core.logging.IApimanLogger;
 import io.apiman.manager.api.core.util.PolicyTemplateUtil;
 import io.apiman.manager.api.gateway.GatewayAuthenticationException;
 import io.apiman.manager.api.gateway.IGatewayLink;
@@ -164,6 +166,8 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
     @Context HttpServletRequest request;
 
+    @Inject @ApimanLogger(OrganizationResourceImpl.class) IApimanLogger log;
+
     /**
      * Constructor.
      */
@@ -218,6 +222,8 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 membership.setCreatedOn(new Date());
                 idmStorage.createMembership(membership);
             }
+
+            log.debug(String.format("Created organization %s: %s", orgBean.getName(), orgBean));
             return orgBean;
         } catch (AbstractRestException e) {
             storage.rollbackTx();
@@ -240,6 +246,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 throw ExceptionFactory.organizationNotFoundException(organizationId);
             }
             storage.commitTx();
+            log.debug(String.format("Got organization %s: %s", organizationBean.getName(), organizationBean));
             return organizationBean;
         } catch (AbstractRestException e) {
             storage.rollbackTx();
@@ -273,6 +280,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.updateOrganization(orgForUpdate);
             storage.createAuditEntry(AuditUtils.organizationUpdated(orgForUpdate, auditData, securityContext));
             storage.commitTx();
+            log.debug(String.format("Updated organization %s: %s", orgForUpdate.getName(), orgForUpdate));
         } catch (AbstractRestException e) {
             storage.rollbackTx();
             throw e;
@@ -347,6 +355,8 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             }
 
             storage.commitTx();
+
+            log.debug(String.format("Created application %s: %s", newApp.getName(), newApp));
             return newApp;
         } catch (AbstractRestException e) {
             storage.rollbackTx();
@@ -370,6 +380,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 throw ExceptionFactory.applicationNotFoundException(applicationId);
             }
             storage.commitTx();
+            log.debug(String.format("Got application %s: %s", applicationBean.getName(), applicationBean));
             return applicationBean;
         } catch (AbstractRestException e) {
             storage.rollbackTx();
@@ -444,6 +455,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.updateApplication(appForUpdate);
             storage.createAuditEntry(AuditUtils.applicationUpdated(appForUpdate, auditData, securityContext));
             storage.commitTx();
+            log.debug(String.format("Updated application %s: %s", appForUpdate.getName(), appForUpdate));
         } catch (AbstractRestException e) {
             storage.rollbackTx();
             throw e;
@@ -531,6 +543,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         storage.createApplicationVersion(newVersion);
         storage.createAuditEntry(AuditUtils.applicationVersionCreated(newVersion, securityContext));
 
+        log.debug(String.format("Created new application version %s: %s", newVersion.getApplication().getName(), newVersion));
         return newVersion;
     }
 
@@ -546,6 +559,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             if (applicationVersion == null)
                 throw ExceptionFactory.applicationVersionNotFoundException(applicationId, version);
             storage.commitTx();
+            log.debug(String.format("Got new application version %s: %s", applicationVersion.getApplication().getName(), applicationVersion));
             return applicationVersion;
         } catch (AbstractRestException e) {
             storage.rollbackTx();
@@ -616,6 +630,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             ContractBean contract = createContractInternal(organizationId, applicationId, version, bean);
 
             storage.commitTx();
+            log.debug(String.format("Created new contract %s: %s", contract.getId(), contract));
             return contract;
         } catch (AbstractRestException e) {
             storage.rollbackTx();
@@ -702,6 +717,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         avb.setModifiedBy(securityContext.getCurrentUser());
         avb.setModifiedOn(new Date());
         storage.updateApplicationVersion(avb);
+
         return contract;
     }
 
@@ -752,6 +768,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 contract.setApikey(null);
             }
 
+            log.debug(String.format("Got contract %s: %s", contract.getId(), contract));
             return contract;
         } catch (AbstractRestException e) {
             storage.rollbackTx();
@@ -804,6 +821,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.createAuditEntry(AuditUtils.contractBrokenToService(contract, securityContext));
 
             storage.commitTx();
+            log.debug(String.format("Deleted contract: %s", contract));
         } catch (AbstractRestException e) {
             storage.rollbackTx();
             throw e;
@@ -2427,6 +2445,8 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.commitTx();
 
             PolicyTemplateUtil.generatePolicyDescription(policy);
+
+            log.debug(String.format("Created app policy: %s", policy));
             return policy;
         } catch (AbstractRestException e) {
             storage.rollbackTx();
