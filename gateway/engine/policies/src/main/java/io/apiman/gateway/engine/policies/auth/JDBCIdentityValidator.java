@@ -18,6 +18,7 @@ package io.apiman.gateway.engine.policies.auth;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.ServiceRequest;
+import io.apiman.gateway.engine.policies.AuthorizationPolicy;
 import io.apiman.gateway.engine.policies.config.basicauth.JDBCIdentitySource;
 import io.apiman.gateway.engine.policy.IPolicyContext;
 
@@ -25,6 +26,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -84,8 +87,11 @@ public class JDBCIdentityValidator implements IIdentityValidator<JDBCIdentitySou
         Connection conn = null;
         boolean validated = false;
         try {
+            // Get a JDBC connection
             conn = ds.getConnection();
             conn.setReadOnly(true);
+
+            // Validate the user exists and the password matches.
             PreparedStatement statement = conn.prepareStatement(query);
             statement.setString(1, username);
             statement.setString(2, sqlPwd);
@@ -94,6 +100,25 @@ public class JDBCIdentityValidator implements IIdentityValidator<JDBCIdentitySou
                 validated = true;
             }
             resultSet.close();
+            statement.close();
+
+            // Extract roles from the DB
+            if (config.isExtractRoles()) {
+                statement = conn.prepareStatement(config.getRoleQuery());
+                statement.setString(1, username);
+                resultSet = statement.executeQuery();
+                Set<String> extractedRoles = new HashSet<>();
+                while (resultSet.next()) {
+                    String roleName = resultSet.getString(1);
+                    extractedRoles.add(roleName);
+                }
+                resultSet.close();
+                statement.close();
+                // Save the extracted roles to the policy context for use by e.g.
+                // the Authorization policy (if configured).
+                context.setAttribute(AuthorizationPolicy.AUTHENTICATED_USER_ROLES, extractedRoles);
+            }
+
             handler.handle(AsyncResultImpl.create(validated));
         } catch (Exception e) {
             handler.handle(AsyncResultImpl.create(e, Boolean.class));

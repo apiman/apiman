@@ -19,12 +19,15 @@ import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.PolicyFailureType;
 import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
+import io.apiman.gateway.engine.policies.config.BasicAuthenticationConfig;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
 
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -33,6 +36,7 @@ import javax.naming.NamingException;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.dbcp.BasicDataSource;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -47,11 +51,8 @@ public class BasicAuthJDBCTest {
     private static final String JDBC_USER = "bwayne";
     private static final String JDBC_PASSWORD = "bwayne123!";
 
-    /**
-     * Test method for {@link io.apiman.gateway.engine.policies.BasicAuthenticationPolicy#apply(ServiceRequest, IPolicyContext, Object, IPolicyChain)}.
-     */
-    @Test
-    public void testApplyJdbc() throws Exception {
+    @BeforeClass
+    public static void setup() throws Exception {
         System.setProperty(Context.INITIAL_CONTEXT_FACTORY, InitialContextFactoryForTest.class.getName());
 
         // Create a test datasource and bind it to JNDI
@@ -59,8 +60,14 @@ public class BasicAuthJDBCTest {
         InitialContext ctx = new InitialContext();
         ensureCtx(ctx, "java:comp/env"); //$NON-NLS-1$
         ensureCtx(ctx, "java:comp/env/jdbc"); //$NON-NLS-1$
-        ctx.bind("java:comp/env/jdbc/TestAuthDS", ds); //$NON-NLS-1$
+        ctx.bind("java:comp/env/jdbc/BasicAuthJDBCTest", ds); //$NON-NLS-1$
+    }
 
+    /**
+     * Test method for {@link io.apiman.gateway.engine.policies.BasicAuthenticationPolicy#apply(ServiceRequest, IPolicyContext, Object, IPolicyChain)}.
+     */
+    @Test
+    public void testApplyJdbcNoRoles() throws Exception {
         // A live LDAP server is required to run this test!
         BasicAuthenticationPolicy policy = new BasicAuthenticationPolicy();
         String json =
@@ -68,12 +75,12 @@ public class BasicAuthJDBCTest {
                 "    \"realm\" : \"TestRealm\",\r\n" +
                 "    \"forwardIdentityHttpHeader\" : \"X-Authenticated-Identity\",\r\n" +
                 "    \"jdbcIdentity\" : {\r\n" +
-                "        \"datasourcePath\" : \"jdbc/TestAuthDS\",\r\n" +
+                "        \"datasourcePath\" : \"jdbc/BasicAuthJDBCTest\",\r\n" +
                 "        \"query\" : \"SELECT * FROM users WHERE username = ? AND password = ?\",\r\n" +
                 "        \"hashAlgorithm\" : \"SHA1\"\r\n" +
                 "    }\r\n" +
                 "}";
-        Object config = policy.parseConfiguration(json);
+        BasicAuthenticationConfig config = policy.parseConfiguration(json);
         ServiceRequest request = new ServiceRequest();
         request.setType("GET");
         request.setApiKey("12345");
@@ -107,6 +114,45 @@ public class BasicAuthJDBCTest {
     }
 
     /**
+     * Test method for {@link io.apiman.gateway.engine.policies.BasicAuthenticationPolicy#apply(ServiceRequest, IPolicyContext, Object, IPolicyChain)}.
+     */
+    @Test
+    public void testApplyJdbcWithRoles() throws Exception {
+        // A live LDAP server is required to run this test!
+        BasicAuthenticationPolicy policy = new BasicAuthenticationPolicy();
+        String json =
+                "{\r\n" +
+                "    \"realm\" : \"TestRealm\",\r\n" +
+                "    \"forwardIdentityHttpHeader\" : \"X-Authenticated-Identity\",\r\n" +
+                "    \"jdbcIdentity\" : {\r\n" +
+                "        \"datasourcePath\" : \"jdbc/BasicAuthJDBCTest\",\r\n" +
+                "        \"query\" : \"SELECT * FROM users WHERE username = ? AND password = ?\",\r\n" +
+                "        \"hashAlgorithm\" : \"SHA1\",\r\n" +
+                "        \"extractRoles\" : true,\r\n" +
+                "        \"roleQuery\" : \"SELECT r.rolename FROM roles r WHERE r.username = ?\"\r\n" +
+                "    }\r\n" +
+                "}";
+        BasicAuthenticationConfig config = policy.parseConfiguration(json);
+        ServiceRequest request = new ServiceRequest();
+        request.setType("GET");
+        request.setApiKey("12345");
+        request.setRemoteAddr("1.2.3.4");
+        request.setDestination("/");
+        IPolicyContext context = Mockito.mock(IPolicyContext.class);
+        IPolicyChain<ServiceRequest> chain = Mockito.mock(IPolicyChain.class);
+
+        // Success
+        request.getHeaders().put("Authorization", createBasicAuthorization(JDBC_USER, JDBC_PASSWORD));
+        chain = Mockito.mock(IPolicyChain.class);
+        policy.apply(request, context, config, chain);
+        Mockito.verify(chain).doApply(request);
+        Set<String> expectedRoles = new HashSet<>();
+        expectedRoles.add("admin");
+        expectedRoles.add("user");
+        Mockito.verify(context).setAttribute(AuthorizationPolicy.AUTHENTICATED_USER_ROLES, expectedRoles);
+    }
+
+    /**
      * Creates the http Authorization string for the given credentials.
      * @param username
      * @param password
@@ -130,9 +176,15 @@ public class BasicAuthJDBCTest {
         ds.setPassword(""); //$NON-NLS-1$
         ds.setUrl("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1"); //$NON-NLS-1$
         Connection connection = ds.getConnection();
-        connection.prepareStatement("CREATE TABLE users ( username varchar(255) NOT NULL, password varchar(255) NOT NULL, PRIMARY KEY (username) )").executeUpdate();
+        connection.prepareStatement("CREATE TABLE users ( username varchar(255) NOT NULL, password varchar(255) NOT NULL, PRIMARY KEY (username))").executeUpdate();
         connection.prepareStatement("INSERT INTO users (username, password) VALUES ('bwayne', 'ae2efd698aefdf366736a4eda1bc5241f9fbfec7')").executeUpdate();
         connection.prepareStatement("INSERT INTO users (username, password) VALUES ('ckent', 'ea59f7ca52a2087c99374caba0ff29be1b2dcdbf')").executeUpdate();
+        connection.prepareStatement("INSERT INTO users (username, password) VALUES ('ballen', 'ea59f7ca52a2087c99374caba0ff29be1b2dcdbf')").executeUpdate();
+        connection.prepareStatement("CREATE TABLE roles (rolename varchar(255) NOT NULL, username varchar(255) NOT NULL)").executeUpdate();
+        connection.prepareStatement("INSERT INTO roles (rolename, username) VALUES ('user', 'bwayne')").executeUpdate();
+        connection.prepareStatement("INSERT INTO roles (rolename, username) VALUES ('admin', 'bwayne')").executeUpdate();
+        connection.prepareStatement("INSERT INTO roles (rolename, username) VALUES ('ckent', 'user')").executeUpdate();
+        connection.prepareStatement("INSERT INTO roles (rolename, username) VALUES ('ballen', 'user')").executeUpdate();
         connection.close();
         return ds;
     }
@@ -143,7 +195,7 @@ public class BasicAuthJDBCTest {
      * @param name
      * @throws NamingException
      */
-    private void ensureCtx(InitialContext ctx, String name) throws NamingException {
+    private static void ensureCtx(InitialContext ctx, String name) throws NamingException {
         try {
             ctx.bind(name, new InitialContext());
         } catch (NameAlreadyBoundException e) {

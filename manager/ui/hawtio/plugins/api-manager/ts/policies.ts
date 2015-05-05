@@ -219,6 +219,9 @@ module Apiman {
                     if (!config.jdbcIdentity.query) {
                         valid = false;
                     }
+                    if (config.jdbcIdentity.extractRoles && !config.jdbcIdentity.roleQuery) {
+                        valid = false;
+                    }
                 }
                 $scope.setValid(valid);
             };

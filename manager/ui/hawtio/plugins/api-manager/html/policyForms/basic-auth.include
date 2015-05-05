@@ -74,6 +74,14 @@
             <option value="SHA512" apiman-i18n-key="basic-auth.sha512">SHA512</option>
           </select>
         </dd>
+        <dd>
+          <input id="extractJdbcRoles" type="checkbox" ng-model="config.jdbcIdentity.extractRoles" style="margin-top: 15px"></input>
+          <label for="extractJdbcRoles" apiman-i18n-key="basic-auth.extract-roles" title="When enabled, roles can also be extracted from the database for use in the Authorization Policy (sold separately).">Also extract user roles from the DB</label>
+        </dd>
+        <dt ng-show="config.jdbcIdentity.extractRoles == true" apiman-i18n-key="roles-sql-query">Roles SQL Query</dt>
+        <dd ng-show="config.jdbcIdentity.extractRoles == true">
+          <textarea ng-model="config.jdbcIdentity.roleQuery" class="form-control" type="text" apiman-i18n-key="basic-auth.ds.enter-role-sql-query" placeholder="Role SQL Query (example: SELECT r.rolename FROM roles r WHERE r.user=?)"></textarea>
+        </dd>
       </dl>
     </div>
   </div>

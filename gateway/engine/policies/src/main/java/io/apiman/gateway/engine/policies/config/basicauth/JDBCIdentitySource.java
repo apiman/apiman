@@ -33,6 +33,8 @@ public class JDBCIdentitySource {
     private String datasourcePath;
     private String query;
     private PasswordHashAlgorithmType hashAlgorithm;
+    private boolean extractRoles;
+    private String roleQuery;
 
     /**
      * Constructor.
@@ -80,6 +82,34 @@ public class JDBCIdentitySource {
      */
     public void setHashAlgorithm(PasswordHashAlgorithmType hashAlgorithm) {
         this.hashAlgorithm = hashAlgorithm;
+    }
+
+    /**
+     * @return the extractRoles
+     */
+    public boolean isExtractRoles() {
+        return extractRoles;
+    }
+
+    /**
+     * @param extractRoles the extractRoles to set
+     */
+    public void setExtractRoles(boolean extractRoles) {
+        this.extractRoles = extractRoles;
+    }
+
+    /**
+     * @return the roleQuery
+     */
+    public String getRoleQuery() {
+        return roleQuery;
+    }
+
+    /**
+     * @param roleQuery the roleQuery to set
+     */
+    public void setRoleQuery(String roleQuery) {
+        this.roleQuery = roleQuery;
     }
 
 }
