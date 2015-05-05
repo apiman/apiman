@@ -19,13 +19,16 @@ import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.PolicyFailureType;
 import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
+import io.apiman.gateway.engine.policies.config.BasicAuthenticationConfig;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Set;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -171,12 +174,66 @@ public class BasicAuthLDAPTest extends AbstractLdapTestUnit {
         doTest(json, "ewittman", "invalid_password", PolicyFailureCodes.BASIC_AUTH_FAILED);
         doTest(json, "unknown_user", "password", PolicyFailureCodes.BASIC_AUTH_FAILED);
         doTest(json, "ewittman", "ewittman", null);
+
+        // Test using a service account with user search
+        //////////////////////////////////////////////////
+        json = "{\r\n" +
+                "  \"realm\" : \"TestRealm\",\r\n" +
+                "  \"ldapIdentity\" : {\r\n" +
+                "    \"url\" : \"ldap://" + LDAP_SERVER + ":" + ldapServer.getPort() + "\",\r\n" +
+                "    \"dnPattern\" : \"uid=${username},ou=system\",\r\n" +
+                "    \"bindAs\" : \"ServiceAccount\",\r\n" +
+                "    \"credentials\" : {\r\n" +
+                "      \"username\" : \"admin\",\r\n" +
+                "      \"password\" : \"secret\"\r\n" +
+                "    },\r\n" +
+                "    \"userSearch\" : {\r\n" +
+                "      \"baseDn\" : \"ou=people,o=apiman\",\r\n" +
+                "      \"expression\" : \"(uid=${username})\"\r\n" +
+                "    }\r\n" +
+                "  }\r\n" +
+                "}";
+        doTest(json, null, null, PolicyFailureCodes.BASIC_AUTH_REQUIRED);
+        doTest(json, "ewittman", "invalid_password", PolicyFailureCodes.BASIC_AUTH_FAILED);
+        doTest(json, "unknown_user", "password", PolicyFailureCodes.BASIC_AUTH_FAILED);
+        doTest(json, "ewittman", "ewittman", null);
+
+        // Test with the extraction of user roles
+        //////////////////////////////////////////////////
+        json = "{\r\n" +
+                "  \"realm\" : \"TestRealm\",\r\n" +
+                "  \"ldapIdentity\" : {\r\n" +
+                "    \"url\" : \"ldap://localhost:7654\",\r\n" +
+                "    \"dnPattern\" : \"uid=${username},ou=system\",\r\n" +
+                "    \"bindAs\" : \"ServiceAccount\",\r\n" +
+                "    \"credentials\" : {\r\n" +
+                "      \"username\" : \"admin\",\r\n" +
+                "      \"password\" : \"secret\"\r\n" +
+                "    },\r\n" +
+                "    \"userSearch\" : {\r\n" +
+                "      \"baseDn\" : \"ou=people,o=apiman\",\r\n" +
+                "      \"expression\" : \"(uid=${username})\"\r\n" +
+                "    },\r\n" +
+                "    \"extractRoles\" : true,\r\n" +
+                "    \"membershipAttribute\" : \"title\",\r\n" +
+                "    \"rolenameAttribute\" : \"cn\"\r\n" +
+                "  }\r\n" +
+                "}";
+        Set<String> expectedRoles = new HashSet<>();
+        expectedRoles.add("user");
+        expectedRoles.add("admin");
+        doTest(json, "ewittman", "ewittman", null, expectedRoles);
+    }
+
+    private void doTest(String json, String username, String password, Integer expectedFailureCode) throws Exception {
+        doTest(json, username, password, expectedFailureCode, null);
     }
 
     // pass null if you expect success
-    private void doTest(String json, String username, String password, Integer expectedFailureCode) throws Exception {
+    private void doTest(String json, String username, String password, Integer expectedFailureCode,
+            Set<String> expectedRoles) throws Exception {
         BasicAuthenticationPolicy policy = new BasicAuthenticationPolicy();
-        Object config = policy.parseConfiguration(json);
+        BasicAuthenticationConfig config = policy.parseConfiguration(json);
         ServiceRequest request = new ServiceRequest();
         request.setType("GET");
         request.setApiKey("12345");
@@ -206,6 +263,9 @@ public class BasicAuthLDAPTest extends AbstractLdapTestUnit {
             policy.apply(request, context, config, chain);
             Mockito.verify(chain).doFailure(failure);
             Assert.assertEquals(expectedFailureCode.intValue(), failure.getFailureCode());
+            if (expectedRoles != null) {
+                Mockito.verify(context).setAttribute(AuthorizationPolicy.AUTHENTICATED_USER_ROLES, expectedRoles);
+            }
         }
     }
 

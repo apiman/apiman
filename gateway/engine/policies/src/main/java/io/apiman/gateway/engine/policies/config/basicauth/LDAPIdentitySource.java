@@ -35,6 +35,9 @@ public class LDAPIdentitySource {
     private LDAPBindAsType bindAs;
     private LDAPCredentials credentials;
     private LDAPUserSearch userSearch;
+    private boolean extractRoles;
+    private String membershipAttribute;
+    private String rolenameAttribute;
 
     /**
      * Constructor.
@@ -110,6 +113,48 @@ public class LDAPIdentitySource {
      */
     public void setUserSearch(LDAPUserSearch userSearch) {
         this.userSearch = userSearch;
+    }
+
+    /**
+     * @return the extractRoles
+     */
+    public boolean isExtractRoles() {
+        return extractRoles;
+    }
+
+    /**
+     * @param extractRoles the extractRoles to set
+     */
+    public void setExtractRoles(boolean extractRoles) {
+        this.extractRoles = extractRoles;
+    }
+
+    /**
+     * @return the membershipAttribute
+     */
+    public String getMembershipAttribute() {
+        return membershipAttribute;
+    }
+
+    /**
+     * @param membershipAttribute the membershipAttribute to set
+     */
+    public void setMembershipAttribute(String membershipAttribute) {
+        this.membershipAttribute = membershipAttribute;
+    }
+
+    /**
+     * @return the rolenameAttribute
+     */
+    public String getRolenameAttribute() {
+        return rolenameAttribute;
+    }
+
+    /**
+     * @param rolenameAttribute the rolenameAttribute to set
+     */
+    public void setRolenameAttribute(String rolenameAttribute) {
+        this.rolenameAttribute = rolenameAttribute;
     }
 
 }

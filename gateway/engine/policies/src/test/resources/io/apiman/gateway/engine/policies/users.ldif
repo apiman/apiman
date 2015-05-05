@@ -17,6 +17,20 @@ dn: ou=groups,o=apiman
 objectClass: organizationalUnit
 ou: groups
 
+dn: cn=user,ou=groups,o=apiman
+cn: user
+objectClass: top
+objectClass: groupOfUniqueNames
+uniquemember: cn=ewittman,ou=developers,ou=people,o=apiman
+uniquemember: cn=msavy,ou=developers,ou=people,o=apiman
+uniquemember: cn=sbunciak,ou=developers,ou=people,o=apiman
+
+dn: cn=admin,ou=groups,o=apiman
+cn: admin
+objectClass: top
+objectClass: groupOfUniqueNames
+uniquemember: cn=ewittman,ou=developers,ou=people,o=apiman
+
 dn: cn=ewittman,ou=developers,ou=people,o=apiman
 cn: Eric Wittmann
 cn: ewittman
@@ -25,6 +39,8 @@ objectClass: top
 objectClass: person
 objectClass: organizationalPerson
 objectClass: inetOrgPerson
+title: cn=user,ou=groups,o=apiman
+title: cn=admin,ou=groups,o=apiman
 sn: Eric
 givenName: Wittmann
 userPassword: {SHA}FLLpfR82kzsamBUxEXOlEb9xN7Y=
@@ -37,6 +53,7 @@ objectClass: top
 objectClass: person
 objectClass: organizationalPerson
 objectClass: inetOrgPerson
+title: cn=user,ou=groups,o=apiman
 sn: Marc
 givenName: Savy
 userPassword: {SHA}L/s7Xi5V0rxlZodhVRo+pN+i+I0=
@@ -49,6 +66,7 @@ objectClass: top
 objectClass: person
 objectClass: organizationalPerson
 objectClass: inetOrgPerson
+title: cn=user,ou=groups,o=apiman
 sn: Stefan
 givenName: Bunciak
 userPassword: {SHA}K+BXsg+iwyhZ0YRmxoLEaRu1r8I=

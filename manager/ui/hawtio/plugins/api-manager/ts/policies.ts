@@ -211,6 +211,14 @@ module Apiman {
                             valid = false;
                         }
                     }
+                    if (config.ldapIdentity.extractRoles) {
+                        if (!config.ldapIdentity.membershipAttribute) {
+                            valid = false;
+                        }
+                        if (!config.ldapIdentity.rolenameAttribute) {
+                            valid = false;
+                        }
+                    }
                 }
                 if (config.jdbcIdentity) {
                     if (!config.jdbcIdentity.datasourcePath) {

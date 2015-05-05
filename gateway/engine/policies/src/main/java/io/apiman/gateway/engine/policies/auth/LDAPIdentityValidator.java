@@ -18,18 +18,23 @@ package io.apiman.gateway.engine.policies.auth;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.ServiceRequest;
+import io.apiman.gateway.engine.policies.AuthorizationPolicy;
 import io.apiman.gateway.engine.policies.config.basicauth.LDAPBindAsType;
 import io.apiman.gateway.engine.policies.config.basicauth.LDAPIdentitySource;
 import io.apiman.gateway.engine.policy.IPolicyContext;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.Set;
 
 import javax.naming.AuthenticationException;
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
+import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchControls;
@@ -80,6 +85,9 @@ public class LDAPIdentityValidator implements IIdentityValidator<LDAPIdentitySou
             if (config.getBindAs() == LDAPBindAsType.ServiceAccount) {
                 validateAsServiceAccount(username, password, request, context, config, handler, dirContext);
             } else {
+                if (config.isExtractRoles()) {
+                    extractRoles(dirContext, bindDN, config, context);
+                }
                 handler.handle(AsyncResultImpl.create(Boolean.TRUE));
             }
         } catch (AuthenticationException e) {
@@ -129,8 +137,48 @@ public class LDAPIdentityValidator implements IIdentityValidator<LDAPIdentitySou
             env.put(Context.SECURITY_PRINCIPAL, userDN);
             env.put(Context.SECURITY_CREDENTIALS, password);
             new InitialDirContext(env);
+            if (config.isExtractRoles()) {
+                extractRoles(dirContext, userDN, config, context);
+            }
             handler.handle(AsyncResultImpl.create(Boolean.TRUE));
         }
+    }
+
+    /**
+     * Extracts the roles from the LDAP directory.  This is done by getting the
+     * LDAP user node located at 'userDN' and then extracting all of its LDAP
+     * group memberships.  Typically this is done by going through all of the
+     * "memberof" attributes for the User Node.
+     * @param dirContext
+     * @param userDN
+     * @param config
+     * @param context
+     * @throws NamingException
+     */
+    private void extractRoles(DirContext dirContext, String userDN, LDAPIdentitySource config,
+            IPolicyContext context) throws NamingException {
+        Set<String> roles = new HashSet<>();
+
+        Attributes attributes = dirContext.getAttributes(userDN);
+        if (attributes == null) {
+            return;
+        }
+        Attribute attribute = attributes.get(config.getMembershipAttribute());
+        if (attribute != null) {
+            NamingEnumeration<?> all = attribute.getAll();
+            while (all.hasMoreElements()) {
+                String groupDN = (String) all.nextElement();
+                try {
+                    Attributes groupAttrs = dirContext.getAttributes(groupDN);
+                    String roleName = (String) groupAttrs.get(config.getRolenameAttribute()).get();
+                    roles.add(roleName);
+                } catch (NamingException ne) {
+                    // skip and move on to the next one
+                }
+            }
+        }
+
+        context.setAttribute(AuthorizationPolicy.AUTHENTICATED_USER_ROLES, roles);
     }
 
     /**

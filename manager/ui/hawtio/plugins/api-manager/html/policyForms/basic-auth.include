@@ -76,7 +76,7 @@
         </dd>
         <dd>
           <input id="extractJdbcRoles" type="checkbox" ng-model="config.jdbcIdentity.extractRoles" style="margin-top: 15px"></input>
-          <label for="extractJdbcRoles" apiman-i18n-key="basic-auth.extract-roles" title="When enabled, roles can also be extracted from the database for use in the Authorization Policy (sold separately).">Also extract user roles from the DB</label>
+          <label for="extractJdbcRoles" apiman-i18n-key="basic-auth.extract-jdbc-roles" title="When enabled, roles can also be extracted from the database for use in the Authorization Policy (sold separately).">Also extract user roles from the DB</label>
         </dd>
         <dt ng-show="config.jdbcIdentity.extractRoles == true" apiman-i18n-key="roles-sql-query">Roles SQL Query</dt>
         <dd ng-show="config.jdbcIdentity.extractRoles == true">
@@ -123,6 +123,18 @@
               <input ng-model="config.ldapIdentity.userSearch.expression" class="form-control" type="text" apiman-i18n-key="basic-auth.ldap.userSearch.expression" placeholder="Enter an expression..."></input>
             </dd>
         </div>
+        <dd>
+          <input id="extractLdapRoles" type="checkbox" ng-model="config.ldapIdentity.extractRoles" style="margin-top: 15px"></input>
+          <label for="extractLdapRoles" apiman-i18n-key="basic-auth.extract-ldap-roles" title="When enabled, roles can also be extracted from the directory for use in the Authorization Policy (sold separately).">Also extract user roles from the directory</label>
+        </dd>
+        <dt ng-show="config.ldapIdentity.extractRoles == true" apiman-i18n-key="ldap-membership-attr">Group Membership Attribute</dt>
+        <dd ng-show="config.ldapIdentity.extractRoles == true">
+          <input ng-model="config.ldapIdentity.membershipAttribute" class="form-control" type="text" apiman-i18n-key="basic-auth.ldap.enter-membership-attr" placeholder="memberOf"></input>
+        </dd>
+        <dt ng-show="config.ldapIdentity.extractRoles == true" apiman-i18n-key="ldap-rolename-attr">Role Name Attribute</dt>
+        <dd ng-show="config.ldapIdentity.extractRoles == true">
+          <input ng-model="config.ldapIdentity.rolenameAttribute" class="form-control" type="text" apiman-i18n-key="basic-auth.ldap.enter-rolename-attr" placeholder="objectGUID"></input>
+        </dd>
       </dl>
     </div>
   </div>
