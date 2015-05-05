@@ -1,10 +1,11 @@
 package io.apiman.plugins.jsonp_policy.http;
 
-import static org.junit.Assert.*;
-import io.apiman.plugins.jsonp_policy.http.ContentType;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 
+@SuppressWarnings("nls")
 public class ContentTypeTest {
 
     @Test

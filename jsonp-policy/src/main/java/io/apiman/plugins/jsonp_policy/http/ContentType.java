@@ -8,20 +8,20 @@ import java.util.regex.Pattern;
 
 /**
  * A value object that represents the Content-Type header.
- * 
+ *
  * @author Alexandre Kieling <alex.kieling@gmail.com>
  */
 public class ContentType {
 
-    private static final Pattern DELIMITING_PATTERN = Pattern.compile(";");
-    private static final Pattern TYPE_SUBTYPE_PATTERN = Pattern.compile("([^/]+/[^/]+)");
-    private static final Pattern PARAMETER_PATTERN = Pattern.compile("([^=]+)=([^=]+)");
+    private static final Pattern DELIMITING_PATTERN = Pattern.compile(";"); //$NON-NLS-1$
+    private static final Pattern TYPE_SUBTYPE_PATTERN = Pattern.compile("([^/]+/[^/]+)"); //$NON-NLS-1$
+    private static final Pattern PARAMETER_PATTERN = Pattern.compile("([^=]+)=([^=]+)"); //$NON-NLS-1$
     private String typeSubtype;
     private SortedMap<String, String> parameters;
 
     /**
      * Constructor that takes a Content-Type string.
-     * 
+     *
      * @param str Content-Type string
      */
     public ContentType(String str) {
@@ -33,7 +33,7 @@ public class ContentType {
         }
 
         if (parts.length > 1) {
-            parameters = new TreeMap<String, String>();
+            parameters = new TreeMap<>();
             for (int i = 1; i < parts.length; i++) {
                 matcher = PARAMETER_PATTERN.matcher(parts[i]);
                 if (matcher.find()) {
@@ -47,7 +47,7 @@ public class ContentType {
 
     /**
      * Return the type/subtype value.
-     * 
+     *
      * @return type/subtype
      */
     public String getTypeSubtype() {
@@ -56,7 +56,7 @@ public class ContentType {
 
     /**
      * Set the type/subtype value.
-     * 
+     *
      * @param typeSubtype type/subtype
      */
     public void setTypeSubtype(String typeSubtype) {
@@ -65,11 +65,11 @@ public class ContentType {
 
     /**
      * Return the charset parameter value.
-     * 
+     *
      * @return charset
      */
     public String getCharset() {
-        return parameters != null ? parameters.get("charset") : null;
+        return parameters != null ? parameters.get("charset") : null; //$NON-NLS-1$
     }
 
     /**
@@ -81,7 +81,7 @@ public class ContentType {
         sb.append(typeSubtype);
         if (parameters != null) {
             for (Map.Entry<String, String> entry : parameters.entrySet()) {
-                sb.append("; ").append(entry.getKey()).append("=").append(entry.getValue());
+                sb.append("; ").append(entry.getKey()).append("=").append(entry.getValue()); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
         return sb.toString();
