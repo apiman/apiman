@@ -40,6 +40,8 @@ import io.apiman.manager.api.core.IServiceValidator;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
+import io.apiman.manager.api.core.logging.ApimanLogger;
+import io.apiman.manager.api.core.logging.IApimanLogger;
 import io.apiman.manager.api.gateway.IGatewayLink;
 import io.apiman.manager.api.gateway.IGatewayLinkFactory;
 import io.apiman.manager.api.rest.contract.IActionResource;
@@ -67,7 +69,7 @@ import javax.inject.Inject;
 
 /**
  * Implementation of the Action API.
- * 
+ *
  * @author eric.wittmann@redhat.com
  */
 @ApplicationScoped
@@ -77,11 +79,13 @@ public class ActionResourceImpl implements IActionResource {
     @Inject IStorageQuery query;
     @Inject IGatewayLinkFactory gatewayLinkFactory;
     @Inject IOrganizationResource orgs;
-    
+
     @Inject IServiceValidator serviceValidator;
     @Inject IApplicationValidator applicationValidator;
 
     @Inject ISecurityContext securityContext;
+
+    @Inject @ApimanLogger(ActionResourceImpl.class) IApimanLogger log;
 
     /**
      * Constructor.
@@ -171,7 +175,7 @@ public class ActionResourceImpl implements IActionResource {
                 storage.rollbackTx();
             }
         }
-        
+
         // Publish the service to all relevant gateways
         try {
             storage.beginTx();
@@ -186,7 +190,7 @@ public class ActionResourceImpl implements IActionResource {
             }
 
             versionBean.setStatus(ServiceStatus.Published);
-            
+
             storage.updateServiceVersion(versionBean);
             storage.createAuditEntry(AuditUtils.servicePublished(versionBean, securityContext));
             storage.commitTx();
@@ -196,6 +200,9 @@ public class ActionResourceImpl implements IActionResource {
             storage.rollbackTx();
             throw ExceptionFactory.actionException(Messages.i18n.format("PublishError"), e); //$NON-NLS-1$
         }
+
+        log.debug(String.format("Successfully published Service %s on specified gateways: %s",
+                versionBean.getService().getName(), versionBean.getService()));
     }
 
     /**
@@ -241,7 +248,7 @@ public class ActionResourceImpl implements IActionResource {
         gatewaySvc.setOrganizationId(versionBean.getService().getOrganization().getId());
         gatewaySvc.setServiceId(versionBean.getService().getId());
         gatewaySvc.setVersion(versionBean.getVersion());
-        
+
         // Retire the service from all relevant gateways
         try {
             storage.beginTx();
@@ -254,10 +261,10 @@ public class ActionResourceImpl implements IActionResource {
                 gatewayLink.retireService(gatewaySvc);
                 gatewayLink.close();
             }
-        
+
             versionBean.setStatus(ServiceStatus.Retired);
             versionBean.setRetiredOn(new Date());
-            
+
             storage.updateServiceVersion(versionBean);
             storage.createAuditEntry(AuditUtils.serviceRetired(versionBean, securityContext));
             storage.commitTx();
@@ -268,6 +275,9 @@ public class ActionResourceImpl implements IActionResource {
             storage.rollbackTx();
             throw ExceptionFactory.actionException(Messages.i18n.format("PublishError")); //$NON-NLS-1$
         }
+
+        log.debug(String.format("Successfully retired Service %s on specified gateways: %s",
+                versionBean.getService().getName(), versionBean.getService()));
     }
 
     /**
@@ -290,7 +300,7 @@ public class ActionResourceImpl implements IActionResource {
         } catch (StorageException e) {
             throw ExceptionFactory.actionException(Messages.i18n.format("ApplicationNotFound"), e); //$NON-NLS-1$
         }
-        
+
         // Validate that it's ok to perform this action - application must be Ready.
         try {
             if (!applicationValidator.isReady(versionBean)) {
@@ -304,7 +314,7 @@ public class ActionResourceImpl implements IActionResource {
         application.setOrganizationId(versionBean.getApplication().getOrganization().getId());
         application.setApplicationId(versionBean.getApplication().getId());
         application.setVersion(versionBean.getVersion());
-        
+
         Set<Contract> contracts = new HashSet<>();
         for (ContractSummaryBean contractBean : contractBeans) {
             Contract contract = new Contract();
@@ -317,7 +327,7 @@ public class ActionResourceImpl implements IActionResource {
         }
         application.setContracts(contracts);
 
-        // Next, register the application with *all* relevant gateways.  This is done by 
+        // Next, register the application with *all* relevant gateways.  This is done by
         // looking up all referenced services and getting the gateway information for them.
         // Each of those gateways must be told about the application.
         try {
@@ -345,9 +355,9 @@ public class ActionResourceImpl implements IActionResource {
             storage.rollbackTx();
             throw ExceptionFactory.actionException(Messages.i18n.format("PublishError"), e); //$NON-NLS-1$
         }
-        
+
         versionBean.setStatus(ApplicationStatus.Registered);
-        
+
         try {
             storage.beginTx();
             storage.updateApplicationVersion(versionBean);
@@ -358,6 +368,8 @@ public class ActionResourceImpl implements IActionResource {
             throw ExceptionFactory.actionException(Messages.i18n.format("PublishError")); //$NON-NLS-1$
         }
 
+        log.debug(String.format("Successfully registered Application %s on specified gateways: %s",
+                versionBean.getApplication().getName(), versionBean.getApplication()));
     }
 
     /**
@@ -447,7 +459,7 @@ public class ActionResourceImpl implements IActionResource {
         application.setApplicationId(versionBean.getApplication().getId());
         application.setVersion(versionBean.getVersion());
 
-        // Next, unregister the application from *all* relevant gateways.  This is done by 
+        // Next, unregister the application from *all* relevant gateways.  This is done by
         // looking up all referenced services and getting the gateway information for them.
         // Each of those gateways must be told about the application.
         try {
@@ -476,7 +488,7 @@ public class ActionResourceImpl implements IActionResource {
             storage.rollbackTx();
             throw ExceptionFactory.actionException(Messages.i18n.format("PublishError"), e); //$NON-NLS-1$
         }
-        
+
         versionBean.setStatus(ApplicationStatus.Retired);
         versionBean.setRetiredOn(new Date());
 
@@ -489,6 +501,9 @@ public class ActionResourceImpl implements IActionResource {
             storage.rollbackTx();
             throw ExceptionFactory.actionException(Messages.i18n.format("PublishError")); //$NON-NLS-1$
         }
+
+        log.debug(String.format("Successfully registered Application %s on specified gateways: %s",
+                versionBean.getApplication().getName(), versionBean.getApplication()));
     }
 
     /**
@@ -523,8 +538,11 @@ public class ActionResourceImpl implements IActionResource {
             storage.rollbackTx();
             throw ExceptionFactory.actionException(Messages.i18n.format("PublishError")); //$NON-NLS-1$
         }
+
+        log.debug(String.format("Successfully locked Plan %s: %s",
+                versionBean.getPlan().getName(), versionBean.getPlan()));
     }
-    
+
     /**
      * @return the storage
      */
@@ -622,5 +640,5 @@ public class ActionResourceImpl implements IActionResource {
     public void setGatewayLinkFactory(IGatewayLinkFactory gatewayLinkFactory) {
         this.gatewayLinkFactory = gatewayLinkFactory;
     }
-        
+
 }

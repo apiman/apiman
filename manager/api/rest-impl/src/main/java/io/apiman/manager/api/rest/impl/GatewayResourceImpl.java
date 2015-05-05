@@ -29,6 +29,8 @@ import io.apiman.manager.api.beans.summary.GatewayTestResultBean;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
+import io.apiman.manager.api.core.logging.ApimanLogger;
+import io.apiman.manager.api.core.logging.IApimanLogger;
 import io.apiman.manager.api.gateway.GatewayAuthenticationException;
 import io.apiman.manager.api.gateway.IGatewayLink;
 import io.apiman.manager.api.gateway.IGatewayLinkFactory;
@@ -52,7 +54,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  * Implementation of the Gateway API.
- * 
+ *
  * @author eric.wittmann@redhat.com
  */
 @ApplicationScoped
@@ -62,15 +64,16 @@ public class GatewayResourceImpl implements IGatewayResource {
     @Inject IStorageQuery query;
     @Inject ISecurityContext securityContext;
     @Inject IGatewayLinkFactory gatewayLinkFactory;
+    @Inject @ApimanLogger(GatewayResourceImpl.class) IApimanLogger log;
 
     private static final ObjectMapper mapper = new ObjectMapper();
-    
+
     /**
      * Constructor.
      */
     public GatewayResourceImpl() {
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.IGatewayResource#test(io.apiman.manager.api.beans.gateways.NewGatewayBean)
      */
@@ -100,7 +103,7 @@ public class GatewayResourceImpl implements IGatewayResource {
 
         return rval;
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.IGatewayResource#list()
      */
@@ -122,7 +125,7 @@ public class GatewayResourceImpl implements IGatewayResource {
             throw ExceptionFactory.notAuthorizedException();
 
         Date now = new Date();
-        
+
         GatewayBean gateway = new GatewayBean();
         gateway.setId(BeanUtils.idFromName(bean.getName()));
         gateway.setName(bean.getName());
@@ -150,6 +153,8 @@ public class GatewayResourceImpl implements IGatewayResource {
             throw new SystemErrorException(e);
         }
         decryptPasswords(gateway);
+
+        log.debug(String.format("Successfully created new gateway %s: %s", gateway.getName(), gateway));
         return gateway;
     }
 
@@ -170,6 +175,8 @@ public class GatewayResourceImpl implements IGatewayResource {
                 decryptPasswords(bean);
             }
             storage.commitTx();
+
+            log.debug(String.format("Successfully fetched gateway %s: %s", bean.getName(), bean));
             return bean;
         } catch (AbstractRestException e) {
             storage.rollbackTx();
@@ -207,6 +214,8 @@ public class GatewayResourceImpl implements IGatewayResource {
             encryptPasswords(gbean);
             storage.updateGateway(gbean);
             storage.commitTx();
+
+            log.debug(String.format("Successfully updated gateway %s: %s" + gbean.getName(), gbean));
         } catch (AbstractRestException e) {
             storage.rollbackTx();
             throw e;
@@ -215,7 +224,7 @@ public class GatewayResourceImpl implements IGatewayResource {
             throw new SystemErrorException(e);
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.IGatewayResource#delete(java.lang.String)
      */
@@ -232,6 +241,8 @@ public class GatewayResourceImpl implements IGatewayResource {
             }
             storage.deleteGateway(gbean);
             storage.commitTx();
+
+            log.debug(String.format("Successfully deleted gateway %s: %s" + gbean.getName(), gbean));
         } catch (AbstractRestException e) {
             storage.rollbackTx();
             throw e;
@@ -258,7 +269,7 @@ public class GatewayResourceImpl implements IGatewayResource {
             throw new RuntimeException(e);
         }
     }
-    
+
     /**
      * @param bean
      */
@@ -276,7 +287,7 @@ public class GatewayResourceImpl implements IGatewayResource {
             throw new RuntimeException(e);
         }
     }
-    
+
     /**
      * @return the storage
      */
@@ -304,5 +315,5 @@ public class GatewayResourceImpl implements IGatewayResource {
     public void setSecurityContext(ISecurityContext securityContext) {
         this.securityContext = securityContext;
     }
-    
+
 }
