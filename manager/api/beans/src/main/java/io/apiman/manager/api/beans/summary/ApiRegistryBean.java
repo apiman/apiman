@@ -58,4 +58,15 @@ public class ApiRegistryBean implements Serializable {
     public void setApis(List<ApiEntryBean> apis) {
         this.apis = apis;
     }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    @SuppressWarnings("nls")
+    public String toString() {
+        final int maxLen = 10;
+        return "ApiRegistryBean [apis="
+                + (apis != null ? apis.subList(0, Math.min(apis.size(), maxLen)) : null) + "]";
+    }
 }

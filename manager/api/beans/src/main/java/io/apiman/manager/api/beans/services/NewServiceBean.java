@@ -81,4 +81,14 @@ public class NewServiceBean implements Serializable {
         this.initialVersion = initialVersion;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    @SuppressWarnings("nls")
+    public String toString() {
+        return "NewServiceBean [name=" + name + ", description=" + description + ", initialVersion="
+                + initialVersion + "]";
+    }
+
 }

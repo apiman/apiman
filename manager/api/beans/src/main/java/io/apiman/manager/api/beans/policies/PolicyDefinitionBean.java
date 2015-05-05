@@ -18,7 +18,9 @@ package io.apiman.manager.api.beans.policies;
 import io.apiman.manager.api.beans.summary.PolicyFormType;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import javax.persistence.CollectionTable;
@@ -231,6 +233,32 @@ public class PolicyDefinitionBean implements Serializable {
         } else if (!id.equals(other.id))
             return false;
         return true;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    @SuppressWarnings("nls")
+    public String toString() {
+        final int maxLen = 10;
+        return "PolicyDefinitionBean [id=" + id + ", policyImpl=" + policyImpl + ", name=" + name
+                + ", description=" + description + ", icon=" + icon + ", templates="
+                + (templates != null ? toString(templates, maxLen) : null) + ", pluginId=" + pluginId
+                + ", formType=" + formType + ", form=" + form + "]";
+    }
+
+    private String toString(Collection<?> collection, int maxLen) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("[");
+        int i = 0;
+        for (Iterator<?> iterator = collection.iterator(); iterator.hasNext() && i < maxLen; i++) {
+            if (i > 0)
+                builder.append(", ");
+            builder.append(iterator.next());
+        }
+        builder.append("]");
+        return builder.toString();
     }
 
 }

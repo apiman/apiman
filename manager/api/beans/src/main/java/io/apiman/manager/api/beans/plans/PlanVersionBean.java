@@ -232,4 +232,15 @@ public class PlanVersionBean implements Serializable {
         return true;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    @SuppressWarnings("nls")
+    public String toString() {
+        return "PlanVersionBean [id=" + id + ", plan=" + plan + ", status=" + status + ", version=" + version
+                + ", createdBy=" + createdBy + ", createdOn=" + createdOn + ", modifiedBy=" + modifiedBy
+                + ", modifiedOn=" + modifiedOn + ", lockedOn=" + lockedOn + "]";
+    }
+
 }

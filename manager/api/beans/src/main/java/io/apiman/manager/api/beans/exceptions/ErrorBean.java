@@ -107,4 +107,14 @@ public class ErrorBean {
         this.stacktrace = stacktrace;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    @SuppressWarnings("nls")
+    public String toString() {
+        return "ErrorBean [type=" + type + ", errorCode=" + errorCode + ", message=" + message
+                + ", moreInfoUrl=" + moreInfoUrl + ", stacktrace=" + stacktrace + "]";
+    }
+
 }

@@ -81,4 +81,14 @@ public class NewApplicationBean implements Serializable {
         this.initialVersion = initialVersion;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    @SuppressWarnings("nls")
+    public String toString() {
+        return "NewApplicationBean [name=" + name + ", description=" + description + ", initialVersion="
+                + initialVersion + "]";
+    }
+
 }

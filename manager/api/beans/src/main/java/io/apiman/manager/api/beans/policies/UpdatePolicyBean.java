@@ -48,4 +48,13 @@ public class UpdatePolicyBean implements Serializable {
         this.configuration = configuration;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    @SuppressWarnings("nls")
+    public String toString() {
+        return "UpdatePolicyBean [configuration=" + configuration + "]";
+    }
+
 }

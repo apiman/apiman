@@ -79,4 +79,14 @@ public class UpdateGatewayBean implements Serializable {
         this.configuration = configuration;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    @SuppressWarnings("nls")
+    public String toString() {
+        return "UpdateGatewayBean [description=" + description + ", type=" + type + ", configuration="
+                + configuration + "]";
+    }
+
 }

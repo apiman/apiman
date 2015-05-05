@@ -16,6 +16,7 @@
 package io.apiman.manager.api.beans.services;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -90,5 +91,17 @@ public class ServiceDefinitionBean implements Serializable {
      */
     public void setId(long id) {
         this.id = id;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    @SuppressWarnings("nls")
+    public String toString() {
+        final int maxLen = 10;
+        return "ServiceDefinitionBean [id=" + id + ", serviceVersion=" + serviceVersion + ", data="
+                + (data != null ? Arrays.toString(Arrays.copyOf(data, Math.min(data.length, maxLen))) : null)
+                + "]";
     }
 }

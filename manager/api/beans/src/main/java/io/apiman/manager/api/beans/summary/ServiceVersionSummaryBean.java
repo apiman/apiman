@@ -156,4 +156,15 @@ public class ServiceVersionSummaryBean implements Serializable {
         this.publicService = publicService;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    @SuppressWarnings("nls")
+    public String toString() {
+        return "ServiceVersionSummaryBean [organizationId=" + organizationId + ", organizationName="
+                + organizationName + ", id=" + id + ", name=" + name + ", description=" + description
+                + ", status=" + status + ", version=" + version + ", publicService=" + publicService + "]";
+    }
+
 }

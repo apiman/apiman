@@ -23,12 +23,12 @@ import java.io.Serializable;
  * @author eric.wittmann@redhat.com
  */
 public class OrganizationBasedCompositeId implements Serializable {
-    
+
     private static final long serialVersionUID = 7313295981342740517L;
-    
+
     private OrganizationBean organization;
     private String id;
-    
+
     /**
      * Constructor.
      */
@@ -109,7 +109,14 @@ public class OrganizationBasedCompositeId implements Serializable {
             return false;
         return true;
     }
-    
-    
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    @SuppressWarnings("nls")
+    public String toString() {
+        return "OrganizationBasedCompositeId [organization=" + organization + ", id=" + id + "]";
+    }
 
 }

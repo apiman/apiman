@@ -196,4 +196,14 @@ public class GatewayBean implements Serializable {
         this.configuration = configuration;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    @SuppressWarnings("nls")
+    public String toString() {
+        return "GatewayBean [id=" + id + ", name=" + name + ", description=" + description + ", createdBy="
+                + createdBy + ", createdOn=" + createdOn + ", modifiedBy=" + modifiedBy + ", modifiedOn="
+                + modifiedOn + ", type=" + type + ", configuration=" + configuration + "]";
+    }
 }

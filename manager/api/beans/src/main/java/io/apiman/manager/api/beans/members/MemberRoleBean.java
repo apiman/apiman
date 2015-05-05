@@ -63,4 +63,13 @@ public class MemberRoleBean implements Serializable {
         this.roleName = roleName;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    @SuppressWarnings("nls")
+    public String toString() {
+        return "MemberRoleBean [roleId=" + roleId + ", roleName=" + roleName + "]";
+    }
+
 }

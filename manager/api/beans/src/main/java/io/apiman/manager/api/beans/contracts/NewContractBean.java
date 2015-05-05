@@ -143,4 +143,14 @@ public class NewContractBean implements Serializable {
         return true;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    @SuppressWarnings("nls")
+    public String toString() {
+        return "NewContractBean [serviceOrgId=" + serviceOrgId + ", serviceId=" + serviceId
+                + ", serviceVersion=" + serviceVersion + ", planId=" + planId + "]";
+    }
+
 }

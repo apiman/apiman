@@ -110,4 +110,14 @@ public class MemberBean implements Serializable {
         this.roles = roles;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    @SuppressWarnings("nls")
+    public String toString() {
+        return "MemberBean [userId=" + userId + ", userName=" + userName + ", email=" + email + ", joinedOn="
+                + joinedOn + ", roles=" + roles + "]";
+    }
+
 }

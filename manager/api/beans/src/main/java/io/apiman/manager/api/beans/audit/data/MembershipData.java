@@ -16,7 +16,9 @@
 package io.apiman.manager.api.beans.audit.data;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -71,6 +73,31 @@ public class MembershipData implements Serializable {
      */
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    @SuppressWarnings("nls")
+    public String toString() {
+        final int maxLen = 10;
+        return "MembershipData [userId=" + userId + ", roles="
+                + (roles != null ? toString(roles, maxLen) : null) + "]";
+    }
+
+    @SuppressWarnings("nls")
+    private String toString(Collection<?> collection, int maxLen) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("[");
+        int i = 0;
+        for (Iterator<?> iterator = collection.iterator(); iterator.hasNext() && i < maxLen; i++) {
+            if (i > 0)
+                builder.append(", ");
+            builder.append(iterator.next());
+        }
+        builder.append("]");
+        return builder.toString();
     }
 
 }

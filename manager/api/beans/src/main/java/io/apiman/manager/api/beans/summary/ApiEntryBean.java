@@ -207,4 +207,17 @@ public class ApiEntryBean implements Serializable {
         this.gatewayId = gatewayId;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    @SuppressWarnings("nls")
+    public String toString() {
+        return "ApiEntryBean [serviceOrgId=" + serviceOrgId + ", serviceOrgName=" + serviceOrgName
+                + ", serviceId=" + serviceId + ", serviceName=" + serviceName + ", serviceVersion="
+                + serviceVersion + ", planId=" + planId + ", planName=" + planName + ", planVersion="
+                + planVersion + ", httpEndpoint=" + httpEndpoint + ", apiKey=" + apiKey + ", gatewayId="
+                + gatewayId + "]";
+    }
+
 }

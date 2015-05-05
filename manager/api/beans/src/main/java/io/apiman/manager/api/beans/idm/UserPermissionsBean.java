@@ -100,4 +100,13 @@ public class UserPermissionsBean implements Serializable {
             return false;
         return true;
     }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    @SuppressWarnings("nls")
+    public String toString() {
+        return "UserPermissionsBean [userId=" + userId + ", permissions=" + permissions + "]";
+    }
 }
