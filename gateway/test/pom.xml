@@ -13,6 +13,10 @@
     <!-- Project Dependencies -->
     <dependency>
       <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-common-util</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>apiman-common-plugin</artifactId>
     </dependency>
     <dependency>
@@ -46,12 +50,6 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-gateway-platforms-war</artifactId>
-    </dependency>
-
-    <!-- Overlord Commons -->
-    <dependency>
-      <groupId>org.overlord</groupId>
-      <artifactId>overlord-commons-i18n</artifactId>
     </dependency>
 
     <!-- Weld -->

@@ -14,6 +14,10 @@
     <!-- Project Dependencies -->
     <dependency>
       <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-common-util</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>apiman-gateway-engine-beans</artifactId>
     </dependency>
     <dependency>
@@ -25,12 +29,6 @@
       <artifactId>apiman-gateway-engine-policies</artifactId>
     </dependency>
     
-    <!-- Overlord Commons -->
-    <dependency>
-      <groupId>org.overlord</groupId>
-      <artifactId>overlord-commons-i18n</artifactId>
-    </dependency>
-
     <!-- Third Party Dependencies -->
     <dependency>
       <groupId>commons-io</groupId>

@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.api.core;
 
+import io.apiman.common.util.AbstractMessages;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionTemplateBean;
@@ -24,7 +25,6 @@ import java.util.Locale;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.overlord.commons.i18n.AbstractMessages;
 
 /**
  * Unit test for {@link PolicyTemplateUtil}.

@@ -19,7 +19,6 @@ package io.apiman.gateway.platforms.servlet;
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.PolicyFailureType;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
-import io.apiman.gateway.platforms.servlet.GatewayThreadContext;
 
 /**
  * Simple policy failure factory component implementation.  Uses the thread local 

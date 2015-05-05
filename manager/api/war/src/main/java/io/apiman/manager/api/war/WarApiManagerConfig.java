@@ -15,6 +15,8 @@
  */
 package io.apiman.manager.api.war;
 
+import io.apiman.common.config.ConfigFileConfiguration;
+import io.apiman.common.config.SystemPropertiesConfiguration;
 import io.apiman.manager.api.core.logging.IApimanLogger;
 
 import java.net.MalformedURLException;
@@ -24,8 +26,8 @@ import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 
+import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.Configuration;
-import org.overlord.commons.config.ConfigurationFactory;
 
 /**
  * Configuration object for the API Manager.
@@ -35,8 +37,6 @@ import org.overlord.commons.config.ConfigurationFactory;
 @ApplicationScoped
 public class WarApiManagerConfig {
 
-    public static final String APIMAN_MANAGER_CONFIG_FILE_NAME = "apiman-manager.config.file.name"; //$NON-NLS-1$
-    public static final String APIMAN_MANAGER_CONFIG_FILE_REFRESH = "apiman-manager.config.file.refresh"; //$NON-NLS-1$
     public static final String APIMAN_MANAGER_CONFIG_LOGGER = "apiman-manager.config.logger"; //$NON-NLS-1$
 
     public static final String APIMAN_MANAGER_STORAGE_TYPE = "apiman-manager.storage.type"; //$NON-NLS-1$
@@ -53,15 +53,10 @@ public class WarApiManagerConfig {
 
     private static Configuration config;
     static {
-        String configFile = System.getProperty(APIMAN_MANAGER_CONFIG_FILE_NAME);
-        String refreshDelayStr = System.getProperty(APIMAN_MANAGER_CONFIG_FILE_REFRESH);
-        Long refreshDelay = 5000l;
-        if (refreshDelayStr != null) {
-            refreshDelay = new Long(refreshDelayStr);
-        }
-
-        config = ConfigurationFactory.createConfig(configFile, "apiman.properties", //$NON-NLS-1$
-                refreshDelay, null, WarApiManagerConfig.class);
+        CompositeConfiguration compositeConfiguration = new CompositeConfiguration();
+        compositeConfiguration.addConfiguration(new SystemPropertiesConfiguration());
+        compositeConfiguration.addConfiguration(ConfigFileConfiguration.create("apiman.properties")); //$NON-NLS-1$
+        config = compositeConfiguration;
     }
 
     /**

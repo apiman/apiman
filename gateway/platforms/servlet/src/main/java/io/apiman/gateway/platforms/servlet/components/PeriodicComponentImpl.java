@@ -15,15 +15,15 @@
  */
 package io.apiman.gateway.platforms.servlet.components;
 
+import io.apiman.gateway.engine.async.IAsyncHandler;
+import io.apiman.gateway.engine.components.IPeriodicComponent;
+
 import java.util.Map.Entry;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import io.apiman.gateway.engine.async.IAsyncHandler;
-import io.apiman.gateway.engine.components.IPeriodicComponent;
 
 /**
  * Servlet implementation of {@link IPeriodicComponent}.

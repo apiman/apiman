@@ -20,7 +20,7 @@
   <!-- Locale Filter -->
   <filter>
     <filter-name>LocaleFilter</filter-name>
-    <filter-class>org.overlord.commons.i18n.server.filters.LocaleFilter</filter-class>
+    <filter-class>io.apiman.common.servlet.LocaleFilter</filter-class>
   </filter>
   <filter-mapping>
     <filter-name>LocaleFilter</filter-name>
@@ -30,7 +30,7 @@
   <!-- CORS Filter -->
   <filter>
     <filter-name>CorsFilter</filter-name>
-    <filter-class>org.overlord.commons.gwt.server.filters.SimpleCorsFilter</filter-class>
+    <filter-class>io.apiman.common.servlet.ApimanCorsFilter</filter-class>
   </filter>
   <filter-mapping>
     <filter-name>CorsFilter</filter-name>
