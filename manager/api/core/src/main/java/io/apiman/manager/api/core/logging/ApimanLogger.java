@@ -29,8 +29,8 @@ import javax.inject.Qualifier;
 import org.apache.commons.lang.ObjectUtils.Null;
 
 /**
- * Allows injection of an {@link IApimanLogger} instance, with a class passed
- * as the requester <tt>@Inject @ApimanLogger IApimanLogger logger;</tt>.
+ * Allows injection of an {@link IApimanLogger} instance, with a class passed as the requester
+ * <tt><pre>@Inject @ApimanLogger(SomeClass.klazz) IApimanLogger logger;</pre></tt>.
  *
  * @author Marc Savy <msavy@redhat.com>
  */
