@@ -15,6 +15,8 @@
  */
 package io.apiman.gateway.platforms.war;
 
+import io.apiman.common.config.ConfigFileConfiguration;
+import io.apiman.common.config.SystemPropertiesConfiguration;
 import io.apiman.gateway.engine.IComponent;
 import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.IEngineConfig;
@@ -28,8 +30,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.Configuration;
-import org.overlord.commons.config.ConfigurationFactory;
 
 /**
  * Global access to configuration information.
@@ -37,9 +39,6 @@ import org.overlord.commons.config.ConfigurationFactory;
  * @author eric.wittmann@redhat.com
  */
 public class WarEngineConfig implements IEngineConfig {
-
-    public static final String APIMAN_GATEWAY_CONFIG_FILE_NAME     = "apiman-gateway.config.file.name"; //$NON-NLS-1$
-    public static final String APIMAN_GATEWAY_CONFIG_FILE_REFRESH  = "apiman-gateway.config.file.refresh"; //$NON-NLS-1$
 
     public static final String APIMAN_GATEWAY_REGISTRY_CLASS = "apiman-gateway.registry"; //$NON-NLS-1$
     public static final String APIMAN_GATEWAY_PLUGIN_REGISTRY_CLASS = "apiman-gateway.plugin-registry"; //$NON-NLS-1$
@@ -51,19 +50,10 @@ public class WarEngineConfig implements IEngineConfig {
 
     public static Configuration config;
     static {
-        String configFile = System.getProperty(APIMAN_GATEWAY_CONFIG_FILE_NAME);
-        String refreshDelayStr = System.getProperty(APIMAN_GATEWAY_CONFIG_FILE_REFRESH);
-        Long refreshDelay = 5000l;
-        if (refreshDelayStr != null) {
-            refreshDelay = new Long(refreshDelayStr);
-        }
-
-        config = ConfigurationFactory.createConfig(
-                configFile,
-                "apiman.properties", //$NON-NLS-1$
-                refreshDelay,
-                null,
-                WarEngineConfig.class);
+        CompositeConfiguration compositeConfiguration = new CompositeConfiguration();
+        compositeConfiguration.addConfiguration(new SystemPropertiesConfiguration());
+        compositeConfiguration.addConfiguration(ConfigFileConfiguration.create("apiman.properties")); //$NON-NLS-1$
+        config = compositeConfiguration;
     }
 
     /**

@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.test.server;
 
+import io.apiman.common.servlet.ApimanCorsFilter;
 import io.apiman.common.servlet.AuthenticationFilter;
 import io.apiman.common.servlet.DisableCachingFilter;
 import io.apiman.manager.api.security.impl.DefaultSecurityContextFilter;
@@ -55,8 +56,6 @@ import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
 import org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap;
 import org.jboss.weld.environment.servlet.BeanManagerResourceBindingListener;
 import org.jboss.weld.environment.servlet.Listener;
-import org.overlord.commons.gwt.server.filters.SimpleCorsFilter;
-import org.overlord.commons.i18n.server.filters.LocaleFilter;
 
 /**
  * This class starts up an embedded Jetty test server so that integration tests
@@ -91,7 +90,7 @@ public class ManagerApiTestServer {
      */
     public ManagerApiTestServer() {
     }
-    
+
     /**
      * Start/run the server.
      */
@@ -111,7 +110,7 @@ public class ManagerApiTestServer {
         long endTime = System.currentTimeMillis();
         System.out.println("******* Started in " + (endTime - startTime) + "ms");
     }
-    
+
     /**
      * Stop the server.
      * @throws Exception
@@ -186,7 +185,7 @@ public class ManagerApiTestServer {
                 node = NodeBuilder.nodeBuilder().client(false).clusterName(clusterName).data(true).local(false)
                         .settings(settings).build();
             }
-            
+
             System.out.println("Starting the ES node.");
             node.start();
             System.out.println("ES node was successfully started.");
@@ -202,7 +201,7 @@ public class ManagerApiTestServer {
                 tc.addTransportAddress(new InetSocketTransportAddress("localhost", 6600));
                 client = tc;
             }
-            
+
             ES_CLIENT = client;
         }
     }
@@ -211,7 +210,7 @@ public class ManagerApiTestServer {
      * Ensure that the given name is bound to a context.
      * @param ctx
      * @param name
-     * @throws NamingException 
+     * @throws NamingException
      */
     private void ensureCtx(InitialContext ctx, String name) throws NamingException {
         try {
@@ -271,8 +270,8 @@ public class ManagerApiTestServer {
         apiManServer.addEventListener(new BeanManagerResourceBindingListener());
         apiManServer.addEventListener(new ResteasyBootstrap());
         apiManServer.addFilter(DatabaseSeedFilter.class, "/db-seeder", EnumSet.of(DispatcherType.REQUEST));
-        apiManServer.addFilter(LocaleFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
-        apiManServer.addFilter(SimpleCorsFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
+//        apiManServer.addFilter(LocaleFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
+        apiManServer.addFilter(ApimanCorsFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
         apiManServer.addFilter(DisableCachingFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
         apiManServer.addFilter(AuthenticationFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
         apiManServer.addFilter(DefaultSecurityContextFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
@@ -286,7 +285,7 @@ public class ManagerApiTestServer {
 
         // Add the web contexts to jetty
         handlers.addHandler(apiManServer);
-        
+
         /* *************
          * Mock Gateway (to test publishing of Services from dt to rt)
          * ************* */
@@ -322,11 +321,11 @@ public class ManagerApiTestServer {
 
         return csh;
     }
-    
+
     public Node getESNode() {
         return node;
     }
-    
+
     public Client getESClient() {
         return client;
     }

@@ -142,7 +142,6 @@
     <version.org.mockito>1.9.5</version.org.mockito>
     <version.org.mvel>2.2.2.Final</version.org.mvel>
     <version.org.osgi>4.3.1</version.org.osgi>
-    <version.org.overlord.overlord-commons>2.0.11.Final</version.org.overlord.overlord-commons>
     <version.org.ow2.asm>4.0</version.org.ow2.asm>
     <version.org.slf4j>1.7.2</version.org.slf4j>
     <version.xmlunit>1.6</version.xmlunit>
@@ -166,6 +165,11 @@
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>apiman-common-util</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-common-config</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -443,33 +447,6 @@
         <artifactId>apiman-quickstarts</artifactId>
         <version>${version.io.apiman.quickstarts}</version>
         <type>zip</type>
-      </dependency>
-
-      <!-- Overlord Commons -->
-      <dependency>
-        <groupId>org.overlord</groupId>
-        <artifactId>overlord-commons-gwt</artifactId>
-        <version>${version.org.overlord.overlord-commons}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.overlord</groupId>
-        <artifactId>overlord-commons-config</artifactId>
-        <version>${version.org.overlord.overlord-commons}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.overlord</groupId>
-        <artifactId>overlord-commons-i18n</artifactId>
-        <version>${version.org.overlord.overlord-commons}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.overlord</groupId>
-        <artifactId>overlord-commons-services</artifactId>
-        <version>${version.org.overlord.overlord-commons}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.overlord</groupId>
-        <artifactId>overlord-commons-dev</artifactId>
-        <version>${version.org.overlord.overlord-commons}</version>
       </dependency>
 
       <!-- Undertow -->

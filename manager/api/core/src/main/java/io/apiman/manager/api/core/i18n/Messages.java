@@ -15,7 +15,7 @@
  */
 package io.apiman.manager.api.core.i18n;
 
-import org.overlord.commons.i18n.AbstractMessages;
+import io.apiman.common.util.AbstractMessages;
 
 /**
  * I18N Messages

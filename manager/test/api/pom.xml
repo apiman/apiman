@@ -13,6 +13,10 @@
     <!-- Project Dependencies -->
     <dependency>
       <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-common-util</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>apiman-common-auth</artifactId>
     </dependency>
     <dependency>
@@ -67,30 +71,6 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-test-common</artifactId>
-    </dependency>
-
-    <!-- Overlord Commons -->
-    <dependency>
-      <groupId>org.overlord</groupId>
-      <artifactId>overlord-commons-config</artifactId>
-      <exclusions>
-        <exclusion>
-          <artifactId>overlord-commons-auth</artifactId>
-          <groupId>org.overlord</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>org.apache.felix.scr.annotations</artifactId>
-          <groupId>org.apache.felix</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.overlord</groupId>
-      <artifactId>overlord-commons-i18n</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.overlord</groupId>
-      <artifactId>overlord-commons-gwt</artifactId>
     </dependency>
 
     <!-- Weld -->

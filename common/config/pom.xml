@@ -6,31 +6,33 @@
     <artifactId>apiman-common</artifactId>
     <version>1.1.2-SNAPSHOT</version>
   </parent>
-  <artifactId>apiman-common-servlet</artifactId>
-  <name>apiman-common-servlet</name>
+  <artifactId>apiman-common-config</artifactId>
+  <packaging>bundle</packaging>
+  <name>apiman-common-config</name>
 
   <dependencies>
-    <!-- Project Dependencies -->
-    <dependency>
-      <groupId>io.apiman</groupId>
-      <artifactId>apiman-common-auth</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.apiman</groupId>
-      <artifactId>apiman-common-util</artifactId>
-    </dependency>
-    
     <!-- Third Party Dependencies -->
     <dependency>
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>
     </dependency>
-
-    <!-- Spec Libraries -->
     <dependency>
-      <groupId>org.jboss.spec.javax.servlet</groupId>
-      <artifactId>jboss-servlet-api_3.0_spec</artifactId>
-      <scope>provided</scope>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-configuration</groupId>
+      <artifactId>commons-configuration</artifactId>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+      </plugin>
+    </plugins>
+  </build>
 </project>
