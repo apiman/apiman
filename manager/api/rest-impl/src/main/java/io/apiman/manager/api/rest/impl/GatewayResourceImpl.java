@@ -215,7 +215,7 @@ public class GatewayResourceImpl implements IGatewayResource {
             storage.updateGateway(gbean);
             storage.commitTx();
 
-            log.debug(String.format("Successfully updated gateway %s: %s" + gbean.getName(), gbean));
+            log.debug(String.format("Successfully updated gateway %s: %s", gbean.getName(), gbean));
         } catch (AbstractRestException e) {
             storage.rollbackTx();
             throw e;
@@ -242,7 +242,7 @@ public class GatewayResourceImpl implements IGatewayResource {
             storage.deleteGateway(gbean);
             storage.commitTx();
 
-            log.debug(String.format("Successfully deleted gateway %s: %s" + gbean.getName(), gbean));
+            log.debug(String.format("Successfully deleted gateway %s: %s", gbean.getName(), gbean));
         } catch (AbstractRestException e) {
             storage.rollbackTx();
             throw e;
