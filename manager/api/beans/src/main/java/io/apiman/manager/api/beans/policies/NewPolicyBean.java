@@ -62,4 +62,13 @@ public class NewPolicyBean implements Serializable {
     public void setDefinitionId(String definitionId) {
         this.definitionId = definitionId;
     }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    @SuppressWarnings("nls")
+    public String toString() {
+        return "NewPolicyBean [definitionId=" + definitionId + ", configuration=" + configuration + "]";
+    }
 }

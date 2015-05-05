@@ -63,4 +63,13 @@ public class UpdateUserBean implements Serializable {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    @SuppressWarnings("nls")
+    public String toString() {
+        return "UpdateUserBean [fullName=" + fullName + ", email=" + email + "]";
+    }
 }

@@ -176,4 +176,14 @@ public class ContractBean implements Serializable {
         this.apikey = apikey;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    @SuppressWarnings("nls")
+    public String toString() {
+        return "ContractBean [id=" + id + ", application=" + application + ", service=" + service + ", plan="
+                + plan + ", createdBy=" + createdBy + ", createdOn=" + createdOn + ", apikey=" + apikey + "]";
+    }
+
 }

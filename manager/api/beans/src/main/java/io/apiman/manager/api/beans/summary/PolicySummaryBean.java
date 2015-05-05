@@ -139,4 +139,15 @@ public class PolicySummaryBean implements Serializable {
         this.createdOn = createdOn;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    @SuppressWarnings("nls")
+    public String toString() {
+        return "PolicySummaryBean [policyDefinitionId=" + policyDefinitionId + ", id=" + id + ", name="
+                + name + ", description=" + description + ", icon=" + icon + ", createdBy=" + createdBy
+                + ", createdOn=" + createdOn + "]";
+    }
+
 }

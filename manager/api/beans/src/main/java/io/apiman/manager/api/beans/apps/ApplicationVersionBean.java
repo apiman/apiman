@@ -250,4 +250,16 @@ public class ApplicationVersionBean implements Serializable {
         return true;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    @SuppressWarnings("nls")
+    public String toString() {
+        return "ApplicationVersionBean [id=" + id + ", application=" + application + ", status=" + status
+                + ", version=" + version + ", createdBy=" + createdBy + ", createdOn=" + createdOn
+                + ", modifiedBy=" + modifiedBy + ", modifiedOn=" + modifiedOn + ", publishedOn="
+                + publishedOn + ", retiredOn=" + retiredOn + "]";
+    }
+
 }

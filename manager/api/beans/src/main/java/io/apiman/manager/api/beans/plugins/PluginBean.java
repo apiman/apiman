@@ -208,4 +208,16 @@ public class PluginBean implements Serializable {
         this.type = type;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    @SuppressWarnings("nls")
+    public String toString() {
+        return "PluginBean [id=" + id + ", groupId=" + groupId + ", artifactId=" + artifactId + ", version="
+                + version + ", classifier=" + classifier + ", type=" + type + ", name=" + name
+                + ", description=" + description + ", createdBy=" + createdBy + ", createdOn=" + createdOn
+                + "]";
+    }
+
 }

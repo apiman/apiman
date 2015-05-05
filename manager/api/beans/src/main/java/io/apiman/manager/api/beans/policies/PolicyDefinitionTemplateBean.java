@@ -67,4 +67,13 @@ public class PolicyDefinitionTemplateBean {
         this.template = template;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    @SuppressWarnings("nls")
+    public String toString() {
+        return "PolicyDefinitionTemplateBean [language=" + language + ", template=" + template + "]";
+    }
+
 }

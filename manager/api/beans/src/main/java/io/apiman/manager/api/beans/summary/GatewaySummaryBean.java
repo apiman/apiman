@@ -96,4 +96,14 @@ public class GatewaySummaryBean implements Serializable {
         this.type = type;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    @SuppressWarnings("nls")
+    public String toString() {
+        return "GatewaySummaryBean [id=" + id + ", name=" + name + ", description=" + description + ", type="
+                + type + "]";
+    }
+
 }

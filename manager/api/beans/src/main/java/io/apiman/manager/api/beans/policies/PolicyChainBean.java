@@ -56,4 +56,15 @@ public class PolicyChainBean implements Serializable {
         this.policies = policies;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    @SuppressWarnings("nls")
+    public String toString() {
+        final int maxLen = 10;
+        return "PolicyChainBean [policies="
+                + (policies != null ? policies.subList(0, Math.min(policies.size(), maxLen)) : null) + "]";
+    }
+
 }

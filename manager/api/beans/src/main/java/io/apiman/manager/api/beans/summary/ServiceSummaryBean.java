@@ -165,4 +165,15 @@ public class ServiceSummaryBean implements Serializable {
         return true;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    @SuppressWarnings("nls")
+    public String toString() {
+        return "ServiceSummaryBean [organizationId=" + organizationId + ", organizationName="
+                + organizationName + ", id=" + id + ", name=" + name + ", description=" + description
+                + ", createdOn=" + createdOn + "]";
+    }
+
 }

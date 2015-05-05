@@ -81,4 +81,13 @@ public class EntityUpdatedData implements Serializable {
         this.changes = changes;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    @SuppressWarnings("nls")
+    public String toString() {
+        return "EntityUpdatedData [changes=" + changes + "]";
+    }
+
 }

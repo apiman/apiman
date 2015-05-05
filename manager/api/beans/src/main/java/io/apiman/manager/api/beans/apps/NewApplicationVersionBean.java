@@ -81,4 +81,14 @@ public class NewApplicationVersionBean implements Serializable {
         this.cloneVersion = cloneVersion;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    @SuppressWarnings("nls")
+    public String toString() {
+        return "NewApplicationVersionBean [version=" + version + ", clone=" + clone + ", cloneVersion="
+                + cloneVersion + "]";
+    }
+
 }

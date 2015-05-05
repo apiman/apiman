@@ -27,6 +27,8 @@ import io.apiman.manager.api.beans.summary.ServiceSummaryBean;
 import io.apiman.manager.api.core.IIdmStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
+import io.apiman.manager.api.core.logging.ApimanLogger;
+import io.apiman.manager.api.core.logging.IApimanLogger;
 import io.apiman.manager.api.rest.contract.ICurrentUserResource;
 import io.apiman.manager.api.rest.contract.exceptions.SystemErrorException;
 import io.apiman.manager.api.security.ISecurityContext;
@@ -53,6 +55,9 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
     private IStorageQuery query;
     @Inject
     private ISecurityContext securityContext;
+    @Inject @ApimanLogger(CurrentUserResourceImpl.class)
+    private IApimanLogger log;
+
 
     /**
      * Constructor.
@@ -97,6 +102,9 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
                 rval.setPermissions(permissions);
                 rval.setAdmin(securityContext.isAdmin());
             }
+
+            log.debug(String.format("Getting info for user %s", user.getUsername()));
+
             return rval;
         } catch (StorageException e) {
             throw new SystemErrorException(e);
@@ -120,6 +128,8 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
                 user.setFullName(info.getFullName());
             }
             idmStorage.updateUser(user);
+
+            log.debug(String.format("Successfully updated user %s: %s", user.getUsername(), user));
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }

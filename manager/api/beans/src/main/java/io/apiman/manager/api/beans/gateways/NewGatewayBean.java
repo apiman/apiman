@@ -94,4 +94,14 @@ public class NewGatewayBean implements Serializable {
         this.configuration = configuration;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    @SuppressWarnings("nls")
+    public String toString() {
+        return "NewGatewayBean [name=" + name + ", description=" + description + ", type=" + type
+                + ", configuration=" + configuration + "]";
+    }
+
 }

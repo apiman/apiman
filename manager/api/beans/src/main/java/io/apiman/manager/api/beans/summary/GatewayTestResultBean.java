@@ -62,4 +62,13 @@ public class GatewayTestResultBean implements Serializable {
     public void setDetail(String detail) {
         this.detail = detail;
     }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    @SuppressWarnings("nls")
+    public String toString() {
+        return "GatewayTestResultBean [success=" + success + ", detail=" + detail + "]";
+    }
 }

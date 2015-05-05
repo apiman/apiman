@@ -51,4 +51,13 @@ public class UpdateOrganizationBean implements Serializable {
         this.description = description;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    @SuppressWarnings("nls")
+    public String toString() {
+        return "UpdateOrganizationBean [description=" + description + "]";
+    }
+
 }

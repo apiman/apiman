@@ -79,4 +79,14 @@ public class NewPlanBean implements Serializable {
     public void setInitialVersion(String initialVersion) {
         this.initialVersion = initialVersion;
     }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    @SuppressWarnings("nls")
+    public String toString() {
+        return "NewPlanBean [name=" + name + ", description=" + description + ", initialVersion="
+                + initialVersion + "]";
+    }
 }
