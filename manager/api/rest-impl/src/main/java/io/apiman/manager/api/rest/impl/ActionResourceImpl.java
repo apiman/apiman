@@ -201,7 +201,7 @@ public class ActionResourceImpl implements IActionResource {
             throw ExceptionFactory.actionException(Messages.i18n.format("PublishError"), e); //$NON-NLS-1$
         }
 
-        log.debug(String.format("Successfully published Service %s on specified gateways: %s",
+        log.debug(String.format("Successfully published Service %s on specified gateways: %s", //$NON-NLS-1$
                 versionBean.getService().getName(), versionBean.getService()));
     }
 
@@ -276,7 +276,7 @@ public class ActionResourceImpl implements IActionResource {
             throw ExceptionFactory.actionException(Messages.i18n.format("PublishError")); //$NON-NLS-1$
         }
 
-        log.debug(String.format("Successfully retired Service %s on specified gateways: %s",
+        log.debug(String.format("Successfully retired Service %s on specified gateways: %s", //$NON-NLS-1$
                 versionBean.getService().getName(), versionBean.getService()));
     }
 
@@ -368,7 +368,7 @@ public class ActionResourceImpl implements IActionResource {
             throw ExceptionFactory.actionException(Messages.i18n.format("PublishError")); //$NON-NLS-1$
         }
 
-        log.debug(String.format("Successfully registered Application %s on specified gateways: %s",
+        log.debug(String.format("Successfully registered Application %s on specified gateways: %s", //$NON-NLS-1$
                 versionBean.getApplication().getName(), versionBean.getApplication()));
     }
 
@@ -502,7 +502,7 @@ public class ActionResourceImpl implements IActionResource {
             throw ExceptionFactory.actionException(Messages.i18n.format("PublishError")); //$NON-NLS-1$
         }
 
-        log.debug(String.format("Successfully registered Application %s on specified gateways: %s",
+        log.debug(String.format("Successfully registered Application %s on specified gateways: %s", //$NON-NLS-1$
                 versionBean.getApplication().getName(), versionBean.getApplication()));
     }
 
@@ -539,7 +539,7 @@ public class ActionResourceImpl implements IActionResource {
             throw ExceptionFactory.actionException(Messages.i18n.format("PublishError")); //$NON-NLS-1$
         }
 
-        log.debug(String.format("Successfully locked Plan %s: %s",
+        log.debug(String.format("Successfully locked Plan %s: %s", //$NON-NLS-1$
                 versionBean.getPlan().getName(), versionBean.getPlan()));
     }
 

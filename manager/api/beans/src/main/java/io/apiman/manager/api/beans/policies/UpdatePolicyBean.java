@@ -54,7 +54,7 @@ public class UpdatePolicyBean implements Serializable {
     @Override
     @SuppressWarnings("nls")
     public String toString() {
-        return "UpdatePolicyBean [configuration=" + configuration + "]";
+        return "UpdatePolicyBean [configuration=***]";
     }
 
 }

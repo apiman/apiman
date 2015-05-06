@@ -101,7 +101,7 @@ public class NewGatewayBean implements Serializable {
     @SuppressWarnings("nls")
     public String toString() {
         return "NewGatewayBean [name=" + name + ", description=" + description + ", type=" + type
-                + ", configuration=" + configuration + "]";
+                + ", configuration=***]";
     }
 
 }

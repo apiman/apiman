@@ -69,6 +69,6 @@ public class NewPolicyBean implements Serializable {
     @Override
     @SuppressWarnings("nls")
     public String toString() {
-        return "NewPolicyBean [definitionId=" + definitionId + ", configuration=" + configuration + "]";
+        return "NewPolicyBean [definitionId=" + definitionId + ", configuration=***]";
     }
 }
