@@ -35,6 +35,9 @@ module Apiman {
       $scope.filterValue = value;
 
       if (!value) {
+        // Case 1: no filter value and no selected roles
+        // Case 2: no filter value but at least one selected role
+        // Case 3: 
         if ($scope.selectedRoles.length === 0) {
           $scope.filteredMembers = $scope.members;
         } else {
@@ -44,9 +47,9 @@ module Apiman {
         }
       } else {
         $scope.filteredMembers = jQuery.grep($scope.members, function(m: any, _) {
-          return (m.userName.toLowerCase().indexOf(value.toLowerCase()) > -1
-          || m.userId.toLowerCase().indexOf(value.toLowerCase()) > -1
-          && containsAnyRoles(getRoleIds(m)));
+          return (
+            (m.userName.toLowerCase().indexOf(value.toLowerCase()) > -1 || m.userId.toLowerCase().indexOf(value.toLowerCase()) > -1)
+            && containsAnyRoles(getRoleIds(m)));
         });
       }
     };
