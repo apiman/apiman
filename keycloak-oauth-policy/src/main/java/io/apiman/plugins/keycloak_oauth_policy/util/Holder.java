@@ -46,6 +46,7 @@ public class Holder<T> {
 
     /**
      * @param item the item to set
+     * @return the item
      */
     public Holder<T> setValue(T item) {
         this.value = item;

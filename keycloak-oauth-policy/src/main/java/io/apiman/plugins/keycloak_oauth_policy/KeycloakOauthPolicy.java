@@ -21,9 +21,9 @@ import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.components.ISharedStateComponent;
 import io.apiman.gateway.engine.policies.AbstractMappedPolicy;
+import io.apiman.gateway.engine.policies.AuthorizationPolicy;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
-import io.apiman.plugins.keycloak_oauth_policy.beans.ApplicationRoleMapping;
 import io.apiman.plugins.keycloak_oauth_policy.beans.ForwardAuthInfo;
 import io.apiman.plugins.keycloak_oauth_policy.beans.KeycloakOauthConfigBean;
 import io.apiman.plugins.keycloak_oauth_policy.failures.PolicyFailureFactory;
@@ -133,43 +133,30 @@ public class KeycloakOauthPolicy extends AbstractMappedPolicy<KeycloakOauthConfi
 
             forwardHeaders(request, config, rawToken, parsedToken);
             stripAuthTokens(request, config);
-
-            if (doTokenRoleAuth(config, parsedToken)) {
-                return isFailedHolder.setValue(true);
-            } else {
-                doFailure(isFailedHolder, chain, failureFactory.doesNotHoldRequiredRoles(context));
-            }
-
+            forwardAuthRoles(context, config, parsedToken);
+            return isFailedHolder.setValue(true);
         } catch (VerificationException e) {
+            System.out.println(e);
             chain.doFailure(failureFactory.verificationException(context, e));
+            return isFailedHolder.setValue(false);
         }
-        return isFailedHolder.setValue(false);
     }
 
-    private boolean doTokenRoleAuth(KeycloakOauthConfigBean config, AccessToken parsedToken) {
-        boolean result = true;
+    private void forwardAuthRoles(IPolicyContext context, KeycloakOauthConfigBean config,
+            AccessToken parsedToken) {
 
-        if (config.getApplicationRoleMappings().size() > 0) {
-            for (ApplicationRoleMapping role : config.getApplicationRoleMappings()) {
-                Access access = parsedToken.getResourceAccess(role.getApplication());
+        if (config.getForwardRoles().getActive()) {
+            Access access = null;
 
-                if (access != null) {
-                    // System.out.println(access.getRoles());
-                    // System.out.println(role.getRequiredRoles());
-                    // System.out.println(access.getRoles().containsAll(role.getRequiredRoles()));
-                    result = result && access.getRoles().containsAll(role.getRequiredRoles());
-                    if (!result)
-                        return false;
-                }
+            if (config.getForwardRoles().getApplicationName() != null) {
+                access = parsedToken.getResourceAccess(config.getForwardRoles().getApplicationName());
+            } else {
+                access = parsedToken.getRealmAccess();
             }
-        }
-        // System.out.println("config.getRealmRoleMappings() " + config.getRealmRoleMappings());
-        // System.out.println("parsedToken.getRealmAccess().getRoles() + parsedToken.getRealmAccess().getRoles());
-        if (config.getRealmRoleMappings().size() > 0) {
-            result = result && parsedToken.getRealmAccess().getRoles().containsAll(config.getRealmRoleMappings());
-        }
 
-        return result;
+            if (access != null && access.getRoles() != null)
+                context.setAttribute(AuthorizationPolicy.AUTHENTICATED_USER_ROLES, access.getRoles());
+        }
     }
 
     private String getRawAuthToken(ServiceRequest request) {
