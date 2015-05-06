@@ -13,9 +13,8 @@ import io.apiman.gateway.engine.impl.DefaultPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.impl.InMemorySharedStateComponent;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
-import io.apiman.plugins.keycloak_oauth_policy.beans.ApplicationRoleMapping;
+import io.apiman.plugins.keycloak_oauth_policy.beans.ForwardRoles;
 import io.apiman.plugins.keycloak_oauth_policy.beans.KeycloakOauthConfigBean;
-import io.apiman.plugins.keycloak_oauth_policy.beans.RequiredRole;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -29,7 +28,6 @@ import java.security.Security;
 import java.security.SignatureException;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
-import java.util.Arrays;
 import java.util.Date;
 
 import javax.security.auth.x500.X500Principal;
@@ -43,7 +41,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.keycloak.jose.jws.JWSBuilder;
 import org.keycloak.representations.AccessToken;
-import org.keycloak.representations.AccessToken.Access;
 import org.keycloak.util.Time;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -103,8 +100,10 @@ public class KeycloakOauthPolicyTest {
         MockitoAnnotations.initMocks(this);
 
         token = new AccessToken();
-        token.subject("CN=Client").issuer("apiman-realm") // KC seems to use issuer for realm?
-                .addAccess("apiman-service").addRole("apiman-gateway-user-role");
+        AccessToken realm = token.subject("CN=Client").issuer("apiman-realm"); // KC seems to use issuer for realm?
+
+        realm.addAccess("apiman-service").addRole("apiman-gateway-user-role").addRole("a-nother-role");
+        realm.addAccess("a-nother-service").addRole("bacon").addRole("shoes");
 
         keycloakOauthPolicy = new KeycloakOauthPolicy();
         config = new KeycloakOauthConfigBean();
@@ -112,6 +111,8 @@ public class KeycloakOauthPolicyTest {
         config.setStripTokens(false);
         config.setBlacklistUnsafeTokens(false);
         config.setRequireTransportSecurity(false);
+
+        config.setForwardRoles(new ForwardRoles());
 
         serviceRequest = new ServiceRequest();
 
@@ -241,94 +242,6 @@ public class KeycloakOauthPolicyTest {
         keycloakOauthPolicy.apply(serviceRequest, mContext, config, mChain);
 
         verify(mChain, times(2)).doFailure(any(PolicyFailure.class));
-        verify(mChain, never()).doApply(any(ServiceRequest.class));
-    }
-
-    @Test
-    public void shouldSucceedWithAuthorizedApplicationRoles() throws Exception {
-        // Create a role that we expect in config
-        RequiredRole rr = new RequiredRole();
-        rr.setName("apiman-gateway-user-role");
-
-        // An application that we expect to see
-        ApplicationRoleMapping mapping = new ApplicationRoleMapping();
-        mapping.setApplication("apiman-service");
-        mapping.setRequiredRoles(Arrays.asList(new RequiredRole[] { rr }));
-
-        // In essence - { apiman-service: [apiman-gateway-user-role] }
-        config.setApplicationRoleMappings(Arrays.asList(new ApplicationRoleMapping[] { mapping }));
-
-        // Create a valid token and set it in the header
-        String encoded = generateAndSerializeToken();
-        serviceRequest.getHeaders().put("Authorization", "Bearer " + encoded);
-
-        keycloakOauthPolicy.apply(serviceRequest, mContext, config, mChain);
-
-        verify(mChain, never()).doFailure(any(PolicyFailure.class));
-        verify(mChain, times(1)).doApply(any(ServiceRequest.class));
-    }
-
-    @Test
-    public void shouldFailWithoutAuthorizedApplicationRoles() throws Exception {
-        // Create a role that we expect in config
-        RequiredRole rr = new RequiredRole();
-        rr.setName("you-dont-have-this-role");
-
-        // An application that we expect to see
-        ApplicationRoleMapping mapping = new ApplicationRoleMapping();
-        mapping.setApplication("apiman-service");
-        mapping.getRequiredRoles().add(rr);
-
-        // In essence - { apiman-service: [apiman-gateway-user-role] }
-        config.getApplicationRoleMappings().add(mapping);
-
-        // Create a valid token and set it in the header
-        String encoded = generateAndSerializeToken();
-        serviceRequest.getHeaders().put("Authorization", "Bearer " + encoded);
-
-        keycloakOauthPolicy.apply(serviceRequest, mContext, config, mChain);
-
-        verify(mChain, times(1)).doFailure(any(PolicyFailure.class));
-        verify(mChain, never()).doApply(any(ServiceRequest.class));
-    }
-
-    @Test
-    public void shouldSucceedWithAuthorizedRealmRoles() throws Exception {
-        // Create a role that we expect in config
-        config.getRealmRoleMappings().add("el-jefe");
-
-        Access access = new Access();
-        access.addRole("el-jefe");
-
-        token.setRealmAccess(access);
-
-        // Create a valid token and set it in the header
-        String encoded = generateAndSerializeToken();
-        serviceRequest.getHeaders().put("Authorization", "Bearer " + encoded);
-
-        keycloakOauthPolicy.apply(serviceRequest, mContext, config, mChain);
-
-        verify(mChain, never()).doFailure(any(PolicyFailure.class));
-        verify(mChain, times(1)).doApply(any(ServiceRequest.class));
-    }
-
-    @Test
-    public void shouldFailWithoutAuthorizedRealmRoles() throws Exception {
-        // Create a role that we expect in config
-        config.getRealmRoleMappings().add("el-jefe");
-
-        Access access = new Access();
-        access.addRole("the-boss");
-
-        token.setRealmAccess(access);
-
-        // Create a valid token and set it in the header
-        String encoded = generateAndSerializeToken();
-        serviceRequest.getHeaders().put("Authorization", "Bearer " + encoded);
-
-        keycloakOauthPolicy.apply(serviceRequest, mContext, config, mChain);
-
-        verify(mChain, times(1)).doFailure(any(PolicyFailure.class));
         verify(mChain, never()).doApply(any(ServiceRequest.class));
     }
 

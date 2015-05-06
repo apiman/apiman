@@ -18,12 +18,8 @@ package io.apiman.plugins.keycloak_oauth_policy.beans;
 import java.security.cert.Certificate;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.Generated;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.codehaus.jackson.annotate.JsonAnyGetter;
@@ -31,7 +27,6 @@ import org.codehaus.jackson.annotate.JsonAnySetter;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
-import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.keycloak.util.PemUtils;
 
@@ -41,10 +36,8 @@ import org.keycloak.util.PemUtils;
  * @author Marc Savy <msavy@redhat.com>
  */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-@Generated("org.jsonschema2pojo")
-@JsonPropertyOrder({ "requireOauth", "requireTransportSecurity", "blacklistUnsafeTokens",
-    "stripTokens", "realm", "realmCertificateString", "applicationRoleMappings",
-    "realmRoleMappings", "forwardAuthInfo" })
+@JsonPropertyOrder({ "requireOauth", "requireTransportSecurity", "blacklistUnsafeTokens", "stripTokens",
+        "realm", "realmCertificateString", "forwardRoles", "forwardAuthInfo" })
 public class KeycloakOauthConfigBean {
 
     /**
@@ -58,8 +51,8 @@ public class KeycloakOauthConfigBean {
     /**
      * Require Transport Security
      * <p>
-     * OAuth2 requires transport security such as TLS or SSL in order to be secure.
-     * Terminate request if none provided.
+     * OAuth2 requires transport security such as TLS or SSL in order to be secure. Terminate request if none
+     * provided.
      */
     @JsonProperty("requireTransportSecurity")
     private boolean requireTransportSecurity = true;
@@ -95,22 +88,13 @@ public class KeycloakOauthConfigBean {
     private String realmCertificateString;
 
     /**
-     * Required Application Roles
+     * Forward Authorization Roles
      * <p>
-     * Keycloak application role(s) that a user must hold. These are configured via the KeyCloak console or API.
+     * Forward KeyCloak roles to the Authorization policy. In your Authorization policy you should specify your required role(s).
      *
      */
-    @JsonProperty("applicationRoleMappings")
-    private List<ApplicationRoleMapping> applicationRoleMappings = new ArrayList<>();
-    /**
-     * Required Realm Roles
-     * <p>
-     * Keycloak realm role(s) that a user must hold. These are configured via the KeyCloak console or API.
-     *
-     */
-    @JsonProperty("realmRoleMappings")
-    @JsonDeserialize(as = java.util.LinkedHashSet.class)
-    private Set<String> realmRoleMappings = new LinkedHashSet<>();
+    @JsonProperty("forwardRoles")
+    private ForwardRoles forwardRoles;
 
     /**
      * Forward Keycloak token information
@@ -270,57 +254,30 @@ public class KeycloakOauthConfigBean {
     }
 
     /**
-     * Required Application Roles
+     * Forward Authorization Roles
      * <p>
-     * Keycloak application role(s) that a user must hold. These are configured via the KeyCloak console or API.
+     * Forward KeyCloak roles to the Authorization policy. In your Authorization policy you should specify your required role(s).
      *
      * @return
-     *     The applicationRoleMappings
+     *     The forwardRoles
      */
-    @JsonProperty("applicationRoleMappings")
-    public List<ApplicationRoleMapping> getApplicationRoleMappings() {
-        return applicationRoleMappings;
+    @JsonProperty("forwardRoles")
+    public ForwardRoles getForwardRoles() {
+        return forwardRoles;
     }
 
     /**
-     * Required Application Roles
+     * Forward Authorization Roles
      * <p>
-     * Keycloak application role(s) that a user must hold. These are configured via the KeyCloak console or API.
+     * Forward KeyCloak roles to the Authorization policy. In your Authorization policy you should specify your required role(s).
      *
-     * @param applicationRoleMappings
-     *     The applicationRoleMappings
+     * @param forwardRoles
+     *     The forwardRoles
      */
-    @JsonProperty("applicationRoleMappings")
-    public void setApplicationRoleMappings(List<ApplicationRoleMapping> applicationRoleMappings) {
-        this.applicationRoleMappings = applicationRoleMappings;
+    @JsonProperty("forwardRoles")
+    public void setForwardRoles(ForwardRoles forwardRoles) {
+        this.forwardRoles = forwardRoles;
     }
-
-    /**
-     * Required Realm Roles
-     * <p>
-     * Keycloak realm role(s) that a user must hold. These are configured via the KeyCloak console or API.
-     *
-     * @return
-     *     The realmRoleMappings
-     */
-    @JsonProperty("realmRoleMappings")
-    public Set<String> getRealmRoleMappings() {
-        return realmRoleMappings;
-    }
-
-    /**
-     * Required Realm Roles
-     * <p>
-     * Keycloak realm role(s) that a user must hold. These are configured via the KeyCloak console or API.
-     *
-     * @param realmRoleMappings
-     *     The realmRoleMappings
-     */
-    @JsonProperty("realmRoleMappings")
-    public void setRealmRoleMappings(Set<String> realmRoleMappings) {
-        this.realmRoleMappings = realmRoleMappings;
-    }
-
 
     /**
      * Forward Keycloak token information
@@ -347,7 +304,6 @@ public class KeycloakOauthConfigBean {
     public void setForwardAuthInfo(List<ForwardAuthInfo> forwardAuthInfo) {
         this.forwardAuthInfo = forwardAuthInfo;
     }
-
 
     @Override
     public String toString() {

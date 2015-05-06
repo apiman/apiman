@@ -8,7 +8,7 @@
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
+ * distributed under the License is distributed on an "AS I/me S" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -18,46 +18,34 @@ package io.apiman.plugins.keycloak_oauth_policy.beans;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.codehaus.jackson.annotate.JsonAnyGetter;
 import org.codehaus.jackson.annotate.JsonAnySetter;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
- * A required role
+ * Forward Authorization Roles
+ * <p>
+ * Forward KeyCloak roles to the Authorization policy. You should specify your
+ * required role(s) in the Authorization policy's configuration.
  *
  * @author Marc Savy <msavy@redhat.com>
  */
-@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-@JsonPropertyOrder({ "name" })
-public class RequiredRole {
+@JsonSerialize
+public class ForwardRoles {
 
-    @JsonProperty("name")
-    private String name;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<>();
 
-    /**
-     * Role name
-     * @return The name
-     */
-    @JsonProperty("name")
-    public String getName() {
-        return name;
-    }
+    @JsonProperty("active")
+    private Boolean active = false;
 
-    /**
-     * Role name
-     * @param name
-     *            The name
-     */
-    @JsonProperty("name")
-    public void setName(String name) {
-        this.name = name;
-    }
+    @JsonProperty("applicationName")
+    private String applicationName = null;
 
     @Override
     public String toString() {
@@ -69,6 +57,26 @@ public class RequiredRole {
         return this.additionalProperties;
     }
 
+    @JsonProperty("active")
+    public Boolean getActive() {
+        return active;
+    }
+
+    @JsonProperty("active")
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
+
+    @JsonProperty("applicationName")
+    public void setApplicationName(String applicationName) {
+        this.applicationName = applicationName;
+    }
+
+    @JsonProperty("applicationName")
+    public String getApplicationName() {
+        return applicationName;
+    }
+
     @JsonAnySetter
     public void setAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
@@ -76,21 +84,19 @@ public class RequiredRole {
 
     @Override
     public int hashCode() {
-        return name.hashCode();
+        return new HashCodeBuilder().append(additionalProperties).toHashCode();
     }
 
     @Override
     public boolean equals(Object other) {
-
-        if (other instanceof String) {
-            return other.equals(this.name);
+        if (other == this) {
+            return true;
         }
-
-        if (other instanceof RequiredRole) {
-            return ((RequiredRole) other).getName().equals(this.name);
+        if ((other instanceof ForwardRoles) == false) {
+            return false;
         }
-
-        return false;
+        ForwardRoles rhs = ((ForwardRoles) other);
+        return new EqualsBuilder().append(additionalProperties, rhs.additionalProperties).isEquals();
     }
 
 }

@@ -36,7 +36,6 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
  * @author Marc Savy <msavy@redhat.com>
  */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-@Generated("org.jsonschema2pojo")
 @JsonPropertyOrder({ "headers", "field" })
 public class ForwardAuthInfo {
 

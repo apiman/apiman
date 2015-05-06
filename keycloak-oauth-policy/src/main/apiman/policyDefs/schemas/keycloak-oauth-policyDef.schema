@@ -38,47 +38,33 @@
       "type": "string",
       "format": "textarea"
     },
-    "applicationRoleMappings": {
-      "title": "Required Application Roles",
-      "description": "Keycloak application role(s) that a user must hold. These are configured via the KeyCloak console or API.",
-      "type": "array",
-      "format": "table",
-      "items": {
-        "type": "object",
-        "title": "Application",
-        "uniqueItems": true,
+    "forwardRoles": {
+      "title": "Forward Authorization Roles",
+      "description": "Forward KeyCloak roles to the Authorization policy. You should specify your required role(s) in the Authorization policy's configuration.",
+      "type": "object",
+      "oneOf": [{
+        "title": "Forward Realm Roles",
         "properties": {
-          "application": {
-            "type": "string",
-            "title": "Application",
-            "uniqueItems": true
-          },
-          "requiredRoles": {
-            "type": "array",
-            "title": "Required Roles",
-            "format": "table",
-            "items": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "title": "Role",
-                  "type": "string",
-                  "uniqueItems": true
-                }
-              }
-            }
+          "active" : {
+            "title": "Forward Realm Roles?",
+            "type": "boolean",
+            "default": false
           }
         }
-      }
-    },
-    "realmRoleMappings": {
-      "title": "Required Realm Roles",
-      "description": "Keycloak realm role(s) that a user must hold. These are configured via the KeyCloak console or API.",
-      "type": "array",
-      "uniqueItems": true,
-      "items": {
-        "type": "string"
-      }
+      }, {
+        "title": "Forward Application Roles",
+        "properties": {
+          "active" : {
+            "title": "Forward Application Roles?",
+            "type": "boolean",
+            "default": false
+          },
+          "applicationName": {
+            "title": "Application Name",
+            "type": "string"
+          }
+        }
+      }]
     },
     "forwardAuthInfo": {
       "title": "Forward Keycloak Token Information",
