@@ -9,6 +9,7 @@ module Apiman {
     var tab = undefined;
 
     var routes = {
+        '/about'               : { templateUrl: 'about.html' },
         '/dash'                : { templateUrl: 'dash.html' },
         '/profile'             : { templateUrl: 'profile.html' },
 

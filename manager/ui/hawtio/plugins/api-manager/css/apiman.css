@@ -4,6 +4,23 @@ body {
   font-size: 13px;
 }
 
+.about table {
+  box-shadow: 2px 2px 3px rgb(221, 221, 221);
+}
+
+.about-logo {
+  background-image: url(../img/about-logo.png);
+  background-repeat: no-repeat;
+  background-position: top left;
+  width: 200px;
+  height: 245px;
+}
+
+.about-label {
+  font-weight: bold;
+  color: #555;
+}
+
 .form-control[readonly] {
   cursor: auto;
 }

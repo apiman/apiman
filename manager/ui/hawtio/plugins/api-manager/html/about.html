@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+  </head>
+
+  <body>
+  <div>
+    <div ng-include="'plugins/api-manager/html/progress.include'"></div>
+    <div id="apiman-header" ng-include="'plugins/api-manager/html/navbar.include'"></div>
+    <div ng-controller="Apiman.AboutController" class="page container about" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+      <div class="row">
+        <div class="col-md-12">
+          <h2 apiman-i18n-key="about.page-heading">About apiman</h2>
+          <hr />
+        </div>
+        <div class="col-md-3">
+          <div class="about-logo"></div>
+        </div>
+        <div class="col-md-9">
+          <h1 class="about-title" apiman-i18n-key="about.page-title">Open Source API Management</h1>
+          <span class="about-description" apiman-i18n-key="about.page-description">
+            The apiman project brings an open source development methodology to API Management, 
+            coupling a rich API design & configuration layer with a blazingly fast runtime.
+          </span>
+          <hr />
+          <table class="table table-bordered">
+            <tbody>
+              <tr>
+                <td width="1%" nowrap="nowrap"><span class="about-label" apiman-i18n-key="about.version">Version:</span></td>
+                <td>{{ version }}</td>
+              </tr>
+              <tr>
+                <td width="1%" nowrap="nowrap"><span class="about-label" apiman-i18n-key="about.built-on">Built On:</span></td>
+                <td>{{ builtOn }}</td>
+              </tr>
+              <tr>
+                <td width="1%" nowrap="nowrap"><span class="about-label" apiman-i18n-key="about.api-endpoint">API Endpoint:</span></td>
+                <td><a href="{{ apiEndpoint }}">{{ apiEndpoint }}</a></td>
+              </tr>
+            </tbody>
+          </table>
+          <table class="table table-bordered">
+            <tbody>
+              <tr>
+                <td width="1%" nowrap="nowrap"><span class="about-label" apiman-i18n-key="about.project-site">Project Site:</span></td>
+                <td><a href="{{ site }}">{{ site }}</a></td>
+              </tr>
+              <tr>
+                <td width="1%" nowrap="nowrap"><span class="about-label" apiman-i18n-key="about.source-code">Source Code:</span></td>
+                <td><a href="{{ github }}">{{ github }}</a></td>
+              </tr>
+              <tr>
+                <td width="1%" nowrap="nowrap"><span class="about-label" apiman-i18n-key="about.user-guide">User Guide:</span></td>
+                <td><a href="{{ userGuide }}">{{ userGuide }}</a></td>
+              </tr>
+              <tr>
+                <td width="1%" nowrap="nowrap"><span class="about-label" apiman-i18n-key="about.tutorials">Tutorials:</span></td>
+                <td><a href="{{ tutorials }}">{{ tutorials }}</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div> <!-- /container -->
+  </div>
+  </body>
+</html>

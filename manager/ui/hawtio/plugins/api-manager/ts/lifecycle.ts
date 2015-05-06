@@ -16,6 +16,7 @@ module ApimanPageLifecycle {
         "page.title.consumer-service": "apiman - Service {0}",
         "page.title.consumer-services": "apiman - Services",
         "page.title.dashboard": "apiman - Home",
+        "page.title.about": "apiman - About",
         "page.title.edit-gateway": "apiman - Edit Gateway",
         "page.title.edit-policy": "apiman - Edit Policy",
         "page.title.edit-policyDef": "apiman - Edit Policy Definition",
@@ -75,8 +76,8 @@ module ApimanPageLifecycle {
     export var _module = angular.module("ApimanPageLifecycle", []);
 
     export var PageLifecycle = _module.factory('PageLifecycle', 
-        ['$q', 'Logger', '$rootScope', '$location', 'CurrentUserSvcs', 'Configuration',
-        ($q, Logger, $rootScope, $location, CurrentUserSvcs, Configuration) => {
+        ['$q', 'Logger', '$rootScope', '$location', 'CurrentUserSvcs', 'Configuration', 'TranslationService',
+        ($q, Logger, $rootScope, $location, CurrentUserSvcs, Configuration, TranslationService) => {
             $rootScope.showHeader = true;
             if (Configuration['ui'] && Configuration.ui.header == false) {
                 $rootScope.showHeader = false;
@@ -121,7 +122,9 @@ module ApimanPageLifecycle {
             };
             return {
                 setPageTitle: function(titleKey, params) {
-                    var pattern = pageTitles['page.title.' + titleKey];
+                    var key = 'page.title.' + titleKey;
+                    var pattern = pageTitles[key];
+                    pattern = TranslationService.translate(key, pattern);
                     if (pattern) {
                         var args = [];
                         args.push(pattern);

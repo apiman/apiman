@@ -14,12 +14,19 @@
                 </a>
                 <ul class="dropdown-menu">
                   <li>
+                    <a href="{{ pluginName }}/dash" apiman-i18n-key="home">Home</a>
+                  </li>
+                  <li>
                     <a href="{{ pluginName }}/users/{{ username }}/orgs" apiman-i18n-key="my-stuff">My Stuff</a>
                   </li>
-                  <li class="divider"></li>
                   <li>
                     <a href="{{ pluginName }}/profile" apiman-i18n-key="profile">Profile</a>
                   </li>
+                  <li class="divider"></li>
+                  <li>
+                    <a href="{{ pluginName }}/about" apiman-i18n-key="about-apiman">About apiman</a>
+                  </li>
+                  <li class="divider"></li>
                   <li>
                     <a href="{{ logoutUrl }}" target="_self" apiman-i18n-key="logout">Logout</a>
                   </li>
