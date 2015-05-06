@@ -204,6 +204,6 @@ public class GatewayBean implements Serializable {
     public String toString() {
         return "GatewayBean [id=" + id + ", name=" + name + ", description=" + description + ", createdBy="
                 + createdBy + ", createdOn=" + createdOn + ", modifiedBy=" + modifiedBy + ", modifiedOn="
-                + modifiedOn + ", type=" + type + ", configuration=" + configuration + "]";
+                + modifiedOn + ", type=" + type + ", configuration=***]";
     }
 }

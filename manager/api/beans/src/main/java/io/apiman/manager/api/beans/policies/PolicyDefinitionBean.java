@@ -248,6 +248,7 @@ public class PolicyDefinitionBean implements Serializable {
                 + ", formType=" + formType + ", form=" + form + "]";
     }
 
+    @SuppressWarnings("nls")
     private String toString(Collection<?> collection, int maxLen) {
         StringBuilder builder = new StringBuilder();
         builder.append("[");

@@ -154,7 +154,7 @@ public class GatewayResourceImpl implements IGatewayResource {
         }
         decryptPasswords(gateway);
 
-        log.debug(String.format("Successfully created new gateway %s: %s", gateway.getName(), gateway));
+        log.debug(String.format("Successfully created new gateway %s: %s", gateway.getName(), gateway)); //$NON-NLS-1$
         return gateway;
     }
 
@@ -176,7 +176,7 @@ public class GatewayResourceImpl implements IGatewayResource {
             }
             storage.commitTx();
 
-            log.debug(String.format("Successfully fetched gateway %s: %s", bean.getName(), bean));
+            log.debug(String.format("Successfully fetched gateway %s: %s", bean.getName(), bean)); //$NON-NLS-1$
             return bean;
         } catch (AbstractRestException e) {
             storage.rollbackTx();
@@ -215,7 +215,7 @@ public class GatewayResourceImpl implements IGatewayResource {
             storage.updateGateway(gbean);
             storage.commitTx();
 
-            log.debug(String.format("Successfully updated gateway %s: %s", gbean.getName(), gbean));
+            log.debug(String.format("Successfully updated gateway %s: %s", gbean.getName(), gbean)); //$NON-NLS-1$
         } catch (AbstractRestException e) {
             storage.rollbackTx();
             throw e;
@@ -242,7 +242,7 @@ public class GatewayResourceImpl implements IGatewayResource {
             storage.deleteGateway(gbean);
             storage.commitTx();
 
-            log.debug(String.format("Successfully deleted gateway %s: %s", gbean.getName(), gbean));
+            log.debug(String.format("Successfully deleted gateway %s: %s", gbean.getName(), gbean)); //$NON-NLS-1$
         } catch (AbstractRestException e) {
             storage.rollbackTx();
             throw e;

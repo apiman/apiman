@@ -103,8 +103,7 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
                 rval.setAdmin(securityContext.isAdmin());
             }
 
-            log.debug(String.format("Getting info for user %s", user.getUsername()));
-
+            log.debug(String.format("Getting info for user %s", user.getUsername())); //$NON-NLS-1$
             return rval;
         } catch (StorageException e) {
             throw new SystemErrorException(e);
@@ -129,7 +128,7 @@ public class CurrentUserResourceImpl implements ICurrentUserResource {
             }
             idmStorage.updateUser(user);
 
-            log.debug(String.format("Successfully updated user %s: %s", user.getUsername(), user));
+            log.debug(String.format("Successfully updated user %s: %s", user.getUsername(), user)); //$NON-NLS-1$
         } catch (StorageException e) {
             throw new SystemErrorException(e);
         }

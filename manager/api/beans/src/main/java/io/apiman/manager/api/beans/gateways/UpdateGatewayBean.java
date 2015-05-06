@@ -85,8 +85,7 @@ public class UpdateGatewayBean implements Serializable {
     @Override
     @SuppressWarnings("nls")
     public String toString() {
-        return "UpdateGatewayBean [description=" + description + ", type=" + type + ", configuration="
-                + configuration + "]";
+        return "UpdateGatewayBean [description=" + description + ", type=" + type + ", configuration=***]";
     }
 
 }

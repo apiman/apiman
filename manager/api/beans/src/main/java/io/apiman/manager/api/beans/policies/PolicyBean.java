@@ -319,7 +319,7 @@ public class PolicyBean implements Serializable {
     public String toString() {
         return "PolicyBean [id=" + id + ", type=" + type + ", organizationId=" + organizationId
                 + ", entityId=" + entityId + ", entityVersion=" + entityVersion + ", name=" + name
-                + ", description=" + description + ", configuration=" + configuration + ", createdBy="
+                + ", description=" + description + ", configuration=***, createdBy="
                 + createdBy + ", createdOn=" + createdOn + ", modifiedBy=" + modifiedBy + ", modifiedOn="
                 + modifiedOn + ", definition=" + definition + ", orderIndex=" + orderIndex + "]";
     }

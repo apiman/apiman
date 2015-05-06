@@ -223,7 +223,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 idmStorage.createMembership(membership);
             }
 
-            log.debug(String.format("Created organization %s: %s", orgBean.getName(), orgBean));
+            log.debug(String.format("Created organization %s: %s", orgBean.getName(), orgBean)); //$NON-NLS-1$
             return orgBean;
         } catch (AbstractRestException e) {
             storage.rollbackTx();
@@ -246,7 +246,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 throw ExceptionFactory.organizationNotFoundException(organizationId);
             }
             storage.commitTx();
-            log.debug(String.format("Got organization %s: %s", organizationBean.getName(), organizationBean));
+            log.debug(String.format("Got organization %s: %s", organizationBean.getName(), organizationBean)); //$NON-NLS-1$
             return organizationBean;
         } catch (AbstractRestException e) {
             storage.rollbackTx();
@@ -280,7 +280,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.updateOrganization(orgForUpdate);
             storage.createAuditEntry(AuditUtils.organizationUpdated(orgForUpdate, auditData, securityContext));
             storage.commitTx();
-            log.debug(String.format("Updated organization %s: %s", orgForUpdate.getName(), orgForUpdate));
+            log.debug(String.format("Updated organization %s: %s", orgForUpdate.getName(), orgForUpdate)); //$NON-NLS-1$
         } catch (AbstractRestException e) {
             storage.rollbackTx();
             throw e;
@@ -356,7 +356,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
             storage.commitTx();
 
-            log.debug(String.format("Created application %s: %s", newApp.getName(), newApp));
+            log.debug(String.format("Created application %s: %s", newApp.getName(), newApp)); //$NON-NLS-1$
             return newApp;
         } catch (AbstractRestException e) {
             storage.rollbackTx();
@@ -380,7 +380,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 throw ExceptionFactory.applicationNotFoundException(applicationId);
             }
             storage.commitTx();
-            log.debug(String.format("Got application %s: %s", applicationBean.getName(), applicationBean));
+            log.debug(String.format("Got application %s: %s", applicationBean.getName(), applicationBean)); //$NON-NLS-1$
             return applicationBean;
         } catch (AbstractRestException e) {
             storage.rollbackTx();
@@ -455,7 +455,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.updateApplication(appForUpdate);
             storage.createAuditEntry(AuditUtils.applicationUpdated(appForUpdate, auditData, securityContext));
             storage.commitTx();
-            log.debug(String.format("Updated application %s: %s", appForUpdate.getName(), appForUpdate));
+            log.debug(String.format("Updated application %s: %s", appForUpdate.getName(), appForUpdate)); //$NON-NLS-1$
         } catch (AbstractRestException e) {
             storage.rollbackTx();
             throw e;
@@ -543,7 +543,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         storage.createApplicationVersion(newVersion);
         storage.createAuditEntry(AuditUtils.applicationVersionCreated(newVersion, securityContext));
 
-        log.debug(String.format("Created new application version %s: %s", newVersion.getApplication().getName(), newVersion));
+        log.debug(String.format("Created new application version %s: %s", newVersion.getApplication().getName(), newVersion)); //$NON-NLS-1$
         return newVersion;
     }
 
@@ -559,7 +559,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             if (applicationVersion == null)
                 throw ExceptionFactory.applicationVersionNotFoundException(applicationId, version);
             storage.commitTx();
-            log.debug(String.format("Got new application version %s: %s", applicationVersion.getApplication().getName(), applicationVersion));
+            log.debug(String.format("Got new application version %s: %s", applicationVersion.getApplication().getName(), applicationVersion)); //$NON-NLS-1$
             return applicationVersion;
         } catch (AbstractRestException e) {
             storage.rollbackTx();
@@ -630,7 +630,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             ContractBean contract = createContractInternal(organizationId, applicationId, version, bean);
 
             storage.commitTx();
-            log.debug(String.format("Created new contract %s: %s", contract.getId(), contract));
+            log.debug(String.format("Created new contract %s: %s", contract.getId(), contract)); //$NON-NLS-1$
             return contract;
         } catch (AbstractRestException e) {
             storage.rollbackTx();
@@ -768,7 +768,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 contract.setApikey(null);
             }
 
-            log.debug(String.format("Got contract %s: %s", contract.getId(), contract));
+            log.debug(String.format("Got contract %s: %s", contract.getId(), contract)); //$NON-NLS-1$
             return contract;
         } catch (AbstractRestException e) {
             storage.rollbackTx();
@@ -821,7 +821,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.createAuditEntry(AuditUtils.contractBrokenToService(contract, securityContext));
 
             storage.commitTx();
-            log.debug(String.format("Deleted contract: %s", contract));
+            log.debug(String.format("Deleted contract: %s", contract)); //$NON-NLS-1$
         } catch (AbstractRestException e) {
             storage.rollbackTx();
             throw e;
@@ -1294,8 +1294,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 } catch (ServiceDefinitionNotFoundException svnfe) {
                     // This is ok - it just means the service doesn't have one, so do nothing.
                 } catch (Exception sdnfe) {
-                    // TODO log this instead of printing the stack trace!
-                    sdnfe.printStackTrace();
+                    log.error("Unable to create response", sdnfe); //$NON-NLS-1$
                 }
 
                 // Clone all service policies
@@ -1469,6 +1468,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             ServiceVersionEndpointSummaryBean rval = new ServiceVersionEndpointSummaryBean();
             rval.setManagedEndpoint(endpoint.getEndpoint());
             storage.commitTx();
+            log.debug(String.format("Got endpoint summary: %s", gateway)); //$NON-NLS-1$
             return rval;
         } catch (AbstractRestException e) {
             storage.rollbackTx();
@@ -1593,6 +1593,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.updateServiceVersion(svb);
             storage.createAuditEntry(AuditUtils.serviceVersionUpdated(svb, data, securityContext));
             storage.commitTx();
+            log.debug(String.format("Successfully updated Service Version: %s", svb)); //$NON-NLS-1$
             return svb;
         } catch (AbstractRestException e) {
             storage.rollbackTx();
@@ -1627,6 +1628,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw new SystemErrorException(Messages.i18n.format("InvalidServiceDefinitionContentType", contentType)); //$NON-NLS-1$
         }
         storeServiceDefinition(organizationId, serviceId, version, newDefinitionType, data);
+        log.debug(String.format("Updated service definition for %s", serviceId)); //$NON-NLS-1$
     }
 
     /**
@@ -1653,6 +1655,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.createAuditEntry(AuditUtils.serviceDefinitionUpdated(serviceVersion, securityContext));
             storage.updateServiceDefinition(serviceVersion, data);
             storage.commitTx();
+            log.debug(String.format("Stored service definition %s: %s", serviceId, serviceVersion)); //$NON-NLS-1$
         } catch (AbstractRestException e) {
             storage.rollbackTx();
             throw e;
@@ -1710,6 +1713,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw ExceptionFactory.invalidServiceStatusException();
         }
 
+        log.debug(String.format("Created service policy %s", svb)); //$NON-NLS-1$
         return doCreatePolicy(organizationId, serviceId, version, bean, PolicyType.Service);
     }
 
@@ -1762,6 +1766,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.updatePolicy(policy);
             storage.createAuditEntry(AuditUtils.policyUpdated(policy, PolicyType.Service, securityContext));
             storage.commitTx();
+            log.debug(String.format("Updated service policy %s", policy)); //$NON-NLS-1$
         } catch (AbstractRestException e) {
             storage.rollbackTx();
             throw e;
@@ -1796,6 +1801,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.deletePolicy(policy);
             storage.createAuditEntry(AuditUtils.policyRemoved(policy, PolicyType.Service, securityContext));
             storage.commitTx();
+            log.debug(String.format("Deleted service %s policy: %s", serviceId, policy)); //$NON-NLS-1$
         } catch (AbstractRestException e) {
             storage.rollbackTx();
             throw e;
@@ -1824,6 +1830,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.deleteServiceDefinition(serviceVersion);
             storage.updateServiceVersion(serviceVersion);
             storage.commitTx();
+            log.debug(String.format("Deleted service %s definition %s", serviceId, serviceVersion)); //$NON-NLS-1$
         } catch (AbstractRestException e) {
             storage.rollbackTx();
             throw e;
@@ -1941,6 +1948,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 }
             }
 
+            log.debug(String.format("Got service %s version %s contracts: %s", serviceId, version, contracts)); //$NON-NLS-1$
             return contracts;
         } catch (StorageException e) {
             throw new SystemErrorException(e);
@@ -1984,6 +1992,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             }
 
             storage.commitTx();
+            log.debug(String.format("Created plan: %s", newPlan)); //$NON-NLS-1$
             return newPlan;
         } catch (AbstractRestException e) {
             storage.rollbackTx();
@@ -2007,6 +2016,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 throw ExceptionFactory.planNotFoundException(planId);
             }
             storage.commitTx();
+            log.debug(String.format("Got plan: %s", bean)); //$NON-NLS-1$
             return bean;
         } catch (AbstractRestException e) {
             storage.rollbackTx();
@@ -2079,6 +2089,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.updatePlan(planForUpdate);
             storage.createAuditEntry(AuditUtils.planUpdated(planForUpdate, auditData, securityContext));
             storage.commitTx();
+            log.debug(String.format("Updated plan: %s", planForUpdate)); //$NON-NLS-1$
         } catch (AbstractRestException e) {
             storage.rollbackTx();
             throw e;
@@ -2131,6 +2142,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             }
         }
 
+        log.debug(String.format("Created plan %s version: %s", planId, newVersion)); //$NON-NLS-1$
         return newVersion;
     }
 
@@ -2172,6 +2184,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 throw ExceptionFactory.planVersionNotFoundException(planId, version);
             }
             storage.commitTx();
+            log.debug(String.format("Got plan %s version: %s", planId, planVersion)); //$NON-NLS-1$
             return planVersion;
         } catch (AbstractRestException e) {
             storage.rollbackTx();
@@ -2240,6 +2253,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             throw ExceptionFactory.invalidPlanStatusException();
         }
 
+        log.debug(String.format("Creating plan %s policy %s", planId, pvb)); //$NON-NLS-1$
         return doCreatePolicy(organizationId, planId, version, bean, PolicyType.Plan);
     }
 
@@ -2261,6 +2275,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             policy.setConfiguration(null);
         }
 
+        log.debug(String.format("Got plan policy %s", policy)); //$NON-NLS-1$
         return policy;
     }
 
@@ -2293,6 +2308,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.updatePolicy(policy);
             storage.createAuditEntry(AuditUtils.policyUpdated(policy, PolicyType.Plan, securityContext));
             storage.commitTx();
+            log.debug(String.format("Updated plan policy %s", policy)); //$NON-NLS-1$
         } catch (AbstractRestException e) {
             storage.rollbackTx();
             throw e;
@@ -2327,6 +2343,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.deletePolicy(policy);
             storage.createAuditEntry(AuditUtils.policyRemoved(policy, PolicyType.Plan, securityContext));
             storage.commitTx();
+            log.debug(String.format("Deleted plan policy %s", policy)); //$NON-NLS-1$
         } catch (AbstractRestException e) {
             storage.rollbackTx();
             throw e;
@@ -2446,7 +2463,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
             PolicyTemplateUtil.generatePolicyDescription(policy);
 
-            log.debug(String.format("Created app policy: %s", policy));
+            log.debug(String.format("Created app policy: %s", policy)); //$NON-NLS-1$
             return policy;
         } catch (AbstractRestException e) {
             storage.rollbackTx();
@@ -2529,6 +2546,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 storage.beginTx();
                 storage.createAuditEntry(AuditUtils.membershipRevoked(organizationId, auditData, securityContext));
                 storage.commitTx();
+                log.debug(String.format("Revoked User %s Role %s Org %s", userId, roleId, organizationId)); //$NON-NLS-1$
             } catch (AbstractRestException e) {
                 storage.rollbackTx();
                 throw e;
