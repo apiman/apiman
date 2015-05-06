@@ -92,3 +92,14 @@ and [generate a pull-request](http://help.github.com/pull-requests/) for your ch
 We prefer pull-requests, because we can review the proposed changes, comment on them,
 discuss them with you, and likely merge the changes right into the official repository.
 
+## Code Formatting
+
+When you are hacking on some apiman code, we'd really appreciate it if you followed the
+apiman coding standards.  If you're using Eclipse, you can find a code formatter config
+file here:
+
+tools/src/eclipse/apiman-eclipse-formatter.xml
+
+You should be able to import that guy straight into Eclipse by going to
+*Window->Preferences :: Java/Code Style/Formatter*
+
