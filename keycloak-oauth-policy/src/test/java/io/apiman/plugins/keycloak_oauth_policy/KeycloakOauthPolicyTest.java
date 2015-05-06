@@ -2,6 +2,7 @@ package io.apiman.plugins.keycloak_oauth_policy;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -11,6 +12,7 @@ import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.components.ISharedStateComponent;
 import io.apiman.gateway.engine.impl.DefaultPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.impl.InMemorySharedStateComponent;
+import io.apiman.gateway.engine.policies.AuthorizationPolicy;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
 import io.apiman.plugins.keycloak_oauth_policy.beans.ForwardRoles;
@@ -29,6 +31,8 @@ import java.security.SignatureException;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
 
@@ -41,6 +45,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.keycloak.jose.jws.JWSBuilder;
 import org.keycloak.representations.AccessToken;
+import org.keycloak.representations.AccessToken.Access;
 import org.keycloak.util.Time;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -67,6 +72,7 @@ public class KeycloakOauthPolicyTest {
     private IPolicyChain<ServiceRequest> mChain;
     @Mock
     private IPolicyContext mContext;
+    private ForwardRoles forwardRoles;
 
     static {
         if (Security.getProvider("BC") == null)
@@ -103,7 +109,7 @@ public class KeycloakOauthPolicyTest {
         AccessToken realm = token.subject("CN=Client").issuer("apiman-realm"); // KC seems to use issuer for realm?
 
         realm.addAccess("apiman-service").addRole("apiman-gateway-user-role").addRole("a-nother-role");
-        realm.addAccess("a-nother-service").addRole("bacon").addRole("shoes");
+        realm.setRealmAccess(new Access().addRole("lets-use-a-realm-role"));
 
         keycloakOauthPolicy = new KeycloakOauthPolicy();
         config = new KeycloakOauthConfigBean();
@@ -112,7 +118,8 @@ public class KeycloakOauthPolicyTest {
         config.setBlacklistUnsafeTokens(false);
         config.setRequireTransportSecurity(false);
 
-        config.setForwardRoles(new ForwardRoles());
+        forwardRoles = new ForwardRoles();
+        config.setForwardRoles(forwardRoles);
 
         serviceRequest = new ServiceRequest();
 
@@ -243,6 +250,48 @@ public class KeycloakOauthPolicyTest {
 
         verify(mChain, times(2)).doFailure(any(PolicyFailure.class));
         verify(mChain, never()).doApply(any(ServiceRequest.class));
+    }
+
+    @SuppressWarnings("serial")
+    @Test
+    public void shouldForwardAppRoles() throws CertificateEncodingException, IOException {
+        forwardRoles.setActive(true);
+        forwardRoles.setApplicationName("apiman-service");
+
+        String encoded = generateAndSerializeToken();
+        serviceRequest.getHeaders().put("Authorization", "Bearer " + encoded);
+
+        keycloakOauthPolicy.apply(serviceRequest, mContext, config, mChain);
+
+        Set<String> roles = new HashSet<String>() {
+            {
+                add("apiman-gateway-user-role");
+                add("a-nother-role");
+            }
+         };
+
+        verify(mContext).setAttribute(eq(AuthorizationPolicy.AUTHENTICATED_USER_ROLES), eq(roles));
+        verify(mChain).doApply(any(ServiceRequest.class));
+    }
+
+    @Test
+    public void shouldForwardRealmRoles() throws CertificateEncodingException, IOException {
+        forwardRoles.setActive(true);
+
+        String encoded = generateAndSerializeToken();
+        serviceRequest.getHeaders().put("Authorization", "Bearer " + encoded);
+
+        keycloakOauthPolicy.apply(serviceRequest, mContext, config, mChain);
+
+        @SuppressWarnings("serial")
+        Set<String> roles = new HashSet<String>() {
+            {
+                add("lets-use-a-realm-role");
+            }
+         };
+
+        verify(mContext).setAttribute(eq(AuthorizationPolicy.AUTHENTICATED_USER_ROLES), eq(roles));
+        verify(mChain).doApply(any(ServiceRequest.class));
     }
 
     private String certificateAsPem(X509Certificate x509) throws CertificateEncodingException, IOException {
