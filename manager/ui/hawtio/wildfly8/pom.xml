@@ -14,7 +14,7 @@
   <properties>
     <ui.webcontext>/apimanui/</ui.webcontext>
     <timestamp>${maven.build.timestamp}</timestamp>
-    <maven.build.timestamp.format>yyyyMMdd_HHmm</maven.build.timestamp.format>
+    <maven.build.timestamp.format>yyyy-MM-dd_HH:mm</maven.build.timestamp.format>
   </properties>
 
   <dependencies>
@@ -80,10 +80,26 @@
   </dependencies>
 
   <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>false</filtering>
+      </resource>
+      <resource>
+        <directory>src/main/resources-filtered</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
     <plugins>
       <plugin>
         <artifactId>maven-war-plugin</artifactId>
         <configuration>
+          <webResources>
+            <resource>
+              <directory>${basedir}/src/main/resources-filtered</directory>
+              <filtering>true</filtering>
+            </resource>
+          </webResources>
           <archive>
             <manifest>
               <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
