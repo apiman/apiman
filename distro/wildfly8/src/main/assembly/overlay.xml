@@ -158,7 +158,7 @@
       <fileMode>0755</fileMode>
     </fileSet>
     <fileSet>
-      <directory>target/keycloak/keycloak-war-dist-all-${version.org.keycloak}</directory>
+      <directory>target/keycloak/standalone</directory>
       <outputDirectory>standalone</outputDirectory>
       <filtered>false</filtered>
       <directoryMode>0755</directoryMode>

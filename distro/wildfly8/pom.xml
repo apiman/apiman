@@ -61,39 +61,12 @@
     <!-- KeyCloak -->
     <dependency>
       <groupId>org.keycloak</groupId>
-      <artifactId>keycloak-war-dist-all</artifactId>
+      <artifactId>keycloak-server-overlay</artifactId>
       <type>zip</type>
       <exclusions>
         <exclusion>
+          <artifactId>keycloak-jboss-modules</artifactId>
           <groupId>org.keycloak</groupId>
-          <artifactId>keycloak-tomcat7-adapter-dist</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.keycloak</groupId>
-          <artifactId>keycloak-example-themes-dist</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.keycloak</groupId>
-          <artifactId>keycloak-eap6-adapter-dist</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.keycloak</groupId>
-          <artifactId>keycloak-wildfly-adapter-dist</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.keycloak</groupId>
-          <artifactId>keycloak-as7-adapter-dist</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.keycloak</groupId>
-      <artifactId>keycloak-wildfly-adapter-dist</artifactId>
-      <type>zip</type>
-      <exclusions>
-        <exclusion>
-          <groupId>org.keycloak</groupId>
-          <artifactId>keycloak-undertow-adapter</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -115,16 +88,7 @@
               <artifactItems>
                 <artifactItem>
                   <groupId>org.keycloak</groupId>
-                  <artifactId>keycloak-war-dist-all</artifactId>
-                  <version>${version.org.keycloak}</version>
-                  <type>zip</type>
-                  <overWrite>true</overWrite>
-                  <outputDirectory>${project.build.directory}/keycloak</outputDirectory>
-                  <includes>**/configuration/**,**/deployments/**</includes>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.keycloak</groupId>
-                  <artifactId>keycloak-wildfly-adapter-dist</artifactId>
+                  <artifactId>keycloak-server-overlay</artifactId>
                   <version>${version.org.keycloak}</version>
                   <type>zip</type>
                   <overWrite>true</overWrite>

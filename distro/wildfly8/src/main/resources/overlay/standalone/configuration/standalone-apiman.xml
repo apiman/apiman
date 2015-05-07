@@ -35,7 +35,8 @@
       <security-realm name="UndertowRealm">
         <server-identities>
           <ssl>
-            <keystore path="apiman.jks" relative-to="jboss.server.config.dir" keystore-password="secret" alias="apimancert" key-password="secret"/>
+            <keystore path="apiman.jks" relative-to="jboss.server.config.dir" keystore-password="secret"
+              alias="apimancert" key-password="secret" />
           </ssl>
         </server-identities>
       </security-realm>
@@ -149,6 +150,15 @@
         <datasource jndi-name="java:jboss/datasources/ExampleDS" pool-name="ExampleDS" enabled="true"
           use-java-context="true">
           <connection-url>jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE</connection-url>
+          <driver>h2</driver>
+          <security>
+            <user-name>sa</user-name>
+            <password>sa</password>
+          </security>
+        </datasource>
+        <datasource jndi-name="java:jboss/datasources/KeycloakDS" pool-name="KeycloakDS" enabled="true"
+          use-java-context="true">
+          <connection-url>jdbc:h2:${jboss.server.data.dir}/keycloak;AUTO_SERVER=TRUE</connection-url>
           <driver>h2</driver>
           <security>
             <user-name>sa</user-name>
@@ -348,6 +358,17 @@
             <policy-module code="Delegating" flag="required" />
           </authorization>
         </security-domain>
+        <security-domain name="keycloak">
+          <authentication>
+            <login-module code="org.keycloak.adapters.jboss.KeycloakLoginModule" flag="required" />
+          </authentication>
+        </security-domain>
+        <security-domain name="sp" cache-type="default">
+          <authentication>
+            <login-module code="org.picketlink.identity.federation.bindings.wildfly.SAML2LoginModule"
+              flag="required" />
+          </authentication>
+        </security-domain>
       </security-domains>
     </subsystem>
     <subsystem xmlns="urn:jboss:domain:transactions:2.0">
@@ -363,7 +384,7 @@
       <buffer-cache name="default" />
       <server name="default-server">
         <http-listener name="default" socket-binding="http" />
-        <https-listener name="https" socket-binding="https" security-realm="UndertowRealm"/>
+        <https-listener name="https" socket-binding="https" security-realm="UndertowRealm" />
         <host name="default-host" alias="localhost">
           <location name="/" handler="welcome-content" />
           <filter-ref name="server-header" />
@@ -395,8 +416,13 @@
     </subsystem>
     <subsystem xmlns="urn:jboss:domain:weld:2.0" />
     <subsystem xmlns="urn:jboss:domain:keycloak:1.0">
+      <auth-server name="main-auth-server">
+        <enabled>true</enabled>
+        <web-context>auth</web-context>
+      </auth-server>
       <kc:realm xmlns:kc="urn:jboss:domain:keycloak:1.0" name="apiman">
-        <kc:realm-public-key>MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCrVrCuTtArbgaZzL1hvh0xtL5mc7o0NqPVnYXkLvgcwiC3BjLGw1tGEGoJaXDuSaRllobm53JBhjx33UNv+5z/UMG4kytBWxheNVKnL6GgqlNabMaFfPLPCF8kAgKnsi79NMo+n6KnSY8YeUmec/p2vjO2NjsSAVcWEQMVhJ31LwIDAQAB</kc:realm-public-key>
+        <kc:realm-public-key>MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCrVrCuTtArbgaZzL1hvh0xtL5mc7o0NqPVnYXkLvgcwiC3BjLGw1tGEGoJaXDuSaRllobm53JBhjx33UNv+5z/UMG4kytBWxheNVKnL6GgqlNabMaFfPLPCF8kAgKnsi79NMo+n6KnSY8YeUmec/p2vjO2NjsSAVcWEQMVhJ31LwIDAQAB
+        </kc:realm-public-key>
         <kc:auth-server-url>/auth</kc:auth-server-url>
         <kc:ssl-required>none</kc:ssl-required>
         <kc:enable-cors>false</kc:enable-cors>

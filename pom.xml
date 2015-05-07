@@ -138,7 +138,7 @@
     <version.org.jboss.resteasy>2.3.7.Final</version.org.jboss.resteasy>
     <version.org.jboss.spec.javax.servlet.jboss-servlet-api_3.0_spec>1.0.2.Final</version.org.jboss.spec.javax.servlet.jboss-servlet-api_3.0_spec>
     <version.org.jboss.weld.weld>1.1.23.Final</version.org.jboss.weld.weld>
-    <version.org.keycloak>1.1.0.Final</version.org.keycloak>
+    <version.org.keycloak>1.2.0.CR1</version.org.keycloak>
     <version.org.mockito>1.9.5</version.org.mockito>
     <version.org.mvel>2.2.2.Final</version.org.mvel>
     <version.org.osgi>4.3.1</version.org.osgi>
@@ -819,13 +819,7 @@
       </dependency>
       <dependency>
         <groupId>org.keycloak</groupId>
-        <artifactId>keycloak-war-dist-all</artifactId>
-        <version>${version.org.keycloak}</version>
-        <type>zip</type>
-      </dependency>
-      <dependency>
-        <groupId>org.keycloak</groupId>
-        <artifactId>keycloak-wildfly-adapter-dist</artifactId>
+        <artifactId>keycloak-server-overlay</artifactId>
         <version>${version.org.keycloak}</version>
         <type>zip</type>
       </dependency>

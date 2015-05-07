@@ -21,6 +21,8 @@ git push origin $BRANCH
 
 mvn clean install
 
+read -p "Do some smoke tests now!  Press Enter if everything is OK." CONFIRM
+
 git tag -a -m "Tagging release $RELEASE_VERSION" apiman-$RELEASE_VERSION
 git push origin apiman-$RELEASE_VERSION
 
