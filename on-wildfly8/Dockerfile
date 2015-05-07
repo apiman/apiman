@@ -3,7 +3,7 @@ FROM jboss/wildfly
 
 MAINTAINER Eric Wittmann <eric.wittmann@redhat.com>
 
-ENV APIMAN_VERSION 1.1.1.Final
+ENV APIMAN_VERSION 1.1.2.Final
 
 RUN cd $HOME/wildfly \
  && curl http://downloads.jboss.org/overlord/apiman/$APIMAN_VERSION/apiman-distro-wildfly8-$APIMAN_VERSION-overlay.zip | bsdtar -xvf-
