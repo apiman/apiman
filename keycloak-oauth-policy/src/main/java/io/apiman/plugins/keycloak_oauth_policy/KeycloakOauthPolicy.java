@@ -29,6 +29,8 @@ import io.apiman.plugins.keycloak_oauth_policy.beans.KeycloakOauthConfigBean;
 import io.apiman.plugins.keycloak_oauth_policy.failures.PolicyFailureFactory;
 import io.apiman.plugins.keycloak_oauth_policy.util.Holder;
 
+import java.util.Collections;
+
 import org.apache.commons.lang.StringUtils;
 import org.keycloak.RSATokenVerifier;
 import org.keycloak.VerificationException;
@@ -154,8 +156,11 @@ public class KeycloakOauthPolicy extends AbstractMappedPolicy<KeycloakOauthConfi
                 access = parsedToken.getRealmAccess();
             }
 
-            if (access != null && access.getRoles() != null)
+            if (access == null || access.getRoles() == null) {
+                context.setAttribute(AuthorizationPolicy.AUTHENTICATED_USER_ROLES, Collections.<String>emptySet());
+            } else {
                 context.setAttribute(AuthorizationPolicy.AUTHENTICATED_USER_ROLES, access.getRoles());
+            }
         }
     }
 
