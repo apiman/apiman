@@ -37,7 +37,7 @@ import org.keycloak.util.PemUtils;
  */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 @JsonPropertyOrder({ "requireOauth", "requireTransportSecurity", "blacklistUnsafeTokens", "stripTokens",
-        "realm", "realmCertificateString", "forwardRoles", "forwardAuthInfo" })
+        "realm", "realmCertificateString", "forwardRoles", "delegateKerberosTicket", "forwardAuthInfo" })
 public class KeycloakOauthConfigBean {
 
     /**
@@ -90,11 +90,18 @@ public class KeycloakOauthConfigBean {
     /**
      * Forward Authorization Roles
      * <p>
-     * Forward KeyCloak roles to the Authorization policy. In your Authorization policy you should specify your required role(s).
+     * Forward KeyCloak roles to the Authorization policy. In your Authorization policy you should specify
+     * your required role(s).
      *
      */
     @JsonProperty("forwardRoles")
     private ForwardRoles forwardRoles;
+
+    /**
+     * Delegate Kerberos Ticket
+     */
+    @JsonProperty("delegateKerberosTicket")
+    private boolean delegateKerberosTicket;
 
     /**
      * Forward Keycloak token information
@@ -256,10 +263,10 @@ public class KeycloakOauthConfigBean {
     /**
      * Forward Authorization Roles
      * <p>
-     * Forward KeyCloak roles to the Authorization policy. In your Authorization policy you should specify your required role(s).
+     * Forward KeyCloak roles to the Authorization policy. In your Authorization policy you should specify
+     * your required role(s).
      *
-     * @return
-     *     The forwardRoles
+     * @return The forwardRoles
      */
     @JsonProperty("forwardRoles")
     public ForwardRoles getForwardRoles() {
@@ -269,14 +276,38 @@ public class KeycloakOauthConfigBean {
     /**
      * Forward Authorization Roles
      * <p>
-     * Forward KeyCloak roles to the Authorization policy. In your Authorization policy you should specify your required role(s).
+     * Forward KeyCloak roles to the Authorization policy. In your Authorization policy you should specify
+     * your required role(s).
      *
-     * @param forwardRoles
-     *     The forwardRoles
+     * @param forwardRoles The forwardRoles
      */
     @JsonProperty("forwardRoles")
     public void setForwardRoles(ForwardRoles forwardRoles) {
         this.forwardRoles = forwardRoles;
+    }
+
+    /**
+     * Delegate Kerberos Ticket
+     * <p>
+     * Delegate the embedded Kerberos Ticket to the Service (via the Authorization header).
+     *
+     * @return true if should delegate token; else false
+     */
+    @JsonProperty("delegateKerberosTicket")
+    public boolean getDelegateKerberosTicket() {
+        return delegateKerberosTicket;
+    }
+
+    /**
+     * Delegate Kerberos Ticket
+     * <p>
+     * Delegate the embedded Kerberos Ticket to the Service (via the Authorization header).
+     *
+     * @param delegateKerberosTicket true if should delegate token; else false
+     */
+    @JsonProperty("delegateKerberosTicket")
+    public void setDelegateKerberosTicket(boolean delegateKerberosTicket) {
+        this.delegateKerberosTicket = delegateKerberosTicket;
     }
 
     /**

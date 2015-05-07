@@ -34,6 +34,7 @@ import java.util.Collections;
 import org.apache.commons.lang.StringUtils;
 import org.keycloak.RSATokenVerifier;
 import org.keycloak.VerificationException;
+import org.keycloak.constants.KerberosConstants;
 import org.keycloak.representations.AccessToken;
 import org.keycloak.representations.AccessToken.Access;
 
@@ -44,8 +45,10 @@ import org.keycloak.representations.AccessToken.Access;
  */
 public class KeycloakOauthPolicy extends AbstractMappedPolicy<KeycloakOauthConfigBean> {
 
-    private final String AUTHORIZATION_KEY = "Authorization"; //$NON-NLS-1$
-    private final String ACCESS_TOKEN_QUERY_KEY = "access_token"; //$NON-NLS-1$
+    private static final String AUTHORIZATION_KEY = "Authorization"; //$NON-NLS-1$
+    private static final String ACCESS_TOKEN_QUERY_KEY = "access_token"; //$NON-NLS-1$
+    private static final String BEARER = "Bearer "; //$NON-NLS-1$
+    private static final String NEGOTIATE = "Negotiate "; //$NON-NLS-1$
     private final PolicyFailureFactory failureFactory = new PolicyFailureFactory();
 
     /**
@@ -116,31 +119,32 @@ public class KeycloakOauthPolicy extends AbstractMappedPolicy<KeycloakOauthConfi
         }
     }
 
-    private void doFailure(Holder<Boolean> isFailedHolder, IPolicyChain<?> chain, PolicyFailure failure) {
+    private void doFailure(Holder<Boolean> successStatus, IPolicyChain<?> chain, PolicyFailure failure) {
         chain.doFailure(failure);
-        isFailedHolder.setValue(false);
+        successStatus.setValue(false);
     }
 
-    private void throwError(Holder<Boolean> isFailedHolder, IPolicyChain<?> chain, Throwable error) {
+    private void throwError(Holder<Boolean> successStatus, IPolicyChain<?> chain, Throwable error) {
         chain.throwError(error);
-        isFailedHolder.setValue(false);
+        successStatus.setValue(false);
     }
 
-    private Holder<Boolean> doTokenAuth(Holder<Boolean> isFailedHolder, ServiceRequest request,
+    private Holder<Boolean> doTokenAuth(Holder<Boolean> successStatus, ServiceRequest request,
             IPolicyContext context, KeycloakOauthConfigBean config, IPolicyChain<ServiceRequest> chain,
             String rawToken) {
         try {
             AccessToken parsedToken = RSATokenVerifier.verifyToken(rawToken, config.getRealmCertificate()
                     .getPublicKey(), config.getRealm());
 
+            delegateKerberosTicket(request, config, parsedToken);
             forwardHeaders(request, config, rawToken, parsedToken);
             stripAuthTokens(request, config);
             forwardAuthRoles(context, config, parsedToken);
-            return isFailedHolder.setValue(true);
+            return successStatus.setValue(true);
         } catch (VerificationException e) {
             System.out.println(e);
             chain.doFailure(failureFactory.verificationException(context, e));
-            return isFailedHolder.setValue(false);
+            return successStatus.setValue(false);
         }
     }
 
@@ -164,11 +168,21 @@ public class KeycloakOauthPolicy extends AbstractMappedPolicy<KeycloakOauthConfi
         }
     }
 
+    private void delegateKerberosTicket(ServiceRequest request, KeycloakOauthConfigBean config,
+            AccessToken parsedToken) {
+        String serializedGssCredential = (String) parsedToken.getOtherClaims().get(
+                KerberosConstants.GSS_DELEGATION_CREDENTIAL);
+
+        if (config.getDelegateKerberosTicket()) {
+            request.getHeaders().put(AUTHORIZATION_KEY, NEGOTIATE + serializedGssCredential);
+        }
+    }
+
     private String getRawAuthToken(ServiceRequest request) {
         String rawToken = StringUtils.strip(request.getHeaders().get(AUTHORIZATION_KEY));
 
-        if (rawToken != null && StringUtils.startsWith(rawToken, "Bearer ")) { //$NON-NLS-1$
-            rawToken = StringUtils.removeStart(rawToken, "Bearer "); //$NON-NLS-1$
+        if (rawToken != null && StringUtils.startsWith(rawToken, BEARER)) {
+            rawToken = StringUtils.removeStart(rawToken, BEARER);
         } else {
             rawToken = request.getQueryParams().get(ACCESS_TOKEN_QUERY_KEY);
         }
