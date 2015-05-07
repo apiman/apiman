@@ -10,6 +10,7 @@
   <name>apiman-test</name>
   <modules>
     <module>common</module>
+    <module>policies</module>
     <module>suite</module>
   </modules>
 </project>

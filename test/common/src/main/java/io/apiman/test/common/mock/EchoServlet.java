@@ -16,12 +16,16 @@
 package io.apiman.test.common.mock;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.security.MessageDigest;
+import java.util.Enumeration;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.IOUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
 
@@ -31,15 +35,68 @@ import org.codehaus.jackson.map.SerializationConfig;
  * @author eric.wittmann@redhat.com
  */
 public class EchoServlet extends HttpServlet {
-    
+
     private static final long serialVersionUID = 3185466526830586555L;
     private static ObjectMapper mapper = new ObjectMapper();
     static {
         mapper.enable(SerializationConfig.Feature.INDENT_OUTPUT);
     }
-    
+
     private long servletCounter = 0L;
-    
+
+    /**
+     * Create an echo response from the inbound information in the http server
+     * request.
+     * @param request the request
+     * @param withBody if request is with body
+     * @return a new echo response
+     */
+    public static EchoResponse response(HttpServletRequest request, boolean withBody) {
+        EchoResponse response = new EchoResponse();
+        response.setMethod(request.getMethod());
+        if (request.getQueryString() != null) {
+            response.setResource(request.getRequestURI() + "?" + request.getQueryString()); //$NON-NLS-1$
+        } else {
+            response.setResource(request.getRequestURI());
+        }
+        response.setUri(request.getRequestURI());
+        Enumeration<String> headerNames = request.getHeaderNames();
+        while (headerNames.hasMoreElements()) {
+            String name = headerNames.nextElement();
+            String value = request.getHeader(name);
+            response.getHeaders().put(name, value);
+        }
+        if (withBody) {
+            long totalBytes = 0;
+            InputStream is = null;
+            try {
+                is = request.getInputStream();
+                MessageDigest sha1 = MessageDigest.getInstance("SHA1"); //$NON-NLS-1$
+                byte[] data = new byte[1024];
+                int read = 0;
+                while ((read = is.read(data)) != -1) {
+                    sha1.update(data, 0, read);
+                    totalBytes += read;
+                };
+
+                byte[] hashBytes = sha1.digest();
+                StringBuffer sb = new StringBuffer();
+                for (int i = 0; i < hashBytes.length; i++) {
+                  sb.append(Integer.toString((hashBytes[i] & 0xff) + 0x100, 16).substring(1));
+                }
+                String fileHash = sb.toString();
+
+                response.setBodyLength(totalBytes);
+                response.setBodySha1(fileHash);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            } finally {
+                IOUtils.closeQuietly(is);
+            }
+        }
+        return response;
+    }
+
     /**
      * Constructor.
      */
@@ -54,7 +111,7 @@ public class EchoServlet extends HttpServlet {
             IOException {
         doEchoResponse(req, resp, false);
     }
-    
+
     /**
      * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
@@ -63,7 +120,7 @@ public class EchoServlet extends HttpServlet {
             IOException {
         doEchoResponse(req, resp, true);
     }
-    
+
     /**
      * @see javax.servlet.http.HttpServlet#doPut(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
@@ -72,7 +129,7 @@ public class EchoServlet extends HttpServlet {
             IOException {
         doEchoResponse(req, resp, true);
     }
-    
+
     /**
      * @see javax.servlet.http.HttpServlet#doDelete(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
@@ -91,7 +148,7 @@ public class EchoServlet extends HttpServlet {
      * @param withBody
      */
     protected void doEchoResponse(HttpServletRequest req, HttpServletResponse resp, boolean withBody) {
-        EchoResponse response = EchoResponse.from(req, withBody);
+        EchoResponse response = response(req, withBody);
         response.setCounter(++servletCounter);
         resp.setContentType("application/json"); //$NON-NLS-1$
         resp.setHeader("Response-Counter", response.getCounter().toString()); //$NON-NLS-1$
