@@ -18,6 +18,20 @@
       <artifactId>apiman-gateway-engine-core</artifactId>
       <scope>provided</scope>
     </dependency>
+    
+    <!-- apiman test framework -->
+    <dependency>
+      <groupId>io.apiman</groupId>
+      <artifactId>apiman-test-policies</artifactId>
+      <scope>test</scope>
+    </dependency>
+    
+    <!-- junit -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
