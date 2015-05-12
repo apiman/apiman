@@ -1104,14 +1104,14 @@ public class EsMarshalling {
      * @param map the search hit map
      * @return the gateway summary
      */
-    public static GatewaySummaryBean unmarshallGatewaySummary(Map<String, SearchHitField> map) {
+    public static GatewaySummaryBean unmarshallGatewaySummary(Map<String, String> map) {
         GatewaySummaryBean bean = new GatewaySummaryBean();
-        bean.setId(asString(map.get("id").value()));
-        bean.setName(asString(map.get("name").value()));
+        bean.setId(map.get("id"));
+        bean.setName(map.get("name"));
         if (map.containsKey("description")) {
-            bean.setDescription(asString(map.get("description").value()));
+            bean.setDescription(map.get("description"));
         }
-        bean.setType(asEnum(map.get("type").value(), GatewayType.class));
+        bean.setType(asEnum(map.get("type"), GatewayType.class));
         return bean;
     }
 
@@ -1152,22 +1152,22 @@ public class EsMarshalling {
      * @param map the search map
      * @return the policy definition summary
      */
-    public static PolicyDefinitionSummaryBean unmarshallPolicyDefinitionSummary(Map<String, SearchHitField> map) {
+    public static PolicyDefinitionSummaryBean unmarshallPolicyDefinitionSummary(Map<String, String> map) {
         PolicyDefinitionSummaryBean bean = new PolicyDefinitionSummaryBean();
-        bean.setId(asString(map.get("id").value()));
-        bean.setName(asString(map.get("name").value()));
+        bean.setId(map.get("id"));
+        bean.setName(map.get("name"));
         if (map.containsKey("description")) {
-            bean.setDescription(asString(map.get("description").value()));
+            bean.setDescription(map.get("description"));
         }
-        bean.setPolicyImpl(asString(map.get("policyImpl").value()));
+        bean.setPolicyImpl(map.get("policyImpl"));
         if (map.containsKey("icon")) {
-            bean.setIcon(asString(map.get("icon").value()));
+            bean.setIcon(map.get("icon"));
         }
         if (map.containsKey("pluginId")) {
-            bean.setPluginId(asLong(map.get("pluginId").value()));
+            bean.setPluginId(asLong(map.get("pluginId")));
         }
         if (map.containsKey("formType")) {
-            bean.setFormType(asEnum(map.get("formType").value(), PolicyFormType.class));
+            bean.setFormType(asEnum(map.get("formType"), PolicyFormType.class));
         }
 
         return bean;
@@ -1201,24 +1201,24 @@ public class EsMarshalling {
      * @param map the search hit map
      * @return the plugin summary
      */
-    public static PluginSummaryBean unmarshallPluginSummary(Map<String, SearchHitField> map) {
+    public static PluginSummaryBean unmarshallPluginSummary(Map<String, String> map) {
         PluginSummaryBean bean = new PluginSummaryBean();
-        bean.setId(asLong(map.get("id").value()));
-        bean.setName(asString(map.get("name").value()));
+        bean.setId(asLong(map.get("id")));
+        bean.setName(map.get("name"));
         if (map.containsKey("description")) {
-            bean.setDescription(asString(map.get("description").value()));
+            bean.setDescription(map.get("description"));
         }
-        bean.setGroupId(asString(map.get("groupId").value()));
-        bean.setArtifactId(asString(map.get("artifactId").value()));
-        bean.setVersion(asString(map.get("version").value()));
+        bean.setGroupId(map.get("groupId"));
+        bean.setArtifactId(map.get("artifactId"));
+        bean.setVersion(map.get("version"));
         if (map.containsKey("type")) {
-            bean.setType(asString(map.get("type").value()));
+            bean.setType(map.get("type"));
         }
         if (map.containsKey("classifier")) {
-            bean.setClassifier(asString(map.get("classifier").value()));
+            bean.setClassifier(map.get("classifier"));
         }
-        bean.setCreatedBy(asString(map.get("createdBy").value()));
-        bean.setCreatedOn(asDate(map.get("createdOn").value()));
+        bean.setCreatedBy(map.get("createdBy"));
+        bean.setCreatedOn(asDate(map.get("createdOn")));
         
         return bean;
     }

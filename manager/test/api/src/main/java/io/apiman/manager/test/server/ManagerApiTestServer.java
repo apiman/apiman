@@ -21,12 +21,17 @@ import io.apiman.common.servlet.DisableCachingFilter;
 import io.apiman.manager.api.security.impl.DefaultSecurityContextFilter;
 import io.apiman.manager.test.util.ManagerTestUtils;
 import io.apiman.manager.test.util.ManagerTestUtils.TestType;
+import io.searchbox.client.JestClient;
+import io.searchbox.client.JestClientFactory;
+import io.searchbox.client.config.HttpClientConfig;
+import io.searchbox.indices.DeleteIndex;
 
 import java.io.File;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.SQLException;
 import java.util.EnumSet;
+import java.util.concurrent.TimeUnit;
 
 import javax.naming.InitialContext;
 import javax.naming.NameAlreadyBoundException;
@@ -67,7 +72,8 @@ import org.jboss.weld.environment.servlet.Listener;
 public class ManagerApiTestServer {
 
     private static final String ES_CLUSTER_NAME = "_apimantest";
-    public static Client ES_CLIENT = null;
+    //public static Client ES_CLIENT = null;
+    public static JestClient ES_CLIENT = null;
 
     /*
      * The jetty server
@@ -83,7 +89,8 @@ public class ManagerApiTestServer {
      * The elasticsearch node and client - only if using ES
      */
     private Node node = null;
-    private Client client = null;
+    //private Client client = null;
+    private JestClient client = null;
 
     /**
      * Constructor.
@@ -124,8 +131,9 @@ public class ManagerApiTestServer {
         }
         if (node != null) {
             if ("true".equals(System.getProperty("apiman.test.es-delete-index", "true"))) {
-                DeleteIndexRequest request = new DeleteIndexRequest("apiman_manager");
-                client.admin().indices().delete(request).actionGet();
+//                DeleteIndexRequest request = new DeleteIndexRequest("apiman_manager");
+//                client.admin().indices().delete(request).actionGet();
+            	client.execute(new DeleteIndex.Builder("apiman_manager").build());
             }
         }
     }
@@ -190,18 +198,27 @@ public class ManagerApiTestServer {
             node.start();
             System.out.println("ES node was successfully started.");
 
-            if (!isPersistent) {
-                Node node = NodeBuilder.nodeBuilder().client(true).loadConfigSettings(false)
-                        .clusterName(ES_CLUSTER_NAME).local(true)
-                        .settings(ImmutableSettings.settingsBuilder().build()).node().start();
-                client = node.client();
-            } else {
-                TransportClient tc = new TransportClient(ImmutableSettings.settingsBuilder()
-                        .put("cluster.name", clusterName).build());
-                tc.addTransportAddress(new InetSocketTransportAddress("localhost", 6600));
-                client = tc;
-            }
+// Commenting this out for now b/c - the JestClient is of a different Client type 
+//            if (!isPersistent) {
+//                Node node = NodeBuilder.nodeBuilder().client(true).loadConfigSettings(false)
+//                        .clusterName(ES_CLUSTER_NAME).local(true)
+//                        .settings(ImmutableSettings.settingsBuilder().build()).node().start();
+//                client = node.client();
+//            } else {
+//                TransportClient tc = new TransportClient(ImmutableSettings.settingsBuilder()
+//                        .put("cluster.name", clusterName).build());
+//                tc.addTransportAddress(new InetSocketTransportAddress("localhost", 6600));
+//                client = tc;
+//            }
 
+        	String connectionUrl = "http://localhost:6500";
+        	JestClientFactory factory = new JestClientFactory();
+    		factory.setHttpClientConfig(new HttpClientConfig
+    		       .Builder(connectionUrl)
+    			   
+    		       .multiThreaded(true)
+    		       .build());
+    		client = factory.getObject();
             ES_CLIENT = client;
         }
     }
@@ -326,7 +343,7 @@ public class ManagerApiTestServer {
         return node;
     }
 
-    public Client getESClient() {
+    public JestClient getESClient() {
         return client;
     }
 

@@ -23,12 +23,10 @@ import io.apiman.manager.api.beans.search.SearchCriteriaBean;
 import io.apiman.manager.api.beans.search.SearchResultsBean;
 import io.apiman.manager.api.core.IIdmStorage;
 import io.apiman.manager.api.core.exceptions.StorageException;
+import io.searchbox.client.JestClient;
+import io.searchbox.indices.Refresh;
 
 import java.util.Set;
-
-import org.elasticsearch.action.admin.indices.refresh.RefreshRequest;
-import org.elasticsearch.client.Client;
-
 
 /**
  * @author eric.wittmann@redhat.com
@@ -36,7 +34,7 @@ import org.elasticsearch.client.Client;
 @SuppressWarnings("javadoc")
 public class TestEsIdmStorageWrapper implements IIdmStorage {
 
-    private Client esClient;
+    private JestClient esClient;
     private IIdmStorage delegate;
 
     /**
@@ -44,7 +42,7 @@ public class TestEsIdmStorageWrapper implements IIdmStorage {
      * @param esClient
      * @param delegate
      */
-    public TestEsIdmStorageWrapper(Client esClient, IIdmStorage delegate) {
+    public TestEsIdmStorageWrapper(JestClient esClient, IIdmStorage delegate) {
         this.esClient = esClient;
         this.delegate = delegate;
     }
@@ -199,7 +197,7 @@ public class TestEsIdmStorageWrapper implements IIdmStorage {
      */
     private void refresh() {
         try {
-            esClient.admin().indices().refresh(new RefreshRequest("apiman_manager")).get(); //$NON-NLS-1$
+        	esClient.execute(new Refresh.Builder().addIndex("apiman_manager").build());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

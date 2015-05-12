@@ -28,14 +28,13 @@ import io.apiman.manager.api.jpa.JpaStorage;
 import io.apiman.manager.api.jpa.roles.JpaIdmStorage;
 import io.apiman.manager.test.util.ManagerTestUtils;
 import io.apiman.manager.test.util.ManagerTestUtils.TestType;
+import io.searchbox.client.JestClient;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.New;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Named;
-
-import org.elasticsearch.client.Client;
 
 /**
  * Attempt to create producer methods for CDI beans.
@@ -99,7 +98,7 @@ public class TestCdiFactory {
     }
 
     @Produces @ApplicationScoped
-    public static Client provideTransportClient() {
+    public static JestClient provideTransportClient() {
         TestType testType = ManagerTestUtils.getTestType();
         if (testType == TestType.jpa) {
             return null;

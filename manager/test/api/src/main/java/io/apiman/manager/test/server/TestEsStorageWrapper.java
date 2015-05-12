@@ -31,12 +31,11 @@ import io.apiman.manager.api.beans.services.ServiceBean;
 import io.apiman.manager.api.beans.services.ServiceVersionBean;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.exceptions.StorageException;
+import io.searchbox.client.JestClient;
+import io.searchbox.indices.Refresh;
 
 import java.io.InputStream;
 import java.util.List;
-
-import org.elasticsearch.action.admin.indices.refresh.RefreshRequest;
-import org.elasticsearch.client.Client;
 
 /**
  * Wraps the ES storage impl so that it can "refresh" the indexes 
@@ -47,7 +46,7 @@ import org.elasticsearch.client.Client;
 @SuppressWarnings("javadoc")
 public class TestEsStorageWrapper implements IStorage {
     
-    private Client esClient;
+    private JestClient esClient;
     private IStorage delegate;
     
     /**
@@ -55,7 +54,7 @@ public class TestEsStorageWrapper implements IStorage {
      * @param esClient 
      * @param delegate
      */
-    public TestEsStorageWrapper(Client esClient, IStorage delegate) {
+    public TestEsStorageWrapper(JestClient esClient, IStorage delegate) {
         this.esClient = esClient;
         this.delegate = delegate;
     }
@@ -547,7 +546,8 @@ public class TestEsStorageWrapper implements IStorage {
      */
     private void refresh() {
         try {
-            esClient.admin().indices().refresh(new RefreshRequest("apiman_manager")).get(); //$NON-NLS-1$
+        	//esClient.admin().indices().refresh(new RefreshRequest("apiman_manager")).get(); //$NON-NLS-1$
+        	esClient.execute(new Refresh.Builder().addIndex("apiman_manager").build());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
