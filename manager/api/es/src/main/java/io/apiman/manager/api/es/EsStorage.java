@@ -65,6 +65,20 @@ import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.core.util.PolicyTemplateUtil;
 import io.apiman.manager.api.es.beans.PoliciesBean;
 import io.apiman.manager.api.es.beans.ServiceDefinitionBean;
+import io.searchbox.action.Action;
+import io.searchbox.client.JestClient;
+import io.searchbox.client.JestResult;
+import io.searchbox.cluster.Health;
+import io.searchbox.core.Delete;
+import io.searchbox.core.DeleteByQuery;
+import io.searchbox.core.Get;
+import io.searchbox.core.Index;
+import io.searchbox.core.Search;
+import io.searchbox.core.SearchResult;
+import io.searchbox.core.SearchResult.Hit;
+import io.searchbox.indices.CreateIndex;
+import io.searchbox.indices.IndicesExists;
+import io.searchbox.params.Parameters;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -83,23 +97,10 @@ import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
 import org.apache.commons.io.IOUtils;
-import org.elasticsearch.action.ActionFuture;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
-import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
-import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
-import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse;
-import org.elasticsearch.action.delete.DeleteRequest;
-import org.elasticsearch.action.delete.DeleteResponse;
-import org.elasticsearch.action.get.GetRequest;
-import org.elasticsearch.action.get.GetResponse;
-import org.elasticsearch.action.index.IndexRequest;
-import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequest;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.client.Client;
 import org.elasticsearch.common.Base64;
 import org.elasticsearch.common.xcontent.XContentBuilder;
-import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.AndFilterBuilder;
 import org.elasticsearch.index.query.BaseQueryBuilder;
 import org.elasticsearch.index.query.FilterBuilders;
@@ -107,8 +108,6 @@ import org.elasticsearch.index.query.FilteredQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.TermsQueryBuilder;
-import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 
@@ -126,7 +125,8 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     private static int guidCounter = 100;
 
     @Inject
-    Client esClient;
+    //Client esClient;
+    JestClient esClient;
 
     /**
      * Constructor.
@@ -139,12 +139,14 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
      */
     public void initialize() {
         try {
-            esClient.admin().cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet(5000);
-            IndicesExistsRequest request = new IndicesExistsRequest(INDEX_NAME);
-            IndicesExistsResponse response = esClient.admin().indices().exists(request).get();
-            if (!response.isExists()) {
-                createIndex(INDEX_NAME);
-            }
+            esClient.execute(new Health.Builder().build());
+        	//TODO what to do with this health? check and wait for yellow?
+            //Do we need a loop to wait for all nodes to join te cluster?
+        	Action<JestResult> action = new IndicesExists.Builder(INDEX_NAME).build();
+        	JestResult result = esClient.execute(action);
+        	if (! result.isSucceeded()) {
+        		createIndex(INDEX_NAME);
+        	}
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -159,8 +161,8 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
         URL settings = getClass().getResource("index-settings.json"); //$NON-NLS-1$
         String source = IOUtils.toString(settings);
         request.source(source);
-        CreateIndexResponse response = esClient.admin().indices().create(request).get();
-        if (!response.isAcknowledged()) {
+        JestResult response = esClient.execute(new CreateIndex.Builder(indexName).settings(source).build());
+        if (!response.isSucceeded()) {
             throw new StorageException("Failed to create index: " + indexName); //$NON-NLS-1$
         }
     }
@@ -624,6 +626,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
             throw new StorageException("Policy not found."); //$NON-NLS-1$
         }
         PoliciesBean policies = EsMarshalling.unmarshallPolicies(source);
+        if (policies == null) throw new StorageException("Policy not found."); //$NON-NLS-1$
         List<PolicyBean> policyBeans = policies.getPolicies();
         boolean found = false;
         if (policyBeans != null) {
@@ -778,6 +781,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
                 return null;
             }
             ServiceDefinitionBean def = EsMarshalling.unmarshallServiceDefinition(source);
+            if (def == null) return null;
             String data = def.getData();
             return new ByteArrayInputStream(Base64.decode(data));
         } catch (IOException e) {
@@ -827,6 +831,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
             return null;
         }
         PoliciesBean policies = EsMarshalling.unmarshallPolicies(source);
+        if (policies == null) return null;
         List<PolicyBean> policyBeans = policies.getPolicies();
         if (policyBeans != null) {
             for (PolicyBean policyBean : policyBeans) {
@@ -873,14 +878,14 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
                     )
                 );
             SearchSourceBuilder builder = new SearchSourceBuilder().query(qb).size(2);
+  
             SearchRequest request = new SearchRequest(INDEX_NAME);
             request.types("plugin"); //$NON-NLS-1$
             request.source(builder);
-            SearchResponse response = esClient.search(request).get();
-            SearchHits hits = response.getHits();
-            if (hits.totalHits() == 1) {
-                SearchHit hit = hits.iterator().next();
-                return EsMarshalling.unmarshallPlugin(hit.getSource());
+            List<Hit<Map,Void>> hits = listEntities("plugin", builder);
+            if (hits.size() == 1) {
+            	Hit<Map,Void> hit = hits.iterator().next();
+                return EsMarshalling.unmarshallPlugin(hit.source);
             }
             return null;
         } catch (Exception e) {
@@ -895,6 +900,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     public PolicyDefinitionBean getPolicyDefinition(String id) throws StorageException {
         Map<String, Object> source = getEntity("policyDef", id); //$NON-NLS-1$
         return EsMarshalling.unmarshallPolicyDefinition(source);
+
     }
 
     /**
@@ -912,13 +918,14 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     @Override
     public List<PluginSummaryBean> listPlugins() throws StorageException {
         @SuppressWarnings("nls")
+        String[] fields = {"id", "artifactId", "groupId", "version", "classifier", "type", "name",
+            "description", "createdBy", "createdOn"};
         SearchSourceBuilder builder = new SearchSourceBuilder()
-                .fields("id", "artifactId", "groupId", "version", "classifier", "type", "name",
-                        "description", "createdBy", "createdOn").sort("name.raw", SortOrder.ASC).size(200);
-        SearchHits hits = listEntities("plugin", builder); //$NON-NLS-1$
-        List<PluginSummaryBean> rval = new ArrayList<>((int) hits.totalHits());
-        for (SearchHit hit : hits) {
-            PluginSummaryBean bean = EsMarshalling.unmarshallPluginSummary(hit.getFields());
+                .fetchSource(fields, null).sort("name.raw", SortOrder.ASC).size(200);
+        List<Hit<Map,Void>> hits = listEntities("plugin", builder); //$NON-NLS-1$
+        List<PluginSummaryBean> rval = new ArrayList<>((int) hits.size());
+        for (Hit<Map,Void> hit : hits) {
+            PluginSummaryBean bean = EsMarshalling.unmarshallPluginSummary(hit.source);
             rval.add(bean);
         }
         return rval;
@@ -930,12 +937,12 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     @Override
     public List<GatewaySummaryBean> listGateways() throws StorageException {
         @SuppressWarnings("nls")
-        SearchSourceBuilder builder = new SearchSourceBuilder().fields("id", "name", "description",
-                "type").sort("name.raw", SortOrder.ASC).size(100);
-        SearchHits hits = listEntities("gateway", builder); //$NON-NLS-1$
-        List<GatewaySummaryBean> rval = new ArrayList<>((int) hits.totalHits());
-        for (SearchHit hit : hits) {
-            GatewaySummaryBean bean = EsMarshalling.unmarshallGatewaySummary(hit.getFields());
+        String[] fields = {"id", "name", "description","type"};
+        SearchSourceBuilder builder = new SearchSourceBuilder().fetchSource(fields, null).sort("name.raw", SortOrder.ASC).size(100);
+        List<Hit<Map,Void>> hits = listEntities("gateway", builder); //$NON-NLS-1$
+        List<GatewaySummaryBean> rval = new ArrayList<>((int) hits.size());
+        for (Hit<Map,Void> hit : hits) {
+            GatewaySummaryBean bean = EsMarshalling.unmarshallGatewaySummary(hit.source);
             rval.add(bean);
         }
         return rval;
@@ -996,7 +1003,6 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
                 return EsMarshalling.unmarshallPlanSummary(source);
             }
         });
-
     }
 
     /**
@@ -1091,10 +1097,10 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
                 .sort("name.raw", SortOrder.ASC)
                 .query(query)
                 .size(500);
-        SearchHits hits = listEntities("organization", builder); //$NON-NLS-1$
-        List<OrganizationSummaryBean> rval = new ArrayList<>((int) hits.totalHits());
-        for (SearchHit hit : hits) {
-            OrganizationSummaryBean bean = EsMarshalling.unmarshallOrganizationSummary(hit.getSource());
+        List<Hit<Map,Void>> hits = listEntities("organization", builder); //$NON-NLS-1$
+        List<OrganizationSummaryBean> rval = new ArrayList<>((int) hits.size());
+        for (Hit<Map,Void> hit : hits) {
+            OrganizationSummaryBean bean = EsMarshalling.unmarshallOrganizationSummary(hit.source);
             rval.add(bean);
         }
         return rval;
@@ -1112,10 +1118,10 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
                 .size(500);
         TermsQueryBuilder query = QueryBuilders.termsQuery("organizationId", organizationIds.toArray(new String[organizationIds.size()])); //$NON-NLS-1$
         builder.query(query);
-        SearchHits hits = listEntities("application", builder); //$NON-NLS-1$
-        List<ApplicationSummaryBean> rval = new ArrayList<>((int) hits.totalHits());
-        for (SearchHit hit : hits) {
-            ApplicationSummaryBean bean = EsMarshalling.unmarshallApplicationSummary(hit.getSource());
+        List<Hit<Map,Void>> hits = listEntities("application", builder); //$NON-NLS-1$
+        List<ApplicationSummaryBean> rval = new ArrayList<>((int) hits.size());
+        for (Hit<Map,Void> hit : hits) {
+            ApplicationSummaryBean bean = EsMarshalling.unmarshallApplicationSummary(hit.source);
             rval.add(bean);
         }
         return rval;
@@ -1149,10 +1155,10 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
                 .sort("createdOn", SortOrder.DESC)
                 .query(query)
                 .size(500);
-        SearchHits hits = listEntities("applicationVersion", builder); //$NON-NLS-1$
-        List<ApplicationVersionSummaryBean> rval = new ArrayList<>((int) hits.totalHits());
-        for (SearchHit hit : hits) {
-            ApplicationVersionSummaryBean bean = EsMarshalling.unmarshallApplicationVersionSummary(hit.getSource());
+        List<Hit<Map,Void>> hits = listEntities("applicationVersion", builder); //$NON-NLS-1$
+        List<ApplicationVersionSummaryBean> rval = new ArrayList<>((int) hits.size());
+        for (Hit<Map,Void> hit : hits) {
+            ApplicationVersionSummaryBean bean = EsMarshalling.unmarshallApplicationVersionSummary(hit.source);
             rval.add(bean);
         }
         return rval;
@@ -1176,10 +1182,10 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
         @SuppressWarnings("nls")
         SearchSourceBuilder builder = new SearchSourceBuilder().sort("serviceOrganizationId", SortOrder.ASC)
                 .sort("serviceId", SortOrder.ASC).query(query).size(500);
-        SearchHits hits = listEntities("contract", builder); //$NON-NLS-1$
-        List<ContractSummaryBean> rval = new ArrayList<>((int) hits.totalHits());
-        for (SearchHit hit : hits) {
-            ContractSummaryBean bean = EsMarshalling.unmarshallContractSummary(hit.getSource());
+        List<Hit<Map,Void>> hits = listEntities("contract", builder); //$NON-NLS-1$
+        List<ContractSummaryBean> rval = new ArrayList<>((int) hits.size());
+        for (Hit<Map,Void> hit : hits) {
+            ContractSummaryBean bean = EsMarshalling.unmarshallContractSummary(hit.source);
             rval.add(bean);
         }
         return rval;
@@ -1203,10 +1209,10 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
         @SuppressWarnings("nls")
         SearchSourceBuilder builder = new SearchSourceBuilder().sort("id", SortOrder.ASC).query(query)
                 .size(500);
-        SearchHits hits = listEntities("contract", builder); //$NON-NLS-1$
+        List<Hit<Map,Void>> hits = listEntities("contract", builder); //$NON-NLS-1$
         ApiRegistryBean registry = new ApiRegistryBean();
-        for (SearchHit hit : hits) {
-            ApiEntryBean bean = EsMarshalling.unmarshallApiEntry(hit.getSource());
+        for (Hit<Map,Void> hit : hits) {
+            ApiEntryBean bean = EsMarshalling.unmarshallApiEntry(hit.source);
             ServiceVersionBean svb = getServiceVersion(bean.getServiceOrgId(), bean.getServiceId(), bean.getServiceVersion());
             Set<ServiceGatewayBean> gateways = svb.getGateways();
             if (gateways != null && gateways.size() > 0) {
@@ -1230,10 +1236,11 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
                 .size(500);
         TermsQueryBuilder query = QueryBuilders.termsQuery("organizationId", organizationIds.toArray(new String[organizationIds.size()])); //$NON-NLS-1$
         builder.query(query);
-        SearchHits hits = listEntities("service", builder); //$NON-NLS-1$
-        List<ServiceSummaryBean> rval = new ArrayList<>((int) hits.totalHits());
-        for (SearchHit hit : hits) {
-            ServiceSummaryBean bean = EsMarshalling.unmarshallServiceSummary(hit.getSource());
+
+        List<Hit<Map,Void>> hits = listEntities("service", builder); //$NON-NLS-1$
+        List<ServiceSummaryBean> rval = new ArrayList<>((int) hits.size());
+        for (Hit<Map,Void> hit : hits) {
+            ServiceSummaryBean bean = EsMarshalling.unmarshallServiceSummary(hit.source);
             rval.add(bean);
         }
         return rval;
@@ -1267,10 +1274,10 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
                 .sort("createdOn", SortOrder.DESC)
                 .query(query)
                 .size(500);
-        SearchHits hits = listEntities("serviceVersion", builder); //$NON-NLS-1$
-        List<ServiceVersionSummaryBean> rval = new ArrayList<>((int) hits.totalHits());
-        for (SearchHit hit : hits) {
-            ServiceVersionSummaryBean bean = EsMarshalling.unmarshallServiceVersionSummary(hit.getSource());
+        List<Hit<Map,Void>> hits = listEntities("serviceVersion", builder); //$NON-NLS-1$
+        List<ServiceVersionSummaryBean> rval = new ArrayList<>((int) hits.size());
+        for (Hit<Map,Void> hit : hits) {
+            ServiceVersionSummaryBean bean = EsMarshalling.unmarshallServiceVersionSummary(hit.source);
             rval.add(bean);
         }
         return rval;
@@ -1313,10 +1320,10 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
                 .size(500);
         TermsQueryBuilder query = QueryBuilders.termsQuery("organizationId", organizationIds.toArray(new String[organizationIds.size()])); //$NON-NLS-1$
         builder.query(query);
-        SearchHits hits = listEntities("plan", builder); //$NON-NLS-1$
-        List<PlanSummaryBean> rval = new ArrayList<>((int) hits.totalHits());
-        for (SearchHit hit : hits) {
-            PlanSummaryBean bean = EsMarshalling.unmarshallPlanSummary(hit.getSource());
+        List<Hit<Map,Void>> hits = listEntities("plan", builder); //$NON-NLS-1$
+        List<PlanSummaryBean> rval = new ArrayList<>((int) hits.size());
+        for (Hit<Map,Void> hit : hits) {
+            PlanSummaryBean bean = EsMarshalling.unmarshallPlanSummary(hit.source);
             rval.add(bean);
         }
         return rval;
@@ -1350,10 +1357,10 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
                 .sort("createdOn", SortOrder.DESC)
                 .query(query)
                 .size(500);
-        SearchHits hits = listEntities("planVersion", builder); //$NON-NLS-1$
-        List<PlanVersionSummaryBean> rval = new ArrayList<>((int) hits.totalHits());
-        for (SearchHit hit : hits) {
-            PlanVersionSummaryBean bean = EsMarshalling.unmarshallPlanVersionSummary(hit.getSource());
+        List<Hit<Map,Void>> hits = listEntities("planVersion", builder); //$NON-NLS-1$
+        List<PlanVersionSummaryBean> rval = new ArrayList<>((int) hits.size());
+        for (Hit<Map,Void> hit : hits) {
+            PlanVersionSummaryBean bean = EsMarshalling.unmarshallPlanVersionSummary(hit.source);
             rval.add(bean);
         }
         return rval;
@@ -1368,12 +1375,13 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
         try {
             String docType = getPoliciesDocType(type);
             String pid = id(organizationId, entityId, version);
-            Map<String, Object> source = getEntity(docType, pid);
             List<PolicySummaryBean> rval = new ArrayList<>();
+            Map<String, Object> source = getEntity(docType, pid);
             if (source == null) {
                 return rval;
             }
             PoliciesBean policies = EsMarshalling.unmarshallPolicies(source);
+            if (policies == null) return rval; 
             List<PolicyBean> policyBeans = policies.getPolicies();
             if (policyBeans != null) {
                 for (PolicyBean policyBean : policyBeans) {
@@ -1403,13 +1411,14 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     @Override
     public List<PolicyDefinitionSummaryBean> listPolicyDefinitions() throws StorageException {
         @SuppressWarnings("nls")
+        String[] fields = {"id", "policyImpl", "name", "description", "icon", "pluginId", "formType"};
         SearchSourceBuilder builder = new SearchSourceBuilder()
-                .fields("id", "policyImpl", "name", "description", "icon", "pluginId", "formType")
+                .fetchSource(fields, null)
                 .sort("name.raw", SortOrder.ASC).size(100);
-        SearchHits hits = listEntities("policyDef", builder); //$NON-NLS-1$
-        List<PolicyDefinitionSummaryBean> rval = new ArrayList<>((int) hits.totalHits());
-        for (SearchHit hit : hits) {
-            PolicyDefinitionSummaryBean bean = EsMarshalling.unmarshallPolicyDefinitionSummary(hit.getFields());
+        List<Hit<Map,Void>> hits = listEntities("policyDef", builder); //$NON-NLS-1$
+        List<PolicyDefinitionSummaryBean> rval = new ArrayList<>((int) hits.size());
+        for (Hit<Map,Void> hit : hits) {
+            PolicyDefinitionSummaryBean bean = EsMarshalling.unmarshallPolicyDefinitionSummary(hit.source);
             rval.add(bean);
         }
         return rval;
@@ -1433,10 +1442,10 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
         @SuppressWarnings("nls")
         SearchSourceBuilder builder = new SearchSourceBuilder().sort("appOrganizationId", SortOrder.ASC)
                 .sort("appId", SortOrder.ASC).query(query).size(500);
-        SearchHits hits = listEntities("contract", builder); //$NON-NLS-1$
-        List<ContractSummaryBean> rval = new ArrayList<>((int) hits.totalHits());
-        for (SearchHit hit : hits) {
-            ContractSummaryBean bean = EsMarshalling.unmarshallContractSummary(hit.getSource());
+        List<Hit<Map,Void>> hits = listEntities("contract", builder); //$NON-NLS-1$
+        List<ContractSummaryBean> rval = new ArrayList<>((int) hits.size());
+        for (Hit<Map,Void> hit : hits) {
+            ContractSummaryBean bean = EsMarshalling.unmarshallContractSummary(hit.source);
             rval.add(bean);
         }
         return rval;
@@ -1463,14 +1472,15 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
                 FilterBuilders.termFilter("pluginId", pluginId)
             );
         @SuppressWarnings("nls")
+        String[] fields = {"id", "policyImpl", "name", "description", "icon", "pluginId", "formType"};
         SearchSourceBuilder builder = new SearchSourceBuilder()
-                .fields("id", "policyImpl", "name", "description", "icon", "pluginId", "formType")
+                .fetchSource(fields, null)
                 .query(qb)
                 .sort("name.raw", SortOrder.ASC).size(100);
-        SearchHits hits = listEntities("policyDef", builder); //$NON-NLS-1$
-        List<PolicyDefinitionSummaryBean> rval = new ArrayList<>((int) hits.totalHits());
-        for (SearchHit hit : hits) {
-            PolicyDefinitionSummaryBean bean = EsMarshalling.unmarshallPolicyDefinitionSummary(hit.getFields());
+        List<Hit<Map,Void>> hits = listEntities("policyDef", builder); //$NON-NLS-1$
+        List<PolicyDefinitionSummaryBean> rval = new ArrayList<>((int) hits.size());
+        for (Hit<Map,Void> hit : hits) {
+            PolicyDefinitionSummaryBean bean = EsMarshalling.unmarshallPolicyDefinitionSummary(hit.source);
             rval.add(bean);
         }
         return rval;
@@ -1506,7 +1516,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
      */
     @Override
     public SearchResultsBean<UserBean> findUsers(SearchCriteriaBean criteria) throws StorageException {
-        return find(criteria, "user", new IUnmarshaller<UserBean>() { //$NON-NLS-1$
+        return find(criteria, "user",  new IUnmarshaller<UserBean>() { //$NON-NLS-1$
             @Override
             public UserBean unmarshal(Map<String, Object> source) {
                 return EsMarshalling.unmarshallUser(source);
@@ -1571,7 +1581,22 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
             FilterBuilders.andFilter(
                 FilterBuilders.termFilter("organizationId", organizationId),
                 FilterBuilders.termFilter("userId", userId)));
-        esClient.prepareDeleteByQuery(INDEX_NAME).setTypes("roleMembership").setQuery(query).execute().actionGet();
+        String string = query.toString();
+        //Workaround for bug in FilteredQueryBuilder which does not (yet) wrap
+        //the JSON in a query element
+        if (string.indexOf("query") < 0 || string.indexOf("query") > 7) {
+        	string = "{ \"query\" : " + string + "}";
+        }
+        DeleteByQuery deleteByQuery = new DeleteByQuery.Builder(string)
+        .addIndex(INDEX_NAME)
+        .addType("roleMembership")
+        .build();
+        try {
+        	JestResult response = esClient.execute(deleteByQuery);
+        	if (!response.isSucceeded()) throw new StorageException(response.getErrorMessage());
+        } catch (Exception e) {
+        	throw new StorageException(e);
+        }
     }
 
     /**
@@ -1586,14 +1611,10 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
                 FilterBuilders.termFilter("userId", userId)
             );
             SearchSourceBuilder builder = new SearchSourceBuilder().query(qb).size(2);
-            SearchRequest request = new SearchRequest(INDEX_NAME);
-            request.types("roleMembership"); //$NON-NLS-1$
-            request.source(builder);
-            SearchResponse response = esClient.search(request).get();
-            SearchHits hits = response.getHits();
+            List<Hit<Map,Void>> hits = listEntities("roleMembership", builder);
             Set<RoleMembershipBean> rval = new HashSet<>();
-            for (SearchHit hit : hits) {
-                RoleMembershipBean roleMembership = EsMarshalling.unmarshallRoleMembership(hit.getSource());
+            for (Hit<Map,Void> hit : hits) {
+                RoleMembershipBean roleMembership = EsMarshalling.unmarshallRoleMembership(hit.source);
                 rval.add(roleMembership);
             }
             return rval;
@@ -1618,14 +1639,10 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
                 )
             );
             SearchSourceBuilder builder = new SearchSourceBuilder().query(qb).size(2);
-            SearchRequest request = new SearchRequest(INDEX_NAME);
-            request.types("roleMembership"); //$NON-NLS-1$
-            request.source(builder);
-            SearchResponse response = esClient.search(request).get();
-            SearchHits hits = response.getHits();
+            List<Hit<Map,Void>> hits = listEntities("roleMembership", builder);
             Set<RoleMembershipBean> rval = new HashSet<>();
-            for (SearchHit hit : hits) {
-                RoleMembershipBean roleMembership = EsMarshalling.unmarshallRoleMembership(hit.getSource());
+            for (Hit<Map,Void> hit : hits) {
+                RoleMembershipBean roleMembership = EsMarshalling.unmarshallRoleMembership(hit.source);
                 rval.add(roleMembership);
             }
             return rval;
@@ -1646,14 +1663,10 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
                 FilterBuilders.termFilter("organizationId", organizationId)
             );
             SearchSourceBuilder builder = new SearchSourceBuilder().query(qb).size(500);
-            SearchRequest request = new SearchRequest(INDEX_NAME);
-            request.types("roleMembership"); //$NON-NLS-1$
-            request.source(builder);
-            SearchResponse response = esClient.search(request).get();
-            SearchHits hits = response.getHits();
+            List<Hit<Map,Void>> hits = listEntities("roleMembership", builder);
             Set<RoleMembershipBean> rval = new HashSet<>();
-            for (SearchHit hit : hits) {
-                RoleMembershipBean roleMembership = EsMarshalling.unmarshallRoleMembership(hit.getSource());
+            for (Hit<Map,Void> hit : hits) {
+                RoleMembershipBean roleMembership = EsMarshalling.unmarshallRoleMembership(hit.source);
                 rval.add(roleMembership);
             }
             return rval;
@@ -1674,15 +1687,11 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
                     FilterBuilders.termFilter("userId", userId)
                 );
             SearchSourceBuilder builder = new SearchSourceBuilder().query(qb).size(500);
-            SearchRequest request = new SearchRequest(INDEX_NAME);
-            request.types("roleMembership"); //$NON-NLS-1$
-            request.source(builder);
-            SearchResponse response = esClient.search(request).get();
-            SearchHits hits = response.getHits();
-            Set<PermissionBean> rval = new HashSet<>((int) hits.totalHits());
-            if (hits.totalHits() > 0) {
-                for (SearchHit hit : hits) {
-                    Map<String, Object> source = hit.getSource();
+            List<Hit<Map,Void>> hits = listEntities("roleMembership", builder); //$NON-NLS-1$
+            Set<PermissionBean> rval = new HashSet<>((int) hits.size());
+            if (hits.size() > 0) {
+                for (Hit<Map,Void> hit : hits) {
+                    Map<String, Object> source = hit.source;
                     String roleId = String.valueOf(source.get("roleId")); //$NON-NLS-1$
                     String qualifier = String.valueOf(source.get("organizationId")); //$NON-NLS-1$
                     RoleBean role = getRole(roleId);
@@ -1709,8 +1718,8 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
      * @param entitySource
      * @throws StorageException
      */
-    private void indexEntity(String type, String id, XContentBuilder entitySource) throws StorageException {
-        indexEntity(type, id, entitySource, false);
+    private void indexEntity(String type, String id, XContentBuilder sourceEntity) throws StorageException {
+        indexEntity(type, id, sourceEntity, false);
     }
 
     /**
@@ -1722,21 +1731,15 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
      * @throws StorageException
      */
     @SuppressWarnings("nls")
-    private void indexEntity(String type, String id, XContentBuilder entitySource, boolean refresh)
+    private void indexEntity(String type, String id, XContentBuilder sourceEntity, boolean refresh)
             throws StorageException {
         try {
-            IndexRequest request = new IndexRequest(INDEX_NAME, type, id);
-            request.create(true);
-            request.refresh(refresh);
-            request.contentType(XContentType.JSON);
-            request.source(entitySource);
-
-            ActionFuture<IndexResponse> future = esClient.index(request);
-
-            IndexResponse response = future.get();
-            if (!response.isCreated()) {
-                throw new StorageException("Failed to index document " + id + " of type " + type + ".");
-            }
+        	String json = sourceEntity.string();
+        	JestResult response = esClient.execute( new Index.
+        			Builder(json).refresh(true).index(INDEX_NAME).type(type).id(id).build());
+        	if (! response.isSucceeded()) {
+        		throw new StorageException("Failed to index document " + id + " of type " + type + ".");
+        	}
         } catch (StorageException e) {
             throw e;
         } catch (Exception e) {
@@ -1750,15 +1753,15 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
      * @param id
      * @throws StorageException
      */
-    private Map<String, Object> getEntity(String type, String id) throws StorageException {
+    @SuppressWarnings("unchecked")
+	private Map<String,Object> getEntity(String type, String id) throws StorageException {
         try {
-            GetRequest request = new GetRequest(INDEX_NAME, type, id);
-            ActionFuture<GetResponse> future = esClient.get(request);
-            GetResponse response = future.get();
-            if (!response.isExists()) {
-                return null;
-            }
-            return response.getSourceAsMap();
+        	JestResult response = esClient.execute(new Get.
+        			Builder(INDEX_NAME, id).type(type).build());
+        	if (! response.isSucceeded()) {
+        		return null;
+        	}
+        	return (Map<String,Object>) response.getSourceAsObject(Map.class);
         } catch (Exception e) {
             throw new StorageException(e);
         }
@@ -1770,13 +1773,13 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
      * @param search
      * @throws StorageException
      */
-    private SearchHits listEntities(String type, SearchSourceBuilder search) throws StorageException {
+    private List<Hit<Map,Void>> listEntities(String type, SearchSourceBuilder searchSourceBuilder) throws StorageException {
         try {
-            SearchRequest request = new SearchRequest(INDEX_NAME);
-            request.types(type);
-            request.source(search);
-            SearchResponse response = esClient.search(request).get();
-            SearchHits hits = response.getHits();
+        	String query = searchSourceBuilder.toString();
+        	Search search = new Search.Builder(query).addIndex(INDEX_NAME)
+        			.addType(type).build();
+        	SearchResult response = esClient.execute(search);
+            List<Hit<Map,Void>> hits = response.getHits(Map.class);
             return hits;
         } catch (Exception e) {
             throw new StorageException(e);
@@ -1791,12 +1794,10 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
      */
     private void deleteEntity(String type, String id) throws StorageException {
         try {
-            DeleteRequest request = new DeleteRequest(INDEX_NAME, type, id);
-            ActionFuture<DeleteResponse> future = esClient.delete(request);
-            DeleteResponse response = future.get();
-            if (!response.isFound()) {
-                throw new StorageException("Document could not be deleted because it did not exist."); //$NON-NLS-1$
-            }
+        	JestResult response = esClient.execute( new Delete.Builder(id).index(INDEX_NAME).type(type).build());
+        	if (!response.isSucceeded()) {
+        		throw new StorageException("Document could not be deleted because it did not exist."); //$NON-NLS-1$
+        	}
         } catch (StorageException e) {
             throw e;
         } catch (Exception e) {
@@ -1813,13 +1814,9 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
      */
     private void updateEntity(String type, String id, XContentBuilder source) throws StorageException {
         try {
-            IndexRequest request = new IndexRequest(INDEX_NAME, type, id);
-            request.create(false);
-            request.contentType(XContentType.JSON);
-            request.source(source);
-
-            ActionFuture<IndexResponse> future = esClient.index(request);
-            future.get();
+        	String doc = source.string();
+        	JestResult response = esClient.execute(new Index.
+        			Builder(doc).setParameter(Parameters.OP_TYPE, "index").index(INDEX_NAME).type(type).id(id).build());
         } catch (Exception e) {
             throw new StorageException(e);
         }
@@ -1833,7 +1830,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
      * @throws StorageException
      */
     private <T> SearchResultsBean<T> find(SearchCriteriaBean criteria, String type,
-            IUnmarshaller<T> unmarshaller) throws StorageException {
+    		IUnmarshaller<T> unmarshaller) throws StorageException {
         try {
             SearchResultsBean<T> rval = new SearchResultsBean<>();
 
@@ -1890,18 +1887,19 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
             }
             builder.query(q);
 
-            SearchRequest request = new SearchRequest(INDEX_NAME);
-            request.types(type);
-            request.source(builder);
-            SearchResponse response = esClient.search(request).get();
-            SearchHits hits = response.getHits();
-            rval.setTotalSize((int) hits.totalHits());
-            for (SearchHit hit : hits) {
-                Map<String, Object> sourceAsMap = hit.sourceAsMap();
-                T bean = unmarshaller.unmarshal(sourceAsMap);
-                rval.getBeans().add(bean);
-            }
-
+            
+            String query = builder.toString();
+        	Search search = new Search.Builder(query).addIndex(INDEX_NAME)
+        			.addType(type).build();
+        	SearchResult response = esClient.execute(search);
+            List<Hit<Map,Void>> hits = response.getHits(Map.class);
+            
+            rval.setTotalSize(response.getTotal());
+            for (Hit<Map,Void> hit : hits) {
+            	Map sourceAsMap = hit.source;
+            	T bean = unmarshaller.unmarshal(sourceAsMap);
+            	rval.getBeans().add(bean);
+			}
             return rval;
         } catch (Exception e) {
             throw new StorageException(e);

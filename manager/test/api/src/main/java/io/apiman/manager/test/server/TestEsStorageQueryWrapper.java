@@ -36,12 +36,11 @@ import io.apiman.manager.api.beans.summary.ServiceSummaryBean;
 import io.apiman.manager.api.beans.summary.ServiceVersionSummaryBean;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.StorageException;
+import io.searchbox.client.JestClient;
+import io.searchbox.indices.Refresh;
 
 import java.util.List;
 import java.util.Set;
-
-import org.elasticsearch.action.admin.indices.refresh.RefreshRequest;
-import org.elasticsearch.client.Client;
 
 /**
  * @author eric.wittmann@redhat.com
@@ -49,7 +48,7 @@ import org.elasticsearch.client.Client;
 @SuppressWarnings("javadoc")
 public class TestEsStorageQueryWrapper implements IStorageQuery {
 
-    private Client esClient;
+    private JestClient esClient;
     private IStorageQuery delegate;
     
     /**
@@ -57,7 +56,7 @@ public class TestEsStorageQueryWrapper implements IStorageQuery {
      * @param esClient 
      * @param delegate
      */
-    public TestEsStorageQueryWrapper(Client esClient, IStorageQuery delegate) {
+    public TestEsStorageQueryWrapper(JestClient esClient, IStorageQuery delegate) {
         this.esClient = esClient;
         this.delegate = delegate;
     }
@@ -317,7 +316,7 @@ public class TestEsStorageQueryWrapper implements IStorageQuery {
      */
     private void refresh() {
         try {
-            esClient.admin().indices().refresh(new RefreshRequest("apiman_manager")).get(); //$NON-NLS-1$
+        	esClient.execute(new Refresh.Builder().refresh(true).addIndex("apiman_manager").build());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
