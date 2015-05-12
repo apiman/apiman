@@ -15,6 +15,7 @@
     <module>core</module>
     <module>gateway</module>
     <module>es</module>
+    <module>es-transport</module>
     <module>ispn</module>
     <module>jpa</module>
     <module>jpa-idm</module>
