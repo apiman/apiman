@@ -1,6 +1,6 @@
 /// <reference path="../../includes.ts"/>
 module Apiman {
-
+    
     _module.directive('apimanActionBtn',
         ['Logger', function(Logger) {
             return {
@@ -48,7 +48,7 @@ module Apiman {
                     });
 
                     if (attrs.ngOptions && / in /.test(attrs.ngOptions)) {
-                        var refreshModel = attrs.ngOptions.split(' in ')[1];
+                        var refreshModel = attrs.ngOptions.split(' in ')[1].split(' ')[0];
                         Logger.debug('Watching model {0} for {1}.', refreshModel, attrs.ngModel);
                         scope.$watch(refreshModel, function() {
                             scope.$applyAsync(function() {
@@ -359,6 +359,7 @@ module Apiman {
                                 return function(result) {
                                     $elem.val(result.target.result);
                                     ngModel.$setViewValue(result.target.result);
+                                    $scope.$emit('afterdrop', { element: $elem, value: result.target.result });
                                 };
                             })(firstFile);
 

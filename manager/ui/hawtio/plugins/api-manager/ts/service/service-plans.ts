@@ -75,9 +75,9 @@ module Apiman {
                 if (newValue.publicService != $scope.version.publicService) {
                     dirty = true;
                 }
-                if (newValue.plans.length != $scope.version.plans.length) {
+                if (newValue.plans && $scope.version.plans && newValue.plans.length != $scope.version.plans.length) {
                     dirty = true;
-                } else {
+                } else if (newValue.plans && $scope.version.plans) {
                     for (var i = 0 ; i < newValue.plans.length; i++) {
                         var p1 = newValue.plans[i];
                         var p2 = $scope.version.plans[i];

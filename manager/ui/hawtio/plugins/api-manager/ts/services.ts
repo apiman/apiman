@@ -2,6 +2,12 @@
 module ApimanServices {
 
     export var _module = angular.module("ApimanServices", ['ngResource', 'ApimanConfiguration']);
+    
+    var formatEndpoint = function(endpoint, params) {
+        return endpoint.replace(/:(\w+)/g, function(match, key) {
+            return params[key] ? params[key] : (':' + key);
+        });
+    };
 
     export var ApimanServices = _module.factory('ApimanSvcs', ['$resource', 'Configuration',
         function($resource, Configuration) {
@@ -36,10 +42,7 @@ module ApimanServices {
                     
                     page: '@page',
                     count: '@count'
-                }, {
-                update: {
-                  method: 'PUT' // update issues a PUT request
-                }});
+                });
         }]);
 
     export var CurrentUserServices = _module.factory('CurrentUserSvcs', ['$resource', 'Configuration',
@@ -93,6 +96,37 @@ module ApimanServices {
                     $resource(endpoint, { pluginId: '@pluginId', policyDefId: '@policyDefId' }).get(
                         {pluginId: pluginId, policyDefId: policyDefId}, 
                         handler, errorHandler);
+                }
+            }
+        }]);
+
+    export var ServiceDefinitionServices = _module.factory('ServiceDefinitionSvcs', ['$resource', '$http', 'Configuration',
+        function($resource, $http, Configuration) {
+            return {
+                getServiceDefinition: function(orgId, serviceId, version, handler, errorHandler) {
+                    var endpoint = formatEndpoint(
+                        Configuration.api.endpoint + '/organizations/:organizationId/services/:serviceId/versions/:version/definition',
+                        { organizationId: orgId, serviceId: serviceId, version: version });
+                    $http({
+                        method: 'GET', 
+                        url: endpoint, 
+                        transformResponse: function(value) { return value; }
+                    }).success(handler).error(errorHandler);
+                },
+                updateServiceDefinition: function(orgId, serviceId, version, definition, definitionType, handler, errorHandler) {
+                    var ct = 'application/json';
+                    if (definitionType == 'SwaggerYAML') {
+                        ct = 'application/x-yaml';
+                    }
+                    var endpoint = formatEndpoint(
+                        Configuration.api.endpoint + '/organizations/:organizationId/services/:serviceId/versions/:version/definition',
+                        { organizationId: orgId, serviceId: serviceId, version: version });
+                    $http({
+                        method: 'PUT', 
+                        url: endpoint,
+                        headers: { 'Content-Type' : ct },
+                        data: definition
+                    }).success(handler).error(errorHandler);
                 }
             }
         }]);
