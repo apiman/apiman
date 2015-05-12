@@ -182,6 +182,9 @@ module Apiman {
         ['$scope', 'Logger',
         ($scope, Logger) => {
             var validate = function(config) {
+                if (!config) {
+                    return;
+                }
                 var valid = true;
                 if (!config.realm) {
                     valid = false;
@@ -206,6 +209,11 @@ module Apiman {
                     if (config.ldapIdentity.bindAs == 'ServiceAccount') {
                         if (!config.ldapIdentity.credentials || !config.ldapIdentity.credentials.username || !config.ldapIdentity.credentials.password) {
                             valid = false;
+                        }
+                        if (config.ldapIdentity.credentials) {
+                            if (config.ldapIdentity.credentials.password != $scope.repeatPassword) {
+                                valid = false;
+                            }
                         }
                         if (!config.ldapIdentity.userSearch || !config.ldapIdentity.userSearch.baseDn || !config.ldapIdentity.userSearch.expression) {
                             valid = false;
@@ -234,13 +242,19 @@ module Apiman {
                 $scope.setValid(valid);
             };
             $scope.$watch('config', validate, true);
+            $scope.$watch('repeatPassword', function() {
+                validate($scope.config);
+            });
             
-            if ($scope.config.staticIdentity) {
-                $scope.identitySourceType = 'static';
-            } else if ($scope.config.ldapIdentity) {
-                $scope.identitySourceType = 'ldap';
-            } else if ($scope.config.jdbcIdentity) {
-                $scope.identitySourceType = 'jdbc';
+            if ($scope.config) {
+                if ($scope.config.staticIdentity) {
+                    $scope.identitySourceType = 'static';
+                } else if ($scope.config.ldapIdentity) {
+                    $scope.identitySourceType = 'ldap';
+                    $scope.repeatPassword = $scope.config.ldapIdentity.credentials.password;
+                } else if ($scope.config.jdbcIdentity) {
+                    $scope.identitySourceType = 'jdbc';
+                }
             }
             
             $scope.$watch('identitySourceType', function(newValue) {

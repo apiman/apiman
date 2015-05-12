@@ -35,7 +35,7 @@
       <dt apiman-i18n-key="static-identities">Static Identities</dt>
     </div>
     <div style="width: 100%; float: left; margin-bottom: 5px;">
-      <select ng-model="selectedIdentity" multiple class="form-control" style="height: 150px; width: 200px; float: left;" ng-options="(item.username + ':' + item.password) for item in config.staticIdentity.identities | orderBy: 'username'">
+      <select ng-model="selectedIdentity" multiple class="form-control" style="height: 150px; width: 200px; float: left;" ng-options="(item.username) for item in config.staticIdentity.identities | orderBy: 'username'">
       </select>
       <div style="margin-left: 5px; float: left">
         <button ng-click="clear()" ng-disabled="!config.staticIdentity.identities" apiman-i18n-key="clear" class="btn btn-default" style="min-width: 75px">Clear</button>
@@ -46,7 +46,7 @@
     <div style="width: 100%; float: left; margin-bottom: 10px; margin-top: 5px">
       <input ng-model="username" class="form-control" style="width: 85px; float: left; margin-right: 5px" type="text" apiman-i18n-key="basic-auth.enter-username" placeholder="Username..."></input>
       <div style="width: 8px; float: left; line-height: 28px" apiman-i18n-skip>:</div>
-      <input ng-model="password" class="form-control" style="width: 102px; float: left; margin-right: 5px" type="text" apiman-i18n-key="basic-auth.enter-password" placeholder="Password..."></input>
+      <input ng-model="password" class="form-control" style="width: 102px; float: left; margin-right: 5px" type="password" apiman-i18n-key="basic-auth.enter-password" placeholder="Password..."></input>
       <button ng-disabled="!username || !password" ng-click="add(username, password)" apiman-i18n-key="add" class="btn btn-default" style="min-width: 75px">Add</button>
     </div>
   </div>
@@ -112,7 +112,8 @@
 	        </dd>
 	        <dt apiman-i18n-key="service-account-password">Service Account Password</dt>
 	        <dd>
-	          <input ng-model="config.ldapIdentity.credentials.password" class="form-control" type="text" apiman-i18n-key="basic-auth.ldap.credentials.password" placeholder="Enter a password..."></input>
+	          <input ng-model="config.ldapIdentity.credentials.password" class="form-control" type="password" apiman-i18n-key="basic-auth.ldap.credentials.password" placeholder="Enter a password..."></input>
+              <input style="margin-top: 3px" ng-model="repeatPassword" class="form-control" type="password" apiman-i18n-key="basic-auth.ldap.credentials.repeat-password" placeholder="Repeat password"></input>
 	        </dd>
             <dt apiman-i18n-key="user-search-base-dn">User Search Base DN</dt>
             <dd>
