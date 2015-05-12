@@ -70,7 +70,6 @@ import java.util.Set;
 
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
-import org.elasticsearch.search.SearchHitField;
 
 /**
  * Marshalls objects into Maps to be used in ES requests.  Also unmarshalls from
@@ -529,7 +528,7 @@ public class EsMarshalling {
                     .field("icon", bean.getIcon())
                     .field("pluginId", bean.getPluginId())
                     .field("policyImpl", bean.getPolicyImpl());
-            
+
             Set<PolicyDefinitionTemplateBean> templates = bean.getTemplates();
             if (templates != null) {
                 builder.field("templates").startArray();
@@ -541,7 +540,7 @@ public class EsMarshalling {
                 }
                 builder.endArray();
             }
-            
+
             builder.endObject();
             return builder;
         } catch (IOException e) {
@@ -877,7 +876,7 @@ public class EsMarshalling {
                 bean.getPlans().add(planBean);
             }
         }
-        
+
         return bean;
     }
 
@@ -978,7 +977,7 @@ public class EsMarshalling {
         bean.setVersion(asString(source.get("version")));
         return bean;
     }
-    
+
     /**
      * Unmarshals the given map source into a bean.
      * @param source the source
@@ -1104,12 +1103,12 @@ public class EsMarshalling {
      * @param map the search hit map
      * @return the gateway summary
      */
-    public static GatewaySummaryBean unmarshallGatewaySummary(Map<String, String> map) {
+    public static GatewaySummaryBean unmarshallGatewaySummary(Map<String, Object> map) {
         GatewaySummaryBean bean = new GatewaySummaryBean();
-        bean.setId(map.get("id"));
-        bean.setName(map.get("name"));
+        bean.setId(asString(map.get("id")));
+        bean.setName(asString(map.get("name")));
         if (map.containsKey("description")) {
-            bean.setDescription(map.get("description"));
+            bean.setDescription(asString(map.get("description")));
         }
         bean.setType(asEnum(map.get("type"), GatewayType.class));
         return bean;
@@ -1152,16 +1151,16 @@ public class EsMarshalling {
      * @param map the search map
      * @return the policy definition summary
      */
-    public static PolicyDefinitionSummaryBean unmarshallPolicyDefinitionSummary(Map<String, String> map) {
+    public static PolicyDefinitionSummaryBean unmarshallPolicyDefinitionSummary(Map<String, Object> map) {
         PolicyDefinitionSummaryBean bean = new PolicyDefinitionSummaryBean();
-        bean.setId(map.get("id"));
-        bean.setName(map.get("name"));
+        bean.setId(asString(map.get("id")));
+        bean.setName(asString(map.get("name")));
         if (map.containsKey("description")) {
-            bean.setDescription(map.get("description"));
+            bean.setDescription(asString(map.get("description")));
         }
-        bean.setPolicyImpl(map.get("policyImpl"));
+        bean.setPolicyImpl(asString(map.get("policyImpl")));
         if (map.containsKey("icon")) {
-            bean.setIcon(map.get("icon"));
+            bean.setIcon(asString(map.get("icon")));
         }
         if (map.containsKey("pluginId")) {
             bean.setPluginId(asLong(map.get("pluginId")));
@@ -1201,25 +1200,25 @@ public class EsMarshalling {
      * @param map the search hit map
      * @return the plugin summary
      */
-    public static PluginSummaryBean unmarshallPluginSummary(Map<String, String> map) {
+    public static PluginSummaryBean unmarshallPluginSummary(Map<String, Object> map) {
         PluginSummaryBean bean = new PluginSummaryBean();
         bean.setId(asLong(map.get("id")));
-        bean.setName(map.get("name"));
+        bean.setName(asString(map.get("name")));
         if (map.containsKey("description")) {
-            bean.setDescription(map.get("description"));
+            bean.setDescription(asString(map.get("description")));
         }
-        bean.setGroupId(map.get("groupId"));
-        bean.setArtifactId(map.get("artifactId"));
-        bean.setVersion(map.get("version"));
+        bean.setGroupId(asString(map.get("groupId")));
+        bean.setArtifactId(asString(map.get("artifactId")));
+        bean.setVersion(asString(map.get("version")));
         if (map.containsKey("type")) {
-            bean.setType(map.get("type"));
+            bean.setType(asString(map.get("type")));
         }
         if (map.containsKey("classifier")) {
-            bean.setClassifier(map.get("classifier"));
+            bean.setClassifier(asString(map.get("classifier")));
         }
-        bean.setCreatedBy(map.get("createdBy"));
+        bean.setCreatedBy(asString(map.get("createdBy")));
         bean.setCreatedOn(asDate(map.get("createdOn")));
-        
+
         return bean;
     }
 

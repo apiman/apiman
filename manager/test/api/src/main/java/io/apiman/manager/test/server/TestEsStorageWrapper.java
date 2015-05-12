@@ -38,20 +38,20 @@ import java.io.InputStream;
 import java.util.List;
 
 /**
- * Wraps the ES storage impl so that it can "refresh" the indexes 
+ * Wraps the ES storage impl so that it can "refresh" the indexes
  * when appropriate.
  *
  * @author eric.wittmann@redhat.com
  */
 @SuppressWarnings("javadoc")
 public class TestEsStorageWrapper implements IStorage {
-    
+
     private JestClient esClient;
     private IStorage delegate;
-    
+
     /**
      * Constructor.
-     * @param esClient 
+     * @param esClient
      * @param delegate
      */
     public TestEsStorageWrapper(JestClient esClient, IStorage delegate) {
@@ -97,7 +97,7 @@ public class TestEsStorageWrapper implements IStorage {
     @Override
     public void createApplication(ApplicationBean application) throws StorageException {
         this.delegate.createApplication(application);
-        
+
     }
 
     /**
@@ -106,7 +106,7 @@ public class TestEsStorageWrapper implements IStorage {
     @Override
     public void createApplicationVersion(ApplicationVersionBean version) throws StorageException {
         this.delegate.createApplicationVersion(version);
-        
+
     }
 
     /**
@@ -115,7 +115,7 @@ public class TestEsStorageWrapper implements IStorage {
     @Override
     public void createContract(ContractBean contract) throws StorageException {
         this.delegate.createContract(contract);
-        
+
     }
 
     /**
@@ -124,7 +124,7 @@ public class TestEsStorageWrapper implements IStorage {
     @Override
     public void createService(ServiceBean service) throws StorageException {
         this.delegate.createService(service);
-        
+
     }
 
     /**
@@ -133,7 +133,7 @@ public class TestEsStorageWrapper implements IStorage {
     @Override
     public void createServiceVersion(ServiceVersionBean version) throws StorageException {
         this.delegate.createServiceVersion(version);
-        
+
     }
 
     /**
@@ -142,7 +142,7 @@ public class TestEsStorageWrapper implements IStorage {
     @Override
     public void createPlan(PlanBean plan) throws StorageException {
         this.delegate.createPlan(plan);
-        
+
     }
 
     /**
@@ -151,7 +151,7 @@ public class TestEsStorageWrapper implements IStorage {
     @Override
     public void createPlanVersion(PlanVersionBean version) throws StorageException {
         this.delegate.createPlanVersion(version);
-        
+
     }
 
     /**
@@ -160,7 +160,7 @@ public class TestEsStorageWrapper implements IStorage {
     @Override
     public void createPolicy(PolicyBean policy) throws StorageException {
         this.delegate.createPolicy(policy);
-        
+
     }
 
     /**
@@ -169,7 +169,7 @@ public class TestEsStorageWrapper implements IStorage {
     @Override
     public void createGateway(GatewayBean gateway) throws StorageException {
         this.delegate.createGateway(gateway);
-        
+
     }
 
     /**
@@ -178,7 +178,7 @@ public class TestEsStorageWrapper implements IStorage {
     @Override
     public void createPlugin(PluginBean plugin) throws StorageException {
         this.delegate.createPlugin(plugin);
-        
+
     }
 
     /**
@@ -187,7 +187,7 @@ public class TestEsStorageWrapper implements IStorage {
     @Override
     public void createPolicyDefinition(PolicyDefinitionBean policyDef) throws StorageException {
         this.delegate.createPolicyDefinition(policyDef);
-        
+
     }
 
     /**
@@ -196,7 +196,7 @@ public class TestEsStorageWrapper implements IStorage {
     @Override
     public void createAuditEntry(AuditEntryBean entry) throws StorageException {
         this.delegate.createAuditEntry(entry);
-        
+
     }
 
     /**
@@ -205,7 +205,7 @@ public class TestEsStorageWrapper implements IStorage {
     @Override
     public void updateOrganization(OrganizationBean organization) throws StorageException {
         this.delegate.updateOrganization(organization);
-        
+
     }
 
     /**
@@ -214,7 +214,7 @@ public class TestEsStorageWrapper implements IStorage {
     @Override
     public void updateApplication(ApplicationBean application) throws StorageException {
         this.delegate.updateApplication(application);
-        
+
     }
 
     /**
@@ -223,7 +223,7 @@ public class TestEsStorageWrapper implements IStorage {
     @Override
     public void updateApplicationVersion(ApplicationVersionBean version) throws StorageException {
         this.delegate.updateApplicationVersion(version);
-        
+
     }
 
     /**
@@ -232,7 +232,7 @@ public class TestEsStorageWrapper implements IStorage {
     @Override
     public void updateService(ServiceBean service) throws StorageException {
         this.delegate.updateService(service);
-        
+
     }
 
     /**
@@ -241,7 +241,7 @@ public class TestEsStorageWrapper implements IStorage {
     @Override
     public void updateServiceVersion(ServiceVersionBean version) throws StorageException {
         this.delegate.updateServiceVersion(version);
-        
+
     }
 
     /**
@@ -250,7 +250,7 @@ public class TestEsStorageWrapper implements IStorage {
     @Override
     public void updatePlan(PlanBean plan) throws StorageException {
         this.delegate.updatePlan(plan);
-        
+
     }
 
     /**
@@ -259,7 +259,7 @@ public class TestEsStorageWrapper implements IStorage {
     @Override
     public void updatePlanVersion(PlanVersionBean version) throws StorageException {
         this.delegate.updatePlanVersion(version);
-        
+
     }
 
     /**
@@ -268,7 +268,7 @@ public class TestEsStorageWrapper implements IStorage {
     @Override
     public void updatePolicy(PolicyBean policy) throws StorageException {
         this.delegate.updatePolicy(policy);
-        
+
     }
 
     /**
@@ -277,7 +277,7 @@ public class TestEsStorageWrapper implements IStorage {
     @Override
     public void updateGateway(GatewayBean gateway) throws StorageException {
         this.delegate.updateGateway(gateway);
-        
+
     }
 
     /**
@@ -286,7 +286,7 @@ public class TestEsStorageWrapper implements IStorage {
     @Override
     public void updatePolicyDefinition(PolicyDefinitionBean policyDef) throws StorageException {
         this.delegate.updatePolicyDefinition(policyDef);
-        
+
     }
 
     /**
@@ -295,7 +295,7 @@ public class TestEsStorageWrapper implements IStorage {
     @Override
     public void deleteOrganization(OrganizationBean organization) throws StorageException {
         this.delegate.deleteOrganization(organization);
-        
+
     }
 
     /**
@@ -304,7 +304,7 @@ public class TestEsStorageWrapper implements IStorage {
     @Override
     public void deleteApplication(ApplicationBean application) throws StorageException {
         this.delegate.deleteApplication(application);
-        
+
     }
 
     /**
@@ -313,7 +313,7 @@ public class TestEsStorageWrapper implements IStorage {
     @Override
     public void deleteApplicationVersion(ApplicationVersionBean version) throws StorageException {
         this.delegate.deleteApplicationVersion(version);
-        
+
     }
 
     /**
@@ -322,7 +322,7 @@ public class TestEsStorageWrapper implements IStorage {
     @Override
     public void deleteContract(ContractBean contract) throws StorageException {
         this.delegate.deleteContract(contract);
-        
+
     }
 
     /**
@@ -331,7 +331,7 @@ public class TestEsStorageWrapper implements IStorage {
     @Override
     public void deleteService(ServiceBean service) throws StorageException {
         this.delegate.deleteService(service);
-        
+
     }
 
     /**
@@ -340,7 +340,7 @@ public class TestEsStorageWrapper implements IStorage {
     @Override
     public void deleteServiceVersion(ServiceVersionBean version) throws StorageException {
         this.delegate.deleteServiceVersion(version);
-        
+
     }
 
     /**
@@ -349,7 +349,7 @@ public class TestEsStorageWrapper implements IStorage {
     @Override
     public void deletePlan(PlanBean plan) throws StorageException {
         this.delegate.deletePlan(plan);
-        
+
     }
 
     /**
@@ -358,7 +358,7 @@ public class TestEsStorageWrapper implements IStorage {
     @Override
     public void deletePlanVersion(PlanVersionBean version) throws StorageException {
         this.delegate.deletePlanVersion(version);
-        
+
     }
 
     /**
@@ -367,7 +367,7 @@ public class TestEsStorageWrapper implements IStorage {
     @Override
     public void deletePolicy(PolicyBean policy) throws StorageException {
         this.delegate.deletePolicy(policy);
-        
+
     }
 
     /**
@@ -376,7 +376,7 @@ public class TestEsStorageWrapper implements IStorage {
     @Override
     public void deleteGateway(GatewayBean gateway) throws StorageException {
         this.delegate.deleteGateway(gateway);
-        
+
     }
 
     /**
@@ -385,7 +385,7 @@ public class TestEsStorageWrapper implements IStorage {
     @Override
     public void deletePlugin(PluginBean plugin) throws StorageException {
         this.delegate.deletePlugin(plugin);
-        
+
     }
 
     /**
@@ -394,7 +394,7 @@ public class TestEsStorageWrapper implements IStorage {
     @Override
     public void deletePolicyDefinition(PolicyDefinitionBean policyDef) throws StorageException {
         this.delegate.deletePolicyDefinition(policyDef);
-        
+
     }
 
     /**
@@ -497,7 +497,7 @@ public class TestEsStorageWrapper implements IStorage {
         refresh();
         return this.delegate.getPlugin(groupId, artifactId);
     }
-    
+
     /**
      * @see io.apiman.manager.api.core.IStorage#reorderPolicies(io.apiman.manager.api.beans.policies.PolicyType, java.lang.String, java.lang.String, java.lang.String, java.util.List)
      */
@@ -514,7 +514,7 @@ public class TestEsStorageWrapper implements IStorage {
     public PolicyDefinitionBean getPolicyDefinition(String id) throws StorageException {
         return this.delegate.getPolicyDefinition(id);
     }
-    
+
     /**
      * @see io.apiman.manager.api.core.IStorage#deleteServiceDefinition(io.apiman.manager.api.beans.services.ServiceVersionBean)
      */
@@ -522,7 +522,7 @@ public class TestEsStorageWrapper implements IStorage {
     public void deleteServiceDefinition(ServiceVersionBean version) throws StorageException {
         delegate.deleteServiceDefinition(version);
     }
-    
+
     /**
      * @see io.apiman.manager.api.core.IStorage#getServiceDefinition(io.apiman.manager.api.beans.services.ServiceVersionBean)
      */
@@ -530,7 +530,7 @@ public class TestEsStorageWrapper implements IStorage {
     public InputStream getServiceDefinition(ServiceVersionBean serviceVersion) throws StorageException {
         return delegate.getServiceDefinition(serviceVersion);
     }
-    
+
     /**
      * @see io.apiman.manager.api.core.IStorage#updateServiceDefinition(io.apiman.manager.api.beans.services.ServiceVersionBean, java.io.InputStream)
      */
@@ -546,8 +546,7 @@ public class TestEsStorageWrapper implements IStorage {
      */
     private void refresh() {
         try {
-        	//esClient.admin().indices().refresh(new RefreshRequest("apiman_manager")).get(); //$NON-NLS-1$
-        	esClient.execute(new Refresh.Builder().addIndex("apiman_manager").build());
+        	esClient.execute(new Refresh.Builder().addIndex("apiman_manager").build()); //$NON-NLS-1$
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

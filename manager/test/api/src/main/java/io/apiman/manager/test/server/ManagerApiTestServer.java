@@ -31,7 +31,6 @@ import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.SQLException;
 import java.util.EnumSet;
-import java.util.concurrent.TimeUnit;
 
 import javax.naming.InitialContext;
 import javax.naming.NameAlreadyBoundException;
@@ -49,12 +48,7 @@ import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.security.Credential;
-import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
-import org.elasticsearch.client.Client;
-import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.ImmutableSettings.Builder;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.node.NodeBuilder;
 import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
@@ -198,7 +192,7 @@ public class ManagerApiTestServer {
             node.start();
             System.out.println("ES node was successfully started.");
 
-// Commenting this out for now b/c - the JestClient is of a different Client type 
+// Commenting this out for now b/c - the JestClient is of a different Client type
 //            if (!isPersistent) {
 //                Node node = NodeBuilder.nodeBuilder().client(true).loadConfigSettings(false)
 //                        .clusterName(ES_CLUSTER_NAME).local(true)
@@ -211,14 +205,12 @@ public class ManagerApiTestServer {
 //                client = tc;
 //            }
 
-        	String connectionUrl = "http://localhost:6500";
-        	JestClientFactory factory = new JestClientFactory();
-    		factory.setHttpClientConfig(new HttpClientConfig
-    		       .Builder(connectionUrl)
-    			   
-    		       .multiThreaded(true)
-    		       .build());
-    		client = factory.getObject();
+            // TODO parameterize this
+            String connectionUrl = "http://localhost:6500";
+            JestClientFactory factory = new JestClientFactory();
+            factory.setHttpClientConfig(new HttpClientConfig.Builder(connectionUrl).multiThreaded(true)
+                    .build());
+            client = factory.getObject();
             ES_CLIENT = client;
         }
     }

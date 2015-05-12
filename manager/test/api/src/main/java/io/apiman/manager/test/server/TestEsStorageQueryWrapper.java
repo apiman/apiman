@@ -50,10 +50,10 @@ public class TestEsStorageQueryWrapper implements IStorageQuery {
 
     private JestClient esClient;
     private IStorageQuery delegate;
-    
+
     /**
      * Constructor.
-     * @param esClient 
+     * @param esClient
      * @param delegate
      */
     public TestEsStorageQueryWrapper(JestClient esClient, IStorageQuery delegate) {
@@ -316,7 +316,7 @@ public class TestEsStorageQueryWrapper implements IStorageQuery {
      */
     private void refresh() {
         try {
-        	esClient.execute(new Refresh.Builder().refresh(true).addIndex("apiman_manager").build());
+        	esClient.execute(new Refresh.Builder().refresh(true).addIndex("apiman_manager").build()); //$NON-NLS-1$
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

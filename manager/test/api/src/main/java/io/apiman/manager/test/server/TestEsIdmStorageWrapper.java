@@ -197,7 +197,7 @@ public class TestEsIdmStorageWrapper implements IIdmStorage {
      */
     private void refresh() {
         try {
-        	esClient.execute(new Refresh.Builder().addIndex("apiman_manager").build());
+        	esClient.execute(new Refresh.Builder().addIndex("apiman_manager").build()); //$NON-NLS-1$
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
