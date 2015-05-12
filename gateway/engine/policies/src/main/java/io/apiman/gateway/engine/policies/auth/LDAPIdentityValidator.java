@@ -74,6 +74,7 @@ public class LDAPIdentityValidator implements IIdentityValidator<LDAPIdentitySou
         Hashtable<String, String> env = new Hashtable<>();
         env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory"); //$NON-NLS-1$
         env.put(Context.PROVIDER_URL, url);
+        env.put(Context.REFERRAL, "follow"); //$NON-NLS-1$
         if (url.startsWith("ldaps")) { //$NON-NLS-1$
             // TODO handle connections to ldaps with self-sign certs?
         }
