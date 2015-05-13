@@ -19,22 +19,20 @@ import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.components.ISharedStateComponent;
 import io.apiman.gateway.engine.es.beans.PrimitiveBean;
-import io.searchbox.client.JestClient;
-import io.searchbox.client.JestResult;
-import io.searchbox.client.JestResultHandler;
-import io.searchbox.core.Delete;
-import io.searchbox.core.Get;
-import io.searchbox.core.Index;
 
-import java.io.IOException;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 import javax.xml.namespace.QName;
 
 import org.codehaus.jackson.map.DeserializationConfig.Feature;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.elasticsearch.action.ActionListener;
+import org.elasticsearch.action.delete.DeleteResponse;
+import org.elasticsearch.action.get.GetResponse;
+import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.client.Client;
 import org.elasticsearch.common.Base64;
+import org.elasticsearch.common.xcontent.XContentType;
 
 /**
  * An elasticsearch implementation of the shared state component.
@@ -42,14 +40,14 @@ import org.elasticsearch.common.Base64;
  * @author eric.wittmann@redhat.com
  */
 public class ESSharedStateComponent implements ISharedStateComponent {
-
+    
     private static final ObjectMapper mapper = new ObjectMapper();
     static {
         mapper.configure(Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
     private Map<String, String> config;
-    private JestClient esClient;
+    private Client esClient;
 
     /**
      * Constructor.
@@ -70,21 +68,19 @@ public class ESSharedStateComponent implements ISharedStateComponent {
             return;
         }
         String id = getPropertyId(namespace, propertyName);
-
-        Get get = new Get.Builder(ESConstants.INDEX_NAME, id).type("sharedStateProperty").build(); //$NON-NLS-1$
-        try {
-            getClient().executeAsync(get, new JestResultHandler<JestResult>() {
+        getClient().prepareGet(ESConstants.INDEX_NAME, "sharedStateProperty", id) //$NON-NLS-1$
+            .execute(new ActionListener<GetResponse>() {
                 @SuppressWarnings("unchecked")
                 @Override
-                public void completed(JestResult result) {
-                    if (result.isSucceeded()) {
+                public void onResponse(GetResponse response) {
+                    if (response.isExists()) {
                         try {
-                            // TODO this is probably wrong:
+                            String source = response.getSourceAsString();
                             T value = null;
                             if (defaultValue.getClass().isPrimitive() || defaultValue instanceof String) {
-                                value = (T) readPrimitive(result);
+                                value = (T) readPrimitive(source);
                             } else {
-                                value = (T) result.getSourceAsObject(defaultValue.getClass());
+                                value = mapper.reader(defaultValue.getClass()).readValue(source);
                             }
                             handler.handle(AsyncResultImpl.create(value));
                         } catch (Exception e) {
@@ -95,13 +91,10 @@ public class ESSharedStateComponent implements ISharedStateComponent {
                     }
                 }
                 @Override
-                public void failed(Exception e) {
+                public void onFailure(Throwable e) {
                     handler.handle(AsyncResultImpl.<T>create(e));
                 }
             });
-        } catch (ExecutionException | InterruptedException | IOException e) {
-            handler.handle(AsyncResultImpl.<T>create(e));
-        }
     }
 
     /**
@@ -127,25 +120,21 @@ public class ESSharedStateComponent implements ISharedStateComponent {
             handler.handle(AsyncResultImpl.<Void>create(e));
             return;
         }
-
-        try {
-            String id = getPropertyId(namespace, propertyName);
-            String json = source;
-            Index index = new Index.Builder(json).refresh(false).index(ESConstants.INDEX_NAME)
-                    .type("sharedStateProperty").id(id).build(); //$NON-NLS-1$
-            getClient().executeAsync(index, new JestResultHandler<JestResult>() {
+        
+        String id = getPropertyId(namespace, propertyName);
+        getClient().prepareIndex(ESConstants.INDEX_NAME, "sharedStateProperty", id) //$NON-NLS-1$
+            .setSource(source)
+            .setContentType(XContentType.JSON)
+            .execute(new ActionListener<IndexResponse>() {
                 @Override
-                public void completed(JestResult result) {
+                public void onResponse(IndexResponse response) {
                     handler.handle(AsyncResultImpl.create((Void) null));
                 }
                 @Override
-                public void failed(Exception ex) {
-                    handler.handle(AsyncResultImpl.<Void>create(ex));
+                public void onFailure(Throwable e) {
+                    handler.handle(AsyncResultImpl.<Void>create(e));
                 }
             });
-        } catch (ExecutionException | InterruptedException | IOException e) {
-            handler.handle(AsyncResultImpl.<Void>create(e));
-        }
     }
 
     /**
@@ -154,22 +143,17 @@ public class ESSharedStateComponent implements ISharedStateComponent {
     @Override
     public <T> void clearProperty(final String namespace, final String propertyName, final IAsyncResultHandler<Void> handler) {
         String id = getPropertyId(namespace, propertyName);
-
-        try {
-            Delete delete = new Delete.Builder(id).index(ESConstants.INDEX_NAME).type("sharedStateProperty").build(); //$NON-NLS-1$
-            getClient().executeAsync(delete, new JestResultHandler<JestResult>() {
+        getClient().prepareDelete(ESConstants.INDEX_NAME, "sharedStateProperty", id) //$NON-NLS-1$
+            .execute(new ActionListener<DeleteResponse>() {
                 @Override
-                public void completed(JestResult result) {
+                public void onResponse(DeleteResponse response) {
                     handler.handle(AsyncResultImpl.create((Void) null));
                 }
                 @Override
-                public void failed(Exception ex) {
-                    handler.handle(AsyncResultImpl.<Void>create(ex));
+                public void onFailure(Throwable e) {
+                    handler.handle(AsyncResultImpl.<Void>create(e));
                 }
             });
-        } catch (ExecutionException | InterruptedException | IOException e) {
-            handler.handle(AsyncResultImpl.<Void>create(e));
-        }
     }
 
     /**
@@ -183,28 +167,28 @@ public class ESSharedStateComponent implements ISharedStateComponent {
 
     /**
      * Reads a stored primitive.
-     * @param result
+     * @param source
      */
-    protected Object readPrimitive(JestResult result) throws Exception {
-        PrimitiveBean pb = result.getSourceAsObject(PrimitiveBean.class);
+    protected Object readPrimitive(String source) throws Exception {
+        PrimitiveBean pb = mapper.reader(PrimitiveBean.class).readValue(source);
         String value = pb.getValue();
         Class<?> c = Class.forName(pb.getType());
         if (c == String.class) {
             return value;
         } else if (c == Long.class) {
-            return Long.parseLong(value);
+            return Long.parseLong(source);
         } else if (c == Integer.class) {
-            return Integer.parseInt(value);
+            return Integer.parseInt(source);
         } else if (c == Double.class) {
-            return Double.parseDouble(value);
+            return Double.parseDouble(source);
         } else if (c == Boolean.class) {
-            return Boolean.parseBoolean(value);
+            return Boolean.parseBoolean(source);
         } else if (c == Byte.class) {
-            return Byte.parseByte(value);
+            return Byte.parseByte(source);
         } else if (c == Short.class) {
-            return Short.parseShort(value);
+            return Short.parseShort(source);
         } else if (c == Float.class) {
-            return Float.parseFloat(value);
+            return Float.parseFloat(source);
         } else {
             throw new Exception("Unsupported primitive: " + c); //$NON-NLS-1$
         }
@@ -213,11 +197,11 @@ public class ESSharedStateComponent implements ISharedStateComponent {
     /**
      * @return the esClient
      */
-    public synchronized JestClient getClient() {
+    public synchronized Client getClient() {
         if (esClient == null) {
             esClient = ESClientFactory.createClient(config);
         }
         return esClient;
     }
-
+    
 }

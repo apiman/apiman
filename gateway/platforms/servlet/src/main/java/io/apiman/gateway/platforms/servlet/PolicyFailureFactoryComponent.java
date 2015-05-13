@@ -21,14 +21,14 @@ import io.apiman.gateway.engine.beans.PolicyFailureType;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 
 /**
- * Simple policy failure factory component implementation.  Uses the thread local 
+ * Simple policy failure factory component implementation.  Uses the thread local
  * policy failure instance.  Only useful in the synchronous WAR implementation of the
  * apiman gateway.
  *
  * @author eric.wittmann@redhat.com
  */
 public class PolicyFailureFactoryComponent implements IPolicyFailureFactoryComponent {
-    
+
     /**
      * Constructor.
      */
@@ -44,6 +44,7 @@ public class PolicyFailureFactoryComponent implements IPolicyFailureFactoryCompo
         failure.setFailureCode(failureCode);
         failure.setMessage(message);
         failure.setType(type);
+//        failure.setResponseCode(500);
         return failure;
     }
 

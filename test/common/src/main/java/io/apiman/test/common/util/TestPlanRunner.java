@@ -112,7 +112,7 @@ public class TestPlanRunner {
                 log("-----------------------------------------------------------");
                 log("Starting Test Group [{0}]", group.getName());
                 log("-----------------------------------------------------------");
-    
+
                 for (TestType test : group.getTest()) {
                     String rtPath = test.getValue();
                     log("Executing REST Test [{0}] - {1}", test.getName(), rtPath);
@@ -121,10 +121,10 @@ public class TestPlanRunner {
                     log("REST Test Completed");
                     log("+++++++++++++++++++");
                 }
-    
+
                 log("Test Group [{0}] Completed Successfully", group.getName());
             }
-    
+
             log("");
             log("-------------------------------------------------------------------------------");
             log("Test Plan successfully executed: " + resourcePath);
@@ -219,6 +219,9 @@ public class TestPlanRunner {
                     InputStream content = response.getEntity().getContent();
                     String payload = IOUtils.toString(content);
                     System.out.println("------ START ERROR PAYLOAD ------");
+                    if (payload.startsWith("{")) {
+                        payload = payload.replace("\\r\\n", "\r\n").replace("\\t", "\t");
+                    }
                     System.out.println(payload);
                     System.out.println("------ END   ERROR PAYLOAD ------");
                 } catch (Exception e1) {
@@ -372,7 +375,7 @@ public class TestPlanRunner {
 
     /**
      * Evaluates the given expression against the given JSON object.
-     * 
+     *
      * @param bindExpression
      * @param json
      */
@@ -383,7 +386,7 @@ public class TestPlanRunner {
                     Object value) {
                 throw new RuntimeException("Not supported!");
             }
-            
+
             @Override
             public Object getProperty(String name, Object contextObj, VariableResolverFactory variableFactory) {
                 ObjectNode node = (ObjectNode) contextObj;

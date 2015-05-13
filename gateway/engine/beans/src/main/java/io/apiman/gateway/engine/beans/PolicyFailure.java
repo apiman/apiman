@@ -21,11 +21,11 @@ import java.util.Map;
 
 /**
  * Models a policy failure.
- * 
+ *
  * @author Marc Savy <msavy@redhat.com>
  */
 public class PolicyFailure implements Serializable {
-    
+
     private static final long serialVersionUID = -4698896399383125062L;
 
     private PolicyFailureType type;
@@ -39,7 +39,7 @@ public class PolicyFailure implements Serializable {
      */
     public PolicyFailure() {
     }
-    
+
     /**
      * Constructor.
      * @param type the policy failure type

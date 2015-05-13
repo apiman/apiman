@@ -233,7 +233,6 @@ public abstract class GatewayServlet extends HttpServlet {
         });
         executor.execute();
         try { latch.await(); } catch (InterruptedException e) { }
-        GatewayThreadContext.reset();
     }
 
     /**
@@ -344,6 +343,7 @@ public abstract class GatewayServlet extends HttpServlet {
             }
         }
         resp.setStatus(errorCode);
+
         try {
             mapper.writer().writeValue(resp.getOutputStream(), policyFailure);
             IOUtils.closeQuietly(resp.getOutputStream());

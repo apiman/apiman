@@ -1734,8 +1734,8 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
             throws StorageException {
         try {
             String json = sourceEntity.string();
-            JestResult response = esClient.execute(new Index.Builder(json).refresh(true).index(INDEX_NAME)
-                    .type(type).id(id).build());
+            JestResult response = esClient.execute(new Index.Builder(json).refresh(refresh).index(INDEX_NAME)
+                    .setParameter(Parameters.OP_TYPE, "create").type(type).id(id).build());
             if (!response.isSucceeded()) {
                 throw new StorageException("Failed to index document " + id + " of type " + type + ".");
             }

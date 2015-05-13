@@ -96,7 +96,7 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
 
     private IServiceConnection serviceConnection;
     private IServiceConnectionResponse serviceConnectionResponse;
-    
+
     private IMetrics metrics;
     private RequestMetric requestMetric = new RequestMetric();
 
@@ -187,12 +187,14 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
         requestMetric.setServiceOrgId(request.getServiceOrgId());
         requestMetric.setServiceId(request.getServiceId());
         requestMetric.setServiceVersion(request.getServiceVersion());
-        
+
         // Create the handler that will be called once the policies are asynchronously
         // loaded (can happen this way due to the plugin framework).
         final IAsyncHandler<List<PolicyWithConfiguration>> policiesLoadedHandler = new IAsyncHandler<List<PolicyWithConfiguration>>() {
             @Override
             public void handle(List<PolicyWithConfiguration> result) {
+
+
                 policyImpls = result;
                 // Set up the policy chain request, call #doApply to execute.
                 requestChain = createRequestChain(new IAsyncHandler<ServiceRequest>() {
@@ -239,11 +241,11 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
                 requestChain.doApply(request);
             }
         };
-        
+
         // If no API Key provided - the service must be public.  If an API Key *is* provided
         // then we lookup the Contract and use that.
         if (request.getApiKey() == null) {
-            registry.getService(request.getServiceOrgId(), request.getServiceId(), request.getServiceVersion(), 
+            registry.getService(request.getServiceOrgId(), request.getServiceId(), request.getServiceVersion(),
                 new IAsyncResultHandler<Service>() {
                     @Override
                     public void handle(IAsyncResult<Service> result) {
@@ -276,7 +278,7 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
                         requestMetric.setApplicationVersion(serviceContract.getApplication().getVersion());
                         requestMetric.setContractId(request.getApiKey());
 
-                        
+
                         service = serviceContract.getService();
                         request.setContract(serviceContract);
                         policies = serviceContract.getPolicies();
@@ -308,7 +310,7 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
      */
     protected void validateRequest(ServiceRequest request) throws InvalidContractException {
         ServiceContract contract = request.getContract();
-        
+
         boolean matches = true;
         if (!contract.getService().getOrganizationId().equals(request.getServiceOrgId())) {
             matches = false;
@@ -344,7 +346,7 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
             handler.handle(policyImpls);
             return;
         }
-        
+
         for (final Policy policy : policies) {
             rval.add(null);
             errors.add(null);
@@ -466,7 +468,7 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
      * client request.
      */
     protected void handleStream() {
-        inboundStreamHandler.handle(new ISignalWriteStream() {     
+        inboundStreamHandler.handle(new ISignalWriteStream() {
             boolean streamFinished = false;
 
             @Override
@@ -482,7 +484,7 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
                 requestChain.end();
                 streamFinished = true;
             }
-            
+
             /**
              * @see io.apiman.gateway.engine.io.IAbortable#abort()
              */

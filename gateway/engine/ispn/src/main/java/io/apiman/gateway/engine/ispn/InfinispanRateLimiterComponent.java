@@ -105,16 +105,16 @@ public class InfinispanRateLimiterComponent implements IRateLimiterComponent {
             bucket.resetIfNecessary(period);
             
             RateLimitResponse response = new RateLimitResponse();
-            if (bucket.count >= limit) {
+            if (bucket.getCount() >= limit) {
                 response.setAccepted(false);
             } else {
-                bucket.count++;
-                bucket.last = System.currentTimeMillis();
+                bucket.setCount(bucket.getCount() + 1);
+                bucket.setLast(System.currentTimeMillis());
                 response.setAccepted(true);
             }
             int reset = (int) (bucket.getResetMillis(period) / 1000L);
             response.setReset(reset);
-            response.setRemaining(limit - bucket.count);
+            response.setRemaining(limit - bucket.getCount());
             handler.handle(AsyncResultImpl.<RateLimitResponse>create(response));
             getCache().put(bucketId, bucket);
         }

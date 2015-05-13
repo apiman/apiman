@@ -29,8 +29,8 @@ public class RateLimiterBucket implements Serializable {
 
     private static final long serialVersionUID = 7322973438395289398L;
     
-    public int count = 0;
-    public long last = System.currentTimeMillis();
+    private int count = 0;
+    private long last = System.currentTimeMillis();
     
     /**
      * Constructor.
@@ -45,7 +45,7 @@ public class RateLimiterBucket implements Serializable {
     public void resetIfNecessary(RateBucketPeriod period) {
         long periodBoundary = getLastPeriodBoundary(period);
         if (System.currentTimeMillis() >= periodBoundary) {
-            count = 0;
+            setCount(0);
         }
     }
     
@@ -66,7 +66,7 @@ public class RateLimiterBucket implements Serializable {
      * @param period
      */
     private long getLastPeriodBoundary(RateBucketPeriod period) {
-        return getPeriodBoundary(last, period);
+        return getPeriodBoundary(getLast(), period);
     }
     
     /**
@@ -118,5 +118,33 @@ public class RateLimiterBucket implements Serializable {
             return lastCal.getTimeInMillis();
         }
         return Long.MAX_VALUE;
+    }
+
+    /**
+     * @return the count
+     */
+    public int getCount() {
+        return count;
+    }
+
+    /**
+     * @param count the count to set
+     */
+    public void setCount(int count) {
+        this.count = count;
+    }
+
+    /**
+     * @return the last
+     */
+    public long getLast() {
+        return last;
+    }
+
+    /**
+     * @param last the last to set
+     */
+    public void setLast(long last) {
+        this.last = last;
     }
 }

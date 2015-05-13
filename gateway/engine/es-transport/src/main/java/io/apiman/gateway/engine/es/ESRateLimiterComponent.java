@@ -21,19 +21,16 @@ import io.apiman.gateway.engine.components.IRateLimiterComponent;
 import io.apiman.gateway.engine.components.rate.RateLimitResponse;
 import io.apiman.gateway.engine.rates.RateBucketPeriod;
 import io.apiman.gateway.engine.rates.RateLimiterBucket;
-import io.searchbox.client.JestClient;
-import io.searchbox.client.JestResult;
-import io.searchbox.client.JestResultHandler;
-import io.searchbox.core.Get;
-import io.searchbox.core.Index;
-import io.searchbox.params.Parameters;
 
-import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
+import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.action.get.GetResponse;
+import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.client.Client;
 import org.elasticsearch.common.Base64;
+import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.engine.VersionConflictEngineException;
 
 /**
@@ -42,13 +39,13 @@ import org.elasticsearch.index.engine.VersionConflictEngineException;
  * @author eric.wittmann@redhat.com
  */
 public class ESRateLimiterComponent implements IRateLimiterComponent {
-
+    
     private Map<String, String> config;
-    private JestClient esClient;
+    private Client esClient;
 
     /**
      * Constructor.
-     * @param config the configuration
+     * @param config the configuration 
      */
     public ESRateLimiterComponent(Map<String, String> config) {
         this.config = config;
@@ -61,18 +58,17 @@ public class ESRateLimiterComponent implements IRateLimiterComponent {
     public void accept(final String bucketId, final RateBucketPeriod period, final int limit,
             final IAsyncResultHandler<RateLimitResponse> handler) {
         final String id = id(bucketId);
-
-        Get get = new Get.Builder(ESConstants.INDEX_NAME, id).type("rateBucket").build(); //$NON-NLS-1$
-        try {
-            getClient().executeAsync(get, new JestResultHandler<JestResult>() {
+        getClient().prepareGet(ESConstants.INDEX_NAME, "rateBucket", id) //$NON-NLS-1$
+            .setFetchSource(true)
+            .execute(new ActionListener<GetResponse>() {
                 @Override
-                public void completed(JestResult result) {
+                public void onResponse(GetResponse response) {
                     RateLimiterBucket bucket = null;
                     long version;
-                    if (result.isSucceeded()) {
+                    if (response.isExists()) {
                         // use the existing bucket
-                        version = result.getJsonObject().get("_version").getAsLong(); //$NON-NLS-1$
-                        bucket = result.getSourceAsObject(RateLimiterBucket.class);
+                        version = response.getVersion();
+                        bucket = readBucket(response);
                     } else {
                         // make a new bucket
                         version = 0;
@@ -94,13 +90,10 @@ public class ESRateLimiterComponent implements IRateLimiterComponent {
                     updateBucketAndReturn(id, bucket, rlr, version, bucketId, period, limit, handler);
                 }
                 @Override
-                public void failed(Exception e) {
+                public void onFailure(Throwable e) {
                     handler.handle(AsyncResultImpl.create(e, RateLimitResponse.class));
                 }
             });
-        } catch (ExecutionException | InterruptedException | IOException e) {
-            handler.handle(AsyncResultImpl.create(e, RateLimitResponse.class));
-        }
     }
 
     /**
@@ -124,29 +117,30 @@ public class ESRateLimiterComponent implements IRateLimiterComponent {
      * @param bucket
      * @param rlr
      * @param version
-     * @param limit
-     * @param period
-     * @param bucketId
+     * @param limit 
+     * @param period 
+     * @param bucketId 
      * @param handler
      */
     protected void updateBucketAndReturn(final String id, final RateLimiterBucket bucket,
             final RateLimitResponse rlr, final long version, final String bucketId,
             final RateBucketPeriod period, final int limit,
             final IAsyncResultHandler<RateLimitResponse> handler) {
-
-        Index index = new Index.Builder(bucket).refresh(false).index(ESConstants.INDEX_NAME)
-                .setParameter(Parameters.OP_TYPE, "index") //$NON-NLS-1$
-                .setParameter(Parameters.VERSION, String.valueOf(version))
-                .type("rateBucket").id(id).build(); //$NON-NLS-1$
-        try {
-            getClient().executeAsync(index, new JestResultHandler<JestResult>() {
+        Map<String,Object> source = new HashMap<>();
+        source.put("count", bucket.getCount()); //$NON-NLS-1$
+        source.put("last", bucket.getLast()); //$NON-NLS-1$
+        getClient().prepareIndex(ESConstants.INDEX_NAME, "rateBucket", id) //$NON-NLS-1$
+            .setVersion(version)
+            .setContentType(XContentType.JSON)
+            .setCreate(false)
+            .setSource(source)
+            .execute(new ActionListener<IndexResponse>() {
                 @Override
-                public void completed(JestResult result) {
+                public void onResponse(IndexResponse response) {
                     handler.handle(AsyncResultImpl.create(rlr));
                 }
                 @Override
-                public void failed(Exception e) {
-                    // TODO need to fix this!
+                public void onFailure(Throwable e) {
                     if (ESUtils.rootCause(e) instanceof VersionConflictEngineException) {
                         // If we got a version conflict, then it means some other request
                         // managed to update the ES document since we retrieved it.  Therefore
@@ -158,9 +152,6 @@ public class ESRateLimiterComponent implements IRateLimiterComponent {
                     }
                 }
             });
-        } catch (ExecutionException | InterruptedException | IOException e) {
-            handler.handle(AsyncResultImpl.<RateLimitResponse>create(e));
-        }
     }
 
     /**
@@ -174,7 +165,7 @@ public class ESRateLimiterComponent implements IRateLimiterComponent {
     /**
      * @return the esClient
      */
-    public synchronized JestClient getClient() {
+    public synchronized Client getClient() {
         if (esClient == null) {
             esClient = ESClientFactory.createClient(config);
         }

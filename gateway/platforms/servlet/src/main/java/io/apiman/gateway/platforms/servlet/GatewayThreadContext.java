@@ -39,38 +39,6 @@ public class GatewayThreadContext {
             request = new ServiceRequest();
             serviceRequest.set(request);
         }
-        return request;
-    }
-
-    /**
-     * @return the thread-local service response
-     */
-    public static final ServiceResponse getServiceResponse() {
-        ServiceResponse request = serviceResponse.get();
-        if (request == null) {
-            request = new ServiceResponse();
-            serviceResponse.set(request);
-        }
-        return request;
-    }
-
-    /**
-     * @return the thread-local policy failure
-     */
-    public static final PolicyFailure getPolicyFailure() {
-        PolicyFailure request = policyFailure.get();
-        if (request == null) {
-            request = new PolicyFailure();
-            policyFailure.set(request);
-        }
-        return request;
-    }
-
-    /**
-     * Resets all thread local objects.
-     */
-    public static final void reset() {
-        ServiceRequest request = getServiceRequest();
         request.setApiKey(null);
         request.setDestination(null);
         request.getHeaders().clear();
@@ -78,18 +46,40 @@ public class GatewayThreadContext {
         request.setRemoteAddr(null);
         request.setType(null);
         request.setTransportSecure(false);
+        return request;
+    }
 
-        ServiceResponse response = getServiceResponse();
+    /**
+     * @return the thread-local service response
+     */
+    public static final ServiceResponse getServiceResponse() {
+        ServiceResponse response = serviceResponse.get();
+        if (response == null) {
+            response = new ServiceResponse();
+            serviceResponse.set(response);
+        }
         response.setCode(0);
         response.getHeaders().clear();
         response.setMessage(null);
         response.getAttributes().clear();
+        return response;
+    }
 
-        PolicyFailure failure = getPolicyFailure();
+    /**
+     * @return the thread-local policy failure
+     */
+    public static final PolicyFailure getPolicyFailure() {
+        PolicyFailure failure = policyFailure.get();
+        if (failure == null) {
+            failure = new PolicyFailure();
+            policyFailure.set(failure);
+        }
+        failure.setResponseCode(0);
         failure.setFailureCode(0);
         failure.setMessage(null);
         failure.setType(null);
         failure.getHeaders().clear();
+        return failure;
     }
 
 }

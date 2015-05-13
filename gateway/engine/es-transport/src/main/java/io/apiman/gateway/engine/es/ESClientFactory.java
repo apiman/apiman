@@ -15,15 +15,6 @@
  */
 package io.apiman.gateway.engine.es;
 
-import io.searchbox.action.Action;
-import io.searchbox.client.JestClient;
-import io.searchbox.client.JestClientFactory;
-import io.searchbox.client.JestResult;
-import io.searchbox.client.config.HttpClientConfig;
-import io.searchbox.cluster.Health;
-import io.searchbox.indices.CreateIndex;
-import io.searchbox.indices.IndicesExists;
-
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.HashMap;
@@ -32,6 +23,13 @@ import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
+import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
+import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
+import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse;
+import org.elasticsearch.client.Client;
+import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.settings.ImmutableSettings;
+import org.elasticsearch.common.transport.InetSocketTransportAddress;
 
 /**
  * Factory for creating elasticsearch clients.
@@ -39,9 +37,9 @@ import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
  * @author eric.wittmann@redhat.com
  */
 public class ESClientFactory {
-
-    private static Map<String, JestClient> clients = new HashMap<>();
-
+    
+    private static Map<String, Client> clients = new HashMap<>();
+    
     /**
      * Clears all the clients from the cache.  Useful for unit testing.
      */
@@ -51,19 +49,16 @@ public class ESClientFactory {
 
     /**
      * Creates a client from information in the config map.
-     * @param config the configuration
+     * @param config the configuration 
      * @return the ES client
      */
-    public static JestClient createClient(Map<String, String> config) {
-        JestClient client = null;
+    public static Client createClient(Map<String, String> config) {
+        Client client = null;
         String clientType = config.get("client.type"); //$NON-NLS-1$
-        if (clientType == null) {
-            clientType = "jest"; //$NON-NLS-1$
-        }
-        if ("jest".equals(clientType)) { //$NON-NLS-1$
-            client = createJestClient(config);
-        } else if ("local".equals(clientType)) { //$NON-NLS-1$
-            client = createLocalClient(config);
+        if ("local".equals(clientType)) { //$NON-NLS-1$
+            client = ESClientFactory.createLocalClient(config);
+        } else if ("transport".equals(clientType)) { //$NON-NLS-1$
+            client = ESClientFactory.createTransportClient(config);
         } else {
             throw new RuntimeException("Invalid elasticsearch client type: " + clientType); //$NON-NLS-1$
         }
@@ -72,62 +67,59 @@ public class ESClientFactory {
 
     /**
      * Creates a transport client from a configuration map.
-     * @param config the configuration
+     * @param config the configuration 
      * @return the ES client
      */
-    public static JestClient createJestClient(Map<String, String> config) {
+    public static Client createTransportClient(Map<String, String> config) {
+        String clusterName = config.get("client.cluster-name"); //$NON-NLS-1$
         String host = config.get("client.host"); //$NON-NLS-1$
         String port = config.get("client.port"); //$NON-NLS-1$
+        if (StringUtils.isBlank(clusterName)) {
+            throw new RuntimeException("Missing client.cluster-name configuration for ESRegistry."); //$NON-NLS-1$
+        }
         if (StringUtils.isBlank(host)) {
             throw new RuntimeException("Missing client.host configuration for ESRegistry."); //$NON-NLS-1$
         }
         if (StringUtils.isBlank(port)) {
             throw new RuntimeException("Missing client.port configuration for ESRegistry."); //$NON-NLS-1$
         }
-        return createJestClient(host, Integer.parseInt(port));
+        return createTransportClient(host, Integer.parseInt(port), clusterName);
     }
-
+    
     /**
-     * Creates and caches a Jest client from host and port.
-     * @param host the host
-     * @param port the port
+     * Creates a local client from a configuration map.
+     * @param config the configuration 
      * @return the ES client
      */
-    public static JestClient createJestClient(String host, int port) {
-        String clientKey = "jest:" + host + ':' + port; //$NON-NLS-1$
+    public static Client createLocalClient(Map<String, String> config) {
+        String clientLocClassName = config.get("client.class"); //$NON-NLS-1$
+        String clientLocFieldName = config.get("client.field"); //$NON-NLS-1$
+        return createLocalClient(clientLocClassName, clientLocFieldName);
+    }
+    
+    /**
+     * Creates and caches a transport client from host, port, and cluster name info.
+     * @param host the host
+     * @param port the port
+     * @param clusterName the cluster name
+     * @return the ES client
+     */
+    public static Client createTransportClient(String host, int port, String clusterName) {
+        String clientKey = "transport:" + host + ':' + port + '/' + clusterName; //$NON-NLS-1$
         synchronized (clients) {
             if (clients.containsKey(clientKey)) {
                 return clients.get(clientKey);
             } else {
-                StringBuilder builder = new StringBuilder();
-                builder.append("http://"); //$NON-NLS-1$
-                builder.append(host);
-                builder.append(":"); //$NON-NLS-1$
-                builder.append(String.valueOf(port));
-                String connectionUrl = builder.toString();
-
-                JestClientFactory factory = new JestClientFactory();
-                factory.setHttpClientConfig(new HttpClientConfig.Builder(connectionUrl).multiThreaded(true)
-                        .build());
-                JestClient client = factory.getObject();
+                Client client = new TransportClient(ImmutableSettings.settingsBuilder()
+                        .put("cluster.name", clusterName).build()); //$NON-NLS-1$
+                ((TransportClient) client).addTransportAddress(new InetSocketTransportAddress(host, port));
                 clients.put(clientKey, client);
                 initializeClient(client);
                 return client;
             }
         }
     }
-
-    /**
-     * Creates a local client from a configuration map.
-     * @param config the configuration
-     * @return the ES client
-     */
-    public static JestClient createLocalClient(Map<String, String> config) {
-        String clientLocClassName = config.get("client.class"); //$NON-NLS-1$
-        String clientLocFieldName = config.get("client.field"); //$NON-NLS-1$
-        return createLocalClient(clientLocClassName, clientLocFieldName);
-    }
-
+    
     /**
      * Creates a cache by looking it up in a static field.  Typically used for
      * testing.
@@ -135,7 +127,7 @@ public class ESClientFactory {
      * @param fieldName the field name
      * @return the ES client
      */
-    public static JestClient createLocalClient(String className, String fieldName) {
+    public static Client createLocalClient(String className, String fieldName) {
         String clientKey = "local:" + className + '/' + fieldName; //$NON-NLS-1$
         synchronized (clients) {
             if (clients.containsKey(clientKey)) {
@@ -144,7 +136,7 @@ public class ESClientFactory {
                 try {
                     Class<?> clientLocClass = Class.forName(className);
                     Field field = clientLocClass.getField(fieldName);
-                    JestClient client = (JestClient) field.get(null);
+                    Client client = (Client) field.get(null);
                     clients.put(clientKey, client);
                     initializeClient(client);
                     return client;
@@ -159,12 +151,12 @@ public class ESClientFactory {
     /**
      * Called to initialize the storage.
      */
-    private static void initializeClient(JestClient client) {
+    private static void initializeClient(Client client) {
         try {
-            client.execute(new Health.Builder().build());
-            Action<JestResult> action = new IndicesExists.Builder(ESConstants.INDEX_NAME).build();
-            JestResult result = client.execute(action);
-            if (! result.isSucceeded()) {
+            client.admin().cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet(5000);
+            IndicesExistsRequest request = new IndicesExistsRequest(ESConstants.INDEX_NAME);
+            IndicesExistsResponse response = client.admin().indices().exists(request).get();
+            if (!response.isExists()) {
                 createIndex(client, ESConstants.INDEX_NAME);
             }
         } catch (Exception e) {
@@ -175,15 +167,15 @@ public class ESClientFactory {
     /**
      * Creates an index.
      * @param indexName
-     * @throws Exception
+     * @throws Exception 
      */
-    private static void createIndex(JestClient client, String indexName) throws Exception {
+    private static void createIndex(Client client, String indexName) throws Exception {
         CreateIndexRequest request = new CreateIndexRequest(indexName);
         URL settings = ESClientFactory.class.getResource("index-settings.json"); //$NON-NLS-1$
         String source = IOUtils.toString(settings);
         request.source(source);
-        JestResult response = client.execute(new CreateIndex.Builder(indexName).settings(source).build());
-        if (!response.isSucceeded()) {
+        CreateIndexResponse response = client.admin().indices().create(request).get();
+        if (!response.isAcknowledged()) {
             throw new Exception("Failed to create index: " + indexName); //$NON-NLS-1$
         }
     }

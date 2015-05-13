@@ -32,6 +32,9 @@ import io.apiman.manager.api.jpa.roles.JpaIdmStorage;
 import io.apiman.manager.api.security.ISecurityContext;
 import io.apiman.manager.api.security.impl.DefaultSecurityContext;
 import io.apiman.manager.api.security.impl.KeycloakSecurityContext;
+import io.searchbox.client.JestClient;
+import io.searchbox.client.JestClientFactory;
+import io.searchbox.client.config.HttpClientConfig;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.New;
@@ -39,9 +42,6 @@ import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.apache.commons.lang.StringUtils;
-import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.settings.ImmutableSettings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
 
 /**
  * Attempt to create producer methods for CDI beans.
@@ -51,7 +51,7 @@ import org.elasticsearch.common.transport.InetSocketTransportAddress;
 @ApplicationScoped
 public class WarCdiFactory {
 
-    private static TransportClient sESClient;
+    private static JestClient sESClient;
     private static EsStorage sESStorage;
 
     @Produces @ApimanLogger
@@ -117,10 +117,10 @@ public class WarCdiFactory {
     }
 
     @Produces @ApplicationScoped
-    public static TransportClient provideTransportClient(WarApiManagerConfig config) {
+    public static JestClient provideTransportClient(WarApiManagerConfig config) {
         if ("es".equals(config.getStorageType())) { //$NON-NLS-1$
             if (sESClient == null) {
-                sESClient = createTransportClient(config);
+                sESClient = createJestClient(config);
             }
         }
         return sESClient;
@@ -130,11 +130,17 @@ public class WarCdiFactory {
      * @param config
      * @return create a new test ES transport client
      */
-    private static TransportClient createTransportClient(WarApiManagerConfig config) {
-        TransportClient client = new TransportClient(ImmutableSettings.settingsBuilder()
-                .put("cluster.name", config.getESClusterName()).build()); //$NON-NLS-1$
-        client.addTransportAddress(new InetSocketTransportAddress(config.getESHost(), config.getESPort()));
-        return client;
+    private static JestClient createJestClient(WarApiManagerConfig config) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("http://"); //$NON-NLS-1$
+        builder.append(config.getESHost());
+        builder.append(":"); //$NON-NLS-1$
+        builder.append(config.getESPort());
+        String connectionUrl = builder.toString();
+        JestClientFactory factory = new JestClientFactory();
+        factory.setHttpClientConfig(new HttpClientConfig.Builder(connectionUrl).multiThreaded(true)
+                .build());
+        return factory.getObject();
     }
 
     /**

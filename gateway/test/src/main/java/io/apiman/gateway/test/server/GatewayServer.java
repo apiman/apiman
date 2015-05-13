@@ -22,6 +22,10 @@ import io.apiman.gateway.api.rest.impl.mappers.RestExceptionMapper;
 import io.apiman.gateway.engine.es.ESClientFactory;
 import io.apiman.gateway.platforms.war.listeners.WarGatewayBootstrapper;
 import io.apiman.gateway.platforms.war.servlets.WarGatewayServlet;
+import io.searchbox.client.JestClient;
+import io.searchbox.client.JestClientFactory;
+import io.searchbox.client.config.HttpClientConfig;
+import io.searchbox.indices.DeleteIndex;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,33 +40,28 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
-import org.elasticsearch.client.Client;
-import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.ImmutableSettings.Builder;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.node.NodeBuilder;
 import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
 
 /**
  * Uses Jetty to run the WAR version of the API Management gateway.
- * 
+ *
  * @author eric.wittmann@redhat.com
  */
 @SuppressWarnings({"nls", "javadoc"})
 public class GatewayServer {
-    
+
     public static GatewayServer gatewayServer;
     private static final String ES_CLUSTER_NAME = "_apimantest";
-    public static Client ES_CLIENT = null;
+    public static JestClient ES_CLIENT = null;
 
     private Server server;
     private int port;
-    
+
     private Node node = null;
-    private Client client = null;
+    private JestClient client = null;
 
     /**
      * Constructor.
@@ -72,7 +71,7 @@ public class GatewayServer {
         this.port = port;
         gatewayServer = this;
     }
-    
+
     /**
      * @return the server port
      */
@@ -98,10 +97,10 @@ public class GatewayServer {
         long endTime = System.currentTimeMillis();
         System.out.println("******* Started in " + (endTime - startTime) + "ms");
     }
-    
+
     /**
      * Does some configuration before starting the server.
-     * @throws IOException 
+     * @throws IOException
      */
     private void preStart() throws IOException {
         if (GatewayTestUtils.getTestType() == GatewayTestType.es && node == null) {
@@ -132,23 +131,27 @@ public class GatewayServer {
                 node = NodeBuilder.nodeBuilder().client(false).clusterName(clusterName).data(true).local(false)
                         .settings(settings).build();
             }
-            
+
             System.out.println("Starting the ES node.");
             node.start();
             System.out.println("ES node was successfully started.");
 
-            if (!isPersistent) {
-                Node node = NodeBuilder.nodeBuilder().client(true).loadConfigSettings(false)
-                        .clusterName(ES_CLUSTER_NAME).local(true)
-                        .settings(ImmutableSettings.settingsBuilder().build()).node().start();
-                client = node.client();
-            } else {
-                TransportClient tc = new TransportClient(ImmutableSettings.settingsBuilder()
-                        .put("cluster.name", clusterName).build());
-                tc.addTransportAddress(new InetSocketTransportAddress("localhost", 6600));
-                client = tc;
-            }
-            
+//            if (!isPersistent) {
+//                Node node = NodeBuilder.nodeBuilder().client(true).loadConfigSettings(false)
+//                        .clusterName(ES_CLUSTER_NAME).local(true)
+//                        .settings(ImmutableSettings.settingsBuilder().build()).node().start();
+//                client = node.client();
+//            } else {
+//                TransportClient tc = new TransportClient(ImmutableSettings.settingsBuilder()
+//                        .put("cluster.name", clusterName).build());
+//                tc.addTransportAddress(new InetSocketTransportAddress("localhost", 6600));
+//                client = tc;
+//            }
+            String connectionUrl = "http://localhost:6500";
+            JestClientFactory factory = new JestClientFactory();
+            factory.setHttpClientConfig(new HttpClientConfig.Builder(connectionUrl).multiThreaded(true)
+                    .build());
+            client = factory.getObject();
             ES_CLIENT = client;
         }
     }
@@ -156,7 +159,7 @@ public class GatewayServer {
     /**
      * Stops the server.
      */
-    public void stop() {
+    public void stop() throws Exception {
         try {
             server.stop();
         } catch (Exception e) {
@@ -164,8 +167,7 @@ public class GatewayServer {
         }
         if (node != null) {
             if ("true".equals(System.getProperty("apiman.test.es-delete-index", "true"))) {
-                DeleteIndexRequest request = new DeleteIndexRequest("apiman_gateway");
-                client.admin().indices().delete(request).actionGet();
+                client.execute(new DeleteIndex.Builder("apiman_gateway").build());
                 ESClientFactory.clearClientCache();
             }
         }
@@ -197,7 +199,7 @@ public class GatewayServer {
 
     @ApplicationPath("/")
     public static class TestGatewayApplication extends Application {
-        
+
         /**
          * Constructor.
          */

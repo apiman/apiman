@@ -98,7 +98,7 @@ public class TestCdiFactory {
     }
 
     @Produces @ApplicationScoped
-    public static JestClient provideTransportClient() {
+    public static JestClient provideJestClient() {
         TestType testType = ManagerTestUtils.getTestType();
         if (testType == TestType.jpa) {
             return null;
