@@ -60,7 +60,7 @@
                   <span apiman-i18n-key="username">Username:</span>
                 </td>
                 <td>
-                  <input ng-model="configuration.username" name="username" type="text" class="form-control name entityname" apiman-i18n-key="gateway-auth-username" placeholder="Username..."></input>
+                  <input id="endpoint-username" ng-model="configuration.username" name="username" type="text" class="form-control name entityname" apiman-i18n-key="gateway-auth-username" placeholder="Username..."></input>
                 </td>
               </tr>
               <tr>
@@ -68,13 +68,13 @@
                   <span apiman-i18n-key="password">Password:</span>
                 </td>
                 <td>
-                  <input ng-model="configuration.password" name="password" type="password" class="form-control name entityname" apiman-i18n-key="gateway-auth-password" placeholder="Password..."></input>
+                  <input id="endpoint-password" ng-model="configuration.password" name="password" type="password" class="form-control name entityname" apiman-i18n-key="gateway-auth-password" placeholder="Password..."></input>
                 </td>
               </tr>
               <tr>
                 <td></td>
                 <td>
-                  <input ng-model="passwordConfirm" name="passwordConfirm" type="password" class="form-control name entityname" apiman-i18n-key="gateway-auth-confirm-pass" placeholder="Confirm Password..."></input>
+                  <input id="endpoint-password-confirm" ng-model="passwordConfirm" name="passwordConfirm" type="password" class="form-control name entityname" apiman-i18n-key="gateway-auth-confirm-pass" placeholder="Confirm Password..."></input>
                 </td>
               </tr>
             </table>
@@ -82,7 +82,7 @@
         </dl>
       </div>
       <div class="row">
-        <button ng-disabled="!isValid" ng-click="testGateway()" apiman-action-btn="" class="btn btn-default" data-field="testButton" apiman-i18n-key="test-gateway" placeholder="Testing..." data-icon="fa-cog">Test Gateway</button>
+        <button id="test-gateway" ng-disabled="!isValid" ng-click="testGateway()" apiman-action-btn="" class="btn btn-default" data-field="testButton" apiman-i18n-key="test-gateway" placeholder="Testing..." data-icon="fa-cog">Test Gateway</button>
       </div>
       <div class="row" ng-show="testResult == 'success'">
         <div class="alert alert-success description" style="margin-top: 10px">
@@ -110,9 +110,9 @@
       </div>
       <!-- Update Button -->
       <div class="row">
-        <button ng-disabled="!isValid || !isDirty" apiman-action-btn="" class="btn btn-primary" data-field="updateButton" apiman-i18n-key="update-gateway" placeholder="Updating..." data-icon="fa-cog" ng-click="updateGateway()">Update Gateway</button>
-        <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" apiman-i18n-key="cancel">Cancel</a>
-        <button apiman-action-btn="" class="btn btn-danger" style="margin-left: 100px;" data-field="deleteButton" apiman-i18n-key="delete-gateway" placeholder="Deleting..." data-icon="fa-cog" ng-click="deleteGateway()">Delete Gateway</button>
+        <button id="update-gateway" ng-disabled="!isValid || !isDirty" apiman-action-btn="" class="btn btn-primary" data-field="updateButton" apiman-i18n-key="update-gateway" placeholder="Updating..." data-icon="fa-cog" ng-click="updateGateway()">Update Gateway</button>
+        <a id="cancel" href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" apiman-i18n-key="cancel">Cancel</a>
+        <button id="delete-gateway" apiman-action-btn="" class="btn btn-danger" style="margin-left: 100px;" data-field="deleteButton" apiman-i18n-key="delete-gateway" placeholder="Deleting..." data-icon="fa-cog" ng-click="deleteGateway()">Delete Gateway</button>
       </div>
   	  </fieldset>
     </div> <!-- /container -->

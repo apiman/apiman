@@ -36,7 +36,7 @@
         <dl>
           <dt apiman-i18n-key="artifact-id">Artifact Id</dt>
           <dd>
-            <input ng-model="plugin.artifactId" type="text" class="form-control entityname" apiman-i18n-key="enter-gav-artifactid" placeholder="Enter artifactId..."></input>
+            <input id="artifact-id" ng-model="plugin.artifactId" type="text" class="form-control entityname" apiman-i18n-key="enter-gav-artifactid" placeholder="Enter artifactId..."></input>
           </dd>
         </dl>
       </div>
@@ -44,7 +44,7 @@
         <dl>
           <dt apiman-i18n-key="version">Version</dt>
           <dd>
-            <input ng-model="plugin.version" type="text" class="form-control entityname" apiman-i18n-key="enter-gav-version" placeholder="Enter version (e.g. 1.0)..." style="width: 175px"></input>
+            <input id="version" ng-model="plugin.version" type="text" class="form-control entityname" apiman-i18n-key="enter-gav-version" placeholder="Enter version (e.g. 1.0)..." style="width: 175px"></input>
           </dd>
         </dl>
       </div>
@@ -52,7 +52,7 @@
         <dl>
           <dt apiman-i18n-key="classifier.optional">Classifier (optional)</dt>
           <dd>
-            <input ng-model="plugin.classifier" type="text" class="form-control entityname" apiman-i18n-key="enter-gav-classifier" placeholder="Enter classifier..."></input>
+            <input id="classifier" ng-model="plugin.classifier" type="text" class="form-control entityname" apiman-i18n-key="enter-gav-classifier" placeholder="Enter classifier..."></input>
           </dd>
         </dl>
       </div>
@@ -60,7 +60,7 @@
         <dl>
           <dt apiman-i18n-key="type.optional">Type (optional)</dt>
           <dd>
-            <input ng-model="plugin.type" type="text" class="form-control entityname" apiman-i18n-key="enter-gav-type" placeholder="Enter type (e.g. jar)..." style="width: 175px"></input>
+            <input id="type" ng-model="plugin.type" type="text" class="form-control entityname" apiman-i18n-key="enter-gav-type" placeholder="Enter type (e.g. jar)..." style="width: 175px"></input>
           </dd>
         </dl>
       </div>
@@ -70,8 +70,8 @@
       </div>
       <!-- Create Button -->
       <div class="row">
-        <button ng-disabled="!isValid" apiman-action-btn="" class="btn btn-primary" data-field="addButton" apiman-i18n-key="add-plugin" placeholder="Adding..." data-icon="fa-cog" ng-click="addPlugin()">Add Plugin</button>
-        <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" apiman-i18n-key="cancel">Cancel</a>
+        <button id="add-plugin" ng-disabled="!isValid" apiman-action-btn="" class="btn btn-primary" data-field="addButton" apiman-i18n-key="add-plugin" placeholder="Adding..." data-icon="fa-cog" ng-click="addPlugin()">Add Plugin</button>
+        <a id="cancel" href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" apiman-i18n-key="cancel">Cancel</a>
       </div>
     </div> <!-- /container -->
   </body>

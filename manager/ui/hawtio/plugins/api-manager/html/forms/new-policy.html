@@ -26,7 +26,7 @@
         <dl>
           <dt apiman-i18n-key="policy-type">Policy Type</dt>
           <dd>
-            <select ng-model="selectedDefId" apiman-select-picker="" class="selectpicker" data-live-search="true" apiman-i18n-key="new-policy.choose-policy-type" title="Choose a policy type...">
+            <select id="policy-type" ng-model="selectedDefId" apiman-select-picker="" class="selectpicker" data-live-search="true" apiman-i18n-key="new-policy.choose-policy-type" title="Choose a policy type...">
               <option value="__null__" data-content="<i class='fa fa-inline fa-fw'></i> <span class='apiman-label-faded'>Choose a policy type...</span>" apiman-i18n-key="new-policy.choose-policy-type">Choose a policy type...</option>
               <option value="{{ def.id }}" ng-repeat="def in policyDefs | orderBy : 'name.toLowerCase()'" data-content="<i class='fa fa-inline fa-fw fa-{{ def.icon }}'></i> <span>{{ def.name }}</span>">{{ def.name }}</option>
             </select>
@@ -49,8 +49,8 @@
 
       <!-- Create Button -->
       <div class="row">
-        <button ng-disabled="!isValid" apiman-action-btn="" class="btn btn-primary" data-field="createButton" apiman-i18n-key="create-policy" placeholder="Adding..." data-icon="fa-cog" ng-click="addPolicy()">Add Policy</button>
-        <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" apiman-i18n-key="cancel">Cancel</a>
+        <button id="add-policy" ng-disabled="!isValid" apiman-action-btn="" class="btn btn-primary" data-field="createButton" apiman-i18n-key="create-policy" placeholder="Adding..." data-icon="fa-cog" ng-click="addPolicy()">Add Policy</button>
+        <a id="cancel" href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" apiman-i18n-key="cancel">Cancel</a>
       </div>
     </div> <!-- /container -->
     </div>

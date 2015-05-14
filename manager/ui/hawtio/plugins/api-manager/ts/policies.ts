@@ -90,6 +90,9 @@ module Apiman {
                 if (!config.period) {
                     valid = false;
                 }
+                if (config.granularity == 'User' && !config.userHeader) {
+                    valid = false;
+                }
                 $scope.setValid(valid);
             };
             $scope.$watch('config', validate, true);

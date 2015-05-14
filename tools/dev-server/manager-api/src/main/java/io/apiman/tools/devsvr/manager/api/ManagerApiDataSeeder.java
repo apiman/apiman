@@ -359,6 +359,18 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         rateLimitPolicyDef.getTemplates().add(templateBean);
         storage.createPolicyDefinition(rateLimitPolicyDef);
 
+        PolicyDefinitionBean ignoredResourcesPolicyDef = new PolicyDefinitionBean();
+        ignoredResourcesPolicyDef.setId("IgnoredResourcesPolicy");
+        ignoredResourcesPolicyDef.setName("Ignored Resources Policy");
+        ignoredResourcesPolicyDef.setDescription("Requests satisfying the provided regular expression will be ignored.");
+        ignoredResourcesPolicyDef.setIcon("eye-slash");
+        ignoredResourcesPolicyDef.setPolicyImpl("class:io.apiman.gateway.engine.policies.IgnoredResourcesPolicy");
+        templateBean = new PolicyDefinitionTemplateBean();
+        templateBean.setLanguage(null);
+        templateBean.setTemplate("Requests matching any of the @{pathsToIgnore.size()} regular expressions provided will receive a 404 error code.");
+        ignoredResourcesPolicyDef.getTemplates().add(templateBean);
+        storage.createPolicyDefinition(ignoredResourcesPolicyDef);
+
         PolicyDefinitionBean authorizationPolicyDef = new PolicyDefinitionBean();
         authorizationPolicyDef.setId("AuthorizationPolicy");
         authorizationPolicyDef.setName("Authorization Policy");

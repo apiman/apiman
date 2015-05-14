@@ -28,7 +28,7 @@
         <div class="box col-md-9 container" data-field="policyFormWrapper">
           <div class="form policy-config default">
             <span apiman-i18n-key="manually-configure-policy-json">Please manually configure your policy's JSON configuration below.</span>
-            <textarea ng-model="policyDefJSON">{{ policyDefJSON }}</textarea>
+            <textarea id="json" ng-model="policyDefJSON">{{ policyDefJSON }}</textarea>
           </div>
         </div>
       </div>
@@ -39,8 +39,8 @@
       </div>
       <!-- Update Button -->
       <div class="row" apiman-status="Created,Ready">
-        <button class="btn btn-primary" data-field="updateButton" apiman-i18n-key="update-policy" placeholder="Updating..." data-icon="fa-cog" ng-click="updatePolicyDef()">Update Policy</button>
-        <a data-field="cancelButton" href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" apiman-i18n-key="cancel">Cancel</a>
+        <button id="update-policy" class="btn btn-primary" data-field="updateButton" apiman-i18n-key="update-policy" placeholder="Updating..." data-icon="fa-cog" ng-click="updatePolicyDef()">Update Policy</button>
+        <a id="cancel" data-field="cancelButton" href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" apiman-i18n-key="cancel">Cancel</a>
       </div>
     </div> <!-- /container -->
   </div>

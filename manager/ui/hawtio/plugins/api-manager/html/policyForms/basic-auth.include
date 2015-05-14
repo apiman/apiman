@@ -3,7 +3,7 @@
     <dl>
       <dt apiman-i18n-key="auth-realm">Authentication Realm</dt>
       <dd>
-        <input ng-model="config.realm" class="form-control" style="" type="text" apiman-i18n-key="basic-auth.enter-realm" placeholder="Realm..."></input>
+        <input id="realm" ng-model="config.realm" class="form-control" style="" type="text" apiman-i18n-key="basic-auth.enter-realm" placeholder="Realm..."></input>
       </dd>
       <dt apiman-i18n-key="require-transport-security">Require Transport Security</dt>
       <dd>
@@ -12,11 +12,11 @@
       </dd>
       <dt apiman-i18n-key="forward-authenticated-user">Forward Authenticated Username as HTTP Header</dt>
       <dd>
-        <input ng-model="config.forwardIdentityHttpHeader" class="form-control" style="" type="text" apiman-i18n-key="base-auth.enter-auth-user-header" placeholder="HTTP header or leave blank to disable..."></input>
+        <input id="forward-identity" ng-model="config.forwardIdentityHttpHeader" class="form-control" style="" type="text" apiman-i18n-key="base-auth.enter-auth-user-header" placeholder="HTTP header or leave blank to disable..."></input>
       </dd>
       <dt apiman-i18n-key="identity-source">Identity Source</dt>
       <dd>
-        <select ng-model="identitySourceType" apiman-select-picker="" class="selectpicker" data-live-search="false">
+        <select id="identity-source" ng-model="identitySourceType" apiman-select-picker="" class="selectpicker" data-live-search="false">
           <option value="" selected="selected" data-content="<span class='apiman-label-faded'>Choose an Identity Source...</span>" apiman-i18n-key="basic-auth.choose-identity-source">Choose an Identity Source...</option>
           <option value="static" apiman-i18n-key="basic-auth.static" data-content="<span>Static</span>">Static</option>
           <option value="jdbc" apiman-i18n-key="basic-auth.jdbc" data-content="<span>JDBC</span>">JDBC</option>
@@ -35,19 +35,19 @@
       <dt apiman-i18n-key="static-identities">Static Identities</dt>
     </div>
     <div style="width: 100%; float: left; margin-bottom: 5px;">
-      <select ng-model="selectedIdentity" multiple class="form-control" style="height: 150px; width: 200px; float: left;" ng-options="(item.username) for item in config.staticIdentity.identities | orderBy: 'username'">
+      <select id="static-identities" ng-model="selectedIdentity" multiple class="form-control" style="height: 150px; width: 200px; float: left;" ng-options="(item.username) for item in config.staticIdentity.identities | orderBy: 'username'">
       </select>
       <div style="margin-left: 5px; float: left">
-        <button ng-click="clear()" ng-disabled="!config.staticIdentity.identities" apiman-i18n-key="clear" class="btn btn-default" style="min-width: 75px">Clear</button>
+        <button id="static-clear" ng-click="clear()" ng-disabled="!config.staticIdentity.identities" apiman-i18n-key="clear" class="btn btn-default" style="min-width: 75px">Clear</button>
         <div class="clear:both"></div>
-        <button ng-click="remove(selectedIdentity)" ng-disabled="!selectedIdentity" apiman-i18n-key="remove" class="btn btn-default" style="min-width: 75px; margin-top: 5px;">Remove</button>
+        <button id="static-remove" ng-click="remove(selectedIdentity)" ng-disabled="!selectedIdentity" apiman-i18n-key="remove" class="btn btn-default" style="min-width: 75px; margin-top: 5px;">Remove</button>
       </div>
     </div>
     <div style="width: 100%; float: left; margin-bottom: 10px; margin-top: 5px">
-      <input ng-model="username" class="form-control" style="width: 85px; float: left; margin-right: 5px" type="text" apiman-i18n-key="basic-auth.enter-username" placeholder="Username..."></input>
+      <input id="static-username" ng-model="username" class="form-control" style="width: 85px; float: left; margin-right: 5px" type="text" apiman-i18n-key="basic-auth.enter-username" placeholder="Username..."></input>
       <div style="width: 8px; float: left; line-height: 28px" apiman-i18n-skip>:</div>
-      <input ng-model="password" class="form-control" style="width: 102px; float: left; margin-right: 5px" type="password" apiman-i18n-key="basic-auth.enter-password" placeholder="Password..."></input>
-      <button ng-disabled="!username || !password" ng-click="add(username, password)" apiman-i18n-key="add" class="btn btn-default" style="min-width: 75px">Add</button>
+      <input id="static-password" ng-model="password" class="form-control" style="width: 102px; float: left; margin-right: 5px" type="password" apiman-i18n-key="basic-auth.enter-password" placeholder="Password..."></input>
+      <button id="static-add" ng-disabled="!username || !password" ng-click="add(username, password)" apiman-i18n-key="add" class="btn btn-default" style="min-width: 75px">Add</button>
     </div>
   </div>
 
@@ -57,15 +57,15 @@
       <dl>
         <dt apiman-i18n-key="jdbc-datasource">JDBC Datasource (JNDI Location)</dt>
         <dd>
-          <input ng-model="config.jdbcIdentity.datasourcePath" class="form-control" type="text" apiman-i18n-key="basic-auth.ds.enter-jndi-loc" placeholder="JNDI Datasource location (example: jdbc/ExampleDS)"></input>
+          <input id="jdbc-datasource" ng-model="config.jdbcIdentity.datasourcePath" class="form-control" type="text" apiman-i18n-key="basic-auth.ds.enter-jndi-loc" placeholder="JNDI Datasource location (example: jdbc/ExampleDS)"></input>
         </dd>
         <dt apiman-i18n-key="jdbc-query">SQL Query</dt>
         <dd>
-          <textarea ng-model="config.jdbcIdentity.query" class="form-control" type="text" apiman-i18n-key="basic-auth.ds.enter-sql-query" placeholder="SQL Query (example: SELECT * FROM users WHERE u=? AND p=?)"></textarea>
+          <textarea id="jdbc-query" ng-model="config.jdbcIdentity.query" class="form-control" type="text" apiman-i18n-key="basic-auth.ds.enter-sql-query" placeholder="SQL Query (example: SELECT * FROM users WHERE u=? AND p=?)"></textarea>
         </dd>
         <dt apiman-i18n-key="jdbc-hash-algorithm">Password Hash Algorithm</dt>
         <dd>
-          <select ng-model="config.jdbcIdentity.hashAlgorithm" apiman-select-picker="" class="selectpicker" data-live-search="false">
+          <select id="jdbc-pwd-hash" ng-model="config.jdbcIdentity.hashAlgorithm" apiman-select-picker="" class="selectpicker" data-live-search="false">
             <option value="None" apiman-i18n-key="basic-auth.none">None</option>
             <option value="SHA1" apiman-i18n-key="basic-auth.sha1">SHA1</option>
             <option value="MD5" apiman-i18n-key="basic-auth.md5">MD5</option>
@@ -75,12 +75,12 @@
           </select>
         </dd>
         <dd>
-          <input id="extractJdbcRoles" type="checkbox" ng-model="config.jdbcIdentity.extractRoles" style="margin-top: 15px"></input>
-          <label for="extractJdbcRoles" apiman-i18n-key="basic-auth.extract-jdbc-roles" title="When enabled, roles can also be extracted from the database for use in the Authorization Policy (sold separately).">Also extract user roles from the DB</label>
+          <input id="jdbc-extract-roles" type="checkbox" ng-model="config.jdbcIdentity.extractRoles" style="margin-top: 15px"></input>
+          <label for="jdbc-extract-roles" apiman-i18n-key="basic-auth.extract-jdbc-roles" title="When enabled, roles can also be extracted from the database for use in the Authorization Policy (sold separately).">Also extract user roles from the DB</label>
         </dd>
         <dt ng-show="config.jdbcIdentity.extractRoles == true" apiman-i18n-key="roles-sql-query">Roles SQL Query</dt>
         <dd ng-show="config.jdbcIdentity.extractRoles == true">
-          <textarea ng-model="config.jdbcIdentity.roleQuery" class="form-control" type="text" apiman-i18n-key="basic-auth.ds.enter-role-sql-query" placeholder="Role SQL Query (example: SELECT r.rolename FROM roles r WHERE r.user=?)"></textarea>
+          <textarea id="jdbc-role-query" ng-model="config.jdbcIdentity.roleQuery" class="form-control" type="text" apiman-i18n-key="basic-auth.ds.enter-role-sql-query" placeholder="Role SQL Query (example: SELECT r.rolename FROM roles r WHERE r.user=?)"></textarea>
         </dd>
       </dl>
     </div>
@@ -92,15 +92,15 @@
       <dl>
         <dt apiman-i18n-key="ldap-server-url">LDAP Server URL</dt>
         <dd>
-          <input ng-model="config.ldapIdentity.url" class="form-control" type="text" apiman-i18n-key="basic-auth.ldap.enter-url" placeholder="LDAP Url (example: ldap://example.org)"></input>
+          <input id="ldap-url" ng-model="config.ldapIdentity.url" class="form-control" type="text" apiman-i18n-key="basic-auth.ldap.enter-url" placeholder="LDAP Url (example: ldap://example.org)"></input>
         </dd>
         <dt apiman-i18n-key="ldap-bind-dn">LDAP Bind DN</dt>
         <dd>
-          <input ng-model="config.ldapIdentity.dnPattern" class="form-control" type="text" apiman-i18n-key="basic-auth.ldap.enter-binddn" placeholder="LDAP Bind DN (example: cn=${username},dc=overlord,dc=org)"></input>
+          <input id="ldap-bind-dn" ng-model="config.ldapIdentity.dnPattern" class="form-control" type="text" apiman-i18n-key="basic-auth.ldap.enter-binddn" placeholder="LDAP Bind DN (example: cn=${username},dc=overlord,dc=org)"></input>
         </dd>
         <dt apiman-i18n-key="bind-as">Bind to LDAP As...</dt>
         <dd>
-          <select ng-model="config.ldapIdentity.bindAs" apiman-select-picker="" class="selectpicker" data-live-search="false">
+          <select id="ldap-bind-as" ng-model="config.ldapIdentity.bindAs" apiman-select-picker="" class="selectpicker" data-live-search="false">
             <option selected="selected" value="UserAccount" apiman-i18n-key="ldap-auth.inbound-user">The inbound user</option>
             <option value="ServiceAccount" apiman-i18n-key="ldap-auth.service-account">A service account</option>
           </select>
@@ -108,33 +108,33 @@
         <div ng-show="config.ldapIdentity.bindAs == 'ServiceAccount'" style="margin-top: 15px">
 	        <dt apiman-i18n-key="service-account-username">Service Account Username</dt>
 	        <dd>
-	          <input ng-model="config.ldapIdentity.credentials.username" class="form-control" type="text" apiman-i18n-key="basic-auth.ldap.credentials.username" placeholder="Enter a username..."></input>
+	          <input id="ldap-sa-username" ng-model="config.ldapIdentity.credentials.username" class="form-control" type="text" apiman-i18n-key="basic-auth.ldap.credentials.username" placeholder="Enter a username..."></input>
 	        </dd>
 	        <dt apiman-i18n-key="service-account-password">Service Account Password</dt>
 	        <dd>
-	          <input ng-model="config.ldapIdentity.credentials.password" class="form-control" type="password" apiman-i18n-key="basic-auth.ldap.credentials.password" placeholder="Enter a password..."></input>
-              <input style="margin-top: 3px" ng-model="repeatPassword" class="form-control" type="password" apiman-i18n-key="basic-auth.ldap.credentials.repeat-password" placeholder="Repeat password"></input>
+	          <input id="ldap-sa-pass" ng-model="config.ldapIdentity.credentials.password" class="form-control" type="password" apiman-i18n-key="basic-auth.ldap.credentials.password" placeholder="Enter a password..."></input>
+              <input id="ldap-sa-pass-confirm" style="margin-top: 3px" ng-model="repeatPassword" class="form-control" type="password" apiman-i18n-key="basic-auth.ldap.credentials.repeat-password" placeholder="Repeat password"></input>
 	        </dd>
             <dt apiman-i18n-key="user-search-base-dn">User Search Base DN</dt>
             <dd>
-              <input ng-model="config.ldapIdentity.userSearch.baseDn" class="form-control" type="text" apiman-i18n-key="basic-auth.ldap.userSearch.baseDn" placeholder="Enter a Base DN..."></input>
+              <input id="ldap-us-base-dn" ng-model="config.ldapIdentity.userSearch.baseDn" class="form-control" type="text" apiman-i18n-key="basic-auth.ldap.userSearch.baseDn" placeholder="Enter a Base DN..."></input>
             </dd>
             <dt apiman-i18n-key="user-search-expression">User Search Expression</dt>
             <dd>
-              <input ng-model="config.ldapIdentity.userSearch.expression" class="form-control" type="text" apiman-i18n-key="basic-auth.ldap.userSearch.expression" placeholder="Enter an expression..."></input>
+              <input id="ldap-us-expr" ng-model="config.ldapIdentity.userSearch.expression" class="form-control" type="text" apiman-i18n-key="basic-auth.ldap.userSearch.expression" placeholder="Enter an expression..."></input>
             </dd>
         </div>
         <dd>
-          <input id="extractLdapRoles" type="checkbox" ng-model="config.ldapIdentity.extractRoles" style="margin-top: 15px"></input>
-          <label for="extractLdapRoles" apiman-i18n-key="basic-auth.extract-ldap-roles" title="When enabled, roles can also be extracted from the directory for use in the Authorization Policy (sold separately).">Also extract user roles from the directory</label>
+          <input id="ldap-extract-roles" type="checkbox" ng-model="config.ldapIdentity.extractRoles" style="margin-top: 15px"></input>
+          <label for="ldap-extract-roles" apiman-i18n-key="basic-auth.extract-ldap-roles" title="When enabled, roles can also be extracted from the directory for use in the Authorization Policy (sold separately).">Also extract user roles from the directory</label>
         </dd>
         <dt ng-show="config.ldapIdentity.extractRoles == true" apiman-i18n-key="ldap-membership-attr">Group Membership Attribute</dt>
         <dd ng-show="config.ldapIdentity.extractRoles == true">
-          <input ng-model="config.ldapIdentity.membershipAttribute" class="form-control" type="text" apiman-i18n-key="basic-auth.ldap.enter-membership-attr" placeholder="memberOf"></input>
+          <input id="ldap-group-attr" ng-model="config.ldapIdentity.membershipAttribute" class="form-control" type="text" apiman-i18n-key="basic-auth.ldap.enter-membership-attr" placeholder="memberOf"></input>
         </dd>
         <dt ng-show="config.ldapIdentity.extractRoles == true" apiman-i18n-key="ldap-rolename-attr">Role Name Attribute</dt>
         <dd ng-show="config.ldapIdentity.extractRoles == true">
-          <input ng-model="config.ldapIdentity.rolenameAttribute" class="form-control" type="text" apiman-i18n-key="basic-auth.ldap.enter-rolename-attr" placeholder="objectGUID"></input>
+          <input id="ldap-role-name-attr" ng-model="config.ldapIdentity.rolenameAttribute" class="form-control" type="text" apiman-i18n-key="basic-auth.ldap.enter-rolename-attr" placeholder="objectGUID"></input>
         </dd>
       </dl>
     </div>

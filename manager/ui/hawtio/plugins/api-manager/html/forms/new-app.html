@@ -65,7 +65,7 @@
           <dl>
             <dt apiman-i18n-key="description">Description</dt>
             <dd>
-              <input ng-model="app.description" data-field="description" type="text" class="form-control description" id="apiman-description" apiman-i18n-key="enter-app-description" placeholder="Enter application description (optional)..."></input>
+              <textarea ng-model="app.description" class="form-control description" id="apiman-description" apiman-i18n-key="enter-app-description" placeholder="Enter application description (optional)..."></textarea>
             </dd>
           </dl>
         </div>
@@ -83,8 +83,8 @@
       </div>
       <!-- Create Button -->
       <div class="row">
-        <button ng-disabled="!app.name || !app.initialVersion || !selectedOrg" apiman-action-btn="" class="btn btn-primary" data-field="createButton" apiman-i18n-key="create-application" placeholder="Creating..." data-icon="fa-cog" ng-click="saveNewApp()">Create Application</button>
-        <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" apiman-i18n-key="cancel">Cancel</a>
+        <button id="create-app" ng-disabled="!app.name || !app.initialVersion || !selectedOrg" apiman-action-btn="" class="btn btn-primary" data-field="createButton" apiman-i18n-key="create-application" placeholder="Creating..." data-icon="fa-cog" ng-click="saveNewApp()">Create Application</button>
+        <a id="cancel" href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" apiman-i18n-key="cancel">Cancel</a>
       </div>
     </div> <!-- /container -->
   </div>
