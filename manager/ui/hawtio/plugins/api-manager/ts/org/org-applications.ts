@@ -5,6 +5,7 @@ module Apiman {
     export var OrgAppsController = _module.controller("Apiman.OrgAppsController",
         ['$q', '$scope', '$location', 'OrgSvcs', 'PageLifecycle', '$rootScope', '$routeParams',
         ($q, $scope, $location, OrgSvcs, PageLifecycle, $rootScope, $routeParams) => {
+            $scope.tab = 'applications';
             var params = $routeParams;
             $scope.organizationId = params.org;
             

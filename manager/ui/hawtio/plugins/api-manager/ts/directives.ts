@@ -184,6 +184,7 @@ module Apiman {
             };
         }]);
 
+    export var sb_counter = 0;
     _module.directive('apimanSearchBox',
         ['Logger', 'TranslationService', function(Logger, TranslationService) {
             return {
@@ -195,6 +196,15 @@ module Apiman {
                 },
                 link: function(scope, element, attrs) {
                     scope.placeholder = attrs.placeholder;
+                    if (attrs['id']) {
+                        scope.filterId = attrs['id'] + '-f';
+                        scope.buttonId = attrs['id'] + '-b';
+                    } else {
+                        var cid = 'search-box-' + sb_counter;
+                        sb_counter = sb_counter + 1;
+                        scope.filterId = cid + '-filter';
+                        scope.buttonId = cid + '-button';
+                    }
 
                     if (attrs.apimanI18nKey) {
                         var translationKey = attrs.apimanI18nKey + ".placeholder";

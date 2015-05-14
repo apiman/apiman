@@ -7,28 +7,28 @@
             </a>
             <ul class="user-menu pull-right">
               <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <a id="navbar-dropdown" href="#" class="dropdown-toggle" data-toggle="dropdown">
                   <span class="pficon pficon-user"></span>
                   <span>{{ username }}</span>
                   <b class="caret"></b>
                 </a>
                 <ul class="dropdown-menu">
                   <li>
-                    <a href="{{ pluginName }}/dash" apiman-i18n-key="home">Home</a>
+                    <a id="navbar-home" href="{{ pluginName }}/dash" apiman-i18n-key="home">Home</a>
                   </li>
                   <li>
-                    <a href="{{ pluginName }}/users/{{ username }}/orgs" apiman-i18n-key="my-stuff">My Stuff</a>
+                    <a id="navbar-my-stuff" href="{{ pluginName }}/users/{{ username }}/orgs" apiman-i18n-key="my-stuff">My Stuff</a>
                   </li>
                   <li>
-                    <a href="{{ pluginName }}/profile" apiman-i18n-key="profile">Profile</a>
-                  </li>
-                  <li class="divider"></li>
-                  <li>
-                    <a href="{{ pluginName }}/about" apiman-i18n-key="about-apiman">About apiman</a>
+                    <a id="navbar-profile" href="{{ pluginName }}/profile" apiman-i18n-key="profile">Profile</a>
                   </li>
                   <li class="divider"></li>
                   <li>
-                    <a href="{{ logoutUrl }}" target="_self" apiman-i18n-key="logout">Logout</a>
+                    <a id="navbar-about" href="{{ pluginName }}/about" apiman-i18n-key="about-apiman">About apiman</a>
+                  </li>
+                  <li class="divider"></li>
+                  <li>
+                    <a id="navbar-logout" href="{{ logoutUrl }}" target="_self" apiman-i18n-key="logout">Logout</a>
                   </li>
                 </ul>
               </li>

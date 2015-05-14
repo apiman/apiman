@@ -3,7 +3,6 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
-    
   </head>
 
   <body>
@@ -17,21 +16,14 @@
         <!-- Center Content -->
         <div class="col-md-8">
           <div class="apiman-entitytabs">
-            <ul id="entitytabs" class="nav nav-tabs">
-              <li apiman-permission="planView"><a href="{{ pluginName }}/orgs/{{org.id}}/plans" data-field="toOrgPlans" apiman-i18n-key="plans">Plans</a></li>
-              <li apiman-permission="svcView" class="active"><a href="{{ pluginName }}/orgs/{{org.id}}/services" data-field="toOrgServices" apiman-i18n-key="services">Services</a></li>
-              <li apiman-permission="appView"><a href="{{ pluginName }}/orgs/{{org.id}}/apps" data-field="toOrgApps" apiman-i18n-key="applications">Applications</a></li>
-              <li><a href="{{ pluginName }}/orgs/{{org.id}}/members" data-field="toOrgMembers" apiman-i18n-key="members">Members</a></li>
-              <li class="pull-right"><a href="{{ pluginName }}/orgs/{{org.id}}/activity" data-field="toOrgActivity" apiman-i18n-key="activity">Activity</a></li>
-            </ul>
-
+            <div ng-include="'plugins/api-manager/html/org/org_tabs.include'"></div>
             <div id="entitytabsContent" class="tab-content">
 
               <!-- Services Tab Content -->
               <div class="tab-pane active" id="tab-services">
                 <div class="apiman-filters apiman-services-filters">
                   <div>
-                    <apiman-search-box apiman-i18n-key="filter-org-services" function="filterServices" placeholder="Filter by service name..." />
+                    <apiman-search-box id="services-filter" apiman-i18n-key="filter-org-services" function="filterServices" placeholder="Filter by service name..." />
                   </div>
                   <div apiman-permission="svcEdit" class="btn-group pull-right">
                     <a data-field="toNewService" href="{{ pluginName }}/new-service" class="btn btn-primary" apiman-i18n-key="new-service">New Service</a>

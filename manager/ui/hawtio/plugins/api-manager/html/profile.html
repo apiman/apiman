@@ -31,8 +31,8 @@
                 <label apiman-i18n-key="profile.email" for="emailInput">Email</label>
                 <input ng-model="updatedUser.email" type="email" class="form-control" id="apiman-email" apiman-i18n-key="profile.enter-email" placeholder="Email address...">
               </div>
-              <button ng-disabled="!isDirty || !isValid" apiman-action-btn="" class="btn btn-primary" data-field="updateButton" apiman-i18n-key="update-profile" placeholder="Updating..." data-icon="fa-cog" ng-click="save()">Update Profile</button>
-              <a href="javascript:window.history.back()" class="btn btn-default btn-cancel" apiman-i18n-key="cancel">Cancel</a>
+              <button id="update-profile" ng-disabled="!isDirty || !isValid" apiman-action-btn="" class="btn btn-primary" data-field="updateButton" apiman-i18n-key="update-profile" placeholder="Updating..." data-icon="fa-cog" ng-click="save()">Update Profile</button>
+              <a id="cancel" href="javascript:window.history.back()" class="btn btn-default btn-cancel" apiman-i18n-key="cancel">Cancel</a>
             </form>
           </div>
         </div>

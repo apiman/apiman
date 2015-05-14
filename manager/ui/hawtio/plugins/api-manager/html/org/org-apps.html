@@ -17,20 +17,14 @@
         <!-- Center Content -->
         <div class="col-md-8">
           <div class="apiman-entitytabs">
-            <ul id="entitytabs" class="nav nav-tabs">
-              <li apiman-permission="planView"><a href="{{ pluginName }}/orgs/{{org.id}}/plans" data-field="toOrgPlans" apiman-i18n-key="plans">Plans</a></li>
-              <li apiman-permission="svcView"><a href="{{ pluginName }}/orgs/{{org.id}}/services" data-field="toOrgServices" apiman-i18n-key="services">Services</a></li>
-              <li apiman-permission="appView" class="active"><a href="{{ pluginName }}/orgs/{{org.id}}/apps" data-field="toOrgApps" apiman-i18n-key="applications">Applications</a></li>
-              <li><a href="{{ pluginName }}/orgs/{{org.id}}/members" data-field="toOrgMembers" apiman-i18n-key="members">Members</a></li>
-              <li class="pull-right"><a href="{{ pluginName }}/orgs/{{org.id}}/activity" data-field="toOrgActivity" apiman-i18n-key="activity">Activity</a></li>
-            </ul>
+            <div ng-include="'plugins/api-manager/html/org/org_tabs.include'"></div>
             <div id="entitytabsContent" class="tab-content">
 
               <!-- Applications Tab Content -->
               <div class="tab-pane active" id="tab-apps">
                 <div class="apiman-filters apiman-applications-filters">
                   <div>
-                    <apiman-search-box apiman-i18n-key="filter-org-apps" function="filterApps" placeholder="Filter by application name..." />
+                    <apiman-search-box id="apps-filter" apiman-i18n-key="filter-org-apps" function="filterApps" placeholder="Filter by application name..." />
                   </div>
                   <a apiman-permission="appEdit" data-field="toNewApp" href="{{ pluginName }}/new-app" class="btn btn-primary pull-right" apiman-i18n-key="new-app">New App</a>
                 </div>

@@ -1,4 +1,4 @@
           <ol class="breadcrumb" data-field="breadcrumb">
-            <li><a href="{{ pluginName }}/dash"><i class="fa fa-home fa-fw"></i><span apiman-i18n-key="home">Home</span></a></li>
+            <li><a id="bc-home" href="{{ pluginName }}/dash"><i class="fa fa-home fa-fw"></i><span apiman-i18n-key="home">Home</span></a></li>
             <li class="active"><i class="fa fa-gavel fa-fw"></i><span apiman-i18n-key="system-administration">System Administration</span></li>
           </ol>

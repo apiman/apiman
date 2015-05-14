@@ -2,10 +2,10 @@
     <tbody>
       <tr>
         <td width="99%">
-          <input ng-model="value" ng-change="doSearch()" value="" type="text" placeholder="{{ placeholder }}">
+          <input id="{{ filterId }}" ng-model="value" ng-change="doSearch()" value="" type="text" placeholder="{{ placeholder }}">
         </td>
         <td width="1%">
-          <button ng-click="onClick()" class="btn btn-default"><i class="fa fa-fw fa-search"></i></button>
+          <button id="{{ buttonId }}" ng-click="onClick()" class="btn btn-default"><i class="fa fa-fw fa-search"></i></button>
         </td>
       </tr>
     </tbody>

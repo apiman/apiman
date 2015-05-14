@@ -27,9 +27,9 @@
               <div class="tab-pane active" id="tab-services">
                 <div class="apiman-filters apiman-services-filters">
                   <div>
-                    <apiman-search-box apiman-i18n-key="filter-user-services" function="filterServices" placeholder="Filter by org or service name..." />
+                    <apiman-search-box id="services-filter" apiman-i18n-key="filter-user-services" function="filterServices" placeholder="Filter by org or service name..." />
                   </div>
-                  <a apiman-i18n-key="new-service" data-field="toNewService" apiman-i18n-key="new-service" href="{{ pluginName}}/new-service" class="btn btn-primary pull-right">New Service</a>
+                  <a id="new-service" apiman-i18n-key="new-service" data-field="toNewService" apiman-i18n-key="new-service" href="{{ pluginName}}/new-service" class="btn btn-primary pull-right">New Service</a>
                 </div>
                 <div class="clearfix"></div>
                 <!-- The list of services the user has access to -->
