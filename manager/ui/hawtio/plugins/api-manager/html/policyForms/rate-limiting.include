@@ -1,4 +1,4 @@
-<div class="form policy-config rates" data-field="form" ng-controller="Apiman.RateLimitingFormController">
+<div class="form policy-config rates" data-field="form" ng-controller="Apiman.RateLimitingFormController" style="margin-top: 10px">
   <div>
     <span apiman-i18n-key="config-sentence-preamble">I want to limit request rates to</span>
     <input id="num-requests" ng-model="config.limit" class="form-control inline-form-control" style="width: 100px" type="number" apiman-i18n-key="rate-limiting.enter-num-requests" placeholder="# of requests"></input>

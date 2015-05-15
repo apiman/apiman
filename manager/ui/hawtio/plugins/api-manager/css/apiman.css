@@ -9,11 +9,11 @@ body {
 }
 
 .about-logo {
-  background-image: url(../img/about-logo.png);
+  background-image: url(../img/about-logo.gif);
   background-repeat: no-repeat;
   background-position: top left;
-  width: 200px;
-  height: 245px;
+  width: 215px;
+  height: 259px;
   margin-top: 30px;
 }
 

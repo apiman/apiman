@@ -2301,7 +2301,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             }
             if (AuditUtils.valueChanged(policy.getConfiguration(), bean.getConfiguration())) {
                 policy.setConfiguration(bean.getConfiguration());
-                // TODO figure out what changed an include that in the audit entry
+                // Note: we do not audit the policy configuration since it may have sensitive data
             }
             policy.setModifiedOn(new Date());
             policy.setModifiedBy(this.securityContext.getCurrentUser());

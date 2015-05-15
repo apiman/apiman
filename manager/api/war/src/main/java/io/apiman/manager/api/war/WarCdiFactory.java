@@ -80,13 +80,15 @@ public class WarCdiFactory {
 
     @Produces @ApplicationScoped
     public static IStorage provideStorage(WarApiManagerConfig config, @New JpaStorage jpaStorage, @New EsStorage esStorage) {
+        IStorage storage = null;
         if ("jpa".equals(config.getStorageType())) { //$NON-NLS-1$
-            return jpaStorage;
+            storage = jpaStorage;
         } else if ("es".equals(config.getStorageType())) { //$NON-NLS-1$
-            return initES(config, esStorage);
+            storage = initES(config, esStorage);
         } else {
             throw new RuntimeException("Unknown storage type: " + config.getStorageType()); //$NON-NLS-1$
         }
+        return new SecureStorageWrapper(config, storage);
     }
 
     @Produces @ApplicationScoped
