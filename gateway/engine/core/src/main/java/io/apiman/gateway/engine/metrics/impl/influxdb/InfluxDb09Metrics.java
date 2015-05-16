@@ -53,7 +53,7 @@ public class InfluxDb09Metrics implements IMetrics {
     private static final String DATABASE = "database"; //$NON-NLS-1$
     private static final String RETENTION_POLICY = "retentionPolicy"; //$NON-NLS-1$
     private static final String POINTS = "points"; //$NON-NLS-1$
-    private static final String TIMESTAMP = "timestamp"; //$NON-NLS-1$
+    private static final String TIMESTAMP = "time"; //$NON-NLS-1$
     private static final String SERIES_NAME = "name"; //$NON-NLS-1$
     private static final String TAGS = "tags"; //$NON-NLS-1$
     private static final String FIELDS = "fields"; //$NON-NLS-1$
