@@ -42,7 +42,10 @@ module ApimanServices {
                     
                     page: '@page',
                     count: '@count'
-                });
+                }, {
+                update: {
+                  method: 'PUT' // update issues a PUT request
+                }});
         }]);
 
     export var CurrentUserServices = _module.factory('CurrentUserSvcs', ['$resource', 'Configuration',
