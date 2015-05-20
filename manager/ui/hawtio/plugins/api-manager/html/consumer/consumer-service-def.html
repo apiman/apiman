@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    
+  </head>
+
+  <body>
+  <div>
+    <div ng-include="'plugins/api-manager/html/progress.include'"></div>
+    <div id="apiman-header" ng-include="'plugins/api-manager/html/navbar.include'"></div>   
+    <div ng-controller="Apiman.ConsumerSvcDefController" class="page" ng-cloak="" ng-show="pageState == 'loaded'">
+    
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <ol class="breadcrumb" data-field="breadcrumb">
+              <li><a id="bc-home" href="{{ pluginName }}/dash"><i class="fa fa-home fa-fw"></i><span apiman-i18n-key="home">Home</span></a></li>
+              <li><a id="bc-orgs" href="{{ pluginName }}/browse/orgs"><i class="fa fa-search fa-fw"></i><span apiman-i18n-key="organizations">Organizations</span></a></li>
+              <li><a id="bc-org" href="{{ pluginName }}/browse/orgs/{{params.org}}"><i class="fa fa-shield fa-fw"></i><span>{{ org.name }}</span></a></li>
+              <li><a id="bc-service" href="{{ pluginName }}/browse/orgs/{{params.org}}/{{params.service}}/{{params.version}}"><i class="fa fa-puzzle-piece fa-fw"></i><span>{{ service.name }}</span></a></li>
+              <li class="active"><i class="fa fa-sitemap fa-fw"></i><span>Definition</span></li>
+            </ol>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <h1 class="consumer-top-header" apiman-i18n-key="service-definition">Service Definition</h1>
+            <hr />
+          </div>
+        </div>
+        
+        <div class="row" ng-show="hasError">
+          <div class="col-md-12">
+            <div class="alert alert-danger" style="margin-top: 15px">
+               <span class="pficon pficon-info"></span>
+               <span apiman-i18n-key="consumer-service-def.error-loading-definition">An error occured while loading the service definition file.  Please try again later.</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="row" ng-hide="hasDefinition">
+          <div class="col-md-12">
+            <div class="alert alert-warning" style="margin-top: 15px">
+               <span class="pficon pficon-info"></span>
+               <span apiman-i18n-key="consumer-service-def.no-service-definition">This service does not have a service definition file.  Contact the service provider and ask them to supply a valid service definition!</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="row" ng-show="definitionStatus == 'loading'">
+          <div class="col-md-12">
+            <div style="margin-top: 15px; padding: 20px" class="alert alert-info">
+              <div style="float:left; margin-right: 6px" class="spinner spinner-sm"></div>
+              <span apiman-i18n-key="loading-service-def">Loading Service Definition, please wait...</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="row swagger-section" ng-show="hasDefinition">
+          <div class="col-md-12">
+            <div id="swagger-ui-container" class="swagger-ui-wrap" />
+          </div>
+        </div>
+      </div>
+    </div> <!-- /container -->
+  </div>
+  </body>
+</html>

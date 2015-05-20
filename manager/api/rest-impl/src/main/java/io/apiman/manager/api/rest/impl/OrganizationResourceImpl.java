@@ -1308,6 +1308,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 }
             } catch (Exception e) {
                 // TODO it's ok if the clone fails - we did our best
+                if (e != null) {
+                    Throwable t = e;
+                    e = (Exception) t;
+                }
             }
         }
 

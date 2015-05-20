@@ -301,10 +301,6 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         ServiceGatewayBean sgb = new ServiceGatewayBean();
         sgb.setGatewayId("TheGateway");
         svb.getGateways().add(sgb);
-        ServicePlanBean spb = new ServicePlanBean();
-        spb.setPlanId("Gold");
-        spb.setVersion("1.0");
-        svb.addPlan(spb);
         storage.createServiceVersion(svb);
 
         storage.commitTx();

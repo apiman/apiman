@@ -106,6 +106,12 @@ module ApimanServices {
     export var ServiceDefinitionServices = _module.factory('ServiceDefinitionSvcs', ['$resource', '$http', 'Configuration',
         function($resource, $http, Configuration) {
             return {
+                getServiceDefinitionUrl: function(orgId, serviceId, version) {
+                    var endpoint = formatEndpoint(
+                        Configuration.api.endpoint + '/organizations/:organizationId/services/:serviceId/versions/:version/definition',
+                        { organizationId: orgId, serviceId: serviceId, version: version });
+                    return endpoint;
+                },
                 getServiceDefinition: function(orgId, serviceId, version, handler, errorHandler) {
                     var endpoint = formatEndpoint(
                         Configuration.api.endpoint + '/organizations/:organizationId/services/:serviceId/versions/:version/definition',

@@ -1,10 +1,10 @@
 /// <reference path="../apimanPlugin.ts"/>
 /// <reference path="../services.ts"/>
 module Apiman {
-
+    
     export var ConsumerServiceRedirectController = _module.controller("Apiman.ConsumerServiceRedirectController",
-        ['$q', '$scope', '$location', 'OrgSvcs', 'PageLifecycle', '$routeParams',
-        ($q, $scope, $location, OrgSvcs, PageLifecycle, $routeParams) => {
+        ['$q', '$scope', 'OrgSvcs', 'PageLifecycle', '$routeParams',
+        ($q, $scope, OrgSvcs, PageLifecycle, $routeParams) => {
             var orgId = $routeParams.org;
             var serviceId = $routeParams.service;
             var pageData = {
@@ -20,8 +20,8 @@ module Apiman {
 
     
     export var ConsumerSvcController = _module.controller("Apiman.ConsumerSvcController",
-        ['$q', '$scope', '$location', 'OrgSvcs', 'PageLifecycle', '$routeParams',
-        ($q, $scope, $location, OrgSvcs, PageLifecycle, $routeParams) => {
+        ['$q', '$scope', 'OrgSvcs', 'PageLifecycle', '$routeParams',
+        ($q, $scope, OrgSvcs, PageLifecycle, $routeParams) => {
             $scope.params = $routeParams;
             $scope.chains = {};
             
@@ -37,9 +37,6 @@ module Apiman {
             };
             
             var pageData = {
-                service: $q(function(resolve, reject) {
-                    OrgSvcs.get({ organizationId: $routeParams.org, entityType: 'services', entityId: $routeParams.service }, resolve, reject);
-                }),
                 version: $q(function(resolve, reject) {
                     OrgSvcs.get({ organizationId: $routeParams.org, entityType: 'services', entityId: $routeParams.service, versionsOrActivity: 'versions', version: $routeParams.version }, resolve, reject);
                 }),
@@ -70,8 +67,74 @@ module Apiman {
             };
 
             PageLifecycle.loadPage('ConsumerService', pageData, $scope, function() {
+                $scope.service = $scope.version.service;
+                $scope.org = $scope.service.organization;
                 PageLifecycle.setPageTitle('consumer-service', [ $scope.service.name ]);
             });
-        }])
+        }]);
+
+    export var ConsumerSvcDefController = _module.controller("Apiman.ConsumerSvcDefController",
+        ['$q', '$scope', 'OrgSvcs', 'PageLifecycle', '$routeParams', '$window', 'Logger', 'ServiceDefinitionSvcs', 'Configuration',
+        ($q, $scope, OrgSvcs, PageLifecycle, $routeParams, $window, Logger, ServiceDefinitionSvcs, Configuration) => {
+            $scope.params = $routeParams;
+            $scope.chains = {};
+
+            var pageData = {
+                version: $q(function(resolve, reject) {
+                    OrgSvcs.get({ organizationId: $routeParams.org, entityType: 'services', entityId: $routeParams.service, versionsOrActivity: 'versions', version: $routeParams.version }, resolve, reject);
+                })
+            };
+            
+            PageLifecycle.loadPage('ConsumerServiceDef', pageData, $scope, function() {
+                $scope.service = $scope.version.service;
+                $scope.org = $scope.service.organization;
+                $scope.hasError = false;
+
+                PageLifecycle.setPageTitle('consumer-service-def', [ $scope.service.name ]);
+
+                if ($scope.version.definitionType == 'SwaggerJSON') {
+                    var url = ServiceDefinitionSvcs.getServiceDefinitionUrl($scope.params.org, $scope.params.service, $scope.params.version);
+                    Logger.debug("!!!!! Using definition URL: {0}", url);
+
+                    // TODO this code was copied from apimanPlugin.ts - it needs to be shared
+                    var authHeader = Configuration.getAuthorizationHeader();
+                    
+                    $scope.definitionStatus = 'loading';
+                    var swaggerOptions = {
+                        url: url,
+                        dom_id:"swagger-ui-container",
+                        validatorUrl:null,
+                        sorter : "alpha",
+                        onComplete: function() {
+                            $('#swagger-ui-container a').each(function(idx, elem) {
+                                var href = $(elem).attr('href');
+                                if (href[0] == '#') {
+                                    $(elem).removeAttr('href');
+                                }
+                            });
+                            $('#swagger-ui-container div.sandbox_header').each(function(idx, elem) {
+                                $(elem).remove();
+                            });
+                            $scope.$apply(function(error) {
+                                $scope.definitionStatus = 'complete';
+                            });
+                        },
+                        onFailure: function() {
+                            $scope.$apply(function(error) {
+                                $scope.definitionStatus = 'error';
+                                $scope.hasError = true;
+                                $scope.error = error;
+                            });
+                        }
+                    };
+                    $window.authorizations.add("apimanauth", new ApiKeyAuthorization("Authorization", authHeader, "header"));
+                    $window.swaggerUi = new SwaggerUi(swaggerOptions);
+                    $window.swaggerUi.load();
+                    $scope.hasDefinition = true;
+                } else {
+                    $scope.hasDefinition = false;
+                }
+            });
+        }]);
 
 }

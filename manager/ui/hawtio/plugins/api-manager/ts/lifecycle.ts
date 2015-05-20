@@ -14,6 +14,7 @@ module ApimanPageLifecycle {
         "page.title.consumer-org": "apiman - Organization {0}",
         "page.title.consumer-orgs": "apiman - Organizations",
         "page.title.consumer-service": "apiman - Service {0}",
+        "page.title.consumer-service-def": "apiman - Service {0} - Definition",
         "page.title.consumer-services": "apiman - Services",
         "page.title.dashboard": "apiman - Home",
         "page.title.about": "apiman - About",

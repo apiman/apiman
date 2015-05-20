@@ -1,7 +1,7 @@
 swagger: "2.0"
 info:
   version: 1.0.0
-  title: Swagger Petstore
+  title: Swagger Petstore (YAML)
   license:
     name: MIT
 host: petstore.swagger.wordnik.com

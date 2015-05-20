@@ -229,6 +229,13 @@ textarea.form-data {
   color: rgb(236, 122, 8);
 }
 
+.alert-danger {
+  background-color: rgb(255,242,245);
+}
+.alert-danger .pficon {
+  color: #C00;
+}
+
 .apiman-label {
   text-transform: uppercase;
   font-size: 11px;
@@ -1530,4 +1537,34 @@ textarea.apiman-endpoint {
 #selectServiceModal .version {
   display: block;
   width: auto;
+}
+
+.swagger-section .swagger-ui-wrap {
+  max-width: none;
+  margin-left: 0px;
+  margin-right: 0px;
+}
+.swagger-section .swagger-ui-wrap a {
+  cursor: pointer;
+}
+.swagger-section #resources_container {
+  padding: 0px;
+  margin: 0px;
+}
+.swagger-section #resources_container #resources {
+  padding: 0px;
+  margin: 0px;
+}
+.swagger-section #resources_container #resources .resource h2 {
+  margin: 0px;
+}
+.swagger-section #resources_container #resources ul.endpoints {
+  padding: 0px;
+  margin: 0px;
+}
+.swagger-section .swagger-ui-wrap table tbody tr td {
+  font-size: inherit;
+}
+.swagger-section .swagger-ui-wrap table thead tr th {
+  font-size: inherit;
 }

@@ -50,11 +50,12 @@ module Apiman {
         '/orgs/:org/services/:service/:version/activity'    : { templateUrl: 'service/service-activity.html' },
         '/orgs/:org/services/:service/:version/new-version' : { templateUrl: 'forms/new-serviceversion.html' },
 
-        '/browse/orgs'                        : { templateUrl: 'consumer/consumer-orgs.html' },
-        '/browse/services'                    : { templateUrl: 'consumer/consumer-services.html' },
-        '/browse/orgs/:org'                   : { templateUrl: 'consumer/consumer-org.html' },
-        '/browse/orgs/:org/:service'          : { templateUrl: 'consumer/consumer-service-redirect.html' },
-        '/browse/orgs/:org/:service/:version' : { templateUrl: 'consumer/consumer-service.html' },
+        '/browse/orgs'                            : { templateUrl: 'consumer/consumer-orgs.html' },
+        '/browse/services'                        : { templateUrl: 'consumer/consumer-services.html' },
+        '/browse/orgs/:org'                       : { templateUrl: 'consumer/consumer-org.html' },
+        '/browse/orgs/:org/:service'              : { templateUrl: 'consumer/consumer-service-redirect.html' },
+        '/browse/orgs/:org/:service/:version'     : { templateUrl: 'consumer/consumer-service.html' },
+        '/browse/orgs/:org/:service/:version/def' : { templateUrl: 'consumer/consumer-service-def.html' },
 
         '/new-app'                  : { templateUrl: 'forms/new-app.html' },
         '/new-contract'             : { templateUrl: 'forms/new-contract.html' },
@@ -128,18 +129,8 @@ module Apiman {
             }
             var requestInterceptor = {
                 request: function(config) {
-                    if (Configuration.api.auth.type == 'basic') {
-                        var username = Configuration.api.auth.basic.username;
-                        var password = Configuration.api.auth.basic.password;
-                        var enc = btoa(username + ':' + password);
-                        config.headers.Authorization = 'Basic ' + enc;
-                    } else if (Configuration.api.auth.type == 'bearerToken') {
-                        var token = Configuration.api.auth.bearerToken.token;
-                        config.headers.Authorization = 'Bearer ' + token;
-                    } else if (Configuration.api.auth.type == 'authToken') {
-                        var token = Configuration.api.auth.bearerToken.token;
-                        config.headers.Authorization = 'AUTH-TOKEN ' + token;
-                    }
+                    var authHeader = Configuration.getAuthorizationHeader();
+                    config.headers.Authorization = authHeader;
                     return config;
                 }
             };
