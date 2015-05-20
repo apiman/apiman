@@ -1568,3 +1568,10 @@ textarea.apiman-endpoint {
 .swagger-section .swagger-ui-wrap table thead tr th {
   font-size: inherit;
 }
+.swagger-section .swagger-ui-wrap ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operation div.content h4 {
+  padding: 0px;
+  margin: 0px;
+}
+.swagger-section .swagger-ui-wrap p {
+  padding: 0px;
+}

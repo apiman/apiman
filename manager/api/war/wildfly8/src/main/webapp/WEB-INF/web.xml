@@ -43,6 +43,16 @@
     <url-pattern>/*</url-pattern>
   </filter-mapping>
 
+  <!-- Transaction Watchdog -->
+  <filter>
+    <filter-name>TransactionWatchdog</filter-name>
+    <filter-class>io.apiman.manager.api.war.TransactionWatchdogFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>TransactionWatchdog</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
   <security-constraint>
     <web-resource-collection>
       <web-resource-name>apiman</web-resource-name>

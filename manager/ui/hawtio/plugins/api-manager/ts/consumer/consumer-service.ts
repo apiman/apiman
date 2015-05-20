@@ -115,6 +115,12 @@ module Apiman {
                             $('#swagger-ui-container div.sandbox_header').each(function(idx, elem) {
                                 $(elem).remove();
                             });
+                            $('#swagger-ui-container li.operation div.auth').each(function(idx, elem) {
+                                $(elem).remove();
+                            });
+                            $('#swagger-ui-container li.operation div.access').each(function(idx, elem) {
+                                $(elem).remove();
+                            });
                             $scope.$apply(function(error) {
                                 $scope.definitionStatus = 'complete';
                             });

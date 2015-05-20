@@ -48,13 +48,16 @@ import org.slf4j.LoggerFactory;
  * @author eric.wittmann@redhat.com
  */
 public abstract class AbstractJpaStorage {
-    
+
     private static Logger logger = LoggerFactory.getLogger(AbstractJpaStorage.class);
 
     @Inject
     private IEntityManagerFactoryAccessor emfAccessor;
-    
+
     private static ThreadLocal<EntityManager> activeEM = new ThreadLocal<>();
+    public static boolean isTxActive() {
+        return activeEM.get() != null;
+    }
 
     /**
      * Constructor.
@@ -73,7 +76,7 @@ public abstract class AbstractJpaStorage {
         activeEM.set(entityManager);
         entityManager.getTransaction().begin();
     }
-    
+
     /**
      * @see io.apiman.manager.api.core.IStorage#commitTx()
      */
@@ -81,7 +84,7 @@ public abstract class AbstractJpaStorage {
         if (activeEM.get() == null) {
             throw new StorageException("Transaction not active."); //$NON-NLS-1$
         }
-        
+
         try {
             activeEM.get().getTransaction().commit();
             activeEM.get().close();
@@ -96,7 +99,7 @@ public abstract class AbstractJpaStorage {
             throw new StorageException(t);
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.core.IStorage#rollbackTx()
      */
@@ -111,7 +114,7 @@ public abstract class AbstractJpaStorage {
             activeEM.set(null);
         }
     }
-    
+
     /**
      * @return the thread's entity manager
      * @throws StorageException if a storage problem occurs while storing a bean
@@ -123,10 +126,10 @@ public abstract class AbstractJpaStorage {
         }
         return entityManager;
     }
-    
+
     /**
      * @param bean the bean to create
-     * @throws StorageException if a storage problem occurs while storing a bean 
+     * @throws StorageException if a storage problem occurs while storing a bean
      */
     public <T> void create(T bean) throws StorageException {
         if (bean == null) {
@@ -157,7 +160,7 @@ public abstract class AbstractJpaStorage {
 
     /**
      * Delete using bean
-     * 
+     *
      * @param bean the bean to delete
      * @throws StorageException if a storage problem occurs while storing a bean
      */
@@ -173,7 +176,7 @@ public abstract class AbstractJpaStorage {
 
     /**
      * Get object of type T
-     * 
+     *
      * @param id identity key
      * @param type class of type T
      * @return Instance of type T
@@ -190,10 +193,10 @@ public abstract class AbstractJpaStorage {
         }
         return rval;
     }
-    
+
     /**
      * Get object of type T
-     * 
+     *
      * @param id identity key
      * @param type class of type T
      * @return Instance of type T
@@ -213,7 +216,7 @@ public abstract class AbstractJpaStorage {
 
     /**
      * Get object of type T
-     * 
+     *
      * @param organizationId org id
      * @param id identity
      * @param type class of type T
@@ -233,7 +236,7 @@ public abstract class AbstractJpaStorage {
         }
         return rval;
     }
-    
+
     /**
      * Get a list of entities based on the provided criteria and entity type.
      * @param criteria
@@ -254,7 +257,7 @@ public abstract class AbstractJpaStorage {
             int page = paging.getPage();
             int pageSize = paging.getPageSize();
             int start = (page - 1) * pageSize;
-            
+
             CriteriaBuilder builder = entityManager.getCriteriaBuilder();
             CriteriaQuery<T> criteriaQuery = builder.createQuery(type);
             Root<T> from = criteriaQuery.from(type);
@@ -263,16 +266,16 @@ public abstract class AbstractJpaStorage {
             typedQuery.setFirstResult(start);
             typedQuery.setMaxResults(pageSize+1);
             boolean hasMore = false;
-            
+
             // Now query for the actual results
             List<T> resultList = typedQuery.getResultList();
-            
+
             // Check if we got back more than we actually needed.
             if (resultList.size() > pageSize) {
                 resultList.remove(resultList.size() - 1);
                 hasMore = true;
             }
-            
+
             // If there are more results than we needed, then we will need to do another
             // query to determine how many rows there are in total
             int totalSize = start + resultList.size();
@@ -303,7 +306,7 @@ public abstract class AbstractJpaStorage {
         TypedQuery<Long> query = entityManager.createQuery(countQuery);
         return query.getSingleResult().intValue();
     }
-    
+
     /**
      * Applies the criteria found in the {@link SearchCriteriaBean} to the JPA query.
      * @param criteria
@@ -314,7 +317,7 @@ public abstract class AbstractJpaStorage {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     protected <T> void applySearchCriteriaToQuery(SearchCriteriaBean criteria, CriteriaBuilder builder,
             CriteriaQuery<?> query, Root<T> from, boolean countOnly) {
-        
+
         List<SearchCriteriaFilterBean> filters = criteria.getFilters();
         if (filters != null && !filters.isEmpty()) {
             List<Predicate> predicates = new ArrayList<>();
