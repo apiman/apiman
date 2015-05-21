@@ -27,11 +27,11 @@ import io.apiman.gateway.engine.policy.PolicyFactoryImpl;
  * A default engine factory useful for quickly getting ramped up with apiman.
  * This should likely never be used in any sort of production situation,
  * although it's useful for testing and bootstrapping.
- * 
+ *
  * @author eric.wittmann@redhat.com
  */
 public abstract class DefaultEngineFactory extends AbstractEngineFactory {
-    
+
     /**
      * Constructor.
      */
@@ -42,10 +42,17 @@ public abstract class DefaultEngineFactory extends AbstractEngineFactory {
      * @see io.apiman.gateway.engine.impl.AbstractEngineFactory#createRegistry()
      */
     @Override
-    protected IRegistry createRegistry() {
+    protected final IRegistry createRegistry() {
+        return new SecureRegistryWrapper(createRegistryInternal());
+    }
+
+    /**
+     * Subclasses can extend this to provide a custom registry.
+     */
+    protected IRegistry createRegistryInternal() {
         return new InMemoryRegistry();
     }
-    
+
     /**
      * @see io.apiman.gateway.engine.impl.AbstractEngineFactory#createPluginRegistry()
      */
@@ -69,7 +76,7 @@ public abstract class DefaultEngineFactory extends AbstractEngineFactory {
     protected IPolicyFactory createPolicyFactory() {
         return new PolicyFactoryImpl();
     }
-    
+
     /**
      * @see io.apiman.gateway.engine.impl.AbstractEngineFactory#createMetrics()
      */

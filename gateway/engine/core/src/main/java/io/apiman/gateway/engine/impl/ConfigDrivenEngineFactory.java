@@ -28,7 +28,7 @@ import java.util.Map;
 
 /**
  * Factory for creating the engine, obviously.
- * 
+ *
  * @author eric.wittmann@redhat.com
  */
 public class ConfigDrivenEngineFactory extends AbstractEngineFactory {
@@ -50,7 +50,8 @@ public class ConfigDrivenEngineFactory extends AbstractEngineFactory {
     protected IRegistry createRegistry() {
         Class<? extends IRegistry> c = engineConfig.getRegistryClass();
         Map<String, String> config = engineConfig.getRegistryConfig();
-        return create(c, config);
+        IRegistry registry = create(c, config);
+        return new SecureRegistryWrapper(registry);
     }
 
     /**
@@ -90,7 +91,7 @@ public class ConfigDrivenEngineFactory extends AbstractEngineFactory {
         Map<String, String> config = engineConfig.getPolicyFactoryConfig();
         return create(c, config);
     }
-    
+
     /**
      * @see io.apiman.gateway.engine.impl.AbstractEngineFactory#createMetrics()
      */
@@ -100,7 +101,7 @@ public class ConfigDrivenEngineFactory extends AbstractEngineFactory {
         Map<String, String> config = engineConfig.getMetricsConfig();
         return create(c, config);
     }
-    
+
     /**
      * Creates a new instance of the given type, passing the given config
      * map if possible (if the class has a Map constructor).
