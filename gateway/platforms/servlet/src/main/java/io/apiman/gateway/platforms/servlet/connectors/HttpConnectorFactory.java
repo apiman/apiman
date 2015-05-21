@@ -50,11 +50,12 @@ public class HttpConnectorFactory implements IConnectorFactory {
         this.config = config;
     }
 
-    /**
-     * @see io.apiman.gateway.engine.IConnectorFactory#createConnector(io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.beans.Service)
+    /* (non-Javadoc)
+     * @see io.apiman.gateway.engine.IConnectorFactory#createConnector(io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.beans.Service, io.apiman.gateway.engine.auth.RequiredAuthType)
      */
     @Override
-    public IServiceConnector createConnector(ServiceRequest request, final Service service) {
+    public IServiceConnector createConnector(ServiceRequest request, final Service service,
+            final RequiredAuthType requiredAuthType) {
         return new IServiceConnector() {
             /**
              * @see io.apiman.gateway.engine.IServiceConnector#connect(io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.async.IAsyncResultHandler)
@@ -63,7 +64,6 @@ public class HttpConnectorFactory implements IConnectorFactory {
             public IServiceConnection connect(ServiceRequest request,
                     IAsyncResultHandler<IServiceConnectionResponse> handler) throws ConnectorException {
 
-                RequiredAuthType requiredAuthType = RequiredAuthType.parseType(service);
                 HttpServiceConnection connection = new HttpServiceConnection(request,
                         service,
                         requiredAuthType,

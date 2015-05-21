@@ -15,24 +15,25 @@
  */
 package io.apiman.gateway.vertx.connector;
 
+import io.apiman.gateway.engine.IConnectorFactory;
+import io.apiman.gateway.engine.IServiceConnection;
+import io.apiman.gateway.engine.IServiceConnectionResponse;
+import io.apiman.gateway.engine.IServiceConnector;
+import io.apiman.gateway.engine.async.IAsyncResultHandler;
+import io.apiman.gateway.engine.auth.RequiredAuthType;
+import io.apiman.gateway.engine.beans.Service;
+import io.apiman.gateway.engine.beans.ServiceRequest;
+import io.apiman.gateway.engine.beans.exceptions.ConnectorException;
+
 import java.util.HashSet;
 import java.util.Set;
 
 import org.vertx.java.core.Vertx;
 import org.vertx.java.platform.Container;
 
-import io.apiman.gateway.engine.IConnectorFactory;
-import io.apiman.gateway.engine.IServiceConnection;
-import io.apiman.gateway.engine.IServiceConnectionResponse;
-import io.apiman.gateway.engine.IServiceConnector;
-import io.apiman.gateway.engine.async.IAsyncResultHandler;
-import io.apiman.gateway.engine.beans.Service;
-import io.apiman.gateway.engine.beans.ServiceRequest;
-import io.apiman.gateway.engine.beans.exceptions.ConnectorException;
-
 /**
  * Create Vert.x connectors to the enable apiman to connect to a backend service.
- * 
+ *
  * @author Marc Savy <msavy@redhat.com>
  */
 public class ConnectorFactory implements IConnectorFactory {
@@ -58,9 +59,9 @@ public class ConnectorFactory implements IConnectorFactory {
     }
 
     @Override
-    public IServiceConnector createConnector(ServiceRequest request, final Service service) {
+    public IServiceConnector createConnector(ServiceRequest request, final Service service, RequiredAuthType authType) {
         return new IServiceConnector() {
-            
+
             @Override
             public IServiceConnection connect(ServiceRequest request,
                     IAsyncResultHandler<IServiceConnectionResponse> resultHandler)

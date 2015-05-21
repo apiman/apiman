@@ -41,7 +41,7 @@ public enum RequiredAuthType {
      */
     DEFAULT;
 
-    public static final String ENDPOINT_PROPERTIES_KEY = "authType";
+    public static final String ENDPOINT_AUTHORIZATION_TYPE = "authorization.type";
 
     private static Map<String, RequiredAuthType> constants = new HashMap<>();
     private final String[] aliases;
@@ -84,6 +84,6 @@ public enum RequiredAuthType {
      */
     public static RequiredAuthType parseType(Service service) {
         return RequiredAuthType.fromValue(service.getEndpointProperties().get(
-                RequiredAuthType.ENDPOINT_PROPERTIES_KEY));
+                RequiredAuthType.ENDPOINT_AUTHORIZATION_TYPE));
     }
 }
