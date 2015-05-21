@@ -5,8 +5,11 @@ module ApimanConfiguration {
 
     export var Configuration = _module.factory('Configuration', ['$window',
         function($window) {
-            var cdata = angular.copy($window.APIMAN_CONFIG_DATA);
-            delete $window['APIMAN_CONFIG_DATA'];
+            var cdata:any = {};
+            if ($window['APIMAN_CONFIG_DATA']) {
+                cdata = angular.copy($window['APIMAN_CONFIG_DATA']);
+                delete $window['APIMAN_CONFIG_DATA'];
+            }
             cdata.getAuthorizationHeader = function() {
                 var authHeader = null;
                 if (cdata.api.auth.type == 'basic') {
