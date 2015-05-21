@@ -139,5 +139,15 @@ module ApimanServices {
                 }
             }
         }]);
+    
+    export var SystemServices = _module.factory('SystemSvcs', ['$resource', 'Configuration',
+        function($resource, Configuration) {
+            return {
+                getStatus: function(handler, errorHandler) {
+                    var endpoint = formatEndpoint(Configuration.api.endpoint + '/system/status', {});
+                    $resource(endpoint).get({}, handler, errorHandler);
+                }
+            }
+        }]);
 
 }

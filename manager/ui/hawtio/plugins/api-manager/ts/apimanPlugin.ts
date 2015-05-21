@@ -93,9 +93,9 @@ module Apiman {
         ($locationProvider, $routeProvider: ng.route.IRouteProvider, builder: HawtioMainNav.BuilderFactory) => {
             tab = builder.create()
                 .id(Apiman.pluginName)
-                .title(() => "Apiman")
+                .title(() => "API Management")
                 .href(() => "/api-manager")
-                .subPath("Home", "dash", builder.join(Apiman.templatePath, 'dash.html'))
+                .page(() => builder.join(Apiman.templatePath, 'dash'))
                 .build();
             builder.configureRouting($routeProvider, tab);
 
@@ -141,10 +141,17 @@ module Apiman {
         $httpProvider.interceptors.push('authInterceptor');
     }]);
 
-    _module.run(['$rootScope', 'HawtioNav', ($rootScope, HawtioNav: HawtioMainNav.Registry) => {
-        HawtioNav.add(tab);
+    _module.run(['$rootScope', 'SystemSvcs', 'HawtioNav', ($rootScope, SystemSvcs, HawtioNav: HawtioMainNav.Registry) => {
+        SystemSvcs.getStatus(function(response) {
+            if (response && response.up) {
+                HawtioNav.add(tab);
+            } else {
+                log.error('apiman reports that it is not running.');
+            }
+        }, function(error) {
+            log.error('Error getting apiman system status: ' + JSON.stringify(error));
+        });
         $rootScope.pluginName = Apiman.pluginName;
-        log.debug("loaded");
     }]);
 
     hawtioPluginLoader.registerPreBootstrapTask((next) => {
