@@ -87,6 +87,8 @@ public abstract class AbstractJpaStorage {
 
         try {
             activeEM.get().getTransaction().commit();
+            activeEM.get().close();
+            activeEM.set(null);
         } catch (EntityExistsException e) {
             throw new StorageException(e);
         } catch (RollbackException e) {
@@ -95,9 +97,6 @@ public abstract class AbstractJpaStorage {
         } catch (Throwable t) {
             logger.error(t.getMessage(), t);
             throw new StorageException(t);
-        } finally {
-            activeEM.get().close();
-            activeEM.set(null);
         }
     }
 
