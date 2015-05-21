@@ -134,7 +134,8 @@ public class WarCdiFactory {
      */
     private static JestClient createJestClient(WarApiManagerConfig config) {
         StringBuilder builder = new StringBuilder();
-        builder.append("http://"); //$NON-NLS-1$
+        builder.append(config.getESProtocol());
+        builder.append("://"); //$NON-NLS-1$
         builder.append(config.getESHost());
         builder.append(":"); //$NON-NLS-1$
         builder.append(config.getESPort());

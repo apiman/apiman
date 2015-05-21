@@ -40,6 +40,7 @@ public class WarApiManagerConfig {
     public static final String APIMAN_MANAGER_CONFIG_LOGGER = "apiman-manager.config.logger"; //$NON-NLS-1$
 
     public static final String APIMAN_MANAGER_STORAGE_TYPE = "apiman-manager.storage.type"; //$NON-NLS-1$
+    public static final String APIMAN_MANAGER_STORAGE_ES_PROTOCOL = "apiman-manager.storage.es.protocol"; //$NON-NLS-1$
     public static final String APIMAN_MANAGER_STORAGE_ES_HOST = "apiman-manager.storage.es.host"; //$NON-NLS-1$
     public static final String APIMAN_MANAGER_STORAGE_ES_PORT = "apiman-manager.storage.es.port"; //$NON-NLS-1$
     public static final String APIMAN_MANAGER_STORAGE_ES_CLUSTER_NAME = "apiman-manager.storage.es.cluster-name"; //$NON-NLS-1$
@@ -93,6 +94,13 @@ public class WarApiManagerConfig {
      */
     public String getStorageType() {
         return config.getString(APIMAN_MANAGER_STORAGE_TYPE, "jpa"); //$NON-NLS-1$
+    }
+
+    /**
+     * @return the elasticsearch protocol
+     */
+    public String getESProtocol() {
+        return config.getString(APIMAN_MANAGER_STORAGE_ES_PROTOCOL, "http"); //$NON-NLS-1$
     }
 
     /**
