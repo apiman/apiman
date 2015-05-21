@@ -20,9 +20,14 @@ import io.apiman.gateway.engine.IServiceConnection;
 import io.apiman.gateway.engine.IServiceConnectionResponse;
 import io.apiman.gateway.engine.IServiceConnector;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
+import io.apiman.gateway.engine.auth.RequiredAuthType;
 import io.apiman.gateway.engine.beans.Service;
 import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.beans.exceptions.ConnectorException;
+import io.apiman.gateway.platforms.servlet.connectors.ssl.SSLSessionStrategy;
+import io.apiman.gateway.platforms.servlet.connectors.ssl.SSLSessionStrategyFactory;
+
+import java.util.Map;
 
 /**
  * Connector factory that uses HTTP to invoke back end systems.
@@ -30,11 +35,19 @@ import io.apiman.gateway.engine.beans.exceptions.ConnectorException;
  * @author eric.wittmann@redhat.com
  */
 public class HttpConnectorFactory implements IConnectorFactory {
-    
+
+    // Standard auth
+    private SSLSessionStrategy standardSslStrategy;
+    // 2WAY auth (i.e. mutual auth)
+    private SSLSessionStrategy mutualAuthSslStrategy;
+    private Map<String, String> config;
+
     /**
      * Constructor.
+     * @param config map of configuration options
      */
-    public HttpConnectorFactory() {
+    public HttpConnectorFactory(Map<String, String> config) {
+        this.config = config;
     }
 
     /**
@@ -49,10 +62,33 @@ public class HttpConnectorFactory implements IConnectorFactory {
             @Override
             public IServiceConnection connect(ServiceRequest request,
                     IAsyncResultHandler<IServiceConnectionResponse> handler) throws ConnectorException {
-                HttpServiceConnection connection = new HttpServiceConnection(request, service, handler);
+
+                RequiredAuthType requiredAuthType = RequiredAuthType.parseType(service);
+                HttpServiceConnection connection = new HttpServiceConnection(request,
+                        service,
+                        requiredAuthType,
+                        getSslStrategy(requiredAuthType),
+                        handler);
                 return connection;
             }
         };
     }
 
+    protected SSLSessionStrategy getSslStrategy(RequiredAuthType authType) {
+        try {
+            if (authType == RequiredAuthType.MTLS) {
+                if (mutualAuthSslStrategy == null) {
+                    mutualAuthSslStrategy = SSLSessionStrategyFactory.buildMutual(config);
+                }
+                return mutualAuthSslStrategy;
+            } else {
+                if (standardSslStrategy == null) {
+                    standardSslStrategy = SSLSessionStrategyFactory.buildStandard(config);
+                }
+                return standardSslStrategy;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
