@@ -1550,6 +1550,7 @@ textarea.apiman-endpoint {
 .swagger-section #resources_container {
   padding: 0px;
   margin: 0px;
+  width: auto;
 }
 .swagger-section #resources_container #resources {
   padding: 0px;

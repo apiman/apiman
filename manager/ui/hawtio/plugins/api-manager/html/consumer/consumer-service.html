@@ -50,7 +50,7 @@
               No versions of this service have been published.  You will not be able to
               consume this service until it has been published by its owner!
             </div>
-            <div ng-show="version.definitionType == 'SwaggerJSON'">
+            <div ng-show="version.definitionType == 'SwaggerJSON' && hasSwagger">
               <div class="vspacer-10" />
               <a href="{{ pluginName }}/browse/orgs/{{params.org}}/{{params.service}}/{{params.version}}/def">
                 <i class="fa fa-fw fa-sitemap"></i>

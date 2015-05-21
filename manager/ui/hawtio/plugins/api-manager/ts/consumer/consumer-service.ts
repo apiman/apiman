@@ -25,6 +25,12 @@ module Apiman {
             $scope.params = $routeParams;
             $scope.chains = {};
             
+            $scope.hasSwagger = false;
+            try {
+                var swagger = SwaggerUi;
+                $scope.hasSwagger = true;
+            } catch (e) {}
+            
             $scope.getPolicyChain = function(plan) {
                 var planId = plan.planId;
                 if (!$scope.chains[planId]) {
@@ -91,8 +97,14 @@ module Apiman {
                 $scope.hasError = false;
 
                 PageLifecycle.setPageTitle('consumer-service-def', [ $scope.service.name ]);
+                
+                var hasSwagger = false;
+                try {
+                    var swagger = SwaggerUi;
+                    hasSwagger = true;
+                } catch (e) {}
 
-                if ($scope.version.definitionType == 'SwaggerJSON') {
+                if ($scope.version.definitionType == 'SwaggerJSON' && hasSwagger) {
                     var url = ServiceDefinitionSvcs.getServiceDefinitionUrl($scope.params.org, $scope.params.service, $scope.params.version);
                     Logger.debug("!!!!! Using definition URL: {0}", url);
 
