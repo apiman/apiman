@@ -22,6 +22,11 @@
       width: 120px;
       margin-top: 4px;
     }
+    .authorization-form .inline-form-select {
+      display: inline-table;
+      width: auto;
+      margin-top: 4px;
+    }
   </style>
   <div class="help" apiman-i18n-key="authorization-message">Manage the list of fine-grained authorization rules in the box below.  If you want a single required role to protect your entire API, simply add one item with a path of ".*" and a verb of "*".</div>
   
@@ -76,5 +81,19 @@
       </tr>
     </tbody>
   </table>
+  
+  <div>
+    <dl>
+      <dt apiman-i18n-key="unmatched-request-action">Unmatched Request Action</dt>
+      <dd>
+        <span apiman-i18n-key="auth.if-request-unmatched-pre">I want the request to</span>
+        <select id="unmatched-request-action" ng-model="config.requestUnmatched" apiman-select-picker="" class="inline-form-select selectpicker" data-live-search="false">
+          <option value="fail" apiman-i18n-key="auth.fail">fail</option>
+          <option value="pass" apiman-i18n-key="auth.pass">pass</option>
+        </select>
+        <span apiman-i18n-key="auth.if-request-unmatched-post">if it does not match any of the authorization rules defined above.</span>
+      </dd>
+    </dl>
+  </div>
 
 </div>

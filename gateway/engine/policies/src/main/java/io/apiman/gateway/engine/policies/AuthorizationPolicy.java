@@ -21,6 +21,7 @@ import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.policies.config.AuthorizationConfig;
 import io.apiman.gateway.engine.policies.config.AuthorizationRule;
+import io.apiman.gateway.engine.policies.config.UnmatchedRequestType;
 import io.apiman.gateway.engine.policies.i18n.Messages;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
@@ -106,13 +107,25 @@ public class AuthorizationPolicy extends AbstractMappedPolicy<AuthorizationConfi
             resource = "/"; //$NON-NLS-1$
         }
         boolean authorized = true;
+        boolean matchFound = false;
         for (AuthorizationRule authorizationRule : config.getRules()) {
             boolean verbMatches = "*".equals(authorizationRule.getVerb()) || verb.equalsIgnoreCase(authorizationRule.getVerb()); //$NON-NLS-1$
             if (verbMatches && resource.matches(authorizationRule.getPathPattern())) {
                 // the verb and resource matched the rule - so enforce the role here!
                 authorized = authorized && userRoles.contains(authorizationRule.getRole());
+                matchFound = true;
             }
         }
+
+        // If no authorization rules matched the request, what do we do?
+        if (!matchFound) {
+            if (config.getRequestUnmatched() == UnmatchedRequestType.pass) {
+                authorized = true;
+            } else {
+                authorized = false;
+            }
+        }
+
         return authorized;
     }
 

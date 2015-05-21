@@ -323,6 +323,9 @@ module Apiman {
         ($scope, Logger) => {
             var validate = function(config) {
                 var valid = config.rules && config.rules.length > 0;
+                if (!config.requestUnmatched) {
+                    config.requestUnmatched = 'fail';
+                }
                 $scope.setValid(valid);
             };
             $scope.$watch('config', validate, true);

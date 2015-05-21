@@ -25,6 +25,7 @@ import java.util.List;
 public class AuthorizationConfig {
 
     private List<AuthorizationRule> rules = new ArrayList<>();
+    private UnmatchedRequestType requestUnmatched;
 
     /**
      * Constructor.
@@ -44,6 +45,20 @@ public class AuthorizationConfig {
      */
     public void setRules(List<AuthorizationRule> rules) {
         this.rules = rules;
+    }
+
+    /**
+     * @return the requestUnmatched
+     */
+    public UnmatchedRequestType getRequestUnmatched() {
+        return requestUnmatched;
+    }
+
+    /**
+     * @param requestUnmatched the requestUnmatched to set
+     */
+    public void setRequestUnmatched(UnmatchedRequestType requestUnmatched) {
+        this.requestUnmatched = requestUnmatched;
     }
 
 }

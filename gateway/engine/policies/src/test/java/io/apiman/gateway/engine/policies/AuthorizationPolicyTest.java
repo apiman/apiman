@@ -116,6 +116,7 @@ public class AuthorizationPolicyTest {
     @Test
     public void testApplyPath() {
         String json = "{\r\n" +
+                " \"requestUnmatched\" : \"pass\"," +
                 "  \"rules\" : [\r\n" +
                 "    { \"verb\" : \"*\", \"pathPattern\" : \"/auth/.*\", \"role\" : \"the-role\" }\r\n" +
                 "  ]\r\n" +
@@ -130,6 +131,7 @@ public class AuthorizationPolicyTest {
     @Test
     public void testApplyVerb() {
         String json = "{\r\n" +
+                " \"requestUnmatched\" : \"pass\"," +
                 "  \"rules\" : [\r\n" +
                 "    { \"verb\" : \"PUT\", \"pathPattern\" : \"/auth/.*\", \"role\" : \"the-role\" }\r\n" +
                 "  ]\r\n" +
@@ -158,6 +160,38 @@ public class AuthorizationPolicyTest {
         userRoles.add("admin");
         doTest(json, userRoles, "GET", "/path/to/user/resource", true);
         doTest(json, userRoles, "GET", "/admin/path/to/admin/resource", true);
+    }
+
+    @Test
+    public void testApplyNoneMatchedPass() {
+        String json = "{\r\n" +
+                " \"requestUnmatched\" : \"pass\"," +
+                "  \"rules\" : [\r\n" +
+                "    { \"verb\" : \"GET\", \"pathPattern\" : \"/user/.*\", \"role\" : \"user\" },\r\n" +
+                "    { \"verb\" : \"GET\", \"pathPattern\" : \"/admin/.*\", \"role\" : \"admin\" }\r\n" +
+                "  ]\r\n" +
+                "}";
+
+        HashSet<String> userRoles = new HashSet<>();
+
+        doTest(json, userRoles, "GET", "/other/resource", true);
+        doTest(json, userRoles, "PUT", "/admin/resource", true);
+    }
+
+    @Test
+    public void testApplyNoneMatchedFail() {
+        String json = "{\r\n" +
+                " \"requestUnmatched\" : \"fail\"," +
+                "  \"rules\" : [\r\n" +
+                "    { \"verb\" : \"GET\", \"pathPattern\" : \"/user/.*\", \"role\" : \"user\" },\r\n" +
+                "    { \"verb\" : \"GET\", \"pathPattern\" : \"/admin/.*\", \"role\" : \"admin\" }\r\n" +
+                "  ]\r\n" +
+                "}";
+
+        HashSet<String> userRoles = new HashSet<>();
+
+        doTest(json, userRoles, "GET", "/other/resource", false);
+        doTest(json, userRoles, "POST", "/admin/resource", false);
     }
 
 
