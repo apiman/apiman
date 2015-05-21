@@ -119,8 +119,8 @@
     <version.org.apache.felix.scr.annotations>1.7.0</version.org.apache.felix.scr.annotations>
     <version.org.apache.geronimo.specs.geronimo-jta_1.1_spec>1.1.1</version.org.apache.geronimo.specs.geronimo-jta_1.1_spec>
     <version.org.apache.geronimo.specs.geronimo-servlet_3.0_spec>1.0</version.org.apache.geronimo.specs.geronimo-servlet_3.0_spec>
-    <version.org.apache.httpcomponents.httpclient>4.4-beta1</version.org.apache.httpcomponents.httpclient>
-    <version.org.apache.httpcomponents.httpcore>4.4-beta1</version.org.apache.httpcomponents.httpcore>
+    <version.org.apache.httpcomponents.httpclient>4.4.1</version.org.apache.httpcomponents.httpclient>
+    <version.org.apache.httpcomponents.httpcore>4.4.1</version.org.apache.httpcomponents.httpcore>
     <version.org.apache.logging.log4j>2.2</version.org.apache.logging.log4j>
     <version.org.apache.servicemix.bundles.antlr>2.7.7_5</version.org.apache.servicemix.bundles.antlr>
     <version.org.apache.servicemix.bundles.cglib>3.0_1</version.org.apache.servicemix.bundles.cglib>
