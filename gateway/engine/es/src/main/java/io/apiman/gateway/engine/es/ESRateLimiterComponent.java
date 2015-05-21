@@ -21,7 +21,6 @@ import io.apiman.gateway.engine.components.IRateLimiterComponent;
 import io.apiman.gateway.engine.components.rate.RateLimitResponse;
 import io.apiman.gateway.engine.rates.RateBucketPeriod;
 import io.apiman.gateway.engine.rates.RateLimiterBucket;
-import io.searchbox.client.JestClient;
 import io.searchbox.client.JestResult;
 import io.searchbox.client.JestResultHandler;
 import io.searchbox.core.Get;
@@ -41,17 +40,14 @@ import org.elasticsearch.index.engine.VersionConflictEngineException;
  *
  * @author eric.wittmann@redhat.com
  */
-public class ESRateLimiterComponent implements IRateLimiterComponent {
-
-    private Map<String, String> config;
-    private JestClient esClient;
+public class ESRateLimiterComponent extends AbstractESComponent implements IRateLimiterComponent {
 
     /**
      * Constructor.
      * @param config the configuration
      */
     public ESRateLimiterComponent(Map<String, String> config) {
-        this.config = config;
+        super(config);
     }
 
     /**
@@ -169,16 +165,6 @@ public class ESRateLimiterComponent implements IRateLimiterComponent {
      */
     private String id(String bucketId) {
         return Base64.encodeBytes(bucketId.getBytes());
-    }
-
-    /**
-     * @return the esClient
-     */
-    public synchronized JestClient getClient() {
-        if (esClient == null) {
-            esClient = ESClientFactory.createClient(config);
-        }
-        return esClient;
     }
 
 }

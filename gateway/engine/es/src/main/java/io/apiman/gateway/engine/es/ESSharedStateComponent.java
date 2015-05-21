@@ -19,7 +19,6 @@ import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.components.ISharedStateComponent;
 import io.apiman.gateway.engine.es.beans.PrimitiveBean;
-import io.searchbox.client.JestClient;
 import io.searchbox.client.JestResult;
 import io.searchbox.client.JestResultHandler;
 import io.searchbox.core.Delete;
@@ -41,22 +40,19 @@ import org.elasticsearch.common.Base64;
  *
  * @author eric.wittmann@redhat.com
  */
-public class ESSharedStateComponent implements ISharedStateComponent {
+public class ESSharedStateComponent extends AbstractESComponent implements ISharedStateComponent {
 
     private static final ObjectMapper mapper = new ObjectMapper();
     static {
         mapper.configure(Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
-    private Map<String, String> config;
-    private JestClient esClient;
-
     /**
      * Constructor.
      * @param config the configuration
      */
     public ESSharedStateComponent(Map<String, String> config) {
-        this.config = config;
+        super(config);
     }
 
     /**
@@ -79,7 +75,6 @@ public class ESSharedStateComponent implements ISharedStateComponent {
                 public void completed(JestResult result) {
                     if (result.isSucceeded()) {
                         try {
-                            // TODO this is probably wrong:
                             T value = null;
                             if (defaultValue.getClass().isPrimitive() || defaultValue instanceof String) {
                                 value = (T) readPrimitive(result);
@@ -208,16 +203,6 @@ public class ESSharedStateComponent implements ISharedStateComponent {
         } else {
             throw new Exception("Unsupported primitive: " + c); //$NON-NLS-1$
         }
-    }
-
-    /**
-     * @return the esClient
-     */
-    public synchronized JestClient getClient() {
-        if (esClient == null) {
-            esClient = ESClientFactory.createClient(config);
-        }
-        return esClient;
     }
 
 }

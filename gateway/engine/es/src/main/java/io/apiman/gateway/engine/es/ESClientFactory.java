@@ -78,37 +78,42 @@ public class ESClientFactory {
     public static JestClient createJestClient(Map<String, String> config) {
         String host = config.get("client.host"); //$NON-NLS-1$
         String port = config.get("client.port"); //$NON-NLS-1$
+        String protocol = config.get("client.protocol"); //$NON-NLS-1$
         if (StringUtils.isBlank(host)) {
             throw new RuntimeException("Missing client.host configuration for ESRegistry."); //$NON-NLS-1$
         }
         if (StringUtils.isBlank(port)) {
             throw new RuntimeException("Missing client.port configuration for ESRegistry."); //$NON-NLS-1$
         }
-        return createJestClient(host, Integer.parseInt(port));
+        if (StringUtils.isBlank(protocol)) {
+            protocol = "http"; //$NON-NLS-1$
+        }
+        return createJestClient(protocol, host, Integer.parseInt(port));
     }
 
     /**
      * Creates and caches a Jest client from host and port.
+     * @param protocol http or https
      * @param host the host
      * @param port the port
      * @return the ES client
      */
-    public static JestClient createJestClient(String host, int port) {
+    public static JestClient createJestClient(String protocol, String host, int port) {
         String clientKey = "jest:" + host + ':' + port; //$NON-NLS-1$
         synchronized (clients) {
             if (clients.containsKey(clientKey)) {
                 return clients.get(clientKey);
             } else {
                 StringBuilder builder = new StringBuilder();
-                builder.append("http://"); //$NON-NLS-1$
+                builder.append(protocol);
+                builder.append("://"); //$NON-NLS-1$
                 builder.append(host);
                 builder.append(":"); //$NON-NLS-1$
                 builder.append(String.valueOf(port));
                 String connectionUrl = builder.toString();
 
                 JestClientFactory factory = new JestClientFactory();
-                factory.setHttpClientConfig(new HttpClientConfig.Builder(connectionUrl).multiThreaded(true)
-                        .build());
+                factory.setHttpClientConfig(new HttpClientConfig.Builder(connectionUrl).multiThreaded(true).build());
                 JestClient client = factory.getObject();
                 clients.put(clientKey, client);
                 initializeClient(client);

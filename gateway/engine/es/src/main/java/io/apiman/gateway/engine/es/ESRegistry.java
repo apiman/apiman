@@ -28,7 +28,6 @@ import io.apiman.gateway.engine.beans.exceptions.InvalidContractException;
 import io.apiman.gateway.engine.beans.exceptions.PublishingException;
 import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
 import io.apiman.gateway.engine.es.i18n.Messages;
-import io.searchbox.client.JestClient;
 import io.searchbox.client.JestResult;
 import io.searchbox.client.JestResultHandler;
 import io.searchbox.core.Delete;
@@ -54,17 +53,14 @@ import org.elasticsearch.index.query.QueryBuilders;
  *
  * @author eric.wittmann@redhat.com
  */
-public class ESRegistry implements IRegistry {
-
-    private Map<String, String> config;
-    private JestClient esClient;
+public class ESRegistry extends AbstractESComponent implements IRegistry {
 
     /**
      * Constructor.
      * @param config map of configuration options
      */
     public ESRegistry(Map<String, String> config) {
-        this.config = config;
+        super(config);
     }
 
     /**
@@ -503,16 +499,6 @@ public class ESRegistry implements IRegistry {
      */
     private String getContractId(Contract contract) {
         return contract.getApiKey();
-    }
-
-    /**
-     * @return the esClient
-     */
-    public synchronized JestClient getClient() {
-        if (esClient == null) {
-            esClient = ESClientFactory.createClient(config);
-        }
-        return esClient;
     }
 
 }
