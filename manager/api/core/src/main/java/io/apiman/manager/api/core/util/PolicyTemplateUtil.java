@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.api.core.util;
 
+import io.apiman.common.util.AesEncrypter;
 import io.apiman.manager.api.beans.policies.PolicyBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionTemplateBean;
@@ -42,7 +43,7 @@ public class PolicyTemplateUtil {
     private static final ObjectMapper mapper = new ObjectMapper();
     // Cache a MVEL 2.0 compiled template - the key is PolicyDefId::language
     private static final Map<String, CompiledTemplate> templateCache = new HashMap<>();
-    
+
     /**
      * Clears out the template cache.
      */
@@ -71,7 +72,8 @@ public class PolicyTemplateUtil {
             templateCache.put(cacheKey, template);
         }
         try {
-            String jsonConfig = policy.getConfiguration();
+            // TODO hack to fix broken descriptions - this util should probably not know about encrypted data
+            String jsonConfig = AesEncrypter.decrypt(policy.getConfiguration());
             Map<String, Object> configMap = mapper.readValue(jsonConfig, Map.class);
             configMap = new PolicyConfigMap(configMap);
             String desc = (String) TemplateRuntime.execute(template, configMap);
@@ -90,7 +92,7 @@ public class PolicyTemplateUtil {
         Locale currentLocale = Messages.i18n.getLocale();
         String lang = currentLocale.getLanguage();
         String country = lang + "_" + currentLocale.getCountry(); //$NON-NLS-1$
-        
+
         PolicyDefinitionTemplateBean nullBean = null;
         PolicyDefinitionTemplateBean langBean = null;
         PolicyDefinitionTemplateBean countryBean = null;

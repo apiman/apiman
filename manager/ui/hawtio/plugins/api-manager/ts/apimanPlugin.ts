@@ -95,7 +95,7 @@ module Apiman {
                 .id(Apiman.pluginName)
                 .title(() => "API Management")
                 .href(() => "/api-manager")
-                .page(() => builder.join(Apiman.templatePath, 'dash'))
+                .page(() => builder.join(Apiman.templatePath, 'dash.html'))
                 .build();
             builder.configureRouting($routeProvider, tab);
 
