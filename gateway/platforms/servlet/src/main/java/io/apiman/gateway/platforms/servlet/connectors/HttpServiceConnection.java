@@ -27,7 +27,6 @@ import io.apiman.gateway.engine.beans.ServiceResponse;
 import io.apiman.gateway.engine.beans.exceptions.ConnectorException;
 import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.gateway.platforms.servlet.GatewayThreadContext;
-import io.apiman.gateway.platforms.servlet.connectors.ssl.CipherSelectingSSLSocketFactory;
 import io.apiman.gateway.platforms.servlet.connectors.ssl.SSLSessionStrategy;
 import io.apiman.gateway.platforms.servlet.io.ByteBuffer;
 
@@ -44,7 +43,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 
 import org.apache.commons.io.IOUtils;
@@ -129,10 +127,8 @@ public class HttpServiceConnection implements IServiceConnection, IServiceConnec
             connection = (HttpURLConnection) url.openConnection();
 
             if (connection instanceof HttpsURLConnection) {
-                SSLContext sslContext = sslStrategy.getSslContext();
                 HttpsURLConnection https = (HttpsURLConnection) connection;
-                SSLSocketFactory socketFactory = new CipherSelectingSSLSocketFactory(
-                        sslContext.getSocketFactory(), sslStrategy);
+                SSLSocketFactory socketFactory = sslStrategy.getSocketFactory();
                 https.setSSLSocketFactory(socketFactory);
                 https.setHostnameVerifier(sslStrategy.getHostnameVerifier());
             }

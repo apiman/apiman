@@ -16,7 +16,7 @@
 package io.apiman.gateway.platforms.servlet.connectors.ssl;
 
 import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
 
 /**
  * Encapsulates basic SSL strategy information
@@ -25,46 +25,19 @@ import javax.net.ssl.SSLContext;
  */
 public class SSLSessionStrategy {
 
-    private SSLContext sslContext;
-    private String[] allowedProtocols;
-    private String[] allowedCiphers;
     private HostnameVerifier hostnameVerifier;
+    private SSLSocketFactory socketFactory;
 
     /**
      * Construct an {@link SSLSessionStrategy}
      *
-     * @param sslContext the SSL context
-     * @param allowedProtocols the allowed protocols
-     * @param allowedCiphers the allowed ciphers
      * @param hostnameVerifier the hostname verifier
+     * @param socketFactory the socket factory
      */
-    public SSLSessionStrategy(SSLContext sslContext, String[] allowedProtocols, String[] allowedCiphers,
-            HostnameVerifier hostnameVerifier) {
-        this.sslContext = sslContext;
-        this.allowedProtocols = allowedProtocols;
-        this.allowedCiphers = allowedCiphers;
+    public SSLSessionStrategy(HostnameVerifier hostnameVerifier,
+            SSLSocketFactory socketFactory) {
         this.hostnameVerifier = hostnameVerifier;
-    }
-
-    /**
-     * @return the sslContext
-     */
-    public SSLContext getSslContext() {
-        return sslContext;
-    }
-
-    /**
-     * @return the allowedProtocols
-     */
-    public String[] getAllowedProtocols() {
-        return allowedProtocols;
-    }
-
-    /**
-     * @return the allowedCiphers
-     */
-    public String[] getAllowedCiphers() {
-        return allowedCiphers;
+        this.socketFactory = socketFactory;
     }
 
     /**
@@ -72,6 +45,13 @@ public class SSLSessionStrategy {
      */
     public HostnameVerifier getHostnameVerifier() {
         return hostnameVerifier;
+    }
+
+    /**
+     * @return the socket factory
+     */
+    public SSLSocketFactory getSocketFactory() {
+        return socketFactory;
     }
 
 }

@@ -32,16 +32,21 @@ import javax.net.ssl.SSLSocketFactory;
 public class CipherSelectingSSLSocketFactory extends SSLSocketFactory {
 
     private SSLSocketFactory delegate;
-    private SSLSessionStrategy sessionStrategy;
+    private String[] ciphers;
+    private String[] protocols;
 
-    public CipherSelectingSSLSocketFactory(SSLSocketFactory delegate, SSLSessionStrategy sessionStrategy) {
+    public CipherSelectingSSLSocketFactory(SSLSocketFactory delegate, String[] ciphers,
+            String[] protocols) {
         this.delegate = delegate;
-        this.sessionStrategy = sessionStrategy;
+        this.ciphers = ciphers;
+        this.protocols = protocols;
     }
 
     @Override
     public Socket createSocket(Socket s, String host, int port, boolean autoClose) throws IOException {
-        return delegate.createSocket(s, host, port, autoClose);
+        SSLSocket socket = (SSLSocket)  delegate.createSocket(s, host, port, autoClose);
+        prepareSSLSocket(socket);
+        return socket;
     }
 
     @Override
@@ -81,8 +86,9 @@ public class CipherSelectingSSLSocketFactory extends SSLSocketFactory {
     }
 
     private Socket prepareSSLSocket(SSLSocket socket) {
-        socket.setEnabledCipherSuites(sessionStrategy.getAllowedCiphers());
-        socket.setEnabledProtocols(sessionStrategy.getAllowedProtocols());
+        //socket.setEnabledCipherSuites(ciphers);
+        //socket.setEnabledProtocols(protocols);
+        socket.setNeedClientAuth(true);
         return socket;
     }
 }

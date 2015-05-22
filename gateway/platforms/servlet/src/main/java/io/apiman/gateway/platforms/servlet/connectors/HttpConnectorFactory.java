@@ -29,6 +29,8 @@ import io.apiman.gateway.platforms.servlet.connectors.ssl.SSLSessionStrategyFact
 
 import java.util.Map;
 
+import org.apache.commons.lang.BooleanUtils;
+
 /**
  * Connector factory that uses HTTP to invoke back end systems.
  *
@@ -83,7 +85,13 @@ public class HttpConnectorFactory implements IConnectorFactory {
                 return mutualAuthSslStrategy;
             } else {
                 if (standardSslStrategy == null) {
-                    standardSslStrategy = SSLSessionStrategyFactory.buildStandard(config);
+                    boolean allowUnsafe = BooleanUtils.toBoolean(config.get("trustAll")); //$NON-NLS-1$
+
+                    if (allowUnsafe) {
+                        standardSslStrategy = SSLSessionStrategyFactory.buildUnsafe();
+                    } else {
+                        standardSslStrategy = SSLSessionStrategyFactory.buildStandard(config);
+                    }
                 }
                 return standardSslStrategy;
             }
