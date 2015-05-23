@@ -1,0 +1,6 @@
+To state the blindingly obvious:
+
+WARNING: **Do not reuse the keys and/or certificates within for anything.**
+They are for internal unit testing purposes only; reusing them for any
+production  purposes would be a severe security risk, as all private key and
+password elements are in the open.

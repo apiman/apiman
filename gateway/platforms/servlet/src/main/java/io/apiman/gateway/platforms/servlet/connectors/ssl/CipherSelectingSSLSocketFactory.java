@@ -86,8 +86,8 @@ public class CipherSelectingSSLSocketFactory extends SSLSocketFactory {
     }
 
     private Socket prepareSSLSocket(SSLSocket socket) {
-        //socket.setEnabledCipherSuites(ciphers);
-        //socket.setEnabledProtocols(protocols);
+        socket.setEnabledCipherSuites(ciphers);
+        socket.setEnabledProtocols(protocols);
         socket.setNeedClientAuth(true);
         return socket;
     }
