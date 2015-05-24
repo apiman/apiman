@@ -26,10 +26,9 @@ import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.beans.exceptions.ConnectorException;
 import io.apiman.gateway.platforms.servlet.connectors.ssl.SSLSessionStrategy;
 import io.apiman.gateway.platforms.servlet.connectors.ssl.SSLSessionStrategyFactory;
+import io.apiman.gateway.platforms.servlet.connectors.ssl.TLSOptions;
 
 import java.util.Map;
-
-import org.apache.commons.lang.BooleanUtils;
 
 /**
  * Connector factory that uses HTTP to invoke back end systems.
@@ -42,14 +41,14 @@ public class HttpConnectorFactory implements IConnectorFactory {
     private SSLSessionStrategy standardSslStrategy;
     // 2WAY auth (i.e. mutual auth)
     private SSLSessionStrategy mutualAuthSslStrategy;
-    private Map<String, String> config;
+    private TLSOptions tlsOptions;
 
     /**
      * Constructor.
      * @param config map of configuration options
      */
     public HttpConnectorFactory(Map<String, String> config) {
-        this.config = config;
+        this.tlsOptions = new TLSOptions(config);
     }
 
     /* (non-Javadoc)
@@ -80,17 +79,15 @@ public class HttpConnectorFactory implements IConnectorFactory {
         try {
             if (authType == RequiredAuthType.MTLS) {
                 if (mutualAuthSslStrategy == null) {
-                    mutualAuthSslStrategy = SSLSessionStrategyFactory.buildMutual(config);
+                    mutualAuthSslStrategy = SSLSessionStrategyFactory.buildMutual(tlsOptions);
                 }
                 return mutualAuthSslStrategy;
             } else {
                 if (standardSslStrategy == null) {
-                    boolean allowUnsafe = BooleanUtils.toBoolean(config.get("trustAll")); //$NON-NLS-1$
-
-                    if (allowUnsafe) {
+                    if (tlsOptions.isDevMode()) {
                         standardSslStrategy = SSLSessionStrategyFactory.buildUnsafe();
                     } else {
-                        standardSslStrategy = SSLSessionStrategyFactory.buildStandard(config);
+                        standardSslStrategy = SSLSessionStrategyFactory.buildStandard(tlsOptions);
                     }
                 }
                 return standardSslStrategy;

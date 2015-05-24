@@ -10,6 +10,7 @@ import io.apiman.gateway.engine.beans.Service;
 import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.beans.exceptions.ConnectorException;
 import io.apiman.gateway.platforms.servlet.connectors.HttpConnectorFactory;
+import io.apiman.gateway.platforms.servlet.connectors.ssl.TLSOptions;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -140,13 +141,13 @@ public class BasicMutualAuthTest {
      */
     @Test
     public void shouldSucceedWithValidMTLS() {
-        config.put("trustStore", getResourcePath("2waytest/basic_mutual_auth_2/gateway_ts.jks"));
-        config.put("trustStorePassword", "password");
-        config.put("clientKeystore", getResourcePath("2waytest/basic_mutual_auth_2/gateway_ks.jks"));
-        config.put("keystorePassword", "password");
-        config.put("keyPassword", "password");
-        config.put("allowAnyHost", "true");
-        config.put("allowSelfSigned", "false");
+        config.put(TLSOptions.TLS_TRUSTSTORE, getResourcePath("2waytest/basic_mutual_auth_2/gateway_ts.jks"));
+        config.put(TLSOptions.TLS_TRUSTSTOREPASSWORD, "password");
+        config.put(TLSOptions.TLS_KEYSTORE, getResourcePath("2waytest/basic_mutual_auth_2/gateway_ks.jks"));
+        config.put(TLSOptions.TLS_KEYSTOREPASSWORD, "password");
+        config.put(TLSOptions.TLS_KEYPASSWORD, "password");
+        config.put(TLSOptions.TLS_ALLOWANYHOST, "true");
+        config.put(TLSOptions.TLS_ALLOWSELFSIGNED, "false");
 
        HttpConnectorFactory factory = new HttpConnectorFactory(config);
        IServiceConnector connector = factory.createConnector(request, service, RequiredAuthType.MTLS);
@@ -173,13 +174,13 @@ public class BasicMutualAuthTest {
      */
     @Test
     public void shouldFailWhenGatewayDoesNotTrustService() {
-        config.put("trustStore", getResourcePath("2waytest/basic_mutual_auth/gateway_ts.jks"));
-        config.put("trustStorePassword", "password");
-        config.put("clientKeystore", getResourcePath("2waytest/basic_mutual_auth/gateway_ks.jks"));
-        config.put("keystorePassword", "password");
-        config.put("keyPassword", "password");
-        config.put("allowAnyHost", "true");
-        config.put("allowSelfSigned", "false");
+        config.put(TLSOptions.TLS_TRUSTSTORE, getResourcePath("2waytest/basic_mutual_auth/gateway_ts.jks"));
+        config.put(TLSOptions.TLS_TRUSTSTOREPASSWORD, "password");
+        config.put(TLSOptions.TLS_KEYSTORE, getResourcePath("2waytest/basic_mutual_auth/gateway_ks.jks"));
+        config.put(TLSOptions.TLS_KEYSTOREPASSWORD, "password");
+        config.put(TLSOptions.TLS_KEYPASSWORD, "password");
+        config.put(TLSOptions.TLS_ALLOWANYHOST, "true");
+        config.put(TLSOptions.TLS_ALLOWSELFSIGNED, "false");
 
        HttpConnectorFactory factory = new HttpConnectorFactory(config);
        IServiceConnector connector = factory.createConnector(request, service, RequiredAuthType.MTLS);
@@ -209,13 +210,13 @@ public class BasicMutualAuthTest {
      */
     @Test
     public void shouldFailWhenServiceDoesNotTrustGateway() {
-        config.put("trustStore", getResourcePath("2waytest/service_not_trust_gw/gateway_ts.jks"));
-        config.put("trustStorePassword", "password");
-        config.put("clientKeystore", getResourcePath("2waytest/service_not_trust_gw/gateway_ks.jks"));
-        config.put("keystorePassword", "password");
-        config.put("keyPassword", "password");
-        config.put("allowAnyHost", "true");
-        config.put("allowSelfSigned", "false");
+        config.put(TLSOptions.TLS_TRUSTSTORE, getResourcePath("2waytest/service_not_trust_gw/gateway_ts.jks"));
+        config.put(TLSOptions.TLS_TRUSTSTOREPASSWORD, "password");
+        config.put(TLSOptions.TLS_KEYSTORE, getResourcePath("2waytest/service_not_trust_gw/gateway_ks.jks"));
+        config.put(TLSOptions.TLS_KEYSTOREPASSWORD, "password");
+        config.put(TLSOptions.TLS_KEYPASSWORD, "password");
+        config.put(TLSOptions.TLS_ALLOWANYHOST, "true");
+        config.put(TLSOptions.TLS_ALLOWSELFSIGNED, "false");
 
         HttpConnectorFactory factory = new HttpConnectorFactory(config);
         IServiceConnector connector = factory.createConnector(request, service, RequiredAuthType.MTLS);
@@ -245,13 +246,13 @@ public class BasicMutualAuthTest {
      */
     @Test
     public void shouldSucceedWhenAllowedSelfSigned() {
-        config.put("trustStore", getResourcePath("2waytest/basic_mutual_auth/gateway_ts.jks"));
-        config.put("trustStorePassword", "password");
-        config.put("clientKeystore", getResourcePath("2waytest/basic_mutual_auth/gateway_ks.jks"));
-        config.put("keystorePassword", "password");
-        config.put("keyPassword", "password");
-        config.put("allowAnyHost", "true");
-        config.put("allowSelfSigned", "true");
+        config.put(TLSOptions.TLS_TRUSTSTORE, getResourcePath("2waytest/basic_mutual_auth/gateway_ts.jks"));
+        config.put(TLSOptions.TLS_TRUSTSTOREPASSWORD, "password");
+        config.put(TLSOptions.TLS_KEYSTORE, getResourcePath("2waytest/basic_mutual_auth/gateway_ks.jks"));
+        config.put(TLSOptions.TLS_KEYSTOREPASSWORD, "password");
+        config.put(TLSOptions.TLS_KEYPASSWORD, "password");
+        config.put(TLSOptions.TLS_ALLOWANYHOST, "true");
+        config.put(TLSOptions.TLS_ALLOWSELFSIGNED, "true");
 
        HttpConnectorFactory factory = new HttpConnectorFactory(config);
        IServiceConnector connector = factory.createConnector(request, service, RequiredAuthType.MTLS);

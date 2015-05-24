@@ -24,7 +24,6 @@ import java.security.SecureRandom;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.util.Map;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
@@ -32,8 +31,6 @@ import javax.net.ssl.SSLParameters;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.X509TrustManager;
 
-import org.apache.commons.lang.BooleanUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.conn.ssl.TrustStrategy;
@@ -41,7 +38,7 @@ import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.ssl.SSLContexts;
 import org.apache.http.util.Args;
 /**
- * Factory to produce {@link SSLConnectionSocketFactory}.
+ * Factory to produce {@link SSLSessionStrategy}.
  *
  * @author Marc Savy
  */
@@ -74,26 +71,19 @@ public class SSLSessionStrategyFactory {
      * @throws IOException if the truststore could not be found or was invalid
      * @throws UnrecoverableKeyException a key in keystore cannot be recovered
      */
-    @SuppressWarnings("nls")
-    public static SSLSessionStrategy buildStandard(Map<String, String> optionsMap)
+    public static SSLSessionStrategy buildStandard(TLSOptions optionsMap)
             throws NoSuchAlgorithmException, KeyManagementException, KeyStoreException,
             UnrecoverableKeyException, CertificateException, IOException {
-        String truststore = optionalVar(optionsMap, "trustStore", null);
-        String truststorePassword = optionalVar(optionsMap, "trustStorePassword", null);
-        String allowedProtocolsStr = optionalVar(optionsMap, "allowedProtocols", null);
-        String allowedCiphersStr = optionalVar(optionsMap, "allowedCiphers", null);
-        String[] allowedProtocols = split(allowedProtocolsStr, ',', getDefaultProtocols());
-        String[] allowedCiphers = split(allowedCiphersStr, ',', getDefaultCipherSuites());
-        boolean allowAnyHost = parseBool(optionsMap, "allowAnyHost");
-        boolean trustSelfSigned = parseBool(optionsMap, "allowSelfSigned");
+        String[] allowedProtocols = optionalVar(optionsMap.getAllowedProtocols(), getDefaultProtocols());
+        String[] allowedCiphers = optionalVar(optionsMap.getAllowedCiphers(), getDefaultCipherSuites());
 
         return build(null, null, null,
-                truststore,
-                truststorePassword,
+                optionsMap.getTrustStore(),
+                optionsMap.getTrustStorePassword(),
                 allowedProtocols,
                 allowedCiphers,
-                allowAnyHost,
-                trustSelfSigned);
+                optionsMap.isAllowAnyHost(),
+                optionsMap.isTrustSelfSigned());
     }
 
     /**
@@ -104,8 +94,8 @@ public class SSLSessionStrategyFactory {
      * <ul>
      *   <li>trustStore - default: <a href="https://docs.oracle.com/javase/6/docs/technotes/guides/security/jsse/JSSERefGuide.html#CustomizingStores">JSSERefGuide</a></li>
      *   <li>trustStorePassword - none</li>
-     *   <li>clientKeystore - required</li>
-     *   <li>keystorePassword - none</li>
+     *   <li>clientKeyStore - required</li>
+     *   <li>keyStorePassword - none</li>
      *   <li>keyPassword - none</li>
      *   <li>allowedProtocols - {@link SSLParameters#getProtocols()}</li>
      *   <li>allowedCiphers - {@link SSLParameters#getCipherSuites()}</li>
@@ -124,43 +114,33 @@ public class SSLSessionStrategyFactory {
      * @throws UnrecoverableKeyException a key in keystore cannot be recovered
      */
     @SuppressWarnings("nls")
-    public static SSLSessionStrategy buildMutual(Map<String, String> optionsMap)
+    public static SSLSessionStrategy buildMutual(TLSOptions optionsMap)
             throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException, CertificateException,
             IOException, UnrecoverableKeyException {
-        String truststore = optionsMap.get("trustStore");
-        String truststorePassword = optionalVar(optionsMap, "trustStorePassword", null);
-        String clientKeystore = optionsMap.get("clientKeystore");
-        String keystorePassword = optionalVar(optionsMap, "keystorePassword", null);
-        String keyPassword = optionalVar(optionsMap, "keyPassword", null);
-        String allowedProtocolsStr = optionalVar(optionsMap, "allowedProtocols", null);
-        String allowedCiphersStr = optionalVar(optionsMap, "allowedCiphers", null);
+        Args.notNull(optionsMap.getClientKeyStore(), "Client KeyStore");
+        Args.notEmpty(optionsMap.getClientKeyStore(), "Client KeyStore must not be empty");
 
-        Args.notNull(clientKeystore, "Client keystore (clientKeystore)");
-        Args.notEmpty(clientKeystore, "Client keystore (clientKeystore)");
+        String[] allowedProtocols = optionalVar(optionsMap.getAllowedProtocols(), getDefaultProtocols());
+        String[] allowedCiphers = optionalVar(optionsMap.getAllowedCiphers(), getDefaultCipherSuites());
 
-        String[] allowedProtocols = split(allowedProtocolsStr, ',', getDefaultProtocols());
-        String[] allowedCiphers = split(allowedCiphersStr, ',', getDefaultCipherSuites());
-        boolean allowAnyHost = parseBool(optionsMap, "allowAnyHost");
-        boolean trustSelfSigned = parseBool(optionsMap, "allowSelfSigned");
-
-        return build(truststore,
-                truststorePassword,
-                clientKeystore,
-                keystorePassword,
-                keyPassword,
+        return build(optionsMap.getTrustStore(),
+                optionsMap.getTrustStorePassword(),
+                optionsMap.getClientKeyStore(),
+                optionsMap.getKeyStorePassword(),
+                optionsMap.getKeyPassword(),
                 allowedProtocols,
                 allowedCiphers,
-                allowAnyHost,
-                trustSelfSigned);
+                optionsMap.isAllowAnyHost(),
+                optionsMap.isTrustSelfSigned());
     }
 
     /**
      * Build an {@link SSLSessionStrategy}.
      *
      * @param trustStore the trust store
-     * @param truststorePassword the truststore password (if any)
-     * @param clientKeystorePath the client keystore
-     * @param keystorePassword password the keystore password (if any)
+     * @param trustStorePassword the truststore password (if any)
+     * @param clientKeyStorePath the client keystore
+     * @param keyStorePassword password the keystore password (if any)
      * @param keyPassword the key password (if any)
      * @param allowedProtocols the allowed transport protocols.
      *            <strong><em>Avoid specifying insecure protocols</em></strong>
@@ -178,9 +158,9 @@ public class SSLSessionStrategyFactory {
      * @throws UnrecoverableKeyException if the key cannot be recovered
      */
     public static SSLSessionStrategy build(String trustStore,
-            String truststorePassword,
-            String clientKeystorePath,
-            String keystorePassword,
+            String trustStorePassword,
+            String clientKeyStorePath,
+            String keyStorePassword,
             String keyPassword,
             String[] allowedProtocols,
             String[] allowedCiphers,
@@ -201,14 +181,14 @@ public class SSLSessionStrategyFactory {
 
         if (trustStore != null) {
             builder.loadTrustMaterial(new File(trustStore),
-                    truststorePassword.toCharArray(),
+                    trustStorePassword.toCharArray(),
                     trustStrategy);
         }
 
-        if (clientKeystorePath != null) {
-            char[] ksp = keystorePassword == null ? null : keystorePassword.toCharArray();
+        if (clientKeyStorePath != null) {
+            char[] ksp = keyStorePassword == null ? null : keyStorePassword.toCharArray();
             char[] kp = keyPassword == null ? null : keyPassword.toCharArray();
-            builder.loadKeyMaterial(new File(clientKeystorePath), ksp, kp);
+            builder.loadKeyMaterial(new File(clientKeyStorePath), ksp, kp);
         }
 
         SSLContext sslContext = builder.build();
@@ -266,30 +246,11 @@ public class SSLSessionStrategyFactory {
         return SSLContext.getDefault().getDefaultSSLParameters().getProtocols();
     }
 
-    private static String optionalVar(Map<String, String> optionsMap, String varName, String defaultValue) {
-        if(optionsMap.get(varName) == null || optionsMap.get(varName).isEmpty()) {
-            return defaultValue;
+    private static String[] optionalVar(String[] arr, String[] defaultArr) {
+        if (arr == null || arr.length==0) {
+            return defaultArr;
         }
-        return optionsMap.get(varName);
-    }
-
-    private static String[] split(String str, char splitter, String[] defaults) {
-        String[] splitStr = StringUtils.split(str, splitter);
-
-        if (splitStr == null)
-            return defaults;
-
-        String[] out = new String[splitStr.length];
-
-        for (int i = 0; i < splitStr.length; i++) {
-            out[i] = StringUtils.trim(splitStr[i]);
-        }
-
-        return out;
-    }
-
-    private static boolean parseBool(Map<String, String> optionsMap, String key) {
-        return BooleanUtils.toBoolean(optionsMap.get(key));
+        return arr;
     }
 
     /**
