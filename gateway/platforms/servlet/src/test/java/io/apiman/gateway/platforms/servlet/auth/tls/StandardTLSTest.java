@@ -203,6 +203,52 @@ public class StandardTLSTest {
         connection.end();
     }
 
+    /**
+     * Scenario:
+     *   - Development mode TLS pass-through. Accepts anything.
+     */
+    @Test
+    public void shouldAllowAllWhenDevMode() {
+        config.put(TLSOptions.TLS_DEVMODE, "true");
+
+        HttpConnectorFactory factory = new HttpConnectorFactory(config);
+        IServiceConnector connector = factory.createConnector(request, service, RequiredAuthType.DEFAULT);
+        IServiceConnection connection = connector.connect(request,
+                new IAsyncResultHandler<IServiceConnectionResponse>() {
+
+         @Override
+         public void handle(IAsyncResult<IServiceConnectionResponse> result) {
+             Assert.assertTrue(result.isSuccess());
+         }
+        });
+
+        connection.end();
+    }
+
+    /**
+     * Scenario:
+     *   - No settings whatsoever.
+     *   - Will fail, as defaults are relatively safe,
+     *     and service certificate will not be recognised.
+     */
+    @Test
+    public void shouldFailWithNoSettings() {
+        HttpConnectorFactory factory = new HttpConnectorFactory(config);
+        IServiceConnector connector = factory.createConnector(request, service, RequiredAuthType.DEFAULT);
+        IServiceConnection connection = connector.connect(request,
+                new IAsyncResultHandler<IServiceConnectionResponse>() {
+
+         @Override
+         public void handle(IAsyncResult<IServiceConnectionResponse> result) {
+                 Assert.assertTrue(result.isError());
+                 System.out.println(result.getError());
+             }
+        });
+
+        exception.expect(RuntimeException.class);
+        connection.end();
+    }
+
     private String getResourcePath(String res) {
         URL resource = StandardTLSTest.class.getResource(res);
         try {

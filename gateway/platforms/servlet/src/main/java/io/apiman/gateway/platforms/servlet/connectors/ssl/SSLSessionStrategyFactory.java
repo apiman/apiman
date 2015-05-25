@@ -212,7 +212,7 @@ public class SSLSessionStrategyFactory {
                 + " This is extremely unsafe for production. Caveat utilitor!"); //$NON-NLS-1$
 
         try {
-            SSLContext sslContext = SSLContext.getInstance("Default"); //$NON-NLS-1$
+            SSLContext sslContext = SSLContext.getInstance("TLSv1"); //$NON-NLS-1$
 
             // This accepts anything.
             sslContext.init(null, new X509TrustManager[] { new X509TrustManager() {

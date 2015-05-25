@@ -283,6 +283,31 @@ public class BasicMutualAuthTest {
        connection.end();
     }
 
+    /**
+     * Scenario:
+     *   - Development mode TLS pass-through. Gateway accepts anything.
+     *   - Server should still refuse on basis of requiring client auth.
+     */
+    @Test
+    public void shouldFailWithDevModeAndNoClientKeys() {
+        config.put(TLSOptions.TLS_DEVMODE, "true");
+
+        HttpConnectorFactory factory = new HttpConnectorFactory(config);
+        IServiceConnector connector = factory.createConnector(request, service, RequiredAuthType.DEFAULT);
+        IServiceConnection connection = connector.connect(request,
+                new IAsyncResultHandler<IServiceConnectionResponse>() {
+
+         @Override
+         public void handle(IAsyncResult<IServiceConnectionResponse> result) {
+                 Assert.assertTrue(result.isError());
+                 System.out.println(result.getError());
+             }
+        });
+
+        exception.expect(RuntimeException.class);
+        connection.end();
+    }
+
     private String getResourcePath(String res) {
         URL resource = CAMutualAuthTest.class.getResource(res);
         try {
