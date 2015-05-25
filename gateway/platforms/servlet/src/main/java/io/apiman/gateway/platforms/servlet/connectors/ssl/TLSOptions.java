@@ -38,7 +38,7 @@ public class TLSOptions implements OptionParser<TLSOptions> {
     public static final String TLS_ALLOWEDCIPHERS = PREFIX + "allowedCiphers"; //$NON-NLS-1$
     public static final String TLS_ALLOWANYHOST = PREFIX + "allowAnyHost"; //$NON-NLS-1$
     public static final String TLS_ALLOWSELFSIGNED = PREFIX + "allowSelfSigned"; //$NON-NLS-1$
-    public static final String TLS_DEVMODE = PREFIX + "devmode"; //$NON-NLS-1$
+    public static final String TLS_DEVMODE = PREFIX + "devMode"; //$NON-NLS-1$
 
     private String trustStore;
     private String trustStorePassword;
