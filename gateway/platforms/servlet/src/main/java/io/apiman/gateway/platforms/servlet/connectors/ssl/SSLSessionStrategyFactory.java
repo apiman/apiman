@@ -94,7 +94,7 @@ public class SSLSessionStrategyFactory {
      * <ul>
      *   <li>trustStore - default: <a href="https://docs.oracle.com/javase/6/docs/technotes/guides/security/jsse/JSSERefGuide.html#CustomizingStores">JSSERefGuide</a></li>
      *   <li>trustStorePassword - none</li>
-     *   <li>clientKeyStore - required</li>
+     *   <li>keyStore - required</li>
      *   <li>keyStorePassword - none</li>
      *   <li>keyPassword - none</li>
      *   <li>allowedProtocols - {@link SSLParameters#getProtocols()}</li>
@@ -117,15 +117,15 @@ public class SSLSessionStrategyFactory {
     public static SSLSessionStrategy buildMutual(TLSOptions optionsMap)
             throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException, CertificateException,
             IOException, UnrecoverableKeyException {
-        Args.notNull(optionsMap.getClientKeyStore(), "Client KeyStore");
-        Args.notEmpty(optionsMap.getClientKeyStore(), "Client KeyStore must not be empty");
+        Args.notNull(optionsMap.getkeyStore(), "KeyStore");
+        Args.notEmpty(optionsMap.getkeyStore(), "KeyStore must not be empty");
 
         String[] allowedProtocols = optionalVar(optionsMap.getAllowedProtocols(), getDefaultProtocols());
         String[] allowedCiphers = optionalVar(optionsMap.getAllowedCiphers(), getDefaultCipherSuites());
 
         return build(optionsMap.getTrustStore(),
                 optionsMap.getTrustStorePassword(),
-                optionsMap.getClientKeyStore(),
+                optionsMap.getkeyStore(),
                 optionsMap.getKeyStorePassword(),
                 optionsMap.getKeyPassword(),
                 allowedProtocols,
@@ -139,7 +139,7 @@ public class SSLSessionStrategyFactory {
      *
      * @param trustStore the trust store
      * @param trustStorePassword the truststore password (if any)
-     * @param clientKeyStorePath the client keystore
+     * @param keyStore the keystore
      * @param keyStorePassword password the keystore password (if any)
      * @param keyPassword the key password (if any)
      * @param allowedProtocols the allowed transport protocols.
@@ -159,7 +159,7 @@ public class SSLSessionStrategyFactory {
      */
     public static SSLSessionStrategy build(String trustStore,
             String trustStorePassword,
-            String clientKeyStorePath,
+            String keyStore,
             String keyStorePassword,
             String keyPassword,
             String[] allowedProtocols,
@@ -185,10 +185,10 @@ public class SSLSessionStrategyFactory {
                     trustStrategy);
         }
 
-        if (clientKeyStorePath != null) {
+        if (keyStore != null) {
             char[] ksp = keyStorePassword == null ? null : keyStorePassword.toCharArray();
             char[] kp = keyPassword == null ? null : keyPassword.toCharArray();
-            builder.loadKeyMaterial(new File(clientKeyStorePath), ksp, kp);
+            builder.loadKeyMaterial(new File(keyStore), ksp, kp);
         }
 
         SSLContext sslContext = builder.build();

@@ -1,3 +1,18 @@
+/*
+ * Copyright 2015 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package io.apiman.gateway.platforms.servlet.connectors.ssl;
 
 import io.apiman.gateway.engine.auth.OptionParser;
@@ -7,17 +22,23 @@ import java.util.Map;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 
+/**
+ * Options parser for TLS/SSL.
+ *
+ * @author Marc Savy <msavy@redhat.com>
+ */
 public class TLSOptions implements OptionParser<TLSOptions> {
-    public static final String TLS_TRUSTSTORE = "trustStore"; //$NON-NLS-1$
-    public static final String TLS_TRUSTSTOREPASSWORD = "trustStorePassword"; //$NON-NLS-1$
-    public static final String TLS_KEYSTORE = "keyStore"; //$NON-NLS-1$
-    public static final String TLS_KEYSTOREPASSWORD = "keystorePassword"; //$NON-NLS-1$
-    public static final String TLS_KEYPASSWORD = "keyPassword"; //$NON-NLS-1$
-    public static final String TLS_ALLOWEDPROTOCOLS = "allowedProtocols"; //$NON-NLS-1$
-    public static final String TLS_ALLOWEDCIPHERS = "allowedCiphers"; //$NON-NLS-1$
-    public static final String TLS_ALLOWANYHOST = "allowAnyHost"; //$NON-NLS-1$
-    public static final String TLS_ALLOWSELFSIGNED = "allowSelfSigned"; //$NON-NLS-1$
-    public static final String TLS_DEVMODE = "devmode"; //$NON-NLS-1$
+    public static final String PREFIX = "tls."; //$NON-NLS-1$
+    public static final String TLS_TRUSTSTORE = PREFIX + "trustStore"; //$NON-NLS-1$
+    public static final String TLS_TRUSTSTOREPASSWORD = PREFIX + "trustStorePassword"; //$NON-NLS-1$
+    public static final String TLS_KEYSTORE = PREFIX + "keyStore"; //$NON-NLS-1$
+    public static final String TLS_KEYSTOREPASSWORD = PREFIX + "keystorePassword"; //$NON-NLS-1$
+    public static final String TLS_KEYPASSWORD = PREFIX + "keyPassword"; //$NON-NLS-1$
+    public static final String TLS_ALLOWEDPROTOCOLS = PREFIX + "allowedProtocols"; //$NON-NLS-1$
+    public static final String TLS_ALLOWEDCIPHERS = PREFIX + "allowedCiphers"; //$NON-NLS-1$
+    public static final String TLS_ALLOWANYHOST = PREFIX + "allowAnyHost"; //$NON-NLS-1$
+    public static final String TLS_ALLOWSELFSIGNED = PREFIX + "allowSelfSigned"; //$NON-NLS-1$
+    public static final String TLS_DEVMODE = PREFIX + "devmode"; //$NON-NLS-1$
 
     private String trustStore;
     private String trustStorePassword;
@@ -30,17 +51,20 @@ public class TLSOptions implements OptionParser<TLSOptions> {
     private boolean trustSelfSigned;
     private boolean devMode;
 
+    /**
+     * Constructor. Parses options immediately.
+     * @param options the options
+     */
     public TLSOptions(Map<String, String> options) {
-        parseOptions(options);
+        parse(options);
     }
 
     @Override
-    public OptionParser<TLSOptions> newInstance(Map<String, String> options) {
+    public OptionParser<TLSOptions> parseOptions(Map<String, String> options) {
         return new TLSOptions(options);
     }
 
-    @Override
-    public void parseOptions(Map<String, String> options) {
+    public void parse(Map<String, String> options) {
         trustStore = getVar(options, TLS_TRUSTSTORE);
         trustStorePassword = getVar(options, TLS_TRUSTSTOREPASSWORD);
         clientKeyStore = options.get(TLS_KEYSTORE);
@@ -84,7 +108,7 @@ public class TLSOptions implements OptionParser<TLSOptions> {
     /**
      * @return the clientKeyStore
      */
-    public String getClientKeyStore() {
+    public String getkeyStore() {
         return clientKeyStore;
     }
 
