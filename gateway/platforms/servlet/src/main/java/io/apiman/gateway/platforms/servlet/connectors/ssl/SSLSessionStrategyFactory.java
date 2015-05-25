@@ -77,9 +77,9 @@ public class SSLSessionStrategyFactory {
         String[] allowedProtocols = optionalVar(optionsMap.getAllowedProtocols(), getDefaultProtocols());
         String[] allowedCiphers = optionalVar(optionsMap.getAllowedCiphers(), getDefaultCipherSuites());
 
-        return build(null, null, null,
-                optionsMap.getTrustStore(),
+        return build(optionsMap.getTrustStore(),
                 optionsMap.getTrustStorePassword(),
+                null, null, null, // All keyStore related stuff
                 allowedProtocols,
                 allowedCiphers,
                 optionsMap.isAllowAnyHost(),
@@ -176,6 +176,7 @@ public class SSLSessionStrategyFactory {
         TrustStrategy trustStrategy = trustSelfSigned ?  SELF_SIGNED : null;
         HostnameVerifier hostnameVerifier = allowAnyHostname ? ALLOW_ANY :
             SSLConnectionSocketFactory.getDefaultHostnameVerifier();
+        boolean clientAuth = keyStore == null ? false : true;
 
         SSLContextBuilder builder = SSLContexts.custom();
 
@@ -193,7 +194,7 @@ public class SSLSessionStrategyFactory {
 
         SSLContext sslContext = builder.build();
         return new SSLSessionStrategy(hostnameVerifier, new CipherSelectingSSLSocketFactory(
-                sslContext.getSocketFactory(), allowedCiphers, allowedProtocols));
+                sslContext.getSocketFactory(), allowedCiphers, allowedProtocols, clientAuth));
     }
 
     /**

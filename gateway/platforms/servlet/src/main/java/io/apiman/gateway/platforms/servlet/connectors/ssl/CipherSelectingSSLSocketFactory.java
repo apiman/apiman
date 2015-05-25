@@ -34,12 +34,14 @@ public class CipherSelectingSSLSocketFactory extends SSLSocketFactory {
     private SSLSocketFactory delegate;
     private String[] ciphers;
     private String[] protocols;
+    private boolean clientAuth;
 
     public CipherSelectingSSLSocketFactory(SSLSocketFactory delegate, String[] ciphers,
-            String[] protocols) {
+            String[] protocols, boolean needClientAuth) {
         this.delegate = delegate;
         this.ciphers = ciphers;
         this.protocols = protocols;
+        this.clientAuth = needClientAuth;
     }
 
     @Override
@@ -88,7 +90,7 @@ public class CipherSelectingSSLSocketFactory extends SSLSocketFactory {
     private Socket prepareSSLSocket(SSLSocket socket) {
         socket.setEnabledCipherSuites(ciphers);
         socket.setEnabledProtocols(protocols);
-        socket.setNeedClientAuth(true);
+        socket.setNeedClientAuth(clientAuth);
         return socket;
     }
 }

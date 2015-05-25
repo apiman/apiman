@@ -35,7 +35,6 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.net.ssl.SSLSocket;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -57,17 +56,13 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 /**
- * Important note from {@link SSLSocket#getNeedClientAuth()} about requiring client auth:
- * <p>
- * <q>... if this option is set and the client chooses not to provide authentication information about itself,
- * the negotiations will stop and the engine will begin its closure procedure.</q>
- * <p>
- * Hence we often capture an {@link ConnectorException} in tests when 2-way auth is failed.
+ * Tests various standard TLS scenarios, in which the client is *not* authenticated. Some of these include
+ * authentication of the server certificate, whilst others are all trusting (devmode).
  *
  * @author Marc Savy <msavy@redhat.com>
  */
 @SuppressWarnings("nls")
-public class BasicMutualAuthTest {
+public class StandardTLSTest {
 
     private Server server;
     private HttpConfiguration http_config;
@@ -76,10 +71,6 @@ public class BasicMutualAuthTest {
     @Rule
     public ExpectedException exception = ExpectedException.none();
 
-    /**
-     * With thanks to assistance of http://stackoverflow.com/b/20056601/2766538
-     * @throws Exception any exception
-     */
     @Before
     public void setupJetty() throws Exception {
         server = new Server();
@@ -89,12 +80,15 @@ public class BasicMutualAuthTest {
         http_config.setSecureScheme("https");
 
         SslContextFactory sslContextFactory = new SslContextFactory();
-        sslContextFactory.setKeyStorePath(getResourcePath("2waytest/basic_mutual_auth/service_ks.jks"));
+        sslContextFactory.setTrustStorePath(getResourcePath("2waytest/mutual_trust_via_ca/common_ts.jks"));
+        sslContextFactory.setTrustStorePassword("password");
+        sslContextFactory.setKeyStorePath(getResourcePath("2waytest/mutual_trust_via_ca/service_ks.jks"));
         sslContextFactory.setKeyStorePassword("password");
         sslContextFactory.setKeyManagerPassword("password");
-        sslContextFactory.setTrustStorePath(getResourcePath("2waytest/basic_mutual_auth/service_ts.jks"));
-        sslContextFactory.setTrustStorePassword("password");
-        sslContextFactory.setNeedClientAuth(true);
+        // Use default trust store
+        // No client auth
+        sslContextFactory.setNeedClientAuth(false);
+        sslContextFactory.setWantClientAuth(false);
 
         HttpConfiguration https_config = new HttpConfiguration(http_config);
         https_config.addCustomizer(new SecureRequestCustomizer());
@@ -150,102 +144,58 @@ public class BasicMutualAuthTest {
 
     /**
      * Scenario:
-     *   - no CA inherited trust
-     *   - gateway trusts service certificate directly
-     *   - service trusts gateway certificate directly
+     *   - CA inherited trust
+     *   - gateway trusts service via CA
+     *   - service does not evaluate trust
      */
     @Test
-    public void shouldSucceedWithValidMTLS() {
-        config.put(TLSOptions.TLS_TRUSTSTORE, getResourcePath("2waytest/basic_mutual_auth_2/gateway_ts.jks"));
+    public void shouldSucceedWithValidTLS() {
+        config.put(TLSOptions.TLS_TRUSTSTORE, getResourcePath("2waytest/mutual_trust_via_ca/common_ts.jks"));
         config.put(TLSOptions.TLS_TRUSTSTOREPASSWORD, "password");
-        config.put(TLSOptions.TLS_KEYSTORE, getResourcePath("2waytest/basic_mutual_auth_2/gateway_ks.jks"));
-        config.put(TLSOptions.TLS_KEYSTOREPASSWORD, "password");
-        config.put(TLSOptions.TLS_KEYPASSWORD, "password");
-        config.put(TLSOptions.TLS_ALLOWANYHOST, "true");
-        config.put(TLSOptions.TLS_ALLOWSELFSIGNED, "false");
-
-       HttpConnectorFactory factory = new HttpConnectorFactory(config);
-       IServiceConnector connector = factory.createConnector(request, service, RequiredAuthType.MTLS);
-       IServiceConnection connection = connector.connect(request,
-               new IAsyncResultHandler<IServiceConnectionResponse>() {
-
-        @Override
-        public void handle(IAsyncResult<IServiceConnectionResponse> result) {
-            if (result.isError())
-                throw new RuntimeException(result.getError());
-
-          Assert.assertTrue(result.isSuccess());
-        }
-       });
-
-       connection.end();
-    }
-
-    /**
-     * Scenario:
-     *   - no CA inherited trust
-     *   - gateway does <em>not</em> trust the service
-     *   - service trusts gateway certificate
-     */
-    @Test
-    public void shouldFailWhenGatewayDoesNotTrustService() {
-        config.put(TLSOptions.TLS_TRUSTSTORE, getResourcePath("2waytest/basic_mutual_auth/gateway_ts.jks"));
-        config.put(TLSOptions.TLS_TRUSTSTOREPASSWORD, "password");
-        config.put(TLSOptions.TLS_KEYSTORE, getResourcePath("2waytest/basic_mutual_auth/gateway_ks.jks"));
-        config.put(TLSOptions.TLS_KEYSTOREPASSWORD, "password");
-        config.put(TLSOptions.TLS_KEYPASSWORD, "password");
-        config.put(TLSOptions.TLS_ALLOWANYHOST, "true");
-        config.put(TLSOptions.TLS_ALLOWSELFSIGNED, "false");
-
-       HttpConnectorFactory factory = new HttpConnectorFactory(config);
-       IServiceConnector connector = factory.createConnector(request, service, RequiredAuthType.MTLS);
-       IServiceConnection connection = connector.connect(request,
-               new IAsyncResultHandler<IServiceConnectionResponse>() {
-
-        @Override
-        public void handle(IAsyncResult<IServiceConnectionResponse> result) {
-            Assert.assertTrue(result.isError());
-
-            System.out.println(result.getError());
-            Assert.assertTrue(result.getError() instanceof ConnectorException);
-            // Would like to assert on SSL error, but is sun specific info
-            // TODO improve connector to handle this situation better
-        }
-       });
-
-       exception.expect(RuntimeException.class);
-       connection.end();
-    }
-
-    /**
-     * Scenario:
-     *   - no CA inherited trust
-     *   - gateway does trust the service
-     *   - service does <em>not</em> trust gateway
-     */
-    @Test
-    public void shouldFailWhenServiceDoesNotTrustGateway() {
-        config.put(TLSOptions.TLS_TRUSTSTORE, getResourcePath("2waytest/service_not_trust_gw/gateway_ts.jks"));
-        config.put(TLSOptions.TLS_TRUSTSTOREPASSWORD, "password");
-        config.put(TLSOptions.TLS_KEYSTORE, getResourcePath("2waytest/service_not_trust_gw/gateway_ks.jks"));
-        config.put(TLSOptions.TLS_KEYSTOREPASSWORD, "password");
-        config.put(TLSOptions.TLS_KEYPASSWORD, "password");
         config.put(TLSOptions.TLS_ALLOWANYHOST, "true");
         config.put(TLSOptions.TLS_ALLOWSELFSIGNED, "false");
 
         HttpConnectorFactory factory = new HttpConnectorFactory(config);
-        IServiceConnector connector = factory.createConnector(request, service, RequiredAuthType.MTLS);
+        IServiceConnector connector = factory.createConnector(request, service, RequiredAuthType.DEFAULT);
+        IServiceConnection connection = connector.connect(request,
+                new IAsyncResultHandler<IServiceConnectionResponse>() {
+
+            @Override
+            public void handle(IAsyncResult<IServiceConnectionResponse> result) {
+                if (result.isError())
+                    throw new RuntimeException(result.getError());
+
+                Assert.assertTrue(result.isSuccess());
+            }
+        });
+
+        connection.end();
+    }
+
+    /**
+     * Scenario:
+     *   - CA is only in service trust store, missing from gateway trust store
+     *   - Gateway does not trust service, as it does not trust CA
+     *   - Service trusts gateway via CA
+     */
+    @Test
+    public void shouldFailWhenCANotTrusted() {
+        // Keystore does not trust the root CA service is signed with.
+        config.put(TLSOptions.TLS_TRUSTSTORE, getResourcePath("2waytest/basic_mutual_auth/gateway_ts.jks"));
+        config.put(TLSOptions.TLS_TRUSTSTOREPASSWORD, "password");
+        config.put(TLSOptions.TLS_ALLOWANYHOST, "true");
+        config.put(TLSOptions.TLS_ALLOWSELFSIGNED, "false");
+
+        HttpConnectorFactory factory = new HttpConnectorFactory(config);
+        IServiceConnector connector = factory.createConnector(request, service, RequiredAuthType.DEFAULT);
         IServiceConnection connection = connector.connect(request,
                 new IAsyncResultHandler<IServiceConnectionResponse>() {
 
          @Override
          public void handle(IAsyncResult<IServiceConnectionResponse> result) {
              Assert.assertTrue(result.isError());
-
              System.out.println(result.getError());
              Assert.assertTrue(result.getError() instanceof ConnectorException);
-             // Would like to assert on SSL error, but is sun specific info
-             // TODO improve connector to handle this situation better
          }
         });
 
@@ -253,38 +203,8 @@ public class BasicMutualAuthTest {
         connection.end();
     }
 
-    /**
-     * Scenario:
-     *   - no CA inherited trust
-     *   - gateway does not explicitly trust the service, but automatically validates against self-signed
-     *   - service trusts gateway certificate
-     */
-    @Test
-    public void shouldSucceedWhenAllowedSelfSigned() {
-        config.put(TLSOptions.TLS_TRUSTSTORE, getResourcePath("2waytest/basic_mutual_auth/gateway_ts.jks"));
-        config.put(TLSOptions.TLS_TRUSTSTOREPASSWORD, "password");
-        config.put(TLSOptions.TLS_KEYSTORE, getResourcePath("2waytest/basic_mutual_auth/gateway_ks.jks"));
-        config.put(TLSOptions.TLS_KEYSTOREPASSWORD, "password");
-        config.put(TLSOptions.TLS_KEYPASSWORD, "password");
-        config.put(TLSOptions.TLS_ALLOWANYHOST, "true");
-        config.put(TLSOptions.TLS_ALLOWSELFSIGNED, "true");
-
-       HttpConnectorFactory factory = new HttpConnectorFactory(config);
-       IServiceConnector connector = factory.createConnector(request, service, RequiredAuthType.MTLS);
-       IServiceConnection connection = connector.connect(request,
-               new IAsyncResultHandler<IServiceConnectionResponse>() {
-
-        @Override
-        public void handle(IAsyncResult<IServiceConnectionResponse> result) {
-            Assert.assertTrue(result.isSuccess());
-        }
-       });
-
-       connection.end();
-    }
-
     private String getResourcePath(String res) {
-        URL resource = CAMutualAuthTest.class.getResource(res);
+        URL resource = StandardTLSTest.class.getResource(res);
         try {
             return Paths.get(resource.toURI()).toFile().getAbsolutePath();
         } catch (URISyntaxException e) {
