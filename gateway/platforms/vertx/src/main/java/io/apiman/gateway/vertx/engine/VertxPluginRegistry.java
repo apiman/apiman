@@ -66,7 +66,7 @@ public class VertxPluginRegistry extends DefaultPluginRegistry {
 
     /**
      * Constructor.
-     * @param vertx
+     * @param vertx the vertx
      */
     public VertxPluginRegistry(Vertx vertx) {
         super(getTempPluginsDir(), PluginUtils.getDefaultMavenRepositories());

@@ -15,14 +15,20 @@
  */
 package io.apiman.gateway.platforms.servlet.connectors;
 
+import io.apiman.common.config.options.TLSOptions;
 import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.IServiceConnection;
 import io.apiman.gateway.engine.IServiceConnectionResponse;
 import io.apiman.gateway.engine.IServiceConnector;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
+import io.apiman.gateway.engine.auth.RequiredAuthType;
 import io.apiman.gateway.engine.beans.Service;
 import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.beans.exceptions.ConnectorException;
+import io.apiman.gateway.platforms.servlet.connectors.ssl.SSLSessionStrategy;
+import io.apiman.gateway.platforms.servlet.connectors.ssl.SSLSessionStrategyFactory;
+
+import java.util.Map;
 
 /**
  * Connector factory that uses HTTP to invoke back end systems.
@@ -30,18 +36,27 @@ import io.apiman.gateway.engine.beans.exceptions.ConnectorException;
  * @author eric.wittmann@redhat.com
  */
 public class HttpConnectorFactory implements IConnectorFactory {
-    
-    /**
-     * Constructor.
-     */
-    public HttpConnectorFactory() {
-    }
+
+    // Standard auth
+    private SSLSessionStrategy standardSslStrategy;
+    // 2WAY auth (i.e. mutual auth)
+    private SSLSessionStrategy mutualAuthSslStrategy;
+    private TLSOptions tlsOptions;
 
     /**
-     * @see io.apiman.gateway.engine.IConnectorFactory#createConnector(io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.beans.Service)
+     * Constructor.
+     * @param config map of configuration options
+     */
+    public HttpConnectorFactory(Map<String, String> config) {
+        this.tlsOptions = new TLSOptions(config);
+    }
+
+    /* (non-Javadoc)
+     * @see io.apiman.gateway.engine.IConnectorFactory#createConnector(io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.beans.Service, io.apiman.gateway.engine.auth.RequiredAuthType)
      */
     @Override
-    public IServiceConnector createConnector(ServiceRequest request, final Service service) {
+    public IServiceConnector createConnector(ServiceRequest request, final Service service,
+            final RequiredAuthType requiredAuthType) {
         return new IServiceConnector() {
             /**
              * @see io.apiman.gateway.engine.IServiceConnector#connect(io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.async.IAsyncResultHandler)
@@ -49,10 +64,36 @@ public class HttpConnectorFactory implements IConnectorFactory {
             @Override
             public IServiceConnection connect(ServiceRequest request,
                     IAsyncResultHandler<IServiceConnectionResponse> handler) throws ConnectorException {
-                HttpServiceConnection connection = new HttpServiceConnection(request, service, handler);
+
+                HttpServiceConnection connection = new HttpServiceConnection(request,
+                        service,
+                        requiredAuthType,
+                        getSslStrategy(requiredAuthType),
+                        handler);
                 return connection;
             }
         };
     }
 
+    protected SSLSessionStrategy getSslStrategy(RequiredAuthType authType) {
+        try {
+            if (authType == RequiredAuthType.MTLS) {
+                if (mutualAuthSslStrategy == null) {
+                    mutualAuthSslStrategy = SSLSessionStrategyFactory.buildMutual(tlsOptions);
+                }
+                return mutualAuthSslStrategy;
+            } else {
+                if (standardSslStrategy == null) {
+                    if (tlsOptions.isDevMode()) {
+                        standardSslStrategy = SSLSessionStrategyFactory.buildUnsafe();
+                    } else {
+                        standardSslStrategy = SSLSessionStrategyFactory.buildStandard(tlsOptions);
+                    }
+                }
+                return standardSslStrategy;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

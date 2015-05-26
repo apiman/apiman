@@ -36,25 +36,25 @@ public class GatewayServletTest {
     @Test
     public void testParseServiceRequestPath() {
         ServiceRequestPathInfo info = GatewayServlet.parseServiceRequestPath(null);
-        
+
         info = GatewayServlet.parseServiceRequestPath("/invalidpath");
         Assert.assertNull(info.orgId);
         Assert.assertNull(info.serviceId);
         Assert.assertNull(info.serviceVersion);
         Assert.assertNull(info.resource);
-        
+
         info = GatewayServlet.parseServiceRequestPath("/invalid/path");
         Assert.assertNull(info.orgId);
         Assert.assertNull(info.serviceId);
         Assert.assertNull(info.serviceVersion);
         Assert.assertNull(info.resource);
-        
+
         info = GatewayServlet.parseServiceRequestPath("/Org1/Service1/1.0");
         Assert.assertEquals("Org1", info.orgId);
         Assert.assertEquals("Service1", info.serviceId);
         Assert.assertEquals("1.0", info.serviceVersion);
         Assert.assertNull(info.resource);
-        
+
         info = GatewayServlet.parseServiceRequestPath("/MyOrg/Service-99/2.7");
         Assert.assertEquals("MyOrg", info.orgId);
         Assert.assertEquals("Service-99", info.serviceId);
@@ -79,7 +79,7 @@ public class GatewayServletTest {
         Assert.assertEquals("2.7", info.serviceVersion);
         Assert.assertEquals("/path/to/resource?query=1234", info.resource);
     }
-    
+
     /**
      * Test method for {@link io.apiman.gateway.platforms.servlet.GatewayServlet#parseServiceRequestQueryParams(String)}
      */
@@ -87,26 +87,26 @@ public class GatewayServletTest {
     public void testParseServiceRequestQueryParams() {
         Map<String, String> paramMap = GatewayServlet.parseServiceRequestQueryParams(null);
         Assert.assertNotNull(paramMap);
-        
+
         paramMap = GatewayServlet.parseServiceRequestQueryParams("param1");
         Assert.assertNull(paramMap.get("param1"));
-        
+
         paramMap = GatewayServlet.parseServiceRequestQueryParams("param1=value1");
         Assert.assertEquals("value1", paramMap.get("param1"));
-        
+
         paramMap = GatewayServlet.parseServiceRequestQueryParams("param1=value1&param2");
         Assert.assertEquals("value1", paramMap.get("param1"));
         Assert.assertNull(paramMap.get("param2"));
-        
+
         paramMap = GatewayServlet.parseServiceRequestQueryParams("param1=value1&param2=value2");
         Assert.assertEquals("value1", paramMap.get("param1"));
         Assert.assertEquals("value2", paramMap.get("param2"));
-        
+
         paramMap = GatewayServlet.parseServiceRequestQueryParams("param1=value1&param2=value2&param3=value3");
         Assert.assertEquals("value1", paramMap.get("param1"));
         Assert.assertEquals("value2", paramMap.get("param2"));
         Assert.assertEquals("value3", paramMap.get("param3"));
-        
+
         paramMap = GatewayServlet.parseServiceRequestQueryParams("param1=hello%20world&param2=hello+world&param3=hello world");
         Assert.assertEquals("hello world", paramMap.get("param1"));
         Assert.assertEquals("hello world", paramMap.get("param2"));

@@ -30,6 +30,7 @@ import io.apiman.gateway.engine.IServiceConnector;
 import io.apiman.gateway.engine.async.IAsyncHandler;
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
+import io.apiman.gateway.engine.auth.RequiredAuthType;
 import io.apiman.gateway.engine.beans.HeaderHashMap;
 import io.apiman.gateway.engine.beans.Service;
 import io.apiman.gateway.engine.beans.ServiceRequest;
@@ -130,7 +131,7 @@ public class ConnectorFactoryTest extends TestVerticle {
 
                 assertTrue(event.succeeded());
 
-                IServiceConnector connector = factory.createConnector(mRequest, mService);
+                IServiceConnector connector = factory.createConnector(mRequest, mService, RequiredAuthType.DEFAULT);
                 IServiceConnection writeStream = connector.connect(mRequest,
                         new IAsyncResultHandler<IServiceConnectionResponse>() {
 

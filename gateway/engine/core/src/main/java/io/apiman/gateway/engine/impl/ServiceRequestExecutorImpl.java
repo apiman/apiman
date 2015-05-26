@@ -27,6 +27,7 @@ import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncHandler;
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
+import io.apiman.gateway.engine.auth.RequiredAuthType;
 import io.apiman.gateway.engine.beans.Policy;
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.Service;
@@ -203,7 +204,8 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
                         IConnectorInterceptor connectorInterceptor = context.getConnectorInterceptor();
                         IServiceConnector connector = null;
                         if (connectorInterceptor == null) {
-                            connector = connectorFactory.createConnector(request, service);
+                            connector = connectorFactory.createConnector(request, service,
+                                    RequiredAuthType.parseType(service));
                         } else {
                             connector = connectorInterceptor.createConnector();
                         }

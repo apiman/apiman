@@ -28,6 +28,10 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-gateway-engine-policies</artifactId>
     </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-common-config</artifactId>
+    </dependency>
     
     <!-- Third Party Dependencies -->
     <dependency>
@@ -42,6 +46,10 @@
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-mapper-asl</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+    </dependency>
 
     <!-- Spec Libs -->
     <dependency>
@@ -49,6 +57,22 @@
       <artifactId>jboss-servlet-api_3.0_spec</artifactId>
       <scope>provided</scope>
     </dependency>
+    
+    <!-- Testing Deps -->
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-server</artifactId>
+      <version>9.2.10.v20150310</version>
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-util</artifactId>
+      <version>9.2.10.v20150310</version>
+      <scope>test</scope>
+    </dependency>
+    
   </dependencies>
 
   <build>

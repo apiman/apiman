@@ -17,6 +17,7 @@ package io.apiman.test.policies;
 
 import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.IServiceConnector;
+import io.apiman.gateway.engine.auth.RequiredAuthType;
 import io.apiman.gateway.engine.beans.Service;
 import io.apiman.gateway.engine.beans.ServiceRequest;
 
@@ -31,7 +32,7 @@ public class PolicyTesterConnectorFactory implements IConnectorFactory {
      * @see io.apiman.gateway.engine.IConnectorFactory#createConnector(io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.beans.Service)
      */
     @Override
-    public IServiceConnector createConnector(ServiceRequest request, Service service) {
+    public IServiceConnector createConnector(ServiceRequest request, Service service, RequiredAuthType authType) {
         return new PolicyTesterConnector(service);
     }
 

@@ -20,12 +20,14 @@ import io.apiman.gateway.engine.IServiceConnectionResponse;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncHandler;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
+import io.apiman.gateway.engine.auth.RequiredAuthType;
 import io.apiman.gateway.engine.beans.Service;
 import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.beans.ServiceResponse;
 import io.apiman.gateway.engine.beans.exceptions.ConnectorException;
 import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.gateway.platforms.servlet.GatewayThreadContext;
+import io.apiman.gateway.platforms.servlet.connectors.ssl.SSLSessionStrategy;
 import io.apiman.gateway.platforms.servlet.io.ByteBuffer;
 
 import java.io.IOException;
@@ -34,19 +36,14 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.security.cert.X509Certificate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
+import javax.net.ssl.SSLSocketFactory;
 
 import org.apache.commons.io.IOUtils;
 
@@ -57,45 +54,20 @@ import org.apache.commons.io.IOUtils;
  */
 public class HttpServiceConnection implements IServiceConnection, IServiceConnectionResponse {
 
-    private static SSLContext sslContext;
-    private static HostnameVerifier allHostsValid;
     private static final Set<String> SUPPRESSED_HEADERS = new HashSet<>();
     static {
         SUPPRESSED_HEADERS.add("Transfer-Encoding"); //$NON-NLS-1$
         SUPPRESSED_HEADERS.add("Content-Length"); //$NON-NLS-1$
         SUPPRESSED_HEADERS.add("X-API-Key"); //$NON-NLS-1$
-
-        TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
-            @Override
-            public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                return null;
-            }
-            @Override
-            public void checkClientTrusted(X509Certificate[] certs, String authType) {
-            }
-            @Override
-            public void checkServerTrusted(X509Certificate[] certs, String authType) {
-            }
-        } };
-        try {
-            sslContext = SSLContext.getInstance("SSL"); //$NON-NLS-1$
-            sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        allHostsValid = new HostnameVerifier() {
-            @Override
-            public boolean verify(String hostname, SSLSession session) {
-                return true;
-            }
-        };
     }
 
     private ServiceRequest request;
     private Service service;
+    private RequiredAuthType authType;
+    private SSLSessionStrategy sslStrategy;
     private IAsyncResultHandler<IServiceConnectionResponse> responseHandler;
-    private boolean connected;
 
+    private boolean connected;
     private HttpURLConnection connection;
     private OutputStream outputStream;
 
@@ -106,20 +78,29 @@ public class HttpServiceConnection implements IServiceConnection, IServiceConnec
 
     /**
      * Constructor.
+     *
+     * @param sslStrategy the SSL strategy
      * @param request the request
      * @param service the service
+     * @param authType the authorization type
      * @param handler the result handler
      * @throws ConnectorException when unable to connect
      */
     public HttpServiceConnection(ServiceRequest request, Service service,
+            RequiredAuthType authType, SSLSessionStrategy sslStrategy,
             IAsyncResultHandler<IServiceConnectionResponse> handler) throws ConnectorException {
         this.request = request;
         this.service = service;
+        this.authType = authType;
+        this.sslStrategy = sslStrategy;
         this.responseHandler = handler;
 
-        connect();
+        try {
+            connect();
+        } catch (Exception e) {
+            handler.handle(AsyncResultImpl.<IServiceConnectionResponse> create(e));
+        }
     }
-
     /**
      * Connects to the back end system.
      */
@@ -144,13 +125,14 @@ public class HttpServiceConnection implements IServiceConnection, IServiceConnec
             }
             URL url = new URL(endpoint);
             connection = (HttpURLConnection) url.openConnection();
-            // Disable the SSL trust manager so we can connect to any SSL endpoint.
-            // TODO make this optional at some level.  also allow individual certs to be somehow configured
+
             if (connection instanceof HttpsURLConnection) {
                 HttpsURLConnection https = (HttpsURLConnection) connection;
-                https.setSSLSocketFactory(sslContext.getSocketFactory());
-                https.setHostnameVerifier(allHostsValid);
+                SSLSocketFactory socketFactory = sslStrategy.getSocketFactory();
+                https.setSSLSocketFactory(socketFactory);
+                https.setHostnameVerifier(sslStrategy.getHostnameVerifier());
             }
+
             connection.setReadTimeout(15000);
             connection.setConnectTimeout(10000);
             if (request.getType().equalsIgnoreCase("PUT") || request.getType().equalsIgnoreCase("POST")) { //$NON-NLS-1$ //$NON-NLS-2$
@@ -237,7 +219,7 @@ public class HttpServiceConnection implements IServiceConnection, IServiceConnec
                 outputStream = connection.getOutputStream();
             }
             if (chunk instanceof ByteBuffer) {
-                byte [] buffer = (byte []) chunk.getNativeBuffer();
+                byte[] buffer = (byte[]) chunk.getNativeBuffer();
                 outputStream.write(buffer, 0, chunk.length());
             } else {
                 outputStream.write(chunk.getBytes());
@@ -266,7 +248,7 @@ public class HttpServiceConnection implements IServiceConnection, IServiceConnec
             }
             response.setCode(connection.getResponseCode());
             response.setMessage(connection.getResponseMessage());
-            responseHandler.handle(AsyncResultImpl.<IServiceConnectionResponse>create(this));
+            responseHandler.handle(AsyncResultImpl.<IServiceConnectionResponse> create(this));
         } catch (Exception e) {
             // TODO log this error
             throw new ConnectorException(e);
@@ -292,7 +274,7 @@ public class HttpServiceConnection implements IServiceConnection, IServiceConnec
             endHandler.handle(null);
         } catch (Throwable e) {
             // At this point we're sort of screwed, because we've already sent the response to
-            // the originating client - and we're in the process of sending the body data.  So
+            // the originating client - and we're in the process of sending the body data. So
             // I guess the only thing to do is abort() the connection and cross our fingers.
             if (connected) {
                 abort();
