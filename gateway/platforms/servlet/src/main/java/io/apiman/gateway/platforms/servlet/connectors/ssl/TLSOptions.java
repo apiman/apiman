@@ -67,7 +67,7 @@ public class TLSOptions implements OptionParser<TLSOptions> {
     public void parse(Map<String, String> options) {
         trustStore = getVar(options, TLS_TRUSTSTORE);
         trustStorePassword = getVar(options, TLS_TRUSTSTOREPASSWORD);
-        clientKeyStore = options.get(TLS_KEYSTORE);
+        clientKeyStore = getVar(options, TLS_KEYSTORE);
         keyStorePassword = getVar(options, TLS_KEYSTOREPASSWORD);
         keyPassword = getVar(options, TLS_KEYPASSWORD);
         allowedProtocols = split(getVar(options, TLS_ALLOWEDPROTOCOLS), ',');
