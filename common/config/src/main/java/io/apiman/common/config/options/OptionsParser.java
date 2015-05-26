@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.gateway.engine.auth;
+package io.apiman.common.config.options;
 
 import java.util.Map;
 
@@ -22,15 +22,16 @@ import java.util.Map;
  *
  * @author Marc Savy <msavy@redhat.com>
  *
- * @param <T> the implementation
+ * @param <T> the parser implementation
  */
-public interface OptionParser<T> {
+public interface OptionsParser<T> {
 
     /**
-     * Parse options map
+     * Instantiate an {@link OptionsParser} and parse options map, non-destructively.
      *
      * @param options the raw options map
      * @return the parsed options
      */
-    OptionParser<T> parseOptions(Map<String, String> options);
+    OptionsParser<T> parseOptions(Map<String, String> options);
+
 }

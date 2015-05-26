@@ -15,6 +15,8 @@
  */
 package io.apiman.gateway.platforms.servlet.connectors.ssl;
 
+import io.apiman.common.config.options.TLSOptions;
+
 import java.io.File;
 import java.io.IOException;
 import java.security.KeyManagementException;

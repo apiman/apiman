@@ -15,6 +15,7 @@
  */
 package io.apiman.gateway.platforms.servlet.connectors;
 
+import io.apiman.common.config.options.TLSOptions;
 import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.IServiceConnection;
 import io.apiman.gateway.engine.IServiceConnectionResponse;
@@ -26,7 +27,6 @@ import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.beans.exceptions.ConnectorException;
 import io.apiman.gateway.platforms.servlet.connectors.ssl.SSLSessionStrategy;
 import io.apiman.gateway.platforms.servlet.connectors.ssl.SSLSessionStrategyFactory;
-import io.apiman.gateway.platforms.servlet.connectors.ssl.TLSOptions;
 
 import java.util.Map;
 

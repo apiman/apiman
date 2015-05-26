@@ -13,9 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.gateway.platforms.servlet.connectors.ssl;
-
-import io.apiman.gateway.engine.auth.OptionParser;
+package io.apiman.common.config.options;
 
 import java.util.Map;
 
@@ -27,7 +25,7 @@ import org.apache.commons.lang.StringUtils;
  *
  * @author Marc Savy <msavy@redhat.com>
  */
-public class TLSOptions implements OptionParser<TLSOptions> {
+public class TLSOptions implements OptionsParser<TLSOptions> {
     public static final String PREFIX = "tls."; //$NON-NLS-1$
     public static final String TLS_TRUSTSTORE = PREFIX + "trustStore"; //$NON-NLS-1$
     public static final String TLS_TRUSTSTOREPASSWORD = PREFIX + "trustStorePassword"; //$NON-NLS-1$
@@ -60,7 +58,7 @@ public class TLSOptions implements OptionParser<TLSOptions> {
     }
 
     @Override
-    public OptionParser<TLSOptions> parseOptions(Map<String, String> options) {
+    public OptionsParser<TLSOptions> parseOptions(Map<String, String> options) {
         return new TLSOptions(options);
     }
 

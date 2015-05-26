@@ -15,6 +15,7 @@
  */
 package io.apiman.gateway.platforms.servlet.auth.tls;
 
+import io.apiman.common.config.options.TLSOptions;
 import io.apiman.gateway.engine.IServiceConnection;
 import io.apiman.gateway.engine.IServiceConnectionResponse;
 import io.apiman.gateway.engine.IServiceConnector;
@@ -25,7 +26,6 @@ import io.apiman.gateway.engine.beans.Service;
 import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.beans.exceptions.ConnectorException;
 import io.apiman.gateway.platforms.servlet.connectors.HttpConnectorFactory;
-import io.apiman.gateway.platforms.servlet.connectors.ssl.TLSOptions;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
