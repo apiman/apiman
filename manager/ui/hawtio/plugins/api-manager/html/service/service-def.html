@@ -37,7 +37,7 @@
               <span class="clearfix" apiman-i18n-key="svc-definition-label">Service Definition:</span>
               <select apiman-i18n-key="service-def.choose-type" title="Choose a type..." apiman-select-picker="" ng-model="selectedDefinitionType" class="selectpicker" ng-options="type.label for type in typeOptions track by type.value">
               </select>
-              <textarea apiman-i18n-key="enter-service-definition" id="service-definition" placeholder="Copy/paste or drag and drop your Service Definition in here!" style="width: 100%;" apiman-drop-text ng-model="updatedServiceDefinition" data-field="data" class="apiman-form-control apiman-form-data"></textarea>
+              <textarea apiman-i18n-key="enter-service-definition" id="service-definition" placeholder="Copy/paste or drag and drop your Service Definition in here!" style="width: 100%;" apiman-drop-text ng-model="updatedServiceDefinition" data-field="data" class="apiman-form-control form-control apiman-form-data"></textarea>
             </div>
             <div apiman-permission="svcEdit" apiman-status="Created,Ready" class="actions" style="margin-top: 20px">
               <button ng-disabled="!isDirty" apiman-action-btn="" ng-click="saveService()" class="btn btn-primary" data-field="saveButton" apiman-i18n-key="save" placeholder="Saving..." data-icon="fa-cog" >Save</button>

@@ -3,14 +3,14 @@
     <dl style="margin-bottom: 0px">
       <dt apiman-i18n-key="ip-http-header">IP Address HTTP Header</dt>
       <dd>
-        <input id="http-header" ng-model="config.httpHeader" data-field="httpHeader" class="apiman-form-control" style="" type="text" apiman-i18n-key="iplist.enter-http-header" placeholder="HTTP header (optional)..."></input>
+        <input id="http-header" ng-model="config.httpHeader" data-field="httpHeader" class="apiman-form-control form-control" style="" type="text" apiman-i18n-key="iplist.enter-http-header" placeholder="HTTP header (optional)..."></input>
       </dd>
       <dt apiman-i18n-key="ip-addresses">IP Addresses</dt>
     </dl>
   </div>
   <div style="width: 300px" apiman-i18n-key="ip-list-message">Manage the list of IP addresses in the box below.  Wildcards can be used by specifying "*" as one of the components of the IP address, such as "10.0.*.*".</div>
   <div style="width: 100%; float: left; margin-bottom: 5px; margin-top: 5px">
-    <select id="ip-addresses" ng-model="selectedIP" data-field="ipAddresses" multiple class="apiman-form-control" style="height: 150px; width: 200px; float: left;" ng-options="item for item in config.ipList | orderBy: 'toString()'">
+    <select id="ip-addresses" ng-model="selectedIP" data-field="ipAddresses" multiple class="apiman-form-control form-control" style="height: 150px; width: 200px; float: left;" ng-options="item for item in config.ipList | orderBy: 'toString()'">
     </select>
     <div style="margin-left: 5px; float: left">
       <button id="clear" ng-click="clear()" ng-disabled="!config.ipList" data-field="clear" apiman-i18n-key="clear" class="btn btn-default" style="min-width: 75px">Clear</button>
@@ -18,6 +18,6 @@
       <button id="remove" ng-click="remove(selectedIP)" ng-disabled="!selectedIP" data-field="remove" apiman-i18n-key="remove" class="btn btn-default" style="min-width: 75px; margin-top: 5px;">Remove</button>
     </div>
   </div>
-  <input id="ip-address" ng-model="ipAddress" data-field="ipAddress" class="apiman-form-control" style="width: 200px; float: left; margin-right: 5px" type="text" apiman-i18n-key="iplist.enter-ip-address" placeholder="Enter an IP address..."></input>
+  <input id="ip-address" ng-model="ipAddress" data-field="ipAddress" class="apiman-form-control form-control" style="width: 200px; float: left; margin-right: 5px" type="text" apiman-i18n-key="iplist.enter-ip-address" placeholder="Enter an IP address..."></input>
   <button id="add" ng-disabled="!ipAddress" ng-click="add(ipAddress)" data-field="add" apiman-i18n-key="add" class="btn btn-default" style="min-width: 75px">Add</button>
 </div>

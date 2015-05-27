@@ -73,6 +73,8 @@ module Apiman {
             PageLifecycle.loadPage('ServiceImpl', pageData, $scope, function() {
                 $scope.reset();
                 PageLifecycle.setPageTitle('service-impl', [ $scope.service.name ]);
+                
+                $scope.apiSecurityType = 'none';
             });
         }])
 

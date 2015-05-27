@@ -92,7 +92,7 @@
           <dl style="width: 100%">
             <dt apiman-i18n-key="wadl-url">WADL Url</dt>
             <dd>
-              <input type="text" class="apiman-form-control" data-field="wadlUrl" placeholder="Enter a valid URL to a WADL..." style="width: 75%"></input>
+              <input type="text" class="apiman-form-control form-control" data-field="wadlUrl" placeholder="Enter a valid URL to a WADL..." style="width: 75%"></input>
             </dd>
           </dl>
         </div>

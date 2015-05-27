@@ -17,7 +17,7 @@
     .authorization-form .panel button {
       margin-top: 15px;
     }
-    .authorization-form .panel input.apiman-form-control[type="text"] {
+    .authorization-form .panel input.apiman-form-control form-control[type="text"] {
       display: inline;
       width: 120px;
       margin-top: 4px;
@@ -36,11 +36,11 @@
     </div>
     <div class="panel-body">
       <span apiman-i18n-key="authorization.to-access">To access resource</span>
-      <input id="path" ng-model="path" class="apiman-form-control" style="" type="text" apiman-i18n-key="authorization.enter-path" placeholder="(/path/to/.*)"></input>
+      <input id="path" ng-model="path" class="apiman-form-control form-control" style="" type="text" apiman-i18n-key="authorization.enter-path" placeholder="(/path/to/.*)"></input>
       <span apiman-i18n-key="authorization.using-verb">using verb/action</span>
-      <input id="verb" ng-model="verb" class="apiman-form-control" style="" type="text" apiman-i18n-key="authorization.enter-verb" placeholder="(verb)"></input>
+      <input id="verb" ng-model="verb" class="apiman-form-control form-control" style="" type="text" apiman-i18n-key="authorization.enter-verb" placeholder="(verb)"></input>
       <span apiman-i18n-key="authorization.must-have-role">the user must have role</span>
-      <input id="role" ng-model="role" class="apiman-form-control" style="" type="text" apiman-i18n-key="authorization.enter-role" placeholder="(required role)"></input>
+      <input id="role" ng-model="role" class="apiman-form-control form-control" style="" type="text" apiman-i18n-key="authorization.enter-role" placeholder="(required role)"></input>
       <span apiman-i18n-key="authorization.period">.</span>
       <div>
         <button id="add-rule" ng-disabled="!path || !verb || !role" ng-click="add(path, verb, role)" apiman-i18n-key="add" class="btn btn-default" style="min-width: 75px">Add</button>

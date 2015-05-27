@@ -28,19 +28,58 @@
             <div class="apiman-label-faded">
               <p apiman-i18n-key="service-impl-explanation">
                 Please provide us with details about the back-end service implementation
-                so that the API Gateway can successfully proxy Service requests.
+                so that the API Gateway can successfully proxy Service requests.  Please
+                include any security you wish to enable between the API Gateway and the
+                back-end service.
               </p>
             </div>
             <div>
               <span apiman-i18n-key="api-endpoint-label">API Endpoint:</span>
-              <input ng-model="updatedService.endpoint" data-field="endpoint" class="apiman-form-control" type="text"></input>
+              <input ng-model="updatedService.endpoint" data-field="endpoint" class="apiman-form-control form-control" type="text"></input>
             </div>
-            <div class="apiman-divider-20">
+            <div style="margin-top: 10px">
               <span class="clearfix" apiman-i18n-key="api-type-label">API Type:</span>
               <select apiman-i18n-key="service-impl.choose-type" title="Choose a type..." apiman-select-picker="" ng-model="updatedService.endpointType" class="selectpicker" ng-options="type.toUpperCase() for type in typeOptions">
               </select>
             </div>
+            
+            <div class="">
+              <span class="clearfix" apiman-i18n-key="api-security-label">API Security:</span>
+              <select apiman-select-picker="" ng-model="apiSecurityType" class="selectpicker">
+                <option value="none" apiman-i18n-key="none">None</option>
+                <option value="mtls" apiman-i18n-key="mtls">MTLS/Two-Way-SSL</option>
+                <option value="basic" apiman-i18n-key="basic-auth">BASIC Authentication</option>
+              </select>
+            </div>
+
+            <div class="" ng-show="apiSecurityType == 'mtls'">
+              <div class="alert alert-info" style="">
+                 <span class="pficon pficon-info"></span>
+                 <span apiman-i18n-key="service-impl.mtsl-info">When using MTLS/Two-Way-SSL you must configure the relevant settings globally in the apiman.properties file.  Please refer to the apiman Installation Guide for details.</span>
+              </div>
+            </div>
+
+            <div class="panel panel-default" ng-show="apiSecurityType == 'basic'">
+              <div class="panel-body">
+                <table width="100%" class="form-table">
+                  <tr>
+                    <td width="1%" nowrap="nowrap" align="right"><span apiman-i18n-key="username-label" class="">Username:</span></td>
+                    <td><input ng-model="username" class="apiman-form-control form-control" width="100%" type="text"></input></td>
+                  </tr>
+                  <tr>
+                    <td width="1%" nowrap="nowrap" align="right"><span apiman-i18n-key="password-label" class="">Password:</span></td>
+                    <td><input ng-model="password" class="apiman-form-control form-control" width="100%" type="password"></input></td>
+                  </tr>
+                  <tr>
+                    <td width="1%" nowrap="nowrap" align="right"><span apiman-i18n-key="confirm-password-label" class="">Confirm Password:</span></td>
+                    <td><input ng-model="confirmPassword" class="apiman-form-control form-control" width="100%" type="password"></input></td>
+                  </tr>
+                </table>
+              </div>
+            </div>            
+            
             <div id="gateway-info" ng-show="gateways.length > 1">
+              <hr />
               <div class="title" apiman-i18n-key="gateway">Gateway</div>
               <div class="apiman-label-faded">
                 <p apiman-i18n-key="service-impl-gateway-explanation">
