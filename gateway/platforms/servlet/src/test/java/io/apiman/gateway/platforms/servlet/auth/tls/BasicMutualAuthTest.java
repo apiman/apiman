@@ -27,7 +27,10 @@ import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.beans.exceptions.ConnectorException;
 import io.apiman.gateway.platforms.servlet.connectors.HttpConnectorFactory;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigInteger;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
@@ -36,6 +39,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.net.ssl.SSLSocket;
+import javax.security.cert.CertificateException;
+import javax.security.cert.X509Certificate;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -72,9 +77,11 @@ public class BasicMutualAuthTest {
     private Server server;
     private HttpConfiguration http_config;
     private Map<String, String> config = new HashMap<>();
+    //private java.security.cert.X509Certificate clientCertUsed;
 
     @Rule
     public ExpectedException exception = ExpectedException.none();
+    protected BigInteger clientSerial;
 
     /**
      * With thanks to assistance of http://stackoverflow.com/b/20056601/2766538
@@ -90,6 +97,7 @@ public class BasicMutualAuthTest {
 
         SslContextFactory sslContextFactory = new SslContextFactory();
         sslContextFactory.setKeyStorePath(getResourcePath("2waytest/basic_mutual_auth/service_ks.jks"));
+
         sslContextFactory.setKeyStorePassword("password");
         sslContextFactory.setKeyManagerPassword("password");
         sslContextFactory.setTrustStorePath(getResourcePath("2waytest/basic_mutual_auth/service_ts.jks"));
@@ -117,6 +125,11 @@ public class BasicMutualAuthTest {
                 while (z.hasMoreElements()) {
                     String elem = z.nextElement();
                     System.out.println(elem + " - " + request.getAttribute(elem));
+                }
+
+                if (request.getAttribute("javax.servlet.request.X509Certificate") != null) {
+                    clientSerial = ((java.security.cert.X509Certificate[]) request
+                            .getAttribute("javax.servlet.request.X509Certificate"))[0].getSerialNumber();
                 }
 
                 response.setStatus(HttpServletResponse.SC_OK);
@@ -281,6 +294,128 @@ public class BasicMutualAuthTest {
        });
 
        connection.end();
+    }
+
+    /**
+     * Scenario:
+     *   - Select client key alias `gateway2`.
+     *   - Mutual trust exists between gateway and service
+     *   - We must use the `gateway2` cert NOT `gateway`.
+     * @throws CertificateException the certificate exception
+     * @throws IOException the IO exception
+     */
+    @Test
+    public void shouldSucceedWhenValidKeyAlias() throws CertificateException, IOException  {
+        config.put(TLSOptions.TLS_TRUSTSTORE, getResourcePath("2waytest/basic_mutual_auth_2/gateway_ts.jks"));
+        config.put(TLSOptions.TLS_TRUSTSTOREPASSWORD, "password");
+        config.put(TLSOptions.TLS_KEYSTORE, getResourcePath("2waytest/basic_mutual_auth_2/gateway_ks.jks"));
+        config.put(TLSOptions.TLS_KEYSTOREPASSWORD, "password");
+        config.put(TLSOptions.TLS_KEYPASSWORD, "password");
+        config.put(TLSOptions.TLS_ALLOWANYHOST, "true");
+        config.put(TLSOptions.TLS_ALLOWSELFSIGNED, "false");
+
+        config.put(TLSOptions.TLS_KEYALIASES, "gateway2");
+
+        InputStream inStream = new FileInputStream(getResourcePath("2waytest/basic_mutual_auth_2/gateway2.cer"));
+        final X509Certificate expectedCert = X509Certificate.getInstance(inStream);
+        inStream.close();
+
+        HttpConnectorFactory factory = new HttpConnectorFactory(config);
+        IServiceConnector connector = factory.createConnector(request, service, RequiredAuthType.MTLS);
+        IServiceConnection connection = connector.connect(request,
+                new IAsyncResultHandler<IServiceConnectionResponse>() {
+
+                    @Override
+                    public void handle(IAsyncResult<IServiceConnectionResponse> result) {
+                        if (result.isError())
+                            throw new RuntimeException(result.getError());
+
+                        Assert.assertTrue(result.isSuccess());
+                        // Assert that the expected certificate (associated with the private key by virtue)
+                        // was the one used.
+                        Assert.assertEquals(expectedCert.getSerialNumber(), clientSerial);
+                    }
+                });
+
+        connection.end();
+    }
+
+    /**
+     * Scenario:
+     *   - First alias invalid, second valid.
+     *   - Mutual trust exists between gateway and service.
+     *   - We must fall back to the valid alias.
+     * @throws CertificateException the certificate exception
+     * @throws IOException the IO exception
+     */
+    @Test
+    public void shouldFallbackWhenMultipleAliasesAvailable() throws CertificateException, IOException  {
+        config.put(TLSOptions.TLS_TRUSTSTORE, getResourcePath("2waytest/basic_mutual_auth_2/gateway_ts.jks"));
+        config.put(TLSOptions.TLS_TRUSTSTOREPASSWORD, "password");
+        config.put(TLSOptions.TLS_KEYSTORE, getResourcePath("2waytest/basic_mutual_auth_2/gateway_ks.jks"));
+        config.put(TLSOptions.TLS_KEYSTOREPASSWORD, "password");
+        config.put(TLSOptions.TLS_KEYPASSWORD, "password");
+        config.put(TLSOptions.TLS_ALLOWANYHOST, "true");
+        config.put(TLSOptions.TLS_ALLOWSELFSIGNED, "false");
+        // Only gateway2 is valid. `unrelated` is real but not trusted by service. others don't exist.
+        config.put(TLSOptions.TLS_KEYALIASES, "unrelated, owt, or, nowt, gateway2, sonorous, unrelated");
+
+        InputStream inStream = new FileInputStream(getResourcePath("2waytest/basic_mutual_auth_2/gateway2.cer"));
+        final X509Certificate expectedCert = X509Certificate.getInstance(inStream);
+        inStream.close();
+
+        HttpConnectorFactory factory = new HttpConnectorFactory(config);
+        IServiceConnector connector = factory.createConnector(request, service, RequiredAuthType.MTLS);
+        IServiceConnection connection = connector.connect(request,
+                new IAsyncResultHandler<IServiceConnectionResponse>() {
+
+                    @Override
+                    public void handle(IAsyncResult<IServiceConnectionResponse> result) {
+                        if (result.isError())
+                            throw new RuntimeException(result.getError());
+
+                        Assert.assertTrue(result.isSuccess());
+                        // Assert that the expected certificate (associated with the private key by virtue)
+                        // was the one used.
+                        Assert.assertEquals(expectedCert.getSerialNumber(), clientSerial);
+                    }
+                });
+
+        connection.end();
+    }
+
+    /**
+     * Scenario:
+     *   - Select invalid key alias (no such key).
+     *   - Negotiation will fail
+     * @throws CertificateException the certificate exception
+     * @throws IOException the IO exception
+     */
+    @Test
+    public void shouldFailWithInValidKeyAlias() throws CertificateException, IOException  {
+        config.put(TLSOptions.TLS_TRUSTSTORE, getResourcePath("2waytest/basic_mutual_auth_2/gateway_ts.jks"));
+        config.put(TLSOptions.TLS_TRUSTSTOREPASSWORD, "password");
+        config.put(TLSOptions.TLS_KEYSTORE, getResourcePath("2waytest/basic_mutual_auth_2/gateway_ks.jks"));
+        config.put(TLSOptions.TLS_KEYSTOREPASSWORD, "password");
+        config.put(TLSOptions.TLS_KEYPASSWORD, "password");
+        config.put(TLSOptions.TLS_ALLOWANYHOST, "true");
+        config.put(TLSOptions.TLS_ALLOWSELFSIGNED, "false");
+        // No such key exists in the keystore
+        config.put(TLSOptions.TLS_KEYALIASES, "xxx");
+
+        HttpConnectorFactory factory = new HttpConnectorFactory(config);
+        IServiceConnector connector = factory.createConnector(request, service, RequiredAuthType.MTLS);
+        IServiceConnection connection = connector.connect(request,
+                new IAsyncResultHandler<IServiceConnectionResponse>() {
+
+                    @Override
+                    public void handle(IAsyncResult<IServiceConnectionResponse> result) {
+                        Assert.assertTrue(result.isError());
+                    }
+                });
+
+        exception.expect(RuntimeException.class);
+        connection.end();
     }
 
     /**

@@ -19,6 +19,7 @@ import io.apiman.common.config.options.TLSOptions;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.Socket;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -26,6 +27,9 @@ import java.security.SecureRandom;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
@@ -36,6 +40,8 @@ import javax.net.ssl.X509TrustManager;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.conn.ssl.TrustStrategy;
+import org.apache.http.ssl.PrivateKeyDetails;
+import org.apache.http.ssl.PrivateKeyStrategy;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.ssl.SSLContexts;
 import org.apache.http.util.Args;
@@ -65,7 +71,7 @@ public class SSLSessionStrategyFactory {
      *
      * @param optionsMap map of options
      * @return the SSL session strategy
-     * @see #build(String, String, String, String, String, String[], String[], boolean, boolean)
+     * @see #build(String, String, String, String, String[], String, String[], String[], boolean, boolean)
      * @throws NoSuchAlgorithmException if the selected algorithm is not available on the system
      * @throws KeyManagementException when particular cryptographic algorithm not available
      * @throws KeyStoreException problem with keystore
@@ -81,7 +87,7 @@ public class SSLSessionStrategyFactory {
 
         return build(optionsMap.getTrustStore(),
                 optionsMap.getTrustStorePassword(),
-                null, null, null, // All keyStore related stuff
+                null, null, null, null, // All keyStore related stuff
                 allowedProtocols,
                 allowedCiphers,
                 optionsMap.isAllowAnyHost(),
@@ -98,6 +104,7 @@ public class SSLSessionStrategyFactory {
      *   <li>trustStorePassword - none</li>
      *   <li>keyStore - required</li>
      *   <li>keyStorePassword - none</li>
+     *   <li>keyAliases - none</li>
      *   <li>keyPassword - none</li>
      *   <li>allowedProtocols - {@link SSLParameters#getProtocols()}</li>
      *   <li>allowedCiphers - {@link SSLParameters#getCipherSuites()}</li>
@@ -107,7 +114,7 @@ public class SSLSessionStrategyFactory {
      *
      * @param optionsMap map of options
      * @return the SSL session strategy
-     * @see #build(String, String, String, String, String, String[], String[], boolean, boolean)
+     * @see #build(String, String, String, String, String[], String, String[], String[], boolean, boolean)
      * @throws NoSuchAlgorithmException if the selected algorithm is not available on the system
      * @throws KeyManagementException when particular cryptographic algorithm not available
      * @throws KeyStoreException problem with keystore
@@ -129,6 +136,7 @@ public class SSLSessionStrategyFactory {
                 optionsMap.getTrustStorePassword(),
                 optionsMap.getkeyStore(),
                 optionsMap.getKeyStorePassword(),
+                optionsMap.getKeyAliases(),
                 optionsMap.getKeyPassword(),
                 allowedProtocols,
                 allowedCiphers,
@@ -142,13 +150,14 @@ public class SSLSessionStrategyFactory {
      * @param trustStore the trust store
      * @param trustStorePassword the truststore password (if any)
      * @param keyStore the keystore
-     * @param keyStorePassword password the keystore password (if any)
+     * @param keyStorePassword the keystore password (if any)
+     * @param keyAliases the key aliases that are candidates for use (if any)
      * @param keyPassword the key password (if any)
      * @param allowedProtocols the allowed transport protocols.
      *            <strong><em>Avoid specifying insecure protocols</em></strong>
      * @param allowedCiphers allowed crypto ciphersuites, <tt>null</tt> to use system defaults
      * @param trustSelfSigned true if self signed certificates can be trusted.
-     *            <strong><em>Use with caution</em></strong>
+     *             <strong><em>Use with caution</em></strong>
      * @param allowAnyHostname true if any hostname can be connected to (i.e. does not need to match
      *            certificate hostname). <strong><em>Do not use in production</em></strong>
      * @return the connection socket factory
@@ -163,6 +172,7 @@ public class SSLSessionStrategyFactory {
             String trustStorePassword,
             String keyStore,
             String keyStorePassword,
+            String[] keyAliases,
             String keyPassword,
             String[] allowedProtocols,
             String[] allowedCiphers,
@@ -178,6 +188,7 @@ public class SSLSessionStrategyFactory {
         TrustStrategy trustStrategy = trustSelfSigned ?  SELF_SIGNED : null;
         HostnameVerifier hostnameVerifier = allowAnyHostname ? ALLOW_ANY :
             SSLConnectionSocketFactory.getDefaultHostnameVerifier();
+        PrivateKeyStrategy privateKeyStrategy = keyAliases == null ? null : new SelectByAlias(keyAliases);
         boolean clientAuth = keyStore == null ? false : true;
 
         SSLContextBuilder builder = SSLContexts.custom();
@@ -191,7 +202,7 @@ public class SSLSessionStrategyFactory {
         if (keyStore != null) {
             char[] ksp = keyStorePassword == null ? null : keyStorePassword.toCharArray();
             char[] kp = keyPassword == null ? null : keyPassword.toCharArray();
-            builder.loadKeyMaterial(new File(keyStore), ksp, kp);
+            builder.loadKeyMaterial(new File(keyStore), ksp, kp, privateKeyStrategy);
         }
 
         SSLContext sslContext = builder.build();
@@ -265,6 +276,26 @@ public class SSLSessionStrategyFactory {
         @Override
         public boolean verify(String hostname, SSLSession session) {
             return true;
+        }
+    }
+
+    private static final class SelectByAlias implements PrivateKeyStrategy {
+        private Set<String> keyAliases = new HashSet<>();
+
+        public SelectByAlias(String[] keyAliases) {
+            for (String k : keyAliases) {
+                this.keyAliases.add(k);
+            }
+        }
+
+        @Override
+        public String chooseAlias(Map<String, PrivateKeyDetails> aliases, Socket socket) {
+            for (String k : aliases.keySet()) {
+              if (keyAliases.contains(k)) {
+                  return k;
+              }
+            }
+            return null;
         }
     }
 }

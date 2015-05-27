@@ -31,6 +31,7 @@ public class TLSOptions implements OptionsParser<TLSOptions> {
     public static final String TLS_TRUSTSTOREPASSWORD = PREFIX + "trustStorePassword"; //$NON-NLS-1$
     public static final String TLS_KEYSTORE = PREFIX + "keyStore"; //$NON-NLS-1$
     public static final String TLS_KEYSTOREPASSWORD = PREFIX + "keystorePassword"; //$NON-NLS-1$
+    public static final String TLS_KEYALIASES = PREFIX + "keyAliases"; //$NON-NLS-1$
     public static final String TLS_KEYPASSWORD = PREFIX + "keyPassword"; //$NON-NLS-1$
     public static final String TLS_ALLOWEDPROTOCOLS = PREFIX + "allowedProtocols"; //$NON-NLS-1$
     public static final String TLS_ALLOWEDCIPHERS = PREFIX + "allowedCiphers"; //$NON-NLS-1$
@@ -48,6 +49,7 @@ public class TLSOptions implements OptionsParser<TLSOptions> {
     private boolean allowAnyHost;
     private boolean trustSelfSigned;
     private boolean devMode;
+    private String[] keyAliases;
 
     /**
      * Constructor. Parses options immediately.
@@ -67,6 +69,7 @@ public class TLSOptions implements OptionsParser<TLSOptions> {
         trustStorePassword = getVar(options, TLS_TRUSTSTOREPASSWORD);
         clientKeyStore = getVar(options, TLS_KEYSTORE);
         keyStorePassword = getVar(options, TLS_KEYSTOREPASSWORD);
+        keyAliases = split(getVar(options, TLS_KEYALIASES), ',');
         keyPassword = getVar(options, TLS_KEYPASSWORD);
         allowedProtocols = split(getVar(options, TLS_ALLOWEDPROTOCOLS), ',');
         allowedCiphers = split(getVar(options, TLS_ALLOWEDCIPHERS), ',');
@@ -215,6 +218,19 @@ public class TLSOptions implements OptionsParser<TLSOptions> {
         this.devMode = devMode;
     }
 
+    /**
+     * @return the keyAliases
+     */
+    public String[] getKeyAliases() {
+        return keyAliases;
+    }
+
+    /**
+     * @param keyAliases the keyAliases to set
+     */
+    public void setKeyAliases(String[] keyAliases) {
+        this.keyAliases = keyAliases;
+    }
 
     private static String getVar(Map<String, String> optionsMap, String varName) {
         if(optionsMap.get(varName) == null || optionsMap.get(varName).isEmpty()) {
