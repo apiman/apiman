@@ -89,7 +89,7 @@
     padding-right: 50px;
   }
 
-  textarea.form-data {
+  textarea.apiman-form-data {
     width: 640px;
   }
 
@@ -143,11 +143,11 @@
     padding-right: 50px;
   }
 
-  textarea.form-data {
+  textarea.apiman-form-data {
     width: 400px;
   }
 
-  .form.policy-config input[type=text].form-control {
+  .form.policy-config input[type=text].apiman-form-control {
     width: 300px;
   }
 
@@ -185,11 +185,11 @@
     padding-right: 10px;
   }
 
-  textarea.form-data {
+  textarea.apiman-form-data {
     width: 320px;
   }
 
-  .form.policy-config input[type=text].form-control {
+  .form.policy-config input[type=text].apiman-form-control {
     width: 300px;
   }
 

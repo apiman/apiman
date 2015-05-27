@@ -311,7 +311,7 @@ public class ManagerApiDataSeeder extends DefaultTestDataSeeder {
         whitelistPolicyDef.setId("IPWhitelistPolicy");
         whitelistPolicyDef.setName("IP Whitelist Policy");
         whitelistPolicyDef.setDescription("Only requests that originate from a specified set of valid IP addresses will be allowed through.");
-        whitelistPolicyDef.setIcon("filter");
+        whitelistPolicyDef.setIcon("thumbs-up");
         whitelistPolicyDef.setPolicyImpl("class:io.apiman.gateway.engine.policies.IPWhitelistPolicy");
         PolicyDefinitionTemplateBean templateBean = new PolicyDefinitionTemplateBean();
         templateBean.setLanguage(null);

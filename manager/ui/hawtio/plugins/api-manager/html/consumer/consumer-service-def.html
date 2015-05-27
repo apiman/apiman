@@ -20,7 +20,7 @@
               <li><a id="bc-orgs" href="{{ pluginName }}/browse/orgs"><i class="fa fa-search fa-fw"></i><span apiman-i18n-key="organizations">Organizations</span></a></li>
               <li><a id="bc-org" href="{{ pluginName }}/browse/orgs/{{params.org}}"><i class="fa fa-shield fa-fw"></i><span>{{ org.name }}</span></a></li>
               <li><a id="bc-service" href="{{ pluginName }}/browse/orgs/{{params.org}}/{{params.service}}/{{params.version}}"><i class="fa fa-puzzle-piece fa-fw"></i><span>{{ service.name }}</span></a></li>
-              <li class="active"><i class="fa fa-sitemap fa-fw"></i><span>Definition</span></li>
+              <li class="active"><i class="fa fa-sitemap fa-fw"></i><span apiman-i18n-key="definition">Definition</span></li>
             </ol>
           </div>
         </div>
@@ -58,7 +58,7 @@
           </div>
         </div>
         
-        <div class="row swagger-section" ng-show="hasDefinition">
+        <div id="apiman-swagger" class="row swagger-section" ng-show="hasDefinition">
           <div class="col-md-12">
             <div id="swagger-ui-container" class="swagger-ui-wrap" />
           </div>

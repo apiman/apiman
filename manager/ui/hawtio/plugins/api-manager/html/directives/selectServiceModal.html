@@ -13,7 +13,7 @@
                 matches.
               </p>
               <form ng-submit="search()">
-                <input apiman-i18n-key="search-service-name" ng-model="searchText" type="text" class="form-control input-search" placeholder="Search by service name..."></input>
+                <input apiman-i18n-key="search-service-name" ng-model="searchText" type="text" class="apiman-form-control input-search" placeholder="Search by service name..."></input>
                 <button type="submit" apiman-action-btn="" class="btn btn-default btn-search" data-field="searchButton" apiman-i18n-key="search" data-icon="fa-cog" placeholder="Searching">Search</button>
               </form>
               <div class="clearfix"></div>
@@ -38,7 +38,7 @@
               <div class="clearfix"></div>
               <table ng-show="serviceVersions">
                 <tr>
-                  <td><span apiman-i18n-key="choose-svc-version" class="form-label">Choose Service Version:</span></td>
+                  <td><span apiman-i18n-key="choose-svc-version" class="apiman-form-label">Choose Service Version:</span></td>
                   <td>
                     <select apiman-i18n-key="choose-svc-version-select" ng-model="selectedServiceVersion" apiman-select-picker="" class="selectpicker version" title="[no versions found]" ng-options="svcVersion.version for svcVersion in serviceVersions">
                   </td>
