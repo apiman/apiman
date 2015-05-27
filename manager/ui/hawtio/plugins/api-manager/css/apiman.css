@@ -315,56 +315,6 @@ textarea.form-data {
   width: auto;
 }
 
-.dropdown-menu li a:hover {
-  color: rgb(255, 255, 255);
-  background-color: rgb(66, 139, 202);
-}
-
-.table th {
-  color: #666;
-}
-
-.navbar-default {
-  background-color: #0B61A4;
-  border-bottom: 1px solid #FF9200;
-}
-.navbar-default .navbar-brand, .navbar-default .navbar-brand:hover, .navbar-default .navbar-brand:focus {
-  color: white;
-}
-.navbar-default .navbar-nav li a {
-  color: white;
-}
-.navbar-default .navbar-nav li a:hover, .navbar-default .navbar-nav li a:focus {
-  color: #ddd;
-}
-a, .nav li a {
-  color: #3F92D2;
-  text-decoration: none;
-}
-a:hover, a:focus, .nav li a:hover, .nav li a:focus {
-  color: #3F92D2;
-}
-a:hover {
-  text-decoration: underline;
-}
-
-#page-loading {
-  width: 100%;
-  padding: 38px;
-  text-align: center;
-}
-
-#page-loading .center {
-  display: inline-block;
-  height: 33px;
-  font-size: 18px;
-  padding-left: 35px;
-  padding-top: 4px;
-  background-image: url(../img/page-spinner.gif);
-  background-position: left top;
-  background-repeat: no-repeat;
-}
-
 .input-search {
   width: 300px;
   float: left;
@@ -1253,54 +1203,6 @@ div.admin-page .admin-content .apiman-summaryrow .emphasis {
 
 .table > tbody > tr > td > a:hover {
   text-decoration: underline;
-}
-
-#apiman-log-viewer {
-  position: fixed;
-  left: 0px;
-  width: 50%;
-  top: 100px;
-  background-color: #fafafa;
-  border-top: 1px solid #887;
-  border-right: 1px solid #887;
-  border-bottom: 1px solid #887;
-  padding-top: 10px;
-  padding-bottom: 20px;
-  z-index: 1000;
-  box-shadow: 3px 3px 8px #AAA;
-  opacity: 0.75;
-}
-
-#apiman-log-viewer:hover {
-  opacity: 1;
-}
-
-#apiman-log-viewer .settings {
-  border-bottom: 1px solid #887;
-}
-
-#apiman-log-viewer .settings .close {
-  font-size: 26px;
-}
-
-#apiman-log-viewer .settings .settings-label {
-  display: inline-block;
-  position: relative;
-  margin-right: 10px;
-}
-
-#apiman-log-viewer .messages-wrap {
-  padding-left: 10px;
-  padding-right: 10px;
-}
-
-#apiman-log-viewer .messages {
-  border: 1px solid #887;
-  margin-top: 20px;
-  height: 275px;
-  overflow: auto;
-  background-color: white;
-  padding: 3px;
 }
 
 .settings-detail {
