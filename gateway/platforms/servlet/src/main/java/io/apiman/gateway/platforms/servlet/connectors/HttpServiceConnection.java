@@ -20,7 +20,6 @@ import io.apiman.gateway.engine.IServiceConnectionResponse;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncHandler;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
-import io.apiman.gateway.engine.auth.RequiredAuthType;
 import io.apiman.gateway.engine.beans.Service;
 import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.beans.ServiceResponse;
@@ -63,7 +62,6 @@ public class HttpServiceConnection implements IServiceConnection, IServiceConnec
 
     private ServiceRequest request;
     private Service service;
-    private RequiredAuthType authType;
     private SSLSessionStrategy sslStrategy;
     private IAsyncResultHandler<IServiceConnectionResponse> responseHandler;
 
@@ -86,12 +84,10 @@ public class HttpServiceConnection implements IServiceConnection, IServiceConnec
      * @param handler the result handler
      * @throws ConnectorException when unable to connect
      */
-    public HttpServiceConnection(ServiceRequest request, Service service,
-            RequiredAuthType authType, SSLSessionStrategy sslStrategy,
+    public HttpServiceConnection(ServiceRequest request, Service service, SSLSessionStrategy sslStrategy,
             IAsyncResultHandler<IServiceConnectionResponse> handler) throws ConnectorException {
         this.request = request;
         this.service = service;
-        this.authType = authType;
         this.sslStrategy = sslStrategy;
         this.responseHandler = handler;
 

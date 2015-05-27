@@ -65,11 +65,8 @@ public class HttpConnectorFactory implements IConnectorFactory {
             public IServiceConnection connect(ServiceRequest request,
                     IAsyncResultHandler<IServiceConnectionResponse> handler) throws ConnectorException {
 
-                HttpServiceConnection connection = new HttpServiceConnection(request,
-                        service,
-                        requiredAuthType,
-                        getSslStrategy(requiredAuthType),
-                        handler);
+                HttpServiceConnection connection = new HttpServiceConnection(request, service,
+                        getSslStrategy(requiredAuthType), handler);
                 return connection;
             }
         };
