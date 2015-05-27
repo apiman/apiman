@@ -26,6 +26,8 @@ import io.apiman.manager.api.core.logging.StandardLoggerImpl;
 import io.apiman.manager.api.es.EsStorage;
 import io.apiman.manager.api.jpa.JpaStorage;
 import io.apiman.manager.api.jpa.roles.JpaIdmStorage;
+import io.apiman.manager.api.security.ISecurityContext;
+import io.apiman.manager.api.security.impl.DefaultSecurityContext;
 import io.apiman.manager.test.util.ManagerTestUtils;
 import io.apiman.manager.test.util.ManagerTestUtils.TestType;
 import io.searchbox.client.JestClient;
@@ -45,6 +47,11 @@ import javax.inject.Named;
 @SuppressWarnings("nls")
 @Named("ApimanLogFactory")
 public class TestCdiFactory {
+
+    @Produces @ApplicationScoped
+    public static ISecurityContext provideSecurityContext(@New DefaultSecurityContext defaultSC) {
+        return defaultSC;
+    }
 
     @Produces @ApimanLogger
     public static IApimanLogger provideLogger(InjectionPoint injectionPoint) {

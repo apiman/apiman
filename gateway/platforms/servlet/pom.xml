@@ -62,14 +62,12 @@
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-server</artifactId>
-      <version>9.2.10.v20150310</version>
       <scope>test</scope>
     </dependency>
     
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-util</artifactId>
-      <version>9.2.10.v20150310</version>
       <scope>test</scope>
     </dependency>
     
