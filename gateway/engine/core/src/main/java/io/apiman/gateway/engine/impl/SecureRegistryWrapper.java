@@ -41,6 +41,7 @@ public class SecureRegistryWrapper implements IRegistry {
 
     /**
      * Constructor.
+     * @param delegate the delegated Registry
      */
     public SecureRegistryWrapper(IRegistry delegate) {
         this.delegate = delegate;
