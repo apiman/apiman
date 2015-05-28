@@ -17,15 +17,12 @@ package io.apiman.common.config.options;
 
 import java.util.Map;
 
-import org.apache.commons.lang.BooleanUtils;
-import org.apache.commons.lang.StringUtils;
-
 /**
  * Options parser for TLS/SSL.
  *
  * @author Marc Savy <msavy@redhat.com>
  */
-public class TLSOptions implements OptionsParser<TLSOptions> {
+public class TLSOptions extends AbstractOptions {
     public static final String PREFIX = "tls."; //$NON-NLS-1$
     public static final String TLS_TRUSTSTORE = PREFIX + "trustStore"; //$NON-NLS-1$
     public static final String TLS_TRUSTSTOREPASSWORD = PREFIX + "trustStorePassword"; //$NON-NLS-1$
@@ -56,15 +53,14 @@ public class TLSOptions implements OptionsParser<TLSOptions> {
      * @param options the options
      */
     public TLSOptions(Map<String, String> options) {
-        parse(options);
+        super(options);
     }
 
+    /**
+     * @see io.apiman.common.config.options.AbstractOptions#parse(java.util.Map)
+     */
     @Override
-    public OptionsParser<TLSOptions> parseOptions(Map<String, String> options) {
-        return new TLSOptions(options);
-    }
-
-    public void parse(Map<String, String> options) {
+    protected void parse(Map<String, String> options) {
         trustStore = getVar(options, TLS_TRUSTSTORE);
         trustStorePassword = getVar(options, TLS_TRUSTSTOREPASSWORD);
         clientKeyStore = getVar(options, TLS_KEYSTORE);
@@ -230,31 +226,5 @@ public class TLSOptions implements OptionsParser<TLSOptions> {
      */
     public void setKeyAliases(String[] keyAliases) {
         this.keyAliases = keyAliases;
-    }
-
-    private static String getVar(Map<String, String> optionsMap, String varName) {
-        if(optionsMap.get(varName) == null || optionsMap.get(varName).isEmpty()) {
-            return null;
-        }
-        return optionsMap.get(varName);
-    }
-
-    private static String[] split(String str, char splitter) {
-        if (str == null)
-            return null;
-
-        String[] splitStr = StringUtils.split(str, splitter);
-
-        String[] out = new String[splitStr.length];
-
-        for (int i = 0; i < splitStr.length; i++) {
-            out[i] = StringUtils.trim(splitStr[i]);
-        }
-
-        return out;
-    }
-
-    private static boolean parseBool(Map<String, String> optionsMap, String key) {
-        return BooleanUtils.toBoolean(optionsMap.get(key));
     }
 }

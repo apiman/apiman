@@ -99,6 +99,14 @@ public class PolicyTesterServiceConnection implements IServiceConnection {
     }
 
     /**
+     * @see io.apiman.gateway.engine.IServiceConnection#isConnected()
+     */
+    @Override
+    public boolean isConnected() {
+        return !isFinished();
+    }
+
+    /**
      * @see io.apiman.gateway.engine.io.IAbortable#abort()
      */
     @Override

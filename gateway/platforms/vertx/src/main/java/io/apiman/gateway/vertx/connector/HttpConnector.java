@@ -222,6 +222,14 @@ class HttpConnector implements IServiceConnectionResponse, IServiceConnection {
         return inboundFinished && outboundFinished;
     }
 
+    /**
+     * @see io.apiman.gateway.engine.IServiceConnection#isConnected()
+     */
+    @Override
+    public boolean isConnected() {
+        return !isFinished();
+    }
+
     private URL parseServiceEndpoint(Service service) {
         try {
             return new URL(service.getEndpoint());

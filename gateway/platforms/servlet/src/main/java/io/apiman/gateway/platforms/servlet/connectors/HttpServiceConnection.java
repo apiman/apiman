@@ -15,11 +15,13 @@
  */
 package io.apiman.gateway.platforms.servlet.connectors;
 
+import io.apiman.common.config.options.BasicAuthOptions;
 import io.apiman.gateway.engine.IServiceConnection;
 import io.apiman.gateway.engine.IServiceConnectionResponse;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncHandler;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
+import io.apiman.gateway.engine.auth.RequiredAuthType;
 import io.apiman.gateway.engine.beans.Service;
 import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.beans.ServiceResponse;
@@ -44,6 +46,7 @@ import java.util.Set;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSocketFactory;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 
 /**
@@ -62,6 +65,7 @@ public class HttpServiceConnection implements IServiceConnection, IServiceConnec
 
     private ServiceRequest request;
     private Service service;
+    private RequiredAuthType requiredAuthType;
     private SSLSessionStrategy sslStrategy;
     private IAsyncResultHandler<IServiceConnectionResponse> responseHandler;
 
@@ -80,14 +84,17 @@ public class HttpServiceConnection implements IServiceConnection, IServiceConnec
      * @param sslStrategy the SSL strategy
      * @param request the request
      * @param service the service
+     * @param requiredAuthType
      * @param authType the authorization type
      * @param handler the result handler
      * @throws ConnectorException when unable to connect
      */
-    public HttpServiceConnection(ServiceRequest request, Service service, SSLSessionStrategy sslStrategy,
-            IAsyncResultHandler<IServiceConnectionResponse> handler) throws ConnectorException {
+    public HttpServiceConnection(ServiceRequest request, Service service, RequiredAuthType requiredAuthType,
+            SSLSessionStrategy sslStrategy, IAsyncResultHandler<IServiceConnectionResponse> handler)
+            throws ConnectorException {
         this.request = request;
         this.service = service;
+        this.requiredAuthType = requiredAuthType;
         this.sslStrategy = sslStrategy;
         this.responseHandler = handler;
 
@@ -122,7 +129,8 @@ public class HttpServiceConnection implements IServiceConnection, IServiceConnec
             URL url = new URL(endpoint);
             connection = (HttpURLConnection) url.openConnection();
 
-            if (connection instanceof HttpsURLConnection) {
+            boolean isSsl = connection instanceof HttpsURLConnection;
+            if (isSsl) {
                 HttpsURLConnection https = (HttpsURLConnection) connection;
                 SSLSocketFactory socketFactory = sslStrategy.getSocketFactory();
                 https.setSSLSocketFactory(socketFactory);
@@ -146,6 +154,23 @@ public class HttpServiceConnection implements IServiceConnection, IServiceConnec
                 String hval = entry.getValue();
                 if (!SUPPRESSED_HEADERS.contains(hname)) {
                     connection.setRequestProperty(hname, hval);
+                }
+            }
+
+            // If basic authentication is enabled (endpoint security) then add
+            // the appropriate authorization header
+            if (this.requiredAuthType == RequiredAuthType.BASIC) {
+                BasicAuthOptions options = new BasicAuthOptions(service.getEndpointProperties());
+                if (options.getUsername() != null && options.getPassword() != null) {
+                    if (options.isRequireSSL() && !isSsl) {
+                        throw new ConnectorException("Endpoint security requested (BASIC auth) but endpoint is not secure (SSL)."); //$NON-NLS-1$
+                    }
+
+                    String up = options.getUsername() + ':' + options.getPassword();
+                    StringBuilder builder = new StringBuilder();
+                    builder.append("BASIC "); //$NON-NLS-1$
+                    builder.append(Base64.encodeBase64String(up.getBytes()));
+                    connection.setRequestProperty("Authorization", builder.toString()); //$NON-NLS-1$
                 }
             }
 
@@ -189,11 +214,22 @@ public class HttpServiceConnection implements IServiceConnection, IServiceConnec
     }
 
     /**
+     * @see io.apiman.gateway.engine.IServiceConnection#isConnected()
+     */
+    @Override
+    public boolean isConnected() {
+        return connected;
+    }
+
+    /**
      * @see io.apiman.gateway.engine.io.IAbortable#abort()
      */
     @Override
     public void abort() {
         try {
+            if (!connected) {
+                throw new IOException("Not connected."); //$NON-NLS-1$
+            }
             if (connection != null) {
                 IOUtils.closeQuietly(outputStream);
                 IOUtils.closeQuietly(connection.getInputStream());
@@ -211,6 +247,9 @@ public class HttpServiceConnection implements IServiceConnection, IServiceConnec
     @Override
     public void write(IApimanBuffer chunk) {
         try {
+            if (!connected) {
+                throw new IOException("Not connected."); //$NON-NLS-1$
+            }
             if (outputStream == null) {
                 outputStream = connection.getOutputStream();
             }
@@ -232,6 +271,9 @@ public class HttpServiceConnection implements IServiceConnection, IServiceConnec
     @Override
     public void end() {
         try {
+            if (!connected) {
+                throw new IOException("Not connected."); //$NON-NLS-1$
+            }
             IOUtils.closeQuietly(outputStream);
             outputStream = null;
             // Process the response, convert to a ServiceResponse object, and return it
@@ -257,6 +299,9 @@ public class HttpServiceConnection implements IServiceConnection, IServiceConnec
     @Override
     public void transmit() {
         try {
+            if (!connected) {
+                throw new IOException("Not connected."); //$NON-NLS-1$
+            }
             InputStream is = connection.getInputStream();
             ByteBuffer buffer = new ByteBuffer(2048);
             int numBytes = buffer.readFrom(is);
