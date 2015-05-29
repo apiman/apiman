@@ -207,6 +207,16 @@ CREATE TABLE `service_versions` (
   CONSTRAINT `FK_service_versions_1` FOREIGN KEY (`service_id`, `service_orgId`) REFERENCES `services` (`id`, `organizationId`)
 ) ENGINE=InnoDB;
 
+
+CREATE TABLE `endpoint_properties` (
+  `service_version_id` bigint(20) NOT NULL,
+  `value` varchar(255) DEFAULT NULL,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`service_version_id`,`name`),
+  CONSTRAINT `FK_end_props_1` FOREIGN KEY (`service_version_id`) REFERENCES `service_versions` (`id`)
+) ENGINE=InnoDB;
+
+
 CREATE TABLE `service_defs` (
   `id` bigint(20) NOT NULL,
   `serviceVersionId` bigint(20) NOT NULL,

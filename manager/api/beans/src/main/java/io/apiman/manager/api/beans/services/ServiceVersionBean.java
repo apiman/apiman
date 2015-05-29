@@ -73,7 +73,7 @@ public class ServiceVersionBean implements Serializable {
     @ElementCollection(fetch=FetchType.EAGER)
     @MapKeyColumn(name="name")
     @Column(name="value")
-    @CollectionTable(name="endpoint_properties", joinColumns=@JoinColumn(name="svcv_id"))
+    @CollectionTable(name="endpoint_properties", joinColumns=@JoinColumn(name="service_version_id"))
     private Map<String, String> endpointProperties = new HashMap<>();
     @ElementCollection(fetch=FetchType.EAGER)
     @CollectionTable(name="svc_gateways", joinColumns=@JoinColumn(name="service_version_id"))
