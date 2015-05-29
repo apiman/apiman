@@ -59,7 +59,11 @@ module Apiman {
                 if (apiSecurity.type == 'basic' && apiSecurity.basic) {
                     rval['basic-auth.username'] = apiSecurity.basic.username;
                     rval['basic-auth.password'] = apiSecurity.basic.password;
-                    rval['basic-auth.requireSSL'] = apiSecurity.basic.requireSSL;
+                    if (apiSecurity.basic.requireSSL) {
+                        rval['basic-auth.requireSSL'] = 'true';
+                    } else {
+                        rval['basic-auth.requireSSL'] = 'false';
+                    }
                 }
                 return rval;
             };
@@ -75,6 +79,10 @@ module Apiman {
                     }
                     if ($scope.version.endpointProperties && newValue.endpointProperties) {
                         if (!angular.equals($scope.version.endpointProperties, newValue.endpointProperties)) {
+                            Logger.debug('Dirty due to EP:');
+                            Logger.debug('    $scope.version:    {0}', $scope.version);
+                            Logger.debug('    $scope.version.EP: {0}', $scope.version.endpointProperties);
+                            Logger.debug('    newValue.EP:       {0}', newValue.endpointProperties);
                             dirty = true;
                         }
                     }
@@ -114,6 +122,7 @@ module Apiman {
             });
 
             $scope.reset = function() {
+                $scope.apiSecurity = toApiSecurity($scope.version);
                 $scope.updatedService.endpoint = $scope.version.endpoint;
                 $scope.updatedService.endpointType = $scope.version.endpointType;
                 $scope.updatedService.endpointProperties = angular.copy($scope.version.endpointProperties);
@@ -127,7 +136,6 @@ module Apiman {
                     });
                 }
                 $scope.isDirty = false;
-                $scope.apiSecurity = toApiSecurity($scope.version);
             };
 
             $scope.saveService = function() {
@@ -141,7 +149,6 @@ module Apiman {
             };
             
             PageLifecycle.loadPage('ServiceImpl', pageData, $scope, function() {
-                $scope.apiSecurity = toApiSecurity($scope.version);
                 $scope.reset();
                 PageLifecycle.setPageTitle('service-impl', [ $scope.service.name ]);
             });

@@ -92,10 +92,9 @@ module Apiman {
                         var orgId = $scope.organizationId;
                         if (orgId) {
                             var permission = attrs.apimanPermission;
+                            $(element).removeClass('apiman-not-permitted');
                             if (!CurrentUser.hasPermission(orgId, permission)) {
-                                $(element).hide();
-                            } else {
-                                $(element).show();
+                                $(element).addClass('apiman-not-permitted');
                             }
                         } else {
                             Logger.error('Missing organizationId from $scope - authorization disabled.');
@@ -129,12 +128,9 @@ module Apiman {
                                     break;
                                 }
                             }
+                            $(element).removeClass('apiman-wrong-status');
                             if (!statusIsValid) {
-                                Logger.debug('   Hiding: {0}', $(element).html());
-                                $(element).css('color', 'red');
-                            } else {
-                                Logger.debug('   Showing: {0}', $(element).html());
-                                $(element).show();
+                                $(element).addClass('apiman-wrong-status');
                             }
                         } else {
                             Logger.error('Missing entityStatus from $scope - hide/show based on entity status feature is disabled.');

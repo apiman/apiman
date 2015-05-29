@@ -4,6 +4,10 @@ body {
   font-size: 13px;
 }
 
+.apiman-wrong-status, .apiman-not-permitted {
+  display: none !important;
+}
+
 .apiman-about-page table {
   box-shadow: 2px 2px 3px rgb(221, 221, 221);
 }
