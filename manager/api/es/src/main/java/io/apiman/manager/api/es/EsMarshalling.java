@@ -63,9 +63,11 @@ import io.apiman.manager.api.es.beans.ServiceDefinitionBean;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.elasticsearch.common.xcontent.XContentBuilder;
@@ -326,6 +328,14 @@ public class EsMarshalling {
                     .endObject();
                 }
                 builder.endArray();
+            }
+            Map<String, String> endpointProperties = bean.getEndpointProperties();
+            if (endpointProperties != null) {
+                builder.startObject("endpointProperties");
+                for (Entry<String, String> property : endpointProperties.entrySet()) {
+                    builder.field(property.getKey(), property.getValue());
+                }
+                builder.endObject();
             }
             builder.endObject();
             return builder;
@@ -876,7 +886,13 @@ public class EsMarshalling {
                 bean.getPlans().add(planBean);
             }
         }
-
+        Map<String, Object> endpointProperties = (Map<String, Object>) source.get("endpointProperties");
+        if (endpointProperties != null) {
+            bean.setEndpointProperties(new HashMap<String, String>());
+            for (Entry<String, Object> entry : endpointProperties.entrySet()) {
+                bean.getEndpointProperties().put(entry.getKey(), String.valueOf(entry.getValue()));
+            }
+        }
         return bean;
     }
 

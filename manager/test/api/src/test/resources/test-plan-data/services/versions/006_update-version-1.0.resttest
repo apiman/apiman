@@ -3,7 +3,11 @@ Content-Type: application/json
 
 {
   "endpoint" : "http://localhost:8080/ping",
-  "endpointType" : "rest"
+  "endpointType" : "rest",
+  "endpointProperties" : {
+    "foo" : "foo-value",
+    "bar" : "bar-value"
+  }
 }
 ----
 200
@@ -11,5 +15,9 @@ Content-Type: application/json
 
 {
   "endpoint" : "http://localhost:8080/ping",
-  "endpointType" : "rest"
+  "endpointType" : "rest",
+  "endpointProperties" : {
+    "foo" : "foo-value",
+    "bar" : "bar-value"
+  }
 }

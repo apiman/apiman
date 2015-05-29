@@ -121,8 +121,8 @@ module Apiman {
                         if (entityStatus) {
                             var validStatuses = attrs.apimanStatus.split(',');
                             var statusIsValid = false;
-//                            Logger.debug('Checking status {0} against valid statuses {1}:  {2}', entityStatus, '' + validStatuses,
-//                                    element[0].outerHTML);
+                            Logger.debug('Checking status {0} against valid statuses {1}:  {2}', entityStatus, '' + validStatuses,
+                                    element[0].outerHTML);
                             for (var i = 0; i < validStatuses.length; i++) {
                                 if (validStatuses[i] == entityStatus) {
                                     statusIsValid = true;
@@ -130,8 +130,10 @@ module Apiman {
                                 }
                             }
                             if (!statusIsValid) {
-                                $(element).hide();
+                                Logger.debug('   Hiding: {0}', $(element).html());
+                                $(element).css('color', 'red');
                             } else {
+                                Logger.debug('   Showing: {0}', $(element).html());
                                 $(element).show();
                             }
                         } else {

@@ -17,6 +17,8 @@ package io.apiman.manager.api.beans.services;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.CollectionTable;
@@ -31,6 +33,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapKeyColumn;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -67,6 +70,11 @@ public class ServiceVersionBean implements Serializable {
     private String endpoint;
     @Enumerated(EnumType.STRING)
     private EndpointType endpointType;
+    @ElementCollection(fetch=FetchType.EAGER)
+    @MapKeyColumn(name="name")
+    @Column(name="value")
+    @CollectionTable(name="endpoint_properties", joinColumns=@JoinColumn(name="svcv_id"))
+    private Map<String, String> endpointProperties = new HashMap<>();
     @ElementCollection(fetch=FetchType.EAGER)
     @CollectionTable(name="svc_gateways", joinColumns=@JoinColumn(name="service_version_id"))
     private Set<ServiceGatewayBean> gateways;
@@ -325,6 +333,20 @@ public class ServiceVersionBean implements Serializable {
      */
     public void setDefinitionType(ServiceDefinitionType definitionType) {
         this.definitionType = definitionType;
+    }
+
+    /**
+     * @return the endpointProperties
+     */
+    public Map<String, String> getEndpointProperties() {
+        return endpointProperties;
+    }
+
+    /**
+     * @param endpointProperties the endpointProperties to set
+     */
+    public void setEndpointProperties(Map<String, String> endpointProperties) {
+        this.endpointProperties = endpointProperties;
     }
 
     /**

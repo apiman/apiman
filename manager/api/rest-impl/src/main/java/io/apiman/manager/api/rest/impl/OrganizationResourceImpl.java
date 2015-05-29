@@ -1280,6 +1280,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 UpdateServiceVersionBean updatedService = new UpdateServiceVersionBean();
                 updatedService.setEndpoint(cloneSource.getEndpoint());
                 updatedService.setEndpointType(cloneSource.getEndpointType());
+                updatedService.setEndpointProperties(cloneSource.getEndpointProperties());
                 updatedService.setGateways(cloneSource.getGateways());
                 updatedService.setPlans(cloneSource.getPlans());
                 updatedService.setPublicService(cloneSource.isPublicService());
@@ -1512,8 +1513,8 @@ public class OrganizationResourceImpl implements IOrganizationResource {
      * @see io.apiman.manager.api.rest.contract.IOrganizationResource#updateServiceVersion(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.services.UpdateServiceVersionBean)
      */
     @Override
-    public ServiceVersionBean updateServiceVersion(String organizationId, String serviceId, String version, UpdateServiceVersionBean bean)
-            throws ServiceVersionNotFoundException, NotAuthorizedException {
+    public ServiceVersionBean updateServiceVersion(String organizationId, String serviceId, String version,
+            UpdateServiceVersionBean bean) throws ServiceVersionNotFoundException, NotAuthorizedException {
         if (!securityContext.hasPermission(PermissionType.svcEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
 
@@ -1531,7 +1532,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 svb.setPlans(new HashSet<ServicePlanBean>());
             }
             svb.getPlans().clear();
-            svb.getPlans().addAll(bean.getPlans());
+            if (bean.getPlans() != null) {
+                svb.getPlans().addAll(bean.getPlans());
+            }
         }
         if (AuditUtils.valueChanged(svb.getGateways(), bean.getGateways())) {
             data.addChange("gateways", AuditUtils.asString_ServiceGatewayBeans(svb.getGateways()), AuditUtils.asString_ServiceGatewayBeans(bean.getGateways())); //$NON-NLS-1$
@@ -1548,6 +1551,16 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (AuditUtils.valueChanged(svb.getEndpointType(), bean.getEndpointType())) {
             data.addChange("endpointType", svb.getEndpointType(), bean.getEndpointType()); //$NON-NLS-1$
             svb.setEndpointType(bean.getEndpointType());
+        }
+        if (AuditUtils.valueChanged(svb.getEndpointProperties(), bean.getEndpointProperties())) {
+            if (svb.getEndpointProperties() == null) {
+                svb.setEndpointProperties(new HashMap<String, String>());
+            } else {
+                svb.getEndpointProperties().clear();
+            }
+            if (bean.getEndpointProperties() != null) {
+                svb.getEndpointProperties().putAll(bean.getEndpointProperties());
+            }
         }
         if (AuditUtils.valueChanged(svb.isPublicService(), bean.getPublicService())) {
             data.addChange("publicService", String.valueOf(svb.isPublicService()), String.valueOf(bean.getPublicService())); //$NON-NLS-1$

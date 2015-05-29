@@ -38,6 +38,8 @@ import io.apiman.manager.api.security.ISecurityContext;
 
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -112,6 +114,42 @@ public class AuditUtils {
             }
             for (Object bean : after) {
                 if (!before.contains(bean)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns true only if the map has changed.
+     *
+     * @param before the value before change
+     * @param after the value after change
+     * @return true if value changed, else false
+     */
+    public static boolean valueChanged(Map<String, String> before, Map<String, String> after) {
+        if ((before == null && after == null) || after == null) {
+            return false;
+        }
+        if (before == null) {
+            if (after.isEmpty()) {
+                return false;
+            } else {
+                return true;
+            }
+        } else {
+            if (before.size() != after.size()) {
+                return true;
+            }
+            for (Entry<String, String> entry : after.entrySet()) {
+                String key =  entry.getKey();
+                String afterValue = entry.getValue();
+                if (!before.containsKey(key)) {
+                    return true;
+                }
+                String beforeValue = before.get(key);
+                if (valueChanged(beforeValue, afterValue)) {
                     return true;
                 }
             }

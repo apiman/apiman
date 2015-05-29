@@ -35,6 +35,8 @@ import io.apiman.manager.api.core.exceptions.StorageException;
 
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Wraps the {@link IStorage} object and provides data encryption for
@@ -129,6 +131,12 @@ public class SecureStorageWrapper implements IStorage {
      */
     @Override
     public void createServiceVersion(ServiceVersionBean version) throws StorageException {
+        Map<String, String> endpointProperties = version.getEndpointProperties();
+        if (endpointProperties != null) {
+            for (Entry<String, String> entry : endpointProperties.entrySet()) {
+                entry.setValue(AesEncrypter.encrypt(entry.getValue()));
+            }
+        }
         this.delegate.createServiceVersion(version);
     }
 
@@ -227,6 +235,12 @@ public class SecureStorageWrapper implements IStorage {
      */
     @Override
     public void updateServiceVersion(ServiceVersionBean version) throws StorageException {
+        Map<String, String> endpointProperties = version.getEndpointProperties();
+        if (endpointProperties != null) {
+            for (Entry<String, String> entry : endpointProperties.entrySet()) {
+                entry.setValue(AesEncrypter.encrypt(entry.getValue()));
+            }
+        }
         this.delegate.updateServiceVersion(version);
     }
 
@@ -415,7 +429,14 @@ public class SecureStorageWrapper implements IStorage {
     @Override
     public ServiceVersionBean getServiceVersion(String organizationId, String serviceId, String version)
             throws StorageException {
-        return this.delegate.getServiceVersion(organizationId, serviceId, version);
+        ServiceVersionBean serviceVersion = this.delegate.getServiceVersion(organizationId, serviceId, version);
+        Map<String, String> endpointProperties = serviceVersion.getEndpointProperties();
+        if (endpointProperties != null) {
+            for (Entry<String, String> entry : endpointProperties.entrySet()) {
+                entry.setValue(AesEncrypter.decrypt(entry.getValue()));
+            }
+        }
+        return serviceVersion;
     }
 
     /**

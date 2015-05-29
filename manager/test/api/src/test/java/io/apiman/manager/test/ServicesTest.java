@@ -27,24 +27,24 @@ import org.junit.Test;
  * @author eric.wittmann@redhat.com
  */
 public class ServicesTest extends AbstractTestPlanTest {
-    
-    private static final String EXPECTED_GATEWAY_LOG = 
+
+    private static final String EXPECTED_GATEWAY_LOG =
             "GET:/mock-gateway/system/status\n" +  //$NON-NLS-1$
             "PUT:/mock-gateway/services\n"; //$NON-NLS-1$
-    
-    private static final String EXPECTED_PAYLOAD = 
-            "{\"publicService\":false,\"organizationId\":\"Organization1\",\"serviceId\":\"Service1\",\"version\":\"1.0\",\"endpointType\":\"rest\",\"endpoint\":\"http://localhost:8080/ping\",\"endpointProperties\":{},\"servicePolicies\":[]}"; //$NON-NLS-1$
+
+    private static final String EXPECTED_PAYLOAD =
+            "{\"publicService\":false,\"organizationId\":\"Organization1\",\"serviceId\":\"Service1\",\"version\":\"1.0\",\"endpointType\":\"rest\",\"endpoint\":\"http://localhost:8080/ping\",\"endpointProperties\":{\"foo\":\"foo-value\",\"bar\":\"bar-value\"},\"servicePolicies\":[]}"; //$NON-NLS-1$
 
     @Test
     public void test() {
         runTestPlan("test-plans/services-testPlan.xml", ServicesTest.class.getClassLoader()); //$NON-NLS-1$
-        
+
         // This test includes publishing of a service to the gateway REST API.  The
         // test framework incldues a mock gateway API to test that the REST calls were
         // properly make.  Here is where we assert the result.
         String actualGatewayLog = MockGatewayServlet.getRequestLog();
         Assert.assertEquals(EXPECTED_GATEWAY_LOG, actualGatewayLog);
-        
+
         String payload = MockGatewayServlet.getPayloads().get(1);
         Assert.assertEquals(EXPECTED_PAYLOAD, payload.trim());
     }

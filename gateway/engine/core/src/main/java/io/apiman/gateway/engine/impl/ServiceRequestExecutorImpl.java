@@ -459,6 +459,8 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
                     });
 
                     responseChain.doApply(serviceResponse);
+                } else {
+                    // TODO handle the use case where there is an error!
                 }
             }
 

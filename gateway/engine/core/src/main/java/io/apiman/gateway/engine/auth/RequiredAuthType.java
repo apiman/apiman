@@ -39,7 +39,7 @@ public enum RequiredAuthType {
     /**
      * Default (nothing)
      */
-    DEFAULT;
+    DEFAULT("none");
 
     public static final String ENDPOINT_AUTHORIZATION_TYPE = "authorization.type";
 
