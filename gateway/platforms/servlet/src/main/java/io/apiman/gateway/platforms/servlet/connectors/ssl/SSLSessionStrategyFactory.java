@@ -211,7 +211,7 @@ public class SSLSessionStrategyFactory {
     }
 
     /**
-     * <em><strong>Do not use in production</em></strong>
+     * <strong><em>Do not use in production</em></strong>
      * <p>
      * Returns an SSLSessionStrategy that trusts any Certificate.
      * <p>
