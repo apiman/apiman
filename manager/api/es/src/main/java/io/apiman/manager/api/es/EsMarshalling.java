@@ -62,6 +62,8 @@ import io.apiman.manager.api.es.beans.PoliciesBean;
 import io.apiman.manager.api.es.beans.ServiceDefinitionBean;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -90,6 +92,7 @@ public class EsMarshalling {
      */
     public static XContentBuilder marshall(PoliciesBean bean) throws StorageException {
         try {
+            preMarshall(bean);
             XContentBuilder builder = XContentFactory.jsonBuilder()
                 .startObject()
                     .field("organizationId", bean.getOrganizationId())
@@ -115,6 +118,7 @@ public class EsMarshalling {
                 builder.endArray();
             }
             builder.endObject();
+            postMarshall(bean);
             return builder;
         } catch (IOException e) {
             throw new StorageException(e);
@@ -129,6 +133,7 @@ public class EsMarshalling {
      */
     public static XContentBuilder marshall(GatewayBean bean) throws StorageException {
         try {
+            preMarshall(bean);
             XContentBuilder builder = XContentFactory.jsonBuilder()
                 .startObject()
                     .field("id", bean.getId())
@@ -141,6 +146,7 @@ public class EsMarshalling {
                     .field("modifiedBy", bean.getModifiedBy())
                     .field("modifiedOn", bean.getModifiedOn().getTime())
                 .endObject();
+            postMarshall(bean);
             return builder;
         } catch (IOException e) {
             throw new StorageException(e);
@@ -155,10 +161,12 @@ public class EsMarshalling {
      */
     public static XContentBuilder marshall(ServiceDefinitionBean bean) throws StorageException {
         try {
+            preMarshall(bean);
             XContentBuilder builder = XContentFactory.jsonBuilder()
                 .startObject()
                     .field("data", bean.getData())
                 .endObject();
+            postMarshall(bean);
             return builder;
         } catch (IOException e) {
             throw new StorageException(e);
@@ -173,6 +181,7 @@ public class EsMarshalling {
      */
     public static XContentBuilder marshall(ContractBean bean) throws StorageException {
         try {
+            preMarshall(bean);
             XContentBuilder builder = XContentFactory.jsonBuilder()
                 .startObject()
                     .field("id", bean.getId())
@@ -194,6 +203,7 @@ public class EsMarshalling {
                     .field("createdOn", bean.getCreatedOn().getTime())
                     .field("createdBy", bean.getCreatedBy())
                 .endObject();
+            postMarshall(bean);
             return builder;
         } catch (IOException e) {
             throw new StorageException(e);
@@ -208,6 +218,7 @@ public class EsMarshalling {
      */
     public static XContentBuilder marshall(PlanBean bean) throws StorageException {
         try {
+            preMarshall(bean);
             XContentBuilder builder = XContentFactory.jsonBuilder()
                 .startObject()
                     .field("organizationId", bean.getOrganization().getId())
@@ -218,6 +229,7 @@ public class EsMarshalling {
                     .field("createdBy", bean.getCreatedBy())
                     .field("createdOn", bean.getCreatedOn().getTime())
                 .endObject();
+            postMarshall(bean);
             return builder;
         } catch (IOException e) {
             throw new StorageException(e);
@@ -234,6 +246,7 @@ public class EsMarshalling {
         try {
             PlanBean plan = bean.getPlan();
             OrganizationBean org = plan.getOrganization();
+            preMarshall(bean);
             XContentBuilder builder = XContentFactory.jsonBuilder()
                 .startObject()
                     .field("organizationId", org.getId())
@@ -249,6 +262,7 @@ public class EsMarshalling {
                     .field("modifiedOn", bean.getModifiedOn().getTime())
                     .field("lockedOn", bean.getLockedOn() != null ? bean.getLockedOn().getTime() : null)
                 .endObject();
+            postMarshall(bean);
             return builder;
         } catch (IOException e) {
             throw new StorageException(e);
@@ -263,6 +277,7 @@ public class EsMarshalling {
      */
     public static XContentBuilder marshall(ServiceBean bean) throws StorageException {
         try {
+            preMarshall(bean);
             XContentBuilder builder = XContentFactory.jsonBuilder()
                 .startObject()
                     .field("organizationId", bean.getOrganization().getId())
@@ -273,6 +288,7 @@ public class EsMarshalling {
                     .field("createdBy", bean.getCreatedBy())
                     .field("createdOn", bean.getCreatedOn().getTime())
                 .endObject();
+            postMarshall(bean);
             return builder;
         } catch (IOException e) {
             throw new StorageException(e);
@@ -289,6 +305,7 @@ public class EsMarshalling {
         try {
             ServiceBean service = bean.getService();
             OrganizationBean org = service.getOrganization();
+            preMarshall(bean);
             XContentBuilder builder = XContentFactory.jsonBuilder()
                 .startObject()
                     .field("organizationId", org.getId())
@@ -338,6 +355,7 @@ public class EsMarshalling {
                 builder.endObject();
             }
             builder.endObject();
+            postMarshall(bean);
             return builder;
         } catch (IOException e) {
             throw new StorageException(e);
@@ -352,6 +370,7 @@ public class EsMarshalling {
      */
     public static XContentBuilder marshall(ApplicationBean bean) throws StorageException {
         try {
+            preMarshall(bean);
             XContentBuilder builder = XContentFactory.jsonBuilder()
                 .startObject()
                     .field("organizationId", bean.getOrganization().getId())
@@ -362,6 +381,7 @@ public class EsMarshalling {
                     .field("createdBy", bean.getCreatedBy())
                     .field("createdOn", bean.getCreatedOn().getTime())
                 .endObject();
+            postMarshall(bean);
             return builder;
         } catch (IOException e) {
             throw new StorageException(e);
@@ -378,6 +398,7 @@ public class EsMarshalling {
         try {
             ApplicationBean app = bean.getApplication();
             OrganizationBean org = app.getOrganization();
+            preMarshall(bean);
             XContentBuilder builder = XContentFactory.jsonBuilder()
                 .startObject()
                     .field("organizationId", org.getId())
@@ -394,6 +415,7 @@ public class EsMarshalling {
                     .field("publishedOn", bean.getPublishedOn() != null ? bean.getPublishedOn().getTime() : null)
                     .field("retiredOn", bean.getRetiredOn() != null ? bean.getRetiredOn().getTime() : null)
                 .endObject();
+            postMarshall(bean);
             return builder;
         } catch (IOException e) {
             throw new StorageException(e);
@@ -408,6 +430,7 @@ public class EsMarshalling {
      */
     public static XContentBuilder marshall(AuditEntryBean bean) throws StorageException {
         try {
+            preMarshall(bean);
             XContentBuilder builder = XContentFactory.jsonBuilder()
                 .startObject()
                     .field("id", bean.getId())
@@ -420,6 +443,7 @@ public class EsMarshalling {
                     .field("what", bean.getWhat())
                     .field("createdOn", bean.getCreatedOn().getTime())
                 .endObject();
+            postMarshall(bean);
             return builder;
         } catch (IOException e) {
             throw new StorageException(e);
@@ -434,6 +458,7 @@ public class EsMarshalling {
      */
     public static XContentBuilder marshall(OrganizationBean bean) throws StorageException {
         try {
+            preMarshall(bean);
             XContentBuilder builder = XContentFactory.jsonBuilder()
                 .startObject()
                     .field("id", bean.getId())
@@ -444,6 +469,7 @@ public class EsMarshalling {
                     .field("modifiedBy", bean.getModifiedBy())
                     .field("modifiedOn", bean.getModifiedOn().getTime())
                 .endObject();
+            postMarshall(bean);
             return builder;
         } catch (IOException e) {
             throw new StorageException(e);
@@ -458,6 +484,7 @@ public class EsMarshalling {
      */
     public static XContentBuilder marshall(RoleMembershipBean bean) throws StorageException {
         try {
+            preMarshall(bean);
             XContentBuilder builder = XContentFactory.jsonBuilder()
                 .startObject()
                     .field("id", bean.getId())
@@ -466,6 +493,7 @@ public class EsMarshalling {
                     .field("userId", bean.getUserId())
                     .field("createdOn", bean.getCreatedOn().getTime())
                 .endObject();
+            postMarshall(bean);
             return builder;
         } catch (IOException e) {
             throw new StorageException(e);
@@ -480,6 +508,7 @@ public class EsMarshalling {
      */
     public static XContentBuilder marshall(UserBean bean) throws StorageException {
         try {
+            preMarshall(bean);
             XContentBuilder builder = XContentFactory.jsonBuilder()
                 .startObject()
                     .field("username", bean.getUsername())
@@ -487,6 +516,7 @@ public class EsMarshalling {
                     .field("fullName", bean.getFullName())
                     .field("joinedOn", bean.getJoinedOn() == null ? null : bean.getJoinedOn().getTime())
                 .endObject();
+            postMarshall(bean);
             return builder;
         } catch (IOException e) {
             throw new StorageException(e);
@@ -501,6 +531,7 @@ public class EsMarshalling {
      */
     public static XContentBuilder marshall(RoleBean bean) throws StorageException {
         try {
+            preMarshall(bean);
             XContentBuilder builder = XContentFactory.jsonBuilder()
                 .startObject()
                     .field("id", bean.getId())
@@ -514,6 +545,7 @@ public class EsMarshalling {
                 builder.array("permissions", permissions.toArray());
             }
             builder.endObject();
+            postMarshall(bean);
             return builder;
         } catch (IOException e) {
             throw new StorageException(e);
@@ -528,6 +560,7 @@ public class EsMarshalling {
      */
     public static XContentBuilder marshall(PolicyDefinitionBean bean) throws StorageException {
         try {
+            preMarshall(bean);
             XContentBuilder builder = XContentFactory.jsonBuilder()
                 .startObject()
                     .field("id", bean.getId())
@@ -552,6 +585,7 @@ public class EsMarshalling {
             }
 
             builder.endObject();
+            postMarshall(bean);
             return builder;
         } catch (IOException e) {
             throw new StorageException(e);
@@ -566,6 +600,7 @@ public class EsMarshalling {
      */
     public static XContentBuilder marshall(PluginBean bean) throws StorageException {
         try {
+            preMarshall(bean);
             XContentBuilder builder = XContentFactory.jsonBuilder()
                 .startObject()
                     .field("id", bean.getId())
@@ -579,6 +614,7 @@ public class EsMarshalling {
                     .field("classifier", bean.getClassifier())
                     .field("type", bean.getType())
                 .endObject();
+            postMarshall(bean);
             return builder;
         } catch (IOException e) {
             throw new StorageException(e);
@@ -623,6 +659,7 @@ public class EsMarshalling {
                 bean.getPolicies().add(policy);
             }
         }
+        postMarshall(bean);
         return bean;
     }
 
@@ -645,6 +682,7 @@ public class EsMarshalling {
         bean.setCreatedOn(asDate(source.get("createdOn")));
         bean.setModifiedBy(asString(source.get("modifiedBy")));
         bean.setModifiedOn(asDate(source.get("modifiedOn")));
+        postMarshall(bean);
         return bean;
     }
 
@@ -659,6 +697,7 @@ public class EsMarshalling {
         }
         ServiceDefinitionBean bean = new ServiceDefinitionBean();
         bean.setData(asString(source.get("data")));
+        postMarshall(bean);
         return bean;
     }
 
@@ -676,6 +715,7 @@ public class EsMarshalling {
         bean.setApikey(asString(source.get("apiKey")));
         bean.setCreatedBy(asString(source.get("createdBy")));
         bean.setCreatedOn(asDate(source.get("createdOn")));
+        postMarshall(bean);
         return bean;
     }
 
@@ -706,6 +746,7 @@ public class EsMarshalling {
         bean.setPlanName(asString(source.get("planName")));
         bean.setPlanId(asString(source.get("planId")));
         bean.setPlanVersion(asString(source.get("planVersion")));
+        postMarshall(bean);
         return bean;
     }
 
@@ -728,6 +769,7 @@ public class EsMarshalling {
         bean.setPlanName(asString(source.get("planName")));
         bean.setPlanId(asString(source.get("planId")));
         bean.setPlanVersion(asString(source.get("planVersion")));
+        postMarshall(bean);
         return bean;
     }
 
@@ -746,6 +788,7 @@ public class EsMarshalling {
         bean.setDescription(asString(source.get("description")));
         bean.setCreatedBy(asString(source.get("createdBy")));
         bean.setCreatedOn(asDate(source.get("createdOn")));
+        postMarshall(bean);
         return bean;
     }
 
@@ -764,6 +807,7 @@ public class EsMarshalling {
         bean.setId(asString(source.get("id")));
         bean.setName(asString(source.get("name")));
         bean.setDescription(asString(source.get("description")));
+        postMarshall(bean);
         return bean;
     }
 
@@ -784,6 +828,7 @@ public class EsMarshalling {
         bean.setModifiedBy(asString(source.get("modifiedBy")));
         bean.setModifiedOn(asDate(source.get("modifiedOn")));
         bean.setLockedOn(asDate(source.get("lockedOn")));
+        postMarshall(bean);
         return bean;
     }
 
@@ -804,6 +849,7 @@ public class EsMarshalling {
         bean.setOrganizationName(asString(source.get("organizationName")));
         bean.setStatus(asEnum(source.get("status"), PlanStatus.class));
         bean.setVersion(asString(source.get("version")));
+        postMarshall(bean);
         return bean;
     }
 
@@ -822,6 +868,7 @@ public class EsMarshalling {
         bean.setDescription(asString(source.get("description")));
         bean.setCreatedBy(asString(source.get("createdBy")));
         bean.setCreatedOn(asDate(source.get("createdOn")));
+        postMarshall(bean);
         return bean;
     }
 
@@ -841,6 +888,7 @@ public class EsMarshalling {
         bean.setName(asString(source.get("name")));
         bean.setDescription(asString(source.get("description")));
         bean.setCreatedOn(asDate(source.get("createdOn")));
+        postMarshall(bean);
         return bean;
     }
 
@@ -893,6 +941,7 @@ public class EsMarshalling {
                 bean.getEndpointProperties().put(entry.getKey(), String.valueOf(entry.getValue()));
             }
         }
+        postMarshall(bean);
         return bean;
     }
 
@@ -914,6 +963,7 @@ public class EsMarshalling {
         bean.setStatus(asEnum(source.get("status"), ServiceStatus.class));
         bean.setVersion(asString(source.get("version")));
         bean.setPublicService(asBoolean(source.get("publicService")));
+        postMarshall(bean);
         return bean;
     }
 
@@ -932,6 +982,7 @@ public class EsMarshalling {
         bean.setDescription(asString(source.get("description")));
         bean.setCreatedBy(asString(source.get("createdBy")));
         bean.setCreatedOn(asDate(source.get("createdOn")));
+        postMarshall(bean);
         return bean;
     }
 
@@ -950,6 +1001,7 @@ public class EsMarshalling {
         bean.setId(asString(source.get("id")));
         bean.setName(asString(source.get("name")));
         bean.setDescription(asString(source.get("description")));
+        postMarshall(bean);
         return bean;
     }
 
@@ -971,6 +1023,7 @@ public class EsMarshalling {
         bean.setModifiedOn(asDate(source.get("modifiedOn")));
         bean.setPublishedOn(asDate(source.get("publishedOn")));
         bean.setRetiredOn(asDate(source.get("retiredOn")));
+        postMarshall(bean);
         return bean;
     }
 
@@ -991,6 +1044,7 @@ public class EsMarshalling {
         bean.setOrganizationName(asString(source.get("organizationName")));
         bean.setStatus(asEnum(source.get("status"), ApplicationStatus.class));
         bean.setVersion(asString(source.get("version")));
+        postMarshall(bean);
         return bean;
     }
 
@@ -1018,6 +1072,7 @@ public class EsMarshalling {
                 bean.getPermissions().add(asEnum(permission, PermissionType.class));
             }
         }
+        postMarshall(bean);
         return bean;
     }
 
@@ -1035,6 +1090,7 @@ public class EsMarshalling {
         bean.setEmail(asString(source.get("email")));
         bean.setFullName(asString(source.get("fullName")));
         bean.setJoinedOn(asDate(source.get("joinedOn")));
+        postMarshall(bean);
         return bean;
     }
 
@@ -1055,6 +1111,7 @@ public class EsMarshalling {
         bean.setCreatedBy(asString(source.get("createdBy")));
         bean.setModifiedOn(asDate(source.get("modifiedOn")));
         bean.setModifiedBy(asString(source.get("modifiedBy")));
+        postMarshall(bean);
         return bean;
     }
 
@@ -1071,6 +1128,7 @@ public class EsMarshalling {
         bean.setId(asString(source.get("id")));
         bean.setName(asString(source.get("name")));
         bean.setDescription(asString(source.get("description")));
+        postMarshall(bean);
         return bean;
     }
 
@@ -1089,6 +1147,7 @@ public class EsMarshalling {
         bean.setRoleId(asString(source.get("roleId")));
         bean.setUserId(asString(source.get("userId")));
         bean.setCreatedOn(asDate(source.get("createdOn")));
+        postMarshall(bean);
         return bean;
     }
 
@@ -1111,6 +1170,7 @@ public class EsMarshalling {
         bean.setEntityVersion(asString(source.get("entityVersion")));
         bean.setWhat(asEnum(source.get("what"), AuditEntryType.class));
         bean.setWho(asString(source.get("who")));
+        postMarshall(bean);
         return bean;
     }
 
@@ -1127,6 +1187,7 @@ public class EsMarshalling {
             bean.setDescription(asString(map.get("description")));
         }
         bean.setType(asEnum(map.get("type"), GatewayType.class));
+        postMarshall(bean);
         return bean;
     }
 
@@ -1159,6 +1220,7 @@ public class EsMarshalling {
                 bean.getTemplates().add(template);
             }
         }
+        postMarshall(bean);
         return bean;
     }
 
@@ -1185,6 +1247,7 @@ public class EsMarshalling {
             bean.setFormType(asEnum(map.get("formType"), PolicyFormType.class));
         }
 
+        postMarshall(bean);
         return bean;
     }
 
@@ -1208,6 +1271,7 @@ public class EsMarshalling {
         bean.setVersion(asString(source.get("version")));
         bean.setType(asString(source.get("type")));
         bean.setClassifier(asString(source.get("classifier")));
+        postMarshall(bean);
         return bean;
     }
 
@@ -1235,6 +1299,7 @@ public class EsMarshalling {
         bean.setCreatedBy(asString(map.get("createdBy")));
         bean.setCreatedOn(asDate(map.get("createdOn")));
 
+        postMarshall(bean);
         return bean;
     }
 
@@ -1300,6 +1365,37 @@ public class EsMarshalling {
             return null;
         }
         return (Boolean) object;
+    }
+
+    /**
+     * Called before marshalling the bean to a form that will be used
+     * for storage in the DB.
+     * @param bean
+     */
+    private static void preMarshall(Object bean) {
+        try {
+            Method method = bean.getClass().getDeclaredMethod("encryptData");
+            if (method != null) {
+                method.invoke(bean);
+            }
+        } catch (NoSuchMethodException | SecurityException | IllegalAccessException
+                | IllegalArgumentException | InvocationTargetException e) {
+        }
+    }
+
+    /**
+     * Called after marshalling (or unmarshalling).
+     * @param bean
+     */
+    private static void postMarshall(Object bean) {
+        try {
+            Method method = bean.getClass().getDeclaredMethod("decryptData");
+            if (method != null) {
+                method.invoke(bean);
+            }
+        } catch (NoSuchMethodException | SecurityException | IllegalAccessException
+                | IllegalArgumentException | InvocationTargetException e) {
+        }
     }
 
 }

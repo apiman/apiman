@@ -11,6 +11,12 @@
   <name>apiman-manager-api-beans</name>
 
   <dependencies>
+    <!-- Project Dependencies -->
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-common-util</artifactId>
+    </dependency>
+
     <!-- Third Party Dependencies -->
     <dependency>
       <groupId>org.hibernate.javax.persistence</groupId>

@@ -15,6 +15,8 @@
  */
 package io.apiman.manager.api.beans.policies;
 
+import io.apiman.common.util.AesEncrypter;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -27,6 +29,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.PostLoad;
+import javax.persistence.PostPersist;
+import javax.persistence.PostUpdate;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -82,6 +89,18 @@ public class PolicyBean implements Serializable {
      * Constructor.
      */
     public PolicyBean() {
+    }
+
+    @PrePersist @PreUpdate
+    protected void encryptData() {
+        // Encrypt the endpoint properties.
+        configuration = AesEncrypter.encrypt(configuration);
+    }
+
+    @PostPersist @PostUpdate @PostLoad
+    protected void decryptData() {
+        // Encrypt the endpoint properties.
+        configuration = AesEncrypter.decrypt(configuration);
     }
 
     /**

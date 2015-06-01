@@ -88,7 +88,7 @@ public class WarCdiFactory {
         } else {
             throw new RuntimeException("Unknown storage type: " + config.getStorageType()); //$NON-NLS-1$
         }
-        return new SecureStorageWrapper(config, storage);
+        return storage;
     }
 
     @Produces @ApplicationScoped

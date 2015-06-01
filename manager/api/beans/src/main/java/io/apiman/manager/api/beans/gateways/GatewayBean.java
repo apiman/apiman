@@ -15,6 +15,8 @@
  */
 package io.apiman.manager.api.beans.gateways;
 
+import io.apiman.common.util.AesEncrypter;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -24,6 +26,11 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.PostLoad;
+import javax.persistence.PostPersist;
+import javax.persistence.PostUpdate;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
@@ -68,6 +75,18 @@ public class GatewayBean implements Serializable {
      * Constructor.
      */
     public GatewayBean() {
+    }
+
+    @PrePersist @PreUpdate
+    protected void encryptData() {
+        // Encrypt the endpoint properties.
+        configuration = AesEncrypter.encrypt(configuration);
+    }
+
+    @PostPersist @PostUpdate @PostLoad
+    protected void decryptData() {
+        // Encrypt the endpoint properties.
+        configuration = AesEncrypter.decrypt(configuration);
     }
 
     /**

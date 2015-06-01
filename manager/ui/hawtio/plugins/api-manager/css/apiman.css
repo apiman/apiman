@@ -814,7 +814,7 @@ ol.breadcrumb {
 .apiman-policies .row .col-70 {
   width: 70%;
 }
-.apiman-policies .row .grabber {
+.apiman-policies .row .policy-grabber {
   float: left;
   margin-right: 10px;
 }

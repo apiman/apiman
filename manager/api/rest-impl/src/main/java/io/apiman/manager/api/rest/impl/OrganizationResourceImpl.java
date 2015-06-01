@@ -16,6 +16,7 @@
 
 package io.apiman.manager.api.rest.impl;
 
+import io.apiman.common.util.AesEncrypter;
 import io.apiman.gateway.engine.beans.ServiceEndpoint;
 import io.apiman.manager.api.beans.BeanUtils;
 import io.apiman.manager.api.beans.apps.ApplicationBean;
@@ -131,6 +132,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -1394,6 +1396,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             if (!hasPermission) {
                 serviceVersion.setGateways(null);
             }
+            decryptEndpointProperties(serviceVersion);
             return serviceVersion;
         } catch (AbstractRestException e) {
             storage.rollbackTx();
@@ -1590,6 +1593,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         }
 
         try {
+            encryptEndpointProperties(svb);
             storage.beginTx();
 
             // Ensure all of the plans are in the right status (locked)
@@ -1611,6 +1615,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             storage.createAuditEntry(AuditUtils.serviceVersionUpdated(svb, data, securityContext));
             storage.commitTx();
             log.debug(String.format("Successfully updated Service Version: %s", svb)); //$NON-NLS-1$
+            decryptEndpointProperties(svb);
             return svb;
         } catch (AbstractRestException e) {
             storage.rollbackTx();
@@ -2699,6 +2704,30 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             return gateways.get(0);
         } else {
             return null;
+        }
+    }
+
+    /**
+     * @param svb
+     */
+    private void decryptEndpointProperties(ServiceVersionBean svb) {
+        Map<String, String> endpointProperties = svb.getEndpointProperties();
+        if (endpointProperties != null) {
+            for (Entry<String, String> entry : endpointProperties.entrySet()) {
+                entry.setValue(AesEncrypter.decrypt(entry.getValue()));
+            }
+        }
+    }
+
+    /**
+     * @param svb
+     */
+    private void encryptEndpointProperties(ServiceVersionBean svb) {
+        Map<String, String> endpointProperties = svb.getEndpointProperties();
+        if (endpointProperties != null) {
+            for (Entry<String, String> entry : endpointProperties.entrySet()) {
+                entry.setValue(AesEncrypter.encrypt(entry.getValue()));
+            }
         }
     }
 
