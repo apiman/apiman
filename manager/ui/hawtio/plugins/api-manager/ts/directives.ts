@@ -1,6 +1,6 @@
 /// <reference path="../../includes.ts"/>
 module Apiman {
-    
+
     _module.directive('apimanActionBtn',
         ['Logger', function(Logger) {
             return {
@@ -31,7 +31,7 @@ module Apiman {
 
 
     _module.directive('apimanSelectPicker',
-        ['Logger', '$timeout', '$parse', 'TranslationService', 
+        ['Logger', '$timeout', '$parse', 'TranslationService',
         function(Logger, $timeout, $parse, TranslationService) {
             return {
                 restrict: 'A',
@@ -41,7 +41,7 @@ module Apiman {
                             $(element)['selectpicker']('refresh');
                         });
                     }
-                    
+
                     $timeout(function() {
                         $(element)['selectpicker']();
                         $(element)['selectpicker']('refresh');
@@ -73,7 +73,7 @@ module Apiman {
                             $(element)['selectpicker']('destroy');
                         });
                     });
-                    
+
                     $timeout(function() {
                         $(element)['selectpicker']('refresh');
                     }, 200);
@@ -438,7 +438,7 @@ module Apiman {
 
                     $scope.focusOnDescription = function(event) {
                         elem = event.target;
-                        elem.value = $scope.descr;
+                        elem.value = $scope.descr || '';
 
                         $(elem).css('height', 'auto');
                         $(elem).height(elem.scrollHeight);
@@ -494,9 +494,9 @@ module Apiman {
                     if (!attrs.apimanI18nKey) {
                         return;
                     }
-                    
+
                     var translationKey, defaultValue, translatedValue;
-                    
+
                     // Process the text of the element only if it has no child elements
                     if ($(element).children().length == 0) {
                         translationKey = attrs.apimanI18nKey;
@@ -504,7 +504,7 @@ module Apiman {
                         translatedValue = TranslationService.translate(translationKey, defaultValue);
                         $(element).text(translatedValue);
                     }
-                    
+
                     // Now process the placeholder attribute.
                     if ($(element).attr('placeholder')) {
                         translationKey = attrs.apimanI18nKey + '.placeholder';
@@ -514,7 +514,7 @@ module Apiman {
                         $(element).prop('placeholder', translatedValue);
                         $(element).attr('placeholder', translatedValue);
                     }
-                    
+
                     // Now process the title attribute.
                     if ($(element).attr('title')) {
                         translationKey = attrs.apimanI18nKey + '.title';
