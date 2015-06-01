@@ -84,8 +84,7 @@ public class HttpServiceConnection implements IServiceConnection, IServiceConnec
      * @param sslStrategy the SSL strategy
      * @param request the request
      * @param service the service
-     * @param requiredAuthType
-     * @param authType the authorization type
+     * @param requiredAuthType the authorization type
      * @param handler the result handler
      * @throws ConnectorException when unable to connect
      */
@@ -130,6 +129,27 @@ public class HttpServiceConnection implements IServiceConnection, IServiceConnec
             connection = (HttpURLConnection) url.openConnection();
 
             boolean isSsl = connection instanceof HttpsURLConnection;
+
+            if(requiredAuthType == RequiredAuthType.MTLS && !isSsl) {
+                throw new ConnectorException("Mutually authenticating TLS requested, but insecure endpoint protocol was indicated."); //$NON-NLS-1$
+            }
+
+            if (requiredAuthType == RequiredAuthType.BASIC) {
+                BasicAuthOptions options = new BasicAuthOptions(service.getEndpointProperties());
+                if (options.getUsername() != null && options.getPassword() != null) {
+                    if (options.isRequireSSL() && !isSsl) {
+                        throw new ConnectorException("Endpoint security requested (BASIC auth) but endpoint is not secure (SSL)."); //$NON-NLS-1$
+                    }
+
+                    String up = options.getUsername() + ':' + options.getPassword();
+                    StringBuilder builder = new StringBuilder();
+                    builder.append("BASIC "); //$NON-NLS-1$
+                    builder.append(Base64.encodeBase64String(up.getBytes()));
+                    connection.setRequestProperty("Authorization", builder.toString()); //$NON-NLS-1$
+                }
+            }
+
+
             if (isSsl) {
                 HttpsURLConnection https = (HttpsURLConnection) connection;
                 SSLSocketFactory socketFactory = sslStrategy.getSocketFactory();
@@ -154,23 +174,6 @@ public class HttpServiceConnection implements IServiceConnection, IServiceConnec
                 String hval = entry.getValue();
                 if (!SUPPRESSED_HEADERS.contains(hname)) {
                     connection.setRequestProperty(hname, hval);
-                }
-            }
-
-            // If basic authentication is enabled (endpoint security) then add
-            // the appropriate authorization header
-            if (this.requiredAuthType == RequiredAuthType.BASIC) {
-                BasicAuthOptions options = new BasicAuthOptions(service.getEndpointProperties());
-                if (options.getUsername() != null && options.getPassword() != null) {
-                    if (options.isRequireSSL() && !isSsl) {
-                        throw new ConnectorException("Endpoint security requested (BASIC auth) but endpoint is not secure (SSL)."); //$NON-NLS-1$
-                    }
-
-                    String up = options.getUsername() + ':' + options.getPassword();
-                    StringBuilder builder = new StringBuilder();
-                    builder.append("BASIC "); //$NON-NLS-1$
-                    builder.append(Base64.encodeBase64String(up.getBytes()));
-                    connection.setRequestProperty("Authorization", builder.toString()); //$NON-NLS-1$
                 }
             }
 
