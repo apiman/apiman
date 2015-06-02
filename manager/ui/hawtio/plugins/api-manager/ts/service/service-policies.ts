@@ -25,14 +25,28 @@ module Apiman {
                     }, PageLifecycle.handleError);
                 });
             };
-            
+
+            $scope.reorderPolicies = function(reorderedPolicies) {
+                var policyChainBean = {
+                    policies: reorderedPolicies
+                };
+
+                OrgSvcs.save({ organizationId: params.org, entityType: 'services', entityId: params.service, versionsOrActivity: 'versions', version: params.version, policiesOrActivity: 'reorderPolicies' },
+                    policyChainBean,
+                    function() {
+                        Logger.debug("Reordering POSTed successfully");
+                    }, function() {
+                        Logger.debug("Reordering POST failed.")
+                    });
+            }
+
             var pageData = ServiceEntityLoader.getCommonData($scope, $location);
             pageData = angular.extend(pageData, {
                 policies: $q(function(resolve, reject) {
                     OrgSvcs.query({ organizationId: params.org, entityType: 'services', entityId: params.service, versionsOrActivity: 'versions', version: params.version, policiesOrActivity: 'policies' }, resolve, reject);
                 })
             });
-            
+
 
             PageLifecycle.loadPage('ServicePolicies', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('service-policies', [ $scope.service.name ]);

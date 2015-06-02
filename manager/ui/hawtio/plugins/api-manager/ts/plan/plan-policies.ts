@@ -9,7 +9,7 @@ module Apiman {
             $scope.organizationId = params.org;
             $scope.tab = 'policies';
             $scope.version = params.version;
-            
+
             var removePolicy = function(policy) {
                 angular.forEach($scope.policies, function(p, index) {
                     if (policy === p) {
@@ -26,6 +26,20 @@ module Apiman {
                 });
             };
 
+            $scope.reorderPolicies = function(reorderedPolicies) {
+                var policyChainBean = {
+                    policies: reorderedPolicies
+                };
+
+                OrgSvcs.save({ organizationId: params.org, entityType: 'plans', entityId: params.plan, versionsOrActivity: 'versions', version: params.version, policiesOrActivity: 'reorderPolicies' },
+                    policyChainBean,
+                    function() {
+                        Logger.debug("Reordering POSTed successfully");
+                    }, function() {
+                        Logger.debug("Reordering POST failed.")
+                    });
+            }
+
             var pageData = PlanEntityLoader.getCommonData($scope, $location);
             angular.extend(pageData, {
                 policies: $q(function(resolve, reject) {
@@ -34,7 +48,7 @@ module Apiman {
                     }, reject);
                 })
             });
-            
+
             PageLifecycle.loadPage('PlanPolicies', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('plan-policies', [ $scope.plan.name ]);
             });
