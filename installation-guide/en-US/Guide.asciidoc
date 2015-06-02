@@ -14,11 +14,11 @@ both are downloaded, it's a simple matter of unpacking both into the same locati
 First you will need to download both WildFly 8 and apiman:
 
 * http://download.jboss.org/wildfly/8.2.0.Final/wildfly-8.2.0.Final.zip[Download WildFly 8]
-* http://downloads.jboss.org/overlord/apiman/1.1.2.Final/apiman-distro-wildfly8-1.1.2.Final-overlay.zip[Download apiman 1.1.2.Final]
+* http://downloads.jboss.org/overlord/apiman/1.1.3.Final/apiman-distro-wildfly8-1.1.3.Final-overlay.zip[Download apiman 1.1.3.Final]
 
 ....
 curl http://download.jboss.org/wildfly/8.2.0.Final/wildfly-8.2.0.Final.zip -o wildfly-8.2.0.Final.zip
-curl http://downloads.jboss.org/overlord/apiman/1.1.2.Final/apiman-distro-wildfly8-1.1.2.Final-overlay.zip -o apiman-distro-wildfly8-1.1.2.Final-overlay.zip
+curl http://downloads.jboss.org/overlord/apiman/1.1.3.Final/apiman-distro-wildfly8-1.1.3.Final-overlay.zip -o apiman-distro-wildfly8-1.1.3.Final-overlay.zip
 ....
 
 ==== Unpack
@@ -26,7 +26,7 @@ Once both files have been downloaded, simply unpack both in the same location.
 
 ....
 unzip wildfly-8.2.0.Final.zip
-unzip -o apiman-distro-wildfly8-1.1.2.Final-overlay.zip -d wildfly-8.2.0.Final
+unzip -o apiman-distro-wildfly8-1.1.3.Final-overlay.zip -d wildfly-8.2.0.Final
 ....
 
 ==== Run WildFly 8
@@ -370,7 +370,7 @@ are removed before the ones below are copied in.
 Here is how you switch the API Gateway Registry over to Elasticsearch.
 ----
 apiman-gateway.registry=io.apiman.gateway.engine.es.ESRegistry
-apiman-gateway.registry.client.type=transport
+apiman-gateway.registry.client.type=jest
 apiman-gateway.registry.client.cluster-name=${apiman-gateway.es.cluster-name}
 apiman-gateway.registry.client.host=${apiman-gateway.es.host}
 apiman-gateway.registry.client.port=${apiman-gateway.es.port}
@@ -380,7 +380,7 @@ apiman-gateway.registry.client.port=${apiman-gateway.es.port}
 Here is how you switch the Rate Limiter Component over to Elasticsearch.
 ----
 apiman-gateway.components.IRateLimiterComponent=io.apiman.gateway.engine.es.ESRateLimiterComponent
-apiman-gateway.components.IRateLimiterComponent.client.type=transport
+apiman-gateway.components.IRateLimiterComponent.client.type=jest
 apiman-gateway.components.IRateLimiterComponent.client.cluster-name=${apiman-gateway.es.cluster-name}
 apiman-gateway.components.IRateLimiterComponent.client.host=${apiman-gateway.es.host}
 apiman-gateway.components.IRateLimiterComponent.client.port=${apiman-gateway.es.port}
@@ -390,7 +390,7 @@ apiman-gateway.components.IRateLimiterComponent.client.port=${apiman-gateway.es.
 Here is how you switch the Shared State Component over to Elasticsearch.
 ----
 apiman-gateway.components.ISharedStateComponent=io.apiman.gateway.engine.es.ESSharedStateComponent
-apiman-gateway.components.ISharedStateComponent.client.type=transport
+apiman-gateway.components.ISharedStateComponent.client.type=jest
 apiman-gateway.components.ISharedStateComponent.client.cluster-name=${apiman-gateway.es.cluster-name}
 apiman-gateway.components.ISharedStateComponent.client.host=${apiman-gateway.es.host}
 apiman-gateway.components.ISharedStateComponent.client.port=${apiman-gateway.es.port}
@@ -401,5 +401,71 @@ If apiman was running, you should stop it now.  Once everything is shutdown, and
 to apiman.properties have been made, go ahead and start apiman up again.  It will pick up the
 new settings in apiman.properties and attempt to use Elasticsearch instead of Infinispan.
 
+
+=== How To:  Enable MTLS (Mutual SSL) Support for Endpoint Security
+If you wish to use mutual SSL to ensure endpoint security between the apiman API Gateway and
+your back-end service(s), you must update some settings in the apiman.properties file.
+
+==== High Level Overview
+1. Create Trust and Key Stores
+2. Make changes to "apiman.properties" to switch from JPA to Elasticsearch
+3. (Re)start apiman!
+4. Configure one or more Service to use MTLS
+
+==== Create Trust and Key Stores
+Please refer to official JDK documentation to learn how to create and managed your SSL
+Trust and Key stores.  Note that both will be required in order to successfully enable 
+the MTLS feature.
+
+It is essential that your server and client both have certificates generated and shared
+between them.  Your back-end services must be SSL enabled and require client SSL 
+connections.  This means you must have server SSL certificates generated (and the public
+key stored in your Trust Store).  You must also have client (apiman) SSL certificates
+generated, with both the private and public keys stored in the Key Store.
+
+==== Make changes to "apiman.properties"
+Once you have your Trust Store and Key Store properly configured, you must configure your
+apiman.properties file.  Here is a summary of the properties:
+
+----
+# ---------------------------------------------------------------------
+# SSL/TLS settings for the gateway connector(s).
+# ---------------------------------------------------------------------
+
+# Ensure proper validation of the connection and host name.
+apiman-gateway.connector-factory.tls.devMode=false
+
+# Trust store contains certificate(s) trusted by gateway.
+apiman-gateway.connector-factory.tls.trustStore=<PATH_TO_TRUST_STORE>
+apiman-gateway.connector-factory.tls.trustStorePassword=<PASSWORD_IF_ANY>
+
+# Key store contains gateway's keys (including private components: keep it safe).
+apiman-gateway.connector-factory.tls.keyStore=<PATH_TO_KEY_STORE>
+apiman-gateway.connector-factory.tls.keyStorePassword=<PASSWORD_IF_ANY> # Password on key store as a whole
+apiman-gateway.connector-factory.tls.keyPassword=<PASSWORD_IF_ANY> # Password on specific key(s)
+# By default all keys can be used (will try all). If alias list provided, will only attempt to use listed keys.
+apiman-gateway.connector-factory.tls.keyAliases=<COMMA_SEPARATED_LIST>
+
+# Allowed TLS/SSL protocols and ciphers suites as CSV. Availability will vary depending on your JVM impl.
+# Uses JVM defaults depending if not explicitly provided.
+# See: https://docs.oracle.com/javase/7/docs/technotes/guides/security/SunProviders.html
+apiman-gateway.connector-factory.tls.allowedProtocols=TLSv1.2,TLSv1.1
+apiman-gateway.connector-factory.tls.allowedCiphers=TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+
+# Whether certificate host checks should be bypassed. *Use with great care.*
+apiman-gateway.connector-factory.tls.allowAnyHost=false
+
+# Whether self-signed certificates should be automatically trusted. *Use with great care.*
+apiman-gateway.connector-factory.tls.allowSelfSigned=false
+----
+
+==== (Re)start apiman
+If apiman was running, you should stop it now.  Once everything is shutdown, and the changes
+to apiman.properties have been made, go ahead and start apiman up again.
+
+==== Configure one or more Service to use MTLS
+Now that the apiman MTLS feature has been configured, use the Manager UI to enable MTLS in 
+one or more Service.  This can be done on the "Implementation" tab when you are configuring
+the details of your back-end endpoint (URL, type, and endpoint security).
 
 :numbered!:

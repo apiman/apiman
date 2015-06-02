@@ -211,6 +211,14 @@ service that the API Gateway will proxy to if all the policies are successfully 
 
 Do not forget to click the Save button when you are done making changes.
 
+==== Service Definition
+As a provider of a service, it is best to include as much information about the service as possible, so
+that consumers can not only create contracts, but also learn how to make calls.  For this purpose, you
+can optionally include a Service Definition document by adding it to your service on the Definition tab.
+Currently the only supported type of definition file is Swagger.  Include a swagger spec document here
+so that consumers of your service can browse information about your service directly in the API Manager
+UI.
+
 ==== Available Plans
 Before a service can be consumed by an application, it must make itself available through at least one of
 the organization's plans (or it must be marked as "Public"). Marking a Service as public or making a Service
@@ -287,6 +295,13 @@ will be taken to the 'Contracts' tab on the application details page.
 From the 'Contracts' tab on the application details page you can see the list of service contracts already
 created for this application. It is also possible to break service contracts from this same list by clicking
 an appropriate 'Break Contract' button.
+
+==== Service Definition Information
+If a service provider has included a Service Definition for the service they are providing, you will be
+presented with an additional link on the consumer-oriented service details page.  This link will take you
+to a page where you can browse the detailed documentation for the service.  The detailed documentation
+should be very helpful in learning what resources and operations are supported by the service, which will
+aid in figuring out how precisely to consume the service.
 
 ==== Managing Policies
 Just like plans and services, applications can have configured policies. The 'Policies' tab will present a

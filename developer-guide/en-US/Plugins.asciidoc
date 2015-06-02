@@ -555,3 +555,110 @@ be in when it is sent to your policy at runtime.
 TIP: Once you have the JSON Schema finalized, you could also use the online http://www.jsonschema2pojo.org/[jsonschema2pojo]
 tool to generate a good starting point for a Java Bean that can be used to marshal/unmarshal your policy's configuration
 data at runtime.  See the discussion about AbstractMappedPolicy above for additional information.
+
+=== Testing a Plugin Policy
+While it is quite simple to create a custom policy for apiman, you may be wondering the best way to
+unit test your implementation.  Fortunately we have made this extremely easy by including an easy-to-use
+Policy Testing junit framework.  Once you have followed the instructions above to create your custom
+policy, refer to this section to learn how to test it using junit.
+
+==== Import the Framework (Maven Dependency)
+The first thing you will need is to include the appropriate maven dependencies in your project's
+pom.xml file.  There is a single additional dependency that you will need (make sure to import it using
+the 'test' maven scope):
+
+```xml
+<dependency>
+   <groupId>io.apiman</groupId>
+   <artifactId>apiman-test-policies</artifactId>
+   <version>1.1.2-SNAPSHOT</version>
+   <scope>test</scope>
+</dependency>
+```
+
+==== Create and Annotate a JUnit Test Case
+Once you have imported the appropriate dependency, you can go ahead and create a JUnit test case.  The
+only additional thing you need is to annotate your test case appropriately and make sure your test case
+Java class extends the framework's 'ApimanPolicyTest' base class.
+
+The following annotations can then be added to your test:
+
+* @TestingPolicy(<classname>) - indicates which of your policy implementations you wish to test
+* @Configuration("<custom_policy_configuration_data>") - specifies the policy configuration to use for the test
+
+The @TestingPolicy annotation is always placed at the class level, but the @Configuration annotation can
+either be global or specified at the test method level.
+
+These annotations tell the apiman Policy Testing framework *what* policy you want to test and the 
+policy configuration you want to use when testsing, but you still need to actually send requests to a
+"service".  This is done using the "send(PolicyTestReqest)" method defined by the base class.  The 
+send() method allows you to send a request (that you build) to the mock back-end service governed by
+your policy.  By default the mock back-end service is a simple "echo" service that responds to all
+requests with a JSON payload describing the request it received (more on how to override this default
+functionality later).
+
+The send() method requires that you create and pass to it a valid PolicyTestRequest object.  This can
+be created using the PolicyTestRequest.build() method.  You can set the request's type, resource path,
+request headers, and body.  If the request is successful, then a PolicyTestResponse object will be
+returned and you can perform assertions on it.  If there is a policy failure, then the send() method
+will throw a PolicyFailureError.
+
+Here is a full example of everything working together:
+
+```java
+@TestingPolicy(CustomPolicy.class)
+public class CustomPolicyTest extends ApimanPolicyTest {
+
+    @Test
+    @Configuration("{}")
+    public void testGet() throws Throwable {
+        // Send a test HTTP request to the service (resulting in executing the policy).
+        PolicyTestResponse response = send(PolicyTestRequest.build(PolicyTestRequestType.GET, "/some/resource")
+                .header("X-Test-Name", "testGet"));
+                
+        // Now do some assertions on the result!
+        Assert.assertEquals(200, response.code());
+        EchoResponse entity = response.entity(EchoResponse.class);
+        Assert.assertEquals("GET", entity.getMethod());
+        Assert.assertEquals("/some/resource", entity.getResource());
+        Assert.assertEquals("testGet", entity.getHeaders().get("X-Test-Name"));
+        // Assert the request header that was added by the policy
+        Assert.assertEquals("Hello World", entity.getHeaders().get("X-MTP-Header"));
+        // Assert the response header was added by the policy
+        Assert.assertEquals("Goodbye World", response.header("X-MTP-Response-Header"));
+    }
+
+}
+```
+
+==== Providing a Custom Back-End Service Mock
+Sometimes the echo service is not sufficient when testing your custom policy.  Perhaps the custom policy
+is more tightly coupled to the service it is protecting.  In this case you may want to provide your own
+custom back-end service mock implementation.  This can be done by simply annotating either the class or
+an individual test method with @BackEndService.  If you do this then you must supply the annotation with
+a class that implements the IPolicyTestBackEndService interface.  Here is an example of what this might
+look like in a test:
+
+
+```java
+@TestingPolicy(CustomPolicy.class)
+public class CustomPolicyTest extends ApimanPolicyTest {
+
+    @Test
+    @Configuration("{}")
+    @BackEndService(MyCustomBackEndServiceImpl.class)
+    public void testGetWithCustomBackEndSvc() throws Throwable {
+        // Send a test HTTP request to the service (resulting in executing the policy).
+        PolicyTestResponse response = send(PolicyTestRequest.build(PolicyTestRequestType.GET, "/some/resource")
+                .header("X-Test-Name", "testGet"));
+
+        // Now do some assertions on the result!
+        MyCustomBackEndServiceResponseBean entity = response.entity(MyCustomBackEndServiceResponseBean.class);
+    }
+
+}
+```
+
+In this example everything works as it did before, but instead of responding with an Echo Response
+the send() method will return with a custom response (as created and returned by the provided custom 
+back-end service implementation).
