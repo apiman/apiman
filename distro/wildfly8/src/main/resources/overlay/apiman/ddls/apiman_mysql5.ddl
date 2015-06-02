@@ -55,7 +55,7 @@ CREATE TABLE `policydefs` (
   `policyImpl` varchar(255) NOT NULL,
   `pluginId` bigint(20),
   KEY `FK_policydefs_1` (`pluginId`),
-  CONSTRAINT `FK_policydefs_1` FOREIGN KEY (`pluginId`) REFERENCES `plugins` (`id`)
+  CONSTRAINT `FK_policydefs_1` FOREIGN KEY (`pluginId`) REFERENCES `plugins` (`id`),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
