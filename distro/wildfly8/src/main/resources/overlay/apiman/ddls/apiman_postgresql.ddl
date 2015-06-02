@@ -47,7 +47,7 @@ CREATE TABLE plugins (
     name character varying(255) NOT NULL,
     description character varying(512),
     createdBy character varying(255) NOT NULL,
-    createdOn timestamp without time zone NOT NULL,
+    createdOn timestamp without time zone NOT NULL
 );
 
 ALTER TABLE ONLY plugins
