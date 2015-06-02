@@ -45,7 +45,7 @@
                 </div>
               </div>
               <div class="clearfix"></div>
-              <apiman-policy-list ng-model="policies" remove-function="removePolicy" type="applications" org-id="{{ org.id }}" page-id="{{ app.id }}" version="{{ version.version }}"></policy-list>
+              <apiman-policy-list ng-model="policies" remove-function="removePolicy" reorder-function="reorderPolicies" type="applications" org-id="{{ org.id }}" page-id="{{ app.id }}" version="{{ version.version }}"></policy-list>
             </div>
           </div>
         </div>

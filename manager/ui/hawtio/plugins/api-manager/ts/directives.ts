@@ -385,6 +385,7 @@ module Apiman {
                 scope: {
                     policies: "=ngModel",
                     remove: "=removeFunction",
+                    reorder: "=reorderFunction",
                     type: "@",
                     org: "@orgId",
                     id: "@pageId",
@@ -392,8 +393,12 @@ module Apiman {
                 },
                 controller: function($scope) {
                     $scope.policyListOptions = {
-                        //containment: '#draggable-ctr',
-                        containerPositioning: 'relative'
+                        containerPositioning: 'relative',
+
+                        orderChanged: function(event) {
+                            Logger.debug("Reordered as: {0}", $scope.ctrl.policies);
+                            $scope.ctrl.reorder($scope.ctrl.policies);
+                        }
                     };
 
                     $scope.pluginName = $scope.$parent.pluginName;
