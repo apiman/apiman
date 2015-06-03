@@ -29,7 +29,7 @@
     },
     "realm": {
       "title": "Realm",
-      "description": "Realm name.",
+      "description": "Realm name. If you are using KeyCloak 1.2.0x or later this must be a full iss domain path (e.g. https://mykeycloak.local/auth/realms/apimanrealm); pre-1.2.0x simply use the realm name (e.g. apimanrealm)",
       "type": "string"
     },
     "realmCertificateString": {
