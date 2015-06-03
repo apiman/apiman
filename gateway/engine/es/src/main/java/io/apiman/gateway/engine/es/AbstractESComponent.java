@@ -31,7 +31,7 @@ public class AbstractESComponent {
 
     /**
      * Constructor.
-     * @param config
+     * @param config the config
      */
     public AbstractESComponent(Map<String, String> config) {
         this.config = config;
