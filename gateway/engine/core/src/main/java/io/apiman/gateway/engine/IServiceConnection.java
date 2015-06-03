@@ -40,7 +40,8 @@ public interface IServiceConnection extends ISignalWriteStream {
 
     /**
      * Returns true if the connection has been made successfully.
+     * @return true if is connected
      */
-    public boolean isConnected();
+    boolean isConnected();
 
 }
