@@ -521,7 +521,7 @@ When you add your MTLS protected services into apiman, you should set the
 The previous approach works for development, but doesn't scale well, is harder to manage
 and doesn't gracefully handle revocations, expiry, expansion, etc. Instead, let's
 summarise a scenario where an organisation has an internal CA which they use to
-sign service's certificates. The process for generating a CA and signing
+sign services' certificates. The process for generating a CA and signing
 certificates is out of scope for this guide, but is trivial to accomplish using
 OpenSSL, LibreSSL, or similar.
 
@@ -553,7 +553,6 @@ Despite the initial administrative work setting up the CA and signing the
 certificates, this process is drastically less effort to maintain in large
 deployments. Only the trusted CA needs to be in the truststore, and any
 certificates signed by it are trusted by virtue of this.
-sign it with our trusted CA.
 
 ==== Make changes to "apiman.properties"
 Once you have your Trust Store and Key Store properly configured, you must
@@ -590,6 +589,9 @@ apiman-gateway.connector-factory.tls.allowAnyHost=false
 # Whether self-signed certificates should be automatically trusted. *Use with great care.*
 apiman-gateway.connector-factory.tls.allowSelfSigned=false
 ----
+
+CAUTION: The settings chosen here have significant security implications. Best practice
+guides are https://www.owasp.org/[available at OWASP].
 
 ==== (Re)start apiman
 If apiman was running, you should stop it now.  Once everything is shutdown, and the changes
