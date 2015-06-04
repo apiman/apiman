@@ -21,16 +21,16 @@ a quick Getting Started guide for that!
 * Configure *configuration.nocache.js* to work with your apiman server
 * Run gulp
 ```
-gulp
+    gulp
 ```
 * Point your browser wherver gulp tells you!  For example:
 ```
-[15:09:24] Using gulpfile /home/ewittman/git/apiman/manager/ui/hawtio/gulpfile.js
-[15:09:24] Starting 'bower'...
-[15:09:24] Finished 'bower' after 8.45 ms
-[15:09:24] Starting 'path-adjust'...
-<snip>
-[15:09:28] Finished 'default' after 6.97 μs
-[15:09:28] Server started http://localhost:2772
-[15:09:28] LiveReload started on port 35729
+    [15:09:24] Using gulpfile /home/ewittman/git/apiman/manager/ui/hawtio/gulpfile.js
+    [15:09:24] Starting 'bower'...
+    [15:09:24] Finished 'bower' after 8.45 ms
+    [15:09:24] Starting 'path-adjust'...
+    <snip>
+    [15:09:28] Finished 'default' after 6.97 μs
+    [15:09:28] Server started http://localhost:2772
+    [15:09:28] LiveReload started on port 35729
 ```
