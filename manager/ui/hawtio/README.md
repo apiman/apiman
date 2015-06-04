@@ -17,8 +17,8 @@ a quick Getting Started guide for that!
     npm install
     bower update
 ```
-* Make a copy of *js/configuration.nocache.js-SAMPLE* and name it *js/configuration.nocache.js*
-* Configure *configuration.nocache.js* to work with your apiman server
+* Make a copy of *apiman/config.js-SAMPLE* and name it *apiman/config.js*
+* Configure *config.js* to work with your apiman server
 * Run gulp
 ```
     gulp
