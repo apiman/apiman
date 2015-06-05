@@ -17,6 +17,7 @@ package io.apiman.test.policies;
 
 import io.apiman.common.plugin.Plugin;
 import io.apiman.common.plugin.PluginCoordinates;
+import io.apiman.gateway.engine.IComponentRegistry;
 import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.IEngine;
 import io.apiman.gateway.engine.IPluginRegistry;
@@ -25,6 +26,8 @@ import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.Policy;
 import io.apiman.gateway.engine.beans.Service;
 import io.apiman.gateway.engine.beans.ServiceRequest;
+import io.apiman.gateway.engine.components.IBufferFactoryComponent;
+import io.apiman.gateway.engine.impl.DefaultComponentRegistry;
 import io.apiman.gateway.engine.impl.DefaultEngineFactory;
 import io.apiman.gateway.engine.policy.IPolicy;
 
@@ -201,9 +204,17 @@ public class PolicyTester extends BlockJUnit4ClassRunner {
             protected IConnectorFactory createConnectorFactory() {
                 return new PolicyTesterConnectorFactory();
             }
-            /**
-             * @see io.apiman.gateway.engine.impl.DefaultEngineFactory#createPluginRegistry()
-             */
+
+            @Override
+            protected IComponentRegistry createComponentRegistry() {
+                return new DefaultComponentRegistry() {
+                    @Override
+                    protected void registerBufferFactoryComponent() {
+                        addComponent(IBufferFactoryComponent.class, new PolicyTesterBufferFactoryComponent());
+                    }
+                };
+            }
+
             @Override
             protected IPluginRegistry createPluginRegistry() {
                 return new IPluginRegistry() {
