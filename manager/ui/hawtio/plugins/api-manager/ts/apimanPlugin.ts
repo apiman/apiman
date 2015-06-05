@@ -130,7 +130,9 @@ module Apiman {
             var requestInterceptor = {
                 request: function(config) {
                     var authHeader = Configuration.getAuthorizationHeader();
-                    config.headers.Authorization = authHeader;
+                    if (authHeader) {
+                        config.headers.Authorization = authHeader;
+                    }
                     return config;
                 }
             };
