@@ -480,7 +480,7 @@ module Apiman {
             }
         }]);
 
-    _module.run(function(editableOptions, editableThemes) {
+    _module.run(['editableOptions', 'editableThemes', function(editableOptions, editableThemes) {
       editableOptions.theme = 'default';
 
       // overwrite templates
