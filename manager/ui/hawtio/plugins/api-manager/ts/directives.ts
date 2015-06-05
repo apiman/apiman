@@ -108,7 +108,8 @@ module Apiman {
 
 
     _module.directive('apimanStatus',
-        ['Logger', 'EntityStatusService', function(Logger, EntityStatusService) {
+        ['Logger', 'EntityStatusService', 
+        function(Logger, EntityStatusService) {
             return {
                 restrict: 'A',
                 link: function(scope, element, attrs) {
@@ -140,7 +141,8 @@ module Apiman {
             };
         }]);
 
-    _module.factory('EntityStatusService', ['$rootScope',
+    _module.factory('EntityStatusService', 
+        ['$rootScope',
         function($rootScope) {
             var entityStatus = null;
 
@@ -156,7 +158,8 @@ module Apiman {
         }]);
 
     _module.directive('apimanEntityStatus',
-        ['Logger', 'EntityStatusService', function(Logger, EntityStatusService) {
+        ['Logger', 'EntityStatusService', 
+        function(Logger, EntityStatusService) {
             return {
                 restrict: 'A',
                 link: function(scope, element, attrs) {
@@ -184,7 +187,8 @@ module Apiman {
 
     export var sb_counter = 0;
     _module.directive('apimanSearchBox',
-        ['Logger', 'TranslationService', function(Logger, TranslationService) {
+        ['Logger', 'TranslationService', 
+        function(Logger, TranslationService) {
             return {
                 restrict: 'E',
                 replace: true,
@@ -235,7 +239,8 @@ module Apiman {
         }]);
 
     _module.directive('apimanConfirmModal',
-        ['Logger', function(Logger) {
+        ['Logger', 
+        function(Logger) {
             return {
                 templateUrl: 'plugins/api-manager/html/directives/confirmModal.html',
                 replace: true,
@@ -251,7 +256,8 @@ module Apiman {
         }]);
 
     _module.directive('apimanSelectServiceModal',
-        ['Logger', function(Logger) {
+        ['Logger', 
+        function(Logger) {
             return {
                 templateUrl: 'plugins/api-manager/html/directives/selectServiceModal.html',
                 replace: true,
@@ -302,7 +308,8 @@ module Apiman {
         }]);
 
     _module.directive('apimanAuditEntry',
-        ['Logger', '$rootScope', function(Logger, $rootScope) {
+        ['Logger', '$rootScope', 
+        function(Logger, $rootScope) {
             return {
                 restrict: 'E',
                 scope: {
@@ -379,7 +386,8 @@ module Apiman {
         }]);
 
     _module.directive('apimanPolicyList',
-        ['Logger', function(Logger) {
+        ['Logger', 
+        function(Logger) {
             return {
                 restrict: 'E',
                 scope: {
@@ -411,7 +419,8 @@ module Apiman {
     ]);
 
     _module.directive('apimanEditableDescription',
-        ['Logger', function(Logger) {
+        ['Logger', 
+        function(Logger) {
             return {
                 restrict: 'E',
                 scope: {
@@ -480,7 +489,7 @@ module Apiman {
             }
         }]);
 
-    _module.run(function(editableOptions, editableThemes) {
+    _module.run(['editableOptions', 'editableThemes', function(editableOptions, editableThemes) {
       editableOptions.theme = 'default';
 
       // overwrite templates
@@ -488,7 +497,7 @@ module Apiman {
       editableThemes['default'].cancelTpl = '<button class="btn btn-default" type="button" ng-click="$form.$cancel()"><i class="fa fa-times fa-fw"></i></button>';
       editableThemes['default'].buttonsTpl = '<div></div>';
       editableThemes['default'].formTpl = '<form class="editable-wrap apiman-inline-edit"></form>';
-    });
+    }]);
 
     _module.directive('apimanI18nKey',
         ['Logger', 'TranslationService',

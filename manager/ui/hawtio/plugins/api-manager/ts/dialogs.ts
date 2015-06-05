@@ -3,7 +3,8 @@ module ApimanDialogs {
 
     export var _module = angular.module("ApimanDialogs", ["ApimanLogger", "ApimanServices"]);
 
-    export var Dialogs = _module.factory('Dialogs', ['Logger', '$compile', '$rootScope', '$timeout', 'ApimanSvcs', 'OrgSvcs',
+    export var Dialogs = _module.factory('Dialogs', 
+        ['Logger', '$compile', '$rootScope', '$timeout', 'ApimanSvcs', 'OrgSvcs',
         function(Logger, $compile, $rootScope, $timeout, ApimanSvcs, OrgSvcs) {
             return {
                 // A standard confirmation dialog

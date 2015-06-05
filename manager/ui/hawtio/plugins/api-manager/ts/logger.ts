@@ -21,7 +21,7 @@ module ApimanLogger {
         return 'apiman [' + now.toLocaleTimeString() + ']>>  ' + msg;
     };
 
-    export var Logger = _module.factory('Logger',
+    export var Logger = _module.factory('Logger', [
         function() {
             return {
                 info: function() {
@@ -37,6 +37,6 @@ module ApimanLogger {
                     console.error(_formatMessage(arguments));
                 }
             };
-        });
+        }]);
 
 }
