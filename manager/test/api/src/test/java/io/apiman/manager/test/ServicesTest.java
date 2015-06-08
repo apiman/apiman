@@ -15,11 +15,17 @@
  */
 package io.apiman.manager.test;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import io.apiman.manager.test.server.MockGatewayServlet;
 import io.apiman.manager.test.util.AbstractTestPlanTest;
 
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.io.IOException;
 
 /**
  * Runs the "services" test plan.
@@ -36,7 +42,7 @@ public class ServicesTest extends AbstractTestPlanTest {
             "{\"publicService\":false,\"organizationId\":\"Organization1\",\"serviceId\":\"Service1\",\"version\":\"1.0\",\"endpointType\":\"rest\",\"endpoint\":\"http://localhost:8080/ping\",\"endpointProperties\":{\"foo\":\"foo-value\",\"bar\":\"bar-value\"},\"servicePolicies\":[]}"; //$NON-NLS-1$
 
     @Test
-    public void test() {
+    public void test() throws IOException {
         runTestPlan("test-plans/services-testPlan.xml", ServicesTest.class.getClassLoader()); //$NON-NLS-1$
 
         // This test includes publishing of a service to the gateway REST API.  The
@@ -46,7 +52,11 @@ public class ServicesTest extends AbstractTestPlanTest {
         Assert.assertEquals(EXPECTED_GATEWAY_LOG, actualGatewayLog);
 
         String payload = MockGatewayServlet.getPayloads().get(1);
-        Assert.assertEquals(EXPECTED_PAYLOAD, payload.trim());
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode expected = mapper.readTree(EXPECTED_PAYLOAD);
+        JsonNode actual = mapper.readTree(payload.trim());
+        Assert.assertTrue(expected.equals(actual));
+
     }
 
 }
