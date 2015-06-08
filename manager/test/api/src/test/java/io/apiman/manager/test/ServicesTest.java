@@ -15,8 +15,6 @@
  */
 package io.apiman.manager.test;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 import io.apiman.manager.test.server.MockGatewayServlet;
 import io.apiman.manager.test.util.AbstractTestPlanTest;
 
