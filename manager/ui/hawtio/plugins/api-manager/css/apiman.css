@@ -764,7 +764,7 @@ ol.breadcrumb {
   margin: 5px 0px 20px 0px;
   padding: 0px;
 }
-.apiman-entity-new .box {
+.apiman-entity-new .apiman-box {
   border: 1px solid rgb(222, 222, 222);
   border-radius: 5px;
   padding-top: 10px;
@@ -1366,7 +1366,7 @@ textarea.apiman-endpoint {
   margin: 5px 0px 20px 0px;
   padding: 0px;
 }
-.modal-select-service .box {
+.modal-select-service .apiman-box {
   border: 1px solid rgb(222, 222, 222);
   border-radius: 5px;
   padding-top: 10px;
