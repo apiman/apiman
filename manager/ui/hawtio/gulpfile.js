@@ -13,7 +13,7 @@ var pkg = require('./package.json');
 var config = {
   main: '.',
   ts: ['plugins/**/*.ts'],
-  templates: ['plugins/**/*.html'],
+  templates: ['plugins/**/*.html', 'plugins/**/*.include'],
   templateModule: pkg.name + '-templates',
   dist: './dist/',
   js: pkg.name + '.js',
