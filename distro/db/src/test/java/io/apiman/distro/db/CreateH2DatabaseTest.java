@@ -21,6 +21,7 @@ import io.apiman.manager.test.util.ManagerTestUtils.TestType;
 
 import java.io.File;
 
+import io.apiman.test.common.util.TestUtil;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -54,11 +55,11 @@ public class CreateH2DatabaseTest extends AbstractTestPlanTest {
     @Test
     public void test() {
         try {
-            System.setProperty("apiman.suite.api-username", "admin");
-            System.setProperty("apiman.suite.api-password", "admin");
-            System.setProperty("apiman.suite.gateway-config-endpoint", "https://localhost:8443/apiman-gateway-api");
-            System.setProperty("apiman.suite.gateway-config-username", "apimanager");
-            System.setProperty("apiman.suite.gateway-config-password", "apiman123!");
+            TestUtil.setProperty("apiman.suite.api-username", "admin");
+            TestUtil.setProperty("apiman.suite.api-password", "admin");
+            TestUtil.setProperty("apiman.suite.gateway-config-endpoint", "https://localhost:8443/apiman-gateway-api");
+            TestUtil.setProperty("apiman.suite.gateway-config-username", "apimanager");
+            TestUtil.setProperty("apiman.suite.gateway-config-password", "apiman123!");
 
             runTestPlan("scripts/api-manager-init-testPlan.xml", CreateH2DatabaseTest.class.getClassLoader());
         } finally {

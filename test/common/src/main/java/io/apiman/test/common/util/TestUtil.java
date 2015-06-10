@@ -207,4 +207,16 @@ public class TestUtil {
         return rval;
     }
 
+
+    /**
+     * Sets the system property indicated by the specified key unless already defined
+     *
+     * @param key  the name of the system property.
+     * @param value the value of the system property.
+     * @return the new value of the system property,
+     */
+    public static String setProperty(String key, String value) {
+        System.setProperty(key, System.getProperty(key, value));
+        return System.getProperty(key);
+    }
 }
