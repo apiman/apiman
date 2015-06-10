@@ -21,6 +21,7 @@ import io.apiman.manager.test.util.ManagerTestUtils.TestType;
 
 import java.io.File;
 
+import io.apiman.test.common.util.TestUtil;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -46,9 +47,9 @@ public class CreateESDatabaseTest extends AbstractTestPlanTest {
         System.out.println("Setting elasticsearch output path: " + targetClassesDir.toString());
         System.out.println("------------------------------------------------");
 
-        System.setProperty("apiman.test.es-home", targetClassesDir.toString());
-        System.setProperty("apiman.test.es-cluster-name", "apiman");
-        System.setProperty("apiman.test.es-persistence", "true");
+        TestUtil.setProperty("apiman.test.es-home", targetClassesDir.toString());
+        TestUtil.setProperty("apiman.test.es-cluster-name", "apiman");
+        TestUtil.setProperty("apiman.test.es-persistence", "true");
         ManagerTestUtils.setTestType(TestType.es);
         AbstractTestPlanTest.setup();
     }
@@ -56,11 +57,11 @@ public class CreateESDatabaseTest extends AbstractTestPlanTest {
     @Test
     public void test() {
         try {
-            System.setProperty("apiman.suite.api-username", "admin");
-            System.setProperty("apiman.suite.api-password", "admin");
-            System.setProperty("apiman.suite.gateway-config-endpoint", "http://localhost:8080/apiman-gateway-api");
-            System.setProperty("apiman.suite.gateway-config-username", "apimanager");
-            System.setProperty("apiman.suite.gateway-config-password", "apiman123!");
+            TestUtil.setProperty("apiman.suite.api-username", "admin");
+            TestUtil.setProperty("apiman.suite.api-password", "admin");
+            TestUtil.setProperty("apiman.suite.gateway-config-endpoint", "http://localhost:8080/apiman-gateway-api");
+            TestUtil.setProperty("apiman.suite.gateway-config-username", "apimanager");
+            TestUtil.setProperty("apiman.suite.gateway-config-password", "apiman123!");
             
             runTestPlan("scripts/api-manager-init-testPlan.xml", CreateH2DatabaseTest.class.getClassLoader());
         } finally {
@@ -71,7 +72,7 @@ public class CreateESDatabaseTest extends AbstractTestPlanTest {
     @AfterClass
     public static void shutdown() throws Exception {
         Thread.sleep(2000); // allow ES time to refresh/index
-        System.setProperty("apiman.test.es-delete-index", "false");
+        TestUtil.setProperty("apiman.test.es-delete-index", "false");
         AbstractTestPlanTest.shutdown();
         testServer.getESNode().close();
     }
