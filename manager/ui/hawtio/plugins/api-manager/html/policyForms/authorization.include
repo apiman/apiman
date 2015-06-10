@@ -17,12 +17,12 @@
     .authorization-form .panel button {
       margin-top: 15px;
     }
-    .authorization-form .panel input.apiman-form-control form-control[type="text"] {
+    .authorization-form .panel input.apiman-form-control[type="text"] {
       display: inline;
       width: 120px;
       margin-top: 4px;
     }
-    .authorization-form .inline-form-select {
+    #form-page .authorization-form dl dd .inline-form-select {
       display: inline-table;
       width: auto;
       margin-top: 4px;
