@@ -142,7 +142,7 @@
                 <delete file="${basedir}/src/main/webapp/index.html" />
                 <copy file="${basedir}/../index.html" tofile="${basedir}/src/main/webapp/index.html" overwrite="true" />
                 <replaceregexp file="${basedir}/src/main/webapp/index.html"
-                  match="&lt;base.href....&gt;&lt;.base&gt;" replace="&lt;base href=&apos;${ui.webcontext}&apos;&gt;&lt;/base&gt;" byline="true" />
+                  match="&lt;base.href....&gt;" replace="&lt;base href=&apos;${ui.webcontext}&apos;&gt;" byline="true" />
                 <replaceregexp file="${basedir}/src/main/webapp/index.html"
                   match="&lt;script.src=&quot;([\w\/\.\-]+)&quot;" replace="&lt;script src=&quot;\1?cid=${timestamp}&quot;" byline="true" />
                 <replaceregexp file="${basedir}/src/main/webapp/index.html"
