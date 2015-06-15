@@ -58,6 +58,7 @@
   </dependencies>
 
   <build>
+    <finalName>apiman-gateway</finalName>
     <plugins>
       <plugin>
         <artifactId>maven-war-plugin</artifactId>
