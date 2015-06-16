@@ -35,7 +35,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  * A simple async HTTP impl of the influxdb driver. Contains only the subset of functionality we need.
- * 
+ *
  * @author Marc Savy <msavy@redhat.com>
  */
 public class InfluxDb09Driver {
@@ -43,27 +43,42 @@ public class InfluxDb09Driver {
     private String endpoint;
     private String username;
     private String password;
+    private String database;
+    private String retentionPolicy;
 
     private String writeQuery;
     private static ObjectMapper objectMapper = new ObjectMapper();
 
-    public InfluxDb09Driver(IHttpClientComponent httpClient, String endpoint, String username, String password) {
+    public InfluxDb09Driver(IHttpClientComponent httpClient, String endpoint,
+            String username, String password,
+            String database,
+            String retentionPolicy) {
         this.httpClient = httpClient;
         this.endpoint = endpoint;
         this.username = username;
         this.password = password;
+        this.database = database;
+        this.retentionPolicy = retentionPolicy;
 
-        this.writeQuery = buildParams(new StringBuffer(endpoint + "/write"), null).toString(); //$NON-NLS-1$
+        StringBuilder writeEndpoint = new StringBuilder();
+
+        if (!endpoint.startsWith("http")) { //$NON-NLS-1$
+            writeEndpoint.append("http"); //$NON-NLS-1$
+        }
+
+        writeEndpoint.append(endpoint + "/write"); //$NON-NLS-1$
+
+        this.writeQuery = buildParams(writeEndpoint, null).toString();
     }
 
     /**
-     * Simple write to "/write". Must be valid Influx JSON.
-     * 
-     * @param jsonDocument document to write, as string
+     * Simple write to "/write". Must be valid Influx line format.
+     *
+     * @param lineDocument document to write, as string
      * @param encoding encoding of string
      * @param failureHandler handler in case of failure
      */
-    public void write(String jsonDocument, String encoding,
+    public void write(String lineDocument, String encoding,
             final IAsyncHandler<InfluxException> failureHandler) {
         // Make request to influx
         IHttpClientRequest request = httpClient.request(writeQuery, HttpMethod.POST,
@@ -76,19 +91,19 @@ public class InfluxDb09Driver {
                         }
                     }
                 });
-        request.addHeader("Content-Type", "application/json"); //$NON-NLS-1$ //$NON-NLS-2$
-        request.write(jsonDocument, encoding);
+        request.addHeader("Content-Type", "encoding/binary"); //$NON-NLS-1$ //$NON-NLS-2$
+        request.write(lineDocument, encoding);
         request.end();
     }
 
     /**
      * List all databases
-     * 
+     *
      * @param handler the result handler
      */
     @SuppressWarnings("nls")
     public void listDatabases(final IAsyncResultHandler<List<String>> handler) {
-        final StringBuffer url = new StringBuffer(endpoint + "/query");
+        final StringBuilder url = new StringBuilder(endpoint + "/query");
         buildParams(url, "SHOW DATABASES");
 
         IHttpClientRequest request = httpClient.request(url.toString(), HttpMethod.GET,
@@ -145,25 +160,27 @@ public class InfluxDb09Driver {
     }
 
     @SuppressWarnings("nls")
-    private StringBuffer buildParams(StringBuffer url, String query) {
-        url.append("?");
-        addQueryParam(url, "u", username);
-        addQueryParam(url, "p", password);
-
-        if (query != null)
-            addQueryParam(url, "q", query);
+    private StringBuilder buildParams(StringBuilder url, String query) {
+        addQueryParam(url, "db", database, "?");
+        addQueryParam(url, "u", username, "&");
+        addQueryParam(url, "p", password, "&");
+        addQueryParam(url, "rp", retentionPolicy, "&");
+        addQueryParam(url, "q", query, "&");
 
         return url;
     }
 
     @SuppressWarnings("nls")
-    private StringBuffer addQueryParam(StringBuffer url, String key, String value) {
+    private void addQueryParam(StringBuilder url, String key, String value, String connector) {
+
+        if (value == null)
+            return;
+
         try {
-            url.append("&" + key + "=" + URLEncoder.encode(value, "utf-8"));
+            url.append(connector + key + "=" + URLEncoder.encode(value, "utf-8"));
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
-        return url;
     }
 
     public final class InfluxException extends RuntimeException {
