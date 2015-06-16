@@ -11,6 +11,7 @@
   <name>apiman-manager-ui-hawtio</name>
 
   <build>
+    <finalName>apimanui</finalName>
     <plugins>
 
       <plugin>
