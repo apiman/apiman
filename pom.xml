@@ -434,6 +434,12 @@
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-distro-es</artifactId>
+        <version>${project.version}</version>
+        <type>war</type>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
         <artifactId>apiman-distro-wildfly8</artifactId>
         <version>${project.version}</version>
         <type>zip</type>

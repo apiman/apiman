@@ -50,6 +50,11 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-distro-db-es</artifactId>
     </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-distro-es</artifactId>
+      <type>war</type>
+    </dependency>
 
     <!-- apiman quickstarts -->
     <dependency>
