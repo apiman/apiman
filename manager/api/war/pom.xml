@@ -87,6 +87,7 @@
   </dependencies>
   
   <build>
+    <finalName>apiman</finalName>
     <plugins>
       <plugin>
         <artifactId>maven-war-plugin</artifactId>

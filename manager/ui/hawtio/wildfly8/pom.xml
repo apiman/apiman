@@ -80,6 +80,7 @@
   </dependencies>
 
   <build>
+    <finalName>apimanui</finalName>
     <resources>
       <resource>
         <directory>src/main/resources</directory>
