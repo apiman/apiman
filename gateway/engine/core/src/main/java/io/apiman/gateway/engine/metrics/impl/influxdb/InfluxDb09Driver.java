@@ -27,6 +27,7 @@ import io.apiman.gateway.engine.components.http.IHttpClientResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,8 +63,8 @@ public class InfluxDb09Driver {
 
         StringBuilder writeEndpoint = new StringBuilder();
 
-        if (!endpoint.startsWith("http")) { //$NON-NLS-1$
-            writeEndpoint.append("http"); //$NON-NLS-1$
+        if (!endpoint.startsWith("http://") || !endpoint.startsWith("https://")) { //$NON-NLS-1$ //$NON-NLS-2$
+            writeEndpoint.append("http://"); //$NON-NLS-1$
         }
 
         writeEndpoint.append(endpoint + "/write"); //$NON-NLS-1$
@@ -75,10 +76,9 @@ public class InfluxDb09Driver {
      * Simple write to "/write". Must be valid Influx line format.
      *
      * @param lineDocument document to write, as string
-     * @param encoding encoding of string
      * @param failureHandler handler in case of failure
      */
-    public void write(String lineDocument, String encoding,
+    public void write(String lineDocument,
             final IAsyncHandler<InfluxException> failureHandler) {
         // Make request to influx
         IHttpClientRequest request = httpClient.request(writeQuery, HttpMethod.POST,
@@ -86,13 +86,19 @@ public class InfluxDb09Driver {
 
                     @Override
                     public void handle(IAsyncResult<IHttpClientResponse> result) {
-                        if (result.isError() || result.getResult().getResponseCode() != 200) {
+                        if (result.isError() || result.getResult().getResponseCode() < 200
+                                || result.getResult().getResponseCode() > 299) {
                             failureHandler.handle(new InfluxException(result.getResult()));
                         }
                     }
                 });
-        request.addHeader("Content-Type", "encoding/binary"); //$NON-NLS-1$ //$NON-NLS-2$
-        request.write(lineDocument, encoding);
+        request.addHeader("Content-Type", "application/x-www-form-urlencoded"); //$NON-NLS-1$ //$NON-NLS-2$
+        try {
+            request.write(URLEncoder.encode(lineDocument, StandardCharsets.UTF_8.name()),
+                    StandardCharsets.UTF_8.name());
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
         request.end();
     }
 
@@ -177,7 +183,7 @@ public class InfluxDb09Driver {
             return;
 
         try {
-            url.append(connector + key + "=" + URLEncoder.encode(value, "utf-8"));
+            url.append(connector + key + "=" + URLEncoder.encode(value, StandardCharsets.UTF_8.name()));
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }

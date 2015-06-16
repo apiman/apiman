@@ -110,7 +110,7 @@ public class InfluxDb09Metrics implements IMetrics {
      */
     @Override
     public void record(RequestMetric metric) {
-        driver.write(buildRequest(metric), "utf-8",
+        driver.write(buildRequest(metric),
                 new IAsyncHandler<InfluxException>() {
                     @Override
                     public void handle(InfluxException result) {
