@@ -22,61 +22,45 @@ import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.exceptions.ConfigurationParseException;
 import io.apiman.gateway.engine.components.IHttpClientComponent;
+import io.apiman.gateway.engine.components.http.IHttpClientResponse;
 import io.apiman.gateway.engine.i18n.Messages;
 import io.apiman.gateway.engine.metrics.RequestMetric;
-import io.apiman.gateway.engine.metrics.impl.influxdb.InfluxDb09Driver.InfluxException;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TimeZone;
+import java.util.Map.Entry;
 import java.util.concurrent.CountDownLatch;
-
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.JsonGenerator;
 
 /**
  * InfluxDB 0.9.x metrics implementation
- * 
+ *
  * @author Marc Savy <msavy@redhat.com>
  */
+@SuppressWarnings("nls")
 public class InfluxDb09Metrics implements IMetrics {
-    private static final String INFLUX_ENDPOINT = "endpoint"; //$NON-NLS-1$
-    private static final String DATABASE = "database"; //$NON-NLS-1$
-    private static final String RETENTION_POLICY = "retentionPolicy"; //$NON-NLS-1$
-    private static final String POINTS = "points"; //$NON-NLS-1$
-    private static final String TIMESTAMP = "time"; //$NON-NLS-1$
-    private static final String SERIES_NAME = "name"; //$NON-NLS-1$
-    private static final String TAGS = "tags"; //$NON-NLS-1$
-    private static final String FIELDS = "fields"; //$NON-NLS-1$
+    private static final String USERNAME = "username";
+    private static final String PASSWORD = "password";
+    private static final String INFLUX_ENDPOINT = "endpoint";
+    private static final String DATABASE = "database";
+    private static final String RETENTION_POLICY = "retentionPolicy";
+    private static final String SERIES_NAME = "measurement";
+    private static final String TIMEPRECISION = "ms";
+
 
     private static final Map<String, String> DEFAULT_TAGS = new LinkedHashMap<>();
     static {
-        DEFAULT_TAGS.put("component", "apiman-gatway"); //$NON-NLS-1$ //$NON-NLS-2$
+        DEFAULT_TAGS.put("generator", "apiman-gateway");  //$NON-NLS-2$
     }
 
-    private static TimeZone tz = TimeZone.getTimeZone("UTC"); //$NON-NLS-1$
-    private static DateFormat iso8601 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'"); //$NON-NLS-1$ ISO-8601
-    static {
-        iso8601.setTimeZone(tz);
-    }
-
-    private JsonFactory jsonFactory = new JsonFactory();
-    private Map<String, String> config;
     private String dbName;
     private String retentionPolicy;
     private String seriesName;
     private String influxEndpoint;
     private IHttpClientComponent httpClient;
-    
+
     private InfluxDb09Driver driver;
     private String username;
     private String password;
@@ -86,36 +70,31 @@ public class InfluxDb09Metrics implements IMetrics {
      * @param config plugin configuration options
      */
     public InfluxDb09Metrics(Map<String, String> config) {
-        this.config = config;
-        this.influxEndpoint = getMandatoryString(INFLUX_ENDPOINT);
-        this.dbName = getMandatoryString(DATABASE);
-        this.retentionPolicy = getOptionalString(RETENTION_POLICY, null);
-        this.seriesName = getMandatoryString(SERIES_NAME);
-        this.username = getMandatoryString("username"); //$NON-NLS-1$
-        this.password = getMandatoryString("password"); //$NON-NLS-1$      
+        System.out.println("Config");
+
+        for ( Entry<String, String> entry : config.entrySet() ) {
+            System.out.println("KEY = " + entry.getKey() + " VALUE = " + entry.getValue());
+        }
+
+
+        this.influxEndpoint = getMandatoryString(config, INFLUX_ENDPOINT);
+        this.dbName = getMandatoryString(config, DATABASE);
+        this.retentionPolicy = getOptionalString(config, RETENTION_POLICY, null);
+        this.seriesName = getMandatoryString(config, SERIES_NAME);
+        this.username = getOptionalString(config, USERNAME, null);
+        this.password = getOptionalString(config, PASSWORD, null);
     }
 
     public void initialize() {
-        driver = new InfluxDb09Driver(httpClient, influxEndpoint, username, password);
+        driver = new InfluxDb09Driver(httpClient, influxEndpoint, username, password, dbName,
+                retentionPolicy, TIMEPRECISION);
 
         if (!listDatabases().contains(dbName)) {
-            throw new ConfigurationParseException(Messages.i18n.format("InfluxDb09Metrics.databaseDoesNotExist", dbName)); //$NON-NLS-1$
+            throw new ConfigurationParseException(Messages.i18n.format(
+                    "InfluxDb09Metrics.databaseDoesNotExist", dbName));
         }
     }
 
-    /**
-     * @see io.apiman.gateway.engine.IMetrics#record(io.apiman.gateway.engine.metrics.RequestMetric)
-     */
-    @Override
-    public void record(RequestMetric metric) {
-        driver.write(buildJsonRequest(metric), "utf-8", //$NON-NLS-1$
-                new IAsyncHandler<InfluxException>() {
-                    @Override
-                    public void handle(InfluxException result) {
-                        // TODO log
-                    }
-                });
-    }
 
     /**
      * @see io.apiman.gateway.engine.IMetrics#setComponentRegistry(io.apiman.gateway.engine.IComponentRegistry)
@@ -125,108 +104,116 @@ public class InfluxDb09Metrics implements IMetrics {
         this.httpClient = registry.getComponent(IHttpClientComponent.class);
     }
 
-    @SuppressWarnings("nls")
-    protected String buildJsonRequest(RequestMetric metric) {
-        StringWriter out = new StringWriter(500); // TODO calculate capacity
+    /**
+     * @see io.apiman.gateway.engine.IMetrics#record(io.apiman.gateway.engine.metrics.RequestMetric)
+     */
+    @Override
+    public void record(RequestMetric metric) {
+        driver.write(buildRequest(metric),
+                new IAsyncHandler<InfluxException>() {
+                    @Override
+                    public void handle(InfluxException result) {
+                        if (result.isBadResponse()) {
+                            IHttpClientResponse response = result.getResponse();
+                            System.err.println(String.format("Influx stats error. Code: %s with message: '%s'",
+                                    response.getResponseCode(),
+                                    response.getResponseMessage()));
+                        } else {
+                            System.err.println(result.getMessage());
+                        }
+                    }
+                });
+    }
 
-        try {
-            JsonGenerator generator = jsonFactory.createJsonGenerator(out);
-            generator.writeStartObject(); // {
-            generator.writeStringField(DATABASE, dbName); // database : mydb,
+    protected String buildRequest(RequestMetric metric) {
+        // TODO: calculate capacity more accurately
+        StringBuilder sb = new StringBuilder(500);
 
-            if (retentionPolicy != null) {
-                generator.writeStringField(RETENTION_POLICY, retentionPolicy); // retentionPolicy : pol,
-            }
+        // Series name, followed by comma
+        sb.append(seriesName + ",");
 
-            generator.writeArrayFieldStart(POINTS); // points : [
-            generator.writeStartObject(); // {
-            writeDate(generator, TIMESTAMP, new Date()); // timestamp : 2015-03-09T17:47:01Z,
-            generator.writeStringField(SERIES_NAME, seriesName); // name : seriesName,
-
-            generator.writeObjectFieldStart(TAGS); // tags : {
-            putAllFields(generator, DEFAULT_TAGS.entrySet()); // tagName : tagValue,
-            generator.writeStringField("serviceOrgId", metric.getServiceOrgId());
-            generator.writeStringField("serviceId", metric.getServiceId());
-            generator.writeStringField("serviceVersion", metric.getServiceVersion());
-            generator.writeStringField("applicationOrgId", metric.getApplicationOrgId());
-            generator.writeStringField("applicationId", metric.getApplicationId());
-            generator.writeStringField("applicationVersion", metric.getApplicationVersion());
-            generator.writeStringField("contractId", metric.getContractId());
-            generator.writeEndObject(); // },
-
-            generator.writeObjectFieldStart(FIELDS); // fields : {
-            writeDate(generator, "requestStart", metric.getRequestStart());
-            writeDate(generator, "requestEnd", metric.getRequestEnd());
-            generator.writeNumberField("requestDuration", metric.getRequestDuration());
-
-            writeDate(generator, "serviceStart", metric.getServiceStart());
-            writeDate(generator, "serviceEnd", metric.getServiceEnd());
-            generator.writeNumberField("serviceDuration", metric.getServiceDuration());
-
-            generator.writeStringField("resource", metric.getResource());
-            generator.writeStringField("method", metric.getMethod());
-
-            generator.writeNumberField("responseCode", metric.getResponseCode());
-            generator.writeStringField("responseMessage", metric.getResponseMessage());
-
-            generator.writeNumberField("failureCode", metric.getFailureCode());
-            generator.writeStringField("failureReason", metric.getFailureReason());
-
-            generator.writeBooleanField("error", metric.isError());
-            generator.writeStringField("errorMessage", metric.getErrorMessage());
-            generator.writeEndObject(); // }
-            generator.writeEndObject(); // }
-            generator.writeEndArray(); // ]
-            generator.writeEndObject(); // }
-            generator.close();
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        // Default tags, comma delimited
+        for (Entry<String, String> entry : DEFAULT_TAGS.entrySet()) {
+            write(entry.getKey(), entry.getValue(), sb);
         }
 
-        return out.toString();
+        // Metric tags, comma delimited, space at end.
+        write("serviceOrgId", quote(metric.getServiceOrgId()), sb);
+        write("serviceId", quote(metric.getServiceId()), sb);
+        write("serviceVersion", quote(metric.getServiceVersion()), sb);
+        write("applicationOrgId", quote(metric.getApplicationOrgId()), sb);
+        write("applicationId", quote(metric.getApplicationId()), sb);
+        write("applicationVersion", quote(metric.getApplicationVersion()), sb);
+        write("contractId", quote(metric.getContractId()), sb);
+
+        sb.deleteCharAt(sb.length()-1);
+        sb.append(' ');
+
+        // Data, comma delimited, space at end.
+        write("requestStart", dateToLong(metric.getRequestStart()), sb);
+        write("requestEnd", dateToLong(metric.getRequestEnd()), sb);
+        write("serviceStart", dateToLong(metric.getServiceStart()), sb);
+        write("serviceEnd", dateToLong(metric.getServiceEnd()), sb);
+        write("resource", quote(metric.getResource()), sb);
+        write("method", quote(metric.getMethod()), sb);
+        write("responseCode", Integer.toString(metric.getResponseCode()), sb);
+        write("responseMessage", quote(metric.getResponseMessage()), sb);
+        write("failureCode", Integer.toString(metric.getFailureCode()), sb);
+        write("failureReason", quote(metric.getFailureReason()), sb);
+        write("error", Boolean.toString(metric.isError()), sb);
+        write("errorMessage", quote(metric.getErrorMessage()), sb);
+
+        sb.deleteCharAt(sb.length()-1);
+        sb.append(' ');
+
+        // Timestamp in milliseconds. Newline would be needed after this point for batching.
+        sb.append(System.currentTimeMillis());
+
+        return sb.toString();
     }
 
-    private void writeDate(JsonGenerator generator, String fieldName, Date date)
-            throws JsonGenerationException, IOException {
-        generator.writeStringField(fieldName, iso8601.format(date));
+    private void write(String tagname, String tagValue, StringBuilder sb) {
+        if (tagValue == null)
+            return;
+
+        sb.append(tagname + "=" + tagValue + ",");
     }
 
-    private void putAllFields(JsonGenerator generator, Set<Map.Entry<String, String>> entrySet)
-            throws JsonGenerationException, IOException {
-        for (Map.Entry<String, String> entry : entrySet) {
-            generator.writeStringField(entry.getKey(), entry.getValue());
-        }
+    private String quote(String item) {
+        if (item == null)
+            return null;
+        return "\"" + item  + "\"";
     }
 
-    @SuppressWarnings("nls")
-    private String getMandatoryString(String keyname) {
+    private String dateToLong(Date date) {
+        return Long.toString(date.getTime());
+    }
+
+    private String getMandatoryString(Map<String, String> config, String keyname) {
         String value = config.get(keyname);
-        
-        if (value == null) {
+
+        if (value == null)
             throw new ConfigurationParseException(Messages.i18n.format(
                     "InfluxDb09Metrics.mandatoryConfigMustBeSet", getClass().getCanonicalName(), keyname));
-        }
-
-        return keyname;
+        return value;
     }
 
-    private String getOptionalString(String key, String dValue) {
+    private String getOptionalString(Map<String, String> config, String key, String dValue) {
         return config.containsKey(key) ? config.get(key) : dValue;
     }
-    
+
     private List<String> listDatabases() {
         final CountDownLatch endSignal = new CountDownLatch(1);
         final List<String> results = new ArrayList<>();
-        
+
         driver.listDatabases(new IAsyncResultHandler<List<String>>() {
-            
+
             @Override
             public void handle(IAsyncResult<List<String>> result) {
                 if(result.isSuccess()) {
                     results.addAll(result.getResult());
                 } else {
-                    throw (InfluxException) result.getError();
+                    throw new InfluxException(result.getError());
                 }
                 endSignal.countDown();
             }
@@ -237,7 +224,7 @@ public class InfluxDb09Metrics implements IMetrics {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-   
+
         return results;
     }
 }
