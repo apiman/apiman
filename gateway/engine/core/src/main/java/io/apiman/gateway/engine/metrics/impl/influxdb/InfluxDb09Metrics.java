@@ -25,9 +25,7 @@ import io.apiman.gateway.engine.components.IHttpClientComponent;
 import io.apiman.gateway.engine.components.http.IHttpClientResponse;
 import io.apiman.gateway.engine.i18n.Messages;
 import io.apiman.gateway.engine.metrics.RequestMetric;
-import io.apiman.gateway.engine.metrics.impl.influxdb.InfluxDb09Driver.InfluxException;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -49,6 +47,8 @@ public class InfluxDb09Metrics implements IMetrics {
     private static final String DATABASE = "database";
     private static final String RETENTION_POLICY = "retentionPolicy";
     private static final String SERIES_NAME = "measurement";
+    private static final String TIMEPRECISION = "ms";
+
 
     private static final Map<String, String> DEFAULT_TAGS = new LinkedHashMap<>();
     static {
@@ -64,8 +64,6 @@ public class InfluxDb09Metrics implements IMetrics {
     private InfluxDb09Driver driver;
     private String username;
     private String password;
-
-    private SimpleDateFormat rfc3339 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
 
     /**
      * Constructor.
@@ -88,7 +86,8 @@ public class InfluxDb09Metrics implements IMetrics {
     }
 
     public void initialize() {
-        driver = new InfluxDb09Driver(httpClient, influxEndpoint, username, password, dbName, retentionPolicy);
+        driver = new InfluxDb09Driver(httpClient, influxEndpoint, username, password, dbName,
+                retentionPolicy, TIMEPRECISION);
 
         if (!listDatabases().contains(dbName)) {
             throw new ConfigurationParseException(Messages.i18n.format(
@@ -130,53 +129,64 @@ public class InfluxDb09Metrics implements IMetrics {
         // TODO: calculate capacity more accurately
         StringBuilder sb = new StringBuilder(500);
 
-        // Series name
-        sb.append(seriesName);
+        // Series name, followed by comma
+        sb.append(seriesName + ",");
 
-        // Default Tags
+        // Default tags, comma delimited
         for (Entry<String, String> entry : DEFAULT_TAGS.entrySet()) {
-            write(entry.getKey(), entry.getValue(), sb, false);
+            write(entry.getKey(), entry.getValue(), sb);
         }
 
-        // Metric Tags
-        write("serviceOrgId", metric.getServiceOrgId(), sb, false);
-        write("serviceId", metric.getServiceId(), sb, false);
-        write("serviceVersion", metric.getServiceVersion(), sb, false);
-        write("applicationOrgId", metric.getApplicationOrgId(), sb, false);
-        write("applicationId", metric.getApplicationId(), sb, false);
-        write("applicationVersion", metric.getApplicationVersion(), sb, false);
-        write("contractId", metric.getContractId(), sb, true);
+        // Metric tags, comma delimited, space at end.
+        write("serviceOrgId", quote(metric.getServiceOrgId()), sb);
+        write("serviceId", quote(metric.getServiceId()), sb);
+        write("serviceVersion", quote(metric.getServiceVersion()), sb);
+        write("applicationOrgId", quote(metric.getApplicationOrgId()), sb);
+        write("applicationId", quote(metric.getApplicationId()), sb);
+        write("applicationVersion", quote(metric.getApplicationVersion()), sb);
+        write("contractId", quote(metric.getContractId()), sb);
 
-        // Data
-        write("requestStart", dateToRfc3330(metric.getRequestStart()), sb, false);
-        write("requestEnd", dateToRfc3330(metric.getRequestEnd()), sb, false);
-        write("serviceStart", dateToRfc3330(metric.getServiceStart()), sb, false);
-        write("serviceEnd", dateToRfc3330(metric.getServiceEnd()), sb, false);
-        write("resource", metric.getResource(), sb, false);
-        write("method", metric.getMethod(), sb, false);
-        write("responseCode", Integer.toString(metric.getResponseCode()), sb, false);
-        write("responseMessage", metric.getResponseMessage(), sb, false);
-        write("failureCode", Integer.toString(metric.getFailureCode()), sb, false);
-        write("failureReason", metric.getFailureReason(), sb, false);
-        write("error", Boolean.toString(metric.isError()), sb, false);
-        write("errorMessage", metric.getErrorMessage(), sb, true);
+        sb.deleteCharAt(sb.length()-1);
+        sb.append(' ');
 
-        // Timestamp in millis
-        sb.append(System.currentTimeMillis() + "ms");
+        // Data, comma delimited, space at end.
+        write("requestStart", dateToLong(metric.getRequestStart()), sb);
+        write("requestEnd", dateToLong(metric.getRequestEnd()), sb);
+        write("serviceStart", dateToLong(metric.getServiceStart()), sb);
+        write("serviceEnd", dateToLong(metric.getServiceEnd()), sb);
+        write("resource", quote(metric.getResource()), sb);
+        write("method", quote(metric.getMethod()), sb);
+        write("responseCode", Integer.toString(metric.getResponseCode()), sb);
+        write("responseMessage", quote(metric.getResponseMessage()), sb);
+        write("failureCode", Integer.toString(metric.getFailureCode()), sb);
+        write("failureReason", quote(metric.getFailureReason()), sb);
+        write("error", Boolean.toString(metric.isError()), sb);
+        write("errorMessage", quote(metric.getErrorMessage()), sb);
+
+        sb.deleteCharAt(sb.length()-1);
+        sb.append(' ');
+
+        // Timestamp in milliseconds. Newline would be needed after this point for batching.
+        sb.append(System.currentTimeMillis());
 
         return sb.toString();
     }
 
-    private void write(String tagname, String tagValue, StringBuilder sb, boolean lastElem) {
-        String separator = " ";
-        if (!lastElem)
-            separator = ",";
+    private void write(String tagname, String tagValue, StringBuilder sb) {
+        if (tagValue == null)
+            return;
 
-        sb.append(tagname + "=" + tagValue + separator);
+        sb.append(tagname + "=" + tagValue + ",");
     }
 
-    private String dateToRfc3330(Date date) {
-        return rfc3339.format(date);
+    private String quote(String item) {
+        if (item == null)
+            return null;
+        return "\"" + item  + "\"";
+    }
+
+    private String dateToLong(Date date) {
+        return Long.toString(date.getTime());
     }
 
     private String getMandatoryString(Map<String, String> config, String keyname) {
@@ -203,7 +213,7 @@ public class InfluxDb09Metrics implements IMetrics {
                 if(result.isSuccess()) {
                     results.addAll(result.getResult());
                 } else {
-                    throw (InfluxException) result.getError();
+                    throw new InfluxException(result.getError());
                 }
                 endSignal.countDown();
             }
