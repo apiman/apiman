@@ -126,8 +126,6 @@ public class ManagerApiTestServer {
         }
         if (node != null) {
             if ("true".equals(System.getProperty("apiman.test.es-delete-index", "true"))) {
-//                DeleteIndexRequest request = new DeleteIndexRequest("apiman_manager");
-//                client.admin().indices().delete(request).actionGet();
             	client.execute(new DeleteIndex.Builder("apiman_manager").build());
             }
         }

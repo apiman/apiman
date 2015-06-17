@@ -22,7 +22,6 @@ import io.apiman.gateway.engine.metrics.RequestMetric;
 import io.searchbox.client.JestResult;
 import io.searchbox.client.JestResultHandler;
 import io.searchbox.core.Index;
-import io.searchbox.params.Parameters;
 
 import java.util.Map;
 
@@ -32,7 +31,7 @@ import java.util.Map;
  * @author eric.wittmann@redhat.com
  */
 public class ESMetrics extends AbstractESComponent implements IMetrics {
-    
+
     protected IComponentRegistry componentRegistry;
 
     /**
@@ -56,29 +55,25 @@ public class ESMetrics extends AbstractESComponent implements IMetrics {
      */
     @Override
     public void record(RequestMetric metric) {
-        System.out.println("Recording a metric into ES: " + metric.toString());
         try {
             Index index = new Index.Builder(metric).refresh(false)
-                    .index("apiman_metrics").setParameter(Parameters.OP_TYPE, "create")
-                    .type("metric").build(); //$NON-NLS-1$
+                    .index(ESConstants.METRICS_INDEX_NAME)
+                    .type("request").build(); //$NON-NLS-1$
             getClient().executeAsync(index, new JestResultHandler<JestResult>() {
                 @Override
                 public void completed(JestResult result) {
-                    if (result.isSucceeded()) {
-                        System.out.println("Added metric to ES.");
-                    } else {
-                        System.out.println("Failed to add metric to ES:");
-                        System.out.println("/t" + result.getErrorMessage());
+                    if (!result.isSucceeded()) {
+                        System.err.println("Failed to add metric to ES:"); //$NON-NLS-1$
+                        System.err.println("/t" + result.getErrorMessage()); //$NON-NLS-1$
                     }
                 }
                 @Override
                 public void failed(Exception e) {
-                    System.out.println("Error adding metric to ES:");
+                    System.out.println("Error adding metric to ES:"); //$NON-NLS-1$
                     e.printStackTrace();
                 }
             });
         } catch (Exception e) {
-            System.out.println("Error adding metric to ES:");
             e.printStackTrace();
         }
     }

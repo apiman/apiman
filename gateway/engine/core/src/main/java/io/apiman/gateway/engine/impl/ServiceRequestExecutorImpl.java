@@ -163,6 +163,7 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
      */
     protected void recordFailureMetrics(PolicyFailure failure) {
         requestMetric.setResponseCode(failure.getResponseCode());
+        requestMetric.setFailure(true);
         requestMetric.setFailureCode(failure.getFailureCode());
         requestMetric.setFailureReason(failure.getMessage());
     }

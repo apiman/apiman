@@ -29,7 +29,7 @@ import java.util.Date;
 public class RequestMetric implements Serializable {
 
     private static final long serialVersionUID = 7085676761317470403L;
-    
+
     private Date requestStart;
     private Date requestEnd;
     private long requestDuration = -1;
@@ -47,11 +47,12 @@ public class RequestMetric implements Serializable {
     private String contractId;
     private int responseCode;
     private String responseMessage;
+    private boolean failure;
     private int failureCode;
     private String failureReason;
     private boolean error;
     private String errorMessage;
-    
+
     /**
      * Constructor.
      */
@@ -352,6 +353,20 @@ public class RequestMetric implements Serializable {
      */
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
+    }
+
+    /**
+     * @return the failure
+     */
+    public boolean isFailure() {
+        return failure;
+    }
+
+    /**
+     * @param failure the failure to set
+     */
+    public void setFailure(boolean failure) {
+        this.failure = failure;
     }
 
 }
