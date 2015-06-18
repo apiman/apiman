@@ -53,7 +53,7 @@ public class PolicyDefinitionBean implements Serializable {
     @Id
     @Column(nullable=false)
     private String id;
-    @Column(updatable=false, nullable=false)
+    @Column(name = "policy_impl", updatable=false, nullable=false)
     private String policyImpl;
     @Column(updatable=true, nullable=false)
     private String name;
@@ -64,9 +64,9 @@ public class PolicyDefinitionBean implements Serializable {
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "pd_templates", joinColumns = @JoinColumn(name = "policydef_id"))
     private Set<PolicyDefinitionTemplateBean> templates = new HashSet<>();
-    @Column(updatable=false, nullable=true)
+    @Column(name = "plugin_id", updatable=false, nullable=true)
     private Long pluginId;
-    @Column(updatable=false, nullable=true)
+    @Column(name = "form_type", updatable=false, nullable=true)
     @Enumerated(EnumType.STRING)
     private PolicyFormType formType;
     @Column(updatable=false, nullable=true)

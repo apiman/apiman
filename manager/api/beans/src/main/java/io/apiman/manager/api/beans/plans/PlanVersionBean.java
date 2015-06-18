@@ -41,7 +41,7 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @Table(name = "plan_versions",
-       uniqueConstraints = { @UniqueConstraint(columnNames = { "plan_id", "plan_orgId", "version" }) })
+       uniqueConstraints = { @UniqueConstraint(columnNames = { "plan_id", "plan_org_id", "version" }) })
 public class PlanVersionBean implements Serializable {
 
     private static final long serialVersionUID = -2218697175049442690L;
@@ -51,7 +51,7 @@ public class PlanVersionBean implements Serializable {
     @ManyToOne
     @JoinColumns({
         @JoinColumn(name="plan_id", referencedColumnName="id"),
-        @JoinColumn(name="plan_orgId", referencedColumnName="organizationId")
+        @JoinColumn(name="plan_org_id", referencedColumnName="organization_id")
     })
     private PlanBean plan;
     @Column(nullable=false)
@@ -59,14 +59,15 @@ public class PlanVersionBean implements Serializable {
     private PlanStatus status;
     @Column(updatable=false, nullable=false)
     private String version;
-    @Column(updatable=false, nullable=false)
+    @Column(name = "created_by", updatable=false, nullable=false)
     private String createdBy;
-    @Column(updatable=false, nullable=false)
+    @Column(name = "created_on", updatable=false, nullable=false)
     private Date createdOn;
-    @Column(updatable=true, nullable=false)
+    @Column(name = "modified_by", updatable=true, nullable=false)
     private String modifiedBy;
-    @Column(updatable=true, nullable=false)
+    @Column(name = "modified_on", updatable=true, nullable=false)
     private Date modifiedOn;
+    @Column(name = "locked_on")
     private Date lockedOn;
 
     /**
