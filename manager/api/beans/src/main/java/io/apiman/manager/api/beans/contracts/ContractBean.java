@@ -65,9 +65,9 @@ public class ContractBean implements Serializable {
         @JoinColumn(name="planv_id", referencedColumnName="id")
     })
     private PlanVersionBean plan;
-    @Column(updatable=false, nullable=false)
+    @Column(name = "created_by", updatable=false, nullable=false)
     private String createdBy;
-    @Column(updatable=false, nullable=false)
+    @Column(name = "created_on", updatable=false, nullable=false)
     private Date createdOn;
     @Column(updatable=false, nullable=false)
     private String apikey;

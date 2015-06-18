@@ -41,7 +41,7 @@ public class UserBean implements Serializable {
     private String username;
     private String fullName;
     private String email;
-    @Column(updatable=false)
+    @Column(name = "joined_on", updatable=false)
     private Date joinedOn;
 
     // Used only when returning information about the current user

@@ -45,13 +45,13 @@ public class OrganizationBean implements Serializable {
     private String name;
     @Column(updatable=true, nullable=true, length=512)
     private String description;
-    @Column(updatable=false, nullable=false)
+    @Column(name = "created_by", updatable=false, nullable=false)
     private String createdBy;
-    @Column(updatable=false, nullable=false)
+    @Column(name = "created_on", updatable=false, nullable=false)
     private Date createdOn;
-    @Column(updatable=true, nullable=false)
+    @Column(name = "modified_by", updatable=true, nullable=false)
     private String modifiedBy;
-    @Column(updatable=true, nullable=false)
+    @Column(name = "modified_on", updatable=true, nullable=false)
     private Date modifiedOn;
 
     /**

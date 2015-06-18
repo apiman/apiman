@@ -50,7 +50,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
  */
 @Entity
 @Table(name = "service_versions",
-       uniqueConstraints = { @UniqueConstraint(columnNames = { "service_id", "service_orgId", "version" }) })
+       uniqueConstraints = { @UniqueConstraint(columnNames = { "service_id", "service_org_id", "version" }) })
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class ServiceVersionBean implements Serializable {
 
@@ -61,13 +61,14 @@ public class ServiceVersionBean implements Serializable {
     @ManyToOne
     @JoinColumns({
         @JoinColumn(name="service_id", referencedColumnName="id"),
-        @JoinColumn(name="service_orgId", referencedColumnName="organizationId")
+        @JoinColumn(name="service_org_id", referencedColumnName="organization_id")
     })
     private ServiceBean service;
     @Column(updatable=true, nullable=false)
     @Enumerated(EnumType.STRING)
     private ServiceStatus status;
     private String endpoint;
+    @Column(name = "endpoint_type")
     @Enumerated(EnumType.STRING)
     private EndpointType endpointType;
     @ElementCollection(fetch=FetchType.EAGER)
@@ -78,23 +79,26 @@ public class ServiceVersionBean implements Serializable {
     @ElementCollection(fetch=FetchType.EAGER)
     @CollectionTable(name="svc_gateways", joinColumns=@JoinColumn(name="service_version_id"))
     private Set<ServiceGatewayBean> gateways;
-    @Column(updatable=true, nullable=false)
+    @Column(name = "public_service", updatable=true, nullable=false)
     private boolean publicService;
     @ElementCollection(fetch=FetchType.EAGER)
     @CollectionTable(name="svc_plans", joinColumns=@JoinColumn(name="service_version_id"))
     private Set<ServicePlanBean> plans;
     @Column(updatable=false)
     private String version;
-    @Column(updatable=false, nullable=false)
+    @Column(name = "created_by", updatable=false, nullable=false)
     private String createdBy;
-    @Column(updatable=false, nullable=false)
+    @Column(name = "created_on", updatable=false, nullable=false)
     private Date createdOn;
-    @Column(updatable=true, nullable=false)
+    @Column(name = "modified_by", updatable=true, nullable=false)
     private String modifiedBy;
-    @Column(updatable=true, nullable=false)
+    @Column(name = "modified_on", updatable=true, nullable=false)
     private Date modifiedOn;
+    @Column(name = "published_on")
     private Date publishedOn;
+    @Column(name = "retired_on")
     private Date retiredOn;
+    @Column(name = "definition_type")
     @Enumerated(EnumType.STRING)
     private ServiceDefinitionType definitionType;
 

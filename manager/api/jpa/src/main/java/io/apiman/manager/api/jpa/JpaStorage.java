@@ -518,9 +518,9 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             
             @SuppressWarnings("nls")
             String sql = 
-                    "SELECT p.id, p.artifactId, p.groupId, p.version, p.classifier, p.type, p.name, p.description, p.createdBy, p.createdOn" + 
+                    "SELECT p.id, p.artifact_id, p.group_id, p.version, p.classifier, p.type, p.name, p.description, p.created_by, p.created_on" +
                     "  FROM plugins p" +
-                    " WHERE p.groupId = ? AND p.artifactId = ?";
+                    " WHERE p.group_id = ? AND p.artifact_id = ?";
             Query query = entityManager.createNativeQuery(sql);
             query.setParameter(1, groupId);
             query.setParameter(2, artifactId);
@@ -802,7 +802,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             
             @SuppressWarnings("nls")
             String sql = 
-                    "SELECT p.id, p.artifactId, p.groupId, p.version, p.classifier, p.type, p.name, p.description, p.createdBy, p.createdOn" + 
+                    "SELECT p.id, p.artifact_id, p.group_id, p.version, p.classifier, p.type, p.name, p.description, p.created_by, p.created_on" +
                     "  FROM plugins p" + 
                     " ORDER BY p.name ASC";
             Query query = entityManager.createNativeQuery(sql);
@@ -843,7 +843,7 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             
             @SuppressWarnings("nls")
             String sql = 
-                    "SELECT pd.id, pd.policyImpl, pd.name, pd.description, pd.icon, pd.pluginId, pd.formType" + 
+                    "SELECT pd.id, pd.policy_impl, pd.name, pd.description, pd.icon, pd.plugin_id, pd.form_type" +
                     "  FROM policydefs pd" + 
                     " ORDER BY pd.name ASC";
             Query query = entityManager.createNativeQuery(sql);
@@ -1559,9 +1559,9 @@ public class JpaStorage extends AbstractJpaStorage implements IStorage, IStorage
             
             @SuppressWarnings("nls")
             String sql = 
-                    "SELECT pd.id, pd.policyImpl, pd.name, pd.description, pd.icon, pd.pluginId, pd.formType" + 
+                    "SELECT pd.id, pd.policy_impl, pd.name, pd.description, pd.icon, pd.plugin_id, pd.form_type" +
                     "  FROM policydefs pd" + 
-                    " WHERE pd.pluginId = ?" +
+                    " WHERE pd.plugin_id = ?" +
                     " ORDER BY pd.name ASC";
             Query query = entityManager.createNativeQuery(sql);
             query.setParameter(1, pluginId);

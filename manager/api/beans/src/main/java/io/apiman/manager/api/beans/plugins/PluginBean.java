@@ -34,7 +34,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
  * @author eric.wittmann@redhat.com
  */
 @Entity
-@Table(name = "plugins", uniqueConstraints = { @UniqueConstraint(columnNames = { "groupId", "artifactId" }) })
+@Table(name = "plugins", uniqueConstraints = { @UniqueConstraint(columnNames = { "group_id", "artifact_id" }) })
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class PluginBean implements Serializable {
 
@@ -42,9 +42,9 @@ public class PluginBean implements Serializable {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(updatable=false, nullable=false)
+    @Column(name = "group_id", updatable=false, nullable=false)
     private String groupId;
-    @Column(updatable=false, nullable=false)
+    @Column(name = "artifact_id", updatable=false, nullable=false)
     private String artifactId;
     @Column(updatable=false, nullable=false)
     private String version;
@@ -57,9 +57,9 @@ public class PluginBean implements Serializable {
     private String name;
     @Column(updatable=true, nullable=true, length=512)
     private String description;
-    @Column(updatable=false, nullable=false)
+    @Column(name = "created_by", updatable=false, nullable=false)
     private String createdBy;
-    @Column(updatable=false, nullable=false)
+    @Column(name = "created_on", updatable=false, nullable=false)
     private Date createdOn;
 
     /**
