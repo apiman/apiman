@@ -70,13 +70,6 @@ public class InfluxDb09Metrics implements IMetrics {
      * @param config plugin configuration options
      */
     public InfluxDb09Metrics(Map<String, String> config) {
-        System.out.println("Config");
-
-        for ( Entry<String, String> entry : config.entrySet() ) {
-            System.out.println("KEY = " + entry.getKey() + " VALUE = " + entry.getValue());
-        }
-
-
         this.influxEndpoint = getMandatoryString(config, INFLUX_ENDPOINT);
         this.dbName = getMandatoryString(config, DATABASE);
         this.retentionPolicy = getOptionalString(config, RETENTION_POLICY, null);
