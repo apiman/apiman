@@ -39,6 +39,7 @@ public class UserBean implements Serializable {
     @Id
     @Column(updatable=false, nullable=false)
     private String username;
+    @Column(name = "full_name")
     private String fullName;
     private String email;
     @Column(name = "joined_on", updatable=false)
