@@ -139,7 +139,31 @@ module ApimanServices {
                 }
             }
         }]);
-    
+
+    export var MetricsServices = _module.factory('MetricsSvcs', ['$resource', 'Configuration',
+        function($resource, Configuration) {
+            return {
+                getUsage: function(orgId, serviceId, version, interval, from, to, handler, errorHandler) {
+                    var endpoint = formatEndpoint(
+                        Configuration.api.endpoint + '/organizations/:organizationId/services/:serviceId/versions/:version/metrics/usage',
+                        { organizationId: orgId, serviceId: serviceId, version: version });
+                    $resource(endpoint, {interval: interval, from: from, to: to}).get({}, handler, errorHandler);
+                },
+                getUsagePerApp: function(orgId, serviceId, version, from, to, handler, errorHandler) {
+                    var endpoint = formatEndpoint(
+                        Configuration.api.endpoint + '/organizations/:organizationId/services/:serviceId/versions/:version/metrics/appUsage',
+                        { organizationId: orgId, serviceId: serviceId, version: version });
+                    $resource(endpoint, {from: from, to: to}).get({}, handler, errorHandler);
+                },
+                getUsagePerPlan: function(orgId, serviceId, version, from, to, handler, errorHandler) {
+                    var endpoint = formatEndpoint(
+                        Configuration.api.endpoint + '/organizations/:organizationId/services/:serviceId/versions/:version/metrics/planUsage',
+                        { organizationId: orgId, serviceId: serviceId, version: version });
+                    $resource(endpoint, {from: from, to: to}).get({}, handler, errorHandler);
+                }
+            }
+        }]);
+
     export var SystemServices = _module.factory('SystemSvcs', ['$resource', 'Configuration',
         function($resource, Configuration) {
             return {

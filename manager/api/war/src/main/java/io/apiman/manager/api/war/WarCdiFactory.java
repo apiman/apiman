@@ -17,6 +17,7 @@ package io.apiman.manager.api.war;
 
 import io.apiman.manager.api.core.IApiKeyGenerator;
 import io.apiman.manager.api.core.IIdmStorage;
+import io.apiman.manager.api.core.IMetricsAccessor;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.UuidApiKeyGenerator;
@@ -26,6 +27,8 @@ import io.apiman.manager.api.core.logging.IApimanDelegateLogger;
 import io.apiman.manager.api.core.logging.IApimanLogger;
 import io.apiman.manager.api.core.logging.JsonLoggerImpl;
 import io.apiman.manager.api.core.logging.StandardLoggerImpl;
+import io.apiman.manager.api.core.noop.NoOpMetricsAccessor;
+import io.apiman.manager.api.es.ESMetricsAccessor;
 import io.apiman.manager.api.es.EsStorage;
 import io.apiman.manager.api.jpa.JpaStorage;
 import io.apiman.manager.api.jpa.roles.JpaIdmStorage;
@@ -40,6 +43,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.New;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
+import javax.inject.Named;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -51,7 +55,8 @@ import org.apache.commons.lang.StringUtils;
 @ApplicationScoped
 public class WarCdiFactory {
 
-    private static JestClient sESClient;
+    private static JestClient sStorageESClient;
+    private static JestClient sMetricsESClient;
     private static EsStorage sESStorage;
 
     @Produces @ApimanLogger
@@ -103,6 +108,19 @@ public class WarCdiFactory {
     }
 
     @Produces @ApplicationScoped
+    public static IMetricsAccessor provideMetricsAccessor(WarApiManagerConfig config,
+            @New NoOpMetricsAccessor noopMetrics, @New ESMetricsAccessor esMetrics) {
+        IMetricsAccessor metrics = null;
+        if ("es".equals(config.getMetricsType())) { //$NON-NLS-1$
+            metrics = esMetrics;
+        } else {
+            System.err.println("Unknown apiman metrics accessor type: " + config.getMetricsType()); //$NON-NLS-1$
+            metrics = noopMetrics;
+        }
+        return metrics;
+    }
+
+    @Produces @ApplicationScoped
     public static IApiKeyGenerator provideApiKeyGenerator(@New UuidApiKeyGenerator uuidApiKeyGen) {
         return uuidApiKeyGen;
     }
@@ -118,27 +136,55 @@ public class WarCdiFactory {
         }
     }
 
-    @Produces @ApplicationScoped
-    public static JestClient provideTransportClient(WarApiManagerConfig config) {
+    @Produces @ApplicationScoped @Named("storage")
+    public static JestClient provideStorageESClient(WarApiManagerConfig config) {
         if ("es".equals(config.getStorageType())) { //$NON-NLS-1$
-            if (sESClient == null) {
-                sESClient = createJestClient(config);
+            if (sStorageESClient == null) {
+                sStorageESClient = createStorageJestClient(config);
             }
         }
-        return sESClient;
+        return sStorageESClient;
+    }
+
+    @Produces @ApplicationScoped @Named("metrics")
+    public static JestClient provideMetricsESClient(WarApiManagerConfig config) {
+        if ("es".equals(config.getMetricsType())) { //$NON-NLS-1$
+            if (sMetricsESClient == null) {
+                sMetricsESClient = createMetricsJestClient(config);
+            }
+        }
+        return sMetricsESClient;
     }
 
     /**
      * @param config
-     * @return create a new test ES transport client
+     * @return create a new test ES client
      */
-    private static JestClient createJestClient(WarApiManagerConfig config) {
+    private static JestClient createStorageJestClient(WarApiManagerConfig config) {
         StringBuilder builder = new StringBuilder();
-        builder.append(config.getESProtocol());
+        builder.append(config.getStorageESProtocol());
         builder.append("://"); //$NON-NLS-1$
-        builder.append(config.getESHost());
+        builder.append(config.getStorageESHost());
         builder.append(":"); //$NON-NLS-1$
-        builder.append(config.getESPort());
+        builder.append(config.getStorageESPort());
+        String connectionUrl = builder.toString();
+        JestClientFactory factory = new JestClientFactory();
+        factory.setHttpClientConfig(new HttpClientConfig.Builder(connectionUrl).multiThreaded(true)
+                .build());
+        return factory.getObject();
+    }
+
+    /**
+     * @param config
+     * @return create a new test ES client
+     */
+    private static JestClient createMetricsJestClient(WarApiManagerConfig config) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(config.getMetricsESProtocol());
+        builder.append("://"); //$NON-NLS-1$
+        builder.append(config.getMetricsESHost());
+        builder.append(":"); //$NON-NLS-1$
+        builder.append(config.getMetricsESPort());
         String connectionUrl = builder.toString();
         JestClientFactory factory = new JestClientFactory();
         factory.setHttpClientConfig(new HttpClientConfig.Builder(connectionUrl).multiThreaded(true)
@@ -154,7 +200,7 @@ public class WarCdiFactory {
     private static EsStorage initES(WarApiManagerConfig config, EsStorage esStorage) {
         if (sESStorage == null) {
             sESStorage = esStorage;
-            if (config.isInitializeES()) {
+            if (config.isInitializeStorageES()) {
                 sESStorage.initialize();
             }
         }

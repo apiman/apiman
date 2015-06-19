@@ -252,7 +252,8 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
 
                 String svcId = getServiceId(contract);
                 Service service = serviceMap.get(svcId);
-                ServiceContract sc = new ServiceContract(contract.getApiKey(), service, application, contract.getPolicies());
+                ServiceContract sc = new ServiceContract(contract.getApiKey(), service, application,
+                        contract.getPlan(), contract.getPolicies());
                 final String contractId = getContractId(contract);
 
                 Index index = new Index.Builder(ESRegistryMarshalling.marshall(sc).string()).refresh(false)

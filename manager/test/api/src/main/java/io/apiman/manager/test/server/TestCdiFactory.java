@@ -17,12 +17,15 @@ package io.apiman.manager.test.server;
 
 import io.apiman.manager.api.core.IApiKeyGenerator;
 import io.apiman.manager.api.core.IIdmStorage;
+import io.apiman.manager.api.core.IMetricsAccessor;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.UuidApiKeyGenerator;
 import io.apiman.manager.api.core.logging.ApimanLogger;
 import io.apiman.manager.api.core.logging.IApimanLogger;
 import io.apiman.manager.api.core.logging.StandardLoggerImpl;
+import io.apiman.manager.api.core.noop.NoOpMetricsAccessor;
+import io.apiman.manager.api.es.ESMetricsAccessor;
 import io.apiman.manager.api.es.EsStorage;
 import io.apiman.manager.api.jpa.JpaStorage;
 import io.apiman.manager.api.jpa.roles.JpaIdmStorage;
@@ -104,13 +107,38 @@ public class TestCdiFactory {
         }
     }
 
-    @Produces @ApplicationScoped
-    public static JestClient provideJestClient() {
+    @Produces @ApplicationScoped @Named("storage")
+    public static JestClient provideStorageJestClient() {
         TestType testType = ManagerTestUtils.getTestType();
         if (testType == TestType.jpa) {
             return null;
         } else if (testType == TestType.es) {
             return ManagerApiTestServer.ES_CLIENT;
+        } else {
+            throw new RuntimeException("Unexpected test type: " + testType);
+        }
+    }
+
+    @Produces @ApplicationScoped @Named("metrics")
+    public static JestClient provideMetricsJestClient() {
+        TestType testType = ManagerTestUtils.getTestType();
+        if (testType == TestType.jpa) {
+            return null;
+        } else if (testType == TestType.es) {
+            return ManagerApiTestServer.ES_CLIENT;
+        } else {
+            throw new RuntimeException("Unexpected test type: " + testType);
+        }
+    }
+
+    @Produces @ApplicationScoped
+    public static IMetricsAccessor provideMetricsAccessor(@New NoOpMetricsAccessor noopMetrics, @New ESMetricsAccessor esMetrics) {
+        TestType testType = ManagerTestUtils.getTestType();
+        if (testType == TestType.jpa) {
+            // Currently do not support metrics in the JPA test environment
+            return noopMetrics;
+        } else if (testType == TestType.es) {
+            return esMetrics;
         } else {
             throw new RuntimeException("Unexpected test type: " + testType);
         }

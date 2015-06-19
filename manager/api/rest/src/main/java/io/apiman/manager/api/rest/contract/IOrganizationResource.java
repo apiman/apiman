@@ -26,6 +26,9 @@ import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.contracts.NewContractBean;
 import io.apiman.manager.api.beans.idm.GrantRolesBean;
 import io.apiman.manager.api.beans.members.MemberBean;
+import io.apiman.manager.api.beans.metrics.UsageHistogramBean;
+import io.apiman.manager.api.beans.metrics.UsagePerAppBean;
+import io.apiman.manager.api.beans.metrics.UsagePerPlanBean;
 import io.apiman.manager.api.beans.orgs.NewOrganizationBean;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.beans.orgs.UpdateOrganizationBean;
@@ -92,12 +95,12 @@ import javax.ws.rs.core.Response;
 
 /**
  * The Organization API.
- * 
+ *
  * @author eric.wittmann@redhat.com
  */
 @Path("organizations")
 public interface IOrganizationResource {
-    
+
     /**
      * Use this endpoint to create a new Organization.
      * @summary Create Organization
@@ -111,7 +114,7 @@ public interface IOrganizationResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public OrganizationBean create(NewOrganizationBean bean) throws OrganizationAlreadyExistsException, NotAuthorizedException;
-    
+
     /**
      * Use this endpoint to get information about a single Organization
      * by its ID.
@@ -145,8 +148,8 @@ public interface IOrganizationResource {
             throws OrganizationNotFoundException, NotAuthorizedException;
 
     /**
-     * Returns audit activity information for a single Organization.  The audit 
-     * information that is returned represents all of the activity associated 
+     * Returns audit activity information for a single Organization.  The audit
+     * information that is returned represents all of the activity associated
      * with this Organization (i.e. an audit log for everything in the Organization).
      * @summary Get Organization Activity
      * @param organizationId The Organization ID.
@@ -171,7 +174,7 @@ public interface IOrganizationResource {
 
     /**
      * Use this endpoint to create a new Application.  Note that it is important to also
-     * create an initial version of the Application (e.g. 1.0).  This can either be done 
+     * create an initial version of the Application (e.g. 1.0).  This can either be done
      * by including the 'initialVersion' property in the request, or by immediately following
      * up with a call to "Create Application Version".  If the former is done, then a first
      * Application version will be created automatically by this endpoint.
@@ -307,7 +310,7 @@ public interface IOrganizationResource {
             @PathParam("applicationId") String applicationId) throws ApplicationNotFoundException, NotAuthorizedException;
 
     /**
-     * Use this endpoint to get detailed information about a single version of 
+     * Use this endpoint to get detailed information about a single version of
      * an Application.
      * @summary Get Application Version
      * @param organizationId The Organization ID.
@@ -351,7 +354,7 @@ public interface IOrganizationResource {
 
     /**
      * Use this endpoint to create a Contract between the Application and a Service.  In order
-     * to create a Contract, the caller must specify the Organization, ID, and Version of the 
+     * to create a Contract, the caller must specify the Organization, ID, and Version of the
      * Service.  Additionally the caller must specify the ID of the Plan it wished to use for
      * the Contract with the Service.
      * @summary Create a Service Contract
@@ -366,7 +369,7 @@ public interface IOrganizationResource {
      * @throws ApplicationNotFoundException when trying to get, update, or delete an application that does not exist
      * @throws ServiceNotFoundException when trying to get, update, or delete an service that does not exist
      * when trying to get, update, or delete an plan that does not exist
-     * @throws PlanNotFoundException when trying to get, update, or delete an plan that does not exist 
+     * @throws PlanNotFoundException when trying to get, update, or delete an plan that does not exist
      * @throws ContractAlreadyExistsException when trying to create an Contract that already exists
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
@@ -624,9 +627,9 @@ public interface IOrganizationResource {
             NotAuthorizedException;
 
     /**
-     * Use this endpoint to change the order of Policies for an Application.  When a 
+     * Use this endpoint to change the order of Policies for an Application.  When a
      * Policy is added to the Application, it is added as the last Policy in the list
-     * of Application Policies.  Sometimes the order of Policies is important, so it 
+     * of Application Policies.  Sometimes the order of Policies is important, so it
      * is often useful to re-order the Policies by invoking this endpoint.  The body
      * of the request should include all of the Policies for the Application, in the
      * new desired order.  Note that only the IDs of each of the Policies is actually
@@ -656,7 +659,7 @@ public interface IOrganizationResource {
 
     /**
      * Use this endpoint to create a new Service.  Note that it is important to also
-     * create an initial version of the Service (e.g. 1.0).  This can either be done 
+     * create an initial version of the Service (e.g. 1.0).  This can either be done
      * by including the 'initialVersion' property in the request, or by immediately following
      * up with a call to "Create Service Version".  If the former is done, then a first
      * Service version will be created automatically by this endpoint.
@@ -676,7 +679,7 @@ public interface IOrganizationResource {
     @Produces(MediaType.APPLICATION_JSON)
     public ServiceBean createService(@PathParam("organizationId") String organizationId, NewServiceBean bean)
             throws OrganizationNotFoundException, ServiceAlreadyExistsException, NotAuthorizedException;
-    
+
     /**
      * Use this endpoint to retrieve information about a single Service by ID.  Note
      * that this only returns information about the Service, not about any particular
@@ -792,7 +795,7 @@ public interface IOrganizationResource {
             @PathParam("serviceId") String serviceId) throws ServiceNotFoundException, NotAuthorizedException;
 
     /**
-     * Use this endpoint to get detailed information about a single version of 
+     * Use this endpoint to get detailed information about a single version of
      * a Service.
      * @summary Get Service Version
      * @param organizationId The Organization ID.
@@ -810,7 +813,7 @@ public interface IOrganizationResource {
     public ServiceVersionBean getServiceVersion(@PathParam("organizationId") String organizationId,
             @PathParam("serviceId") String serviceId, @PathParam("version") String version)
             throws ServiceVersionNotFoundException, NotAuthorizedException;
-    
+
     /**
      * Use this endpoint to retrieve the Service's definition document.  A service
      * definition document can be several different types, depending on the Service
@@ -834,8 +837,8 @@ public interface IOrganizationResource {
             throws ServiceVersionNotFoundException, NotAuthorizedException;
 
     /**
-     * Use this endpoint to get information about the Managed Service's gateway 
-     * endpoint.  In other words, this returns the actual live endpoint on the 
+     * Use this endpoint to get information about the Managed Service's gateway
+     * endpoint.  In other words, this returns the actual live endpoint on the
      * API Gateway - the endpoint that a client should use when invoking the Service.
      * @summary Get Service Endpoint
      * @param organizationId The Organization ID.
@@ -854,7 +857,7 @@ public interface IOrganizationResource {
     public ServiceVersionEndpointSummaryBean getServiceVersionEndpointInfo(@PathParam("organizationId") String organizationId,
             @PathParam("serviceId") String serviceId, @PathParam("version") String version)
             throws ServiceVersionNotFoundException, InvalidServiceStatusException, GatewayNotFoundException;
-    
+
     /**
      * Use this endpoint to update information about a single version of a Service.
      * @summary Update Service Version
@@ -879,8 +882,8 @@ public interface IOrganizationResource {
             InvalidServiceStatusException;
 
     /**
-     * Use this endpoint to update the Service's definition document.  A service 
-     * definition will vary depending on the type of service, and the type of 
+     * Use this endpoint to update the Service's definition document.  A service
+     * definition will vary depending on the type of service, and the type of
      * definition used.  For example, it might be a Swagger document or a WSDL file.
      * To use this endpoint, simply PUT the updated Service Definition document
      * in its entirety, making sure to set the Content-Type appropriately for the
@@ -889,9 +892,9 @@ public interface IOrganizationResource {
      * <br />
      * Whenever a service's definition is updated, the "definitionType" property of
      * that service is automatically set based on the request Content-Type.  There
-     * is no other way to set the service's definition type property.  The following 
+     * is no other way to set the service's definition type property.  The following
      * is a map of Content-Type to service definition type.
-     * 
+     *
      * <table>
      *   <thead>
      *     <tr><th>Content Type</th><th>Service Definition Type</th></tr>
@@ -916,7 +919,7 @@ public interface IOrganizationResource {
     @Path("{organizationId}/services/{serviceId}/versions/{version}/definition")
     @Consumes({ MediaType.APPLICATION_JSON, "application/wsdl+xml", "application/x-yaml" })
     public void updateServiceDefinition(@PathParam("organizationId") String organizationId,
-            @PathParam("serviceId") String serviceId, @PathParam("version") String version) 
+            @PathParam("serviceId") String serviceId, @PathParam("version") String version)
             throws ServiceVersionNotFoundException, NotAuthorizedException, InvalidServiceStatusException;
 
     /**
@@ -1055,7 +1058,7 @@ public interface IOrganizationResource {
             PolicyNotFoundException, NotAuthorizedException;
 
     /**
-     * Use this endpoint to delete a Service's definition document.  When this 
+     * Use this endpoint to delete a Service's definition document.  When this
      * is done, the "definitionType" field on the Service will be set to None.
      * @summary Remove Service Definition
      * @param organizationId The Organization ID.
@@ -1096,9 +1099,9 @@ public interface IOrganizationResource {
             NotAuthorizedException;
 
     /**
-     * Use this endpoint to change the order of Policies for a Service.  When a 
+     * Use this endpoint to change the order of Policies for a Service.  When a
      * Policy is added to the Service, it is added as the last Policy in the list
-     * of Service Policies.  Sometimes the order of Policies is important, so it 
+     * of Service Policies.  Sometimes the order of Policies is important, so it
      * is often useful to re-order the Policies by invoking this endpoint.  The body
      * of the request should include all of the Policies for the Service, in the
      * new desired order.  Note that only the IDs of each of the Policies is actually
@@ -1176,7 +1179,7 @@ public interface IOrganizationResource {
 
     /**
      * Use this endpoint to create a new Plan.  Note that it is important to also
-     * create an initial version of the Plan (e.g. 1.0).  This can either be done 
+     * create an initial version of the Plan (e.g. 1.0).  This can either be done
      * by including the 'initialVersion' property in the request, or by immediately following
      * up with a call to "Create Plan Version".  If the former is done, then a first
      * Plan version will be created automatically by this endpoint.
@@ -1196,7 +1199,7 @@ public interface IOrganizationResource {
     @Produces(MediaType.APPLICATION_JSON)
     public PlanBean createPlan(@PathParam("organizationId") String organizationId, NewPlanBean bean)
             throws OrganizationNotFoundException, PlanAlreadyExistsException, NotAuthorizedException;
-    
+
     /**
      * Use this endpoint to retrieve information about a single Plan by ID.  Note
      * that this only returns information about the Plan, not about any particular
@@ -1209,7 +1212,7 @@ public interface IOrganizationResource {
      * @statuscode 404 If the Plan does not exist.
      * @return An Plan.
      * when trying to get, update, or delete an plan that does not exist
-     * @throws PlanNotFoundException when trying to get, update, or delete an plan that does not exist 
+     * @throws PlanNotFoundException when trying to get, update, or delete an plan that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
@@ -1231,7 +1234,7 @@ public interface IOrganizationResource {
      * @statuscode 404 If the Plan does not exist.
      * @return A list of audit activity entries.
      * when trying to get, update, or delete an plan that does not exist
-     * @throws PlanNotFoundException when trying to get, update, or delete an plan that does not exist 
+     * @throws PlanNotFoundException when trying to get, update, or delete an plan that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
@@ -1287,7 +1290,7 @@ public interface IOrganizationResource {
      * @statuscode 404 If the Plan does not exist.
      * @return Full details about the newly created Plan version.
      * when trying to get, update, or delete an plan that does not exist
-     * @throws PlanNotFoundException when trying to get, update, or delete an plan that does not exist 
+     * @throws PlanNotFoundException when trying to get, update, or delete an plan that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @POST
@@ -1306,7 +1309,7 @@ public interface IOrganizationResource {
      * @statuscode 200 If the list of Plan versions is successfully returned.
      * @return A list of Plans.
      * when trying to get, update, or delete an plan that does not exist
-     * @throws PlanNotFoundException when trying to get, update, or delete an plan that does not exist 
+     * @throws PlanNotFoundException when trying to get, update, or delete an plan that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
      */
     @GET
@@ -1316,7 +1319,7 @@ public interface IOrganizationResource {
             @PathParam("planId") String planId) throws PlanNotFoundException, NotAuthorizedException;
 
     /**
-     * Use this endpoint to get detailed information about a single version of 
+     * Use this endpoint to get detailed information about a single version of
      * a Plan.
      * @summary Get Plan Version
      * @param organizationId The Organization ID.
@@ -1473,9 +1476,9 @@ public interface IOrganizationResource {
             NotAuthorizedException;
 
     /**
-     * Use this endpoint to change the order of Policies for a Plan.  When a 
+     * Use this endpoint to change the order of Policies for a Plan.  When a
      * Policy is added to the Plan, it is added as the last Policy in the list
-     * of Plan Policies.  Sometimes the order of Policies is important, so it 
+     * of Plan Policies.  Sometimes the order of Policies is important, so it
      * is often useful to re-order the Policies by invoking this endpoint.  The body
      * of the request should include all of the Policies for the Plan, in the
      * new desired order.  Note that only the IDs of each of the Policies is actually
@@ -1571,4 +1574,80 @@ public interface IOrganizationResource {
     @Produces(MediaType.APPLICATION_JSON)
     public List<MemberBean> listMembers(@PathParam("organizationId") String organizationId)
             throws OrganizationNotFoundException, NotAuthorizedException;
+
+
+    /* -----------------------------------------------------------------
+     *                             Metrics
+     * ----------------------------------------------------------------- */
+
+    /**
+     * Retrieves metrics/analytics information for a specific service.  This will
+     * return a full histogram of request count data based on the provided date range
+     * and interval.  Valid intervals are:  month, week, day, hour, minute
+     *
+     * @summary Get Service Usage Metrics
+     * @param organizationId The organization ID.
+     * @param serviceId The service ID.
+     * @param version The service version.
+     * @param interval A valid interval (month, week, day, hour, minute)
+     * @param fromDate The start of a valid date range.
+     * @param toDate The end of a valid date range.
+     * @statuscode 200 If the metrics data is successfully returned.
+     * @return Usage metrics information.
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
+     */
+    @GET
+    @Path("{organizationId}/services/{serviceId}/versions/{version}/metrics/usage")
+    @Produces(MediaType.APPLICATION_JSON)
+    public UsageHistogramBean getUsage(@PathParam("organizationId") String organizationId,
+            @PathParam("serviceId") String serviceId, @PathParam("version") String version,
+            @QueryParam("interval") String interval, @QueryParam("from") String fromDate,
+            @QueryParam("to") String toDate) throws NotAuthorizedException;
+
+    /**
+     * Retrieves metrics/analytics information for a specific service.  This will
+     * return request count data broken down by application.  It basically answers
+     * the question "who is calling my service?".
+     *
+     * @summary Get Service Usage Metrics (per App)
+     * @param organizationId The organization ID.
+     * @param serviceId The service ID.
+     * @param version The service version.
+     * @param fromDate The start of a valid date range.
+     * @param toDate The end of a valid date range.
+     * @statuscode 200 If the metrics data is successfully returned.
+     * @return Usage metrics information.
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
+     */
+    @GET
+    @Path("{organizationId}/services/{serviceId}/versions/{version}/metrics/appUsage")
+    @Produces(MediaType.APPLICATION_JSON)
+    public UsagePerAppBean getUsagePerApp(
+            @PathParam("organizationId") String organizationId, @PathParam("serviceId") String serviceId,
+            @PathParam("version") String version, @QueryParam("from") String fromDate,
+            @QueryParam("to") String toDate) throws NotAuthorizedException;
+
+
+    /**
+     * Retrieves metrics/analytics information for a specific service.  This will
+     * return request count data broken down by plan.  It basically answers
+     * the question "which service plans are most used?".
+     *
+     * @summary Get Service Usage Metrics (per Plan)
+     * @param organizationId The organization ID.
+     * @param serviceId The service ID.
+     * @param version The service version.
+     * @param fromDate The start of a valid date range.
+     * @param toDate The end of a valid date range.
+     * @statuscode 200 If the metrics data is successfully returned.
+     * @return Usage metrics information.
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
+     */
+    @GET
+    @Path("{organizationId}/services/{serviceId}/versions/{version}/metrics/planUsage")
+    @Produces(MediaType.APPLICATION_JSON)
+    public UsagePerPlanBean getUsagePerPlan(
+            @PathParam("organizationId") String organizationId, @PathParam("serviceId") String serviceId,
+            @PathParam("version") String version, @QueryParam("from") String fromDate,
+            @QueryParam("to") String toDate) throws NotAuthorizedException;
 }
