@@ -136,7 +136,7 @@
           </execution>
           <execution>
             <id>postgresql-ddl</id>
-            <phase>process-resources</phase>
+            <!--<phase>process-resources</phase>-->
             <goals>
               <goal>updateSQL</goal>
             </goals>
@@ -153,7 +153,7 @@
           </execution>
           <execution>
             <id>mysql-ddl</id>
-            <phase>process-resources</phase>
+            <!--<phase>process-resources</phase>-->
             <goals>
               <goal>updateSQL</goal>
             </goals>
