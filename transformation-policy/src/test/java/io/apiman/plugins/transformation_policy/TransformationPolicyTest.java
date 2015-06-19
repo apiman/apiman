@@ -1,20 +1,17 @@
 package io.apiman.plugins.transformation_policy;
 
 import static org.junit.Assert.*;
-import io.apiman.gateway.engine.beans.ServiceRequest;
-import io.apiman.gateway.engine.beans.ServiceResponse;
-import io.apiman.plugins.transformation_policy.transformer.XmlToJsonTransformer;
+import io.apiman.plugins.transformation_policy.backendservice.ConsumeJsonBackEndService;
+import io.apiman.plugins.transformation_policy.backendservice.ConsumeXmlBackEndService;
+import io.apiman.plugins.transformation_policy.backendservice.ProduceJsonBackEndService;
+import io.apiman.plugins.transformation_policy.backendservice.ProduceXmlBackEndService;
 import io.apiman.test.policies.ApimanPolicyTest;
 import io.apiman.test.policies.BackEndService;
 import io.apiman.test.policies.Configuration;
-import io.apiman.test.policies.IPolicyTestBackEndService;
-import io.apiman.test.policies.PolicyTestBackEndServiceResponse;
 import io.apiman.test.policies.PolicyTestRequest;
 import io.apiman.test.policies.PolicyTestRequestType;
 import io.apiman.test.policies.PolicyTestResponse;
 import io.apiman.test.policies.TestingPolicy;
-
-import java.io.UnsupportedEncodingException;
 
 import org.junit.Test;
 
@@ -36,23 +33,6 @@ public class TransformationPolicyTest extends ApimanPolicyTest {
         assertEquals(expectedResponse, response.body());
     }
 
-    public static class ProduceJsonBackEndService implements IPolicyTestBackEndService {
-
-        @Override
-        public PolicyTestBackEndServiceResponse invoke(ServiceRequest serviceRequest, byte[] requestBody) {
-            try {
-                String responseBody = "{\"name\":\"apiman\"}";
-                ServiceResponse serviceResponse = new ServiceResponse();
-                serviceResponse.getHeaders().put("Content-Type", "application/json");
-                serviceResponse.getHeaders().put("Content-Length", String.valueOf(responseBody.getBytes("UTF-8").length));
-                return new PolicyTestBackEndServiceResponse(serviceResponse, responseBody);
-            } catch (UnsupportedEncodingException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        
-    }
-    
     @Test
     @Configuration("{\"clientFormat\": \"XML\", \"serverFormat\": \"JSON\"}")
     @BackEndService(ConsumeJsonBackEndService.class)
@@ -64,19 +44,6 @@ public class TransformationPolicyTest extends ApimanPolicyTest {
         request.body(xml);
         
         send(request);
-    }
-
-    public static class ConsumeJsonBackEndService implements IPolicyTestBackEndService {
-
-        @Override
-        public PolicyTestBackEndServiceResponse invoke(ServiceRequest serviceRequest, byte[] requestBody) {
-            if (!new String(requestBody).equals("<a><b>test</b></a>")) {
-                throw new AssertionError();
-            }
-            ServiceResponse serviceResponse = new ServiceResponse();
-            return new PolicyTestBackEndServiceResponse(serviceResponse, null);
-        }
-        
     }
 
     @Test
@@ -93,23 +60,6 @@ public class TransformationPolicyTest extends ApimanPolicyTest {
         assertEquals(expectedResponse, response.body());
     }
 
-    public static class ProduceXmlBackEndService implements IPolicyTestBackEndService {
-
-        @Override
-        public PolicyTestBackEndServiceResponse invoke(ServiceRequest serviceRequest, byte[] requestBody) {
-            try {
-                String responseBody = "<name>apiman</name>";
-                ServiceResponse serviceResponse = new ServiceResponse();
-                serviceResponse.getHeaders().put("Content-Type", "application/xml");
-                serviceResponse.getHeaders().put("Content-Length", String.valueOf(responseBody.getBytes("UTF-8").length));
-                return new PolicyTestBackEndServiceResponse(serviceResponse, responseBody);
-            } catch (UnsupportedEncodingException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        
-    }
-
     @Test
     @Configuration("{\"clientFormat\": \"JSON\", \"serverFormat\": \"XML\"}")
     @BackEndService(ConsumeXmlBackEndService.class)
@@ -123,19 +73,6 @@ public class TransformationPolicyTest extends ApimanPolicyTest {
         send(request);
     }
 
-    public static class ConsumeXmlBackEndService implements IPolicyTestBackEndService {
-
-        @Override
-        public PolicyTestBackEndServiceResponse invoke(ServiceRequest serviceRequest, byte[] requestBody) {
-            if (!new String(requestBody).equals("{\"name\":\"apiman\"}")) {
-                throw new AssertionError();
-            }
-            ServiceResponse serviceResponse = new ServiceResponse();
-            return new PolicyTestBackEndServiceResponse(serviceResponse, null);
-        }
-        
-    }
-    
     @Test
     @Configuration("{\"clientFormat\": \"JSON\", \"serverFormat\": \"JSON\"}")
     @BackEndService(ProduceJsonBackEndService.class)

@@ -64,7 +64,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
 
-    <version.apiman>1.1.3.Final</version.apiman>
+    <version.apiman>1.1.4-SNAPSHOT</version.apiman>
 
     <version.javadoc.plugin>2.10.1</version.javadoc.plugin>
     <version.compiler.plugin>3.2</version.compiler.plugin>
@@ -81,7 +81,8 @@
     <version.org.keycloak>1.2.0.CR1</version.org.keycloak>
     <version.org.bouncycastle>1.51</version.org.bouncycastle>
     <version.net.iharder>2.3.8</version.net.iharder>
-
+    <version.org.json>20140107</version.org.json>
+    <version.jackson-dataformat-xml>2.5.4</version.jackson-dataformat-xml>
 
     <!-- Distribution URLs -->
     <jboss.releases.repo.url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</jboss.releases.repo.url>
@@ -178,6 +179,16 @@
         <artifactId>base64</artifactId>
         <version>${version.net.iharder}</version>
       </dependency>
+      <dependency>
+        <groupId>org.json</groupId>
+        <artifactId>json</artifactId>
+        <version>${version.org.json}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.dataformat</groupId>
+        <artifactId>jackson-dataformat-xml</artifactId>
+        <version>${version.jackson-dataformat-xml}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -190,6 +201,7 @@
     <module>http-security-policy</module>
     <module>simple-header-policy</module>
     <module>jsonp-policy</module>
+    <module>transformation-policy</module>
   </modules>
 
   <build>

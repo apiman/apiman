@@ -1,0 +1,114 @@
+{
+  "catalog": {
+    "product": {
+      "catalog_item": [
+        {
+          "item_number": "QWZ5671",
+          "price": 39.95,
+          "gender": "Men's",
+          "size": [
+            {
+              "description": "Medium",
+              "color_swatch": [
+                {
+                  "content": "Red",
+                  "image": "red_cardigan.jpg"
+                },
+                {
+                  "content": "Burgundy",
+                  "image": "burgundy_cardigan.jpg"
+                }
+              ]
+            },
+            {
+              "description": "Large",
+              "color_swatch": [
+                {
+                  "content": "Red",
+                  "image": "red_cardigan.jpg"
+                },
+                {
+                  "content": "Burgundy",
+                  "image": "burgundy_cardigan.jpg"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "item_number": "RRX9856",
+          "price": "42.50",
+          "gender": "Women's",
+          "size": [
+            {
+              "description": "Small",
+              "color_swatch": [
+                {
+                  "content": "Red",
+                  "image": "red_cardigan.jpg"
+                },
+                {
+                  "content": "Navy",
+                  "image": "navy_cardigan.jpg"
+                },
+                {
+                  "content": "Burgundy",
+                  "image": "burgundy_cardigan.jpg"
+                }
+              ]
+            },
+            {
+              "description": "Medium",
+              "color_swatch": [
+                {
+                  "content": "Red",
+                  "image": "red_cardigan.jpg"
+                },
+                {
+                  "content": "Navy",
+                  "image": "navy_cardigan.jpg"
+                },
+                {
+                  "content": "Burgundy",
+                  "image": "burgundy_cardigan.jpg"
+                },
+                {
+                  "content": "Black",
+                  "image": "black_cardigan.jpg"
+                }
+              ]
+            },
+            {
+              "description": "Large",
+              "color_swatch": [
+                {
+                  "content": "Navy",
+                  "image": "navy_cardigan.jpg"
+                },
+                {
+                  "content": "Black",
+                  "image": "black_cardigan.jpg"
+                }
+              ]
+            },
+            {
+              "description": "Extra Large",
+              "color_swatch": [
+                {
+                  "content": "Burgundy",
+                  "image": "burgundy_cardigan.jpg"
+                },
+                {
+                  "content": "Black",
+                  "image": "black_cardigan.jpg"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "description": "Cardigan Sweater",
+      "product_image": "cardigan.jpg"
+    }
+  }
+}

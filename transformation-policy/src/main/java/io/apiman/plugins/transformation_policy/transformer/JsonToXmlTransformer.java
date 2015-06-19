@@ -8,13 +8,13 @@ import org.json.XML;
 public class JsonToXmlTransformer implements DataTransformer {
 
 	public String transform(String json) {
-		Object value;
+		Object object;
 		try {
-			value = new JSONObject(json);
+			object = new JSONObject(json);
 		} catch (JSONException e) {
-			value = new JSONArray(json);
+			object = new JSONArray(json);
 		}
-		return XML.toString(new JSONObject().put("root", value));
+		return XML.toString(object, "root");
 	}
 	
 }

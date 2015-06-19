@@ -11,29 +11,26 @@
   <packaging>war</packaging>
   <name>apiman-plugins-transformation-policy</name>
   <dependencies>
+    <!-- library for JSON/XML transformation -->
     <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
-      <version>20140107</version>
     </dependency>
     <!-- apiman dependencies (must be excluded from the WAR) -->
     <dependency>
       <groupId>io.apiman</groupId>
       <artifactId>apiman-gateway-engine-core</artifactId>
-      <version>1.1.4-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>io.apiman</groupId>
       <artifactId>apiman-gateway-engine-policies</artifactId>
-      <version>1.1.4-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <!-- Testing -->
     <dependency>
       <groupId>io.apiman</groupId>
       <artifactId>apiman-test-policies</artifactId>
-      <version>1.1.4-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -42,13 +39,8 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-all</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.apiman</groupId>
-      <artifactId>apiman-test-common</artifactId>
+      <groupId>com.fasterxml.jackson.dataformat</groupId>
+      <artifactId>jackson-dataformat-xml</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
