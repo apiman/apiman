@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+  http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+
+    <changeSet dbms="mysql" author="apiman" id="1434723514712-1">
+        <sql dbms="mysql">
+            CREATE TABLE `hibernate_sequence` (`next_val` bigint(20) DEFAULT NULL) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+            INSERT INTO `hibernate_sequence` VALUES (1);
+        </sql>
+    </changeSet>
+
+    <changeSet dbms="h2,postgresql" author="apiman" id="1434723514712-2">
+        <createSequence sequenceName="hibernate_sequence"/>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+    <changeSet author="apiman" id="1434686531709-1">
+        <insert tableName="gateways">
+            <column name="id" value="TheGateway"/>
+            <column name="configuration"
+                    value="$CRYPT::PmrNC1m25oGSO8fC3XnxKSepmQsbxEZCldn+hYi9bQ10m8m4tEOHYU7gz5w2hcY2cMRPB3Rw+4FZYoeX0n3qEvyk+2Yf+ym3nKw3UtmtHViHLibBzWPY+8OTtJlZVb8dA8yd0TMkiwqk1WGHLSbyjmQujZ07RBK9wkwDahYwQEw="/>
+            <column name="created_by" value="admin"/>
+            <column name="created_on" valueDate="2015-06-18 17:56:58.083"/>
+            <column name="description" value="This is the gateway."/>
+            <column name="modified_by" value="admin"/>
+            <column name="modified_on" valueDate="2015-06-18 17:56:58.083"/>
+            <column name="name" value="The Gateway"/>
+            <column name="type" value="REST"/>
+        </insert>
+    </changeSet>
+    <changeSet author="apiman" id="1434686531709-2">
+        <insert tableName="pd_templates">
+            <column name="policydef_id" value="IPWhitelistPolicy"/>
+            <column name="language"/>
+            <column name="template"
+                    value="Only requests that originate from the set of @{ipList.size()} configured IP address(es) will be allowed to invoke the managed service."/>
+        </insert>
+        <insert tableName="pd_templates">
+            <column name="policydef_id" value="IPBlacklistPolicy"/>
+            <column name="language"/>
+            <column name="template"
+                    value="Requests that originate from the set of @{ipList.size()} configured IP address(es) will be denied access to the managed service."/>
+        </insert>
+        <insert tableName="pd_templates">
+            <column name="policydef_id" value="BASICAuthenticationPolicy"/>
+            <column name="language"/>
+            <column name="template"
+                    value="Access to the service is protected by BASIC Authentication through the '@{realm}' authentication realm.  @if{forwardIdentityHttpHeader != null}Successfully authenticated requests will forward the authenticated identity to the back end service via the '@{forwardIdentityHttpHeader}' custom HTTP header.@end{}"/>
+        </insert>
+        <insert tableName="pd_templates">
+            <column name="policydef_id" value="RateLimitingPolicy"/>
+            <column name="language"/>
+            <column name="template"
+                    value="Consumers are limited to @{limit} requests per @{granularity} per @{period}."/>
+        </insert>
+        <insert tableName="pd_templates">
+            <column name="policydef_id" value="IgnoredResourcesPolicy"/>
+            <column name="language"/>
+            <column name="template"
+                    value="Requests matching any of the @{pathsToIgnore.size()} regular expressions provided will receive a 404 error code."/>
+        </insert>
+        <insert tableName="pd_templates">
+            <column name="policydef_id" value="AuthorizationPolicy"/>
+            <column name="language"/>
+            <column name="template"
+                    value="Appropriate authorization roles are required.  There are @{rules.size()} authorization rules defined."/>
+        </insert>
+    </changeSet>
+    <changeSet author="apiman" id="1434686531709-3">
+        <insert tableName="permissions">
+            <column name="role_id" value="OrganizationOwner"/>
+            <column name="permissions" valueNumeric="1"/>
+        </insert>
+        <insert tableName="permissions">
+            <column name="role_id" value="OrganizationOwner"/>
+            <column name="permissions" valueNumeric="2"/>
+        </insert>
+        <insert tableName="permissions">
+            <column name="role_id" value="OrganizationOwner"/>
+            <column name="permissions" valueNumeric="3"/>
+        </insert>
+        <insert tableName="permissions">
+            <column name="role_id" value="OrganizationOwner"/>
+            <column name="permissions" valueNumeric="6"/>
+        </insert>
+        <insert tableName="permissions">
+            <column name="role_id" value="OrganizationOwner"/>
+            <column name="permissions" valueNumeric="8"/>
+        </insert>
+        <insert tableName="permissions">
+            <column name="role_id" value="OrganizationOwner"/>
+            <column name="permissions" valueNumeric="5"/>
+        </insert>
+        <insert tableName="permissions">
+            <column name="role_id" value="OrganizationOwner"/>
+            <column name="permissions" valueNumeric="9"/>
+        </insert>
+        <insert tableName="permissions">
+            <column name="role_id" value="OrganizationOwner"/>
+            <column name="permissions" valueNumeric="11"/>
+        </insert>
+        <insert tableName="permissions">
+            <column name="role_id" value="OrganizationOwner"/>
+            <column name="permissions" valueNumeric="7"/>
+        </insert>
+        <insert tableName="permissions">
+            <column name="role_id" value="OrganizationOwner"/>
+            <column name="permissions" valueNumeric="4"/>
+        </insert>
+        <insert tableName="permissions">
+            <column name="role_id" value="OrganizationOwner"/>
+            <column name="permissions" valueNumeric="10"/>
+        </insert>
+        <insert tableName="permissions">
+            <column name="role_id" value="OrganizationOwner"/>
+            <column name="permissions" valueNumeric="0"/>
+        </insert>
+        <insert tableName="permissions">
+            <column name="role_id" value="ApplicationDeveloper"/>
+            <column name="permissions" valueNumeric="6"/>
+        </insert>
+        <insert tableName="permissions">
+            <column name="role_id" value="ApplicationDeveloper"/>
+            <column name="permissions" valueNumeric="8"/>
+        </insert>
+        <insert tableName="permissions">
+            <column name="role_id" value="ApplicationDeveloper"/>
+            <column name="permissions" valueNumeric="7"/>
+        </insert>
+        <insert tableName="permissions">
+            <column name="role_id" value="ServiceDeveloper"/>
+            <column name="permissions" valueNumeric="3"/>
+        </insert>
+        <insert tableName="permissions">
+            <column name="role_id" value="ServiceDeveloper"/>
+            <column name="permissions" valueNumeric="5"/>
+        </insert>
+        <insert tableName="permissions">
+            <column name="role_id" value="ServiceDeveloper"/>
+            <column name="permissions" valueNumeric="9"/>
+        </insert>
+        <insert tableName="permissions">
+            <column name="role_id" value="ServiceDeveloper"/>
+            <column name="permissions" valueNumeric="11"/>
+        </insert>
+        <insert tableName="permissions">
+            <column name="role_id" value="ServiceDeveloper"/>
+            <column name="permissions" valueNumeric="4"/>
+        </insert>
+        <insert tableName="permissions">
+            <column name="role_id" value="ServiceDeveloper"/>
+            <column name="permissions" valueNumeric="10"/>
+        </insert>
+    </changeSet>
+    <changeSet author="apiman" id="1434686531709-4">
+        <insert tableName="policydefs">
+            <column name="id" value="IPWhitelistPolicy"/>
+            <column name="description"
+                    value="Only requests that originate from a specified set of valid IP addresses will be allowed through."/>
+            <column name="form"/>
+            <column name="form_type" value="Default"/>
+            <column name="icon" value="filter"/>
+            <column name="name" value="IP Whitelist Policy"/>
+            <column name="plugin_id"/>
+            <column name="policy_impl" value="class:io.apiman.gateway.engine.policies.IPWhitelistPolicy"/>
+        </insert>
+        <insert tableName="policydefs">
+            <column name="id" value="IPBlacklistPolicy"/>
+            <column name="description"
+                    value="Requests that originate from a specified set of valid IP addresses will be denied access."/>
+            <column name="form"/>
+            <column name="form_type" value="Default"/>
+            <column name="icon" value="thumbs-down"/>
+            <column name="name" value="IP Blacklist Policy"/>
+            <column name="plugin_id"/>
+            <column name="policy_impl" value="class:io.apiman.gateway.engine.policies.IPBlacklistPolicy"/>
+        </insert>
+        <insert tableName="policydefs">
+            <column name="id" value="BASICAuthenticationPolicy"/>
+            <column name="description"
+                    value="Enables HTTP BASIC Authentication on a service.  Some configuration required."/>
+            <column name="form"/>
+            <column name="form_type" value="Default"/>
+            <column name="icon" value="lock"/>
+            <column name="name" value="BASIC Authentication Policy"/>
+            <column name="plugin_id"/>
+            <column name="policy_impl" value="class:io.apiman.gateway.engine.policies.BasicAuthenticationPolicy"/>
+        </insert>
+        <insert tableName="policydefs">
+            <column name="id" value="RateLimitingPolicy"/>
+            <column name="description"
+                    value="Enforces rate configurable request rate limits on a service.  This ensures that consumers can't overload a service with too many requests."/>
+            <column name="form"/>
+            <column name="form_type" value="Default"/>
+            <column name="icon" value="sliders"/>
+            <column name="name" value="Rate Limiting Policy"/>
+            <column name="plugin_id"/>
+            <column name="policy_impl" value="class:io.apiman.gateway.engine.policies.RateLimitingPolicy"/>
+        </insert>
+        <insert tableName="policydefs">
+            <column name="id" value="IgnoredResourcesPolicy"/>
+            <column name="description" value="Requests satisfying the provided regular expression will be ignored."/>
+            <column name="form"/>
+            <column name="form_type" value="Default"/>
+            <column name="icon" value="eye-slash"/>
+            <column name="name" value="Ignored Resources Policy"/>
+            <column name="plugin_id"/>
+            <column name="policy_impl" value="class:io.apiman.gateway.engine.policies.IgnoredResourcesPolicy"/>
+        </insert>
+        <insert tableName="policydefs">
+            <column name="id" value="AuthorizationPolicy"/>
+            <column name="description"
+                    value="Enables fine grained authorization to API resources based on authenticated user roles."/>
+            <column name="form"/>
+            <column name="form_type" value="Default"/>
+            <column name="icon" value="users"/>
+            <column name="name" value="Authorization Policy"/>
+            <column name="plugin_id"/>
+            <column name="policy_impl" value="class:io.apiman.gateway.engine.policies.AuthorizationPolicy"/>
+        </insert>
+    </changeSet>
+    <changeSet author="apiman" id="1434686531709-5">
+        <insert tableName="roles">
+            <column name="id" value="OrganizationOwner"/>
+            <column name="auto_grant" valueBoolean="true"/>
+            <column name="created_by" value="admin"/>
+            <column name="created_on" valueDate="2015-06-18 17:56:57.496"/>
+            <column name="description"
+                    value="Automatically granted to the user who creates an Organization.  Grants all privileges."/>
+            <column name="name" value="Organization Owner"/>
+        </insert>
+        <insert tableName="roles">
+            <column name="id" value="ApplicationDeveloper"/>
+            <column name="auto_grant"/>
+            <column name="created_by" value="admin"/>
+            <column name="created_on" valueDate="2015-06-18 17:56:57.632"/>
+            <column name="description"
+                    value="Users responsible for creating and managing applications should be granted this role within an Organization."/>
+            <column name="name" value="Application Developer"/>
+        </insert>
+        <insert tableName="roles">
+            <column name="id" value="ServiceDeveloper"/>
+            <column name="auto_grant"/>
+            <column name="created_by" value="admin"/>
+            <column name="created_on" valueDate="2015-06-18 17:56:57.641"/>
+            <column name="description"
+                    value="Users responsible for creating and managing services should be granted this role within an Organization."/>
+            <column name="name" value="Service Developer"/>
+        </insert>
+    </changeSet>
+    <changeSet author="apiman" id="1434686531709-6">
+        <insert tableName="users">
+            <column name="username" value="admin"/>
+            <column name="email" value="admin@example.org"/>
+            <column name="full_name" value="Admin"/>
+            <column name="joined_on" valueDate="2015-06-18 17:56:54.794"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>
