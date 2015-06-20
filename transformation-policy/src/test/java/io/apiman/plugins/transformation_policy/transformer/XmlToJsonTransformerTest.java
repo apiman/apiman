@@ -14,17 +14,17 @@ public class XmlToJsonTransformerTest {
 	private XmlToJsonTransformer transformer = new XmlToJsonTransformer();
 	
     @Test
-    public void xmlToJson_test1() throws Exception {
+    public void test_xmlToJson_1() throws Exception {
         test("xmlToJson-input1.xml", "xmlToJson-output1.json");
     }
 
 	@Test
-	public void xmlToJson_test2() throws Exception {
+	public void test_xmlToJson_2() throws Exception {
         test("xmlToJson-input2.xml", "xmlToJson-output2.json");
 	}
 
 	@Test
-	public void xmlToJson_test3() throws Exception {
+	public void test_xmlToJson_3() throws Exception {
         test("xmlToJson-input3.xml", "xmlToJson-output3.json");
 	}
 

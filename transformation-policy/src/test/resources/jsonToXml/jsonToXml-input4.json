@@ -1,0 +1,20 @@
+[
+  {
+    "name": "Belgian Waffles",
+    "price": "$5.95",
+    "description": "two of our famous Belgian Waffles with plenty of real maple syrup",
+    "calories": 650
+  },
+  {
+    "name": "Strawberry Belgian Waffles",
+    "price": "$7.95",
+    "description": "light Belgian waffles covered with strawberrys and whipped cream",
+    "calories": 900
+  },
+  {
+    "name": "Berry-Berry Belgian Waffles",
+    "price": "$8.95",
+    "description": "light Belgian waffles covered with an assortment of fresh berries and whipped cream",
+    "calories": 900
+  }
+]
