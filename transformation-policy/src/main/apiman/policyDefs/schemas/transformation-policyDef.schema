@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Transformation Policy Configuration",
+  "type": "object",
+  "properties": {
+    "clientFormat": {
+      "title": "Client Data Format",
+      "type": "string",
+      "enum": [
+        "JSON",
+        "XML"
+      ]
+    },
+    "serverFormat": {
+      "title": "Server Data Format",
+      "type": "string",
+      "enum": [
+        "JSON",
+        "XML"
+      ]
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "frameworkVersion" : 1.0,
+  "name" : "Transformation Policy Plugin",
+  "description" : "This plugin transforms the data from one format to another.",
+  "version" : "${project.version}"
+}
