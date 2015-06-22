@@ -41,7 +41,7 @@ module Apiman {
                 } else {
                     Logger.log("======= xcol: " + JSON.stringify(xcol));
                     Logger.log("======= reqs: " + JSON.stringify(reqCol));
-                    var usageChart = c3.generate({
+                    usageChart = c3.generate({
                         size: {
                             height: 200
                         },
@@ -165,6 +165,10 @@ module Apiman {
                 }
                 
                 // Refresh the usage chart
+                if (usageChart) {
+                    usageChart.destroy();
+                    usageChart = null;
+                }
                 MetricsSvcs.getUsage(params.org, params.service, params.version, interval, from, to, function(data) {
                     $scope.usageChartLoading = false;
                     renderUsageChart(data);
@@ -175,6 +179,10 @@ module Apiman {
                 });
                 
                 // Refresh the app usage chart
+                if (usageByAppChart) {
+                    usageByAppChart.destroy();
+                    usageByAppChart = null;
+                }
                 MetricsSvcs.getUsagePerApp(params.org, params.service, params.version, from, to, function(data) {
                     $scope.appUsageChartLoading = false;
                     renderAppUsageChart(data);
@@ -185,6 +193,10 @@ module Apiman {
                 });
                 
                 // Refresh the plan usage chart
+                if (usageByPlanChart) {
+                    usageByPlanChart.destroy();
+                    usageByPlanChart = null;
+                }
                 MetricsSvcs.getUsagePerPlan(params.org, params.service, params.version, from, to, function(data) {
                     $scope.planUsageChartLoading = false;
                     renderPlanUsageChart(data);

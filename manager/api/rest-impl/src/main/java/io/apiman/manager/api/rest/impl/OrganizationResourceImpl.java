@@ -131,9 +131,7 @@ import io.apiman.manager.api.security.ISecurityContext;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -151,7 +149,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
-import org.apache.commons.lang.time.DateUtils;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.format.ISODateTimeFormat;
 
 /**
  * Implementation of the Organization API.
@@ -162,7 +162,9 @@ import org.apache.commons.lang.time.DateUtils;
 public class OrganizationResourceImpl implements IOrganizationResource {
 
     @SuppressWarnings("nls")
-    private static final String [] DATE_FORMATS = {
+    public static final String [] DATE_FORMATS = {
+        "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+        "yyyy-MM-dd'T'HH:mm:ss'Z'",
         "yyyy-MM-dd'T'HH:mm:ssz",
         "yyyy-MM-dd'T'HH:mm:ss",
         "yyyy-MM-dd'T'HH:mm",
@@ -2009,8 +2011,8 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
         // TODO put in range and interval restrictions - e.g. cannot request a 2 year range with a "minute" interval - that's too many data points
 
-        Date from = parseFromDate(fromDate);
-        Date to = parseToDate(toDate);
+        DateTime from = parseFromDate(fromDate);
+        DateTime to = parseToDate(toDate);
         if (interval == null) {
             interval = "day"; //$NON-NLS-1$
         }
@@ -2026,8 +2028,8 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
             throw ExceptionFactory.notAuthorizedException();
 
-        Date from = parseFromDate(fromDate);
-        Date to = parseToDate(toDate);
+        DateTime from = parseFromDate(fromDate);
+        DateTime to = parseToDate(toDate);
         return metrics.getUsagePerApp(organizationId, serviceId, version, from, to);
     }
 
@@ -2040,8 +2042,8 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
             throw ExceptionFactory.notAuthorizedException();
 
-        Date from = parseFromDate(fromDate);
-        Date to = parseToDate(toDate);
+        DateTime from = parseFromDate(fromDate);
+        DateTime to = parseToDate(toDate);
         return metrics.getUsagePerPlan(organizationId, serviceId, version, from, to);
     }
 
@@ -2943,40 +2945,37 @@ public class OrganizationResourceImpl implements IOrganizationResource {
      * Parse the to date query param.
      * @param fromDate
      */
-    private Date parseFromDate(String fromDate) {
-        Calendar defaultFrom = Calendar.getInstance();
+    private DateTime parseFromDate(String fromDate) {
         // Default to the last 30 days
-        defaultFrom.add(Calendar.DAY_OF_YEAR, -30);
-        defaultFrom.set(Calendar.HOUR, 0);
-        defaultFrom.set(Calendar.MINUTE, 0);
-        defaultFrom.set(Calendar.SECOND, 0);
-        defaultFrom.set(Calendar.MILLISECOND, 0);
-        return parseDate(fromDate, defaultFrom.getTime());
+        DateTime defaultFrom = DateTime.now().withZone(DateTimeZone.UTC).minusDays(30).withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0);
+        return parseDate(fromDate, defaultFrom);
     }
 
     /**
      * Parse the from date query param.
      * @param fromDate
      */
-    private Date parseToDate(String toDate) {
-        Date defaultTo = new Date();
-        return parseDate(toDate, defaultTo);
+    private DateTime parseToDate(String toDate) {
+        // Default to now
+        return parseDate(toDate, DateTime.now().withZone(DateTimeZone.UTC));
     }
 
     /**
      * Parses a query param representing a date into an actual date object.
      * @param dateStr
      */
-    private static Date parseDate(String dateStr, Date defaultDate) {
+    private static DateTime parseDate(String dateStr, DateTime defaultDate) {
         if ("now".equals(dateStr)) { //$NON-NLS-1$
-            return new Date();
+            return DateTime.now();
         }
-        try {
-            Date date = DateUtils.parseDate(dateStr, DATE_FORMATS);
-            if (date != null) {
-                return date;
-            }
-        } catch (ParseException e) {
+        if (dateStr.length() == 10) {
+            return ISODateTimeFormat.date().withZoneUTC().parseDateTime(dateStr);
+        }
+        if (dateStr.length() == 20) {
+            return ISODateTimeFormat.dateTimeNoMillis().withZoneUTC().parseDateTime(dateStr);
+        }
+        if (dateStr.length() == 24) {
+            return ISODateTimeFormat.dateTime().withZoneUTC().parseDateTime(dateStr);
         }
         return defaultDate;
     }

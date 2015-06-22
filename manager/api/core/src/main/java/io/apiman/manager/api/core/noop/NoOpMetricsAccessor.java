@@ -22,10 +22,10 @@ import io.apiman.manager.api.beans.metrics.UsagePerAppBean;
 import io.apiman.manager.api.beans.metrics.UsagePerPlanBean;
 import io.apiman.manager.api.core.IMetricsAccessor;
 
-import java.util.Date;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Alternative;
+
+import org.joda.time.DateTime;
 
 /**
  * A no-op implementaiton of {@link IMetricsAccessor}.  Useful for situations where
@@ -47,7 +47,7 @@ public class NoOpMetricsAccessor implements IMetricsAccessor {
      */
     @Override
     public UsageHistogramBean getUsage(String organizationId, String serviceId, String version,
-            UsageHistogramIntervalType interval, Date from, Date to) {
+            UsageHistogramIntervalType interval, DateTime from, DateTime to) {
         UsageHistogramBean rval = new UsageHistogramBean();
         rval.getData().add(new UsageDataPoint("2015-06-01T00:00:00.000Z", 17));
         rval.getData().add(new UsageDataPoint("2015-06-01T01:00:00.000Z", 1));
@@ -76,7 +76,7 @@ public class NoOpMetricsAccessor implements IMetricsAccessor {
      */
     @Override
     public UsagePerAppBean getUsagePerApp(String organizationId, String serviceId, String version,
-            Date fromDate, Date toDate) {
+            DateTime from, DateTime to) {
         UsagePerAppBean rval = new UsagePerAppBean();
         rval.getData().put("my-app", 120384L);
         rval.getData().put("foo-app", 1263L);
@@ -89,7 +89,7 @@ public class NoOpMetricsAccessor implements IMetricsAccessor {
      */
     @Override
     public UsagePerPlanBean getUsagePerPlan(String organizationId, String serviceId, String version,
-            Date fromDate, Date toDate) {
+            DateTime from, DateTime to) {
         UsagePerPlanBean rval = new UsagePerPlanBean();
         rval.getData().put("Gold", 120384L);
         rval.getData().put("Silver", 921263L);

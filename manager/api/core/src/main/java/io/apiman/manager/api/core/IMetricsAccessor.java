@@ -20,7 +20,7 @@ import io.apiman.manager.api.beans.metrics.UsageHistogramIntervalType;
 import io.apiman.manager.api.beans.metrics.UsagePerAppBean;
 import io.apiman.manager.api.beans.metrics.UsagePerPlanBean;
 
-import java.util.Date;
+import org.joda.time.DateTime;
 
 /**
  * An interface used to access metrics information.  Typically metrics are
@@ -51,7 +51,7 @@ public interface IMetricsAccessor {
      * @param to
      */
     UsageHistogramBean getUsage(String organizationId, String serviceId, String version,
-            UsageHistogramIntervalType interval, Date from, Date to);
+            UsageHistogramIntervalType interval, DateTime from, DateTime to);
 
     /**
      * Query the metrics store for # of requests made to a service broken
@@ -64,7 +64,7 @@ public interface IMetricsAccessor {
      * @param to
      */
     UsagePerAppBean getUsagePerApp(String organizationId, String serviceId, String version,
-            Date from, Date to);
+            DateTime from, DateTime to);
 
     /**
      * Query the metrics store for # of requests made to a service broken
@@ -77,6 +77,6 @@ public interface IMetricsAccessor {
      * @param to
      */
     UsagePerPlanBean getUsagePerPlan(String organizationId, String serviceId, String version,
-            Date from, Date to);
+            DateTime from, DateTime to);
 
 }
