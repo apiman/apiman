@@ -54,7 +54,7 @@ import org.elasticsearch.index.query.QueryBuilders;
  * @author eric.wittmann@redhat.com
  */
 public class ESRegistry implements IRegistry {
-    
+
     private Map<String, String> config;
     private Client esClient;
 
@@ -162,7 +162,7 @@ public class ESRegistry implements IRegistry {
                                         registerContracts(application, iterator, svcMap, handler);
                                     }
                                 }
-                                
+
                                 @Override
                                 public void onFailure(Throwable e) {
                                     if (ESUtils.rootCause(e) instanceof DocumentAlreadyExistsException) {
@@ -189,7 +189,7 @@ public class ESRegistry implements IRegistry {
     /**
      * Validate that the application should be registered.
      * @param application
-     * @param serviceMap 
+     * @param serviceMap
      * @param iAsyncResultHandler
      */
     private void validateApplication(Application application, Map<String, Service> serviceMap, IAsyncResultHandler<Void> handler) {
@@ -204,13 +204,13 @@ public class ESRegistry implements IRegistry {
     }
 
     /**
-     * Ensures that the service referenced by the Contract at the head of 
+     * Ensures that the service referenced by the Contract at the head of
      * the iterator actually exists (is published).
      * @param iterator
-     * @param serviceMap 
+     * @param serviceMap
      * @param handler
      */
-    private void validateServiceExists(final Iterator<Contract> iterator, final Map<String, Service> serviceMap, 
+    private void validateServiceExists(final Iterator<Contract> iterator, final Map<String, Service> serviceMap,
             final IAsyncResultHandler<Void> handler) {
         if (!iterator.hasNext()) {
             handler.handle(AsyncResultImpl.create((Void) null));
@@ -224,7 +224,7 @@ public class ESRegistry implements IRegistry {
                         handler.handle(AsyncResultImpl.create(
                                 new RegistrationException(
                                         Messages.i18n.format("ESRegistry.ErrorValidatingApp"),  //$NON-NLS-1$
-                                        result.getError()), 
+                                        result.getError()),
                                 Void.class));
                     } else {
                         Service service = result.getResult();
@@ -250,7 +250,7 @@ public class ESRegistry implements IRegistry {
      * their ID by all nodes in the cluster.
      * @param application
      * @param contracts
-     * @param serviceMap 
+     * @param serviceMap
      * @param handler
      */
     private void registerContracts(final Application application, final Iterator<Contract> contracts,
@@ -263,9 +263,10 @@ public class ESRegistry implements IRegistry {
 
                 String svcId = getServiceId(contract);
                 Service service = serviceMap.get(svcId);
-                ServiceContract sc = new ServiceContract(contract.getApiKey(), service, application, contract.getPolicies());
+                ServiceContract sc = new ServiceContract(contract.getApiKey(), service, application,
+                        contract.getPlan(), contract.getPolicies());
                 final String contractId = getContractId(contract);
-                
+
                 XContentBuilder source = ESRegistryMarshalling.marshall(sc);
                 getClient().prepareIndex(ESConstants.INDEX_NAME, "serviceContract", contractId) //$NON-NLS-1$
                     .setSource(source)
@@ -295,7 +296,7 @@ public class ESRegistry implements IRegistry {
                             }
                         }
                     });
-                
+
             }
         } catch (Exception e) {
             handler.handle(AsyncResultImpl.create(
@@ -404,7 +405,7 @@ public class ESRegistry implements IRegistry {
                     if (response.isExists()) {
                         handler.handle(AsyncResultImpl.create(contract));
                     } else {
-                        Exception error = new InvalidContractException(Messages.i18n.format("ESRegistry.ServiceWasRetired", //$NON-NLS-1$ 
+                        Exception error = new InvalidContractException(Messages.i18n.format("ESRegistry.ServiceWasRetired", //$NON-NLS-1$
                                 service.getServiceId(), service.getOrganizationId()));
                         handler.handle(AsyncResultImpl.create(error, ServiceContract.class));
                     }
@@ -412,7 +413,7 @@ public class ESRegistry implements IRegistry {
                 @Override
                 public void onFailure(Throwable e) {
                     if (ESUtils.rootCause(e) instanceof DocumentAlreadyExistsException) {
-                        Exception error = new InvalidContractException(Messages.i18n.format("ESRegistry.ServiceWasRetired", //$NON-NLS-1$ 
+                        Exception error = new InvalidContractException(Messages.i18n.format("ESRegistry.ServiceWasRetired", //$NON-NLS-1$
                                 service.getServiceId(), service.getOrganizationId()));
                         handler.handle(AsyncResultImpl.create(error, ServiceContract.class));
                     } else {
@@ -469,9 +470,9 @@ public class ESRegistry implements IRegistry {
     private String getServiceId(Service service) {
         return getServiceId(service.getOrganizationId(), service.getServiceId(), service.getVersion());
     }
-    
+
     /**
-     * Generates a valid document ID for a service referenced by a contract, used to 
+     * Generates a valid document ID for a service referenced by a contract, used to
      * retrieve the service from ES.
      * @param contract
      */

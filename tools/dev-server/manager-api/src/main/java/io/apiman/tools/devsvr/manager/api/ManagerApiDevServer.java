@@ -18,6 +18,7 @@ package io.apiman.tools.devsvr.manager.api;
 
 import io.apiman.manager.test.server.ISeeder;
 import io.apiman.manager.test.server.ManagerApiTestServer;
+import io.apiman.test.common.util.TestUtil;
 
 import java.io.File;
 
@@ -28,22 +29,20 @@ import java.io.File;
  */
 @SuppressWarnings("javadoc")
 public class ManagerApiDevServer {
-    
+
     /**
      * Main entry point.
      * @param args
      */
     @SuppressWarnings("nls")
     public static void main(String [] args) throws Exception {
-        if (System.getProperty(ISeeder.SYSTEM_PROPERTY) == null) {
-            System.setProperty(ISeeder.SYSTEM_PROPERTY, ManagerApiDataSeeder.class.getName());
-        }
-        File m2TestDir = new File(new File("").getAbsoluteFile().getParentFile().getParentFile().getParentFile(), 
+        TestUtil.setProperty(ISeeder.SYSTEM_PROPERTY, ManagerApiDataSeeder.class.getName());
+        File m2TestDir = new File(new File("").getAbsoluteFile().getParentFile().getParentFile().getParentFile(),
                 "manager/test/api/src/test/resources/test-plan-data/plugins/m2").getAbsoluteFile();
         if (!m2TestDir.isDirectory()) {
             throw new Exception("Failed to find test m2 directory at: " + m2TestDir.getAbsolutePath());
         }
-        System.setProperty("apiman.test.m2-path", m2TestDir.getAbsolutePath());
+        TestUtil.setProperty("apiman.test.m2-path", m2TestDir.getAbsolutePath());
         ManagerApiTestServer server = new ManagerApiTestServer();
         server.start();
     }

@@ -17,12 +17,14 @@ package io.apiman.manager.test.server;
 
 import io.apiman.manager.api.core.IApiKeyGenerator;
 import io.apiman.manager.api.core.IIdmStorage;
+import io.apiman.manager.api.core.IMetricsAccessor;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.UuidApiKeyGenerator;
 import io.apiman.manager.api.core.logging.ApimanLogger;
 import io.apiman.manager.api.core.logging.IApimanLogger;
 import io.apiman.manager.api.core.logging.StandardLoggerImpl;
+import io.apiman.manager.api.es.ESMetricsAccessor;
 import io.apiman.manager.api.es.EsStorage;
 import io.apiman.manager.api.jpa.JpaStorage;
 import io.apiman.manager.api.jpa.roles.JpaIdmStorage;
@@ -31,6 +33,8 @@ import io.apiman.manager.api.security.impl.DefaultSecurityContext;
 import io.apiman.manager.test.util.ManagerTestUtils;
 import io.apiman.manager.test.util.ManagerTestUtils.TestType;
 import io.searchbox.client.JestClient;
+import io.searchbox.client.JestClientFactory;
+import io.searchbox.client.config.HttpClientConfig;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.New;
@@ -104,8 +108,8 @@ public class TestCdiFactory {
         }
     }
 
-    @Produces @ApplicationScoped
-    public static JestClient provideJestClient() {
+    @Produces @ApplicationScoped @Named("storage")
+    public static JestClient provideStorageJestClient() {
         TestType testType = ManagerTestUtils.getTestType();
         if (testType == TestType.jpa) {
             return null;
@@ -113,6 +117,33 @@ public class TestCdiFactory {
             return ManagerApiTestServer.ES_CLIENT;
         } else {
             throw new RuntimeException("Unexpected test type: " + testType);
+        }
+    }
+
+    @Produces @ApplicationScoped @Named("metrics")
+    public static JestClient provideMetricsJestClient() {
+        boolean enableESMetrics = "true".equals(System.getProperty("apiman-test.es-metrics", "false"));
+        if (enableESMetrics) {
+            String host = System.getProperty("apiman-test.es-metrics.host", "localhost");
+            String port = System.getProperty("apiman-test.es-metrics.port", "9200");
+
+            String connectionUrl = "http://" + host + ":" + port + "";
+            JestClientFactory factory = new JestClientFactory();
+            factory.setHttpClientConfig(new HttpClientConfig.Builder(connectionUrl).multiThreaded(true)
+                    .build());
+            return factory.getObject();
+        } else {
+            return null;
+        }
+    }
+
+    @Produces @ApplicationScoped
+    public static IMetricsAccessor provideMetricsAccessor(@New TestMetricsAccessor testMetrics, @New ESMetricsAccessor esMetrics) {
+        boolean enableESMetrics = "true".equals(System.getProperty("apiman-test.es-metrics", "false"));
+        if (enableESMetrics) {
+            return esMetrics;
+        } else {
+            return testMetrics;
         }
     }
 }

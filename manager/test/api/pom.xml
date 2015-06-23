@@ -72,6 +72,10 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-test-common</artifactId>
     </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-gateway-engine-es</artifactId>
+    </dependency>
 
     <!-- Weld -->
     <dependency>

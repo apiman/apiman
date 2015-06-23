@@ -47,6 +47,7 @@ module Apiman {
         '/orgs/:org/services/:service/:version/policies'    : { templateUrl: 'service/service-policies.html' },
         '/orgs/:org/services/:service/:version/endpoint'    : { templateUrl: 'service/service-endpoint.html' },
         '/orgs/:org/services/:service/:version/contracts'   : { templateUrl: 'service/service-contracts.html' },
+        '/orgs/:org/services/:service/:version/metrics'     : { templateUrl: 'service/service-metrics.html' },
         '/orgs/:org/services/:service/:version/activity'    : { templateUrl: 'service/service-activity.html' },
         '/orgs/:org/services/:service/:version/new-version' : { templateUrl: 'forms/new-serviceversion.html' },
 

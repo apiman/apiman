@@ -38,6 +38,10 @@ import io.apiman.manager.api.beans.idm.RoleMembershipBean;
 import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.beans.members.MemberBean;
 import io.apiman.manager.api.beans.members.MemberRoleBean;
+import io.apiman.manager.api.beans.metrics.UsageHistogramBean;
+import io.apiman.manager.api.beans.metrics.UsageHistogramIntervalType;
+import io.apiman.manager.api.beans.metrics.UsagePerAppBean;
+import io.apiman.manager.api.beans.metrics.UsagePerPlanBean;
 import io.apiman.manager.api.beans.orgs.NewOrganizationBean;
 import io.apiman.manager.api.beans.orgs.OrganizationBean;
 import io.apiman.manager.api.beans.orgs.UpdateOrganizationBean;
@@ -83,6 +87,7 @@ import io.apiman.manager.api.beans.summary.ServiceVersionSummaryBean;
 import io.apiman.manager.api.core.IApiKeyGenerator;
 import io.apiman.manager.api.core.IApplicationValidator;
 import io.apiman.manager.api.core.IIdmStorage;
+import io.apiman.manager.api.core.IMetricsAccessor;
 import io.apiman.manager.api.core.IServiceValidator;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
@@ -144,6 +149,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.format.ISODateTimeFormat;
+
 /**
  * Implementation of the Organization API.
  *
@@ -152,9 +161,23 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 @RequestScoped
 public class OrganizationResourceImpl implements IOrganizationResource {
 
+    @SuppressWarnings("nls")
+    public static final String [] DATE_FORMATS = {
+        "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+        "yyyy-MM-dd'T'HH:mm:ss'Z'",
+        "yyyy-MM-dd'T'HH:mm:ssz",
+        "yyyy-MM-dd'T'HH:mm:ss",
+        "yyyy-MM-dd'T'HH:mm",
+        "yyyy-MM-dd",
+        "EEE, dd MMM yyyy HH:mm:ss z",
+        "EEE, dd MMM yyyy HH:mm:ss",
+        "EEE, dd MMM yyyy"
+    };
+
     @Inject IStorage storage;
     @Inject IIdmStorage idmStorage;
     @Inject IStorageQuery query;
+    @Inject IMetricsAccessor metrics;
 
     @Inject IApplicationValidator applicationValidator;
     @Inject IServiceValidator serviceValidator;
@@ -1978,6 +2001,53 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getUsage(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public UsageHistogramBean getUsage(String organizationId, String serviceId, String version,
+            String interval, String fromDate, String toDate) throws NotAuthorizedException {
+        if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
+
+        // TODO put in range and interval restrictions - e.g. cannot request a 2 year range with a "minute" interval - that's too many data points
+
+        DateTime from = parseFromDate(fromDate);
+        DateTime to = parseToDate(toDate);
+        if (interval == null) {
+            interval = "day"; //$NON-NLS-1$
+        }
+        return metrics.getUsage(organizationId, serviceId, version, UsageHistogramIntervalType.valueOf(interval), from, to);
+    }
+
+    /**
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getUsagePerApp(java.lang.String, java.lang.String, java.lang.String, java.util.Date, java.util.Date)
+     */
+    @Override
+    public UsagePerAppBean getUsagePerApp(String organizationId, String serviceId, String version,
+            String fromDate, String toDate) throws NotAuthorizedException {
+        if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
+
+        DateTime from = parseFromDate(fromDate);
+        DateTime to = parseToDate(toDate);
+        return metrics.getUsagePerApp(organizationId, serviceId, version, from, to);
+    }
+
+    /**
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getUsagePerPlan(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public UsagePerPlanBean getUsagePerPlan(String organizationId, String serviceId, String version,
+            String fromDate, String toDate) throws NotAuthorizedException {
+        if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
+
+        DateTime from = parseFromDate(fromDate);
+        DateTime to = parseToDate(toDate);
+        return metrics.getUsagePerPlan(organizationId, serviceId, version, from, to);
+    }
+
+    /**
      * @see io.apiman.manager.api.rest.contract.IOrganizationResource#createPlan(java.lang.String,
      *      io.apiman.manager.api.beans.plans.NewPlanBean)
      */
@@ -2816,6 +2886,20 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
+     * @return the metrics
+     */
+    public IMetricsAccessor getMetrics() {
+        return this.metrics;
+    }
+
+    /**
+     * @param metrics the metrics to set
+     */
+    public void setMetrics(IMetricsAccessor metrics) {
+        this.metrics = metrics;
+    }
+
+    /**
      * @return the applicationValidator
      */
     public IApplicationValidator getApplicationValidator() {
@@ -2855,6 +2939,45 @@ public class OrganizationResourceImpl implements IOrganizationResource {
      */
     public void setApiKeyGenerator(IApiKeyGenerator apiKeyGenerator) {
         this.apiKeyGenerator = apiKeyGenerator;
+    }
+
+    /**
+     * Parse the to date query param.
+     * @param fromDate
+     */
+    private DateTime parseFromDate(String fromDate) {
+        // Default to the last 30 days
+        DateTime defaultFrom = DateTime.now().withZone(DateTimeZone.UTC).minusDays(30).withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0);
+        return parseDate(fromDate, defaultFrom);
+    }
+
+    /**
+     * Parse the from date query param.
+     * @param fromDate
+     */
+    private DateTime parseToDate(String toDate) {
+        // Default to now
+        return parseDate(toDate, DateTime.now().withZone(DateTimeZone.UTC));
+    }
+
+    /**
+     * Parses a query param representing a date into an actual date object.
+     * @param dateStr
+     */
+    private static DateTime parseDate(String dateStr, DateTime defaultDate) {
+        if ("now".equals(dateStr)) { //$NON-NLS-1$
+            return DateTime.now();
+        }
+        if (dateStr.length() == 10) {
+            return ISODateTimeFormat.date().withZoneUTC().parseDateTime(dateStr);
+        }
+        if (dateStr.length() == 20) {
+            return ISODateTimeFormat.dateTimeNoMillis().withZoneUTC().parseDateTime(dateStr);
+        }
+        if (dateStr.length() == 24) {
+            return ISODateTimeFormat.dateTime().withZoneUTC().parseDateTime(dateStr);
+        }
+        return defaultDate;
     }
 
 }

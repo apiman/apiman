@@ -46,7 +46,7 @@ public class InMemoryRegistry implements IRegistry {
      */
     public InMemoryRegistry() {
     }
-    
+
     /**
      * @see io.apiman.gateway.engine.IRegistry#publishService(io.apiman.gateway.engine.beans.Service, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
@@ -67,7 +67,7 @@ public class InMemoryRegistry implements IRegistry {
             handler.handle(AsyncResultImpl.create(error, Void.class));
         }
     }
-    
+
     /**
      * @see io.apiman.gateway.engine.IRegistry#retireService(io.apiman.gateway.engine.beans.Service, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
@@ -119,7 +119,7 @@ public class InMemoryRegistry implements IRegistry {
                 for (Contract contract : application.getContracts()) {
                     String svcKey = getServiceKey(contract.getServiceOrgId(), contract.getServiceId(), contract.getServiceVersion());
                     Service service = (Service) getMap().get(svcKey);
-                    ServiceContract sc = new ServiceContract(contract.getApiKey(), service, application, contract.getPolicies());
+                    ServiceContract sc = new ServiceContract(contract.getApiKey(), service, application, contract.getPlan(), contract.getPolicies());
                     String contractKey = getContractKey(contract);
                     getMap().put(contractKey, sc);
                 }
@@ -166,7 +166,7 @@ public class InMemoryRegistry implements IRegistry {
     public void getContract(ServiceRequest request, IAsyncResultHandler<ServiceContract> handler) {
         String contractKey = getContractKey(request);
         ServiceContract contract = (ServiceContract) getMap().get(contractKey);
-        
+
         if (contract == null) {
             Exception error = new InvalidContractException(Messages.i18n.format("InMemoryRegistry.NoContractForAPIKey", request.getApiKey())); //$NON-NLS-1$
             handler.handle(AsyncResultImpl.create(error, ServiceContract.class));
@@ -176,15 +176,15 @@ public class InMemoryRegistry implements IRegistry {
         Service service = contract.getService();
         String serviceKey = getServiceKey(service);
         if (getMap().get(serviceKey) == null) {
-            Exception error = new InvalidContractException(Messages.i18n.format("InMemoryRegistry.ServiceWasRetired", //$NON-NLS-1$ 
+            Exception error = new InvalidContractException(Messages.i18n.format("InMemoryRegistry.ServiceWasRetired", //$NON-NLS-1$
                     service.getServiceId(), service.getOrganizationId()));
             handler.handle(AsyncResultImpl.create(error, ServiceContract.class));
             return;
         }
-        
+
         handler.handle(AsyncResultImpl.create(contract));
     }
-    
+
     /**
      * @see io.apiman.gateway.engine.IRegistry#getService(java.lang.String, java.lang.String, java.lang.String, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
@@ -244,7 +244,7 @@ public class InMemoryRegistry implements IRegistry {
     private String getContractKey(Contract contract) {
         return "CONTRACT::" + contract.getApiKey(); //$NON-NLS-1$
     }
-    
+
     /**
      * @return the map to use when storing stuff
      */

@@ -163,6 +163,7 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
      */
     protected void recordFailureMetrics(PolicyFailure failure) {
         requestMetric.setResponseCode(failure.getResponseCode());
+        requestMetric.setFailure(true);
         requestMetric.setFailureCode(failure.getFailureCode());
         requestMetric.setFailureReason(failure.getMessage());
     }
@@ -278,8 +279,8 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
                         requestMetric.setApplicationOrgId(serviceContract.getApplication().getOrganizationId());
                         requestMetric.setApplicationId(serviceContract.getApplication().getApplicationId());
                         requestMetric.setApplicationVersion(serviceContract.getApplication().getVersion());
+                        requestMetric.setPlanId(serviceContract.getPlan());
                         requestMetric.setContractId(request.getApiKey());
-
 
                         service = serviceContract.getService();
                         request.setContract(serviceContract);

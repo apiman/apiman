@@ -79,6 +79,7 @@ public class ESClientFactory {
         String host = config.get("client.host"); //$NON-NLS-1$
         String port = config.get("client.port"); //$NON-NLS-1$
         String protocol = config.get("client.protocol"); //$NON-NLS-1$
+        String indexName = config.get("client.index"); //$NON-NLS-1$
         if (StringUtils.isBlank(host)) {
             throw new RuntimeException("Missing client.host configuration for ESRegistry."); //$NON-NLS-1$
         }
@@ -88,7 +89,10 @@ public class ESClientFactory {
         if (StringUtils.isBlank(protocol)) {
             protocol = "http"; //$NON-NLS-1$
         }
-        return createJestClient(protocol, host, Integer.parseInt(port));
+        if (StringUtils.isBlank(indexName)) {
+            indexName = ESConstants.INDEX_NAME;
+        }
+        return createJestClient(protocol, host, Integer.parseInt(port), indexName);
     }
 
     /**
@@ -98,8 +102,8 @@ public class ESClientFactory {
      * @param port the port
      * @return the ES client
      */
-    public static JestClient createJestClient(String protocol, String host, int port) {
-        String clientKey = "jest:" + host + ':' + port; //$NON-NLS-1$
+    public static JestClient createJestClient(String protocol, String host, int port, String indexName) {
+        String clientKey = "jest:" + host + ':' + port + '/' + indexName; //$NON-NLS-1$
         synchronized (clients) {
             if (clients.containsKey(clientKey)) {
                 return clients.get(clientKey);
@@ -116,7 +120,7 @@ public class ESClientFactory {
                 factory.setHttpClientConfig(new HttpClientConfig.Builder(connectionUrl).multiThreaded(true).build());
                 JestClient client = factory.getObject();
                 clients.put(clientKey, client);
-                initializeClient(client);
+                initializeClient(client, indexName);
                 return client;
             }
         }
@@ -151,7 +155,7 @@ public class ESClientFactory {
                     Field field = clientLocClass.getField(fieldName);
                     JestClient client = (JestClient) field.get(null);
                     clients.put(clientKey, client);
-                    initializeClient(client);
+                    initializeClient(client, ESConstants.INDEX_NAME);
                     return client;
                 } catch (ClassNotFoundException | NoSuchFieldException | SecurityException
                         | IllegalArgumentException | IllegalAccessException e) {
@@ -164,13 +168,13 @@ public class ESClientFactory {
     /**
      * Called to initialize the storage.
      */
-    private static void initializeClient(JestClient client) {
+    public static void initializeClient(JestClient client, String indexName) {
         try {
             client.execute(new Health.Builder().build());
-            Action<JestResult> action = new IndicesExists.Builder(ESConstants.INDEX_NAME).build();
+            Action<JestResult> action = new IndicesExists.Builder(indexName).build();
             JestResult result = client.execute(action);
-            if (! result.isSucceeded()) {
-                createIndex(client, ESConstants.INDEX_NAME);
+            if (!result.isSucceeded()) {
+                createIndex(client, indexName, indexName + "-settings.json"); //$NON-NLS-1$
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -182,9 +186,9 @@ public class ESClientFactory {
      * @param indexName
      * @throws Exception
      */
-    private static void createIndex(JestClient client, String indexName) throws Exception {
+    public static void createIndex(JestClient client, String indexName, String settingsName) throws Exception {
         CreateIndexRequest request = new CreateIndexRequest(indexName);
-        URL settings = ESClientFactory.class.getResource("index-settings.json"); //$NON-NLS-1$
+        URL settings = ESClientFactory.class.getResource(settingsName);
         String source = IOUtils.toString(settings);
         request.source(source);
         JestResult response = client.execute(new CreateIndex.Builder(indexName).settings(source).build());

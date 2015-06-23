@@ -20,6 +20,7 @@ import io.apiman.gateway.engine.components.IDataStoreComponent;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.components.IRateLimiterComponent;
 import io.apiman.gateway.engine.components.ISharedStateComponent;
+import io.apiman.gateway.engine.es.ESMetrics;
 import io.apiman.gateway.engine.impl.DefaultPluginRegistry;
 import io.apiman.gateway.engine.impl.InMemoryDataStoreComponent;
 import io.apiman.gateway.engine.impl.InMemoryMetrics;
@@ -41,12 +42,15 @@ import java.io.File;
  *
  * @author eric.wittmann@redhat.com
  */
+@SuppressWarnings("nls")
 public class GatewayDevServer {
 
     private static final int GATEWAY_PORT  = 6666;
     private static final int ECHO_PORT     = 9001;
-    private static final String APIMAN_RT_GATEWAY_SERVER_PORT = "apiman.gateway.server.port"; //$NON-NLS-1$
-    private static final String ECHO_PORT_PROPERTY = "apiman.echo.server.port"; //$NON-NLS-1$
+    private static final String APIMAN_RT_GATEWAY_SERVER_PORT = "apiman.gateway.server.port";
+    private static final String ECHO_PORT_PROPERTY = "apiman.echo.server.port";
+
+    private static boolean enableESMetrics = false;
 
     /**
      * Main entry point.
@@ -56,25 +60,36 @@ public class GatewayDevServer {
     public static void main(String [] args) throws Exception {
         int gatewayPort = getGatewayPort();
         int echoPort = getEchoPort();
-        
+
+        enableESMetrics = "true".equals(System.getProperty("apiman-test.es-metrics", "false"));
+
         System.setProperty(WarEngineConfig.APIMAN_GATEWAY_REGISTRY_CLASS, InMemoryRegistry.class.getName());
         System.setProperty(WarEngineConfig.APIMAN_GATEWAY_PLUGIN_REGISTRY_CLASS, DefaultPluginRegistry.class.getName());
         System.setProperty(WarEngineConfig.APIMAN_GATEWAY_CONNECTOR_FACTORY_CLASS, HttpConnectorFactory.class.getName());
         System.setProperty(WarEngineConfig.APIMAN_GATEWAY_POLICY_FACTORY_CLASS, PolicyFactoryImpl.class.getName());
         System.setProperty(WarEngineConfig.APIMAN_GATEWAY_METRICS_CLASS, InMemoryMetrics.class.getName());
-        
-        if (System.getProperty("apiman.gateway.m2-repository-path") == null) { //$NON-NLS-1$
-            System.setProperty("apiman.gateway.m2-repository-path", new File("src/main/resources/plugin").getAbsolutePath()); //$NON-NLS-1$ //$NON-NLS-2$
+
+        if (System.getProperty("apiman.gateway.m2-repository-path") == null) {
+            System.setProperty("apiman.gateway.m2-repository-path", new File("src/main/resources/plugin").getAbsolutePath());
+        }
+
+        if (enableESMetrics) {
+            System.setProperty(WarEngineConfig.APIMAN_GATEWAY_METRICS_CLASS, ESMetrics.class.getName());
+            System.setProperty(WarEngineConfig.APIMAN_GATEWAY_METRICS_CLASS + ".client.type", "jest");
+            System.setProperty(WarEngineConfig.APIMAN_GATEWAY_METRICS_CLASS + ".client.cluster-name", System.getProperty("apiman-test.es-metrics.cluster-name", "apiman"));
+            System.setProperty(WarEngineConfig.APIMAN_GATEWAY_METRICS_CLASS + ".client.host", System.getProperty("apiman-test.es-metrics.host", "localhost"));
+            System.setProperty(WarEngineConfig.APIMAN_GATEWAY_METRICS_CLASS + ".client.port", System.getProperty("apiman-test.es-metrics.port", "9200"));
+            System.setProperty(WarEngineConfig.APIMAN_GATEWAY_METRICS_CLASS + ".client.index", System.getProperty("apiman-test.es-metrics.index", "apiman_metrics"));
         }
 
         // Register test components
-        System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + ISharedStateComponent.class.getSimpleName(), 
+        System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + ISharedStateComponent.class.getSimpleName(),
                 InMemorySharedStateComponent.class.getName());
-        System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + IDataStoreComponent.class.getSimpleName(), 
+        System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + IDataStoreComponent.class.getSimpleName(),
                 InMemoryDataStoreComponent.class.getName());
-        System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + IRateLimiterComponent.class.getSimpleName(), 
+        System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + IRateLimiterComponent.class.getSimpleName(),
                 InMemoryRateLimiterComponent.class.getName());
-        System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + IPolicyFailureFactoryComponent.class.getSimpleName(), 
+        System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + IPolicyFailureFactoryComponent.class.getSimpleName(),
                 PolicyFailureFactoryComponent.class.getName());
 
         GatewayServer server = new GatewayServer(gatewayPort);

@@ -27,9 +27,7 @@ import io.searchbox.core.Get;
 import io.searchbox.core.Index;
 import io.searchbox.params.Parameters;
 
-import java.io.IOException;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.common.Base64;
@@ -59,44 +57,40 @@ public class ESRateLimiterComponent extends AbstractESComponent implements IRate
         final String id = id(bucketId);
 
         Get get = new Get.Builder(ESConstants.INDEX_NAME, id).type("rateBucket").build(); //$NON-NLS-1$
-        try {
-            getClient().executeAsync(get, new JestResultHandler<JestResult>() {
-                @Override
-                public void completed(JestResult result) {
-                    RateLimiterBucket bucket = null;
-                    long version;
-                    if (result.isSucceeded()) {
-                        // use the existing bucket
-                        version = result.getJsonObject().get("_version").getAsLong(); //$NON-NLS-1$
-                        bucket = result.getSourceAsObject(RateLimiterBucket.class);
-                    } else {
-                        // make a new bucket
-                        version = 0;
-                        bucket = new RateLimiterBucket();
-                    }
-                    bucket.resetIfNecessary(period);
+        getClient().executeAsync(get, new JestResultHandler<JestResult>() {
+            @Override
+            public void completed(JestResult result) {
+                RateLimiterBucket bucket = null;
+                long version;
+                if (result.isSucceeded()) {
+                    // use the existing bucket
+                    version = result.getJsonObject().get("_version").getAsLong(); //$NON-NLS-1$
+                    bucket = result.getSourceAsObject(RateLimiterBucket.class);
+                } else {
+                    // make a new bucket
+                    version = 0;
+                    bucket = new RateLimiterBucket();
+                }
+                bucket.resetIfNecessary(period);
 
-                    final RateLimitResponse rlr = new RateLimitResponse();
-                    if (bucket.getCount() >= limit) {
-                        rlr.setAccepted(false);
-                    } else {
-                        bucket.setCount(bucket.getCount() + 1);
-                        bucket.setLast(System.currentTimeMillis());
-                        rlr.setAccepted(true);
-                    }
-                    int reset = (int) (bucket.getResetMillis(period) / 1000L);
-                    rlr.setReset(reset);
-                    rlr.setRemaining(limit - bucket.getCount());
-                    updateBucketAndReturn(id, bucket, rlr, version, bucketId, period, limit, handler);
+                final RateLimitResponse rlr = new RateLimitResponse();
+                if (bucket.getCount() >= limit) {
+                    rlr.setAccepted(false);
+                } else {
+                    bucket.setCount(bucket.getCount() + 1);
+                    bucket.setLast(System.currentTimeMillis());
+                    rlr.setAccepted(true);
                 }
-                @Override
-                public void failed(Exception e) {
-                    handler.handle(AsyncResultImpl.create(e, RateLimitResponse.class));
-                }
-            });
-        } catch (ExecutionException | InterruptedException | IOException e) {
-            handler.handle(AsyncResultImpl.create(e, RateLimitResponse.class));
-        }
+                int reset = (int) (bucket.getResetMillis(period) / 1000L);
+                rlr.setReset(reset);
+                rlr.setRemaining(limit - bucket.getCount());
+                updateBucketAndReturn(id, bucket, rlr, version, bucketId, period, limit, handler);
+            }
+            @Override
+            public void failed(Exception e) {
+                handler.handle(AsyncResultImpl.create(e, RateLimitResponse.class));
+            }
+        });
     }
 
     /**
@@ -134,29 +128,25 @@ public class ESRateLimiterComponent extends AbstractESComponent implements IRate
                 .setParameter(Parameters.OP_TYPE, "index") //$NON-NLS-1$
                 .setParameter(Parameters.VERSION, String.valueOf(version))
                 .type("rateBucket").id(id).build(); //$NON-NLS-1$
-        try {
-            getClient().executeAsync(index, new JestResultHandler<JestResult>() {
-                @Override
-                public void completed(JestResult result) {
-                    handler.handle(AsyncResultImpl.create(rlr));
+        getClient().executeAsync(index, new JestResultHandler<JestResult>() {
+            @Override
+            public void completed(JestResult result) {
+                handler.handle(AsyncResultImpl.create(rlr));
+            }
+            @Override
+            public void failed(Exception e) {
+                // TODO need to fix this!
+                if (ESUtils.rootCause(e) instanceof VersionConflictEngineException) {
+                    // If we got a version conflict, then it means some other request
+                    // managed to update the ES document since we retrieved it.  Therefore
+                    // everything we've done is out of date, so we should do it all
+                    // over again.
+                    accept(bucketId, period, limit, handler);
+                } else {
+                    handler.handle(AsyncResultImpl.<RateLimitResponse>create(e));
                 }
-                @Override
-                public void failed(Exception e) {
-                    // TODO need to fix this!
-                    if (ESUtils.rootCause(e) instanceof VersionConflictEngineException) {
-                        // If we got a version conflict, then it means some other request
-                        // managed to update the ES document since we retrieved it.  Therefore
-                        // everything we've done is out of date, so we should do it all
-                        // over again.
-                        accept(bucketId, period, limit, handler);
-                    } else {
-                        handler.handle(AsyncResultImpl.<RateLimitResponse>create(e));
-                    }
-                }
-            });
-        } catch (ExecutionException | InterruptedException | IOException e) {
-            handler.handle(AsyncResultImpl.<RateLimitResponse>create(e));
-        }
+            }
+        });
     }
 
     /**

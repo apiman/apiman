@@ -28,6 +28,7 @@
         "serviceContract" : {
             "properties" : {
                "apiKey" : { "type" : "string", "index" : "not_analyzed" },
+               "plan" : { "type" : "string", "index" : "not_analyzed" },
                "application" : {
                   "properties" : {
                      "applicationId" : { "type" : "string", "index" : "not_analyzed" },

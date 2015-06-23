@@ -48,7 +48,7 @@ public class RateLimitingPolicyTest {
     @Test
     public void testParseConfiguration() {
         RateLimitingPolicy policy = new RateLimitingPolicy();
-        
+
         // Empty config test
         String config = "{}";
         Object parsed = policy.parseConfiguration(config);
@@ -58,16 +58,16 @@ public class RateLimitingPolicyTest {
         Assert.assertNull(parsedConfig.getUserHeader());
         Assert.assertNull(parsedConfig.getGranularity());
         Assert.assertNull(parsedConfig.getPeriod());
-        
+
         // Sample real config
-        config = "{\r\n" + 
-                "  \"limit\" : 100,\r\n" + 
-                "  \"granularity\" : \"User\",\r\n" + 
-                "  \"period\" : \"Day\",\r\n" + 
-                "  \"headerRemaining\" : \"X-Rate-Remaining\",\r\n" + 
-                "  \"headerLimit\" : \"X-Rate-Limit\",\r\n" + 
-                "  \"headerReset\" : \"X-Rate-Reset\",\r\n" + 
-                "  \"userHeader\" : \"X-Authenticated-Identity\"\r\n" + 
+        config = "{\r\n" +
+                "  \"limit\" : 100,\r\n" +
+                "  \"granularity\" : \"User\",\r\n" +
+                "  \"period\" : \"Day\",\r\n" +
+                "  \"headerRemaining\" : \"X-Rate-Remaining\",\r\n" +
+                "  \"headerLimit\" : \"X-Rate-Limit\",\r\n" +
+                "  \"headerReset\" : \"X-Rate-Reset\",\r\n" +
+                "  \"userHeader\" : \"X-Authenticated-Identity\"\r\n" +
                 "}";
 
         parsed = policy.parseConfiguration(config);
@@ -93,11 +93,11 @@ public class RateLimitingPolicyTest {
     @Test
     public void testApply() {
         RateLimitingPolicy policy = new RateLimitingPolicy();
-        String json = "{\r\n" + 
-                "  \"limit\" : 10,\r\n" + 
-                "  \"granularity\" : \"User\",\r\n" + 
-                "  \"period\" : \"Minute\",\r\n" + 
-                "  \"userHeader\" : \"X-Identity\"\r\n" + 
+        String json = "{\r\n" +
+                "  \"limit\" : 10,\r\n" +
+                "  \"granularity\" : \"User\",\r\n" +
+                "  \"period\" : \"Minute\",\r\n" +
+                "  \"userHeader\" : \"X-Identity\"\r\n" +
                 "}";
         Object config = policy.parseConfiguration(json);
         ServiceRequest request = new ServiceRequest();
@@ -117,13 +117,13 @@ public class RateLimitingPolicyTest {
         });
         Mockito.when(context.getComponent(IRateLimiterComponent.class)).thenReturn(new InMemoryRateLimiterComponent());
         IPolicyChain<ServiceRequest> chain = null;
-        
+
         for (int count = 0; count < 10; count++) {
             chain = Mockito.mock(IPolicyChain.class);
             policy.apply(request, context, config, chain);
             Mockito.verify(chain).doApply(request);
         }
-        
+
         // Failure - only allow 10 per minute!
         chain = Mockito.mock(IPolicyChain.class);
         policy.apply(request, context, config, chain);
@@ -142,7 +142,7 @@ public class RateLimitingPolicyTest {
         app.setOrganizationId("AppOrg");
         app.setApplicationId("App");
         app.setVersion("1.0");
-        return new ServiceContract("12345", service, app, null);
+        return new ServiceContract("12345", service, app, "Gold", null);
     }
 
 }

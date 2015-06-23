@@ -3,14 +3,14 @@
     <span apiman-i18n-key="config-sentence-preamble">I want to limit request rates to</span>
     <input id="num-requests" ng-model="config.limit" class="apiman-form-control form-control inline-apiman-form-control form-control" style="width: 100px" type="number" apiman-i18n-key="rate-limiting.enter-num-requests" placeholder="# of requests"></input>
     <span apiman-i18n-key="requests-per">requests per</span>
-    <select id="granularity" ng-model="config.granularity" apiman-select-picker="" data-field="granularity" class="selectpicker inline-line inline-form-dropdown" data-style="btn-default inline-form-dropdown" style="width: 100px">
+    <select id="granularity" ng-model="config.granularity" apiman-select-picker="" data-field="granularity" class="selectpicker inline-line apiman-inline-form-dropdown" data-style="btn-default apiman-inline-form-dropdown" style="width: 100px">
       <option value="" data-content="<span class='apiman-label-faded'>Granularity</span>" apiman-i18n-key="granularity">Granularity</option>
       <option value="Application" apiman-i18n-key="rate-limiting.application">Application</option>
       <option value="User" apiman-i18n-key="rate-limiting.user">User</option>
       <option value="Service" apiman-i18n-key="rate-limiting.service">Service</option>
     </select>
     <span apiman-i18n-key="per">per</span>
-    <select id="period" ng-model="config.period" apiman-select-picker="" data-field="period" class="selectpicker inline-line inline-form-dropdown" data-style="btn-default inline-form-dropdown" style="width: 100px">
+    <select id="period" ng-model="config.period" apiman-select-picker="" data-field="period" class="selectpicker inline-line apiman-inline-form-dropdown" data-style="btn-default apiman-inline-form-dropdown" style="width: 100px">
       <option value="" data-content="<span class='apiman-label-faded'>Period</span>" apiman-i18n-key="rate-limiting.period">Period</option>
       <option value="Second" apiman-i18n-key="rate-limiting.second">Second</option>
       <option value="Minute" apiman-i18n-key="rate-limiting.minute">Minute</option>

@@ -48,7 +48,7 @@ public class ESRegistryMarshallingTest {
         service.setPublicService(true);
         service.setServiceId("service-id");
         service.setVersion("1.0");
-        
+
         Assert.assertEquals("{"
                     + "\"endpoint\":\"http://host/path/to/svc\","
                     + "\"endpointType\":\"REST\","
@@ -115,16 +115,17 @@ public class ESRegistryMarshallingTest {
         app.setApplicationId("app-id");
         app.setOrganizationId("test-org");
         app.setVersion("1.0");
-        
+
         Assert.assertEquals("{"
                 + "\"organizationId\":\"test-org\","
                 + "\"applicationId\":\"app-id\","
                 + "\"version\":\"1.0\","
                 + "\"contracts\":[]"
             + "}", ESRegistryMarshalling.marshall(app).string());
-        
+
         Contract contract = new Contract();
         contract.setApiKey("12345");
+        contract.setPlan("Silver");
         contract.setServiceId("service-id");
         contract.setServiceOrgId("service-test-org");
         contract.setServiceVersion("1.7");
@@ -137,6 +138,7 @@ public class ESRegistryMarshallingTest {
                 + "\"contracts\":["
                     + "{"
                         + "\"apiKey\":\"12345\","
+                        + "\"plan\":\"Silver\","
                         + "\"serviceOrgId\":\"service-test-org\","
                         + "\"serviceId\":\"service-id\","
                         + "\"serviceVersion\":\"1.7\","
@@ -162,6 +164,7 @@ public class ESRegistryMarshallingTest {
                 + "\"contracts\":["
                     + "{"
                         + "\"apiKey\":\"12345\","
+                        + "\"plan\":\"Silver\","
                         + "\"serviceOrgId\":\"service-test-org\","
                         + "\"serviceId\":\"service-id\","
                         + "\"serviceVersion\":\"1.7\","
@@ -187,8 +190,9 @@ public class ESRegistryMarshallingTest {
     public void testMarshall_ServiceContract() throws Exception {
         ServiceContract sc = new ServiceContract();
         sc.setApikey("12345");
+        sc.setPlan("Gold");
         sc.setPolicies(new ArrayList<Policy>());
-        
+
         Service service = new Service();
         service.setServicePolicies(null);
         service.setEndpoint("http://host/path/to/svc");
@@ -217,6 +221,7 @@ public class ESRegistryMarshallingTest {
 
         Assert.assertEquals("{"
                 + "\"apiKey\":\"12345\","
+                + "\"plan\":\"Gold\","
                 + "\"application\":{"
                     + "\"organizationId\":\"test-org\","
                     + "\"applicationId\":\"app-id\","
@@ -258,7 +263,7 @@ public class ESRegistryMarshallingTest {
         data.put("serviceId", "test-service");
         data.put("version", "1.2");
         Service service = ESRegistryMarshalling.unmarshallService(data);
-        
+
         Assert.assertEquals("http://host:port/blah", service.getEndpoint());
         Assert.assertEquals("REST", service.getEndpointType());
         Assert.assertEquals("test-org", service.getOrganizationId());
@@ -268,12 +273,12 @@ public class ESRegistryMarshallingTest {
 
         List<Map<String, Object>> policiesData = new ArrayList<>();
         data.put("policies", policiesData);
-        
+
         Map<String, Object> policyData = new HashMap<>();
         policyData.put("policyImpl", "impl-1");
         policyData.put("policyJsonConfig", "json-config-1");
         policiesData.add(policyData);
-        
+
         service = ESRegistryMarshalling.unmarshallService(data);
         Assert.assertEquals("http://host:port/blah", service.getEndpoint());
         Assert.assertEquals("REST", service.getEndpointType());
@@ -296,7 +301,7 @@ public class ESRegistryMarshallingTest {
         data.put("organizationId", "test-org");
         data.put("applicationId", "test-app");
         data.put("version", "3.1");
-        
+
         Application app = ESRegistryMarshalling.unmarshallApplication(data);
         Assert.assertEquals("test-org", app.getOrganizationId());
         Assert.assertEquals("test-app", app.getApplicationId());
@@ -310,15 +315,15 @@ public class ESRegistryMarshallingTest {
         contractData.put("serviceId", "svc-id");
         contractData.put("serviceVersion", "19");
         contractsData.add(contractData);
-        
+
         List<Map<String, Object>> policiesData = new ArrayList<>();
         contractData.put("policies", policiesData);
-        
+
         Map<String, Object> policyData = new HashMap<>();
         policyData.put("policyImpl", "impl-1");
         policyData.put("policyJsonConfig", "json-config-1");
         policiesData.add(policyData);
-        
+
         app = ESRegistryMarshalling.unmarshallApplication(data);
         Assert.assertEquals("test-org", app.getOrganizationId());
         Assert.assertEquals("test-app", app.getApplicationId());
