@@ -42,7 +42,7 @@ public class ESRegistryMarshalling {
      * Marshals the given bean into the given map.
      * @param bean the service bean
      * @return the content builder
-     * @throws Exception when json marshalling fails 
+     * @throws Exception when json marshalling fails
      */
     public static XContentBuilder marshall(Service bean) throws Exception {
         XContentBuilder builder = XContentFactory.jsonBuilder();
@@ -123,7 +123,7 @@ public class ESRegistryMarshalling {
      * Marshals the given bean into the given map.
      * @param bean the application bean
      * @return the content builder
-     * @throws Exception when json marshalling fails 
+     * @throws Exception when json marshalling fails
      */
     public static XContentBuilder marshall(Application bean) throws Exception {
         XContentBuilder builder = XContentFactory.jsonBuilder();
@@ -147,6 +147,7 @@ public class ESRegistryMarshalling {
             for (Contract contract : contracts) {
                 builder.startObject()
                     .field("apiKey", contract.getApiKey())
+                    .field("plan", contract.getPlan())
                     .field("serviceOrgId", contract.getServiceOrgId())
                     .field("serviceId", contract.getServiceId())
                     .field("serviceVersion", contract.getServiceVersion());
@@ -187,6 +188,7 @@ public class ESRegistryMarshalling {
             for (Map<String, Object> contractSource : contracts) {
                 Contract contract = new Contract();
                 contract.setApiKey(asString(contractSource.get("apiKey")));
+                contract.setPlan(asString(contractSource.get("plan")));
                 contract.setServiceOrgId(asString(contractSource.get("serviceOrgId")));
                 contract.setServiceId(asString(contractSource.get("serviceId")));
                 contract.setServiceVersion(asString(contractSource.get("serviceVersion")));
@@ -199,7 +201,7 @@ public class ESRegistryMarshalling {
                         contract.getPolicies().add(policy);
                     }
                 }
-                
+
                 bean.getContracts().add(contract);
             }
         }
@@ -208,7 +210,7 @@ public class ESRegistryMarshalling {
 
     /**
      * Marshals the given bean into the given map.
-     * @param bean the service contract 
+     * @param bean the service contract
      * @throws Exception when json marshalling fails
      * @return the content builder
      */
@@ -216,6 +218,7 @@ public class ESRegistryMarshalling {
     public static XContentBuilder marshall(ServiceContract bean) throws Exception {
         XContentBuilder builder = XContentFactory.jsonBuilder().startObject();
         builder.field("apiKey", bean.getApikey());
+        builder.field("plan", bean.getPlan());
         builder.field("application");
         marshallInto(bean.getApplication(), builder);
         builder.field("service");
@@ -238,7 +241,7 @@ public class ESRegistryMarshalling {
     /**
      * Unmarshals the given map source into a bean.
      * @param source the source mappings
-     * @return the service contract 
+     * @return the service contract
      */
     @SuppressWarnings({ "nls", "unchecked" })
     public static ServiceContract unmarshallServiceContract(Map<String, Object> source) {
@@ -249,6 +252,7 @@ public class ESRegistryMarshalling {
         contract.setApikey(asString(source.get("apiKey")));
         contract.setApplication(unmarshallApplication((Map<String, Object>) source.get("application")));
         contract.setService(unmarshallService((Map<String, Object>) source.get("service")));
+        contract.setPlan(asString(source.get("plan")));
         List<Map<String,Object>> policies = (List<Map<String,Object>>) source.get("policies");
         if (policies != null) {
             for (Map<String, Object> policySource : policies) {
@@ -258,7 +262,7 @@ public class ESRegistryMarshalling {
                 contract.getPolicies().add(policy);
             }
         }
-        
+
         return contract;
     }
 

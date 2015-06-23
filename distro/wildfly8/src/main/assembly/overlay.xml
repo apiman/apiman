@@ -95,7 +95,21 @@
         </excludes>
       </unpackOptions>
     </dependencySet>
-    <!-- Pre-configured elasticsearch storage -->
+    <!-- apiman -->
+    <dependencySet>
+      <outputDirectory>standalone/deployments</outputDirectory>
+      <includes>
+        <include>*:apiman-distro-es:war</include>
+      </includes>
+      <outputFileNameMapping>apiman-es.war</outputFileNameMapping>
+      <useProjectArtifact>false</useProjectArtifact>
+      <useProjectAttachments>false</useProjectAttachments>
+      <useTransitiveDependencies>false</useTransitiveDependencies>
+      <useTransitiveFiltering>false</useTransitiveFiltering>
+      <directoryMode>0755</directoryMode>
+      <fileMode>0755</fileMode>
+    </dependencySet>
+    <!-- Pre-configured elasticsearch data -->
     <dependencySet>
       <outputDirectory>standalone/data/es</outputDirectory>
       <includes>

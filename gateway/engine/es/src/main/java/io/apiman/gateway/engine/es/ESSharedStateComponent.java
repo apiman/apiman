@@ -25,9 +25,7 @@ import io.searchbox.core.Delete;
 import io.searchbox.core.Get;
 import io.searchbox.core.Index;
 
-import java.io.IOException;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 import javax.xml.namespace.QName;
 
@@ -68,35 +66,31 @@ public class ESSharedStateComponent extends AbstractESComponent implements IShar
         String id = getPropertyId(namespace, propertyName);
 
         Get get = new Get.Builder(ESConstants.INDEX_NAME, id).type("sharedStateProperty").build(); //$NON-NLS-1$
-        try {
-            getClient().executeAsync(get, new JestResultHandler<JestResult>() {
-                @SuppressWarnings("unchecked")
-                @Override
-                public void completed(JestResult result) {
-                    if (result.isSucceeded()) {
-                        try {
-                            T value = null;
-                            if (defaultValue.getClass().isPrimitive() || defaultValue instanceof String) {
-                                value = (T) readPrimitive(result);
-                            } else {
-                                value = (T) result.getSourceAsObject(defaultValue.getClass());
-                            }
-                            handler.handle(AsyncResultImpl.create(value));
-                        } catch (Exception e) {
-                            handler.handle(AsyncResultImpl.<T>create(e));
+        getClient().executeAsync(get, new JestResultHandler<JestResult>() {
+            @SuppressWarnings("unchecked")
+            @Override
+            public void completed(JestResult result) {
+                if (result.isSucceeded()) {
+                    try {
+                        T value = null;
+                        if (defaultValue.getClass().isPrimitive() || defaultValue instanceof String) {
+                            value = (T) readPrimitive(result);
+                        } else {
+                            value = (T) result.getSourceAsObject(defaultValue.getClass());
                         }
-                    } else {
-                        handler.handle(AsyncResultImpl.create(defaultValue));
+                        handler.handle(AsyncResultImpl.create(value));
+                    } catch (Exception e) {
+                        handler.handle(AsyncResultImpl.<T>create(e));
                     }
+                } else {
+                    handler.handle(AsyncResultImpl.create(defaultValue));
                 }
-                @Override
-                public void failed(Exception e) {
-                    handler.handle(AsyncResultImpl.<T>create(e));
-                }
-            });
-        } catch (ExecutionException | InterruptedException | IOException e) {
-            handler.handle(AsyncResultImpl.<T>create(e));
-        }
+            }
+            @Override
+            public void failed(Exception e) {
+                handler.handle(AsyncResultImpl.<T>create(e));
+            }
+        });
     }
 
     /**
@@ -123,24 +117,20 @@ public class ESSharedStateComponent extends AbstractESComponent implements IShar
             return;
         }
 
-        try {
-            String id = getPropertyId(namespace, propertyName);
-            String json = source;
-            Index index = new Index.Builder(json).refresh(false).index(ESConstants.INDEX_NAME)
-                    .type("sharedStateProperty").id(id).build(); //$NON-NLS-1$
-            getClient().executeAsync(index, new JestResultHandler<JestResult>() {
-                @Override
-                public void completed(JestResult result) {
-                    handler.handle(AsyncResultImpl.create((Void) null));
-                }
-                @Override
-                public void failed(Exception ex) {
-                    handler.handle(AsyncResultImpl.<Void>create(ex));
-                }
-            });
-        } catch (ExecutionException | InterruptedException | IOException e) {
-            handler.handle(AsyncResultImpl.<Void>create(e));
-        }
+        String id = getPropertyId(namespace, propertyName);
+        String json = source;
+        Index index = new Index.Builder(json).refresh(false).index(ESConstants.INDEX_NAME)
+                .type("sharedStateProperty").id(id).build(); //$NON-NLS-1$
+        getClient().executeAsync(index, new JestResultHandler<JestResult>() {
+            @Override
+            public void completed(JestResult result) {
+                handler.handle(AsyncResultImpl.create((Void) null));
+            }
+            @Override
+            public void failed(Exception ex) {
+                handler.handle(AsyncResultImpl.<Void>create(ex));
+            }
+        });
     }
 
     /**
@@ -150,21 +140,17 @@ public class ESSharedStateComponent extends AbstractESComponent implements IShar
     public <T> void clearProperty(final String namespace, final String propertyName, final IAsyncResultHandler<Void> handler) {
         String id = getPropertyId(namespace, propertyName);
 
-        try {
-            Delete delete = new Delete.Builder(id).index(ESConstants.INDEX_NAME).type("sharedStateProperty").build(); //$NON-NLS-1$
-            getClient().executeAsync(delete, new JestResultHandler<JestResult>() {
-                @Override
-                public void completed(JestResult result) {
-                    handler.handle(AsyncResultImpl.create((Void) null));
-                }
-                @Override
-                public void failed(Exception ex) {
-                    handler.handle(AsyncResultImpl.<Void>create(ex));
-                }
-            });
-        } catch (ExecutionException | InterruptedException | IOException e) {
-            handler.handle(AsyncResultImpl.<Void>create(e));
-        }
+        Delete delete = new Delete.Builder(id).index(ESConstants.INDEX_NAME).type("sharedStateProperty").build(); //$NON-NLS-1$
+        getClient().executeAsync(delete, new JestResultHandler<JestResult>() {
+            @Override
+            public void completed(JestResult result) {
+                handler.handle(AsyncResultImpl.create((Void) null));
+            }
+            @Override
+            public void failed(Exception ex) {
+                handler.handle(AsyncResultImpl.<Void>create(ex));
+            }
+        });
     }
 
     /**

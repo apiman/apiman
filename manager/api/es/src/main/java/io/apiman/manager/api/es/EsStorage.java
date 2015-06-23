@@ -95,6 +95,7 @@ import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.apache.commons.io.IOUtils;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
@@ -124,7 +125,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
 
     private static int guidCounter = 100;
 
-    @Inject
+    @Inject @Named("storage")
     JestClient esClient;
 
     /**

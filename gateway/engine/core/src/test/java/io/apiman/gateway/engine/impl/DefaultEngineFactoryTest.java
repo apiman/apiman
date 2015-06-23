@@ -184,6 +184,7 @@ public class DefaultEngineFactoryTest {
         app.setVersion("1.0");
         Contract contract = new Contract();
         contract.setApiKey("12345");
+        contract.setPlan("Gold");
         contract.setServiceId("TestService");
         contract.setServiceOrgId("TestOrg");
         contract.setServiceVersion("1.0");

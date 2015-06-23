@@ -27,13 +27,14 @@ import java.util.List;
 public class Contract implements Serializable {
 
     private static final long serialVersionUID = 8344360785926823601L;
-    
+
     private String apiKey;
     private String serviceOrgId;
     private String serviceId;
     private String serviceVersion;
+    private String plan;
     private List<Policy> policies = new ArrayList<>();
-    
+
     /**
      * Constructor.
      */
@@ -108,6 +109,20 @@ public class Contract implements Serializable {
      */
     public void setPolicies(List<Policy> policies) {
         this.policies = policies;
+    }
+
+    /**
+     * @return the plan
+     */
+    public String getPlan() {
+        return plan;
+    }
+
+    /**
+     * @param plan the plan to set
+     */
+    public void setPlan(String plan) {
+        this.plan = plan;
     }
 
     /**

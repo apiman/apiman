@@ -32,8 +32,9 @@ public class ServiceContract implements Serializable {
     private String apikey;
     private Service service;
     private Application application;
+    private String plan;
     private List<Policy> policies = new ArrayList<>();
-    
+
     /**
      * Constructor.
      */
@@ -47,10 +48,11 @@ public class ServiceContract implements Serializable {
      * @param application the application
      * @param policies the list of policies
      */
-    public ServiceContract(String apikey, Service service, Application application, List<Policy> policies) {
+    public ServiceContract(String apikey, Service service, Application application, String plan, List<Policy> policies) {
         setApikey(apikey);
         setService(service);
         setApplication(application);
+        setPlan(plan);
         setPolicies(policies);
     }
 
@@ -139,6 +141,20 @@ public class ServiceContract implements Serializable {
         } else if (!apikey.equals(other.apikey))
             return false;
         return true;
+    }
+
+    /**
+     * @return the plan
+     */
+    public String getPlan() {
+        return plan;
+    }
+
+    /**
+     * @param plan the plan to set
+     */
+    public void setPlan(String plan) {
+        this.plan = plan;
     }
 
 }

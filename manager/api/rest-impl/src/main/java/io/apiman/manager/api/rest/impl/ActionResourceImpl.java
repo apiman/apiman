@@ -320,6 +320,7 @@ public class ActionResourceImpl implements IActionResource {
         for (ContractSummaryBean contractBean : contractBeans) {
             Contract contract = new Contract();
             contract.setApiKey(contractBean.getApikey());
+            contract.setPlan(contractBean.getPlanId());
             contract.setServiceId(contractBean.getServiceId());
             contract.setServiceOrgId(contractBean.getServiceOrganizationId());
             contract.setServiceVersion(contractBean.getServiceVersion());

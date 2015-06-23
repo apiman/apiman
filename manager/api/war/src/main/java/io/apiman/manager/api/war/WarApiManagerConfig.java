@@ -39,12 +39,24 @@ public class WarApiManagerConfig {
 
     public static final String APIMAN_MANAGER_CONFIG_LOGGER = "apiman-manager.config.logger"; //$NON-NLS-1$
 
+    /* -------------------------------------------------------
+     * Storage
+     * ------------------------------------------------------- */
     public static final String APIMAN_MANAGER_STORAGE_TYPE = "apiman-manager.storage.type"; //$NON-NLS-1$
     public static final String APIMAN_MANAGER_STORAGE_ES_PROTOCOL = "apiman-manager.storage.es.protocol"; //$NON-NLS-1$
     public static final String APIMAN_MANAGER_STORAGE_ES_HOST = "apiman-manager.storage.es.host"; //$NON-NLS-1$
     public static final String APIMAN_MANAGER_STORAGE_ES_PORT = "apiman-manager.storage.es.port"; //$NON-NLS-1$
     public static final String APIMAN_MANAGER_STORAGE_ES_CLUSTER_NAME = "apiman-manager.storage.es.cluster-name"; //$NON-NLS-1$
     public static final String APIMAN_MANAGER_STORAGE_ES_INITIALIZE = "apiman-manager.storage.es.initialize"; //$NON-NLS-1$
+
+    /* -------------------------------------------------------
+     * Metrics
+     * ------------------------------------------------------- */
+    public static final String APIMAN_MANAGER_METRICS_TYPE = "apiman-manager.metrics.type"; //$NON-NLS-1$
+    public static final String APIMAN_MANAGER_METRICS_ES_PROTOCOL = "apiman-manager.metrics.es.protocol"; //$NON-NLS-1$
+    public static final String APIMAN_MANAGER_METRICS_ES_HOST = "apiman-manager.metrics.es.host"; //$NON-NLS-1$
+    public static final String APIMAN_MANAGER_METRICS_ES_PORT = "apiman-manager.metrics.es.port"; //$NON-NLS-1$
+    public static final String APIMAN_MANAGER_METRICS_ES_CLUSTER_NAME = "apiman-manager.metrics.es.cluster-name"; //$NON-NLS-1$
 
     public static final String APIMAN_MANAGER_SECURITY_CONTEXT_TYPE = "apiman-manager.security-context.type"; //$NON-NLS-1$
 
@@ -99,36 +111,71 @@ public class WarApiManagerConfig {
     /**
      * @return the elasticsearch protocol
      */
-    public String getESProtocol() {
+    public String getStorageESProtocol() {
         return config.getString(APIMAN_MANAGER_STORAGE_ES_PROTOCOL, "http"); //$NON-NLS-1$
     }
 
     /**
      * @return the elasticsearch host
      */
-    public String getESHost() {
+    public String getStorageESHost() {
         return config.getString(APIMAN_MANAGER_STORAGE_ES_HOST, "localhost"); //$NON-NLS-1$
     }
 
     /**
      * @return the elasticsearch port
      */
-    public int getESPort() {
-        return config.getInt(APIMAN_MANAGER_STORAGE_ES_PORT, 9300);
+    public int getStorageESPort() {
+        return config.getInt(APIMAN_MANAGER_STORAGE_ES_PORT, 19300);
     }
 
     /**
      * @return the elasticsearch cluster name
      */
-    public String getESClusterName() {
+    public String getStorageESClusterName() {
         return config.getString(APIMAN_MANAGER_STORAGE_ES_CLUSTER_NAME, DEFAULT_ES_CLUSTER_NAME);
     }
 
     /**
      * @return true if the elasticsearch index should be initialized if not found
      */
-    public boolean isInitializeES() {
+    public boolean isInitializeStorageES() {
         return config.getBoolean(APIMAN_MANAGER_STORAGE_ES_INITIALIZE, true);
+    }
+
+    /**
+     * @return the configured storage type
+     */
+    public String getMetricsType() {
+        return config.getString(APIMAN_MANAGER_METRICS_TYPE, "es"); //$NON-NLS-1$
+    }
+
+    /**
+     * @return the elasticsearch protocol
+     */
+    public String getMetricsESProtocol() {
+        return config.getString(APIMAN_MANAGER_METRICS_ES_PROTOCOL, "http"); //$NON-NLS-1$
+    }
+
+    /**
+     * @return the elasticsearch host
+     */
+    public String getMetricsESHost() {
+        return config.getString(APIMAN_MANAGER_METRICS_ES_HOST, "localhost"); //$NON-NLS-1$
+    }
+
+    /**
+     * @return the elasticsearch port
+     */
+    public int getMetricsESPort() {
+        return config.getInt(APIMAN_MANAGER_METRICS_ES_PORT, 19200);
+    }
+
+    /**
+     * @return the elasticsearch cluster name
+     */
+    public String getMetricsESClusterName() {
+        return config.getString(APIMAN_MANAGER_METRICS_ES_CLUSTER_NAME, DEFAULT_ES_CLUSTER_NAME);
     }
 
     /**

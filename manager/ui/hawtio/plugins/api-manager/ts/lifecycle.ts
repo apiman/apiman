@@ -51,6 +51,7 @@ module ApimanPageLifecycle {
         "page.title.service-activity": "apiman - {0} (Activity)",
         "page.title.service-contracts": "apiman - {0} (Contracts)",
         "page.title.service-endpoint": "apiman - {0} (Endpoint)",
+        "page.title.service-metrics": "apiman - {0} (Metrics)",
         "page.title.service-impl": "apiman - {0} (Implementation)",
         "page.title.service-def": "apiman - {0} (Definition)",
         "page.title.service-overview": "apiman - {0} (Overview)",

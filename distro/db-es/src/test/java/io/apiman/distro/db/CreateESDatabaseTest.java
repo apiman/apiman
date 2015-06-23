@@ -18,10 +18,10 @@ package io.apiman.distro.db;
 import io.apiman.manager.test.util.AbstractTestPlanTest;
 import io.apiman.manager.test.util.ManagerTestUtils;
 import io.apiman.manager.test.util.ManagerTestUtils.TestType;
+import io.apiman.test.common.util.TestUtil;
 
 import java.io.File;
 
-import io.apiman.test.common.util.TestUtil;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -48,6 +48,7 @@ public class CreateESDatabaseTest extends AbstractTestPlanTest {
         System.out.println("------------------------------------------------");
 
         TestUtil.setProperty("apiman.test.es-home", targetClassesDir.toString());
+        TestUtil.setProperty("apiman.test.admin-user-only", "true");
         TestUtil.setProperty("apiman.test.es-cluster-name", "apiman");
         TestUtil.setProperty("apiman.test.es-persistence", "true");
         ManagerTestUtils.setTestType(TestType.es);
