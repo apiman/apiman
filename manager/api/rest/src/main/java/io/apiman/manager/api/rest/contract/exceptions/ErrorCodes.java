@@ -24,7 +24,7 @@ package io.apiman.manager.api.rest.contract.exceptions;
  * @author eric.wittmann@redhat.com
  */
 public final class ErrorCodes {
-    
+
     //
     // HTTP status codes
     //
@@ -35,7 +35,7 @@ public final class ErrorCodes {
     public static final int HTTP_STATUS_CODE_INVALID_STATE  = 409;
     public static final int HTTP_STATUS_CODE_SYSTEM_ERROR   = 500;
 
-    
+
     //
     // Search API related (cross-cutting across many APIs)
     //
@@ -43,7 +43,7 @@ public final class ErrorCodes {
 
     public static final String SEARCH_CRITERIA_INVALID_INFO = null;
 
-    
+
     //
     // User API related
     //
@@ -51,7 +51,7 @@ public final class ErrorCodes {
 
     public static final String USER_NOT_FOUND_INFO          = null;
 
-    
+
     //
     // Role API related
     //
@@ -61,13 +61,13 @@ public final class ErrorCodes {
     public static final String ROLE_NOT_FOUND_INFO          = null;
     public static final String ROLE_ALREADY_EXISTS_INFO     = null;
 
-    
+
     //
     // Organization API related
     //
     public static final int ORG_ALREADY_EXISTS              = 3001;
     public static final int ORG_NOT_FOUND                   = 3002;
-    
+
     public static final String ORG_ALREADY_EXISTS_INFO      = null;
     public static final String ORG_NOT_FOUND_INFO           = null;
 
@@ -89,7 +89,7 @@ public final class ErrorCodes {
     public static final String CONTRACT_ALREADY_EXISTS_INFO = null;
     public static final String APP_STATUS_ERROR_INFO        = null;
 
-    
+
     //
     // Service API related
     //
@@ -98,14 +98,14 @@ public final class ErrorCodes {
     public static final int SERVICE_VERSION_NOT_FOUND           = 5003;
     public static final int SERVICE_STATUS_ERROR                = 5004;
     public static final int SERVICE_DEFINITION_NOT_FOUND        = 5005;
-    
+
     public static final String SERVICE_ALREADY_EXISTS_INFO      = null;
     public static final String SERVICE_NOT_FOUND_INFO           = null;
     public static final String SERVICE_VERSION_NOT_FOUND_INFO   = null;
     public static final String SERVICE_STATUS_ERROR_INFO        = null;
     public static final String SERVICE_DEFINITION_NOT_FOUND_INFO   = null;
 
-    
+
     //
     // Plan API related
     //
@@ -117,15 +117,15 @@ public final class ErrorCodes {
     public static final String PLAN_NOT_FOUND_INFO           = null;
     public static final String PLAN_VERSION_NOT_FOUND_INFO   = null;
 
-    
+
     //
     // Member API related
     //
     public static final int MEMBER_NOT_FOUND                  = 7001;
 
     public static final String MEMBER_NOT_FOUND_INFO          = null;
-    
-    
+
+
 
     //
     // Action API related
@@ -134,7 +134,7 @@ public final class ErrorCodes {
 
     public static final String ACTION_ERROR_INFO              = null;
 
-    
+
     //
     // Policy related
     //
@@ -142,14 +142,14 @@ public final class ErrorCodes {
 
     public static final String POLICY_NOT_FOUND_INFO          = null;
 
-    
+
     //
     // Policy Definition related
     //
     public static final int POLICY_DEF_ALREADY_EXISTS              = 10001;
     public static final int POLICY_DEF_NOT_FOUND                   = 10002;
     public static final int POLICY_DEF_INVALID                     = 10003;
-    
+
     public static final String POLICY_DEF_ALREADY_EXISTS_INFO      = null;
     public static final String POLICY_DEF_NOT_FOUND_INFO           = null;
     public static final String POLICY_DEF_INVALID_INFO             = null;
@@ -160,7 +160,7 @@ public final class ErrorCodes {
     //
     public static final int GATEWAY_ALREADY_EXISTS              = 11001;
     public static final int GATEWAY_NOT_FOUND                   = 11002;
-    
+
     public static final String GATEWAY_ALREADY_EXISTS_INFO      = null;
     public static final String GATEWAY_NOT_FOUND_INFO           = null;
 
@@ -171,9 +171,17 @@ public final class ErrorCodes {
     public static final int PLUGIN_ALREADY_EXISTS              = 12001;
     public static final int PLUGIN_NOT_FOUND                   = 12002;
     public static final int PLUGIN_RESOURCE_NOT_FOUND          = 12003;
-    
+
     public static final String PLUGIN_ALREADY_EXISTS_INFO      = null;
     public static final String PLUGIN_NOT_FOUND_INFO           = null;
     public static final String PLUGIN_RESOURCE_NOT_FOUND_INFO  = null;
-    
+
+
+    //
+    // Metrics related
+    //
+    public static final int METRIC_CRITERIA_INVALID            = 130001;
+
+    public static final String METRIC_CRITERIA_INVALID_INFO    = null;
+
 }

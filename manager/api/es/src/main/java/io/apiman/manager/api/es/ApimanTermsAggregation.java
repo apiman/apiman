@@ -42,7 +42,7 @@ public class ApimanTermsAggregation extends Aggregation {
 
     public static final String TYPE = "terms";
 
-    private List<Entry> buckets = new LinkedList<Entry>();
+    private List<Entry> buckets = new LinkedList<>();
 
     public ApimanTermsAggregation(String name, JsonObject termAggregation) {
         super(name, termAggregation);

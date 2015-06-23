@@ -56,12 +56,18 @@ module Apiman {
                             }
                         },
                         bindto: '#usage-chart',
+                        legend: {
+                            hide: true
+                        },
                         axis: {
                             x: {
                                 type: 'timeseries',
                                 tick: {
                                     format: getTimeSeriesFormat()
                                 }
+                            },
+                            y: {
+                                label: 'Total Requests'
                             }
                         }
                     });

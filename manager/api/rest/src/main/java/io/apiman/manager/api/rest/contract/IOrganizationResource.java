@@ -27,6 +27,7 @@ import io.apiman.manager.api.beans.contracts.NewContractBean;
 import io.apiman.manager.api.beans.idm.GrantRolesBean;
 import io.apiman.manager.api.beans.members.MemberBean;
 import io.apiman.manager.api.beans.metrics.UsageHistogramBean;
+import io.apiman.manager.api.beans.metrics.UsageHistogramIntervalType;
 import io.apiman.manager.api.beans.metrics.UsagePerAppBean;
 import io.apiman.manager.api.beans.metrics.UsagePerPlanBean;
 import io.apiman.manager.api.beans.orgs.NewOrganizationBean;
@@ -65,6 +66,7 @@ import io.apiman.manager.api.rest.contract.exceptions.ApplicationVersionNotFound
 import io.apiman.manager.api.rest.contract.exceptions.ContractAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.ContractNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.GatewayNotFoundException;
+import io.apiman.manager.api.rest.contract.exceptions.InvalidMetricCriteriaException;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidServiceStatusException;
 import io.apiman.manager.api.rest.contract.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.contract.exceptions.OrganizationAlreadyExistsException;
@@ -1601,8 +1603,8 @@ public interface IOrganizationResource {
     @Produces(MediaType.APPLICATION_JSON)
     public UsageHistogramBean getUsage(@PathParam("organizationId") String organizationId,
             @PathParam("serviceId") String serviceId, @PathParam("version") String version,
-            @QueryParam("interval") String interval, @QueryParam("from") String fromDate,
-            @QueryParam("to") String toDate) throws NotAuthorizedException;
+            @QueryParam("interval") UsageHistogramIntervalType interval, @QueryParam("from") String fromDate,
+            @QueryParam("to") String toDate) throws NotAuthorizedException, InvalidMetricCriteriaException;
 
     /**
      * Retrieves metrics/analytics information for a specific service.  This will
@@ -1625,7 +1627,7 @@ public interface IOrganizationResource {
     public UsagePerAppBean getUsagePerApp(
             @PathParam("organizationId") String organizationId, @PathParam("serviceId") String serviceId,
             @PathParam("version") String version, @QueryParam("from") String fromDate,
-            @QueryParam("to") String toDate) throws NotAuthorizedException;
+            @QueryParam("to") String toDate) throws NotAuthorizedException, InvalidMetricCriteriaException;
 
 
     /**
@@ -1649,5 +1651,5 @@ public interface IOrganizationResource {
     public UsagePerPlanBean getUsagePerPlan(
             @PathParam("organizationId") String organizationId, @PathParam("serviceId") String serviceId,
             @PathParam("version") String version, @QueryParam("from") String fromDate,
-            @QueryParam("to") String toDate) throws NotAuthorizedException;
+            @QueryParam("to") String toDate) throws NotAuthorizedException, InvalidMetricCriteriaException;
 }

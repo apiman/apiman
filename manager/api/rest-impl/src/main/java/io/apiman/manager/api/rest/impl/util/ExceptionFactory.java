@@ -25,6 +25,7 @@ import io.apiman.manager.api.rest.contract.exceptions.ContractNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.GatewayAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.GatewayNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidApplicationStatusException;
+import io.apiman.manager.api.rest.contract.exceptions.InvalidMetricCriteriaException;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidServiceStatusException;
 import io.apiman.manager.api.rest.contract.exceptions.MemberNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.NotAuthorizedException;
@@ -193,7 +194,7 @@ public final class ExceptionFactory {
     /**
      * Creates an exception from an service id and version.
      * @param serviceId the service id
-     * @param version the service version 
+     * @param version the service version
      * @return the exception
      */
     public static final ServiceDefinitionNotFoundException serviceDefinitionNotFoundException(String serviceId, String version) {
@@ -224,7 +225,7 @@ public final class ExceptionFactory {
     public static final MemberNotFoundException memberNotFoundException(String memberId) {
         return new MemberNotFoundException(Messages.i18n.format("MemberDoesNotExist", memberId)); //$NON-NLS-1$
     }
-    
+
     /**
      * Creates an exception from an plan name.
      * @param planName the plan name
@@ -252,7 +253,7 @@ public final class ExceptionFactory {
     public static final PlanVersionNotFoundException planVersionNotFoundException(String planId, String version) {
         return new PlanVersionNotFoundException(Messages.i18n.format("PlanVersionDoesNotExist", planId, version)); //$NON-NLS-1$
     }
-    
+
     /**
      * Creates an action exception.
      * @param message the exception message
@@ -353,6 +354,15 @@ public final class ExceptionFactory {
             PluginCoordinates coordinates) {
         return new PluginResourceNotFoundException(Messages.i18n.format(
                 "PluginResourceNotFound", resourceName, coordinates.toString())); //$NON-NLS-1$
+    }
+
+    /**
+     * Creates an exception.
+     * @param message
+     * @return the exception
+     */
+    public static final InvalidMetricCriteriaException invalidMetricCriteriaException(String message) {
+        return new InvalidMetricCriteriaException(message);
     }
 
 }

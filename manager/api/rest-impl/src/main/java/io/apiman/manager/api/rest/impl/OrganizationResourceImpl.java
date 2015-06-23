@@ -108,6 +108,7 @@ import io.apiman.manager.api.rest.contract.exceptions.ApplicationVersionNotFound
 import io.apiman.manager.api.rest.contract.exceptions.ContractAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.ContractNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.GatewayNotFoundException;
+import io.apiman.manager.api.rest.contract.exceptions.InvalidMetricCriteriaException;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidServiceStatusException;
 import io.apiman.manager.api.rest.contract.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.contract.exceptions.OrganizationAlreadyExistsException;
@@ -173,6 +174,12 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         "EEE, dd MMM yyyy HH:mm:ss",
         "EEE, dd MMM yyyy"
     };
+
+    private static final long ONE_MINUTE_MILLIS = 1 * 60 * 1000;
+    private static final long ONE_HOUR_MILLIS = 1 * 60 * 60 * 1000;
+    private static final long ONE_DAY_MILLIS = 1 * 24 * 60 * 60 * 1000;
+    private static final long ONE_WEEK_MILLIS = 7 * 24 * 60 * 60 * 1000;
+    private static final long ONE_MONTH_MILLIS = 30 * 24 * 60 * 60 * 1000;
 
     @Inject IStorage storage;
     @Inject IIdmStorage idmStorage;
@@ -2001,22 +2008,22 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getUsage(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getUsage(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.metrics.UsageHistogramIntervalType, java.lang.String, java.lang.String)
      */
     @Override
     public UsageHistogramBean getUsage(String organizationId, String serviceId, String version,
-            String interval, String fromDate, String toDate) throws NotAuthorizedException {
+            UsageHistogramIntervalType interval, String fromDate, String toDate) throws NotAuthorizedException, InvalidMetricCriteriaException {
         if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
             throw ExceptionFactory.notAuthorizedException();
-
-        // TODO put in range and interval restrictions - e.g. cannot request a 2 year range with a "minute" interval - that's too many data points
 
         DateTime from = parseFromDate(fromDate);
         DateTime to = parseToDate(toDate);
         if (interval == null) {
-            interval = "day"; //$NON-NLS-1$
+            interval = UsageHistogramIntervalType.day;
         }
-        return metrics.getUsage(organizationId, serviceId, version, UsageHistogramIntervalType.valueOf(interval), from, to);
+        validateMetricRange(from, to);
+        validateTimeSeriesMetric(from, to, interval);
+        return metrics.getUsage(organizationId, serviceId, version, interval, from, to);
     }
 
     /**
@@ -2024,12 +2031,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
      */
     @Override
     public UsagePerAppBean getUsagePerApp(String organizationId, String serviceId, String version,
-            String fromDate, String toDate) throws NotAuthorizedException {
+            String fromDate, String toDate) throws NotAuthorizedException, InvalidMetricCriteriaException {
         if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
             throw ExceptionFactory.notAuthorizedException();
 
         DateTime from = parseFromDate(fromDate);
         DateTime to = parseToDate(toDate);
+        validateMetricRange(from, to);
         return metrics.getUsagePerApp(organizationId, serviceId, version, from, to);
     }
 
@@ -2038,12 +2046,13 @@ public class OrganizationResourceImpl implements IOrganizationResource {
      */
     @Override
     public UsagePerPlanBean getUsagePerPlan(String organizationId, String serviceId, String version,
-            String fromDate, String toDate) throws NotAuthorizedException {
+            String fromDate, String toDate) throws NotAuthorizedException, InvalidMetricCriteriaException {
         if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
             throw ExceptionFactory.notAuthorizedException();
 
         DateTime from = parseFromDate(fromDate);
         DateTime to = parseToDate(toDate);
+        validateMetricRange(from, to);
         return metrics.getUsagePerPlan(organizationId, serviceId, version, from, to);
     }
 
@@ -2978,6 +2987,53 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             return ISODateTimeFormat.dateTime().withZoneUTC().parseDateTime(dateStr);
         }
         return defaultDate;
+    }
+
+    /**
+     * Ensures that the given date range is valid.
+     * @param from
+     * @param to
+     */
+    private void validateMetricRange(DateTime from, DateTime to) throws InvalidMetricCriteriaException {
+        if (from.isAfter(to)) {
+            throw ExceptionFactory.invalidMetricCriteriaException(Messages.i18n.format("OrganizationResourceImpl.InvalidMetricDateRange")); //$NON-NLS-1$
+        }
+    }
+
+    /**
+     * Ensures that a time series can be created for the given date range and
+     * interval, and that the
+     * @param from
+     * @param to
+     * @param interval
+     */
+    private void validateTimeSeriesMetric(DateTime from, DateTime to, UsageHistogramIntervalType interval)
+            throws InvalidMetricCriteriaException {
+        long millis = to.getMillis() - from.getMillis();
+        long divBy = ONE_DAY_MILLIS;
+        switch (interval) {
+        case day:
+            divBy = ONE_DAY_MILLIS;
+            break;
+        case hour:
+            divBy = ONE_HOUR_MILLIS;
+            break;
+        case minute:
+            divBy = ONE_MINUTE_MILLIS;
+            break;
+        case month:
+            divBy = ONE_MONTH_MILLIS;
+            break;
+        case week:
+            divBy = ONE_WEEK_MILLIS;
+            break;
+        default:
+            break;
+        }
+        long totalDataPoints = millis / divBy;
+        if (totalDataPoints > 5000) {
+            throw ExceptionFactory.invalidMetricCriteriaException(Messages.i18n.format("OrganizationResourceImpl.MetricDataSetTooLarge")); //$NON-NLS-1$
+        }
     }
 
 }

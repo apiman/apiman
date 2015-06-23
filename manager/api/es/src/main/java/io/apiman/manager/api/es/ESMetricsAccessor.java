@@ -274,8 +274,13 @@ public class ESMetricsAccessor implements IMetricsAccessor {
             MetricAggregation aggregations = response.getAggregations();
             ApimanTermsAggregation termsAggregation = aggregations.getAggregation("usage_by_app", ApimanTermsAggregation.class); //$NON-NLS-1$
             List<ApimanTermsAggregation.Entry> buckets = termsAggregation.getBuckets();
+            int counter = 0;
             for (ApimanTermsAggregation.Entry entry : buckets) {
                 rval.getData().put(entry.getKey(), entry.getCount());
+                counter++;
+                if (counter > 5) {
+                    break;
+                }
             }
         } catch (IOException e) {
             log.error(e);
