@@ -40,7 +40,7 @@ public class ServiceDefinitionBean implements Serializable {
     @Id
     private long id;
     @OneToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="serviceVersionId")
+    @JoinColumn(name="service_version_id")
     private ServiceVersionBean serviceVersion;
     @Lob
     private byte[] data;

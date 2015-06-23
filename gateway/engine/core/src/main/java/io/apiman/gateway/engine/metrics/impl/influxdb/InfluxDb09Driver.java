@@ -27,6 +27,7 @@ import io.apiman.gateway.engine.components.http.IHttpClientResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,63 +36,86 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  * A simple async HTTP impl of the influxdb driver. Contains only the subset of functionality we need.
- * 
+ *
  * @author Marc Savy <msavy@redhat.com>
  */
 public class InfluxDb09Driver {
     private IHttpClientComponent httpClient;
-    private String endpoint;
+
+    private StringBuilder writeUrl;
+    private StringBuilder queryUrl;
+
     private String username;
     private String password;
+    private String database;
+    private String retentionPolicy;
+    private String timePrecision;
 
-    private String writeQuery;
     private static ObjectMapper objectMapper = new ObjectMapper();
 
-    public InfluxDb09Driver(IHttpClientComponent httpClient, String endpoint, String username, String password) {
+    @SuppressWarnings("nls")
+    public InfluxDb09Driver(IHttpClientComponent httpClient, String endpoint, String username,
+            String password, String database, String retentionPolicy, String timePrecision) {
         this.httpClient = httpClient;
-        this.endpoint = endpoint;
         this.username = username;
         this.password = password;
+        this.database = database;
+        this.retentionPolicy = retentionPolicy;
+        this.timePrecision = timePrecision;
 
-        this.writeQuery = buildParams(new StringBuffer(endpoint + "/write"), null).toString(); //$NON-NLS-1$
+        StringBuilder writeEndpoint = new StringBuilder();
+
+        if (!endpoint.startsWith("http://") || !endpoint.startsWith("https://")) {
+            writeEndpoint.append("http://");
+        }
+
+        // domain + port
+        writeEndpoint.append(endpoint);
+
+        // Same basic structure, but with /query on end
+        StringBuilder queryEndpoint = new StringBuilder().append(writeEndpoint).append("/query");
+        this.queryUrl = buildParams(queryEndpoint, "SHOW DATABASES");
+
+        // Add user-name, password, etc
+        writeEndpoint.append("/write");
+        this.writeUrl = buildParams(writeEndpoint, null);
     }
 
     /**
-     * Simple write to "/write". Must be valid Influx JSON.
-     * 
-     * @param jsonDocument document to write, as string
-     * @param encoding encoding of string
+     * Simple write to "/write". Must be valid Influx line format.
+     *
+     * @param lineDocument document to write, as string
      * @param failureHandler handler in case of failure
      */
-    public void write(String jsonDocument, String encoding,
+    public void write(String lineDocument,
             final IAsyncHandler<InfluxException> failureHandler) {
         // Make request to influx
-        IHttpClientRequest request = httpClient.request(writeQuery, HttpMethod.POST,
+        IHttpClientRequest request = httpClient.request(writeUrl.toString(), HttpMethod.POST,
                 new IAsyncResultHandler<IHttpClientResponse>() {
 
                     @Override
                     public void handle(IAsyncResult<IHttpClientResponse> result) {
-                        if (result.isError() || result.getResult().getResponseCode() != 200) {
+                        if (result.isError() || result.getResult().getResponseCode() < 200
+                                || result.getResult().getResponseCode() > 299) {
                             failureHandler.handle(new InfluxException(result.getResult()));
                         }
                     }
                 });
-        request.addHeader("Content-Type", "application/json"); //$NON-NLS-1$ //$NON-NLS-2$
-        request.write(jsonDocument, encoding);
+        // For some reason Java's URLEncoding doesn't seem to be parseable by influx?
+        //request.addHeader("Content-Type", "application/x-www-form-urlencoded");
+        request.addHeader("Content-Type", "text/plain"); //$NON-NLS-1$ //$NON-NLS-2$
+        request.write(lineDocument, StandardCharsets.UTF_8.name());
         request.end();
     }
 
     /**
      * List all databases
-     * 
+     *
      * @param handler the result handler
      */
     @SuppressWarnings("nls")
     public void listDatabases(final IAsyncResultHandler<List<String>> handler) {
-        final StringBuffer url = new StringBuffer(endpoint + "/query");
-        buildParams(url, "SHOW DATABASES");
-
-        IHttpClientRequest request = httpClient.request(url.toString(), HttpMethod.GET,
+        IHttpClientRequest request = httpClient.request(queryUrl.toString(), HttpMethod.GET,
                 new IAsyncResultHandler<IHttpClientResponse>() {
 
                     @Override
@@ -129,7 +153,7 @@ public class InfluxDb09Driver {
         if (result.isError()) {
             handler.handle(AsyncResultImpl.<T> create(result.getError()));
         } else if (result.getResult().getResponseCode() != 200) {
-            handler.handle(AsyncResultImpl.<T> create(new RuntimeException("Influx: " //$NON-NLS-1$
+            handler.handle(AsyncResultImpl.<T> create(new InfluxException("Influx: " //$NON-NLS-1$
                     + result.getResult().getResponseCode() + " " + result.getResult().getResponseMessage()))); //$NON-NLS-1$
         }
     }
@@ -145,55 +169,26 @@ public class InfluxDb09Driver {
     }
 
     @SuppressWarnings("nls")
-    private StringBuffer buildParams(StringBuffer url, String query) {
-        url.append("?");
-        addQueryParam(url, "u", username);
-        addQueryParam(url, "p", password);
-
-        if (query != null)
-            addQueryParam(url, "q", query);
-
+    private StringBuilder buildParams(StringBuilder url, String query) {
+        addQueryParam(url, "db", database, "?");
+        addQueryParam(url, "u", username, "&");
+        addQueryParam(url, "p", password, "&");
+        addQueryParam(url, "rp", retentionPolicy, "&");
+        addQueryParam(url, "precision", timePrecision, "&");
+        addQueryParam(url, "q", query, "&");
         return url;
     }
 
     @SuppressWarnings("nls")
-    private StringBuffer addQueryParam(StringBuffer url, String key, String value) {
+    private void addQueryParam(StringBuilder url, String key, String value, String connector) {
+
+        if (value == null)
+            return;
+
         try {
-            url.append("&" + key + "=" + URLEncoder.encode(value, "utf-8"));
+            url.append(connector + key + "=" + URLEncoder.encode(value, StandardCharsets.UTF_8.name()));
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
-        }
-        return url;
-    }
-
-    public final class InfluxException extends RuntimeException {
-        private static final long serialVersionUID = 3481055452967828740L;
-        private IHttpClientResponse response;
-        private RuntimeException exception;
-
-        public InfluxException(IHttpClientResponse r) {
-            this.response = r;
-        }
-
-        public InfluxException(RuntimeException e) {
-            super(e);
-            this.exception = e;
-        }
-
-        public boolean isBadResponse() {
-            return response != null;
-        }
-
-        public IHttpClientResponse getResponse() {
-            return response;
-        }
-
-        public boolean isException() {
-            return exception != null;
-        }
-
-        public RuntimeException getException() {
-            return exception;
         }
     }
 }

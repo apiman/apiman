@@ -43,7 +43,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
  */
 @Entity
 @Table(name = "application_versions",
-       uniqueConstraints = { @UniqueConstraint(columnNames = { "app_id", "app_orgId", "version" }) })
+       uniqueConstraints = { @UniqueConstraint(columnNames = { "app_id", "app_org_id", "version" }) })
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class ApplicationVersionBean implements Serializable {
 
@@ -54,7 +54,7 @@ public class ApplicationVersionBean implements Serializable {
     @ManyToOne
     @JoinColumns({
         @JoinColumn(name="app_id", referencedColumnName="id"),
-        @JoinColumn(name="app_orgId", referencedColumnName="organizationId")
+        @JoinColumn(name="app_org_id", referencedColumnName="organization_id")
     })
     private ApplicationBean application;
     @Column(updatable=true, nullable=false)
@@ -62,15 +62,17 @@ public class ApplicationVersionBean implements Serializable {
     private ApplicationStatus status;
     @Column(updatable=false, nullable=false)
     private String version;
-    @Column(updatable=false, nullable=false)
+    @Column(name = "created_by", updatable=false, nullable=false)
     private String createdBy;
-    @Column(updatable=false, nullable=false)
+    @Column(name = "created_on", updatable=false, nullable=false)
     private Date createdOn;
-    @Column(updatable=true, nullable=false)
+    @Column(name = "modified_by", updatable=true, nullable=false)
     private String modifiedBy;
-    @Column(updatable=true, nullable=false)
+    @Column(name = "modified_on", updatable=true, nullable=false)
     private Date modifiedOn;
+    @Column(name = "published_on")
     private Date publishedOn;
+    @Column(name = "retired_on")
     private Date retiredOn;
 
     /**

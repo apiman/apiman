@@ -57,6 +57,7 @@ public class RoleMembershipBean implements Serializable {
     private String roleId;
     @Column(name="org_id")
     private String organizationId;
+    @Column(name = "created_on")
     private Date createdOn;
 
     /**

@@ -51,16 +51,16 @@ public class AuditEntryBean implements Serializable {
     private Long id;
     @Column(updatable=false, nullable=false)
     private String who;
-    @Column(updatable=false, nullable=false)
+    @Column(name= "organization_id", updatable=false, nullable=false)
     private String organizationId;
-    @Column(updatable=false, nullable=false)
+    @Column(name = "entity_type", updatable=false, nullable=false)
     @Enumerated(EnumType.STRING)
     private AuditEntityType entityType;
-    @Column(updatable=false)
+    @Column(name = "entity_id", updatable=false)
     private String entityId;
-    @Column(updatable=false)
+    @Column(name = "entity_version", updatable=false)
     private String entityVersion;
-    @Column(updatable=false, nullable=false)
+    @Column(name = "created_on", updatable=false, nullable=false)
     private Date createdOn;
     @Column(updatable=false, nullable=false)
     @Enumerated(EnumType.STRING)
