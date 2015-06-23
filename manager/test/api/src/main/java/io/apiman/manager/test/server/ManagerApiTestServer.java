@@ -22,6 +22,7 @@ import io.apiman.manager.api.security.impl.DefaultSecurityContextFilter;
 import io.apiman.manager.api.war.TransactionWatchdogFilter;
 import io.apiman.manager.test.util.ManagerTestUtils;
 import io.apiman.manager.test.util.ManagerTestUtils.TestType;
+import io.apiman.test.common.util.TestUtil;
 import io.searchbox.client.JestClient;
 import io.searchbox.client.JestClientFactory;
 import io.searchbox.client.config.HttpClientConfig;
@@ -143,7 +144,7 @@ public class ManagerApiTestServer {
      */
     protected void preStart() throws Exception {
         if (ManagerTestUtils.getTestType() == TestType.jpa) {
-            System.setProperty("apiman.hibernate.hbm2ddl.auto", "create-drop");
+            TestUtil.setProperty("apiman.hibernate.hbm2ddl.auto", "create-drop");
             try {
                 InitialContext ctx = new InitialContext();
                 ensureCtx(ctx, "java:/comp/env");
@@ -233,7 +234,7 @@ public class ManagerApiTestServer {
      * @throws SQLException
      */
     private static BasicDataSource createInMemoryDatasource() throws SQLException {
-        System.setProperty("apiman.hibernate.dialect", "org.hibernate.dialect.H2Dialect");
+        TestUtil.setProperty("apiman.hibernate.dialect", "org.hibernate.dialect.H2Dialect");
         BasicDataSource ds = new BasicDataSource();
         ds.setDriverClassName(Driver.class.getName());
         ds.setUsername("sa");
@@ -250,7 +251,7 @@ public class ManagerApiTestServer {
      * @throws SQLException
      */
     private static BasicDataSource createFileDatasource(File outputDirectory) throws SQLException {
-        System.setProperty("apiman.hibernate.dialect", "org.hibernate.dialect.H2Dialect");
+        TestUtil.setProperty("apiman.hibernate.dialect", "org.hibernate.dialect.H2Dialect");
         BasicDataSource ds = new BasicDataSource();
         ds.setDriverClassName(Driver.class.getName());
         ds.setUsername("sa");

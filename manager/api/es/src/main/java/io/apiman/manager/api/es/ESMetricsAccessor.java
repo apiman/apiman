@@ -43,7 +43,6 @@ import javax.inject.Named;
 
 import org.apache.commons.lang.text.StrSubstitutor;
 import org.apache.commons.lang.time.DateFormatUtils;
-import org.apache.commons.lang.time.DateUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 
@@ -58,7 +57,7 @@ import org.joda.time.format.ISODateTimeFormat;
 public class ESMetricsAccessor implements IMetricsAccessor {
 
     private static final String INDEX_NAME = "apiman_metrics"; //$NON-NLS-1$
-    
+
     @Inject @ApimanLogger(ESMetricsAccessor.class)
     IApimanLogger log;
 
@@ -82,36 +81,36 @@ public class ESMetricsAccessor implements IMetricsAccessor {
         Map<String, UsageDataPoint> index = generateHistogramSkeleton(rval, from, to, interval);
 
         try {
-            String query = 
-                    "{" + 
-                    "  \"query\": {" + 
-                    "    \"filtered\" : {" + 
-                    "      \"query\" : {" + 
-                    "        \"range\" : {" + 
-                    "          \"requestStart\" : {" + 
-                    "            \"gte\": \"${from}\"," + 
-                    "            \"lte\": \"${to}\"" + 
-                    "          }" + 
-                    "        }" + 
-                    "      }," + 
-                    "      \"filter\": {" + 
-                    "        \"and\" : [" + 
-                    "          { \"term\" : { \"serviceOrgId\" : \"${serviceOrgId}\" } }," + 
-                    "          { \"term\" : { \"serviceId\" : \"${serviceId}\" } }," + 
-                    "          { \"term\" : { \"serviceVersion\" : \"${serviceVersion}\" } }" + 
-                    "        ]" + 
-                    "      }" + 
-                    "    }" + 
-                    "  }," + 
-                    "  \"size\": 0, " + 
-                    "  \"aggs\" : {" + 
-                    "      \"usage\" : {" + 
-                    "          \"date_histogram\" : {" + 
-                    "              \"field\" : \"requestStart\"," + 
-                    "              \"interval\" : \"${interval}\"" + 
-                    "          }" + 
-                    "      }" + 
-                    "  }" + 
+            String query =
+                    "{" +
+                    "  \"query\": {" +
+                    "    \"filtered\" : {" +
+                    "      \"query\" : {" +
+                    "        \"range\" : {" +
+                    "          \"requestStart\" : {" +
+                    "            \"gte\": \"${from}\"," +
+                    "            \"lte\": \"${to}\"" +
+                    "          }" +
+                    "        }" +
+                    "      }," +
+                    "      \"filter\": {" +
+                    "        \"and\" : [" +
+                    "          { \"term\" : { \"serviceOrgId\" : \"${serviceOrgId}\" } }," +
+                    "          { \"term\" : { \"serviceId\" : \"${serviceId}\" } }," +
+                    "          { \"term\" : { \"serviceVersion\" : \"${serviceVersion}\" } }" +
+                    "        ]" +
+                    "      }" +
+                    "    }" +
+                    "  }," +
+                    "  \"size\": 0, " +
+                    "  \"aggs\" : {" +
+                    "      \"usage\" : {" +
+                    "          \"date_histogram\" : {" +
+                    "              \"field\" : \"requestStart\"," +
+                    "              \"interval\" : \"${interval}\"" +
+                    "          }" +
+                    "      }" +
+                    "  }" +
                     "}";
             Map<String, String> params = new HashMap<>();
             params.put("from", formatDate(from));
@@ -122,7 +121,7 @@ public class ESMetricsAccessor implements IMetricsAccessor {
             params.put("interval", interval.name());
             StrSubstitutor ss = new StrSubstitutor(params);
             query = ss.replace(query);
-            
+
             Search search = new Search.Builder(query).addIndex(INDEX_NAME).addType("request").build();
             SearchResult response = getEsClient().execute(search);
             MetricAggregation aggregations = response.getAggregations();
@@ -131,7 +130,6 @@ public class ESMetricsAccessor implements IMetricsAccessor {
             List<DateHistogram> buckets = aggregation.getBuckets();
             for (DateHistogram entry : buckets) {
                 String keyAsString = entry.getTimeAsString();
-                System.out.println(keyAsString);
                 if (index.containsKey(keyAsString)) {
                     index.get(keyAsString).setCount(entry.getCount());
                 }
@@ -139,7 +137,7 @@ public class ESMetricsAccessor implements IMetricsAccessor {
         } catch (IOException e) {
             log.error(e);
         }
-        
+
         return rval;
     }
 
@@ -154,35 +152,44 @@ public class ESMetricsAccessor implements IMetricsAccessor {
     public static Map<String, UsageDataPoint> generateHistogramSkeleton(UsageHistogramBean rval, DateTime from, DateTime to,
             UsageHistogramIntervalType interval) {
         Map<String, UsageDataPoint> index = new HashMap<>();
-        
+
         Calendar fromCal = from.toGregorianCalendar();
         Calendar toCal = to.toGregorianCalendar();
-        
+
         switch(interval) {
             case day:
-                DateUtils.truncate(fromCal, Calendar.HOUR);
                 fromCal.set(Calendar.HOUR_OF_DAY, 0);
+                fromCal.set(Calendar.MINUTE, 0);
+                fromCal.set(Calendar.SECOND, 0);
+                fromCal.set(Calendar.MILLISECOND, 0);
                 break;
             case hour:
-                DateUtils.truncate(fromCal, Calendar.HOUR);
+                fromCal.set(Calendar.MINUTE, 0);
+                fromCal.set(Calendar.SECOND, 0);
+                fromCal.set(Calendar.MILLISECOND, 0);
                 break;
             case minute:
-                DateUtils.truncate(fromCal, Calendar.MINUTE);
+                fromCal.set(Calendar.SECOND, 0);
+                fromCal.set(Calendar.MILLISECOND, 0);
                 break;
             case month:
-                DateUtils.truncate(fromCal, Calendar.HOUR);
-                fromCal.set(Calendar.HOUR_OF_DAY, 0);
                 fromCal.set(Calendar.DAY_OF_MONTH, 1);
+                fromCal.set(Calendar.HOUR_OF_DAY, 0);
+                fromCal.set(Calendar.MINUTE, 0);
+                fromCal.set(Calendar.SECOND, 0);
+                fromCal.set(Calendar.MILLISECOND, 0);
                 break;
             case week:
-                DateUtils.truncate(fromCal, Calendar.HOUR);
-                fromCal.set(Calendar.HOUR_OF_DAY, 0);
                 fromCal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+                fromCal.set(Calendar.HOUR_OF_DAY, 0);
+                fromCal.set(Calendar.MINUTE, 0);
+                fromCal.set(Calendar.SECOND, 0);
+                fromCal.set(Calendar.MILLISECOND, 0);
                 break;
             default:
                 break;
         }
-        
+
         while (fromCal.before(toCal)) {
             String label = formatDateWithMillis(fromCal);
             UsageDataPoint point = new UsageDataPoint(label, 0L);
@@ -208,9 +215,9 @@ public class ESMetricsAccessor implements IMetricsAccessor {
                     break;
             }
         }
-        
+
         return index;
-        
+
     }
 
     /**
@@ -221,37 +228,37 @@ public class ESMetricsAccessor implements IMetricsAccessor {
     public UsagePerAppBean getUsagePerApp(String organizationId, String serviceId, String version,
             DateTime from, DateTime to) {
         UsagePerAppBean rval = new UsagePerAppBean();
-        
+
         try {
-            String query = 
-                    "{" + 
-                    "  \"query\": {" + 
-                    "    \"filtered\" : {" + 
-                    "      \"query\" : {" + 
-                    "        \"range\" : {" + 
-                    "          \"requestStart\" : {" + 
-                    "            \"gte\": \"${from}\"," + 
-                    "            \"lte\": \"${to}\"" + 
-                    "          }" + 
-                    "        }" + 
-                    "      }," + 
-                    "      \"filter\": {" + 
-                    "        \"and\" : [" + 
-                    "          { \"term\" : { \"serviceOrgId\" : \"${serviceOrgId}\" } }," + 
-                    "          { \"term\" : { \"serviceId\" : \"${serviceId}\" } }," + 
-                    "          { \"term\" : { \"serviceVersion\" : \"${serviceVersion}\" } }" + 
-                    "        ]" + 
-                    "      }" + 
-                    "    }" + 
-                    "  }," + 
-                    "  \"size\": 0, " + 
-                    "  \"aggs\" : {" + 
-                    "      \"usage_by_app\" : {" + 
-                    "        \"terms\" : {" + 
-                    "          \"field\" : \"applicationId\"" + 
-                    "        }" + 
-                    "      }" + 
-                    "  }" + 
+            String query =
+                    "{" +
+                    "  \"query\": {" +
+                    "    \"filtered\" : {" +
+                    "      \"query\" : {" +
+                    "        \"range\" : {" +
+                    "          \"requestStart\" : {" +
+                    "            \"gte\": \"${from}\"," +
+                    "            \"lte\": \"${to}\"" +
+                    "          }" +
+                    "        }" +
+                    "      }," +
+                    "      \"filter\": {" +
+                    "        \"and\" : [" +
+                    "          { \"term\" : { \"serviceOrgId\" : \"${serviceOrgId}\" } }," +
+                    "          { \"term\" : { \"serviceId\" : \"${serviceId}\" } }," +
+                    "          { \"term\" : { \"serviceVersion\" : \"${serviceVersion}\" } }" +
+                    "        ]" +
+                    "      }" +
+                    "    }" +
+                    "  }," +
+                    "  \"size\": 0, " +
+                    "  \"aggs\" : {" +
+                    "      \"usage_by_app\" : {" +
+                    "        \"terms\" : {" +
+                    "          \"field\" : \"applicationId\"" +
+                    "        }" +
+                    "      }" +
+                    "  }" +
                     "}";
             Map<String, String> params = new HashMap<>();
             params.put("from", formatDate(from));
@@ -261,7 +268,7 @@ public class ESMetricsAccessor implements IMetricsAccessor {
             params.put("serviceVersion", version.replace('"', '_'));
             StrSubstitutor ss = new StrSubstitutor(params);
             query = ss.replace(query);
-            
+
             Search search = new Search.Builder(query).addIndex(INDEX_NAME).addType("request").build();
             SearchResult response = getEsClient().execute(search);
             MetricAggregation aggregations = response.getAggregations();
@@ -273,7 +280,7 @@ public class ESMetricsAccessor implements IMetricsAccessor {
         } catch (IOException e) {
             log.error(e);
         }
-        
+
         return rval;
     }
 
@@ -285,37 +292,37 @@ public class ESMetricsAccessor implements IMetricsAccessor {
     public UsagePerPlanBean getUsagePerPlan(String organizationId, String serviceId, String version,
             DateTime from, DateTime to) {
         UsagePerPlanBean rval = new UsagePerPlanBean();
-        
+
         try {
-            String query = 
-                    "{" + 
-                    "  \"query\": {" + 
-                    "    \"filtered\" : {" + 
-                    "      \"query\" : {" + 
-                    "        \"range\" : {" + 
-                    "          \"requestStart\" : {" + 
-                    "            \"gte\": \"${from}\"," + 
-                    "            \"lte\": \"${to}\"" + 
-                    "          }" + 
-                    "        }" + 
-                    "      }," + 
-                    "      \"filter\": {" + 
-                    "        \"and\" : [" + 
-                    "          { \"term\" : { \"serviceOrgId\" : \"${serviceOrgId}\" } }," + 
-                    "          { \"term\" : { \"serviceId\" : \"${serviceId}\" } }," + 
-                    "          { \"term\" : { \"serviceVersion\" : \"${serviceVersion}\" } }" + 
-                    "        ]" + 
-                    "      }" + 
-                    "    }" + 
-                    "  }," + 
-                    "  \"size\": 0, " + 
-                    "  \"aggs\" : {" + 
-                    "      \"usage_by_plan\" : {" + 
-                    "        \"terms\" : {" + 
-                    "          \"field\" : \"planId\"" + 
-                    "        }" + 
-                    "      }" + 
-                    "  }" + 
+            String query =
+                    "{" +
+                    "  \"query\": {" +
+                    "    \"filtered\" : {" +
+                    "      \"query\" : {" +
+                    "        \"range\" : {" +
+                    "          \"requestStart\" : {" +
+                    "            \"gte\": \"${from}\"," +
+                    "            \"lte\": \"${to}\"" +
+                    "          }" +
+                    "        }" +
+                    "      }," +
+                    "      \"filter\": {" +
+                    "        \"and\" : [" +
+                    "          { \"term\" : { \"serviceOrgId\" : \"${serviceOrgId}\" } }," +
+                    "          { \"term\" : { \"serviceId\" : \"${serviceId}\" } }," +
+                    "          { \"term\" : { \"serviceVersion\" : \"${serviceVersion}\" } }" +
+                    "        ]" +
+                    "      }" +
+                    "    }" +
+                    "  }," +
+                    "  \"size\": 0, " +
+                    "  \"aggs\" : {" +
+                    "      \"usage_by_plan\" : {" +
+                    "        \"terms\" : {" +
+                    "          \"field\" : \"planId\"" +
+                    "        }" +
+                    "      }" +
+                    "  }" +
                     "}";
             Map<String, String> params = new HashMap<>();
             params.put("from", formatDate(from));
@@ -325,7 +332,7 @@ public class ESMetricsAccessor implements IMetricsAccessor {
             params.put("serviceVersion", version.replace('"', '_'));
             StrSubstitutor ss = new StrSubstitutor(params);
             query = ss.replace(query);
-            
+
             Search search = new Search.Builder(query).addIndex(INDEX_NAME).addType("request").build();
             SearchResult response = getEsClient().execute(search);
             MetricAggregation aggregations = response.getAggregations();
@@ -337,7 +344,7 @@ public class ESMetricsAccessor implements IMetricsAccessor {
         } catch (IOException e) {
             log.error(e);
         }
-        
+
         return rval;
     }
 
