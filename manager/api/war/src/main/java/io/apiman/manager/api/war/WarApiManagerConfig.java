@@ -168,7 +168,7 @@ public class WarApiManagerConfig {
      * @return the elasticsearch port
      */
     public int getMetricsESPort() {
-        return config.getInt(APIMAN_MANAGER_METRICS_ES_PORT, 19300);
+        return config.getInt(APIMAN_MANAGER_METRICS_ES_PORT, 19200);
     }
 
     /**
