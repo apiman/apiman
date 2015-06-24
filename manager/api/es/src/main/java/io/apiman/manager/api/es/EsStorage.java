@@ -1872,7 +1872,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
                         andFilter.add(FilterBuilders.termFilter(filter.getName(), filter.getValue()));
                         filterCount++;
                     } else if (filter.getOperator() == SearchCriteriaFilterOperator.like) {
-                        q = QueryBuilders.wildcardQuery(filter.getName().toLowerCase(), filter.getValue().replace('%', '*'));
+                        q = QueryBuilders.wildcardQuery(filter.getName(), filter.getValue().toLowerCase().replace('%', '*'));
                     } else if (filter.getOperator() == SearchCriteriaFilterOperator.bool_eq) {
                         andFilter.add(FilterBuilders.termFilter(filter.getName(), "true".equals(filter.getValue()))); //$NON-NLS-1$
                         filterCount++;

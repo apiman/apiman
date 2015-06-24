@@ -18,7 +18,7 @@ module Apiman {
                     if (params.q) {
                         var body:any = {};
                         body.filters = [];
-                        body.filters.push( {"name": "name", "value": "%" + params.q + "%", "operator": "like"});
+                        body.filters.push( {"name": "name", "value": "*" + params.q + "*", "operator": "like"});
                         var searchStr = angular.toJson(body);
                         ApimanSvcs.save({ entityType: 'search', secondaryType: 'organizations' }, searchStr, function(result) { 
                             resolve(result.beans);

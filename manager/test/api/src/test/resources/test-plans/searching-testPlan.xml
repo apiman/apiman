@@ -22,6 +22,7 @@
     <test name="Query Second Page">test-plan-data/searching/queries/003_query-page-2.resttest</test>
     <test name="Query By ID">test-plan-data/searching/queries/004_query-by-id.resttest</test>
     <test name="Descending Order">test-plan-data/searching/queries/005_query-order-by-desc.resttest</test>
+    <test name="Query By Name">test-plan-data/searching/queries/006_query-by-name.resttest</test>
   </testGroup>
 
   <!-- Now, test that request validation is working -->

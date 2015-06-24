@@ -1,0 +1,28 @@
+POST /search/organizations admin/admin
+Content-Type: application/json
+
+{
+  "filters" : [
+    {
+      "name" : "id",
+      "value" : "*1*",
+      "operator" : "like"
+    }
+  ],
+  "orderBy" : {
+    "name" : "id",
+    "ascending" : true
+  },
+  "paging" : {
+    "page" : 1,
+    "pageSize" : 20
+  }
+}
+----
+200
+Content-Type: application/json
+
+{"beans":[
+  {"id":"TestOrganization1","name":"Test Organization 1"},
+  {"id":"TestOrganization10","name":"Test Organization 10"}
+],"totalSize":2}

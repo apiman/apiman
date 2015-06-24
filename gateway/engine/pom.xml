@@ -17,6 +17,5 @@
     <module>osgi</module>
     <module>ispn</module>
     <module>es</module>
-    <module>es-transport</module>
   </modules>
 </project>
