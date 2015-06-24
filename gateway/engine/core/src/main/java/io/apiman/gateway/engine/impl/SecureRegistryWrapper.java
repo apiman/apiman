@@ -99,8 +99,10 @@ public class SecureRegistryWrapper implements IRegistry {
             public void handle(IAsyncResult<Service> result) {
                 if (result.isSuccess()) {
                     Service service = result.getResult();
-                    List<Policy> policies = service.getServicePolicies();
-                    decryptPolicies(policies);
+                    if (service != null) {
+                        List<Policy> policies = service.getServicePolicies();
+                        decryptPolicies(policies);
+                    }
                 }
                 handler.handle(result);
             }
