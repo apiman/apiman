@@ -19,6 +19,18 @@ Content-Type: application/json
       ]
     },
     {
+      "apiKey" : "12345_403",
+      "serviceOrgId" : "Policy_IPWhitelistTest",
+      "serviceId" : "echo",
+      "serviceVersion" : "1.0.0",
+      "policies" : [
+        {
+          "policyImpl" : "class:io.apiman.gateway.engine.policies.IPWhitelistPolicy",
+          "policyJsonConfig" : "{ \"responseCode\" : \"403\", \"ipList\" : [ \"1.2.3.4\" ] }"
+        }
+      ]
+    },
+    {
       "apiKey" : "54321",
       "serviceOrgId" : "Policy_IPWhitelistTest",
       "serviceId" : "echo",

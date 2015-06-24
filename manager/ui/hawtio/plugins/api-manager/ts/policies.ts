@@ -110,6 +110,9 @@ module Apiman {
             if (!$scope.config.ipList) {
                 $scope.config.ipList = [];
             }
+            if (!$scope.config.responseCode) {
+                $scope.config.responseCode = 500;
+            }
             
             $scope.add = function(ip) {
                 $scope.remove(ip);

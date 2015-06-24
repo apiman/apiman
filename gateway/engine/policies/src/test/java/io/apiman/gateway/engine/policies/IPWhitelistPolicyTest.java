@@ -41,7 +41,7 @@ public class IPWhitelistPolicyTest {
     @Test
     public void testParseConfiguration() {
         IPWhitelistPolicy policy = new IPWhitelistPolicy();
-        
+
         // Empty config test
         String config = "{}";
         Object parsed = policy.parseConfiguration(config);
@@ -50,13 +50,14 @@ public class IPWhitelistPolicyTest {
         IPListConfig parsedConfig = (IPListConfig) parsed;
         Assert.assertNotNull(parsedConfig.getIpList());
         Assert.assertTrue(parsedConfig.getIpList().isEmpty());
-        
+
         // Single IP address
-        config = "{" + 
+        config = "{" +
                 "  \"httpHeader\" : null," +
-                "  \"ipList\" : [" + 
-                "    \"1.2.3.4\"" + 
-                "  ]" + 
+                "  \"responseCode\" : 403," +
+                "  \"ipList\" : [" +
+                "    \"1.2.3.4\"" +
+                "  ]" +
                 "}";
         parsed = policy.parseConfiguration(config);
         parsedConfig = (IPListConfig) parsed;
@@ -64,15 +65,16 @@ public class IPWhitelistPolicyTest {
         Assert.assertEquals(1, parsedConfig.getIpList().size());
         Assert.assertNull(parsedConfig.getHttpHeader());
         Assert.assertEquals("1.2.3.4", parsedConfig.getIpList().iterator().next());
+        Assert.assertEquals(403, parsedConfig.getResponseCode());
 
         // Multiple IP addresses
-        config = "{" + 
+        config = "{" +
                 "  \"httpHeader\" : \"X-Forwarded-For\"," +
-                "  \"ipList\" : [" + 
-                "    \"1.2.3.4\"," + 
-                "    \"3.4.5.6\"," + 
-                "    \"10.0.0.11\"" + 
-                "  ]" + 
+                "  \"ipList\" : [" +
+                "    \"1.2.3.4\"," +
+                "    \"3.4.5.6\"," +
+                "    \"10.0.0.11\"" +
+                "  ]" +
                 "}";
         parsed = policy.parseConfiguration(config);
         parsedConfig = (IPListConfig) parsed;
@@ -87,12 +89,12 @@ public class IPWhitelistPolicyTest {
     @Test
     public void testApply() {
         IPWhitelistPolicy policy = new IPWhitelistPolicy();
-        String json = "{" + 
-                "  \"ipList\" : [" + 
-                "    \"1.2.3.4\"," + 
-                "    \"3.4.5.6\"," + 
-                "    \"10.0.0.11\"" + 
-                "  ]" + 
+        String json = "{" +
+                "  \"ipList\" : [" +
+                "    \"1.2.3.4\"," +
+                "    \"3.4.5.6\"," +
+                "    \"10.0.0.11\"" +
+                "  ]" +
                 "}";
         Object config = policy.parseConfiguration(json);
         ServiceRequest request = new ServiceRequest();
@@ -102,11 +104,11 @@ public class IPWhitelistPolicyTest {
         request.setDestination("/");
         IPolicyContext context = Mockito.mock(IPolicyContext.class);
         IPolicyChain<ServiceRequest> chain = Mockito.mock(IPolicyChain.class);
-        
+
         // Success
         policy.apply(request, context, config, chain);
         Mockito.verify(chain).doApply(request);
-        
+
         // Failure
         final PolicyFailure failure = new PolicyFailure();
         Mockito.when(context.getComponent(IPolicyFailureFactoryComponent.class)).thenReturn(new IPolicyFailureFactoryComponent() {
@@ -127,10 +129,10 @@ public class IPWhitelistPolicyTest {
     @Test
     public void testApplyWithWildcards() {
         IPWhitelistPolicy policy = new IPWhitelistPolicy();
-        String json = "{" + 
-                "  \"ipList\" : [" + 
-                "    \"10.0.*.*\"" + 
-                "  ]" + 
+        String json = "{" +
+                "  \"ipList\" : [" +
+                "    \"10.0.*.*\"" +
+                "  ]" +
                 "}";
         Object config = policy.parseConfiguration(json);
         ServiceRequest request = new ServiceRequest();
@@ -139,7 +141,7 @@ public class IPWhitelistPolicyTest {
         request.setDestination("/");
         IPolicyContext context = Mockito.mock(IPolicyContext.class);
         IPolicyChain<ServiceRequest> chain = Mockito.mock(IPolicyChain.class);
-        
+
         // Success
         request.setRemoteAddr("10.0.87.33");
         policy.apply(request, context, config, chain);

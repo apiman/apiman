@@ -29,6 +29,18 @@ Content-Type: application/json
           "policyJsonConfig" : "{ \"ipList\": [ \"127.0.0.1\" ] }"
         }
       ]
+    },
+    {
+      "apiKey" : "54321_404",
+      "serviceOrgId" : "Policy_IPBlacklistTest",
+      "serviceId" : "echo",
+      "serviceVersion" : "1.0.0",
+      "policies" : [
+        {
+          "policyImpl" : "class:io.apiman.gateway.engine.policies.IPBlacklistPolicy",
+          "policyJsonConfig" : "{ \"responseCode\" : \"404\", \"ipList\": [ \"127.0.0.1\" ] }"
+        }
+      ]
     }
   ]
 }

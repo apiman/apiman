@@ -15,6 +15,7 @@
  */
 package io.apiman.gateway.engine.policies;
 
+import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.PolicyFailureType;
 import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
@@ -30,13 +31,13 @@ import io.apiman.gateway.engine.policy.IPolicyContext;
  * @author eric.wittmann@redhat.com
  */
 public class IPWhitelistPolicy extends AbstractIPListPolicy<IPListConfig> {
-    
+
     /**
      * Constructor.
      */
     public IPWhitelistPolicy() {
     }
-    
+
     /**
      * @see io.apiman.gateway.engine.policy.AbstractPolicy#getConfigurationClass()
      */
@@ -44,7 +45,7 @@ public class IPWhitelistPolicy extends AbstractIPListPolicy<IPListConfig> {
     protected Class<IPListConfig> getConfigurationClass() {
         return IPListConfig.class;
     }
-    
+
     /**
      * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#doApply(io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
      */
@@ -57,7 +58,17 @@ public class IPWhitelistPolicy extends AbstractIPListPolicy<IPListConfig> {
         } else {
             IPolicyFailureFactoryComponent ffactory = context.getComponent(IPolicyFailureFactoryComponent.class);
             String msg = Messages.i18n.format("IPWhitelistPolicy.NotWhitelisted", remoteAddr); //$NON-NLS-1$
-            chain.doFailure(ffactory.createFailure(PolicyFailureType.Other, PolicyFailureCodes.IP_NOT_WHITELISTED, msg));
+            PolicyFailure failure = ffactory.createFailure(PolicyFailureType.Other, PolicyFailureCodes.IP_NOT_WHITELISTED, msg);
+            if (config.getResponseCode() >= 400) {
+                failure.setResponseCode(config.getResponseCode());
+            }
+            if (config.getResponseCode() == 404) {
+                failure.setType(PolicyFailureType.NotFound);
+            }
+            if (config.getResponseCode() == 403) {
+                failure.setType(PolicyFailureType.Authorization);
+            }
+            chain.doFailure(failure);
         }
     }
 

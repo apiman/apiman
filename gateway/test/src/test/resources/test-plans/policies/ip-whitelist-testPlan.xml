@@ -6,6 +6,7 @@
     <test name="Register Application">test-plan-data/policies/ip-whitelist/002-register-app.resttest</test>
     <test name="Success">test-plan-data/policies/ip-whitelist/003-success.resttest</test>
     <test name="Failure">test-plan-data/policies/ip-whitelist/004-failure.resttest</test>
+    <test name="Failure (403)">test-plan-data/policies/ip-whitelist/005-failure-403.resttest</test>
   </testGroup>
 
 </testPlan>

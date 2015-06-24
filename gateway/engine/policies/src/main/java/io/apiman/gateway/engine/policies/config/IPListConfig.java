@@ -27,6 +27,7 @@ public class IPListConfig {
 
     private String httpHeader;
     private Set<String> ipList = new HashSet<>();
+    private int responseCode;
 
     /**
      * Constructor.
@@ -60,6 +61,20 @@ public class IPListConfig {
      */
     public void setHttpHeader(String httpHeader) {
         this.httpHeader = httpHeader;
+    }
+
+    /**
+     * @return the responseCode
+     */
+    public int getResponseCode() {
+        return responseCode;
+    }
+
+    /**
+     * @param responseCode the responseCode to set
+     */
+    public void setResponseCode(int responseCode) {
+        this.responseCode = responseCode;
     }
 
 }

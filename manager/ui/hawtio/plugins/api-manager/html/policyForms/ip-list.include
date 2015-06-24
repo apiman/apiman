@@ -5,6 +5,15 @@
       <dd>
         <input id="http-header" ng-model="config.httpHeader" data-field="httpHeader" class="apiman-form-control form-control" style="" type="text" apiman-i18n-key="iplist.enter-http-header" placeholder="HTTP header (optional)..."></input>
       </dd>
+      <dt apiman-i18n-key="failure-code">Failure Response</dt>
+      <dd>
+        <p apiman-i18n-key="ip-list.response-code-explanation">Choose how apiman should respond to a client if the request fails due to a violation of this policy.</p>
+        <select id="failure-code" ng-model="config.responseCode" apiman-select-picker="" class="selectpicker" data-live-search="false">
+          <option value="403" apiman-i18n-key="ip-list.auth-failure-403">Authentication Failure (403)</option>
+          <option value="404" apiman-i18n-key="ip-list.not-found-404">Not Found (404)</option>
+          <option value="500" apiman-i18n-key="ip-list.server-error-500">Server Error (500)</option>
+        </select>
+      </dd>
       <dt apiman-i18n-key="ip-addresses">IP Addresses</dt>
     </dl>
   </div>

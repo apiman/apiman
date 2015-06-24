@@ -1,0 +1,13 @@
+GET /gateway/Policy_IPBlacklistTest/echo/1.0.0/path/to/app/resource admin/admin
+X-API-Key: 54321_404
+
+----
+404
+Content-Type: application/json
+X-Policy-Failure-Type: NotFound
+X-Policy-Failure-Code: 10002
+
+{
+    "type" : "NotFound",
+    "failureCode" : 10002
+}

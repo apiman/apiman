@@ -15,6 +15,7 @@
  */
 package io.apiman.gateway.engine.policies;
 
+import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.PolicyFailureType;
 import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
@@ -55,7 +56,16 @@ public class IPBlacklistPolicy extends AbstractIPListPolicy<IPListConfig> {
         if (isMatch(config, remoteAddr)) {
             IPolicyFailureFactoryComponent ffactory = context.getComponent(IPolicyFailureFactoryComponent.class);
             String msg = Messages.i18n.format("IPBlacklistPolicy.Blacklisted", remoteAddr); //$NON-NLS-1$
-            chain.doFailure(ffactory.createFailure(PolicyFailureType.Other, PolicyFailureCodes.IP_BLACKLISTED, msg));
+            PolicyFailure failure = ffactory.createFailure(PolicyFailureType.Other, PolicyFailureCodes.IP_BLACKLISTED, msg);
+            if (config.getResponseCode() == 404) {
+                failure.setType(PolicyFailureType.NotFound);
+            } else if (config.getResponseCode() == 403) {
+                failure.setType(PolicyFailureType.Authorization);
+            } else if (config.getResponseCode() >= 400) {
+                failure.setResponseCode(config.getResponseCode());
+            }
+
+            chain.doFailure(failure);
         } else {
             super.doApply(request, context, config, chain);
         }
