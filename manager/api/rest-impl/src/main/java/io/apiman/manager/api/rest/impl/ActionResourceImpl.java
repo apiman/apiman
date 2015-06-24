@@ -271,10 +271,10 @@ public class ActionResourceImpl implements IActionResource {
             storage.commitTx();
         } catch (PublishingException e) {
             storage.rollbackTx();
-            throw ExceptionFactory.actionException(Messages.i18n.format("PublishError")); //$NON-NLS-1$
+            throw ExceptionFactory.actionException(Messages.i18n.format("RetireError"), e); //$NON-NLS-1$
         } catch (Exception e) {
             storage.rollbackTx();
-            throw ExceptionFactory.actionException(Messages.i18n.format("PublishError")); //$NON-NLS-1$
+            throw ExceptionFactory.actionException(Messages.i18n.format("RetireError"), e); //$NON-NLS-1$
         }
 
         log.debug(String.format("Successfully retired Service %s on specified gateways: %s", //$NON-NLS-1$
@@ -355,7 +355,7 @@ public class ActionResourceImpl implements IActionResource {
             storage.commitTx();
         } catch (Exception e) {
             storage.rollbackTx();
-            throw ExceptionFactory.actionException(Messages.i18n.format("PublishError"), e); //$NON-NLS-1$
+            throw ExceptionFactory.actionException(Messages.i18n.format("RegisterError"), e); //$NON-NLS-1$
         }
 
         versionBean.setStatus(ApplicationStatus.Registered);
@@ -367,7 +367,7 @@ public class ActionResourceImpl implements IActionResource {
             storage.commitTx();
         } catch (Exception e) {
             storage.rollbackTx();
-            throw ExceptionFactory.actionException(Messages.i18n.format("PublishError")); //$NON-NLS-1$
+            throw ExceptionFactory.actionException(Messages.i18n.format("RegisterError"), e); //$NON-NLS-1$
         }
 
         log.debug(String.format("Successfully registered Application %s on specified gateways: %s", //$NON-NLS-1$
@@ -488,7 +488,7 @@ public class ActionResourceImpl implements IActionResource {
             }
         } catch (Exception e) {
             storage.rollbackTx();
-            throw ExceptionFactory.actionException(Messages.i18n.format("PublishError"), e); //$NON-NLS-1$
+            throw ExceptionFactory.actionException(Messages.i18n.format("UnregisterError"), e); //$NON-NLS-1$
         }
 
         versionBean.setStatus(ApplicationStatus.Retired);
@@ -501,7 +501,7 @@ public class ActionResourceImpl implements IActionResource {
             storage.commitTx();
         } catch (Exception e) {
             storage.rollbackTx();
-            throw ExceptionFactory.actionException(Messages.i18n.format("PublishError")); //$NON-NLS-1$
+            throw ExceptionFactory.actionException(Messages.i18n.format("UnregisterError"), e); //$NON-NLS-1$
         }
 
         log.debug(String.format("Successfully registered Application %s on specified gateways: %s", //$NON-NLS-1$
@@ -538,7 +538,7 @@ public class ActionResourceImpl implements IActionResource {
             storage.commitTx();
         } catch (Exception e) {
             storage.rollbackTx();
-            throw ExceptionFactory.actionException(Messages.i18n.format("PublishError")); //$NON-NLS-1$
+            throw ExceptionFactory.actionException(Messages.i18n.format("LockError"), e); //$NON-NLS-1$
         }
 
         log.debug(String.format("Successfully locked Plan %s: %s", //$NON-NLS-1$
