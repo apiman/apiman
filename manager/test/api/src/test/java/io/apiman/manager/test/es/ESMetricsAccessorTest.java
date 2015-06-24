@@ -56,7 +56,7 @@ import org.junit.Test;
  */
 @SuppressWarnings("nls")
 public class ESMetricsAccessorTest {
-    
+
     private static Node node;
     private static JestClient client;
 
@@ -80,11 +80,11 @@ public class ESMetricsAccessorTest {
         client = createJestClient();
         loadTestData();
     }
-    
+
     private static JestClient createJestClient() {
         return ESClientFactory.createJestClient("http", "localhost", 6500, "apiman_metrics");
     }
-    
+
     private static void loadTestData() throws Exception {
         String url = "http://localhost:6500/_bulk";
         HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
@@ -100,7 +100,7 @@ public class ESMetricsAccessorTest {
             IOUtils.copy(conn.getInputStream(), System.err);
             throw new IOException("Bulk load of data failed with: " + conn.getResponseMessage());
         }
-        
+
         client.execute(new Refresh.Builder().addIndex("apiman_metrics").refresh(true).build());
     }
 
@@ -118,7 +118,7 @@ public class ESMetricsAccessorTest {
     public void testGetUsage() throws Exception {
         ESMetricsAccessor metrics = new ESMetricsAccessor();
         metrics.setEsClient(client);
-        
+
         UsageHistogramBean usage = metrics.getUsage("JBossOverlord", "s-ramp-api", "1.0", UsageHistogramIntervalType.day,
                 parseDate("2015-01-01"), DateTime.now().withZone(DateTimeZone.UTC));
         List<UsageDataPoint> data = usage.getData();
@@ -126,7 +126,7 @@ public class ESMetricsAccessorTest {
         Assert.assertTrue(data.size() > 1);
         Assert.assertEquals("2015-06-19T00:00:00.000Z", usage.getData().get(169).getLabel());
         Assert.assertEquals(46L, usage.getData().get(169).getCount());
-        
+
 
         usage = metrics.getUsage("JBossOverlord", "s-ramp-api", "1.0", UsageHistogramIntervalType.hour,
                 parseDate("2015-06-15"), parseDate("2015-06-22"));
@@ -135,16 +135,10 @@ public class ESMetricsAccessorTest {
         Assert.assertEquals("2015-06-19T15:00:00.000Z", usage.getData().get(111).getLabel());
         Assert.assertEquals(46L, usage.getData().get(111).getCount());
 
-        
+
         usage = metrics.getUsage("JBossOverlord", "s-ramp-api", "1.0", UsageHistogramIntervalType.minute,
                 parseDate("2015-06-19"), parseDate("2015-06-20"));
         data = usage.getData();
-        System.out.println("---");
-        int idx = 0;
-        for (UsageDataPoint usageDataPoint : data) {
-            System.out.println("" + (idx++) + " :: " + usageDataPoint.getLabel() + " :: " + usageDataPoint.getCount());
-        }
-        System.out.println("---");
         Assert.assertEquals(1440, data.size());
         Assert.assertEquals("2015-06-19T15:13:00.000Z", usage.getData().get(913).getLabel());
         Assert.assertEquals("2015-06-19T15:14:00.000Z", usage.getData().get(914).getLabel());
@@ -152,7 +146,7 @@ public class ESMetricsAccessorTest {
         Assert.assertEquals(14L, usage.getData().get(913).getCount());
         Assert.assertEquals(15L, usage.getData().get(914).getCount());
         Assert.assertEquals(17L, usage.getData().get(915).getCount());
-        
+
     }
 
     /**
@@ -162,7 +156,7 @@ public class ESMetricsAccessorTest {
     public void testGetUsagePerApp() throws Exception {
         ESMetricsAccessor metrics = new ESMetricsAccessor();
         metrics.setEsClient(client);
-        
+
         // data exists - all data for JBossOverlord/s-ramp-api:1.0
         UsagePerAppBean usagePerApp = metrics.getUsagePerApp("JBossOverlord", "s-ramp-api", "1.0",
                 parseDate("2015-01-01"), DateTime.now().withZone(DateTimeZone.UTC));
@@ -197,7 +191,7 @@ public class ESMetricsAccessorTest {
         expectedData.put("my-app", 136L);
         expectedData.put("app1", 78L);
         Assert.assertEquals(expectedData, usagePerApp.getData());
-        
+
         // No data for service
         usagePerApp = metrics.getUsagePerApp("NA", "NA", "NA", parseDate("2015-01-01"), DateTime.now().withZone(DateTimeZone.UTC));
         Assert.assertNotNull(usagePerApp);
@@ -212,7 +206,7 @@ public class ESMetricsAccessorTest {
     public void testGetUsagePerPlan() throws Exception {
         ESMetricsAccessor metrics = new ESMetricsAccessor();
         metrics.setEsClient(client);
-        
+
         // data exists - all data for JBossOverlord/s-ramp-api:1.0
         UsagePerPlanBean usagePerPlan = metrics.getUsagePerPlan("JBossOverlord", "s-ramp-api", "1.0",
                 parseDate("2015-01-01"), DateTime.now().withZone(DateTimeZone.UTC));
@@ -252,7 +246,7 @@ public class ESMetricsAccessorTest {
         expectedData.put("Gold", 67L);
         expectedData.put("Bronze", 43L);
         Assert.assertEquals(expectedData, usagePerPlan.getData());
-        
+
     }
 
     /**
@@ -270,7 +264,7 @@ public class ESMetricsAccessorTest {
         Assert.assertEquals("2015-01-03T00:00:00.000Z", histogram.getData().get(2).getLabel());
         Assert.assertEquals("2015-01-07T00:00:00.000Z", histogram.getData().get(6).getLabel());
 
-        
+
         from = parseDate("2015-01-01T00:00:00Z");
         to = parseDate("2015-01-03T00:00:00Z");
         histogram = new UsageHistogramBean();
@@ -282,7 +276,7 @@ public class ESMetricsAccessorTest {
         Assert.assertEquals("2015-01-01T06:00:00.000Z", histogram.getData().get(6).getLabel());
         Assert.assertEquals("2015-01-02T18:00:00.000Z", histogram.getData().get(42).getLabel());
 
-        
+
         from = parseDate("2015-01-01");
         to = parseDate("2015-01-03");
         histogram = new UsageHistogramBean();
@@ -294,7 +288,7 @@ public class ESMetricsAccessorTest {
         Assert.assertEquals("2015-01-01T06:00:00.000Z", histogram.getData().get(6).getLabel());
         Assert.assertEquals("2015-01-02T18:00:00.000Z", histogram.getData().get(42).getLabel());
 
-        
+
         from = parseDate("2015-01-01T00:00:00Z");
         to = parseDate("2015-01-02T00:00:00Z");
         histogram = new UsageHistogramBean();
@@ -305,7 +299,7 @@ public class ESMetricsAccessorTest {
         Assert.assertEquals("2015-01-01T00:20:00.000Z", histogram.getData().get(20).getLabel());
         Assert.assertEquals("2015-01-01T00:30:00.000Z", histogram.getData().get(30).getLabel());
 
-        
+
         from = parseDate("2015-01-01");
         to = parseDate("2015-12-31");
         histogram = new UsageHistogramBean();
@@ -314,9 +308,9 @@ public class ESMetricsAccessorTest {
         Assert.assertEquals(12, histogram.getData().size());
         Assert.assertEquals("2015-01-01T00:00:00.000Z", histogram.getData().get(0).getLabel());
         Assert.assertEquals("2015-06-01T00:00:00.000Z", histogram.getData().get(5).getLabel());
-    
+
         System.out.println("--------------------------------");
-        
+
         from = parseDate("2015-01-01");
         to = parseDate("2015-12-30");
         histogram = new UsageHistogramBean();
@@ -330,7 +324,7 @@ public class ESMetricsAccessorTest {
 
     /**
      * @param date
-     * @throws ParseException 
+     * @throws ParseException
      */
     private DateTime parseDate(String date) throws ParseException {
         if (date.length() == 10) {

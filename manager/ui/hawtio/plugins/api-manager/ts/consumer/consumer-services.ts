@@ -2,8 +2,8 @@
 module Apiman {
 
     export var ConsumerSvcsController = _module.controller("Apiman.ConsumerSvcsController",
-        ['$q', '$location', '$scope', 'ApimanSvcs', 'PageLifecycle', 
-        ($q, $location, $scope, ApimanSvcs, PageLifecycle) => {
+        ['$q', '$location', '$scope', 'ApimanSvcs', 'PageLifecycle', 'Logger',
+        ($q, $location, $scope, ApimanSvcs, PageLifecycle, Logger) => {
             var params = $location.search();
             if (params.q) {
                 $scope.serviceName = params.q;
@@ -31,8 +31,10 @@ module Apiman {
             };
 
             PageLifecycle.loadPage('ConsumerSvcs', pageData, $scope, function() {
-                $('#apiman-search').focus();
                 PageLifecycle.setPageTitle('consumer-services');
+                $scope.$applyAsync(function() {
+                    $('#apiman-search').focus();
+                });
             });
         }]);
 

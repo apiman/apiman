@@ -13,7 +13,7 @@
       <div class="row">
         <div class="col-md-12">
           <ol class="breadcrumb" data-field="breadcrumb">
-            <li><a href="{{ pluginName }}/dash"><i class="fa fa-home fa-fw"></i><span apiman-i18n-key="home">Home</span></a></li>
+            <li><a id="bc-home" href="{{ pluginName }}/dash"><i class="fa fa-home fa-fw"></i><span apiman-i18n-key="home">Home</span></a></li>
             <li class="active"><i class="fa fa-search fa-fw"></i><span apiman-i18n-key="services">Services</span></li>
           </ol>
         </div>
@@ -28,8 +28,8 @@
         <div class="col-md-6">
           <form ng-submit="searchSvcs(serviceName)">
             <input id="apiman-search" ng-model="serviceName" type="text" class="apiman-form-control form-control input-search" apiman-i18n-key="searchfor-svcs" placeholder="Search by service name or keyword..."></input>
-            <button id="search-button" type="submit" class="btn btn-default btn-search" apiman-i18n-key="search" data-field="searchButton" ng-click="searchSvcs()">Search</input>
-          </button>
+            <button id="search-btn" type="submit" class="btn btn-default btn-search" apiman-i18n-key="search" data-field="searchButton">Search</input>
+          </form>
         </div>
         <div class="col-md-12">
           <hr />
