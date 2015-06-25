@@ -1065,6 +1065,9 @@ ol.breadcrumb {
 .error-500 {
   background-image: url(../img/error-500.png);
 }
+.error-0 {
+  background-image: url(../img/error-0.png);
+}
 
 .consumer-top-header {
   margin-top: 0px;

@@ -118,6 +118,9 @@ module ApimanPageLifecycle {
                 } else if (error.status == 409) {
                     Logger.info('Detected an error {0}, redirecting to 409.', error.status);
                     $location.url(Apiman.pluginName + '/errors/409').replace();
+                } else if (error.status == 0) {
+                    Logger.info('Detected an error {0}, redirecting to CORS error page.', error.status);
+                    $location.url(Apiman.pluginName + '/errors/invalid_server').replace();
                 } else {
                     Logger.info('Detected an error {0}, redirecting to 500.', error.status);
                     $location.url(Apiman.pluginName + '/errors/500').replace();
@@ -194,8 +197,17 @@ module ApimanPageLifecycle {
                         Logger.error("|{0}| >> Page load failed: {1}", pageName, reason);
                         handleError(reason);
                     });
-                
-                
+                },
+                loadErrorPage: function(pageName, $scope, handler) {
+                    Logger.log("|{0}| >> Loading error page.", pageName);
+                    $rootScope.pageState = 'loading';
+
+                    // Nothing to do asynchronously for the error pages!
+                    $rootScope.pageState = 'loaded';
+                    if (handler) {
+                        handler();
+                    }
+                    Logger.log("|{0}| >> Error page successfully loaded", pageName);
                 }
             }
         }]);

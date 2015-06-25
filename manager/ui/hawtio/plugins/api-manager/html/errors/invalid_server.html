@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+  </head>
+
+  <body>
+    <div ng-include="'plugins/api-manager/html/progress.include'"></div>
+    <div id="apiman-header" ng-include="'plugins/api-manager/html/navbar.include'"></div>
+    <div ng-controller="Apiman.ErrorInvalidServerController" class="container error-page" data-field="error-page">
+      <div class="row">
+        <div class="col-md-3">
+          <div class="error-icon error-0 pull-right"></div>
+        </div>
+        <div class="col-md-8">
+          <div class="title" apiman-i18n-key="error-0-title">Error Communicating With Server</div>
+          <div class="description" apiman-i18n-key="error-0-message">We received an error 0 from the server.  This either means that the server was down, or that CORS was not properly configured.  If this error persists, please contact the system administrator.</div>
+        </div>
+      </div>
+      <div class="row">
+        <hr />
+      </div>
+      <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-8">
+          <h2>More Information</h2>
+          <table class="table table-bordered">
+            <tbody>
+              <tr>
+                <td width="1%" nowrap="nowrap"><span class="about-label" apiman-i18n-key="version-label">Version:</span></td>
+                <td>{{ version }}</td>
+              </tr>
+              <tr>
+                <td width="1%" nowrap="nowrap"><span class="about-label" apiman-i18n-key="build-date-label">Build Date:</span></td>
+                <td>{{ builtOn }}</td>
+              </tr>
+              <tr>
+                <td width="1%" nowrap="nowrap"><span class="about-label" apiman-i18n-key="server-label">Server:</span></td>
+                <td><a href="{{ apiEndpoint }}">{{ apiEndpoint }}</a></td>
+              </tr>
+              <tr>
+                <td width="1%" nowrap="nowrap"><span class="about-label" apiman-i18n-key="installation-guide-label">Install Guide:</span></td>
+                <td><a href="{{ installGuide }}">{{ installGuide }}</a></td>
+              </tr>
+              <tr>
+                <td width="1%" nowrap="nowrap"><span class="about-label" apiman-i18n-key="cors-label">CORS Information:</span></td>
+                <td><a href="{{ cors }}">{{ cors }}</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
