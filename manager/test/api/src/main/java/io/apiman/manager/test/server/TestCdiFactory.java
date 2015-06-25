@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.test.server;
 
+import io.apiman.common.config.SystemPropertiesConfiguration;
 import io.apiman.manager.api.core.IApiKeyGenerator;
 import io.apiman.manager.api.core.IIdmStorage;
 import io.apiman.manager.api.core.IMetricsAccessor;
@@ -26,6 +27,7 @@ import io.apiman.manager.api.core.logging.IApimanLogger;
 import io.apiman.manager.api.core.logging.StandardLoggerImpl;
 import io.apiman.manager.api.es.ESMetricsAccessor;
 import io.apiman.manager.api.es.EsStorage;
+import io.apiman.manager.api.jpa.IJpaProperties;
 import io.apiman.manager.api.jpa.JpaStorage;
 import io.apiman.manager.api.jpa.roles.JpaIdmStorage;
 import io.apiman.manager.api.security.ISecurityContext;
@@ -35,6 +37,10 @@ import io.apiman.manager.test.util.ManagerTestUtils.TestType;
 import io.searchbox.client.JestClient;
 import io.searchbox.client.JestClientFactory;
 import io.searchbox.client.config.HttpClientConfig;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.New;
@@ -62,6 +68,28 @@ public class TestCdiFactory {
         ApimanLogger logger = injectionPoint.getAnnotated().getAnnotation(ApimanLogger.class);
         Class<?> klazz = logger.value();
         return new StandardLoggerImpl().createLogger(klazz);
+    }
+
+
+    @Produces @ApplicationScoped
+    public static IJpaProperties provideJpaProperties() {
+        return new IJpaProperties() {
+            @Override
+            public Map<String, String> getAllHibernateProperties() {
+                SystemPropertiesConfiguration config = new SystemPropertiesConfiguration();
+                Map<String, String> rval = new HashMap<>();
+                Iterator<String> keys = config.getKeys();
+                while (keys.hasNext()) {
+                    String key = keys.next();
+                    if (key.startsWith("apiman.hibernate.")) { //$NON-NLS-1$
+                        String value = config.getString(key);
+                        key = key.substring("apiman.".length()); //$NON-NLS-1$
+                        rval.put(key, value);
+                    }
+                }
+                return rval;
+            }
+        };
     }
 
     @Produces @ApplicationScoped

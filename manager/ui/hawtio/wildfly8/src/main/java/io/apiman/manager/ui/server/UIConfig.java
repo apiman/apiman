@@ -15,8 +15,8 @@
  */
 package io.apiman.manager.ui.server;
 
+import io.apiman.common.config.SystemPropertiesConfiguration;
 import io.apiman.manager.ui.server.beans.ApiAuthType;
-import io.apiman.manager.ui.server.servlets.SystemPropertiesConfiguration;
 
 import java.io.File;
 
@@ -27,7 +27,7 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 
 /**
  * Global access to configuration information.
- * 
+ *
  * @author eric.wittmann@redhat.com
  */
 public class UIConfig implements IUIConfig {
@@ -101,7 +101,7 @@ public class UIConfig implements IUIConfig {
             throw new RuntimeException("Invalid API authentication type: " + at); //$NON-NLS-1$
         }
     }
-    
+
     /**
      * @see io.apiman.manager.ui.server.IUIConfig#getLogoutUrl()
      */
@@ -109,7 +109,7 @@ public class UIConfig implements IUIConfig {
     public String getLogoutUrl() {
         return config.getString(UIConfig.APIMAN_MANAGER_UI_LOGOUT_URL, "/apimanui/logout"); //$NON-NLS-1$
     }
-    
+
     /**
      * @see io.apiman.manager.ui.server.IUIConfig#getManagementApiAuthUsername()
      */
@@ -117,7 +117,7 @@ public class UIConfig implements IUIConfig {
     public String getManagementApiAuthUsername() {
         return config.getString(UIConfig.APIMAN_MANAGER_UI_API_BASIC_AUTH_USER);
     }
-    
+
     /**
      * @see io.apiman.manager.ui.server.IUIConfig#getManagementApiAuthPassword()
      */
@@ -125,7 +125,7 @@ public class UIConfig implements IUIConfig {
     public String getManagementApiAuthPassword() {
         return config.getString(UIConfig.APIMAN_MANAGER_UI_API_BASIC_AUTH_PASS);
     }
-    
+
     /**
      * @see io.apiman.manager.ui.server.IUIConfig#getManagementApiAuthTokenGenerator()
      */

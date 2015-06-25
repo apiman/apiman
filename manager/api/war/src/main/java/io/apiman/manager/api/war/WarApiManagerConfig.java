@@ -18,10 +18,14 @@ package io.apiman.manager.api.war;
 import io.apiman.common.config.ConfigFileConfiguration;
 import io.apiman.common.config.SystemPropertiesConfiguration;
 import io.apiman.manager.api.core.logging.IApimanLogger;
+import io.apiman.manager.api.jpa.IJpaProperties;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -35,7 +39,7 @@ import org.apache.commons.configuration.Configuration;
  * @author eric.wittmann@redhat.com
  */
 @ApplicationScoped
-public class WarApiManagerConfig {
+public class WarApiManagerConfig implements IJpaProperties {
 
     public static final String APIMAN_MANAGER_CONFIG_LOGGER = "apiman-manager.config.logger"; //$NON-NLS-1$
 
@@ -192,6 +196,24 @@ public class WarApiManagerConfig {
      */
     public String getLoggerName() {
         return config.getString(APIMAN_MANAGER_CONFIG_LOGGER);
+    }
+
+    /**
+     * @see io.apiman.manager.api.jpa.IJpaProperties#getAllHibernateProperties()
+     */
+    @Override
+    public Map<String, String> getAllHibernateProperties() {
+        Map<String, String> rval = new HashMap<>();
+        Iterator<String> keys = config.getKeys();
+        while (keys.hasNext()) {
+            String key = keys.next();
+            if (key.startsWith("apiman.hibernate.")) { //$NON-NLS-1$
+                String value = config.getString(key);
+                key = key.substring("apiman.".length()); //$NON-NLS-1$
+                rval.put(key, value);
+            }
+        }
+        return rval;
     }
 
 }

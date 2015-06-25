@@ -20,6 +20,7 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
@@ -30,6 +31,9 @@ import javax.persistence.Persistence;
  */
 @ApplicationScoped
 public class EntityManagerFactoryAccessor implements IEntityManagerFactoryAccessor {
+
+    @Inject
+    private IJpaProperties jpaProperties;
 
     private EntityManagerFactory emf;
 
@@ -44,6 +48,11 @@ public class EntityManagerFactoryAccessor implements IEntityManagerFactoryAccess
         String autoValue = System.getProperty("apiman.hibernate.hbm2ddl.auto", "validate"); //$NON-NLS-1$ //$NON-NLS-2$
         String dialect = System.getProperty("apiman.hibernate.dialect", "org.hibernate.dialect.H2Dialect"); //$NON-NLS-1$ //$NON-NLS-2$
         Map<String, String> properties = new HashMap<>();
+
+        Map<String, String> cp = jpaProperties.getAllHibernateProperties();
+        if (cp != null) {
+            properties.putAll(cp);
+        }
         properties.put("hibernate.hbm2ddl.auto", autoValue); //$NON-NLS-1$
         properties.put("hibernate.dialect", dialect); //$NON-NLS-1$
         emf = Persistence.createEntityManagerFactory("apiman-manager-api-jpa", properties); //$NON-NLS-1$
