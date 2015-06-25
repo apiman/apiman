@@ -31,6 +31,8 @@ import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.exceptions.InvalidPluginException;
 import io.apiman.manager.api.core.exceptions.StorageException;
+import io.apiman.manager.api.core.logging.ApimanLogger;
+import io.apiman.manager.api.core.logging.IApimanLogger;
 import io.apiman.manager.api.rest.contract.IPluginResource;
 import io.apiman.manager.api.rest.contract.exceptions.AbstractRestException;
 import io.apiman.manager.api.rest.contract.exceptions.NotAuthorizedException;
@@ -57,7 +59,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  * Implementation of the Plugin API.
- * 
+ *
  * @author eric.wittmann@redhat.com
  */
 @ApplicationScoped
@@ -69,6 +71,9 @@ public class PluginResourceImpl implements IPluginResource {
     @Inject IStorageQuery query;
     @Inject ISecurityContext securityContext;
     @Inject IPluginRegistry pluginRegistry;
+
+    @Inject @ApimanLogger(PluginResourceImpl.class)
+    IApimanLogger log;
 
     /**
      * Constructor.
@@ -106,7 +111,7 @@ public class PluginResourceImpl implements IPluginResource {
         } catch (InvalidPluginException e) {
             throw new PluginNotFoundException(coordinates.toString(), e);
         }
-        
+
         PluginBean pluginBean = new PluginBean();
         pluginBean.setGroupId(bean.getGroupId());
         pluginBean.setArtifactId(bean.getArtifactId());
@@ -127,6 +132,7 @@ public class PluginResourceImpl implements IPluginResource {
 
             // Process any contributed policy definitions.
             List<URL> policyDefs = plugin.getPolicyDefinitions();
+            int policyDefCounter = 0;
             for (URL url : policyDefs) {
                 PolicyDefinitionBean policyDef = (PolicyDefinitionBean) mapper.reader(PolicyDefinitionBean.class).readValue(url);
                 if (policyDef.getId() == null || policyDef.getId().trim().isEmpty()) {
@@ -143,10 +149,14 @@ public class PluginResourceImpl implements IPluginResource {
                 }
                 if (storage.getPolicyDefinition(policyDef.getId()) == null) {
                     storage.createPolicyDefinition(policyDef);
+                    policyDefCounter++;
                 }
             }
 
             storage.commitTx();
+            log.info(String.format("Created plugin mvn:%s:%s:%s", pluginBean.getGroupId(), pluginBean.getArtifactId(),  //$NON-NLS-1$
+                    pluginBean.getVersion()));
+            log.info(String.format("\tCreated %s policy definitions from plugin.", String.valueOf(policyDefCounter))); //$NON-NLS-1$
         } catch (AbstractRestException e) {
             storage.rollbackTx();
             throw e;
@@ -197,6 +207,8 @@ public class PluginResourceImpl implements IPluginResource {
             }
             storage.deletePlugin(pbean);
             storage.commitTx();
+            log.info(String.format("Deleted plugin mvn:%s:%s:%s", pbean.getGroupId(), pbean.getArtifactId(),  //$NON-NLS-1$
+                    pbean.getVersion()));
         } catch (AbstractRestException e) {
             storage.rollbackTx();
             throw e;
@@ -205,7 +217,7 @@ public class PluginResourceImpl implements IPluginResource {
             throw new SystemErrorException(e);
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.IPluginResource#getPolicyDefs(java.lang.Long)
      */
@@ -218,12 +230,12 @@ public class PluginResourceImpl implements IPluginResource {
             throw new SystemErrorException(e);
         }
     }
-    
+
     /**
      * @see io.apiman.manager.api.rest.contract.IPluginResource#getPolicyForm(java.lang.Long, java.lang.String)
      */
     @Override
-    public String getPolicyForm(Long pluginId, String policyDefId) throws PluginNotFoundException, 
+    public String getPolicyForm(Long pluginId, String policyDefId) throws PluginNotFoundException,
             PluginResourceNotFoundException, PolicyDefinitionNotFoundException {
         PluginBean pbean = null;
         PolicyDefinitionBean pdBean = null;
@@ -309,5 +321,5 @@ public class PluginResourceImpl implements IPluginResource {
     public void setSecurityContext(ISecurityContext securityContext) {
         this.securityContext = securityContext;
     }
-    
+
 }
