@@ -28,7 +28,7 @@ import org.apache.commons.codec.binary.Base64;
 
 /**
  * A simple AES encrypter.
- * 
+ *
  * @author eric.wittmann@redhat.com
  */
 public class AesEncrypter {
@@ -71,7 +71,6 @@ public class AesEncrypter {
             throw new RuntimeException(e);
         }
         return "$CRYPT::" + new String(Base64.encodeBase64(encrypted)); //$NON-NLS-1$
-
     }
 
     /**
@@ -107,5 +106,39 @@ public class AesEncrypter {
         } else {
             return encryptedText;
         }
+    }
+
+    /**
+     * Main entry point for the encrypter.  Allows encryption and decryption of text
+     * from the command line.
+     * @param args
+     */
+    public static final void main(String [] args) {
+        if (args.length != 2) {
+            printUsage();
+            return;
+        }
+        String cmd = args[0];
+        String input = args[1];
+        if ("encrypt".equals(cmd)) { //$NON-NLS-1$
+            System.out.println(AesEncrypter.encrypt(input).substring("$CRYPT::".length())); //$NON-NLS-1$
+        } else if ("decrypt".equals(cmd)) { //$NON-NLS-1$
+            System.out.println(AesEncrypter.decrypt("$CRYPT::" + input)); //$NON-NLS-1$
+        } else {
+            printUsage();
+        }
+
+    }
+
+    /**
+     * Usage.
+     */
+    @SuppressWarnings("nls")
+    private static void printUsage() {
+        System.out.println("Usage:");
+        System.out.println("\tAesEncrypter encrypt|decrypt \"input\"\n------");
+        System.out.println("Argument 1: the command, either 'encrypt' or 'decrypt'");
+        System.out.println("Argument 2: the text to encrypt or decrypt (use quotes if the input contains spaces)");
+        System.out.println("");
     }
 }

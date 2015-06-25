@@ -4,6 +4,7 @@
       <module name="org.infinispan" />
       <module name="org.apache.log4j" />
       <module name="org.slf4j" />
+      <module name="org.picketbox" />
     </dependencies>
     <exclude-subsystems>
       <subsystem name="webservices" />

@@ -11,6 +11,12 @@
   <name>apiman-common-config</name>
 
   <dependencies>
+    <!-- Project Dependencies -->
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-common-util</artifactId>
+      <version>${project.version}</version>
+    </dependency>
     <!-- Third Party Dependencies -->
     <dependency>
       <groupId>commons-codec</groupId>
@@ -23,6 +29,12 @@
     <dependency>
       <groupId>commons-configuration</groupId>
       <artifactId>commons-configuration</artifactId>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.picketbox</groupId>
+      <artifactId>jboss-security-spi</artifactId>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 
