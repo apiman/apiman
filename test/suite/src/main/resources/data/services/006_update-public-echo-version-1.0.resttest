@@ -1,0 +1,26 @@
+PUT /organizations/Test/services/public-echo/versions/1.0 ${apiman.suite.api-username}/${apiman.suite.api-password}
+Content-Type: application/json
+
+{
+  "endpoint" : "${apiman.suite.echo-endpoint}/public-echo",
+  "endpointType" : "rest",
+  "publicService" : true,
+  "gateways" : [
+    { "gatewayId" : "TheGateway" }
+  ]
+}
+----
+200
+Content-Type: application/json
+
+{
+  "service" : {
+    "organization" : {
+      "id" : "Test"
+    },
+    "id" : "public-echo",
+    "name" : "public-echo"
+  },
+  "status" : "Ready",
+  "version" : "1.0"
+}

@@ -2,7 +2,7 @@ PUT /organizations/Test/services/echo/versions/1.0 ${apiman.suite.api-username}/
 Content-Type: application/json
 
 {
-  "endpoint" : "${apiman.suite.echo-endpoint}",
+  "endpoint" : "${apiman.suite.echo-endpoint}/echo",
   "endpointType" : "rest",
   "plans" : [
     { "planId" : "Gold", "version" : "1.0" },

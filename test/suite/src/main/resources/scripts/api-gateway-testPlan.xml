@@ -24,4 +24,12 @@
     <test name="Failed echo request (rate limited)">data/runtime/echo_silver_fail.resttest</test>
   </testGroup>
 
+  <testGroup name="Public Echo">
+    <test name="Successful public-echo request 1">data/runtime/public-echo_success.resttest</test>
+    <test name="Successful public-echo request 2">data/runtime/public-echo_success.resttest</test>
+    <test name="Successful public-echo request 3">data/runtime/public-echo_success.resttest</test>
+    <test name="Successful public-echo request 4">data/runtime/public-echo_success.resttest</test>
+    <test name="Successful public-echo request 5">data/runtime/public-echo_success.resttest</test>
+  </testGroup>
+
 </testPlan>

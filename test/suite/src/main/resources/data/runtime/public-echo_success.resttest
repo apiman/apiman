@@ -1,0 +1,13 @@
+GET /Test/public-echo/1.0
+X-Custom-Header: custom-value
+
+----
+200
+Content-Type: application/json
+
+{
+  "method" : "GET",
+  "headers" : {
+    "X-Custom-Header" : "custom-value"
+  }
+}
