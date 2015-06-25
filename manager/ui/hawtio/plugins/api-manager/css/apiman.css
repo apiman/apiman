@@ -4,6 +4,10 @@ body {
   font-size: 13px;
 }
 
+.bootstrap-select.btn-group .dropdown-menu .selected a span.apiman-label-faded {
+  color: white;
+}
+
 .apiman-wrong-status, .apiman-not-permitted {
   display: none !important;
 }
