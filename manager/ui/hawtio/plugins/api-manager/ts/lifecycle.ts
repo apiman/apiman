@@ -79,8 +79,8 @@ module ApimanPageLifecycle {
     export var _module = angular.module("ApimanPageLifecycle", []);
 
     export var PageLifecycle = _module.factory('PageLifecycle', 
-        ['$q', 'Logger', '$rootScope', '$location', 'CurrentUserSvcs', 'Configuration', 'TranslationService',
-        ($q, Logger, $rootScope, $location, CurrentUserSvcs, Configuration, TranslationService) => {
+        ['$q', 'Logger', '$rootScope', '$location', 'CurrentUserSvcs', 'Configuration', 'TranslationService', '$window',
+        ($q, Logger, $rootScope, $location, CurrentUserSvcs, Configuration, TranslationService, $window) => {
             $rootScope.showHeader = true;
             if (Configuration['ui'] && Configuration.ui.header == false) {
                 $rootScope.showHeader = false;
@@ -101,7 +101,6 @@ module ApimanPageLifecycle {
                 Logger.info('Updating permissions now {0}', permissions);
                 $rootScope.permissions = permissions;
                 $rootScope.memberships = memberships;
-                
             };
             var handleError = function(error) {
                 $rootScope.pageState = 'error';
@@ -109,6 +108,9 @@ module ApimanPageLifecycle {
                 if (error.status == 400) {
                     Logger.info('Detected an error {0}, redirecting to 400.', error.status);
                     $location.url(Apiman.pluginName + '/errors/400').replace();
+                } else if (error.status == 401) {
+                    Logger.info('Detected an error 401, reloading the page.');
+                    $window.location.reload();
                 } else if (error.status == 403) {
                     Logger.info('Detected an error {0}, redirecting to 403.', error.status);
                     $location.url(Apiman.pluginName + '/errors/403').replace();

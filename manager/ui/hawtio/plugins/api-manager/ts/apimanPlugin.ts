@@ -120,6 +120,10 @@ module Apiman {
                     Logger.info('Bearer token successfully refreshed: {0}', reply);
                     Configuration.api.auth.bearerToken.token = reply.token;
                     var refreshPeriod = reply.refreshPeriod;
+                    if (!refreshPeriod || refreshPeriod < 1) {
+                        Logger.info('Refresh period was invalid! (using 60s)');
+                        refreshPeriod = 60;
+                    }
                     $timeout(refreshBearerToken, refreshPeriod * 1000);
                 }).fail(function(error) {
                     Logger.error('Failed to refresh bearer token: {0}', error);
