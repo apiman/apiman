@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 JBoss Inc
+ * Copyright 2015 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,20 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.manager.test;
+package io.apiman.manager.test.junit;
 
-import io.apiman.manager.test.junit.RestTestPlan;
-import io.apiman.manager.test.junit.RestTester;
-
-import org.junit.runner.RunWith;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Runs the "applications" test plan.
+ * Annotation used to indicate an apiman REST Test junit test.  The
+ * value of the annotation should be a path to a REST Test test plan
+ * XML file.
  *
  * @author eric.wittmann@redhat.com
  */
-@RunWith(RestTester.class)
-@RestTestPlan("test-plans/contracts-testPlan.xml")
-public class ContractsTest {
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE})
+public @interface RestTestPlan {
+
+    String value();
 
 }

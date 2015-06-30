@@ -22,12 +22,6 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-distro-db</artifactId>
     </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-distro-db</artifactId>
-      <type>test-jar</type>
-      <scope>test</scope>
-    </dependency>
 
     <!-- Third Party Dependencies -->
     <dependency>
@@ -58,5 +52,31 @@
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
     </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>generate-h2</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>java</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <mainClass>io.apiman.distro.db.CreateESDatabase</mainClass>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
 </project>

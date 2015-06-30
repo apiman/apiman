@@ -141,7 +141,7 @@ public class TestPlanRunner {
      *
      * @param restTest
      */
-    private void runTest(RestTest restTest) throws Error {
+    public void runTest(RestTest restTest) throws Error {
         try {
             String requestPath = TestUtil.doPropertyReplacement(restTest.getRequestPath());
             URI uri = getUri(requestPath);
@@ -404,7 +404,7 @@ public class TestPlanRunner {
      * @param expectedJson
      * @param actualJson
      */
-    private void assertJson(RestTest restTest, JsonNode expectedJson, JsonNode actualJson) {
+    public void assertJson(RestTest restTest, JsonNode expectedJson, JsonNode actualJson) {
         if (expectedJson instanceof ArrayNode) {
             JsonNode actualValue = actualJson;
             ArrayNode expectedArray = (ArrayNode) expectedJson;

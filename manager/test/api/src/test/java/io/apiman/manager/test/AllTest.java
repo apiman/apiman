@@ -15,35 +15,24 @@
  */
 package io.apiman.manager.test;
 
-import io.apiman.manager.test.server.MockGatewayServlet;
-import io.apiman.manager.test.util.AbstractTestPlanTest;
+import io.apiman.manager.test.junit.RestTestGatewayLog;
+import io.apiman.manager.test.junit.RestTestPlan;
+import io.apiman.manager.test.junit.RestTester;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * Runs the "all" test plan.
  *
  * @author eric.wittmann@redhat.com
  */
-@SuppressWarnings("nls")
-public class AllTest extends AbstractTestPlanTest {
-
-    private static final String EXPECTED_GATEWAY_LOG = 
-            "GET:/mock-gateway/system/status\n" + 
-            "PUT:/mock-gateway/services\n" +
-            "GET:/mock-gateway/system/status\n" + 
-            "PUT:/mock-gateway/applications\n";
-
-    @Test
-    public void test() {
-        runTestPlan("test-plans/all-testPlan.xml", AllTest.class.getClassLoader());
-
-        // This test includes publishing of a service to the gateway REST API.  The
-        // test framework incldues a mock gateway API to test that the REST calls were
-        // properly make.  Here is where we assert the result.
-        String actualGatewayLog = MockGatewayServlet.getRequestLog();
-        Assert.assertEquals(EXPECTED_GATEWAY_LOG, actualGatewayLog);
-    }
-
+@RunWith(RestTester.class)
+@RestTestPlan("test-plans/all-testPlan.xml")
+@RestTestGatewayLog(
+      "GET:/mock-gateway/system/status\n" +
+      "PUT:/mock-gateway/services\n" +
+      "GET:/mock-gateway/system/status\n" +
+      "PUT:/mock-gateway/applications\n"
+)
+public class AllTest {
 }

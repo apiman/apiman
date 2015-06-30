@@ -15,29 +15,43 @@
  */
 package io.apiman.distro.db;
 
-import io.apiman.manager.test.util.AbstractTestPlanTest;
 import io.apiman.manager.test.util.ManagerTestUtils;
 import io.apiman.manager.test.util.ManagerTestUtils.TestType;
 import io.apiman.test.common.util.TestUtil;
 
 import java.io.File;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 /**
- * Unit test that creates an H2 database file by firing up the API Manager and sending a 
+ * Unit test that creates an H2 database file by firing up the API Manager and sending a
  * bunch of REST requests to configure it.  When this test is complete there should be a
  * valid H2 database located in target/classes (and thus be included in the JAR).
  *
  * @author eric.wittmann@redhat.com
  */
 @SuppressWarnings("nls")
-public class CreateESDatabaseTest extends AbstractTestPlanTest {
+public class CreateESDatabase extends CreateH2Database {
 
-    @BeforeClass
-    public static void setup() throws Exception {
+    /**
+     * The test suite main entry point.
+     * @param args
+     * @throws Exception
+     */
+    public static void main(String [] args) throws Exception {
+        CreateESDatabase ch2d = new CreateESDatabase();
+        ch2d.setup();
+        ch2d.startServer();
+        try {
+            ch2d.create();
+        } finally {
+            ch2d.stopServer();
+        }
+    }
+
+    /**
+     * @see io.apiman.distro.db.CreateH2Database#setup()
+     */
+    @Override
+    public void setup() throws Exception {
         File targetClassesDir = new File("target/classes").getAbsoluteFile();
         if (!targetClassesDir.exists()) {
             targetClassesDir.mkdirs();
@@ -52,30 +66,21 @@ public class CreateESDatabaseTest extends AbstractTestPlanTest {
         TestUtil.setProperty("apiman.test.es-cluster-name", "apiman");
         TestUtil.setProperty("apiman.test.es-persistence", "true");
         ManagerTestUtils.setTestType(TestType.es);
-        AbstractTestPlanTest.setup();
-    }
-    
-    @Test
-    public void test() {
-        try {
-            TestUtil.setProperty("apiman.suite.api-username", "admin");
-            TestUtil.setProperty("apiman.suite.api-password", "admin");
-            TestUtil.setProperty("apiman.suite.gateway-config-endpoint", "http://localhost:8080/apiman-gateway-api");
-            TestUtil.setProperty("apiman.suite.gateway-config-username", "apimanager");
-            TestUtil.setProperty("apiman.suite.gateway-config-password", "apiman123!");
-            
-            runTestPlan("scripts/api-manager-init-testPlan.xml", CreateH2DatabaseTest.class.getClassLoader());
-        } finally {
-            System.clearProperty("apiman.test.h2-output-dir");
-        }
     }
 
-    @AfterClass
-    public static void shutdown() throws Exception {
-        Thread.sleep(2000); // allow ES time to refresh/index
-        TestUtil.setProperty("apiman.test.es-delete-index", "false");
-        AbstractTestPlanTest.shutdown();
-        testServer.getESNode().close();
+    /**
+     * @see io.apiman.distro.db.CreateH2Database#stopServer()
+     */
+    @Override
+    protected void stopServer() {
+        try {
+            Thread.sleep(2000); // allow ES time to refresh/index
+            TestUtil.setProperty("apiman.test.es-delete-index", "false");
+            super.stopServer();
+            testServer.getESNode().close();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

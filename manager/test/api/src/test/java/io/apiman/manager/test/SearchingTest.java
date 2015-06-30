@@ -15,20 +15,18 @@
  */
 package io.apiman.manager.test;
 
-import io.apiman.manager.test.util.AbstractTestPlanTest;
+import io.apiman.manager.test.junit.RestTestPlan;
+import io.apiman.manager.test.junit.RestTester;
 
-import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * Runs the "searching" test plan.
  *
  * @author eric.wittmann@redhat.com
  */
-public class SearchingTest extends AbstractTestPlanTest {
-
-    @Test
-    public void test() {
-        runTestPlan("test-plans/searching-testPlan.xml", SearchingTest.class.getClassLoader()); //$NON-NLS-1$
-    }
+@RunWith(RestTester.class)
+@RestTestPlan("test-plans/searching-testPlan.xml")
+public class SearchingTest {
 
 }

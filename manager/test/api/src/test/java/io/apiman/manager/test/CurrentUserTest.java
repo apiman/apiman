@@ -15,20 +15,18 @@
  */
 package io.apiman.manager.test;
 
-import io.apiman.manager.test.util.AbstractTestPlanTest;
+import io.apiman.manager.test.junit.RestTestPlan;
+import io.apiman.manager.test.junit.RestTester;
 
-import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * Runs the "current user" test plan.
  *
  * @author eric.wittmann@redhat.com
  */
-public class CurrentUserTest extends AbstractTestPlanTest {
-
-    @Test
-    public void test() {
-        runTestPlan("test-plans/currentuser-testPlan.xml", CurrentUserTest.class.getClassLoader()); //$NON-NLS-1$
-    }
+@RunWith(RestTester.class)
+@RestTestPlan("test-plans/currentuser-testPlan.xml")
+public class CurrentUserTest {
 
 }

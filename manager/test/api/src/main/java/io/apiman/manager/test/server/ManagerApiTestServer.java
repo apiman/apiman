@@ -192,19 +192,6 @@ public class ManagerApiTestServer {
             node.start();
             System.out.println("ES node was successfully started.");
 
-// Commenting this out for now b/c - the JestClient is of a different Client type
-//            if (!isPersistent) {
-//                Node node = NodeBuilder.nodeBuilder().client(true).loadConfigSettings(false)
-//                        .clusterName(ES_CLUSTER_NAME).local(true)
-//                        .settings(ImmutableSettings.settingsBuilder().build()).node().start();
-//                client = node.client();
-//            } else {
-//                TransportClient tc = new TransportClient(ImmutableSettings.settingsBuilder()
-//                        .put("cluster.name", clusterName).build());
-//                tc.addTransportAddress(new InetSocketTransportAddress("localhost", 6600));
-//                client = tc;
-//            }
-
             // TODO parameterize this
             String connectionUrl = "http://localhost:6500";
             JestClientFactory factory = new JestClientFactory();

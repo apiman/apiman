@@ -15,22 +15,22 @@
  */
 package io.apiman.manager.test;
 
-import io.apiman.manager.test.util.AbstractTestPlanTest;
+import io.apiman.manager.test.junit.RestTestPlan;
+import io.apiman.manager.test.junit.RestTestSystemProperties;
+import io.apiman.manager.test.junit.RestTester;
 
-import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * Runs the "plugins" test plan.
  *
  * @author eric.wittmann@redhat.com
  */
-@SuppressWarnings("nls")
-public class PluginsTest extends AbstractTestPlanTest {
-
-    @Test
-    public void test() {
-        System.setProperty("apiman.test.m2-path", "src/test/resources/test-plan-data/plugins/m2");
-        runTestPlan("test-plans/plugins-testPlan.xml", PluginsTest.class.getClassLoader()); //$NON-NLS-1$
-    }
+@RunWith(RestTester.class)
+@RestTestPlan("test-plans/plugins-testPlan.xml")
+@RestTestSystemProperties({
+    "apiman.test.m2-path", "src/test/resources/test-plan-data/plugins/m2"
+})
+public class PluginsTest {
 
 }

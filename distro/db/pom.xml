@@ -45,20 +45,35 @@
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
     </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
     <plugins>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
         <executions>
           <execution>
+            <id>generate-h2</id>
+            <phase>prepare-package</phase>
             <goals>
-              <goal>test-jar</goal>
+              <goal>java</goal>
             </goals>
           </execution>
         </executions>
+        <configuration>
+          <mainClass>io.apiman.distro.db.CreateH2Database</mainClass>
+          <systemProperties>
+            <systemProperty>
+              <key>apiman.test.h2-output-dir</key>
+              <value>${project.build.outputDirectory}</value>
+            </systemProperty>
+          </systemProperties>
+        </configuration>
       </plugin>
     </plugins>
   </build>

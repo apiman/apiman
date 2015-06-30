@@ -15,21 +15,18 @@
  */
 package io.apiman.manager.test;
 
-import io.apiman.manager.test.util.AbstractTestPlanTest;
+import io.apiman.manager.test.junit.RestTestPlan;
+import io.apiman.manager.test.junit.RestTester;
 
-import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * Runs the "applications" test plan.
  *
  * @author eric.wittmann@redhat.com
  */
-public class ApplicationsTest extends AbstractTestPlanTest {
-
-    @Test
-    public void test() {
-        runTestPlan("test-plans/applications-testPlan.xml", ApplicationsTest.class.getClassLoader()); //$NON-NLS-1$
-        System.out.println("Done!"); //$NON-NLS-1$
-    }
+@RunWith(RestTester.class)
+@RestTestPlan("test-plans/applications-testPlan.xml")
+public class ApplicationsTest {
 
 }

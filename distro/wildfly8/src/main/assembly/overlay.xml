@@ -90,9 +90,9 @@
       <fileMode>0755</fileMode>
       <unpack>true</unpack>
       <unpackOptions>
-        <excludes>
-          <exclude>**/META-INF/**</exclude>
-        </excludes>
+        <includes>
+          <include>apiman*.db</include>
+        </includes>
       </unpackOptions>
     </dependencySet>
     <!-- apiman -->
