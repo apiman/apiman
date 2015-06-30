@@ -1,0 +1,21 @@
+The apiman project has benefited from the assistance of many members of the
+community.  This (always appreciated!) assistance comes in many forms, 
+including but not limited to:
+
+* Code contributions
+* Documentation
+* Testing
+* Evangelism
+
+A (hopefully complete) list of our wonderful contributors:
+
+Bunciak, Stefan
+Cechacek, Jakub
+DiMaggio, Len
+Gaisford, Brandon
+Kieling, Alexandre
+Meyer, Brett
+Morales, Jorge
+Savy, Marc
+Stam, Kurt
+Wittmann, Eric
