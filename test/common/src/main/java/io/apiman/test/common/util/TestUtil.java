@@ -32,12 +32,12 @@ import org.apache.commons.io.IOUtils;
 
 /**
  * Utilities to load test plans and rest tests.
- * 
+ *
  * @author eric.wittmann@redhat.com
  */
 @SuppressWarnings({"nls", "javadoc"})
 public class TestUtil {
-    
+
     /**
      * Loads a test plan from a classpath resource.
      * @param resourcePath
@@ -56,7 +56,7 @@ public class TestUtil {
             throw new RuntimeException(e);
         }
     }
-    
+
     /**
      * Loads a test plan from a file resource.
      * @param planFile
@@ -64,7 +64,7 @@ public class TestUtil {
     public static final TestPlan loadTestPlan(File planFile) {
         try {
             if (!planFile.isFile())
-                throw new RuntimeException("Test Plan not found: " + planFile.getCanonicalPath()); 
+                throw new RuntimeException("Test Plan not found: " + planFile.getCanonicalPath());
             JAXBContext jaxbContext = JAXBContext.newInstance(TestPlan.class);
             Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
             TestPlan plan = (TestPlan) jaxbUnmarshaller.unmarshal(planFile);
@@ -73,7 +73,7 @@ public class TestUtil {
             throw new RuntimeException(e);
         }
     }
-    
+
     /**
      * Loads a rest test from a classpath resource.
      * @param resourcePath
@@ -84,7 +84,7 @@ public class TestUtil {
         try {
             URL url = cl.getResource(resourcePath);
             if (url == null)
-                throw new RuntimeException("Rest Test not found: " + resourcePath); 
+                throw new RuntimeException("Rest Test not found: " + resourcePath);
             is = url.openStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(is));
             return parseRestTest(reader);
@@ -97,22 +97,22 @@ public class TestUtil {
 
     /**
      * Parse a *.resttest file.  The format of a *.resttest file is:
-     * 
+     *
      * <pre>
      *     METHOD /path/to/resource username/password
      *     Request-Header-1: value
      *     Request-Header-2: value
-     *  
+     *
      *     **Request Payload**
      *     ----
      *     ResponseStatusCode
      *     Response-Header-1: expected-value
      *     Response-Header-2: expected-value
-     *  
+     *
      *     **Response Payload**
      * </pre>
      * @param reader
-     * @throws IOException 
+     * @throws IOException
      */
     private static RestTest parseRestTest(BufferedReader reader) throws IOException {
         RestTest rval = new RestTest();
@@ -120,19 +120,19 @@ public class TestUtil {
         try {
             // METHOD, Path, Username/Password
             String line = reader.readLine();
-            String [] split = line.split(" "); 
+            String [] split = line.split(" ");
             rval.setRequestMethod(split[0]);
             rval.setRequestPath(split[1]);
             if (split.length >= 3) {
                 String userpass = split[2];
-                split = userpass.split("/"); 
+                split = userpass.split("/");
                 rval.setUsername(split[0]);
                 rval.setPassword(split[1]);
             }
-            
+
             // Request Headers
             line = reader.readLine();
-            if (!line.trim().startsWith("----")) { 
+            if (!line.trim().startsWith("----")) {
                 while (line.trim().length() > 0) {
                     int idx = line.indexOf(':');
                     String headerName = line.substring(0, idx).trim();
@@ -140,23 +140,23 @@ public class TestUtil {
                     rval.getRequestHeaders().put(headerName, headerValue);
                     line = reader.readLine();
                 }
-                
+
                 // Request payload
                 StringBuilder builder = new StringBuilder();
                 line = reader.readLine();
-                while (!line.trim().startsWith("----")) { 
-                    builder.append(line).append("\n"); 
+                while (!line.trim().startsWith("----")) {
+                    builder.append(line).append("\n");
                     line = reader.readLine();
                     line = doPropertyReplacement(line);
                 }
                 rval.setRequestPayload(builder.toString());
             }
-            
+
             // Response
             // Expected Status Code
             line = reader.readLine();
             rval.setExpectedStatusCode(new Integer(line.trim()));
-            
+
             // Expected Response Headers
             line = reader.readLine();
             while (line != null && line.trim().length() > 0) {
@@ -166,21 +166,21 @@ public class TestUtil {
                 rval.getExpectedResponseHeaders().put(headerName, headerValue);
                 line = reader.readLine();
             }
-            
+
             // Expected Response Payload
             if (line != null) {
                 StringBuilder builder = new StringBuilder();
                 line = reader.readLine();
-                while (line != null && !line.trim().startsWith("----")) { 
-                    builder.append(line).append("\n"); 
+                while (line != null && !line.trim().startsWith("----")) {
+                    builder.append(line).append("\n");
                     line = reader.readLine();
                 }
                 rval.setExpectedResponsePayload(builder.toString());
             }
         } catch (Throwable t) {
-            throw new IOException("Error while parsing Rest Test", t); 
+            throw new IOException("Error while parsing Rest Test", t);
         }
-        
+
         return rval;
     }
 
@@ -197,11 +197,17 @@ public class TestUtil {
         }
         String rval = line;
         int sidx = -1;
-        while ( (sidx = rval.indexOf("${")) != -1 ) { 
+        while ( (sidx = rval.indexOf("${")) != -1 ) {
             int eidx = rval.indexOf('}', sidx);
             String substring = rval.substring(sidx + 2, eidx);
             String propName = substring.trim();
-            String propVal = System.getProperty(propName, ""); 
+            String defaultValue = "";
+            if (propName.contains(":")) {
+                int cidx = propName.indexOf(':');
+                defaultValue = propName.substring(cidx+1).trim();
+                propName = propName.substring(0, cidx).trim();
+            }
+            String propVal = System.getProperty(propName, defaultValue);
             rval = rval.replace("${" + substring + "}", propVal);
         }
         return rval;

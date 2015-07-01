@@ -16,6 +16,7 @@
 package io.apiman.manager.test.junit;
 
 import io.apiman.manager.api.core.util.PolicyTemplateUtil;
+import io.apiman.manager.test.junit.RestTester.TestInfo;
 import io.apiman.manager.test.server.ManagerApiTestServer;
 import io.apiman.manager.test.server.MockGatewayServlet;
 import io.apiman.test.common.plan.TestGroupType;
@@ -25,9 +26,15 @@ import io.apiman.test.common.resttest.RestTest;
 import io.apiman.test.common.util.TestPlanRunner;
 import io.apiman.test.common.util.TestUtil;
 
+import java.io.File;
+import java.lang.reflect.Method;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -48,7 +55,7 @@ import org.slf4j.LoggerFactory;
  * @author eric.wittmann@redhat.com
  */
 @SuppressWarnings("nls")
-public class RestTester extends ParentRunner<TestType> {
+public class RestTester extends ParentRunner<TestInfo> {
 
     private static Logger logger = LoggerFactory.getLogger(TestPlanRunner.class);
 
@@ -56,36 +63,65 @@ public class RestTester extends ParentRunner<TestType> {
     private static final boolean USE_PROXY = false;
     private static final int PROXY_PORT = 7071;
 
-    private TestPlan testPlan;
-    private String testPlanPath;
-    private TestPlanRunner runner;
-
-    private TestType gatewayLogTest = new TestType();
-    private TestType publishPayloadTest = new TestType();
+    private List<TestPlanInfo> testPlans = new ArrayList<>();
+    private Set<String> resetSysProps = new HashSet<>();
 
     /**
      * Constructor.
      */
     public RestTester(Class<?> testClass) throws InitializationError {
         super(testClass);
-        testPlan = loadTestPlan(testClass);
-        gatewayLogTest.setName("Assert Gateway Log");
-        publishPayloadTest.setName("Assert Publishing Payloads");
+        configureSystemProperties();
+        loadTestPlans(testClass);
     }
 
     /**
-     * Loads a test plan.
+     * Loads the test plans.
      * @param testClass
      * @throws InitializationError
      */
-    private TestPlan loadTestPlan(Class<?> testClass) throws InitializationError {
-        RestTestPlan annotation = testClass.getAnnotation(RestTestPlan.class);
-        if (annotation == null) {
-            throw new InitializationError("Missing test annotation: @RestTestPlan");
+    private void loadTestPlans(Class<?> testClass) throws InitializationError {
+        try {
+            RestTestPlan annotation = testClass.getAnnotation(RestTestPlan.class);
+            if (annotation == null) {
+                Method[] methods = testClass.getMethods();
+                TreeSet<RestTestPlan> annotations = new TreeSet<>(new Comparator<RestTestPlan>() {
+                    @Override
+                    public int compare(RestTestPlan o1, RestTestPlan o2) {
+                        Integer i1 = o1.order();
+                        Integer i2 = o2.order();
+                        return i1.compareTo(i2);
+                    }
+                });
+                for (Method method : methods) {
+                    annotation = method.getAnnotation(RestTestPlan.class);
+                    if (annotation != null) {
+                        annotations.add(annotation);
+                    }
+                }
+                for (RestTestPlan anno : annotations) {
+                    TestPlanInfo planInfo = new TestPlanInfo();
+                    planInfo.planPath = anno.value();
+                    planInfo.name = new File(planInfo.planPath).getName();
+                    planInfo.endpoint = TestUtil.doPropertyReplacement(anno.endpoint());
+                    planInfo.plan = TestUtil.loadTestPlan(planInfo.planPath, testClass.getClassLoader());
+                    testPlans.add(planInfo);
+                }
+            } else {
+                TestPlanInfo planInfo = new TestPlanInfo();
+                planInfo.planPath = annotation.value();
+                planInfo.name = new File(planInfo.planPath).getName();
+                planInfo.plan = TestUtil.loadTestPlan(planInfo.planPath, testClass.getClassLoader());
+                planInfo.endpoint = TestUtil.doPropertyReplacement(annotation.endpoint());
+                testPlans.add(planInfo);
+            }
+        } catch (Throwable e) {
+            throw new InitializationError(e);
         }
-        testPlanPath = annotation.value();
-        TestPlan plan = TestUtil.loadTestPlan(testPlanPath, testClass.getClassLoader());
-        return plan;
+
+        if (testPlans.isEmpty()) {
+            throw new InitializationError("No @RestTestPlan annotations found on test class: " + testClass);
+        }
     }
 
     /**
@@ -135,21 +171,52 @@ public class RestTester extends ParentRunner<TestType> {
      * @see org.junit.runners.ParentRunner#getChildren()
      */
     @Override
-    protected List<TestType> getChildren() {
-        List<TestType> children = new ArrayList<>();
-        List<TestGroupType> groups = testPlan.getTestGroup();
-        for (TestGroupType group : groups) {
-            children.addAll(group.getTest());
+    protected List<TestInfo> getChildren() {
+        List<TestInfo> children = new ArrayList<>();
+
+        TestPlanInfo lastPlan = null;
+        for (TestPlanInfo planInfo : testPlans) {
+            lastPlan = planInfo;
+            if (planInfo.endpoint != null && planInfo.endpoint.length() > 0) {
+                log("Test Endpoint: {0}", planInfo.endpoint);
+                planInfo.runner = new TestPlanRunner(planInfo.endpoint);
+            } else {
+                String baseApiUrl = "http://localhost:" + getTestServerPort() + getBaseApiContext();
+                log("Test Endpoint: {0}", baseApiUrl);
+                planInfo.runner = new TestPlanRunner(baseApiUrl);
+            }
+
+            List<TestGroupType> groups = planInfo.plan.getTestGroup();
+            for (TestGroupType group : groups) {
+                for (TestType test : group.getTest()) {
+                    TestInfo testInfo = new TestInfo();
+                    if (testPlans.size() > 1) {
+                        testInfo.name = planInfo.name + " / " + test.getName();
+                    } else {
+                        testInfo.name = test.getName();
+                    }
+                    testInfo.plan = planInfo;
+                    testInfo.test = test;
+                    children.add(testInfo);
+                }
+            }
         }
 
         RestTestGatewayLog annotation = getTestClass().getJavaClass().getAnnotation(RestTestGatewayLog.class);
         if (annotation != null) {
-            gatewayLogTest.setValue(annotation.value());
-            children.add(gatewayLogTest);
+            GatewayAssertionTestInfo gatewayTest = new GatewayAssertionTestInfo();
+            gatewayTest.name = "Assert Gateway Log";
+            gatewayTest.plan = lastPlan;
+            gatewayTest.expectedLog = annotation.value();
+            children.add(gatewayTest);
         }
         RestTestPublishPayload annotation2 = getTestClass().getJavaClass().getAnnotation(RestTestPublishPayload.class);
         if (annotation2 != null) {
-            children.add(publishPayloadTest);
+            PublishPayloadTestInfo pubTest = new PublishPayloadTestInfo();
+            pubTest.name = "Assert Publishing Payloads";
+            pubTest.plan = lastPlan;
+            pubTest.expectedPayloads = annotation2.value();
+            children.add(pubTest);
         }
 
         return children;
@@ -165,25 +232,22 @@ public class RestTester extends ParentRunner<TestType> {
         PolicyTemplateUtil.clearCache();
         MockGatewayServlet.reset();
 
-        String baseApiUrl = "http://localhost:" + getTestServerPort() + getBaseApiContext();
         log("");
         log("-------------------------------------------------------------------------------");
-        log("Executing Test Plan: " + testPlanPath);
-        log("   Base API URL: " + baseApiUrl);
+        log("Executing REST Test");
         log("-------------------------------------------------------------------------------");
         log("");
-        runner = new TestPlanRunner(baseApiUrl);
-        configureSystemProperties();
 
         try {
             super.run(notifier);
         } finally {
-            shutdown();
+            try { shutdown(); } catch (Throwable e) { e.printStackTrace(); }
+            resetSystemProperties();
         }
 
         log("");
         log("-------------------------------------------------------------------------------");
-        log("Test Plan complete: " + testPlanPath);
+        log("REST Test complete");
         log("-------------------------------------------------------------------------------");
         log("");
     }
@@ -192,25 +256,24 @@ public class RestTester extends ParentRunner<TestType> {
      * @see org.junit.runners.ParentRunner#runChild(java.lang.Object, org.junit.runner.notification.RunNotifier)
      */
     @Override
-    protected void runChild(final TestType test, RunNotifier notifier) {
+    protected void runChild(final TestInfo testInfo, RunNotifier notifier) {
         log("-----------------------------------------------------------");
-        log("Starting Test [{0}]", test.getName());
+        log("Starting Test [{0} / {1}]", testInfo.plan.name, testInfo.name);
         log("-----------------------------------------------------------");
-        Description description = describeChild(test);
-        if (test == this.gatewayLogTest) {
+        Description description = describeChild(testInfo);
+        if (testInfo instanceof GatewayAssertionTestInfo) {
             runLeaf(new Statement() {
                 @Override
                 public void evaluate() throws Throwable {
                     String actualGatewayLog = MockGatewayServlet.getRequestLog();
-                    Assert.assertEquals(test.getValue(), actualGatewayLog);
+                    Assert.assertEquals(((GatewayAssertionTestInfo) testInfo).expectedLog, actualGatewayLog);
                 }
             }, description, notifier);
-        } else if (test == this.publishPayloadTest) {
+        } else if (testInfo instanceof PublishPayloadTestInfo) {
             runLeaf(new Statement() {
                 @Override
                 public void evaluate() throws Throwable {
-                    RestTestPublishPayload annotation = getTestClass().getJavaClass().getAnnotation(RestTestPublishPayload.class);
-                    String[] expectedPayloads = annotation.value();
+                    String[] expectedPayloads = ((PublishPayloadTestInfo) testInfo).expectedPayloads;
                     int index = 0;
                     for (String expectedPayload : expectedPayloads) {
                         String actualPayload = MockGatewayServlet.getPayloads().get(index);
@@ -221,7 +284,7 @@ public class RestTester extends ParentRunner<TestType> {
                             JsonNode expected = mapper.readTree(expectedPayload);
                             JsonNode actual = mapper.readTree(actualPayload.trim());
                             RestTest mockRT = new RestTest();
-                            runner.assertJson(mockRT, expected, actual);
+                            testInfo.plan.runner.assertJson(mockRT, expected, actual);
                         }
 
                         index++;
@@ -232,8 +295,8 @@ public class RestTester extends ParentRunner<TestType> {
             runLeaf(new Statement() {
                 @Override
                 public void evaluate() throws Throwable {
-                    RestTest restTest = TestUtil.loadRestTest(test.getValue(), getTestClass().getJavaClass().getClassLoader());
-                    runner.runTest(restTest);
+                    RestTest restTest = TestUtil.loadRestTest(testInfo.test.getValue(), getTestClass().getJavaClass().getClassLoader());
+                    testInfo.plan.runner.runTest(restTest);
                 }
             }, description, notifier);
         }
@@ -243,8 +306,8 @@ public class RestTester extends ParentRunner<TestType> {
      * @see org.junit.runners.ParentRunner#describeChild(java.lang.Object)
      */
     @Override
-    protected Description describeChild(TestType child) {
-        return Description.createTestDescription(getTestClass().getJavaClass(), child.getName());
+    protected Description describeChild(TestInfo child) {
+        return Description.createTestDescription(getTestClass().getJavaClass(), child.name);
     }
 
     /**
@@ -278,7 +341,6 @@ public class RestTester extends ParentRunner<TestType> {
         TestUtil.setProperty("apiman.test.gateway.password", "admin");
         TestUtil.setProperty("apiman.manager.require-auto-granted-org", "false");
 
-        // TODO reset all these properties back to their previous versions when the test is complete
         RestTestSystemProperties annotation = getTestClass().getJavaClass().getAnnotation(RestTestSystemProperties.class);
         if (annotation != null) {
             String[] strings = annotation.value();
@@ -286,9 +348,22 @@ public class RestTester extends ParentRunner<TestType> {
                 String pname = strings[idx];
                 String pval = strings[idx+1];
                 log("Setting system property \"{0}\" to \"{1}\".", pname, pval);
+                if (System.getProperty(pname) == null) {
+                    resetSysProps.add(pname);
+                }
                 TestUtil.setProperty(pname, pval);
             }
         }
+    }
+
+    /**
+     * Resets the system properties that were set at the start of the test.
+     */
+    private void resetSystemProperties() {
+        for (String propName : resetSysProps) {
+            System.clearProperty(propName);
+        }
+        resetSysProps.clear();
     }
 
     /**
@@ -297,9 +372,31 @@ public class RestTester extends ParentRunner<TestType> {
      * @param message
      * @param params
      */
-    private void log(String message, Object... params) {
+    public void log(String message, Object... params) {
         String outmsg = MessageFormat.format(message, params);
         logger.info("    >> " + outmsg);
     }
 
+    public static class TestPlanInfo {
+        TestPlan plan;
+        String name;
+        String planPath;
+        String endpoint;
+
+        TestPlanRunner runner;
+    }
+
+    public static class TestInfo {
+        TestType test;
+        String name;
+        TestPlanInfo plan;
+    }
+
+    public static class GatewayAssertionTestInfo extends TestInfo {
+        String expectedLog;
+    }
+
+    public static class PublishPayloadTestInfo extends TestInfo {
+        String[] expectedPayloads;
+    }
 }

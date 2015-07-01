@@ -28,9 +28,13 @@ import java.lang.annotation.Target;
  * @author eric.wittmann@redhat.com
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
+@Target({ElementType.TYPE, ElementType.METHOD})
 public @interface RestTestPlan {
 
     String value();
+
+    String endpoint() default "";
+
+    int order() default 0;
 
 }
