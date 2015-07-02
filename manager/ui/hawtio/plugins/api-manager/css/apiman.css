@@ -1433,3 +1433,7 @@ textarea.apiman-endpoint {
   text-align: center;
   text-decoration: underline;
 }
+
+#apiman-svc-metrics-selector .bootstrap-select {
+  width: auto;
+}

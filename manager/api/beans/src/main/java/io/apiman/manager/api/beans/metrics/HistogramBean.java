@@ -15,43 +15,38 @@
  */
 package io.apiman.manager.api.beans.metrics;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * A single data point in the usage histogram.
+ * Base class for histogram beans.
  *
  * @author eric.wittmann@redhat.com
  */
-public class UsageDataPoint extends HistogramDataPoint {
+public abstract class HistogramBean<T extends HistogramDataPoint> {
 
-    private long count;
+    private List<T> data = new ArrayList<>();
 
     /**
-     * Constructor.
+     * @return the data
      */
-    public UsageDataPoint() {
+    public List<T> getData() {
+        return data;
     }
 
     /**
-     * Constructor.
-     * @param label
-     * @param count
+     * @param data the data to set
      */
-    public UsageDataPoint(String label, long count) {
-        super(label);
-        setCount(count);
+    public void setData(List<T> data) {
+        this.data = data;
     }
 
     /**
-     * @return the count
+     * Adds a single data point.
+     * @param point
      */
-    public long getCount() {
-        return count;
-    }
-
-    /**
-     * @param count the count to set
-     */
-    public void setCount(long count) {
-        this.count = count;
+    public void addDataPoint(T point) {
+        getData().add(point);
     }
 
 }

@@ -26,8 +26,12 @@ import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.contracts.NewContractBean;
 import io.apiman.manager.api.beans.idm.GrantRolesBean;
 import io.apiman.manager.api.beans.members.MemberBean;
+import io.apiman.manager.api.beans.metrics.HistogramIntervalType;
+import io.apiman.manager.api.beans.metrics.ResponseStatsHistogramBean;
+import io.apiman.manager.api.beans.metrics.ResponseStatsPerAppBean;
+import io.apiman.manager.api.beans.metrics.ResponseStatsPerPlanBean;
+import io.apiman.manager.api.beans.metrics.ResponseStatsSummaryBean;
 import io.apiman.manager.api.beans.metrics.UsageHistogramBean;
-import io.apiman.manager.api.beans.metrics.UsageHistogramIntervalType;
 import io.apiman.manager.api.beans.metrics.UsagePerAppBean;
 import io.apiman.manager.api.beans.metrics.UsagePerPlanBean;
 import io.apiman.manager.api.beans.orgs.NewOrganizationBean;
@@ -1603,7 +1607,7 @@ public interface IOrganizationResource {
     @Produces(MediaType.APPLICATION_JSON)
     public UsageHistogramBean getUsage(@PathParam("organizationId") String organizationId,
             @PathParam("serviceId") String serviceId, @PathParam("version") String version,
-            @QueryParam("interval") UsageHistogramIntervalType interval, @QueryParam("from") String fromDate,
+            @QueryParam("interval") HistogramIntervalType interval, @QueryParam("from") String fromDate,
             @QueryParam("to") String toDate) throws NotAuthorizedException, InvalidMetricCriteriaException;
 
     /**
@@ -1652,4 +1656,102 @@ public interface IOrganizationResource {
             @PathParam("organizationId") String organizationId, @PathParam("serviceId") String serviceId,
             @PathParam("version") String version, @QueryParam("from") String fromDate,
             @QueryParam("to") String toDate) throws NotAuthorizedException, InvalidMetricCriteriaException;
+
+
+    /**
+     * Retrieves metrics/analytics information for a specific service.  This will
+     * return a full histogram of response statistics data based on the provided date range
+     * and interval.  Valid intervals are:  month, week, day, hour, minute
+     *
+     * The data returned includes total request counts, failure counts, and error counts
+     * for each data point in the histogram.
+     *
+     * @summary Get Service Response Statistics (Histogram)
+     * @param organizationId The organization ID.
+     * @param serviceId The service ID.
+     * @param version The service version.
+     * @param interval A valid interval (month, week, day, hour, minute)
+     * @param fromDate The start of a valid date range.
+     * @param toDate The end of a valid date range.
+     * @statuscode 200 If the metrics data is successfully returned.
+     * @return Response statistics metrics information.
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
+     */
+    @GET
+    @Path("{organizationId}/services/{serviceId}/versions/{version}/metrics/responseStats")
+    @Produces(MediaType.APPLICATION_JSON)
+    public ResponseStatsHistogramBean getResponseStats(@PathParam("organizationId") String organizationId,
+            @PathParam("serviceId") String serviceId, @PathParam("version") String version,
+            @QueryParam("interval") HistogramIntervalType interval, @QueryParam("from") String fromDate,
+            @QueryParam("to") String toDate) throws NotAuthorizedException, InvalidMetricCriteriaException;
+
+    /**
+     * Retrieves metrics/analytics information for a specific service.  This will
+     * return total response type statistics over the given date range.  Basically
+     * this will return three numbers: total request, # failed responses, # error
+     * responses.
+     *
+     * @summary Get Service Response Statistics (Summary)
+     * @param organizationId The organization ID.
+     * @param serviceId The service ID.
+     * @param version The service version.
+     * @param fromDate The start of a valid date range.
+     * @param toDate The end of a valid date range.
+     * @statuscode 200 If the metrics data is successfully returned.
+     * @return Usage metrics information.
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
+     */
+    @GET
+    @Path("{organizationId}/services/{serviceId}/versions/{version}/metrics/summaryResponseStats")
+    @Produces(MediaType.APPLICATION_JSON)
+    public ResponseStatsSummaryBean getResponseStatsSummary(
+            @PathParam("organizationId") String organizationId, @PathParam("serviceId") String serviceId,
+            @PathParam("version") String version, @QueryParam("from") String fromDate,
+            @QueryParam("to") String toDate) throws NotAuthorizedException, InvalidMetricCriteriaException;
+
+    /**
+     * Retrieves metrics/analytics information for a specific service.  This will
+     * return response type statistics broken down by application.
+     *
+     * @summary Get Service Response Statistics (per App)
+     * @param organizationId The organization ID.
+     * @param serviceId The service ID.
+     * @param version The service version.
+     * @param fromDate The start of a valid date range.
+     * @param toDate The end of a valid date range.
+     * @statuscode 200 If the metrics data is successfully returned.
+     * @return Usage metrics information.
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
+     */
+    @GET
+    @Path("{organizationId}/services/{serviceId}/versions/{version}/metrics/appResponseStats")
+    @Produces(MediaType.APPLICATION_JSON)
+    public ResponseStatsPerAppBean getResponseStatsPerApp(
+            @PathParam("organizationId") String organizationId, @PathParam("serviceId") String serviceId,
+            @PathParam("version") String version, @QueryParam("from") String fromDate,
+            @QueryParam("to") String toDate) throws NotAuthorizedException, InvalidMetricCriteriaException;
+
+
+    /**
+     * Retrieves metrics/analytics information for a specific service.  This will
+     * return response type statistics broken down by plan.
+     *
+     * @summary Get Service Response Statistics (per Plan)
+     * @param organizationId The organization ID.
+     * @param serviceId The service ID.
+     * @param version The service version.
+     * @param fromDate The start of a valid date range.
+     * @param toDate The end of a valid date range.
+     * @statuscode 200 If the metrics data is successfully returned.
+     * @return Usage metrics information.
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
+     */
+    @GET
+    @Path("{organizationId}/services/{serviceId}/versions/{version}/metrics/planResponseStats")
+    @Produces(MediaType.APPLICATION_JSON)
+    public ResponseStatsPerPlanBean getResponseStatsPerPlan(
+            @PathParam("organizationId") String organizationId, @PathParam("serviceId") String serviceId,
+            @PathParam("version") String version, @QueryParam("from") String fromDate,
+            @QueryParam("to") String toDate) throws NotAuthorizedException, InvalidMetricCriteriaException;
+
 }

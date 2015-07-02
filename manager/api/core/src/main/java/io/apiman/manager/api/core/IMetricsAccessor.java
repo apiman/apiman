@@ -15,8 +15,12 @@
  */
 package io.apiman.manager.api.core;
 
+import io.apiman.manager.api.beans.metrics.HistogramIntervalType;
+import io.apiman.manager.api.beans.metrics.ResponseStatsHistogramBean;
+import io.apiman.manager.api.beans.metrics.ResponseStatsPerAppBean;
+import io.apiman.manager.api.beans.metrics.ResponseStatsPerPlanBean;
+import io.apiman.manager.api.beans.metrics.ResponseStatsSummaryBean;
 import io.apiman.manager.api.beans.metrics.UsageHistogramBean;
-import io.apiman.manager.api.beans.metrics.UsageHistogramIntervalType;
 import io.apiman.manager.api.beans.metrics.UsagePerAppBean;
 import io.apiman.manager.api.beans.metrics.UsagePerPlanBean;
 
@@ -51,7 +55,7 @@ public interface IMetricsAccessor {
      * @param to
      */
     UsageHistogramBean getUsage(String organizationId, String serviceId, String version,
-            UsageHistogramIntervalType interval, DateTime from, DateTime to);
+            HistogramIntervalType interval, DateTime from, DateTime to);
 
     /**
      * Query the metrics store for # of requests made to a service broken
@@ -77,6 +81,55 @@ public interface IMetricsAccessor {
      * @param to
      */
     UsagePerPlanBean getUsagePerPlan(String organizationId, String serviceId, String version,
+            DateTime from, DateTime to);
+
+    /**
+     * Query the metrics store for a histogram of response statistics, including total
+     * number of responses, # of error responses,
+     * @param organizationId
+     * @param serviceId
+     * @param version
+     * @param interval
+     * @param from
+     * @param to
+     */
+    ResponseStatsHistogramBean getResponseStats(String organizationId, String serviceId, String version,
+            HistogramIntervalType interval, DateTime from, DateTime to);
+
+    /**
+     * Query the metrics store for response type stats (total, errors, failures) for a given
+     * service over a specified time range.  Returns a total summary of stats.
+     * @param organizationId
+     * @param serviceId
+     * @param version
+     * @param from
+     * @param to
+     */
+    ResponseStatsSummaryBean getResponseStatsSummary(String organizationId, String serviceId, String version,
+            DateTime from, DateTime to);
+
+    /**
+     * Query the metrics store for response type stats (total, errors, failures) for a given
+     * service over a specified time range per application.
+     * @param organizationId
+     * @param serviceId
+     * @param version
+     * @param from
+     * @param to
+     */
+    ResponseStatsPerAppBean getResponseStatsPerApp(String organizationId, String serviceId, String version,
+            DateTime from, DateTime to);
+
+    /**
+     * Query the metrics store for response type stats (total, errors, failures) for a given
+     * service over a specified time range per plan.
+     * @param organizationId
+     * @param serviceId
+     * @param version
+     * @param from
+     * @param to
+     */
+    ResponseStatsPerPlanBean getResponseStatsPerPlan(String organizationId, String serviceId, String version,
             DateTime from, DateTime to);
 
 }

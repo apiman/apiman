@@ -160,6 +160,30 @@ module ApimanServices {
                         Configuration.api.endpoint + '/organizations/:organizationId/services/:serviceId/versions/:version/metrics/planUsage',
                         { organizationId: orgId, serviceId: serviceId, version: version });
                     $resource(endpoint, {from: from, to: to}).get({}, handler, errorHandler);
+                },
+                getResponseStats: function(orgId, serviceId, version, interval, from, to, handler, errorHandler) {
+                    var endpoint = formatEndpoint(
+                        Configuration.api.endpoint + '/organizations/:organizationId/services/:serviceId/versions/:version/metrics/responseStats',
+                        { organizationId: orgId, serviceId: serviceId, version: version });
+                    $resource(endpoint, {interval: interval, from: from, to: to}).get({}, handler, errorHandler);
+                },
+                getResponseStatsSummary: function(orgId, serviceId, version, from, to, handler, errorHandler) {
+                    var endpoint = formatEndpoint(
+                        Configuration.api.endpoint + '/organizations/:organizationId/services/:serviceId/versions/:version/metrics/summaryResponseStats',
+                        { organizationId: orgId, serviceId: serviceId, version: version });
+                    $resource(endpoint, {from: from, to: to}).get({}, handler, errorHandler);
+                },
+                getResponseStatsPerApp: function(orgId, serviceId, version, from, to, handler, errorHandler) {
+                    var endpoint = formatEndpoint(
+                        Configuration.api.endpoint + '/organizations/:organizationId/services/:serviceId/versions/:version/metrics/appResponseStats',
+                        { organizationId: orgId, serviceId: serviceId, version: version });
+                    $resource(endpoint, {from: from, to: to}).get({}, handler, errorHandler);
+                },
+                getResponseStatsPerPlan: function(orgId, serviceId, version, from, to, handler, errorHandler) {
+                    var endpoint = formatEndpoint(
+                        Configuration.api.endpoint + '/organizations/:organizationId/services/:serviceId/versions/:version/metrics/planResponseStats',
+                        { organizationId: orgId, serviceId: serviceId, version: version });
+                    $resource(endpoint, {from: from, to: to}).get({}, handler, errorHandler);
                 }
             }
         }]);

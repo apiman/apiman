@@ -38,8 +38,12 @@ import io.apiman.manager.api.beans.idm.RoleMembershipBean;
 import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.beans.members.MemberBean;
 import io.apiman.manager.api.beans.members.MemberRoleBean;
+import io.apiman.manager.api.beans.metrics.HistogramIntervalType;
+import io.apiman.manager.api.beans.metrics.ResponseStatsHistogramBean;
+import io.apiman.manager.api.beans.metrics.ResponseStatsPerAppBean;
+import io.apiman.manager.api.beans.metrics.ResponseStatsPerPlanBean;
+import io.apiman.manager.api.beans.metrics.ResponseStatsSummaryBean;
 import io.apiman.manager.api.beans.metrics.UsageHistogramBean;
-import io.apiman.manager.api.beans.metrics.UsageHistogramIntervalType;
 import io.apiman.manager.api.beans.metrics.UsagePerAppBean;
 import io.apiman.manager.api.beans.metrics.UsagePerPlanBean;
 import io.apiman.manager.api.beans.orgs.NewOrganizationBean;
@@ -2008,18 +2012,18 @@ public class OrganizationResourceImpl implements IOrganizationResource {
     }
 
     /**
-     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getUsage(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.metrics.UsageHistogramIntervalType, java.lang.String, java.lang.String)
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getUsage(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.metrics.HistogramIntervalType, java.lang.String, java.lang.String)
      */
     @Override
     public UsageHistogramBean getUsage(String organizationId, String serviceId, String version,
-            UsageHistogramIntervalType interval, String fromDate, String toDate) throws NotAuthorizedException, InvalidMetricCriteriaException {
+            HistogramIntervalType interval, String fromDate, String toDate) throws NotAuthorizedException, InvalidMetricCriteriaException {
         if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
             throw ExceptionFactory.notAuthorizedException();
 
         DateTime from = parseFromDate(fromDate);
         DateTime to = parseToDate(toDate);
         if (interval == null) {
-            interval = UsageHistogramIntervalType.day;
+            interval = HistogramIntervalType.day;
         }
         validateMetricRange(from, to);
         validateTimeSeriesMetric(from, to, interval);
@@ -2054,6 +2058,74 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         DateTime to = parseToDate(toDate);
         validateMetricRange(from, to);
         return metrics.getUsagePerPlan(organizationId, serviceId, version, from, to);
+    }
+
+    /**
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getResponseStats(java.lang.String, java.lang.String, java.lang.String, io.apiman.manager.api.beans.metrics.HistogramIntervalType, java.lang.String, java.lang.String)
+     */
+    @Override
+    public ResponseStatsHistogramBean getResponseStats(String organizationId, String serviceId,
+            String version, HistogramIntervalType interval, String fromDate, String toDate)
+            throws NotAuthorizedException, InvalidMetricCriteriaException {
+        if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
+
+        DateTime from = parseFromDate(fromDate);
+        DateTime to = parseToDate(toDate);
+        if (interval == null) {
+            interval = HistogramIntervalType.day;
+        }
+        validateMetricRange(from, to);
+        validateTimeSeriesMetric(from, to, interval);
+        return metrics.getResponseStats(organizationId, serviceId, version, interval, from, to);
+    }
+
+    /**
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getResponseStatsSummary(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public ResponseStatsSummaryBean getResponseStatsSummary(String organizationId, String serviceId,
+            String version, String fromDate, String toDate) throws NotAuthorizedException,
+            InvalidMetricCriteriaException {
+        if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
+
+        DateTime from = parseFromDate(fromDate);
+        DateTime to = parseToDate(toDate);
+        validateMetricRange(from, to);
+        return metrics.getResponseStatsSummary(organizationId, serviceId, version, from, to);
+    }
+
+    /**
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getResponseStatsPerApp(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public ResponseStatsPerAppBean getResponseStatsPerApp(String organizationId, String serviceId,
+            String version, String fromDate, String toDate) throws NotAuthorizedException,
+            InvalidMetricCriteriaException {
+        if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
+
+        DateTime from = parseFromDate(fromDate);
+        DateTime to = parseToDate(toDate);
+        validateMetricRange(from, to);
+        return metrics.getResponseStatsPerApp(organizationId, serviceId, version, from, to);
+    }
+
+    /**
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getResponseStatsPerPlan(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public ResponseStatsPerPlanBean getResponseStatsPerPlan(String organizationId, String serviceId,
+            String version, String fromDate, String toDate) throws NotAuthorizedException,
+            InvalidMetricCriteriaException {
+        if (!securityContext.hasPermission(PermissionType.svcView, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
+
+        DateTime from = parseFromDate(fromDate);
+        DateTime to = parseToDate(toDate);
+        validateMetricRange(from, to);
+        return metrics.getResponseStatsPerPlan(organizationId, serviceId, version, from, to);
     }
 
     /**
@@ -3016,7 +3088,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
      * @param to
      * @param interval
      */
-    private void validateTimeSeriesMetric(DateTime from, DateTime to, UsageHistogramIntervalType interval)
+    private void validateTimeSeriesMetric(DateTime from, DateTime to, HistogramIntervalType interval)
             throws InvalidMetricCriteriaException {
         long millis = to.getMillis() - from.getMillis();
         long divBy = ONE_DAY_MILLIS;

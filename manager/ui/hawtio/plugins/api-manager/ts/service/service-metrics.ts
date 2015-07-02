@@ -16,8 +16,10 @@ module Apiman {
             $scope.tab = 'metrics';
             $scope.version = params.version;
             $scope.metricsRange = '7days';
+            $scope.metricsType = 'usage';
             
             var usageChart, usageByAppChart, usageByPlanChart;
+            var responseTypeChart, responseTypeSuccessChart, responseTypeFailuresChart, responseTypeErrorsChart;
             
             var getTimeSeriesFormat = function() {
                 var format = '%Y-%m-%d';
@@ -116,6 +118,130 @@ module Apiman {
                 }
             };
             
+            var renderResponseTypeHistogramChart = function(data) {
+                var xcol = [];
+                xcol.push('x');
+                var successCol = ['Success']
+                var failureCol = ['Fail']
+                var errorCol = ['Error']
+
+                angular.forEach(data.data, function(dataPoint) {
+                    xcol.push(Date.parse(dataPoint.label));
+                    successCol.push((dataPoint.total - dataPoint.failures - dataPoint.errors).toString());
+                    failureCol.push(dataPoint.failures);
+                    errorCol.push(dataPoint.errors);
+                });
+                if (xcol.length == 1) {
+                    $scope.responseTypeChartNoData = true;
+                } else {
+                    Logger.log("======= xcol: " + JSON.stringify(xcol));
+                    Logger.log("======= successCol: " + JSON.stringify(successCol));
+                    Logger.log("======= failureCol: " + JSON.stringify(failureCol));
+                    Logger.log("======= errorCol: " + JSON.stringify(errorCol));
+                    responseTypeChart = c3.generate({
+                        size: {
+                            height: 200
+                        },
+                        data: {
+                            x: 'x',
+                            columns: [
+                                xcol, successCol, failureCol, errorCol
+                            ],
+                            colors: {
+                                'Success': '#71B56E',
+                                'Fail': '#E37B4F',
+                                'Error': '#E34F4F',
+                            },
+                            types: {
+                                'Success': 'bar',
+                                'Fail': 'bar',
+                                'Error': 'bar',
+                            },
+                            groups: [
+                                ['Success', 'Fail', 'Error']
+                            ]
+                        },
+                        bindto: '#responseType-chart',
+                        axis: {
+                            x: {
+                                type: 'timeseries',
+                                tick: {
+                                    format: getTimeSeriesFormat()
+                                }
+                            },
+                            y: {
+                                label: 'Responses'
+                            }
+                        }
+                    });
+                }
+            };
+
+            var renderResponseTypeSummaryCharts = function(data) {
+                var total = data.total;
+                var success = data.total - data.failures - data.errors;
+                var failures = data.failures;
+                var errors = data.errors;
+                
+                responseTypeSuccessChart = c3.generate({
+                    size: {
+                        height: 150
+                    },
+                    data: {
+                        columns: [
+                            ['data', success]
+                        ],
+                        colors: {
+                            data: '#71B56E'
+                        },
+                        type: 'gauge'
+                    },
+                    gauge: {
+                        max: total
+                    },
+                    bindto: '#responseType-chart-success'
+                });
+                
+                responseTypeFailuresChart = c3.generate({
+                    size: {
+                        height: 150
+                    },
+                    data: {
+                        columns: [
+                            ['data', failures]
+                        ],
+                        colors: {
+                            data: '#E37B4F'
+                        },
+                        type: 'gauge'
+                    },
+                    gauge: {
+                        max: total
+                    },
+                    bindto: '#responseType-chart-failed'
+                });
+
+                responseTypeErrorsChart = c3.generate({
+                    size: {
+                        height: 150
+                    },
+                    data: {
+                        columns: [
+                            ['data', errors]
+                        ],
+                        colors: {
+                            data: '#E34F4F'
+                        },
+                        type: 'gauge'
+                    },
+                    gauge: {
+                        max: total
+                    },
+                    bindto: '#responseType-chart-error'
+                });
+
+            };
+
             var truncateToDay = function(date) {
                 truncateToHour(date);
                 date.setHours(0);
@@ -153,12 +279,14 @@ module Apiman {
                 }
             };
             
-            var refreshCharts = function() {
+            // *******************************************************
+            // Refresh the usage charts
+            // *******************************************************
+            var refreshUsageCharts = function() {
                 $scope.usageChartLoading = true;
                 $scope.appUsageChartLoading = true;
                 $scope.planUsageChartLoading = true;
                 
-                // TODO get the right date range based on the value of $scope.metricsRange
                 var range = getChartDateRange();
                 var from = range.from;
                 var to = range.to;
@@ -212,8 +340,85 @@ module Apiman {
                     $scope.planUsageChartNoData = true;
                 });
             }
+
+            // *******************************************************
+            // Refresh the response type charts
+            // *******************************************************
+            var refreshResponseTypeCharts = function() {
+                $scope.responseTypeChartLoading = true;
+                $scope.responseTypeSuccessChartLoading = true;
+                $scope.responseTypeFailedChartLoading = true;
+                $scope.responseTypeErrorChartLoading = true;
+                
+                var range = getChartDateRange();
+                var from = range.from;
+                var to = range.to;
+                var interval = 'day';
+                if ($scope.metricsRange == '7days' || $scope.metricsRange == '24hours') {
+                    interval = 'hour';
+                }
+                if ($scope.metricsRange == 'hour') {
+                    interval = 'minute';
+                }
+
+                // Refresh the response type chart
+                if (responseTypeChart) {
+                    responseTypeChart.destroy();
+                    responseTypeChart = null;
+                }
+                MetricsSvcs.getResponseStats(params.org, params.service, params.version, interval, from, to, function(data) {
+                    $scope.responseTypeChartLoading = false;
+                    renderResponseTypeHistogramChart(data);
+                }, function(error) {
+                    Logger.error('Error loading response type stats histogram data: {0}', JSON.stringify(error));
+                    $scope.responseTypeChartLoading = false;
+                    $scope.responseTypeChartNoData = true;
+                });
+                
+                // Refresh the success, failure, and error charts
+                if (responseTypeSuccessChart) {
+                    responseTypeSuccessChart.destroy();
+                    responseTypeSuccessChart = null;
+                }
+                if (responseTypeFailuresChart) {
+                    responseTypeFailuresChart.destroy();
+                    responseTypeFailuresChart = null;
+                }
+                if (responseTypeErrorsChart) {
+                    responseTypeErrorsChart.destroy();
+                    responseTypeErrorsChart = null;
+                }
+                MetricsSvcs.getResponseStatsSummary(params.org, params.service, params.version, from, to, function(data) {
+                    $scope.responseTypeSuccessChartLoading = false;
+                    $scope.responseTypeFailedChartLoading = false;
+                    $scope.responseTypeErrorChartLoading = false;
+                    renderResponseTypeSummaryCharts(data);
+                }, function(error) {
+                    Logger.error('Error loading response type summary stats chart data: {0}', JSON.stringify(error));
+                    $scope.responseTypeSuccessChartLoading = false;
+                    $scope.responseTypeFailedChartLoading = false;
+                    $scope.responseTypeErrorChartLoading = false;
+                    $scope.responseTypeSuccessChartNoData = true;
+                    $scope.responseTypeFailedChartNoData = true;
+                    $scope.responseTypeErrorChartNoData = true;
+                });
+            }
+            
+            var refreshCharts = function() {
+                if ($scope.metricsType == 'usage') {
+                    refreshUsageCharts();
+                }
+                if ($scope.metricsType == 'responseType') {
+                    refreshResponseTypeCharts();
+                }
+            };
             
             $scope.$watch('metricsRange', function(newValue, oldValue) {
+                if (newValue && newValue != oldValue) {
+                    refreshCharts();
+                }
+            });
+            $scope.$watch('metricsType', function(newValue, oldValue) {
                 if (newValue && newValue != oldValue) {
                     refreshCharts();
                 }

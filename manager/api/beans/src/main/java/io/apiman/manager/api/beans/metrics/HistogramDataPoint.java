@@ -16,12 +16,39 @@
 package io.apiman.manager.api.beans.metrics;
 
 /**
- * The various intervals allowed for a histogram metric.
+ * Base class for histogram data points.
  *
  * @author eric.wittmann@redhat.com
  */
-public enum UsageHistogramIntervalType {
+public abstract class HistogramDataPoint {
 
-    month, week, day, hour, minute
+    private String label;
 
+    /**
+     * Constructor.
+     */
+    public HistogramDataPoint() {
+    }
+
+    /**
+     * Constructor.
+     * @param label
+     */
+    public HistogramDataPoint(String label) {
+        setLabel(label);
+    }
+
+    /**
+     * @return the label
+     */
+    public String getLabel() {
+        return label;
+    }
+
+    /**
+     * @param label the label to set
+     */
+    public void setLabel(String label) {
+        this.label = label;
+    }
 }

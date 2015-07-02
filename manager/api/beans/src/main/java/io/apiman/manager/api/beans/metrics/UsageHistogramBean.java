@@ -15,38 +15,14 @@
  */
 package io.apiman.manager.api.beans.metrics;
 
-import java.util.ArrayList;
-import java.util.List;
 
 /**
- * Bean returned for the "Overall Usage" metric.  The data returned is a
- * set of sparse data points over a histogram date range.  The period of
- * each bucket is dependent upon the granularity specified in the request.
+ * Bean returned for the "Overall Usage" metric. The data returned is a set of
+ * data points over a histogram date range. The period of each bucket is
+ * dependent upon the granularity specified in the request.
  *
  * @author eric.wittmann@redhat.com
  */
-public class UsageHistogramBean {
-
-    private List<UsageDataPoint> data = new ArrayList<>();
-
-    /**
-     * Constructor.
-     */
-    public UsageHistogramBean() {
-    }
-
-    /**
-     * @return the data
-     */
-    public List<UsageDataPoint> getData() {
-        return data;
-    }
-
-    /**
-     * @param data the data to set
-     */
-    public void setData(List<UsageDataPoint> data) {
-        this.data = data;
-    }
+public class UsageHistogramBean extends HistogramBean<UsageDataPoint> {
 
 }

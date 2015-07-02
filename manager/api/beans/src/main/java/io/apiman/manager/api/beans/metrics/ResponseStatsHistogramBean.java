@@ -15,43 +15,14 @@
  */
 package io.apiman.manager.api.beans.metrics;
 
+
 /**
- * A single data point in the usage histogram.
+ * Bean returned for the "Response Type" histogram metric. The data returned is
+ * a set of data points over a histogram date range. The period of each bucket
+ * is dependent upon the granularity specified in the request.
  *
  * @author eric.wittmann@redhat.com
  */
-public class UsageDataPoint extends HistogramDataPoint {
-
-    private long count;
-
-    /**
-     * Constructor.
-     */
-    public UsageDataPoint() {
-    }
-
-    /**
-     * Constructor.
-     * @param label
-     * @param count
-     */
-    public UsageDataPoint(String label, long count) {
-        super(label);
-        setCount(count);
-    }
-
-    /**
-     * @return the count
-     */
-    public long getCount() {
-        return count;
-    }
-
-    /**
-     * @param count the count to set
-     */
-    public void setCount(long count) {
-        this.count = count;
-    }
+public class ResponseStatsHistogramBean extends HistogramBean<ResponseStatsDataPoint> {
 
 }

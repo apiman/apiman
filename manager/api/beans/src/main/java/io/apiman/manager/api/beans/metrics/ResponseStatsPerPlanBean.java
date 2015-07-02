@@ -15,43 +15,47 @@
  */
 package io.apiman.manager.api.beans.metrics;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
- * A single data point in the usage histogram.
+ * Bean returned for the "Usage per Plan" metric.
  *
  * @author eric.wittmann@redhat.com
  */
-public class UsageDataPoint extends HistogramDataPoint {
+public class ResponseStatsPerPlanBean {
 
-    private long count;
-
-    /**
-     * Constructor.
-     */
-    public UsageDataPoint() {
-    }
+    private Map<String, ResponseStatsDataPoint> data = new HashMap<>();
 
     /**
      * Constructor.
-     * @param label
-     * @param count
      */
-    public UsageDataPoint(String label, long count) {
-        super(label);
-        setCount(count);
+    public ResponseStatsPerPlanBean() {
     }
 
     /**
-     * @return the count
+     * @return the data
      */
-    public long getCount() {
-        return count;
+    public Map<String, ResponseStatsDataPoint> getData() {
+        return data;
     }
 
     /**
-     * @param count the count to set
+     * @param data the data to set
      */
-    public void setCount(long count) {
-        this.count = count;
+    public void setData(Map<String, ResponseStatsDataPoint> data) {
+        this.data = data;
+    }
+
+    /**
+     * @param plan
+     * @param total
+     * @param failures
+     * @param errors
+     */
+    public void addDataPoint(String plan, long total, long failures, long errors) {
+        ResponseStatsDataPoint point = new ResponseStatsDataPoint(null, total, failures, errors);
+        data.put(plan, point);
     }
 
 }

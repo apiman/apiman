@@ -16,42 +16,12 @@
 package io.apiman.manager.api.beans.metrics;
 
 /**
- * A single data point in the usage histogram.
+ * The various intervals allowed for a histogram metric.
  *
  * @author eric.wittmann@redhat.com
  */
-public class UsageDataPoint extends HistogramDataPoint {
+public enum HistogramIntervalType {
 
-    private long count;
-
-    /**
-     * Constructor.
-     */
-    public UsageDataPoint() {
-    }
-
-    /**
-     * Constructor.
-     * @param label
-     * @param count
-     */
-    public UsageDataPoint(String label, long count) {
-        super(label);
-        setCount(count);
-    }
-
-    /**
-     * @return the count
-     */
-    public long getCount() {
-        return count;
-    }
-
-    /**
-     * @param count the count to set
-     */
-    public void setCount(long count) {
-        this.count = count;
-    }
+    month, week, day, hour, minute
 
 }
