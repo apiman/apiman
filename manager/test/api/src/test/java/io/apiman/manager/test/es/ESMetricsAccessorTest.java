@@ -39,7 +39,9 @@ import java.net.URL;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.io.IOUtils;
 import org.elasticsearch.common.settings.ImmutableSettings;
@@ -64,6 +66,7 @@ public class ESMetricsAccessorTest {
 
     private static Node node;
     private static JestClient client;
+    private static Locale locale;
 
     @BeforeClass @Ignore
     public static void setup() throws Exception {
@@ -82,6 +85,10 @@ public class ESMetricsAccessorTest {
         System.out.println("----------- Starting the ES node.");
         node.start();
         System.out.println("----------- ES node was successfully started.");
+        System.out.println("--- Fixing locale for testing purposes");
+        locale = Locale.getDefault();
+        Locale.setDefault(Locale.US);
+
         client = createJestClient();
         loadTestData();
     }
@@ -114,6 +121,7 @@ public class ESMetricsAccessorTest {
         System.out.println("----------- Stopping the ES node.");
         node.stop();
         System.out.println("----------- All done.");
+        Locale.setDefault(locale);
     }
 
     /**
@@ -325,6 +333,13 @@ public class ESMetricsAccessorTest {
         histogram = new UsageHistogramBean();
         index = ESMetricsAccessor.generateHistogramSkeleton(histogram, from, to, HistogramIntervalType.week,
                 UsageDataPoint.class);
+
+        System.out.println("Index -----");
+
+        for (Entry<String, UsageDataPoint> entry : index.entrySet()) {
+            System.out.println(entry.getKey() + " -> " + entry.getValue().getLabel() + " " + entry.getValue().getCount());
+        }
+
         Assert.assertEquals(53, index.size());
         Assert.assertEquals(53, histogram.getData().size());
         Assert.assertEquals("2014-12-28T00:00:00.000Z", histogram.getData().get(0).getLabel());
