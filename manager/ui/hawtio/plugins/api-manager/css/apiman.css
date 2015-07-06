@@ -254,7 +254,7 @@ textarea.apiman-form-data {
   width: auto;
 }
 
-.apiman-inline-form-dropdown, .bootstrap-select .apiman-inline-form-dropdown {
+#form-page .apiman-inline-form-dropdown, .apiman-inline-form-dropdown, .bootstrap-select .apiman-inline-form-dropdown {
   height: 28px;
   display: inline;
   float: none;
