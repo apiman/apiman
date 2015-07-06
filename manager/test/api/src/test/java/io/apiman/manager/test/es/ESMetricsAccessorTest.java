@@ -41,7 +41,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.apache.commons.io.IOUtils;
 import org.elasticsearch.common.settings.ImmutableSettings;
@@ -333,12 +332,6 @@ public class ESMetricsAccessorTest {
         histogram = new UsageHistogramBean();
         index = ESMetricsAccessor.generateHistogramSkeleton(histogram, from, to, HistogramIntervalType.week,
                 UsageDataPoint.class);
-
-        System.out.println("Index -----");
-
-        for (Entry<String, UsageDataPoint> entry : index.entrySet()) {
-            System.out.println(entry.getKey() + " -> " + entry.getValue().getLabel() + " " + entry.getValue().getCount());
-        }
 
         Assert.assertEquals(53, index.size());
         Assert.assertEquals(53, histogram.getData().size());
