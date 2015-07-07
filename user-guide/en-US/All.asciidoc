@@ -209,6 +209,13 @@ Every service must be configured with an API implementation. The implementation 
 service that the API Gateway will proxy to if all the policies are successfully applied. Click the
 'Implementation' tab to configure the API endpoint and API type details on your service.
 
+Additionally, the 'Implementation' tab allows you to configure any security options that might
+be required when proxying requests to the back end service.  For example, if you are using mutual/two-way
+SSL to ensure full security between the API Gateway and your back-end service, you may configure
+that here.  We also support simple BASIC authentication between the gateway and your back end
+service.  Please note that BASIC authentication is not ideal, and especially insecure if not
+using SSL/HTTPS to connect to the back end service.
+
 Do not forget to click the Save button when you are done making changes.
 
 ==== Service Definition
@@ -247,6 +254,19 @@ service will change to "Published" and the 'Publish' button will disappear.
 It is worth repeating that the 'Publish' button will be disabled until the service is fully configured (at
 which time it transitions to "Ready" status). This includes at least the implementation and one or more
 available plans. Service policies are optional.
+
+==== Service Metrics
+Once a service is published and is being consumed at runtime, metrics information about that usage is
+recorded in a metrics storage system.  See the Metrics section of the API Gateway documentation for
+more about how and when metrics data is recorded.
+
+If a Service has been used by at least one client, then it will have metrics information available.
+This information can be viewed in the 'Metrics' tab on the Service's details page.  On this page
+you can choose the type of metric you wish to see (e.g. Usage metrics and Response Type
+metrics) as well as a pre-defined time range (e.g. Last 30 Days, Last Week, etc...).
+
+The Service Metrics page is a great way to figure out how often your service is used, and in what
+ways.
 
 === Consuming Services
 After the service providers have added a number of services to the API management system, those services
@@ -459,3 +479,23 @@ is being used to invoke the Service.  The API Key can be sent in one of the foll
 If the Service being invoked is a "Public" service, then no API Key should be sent.  However,
 the request should still be sent to the same endpoint as described above.  The endpoint
 itself contains enough information to let the Gateway know what service is being invoked.
+
+=== Recording Metrics
+The API Gateway is typically configured to record each request made to it into a metrics
+storage system of some kind.  By default apiman will use an included elasticsearch
+instance to store this information.  Various pieces of information about each request
+is included in the record, including but not necessarily limited to the following:
+
+* Request start and end times
+* Service start and end times (i.e. just the part of the request taken up by the back end service)
+* Resource path
+* Response type (success, failure, error)
+* Service info (org id, id, version)
+* Application info (org id, id, version)
+
+This information is then available for analysis and reporting.  The data can be accessed
+in a number of ways, including:
+
+* Through the API Manager UI
+* Through the API Manager REST API
+* Directly from the metrics system
