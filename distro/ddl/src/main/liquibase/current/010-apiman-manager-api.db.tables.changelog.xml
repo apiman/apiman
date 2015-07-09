@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<databaseChangeLog
-        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-  http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
-
-    <changeSet author="apiman (generated)" id="1434728211665-1">
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+    <changeSet author="apiman (generated)" id="1436469846462-1">
         <createTable tableName="application_versions">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -34,7 +29,7 @@
             <column name="app_org_id" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
-    <changeSet author="apiman (generated)" id="1434728211665-2">
+    <changeSet author="apiman (generated)" id="1436469846462-2">
         <createTable tableName="applications">
             <column name="id" type="VARCHAR(255)">
                 <constraints nullable="false"/>
@@ -54,7 +49,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="apiman (generated)" id="1434728211665-3">
+    <changeSet author="apiman (generated)" id="1436469846462-3">
         <createTable tableName="auditlog">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -79,7 +74,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="apiman (generated)" id="1434728211665-4">
+    <changeSet author="apiman (generated)" id="1436469846462-4">
         <createTable tableName="contracts">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -98,7 +93,7 @@
             <column name="svcv_id" type="BIGINT"/>
         </createTable>
     </changeSet>
-    <changeSet author="apiman (generated)" id="1434728211665-5">
+    <changeSet author="apiman (generated)" id="1436469846462-5">
         <createTable tableName="endpoint_properties">
             <column name="service_version_id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -109,7 +104,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="apiman (generated)" id="1434728211665-6">
+    <changeSet author="apiman (generated)" id="1436469846462-6">
         <createTable tableName="gateways">
             <column name="id" type="VARCHAR(255)">
                 <constraints nullable="false"/>
@@ -138,7 +133,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="apiman (generated)" id="1434728211665-7">
+    <changeSet author="apiman (generated)" id="1436469846462-7">
         <createTable tableName="memberships">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -149,7 +144,7 @@
             <column name="user_id" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
-    <changeSet author="apiman (generated)" id="1434728211665-8">
+    <changeSet author="apiman (generated)" id="1436469846462-8">
         <createTable tableName="organizations">
             <column name="id" type="VARCHAR(255)">
                 <constraints nullable="false"/>
@@ -172,7 +167,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="apiman (generated)" id="1434728211665-9">
+    <changeSet author="apiman (generated)" id="1436469846462-9">
         <createTable tableName="pd_templates">
             <column name="policydef_id" type="VARCHAR(255)">
                 <constraints nullable="false"/>
@@ -181,7 +176,7 @@
             <column name="template" type="VARCHAR(2048)"/>
         </createTable>
     </changeSet>
-    <changeSet author="apiman (generated)" id="1434728211665-10">
+    <changeSet author="apiman (generated)" id="1436469846462-10">
         <createTable tableName="permissions">
             <column name="role_id" type="VARCHAR(255)">
                 <constraints nullable="false"/>
@@ -189,7 +184,7 @@
             <column name="permissions" type="INT"/>
         </createTable>
     </changeSet>
-    <changeSet author="apiman (generated)" id="1434728211665-11">
+    <changeSet author="apiman (generated)" id="1436469846462-11">
         <createTable tableName="plan_versions">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -217,7 +212,7 @@
             <column name="plan_org_id" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
-    <changeSet author="apiman (generated)" id="1434728211665-12">
+    <changeSet author="apiman (generated)" id="1436469846462-12">
         <createTable tableName="plans">
             <column name="id" type="VARCHAR(255)">
                 <constraints nullable="false"/>
@@ -237,7 +232,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="apiman (generated)" id="1434728211665-13">
+    <changeSet author="apiman (generated)" id="1436469846462-13">
         <createTable tableName="plugins">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -265,7 +260,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="apiman (generated)" id="1434728211665-14">
+    <changeSet author="apiman (generated)" id="1436469846462-14">
         <createTable tableName="policies">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -306,7 +301,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="apiman (generated)" id="1434728211665-15">
+    <changeSet author="apiman (generated)" id="1436469846462-15">
         <createTable tableName="policydefs">
             <column name="id" type="VARCHAR(255)">
                 <constraints nullable="false"/>
@@ -328,7 +323,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="apiman (generated)" id="1434728211665-16">
+    <changeSet author="apiman (generated)" id="1436469846462-16">
         <createTable tableName="roles">
             <column name="id" type="VARCHAR(255)">
                 <constraints nullable="false"/>
@@ -344,7 +339,7 @@
             <column name="name" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
-    <changeSet author="apiman (generated)" id="1434728211665-17">
+    <changeSet author="apiman (generated)" id="1436469846462-17">
         <createTable tableName="service_defs">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -353,7 +348,7 @@
             <column name="service_version_id" type="BIGINT"/>
         </createTable>
     </changeSet>
-    <changeSet author="apiman (generated)" id="1434728211665-18">
+    <changeSet author="apiman (generated)" id="1436469846462-18">
         <createTable tableName="service_versions">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -386,7 +381,7 @@
             <column name="service_org_id" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
-    <changeSet author="apiman (generated)" id="1434728211665-19">
+    <changeSet author="apiman (generated)" id="1436469846462-19">
         <createTable tableName="services">
             <column name="id" type="VARCHAR(255)">
                 <constraints nullable="false"/>
@@ -406,22 +401,22 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="apiman (generated)" id="1434728211665-20">
+    <changeSet author="apiman (generated)" id="1436469846462-20">
         <createTable tableName="svc_gateways">
             <column name="service_version_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
-            <column name="gatewayId" type="VARCHAR(255)">
+            <column name="gateway_id" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="apiman (generated)" id="1434728211665-21">
+    <changeSet author="apiman (generated)" id="1436469846462-21">
         <createTable tableName="svc_plans">
             <column name="service_version_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
-            <column name="planId" type="VARCHAR(255)">
+            <column name="plan_id" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
             <column name="version" type="VARCHAR(255)">
@@ -429,7 +424,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="apiman (generated)" id="1434728211665-22">
+    <changeSet author="apiman (generated)" id="1436469846462-22">
         <createTable tableName="users">
             <column name="username" type="VARCHAR(255)">
                 <constraints nullable="false"/>
