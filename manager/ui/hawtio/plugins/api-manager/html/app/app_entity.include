@@ -44,13 +44,13 @@
               <span apiman-entity-status />
             </div>
           </div>
-          <div class="col-md-5" apiman-permission="appEdit">
+          <div class="col-md-5" apiman-permission="appAdmin">
             <div>
               <div apiman-status="Created,Ready"><a apiman-i18n-key="ttdo-consume-services" data-field="ttd_toConsumeServices" href="{{ pluginName }}/browse/services">Search for Services to consume</a></div>
               <div apiman-status="Created,Ready"><a apiman-i18n-key="ttdo-new-contract" data-field="ttd_toNewContract" href="{{ pluginName }}/new-contract">Create a new Service Contract for this Application</a></div>
               <div><a apiman-i18n-key="ttdo-new-version" data-field="ttd_toNewVersion" href="{{ pluginName }}/orgs/{{ org.id }}/apps/{{ app.id}}/{{ version.version }}/new-version">Create a new version of this Application (New Version)</a></div>
             </div>
-            <!-- The Publish Action -->
+            <!-- The Register Action -->
             <div class="apiman-divider-40"></div>
             <div class="">
               <button ng-disabled="getEntityStatus() == 'Created'" apiman-action-btn="" apiman-status="Created,Ready" class="btn btn-primary" data-field="registerButton" apiman-i18n-key="register" placeholder="Registering..." data-icon="fa-cog" ng-click="registerApp()">Register</button>

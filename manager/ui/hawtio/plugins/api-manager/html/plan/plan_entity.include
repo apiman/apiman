@@ -44,11 +44,11 @@
               <span apiman-entity-status="" />
             </div>
           </div>
-          <div class="col-md-5" apiman-permission="planEdit">
+          <div class="col-md-5" apiman-permission="planAdmin">
             <div>
               <div><a apiman-i18n-key="ttdo-new-plan-version" data-field="ttd_toNewVersion" href="{{ pluginName }}/orgs/{{ org.id }}/plans/{{ plan.id }}/{{version.version}}/new-version">Create a new version of this Plan (New Version)</a></div>
             </div>
-            <!-- The Publish Action -->
+            <!-- The Lock Action -->
             <div class="apiman-divider-40"></div>
             <div class="">
               <button apiman-status="Created,Ready" apiman-action-btn="" class="btn btn-primary" data-field="lockButton" apiman-i18n-key="lock" placeholder="Locking..." data-icon="fa-cog"  ng-click="lockPlan()">Lock Plan</button>

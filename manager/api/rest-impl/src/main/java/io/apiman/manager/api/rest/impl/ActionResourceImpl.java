@@ -124,7 +124,7 @@ public class ActionResourceImpl implements IActionResource {
      * @param action
      */
     private void publishService(ActionBean action) throws ActionException {
-        if (!securityContext.hasPermission(PermissionType.svcEdit, action.getOrganizationId()))
+        if (!securityContext.hasPermission(PermissionType.svcAdmin, action.getOrganizationId()))
             throw ExceptionFactory.notAuthorizedException();
 
         ServiceVersionBean versionBean = null;
@@ -230,7 +230,7 @@ public class ActionResourceImpl implements IActionResource {
      * @param action
      */
     private void retireService(ActionBean action) throws ActionException {
-        if (!securityContext.hasPermission(PermissionType.svcEdit, action.getOrganizationId()))
+        if (!securityContext.hasPermission(PermissionType.svcAdmin, action.getOrganizationId()))
             throw ExceptionFactory.notAuthorizedException();
 
         ServiceVersionBean versionBean = null;
@@ -286,7 +286,7 @@ public class ActionResourceImpl implements IActionResource {
      * @param action
      */
     private void registerApplication(ActionBean action) throws ActionException {
-        if (!securityContext.hasPermission(PermissionType.appEdit, action.getOrganizationId()))
+        if (!securityContext.hasPermission(PermissionType.appAdmin, action.getOrganizationId()))
             throw ExceptionFactory.notAuthorizedException();
 
         ApplicationVersionBean versionBean = null;
@@ -435,7 +435,7 @@ public class ActionResourceImpl implements IActionResource {
      * @param action
      */
     private void unregisterApplication(ActionBean action) throws ActionException {
-        if (!securityContext.hasPermission(PermissionType.appEdit, action.getOrganizationId()))
+        if (!securityContext.hasPermission(PermissionType.appAdmin, action.getOrganizationId()))
             throw ExceptionFactory.notAuthorizedException();
 
         ApplicationVersionBean versionBean = null;
@@ -513,7 +513,7 @@ public class ActionResourceImpl implements IActionResource {
      * @param action
      */
     private void lockPlan(ActionBean action) throws ActionException {
-        if (!securityContext.hasPermission(PermissionType.planEdit, action.getOrganizationId()))
+        if (!securityContext.hasPermission(PermissionType.planAdmin, action.getOrganizationId()))
             throw ExceptionFactory.notAuthorizedException();
 
         PlanVersionBean versionBean = null;

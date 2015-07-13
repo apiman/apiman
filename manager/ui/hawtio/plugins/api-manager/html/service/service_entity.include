@@ -44,7 +44,7 @@
               <span apiman-entity-status />
             </div>
           </div>
-          <div class="col-md-5" apiman-permission="svcEdit">
+          <div class="col-md-5" apiman-permission="svcAdmin">
             <div>
               <div apiman-status="Published">
                 <a apiman-i18n-key="ttdo-new-svc-contract" data-field="ttd_toNewContract" href="{{ pluginName }}/new-contract?svc={{ params.service }}&amp;svcorg={{ params.org }}&amp;svcv={{ params.version }}">Link my Application to this Service (New Contract)</a>
