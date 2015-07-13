@@ -38,7 +38,7 @@ The project can be built and deployed on a variety of runtime platforms, but if 
 action as quickly as possible try this:
 
     $ mvn clean install -Pinstall-all-wildfly8
-    $ cd tools/server-all/target/wildfly-8.1.0.Final/
+    $ cd tools/server-all/target/wildfly-8.2.0.Final/
     $ ./bin/standalone.sh
 
 The above maven command will do the following:
