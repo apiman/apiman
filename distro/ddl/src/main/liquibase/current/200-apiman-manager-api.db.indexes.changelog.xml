@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+    <changeSet author="apiman" id="createIndex-1">
+        <createIndex indexName="IDX_auditlog_1"
+                     tableName="auditlog">
+            <column name="who"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="apiman" id="createIndex-2">
+        <createIndex indexName="IDX_auditlog_2"
+                     tableName="auditlog">
+            <column name="organization_id"/>
+            <column name="entity_id"/>
+            <column name="entity_version"/>
+            <column name="entity_type"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="apiman" id="createIndex-3">
+        <createIndex indexName="IDX_FK_pd_templates_1"
+                     tableName="pd_templates">
+            <column name="policydef_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="apiman" id="createIndex-4">
+        <createIndex indexName="IDX_users_1"
+                     tableName="users">
+            <column name="username"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="apiman" id="createIndex-5">
+        <createIndex indexName="IDX_users_2"
+                     tableName="users">
+            <column name="full_name"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="apiman" id="createIndex-6">
+        <createIndex indexName="IDX_FK_permissions_1"
+                     tableName="permissions">
+            <column name="role_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="apiman" id="createIndex-7">
+        <createIndex indexName="IDX_memberships_1"
+                     tableName="memberships">
+            <column name="user_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="apiman" id="createIndex-8">
+        <createIndex indexName="IDX_organizations_1"
+                     tableName="organizations">
+            <column name="name"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="apiman" id="createIndex-9">
+        <createIndex indexName="IDX_FK_plans_1"
+                     tableName="plans">
+            <column name="organization_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="apiman" id="createIndex-10">
+        <createIndex indexName="IDX_FK_applications_1"
+                     tableName="applications">
+            <column name="organization_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="apiman" id="createIndex-11">
+        <createIndex indexName="IDX_services_1"
+                     tableName="services">
+            <column name="name"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="apiman" id="createIndex-12">
+        <createIndex indexName="IDX_FK_services_1"
+                     tableName="services">
+            <column name="organization_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="apiman" id="createIndex-13">
+        <createIndex indexName="IDX_policies_1"
+                     tableName="policies">
+            <column name="organization_id"/>
+            <column name="entity_id"/>
+            <column name="entity_version"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="apiman" id="createIndex-14">
+        <createIndex indexName="IDX_policies_2"
+                     tableName="policies">
+            <column name="order_index"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="apiman" id="createIndex-15">
+        <createIndex indexName="IDX_FK_policies_1"
+                     tableName="policies">
+            <column name="definition_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="apiman" id="createIndex-16">
+        <createIndex indexName="IDX_FK_contracts_p"
+                     tableName="contracts">
+            <column name="planv_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="apiman" id="createIndex-17">
+        <createIndex indexName="IDX_FK_contracts_s"
+                     tableName="contracts">
+            <column name="svcv_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="apiman" id="createIndex-18">
+        <createIndex indexName="IDX_FK_contracts_a"
+                     tableName="contracts">
+            <column name="appv_id"/>
+        </createIndex>
+    </changeSet>
+    <!--<changeSet author="apiman" id="createIndex-19">-->
+        <!--<createIndex indexName="IDX_FK_policydefs_1"-->
+                     <!--tableName="policydefs">-->
+            <!--<column name="plugin_id"/>-->
+        <!--</createIndex>-->
+    <!--</changeSet>-->
+</databaseChangeLog>
