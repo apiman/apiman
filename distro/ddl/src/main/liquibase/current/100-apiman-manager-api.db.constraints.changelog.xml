@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+    <changeSet author="apiman (generated)" id="1436469846462-23">
+        <addPrimaryKey columnNames="service_version_id, name" tableName="endpoint_properties"/>
+    </changeSet>
+    <changeSet author="apiman (generated)" id="1436469846462-24">
+        <addPrimaryKey columnNames="service_version_id, gateway_id" tableName="svc_gateways"/>
+    </changeSet>
+    <changeSet author="apiman (generated)" id="1436469846462-25">
+        <addPrimaryKey columnNames="service_version_id, plan_id, version" tableName="svc_plans"/>
+    </changeSet>
+    <changeSet author="apiman (generated)" id="1436469846462-26">
+        <addPrimaryKey columnNames="id" constraintName="application_versionsPK" tableName="application_versions"/>
+    </changeSet>
+    <changeSet author="apiman (generated)" id="1436469846462-27">
+        <addPrimaryKey columnNames="id, organization_id" constraintName="applicationsPK" tableName="applications"/>
+    </changeSet>
+    <changeSet author="apiman (generated)" id="1436469846462-28">
+        <addPrimaryKey columnNames="id" constraintName="auditlogPK" tableName="auditlog"/>
+    </changeSet>
+    <changeSet author="apiman (generated)" id="1436469846462-29">
+        <addPrimaryKey columnNames="id" constraintName="contractsPK" tableName="contracts"/>
+    </changeSet>
+    <changeSet author="apiman (generated)" id="1436469846462-30">
+        <addPrimaryKey columnNames="id" constraintName="gatewaysPK" tableName="gateways"/>
+    </changeSet>
+    <changeSet author="apiman (generated)" id="1436469846462-31">
+        <addPrimaryKey columnNames="id" constraintName="membershipsPK" tableName="memberships"/>
+    </changeSet>
+    <changeSet author="apiman (generated)" id="1436469846462-32">
+        <addPrimaryKey columnNames="id" constraintName="organizationsPK" tableName="organizations"/>
+    </changeSet>
+    <changeSet author="apiman (generated)" id="1436469846462-33">
+        <addPrimaryKey columnNames="id" constraintName="plan_versionsPK" tableName="plan_versions"/>
+    </changeSet>
+    <changeSet author="apiman (generated)" id="1436469846462-34">
+        <addPrimaryKey columnNames="id, organization_id" constraintName="plansPK" tableName="plans"/>
+    </changeSet>
+    <changeSet author="apiman (generated)" id="1436469846462-35">
+        <addPrimaryKey columnNames="id" constraintName="pluginsPK" tableName="plugins"/>
+    </changeSet>
+    <changeSet author="apiman (generated)" id="1436469846462-36">
+        <addPrimaryKey columnNames="id" constraintName="policiesPK" tableName="policies"/>
+    </changeSet>
+    <changeSet author="apiman (generated)" id="1436469846462-37">
+        <addPrimaryKey columnNames="id" constraintName="policydefsPK" tableName="policydefs"/>
+    </changeSet>
+    <changeSet author="apiman (generated)" id="1436469846462-38">
+        <addPrimaryKey columnNames="id" constraintName="rolesPK" tableName="roles"/>
+    </changeSet>
+    <changeSet author="apiman (generated)" id="1436469846462-39">
+        <addPrimaryKey columnNames="id" constraintName="service_defsPK" tableName="service_defs"/>
+    </changeSet>
+    <changeSet author="apiman (generated)" id="1436469846462-40">
+        <addPrimaryKey columnNames="id" constraintName="service_versionsPK" tableName="service_versions"/>
+    </changeSet>
+    <changeSet author="apiman (generated)" id="1436469846462-41">
+        <addPrimaryKey columnNames="id, organization_id" constraintName="servicesPK" tableName="services"/>
+    </changeSet>
+    <changeSet author="apiman (generated)" id="1436469846462-42">
+        <addPrimaryKey columnNames="username" constraintName="usersPK" tableName="users"/>
+    </changeSet>
+    <changeSet author="apiman (generated)" id="1436469846462-43">
+        <addForeignKeyConstraint baseColumnNames="organization_id" baseTableName="services" constraintName="FK_31hj3xmhp1wedxjh5bklnlg15" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="organizations"/>
+    </changeSet>
+    <changeSet author="apiman (generated)" id="1436469846462-44">
+        <addForeignKeyConstraint baseColumnNames="appv_id" baseTableName="contracts" constraintName="FK_6h06sgs4dudh1wehmk0us973g" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="application_versions"/>
+    </changeSet>
+    <changeSet author="apiman (generated)" id="1436469846462-45">
+        <addForeignKeyConstraint baseColumnNames="service_version_id" baseTableName="service_defs" constraintName="FK_81fuw1n8afmvpw4buk7l4tyxk" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="service_versions"/>
+    </changeSet>
+    <changeSet author="apiman (generated)" id="1436469846462-46">
+        <addForeignKeyConstraint baseColumnNames="app_id,app_org_id" baseTableName="application_versions" constraintName="FK_8epnoby31bt7xakegakigpikp" deferrable="false" initiallyDeferred="false" referencedColumnNames="id,organization_id" referencedTableName="applications"/>
+    </changeSet>
+    <changeSet author="apiman (generated)" id="1436469846462-47">
+        <addForeignKeyConstraint baseColumnNames="svcv_id" baseTableName="contracts" constraintName="FK_8o6t1f3kg96rxy5uv51f6k9fy" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="service_versions"/>
+    </changeSet>
+    <changeSet author="apiman (generated)" id="1436469846462-48">
+        <addForeignKeyConstraint baseColumnNames="service_id,service_org_id" baseTableName="service_versions" constraintName="FK_92erjg9k1lni97gd87nt6tq37" deferrable="false" initiallyDeferred="false" referencedColumnNames="id,organization_id" referencedTableName="services"/>
+    </changeSet>
+    <changeSet author="apiman (generated)" id="1436469846462-49">
+        <addForeignKeyConstraint baseColumnNames="service_version_id" baseTableName="endpoint_properties" constraintName="FK_gn0ydqur10sxuvpyw2jvv4xxb" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="service_versions"/>
+    </changeSet>
+    <changeSet author="apiman (generated)" id="1436469846462-50">
+        <addForeignKeyConstraint baseColumnNames="organization_id" baseTableName="applications" constraintName="FK_jenpu34rtuncsgvtw0sfo8qq9" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="organizations"/>
+    </changeSet>
+    <changeSet author="apiman (generated)" id="1436469846462-51">
+        <addForeignKeyConstraint baseColumnNames="definition_id" baseTableName="policies" constraintName="FK_l4q6we1bos1yl9unmogei6aja" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="policydefs"/>
+    </changeSet>
+    <changeSet author="apiman (generated)" id="1436469846462-52">
+        <addForeignKeyConstraint baseColumnNames="organization_id" baseTableName="plans" constraintName="FK_lwhc7xrdbsun1ak2uvfu0prj8" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="organizations"/>
+    </changeSet>
+    <changeSet author="apiman (generated)" id="1436469846462-53">
+        <addForeignKeyConstraint baseColumnNames="planv_id" baseTableName="contracts" constraintName="FK_nyw8xu6m8cx4rwwbtrxbjneui" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="plan_versions"/>
+    </changeSet>
+    <changeSet author="apiman (generated)" id="1436469846462-54">
+        <addForeignKeyConstraint baseColumnNames="service_version_id" baseTableName="svc_gateways" constraintName="FK_p5dm3cngljt6yrsnvc7uc6a75" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="service_versions"/>
+    </changeSet>
+    <changeSet author="apiman (generated)" id="1436469846462-55">
+        <addForeignKeyConstraint baseColumnNames="policydef_id" baseTableName="pd_templates" constraintName="FK_prbnn7j7m6m3pxt2dsn9gwlw8" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="policydefs"/>
+    </changeSet>
+    <changeSet author="apiman (generated)" id="1436469846462-56">
+        <addForeignKeyConstraint baseColumnNames="role_id" baseTableName="permissions" constraintName="FK_sq51ihfrapwdr98uufenhcocg" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="roles"/>
+    </changeSet>
+    <changeSet author="apiman (generated)" id="1436469846462-57">
+        <addForeignKeyConstraint baseColumnNames="service_version_id" baseTableName="svc_plans" constraintName="FK_t7uvfcsswopb9kh8wpa86blqr" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="service_versions"/>
+    </changeSet>
+    <changeSet author="apiman (generated)" id="1436469846462-58">
+        <addForeignKeyConstraint baseColumnNames="plan_id,plan_org_id" baseTableName="plan_versions" constraintName="FK_tonylvm2ypnq3efxqr1g0m9fs" deferrable="false" initiallyDeferred="false" referencedColumnNames="id,organization_id" referencedTableName="plans"/>
+    </changeSet>
+</databaseChangeLog>
