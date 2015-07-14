@@ -16,7 +16,6 @@
     <class>io.apiman.manager.api.beans.apps.ApplicationVersionBean</class>
     <class>io.apiman.manager.api.beans.services.ServiceBean</class>
     <class>io.apiman.manager.api.beans.services.ServiceVersionBean</class>
-    <class>io.apiman.manager.api.beans.services.EndpointPropertyValueBean</class>
     <class>io.apiman.manager.api.beans.services.ServiceDefinitionBean</class>
     <class>io.apiman.manager.api.beans.services.ServicePlanBean</class>
     <class>io.apiman.manager.api.beans.plans.PlanBean</class>
