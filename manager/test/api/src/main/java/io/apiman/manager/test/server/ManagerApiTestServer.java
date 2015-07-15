@@ -19,6 +19,7 @@ import io.apiman.common.servlet.ApimanCorsFilter;
 import io.apiman.common.servlet.AuthenticationFilter;
 import io.apiman.common.servlet.DisableCachingFilter;
 import io.apiman.manager.api.security.impl.DefaultSecurityContextFilter;
+import io.apiman.manager.api.war.RootResourceFilter;
 import io.apiman.manager.api.war.TransactionWatchdogFilter;
 import io.apiman.manager.test.util.ManagerTestUtils;
 import io.apiman.manager.test.util.ManagerTestUtils.TestType;
@@ -272,6 +273,7 @@ public class ManagerApiTestServer {
         apiManServer.addFilter(AuthenticationFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
         apiManServer.addFilter(DefaultSecurityContextFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
         apiManServer.addFilter(TransactionWatchdogFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
+        apiManServer.addFilter(RootResourceFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
         ServletHolder resteasyServlet = new ServletHolder(new HttpServletDispatcher());
         resteasyServlet.setInitParameter("javax.ws.rs.Application", TestManagerApiApplication.class.getName());
         apiManServer.addServlet(resteasyServlet, "/*");
