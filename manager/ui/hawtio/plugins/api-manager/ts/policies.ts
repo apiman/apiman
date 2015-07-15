@@ -53,27 +53,43 @@ module Apiman {
                 $scope.editor = editor;
             };
             var destroyEditor = function() {
-                $scope.editor.destroy();
+                if ($scope.editor) {
+                    $scope.editor.destroy();
+                }
             };
             
+            var loadSchema = function() {
+                $scope.schemaState = 'loading';
+                var pluginId = $scope.selectedDef.pluginId;
+                var policyDefId = $scope.selectedDef.id;
+                PluginSvcs.getPolicyForm(pluginId, policyDefId, function(schema) {
+                    initEditor(schema);
+                    $scope.editor.setValue($scope.config);
+                    $scope.schemaState = 'loaded';
+                }, function (error) {
+                    // TODO handle the error better here!
+                    Logger.error(error);
+                    $scope.schemaState = 'loaded';
+                });
+            };
+
+            // Watch for changes to selectedDef - if the user changes from one schema-based policy
+            // to another schema-based policy, then the controller won't change.  The result is that
+            // we need to refresh the schema when the selectedDef changes.
+            $scope.$watch('selectedDef', function(newValue) {
+                if (newValue && newValue.formType == 'JsonSchema') {
+                    destroyEditor();
+                    loadSchema();
+                }
+            });
+
             $scope.$on('$destroy', function() {
                 Logger.debug('Destroying the json-editor!');
                 destroyEditor();
             });
             
-            $scope.schemaState = 'loading';
-            var pluginId = $scope.selectedDef.pluginId;
-            var policyDefId = $scope.selectedDef.id;
-            PluginSvcs.getPolicyForm(pluginId, policyDefId, function(schema) {
-                Logger.debug("Schema: {0}", schema);
-                initEditor(schema);
-                $scope.editor.setValue($scope.config);
-                $scope.schemaState = 'loaded';
-            }, function (error) {
-                // TODO handle the error better here!
-                Logger.error(error);
-                $scope.schemaState = 'loaded';
-            });
+            // On first load of this controller, load the schema.
+            loadSchema();
         }]);
 
     _module.controller("Apiman.RateLimitingFormController",
