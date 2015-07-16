@@ -53,8 +53,8 @@ familiar with docker if you're going that route, but here is an example of how t
 the apiman docker image:
 
 ....
-docker pull apiman/on-wildfly8
-docker run -it -p 8080:8080 apiman/on-wildfly8
+docker pull jboss/apiman-wildfly
+docker run -it -p 8080:8080 jboss/apiman-wildfly
 ....
 
 [NOTE]
@@ -90,67 +90,8 @@ All of the apiman WARs share a common configuration file called *apiman.properti
 be found in *standalone/configuration*.  This file therefore contains configuration settings
 for all three applications (API Manager, API Manager UI, API Gateway).
 
-Here is a breakdown of the properties found in this configuration file:
-
-* *apiman.plugins.repositories*
-+
-Typical Value:: http://repository.jboss.org/nexus/content/groups/public/
-+
-Description:: A comma separated list of maven repositories from which to (try to) download apiman plugins.
-
-* *apiman-manager-ui.api.endpoint*
-+
-Typical Value:: <empty>
-+
-Description:: The public endpoint of the API Manager's REST API.  This is used by the API Manager UI to communicate with the back end.  If ommitted, the UI will assume the back-end is located on the same server as the UI.
-
-* *apiman-manager-ui.api.authentication.type*
-+
-Typical Value:: bearerToken
-+
-Description:: The type of authentication used by the API Manager UI when communicating with the API Manager.
-
-* *apiman-manager-ui.api.authentication.token.generator*
-+
-Typical Value:: io.apiman.manager.ui.server.wildfly8.KeyCloakBearerTokenGenerator
-+
-Description:: The class used by the UI to generate authentication tokens (only used for certain types of authentication).
-
-* *apiman-gateway.registry*
-+
-Typical Value:: io.apiman.gateway.engine.ispn.InfinispanRegistry
-+
-Description:: The implementation of the service/application registry used by the API Gateway.  By default a persistent Infinispan cache is used.
-
-* *apiman-gateway.connector-factory*
-+
-Typical Value:: io.apiman.gateway.platforms.servlet.connectors.HttpConnectorFactory
-+
-Description:: The implementation of a connector factory for API endpoints of type "http".  This factory is used by the Gateway when proxying a request to a back-end endpoint.
-
-* *apiman-gateway.policy-factory*
-+
-Typical Value:: io.apiman.gateway.engine.policy.PolicyFactoryImpl
-+
-Description:: The class that the API Gateway will use creating policies.
-
-* *apiman-gateway.components.ISharedStateComponent*
-+
-Typical Value:: io.apiman.gateway.engine.ispn.InfinispanSharedStateComponent
-+
-Description:: The implementation of the shared-state component - a component that can store arbitrary state across request invocations.
-
-* *apiman-gateway.components.IRateLimiterComponent*
-+
-Typical Value:: io.apiman.gateway.engine.ispn.InfinispanRateLimiterComponent
-+
-Description:: The implementation of the rate limiter component, which is used by the rate limiting policy.
-
-* *apiman-gateway.components.IPolicyFailureFactoryComponent*
-+
-Typical Value:: io.apiman.gateway.platforms.servlet.PolicyFailureFactoryComponent
-+
-Description:: The implementation class to use for the factory that creates policy failures.
+Please refer to the apiman.properties file itself, as well as this document, for more information
+on each property's purpose and possible values.
 
 
 === API Manager Database
@@ -280,6 +221,10 @@ resource for this can be found here:
 
 http://www.elastic.co/guide/en/elasticsearch/guide/master/getting-started.html
 
+TIP: As of apiman 1.1.4.Final, an instance of Elasticsearch is included in the default
+apiman distribution.  You may use it as your API Manager persistence store.  It is running
+on port 19200.
+
 ==== Make changes to "apiman.properties"
 Once Elasticsearch is running smoothly, you must make some changes to the *apiman.properties*
 file in order to tell apiman to use ES instead of a database.  You should modify the
@@ -342,6 +287,10 @@ This part is pretty easy - download the Elasticsearch software and get it runnin
 resource for this can be found here:
 
 http://www.elastic.co/guide/en/elasticsearch/guide/master/getting-started.html
+
+TIP: As of apiman 1.1.4.Final, an instance of Elasticsearch is included in the default
+apiman distribution.  You may use it as your API Manager persistence store.  It is running
+on port 19200.
 
 ==== Make changes to "apiman.properties"
 Once Elasticsearch is running smoothly, you must make some changes to the *apiman.properties*
