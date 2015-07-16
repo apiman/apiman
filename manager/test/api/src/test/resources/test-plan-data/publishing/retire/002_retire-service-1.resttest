@@ -1,4 +1,4 @@
-POST /actions admin/admin
+POST /actions user1/user1
 Content-Type: application/json
 
 {

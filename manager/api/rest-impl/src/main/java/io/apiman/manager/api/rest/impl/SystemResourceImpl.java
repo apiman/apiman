@@ -26,17 +26,17 @@ import javax.inject.Inject;
 
 /**
  * Implementation of the System API.
- * 
+ *
  * @author eric.wittmann@redhat.com
  */
 @ApplicationScoped
 public class SystemResourceImpl implements ISystemResource {
-    
+
     @Inject
     private IStorage storage;
     @Inject
     private Version version;
-    
+
     /**
      * Constructor.
      */
@@ -49,9 +49,14 @@ public class SystemResourceImpl implements ISystemResource {
     @Override
     public SystemStatusBean getStatus() {
         SystemStatusBean rval = new SystemStatusBean();
+        rval.setId("apiman-manager-api"); //$NON-NLS-1$
+        rval.setName("API Manager REST API"); //$NON-NLS-1$
+        rval.setDescription("The API Manager REST API is used by the API Manager UI to get stuff done.  You can use it to automate any apiman task you wish.  For example, create new Organizations, Plans, Applications, and Services."); //$NON-NLS-1$
+        rval.setMoreInfo("http://www.apiman.io/latest/api-manager-restdocs.html"); //$NON-NLS-1$
         rval.setUp(getStorage() != null);
         if (getVersion() != null) {
             rval.setVersion(getVersion().getVersionString());
+            rval.setBuiltOn(getVersion().getVersionDate());
         }
         return rval;
     }

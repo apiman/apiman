@@ -32,10 +32,10 @@ import javax.inject.Inject;
  * @author eric.wittmann@redhat.com
  */
 public class EntityValidator implements IServiceValidator, IApplicationValidator {
-    
+
     @Inject
     private IStorageQuery storageQuery;
-    
+
     /**
      * Constructor.
      */
@@ -48,16 +48,16 @@ public class EntityValidator implements IServiceValidator, IApplicationValidator
     @Override
     public boolean isReady(ApplicationVersionBean application) throws Exception {
         boolean hasContracts = true;
-        
+
         List<ContractSummaryBean> contracts = storageQuery.getApplicationContracts(application.getApplication().getOrganization().getId(), application
                 .getApplication().getId(), application.getVersion());
         if (contracts.isEmpty()) {
             hasContracts = false;
         }
-        
+
         return isReady(application, hasContracts);
     }
-    
+
     /**
      * @see io.apiman.manager.api.core.IApplicationValidator#isReady(io.apiman.manager.api.beans.apps.ApplicationVersionBean, boolean)
      */
@@ -74,6 +74,9 @@ public class EntityValidator implements IServiceValidator, IApplicationValidator
     public boolean isReady(ServiceVersionBean service) {
         boolean ready = true;
         if (service.getEndpoint() == null || service.getEndpoint().trim().length() == 0) {
+            ready = false;
+        }
+        if (service.getEndpointType() == null) {
             ready = false;
         }
         if (!service.isPublicService()) {

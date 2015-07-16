@@ -43,22 +43,16 @@ public abstract class AbstractEngineFactory implements IEngineFactory {
      */
     @Override
     public final IEngine createEngine() {
-        IRegistry registry = createRegistry();
         IPluginRegistry pluginRegistry = createPluginRegistry();
-        IComponentRegistry componentRegistry = createComponentRegistry();
-        IConnectorFactory cfactory = createConnectorFactory();
-        IPolicyFactory pfactory = createPolicyFactory();
-        IMetrics metrics = createMetrics();
+        IRegistry registry = createRegistry(pluginRegistry);
+        IComponentRegistry componentRegistry = createComponentRegistry(pluginRegistry);
+        IConnectorFactory cfactory = createConnectorFactory(pluginRegistry);
+        IPolicyFactory pfactory = createPolicyFactory(pluginRegistry);
+        IMetrics metrics = createMetrics(pluginRegistry);
 
         IEngine engine = new EngineImpl(registry, pluginRegistry, componentRegistry, cfactory, pfactory, metrics);
         return engine;
     }
-
-    /**
-     * Creates a registry.
-     * @return a new registry instance
-     */
-    protected abstract IRegistry createRegistry();
 
     /**
      * Creates a plugin registry.
@@ -67,27 +61,33 @@ public abstract class AbstractEngineFactory implements IEngineFactory {
     protected abstract IPluginRegistry createPluginRegistry();
 
     /**
+     * Creates a registry.
+     * @return a new registry instance
+     */
+    protected abstract IRegistry createRegistry(IPluginRegistry pluginRegistry);
+
+    /**
      * Creates a component registry.
      * @return a new registry instance
      */
-    protected abstract IComponentRegistry createComponentRegistry();
+    protected abstract IComponentRegistry createComponentRegistry(IPluginRegistry pluginRegistry);
 
     /**
      * Creates a connector factory.
      * @return a new connection factory
      */
-    protected abstract IConnectorFactory createConnectorFactory();
+    protected abstract IConnectorFactory createConnectorFactory(IPluginRegistry pluginRegistry);
 
     /**
      * Creates a policy factory.
      * @return a new policy factory
      */
-    protected abstract IPolicyFactory createPolicyFactory();
+    protected abstract IPolicyFactory createPolicyFactory(IPluginRegistry pluginRegistry);
 
     /**
      * Creates the metrics system.
      * @return the metrics object
      */
-    protected abstract IMetrics createMetrics();
+    protected abstract IMetrics createMetrics(IPluginRegistry pluginRegistry);
 
 }

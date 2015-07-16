@@ -67,6 +67,24 @@ module Apiman {
                 }
                 return rval;
             };
+            
+            var checkValid = function() {
+                var valid = true;
+                if (!$scope.updatedService.endpointType) {
+                    valid = false;
+                }
+                if ($scope.apiSecurity.type == 'basic' && $scope.apiSecurity.basic) {
+                    if (!$scope.apiSecurity.basic.password) {
+                        valid = false;
+                    }
+                    if ($scope.apiSecurity.basic.password != $scope.apiSecurity.basic.confirmPassword) {
+                        valid = false;
+                    }
+                } else if ($scope.apiSecurity.type == 'basic' && !$scope.apiSecurity.basic) {
+                    valid = false;
+                }
+                $scope.isValid = valid;
+            };
 
             $scope.$watch('updatedService', function(newValue) {
                 if ($scope.version) {
@@ -87,6 +105,8 @@ module Apiman {
                         }
                     }
                     
+                    checkValid();
+                    
                     $scope.isDirty = dirty;
                 }
             }, true);
@@ -94,16 +114,7 @@ module Apiman {
             $scope.$watch('apiSecurity', function(newValue) {
                 if (newValue) {
                     $scope.updatedService.endpointProperties = toEndpointProperties(newValue);
-                    var valid = true;
-                    if (newValue.type == 'basic' && newValue.basic) {
-                        if (!newValue.basic.password) {
-                            valid = false;
-                        }
-                        if (newValue.basic.password != newValue.basic.confirmPassword) {
-                            valid = false;
-                        }
-                    }
-                    $scope.isValid = valid;
+                    checkValid();
                 }
             }, true);
 

@@ -31,7 +31,7 @@ public class ServicePlanBean implements Serializable {
 
     private static final long serialVersionUID = 7972763768594076697L;
 
-    @Column(nullable=false)
+    @Column(name = "plan_id", nullable=false)
     private String planId;
     @Column(nullable=false)
     private String version;

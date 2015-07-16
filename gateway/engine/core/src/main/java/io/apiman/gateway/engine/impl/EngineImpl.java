@@ -15,9 +15,6 @@
  */
 package io.apiman.gateway.engine.impl;
 
-import java.lang.reflect.InvocationTargetException;
-
-import io.apiman.common.util.ReflectionUtils;
 import io.apiman.gateway.engine.IComponentRegistry;
 import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.IEngine;
@@ -25,6 +22,7 @@ import io.apiman.gateway.engine.IEngineResult;
 import io.apiman.gateway.engine.IMetrics;
 import io.apiman.gateway.engine.IPluginRegistry;
 import io.apiman.gateway.engine.IRegistry;
+import io.apiman.gateway.engine.IRequiresInitialization;
 import io.apiman.gateway.engine.IServiceRequestExecutor;
 import io.apiman.gateway.engine.Version;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
@@ -64,10 +62,10 @@ public class EngineImpl implements IEngine {
         setConnectorFactory(connectorFactory);
         setPolicyFactory(policyFactory);
         setMetrics(metrics);
-        
+
         policyFactory.setPluginRegistry(pluginRegistry);
         metrics.setComponentRegistry(componentRegistry);
-        
+
         initialize(registry, pluginRegistry, componentRegistry, connectorFactory, policyFactory, metrics);
     }
 
@@ -84,7 +82,7 @@ public class EngineImpl implements IEngine {
      */
     @Override
     public IServiceRequestExecutor executor(ServiceRequest request, final IAsyncResultHandler<IEngineResult> resultHandler) {
-        return new ServiceRequestExecutorImpl(request, 
+        return new ServiceRequestExecutorImpl(request,
                 resultHandler,
                 registry,
                 new PolicyContextImpl(getComponentRegistry()),
@@ -177,15 +175,12 @@ public class EngineImpl implements IEngine {
     public void setMetrics(IMetrics metrics) {
         this.metrics = metrics;
     }
-    
+
     private void initialize(Object... m) {
-        try {
-            for(Object o : m) {
-                ReflectionUtils.callIfExists(o, "initialize"); //$NON-NLS-1$
+        for (Object o : m) {
+            if (o instanceof IRequiresInitialization) {
+                ((IRequiresInitialization) o).initialize();
             }
-        } catch (SecurityException | IllegalAccessException
-                | IllegalArgumentException | InvocationTargetException e) {
-            throw new RuntimeException(e); // If anything breaks at this point, we can't fix it.
         }
     }
 }

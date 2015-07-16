@@ -39,17 +39,18 @@ public abstract class DefaultEngineFactory extends AbstractEngineFactory {
     }
 
     /**
-     * @see io.apiman.gateway.engine.impl.AbstractEngineFactory#createRegistry()
+     * @see io.apiman.gateway.engine.impl.AbstractEngineFactory#createRegistry(io.apiman.gateway.engine.IPluginRegistry)
      */
     @Override
-    protected final IRegistry createRegistry() {
-        return new SecureRegistryWrapper(createRegistryInternal());
+    protected IRegistry createRegistry(IPluginRegistry pluginRegistry) {
+        return new SecureRegistryWrapper(createRegistryInternal(pluginRegistry));
     }
 
     /**
      * Subclasses can extend this to provide a custom registry.
+     * @param pluginRegistry
      */
-    protected IRegistry createRegistryInternal() {
+    protected IRegistry createRegistryInternal(IPluginRegistry pluginRegistry) {
         return new InMemoryRegistry();
     }
 
@@ -62,26 +63,26 @@ public abstract class DefaultEngineFactory extends AbstractEngineFactory {
     }
 
     /**
-     * @see io.apiman.gateway.engine.impl.AbstractEngineFactory#createComponentRegistry()
+     * @see io.apiman.gateway.engine.impl.AbstractEngineFactory#createComponentRegistry(io.apiman.gateway.engine.IPluginRegistry)
      */
     @Override
-    protected IComponentRegistry createComponentRegistry() {
+    protected IComponentRegistry createComponentRegistry(IPluginRegistry pluginRegistry) {
         return new DefaultComponentRegistry();
     }
 
     /**
-     * @see io.apiman.gateway.engine.impl.AbstractEngineFactory#createPolicyFactory()
+     * @see io.apiman.gateway.engine.impl.AbstractEngineFactory#createPolicyFactory(io.apiman.gateway.engine.IPluginRegistry)
      */
     @Override
-    protected IPolicyFactory createPolicyFactory() {
+    protected IPolicyFactory createPolicyFactory(IPluginRegistry pluginRegistry) {
         return new PolicyFactoryImpl();
     }
 
     /**
-     * @see io.apiman.gateway.engine.impl.AbstractEngineFactory#createMetrics()
+     * @see io.apiman.gateway.engine.impl.AbstractEngineFactory#createMetrics(io.apiman.gateway.engine.IPluginRegistry)
      */
     @Override
-    protected IMetrics createMetrics() {
+    protected IMetrics createMetrics(IPluginRegistry pluginRegistry) {
         return new InMemoryMetrics();
     }
 

@@ -154,10 +154,10 @@ module Apiman {
             if (response && response.up) {
                 HawtioNav.add(tab);
             } else {
-                log.error('apiman reports that it is not running.');
+                log.debug('apiman reports that it is not running.');
             }
         }, function(error) {
-            log.error('Error getting apiman system status: ' + JSON.stringify(error));
+            log.debug('Error getting apiman system status: ' + JSON.stringify(error));
         });
         $rootScope.pluginName = Apiman.pluginName;
     }]);

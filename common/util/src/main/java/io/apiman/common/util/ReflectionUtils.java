@@ -23,7 +23,7 @@ import java.lang.reflect.Method;
  * @author Marc Savy <msavy@redhat.com>
  */
 public class ReflectionUtils {
-    
+
     /**
      * Call a method if it exists. Use very sparingly and generally prefer interfaces.
      * @param object The object
@@ -33,11 +33,33 @@ public class ReflectionUtils {
      * @throws IllegalArgumentException reflection - argument not allowed
      * @throws InvocationTargetException reflection - exception thrown by an invoked method or constructor
      */
-    public static <T> void callIfExists(T object, String methodName) throws SecurityException, IllegalAccessException, 
-    IllegalArgumentException, InvocationTargetException {
+    public static <T> void callIfExists(T object, String methodName) throws SecurityException,
+            IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         try {
             Method method = object.getClass().getMethod(methodName);
             method.invoke(object);
-        } catch(NoSuchMethodException e) {}
+        } catch (NoSuchMethodException e) {
+        }
+    }
+
+    /**
+     * Loads a class.
+     * @param classname
+     */
+    public static Class<?> loadClass(String classname) {
+        Class<?> c = null;
+
+        // First try a simple Class.forName()
+        try { c = Class.forName(classname); } catch (ClassNotFoundException e) { }
+        // Didn't work?  Try using this class's classloader.
+        if (c == null) {
+            try { c = ReflectionUtils.class.getClassLoader().loadClass(classname); } catch (ClassNotFoundException e) { }
+        }
+        // Still didn't work?  Try the thread's context classloader.
+        if (c == null) {
+            try { c = Thread.currentThread().getContextClassLoader().loadClass(classname); } catch (ClassNotFoundException e) { }
+        }
+
+        return c;
     }
 }

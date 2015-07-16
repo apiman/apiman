@@ -44,17 +44,6 @@ public class ConfigDrivenEngineFactory extends AbstractEngineFactory {
     }
 
     /**
-     * @see io.apiman.gateway.engine.impl.AbstractEngineFactory#createRegistry()
-     */
-    @Override
-    protected IRegistry createRegistry() {
-        Class<? extends IRegistry> c = engineConfig.getRegistryClass();
-        Map<String, String> config = engineConfig.getRegistryConfig();
-        IRegistry registry = create(c, config);
-        return new SecureRegistryWrapper(registry);
-    }
-
-    /**
      * @see io.apiman.gateway.engine.impl.AbstractEngineFactory#createPluginRegistry()
      */
     @Override
@@ -65,39 +54,50 @@ public class ConfigDrivenEngineFactory extends AbstractEngineFactory {
     }
 
     /**
-     * @see io.apiman.gateway.engine.impl.AbstractEngineFactory#createComponentRegistry()
+     * @see io.apiman.gateway.engine.impl.AbstractEngineFactory#createRegistry(io.apiman.gateway.engine.IPluginRegistry)
      */
     @Override
-    protected IComponentRegistry createComponentRegistry() {
-        return new ConfigDrivenComponentRegistry(engineConfig);
+    protected IRegistry createRegistry(IPluginRegistry pluginRegistry) {
+        Class<? extends IRegistry> c = engineConfig.getRegistryClass(pluginRegistry);
+        Map<String, String> config = engineConfig.getRegistryConfig();
+        IRegistry registry = create(c, config);
+        return new SecureRegistryWrapper(registry);
     }
 
     /**
-     * @see io.apiman.gateway.engine.impl.AbstractEngineFactory#createConnectorFactory()
+     * @see io.apiman.gateway.engine.impl.AbstractEngineFactory#createComponentRegistry(io.apiman.gateway.engine.IPluginRegistry)
      */
     @Override
-    protected IConnectorFactory createConnectorFactory() {
-        Class<? extends IConnectorFactory> c = engineConfig.getConnectorFactoryClass();
+    protected IComponentRegistry createComponentRegistry(IPluginRegistry pluginRegistry) {
+        return new ConfigDrivenComponentRegistry(engineConfig, pluginRegistry);
+    }
+
+    /**
+     * @see io.apiman.gateway.engine.impl.AbstractEngineFactory#createConnectorFactory(io.apiman.gateway.engine.IPluginRegistry)
+     */
+    @Override
+    protected IConnectorFactory createConnectorFactory(IPluginRegistry pluginRegistry) {
+        Class<? extends IConnectorFactory> c = engineConfig.getConnectorFactoryClass(pluginRegistry);
         Map<String, String> config = engineConfig.getConnectorFactoryConfig();
         return create(c, config);
     }
 
     /**
-     * @see io.apiman.gateway.engine.impl.AbstractEngineFactory#createPolicyFactory()
+     * @see io.apiman.gateway.engine.impl.AbstractEngineFactory#createPolicyFactory(io.apiman.gateway.engine.IPluginRegistry)
      */
     @Override
-    protected IPolicyFactory createPolicyFactory() {
-        Class<? extends IPolicyFactory> c = engineConfig.getPolicyFactoryClass();
+    protected IPolicyFactory createPolicyFactory(IPluginRegistry pluginRegistry) {
+        Class<? extends IPolicyFactory> c = engineConfig.getPolicyFactoryClass(pluginRegistry);
         Map<String, String> config = engineConfig.getPolicyFactoryConfig();
         return create(c, config);
     }
 
     /**
-     * @see io.apiman.gateway.engine.impl.AbstractEngineFactory#createMetrics()
+     * @see io.apiman.gateway.engine.impl.AbstractEngineFactory#createMetrics(io.apiman.gateway.engine.IPluginRegistry)
      */
     @Override
-    protected IMetrics createMetrics() {
-        Class<? extends IMetrics> c = engineConfig.getMetricsClass();
+    protected IMetrics createMetrics(IPluginRegistry pluginRegistry) {
+        Class<? extends IMetrics> c = engineConfig.getMetricsClass(pluginRegistry);
         Map<String, String> config = engineConfig.getMetricsConfig();
         return create(c, config);
     }

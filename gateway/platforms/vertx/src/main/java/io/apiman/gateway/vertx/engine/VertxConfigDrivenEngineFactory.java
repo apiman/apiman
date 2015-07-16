@@ -15,20 +15,21 @@
  */
 package io.apiman.gateway.vertx.engine;
 
-import org.vertx.java.core.Vertx;
-import org.vertx.java.platform.Container;
-
 import io.apiman.gateway.engine.IComponentRegistry;
 import io.apiman.gateway.engine.IConnectorFactory;
+import io.apiman.gateway.engine.IPluginRegistry;
 import io.apiman.gateway.engine.impl.ConfigDrivenEngineFactory;
 import io.apiman.gateway.vertx.config.VertxEngineConfig;
 import io.apiman.gateway.vertx.connector.ConnectorFactory;
 
+import org.vertx.java.core.Vertx;
+import org.vertx.java.platform.Container;
+
 /**
  * A configuration driven engine specifically for Vert.x
- * 
+ *
  * @see ConfigDrivenEngineFactory
- * 
+ *
  * @author Marc Savy <msavy@redhat.com>
  */
 public class VertxConfigDrivenEngineFactory extends ConfigDrivenEngineFactory {
@@ -43,15 +44,21 @@ public class VertxConfigDrivenEngineFactory extends ConfigDrivenEngineFactory {
         this.container = container;
         this.vxConfig = config;
     }
-    
+
+    /**
+     * @see io.apiman.gateway.engine.impl.ConfigDrivenEngineFactory#createConnectorFactory(io.apiman.gateway.engine.IPluginRegistry)
+     */
     @Override
-    protected IConnectorFactory createConnectorFactory() {
+    protected IConnectorFactory createConnectorFactory(IPluginRegistry pluginRegistry) {
         return new ConnectorFactory(vertx, container);
     }
-    
+
+    /**
+     * @see io.apiman.gateway.engine.impl.ConfigDrivenEngineFactory#createComponentRegistry(io.apiman.gateway.engine.IPluginRegistry)
+     */
     @Override
-    protected IComponentRegistry createComponentRegistry() {
-        return new VertxConfigDrivenComponentRegistry(vertx, vxConfig);
+    protected IComponentRegistry createComponentRegistry(IPluginRegistry pluginRegistry) {
+        return new VertxConfigDrivenComponentRegistry(vertx, vxConfig, pluginRegistry);
     }
-   
+
 }

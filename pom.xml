@@ -107,7 +107,7 @@
     <version.commons-io>2.4</version.commons-io>
     <version.commons-lang>2.6</version.commons-lang>
     <version.commons-pool>1.6</version.commons-pool>
-    <version.io.apiman.quickstarts>1.1.3.Final</version.io.apiman.quickstarts>
+    <version.io.apiman.quickstarts>1.1.4.Final</version.io.apiman.quickstarts>
     <version.io.searchbox.jest>0.1.6</version.io.searchbox.jest>
     <version.io.undertow>1.0.1.Final</version.io.undertow>
     <version.javax.enterprise>1.2</version.javax.enterprise>

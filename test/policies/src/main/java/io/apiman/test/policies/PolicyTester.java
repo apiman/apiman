@@ -35,11 +35,11 @@ import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.Future;
 
-import org.junit.runner.Description;
-import org.junit.runner.notification.RunListener;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.BlockJUnit4ClassRunner;
+import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 
 /**
@@ -63,36 +63,27 @@ public class PolicyTester extends BlockJUnit4ClassRunner {
      */
     public PolicyTester(Class<?> testClass) throws InitializationError {
         super(testClass);
+        System.out.println("=== Using apiman's PolicyTester on " + testClass);
         setTesterOnTest();
+    }
+
+    /**
+     * @see org.junit.runners.BlockJUnit4ClassRunner#runChild(org.junit.runners.model.FrameworkMethod, org.junit.runner.notification.RunNotifier)
+     */
+    @Override
+    protected void runChild(FrameworkMethod method, RunNotifier notifier) {
+        publishService(method);
+        super.runChild(method, notifier);
+        retireService();
     }
 
     /**
      * @see org.junit.runners.ParentRunner#run(org.junit.runner.notification.RunNotifier)
      */
     @Override
-    public void run(RunNotifier notifier) {
+    public void run(final RunNotifier notifier) {
         // For every run, we need to set up an instance of the apiman engine.
         setEngine(createEngine());
-
-        notifier.addListener(new RunListener() {
-            @Override
-            public void testStarted(Description description) throws Exception {
-                // For each test method, we need to (potentially) deploy a service
-                try {
-                    publishService(description);
-                } catch (Throwable e) {
-                    e.printStackTrace();
-                }
-                super.testStarted(description);
-            }
-
-            @Override
-            public void testFinished(Description description) throws Exception {
-                super.testFinished(description);
-                // Now we need to retire the service we deployed.
-                retireService();
-            }
-        });
         super.run(notifier);
     }
 
@@ -113,68 +104,74 @@ public class PolicyTester extends BlockJUnit4ClassRunner {
 
     /**
      * Publish a service configured with the correct policy and policy config.
+     * @param method
+     * @throws Throwable
      */
-    protected void publishService(Description description) throws Throwable {
+    protected void publishService(FrameworkMethod method) {
         version++;
 
-        // Get the policy class under test.
-        TestingPolicy tp = description.getAnnotation(TestingPolicy.class);
-        if (tp == null) {
-            tp = getTestClass().getJavaClass().getAnnotation(TestingPolicy.class);
-        }
-        if (tp == null) {
-            throw new Exception("Missing test annotation @TestingPolicy.");
-        }
-        Class<? extends IPolicy> policyUnderTest = tp.value();
-
-        // Get the configuration JSON to use
-        Configuration config = description.getAnnotation(Configuration.class);
-        if (config == null) {
-            config = getTestClass().getJavaClass().getAnnotation(Configuration.class);
-        }
-        if (config == null) {
-            throw new Exception("Missing test annotation @Configuration.");
-        }
-
-        // Get the back end service simulator to use
-        BackEndService backEnd = description.getAnnotation(BackEndService.class);
-        if (backEnd == null) {
-            backEnd = getTestClass().getJavaClass().getAnnotation(BackEndService.class);
-        }
-        Class<? extends IPolicyTestBackEndService> backEndService = null;
-        if (backEnd == null) {
-            backEndService = EchoBackEndService.class;
-        } else {
-            backEndService = backEnd.value();
-        }
-
-
-        final Set<Throwable> errorHolder = new HashSet<>();
-
-        Policy policy = new Policy();
-        policy.setPolicyImpl("class:" + policyUnderTest.getName());
-        policy.setPolicyJsonConfig(config.value());
-
-        Service service = new Service();
-        service.setEndpoint(backEndService.getName());
-        service.setEndpointType("TEST");
-        service.setOrganizationId(orgId);
-        service.setServiceId(serviceId);
-        service.setVersion(String.valueOf(version));
-        service.setPublicService(true);
-        service.setServicePolicies(Collections.singletonList(policy));
-
-        getEngine().getRegistry().publishService(service, new IAsyncResultHandler<Void>() {
-            @Override
-            public void handle(IAsyncResult<Void> result) {
-                if (result.isError()) {
-                    errorHolder.add(result.getError());
-                }
+        try {
+            // Get the policy class under test.
+            TestingPolicy tp = method.getMethod().getAnnotation(TestingPolicy.class);
+            if (tp == null) {
+                tp = getTestClass().getJavaClass().getAnnotation(TestingPolicy.class);
             }
-        });
+            if (tp == null) {
+                throw new Exception("Missing test annotation @TestingPolicy.");
+            }
+            Class<? extends IPolicy> policyUnderTest = tp.value();
 
-        if (!errorHolder.isEmpty()) {
-            throw errorHolder.iterator().next();
+            // Get the configuration JSON to use
+            Configuration config = method.getMethod().getAnnotation(Configuration.class);
+            if (config == null) {
+                config = getTestClass().getJavaClass().getAnnotation(Configuration.class);
+            }
+            if (config == null) {
+                throw new Exception("Missing test annotation @Configuration.");
+            }
+
+            // Get the back end service simulator to use
+            BackEndService backEnd = method.getMethod().getAnnotation(BackEndService.class);
+            if (backEnd == null) {
+                backEnd = getTestClass().getJavaClass().getAnnotation(BackEndService.class);
+            }
+            Class<? extends IPolicyTestBackEndService> backEndService = null;
+            if (backEnd == null) {
+                backEndService = EchoBackEndService.class;
+            } else {
+                backEndService = backEnd.value();
+            }
+
+
+            final Set<Throwable> errorHolder = new HashSet<>();
+
+            Policy policy = new Policy();
+            policy.setPolicyImpl("class:" + policyUnderTest.getName());
+            policy.setPolicyJsonConfig(config.value());
+
+            Service service = new Service();
+            service.setEndpoint(backEndService.getName());
+            service.setEndpointType("TEST");
+            service.setOrganizationId(orgId);
+            service.setServiceId(serviceId);
+            service.setVersion(String.valueOf(version));
+            service.setPublicService(true);
+            service.setServicePolicies(Collections.singletonList(policy));
+
+            getEngine().getRegistry().publishService(service, new IAsyncResultHandler<Void>() {
+                @Override
+                public void handle(IAsyncResult<Void> result) {
+                    if (result.isError()) {
+                        errorHolder.add(result.getError());
+                    }
+                }
+            });
+
+            if (!errorHolder.isEmpty()) {
+                throw errorHolder.iterator().next();
+            }
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -200,13 +197,14 @@ public class PolicyTester extends BlockJUnit4ClassRunner {
      */
     private IEngine createEngine() {
         DefaultEngineFactory factory = new DefaultEngineFactory() {
+
             @Override
-            protected IConnectorFactory createConnectorFactory() {
+            protected IConnectorFactory createConnectorFactory(IPluginRegistry pluginRegistry) {
                 return new PolicyTesterConnectorFactory();
             }
 
             @Override
-            protected IComponentRegistry createComponentRegistry() {
+            protected IComponentRegistry createComponentRegistry(IPluginRegistry pluginRegistry) {
                 return new DefaultComponentRegistry() {
                     @Override
                     protected void registerBufferFactoryComponent() {
@@ -219,7 +217,7 @@ public class PolicyTester extends BlockJUnit4ClassRunner {
             protected IPluginRegistry createPluginRegistry() {
                 return new IPluginRegistry() {
                     @Override
-                    public void loadPlugin(PluginCoordinates coordinates, IAsyncResultHandler<Plugin> handler) {
+                    public Future<IAsyncResult<Plugin>> loadPlugin(PluginCoordinates coordinates, IAsyncResultHandler<Plugin> handler) {
                         throw new RuntimeException("Plugins not supported.");
                     }
                 };

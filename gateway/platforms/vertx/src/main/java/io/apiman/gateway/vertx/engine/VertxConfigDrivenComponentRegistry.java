@@ -15,15 +15,16 @@
  */
 package io.apiman.gateway.vertx.engine;
 
+import io.apiman.gateway.engine.IComponent;
+import io.apiman.gateway.engine.IPluginRegistry;
+import io.apiman.gateway.engine.beans.exceptions.ComponentNotFoundException;
+import io.apiman.gateway.engine.impl.ConfigDrivenComponentRegistry;
+import io.apiman.gateway.vertx.config.VertxEngineConfig;
+
 import java.lang.reflect.Constructor;
 import java.util.Map;
 
 import org.vertx.java.core.Vertx;
-
-import io.apiman.gateway.engine.IComponent;
-import io.apiman.gateway.engine.beans.exceptions.ComponentNotFoundException;
-import io.apiman.gateway.engine.impl.ConfigDrivenComponentRegistry;
-import io.apiman.gateway.vertx.config.VertxEngineConfig;
 
 /**
  * Extends {@link ConfigDrivenComponentRegistry} to allow components to be constructed with a {@link Vertx}
@@ -37,18 +38,21 @@ public class VertxConfigDrivenComponentRegistry extends ConfigDrivenComponentReg
 
     private VertxEngineConfig engineConfig;
     private Vertx vertx;
+    private IPluginRegistry pluginRegistry;
 
-    public VertxConfigDrivenComponentRegistry(Vertx vertx, VertxEngineConfig engineConfig) {
-        super(engineConfig);
+    public VertxConfigDrivenComponentRegistry(Vertx vertx, VertxEngineConfig engineConfig,
+            IPluginRegistry pluginRegistry) {
+        super(engineConfig, pluginRegistry);
         this.engineConfig = engineConfig;
         this.vertx = vertx;
+        this.pluginRegistry = pluginRegistry;
     }
 
     @Override
     public <T extends IComponent> T createAndRegisterComponent(Class<T> componentType)
             throws ComponentNotFoundException {
         try {
-            Class<T> componentClass = engineConfig.getComponentClass(componentType);
+            Class<T> componentClass = engineConfig.getComponentClass(componentType, pluginRegistry);
             Map<String, String> componentConfig = engineConfig.getComponentConfig(componentType);
             T component = createWithVertx(componentClass, engineConfig, componentConfig);
             super.addComponentMapping(componentType, component);

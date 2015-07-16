@@ -17,7 +17,10 @@ package io.apiman.gateway.engine;
 
 import io.apiman.common.plugin.Plugin;
 import io.apiman.common.plugin.PluginCoordinates;
+import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
+
+import java.util.concurrent.Future;
 
 
 /**
@@ -34,6 +37,6 @@ public interface IPluginRegistry {
      * @param coordinates the coordinates
      * @param handler result handler
      */
-    public void loadPlugin(PluginCoordinates coordinates, IAsyncResultHandler<Plugin> handler);
+    public Future<IAsyncResult<Plugin>> loadPlugin(PluginCoordinates coordinates, IAsyncResultHandler<Plugin> handler);
 
 }

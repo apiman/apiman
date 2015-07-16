@@ -95,8 +95,11 @@ public class VertxEngineConfig implements IEngineConfig {
         return config;
     }
 
+    /**
+     * @see io.apiman.gateway.engine.IEngineConfig#getRegistryClass(io.apiman.gateway.engine.IPluginRegistry)
+     */
     @Override
-    public Class<? extends IRegistry> getRegistryClass() {
+    public Class<? extends IRegistry> getRegistryClass(IPluginRegistry pluginRegistry) {
         return loadConfigClass(getClassname(config, API_GATEWAY_REGISTRY_PREFIX),
                 IRegistry.class);
     }
@@ -117,8 +120,11 @@ public class VertxEngineConfig implements IEngineConfig {
         return toFlatStringMap(getConfig(config, API_GATEWAY_PLUGIN_REGISTRY_PREFIX));
     }
 
+    /**
+     * @see io.apiman.gateway.engine.IEngineConfig#getConnectorFactoryClass(io.apiman.gateway.engine.IPluginRegistry)
+     */
     @Override
-    public Class<? extends IConnectorFactory> getConnectorFactoryClass() {
+    public Class<? extends IConnectorFactory> getConnectorFactoryClass(IPluginRegistry pluginRegistry) {
         return loadConfigClass(getClassname(config, API_GATEWAY_CONNECTOR_FACTORY_PREFIX),
                 IConnectorFactory.class);
     }
@@ -128,8 +134,11 @@ public class VertxEngineConfig implements IEngineConfig {
         return toFlatStringMap(getConfig(config, API_GATEWAY_CONNECTOR_FACTORY_PREFIX));
     }
 
+    /**
+     * @see io.apiman.gateway.engine.IEngineConfig#getPolicyFactoryClass(io.apiman.gateway.engine.IPluginRegistry)
+     */
     @Override
-    public Class<? extends IPolicyFactory> getPolicyFactoryClass() {
+    public Class<? extends IPolicyFactory> getPolicyFactoryClass(IPluginRegistry pluginRegistry) {
         return loadConfigClass(getClassname(config, API_GATEWAY_POLICY_FACTORY_PREFIX),
                 IPolicyFactory.class);
     }
@@ -138,20 +147,27 @@ public class VertxEngineConfig implements IEngineConfig {
     public Map<String, String> getPolicyFactoryConfig() {
         return toFlatStringMap(getConfig(config, API_GATEWAY_POLICY_FACTORY_PREFIX));
     }
-    
+
+    /**
+     * @see io.apiman.gateway.engine.IEngineConfig#getMetricsClass(io.apiman.gateway.engine.IPluginRegistry)
+     */
     @Override
-    public Class<? extends IMetrics> getMetricsClass() {
+    public Class<? extends IMetrics> getMetricsClass(IPluginRegistry pluginRegistry) {
         return loadConfigClass(getClassname(config, API_GATEWAY_METRICS_PREFIX),
                 IMetrics.class);
     }
-    
+
     @Override
     public Map<String, String> getMetricsConfig() {
         return toFlatStringMap(getConfig(config, API_GATEWAY_METRICS_PREFIX));
     }
 
+    /**
+     * @see io.apiman.gateway.engine.IEngineConfig#getComponentClass(java.lang.Class, io.apiman.gateway.engine.IPluginRegistry)
+     */
     @Override
-    public <T extends IComponent> Class<T> getComponentClass(Class<T> componentType) {
+    public <T extends IComponent> Class<T> getComponentClass(Class<T> componentType,
+            IPluginRegistry pluginRegistry) {
         String className = config.getObject(API_GATEWAY_COMPONENT_PREFIX).
                 getObject(componentType.getSimpleName()).
                 getString(API_GATEWAY_CLASS);
@@ -180,11 +196,11 @@ public class VertxEngineConfig implements IEngineConfig {
     public RouteMapper getRouteMap() {
         return routeMap;
     }
-    
+
     public String hostname() {
         return stringConfigWithDefault(API_GATEWAY_HOSTNAME, "localhost"); //$NON-NLS-1$
     }
-    
+
     public String getEndpoint() {
         return stringConfigWithDefault(API_GATEWAY_ENDPOINT, "localhost");    //$NON-NLS-1$
     }
@@ -242,15 +258,15 @@ public class VertxEngineConfig implements IEngineConfig {
         }
         throw new RuntimeException(Messages.i18n.format("EngineConfig.FailedToLoadClass", classname)); //$NON-NLS-1$
     }
-    
+
     protected String stringConfigWithDefault(String name, String defaultValue) {
         String str = config.getString(name);
         return str == null ? defaultValue : str;
     }
-    
+
     protected Boolean boolConfigWithDefault(String name, Boolean defaultValue) {
         Boolean bool = config.containsField(name);
-         
+
         return bool == null ? defaultValue : bool;
     }
 }

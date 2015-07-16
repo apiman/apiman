@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+    <changeSet author="apiman" id="addUniqueConstraint-1">
+        <addUniqueConstraint columnNames="group_id, artifact_id" deferrable="false" disabled="false"
+                             constraintName="UK_plugins_1" initiallyDeferred="false" tableName="plugins"/>
+    </changeSet>
+    <changeSet author="apiman" id="addUniqueConstraint-2">
+        <addUniqueConstraint columnNames="user_id, role_id, org_id" deferrable="false" disabled="false"
+                             constraintName="UK_memberships_1" initiallyDeferred="false" tableName="memberships"/>
+    </changeSet>
+    <changeSet author="apiman" id="addUniqueConstraint-3">
+        <addUniqueConstraint columnNames="plan_id, plan_org_id, version" deferrable="false" disabled="false"
+                             constraintName="UK_plan_versions_1" initiallyDeferred="false" tableName="plan_versions"/>
+    </changeSet>
+    <changeSet author="apiman" id="addUniqueConstraint-4">
+        <addUniqueConstraint columnNames="app_id, app_org_id, version" deferrable="false" disabled="false"
+                             constraintName="UK_app_versions_1" initiallyDeferred="false" tableName="application_versions"/>
+    </changeSet>
+    <changeSet author="apiman" id="addUniqueConstraint-5">
+        <addUniqueConstraint columnNames="service_id, service_org_id, version" deferrable="false" disabled="false"
+                             constraintName="UK_service_versions_1" initiallyDeferred="false" tableName="service_versions"/>
+    </changeSet>
+    <changeSet author="apiman" id="addUniqueConstraint-6">
+        <addUniqueConstraint columnNames="service_version_id" deferrable="false" disabled="false"
+                             constraintName="UK_service_defs_1" initiallyDeferred="false" tableName="service_defs"/>
+    </changeSet>
+    <changeSet author="apiman" id="addUniqueConstraint-7">
+        <addUniqueConstraint columnNames="appv_id, svcv_id, planv_id" deferrable="false" disabled="false"
+                             constraintName="UK_contracts_1" initiallyDeferred="false" tableName="contracts"/>
+    </changeSet>
+</databaseChangeLog>

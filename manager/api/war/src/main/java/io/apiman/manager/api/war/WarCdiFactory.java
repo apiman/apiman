@@ -15,9 +15,14 @@
  */
 package io.apiman.manager.api.war;
 
+import io.apiman.common.plugin.Plugin;
+import io.apiman.common.plugin.PluginClassLoader;
+import io.apiman.common.plugin.PluginCoordinates;
+import io.apiman.common.util.ReflectionUtils;
 import io.apiman.manager.api.core.IApiKeyGenerator;
 import io.apiman.manager.api.core.IIdmStorage;
 import io.apiman.manager.api.core.IMetricsAccessor;
+import io.apiman.manager.api.core.IPluginRegistry;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.UuidApiKeyGenerator;
@@ -38,6 +43,9 @@ import io.apiman.manager.api.security.impl.KeycloakSecurityContext;
 import io.searchbox.client.JestClient;
 import io.searchbox.client.JestClientFactory;
 import io.searchbox.client.config.HttpClientConfig;
+
+import java.lang.reflect.Constructor;
+import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.New;
@@ -84,38 +92,111 @@ public class WarCdiFactory {
     }
 
     @Produces @ApplicationScoped
-    public static IStorage provideStorage(WarApiManagerConfig config, @New JpaStorage jpaStorage, @New EsStorage esStorage) {
+    public static IStorage provideStorage(WarApiManagerConfig config, @New JpaStorage jpaStorage,
+            @New EsStorage esStorage, IPluginRegistry pluginRegistry) {
         IStorage storage = null;
         if ("jpa".equals(config.getStorageType())) { //$NON-NLS-1$
             storage = jpaStorage;
         } else if ("es".equals(config.getStorageType())) { //$NON-NLS-1$
             storage = initES(config, esStorage);
         } else {
-            throw new RuntimeException("Unknown storage type: " + config.getStorageType()); //$NON-NLS-1$
+            try {
+                storage = createCustomComponent(IStorage.class, config.getStorageType(),
+                        config.getStorageProperties(), pluginRegistry);
+            } catch (Throwable t) {
+                throw new RuntimeException("Error or unknown storage type: " + config.getStorageType(), t); //$NON-NLS-1$
+            }
         }
         return storage;
     }
 
     @Produces @ApplicationScoped
-    public static IStorageQuery provideStorageQuery(WarApiManagerConfig config, @New JpaStorage jpaStorage, @New EsStorage esStorage) {
+    public static IStorageQuery provideStorageQuery(WarApiManagerConfig config, @New JpaStorage jpaStorage,
+            @New EsStorage esStorage, IPluginRegistry pluginRegistry) {
         if ("jpa".equals(config.getStorageType())) { //$NON-NLS-1$
             return jpaStorage;
         } else if ("es".equals(config.getStorageType())) { //$NON-NLS-1$
             return initES(config, esStorage);
         } else {
-            throw new RuntimeException("Unknown storage type: " + config.getStorageType()); //$NON-NLS-1$
+            try {
+                return createCustomComponent(IStorageQuery.class, config.getStorageQueryType(),
+                        config.getStorageQueryProperties(), pluginRegistry);
+            } catch (Throwable t) {
+                throw new RuntimeException("Error or unknown storage query type: " + config.getStorageType(), t); //$NON-NLS-1$
+            }
         }
+    }
+
+    /**
+     * Creates a custom component from information found in the properties file.
+     * @param componentType
+     * @param componentSpec
+     * @param configProperties
+     * @param pluginRegistry
+     */
+    private static <T> T createCustomComponent(Class<T> componentType, String componentSpec,
+            Map<String, String> configProperties, IPluginRegistry pluginRegistry) throws Exception {
+        if (componentSpec == null) {
+            throw new IllegalArgumentException("Null component type."); //$NON-NLS-1$
+        }
+
+        if (componentSpec.startsWith("class:")) { //$NON-NLS-1$
+            Class<?> c = ReflectionUtils.loadClass(componentSpec.substring("class:".length())); //$NON-NLS-1$
+            return createCustomComponent(componentType, c, configProperties);
+        } else if (componentSpec.startsWith("plugin:")) { //$NON-NLS-1$
+            PluginCoordinates coordinates = PluginCoordinates.fromPolicySpec(componentSpec);
+            if (coordinates == null) {
+                throw new IllegalArgumentException("Invalid plugin component spec: " + componentSpec); //$NON-NLS-1$
+            }
+            int ssidx = componentSpec.indexOf('/');
+            if (ssidx == -1) {
+                throw new IllegalArgumentException("Invalid plugin component spec: " + componentSpec); //$NON-NLS-1$
+            }
+            String classname = componentSpec.substring(ssidx + 1);
+            Plugin plugin = pluginRegistry.loadPlugin(coordinates);
+            PluginClassLoader classLoader = plugin.getLoader();
+            Class<?> class1 = classLoader.loadClass(classname);
+            return createCustomComponent(componentType, class1, configProperties);
+        } else {
+            Class<?> c = ReflectionUtils.loadClass(componentSpec);
+            return createCustomComponent(componentType, c, configProperties);
+        }
+    }
+
+    /**
+     * Creates a custom component from a loaded class.
+     * @param componentType
+     * @param componentClass
+     * @param configProperties
+     */
+    @SuppressWarnings("unchecked")
+    private static <T> T createCustomComponent(Class<T> componentType, Class<?> componentClass,
+            Map<String, String> configProperties) throws Exception {
+        if (componentClass == null) {
+            throw new IllegalArgumentException("Invalid component spec (class not found)."); //$NON-NLS-1$
+        }
+        try {
+            Constructor<?> constructor = componentClass.getConstructor(Map.class);
+            return (T) constructor.newInstance(configProperties);
+        } catch (Exception e) {
+        }
+        return (T) componentClass.getConstructor().newInstance();
     }
 
     @Produces @ApplicationScoped
     public static IMetricsAccessor provideMetricsAccessor(WarApiManagerConfig config,
-            @New NoOpMetricsAccessor noopMetrics, @New ESMetricsAccessor esMetrics) {
+            @New NoOpMetricsAccessor noopMetrics, @New ESMetricsAccessor esMetrics, IPluginRegistry pluginRegistry) {
         IMetricsAccessor metrics = null;
         if ("es".equals(config.getMetricsType())) { //$NON-NLS-1$
             metrics = esMetrics;
         } else {
-            System.err.println("Unknown apiman metrics accessor type: " + config.getMetricsType()); //$NON-NLS-1$
-            metrics = noopMetrics;
+            try {
+                metrics = createCustomComponent(IMetricsAccessor.class, config.getMetricsType(),
+                        config.getMetricsProperties(), pluginRegistry);
+            } catch (Throwable t) {
+                System.err.println("Unknown apiman metrics accessor type: " + config.getMetricsType()); //$NON-NLS-1$
+                metrics = noopMetrics;
+            }
         }
         return metrics;
     }
@@ -126,13 +207,19 @@ public class WarCdiFactory {
     }
 
     @Produces @ApplicationScoped
-    public static IIdmStorage provideIdmStorage(WarApiManagerConfig config, @New JpaIdmStorage jpaIdmStorage, @New EsStorage esStorage) {
+    public static IIdmStorage provideIdmStorage(WarApiManagerConfig config, @New JpaIdmStorage jpaIdmStorage,
+            @New EsStorage esStorage, IPluginRegistry pluginRegistry) {
         if ("jpa".equals(config.getStorageType())) { //$NON-NLS-1$
             return jpaIdmStorage;
         } else if ("es".equals(config.getStorageType())) { //$NON-NLS-1$
             return initES(config, esStorage);
         } else {
-            throw new RuntimeException("Unknown storage type: " + config.getStorageType()); //$NON-NLS-1$
+            try {
+                return createCustomComponent(IIdmStorage.class, config.getIdmStorageType(),
+                        config.getIdmStorageProperties(), pluginRegistry);
+            } catch (Throwable t) {
+                throw new RuntimeException("Error or unknown IDM storage type: " + config.getIdmStorageType(), t); //$NON-NLS-1$
+            }
         }
     }
 
