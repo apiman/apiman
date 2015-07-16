@@ -17,6 +17,7 @@ package io.apiman.gateway.engine.metrics.impl.influxdb;
 
 import io.apiman.gateway.engine.IComponentRegistry;
 import io.apiman.gateway.engine.IMetrics;
+import io.apiman.gateway.engine.IRequiresInitialization;
 import io.apiman.gateway.engine.async.IAsyncHandler;
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
@@ -40,7 +41,7 @@ import java.util.concurrent.CountDownLatch;
  * @author Marc Savy <msavy@redhat.com>
  */
 @SuppressWarnings("nls")
-public class InfluxDb09Metrics implements IMetrics {
+public class InfluxDb09Metrics implements IMetrics, IRequiresInitialization {
     private static final String USERNAME = "username";
     private static final String PASSWORD = "password";
     private static final String INFLUX_ENDPOINT = "endpoint";
@@ -78,6 +79,10 @@ public class InfluxDb09Metrics implements IMetrics {
         this.password = getOptionalString(config, PASSWORD, null);
     }
 
+    /**
+     * @see io.apiman.gateway.engine.IRequiresInitialization#initialize()
+     */
+    @Override
     public void initialize() {
         driver = new InfluxDb09Driver(httpClient, influxEndpoint, username, password, dbName,
                 retentionPolicy, TIMEPRECISION);
