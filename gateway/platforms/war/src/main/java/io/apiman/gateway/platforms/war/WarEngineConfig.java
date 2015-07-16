@@ -17,18 +17,24 @@ package io.apiman.gateway.platforms.war;
 
 import io.apiman.common.config.ConfigFileConfiguration;
 import io.apiman.common.config.SystemPropertiesConfiguration;
+import io.apiman.common.plugin.Plugin;
+import io.apiman.common.plugin.PluginClassLoader;
+import io.apiman.common.plugin.PluginCoordinates;
+import io.apiman.common.util.ReflectionUtils;
 import io.apiman.gateway.engine.IComponent;
 import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.IEngineConfig;
 import io.apiman.gateway.engine.IMetrics;
 import io.apiman.gateway.engine.IPluginRegistry;
 import io.apiman.gateway.engine.IRegistry;
+import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.policy.IPolicyFactory;
-import io.apiman.gateway.platforms.war.i18n.Messages;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.Configuration;
@@ -81,11 +87,11 @@ public class WarEngineConfig implements IEngineConfig {
     }
 
     /**
-     * @return the class to use as the {@link IRegistry}
+     * @see io.apiman.gateway.engine.IEngineConfig#getRegistryClass(io.apiman.gateway.engine.IPluginRegistry)
      */
     @Override
-    public Class<IRegistry> getRegistryClass() {
-        return loadConfigClass(APIMAN_GATEWAY_REGISTRY_CLASS, IRegistry.class);
+    public Class<? extends IRegistry> getRegistryClass(IPluginRegistry pluginRegistry) {
+        return loadConfigClass(APIMAN_GATEWAY_REGISTRY_CLASS, IRegistry.class, pluginRegistry);
     }
 
     /**
@@ -101,7 +107,7 @@ public class WarEngineConfig implements IEngineConfig {
      */
     @Override
     public Class<IPluginRegistry> getPluginRegistryClass() {
-        return loadConfigClass(APIMAN_GATEWAY_PLUGIN_REGISTRY_CLASS, IPluginRegistry.class);
+        return loadConfigClass(APIMAN_GATEWAY_PLUGIN_REGISTRY_CLASS, IPluginRegistry.class, null);
     }
 
     /**
@@ -118,11 +124,11 @@ public class WarEngineConfig implements IEngineConfig {
     }
 
     /**
-     * @return the class to use as the {@link IConnectorFactory}
+     * @see io.apiman.gateway.engine.IEngineConfig#getConnectorFactoryClass(io.apiman.gateway.engine.IPluginRegistry)
      */
     @Override
-    public Class<IConnectorFactory> getConnectorFactoryClass() {
-        return loadConfigClass(APIMAN_GATEWAY_CONNECTOR_FACTORY_CLASS, IConnectorFactory.class);
+    public Class<? extends IConnectorFactory> getConnectorFactoryClass(IPluginRegistry pluginRegistry) {
+        return loadConfigClass(APIMAN_GATEWAY_CONNECTOR_FACTORY_CLASS, IConnectorFactory.class, pluginRegistry);
     }
 
     /**
@@ -134,11 +140,11 @@ public class WarEngineConfig implements IEngineConfig {
     }
 
     /**
-     * @return the class to use as the {@link IPolicyFactory}
+     * @see io.apiman.gateway.engine.IEngineConfig#getPolicyFactoryClass(io.apiman.gateway.engine.IPluginRegistry)
      */
     @Override
-    public Class<IPolicyFactory> getPolicyFactoryClass() {
-        return loadConfigClass(APIMAN_GATEWAY_POLICY_FACTORY_CLASS, IPolicyFactory.class);
+    public Class<? extends IPolicyFactory> getPolicyFactoryClass(IPluginRegistry pluginRegistry) {
+        return loadConfigClass(APIMAN_GATEWAY_POLICY_FACTORY_CLASS, IPolicyFactory.class, pluginRegistry);
     }
 
     /**
@@ -150,11 +156,11 @@ public class WarEngineConfig implements IEngineConfig {
     }
 
     /**
-     * @return the class to use as the {@link IMetrics}
+     * @see io.apiman.gateway.engine.IEngineConfig#getMetricsClass(io.apiman.gateway.engine.IPluginRegistry)
      */
     @Override
-    public Class<IMetrics> getMetricsClass() {
-        return loadConfigClass(APIMAN_GATEWAY_METRICS_CLASS, IMetrics.class);
+    public Class<? extends IMetrics> getMetricsClass(IPluginRegistry pluginRegistry) {
+        return loadConfigClass(APIMAN_GATEWAY_METRICS_CLASS, IMetrics.class, pluginRegistry);
     }
 
     /**
@@ -166,11 +172,12 @@ public class WarEngineConfig implements IEngineConfig {
     }
 
     /**
-     * @return the class to use for the given component
+     * @see io.apiman.gateway.engine.IEngineConfig#getComponentClass(java.lang.Class, io.apiman.gateway.engine.IPluginRegistry)
      */
     @Override
-    public <T extends IComponent> Class<T> getComponentClass(Class<T> componentType) {
-        return loadConfigClass(APIMAN_GATEWAY_COMPONENT_PREFIX + componentType.getSimpleName(), componentType);
+    public <T extends IComponent> Class<T> getComponentClass(Class<T> componentType,
+            IPluginRegistry pluginRegistry) {
+        return loadConfigClass(APIMAN_GATEWAY_COMPONENT_PREFIX + componentType.getSimpleName(), componentType, pluginRegistry);
     }
 
     /**
@@ -185,24 +192,42 @@ public class WarEngineConfig implements IEngineConfig {
      * @return a loaded class
      */
     @SuppressWarnings("unchecked")
-    private <T> Class<T> loadConfigClass(String property, Class<T> type) {
-        String classname = getConfig().getString(property);
-        if (classname == null) {
+    private <T> Class<T> loadConfigClass(String property, Class<T> type, IPluginRegistry pluginRegistry) {
+        String componentSpec = getConfig().getString(property);
+        if (componentSpec == null) {
             throw new RuntimeException("No " + type.getSimpleName() + " class configured."); //$NON-NLS-1$ //$NON-NLS-2$
         }
+
         try {
-            Class<T> c = (Class<T>) Thread.currentThread().getContextClassLoader().loadClass(classname);
-            return c;
-        } catch (ClassNotFoundException e) {
-            // Not found via Class.forName() - try other mechanisms.
+            if (componentSpec.startsWith("class:")) { //$NON-NLS-1$
+                Class<?> c = ReflectionUtils.loadClass(componentSpec.substring("class:".length())); //$NON-NLS-1$
+                return (Class<T>) c;
+            } else if (componentSpec.startsWith("plugin:")) { //$NON-NLS-1$
+                PluginCoordinates coordinates = PluginCoordinates.fromPolicySpec(componentSpec);
+                if (coordinates == null) {
+                    throw new IllegalArgumentException("Invalid plugin component spec: " + componentSpec); //$NON-NLS-1$
+                }
+                int ssidx = componentSpec.indexOf('/');
+                if (ssidx == -1) {
+                    throw new IllegalArgumentException("Invalid plugin component spec: " + componentSpec); //$NON-NLS-1$
+                }
+                String classname = componentSpec.substring(ssidx + 1);
+                Future<IAsyncResult<Plugin>> pluginF = pluginRegistry.loadPlugin(coordinates, null);
+                IAsyncResult<Plugin> pluginR = pluginF.get();
+                if (pluginR.isError()) {
+                    throw new RuntimeException(pluginR.getError());
+                }
+                Plugin plugin = pluginR.getResult();
+                PluginClassLoader classLoader = plugin.getLoader();
+                Class<?> class1 = classLoader.loadClass(classname);
+                return (Class<T>) class1;
+            } else {
+                Class<?> c = ReflectionUtils.loadClass(componentSpec);
+                return (Class<T>) c;
+            }
+        } catch (ClassNotFoundException | InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
         }
-        try {
-            Class<T> c = (Class<T>) Class.forName(classname);
-            return c;
-        } catch (ClassNotFoundException e) {
-            // Not found via Class.forName() - try other mechanisms.
-        }
-        throw new RuntimeException(Messages.i18n.format("WarEngineConfig.FailedToLoadClass", classname)); //$NON-NLS-1$
     }
 
     /**

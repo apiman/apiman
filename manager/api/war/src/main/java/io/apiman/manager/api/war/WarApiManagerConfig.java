@@ -53,6 +53,10 @@ public class WarApiManagerConfig implements IJpaProperties {
     public static final String APIMAN_MANAGER_STORAGE_ES_CLUSTER_NAME = "apiman-manager.storage.es.cluster-name"; //$NON-NLS-1$
     public static final String APIMAN_MANAGER_STORAGE_ES_INITIALIZE = "apiman-manager.storage.es.initialize"; //$NON-NLS-1$
 
+    public static final String APIMAN_MANAGER_STORAGE_QUERY_TYPE = "apiman-manager.storage-query.type"; //$NON-NLS-1$
+    public static final String APIMAN_MANAGER_IDM_STORAGE_TYPE = "apiman-manager.idm-storage.type"; //$NON-NLS-1$
+
+
     /* -------------------------------------------------------
      * Metrics
      * ------------------------------------------------------- */
@@ -110,6 +114,20 @@ public class WarApiManagerConfig implements IJpaProperties {
      */
     public String getStorageType() {
         return config.getString(APIMAN_MANAGER_STORAGE_TYPE, "jpa"); //$NON-NLS-1$
+    }
+
+    /**
+     * @return the configured storage query type
+     */
+    public String getStorageQueryType() {
+        return config.getString(APIMAN_MANAGER_STORAGE_QUERY_TYPE, "jpa"); //$NON-NLS-1$
+    }
+
+    /**
+     * @return the configured storage query type
+     */
+    public String getIdmStorageType() {
+        return config.getString(APIMAN_MANAGER_IDM_STORAGE_TYPE, getStorageType());
     }
 
     /**
@@ -210,6 +228,74 @@ public class WarApiManagerConfig implements IJpaProperties {
             if (key.startsWith("apiman.hibernate.")) { //$NON-NLS-1$
                 String value = config.getString(key);
                 key = key.substring("apiman.".length()); //$NON-NLS-1$
+                rval.put(key, value);
+            }
+        }
+        return rval;
+    }
+
+    /**
+     * @return any custom properties associated with the storage (useful for custom impls)
+     */
+    public Map<String, String> getStorageProperties() {
+        Map<String, String> rval = new HashMap<>();
+        Iterator<String> keys = config.getKeys();
+        while (keys.hasNext()) {
+            String key = keys.next();
+            if (key.startsWith("apiman-manager.storage.")) { //$NON-NLS-1$
+                String value = config.getString(key);
+                key = key.substring("apiman-manager.storage.".length()); //$NON-NLS-1$
+                rval.put(key, value);
+            }
+        }
+        return rval;
+    }
+
+    /**
+     * @return any custom properties associated with the storage query impl
+     */
+    public Map<String, String> getStorageQueryProperties() {
+        Map<String, String> rval = new HashMap<>();
+        Iterator<String> keys = config.getKeys();
+        while (keys.hasNext()) {
+            String key = keys.next();
+            if (key.startsWith("apiman-manager.storage-query.type.")) { //$NON-NLS-1$
+                String value = config.getString(key);
+                key = key.substring("apiman-manager.storage-query.type.".length()); //$NON-NLS-1$
+                rval.put(key, value);
+            }
+        }
+        return rval;
+    }
+
+    /**
+     * @return any custom properties associated with the IDM storage impl (useful for custom impls)
+     */
+    public Map<String, String> getIdmStorageProperties() {
+        Map<String, String> rval = new HashMap<>();
+        Iterator<String> keys = config.getKeys();
+        while (keys.hasNext()) {
+            String key = keys.next();
+            if (key.startsWith("apiman-manager.idm-storage.")) { //$NON-NLS-1$
+                String value = config.getString(key);
+                key = key.substring("apiman-manager.idm-storage.".length()); //$NON-NLS-1$
+                rval.put(key, value);
+            }
+        }
+        return rval;
+    }
+
+    /**
+     * @return any custom properties associated with the metrics accessor impl
+     */
+    public Map<String, String> getMetricsProperties() {
+        Map<String, String> rval = new HashMap<>();
+        Iterator<String> keys = config.getKeys();
+        while (keys.hasNext()) {
+            String key = keys.next();
+            if (key.startsWith("apiman-manager.metrics.")) { //$NON-NLS-1$
+                String value = config.getString(key);
+                key = key.substring("apiman-manager.metrics.".length()); //$NON-NLS-1$
                 rval.put(key, value);
             }
         }

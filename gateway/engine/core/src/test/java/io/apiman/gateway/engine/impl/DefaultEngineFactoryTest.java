@@ -23,6 +23,7 @@ import static org.mockito.Mockito.verify;
 import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.IEngine;
 import io.apiman.gateway.engine.IEngineResult;
+import io.apiman.gateway.engine.IPluginRegistry;
 import io.apiman.gateway.engine.IServiceConnection;
 import io.apiman.gateway.engine.IServiceConnectionResponse;
 import io.apiman.gateway.engine.IServiceConnector;
@@ -95,7 +96,7 @@ public class DefaultEngineFactoryTest {
     public void testCreateEngine() throws InterruptedException, ExecutionException {
         DefaultEngineFactory factory = new DefaultEngineFactory() {
             @Override
-            protected IConnectorFactory createConnectorFactory() {
+            protected IConnectorFactory createConnectorFactory(IPluginRegistry pluginRegistry) {
                 return new IConnectorFactory() {
                     @Override
                     public IServiceConnector createConnector(ServiceRequest request, Service service, RequiredAuthType requiredAuthType) {

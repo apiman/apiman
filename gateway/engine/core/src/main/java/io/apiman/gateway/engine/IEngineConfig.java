@@ -29,7 +29,7 @@ public interface IEngineConfig {
     /**
      * @return the class to use as the {@link IRegistry}
      */
-    public Class<? extends IRegistry> getRegistryClass();
+    public Class<? extends IRegistry> getRegistryClass(IPluginRegistry pluginRegistry);
 
     /**
      * @return all properties to be passed to the registry
@@ -49,7 +49,7 @@ public interface IEngineConfig {
     /**
      * @return the class to use as the {@link IConnectorFactory}
      */
-    public Class<? extends IConnectorFactory> getConnectorFactoryClass();
+    public Class<? extends IConnectorFactory> getConnectorFactoryClass(IPluginRegistry pluginRegistry);
 
     /**
      * @return all properties to be passed to the factory
@@ -59,7 +59,7 @@ public interface IEngineConfig {
     /**
      * @return the class to use as the {@link IPolicyFactory}
      */
-    public Class<? extends IPolicyFactory> getPolicyFactoryClass();
+    public Class<? extends IPolicyFactory> getPolicyFactoryClass(IPluginRegistry pluginRegistry);
 
     /**
      * @return all properties to be passed to the factory
@@ -70,7 +70,7 @@ public interface IEngineConfig {
      * @param componentType the component type
      * @return the class to use for the given component
      */
-    public <T extends IComponent> Class<T> getComponentClass(Class<T> componentType);
+    public <T extends IComponent> Class<T> getComponentClass(Class<T> componentType, IPluginRegistry pluginRegistry);
 
     /**
      * @param componentType the component type
@@ -81,7 +81,7 @@ public interface IEngineConfig {
     /**
      * @return the class to use as the {@link IMetrics}
      */
-    public Class<? extends IMetrics> getMetricsClass();
+    public Class<? extends IMetrics> getMetricsClass(IPluginRegistry pluginRegistry);
 
     /**
      * @return all properties to be passed to the factory
