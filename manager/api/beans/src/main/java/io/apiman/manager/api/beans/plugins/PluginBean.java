@@ -40,7 +40,7 @@ public class PluginBean implements Serializable {
 
     private static final long serialVersionUID = 2932636903455749308L;
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue
     private Long id;
     @Column(name = "group_id", updatable=false, nullable=false)
     private String groupId;
