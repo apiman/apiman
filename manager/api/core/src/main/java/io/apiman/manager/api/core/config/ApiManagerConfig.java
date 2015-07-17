@@ -207,68 +207,42 @@ public class ApiManagerConfig {
      * @return any custom properties associated with the storage (useful for custom impls)
      */
     public Map<String, String> getStorageProperties() {
-        Map<String, String> rval = new HashMap<>();
-        @SuppressWarnings("unchecked")
-        Iterator<String> keys = getConfig().getKeys();
-        while (keys.hasNext()) {
-            String key = keys.next();
-            if (key.startsWith("apiman-manager.storage.")) { //$NON-NLS-1$
-                String value = getConfig().getString(key);
-                key = key.substring("apiman-manager.storage.".length()); //$NON-NLS-1$
-                rval.put(key, value);
-            }
-        }
-        return rval;
+        return getPrefixedProperties("apiman-manager.storage."); //$NON-NLS-1$
     }
 
     /**
      * @return any custom properties associated with the storage query impl
      */
     public Map<String, String> getStorageQueryProperties() {
-        Map<String, String> rval = new HashMap<>();
-        @SuppressWarnings("unchecked")
-        Iterator<String> keys = getConfig().getKeys();
-        while (keys.hasNext()) {
-            String key = keys.next();
-            if (key.startsWith("apiman-manager.storage-query.type.")) { //$NON-NLS-1$
-                String value = getConfig().getString(key);
-                key = key.substring("apiman-manager.storage-query.type.".length()); //$NON-NLS-1$
-                rval.put(key, value);
-            }
-        }
-        return rval;
+        return getPrefixedProperties("apiman-manager.storage-query.type."); //$NON-NLS-1$
     }
 
     /**
      * @return any custom properties associated with the IDM storage impl (useful for custom impls)
      */
     public Map<String, String> getIdmStorageProperties() {
-        Map<String, String> rval = new HashMap<>();
-        @SuppressWarnings("unchecked")
-        Iterator<String> keys = getConfig().getKeys();
-        while (keys.hasNext()) {
-            String key = keys.next();
-            if (key.startsWith("apiman-manager.idm-storage.")) { //$NON-NLS-1$
-                String value = getConfig().getString(key);
-                key = key.substring("apiman-manager.idm-storage.".length()); //$NON-NLS-1$
-                rval.put(key, value);
-            }
-        }
-        return rval;
+        return getPrefixedProperties("apiman-manager.idm-storage."); //$NON-NLS-1$
     }
 
     /**
      * @return any custom properties associated with the metrics accessor impl
      */
     public Map<String, String> getMetricsProperties() {
+        return getPrefixedProperties("apiman-manager.metrics."); //$NON-NLS-1$
+    }
+    
+    /**
+     * Gets a map of properties prefixed by the given string.
+     */
+    protected Map<String, String> getPrefixedProperties(String prefix) {
         Map<String, String> rval = new HashMap<>();
         @SuppressWarnings("unchecked")
         Iterator<String> keys = getConfig().getKeys();
         while (keys.hasNext()) {
             String key = keys.next();
-            if (key.startsWith("apiman-manager.metrics.")) { //$NON-NLS-1$
+            if (key.startsWith(prefix)) {
                 String value = getConfig().getString(key);
-                key = key.substring("apiman-manager.metrics.".length()); //$NON-NLS-1$
+                key = key.substring(prefix.length());
                 rval.put(key, value);
             }
         }
