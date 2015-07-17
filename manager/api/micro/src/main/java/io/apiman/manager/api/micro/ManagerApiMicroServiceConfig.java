@@ -22,6 +22,7 @@ import io.apiman.manager.api.jpa.IJpaProperties;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -31,7 +32,6 @@ import javax.inject.Inject;
 
 import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.Configuration;
-import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 
 /**
@@ -41,6 +41,8 @@ import org.apache.commons.configuration.PropertiesConfiguration;
  */
 @ApplicationScoped
 public class ManagerApiMicroServiceConfig extends ApiManagerConfig implements IJpaProperties {
+
+    public static final String APIMAN_PROPERTIES_URL = "apiman.micro.properties-url"; //$NON-NLS-1$
 
     public static final String APIMAN_PLUGIN_DIRECTORY = "apiman.plugins.plugin-directory"; //$NON-NLS-1$
 
@@ -61,8 +63,12 @@ public class ManagerApiMicroServiceConfig extends ApiManagerConfig implements IJ
     protected Configuration loadProperties() {
         CompositeConfiguration config = (CompositeConfiguration) super.loadProperties();
         try {
-            config.addConfiguration(new PropertiesConfiguration(getClass().getClassLoader().getResource("micro-apiman.properties"))); //$NON-NLS-1$
-        } catch (ConfigurationException e) {
+            String propsUrl = System.getProperty(APIMAN_PROPERTIES_URL);
+            if (propsUrl == null) {
+                propsUrl = getClass().getClassLoader().getResource("micro-apiman.properties").toString(); //$NON-NLS-1$
+            }
+            config.addConfiguration(new PropertiesConfiguration(new URL(propsUrl)));
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
         return config;
@@ -95,6 +101,7 @@ public class ManagerApiMicroServiceConfig extends ApiManagerConfig implements IJ
     @Override
     public Map<String, String> getAllHibernateProperties() {
         Map<String, String> rval = new HashMap<>();
+        @SuppressWarnings("unchecked")
         Iterator<String> keys = getConfig().getKeys();
         while (keys.hasNext()) {
             String key = keys.next();

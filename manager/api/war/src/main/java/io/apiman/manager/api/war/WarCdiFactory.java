@@ -127,62 +127,6 @@ public class WarCdiFactory {
         }
     }
 
-    /**
-     * Creates a custom component from information found in the properties file.
-     * @param componentType
-     * @param componentSpec
-     * @param configProperties
-     * @param pluginRegistry
-     */
-    private static <T> T createCustomComponent(Class<T> componentType, String componentSpec,
-            Map<String, String> configProperties, IPluginRegistry pluginRegistry) throws Exception {
-        if (componentSpec == null) {
-            throw new IllegalArgumentException("Null component type."); //$NON-NLS-1$
-        }
-
-        if (componentSpec.startsWith("class:")) { //$NON-NLS-1$
-            Class<?> c = ReflectionUtils.loadClass(componentSpec.substring("class:".length())); //$NON-NLS-1$
-            return createCustomComponent(componentType, c, configProperties);
-        } else if (componentSpec.startsWith("plugin:")) { //$NON-NLS-1$
-            PluginCoordinates coordinates = PluginCoordinates.fromPolicySpec(componentSpec);
-            if (coordinates == null) {
-                throw new IllegalArgumentException("Invalid plugin component spec: " + componentSpec); //$NON-NLS-1$
-            }
-            int ssidx = componentSpec.indexOf('/');
-            if (ssidx == -1) {
-                throw new IllegalArgumentException("Invalid plugin component spec: " + componentSpec); //$NON-NLS-1$
-            }
-            String classname = componentSpec.substring(ssidx + 1);
-            Plugin plugin = pluginRegistry.loadPlugin(coordinates);
-            PluginClassLoader classLoader = plugin.getLoader();
-            Class<?> class1 = classLoader.loadClass(classname);
-            return createCustomComponent(componentType, class1, configProperties);
-        } else {
-            Class<?> c = ReflectionUtils.loadClass(componentSpec);
-            return createCustomComponent(componentType, c, configProperties);
-        }
-    }
-
-    /**
-     * Creates a custom component from a loaded class.
-     * @param componentType
-     * @param componentClass
-     * @param configProperties
-     */
-    @SuppressWarnings("unchecked")
-    private static <T> T createCustomComponent(Class<T> componentType, Class<?> componentClass,
-            Map<String, String> configProperties) throws Exception {
-        if (componentClass == null) {
-            throw new IllegalArgumentException("Invalid component spec (class not found)."); //$NON-NLS-1$
-        }
-        try {
-            Constructor<?> constructor = componentClass.getConstructor(Map.class);
-            return (T) constructor.newInstance(configProperties);
-        } catch (Exception e) {
-        }
-        return (T) componentClass.getConstructor().newInstance();
-    }
-
     @Produces @ApplicationScoped
     public static IMetricsAccessor provideMetricsAccessor(WarApiManagerConfig config,
             @New NoOpMetricsAccessor noopMetrics, @New ESMetricsAccessor esMetrics, IPluginRegistry pluginRegistry) {
@@ -292,6 +236,62 @@ public class WarCdiFactory {
             }
         }
         return sESStorage;
+    }
+
+    /**
+     * Creates a custom component from information found in the properties file.
+     * @param componentType
+     * @param componentSpec
+     * @param configProperties
+     * @param pluginRegistry
+     */
+    private static <T> T createCustomComponent(Class<T> componentType, String componentSpec,
+            Map<String, String> configProperties, IPluginRegistry pluginRegistry) throws Exception {
+        if (componentSpec == null) {
+            throw new IllegalArgumentException("Null component type."); //$NON-NLS-1$
+        }
+
+        if (componentSpec.startsWith("class:")) { //$NON-NLS-1$
+            Class<?> c = ReflectionUtils.loadClass(componentSpec.substring("class:".length())); //$NON-NLS-1$
+            return createCustomComponent(componentType, c, configProperties);
+        } else if (componentSpec.startsWith("plugin:")) { //$NON-NLS-1$
+            PluginCoordinates coordinates = PluginCoordinates.fromPolicySpec(componentSpec);
+            if (coordinates == null) {
+                throw new IllegalArgumentException("Invalid plugin component spec: " + componentSpec); //$NON-NLS-1$
+            }
+            int ssidx = componentSpec.indexOf('/');
+            if (ssidx == -1) {
+                throw new IllegalArgumentException("Invalid plugin component spec: " + componentSpec); //$NON-NLS-1$
+            }
+            String classname = componentSpec.substring(ssidx + 1);
+            Plugin plugin = pluginRegistry.loadPlugin(coordinates);
+            PluginClassLoader classLoader = plugin.getLoader();
+            Class<?> class1 = classLoader.loadClass(classname);
+            return createCustomComponent(componentType, class1, configProperties);
+        } else {
+            Class<?> c = ReflectionUtils.loadClass(componentSpec);
+            return createCustomComponent(componentType, c, configProperties);
+        }
+    }
+
+    /**
+     * Creates a custom component from a loaded class.
+     * @param componentType
+     * @param componentClass
+     * @param configProperties
+     */
+    @SuppressWarnings("unchecked")
+    private static <T> T createCustomComponent(Class<T> componentType, Class<?> componentClass,
+            Map<String, String> configProperties) throws Exception {
+        if (componentClass == null) {
+            throw new IllegalArgumentException("Invalid component spec (class not found)."); //$NON-NLS-1$
+        }
+        try {
+            Constructor<?> constructor = componentClass.getConstructor(Map.class);
+            return (T) constructor.newInstance(configProperties);
+        } catch (Exception e) {
+        }
+        return (T) componentClass.getConstructor().newInstance();
     }
 
     private static Class<? extends IApimanDelegateLogger> getDelegate(WarApiManagerConfig config) {

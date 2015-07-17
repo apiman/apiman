@@ -19,6 +19,7 @@ import io.apiman.common.servlet.ApimanCorsFilter;
 import io.apiman.common.servlet.AuthenticationFilter;
 import io.apiman.common.servlet.DisableCachingFilter;
 import io.apiman.common.servlet.LocaleFilter;
+import io.apiman.common.servlet.RootResourceFilter;
 import io.apiman.manager.api.security.impl.DefaultSecurityContextFilter;
 
 import java.util.EnumSet;
@@ -103,7 +104,7 @@ public class ManagerApiMicroService {
          * Manager API
          * ************* */
         ServletContextHandler apiManServer = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        apiManServer.setSecurityHandler(createSecurityHandler());
+        addSecurityHandler(apiManServer);
         apiManServer.setContextPath("/apiman");
         apiManServer.addEventListener(new Listener());
         apiManServer.addEventListener(new BeanManagerResourceBindingListener());
@@ -111,8 +112,9 @@ public class ManagerApiMicroService {
         apiManServer.addFilter(LocaleFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
         apiManServer.addFilter(ApimanCorsFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
         apiManServer.addFilter(DisableCachingFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
-        apiManServer.addFilter(AuthenticationFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
+        addAuthFilter(apiManServer);
         apiManServer.addFilter(DefaultSecurityContextFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
+        apiManServer.addFilter(RootResourceFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
         ServletHolder resteasyServlet = new ServletHolder(new HttpServletDispatcher());
         resteasyServlet.setInitParameter("javax.ws.rs.Application", ManagerApiMicroServiceApplication.class.getName());
         apiManServer.addServlet(resteasyServlet, "/*");
@@ -124,18 +126,28 @@ public class ManagerApiMicroService {
         handlers.addHandler(apiManServer);
     }
 
+
+    /**
+     * @param apiManServer
+     */
+    protected void addSecurityHandler(ServletContextHandler apiManServer) {
+        apiManServer.setSecurityHandler(createSecurityHandler());
+    }
+
+    /**
+     * @param apiManServer
+     */
+    protected void addAuthFilter(ServletContextHandler apiManServer) {
+        apiManServer.addFilter(AuthenticationFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
+    }
+
     /**
      * Creates a basic auth security handler.
      */
-    private SecurityHandler createSecurityHandler() {
+    protected SecurityHandler createSecurityHandler() {
         HashLoginService l = new HashLoginService();
-        for (String [] userInfo : DefaultUsers.USERS) {
-            String user = userInfo[0];
-            String pwd = userInfo[1];
-            String[] roles = new String[] { "apiuser" };
-            if (user.startsWith("admin"))
-                roles = new String[] { "apiuser", "apiadmin"};
-            l.putUser(user, Credential.getCredential(pwd), roles);
+        for (User user : Users.getUsers()) {
+            l.putUser(user.getId(), Credential.getCredential(user.getPassword()), user.getRolesAsArray());
         }
         l.setName("apimanrealm");
 
