@@ -1,0 +1,14 @@
+== VertxServiceResponse
+
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+
+|[[code]]`code`
+|`Number`
+|-
+|[[message]]`message`
+|`String`
+|-|===

@@ -6,16 +6,29 @@
   <parent>
     <groupId>io.apiman</groupId>
     <artifactId>apiman-gateway-platforms</artifactId>
-    <version>1.1.6-SNAPSHOT</version>
+    <version>1.1.4-SNAPSHOT</version>
   </parent>
 
-  <artifactId>apiman-gateway-platforms-vertx</artifactId>
+  <artifactId>apiman-gateway-platforms-vertx2</artifactId>
   <packaging>jar</packaging>
-  <name>apiman-gateway-platforms-vertx</name>
+  <name>apiman-gateway-platforms-vertx2</name>
 
   <properties>
-    <main.verticle>xyz</main.verticle>
+    <main.verticle>io.apiman.gateway.platforms.vertx2.HelloWorldVerticle</main.verticle>
   </properties>
+  
+<!--   <dependencyManagement>
+    <dependencies>
+          
+      <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>stack-depchain</artifactId>
+      <version>3.0.0</version>
+      <type>pom</type>
+    </dependency>
+  
+    </dependencies>
+  </dependencyManagement> -->
 
   <dependencies>
     <!--Vertx provided dependencies -->
@@ -24,19 +37,24 @@
       <artifactId>vertx-core</artifactId>
     </dependency>
 
-    <!-- Add hazelcast deps if you want it clusterable -->
+    <!-- change to jgroups? -->
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-hazelcast</artifactId>
     </dependency>
-
-
-    <!--Test dependencies -->
+    
     <dependency>
       <groupId>io.vertx</groupId>
-      <artifactId>testtools</artifactId>
-      <scope>test</scope>
+      <artifactId>vertx-service-proxy</artifactId>
+      <version>3.0.0</version>
     </dependency>
+    
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-codegen</artifactId>
+      <version>3.0.0</version>
+    </dependency>
+    
 
     <!-- apiman dependencies -->
     <dependency>
@@ -87,6 +105,26 @@
             <target>1.8</target>
           </configuration>
         </plugin>
+        
+        <!-- Configure the execution of the compiler to execute the codegen processor -->
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.1</version>
+          <configuration>
+            <source>1.8</source>
+            <target>1.8</target>
+            <annotationProcessors>
+              <annotationProcessor>io.vertx.codegen.CodeGenProcessor</annotationProcessor>
+            </annotationProcessors>
+            <generatedSourcesDirectory>
+              ${project.basedir}/src/main/generated
+            </generatedSourcesDirectory>
+            <compilerArgs>
+              <arg>-AoutputDirectory=${project.basedir}/src/main</arg>
+            </compilerArgs>
+          </configuration>
+        </plugin>
+        
       </plugins>
     </pluginManagement>
 

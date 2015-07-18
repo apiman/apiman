@@ -13,7 +13,8 @@
   <modules>
     <module>servlet</module>
     <module>undertow</module>
-    <module>vertx</module>
+    <!-- <module>vertx</module> -->
+    <module>vertx2</module>
     <module>war</module>
     <module>war/micro</module>
     <module>war/wildfly8</module>
