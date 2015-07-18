@@ -24,7 +24,6 @@ import io.apiman.gateway.engine.components.http.IHttpClientResponse;
 import io.apiman.gateway.platforms.vertx2.i18n.Messages;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
-import io.vertx.core.VoidHandler;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientRequest;
@@ -75,21 +74,13 @@ public class HttpClientComponentImpl implements IHttpClientComponent {
             this.response = response;
 
             // The interface stipulates accumulating the whole body,
-            response.bodyHandler(new Handler<Buffer>() {
-
-                @Override
-                public void handle(Buffer wholeBody) {
-                    body = wholeBody;
-                }
+            response.bodyHandler((Handler<Buffer>) wholeBody -> {
+                body = wholeBody;
             });
 
-            response.endHandler(new VoidHandler() {
-
-                @Override
-                public void handle() {
-                    responseHandler.handle(AsyncResultImpl
-                            .<IHttpClientResponse> create(HttpClientResponseImpl.this));
-                }
+            response.endHandler((Handler<Void>) v -> {
+                responseHandler.handle(AsyncResultImpl
+                        .<IHttpClientResponse> create(HttpClientResponseImpl.this));
             });
         }
 

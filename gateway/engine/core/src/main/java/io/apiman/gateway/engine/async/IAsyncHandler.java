@@ -17,16 +17,17 @@ package io.apiman.gateway.engine.async;
 
 /**
  * Asynchronous handler called when an async operation completes.
- * 
+ *
  * @author Marc Savy <msavy@redhat.com>
  *
  * @param <T> The event to handle
  */
+@FunctionalInterface
 public interface IAsyncHandler<T> {
-    
+
     /**
      * Called when an async result is available.
-     * 
+     *
      * @param result the result
      */
     void handle(T result);

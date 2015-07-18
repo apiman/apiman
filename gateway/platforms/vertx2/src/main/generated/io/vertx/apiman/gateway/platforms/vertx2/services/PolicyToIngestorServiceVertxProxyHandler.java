@@ -90,6 +90,7 @@ public class PolicyToIngestorServiceVertxProxyHandler extends ProxyHandler {
   private void checkTimedOut(long id) {
     long now = System.nanoTime();
     if (now - lastAccessed > timeoutSeconds * 1000000000) {
+      service.end();
       close();
     }
   }
@@ -126,6 +127,7 @@ public class PolicyToIngestorServiceVertxProxyHandler extends ProxyHandler {
       }
       case "end": {
         service.end();
+        close();
         break;
       }
       default: {

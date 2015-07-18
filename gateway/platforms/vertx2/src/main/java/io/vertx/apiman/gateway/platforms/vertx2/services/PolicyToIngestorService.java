@@ -1,6 +1,7 @@
 package io.vertx.apiman.gateway.platforms.vertx2.services;
 
 import io.vertx.apiman.gateway.platforms.vertx2.services.impl2.PolicyToIngestorServiceImpl;
+import io.vertx.codegen.annotations.ProxyClose;
 import io.vertx.codegen.annotations.ProxyGen;
 import io.vertx.codegen.annotations.VertxGen;
 import io.vertx.core.AsyncResult;
@@ -47,6 +48,6 @@ public interface PolicyToIngestorService {
     /**
      * Finished transmitting body chunks
      */
-    //@ProxyClose
+    @ProxyClose
     void end();
 }

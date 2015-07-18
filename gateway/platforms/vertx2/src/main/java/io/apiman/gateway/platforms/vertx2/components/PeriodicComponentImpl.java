@@ -30,7 +30,6 @@ import java.util.Map;
  * @author Marc Savy <msavy@redhat.com>
  */
 public class PeriodicComponentImpl implements IPeriodicComponent {
-
     private Vertx vertx;
     private Map<Long, Long> timerMap = new LinkedHashMap<>();
     private long id = 0;
@@ -55,23 +54,15 @@ public class PeriodicComponentImpl implements IPeriodicComponent {
         final long timerId = id++;
 
         // Do the initial delay, then map the next timer back to our ID.
-        long vertxId = vertx.setTimer(initialDelayMillis, new Handler<Long>() {
+        long vertxId = vertx.setTimer(initialDelayMillis, (Handler<Long>) tid -> {
 
-            @Override
-            public void handle(Long id) {
+            long newVertxId = vertx.setPeriodic(periodMillis,  (Handler<Long>) tid2 -> {
+                periodicHandler.handle(timerId);
+            });
 
-                long newVertxId = vertx.setPeriodic(periodMillis, new Handler<Long>() {
-
-                    @Override
-                    public void handle(Long id) {
-                        periodicHandler.handle(timerId);
-                    }
-                });
-
-                // Periodic delay - re-map to the new Vert.x timer ID, as original timer ID is now invalid.
-                // Vert.x. is single-threaded per-verticle so this should be safe.
-                timerMap.put(timerId, newVertxId);
-            }
+            // Periodic delay - re-map to the new Vert.x timer ID, as original timer ID is now invalid.
+            // Vert.x. is single-threaded per-verticle so this should be safe.
+            timerMap.put(timerId, newVertxId);
         });
 
         timerMap.put(timerId, vertxId);
@@ -86,16 +77,11 @@ public class PeriodicComponentImpl implements IPeriodicComponent {
     public long setOneshotTimer(long deltaMillis, final IAsyncHandler<Long> timerHandler) {
         final long timerId = id++;
 
-        long vertxTimerId = vertx.setTimer(deltaMillis, new Handler<Long>() {
-
-            @Override
-            public void handle(Long id) {
-                timerHandler.handle(timerId);
-            }
+        long vertxTimerId = vertx.setTimer(deltaMillis, (Handler<Long>) tid -> {
+            timerHandler.handle(timerId);
         });
 
         timerMap.put(timerId, vertxTimerId);
-
         return timerId;
     }
 

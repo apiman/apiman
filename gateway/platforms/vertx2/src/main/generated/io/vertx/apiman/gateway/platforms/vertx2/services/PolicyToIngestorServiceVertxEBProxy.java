@@ -83,6 +83,7 @@ public class PolicyToIngestorServiceVertxEBProxy implements PolicyToIngestorServ
     if (closed) {
       throw new IllegalStateException("Proxy is closed");
     }
+    closed = true;
     JsonObject _json = new JsonObject();
     DeliveryOptions _deliveryOptions = new DeliveryOptions();
     _deliveryOptions.addHeader("action", "end");

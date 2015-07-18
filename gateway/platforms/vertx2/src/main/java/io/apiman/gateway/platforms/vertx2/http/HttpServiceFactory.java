@@ -26,14 +26,13 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
-
 /**
  * Construct {@link VertxServiceRequest} and {@link VertxServiceResponse} objects from {@link HttpServerRequest},
  * {@link HttpServerResponse} and {@link HttpClientResponse}
  *
  * @author Marc Savy <msavy@redhat.com>
  */
+@SuppressWarnings("nls")
 public class HttpServiceFactory {
 
     public static VertxServiceResponse buildResponse(HttpClientResponse response, Set<String> suppressHeaders) {
@@ -51,13 +50,12 @@ public class HttpServiceFactory {
         httpServerResponse.setStatusMessage(amanResponse.getMessage());
     }
 
-    public static VertxServiceRequest buildRequest(HttpServerRequest req, String stripFromStart, boolean isTransportSecure) {
+    public static VertxServiceRequest buildRequest(HttpServerRequest req, boolean isTransportSecure) {
         VertxServiceRequest apimanRequest = new VertxServiceRequest();
         apimanRequest.setApiKey(parseApiKey(req));
         parseHeaders(apimanRequest.getHeaders(), req.headers(), Collections.<String>emptySet());
 
-        // Remove the gateway's URI from the start of the path if it's there.
-        apimanRequest.setDestination(StringUtils.removeStart(req.path(), "/" + stripFromStart)); //$NON-NLS-1$
+        apimanRequest.setDestination(req.path()); // TODO RESTful path twiddling stuff here?
         //apimanRequest.setRemoteAddr(req.remoteAddress().getAddress().getHostAddress());
         apimanRequest.setRemoteAddr(req.remoteAddress().host()); // TODO hmm
         apimanRequest.setType(req.method().toString());
@@ -75,7 +73,7 @@ public class HttpServiceFactory {
     }
 
     private static String parseApiKey(HttpServerRequest req) {
-        String headerKey = req.headers().get("X-API-Key"); //$NON-NLS-1$
+        String headerKey = req.headers().get("X-API-Key");
         if (headerKey == null || headerKey.trim().length() == 0) {
             headerKey = parseApiKeyFromQuery(req);
         }
@@ -86,9 +84,9 @@ public class HttpServiceFactory {
         String queryString = req.query();
 
         if(queryString == null)
-            return "<none>"; //$NON-NLS-1$
+            return "<none>";
 
-        int idx = queryString.indexOf("apikey="); //$NON-NLS-1$
+        int idx = queryString.indexOf("apikey=");
         if (idx >= 0) {
             int endIdx = queryString.indexOf('&', idx);
             if (endIdx == -1) {
