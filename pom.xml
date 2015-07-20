@@ -137,7 +137,7 @@
     <version.org.jboss.logging.jboss-logging>3.1.4.GA</version.org.jboss.logging.jboss-logging>
     <version.org.jboss.resteasy>2.3.7.Final</version.org.jboss.resteasy>
     <version.org.jboss.spec.javax.servlet.jboss-servlet-api_3.0_spec>1.0.2.Final</version.org.jboss.spec.javax.servlet.jboss-servlet-api_3.0_spec>
-    <version.org.jboss.weld.weld>2.2.9.Final</version.org.jboss.weld.weld>
+    <version.org.jboss.weld.weld>2.2.14.Final</version.org.jboss.weld.weld>
     <version.org.keycloak>1.2.0.Final</version.org.keycloak>
     <version.org.mockito>1.9.5</version.org.mockito>
     <version.org.mvel>2.2.2.Final</version.org.mvel>
@@ -504,6 +504,16 @@
         <artifactId>jetty-util</artifactId>
         <version>${version.org.eclipse.jetty}</version>
       </dependency>
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-rewrite</artifactId>
+        <version>${version.org.eclipse.jetty}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-io</artifactId>
+        <version>${version.org.eclipse.jetty}</version>
+      </dependency>
 
       <!-- Hibernate -->
       <dependency>
@@ -736,6 +746,11 @@
         <groupId>org.jboss.resteasy</groupId>
         <artifactId>resteasy-jaxb-provider</artifactId>
         <version>${version.org.jboss.resteasy}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.weld</groupId>
+        <artifactId>weld-core</artifactId>
+        <version>${version.org.jboss.weld.weld}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.weld.se</groupId>

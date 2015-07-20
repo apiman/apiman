@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.manager.api.war;
+package io.apiman.manager.api.micro;
 
 import io.apiman.common.plugin.Plugin;
 import io.apiman.common.plugin.PluginClassLoader;
@@ -26,12 +26,9 @@ import io.apiman.manager.api.core.IPluginRegistry;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
 import io.apiman.manager.api.core.UuidApiKeyGenerator;
-import io.apiman.manager.api.core.i18n.Messages;
 import io.apiman.manager.api.core.logging.ApimanLogger;
-import io.apiman.manager.api.core.logging.IApimanDelegateLogger;
 import io.apiman.manager.api.core.logging.IApimanLogger;
 import io.apiman.manager.api.core.logging.JsonLoggerImpl;
-import io.apiman.manager.api.core.logging.StandardLoggerImpl;
 import io.apiman.manager.api.core.noop.NoOpMetricsAccessor;
 import io.apiman.manager.api.es.ESMetricsAccessor;
 import io.apiman.manager.api.es.EsStorage;
@@ -39,7 +36,6 @@ import io.apiman.manager.api.jpa.JpaStorage;
 import io.apiman.manager.api.jpa.roles.JpaIdmStorage;
 import io.apiman.manager.api.security.ISecurityContext;
 import io.apiman.manager.api.security.impl.DefaultSecurityContext;
-import io.apiman.manager.api.security.impl.KeycloakSecurityContext;
 import io.searchbox.client.JestClient;
 import io.searchbox.client.JestClientFactory;
 import io.searchbox.client.config.HttpClientConfig;
@@ -53,46 +49,28 @@ import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Named;
 
-import org.apache.commons.lang.StringUtils;
-
 /**
  * Attempt to create producer methods for CDI beans.
  *
  * @author eric.wittmann@redhat.com
  */
 @ApplicationScoped
-public class WarCdiFactory {
+public class ManagerApiMicroServiceCdiFactory {
 
     private static JestClient sStorageESClient;
     private static JestClient sMetricsESClient;
     private static EsStorage sESStorage;
 
     @Produces @ApimanLogger
-    public static IApimanLogger provideLogger(WarApiManagerConfig config, InjectionPoint injectionPoint) {
-        try {
-            ApimanLogger logger = injectionPoint.getAnnotated().getAnnotation(ApimanLogger.class);
-            Class<?> klazz = logger.value();
-            return getDelegate(config).newInstance().createLogger(klazz);
-        } catch (InstantiationException | IllegalAccessException e) {
-            throw new RuntimeException(String.format(
-                    Messages.i18n.format("LoggerFactory.InstantiationFailed")), e); //$NON-NLS-1$
-        }
+    public static IApimanLogger provideLogger(ManagerApiMicroServiceConfig config, InjectionPoint injectionPoint) {
+        ApimanLogger logger = injectionPoint.getAnnotated().getAnnotation(ApimanLogger.class);
+        Class<?> requestorKlazz = logger.value();
+        return new JsonLoggerImpl().createLogger(requestorKlazz);
     }
 
-    @Produces @ApplicationScoped
-    public static ISecurityContext provideSecurityContext(WarApiManagerConfig config,
-            @New DefaultSecurityContext defaultSC, @New KeycloakSecurityContext keycloakSC) {
-        if ("default".equals(config.getSecurityContextType())) { //$NON-NLS-1$
-            return defaultSC;
-        } else if ("keycloak".equals(config.getSecurityContextType())) { //$NON-NLS-1$
-            return keycloakSC;
-        } else {
-            throw new RuntimeException("Unknown security context type: " + config.getSecurityContextType()); //$NON-NLS-1$
-        }
-    }
-
-    @Produces @ApplicationScoped
-    public static IStorage provideStorage(WarApiManagerConfig config, @New JpaStorage jpaStorage,
+    @Produces
+    @ApplicationScoped
+    public static IStorage provideStorage(ManagerApiMicroServiceConfig config, @New JpaStorage jpaStorage,
             @New EsStorage esStorage, IPluginRegistry pluginRegistry) {
         IStorage storage = null;
         if ("jpa".equals(config.getStorageType())) { //$NON-NLS-1$
@@ -110,8 +88,14 @@ public class WarCdiFactory {
         return storage;
     }
 
+
     @Produces @ApplicationScoped
-    public static IStorageQuery provideStorageQuery(WarApiManagerConfig config, @New JpaStorage jpaStorage,
+    public static ISecurityContext provideSecurityContext(@New DefaultSecurityContext defaultSC) {
+        return defaultSC;
+    }
+
+    @Produces @ApplicationScoped
+    public static IStorageQuery provideStorageQuery(ManagerApiMicroServiceConfig config, @New JpaStorage jpaStorage,
             @New EsStorage esStorage, IPluginRegistry pluginRegistry) {
         if ("jpa".equals(config.getStorageType())) { //$NON-NLS-1$
             return jpaStorage;
@@ -128,7 +112,7 @@ public class WarCdiFactory {
     }
 
     @Produces @ApplicationScoped
-    public static IMetricsAccessor provideMetricsAccessor(WarApiManagerConfig config,
+    public static IMetricsAccessor provideMetricsAccessor(ManagerApiMicroServiceConfig config,
             @New NoOpMetricsAccessor noopMetrics, @New ESMetricsAccessor esMetrics, IPluginRegistry pluginRegistry) {
         IMetricsAccessor metrics = null;
         if ("es".equals(config.getMetricsType())) { //$NON-NLS-1$
@@ -145,14 +129,15 @@ public class WarCdiFactory {
         return metrics;
     }
 
+
     @Produces @ApplicationScoped
     public static IApiKeyGenerator provideApiKeyGenerator(@New UuidApiKeyGenerator uuidApiKeyGen) {
         return uuidApiKeyGen;
     }
 
     @Produces @ApplicationScoped
-    public static IIdmStorage provideIdmStorage(WarApiManagerConfig config, @New JpaIdmStorage jpaIdmStorage,
-            @New EsStorage esStorage, IPluginRegistry pluginRegistry) {
+    public static IIdmStorage provideIdmStorage(ManagerApiMicroServiceConfig config,
+            @New JpaIdmStorage jpaIdmStorage, @New EsStorage esStorage, IPluginRegistry pluginRegistry) {
         if ("jpa".equals(config.getStorageType())) { //$NON-NLS-1$
             return jpaIdmStorage;
         } else if ("es".equals(config.getStorageType())) { //$NON-NLS-1$
@@ -168,7 +153,7 @@ public class WarCdiFactory {
     }
 
     @Produces @ApplicationScoped @Named("storage")
-    public static JestClient provideStorageESClient(WarApiManagerConfig config) {
+    public static JestClient provideStorageESClient(ManagerApiMicroServiceConfig config) {
         if ("es".equals(config.getStorageType())) { //$NON-NLS-1$
             if (sStorageESClient == null) {
                 sStorageESClient = createStorageJestClient(config);
@@ -178,7 +163,7 @@ public class WarCdiFactory {
     }
 
     @Produces @ApplicationScoped @Named("metrics")
-    public static JestClient provideMetricsESClient(WarApiManagerConfig config) {
+    public static JestClient provideMetricsESClient(ManagerApiMicroServiceConfig config) {
         if ("es".equals(config.getMetricsType())) { //$NON-NLS-1$
             if (sMetricsESClient == null) {
                 sMetricsESClient = createMetricsJestClient(config);
@@ -191,7 +176,7 @@ public class WarCdiFactory {
      * @param config
      * @return create a new test ES client
      */
-    private static JestClient createStorageJestClient(WarApiManagerConfig config) {
+    private static JestClient createStorageJestClient(ManagerApiMicroServiceConfig config) {
         StringBuilder builder = new StringBuilder();
         builder.append(config.getStorageESProtocol());
         builder.append("://"); //$NON-NLS-1$
@@ -209,7 +194,7 @@ public class WarCdiFactory {
      * @param config
      * @return create a new test ES client
      */
-    private static JestClient createMetricsJestClient(WarApiManagerConfig config) {
+    private static JestClient createMetricsJestClient(ManagerApiMicroServiceConfig config) {
         StringBuilder builder = new StringBuilder();
         builder.append(config.getMetricsESProtocol());
         builder.append("://"); //$NON-NLS-1$
@@ -228,7 +213,7 @@ public class WarCdiFactory {
      * @param config
      * @param esStorage
      */
-    private static EsStorage initES(WarApiManagerConfig config, EsStorage esStorage) {
+    private static EsStorage initES(ManagerApiMicroServiceConfig config, EsStorage esStorage) {
         if (sESStorage == null) {
             sESStorage = esStorage;
             if (config.isInitializeStorageES()) {
@@ -294,31 +279,4 @@ public class WarCdiFactory {
         return (T) componentClass.getConstructor().newInstance();
     }
 
-    private static Class<? extends IApimanDelegateLogger> getDelegate(WarApiManagerConfig config) {
-        if(config.getLoggerName() == null || StringUtils.isEmpty(config.getLoggerName())) {
-            System.err.println(Messages.i18n.format("LoggerFactory.NoLoggerSpecified")); //$NON-NLS-1$
-            return StandardLoggerImpl.class;
-        }
-
-        switch(config.getLoggerName().toLowerCase()) {
-            case "json": //$NON-NLS-1$
-                return JsonLoggerImpl.class;
-            case "standard": //$NON-NLS-1$
-                return StandardLoggerImpl.class;
-            default:
-                return loadByFQDN(config.getLoggerName());
-        }
-
-    }
-
-    @SuppressWarnings("unchecked")
-    private static Class<? extends IApimanDelegateLogger> loadByFQDN(String fqdn) {
-        try {
-            return (Class<? extends IApimanDelegateLogger>) Class.forName(fqdn);
-        } catch (ClassNotFoundException e) {
-            System.err.println(String.format(Messages.i18n.format("LoggerFactory.LoggerNotFoundOnClasspath"), //$NON-NLS-1$
-                    fqdn));
-            return StandardLoggerImpl.class;
-        }
-    }
 }
