@@ -22,6 +22,7 @@ import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.PolicyFailureType;
 import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
+import io.apiman.gateway.engine.metrics.RequestMetric;
 import io.apiman.gateway.engine.policies.auth.JDBCIdentityValidator;
 import io.apiman.gateway.engine.policies.auth.LDAPIdentityValidator;
 import io.apiman.gateway.engine.policies.auth.StaticIdentityValidator;
@@ -29,6 +30,7 @@ import io.apiman.gateway.engine.policies.config.BasicAuthenticationConfig;
 import io.apiman.gateway.engine.policies.i18n.Messages;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
+import io.apiman.gateway.engine.policy.PolicyContextKeys;
 
 import org.apache.commons.codec.binary.Base64;
 
@@ -113,6 +115,10 @@ public class BasicAuthenticationPolicy extends AbstractMappedPolicy<BasicAuthent
                         String forwardIdentityHttpHeader = config.getForwardIdentityHttpHeader();
                         if (forwardIdentityHttpHeader != null && !forwardIdentityHttpHeader.trim().isEmpty()) {
                             request.getHeaders().put(forwardIdentityHttpHeader, forwardedUsername);
+                        }
+                        RequestMetric metric = context.getAttribute(PolicyContextKeys.REQUEST_METRIC, (RequestMetric) null);
+                        if (metric != null) {
+                            metric.setUser(forwardedUsername);
                         }
                         // Remove the authorization header so that it doesn't get passed through to the backend service
                         // TODO: make this optional - perhaps they *want* the auth header passed through?

@@ -139,10 +139,12 @@ public class InfluxDb09Metrics implements IMetrics, IRequiresInitialization {
         write("serviceOrgId", quote(metric.getServiceOrgId()), sb);
         write("serviceId", quote(metric.getServiceId()), sb);
         write("serviceVersion", quote(metric.getServiceVersion()), sb);
+        write("planId", quote(metric.getPlanId()), sb);
         write("applicationOrgId", quote(metric.getApplicationOrgId()), sb);
         write("applicationId", quote(metric.getApplicationId()), sb);
         write("applicationVersion", quote(metric.getApplicationVersion()), sb);
         write("contractId", quote(metric.getContractId()), sb);
+        write("user", quote(metric.getUser()), sb);
 
         sb.deleteCharAt(sb.length()-1);
         sb.append(' ');

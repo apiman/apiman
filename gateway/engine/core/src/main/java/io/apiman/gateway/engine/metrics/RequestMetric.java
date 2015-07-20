@@ -46,6 +46,7 @@ public class RequestMetric implements Serializable {
     private String applicationId;
     private String applicationVersion;
     private String contractId;
+    private String user;
     private int responseCode;
     private String responseMessage;
     private boolean failure;
@@ -382,6 +383,20 @@ public class RequestMetric implements Serializable {
      */
     public void setPlanId(String planId) {
         this.planId = planId;
+    }
+
+    /**
+     * @return the user
+     */
+    public String getUser() {
+        return user;
+    }
+
+    /**
+     * @param user the user to set
+     */
+    public void setUser(String user) {
+        this.user = user;
     }
 
 }
