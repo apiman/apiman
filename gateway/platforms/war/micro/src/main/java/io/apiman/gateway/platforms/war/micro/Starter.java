@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 JBoss Inc
+ * Copyright 2013 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,22 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.manager.api.micro;
+
+package io.apiman.gateway.platforms.war.micro;
+
 
 /**
- * Starts the API Manager as a jetty micro service.
+ * Starts the API Gateway as a jetty micro service.
  *
  * @author eric.wittmann@redhat.com
  */
 public class Starter {
 
     /**
-     * Main entry point for the API Manager micro service.
+     * Main entry point for the API Gateway micro service.
      * @param args the arguments
      * @throws Exception when any unhandled exception occurs
      */
     public static final void main(String [] args) throws Exception {
-        ManagerApiMicroService microService = new ManagerApiMicroService();
+        GatewayMicroService microService = new GatewayMicroService();
         microService.start();
         microService.join();
     }

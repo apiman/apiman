@@ -42,7 +42,7 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 @ApplicationScoped
 public class ManagerApiMicroServiceConfig extends ApiManagerConfig implements IJpaProperties {
 
-    public static final String APIMAN_PROPERTIES_URL = "apiman.micro.properties-url"; //$NON-NLS-1$
+    public static final String APIMAN_PROPERTIES_URL = "apiman.micro.manager.properties-url"; //$NON-NLS-1$
 
     public static final String APIMAN_PLUGIN_DIRECTORY = "apiman.plugins.plugin-directory"; //$NON-NLS-1$
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,24 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.manager.api.micro;
+package io.apiman.gateway.platforms.war.micro;
+
+import io.apiman.gateway.api.rest.impl.IPlatform;
+import io.apiman.gateway.api.rest.impl.IPlatformAccessor;
 
 /**
- * Starts the API Manager as a jetty micro service.
+ * Platform accessor for wildfly8.
  *
  * @author eric.wittmann@redhat.com
  */
-public class Starter {
+public class GatewayMicroServicePlatformAccessor implements IPlatformAccessor {
+    
+    private static final GatewayMicroServicePlatform platform = new GatewayMicroServicePlatform();
 
     /**
-     * Main entry point for the API Manager micro service.
-     * @param args the arguments
-     * @throws Exception when any unhandled exception occurs
+     * @see io.apiman.gateway.api.rest.impl.IPlatformAccessor#getPlatform()
      */
-    public static final void main(String [] args) throws Exception {
-        ManagerApiMicroService microService = new ManagerApiMicroService();
-        microService.start();
-        microService.join();
+    @Override
+    public IPlatform getPlatform() {
+        return platform;
     }
-    
+
 }

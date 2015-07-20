@@ -13,7 +13,7 @@
  *  implied.  See the License for the specific language governing
  *  permissions and limitations under the License.
  */
-package io.apiman.manager.api.micro;
+package io.apiman.gateway.platforms.war.micro;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -33,7 +33,7 @@ import org.apache.commons.io.IOUtils;
 @SuppressWarnings("nls")
 public final class Users {
     
-    private static final String USERS_FILE_PROP = "apiman.micro.manager.users-file";
+    private static final String USERS_FILE_PROP = "apiman.micro.gateway.users-file";
 
     public static final List<User> getUsers() {
         List<User> rval = new ArrayList<>();
@@ -56,7 +56,11 @@ public final class Users {
                     User user = new User();
                     user.setId(split[0]);
                     user.setPassword(split[1]);
-                    user.getRoles().add("apipublisher");
+                    user.getRoles().add("apiuser");
+                    boolean isAdmin = "true".equals(split[2]);
+                    if (isAdmin) {
+                        user.getRoles().add("apiadmin");
+                    }
                     rval.add(user);
                 }
             } catch (Throwable t) {

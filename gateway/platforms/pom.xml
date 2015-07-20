@@ -15,6 +15,7 @@
     <module>undertow</module>
     <module>vertx</module>
     <module>war</module>
+    <module>war/micro</module>
     <module>war/wildfly8</module>
   </modules>
   
