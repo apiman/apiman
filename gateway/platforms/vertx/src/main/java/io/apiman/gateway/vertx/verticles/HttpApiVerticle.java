@@ -227,6 +227,9 @@ public class HttpApiVerticle extends ApimanVerticleWithEngine {
             public void handle(HttpServerRequest request) {
                 SystemStatus status = new SystemStatus();// TODO how to get/set global system status? Maybe
                                                          // the init verticle is in charge of this.
+                status.setId("apiman-gateway-api"); //$NON-NLS-1$
+                status.setName("API Gateway REST API"); //$NON-NLS-1$
+                status.setDescription("The API Gateway REST API is used by the API Manager to publish services and register applications.  You can use it directly if you wish, but if you are utilizing the API Manager then it's probably best to avoid invoking this API directly."); //$NON-NLS-1$
                 status.setUp(true);
                 status.setVersion(engine.getVersion());
 

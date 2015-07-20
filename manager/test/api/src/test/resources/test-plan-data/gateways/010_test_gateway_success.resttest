@@ -13,5 +13,5 @@ Content-Type: application/json
 
 {
   "success" : true,
-  "detail" : "{\"up\":true,\"version\":\"1.0.Mock\"}"
+  "detail" : "{\"id\":\"apiman-gateway-api\",\"name\":\"API Gateway REST API\",\"description\":\"\",\"version\":\"1.0.Mock\",\"up\":true}"
 }
