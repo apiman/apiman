@@ -1,6 +1,6 @@
 package io.apiman.plugins.transformation_policy.transformer;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
@@ -9,10 +9,11 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Test;
 
+@SuppressWarnings("nls")
 public class XmlToJsonTransformerTest {
 
 	private XmlToJsonTransformer transformer = new XmlToJsonTransformer();
-	
+
     @Test
     public void test_xmlToJson_1() throws Exception {
         test("xmlToJson-input1.xml", "xmlToJson-output1.json");
@@ -31,7 +32,7 @@ public class XmlToJsonTransformerTest {
 	private void test(String xmlFileName, String jsonFileName) throws Exception {
 		String xml = readFile(xmlFileName);
 		String expectedJson = readFile(jsonFileName);
-		
+
 		String actualJson = transformer.transform(xml);
 
         ObjectMapper mapper = new ObjectMapper();
@@ -43,5 +44,5 @@ public class XmlToJsonTransformerTest {
 	private String readFile(String fileName) throws IOException {
 		return IOUtils.toString(getClass().getClassLoader().getResource("xmlToJson/" + fileName), "UTF-8");
 	}
-	
+
 }

@@ -7,6 +7,7 @@ import io.apiman.test.policies.PolicyTestBackEndServiceResponse;
 
 import java.io.UnsupportedEncodingException;
 
+@SuppressWarnings("nls")
 public class ProduceJsonBackEndService implements IPolicyTestBackEndService {
 
     @Override
@@ -21,5 +22,5 @@ public class ProduceJsonBackEndService implements IPolicyTestBackEndService {
             throw new RuntimeException(e);
         }
     }
-    
+
 }

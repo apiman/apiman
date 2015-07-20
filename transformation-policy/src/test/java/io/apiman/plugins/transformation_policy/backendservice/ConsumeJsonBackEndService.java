@@ -5,6 +5,7 @@ import io.apiman.gateway.engine.beans.ServiceResponse;
 import io.apiman.test.policies.IPolicyTestBackEndService;
 import io.apiman.test.policies.PolicyTestBackEndServiceResponse;
 
+@SuppressWarnings("nls")
 public class ConsumeJsonBackEndService implements IPolicyTestBackEndService {
 
     @Override
@@ -15,5 +16,5 @@ public class ConsumeJsonBackEndService implements IPolicyTestBackEndService {
         ServiceResponse serviceResponse = new ServiceResponse();
         return new PolicyTestBackEndServiceResponse(serviceResponse, null);
     }
-    
+
 }

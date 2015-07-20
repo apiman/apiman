@@ -22,11 +22,11 @@ import io.apiman.plugins.transformation_policy.transformer.DataTransformerFactor
  */
 public class TransformationPolicy extends AbstractMappedPolicy<TransformationConfigBean> implements IDataPolicy {
 
-    private static final String CLIENT_FORMAT = "clientFormat";
-    private static final String SERVER_FORMAT = "serverFormat";
-    private static final String CONTENT_TYPE = "Content-Type";
-    private static final String CONTENT_LENGTH = "Content-Length";
-    
+    private static final String CLIENT_FORMAT = "clientFormat"; //$NON-NLS-1$
+    private static final String SERVER_FORMAT = "serverFormat"; //$NON-NLS-1$
+    private static final String CONTENT_TYPE = "Content-Type"; //$NON-NLS-1$
+    private static final String CONTENT_LENGTH = "Content-Length"; //$NON-NLS-1$
+
     @Override
     protected Class<TransformationConfigBean> getConfigurationClass() {
         return TransformationConfigBean.class;
@@ -37,15 +37,15 @@ public class TransformationPolicy extends AbstractMappedPolicy<TransformationCon
             IPolicyChain<ServiceRequest> chain) {
         DataFormat clientFormat = config.getClientFormat();
         DataFormat serverFormat = config.getServerFormat();
-        
+
         if (isValidTransformation(clientFormat, serverFormat)) {
             context.setAttribute(CLIENT_FORMAT, clientFormat);
             context.setAttribute(SERVER_FORMAT, serverFormat);
-            
+
             request.getHeaders().put(CONTENT_TYPE, serverFormat.getContentType());
             request.getHeaders().remove(CONTENT_LENGTH);
         }
-        
+
         super.doApply(request, context, config, chain);
     }
 
@@ -86,14 +86,14 @@ public class TransformationPolicy extends AbstractMappedPolicy<TransformationCon
 
                         String data = dataTransformer.transform(new String(readBuffer.getBytes()));
                         writeBuffer.append(data);
-                        
+
                         super.write(writeBuffer);
                     }
                     super.end();
                 }
             };
         }
-        
+
         return null;
     }
 
@@ -110,7 +110,7 @@ public class TransformationPolicy extends AbstractMappedPolicy<TransformationCon
 
         super.doApply(response, context, config, chain);
     }
-    
+
     @Override
     public IReadWriteStream<ServiceResponse> getResponseDataHandler(final ServiceResponse response,
             final IPolicyContext context) {
@@ -147,7 +147,7 @@ public class TransformationPolicy extends AbstractMappedPolicy<TransformationCon
                     if (readBuffer.length() > 0) {
                         DataTransformer dataTransformer = DataTransformerFactory.getDataTransformer(serverFormat, clientFormat);
                         IApimanBuffer writeBuffer = bufferFactory.createBuffer(readBuffer.length());
-                        
+
                         String data = dataTransformer.transform(new String(readBuffer.getBytes()));
                         writeBuffer.append(data);
 
@@ -157,12 +157,12 @@ public class TransformationPolicy extends AbstractMappedPolicy<TransformationCon
                 }
             };
         }
-        
+
         return null;
     }
 
     private boolean isValidTransformation(DataFormat clientFormat, DataFormat serverFormat) {
         return clientFormat != null && serverFormat != null && !clientFormat.equals(serverFormat);
     }
-    
+
 }

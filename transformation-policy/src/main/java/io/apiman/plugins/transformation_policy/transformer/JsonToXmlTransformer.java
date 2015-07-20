@@ -6,12 +6,13 @@ import org.json.XML;
 
 public class JsonToXmlTransformer implements DataTransformer {
 
-    private static final String ROOT = "root";
-    private static final String ELEMENT = "element";
+    private static final String ROOT = "root"; //$NON-NLS-1$
+    private static final String ELEMENT = "element"; //$NON-NLS-1$
 
+    @Override
     public String transform(String json) {
         JSONObject jsonObject = null;
-	    if (json.trim().startsWith("{")) {
+	    if (json.trim().startsWith("{")) { //$NON-NLS-1$
 	        jsonObject = new JSONObject(json);
 	    } else {
 	        JSONArray jsonArray = new JSONArray(json);
@@ -19,5 +20,5 @@ public class JsonToXmlTransformer implements DataTransformer {
 	    }
         return XML.toString(jsonObject, ROOT);
 	}
-	
+
 }

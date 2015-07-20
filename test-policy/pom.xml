@@ -18,7 +18,12 @@
       <artifactId>apiman-gateway-engine-core</artifactId>
       <scope>provided</scope>
     </dependency>
-    
+    <dependency>
+      <groupId>io.apiman</groupId>
+      <artifactId>apiman-manager-api-core</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
     <!-- apiman test framework -->
     <dependency>
       <groupId>io.apiman</groupId>

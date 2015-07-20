@@ -64,7 +64,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
 
-    <version.apiman>1.1.4-SNAPSHOT</version.apiman>
+    <version.apiman>1.1.5-SNAPSHOT</version.apiman>
 
     <version.javadoc.plugin>2.10.1</version.javadoc.plugin>
     <version.compiler.plugin>3.2</version.compiler.plugin>
@@ -139,6 +139,11 @@
       <dependency>
         <groupId>io.apiman</groupId>
         <artifactId>apiman-gateway-engine-policies</artifactId>
+        <version>${version.apiman}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.apiman</groupId>
+        <artifactId>apiman-manager-api-core</artifactId>
         <version>${version.apiman}</version>
       </dependency>
       <dependency>
