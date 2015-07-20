@@ -9,6 +9,10 @@
   <artifactId>apiman-test-suite</artifactId>
   <name>apiman-test-suite</name>
 
+  <properties>
+    <skipTests>true</skipTests>
+  </properties>
+
   <dependencies>
     <!-- Project Dependencies -->
     <dependency>
@@ -57,7 +61,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <skipTests>true</skipTests>
+          <skipTests>${skipTests}</skipTests>
         </configuration>
       </plugin>
     </plugins>
