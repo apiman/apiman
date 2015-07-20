@@ -9,6 +9,7 @@
                "applicationOrgId": { "type" : "string", "index" : "not_analyzed" },
                "applicationId": { "type" : "string", "index" : "not_analyzed" },
                "applicationVersion": { "type" : "string", "index" : "not_analyzed" },
+               "user": { "type" : "string", "index" : "not_analyzed" },
                "planId": { "type" : "string", "index" : "not_analyzed" },
                "responseCode": { "type" : "long", "index" : "not_analyzed" },
                "failureCode": { "type" : "long", "index" : "not_analyzed" }

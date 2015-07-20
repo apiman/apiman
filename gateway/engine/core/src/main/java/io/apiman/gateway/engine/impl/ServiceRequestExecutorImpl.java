@@ -46,6 +46,7 @@ import io.apiman.gateway.engine.policy.IConnectorInterceptor;
 import io.apiman.gateway.engine.policy.IPolicy;
 import io.apiman.gateway.engine.policy.IPolicyContext;
 import io.apiman.gateway.engine.policy.IPolicyFactory;
+import io.apiman.gateway.engine.policy.PolicyContextKeys;
 import io.apiman.gateway.engine.policy.PolicyWithConfiguration;
 import io.apiman.gateway.engine.policy.RequestChain;
 import io.apiman.gateway.engine.policy.ResponseChain;
@@ -189,6 +190,8 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
         requestMetric.setServiceOrgId(request.getServiceOrgId());
         requestMetric.setServiceId(request.getServiceId());
         requestMetric.setServiceVersion(request.getServiceVersion());
+
+        context.setAttribute(PolicyContextKeys.REQUEST_METRIC, requestMetric);
 
         // Create the handler that will be called once the policies are asynchronously
         // loaded (can happen this way due to the plugin framework).
