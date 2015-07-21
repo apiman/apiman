@@ -230,13 +230,12 @@ public class ApiManagerConfig {
     public Map<String, String> getMetricsProperties() {
         return getPrefixedProperties("apiman-manager.metrics."); //$NON-NLS-1$
     }
-    
+
     /**
      * Gets a map of properties prefixed by the given string.
      */
     protected Map<String, String> getPrefixedProperties(String prefix) {
         Map<String, String> rval = new HashMap<>();
-        @SuppressWarnings("unchecked")
         Iterator<String> keys = getConfig().getKeys();
         while (keys.hasNext()) {
             String key = keys.next();

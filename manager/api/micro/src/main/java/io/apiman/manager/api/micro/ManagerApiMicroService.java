@@ -68,7 +68,7 @@ public class ManagerApiMicroService {
 
         ContextHandlerCollection handlers = new ContextHandlerCollection();
         addModulesToJetty(handlers);
-        
+
         // Create the server.
         int serverPort = serverPort();
         System.out.println("**** Starting Server (" + getClass().getSimpleName() + ") on port: " + serverPort);
@@ -125,7 +125,6 @@ public class ManagerApiMicroService {
 
         handlers.addHandler(apiManServer);
     }
-
 
     /**
      * @param apiManServer

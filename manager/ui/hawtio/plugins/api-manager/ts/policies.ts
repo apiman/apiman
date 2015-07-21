@@ -22,6 +22,7 @@ module Apiman {
         ['$scope', 'Logger', 'PluginSvcs',
         ($scope, Logger, PluginSvcs) => {
             var initEditor = function(schema) {
+                Logger.debug("************ Init Editor ************");
                 var holder = document.getElementById('json-editor-holder');
                 var editor = new window['JSONEditor'](holder, {
                     // Disable fetching schemas via ajax
@@ -55,14 +56,18 @@ module Apiman {
             var destroyEditor = function() {
                 if ($scope.editor) {
                     $scope.editor.destroy();
+                    $scope.editor = null;
                 }
             };
             
             var loadSchema = function() {
+                Logger.debug("************* Loading schema");
                 $scope.schemaState = 'loading';
                 var pluginId = $scope.selectedDef.pluginId;
                 var policyDefId = $scope.selectedDef.id;
                 PluginSvcs.getPolicyForm(pluginId, policyDefId, function(schema) {
+                    Logger.debug("!!!!!!!!!!!!!!! schema returned");
+                    destroyEditor();
                     initEditor(schema);
                     $scope.editor.setValue($scope.config);
                     $scope.schemaState = 'loaded';

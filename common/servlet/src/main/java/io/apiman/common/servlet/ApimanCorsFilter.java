@@ -32,20 +32,20 @@ import javax.servlet.http.HttpServletResponse;
  * @author eric.wittmann@redhat.com
  */
 public class ApimanCorsFilter implements Filter {
-    
+
     /**
      * Constructor.
      */
     public ApimanCorsFilter() {
     }
-    
+
     /**
      * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
      */
     @Override
     public void init(FilterConfig config) throws ServletException {
     }
-    
+
     /**
      * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse, javax.servlet.FilterChain)
      */
@@ -54,7 +54,7 @@ public class ApimanCorsFilter implements Filter {
             ServletException {
         HttpServletRequest httpReq = (HttpServletRequest) request;
         HttpServletResponse httpResp = (HttpServletResponse) response;
-        
+
         if (isPreflightRequest(httpReq)) {
             httpResp.setHeader("Access-Control-Allow-Origin", httpReq.getHeader("Origin")); //$NON-NLS-1$ //$NON-NLS-2$
             httpResp.setHeader("Access-Control-Allow-Credentials", "true"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -99,7 +99,7 @@ public class ApimanCorsFilter implements Filter {
         String origin = httpReq.getHeader("Origin"); //$NON-NLS-1$
         return origin != null && origin.trim().length() > 0;
     }
-    
+
     /**
      * @see javax.servlet.Filter#destroy()
      */

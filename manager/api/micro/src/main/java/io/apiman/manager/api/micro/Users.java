@@ -32,12 +32,12 @@ import org.apache.commons.io.IOUtils;
  */
 @SuppressWarnings("nls")
 public final class Users {
-    
-    private static final String USERS_FILE_PROP = "apiman.micro.manager.users-file";
+
+    public static final String USERS_FILE_PROP = "apiman.micro.manager.users-file";
 
     public static final List<User> getUsers() {
         List<User> rval = new ArrayList<>();
-        
+
         String usersFileLoc = System.getProperty(USERS_FILE_PROP);
         if (usersFileLoc == null) {
             usersFileLoc = "";
@@ -52,12 +52,22 @@ public final class Users {
                 reader = new BufferedReader(new InputStreamReader(in));
                 String line = reader.readLine();
                 while (line != null) {
+                    line = line.trim();
+                    if (line.length() == 0 || line.startsWith("#")) {
+                        continue;
+                    }
                     String [] split = line.split(",");
                     User user = new User();
                     user.setId(split[0]);
                     user.setPassword(split[1]);
-                    user.getRoles().add("apipublisher");
+                    user.getRoles().add("apiuser");
+                    boolean isAdmin = "true".equals(split[2]);
+                    if (isAdmin) {
+                        user.getRoles().add("apiadmin");
+                    }
                     rval.add(user);
+                    System.out.println("  added user => " + user.getId());
+                    line = reader.readLine();
                 }
             } catch (Throwable t) {
                 throw new RuntimeException(t);
@@ -74,7 +84,7 @@ public final class Users {
             user.getRoles().add("apiadmin");
             rval.add(user);
         }
-        
+
         return rval;
     }
 

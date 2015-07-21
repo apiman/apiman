@@ -142,7 +142,7 @@
               <goal>updateSQL</goal>
             </goals>
             <configuration>
-              <migrationSqlOutputFile>${basedir}/target/apiman_postgresql.ddl</migrationSqlOutputFile>
+              <migrationSqlOutputFile>${basedir}/target/apiman_postgresql9.ddl</migrationSqlOutputFile>
               <driver>org.postgresql.Driver</driver>
               <url>offline:postgresql?version=9.3&amp;caseSensitive=true&amp;changeLogFile=${basedir}/target/changelog/postgresql/databasechangelog.csv</url>
               <username>apiman</username>
@@ -158,7 +158,7 @@
               <goal>updateSQL</goal>
             </goals>
             <configuration>
-              <migrationSqlOutputFile>${basedir}/target/apiman_mysql.ddl</migrationSqlOutputFile>
+              <migrationSqlOutputFile>${basedir}/target/apiman_mysql5.ddl</migrationSqlOutputFile>
               <driver>com.mysql.jdbc.Driver</driver>
               <url>offline:mysql?version=5.1&amp;caseSensitive=false&amp;changeLogFile=${basedir}/target/changelog/mysql/databasechangelog.csv</url>
               <username>apiman</username>
@@ -170,5 +170,35 @@
         </executions>
       </plugin>
     </plugins>
+    <pluginManagement>
+      <plugins>
+        <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+        <plugin>
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <version>1.0.0</version>
+          <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.liquibase</groupId>
+                    <artifactId>liquibase-maven-plugin</artifactId>
+                    <versionRange>[3.3.5,)</versionRange>
+                    <goals>
+                      <goal>update</goal>
+                      <goal>updateSQL</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore></ignore>
+                  </action>
+                </pluginExecution>
+              </pluginExecutions>
+            </lifecycleMappingMetadata>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
   </build>
 </project>

@@ -5,46 +5,46 @@
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
-            <column name="created_by" type="VARCHAR(255)">
+            <column name="created_by" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="created_on" type="timestamp">
+            <column name="created_on" type="DATETIME">
                 <constraints nullable="false"/>
             </column>
-            <column name="modified_by" type="VARCHAR(255)">
+            <column name="modified_by" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="modified_on" type="timestamp">
+            <column name="modified_on" type="DATETIME">
                 <constraints nullable="false"/>
             </column>
-            <column name="published_on" type="timestamp"/>
-            <column name="retired_on" type="timestamp"/>
-            <column name="status" type="VARCHAR(255)">
+            <column name="published_on" type="DATETIME"/>
+            <column name="retired_on" type="DATETIME"/>
+            <column name="status" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="version" type="VARCHAR(255)">
+            <column name="version" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="app_id" type="VARCHAR(255)"/>
-            <column name="app_org_id" type="VARCHAR(255)"/>
+            <column name="app_id" type="java.sql.Types.VARCHAR(255)"/>
+            <column name="app_org_id" type="java.sql.Types.VARCHAR(255)"/>
         </createTable>
     </changeSet>
     <changeSet author="apiman (generated)" id="1436469846462-2">
         <createTable tableName="applications">
-            <column name="id" type="VARCHAR(255)">
+            <column name="id" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="created_by" type="VARCHAR(255)">
+            <column name="created_by" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="created_on" type="timestamp">
+            <column name="created_on" type="DATETIME">
                 <constraints nullable="false"/>
             </column>
             <column name="description" type="VARCHAR(512)"/>
-            <column name="name" type="VARCHAR(255)">
+            <column name="name" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="organization_id" type="VARCHAR(255)">
+            <column name="organization_id" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
         </createTable>
@@ -54,22 +54,22 @@
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
-            <column name="created_on" type="timestamp">
+            <column name="created_on" type="DATETIME">
                 <constraints nullable="false"/>
             </column>
             <column name="data" type="CLOB"/>
-            <column name="entity_id" type="VARCHAR(255)"/>
-            <column name="entity_type" type="VARCHAR(255)">
+            <column name="entity_id" type="java.sql.Types.VARCHAR(255)"/>
+            <column name="entity_type" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="entity_version" type="VARCHAR(255)"/>
-            <column name="organization_id" type="VARCHAR(255)">
+            <column name="entity_version" type="java.sql.Types.VARCHAR(255)"/>
+            <column name="organization_id" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="what" type="VARCHAR(255)">
+            <column name="what" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="who" type="VARCHAR(255)">
+            <column name="who" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
         </createTable>
@@ -79,13 +79,13 @@
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
-            <column name="apikey" type="VARCHAR(255)">
+            <column name="apikey" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="created_by" type="VARCHAR(255)">
+            <column name="created_by" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="created_on" type="timestamp">
+            <column name="created_on" type="DATETIME">
                 <constraints nullable="false"/>
             </column>
             <column name="appv_id" type="BIGINT"/>
@@ -98,37 +98,37 @@
             <column name="service_version_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
-            <column name="value" type="VARCHAR(255)"/>
-            <column name="name" type="VARCHAR(255)">
+            <column name="value" type="java.sql.Types.VARCHAR(255)"/>
+            <column name="name" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
     <changeSet author="apiman (generated)" id="1436469846462-6">
         <createTable tableName="gateways">
-            <column name="id" type="VARCHAR(255)">
+            <column name="id" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
             <column name="configuration" type="CLOB">
                 <constraints nullable="false"/>
             </column>
-            <column name="created_by" type="VARCHAR(255)">
+            <column name="created_by" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="created_on" type="timestamp">
+            <column name="created_on" type="DATETIME">
                 <constraints nullable="false"/>
             </column>
             <column name="description" type="VARCHAR(512)"/>
-            <column name="modified_by" type="VARCHAR(255)">
+            <column name="modified_by" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="modified_on" type="timestamp">
+            <column name="modified_on" type="DATETIME">
                 <constraints nullable="false"/>
             </column>
-            <column name="name" type="VARCHAR(255)">
+            <column name="name" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="type" type="VARCHAR(255)">
+            <column name="type" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
         </createTable>
@@ -138,47 +138,47 @@
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
-            <column name="created_on" type="timestamp"/>
-            <column name="org_id" type="VARCHAR(255)"/>
-            <column name="role_id" type="VARCHAR(255)"/>
-            <column name="user_id" type="VARCHAR(255)"/>
+            <column name="created_on" type="DATETIME"/>
+            <column name="org_id" type="java.sql.Types.VARCHAR(255)"/>
+            <column name="role_id" type="java.sql.Types.VARCHAR(255)"/>
+            <column name="user_id" type="java.sql.Types.VARCHAR(255)"/>
         </createTable>
     </changeSet>
     <changeSet author="apiman (generated)" id="1436469846462-8">
         <createTable tableName="organizations">
-            <column name="id" type="VARCHAR(255)">
+            <column name="id" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="created_by" type="VARCHAR(255)">
+            <column name="created_by" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="created_on" type="timestamp">
+            <column name="created_on" type="DATETIME">
                 <constraints nullable="false"/>
             </column>
             <column name="description" type="VARCHAR(512)"/>
-            <column name="modified_by" type="VARCHAR(255)">
+            <column name="modified_by" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="modified_on" type="timestamp">
+            <column name="modified_on" type="DATETIME">
                 <constraints nullable="false"/>
             </column>
-            <column name="name" type="VARCHAR(255)">
+            <column name="name" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
     <changeSet author="apiman (generated)" id="1436469846462-9">
         <createTable tableName="pd_templates">
-            <column name="policydef_id" type="VARCHAR(255)">
+            <column name="policydef_id" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="language" type="VARCHAR(255)"/>
+            <column name="language" type="java.sql.Types.VARCHAR(255)"/>
             <column name="template" type="VARCHAR(2048)"/>
         </createTable>
     </changeSet>
     <changeSet author="apiman (generated)" id="1436469846462-10">
         <createTable tableName="permissions">
-            <column name="role_id" type="VARCHAR(255)">
+            <column name="role_id" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
             <column name="permissions" type="INT"/>
@@ -189,45 +189,45 @@
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
-            <column name="created_by" type="VARCHAR(255)">
+            <column name="created_by" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="created_on" type="timestamp">
+            <column name="created_on" type="DATETIME">
                 <constraints nullable="false"/>
             </column>
-            <column name="locked_on" type="timestamp"/>
-            <column name="modified_by" type="VARCHAR(255)">
+            <column name="locked_on" type="DATETIME"/>
+            <column name="modified_by" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="modified_on" type="timestamp">
+            <column name="modified_on" type="DATETIME">
                 <constraints nullable="false"/>
             </column>
-            <column name="status" type="VARCHAR(255)">
+            <column name="status" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="version" type="VARCHAR(255)">
+            <column name="version" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="plan_id" type="VARCHAR(255)"/>
-            <column name="plan_org_id" type="VARCHAR(255)"/>
+            <column name="plan_id" type="java.sql.Types.VARCHAR(255)"/>
+            <column name="plan_org_id" type="java.sql.Types.VARCHAR(255)"/>
         </createTable>
     </changeSet>
     <changeSet author="apiman (generated)" id="1436469846462-12">
         <createTable tableName="plans">
-            <column name="id" type="VARCHAR(255)">
+            <column name="id" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="created_by" type="VARCHAR(255)">
+            <column name="created_by" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="created_on" type="timestamp">
+            <column name="created_on" type="DATETIME">
                 <constraints nullable="false"/>
             </column>
             <column name="description" type="VARCHAR(512)"/>
-            <column name="name" type="VARCHAR(255)">
+            <column name="name" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="organization_id" type="VARCHAR(255)">
+            <column name="organization_id" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
         </createTable>
@@ -237,25 +237,25 @@
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
-            <column name="artifact_id" type="VARCHAR(255)">
+            <column name="artifact_id" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="classifier" type="VARCHAR(255)"/>
-            <column name="created_by" type="VARCHAR(255)">
+            <column name="classifier" type="java.sql.Types.VARCHAR(255)"/>
+            <column name="created_by" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="created_on" type="timestamp">
+            <column name="created_on" type="DATETIME">
                 <constraints nullable="false"/>
             </column>
             <column name="description" type="VARCHAR(512)"/>
-            <column name="group_id" type="VARCHAR(255)">
+            <column name="group_id" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="name" type="VARCHAR(255)">
+            <column name="name" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="type" type="VARCHAR(255)"/>
-            <column name="version" type="VARCHAR(255)">
+            <column name="type" type="java.sql.Types.VARCHAR(255)"/>
+            <column name="version" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
         </createTable>
@@ -266,77 +266,77 @@
                 <constraints nullable="false"/>
             </column>
             <column name="configuration" type="CLOB"/>
-            <column name="created_by" type="VARCHAR(255)">
+            <column name="created_by" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="created_on" type="timestamp">
+            <column name="created_on" type="DATETIME">
                 <constraints nullable="false"/>
             </column>
-            <column name="entity_id" type="VARCHAR(255)">
+            <column name="entity_id" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="entity_version" type="VARCHAR(255)">
+            <column name="entity_version" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="modified_by" type="VARCHAR(255)">
+            <column name="modified_by" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="modified_on" type="timestamp">
+            <column name="modified_on" type="DATETIME">
                 <constraints nullable="false"/>
             </column>
-            <column name="name" type="VARCHAR(255)">
+            <column name="name" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
             <column name="order_index" type="INT">
                 <constraints nullable="false"/>
             </column>
-            <column name="organization_id" type="VARCHAR(255)">
+            <column name="organization_id" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="type" type="VARCHAR(255)">
+            <column name="type" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="definition_id" type="VARCHAR(255)">
+            <column name="definition_id" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
     <changeSet author="apiman (generated)" id="1436469846462-15">
         <createTable tableName="policydefs">
-            <column name="id" type="VARCHAR(255)">
+            <column name="id" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
             <column name="description" type="VARCHAR(512)">
                 <constraints nullable="false"/>
             </column>
-            <column name="form" type="VARCHAR(255)"/>
-            <column name="form_type" type="VARCHAR(255)"/>
-            <column name="icon" type="VARCHAR(255)">
+            <column name="form" type="java.sql.Types.VARCHAR(255)"/>
+            <column name="form_type" type="java.sql.Types.VARCHAR(255)"/>
+            <column name="icon" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="name" type="VARCHAR(255)">
+            <column name="name" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
             <column name="plugin_id" type="BIGINT"/>
-            <column name="policy_impl" type="VARCHAR(255)">
+            <column name="policy_impl" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
     <changeSet author="apiman (generated)" id="1436469846462-16">
         <createTable tableName="roles">
-            <column name="id" type="VARCHAR(255)">
+            <column name="id" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
             <column name="auto_grant" type="BOOLEAN"/>
-            <column name="created_by" type="VARCHAR(255)">
+            <column name="created_by" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="created_on" type="timestamp">
+            <column name="created_on" type="DATETIME">
                 <constraints nullable="false"/>
             </column>
             <column name="description" type="VARCHAR(512)"/>
-            <column name="name" type="VARCHAR(255)"/>
+            <column name="name" type="java.sql.Types.VARCHAR(255)"/>
         </createTable>
     </changeSet>
     <changeSet author="apiman (generated)" id="1436469846462-17">
@@ -344,7 +344,7 @@
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
-            <column name="data" type="BLOB"/>
+            <column name="data" type="LONGBLOB"/>
             <column name="service_version_id" type="BIGINT"/>
         </createTable>
     </changeSet>
@@ -353,50 +353,50 @@
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
-            <column name="created_by" type="VARCHAR(255)">
+            <column name="created_by" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="created_on" type="timestamp">
+            <column name="created_on" type="DATETIME">
                 <constraints nullable="false"/>
             </column>
-            <column name="definition_type" type="VARCHAR(255)"/>
-            <column name="endpoint" type="VARCHAR(255)"/>
-            <column name="endpoint_type" type="VARCHAR(255)"/>
-            <column name="modified_by" type="VARCHAR(255)">
+            <column name="definition_type" type="java.sql.Types.VARCHAR(255)"/>
+            <column name="endpoint" type="java.sql.Types.VARCHAR(255)"/>
+            <column name="endpoint_type" type="java.sql.Types.VARCHAR(255)"/>
+            <column name="modified_by" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="modified_on" type="timestamp">
+            <column name="modified_on" type="DATETIME">
                 <constraints nullable="false"/>
             </column>
             <column name="public_service" type="BOOLEAN">
                 <constraints nullable="false"/>
             </column>
-            <column name="published_on" type="timestamp"/>
-            <column name="retired_on" type="timestamp"/>
-            <column name="status" type="VARCHAR(255)">
+            <column name="published_on" type="DATETIME"/>
+            <column name="retired_on" type="DATETIME"/>
+            <column name="status" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="version" type="VARCHAR(255)"/>
-            <column name="service_id" type="VARCHAR(255)"/>
-            <column name="service_org_id" type="VARCHAR(255)"/>
+            <column name="version" type="java.sql.Types.VARCHAR(255)"/>
+            <column name="service_id" type="java.sql.Types.VARCHAR(255)"/>
+            <column name="service_org_id" type="java.sql.Types.VARCHAR(255)"/>
         </createTable>
     </changeSet>
     <changeSet author="apiman (generated)" id="1436469846462-19">
         <createTable tableName="services">
-            <column name="id" type="VARCHAR(255)">
+            <column name="id" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="created_by" type="VARCHAR(255)">
+            <column name="created_by" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="created_on" type="timestamp">
+            <column name="created_on" type="DATETIME">
                 <constraints nullable="false"/>
             </column>
             <column name="description" type="VARCHAR(512)"/>
-            <column name="name" type="VARCHAR(255)">
+            <column name="name" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="organization_id" type="VARCHAR(255)">
+            <column name="organization_id" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
         </createTable>
@@ -406,7 +406,7 @@
             <column name="service_version_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
-            <column name="gateway_id" type="VARCHAR(255)">
+            <column name="gateway_id" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
         </createTable>
@@ -416,22 +416,22 @@
             <column name="service_version_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
-            <column name="plan_id" type="VARCHAR(255)">
+            <column name="plan_id" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="version" type="VARCHAR(255)">
+            <column name="version" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
     <changeSet author="apiman (generated)" id="1436469846462-22">
         <createTable tableName="users">
-            <column name="username" type="VARCHAR(255)">
+            <column name="username" type="java.sql.Types.VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="email" type="VARCHAR(255)"/>
-            <column name="full_name" type="VARCHAR(255)"/>
-            <column name="joined_on" type="timestamp"/>
+            <column name="email" type="java.sql.Types.VARCHAR(255)"/>
+            <column name="full_name" type="java.sql.Types.VARCHAR(255)"/>
+            <column name="joined_on" type="DATETIME"/>
         </createTable>
     </changeSet>
 </databaseChangeLog>

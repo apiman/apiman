@@ -54,8 +54,16 @@ public class EntityManagerFactoryAccessor implements IEntityManagerFactoryAccess
         }
 
         // Get two specific properties from the System (for backward compatibility only)
-        String autoValue = System.getProperty("apiman.hibernate.hbm2ddl.auto", "validate"); //$NON-NLS-1$ //$NON-NLS-2$
-        String dialect = System.getProperty("apiman.hibernate.dialect", "org.hibernate.dialect.H2Dialect"); //$NON-NLS-1$ //$NON-NLS-2$
+        String s = properties.get("hibernate.hbm2ddl.auto"); //$NON-NLS-1$
+        if (s == null) {
+            s = "validate"; //$NON-NLS-1$
+        }
+        String autoValue = System.getProperty("apiman.hibernate.hbm2ddl.auto", s); //$NON-NLS-1$
+        s = properties.get("hibernate.dialect"); //$NON-NLS-1$
+        if (s == null) {
+            s = "org.hibernate.dialect.H2Dialect"; //$NON-NLS-1$
+        }
+        String dialect = System.getProperty("apiman.hibernate.dialect", s); //$NON-NLS-1$
         properties.put("hibernate.hbm2ddl.auto", autoValue); //$NON-NLS-1$
         properties.put("hibernate.dialect", dialect); //$NON-NLS-1$
 

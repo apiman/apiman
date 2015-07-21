@@ -55,7 +55,7 @@ public class ManagerApiMicroServiceConfig extends ApiManagerConfig implements IJ
      */
     public ManagerApiMicroServiceConfig() {
     }
-    
+
     /**
      * @see io.apiman.manager.api.core.config.ApiManagerConfig#loadProperties()
      */
@@ -101,7 +101,6 @@ public class ManagerApiMicroServiceConfig extends ApiManagerConfig implements IJ
     @Override
     public Map<String, String> getAllHibernateProperties() {
         Map<String, String> rval = new HashMap<>();
-        @SuppressWarnings("unchecked")
         Iterator<String> keys = getConfig().getKeys();
         while (keys.hasNext()) {
             String key = keys.next();

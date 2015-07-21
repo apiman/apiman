@@ -44,7 +44,6 @@ public class WarApiManagerConfig extends ApiManagerConfig implements IJpaPropert
     @Override
     public Map<String, String> getAllHibernateProperties() {
         Map<String, String> rval = new HashMap<>();
-        @SuppressWarnings("unchecked")
         Iterator<String> keys = getConfig().getKeys();
         while (keys.hasNext()) {
             String key = keys.next();

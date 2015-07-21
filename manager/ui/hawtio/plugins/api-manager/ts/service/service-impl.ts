@@ -92,7 +92,9 @@ module Apiman {
                     
                     if (newValue.endpoint != $scope.version.endpoint || newValue.endpointType != $scope.version.endpointType) {
                         dirty = true;
-                    } else if (newValue.gateways && newValue.gateways.length > 0) {
+                    }
+                    
+                    if (newValue.gateways && newValue.gateways.length > 0) {
                         dirty = true;
                     }
                     if ($scope.version.endpointProperties && newValue.endpointProperties) {
@@ -121,7 +123,7 @@ module Apiman {
             $scope.$watch('selectedGateway', function(newValue) {
                 if (newValue) {
                     var alreadySet = false;
-                    if ($scope.version.gateways[0].gatewayId == newValue.id) {
+                    if ($scope.version.gateways && $scope.version.gateways.length > 0 && $scope.version.gateways[0].gatewayId == newValue.id) {
                         alreadySet = true;
                     }
                     if (!alreadySet) {
@@ -138,7 +140,7 @@ module Apiman {
                 $scope.updatedService.endpointType = $scope.version.endpointType;
                 $scope.updatedService.endpointProperties = angular.copy($scope.version.endpointProperties);
                 delete $scope.updatedService.gateways;
-                if ($scope.version.gateways) {
+                if ($scope.version.gateways && $scope.version.gateways.length > 0) {
                     angular.forEach($scope.gateways, function(gateway) {
                         // TODO support multiple gateway assignments here
                         if (gateway.id == $scope.version.gateways[0].gatewayId) {
