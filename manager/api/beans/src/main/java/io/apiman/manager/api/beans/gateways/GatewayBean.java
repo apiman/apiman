@@ -34,6 +34,7 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.hibernate.annotations.Type;
 
 /**
  * Models a single gateway configured by an admin.  When publishing services,
@@ -69,6 +70,7 @@ public class GatewayBean implements Serializable {
     private GatewayType type;
     @Lob
     @Column(updatable=true, nullable=false)
+    @Type(type = "org.hibernate.type.TextType")
     private String configuration;
 
     /**

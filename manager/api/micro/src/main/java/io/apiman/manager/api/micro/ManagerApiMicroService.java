@@ -115,6 +115,7 @@ public class ManagerApiMicroService {
         addAuthFilter(apiManServer);
         apiManServer.addFilter(DefaultSecurityContextFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
         apiManServer.addFilter(RootResourceFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
+        apiManServer.addFilter(ManagerApiMicroServiceTxWatchdogFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
         ServletHolder resteasyServlet = new ServletHolder(new HttpServletDispatcher());
         resteasyServlet.setInitParameter("javax.ws.rs.Application", ManagerApiMicroServiceApplication.class.getName());
         apiManServer.addServlet(resteasyServlet, "/*");

@@ -38,6 +38,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.hibernate.annotations.Type;
 
 /**
  * A Policy is the primary unit of work for the runtime engine, which is
@@ -71,6 +72,7 @@ public class PolicyBean implements Serializable {
     private String description;
     @Lob
     @Column(updatable=true, nullable=true)
+    @Type(type = "org.hibernate.type.TextType")
     private String configuration;
     @Column(name = "created_by", updatable=false, nullable=false)
     private String createdBy;

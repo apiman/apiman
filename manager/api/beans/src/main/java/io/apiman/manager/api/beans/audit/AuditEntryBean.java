@@ -27,6 +27,8 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Type;
+
 /**
  * A single audit entry - these are created whenever something interesting
  * happens to an entity in the management layer.  For example, when the
@@ -67,6 +69,7 @@ public class AuditEntryBean implements Serializable {
     private AuditEntryType what;
     @Lob
     @Column(updatable=false, nullable=true)
+    @Type(type = "org.hibernate.type.TextType")
     private String data;
 
     /**
