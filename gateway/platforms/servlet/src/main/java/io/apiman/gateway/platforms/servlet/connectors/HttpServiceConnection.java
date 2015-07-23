@@ -108,6 +108,8 @@ public class HttpServiceConnection implements IServiceConnection, IServiceConnec
      */
     private void connect() throws ConnectorException {
         try {
+            Set<String> suppressedHeaders = new HashSet<>(SUPPRESSED_HEADERS);
+
             String endpoint = service.getEndpoint();
             if (endpoint.endsWith("/")) { //$NON-NLS-1$
                 endpoint = endpoint.substring(0, endpoint.length() - 1);
@@ -146,9 +148,9 @@ public class HttpServiceConnection implements IServiceConnection, IServiceConnec
                     builder.append("BASIC "); //$NON-NLS-1$
                     builder.append(Base64.encodeBase64String(up.getBytes()));
                     connection.setRequestProperty("Authorization", builder.toString()); //$NON-NLS-1$
+                    suppressedHeaders.add("Authorization"); //$NON-NLS-1$
                 }
             }
-
 
             if (isSsl) {
                 HttpsURLConnection https = (HttpsURLConnection) connection;
@@ -172,7 +174,7 @@ public class HttpServiceConnection implements IServiceConnection, IServiceConnec
             for (Entry<String, String> entry : request.getHeaders().entrySet()) {
                 String hname = entry.getKey();
                 String hval = entry.getValue();
-                if (!SUPPRESSED_HEADERS.contains(hname)) {
+                if (!suppressedHeaders.contains(hname)) {
                     connection.setRequestProperty(hname, hval);
                 }
             }
