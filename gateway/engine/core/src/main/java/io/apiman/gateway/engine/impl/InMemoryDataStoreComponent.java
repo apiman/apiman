@@ -42,19 +42,19 @@ public class InMemoryDataStoreComponent implements IDataStoreComponent {
     }
 
     /**
-     * @see io.apiman.gateway.engine.components.IDataStoreComponent#hasProperty(java.lang.String, java.lang.String)
+     * @see io.apiman.gateway.engine.components.IDataStoreComponent#hasProperty(java.lang.String, java.lang.String, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @SuppressWarnings("unchecked")
     @Override
-    public <T> boolean hasProperty(String namespace, String propertyName) {
+    public <T> void hasProperty(String namespace, String propertyName, IAsyncResultHandler<Boolean> handler) {
         T value = null;
         synchronized (sharedState) {
             QName key = new QName(namespace, propertyName);
             value = (T) sharedState.get(key);
         }
-        return value != null;
+        handler.handle(AsyncResultImpl.create(value != null));
     }
-    
+
     /**
      * @see io.apiman.gateway.engine.components.IDataStoreComponent#getProperty(java.lang.String, java.lang.String, java.lang.Object, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
@@ -83,7 +83,7 @@ public class InMemoryDataStoreComponent implements IDataStoreComponent {
 
     /**
      * This implementation will ignore the expiration time
-     * 
+     *
      * @see io.apiman.gateway.engine.components.IDataStoreComponent#setProperty(java.lang.String, java.lang.String, java.lang.Object, java.lang.Long, IAsyncResultHandler)
      */
     @SuppressWarnings("unchecked")

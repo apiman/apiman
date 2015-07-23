@@ -30,6 +30,7 @@ public class BasicAuthenticationConfig {
     private String realm;
     private String forwardIdentityHttpHeader;
     private boolean requireTransportSecurity;
+    private Boolean requireBasicAuth;
 
     private StaticIdentitySource staticIdentity;
     private LDAPIdentitySource ldapIdentity;
@@ -123,6 +124,20 @@ public class BasicAuthenticationConfig {
      */
     public void setRequireTransportSecurity(boolean requireTransportSecurity) {
         this.requireTransportSecurity = requireTransportSecurity;
+    }
+
+    /**
+     * @return the requireBasicAuth
+     */
+    public Boolean getRequireBasicAuth() {
+        return requireBasicAuth;
+    }
+
+    /**
+     * @param requireBasicAuth the requireBasicAuth to set
+     */
+    public void setRequireBasicAuth(Boolean requireBasicAuth) {
+        this.requireBasicAuth = requireBasicAuth;
     }
 
 }

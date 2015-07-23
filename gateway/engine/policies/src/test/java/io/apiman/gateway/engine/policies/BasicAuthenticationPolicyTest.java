@@ -49,7 +49,9 @@ public class BasicAuthenticationPolicyTest {
         String config =
                 "{\r\n" +
                 "    \"realm\" : \"TestRealm\",\r\n" +
-                "    \"forwardIdentityHttpHeader\" : \"X-Authenticated-Identity\"\r\n" +
+                "    \"forwardIdentityHttpHeader\" : \"X-Authenticated-Identity\",\r\n" +
+                "    \"requireTransportSecurity\" : true,\r\n" +
+                "    \"requireBasicAuth\" : true\r\n" +
                 "}";
         Object parsed = policy.parseConfiguration(config);
         Assert.assertNotNull(parsed);
@@ -57,6 +59,8 @@ public class BasicAuthenticationPolicyTest {
         BasicAuthenticationConfig parsedConfig = (BasicAuthenticationConfig) parsed;
         Assert.assertEquals("TestRealm", parsedConfig.getRealm());
         Assert.assertEquals("X-Authenticated-Identity", parsedConfig.getForwardIdentityHttpHeader());
+        Assert.assertEquals(Boolean.TRUE, parsedConfig.isRequireTransportSecurity());
+        Assert.assertEquals(Boolean.TRUE, parsedConfig.getRequireBasicAuth());
 
         // Static identities
         config =

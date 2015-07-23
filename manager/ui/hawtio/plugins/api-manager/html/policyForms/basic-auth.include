@@ -14,6 +14,16 @@
       <dd>
         <input id="forward-identity" ng-model="config.forwardIdentityHttpHeader" class="apiman-form-control form-control" style="" type="text" apiman-i18n-key="base-auth.enter-auth-user-header" placeholder="HTTP header or leave blank to disable..."></input>
       </dd>
+      <dt apiman-i18n-key="require-basic-auth">Require Basic Authentication</dt>
+      <dd>
+        <p class="apiman-label-faded">
+          If this option is enabled, then BASIC authentication is required for the request to succeed.  You
+          might disable this option if you want to support both BASIC auth and OAuth policies (for example).
+        </p>
+        <input id="requireBasic" type="checkbox" ng-model="config.requireBasicAuth"></input>
+        <label for="requireBasic" apiman-i18n-key="basic-auth.basic-auth-required" title="When enabled, requests *must* provide BASIC auth credentials, otherwise the request will fail.">Basic Auth required</label>
+      </dd>
+      <hr />
       <dt apiman-i18n-key="identity-source">Identity Source</dt>
       <dd>
         <select id="identity-source" ng-model="identitySourceType" apiman-select-picker="" class="selectpicker" data-live-search="false">

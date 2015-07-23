@@ -28,11 +28,11 @@ import io.apiman.gateway.engine.impl.CachedResponse;
  * it might be (there are time vs. accuracy tradeoffs to be made here).  Users
  * of API Management will need to ensure they use an appropriate implementation
  * of this component based on the data integrity/accuracy guarantees they require.
- * 
+ *
  * All operations in this component are assumed to be asyncrhonous, so a handler
  * must be provided if the policy implementation needs the operation to finish
  * prior to moving on.
- * 
+ *
  * @author rubenrm1@gmail.com
  */
 public interface IDataStoreComponent extends IComponent {
@@ -43,10 +43,10 @@ public interface IDataStoreComponent extends IComponent {
      * @param propertyName
      * @return true if has property; else false.
      */
-    <T> boolean hasProperty(String namespace, String propertyName); 
-    
+    <T> void hasProperty(String namespace, String propertyName, IAsyncResultHandler<Boolean> handler);
+
     /**
-     * Gets the value of a single property stored in the shared state 
+     * Gets the value of a single property stored in the shared state
      * environment.  Null is returned if the property is not set.
      * @param namespace
      * @param propertyName
@@ -54,7 +54,7 @@ public interface IDataStoreComponent extends IComponent {
      * @param handler
      */
      <T> void getProperty(String namespace, String propertyName, T defaultValue, IAsyncResultHandler<T> handler);
-    
+
     /**
      * Sets a single property in the shared state environment, returning
      * the previous value of the property or null if it was not previously set.
@@ -64,9 +64,9 @@ public interface IDataStoreComponent extends IComponent {
      * @param handler
      */
     <T> void setProperty(String namespace, String propertyName, T value, IAsyncResultHandler<T> handler);
-    
+
     /**
-     * Sets a single property in the shared state environment for the given period of time, 
+     * Sets a single property in the shared state environment for the given period of time,
      * returning the previous value of the property or null if it was not previously set.
      * @param namespace
      * @param propertyName
@@ -75,14 +75,14 @@ public interface IDataStoreComponent extends IComponent {
      * @param handler
      */
     <T> void setProperty(String namespace, String propertyName, T value, Long expiration, IAsyncResultHandler<T> handler);
-    
+
     /**
-     * Clears a property from the shared state environment, returning the previous 
+     * Clears a property from the shared state environment, returning the previous
      * value of the property or null if it was not previously set.
      * @param namespace
      * @param propertyName
      * @param handler
      */
     <T> void clearProperty(String namespace, String propertyName, IAsyncResultHandler<T> handler);
-    
+
 }

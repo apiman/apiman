@@ -6,6 +6,9 @@
     <test name="Register Application">test-plan-data/policies/basic-auth-static/002-register-app.resttest</test>
     <test name="Success">test-plan-data/policies/basic-auth-static/003-success.resttest</test>
     <test name="Failure">test-plan-data/policies/basic-auth-static/004-failure.resttest</test>
+    <test name="Failure (no creds)">test-plan-data/policies/basic-auth-static/005-failure.resttest</test>
+    <test name="Register Application 2 (require-basic)">test-plan-data/policies/basic-auth-static/006-register-app-2.resttest</test>
+    <test name="Success">test-plan-data/policies/basic-auth-static/007-success.resttest</test>
   </testGroup>
 
 </testPlan>

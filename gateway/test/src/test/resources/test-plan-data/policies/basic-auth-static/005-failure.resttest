@@ -1,0 +1,14 @@
+GET /gateway/Policy_BasicAuthStatic/echo/1.0.0/path/to/app/resource
+X-API-Key: 12345
+
+----
+401
+Content-Type: application/json
+X-Policy-Failure-Type: Authentication
+X-Policy-Failure-Code: 10004
+WWW-Authenticate: BASIC realm="Test"
+
+{
+    "type" : "Authentication",
+    "failureCode" : 10004
+}

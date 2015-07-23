@@ -22,6 +22,7 @@ import io.apiman.gateway.engine.policy.IPolicy;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
 
+import org.codehaus.jackson.map.DeserializationConfig.Feature;
 import org.codehaus.jackson.map.ObjectMapper;
 
 /**
@@ -31,9 +32,12 @@ import org.codehaus.jackson.map.ObjectMapper;
  * @param <C> the config type
  */
 public abstract class AbstractMappedPolicy<C> implements IPolicy {
-    
+
     private static final ObjectMapper mapper = new ObjectMapper();
-    
+    static {
+        mapper.configure(Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    }
+
     /**
      * Constructor.
      */

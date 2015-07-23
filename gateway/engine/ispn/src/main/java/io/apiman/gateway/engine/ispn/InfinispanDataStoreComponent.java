@@ -42,9 +42,9 @@ public class InfinispanDataStoreComponent implements IDataStoreComponent {
 
     private String cacheContainer;
     private String cacheName;
-    
+
     private Cache<Object, Object> cache;
-    
+
     /**
      * Constructor.
      */
@@ -60,7 +60,7 @@ public class InfinispanDataStoreComponent implements IDataStoreComponent {
     public InfinispanDataStoreComponent(Map<String, String> config) {
         cacheContainer = DEFAULT_CACHE_CONTAINER;
         cacheName = DEFAULT_CACHE;
-        
+
         if (config.containsKey("cache-container")) { //$NON-NLS-1$
             cacheContainer = config.get("cache-container"); //$NON-NLS-1$
         }
@@ -70,14 +70,14 @@ public class InfinispanDataStoreComponent implements IDataStoreComponent {
     }
 
     /**
-     * @see io.apiman.gateway.engine.components.IDataStoreComponent#hasProperty(java.lang.String, java.lang.String)
+     * @see io.apiman.gateway.engine.components.IDataStoreComponent#hasProperty(java.lang.String, java.lang.String, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
-    public <T> boolean hasProperty(String namespace, String propertyName) {
+    public <T> void hasProperty(String namespace, String propertyName, IAsyncResultHandler<Boolean> handler) {
         QName qname = new QName(namespace, propertyName);
-        return getCache().containsKey(qname);
+        handler.handle(AsyncResultImpl.create(getCache().containsKey(qname)));
     }
-    
+
     /**
      * @see io.apiman.gateway.engine.components.IDataStoreComponent#getProperty(java.lang.String, java.lang.String, java.lang.Object, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
@@ -93,7 +93,7 @@ public class InfinispanDataStoreComponent implements IDataStoreComponent {
             } catch (Exception e) {
                 handler.handle(AsyncResultImpl.<T>create(e));
             }
-            
+
         } else {
             handler.handle(AsyncResultImpl.create(defaultValue));
         }
@@ -149,7 +149,7 @@ public class InfinispanDataStoreComponent implements IDataStoreComponent {
         if (cache != null) {
             return cache;
         }
-        
+
         try {
             InitialContext ic = new InitialContext();
             CacheContainer container = (CacheContainer) ic.lookup(cacheContainer);

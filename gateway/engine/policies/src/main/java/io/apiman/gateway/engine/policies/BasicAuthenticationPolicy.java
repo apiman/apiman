@@ -69,13 +69,29 @@ public class BasicAuthenticationPolicy extends AbstractMappedPolicy<BasicAuthent
     protected void doApply(final ServiceRequest request, final IPolicyContext context, final BasicAuthenticationConfig config,
             final IPolicyChain<ServiceRequest> chain) {
         String authHeader = request.getHeaders().get("Authorization"); //$NON-NLS-1$
+        boolean requireBasic = config.getRequireBasicAuth() == null ? Boolean.TRUE : config.getRequireBasicAuth();
+
+        // Handle the case where no authentication credentials are provided
         if (authHeader == null || authHeader.trim().isEmpty()) {
-            sendAuthFailure(context, chain, config, PolicyFailureCodes.BASIC_AUTH_REQUIRED);
-            return;
+            if (requireBasic) {
+                sendAuthFailure(context, chain, config, PolicyFailureCodes.BASIC_AUTH_REQUIRED);
+                return;
+            } else {
+                chain.doApply(request);
+                return;
+            }
         }
+
+        // Handle the case where auth credentials are provided but they aren't BASIC
+        // credentials (e.g. BEARER-TOKEN)
         if (!authHeader.toUpperCase().startsWith("BASIC ")) { //$NON-NLS-1$
-            sendAuthFailure(context, chain, config, PolicyFailureCodes.BASIC_AUTH_REQUIRED);
-            return;
+            if (requireBasic) {
+                sendAuthFailure(context, chain, config, PolicyFailureCodes.BASIC_AUTH_REQUIRED);
+                return;
+            } else {
+                chain.doApply(request);
+                return;
+            }
         }
 
         // Check transport security
