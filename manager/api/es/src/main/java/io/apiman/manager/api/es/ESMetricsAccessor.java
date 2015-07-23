@@ -134,12 +134,13 @@ public class ESMetricsAccessor implements IMetricsAccessor {
             SearchResult response = getEsClient().execute(search);
             MetricAggregation aggregations = response.getAggregations();
             DateHistogramAggregation aggregation = aggregations.getDateHistogramAggregation("histogram");
-
-            List<DateHistogram> buckets = aggregation.getBuckets();
-            for (DateHistogram entry : buckets) {
-                String keyAsString = entry.getTimeAsString();
-                if (index.containsKey(keyAsString)) {
-                    index.get(keyAsString).setCount(entry.getCount());
+            if (aggregation != null) {
+                List<DateHistogram> buckets = aggregation.getBuckets();
+                for (DateHistogram entry : buckets) {
+                    String keyAsString = entry.getTimeAsString();
+                    if (index.containsKey(keyAsString)) {
+                        index.get(keyAsString).setCount(entry.getCount());
+                    }
                 }
             }
         } catch (IOException e) {
@@ -286,14 +287,16 @@ public class ESMetricsAccessor implements IMetricsAccessor {
             Search search = new Search.Builder(query).addIndex(INDEX_NAME).addType("request").build();
             SearchResult response = getEsClient().execute(search);
             MetricAggregation aggregations = response.getAggregations();
-            ApimanTermsAggregation termsAggregation = aggregations.getAggregation("usage_by_app", ApimanTermsAggregation.class); //$NON-NLS-1$
-            List<ApimanTermsAggregation.Entry> buckets = termsAggregation.getBuckets();
-            int counter = 0;
-            for (ApimanTermsAggregation.Entry entry : buckets) {
-                rval.getData().put(entry.getKey(), entry.getCount());
-                counter++;
-                if (counter > 5) {
-                    break;
+            ApimanTermsAggregation aggregation = aggregations.getAggregation("usage_by_app", ApimanTermsAggregation.class); //$NON-NLS-1$
+            if (aggregation != null) {
+                List<ApimanTermsAggregation.Entry> buckets = aggregation.getBuckets();
+                int counter = 0;
+                for (ApimanTermsAggregation.Entry entry : buckets) {
+                    rval.getData().put(entry.getKey(), entry.getCount());
+                    counter++;
+                    if (counter > 5) {
+                        break;
+                    }
                 }
             }
         } catch (IOException e) {
@@ -355,10 +358,12 @@ public class ESMetricsAccessor implements IMetricsAccessor {
             Search search = new Search.Builder(query).addIndex(INDEX_NAME).addType("request").build();
             SearchResult response = getEsClient().execute(search);
             MetricAggregation aggregations = response.getAggregations();
-            ApimanTermsAggregation termsAggregation = aggregations.getAggregation("usage_by_plan", ApimanTermsAggregation.class); //$NON-NLS-1$
-            List<ApimanTermsAggregation.Entry> buckets = termsAggregation.getBuckets();
-            for (ApimanTermsAggregation.Entry entry : buckets) {
-                rval.getData().put(entry.getKey(), entry.getCount());
+            ApimanTermsAggregation aggregation = aggregations.getAggregation("usage_by_plan", ApimanTermsAggregation.class); //$NON-NLS-1$
+            if (aggregation != null) {
+                List<ApimanTermsAggregation.Entry> buckets = aggregation.getBuckets();
+                for (ApimanTermsAggregation.Entry entry : buckets) {
+                    rval.getData().put(entry.getKey(), entry.getCount());
+                }
             }
         } catch (IOException e) {
             log.error(e);
@@ -431,19 +436,20 @@ public class ESMetricsAccessor implements IMetricsAccessor {
             SearchResult response = getEsClient().execute(search);
             MetricAggregation aggregations = response.getAggregations();
             DateHistogramAggregation aggregation = aggregations.getDateHistogramAggregation("histogram");
-
-            List<DateHistogram> buckets = aggregation.getBuckets();
-            for (DateHistogram entry : buckets) {
-                String keyAsString = entry.getTimeAsString();
-                if (index.containsKey(keyAsString)) {
-                    FilterAggregation totalFailuresAgg = entry.getFilterAggregation("total_failures");
-                    FilterAggregation totalErrorsAgg = entry.getFilterAggregation("total_errors");
-                    long failures = totalFailuresAgg.getCount();
-                    long errors = totalErrorsAgg.getCount();
-                    ResponseStatsDataPoint point = index.get(keyAsString);
-                    point.setTotal(entry.getCount());
-                    point.setFailures(failures);
-                    point.setErrors(errors);
+            if (aggregation != null) {
+                List<DateHistogram> buckets = aggregation.getBuckets();
+                for (DateHistogram entry : buckets) {
+                    String keyAsString = entry.getTimeAsString();
+                    if (index.containsKey(keyAsString)) {
+                        FilterAggregation totalFailuresAgg = entry.getFilterAggregation("total_failures");
+                        FilterAggregation totalErrorsAgg = entry.getFilterAggregation("total_errors");
+                        long failures = totalFailuresAgg.getCount();
+                        long errors = totalErrorsAgg.getCount();
+                        ResponseStatsDataPoint point = index.get(keyAsString);
+                        point.setTotal(entry.getCount());
+                        point.setFailures(failures);
+                        point.setErrors(errors);
+                    }
                 }
             }
         } catch (IOException e) {
@@ -576,17 +582,19 @@ public class ESMetricsAccessor implements IMetricsAccessor {
             Search search = new Search.Builder(query).addIndex(INDEX_NAME).addType("request").build();
             SearchResult response = getEsClient().execute(search);
             MetricAggregation aggregations = response.getAggregations();
-            ApimanTermsAggregation termsAggregation = aggregations.getAggregation("by_app", ApimanTermsAggregation.class); //$NON-NLS-1$
-            List<ApimanTermsAggregation.Entry> buckets = termsAggregation.getBuckets();
-            int counter = 0;
-            for (ApimanTermsAggregation.Entry entry : buckets) {
-                ResponseStatsDataPoint point = new ResponseStatsDataPoint();
-                point.setTotal(entry.getCount());
-                rval.addDataPoint(entry.getKey(), entry.getCount(), entry.getFilterAggregation("total_failures").getCount(),
-                        entry.getFilterAggregation("total_errors").getCount());
-                counter++;
-                if (counter > 10) {
-                    break;
+            ApimanTermsAggregation aggregation = aggregations.getAggregation("by_app", ApimanTermsAggregation.class); //$NON-NLS-1$
+            if (aggregation != null) {
+                List<ApimanTermsAggregation.Entry> buckets = aggregation.getBuckets();
+                int counter = 0;
+                for (ApimanTermsAggregation.Entry entry : buckets) {
+                    ResponseStatsDataPoint point = new ResponseStatsDataPoint();
+                    point.setTotal(entry.getCount());
+                    rval.addDataPoint(entry.getKey(), entry.getCount(), entry.getFilterAggregation("total_failures").getCount(),
+                            entry.getFilterAggregation("total_errors").getCount());
+                    counter++;
+                    if (counter > 10) {
+                        break;
+                    }
                 }
             }
         } catch (IOException e) {
@@ -656,17 +664,19 @@ public class ESMetricsAccessor implements IMetricsAccessor {
             Search search = new Search.Builder(query).addIndex(INDEX_NAME).addType("request").build();
             SearchResult response = getEsClient().execute(search);
             MetricAggregation aggregations = response.getAggregations();
-            ApimanTermsAggregation termsAggregation = aggregations.getAggregation("by_plan", ApimanTermsAggregation.class); //$NON-NLS-1$
-            List<ApimanTermsAggregation.Entry> buckets = termsAggregation.getBuckets();
-            int counter = 0;
-            for (ApimanTermsAggregation.Entry entry : buckets) {
-                ResponseStatsDataPoint point = new ResponseStatsDataPoint();
-                point.setTotal(entry.getCount());
-                rval.addDataPoint(entry.getKey(), entry.getCount(), entry.getFilterAggregation("total_failures").getCount(),
-                        entry.getFilterAggregation("total_errors").getCount());
-                counter++;
-                if (counter > 10) {
-                    break;
+            ApimanTermsAggregation aggregation = aggregations.getAggregation("by_plan", ApimanTermsAggregation.class); //$NON-NLS-1$
+            if (aggregation != null) {
+                List<ApimanTermsAggregation.Entry> buckets = aggregation.getBuckets();
+                int counter = 0;
+                for (ApimanTermsAggregation.Entry entry : buckets) {
+                    ResponseStatsDataPoint point = new ResponseStatsDataPoint();
+                    point.setTotal(entry.getCount());
+                    rval.addDataPoint(entry.getKey(), entry.getCount(), entry.getFilterAggregation("total_failures").getCount(),
+                            entry.getFilterAggregation("total_errors").getCount());
+                    counter++;
+                    if (counter > 10) {
+                        break;
+                    }
                 }
             }
         } catch (IOException e) {
