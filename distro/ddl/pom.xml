@@ -90,7 +90,7 @@
           <execution>
             <!-- This step is used to create the current database, based on the current changelogs -->
             <id>h2-update</id>
-            <phase>process-resources</phase>
+            <!--<phase>process-resources</phase>-->
             <goals>
               <goal>update</goal>
             </goals>
