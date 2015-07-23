@@ -26,7 +26,7 @@ import org.elasticsearch.node.NodeBuilder;
 
 /**
  * Starts up an embedded elasticsearch cluster.  This is useful when running
- * apiman in ES storage mode.  This takes the place of a standalone 
+ * apiman in ES storage mode.  This takes the place of a standalone
  * elasticsearch cluster installation.
  *
  * @author eric.wittmann@redhat.com
@@ -41,8 +41,14 @@ public class Bootstrapper implements ServletContextListener {
      */
     @Override
     public void contextInitialized(ServletContextEvent sce) {
+        DistroESConfig config = new DistroESConfig();
+
+
         System.out.println("------------------------------");
         System.out.println("Starting apiman-es.");
+        System.out.println("   HTTP Ports: " + config.getHttpPortRange());
+        System.out.println("   Transport Ports: " + config.getTransportPortRange());
+        System.out.println("   Bind Host: " + config.getBindHost());
         System.out.println("------------------------------");
         String dataDir = System.getProperty("jboss.server.data.dir");
         if (dataDir == null) {
@@ -56,8 +62,11 @@ public class Bootstrapper implements ServletContextListener {
         }
         Builder settings = NodeBuilder.nodeBuilder().settings();
         settings.put("path.home", esHome.getAbsolutePath());
-        settings.put("http.port", "19200-19300");
-        settings.put("transport.tcp.port", "19300-19400");
+        settings.put("http.port", config.getHttpPortRange());
+        settings.put("transport.tcp.port", config.getTransportPortRange());
+        if (config.getBindHost() != null) {
+            settings.put("network.bind_host", config.getBindHost());
+        }
 
         String clusterName = "apiman";
         node = NodeBuilder.nodeBuilder().client(false).clusterName(clusterName).data(true).local(false).settings(settings).build();
