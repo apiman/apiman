@@ -2,6 +2,7 @@
   <deployment>
     <dependencies>
       <module name="org.infinispan" />
+      <module name="org.hibernate" />
       <module name="org.apache.log4j" />
       <module name="org.slf4j" />
       <module name="org.picketbox" />

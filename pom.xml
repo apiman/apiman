@@ -447,6 +447,13 @@
         <type>zip</type>
         <classifier>overlay</classifier>
       </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-distro-eap64</artifactId>
+        <version>${project.version}</version>
+        <type>zip</type>
+        <classifier>overlay</classifier>
+      </dependency>
 
       <!-- apiman Quickstarts -->
       <dependency>

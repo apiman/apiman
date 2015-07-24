@@ -24,11 +24,15 @@ import javax.inject.Inject;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import org.hibernate.ejb.HibernatePersistence;
+import org.hibernate.jpa.HibernatePersistenceProvider;
+
 /**
  * Produces an instance of {@link EntityManagerFactory}.
  *
  * @author eric.wittmann@redhat.com
  */
+@SuppressWarnings("deprecation")
 @ApplicationScoped
 public class EntityManagerFactoryAccessor implements IEntityManagerFactoryAccessor {
 
@@ -67,7 +71,22 @@ public class EntityManagerFactoryAccessor implements IEntityManagerFactoryAccess
         properties.put("hibernate.hbm2ddl.auto", autoValue); //$NON-NLS-1$
         properties.put("hibernate.dialect", dialect); //$NON-NLS-1$
 
-        emf = Persistence.createEntityManagerFactory("apiman-manager-api-jpa", properties); //$NON-NLS-1$
+        // First try using standard JPA to load the persistence unit.  If that fails, then
+        // try using hibernate directly in a couple ways (depends on hibernate version and
+        // platform we're running on).
+        try {
+            emf = Persistence.createEntityManagerFactory("apiman-manager-api-jpa", properties); //$NON-NLS-1$
+        } catch (Throwable t1) {
+            try {
+                emf = new HibernatePersistenceProvider().createEntityManagerFactory("apiman-manager-api-jpa", properties); //$NON-NLS-1$
+            } catch (Throwable t2) {
+                try {
+                    emf = new HibernatePersistence().createEntityManagerFactory("apiman-manager-api-jpa", properties); //$NON-NLS-1$
+                } catch (Throwable t3) {
+                    throw t1;
+                }
+            }
+        }
     }
 
     /**

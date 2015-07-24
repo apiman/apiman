@@ -36,6 +36,13 @@
       <artifactId>hibernate-jpa-2.1-api</artifactId>
       <scope>provided</scope>
     </dependency>
+    
+    <!-- Hibernate -->
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-entitymanager</artifactId>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
 
   <build>
