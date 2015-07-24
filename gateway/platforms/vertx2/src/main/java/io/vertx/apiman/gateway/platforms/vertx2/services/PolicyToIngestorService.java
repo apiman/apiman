@@ -46,8 +46,15 @@ public interface PolicyToIngestorService {
     void write(String chunk);
 
     /**
-     * Finished transmitting body chunks
+     * Finished all actions.
+     * @param resultHandler the result handler
      */
     @ProxyClose
-    void end();
+    void end(Handler<AsyncResult<Void>> resultHandler);
+
+    /**
+     * Indicate failure
+     * @param policyFailure the policy failure
+     */
+    void policyFailure(VertxPolicyFailure policyFailure);
 }

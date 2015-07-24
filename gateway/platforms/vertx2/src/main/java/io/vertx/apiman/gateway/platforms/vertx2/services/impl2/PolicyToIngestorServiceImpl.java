@@ -2,24 +2,28 @@ package io.vertx.apiman.gateway.platforms.vertx2.services.impl2;
 
 import io.apiman.gateway.platforms.vertx2.io.VertxApimanBuffer;
 import io.vertx.apiman.gateway.platforms.vertx2.services.PolicyToIngestorService;
+import io.vertx.apiman.gateway.platforms.vertx2.services.VertxPolicyFailure;
 import io.vertx.apiman.gateway.platforms.vertx2.services.VertxServiceResponse;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 
+import java.util.UUID;
+
 /**
  *
  * @author Marc Savy <msavy@redhat.com>
  */
+@SuppressWarnings("nls")
 public class PolicyToIngestorServiceImpl implements PolicyToIngestorService {
 
-    private String uuid;
+    private String uuid = UUID.randomUUID().toString();
     private Handler<VertxServiceResponse> headHandler;
     private Handler<VertxApimanBuffer> bodyHandler;
     private Handler<Void> endHandler;
+    private Handler<VertxPolicyFailure> policyFailureHandler;
 
     public PolicyToIngestorServiceImpl() {
-        this.uuid = "123-not-really-uuid";
         System.out.println("Creating PolicyToIngestorServiceImpl");
     }
 
@@ -34,13 +38,23 @@ public class PolicyToIngestorServiceImpl implements PolicyToIngestorService {
     @Override
     public void write(String chunk) {
         System.out.println("PolicyToIngestorServiceImpl Received chunk " + chunk + " // on UUID " + uuid);
-        bodyHandler.handle(new VertxApimanBuffer(chunk, "utf-8")); // TODO fix when upstream ready
+        bodyHandler.handle(new VertxApimanBuffer(chunk, "UTF-8")); // TODO fix when upstream ready
     }
 
     @Override
-    public void end() {
-        System.out.println("OK, finished");
+    public void end(Handler<AsyncResult<Void>> resultHandler) {
+        System.out.println("Finished PolicyToIngestor");
         endHandler.handle((Void) null);
+        resultHandler.handle(Future.succeededFuture());
+    }
+
+    @Override
+    public void policyFailure(VertxPolicyFailure policyFailure) {
+        policyFailureHandler.handle(policyFailure);
+    }
+
+    public void policyFailureHandler(Handler<VertxPolicyFailure> policyFailureHandler) {
+        this.policyFailureHandler = policyFailureHandler;
     }
 
     public void headHandler(Handler<VertxServiceResponse> handler) {

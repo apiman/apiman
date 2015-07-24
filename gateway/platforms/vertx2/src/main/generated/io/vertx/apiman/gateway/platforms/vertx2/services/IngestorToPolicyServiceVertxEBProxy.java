@@ -16,24 +16,19 @@
 
 package io.vertx.apiman.gateway.platforms.vertx2.services;
 
-import io.vertx.apiman.gateway.platforms.vertx2.services.IngestorToPolicyService;
-import io.vertx.core.eventbus.DeliveryOptions;
-import io.vertx.core.Vertx;
+import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
-import io.vertx.core.json.JsonObject;
+import io.vertx.core.Handler;
+import io.vertx.core.Vertx;
+import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
-import io.vertx.serviceproxy.ProxyHelper;
-import io.vertx.apiman.gateway.platforms.vertx2.services.IngestorToPolicyService;
-import io.vertx.core.Vertx;
-import io.vertx.core.AsyncResult;
-import io.vertx.core.Handler;
-import io.vertx.apiman.gateway.platforms.vertx2.services.VertxServiceRequest;
 
 /*
   Generated Proxy code - DO NOT EDIT
@@ -50,7 +45,8 @@ public class IngestorToPolicyServiceVertxEBProxy implements IngestorToPolicyServ
     this._address = address;
   }
 
-  public void head(VertxServiceRequest serviceRequest, Handler<AsyncResult<Void>> readyHandler) {
+  @Override
+public void head(VertxServiceRequest serviceRequest, Handler<AsyncResult<Boolean>> readyHandler) {
     if (closed) {
       readyHandler.handle(Future.failedFuture(new IllegalStateException("Proxy is closed")));
       return;
@@ -59,7 +55,7 @@ public class IngestorToPolicyServiceVertxEBProxy implements IngestorToPolicyServ
     _json.put("serviceRequest", serviceRequest == null ? null : serviceRequest.toJson());
     DeliveryOptions _deliveryOptions = new DeliveryOptions();
     _deliveryOptions.addHeader("action", "head");
-    _vertx.eventBus().<Void>send(_address, _json, _deliveryOptions, res -> {
+    _vertx.eventBus().<Boolean>send(_address, _json, _deliveryOptions, res -> {
       if (res.failed()) {
         readyHandler.handle(Future.failedFuture(res.cause()));
       } else {
@@ -68,7 +64,8 @@ public class IngestorToPolicyServiceVertxEBProxy implements IngestorToPolicyServ
     });
   }
 
-  public void write(String chunk) {
+  @Override
+public void write(String chunk) {
     if (closed) {
       throw new IllegalStateException("Proxy is closed");
     }
@@ -79,15 +76,23 @@ public class IngestorToPolicyServiceVertxEBProxy implements IngestorToPolicyServ
     _vertx.eventBus().send(_address, _json, _deliveryOptions);
   }
 
-  public void end() {
+  @Override
+public void end(Handler<AsyncResult<Void>> resultHandler) {
     if (closed) {
-      throw new IllegalStateException("Proxy is closed");
+      resultHandler.handle(Future.failedFuture(new IllegalStateException("Proxy is closed")));
+      return;
     }
     closed = true;
     JsonObject _json = new JsonObject();
     DeliveryOptions _deliveryOptions = new DeliveryOptions();
     _deliveryOptions.addHeader("action", "end");
-    _vertx.eventBus().send(_address, _json, _deliveryOptions);
+    _vertx.eventBus().<Void>send(_address, _json, _deliveryOptions, res -> {
+      if (res.failed()) {
+        resultHandler.handle(Future.failedFuture(res.cause()));
+      } else {
+        resultHandler.handle(Future.succeededFuture(res.result().body()));
+      }
+    });
   }
 
 
@@ -110,12 +115,12 @@ public class IngestorToPolicyServiceVertxEBProxy implements IngestorToPolicyServ
   }
 
   private <T> Map<String, T> convertMap(Map map) {
-    return (Map<String, T>)map;
+    return map;
   }
   private <T> List<T> convertList(List list) {
-    return (List<T>)list;
+    return list;
   }
   private <T> Set<T> convertSet(List list) {
-    return new HashSet<T>((List<T>)list);
+    return new HashSet<T>(list);
   }
 }

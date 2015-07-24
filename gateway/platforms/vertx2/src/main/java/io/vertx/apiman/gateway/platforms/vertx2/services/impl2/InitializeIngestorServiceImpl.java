@@ -27,6 +27,7 @@ import io.apiman.gateway.platforms.vertx2.io.VertxApimanBuffer;
 import io.vertx.apiman.gateway.platforms.vertx2.services.IngestorToPolicyService;
 import io.vertx.apiman.gateway.platforms.vertx2.services.InitializeIngestorService;
 import io.vertx.apiman.gateway.platforms.vertx2.services.PolicyToIngestorService;
+import io.vertx.apiman.gateway.platforms.vertx2.services.VertxPolicyFailure;
 import io.vertx.apiman.gateway.platforms.vertx2.services.VertxServiceRequest;
 import io.vertx.apiman.gateway.platforms.vertx2.services.VertxServiceResponse;
 import io.vertx.core.AsyncResult;
@@ -37,10 +38,10 @@ import io.vertx.core.buffer.Buffer;
 import io.vertx.core.logging.Logger;
 import io.vertx.serviceproxy.ProxyHelper;
 
+@SuppressWarnings("nls")
 public class InitializeIngestorServiceImpl implements InitializeIngestorService {
 
     private Vertx vertx;
-    private VertxEngineConfig engineConfig;
     private IEngine engine;
     private Logger log;
 
@@ -49,7 +50,6 @@ public class InitializeIngestorServiceImpl implements InitializeIngestorService 
             IEngine engine,
             Logger log) {
         this.vertx = vertx;
-        this.engineConfig = engineConfig;
         this.engine = engine;
         this.log = log;
     }
@@ -68,8 +68,8 @@ public class InitializeIngestorServiceImpl implements InitializeIngestorService 
         execute(service, replyProxy, resultHandler);
 
         // Open up a IngestorToPolicy service
+        System.out.println("Called Future.succededFuture(service)");
         resultHandler.handle(Future.succeededFuture(service));
-        //service.ready();
     }
 
     // Do as class?
@@ -90,17 +90,34 @@ public class InitializeIngestorServiceImpl implements InitializeIngestorService 
 
                     if (engineResult.isResponse()) {
                         doResponse(engineResult, replyProxy);
+                        requestService.ready();
                     } else {
-                        //responseExecutor.failure(engineResult.getPolicyFailure());
-                        //resultHandler.handle(Future.failedFuture(engineResult.get));
                         System.out.println("Failed with policy denial");
+                        replyProxy.policyFailure(new VertxPolicyFailure(engineResult.getPolicyFailure()));
+
+                        requestService.failHead();
                     }
+
+                    requestService.succeeded();
 
                 } else {
                     //responseExecutor.error(result.getError());
                     System.out.println("Failed with exception");
                     System.out.println(result.getError().getMessage());
-                    replyProxy.end();
+                    requestService.failHead();
+
+                    requestService.endHandler((Handler<Void>) v -> {
+                        requestService.fail(result.getError());
+
+                        replyProxy.end((Handler<AsyncResult<Void>>) endResult -> {
+                            if (endResult.failed()) {
+                                log.error("Was unable to respond "); //TODO
+                            } else {
+                                System.out.println("Called end on replyProxy");
+                            }
+                        });
+                    });
+
                 }
             });
 
@@ -124,7 +141,7 @@ public class InitializeIngestorServiceImpl implements InitializeIngestorService 
         VertxServiceResponse serviceResponse = new VertxServiceResponse(engineResult.getHead());
 
         replyProxy.head(serviceResponse, (Handler<AsyncResult<Void>>) ready -> {
-
+            System.out.println("Acking head response");
         });
 
         engineResult.bodyHandler((IAsyncHandler<IApimanBuffer>) chunk -> {
@@ -132,7 +149,21 @@ public class InitializeIngestorServiceImpl implements InitializeIngestorService 
         });
 
         engineResult.endHandler((IAsyncHandler<Void>) v -> {
-            replyProxy.end();
+            replyProxy.end((Handler<AsyncResult<Void>>) reply -> {
+                if (reply.failed()) {
+                    log.error("The reply failed");
+                }
+            }); //TODO FIXME
+        });
+    }
+
+    private void end(PolicyToIngestorService replyProxy) {
+        replyProxy.end((Handler<AsyncResult<Void>>) result -> {
+            if (result.failed()) {
+                log.error("Was unable to respond "); //TODO
+            } else {
+                System.out.println("Called end on replyProxy");
+            }
         });
     }
 }

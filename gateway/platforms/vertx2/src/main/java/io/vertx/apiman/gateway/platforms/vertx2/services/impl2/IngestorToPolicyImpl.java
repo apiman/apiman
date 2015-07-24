@@ -24,7 +24,8 @@ public class IngestorToPolicyImpl implements IngestorToPolicyService {
     private Handler<VertxServiceRequest> headHandler;
     private Handler<VertxApimanBuffer> bodyHandler;
     private Handler<Void> endHandler;
-    private Handler<AsyncResult<Void>> readyHandler;
+    private Handler<AsyncResult<Boolean>> readyHandler;
+    private Handler<AsyncResult<Void>> resultHandler;
 
     public IngestorToPolicyImpl(Vertx vertx) {
         //this.vertx = vertx;
@@ -33,16 +34,16 @@ public class IngestorToPolicyImpl implements IngestorToPolicyService {
 
     @Override
     public void head(VertxServiceRequest serviceRequest,
-            Handler<AsyncResult<Void>> readyHandler) {
+            Handler<AsyncResult<Boolean>> readyHandler) {
         System.out.println("Received head");
         this.readyHandler = readyHandler;
 
-        try {
+//        try {
             headHandler.handle(serviceRequest);
-            readyHandler.handle(Future.succeededFuture());
-        } catch (Exception e) {
-            readyHandler.handle(Future.failedFuture(e));
-        }
+//            //readyHandler.handle(Future.succeededFuture());
+//        } catch (Exception e) {
+//            readyHandler.handle(Future.failedFuture(e));
+//        }
     }
 
     @Override
@@ -54,8 +55,10 @@ public class IngestorToPolicyImpl implements IngestorToPolicyService {
     }
 
     @Override
-    public void end() {
+    public void end(Handler<AsyncResult<Void>> resultHandler) {
         System.out.println("OK, finished IngestorToPolicyImpl");
+
+        this.resultHandler = resultHandler;
 
         if (endHandler != null)
             endHandler.handle((Void) null);
@@ -74,10 +77,18 @@ public class IngestorToPolicyImpl implements IngestorToPolicyService {
     }
 
     public void ready() {
-        readyHandler.handle(Future.succeededFuture());
+        readyHandler.handle(Future.succeededFuture(true));
     }
 
-    public void fail(Throwable throwable) {
-        readyHandler.handle(Future.failedFuture(throwable));
+    public void failHead() {
+        readyHandler.handle(Future.succeededFuture(false));
+    }
+
+    public void fail(Throwable error) {
+        resultHandler.handle(Future.failedFuture(error));
+    }
+
+    public void succeeded() {
+        resultHandler.handle(Future.succeededFuture());
     }
 }

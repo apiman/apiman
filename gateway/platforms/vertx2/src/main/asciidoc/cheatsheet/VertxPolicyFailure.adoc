@@ -1,0 +1,17 @@
+== VertxPolicyFailure
+
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+
+|[[message]]`message`
+|`String`
+|-
+|[[failureCode]]`failureCode`
+|`Number`
+|-
+|[[responseCode]]`responseCode`
+|`Number`
+|-|===

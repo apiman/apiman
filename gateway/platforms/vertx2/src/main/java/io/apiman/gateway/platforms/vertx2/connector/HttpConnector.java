@@ -132,12 +132,11 @@ class HttpConnector implements IServiceConnectionResponse, IServiceConnection {
                 serviceResponse = HttpServiceFactory.buildResponse(vxClientResponse, SUPPRESSED_HEADERS);
 
                 vxClientResponse.handler((Handler<Buffer>) chunk -> {
-                    //logger.debug("Received data from the back end! " + chunk.toString());
                     bodyHandler.handle(new VertxApimanBuffer(chunk));
                 });
 
                 vxClientResponse.endHandler((Handler<Void>) v -> {
-                        endHandler.handle((Void) null);
+                    endHandler.handle((Void) null);
                 });
 
                 vxClientResponse.exceptionHandler(exceptionHandler);

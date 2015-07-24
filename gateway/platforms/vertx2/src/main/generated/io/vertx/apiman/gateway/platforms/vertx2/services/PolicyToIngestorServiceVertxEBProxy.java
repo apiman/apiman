@@ -30,6 +30,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import io.vertx.serviceproxy.ProxyHelper;
 import io.vertx.apiman.gateway.platforms.vertx2.services.VertxServiceResponse;
+import io.vertx.apiman.gateway.platforms.vertx2.services.VertxPolicyFailure;
 import io.vertx.core.Vertx;
 import io.vertx.core.AsyncResult;
 import io.vertx.apiman.gateway.platforms.vertx2.services.PolicyToIngestorService;
@@ -79,14 +80,32 @@ public class PolicyToIngestorServiceVertxEBProxy implements PolicyToIngestorServ
     _vertx.eventBus().send(_address, _json, _deliveryOptions);
   }
 
-  public void end() {
+  public void end(Handler<AsyncResult<Void>> resultHandler) {
     if (closed) {
-      throw new IllegalStateException("Proxy is closed");
+      resultHandler.handle(Future.failedFuture(new IllegalStateException("Proxy is closed")));
+      return;
     }
     closed = true;
     JsonObject _json = new JsonObject();
     DeliveryOptions _deliveryOptions = new DeliveryOptions();
     _deliveryOptions.addHeader("action", "end");
+    _vertx.eventBus().<Void>send(_address, _json, _deliveryOptions, res -> {
+      if (res.failed()) {
+        resultHandler.handle(Future.failedFuture(res.cause()));
+      } else {
+        resultHandler.handle(Future.succeededFuture(res.result().body()));
+      }
+    });
+  }
+
+  public void policyFailure(VertxPolicyFailure policyFailure) {
+    if (closed) {
+      throw new IllegalStateException("Proxy is closed");
+    }
+    JsonObject _json = new JsonObject();
+    _json.put("policyFailure", policyFailure == null ? null : policyFailure.toJson());
+    DeliveryOptions _deliveryOptions = new DeliveryOptions();
+    _deliveryOptions.addHeader("action", "policyFailure");
     _vertx.eventBus().send(_address, _json, _deliveryOptions);
   }
 

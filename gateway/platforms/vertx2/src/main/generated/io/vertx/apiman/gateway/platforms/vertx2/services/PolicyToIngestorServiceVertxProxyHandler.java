@@ -38,6 +38,7 @@ import java.util.stream.Collectors;
 import io.vertx.serviceproxy.ProxyHelper;
 import io.vertx.serviceproxy.ProxyHandler;
 import io.vertx.apiman.gateway.platforms.vertx2.services.VertxServiceResponse;
+import io.vertx.apiman.gateway.platforms.vertx2.services.VertxPolicyFailure;
 import io.vertx.core.Vertx;
 import io.vertx.core.AsyncResult;
 import io.vertx.apiman.gateway.platforms.vertx2.services.PolicyToIngestorService;
@@ -90,7 +91,7 @@ public class PolicyToIngestorServiceVertxProxyHandler extends ProxyHandler {
   private void checkTimedOut(long id) {
     long now = System.nanoTime();
     if (now - lastAccessed > timeoutSeconds * 1000000000) {
-      service.end();
+      service.end(done -> {});
       close();
     }
   }
@@ -126,8 +127,12 @@ public class PolicyToIngestorServiceVertxProxyHandler extends ProxyHandler {
         break;
       }
       case "end": {
-        service.end();
+        service.end(createHandler(msg));
         close();
+        break;
+      }
+      case "policyFailure": {
+        service.policyFailure(json.getJsonObject("policyFailure") == null ? null : new io.vertx.apiman.gateway.platforms.vertx2.services.VertxPolicyFailure(json.getJsonObject("policyFailure")));
         break;
       }
       default: {
