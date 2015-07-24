@@ -28,6 +28,7 @@ import io.vertx.apiman.gateway.platforms.vertx2.services.IngestorToPolicyService
 import io.vertx.apiman.gateway.platforms.vertx2.services.InitializeIngestorService;
 import io.vertx.apiman.gateway.platforms.vertx2.services.PolicyToIngestorService;
 import io.vertx.apiman.gateway.platforms.vertx2.services.VertxServiceRequest;
+import io.vertx.apiman.gateway.platforms.vertx2.services.VertxServiceResponse;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
@@ -64,14 +65,20 @@ public class InitializeIngestorServiceImpl implements InitializeIngestorService 
 
         PolicyToIngestorService replyProxy = PolicyToIngestorService.createProxy(vertx, uuid + ".response");
 
-        execute(service, replyProxy);
+        execute(service, replyProxy, resultHandler);
 
+        // Open up a IngestorToPolicy service
         resultHandler.handle(Future.succeededFuture(service));
+        //service.ready();
     }
 
-    private void execute(IngestorToPolicyImpl request, PolicyToIngestorService replyProxy) {
+    // Do as class?
+    private void execute(IngestorToPolicyImpl requestService, PolicyToIngestorService replyProxy, Handler<AsyncResult<IngestorToPolicyService>> resultHandler) {
 
-        request.headHandler((Handler<VertxServiceRequest>) serviceRequest -> {
+        System.out.println("Setting head handler");
+        requestService.headHandler((Handler<VertxServiceRequest>) serviceRequest -> {
+
+            System.out.println("Head has arrived....");
 
             final IServiceRequestExecutor requestExecutor = engine.executor(serviceRequest,
                     (IAsyncResultHandler<IEngineResult>) result -> {
@@ -82,33 +89,50 @@ public class InitializeIngestorServiceImpl implements InitializeIngestorService 
                     IEngineResult engineResult = result.getResult();
 
                     if (engineResult.isResponse()) {
-                        engineResult.bodyHandler((IAsyncHandler<IApimanBuffer>) chunk -> {
-                            replyProxy.write(((Buffer) chunk.getNativeBuffer()).toString("utf-8")); // TODO change
-                        });
-
-                        engineResult.endHandler((IAsyncHandler<Void>) v -> {
-                            replyProxy.end();
-                        });
+                        doResponse(engineResult, replyProxy);
                     } else {
                         //responseExecutor.failure(engineResult.getPolicyFailure());
+                        //resultHandler.handle(Future.failedFuture(engineResult.get));
+                        System.out.println("Failed with policy denial");
                     }
 
                 } else {
                     //responseExecutor.error(result.getError());
+                    System.out.println("Failed with exception");
+                    System.out.println(result.getError().getMessage());
+                    replyProxy.end();
                 }
             });
 
             requestExecutor.streamHandler((IAsyncHandler<ISignalWriteStream>) writeStream -> {
-                request.bodyHandler((Handler<VertxApimanBuffer>) body -> {
+                requestService.bodyHandler((Handler<VertxApimanBuffer>) body -> {
                     writeStream.write(body);
                 });
 
-                request.endHandler((Handler<Void>) v -> {
+                requestService.endHandler((Handler<Void>) v -> {
                     writeStream.end();
                 });
             });
 
             requestExecutor.execute();
+        });
+    }
+
+    // Do as separate class?
+    private void doResponse(IEngineResult engineResult, PolicyToIngestorService replyProxy) {
+
+        VertxServiceResponse serviceResponse = new VertxServiceResponse(engineResult.getHead());
+
+        replyProxy.head(serviceResponse, (Handler<AsyncResult<Void>>) ready -> {
+
+        });
+
+        engineResult.bodyHandler((IAsyncHandler<IApimanBuffer>) chunk -> {
+            replyProxy.write(((Buffer) chunk.getNativeBuffer()).toString("utf-8")); // TODO change
+        });
+
+        engineResult.endHandler((IAsyncHandler<Void>) v -> {
+            replyProxy.end();
         });
     }
 }

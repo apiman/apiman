@@ -15,8 +15,6 @@
  */
 package io.apiman.gateway.platforms.vertx2.engine;
 
-import io.apiman.gateway.engine.IComponent;
-import io.apiman.gateway.engine.beans.exceptions.ComponentNotFoundException;
 import io.apiman.gateway.engine.impl.ConfigDrivenComponentRegistry;
 import io.apiman.gateway.platforms.vertx2.config.VertxEngineConfig;
 import io.vertx.core.Vertx;
@@ -43,20 +41,6 @@ public class VertxConfigDrivenComponentRegistry extends ConfigDrivenComponentReg
         this.vertx = vertx;
     }
 
-    @Override
-    public <T extends IComponent> T createAndRegisterComponent(Class<T> componentType)
-            throws ComponentNotFoundException {
-        try {
-            Class<T> componentClass = engineConfig.getComponentClass(componentType);
-            Map<String, String> componentConfig = engineConfig.getComponentConfig(componentType);
-            T component = createWithVertx(componentClass, engineConfig, componentConfig);
-            super.addComponentMapping(componentType, component);
-            return component;
-        } catch (Exception e) {
-            throw new ComponentNotFoundException(componentType.getName(), e);
-        }
-    }
-
     /**
      * Creates components, but allows a {@link #vertx} instance to be passed in.
      *
@@ -66,7 +50,8 @@ public class VertxConfigDrivenComponentRegistry extends ConfigDrivenComponentReg
      * @param apimanConfig configuration (if necessary).
      * @return instance of Class<T>
      */
-    protected <T> T createWithVertx(Class<T> type, VertxEngineConfig engineConfig, Map<String, String> mapConfig) {
+    @Override
+    protected <T> T create(Class<T> type, Map<String, String> mapConfig) {
         try {
             Constructor<T> constructor = type.getConstructor(Vertx.class, VertxEngineConfig.class, Map.class);
             return constructor.newInstance(vertx, engineConfig, mapConfig);

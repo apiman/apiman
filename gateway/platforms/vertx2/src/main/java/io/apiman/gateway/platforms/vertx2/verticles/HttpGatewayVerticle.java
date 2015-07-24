@@ -69,6 +69,7 @@ public class HttpGatewayVerticle extends ApimanVerticleBase {
             send.head(serviceRequest, (Handler<AsyncResult<Void>>) ready -> {
                 // Signalled that we can send the body.
                 if (ready.succeeded()) {
+                    System.out.println("Resuming");
                     request.resume();
                 } else {
                     // TODO error on head

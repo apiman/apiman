@@ -231,6 +231,9 @@ public class VertxEngineConfig implements IEngineConfig {
         } catch (ClassNotFoundException e) {
             // Not found via Class.forName() - try other mechanisms.
         }
+
+        System.err.println("COULD NOT LOAD " + classname);
+
         throw new RuntimeException(Messages.i18n.format("EngineConfig.FailedToLoadClass", classname));
     }
 

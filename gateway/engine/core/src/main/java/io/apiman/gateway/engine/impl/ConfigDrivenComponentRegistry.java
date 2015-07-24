@@ -83,7 +83,7 @@ public class ConfigDrivenComponentRegistry implements IComponentRegistry {
             synchronized (components) {
                 Class<T> componentClass = engineConfig.getComponentClass(componentType, pluginRegistry);
                 Map<String, String> componentConfig = engineConfig.getComponentConfig(componentType);
-                T component = ConfigDrivenEngineFactory.create(componentClass, componentConfig);
+                T component = create(componentClass, componentConfig);
                 components.put(componentType, component);
 
                 // Because components are lazily created, we need to initialize them here
@@ -122,5 +122,20 @@ public class ConfigDrivenComponentRegistry implements IComponentRegistry {
      */
     protected void addComponentMapping(Class<? extends IComponent> klazz, IComponent component) {
         components.put(klazz, component);
+    }
+
+    protected <T> T create(Class<T> type, Map<String, String> config) {
+        try {
+            Constructor<T> constructor = type.getConstructor(Map.class);
+            return constructor.newInstance(config);
+        } catch (NoSuchMethodException e) {
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            return type.newInstance();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

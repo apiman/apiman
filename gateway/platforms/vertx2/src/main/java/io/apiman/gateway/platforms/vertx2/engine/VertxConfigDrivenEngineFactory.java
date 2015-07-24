@@ -15,13 +15,15 @@
  */
 package io.apiman.gateway.platforms.vertx2.engine;
 
-
 import io.apiman.gateway.engine.IComponentRegistry;
 import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.impl.ConfigDrivenEngineFactory;
 import io.apiman.gateway.platforms.vertx2.config.VertxEngineConfig;
 import io.apiman.gateway.platforms.vertx2.connector.ConnectorFactory;
 import io.vertx.core.Vertx;
+
+import java.lang.reflect.Constructor;
+import java.util.Map;
 
 /**
  * A configuration driven engine specifically for Vert.x
@@ -51,4 +53,25 @@ public class VertxConfigDrivenEngineFactory extends ConfigDrivenEngineFactory {
         return new VertxConfigDrivenComponentRegistry(vertx, vxConfig);
     }
 
+    @Override
+    @SuppressWarnings("nls")
+    protected <T> T create(Class<T> type, Map<String, String> mapConfig) {
+        try {
+            Constructor<T> constructor = type.getConstructor(Vertx.class, VertxEngineConfig.class, Map.class);
+            return constructor.newInstance(vertx, vxConfig, mapConfig);
+        } catch (Exception e) {
+        }
+        try {
+            Constructor<T> constructor = type.getConstructor(Map.class);
+            return constructor.newInstance(mapConfig);
+        } catch (Exception e) {
+        }
+        try {
+            return type.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException(String.format(
+                    "Could not instantiate %s. Verify class has valid constructor parameters: %s", type,
+                    e.getMessage()), e);
+        }
+    }
 }

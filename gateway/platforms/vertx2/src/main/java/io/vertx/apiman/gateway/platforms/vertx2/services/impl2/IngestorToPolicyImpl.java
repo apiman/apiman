@@ -36,19 +36,29 @@ public class IngestorToPolicyImpl implements IngestorToPolicyService {
             Handler<AsyncResult<Void>> readyHandler) {
         System.out.println("Received head");
         this.readyHandler = readyHandler;
-        headHandler.handle(serviceRequest);
+
+        try {
+            headHandler.handle(serviceRequest);
+            readyHandler.handle(Future.succeededFuture());
+        } catch (Exception e) {
+            readyHandler.handle(Future.failedFuture(e));
+        }
     }
 
     @Override
     public void write(String chunk) {
         System.out.println("Received chunk " + chunk + " // on UUID " + uuid);
-        bodyHandler.handle(new VertxApimanBuffer(chunk)); //TODO this should be fixed when custom marshallers allowed
+
+        if (bodyHandler != null)
+            bodyHandler.handle(new VertxApimanBuffer(chunk)); //TODO this should be fixed when custom marshallers allowed
     }
 
     @Override
     public void end() {
-        System.out.println("OK, finished");
-        endHandler.handle((Void) null);
+        System.out.println("OK, finished IngestorToPolicyImpl");
+
+        if (endHandler != null)
+            endHandler.handle((Void) null);
     }
 
     public void headHandler(Handler<VertxServiceRequest> handler) {

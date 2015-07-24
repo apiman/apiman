@@ -19,6 +19,7 @@ import io.apiman.common.plugin.PluginUtils;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.impl.DefaultPluginRegistry;
+import io.apiman.gateway.platforms.vertx2.config.VertxEngineConfig;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
@@ -31,6 +32,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
+import java.util.Map;
 
 /**
  * A vertx implementation of the API Gateway's plugin registry. This version simply extends the default
@@ -62,12 +64,15 @@ public class VertxPluginRegistry extends DefaultPluginRegistry {
 
     private HttpClient client;
 
+
     /**
      * Constructor.
      *
      * @param vertx the vertx
+     * @param vxEngineConfig the engine config
+     * @param config the plugin config
      */
-    public VertxPluginRegistry(Vertx vertx) {
+    public VertxPluginRegistry(Vertx vertx, VertxEngineConfig vxEngineConfig, Map<String, String> config) {
         super(getTempPluginsDir(), PluginUtils.getDefaultMavenRepositories());
         this.client = vertx.createHttpClient();
     }
