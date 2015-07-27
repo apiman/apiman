@@ -155,6 +155,7 @@ module Apiman {
                 $scope.saveButton.state = 'in-progress';
                 OrgSvcs.update({ organizationId: params.org, entityType: 'services', entityId:params.service, versionsOrActivity: 'versions', version: params.version }, $scope.updatedService, function(reply) {
                     $scope.isDirty = false;
+                    $scope.autoGateway = false;
                     $scope.saveButton.state = 'complete';
                     $scope.version = reply;
                     EntityStatusService.setEntityStatus(reply.status);
@@ -164,6 +165,15 @@ module Apiman {
             PageLifecycle.loadPage('ServiceImpl', pageData, $scope, function() {
                 $scope.reset();
                 PageLifecycle.setPageTitle('service-impl', [ $scope.service.name ]);
+                
+                // Automatically set the selected gateway if there's only one and the 
+                // gateway is not already set.
+                if (!$scope.version.gateways || $scope.version.gateways.length == 0) {
+                    if ($scope.gateways && $scope.gateways.length == 1) {
+                        $scope.selectedGateway = $scope.gateways[0];
+                        $scope.autoGateway = true;
+                    }
+                }
             });
         }])
 

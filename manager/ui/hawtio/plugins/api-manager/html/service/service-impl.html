@@ -82,7 +82,7 @@
                   </tr>
                 </table>
               </div>
-            </div>            
+            </div>
             
             <div id="gateway-info" ng-show="gateways.length > 1">
               <hr />
@@ -99,6 +99,28 @@
                 </select>
               </div>
             </div>
+            
+            <div id="no-gateways-info" ng-show="gateways.length == 0">
+              <hr />
+              <div class="title" apiman-i18n-key="gateway">Gateway</div>
+              <div class="alert alert-warning" apiman-i18n-key="service-impl-no-gateways-explanation">
+                  There are no API Gateways configured in apiman.  For this reason you will not
+                  be able to complete the configuration of your service.  Please contact your
+                  apiman administrator - at least one API Gateway must be configured!
+              </div>
+            </div>
+            
+            <div id="new-gateway-info" ng-show="autoGateway">
+              <hr />
+              <div class="title" apiman-i18n-key="gateway">Gateway</div>
+              <div class="alert alert-success" apiman-i18n-key="service-impl-new-gateway-explanation">
+                  An API Gateway has been added since this service was created.  The new
+                  Gateway has been selected for you - all you need to do is click Save below
+                  to make it stick.
+              </div>
+            </div>
+            
+            
             <div apiman-permission="svcEdit" apiman-status="Created,Ready" class="actions" style="margin-top: 20px">
               <button ng-disabled="!isDirty || !isValid" apiman-action-btn="" ng-click="saveService()" class="btn btn-primary" data-field="saveButton" apiman-i18n-key="save" placeholder="Saving..." data-icon="fa-cog" >Save</button>
               <button ng-disabled="!isDirty" ng-click="reset()" class="btn btn-default" data-field="cancelButton" apiman-i18n-key="cancel">Cancel</button>
