@@ -298,6 +298,16 @@ public abstract class GatewayServlet extends HttpServlet {
         while (headerNames.hasMoreElements()) {
             String hname = headerNames.nextElement();
             String hval = request.getHeader(hname);
+            if (hname != null && hname.equalsIgnoreCase("accept") && hval != null && hval.startsWith("application/apiman.")) { //$NON-NLS-1$ //$NON-NLS-2$
+                if (hval.contains("+json")) { //$NON-NLS-1$
+                    hval = "application/json"; //$NON-NLS-1$
+                } else if (hval.contains("+xml")) { //$NON-NLS-1$
+                    hval = "text/xml"; //$NON-NLS-1$
+                }
+            }
+            if (hname != null && hname.equalsIgnoreCase("X-API-Version")) { //$NON-NLS-1$
+                continue;
+            }
             srequest.getHeaders().put(hname, hval);
         }
     }
