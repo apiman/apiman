@@ -41,14 +41,14 @@ import java.util.Map;
  * @author eric.wittmann@redhat.com
  */
 public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig> {
-    
+
     private static final String NO_USER_AVAILABLE = new String();
     private static final String NO_APPLICATION_AVAILABLE = new String();
-    
+
     private static final String DEFAULT_LIMIT_HEADER = "X-RateLimit-Limit"; //$NON-NLS-1$
     private static final String DEFAULT_REMAINING_HEADER = "X-RateLimit-Remaining"; //$NON-NLS-1$
     private static final String DEFAULT_RESET_HEADER = "X-RateLimit-Reset"; //$NON-NLS-1$
-    
+
     /**
      * Constructor.
      */
@@ -62,7 +62,7 @@ public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig>
     protected Class<RateLimitingConfig> getConfigurationClass() {
         return RateLimitingConfig.class;
     }
-    
+
     /**
      * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#doApply(io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
      */
@@ -84,7 +84,7 @@ public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig>
             chain.doFailure(failure);
             return;
         }
-        
+
         IRateLimiterComponent rateLimiter = context.getComponent(IRateLimiterComponent.class);
         rateLimiter.accept(bucketId, period, config.getLimit(), new IAsyncResultHandler<RateLimitResponse>() {
             @Override
@@ -93,19 +93,19 @@ public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig>
                     chain.throwError(result.getError());
                 } else {
                     RateLimitResponse rtr = result.getResult();
-                    
+
                     Map<String, String> responseHeaders = new HashMap<>();
                     String limitHeader = config.getHeaderLimit();
                     if (limitHeader == null) {
-                        limitHeader = DEFAULT_LIMIT_HEADER;
+                        limitHeader = defaultLimitHeader();
                     }
                     String remainingHeader = config.getHeaderRemaining();
                     if (remainingHeader == null) {
-                        remainingHeader = DEFAULT_REMAINING_HEADER;
+                        remainingHeader = defaultRemainingHeader();
                     }
                     String resetHeader = config.getHeaderReset();
                     if (resetHeader == null) {
-                        resetHeader = DEFAULT_RESET_HEADER;
+                        resetHeader = defaultResetHeader();
                     }
                     responseHeaders.put(limitHeader, String.valueOf(config.getLimit()));
                     responseHeaders.put(remainingHeader, String.valueOf(rtr.getRemaining()));
@@ -125,7 +125,7 @@ public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig>
             }
         });
     }
-    
+
     /**
      * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#doApply(io.apiman.gateway.engine.beans.ServiceResponse, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
      */
@@ -140,9 +140,9 @@ public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig>
     }
 
     /**
-     * Creates the ID of the rate bucket to use.  The ID is composed differently 
+     * Creates the ID of the rate bucket to use.  The ID is composed differently
      * depending on the configuration of the policy.
-     * 
+     *
      * @param request
      * @param config
      */
@@ -222,6 +222,27 @@ public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig>
         default:
             return RateBucketPeriod.Month;
         }
+    }
+
+    /**
+     * @return the default reset header
+     */
+    protected String defaultResetHeader() {
+        return DEFAULT_RESET_HEADER;
+    }
+
+    /**
+     * @return the default remaining header
+     */
+    protected String defaultRemainingHeader() {
+        return DEFAULT_REMAINING_HEADER;
+    }
+
+    /**
+     * @return the default limit header
+     */
+    protected String defaultLimitHeader() {
+        return DEFAULT_LIMIT_HEADER;
     }
 
 }

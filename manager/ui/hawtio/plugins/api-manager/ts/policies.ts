@@ -102,6 +102,34 @@ module Apiman {
         ($scope, Logger) => {
             var validate = function(config) {
                 var valid = true;
+                if (config.limit) {
+                    config.limit = Number(config.limit);
+                }
+                if (!config.limit || config.limit < 1) {
+                    valid = false;
+                }
+                if (!config.granularity) {
+                    valid = false;
+                }
+                if (!config.period) {
+                    valid = false;
+                }
+                if (config.granularity == 'User' && !config.userHeader) {
+                    valid = false;
+                }
+                $scope.setValid(valid);
+            };
+            $scope.$watch('config', validate, true);
+        }]);
+
+    _module.controller("Apiman.QuotaFormController",
+        ['$scope', 'Logger',
+        ($scope, Logger) => {
+            var validate = function(config) {
+                var valid = true;
+                if (config.limit) {
+                    config.limit = Number(config.limit);
+                }
                 if (!config.limit || config.limit < 1) {
                     valid = false;
                 }

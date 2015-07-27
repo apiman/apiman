@@ -88,6 +88,8 @@ INSERT INTO pd_templates (policydef_id, language, template) VALUES ('BASICAuthen
 
 INSERT INTO pd_templates (policydef_id, language, template) VALUES ('RateLimitingPolicy', NULL, 'Consumers are limited to @{limit} requests per @{granularity} per @{period}.');
 
+INSERT INTO pd_templates (policydef_id, language, template) VALUES ('QuotaPolicy', NULL, 'Consumers cannot exceed their quota of @{limit} requests per @{granularity} per @{period}.');
+
 INSERT INTO pd_templates (policydef_id, language, template) VALUES ('IgnoredResourcesPolicy', NULL, 'Requests matching any of the @{pathsToIgnore.size()} regular expressions provided will receive a 404 error code.');
 
 INSERT INTO pd_templates (policydef_id, language, template) VALUES ('AuthorizationPolicy', NULL, 'Appropriate authorization roles are required.  There are @{rules.size()} authorization rules defined.');
@@ -142,7 +144,9 @@ INSERT INTO policydefs (id, description, form, form_type, icon, name, plugin_id,
 
 INSERT INTO policydefs (id, description, form, form_type, icon, name, plugin_id, policy_impl) VALUES ('BASICAuthenticationPolicy', 'Enables HTTP BASIC Authentication on a service.  Some configuration required.', NULL, 'Default', 'lock', 'BASIC Authentication Policy', NULL, 'class:io.apiman.gateway.engine.policies.BasicAuthenticationPolicy');
 
-INSERT INTO policydefs (id, description, form, form_type, icon, name, plugin_id, policy_impl) VALUES ('RateLimitingPolicy', 'Enforces rate configurable request rate limits on a service.  This ensures that consumers can''t overload a service with too many requests.', NULL, 'Default', 'sliders', 'Rate Limiting Policy', NULL, 'class:io.apiman.gateway.engine.policies.RateLimitingPolicy');
+INSERT INTO policydefs (id, description, form, form_type, icon, name, plugin_id, policy_impl) VALUES ('RateLimitingPolicy', 'Enforces rate configurable request rate limits on a service.  This ensures that consumers can''t overload a service with too many requests.', NULL, 'Default', 'tachometer', 'Rate Limiting Policy', NULL, 'class:io.apiman.gateway.engine.policies.RateLimitingPolicy');
+
+INSERT INTO policydefs (id, description, form, form_type, icon, name, plugin_id, policy_impl) VALUES ('QuotaPolicy', 'Provides a way to limit the total number of requests that can be sent to an API.', NULL, 'Default', 'exchange', 'Quota Policy', NULL, 'class:io.apiman.gateway.engine.policies.QuotaPolicy');
 
 INSERT INTO policydefs (id, description, form, form_type, icon, name, plugin_id, policy_impl) VALUES ('IgnoredResourcesPolicy', 'Requests satisfying the provided regular expression will be ignored.', NULL, 'Default', 'eye-slash', 'Ignored Resources Policy', NULL, 'class:io.apiman.gateway.engine.policies.IgnoredResourcesPolicy');
 

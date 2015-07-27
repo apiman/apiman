@@ -7,6 +7,7 @@ module Apiman {
         IPBlacklistPolicy: 'ip-list.include',
         IPWhitelistPolicy: 'ip-list.include',
         RateLimitingPolicy: 'rate-limiting.include',
+        QuotaPolicy: 'quota.include',
         AuthorizationPolicy: 'authorization.include',
     };
 
