@@ -35,49 +35,85 @@ public class GatewayServletTest {
      */
     @Test
     public void testParseServiceRequestPath() {
-        ServiceRequestPathInfo info = GatewayServlet.parseServiceRequestPath(null);
+        ServiceRequestPathInfo info = parseServiceRequestPath(null);
 
-        info = GatewayServlet.parseServiceRequestPath("/invalidpath");
+        info = parseServiceRequestPath("/invalidpath");
         Assert.assertNull(info.orgId);
         Assert.assertNull(info.serviceId);
         Assert.assertNull(info.serviceVersion);
         Assert.assertNull(info.resource);
 
-        info = GatewayServlet.parseServiceRequestPath("/invalid/path");
+        info = parseServiceRequestPath("/invalid/path");
         Assert.assertNull(info.orgId);
         Assert.assertNull(info.serviceId);
         Assert.assertNull(info.serviceVersion);
         Assert.assertNull(info.resource);
 
-        info = GatewayServlet.parseServiceRequestPath("/Org1/Service1/1.0");
+        info = parseServiceRequestPath("/Org1/Service1/1.0");
         Assert.assertEquals("Org1", info.orgId);
         Assert.assertEquals("Service1", info.serviceId);
         Assert.assertEquals("1.0", info.serviceVersion);
         Assert.assertNull(info.resource);
 
-        info = GatewayServlet.parseServiceRequestPath("/MyOrg/Service-99/2.7");
+        info = parseServiceRequestPath("/MyOrg/Service-99/2.7");
         Assert.assertEquals("MyOrg", info.orgId);
         Assert.assertEquals("Service-99", info.serviceId);
         Assert.assertEquals("2.7", info.serviceVersion);
         Assert.assertNull(info.resource);
 
-        info = GatewayServlet.parseServiceRequestPath("/MyOrg/Service-99/2.7/resource");
+        info = parseServiceRequestPath("/MyOrg/Service-99/2.7/resource");
         Assert.assertEquals("MyOrg", info.orgId);
         Assert.assertEquals("Service-99", info.serviceId);
         Assert.assertEquals("2.7", info.serviceVersion);
         Assert.assertEquals("/resource", info.resource);
 
-        info = GatewayServlet.parseServiceRequestPath("/MyOrg/Service-99/2.7/path/to/resource");
+        info = parseServiceRequestPath("/MyOrg/Service-99/2.7/path/to/resource");
         Assert.assertEquals("MyOrg", info.orgId);
         Assert.assertEquals("Service-99", info.serviceId);
         Assert.assertEquals("2.7", info.serviceVersion);
         Assert.assertEquals("/path/to/resource", info.resource);
 
-        info = GatewayServlet.parseServiceRequestPath("/MyOrg/Service-99/2.7/path/to/resource?query=1234");
+        info = parseServiceRequestPath("/MyOrg/Service-99/2.7/path/to/resource?query=1234");
         Assert.assertEquals("MyOrg", info.orgId);
         Assert.assertEquals("Service-99", info.serviceId);
         Assert.assertEquals("2.7", info.serviceVersion);
         Assert.assertEquals("/path/to/resource?query=1234", info.resource);
+
+        info = parseServiceRequestPath("/MyOrg/Service-99/path/to/resource?query=1234", null, "2.7");
+        Assert.assertEquals("MyOrg", info.orgId);
+        Assert.assertEquals("Service-99", info.serviceId);
+        Assert.assertEquals("2.7", info.serviceVersion);
+        Assert.assertEquals("/path/to/resource?query=1234", info.resource);
+
+        info = parseServiceRequestPath("/MyOrg/Service-99/path/to/resource?query=1234", "application/apiman.2.7+json", null);
+        Assert.assertEquals("MyOrg", info.orgId);
+        Assert.assertEquals("Service-99", info.serviceId);
+        Assert.assertEquals("2.7", info.serviceVersion);
+        Assert.assertEquals("/path/to/resource?query=1234", info.resource);
+
+    }
+
+    /**
+     * @param path
+     */
+    private ServiceRequestPathInfo parseServiceRequestPath(String path) {
+        return parseServiceRequestPath(path, null, null);
+    }
+
+    /**
+     * @param path
+     * @param acceptHeader
+     * @param apiVersionHeader
+     */
+    private ServiceRequestPathInfo parseServiceRequestPath(String path, String acceptHeader, String apiVersionHeader) {
+        MockHttpServletRequest mockReq = new MockHttpServletRequest(path);
+        if (acceptHeader != null) {
+            mockReq.setHeader("Accept", acceptHeader);
+        }
+        if (apiVersionHeader != null) {
+            mockReq.setHeader("X-API-Version", apiVersionHeader);
+        }
+        return GatewayServlet.parseServiceRequestPath(mockReq);
     }
 
     /**
