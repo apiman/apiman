@@ -9,7 +9,7 @@ import io.vertx.core.json.JsonObject;
 import java.util.Collection;
 import java.util.Iterator;
 
-@DataObject
+@DataObject//(inheritConverter = true) for next release of vertx
 public class VertxPolicyFailure extends PolicyFailure {
     private static final long serialVersionUID = 6303864238553908191L;
     private String rawRepresentation;

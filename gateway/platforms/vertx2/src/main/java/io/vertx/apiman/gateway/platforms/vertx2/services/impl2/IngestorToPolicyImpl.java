@@ -19,8 +19,6 @@ import java.util.UUID;
 public class IngestorToPolicyImpl implements IngestorToPolicyService {
 
     private String uuid = UUID.randomUUID().toString();
-    //private Vertx vertx;
-
     private Handler<VertxServiceRequest> headHandler;
     private Handler<VertxApimanBuffer> bodyHandler;
     private Handler<Void> endHandler;
@@ -28,7 +26,6 @@ public class IngestorToPolicyImpl implements IngestorToPolicyService {
     private Handler<AsyncResult<Void>> resultHandler;
 
     public IngestorToPolicyImpl(Vertx vertx) {
-        //this.vertx = vertx;
         System.out.println("Creating IngestorToPolicyImpl");
     }
 
@@ -38,12 +35,7 @@ public class IngestorToPolicyImpl implements IngestorToPolicyService {
         System.out.println("Received head");
         this.readyHandler = readyHandler;
 
-//        try {
-            headHandler.handle(serviceRequest);
-//            //readyHandler.handle(Future.succeededFuture());
-//        } catch (Exception e) {
-//            readyHandler.handle(Future.failedFuture(e));
-//        }
+        headHandler.handle(serviceRequest);
     }
 
     @Override

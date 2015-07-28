@@ -1,6 +1,5 @@
 package io.apiman.gateway.platforms.vertx2.verticles;
 
-import io.vertx.core.AsyncResult;
 import io.vertx.core.DeploymentOptions;
 
 public class InitVerticle extends ApimanVerticleBase {
@@ -13,14 +12,16 @@ public class InitVerticle extends ApimanVerticleBase {
         deploymentOptions.setInstances(1); // get from JSON config (4:1 ratio?)
         deploymentOptions.setConfig(config());
 
-        vertx.deployVerticle(PolicyVerticle.class.getCanonicalName(), deploymentOptions,
-                (AsyncResult<String> event) -> {
+//        vertx.deployVerticle(PolicyVerticle.class.getCanonicalName(), deploymentOptions,
+//                (AsyncResult<String> event) -> {
+//
+//                if (event.failed())
+//                    throw new RuntimeException(event.cause());
+//
+//                vertx.deployVerticle(HttpGatewayVerticle.class.getCanonicalName(), deploymentOptions);
+//        });
 
-                if (event.failed())
-                    throw new RuntimeException(event.cause());
-
-                vertx.deployVerticle(HttpGatewayVerticle.class.getCanonicalName(), deploymentOptions);
-        });
+        vertx.deployVerticle(ApiVerticle.class.getCanonicalName());
     }
 
     @Override

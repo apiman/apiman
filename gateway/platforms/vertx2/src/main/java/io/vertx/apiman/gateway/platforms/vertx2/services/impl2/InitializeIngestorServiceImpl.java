@@ -16,25 +16,14 @@
 package io.vertx.apiman.gateway.platforms.vertx2.services.impl2;
 
 import io.apiman.gateway.engine.IEngine;
-import io.apiman.gateway.engine.IEngineResult;
-import io.apiman.gateway.engine.IServiceRequestExecutor;
-import io.apiman.gateway.engine.async.IAsyncHandler;
-import io.apiman.gateway.engine.async.IAsyncResultHandler;
-import io.apiman.gateway.engine.io.IApimanBuffer;
-import io.apiman.gateway.engine.io.ISignalWriteStream;
 import io.apiman.gateway.platforms.vertx2.config.VertxEngineConfig;
-import io.apiman.gateway.platforms.vertx2.io.VertxApimanBuffer;
 import io.vertx.apiman.gateway.platforms.vertx2.services.IngestorToPolicyService;
 import io.vertx.apiman.gateway.platforms.vertx2.services.InitializeIngestorService;
 import io.vertx.apiman.gateway.platforms.vertx2.services.PolicyToIngestorService;
-import io.vertx.apiman.gateway.platforms.vertx2.services.VertxPolicyFailure;
-import io.vertx.apiman.gateway.platforms.vertx2.services.VertxServiceRequest;
-import io.vertx.apiman.gateway.platforms.vertx2.services.VertxServiceResponse;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
-import io.vertx.core.buffer.Buffer;
 import io.vertx.core.logging.Logger;
 import io.vertx.serviceproxy.ProxyHelper;
 
@@ -65,105 +54,15 @@ public class InitializeIngestorServiceImpl implements InitializeIngestorService 
 
         PolicyToIngestorService replyProxy = PolicyToIngestorService.createProxy(vertx, uuid + ".response");
 
-        execute(service, replyProxy, resultHandler);
+        PolicyExecutor executor = new PolicyExecutor(engine, service, replyProxy, log);
+        executor.execute();
 
         // Open up a IngestorToPolicy service
         System.out.println("Called Future.succededFuture(service)");
         resultHandler.handle(Future.succeededFuture(service));
     }
 
-    // Do as class?
-    private void execute(IngestorToPolicyImpl requestService, PolicyToIngestorService replyProxy, Handler<AsyncResult<IngestorToPolicyService>> resultHandler) {
-
-        System.out.println("Setting head handler");
-        requestService.headHandler((Handler<VertxServiceRequest>) serviceRequest -> {
-
-            System.out.println("Head has arrived....");
-
-            final IServiceRequestExecutor requestExecutor = engine.executor(serviceRequest,
-                    (IAsyncResultHandler<IEngineResult>) result -> {
-
-                log.debug("Received result from apiman engine in PolicyVerticle!"); //$NON-NLS-1$
-
-                if (result.isSuccess()) {
-                    IEngineResult engineResult = result.getResult();
-
-                    if (engineResult.isResponse()) {
-                        doResponse(engineResult, replyProxy);
-                        requestService.ready();
-                    } else {
-                        System.out.println("Failed with policy denial");
-                        replyProxy.policyFailure(new VertxPolicyFailure(engineResult.getPolicyFailure()));
-
-                        requestService.failHead();
-                    }
-
-                    requestService.succeeded();
-
-                } else {
-                    //responseExecutor.error(result.getError());
-                    System.out.println("Failed with exception");
-                    System.out.println(result.getError().getMessage());
-                    requestService.failHead();
-
-                    requestService.endHandler((Handler<Void>) v -> {
-                        requestService.fail(result.getError());
-
-                        replyProxy.end((Handler<AsyncResult<Void>>) endResult -> {
-                            if (endResult.failed()) {
-                                log.error("Was unable to respond "); //TODO
-                            } else {
-                                System.out.println("Called end on replyProxy");
-                            }
-                        });
-                    });
-
-                }
-            });
-
-            requestExecutor.streamHandler((IAsyncHandler<ISignalWriteStream>) writeStream -> {
-                requestService.bodyHandler((Handler<VertxApimanBuffer>) body -> {
-                    writeStream.write(body);
-                });
-
-                requestService.endHandler((Handler<Void>) v -> {
-                    writeStream.end();
-                });
-            });
-
-            requestExecutor.execute();
-        });
-    }
-
-    // Do as separate class?
-    private void doResponse(IEngineResult engineResult, PolicyToIngestorService replyProxy) {
-
-        VertxServiceResponse serviceResponse = new VertxServiceResponse(engineResult.getHead());
-
-        replyProxy.head(serviceResponse, (Handler<AsyncResult<Void>>) ready -> {
-            System.out.println("Acking head response");
-        });
-
-        engineResult.bodyHandler((IAsyncHandler<IApimanBuffer>) chunk -> {
-            replyProxy.write(((Buffer) chunk.getNativeBuffer()).toString("utf-8")); // TODO change
-        });
-
-        engineResult.endHandler((IAsyncHandler<Void>) v -> {
-            replyProxy.end((Handler<AsyncResult<Void>>) reply -> {
-                if (reply.failed()) {
-                    log.error("The reply failed");
-                }
-            }); //TODO FIXME
-        });
-    }
-
-    private void end(PolicyToIngestorService replyProxy) {
-        replyProxy.end((Handler<AsyncResult<Void>>) result -> {
-            if (result.failed()) {
-                log.error("Was unable to respond "); //TODO
-            } else {
-                System.out.println("Called end on replyProxy");
-            }
-        });
-    }
+//    public void setPolicyConnectionHandler(Handler<>) { could pass this out to the policy verticle
+//
+//    }
 }
