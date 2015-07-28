@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.api.es;
 
+import io.apiman.manager.api.beans.metrics.AppUsagePerServiceBean;
 import io.apiman.manager.api.beans.metrics.HistogramBean;
 import io.apiman.manager.api.beans.metrics.HistogramDataPoint;
 import io.apiman.manager.api.beans.metrics.HistogramIntervalType;
@@ -684,6 +685,73 @@ public class ESMetricsAccessor implements IMetricsAccessor {
         }
 
         return rval;
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IMetricsAccessor#getAppUsagePerService(java.lang.String, java.lang.String, java.lang.String, org.joda.time.DateTime, org.joda.time.DateTime)
+     */
+    @Override
+    @SuppressWarnings("nls")
+    public AppUsagePerServiceBean getAppUsagePerService(String organizationId, String applicationId,
+            String version, DateTime from, DateTime to) {
+        AppUsagePerServiceBean rval = new AppUsagePerServiceBean();
+
+        try {
+            String query =
+                    "{" +
+                    "  \"query\": {\n" +
+                    "    \"filtered\" : {\n" +
+                    "      \"query\" : {\n" +
+                    "        \"range\" : {\n" +
+                    "          \"requestStart\" : {\n" +
+                    "            \"gte\": \"${from}\",\n" +
+                    "            \"lte\": \"${to}\"\n" +
+                    "          }\n" +
+                    "        }\n" +
+                    "      },\n" +
+                    "      \"filter\": {\n" +
+                    "        \"and\" : [\n" +
+                    "          { \"term\" : { \"applicationOrgId\" : \"${applicationOrgId}\" } },\n" +
+                    "          { \"term\" : { \"applicationId\" : \"${applicationId}\" } },\n" +
+                    "          { \"term\" : { \"applicationVersion\" : \"${applicationVersion}\" } }\n" +
+                    "        ]\n" +
+                    "      }\n" +
+                    "    }\n" +
+                    "  },\n" +
+                    "  \"size\": 0, \n" +
+                    "  \"aggs\" : {\n" +
+                    "      \"usage_by_service\" : {\n" +
+                    "        \"terms\" : {\n" +
+                    "          \"field\" : \"serviceId\"\n" +
+                    "        }\n" +
+                    "      }\n" +
+                    "  }\n" +
+                    "}";
+            Map<String, String> params = new HashMap<>();
+            params.put("from", formatDate(from));
+            params.put("to", formatDate(to));
+            params.put("applicationOrgId", organizationId.replace('"', '_'));
+            params.put("applicationId", applicationId.replace('"', '_'));
+            params.put("applicationVersion", version.replace('"', '_'));
+            StrSubstitutor ss = new StrSubstitutor(params);
+            query = ss.replace(query);
+
+            Search search = new Search.Builder(query).addIndex(INDEX_NAME).addType("request").build();
+            SearchResult response = getEsClient().execute(search);
+            MetricAggregation aggregations = response.getAggregations();
+            ApimanTermsAggregation aggregation = aggregations.getAggregation("usage_by_service", ApimanTermsAggregation.class); //$NON-NLS-1$
+            if (aggregation != null) {
+                List<ApimanTermsAggregation.Entry> buckets = aggregation.getBuckets();
+                for (ApimanTermsAggregation.Entry entry : buckets) {
+                    rval.getData().put(entry.getKey(), entry.getCount());
+                }
+            }
+        } catch (IOException e) {
+            log.error(e);
+        }
+
+        return rval;
+
     }
 
     /**

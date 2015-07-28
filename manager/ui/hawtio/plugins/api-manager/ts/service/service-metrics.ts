@@ -2,11 +2,11 @@
 /// <reference path="../services.ts"/>
 module Apiman {
     
-    var NINETY_DAYS = 90 * 24 * 60 * 60 * 1000;
-    var THIRTY_DAYS = 30 * 24 * 60 * 60 * 1000;
-    var SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000;
-    var ONE_DAY = 1 * 24 * 60 * 60 * 1000;
-    var ONE_HOUR = 1 * 60 * 60 * 1000;
+    export var NINETY_DAYS = 90 * 24 * 60 * 60 * 1000;
+    export var THIRTY_DAYS = 30 * 24 * 60 * 60 * 1000;
+    export var SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000;
+    export var ONE_DAY = 1 * 24 * 60 * 60 * 1000;
+    export var ONE_HOUR = 1 * 60 * 60 * 1000;
 
     export var ServiceMetricsController = _module.controller("Apiman.ServiceMetricsController",
         ['$q', 'Logger', '$scope', '$location', 'PageLifecycle', 'ServiceEntityLoader', 'OrgSvcs', 'MetricsSvcs', '$routeParams', '$timeout',

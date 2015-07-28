@@ -1434,6 +1434,6 @@ textarea.apiman-endpoint {
   text-decoration: underline;
 }
 
-#apiman-svc-metrics-selector .bootstrap-select {
+#apiman-svc-metrics-selector .bootstrap-select, #apiman-app-metrics-selector .bootstrap-select {
   width: auto;
 }

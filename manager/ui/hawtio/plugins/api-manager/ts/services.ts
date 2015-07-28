@@ -184,7 +184,13 @@ module ApimanServices {
                         Configuration.api.endpoint + '/organizations/:organizationId/services/:serviceId/versions/:version/metrics/planResponseStats',
                         { organizationId: orgId, serviceId: serviceId, version: version });
                     $resource(endpoint, {from: from, to: to}).get({}, handler, errorHandler);
-                }
+                },
+                getAppUsagePerService: function(orgId, applicationId, version, from, to, handler, errorHandler) {
+                    var endpoint = formatEndpoint(
+                        Configuration.api.endpoint + '/organizations/:organizationId/applications/:applicationId/versions/:version/metrics/serviceUsage',
+                        { organizationId: orgId, applicationId: applicationId, version: version });
+                    $resource(endpoint, {from: from, to: to}).get({}, handler, errorHandler);
+                },
             }
         }]);
 

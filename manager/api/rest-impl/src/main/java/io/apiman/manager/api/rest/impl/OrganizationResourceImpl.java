@@ -38,6 +38,7 @@ import io.apiman.manager.api.beans.idm.RoleMembershipBean;
 import io.apiman.manager.api.beans.idm.UserBean;
 import io.apiman.manager.api.beans.members.MemberBean;
 import io.apiman.manager.api.beans.members.MemberRoleBean;
+import io.apiman.manager.api.beans.metrics.AppUsagePerServiceBean;
 import io.apiman.manager.api.beans.metrics.HistogramIntervalType;
 import io.apiman.manager.api.beans.metrics.ResponseStatsHistogramBean;
 import io.apiman.manager.api.beans.metrics.ResponseStatsPerAppBean;
@@ -632,6 +633,22 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         } catch (Exception e) {
             throw new SystemErrorException(e);
         }
+    }
+
+    /**
+     * @see io.apiman.manager.api.rest.contract.IOrganizationResource#getAppUsagePerService(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public AppUsagePerServiceBean getAppUsagePerService(String organizationId, String applicationId,
+            String version, String fromDate, String toDate) throws NotAuthorizedException,
+            InvalidMetricCriteriaException {
+        if (!securityContext.hasPermission(PermissionType.appView, organizationId))
+            throw ExceptionFactory.notAuthorizedException();
+
+        DateTime from = parseFromDate(fromDate);
+        DateTime to = parseToDate(toDate);
+        validateMetricRange(from, to);
+        return metrics.getAppUsagePerService(organizationId, applicationId, version, from, to);
     }
 
     /**

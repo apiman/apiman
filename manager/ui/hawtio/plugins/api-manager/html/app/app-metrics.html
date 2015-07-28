@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    
+  </head>
+
+  <body>
+  <div>
+    <div ng-include="'plugins/api-manager/html/progress.include'"></div>
+    <div id="apiman-header" ng-include="'plugins/api-manager/html/navbar.include'"></div>
+    <div ng-controller="Apiman.AppMetricsController" class="container page" data-field="page" ng-cloak="" ng-show="pageState == 'loaded'">
+      <div ng-include="'plugins/api-manager/html/app/app_bc.include'"></div>
+      <!-- Entity Summary Row -->
+      <div ng-include="'plugins/api-manager/html/app/app_entity.include'"></div>
+
+      <!-- Navigation + Content Row -->
+      <div class="row">
+        <!-- Left hand nav -->
+        <div ng-include="'plugins/api-manager/html/app/app_tabs.include'"></div>
+        <!-- /Left hand nav -->
+
+        <!-- Content -->
+        <div class="col-md-10 apiman-entity-content apiman-entity-metrics">
+          <!-- Content Summary -->
+          <div class="col-md-12">
+            <div class="title" apiman-i18n-key="app-metrics">Application Metrics</div>
+            <p class="explanation" apiman-i18n-key="app-metrics-explanation">
+                Now that this application is registered with the gateway, it may be consuming
+                one or more services (APIs).  When this happens, you can use the Metrics
+                tab to view basic metrics/analytics information.
+            </p>
+            <div id="apiman-app-metrics-selector" style="margin-top: 15px; padding-top: 8px; border-top: 1px solid #ddd; border-bottom: 1px solid #ddd">
+              <span style="margin-right: 5px" apiman-i18n-key="service-metrics.show">Show</span>
+                <select ng-model="metricsType" apiman-select-picker="" class="selectpicker apiman-inline-form-dropdown" data-style="btn-default apiman-inline-form-dropdown">
+                  <option value="usage" apiman-i18n-key="metrics-usage">usage</option>
+<!--                   <option value="responseType" apiman-i18n-key="metrics-responseType">response type</option> -->
+                </select>
+              <span style="margin-right: 5px" apiman-i18n-key="service-metrics.show-metrics-for">metrics data for the</span>
+              <select ng-model="metricsRange" apiman-select-picker="" class="selectpicker apiman-inline-form-dropdown" data-style="btn-default apiman-inline-form-dropdown">
+                <option value="90days" apiman-i18n-key="metrics-90days">last 90 days</option>
+                <option value="30days" apiman-i18n-key="metrics-30days">last 30 days</option>
+                <option value="7days" apiman-i18n-key="metrics-7days">last 7 days</option>
+                <option value="24hours" apiman-i18n-key="metrics-24hours">last 24 hours</option>
+                <option value="hour" apiman-i18n-key="metrics-hour">last hour</option>
+              </select>
+            </div>
+          </div>
+          <!-- /Content Summary -->
+
+          <!-- Usage Metrics -->
+          <div id="usage-metrics" ng-show="metricsType == 'usage'">
+            <div class="col-md-12">
+              <h3 class="apiman-chart-title" apiman-i18n-key="service-usage">Service Usage</h3>
+              <div id="service-usage-chart"></div>
+              <div style="text-align: center" ng-show="serviceUsageChartLoading">
+                <div class="spinner spinner-lg" style="display: inline-block"></div>
+              </div>
+              <div style="text-align: center" ng-show="serviceUsageChartNoData">
+                <span apiman-i18n-key="metrics-no-data">No data found.</span>
+              </div>
+            </div>
+          </div>
+        
+        </div>
+        <!-- /Content -->
+      </div>
+    </div> <!-- /container -->
+  </div>
+  </body>
+</html>

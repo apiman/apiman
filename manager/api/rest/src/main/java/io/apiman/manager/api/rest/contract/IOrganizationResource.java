@@ -26,6 +26,7 @@ import io.apiman.manager.api.beans.contracts.ContractBean;
 import io.apiman.manager.api.beans.contracts.NewContractBean;
 import io.apiman.manager.api.beans.idm.GrantRolesBean;
 import io.apiman.manager.api.beans.members.MemberBean;
+import io.apiman.manager.api.beans.metrics.AppUsagePerServiceBean;
 import io.apiman.manager.api.beans.metrics.HistogramIntervalType;
 import io.apiman.manager.api.beans.metrics.ResponseStatsHistogramBean;
 import io.apiman.manager.api.beans.metrics.ResponseStatsPerAppBean;
@@ -357,6 +358,30 @@ public interface IOrganizationResource {
             @PathParam("organizationId") String organizationId, @PathParam("applicationId") String applicationId,
             @PathParam("version") String version, @QueryParam("page") int page,
             @QueryParam("count") int pageSize) throws ApplicationVersionNotFoundException, NotAuthorizedException;
+
+    /**
+     * Retrieves metrics/analytics information for a specific application.  This will
+     * return request count data broken down by service.  It basically answers
+     * the question "which services is my app really using?".
+     *
+     * @summary Get App Usage Metrics (per Service)
+     * @param organizationId The organization ID.
+     * @param applicationId The application ID.
+     * @param version The application version.
+     * @param fromDate The start of a valid date range.
+     * @param toDate The end of a valid date range.
+     * @statuscode 200 If the metrics data is successfully returned.
+     * @return Usage metrics information.
+     * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
+     */
+    @GET
+    @Path("{organizationId}/applications/{applicationId}/versions/{version}/metrics/serviceUsage")
+    @Produces(MediaType.APPLICATION_JSON)
+    public AppUsagePerServiceBean getAppUsagePerService(
+            @PathParam("organizationId") String organizationId, @PathParam("applicationId") String applicationId,
+            @PathParam("version") String version, @QueryParam("from") String fromDate,
+            @QueryParam("to") String toDate) throws NotAuthorizedException, InvalidMetricCriteriaException;
+
 
     /**
      * Use this endpoint to create a Contract between the Application and a Service.  In order

@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.api.core.noop;
 
+import io.apiman.manager.api.beans.metrics.AppUsagePerServiceBean;
 import io.apiman.manager.api.beans.metrics.HistogramIntervalType;
 import io.apiman.manager.api.beans.metrics.ResponseStatsHistogramBean;
 import io.apiman.manager.api.beans.metrics.ResponseStatsPerAppBean;
@@ -112,6 +113,16 @@ public class NoOpMetricsAccessor implements IMetricsAccessor {
     public ResponseStatsPerPlanBean getResponseStatsPerPlan(String organizationId, String serviceId,
             String version, DateTime from, DateTime to) {
         ResponseStatsPerPlanBean rval = new ResponseStatsPerPlanBean();
+        return rval;
+    }
+
+    /**
+     * @see io.apiman.manager.api.core.IMetricsAccessor#getAppUsagePerService(java.lang.String, java.lang.String, java.lang.String, org.joda.time.DateTime, org.joda.time.DateTime)
+     */
+    @Override
+    public AppUsagePerServiceBean getAppUsagePerService(String organizationId, String applicationId,
+            String version, DateTime from, DateTime to) {
+        AppUsagePerServiceBean rval = new AppUsagePerServiceBean();
         return rval;
     }
 }

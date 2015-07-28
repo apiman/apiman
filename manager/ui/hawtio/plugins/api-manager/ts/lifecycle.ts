@@ -9,6 +9,7 @@ module ApimanPageLifecycle {
         "page.title.app-activity": "apiman - {0} (Activity)",
         "page.title.app-apis": "apiman - {0} (APIs)",
         "page.title.app-contracts": "apiman - {0} (Contracts)",
+        "page.title.app-metrics": "apiman - {0} (Metrics)",
         "page.title.app-overview": "apiman - {0} (Overview)",
         "page.title.app-policies": "apiman - {0} (Policies)",
         "page.title.consumer-org": "apiman - Organization {0}",

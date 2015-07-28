@@ -15,6 +15,7 @@
  */
 package io.apiman.manager.api.core;
 
+import io.apiman.manager.api.beans.metrics.AppUsagePerServiceBean;
 import io.apiman.manager.api.beans.metrics.HistogramIntervalType;
 import io.apiman.manager.api.beans.metrics.ResponseStatsHistogramBean;
 import io.apiman.manager.api.beans.metrics.ResponseStatsPerAppBean;
@@ -130,6 +131,19 @@ public interface IMetricsAccessor {
      * @param to
      */
     ResponseStatsPerPlanBean getResponseStatsPerPlan(String organizationId, String serviceId, String version,
+            DateTime from, DateTime to);
+
+    /**
+     * Query the metrics store for # of requests made to a service broken
+     * down by plan.  For exclusively public services this will return no data.
+     *
+     * @param organizationId
+     * @param applicationId
+     * @param version
+     * @param from
+     * @param to
+     */
+    AppUsagePerServiceBean getAppUsagePerService(String organizationId, String applicationId, String version,
             DateTime from, DateTime to);
 
 }

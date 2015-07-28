@@ -29,6 +29,7 @@ module Apiman {
         '/orgs/:org/apps/:app/:version'             : { templateUrl: 'app/app-overview.html' },
         '/orgs/:org/apps/:app/:version/contracts'   : { templateUrl: 'app/app-contracts.html' },
         '/orgs/:org/apps/:app/:version/apis'        : { templateUrl: 'app/app-apis.html' },
+        '/orgs/:org/apps/:app/:version/metrics'     : { templateUrl: 'app/app-metrics.html' },
         '/orgs/:org/apps/:app/:version/policies'    : { templateUrl: 'app/app-policies.html' },
         '/orgs/:org/apps/:app/:version/activity'    : { templateUrl: 'app/app-activity.html' },
         '/orgs/:org/apps/:app/:version/new-version' : { templateUrl: 'forms/new-appversion.html' },
