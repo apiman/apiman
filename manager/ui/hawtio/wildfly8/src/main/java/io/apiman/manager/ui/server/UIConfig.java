@@ -15,15 +15,10 @@
  */
 package io.apiman.manager.ui.server;
 
-import io.apiman.common.config.SystemPropertiesConfiguration;
+import io.apiman.common.config.ConfigFactory;
 import io.apiman.manager.ui.server.beans.ApiAuthType;
 
-import java.io.File;
-
-import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.Configuration;
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
 
 /**
  * Global access to configuration information.
@@ -42,37 +37,7 @@ public class UIConfig implements IUIConfig {
 
     private static Configuration config;
     static {
-        CompositeConfiguration compositeConfig = new CompositeConfiguration();
-        // System properties always win - add that first
-        compositeConfig.addConfiguration(new SystemPropertiesConfiguration());
-
-        // Next, check for the apiman.properties file in wildfly
-        File configFile = null;
-        String jbossConfigDir = System.getProperty("jboss.server.config.dir"); //$NON-NLS-1$
-        if (jbossConfigDir != null) {
-            File dirFile = new File(jbossConfigDir);
-            File confFile = new File(dirFile, "apiman.properties"); //$NON-NLS-1$
-            if (confFile.isFile()) {
-                configFile = confFile;
-            }
-        }
-        String jbossConfigUrl = System.getProperty("jboss.server.config.url"); //$NON-NLS-1$
-        if (jbossConfigUrl != null) {
-            File dirFile = new File(jbossConfigUrl);
-            File confFile = new File(dirFile, "apiman.properties"); //$NON-NLS-1$
-            if (confFile.isFile()) {
-                configFile = confFile;
-            }
-        }
-        if (configFile != null && configFile.isFile()) {
-            try {
-                compositeConfig.addConfiguration(new PropertiesConfiguration(configFile));
-            } catch (ConfigurationException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        config = compositeConfig;
+        config = ConfigFactory.createConfig();
     }
 
     /**

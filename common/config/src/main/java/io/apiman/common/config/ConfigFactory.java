@@ -16,7 +16,6 @@
 package io.apiman.common.config;
 
 import org.apache.commons.configuration.CompositeConfiguration;
-import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.interpol.ConfigurationInterpolator;
 
 /**
@@ -27,11 +26,12 @@ import org.apache.commons.configuration.interpol.ConfigurationInterpolator;
 public class ConfigFactory {
 
     static {
+        ConfigurationInterpolator.registerGlobalLookup("env", new EnvLookup()); //$NON-NLS-1$
         ConfigurationInterpolator.registerGlobalLookup("crypt", new CryptLookup()); //$NON-NLS-1$
         ConfigurationInterpolator.registerGlobalLookup("vault", new VaultLookup()); //$NON-NLS-1$
     }
 
-    public static final Configuration createConfig() {
+    public static final CompositeConfiguration createConfig() {
         CompositeConfiguration compositeConfiguration = new CompositeConfiguration();
         compositeConfiguration.addConfiguration(new SystemPropertiesConfiguration());
         compositeConfiguration.addConfiguration(ConfigFileConfiguration.create("apiman.properties")); //$NON-NLS-1$

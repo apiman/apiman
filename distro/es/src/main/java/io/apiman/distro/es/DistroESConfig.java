@@ -15,8 +15,7 @@
  */
 package io.apiman.distro.es;
 
-import io.apiman.common.config.ConfigFileConfiguration;
-import io.apiman.common.config.SystemPropertiesConfiguration;
+import io.apiman.common.config.ConfigFactory;
 
 import org.apache.commons.configuration.CompositeConfiguration;
 
@@ -31,8 +30,7 @@ public class DistroESConfig extends CompositeConfiguration {
      * Constructor.
      */
     public DistroESConfig() {
-        addConfiguration(new SystemPropertiesConfiguration());
-        addConfiguration(ConfigFileConfiguration.create("apiman.properties")); //$NON-NLS-1$
+        addConfiguration(ConfigFactory.createConfig());
     }
 
     public String getHttpPortRange() {

@@ -15,8 +15,7 @@
  */
 package io.apiman.gateway.platforms.war;
 
-import io.apiman.common.config.ConfigFileConfiguration;
-import io.apiman.common.config.SystemPropertiesConfiguration;
+import io.apiman.common.config.ConfigFactory;
 import io.apiman.common.plugin.Plugin;
 import io.apiman.common.plugin.PluginClassLoader;
 import io.apiman.common.plugin.PluginCoordinates;
@@ -36,7 +35,6 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.Configuration;
 
 /**
@@ -56,10 +54,7 @@ public class WarEngineConfig implements IEngineConfig {
 
     public static Configuration config;
     static {
-        CompositeConfiguration compositeConfiguration = new CompositeConfiguration();
-        compositeConfiguration.addConfiguration(new SystemPropertiesConfiguration());
-        compositeConfiguration.addConfiguration(ConfigFileConfiguration.create("apiman.properties")); //$NON-NLS-1$
-        config = compositeConfiguration;
+        config = ConfigFactory.createConfig();
     }
 
     /**

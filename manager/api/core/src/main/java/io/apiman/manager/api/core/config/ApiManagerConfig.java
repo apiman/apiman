@@ -15,8 +15,7 @@
  */
 package io.apiman.manager.api.core.config;
 
-import io.apiman.common.config.ConfigFileConfiguration;
-import io.apiman.common.config.SystemPropertiesConfiguration;
+import io.apiman.common.config.ConfigFactory;
 import io.apiman.manager.api.core.logging.IApimanLogger;
 
 import java.net.MalformedURLException;
@@ -29,7 +28,6 @@ import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.Configuration;
 
 /**
@@ -83,10 +81,7 @@ public class ApiManagerConfig {
      * Loads the config properties.
      */
     protected Configuration loadProperties() {
-        CompositeConfiguration compositeConfiguration = new CompositeConfiguration();
-        compositeConfiguration.addConfiguration(new SystemPropertiesConfiguration());
-        compositeConfiguration.addConfiguration(ConfigFileConfiguration.create("apiman.properties")); //$NON-NLS-1$
-        return compositeConfiguration;
+        return ConfigFactory.createConfig();
     }
 
     /**
