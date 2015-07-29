@@ -21,7 +21,7 @@ public class InitVerticle extends ApimanVerticleBase {
 //                vertx.deployVerticle(HttpGatewayVerticle.class.getCanonicalName(), deploymentOptions);
 //        });
 
-        vertx.deployVerticle(ApiVerticle.class.getCanonicalName());
+        vertx.deployVerticle(ApiVerticle.class.getCanonicalName(), deploymentOptions);
     }
 
     @Override

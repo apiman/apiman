@@ -11,7 +11,7 @@ import io.vertx.ext.web.RoutingContext;
 import javax.ws.rs.core.MediaType;
 
 @SuppressWarnings("nls")
-public interface RouteBuilder {
+public interface IRouteBuilder {
 
     void buildRoutes(Router router);
 

@@ -32,6 +32,11 @@ import io.vertx.core.Handler;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.logging.Logger;
 
+/**
+ * Execute policy
+ *
+ * @author Marc Savy <msavy@redhat.com>
+ */
 public class PolicyExecutor {
     private IngestorToPolicyImpl requestService;
     private PolicyToIngestorService replyProxy;
@@ -47,7 +52,7 @@ public class PolicyExecutor {
     }
 
     public void execute() {
-        System.out.println("Setting head handler");
+//        System.out.println("Setting head handler");
         requestService.headHandler((Handler<VertxServiceRequest>) serviceRequest -> {
 
             System.out.println("Head has arrived....");
@@ -63,17 +68,15 @@ public class PolicyExecutor {
                         requestService.ready();
                     } else {
                         System.out.println("Failed with policy denial");
-                        replyProxy.policyFailure(new VertxPolicyFailure(engineResult
-                                .getPolicyFailure()));
-
+                        replyProxy.policyFailure(new VertxPolicyFailure(engineResult.getPolicyFailure()));
                         requestService.failHead();
                     }
                     requestService.succeeded(); // no exception
                 } else {
 //                    System.out.println("Failed with exception");
 //                    System.out.println(result.getError().getMessage());
+                    // Necessary to fail head to ensure #end is called. Could refactor this to call end ourselves, possibly.
                     requestService.failHead();
-
                     requestService.endHandler((Handler<Void>) v -> {
                         requestService.fail(result.getError());
                         end();
@@ -96,7 +99,6 @@ public class PolicyExecutor {
     }
 
     private void doResponse(IEngineResult engineResult, PolicyToIngestorService replyProxy) {
-
         VertxServiceResponse serviceResponse = new VertxServiceResponse(engineResult.getHead());
 
         replyProxy.head(serviceResponse, (Handler<AsyncResult<Void>>) ready -> {
@@ -104,7 +106,7 @@ public class PolicyExecutor {
         });
 
         engineResult.bodyHandler((IAsyncHandler<IApimanBuffer>) chunk -> {
-            replyProxy.write(((Buffer) chunk.getNativeBuffer()).toString("utf-8")); // TODO change when marshaller available
+            replyProxy.write(((Buffer) chunk.getNativeBuffer()).toString("UTF-8")); // TODO change when marshaller available
         });
 
         engineResult.endHandler((IAsyncHandler<Void>) v -> {

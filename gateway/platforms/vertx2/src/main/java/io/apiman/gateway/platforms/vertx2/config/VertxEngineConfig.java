@@ -23,6 +23,7 @@ import io.apiman.gateway.engine.IPluginRegistry;
 import io.apiman.gateway.engine.IRegistry;
 import io.apiman.gateway.engine.i18n.Messages;
 import io.apiman.gateway.engine.policy.IPolicyFactory;
+import io.apiman.gateway.platforms.vertx2.verticles.VerticleType;
 import io.vertx.core.json.JsonObject;
 
 import java.util.HashMap;
@@ -45,8 +46,6 @@ public class VertxEngineConfig implements IEngineConfig {
     public static final String API_GATEWAY_METRICS_PREFIX = "metrics";
 
     public static final String API_GATEWAY_COMPONENT_PREFIX = "components";
-
-    private static final String API_GATEWAY_AUTH_PREFIX = "auth";
 
     public static final String API_GATEWAY_GATEWAY_SERVER_PORT = "server-port";
 
@@ -74,13 +73,14 @@ public class VertxEngineConfig implements IEngineConfig {
     //public static final String APIMAN_API_SERVICES_DELETE = ".apiman.api.services.delete";
     //public static final String APIMAN_API_SUBSCRIBE = "apiman.api.subscribe";
 
-    private static final String API_GATEWAY_AUTH_BASIC = "file-basic";
-    private static final String API_GATEWAY_AUTH_ENABLED = "authenticated";
-    private static final String API_GATEWAY_AUTH_REALM = "realm";
+    //private static final String API_GATEWAY_AUTH_ENABLED = "authenticated";
     private static final String API_GATEWAY_HOSTNAME = "hostname";
     private static final String API_GATEWAY_ENDPOINT = "endpoint";
+    private static final String API_GATEWAY_PREFER_SECURE = "preferSecure";
 
     private JsonObject config;
+    private HashMap<String, String> basicAuthMap = new HashMap<>();
+;
 
     public VertxEngineConfig(JsonObject config) {
         this.config = config;
@@ -163,13 +163,12 @@ public class VertxEngineConfig implements IEngineConfig {
         return toFlatStringMap(componentConfig);
     }
 
-
     public Boolean isAuthenticationEnabled() {
-        return boolConfigWithDefault(API_GATEWAY_AUTH_ENABLED, false);
+        return config.getJsonObject("auth").getString("required") != null;
     }
 
     public String getRealm() {
-        return stringConfigWithDefault(API_GATEWAY_AUTH_REALM, "apiman-realm");
+        return config.getJsonObject("auth").getString("realm");
     }
 
     public String hostname() {
@@ -177,19 +176,24 @@ public class VertxEngineConfig implements IEngineConfig {
     }
 
     public String getEndpoint() {
-        return stringConfigWithDefault(API_GATEWAY_ENDPOINT, "localhost");
+        return config.getString(API_GATEWAY_ENDPOINT);
     }
 
-    public Map<String, String> loadFileBasicAuth() {
-        JsonObject pairs = config.getJsonObject(API_GATEWAY_AUTH_PREFIX).getJsonObject(API_GATEWAY_AUTH_BASIC);
+    public Boolean preferSecure() {
+        return config.getBoolean(API_GATEWAY_PREFER_SECURE);
+    }
 
-        Map<String, String> map = new HashMap<>();
+    public Map<String, String> getBasicAuthCredentials() {
+        if (!basicAuthMap.isEmpty())
+            return basicAuthMap;
+
+        JsonObject pairs = config.getJsonObject("auth").getJsonObject("basic");
 
         for (String username : pairs.fieldNames()) {
-            map.put(username, pairs.getString(username));
+            basicAuthMap.put(username, pairs.getString(username));
         }
 
-        return map;
+        return basicAuthMap;
     }
 
     protected Map<String, String> toFlatStringMap(JsonObject jsonObject) {
@@ -246,5 +250,13 @@ public class VertxEngineConfig implements IEngineConfig {
         Boolean bool = config.containsKey(name);
 
         return bool == null ? defaultValue : bool;
+    }
+
+    public int getPort(String name) {
+        return config.getJsonObject("ports").getInteger(name.toLowerCase());
+    }
+
+    public int getPort(VerticleType verticleType) {
+        return getPort(verticleType.name().toLowerCase());
     }
 }

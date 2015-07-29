@@ -14,4 +14,7 @@
 |-
 |[[responseCode]]`responseCode`
 |`Number`
+|-
+|[[raw]]`raw`
+|`String`
 |-|===

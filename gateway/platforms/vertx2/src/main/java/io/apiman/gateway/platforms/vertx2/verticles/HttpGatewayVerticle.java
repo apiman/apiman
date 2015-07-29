@@ -25,6 +25,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.ws.rs.core.MediaType;
+
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 @SuppressWarnings("nls")
@@ -62,7 +64,7 @@ public class HttpGatewayVerticle extends ApimanVerticleBase {
                 setupRequest(req, result, httpSessionUuid);
             });
 
-        }).listen(8080);
+        }).listen(apimanConfig.getPort(VerticleType.HTTP_GATEWAY));
     }
 
     // Setup request leg
@@ -73,7 +75,6 @@ public class HttpGatewayVerticle extends ApimanVerticleBase {
         IngestorToPolicyService send = result.result();
 
         if (result.succeeded()) {
-
             VertxServiceRequest serviceRequest = HttpServiceFactory.buildRequest(request, false);
 
             send.head(serviceRequest, (Handler<AsyncResult<Boolean>>) ready -> {
@@ -103,7 +104,8 @@ public class HttpGatewayVerticle extends ApimanVerticleBase {
                     }
 
                 } else {
-                    System.out.println("There was a failure. Should see it come through end()");
+                    //System.out.println("There was a failure. Should see it come through end()");
+                    setError(request.response(), ready.cause());
                 }
             });
 
@@ -129,7 +131,8 @@ public class HttpGatewayVerticle extends ApimanVerticleBase {
 
         receive.endHandler((Handler<Void>) vertxEngineResult -> {
             System.out.println("Response has been written");
-            response.end();
+            if (!response.ended())
+                response.end();
         });
 
         receive.policyFailureHandler((Handler<VertxPolicyFailure>) failure -> {
@@ -138,21 +141,17 @@ public class HttpGatewayVerticle extends ApimanVerticleBase {
     }
 
     private void setError(HttpServerResponse response, Throwable error) {
-        System.out.println("SetError called");
-
         response.setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
         response.setStatusMessage(HttpResponseStatus.INTERNAL_SERVER_ERROR.reasonPhrase());
         response.headers().add("X-Exception", String.valueOf(error.getMessage())); //$NON-NLS-1$
-        response.write(ExceptionUtils.getStackTrace(error));
+        response.end(ExceptionUtils.getStackTrace(error));
     }
 
     private void setPolicyFailure(HttpServerResponse response, VertxPolicyFailure failure) {
-        System.out.println("SetPolicyFailure called");
-
         response.headers().add("X-Policy-Failure-Type", String.valueOf(failure.getType())); //$NON-NLS-1$
         response.headers().add("X-Policy-Failure-Message", failure.getMessage()); //$NON-NLS-1$
         response.headers().add("X-Policy-Failure-Code", String.valueOf(failure.getFailureCode())); //$NON-NLS-1$
-        response.headers().add(HttpHeaders.CONTENT_TYPE, "application/json"); //$NON-NLS-1$
+        response.headers().add(HttpHeaders.CONTENT_TYPE,  MediaType.APPLICATION_JSON);
 
         HttpResponseStatus status = HttpResponseStatus.INTERNAL_SERVER_ERROR;
 

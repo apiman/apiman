@@ -15,23 +15,11 @@
 
   <properties>
     <main.verticle>io.apiman.gateway.platforms.vertx2.HelloWorldVerticle</main.verticle>
+    <vert-x-version-move-me-to-parent-pom>3.0.0</vert-x-version-move-me-to-parent-pom>
   </properties>
-  
-<!--   <dependencyManagement>
-    <dependencies>
-          
-      <dependency>
-      <groupId>io.vertx</groupId>
-      <artifactId>stack-depchain</artifactId>
-      <version>3.0.0</version>
-      <type>pom</type>
-    </dependency>
-  
-    </dependencies>
-  </dependencyManagement> -->
 
-  <dependencies>
-    <!--Vertx provided dependencies -->
+  <dependencies>         
+    <!-- Vert.x provided dependencies -->
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-core</artifactId>
@@ -46,21 +34,27 @@
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-service-proxy</artifactId>
-      <version>3.0.0</version>
+      <version>${vert-x-version-move-me-to-parent-pom}</version>
     </dependency>
     
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-codegen</artifactId>
-      <version>3.0.0</version>
+      <version>${vert-x-version-move-me-to-parent-pom}</version>
     </dependency>
     
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-web</artifactId>
-      <version>3.0.0</version>
+      <version>${vert-x-version-move-me-to-parent-pom}</version>
     </dependency> 
     
+    <!-- Auth -->
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-auth-shiro</artifactId>
+      <version>${vert-x-version-move-me-to-parent-pom}</version>
+    </dependency>
 
     <!-- apiman dependencies -->
     <dependency>

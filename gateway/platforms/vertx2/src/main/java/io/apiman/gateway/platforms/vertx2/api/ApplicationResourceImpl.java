@@ -4,18 +4,23 @@ import io.apiman.gateway.api.rest.contract.IApplicationResource;
 import io.apiman.gateway.api.rest.contract.exceptions.NotAuthorizedException;
 import io.apiman.gateway.engine.beans.Application;
 import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
+import io.apiman.gateway.platforms.vertx2.config.VertxEngineConfig;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.json.Json;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 
-public class ApplicationResourceImpl implements IApplicationResource, RouteBuilder {
+public class ApplicationResourceImpl implements IApplicationResource, IRouteBuilder {
 
     private static final String ORG_ID = "organizationId"; //$NON-NLS-1$
     private static final String APP_ID = "applicationId"; //$NON-NLS-1$
     private static final String VER = "version"; //$NON-NLS-1$
     private static final String REGISTER = "register"; //$NON-NLS-1$
-    private static final String UNREGISTER = "unregister/" + RouteBuilder.join(ORG_ID, APP_ID, VER); //$NON-NLS-1$
+    private static final String UNREGISTER = "unregister/" + IRouteBuilder.join(ORG_ID, APP_ID, VER); //$NON-NLS-1$
+
+    public ApplicationResourceImpl(VertxEngineConfig apimanConfig) {
+        // TODO Auto-generated constructor stub
+    }
 
     @Override
     public void register(Application application) throws RegistrationException, NotAuthorizedException {
