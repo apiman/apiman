@@ -20,7 +20,6 @@ import io.apiman.common.servlet.AuthenticationFilter;
 import io.apiman.common.servlet.DisableCachingFilter;
 import io.apiman.common.servlet.LocaleFilter;
 import io.apiman.common.servlet.RootResourceFilter;
-import io.apiman.gateway.engine.components.IDataStoreComponent;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.components.IRateLimiterComponent;
 import io.apiman.gateway.engine.components.ISharedStateComponent;
@@ -29,7 +28,6 @@ import io.apiman.gateway.engine.es.ESRateLimiterComponent;
 import io.apiman.gateway.engine.es.ESRegistry;
 import io.apiman.gateway.engine.es.ESSharedStateComponent;
 import io.apiman.gateway.engine.impl.DefaultPluginRegistry;
-import io.apiman.gateway.engine.impl.InMemoryDataStoreComponent;
 import io.apiman.gateway.engine.policy.PolicyFactoryImpl;
 import io.apiman.gateway.platforms.servlet.PolicyFailureFactoryComponent;
 import io.apiman.gateway.platforms.servlet.connectors.HttpConnectorFactory;
@@ -72,7 +70,7 @@ public class GatewayMicroService {
     public GatewayMicroService() {
         configure();
     }
-    
+
     /**
      * Configure the gateway options.
      */
@@ -104,7 +102,6 @@ public class GatewayMicroService {
      */
     protected void registerComponents() {
         registerSharedStateComponent();
-        registerDataStoreComponent();
         registerRateLimiterComponent();
         registerPolicyFailureFactoryComponent();
     }
@@ -128,14 +125,6 @@ public class GatewayMicroService {
         System.setProperty("apiman-gateway.components.IRateLimiterComponent.client.protocol", "${apiman.es.protocol}");
         System.setProperty("apiman-gateway.components.IRateLimiterComponent.client.host", "${apiman.es.host}");
         System.setProperty("apiman-gateway.components.IRateLimiterComponent.client.port", "${apiman.es.port}");
-    }
-
-    /**
-     * The data store component.
-     */
-    protected void registerDataStoreComponent() {
-        System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + IDataStoreComponent.class.getSimpleName(),
-                InMemoryDataStoreComponent.class.getName());
     }
 
     /**
@@ -206,7 +195,7 @@ public class GatewayMicroService {
 
         ContextHandlerCollection handlers = new ContextHandlerCollection();
         addModulesToJetty(handlers);
-        
+
         // Create the server.
         int serverPort = serverPort();
         System.out.println("**** Starting Gateway (" + getClass().getSimpleName() + ") on port: " + serverPort);
@@ -258,8 +247,8 @@ public class GatewayMicroService {
         gatewayApiServer.setInitParameter("resteasy.servlet.mapping.prefix", "");
 
         handlers.addHandler(gatewayApiServer);
-        
-        
+
+
         /* *************
          * Gateway
          * ************* */
