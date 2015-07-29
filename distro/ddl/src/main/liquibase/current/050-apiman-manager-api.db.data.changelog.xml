@@ -51,6 +51,18 @@
             <column name="template"
                     value="Appropriate authorization roles are required.  There are @{rules.size()} authorization rules defined."/>
         </insert>
+        <insert tableName="pd_templates">
+            <column name="policydef_id" value="QuotaPolicy"/>
+            <column name="language"/>
+            <column name="template"
+                    value="Consumers cannot exceed their quota of @{limit} requests per @{granularity} per @{period}."/>
+        </insert>
+        <insert tableName="pd_templates">
+            <column name="policydef_id" value="TransferQuotaPolicy"/>
+            <column name="language"/>
+            <column name="template"
+                    value="Consumers are limited to transferring @{limit} bytes per per @{granularity} per @{period}."/>
+        </insert>
     </changeSet>
     <changeSet author="apiman" id="1434686531709-3">
         <insert tableName="permissions">
@@ -203,6 +215,28 @@
             <column name="name" value="Authorization Policy"/>
             <column name="plugin_id"/>
             <column name="policy_impl" value="class:io.apiman.gateway.engine.policies.AuthorizationPolicy"/>
+        </insert>
+        <insert tableName="policydefs">
+            <column name="id" value="QuotaPolicy"/>
+            <column name="description"
+                    value="Provides a way to limit the total number of requests that can be sent to an API."/>
+            <column name="form"/>
+            <column name="form_type" value="Default"/>
+            <column name="icon" value="exchange"/>
+            <column name="name" value="Quota Policy"/>
+            <column name="plugin_id"/>
+            <column name="policy_impl" value="class:io.apiman.gateway.engine.policies.QuotaPolicy"/>
+        </insert>
+        <insert tableName="policydefs">
+            <column name="id" value="TransferQuotaPolicy"/>
+            <column name="description"
+                    value="Provides a way to limit the total number of bytes that can be transferred from (or to) an API."/>
+            <column name="form"/>
+            <column name="form_type" value="Default"/>
+            <column name="icon" value="download"/>
+            <column name="name" value="Transfer Quota Policy"/>
+            <column name="plugin_id"/>
+            <column name="policy_impl" value="class:io.apiman.gateway.engine.policies.TransferQuotaPolicy"/>
         </insert>
     </changeSet>
     <changeSet author="apiman" id="1434686531709-5">

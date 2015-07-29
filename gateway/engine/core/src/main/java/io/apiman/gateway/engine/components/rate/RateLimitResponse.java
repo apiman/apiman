@@ -16,22 +16,21 @@
 package io.apiman.gateway.engine.components.rate;
 
 /**
- * A simple bean that is returned when using the rate limiter 
+ * A simple bean that is returned when using the rate limiter
  * component.
  *
  * @author eric.wittmann@redhat.com
  */
 public class RateLimitResponse {
-    
+
     private boolean accepted;
-    private int remaining;
+    private long remaining;
     private long reset;
-    
+
     /**
      * Constructor.
      */
     public RateLimitResponse() {
-        // TODO Auto-generated constructor stub
     }
 
     /**
@@ -51,14 +50,14 @@ public class RateLimitResponse {
     /**
      * @return the remaining
      */
-    public int getRemaining() {
+    public long getRemaining() {
         return remaining;
     }
 
     /**
      * @param remaining the remaining to set
      */
-    public void setRemaining(int remaining) {
+    public void setRemaining(long remaining) {
         this.remaining = remaining;
     }
 

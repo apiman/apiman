@@ -25,7 +25,7 @@ import io.apiman.gateway.engine.policies.config.rates.RateLimitingPeriod;
  */
 public class RateLimitingConfig {
 
-    private int limit;
+    private long limit;
     private RateLimitingGranularity granularity;
     private RateLimitingPeriod period;
     private String userHeader;
@@ -84,14 +84,14 @@ public class RateLimitingConfig {
     /**
      * @return the limit
      */
-    public int getLimit() {
+    public long getLimit() {
         return limit;
     }
 
     /**
      * @param limit the limit to set
      */
-    public void setLimit(int limit) {
+    public void setLimit(long limit) {
         this.limit = limit;
     }
 

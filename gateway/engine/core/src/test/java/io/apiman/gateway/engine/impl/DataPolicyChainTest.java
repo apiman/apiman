@@ -41,7 +41,7 @@ import org.mockito.MockitoAnnotations;
 
 /**
  * Test {@link RequestChain} and {@link ResponseChain} functionality.
- * 
+ *
  * @author Marc Savy <msavy@redhat.com>
  */
 @SuppressWarnings({ "nls" })
@@ -52,7 +52,7 @@ public class DataPolicyChainTest {
 
     private ServiceRequest mockRequest;
     private ServiceResponse mockResponse;
-    
+
     private IApimanBuffer mockBuffer;
     private IAsyncHandler<IApimanBuffer> mockBodyHandler;
     private IAsyncHandler<Void> mockEndHandler;
@@ -60,81 +60,82 @@ public class DataPolicyChainTest {
     private PolicyWithConfiguration pwcOne;
     private IPolicyContext mockContext;
     private List<PolicyWithConfiguration> policies;
-    
-    
+    Object configuration = new Object();
+
+
     @Mock private IReadWriteStream<ServiceRequest> mockRequestHandler;
     @Mock private IReadWriteStream<ServiceResponse> mockResponseHandler;
 
     @Before
-    public void setup() {   
+    public void setup() {
         MockitoAnnotations.initMocks(this);
-        
+
         policies = new ArrayList<>();
         policyOne = spy(new PassthroughDataPolicy("1"));
-        
-        pwcOne = new PolicyWithConfiguration(policyOne, new Object());
-        
+
+        pwcOne = new PolicyWithConfiguration(policyOne, configuration);
+
         mockContext = mock(IPolicyContext.class);
-        
+
         mockRequest = mock(ServiceRequest.class);
         given(mockRequest.getApiKey()).willReturn("bacon");
         given(mockRequest.getDestination()).willReturn("mars");
         given(mockRequest.getType()).willReturn("request");
-        
+
         mockResponse = mock(ServiceResponse.class);
         given(mockRequest.getApiKey()).willReturn("bacon");
         given(mockRequest.getDestination()).willReturn("mars");
         given(mockRequest.getType()).willReturn("response");
-        
+
         mockBuffer = mock(IApimanBuffer.class);
-        given(mockBuffer.toString()).willReturn("bananas"); 
-        
+        given(mockBuffer.toString()).willReturn("bananas");
+
         mockRequestHandler = mock(IReadWriteStream.class);
         mockResponseHandler = mock(IReadWriteStream.class);
-        
-        mockBodyHandler = (IAsyncHandler<IApimanBuffer>) mock(IAsyncHandler.class);
-        mockEndHandler = (IAsyncHandler<Void>) mock(IAsyncHandler.class);
+
+        mockBodyHandler = mock(IAsyncHandler.class);
+        mockEndHandler = mock(IAsyncHandler.class);
     }
-    
+
     @Test
     public void shouldEnsureNonNullRequestReceivedByHandlers() {
         policies.add(pwcOne);
-        
+
         requestChain = new RequestChain(policies, mockContext);
-        
+
         requestChain.bodyHandler(mockBodyHandler);
         requestChain.endHandler(mockEndHandler);
-        
+
         requestChain.doApply(mockRequest);
         requestChain.write(mockBuffer);
         requestChain.end();
-        
+
         verify(mockBodyHandler, times(1)).handle(mockBuffer);
         verify(mockEndHandler, times(1)).handle((Void) null);
-        
+
         // At this point we must ensure that the request and responses are NOT null.
-        verify(policyOne).getRequestDataHandler(mockRequest, mockContext);
+        verify(policyOne).getRequestDataHandler(mockRequest, mockContext, configuration);
     }
-    
+
     @Test
     public void shouldEnsureNonNullResponseReceivedByHandlers() {
         policies.add(pwcOne);
-        
+
         responseChain = new ResponseChain(policies, mockContext);
-        
+
         responseChain.bodyHandler(mockBodyHandler);
         responseChain.endHandler(mockEndHandler);
-        
+
         responseChain.doApply(mockResponse);
         responseChain.write(mockBuffer);
         responseChain.end();
-        
+
         verify(mockBodyHandler, times(1)).handle(mockBuffer);
         verify(mockEndHandler, times(1)).handle((Void) null);
-        
+
         // At this point we must ensure that the request and responses are NOT null.
-        verify(policyOne).getResponseDataHandler(mockResponse, mockContext);
+        verify(policyOne).getResponseDataHandler(mockResponse, mockContext, configuration);
     }
-    
-  
+
+
 }

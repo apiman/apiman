@@ -15,8 +15,16 @@
  */
 package io.apiman.gateway.engine.policies;
 
+import io.apiman.gateway.engine.beans.PolicyFailure;
+import io.apiman.gateway.engine.beans.PolicyFailureType;
+import io.apiman.gateway.engine.beans.ServiceRequest;
+import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
+import io.apiman.gateway.engine.policies.config.RateLimitingConfig;
+import io.apiman.gateway.engine.policies.i18n.Messages;
+
 /**
- * Similar to the rate limiting policy.
+ * Similar to the rate limiting policy, but less granular.  Useful primarily
+ * so that both a quota and a rate limit can be active at the same time.
  *
  * @author eric.wittmann@redhat.com
  */
@@ -30,6 +38,16 @@ public class QuotaPolicy extends RateLimitingPolicy {
      * Constructor.
      */
     public QuotaPolicy() {
+    }
+
+    /**
+     * @see io.apiman.gateway.engine.policies.RateLimitingPolicy#limitExceededFailure(io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent)
+     */
+    @Override
+    protected PolicyFailure limitExceededFailure(IPolicyFailureFactoryComponent failureFactory) {
+        PolicyFailure failure = failureFactory.createFailure(PolicyFailureType.Other, PolicyFailureCodes.REQUEST_QUOTA_EXCEEDED, Messages.i18n.format("QuotaPolicy.QuotaExceeded")); //$NON-NLS-1$
+        failure.setResponseCode(429);
+        return failure;
     }
 
     /**
@@ -54,6 +72,14 @@ public class QuotaPolicy extends RateLimitingPolicy {
     @Override
     protected String defaultResetHeader() {
         return DEFAULT_RESET_HEADER;
+    }
+
+    /**
+     * @see io.apiman.gateway.engine.policies.RateLimitingPolicy#createBucketId(io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.policies.config.RateLimitingConfig)
+     */
+    @Override
+    protected String createBucketId(ServiceRequest request, RateLimitingConfig config) {
+        return "QUOTA||" + super.createBucketId(request, config); //$NON-NLS-1$
     }
 
 }

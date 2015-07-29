@@ -28,16 +28,16 @@ import java.util.Calendar;
 public class RateLimiterBucket implements Serializable {
 
     private static final long serialVersionUID = 7322973438395289398L;
-    
-    private int count = 0;
+
+    private long count = 0;
     private long last = System.currentTimeMillis();
-    
+
     /**
      * Constructor.
      */
     public RateLimiterBucket() {
     }
-    
+
     /**
      * Resets the count if the period boundary has been crossed.
      * @param period the period
@@ -48,7 +48,7 @@ public class RateLimiterBucket implements Serializable {
             setCount(0);
         }
     }
-    
+
     /**
      * Returns the number of millis until the period resets.
      * @param period the period
@@ -68,7 +68,7 @@ public class RateLimiterBucket implements Serializable {
     private long getLastPeriodBoundary(RateBucketPeriod period) {
         return getPeriodBoundary(getLast(), period);
     }
-    
+
     /**
      * Gets the boundary timestamp for the given rate bucket period.  In other words,
      * returns the timestamp associated with when the rate period will reset.
@@ -123,14 +123,14 @@ public class RateLimiterBucket implements Serializable {
     /**
      * @return the count
      */
-    public int getCount() {
+    public long getCount() {
         return count;
     }
 
     /**
      * @param count the count to set
      */
-    public void setCount(int count) {
+    public void setCount(long count) {
         this.count = count;
     }
 

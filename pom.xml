@@ -393,6 +393,11 @@
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-test-policies</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
         <artifactId>apiman-tools-dev-server-manager-ui</artifactId>
         <version>${project.version}</version>
       </dependency>

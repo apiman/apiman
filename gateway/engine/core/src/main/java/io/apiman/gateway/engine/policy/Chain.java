@@ -79,7 +79,7 @@ public abstract class Chain<H> extends AbstractStream<H> implements IAbortable, 
         while (iterator.hasNext()) {
             final PolicyWithConfiguration pwc = iterator.next();
             final IPolicy policy = pwc.getPolicy();
-            final IReadWriteStream<H> handler = getServiceHandler(policy);
+            final IReadWriteStream<H> handler = getServiceHandler(policy, pwc.getConfiguration());
             if (handler == null) {
                 continue;
             }
@@ -250,8 +250,9 @@ public abstract class Chain<H> extends AbstractStream<H> implements IAbortable, 
     /**
      * Gets the service handler for the policy.
      * @param policy
+     * @param config
      */
-    protected abstract IReadWriteStream<H> getServiceHandler(IPolicy policy);
+    protected abstract IReadWriteStream<H> getServiceHandler(IPolicy policy, Object config);
 
     /**
      * Called to apply the given policy to the service object (request or response).

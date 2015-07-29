@@ -25,35 +25,35 @@ import io.apiman.gateway.engine.policy.IPolicyContext;
 
 /**
  * A pass-through {@link IDataPolicy} impl for testing purposes.
- * 
+ *
  * @author Marc Savy <msavy@redhat.com>
  */
 @SuppressWarnings("nls")
 public class PassthroughDataPolicy implements IDataPolicy {
-    
+
     public static final String QUALIFIED_NAME = "class:" + PassthroughDataPolicy.class.getCanonicalName();
     private Object config;
     private String name;
     private IReadWriteStream<ServiceRequest> dataRequestHandler;
 
     private IReadWriteStream<ServiceResponse> dataResponseHandler;
-    
+
     public PassthroughDataPolicy(){}
 
     public PassthroughDataPolicy(String name) {
         this.name = name;
     }
-    
+
     public String getName() {
         return name;
     }
-    
+
     @Override
     public Object parseConfiguration(String jsonConfiguration) throws ConfigurationParseException {
-        this.config = (Object) jsonConfiguration;
+        this.config = jsonConfiguration;
         return config;
     }
-    
+
     /**
      * @see io.apiman.gateway.engine.policy.IPolicy#apply(io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
      */
@@ -62,7 +62,7 @@ public class PassthroughDataPolicy implements IDataPolicy {
             IPolicyChain<ServiceRequest> chain) {
         chain.doApply(request);
     }
-    
+
     /**
      * @see io.apiman.gateway.engine.policy.IPolicy#apply(io.apiman.gateway.engine.beans.ServiceResponse, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
      */
@@ -72,18 +72,24 @@ public class PassthroughDataPolicy implements IDataPolicy {
         chain.doApply(response);
     }
 
+    /**
+     * @see io.apiman.gateway.engine.policy.IDataPolicy#getRequestDataHandler(io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object)
+     */
     @Override
     public IReadWriteStream<ServiceRequest> getRequestDataHandler(ServiceRequest request,
-            IPolicyContext context) {
+            IPolicyContext context, Object policyConfiguration) {
         return dataRequestHandler;
     }
 
+    /**
+     * @see io.apiman.gateway.engine.policy.IDataPolicy#getResponseDataHandler(io.apiman.gateway.engine.beans.ServiceResponse, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object)
+     */
     @Override
     public IReadWriteStream<ServiceResponse> getResponseDataHandler(ServiceResponse response,
-            IPolicyContext context) {
+            IPolicyContext context, Object policyConfiguration) {
         return dataResponseHandler;
     }
-    
+
     /**
      * @return the dataRequestHandler
      */

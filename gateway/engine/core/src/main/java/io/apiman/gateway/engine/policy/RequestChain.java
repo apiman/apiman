@@ -23,7 +23,7 @@ import java.util.List;
 
 /**
  * Request phase policy chain.
- * 
+ *
  * @author Marc Savy <msavy@redhat.com>
  */
 public class RequestChain extends Chain<ServiceRequest> {
@@ -46,12 +46,12 @@ public class RequestChain extends Chain<ServiceRequest> {
     }
 
     /**
-     * @see io.apiman.gateway.engine.policy.Chain#getServiceHandler(io.apiman.gateway.engine.policy.IPolicy)
+     * @see io.apiman.gateway.engine.policy.Chain#getServiceHandler(io.apiman.gateway.engine.policy.IPolicy, java.lang.Object)
      */
     @Override
-    protected IReadWriteStream<ServiceRequest> getServiceHandler(IPolicy policy) {
+    protected IReadWriteStream<ServiceRequest> getServiceHandler(IPolicy policy, Object config) {
         if (policy instanceof IDataPolicy) {
-            return ((IDataPolicy) policy).getRequestDataHandler(getHead(), getContext());
+            return ((IDataPolicy) policy).getRequestDataHandler(getHead(), getContext(), config);
         } else {
             return null;
         }

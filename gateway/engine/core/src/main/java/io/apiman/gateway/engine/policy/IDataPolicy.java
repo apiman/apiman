@@ -21,7 +21,7 @@ import io.apiman.gateway.engine.io.IReadWriteStream;
 
 /**
  * Policies that wish to be applied to the data handling phase of apiman
- * must implement this interface.  Normal policies (which implement 
+ * must implement this interface.  Normal policies (which implement
  * {@link IPolicy}) are only given a crack at the {@link ServiceRequest}
  * and {@link ServiceResponse}.  If this interface is implemented, then
  * the policy also gets a crack at the request body stream and response
@@ -36,17 +36,21 @@ public interface IDataPolicy extends IPolicy {
      * from the client to the back-end service.
      * @param request the request
      * @param context the context
+     * @param policyConfiguration the policy's configuration
      * @return Request handler to stream request data through the policy.
      */
-    public IReadWriteStream<ServiceRequest> getRequestDataHandler(ServiceRequest request, IPolicyContext context);
+    public IReadWriteStream<ServiceRequest> getRequestDataHandler(ServiceRequest request,
+            IPolicyContext context, Object policyConfiguration);
 
     /**
      * This method should return a stream that will be used when piping the response data
      * from the back-end service to the client.
      * @param response the response
      * @param context the context
+     * @param policyConfiguration the policy's configuration
      * @return Response handler to stream request data through the policy.
      */
-    public IReadWriteStream<ServiceResponse> getResponseDataHandler(ServiceResponse response, IPolicyContext context);
+    public IReadWriteStream<ServiceResponse> getResponseDataHandler(ServiceResponse response,
+            IPolicyContext context, Object policyConfiguration);
 
 }

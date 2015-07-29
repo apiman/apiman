@@ -45,6 +45,11 @@
 
     <!-- Test dependencies -->
     <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-test-policies</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
       <scope>test</scope>

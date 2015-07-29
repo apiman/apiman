@@ -22,7 +22,6 @@ module Apiman {
         ['$scope', 'Logger', 'PluginSvcs',
         ($scope, Logger, PluginSvcs) => {
             var initEditor = function(schema) {
-                Logger.debug("************ Init Editor ************");
                 var holder = document.getElementById('json-editor-holder');
                 var editor = new window['JSONEditor'](holder, {
                     // Disable fetching schemas via ajax
@@ -61,12 +60,10 @@ module Apiman {
             };
             
             var loadSchema = function() {
-                Logger.debug("************* Loading schema");
                 $scope.schemaState = 'loading';
                 var pluginId = $scope.selectedDef.pluginId;
                 var policyDefId = $scope.selectedDef.id;
                 PluginSvcs.getPolicyForm(pluginId, policyDefId, function(schema) {
-                    Logger.debug("!!!!!!!!!!!!!!! schema returned");
                     destroyEditor();
                     initEditor(schema);
                     $scope.editor.setValue($scope.config);
@@ -89,7 +86,6 @@ module Apiman {
             });
 
             $scope.$on('$destroy', function() {
-                Logger.debug('Destroying the json-editor!');
                 destroyEditor();
             });
             
@@ -145,6 +141,76 @@ module Apiman {
                 $scope.setValid(valid);
             };
             $scope.$watch('config', validate, true);
+        }]);
+    
+    export var KB = 1024;
+    export var MB = 1024 * 1024;
+    export var GB = 1024 * 1024 * 1024;
+
+    _module.controller("Apiman.TransferQuotaFormController",
+        ['$scope', 'Logger',
+        ($scope, Logger) => {
+            $scope.limitDenomination = 'B';
+            
+            if ($scope.config && $scope.config.limit) {
+                var limit = Number($scope.config.limit);
+                if (limit > GB && ((limit % GB) == 0)) {
+                    $scope.limitAmount = limit / GB;
+                    $scope.limitDenomination = 'GB';
+                } else if (limit > MB && ((limit % MB) == 0)) {
+                    $scope.limitAmount = limit / MB;
+                    $scope.limitDenomination = 'MB';
+                } else if (limit > KB && ((limit % KB) == 0)) {
+                    $scope.limitAmount = limit / KB;
+                    $scope.limitDenomination = 'KB';
+                } else {
+                    $scope.limitAmount = limit;
+                }
+            }
+
+            var validate = function(config) {
+                var valid = true;
+                if (config.limit) {
+                    config.limit = Number(config.limit);
+                }
+                if (!config.limit || config.limit < 1) {
+                    valid = false;
+                }
+                if (!config.granularity) {
+                    valid = false;
+                }
+                if (!config.period) {
+                    valid = false;
+                }
+                if (config.granularity == 'User' && !config.userHeader) {
+                    valid = false;
+                }
+                if (!config.direction) {
+                    valid = false;
+                }
+                $scope.setValid(valid);
+            };
+            var onLimitChange = function() {
+                var amt = $scope.limitAmount;
+                if (amt) {
+                    var den = $scope.limitDenomination;
+                    var denFact = 1;
+                    if (den == 'KB') {
+                        denFact = 1024;
+                    }
+                    if (den == 'MB') {
+                        denFact = 1024 * 1024;
+                    }
+                    if (den == 'GB') {
+                        denFact = 1024 * 1024 * 1024;
+                    }
+                    $scope.config.limit = Number(amt) * denFact;
+                    Logger.debug("Set limit to {0}", $scope.config.limit);
+                }
+            };
+            $scope.$watch('config', validate, true);
+            $scope.$watch('limitDenomination', onLimitChange, false);
+            $scope.$watch('limitAmount', onLimitChange, false);
         }]);
 
     _module.controller("Apiman.IPListFormController",

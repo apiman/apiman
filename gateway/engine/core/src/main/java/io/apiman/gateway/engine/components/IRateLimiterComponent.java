@@ -22,8 +22,8 @@ import io.apiman.gateway.engine.rates.RateBucketPeriod;
 
 /**
  * A component used to enforce rate limits.  This component is responsible
- * for ensuring that request rates are not exceeded.  Request rates may be 
- * limited by a number of different criteria.  Generally, N number of 
+ * for ensuring that request rates are not exceeded.  Request rates may be
+ * limited by a number of different criteria.  Generally, N number of
  * requests are allowed within a static time window.  This time window can
  * be of varying sizes.  For example, we might allow only 1000 requests
  * per hour.
@@ -31,15 +31,17 @@ import io.apiman.gateway.engine.rates.RateBucketPeriod;
  * @author eric.wittmann@redhat.com
  */
 public interface IRateLimiterComponent extends IComponent {
-    
+
     /**
-     * Adds another request to the given rate bucket.  Sends a true signal if the 
+     * Adds another request to the given rate bucket.  Sends a true signal if the
      * request should be accepted or false if it should be rejected.
      * @param bucketId
-     * @param period 
+     * @param period
      * @param limit
-     * @param handler 
+     * @param increment
+     * @param handler
      */
-    void accept(String bucketId, RateBucketPeriod period, int limit, IAsyncResultHandler<RateLimitResponse> handler);
+    void accept(String bucketId, RateBucketPeriod period, long limit, long increment,
+            IAsyncResultHandler<RateLimitResponse> handler);
 
 }

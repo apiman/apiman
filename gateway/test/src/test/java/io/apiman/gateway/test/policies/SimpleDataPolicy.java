@@ -69,11 +69,11 @@ public class SimpleDataPolicy implements IPolicy, IDataPolicy {
     }
 
     /**
-     * @see io.apiman.gateway.engine.policy.IDataPolicy#getRequestDataHandler(io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.policy.IPolicyContext)
+     * @see io.apiman.gateway.engine.policy.IDataPolicy#getRequestDataHandler(io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object)
      */
     @Override
     public IReadWriteStream<ServiceRequest> getRequestDataHandler(final ServiceRequest request,
-            final IPolicyContext context) {
+            final IPolicyContext context, final Object policyConfiguration) {
         return new AbstractStream<ServiceRequest>() {
             @Override
             public ServiceRequest getHead() {
@@ -104,11 +104,11 @@ public class SimpleDataPolicy implements IPolicy, IDataPolicy {
     }
 
     /**
-     * @see io.apiman.gateway.engine.policy.IDataPolicy#getResponseDataHandler(io.apiman.gateway.engine.beans.ServiceResponse, io.apiman.gateway.engine.policy.IPolicyContext)
+     * @see io.apiman.gateway.engine.policy.IDataPolicy#getResponseDataHandler(io.apiman.gateway.engine.beans.ServiceResponse, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object)
      */
     @Override
     public IReadWriteStream<ServiceResponse> getResponseDataHandler(ServiceResponse response,
-            IPolicyContext context) {
+            IPolicyContext context, Object policyConfiguration) {
         return null;
     }
 

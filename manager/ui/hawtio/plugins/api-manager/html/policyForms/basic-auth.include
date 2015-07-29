@@ -16,7 +16,7 @@
       </dd>
       <dt apiman-i18n-key="require-basic-auth">Require Basic Authentication</dt>
       <dd>
-        <p class="apiman-label-faded">
+        <p class="apiman-label-faded" apiman-i18n-key="basic-auth.require-explanation">
           If this option is enabled, then BASIC authentication is required for the request to succeed.  You
           might disable this option if you want to support both BASIC auth and OAuth policies (for example).
         </p>

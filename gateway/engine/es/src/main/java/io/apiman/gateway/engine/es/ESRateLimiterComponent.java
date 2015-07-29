@@ -49,11 +49,11 @@ public class ESRateLimiterComponent extends AbstractESComponent implements IRate
     }
 
     /**
-     * @see io.apiman.gateway.engine.components.IRateLimiterComponent#accept(java.lang.String, io.apiman.gateway.engine.rates.RateBucketPeriod, int, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     * @see io.apiman.gateway.engine.components.IRateLimiterComponent#accept(java.lang.String, io.apiman.gateway.engine.rates.RateBucketPeriod, long, long, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
-    public void accept(final String bucketId, final RateBucketPeriod period, final int limit,
-            final IAsyncResultHandler<RateLimitResponse> handler) {
+    public void accept(final String bucketId, final RateBucketPeriod period, final long limit,
+            final long increment, final IAsyncResultHandler<RateLimitResponse> handler) {
         final String id = id(bucketId);
 
         Get get = new Get.Builder(ESConstants.INDEX_NAME, id).type("rateBucket").build(); //$NON-NLS-1$
@@ -74,17 +74,17 @@ public class ESRateLimiterComponent extends AbstractESComponent implements IRate
                 bucket.resetIfNecessary(period);
 
                 final RateLimitResponse rlr = new RateLimitResponse();
-                if (bucket.getCount() >= limit) {
+                if (bucket.getCount() > limit) {
                     rlr.setAccepted(false);
                 } else {
-                    bucket.setCount(bucket.getCount() + 1);
+                    bucket.setCount(bucket.getCount() + increment);
                     bucket.setLast(System.currentTimeMillis());
-                    rlr.setAccepted(true);
+                    rlr.setAccepted(bucket.getCount() <= limit);
                 }
                 int reset = (int) (bucket.getResetMillis(period) / 1000L);
                 rlr.setReset(reset);
                 rlr.setRemaining(limit - bucket.getCount());
-                updateBucketAndReturn(id, bucket, rlr, version, bucketId, period, limit, handler);
+                updateBucketAndReturn(id, bucket, rlr, version, bucketId, period, limit, increment, handler);
             }
             @Override
             public void failed(Exception e) {
@@ -117,11 +117,12 @@ public class ESRateLimiterComponent extends AbstractESComponent implements IRate
      * @param limit
      * @param period
      * @param bucketId
+     * @param increment
      * @param handler
      */
     protected void updateBucketAndReturn(final String id, final RateLimiterBucket bucket,
             final RateLimitResponse rlr, final long version, final String bucketId,
-            final RateBucketPeriod period, final int limit,
+            final RateBucketPeriod period, final long limit, final long increment,
             final IAsyncResultHandler<RateLimitResponse> handler) {
 
         Index index = new Index.Builder(bucket).refresh(false).index(ESConstants.INDEX_NAME)
@@ -135,13 +136,13 @@ public class ESRateLimiterComponent extends AbstractESComponent implements IRate
             }
             @Override
             public void failed(Exception e) {
-                // TODO need to fix this!
+                // TODO need to fix this now that we've switched to jest!
                 if (ESUtils.rootCause(e) instanceof VersionConflictEngineException) {
                     // If we got a version conflict, then it means some other request
                     // managed to update the ES document since we retrieved it.  Therefore
                     // everything we've done is out of date, so we should do it all
                     // over again.
-                    accept(bucketId, period, limit, handler);
+                    accept(bucketId, period, limit, increment, handler);
                 } else {
                     handler.handle(AsyncResultImpl.<RateLimitResponse>create(e));
                 }

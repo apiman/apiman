@@ -32,7 +32,7 @@ import java.util.Map;
  * @author eric.wittmann@redhat.com
  */
 public class InMemoryRateLimiterComponent implements IRateLimiterComponent {
-    
+
     private Map<String, RateLimiterBucket> buckets = new HashMap<>();
 
     /**
@@ -42,10 +42,10 @@ public class InMemoryRateLimiterComponent implements IRateLimiterComponent {
     }
 
     /**
-     * @see io.apiman.gateway.engine.components.IRateLimiterComponent#accept(java.lang.String, io.apiman.gateway.engine.rates.RateBucketPeriod, int, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     * @see io.apiman.gateway.engine.components.IRateLimiterComponent#accept(java.lang.String, io.apiman.gateway.engine.rates.RateBucketPeriod, long, long, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
-    public void accept(String bucketId, RateBucketPeriod period, int limit, IAsyncResultHandler<RateLimitResponse> handler) {
+    public void accept(String bucketId, RateBucketPeriod period, long limit, long increment, IAsyncResultHandler<RateLimitResponse> handler) {
         RateLimiterBucket bucket = null;
         synchronized (buckets) {
             bucket = buckets.get(bucketId);
@@ -56,12 +56,12 @@ public class InMemoryRateLimiterComponent implements IRateLimiterComponent {
             bucket.resetIfNecessary(period);
 
             RateLimitResponse response = new RateLimitResponse();
-            if (bucket.getCount() >= limit) {
+            if (bucket.getCount() > limit) {
                 response.setAccepted(false);
             } else {
-                bucket.setCount(bucket.getCount() + 1);
+                bucket.setCount(bucket.getCount() + increment);
                 bucket.setLast(System.currentTimeMillis());
-                response.setAccepted(true);
+                response.setAccepted(bucket.getCount() <= limit);
             }
             int reset = (int) (bucket.getResetMillis(period) / 1000L);
             response.setReset(reset);

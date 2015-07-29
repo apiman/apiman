@@ -42,8 +42,8 @@ import java.util.Map;
  */
 public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig> {
 
-    private static final String NO_USER_AVAILABLE = new String();
-    private static final String NO_APPLICATION_AVAILABLE = new String();
+    protected static final String NO_USER_AVAILABLE = new String();
+    protected static final String NO_APPLICATION_AVAILABLE = new String();
 
     private static final String DEFAULT_LIMIT_HEADER = "X-RateLimit-Limit"; //$NON-NLS-1$
     private static final String DEFAULT_REMAINING_HEADER = "X-RateLimit-Remaining"; //$NON-NLS-1$
@@ -86,7 +86,7 @@ public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig>
         }
 
         IRateLimiterComponent rateLimiter = context.getComponent(IRateLimiterComponent.class);
-        rateLimiter.accept(bucketId, period, config.getLimit(), new IAsyncResultHandler<RateLimitResponse>() {
+        rateLimiter.accept(bucketId, period, config.getLimit(), 1, new IAsyncResultHandler<RateLimitResponse>() {
             @Override
             public void handle(IAsyncResult<RateLimitResponse> result) {
                 if (result.isError()) {
@@ -94,36 +94,29 @@ public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig>
                 } else {
                     RateLimitResponse rtr = result.getResult();
 
-                    Map<String, String> responseHeaders = new HashMap<>();
-                    String limitHeader = config.getHeaderLimit();
-                    if (limitHeader == null) {
-                        limitHeader = defaultLimitHeader();
-                    }
-                    String remainingHeader = config.getHeaderRemaining();
-                    if (remainingHeader == null) {
-                        remainingHeader = defaultRemainingHeader();
-                    }
-                    String resetHeader = config.getHeaderReset();
-                    if (resetHeader == null) {
-                        resetHeader = defaultResetHeader();
-                    }
-                    responseHeaders.put(limitHeader, String.valueOf(config.getLimit()));
-                    responseHeaders.put(remainingHeader, String.valueOf(rtr.getRemaining()));
-                    responseHeaders.put(resetHeader, String.valueOf(rtr.getReset()));
+                    Map<String, String> responseHeaders = responseHeaders(config, rtr,
+                            defaultLimitHeader(), defaultRemainingHeader(), defaultResetHeader());
 
                     if (rtr.isAccepted()) {
                         context.setAttribute("rate-limit-response-headers", responseHeaders); //$NON-NLS-1$
                         chain.doApply(request);
                     } else {
                         IPolicyFailureFactoryComponent failureFactory = context.getComponent(IPolicyFailureFactoryComponent.class);
-                        PolicyFailure failure = failureFactory.createFailure(PolicyFailureType.Other, PolicyFailureCodes.RATE_LIMIT_EXCEEDED, Messages.i18n.format("RateLimitingPolicy.RateExceeded")); //$NON-NLS-1$
+                        PolicyFailure failure = limitExceededFailure(failureFactory);
                         failure.getHeaders().putAll(responseHeaders);
-                        failure.setResponseCode(429);
                         chain.doFailure(failure);
                     }
                 }
             }
         });
+    }
+
+    /**
+     * @param request
+     * @param config
+     */
+    protected String createBucketId(ServiceRequest request, RateLimitingConfig config) {
+        return bucketId(request, config);
     }
 
     /**
@@ -146,7 +139,7 @@ public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig>
      * @param request
      * @param config
      */
-    private String createBucketId(ServiceRequest request, RateLimitingConfig config) {
+    protected static String bucketId(ServiceRequest request, RateLimitingConfig config) {
         StringBuilder builder = new StringBuilder();
         if (request.getContract() == null) {
             builder.append("PUBLIC||"); //$NON-NLS-1$
@@ -204,7 +197,7 @@ public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig>
      * Gets the appropriate bucket period from the config.
      * @param config
      */
-    private RateBucketPeriod getPeriod(RateLimitingConfig config) {
+    protected static RateBucketPeriod getPeriod(RateLimitingConfig config) {
         RateLimitingPeriod period = config.getPeriod();
         switch (period) {
         case Second:
@@ -222,6 +215,45 @@ public class RateLimitingPolicy extends AbstractMappedPolicy<RateLimitingConfig>
         default:
             return RateBucketPeriod.Month;
         }
+    }
+
+    /**
+     * @param config
+     * @param rtr
+     * @param defaultLimitHeader
+     * @param defaultRemainingHeader
+     * @param defaultResetHeader
+     */
+    protected static Map<String, String> responseHeaders(RateLimitingConfig config,
+            RateLimitResponse rtr, String defaultLimitHeader, String defaultRemainingHeader,
+            String defaultResetHeader) {
+        Map<String, String> responseHeaders = new HashMap<>();
+        String limitHeader = config.getHeaderLimit();
+        if (limitHeader == null) {
+            limitHeader = defaultLimitHeader;
+        }
+        String remainingHeader = config.getHeaderRemaining();
+        if (remainingHeader == null) {
+            remainingHeader = defaultRemainingHeader;
+        }
+        String resetHeader = config.getHeaderReset();
+        if (resetHeader == null) {
+            resetHeader = defaultResetHeader;
+        }
+        responseHeaders.put(limitHeader, String.valueOf(config.getLimit()));
+        responseHeaders.put(remainingHeader, String.valueOf(rtr.getRemaining()));
+        responseHeaders.put(resetHeader, String.valueOf(rtr.getReset()));
+        return responseHeaders;
+    }
+
+    /**
+     * @param responseHeaders
+     * @param failureFactory
+     */
+    protected PolicyFailure limitExceededFailure(IPolicyFailureFactoryComponent failureFactory) {
+        PolicyFailure failure = failureFactory.createFailure(PolicyFailureType.Other, PolicyFailureCodes.RATE_LIMIT_EXCEEDED, Messages.i18n.format("RateLimitingPolicy.RateExceeded")); //$NON-NLS-1$
+        failure.setResponseCode(429);
+        return failure;
     }
 
     /**

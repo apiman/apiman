@@ -43,10 +43,10 @@ public class InfinispanRateLimiterComponent implements IRateLimiterComponent {
 
     private String cacheContainer;
     private String cacheName;
-    
+
     private Cache<Object, Object> cache;
     private Object mutex = new Object();
-    
+
     /**
      * Constructor.
      */
@@ -62,7 +62,7 @@ public class InfinispanRateLimiterComponent implements IRateLimiterComponent {
     public InfinispanRateLimiterComponent(Map<String, String> config) {
         cacheContainer = DEFAULT_CACHE_CONTAINER;
         cacheName = DEFAULT_CACHE;
-        
+
         if (config.containsKey("cache-container")) { //$NON-NLS-1$
             cacheContainer = config.get("cache-container"); //$NON-NLS-1$
         }
@@ -78,7 +78,7 @@ public class InfinispanRateLimiterComponent implements IRateLimiterComponent {
         if (cache != null) {
             return cache;
         }
-        
+
         try {
             InitialContext ic = new InitialContext();
             CacheContainer container = (CacheContainer) ic.lookup(cacheContainer);
@@ -90,11 +90,11 @@ public class InfinispanRateLimiterComponent implements IRateLimiterComponent {
     }
 
     /**
-     * @see io.apiman.gateway.engine.components.IRateLimiterComponent#accept(java.lang.String, io.apiman.gateway.engine.rates.RateBucketPeriod, int, io.apiman.gateway.engine.async.IAsyncResultHandler)
+     * @see io.apiman.gateway.engine.components.IRateLimiterComponent#accept(java.lang.String, io.apiman.gateway.engine.rates.RateBucketPeriod, long, long, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
-    public void accept(String bucketId, RateBucketPeriod period, int limit,
-            IAsyncResultHandler<RateLimitResponse> handler) {
+    public void accept(final String bucketId, final RateBucketPeriod period, final long limit,
+            final long increment, final IAsyncResultHandler<RateLimitResponse> handler) {
         RateLimiterBucket bucket = null;
         synchronized (mutex) {
             bucket = (RateLimiterBucket) getCache().get(bucketId);
@@ -103,14 +103,14 @@ public class InfinispanRateLimiterComponent implements IRateLimiterComponent {
                 getCache().put(bucketId, bucket);
             }
             bucket.resetIfNecessary(period);
-            
+
             RateLimitResponse response = new RateLimitResponse();
-            if (bucket.getCount() >= limit) {
+            if (bucket.getCount() > limit) {
                 response.setAccepted(false);
             } else {
-                bucket.setCount(bucket.getCount() + 1);
+                bucket.setCount(bucket.getCount() + increment);
                 bucket.setLast(System.currentTimeMillis());
-                response.setAccepted(true);
+                response.setAccepted(bucket.getCount() <= limit);
             }
             int reset = (int) (bucket.getResetMillis(period) / 1000L);
             response.setReset(reset);

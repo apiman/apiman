@@ -33,5 +33,7 @@ public final class PolicyFailureCodes {
     public static final int USER_NOT_AUTHORIZED         = 10009;
     public static final int CONFIGURATION_ERROR         = 10010;
     public static final int TRANSPORT_SECURITY_REQUIRED = 10011;
+    public static final int REQUEST_QUOTA_EXCEEDED      = 10012;
+    public static final int BYTE_QUOTA_EXCEEDED         = 10013;
 
 }

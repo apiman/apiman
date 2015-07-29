@@ -23,7 +23,7 @@ import java.util.List;
 
 /**
  * Response phase policy chain.
- * 
+ *
  * @author Marc Savy <msavy@redhat.com>
  */
 public class ResponseChain extends Chain<ServiceResponse> {
@@ -36,7 +36,7 @@ public class ResponseChain extends Chain<ServiceResponse> {
     public ResponseChain(List<PolicyWithConfiguration> policies, IPolicyContext context) {
         super(policies, context);
     }
-    
+
     /**
      * @see java.lang.Iterable#iterator()
      */
@@ -46,12 +46,12 @@ public class ResponseChain extends Chain<ServiceResponse> {
     }
 
     /**
-     * @see io.apiman.gateway.engine.policy.Chain#getServiceHandler(io.apiman.gateway.engine.policy.IPolicy)
+     * @see io.apiman.gateway.engine.policy.Chain#getServiceHandler(io.apiman.gateway.engine.policy.IPolicy, java.lang.Object)
      */
     @Override
-    protected IReadWriteStream<ServiceResponse> getServiceHandler(IPolicy policy) {
+    protected IReadWriteStream<ServiceResponse> getServiceHandler(IPolicy policy, Object config) {
         if (policy instanceof IDataPolicy) {
-            return ((IDataPolicy) policy).getResponseDataHandler(getHead(), getContext());
+            return ((IDataPolicy) policy).getResponseDataHandler(getHead(), getContext(), config);
         } else {
             return null;
         }
@@ -67,7 +67,7 @@ public class ResponseChain extends Chain<ServiceResponse> {
 
     /**
      * An iterator over a list of policies - iterates through the policies from
-     * back to front (in reverse), which is the proper order when applying the 
+     * back to front (in reverse), which is the proper order when applying the
      * policies to a response (on the way back out).
      */
     private class ResponseIterator implements Iterator<PolicyWithConfiguration> {
