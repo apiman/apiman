@@ -88,7 +88,8 @@ public class HttpGatewayVerticle extends ApimanVerticleBase {
                         request.endHandler((Handler<Void>) end -> {
                             // Finish *send* to Policy
                             send.end((Handler<AsyncResult<Void>>) sendResult -> {
-                                setError(request.response(), sendResult.cause());
+                                if (sendResult.failed())
+                                    setError(request.response(), sendResult.cause());
                             });
                         });
 

@@ -52,8 +52,7 @@ public class IngestorToPolicyImpl implements IngestorToPolicyService {
 
         this.resultHandler = resultHandler;
 
-        if (endHandler != null)
-            endHandler.handle((Void) null);
+        endHandler.handle((Void) null);
     }
 
     public void headHandler(Handler<VertxServiceRequest> handler) {
@@ -69,6 +68,7 @@ public class IngestorToPolicyImpl implements IngestorToPolicyService {
     }
 
     public void ready() {
+        System.out.println("indicated ready");
         readyHandler.handle(Future.succeededFuture(true));
     }
 
@@ -81,6 +81,7 @@ public class IngestorToPolicyImpl implements IngestorToPolicyService {
     }
 
     public void succeeded() {
+        System.out.println("Indicated succeeded");
         resultHandler.handle(Future.succeededFuture());
     }
 }

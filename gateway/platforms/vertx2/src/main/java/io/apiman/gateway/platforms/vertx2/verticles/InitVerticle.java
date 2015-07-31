@@ -10,7 +10,7 @@ public class InitVerticle extends ApimanVerticleBase {
         super.start();
 
         DeploymentOptions deploymentOptions = new DeploymentOptions();
-        deploymentOptions.setInstances(1); // get from JSON config (4:1 ratio?)
+        deploymentOptions.setInstances(10); // get from JSON config (4:1 ratio?)
         deploymentOptions.setConfig(config());
 
         vertx.deployVerticle(PolicyVerticle.class.getCanonicalName(), deploymentOptions,

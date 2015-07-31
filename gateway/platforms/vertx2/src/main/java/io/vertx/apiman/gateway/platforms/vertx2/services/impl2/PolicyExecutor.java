@@ -63,7 +63,6 @@ public class PolicyExecutor {
 
                     if (engineResult.isResponse()) {
                         doResponse(engineResult, replyProxy);
-                        requestService.ready();
                     } else {
                         System.out.println("Failed with policy denial");
                         replyProxy.policyFailure(new VertxPolicyFailure(engineResult.getPolicyFailure()));
@@ -83,13 +82,19 @@ public class PolicyExecutor {
             });
 
             requestExecutor.streamHandler((IAsyncHandler<ISignalWriteStream>) writeStream -> {
+                System.out.println("In streamhandler");
+
                 requestService.bodyHandler((Handler<VertxApimanBuffer>) body -> {
                     writeStream.write(body);
                 });
 
                 requestService.endHandler((Handler<Void>) v -> {
+                    System.out.println("requestService.endHandler handle");
                     writeStream.end();
                 });
+
+                //requestService.succeeded();
+                requestService.ready();
             });
 
             requestExecutor.execute();

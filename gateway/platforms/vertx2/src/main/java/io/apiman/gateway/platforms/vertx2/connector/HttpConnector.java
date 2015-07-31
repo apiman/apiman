@@ -104,15 +104,30 @@ class HttpConnector implements IServiceConnectionResponse, IServiceConnection {
        URL serviceEndpoint = parseServiceEndpoint(service);
 
        serviceHost = serviceEndpoint.getHost();
-       servicePort = serviceEndpoint.getPort();
+       servicePort = getPort(serviceEndpoint);
        servicePath = StringUtils.removeEnd(serviceEndpoint.getPath(), "/"); //$NON-NLS-1$
-
        doConnection();
     }
 
-    private void doConnection() {
+    private int getPort(URL serviceEndpoint) {
+        if (serviceEndpoint.getPort() != -1)
+            return serviceEndpoint.getPort();
 
+        if (serviceEndpoint.getProtocol().equals("https")) {
+            return 443;
+        } else {
+            return 80;
+        }
+    }
+
+    private void doConnection() {
         String destination = servicePath + serviceRequest.getDestination();
+
+        System.out.println("destination =" + destination);
+        System.out.println(HttpMethod.valueOf(serviceRequest.getType()));
+        System.out.println(servicePort);
+        System.out.println(serviceHost);
+        System.out.println(serviceRequest.getQueryParams().size());
 
         clientRequest = client.request(HttpMethod.valueOf(serviceRequest.getType()),
                 servicePort,
@@ -124,7 +139,7 @@ class HttpConnector implements IServiceConnectionResponse, IServiceConnection {
             public void handle(final HttpClientResponse vxClientResponse) {
                 clientResponse = vxClientResponse;
 
-                logger.debug("We have a response from the backend service in HttpConnector"); //$NON-NLS-1$
+                System.out.println("We have a response from the backend service in HttpConnector"); //$NON-NLS-1$
 
                 // Pause until we're given permission to xfer the response.
                 vxClientResponse.pause();
@@ -159,7 +174,7 @@ class HttpConnector implements IServiceConnectionResponse, IServiceConnection {
 
     @Override
     public void transmit() {
-        //logger.debug("Resuming HttpConnector!");
+        logger.info("Resuming HttpConnector!");
         clientResponse.resume();
     }
 
@@ -201,7 +216,7 @@ class HttpConnector implements IServiceConnectionResponse, IServiceConnection {
 
     @Override
     public void end() {
-        //logger.debug("HttpConnector clientRequest.end");
+        System.out.println("HttpConnector clientRequest.end");
         clientRequest.end();
         inboundFinished = true;
     }
@@ -230,6 +245,10 @@ class HttpConnector implements IServiceConnectionResponse, IServiceConnection {
     private class ExceptionHandler implements Handler<Throwable> {
         @Override
         public void handle(Throwable error) {
+            System.out.println("There was an error in HttpConnector");
+            System.out.println(error);
+
+
             resultHandler.handle(AsyncResultImpl
                     .<IServiceConnectionResponse> create(error));
         }
