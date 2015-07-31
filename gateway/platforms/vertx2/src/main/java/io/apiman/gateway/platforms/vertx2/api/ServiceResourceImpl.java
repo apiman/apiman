@@ -3,12 +3,17 @@ package io.apiman.gateway.platforms.vertx2.api;
 import io.apiman.common.util.SimpleStringUtils;
 import io.apiman.gateway.api.rest.contract.IServiceResource;
 import io.apiman.gateway.api.rest.contract.exceptions.NotAuthorizedException;
+import io.apiman.gateway.engine.IEngine;
+import io.apiman.gateway.engine.IRegistry;
+import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.Service;
 import io.apiman.gateway.engine.beans.ServiceEndpoint;
 import io.apiman.gateway.engine.beans.exceptions.PublishingException;
 import io.apiman.gateway.engine.beans.exceptions.RegistrationException;
 import io.apiman.gateway.platforms.vertx2.config.VertxEngineConfig;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.vertx.core.Handler;
+import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.Json;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
@@ -20,25 +25,38 @@ public class ServiceResourceImpl implements IServiceResource, IRouteBuilder {
     private static final String ORG_ID = "organizationId"; //$NON-NLS-1$
     private static final String SVC_ID = "serviceId"; //$NON-NLS-1$
     private static final String VER = "version"; //$NON-NLS-1$
-    private static final String PUBLISH = "publish"; //$NON-NLS-1$
     private static final String RETIRE = IRouteBuilder.join(ORG_ID, SVC_ID, VER);
     private static final String ENDPOINT = IRouteBuilder.join(ORG_ID, SVC_ID, VER) + "/endpoint"; //$NON-NLS-1$
     private VertxEngineConfig apimanConfig;
     private String host;
+    private IRegistry registry;
 
-    public ServiceResourceImpl(VertxEngineConfig apimanConfig) {
+    public ServiceResourceImpl(VertxEngineConfig apimanConfig, IEngine engine) {
         this.apimanConfig = apimanConfig;
+        this.registry = engine.getRegistry();
     }
 
     @Override
     public void publish(Service service) throws PublishingException, NotAuthorizedException {
-        //end
+        registry.publishService(service, (IAsyncResultHandler<Void>) result -> {
+            if (result.isError()) {
+                if (result.getError() instanceof PublishingException) {
+                    throw (PublishingException) result.getError();
+                } else if (result.getError() instanceof NotAuthorizedException) {
+                    throw (NotAuthorizedException) result.getError();
+                } else {
+                    throw new RuntimeException(result.getError());
+                }
+            }
+        });
     }
 
     public void publish(RoutingContext routingContext) {
         try {
-            publish(Json.decodeValue(routingContext.getBodyAsString(), Service.class));
-            end(routingContext, HttpResponseStatus.CREATED);
+            routingContext.request().bodyHandler((Handler<Buffer>) buffer -> {
+                publish(Json.decodeValue(buffer.toString("utf-8"), Service.class)); //$NON-NLS-1$
+                end(routingContext, HttpResponseStatus.CREATED);
+            });
         } catch (PublishingException e) {
             error(routingContext, HttpResponseStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
         } catch (NotAuthorizedException e) {
@@ -49,7 +67,21 @@ public class ServiceResourceImpl implements IServiceResource, IRouteBuilder {
     @Override
     public void retire(String organizationId, String serviceId, String version) throws RegistrationException,
             NotAuthorizedException {
-
+        Service service = new Service();
+        service.setOrganizationId(organizationId);
+        service.setServiceId(serviceId);
+        service.setVersion(version);
+        registry.retireService(service, (IAsyncResultHandler<Void>) result -> {
+            if (result.isError()) {
+                if (result.getError() instanceof RegistrationException) {
+                    throw (RegistrationException) result.getError();
+                } else if (result.getError() instanceof NotAuthorizedException) {
+                    throw (NotAuthorizedException) result.getError();
+                } else {
+                    throw new RuntimeException(result.getError());
+                }
+            }
+        });
     }
 
     public void retire(RoutingContext routingContext) {
@@ -104,7 +136,6 @@ public class ServiceResourceImpl implements IServiceResource, IRouteBuilder {
         String orgId = routingContext.request().getParam(ORG_ID);
         String svcId = routingContext.request().getParam(SVC_ID);
         String ver = routingContext.request().getParam(VER);
-
         try {
             writeBody(routingContext, getServiceEndpoint(orgId, svcId, ver));
         } catch (NotAuthorizedException e) {
@@ -114,7 +145,7 @@ public class ServiceResourceImpl implements IServiceResource, IRouteBuilder {
 
     @Override
     public void buildRoutes(Router router) {
-        router.put(buildPath(PUBLISH)).handler(this::publish);
+        router.put(buildPath("")).handler(this::publish); //$NON-NLS-1$
         router.delete(buildPath(RETIRE)).handler(this::retire);
         router.get(buildPath(ENDPOINT)).handler(this::getServiceEndpoint);
     }

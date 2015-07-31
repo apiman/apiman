@@ -52,9 +52,7 @@ public class PolicyExecutor {
     }
 
     public void execute() {
-//        System.out.println("Setting head handler");
         requestService.headHandler((Handler<VertxServiceRequest>) serviceRequest -> {
-
             System.out.println("Head has arrived....");
 
             final IServiceRequestExecutor requestExecutor = engine.executor(serviceRequest, (IAsyncResultHandler<IEngineResult>) result -> {

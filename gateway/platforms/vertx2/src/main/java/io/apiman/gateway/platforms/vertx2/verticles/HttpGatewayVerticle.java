@@ -64,7 +64,7 @@ public class HttpGatewayVerticle extends ApimanVerticleBase {
                 setupRequest(req, result, httpSessionUuid);
             });
 
-        }).listen(apimanConfig.getPort(VerticleType.HTTP_GATEWAY));
+        }).listen(apimanConfig.getPort(VerticleType.HTTP));
     }
 
     // Setup request leg
@@ -173,6 +173,6 @@ public class HttpGatewayVerticle extends ApimanVerticleBase {
 
     @Override
     public VerticleType verticleType() {
-        return VerticleType.HTTP_GATEWAY;
+        return VerticleType.HTTP;
     }
 }

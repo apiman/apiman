@@ -17,15 +17,15 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.DigestUtils;
 
 @SuppressWarnings("nls")
-public class ApiVerticle extends ApimanVerticleBase {
+public class ApiVerticle extends ApimanVerticleWithEngine {
 
     @Override
     public void start() {
         super.start();
 
-        IRouteBuilder applicationResource = new ApplicationResourceImpl(apimanConfig);
-        IRouteBuilder serviceResource = new ServiceResourceImpl(apimanConfig);
-        IRouteBuilder systemResource = new SystemResourceImpl(apimanConfig);
+        IRouteBuilder applicationResource = new ApplicationResourceImpl(apimanConfig, engine);
+        IRouteBuilder serviceResource = new ServiceResourceImpl(apimanConfig, engine);
+        IRouteBuilder systemResource = new SystemResourceImpl(apimanConfig, engine);
 
         Router router = Router.router(vertx);
 
