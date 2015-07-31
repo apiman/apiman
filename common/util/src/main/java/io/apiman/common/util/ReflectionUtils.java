@@ -62,4 +62,19 @@ public class ReflectionUtils {
 
         return c;
     }
+
+    /**
+     * Squishy way to find a setter method.
+     * @param theClass
+     */
+    public static Method findSetter(Class<?> onClass, Class<?> targetClass) {
+        Method[] methods = onClass.getMethods();
+        for (Method method : methods) {
+            Class<?>[] ptypes = method.getParameterTypes();
+            if (method.getName().startsWith("set") && ptypes.length == 1 && ptypes[0] == targetClass) { //$NON-NLS-1$
+                return method;
+            }
+        }
+        return null;
+    }
 }

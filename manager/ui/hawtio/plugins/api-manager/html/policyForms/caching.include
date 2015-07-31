@@ -1,0 +1,7 @@
+<div class="form policy-config caching" data-field="form" ng-controller="Apiman.CachingFormController" style="margin-top: 10px">
+  <div>
+    <span apiman-i18n-key="caching.config-sentence-preamble">Cache API responses for</span>
+    <input id="ttl" ng-model="config.ttl" class="apiman-form-control form-control inline-apiman-form-control form-control" style="width: 150px" type="text" apiman-i18n-key="caching.enter-num-seconds" placeholder="Enter time-to-live"></input>
+    <span apiman-i18n-key="caching.seconds">seconds.</span>
+  </div>
+</div>

@@ -16,6 +16,7 @@
 package io.apiman.gateway.test;
 
 import io.apiman.gateway.engine.components.IBufferFactoryComponent;
+import io.apiman.gateway.engine.components.ICacheStoreComponent;
 import io.apiman.gateway.engine.components.IHttpClientComponent;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.components.IRateLimiterComponent;
@@ -23,13 +24,14 @@ import io.apiman.gateway.engine.components.ISharedStateComponent;
 import io.apiman.gateway.engine.es.ESRateLimiterComponent;
 import io.apiman.gateway.engine.es.ESRegistry;
 import io.apiman.gateway.engine.es.ESSharedStateComponent;
+import io.apiman.gateway.engine.impl.ByteBufferFactoryComponent;
 import io.apiman.gateway.engine.impl.DefaultPluginRegistry;
+import io.apiman.gateway.engine.impl.InMemoryCacheStoreComponent;
 import io.apiman.gateway.engine.impl.InMemoryRateLimiterComponent;
 import io.apiman.gateway.engine.impl.InMemoryRegistry;
 import io.apiman.gateway.engine.impl.InMemorySharedStateComponent;
 import io.apiman.gateway.engine.policy.PolicyFactoryImpl;
 import io.apiman.gateway.platforms.servlet.PolicyFailureFactoryComponent;
-import io.apiman.gateway.platforms.servlet.components.BufferFactoryComponentImpl;
 import io.apiman.gateway.platforms.servlet.components.HttpClientComponentImpl;
 import io.apiman.gateway.platforms.servlet.connectors.HttpConnectorFactory;
 import io.apiman.gateway.platforms.war.WarEngineConfig;
@@ -84,7 +86,7 @@ public class AbstractGatewayTest {
         System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + IHttpClientComponent.class.getSimpleName(),
                 HttpClientComponentImpl.class.getName());
         System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + IBufferFactoryComponent.class.getSimpleName(),
-                BufferFactoryComponentImpl.class.getName());
+                ByteBufferFactoryComponent.class.getName());
         System.setProperty(WarEngineConfig.APIMAN_GATEWAY_METRICS_CLASS, TestMetrics.class.getName());
 
         if (GatewayTestUtils.getTestType() == GatewayTestType.memory) {
@@ -95,6 +97,8 @@ public class AbstractGatewayTest {
                     InMemorySharedStateComponent.class.getName());
             System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + IRateLimiterComponent.class.getSimpleName(),
                     InMemoryRateLimiterComponent.class.getName());
+            System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + ICacheStoreComponent.class.getSimpleName(),
+                    InMemoryCacheStoreComponent.class.getName());
         } else if (GatewayTestUtils.getTestType() == GatewayTestType.es) {
             // Configure to run with elasticsearch components
             /////////////////////////////////////////////////

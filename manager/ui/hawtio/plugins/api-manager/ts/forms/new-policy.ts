@@ -10,6 +10,7 @@ module Apiman {
         QuotaPolicy: 'quota.include',
         TransferQuotaPolicy: 'transfer-quota.include',
         AuthorizationPolicy: 'authorization.include',
+        CachingPolicy: 'caching.include'
     };
 
     export var NewPolicyController = _module.controller("Apiman.NewPolicyController",

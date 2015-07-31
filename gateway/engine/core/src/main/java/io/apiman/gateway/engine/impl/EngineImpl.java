@@ -15,6 +15,9 @@
  */
 package io.apiman.gateway.engine.impl;
 
+import io.apiman.common.util.ReflectionUtils;
+import io.apiman.gateway.engine.DependsOnComponents;
+import io.apiman.gateway.engine.IComponent;
 import io.apiman.gateway.engine.IComponentRegistry;
 import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.IEngine;
@@ -29,6 +32,10 @@ import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.policy.IPolicyFactory;
 import io.apiman.gateway.engine.policy.PolicyContextImpl;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Collection;
 
 /**
  * The implementation of the API Management runtime engine.
@@ -178,8 +185,31 @@ public class EngineImpl implements IEngine {
 
     private void initialize(Object... m) {
         for (Object o : m) {
+            DependsOnComponents annotation = o.getClass().getAnnotation(DependsOnComponents.class);
+            if (annotation != null) {
+                Class<? extends IComponent>[] value = annotation.value();
+                for (Class<? extends IComponent> componentClass : value) {
+                    Method setter = ReflectionUtils.findSetter(o.getClass(), componentClass);
+                    if (setter != null) {
+                        IComponent component = componentRegistry.getComponent(componentClass);
+                        try {
+                            setter.invoke(o, new Object[] { component });
+                        } catch (IllegalAccessException | IllegalArgumentException
+                                | InvocationTargetException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+            }
             if (o instanceof IRequiresInitialization) {
                 ((IRequiresInitialization) o).initialize();
+            }
+            // Make sure to also initialize all components!
+            if (o instanceof IComponentRegistry) {
+                Collection<IComponent> components = ((IComponentRegistry) o).getComponents();
+                for (IComponent component : components) {
+                    initialize(component);
+                }
             }
         }
     }

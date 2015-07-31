@@ -481,4 +481,20 @@ module Apiman {
             };
         }]);
 
+    _module.controller("Apiman.CachingFormController",
+        ['$scope', 'Logger',
+        ($scope, Logger) => {
+            var validate = function(config) {
+                var valid = false;
+                if (config.ttl) {
+                    config.ttl = Number(config.ttl);
+                    if (config.ttl && config.ttl > 0) {
+                        valid = true;
+                    }
+                }
+                $scope.setValid(valid);
+            };
+            $scope.$watch('config', validate, true);
+        }]);
+
 }

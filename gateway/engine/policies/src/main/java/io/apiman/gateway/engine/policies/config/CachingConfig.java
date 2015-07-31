@@ -15,8 +15,6 @@
  */
 package io.apiman.gateway.engine.policies.config;
 
-
-
 /**
  * Configuration object for the Caching policy.
  *
@@ -24,7 +22,7 @@ package io.apiman.gateway.engine.policies.config;
  */
 public class CachingConfig {
 
-    private long ttl;
+    private long ttl; // in seconds
 
     /**
      * Constructor.

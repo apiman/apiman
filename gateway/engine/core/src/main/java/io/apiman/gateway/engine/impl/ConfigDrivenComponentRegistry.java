@@ -15,12 +15,18 @@
  */
 package io.apiman.gateway.engine.impl;
 
+import io.apiman.common.util.ReflectionUtils;
+import io.apiman.gateway.engine.DependsOnComponents;
 import io.apiman.gateway.engine.IComponent;
 import io.apiman.gateway.engine.IComponentRegistry;
 import io.apiman.gateway.engine.IEngineConfig;
 import io.apiman.gateway.engine.IPluginRegistry;
+import io.apiman.gateway.engine.IRequiresInitialization;
 import io.apiman.gateway.engine.beans.exceptions.ComponentNotFoundException;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,6 +48,14 @@ public class ConfigDrivenComponentRegistry implements IComponentRegistry {
     public ConfigDrivenComponentRegistry(IEngineConfig engineConfig, IPluginRegistry pluginRegistry) {
         this.engineConfig = engineConfig;
         this.pluginRegistry = pluginRegistry;
+    }
+
+    /**
+     * @see io.apiman.gateway.engine.IComponentRegistry#getComponents()
+     */
+    @Override
+    public Collection<IComponent> getComponents() {
+        return components.values();
     }
 
     /**
@@ -71,6 +85,29 @@ public class ConfigDrivenComponentRegistry implements IComponentRegistry {
                 Map<String, String> componentConfig = engineConfig.getComponentConfig(componentType);
                 T component = ConfigDrivenEngineFactory.create(componentClass, componentConfig);
                 components.put(componentType, component);
+
+                // Because components are lazily created, we need to initialize them here
+                // if necessary.
+                DependsOnComponents annotation = componentClass.getAnnotation(DependsOnComponents.class);
+                if (annotation != null) {
+                    Class<? extends IComponent>[] value = annotation.value();
+                    for (Class<? extends IComponent> theC : value) {
+                        Method setter = ReflectionUtils.findSetter(componentClass, theC);
+                        if (setter != null) {
+                            IComponent injectedComponent = getComponent(theC);
+                            try {
+                                setter.invoke(component, new Object[] { injectedComponent });
+                            } catch (IllegalAccessException | IllegalArgumentException
+                                    | InvocationTargetException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    }
+                }
+                if (component instanceof IRequiresInitialization) {
+                    ((IRequiresInitialization) component).initialize();
+                }
+
                 return component;
             }
         } catch (Exception e) {

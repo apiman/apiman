@@ -20,6 +20,7 @@ import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import io.apiman.gateway.engine.IComponentRegistry;
 import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.IEngine;
 import io.apiman.gateway.engine.IEngineResult;
@@ -39,6 +40,7 @@ import io.apiman.gateway.engine.beans.Service;
 import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.beans.ServiceResponse;
 import io.apiman.gateway.engine.beans.exceptions.ConnectorException;
+import io.apiman.gateway.engine.components.IBufferFactoryComponent;
 import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.gateway.engine.io.ISignalWriteStream;
 import io.apiman.gateway.engine.util.PassthroughPolicy;
@@ -95,6 +97,16 @@ public class DefaultEngineFactoryTest {
     @Test
     public void testCreateEngine() throws InterruptedException, ExecutionException {
         DefaultEngineFactory factory = new DefaultEngineFactory() {
+            @Override
+            protected IComponentRegistry createComponentRegistry(IPluginRegistry pluginRegistry) {
+                return new DefaultComponentRegistry() {
+                    @Override
+                    protected void registerBufferFactoryComponent() {
+                        addComponent(IBufferFactoryComponent.class, new ByteBufferFactoryComponent());
+                    }
+                };
+            }
+
             @Override
             protected IConnectorFactory createConnectorFactory(IPluginRegistry pluginRegistry) {
                 return new IConnectorFactory() {

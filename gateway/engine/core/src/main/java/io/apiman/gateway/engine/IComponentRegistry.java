@@ -18,16 +18,23 @@ package io.apiman.gateway.engine;
 import io.apiman.gateway.engine.beans.exceptions.ComponentNotFoundException;
 import io.apiman.gateway.engine.policy.IPolicyContext;
 
+import java.util.Collection;
+
 /**
  * A registry to discover and lookup components used by the policy implementations.  All
- * of the components in the registry are made available via the {@link IPolicyContext} for 
+ * of the components in the registry are made available via the {@link IPolicyContext} for
  * lookup by the policy implementations.  This interface is internal to the policy engine
  * and should never be made available to the policy impls.
  *
  * @author eric.wittmann@redhat.com
  */
 public interface IComponentRegistry {
-    
+
+    /**
+     * @return a list of all registered components
+     */
+    public Collection<IComponent> getComponents();
+
     /**
      * Gets a specific type of component from the registry.
      * @param componentType the component type

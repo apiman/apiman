@@ -18,10 +18,12 @@ package io.apiman.gateway.engine.impl;
 import io.apiman.gateway.engine.IComponent;
 import io.apiman.gateway.engine.IComponentRegistry;
 import io.apiman.gateway.engine.beans.exceptions.ComponentNotFoundException;
+import io.apiman.gateway.engine.components.ICacheStoreComponent;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.components.IRateLimiterComponent;
 import io.apiman.gateway.engine.components.ISharedStateComponent;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,6 +46,15 @@ public class DefaultComponentRegistry implements IComponentRegistry {
         registerPolicyFailureFactoryComponent();
         registerHttpClientComponent();
         registerBufferFactoryComponent();
+        registerCacheStoreComponent();
+    }
+
+    /**
+     * @see io.apiman.gateway.engine.IComponentRegistry#getComponents()
+     */
+    @Override
+    public Collection<IComponent> getComponents() {
+        return components.values();
     }
 
     protected void registerHttpClientComponent() {
@@ -64,6 +75,10 @@ public class DefaultComponentRegistry implements IComponentRegistry {
 
     protected void registerSharedStateComponent() {
         addComponent(ISharedStateComponent.class, new InMemorySharedStateComponent());
+    }
+
+    protected void registerCacheStoreComponent() {
+        addComponent(ICacheStoreComponent.class, new InMemoryCacheStoreComponent());
     }
 
     /**

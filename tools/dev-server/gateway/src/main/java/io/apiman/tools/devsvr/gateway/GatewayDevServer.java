@@ -16,11 +16,13 @@
 
 package io.apiman.tools.devsvr.gateway;
 
+import io.apiman.gateway.engine.components.ICacheStoreComponent;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.components.IRateLimiterComponent;
 import io.apiman.gateway.engine.components.ISharedStateComponent;
 import io.apiman.gateway.engine.es.ESMetrics;
 import io.apiman.gateway.engine.impl.DefaultPluginRegistry;
+import io.apiman.gateway.engine.impl.InMemoryCacheStoreComponent;
 import io.apiman.gateway.engine.impl.InMemoryMetrics;
 import io.apiman.gateway.engine.impl.InMemoryRateLimiterComponent;
 import io.apiman.gateway.engine.impl.InMemoryRegistry;
@@ -87,6 +89,8 @@ public class GatewayDevServer {
                 InMemoryRateLimiterComponent.class.getName());
         System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + IPolicyFailureFactoryComponent.class.getSimpleName(),
                 PolicyFailureFactoryComponent.class.getName());
+        System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + ICacheStoreComponent.class.getSimpleName(),
+                InMemoryCacheStoreComponent.class.getName());
 
         GatewayServer server = new GatewayServer(gatewayPort);
         server.start();

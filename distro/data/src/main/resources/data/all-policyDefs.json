@@ -84,6 +84,18 @@
       ]
     },
     {
+      "name" : "Caching Policy",
+      "description" : "Allows caching of API responses in the Gateway to reduce overall traffic to the back-end API.",
+      "policyImpl" : "class:io.apiman.gateway.engine.policies.CachingPolicy",
+      "icon" : "hdd-o",
+      "templates" : [
+        {
+          "language" : null,
+          "template" : "API responses will be cached for @{ttl} seconds."
+        }
+      ]
+    },
+    {
       "name" : "Ignored Resources Policy",
       "description" : "Requests satisfying the provided regular expression will be ignored.",
       "policyImpl" : "class:io.apiman.gateway.engine.policies.IgnoredResourcesPolicy",
