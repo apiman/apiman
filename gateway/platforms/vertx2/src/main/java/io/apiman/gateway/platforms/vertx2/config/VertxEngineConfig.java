@@ -39,6 +39,12 @@ import java.util.Map.Entry;
 @SuppressWarnings("nls")
 public class VertxEngineConfig implements IEngineConfig {
 
+    private static final String AUTH = "auth";
+    private static final String PASSWORD = "password";
+    private static final String PATH = "path";
+    private static final String TRUSTSTORE = "truststore";
+    private static final String KEYSTORE = "keystore";
+    private static final String SSL = "ssl";
     public static final String API_GATEWAY_REGISTRY_PREFIX = "registry";
     public static final String API_GATEWAY_PLUGIN_REGISTRY_PREFIX = "plugin-registry";
     public static final String API_GATEWAY_CONNECTOR_FACTORY_PREFIX = "connector-factory";
@@ -77,10 +83,11 @@ public class VertxEngineConfig implements IEngineConfig {
     private static final String API_GATEWAY_HOSTNAME = "hostname";
     private static final String API_GATEWAY_ENDPOINT = "endpoint";
     private static final String API_GATEWAY_PREFER_SECURE = "preferSecure";
+    private static final String VERTICLES = "verticles";
+    private static final String PORT = "port";
 
     private JsonObject config;
     private HashMap<String, String> basicAuthMap = new HashMap<>();
-;
 
     public VertxEngineConfig(JsonObject config) {
         this.config = config;
@@ -164,14 +171,14 @@ public class VertxEngineConfig implements IEngineConfig {
     }
 
     public Boolean isAuthenticationEnabled() {
-        return config.getJsonObject("auth").getString("required") != null;
+        return config.getJsonObject(AUTH).getString("required") != null;
     }
 
     public String getRealm() {
-        return config.getJsonObject("auth").getString("realm");
+        return config.getJsonObject(AUTH).getString("realm");
     }
 
-    public String hostname() {
+    public String getHostname() {
         return stringConfigWithDefault(API_GATEWAY_HOSTNAME, "localhost");
     }
 
@@ -187,7 +194,7 @@ public class VertxEngineConfig implements IEngineConfig {
         if (!basicAuthMap.isEmpty())
             return basicAuthMap;
 
-        JsonObject pairs = config.getJsonObject("auth").getJsonObject("basic");
+        JsonObject pairs = config.getJsonObject(AUTH).getJsonObject("basic");
 
         for (String username : pairs.fieldNames()) {
             basicAuthMap.put(username, pairs.getString(username));
@@ -252,11 +259,35 @@ public class VertxEngineConfig implements IEngineConfig {
         return bool == null ? defaultValue : bool;
     }
 
+    public JsonObject getVerticleConfig(String verticleType) {
+        return config.getJsonObject(VERTICLES).getJsonObject(verticleType);
+    }
+
     public int getPort(String name) {
-        return config.getJsonObject("ports").getInteger(name.toLowerCase());
+        return getVerticleConfig(name.toLowerCase()).getInteger(PORT);
     }
 
     public int getPort(VerticleType verticleType) {
-        return getPort(verticleType.name().toLowerCase());
+        return getPort(verticleType.name());
+    }
+
+    public boolean isSSL() {
+        return config.containsKey(SSL);
+    }
+
+    public String getKeyStore() {
+        return config.getJsonObject(SSL).getJsonObject(KEYSTORE).getString(PATH);
+    }
+
+    public String getKeyStorePassword() {
+        return config.getJsonObject(SSL).getJsonObject(KEYSTORE).getString(PASSWORD);
+    }
+
+    public String getTrustStore() {
+        return config.getJsonObject(SSL).getJsonObject(TRUSTSTORE).getString(PATH);
+    }
+
+    public String getTrustStorePassword() {
+        return config.getJsonObject(SSL).getJsonObject(TRUSTSTORE).getString(PASSWORD);
     }
 }

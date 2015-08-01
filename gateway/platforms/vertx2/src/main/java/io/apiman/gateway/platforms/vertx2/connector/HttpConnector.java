@@ -114,7 +114,7 @@ class HttpConnector implements IServiceConnectionResponse, IServiceConnection {
         if (serviceEndpoint.getPort() != -1)
             return serviceEndpoint.getPort();
 
-        if (serviceEndpoint.getProtocol().equals("https")) {
+        if (serviceEndpoint.getProtocol().equals("https")) { //$NON-NLS-1$
             return 443;
         } else {
             return 80;

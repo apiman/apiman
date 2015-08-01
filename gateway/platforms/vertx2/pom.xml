@@ -14,7 +14,7 @@
   <name>apiman-gateway-platforms-vertx2</name>
 
   <properties>
-    <main.verticle>io.apiman.gateway.platforms.vertx2.HelloWorldVerticle</main.verticle>
+    <main.verticle>io.apiman.gateway.platforms.vertx2.verticles.InitVerticle</main.verticle>
     <vert-x-version-move-me-to-parent-pom>3.0.0</vert-x-version-move-me-to-parent-pom>
   </properties>
 
@@ -23,12 +23,14 @@
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-core</artifactId>
+      <version>${vert-x-version-move-me-to-parent-pom}</version> 
     </dependency>
 
     <!-- change to jgroups? -->
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-hazelcast</artifactId>
+      <version>${vert-x-version-move-me-to-parent-pom}</version>
     </dependency>
     
     <dependency>

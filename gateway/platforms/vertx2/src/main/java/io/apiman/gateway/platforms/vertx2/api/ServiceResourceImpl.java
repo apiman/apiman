@@ -21,12 +21,13 @@ import io.vertx.ext.web.RoutingContext;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+@SuppressWarnings("nls")
 public class ServiceResourceImpl implements IServiceResource, IRouteBuilder {
-    private static final String ORG_ID = "organizationId"; //$NON-NLS-1$
-    private static final String SVC_ID = "serviceId"; //$NON-NLS-1$
-    private static final String VER = "version"; //$NON-NLS-1$
+    private static final String ORG_ID = "organizationId";
+    private static final String SVC_ID = "serviceId";
+    private static final String VER = "version";
     private static final String RETIRE = IRouteBuilder.join(ORG_ID, SVC_ID, VER);
-    private static final String ENDPOINT = IRouteBuilder.join(ORG_ID, SVC_ID, VER) + "/endpoint"; //$NON-NLS-1$
+    private static final String ENDPOINT = IRouteBuilder.join(ORG_ID, SVC_ID, VER) + "/endpoint";
     private VertxEngineConfig apimanConfig;
     private String host;
     private IRegistry registry;
@@ -54,7 +55,7 @@ public class ServiceResourceImpl implements IServiceResource, IRouteBuilder {
     public void publish(RoutingContext routingContext) {
         try {
             routingContext.request().bodyHandler((Handler<Buffer>) buffer -> {
-                publish(Json.decodeValue(buffer.toString("utf-8"), Service.class)); //$NON-NLS-1$
+                publish(Json.decodeValue(buffer.toString("utf-8"), Service.class));
                 end(routingContext, HttpResponseStatus.CREATED);
             });
         } catch (PublishingException e) {
@@ -101,7 +102,6 @@ public class ServiceResourceImpl implements IServiceResource, IRouteBuilder {
 
     // TODO refactor to look up serviceId in engine, we can then determine more accurately what the URL scheme should be.
     @Override
-    @SuppressWarnings("nls")
     public ServiceEndpoint getServiceEndpoint(String organizationId, String serviceId, String version)
             throws NotAuthorizedException {
         String scheme = apimanConfig.preferSecure() ? "https" : "http";
@@ -145,13 +145,13 @@ public class ServiceResourceImpl implements IServiceResource, IRouteBuilder {
 
     @Override
     public void buildRoutes(Router router) {
-        router.put(buildPath("")).handler(this::publish); //$NON-NLS-1$
+        router.put(buildPath("")).handler(this::publish);
         router.delete(buildPath(RETIRE)).handler(this::retire);
         router.get(buildPath(ENDPOINT)).handler(this::getServiceEndpoint);
     }
 
     @Override
     public String getPath() {
-        return "services"; //$NON-NLS-1$
+        return "services";
     }
 }
