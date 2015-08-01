@@ -1,6 +1,5 @@
 package io.apiman.gateway.platforms.vertx2.verticles;
 
-import io.apiman.gateway.engine.beans.PolicyFailureType;
 import io.apiman.gateway.platforms.vertx2.config.VertxEngineConfig;
 import io.apiman.gateway.platforms.vertx2.http.HttpServiceFactory;
 import io.apiman.gateway.platforms.vertx2.io.VertxApimanBuffer;
@@ -154,15 +153,24 @@ public class HttpGatewayVerticle extends ApimanVerticleBase {
         response.headers().add("X-Policy-Failure-Code", String.valueOf(failure.getFailureCode())); //$NON-NLS-1$
         response.headers().add(HttpHeaders.CONTENT_TYPE,  MediaType.APPLICATION_JSON);
 
-        HttpResponseStatus status = HttpResponseStatus.INTERNAL_SERVER_ERROR;
+        int code = HttpResponseStatus.INTERNAL_SERVER_ERROR.code();
 
-        if (failure.getType() == PolicyFailureType.Authentication) {
-            status = HttpResponseStatus.UNAUTHORIZED;
-        } else if (failure.getType() == PolicyFailureType.Authorization) {
-            status = HttpResponseStatus.FORBIDDEN;
+        switch(failure.getType()) {
+        case Authentication:
+            code = HttpResponseStatus.UNAUTHORIZED.code();
+            break;
+        case Authorization:
+            code = HttpResponseStatus.FORBIDDEN.code();
+            break;
+        case NotFound:
+            code = HttpResponseStatus.NOT_FOUND.code();
+            break;
+        case Other:
+            code = failure.getResponseCode();
+            break;
         }
 
-        response.setStatusCode(status.code());
+        response.setStatusCode(code);
         response.setStatusMessage(failure.getMessage());
 
         for (Entry<String, String> entry : failure.getHeaders().entrySet()) {

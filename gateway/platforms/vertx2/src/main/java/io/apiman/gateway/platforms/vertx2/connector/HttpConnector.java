@@ -31,6 +31,7 @@ import io.apiman.gateway.platforms.vertx2.i18n.Messages;
 import io.apiman.gateway.platforms.vertx2.io.VertxApimanBuffer;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
+import io.vertx.core.VertxException;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientRequest;
@@ -123,11 +124,11 @@ class HttpConnector implements IServiceConnectionResponse, IServiceConnection {
     private void doConnection() {
         String destination = servicePath + serviceRequest.getDestination();
 
-        System.out.println("destination =" + destination);
-        System.out.println(HttpMethod.valueOf(serviceRequest.getType()));
-        System.out.println(servicePort);
-        System.out.println(serviceHost);
-        System.out.println(serviceRequest.getQueryParams().size());
+//        System.out.println("destination =" + destination);
+//        System.out.println(HttpMethod.valueOf(serviceRequest.getType()));
+//        System.out.println(servicePort);
+//        System.out.println(serviceHost);
+//        System.out.println(serviceRequest.getQueryParams().size());
 
         clientRequest = client.request(HttpMethod.valueOf(serviceRequest.getType()),
                 servicePort,
@@ -216,7 +217,7 @@ class HttpConnector implements IServiceConnectionResponse, IServiceConnection {
 
     @Override
     public void end() {
-        System.out.println("HttpConnector clientRequest.end");
+        System.out.println("Connector clientRequest.end");
         clientRequest.end();
         inboundFinished = true;
     }
@@ -245,10 +246,11 @@ class HttpConnector implements IServiceConnectionResponse, IServiceConnection {
     private class ExceptionHandler implements Handler<Throwable> {
         @Override
         public void handle(Throwable error) {
-            System.out.println("There was an error in HttpConnector");
-            System.out.println(error);
-
-
+            // FIXME Workaround for https://bugs.eclipse.org/bugs/show_bug.cgi?id=471591
+            if (error instanceof VertxException &&
+                (((VertxException) error).getMessage().equals("Connection was closed"))) { //$NON-NLS-1$
+                return;
+            }
             resultHandler.handle(AsyncResultImpl
                     .<IServiceConnectionResponse> create(error));
         }
