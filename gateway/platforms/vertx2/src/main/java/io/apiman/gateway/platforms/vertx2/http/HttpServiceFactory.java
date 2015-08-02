@@ -15,8 +15,8 @@
  */
 package io.apiman.gateway.platforms.vertx2.http;
 
-import io.apiman.gateway.platforms.vertx2.services.VertxServiceRequest;
-import io.apiman.gateway.platforms.vertx2.services.VertxServiceResponse;
+import io.apiman.gateway.platforms.vertx2.io.VertxServiceRequest;
+import io.apiman.gateway.platforms.vertx2.io.VertxServiceResponse;
 import io.vertx.core.MultiMap;
 import io.vertx.core.http.HttpClientResponse;
 import io.vertx.core.http.HttpServerRequest;

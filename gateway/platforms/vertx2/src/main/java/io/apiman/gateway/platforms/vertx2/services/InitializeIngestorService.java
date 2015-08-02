@@ -2,7 +2,7 @@ package io.apiman.gateway.platforms.vertx2.services;
 
 import io.apiman.gateway.engine.IEngine;
 import io.apiman.gateway.platforms.vertx2.config.VertxEngineConfig;
-import io.apiman.gateway.platforms.vertx2.services.impl2.InitializeIngestorServiceImpl;
+import io.apiman.gateway.platforms.vertx2.services.impl.InitializeIngestorServiceImpl;
 import io.vertx.codegen.annotations.ProxyGen;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;

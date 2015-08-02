@@ -31,10 +31,10 @@ import java.util.stream.Collectors;
 import io.vertx.serviceproxy.ProxyHelper;
 import io.apiman.gateway.platforms.vertx2.services.PolicyToIngestorService;
 import io.vertx.core.Vertx;
-import io.apiman.gateway.platforms.vertx2.services.VertxServiceResponse;
-import io.apiman.gateway.platforms.vertx2.services.VertxPolicyFailure;
+import io.apiman.gateway.platforms.vertx2.io.VertxServiceResponse;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
+import io.apiman.gateway.platforms.vertx2.io.VertxPolicyFailure;
 
 /*
   Generated Proxy code - DO NOT EDIT

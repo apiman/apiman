@@ -1,9 +1,9 @@
-package io.apiman.gateway.platforms.vertx2.services.impl2;
+package io.apiman.gateway.platforms.vertx2.services.impl;
 
 import io.apiman.gateway.platforms.vertx2.io.VertxApimanBuffer;
+import io.apiman.gateway.platforms.vertx2.io.VertxPolicyFailure;
+import io.apiman.gateway.platforms.vertx2.io.VertxServiceResponse;
 import io.apiman.gateway.platforms.vertx2.services.PolicyToIngestorService;
-import io.apiman.gateway.platforms.vertx2.services.VertxPolicyFailure;
-import io.apiman.gateway.platforms.vertx2.services.VertxServiceResponse;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;

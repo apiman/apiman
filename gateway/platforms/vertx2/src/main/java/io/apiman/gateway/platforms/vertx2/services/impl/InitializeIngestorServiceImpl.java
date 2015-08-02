@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.gateway.platforms.vertx2.services.impl2;
+package io.apiman.gateway.platforms.vertx2.services.impl;
 
 import io.apiman.gateway.engine.IEngine;
 import io.apiman.gateway.platforms.vertx2.config.VertxEngineConfig;

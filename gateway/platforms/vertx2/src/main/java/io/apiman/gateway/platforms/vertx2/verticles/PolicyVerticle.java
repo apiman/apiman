@@ -2,7 +2,7 @@ package io.apiman.gateway.platforms.vertx2.verticles;
 
 import io.apiman.gateway.platforms.vertx2.config.VertxEngineConfig;
 import io.apiman.gateway.platforms.vertx2.services.InitializeIngestorService;
-import io.apiman.gateway.platforms.vertx2.services.impl2.InitializeIngestorServiceImpl;
+import io.apiman.gateway.platforms.vertx2.services.impl.InitializeIngestorServiceImpl;
 import io.vertx.serviceproxy.ProxyHelper;
 
 public class PolicyVerticle extends ApimanVerticleWithEngine {

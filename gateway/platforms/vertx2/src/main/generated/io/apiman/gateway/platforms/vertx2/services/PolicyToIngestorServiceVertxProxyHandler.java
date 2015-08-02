@@ -39,10 +39,10 @@ import io.vertx.serviceproxy.ProxyHelper;
 import io.vertx.serviceproxy.ProxyHandler;
 import io.apiman.gateway.platforms.vertx2.services.PolicyToIngestorService;
 import io.vertx.core.Vertx;
-import io.apiman.gateway.platforms.vertx2.services.VertxServiceResponse;
-import io.apiman.gateway.platforms.vertx2.services.VertxPolicyFailure;
+import io.apiman.gateway.platforms.vertx2.io.VertxServiceResponse;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
+import io.apiman.gateway.platforms.vertx2.io.VertxPolicyFailure;
 
 /*
   Generated Proxy code - DO NOT EDIT
@@ -119,7 +119,7 @@ public class PolicyToIngestorServiceVertxProxyHandler extends ProxyHandler {
 
 
       case "head": {
-        service.head(json.getJsonObject("serviceResponse") == null ? null : new io.apiman.gateway.platforms.vertx2.services.VertxServiceResponse(json.getJsonObject("serviceResponse")), createHandler(msg));
+        service.head(json.getJsonObject("serviceResponse") == null ? null : new io.apiman.gateway.platforms.vertx2.io.VertxServiceResponse(json.getJsonObject("serviceResponse")), createHandler(msg));
         break;
       }
       case "write": {
@@ -132,7 +132,7 @@ public class PolicyToIngestorServiceVertxProxyHandler extends ProxyHandler {
         break;
       }
       case "policyFailure": {
-        service.policyFailure(json.getJsonObject("policyFailure") == null ? null : new io.apiman.gateway.platforms.vertx2.services.VertxPolicyFailure(json.getJsonObject("policyFailure")));
+        service.policyFailure(json.getJsonObject("policyFailure") == null ? null : new io.apiman.gateway.platforms.vertx2.io.VertxPolicyFailure(json.getJsonObject("policyFailure")));
         break;
       }
       default: {

@@ -37,7 +37,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import io.vertx.serviceproxy.ProxyHelper;
 import io.vertx.serviceproxy.ProxyHandler;
-import io.apiman.gateway.platforms.vertx2.services.VertxServiceRequest;
+import io.apiman.gateway.platforms.vertx2.io.VertxServiceRequest;
 import io.vertx.core.Vertx;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
@@ -118,7 +118,7 @@ public class IngestorToPolicyServiceVertxProxyHandler extends ProxyHandler {
 
 
       case "head": {
-        service.head(json.getJsonObject("serviceRequest") == null ? null : new io.apiman.gateway.platforms.vertx2.services.VertxServiceRequest(json.getJsonObject("serviceRequest")), createHandler(msg));
+        service.head(json.getJsonObject("serviceRequest") == null ? null : new io.apiman.gateway.platforms.vertx2.io.VertxServiceRequest(json.getJsonObject("serviceRequest")), createHandler(msg));
         break;
       }
       case "write": {

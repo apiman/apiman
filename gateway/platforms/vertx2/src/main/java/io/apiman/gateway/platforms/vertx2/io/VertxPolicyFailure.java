@@ -1,4 +1,4 @@
-package io.apiman.gateway.platforms.vertx2.services;
+package io.apiman.gateway.platforms.vertx2.io;
 
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.PolicyFailureType;

@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import io.vertx.serviceproxy.ProxyHelper;
-import io.apiman.gateway.platforms.vertx2.services.VertxServiceRequest;
+import io.apiman.gateway.platforms.vertx2.io.VertxServiceRequest;
 import io.vertx.core.Vertx;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
