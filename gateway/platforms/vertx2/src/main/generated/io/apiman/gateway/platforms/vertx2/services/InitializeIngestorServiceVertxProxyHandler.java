@@ -14,9 +14,9 @@
 * under the License.
 */
 
-package io.vertx.apiman.gateway.platforms.vertx2.services;
+package io.apiman.gateway.platforms.vertx2.services;
 
-import io.vertx.apiman.gateway.platforms.vertx2.services.InitializeIngestorService;
+import io.apiman.gateway.platforms.vertx2.services.InitializeIngestorService;
 import io.vertx.core.Vertx;
 import io.vertx.core.Handler;
 import io.vertx.core.AsyncResult;
@@ -39,12 +39,12 @@ import io.vertx.serviceproxy.ProxyHelper;
 import io.vertx.serviceproxy.ProxyHandler;
 import io.apiman.gateway.platforms.vertx2.config.VertxEngineConfig;
 import io.apiman.gateway.engine.IEngine;
-import io.vertx.apiman.gateway.platforms.vertx2.services.InitializeIngestorService;
-import io.vertx.apiman.gateway.platforms.vertx2.services.IngestorToPolicyService;
+import io.apiman.gateway.platforms.vertx2.services.InitializeIngestorService;
 import io.vertx.core.Vertx;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
 import io.vertx.core.logging.Logger;
+import io.apiman.gateway.platforms.vertx2.services.IngestorToPolicyService;
 
 /*
   Generated Proxy code - DO NOT EDIT

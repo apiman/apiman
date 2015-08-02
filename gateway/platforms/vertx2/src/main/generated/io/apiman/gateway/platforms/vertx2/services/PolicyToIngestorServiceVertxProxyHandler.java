@@ -14,9 +14,9 @@
 * under the License.
 */
 
-package io.vertx.apiman.gateway.platforms.vertx2.services;
+package io.apiman.gateway.platforms.vertx2.services;
 
-import io.vertx.apiman.gateway.platforms.vertx2.services.PolicyToIngestorService;
+import io.apiman.gateway.platforms.vertx2.services.PolicyToIngestorService;
 import io.vertx.core.Vertx;
 import io.vertx.core.Handler;
 import io.vertx.core.AsyncResult;
@@ -37,11 +37,11 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import io.vertx.serviceproxy.ProxyHelper;
 import io.vertx.serviceproxy.ProxyHandler;
-import io.vertx.apiman.gateway.platforms.vertx2.services.VertxServiceResponse;
-import io.vertx.apiman.gateway.platforms.vertx2.services.VertxPolicyFailure;
+import io.apiman.gateway.platforms.vertx2.services.PolicyToIngestorService;
 import io.vertx.core.Vertx;
+import io.apiman.gateway.platforms.vertx2.services.VertxServiceResponse;
+import io.apiman.gateway.platforms.vertx2.services.VertxPolicyFailure;
 import io.vertx.core.AsyncResult;
-import io.vertx.apiman.gateway.platforms.vertx2.services.PolicyToIngestorService;
 import io.vertx.core.Handler;
 
 /*
@@ -119,7 +119,7 @@ public class PolicyToIngestorServiceVertxProxyHandler extends ProxyHandler {
 
 
       case "head": {
-        service.head(json.getJsonObject("serviceResponse") == null ? null : new io.vertx.apiman.gateway.platforms.vertx2.services.VertxServiceResponse(json.getJsonObject("serviceResponse")), createHandler(msg));
+        service.head(json.getJsonObject("serviceResponse") == null ? null : new io.apiman.gateway.platforms.vertx2.services.VertxServiceResponse(json.getJsonObject("serviceResponse")), createHandler(msg));
         break;
       }
       case "write": {
@@ -132,7 +132,7 @@ public class PolicyToIngestorServiceVertxProxyHandler extends ProxyHandler {
         break;
       }
       case "policyFailure": {
-        service.policyFailure(json.getJsonObject("policyFailure") == null ? null : new io.vertx.apiman.gateway.platforms.vertx2.services.VertxPolicyFailure(json.getJsonObject("policyFailure")));
+        service.policyFailure(json.getJsonObject("policyFailure") == null ? null : new io.apiman.gateway.platforms.vertx2.services.VertxPolicyFailure(json.getJsonObject("policyFailure")));
         break;
       }
       default: {

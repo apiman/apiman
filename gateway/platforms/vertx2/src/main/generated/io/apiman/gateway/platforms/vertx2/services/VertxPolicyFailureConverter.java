@@ -1,4 +1,4 @@
-package io.vertx.apiman.gateway.platforms.vertx2.services;
+package io.apiman.gateway.platforms.vertx2.services;
 
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.json.JsonArray;

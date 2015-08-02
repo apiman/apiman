@@ -1,4 +1,4 @@
-package io.vertx.apiman.gateway.platforms.vertx2.services;
+package io.apiman.gateway.platforms.vertx2.services;
 
 import io.apiman.gateway.engine.beans.ServiceResponse;
 import io.vertx.codegen.annotations.DataObject;

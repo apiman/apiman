@@ -14,9 +14,9 @@
 * under the License.
 */
 
-package io.vertx.apiman.gateway.platforms.vertx2.services;
+package io.apiman.gateway.platforms.vertx2.services;
 
-import io.vertx.apiman.gateway.platforms.vertx2.services.IngestorToPolicyService;
+import io.apiman.gateway.platforms.vertx2.services.IngestorToPolicyService;
 import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.Vertx;
 import io.vertx.core.Future;
@@ -29,11 +29,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import io.vertx.serviceproxy.ProxyHelper;
-import io.vertx.apiman.gateway.platforms.vertx2.services.IngestorToPolicyService;
+import io.apiman.gateway.platforms.vertx2.services.VertxServiceRequest;
 import io.vertx.core.Vertx;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
-import io.vertx.apiman.gateway.platforms.vertx2.services.VertxServiceRequest;
+import io.apiman.gateway.platforms.vertx2.services.IngestorToPolicyService;
 
 /*
   Generated Proxy code - DO NOT EDIT

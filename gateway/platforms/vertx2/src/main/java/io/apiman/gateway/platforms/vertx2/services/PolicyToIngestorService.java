@@ -1,6 +1,6 @@
-package io.vertx.apiman.gateway.platforms.vertx2.services;
+package io.apiman.gateway.platforms.vertx2.services;
 
-import io.vertx.apiman.gateway.platforms.vertx2.services.impl2.PolicyToIngestorServiceImpl;
+import io.apiman.gateway.platforms.vertx2.services.impl2.PolicyToIngestorServiceImpl;
 import io.vertx.codegen.annotations.ProxyClose;
 import io.vertx.codegen.annotations.ProxyGen;
 import io.vertx.codegen.annotations.VertxGen;

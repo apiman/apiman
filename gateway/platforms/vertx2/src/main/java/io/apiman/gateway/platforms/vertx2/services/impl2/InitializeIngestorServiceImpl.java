@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertx.apiman.gateway.platforms.vertx2.services.impl2;
+package io.apiman.gateway.platforms.vertx2.services.impl2;
 
 import io.apiman.gateway.engine.IEngine;
 import io.apiman.gateway.platforms.vertx2.config.VertxEngineConfig;
-import io.vertx.apiman.gateway.platforms.vertx2.services.IngestorToPolicyService;
-import io.vertx.apiman.gateway.platforms.vertx2.services.InitializeIngestorService;
-import io.vertx.apiman.gateway.platforms.vertx2.services.PolicyToIngestorService;
+import io.apiman.gateway.platforms.vertx2.services.IngestorToPolicyService;
+import io.apiman.gateway.platforms.vertx2.services.InitializeIngestorService;
+import io.apiman.gateway.platforms.vertx2.services.PolicyToIngestorService;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;

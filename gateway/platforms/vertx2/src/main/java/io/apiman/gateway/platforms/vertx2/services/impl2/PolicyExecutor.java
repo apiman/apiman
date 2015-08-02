@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertx.apiman.gateway.platforms.vertx2.services.impl2;
+package io.apiman.gateway.platforms.vertx2.services.impl2;
 
 import io.apiman.gateway.engine.IEngine;
 import io.apiman.gateway.engine.IEngineResult;
@@ -23,10 +23,10 @@ import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.gateway.engine.io.ISignalWriteStream;
 import io.apiman.gateway.platforms.vertx2.io.VertxApimanBuffer;
-import io.vertx.apiman.gateway.platforms.vertx2.services.PolicyToIngestorService;
-import io.vertx.apiman.gateway.platforms.vertx2.services.VertxPolicyFailure;
-import io.vertx.apiman.gateway.platforms.vertx2.services.VertxServiceRequest;
-import io.vertx.apiman.gateway.platforms.vertx2.services.VertxServiceResponse;
+import io.apiman.gateway.platforms.vertx2.services.PolicyToIngestorService;
+import io.apiman.gateway.platforms.vertx2.services.VertxPolicyFailure;
+import io.apiman.gateway.platforms.vertx2.services.VertxServiceRequest;
+import io.apiman.gateway.platforms.vertx2.services.VertxServiceResponse;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
 import io.vertx.core.buffer.Buffer;
