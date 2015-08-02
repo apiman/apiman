@@ -48,7 +48,7 @@ public class HttpGatewayVerticle extends ApimanVerticleBase {
             .setHost(apimanConfig.getHostname());
 
         vertx.createHttpServer(standardOptions)
-            .requestHandler(this::requestHandler)
+            .requestHandler(this::plaintextHandler)
             .listen(apimanConfig.getPort(VerticleType.HTTP));
 
         if (apimanConfig.isSSL()) {
@@ -64,12 +64,12 @@ public class HttpGatewayVerticle extends ApimanVerticleBase {
                                 .setPassword(apimanConfig.getTrustStorePassword()));
 
             vertx.createHttpServer(sslOptions)
-                .requestHandler(this::requestHandler)
+                .requestHandler(this::sslHandler)
                 .listen(apimanConfig.getPort(VerticleType.HTTPS));
         }
     }
 
-    private void requestHandler(HttpServerRequest req) {
+    private void requestHandler(HttpServerRequest req, boolean isSecure) {
         req.response().setChunked(true);
 
         // Pause the request, as we want to give explicit permission to transmit body chunks
@@ -87,19 +87,27 @@ public class HttpGatewayVerticle extends ApimanVerticleBase {
 
         // The outer proxy returns an inner proxy, which is our request 'connection'
         initService.createIngestor(httpSessionUuid, (Handler<AsyncResult<IngestorToPolicyService>>) result -> {
-            setupRequest(req, result, httpSessionUuid);
+            setupRequest(req, result, httpSessionUuid, true);
         });
+    }
+
+    private void plaintextHandler(HttpServerRequest req) {
+        requestHandler(req, false);
+    }
+
+    private void sslHandler(HttpServerRequest req) {
+        requestHandler(req, true);
     }
 
     // Setup request leg
     private void setupRequest(HttpServerRequest request, AsyncResult<IngestorToPolicyService> result,
-            String httpSessionUuid) {
+            String httpSessionUuid, boolean isSecure) {
         log.debug("Setting up the request with " + httpSessionUuid);
 
         IngestorToPolicyService send = result.result();
 
         if (result.succeeded()) {
-            VertxServiceRequest serviceRequest = HttpServiceFactory.buildRequest(request, false);
+            VertxServiceRequest serviceRequest = HttpServiceFactory.buildRequest(request, isSecure);
 
             send.head(serviceRequest, (Handler<AsyncResult<Boolean>>) ready -> {
                 // Signalled that we can send the body.
