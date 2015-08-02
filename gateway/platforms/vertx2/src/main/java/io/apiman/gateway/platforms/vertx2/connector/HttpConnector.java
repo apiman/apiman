@@ -45,8 +45,6 @@ import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
-
 /**
  * A vert.x-based HTTP connector; implementing both {@link ISignalReadStream} and {@link ISignalWriteStream}.
  *
@@ -80,6 +78,7 @@ class HttpConnector implements IServiceConnectionResponse, IServiceConnection {
 
     private String servicePath;
     private String serviceHost;
+    private String destination;
     private int servicePort;
 
     private HttpClient client;
@@ -106,7 +105,9 @@ class HttpConnector implements IServiceConnectionResponse, IServiceConnection {
 
        serviceHost = serviceEndpoint.getHost();
        servicePort = getPort(serviceEndpoint);
-       servicePath = StringUtils.removeEnd(serviceEndpoint.getPath(), "/"); //$NON-NLS-1$
+       servicePath = serviceEndpoint.getPath().length() == 0 ? "/" : serviceEndpoint.getPath();
+       destination = serviceRequest.getDestination() == null ? "" : serviceRequest.getDestination();
+       //servicePath = StringUtils.removeEnd(serviceEndpoint.getPath(), "/"); //$NON-NLS-1$
        doConnection();
     }
 
@@ -122,8 +123,7 @@ class HttpConnector implements IServiceConnectionResponse, IServiceConnection {
     }
 
     private void doConnection() {
-        String destination = servicePath + serviceRequest.getDestination();
-
+        String endpoint = servicePath + destination;
 //        System.out.println("destination =" + destination);
 //        System.out.println(HttpMethod.valueOf(serviceRequest.getType()));
 //        System.out.println(servicePort);
@@ -133,7 +133,7 @@ class HttpConnector implements IServiceConnectionResponse, IServiceConnection {
         clientRequest = client.request(HttpMethod.valueOf(serviceRequest.getType()),
                 servicePort,
                 serviceHost,
-                destination,
+                endpoint,
                 new Handler<HttpClientResponse>() {
 
             @Override

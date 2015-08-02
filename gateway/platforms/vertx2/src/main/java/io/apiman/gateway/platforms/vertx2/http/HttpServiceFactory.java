@@ -42,7 +42,6 @@ public class HttpServiceFactory {
         apimanResponse.setCode(response.statusCode());
         apimanResponse.setMessage(response.statusMessage());
         multimapToMap(apimanResponse.getHeaders(), response.headers(), suppressHeaders);
-
         return apimanResponse;
     }
 
