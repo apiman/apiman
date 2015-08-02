@@ -15,8 +15,15 @@
 
   <properties>
     <main.verticle>io.apiman.gateway.platforms.vertx2.verticles.InitVerticle</main.verticle>
-    <vert-x-version-move-me-to-parent-pom>3.0.0</vert-x-version-move-me-to-parent-pom>
+    <vert-x-version-move-me-to-parent-pom>3.1.0-SNAPSHOT</vert-x-version-move-me-to-parent-pom>
   </properties>
+  
+  <repositories>
+    <repository>
+        <id>snapshots-repo</id>
+        <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+    </repository>
+</repositories>
 
   <dependencies>         
     <!-- Vert.x provided dependencies -->
@@ -161,6 +168,16 @@
               <artifactSet>
               </artifactSet>
               <outputFile>${project.build.directory}/${project.artifactId}-${project.version}-fat.jar</outputFile>
+              <filters>
+                  <filter>
+                      <artifact>*:*</artifact>
+                      <excludes>
+                          <exclude>META-INF/*.SF</exclude>
+                          <exclude>META-INF/*.DSA</exclude>
+                          <exclude>META-INF/*.RSA</exclude>
+                      </excludes>
+                  </filter>
+              </filters>
             </configuration>
           </execution>
         </executions>

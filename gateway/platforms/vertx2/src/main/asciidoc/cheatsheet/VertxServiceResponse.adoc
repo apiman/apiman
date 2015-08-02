@@ -7,7 +7,7 @@
 ^|Name | Type ^| Description
 
 |[[code]]`code`
-|`Number`
+|`Number (int)`
 |-
 |[[message]]`message`
 |`String`

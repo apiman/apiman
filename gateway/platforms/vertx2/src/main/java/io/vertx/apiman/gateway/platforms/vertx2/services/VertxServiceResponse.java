@@ -2,13 +2,12 @@ package io.vertx.apiman.gateway.platforms.vertx2.services;
 
 import io.apiman.gateway.engine.beans.ServiceResponse;
 import io.vertx.codegen.annotations.DataObject;
-import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
 
 import java.util.Collection;
 import java.util.Iterator;
 
-@DataObject
+@DataObject(generateConverter = true, inheritConverter = true)
 public class VertxServiceResponse extends ServiceResponse {
 
     private static final long serialVersionUID = 1205823836132916146L;
@@ -25,18 +24,18 @@ public class VertxServiceResponse extends ServiceResponse {
         setMessage(copy.getMessage());
     }
 
-    // TODO Hack until Vert.x tidy this up - no clean & easy way of going JsonObject <-> POJO
     public VertxServiceResponse(JsonObject json) {
-        this(Json.decodeValue(json.toString(), VertxServiceResponse.class));
+        VertxServiceResponseConverter.fromJson(json, this);
     }
 
     public VertxServiceResponse(VertxServiceResponse copy) {
         this((ServiceResponse) copy);
     }
 
-    // TODO hack until clean way of going POJO <-> JsonObject
     public JsonObject toJson() {
-        return new JsonObject(Json.encode(this));
+        JsonObject asJson = new JsonObject();
+        VertxServiceResponseConverter.toJson(this, asJson);
+        return asJson;
     }
 
     /* (non-Javadoc)

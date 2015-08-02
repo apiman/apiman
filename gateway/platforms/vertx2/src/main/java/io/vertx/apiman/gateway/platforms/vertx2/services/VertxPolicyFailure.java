@@ -9,7 +9,7 @@ import io.vertx.core.json.JsonObject;
 import java.util.Collection;
 import java.util.Iterator;
 
-@DataObject//(inheritConverter = true) for next release of vertx
+@DataObject(generateConverter = true, inheritConverter = true)
 public class VertxPolicyFailure extends PolicyFailure {
     private static final long serialVersionUID = 6303864238553908191L;
     private String rawRepresentation;
@@ -33,16 +33,17 @@ public class VertxPolicyFailure extends PolicyFailure {
     }
 
     public VertxPolicyFailure(JsonObject json) {
-        this(Json.decodeValue(json.toString(), VertxPolicyFailure.class));
+        VertxPolicyFailureConverter.fromJson(json, this);
     }
 
     public VertxPolicyFailure(VertxPolicyFailure copy) {
         this((PolicyFailure) copy);
     }
 
-    // TODO hack until clean way of going POJO <-> JsonObject
     public JsonObject toJson() {
-        return new JsonObject(Json.encode(this));
+        JsonObject asJson = new JsonObject();
+        VertxPolicyFailureConverter.toJson(this, asJson);
+        return asJson;
     }
 
     /* (non-Javadoc)

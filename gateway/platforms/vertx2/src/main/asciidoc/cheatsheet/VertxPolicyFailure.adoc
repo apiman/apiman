@@ -6,15 +6,18 @@
 |===
 ^|Name | Type ^| Description
 
+|[[failureCode]]`failureCode`
+|`Number (int)`
+|-
 |[[message]]`message`
 |`String`
 |-
-|[[failureCode]]`failureCode`
-|`Number`
-|-
-|[[responseCode]]`responseCode`
-|`Number`
-|-
 |[[raw]]`raw`
 |`String`
+|-
+|[[responseCode]]`responseCode`
+|`Number (int)`
+|-
+|[[type]]`type`
+|`Enum`
 |-|===
