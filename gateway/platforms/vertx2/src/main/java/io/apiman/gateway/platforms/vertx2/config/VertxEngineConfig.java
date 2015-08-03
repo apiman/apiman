@@ -79,6 +79,9 @@ public class VertxEngineConfig implements IEngineConfig {
     //public static final String APIMAN_API_SERVICES_DELETE = ".apiman.api.services.delete";
     //public static final String APIMAN_API_SUBSCRIBE = "apiman.api.subscribe";
 
+    public static final String API_GATEWAY_REQUEST = ".request";
+    public static final String API_GATEWAY_RESPONSE = ".response";
+
     //private static final String API_GATEWAY_AUTH_ENABLED = "authenticated";
     private static final String API_GATEWAY_HOSTNAME = "hostname";
     private static final String API_GATEWAY_ENDPOINT = "endpoint";
