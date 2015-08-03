@@ -52,7 +52,7 @@ public class InitializeIngestorServiceImpl implements InitializeIngestorService 
         ProxyHelper.registerService(IngestorToPolicyService.class,
                 vertx, service, uuid);
 
-        PolicyToIngestorService replyProxy = PolicyToIngestorService.createProxy(vertx, uuid + ".response");
+        PolicyToIngestorService replyProxy = PolicyToIngestorService.createProxy(vertx, uuid + VertxEngineConfig.API_GATEWAY_RESPONSE);
 
         PolicyExecutor executor = new PolicyExecutor(engine, service, replyProxy, log);
         executor.execute();

@@ -49,6 +49,9 @@ public class HttpExecutor implements Handler<HttpServerRequest> {
     public void handle(HttpServerRequest request) {
         this.request = request;
         this.response = request.response();
+        request.exceptionHandler(this::setError);
+        response.exceptionHandler(this::setError);
+
         execute();
     }
 
