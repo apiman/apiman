@@ -63,20 +63,24 @@ public class PolicyExecutor {
 
                     if (engineResult.isResponse()) {
                         doResponse(engineResult, replyProxy);
+                        requestService.succeeded(); // no exception
                     } else {
-                        System.out.println("Failed with policy denial");
+                        System.out.println("Failed with policy denial - setting end handler");
+                        requestService.endHandler((Handler<Void>) v -> {
+                            System.out.println("requestService.endHandler called");
+                            replyEnd();
+                            requestService.succeeded();
+                        });
                         replyProxy.policyFailure(new VertxPolicyFailure(engineResult.getPolicyFailure()));
                         requestService.failHead();
+                        requestService.succeeded();
                     }
-                    requestService.succeeded(); // no exception
                 } else {
-//                    System.out.println("Failed with exception");
-//                    System.out.println(result.getError().getMessage());
                     // Necessary to fail head to ensure #end is called. Could refactor this to call end ourselves, possibly.
                     requestService.failHead();
                     requestService.endHandler((Handler<Void>) v -> {
                         requestService.fail(result.getError());
-                        end();
+                        replyEnd();
                     });
                 }
             });
@@ -93,7 +97,6 @@ public class PolicyExecutor {
                     writeStream.end();
                 });
 
-                //requestService.succeeded();
                 requestService.ready();
             });
 
@@ -113,11 +116,11 @@ public class PolicyExecutor {
         });
 
         engineResult.endHandler((IAsyncHandler<Void>) v -> {
-            end();
+            replyEnd();
         });
     }
 
-    private void end() {
+    private void replyEnd() {
         replyProxy.end((Handler<AsyncResult<Void>>) result -> {
             if (result.failed()) {
                 log.error("Was unable to respond "); // TODO

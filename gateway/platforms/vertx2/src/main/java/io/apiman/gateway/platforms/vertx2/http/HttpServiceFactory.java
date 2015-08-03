@@ -26,8 +26,6 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
-import org.jboss.weld.exceptions.IllegalArgumentException;
-
 /**
  * Construct {@link VertxServiceRequest} and {@link VertxServiceResponse} objects from {@link HttpServerRequest},
  * {@link HttpServerResponse} and {@link HttpClientResponse}
@@ -54,7 +52,7 @@ public class HttpServiceFactory {
     public static VertxServiceRequest buildRequest(HttpServerRequest req, boolean isTransportSecure) {
         VertxServiceRequest apimanRequest = new VertxServiceRequest();
         apimanRequest.setApiKey(parseApiKey(req));
-        apimanRequest.setRemoteAddr(req.remoteAddress().host()); // TODO hmm
+        apimanRequest.setRemoteAddr(req.remoteAddress().host());
         apimanRequest.setType(req.method().toString());
         apimanRequest.setTransportSecure(isTransportSecure);
         multimapToMap(apimanRequest.getHeaders(), req.headers(), Collections.<String>emptySet());
@@ -67,7 +65,7 @@ public class HttpServiceFactory {
         String pathInfo = request.path();
 
         if (pathInfo != null) {
-            String[] split = pathInfo.split("/"); //$NON-NLS-1$
+            String[] split = pathInfo.split("/");
             if (split.length >= 4) {
                 apimanRequest.setServiceOrgId(split[1]);
                 apimanRequest.setServiceId(split[2]);
@@ -78,7 +76,7 @@ public class HttpServiceFactory {
                         resourceSb.append('/');
                         resourceSb.append(split[idx]);
                     }
-                    if (pathInfo.endsWith("/")) { //$NON-NLS-1$
+                    if (pathInfo.endsWith("/")) {
                         resourceSb.append('/');
                     }
                     apimanRequest.setDestination(resourceSb.toString());
@@ -87,7 +85,7 @@ public class HttpServiceFactory {
         }
 
         if (apimanRequest.getServiceOrgId() == null) {
-            throw new IllegalArgumentException("Invalid endpoint provided"); //$NON-NLS-1$
+            throw new IllegalArgumentException("Invalid endpoint provided: " + pathInfo);
         }
     }
 

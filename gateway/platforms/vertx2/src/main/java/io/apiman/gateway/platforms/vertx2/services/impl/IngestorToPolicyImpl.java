@@ -68,20 +68,22 @@ public class IngestorToPolicyImpl implements IngestorToPolicyService {
     }
 
     public void ready() {
-        System.out.println("indicated ready");
+        System.out.println("indicated ready (on head) in IngestorToPolicy");
         readyHandler.handle(Future.succeededFuture(true));
     }
 
     public void failHead() {
+        System.out.println("Indicated FailedHead in IngestorToPolicy");
         readyHandler.handle(Future.succeededFuture(false));
     }
 
     public void fail(Throwable error) {
+        System.out.println("Indicated Failure on result in INgestorToPolicy");
         resultHandler.handle(Future.failedFuture(error));
     }
 
     public void succeeded() {
-        System.out.println("Indicated succeeded");
+        System.out.println("Indicated succeeded on result in IngestorToPolicy");
         resultHandler.handle(Future.succeededFuture());
     }
 }

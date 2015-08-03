@@ -127,17 +127,20 @@ public class HttpGatewayVerticle extends ApimanVerticleBase {
 
                         System.out.println("Resuming");
                         request.resume();
-                    } else { // It didn't work. Just call end immediately.
-
-                        System.out.println("Setting end");
+                    } else { // It didn't work - probably a policy failure?. Just call end immediately.
+                        System.out.println("There was a policy failure");
+//
+                        System.out.println("End called....");
                         send.end((Handler<AsyncResult<Void>>) sendResult -> {
-                            System.out.println("There was an error, we'll catch it here...");
-                            setError(request.response(), sendResult.cause());
+                            if (sendResult.failed()) {
+                                System.out.println("There was an error, we'll catch it here...");
+                                setError(request.response(), sendResult.cause());
+                            }
                         });
                     }
 
                 } else {
-                    //System.out.println("There was a failure. Should see it come through end()");
+                    System.out.println("There was a failure - likely an exception. Should see it come through end()");
                     setError(request.response(), ready.cause());
                 }
             });
@@ -164,6 +167,7 @@ public class HttpGatewayVerticle extends ApimanVerticleBase {
 
         receive.endHandler((Handler<Void>) vertxEngineResult -> {
             System.out.println("Response has been written");
+
             if (!response.ended())
                 response.end();
         });

@@ -32,6 +32,8 @@ public class PolicyToIngestorServiceImpl implements PolicyToIngestorService {
         System.out.println("Head on PolicyToIngestorServiceImpl // " + serviceResponse);
         headHandler.handle(serviceResponse);
         // Fire the ready handler
+
+        System.out.println("Successful ack in readyHandler in PolicyToIngestor");
         readyHandler.handle(Future.succeededFuture((Void) null));
     }
 
@@ -45,6 +47,8 @@ public class PolicyToIngestorServiceImpl implements PolicyToIngestorService {
     public void end(Handler<AsyncResult<Void>> resultHandler) {
         System.out.println("Finished PolicyToIngestor");
         endHandler.handle((Void) null);
+
+        System.out.println("Acking resultHandler in PolicyToIngestor");
         resultHandler.handle(Future.succeededFuture());
     }
 
