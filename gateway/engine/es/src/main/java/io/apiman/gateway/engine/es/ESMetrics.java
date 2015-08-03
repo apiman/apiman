@@ -57,7 +57,7 @@ public class ESMetrics extends AbstractESComponent implements IMetrics {
     public void record(RequestMetric metric) {
         try {
             Index index = new Index.Builder(metric).refresh(false)
-                    .index(ESConstants.METRICS_INDEX_NAME)
+                    .index(getIndexName())
                     .type("request").build(); //$NON-NLS-1$
             getClient().executeAsync(index, new JestResultHandler<JestResult>() {
                 @Override
@@ -76,6 +76,14 @@ public class ESMetrics extends AbstractESComponent implements IMetrics {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * @see io.apiman.gateway.engine.es.AbstractESComponent#getDefaultIndexName()
+     */
+    @Override
+    protected String getDefaultIndexName() {
+        return ESConstants.METRICS_INDEX_NAME;
     }
 
 }

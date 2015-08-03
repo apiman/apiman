@@ -56,7 +56,7 @@ public class ESRateLimiterComponent extends AbstractESComponent implements IRate
             final long increment, final IAsyncResultHandler<RateLimitResponse> handler) {
         final String id = id(bucketId);
 
-        Get get = new Get.Builder(ESConstants.INDEX_NAME, id).type("rateBucket").build(); //$NON-NLS-1$
+        Get get = new Get.Builder(getIndexName(), id).type("rateBucket").build(); //$NON-NLS-1$
         getClient().executeAsync(get, new JestResultHandler<JestResult>() {
             @Override
             public void completed(JestResult result) {
@@ -125,7 +125,7 @@ public class ESRateLimiterComponent extends AbstractESComponent implements IRate
             final RateBucketPeriod period, final long limit, final long increment,
             final IAsyncResultHandler<RateLimitResponse> handler) {
 
-        Index index = new Index.Builder(bucket).refresh(false).index(ESConstants.INDEX_NAME)
+        Index index = new Index.Builder(bucket).refresh(false).index(getIndexName())
                 .setParameter(Parameters.OP_TYPE, "index") //$NON-NLS-1$
                 .setParameter(Parameters.VERSION, String.valueOf(version))
                 .type("rateBucket").id(id).build(); //$NON-NLS-1$

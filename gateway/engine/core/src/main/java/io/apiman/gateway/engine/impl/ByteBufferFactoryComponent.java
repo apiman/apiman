@@ -13,39 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.test.policies;
+package io.apiman.gateway.engine.impl;
 
 import io.apiman.gateway.engine.components.IBufferFactoryComponent;
+import io.apiman.gateway.engine.io.ByteBuffer;
 import io.apiman.gateway.engine.io.IApimanBuffer;
-import io.apiman.test.common.io.ByteBuffer;
 
 /**
- * Buffer factory component for use in policy unit tests.
+ * Implementation of {@link IBufferFactoryComponent} for servlets.
  *
- * @author eric.wittmann@redhat.com
+ * @author Marc Savy <msavy@redhat.com>
  */
-public class PolicyTesterBufferFactoryComponent implements IBufferFactoryComponent {
-
-    /**
-     * Constructor.
-     */
-    public PolicyTesterBufferFactoryComponent() {
-    }
+public class ByteBufferFactoryComponent implements IBufferFactoryComponent {
 
     /**
      * @see io.apiman.gateway.engine.components.IBufferFactoryComponent#createBuffer()
      */
     @Override
     public IApimanBuffer createBuffer() {
-        return new ByteBuffer(0);
-    }
-
-    /**
-     * @see io.apiman.gateway.engine.components.IBufferFactoryComponent#createBuffer(int)
-     */
-    @Override
-    public IApimanBuffer createBuffer(int size) {
-        return new ByteBuffer(size);
+        return new ByteBuffer(1024);
     }
 
     /**
@@ -57,7 +43,8 @@ public class PolicyTesterBufferFactoryComponent implements IBufferFactoryCompone
     }
 
     /**
-     * @see io.apiman.gateway.engine.components.IBufferFactoryComponent#createBuffer(java.lang.String, java.lang.String)
+     * @see io.apiman.gateway.engine.components.IBufferFactoryComponent#createBuffer(java.lang.String,
+     *      java.lang.String)
      */
     @Override
     public IApimanBuffer createBuffer(String stringData, String enc) {
@@ -72,4 +59,11 @@ public class PolicyTesterBufferFactoryComponent implements IBufferFactoryCompone
         return new ByteBuffer(byteData);
     }
 
+    /**
+     * @see io.apiman.gateway.engine.components.IBufferFactoryComponent#createBuffer(int)
+     */
+    @Override
+    public IApimanBuffer createBuffer(int sizeHint) {
+        return new ByteBuffer(sizeHint);
+    }
 }

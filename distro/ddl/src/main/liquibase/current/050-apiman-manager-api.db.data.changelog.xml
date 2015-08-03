@@ -46,6 +46,12 @@
                     value="Requests matching any of the @{pathsToIgnore.size()} regular expressions provided will receive a 404 error code."/>
         </insert>
         <insert tableName="pd_templates">
+            <column name="policydef_id" value="CachingPolicy"/>
+            <column name="language"/>
+            <column name="template"
+                    value="API responses will be cached for @{ttl} seconds."/>
+        </insert>
+        <insert tableName="pd_templates">
             <column name="policydef_id" value="AuthorizationPolicy"/>
             <column name="language"/>
             <column name="template"
@@ -204,6 +210,16 @@
             <column name="name" value="Ignored Resources Policy"/>
             <column name="plugin_id"/>
             <column name="policy_impl" value="class:io.apiman.gateway.engine.policies.IgnoredResourcesPolicy"/>
+        </insert>
+        <insert tableName="policydefs">
+            <column name="id" value="CachingPolicy"/>
+            <column name="description" value="Allows caching of API responses in the Gateway to reduce overall traffic to the back-end API."/>
+            <column name="form"/>
+            <column name="form_type" value="Default"/>
+            <column name="icon" value="hdd-o"/>
+            <column name="name" value="Caching Policy"/>
+            <column name="plugin_id"/>
+            <column name="policy_impl" value="class:io.apiman.gateway.engine.policies.CachingPolicy"/>
         </insert>
         <insert tableName="policydefs">
             <column name="id" value="AuthorizationPolicy"/>

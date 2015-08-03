@@ -27,6 +27,7 @@ import io.apiman.gateway.engine.beans.Policy;
 import io.apiman.gateway.engine.beans.Service;
 import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.components.IBufferFactoryComponent;
+import io.apiman.gateway.engine.impl.ByteBufferFactoryComponent;
 import io.apiman.gateway.engine.impl.DefaultComponentRegistry;
 import io.apiman.gateway.engine.impl.DefaultEngineFactory;
 import io.apiman.gateway.engine.policy.IPolicy;
@@ -208,7 +209,7 @@ public class PolicyTester extends BlockJUnit4ClassRunner {
                 return new DefaultComponentRegistry() {
                     @Override
                     protected void registerBufferFactoryComponent() {
-                        addComponent(IBufferFactoryComponent.class, new PolicyTesterBufferFactoryComponent());
+                        addComponent(IBufferFactoryComponent.class, new ByteBufferFactoryComponent());
                     }
                 };
             }

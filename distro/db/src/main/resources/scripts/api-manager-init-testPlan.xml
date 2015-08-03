@@ -18,6 +18,7 @@
     <test name="Create Ignored Resources Policy Def">data/policyDefs/004_ignoredresources-policydef.resttest</test>
     <test name="Create Authorization Policy Def">data/policyDefs/005_authorization-policydef.resttest</test>
     <test name="Create Quota Policy Def">data/policyDefs/006_quota-policydef.resttest</test>
+    <test name="Create Caching Policy Def">data/policyDefs/007_caching-policydef.resttest</test>
   </testGroup>
   
   <!-- Gateways -->

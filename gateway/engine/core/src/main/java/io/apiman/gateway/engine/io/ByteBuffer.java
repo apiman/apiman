@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.gateway.platforms.servlet.io;
+package io.apiman.gateway.engine.io;
 
-import io.apiman.gateway.engine.io.IApimanBuffer;
+import io.apiman.gateway.engine.components.IBufferFactoryComponent;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,7 +23,9 @@ import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 
 /**
- * A simple {@link IApimanBuffer} from a byte array.
+ * A simple {@link IApimanBuffer} from a byte array.  Don't use this class
+ * directly - create and manage buffers by using the {@link IBufferFactoryComponent}
+ * instead!  The factory will give you a platform-specific buffer implementation.
  *
  * @author eric.wittmann@redhat.com
  */
@@ -32,19 +34,19 @@ public class ByteBuffer implements IApimanBuffer {
 
     private byte [] buffer;
     private int bytesInBuffer = 0;
-    
+
     /**
      * Constructor.
-     * 
+     *
      * @param size initial size
      */
     public ByteBuffer(int size) {
         buffer = new byte[size];
     }
-    
+
     /**
      * Constructor.
-     * 
+     *
      * @param stringData String data
      */
     public ByteBuffer(String stringData) {
@@ -54,13 +56,14 @@ public class ByteBuffer implements IApimanBuffer {
 
     /**
      * Constructor.
-     * 
+     *
      * @param stringData String data
      * @param enc String data encoding
      */
     public ByteBuffer(String stringData, String enc) {
         try {
             buffer = stringData.getBytes(enc);
+            bytesInBuffer = buffer.length;
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
@@ -71,6 +74,7 @@ public class ByteBuffer implements IApimanBuffer {
      */
     public ByteBuffer(byte[] byteData) {
         buffer = Arrays.copyOf(byteData, byteData.length);
+        bytesInBuffer = byteData.length;
     }
 
     /**
@@ -110,7 +114,7 @@ public class ByteBuffer implements IApimanBuffer {
      */
     @Override
     public void append(IApimanBuffer buffer) {
-        throw new RuntimeException("Not yet implemented");
+        append(buffer, 0, buffer.length());
     }
 
     /**
@@ -118,7 +122,17 @@ public class ByteBuffer implements IApimanBuffer {
      */
     @Override
     public void append(IApimanBuffer buffer, int offset, int length) {
-        throw new RuntimeException("Not yet implemented");
+        int sizeToAppend = length;
+        int newBufferSize = this.bytesInBuffer + sizeToAppend;
+        if (this.buffer.length >= newBufferSize) {
+            System.arraycopy(buffer.getBytes(), offset, this.buffer, bytesInBuffer, sizeToAppend);
+        } else {
+            byte [] newBuffer = new byte[newBufferSize];
+            System.arraycopy(this.buffer, 0, newBuffer, 0, bytesInBuffer);
+            System.arraycopy(buffer.getBytes(), offset, newBuffer, bytesInBuffer, sizeToAppend);
+            this.buffer = newBuffer;
+        }
+        this.bytesInBuffer = newBufferSize;
     }
 
     /**
@@ -279,7 +293,7 @@ public class ByteBuffer implements IApimanBuffer {
             throw new RuntimeException(e);
         }
     }
-    
+
     /**
      * @see java.lang.Object#toString()
      */
@@ -294,7 +308,7 @@ public class ByteBuffer implements IApimanBuffer {
     public int getBytesInBuffer() {
         return bytesInBuffer;
     }
-    
+
     /**
      * Reads from the input stream.
      * @param stream the input stream to read from

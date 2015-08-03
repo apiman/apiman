@@ -20,13 +20,17 @@ import io.apiman.common.servlet.AuthenticationFilter;
 import io.apiman.common.servlet.DisableCachingFilter;
 import io.apiman.common.servlet.LocaleFilter;
 import io.apiman.common.servlet.RootResourceFilter;
+import io.apiman.gateway.engine.components.IBufferFactoryComponent;
+import io.apiman.gateway.engine.components.ICacheStoreComponent;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.components.IRateLimiterComponent;
 import io.apiman.gateway.engine.components.ISharedStateComponent;
+import io.apiman.gateway.engine.es.ESCacheStoreComponent;
 import io.apiman.gateway.engine.es.ESMetrics;
 import io.apiman.gateway.engine.es.ESRateLimiterComponent;
 import io.apiman.gateway.engine.es.ESRegistry;
 import io.apiman.gateway.engine.es.ESSharedStateComponent;
+import io.apiman.gateway.engine.impl.ByteBufferFactoryComponent;
 import io.apiman.gateway.engine.impl.DefaultPluginRegistry;
 import io.apiman.gateway.engine.policy.PolicyFactoryImpl;
 import io.apiman.gateway.platforms.servlet.PolicyFailureFactoryComponent;
@@ -101,9 +105,19 @@ public class GatewayMicroService {
      * Register the components.
      */
     protected void registerComponents() {
+        registerBufferFactoryComponent();
         registerSharedStateComponent();
         registerRateLimiterComponent();
         registerPolicyFailureFactoryComponent();
+        registerCacheStoreComponent();
+    }
+
+    /**
+     * The buffer factory component.
+     */
+    private void registerBufferFactoryComponent() {
+        System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + IBufferFactoryComponent.class.getSimpleName(),
+                ByteBufferFactoryComponent.class.getName());
     }
 
     /**
@@ -138,6 +152,20 @@ public class GatewayMicroService {
         System.setProperty("apiman-gateway.components.ISharedStateComponent.client.protocol", "${apiman.es.protocol}");
         System.setProperty("apiman-gateway.components.ISharedStateComponent.client.host", "${apiman.es.host}");
         System.setProperty("apiman-gateway.components.ISharedStateComponent.client.port", "${apiman.es.port}");
+    }
+
+    /**
+     * The cache store component.
+     */
+    protected void registerCacheStoreComponent() {
+        System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + ICacheStoreComponent.class.getSimpleName(),
+                ESCacheStoreComponent.class.getName());
+        System.setProperty("apiman-gateway.components.ICacheStoreComponent.client.type", "jest");
+        System.setProperty("apiman-gateway.components.ICacheStoreComponent.client.cluster-name", "${apiman.es.cluster-name}");
+        System.setProperty("apiman-gateway.components.ICacheStoreComponent.client.protocol", "${apiman.es.protocol}");
+        System.setProperty("apiman-gateway.components.ICacheStoreComponent.client.host", "${apiman.es.host}");
+        System.setProperty("apiman-gateway.components.ICacheStoreComponent.client.port", "${apiman.es.port}");
+        System.setProperty("apiman-gateway.components.ICacheStoreComponent.client.index", "apiman_cache");
     }
 
     /**

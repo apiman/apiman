@@ -19,6 +19,8 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 /**
  * The response sent back to a caller when a managed service is
  * invoked.
@@ -28,11 +30,12 @@ import java.util.Map;
 public class ServiceResponse implements IServiceObject, Serializable {
 
     private static final long serialVersionUID = -7245095046846226241L;
-    
+
     private int code;
     private String message;
     private Map<String, String> headers = new HeaderHashMap();
-    private Map<String, Object> attributes = new HashMap<>();
+    @JsonIgnore
+    private transient Map<String, Object> attributes = new HashMap<>();
 
     /**
      * Constructor.
@@ -55,7 +58,7 @@ public class ServiceResponse implements IServiceObject, Serializable {
     public void setHeaders(Map<String, String> headers) {
         this.headers = headers;
     }
-    
+
     /**
      * @return the code
      */
@@ -97,15 +100,15 @@ public class ServiceResponse implements IServiceObject, Serializable {
     public void setAttributes(Map<String, Object> attributes) {
         this.attributes = attributes;
     }
-    
-    /**  
+
+    /**
      * @param name Name of attribute
      * @param value Value of attribute
      */
     public void setAttribute(String name, Object value) {
         this.attributes.put(name, value);
     }
-    
+
     /**
      * @param name Name of attribute
      * @return Attribute if present; else null.

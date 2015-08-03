@@ -18,8 +18,8 @@ package io.apiman.test.policies;
 import io.apiman.gateway.engine.IServiceConnectionResponse;
 import io.apiman.gateway.engine.async.IAsyncHandler;
 import io.apiman.gateway.engine.beans.ServiceResponse;
+import io.apiman.gateway.engine.io.ByteBuffer;
 import io.apiman.gateway.engine.io.IApimanBuffer;
-import io.apiman.test.common.io.ByteBuffer;
 
 /**
  * The response created by the policy tester service connection.

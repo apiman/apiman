@@ -15,16 +15,21 @@
  */
 package io.apiman.gateway.engine;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Components that require initialization should implement this interface.
+ * Annotation that allows a component to indicate that it depends on other
+ * components.
  *
  * @author eric.wittmann@redhat.com
  */
-public interface IRequiresInitialization {
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE})
+public @interface DependsOnComponents {
 
-    /**
-     * Called by the engine to initialize the component.
-     */
-    public void initialize();
+    Class<? extends IComponent> [] value();
+
 }

@@ -96,6 +96,8 @@ INSERT INTO pd_templates (policydef_id, language, template) VALUES ('TransferQuo
 
 INSERT INTO pd_templates (policydef_id, language, template) VALUES ('IgnoredResourcesPolicy', NULL, 'Requests matching any of the @{pathsToIgnore.size()} regular expressions provided will receive a 404 error code.');
 
+INSERT INTO pd_templates (policydef_id, language, template) VALUES ('CachingPolicy', NULL, 'API responses will be cached for @{ttl} seconds.');
+
 INSERT INTO pd_templates (policydef_id, language, template) VALUES ('AuthorizationPolicy', NULL, 'Appropriate authorization roles are required.  There are @{rules.size()} authorization rules defined.');
 
 --  Changeset c:/Users/ewittman/git/apiman/apiman/distro/ddl/src/main/liquibase/current/050-apiman-manager-api.db.data.changelog.xml::1434686531709-3::apiman
@@ -155,6 +157,8 @@ INSERT INTO policydefs (id, description, form, form_type, icon, name, plugin_id,
 INSERT INTO policydefs (id, description, form, form_type, icon, name, plugin_id, policy_impl) VALUES ('TransferQuotaPolicy', 'Provides a way to limit the total number of bytes that can be transferred from (or to) an API.', NULL, 'Default', 'download', 'Transfer Quota Policy', NULL, 'class:io.apiman.gateway.engine.policies.TransferQuotaPolicy');
 
 INSERT INTO policydefs (id, description, form, form_type, icon, name, plugin_id, policy_impl) VALUES ('IgnoredResourcesPolicy', 'Requests satisfying the provided regular expression will be ignored.', NULL, 'Default', 'eye-slash', 'Ignored Resources Policy', NULL, 'class:io.apiman.gateway.engine.policies.IgnoredResourcesPolicy');
+
+INSERT INTO policydefs (id, description, form, form_type, icon, name, plugin_id, policy_impl) VALUES ('CachingPolicy', 'Allows caching of API responses in the Gateway to reduce overall traffic to the back-end API.', NULL, 'Default', 'hdd-o', 'Cachine Policy', NULL, 'class:io.apiman.gateway.engine.policies.CachingPolicy');
 
 INSERT INTO policydefs (id, description, form, form_type, icon, name, plugin_id, policy_impl) VALUES ('AuthorizationPolicy', 'Enables fine grained authorization to API resources based on authenticated user roles.', NULL, 'Default', 'users', 'Authorization Policy', NULL, 'class:io.apiman.gateway.engine.policies.AuthorizationPolicy');
 
