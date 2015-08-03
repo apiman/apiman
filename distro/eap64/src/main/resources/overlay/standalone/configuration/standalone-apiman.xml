@@ -212,6 +212,9 @@
         <local-cache name="shared-state" batching="true">
           <file-store passivation="false" purge="false" />
         </local-cache>
+        <local-cache name="caching" batching="true">
+          <file-store passivation="false" purge="false" />
+        </local-cache>
       </cache-container>
       <cache-container name="web" aliases="standard-session-cache" default-cache="local-web"
         module="org.jboss.as.clustering.web.infinispan">

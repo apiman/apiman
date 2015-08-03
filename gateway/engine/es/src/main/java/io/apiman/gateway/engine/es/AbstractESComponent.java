@@ -47,4 +47,22 @@ public class AbstractESComponent {
         return esClient;
     }
 
+    /**
+     * Gets the configured index name.
+     */
+    protected String getIndexName() {
+        if (config.containsKey("index")) { //$NON-NLS-1$
+            return config.get("index"); //$NON-NLS-1$
+        } else {
+            return getDefaultIndexName();
+        }
+    }
+
+    /**
+     * @return the default index name
+     */
+    protected String getDefaultIndexName() {
+        return ESConstants.INDEX_NAME;
+    }
+
 }

@@ -24,5 +24,6 @@ public class ESConstants {
 
     public static final String INDEX_NAME = "apiman_gateway"; //$NON-NLS-1$
     public static final String METRICS_INDEX_NAME = "apiman_metrics"; //$NON-NLS-1$
+    public static final String CACHE_INDEX_NAME = "apiman_cache"; //$NON-NLS-1$
 
 }

@@ -16,6 +16,7 @@
 package io.apiman.gateway.engine.components;
 
 import io.apiman.gateway.engine.IComponent;
+import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.io.ISignalReadStream;
 import io.apiman.gateway.engine.io.ISignalWriteStream;
 
@@ -51,17 +52,17 @@ public interface ICacheStoreComponent extends IComponent {
 
     /**
      * Gets a cache entry.
-     * @param cacheEntry
+     * @param cacheKey
      * @param type
      * @throws IOException
      */
-    public <T> T get(String cacheEntry, Class<T> type) throws IOException;
+    public <T> void get(String cacheKey, Class<T> type, IAsyncResultHandler<T> handler);
 
     /**
      * Gets a cache entry with its binary data.
      * @param cacheKey
      * @throws IOException
      */
-    public <T> ISignalReadStream<T> getBinary(String cacheKey, Class<T> type) throws IOException;
+    public <T> void getBinary(String cacheKey, Class<T> type, IAsyncResultHandler<ISignalReadStream<T>> handler);
 
 }

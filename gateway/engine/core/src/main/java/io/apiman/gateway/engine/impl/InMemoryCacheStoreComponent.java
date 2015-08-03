@@ -16,7 +16,9 @@
 package io.apiman.gateway.engine.impl;
 
 import io.apiman.gateway.engine.DependsOnComponents;
+import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncHandler;
+import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.components.IBufferFactoryComponent;
 import io.apiman.gateway.engine.components.ICacheStoreComponent;
 import io.apiman.gateway.engine.io.IApimanBuffer;
@@ -127,16 +129,16 @@ public class InMemoryCacheStoreComponent implements ICacheStoreComponent {
     }
 
     /**
-     * @see io.apiman.gateway.engine.components.ICacheStoreComponent#get(java.lang.String, java.lang.Class)
+     * @see io.apiman.gateway.engine.components.ICacheStoreComponent#get(java.lang.String, java.lang.Class, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
-    @SuppressWarnings("unchecked")
     @Override
-    public <T> T get(String cacheKey, Class<T> type) throws IOException {
+    @SuppressWarnings("unchecked")
+    public <T> void get(String cacheKey, Class<T> type, IAsyncResultHandler<T> handler) {
         boolean expired = false;
-        Object object = null;
+        Object rval = null;
         synchronized (mapMutex) {
-            object = objectCache.get(cacheKey);
-            if (object != null) {
+            rval = objectCache.get(cacheKey);
+            if (rval != null) {
                 Long expiresOn = expireOnMap.get(cacheKey);
                 if (expiresOn > System.currentTimeMillis()) {
                     expired = true;
@@ -154,18 +156,21 @@ public class InMemoryCacheStoreComponent implements ICacheStoreComponent {
                     }
                 }
             }
-            object = null;
+            rval = null;
         }
-        return (T) object;
+        handler.handle(AsyncResultImpl.create((T) rval));
     }
 
     /**
-     * @see io.apiman.gateway.engine.components.ICacheStoreComponent#getBinary(java.lang.String, java.lang.Class)
+     * @see io.apiman.gateway.engine.components.ICacheStoreComponent#getBinary(java.lang.String, java.lang.Class, io.apiman.gateway.engine.async.IAsyncResultHandler)
      */
     @Override
-    public <T> ISignalReadStream<T> getBinary(String cacheKey, Class<T> type) throws IOException {
+    public <T> void getBinary(String cacheKey, Class<T> type,
+            IAsyncResultHandler<ISignalReadStream<T>> handler) {
         boolean expired = false;
+        ISignalReadStream<T> rval;
         Object object = null;
+
         IApimanBuffer buffer = null;
         synchronized (mapMutex) {
             object = objectCache.get(cacheKey);
@@ -177,10 +182,13 @@ public class InMemoryCacheStoreComponent implements ICacheStoreComponent {
             }
             buffer = dataCache.get(cacheKey);
             if (buffer == null) {
-                return null;
+                object = null;
             }
         }
-        if (expired) {
+
+        if (object == null) {
+            rval = null;
+        } else if (expired) {
             synchronized (cacheSizeMutex) {
                 synchronized (mapMutex) {
                     objectCache.remove(cacheKey);
@@ -191,43 +199,45 @@ public class InMemoryCacheStoreComponent implements ICacheStoreComponent {
                     }
                 }
             }
-            return null;
+            rval = null;
+        } else {
+            @SuppressWarnings("unchecked")
+            final T head = (T) object;
+            final IApimanBuffer data = buffer;
+            rval = new ISignalReadStream<T>() {
+                IAsyncHandler<IApimanBuffer> bodyHandler;
+                IAsyncHandler<Void> endHandler;
+                boolean finished = false;
+
+                @Override
+                public void bodyHandler(IAsyncHandler<IApimanBuffer> bodyHandler) {
+                    this.bodyHandler = bodyHandler;
+                }
+                @Override
+                public void endHandler(IAsyncHandler<Void> endHandler) {
+                    this.endHandler = endHandler;
+                }
+                @Override
+                public T getHead() {
+                    return head;
+                }
+                @Override
+                public boolean isFinished() {
+                    return finished;
+                }
+                @Override
+                public void abort() {
+                    finished = true;
+                }
+                @Override
+                public void transmit() {
+                    bodyHandler.handle(data);
+                    endHandler.handle(null);
+                }
+            };
         }
 
-        @SuppressWarnings("unchecked")
-        final T head = (T) object;
-        final IApimanBuffer data = buffer;
-        return new ISignalReadStream<T>() {
-            IAsyncHandler<IApimanBuffer> bodyHandler;
-            IAsyncHandler<Void> endHandler;
-            boolean finished = false;
-
-            @Override
-            public void bodyHandler(IAsyncHandler<IApimanBuffer> bodyHandler) {
-                this.bodyHandler = bodyHandler;
-            }
-            @Override
-            public void endHandler(IAsyncHandler<Void> endHandler) {
-                this.endHandler = endHandler;
-            }
-            @Override
-            public T getHead() {
-                return head;
-            }
-            @Override
-            public boolean isFinished() {
-                return finished;
-            }
-            @Override
-            public void abort() {
-                finished = true;
-            }
-            @Override
-            public void transmit() {
-                bodyHandler.handle(data);
-                endHandler.handle(null);
-            }
-        };
+        handler.handle(AsyncResultImpl.create(rval));
     }
 
     /**

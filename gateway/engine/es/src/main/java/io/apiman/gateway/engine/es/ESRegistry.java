@@ -70,7 +70,7 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
             String id = getServiceId(service);
 
             Index index = new Index.Builder(ESRegistryMarshalling.marshall(service).string()).refresh(false)
-                    .index(ESConstants.INDEX_NAME).setParameter(Parameters.OP_TYPE, "create") //$NON-NLS-1$
+                    .index(getIndexName()).setParameter(Parameters.OP_TYPE, "create") //$NON-NLS-1$
                     .type("service").id(id).build(); //$NON-NLS-1$
             getClient().executeAsync(index, new JestResultHandler<JestResult>() {
                 @Override
@@ -104,7 +104,7 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
     public void retireService(Service service, final IAsyncResultHandler<Void> handler) {
         final String id = getServiceId(service);
 
-        Delete delete = new Delete.Builder(id).index(ESConstants.INDEX_NAME).type("service").build(); //$NON-NLS-1$
+        Delete delete = new Delete.Builder(id).index(getIndexName()).type("service").build(); //$NON-NLS-1$
         getClient().executeAsync(delete, new JestResultHandler<JestResult>() {
             @Override
             public void completed(JestResult result) {
@@ -136,7 +136,7 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
                     String id = getApplicationId(application);
                     try {
                         Index index = new Index.Builder(ESRegistryMarshalling.marshall(application).string())
-                                .refresh(false).index(ESConstants.INDEX_NAME)
+                                .refresh(false).index(getIndexName())
                                 .setParameter(Parameters.OP_TYPE, "create") //$NON-NLS-1$
                                 .type("application").id(id).build(); //$NON-NLS-1$
                         getClient().executeAsync(index, new JestResultHandler<JestResult>() {
@@ -252,7 +252,7 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
 
                 Index index = new Index.Builder(ESRegistryMarshalling.marshall(sc).string()).refresh(false)
                         .setParameter(Parameters.OP_TYPE, "create") //$NON-NLS-1$
-                        .index(ESConstants.INDEX_NAME).type("serviceContract").id(contractId).build(); //$NON-NLS-1$
+                        .index(getIndexName()).type("serviceContract").id(contractId).build(); //$NON-NLS-1$
                 getClient().executeAsync(index, new JestResultHandler<JestResult>() {
                     @Override
                     public void completed(JestResult result) {
@@ -286,7 +286,7 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
     public void unregisterApplication(final Application application, final IAsyncResultHandler<Void> handler) {
         final String id = getApplicationId(application);
 
-        Delete delete = new Delete.Builder(id).index(ESConstants.INDEX_NAME).type("application").build(); //$NON-NLS-1$
+        Delete delete = new Delete.Builder(id).index(getIndexName()).type("application").build(); //$NON-NLS-1$
         getClient().executeAsync(delete, new JestResultHandler<JestResult>() {
             @Override
             public void completed(JestResult result) {
@@ -319,7 +319,7 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
             );
         @SuppressWarnings("nls")
         String dquery = "{\"query\" : " + qb.toString() + "}";
-        DeleteByQuery delete = new DeleteByQuery.Builder(dquery).addIndex(ESConstants.INDEX_NAME).addType("serviceContract").build(); //$NON-NLS-1$
+        DeleteByQuery delete = new DeleteByQuery.Builder(dquery).addIndex(getIndexName()).addType("serviceContract").build(); //$NON-NLS-1$
         getClient().executeAsync(delete, new JestResultHandler<JestResult>() {
             @Override
             public void completed(JestResult result) {
@@ -339,7 +339,7 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
     public void getContract(final ServiceRequest request, final IAsyncResultHandler<ServiceContract> handler) {
         final String id = getContractId(request);
 
-        Get get = new Get.Builder(ESConstants.INDEX_NAME, id).type("serviceContract").build(); //$NON-NLS-1$
+        Get get = new Get.Builder(getIndexName(), id).type("serviceContract").build(); //$NON-NLS-1$
         getClient().executeAsync(get, new JestResultHandler<JestResult>() {
             @Override
             public void completed(JestResult result) {
@@ -368,7 +368,7 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
         final Service service = contract.getService();
         String id = getServiceId(service);
 
-        Get get = new Get.Builder(ESConstants.INDEX_NAME, id).type("service").build(); //$NON-NLS-1$
+        Get get = new Get.Builder(getIndexName(), id).type("service").build(); //$NON-NLS-1$
         getClient().executeAsync(get, new JestResultHandler<JestResult>() {
             @Override
             public void completed(JestResult result) {
@@ -403,7 +403,7 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
      * @param handler
      */
     protected void getService(String id, final IAsyncResultHandler<Service> handler) {
-        Get get = new Get.Builder(ESConstants.INDEX_NAME, id).type("service").build(); //$NON-NLS-1$
+        Get get = new Get.Builder(getIndexName(), id).type("service").build(); //$NON-NLS-1$
         getClient().executeAsync(get, new JestResultHandler<JestResult>() {
             @Override
             public void completed(JestResult result) {

@@ -15,6 +15,8 @@
  */
 package io.apiman.gateway.engine.policies;
 
+import io.apiman.gateway.engine.async.IAsyncResult;
+import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.beans.ServiceResponse;
 import io.apiman.gateway.engine.beans.exceptions.ComponentNotFoundException;
@@ -75,16 +77,22 @@ public class CachingPolicy extends AbstractMappedDataPolicy<CachingConfig> imple
             String cacheId = buildCacheID(request);
             context.setAttribute(CACHE_ID_ATTR, cacheId);
             ICacheStoreComponent cache = context.getComponent(ICacheStoreComponent.class);
-            try {
-                ISignalReadStream<ServiceResponse> cacheEntry = cache.getBinary(cacheId, ServiceResponse.class);
-                if (cacheEntry != null) {
-                    context.setConnectorInterceptor(new CacheConnectorInterceptor(cacheEntry));
-                    context.setAttribute(SHOULD_CACHE_ATTR, Boolean.FALSE);
-                }
-                chain.doApply(request);
-            } catch (IOException e) {
-                chain.throwError(e);
-            }
+            cache.getBinary(cacheId, ServiceResponse.class,
+                    new IAsyncResultHandler<ISignalReadStream<ServiceResponse>>() {
+                        @Override
+                        public void handle(IAsyncResult<ISignalReadStream<ServiceResponse>> result) {
+                            if (result.isError()) {
+                                chain.throwError(result.getError());
+                            } else {
+                                ISignalReadStream<ServiceResponse> cacheEntry = result.getResult();
+                                if (cacheEntry != null) {
+                                    context.setConnectorInterceptor(new CacheConnectorInterceptor(cacheEntry));
+                                    context.setAttribute(SHOULD_CACHE_ATTR, Boolean.FALSE);
+                                }
+                                chain.doApply(request);
+                            }
+                        }
+                    });
         } else {
             context.setAttribute(SHOULD_CACHE_ATTR, Boolean.FALSE);
             chain.doApply(request);
@@ -106,6 +114,7 @@ public class CachingPolicy extends AbstractMappedDataPolicy<CachingConfig> imple
     @Override
     protected IReadWriteStream<ServiceRequest> requestDataHandler(ServiceRequest request,
             IPolicyContext context, CachingConfig policyConfiguration) {
+        // No need to handle the request stream (e.g. POST body)
         return null;
     }
 

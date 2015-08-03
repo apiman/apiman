@@ -63,6 +63,7 @@ public class ByteBuffer implements IApimanBuffer {
     public ByteBuffer(String stringData, String enc) {
         try {
             buffer = stringData.getBytes(enc);
+            bytesInBuffer = buffer.length;
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
@@ -73,6 +74,7 @@ public class ByteBuffer implements IApimanBuffer {
      */
     public ByteBuffer(byte[] byteData) {
         buffer = Arrays.copyOf(byteData, byteData.length);
+        bytesInBuffer = byteData.length;
     }
 
     /**
@@ -121,7 +123,7 @@ public class ByteBuffer implements IApimanBuffer {
     @Override
     public void append(IApimanBuffer buffer, int offset, int length) {
         int sizeToAppend = length;
-        int newBufferSize = this.buffer.length + sizeToAppend;
+        int newBufferSize = this.bytesInBuffer + sizeToAppend;
         if (this.buffer.length >= newBufferSize) {
             System.arraycopy(buffer.getBytes(), offset, this.buffer, bytesInBuffer, sizeToAppend);
         } else {

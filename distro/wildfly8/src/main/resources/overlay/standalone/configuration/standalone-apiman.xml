@@ -252,6 +252,9 @@
         <local-cache name="shared-state" batching="true">
           <file-store passivation="false" purge="false" />
         </local-cache>
+        <local-cache name="caching" batching="true">
+          <file-store passivation="false" purge="false" />
+        </local-cache>
       </cache-container>
       <cache-container name="web" default-cache="passivation" module="org.wildfly.clustering.web.infinispan">
         <local-cache name="passivation" batching="true">

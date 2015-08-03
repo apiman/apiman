@@ -65,7 +65,7 @@ public class ESSharedStateComponent extends AbstractESComponent implements IShar
         }
         String id = getPropertyId(namespace, propertyName);
 
-        Get get = new Get.Builder(ESConstants.INDEX_NAME, id).type("sharedStateProperty").build(); //$NON-NLS-1$
+        Get get = new Get.Builder(getIndexName(), id).type("sharedStateProperty").build(); //$NON-NLS-1$
         getClient().executeAsync(get, new JestResultHandler<JestResult>() {
             @SuppressWarnings("unchecked")
             @Override
@@ -119,7 +119,7 @@ public class ESSharedStateComponent extends AbstractESComponent implements IShar
 
         String id = getPropertyId(namespace, propertyName);
         String json = source;
-        Index index = new Index.Builder(json).refresh(false).index(ESConstants.INDEX_NAME)
+        Index index = new Index.Builder(json).refresh(false).index(getIndexName())
                 .type("sharedStateProperty").id(id).build(); //$NON-NLS-1$
         getClient().executeAsync(index, new JestResultHandler<JestResult>() {
             @Override
@@ -140,7 +140,7 @@ public class ESSharedStateComponent extends AbstractESComponent implements IShar
     public <T> void clearProperty(final String namespace, final String propertyName, final IAsyncResultHandler<Void> handler) {
         String id = getPropertyId(namespace, propertyName);
 
-        Delete delete = new Delete.Builder(id).index(ESConstants.INDEX_NAME).type("sharedStateProperty").build(); //$NON-NLS-1$
+        Delete delete = new Delete.Builder(id).index(getIndexName()).type("sharedStateProperty").build(); //$NON-NLS-1$
         getClient().executeAsync(delete, new JestResultHandler<JestResult>() {
             @Override
             public void completed(JestResult result) {

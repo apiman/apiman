@@ -1,0 +1,11 @@
+{
+    "mappings" : {
+        "entry": {
+            "properties": {
+               "head": { "type" : "string", "index" : "not_analyzed" },
+               "expiresOn": { "type" : "long", "index" : "not_analyzed" },
+               "data": { "type" : "binary" }
+            }
+         }
+    }
+}
