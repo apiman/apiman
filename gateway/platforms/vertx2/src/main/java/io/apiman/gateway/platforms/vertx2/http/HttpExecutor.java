@@ -34,12 +34,12 @@ public class HttpExecutor implements Handler<HttpServerRequest> {
     private Vertx vertx;
     private String httpSessionUuid;
     private Logger log;
-    private VertxEngineConfig apimanConfig;
+    private boolean transportSecure;
 
     public HttpExecutor(Vertx vertx,
             Logger log,
-            VertxEngineConfig apimanConfig) {
-        this.apimanConfig = apimanConfig;
+            boolean transportSecure) {
+        this.transportSecure = transportSecure;
         this.vertx = vertx;
         this.httpSessionUuid = UUID.randomUUID().toString(); // Unique ID for this request/response sequence.
         this.log = log;
@@ -75,7 +75,7 @@ public class HttpExecutor implements Handler<HttpServerRequest> {
         IngestorToPolicyService send = result.result();
 
         if (result.succeeded()) {
-            VertxServiceRequest serviceRequest = HttpServiceFactory.buildRequest(request, apimanConfig.isSSL());
+            VertxServiceRequest serviceRequest = HttpServiceFactory.buildRequest(request, transportSecure);
 
             send.head(serviceRequest, (Handler<AsyncResult<Boolean>>) ready -> {
                 if (ready.succeeded()) {

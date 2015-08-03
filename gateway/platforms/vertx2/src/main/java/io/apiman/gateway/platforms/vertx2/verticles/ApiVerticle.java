@@ -18,6 +18,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 
 @SuppressWarnings("nls")
 public class ApiVerticle extends ApimanVerticleWithEngine {
+    public static final VerticleType VERTICLE_TYPE = VerticleType.API;
 
     @Override
     public void start() {
@@ -42,12 +43,12 @@ public class ApiVerticle extends ApimanVerticleWithEngine {
 
         vertx.createHttpServer()
             .requestHandler(router::accept)
-            .listen(apimanConfig.getPort(VerticleType.API));
+            .listen(apimanConfig.getPort(VERTICLE_TYPE));
     }
 
     @Override
     public VerticleType verticleType() {
-        return VerticleType.API;
+        return VERTICLE_TYPE;
     }
 
     public void authenticateBasic(JsonObject authInfo, Handler<AsyncResult<User>> resultHandler) {

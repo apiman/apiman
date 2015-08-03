@@ -39,6 +39,7 @@ import java.util.Map.Entry;
 @SuppressWarnings("nls")
 public class VertxEngineConfig implements IEngineConfig {
 
+    private static final String COUNT = "count";
     private static final String AUTH = "auth";
     private static final String PASSWORD = "password";
     private static final String PATH = "path";
@@ -258,20 +259,24 @@ public class VertxEngineConfig implements IEngineConfig {
 
     protected Boolean boolConfigWithDefault(String name, Boolean defaultValue) {
         Boolean bool = config.containsKey(name);
-
         return bool == null ? defaultValue : bool;
     }
 
     public JsonObject getVerticleConfig(String verticleType) {
-        return config.getJsonObject(VERTICLES).getJsonObject(verticleType);
+        return config.getJsonObject(VERTICLES).getJsonObject(verticleType.toLowerCase());
     }
 
+
     public int getPort(String name) {
-        return getVerticleConfig(name.toLowerCase()).getInteger(PORT);
+        return getVerticleConfig(name).getInteger(PORT);
     }
 
     public int getPort(VerticleType verticleType) {
         return getPort(verticleType.name());
+    }
+
+    public int getVerticleCount(VerticleType verticleType) {
+        return getVerticleConfig(verticleType.name()).getInteger(COUNT);
     }
 
     public boolean isSSL() {
@@ -293,4 +298,5 @@ public class VertxEngineConfig implements IEngineConfig {
     public String getTrustStorePassword() {
         return config.getJsonObject(SSL).getJsonObject(TRUSTSTORE).getString(PASSWORD);
     }
+
 }

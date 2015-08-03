@@ -6,6 +6,7 @@ import io.apiman.gateway.platforms.vertx2.services.impl.InitializeIngestorServic
 import io.vertx.serviceproxy.ProxyHelper;
 
 public class PolicyVerticle extends ApimanVerticleWithEngine {
+    public static final VerticleType VERTICLE_TYPE = VerticleType.POLICY;
 
     private InitializeIngestorServiceImpl service;
 
@@ -22,6 +23,6 @@ public class PolicyVerticle extends ApimanVerticleWithEngine {
 
     @Override
     public VerticleType verticleType() {
-        return VerticleType.POLICY;
+        return VERTICLE_TYPE;
     }
 }
