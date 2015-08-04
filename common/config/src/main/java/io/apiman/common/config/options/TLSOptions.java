@@ -15,6 +15,7 @@
  */
 package io.apiman.common.config.options;
 
+import java.util.Arrays;
 import java.util.Map;
 
 /**
@@ -105,7 +106,7 @@ public class TLSOptions extends AbstractOptions {
     /**
      * @return the clientKeyStore
      */
-    public String getkeyStore() {
+    public String getKeyStore() {
         return clientKeyStore;
     }
 
@@ -226,5 +227,78 @@ public class TLSOptions extends AbstractOptions {
      */
     public void setKeyAliases(String[] keyAliases) {
         this.keyAliases = keyAliases;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (allowAnyHost ? 1231 : 1237);
+        result = prime * result + Arrays.hashCode(allowedCiphers);
+        result = prime * result + Arrays.hashCode(allowedProtocols);
+        result = prime * result + ((clientKeyStore == null) ? 0 : clientKeyStore.hashCode());
+        result = prime * result + (devMode ? 1231 : 1237);
+        result = prime * result + Arrays.hashCode(keyAliases);
+        result = prime * result + ((keyPassword == null) ? 0 : keyPassword.hashCode());
+        result = prime * result + ((keyStorePassword == null) ? 0 : keyStorePassword.hashCode());
+        result = prime * result + (trustSelfSigned ? 1231 : 1237);
+        result = prime * result + ((trustStore == null) ? 0 : trustStore.hashCode());
+        result = prime * result + ((trustStorePassword == null) ? 0 : trustStorePassword.hashCode());
+        return result;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        TLSOptions other = (TLSOptions) obj;
+        if (allowAnyHost != other.allowAnyHost)
+            return false;
+        if (!Arrays.equals(allowedCiphers, other.allowedCiphers))
+            return false;
+        if (!Arrays.equals(allowedProtocols, other.allowedProtocols))
+            return false;
+        if (clientKeyStore == null) {
+            if (other.clientKeyStore != null)
+                return false;
+        } else if (!clientKeyStore.equals(other.clientKeyStore))
+            return false;
+        if (devMode != other.devMode)
+            return false;
+        if (!Arrays.equals(keyAliases, other.keyAliases))
+            return false;
+        if (keyPassword == null) {
+            if (other.keyPassword != null)
+                return false;
+        } else if (!keyPassword.equals(other.keyPassword))
+            return false;
+        if (keyStorePassword == null) {
+            if (other.keyStorePassword != null)
+                return false;
+        } else if (!keyStorePassword.equals(other.keyStorePassword))
+            return false;
+        if (trustSelfSigned != other.trustSelfSigned)
+            return false;
+        if (trustStore == null) {
+            if (other.trustStore != null)
+                return false;
+        } else if (!trustStore.equals(other.trustStore))
+            return false;
+        if (trustStorePassword == null) {
+            if (other.trustStorePassword != null)
+                return false;
+        } else if (!trustStorePassword.equals(other.trustStorePassword))
+            return false;
+        return true;
     }
 }

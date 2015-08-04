@@ -127,15 +127,15 @@ public class SSLSessionStrategyFactory {
     public static SSLSessionStrategy buildMutual(TLSOptions optionsMap)
             throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException, CertificateException,
             IOException, UnrecoverableKeyException {
-        Args.notNull(optionsMap.getkeyStore(), "KeyStore");
-        Args.notEmpty(optionsMap.getkeyStore(), "KeyStore must not be empty");
+        Args.notNull(optionsMap.getKeyStore(), "KeyStore");
+        Args.notEmpty(optionsMap.getKeyStore(), "KeyStore must not be empty");
 
         String[] allowedProtocols = optionalVar(optionsMap.getAllowedProtocols(), getDefaultProtocols());
         String[] allowedCiphers = optionalVar(optionsMap.getAllowedCiphers(), getDefaultCipherSuites());
 
         return build(optionsMap.getTrustStore(),
                 optionsMap.getTrustStorePassword(),
-                optionsMap.getkeyStore(),
+                optionsMap.getKeyStore(),
                 optionsMap.getKeyStorePassword(),
                 optionsMap.getKeyAliases(),
                 optionsMap.getKeyPassword(),

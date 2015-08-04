@@ -15,17 +15,23 @@
  */
 package io.apiman.gateway.platforms.vertx2.connector;
 
+import io.apiman.common.config.options.BasicAuthOptions;
+import io.apiman.common.config.options.TLSOptions;
+import io.apiman.common.util.Basic;
 import io.apiman.gateway.engine.IServiceConnection;
 import io.apiman.gateway.engine.IServiceConnectionResponse;
 import io.apiman.gateway.engine.async.AsyncResultImpl;
 import io.apiman.gateway.engine.async.IAsyncHandler;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
+import io.apiman.gateway.engine.auth.RequiredAuthType;
 import io.apiman.gateway.engine.beans.Service;
 import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.beans.ServiceResponse;
+import io.apiman.gateway.engine.beans.exceptions.ConnectorException;
 import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.gateway.engine.io.ISignalReadStream;
 import io.apiman.gateway.engine.io.ISignalWriteStream;
+import io.apiman.gateway.platforms.vertx2.http.HttpClientOptionsFactory;
 import io.apiman.gateway.platforms.vertx2.http.HttpServiceFactory;
 import io.apiman.gateway.platforms.vertx2.i18n.Messages;
 import io.apiman.gateway.platforms.vertx2.io.VertxApimanBuffer;
@@ -34,6 +40,7 @@ import io.vertx.core.Vertx;
 import io.vertx.core.VertxException;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpClient;
+import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.http.HttpClientRequest;
 import io.vertx.core.http.HttpClientResponse;
 import io.vertx.core.http.HttpMethod;
@@ -54,13 +61,14 @@ import java.util.Set;
  *
  * @author Marc Savy <msavy@redhat.com>
  */
+@SuppressWarnings("nls")
 class HttpConnector implements IServiceConnectionResponse, IServiceConnection {
 
     private static final Set<String> SUPPRESSED_HEADERS = new HashSet<>();
     static {
-        SUPPRESSED_HEADERS.add("Transfer-Encoding"); //$NON-NLS-1$
-        SUPPRESSED_HEADERS.add("Content-Length"); //$NON-NLS-1$
-        SUPPRESSED_HEADERS.add("X-API-Key"); //$NON-NLS-1$
+        SUPPRESSED_HEADERS.add("Transfer-Encoding");
+        SUPPRESSED_HEADERS.add("Content-Length");
+        SUPPRESSED_HEADERS.add("X-API-Key");
     }
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -76,10 +84,14 @@ class HttpConnector implements IServiceConnectionResponse, IServiceConnection {
     private boolean inboundFinished = false;
     private boolean outboundFinished = false;
 
+    private Service service;
     private String servicePath;
     private String serviceHost;
     private String destination;
     private int servicePort;
+    private boolean isHttps;
+    private RequiredAuthType authType;
+    private BasicAuthOptions basicOptions;
 
     private HttpClient client;
     private HttpClientRequest clientRequest;
@@ -92,22 +104,29 @@ class HttpConnector implements IServiceConnectionResponse, IServiceConnection {
      * @param vertx a vertx
      * @param service a service
      * @param request a request with fields filled
+     * @param authType the required auth type
+     * @param tlsOptions the tls options
      * @param resultHandler a handler, called when reading is permitted
      */
-    public HttpConnector(Vertx vertx, Service service, ServiceRequest request,
-            IAsyncResultHandler<IServiceConnectionResponse> resultHandler) {
+    public HttpConnector(Vertx vertx, Service service, ServiceRequest request, RequiredAuthType authType,
+            TLSOptions tlsOptions, IAsyncResultHandler<IServiceConnectionResponse> resultHandler) {
+       this.service = service;
        this.serviceRequest = request;
+       this.authType = authType;
        this.resultHandler = resultHandler;
        this.exceptionHandler = new ExceptionHandler();
-       this.client = vertx.createHttpClient();
 
        URL serviceEndpoint = parseServiceEndpoint(service);
 
+       isHttps = serviceEndpoint.getProtocol().equals("https");
        serviceHost = serviceEndpoint.getHost();
        servicePort = getPort(serviceEndpoint);
-       servicePath = serviceEndpoint.getPath().length() == 0 ? "/" : serviceEndpoint.getPath();
+       servicePath = serviceEndpoint.getPath().isEmpty() ? "/" : serviceEndpoint.getPath();
        destination = serviceRequest.getDestination() == null ? "" : serviceRequest.getDestination();
-       //servicePath = StringUtils.removeEnd(serviceEndpoint.getPath(), "/"); //$NON-NLS-1$
+
+       HttpClientOptions clientOptions = HttpClientOptionsFactory.parseOptions(tlsOptions, serviceEndpoint);
+       this.client = vertx.createHttpClient(clientOptions);
+       verifyConnection();
        doConnection();
     }
 
@@ -115,10 +134,22 @@ class HttpConnector implements IServiceConnectionResponse, IServiceConnection {
         if (serviceEndpoint.getPort() != -1)
             return serviceEndpoint.getPort();
 
-        if (serviceEndpoint.getProtocol().equals("https")) { //$NON-NLS-1$
-            return 443;
-        } else {
-            return 80;
+        return isHttps ? 443 : 80;
+    }
+
+    private void verifyConnection() {
+        switch (authType) {
+        case BASIC:
+            basicOptions = new BasicAuthOptions(service.getEndpointProperties());
+            if (!isHttps && basicOptions.isRequireSSL())
+                throw new ConnectorException("Endpoint security requested (BASIC auth) but endpoint is not secure (SSL).");
+            break;
+        case MTLS:
+            if (!isHttps)
+                throw new ConnectorException("Mutual TLS specified, but endpoint is not HTTPS.");
+            break;
+        case DEFAULT:
+            break;
         }
     }
 
@@ -140,7 +171,7 @@ class HttpConnector implements IServiceConnectionResponse, IServiceConnection {
             public void handle(final HttpClientResponse vxClientResponse) {
                 clientResponse = vxClientResponse;
 
-                System.out.println("We have a response from the backend service in HttpConnector"); //$NON-NLS-1$
+                System.out.println("We have a response from the backend service in HttpConnector");
 
                 // Pause until we're given permission to xfer the response.
                 vxClientResponse.pause();
@@ -166,6 +197,10 @@ class HttpConnector implements IServiceConnectionResponse, IServiceConnection {
         clientRequest.exceptionHandler(exceptionHandler);
         clientRequest.setChunked(true);
         clientRequest.headers().addAll(serviceRequest.getHeaders());
+
+        if (authType == RequiredAuthType.BASIC) {
+            clientRequest.putHeader("Authorization", Basic.encode(basicOptions.getUsername(), basicOptions.getPassword()));
+        }
     }
 
     @Override
@@ -205,13 +240,13 @@ class HttpConnector implements IServiceConnectionResponse, IServiceConnection {
     @Override
     public void write(IApimanBuffer chunk) {
         if (inboundFinished) {
-            throw new IllegalStateException(Messages.getString("HttpConnector.0")); //$NON-NLS-1$
+            throw new IllegalStateException(Messages.getString("HttpConnector.0"));
         }
 
         if (chunk.getNativeBuffer() instanceof Buffer) {
             clientRequest.write((Buffer) chunk.getNativeBuffer());
         } else {
-            throw new IllegalArgumentException(Messages.getString("HttpConnector.1")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("HttpConnector.1"));
         }
     }
 
@@ -248,7 +283,7 @@ class HttpConnector implements IServiceConnectionResponse, IServiceConnection {
         public void handle(Throwable error) {
             // FIXME Workaround for https://bugs.eclipse.org/bugs/show_bug.cgi?id=471591
             if (error instanceof VertxException &&
-                (((VertxException) error).getMessage().equals("Connection was closed"))) { //$NON-NLS-1$
+                (((VertxException) error).getMessage().equals("Connection was closed"))) {
                 return;
             }
             resultHandler.handle(AsyncResultImpl

@@ -15,6 +15,7 @@
  */
 package io.apiman.gateway.platforms.vertx2.connector;
 
+import io.apiman.common.config.options.TLSOptions;
 import io.apiman.gateway.engine.IConnectorFactory;
 import io.apiman.gateway.engine.IServiceConnection;
 import io.apiman.gateway.engine.IServiceConnectionResponse;
@@ -27,6 +28,7 @@ import io.apiman.gateway.engine.beans.exceptions.ConnectorException;
 import io.vertx.core.Vertx;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -44,13 +46,16 @@ public class ConnectorFactory implements IConnectorFactory {
     }
 
     private Vertx vertx;
+    private TLSOptions tlsOptions;
 
     /**
      * Constructor
      * @param vertx a vertx instance
+     * @param config the config
      */
-    public ConnectorFactory(Vertx vertx) {
+    public ConnectorFactory(Vertx vertx, Map<String, String> config) {
         this.vertx = vertx;
+        this.tlsOptions = new TLSOptions(config);
     }
 
     @Override
@@ -62,7 +67,7 @@ public class ConnectorFactory implements IConnectorFactory {
                     IAsyncResultHandler<IServiceConnectionResponse> resultHandler)
                     throws ConnectorException {
                 // In the future we can switch to different back-end implementations here!
-                return new HttpConnector(vertx, service, request, resultHandler);
+                return new HttpConnector(vertx, service, request, authType, tlsOptions, resultHandler);
             }
         };
     }

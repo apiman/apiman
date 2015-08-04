@@ -45,7 +45,7 @@ public class VertxConfigDrivenEngineFactory extends ConfigDrivenEngineFactory {
 
     @Override
     protected IConnectorFactory createConnectorFactory() {
-        return new ConnectorFactory(vertx);
+        return new ConnectorFactory(vertx, vxConfig.getConnectorFactoryConfig());
     }
 
     @Override
