@@ -1,4 +1,4 @@
-GET /gateway/Policy_BasicAuthStatic/echo/1.0.0/path/to/app/resource bwayne/invalid-password
+GET /Policy_BasicAuthStatic/echo/1.0.0/path/to/app/resource bwayne/invalid-password
 X-API-Key: 12345
 
 ----

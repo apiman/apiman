@@ -1,4 +1,4 @@
-GET /gateway/Policy_BasicAuthStatic/echo/1.0.0/path/to/app/resource bwayne/bwayne
+GET /Policy_BasicAuthStatic/echo/1.0.0/path/to/app/resource bwayne/bwayne
 X-API-Key: 12345
 
 ----

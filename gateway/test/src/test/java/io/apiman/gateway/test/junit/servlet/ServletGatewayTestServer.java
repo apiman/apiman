@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 JBoss Inc
+ * Copyright 2015 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.gateway.test;
+package io.apiman.gateway.test.junit.servlet;
 
 import io.apiman.gateway.engine.components.IBufferFactoryComponent;
 import io.apiman.gateway.engine.components.ICacheStoreComponent;
@@ -35,42 +35,47 @@ import io.apiman.gateway.platforms.servlet.PolicyFailureFactoryComponent;
 import io.apiman.gateway.platforms.servlet.components.HttpClientComponentImpl;
 import io.apiman.gateway.platforms.servlet.connectors.HttpConnectorFactory;
 import io.apiman.gateway.platforms.war.WarEngineConfig;
+import io.apiman.gateway.test.junit.IGatewayTestServer;
 import io.apiman.gateway.test.server.EchoServer;
 import io.apiman.gateway.test.server.GatewayServer;
 import io.apiman.gateway.test.server.GatewayTestType;
 import io.apiman.gateway.test.server.GatewayTestUtils;
 import io.apiman.gateway.test.server.TestMetrics;
-import io.apiman.test.common.util.TestPlanRunner;
 
 import java.io.File;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.codehaus.jackson.JsonNode;
 
 /**
- * Base class for all Gateway tests.
+ * A servlet version of the gateway test server.
  *
  * @author eric.wittmann@redhat.com
  */
 @SuppressWarnings("nls")
-public final class AbstractGatewayTest {
+public class ServletGatewayTestServer implements IGatewayTestServer {
 
     protected static final int ECHO_PORT = 7654;
     protected static final int GATEWAY_PORT = 8080;
     protected static final int GATEWAY_PROXY_PORT = 8081;
     protected static final boolean USE_PROXY = false; // if you set this to true you must start a tcp proxy on 8081
 
-    static {
-        configureGateway();
+    private EchoServer echoServer = new EchoServer(ECHO_PORT);
+    private GatewayServer gatewayServer = new GatewayServer(GATEWAY_PORT);
+
+    /**
+     * Constructor.
+     */
+    public ServletGatewayTestServer() {
     }
 
-    private static EchoServer echoServer = new EchoServer(ECHO_PORT);
-    private static GatewayServer gatewayServer = new GatewayServer(GATEWAY_PORT);
-
-    @BeforeClass
-    public static void setup() throws Exception {
-        echoServer.start();
-        gatewayServer.start();
+    /**
+     * @see io.apiman.gateway.test.junit.IGatewayTestServer#configure(org.codehaus.jackson.JsonNode)
+     */
+    @Override
+    public void configure(JsonNode config) {
+        String testType = config.get("type").asText();
+        System.setProperty("apiman.test.type", testType);
+        configureGateway();
     }
 
     /**
@@ -127,49 +132,64 @@ public final class AbstractGatewayTest {
         }
     }
 
-    @AfterClass
-    public static void shutdown() throws Exception {
-        gatewayServer.stop();
-        echoServer.stop();
-    }
-
     /**
-     * Runs the given test plan.
-     * @param planPath
+     * @see io.apiman.gateway.test.junit.IGatewayTestServer#getApiEndpoint()
      */
-    protected void runTestPlan(String planPath) {
-        System.setProperty("apiman-gateway-test.endpoints.echo", getEchoEndpoint());
-        runTestPlan(planPath, getClass().getClassLoader());
-    }
-
-    /**
-     * Runs the given test plan.
-     * @param planPath
-     * @param classLoader
-     */
-    protected void runTestPlan(String planPath, ClassLoader classLoader) {
-        String baseApiUrl = getGatewayEndpoint();
-        TestPlanRunner runner = new TestPlanRunner(baseApiUrl);
-        runner.runTestPlan(planPath, classLoader);
-    }
-
-    /**
-     * @return the gateway endpoint
-     */
-    protected String getGatewayEndpoint() {
+    @Override
+    public String getApiEndpoint() {
         int port = GATEWAY_PORT;
         if (USE_PROXY) {
             port = GATEWAY_PROXY_PORT;
         }
-        String baseApiUrl = "http://localhost:" + port;
+        String baseApiUrl = "http://localhost:" + port + "/api";
         return baseApiUrl;
     }
 
     /**
-     * @return the echo server endpoint
+     * @see io.apiman.gateway.test.junit.IGatewayTestServer#getGatewayEndpoint()
      */
-    protected String getEchoEndpoint() {
+    @Override
+    public String getGatewayEndpoint() {
+        int port = GATEWAY_PORT;
+        if (USE_PROXY) {
+            port = GATEWAY_PROXY_PORT;
+        }
+        String baseApiUrl = "http://localhost:" + port + "/gateway";
+        return baseApiUrl;
+    }
+
+    /**
+     * @see io.apiman.gateway.test.junit.IGatewayTestServer#getEchoTestEndpoint()
+     */
+    @Override
+    public String getEchoTestEndpoint() {
         return "http://localhost:" + ECHO_PORT;
+    }
+
+    /**
+     * @see io.apiman.gateway.test.junit.IGatewayTestServer#start()
+     */
+    @Override
+    public void start() {
+        try {
+            echoServer.start();
+            gatewayServer.start();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * @see io.apiman.gateway.test.junit.IGatewayTestServer#stop()
+     */
+    @Override
+    public void stop() {
+        try {
+            gatewayServer.stop();
+            echoServer.stop();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

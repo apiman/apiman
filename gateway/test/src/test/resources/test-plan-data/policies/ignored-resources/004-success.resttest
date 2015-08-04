@@ -1,4 +1,4 @@
-GET /gateway/Policy_IgnoredResourcesTest/echo/1.0.0/invoices/12 admin/admin
+GET /Policy_IgnoredResourcesTest/echo/1.0.0/invoices/12 admin/admin
 X-API-Key: 12345
 
 ----

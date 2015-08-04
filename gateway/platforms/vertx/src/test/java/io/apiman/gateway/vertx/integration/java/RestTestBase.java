@@ -107,14 +107,14 @@ public abstract class RestTestBase extends TestVerticle {
                     logger.error("Vert.x failed to deploy:");
                     logger.error(result.cause().getMessage());
                     result.cause().printStackTrace();
-                    
+
                     throw new RuntimeException(result.cause());
                 }
-                
+
                 assertTrue(result.succeeded());
-                
-                
-                
+
+
+
                 System.setProperty("apiman-gateway-test.endpoints.echo", getEchoEndpoint()); //$NON-NLS-1$
 
                 runTestPlan(planPath, getClass().getClassLoader());
@@ -133,8 +133,8 @@ public abstract class RestTestBase extends TestVerticle {
      */
     protected void runTestPlan(String planPath, ClassLoader classLoader) {
         String baseApiUrl = getApiEndpoint();
-        TestPlanRunner runner = new TestPlanRunner(baseApiUrl);
-        runner.runTestPlan(planPath, classLoader);
+        TestPlanRunner runner = new TestPlanRunner();
+        runner.runTestPlan(planPath, classLoader, baseApiUrl);
     }
 
     /**

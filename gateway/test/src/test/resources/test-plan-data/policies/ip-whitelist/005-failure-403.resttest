@@ -1,4 +1,4 @@
-GET /gateway/Policy_IPWhitelistTest/echo/1.0.0/path/to/app/resource admin/admin
+GET /Policy_IPWhitelistTest/echo/1.0.0/path/to/app/resource admin/admin
 X-API-Key: 12345_403
 
 ----

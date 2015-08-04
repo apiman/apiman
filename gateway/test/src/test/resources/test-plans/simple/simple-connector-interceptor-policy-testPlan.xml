@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testPlan xmlns="urn:io.apiman.test:2014:02:testPlan">
 
-  <testGroup name="Configure the Gateway">
+  <testGroup name="Configure the Gateway" endpoint="api">
     <test name="Register Public Application">test-plan-data/simple/simple-connector-interceptor-policy/setup/001-publish-service.resttest</test>
   </testGroup>
 

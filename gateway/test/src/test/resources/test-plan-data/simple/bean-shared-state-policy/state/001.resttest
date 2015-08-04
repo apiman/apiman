@@ -1,4 +1,4 @@
-GET /gateway/BeanSharedStatePolicyTest/echo/1.0.0/path/to/app/resource admin/admin
+GET /BeanSharedStatePolicyTest/echo/1.0.0/path/to/app/resource admin/admin
 X-API-Key: 12345
 
 ----

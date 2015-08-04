@@ -1,4 +1,4 @@
-PUT /gateway/SimpleEchoPublicTest/echo/2.0/path/to/app/resource admin/admin
+PUT /SimpleEchoPublicTest/echo/2.0/path/to/app/resource admin/admin
 Content-Type: application/json
 
 {

@@ -79,17 +79,11 @@ public class TestPlanRunner {
     private static Logger logger = LoggerFactory.getLogger(TestPlanRunner.class);
 
     private CloseableHttpClient client = HttpClientBuilder.create().build();
-    private String baseApiUrl;
 
     /**
      * Constructor.
-     * @param baseApiUrl
      */
-    public TestPlanRunner(String baseApiUrl) {
-        this.baseApiUrl = baseApiUrl;
-        if (this.baseApiUrl.endsWith("/")) {
-            this.baseApiUrl = this.baseApiUrl.substring(0, this.baseApiUrl.length() - 1);
-        }
+    public TestPlanRunner() {
     }
 
     /**
@@ -97,8 +91,9 @@ public class TestPlanRunner {
      *
      * @param resourcePath
      * @param cl
+     * @param baseApiUrl
      */
-    public void runTestPlan(String resourcePath, ClassLoader cl) {
+    public void runTestPlan(String resourcePath, ClassLoader cl, String baseApiUrl) {
         client = HttpClientBuilder.create().build();
         try {
             TestPlan testPlan = TestUtil.loadTestPlan(resourcePath, cl);
@@ -117,7 +112,7 @@ public class TestPlanRunner {
                     String rtPath = test.getValue();
                     log("Executing REST Test [{0}] - {1}", test.getName(), rtPath);
                     RestTest restTest = TestUtil.loadRestTest(rtPath, cl);
-                    runTest(restTest);
+                    runTest(restTest, baseApiUrl);
                     log("REST Test Completed");
                     log("+++++++++++++++++++");
                 }
@@ -140,11 +135,14 @@ public class TestPlanRunner {
      * Runs a single REST test.
      *
      * @param restTest
+     * @param baseApiUrl
+     * @throws Error
      */
-    public void runTest(RestTest restTest) throws Error {
+    public void runTest(RestTest restTest, String baseApiUrl) throws Error {
         try {
             String requestPath = TestUtil.doPropertyReplacement(restTest.getRequestPath());
-            URI uri = getUri(requestPath);
+            URI uri = getUri(baseApiUrl, requestPath);
+            log("Sending HTTP request to: " + uri);
             HttpRequestBase request = null;
             if (restTest.getRequestMethod().equalsIgnoreCase("GET")) {
                 request = new HttpGet();
@@ -545,7 +543,10 @@ public class TestPlanRunner {
      * @param path
      * @throws URISyntaxException
      */
-    public URI getUri(String path) throws URISyntaxException {
+    public URI getUri(String baseApiUrl, String path) throws URISyntaxException {
+        if (baseApiUrl.endsWith("/")) {
+            baseApiUrl = baseApiUrl.substring(0, baseApiUrl.length() - 1);
+        }
         if (path == null) {
             return new URI(baseApiUrl);
         } else {

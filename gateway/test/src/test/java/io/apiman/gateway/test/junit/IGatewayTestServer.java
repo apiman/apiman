@@ -15,22 +15,28 @@
  */
 package io.apiman.gateway.test.junit;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import org.codehaus.jackson.JsonNode;
 
 /**
- * Annotation used to indicate an apiman REST Test junit test.  The
- * value of the annotation should be a path to a REST Test test plan
- * XML file.
+ * Any gateway under test would need to implement this interface, along
+ * with standing up an actual gateway instance (with API).  The gateway
+ * REST tests will then send http messages to the appropriate endpoints
+ * in order to affect the test being run.
  *
  * @author eric.wittmann@redhat.com
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
-public @interface GatewayRestTestPlan {
+public interface IGatewayTestServer {
 
-    String value();
+    public void configure(JsonNode config);
+
+    public String getApiEndpoint();
+
+    public String getGatewayEndpoint();
+
+    public String getEchoTestEndpoint();
+
+    public void start();
+
+    public void stop();
 
 }

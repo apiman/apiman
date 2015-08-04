@@ -1,4 +1,4 @@
-GET /gateway/PluginTestPolicyTest/echo/1.0/path/to/app/resource bwayne/bwayne
+GET /PluginTestPolicyTest/echo/1.0/path/to/app/resource bwayne/bwayne
 
 ----
 200

@@ -1,4 +1,4 @@
-GET /gateway/SimpleEchoTest/echo/1.0.0/path/to/app/resource?param1=value1&param3=hello%20world&param2=value2 admin/admin
+GET /SimpleEchoTest/echo/1.0.0/path/to/app/resource?param1=value1&param3=hello%20world&param2=value2 admin/admin
 X-Custom-Header: MyValue
 X-API-Key: 12345
 

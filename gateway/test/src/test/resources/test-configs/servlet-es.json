@@ -1,0 +1,4 @@
+{
+    "factory" : "io.apiman.gateway.test.junit.servlet.ServletGatewayTestServerFactory",
+    "type" : "es"
+}

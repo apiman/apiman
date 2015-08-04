@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
@@ -177,14 +178,7 @@ public class ManagerRestTester extends ParentRunner<TestInfo> {
         TestPlanInfo lastPlan = null;
         for (TestPlanInfo planInfo : testPlans) {
             lastPlan = planInfo;
-            if (planInfo.endpoint != null && planInfo.endpoint.length() > 0) {
-                log("Test Endpoint: {0}", planInfo.endpoint);
-                planInfo.runner = new TestPlanRunner(planInfo.endpoint);
-            } else {
-                String baseApiUrl = "http://localhost:" + getTestServerPort() + getBaseApiContext();
-                log("Test Endpoint: {0}", baseApiUrl);
-                planInfo.runner = new TestPlanRunner(baseApiUrl);
-            }
+            planInfo.runner = new TestPlanRunner();
 
             List<TestGroupType> groups = planInfo.plan.getTestGroup();
             for (TestGroupType group : groups) {
@@ -196,6 +190,7 @@ public class ManagerRestTester extends ParentRunner<TestInfo> {
                         testInfo.name = test.getName();
                     }
                     testInfo.plan = planInfo;
+                    testInfo.group = group;
                     testInfo.test = test;
                     children.add(testInfo);
                 }
@@ -296,7 +291,20 @@ public class ManagerRestTester extends ParentRunner<TestInfo> {
                 @Override
                 public void evaluate() throws Throwable {
                     RestTest restTest = TestUtil.loadRestTest(testInfo.test.getValue(), getTestClass().getJavaClass().getClassLoader());
-                    testInfo.plan.runner.runTest(restTest);
+                    String endpoint = testInfo.plan.endpoint;
+                    if (StringUtils.isEmpty(endpoint)) {
+                        endpoint = TestUtil.doPropertyReplacement(testInfo.test.getEndpoint());
+                    }
+                    if (StringUtils.isEmpty(endpoint)) {
+                        endpoint = TestUtil.doPropertyReplacement(testInfo.group.getEndpoint());
+                    }
+                    if (StringUtils.isEmpty(endpoint)) {
+                        endpoint = TestUtil.doPropertyReplacement(testInfo.plan.plan.getEndpoint());
+                    }
+                    if (StringUtils.isEmpty(endpoint)) {
+                        endpoint = "http://localhost:" + getTestServerPort() + getBaseApiContext();
+                    }
+                    testInfo.plan.runner.runTest(restTest, endpoint);
                 }
             }, description, notifier);
         }
@@ -387,6 +395,7 @@ public class ManagerRestTester extends ParentRunner<TestInfo> {
     }
 
     public static class TestInfo {
+        TestGroupType group;
         TestType test;
         String name;
         TestPlanInfo plan;

@@ -15,32 +15,7 @@
  */
 package io.apiman.gateway.test.junit;
 
-import io.apiman.gateway.engine.components.IBufferFactoryComponent;
-import io.apiman.gateway.engine.components.ICacheStoreComponent;
-import io.apiman.gateway.engine.components.IHttpClientComponent;
-import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
-import io.apiman.gateway.engine.components.IRateLimiterComponent;
-import io.apiman.gateway.engine.components.ISharedStateComponent;
-import io.apiman.gateway.engine.es.ESRateLimiterComponent;
-import io.apiman.gateway.engine.es.ESRegistry;
-import io.apiman.gateway.engine.es.ESSharedStateComponent;
-import io.apiman.gateway.engine.impl.ByteBufferFactoryComponent;
-import io.apiman.gateway.engine.impl.DefaultPluginRegistry;
-import io.apiman.gateway.engine.impl.InMemoryCacheStoreComponent;
-import io.apiman.gateway.engine.impl.InMemoryRateLimiterComponent;
-import io.apiman.gateway.engine.impl.InMemoryRegistry;
-import io.apiman.gateway.engine.impl.InMemorySharedStateComponent;
-import io.apiman.gateway.engine.policy.PolicyFactoryImpl;
-import io.apiman.gateway.platforms.servlet.PolicyFailureFactoryComponent;
-import io.apiman.gateway.platforms.servlet.components.HttpClientComponentImpl;
-import io.apiman.gateway.platforms.servlet.connectors.HttpConnectorFactory;
-import io.apiman.gateway.platforms.war.WarEngineConfig;
 import io.apiman.gateway.test.junit.GatewayRestTester.TestInfo;
-import io.apiman.gateway.test.server.EchoServer;
-import io.apiman.gateway.test.server.GatewayServer;
-import io.apiman.gateway.test.server.GatewayTestType;
-import io.apiman.gateway.test.server.GatewayTestUtils;
-import io.apiman.gateway.test.server.TestMetrics;
 import io.apiman.test.common.plan.TestGroupType;
 import io.apiman.test.common.plan.TestPlan;
 import io.apiman.test.common.plan.TestType;
@@ -49,15 +24,16 @@ import io.apiman.test.common.util.TestPlanRunner;
 import io.apiman.test.common.util.TestUtil;
 
 import java.io.File;
-import java.lang.reflect.Method;
+import java.io.IOException;
+import java.net.URL;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.runner.Description;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.ParentRunner;
@@ -78,13 +54,32 @@ public class GatewayRestTester extends ParentRunner<TestInfo> {
 
     private static Logger logger = LoggerFactory.getLogger(TestPlanRunner.class);
 
-    protected static final int ECHO_PORT = 7654;
-    protected static final int GATEWAY_PORT = 8080;
-    protected static final int GATEWAY_PROXY_PORT = 8081;
-    protected static final boolean USE_PROXY = false; // if you set this to true you must start a tcp proxy on 8081
+    private static IGatewayTestServer gatewayServer;
 
-    private static EchoServer echoServer = new EchoServer(ECHO_PORT);
-    private static GatewayServer gatewayServer = new GatewayServer(GATEWAY_PORT);
+    static {
+        createAndConfigureGateway();
+    }
+
+    /**
+     * Creates a gateway from a gateway test config file.
+     */
+    protected static void createAndConfigureGateway() {
+        String testConfig = System.getProperty("apiman.gateway-test.config", null);
+        if (testConfig == null) {
+            testConfig = "default";
+        }
+        URL configUrl = GatewayRestTester.class.getClassLoader().getResource("test-configs/" + testConfig + ".json");
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            JsonNode config = mapper.readTree(configUrl);
+            String factoryFQN = config.get("factory").asText();
+            IGatewayTestServerFactory factory = (IGatewayTestServerFactory) Class.forName(factoryFQN).newInstance();
+            gatewayServer = factory.createGatewayTestServer();
+            gatewayServer.configure(config);
+        } catch (IOException | ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     private List<TestPlanInfo> testPlans = new ArrayList<>();
     private Set<String> resetSysProps = new HashSet<>();
@@ -107,35 +102,12 @@ public class GatewayRestTester extends ParentRunner<TestInfo> {
         try {
             GatewayRestTestPlan annotation = testClass.getAnnotation(GatewayRestTestPlan.class);
             if (annotation == null) {
-                Method[] methods = testClass.getMethods();
-                TreeSet<GatewayRestTestPlan> annotations = new TreeSet<>(new Comparator<GatewayRestTestPlan>() {
-                    @Override
-                    public int compare(GatewayRestTestPlan o1, GatewayRestTestPlan o2) {
-                        Integer i1 = o1.order();
-                        Integer i2 = o2.order();
-                        return i1.compareTo(i2);
-                    }
-                });
-                for (Method method : methods) {
-                    annotation = method.getAnnotation(GatewayRestTestPlan.class);
-                    if (annotation != null) {
-                        annotations.add(annotation);
-                    }
-                }
-                for (GatewayRestTestPlan anno : annotations) {
-                    TestPlanInfo planInfo = new TestPlanInfo();
-                    planInfo.planPath = anno.value();
-                    planInfo.name = new File(planInfo.planPath).getName();
-                    planInfo.endpoint = TestUtil.doPropertyReplacement(anno.endpoint());
-                    planInfo.plan = TestUtil.loadTestPlan(planInfo.planPath, testClass.getClassLoader());
-                    testPlans.add(planInfo);
-                }
+                throw new InitializationError("Missing @GatewayRestTestPlan annotation on test class.");
             } else {
                 TestPlanInfo planInfo = new TestPlanInfo();
                 planInfo.planPath = annotation.value();
                 planInfo.name = new File(planInfo.planPath).getName();
                 planInfo.plan = TestUtil.loadTestPlan(planInfo.planPath, testClass.getClassLoader());
-                planInfo.endpoint = TestUtil.doPropertyReplacement(annotation.endpoint());
                 testPlans.add(planInfo);
             }
         } catch (Throwable e) {
@@ -151,76 +123,15 @@ public class GatewayRestTester extends ParentRunner<TestInfo> {
      * Called to setup the test.
      * @throws InitializationError
      */
-    public static void setup() {
-        if (!"true".equals(System.getProperty("apiman.junit.no-server", "false"))) {
-            configureGateway();
-            startServer();
-        } else {
-            System.out.println("**** API Gateway Server suppressed - assuming running tests against a live server. ****");
-        }
-    }
-
-    /**
-     * Configures the gateway by settings system properties.
-     */
-    protected static void configureGateway() {
-        System.setProperty(WarEngineConfig.APIMAN_GATEWAY_PLUGIN_REGISTRY_CLASS, DefaultPluginRegistry.class.getName());
-        System.setProperty(WarEngineConfig.APIMAN_GATEWAY_PLUGIN_REGISTRY_CLASS + ".pluginsDir", new File("target/plugintmp").getAbsolutePath());
-        System.setProperty(WarEngineConfig.APIMAN_GATEWAY_CONNECTOR_FACTORY_CLASS, HttpConnectorFactory.class.getName());
-        System.setProperty(WarEngineConfig.APIMAN_GATEWAY_POLICY_FACTORY_CLASS, PolicyFactoryImpl.class.getName());
-        System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + IPolicyFailureFactoryComponent.class.getSimpleName(),
-                PolicyFailureFactoryComponent.class.getName());
-        System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + IHttpClientComponent.class.getSimpleName(),
-                HttpClientComponentImpl.class.getName());
-        System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + IBufferFactoryComponent.class.getSimpleName(),
-                ByteBufferFactoryComponent.class.getName());
-        System.setProperty(WarEngineConfig.APIMAN_GATEWAY_METRICS_CLASS, TestMetrics.class.getName());
-
-        if (GatewayTestUtils.getTestType() == GatewayTestType.memory) {
-            // Configure to run with in-memory components
-            /////////////////////////////////////////////
-            System.setProperty(WarEngineConfig.APIMAN_GATEWAY_REGISTRY_CLASS, InMemoryRegistry.class.getName());
-            System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + ISharedStateComponent.class.getSimpleName(),
-                    InMemorySharedStateComponent.class.getName());
-            System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + IRateLimiterComponent.class.getSimpleName(),
-                    InMemoryRateLimiterComponent.class.getName());
-            System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + ICacheStoreComponent.class.getSimpleName(),
-                    InMemoryCacheStoreComponent.class.getName());
-        } else if (GatewayTestUtils.getTestType() == GatewayTestType.es) {
-            // Configure to run with elasticsearch components
-            /////////////////////////////////////////////////
-            System.setProperty(WarEngineConfig.APIMAN_GATEWAY_REGISTRY_CLASS, ESRegistry.class.getName());
-            System.setProperty(WarEngineConfig.APIMAN_GATEWAY_REGISTRY_CLASS + ".client.type", "local");
-            System.setProperty(WarEngineConfig.APIMAN_GATEWAY_REGISTRY_CLASS + ".client.class", GatewayServer.class.getName());
-            System.setProperty(WarEngineConfig.APIMAN_GATEWAY_REGISTRY_CLASS + ".client.field", "ES_CLIENT");
-
-            System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + ISharedStateComponent.class.getSimpleName(),
-                    ESSharedStateComponent.class.getName());
-            System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + ISharedStateComponent.class.getSimpleName() + ".client.type",
-                    "local");
-            System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + ISharedStateComponent.class.getSimpleName() + ".client.class",
-                    GatewayServer.class.getName());
-            System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + ISharedStateComponent.class.getSimpleName() + ".client.field",
-                    "ES_CLIENT");
-
-            System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + IRateLimiterComponent.class.getSimpleName(),
-                    ESRateLimiterComponent.class.getName());
-            System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + IRateLimiterComponent.class.getSimpleName() + ".client.type",
-                    "local");
-            System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + IRateLimiterComponent.class.getSimpleName() + ".client.class",
-                    GatewayServer.class.getName());
-            System.setProperty(WarEngineConfig.APIMAN_GATEWAY_COMPONENT_PREFIX + IRateLimiterComponent.class.getSimpleName() + ".client.field",
-                    "ES_CLIENT");
-        }
+    public void setup() {
+        startServer();
     }
 
     /**
      * Called at the end of the test.
      */
-    public static void shutdown() {
-        if (!"true".equals(System.getProperty("apiman.junit.no-server", "false"))) {
-            stopServer();
-        }
+    public void shutdown() {
+        stopServer();
     }
 
     /**
@@ -228,7 +139,6 @@ public class GatewayRestTester extends ParentRunner<TestInfo> {
      */
     protected static void startServer() {
         try {
-            echoServer.start();
             gatewayServer.start();
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -241,7 +151,6 @@ public class GatewayRestTester extends ParentRunner<TestInfo> {
     protected static void stopServer() {
         try {
             gatewayServer.stop();
-            echoServer.stop();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -255,14 +164,7 @@ public class GatewayRestTester extends ParentRunner<TestInfo> {
         List<TestInfo> children = new ArrayList<>();
 
         for (TestPlanInfo planInfo : testPlans) {
-            if (planInfo.endpoint != null && planInfo.endpoint.length() > 0) {
-                log("Test Endpoint: {0}", planInfo.endpoint);
-                planInfo.runner = new TestPlanRunner(planInfo.endpoint);
-            } else {
-                String baseApiUrl = "http://localhost:" + getTestServerPort() + getBaseApiContext();
-                log("Test Endpoint: {0}", baseApiUrl);
-                planInfo.runner = new TestPlanRunner(baseApiUrl);
-            }
+            planInfo.runner = new TestPlanRunner();
 
             List<TestGroupType> groups = planInfo.plan.getTestGroup();
             for (TestGroupType group : groups) {
@@ -274,6 +176,7 @@ public class GatewayRestTester extends ParentRunner<TestInfo> {
                         testInfo.name = test.getName();
                     }
                     testInfo.plan = planInfo;
+                    testInfo.group = group;
                     testInfo.test = test;
                     children.add(testInfo);
                 }
@@ -296,7 +199,7 @@ public class GatewayRestTester extends ParentRunner<TestInfo> {
         log("-------------------------------------------------------------------------------");
         log("");
 
-        System.setProperty("apiman-gateway-test.endpoints.echo", getEchoEndpoint());
+        System.setProperty("apiman-gateway-test.endpoints.echo", gatewayServer.getEchoTestEndpoint());
 
         try {
             super.run(notifier);
@@ -325,9 +228,40 @@ public class GatewayRestTester extends ParentRunner<TestInfo> {
             @Override
             public void evaluate() throws Throwable {
                 RestTest restTest = TestUtil.loadRestTest(testInfo.test.getValue(), getTestClass().getJavaClass().getClassLoader());
-                testInfo.plan.runner.runTest(restTest);
+                String endpoint = null;
+                if (endpoint == null) {
+                    endpoint = testInfo.test.getEndpoint();
+                }
+                if (endpoint == null) {
+                    endpoint = testInfo.group.getEndpoint();
+                }
+                if (endpoint == null) {
+                    endpoint = testInfo.plan.plan.getEndpoint();
+                }
+                if (endpoint != null) {
+                    endpoint = resolveEndpoint(endpoint);
+                }
+                if (endpoint == null) {
+                    endpoint = gatewayServer.getGatewayEndpoint();
+                }
+
+                testInfo.plan.runner.runTest(restTest, endpoint);
             }
         }, description, notifier);
+    }
+
+    /**
+     * Resolves the logical endpoint into a real endpoint provided by the {@link IGatewayTestServer}.
+     * @param endpoint
+     */
+    protected String resolveEndpoint(String endpoint) {
+        if ("api".equals(endpoint)) {
+            return gatewayServer.getApiEndpoint();
+        } else if ("gateway".equals(endpoint)) {
+            return gatewayServer.getGatewayEndpoint();
+        } else {
+            return TestUtil.doPropertyReplacement(endpoint);
+        }
     }
 
     /**
@@ -343,21 +277,6 @@ public class GatewayRestTester extends ParentRunner<TestInfo> {
      */
     protected String getBaseApiContext() {
         return System.getProperty("apiman.junit.gateway-context", "/");
-    }
-
-    /**
-     * @return the port to use when sending requests
-     */
-    protected int getTestServerPort() {
-        String spPort = System.getProperty("apiman.junit.server-port");
-        if (spPort != null) {
-            return Integer.parseInt(spPort);
-        }
-        if (USE_PROXY) {
-            return GATEWAY_PROXY_PORT;
-        } else {
-            return GATEWAY_PORT;
-        }
     }
 
     /**
@@ -404,21 +323,14 @@ public class GatewayRestTester extends ParentRunner<TestInfo> {
         TestPlan plan;
         String name;
         String planPath;
-        String endpoint;
 
         TestPlanRunner runner;
     }
 
     public static class TestInfo {
+        TestGroupType group;
         TestType test;
         String name;
         TestPlanInfo plan;
-    }
-
-    /**
-     * @return the echo server endpoint
-     */
-    protected String getEchoEndpoint() {
-        return "http://localhost:" + ECHO_PORT;
     }
 }

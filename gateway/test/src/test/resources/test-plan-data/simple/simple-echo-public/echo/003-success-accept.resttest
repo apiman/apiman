@@ -1,4 +1,4 @@
-PUT /gateway/SimpleEchoPublicTest/echo/path/to/app/resource admin/admin
+PUT /SimpleEchoPublicTest/echo/path/to/app/resource admin/admin
 Content-Type: application/json
 Accept: application/apiman.2.0+json
 

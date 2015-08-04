@@ -2,7 +2,7 @@
 <testPlan xmlns="urn:io.apiman.test:2014:02:testPlan">
 
   <testGroup name="Test a simple plugin-provided policy">
-    <test name="Publish Service">test-plan-data/plugins/test-policy/001-publish-service.resttest</test>
+    <test name="Publish Service" endpoint="api">test-plan-data/plugins/test-policy/001-publish-service.resttest</test>
     <test name="Success">test-plan-data/plugins/test-policy/002-success.resttest</test>
   </testGroup>
 

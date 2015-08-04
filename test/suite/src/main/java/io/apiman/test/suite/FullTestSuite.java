@@ -23,7 +23,7 @@ import java.io.InputStreamReader;
 /**
  * A full apiman test suite.  Run this against an empty apiman installation as a smoke
  * test.  The suite will do the following:
- * 
+ *
  * <pre>
  * 1) Global configuration
  *     a) Add policy definitions
@@ -38,9 +38,9 @@ import java.io.InputStreamReader;
  * 8) Publish and Register the service and app
  * 9) Send requests to the gateway
  * </pre>
- * 
+ *
  * The following are pre-requisites for this test suite:
- * 
+ *
  * <pre>
  * 1) apiman must be running :)
  * 2) a valid user must exist with admin privs (role = apiadmin)
@@ -52,7 +52,7 @@ import java.io.InputStreamReader;
  */
 @SuppressWarnings({"nls", "javadoc"})
 public class FullTestSuite {
-    
+
     /**
      * The test suite main entry point.
      * @param args
@@ -67,11 +67,10 @@ public class FullTestSuite {
         param("apiman.suite.gateway-config-password", "  Password", "admin123!");
         String gatewayEndpoint = param("apiman.suite.gateway-endpoint", "Gateway HTTP Endpoint", "http://localhost:8080/apiman-gateway");
         param("apiman.suite.echo-endpoint", "Echo Service Endpoint", "http://localhost:8080/services/echo");
-        
-        TestPlanRunner runner = new TestPlanRunner(apiEndpoint);
-        runner.runTestPlan("scripts/api-manager-testPlan.xml", FullTestSuite.class.getClassLoader());
-        runner = new TestPlanRunner(gatewayEndpoint);
-        runner.runTestPlan("scripts/api-gateway-testPlan.xml", FullTestSuite.class.getClassLoader());
+
+        TestPlanRunner runner = new TestPlanRunner();
+        runner.runTestPlan("scripts/api-manager-testPlan.xml", FullTestSuite.class.getClassLoader(), apiEndpoint);
+        runner.runTestPlan("scripts/api-gateway-testPlan.xml", FullTestSuite.class.getClassLoader(), gatewayEndpoint);
     }
 
     /**
@@ -91,7 +90,7 @@ public class FullTestSuite {
         if (input == null || input.trim().isEmpty()) {
             input = defaultValue;
         }
-        
+
         System.setProperty(propertyName, input);
         return input;
     }

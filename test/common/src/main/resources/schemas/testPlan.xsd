@@ -26,6 +26,8 @@
       <xsd:sequence>
         <xsd:element name="testGroup" type="tns:testGroupType" minOccurs="1" maxOccurs="unbounded" />
       </xsd:sequence>
+      <xsd:attribute name="name" type="xsd:string" use="required" />
+      <xsd:attribute name="endpoint" type="xsd:string" use="optional" />
     </xsd:complexType>
   </xsd:element>
 
@@ -35,6 +37,7 @@
       <xsd:element name="test" type="tns:testType" minOccurs="0" maxOccurs="unbounded" />
     </xsd:sequence>
     <xsd:attribute name="name" type="xsd:string" use="required" />
+    <xsd:attribute name="endpoint" type="xsd:string" use="optional" />
   </xsd:complexType>
 
 
@@ -42,6 +45,7 @@
     <xsd:simpleContent>
       <xsd:extension base="xsd:string">
         <xsd:attribute name="name" type="xsd:string" use="required" />
+        <xsd:attribute name="endpoint" type="xsd:string" use="optional" />
       </xsd:extension>
     </xsd:simpleContent>
   </xsd:complexType>

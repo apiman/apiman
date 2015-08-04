@@ -82,9 +82,9 @@ public class CreateH2Database {
      */
     protected void runTestPlan(String planPath, ClassLoader classLoader) {
         String baseApiUrl = "http://localhost:" + getTestServerPort() + getBaseApiContext();
-        TestPlanRunner runner = new TestPlanRunner(baseApiUrl);
+        TestPlanRunner runner = new TestPlanRunner();
         configureSystemProperties();
-        runner.runTestPlan(planPath, classLoader);
+        runner.runTestPlan(planPath, classLoader, baseApiUrl);
     }
 
     /**

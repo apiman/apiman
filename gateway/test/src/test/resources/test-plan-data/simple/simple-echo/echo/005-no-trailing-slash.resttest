@@ -1,4 +1,4 @@
-GET /gateway/SimpleEchoTest/echo/1.0.0/path/to/app/resource
+GET /SimpleEchoTest/echo/1.0.0/path/to/app/resource
 X-API-Key: 12345
 
 ----

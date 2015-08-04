@@ -1,4 +1,4 @@
-PUT /api/services admin/admin
+PUT /services admin/admin
 Content-Type: application/json
 
 {
