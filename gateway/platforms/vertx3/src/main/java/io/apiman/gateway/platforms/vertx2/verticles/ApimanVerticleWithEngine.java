@@ -19,10 +19,9 @@ import io.apiman.gateway.engine.IEngine;
 import io.apiman.gateway.platforms.vertx2.engine.VertxConfigDrivenEngineFactory;
 
 /**
- * A base for those verticles that require an instantiated engine, and associated API Listener to receive
- * updates.
+ * A base for those verticles that require an instantiated engine.
  *
- * @author Marc Savy <msavy@redhat.com>
+ * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 public abstract class ApimanVerticleWithEngine extends ApimanVerticleBase {
 

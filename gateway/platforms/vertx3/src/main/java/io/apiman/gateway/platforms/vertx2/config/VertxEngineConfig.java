@@ -34,7 +34,7 @@ import java.util.Map.Entry;
  * Engine configuration, read simplistically from Vert'x JSON config.
  *
  * @see "http://vertx.io/manual.html#using-vertx-from-the-command-line"
- * @author Marc Savy <msavy@redhat.com>
+ * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 @SuppressWarnings("nls")
 public class VertxEngineConfig implements IEngineConfig {

@@ -23,7 +23,7 @@ import java.io.UnsupportedEncodingException;
 /**
  * An {@link IApimanBuffer} implementation that wraps Vert.x's native {@link Buffer} format.
  *
- * @author Marc Savy <msavy@redhat.com>
+ * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 public class VertxApimanBuffer implements IApimanBuffer {
 

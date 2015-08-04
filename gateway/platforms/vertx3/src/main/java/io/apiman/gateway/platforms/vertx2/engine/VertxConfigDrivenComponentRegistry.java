@@ -28,7 +28,7 @@ import java.util.Map;
  *
  * @see ConfigDrivenComponentRegistry
  *
- * @author Marc Savy <msavy@redhat.com>
+ * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 public class VertxConfigDrivenComponentRegistry extends ConfigDrivenComponentRegistry {
 

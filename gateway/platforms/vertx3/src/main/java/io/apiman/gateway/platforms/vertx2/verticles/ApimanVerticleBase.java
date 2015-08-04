@@ -24,9 +24,9 @@ import io.vertx.core.logging.LoggerFactory;
 
 import java.util.UUID;
 /**
- * Standard base for all Apiman verticles.
+ * Standard base for all apiman verticles.
  *
- * @author Marc Savy <msavy@redhat.com>
+ * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 @SuppressWarnings("nls")
 public abstract class ApimanVerticleBase extends AbstractVerticle {

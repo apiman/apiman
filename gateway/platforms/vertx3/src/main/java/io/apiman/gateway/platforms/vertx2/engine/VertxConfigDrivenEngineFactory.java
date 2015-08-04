@@ -30,7 +30,7 @@ import java.util.Map;
  *
  * @see ConfigDrivenEngineFactory
  *
- * @author Marc Savy <msavy@redhat.com>
+ * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 public class VertxConfigDrivenEngineFactory extends ConfigDrivenEngineFactory {
 

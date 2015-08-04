@@ -34,7 +34,7 @@ import java.util.Set;
 /**
  * Create Vert.x connectors to the enable apiman to connect to a backend service.
  *
- * @author Marc Savy <msavy@redhat.com>
+ * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 public class ConnectorFactory implements IConnectorFactory {
 

@@ -59,7 +59,7 @@ import java.util.Set;
  * an event to the provided {@link #resultHandler} when once it has reached a valid state. Hence, it is safe
  * to return instances immediately after the constructor has returned.
  *
- * @author Marc Savy <msavy@redhat.com>
+ * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 @SuppressWarnings("nls")
 class HttpConnector implements IServiceConnectionResponse, IServiceConnection {

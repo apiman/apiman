@@ -27,6 +27,11 @@ import io.vertx.core.Vertx;
 import io.vertx.core.logging.Logger;
 import io.vertx.serviceproxy.ProxyHelper;
 
+/**
+ * Create connection
+ *
+ * @author Marc Savy {@literal <msavy@redhat.com>}
+ */
 @SuppressWarnings("nls")
 public class InitializeIngestorServiceImpl implements InitializeIngestorService {
 

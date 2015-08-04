@@ -35,7 +35,7 @@ import io.vertx.core.logging.Logger;
 /**
  * Execute policy
  *
- * @author Marc Savy <msavy@redhat.com>
+ * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 public class PolicyExecutor {
     private IngestorToPolicyImpl requestService;
