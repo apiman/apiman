@@ -15,9 +15,9 @@
  */
 package io.apiman.manager.test;
 
-import io.apiman.manager.test.junit.RestTestGatewayLog;
-import io.apiman.manager.test.junit.RestTestPlan;
-import io.apiman.manager.test.junit.RestTester;
+import io.apiman.manager.test.junit.ManagerRestTestGatewayLog;
+import io.apiman.manager.test.junit.ManagerRestTestPlan;
+import io.apiman.manager.test.junit.ManagerRestTester;
 
 import org.junit.runner.RunWith;
 
@@ -26,9 +26,9 @@ import org.junit.runner.RunWith;
  *
  * @author eric.wittmann@redhat.com
  */
-@RunWith(RestTester.class)
-@RestTestPlan("test-plans/all-testPlan.xml")
-@RestTestGatewayLog(
+@RunWith(ManagerRestTester.class)
+@ManagerRestTestPlan("test-plans/all-testPlan.xml")
+@ManagerRestTestGatewayLog(
       "GET:/mock-gateway/system/status\n" +
       "PUT:/mock-gateway/services\n" +
       "GET:/mock-gateway/system/status\n" +

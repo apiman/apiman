@@ -15,9 +15,9 @@
  */
 package io.apiman.test.suite;
 
-import io.apiman.manager.test.junit.RestTestPlan;
+import io.apiman.manager.test.junit.ManagerRestTestPlan;
 import io.apiman.manager.test.junit.RestTestSystemProperties;
-import io.apiman.manager.test.junit.RestTester;
+import io.apiman.manager.test.junit.ManagerRestTester;
 
 import org.junit.runner.RunWith;
 
@@ -27,7 +27,7 @@ import org.junit.runner.RunWith;
  *
  * @author eric.wittmann@redhat.com
  */
-@RunWith(RestTester.class)
+@RunWith(ManagerRestTester.class)
 @RestTestSystemProperties({
     "apiman.junit.no-server", "true",
     "apiman.junit.server-port", "8080",
@@ -40,10 +40,10 @@ import org.junit.runner.RunWith;
 })
 public class FullTestSuiteTest {
 
-    @RestTestPlan(value="scripts/api-manager-testPlan.xml", order = 1)
+    @ManagerRestTestPlan(value="scripts/api-manager-testPlan.xml", order = 1)
     public void managerTests() {}
 
-    @RestTestPlan(value="scripts/api-gateway-testPlan.xml", order = 2, endpoint="${apiman.full-test-suite.gateway-endpoint : http://localhost:8080/apiman-gateway}")
+    @ManagerRestTestPlan(value="scripts/api-gateway-testPlan.xml", order = 2, endpoint="${apiman.full-test-suite.gateway-endpoint : http://localhost:8080/apiman-gateway}")
     public void gatewayTests() {}
 
 }

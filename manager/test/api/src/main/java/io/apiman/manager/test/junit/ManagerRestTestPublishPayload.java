@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 JBoss Inc
+ * Copyright 2015 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,24 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.manager.test;
+package io.apiman.manager.test.junit;
 
-import io.apiman.manager.test.junit.ManagerRestTestPlan;
-import io.apiman.manager.test.junit.RestTestSystemProperties;
-import io.apiman.manager.test.junit.ManagerRestTester;
-
-import org.junit.runner.RunWith;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Runs the "plugins" test plan.
+ * Indicates that a rest test needs to validate the mock gateway
+ * for calls made to it during the tests.
  *
  * @author eric.wittmann@redhat.com
  */
-@RunWith(ManagerRestTester.class)
-@ManagerRestTestPlan("test-plans/plugins-testPlan.xml")
-@RestTestSystemProperties({
-    "apiman.test.m2-path", "src/test/resources/test-plan-data/plugins/m2"
-})
-public class PluginsTest {
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE})
+public @interface ManagerRestTestPublishPayload {
+
+    String [] value();
 
 }

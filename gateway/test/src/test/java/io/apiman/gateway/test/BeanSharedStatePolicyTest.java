@@ -15,18 +15,18 @@
  */
 package io.apiman.gateway.test;
 
-import org.junit.Test;
+import io.apiman.gateway.test.junit.GatewayRestTestPlan;
+import io.apiman.gateway.test.junit.GatewayRestTester;
+
+import org.junit.runner.RunWith;
 
 /**
  * Unit test for the shared state component.
  *
  * @author eric.wittmann@redhat.com
  */
-public class BeanSharedStatePolicyTest extends AbstractGatewayTest {
-    
-    @Test
-    public void test() throws Exception {
-        runTestPlan("test-plans/simple/bean-shared-state-policy-testPlan.xml"); //$NON-NLS-1$
-    }
+@RunWith(GatewayRestTester.class)
+@GatewayRestTestPlan("test-plans/simple/bean-shared-state-policy-testPlan.xml")
+public class BeanSharedStatePolicyTest {
 
 }

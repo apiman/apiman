@@ -21,15 +21,20 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Indicates that a rest test needs to validate the mock gateway
- * for calls made to it during the tests.
+ * Annotation used to indicate an apiman REST Test junit test.  The
+ * value of the annotation should be a path to a REST Test test plan
+ * XML file.
  *
  * @author eric.wittmann@redhat.com
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
-public @interface RestTestPublishPayload {
+@Target({ElementType.TYPE, ElementType.METHOD})
+public @interface ManagerRestTestPlan {
 
-    String [] value();
+    String value();
+
+    String endpoint() default "";
+
+    int order() default 0;
 
 }

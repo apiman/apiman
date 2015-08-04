@@ -15,18 +15,18 @@
  */
 package io.apiman.gateway.test;
 
-import org.junit.Test;
+import io.apiman.gateway.test.junit.GatewayRestTestPlan;
+import io.apiman.gateway.test.junit.GatewayRestTester;
+
+import org.junit.runner.RunWith;
 
 /**
  * Make sure the Ignored Resources policy works.
  *
  * @author rubenrm1@gmail.com
  */
-public class Policy_IgnoredResourcesTest extends AbstractGatewayTest {
-    
-    @Test
-    public void test() throws Exception {
-        runTestPlan("test-plans/policies/ignored-resources-testPlan.xml"); //$NON-NLS-1$
-    }
+@RunWith(GatewayRestTester.class)
+@GatewayRestTestPlan("test-plans/policies/ignored-resources-testPlan.xml")
+public class Policy_IgnoredResourcesTest {
 
 }

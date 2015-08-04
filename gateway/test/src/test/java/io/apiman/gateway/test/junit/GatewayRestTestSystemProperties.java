@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.manager.test.junit;
+package io.apiman.gateway.test.junit;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -21,15 +21,15 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Indicates that a rest test needs to validate the mock gateway
- * for calls made to it during the tests.
+ * System properties that should be set at the beginning of a rest test.  Old
+ * values of these system properties will be restored when the test completes.
  *
  * @author eric.wittmann@redhat.com
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
-public @interface RestTestGatewayLog {
+public @interface GatewayRestTestSystemProperties {
 
-    String value();
+    String [] value();
 
 }

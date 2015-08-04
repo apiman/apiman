@@ -15,26 +15,25 @@
  */
 package io.apiman.gateway.test;
 
+import io.apiman.gateway.test.junit.GatewayRestTestPlan;
+import io.apiman.gateway.test.junit.GatewayRestTester;
 import io.apiman.gateway.test.policies.SimplePolicy;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.BeforeClass;
+import org.junit.runner.RunWith;
 
 /**
  * Make sure the gateway and test echo server are working.
  *
  * @author eric.wittmann@redhat.com
  */
-public class SimplePolicyTest extends AbstractGatewayTest {
-    
-    @Test
-    public void test() throws Exception {
+@RunWith(GatewayRestTester.class)
+@GatewayRestTestPlan("test-plans/simple/simple-policy-testPlan.xml")
+public class SimplePolicyTest {
+
+    @BeforeClass
+    public static void before() {
         SimplePolicy.reset();
-        runTestPlan("test-plans/simple/simple-policy-testPlan.xml"); //$NON-NLS-1$
-        // This test invokes the echo service twice, so that should result in two
-        // invokations of the simple policy
-        Assert.assertEquals(2, SimplePolicy.inboundCallCounter);
-        Assert.assertEquals(2, SimplePolicy.outboundCallCounter);
     }
 
 }

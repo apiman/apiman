@@ -15,18 +15,18 @@
  */
 package io.apiman.gateway.test;
 
-import org.junit.Test;
+import io.apiman.gateway.test.junit.GatewayRestTestPlan;
+import io.apiman.gateway.test.junit.GatewayRestTester;
+
+import org.junit.runner.RunWith;
 
 /**
  * Make sure the gateway and test echo server are working.
  *
  * @author eric.wittmann@redhat.com
  */
-public class SimpleHttpClientPolicyTest extends AbstractGatewayTest {
-    
-    @Test
-    public void test() throws Exception {
-        runTestPlan("test-plans/simple/simple-httpclient-policy-testPlan.xml"); //$NON-NLS-1$
-    }
+@RunWith(GatewayRestTester.class)
+@GatewayRestTestPlan("test-plans/simple/simple-httpclient-policy-testPlan.xml")
+public class SimpleHttpClientPolicyTest {
 
 }

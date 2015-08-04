@@ -15,8 +15,8 @@
  */
 package io.apiman.manager.test;
 
-import io.apiman.manager.test.junit.RestTestPlan;
-import io.apiman.manager.test.junit.RestTester;
+import io.apiman.manager.test.junit.ManagerRestTestPlan;
+import io.apiman.manager.test.junit.ManagerRestTester;
 
 import org.junit.runner.RunWith;
 
@@ -25,8 +25,8 @@ import org.junit.runner.RunWith;
  *
  * @author eric.wittmann@redhat.com
  */
-@RunWith(RestTester.class)
-@RestTestPlan("test-plans/gateways-testPlan.xml")
+@RunWith(ManagerRestTester.class)
+@ManagerRestTestPlan("test-plans/gateways-testPlan.xml")
 public class GatewaysTest {
 
 }

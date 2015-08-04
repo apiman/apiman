@@ -15,21 +15,25 @@
  */
 package io.apiman.gateway.test;
 
+import io.apiman.gateway.test.junit.GatewayRestTestPlan;
+import io.apiman.gateway.test.junit.GatewayRestTester;
+
 import java.io.File;
 
-import org.junit.Test;
+import org.junit.BeforeClass;
+import org.junit.runner.RunWith;
 
 /**
  * Make sure plugins work.
  *
  * @author eric.wittmann@redhat.com
  */
-public class PluginTestPolicyTest extends AbstractGatewayTest {
-    
-    @Test
-    public void test() throws Exception {
-        System.setProperty("apiman.gateway.m2-repository-path", new File("src/test/resources/test-plan-data/plugins/.m2/repository").getAbsolutePath()); //$NON-NLS-1$ //$NON-NLS-2$
-        runTestPlan("test-plans/plugins/test-policy-testPlan.xml"); //$NON-NLS-1$
-    }
+@RunWith(GatewayRestTester.class)
+@GatewayRestTestPlan("test-plans/plugins/test-policy-testPlan.xml")
+public class PluginTestPolicyTest {
 
+    @BeforeClass
+    public static void before() {
+        System.setProperty("apiman.gateway.m2-repository-path", new File("src/test/resources/test-plan-data/plugins/.m2/repository").getAbsolutePath()); //$NON-NLS-1$ //$NON-NLS-2$
+    }
 }

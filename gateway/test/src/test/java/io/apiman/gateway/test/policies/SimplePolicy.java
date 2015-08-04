@@ -27,14 +27,14 @@ import io.apiman.gateway.engine.policy.IPolicyContext;
  * @author eric.wittmann@redhat.com
  */
 public class SimplePolicy implements IPolicy {
-    
+
     public static int inboundCallCounter = 0;
     public static int outboundCallCounter = 0;
     public static void reset() {
         inboundCallCounter = 0;
         outboundCallCounter = 0;
     }
-    
+
     /**
      * Constructor.
      */
@@ -48,7 +48,7 @@ public class SimplePolicy implements IPolicy {
     public Object parseConfiguration(String jsonConfiguration) {
         return new Object();
     }
-    
+
     /**
      * @see io.apiman.gateway.engine.policy.IPolicy#apply(io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object, io.apiman.gateway.engine.policy.IPolicyChain)
      */
@@ -56,6 +56,7 @@ public class SimplePolicy implements IPolicy {
     public void apply(final ServiceRequest request, final IPolicyContext context, final Object config,
             final IPolicyChain<ServiceRequest> chain) {
         inboundCallCounter++;
+        request.getHeaders().put("X-Test-InboundCallCounter", String.valueOf(inboundCallCounter)); //$NON-NLS-1$
         chain.doApply(request);
     }
 
@@ -66,6 +67,7 @@ public class SimplePolicy implements IPolicy {
     public void apply(ServiceResponse response, IPolicyContext context, Object config,
             IPolicyChain<ServiceResponse> chain) {
         outboundCallCounter++;
+        response.getHeaders().put("X-Test-OutboundCallCounter", String.valueOf(outboundCallCounter)); //$NON-NLS-1$
         chain.doApply(response);
     }
 

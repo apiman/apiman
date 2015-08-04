@@ -15,18 +15,18 @@
  */
 package io.apiman.gateway.test;
 
-import org.junit.Test;
+import io.apiman.gateway.test.junit.GatewayRestTestPlan;
+import io.apiman.gateway.test.junit.GatewayRestTester;
+
+import org.junit.runner.RunWith;
 
 /**
  * Make sure the gateway API works.
  *
  * @author eric.wittmann@redhat.com
  */
-public class GatewayApiTest extends AbstractGatewayTest {
-    
-    @Test
-    public void test() throws Exception {
-        runTestPlan("test-plans/api/api-testPlan.xml"); //$NON-NLS-1$
-    }
+@RunWith(GatewayRestTester.class)
+@GatewayRestTestPlan("test-plans/api/api-testPlan.xml")
+public class GatewayApiTest {
 
 }

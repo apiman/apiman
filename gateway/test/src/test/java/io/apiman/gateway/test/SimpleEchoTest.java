@@ -16,12 +16,15 @@
 package io.apiman.gateway.test;
 
 import io.apiman.gateway.engine.metrics.RequestMetric;
+import io.apiman.gateway.test.junit.GatewayRestTestPlan;
+import io.apiman.gateway.test.junit.GatewayRestTester;
 import io.apiman.gateway.test.server.TestMetrics;
 
 import java.util.List;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * Make sure the gateway and test echo server are working.
@@ -29,12 +32,12 @@ import org.junit.Test;
  * @author eric.wittmann@redhat.com
  */
 @SuppressWarnings("nls")
-public class SimpleEchoTest extends AbstractGatewayTest {
-    
-    @Test
-    public void test() throws Exception {
-        runTestPlan("test-plans/simple/simple-echo-testPlan.xml");
-        
+@RunWith(GatewayRestTester.class)
+@GatewayRestTestPlan("test-plans/simple/simple-echo-testPlan.xml")
+public class SimpleEchoTest {
+
+    @AfterClass
+    public static void after() {
         List<RequestMetric> metrics = TestMetrics.getMetrics();
         Assert.assertNotNull(metrics);
         Assert.assertEquals(6, metrics.size());
@@ -49,14 +52,13 @@ public class SimpleEchoTest extends AbstractGatewayTest {
 
         Assert.assertEquals("12345", metric.getContractId());
 
-        Assert.assertTrue("Expected the request duration to be at least 0 ms but was " + metric.getRequestDuration(), 
+        Assert.assertTrue("Expected the request duration to be at least 0 ms but was " + metric.getRequestDuration(),
                 metric.getRequestDuration() >= 0);
-        Assert.assertTrue("Expected the service duration to be at least 0 ms but was " + metric.getServiceDuration(), 
+        Assert.assertTrue("Expected the service duration to be at least 0 ms but was " + metric.getServiceDuration(),
                 metric.getServiceDuration() >= 0);
 
         Assert.assertEquals(200, metric.getResponseCode());
         Assert.assertEquals("OK", metric.getResponseMessage());
-
     }
 
 }

@@ -15,18 +15,19 @@
  */
 package io.apiman.gateway.test;
 
-import org.junit.Test;
+import io.apiman.gateway.test.junit.GatewayRestTestPlan;
+import io.apiman.gateway.test.junit.GatewayRestTester;
+
+import org.junit.runner.RunWith;
 
 /**
  * Make sure the blacklist policy works.
  *
  * @author eric.wittmann@redhat.com
  */
-public class Policy_RateLimitingTest extends AbstractGatewayTest {
-    
-    @Test
-    public void test() throws Exception {
-        runTestPlan("test-plans/policies/rate-limiting-testPlan.xml"); //$NON-NLS-1$
-    }
+@RunWith(GatewayRestTester.class)
+@GatewayRestTestPlan("test-plans/policies/rate-limiting-testPlan.xml")
+public class Policy_RateLimitingTest {
+
 
 }

@@ -53,7 +53,7 @@ import org.junit.BeforeClass;
  * @author eric.wittmann@redhat.com
  */
 @SuppressWarnings("nls")
-public class AbstractGatewayTest {
+public final class AbstractGatewayTest {
 
     protected static final int ECHO_PORT = 7654;
     protected static final int GATEWAY_PORT = 8080;
