@@ -51,8 +51,8 @@ public class IngestorToPolicyImpl implements IngestorToPolicyService {
         System.out.println("OK, finished IngestorToPolicyImpl");
 
         this.resultHandler = resultHandler;
-
-        endHandler.handle((Void) null);
+        if (endHandler != null)
+            endHandler.handle((Void) null);
     }
 
     public void headHandler(Handler<VertxServiceRequest> handler) {

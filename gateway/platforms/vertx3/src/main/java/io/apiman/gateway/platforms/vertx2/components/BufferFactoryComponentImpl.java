@@ -66,4 +66,9 @@ public class BufferFactoryComponentImpl implements IBufferFactoryComponent {
     public IApimanBuffer createBuffer(int size) {
         return new VertxApimanBuffer(size);
     }
+
+    @Override
+    public IApimanBuffer cloneBuffer(IApimanBuffer buffer) {
+        return new VertxApimanBuffer(buffer);
+    }
 }

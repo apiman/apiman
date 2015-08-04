@@ -91,7 +91,6 @@
     <version.failsafe.plugin>2.14</version.failsafe.plugin>
     <version.war.plugin>2.5</version.war.plugin>
     <version.exec.plugin>1.3.2</version.exec.plugin>
-    <version.vertx.plugin>2.0.11-final</version.vertx.plugin>
     <version.docker.plugin>0.11.2</version.docker.plugin>
     <version.frontend-maven.plugin>0.0.23</version.frontend-maven.plugin>
 
@@ -147,8 +146,7 @@
     <version.org.picketbox>4.0.21.Final</version.org.picketbox>
     <version.org.slf4j>1.7.2</version.org.slf4j>
     <version.xmlunit>1.6</version.xmlunit>
-    <version.io.vertx>3.0.0</version.io.vertx>
-    <version.io.vertx.testtools>2.0.3-final</version.io.vertx.testtools>
+    <version.io.vertx>3.1.0-SNAPSHOT</version.io.vertx>
   </properties>
 
   <dependencyManagement>
@@ -885,21 +883,30 @@
         <artifactId>vertx-core</artifactId>
         <version>${version.io.vertx}</version>
       </dependency>
-      <!-- <dependency>
-        <groupId>io.vertx</groupId>
-        <artifactId>vertx-platform</artifactId>
-        <version>${version.io.vertx}</version>
-      </dependency> -->
       <dependency>
         <groupId>io.vertx</groupId>
         <artifactId>vertx-hazelcast</artifactId>
         <version>${version.io.vertx}</version>
       </dependency>
       <dependency>
-        <groupId>io.vertx</groupId>
-        <artifactId>testtools</artifactId>
-        <version>${version.io.vertx.testtools}</version>
-        <scope>test</scope>
+	<groupId>io.vertx</groupId>
+	<artifactId>vertx-service-proxy</artifactId>
+	<version>${version.io.vertx}</version>
+      </dependency>
+      <dependency>
+	<groupId>io.vertx</groupId>
+	<artifactId>vertx-codegen</artifactId>
+	<version>${version.io.vertx}</version>
+      </dependency>
+      <dependency>
+	<groupId>io.vertx</groupId>
+	<artifactId>vertx-web</artifactId>
+	<version>${version.io.vertx}</version>
+      </dependency>
+      <dependency>
+	<groupId>io.vertx</groupId>
+	<artifactId>vertx-auth-shiro</artifactId>
+	<version>${version.io.vertx}</version>
       </dependency>
 
       <!-- Test -->
@@ -915,7 +922,6 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-
 
   <dependencies>
     <dependency>

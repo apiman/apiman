@@ -30,7 +30,7 @@ import java.util.Set;
  * Construct {@link VertxServiceRequest} and {@link VertxServiceResponse} objects from {@link HttpServerRequest},
  * {@link HttpServerResponse} and {@link HttpClientResponse}
  *
- * @author Marc Savy <msavy@redhat.com>
+ * @author Marc Savy msavy@redhat.com
  */
 @SuppressWarnings("nls")
 public class HttpServiceFactory {
