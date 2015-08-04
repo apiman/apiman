@@ -80,6 +80,11 @@ public class ESClientFactory {
         String port = config.get("client.port"); //$NON-NLS-1$
         String protocol = config.get("client.protocol"); //$NON-NLS-1$
         String indexName = config.get("client.index"); //$NON-NLS-1$
+        String initialize = config.get("client.initialize"); //$NON-NLS-1$
+        if (initialize == null) {
+            initialize = "true"; //$NON-NLS-1$
+        }
+
         if (StringUtils.isBlank(host)) {
             throw new RuntimeException("Missing client.host configuration for ESRegistry."); //$NON-NLS-1$
         }
@@ -92,7 +97,7 @@ public class ESClientFactory {
         if (StringUtils.isBlank(indexName)) {
             indexName = ESConstants.INDEX_NAME;
         }
-        return createJestClient(protocol, host, Integer.parseInt(port), indexName);
+        return createJestClient(protocol, host, Integer.parseInt(port), indexName, "true".equals(initialize)); //$NON-NLS-1$
     }
 
     /**
@@ -100,9 +105,10 @@ public class ESClientFactory {
      * @param protocol http or https
      * @param host the host
      * @param port the port
+     * @param initialize true if the index should be initialized
      * @return the ES client
      */
-    public static JestClient createJestClient(String protocol, String host, int port, String indexName) {
+    public static JestClient createJestClient(String protocol, String host, int port, String indexName, boolean initialize) {
         String clientKey = "jest:" + host + ':' + port + '/' + indexName; //$NON-NLS-1$
         synchronized (clients) {
             if (clients.containsKey(clientKey)) {
@@ -120,7 +126,9 @@ public class ESClientFactory {
                 factory.setHttpClientConfig(new HttpClientConfig.Builder(connectionUrl).multiThreaded(true).build());
                 JestClient client = factory.getObject();
                 clients.put(clientKey, client);
-                initializeClient(client, indexName);
+                if (initialize) {
+                    initializeClient(client, indexName);
+                }
                 return client;
             }
         }

@@ -94,7 +94,7 @@ public class ESMetricsAccessorTest {
     }
 
     private static JestClient createJestClient() {
-        return ESClientFactory.createJestClient("http", "localhost", 6500, "apiman_metrics");
+        return ESClientFactory.createJestClient("http", "localhost", 6500, "apiman_metrics", true);
     }
 
     private static void loadTestData() throws Exception {
