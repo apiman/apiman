@@ -38,9 +38,9 @@ public class HttpClientOptionsFactory {
             );
         }
 
-        if (tlsOptions.getkeyStore() != null) {
+        if (tlsOptions.getKeyStore() != null) {
             clientOptions.setKeyStoreOptions(
-                new JksOptions().setPath(tlsOptions.getkeyStore()).setPassword(tlsOptions.getKeyStorePassword())
+                new JksOptions().setPath(tlsOptions.getKeyStore()).setPassword(tlsOptions.getKeyStorePassword())
             );
         }
 

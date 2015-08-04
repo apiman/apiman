@@ -84,8 +84,7 @@ public class HttpExecutor implements Handler<HttpServerRequest> {
                 if (ready.succeeded()) {
                     // Signalled that we can send the body.
                     if (ready.result()) {
-                        request.handler((Handler<Buffer>) buffer -> {
-                            // TODO fixme when pluggable marshallers available...
+                        request.handler((Handler<Buffer>) buffer -> { // TODO fixme when pluggable marshallers available...
                             send.write(buffer.toString("UTF-8"));
                         });
 
@@ -120,7 +119,7 @@ public class HttpExecutor implements Handler<HttpServerRequest> {
         PolicyToIngestorServiceImpl receive = new PolicyToIngestorServiceImpl();
 
         ProxyHelper.registerService(PolicyToIngestorService.class, vertx, receive,
-                httpSessionUuid + VertxEngineConfig.API_GATEWAY_RESPONSE);
+                httpSessionUuid + VertxEngineConfig.GATEWAY_ENDPOINT_RESPONSE);
 
         receive.headHandler((Handler<VertxServiceResponse>) apimanResponse -> {
             HttpServiceFactory.buildResponse(response, apimanResponse);

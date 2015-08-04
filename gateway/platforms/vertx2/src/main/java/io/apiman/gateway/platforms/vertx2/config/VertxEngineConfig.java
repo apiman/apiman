@@ -38,57 +38,37 @@ import java.util.Map.Entry;
  */
 @SuppressWarnings("nls")
 public class VertxEngineConfig implements IEngineConfig {
-
-    private static final String COUNT = "count";
-    private static final String AUTH = "auth";
-    private static final String PASSWORD = "password";
-    private static final String PATH = "path";
-    private static final String TRUSTSTORE = "truststore";
-    private static final String KEYSTORE = "keystore";
-    private static final String SSL = "ssl";
-    public static final String API_GATEWAY_REGISTRY_PREFIX = "registry";
-    public static final String API_GATEWAY_PLUGIN_REGISTRY_PREFIX = "plugin-registry";
-    public static final String API_GATEWAY_CONNECTOR_FACTORY_PREFIX = "connector-factory";
-    public static final String API_GATEWAY_POLICY_FACTORY_PREFIX = "policy-factory";
-    public static final String API_GATEWAY_METRICS_PREFIX = "metrics";
-
-    public static final String API_GATEWAY_COMPONENT_PREFIX = "components";
-
-    public static final String API_GATEWAY_GATEWAY_SERVER_PORT = "server-port";
-
-    public static final String API_GATEWAY_CONFIG = "config";
-    public static final String API_GATEWAY_CLASS = "class";
-
     public static final String GATEWAY_ENDPOINT_POLICY_INGESTION = "io.apiman.gateway.platforms.vertx2.policy";
+    public static final String GATEWAY_ENDPOINT_REQUEST = ".request";
+    public static final String GATEWAY_ENDPOINT_RESPONSE = ".response";
 
-    //public static final String API_GATEWAY_EP_SERVICE_REQUEST = ".apiman.gateway.service.request";
-    //public static final String API_GATEWAY_EP_SERVICE_RESPONSE = ".apiman.gateway.service.response";
-
-    //public static final String API_GATEWAY_READY_SUFFIX = ".ready";
-    //public static final String API_GATEWAY_HEAD_SUFFIX = ".head";
-    //public static final String API_GATEWAY_BODY_SUFFIX = ".body";
-    //public static final String API_GATEWAY_END_SUFFIX = ".end";
-    //public static final String API_GATEWAY_ERROR_SUFFIX = ".error";
-    //public static final String API_GATEWAY_FAILURE_SUFFIX = ".failure";
-
-    //public static final String API_GATEWAY_GATEWAY_ROUTES = "routes";
-    //public static final String API_GATEWAY_EP_GATEWAY_REG_POLICY = "apiman.gateway.register.policy";
-
-    //public static final String APIMAN_API_APPLICATIONS_REGISTER = ".apiman.api.applications.register";
-    //public static final String APIMAN_API_APPLICATIONS_DELETE = ".apiman.api.applications.delete";
-    //public static final String APIMAN_API_SERVICES_REGISTER = ".apiman.api.services.register";
-    //public static final String APIMAN_API_SERVICES_DELETE = ".apiman.api.services.delete";
-    //public static final String APIMAN_API_SUBSCRIBE = "apiman.api.subscribe";
-
-    public static final String API_GATEWAY_REQUEST = ".request";
-    public static final String API_GATEWAY_RESPONSE = ".response";
-
-    //private static final String API_GATEWAY_AUTH_ENABLED = "authenticated";
-    private static final String API_GATEWAY_HOSTNAME = "hostname";
-    private static final String API_GATEWAY_ENDPOINT = "endpoint";
-    private static final String API_GATEWAY_PREFER_SECURE = "preferSecure";
     private static final String VERTICLES = "verticles";
-    private static final String PORT = "port";
+    private static final String VERTICLE_PORT = "port";
+    private static final String VERTICLE_COUNT = "count";
+
+    private static final String GATEWAY_HOSTNAME = "hostname";
+    private static final String GATEWAY_ENDPOINT = "endpoint";
+    private static final String GATEWAY_PREFER_SECURE = "preferSecure";
+
+    private static final String API_AUTH = "auth";
+    private static final String API_PASSWORD = "password";
+    private static final String API_REQUIRED = "required";
+    private static final String API_REALM = "realm";
+
+    private static final String GATEWAY_REGISTRY_PREFIX = "registry";
+    private static final String GATEWAY_PLUGIN_REGISTRY_PREFIX = "plugin-registry";
+    private static final String GATEWAY_CONNECTOR_FACTORY_PREFIX = "connector-factory";
+    private static final String GATEWAY_POLICY_FACTORY_PREFIX = "policy-factory";
+    private static final String GATEWAY_METRICS_PREFIX = "metrics";
+    private static final String GATEWAY_COMPONENT_PREFIX = "components";
+
+    private static final String GATEWAY_CONFIG = "config";
+    private static final String GATEWAY_CLASS = "class";
+
+    private static final String SSL = "ssl";
+    private static final String SSL_TRUSTSTORE = "truststore";
+    private static final String SSL_KEYSTORE = "keystore";
+    private static final String SSL_PATH = "path";
 
     private JsonObject config;
     private HashMap<String, String> basicAuthMap = new HashMap<>();
@@ -103,102 +83,102 @@ public class VertxEngineConfig implements IEngineConfig {
 
     @Override
     public Class<? extends IRegistry> getRegistryClass() {
-        return loadConfigClass(getClassname(config, API_GATEWAY_REGISTRY_PREFIX),
+        return loadConfigClass(getClassname(config, GATEWAY_REGISTRY_PREFIX),
                 IRegistry.class);
     }
 
     @Override
     public Map<String, String> getRegistryConfig() {
-        return toFlatStringMap(getConfig(config, API_GATEWAY_REGISTRY_PREFIX));
+        return toFlatStringMap(getConfig(config, GATEWAY_REGISTRY_PREFIX));
     }
 
     @Override
     public Class<? extends IPluginRegistry> getPluginRegistryClass() {
-        return loadConfigClass(getClassname(config, API_GATEWAY_PLUGIN_REGISTRY_PREFIX),
+        return loadConfigClass(getClassname(config, GATEWAY_PLUGIN_REGISTRY_PREFIX),
                 IPluginRegistry.class);
     }
 
     @Override
     public Map<String, String> getPluginRegistryConfig() {
-        return toFlatStringMap(getConfig(config, API_GATEWAY_PLUGIN_REGISTRY_PREFIX));
+        return toFlatStringMap(getConfig(config, GATEWAY_PLUGIN_REGISTRY_PREFIX));
     }
 
     @Override
     public Class<? extends IConnectorFactory> getConnectorFactoryClass() {
-        return loadConfigClass(getClassname(config, API_GATEWAY_CONNECTOR_FACTORY_PREFIX),
+        return loadConfigClass(getClassname(config, GATEWAY_CONNECTOR_FACTORY_PREFIX),
                 IConnectorFactory.class);
     }
 
     @Override
     public Map<String, String> getConnectorFactoryConfig() {
-        return toFlatStringMap(getConfig(config, API_GATEWAY_CONNECTOR_FACTORY_PREFIX));
+        return toFlatStringMap(getConfig(config, GATEWAY_CONNECTOR_FACTORY_PREFIX));
     }
 
     @Override
     public Class<? extends IPolicyFactory> getPolicyFactoryClass() {
-        return loadConfigClass(getClassname(config, API_GATEWAY_POLICY_FACTORY_PREFIX),
+        return loadConfigClass(getClassname(config, GATEWAY_POLICY_FACTORY_PREFIX),
                 IPolicyFactory.class);
     }
 
     @Override
     public Map<String, String> getPolicyFactoryConfig() {
-        return toFlatStringMap(getConfig(config, API_GATEWAY_POLICY_FACTORY_PREFIX));
+        return toFlatStringMap(getConfig(config, GATEWAY_POLICY_FACTORY_PREFIX));
     }
 
     @Override
     public Class<? extends IMetrics> getMetricsClass() {
-        return loadConfigClass(getClassname(config, API_GATEWAY_METRICS_PREFIX),
+        return loadConfigClass(getClassname(config, GATEWAY_METRICS_PREFIX),
                 IMetrics.class);
     }
 
     @Override
     public Map<String, String> getMetricsConfig() {
-        return toFlatStringMap(getConfig(config, API_GATEWAY_METRICS_PREFIX));
+        return toFlatStringMap(getConfig(config, GATEWAY_METRICS_PREFIX));
     }
 
     @Override
     public <T extends IComponent> Class<T> getComponentClass(Class<T> componentType) {
-        String className = config.getJsonObject(API_GATEWAY_COMPONENT_PREFIX).
+        String className = config.getJsonObject(GATEWAY_COMPONENT_PREFIX).
                 getJsonObject(componentType.getSimpleName()).
-                getString(API_GATEWAY_CLASS);
+                getString(GATEWAY_CLASS);
 
         return loadConfigClass(className, componentType);
     }
 
     @Override
     public <T extends IComponent> Map<String, String> getComponentConfig(Class<T> componentType) {
-        JsonObject componentConfig = config.getJsonObject(API_GATEWAY_COMPONENT_PREFIX).
+        JsonObject componentConfig = config.getJsonObject(GATEWAY_COMPONENT_PREFIX).
                 getJsonObject(componentType.getSimpleName()).
-                getJsonObject(API_GATEWAY_CONFIG);
+                getJsonObject(GATEWAY_CONFIG);
 
         return toFlatStringMap(componentConfig);
     }
 
     public Boolean isAuthenticationEnabled() {
-        return config.getJsonObject(AUTH).getString("required") != null;
+        return config.getJsonObject(API_AUTH).getString(API_REQUIRED) != null;
     }
 
     public String getRealm() {
-        return config.getJsonObject(AUTH).getString("realm");
+        return config.getJsonObject(API_AUTH).getString(API_REALM);
     }
 
     public String getHostname() {
-        return stringConfigWithDefault(API_GATEWAY_HOSTNAME, "localhost");
+        return stringConfigWithDefault(GATEWAY_HOSTNAME, "localhost");
     }
 
     public String getEndpoint() {
-        return config.getString(API_GATEWAY_ENDPOINT);
+        return config.getString(GATEWAY_ENDPOINT);
     }
 
     public Boolean preferSecure() {
-        return config.getBoolean(API_GATEWAY_PREFER_SECURE);
+        return config.getBoolean(GATEWAY_PREFER_SECURE);
     }
 
     public Map<String, String> getBasicAuthCredentials() {
         if (!basicAuthMap.isEmpty())
             return basicAuthMap;
 
-        JsonObject pairs = config.getJsonObject(AUTH).getJsonObject("basic");
+        JsonObject pairs = config.getJsonObject(API_AUTH).getJsonObject("basic");
 
         for (String username : pairs.fieldNames()) {
             basicAuthMap.put(username, pairs.getString(username));
@@ -218,11 +198,11 @@ public class VertxEngineConfig implements IEngineConfig {
     }
 
     protected String getClassname(JsonObject obj, String prefix) {
-        return obj.getJsonObject(prefix).getString(API_GATEWAY_CLASS);
+        return obj.getJsonObject(prefix).getString(GATEWAY_CLASS);
     }
 
     protected JsonObject getConfig(JsonObject obj, String prefix) {
-        return obj.getJsonObject(prefix).getJsonObject(API_GATEWAY_CONFIG);
+        return obj.getJsonObject(prefix).getJsonObject(GATEWAY_CONFIG);
     }
 
     /**
@@ -268,7 +248,7 @@ public class VertxEngineConfig implements IEngineConfig {
 
 
     public int getPort(String name) {
-        return getVerticleConfig(name).getInteger(PORT);
+        return getVerticleConfig(name).getInteger(VERTICLE_PORT);
     }
 
     public int getPort(VerticleType verticleType) {
@@ -276,7 +256,7 @@ public class VertxEngineConfig implements IEngineConfig {
     }
 
     public int getVerticleCount(VerticleType verticleType) {
-        return getVerticleConfig(verticleType.name()).getInteger(COUNT);
+        return getVerticleConfig(verticleType.name()).getInteger(VERTICLE_COUNT);
     }
 
     public boolean isSSL() {
@@ -284,19 +264,19 @@ public class VertxEngineConfig implements IEngineConfig {
     }
 
     public String getKeyStore() {
-        return config.getJsonObject(SSL).getJsonObject(KEYSTORE).getString(PATH);
+        return config.getJsonObject(SSL).getJsonObject(SSL_KEYSTORE).getString(SSL_PATH);
     }
 
     public String getKeyStorePassword() {
-        return config.getJsonObject(SSL).getJsonObject(KEYSTORE).getString(PASSWORD);
+        return config.getJsonObject(SSL).getJsonObject(SSL_KEYSTORE).getString(API_PASSWORD);
     }
 
     public String getTrustStore() {
-        return config.getJsonObject(SSL).getJsonObject(TRUSTSTORE).getString(PATH);
+        return config.getJsonObject(SSL).getJsonObject(SSL_TRUSTSTORE).getString(SSL_PATH);
     }
 
     public String getTrustStorePassword() {
-        return config.getJsonObject(SSL).getJsonObject(TRUSTSTORE).getString(PASSWORD);
+        return config.getJsonObject(SSL).getJsonObject(SSL_TRUSTSTORE).getString(API_PASSWORD);
     }
 
 }
