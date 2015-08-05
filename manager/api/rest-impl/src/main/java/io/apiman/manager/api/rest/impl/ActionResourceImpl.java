@@ -191,6 +191,7 @@ public class ActionResourceImpl implements IActionResource {
             }
 
             versionBean.setStatus(ServiceStatus.Published);
+            versionBean.setPublishedOn(new Date());
 
             storage.updateServiceVersion(versionBean);
             storage.createAuditEntry(AuditUtils.servicePublished(versionBean, securityContext));
@@ -359,6 +360,7 @@ public class ActionResourceImpl implements IActionResource {
         }
 
         versionBean.setStatus(ApplicationStatus.Registered);
+        versionBean.setPublishedOn(new Date());
 
         try {
             storage.beginTx();
