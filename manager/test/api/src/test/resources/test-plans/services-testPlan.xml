@@ -34,6 +34,7 @@
     <test name="Update Version 1.0">test-plan-data/services/versions/006_update-version-1.0.resttest</test>
     <test name="Get Version 1.0 (updated)">test-plan-data/services/versions/007_get-version-1.0.resttest</test>
     <test name="Create Service Version (invalid)">test-plan-data/services/versions/008_create-version-invalid.resttest</test>
+    <test name="Create Service Version (duplicate)">test-plan-data/services/versions/009_create-version-duplicate.resttest</test>
   </testGroup>
 
   <!-- Test service plans -->

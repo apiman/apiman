@@ -109,6 +109,7 @@ import io.apiman.manager.api.rest.contract.IUserResource;
 import io.apiman.manager.api.rest.contract.exceptions.AbstractRestException;
 import io.apiman.manager.api.rest.contract.exceptions.ApplicationAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.ApplicationNotFoundException;
+import io.apiman.manager.api.rest.contract.exceptions.ApplicationVersionAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.ApplicationVersionNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.ContractAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.ContractNotFoundException;
@@ -122,6 +123,7 @@ import io.apiman.manager.api.rest.contract.exceptions.OrganizationAlreadyExistsE
 import io.apiman.manager.api.rest.contract.exceptions.OrganizationNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.PlanAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.PlanNotFoundException;
+import io.apiman.manager.api.rest.contract.exceptions.PlanVersionAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.PlanVersionNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.PolicyDefinitionNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.PolicyNotFoundException;
@@ -129,6 +131,7 @@ import io.apiman.manager.api.rest.contract.exceptions.RoleNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.ServiceAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.ServiceDefinitionNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.ServiceNotFoundException;
+import io.apiman.manager.api.rest.contract.exceptions.ServiceVersionAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.ServiceVersionNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.SystemErrorException;
 import io.apiman.manager.api.rest.contract.exceptions.UserNotFoundException;
@@ -513,8 +516,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
      * @see io.apiman.manager.api.rest.contract.IOrganizationResource#createAppVersion(java.lang.String, java.lang.String, io.apiman.manager.api.beans.apps.NewApplicationVersionBean)
      */
     @Override
-    public ApplicationVersionBean createAppVersion(String organizationId, String applicationId, NewApplicationVersionBean bean)
-            throws ApplicationNotFoundException, NotAuthorizedException, InvalidVersionException {
+    public ApplicationVersionBean createAppVersion(String organizationId, String applicationId,
+            NewApplicationVersionBean bean) throws ApplicationNotFoundException, NotAuthorizedException,
+            InvalidVersionException, ApplicationVersionAlreadyExistsException {
         if (!securityContext.hasPermission(PermissionType.appEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
         FieldValidator.validateVersion(bean.getVersion());
@@ -525,6 +529,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             ApplicationBean application = storage.getApplication(organizationId, applicationId);
             if (application == null) {
                 throw ExceptionFactory.applicationNotFoundException(applicationId);
+            }
+
+            if (storage.getApplicationVersion(organizationId, applicationId, bean.getVersion()) != null) {
+                throw ExceptionFactory.applicationVersionAlreadyExistsException(applicationId, bean.getVersion());
             }
 
             newVersion = createAppVersionInternal(bean, application);
@@ -601,8 +609,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         try {
             storage.beginTx();
             ApplicationVersionBean applicationVersion = storage.getApplicationVersion(organizationId, applicationId, version);
-            if (applicationVersion == null)
+            if (applicationVersion == null) {
                 throw ExceptionFactory.applicationVersionNotFoundException(applicationId, version);
+            }
             storage.commitTx();
             log.debug(String.format("Got new application version %s: %s", applicationVersion.getApplication().getName(), applicationVersion)); //$NON-NLS-1$
             return applicationVersion;
@@ -1310,8 +1319,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
      * @see io.apiman.manager.api.rest.contract.IOrganizationResource#createServiceVersion(java.lang.String, java.lang.String, io.apiman.manager.api.beans.services.NewServiceVersionBean)
      */
     @Override
-    public ServiceVersionBean createServiceVersion(String organizationId, String serviceId, NewServiceVersionBean bean)
-            throws ServiceNotFoundException, NotAuthorizedException, InvalidVersionException {
+    public ServiceVersionBean createServiceVersion(String organizationId, String serviceId,
+            NewServiceVersionBean bean) throws ServiceNotFoundException, NotAuthorizedException,
+            InvalidVersionException, ServiceVersionAlreadyExistsException {
         if (!securityContext.hasPermission(PermissionType.svcEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
         FieldValidator.validateVersion(bean.getVersion());
@@ -1324,6 +1334,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             ServiceBean service = storage.getService(organizationId, serviceId);
             if (service == null) {
                 throw ExceptionFactory.serviceNotFoundException(serviceId);
+            }
+
+            if (storage.getServiceVersion(organizationId, serviceId, bean.getVersion()) != null) {
+                throw ExceptionFactory.serviceVersionAlreadyExistsException(serviceId, bean.getVersion());
             }
 
             newVersion = createServiceVersionInternal(bean, service, gateway);
@@ -2307,7 +2321,8 @@ public class OrganizationResourceImpl implements IOrganizationResource {
      */
     @Override
     public PlanVersionBean createPlanVersion(String organizationId, String planId, NewPlanVersionBean bean)
-            throws PlanNotFoundException, NotAuthorizedException, InvalidVersionException {
+            throws PlanNotFoundException, NotAuthorizedException, InvalidVersionException,
+            PlanVersionAlreadyExistsException {
         if (!securityContext.hasPermission(PermissionType.planEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
         FieldValidator.validateVersion(bean.getVersion());
@@ -2318,6 +2333,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             PlanBean plan = storage.getPlan(organizationId, planId);
             if (plan == null) {
                 throw ExceptionFactory.planNotFoundException(planId);
+            }
+
+            if (storage.getPlanVersion(organizationId, planId, bean.getVersion()) != null) {
+                throw ExceptionFactory.planVersionAlreadyExistsException(planId, bean.getVersion());
             }
 
             newVersion = createPlanVersionInternal(bean, plan);

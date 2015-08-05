@@ -22,21 +22,21 @@ package io.apiman.manager.api.rest.contract.exceptions;
  *
  * @author eric.wittmann@redhat.com
  */
-public class ServiceAlreadyExistsException extends AbstractAlreadyExistsException {
+public class ServiceVersionAlreadyExistsException extends AbstractAlreadyExistsException {
 
-    private static final long serialVersionUID = -2001544127622583292L;
+    private static final long serialVersionUID = 9210041761070127463L;
 
     /**
      * Constructor.
      */
-    public ServiceAlreadyExistsException() {
+    public ServiceVersionAlreadyExistsException() {
     }
 
     /**
      * Constructor.
      * @param message the exception message
      */
-    public ServiceAlreadyExistsException(String message) {
+    public ServiceVersionAlreadyExistsException(String message) {
         super(message);
     }
 
@@ -45,7 +45,7 @@ public class ServiceAlreadyExistsException extends AbstractAlreadyExistsExceptio
      */
     @Override
     public int getErrorCode() {
-        return ErrorCodes.SERVICE_ALREADY_EXISTS;
+        return ErrorCodes.SERVICE_VERSION_ALREADY_EXISTS;
     }
 
     /**
@@ -53,7 +53,7 @@ public class ServiceAlreadyExistsException extends AbstractAlreadyExistsExceptio
      */
     @Override
     public String getMoreInfoUrl() {
-        return ErrorCodes.SERVICE_ALREADY_EXISTS_INFO;
+        return ErrorCodes.SERVICE_VERSION_ALREADY_EXISTS_INFO;
     }
 
 }

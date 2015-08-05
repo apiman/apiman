@@ -18,25 +18,25 @@ package io.apiman.manager.api.rest.contract.exceptions;
 
 
 /**
- * Thrown when trying to create an Service that already exists.
+ * Thrown when trying to create an Plan that already exists.
  *
  * @author eric.wittmann@redhat.com
  */
-public class ServiceAlreadyExistsException extends AbstractAlreadyExistsException {
+public class PlanVersionAlreadyExistsException extends AbstractAlreadyExistsException {
 
-    private static final long serialVersionUID = -2001544127622583292L;
+    private static final long serialVersionUID = 4811955945896932570L;
 
     /**
      * Constructor.
      */
-    public ServiceAlreadyExistsException() {
+    public PlanVersionAlreadyExistsException() {
     }
 
     /**
      * Constructor.
      * @param message the exception message
      */
-    public ServiceAlreadyExistsException(String message) {
+    public PlanVersionAlreadyExistsException(String message) {
         super(message);
     }
 
@@ -45,7 +45,7 @@ public class ServiceAlreadyExistsException extends AbstractAlreadyExistsExceptio
      */
     @Override
     public int getErrorCode() {
-        return ErrorCodes.SERVICE_ALREADY_EXISTS;
+        return ErrorCodes.PLAN_VERSION_ALREADY_EXISTS;
     }
 
     /**
@@ -53,7 +53,7 @@ public class ServiceAlreadyExistsException extends AbstractAlreadyExistsExceptio
      */
     @Override
     public String getMoreInfoUrl() {
-        return ErrorCodes.SERVICE_ALREADY_EXISTS_INFO;
+        return ErrorCodes.PLAN_VERSION_ALREADY_EXISTS_INFO;
     }
 
 }

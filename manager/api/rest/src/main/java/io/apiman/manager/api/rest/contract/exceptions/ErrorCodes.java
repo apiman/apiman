@@ -73,6 +73,7 @@ public final class ErrorCodes {
     public static final int CONTRACT_NOT_FOUND              = 4004;
     public static final int CONTRACT_ALREADY_EXISTS         = 4005;
     public static final int APP_STATUS_ERROR                = 4006;
+    public static final int APP_VERSION_ALREADY_EXISTS      = 4007;
 
     public static final String APP_ALREADY_EXISTS_INFO      = null;
     public static final String APP_NOT_FOUND_INFO           = null;
@@ -80,6 +81,7 @@ public final class ErrorCodes {
     public static final String CONTRACT_NOT_FOUND_INFO      = null;
     public static final String CONTRACT_ALREADY_EXISTS_INFO = null;
     public static final String APP_STATUS_ERROR_INFO        = null;
+    public static final String APP_VERSION_ALREADY_EXISTS_INFO = null;
 
 
     //
@@ -90,12 +92,14 @@ public final class ErrorCodes {
     public static final int SERVICE_VERSION_NOT_FOUND           = 5003;
     public static final int SERVICE_STATUS_ERROR                = 5004;
     public static final int SERVICE_DEFINITION_NOT_FOUND        = 5005;
+    public static final int SERVICE_VERSION_ALREADY_EXISTS      = 5006;
 
     public static final String SERVICE_ALREADY_EXISTS_INFO      = null;
     public static final String SERVICE_NOT_FOUND_INFO           = null;
     public static final String SERVICE_VERSION_NOT_FOUND_INFO   = null;
     public static final String SERVICE_STATUS_ERROR_INFO        = null;
     public static final String SERVICE_DEFINITION_NOT_FOUND_INFO   = null;
+    public static final String SERVICE_VERSION_ALREADY_EXISTS_INFO      = null;
 
 
     //
@@ -104,11 +108,12 @@ public final class ErrorCodes {
     public static final int PLAN_ALREADY_EXISTS              = 6001;
     public static final int PLAN_NOT_FOUND                   = 6002;
     public static final int PLAN_VERSION_NOT_FOUND           = 6003;
+    public static final int PLAN_VERSION_ALREADY_EXISTS      = 6004;
 
     public static final String PLAN_ALREADY_EXISTS_INFO      = null;
     public static final String PLAN_NOT_FOUND_INFO           = null;
     public static final String PLAN_VERSION_NOT_FOUND_INFO   = null;
-
+    public static final String PLAN_VERSION_ALREADY_EXISTS_INFO = null;
 
     //
     // Member API related

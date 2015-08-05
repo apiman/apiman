@@ -67,6 +67,7 @@ import io.apiman.manager.api.beans.summary.ServiceVersionEndpointSummaryBean;
 import io.apiman.manager.api.beans.summary.ServiceVersionSummaryBean;
 import io.apiman.manager.api.rest.contract.exceptions.ApplicationAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.ApplicationNotFoundException;
+import io.apiman.manager.api.rest.contract.exceptions.ApplicationVersionAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.ApplicationVersionNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.ContractAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.ContractNotFoundException;
@@ -80,11 +81,13 @@ import io.apiman.manager.api.rest.contract.exceptions.OrganizationAlreadyExistsE
 import io.apiman.manager.api.rest.contract.exceptions.OrganizationNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.PlanAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.PlanNotFoundException;
+import io.apiman.manager.api.rest.contract.exceptions.PlanVersionAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.PlanVersionNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.PolicyNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.RoleNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.ServiceAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.ServiceNotFoundException;
+import io.apiman.manager.api.rest.contract.exceptions.ServiceVersionAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.ServiceVersionNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.UserNotFoundException;
 
@@ -294,6 +297,7 @@ public interface IOrganizationResource {
      * @param bean Initial information about the new Application version.
      * @statuscode 200 If the Application version is created successfully.
      * @statuscode 404 If the Application does not exist.
+     * @statuscode 409 If the Application version already exists.
      * @return Full details about the newly created Application version.
      * @throws ApplicationNotFoundException when trying to get, update, or delete an application that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
@@ -305,7 +309,8 @@ public interface IOrganizationResource {
     @Produces(MediaType.APPLICATION_JSON)
     public ApplicationVersionBean createAppVersion(@PathParam("organizationId") String organizationId,
             @PathParam("applicationId") String applicationId, NewApplicationVersionBean bean)
-            throws ApplicationNotFoundException, NotAuthorizedException, InvalidVersionException;
+            throws ApplicationNotFoundException, NotAuthorizedException, InvalidVersionException,
+            ApplicationVersionAlreadyExistsException;
 
     /**
      * Use this endpoint to list all of the versions of an Application.
@@ -806,6 +811,7 @@ public interface IOrganizationResource {
      * @param bean Initial information about the new Service version.
      * @statuscode 200 If the Service version is created successfully.
      * @statuscode 404 If the Service does not exist.
+     * @statuscode 409 If the Service version already exists.
      * @return Full details about the newly created Service version.
      * @throws ServiceNotFoundException when trying to get, update, or delete an service that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
@@ -817,7 +823,8 @@ public interface IOrganizationResource {
     @Produces(MediaType.APPLICATION_JSON)
     public ServiceVersionBean createServiceVersion(@PathParam("organizationId") String organizationId,
             @PathParam("serviceId") String serviceId, NewServiceVersionBean bean)
-            throws ServiceNotFoundException, NotAuthorizedException, InvalidVersionException;
+            throws ServiceNotFoundException, NotAuthorizedException, InvalidVersionException,
+            ServiceVersionAlreadyExistsException;
 
     /**
      * Use this endpoint to list all of the versions of a Service.
@@ -1331,6 +1338,7 @@ public interface IOrganizationResource {
      * @param bean Initial information about the new Plan version.
      * @statuscode 200 If the Plan version is created successfully.
      * @statuscode 404 If the Plan does not exist.
+     * @statuscode 409 If the Plan version already exists.
      * @return Full details about the newly created Plan version.
      * when trying to get, update, or delete an plan that does not exist
      * @throws PlanNotFoundException when trying to get, update, or delete an plan that does not exist
@@ -1342,8 +1350,8 @@ public interface IOrganizationResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public PlanVersionBean createPlanVersion(@PathParam("organizationId") String organizationId,
-            @PathParam("planId") String planId, NewPlanVersionBean bean)
-            throws PlanNotFoundException, NotAuthorizedException, InvalidVersionException;
+            @PathParam("planId") String planId, NewPlanVersionBean bean) throws PlanNotFoundException,
+            NotAuthorizedException, InvalidVersionException, PlanVersionAlreadyExistsException;
 
     /**
      * Use this endpoint to list all of the versions of a Plan.

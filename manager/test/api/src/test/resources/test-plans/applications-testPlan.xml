@@ -32,6 +32,7 @@
     <test name="List All Versions">test-plan-data/applications/versions/005_list-versions.resttest</test>
     <test name="Get Version 1.0 (updated)">test-plan-data/applications/versions/007_get-version-1.0.resttest</test>
     <test name="Create Application Version (invalid)">test-plan-data/applications/versions/008_create-version-invalid.resttest</test>
+    <test name="Create Application Version (duplicate)">test-plan-data/applications/versions/009_create-version-duplicate.resttest</test>
   </testGroup>
 
   <!-- Test Application Policy management -->

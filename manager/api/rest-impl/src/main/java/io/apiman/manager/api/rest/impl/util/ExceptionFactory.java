@@ -19,6 +19,7 @@ import io.apiman.common.plugin.PluginCoordinates;
 import io.apiman.manager.api.rest.contract.exceptions.ActionException;
 import io.apiman.manager.api.rest.contract.exceptions.ApplicationAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.ApplicationNotFoundException;
+import io.apiman.manager.api.rest.contract.exceptions.ApplicationVersionAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.ApplicationVersionNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.ContractAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.ContractNotFoundException;
@@ -35,6 +36,7 @@ import io.apiman.manager.api.rest.contract.exceptions.OrganizationAlreadyExistsE
 import io.apiman.manager.api.rest.contract.exceptions.OrganizationNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.PlanAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.PlanNotFoundException;
+import io.apiman.manager.api.rest.contract.exceptions.PlanVersionAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.PlanVersionNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.PluginAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.PluginNotFoundException;
@@ -48,6 +50,7 @@ import io.apiman.manager.api.rest.contract.exceptions.RoleNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.ServiceAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.ServiceDefinitionNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.ServiceNotFoundException;
+import io.apiman.manager.api.rest.contract.exceptions.ServiceVersionAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.ServiceVersionNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.UserNotFoundException;
 import io.apiman.manager.api.rest.impl.i18n.Messages;
@@ -122,6 +125,16 @@ public final class ExceptionFactory {
     }
 
     /**
+     * Creates an exception from an application name.
+     * @param applicationName the application name
+     * @param version the version
+     * @return the exception
+     */
+    public static final ApplicationVersionAlreadyExistsException applicationVersionAlreadyExistsException(String applicationName, String version) {
+        return new ApplicationVersionAlreadyExistsException(Messages.i18n.format("ApplicationVersionAlreadyExists", applicationName, version)); //$NON-NLS-1$
+    }
+
+    /**
      * Creates an exception.
      * @return the exception
      */
@@ -172,6 +185,16 @@ public final class ExceptionFactory {
      */
     public static final ServiceAlreadyExistsException serviceAlreadyExistsException(String serviceName) {
         return new ServiceAlreadyExistsException(Messages.i18n.format("ServiceAlreadyExists", serviceName)); //$NON-NLS-1$
+    }
+
+    /**
+     * Creates an exception from an service name.
+     * @param serviceName the service name
+     * @param version the version
+     * @return the exception
+     */
+    public static final ServiceVersionAlreadyExistsException serviceVersionAlreadyExistsException(String serviceName, String version) {
+        return new ServiceVersionAlreadyExistsException(Messages.i18n.format("ServiceVersionAlreadyExists", serviceName, version)); //$NON-NLS-1$
     }
 
     /**
@@ -235,6 +258,16 @@ public final class ExceptionFactory {
      */
     public static final PlanAlreadyExistsException planAlreadyExistsException(String planName) {
         return new PlanAlreadyExistsException(Messages.i18n.format("PlanAlreadyExists", planName)); //$NON-NLS-1$
+    }
+
+    /**
+     * Creates an exception from an plan name.
+     * @param planName the plan name
+     * @param version the version
+     * @return the exception
+     */
+    public static final PlanVersionAlreadyExistsException planVersionAlreadyExistsException(String planName, String version) {
+        return new PlanVersionAlreadyExistsException(Messages.i18n.format("PlanVersionAlreadyExists", planName, version)); //$NON-NLS-1$
     }
 
     /**

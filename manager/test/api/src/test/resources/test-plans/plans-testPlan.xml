@@ -31,6 +31,7 @@
     <test name="List All Versions">test-plan-data/plans/versions/005_list-versions.resttest</test>
     <test name="Get Version 1.0 (updated)">test-plan-data/plans/versions/007_get-version-1.0.resttest</test>
     <test name="Create Plan Version (invalid)">test-plan-data/plans/versions/008_create-version-invalid.resttest</test>
+    <test name="Create Plan Version (duplicate)">test-plan-data/plans/versions/009_create-version-duplicate.resttest</test>
   </testGroup>
 
   <!-- Test Plan Policy management -->
