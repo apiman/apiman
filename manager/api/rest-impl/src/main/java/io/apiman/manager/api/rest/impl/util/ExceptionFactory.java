@@ -26,7 +26,9 @@ import io.apiman.manager.api.rest.contract.exceptions.GatewayAlreadyExistsExcept
 import io.apiman.manager.api.rest.contract.exceptions.GatewayNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidApplicationStatusException;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidMetricCriteriaException;
+import io.apiman.manager.api.rest.contract.exceptions.InvalidNameException;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidServiceStatusException;
+import io.apiman.manager.api.rest.contract.exceptions.InvalidVersionException;
 import io.apiman.manager.api.rest.contract.exceptions.MemberNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.contract.exceptions.OrganizationAlreadyExistsException;
@@ -363,6 +365,22 @@ public final class ExceptionFactory {
      */
     public static final InvalidMetricCriteriaException invalidMetricCriteriaException(String message) {
         return new InvalidMetricCriteriaException(message);
+    }
+
+    /**
+     * Creates an exception.
+     * @param message
+     */
+    public static final InvalidNameException invalidNameException(String message) {
+        return new InvalidNameException(message);
+    }
+
+    /**
+     * Creates an exception.
+     * @param message
+     */
+    public static final InvalidVersionException invalidVersionException(String message) {
+        return new InvalidVersionException(message);
     }
 
 }

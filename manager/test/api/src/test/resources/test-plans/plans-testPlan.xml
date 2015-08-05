@@ -19,6 +19,7 @@
     <test name="Get Plan 1">test-plan-data/plans/plans/009_get-plan1.resttest</test>
     <test name="Get Plan 1 (Org 2)">test-plan-data/plans/plans/010_get-plan1-org2.resttest</test>
     <test name="List Plan">test-plan-data/plans/plans/011_list-plans.resttest</test>
+    <test name="Create Plan (invalid name)">test-plan-data/plans/plans/012_create-invalid-name.resttest</test>
   </testGroup>
 
   <!-- Test Plan Version management -->
@@ -29,6 +30,7 @@
     <test name="Create Plan Version 2.0">test-plan-data/plans/versions/004_create-version-2.0.resttest</test>
     <test name="List All Versions">test-plan-data/plans/versions/005_list-versions.resttest</test>
     <test name="Get Version 1.0 (updated)">test-plan-data/plans/versions/007_get-version-1.0.resttest</test>
+    <test name="Create Plan Version (invalid)">test-plan-data/plans/versions/008_create-version-invalid.resttest</test>
   </testGroup>
 
   <!-- Test Plan Policy management -->

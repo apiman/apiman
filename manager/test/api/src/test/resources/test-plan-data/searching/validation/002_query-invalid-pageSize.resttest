@@ -11,4 +11,4 @@ Content-Type: application/json
 400
 Content-Type: application/json
 
-{"type":"InvalidSearchCriteriaException","errorCode":9001,"message":"Missing or invalid 'pageSize' param in search criteria."}
+{"type":"InvalidSearchCriteriaException","errorCode":14001,"message":"Missing or invalid 'pageSize' param in search criteria."}

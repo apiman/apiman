@@ -1,0 +1,16 @@
+POST /organizations/Organization1/applications admin/admin
+Content-Type: application/json
+
+{
+  "name" : "",
+  "description" : "The name isn't valid!."
+}
+----
+400
+Content-Type: application/json
+
+{
+  "type" : "InvalidNameException",
+  "errorCode" : 14002,
+  "message" : "Invalid (empty) name provided for entity."
+}

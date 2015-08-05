@@ -72,7 +72,9 @@ import io.apiman.manager.api.rest.contract.exceptions.ContractAlreadyExistsExcep
 import io.apiman.manager.api.rest.contract.exceptions.ContractNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.GatewayNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidMetricCriteriaException;
+import io.apiman.manager.api.rest.contract.exceptions.InvalidNameException;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidServiceStatusException;
+import io.apiman.manager.api.rest.contract.exceptions.InvalidVersionException;
 import io.apiman.manager.api.rest.contract.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.contract.exceptions.OrganizationAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.OrganizationNotFoundException;
@@ -116,11 +118,13 @@ public interface IOrganizationResource {
      * @return Full details about the Organization that was created.
      * @throws OrganizationAlreadyExistsException when trying to create an Organization that already exists
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
+     * @throws InvalidNameException when the user attempts to create an Organization with an invalid name
      */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public OrganizationBean create(NewOrganizationBean bean) throws OrganizationAlreadyExistsException, NotAuthorizedException;
+    public OrganizationBean create(NewOrganizationBean bean) throws OrganizationAlreadyExistsException,
+            NotAuthorizedException, InvalidNameException;
 
     /**
      * Use this endpoint to get information about a single Organization
@@ -194,13 +198,15 @@ public interface IOrganizationResource {
      * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
      * @throws ApplicationAlreadyExistsException when trying to create an Application that already exists
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
+     * @throws InvalidNameException when the user attempts the create with an invalid name
      */
     @POST
     @Path("{organizationId}/applications")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public ApplicationBean createApp(@PathParam("organizationId") String organizationId, NewApplicationBean bean)
-            throws OrganizationNotFoundException, ApplicationAlreadyExistsException, NotAuthorizedException;
+    public ApplicationBean createApp(@PathParam("organizationId") String organizationId,
+            NewApplicationBean bean) throws OrganizationNotFoundException, ApplicationAlreadyExistsException,
+            NotAuthorizedException, InvalidNameException;
 
     /**
      * Use this endpoint to retrieve information about a single Application by ID.  Note
@@ -291,6 +297,7 @@ public interface IOrganizationResource {
      * @return Full details about the newly created Application version.
      * @throws ApplicationNotFoundException when trying to get, update, or delete an application that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
+     * @throws InvalidVersionException when the user attempts to use an invalid version value
      */
     @POST
     @Path("{organizationId}/applications/{applicationId}/versions")
@@ -298,7 +305,7 @@ public interface IOrganizationResource {
     @Produces(MediaType.APPLICATION_JSON)
     public ApplicationVersionBean createAppVersion(@PathParam("organizationId") String organizationId,
             @PathParam("applicationId") String applicationId, NewApplicationVersionBean bean)
-            throws ApplicationNotFoundException, NotAuthorizedException;
+            throws ApplicationNotFoundException, NotAuthorizedException, InvalidVersionException;
 
     /**
      * Use this endpoint to list all of the versions of an Application.
@@ -703,13 +710,15 @@ public interface IOrganizationResource {
      * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
      * @throws ServiceAlreadyExistsException when trying to create an Service that already exists
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
+     * @throws InvalidNameException when the user attempts the create with an invalid name
      */
     @POST
     @Path("{organizationId}/services")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public ServiceBean createService(@PathParam("organizationId") String organizationId, NewServiceBean bean)
-            throws OrganizationNotFoundException, ServiceAlreadyExistsException, NotAuthorizedException;
+            throws OrganizationNotFoundException, ServiceAlreadyExistsException, NotAuthorizedException,
+            InvalidNameException;
 
     /**
      * Use this endpoint to retrieve information about a single Service by ID.  Note
@@ -800,6 +809,7 @@ public interface IOrganizationResource {
      * @return Full details about the newly created Service version.
      * @throws ServiceNotFoundException when trying to get, update, or delete an service that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
+     * @throws InvalidVersionException when the user attempts to use an invalid version value
      */
     @POST
     @Path("{organizationId}/services/{serviceId}/versions")
@@ -807,7 +817,7 @@ public interface IOrganizationResource {
     @Produces(MediaType.APPLICATION_JSON)
     public ServiceVersionBean createServiceVersion(@PathParam("organizationId") String organizationId,
             @PathParam("serviceId") String serviceId, NewServiceVersionBean bean)
-            throws ServiceNotFoundException, NotAuthorizedException;
+            throws ServiceNotFoundException, NotAuthorizedException, InvalidVersionException;
 
     /**
      * Use this endpoint to list all of the versions of a Service.
@@ -1223,13 +1233,15 @@ public interface IOrganizationResource {
      * @throws OrganizationNotFoundException when trying to get, update, or delete an organization that does not exist
      * @throws PlanAlreadyExistsException when trying to create an Plan that already exists
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
+     * @throws InvalidNameException when the user attempts the create with an invalid name
      */
     @POST
     @Path("{organizationId}/plans")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public PlanBean createPlan(@PathParam("organizationId") String organizationId, NewPlanBean bean)
-            throws OrganizationNotFoundException, PlanAlreadyExistsException, NotAuthorizedException;
+            throws OrganizationNotFoundException, PlanAlreadyExistsException, NotAuthorizedException,
+            InvalidNameException;
 
     /**
      * Use this endpoint to retrieve information about a single Plan by ID.  Note
@@ -1323,6 +1335,7 @@ public interface IOrganizationResource {
      * when trying to get, update, or delete an plan that does not exist
      * @throws PlanNotFoundException when trying to get, update, or delete an plan that does not exist
      * @throws NotAuthorizedException when the user attempts to do or see something that they are not authorized (do not have permission) to
+     * @throws InvalidVersionException when the user attempts to use an invalid version value
      */
     @POST
     @Path("{organizationId}/plans/{planId}/versions")
@@ -1330,7 +1343,7 @@ public interface IOrganizationResource {
     @Produces(MediaType.APPLICATION_JSON)
     public PlanVersionBean createPlanVersion(@PathParam("organizationId") String organizationId,
             @PathParam("planId") String planId, NewPlanVersionBean bean)
-            throws PlanNotFoundException, NotAuthorizedException;
+            throws PlanNotFoundException, NotAuthorizedException, InvalidVersionException;
 
     /**
      * Use this endpoint to list all of the versions of a Plan.

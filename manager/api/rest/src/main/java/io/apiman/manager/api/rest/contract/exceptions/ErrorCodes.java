@@ -37,14 +37,6 @@ public final class ErrorCodes {
 
 
     //
-    // Search API related (cross-cutting across many APIs)
-    //
-    public static final int SEARCH_CRITERIA_INVALID         = 9001;
-
-    public static final String SEARCH_CRITERIA_INVALID_INFO = null;
-
-
-    //
     // User API related
     //
     public static final int USER_NOT_FOUND                  = 1001;
@@ -180,8 +172,20 @@ public final class ErrorCodes {
     //
     // Metrics related
     //
-    public static final int METRIC_CRITERIA_INVALID            = 130001;
+    public static final int METRIC_CRITERIA_INVALID            = 13001;
 
     public static final String METRIC_CRITERIA_INVALID_INFO    = null;
+
+
+    //
+    // General cross-cutting errors
+    //
+    public static final int SEARCH_CRITERIA_INVALID         = 14001;
+    public static final int NAME_INVALID                    = 14002;
+    public static final int VERSION_INVALID                 = 14003;
+
+    public static final String SEARCH_CRITERIA_INVALID_INFO = null;
+    public static final String NAME_INVALID_INFO            = null;
+    public static final String VERSION_INVALID_INFO         = null;
 
 }

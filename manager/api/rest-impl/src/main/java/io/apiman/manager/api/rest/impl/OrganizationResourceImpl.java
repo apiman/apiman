@@ -114,7 +114,9 @@ import io.apiman.manager.api.rest.contract.exceptions.ContractAlreadyExistsExcep
 import io.apiman.manager.api.rest.contract.exceptions.ContractNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.GatewayNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidMetricCriteriaException;
+import io.apiman.manager.api.rest.contract.exceptions.InvalidNameException;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidServiceStatusException;
+import io.apiman.manager.api.rest.contract.exceptions.InvalidVersionException;
 import io.apiman.manager.api.rest.contract.exceptions.NotAuthorizedException;
 import io.apiman.manager.api.rest.contract.exceptions.OrganizationAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.OrganizationNotFoundException;
@@ -133,6 +135,7 @@ import io.apiman.manager.api.rest.contract.exceptions.UserNotFoundException;
 import io.apiman.manager.api.rest.impl.audit.AuditUtils;
 import io.apiman.manager.api.rest.impl.i18n.Messages;
 import io.apiman.manager.api.rest.impl.util.ExceptionFactory;
+import io.apiman.manager.api.rest.impl.util.FieldValidator;
 import io.apiman.manager.api.security.ISecurityContext;
 
 import java.io.IOException;
@@ -215,7 +218,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
      * @see io.apiman.manager.api.rest.contract.IOrganizationResource#create(io.apiman.manager.api.beans.orgs.NewOrganizationBean)
      */
     @Override
-    public OrganizationBean create(NewOrganizationBean bean) throws OrganizationAlreadyExistsException {
+    public OrganizationBean create(NewOrganizationBean bean) throws OrganizationAlreadyExistsException, InvalidNameException {
+        FieldValidator.validateName(bean.getName());
+
         List<RoleBean> autoGrantedRoles = null;
         SearchCriteriaBean criteria = new SearchCriteriaBean();
         criteria.setPage(1);
@@ -359,9 +364,11 @@ public class OrganizationResourceImpl implements IOrganizationResource {
      */
     @Override
     public ApplicationBean createApp(String organizationId, NewApplicationBean bean)
-            throws OrganizationNotFoundException, ApplicationAlreadyExistsException, NotAuthorizedException {
+            throws OrganizationNotFoundException, ApplicationAlreadyExistsException, NotAuthorizedException,
+            InvalidNameException {
         if (!securityContext.hasPermission(PermissionType.appEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
+        FieldValidator.validateName(bean.getName());
 
         ApplicationBean newApp = new ApplicationBean();
         newApp.setId(BeanUtils.idFromName(bean.getName()));
@@ -507,9 +514,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
      */
     @Override
     public ApplicationVersionBean createAppVersion(String organizationId, String applicationId, NewApplicationVersionBean bean)
-            throws ApplicationNotFoundException, NotAuthorizedException {
+            throws ApplicationNotFoundException, NotAuthorizedException, InvalidVersionException {
         if (!securityContext.hasPermission(PermissionType.appEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
+        FieldValidator.validateVersion(bean.getVersion());
 
         ApplicationVersionBean newVersion;
         try {
@@ -1159,9 +1167,11 @@ public class OrganizationResourceImpl implements IOrganizationResource {
      */
     @Override
     public ServiceBean createService(String organizationId, NewServiceBean bean)
-            throws OrganizationNotFoundException, ServiceAlreadyExistsException, NotAuthorizedException {
+            throws OrganizationNotFoundException, ServiceAlreadyExistsException, NotAuthorizedException,
+            InvalidNameException {
         if (!securityContext.hasPermission(PermissionType.svcEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
+        FieldValidator.validateName(bean.getName());
 
         ServiceBean newService = new ServiceBean();
         newService.setName(bean.getName());
@@ -1301,9 +1311,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
      */
     @Override
     public ServiceVersionBean createServiceVersion(String organizationId, String serviceId, NewServiceVersionBean bean)
-            throws ServiceNotFoundException, NotAuthorizedException {
+            throws ServiceNotFoundException, NotAuthorizedException, InvalidVersionException {
         if (!securityContext.hasPermission(PermissionType.svcEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
+        FieldValidator.validateVersion(bean.getVersion());
 
         ServiceVersionBean newVersion = null;
         try {
@@ -2150,10 +2161,11 @@ public class OrganizationResourceImpl implements IOrganizationResource {
      *      io.apiman.manager.api.beans.plans.NewPlanBean)
      */
     @Override
-    public PlanBean createPlan(String organizationId, NewPlanBean bean)
-            throws OrganizationNotFoundException, PlanAlreadyExistsException, NotAuthorizedException {
+    public PlanBean createPlan(String organizationId, NewPlanBean bean) throws OrganizationNotFoundException,
+            PlanAlreadyExistsException, NotAuthorizedException, InvalidNameException {
         if (!securityContext.hasPermission(PermissionType.planEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
+        FieldValidator.validateName(bean.getName());
 
         PlanBean newPlan = new PlanBean();
         newPlan.setName(bean.getName());
@@ -2295,9 +2307,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
      */
     @Override
     public PlanVersionBean createPlanVersion(String organizationId, String planId, NewPlanVersionBean bean)
-            throws PlanNotFoundException, NotAuthorizedException {
+            throws PlanNotFoundException, NotAuthorizedException, InvalidVersionException {
         if (!securityContext.hasPermission(PermissionType.planEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
+        FieldValidator.validateVersion(bean.getVersion());
 
         PlanVersionBean newVersion = null;
         try {

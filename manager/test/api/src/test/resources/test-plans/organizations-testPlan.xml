@@ -11,6 +11,7 @@
     <test name="Search for all Orgs (2)">test-plan-data/organizations/orgs/006_search_all-2.resttest</test>
     <test name="Update Organization">test-plan-data/organizations/orgs/007_update.resttest</test>
     <test name="Get Organization (updated)">test-plan-data/organizations/orgs/008_get.resttest</test>
+    <test name="Create Organization (invalid)">test-plan-data/organizations/orgs/009_create_invalid_name.resttest</test>
   </testGroup>
 
   <!-- Make sure auditing is working properly -->

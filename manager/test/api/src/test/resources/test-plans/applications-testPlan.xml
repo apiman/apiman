@@ -20,6 +20,7 @@
     <test name="Get Application 1">test-plan-data/applications/apps/009_get-app1.resttest</test>
     <test name="Get Application 1 (Org 2)">test-plan-data/applications/apps/010_get-app1-org2.resttest</test>
     <test name="List Application">test-plan-data/applications/apps/011_list-apps.resttest</test>
+    <test name="Create Application (invalid name)">test-plan-data/applications/apps/012_create-invalid-name.resttest</test>
   </testGroup>
 
   <!-- Test Application Version management -->
@@ -30,6 +31,7 @@
     <test name="Create Application Version 2.0">test-plan-data/applications/versions/004_create-version-2.0.resttest</test>
     <test name="List All Versions">test-plan-data/applications/versions/005_list-versions.resttest</test>
     <test name="Get Version 1.0 (updated)">test-plan-data/applications/versions/007_get-version-1.0.resttest</test>
+    <test name="Create Application Version (invalid)">test-plan-data/applications/versions/008_create-version-invalid.resttest</test>
   </testGroup>
 
   <!-- Test Application Policy management -->

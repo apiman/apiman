@@ -21,6 +21,7 @@
     <test name="Get Service 1">test-plan-data/services/svcs/009_get-service1.resttest</test>
     <test name="Get Service 1 (Org 2)">test-plan-data/services/svcs/010_get-service1-org2.resttest</test>
     <test name="List Services">test-plan-data/services/svcs/011_list-services.resttest</test>
+    <test name="Create Service (invalid name)">test-plan-data/services/svcs/012_create-invalid-name.resttest</test>
   </testGroup>
 
   <!-- Test Service Version management -->
@@ -32,6 +33,7 @@
     <test name="List All Versions">test-plan-data/services/versions/005_list-versions.resttest</test>
     <test name="Update Version 1.0">test-plan-data/services/versions/006_update-version-1.0.resttest</test>
     <test name="Get Version 1.0 (updated)">test-plan-data/services/versions/007_get-version-1.0.resttest</test>
+    <test name="Create Service Version (invalid)">test-plan-data/services/versions/008_create-version-invalid.resttest</test>
   </testGroup>
 
   <!-- Test service plans -->
