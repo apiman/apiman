@@ -16,20 +16,27 @@
 
 package io.apiman.gateway.platforms.vertx3.services;
 
-import io.vertx.core.AsyncResult;
-import io.vertx.core.Future;
-import io.vertx.core.Handler;
-import io.vertx.core.Vertx;
+import io.apiman.gateway.platforms.vertx3.services.InitializeIngestorService;
 import io.vertx.core.eventbus.DeliveryOptions;
-import io.vertx.core.json.JsonArray;
+import io.vertx.core.Vertx;
+import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
-import io.vertx.serviceproxy.ProxyHelper;
-
+import io.vertx.core.json.JsonArray;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import io.vertx.serviceproxy.ProxyHelper;
+import io.apiman.gateway.engine.IEngine;
+import io.apiman.gateway.platforms.vertx3.services.InitializeIngestorService;
+import io.vertx.core.Vertx;
+import io.vertx.core.AsyncResult;
+import io.vertx.core.Handler;
+import io.vertx.core.logging.Logger;
+import io.apiman.gateway.platforms.vertx3.services.IngestorToPolicyService;
+import io.apiman.gateway.platforms.vertx3.config.VertxEngineConfig;
 
 /*
   Generated Proxy code - DO NOT EDIT
@@ -46,8 +53,7 @@ public class InitializeIngestorServiceVertxEBProxy implements InitializeIngestor
     this._address = address;
   }
 
-  @Override
-public void createIngestor(String uuid, Handler<AsyncResult<IngestorToPolicyService>> resultHandler) {
+  public void createIngestor(String uuid, Handler<AsyncResult<IngestorToPolicyService>> resultHandler) {
     if (closed) {
       resultHandler.handle(Future.failedFuture(new IllegalStateException("Proxy is closed")));
       return;
@@ -86,12 +92,12 @@ public void createIngestor(String uuid, Handler<AsyncResult<IngestorToPolicyServ
   }
 
   private <T> Map<String, T> convertMap(Map map) {
-    return map;
+    return (Map<String, T>)map;
   }
   private <T> List<T> convertList(List list) {
-    return list;
+    return (List<T>)list;
   }
   private <T> Set<T> convertSet(List list) {
-    return new HashSet<T>(list);
+    return new HashSet<T>((List<T>)list);
   }
 }

@@ -15,6 +15,7 @@
  */
 package io.apiman.gateway.platforms.vertx3.api;
 
+import io.apiman.common.util.MediaType;
 import io.apiman.common.util.SimpleStringUtils;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.http.HttpHeaders;
@@ -22,8 +23,6 @@ import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.json.Json;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
-
-import javax.ws.rs.core.MediaType;
 
 /**
  * Route building helper

@@ -17,6 +17,7 @@ package io.apiman.gateway.platforms.vertx3.engine;
 
 import io.apiman.gateway.engine.IComponentRegistry;
 import io.apiman.gateway.engine.IConnectorFactory;
+import io.apiman.gateway.engine.IPluginRegistry;
 import io.apiman.gateway.engine.impl.ConfigDrivenEngineFactory;
 import io.apiman.gateway.platforms.vertx3.config.VertxEngineConfig;
 import io.apiman.gateway.platforms.vertx3.connector.ConnectorFactory;
@@ -44,13 +45,13 @@ public class VertxConfigDrivenEngineFactory extends ConfigDrivenEngineFactory {
     }
 
     @Override
-    protected IConnectorFactory createConnectorFactory() {
+    protected IConnectorFactory createConnectorFactory(IPluginRegistry pluginRegistry) {
         return new ConnectorFactory(vertx, vxConfig.getConnectorFactoryConfig());
     }
 
     @Override
-    protected IComponentRegistry createComponentRegistry() {
-        return new VertxConfigDrivenComponentRegistry(vertx, vxConfig);
+    protected IComponentRegistry createComponentRegistry(IPluginRegistry pluginRegistry) {
+        return new VertxConfigDrivenComponentRegistry(pluginRegistry, vertx, vxConfig);
     }
 
     @Override

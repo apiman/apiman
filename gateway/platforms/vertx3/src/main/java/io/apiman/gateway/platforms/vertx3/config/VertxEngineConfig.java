@@ -82,7 +82,7 @@ public class VertxEngineConfig implements IEngineConfig {
     }
 
     @Override
-    public Class<? extends IRegistry> getRegistryClass() {
+    public Class<? extends IRegistry> getRegistryClass(IPluginRegistry pluginRegistry) {
         return loadConfigClass(getClassname(config, GATEWAY_REGISTRY_PREFIX),
                 IRegistry.class);
     }
@@ -104,7 +104,7 @@ public class VertxEngineConfig implements IEngineConfig {
     }
 
     @Override
-    public Class<? extends IConnectorFactory> getConnectorFactoryClass() {
+    public Class<? extends IConnectorFactory> getConnectorFactoryClass(IPluginRegistry pluginRegistry) {
         return loadConfigClass(getClassname(config, GATEWAY_CONNECTOR_FACTORY_PREFIX),
                 IConnectorFactory.class);
     }
@@ -115,7 +115,7 @@ public class VertxEngineConfig implements IEngineConfig {
     }
 
     @Override
-    public Class<? extends IPolicyFactory> getPolicyFactoryClass() {
+    public Class<? extends IPolicyFactory> getPolicyFactoryClass(IPluginRegistry pluginRegistry) {
         return loadConfigClass(getClassname(config, GATEWAY_POLICY_FACTORY_PREFIX),
                 IPolicyFactory.class);
     }
@@ -126,7 +126,7 @@ public class VertxEngineConfig implements IEngineConfig {
     }
 
     @Override
-    public Class<? extends IMetrics> getMetricsClass() {
+    public Class<? extends IMetrics> getMetricsClass(IPluginRegistry pluginRegistry) {
         return loadConfigClass(getClassname(config, GATEWAY_METRICS_PREFIX),
                 IMetrics.class);
     }
@@ -137,7 +137,7 @@ public class VertxEngineConfig implements IEngineConfig {
     }
 
     @Override
-    public <T extends IComponent> Class<T> getComponentClass(Class<T> componentType) {
+    public <T extends IComponent> Class<T> getComponentClass(Class<T> componentType, IPluginRegistry pluginRegistry) {
         String className = config.getJsonObject(GATEWAY_COMPONENT_PREFIX).
                 getJsonObject(componentType.getSimpleName()).
                 getString(GATEWAY_CLASS);

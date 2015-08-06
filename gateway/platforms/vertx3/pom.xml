@@ -6,7 +6,7 @@
   <parent>
     <groupId>io.apiman</groupId>
     <artifactId>apiman-gateway-platforms</artifactId>
-    <version>1.1.4-SNAPSHOT</version>
+    <version>1.1.6-SNAPSHOT</version>
   </parent>
 
   <artifactId>apiman-gateway-platforms-vertx3</artifactId>
@@ -66,6 +66,10 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-common-config</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>apiman-gateway-api-rest</artifactId>
     </dependency>
     <dependency>
@@ -74,11 +78,15 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>apiman-gateway-test</artifactId>
+      <artifactId>apiman-test-common</artifactId>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-test-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-gateway-engine-es</artifactId>
     </dependency>
 
     <!-- Third Party Dependencies -->

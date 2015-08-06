@@ -16,20 +16,24 @@
 
 package io.apiman.gateway.platforms.vertx3.services;
 
-import io.apiman.gateway.platforms.vertx3.io.VertxServiceRequest;
-import io.vertx.core.AsyncResult;
-import io.vertx.core.Future;
-import io.vertx.core.Handler;
-import io.vertx.core.Vertx;
+import io.apiman.gateway.platforms.vertx3.services.IngestorToPolicyService;
 import io.vertx.core.eventbus.DeliveryOptions;
-import io.vertx.core.json.JsonArray;
+import io.vertx.core.Vertx;
+import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
-
+import io.vertx.core.json.JsonArray;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import io.vertx.serviceproxy.ProxyHelper;
+import io.vertx.core.Vertx;
+import io.vertx.core.AsyncResult;
+import io.vertx.core.Handler;
+import io.apiman.gateway.platforms.vertx3.services.IngestorToPolicyService;
+import io.apiman.gateway.platforms.vertx3.io.VertxServiceRequest;
 
 /*
   Generated Proxy code - DO NOT EDIT
@@ -64,8 +68,7 @@ public class IngestorToPolicyServiceVertxEBProxy implements IngestorToPolicyServ
     });
   }
 
-  @Override
-public void write(String chunk) {
+  public void write(String chunk) {
     if (closed) {
       throw new IllegalStateException("Proxy is closed");
     }
@@ -76,8 +79,7 @@ public void write(String chunk) {
     _vertx.eventBus().send(_address, _json, _deliveryOptions);
   }
 
-  @Override
-public void end(Handler<AsyncResult<Void>> resultHandler) {
+  public void end(Handler<AsyncResult<Void>> resultHandler) {
     if (closed) {
       resultHandler.handle(Future.failedFuture(new IllegalStateException("Proxy is closed")));
       return;
@@ -115,12 +117,12 @@ public void end(Handler<AsyncResult<Void>> resultHandler) {
   }
 
   private <T> Map<String, T> convertMap(Map map) {
-    return map;
+    return (Map<String, T>)map;
   }
   private <T> List<T> convertList(List list) {
-    return list;
+    return (List<T>)list;
   }
   private <T> Set<T> convertSet(List list) {
-    return new HashSet<T>(list);
+    return new HashSet<T>((List<T>)list);
   }
 }

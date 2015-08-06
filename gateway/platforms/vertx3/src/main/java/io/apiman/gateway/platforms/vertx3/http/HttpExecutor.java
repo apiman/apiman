@@ -15,6 +15,7 @@
  */
 package io.apiman.gateway.platforms.vertx3.http;
 
+import io.apiman.common.util.MediaType;
 import io.apiman.gateway.platforms.vertx3.config.VertxEngineConfig;
 import io.apiman.gateway.platforms.vertx3.io.VertxApimanBuffer;
 import io.apiman.gateway.platforms.vertx3.io.VertxPolicyFailure;
@@ -37,8 +38,6 @@ import io.vertx.serviceproxy.ProxyHelper;
 
 import java.util.Map.Entry;
 import java.util.UUID;
-
-import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 

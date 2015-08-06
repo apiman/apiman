@@ -16,20 +16,33 @@
 
 package io.apiman.gateway.platforms.vertx3.services;
 
-import io.vertx.core.AsyncResult;
-import io.vertx.core.Handler;
+import io.apiman.gateway.platforms.vertx3.services.PolicyToIngestorService;
 import io.vertx.core.Vertx;
+import io.vertx.core.Handler;
+import io.vertx.core.AsyncResult;
+import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.eventbus.Message;
 import io.vertx.core.eventbus.MessageConsumer;
-import io.vertx.core.json.JsonArray;
+import io.vertx.core.eventbus.DeliveryOptions;
+import io.vertx.core.eventbus.ReplyException;
 import io.vertx.core.json.JsonObject;
-import io.vertx.serviceproxy.ProxyHandler;
-
+import io.vertx.core.json.JsonArray;
+import java.util.Collection;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import io.vertx.serviceproxy.ProxyHelper;
+import io.vertx.serviceproxy.ProxyHandler;
+import io.apiman.gateway.platforms.vertx3.services.PolicyToIngestorService;
+import io.vertx.core.Vertx;
+import io.apiman.gateway.platforms.vertx3.io.VertxServiceResponse;
+import io.vertx.core.AsyncResult;
+import io.vertx.core.Handler;
+import io.apiman.gateway.platforms.vertx3.io.VertxPolicyFailure;
 
 /*
   Generated Proxy code - DO NOT EDIT
@@ -37,7 +50,7 @@ import java.util.Set;
 */
 public class PolicyToIngestorServiceVertxProxyHandler extends ProxyHandler {
 
-  public static final long DEFAULT_CONNECTION_TIMEOUT = 5 * 60; // 5 minutes
+  public static final long DEFAULT_CONNECTION_TIMEOUT = 5 * 60; // 5 minutes 
 
   private final Vertx vertx;
   private final PolicyToIngestorService service;
@@ -69,8 +82,7 @@ public class PolicyToIngestorServiceVertxProxyHandler extends ProxyHandler {
     accessed();
   }
 
-  @Override
-public MessageConsumer<JsonObject> registerHandler(String address) {
+  public MessageConsumer<JsonObject> registerHandler(String address) {
     MessageConsumer<JsonObject> consumer = vertx.eventBus().<JsonObject>consumer(address).handler(this);
     this.setConsumer(consumer);
     return consumer;
@@ -96,8 +108,7 @@ public MessageConsumer<JsonObject> registerHandler(String address) {
     this.lastAccessed = System.nanoTime();
   }
 
-  @Override
-public void handle(Message<JsonObject> msg) {
+  public void handle(Message<JsonObject> msg) {
     JsonObject json = msg.body();
     String action = msg.headers().get("action");
     if (action == null) {
@@ -189,14 +200,14 @@ public void handle(Message<JsonObject> msg) {
   }
 
   private <T> Map<String, T> convertMap(Map map) {
-    return map;
+    return (Map<String, T>)map;
   }
 
   private <T> List<T> convertList(List list) {
-    return list;
+    return (List<T>)list;
   }
 
   private <T> Set<T> convertSet(List list) {
-    return new HashSet<T>(list);
+    return new HashSet<T>((List<T>)list);
   }
 }

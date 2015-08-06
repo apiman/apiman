@@ -15,6 +15,7 @@
  */
 package io.apiman.gateway.platforms.vertx3.engine;
 
+import io.apiman.gateway.engine.IPluginRegistry;
 import io.apiman.gateway.engine.impl.ConfigDrivenComponentRegistry;
 import io.apiman.gateway.platforms.vertx3.config.VertxEngineConfig;
 import io.vertx.core.Vertx;
@@ -35,8 +36,8 @@ public class VertxConfigDrivenComponentRegistry extends ConfigDrivenComponentReg
     private VertxEngineConfig engineConfig;
     private Vertx vertx;
 
-    public VertxConfigDrivenComponentRegistry(Vertx vertx, VertxEngineConfig engineConfig) {
-        super(engineConfig);
+    public VertxConfigDrivenComponentRegistry(IPluginRegistry pluginRegistry, Vertx vertx, VertxEngineConfig engineConfig) {
+        super(engineConfig, pluginRegistry);
         this.engineConfig = engineConfig;
         this.vertx = vertx;
     }

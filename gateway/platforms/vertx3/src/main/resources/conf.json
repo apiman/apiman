@@ -1,6 +1,6 @@
 {
   "registry": { "class": "io.apiman.gateway.engine.impl.InMemoryRegistry", "config": {} },
-  "connector-factory": { "class": "io.apiman.gateway.platforms.vertx2.connector.ConnectorFactory", "config": {} },
+  "connector-factory": { "class": "io.apiman.gateway.platforms.vertx3.connector.ConnectorFactory", "config": {} },
   "policy-factory": { "class": "io.apiman.gateway.engine.policy.PolicyFactoryImpl", "config": {} },
   
   "components": {

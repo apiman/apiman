@@ -1,6 +1,7 @@
 package io.apiman.gateway.platforms.vertx3.io;
 
 import io.vertx.core.json.JsonObject;
+import io.vertx.core.json.JsonArray;
 
 public class VertxServiceRequestConverter {
 

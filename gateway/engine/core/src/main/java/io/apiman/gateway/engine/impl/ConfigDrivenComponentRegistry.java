@@ -24,6 +24,7 @@ import io.apiman.gateway.engine.IPluginRegistry;
 import io.apiman.gateway.engine.IRequiresInitialization;
 import io.apiman.gateway.engine.beans.exceptions.ComponentNotFoundException;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
