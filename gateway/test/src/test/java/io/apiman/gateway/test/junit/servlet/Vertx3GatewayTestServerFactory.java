@@ -1,0 +1,44 @@
+/*
+ * Copyright 2015 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package io.apiman.gateway.test.junit.servlet;
+
+import io.apiman.gateway.test.junit.IGatewayTestServer;
+import io.apiman.gateway.test.junit.IGatewayTestServerFactory;
+
+/**
+ * Factory used to create the servlet version of the gateway for testing purposes.
+ *
+ * @author eric.wittmann@redhat.com
+ */
+public class Vertx3GatewayTestServerFactory implements IGatewayTestServerFactory {
+
+    /**
+     * Constructor.
+     */
+    public Vertx3GatewayTestServerFactory() {
+    }
+
+    /**
+     * @see io.apiman.gateway.test.junit.IGatewayTestServerFactory#createGatewayTestServer()
+     */
+    @Override
+    public IGatewayTestServer createGatewayTestServer() {
+        //System.out.println("Test test test");
+        //return null;
+        return new Vertx3GatewayTestServer();
+    }
+
+}

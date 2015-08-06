@@ -51,6 +51,10 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-gateway-platforms-war</artifactId>
     </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-gateway-platforms-vertx3</artifactId>
+    </dependency>
 
     <!-- Weld -->
     <dependency>

@@ -377,7 +377,7 @@
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-gateway-platforms-vertx</artifactId>
+        <artifactId>apiman-gateway-platforms-vertx3</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
