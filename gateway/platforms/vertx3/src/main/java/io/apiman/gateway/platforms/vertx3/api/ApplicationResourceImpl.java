@@ -63,16 +63,16 @@ public class ApplicationResourceImpl implements IApplicationResource, IRouteBuil
     }
 
     public void register(RoutingContext routingContext) {
-        try {
-            routingContext.request().bodyHandler((Handler<Buffer>) buffer -> {
+        routingContext.request().bodyHandler((Handler<Buffer>) buffer -> {
+            try {
                 register(Json.decodeValue(buffer.toString("utf-8"), Application.class)); //$NON-NLS-1$
                 end(routingContext, HttpResponseStatus.NO_CONTENT);
-            });
-        } catch (RegistrationException e) {
-            error(routingContext, HttpResponseStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
-        } catch (NotAuthorizedException e) {
-            error(routingContext, HttpResponseStatus.UNAUTHORIZED, e.getMessage(), e);
-        }
+            } catch (RegistrationException e) {
+                error(routingContext, HttpResponseStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
+            } catch (NotAuthorizedException e) {
+                error(routingContext, HttpResponseStatus.UNAUTHORIZED, e.getMessage(), e);
+            }
+        });
     }
 
     @Override

@@ -68,16 +68,16 @@ public class ServiceResourceImpl implements IServiceResource, IRouteBuilder {
     }
 
     public void publish(RoutingContext routingContext) {
-        try {
-            routingContext.request().bodyHandler((Handler<Buffer>) buffer -> {
+        routingContext.request().bodyHandler((Handler<Buffer>) buffer -> {
+            try {
                 publish(Json.decodeValue(buffer.toString("utf-8"), Service.class));
-                end(routingContext, HttpResponseStatus.CREATED);
-            });
-        } catch (PublishingException e) {
-            error(routingContext, HttpResponseStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
-        } catch (NotAuthorizedException e) {
-            error(routingContext, HttpResponseStatus.UNAUTHORIZED, e.getMessage(), e);
-        }
+                end(routingContext, HttpResponseStatus.NO_CONTENT);
+            } catch (PublishingException e) {
+                error(routingContext, HttpResponseStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
+            } catch (NotAuthorizedException e) {
+                error(routingContext, HttpResponseStatus.UNAUTHORIZED, e.getMessage(), e);
+            }
+        });
     }
 
     @Override

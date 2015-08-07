@@ -46,7 +46,8 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
  *
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
-public class HttpExecutor implements Handler<HttpServerRequest> {
+
+class HttpExecutor implements Handler<HttpServerRequest> {
 
     private HttpServerRequest request;
     private HttpServerResponse response;
@@ -88,6 +89,8 @@ public class HttpExecutor implements Handler<HttpServerRequest> {
         // Setup response leg first
         setupResponse();
 
+        System.out.println("httpSessionUuid =" + httpSessionUuid);
+
         // The outer proxy returns an inner proxy, which is our request 'connection'
         initService.createIngestor(httpSessionUuid, this::setupRequest);
     }
@@ -112,7 +115,7 @@ public class HttpExecutor implements Handler<HttpServerRequest> {
                             send.end(this::errorCatchingReplyHandler);
                         });
 
-                        System.out.println("Resuming body in HttpExecutor");
+                        System.out.println("Worked! Resuming body in HttpExecutor");
                         request.resume();
                     } else { // It didn't work; probably a policy failure. Just call #end immediately.
                         System.out.println("There was a policy failure");
@@ -121,7 +124,7 @@ public class HttpExecutor implements Handler<HttpServerRequest> {
                     }
                 } else {
                     System.out.println("There was a failure - likely an exception. Should see it come through end()");
-                    setError(ready.cause());
+                    //setError(ready.cause());
                 }
             });
         } else {
@@ -130,8 +133,11 @@ public class HttpExecutor implements Handler<HttpServerRequest> {
     }
 
     private void errorCatchingReplyHandler(AsyncResult<Void> result) {
-        if (result.failed())
+        if (result.failed()) {
+            System.out.println("error catching reply handler fired ");
+            result.cause().printStackTrace();
             setError(result.cause());
+        }
     }
 
     private void setupResponse() {
@@ -163,7 +169,7 @@ public class HttpExecutor implements Handler<HttpServerRequest> {
         response.setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
         response.setStatusMessage(HttpResponseStatus.INTERNAL_SERVER_ERROR.reasonPhrase());
         response.headers().add("X-Exception", String.valueOf(error.getMessage())); //$NON-NLS-1$
-        response.end(ExceptionUtils.getStackTrace(error));
+        response.write(ExceptionUtils.getStackTrace(error));
     }
 
     private void setPolicyFailure(VertxPolicyFailure failure) {
@@ -197,5 +203,6 @@ public class HttpExecutor implements Handler<HttpServerRequest> {
         }
 
         response.write(failure.getRaw());
+        response.end();
     }
 }

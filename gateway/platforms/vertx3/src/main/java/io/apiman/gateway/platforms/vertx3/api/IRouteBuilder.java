@@ -21,6 +21,7 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.json.Json;
+import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 
@@ -44,8 +45,9 @@ public interface IRouteBuilder {
         return "/" + (path.length() == 0 ? getPath() : getPath() + "/" + path);
     }
 
-    default <T> void error(RoutingContext context, HttpResponseStatus code, String message, T object) {
+    default <T extends Exception> void error(RoutingContext context, HttpResponseStatus code, String message, T object) {
         HttpServerResponse response = context.response().setStatusCode(code.code());
+        response.putHeader("X-API-Gateway-Error", "true");
 
         if (message == null) {
             response.setStatusMessage(code.reasonPhrase());
@@ -54,9 +56,13 @@ public interface IRouteBuilder {
         }
 
         if(object != null) {
+            JsonObject errorResponse = new JsonObject();
+            errorResponse.put("errorType", object.getClass().getSimpleName())
+                .put("message", object.getMessage());
+
             response.setChunked(true)
                 .putHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
-                .end(Json.encode(object), "UTF-8");
+                .end(errorResponse.toString(), "UTF-8");
         } else {
             response.end();
         }

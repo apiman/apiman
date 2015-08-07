@@ -15,7 +15,7 @@
  */
 package io.apiman.gateway.platforms.vertx3.verticles;
 
-import io.apiman.gateway.platforms.vertx3.http.HttpExecutor;
+import io.apiman.gateway.platforms.vertx3.http.HttpSpawner;
 import io.vertx.core.http.HttpServerOptions;
 
 /**
@@ -34,7 +34,7 @@ public class HttpGatewayVerticle extends ApimanVerticleBase {
             .setHost(apimanConfig.getHostname());
 
         vertx.createHttpServer(standardOptions)
-            .requestHandler(new HttpExecutor(vertx, log, false))
+            .requestHandler(new HttpSpawner(vertx, log, false))
             .listen(apimanConfig.getPort(VERTICLE_TYPE));
     }
 

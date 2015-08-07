@@ -47,7 +47,7 @@ public class IngestorToPolicyImpl implements IngestorToPolicyService {
     @Override
     public void head(VertxServiceRequest serviceRequest,
             Handler<AsyncResult<Boolean>> readyHandler) {
-        System.out.println("Received head:");
+        System.out.println("Received head: " + serviceRequest);
 
         this.readyHandler = readyHandler;
         headHandler.handle(serviceRequest);

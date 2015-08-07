@@ -21,6 +21,7 @@ import io.vertx.core.json.JsonObject;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.UUID;
 
 /**
  * Wrapped {@link ServiceRequest} with Vertx specific converters
@@ -97,4 +98,12 @@ public class VertxServiceRequest extends ServiceRequest {
         builder.append("]");
         return builder.toString();
     }
+
+    int uuid = UUID.randomUUID().hashCode();
+
+    @Override
+    public int hashCode() {
+        return uuid;
+    }
+
 }

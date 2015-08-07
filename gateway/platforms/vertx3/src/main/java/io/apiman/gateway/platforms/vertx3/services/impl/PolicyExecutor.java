@@ -53,10 +53,13 @@ public class PolicyExecutor {
 
     public void execute() {
         requestService.headHandler((Handler<VertxServiceRequest>) serviceRequest -> {
-            System.out.println("Head has arrived....");
+            System.err.println("Head has arrived.... " + serviceRequest.hashCode());
 
             final IServiceRequestExecutor requestExecutor = engine.executor(serviceRequest, (IAsyncResultHandler<IEngineResult>) result -> {
-                log.debug("Received result from apiman engine in PolicyVerticle!"); //$NON-NLS-1$
+                System.err.println("Received result from apiman engine in PolicyVerticle! " + serviceRequest.hashCode() + " @ " + result.getError()); //$NON-NLS-1$
+
+                if (result.getError() != null)
+                    result.getError().printStackTrace();
 
                 if (result.isSuccess()) {
                     IEngineResult engineResult = result.getResult();
@@ -65,7 +68,7 @@ public class PolicyExecutor {
                         doResponse(engineResult, replyProxy);
                         requestService.succeeded(); // no exception
                     } else {
-                        System.out.println("Failed with policy denial - setting end handler");
+                        System.out.println("Failed with policy denial - setting end handler = "+ serviceRequest.hashCode());
                         requestService.endHandler((Handler<Void>) v -> {
                             System.out.println("requestService.endHandler called");
                             replyEnd();
@@ -73,15 +76,17 @@ public class PolicyExecutor {
                         });
                         replyProxy.policyFailure(new VertxPolicyFailure(engineResult.getPolicyFailure()));
                         requestService.failHead();
-                        requestService.succeeded();
+                        //requestService.succeeded();
                     }
                 } else {
                     // Necessary to fail head to ensure #end is called. Could refactor this to call end ourselves, possibly.
-                    requestService.failHead();
+                    System.out.println("An exception occurred? SR = " + serviceRequest.hashCode());
                     requestService.endHandler((Handler<Void>) v -> {
                         requestService.fail(result.getError());
                         replyEnd();
                     });
+
+                    requestService.failHead();
                 }
             });
 
@@ -100,6 +105,7 @@ public class PolicyExecutor {
                 requestService.ready();
             });
 
+            System.err.println("Calling execute on " + serviceRequest.hashCode());
             requestExecutor.execute();
         });
     }

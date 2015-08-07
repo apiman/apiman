@@ -121,8 +121,8 @@ class HttpConnector implements IServiceConnectionResponse, IServiceConnection {
        isHttps = serviceEndpoint.getProtocol().equals("https");
        serviceHost = serviceEndpoint.getHost();
        servicePort = getPort(serviceEndpoint);
-       servicePath = serviceEndpoint.getPath().isEmpty() ? "/" : serviceEndpoint.getPath();
-       destination = serviceRequest.getDestination() == null ? "" : serviceRequest.getDestination();
+       servicePath = serviceEndpoint.getPath().isEmpty() || serviceEndpoint.getPath().equals("/") ? "" : serviceEndpoint.getPath();
+       destination = serviceRequest.getDestination() == null ? "/" : serviceRequest.getDestination();
 
        HttpClientOptions clientOptions = HttpClientOptionsFactory.parseOptions(tlsOptions, serviceEndpoint);
        this.client = vertx.createHttpClient(clientOptions);
@@ -197,6 +197,8 @@ class HttpConnector implements IServiceConnectionResponse, IServiceConnection {
         clientRequest.exceptionHandler(exceptionHandler);
         clientRequest.setChunked(true);
         clientRequest.headers().addAll(serviceRequest.getHeaders());
+
+//        System.out.println(String.format("Sending Content-Type of: %s", serviceRequest.getHeaders().get("Content-Type")));
 
         if (authType == RequiredAuthType.BASIC) {
             clientRequest.putHeader("Authorization", Basic.encode(basicOptions.getUsername(), basicOptions.getPassword()));

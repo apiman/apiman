@@ -17,6 +17,7 @@ package io.apiman.gateway.platforms.vertx3.verticles;
 
 import io.vertx.core.AsyncResult;
 import io.vertx.core.DeploymentOptions;
+import io.vertx.core.Future;
 
 /**
  * Initialiser verticle
@@ -25,8 +26,10 @@ import io.vertx.core.DeploymentOptions;
  */
 public class InitVerticle extends ApimanVerticleBase {
 
+    int deployed = 0;
+
     @Override
-    public void start() {
+    public void start(Future<Void> start) {
         super.start();
 
         DeploymentOptions base = new DeploymentOptions().setConfig(config());
@@ -34,14 +37,15 @@ public class InitVerticle extends ApimanVerticleBase {
         DeploymentOptions api = buildDeploymentOptions(base, ApiVerticle.VERTICLE_TYPE);
         DeploymentOptions http = buildDeploymentOptions(base, HttpGatewayVerticle.VERTICLE_TYPE);
 
-        vertx.deployVerticle(PolicyVerticle.class.getCanonicalName(), policy,
-                (AsyncResult<String> event) -> {
+        vertx.deployVerticle(PolicyVerticle.class.getCanonicalName(), policy, (AsyncResult<String> policyResult) -> {
 
-                if (event.failed())
-                    throw new RuntimeException(event.cause());
+                vertx.deployVerticle(HttpGatewayVerticle.class.getCanonicalName(), http, (AsyncResult<String> httpResult) -> {
 
-                vertx.deployVerticle(HttpGatewayVerticle.class.getCanonicalName(), http, this::failureHandler);
-                vertx.deployVerticle(ApiVerticle.class.getCanonicalName(), api, this::failureHandler);
+                            vertx.deployVerticle(ApiVerticle.class.getCanonicalName(), api, (AsyncResult<String> apiResult) -> {
+                                start.complete();
+                            });
+                });
+
         });
     }
 

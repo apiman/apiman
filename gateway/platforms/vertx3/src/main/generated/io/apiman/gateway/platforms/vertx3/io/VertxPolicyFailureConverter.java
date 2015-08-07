@@ -1,7 +1,8 @@
 package io.apiman.gateway.platforms.vertx3.io;
 
 import io.vertx.core.json.JsonObject;
-import io.vertx.core.json.JsonArray;
+
+import java.util.Map.Entry;
 
 public class VertxPolicyFailureConverter {
 
@@ -21,6 +22,11 @@ public class VertxPolicyFailureConverter {
     if (json.getValue("type") instanceof String) {
       obj.setType(io.apiman.gateway.engine.beans.PolicyFailureType.valueOf((String)json.getValue("type")));
     }
+    for (Entry<String, Object> entry : json.getJsonObject("headers").getMap().entrySet()) {
+        if (entry.getValue() instanceof String) {
+            obj.getHeaders().put(entry.getKey(), (String) entry.getValue());
+        }
+    }
   }
 
   public static void toJson(VertxPolicyFailure obj, JsonObject json) {
@@ -35,5 +41,8 @@ public class VertxPolicyFailureConverter {
     if (obj.getType() != null) {
       json.put("type", obj.getType().name());
     }
+    if (obj.getHeaders() != null) {
+        json.put("headers", obj.getHeaders());
+      }
   }
 }

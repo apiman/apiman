@@ -21,6 +21,7 @@ import io.apiman.gateway.engine.components.IHttpClientComponent;
 import io.apiman.gateway.engine.components.http.HttpMethod;
 import io.apiman.gateway.engine.components.http.IHttpClientRequest;
 import io.apiman.gateway.engine.components.http.IHttpClientResponse;
+import io.apiman.gateway.platforms.vertx3.config.VertxEngineConfig;
 import io.apiman.gateway.platforms.vertx3.i18n.Messages;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
@@ -31,6 +32,7 @@ import io.vertx.core.http.HttpClientResponse;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Map;
 
 /**
  * A Vert.x based implementation of {@link IHttpClientComponent}. Ensure that
@@ -44,7 +46,7 @@ public class HttpClientComponentImpl implements IHttpClientComponent {
     private IAsyncResultHandler<IHttpClientResponse> responseHandler;
     private HttpClient client;
 
-    public HttpClientComponentImpl(Vertx vertx) {
+    public HttpClientComponentImpl(Vertx vertx, VertxEngineConfig engineConfig, Map<String, String> componentConfig) {
         this.client = vertx.createHttpClient();
     }
 
