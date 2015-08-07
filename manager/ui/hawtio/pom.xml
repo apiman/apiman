@@ -66,7 +66,7 @@
               <goal>bower</goal>
             </goals>
             <configuration>
-              <arguments>install</arguments>
+              <arguments>--config.strict-ssl=false install</arguments>
             </configuration>
           </execution>
 
