@@ -17,5 +17,6 @@
     <module>osgi</module>
     <module>ispn</module>
     <module>es</module>
+    <module>vertx-eb-inmemory</module>
   </modules>
 </project>
