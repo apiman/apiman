@@ -47,8 +47,10 @@ import io.vertx.core.http.HttpMethod;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -162,6 +164,8 @@ class HttpConnector implements IServiceConnectionResponse, IServiceConnection {
 //        System.out.println(servicePort);
 //        System.out.println(serviceHost);
 //        System.out.println(serviceRequest.getQueryParams().size());
+
+        System.out.println("endpoint ===" + endpoint);
 
         clientRequest = client.request(HttpMethod.valueOf(serviceRequest.getType()),
                 servicePort,
@@ -284,21 +288,22 @@ class HttpConnector implements IServiceConnectionResponse, IServiceConnection {
         if (queryParams == null || queryParams.size() == 0)
             return "";
 
-        StringBuilder sb = new StringBuilder(queryParams.size()*2*10);
+        StringBuilder sb = new StringBuilder(queryParams.size() * 2 * 10);
         String joiner = "?";
 
-        for (Entry<String, String> entry : queryParams.entrySet()) {
-            sb.append(joiner);
-            sb.append(entry.getKey());
-
-            if (entry.getValue() != null) {
-                sb.append("=");
-                sb.append(entry.getValue());
+        try {
+            for (Entry<String, String> entry : queryParams.entrySet()) {
+                sb.append(joiner);
+                sb.append(entry.getKey());
+                if (entry.getValue() != null) {
+                    sb.append("=");
+                    sb.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
+                }
+                joiner = "&";
             }
-
-            joiner = "&";
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
         }
-
         return sb.toString();
     }
 

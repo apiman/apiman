@@ -141,6 +141,7 @@
     <version.org.keycloak>1.2.0.Final</version.org.keycloak>
     <version.org.mockito>1.9.5</version.org.mockito>
     <version.org.mvel>2.2.2.Final</version.org.mvel>
+    <version.com.squareup.okhttp>2.4.0</version.com.squareup.okhttp>
     <version.org.osgi>4.3.1</version.org.osgi>
     <version.org.ow2.asm>4.0</version.org.ow2.asm>
     <version.org.picketbox>4.0.21.Final</version.org.picketbox>
@@ -822,6 +823,11 @@
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-core</artifactId>
         <version>${version.org.apache.logging.log4j}</version>
+      </dependency>
+      <dependency>
+	<groupId>com.squareup.okhttp</groupId>
+	<artifactId>okhttp</artifactId>
+	<version>${version.com.squareup.okhttp}</version>
       </dependency>
       <dependency>
         <groupId>joda-time</groupId>

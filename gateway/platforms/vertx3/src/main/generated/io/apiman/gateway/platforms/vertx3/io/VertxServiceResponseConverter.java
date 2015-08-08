@@ -18,7 +18,6 @@ public class VertxServiceResponseConverter {
             obj.getHeaders().put(entry.getKey(), (String) entry.getValue());
         }
     }
-
   }
 
   public static void toJson(VertxServiceResponse obj, JsonObject json) {
