@@ -15,9 +15,12 @@
  */
 package io.apiman.test.common.mock;
 
+import io.apiman.common.util.SimpleStringUtils;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.MessageDigest;
+import java.util.Arrays;
 import java.util.Enumeration;
 
 import javax.servlet.ServletException;
@@ -55,7 +58,9 @@ public class EchoServlet extends HttpServlet {
         EchoResponse response = new EchoResponse();
         response.setMethod(request.getMethod());
         if (request.getQueryString() != null) {
-            response.setResource(request.getRequestURI() + "?" + request.getQueryString()); //$NON-NLS-1$
+            String[] normalisedQueryString = request.getQueryString().split("&");
+            Arrays.sort(normalisedQueryString);
+            response.setResource(request.getRequestURI() + "?" + SimpleStringUtils.join("&", normalisedQueryString)); //$NON-NLS-1$
         } else {
             response.setResource(request.getRequestURI());
         }
