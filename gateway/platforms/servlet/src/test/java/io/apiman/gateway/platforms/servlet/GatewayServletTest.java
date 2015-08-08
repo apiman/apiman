@@ -15,7 +15,7 @@
  */
 package io.apiman.gateway.platforms.servlet;
 
-import io.apiman.gateway.platforms.servlet.GatewayServlet.ServiceRequestPathInfo;
+import io.apiman.common.util.ApimanPathUtils.ServiceRequestPathInfo;
 
 import java.util.Map;
 

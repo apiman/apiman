@@ -15,6 +15,8 @@
  */
 package io.apiman.gateway.platforms.vertx3.http;
 
+import io.apiman.common.util.ApimanPathUtils;
+import io.apiman.common.util.ApimanPathUtils.ServiceRequestPathInfo;
 import io.apiman.gateway.platforms.vertx3.io.VertxServiceRequest;
 import io.apiman.gateway.platforms.vertx3.io.VertxServiceResponse;
 import io.vertx.core.MultiMap;
@@ -23,6 +25,7 @@ import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -34,6 +37,11 @@ import java.util.Set;
  */
 @SuppressWarnings("nls")
 public class HttpServiceFactory {
+
+    final static Set<String> IGNORESET = new HashSet<>();
+    static {
+        IGNORESET.add(ApimanPathUtils.X_API_VERSION_HEADER);
+    }
 
     public static VertxServiceResponse buildResponse(HttpClientResponse response, Set<String> suppressHeaders) {
         VertxServiceResponse apimanResponse = new VertxServiceResponse();
@@ -55,44 +63,44 @@ public class HttpServiceFactory {
         apimanRequest.setRemoteAddr(req.remoteAddress().host());
         apimanRequest.setType(req.method().toString());
         apimanRequest.setTransportSecure(isTransportSecure);
-        multimapToMap(apimanRequest.getHeaders(), req.headers(), Collections.<String>emptySet());
+        multimapToMap(apimanRequest.getHeaders(), req.headers(), IGNORESET);
         multimapToMap(apimanRequest.getQueryParams(), req.params(), Collections.<String>emptySet());
         mungePath(req, apimanRequest);
         return apimanRequest;
     }
 
     private static void mungePath(HttpServerRequest request, VertxServiceRequest apimanRequest) {
-        String pathInfo = request.path();
+        ServiceRequestPathInfo parsedPath = ApimanPathUtils.parseServiceRequestPath(
+                request.getHeader(ApimanPathUtils.X_API_VERSION_HEADER),
+                request.getHeader(ApimanPathUtils.ACCEPT_HEADER),
+                request.path());
 
-        if (pathInfo != null) {
-            String[] split = pathInfo.split("/");
-            if (split.length >= 4) {
-                apimanRequest.setServiceOrgId(split[1]);
-                apimanRequest.setServiceId(split[2]);
-                apimanRequest.setServiceVersion(split[3]);
-                if (split.length > 4) {
-                    StringBuilder resourceSb = new StringBuilder();
-                    for (int idx = 4; idx < split.length; idx++) {
-                        resourceSb.append('/');
-                        resourceSb.append(split[idx]);
-                    }
-                    if (pathInfo.endsWith("/")) {
-                        resourceSb.append('/');
-                    }
-                    apimanRequest.setDestination(resourceSb.toString());
-                }
-            }
-        }
+        apimanRequest.setServiceOrgId(parsedPath.orgId);
+        apimanRequest.setServiceId(parsedPath.serviceId);
+        apimanRequest.setServiceVersion(parsedPath.serviceVersion);
+        apimanRequest.setDestination(parsedPath.resource);
 
         if (apimanRequest.getServiceOrgId() == null) {
-            throw new IllegalArgumentException("Invalid endpoint provided: " + pathInfo);
+            throw new IllegalArgumentException("Invalid endpoint provided: " + request.path());
         }
     }
 
     private static void multimapToMap(Map<String, String> map, MultiMap multimap, Set<String> suppressHeaders) {
         for (Map.Entry<String, String> entry : multimap) {
             if(!suppressHeaders.contains(entry.getKey())) {
-                map.put(entry.getKey(), entry.getValue());
+                String key = entry.getKey();
+                String val = entry.getValue();
+
+                if (key != null && key.equalsIgnoreCase("accept") && val != null
+                        && val.startsWith("application/apiman.")) { //$NON-NLS-1$
+                    if (val.contains("+json")) { //$NON-NLS-1$
+                        val = "application/json"; //$NON-NLS-1$
+                    } else if (val.contains("+xml")) { //$NON-NLS-1$
+                        val = "text/xml"; //$NON-NLS-1$
+                    }
+                }
+
+                map.put(key, val);
             }
         }
     }

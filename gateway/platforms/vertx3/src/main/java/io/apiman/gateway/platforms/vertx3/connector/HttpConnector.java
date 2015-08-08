@@ -50,6 +50,8 @@ import io.vertx.core.logging.LoggerFactory;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 /**
@@ -154,7 +156,7 @@ class HttpConnector implements IServiceConnectionResponse, IServiceConnection {
     }
 
     private void doConnection() {
-        String endpoint = servicePath + destination;
+        String endpoint = servicePath + destination + queryParams(serviceRequest.getQueryParams());
 //        System.out.println("destination =" + destination);
 //        System.out.println(HttpMethod.valueOf(serviceRequest.getType()));
 //        System.out.println(servicePort);
@@ -197,8 +199,6 @@ class HttpConnector implements IServiceConnectionResponse, IServiceConnection {
         clientRequest.exceptionHandler(exceptionHandler);
         clientRequest.setChunked(true);
         clientRequest.headers().addAll(serviceRequest.getHeaders());
-
-//        System.out.println(String.format("Sending Content-Type of: %s", serviceRequest.getHeaders().get("Content-Type")));
 
         if (authType == RequiredAuthType.BASIC) {
             clientRequest.putHeader("Authorization", Basic.encode(basicOptions.getUsername(), basicOptions.getPassword()));
@@ -278,6 +278,28 @@ class HttpConnector implements IServiceConnectionResponse, IServiceConnection {
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private String queryParams(Map<String, String> queryParams) {
+        if (queryParams == null || queryParams.size() == 0)
+            return "";
+
+        StringBuilder sb = new StringBuilder(queryParams.size()*2*10);
+        String joiner = "?";
+
+        for (Entry<String, String> entry : queryParams.entrySet()) {
+            sb.append(joiner);
+            sb.append(entry.getKey());
+
+            if (entry.getValue() != null) {
+                sb.append("=");
+                sb.append(entry.getValue());
+            }
+
+            joiner = "&";
+        }
+
+        return sb.toString();
     }
 
     private class ExceptionHandler implements Handler<Throwable> {
