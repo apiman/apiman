@@ -54,7 +54,7 @@ the apiman docker image:
 
 ....
 docker pull jboss/apiman-wildfly
-docker run -it -p 8080:8080 jboss/apiman-wildfly
+docker run -it -p 8080:8080 -p 8443:8443 jboss/apiman-wildfly
 ....
 
 [NOTE]
