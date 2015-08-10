@@ -94,6 +94,8 @@ INSERT INTO pd_templates (policydef_id, language, template) VALUES ('TransferQuo
 
 INSERT INTO pd_templates (policydef_id, language, template) VALUES ('IgnoredResourcesPolicy', NULL, 'Requests matching any of the @{pathsToIgnore.size()} regular expressions provided will receive a 404 error code.');
 
+INSERT INTO pd_templates (policydef_id, language, template) VALUES ('URLRewritingPolicy', NULL, "Responses will be modified by finding all text matching regular expression '@{fromRegex}' with '@{toReplacement}'.");
+
 INSERT INTO pd_templates (policydef_id, language, template) VALUES ('CachingPolicy', NULL, 'API responses will be cached for @{ttl} seconds.');
 
 INSERT INTO pd_templates (policydef_id, language, template) VALUES ('AuthorizationPolicy', NULL, 'Appropriate authorization roles are required.  There are @{rules.size()} authorization rules defined.');

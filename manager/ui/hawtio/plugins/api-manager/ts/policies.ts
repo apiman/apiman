@@ -9,12 +9,15 @@ module Apiman {
                 var valid = true;
                 try {
                     var parsed = JSON.parse(config);
-                    $scope.config = parsed;
+                    $scope.setConfig(parsed);
                 } catch (e) {
                     valid = false;
                 }
                 $scope.setValid(valid);
             };
+            if ($scope.getConfig()) {
+                $scope.rawConfig = JSON.stringify($scope.getConfig(), null, 2);
+            }
             $scope.$watch('rawConfig', validateRaw);
         }]);
 
@@ -491,6 +494,31 @@ module Apiman {
                     if (config.ttl && config.ttl > 0) {
                         valid = true;
                     }
+                }
+                $scope.setValid(valid);
+            };
+            $scope.$watch('config', validate, true);
+        }]);
+
+    _module.controller("Apiman.URLRewritingFormController",
+        ['$scope', 'Logger',
+        ($scope, Logger) => {
+            var validate = function(config) {
+                var valid = true;
+                if (!config.fromRegex) {
+                    valid = false;
+                } else {
+                    try {
+                        new RegExp(config.fromRegex, "");
+                    } catch(e) {
+                        valid = false;
+                    }                    
+                }
+                if (!config.toReplacement) {
+                    valid = false;
+                }
+                if (!config.processBody && !config.processHeaders) {
+                    valid = false;
                 }
                 $scope.setValid(valid);
             };

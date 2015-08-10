@@ -46,6 +46,12 @@
                     value="Requests matching any of the @{pathsToIgnore.size()} regular expressions provided will receive a 404 error code."/>
         </insert>
         <insert tableName="pd_templates">
+            <column name="policydef_id" value="URLRewritingPolicy"/>
+            <column name="language"/>
+            <column name="template"
+                    value="Responses will be modified by finding all text matching regular expression '@{fromRegex}' with '@{toReplacement}'."/>
+        </insert>
+        <insert tableName="pd_templates">
             <column name="policydef_id" value="CachingPolicy"/>
             <column name="language"/>
             <column name="template"
@@ -210,6 +216,16 @@
             <column name="name" value="Ignored Resources Policy"/>
             <column name="plugin_id"/>
             <column name="policy_impl" value="class:io.apiman.gateway.engine.policies.IgnoredResourcesPolicy"/>
+        </insert>
+        <insert tableName="policydefs">
+            <column name="id" value="URLRewritingPolicy"/>
+            <column name="description" value="Responses from the back-end API will be modified by fixing up any incorrect URLs found with modified ones.  This is useful because apiman works through an API Gateway."/>
+            <column name="form"/>
+            <column name="form_type" value="Default"/>
+            <column name="icon" value="pencil-square"/>
+            <column name="name" value="URL Rewriting Policy"/>
+            <column name="plugin_id"/>
+            <column name="policy_impl" value="class:io.apiman.gateway.engine.policies.URLRewritingPolicy"/>
         </insert>
         <insert tableName="policydefs">
             <column name="id" value="CachingPolicy"/>

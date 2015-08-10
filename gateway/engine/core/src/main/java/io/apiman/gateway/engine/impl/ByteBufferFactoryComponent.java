@@ -27,6 +27,12 @@ import io.apiman.gateway.engine.io.IApimanBuffer;
 public class ByteBufferFactoryComponent implements IBufferFactoryComponent {
 
     /**
+     * Constructor.
+     */
+    public ByteBufferFactoryComponent() {
+    }
+
+    /**
      * @see io.apiman.gateway.engine.components.IBufferFactoryComponent#createBuffer()
      */
     @Override
@@ -65,5 +71,13 @@ public class ByteBufferFactoryComponent implements IBufferFactoryComponent {
     @Override
     public IApimanBuffer createBuffer(int sizeHint) {
         return new ByteBuffer(sizeHint);
+    }
+
+    /**
+     * @see io.apiman.gateway.engine.components.IBufferFactoryComponent#cloneBuffer(io.apiman.gateway.engine.io.IApimanBuffer)
+     */
+    @Override
+    public IApimanBuffer cloneBuffer(IApimanBuffer buffer) {
+        return new ByteBuffer(buffer.getBytes());
     }
 }

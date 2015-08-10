@@ -10,6 +10,7 @@ module Apiman {
         QuotaPolicy: 'quota.include',
         TransferQuotaPolicy: 'transfer-quota.include',
         AuthorizationPolicy: 'authorization.include',
+        URLRewritingPolicy: 'url-rewriting.include',
         CachingPolicy: 'caching.include'
     };
 

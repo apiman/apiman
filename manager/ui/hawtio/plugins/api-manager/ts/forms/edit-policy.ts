@@ -59,6 +59,9 @@ module Apiman {
             $scope.setConfig = function(config) {
                 $scope.config = config;
             };
+            $scope.getConfig = function() {
+                return $scope.config;
+            };
             
             $scope.updatePolicy = function() {
                 $scope.updateButton.state = 'in-progress';

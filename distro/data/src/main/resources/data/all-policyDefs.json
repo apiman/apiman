@@ -106,5 +106,17 @@
           "template" : "Requests matching any of the @{pathsToIgnore.size()} regular expressions provided will receive a 404 error code."
         }
       ]
+    },
+    {
+      "name" : "URL Rewriting Policy",
+      "description" : "Responses from the back-end API will be modified by fixing up any incorrect URLs found with modified ones.  This is useful because apiman works through an API Gateway.",
+      "policyImpl" : "class:io.apiman.gateway.engine.policies.URLRewritingPolicy",
+      "icon" : "pencil-square",
+      "templates" : [
+        {
+          "language" : null,
+          "template" : "Responses will be modified by finding all text matching regular expression '@{fromRegex}' with '@{toReplacement}'."
+        }
+      ]
     }
 ]

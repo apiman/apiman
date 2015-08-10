@@ -264,6 +264,7 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
                                 Exception error = new InvalidServiceException(Messages.i18n.format("EngineImpl.ServiceNotPublic")); //$NON-NLS-1$
                                 resultHandler.handle(AsyncResultImpl.create(error, IEngineResult.class));
                             } else {
+                                request.setService(service);
                                 policies = service.getServicePolicies();
                                 policyImpls = new ArrayList<>(policies.size());
                                 loadPolicies(policiesLoadedHandler);
@@ -287,6 +288,7 @@ public class ServiceRequestExecutorImpl implements IServiceRequestExecutor {
 
                         service = serviceContract.getService();
                         request.setContract(serviceContract);
+                        request.setService(service);
                         policies = serviceContract.getPolicies();
                         policyImpls = new ArrayList<>(policies.size());
                         if (request.getServiceOrgId() != null) {

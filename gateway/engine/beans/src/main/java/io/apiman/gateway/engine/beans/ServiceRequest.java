@@ -25,11 +25,12 @@ import java.util.Map;
  * @author eric.wittmann@redhat.com
  */
 public class ServiceRequest implements IServiceObject, Serializable {
-    
+
     private static final long serialVersionUID = 8024669261165845962L;
 
     private String apiKey;
     private transient ServiceContract contract;
+    private transient Service service;
     private String type;
     private String destination;
     private Map<String, String> queryParams = new LinkedHashMap<>();
@@ -37,7 +38,7 @@ public class ServiceRequest implements IServiceObject, Serializable {
     private String remoteAddr;
     private Object rawRequest;
     private boolean transportSecurity = false;
-    
+
     /*
      * Optional fields - set these if you want the APIMan engine to
      * validate that the apikey is valid for the given service coords.
@@ -93,7 +94,7 @@ public class ServiceRequest implements IServiceObject, Serializable {
     public void setType(String type) {
         this.type = type;
     }
-   
+
     /**
      * @see io.apiman.gateway.engine.beans.IServiceObject#getHeaders()
      */
@@ -101,7 +102,7 @@ public class ServiceRequest implements IServiceObject, Serializable {
     public Map<String, String> getHeaders() {
         return headers;
     }
-    
+
     /**
      * @see io.apiman.gateway.engine.beans.IServiceObject#setHeaders(java.util.Map)
      */
@@ -219,10 +220,24 @@ public class ServiceRequest implements IServiceObject, Serializable {
 
     /**
      * Set whether service request/response was made with transport security.
-     * 
+     *
      * @param isSecure transport security status
      */
     public void setTransportSecure(boolean isSecure) {
         this.transportSecurity = isSecure;
+    }
+
+    /**
+     * @return the service
+     */
+    public Service getService() {
+        return service;
+    }
+
+    /**
+     * @param service the service to set
+     */
+    public void setService(Service service) {
+        this.service = service;
     }
 }

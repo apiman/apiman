@@ -23,21 +23,21 @@ import io.apiman.gateway.engine.policy.IPolicy;
  * Allows platform-specific buffer objects to be generated. There may be occasions where a {@link IPolicy} may
  * legitimately wish to construct a new buffer (e.g. caching), and therefore needs a mechanism to efficiently
  * get a new {@link IApimanBuffer} buffer with a native implementation.
- * 
+ *
  * @author Marc Savy <msavy@redhat.com>
  */
 public interface IBufferFactoryComponent extends IComponent {
 
     /**
      * Instantiate an {@link IApimanBuffer}.
-     * 
+     *
      * @return A new empty buffer
      */
     IApimanBuffer createBuffer();
-    
+
     /**
      * Instantiate an {@link IApimanBuffer} of given size.
-     * 
+     *
      * @param size buffer size
      * @return A new empty buffer of size
      */
@@ -45,7 +45,7 @@ public interface IBufferFactoryComponent extends IComponent {
 
     /**
      * Instantiate an {@link IApimanBuffer} with {@link String}.
-     * 
+     *
      * @param stringData string to instantiate buffer
      * @return A buffer instantiated with stringData
      */
@@ -53,7 +53,7 @@ public interface IBufferFactoryComponent extends IComponent {
 
     /**
      * Instantiate an {@link IApimanBuffer} with {@link String}.
-     * 
+     *
      * @param stringData string to instantiate buffer
      * @param enc encoding of string
      * @return A buffer instantiated with stringData
@@ -62,9 +62,15 @@ public interface IBufferFactoryComponent extends IComponent {
 
     /**
      * Instantiate an {@link IApimanBuffer} with {@link Byte} array.
-     * 
+     *
      * @param byteData byte array data to instantiate buffer
      * @return Buffer instantiated with byteData
      */
     IApimanBuffer createBuffer(byte[] byteData);
+
+    /**
+     * Clone an existing buffer.
+     * @param buffer
+     */
+    IApimanBuffer cloneBuffer(IApimanBuffer buffer);
 }

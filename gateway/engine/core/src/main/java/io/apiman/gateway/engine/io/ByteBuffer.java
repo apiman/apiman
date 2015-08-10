@@ -37,6 +37,16 @@ public class ByteBuffer implements IApimanBuffer {
 
     /**
      * Constructor.
+     * @param buffer
+     * @param size
+     */
+    public ByteBuffer(byte [] buffer, int size) {
+        this.buffer = buffer;
+        this.bytesInBuffer = size;
+    }
+
+    /**
+     * Constructor.
      *
      * @param size initial size
      */
@@ -176,8 +186,8 @@ public class ByteBuffer implements IApimanBuffer {
      */
     @Override
     public byte[] getBytes(int start, int end) {
-        int size = (end - start) - 1;
-        byte [] rval = new byte[bytesInBuffer];
+        int size = (end - start);
+        byte [] rval = new byte[size];
         System.arraycopy(buffer, start, rval, 0, size);
         return rval;
     }
@@ -316,8 +326,13 @@ public class ByteBuffer implements IApimanBuffer {
      * @return bytes read from buffer
      */
     public int readFrom(InputStream stream) throws IOException {
-        bytesInBuffer = stream.read(buffer);
-        return bytesInBuffer;
+        int bytesRead = stream.read(buffer);
+        if (bytesRead < 0) {
+            bytesInBuffer = 0;
+        } else {
+            bytesInBuffer = bytesRead;
+        }
+        return bytesRead;
     }
 
 }

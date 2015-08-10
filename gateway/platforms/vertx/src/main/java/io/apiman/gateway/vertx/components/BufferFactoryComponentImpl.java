@@ -21,7 +21,7 @@ import io.apiman.gateway.vertx.io.VertxApimanBuffer;
 
 /**
  * Implementation of {@link IBufferFactoryComponent} for Vert.x
- * 
+ *
  * @author Marc Savy <msavy@redhat.com>
  */
 public class BufferFactoryComponentImpl implements IBufferFactoryComponent {
@@ -65,5 +65,13 @@ public class BufferFactoryComponentImpl implements IBufferFactoryComponent {
     @Override
     public IApimanBuffer createBuffer(int size) {
         return new VertxApimanBuffer(size);
+    }
+
+    /**
+     * @see io.apiman.gateway.engine.components.IBufferFactoryComponent#cloneBuffer(io.apiman.gateway.engine.io.IApimanBuffer)
+     */
+    @Override
+    public IApimanBuffer cloneBuffer(IApimanBuffer buffer) {
+        return new VertxApimanBuffer(buffer.getBytes());
     }
 }
