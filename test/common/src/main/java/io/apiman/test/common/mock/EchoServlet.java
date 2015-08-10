@@ -58,9 +58,9 @@ public class EchoServlet extends HttpServlet {
         EchoResponse response = new EchoResponse();
         response.setMethod(request.getMethod());
         if (request.getQueryString() != null) {
-            String[] normalisedQueryString = request.getQueryString().split("&");
+            String[] normalisedQueryString = request.getQueryString().split("&"); //$NON-NLS-1$
             Arrays.sort(normalisedQueryString);
-            response.setResource(request.getRequestURI() + "?" + SimpleStringUtils.join("&", normalisedQueryString)); //$NON-NLS-1$
+            response.setResource(request.getRequestURI() + "?" + SimpleStringUtils.join("&", normalisedQueryString)); //$NON-NLS-1$ //$NON-NLS-2$
         } else {
             response.setResource(request.getRequestURI());
         }
