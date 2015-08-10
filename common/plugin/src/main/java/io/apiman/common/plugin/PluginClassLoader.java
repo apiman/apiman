@@ -43,6 +43,7 @@ public class PluginClassLoader extends ClassLoader {
     private ZipFile pluginArtifactZip;
     private List<ZipFile> dependencyZips;
     private File workDir;
+    private boolean closed;
 
     /**
      * Constructor.
@@ -51,6 +52,7 @@ public class PluginClassLoader extends ClassLoader {
      */
     public PluginClassLoader(File pluginArtifactFile) throws IOException {
         super();
+        closed = false;
         this.pluginArtifactZip = new ZipFile(pluginArtifactFile);
         this.workDir = createWorkDir(pluginArtifactFile);
         indexPluginArtifact();
@@ -208,7 +210,7 @@ public class PluginClassLoader extends ClassLoader {
         }
         return null;
     }
-    
+
     /**
      * @see java.lang.ClassLoader#findResource(java.lang.String)
      */
@@ -227,7 +229,7 @@ public class PluginClassLoader extends ClassLoader {
         }
         return super.findResource(name);
     }
-    
+
     /**
      * @see java.lang.ClassLoader#findResources(java.lang.String)
      */
@@ -257,7 +259,7 @@ public class PluginClassLoader extends ClassLoader {
             }
         };
     }
-    
+
     /**
      * @see java.lang.Object#finalize()
      */
@@ -272,10 +274,12 @@ public class PluginClassLoader extends ClassLoader {
      * @throws IOException if an I/O error has occurred
      */
     public void close() throws IOException {
+        if (closed) { return; }
         this.pluginArtifactZip.close();
         for (ZipFile zipFile : this.dependencyZips) {
             zipFile.close();
         }
+        closed = true;
     }
 
     /**

@@ -31,6 +31,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.IOUtils;
 import org.codehaus.jackson.JsonEncoding;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
@@ -64,10 +65,11 @@ public class ConfigurationServlet extends AbstractUIServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
             IOException {
 
+        JsonGenerator g = null;
         try {
             response.getOutputStream().write("window.APIMAN_CONFIG_DATA = ".getBytes("UTF-8")); //$NON-NLS-1$ //$NON-NLS-2$
             JsonFactory f = new JsonFactory();
-            JsonGenerator g = f.createJsonGenerator(response.getOutputStream(), JsonEncoding.UTF8);
+            g = f.createJsonGenerator(response.getOutputStream(), JsonEncoding.UTF8);
             ObjectMapper mapper = new ObjectMapper();
             mapper.setSerializationInclusion(Inclusion.NON_NULL);
             g.setCodec(mapper);
@@ -95,8 +97,9 @@ public class ConfigurationServlet extends AbstractUIServlet {
                 case authToken: {
                     configBean.getApi().getAuth().setType(ApiAuthType.authToken);
                     String tokenGeneratorClassName = getConfig().getManagementApiAuthTokenGenerator();
-                    if (tokenGeneratorClassName == null)
+                    if (tokenGeneratorClassName == null) {
                         throw new ServletException("No token generator class specified."); //$NON-NLS-1$
+                    }
                     Class<?> c = Class.forName(tokenGeneratorClassName);
                     ITokenGenerator tokenGenerator = (ITokenGenerator) c.newInstance();
                     configBean.getApi().getAuth().setBearerToken(tokenGenerator.generateToken(request));
@@ -136,9 +139,10 @@ public class ConfigurationServlet extends AbstractUIServlet {
 
             g.flush();
             response.getOutputStream().write(";".getBytes("UTF-8")); //$NON-NLS-1$ //$NON-NLS-2$
-            g.close();
         } catch (Exception e) {
             throw new ServletException(e);
+        } finally {
+            IOUtils.closeQuietly(g);
         }
     }
 }

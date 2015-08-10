@@ -36,13 +36,13 @@ import org.apache.commons.io.output.StringBuilderWriter;
  */
 @Provider
 public class RestExceptionMapper implements ExceptionMapper<AbstractEngineException> {
-    
+
     /**
      * Constructor.
      */
     public RestExceptionMapper() {
     }
-    
+
     /**
      * @see javax.ws.rs.ext.ExceptionMapper#toResponse(java.lang.Throwable)
      */
@@ -69,7 +69,11 @@ public class RestExceptionMapper implements ExceptionMapper<AbstractEngineExcept
      */
     private String getStackTrace(AbstractEngineException data) {
         StringBuilderWriter writer = new StringBuilderWriter();
-        data.printStackTrace(new PrintWriter(writer));
-        return writer.getBuilder().toString();
+        try {
+            data.printStackTrace(new PrintWriter(writer));
+            return writer.getBuilder().toString();
+        } finally {
+            writer.close();
+        }
     }
 }

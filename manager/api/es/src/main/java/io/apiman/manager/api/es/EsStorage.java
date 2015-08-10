@@ -443,9 +443,10 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     @Override
     public void updateServiceDefinition(ServiceVersionBean version, InputStream definitionStream)
             throws StorageException {
+        InputStream serviceDefinition = null;
         try {
             String id = id(version.getService().getOrganization().getId(), version.getService().getId(), version.getVersion()) + ":def"; //$NON-NLS-1$
-            InputStream serviceDefinition = getServiceDefinition(version);
+            serviceDefinition = getServiceDefinition(version);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             IOUtils.copy(definitionStream, baos);
             String data = Base64.encodeBytes(baos.toByteArray());
@@ -458,6 +459,8 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
             }
         } catch (IOException e) {
             throw new StorageException(e);
+        } finally {
+            IOUtils.closeQuietly(serviceDefinition);
         }
     }
 

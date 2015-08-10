@@ -213,8 +213,9 @@ public class TestPlanRunner {
                     actualStatusCode);
         } catch (Error e) {
             if (actualStatusCode >= 400) {
+                InputStream content = null;
                 try {
-                    InputStream content = response.getEntity().getContent();
+                    content = response.getEntity().getContent();
                     String payload = IOUtils.toString(content);
                     System.out.println("------ START ERROR PAYLOAD ------");
                     if (payload.startsWith("{")) {
@@ -223,6 +224,8 @@ public class TestPlanRunner {
                     System.out.println(payload);
                     System.out.println("------ END   ERROR PAYLOAD ------");
                 } catch (Exception e1) {
+                } finally {
+                    IOUtils.closeQuietly(content);
                 }
             }
             throw e;

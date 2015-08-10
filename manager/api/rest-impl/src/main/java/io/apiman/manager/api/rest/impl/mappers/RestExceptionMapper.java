@@ -80,8 +80,12 @@ public class RestExceptionMapper implements ExceptionMapper<AbstractRestExceptio
      */
     private String getStackTrace(AbstractRestException data) {
         StringBuilderWriter writer = new StringBuilderWriter();
-        data.printStackTrace(new PrintWriter(writer));
-        return writer.getBuilder().toString();
+        try {
+            data.printStackTrace(new PrintWriter(writer));
+            return writer.getBuilder().toString();
+        } finally {
+            writer.close();
+        }
     }
 
 }

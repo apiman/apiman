@@ -161,6 +161,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.ISODateTimeFormat;
@@ -1365,15 +1366,18 @@ public class OrganizationResourceImpl implements IOrganizationResource {
                 newVersion = updateServiceVersion(organizationId, serviceId, bean.getVersion(), updatedService );
 
                 // Clone the service definition document
+                InputStream definition = null;
                 try {
                     Response response = getServiceDefinition(organizationId, serviceId, bean.getCloneVersion());
-                    InputStream definition = (InputStream) response.getEntity();
+                    definition = (InputStream) response.getEntity();
                     storeServiceDefinition(organizationId, serviceId, newVersion.getVersion(),
                             cloneSource.getDefinitionType(), definition);
                 } catch (ServiceDefinitionNotFoundException svnfe) {
                     // This is ok - it just means the service doesn't have one, so do nothing.
                 } catch (Exception sdnfe) {
                     log.error("Unable to create response", sdnfe); //$NON-NLS-1$
+                } finally {
+                    IOUtils.closeQuietly(definition);
                 }
 
                 // Clone all service policies
@@ -1498,7 +1502,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             if (serviceVersion.getDefinitionType() == ServiceDefinitionType.None || serviceVersion.getDefinitionType() == null) {
                 throw ExceptionFactory.serviceDefinitionNotFoundException(serviceId, version);
             }
-            InputStream  definition = storage.getServiceDefinition(serviceVersion);
+            InputStream definition = storage.getServiceDefinition(serviceVersion);
             if (definition == null) {
                 throw ExceptionFactory.serviceDefinitionNotFoundException(serviceId, version);
             }
@@ -1510,6 +1514,7 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             } else if (serviceVersion.getDefinitionType() == ServiceDefinitionType.WSDL) {
                 builder.type("application/wsdl+xml"); //$NON-NLS-1$
             } else {
+                IOUtils.closeQuietly(definition);
                 throw new Exception("Service definition type not supported: " + serviceVersion.getDefinitionType()); //$NON-NLS-1$
             }
             storage.commitTx();
@@ -1715,18 +1720,22 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         } catch (IOException e) {
             throw new SystemErrorException(e);
         }
-        ServiceDefinitionType newDefinitionType = null;
-        if (contentType.toLowerCase().contains("application/json")) { //$NON-NLS-1$
-            newDefinitionType = ServiceDefinitionType.SwaggerJSON;
-        } else if (contentType.toLowerCase().contains("application/x-yaml")) { //$NON-NLS-1$
-            newDefinitionType = ServiceDefinitionType.SwaggerYAML;
-        } else if (contentType.toLowerCase().contains("application/wsdl+xml")) { //$NON-NLS-1$
-            newDefinitionType = ServiceDefinitionType.WSDL;
-        } else {
-            throw new SystemErrorException(Messages.i18n.format("InvalidServiceDefinitionContentType", contentType)); //$NON-NLS-1$
+        try {
+            ServiceDefinitionType newDefinitionType = null;
+            if (contentType.toLowerCase().contains("application/json")) { //$NON-NLS-1$
+                newDefinitionType = ServiceDefinitionType.SwaggerJSON;
+            } else if (contentType.toLowerCase().contains("application/x-yaml")) { //$NON-NLS-1$
+                newDefinitionType = ServiceDefinitionType.SwaggerYAML;
+            } else if (contentType.toLowerCase().contains("application/wsdl+xml")) { //$NON-NLS-1$
+                newDefinitionType = ServiceDefinitionType.WSDL;
+            } else {
+                throw new SystemErrorException(Messages.i18n.format("InvalidServiceDefinitionContentType", contentType)); //$NON-NLS-1$
+            }
+            storeServiceDefinition(organizationId, serviceId, version, newDefinitionType, data);
+            log.debug(String.format("Updated service definition for %s", serviceId)); //$NON-NLS-1$
+        } finally {
+            IOUtils.closeQuietly(data);
         }
-        storeServiceDefinition(organizationId, serviceId, version, newDefinitionType, data);
-        log.debug(String.format("Updated service definition for %s", serviceId)); //$NON-NLS-1$
     }
 
     /**

@@ -40,6 +40,7 @@ import javax.naming.directory.SearchResult;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.directory.server.annotations.CreateLdapServer;
 import org.apache.directory.server.annotations.CreateTransport;
 import org.apache.directory.server.core.integ.AbstractLdapTestUnit;
@@ -308,19 +309,24 @@ public class BasicAuthLDAPTest extends AbstractLdapTestUnit {
     public static void injectLdifFiles(String... ldifFiles) throws Exception {
         if ((ldifFiles != null) && (ldifFiles.length > 0)) {
             for (String ldifFile : ldifFiles) {
-                InputStream is = BasicAuthLDAPTest.class.getClassLoader().getResourceAsStream(ldifFile);
-                if (is == null) {
-                    throw new FileNotFoundException("LDIF file '" + ldifFile + "' not found.");
-                } else {
-                    try {
-                        LdifReader ldifReader = new LdifReader(is);
-                        for (LdifEntry entry : ldifReader) {
-                            injectEntry(entry);
+                InputStream is = null;
+                try {
+                    is = BasicAuthLDAPTest.class.getClassLoader().getResourceAsStream(ldifFile);
+                    if (is == null) {
+                        throw new FileNotFoundException("LDIF file '" + ldifFile + "' not found.");
+                    } else {
+                        try {
+                            LdifReader ldifReader = new LdifReader(is);
+                            for (LdifEntry entry : ldifReader) {
+                                injectEntry(entry);
+                            }
+                            ldifReader.close();
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
                         }
-                        ldifReader.close();
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
                     }
+                } finally {
+                    IOUtils.closeQuietly(is);
                 }
             }
         }
