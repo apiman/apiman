@@ -74,6 +74,12 @@
         </executions>
         <configuration>
           <mainClass>io.apiman.distro.db.CreateESDatabase</mainClass>
+          <systemProperties>
+            <systemProperty>
+              <key>apiman.test.es-home</key>
+              <value>${project.build.outputDirectory}</value>
+            </systemProperty>
+          </systemProperties>
         </configuration>
       </plugin>
     </plugins>

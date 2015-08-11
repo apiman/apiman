@@ -19,8 +19,6 @@ import io.apiman.manager.test.util.ManagerTestUtils;
 import io.apiman.manager.test.util.ManagerTestUtils.TestType;
 import io.apiman.test.common.util.TestUtil;
 
-import java.io.File;
-
 /**
  * Unit test that creates an H2 database file by firing up the API Manager and sending a
  * bunch of REST requests to configure it.  When this test is complete there should be a
@@ -52,16 +50,10 @@ public class CreateESDatabase extends CreateH2Database {
      */
     @Override
     public void setup() throws Exception {
-        File targetClassesDir = new File("target/classes").getAbsoluteFile();
-        if (!targetClassesDir.exists()) {
-            targetClassesDir.mkdirs();
-        }
-
         System.out.println("------------------------------------------------");
-        System.out.println("Setting elasticsearch output path: " + targetClassesDir.toString());
+        System.out.println("Setting elasticsearch output path: " + System.getProperty("apiman.test.es-home"));
         System.out.println("------------------------------------------------");
 
-        TestUtil.setProperty("apiman.test.es-home", targetClassesDir.toString());
         TestUtil.setProperty("apiman.test.admin-user-only", "true");
         TestUtil.setProperty("apiman.test.es-cluster-name", "apiman");
         TestUtil.setProperty("apiman.test.es-persistence", "true");

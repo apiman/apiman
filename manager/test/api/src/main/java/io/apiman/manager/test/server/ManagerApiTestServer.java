@@ -181,11 +181,13 @@ public class ManagerApiTestServer {
 
             boolean isPersistent = "true".equals(System.getProperty("apiman.test.es-persistence", "false"));
             if (!isPersistent) {
+                System.out.println("Creating non-persistent ES");
                 settings.put("index.store.type", "memory").put("gateway.type", "none")
                         .put("index.number_of_shards", 1).put("index.number_of_replicas", 1);
                 node = NodeBuilder.nodeBuilder().client(false).clusterName(clusterName).data(true).local(true)
                         .settings(settings).build();
             } else {
+                System.out.println("Creating *persistent* ES here: " + esHome);
                 node = NodeBuilder.nodeBuilder().client(false).clusterName(clusterName).data(true).local(false)
                         .settings(settings).build();
             }
