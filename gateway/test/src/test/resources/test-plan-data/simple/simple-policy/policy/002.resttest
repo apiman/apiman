@@ -1,5 +1,5 @@
 PUT /SimplePolicyTest/echo/1.0.0/path/to/app/resource admin/admin
-Content-Type: application/json
+Content-Type: application/json; charset=UTF-8
 X-API-Key: 12345
 
 {
@@ -17,7 +17,7 @@ X-Test-OutboundCallCounter: 2
   "bodyLength" : 41,
   "uri" : "/path/to/app/resource",
   "headers" : {
-    "Content-Type":"application/json",
+    "Content-Type":"application/json; charset=UTF-8",
     "X-Test-InboundCallCounter" : "2"
   }
 }

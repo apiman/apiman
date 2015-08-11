@@ -1,5 +1,5 @@
 PUT /SimpleEchoTest/echo/1.0.0/path/to/app/resource admin/admin
-Content-Type: application/json
+Content-Type: application/json; charset=UTF-8
 X-API-Key: 12345
 
 {
@@ -15,7 +15,7 @@ Content-Type: application/json
   "resource" : "/path/to/app/resource",
   "uri" : "/path/to/app/resource",
   "headers" : {
-    "Content-Type":"application/json"
+    "Content-Type":"application/json; charset=UTF-8"
   },
   "bodyLength" : 41,
   "bodySha1" : "9a09002951d1e09e8268b5f0cb4fb89f7f9deb3f"

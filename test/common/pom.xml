@@ -45,12 +45,8 @@
       <groupId>org.slf4j</groupId>
     </dependency>
     <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpclient</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpcore</artifactId>
+	  <groupId>com.squareup.okhttp</groupId>
+	  <artifactId>okhttp</artifactId>
     </dependency>
     <dependency>
       <groupId>commons-codec</groupId>
