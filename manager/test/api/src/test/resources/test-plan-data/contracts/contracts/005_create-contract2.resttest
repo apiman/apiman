@@ -10,6 +10,7 @@ Content-Type: application/json
 ----
 200
 Content-Type: application/json
+X-RestTest-BindTo-contract2Id: id
 
 {
   "application" : {

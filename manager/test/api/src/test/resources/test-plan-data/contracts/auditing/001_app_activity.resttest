@@ -3,7 +3,17 @@ GET /organizations/Organization1/applications/Application1/activity admin/admin
 200
 Content-Type: application/json
 
-{ "beans" : [ { "data" : "{\"appOrgId\":\"Organization1\",\"appId\":\"Application1\",\"appVersion\":\"1.0\",\"serviceOrgId\":\"Organization1\",\"serviceId\":\"Service1\",\"serviceVersion\":\"1.0\",\"planId\":\"Plan1\",\"planVersion\":\"1.0\"}",
+{ "beans" : [
+    {
+      "who": "admin",
+      "organizationId": "Organization1",
+      "entityType": "Application",
+      "entityId": "Application1",
+      "entityVersion": "1.0",
+      "what": "Register",
+      "data": null
+    },
+      { "data" : "{\"appOrgId\":\"Organization1\",\"appId\":\"Application1\",\"appVersion\":\"1.0\",\"serviceOrgId\":\"Organization1\",\"serviceId\":\"Service1\",\"serviceVersion\":\"1.0\",\"planId\":\"Plan1\",\"planVersion\":\"1.0\"}",
         "entityId" : "Application1",
         "entityType" : "Application",
         "entityVersion" : "1.0",
@@ -44,5 +54,5 @@ Content-Type: application/json
         "who" : "admin"
       }
     ],
-  "totalSize" : 5
+  "totalSize" : 6
 }

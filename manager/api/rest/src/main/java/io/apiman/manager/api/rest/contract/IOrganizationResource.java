@@ -72,6 +72,7 @@ import io.apiman.manager.api.rest.contract.exceptions.ApplicationVersionNotFound
 import io.apiman.manager.api.rest.contract.exceptions.ContractAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.ContractNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.GatewayNotFoundException;
+import io.apiman.manager.api.rest.contract.exceptions.InvalidApplicationStatusException;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidMetricCriteriaException;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidNameException;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidServiceStatusException;
@@ -553,7 +554,7 @@ public interface IOrganizationResource {
     public void deleteContract(@PathParam("organizationId") String organizationId,
             @PathParam("applicationId") String applicationId, @PathParam("version") String version,
             @PathParam("contractId") Long contractId) throws ApplicationNotFoundException,
-            ContractNotFoundException, NotAuthorizedException;
+            ContractNotFoundException, NotAuthorizedException, InvalidApplicationStatusException;
 
     /**
      * Use this endpoint to add a new Policy to the Application version.

@@ -114,6 +114,7 @@ import io.apiman.manager.api.rest.contract.exceptions.ApplicationVersionNotFound
 import io.apiman.manager.api.rest.contract.exceptions.ContractAlreadyExistsException;
 import io.apiman.manager.api.rest.contract.exceptions.ContractNotFoundException;
 import io.apiman.manager.api.rest.contract.exceptions.GatewayNotFoundException;
+import io.apiman.manager.api.rest.contract.exceptions.InvalidApplicationStatusException;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidMetricCriteriaException;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidNameException;
 import io.apiman.manager.api.rest.contract.exceptions.InvalidServiceStatusException;
@@ -869,7 +870,8 @@ public class OrganizationResourceImpl implements IOrganizationResource {
      */
     @Override
     public void deleteContract(String organizationId, String applicationId, String version, Long contractId)
-            throws ApplicationNotFoundException, ContractNotFoundException, NotAuthorizedException {
+            throws ApplicationNotFoundException, ContractNotFoundException, NotAuthorizedException,
+            InvalidApplicationStatusException {
         if (!securityContext.hasPermission(PermissionType.appEdit, organizationId))
             throw ExceptionFactory.notAuthorizedException();
         try {
@@ -886,6 +888,9 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             }
             if (!contract.getApplication().getVersion().equals(version)) {
                 throw ExceptionFactory.contractNotFoundException(contractId);
+            }
+            if (contract.getApplication().getStatus() == ApplicationStatus.Registered || contract.getApplication().getStatus() == ApplicationStatus.Retired) {
+                throw ExceptionFactory.invalidApplicationStatusException();
             }
             storage.deleteContract(contract);
             storage.createAuditEntry(AuditUtils.contractBrokenFromApp(contract, securityContext));
