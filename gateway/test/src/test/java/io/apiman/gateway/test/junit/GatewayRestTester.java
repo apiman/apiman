@@ -86,6 +86,8 @@ public class GatewayRestTester extends ParentRunner<TestInfo> {
 
     /**
      * Constructor.
+     * @param testClass the test class
+     * @throws InitializationError the initialziation error
      */
     public GatewayRestTester(Class<?> testClass) throws InitializationError {
         super(testClass);
@@ -121,7 +123,6 @@ public class GatewayRestTester extends ParentRunner<TestInfo> {
 
     /**
      * Called to setup the test.
-     * @throws InitializationError
      */
     public void setup() {
         startServer();
@@ -311,8 +312,8 @@ public class GatewayRestTester extends ParentRunner<TestInfo> {
     /**
      * Logs a message.
      *
-     * @param message
-     * @param params
+     * @param message the message
+     * @param params the params
      */
     public void log(String message, Object... params) {
         String outmsg = MessageFormat.format(message, params);

@@ -1,5 +1,5 @@
 PUT /SimpleDataPolicyTest/echo/1.0.0/path/to/app/resource admin/admin
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
 X-API-Key: 12345
 
 Hello $NAME,
@@ -87,7 +87,7 @@ Content-Type: application/json
   "resource" : "/path/to/app/resource",
   "uri" : "/path/to/app/resource",
   "headers" : {
-    "Content-Type":"text/plain"
+    "Content-Type":"text/plain; charset=UTF-8"
   },
   "bodyLength" : 4745,
   "bodySha1" : "1dd43072f7ac27dc3bb83620bd4a1b43c6d9d17d"

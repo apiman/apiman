@@ -20,9 +20,9 @@ import io.apiman.test.common.plan.TestPlan;
 import io.apiman.test.common.plan.TestType;
 import io.apiman.test.common.resttest.RestTest;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.net.ProtocolException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.MessageFormat;
@@ -35,17 +35,6 @@ import java.util.Map.Entry;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ArrayNode;
@@ -68,6 +57,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
 
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
+import com.squareup.okhttp.Response;
+
 /**
  * Runs a test plan.
  *
@@ -77,8 +72,7 @@ import org.w3c.dom.Node;
 public class TestPlanRunner {
 
     private static Logger logger = LoggerFactory.getLogger(TestPlanRunner.class);
-
-    private CloseableHttpClient client = HttpClientBuilder.create().build();
+    private OkHttpClient client = new OkHttpClient();
 
     /**
      * Constructor.
@@ -94,41 +88,35 @@ public class TestPlanRunner {
      * @param baseApiUrl
      */
     public void runTestPlan(String resourcePath, ClassLoader cl, String baseApiUrl) {
-        client = HttpClientBuilder.create().build();
-        try {
-            TestPlan testPlan = TestUtil.loadTestPlan(resourcePath, cl);
-            log("");
-            log("-------------------------------------------------------------------------------");
-            log("Executing Test Plan: " + resourcePath);
-            log("   Base API URL: " + baseApiUrl);
-            log("-------------------------------------------------------------------------------");
-            log("");
-            for (TestGroupType group : testPlan.getTestGroup()) {
-                log("-----------------------------------------------------------");
-                log("Starting Test Group [{0}]", group.getName());
-                log("-----------------------------------------------------------");
+        TestPlan testPlan = TestUtil.loadTestPlan(resourcePath, cl);
+        log("");
+        log("-------------------------------------------------------------------------------");
+        log("Executing Test Plan: " + resourcePath);
+        log("   Base API URL: " + baseApiUrl);
+        log("-------------------------------------------------------------------------------");
+        log("");
+        for (TestGroupType group : testPlan.getTestGroup()) {
+            log("-----------------------------------------------------------");
+            log("Starting Test Group [{0}]", group.getName());
+            log("-----------------------------------------------------------");
 
-                for (TestType test : group.getTest()) {
-                    String rtPath = test.getValue();
-                    log("Executing REST Test [{0}] - {1}", test.getName(), rtPath);
-                    RestTest restTest = TestUtil.loadRestTest(rtPath, cl);
-                    runTest(restTest, baseApiUrl);
-                    log("REST Test Completed");
-                    log("+++++++++++++++++++");
-                }
-
-                log("Test Group [{0}] Completed Successfully", group.getName());
+            for (TestType test : group.getTest()) {
+                String rtPath = test.getValue();
+                log("Executing REST Test [{0}] - {1}", test.getName(), rtPath);
+                RestTest restTest = TestUtil.loadRestTest(rtPath, cl);
+                runTest(restTest, baseApiUrl);
+                log("REST Test Completed");
+                log("+++++++++++++++++++");
             }
 
-            log("");
-            log("-------------------------------------------------------------------------------");
-            log("Test Plan successfully executed: " + resourcePath);
-            log("-------------------------------------------------------------------------------");
-            log("");
-        } finally {
-            try { client.close(); } catch (IOException e) { throw new RuntimeException(e); }
-            client = null;
+            log("Test Group [{0}] Completed Successfully", group.getName());
         }
+
+        log("");
+        log("-------------------------------------------------------------------------------");
+        log("Test Plan successfully executed: " + resourcePath);
+        log("-------------------------------------------------------------------------------");
+        log("");
     }
 
     /**
@@ -142,47 +130,44 @@ public class TestPlanRunner {
         try {
             String requestPath = TestUtil.doPropertyReplacement(restTest.getRequestPath());
             URI uri = getUri(baseApiUrl, requestPath);
+            String rawType = restTest.getRequestHeaders().get("Content-Type") != null ?
+                    restTest.getRequestHeaders().get("Content-Type") : "text/plain; charset=UTF-8";
+            MediaType mediaType = MediaType.parse(rawType);
+
             log("Sending HTTP request to: " + uri);
-            HttpRequestBase request = null;
-            if (restTest.getRequestMethod().equalsIgnoreCase("GET")) {
-                request = new HttpGet();
-            } else if (restTest.getRequestMethod().equalsIgnoreCase("POST")) {
-                request = new HttpPost();
-                HttpEntity entity = new StringEntity(restTest.getRequestPayload());
-                ((HttpPost) request).setEntity(entity);
-            } else if (restTest.getRequestMethod().equalsIgnoreCase("PUT")) {
-                request = new HttpPut();
-                HttpEntity entity = new StringEntity(restTest.getRequestPayload());
-                ((HttpPut) request).setEntity(entity);
-            } else if (restTest.getRequestMethod().equalsIgnoreCase("DELETE")) {
-                request = new HttpDelete();
+
+            RequestBody body = null;
+            if (restTest.getRequestPayload() != null && !restTest.getRequestPayload().isEmpty()) {
+                body = RequestBody.create(mediaType, restTest.getRequestPayload());
             }
-            if (request == null) {
-                Assert.fail("Unsupported method in REST Test: " + restTest.getRequestMethod());
-            }
-            request.setURI(uri);
+
+            Request.Builder requestBuilder = new Request.Builder()
+                    .url(uri.toString())
+                    .method(restTest.getRequestMethod(), body);
 
             Map<String, String> requestHeaders = restTest.getRequestHeaders();
             for (Entry<String, String> entry : requestHeaders.entrySet()) {
                 String value = TestUtil.doPropertyReplacement(entry.getValue());
-                request.setHeader(entry.getKey(), value);
+                requestBuilder.addHeader(entry.getKey(), value);
             }
 
             // Set up basic auth
             String authorization = createBasicAuthorization(restTest.getUsername(), restTest.getPassword());
             if (authorization != null) {
-                request.setHeader("Authorization", authorization);
+                requestBuilder.addHeader("Authorization", authorization);
             }
 
-            HttpResponse response = client.execute(request);
+            Response response = client.newCall(requestBuilder.build()).execute();
             assertResponse(restTest, response);
         } catch (Error e) {
             logPlain("[ERROR] " + e.getMessage());
             throw e;
+        } catch (ProtocolException e) {
+            logPlain("[HTTP PROTOCOL EXCEPTION]" + e.getMessage());
         } catch (Exception e) {
+            logPlain("[EXCEPTION] " + e.getMessage());
             throw new Error(e);
         }
-
     }
 
     /**
@@ -205,18 +190,17 @@ public class TestPlanRunner {
      * @param restTest
      * @param response
      */
-    private void assertResponse(RestTest restTest, HttpResponse response) {
-        int actualStatusCode = response.getStatusLine().getStatusCode();
+    private void assertResponse(RestTest restTest, Response response) {
+        int actualStatusCode = response.code();
         try {
             Assert.assertEquals("Unexpected REST response status code.  Status message: "
-                    + response.getStatusLine().getReasonPhrase(), restTest.getExpectedStatusCode(),
+                    + response.message(), restTest.getExpectedStatusCode(),
                     actualStatusCode);
         } catch (Error e) {
             if (actualStatusCode >= 400) {
                 InputStream content = null;
                 try {
-                    content = response.getEntity().getContent();
-                    String payload = IOUtils.toString(content);
+                    String payload = response.body().string();
                     System.out.println("------ START ERROR PAYLOAD ------");
                     if (payload.startsWith("{")) {
                         payload = payload.replace("\\r\\n", "\r\n").replace("\\t", "\t");
@@ -235,24 +219,23 @@ public class TestPlanRunner {
             if (expectedHeaderName.startsWith("X-RestTest-"))
                 continue;
             String expectedHeaderValue = entry.getValue();
-            Header header = response.getFirstHeader(expectedHeaderName);
+            String header = response.header(expectedHeaderName);
+
             Assert.assertNotNull("Expected header to exist but was not found: " + expectedHeaderName, header);
-            String actualValue = header.getValue();
-            Assert.assertEquals(expectedHeaderValue, actualValue);
+            Assert.assertEquals(expectedHeaderValue, header);
         }
-        Header ctHeader = response.getFirstHeader("Content-Type");
-        if (ctHeader == null) {
+        String ctValue = response.header("Content-Type");
+        if (ctValue == null) {
             assertNoPayload(restTest, response);
         } else {
-            String ct = ctHeader.getValue();
-            if (ct.equals("application/json")) {
+            if (ctValue.equals("application/json")) {
                 assertJsonPayload(restTest, response);
-            } else if (ct.equals("text/plain")) {
+            } else if (ctValue.equals("text/plain")) {
                 assertTextPayload(restTest, response);
-            } else if (ct.equals("application/xml") || ct.equals("application/wsdl+xml")) {
+            } else if (ctValue.equals("application/xml") || ctValue.equals("application/wsdl+xml")) {
                 assertXmlPayload(restTest, response);
             } else {
-                Assert.fail("Unsupported response payload type: " + ct);
+                Assert.fail("Unsupported response payload type: " + ctValue);
             }
         }
     }
@@ -262,7 +245,7 @@ public class TestPlanRunner {
      * @param restTest
      * @param response
      */
-    private void assertNoPayload(RestTest restTest, HttpResponse response) {
+    private void assertNoPayload(RestTest restTest, Response response) {
         String expectedPayload = restTest.getExpectedResponsePayload();
         if (expectedPayload != null && expectedPayload.trim().length() > 0) {
             Assert.fail("Expected a payload but didn't get one.");
@@ -275,10 +258,10 @@ public class TestPlanRunner {
      * @param restTest
      * @param response
      */
-    private void assertJsonPayload(RestTest restTest, HttpResponse response) {
+    private void assertJsonPayload(RestTest restTest, Response response) {
         InputStream inputStream = null;
         try {
-            inputStream = response.getEntity().getContent();
+            inputStream = response.body().byteStream();
             ObjectMapper jacksonParser = new ObjectMapper();
             JsonNode actualJson = jacksonParser.readTree(inputStream);
             bindVariables(actualJson, restTest);
@@ -306,10 +289,10 @@ public class TestPlanRunner {
      * @param restTest
      * @param response
      */
-    private void assertXmlPayload(RestTest restTest, HttpResponse response) {
+    private void assertXmlPayload(RestTest restTest, Response response) {
         InputStream inputStream = null;
         try {
-            inputStream = response.getEntity().getContent();
+            inputStream = response.body().byteStream();
             StringWriter writer = new StringWriter();
             IOUtils.copy(inputStream, writer);
             String xmlPayload = writer.toString();
@@ -521,10 +504,10 @@ public class TestPlanRunner {
      * @param restTest
      * @param response
      */
-    private void assertTextPayload(RestTest restTest, HttpResponse response) {
+    private void assertTextPayload(RestTest restTest, Response response) {
         InputStream inputStream = null;
         try {
-            inputStream = response.getEntity().getContent();
+            inputStream = response.body().byteStream();
             List<String> lines = IOUtils.readLines(inputStream);
             StringBuilder builder = new StringBuilder();
             for (String line : lines) {
@@ -576,5 +559,4 @@ public class TestPlanRunner {
     private void logPlain(String message) {
         logger.info("    >> " + message);
     }
-
 }

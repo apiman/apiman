@@ -15,7 +15,7 @@ Content-Type: application/json
   "resource" : "/path/to/app/resource",
   "uri" : "/path/to/app/resource",
   "headers" : {
-    "Content-Type" : "application/json",
+    "Content-Type" : "application/json; charset=UTF-8",
     "Accept" : "application/json"
   },
   "bodyLength" : 41,

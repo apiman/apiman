@@ -1,5 +1,5 @@
 POST /SimpleEchoTest/echo/1.0.0/path/to/app/resource admin/admin
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
 X-API-Key: 12345
 
 Lorem ipsum dolor sit amet, liber ocurreret suscipiantur has in. Nec nibh luptatum te, et vix option iisque, ne mazim voluptaria mediocritatem est. Summo movet salutandi no sed, in unum labore forensibus usu, ex putant omnium appellantur pri. Sed nominati praesent te, an his sint case incorrupte. Hinc reprehendunt at est, errem impedit no qui. Ad atomorum rationibus constituto has.
@@ -92,7 +92,7 @@ Content-Type: application/json
   "resource" : "/path/to/app/resource",
   "uri" : "/path/to/app/resource",
   "headers" : {
-    "Content-Type":"text/plain"
+    "Content-Type":"text/plain; charset=UTF-8"
   },
   "bodyLength" : 16011,
   "bodySha1" : "c6c38fb58b3731498d705cb64c288c6cca367222"
