@@ -22,6 +22,8 @@ import io.apiman.gateway.platforms.vertx3.services.PolicyToIngestorService;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 
 import java.util.UUID;
 
@@ -38,33 +40,30 @@ public class PolicyToIngestorServiceImpl implements PolicyToIngestorService {
     private Handler<VertxApimanBuffer> bodyHandler;
     private Handler<Void> endHandler;
     private Handler<VertxPolicyFailure> policyFailureHandler;
+    private Logger log = LoggerFactory.getLogger(PolicyToIngestorServiceImpl.class);
 
     public PolicyToIngestorServiceImpl() {
-        System.out.println("Creating PolicyToIngestorServiceImpl");
+        log.debug("Creating PolicyToIngestorServiceImpl " + uuid);
     }
 
     @Override
     public void head(VertxServiceResponse serviceResponse, Handler<AsyncResult<Void>> readyHandler) {
-        System.out.println("Head on PolicyToIngestorServiceImpl // " + serviceResponse);
+        log.debug(String.format("%s received ServiceResponse %s", uuid, serviceResponse));
         headHandler.handle(serviceResponse);
-        // Fire the ready handler
-
-        System.out.println("Successful ack in readyHandler in PolicyToIngestor");
+        // Fire the ready handler immediately
         readyHandler.handle(Future.succeededFuture((Void) null));
     }
 
     @Override
     public void write(String chunk) {
-        System.out.println("PolicyToIngestorServiceImpl Received chunk " + chunk + " // on UUID " + uuid);
+        log.debug(String.format("%s received chunk of size %d", uuid, chunk.length()));
         bodyHandler.handle(new VertxApimanBuffer(chunk, "UTF-8")); // TODO fix when upstream ready
     }
 
     @Override
     public void end(Handler<AsyncResult<Void>> resultHandler) {
-        System.out.println("Finished PolicyToIngestor");
+        log.debug(uuid + " ended");
         endHandler.handle((Void) null);
-
-        System.out.println("Acking resultHandler in PolicyToIngestor");
         resultHandler.handle(Future.succeededFuture());
     }
 

@@ -45,8 +45,6 @@ public class VertxConfigDrivenComponentRegistry extends ConfigDrivenComponentReg
     /**
      * Creates components, but allows a {@link #vertx} instance to be passed in.
      *
-     * Note that we can't have a static {@link #vertx} object, so we can't override the super method.
-     *
      * @param type component type
      * @param apimanConfig configuration (if necessary).
      * @return instance of Class<T>

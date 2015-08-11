@@ -37,7 +37,6 @@ import io.apiman.gateway.platforms.vertx3.i18n.Messages;
 import io.apiman.gateway.platforms.vertx3.io.VertxApimanBuffer;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
-import io.vertx.core.VertxException;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientOptions;
@@ -159,13 +158,8 @@ class HttpConnector implements IServiceConnectionResponse, IServiceConnection {
 
     private void doConnection() {
         String endpoint = servicePath + destination + queryParams(serviceRequest.getQueryParams());
-//        System.out.println("destination =" + destination);
-//        System.out.println(HttpMethod.valueOf(serviceRequest.getType()));
-//        System.out.println(servicePort);
-//        System.out.println(serviceHost);
-//        System.out.println(serviceRequest.getQueryParams().size());
-
-        System.out.println("endpoint ===" + endpoint);
+        logger.debug(String.format("Connecting to %s | port: %d verb: %s path: %s", serviceHost, servicePort,
+                HttpMethod.valueOf(serviceRequest.getType()), endpoint));
 
         clientRequest = client.request(HttpMethod.valueOf(serviceRequest.getType()),
                 servicePort,
@@ -176,8 +170,6 @@ class HttpConnector implements IServiceConnectionResponse, IServiceConnection {
             @Override
             public void handle(final HttpClientResponse vxClientResponse) {
                 clientResponse = vxClientResponse;
-
-                System.out.println("We have a response from the backend service in HttpConnector");
 
                 // Pause until we're given permission to xfer the response.
                 vxClientResponse.pause();
@@ -258,7 +250,6 @@ class HttpConnector implements IServiceConnectionResponse, IServiceConnection {
 
     @Override
     public void end() {
-        System.out.println("Connector clientRequest.end");
         clientRequest.end();
         inboundFinished = true;
     }
@@ -310,11 +301,6 @@ class HttpConnector implements IServiceConnectionResponse, IServiceConnection {
     private class ExceptionHandler implements Handler<Throwable> {
         @Override
         public void handle(Throwable error) {
-            // FIXME Workaround for https://bugs.eclipse.org/bugs/show_bug.cgi?id=471591
-            if (error instanceof VertxException &&
-                (((VertxException) error).getMessage().equals("Connection was closed"))) {
-                return;
-            }
             resultHandler.handle(AsyncResultImpl
                     .<IServiceConnectionResponse> create(error));
         }

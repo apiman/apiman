@@ -24,17 +24,15 @@ import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.concurrent.CountDownLatch;
 
 import org.codehaus.jackson.JsonNode;
 
 /**
- * A servlet version of the gateway test server.
- *
- * @author eric.wittmann@redhat.com
+ * A Vert.x 3 version of the gateway test server
  */
 @SuppressWarnings("nls")
 public class Vertx3GatewayTestServer implements IGatewayTestServer {
@@ -47,6 +45,7 @@ public class Vertx3GatewayTestServer implements IGatewayTestServer {
     private String conf;
     private CountDownLatch startLatch;
     private CountDownLatch stopLatch;
+    private Vertx vertx;
 
     /**
      * Constructor.
@@ -59,12 +58,13 @@ public class Vertx3GatewayTestServer implements IGatewayTestServer {
      */
     @Override
     public void configure(JsonNode config) {
+        ClassLoader classLoader = getClass().getClassLoader();
         String fPath = config.get("config").asText();
-
+        File file = new File(classLoader.getResource(fPath).getFile());
         try {
-            conf = new String(Files.readAllBytes(Paths.get(fPath)));
+            conf = new String(Files.readAllBytes(file.toPath()));
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
     /**
@@ -97,6 +97,7 @@ public class Vertx3GatewayTestServer implements IGatewayTestServer {
     @Override
     public void start() {
         try {
+            vertx = Vertx.vertx();
             echoServer.start();
 
             startLatch = new CountDownLatch(1);
@@ -104,14 +105,15 @@ public class Vertx3GatewayTestServer implements IGatewayTestServer {
             DeploymentOptions options = new DeploymentOptions();
             options.setConfig(new JsonObject(conf));
 
-            Vertx.vertx().deployVerticle(InitVerticle.class.getCanonicalName(),
+            vertx.deployVerticle(InitVerticle.class.getCanonicalName(),
                     options, new Handler<AsyncResult<String>>() {
 
-                        @Override
-                        public void handle(AsyncResult<String> event) {
-                            startLatch.countDown();
-                        }
-                    });
+                @Override
+                public void handle(AsyncResult<String> event) {
+                    System.out.println("Deployed init verticle!");
+                    startLatch.countDown();
+                }
+            });
 
             startLatch.await();
         } catch (Exception e) {
@@ -127,13 +129,10 @@ public class Vertx3GatewayTestServer implements IGatewayTestServer {
         try {
             stopLatch = new CountDownLatch(1);
             echoServer.stop();
-
-            Vertx.vertx().close(new Handler<AsyncResult<Void>>() {
-
-                @Override
-                public void handle(AsyncResult<Void> event) {
-                    stopLatch.countDown();
-                }
+            // Seems to be a vert.x bug
+            //vertx.deploymentIDs().stream().forEach(id -> undeploy(id, stopLatch));
+            vertx.close(result -> {
+                stopLatch.countDown();
             });
 
             stopLatch.await();
@@ -141,5 +140,4 @@ public class Vertx3GatewayTestServer implements IGatewayTestServer {
             throw new RuntimeException(e);
         }
     }
-
 }

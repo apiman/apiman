@@ -37,6 +37,7 @@ import io.vertx.core.logging.Logger;
  *
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
+@SuppressWarnings("nls")
 public class PolicyExecutor {
     private IngestorToPolicyImpl requestService;
     private PolicyToIngestorService replyProxy;
@@ -53,13 +54,10 @@ public class PolicyExecutor {
 
     public void execute() {
         requestService.headHandler((Handler<VertxServiceRequest>) serviceRequest -> {
-            System.err.println("Head has arrived.... " + serviceRequest.hashCode());
 
             final IServiceRequestExecutor requestExecutor = engine.executor(serviceRequest, (IAsyncResultHandler<IEngineResult>) result -> {
-                System.err.println("Received result from apiman engine in PolicyVerticle! " + serviceRequest.hashCode() + " @ " + result.getError()); //$NON-NLS-1$
-
-                if (result.getError() != null)
-                    result.getError().printStackTrace();
+                log.debug(String.format("Received result from apiman engine in PolicyVerticle. Request: %d Result Success?: %b",
+                        serviceRequest.hashCode(), result.isSuccess()));
 
                 if (result.isSuccess()) {
                     IEngineResult engineResult = result.getResult();
@@ -68,19 +66,21 @@ public class PolicyExecutor {
                         doResponse(engineResult, replyProxy);
                         requestService.succeeded(); // no exception
                     } else {
-                        System.out.println("Failed with policy denial - setting end handler = "+ serviceRequest.hashCode());
+                        log.debug(String.format("Failed with policy denial; setting end handler. Request: %d", serviceRequest.hashCode()));
+
                         requestService.endHandler((Handler<Void>) v -> {
-                            System.out.println("requestService.endHandler called");
                             replyEnd();
                             requestService.succeeded();
                         });
+
                         replyProxy.policyFailure(new VertxPolicyFailure(engineResult.getPolicyFailure()));
                         requestService.failHead();
-                        //requestService.succeeded();
                     }
                 } else {
                     // Necessary to fail head to ensure #end is called. Could refactor this to call end ourselves, possibly.
-                    System.out.println("An exception occurred? SR = " + serviceRequest.hashCode());
+                    log.debug(String.format("An exception occurred. Request: %d Error: %s ",
+                            serviceRequest.hashCode(), result.getError().getMessage()));
+
                     requestService.endHandler((Handler<Void>) v -> {
                         requestService.fail(result.getError());
                         replyEnd();
@@ -91,21 +91,18 @@ public class PolicyExecutor {
             });
 
             requestExecutor.streamHandler((IAsyncHandler<ISignalWriteStream>) writeStream -> {
-                System.out.println("In streamhandler");
-
                 requestService.bodyHandler((Handler<VertxApimanBuffer>) body -> {
                     writeStream.write(body);
                 });
 
                 requestService.endHandler((Handler<Void>) v -> {
-                    System.out.println("requestService.endHandler handle");
                     writeStream.end();
                 });
 
                 requestService.ready();
             });
 
-            System.err.println("Calling execute on " + serviceRequest.hashCode());
+            log.debug("Calling RequestExecutor#execute on " + serviceRequest.hashCode());
             requestExecutor.execute();
         });
     }
@@ -113,8 +110,9 @@ public class PolicyExecutor {
     private void doResponse(IEngineResult engineResult, PolicyToIngestorService replyProxy) {
         VertxServiceResponse serviceResponse = new VertxServiceResponse(engineResult.getHead());
 
-        replyProxy.head(serviceResponse, (Handler<AsyncResult<Void>>) ready -> {
-            System.out.println("Acking head response");
+        replyProxy.head(serviceResponse, (Handler<AsyncResult<Void>>) result -> {
+            if (result.failed())
+                log.error("Head send from Proxy to Ingestor failed", result.cause());
         });
 
         engineResult.bodyHandler((IAsyncHandler<IApimanBuffer>) chunk -> {
@@ -129,9 +127,9 @@ public class PolicyExecutor {
     private void replyEnd() {
         replyProxy.end((Handler<AsyncResult<Void>>) result -> {
             if (result.failed()) {
-                log.error("Was unable to respond "); // TODO
+                log.error("Was unable to respond"); // TODO
             } else {
-                System.out.println("Called end on replyProxy");
+                log.debug("Called end on replyProxy");
             }
         });
     }

@@ -78,9 +78,4 @@ public interface IRouteBuilder {
     default void end(RoutingContext context, HttpResponseStatus statusCode) {
         context.response().setStatusCode(statusCode.code()).setStatusMessage(statusCode.reasonPhrase()).end();
     }
-
-    public static void main(String... args) {
-        System.out.println("delete/"+ join("organizationId", "applicationId", "version"));
-        System.out.println(join("organizationId", "applicationId", "version") + "/endpoint");
-    }
 }

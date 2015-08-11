@@ -137,7 +137,6 @@ public class HttpClientComponentImpl implements IHttpClientComponent {
             if (finished) {
                 throw new IllegalStateException(Messages.getString("HttpClientComponentImpl.0")); //$NON-NLS-1$
             }
-
             request.write(Buffer.buffer(data));
         }
 
@@ -146,7 +145,6 @@ public class HttpClientComponentImpl implements IHttpClientComponent {
             if (finished) {
                 throw new IllegalStateException(Messages.getString("HttpClientComponentImpl.0")); //$NON-NLS-1$
             }
-
             request.write(Buffer.buffer(body, charsetName));
         }
 

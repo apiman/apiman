@@ -34,8 +34,6 @@ public abstract class ApimanVerticleWithEngine extends ApimanVerticleBase {
 
         engine = new VertxConfigDrivenEngineFactory(vertx, getEngineConfig()).createEngine();
         engine.getRegistry(); // this should help avoid slow first-time loads.
-
-        //System.out.println("After");
         //apiListener = new ApiListener(eb, uuid);
         //apiListener.listen(engine);
     }

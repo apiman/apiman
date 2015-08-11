@@ -50,7 +50,7 @@ public class InitializeIngestorServiceImpl implements InitializeIngestorService 
 
     @Override
     public void createIngestor(String uuid, Handler<AsyncResult<IngestorToPolicyService>> resultHandler) {
-        System.out.println("Creating ingestor who will listen on " + uuid);
+        log.debug("Creating ingestor who will listen on " + uuid);
 
         IngestorToPolicyImpl service = new IngestorToPolicyImpl(vertx);
 
@@ -63,7 +63,7 @@ public class InitializeIngestorServiceImpl implements InitializeIngestorService 
         executor.execute();
 
         // Open up a IngestorToPolicy service
-        System.out.println("Called Future.succededFuture(service)");
+        log.debug("Called Future#succededFuture(service)");
         resultHandler.handle(Future.succeededFuture(service));
     }
 

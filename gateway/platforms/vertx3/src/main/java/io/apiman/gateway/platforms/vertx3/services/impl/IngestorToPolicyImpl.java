@@ -22,6 +22,8 @@ import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 
 import java.util.UUID;
 
@@ -33,38 +35,36 @@ import java.util.UUID;
 @SuppressWarnings("nls")
 public class IngestorToPolicyImpl implements IngestorToPolicyService {
 
-    private String uuid = UUID.randomUUID().toString();
     private Handler<VertxServiceRequest> headHandler;
     private Handler<VertxApimanBuffer> bodyHandler;
     private Handler<Void> endHandler;
     private Handler<AsyncResult<Boolean>> readyHandler;
     private Handler<AsyncResult<Void>> resultHandler;
+    private Logger log = LoggerFactory.getLogger(IngestorToPolicyImpl.class);
+    private String uuid = UUID.randomUUID().toString();
 
     public IngestorToPolicyImpl(Vertx vertx) {
-        System.out.println("Creating IngestorToPolicyImpl");
+        log.debug("Creating IngestorToPolicyImpl " + uuid);
     }
 
     @Override
     public void head(VertxServiceRequest serviceRequest,
             Handler<AsyncResult<Boolean>> readyHandler) {
-        System.out.println("Received head: " + serviceRequest);
-
+        log.debug(String.format("%s received ServiceRequest %s", uuid, serviceRequest));
         this.readyHandler = readyHandler;
         headHandler.handle(serviceRequest);
     }
 
     @Override
     public void write(String chunk) {
-        System.out.println("Received chunk " + chunk + " // on UUID " + uuid);
-
+        log.debug(String.format("%s received chunk of size %s", uuid, chunk.length()));
         if (bodyHandler != null)
             bodyHandler.handle(new VertxApimanBuffer(chunk)); //TODO this should be fixed when custom marshallers allowed
     }
 
     @Override
     public void end(Handler<AsyncResult<Void>> resultHandler) {
-        System.out.println("OK, finished IngestorToPolicyImpl");
-
+        log.debug(uuid + " ended");
         this.resultHandler = resultHandler;
         if (endHandler != null)
             endHandler.handle((Void) null);
@@ -83,22 +83,22 @@ public class IngestorToPolicyImpl implements IngestorToPolicyService {
     }
 
     public void ready() {
-        System.out.println("indicated ready (on head) in IngestorToPolicy");
+        log.debug(String.format("%s indicated #ready", uuid));
         readyHandler.handle(Future.succeededFuture(true));
     }
 
     public void failHead() {
-        System.out.println("Indicated FailedHead in IngestorToPolicy");
+        log.debug(String.format("%s indicated #failHead", uuid));
         readyHandler.handle(Future.succeededFuture(false));
     }
 
     public void fail(Throwable error) {
-        System.out.println("Indicated Failure on result in INgestorToPolicy");
+        log.debug(String.format("%s indicated #fail", uuid));
         resultHandler.handle(Future.failedFuture(error));
     }
 
     public void succeeded() {
-        System.out.println("Indicated succeeded on result in IngestorToPolicy");
+        log.debug(String.format("%s indicated #succeeded",uuid));
         resultHandler.handle(Future.succeededFuture());
     }
 }

@@ -19,9 +19,9 @@ import io.apiman.gateway.test.junit.IGatewayTestServer;
 import io.apiman.gateway.test.junit.IGatewayTestServerFactory;
 
 /**
- * Factory used to create the servlet version of the gateway for testing purposes.
+ * Factory to produce Vertx3 gateway test servers.
  *
- * @author eric.wittmann@redhat.com
+ * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 public class Vertx3GatewayTestServerFactory implements IGatewayTestServerFactory {
 
@@ -36,8 +36,6 @@ public class Vertx3GatewayTestServerFactory implements IGatewayTestServerFactory
      */
     @Override
     public IGatewayTestServer createGatewayTestServer() {
-        //System.out.println("Test test test");
-        //return null;
         return new Vertx3GatewayTestServer();
     }
 

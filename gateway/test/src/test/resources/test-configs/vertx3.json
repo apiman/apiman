@@ -1,4 +1,4 @@
 {
     "factory" : "io.apiman.gateway.test.junit.servlet.Vertx3GatewayTestServerFactory",
-    "config" : "/Users/msavy/conf.json"
+    "config" : "vertx/conf-mem.json"
 }

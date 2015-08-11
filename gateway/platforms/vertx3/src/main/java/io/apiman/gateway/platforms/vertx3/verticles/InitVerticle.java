@@ -38,20 +38,20 @@ public class InitVerticle extends ApimanVerticleBase {
         DeploymentOptions http = buildDeploymentOptions(base, HttpGatewayVerticle.VERTICLE_TYPE);
 
         vertx.deployVerticle(PolicyVerticle.class.getCanonicalName(), policy, (AsyncResult<String> policyResult) -> {
-
-                vertx.deployVerticle(HttpGatewayVerticle.class.getCanonicalName(), http, (AsyncResult<String> httpResult) -> {
-
-                            vertx.deployVerticle(ApiVerticle.class.getCanonicalName(), api, (AsyncResult<String> apiResult) -> {
-                                start.complete();
-                            });
+            checkFail(policyResult);
+            vertx.deployVerticle(HttpGatewayVerticle.class.getCanonicalName(), http, (AsyncResult<String> httpResult) -> {
+                checkFail(httpResult);
+                vertx.deployVerticle(ApiVerticle.class.getCanonicalName(), api, (AsyncResult<String> apiResult) -> {
+                    checkFail(apiResult);
+                    start.complete();
                 });
-
+            });
         });
     }
 
-    private void failureHandler(AsyncResult<String> result) {
+    private void checkFail(AsyncResult<String> result) {
         if (result.failed())
-            throw new RuntimeException("Failed to deploy verticle", result.cause()); //$NON-NLS-1$
+            throw new RuntimeException(String.format("Failed to deploy %s verticles: %s"), result.cause()); //$NON-NLS-1$
     }
 
     private DeploymentOptions buildDeploymentOptions(DeploymentOptions base, VerticleType type) {
