@@ -1,4 +1,4 @@
-GET /SimpleEchoTest/echo/1.0.0/path/to/app/resource?param1=value1&param2=hello%20world&param3=value2 admin/admin
+GET /SimpleEchoTest/echo/1.0.0/path/to/app/resource?param1=value1&param2=hello_world&param3=value2 admin/admin
 X-Custom-Header: MyValue
 X-API-Key: 12345
 
@@ -8,7 +8,7 @@ Content-Type: application/json
 
 {
   "method" : "GET",
-  "resource" : "/path/to/app/resource?param1=value1&param2=hello+world&param3=value2",
+  "resource" : "/path/to/app/resource?param1=value1&param2=hello_world&param3=value2",
   "uri" : "/path/to/app/resource",
   "headers" : {
     "X-Custom-Header" : "MyValue"

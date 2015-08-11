@@ -100,6 +100,7 @@
     <version.com.google.guava>13.0.1</version.com.google.guava>
     <version.com.google.gwt>2.5.1</version.com.google.gwt>
     <version.com.h2database>1.3.168</version.com.h2database>
+    <version.com.squareup.okhttp>2.4.0</version.com.squareup.okhttp>
     <version.commons-codec>1.9</version.commons-codec>
     <version.commons-collections>3.2.1</version.commons-collections>
     <version.commons-configuration>1.6</version.commons-configuration>
@@ -794,6 +795,16 @@
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpcore</artifactId>
         <version>${version.org.apache.httpcomponents.httpcore}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.squareup.okhttp</groupId>
+        <artifactId>okhttp</artifactId>
+        <version>${version.com.squareup.okhttp}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.squareup.okhttp</groupId>
+        <artifactId>okhttp-urlconnection</artifactId>
+        <version>${version.com.squareup.okhttp}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.resteasy</groupId>

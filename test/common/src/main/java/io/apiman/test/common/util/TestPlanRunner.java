@@ -230,7 +230,7 @@ public class TestPlanRunner {
         } else {
             if (ctValue.equals("application/json")) {
                 assertJsonPayload(restTest, response);
-            } else if (ctValue.equals("text/plain")) {
+            } else if (ctValue.equals("text/plain") || ctValue.equals("text/html")) {
                 assertTextPayload(restTest, response);
             } else if (ctValue.equals("application/xml") || ctValue.equals("application/wsdl+xml")) {
                 assertXmlPayload(restTest, response);
@@ -516,7 +516,9 @@ public class TestPlanRunner {
 
             String actual = builder.toString();
             String expected = restTest.getExpectedResponsePayload();
-            Assert.assertEquals("Response payload (text/plain) mismatch.", expected, actual);
+            if (expected != null) {
+                Assert.assertEquals("Response payload (text/plain) mismatch.", expected, actual);
+            }
         } catch (Exception e) {
             throw new Error(e);
         } finally {

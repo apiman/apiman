@@ -152,7 +152,15 @@ public class EchoServlet extends HttpServlet {
      * @param resp
      * @param withBody
      */
-    protected void doEchoResponse(HttpServletRequest req, HttpServletResponse resp, boolean withBody) {
+    protected void doEchoResponse(HttpServletRequest req, HttpServletResponse resp, boolean withBody) throws IOException {
+        String errorCode = req.getHeader("X-Echo-ErrorCode"); //$NON-NLS-1$
+        if (errorCode != null) {
+            int ec = new Integer(errorCode);
+            String errorMsg = req.getHeader("X-Echo-ErrorMessage"); //$NON-NLS-1$
+            resp.sendError(ec, errorMsg);
+            return;
+        }
+
         EchoResponse response = response(req, withBody);
         response.setCounter(++servletCounter);
         resp.setContentType("application/json"); //$NON-NLS-1$

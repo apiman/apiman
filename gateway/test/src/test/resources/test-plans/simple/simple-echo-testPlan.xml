@@ -15,4 +15,10 @@
     <test name="Echo 6 (Trailing Slash)">test-plan-data/simple/simple-echo/echo/006-trailing-slash.resttest</test>
   </testGroup>
 
+  <testGroup name="Test some error handling">
+    <test name="Echo 1 (404)">test-plan-data/simple/simple-echo/errors/001-404.resttest</test>
+    <test name="Echo 2 (403)">test-plan-data/simple/simple-echo/errors/002-403.resttest</test>
+    <test name="Echo 3 (409)">test-plan-data/simple/simple-echo/errors/003-409.resttest</test>
+  </testGroup>
+
 </testPlan>
