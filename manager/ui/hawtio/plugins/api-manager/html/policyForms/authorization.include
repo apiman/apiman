@@ -43,7 +43,7 @@
       <input id="role" ng-model="role" class="apiman-form-control form-control" style="" type="text" apiman-i18n-key="authorization.enter-role" placeholder="(required role)"></input>
       <span apiman-i18n-key="authorization.period">.</span>
       <div>
-        <button id="add-rule" ng-disabled="!path || !verb || !role" ng-click="add(path, verb, role)" apiman-i18n-key="add" class="btn btn-default" style="min-width: 75px">Add</button>
+        <button id="add-rule" ng-disabled="currentItemInvalid()" ng-click="add(path, verb, role)" apiman-i18n-key="add" class="btn btn-default" style="min-width: 75px">Add</button>
       </div>
     </div>
   </div>

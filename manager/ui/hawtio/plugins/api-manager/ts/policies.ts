@@ -2,6 +2,16 @@
 /// <reference path="services.ts"/>
 module Apiman {
     
+    export var isRegexpValid = function(v) {
+        var valid = true;
+        try {
+            new RegExp(v, "");
+        } catch(e) {
+            valid = false;
+        }
+        return valid;
+    };
+    
     _module.controller("Apiman.DefaultPolicyConfigFormController",
         ['$scope', 'Logger',
         ($scope, Logger) => {
@@ -451,6 +461,10 @@ module Apiman {
             };
             $scope.$watch('config', validate, true);
             
+            $scope.currentItemInvalid = function() {
+                return !$scope.path || !$scope.verb || !$scope.role || !isRegexpValid($scope.path);
+            };
+            
             $scope.add = function(path, verb, role) {
                 if (!$scope.config.rules) {
                     $scope.config.rules = [];
@@ -508,11 +522,9 @@ module Apiman {
                 if (!config.fromRegex) {
                     valid = false;
                 } else {
-                    try {
-                        new RegExp(config.fromRegex, "");
-                    } catch(e) {
+                    if (!isRegexpValid(config.fromRegex)) {
                         valid = false;
-                    }                    
+                    }
                 }
                 if (!config.toReplacement) {
                     valid = false;
