@@ -1,0 +1,6 @@
+GET /SimpleEchoTest/echo/1.0.0/path/to/app/resource admin/admin
+X-Echo-ErrorCode: 403
+X-API-Key: 12345
+
+----
+403

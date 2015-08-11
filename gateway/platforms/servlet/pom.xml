@@ -32,7 +32,7 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-common-config</artifactId>
     </dependency>
-    
+
     <!-- Third Party Dependencies -->
     <dependency>
       <groupId>commons-io</groupId>
@@ -47,6 +47,10 @@
       <artifactId>jackson-mapper-asl</artifactId>
     </dependency>
     <dependency>
+      <groupId>com.squareup.okhttp</groupId>
+      <artifactId>okhttp</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient</artifactId>
     </dependency>
@@ -57,7 +61,7 @@
       <artifactId>jboss-servlet-api_3.0_spec</artifactId>
       <scope>provided</scope>
     </dependency>
-    
+
     <!-- Testing Deps -->
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
@@ -84,7 +88,7 @@
       <artifactId>apiman-common-servlet</artifactId>
       <scope>test</scope>
     </dependency>
-    
+
   </dependencies>
 
   <build>
