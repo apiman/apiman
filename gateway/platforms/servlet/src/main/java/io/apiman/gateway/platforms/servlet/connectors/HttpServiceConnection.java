@@ -29,12 +29,15 @@ import io.apiman.gateway.engine.beans.exceptions.ConnectorException;
 import io.apiman.gateway.engine.io.ByteBuffer;
 import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.gateway.platforms.servlet.GatewayThreadContext;
+import io.apiman.gateway.platforms.servlet.connectors.ok.OkUrlFactory;
 import io.apiman.gateway.platforms.servlet.connectors.ssl.SSLSessionStrategy;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.CookieHandler;
 import java.net.HttpURLConnection;
+import java.net.ProxySelector;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashSet;
@@ -42,12 +45,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
+import javax.net.SocketFactory;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSocketFactory;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
+
+import com.squareup.okhttp.CertificatePinner;
+import com.squareup.okhttp.ConnectionPool;
+import com.squareup.okhttp.ConnectionSpec;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Protocol;
+import com.squareup.okhttp.internal.Internal;
+import com.squareup.okhttp.internal.Network;
+import com.squareup.okhttp.internal.Util;
+import com.squareup.okhttp.internal.http.AuthenticatorAdapter;
 
 /**
  * Models a live connection to a back end service.
@@ -61,6 +76,25 @@ public class HttpServiceConnection implements IServiceConnection, IServiceConnec
         SUPPRESSED_HEADERS.add("Transfer-Encoding"); //$NON-NLS-1$
         SUPPRESSED_HEADERS.add("Content-Length"); //$NON-NLS-1$
         SUPPRESSED_HEADERS.add("X-API-Key"); //$NON-NLS-1$
+    }
+
+    private static final OkHttpClient okClient;
+    private static final List<ConnectionSpec> DEFAULT_CONNECTION_SPECS = Util.immutableList(
+            ConnectionSpec.MODERN_TLS, ConnectionSpec.COMPATIBLE_TLS, ConnectionSpec.CLEARTEXT);
+    static {
+        okClient = new OkHttpClient();
+        okClient.setReadTimeout(15, TimeUnit.SECONDS);
+        okClient.setWriteTimeout(15, TimeUnit.SECONDS);
+        okClient.setConnectTimeout(10, TimeUnit.SECONDS);
+        okClient.setProxySelector(ProxySelector.getDefault());
+        okClient.setCookieHandler(CookieHandler.getDefault());
+        okClient.setCertificatePinner(CertificatePinner.DEFAULT);
+        okClient.setAuthenticator(AuthenticatorAdapter.INSTANCE);
+        okClient.setConnectionPool(ConnectionPool.getDefault());
+        okClient.setProtocols(Util.immutableList(Protocol.HTTP_1_1));
+        okClient.setConnectionSpecs(DEFAULT_CONNECTION_SPECS);
+        okClient.setSocketFactory(SocketFactory.getDefault());
+        Internal.instance.setNetwork(okClient, Network.DEFAULT);
     }
 
     private ServiceRequest request;
@@ -128,7 +162,8 @@ public class HttpServiceConnection implements IServiceConnection, IServiceConnec
                 }
             }
             URL url = new URL(endpoint);
-            connection = (HttpURLConnection) url.openConnection();
+            OkUrlFactory factory = new OkUrlFactory(okClient);
+            connection = factory.open(url);
 
             boolean isSsl = connection instanceof HttpsURLConnection;
 
@@ -236,10 +271,14 @@ public class HttpServiceConnection implements IServiceConnection, IServiceConnec
                 throw new IOException("Not connected."); //$NON-NLS-1$
             }
             if (connection != null) {
-                IOUtils.closeQuietly(outputStream);
-                IOUtils.closeQuietly(connection.getInputStream());
-                connected = false;
-                connection.disconnect();
+                try {
+                    IOUtils.closeQuietly(outputStream);
+                    IOUtils.closeQuietly(connection.getInputStream());
+                } catch (Exception e) {}
+                try {
+                    connected = false;
+                    connection.disconnect();
+                } catch (Exception e) {}
             }
         } catch (IOException e) {
             // TODO log this error but don't rethrow it

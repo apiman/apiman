@@ -37,6 +37,7 @@ import org.codehaus.jackson.map.SerializationConfig;
  *
  * @author eric.wittmann@redhat.com
  */
+@SuppressWarnings("nls")
 public class EchoServlet extends HttpServlet {
 
     private static final long serialVersionUID = 3185466526830586555L;
@@ -58,9 +59,9 @@ public class EchoServlet extends HttpServlet {
         EchoResponse response = new EchoResponse();
         response.setMethod(request.getMethod());
         if (request.getQueryString() != null) {
-            String[] normalisedQueryString = request.getQueryString().split("&"); //$NON-NLS-1$
+            String[] normalisedQueryString = request.getQueryString().split("&");
             Arrays.sort(normalisedQueryString);
-            response.setResource(request.getRequestURI() + "?" + SimpleStringUtils.join("&", normalisedQueryString)); //$NON-NLS-1$ //$NON-NLS-2$
+            response.setResource(request.getRequestURI() + "?" + SimpleStringUtils.join("&", normalisedQueryString));
         } else {
             response.setResource(request.getRequestURI());
         }
@@ -76,7 +77,7 @@ public class EchoServlet extends HttpServlet {
             InputStream is = null;
             try {
                 is = request.getInputStream();
-                MessageDigest sha1 = MessageDigest.getInstance("SHA1"); //$NON-NLS-1$
+                MessageDigest sha1 = MessageDigest.getInstance("SHA1");
                 byte[] data = new byte[1024];
                 int read = 0;
                 while ((read = is.read(data)) != -1) {
@@ -152,11 +153,19 @@ public class EchoServlet extends HttpServlet {
      * @param resp
      * @param withBody
      */
-    protected void doEchoResponse(HttpServletRequest req, HttpServletResponse resp, boolean withBody) {
+    protected void doEchoResponse(HttpServletRequest req, HttpServletResponse resp, boolean withBody) throws IOException {
+        String errorCode = req.getHeader("X-Echo-ErrorCode");
+        if (errorCode != null) {
+            int ec = new Integer(errorCode);
+            String errorMsg = req.getHeader("X-Echo-ErrorMessage");
+            resp.sendError(ec, errorMsg);
+            return;
+        }
+
         EchoResponse response = response(req, withBody);
         response.setCounter(++servletCounter);
-        resp.setContentType("application/json"); //$NON-NLS-1$
-        resp.setHeader("Response-Counter", response.getCounter().toString()); //$NON-NLS-1$
+        resp.setContentType("application/json");
+        resp.setHeader("Response-Counter", response.getCounter().toString());
         try {
             mapper.writeValue(resp.getOutputStream(), response);
         } catch (Exception e) {
