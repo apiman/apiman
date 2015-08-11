@@ -16,7 +16,7 @@
   <properties>
     <main.verticle>io.apiman.gateway.platforms.vertx3.verticles.InitVerticle</main.verticle>
   </properties>
-  
+
   <repositories>
     <repository>
         <id>snapshots-repo</id>
@@ -24,7 +24,7 @@
     </repository>
 </repositories>
 
-  <dependencies>         
+  <dependencies>
     <!-- Vert.x provided dependencies -->
     <dependency>
       <groupId>io.vertx</groupId>
@@ -112,35 +112,61 @@
             <target>1.8</target>
           </configuration>
         </plugin>
-        
+        <!--
+          This is a hack to prevent manually edited codegen stuff from being overwritten.
+          It should be reverted when upstream has been fixed.
+         -->
         <!-- Configure the execution of the compiler to execute the codegen processor -->
-        <plugin>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.1</version>
-          <configuration>
-            <source>1.8</source>
-            <target>1.8</target>
-            <annotationProcessors>
-              <annotationProcessor>io.vertx.codegen.CodeGenProcessor</annotationProcessor>
-            </annotationProcessors>
-            <generatedSourcesDirectory>
-              ${project.basedir}/src/main/generated
-            </generatedSourcesDirectory>
-            <compilerArgs>
-              <arg>-AoutputDirectory=${project.basedir}/src/main</arg>
-            </compilerArgs>
-          </configuration>
-        </plugin>
-        
+        <!-- <plugin> -->
+        <!--   <artifactId>maven-compiler-plugin</artifactId> -->
+        <!--   <version>3.1</version> -->
+        <!--   <configuration> -->
+        <!--     <source>1.8</source> -->
+        <!--     <target>1.8</target> -->
+        <!--     <annotationProcessors> -->
+        <!--       <annotationProcessor>io.vertx.codegen.CodeGenProcessor</annotationProcessor>  -->
+        <!--     </annotationProcessors> -->
+        <!--     <generatedSourcesDirectory> -->
+        <!--       ${project.basedir}/src/main/generated -->
+        <!--     </generatedSourcesDirectory> -->
+        <!--     <compilerArgs> -->
+        <!--       <arg>-AoutputDirectory=${project.basedir}/src/main</arg> -->
+        <!--     </compilerArgs> -->
+        <!--   </configuration> -->
+        <!-- </plugin> -->
       </plugins>
     </pluginManagement>
 
-    <!--
-    You only need the part below if you want to build your application into a fat executable jar.
-    This is a jar that contains all the dependencies required to run it, so you can just run it with
-    java -jar
-    -->
     <plugins>
+      <!--
+        This ensures the codegen-ed sources make it into compilation phase
+        Should be removed when upstream is fixed.
+       -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>1.7</version>
+        <executions>
+          <execution>
+            <id>add-source</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>${project.basedir}/src/main/generated</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!--
+      You only need the part below if you want to build your application into a fat executable jar.
+      This is a jar that contains all the dependencies required to run it, so you can just run it with
+      java -jar
+      -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
