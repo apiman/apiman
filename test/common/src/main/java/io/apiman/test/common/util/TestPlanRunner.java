@@ -228,11 +228,11 @@ public class TestPlanRunner {
         if (ctValue == null) {
             assertNoPayload(restTest, response);
         } else {
-            if (ctValue.equals("application/json")) {
+            if (ctValue.startsWith("application/json")) {
                 assertJsonPayload(restTest, response);
-            } else if (ctValue.equals("text/plain") || ctValue.equals("text/html")) {
+            } else if (ctValue.startsWith("text/plain") || ctValue.startsWith("text/html")) {
                 assertTextPayload(restTest, response);
-            } else if (ctValue.equals("application/xml") || ctValue.equals("application/wsdl+xml")) {
+            } else if (ctValue.startsWith("application/xml") || ctValue.startsWith("application/wsdl+xml")) {
                 assertXmlPayload(restTest, response);
             } else {
                 Assert.fail("Unsupported response payload type: " + ctValue);
