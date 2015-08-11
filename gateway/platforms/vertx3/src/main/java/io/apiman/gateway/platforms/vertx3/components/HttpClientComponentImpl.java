@@ -39,7 +39,7 @@ import java.util.Map;
  * {@link IHttpClientRequest#end()} is called after writing is finished, or your data may never be sent, and
  * the connection will be left hanging.
  *
- * @author Marc Savy <msavy@redhat.com>
+ * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 public class HttpClientComponentImpl implements IHttpClientComponent {
 

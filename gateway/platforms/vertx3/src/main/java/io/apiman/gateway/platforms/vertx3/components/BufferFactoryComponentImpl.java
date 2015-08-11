@@ -22,7 +22,7 @@ import io.apiman.gateway.platforms.vertx3.io.VertxApimanBuffer;
 /**
  * Implementation of {@link IBufferFactoryComponent} for Vert.x
  *
- * @author Marc Savy <msavy@redhat.com>
+ * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 public class BufferFactoryComponentImpl implements IBufferFactoryComponent {
 

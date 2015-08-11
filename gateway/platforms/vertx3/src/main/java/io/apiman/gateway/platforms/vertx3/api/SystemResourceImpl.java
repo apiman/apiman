@@ -23,6 +23,11 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 
+/**
+ * System Resource route builder
+ *
+ * @author Marc Savy {@literal <msavy@redhat.com>}
+ */
 public class SystemResourceImpl implements ISystemResource, IRouteBuilder {
 
     private static final String STATUS = "status"; //$NON-NLS-1$

@@ -208,7 +208,7 @@ class HttpConnector implements IServiceConnectionResponse, IServiceConnection {
 
     @Override
     public void transmit() {
-        logger.info("Resuming HttpConnector!");
+        logger.debug("Resuming");
         clientResponse.resume();
     }
 

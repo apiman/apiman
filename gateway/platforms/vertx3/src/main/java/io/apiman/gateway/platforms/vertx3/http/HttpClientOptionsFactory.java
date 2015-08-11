@@ -17,6 +17,8 @@ package io.apiman.gateway.platforms.vertx3.http;
 
 import io.apiman.common.config.options.TLSOptions;
 import io.vertx.core.http.HttpClientOptions;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import io.vertx.core.net.JksOptions;
 
 import java.net.URL;
@@ -30,6 +32,7 @@ import java.util.Map;
  */
 public class HttpClientOptionsFactory {
     private static Map<TLSOptions, HttpClientOptions> configCache = new HashMap<>();
+    private static Logger log = LoggerFactory.getLogger(HttpClientOptionsFactory.class);
 
     public static HttpClientOptions parseOptions(TLSOptions tlsOptions, URL serviceEndpoint) {
         if (configCache.containsKey(tlsOptions))
@@ -71,7 +74,7 @@ public class HttpClientOptionsFactory {
         }
 
         if (tlsOptions.getAllowedProtocols() != null) {
-            System.err.println("Can't set allowed protocols on Vert.x gateway"); //$NON-NLS-1$
+            log.info("Can't set allowed protocols on Vert.x gateway"); //$NON-NLS-1$
         }
 
         return clientOptions;

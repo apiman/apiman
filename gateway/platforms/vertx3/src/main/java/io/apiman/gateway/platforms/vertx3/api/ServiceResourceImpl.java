@@ -36,6 +36,11 @@ import io.vertx.ext.web.RoutingContext;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+/**
+ * Service Resource route builder
+ *
+ * @author Marc Savy {@literal <msavy@redhat.com>}
+ */
 @SuppressWarnings("nls")
 public class ServiceResourceImpl implements IServiceResource, IRouteBuilder {
     private static final String ORG_ID = "organizationId";

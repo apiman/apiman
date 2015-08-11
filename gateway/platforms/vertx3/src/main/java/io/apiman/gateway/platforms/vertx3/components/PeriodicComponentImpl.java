@@ -27,7 +27,7 @@ import java.util.Map;
 /**
  * Vert.x implementation of {@link IPeriodicComponent}.
  *
- * @author Marc Savy <msavy@redhat.com>
+ * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 public class PeriodicComponentImpl implements IPeriodicComponent {
     private Vertx vertx;
