@@ -541,7 +541,7 @@ public interface IOrganizationResource {
      * @param applicationId The Application ID.
      * @param version The Application version.
      * @param contractId The Contract ID.
-     * @statuscode 200 If the Contract is successfully broken.
+     * @statuscode 204 If the Contract is successfully broken.
      * @statuscode 404 If the Application does not exist.
      * @statuscode 404 If the Contract does not exist.
      * @throws ApplicationNotFoundException when trying to get, update, or delete an application that does not exist
