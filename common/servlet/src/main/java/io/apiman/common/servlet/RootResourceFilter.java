@@ -53,7 +53,7 @@ public class RootResourceFilter implements Filter {
             throws IOException, ServletException {
         HttpServletRequest httpReq = (HttpServletRequest) request;
         String path = httpReq.getPathInfo();
-        if ("/".equals(path)) { //$NON-NLS-1$
+        if ("/".equals(path) || "".equals(path) || path == null) { //$NON-NLS-1$ //$NON-NLS-2$
             httpReq.getRequestDispatcher("/system/status").forward(request, response); //$NON-NLS-1$
         } else {
             chain.doFilter(request, response);
