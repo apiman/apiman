@@ -20,6 +20,7 @@ import io.searchbox.client.JestClient;
 import io.searchbox.client.JestClientFactory;
 import io.searchbox.client.JestResult;
 import io.searchbox.client.config.HttpClientConfig;
+import io.searchbox.client.config.HttpClientConfig.Builder;
 import io.searchbox.cluster.Health;
 import io.searchbox.indices.CreateIndex;
 import io.searchbox.indices.IndicesExists;
@@ -84,6 +85,8 @@ public class ESClientFactory {
         if (initialize == null) {
             initialize = "true"; //$NON-NLS-1$
         }
+        String username = config.get("client.username"); //$NON-NLS-1$
+        String password = config.get("client.password"); //$NON-NLS-1$
 
         if (StringUtils.isBlank(host)) {
             throw new RuntimeException("Missing client.host configuration for ESRegistry."); //$NON-NLS-1$
@@ -97,7 +100,8 @@ public class ESClientFactory {
         if (StringUtils.isBlank(indexName)) {
             indexName = ESConstants.INDEX_NAME;
         }
-        return createJestClient(protocol, host, Integer.parseInt(port), indexName, "true".equals(initialize)); //$NON-NLS-1$
+        return createJestClient(protocol, host, Integer.parseInt(port), indexName, username, password,
+                "true".equals(initialize)); //$NON-NLS-1$
     }
 
     /**
@@ -108,7 +112,8 @@ public class ESClientFactory {
      * @param initialize true if the index should be initialized
      * @return the ES client
      */
-    public static JestClient createJestClient(String protocol, String host, int port, String indexName, boolean initialize) {
+    public static JestClient createJestClient(String protocol, String host, int port, String indexName,
+            String username, String password, boolean initialize) {
         String clientKey = "jest:" + host + ':' + port + '/' + indexName; //$NON-NLS-1$
         synchronized (clients) {
             if (clients.containsKey(clientKey)) {
@@ -123,7 +128,11 @@ public class ESClientFactory {
                 String connectionUrl = builder.toString();
 
                 JestClientFactory factory = new JestClientFactory();
-                factory.setHttpClientConfig(new HttpClientConfig.Builder(connectionUrl).multiThreaded(true).build());
+                Builder httpClientConfig = new HttpClientConfig.Builder(connectionUrl).multiThreaded(true);
+                if (username != null && password != null) {
+                    httpClientConfig.defaultCredentials(username, password);
+                }
+                factory.setHttpClientConfig(httpClientConfig.build());
                 JestClient client = factory.getObject();
                 clients.put(clientKey, client);
                 if (initialize) {

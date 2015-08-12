@@ -39,6 +39,7 @@ import io.apiman.manager.api.security.impl.DefaultSecurityContext;
 import io.searchbox.client.JestClient;
 import io.searchbox.client.JestClientFactory;
 import io.searchbox.client.config.HttpClientConfig;
+import io.searchbox.client.config.HttpClientConfig.Builder;
 
 import java.lang.reflect.Constructor;
 import java.util.Map;
@@ -185,8 +186,13 @@ public class ManagerApiMicroServiceCdiFactory {
         builder.append(config.getStorageESPort());
         String connectionUrl = builder.toString();
         JestClientFactory factory = new JestClientFactory();
-        factory.setHttpClientConfig(new HttpClientConfig.Builder(connectionUrl).multiThreaded(true)
-                .build());
+        Builder httpConfig = new HttpClientConfig.Builder(connectionUrl).multiThreaded(true);
+        String username = config.getStorageESUsername();
+        String password = config.getStorageESPassword();
+        if (username != null) {
+            httpConfig.defaultCredentials(username, password);
+        }
+        factory.setHttpClientConfig(httpConfig.build());
         return factory.getObject();
     }
 
@@ -203,8 +209,13 @@ public class ManagerApiMicroServiceCdiFactory {
         builder.append(config.getMetricsESPort());
         String connectionUrl = builder.toString();
         JestClientFactory factory = new JestClientFactory();
-        factory.setHttpClientConfig(new HttpClientConfig.Builder(connectionUrl).multiThreaded(true)
-                .build());
+        Builder httpConfig = new HttpClientConfig.Builder(connectionUrl).multiThreaded(true);
+        String username = config.getMetricsESUsername();
+        String password = config.getMetricsESPassword();
+        if (username != null) {
+            httpConfig.defaultCredentials(username, password);
+        }
+        factory.setHttpClientConfig(httpConfig.build());
         return factory.getObject();
     }
 

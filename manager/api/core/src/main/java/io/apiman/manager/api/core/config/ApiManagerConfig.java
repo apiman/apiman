@@ -48,6 +48,8 @@ public class ApiManagerConfig {
     public static final String APIMAN_MANAGER_STORAGE_ES_HOST = "apiman-manager.storage.es.host"; //$NON-NLS-1$
     public static final String APIMAN_MANAGER_STORAGE_ES_PORT = "apiman-manager.storage.es.port"; //$NON-NLS-1$
     public static final String APIMAN_MANAGER_STORAGE_ES_CLUSTER_NAME = "apiman-manager.storage.es.cluster-name"; //$NON-NLS-1$
+    public static final String APIMAN_MANAGER_STORAGE_ES_USERNAME = "apiman-manager.storage.es.username"; //$NON-NLS-1$
+    public static final String APIMAN_MANAGER_STORAGE_ES_PASSWORD = "apiman-manager.storage.es.password"; //$NON-NLS-1$
     public static final String APIMAN_MANAGER_STORAGE_ES_INITIALIZE = "apiman-manager.storage.es.initialize"; //$NON-NLS-1$
 
     public static final String APIMAN_MANAGER_STORAGE_QUERY_TYPE = "apiman-manager.storage-query.type"; //$NON-NLS-1$
@@ -61,6 +63,8 @@ public class ApiManagerConfig {
     public static final String APIMAN_MANAGER_METRICS_ES_HOST = "apiman-manager.metrics.es.host"; //$NON-NLS-1$
     public static final String APIMAN_MANAGER_METRICS_ES_PORT = "apiman-manager.metrics.es.port"; //$NON-NLS-1$
     public static final String APIMAN_MANAGER_METRICS_ES_CLUSTER_NAME = "apiman-manager.metrics.es.cluster-name"; //$NON-NLS-1$
+    public static final String APIMAN_MANAGER_METRICS_ES_USERNAME = "apiman-manager.metrics.es.username"; //$NON-NLS-1$
+    public static final String APIMAN_MANAGER_METRICS_ES_PASSWORD = "apiman-manager.metrics.es.password"; //$NON-NLS-1$
 
     public static final String APIMAN_MANAGER_SECURITY_CONTEXT_TYPE = "apiman-manager.security-context.type"; //$NON-NLS-1$
 
@@ -157,6 +161,20 @@ public class ApiManagerConfig {
     }
 
     /**
+     * @return the elasticsearch username
+     */
+    public String getStorageESUsername() {
+        return config.getString(APIMAN_MANAGER_STORAGE_ES_USERNAME, null);
+    }
+
+    /**
+     * @return the elasticsearch username
+     */
+    public String getStorageESPassword() {
+        return config.getString(APIMAN_MANAGER_STORAGE_ES_PASSWORD, null);
+    }
+
+    /**
      * @return true if the elasticsearch index should be initialized if not found
      */
     public boolean isInitializeStorageES() {
@@ -196,6 +214,20 @@ public class ApiManagerConfig {
      */
     public String getMetricsESClusterName() {
         return config.getString(APIMAN_MANAGER_METRICS_ES_CLUSTER_NAME, DEFAULT_ES_CLUSTER_NAME);
+    }
+
+    /**
+     * @return the elasticsearch username
+     */
+    public String getMetricsESUsername() {
+        return config.getString(APIMAN_MANAGER_METRICS_ES_USERNAME, null);
+    }
+
+    /**
+     * @return the elasticsearch password
+     */
+    public String getMetricsESPassword() {
+        return config.getString(APIMAN_MANAGER_METRICS_ES_PASSWORD, null);
     }
 
     /**
