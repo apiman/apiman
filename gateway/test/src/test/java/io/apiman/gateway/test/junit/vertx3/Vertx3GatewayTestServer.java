@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.gateway.test.junit.servlet;
+package io.apiman.gateway.test.junit.vertx3;
 
 import io.apiman.gateway.platforms.vertx3.verticles.InitVerticle;
 import io.apiman.gateway.test.junit.IGatewayTestServer;
