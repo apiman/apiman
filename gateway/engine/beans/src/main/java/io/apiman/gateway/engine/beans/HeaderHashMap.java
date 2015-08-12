@@ -18,23 +18,32 @@ package io.apiman.gateway.engine.beans;
 import java.util.HashMap;
 
 /**
- * Extends the basic {@link HashMap} class in order to provide case insensitive 
+ * Extends the basic {@link HashMap} class in order to provide case insensitive
  * lookups.
  *
  * @author eric.wittmann@redhat.com
  */
 public class HeaderHashMap extends HashMap<String, String> {
-    
+
     private static final long serialVersionUID = -8627183971399152775L;
 
     private HashMap<String, String> caseInsensitiveIndex = new HashMap<>();
-    
+
     /**
      * Constructor.
      */
     public HeaderHashMap() {
     }
-    
+
+    /**
+     * @see java.util.HashMap#clear()
+     */
+    @Override
+    public void clear() {
+        super.clear();
+        caseInsensitiveIndex.clear();
+    }
+
     /**
      * @see java.util.HashMap#get(java.lang.Object)
      */
@@ -47,7 +56,7 @@ public class HeaderHashMap extends HashMap<String, String> {
         }
         return rval;
     }
-    
+
     /**
      * @see java.util.HashMap#containsKey(java.lang.Object)
      */
@@ -60,7 +69,7 @@ public class HeaderHashMap extends HashMap<String, String> {
         }
         return rval;
     }
-    
+
     /**
      * @see java.util.HashMap#put(java.lang.Object, java.lang.Object)
      */
@@ -72,7 +81,7 @@ public class HeaderHashMap extends HashMap<String, String> {
         caseInsensitiveIndex.put(trimmedKey.toLowerCase(), trimmedValue);
         return rval;
     }
-    
+
     /**
      * @see java.util.HashMap#remove(java.lang.Object)
      */
@@ -85,7 +94,7 @@ public class HeaderHashMap extends HashMap<String, String> {
 
     /**
      * Trim string of whitespace.
-     * 
+     *
      * @param string string to trim
      * @return trimmed string, or null if null was provided.
      */
