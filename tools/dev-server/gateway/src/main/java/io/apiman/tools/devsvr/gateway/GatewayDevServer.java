@@ -31,8 +31,8 @@ import io.apiman.gateway.engine.policy.PolicyFactoryImpl;
 import io.apiman.gateway.platforms.servlet.PolicyFailureFactoryComponent;
 import io.apiman.gateway.platforms.servlet.connectors.HttpConnectorFactory;
 import io.apiman.gateway.platforms.war.WarEngineConfig;
-import io.apiman.gateway.test.server.EchoServer;
 import io.apiman.gateway.test.server.GatewayServer;
+import io.apiman.test.common.echo.EchoServer;
 
 import java.io.File;
 

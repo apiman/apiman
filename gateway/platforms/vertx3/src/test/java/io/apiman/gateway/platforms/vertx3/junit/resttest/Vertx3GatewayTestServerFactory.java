@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.gateway.test.junit.vertx3;
+package io.apiman.gateway.platforms.vertx3.junit.resttest;
 
-import io.apiman.gateway.test.junit.IGatewayTestServer;
-import io.apiman.gateway.test.junit.IGatewayTestServerFactory;
+import io.apiman.test.common.resttest.IGatewayTestServer;
+import io.apiman.test.common.resttest.IGatewayTestServerFactory;
 
 /**
  * Factory to produce Vertx3 gateway test servers.
@@ -31,9 +31,6 @@ public class Vertx3GatewayTestServerFactory implements IGatewayTestServerFactory
     public Vertx3GatewayTestServerFactory() {
     }
 
-    /**
-     * @see io.apiman.gateway.test.junit.IGatewayTestServerFactory#createGatewayTestServer()
-     */
     @Override
     public IGatewayTestServer createGatewayTestServer() {
         return new Vertx3GatewayTestServer();

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.gateway.test.junit;
+package io.apiman.test.common.resttest;
 
 import org.codehaus.jackson.JsonNode;
 

@@ -26,8 +26,6 @@ import io.vertx.core.Future;
  */
 public class InitVerticle extends ApimanVerticleBase {
 
-    int deployed = 0;
-
     @Override
     public void start(Future<Void> start) {
         super.start();

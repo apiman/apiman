@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.gateway.test.junit.vertx3;
+package io.apiman.gateway.platforms.vertx3.junit.resttest;
 
 import io.apiman.gateway.platforms.vertx3.verticles.InitVerticle;
-import io.apiman.gateway.test.junit.IGatewayTestServer;
-import io.apiman.gateway.test.server.EchoServer;
+import io.apiman.test.common.echo.EchoServer;
+import io.apiman.test.common.resttest.IGatewayTestServer;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Handler;

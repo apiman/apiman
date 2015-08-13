@@ -9,13 +9,34 @@
   <artifactId>apiman-gateway-platforms</artifactId>
   <packaging>pom</packaging>
   <name>apiman-gateway-platforms</name>
-
-  <modules>
-    <module>servlet</module>
-    <module>undertow</module>
-    <module>vertx3</module>
-    <module>war</module>
-    <module>war/micro</module>
-    <module>war/wildfly8</module>
-  </modules>
+  <profiles>
+    <profile>
+      <id>vertx3</id>
+      <activation>
+        <jdk>[1.8,)</jdk>
+      </activation>
+      <modules>
+        <module>servlet</module>
+        <module>undertow</module>
+        <module>vertx3</module>
+        <module>war</module>
+        <module>war/micro</module>
+        <module>war/wildfly8</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>default</id>
+      <activation>
+        <jdk>(,1.7]</jdk>
+      </activation>
+      <modules>
+        <module>servlet</module>
+        <module>undertow</module>
+        <!-- <module>vertx3</module> No Vert.x 3 by default -->
+        <module>war</module>
+        <module>war/micro</module>
+        <module>war/wildfly8</module>
+      </modules>
+    </profile>
+  </profiles>
 </project>

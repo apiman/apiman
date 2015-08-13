@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.gateway.test.server;
+package io.apiman.test.common.echo;
 
 import io.apiman.test.common.mock.EchoServlet;
 

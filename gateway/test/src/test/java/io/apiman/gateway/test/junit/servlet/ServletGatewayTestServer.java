@@ -35,12 +35,12 @@ import io.apiman.gateway.platforms.servlet.PolicyFailureFactoryComponent;
 import io.apiman.gateway.platforms.servlet.components.HttpClientComponentImpl;
 import io.apiman.gateway.platforms.servlet.connectors.HttpConnectorFactory;
 import io.apiman.gateway.platforms.war.WarEngineConfig;
-import io.apiman.gateway.test.junit.IGatewayTestServer;
-import io.apiman.gateway.test.server.EchoServer;
 import io.apiman.gateway.test.server.GatewayServer;
 import io.apiman.gateway.test.server.GatewayTestType;
 import io.apiman.gateway.test.server.GatewayTestUtils;
 import io.apiman.gateway.test.server.TestMetrics;
+import io.apiman.test.common.echo.EchoServer;
+import io.apiman.test.common.resttest.IGatewayTestServer;
 
 import java.io.File;
 
@@ -69,7 +69,7 @@ public class ServletGatewayTestServer implements IGatewayTestServer {
     }
 
     /**
-     * @see io.apiman.gateway.test.junit.IGatewayTestServer#configure(org.codehaus.jackson.JsonNode)
+     * @see io.apiman.test.common.resttest.IGatewayTestServer#configure(org.codehaus.jackson.JsonNode)
      */
     @Override
     public void configure(JsonNode config) {
@@ -133,7 +133,7 @@ public class ServletGatewayTestServer implements IGatewayTestServer {
     }
 
     /**
-     * @see io.apiman.gateway.test.junit.IGatewayTestServer#getApiEndpoint()
+     * @see io.apiman.test.common.resttest.IGatewayTestServer#getApiEndpoint()
      */
     @Override
     public String getApiEndpoint() {
@@ -146,7 +146,7 @@ public class ServletGatewayTestServer implements IGatewayTestServer {
     }
 
     /**
-     * @see io.apiman.gateway.test.junit.IGatewayTestServer#getGatewayEndpoint()
+     * @see io.apiman.test.common.resttest.IGatewayTestServer#getGatewayEndpoint()
      */
     @Override
     public String getGatewayEndpoint() {
@@ -159,7 +159,7 @@ public class ServletGatewayTestServer implements IGatewayTestServer {
     }
 
     /**
-     * @see io.apiman.gateway.test.junit.IGatewayTestServer#getEchoTestEndpoint()
+     * @see io.apiman.test.common.resttest.IGatewayTestServer#getEchoTestEndpoint()
      */
     @Override
     public String getEchoTestEndpoint() {
@@ -167,7 +167,7 @@ public class ServletGatewayTestServer implements IGatewayTestServer {
     }
 
     /**
-     * @see io.apiman.gateway.test.junit.IGatewayTestServer#start()
+     * @see io.apiman.test.common.resttest.IGatewayTestServer#start()
      */
     @Override
     public void start() {
@@ -180,7 +180,7 @@ public class ServletGatewayTestServer implements IGatewayTestServer {
     }
 
     /**
-     * @see io.apiman.gateway.test.junit.IGatewayTestServer#stop()
+     * @see io.apiman.test.common.resttest.IGatewayTestServer#stop()
      */
     @Override
     public void stop() {
