@@ -67,11 +67,8 @@ public class BufferFactoryComponentImpl implements IBufferFactoryComponent {
         return new VertxApimanBuffer(size);
     }
 
-    /**
-     * @see io.apiman.gateway.engine.components.IBufferFactoryComponent#cloneBuffer(io.apiman.gateway.engine.io.IApimanBuffer)
-     */
     @Override
     public IApimanBuffer cloneBuffer(IApimanBuffer buffer) {
-        return new VertxApimanBuffer(buffer.getBytes());
+        return new VertxApimanBuffer(buffer);
     }
 }
