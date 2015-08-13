@@ -19,6 +19,8 @@ import io.apiman.gateway.test.junit.GatewayRestTester.TestInfo;
 import io.apiman.test.common.plan.TestGroupType;
 import io.apiman.test.common.plan.TestPlan;
 import io.apiman.test.common.plan.TestType;
+import io.apiman.test.common.resttest.IGatewayTestServer;
+import io.apiman.test.common.resttest.IGatewayTestServerFactory;
 import io.apiman.test.common.resttest.RestTest;
 import io.apiman.test.common.util.TestPlanRunner;
 import io.apiman.test.common.util.TestUtil;

@@ -50,6 +50,7 @@ public class ConfigDrivenEngineFactory extends AbstractEngineFactory {
     protected IPluginRegistry createPluginRegistry() {
         Class<? extends IPluginRegistry> c = engineConfig.getPluginRegistryClass();
         Map<String, String> config = engineConfig.getPluginRegistryConfig();
+
         return create(c, config);
     }
 
@@ -109,7 +110,7 @@ public class ConfigDrivenEngineFactory extends AbstractEngineFactory {
      * @param config config to pass
      * @return a new instance of 'type'
      */
-    protected static <T> T create(Class<T> type, Map<String, String> config) {
+    protected <T> T create(Class<T> type, Map<String, String> config) {
         try {
             Constructor<T> constructor = type.getConstructor(Map.class);
             return constructor.newInstance(config);

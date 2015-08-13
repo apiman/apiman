@@ -15,8 +15,8 @@
  */
 package io.apiman.gateway.test.junit.servlet;
 
-import io.apiman.gateway.test.junit.IGatewayTestServer;
-import io.apiman.gateway.test.junit.IGatewayTestServerFactory;
+import io.apiman.test.common.resttest.IGatewayTestServer;
+import io.apiman.test.common.resttest.IGatewayTestServerFactory;
 
 /**
  * Factory used to create the servlet version of the gateway for testing purposes.
@@ -32,7 +32,7 @@ public class ServletGatewayTestServerFactory implements IGatewayTestServerFactor
     }
 
     /**
-     * @see io.apiman.gateway.test.junit.IGatewayTestServerFactory#createGatewayTestServer()
+     * @see io.apiman.test.common.resttest.IGatewayTestServerFactory#createGatewayTestServer()
      */
     @Override
     public IGatewayTestServer createGatewayTestServer() {

@@ -1,0 +1,27 @@
+== VertxPolicyFailure
+
+++++
+ Wrapped link with Vertx specific converters
+++++
+'''
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+
+|[[failureCode]]`failureCode`
+|`Number (int)`
+|-
+|[[message]]`message`
+|`String`
+|-
+|[[raw]]`raw`
+|`String`
+|-
+|[[responseCode]]`responseCode`
+|`Number (int)`
+|-
+|[[type]]`type`
+|`Enum`
+|-|===

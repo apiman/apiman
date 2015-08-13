@@ -91,7 +91,6 @@
     <version.failsafe.plugin>2.14</version.failsafe.plugin>
     <version.war.plugin>2.5</version.war.plugin>
     <version.exec.plugin>1.3.2</version.exec.plugin>
-    <version.vertx.plugin>2.0.11-final</version.vertx.plugin>
     <version.docker.plugin>0.11.2</version.docker.plugin>
     <version.frontend-maven.plugin>0.0.23</version.frontend-maven.plugin>
 
@@ -142,13 +141,13 @@
     <version.org.keycloak>1.2.0.Final</version.org.keycloak>
     <version.org.mockito>1.9.5</version.org.mockito>
     <version.org.mvel>2.2.2.Final</version.org.mvel>
+    <version.com.squareup.okhttp>2.4.0</version.com.squareup.okhttp>
     <version.org.osgi>4.3.1</version.org.osgi>
     <version.org.ow2.asm>4.0</version.org.ow2.asm>
     <version.org.picketbox>4.0.21.Final</version.org.picketbox>
     <version.org.slf4j>1.7.2</version.org.slf4j>
     <version.xmlunit>1.6</version.xmlunit>
-    <version.io.vertx>2.1.1</version.io.vertx>
-    <version.io.vertx.testtools>2.0.3-final</version.io.vertx.testtools>
+    <version.io.vertx>3.1.0-SNAPSHOT</version.io.vertx>
   </properties>
 
   <dependencyManagement>
@@ -336,6 +335,11 @@
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-gateway-engine-vertx-eb-inmemory</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
         <artifactId>apiman-gateway-engine-policies</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -379,7 +383,7 @@
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>apiman-gateway-platforms-vertx</artifactId>
+        <artifactId>apiman-gateway-platforms-vertx3</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -595,12 +599,12 @@
         <groupId>org.apache.directory.server</groupId>
         <artifactId>apacheds-all</artifactId>
         <version>${version.org.apache.directory.server}</version>
-      </dependency> 
+      </dependency>
       <dependency>
         <groupId>org.apache.directory.server</groupId>
         <artifactId>apacheds-core-integ</artifactId>
         <version>${version.org.apache.directory.server}</version>
-      </dependency> 
+      </dependency>
       <dependency>
         <groupId>org.apache.directory.server</groupId>
         <artifactId>apacheds-test-framework</artifactId>
@@ -821,6 +825,11 @@
         <version>${version.org.apache.logging.log4j}</version>
       </dependency>
       <dependency>
+	<groupId>com.squareup.okhttp</groupId>
+	<artifactId>okhttp</artifactId>
+	<version>${version.com.squareup.okhttp}</version>
+      </dependency>
+      <dependency>
         <groupId>joda-time</groupId>
         <artifactId>joda-time</artifactId>
         <version>${version.joda-time}</version>
@@ -887,19 +896,28 @@
       </dependency>
       <dependency>
         <groupId>io.vertx</groupId>
-        <artifactId>vertx-platform</artifactId>
-        <version>${version.io.vertx}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.vertx</groupId>
         <artifactId>vertx-hazelcast</artifactId>
         <version>${version.io.vertx}</version>
       </dependency>
       <dependency>
-        <groupId>io.vertx</groupId>
-        <artifactId>testtools</artifactId>
-        <version>${version.io.vertx.testtools}</version>
-        <scope>test</scope>
+	<groupId>io.vertx</groupId>
+	<artifactId>vertx-service-proxy</artifactId>
+	<version>${version.io.vertx}</version>
+      </dependency>
+      <dependency>
+	<groupId>io.vertx</groupId>
+	<artifactId>vertx-codegen</artifactId>
+	<version>${version.io.vertx}</version>
+      </dependency>
+      <dependency>
+	<groupId>io.vertx</groupId>
+	<artifactId>vertx-web</artifactId>
+	<version>${version.io.vertx}</version>
+      </dependency>
+      <dependency>
+	<groupId>io.vertx</groupId>
+	<artifactId>vertx-auth-shiro</artifactId>
+	<version>${version.io.vertx}</version>
       </dependency>
 
       <!-- Test -->
@@ -915,7 +933,6 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-
 
   <dependencies>
     <dependency>
@@ -1079,8 +1096,8 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <source>1.7</source>
-          <target>1.7</target>
+          <source>${maven.compiler.target}</source>
+          <target>${maven.compiler.target}</target>
           <showDeprecation>false</showDeprecation>
           <showWarnings>false</showWarnings>
         </configuration>
@@ -1236,6 +1253,10 @@
       <activation>
         <jdk>[1.8,)</jdk>
       </activation>
+      <properties>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+      </properties>
       <build>
         <plugins>
           <plugin>

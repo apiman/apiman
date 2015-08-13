@@ -1,0 +1,36 @@
+== VertxServiceRequest
+
+++++
+ Wrapped  with Vertx specific converters
+++++
+'''
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+
+|[[apiKey]]`apiKey`
+|`String`
+|-
+|[[destination]]`destination`
+|`String`
+|-
+|[[remoteAddr]]`remoteAddr`
+|`String`
+|-
+|[[serviceId]]`serviceId`
+|`String`
+|-
+|[[serviceOrgId]]`serviceOrgId`
+|`String`
+|-
+|[[serviceVersion]]`serviceVersion`
+|`String`
+|-
+|[[transportSecure]]`transportSecure`
+|`Boolean`
+|-
+|[[type]]`type`
+|`String`
+|-|===
