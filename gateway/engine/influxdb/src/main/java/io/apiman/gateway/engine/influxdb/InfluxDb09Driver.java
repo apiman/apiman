@@ -13,16 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.gateway.engine.metrics.impl.influxdb;
-
-import io.apiman.gateway.engine.async.AsyncResultImpl;
-import io.apiman.gateway.engine.async.IAsyncHandler;
-import io.apiman.gateway.engine.async.IAsyncResult;
-import io.apiman.gateway.engine.async.IAsyncResultHandler;
-import io.apiman.gateway.engine.components.IHttpClientComponent;
-import io.apiman.gateway.engine.components.http.HttpMethod;
-import io.apiman.gateway.engine.components.http.IHttpClientRequest;
-import io.apiman.gateway.engine.components.http.IHttpClientResponse;
+package io.apiman.gateway.engine.influxdb;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -33,6 +24,15 @@ import java.util.List;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
+
+import io.apiman.gateway.engine.async.AsyncResultImpl;
+import io.apiman.gateway.engine.async.IAsyncHandler;
+import io.apiman.gateway.engine.async.IAsyncResult;
+import io.apiman.gateway.engine.async.IAsyncResultHandler;
+import io.apiman.gateway.engine.components.IHttpClientComponent;
+import io.apiman.gateway.engine.components.http.HttpMethod;
+import io.apiman.gateway.engine.components.http.IHttpClientRequest;
+import io.apiman.gateway.engine.components.http.IHttpClientResponse;
 
 /**
  * A simple async HTTP impl of the influxdb driver. Contains only the subset of functionality we need.
