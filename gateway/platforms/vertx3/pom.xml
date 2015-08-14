@@ -19,10 +19,10 @@
 
   <repositories>
     <repository>
-        <id>snapshots-repo</id>
-        <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+      <id>snapshots-repo</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
     </repository>
-</repositories>
+  </repositories>
 
   <dependencies>
     <!-- Vert.x provided dependencies -->
@@ -88,7 +88,7 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-gateway-engine-es</artifactId>
     </dependency>
-    
+
     <!-- Third Party Dependencies -->
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -103,10 +103,9 @@
   <build>
     <pluginManagement>
       <plugins>
-        <!--
-          This is a hack to prevent manually edited codegen stuff from being overwritten.
-          It should be reverted when upstream has been fixed.
-         -->
+        <!-- This is a hack to prevent manually edited codegen stuff from being overwritten.
+        It should be reverted when upstream has been fixed. -->
+
         <!-- Configure the execution of the compiler to execute the codegen processor -->
         <!-- <plugin> -->
         <!--   <artifactId>maven-compiler-plugin</artifactId> -->
@@ -128,11 +127,9 @@
       </plugins>
     </pluginManagement>
 
+    <!-- This ensures the codegen-ed sources make it into compilation phase
+    Should be removed when upstream is fixed. -->
     <plugins>
-      <!--
-        This ensures the codegen-ed sources make it into compilation phase
-        Should be removed when upstream is fixed.
-       -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
@@ -152,11 +149,9 @@
         </executions>
       </plugin>
 
-      <!--
-      You only need the part below if you want to build your application into a fat executable jar.
+      <!-- You only need the part below if you want to build your application into a fat executable jar.
       This is a jar that contains all the dependencies required to run it, so you can just run it with
-      java -jar
-      -->
+      java -jar -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
@@ -183,16 +178,28 @@
               </artifactSet>
               <outputFile>${project.build.directory}/${project.artifactId}-${project.version}-fat.jar</outputFile>
               <filters>
-                  <filter>
-                      <artifact>*:*</artifact>
-                      <excludes>
-                          <exclude>META-INF/*.SF</exclude>
-                          <exclude>META-INF/*.DSA</exclude>
-                          <exclude>META-INF/*.RSA</exclude>
-                      </excludes>
-                  </filter>
+                <filter>
+                  <artifact>*:*</artifact>
+                  <excludes>
+                    <exclude>META-INF/*.SF</exclude>
+                    <exclude>META-INF/*.DSA</exclude>
+                    <exclude>META-INF/*.RSA</exclude>
+                  </excludes>
+                </filter>
               </filters>
             </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- Export test jar -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
           </execution>
         </executions>
       </plugin>
