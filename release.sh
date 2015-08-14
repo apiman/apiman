@@ -28,6 +28,9 @@ echo "Release Version: $RELEASE_VERSION"
 echo "Dev Version: $DEV_VERSION"
 echo "######################################"
 
+rm -rf ~/.m2/repository/io/apiman
+mvn clean install
+
 mvn versions:set -DnewVersion=$RELEASE_VERSION
 find . -name '*.versionsBackup' -exec rm -f {} \;
 git add .
