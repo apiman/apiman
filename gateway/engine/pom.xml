@@ -4,7 +4,7 @@
   <parent>
     <groupId>io.apiman</groupId>
     <artifactId>apiman-gateway</artifactId>
-    <version>1.1.6.Final</version>
+    <version>1.1.6-SNAPSHOT</version>
   </parent>
   <artifactId>apiman-gateway-engine</artifactId>
   <packaging>pom</packaging>
@@ -17,6 +17,7 @@
     <module>osgi</module>
     <module>ispn</module>
     <module>es</module>
+    <module>influxdb</module>
   </modules>
 
   <profiles>
@@ -27,7 +28,6 @@
       </activation>
       <modules>
         <module>vertx-eb-inmemory</module>
-	<module>influxdb</module>
       </modules>
     </profile>
   </profiles>
