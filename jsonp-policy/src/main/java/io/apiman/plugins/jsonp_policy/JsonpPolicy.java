@@ -47,14 +47,21 @@ public class JsonpPolicy extends AbstractMappedPolicy<JsonpConfigBean> implement
         super.doApply(request, context, config, chain);
     }
 
+    /**
+     * @see io.apiman.gateway.engine.policy.IDataPolicy#getRequestDataHandler(io.apiman.gateway.engine.beans.ServiceRequest, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object)
+     */
     @Override
-    public IReadWriteStream<ServiceRequest> getRequestDataHandler(ServiceRequest request, IPolicyContext context) {
+    public IReadWriteStream<ServiceRequest> getRequestDataHandler(ServiceRequest request,
+            IPolicyContext context, Object policyConfiguration) {
         return null;
     }
 
+    /**
+     * @see io.apiman.gateway.engine.policy.IDataPolicy#getResponseDataHandler(io.apiman.gateway.engine.beans.ServiceResponse, io.apiman.gateway.engine.policy.IPolicyContext, java.lang.Object)
+     */
     @Override
     public IReadWriteStream<ServiceResponse> getResponseDataHandler(final ServiceResponse response,
-            final IPolicyContext context) {
+            IPolicyContext context, Object policyConfiguration) {
         final String callbackFunctionName = (String) context.getAttribute(CALLBACK_FUNCTION_NAME, null);
 
         if (callbackFunctionName != null) {

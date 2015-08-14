@@ -10,13 +10,13 @@ import io.apiman.gateway.engine.async.IAsyncHandler;
 import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.beans.ServiceResponse;
 import io.apiman.gateway.engine.components.IBufferFactoryComponent;
+import io.apiman.gateway.engine.io.ByteBuffer;
 import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.gateway.engine.io.IReadWriteStream;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
 import io.apiman.gateway.engine.policy.PolicyContextImpl;
 import io.apiman.plugins.jsonp_policy.beans.JsonpConfigBean;
-import io.apiman.test.common.io.ByteBuffer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -119,6 +119,8 @@ public class JsonpPolicyTest {
 
     @Test
     public void changeResponseWhenCallbackParamNameIsSavedInContext() throws Exception {
+        JsonpConfigBean config = new JsonpConfigBean();
+
         // given
         String functionName = "testFunction";
         sContext.setAttribute(JsonpPolicy.CALLBACK_FUNCTION_NAME, functionName);
@@ -128,7 +130,7 @@ public class JsonpPolicyTest {
         chunk.append(json);
         IAsyncHandler<IApimanBuffer> bodyHandler = mock(IAsyncHandler.class);
         // when
-        IReadWriteStream<ServiceResponse> responseDataHandler = jsonpPolicy.getResponseDataHandler(response, sContext);
+        IReadWriteStream<ServiceResponse> responseDataHandler = jsonpPolicy.getResponseDataHandler(response, sContext, config);
         ServiceResponse head = responseDataHandler.getHead();
         responseDataHandler.bodyHandler(bodyHandler);
         responseDataHandler.write(chunk);
@@ -143,10 +145,12 @@ public class JsonpPolicyTest {
 
     @Test
     public void doNotChangeResponseWhenCallbackParamNameIsNotSavedInContext() throws Exception {
+        JsonpConfigBean config = new JsonpConfigBean();
+
         // given
         ServiceResponse response = new ServiceResponse();
         // when
-        IReadWriteStream<ServiceResponse> responseDataHandler = jsonpPolicy.getResponseDataHandler(response, sContext);
+        IReadWriteStream<ServiceResponse> responseDataHandler = jsonpPolicy.getResponseDataHandler(response, sContext, config);
         // then
         assertNull(responseDataHandler);
     }
@@ -176,6 +180,11 @@ public class JsonpPolicyTest {
         @Override
         public IApimanBuffer createBuffer(byte[] byteData) {
             return new ByteBuffer(byteData);
+        }
+
+        @Override
+        public IApimanBuffer cloneBuffer(IApimanBuffer buffer) {
+            return new ByteBuffer(buffer.getBytes());
         }
     }
 }
