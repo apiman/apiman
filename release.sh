@@ -36,7 +36,14 @@ git push origin $BRANCH
 
 mvn clean install
 
+echo ""
+echo ""
+echo " ***** USER ACTION REQUIRED *****
 read -p "Do some smoke tests now!  Press Enter if everything is OK." CONFIRM
+mkdir ~/tmp
+mkdir ~/tmp/apiman-releases
+cp distro/wildfly8/target/*.zip ~/tmp/apiman-releases
+cp distro/eap64/target/*.zip ~/tmp/apiman-releases
 
 git tag -a -m "Tagging release $RELEASE_VERSION" apiman-$RELEASE_VERSION
 git push origin apiman-$RELEASE_VERSION
