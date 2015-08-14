@@ -4,7 +4,7 @@
 
   <groupId>io.apiman</groupId>
   <artifactId>apiman</artifactId>
-  <version>1.1.6.Final</version>
+  <version>1.1.6-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>apiman</name>
 
@@ -107,7 +107,7 @@
     <version.commons-io>2.4</version.commons-io>
     <version.commons-lang>2.6</version.commons-lang>
     <version.commons-pool>1.6</version.commons-pool>
-    <version.io.apiman.quickstarts>$RELEASE_VERSION</version.io.apiman.quickstarts>
+    <version.io.apiman.quickstarts>1.1.5.Final</version.io.apiman.quickstarts>
     <version.io.searchbox.jest>0.1.6</version.io.searchbox.jest>
     <version.io.undertow>1.0.1.Final</version.io.undertow>
     <version.javax.enterprise>1.2</version.javax.enterprise>
