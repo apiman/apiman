@@ -9,35 +9,24 @@
   <artifactId>apiman-gateway-engine</artifactId>
   <packaging>pom</packaging>
   <name>apiman-gateway-engine</name>
+
+  <modules>
+    <module>core</module>
+    <module>beans</module>
+    <module>policies</module>
+    <module>osgi</module>
+    <module>ispn</module>
+    <module>es</module>
+  </modules>
+
   <profiles>
     <profile>
-      <id>vertx3</id>
+      <id>java8</id>
       <activation>
         <jdk>[1.8,)</jdk>
       </activation>
       <modules>
-        <module>core</module>
-        <module>beans</module>
-        <module>policies</module>
-        <module>osgi</module>
-        <module>ispn</module>
-        <module>es</module>
         <module>vertx-eb-inmemory</module>
-      </modules>
-    </profile>
-    <profile>
-      <id>default</id>
-      <activation>
-        <jdk>(,1.7]</jdk>
-      </activation>
-      <modules>
-        <module>core</module>
-        <module>beans</module>
-        <module>policies</module>
-        <module>osgi</module>
-        <module>ispn</module>
-        <module>es</module>
-        <!-- <module>vertx-eb-inmemory</module> -->
       </modules>
     </profile>
   </profiles>
