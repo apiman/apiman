@@ -1,4 +1,4 @@
-package io.apiman.gateway.engine.metrics.impl.influxdb;
+package io.apiman.gateway.engine.influxdb;
 
 import io.apiman.gateway.engine.components.http.IHttpClientResponse;
 

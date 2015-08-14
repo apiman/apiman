@@ -1,41 +1,31 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>io.apiman</groupId>
     <artifactId>apiman-gateway</artifactId>
-    <version>1.1.6-SNAPSHOT</version>
+    <version>1.1.6.Final</version>
   </parent>
   <artifactId>apiman-gateway-platforms</artifactId>
   <packaging>pom</packaging>
   <name>apiman-gateway-platforms</name>
+
+  <modules>
+    <module>servlet</module>
+    <module>undertow</module>
+    <module>war</module>
+    <module>war/micro</module>
+    <module>war/wildfly8</module>
+  </modules>
+
   <profiles>
     <profile>
-      <id>vertx3</id>
+      <id>java8</id>
       <activation>
         <jdk>[1.8,)</jdk>
       </activation>
       <modules>
-        <module>servlet</module>
-        <module>undertow</module>
-        <module>vertx3</module>
-        <module>war</module>
-        <module>war/micro</module>
-        <module>war/wildfly8</module>
-      </modules>
-    </profile>
-    <profile>
-      <id>default</id>
-      <activation>
-        <jdk>(,1.7]</jdk>
-      </activation>
-      <modules>
-        <module>servlet</module>
-        <module>undertow</module>
-        <!-- <module>vertx3</module> No Vert.x 3 by default -->
-        <module>war</module>
-        <module>war/micro</module>
-        <module>war/wildfly8</module>
+	<module>vertx3</module>
       </modules>
     </profile>
   </profiles>

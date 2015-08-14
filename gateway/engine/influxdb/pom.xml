@@ -6,12 +6,15 @@
     <artifactId>apiman-gateway-engine</artifactId>
     <version>1.1.6.Final</version>
   </parent>
-  <artifactId>apiman-gateway-engine-osgi</artifactId>
-  <packaging>bundle</packaging>
-  <name>apiman-gateway-engine-osgi</name>
+  <artifactId>apiman-gateway-engine-influxdb</artifactId>
+  <name>apiman-gateway-engine-influxdb</name>
 
   <dependencies>
     <!-- Project Dependencies -->
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>apiman-common-util</artifactId>
+    </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-gateway-engine-beans</artifactId>
@@ -20,22 +23,6 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>apiman-gateway-engine-core</artifactId>
     </dependency>
-
-    <!-- Spec Libs -->
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.core</artifactId>
-      <scope>provided</scope>
-    </dependency>
+    <!-- Third Party Dependencies -->
   </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-      </plugin>
-    </plugins>
-  </build>
 </project>

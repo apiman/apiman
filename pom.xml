@@ -4,7 +4,7 @@
 
   <groupId>io.apiman</groupId>
   <artifactId>apiman</artifactId>
-  <version>1.1.6-SNAPSHOT</version>
+  <version>1.1.6.Final</version>
   <packaging>pom</packaging>
   <name>apiman</name>
 
@@ -107,7 +107,7 @@
     <version.commons-io>2.4</version.commons-io>
     <version.commons-lang>2.6</version.commons-lang>
     <version.commons-pool>1.6</version.commons-pool>
-    <version.io.apiman.quickstarts>1.1.5.Final</version.io.apiman.quickstarts>
+    <version.io.apiman.quickstarts>1.1.6.Final</version.io.apiman.quickstarts>
     <version.io.searchbox.jest>0.1.6</version.io.searchbox.jest>
     <version.io.undertow>1.0.1.Final</version.io.undertow>
     <version.javax.enterprise>1.2</version.javax.enterprise>
@@ -320,6 +320,11 @@
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>apiman-gateway-engine-core</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-gateway-engine-influxdb</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -1243,7 +1248,7 @@
       </pluginRepositories>
     </profile>
     <profile>
-      <id>doclint-java8-disable</id>
+      <id>java8</id>
       <activation>
         <jdk>[1.8,)</jdk>
       </activation>
