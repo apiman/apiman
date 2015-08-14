@@ -324,6 +324,11 @@
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
+        <artifactId>apiman-gateway-engine-influxdb</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
         <artifactId>apiman-gateway-engine-ispn</artifactId>
         <version>${project.version}</version>
       </dependency>

@@ -27,6 +27,7 @@
       </activation>
       <modules>
         <module>vertx-eb-inmemory</module>
+	<module>influxdb</module>
       </modules>
     </profile>
   </profiles>
