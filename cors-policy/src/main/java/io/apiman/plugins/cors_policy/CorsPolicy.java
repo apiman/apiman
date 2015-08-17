@@ -20,9 +20,9 @@ import java.util.Map;
 
 import io.apiman.gateway.engine.IServiceConnector;
 import io.apiman.gateway.engine.beans.ServiceRequest;
-import io.apiman.gateway.engine.policies.AbstractMappedPolicy;
 import io.apiman.gateway.engine.beans.ServiceResponse;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
+import io.apiman.gateway.engine.policies.AbstractMappedPolicy;
 import io.apiman.gateway.engine.policy.IConnectorInterceptor;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
@@ -31,11 +31,11 @@ import io.apiman.gateway.engine.policy.IPolicyContext;
  * A policy implementing CORS (Cross-origin resource sharing): a method of defining access to resources
  * outside of the originating domain. It is principally a security mechanism to prevent the loading of
  * resources from unexpected domains, for instance via XSS injection attacks.
- * 
+ *
  * @see <a href="http://www.w3.org/TR/2014/REC-cors-20140116/">CORS W3C Recommendation 16 January 2014</a>
  * @see <a href="http://www.w3.org/wiki/CORS">CORS W3 Wiki</a>
- * 
- * @author Marc Savy <msavy@redhat.com>
+ *
+ * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 public class CorsPolicy extends AbstractMappedPolicy<CorsConfigBean> {
     private static final String CORS_SIMPLE_RESPONSE_HEADERS = "cors-simple-response-headers"; //$NON-NLS-1$
@@ -43,7 +43,7 @@ public class CorsPolicy extends AbstractMappedPolicy<CorsConfigBean> {
 
 
     public CorsPolicy() {
-    } 
+    }
 
     /* (non-Javadoc)
      * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#getConfigurationClass()
@@ -53,7 +53,7 @@ public class CorsPolicy extends AbstractMappedPolicy<CorsConfigBean> {
         return CorsConfigBean.class;
     }
 
-    
+
     /* (non-Javadoc)
      * @see io.apiman.gateway.engine.policies.AbstractMappedPolicy#doApply(ServiceRequest, IPolicyContext, C, IPolicyChain)
      */
@@ -77,14 +77,15 @@ public class CorsPolicy extends AbstractMappedPolicy<CorsConfigBean> {
             } else {
                 setResponseHeaders(context, corsConnector.getResponseHeaders());
             }
-            
+
             if (corsConnector.isFailure()) {
                 chain.doFailure(corsConnector.getFailure());
-                return;
+            } else { // We want to hit the response chain immediately (i.e. avoid auth policies)
+                chain.doSkip(request);
             }
+        } else {
+            chain.doApply(request);
         }
-                
-        chain.doApply(request);
     }
 
 
@@ -94,16 +95,16 @@ public class CorsPolicy extends AbstractMappedPolicy<CorsConfigBean> {
     @Override
     protected void doApply(ServiceResponse response, IPolicyContext context, CorsConfigBean config,
             IPolicyChain<ServiceResponse> chain) {
-        
+
         Map<String, String> corsHeaders = getResponseHeaders(context);
-        
+
         if(corsHeaders != EMPTY_MAP) {
             response.getHeaders().putAll(corsHeaders);
         }
-        
+
         chain.doApply(response);
     }
-    
+
     private void setResponseHeaders(IPolicyContext context, Map<String, String> response) {
         context.setAttribute(CORS_SIMPLE_RESPONSE_HEADERS, response);
     }

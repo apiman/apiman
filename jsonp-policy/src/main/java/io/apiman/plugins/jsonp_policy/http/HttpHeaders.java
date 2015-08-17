@@ -5,7 +5,7 @@ import java.util.Map;
 /**
  * Utility class to get and set data into headers.
  * 
- * @author Alexandre Kieling <alex.kieling@gmail.com>
+ * @author Alexandre Kieling {@literal <alex.kieling@gmail.com>}
  */
 public class HttpHeaders {
 

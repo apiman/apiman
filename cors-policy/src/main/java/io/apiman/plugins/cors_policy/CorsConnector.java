@@ -15,6 +15,11 @@
  */
 package io.apiman.plugins.cors_policy;
 
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.lang.StringUtils;
+
 import io.apiman.gateway.engine.IServiceConnection;
 import io.apiman.gateway.engine.IServiceConnectionResponse;
 import io.apiman.gateway.engine.IServiceConnector;
@@ -31,15 +36,10 @@ import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.plugins.cors_policy.util.HttpHelper;
 
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.commons.lang.StringUtils;
-
 /**
  * CORS validator and connector. Implements http://www.w3.org/TR/2014/REC-cors-20140116/.
  *
- * @author Marc Savy <msavy@redhat.com>
+ * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 public class CorsConnector implements IServiceConnector {
 
@@ -244,7 +244,7 @@ public class CorsConnector implements IServiceConnector {
     /**
      * A connection consisting predominantly dummy methods as we're not contacting a real service.
      *
-     * @author Marc Savy <msavy@redhat.com>
+     * @author Marc Savy {@literal <msavy@redhat.com>}
      */
     class ShortcircuitServiceConnection implements IServiceConnection, IServiceConnectionResponse {
         private boolean finished = false;

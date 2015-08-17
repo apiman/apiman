@@ -18,7 +18,7 @@ package io.apiman.plugins.keycloak_oauth_policy.util;
 /**
  * Hold an item.
  *
- * @author Marc Savy <msavy@redhat.com>
+ * @author Marc Savy {@literal <msavy@redhat.com>}
  *
  * @param <T> item type to hold
  */

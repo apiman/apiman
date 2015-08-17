@@ -30,7 +30,7 @@ import io.apiman.plugins.httpsecuritypolicy.beans.HttpSecurityBean.XssProtection
 /**
  * Security-related HTTP headers can be set, such as HSTS, CSP and XSS protection.
  * 
- * @author Marc Savy <msavy@redhat.com>
+ * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 public class HttpSecurityPolicy extends AbstractMappedPolicy<HttpSecurityBean> {
 

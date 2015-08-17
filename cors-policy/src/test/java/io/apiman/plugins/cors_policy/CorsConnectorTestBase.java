@@ -34,7 +34,7 @@ import org.mockito.MockitoAnnotations;
 /**
  * Common test base
  * 
- * @author Marc Savy <msavy@redhat.com>
+ * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 @SuppressWarnings("nls")
 public class CorsConnectorTestBase {

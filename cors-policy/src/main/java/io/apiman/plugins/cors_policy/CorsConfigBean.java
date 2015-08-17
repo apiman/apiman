@@ -15,9 +15,6 @@
  */
 package io.apiman.plugins.cors_policy;
 
-import io.apiman.plugins.cors_policy.util.HttpHelper;
-import io.apiman.plugins.cors_policy.util.InsensitiveLinkedHashSet;
-
 import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -29,10 +26,13 @@ import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
+import io.apiman.plugins.cors_policy.util.HttpHelper;
+import io.apiman.plugins.cors_policy.util.InsensitiveLinkedHashSet;
+
 /**
  * CORS Policy Configuration
- * 
- * @author Marc Savy <msavy@redhat.com>
+ *
+ * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 @Generated("org.jsonschema2pojo")
@@ -47,7 +47,7 @@ public class CorsConfigBean implements Serializable {
      * When true, any request that fails CORS validation will be terminated with an appropriate error. When
      * false, the request will still be sent to the backend service, but the browser will be left to enforce
      * the CORS failure. In both cases valid CORS headers will be set.
-     * 
+     *
      */
     @JsonProperty("errorOnCorsFailure")
     private boolean errorOnCorsFailure = true;
@@ -56,7 +56,7 @@ public class CorsConfigBean implements Serializable {
      * <p>
      * List of origins permitted to make CORS requests through the gateway. By default same-origin is
      * permitted, and cross-origin is forbidden. An entry of * permits all CORS requests.
-     * 
+     *
      */
     @JsonProperty("allowOrigin")
     @JsonDeserialize(as = InsensitiveLinkedHashSet.class)
@@ -65,7 +65,7 @@ public class CorsConfigBean implements Serializable {
      * Access-Control-Allow-Credentials
      * <p>
      * Whether response may be exposed when the `credentials` flag is set to true on the request.
-     * 
+     *
      */
     @JsonProperty("allowCredentials")
     private boolean allowCredentials = false;
@@ -73,7 +73,7 @@ public class CorsConfigBean implements Serializable {
      * Access-Control-Expose-Headers
      * <p>
      * Which non-simple headers the browser may expose during CORS.
-     * 
+     *
      */
     @JsonProperty("exposeHeaders")
     @JsonDeserialize(as = InsensitiveLinkedHashSet.class)
@@ -82,7 +82,7 @@ public class CorsConfigBean implements Serializable {
      * Access-Control-Allow-Headers
      * <p>
      * In response to preflight request, which headers can be used during actual request.
-     * 
+     *
      */
     @JsonProperty("allowHeaders")
     @JsonDeserialize(as = InsensitiveLinkedHashSet.class)
@@ -91,7 +91,7 @@ public class CorsConfigBean implements Serializable {
      * Access-Control-Allow-Methods
      * <p>
      * In response to preflight request, which methods can be used during actual request.
-     * 
+     *
      */
     @JsonProperty("allowMethods")
     @JsonDeserialize(as = java.util.LinkedHashSet.class)
@@ -101,7 +101,7 @@ public class CorsConfigBean implements Serializable {
      * Access-Control-Max-Age
      * <p>
      * How long preflight request can be cached in delta seconds
-     * 
+     *
      */
     @JsonProperty("maxAge")
     private Integer maxAge;
@@ -112,7 +112,7 @@ public class CorsConfigBean implements Serializable {
      * When true, any request that fails CORS validation will be terminated with an appropriate error. When
      * false, the request will still be sent to the backend service, but the browser will be left to enforce
      * the CORS failure. In both cases valid CORS headers will be set.
-     * 
+     *
      * @return The errorOnCorsFailure
      */
     @JsonProperty("errorOnCorsFailure")
@@ -126,7 +126,7 @@ public class CorsConfigBean implements Serializable {
      * When true, any request that fails CORS validation will be terminated with an appropriate error. When
      * false, the request will still be sent to the backend service, but the browser will be left to enforce
      * the CORS failure. In both cases valid CORS headers will be set.
-     * 
+     *
      * @param errorOnCorsFailure The errorOnCorsFailure
      */
     @JsonProperty("errorOnCorsFailure")
@@ -139,7 +139,7 @@ public class CorsConfigBean implements Serializable {
      * <p>
      * List of origins permitted to make CORS requests through the gateway. By default same-origin is
      * permitted, and cross-origin is forbidden. An entry of * permits all CORS requests.
-     * 
+     *
      * @return The allowOrigin
      */
     @JsonProperty("allowOrigin")
@@ -152,7 +152,7 @@ public class CorsConfigBean implements Serializable {
      * <p>
      * List of origins permitted to make CORS requests through the gateway. By default same-origin is
      * permitted, and cross-origin is forbidden. An entry of * permits all CORS requests.
-     * 
+     *
      * @param allowOrigin The allowOrigin
      */
     @JsonProperty("allowOrigin")
@@ -164,7 +164,7 @@ public class CorsConfigBean implements Serializable {
      * Access-Control-Allow-Credentials
      * <p>
      * Whether response may be exposed when the `credentials` flag is set to true on the request.
-     * 
+     *
      * @return The allowCredentials
      */
     @JsonProperty("allowCredentials")
@@ -176,7 +176,7 @@ public class CorsConfigBean implements Serializable {
      * Access-Control-Allow-Credentials
      * <p>
      * Whether response may be exposed when the `credentials` flag is set to true on the request.
-     * 
+     *
      * @param allowCredentials The allowCredentials
      */
     @JsonProperty("allowCredentials")
@@ -188,7 +188,7 @@ public class CorsConfigBean implements Serializable {
      * Access-Control-Expose-Headers
      * <p>
      * Which non-simple headers the browser may expose during CORS.
-     * 
+     *
      * @return The exposeHeaders
      */
     @JsonProperty("exposeHeaders")
@@ -200,7 +200,7 @@ public class CorsConfigBean implements Serializable {
      * Access-Control-Expose-Headers
      * <p>
      * Which non-simple headers the browser may expose during CORS.
-     * 
+     *
      * @param exposeHeaders The exposeHeaders
      */
     @JsonProperty("exposeHeaders")
@@ -212,7 +212,7 @@ public class CorsConfigBean implements Serializable {
      * Access-Control-Allow-Headers
      * <p>
      * In response to preflight request, which headers can be used during actual request.
-     * 
+     *
      * @return The allowHeaders
      */
     @JsonProperty("allowHeaders")
@@ -224,7 +224,7 @@ public class CorsConfigBean implements Serializable {
      * Access-Control-Allow-Headers
      * <p>
      * In response to preflight request, which headers can be used during actual request.
-     * 
+     *
      * @param allowHeaders The allowHeaders
      */
     @JsonProperty("allowHeaders")
@@ -236,7 +236,7 @@ public class CorsConfigBean implements Serializable {
      * Access-Control-Allow-Methods
      * <p>
      * In response to preflight request, which methods can be used during actual request.
-     * 
+     *
      * @return The allowMethods
      */
     @JsonProperty("allowMethods")
@@ -248,7 +248,7 @@ public class CorsConfigBean implements Serializable {
      * Access-Control-Allow-Methods
      * <p>
      * In response to preflight request, which methods can be used during actual request.
-     * 
+     *
      * @param allowMethods The allowMethods
      */
     @JsonProperty("allowMethods")
@@ -260,7 +260,7 @@ public class CorsConfigBean implements Serializable {
      * Access-Control-Max-Age
      * <p>
      * How long preflight request can be cached in delta seconds
-     * 
+     *
      * @return The maxAge
      */
     @JsonProperty("maxAge")
@@ -272,7 +272,7 @@ public class CorsConfigBean implements Serializable {
      * Access-Control-Max-Age
      * <p>
      * How long preflight request can be cached in delta seconds
-     * 
+     *
      * @param maxAge The maxAge
      */
     @JsonProperty("maxAge")
@@ -282,7 +282,7 @@ public class CorsConfigBean implements Serializable {
 
     /**
      * Is allowed if: * (any), host == origin (not all browsers do this), is on allowed list.
-     * 
+     *
      * @param host the host
      * @param origin the origin of request
      * @return true if origin is allowed
@@ -293,7 +293,7 @@ public class CorsConfigBean implements Serializable {
 
     /**
      * A simple method as defined by the spec.
-     * 
+     *
      * @param method the methods
      * @return true if simple method(s)
      */
@@ -304,12 +304,12 @@ public class CorsConfigBean implements Serializable {
     /**
      * Is an allowed header, either by user definition or the spec. Generally browsers should not ask for
      * fields which are always allowed but we handle that anyway.
-     * 
+     *
      * @param header the headers
      * @return true if simple header(s)
      */
     public boolean isAllowedHeader(String... header) {
-        return header != null && 
+        return header != null &&
                 (HttpHelper.containsAll(allowHeaders, header) || HttpHelper.isSimpleHeader(header));
     }
 }

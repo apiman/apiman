@@ -22,7 +22,7 @@ import java.nio.charset.StandardCharsets;
  *
  * @see <a href="http://en.wikipedia.org/wiki/JSONP" target="_blank">JSONP - Wikipedia</a>
  *
- * @author Alexandre Kieling <alex.kieling@gmail.com>
+ * @author Alexandre Kieling {@literal <alex.kieling@gmail.com>}
  */
 public class JsonpPolicy extends AbstractMappedPolicy<JsonpConfigBean> implements IDataPolicy {
 

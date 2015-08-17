@@ -28,7 +28,7 @@ import org.junit.Test;
 /**
  * Test preflight aspects of CORS
  * 
- * @author Marc Savy <msavy@redhat.com>
+ * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 @SuppressWarnings("nls")
 public class CorsConnectorPreflightTest extends CorsConnectorTestBase {

@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 /**
  * A value object that represents the Content-Type header.
  *
- * @author Alexandre Kieling <alex.kieling@gmail.com>
+ * @author Alexandre Kieling {@literal <alex.kieling@gmail.com>}
  */
 public class ContentType {
 

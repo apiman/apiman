@@ -33,7 +33,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 /**
  * Header to token property mappings.
  *
- * @author Marc Savy <msavy@redhat.com>
+ * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 @JsonPropertyOrder({ "headers", "field" })

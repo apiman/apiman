@@ -29,7 +29,7 @@ import io.apiman.plugins.simpleheaderpolicy.beans.SimpleHeaderPolicyDefBean;
 /**
  * Set, overwrite and/or delete headers on request, response or both, with pattern matching available.
  * 
- * @author Marc Savy <msavy@redhat.com>
+ * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 public class SimpleHeaderPolicy extends AbstractMappedPolicy<SimpleHeaderPolicyDefBean> {
 

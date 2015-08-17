@@ -18,7 +18,7 @@ import io.apiman.plugins.transformation_policy.transformer.DataTransformerFactor
 /**
  * Policy that transforms the data from one format to another.
  *
- * @author Alexandre Kieling <alex.kieling@gmail.com>
+ * @author Alexandre Kieling {@literal <alex.kieling@gmail.com>}
  */
 public class TransformationPolicy extends AbstractMappedPolicy<TransformationConfigBean> implements IDataPolicy {
 

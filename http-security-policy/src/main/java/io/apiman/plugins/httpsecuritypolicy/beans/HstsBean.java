@@ -35,7 +35,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
  * <p>
  * Enforce transport security when using HTTP to mitigate a range of common web vulnerabilities.
  * 
- * @author Marc Savy <msavy@redhat.com>
+ * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 @Generated("org.jsonschema2pojo")
