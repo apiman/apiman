@@ -15,15 +15,15 @@
  */
 package io.apiman.gateway.engine.policy;
 
+import java.util.Iterator;
+import java.util.List;
+
 import io.apiman.gateway.engine.async.IAsyncHandler;
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.io.AbstractStream;
 import io.apiman.gateway.engine.io.IAbortable;
 import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.gateway.engine.io.IReadWriteStream;
-
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * Traverses and executes a series of policies according to implementor's
@@ -149,6 +149,18 @@ public abstract class Chain<H> extends AbstractStream<H> implements IAbortable, 
             } else {
                 handleHead(getHead());
             }
+        } catch (Throwable error) {
+            throwError(error);
+        }
+    }
+
+    /**
+     * @see io.apiman.gateway.engine.policy.IPolicyChain#doSkip(java.lang.Object)
+     */
+    @Override
+    public void doSkip(H serviceObject) {
+        try {
+            handleHead(getHead());
         } catch (Throwable error) {
             throwError(error);
         }
