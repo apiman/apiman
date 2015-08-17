@@ -17,6 +17,12 @@ package io.apiman.gateway.engine.vertxebinmemory.services;
 
 import io.vertx.core.json.JsonObject;
 
+/**
+ * A standard head object containing the UUID (given registry's unique identity), the action (e.g. register,
+ * retire), the type (e.g. application, service), and the body (real object).
+ *
+ * @author Marc Savy {@literal <msavy@redhat.com>}
+ */
 @SuppressWarnings("nls")
 public interface Head {
     String UUID = "uuid";

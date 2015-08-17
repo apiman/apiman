@@ -20,6 +20,12 @@ import io.apiman.gateway.engine.beans.Service;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.DeliveryOptions;
 
+/**
+ * Publishes mutating events onto the event bus for listeners to consume. A UUID is sent to avoid circular
+ * calls.
+ *
+ * @author Marc Savy {@literal <msavy@redhat.com>}
+ */
 public class EBRegistryProxy {
     Vertx vertx;
     DeliveryOptions options;

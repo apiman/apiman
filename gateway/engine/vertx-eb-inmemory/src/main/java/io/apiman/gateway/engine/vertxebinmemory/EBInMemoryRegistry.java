@@ -15,6 +15,10 @@
  */
 package io.apiman.gateway.engine.vertxebinmemory;
 
+import java.util.Map;
+import java.util.UUID;
+
+import io.apiman.gateway.engine.IRegistry;
 import io.apiman.gateway.engine.async.IAsyncResult;
 import io.apiman.gateway.engine.async.IAsyncResultHandler;
 import io.apiman.gateway.engine.beans.Application;
@@ -27,9 +31,16 @@ import io.apiman.gateway.engine.vertxebinmemory.services.EBRegistryProxyHandler;
 import io.apiman.gateway.platforms.vertx3.config.VertxEngineConfig;
 import io.vertx.core.Vertx;
 
-import java.util.Map;
-import java.util.UUID;
-
+/**
+ * In-memory implementation of the {@link IRegistry} using Vert.x 3's event bus to distribute the events to
+ * all nodes. This is used for testing purposes only, and isn't sufficiently robust for production.
+ *
+ * Each node has an event listener; a given node receiving a write/delete-type registry operation distributes
+ * the events to all nodes listening, along with an attached node-unique UUID. Any listener ignores messages
+ * from their own UUID.
+ *
+ * @author Marc Savy {@literal <msavy@redhat.com>}
+ */
 @SuppressWarnings("nls")
 public class EBInMemoryRegistry extends InMemoryRegistry implements EBRegistryProxyHandler {
     private Vertx vertx;
