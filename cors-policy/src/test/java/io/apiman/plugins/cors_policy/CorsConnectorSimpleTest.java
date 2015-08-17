@@ -27,7 +27,7 @@ import org.junit.Test;
 /**
  * Test simple aspects of CORS
  * 
- * @author Marc Savy <msavy@redhat.com>
+ * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 @SuppressWarnings("nls")
 public class CorsConnectorSimpleTest extends CorsConnectorTestBase {

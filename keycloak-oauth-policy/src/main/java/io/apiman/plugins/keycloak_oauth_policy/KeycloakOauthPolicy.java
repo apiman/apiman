@@ -43,7 +43,7 @@ import org.keycloak.representations.AccessToken.Access;
 /**
  * A Keycloak OAuth policy.
  *
- * @author Marc Savy <msavy@redhat.com>
+ * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 public class KeycloakOauthPolicy extends AbstractMappedPolicy<KeycloakOauthConfigBean> {
 

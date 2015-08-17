@@ -5,7 +5,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 /**
  * Configuration object for the Transformation policy.
  *
- * @author Alexandre Kieling <alex.kieling@gmail.com>
+ * @author Alexandre Kieling {@literal <alex.kieling@gmail.com>}
  */
 public class TransformationConfigBean {
 

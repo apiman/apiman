@@ -26,7 +26,7 @@ import org.keycloak.VerificationException;
 /**
  * Policy failures
  *
- * @author Marc Savy <msavy@redhat.com>
+ * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 public class PolicyFailureFactory {
 

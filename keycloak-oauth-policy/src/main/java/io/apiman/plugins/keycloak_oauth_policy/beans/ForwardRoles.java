@@ -33,7 +33,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
  * Forward KeyCloak roles to the Authorization policy. You should specify your
  * required role(s) in the Authorization policy's configuration.
  *
- * @author Marc Savy <msavy@redhat.com>
+ * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 @JsonSerialize
 public class ForwardRoles {

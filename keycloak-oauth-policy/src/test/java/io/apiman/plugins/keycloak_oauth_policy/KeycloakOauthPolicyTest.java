@@ -56,7 +56,7 @@ import org.mockito.MockitoAnnotations;
  * With thanks to the Keycloak project for their RSAVerifierTest whose setup procedures are adapted here for
  * our requirements.
  *
- * @author Marc Savy <msavy@redhat.com>
+ * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 @SuppressWarnings({ "nls", "deprecation" })
 public class KeycloakOauthPolicyTest {

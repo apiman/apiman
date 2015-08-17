@@ -21,8 +21,8 @@ import java.util.Set;
 
 /**
  * Helper methods and variables.
- * 
- * @author Marc Savy <msavy@redhat.com>
+ *
+ * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 public class HttpHelper {
     // Verbs
@@ -30,7 +30,7 @@ public class HttpHelper {
     public static final String HEAD = "HEAD"; //$NON-NLS-1$
     public static final String POST = "POST";//$NON-NLS-1$
     public static final String OPTIONS = "OPTIONS";//$NON-NLS-1$
-    
+
     // Simple verbs
     public static final Set<String> SIMPLE_METHODS = new HashSet<>(Arrays.asList(
                 new String[] { GET, HEAD, POST }
@@ -40,39 +40,39 @@ public class HttpHelper {
     public static final Set<String> SIMPLE_CONTENT_TYPES = new InsensitiveLinkedHashSet(Arrays.asList(
                 new String[] { "application/x-www-form-urlencoded", "multipart/form-data", "text/plain" } //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             ));
-    
+
     // Any header request other than the following requires preflight. Many browsers don't bother asking if from known list.
     public static final Set<String> SIMPLE_HEADER_TYPES = new InsensitiveLinkedHashSet(Arrays.asList(
                 new String[] { "Cache-Control", "Content-Language", "Content-Type",  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                                 "Expires", "Last-Modified", "Pragma" } //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             ));
-    
+
     /**
      * @param method http method
-     * @return Whether the given HTTP method is simple as defined by specification 
+     * @return Whether the given HTTP method is simple as defined by specification
      */
     public static boolean isSimpleMethod(String... method) {
         return containsAll(SIMPLE_METHODS, method);
     }
-    
+
     public static boolean isSimpleContentType(String... type) {
         return containsAll(SIMPLE_CONTENT_TYPES, type);
     }
-    
+
     public static boolean isSimpleHeader(String... header) {
         return containsAll(SIMPLE_HEADER_TYPES, header);
     }
-    
+
     public static boolean containsAll(Set<String> set, String[] values) {
         boolean collect = true;
-        
+
         for(String entry : values) {
             collect = collect && set.contains(entry);
-            
+
             if(collect == false)
                 break;
         }
-        
+
         return collect;
     }
 }

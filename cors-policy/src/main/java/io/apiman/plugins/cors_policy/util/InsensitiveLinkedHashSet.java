@@ -23,8 +23,8 @@ import java.util.Set;
 
 /**
  * A simple case-insensitive linked hash map
- * 
- * @author Marc Savy <msavy@redhat.com>
+ *
+ * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 public class InsensitiveLinkedHashSet extends LinkedHashSet<String> implements Serializable, Set<String> {
 

@@ -21,7 +21,7 @@ import org.junit.*;
 
 /**
  * 
- * @author Marc Savy <msavy@redhat.com>
+ * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 @SuppressWarnings("nls")
 public class KeycloakOauthBeanTest {

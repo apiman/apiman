@@ -33,7 +33,7 @@ import org.keycloak.util.PemUtils;
 /**
  * Keycloak OAuth Policy Configuration
  *
- * @author Marc Savy <msavy@redhat.com>
+ * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 @JsonPropertyOrder({ "requireOauth", "requireTransportSecurity", "blacklistUnsafeTokens", "stripTokens",
