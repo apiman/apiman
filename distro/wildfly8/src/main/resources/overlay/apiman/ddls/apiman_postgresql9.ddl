@@ -94,7 +94,7 @@ INSERT INTO pd_templates (policydef_id, language, template) VALUES ('TransferQuo
 
 INSERT INTO pd_templates (policydef_id, language, template) VALUES ('IgnoredResourcesPolicy', NULL, 'Requests matching any of the @{pathsToIgnore.size()} regular expressions provided will receive a 404 error code.');
 
-INSERT INTO pd_templates (policydef_id, language, template) VALUES ('URLRewritingPolicy', NULL, "Responses will be modified by finding all text matching regular expression '@{fromRegex}' with '@{toReplacement}'.");
+INSERT INTO pd_templates (policydef_id, language, template) VALUES ('URLRewritingPolicy', NULL, 'Responses will be modified by finding all text matching regular expression ''@{fromRegex}'' with ''@{toReplacement}''.');
 
 INSERT INTO pd_templates (policydef_id, language, template) VALUES ('CachingPolicy', NULL, 'API responses will be cached for @{ttl} seconds.');
 
@@ -157,6 +157,8 @@ INSERT INTO policydefs (id, description, form, form_type, icon, name, plugin_id,
 INSERT INTO policydefs (id, description, form, form_type, icon, name, plugin_id, policy_impl) VALUES ('TransferQuotaPolicy', 'Provides a way to limit the total number of bytes that can be transferred from (or to) an API.', NULL, 'Default', 'download', 'Transfer Quota Policy', NULL, 'class:io.apiman.gateway.engine.policies.TransferQuotaPolicy');
 
 INSERT INTO policydefs (id, description, form, form_type, icon, name, plugin_id, policy_impl) VALUES ('IgnoredResourcesPolicy', 'Requests satisfying the provided regular expression will be ignored.', NULL, 'Default', 'eye-slash', 'Ignored Resources Policy', NULL, 'class:io.apiman.gateway.engine.policies.IgnoredResourcesPolicy');
+
+INSERT INTO policydefs (id, description, form, form_type, icon, name, plugin_id, policy_impl) VALUES ('URLRewritingPolicy', 'Responses from the back-end API will be modified by fixing up any incorrect URLs found with modified ones.  This is useful because apiman works through an API Gateway.', NULL, 'Default', 'pencil-square', 'URL Rewriting Policy', NULL, 'class:io.apiman.gateway.engine.policies.URLRewritingPolicy');
 
 INSERT INTO policydefs (id, description, form, form_type, icon, name, plugin_id, policy_impl) VALUES ('CachingPolicy', 'Allows caching of API responses in the Gateway to reduce overall traffic to the back-end API.', NULL, 'Default', 'hdd-o', 'Cachine Policy', NULL, 'class:io.apiman.gateway.engine.policies.CachingPolicy');
 
