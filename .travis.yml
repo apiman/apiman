@@ -1,0 +1,19 @@
+language: java
+
+before_install:
+  - export MAVEN_OPTS="-Xmx512m -XX:MaxPermSize=192m"
+  - sed -i.bak -e 's|https://nexus.codehaus.org/snapshots/|https://oss.sonatype.org/content/repositories/codehaus-snapshots/|g' ~/.m2/settings.xml
+  - echo "Settings XML" && cat ~/.m2/settings.xml
+
+jdk:
+  - oraclejdk8
+  - openjdk7
+
+notifications:
+  irc:
+    channels:
+      - "chat.freenode.net#apiman"
+    on_success: change
+    on_failure: always
+    template:
+      - "%{repository} (%{branch}:%{commit} by %{author}): %{message} (%{build_url})"
