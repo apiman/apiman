@@ -22,6 +22,15 @@ import io.vertx.core.eventbus.Message;
 import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
 
+/**
+ * Listens for registry events on the event bus. Ignores self-generated events. These arrive as a simple JSON
+ * payload, with a header containing the operation type, action and then a marshalled object containing the
+ * corresponding object (e.g. Application, Service, etc).
+ *
+ * Requests are then routed to the appropriate registry method.
+ *
+ * @author Marc Savy {@literal <msavy@redhat.com>}
+ */
 public interface EBRegistryProxyHandler {
 
     @SuppressWarnings("nls")

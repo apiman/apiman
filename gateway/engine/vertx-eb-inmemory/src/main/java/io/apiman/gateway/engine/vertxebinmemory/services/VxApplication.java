@@ -18,6 +18,11 @@ package io.apiman.gateway.engine.vertxebinmemory.services;
 import io.apiman.gateway.engine.beans.Application;
 import io.vertx.core.json.Json;
 
+/**
+ * An {@link io.apiman.gateway.engine.beans.Application} with a {@link Head}.
+ *
+ * @author Marc Savy {@literal <msavy@redhat.com>}
+ */
 @SuppressWarnings("nls")
 public class VxApplication implements Head {
     private Application application;
