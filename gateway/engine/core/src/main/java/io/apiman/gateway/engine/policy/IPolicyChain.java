@@ -27,11 +27,20 @@ import io.apiman.gateway.engine.beans.PolicyFailure;
 public interface IPolicyChain<T> {
 
     /**
-     * Called by a policy when it has successfully completed applying itself.  This 
+     * Called by a policy when it has successfully completed applying itself.  This
      * triggers the next policy in the chain.
      * @param serviceObject the service object
      */
     public void doApply(T serviceObject);
+
+    /**
+     * Immediately trigger a successful response, rather than waiting for the entire
+     * policy chain to complete. This is useful for special cases where subsequent
+     * policies might block a response that should always succeed (e.g. CORS).
+     * <em>Use extremely judiciously</em>.
+     * @param serviceObject the service object
+     */
+    public void doSkip(T serviceObject);
 
     /**
      * Called by a policy when it has detected a violation or failure in the policy.  This
