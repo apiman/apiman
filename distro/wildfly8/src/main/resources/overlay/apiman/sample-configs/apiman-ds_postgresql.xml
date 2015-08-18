@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<datasources xmlns="http://www.jboss.org/ironjacamar/schema">
-  <datasource jndi-name="jdbc/ApiManagerDS" pool-name="apiman-manager-api" enabled="true" use-java-context="true">
+<datasources>
+  <datasource jndi-name="java:jboss/datasources/apiman-manager" pool-name="apiman-manager-api" enabled="true" use-java-context="true">
     <connection-url>jdbc:postgresql://POSTGRESQLSERVER:5432/apiman</connection-url>
     <driver>postgresql-9.3-1102.jdbc41.jar_org.postgresql.Driver_9_3</driver>
     <pool>
