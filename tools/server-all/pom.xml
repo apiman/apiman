@@ -100,7 +100,7 @@
                     <mkdir dir="${apiman.tempdir}" />
 
                     <!-- Download and unpack WildFly 8.2 -->
-                    <get src="${apiman.wildfly.download.url}" dest="${apiman.appserver.zip}" usetimestamp="true" />
+                    <get src="${apiman.wildfly.download.url}" dest="${apiman.appserver.zip}" usetimestamp="true" skipexisting="true" />
                     <unzip src="${apiman.appserver.zip}" dest="${apiman.install.dir}" overwrite="false" />
 
                     <!-- Overlay APIMan on top of WildFly 8.2 -->
