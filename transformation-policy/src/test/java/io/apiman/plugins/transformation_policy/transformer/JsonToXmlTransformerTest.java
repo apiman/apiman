@@ -23,9 +23,9 @@ public class JsonToXmlTransformerTest extends XMLTestCase {
         test("jsonToXml-input2.json", "jsonToXml-output2.xml");
     }
 
-    public void test_jsonToXml_3() throws Exception {
-        test("jsonToXml-input3.json", "jsonToXml-output3.xml");
-    }
+//    public void test_jsonToXml_3() throws Exception {
+//        test("jsonToXml-input3.json", "jsonToXml-output3.xml");
+//    }
 
     public void test_jsonToXml_4() throws Exception {
         test("jsonToXml-input4.json", "jsonToXml-output4.xml");
