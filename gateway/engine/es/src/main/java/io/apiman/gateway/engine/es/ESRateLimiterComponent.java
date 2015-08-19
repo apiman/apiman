@@ -158,4 +158,12 @@ public class ESRateLimiterComponent extends AbstractESComponent implements IRate
         return Base64.encodeBytes(bucketId.getBytes());
     }
 
+    /**
+     * @see io.apiman.gateway.engine.es.AbstractESComponent#getIndexName()
+     */
+    @Override
+    protected String getIndexName() {
+        return ESConstants.GATEWAY_INDEX_NAME;
+    }
+
 }

@@ -24,7 +24,7 @@ import java.util.Map;
  *
  * @author eric.wittmann@redhat.com
  */
-public class AbstractESComponent {
+public abstract class AbstractESComponent {
 
     private final Map<String, String> config;
     private JestClient esClient;
@@ -42,7 +42,7 @@ public class AbstractESComponent {
      */
     public synchronized JestClient getClient() {
         if (esClient == null) {
-            esClient = ESClientFactory.createClient(config);
+            esClient = ESClientFactory.createClient(config, getIndexName());
         }
         return esClient;
     }
@@ -50,19 +50,6 @@ public class AbstractESComponent {
     /**
      * Gets the configured index name.
      */
-    protected String getIndexName() {
-        if (config.containsKey("index")) { //$NON-NLS-1$
-            return config.get("index"); //$NON-NLS-1$
-        } else {
-            return getDefaultIndexName();
-        }
-    }
-
-    /**
-     * @return the default index name
-     */
-    protected String getDefaultIndexName() {
-        return ESConstants.INDEX_NAME;
-    }
+    protected abstract String getIndexName();
 
 }

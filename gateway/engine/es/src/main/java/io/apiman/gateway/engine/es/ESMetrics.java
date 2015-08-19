@@ -79,10 +79,10 @@ public class ESMetrics extends AbstractESComponent implements IMetrics {
     }
 
     /**
-     * @see io.apiman.gateway.engine.es.AbstractESComponent#getDefaultIndexName()
+     * @see io.apiman.gateway.engine.es.AbstractESComponent#getIndexName()
      */
     @Override
-    protected String getDefaultIndexName() {
+    protected String getIndexName() {
         return ESConstants.METRICS_INDEX_NAME;
     }
 

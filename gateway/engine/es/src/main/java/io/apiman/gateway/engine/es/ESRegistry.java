@@ -476,4 +476,12 @@ public class ESRegistry extends AbstractESComponent implements IRegistry {
         return contract.getApiKey();
     }
 
+    /**
+     * @see io.apiman.gateway.engine.es.AbstractESComponent#getIndexName()
+     */
+    @Override
+    protected String getIndexName() {
+        return ESConstants.GATEWAY_INDEX_NAME;
+    }
+
 }
