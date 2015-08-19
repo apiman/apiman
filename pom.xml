@@ -81,7 +81,7 @@
     <version.org.keycloak>1.2.0.CR1</version.org.keycloak>
     <version.org.bouncycastle>1.51</version.org.bouncycastle>
     <version.net.iharder>2.3.8</version.net.iharder>
-    <version.org.json>20140107</version.org.json>
+    <version.org.json>20141113</version.org.json>
 
     <!-- Distribution URLs -->
     <jboss.releases.repo.url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</jboss.releases.repo.url>
