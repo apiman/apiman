@@ -74,14 +74,15 @@ public class CorsPolicy extends AbstractMappedPolicy<CorsConfigBean> {
                         return corsConnector;
                     }
                 });
+                chain.doSkip(request);
             } else {
                 setResponseHeaders(context, corsConnector.getResponseHeaders());
-            }
 
-            if (corsConnector.isFailure()) {
-                chain.doFailure(corsConnector.getFailure());
-            } else { // We want to hit the response chain immediately (i.e. avoid auth policies)
-                chain.doSkip(request);
+                if (corsConnector.isFailure()) {
+                    chain.doFailure(corsConnector.getFailure());
+                } else {
+                    chain.doApply(request);
+                }
             }
         } else {
             chain.doApply(request);
