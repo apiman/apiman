@@ -162,7 +162,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
         request.source(source);
         JestResult response = esClient.execute(new CreateIndex.Builder(indexName).settings(source).build());
         if (!response.isSucceeded()) {
-            throw new StorageException("Failed to create index: " + indexName); //$NON-NLS-1$
+            throw new StorageException("Failed to create index " + indexName + ": " + response.getErrorMessage()); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 
@@ -1741,7 +1741,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
             JestResult response = esClient.execute(new Index.Builder(json).refresh(refresh).index(INDEX_NAME)
                     .setParameter(Parameters.OP_TYPE, "create").type(type).id(id).build());
             if (!response.isSucceeded()) {
-                throw new StorageException("Failed to index document " + id + " of type " + type + ".");
+                throw new StorageException("Failed to index document " + id + " of type " + type + ": " + response.getErrorMessage());
             }
         } catch (StorageException e) {
             throw e;
@@ -1798,7 +1798,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
         try {
             JestResult response = esClient.execute(new Delete.Builder(id).index(INDEX_NAME).type(type).build());
             if (!response.isSucceeded()) {
-                throw new StorageException("Document could not be deleted because it did not exist."); //$NON-NLS-1$
+                throw new StorageException("Document could not be deleted because it did not exist:" + response.getErrorMessage()); //$NON-NLS-1$
             }
         } catch (StorageException e) {
             throw e;
