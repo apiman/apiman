@@ -191,4 +191,12 @@ public class ESSharedStateComponent extends AbstractESComponent implements IShar
         }
     }
 
+    /**
+     * @see io.apiman.gateway.engine.es.AbstractESComponent#getIndexName()
+     */
+    @Override
+    protected String getIndexName() {
+        return ESConstants.GATEWAY_INDEX_NAME;
+    }
+
 }

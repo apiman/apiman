@@ -53,18 +53,19 @@ public class ESClientFactory {
     /**
      * Creates a client from information in the config map.
      * @param config the configuration
+     * @param indexName the index to use
      * @return the ES client
      */
-    public static JestClient createClient(Map<String, String> config) {
+    public static JestClient createClient(Map<String, String> config, String indexName) {
         JestClient client = null;
         String clientType = config.get("client.type"); //$NON-NLS-1$
         if (clientType == null) {
             clientType = "jest"; //$NON-NLS-1$
         }
         if ("jest".equals(clientType)) { //$NON-NLS-1$
-            client = createJestClient(config);
+            client = createJestClient(config, indexName);
         } else if ("local".equals(clientType)) { //$NON-NLS-1$
-            client = createLocalClient(config);
+            client = createLocalClient(config, indexName);
         } else {
             throw new RuntimeException("Invalid elasticsearch client type: " + clientType); //$NON-NLS-1$
         }
@@ -74,13 +75,13 @@ public class ESClientFactory {
     /**
      * Creates a transport client from a configuration map.
      * @param config the configuration
+     * @param indexName the name of the index
      * @return the ES client
      */
-    public static JestClient createJestClient(Map<String, String> config) {
+    public static JestClient createJestClient(Map<String, String> config, String indexName) {
         String host = config.get("client.host"); //$NON-NLS-1$
         String port = config.get("client.port"); //$NON-NLS-1$
         String protocol = config.get("client.protocol"); //$NON-NLS-1$
-        String indexName = config.get("client.index"); //$NON-NLS-1$
         String initialize = config.get("client.initialize"); //$NON-NLS-1$
         if (initialize == null) {
             initialize = "true"; //$NON-NLS-1$
@@ -96,9 +97,6 @@ public class ESClientFactory {
         }
         if (StringUtils.isBlank(protocol)) {
             protocol = "http"; //$NON-NLS-1$
-        }
-        if (StringUtils.isBlank(indexName)) {
-            indexName = ESConstants.INDEX_NAME;
         }
         return createJestClient(protocol, host, Integer.parseInt(port), indexName, username, password,
                 "true".equals(initialize)); //$NON-NLS-1$
@@ -129,7 +127,7 @@ public class ESClientFactory {
 
                 JestClientFactory factory = new JestClientFactory();
                 Builder httpClientConfig = new HttpClientConfig.Builder(connectionUrl).multiThreaded(true);
-                if (username != null && password != null) {
+                if (!StringUtils.isBlank(username)) {
                     httpClientConfig.defaultCredentials(username, password);
                 }
                 factory.setHttpClientConfig(httpClientConfig.build());
@@ -145,13 +143,14 @@ public class ESClientFactory {
 
     /**
      * Creates a local client from a configuration map.
-     * @param config the configuration
+     * @param config the config from apiman.properties
+     * @param indexName the name of the ES index
      * @return the ES client
      */
-    public static JestClient createLocalClient(Map<String, String> config) {
+    public static JestClient createLocalClient(Map<String, String> config, String indexName) {
         String clientLocClassName = config.get("client.class"); //$NON-NLS-1$
         String clientLocFieldName = config.get("client.field"); //$NON-NLS-1$
-        return createLocalClient(clientLocClassName, clientLocFieldName);
+        return createLocalClient(clientLocClassName, clientLocFieldName, indexName);
     }
 
     /**
@@ -159,9 +158,10 @@ public class ESClientFactory {
      * testing.
      * @param className the class name
      * @param fieldName the field name
+     * @param indexName the name of the ES index
      * @return the ES client
      */
-    public static JestClient createLocalClient(String className, String fieldName) {
+    public static JestClient createLocalClient(String className, String fieldName, String indexName) {
         String clientKey = "local:" + className + '/' + fieldName; //$NON-NLS-1$
         synchronized (clients) {
             if (clients.containsKey(clientKey)) {
@@ -172,7 +172,7 @@ public class ESClientFactory {
                     Field field = clientLocClass.getField(fieldName);
                     JestClient client = (JestClient) field.get(null);
                     clients.put(clientKey, client);
-                    initializeClient(client, ESConstants.INDEX_NAME);
+                    initializeClient(client, indexName);
                     return client;
                 } catch (ClassNotFoundException | NoSuchFieldException | SecurityException
                         | IllegalArgumentException | IllegalAccessException e) {
