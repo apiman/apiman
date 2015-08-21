@@ -15,6 +15,15 @@
  */
 package io.apiman.gateway.platforms.vertx3.connector;
 
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
 import io.apiman.common.config.options.BasicAuthOptions;
 import io.apiman.common.config.options.TLSOptions;
 import io.apiman.common.util.Basic;
@@ -36,6 +45,7 @@ import io.apiman.gateway.platforms.vertx3.http.HttpServiceFactory;
 import io.apiman.gateway.platforms.vertx3.i18n.Messages;
 import io.apiman.gateway.platforms.vertx3.io.VertxApimanBuffer;
 import io.vertx.core.Handler;
+import io.vertx.core.MultiMap;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpClient;
@@ -45,15 +55,6 @@ import io.vertx.core.http.HttpClientResponse;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 /**
  * A vert.x-based HTTP connector; implementing both {@link ISignalReadStream} and {@link ISignalWriteStream}.
@@ -72,6 +73,7 @@ class HttpConnector implements IServiceConnectionResponse, IServiceConnection {
         SUPPRESSED_HEADERS.add("Transfer-Encoding");
         SUPPRESSED_HEADERS.add("Content-Length");
         SUPPRESSED_HEADERS.add("X-API-Key");
+        SUPPRESSED_HEADERS.add("Host");
     }
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -100,6 +102,8 @@ class HttpConnector implements IServiceConnectionResponse, IServiceConnection {
     private HttpClientRequest clientRequest;
     private HttpClientResponse clientResponse;
 
+    private URL serviceEndpoint;
+
     /**
      * Construct an {@link HttpConnector} instance. The {@link #resultHandler} must remain exclusive to a
      * given instance.
@@ -119,11 +123,11 @@ class HttpConnector implements IServiceConnectionResponse, IServiceConnection {
        this.resultHandler = resultHandler;
        this.exceptionHandler = new ExceptionHandler();
 
-       URL serviceEndpoint = parseServiceEndpoint(service);
+       serviceEndpoint = parseServiceEndpoint(service);
 
        isHttps = serviceEndpoint.getProtocol().equals("https");
        serviceHost = serviceEndpoint.getHost();
-       servicePort = getPort(serviceEndpoint);
+       servicePort = getPort();
        servicePath = serviceEndpoint.getPath().isEmpty() || serviceEndpoint.getPath().equals("/") ? "" : serviceEndpoint.getPath();
        destination = serviceRequest.getDestination() == null ? "/" : serviceRequest.getDestination();
 
@@ -133,7 +137,7 @@ class HttpConnector implements IServiceConnectionResponse, IServiceConnection {
        doConnection();
     }
 
-    private int getPort(URL serviceEndpoint) {
+    private int getPort() {
         if (serviceEndpoint.getPort() != -1)
             return serviceEndpoint.getPort();
 
@@ -195,10 +199,16 @@ class HttpConnector implements IServiceConnectionResponse, IServiceConnection {
         clientRequest.exceptionHandler(exceptionHandler);
         clientRequest.setChunked(true);
         clientRequest.headers().addAll(serviceRequest.getHeaders());
+        addMandatoryRequestHeaders(clientRequest.headers());
 
         if (authType == RequiredAuthType.BASIC) {
             clientRequest.putHeader("Authorization", Basic.encode(basicOptions.getUsername(), basicOptions.getPassword()));
         }
+    }
+
+    private void addMandatoryRequestHeaders(MultiMap headers) {
+        String port = serviceEndpoint.getPort() == -1 ? "" : ":" + serviceEndpoint.getPort();
+        headers.add("Host", serviceEndpoint.getHost() + port);
     }
 
     @Override
