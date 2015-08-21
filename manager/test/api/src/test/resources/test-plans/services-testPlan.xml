@@ -11,14 +11,14 @@
   <!-- Test Service management -->
   <testGroup name="Service Management">
     <test name="Create Service 1">test-plan-data/services/svcs/001_create-service1.resttest</test>
-    <test name="Get Service 1">test-plan-data/services/svcs/002_get-service1.resttest</test>
+    <test name="Get Service 1 [1]">test-plan-data/services/svcs/002_get-service1.resttest</test>
     <test name="Get Missing Svc">test-plan-data/services/svcs/003_get-missing-service.resttest</test>
     <test name="Create Service 2">test-plan-data/services/svcs/004_create-service2.resttest</test>
     <test name="Search Svcs">test-plan-data/services/svcs/005_search-services.resttest</test>
     <test name="Update Svc 1">test-plan-data/services/svcs/006_update-service1.resttest</test>
-    <test name="Get Service 1 (updated)">test-plan-data/services/svcs/007_get-service1.resttest</test>
+    <test name="Get Service 1 [2]">test-plan-data/services/svcs/007_get-service1.resttest</test>
     <test name="Create Service 1 (Org 2)">test-plan-data/services/svcs/008_create-service1-org2.resttest</test>
-    <test name="Get Service 1">test-plan-data/services/svcs/009_get-service1.resttest</test>
+    <test name="Get Service 1 [3]">test-plan-data/services/svcs/009_get-service1.resttest</test>
     <test name="Get Service 1 (Org 2)">test-plan-data/services/svcs/010_get-service1-org2.resttest</test>
     <test name="List Services">test-plan-data/services/svcs/011_list-services.resttest</test>
     <test name="Create Service (invalid name)">test-plan-data/services/svcs/012_create-invalid-name.resttest</test>
@@ -30,7 +30,7 @@
     <test name="Get Service Version 1.0">test-plan-data/services/versions/002_get-version-1.0.resttest</test>
     <test name="Get Missing Service Version">test-plan-data/services/versions/003_get-version-missing.resttest</test>
     <test name="Create Service Version 2.0">test-plan-data/services/versions/004_create-version-2.0.resttest</test>
-    <test name="List All Versions">test-plan-data/services/versions/005_list-versions.resttest</test>
+    <test name="List All Versions [1]">test-plan-data/services/versions/005_list-versions.resttest</test>
     <test name="Update Version 1.0">test-plan-data/services/versions/006_update-version-1.0.resttest</test>
     <test name="Get Version 1.0 (updated)">test-plan-data/services/versions/007_get-version-1.0.resttest</test>
     <test name="Create Service Version (invalid)">test-plan-data/services/versions/008_create-version-invalid.resttest</test>
@@ -63,10 +63,10 @@
     <test name="Create Policy 1">test-plan-data/services/policies/001_create-policy1.resttest</test>
     <test name="Get Policy 1">test-plan-data/services/policies/002_get-policy1.resttest</test>
     <test name="Create Policy 2">test-plan-data/services/policies/003_create-policy2.resttest</test>
-    <test name="List Policies">test-plan-data/services/policies/004_list-policies.resttest</test>
+    <test name="List Policies [1]">test-plan-data/services/policies/004_list-policies.resttest</test>
     <test name="Update Policy 1">test-plan-data/services/policies/005_update-policy1.resttest</test>
     <test name="Delete Policy 2">test-plan-data/services/policies/006_delete-policy2.resttest</test>
-    <test name="List Policies">test-plan-data/services/policies/007_list-policies.resttest</test>
+    <test name="List Policies [2]">test-plan-data/services/policies/007_list-policies.resttest</test>
   </testGroup>
 
   <!-- Publishing -->
@@ -97,10 +97,10 @@
   <testGroup name="Test Cloning">
     <test name="Add Service Definition to 1.0">test-plan-data/services/cloning/000_add-service-definition-1.0.resttest</test>
     <test name="Clone 1.0 --> 2.1">test-plan-data/services/cloning/001_clone-version-2.1.resttest</test>
-    <test name="List All Versions">test-plan-data/services/cloning/002_list-versions.resttest</test>
+    <test name="List All Versions [2]">test-plan-data/services/cloning/002_list-versions.resttest</test>
     <test name="Get Version 2.1">test-plan-data/services/cloning/003_get-version-2.1.resttest</test>
-    <test name="List Policies">test-plan-data/services/cloning/004_list-policies.resttest</test>
-    <test name="List Policies">test-plan-data/services/cloning/005_get-cloned-service-definition.resttest</test>
+    <test name="List Policies [3]">test-plan-data/services/cloning/004_list-policies.resttest</test>
+    <test name="List Policies [4]">test-plan-data/services/cloning/005_get-cloned-service-definition.resttest</test>
   </testGroup>
 
 </testPlan>

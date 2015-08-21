@@ -12,16 +12,16 @@
 
   <!-- Test Memberships -->
   <testGroup name="Member Management">
-    <test name="Get Org 1 Members (one)">test-plan-data/members/manage/001_get-members.resttest</test>
+    <test name="Get Org 1 Members [1]">test-plan-data/members/manage/001_get-members.resttest</test>
     <test name="Grant user1 app dev role">test-plan-data/members/manage/002_grant-user1-app.resttest</test>
-    <test name="Get Org 1 Members (two)">test-plan-data/members/manage/003_get-members.resttest</test>
+    <test name="Get Org 1 Members [2]">test-plan-data/members/manage/003_get-members.resttest</test>
     <test name="Grant user1 svc dev role">test-plan-data/members/manage/004_grant-user1-service.resttest</test>
     <test name="Grant user2 svc dev role">test-plan-data/members/manage/005_grant-user2-service.resttest</test>
-    <test name="Get Org 1 Members (three)">test-plan-data/members/manage/006_get-members.resttest</test>
+    <test name="Get Org 1 Members [3]">test-plan-data/members/manage/006_get-members.resttest</test>
     <test name="Revoke user2 role">test-plan-data/members/manage/007_revoke-user2.resttest</test>
-    <test name="Get Org 1 Members (two)">test-plan-data/members/manage/008_get-members.resttest</test>
+    <test name="Get Org 1 Members [4]">test-plan-data/members/manage/008_get-members.resttest</test>
     <test name="Revoke all user1 roles">test-plan-data/members/manage/009_revoke-user1-all.resttest</test>
-    <test name="Get Org 1 Members (one)">test-plan-data/members/manage/010_get-members.resttest</test>
+    <test name="Get Org 1 Members [5]">test-plan-data/members/manage/010_get-members.resttest</test>
   </testGroup>
 
   <!-- Make sure auditing is working properly -->

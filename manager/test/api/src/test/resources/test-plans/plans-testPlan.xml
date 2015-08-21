@@ -10,13 +10,13 @@
   <!-- Test Plan management -->
   <testGroup name="Plan Management">
     <test name="Create Plan 1">test-plan-data/plans/plans/001_create-plan1.resttest</test>
-    <test name="Get Plan 1">test-plan-data/plans/plans/002_get-plan1.resttest</test>
+    <test name="Get Plan 1 [1]">test-plan-data/plans/plans/002_get-plan1.resttest</test>
     <test name="Get Missing App">test-plan-data/plans/plans/003_get-missing-plan.resttest</test>
     <test name="Create Plan 2">test-plan-data/plans/plans/004_create-plan2.resttest</test>
     <test name="Update App 1">test-plan-data/plans/plans/006_update-plan1.resttest</test>
-    <test name="Get Plan 1 (updated)">test-plan-data/plans/plans/007_get-plan1.resttest</test>
+    <test name="Get Plan 1 [2]">test-plan-data/plans/plans/007_get-plan1.resttest</test>
     <test name="Create Plan 1 (Org 2)">test-plan-data/plans/plans/008_create-plan1-org2.resttest</test>
-    <test name="Get Plan 1">test-plan-data/plans/plans/009_get-plan1.resttest</test>
+    <test name="Get Plan 1 [3]">test-plan-data/plans/plans/009_get-plan1.resttest</test>
     <test name="Get Plan 1 (Org 2)">test-plan-data/plans/plans/010_get-plan1-org2.resttest</test>
     <test name="List Plan">test-plan-data/plans/plans/011_list-plans.resttest</test>
     <test name="Create Plan (invalid name)">test-plan-data/plans/plans/012_create-invalid-name.resttest</test>
@@ -28,7 +28,7 @@
     <test name="Get Plan Version 1.0">test-plan-data/plans/versions/002_get-version-1.0.resttest</test>
     <test name="Get Missing Plan Version">test-plan-data/plans/versions/003_get-version-missing.resttest</test>
     <test name="Create Plan Version 2.0">test-plan-data/plans/versions/004_create-version-2.0.resttest</test>
-    <test name="List All Versions">test-plan-data/plans/versions/005_list-versions.resttest</test>
+    <test name="List All Versions [1]">test-plan-data/plans/versions/005_list-versions.resttest</test>
     <test name="Get Version 1.0 (updated)">test-plan-data/plans/versions/007_get-version-1.0.resttest</test>
     <test name="Create Plan Version (invalid)">test-plan-data/plans/versions/008_create-version-invalid.resttest</test>
     <test name="Create Plan Version (duplicate)">test-plan-data/plans/versions/009_create-version-duplicate.resttest</test>
@@ -40,10 +40,10 @@
     <test name="Create Policy 1">test-plan-data/plans/policies/001_create-policy1.resttest</test>
     <test name="Get Policy 1">test-plan-data/plans/policies/002_get-policy1.resttest</test>
     <test name="Create Policy 2">test-plan-data/plans/policies/003_create-policy2.resttest</test>
-    <test name="List Policies">test-plan-data/plans/policies/004_list-policies.resttest</test>
+    <test name="List Policies [1]">test-plan-data/plans/policies/004_list-policies.resttest</test>
     <test name="Update Policy 1">test-plan-data/plans/policies/005_update-policy1.resttest</test>
     <test name="Delete Policy 2">test-plan-data/plans/policies/006_delete-policy2.resttest</test>
-    <test name="List Policies">test-plan-data/plans/policies/007_list-policies.resttest</test>
+    <test name="List Policies [2]">test-plan-data/plans/policies/007_list-policies.resttest</test>
   </testGroup>
 
   <!-- Auditing -->
@@ -55,9 +55,9 @@
   <!-- Cloning -->
   <testGroup name="Test Cloning">
     <test name="Clone 2.0 --> 2.1">test-plan-data/plans/cloning/001_clone-version-2.1.resttest</test>
-    <test name="List All Versions">test-plan-data/plans/cloning/002_list-versions.resttest</test>
+    <test name="List All Versions [2]">test-plan-data/plans/cloning/002_list-versions.resttest</test>
     <test name="Get Version 2.1">test-plan-data/plans/cloning/003_get-version-2.1.resttest</test>
-    <test name="List Policies">test-plan-data/plans/cloning/004_list-policies.resttest</test>
+    <test name="List Policies [3]">test-plan-data/plans/cloning/004_list-policies.resttest</test>
   </testGroup>
 
 </testPlan>

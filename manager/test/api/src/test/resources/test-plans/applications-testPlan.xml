@@ -10,14 +10,14 @@
   <!-- Test Application management -->
   <testGroup name="Application Management">
     <test name="Create Application 1">test-plan-data/applications/apps/001_create-app1.resttest</test>
-    <test name="Get Application 1">test-plan-data/applications/apps/002_get-app1.resttest</test>
+    <test name="Get Application 1 [1]">test-plan-data/applications/apps/002_get-app1.resttest</test>
     <test name="Get Missing App">test-plan-data/applications/apps/003_get-missing-app.resttest</test>
     <test name="Create Application 2">test-plan-data/applications/apps/004_create-app2.resttest</test>
     <test name="Search Apps">test-plan-data/applications/apps/005_search-apps.resttest</test>
     <test name="Update App 1">test-plan-data/applications/apps/006_update-app1.resttest</test>
-    <test name="Get Application 1 (updated)">test-plan-data/applications/apps/007_get-app1.resttest</test>
+    <test name="Get Application 1 [2]">test-plan-data/applications/apps/007_get-app1.resttest</test>
     <test name="Create Application 1 (Org 2)">test-plan-data/applications/apps/008_create-app1-org2.resttest</test>
-    <test name="Get Application 1">test-plan-data/applications/apps/009_get-app1.resttest</test>
+    <test name="Get Application 1 [3]">test-plan-data/applications/apps/009_get-app1.resttest</test>
     <test name="Get Application 1 (Org 2)">test-plan-data/applications/apps/010_get-app1-org2.resttest</test>
     <test name="List Application">test-plan-data/applications/apps/011_list-apps.resttest</test>
     <test name="Create Application (invalid name)">test-plan-data/applications/apps/012_create-invalid-name.resttest</test>
@@ -29,7 +29,7 @@
     <test name="Get Application Version 1.0">test-plan-data/applications/versions/002_get-version-1.0.resttest</test>
     <test name="Get Missing Application Version">test-plan-data/applications/versions/003_get-version-missing.resttest</test>
     <test name="Create Application Version 2.0">test-plan-data/applications/versions/004_create-version-2.0.resttest</test>
-    <test name="List All Versions">test-plan-data/applications/versions/005_list-versions.resttest</test>
+    <test name="List All Versions [1]">test-plan-data/applications/versions/005_list-versions.resttest</test>
     <test name="Get Version 1.0 (updated)">test-plan-data/applications/versions/007_get-version-1.0.resttest</test>
     <test name="Create Application Version (invalid)">test-plan-data/applications/versions/008_create-version-invalid.resttest</test>
     <test name="Create Application Version (duplicate)">test-plan-data/applications/versions/009_create-version-duplicate.resttest</test>
@@ -41,10 +41,10 @@
     <test name="Create Policy 1">test-plan-data/applications/policies/001_create-policy1.resttest</test>
     <test name="Get Policy 1">test-plan-data/applications/policies/002_get-policy1.resttest</test>
     <test name="Create Policy 2">test-plan-data/applications/policies/003_create-policy2.resttest</test>
-    <test name="List Policies">test-plan-data/applications/policies/004_list-policies.resttest</test>
+    <test name="List Policies [1]">test-plan-data/applications/policies/004_list-policies.resttest</test>
     <test name="Update Policy 1">test-plan-data/applications/policies/005_update-policy1.resttest</test>
     <test name="Delete Policy 2">test-plan-data/applications/policies/006_delete-policy2.resttest</test>
-    <test name="List Policies">test-plan-data/applications/policies/007_list-policies.resttest</test>
+    <test name="List Policies [2]">test-plan-data/applications/policies/007_list-policies.resttest</test>
   </testGroup>
 
   <!-- Auditing -->
@@ -56,9 +56,9 @@
   <!-- Cloning -->
   <testGroup name="Test Cloning">
     <test name="Clone 2.0 --> 2.1">test-plan-data/applications/cloning/001_clone-version-2.1.resttest</test>
-    <test name="List All Versions">test-plan-data/applications/cloning/002_list-versions.resttest</test>
+    <test name="List All Versions [2]">test-plan-data/applications/cloning/002_list-versions.resttest</test>
     <test name="Get Version 2.1">test-plan-data/applications/cloning/003_get-version-2.1.resttest</test>
-    <test name="List Policies">test-plan-data/applications/cloning/004_list-policies.resttest</test>
+    <test name="List Policies [3]">test-plan-data/applications/cloning/004_list-policies.resttest</test>
   </testGroup>
 
 </testPlan>
