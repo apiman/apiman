@@ -14,11 +14,11 @@ both are downloaded, it's a simple matter of unpacking both into the same locati
 First you will need to download both WildFly 8 and apiman:
 
 * http://download.jboss.org/wildfly/8.2.0.Final/wildfly-8.2.0.Final.zip[Download WildFly 8]
-* http://downloads.jboss.org/apiman/1.1.6.Final/apiman-distro-wildfly8-1.1.6.Final-overlay.zip[Download apiman 1.1.6.Final]
+* http://downloads.jboss.org/apiman/1.1.7.Final/apiman-distro-wildfly8-1.1.7.Final-overlay.zip[Download apiman 1.1.7.Final]
 
 ....
 curl http://download.jboss.org/wildfly/8.2.0.Final/wildfly-8.2.0.Final.zip -o wildfly-8.2.0.Final.zip
-curl http://downloads.jboss.org/apiman/1.1.6.Final/apiman-distro-wildfly8-1.1.6.Final-overlay.zip -o apiman-distro-wildfly8-1.1.6.Final-overlay.zip
+curl http://downloads.jboss.org/apiman/1.1.7.Final/apiman-distro-wildfly8-1.1.7.Final-overlay.zip -o apiman-distro-wildfly8-1.1.7.Final-overlay.zip
 ....
 
 ==== Unpack
@@ -26,7 +26,7 @@ Once both files have been downloaded, simply unpack both in the same location.
 
 ....
 unzip wildfly-8.2.0.Final.zip
-unzip -o apiman-distro-wildfly8-1.1.6.Final-overlay.zip -d wildfly-8.2.0.Final
+unzip -o apiman-distro-wildfly8-1.1.7.Final-overlay.zip -d wildfly-8.2.0.Final
 ....
 
 ==== Run WildFly 8
