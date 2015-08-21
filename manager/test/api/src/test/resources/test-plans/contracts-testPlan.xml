@@ -38,9 +38,9 @@
     <test name="Publish Service 2">test-plan-data/contracts/publish/002_publish-service-2.resttest</test>
 
     <test name="Create Contract to Service 1">test-plan-data/contracts/contracts/003_create-contract1.resttest</test>
-    <test name="List Contracts for App 1">test-plan-data/contracts/contracts/004_get-contracts.resttest</test>
+    <test name="List Contracts for App 1 [1]">test-plan-data/contracts/contracts/004_get-contracts.resttest</test>
     <test name="Create Contract to Service 2">test-plan-data/contracts/contracts/005_create-contract2.resttest</test>
-    <test name="List Contracts for App 1">test-plan-data/contracts/contracts/006_get-contracts.resttest</test>
+    <test name="List Contracts for App 1 [2]">test-plan-data/contracts/contracts/006_get-contracts.resttest</test>
     <test name="List ApiRegistry for App 1 (JSON)">test-plan-data/contracts/contracts/007_get-apiregistry_json.resttest</test>
     <test name="List ApiRegistry for App 1 (XML)">test-plan-data/contracts/contracts/007_get-apiregistry_xml.resttest</test>
     <test name="Create Duplicate Contract (failure)">test-plan-data/contracts/contracts/007.5_create-duplicate-contract.resttest</test>

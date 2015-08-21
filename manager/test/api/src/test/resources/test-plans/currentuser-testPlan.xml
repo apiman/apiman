@@ -17,7 +17,7 @@
     <test name="My Orgs (user1)">test-plan-data/currentuser/orgs/002_my-orgs-user1.resttest</test>
     <test name="My Orgs (user2)">test-plan-data/currentuser/orgs/003_my-orgs-user2.resttest</test>
     <test name="Grant Access to Org2 (user1)">test-plan-data/currentuser/orgs/004_grant-org2.resttest</test>
-    <test name="My Orgs (user1)">test-plan-data/currentuser/orgs/005_my-orgs-user1.resttest</test>
+    <test name="My Orgs (user1) Repeat">test-plan-data/currentuser/orgs/005_my-orgs-user1.resttest</test>
     <test name="Someone Else's Orgs (user1)">test-plan-data/currentuser/orgs/006_other-orgs-user1.resttest</test>
   </testGroup>
 

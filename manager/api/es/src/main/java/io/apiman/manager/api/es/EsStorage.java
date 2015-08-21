@@ -359,7 +359,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     @Override
     public void createPlugin(PluginBean plugin) throws StorageException {
         plugin.setId(generateGuid());
-        indexEntity("plugin", String.valueOf(plugin.getId()), EsMarshalling.marshall(plugin)); //$NON-NLS-1$
+        indexEntity("plugin", String.valueOf(plugin.getId()), EsMarshalling.marshall(plugin), true); //$NON-NLS-1$
     }
 
     /**
@@ -1546,7 +1546,7 @@ public class EsStorage implements IStorage, IStorageQuery, IIdmStorage {
     public void createMembership(RoleMembershipBean membership) throws StorageException {
         membership.setId(generateGuid());
         String id = id(membership.getOrganizationId(), membership.getUserId(), membership.getRoleId());
-        indexEntity("roleMembership", id, EsMarshalling.marshall(membership)); //$NON-NLS-1$
+        indexEntity("roleMembership", id, EsMarshalling.marshall(membership), true); //$NON-NLS-1$
     }
 
     /**

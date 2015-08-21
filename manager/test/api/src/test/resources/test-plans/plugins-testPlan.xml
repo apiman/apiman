@@ -6,10 +6,10 @@
     <test name="Plugin 1">test-plan-data/plugins/001_create-1_1.0.resttest</test>
     <test name="Plugin 2">test-plan-data/plugins/002_create-2.resttest</test>
     <test name="Get Plugin 1">test-plan-data/plugins/003_get-1.resttest</test>
-    <test name="List All Plugins">test-plan-data/plugins/004_list-all.resttest</test>
+    <test name="List All Plugins [1]">test-plan-data/plugins/004_list-all.resttest</test>
     <test name="Delete Plugin 1">test-plan-data/plugins/005_delete-1.resttest</test>
     <test name="Plugin 1, 2.0">test-plan-data/plugins/006_create-1_2.0.resttest</test>
-    <test name="List All Plugins">test-plan-data/plugins/007_list-all.resttest</test>
+    <test name="List All Plugins [2]">test-plan-data/plugins/007_list-all.resttest</test>
   </testGroup>
 
   <testGroup name="Plugin Management - Auto-Deploy Policy Defs">
