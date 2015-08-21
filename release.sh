@@ -28,6 +28,16 @@ echo "Release Version: $RELEASE_VERSION"
 echo "Dev Version: $DEV_VERSION"
 echo "######################################"
 
+rm -rf ~/.m2/repository/io/apiman/plugins
+mvn clean install
+STATUS=$?
+if [ $STATUS -eq 0 ]; then
+  echo "Build success!"
+else
+  echo "Build failed!"
+  exit 1
+fi
+
 mvn versions:set -DnewVersion=$RELEASE_VERSION
 find . -name '*.versionsBackup' -exec rm -f {} \;
 git add .
