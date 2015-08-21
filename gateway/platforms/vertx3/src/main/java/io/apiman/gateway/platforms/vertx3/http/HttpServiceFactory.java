@@ -15,6 +15,11 @@
  */
 package io.apiman.gateway.platforms.vertx3.http;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import io.apiman.common.util.ApimanPathUtils;
 import io.apiman.common.util.ApimanPathUtils.ServiceRequestPathInfo;
 import io.apiman.gateway.platforms.vertx3.io.VertxServiceRequest;
@@ -23,11 +28,6 @@ import io.vertx.core.MultiMap;
 import io.vertx.core.http.HttpClientResponse;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
-
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Construct {@link VertxServiceRequest} and {@link VertxServiceResponse} objects from {@link HttpServerRequest},
@@ -41,6 +41,7 @@ public class HttpServiceFactory {
     final static Set<String> IGNORESET = new HashSet<>();
     static {
         IGNORESET.add(ApimanPathUtils.X_API_VERSION_HEADER);
+        IGNORESET.add("Host");
     }
 
     public static VertxServiceResponse buildResponse(HttpClientResponse response, Set<String> suppressHeaders) {
