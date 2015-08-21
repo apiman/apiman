@@ -15,23 +15,6 @@
  */
 package io.apiman.gateway.platforms.servlet.connectors;
 
-import io.apiman.common.config.options.BasicAuthOptions;
-import io.apiman.gateway.engine.IServiceConnection;
-import io.apiman.gateway.engine.IServiceConnectionResponse;
-import io.apiman.gateway.engine.async.AsyncResultImpl;
-import io.apiman.gateway.engine.async.IAsyncHandler;
-import io.apiman.gateway.engine.async.IAsyncResultHandler;
-import io.apiman.gateway.engine.auth.RequiredAuthType;
-import io.apiman.gateway.engine.beans.Service;
-import io.apiman.gateway.engine.beans.ServiceRequest;
-import io.apiman.gateway.engine.beans.ServiceResponse;
-import io.apiman.gateway.engine.beans.exceptions.ConnectorException;
-import io.apiman.gateway.engine.io.ByteBuffer;
-import io.apiman.gateway.engine.io.IApimanBuffer;
-import io.apiman.gateway.platforms.servlet.GatewayThreadContext;
-import io.apiman.gateway.platforms.servlet.connectors.ok.OkUrlFactory;
-import io.apiman.gateway.platforms.servlet.connectors.ssl.SSLSessionStrategy;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -64,6 +47,23 @@ import com.squareup.okhttp.internal.Network;
 import com.squareup.okhttp.internal.Util;
 import com.squareup.okhttp.internal.http.AuthenticatorAdapter;
 
+import io.apiman.common.config.options.BasicAuthOptions;
+import io.apiman.gateway.engine.IServiceConnection;
+import io.apiman.gateway.engine.IServiceConnectionResponse;
+import io.apiman.gateway.engine.async.AsyncResultImpl;
+import io.apiman.gateway.engine.async.IAsyncHandler;
+import io.apiman.gateway.engine.async.IAsyncResultHandler;
+import io.apiman.gateway.engine.auth.RequiredAuthType;
+import io.apiman.gateway.engine.beans.Service;
+import io.apiman.gateway.engine.beans.ServiceRequest;
+import io.apiman.gateway.engine.beans.ServiceResponse;
+import io.apiman.gateway.engine.beans.exceptions.ConnectorException;
+import io.apiman.gateway.engine.io.ByteBuffer;
+import io.apiman.gateway.engine.io.IApimanBuffer;
+import io.apiman.gateway.platforms.servlet.GatewayThreadContext;
+import io.apiman.gateway.platforms.servlet.connectors.ok.OkUrlFactory;
+import io.apiman.gateway.platforms.servlet.connectors.ssl.SSLSessionStrategy;
+
 /**
  * Models a live connection to a back end service.
  *
@@ -76,6 +76,7 @@ public class HttpServiceConnection implements IServiceConnection, IServiceConnec
         SUPPRESSED_HEADERS.add("Transfer-Encoding"); //$NON-NLS-1$
         SUPPRESSED_HEADERS.add("Content-Length"); //$NON-NLS-1$
         SUPPRESSED_HEADERS.add("X-API-Key"); //$NON-NLS-1$
+        SUPPRESSED_HEADERS.add("Host"); //$NON-NLS-1$
     }
 
     private static final OkHttpClient okClient;
@@ -214,6 +215,8 @@ public class HttpServiceConnection implements IServiceConnection, IServiceConnec
                 }
             }
 
+            // Set or reset mandatory headers
+            connection.setRequestProperty("Host", url.getHost() + determinePort(url)); //$NON-NLS-1$
             connection.connect();
             connected = true;
         } catch (IOException e) {
@@ -221,6 +224,9 @@ public class HttpServiceConnection implements IServiceConnection, IServiceConnec
         }
     }
 
+    private String determinePort(URL url) {
+        return (url.getPort() == -1) ? "" : ":" + url.getPort();
+    }
     /**
      * @see io.apiman.gateway.engine.io.IReadStream#bodyHandler(io.apiman.gateway.engine.async.IAsyncHandler)
      */
