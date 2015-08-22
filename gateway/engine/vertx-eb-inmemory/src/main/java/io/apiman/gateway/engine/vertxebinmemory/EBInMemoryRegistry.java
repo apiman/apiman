@@ -28,7 +28,7 @@ import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.impl.InMemoryRegistry;
 import io.apiman.gateway.engine.vertxebinmemory.services.EBRegistryProxy;
 import io.apiman.gateway.engine.vertxebinmemory.services.EBRegistryProxyHandler;
-import io.apiman.gateway.platforms.vertx3.config.VertxEngineConfig;
+import io.apiman.gateway.platforms.vertx3.common.config.VertxEngineConfig;
 import io.vertx.core.Vertx;
 
 /**
