@@ -37,7 +37,8 @@
         <jdk>[1.8,)</jdk>
       </activation>
       <modules>
-        <module>vertx3</module>
+        <module>vertx3/vertx3</module>
+	<module>vertx3/vertx3-common</module>
       </modules>
     </profile>
   </profiles>
