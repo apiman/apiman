@@ -224,9 +224,15 @@ public class HttpServiceConnection implements IServiceConnection, IServiceConnec
         }
     }
 
+    /**
+     * Extracts the port information fromthe given URL.
+     * @param url a URL
+     * @return the port configured in the URL, or empty string if no port specified
+     */
     private String determinePort(URL url) {
-        return (url.getPort() == -1) ? "" : ":" + url.getPort();
+        return (url.getPort() == -1) ? "" : ":" + url.getPort(); //$NON-NLS-1$ //$NON-NLS-2$
     }
+
     /**
      * @see io.apiman.gateway.engine.io.IReadStream#bodyHandler(io.apiman.gateway.engine.async.IAsyncHandler)
      */
