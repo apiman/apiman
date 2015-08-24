@@ -162,7 +162,7 @@ In order to configure the gateway properly, you will need to configure the locat
 instance.  To do this, modify these properties in the *apiman.properties* file:
 
     apiman.es.protocol=http
-    apiman.es.host=es-server
+    apiman.es.host=es.myorg.com
     apiman.es.port=9200
     apiman.es.username=es_admin
     apiman.es.password=es_admin_password
@@ -259,7 +259,10 @@ this.  Simply navigate here:
 https://api-manager-host.org:8443/apimanui/api-manager/admin/gateways
 
 From there you will be able to click on the gateway and modify its settings.  Make sure to use the *Test*
-button on the Edit Gateway UI page to make sure you got the settings right!
+button on the Edit Gateway UI page to make sure you got the settings right!  Don't worry, the *Test* button
+will simply try to make a connection to the API Gateway's configuration URL, asking it for the current
+Gateway status.  If the Gateway responds as expected, then you can be confident that your settings are
+correct.
 
 TIP: You will need to log into the UI.  The default credentials are:  admin/admin123!
 
@@ -292,7 +295,7 @@ talk to the same Elasticsearch instance/cluster.
 To configure Elasticsearch for the API Manager, modify these properties in the *apiman.properties* file:
 
     apiman.es.protocol=http
-    apiman.es.host=es-server
+    apiman.es.host=es.myorg.com
     apiman.es.port=9200
     apiman.es.username=es_admin
     apiman.es.password=es_admin_password
