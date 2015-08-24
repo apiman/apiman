@@ -69,6 +69,7 @@
     <module>user-guide</module>
     <module>developer-guide</module>
     <module>installation-guide</module>
+    <module>production-guide</module>
   </modules>
 
 </project>
