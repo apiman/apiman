@@ -42,35 +42,48 @@ public class ApplicationResourceImpl implements IApplicationResource, IRouteBuil
     private static final String VER = "version"; //$NON-NLS-1$
     private static final String UNREGISTER = IRouteBuilder.join(ORG_ID, APP_ID, VER);
     private IRegistry registry;
+    private RoutingContext routingContext;
+    private VertxEngineConfig apimanConfig;
+    private IEngine engine;
 
     public ApplicationResourceImpl(VertxEngineConfig apimanConfig, IEngine engine) {
         this.registry = engine.getRegistry();
+        this.apimanConfig = apimanConfig;
+        this.engine = engine;
+        this.routingContext = null;
+    }
+
+    private ApplicationResourceImpl(VertxEngineConfig apimanConfig, IEngine engine, RoutingContext routingContext) {
+        this.registry = engine.getRegistry();
+        this.apimanConfig = apimanConfig;
+        this.engine = engine;
+        this.routingContext = routingContext;
     }
 
     @Override
     public void register(Application application) throws RegistrationException, NotAuthorizedException {
         registry.registerApplication(application, (IAsyncResultHandler<Void>) result -> {
             if (result.isError()) {
-                if (result.getError() instanceof RegistrationException) {
-                    throw (RegistrationException) result.getError();
-                } else if (result.getError() instanceof NotAuthorizedException) {
-                    throw (NotAuthorizedException) result.getError();
+                Throwable e = result.getError();
+                if (e instanceof RegistrationException) {
+                    error(routingContext, HttpResponseStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
+                } else if (e instanceof NotAuthorizedException) {
+                    error(routingContext, HttpResponseStatus.UNAUTHORIZED, e.getMessage(), e);
                 } else {
-                    throw new RuntimeException(result.getError());
+                    error(routingContext, HttpResponseStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
                 }
+            } else {
+                end(routingContext, HttpResponseStatus.NO_CONTENT);
             }
         });
     }
 
-    public void register(RoutingContext routingContext) {
+    public void register() {
         routingContext.request().bodyHandler((Handler<Buffer>) buffer -> {
             try {
                 register(Json.decodeValue(buffer.toString("utf-8"), Application.class)); //$NON-NLS-1$
-                end(routingContext, HttpResponseStatus.NO_CONTENT);
-            } catch (RegistrationException e) {
-                error(routingContext, HttpResponseStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
-            } catch (NotAuthorizedException e) {
-                error(routingContext, HttpResponseStatus.UNAUTHORIZED, e.getMessage(), e);
+            } catch (Exception e) {
+                error(routingContext, HttpResponseStatus.BAD_REQUEST, e.getMessage(), e);
             }
         });
     }
@@ -82,31 +95,29 @@ public class ApplicationResourceImpl implements IApplicationResource, IRouteBuil
         application.setOrganizationId(organizationId);
         application.setApplicationId(applicationId);
         application.setVersion(version);
+        application.setContracts(null);
+
         registry.unregisterApplication(application, (IAsyncResultHandler<Void>) result -> {
             if (result.isError()) {
-                if (result.getError() instanceof RegistrationException) {
-                    throw (RegistrationException) result.getError();
-                } else if (result.getError() instanceof NotAuthorizedException) {
-                    throw (NotAuthorizedException) result.getError();
+                Throwable e = result.getError();
+                if (e instanceof RegistrationException) {
+                    error(routingContext, HttpResponseStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
+                } else if (e instanceof NotAuthorizedException) {
+                    error(routingContext, HttpResponseStatus.UNAUTHORIZED, e.getMessage(), e);
                 } else {
-                    throw new RuntimeException(result.getError());
+                    error(routingContext, HttpResponseStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
                 }
+            } else {
+                end(routingContext, HttpResponseStatus.NO_CONTENT);
             }
         });
     }
 
-    public void unregister(RoutingContext routingContext) {
+    public void unregister() {
         String orgId = routingContext.request().getParam(ORG_ID);
         String appId = routingContext.request().getParam(APP_ID);
         String ver = routingContext.request().getParam(VER);
-        try {
-            unregister(orgId, appId, ver);
-            end(routingContext, HttpResponseStatus.NO_CONTENT);
-        } catch (RegistrationException e) {
-            error(routingContext, HttpResponseStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
-        } catch (NotAuthorizedException e) {
-            error(routingContext, HttpResponseStatus.UNAUTHORIZED, e.getMessage(), e);
-        }
+        unregister(orgId, appId, ver);
     }
 
     @Override
@@ -116,7 +127,12 @@ public class ApplicationResourceImpl implements IApplicationResource, IRouteBuil
 
     @Override
     public void buildRoutes(Router router) {
-        router.put(buildPath("")).handler(this::register); //$NON-NLS-1$
-        router.delete(buildPath(UNREGISTER)).handler(this::unregister);
+        router.put(buildPath("")).handler( routingContext -> { //$NON-NLS-1$
+            new ApplicationResourceImpl(apimanConfig, engine, routingContext).register();
+        });
+
+        router.delete(buildPath(UNREGISTER)).handler( routingContext -> {
+            new ApplicationResourceImpl(apimanConfig, engine, routingContext).unregister();
+        });
     }
 }

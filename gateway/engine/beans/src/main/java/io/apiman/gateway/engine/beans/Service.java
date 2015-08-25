@@ -17,7 +17,9 @@ package io.apiman.gateway.engine.beans;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -29,7 +31,7 @@ import java.util.Map;
 public class Service implements Serializable {
 
     private static final long serialVersionUID = -294764695917891050L;
-    
+
     private boolean publicService;
     private String organizationId;
     private String serviceId;
@@ -38,7 +40,7 @@ public class Service implements Serializable {
     private String endpoint;
     private Map<String, String> endpointProperties = new HashMap<>();
     private List<Policy> servicePolicies = new ArrayList<>();
-    
+
     /**
      * Constructor.
      */
@@ -198,6 +200,33 @@ public class Service implements Serializable {
         } else if (!version.equals(other.version))
             return false;
         return true;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        final int maxLen = 10;
+        return "Service [publicService=" + publicService + ", organizationId=" + organizationId
+                + ", serviceId=" + serviceId + ", version=" + version + ", endpointType=" + endpointType
+                + ", endpoint=" + endpoint + ", endpointProperties="
+                + (endpointProperties != null ? toString(endpointProperties.entrySet(), maxLen) : null)
+                + ", servicePolicies=" + (servicePolicies != null ? toString(servicePolicies, maxLen) : null)
+                + "]";
+    }
+
+    private String toString(Collection<?> collection, int maxLen) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("[");
+        int i = 0;
+        for (Iterator<?> iterator = collection.iterator(); iterator.hasNext() && i < maxLen; i++) {
+            if (i > 0)
+                builder.append(", ");
+            builder.append(iterator.next());
+        }
+        builder.append("]");
+        return builder.toString();
     }
 
 }

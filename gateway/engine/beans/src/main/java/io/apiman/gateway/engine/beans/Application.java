@@ -16,7 +16,9 @@
 package io.apiman.gateway.engine.beans;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -25,14 +27,14 @@ import java.util.Set;
  * @author eric.wittmann@redhat.com
  */
 public class Application implements Serializable {
-    
+
     private static final long serialVersionUID = 4515000941548789924L;
-    
+
     private String organizationId;
     private String applicationId;
     private String version;
     private Set<Contract> contracts = new HashSet<>();
-    
+
     /**
      * Constructor.
      */
@@ -87,7 +89,7 @@ public class Application implements Serializable {
     public Set<Contract> getContracts() {
         return contracts;
     }
-    
+
     /**
      * @param contract the contract to add
      */
@@ -143,6 +145,30 @@ public class Application implements Serializable {
         } else if (!version.equals(other.version))
             return false;
         return true;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        final int maxLen = 10;
+        return "Application [organizationId=" + organizationId + ", applicationId=" + applicationId
+                + ", version=" + version + ", contracts="
+                + (contracts != null ? toString(contracts, maxLen) : null) + "]";
+    }
+
+    private String toString(Collection<?> collection, int maxLen) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("[");
+        int i = 0;
+        for (Iterator<?> iterator = collection.iterator(); iterator.hasNext() && i < maxLen; i++) {
+            if (i > 0)
+                builder.append(", ");
+            builder.append(iterator.next());
+        }
+        builder.append("]");
+        return builder.toString();
     }
 
 }

@@ -45,7 +45,7 @@ public interface IRouteBuilder {
         return "/" + (path.length() == 0 ? getPath() : getPath() + "/" + path);
     }
 
-    default <T extends Exception> void error(RoutingContext context, HttpResponseStatus code, String message, T object) {
+    default <T extends Throwable> void error(RoutingContext context, HttpResponseStatus code, String message, T object) {
         HttpServerResponse response = context.response().setStatusCode(code.code());
         response.putHeader("X-API-Gateway-Error", "true");
 
@@ -55,10 +55,10 @@ public interface IRouteBuilder {
             response.setStatusMessage(message);
         }
 
-        if(object != null) {
-            JsonObject errorResponse = new JsonObject();
-            errorResponse.put("errorType", object.getClass().getSimpleName())
-                .put("message", object.getMessage());
+        if (object != null) {
+            JsonObject errorResponse = new JsonObject()
+                    .put("errorType", object.getClass().getSimpleName())
+                    .put("message", object.getMessage());
 
             response.setChunked(true)
                 .putHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
