@@ -28,6 +28,8 @@ matrix:
   include:
     - env: ACTION='-Dapiman.gateway-test.config=vertx3-mem'
       jdk: oraclejdk8
+    - env: ACTION='-Dapiman.gateway-test.config=vertx3-es'
+      jdk: oraclejdk8
     - env: ACTION='-Dapiman.gateway-test.config=servlet-es'
       jdk: oraclejdk8
     - env: ACTION='-Dapiman.gateway-test.config=servlet-es'
