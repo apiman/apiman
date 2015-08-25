@@ -1,0 +1,119 @@
+{
+  "registry": {
+    "class": "io.apiman.gateway.engine.es.ESRegistry",
+    "config": {
+      "client.type": "jest",
+      "client.cluster-name": "elasticsearch_msavy",
+      "client.host": "127.0.0.1",
+      "client.port": "9200",
+      "client.initialize": true
+    }
+  },
+
+  "plugin-registry": {
+    "class": "io.apiman.gateway.platforms.vertx3.engine.VertxPluginRegistry",
+    "config": {}
+  },
+
+  "connector-factory": {
+    "class": "io.apiman.gateway.platforms.vertx3.connector.ConnectorFactory",
+    "config": {
+      //"tls.allowSelfSigned": true,
+      //"tls.devMode": true,
+      //"tls.trustStore": "/path/to/your/truststore.jks",
+      //"tls.trustStorePassword": "abc123",
+      //"tls.keyStore": "/path/to/your/keystore.jks",
+      //"tls.keyStorePassword": "abc123"
+    }
+  },
+
+  "policy-factory": {
+    "class": "io.apiman.gateway.engine.policy.PolicyFactoryImpl",
+    "config": {}
+  },
+
+  "metrics": {
+    "class": "io.apiman.gateway.test.server.TestMetrics",
+    "config": {}
+  },
+
+  "components": {
+      "IHttpClientComponent": {
+        "class": "io.apiman.gateway.platforms.vertx3.components.HttpClientComponentImpl",
+        "config": {}
+      },
+
+      "ISharedStateComponent": {
+        "class": "io.apiman.gateway.engine.es.ESSharedStateComponent",
+        "config": {
+          "client.type": "jest",
+          "client.cluster-name": "elasticsearch_msavy",
+          "client.host": "localhost",
+          "client.port": "9200",
+          "client.initialize": true
+        }
+      },
+
+      "IRateLimiterComponent": {
+        "class": "io.apiman.gateway.engine.es.ESRateLimiterComponent",
+        "config": {
+          "client.type": "jest",
+          "client.cluster-name": "elasticsearch_msavy",
+          "client.host": "localhost",
+          "client.port": "9200",
+          "client.initialize": true
+        }
+      },
+
+      "IPolicyFailureFactoryComponent": {
+        "class": "io.apiman.gateway.platforms.vertx3.components.PolicyFailureFactoryComponent",
+        "config": {}
+      },
+
+      "IBufferFactoryComponent": {
+        "class": "io.apiman.gateway.platforms.vertx3.components.BufferFactoryComponentImpl",
+        "config": {}
+      }
+  },
+
+  // Host-name to bind to for this machine.
+  "hostname": "localhost",
+
+  // You can force a particular endpoint to be reported here (e.g.
+  // if you have some clustered setup with exotic DNS setup)
+  //"endpoint": "localhost",
+
+  // Verticle configuration
+  // Port - The port a given verticle listens on (where relevant)
+  // Count - Number of given verticle type launched
+  "verticles": {
+    "http": { "port": 8082, "count": 1 },
+    "https": { "port": 8443, "count": 1 },
+    "api": { "port": 8081, "count": 1 },
+    "policy": { "port": -1, "count": 1 }
+  },
+
+// SSL configuration to the gateway's *front end* (i.e. client <-> gateway).
+//  "ssl": {
+//    "keystore": {
+//      "path": "/the/keystore/path/here.jks",
+//      "password": "password-here"
+//    },
+//    "truststore": {
+//      "path": "/the/truststore/path/here.jks",
+//      "password": "password-here"
+//    }
+//  },
+
+  // API authentication; presently just BASIC auth.
+  "auth": {
+    "required": "basic",
+    "realm": "apiman-gateway",
+    "basic": { // Password is SHA256 digest encoded as Base64.
+      "admin" : "jGl25bVBBBW96Qi9Te4V37Fnqchz/Eu4qB9vKrRIqRg="
+    }
+  },
+
+  // When reporting a service's endpoint, prefer secure (i.e. https)
+  "preferSecure": true
+}

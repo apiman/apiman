@@ -15,16 +15,6 @@
  */
 package io.apiman.gateway.test.junit;
 
-import io.apiman.gateway.test.junit.GatewayRestTester.TestInfo;
-import io.apiman.test.common.plan.TestGroupType;
-import io.apiman.test.common.plan.TestPlan;
-import io.apiman.test.common.plan.TestType;
-import io.apiman.test.common.resttest.IGatewayTestServer;
-import io.apiman.test.common.resttest.IGatewayTestServerFactory;
-import io.apiman.test.common.resttest.RestTest;
-import io.apiman.test.common.util.TestPlanRunner;
-import io.apiman.test.common.util.TestUtil;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -43,6 +33,16 @@ import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.apiman.gateway.test.junit.GatewayRestTester.TestInfo;
+import io.apiman.test.common.plan.TestGroupType;
+import io.apiman.test.common.plan.TestPlan;
+import io.apiman.test.common.plan.TestType;
+import io.apiman.test.common.resttest.IGatewayTestServer;
+import io.apiman.test.common.resttest.IGatewayTestServerFactory;
+import io.apiman.test.common.resttest.RestTest;
+import io.apiman.test.common.util.TestPlanRunner;
+import io.apiman.test.common.util.TestUtil;
 
 /**
  * A junit test runner that fires up an API Gateway and makes it ready for use

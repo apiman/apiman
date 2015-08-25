@@ -15,6 +15,16 @@
  */
 package io.apiman.gateway.platforms.vertx3.junit.resttest;
 
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Files;
+import java.util.concurrent.CountDownLatch;
+
+import org.codehaus.jackson.JsonNode;
+
+import io.apiman.common.util.ReflectionUtils;
+import io.apiman.gateway.platforms.vertx3.config.VertxEngineConfig;
 import io.apiman.gateway.platforms.vertx3.verticles.InitVerticle;
 import io.apiman.test.common.echo.EchoServer;
 import io.apiman.test.common.resttest.IGatewayTestServer;
@@ -24,15 +34,10 @@ import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.concurrent.CountDownLatch;
-
-import org.codehaus.jackson.JsonNode;
-
 /**
  * A Vert.x 3 version of the gateway test server
+ *
+ * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 @SuppressWarnings("nls")
 public class Vertx3GatewayTestServer implements IGatewayTestServer {
@@ -45,7 +50,9 @@ public class Vertx3GatewayTestServer implements IGatewayTestServer {
     private String conf;
     private CountDownLatch startLatch;
     private CountDownLatch stopLatch;
+    private Resetter resetter;
     private Vertx vertx;
+    private JsonObject vertxConf;
 
     /**
      * Constructor.
@@ -53,57 +60,48 @@ public class Vertx3GatewayTestServer implements IGatewayTestServer {
     public Vertx3GatewayTestServer() {
     }
 
-    /**
-     * @see io.apiman.gateway.test.junit.IGatewayTestServer#configure(org.codehaus.jackson.JsonNode)
-     */
     @Override
     public void configure(JsonNode config) {
         ClassLoader classLoader = getClass().getClassLoader();
         String fPath = config.get("config").asText();
         File file = new File(classLoader.getResource(fPath).getFile());
+
         try {
             conf = new String(Files.readAllBytes(file.toPath()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        vertxConf = new JsonObject(conf);
+        resetter = getResetter(config.get("resetter").asText());
     }
-    /**
-     * @see io.apiman.gateway.test.junit.IGatewayTestServer#getApiEndpoint()
-     */
+
     @Override
     public String getApiEndpoint() {
         return "http://localhost:" + API_PORT;
     }
 
-    /**
-     * @see io.apiman.gateway.test.junit.IGatewayTestServer#getGatewayEndpoint()
-     */
     @Override
     public String getGatewayEndpoint() {
         return "http://localhost:" + GW_PORT;
     }
 
-    /**
-     * @see io.apiman.gateway.test.junit.IGatewayTestServer#getEchoTestEndpoint()
-     */
     @Override
     public String getEchoTestEndpoint() {
         return "http://localhost:" + ECHO_PORT;
     }
 
-    /**
-     * @see io.apiman.gateway.test.junit.IGatewayTestServer#start()
-     */
     @Override
     public void start() {
         try {
+            resetter.reset();
+
             vertx = Vertx.vertx();
             echoServer.start();
 
             startLatch = new CountDownLatch(1);
 
             DeploymentOptions options = new DeploymentOptions();
-            options.setConfig(new JsonObject(conf));
+            options.setConfig(vertxConf);
 
             vertx.deployVerticle(InitVerticle.class.getCanonicalName(),
                     options, new Handler<AsyncResult<String>>() {
@@ -121,23 +119,38 @@ public class Vertx3GatewayTestServer implements IGatewayTestServer {
         }
     }
 
-    /**
-     * @see io.apiman.gateway.test.junit.IGatewayTestServer#stop()
-     */
     @Override
     public void stop() {
         try {
             stopLatch = new CountDownLatch(1);
             echoServer.stop();
-            // Seems to be a vert.x bug
-            //vertx.deploymentIDs().stream().forEach(id -> undeploy(id, stopLatch));
+
             vertx.close(result -> {
                 stopLatch.countDown();
             });
 
             stopLatch.await();
+            resetter.reset(); // Also reset at end to avoid leaving pollution in index.
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    protected Resetter getResetter(String name) {
+        @SuppressWarnings("unchecked")
+        Class<Resetter> c = (Class<Resetter>) ReflectionUtils.loadClass(name);
+        VertxEngineConfig vxEngineConf = new VertxEngineConfig(vertxConf);
+
+        try {
+            return c.newInstance();
+        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+                  | SecurityException e) {
+            try {
+                return c.getConstructor(VertxEngineConfig.class).newInstance(vxEngineConf);
+            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+                    | SecurityException | InvocationTargetException | NoSuchMethodException f) {
+                throw new RuntimeException(f);
+            }
         }
     }
 }
