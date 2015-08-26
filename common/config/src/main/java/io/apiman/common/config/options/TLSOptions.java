@@ -23,19 +23,22 @@ import java.util.Map;
  *
  * @author Marc Savy <msavy@redhat.com>
  */
+@SuppressWarnings("nls")
 public class TLSOptions extends AbstractOptions {
-    public static final String PREFIX = "tls."; //$NON-NLS-1$
-    public static final String TLS_TRUSTSTORE = PREFIX + "trustStore"; //$NON-NLS-1$
-    public static final String TLS_TRUSTSTOREPASSWORD = PREFIX + "trustStorePassword"; //$NON-NLS-1$
-    public static final String TLS_KEYSTORE = PREFIX + "keyStore"; //$NON-NLS-1$
-    public static final String TLS_KEYSTOREPASSWORD = PREFIX + "keystorePassword"; //$NON-NLS-1$
-    public static final String TLS_KEYALIASES = PREFIX + "keyAliases"; //$NON-NLS-1$
-    public static final String TLS_KEYPASSWORD = PREFIX + "keyPassword"; //$NON-NLS-1$
-    public static final String TLS_ALLOWEDPROTOCOLS = PREFIX + "allowedProtocols"; //$NON-NLS-1$
-    public static final String TLS_ALLOWEDCIPHERS = PREFIX + "allowedCiphers"; //$NON-NLS-1$
-    public static final String TLS_ALLOWANYHOST = PREFIX + "allowAnyHost"; //$NON-NLS-1$
-    public static final String TLS_ALLOWSELFSIGNED = PREFIX + "allowSelfSigned"; //$NON-NLS-1$
-    public static final String TLS_DEVMODE = PREFIX + "devMode"; //$NON-NLS-1$
+    public static final String PREFIX = "tls.";
+    public static final String TLS_TRUSTSTORE = PREFIX + "trustStore";
+    public static final String TLS_TRUSTSTOREPASSWORD = PREFIX + "trustStorePassword";
+    public static final String TLS_KEYSTORE = PREFIX + "keyStore";
+    public static final String TLS_KEYSTOREPASSWORD = PREFIX + "keystorePassword";
+    public static final String TLS_KEYALIASES = PREFIX + "keyAliases";
+    public static final String TLS_KEYPASSWORD = PREFIX + "keyPassword";
+    public static final String TLS_ALLOWEDPROTOCOLS = PREFIX + "allowedProtocols";
+    public static final String TLS_DISALLOWEDPROTOCOLS = PREFIX + "disallowedProtocols";
+    public static final String TLS_ALLOWEDCIPHERS = PREFIX + "allowedCiphers";
+    public static final String TLS_DISALLOWEDCIPHERS = PREFIX + "disallowedCiphers";
+    public static final String TLS_ALLOWANYHOST = PREFIX + "allowAnyHost";
+    public static final String TLS_ALLOWSELFSIGNED = PREFIX + "allowSelfSigned";
+    public static final String TLS_DEVMODE = PREFIX + "devMode";
 
     private String trustStore;
     private String trustStorePassword;
@@ -43,7 +46,9 @@ public class TLSOptions extends AbstractOptions {
     private String keyStorePassword;
     private String keyPassword;
     private String[] allowedProtocols;
+    private String[] disallowedProtocols;
     private String[] allowedCiphers;
+    private String[] disallowedCiphers;
     private boolean allowAnyHost;
     private boolean trustSelfSigned;
     private boolean devMode;
@@ -70,6 +75,7 @@ public class TLSOptions extends AbstractOptions {
         keyPassword = getVar(options, TLS_KEYPASSWORD);
         allowedProtocols = split(getVar(options, TLS_ALLOWEDPROTOCOLS), ',');
         allowedCiphers = split(getVar(options, TLS_ALLOWEDCIPHERS), ',');
+        disallowedCiphers = split(getVar(options, TLS_DISALLOWEDCIPHERS), ',');
         allowAnyHost = parseBool(options, TLS_ALLOWANYHOST);
         trustSelfSigned = parseBool(options, TLS_ALLOWSELFSIGNED);
         devMode = parseBool(options, TLS_DEVMODE);
@@ -229,6 +235,34 @@ public class TLSOptions extends AbstractOptions {
         this.keyAliases = keyAliases;
     }
 
+    /**
+     * @return the disallowedCiphers
+     */
+    public String[] getDisallowedCiphers() {
+        return disallowedCiphers;
+    }
+
+    /**
+     * @param disallowedCiphers the disallowedCiphers to set
+     */
+    public void setDisallowedCiphers(String[] disallowedCiphers) {
+        this.disallowedCiphers = disallowedCiphers;
+    }
+
+    /**
+     * @return the disallowedProtocols
+     */
+    public String[] getDisallowedProtocols() {
+        return disallowedProtocols;
+    }
+
+    /**
+     * @param disallowedProtocols the disallowedProtocols to set
+     */
+    public void setDisallowedProtocols(String[] disallowedProtocols) {
+        this.disallowedProtocols = disallowedProtocols;
+    }
+
     /* (non-Javadoc)
      * @see java.lang.Object#hashCode()
      */
@@ -241,6 +275,8 @@ public class TLSOptions extends AbstractOptions {
         result = prime * result + Arrays.hashCode(allowedProtocols);
         result = prime * result + ((clientKeyStore == null) ? 0 : clientKeyStore.hashCode());
         result = prime * result + (devMode ? 1231 : 1237);
+        result = prime * result + Arrays.hashCode(disallowedCiphers);
+        result = prime * result + Arrays.hashCode(disallowedProtocols);
         result = prime * result + Arrays.hashCode(keyAliases);
         result = prime * result + ((keyPassword == null) ? 0 : keyPassword.hashCode());
         result = prime * result + ((keyStorePassword == null) ? 0 : keyStorePassword.hashCode());
@@ -275,6 +311,10 @@ public class TLSOptions extends AbstractOptions {
             return false;
         if (devMode != other.devMode)
             return false;
+        if (!Arrays.equals(disallowedCiphers, other.disallowedCiphers))
+            return false;
+        if (!Arrays.equals(disallowedProtocols, other.disallowedProtocols))
+            return false;
         if (!Arrays.equals(keyAliases, other.keyAliases))
             return false;
         if (keyPassword == null) {
@@ -301,4 +341,5 @@ public class TLSOptions extends AbstractOptions {
             return false;
         return true;
     }
+
 }
