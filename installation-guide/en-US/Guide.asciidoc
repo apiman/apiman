@@ -549,4 +549,50 @@ Now that the apiman MTLS feature has been configured, use the Manager UI to enab
 one or more Service.  This can be done on the "Implementation" tab when you are configuring
 the details of your back-end endpoint (URL, type, and endpoint security).
 
+
+=== How To:  Use an External Keycloak Authentication Server
+The apiman quickstart overlay comes with an embedded version of Keycloak that we use for
+authentication.  You may already have a Keycloak instance that you use.  This section 
+explains how to modify apiman to use yours instead of ours.
+
+==== High Level Overview
+1. Create the apiman Realm in Keycloak
+2. Configure the API Manager UI client in Keycloak
+3. Point apiman at the remote Keycloak
+
+==== Create the apiman Realm in Keycloak
+You'll need to make sure you create the *apiman* realm in your Keycloak server.  A
+quick way to do that is to use the Keycloak admin console to import the apiman 
+realm file located here:
+
+https://github.com/apiman/apiman/blob/master/distro/data/src/main/resources/data/apiman-realm.json
+
+==== Configure the API Manager UI client in Keycloak
+Once the apiman realm has been created or imported, make sure to configure the 
+*Valid Redirect URIs* section of the *apimanui* client.  The default value of 
+"/apimanui/*" must be replaced with the full public URL of your API Manager UI.
+For example, the value may be something like:
+
+    https://apiman.myorg.com/apimanui/*
+
+TIP: Don't forget the "*" wildcard at the end of the URL.
+
+==== Point apiman at the remote Keycloak
+Finally, you must modify the *standalone-apiman.xml* configuration file to point
+apiman at the remote Keycloak server.  Make sure you know the full public URL of
+your Keycloak server and add it to the following section of *standalone-apiman.xml*:
+
+```xml
+<kc:realm xmlns:kc="urn:jboss:domain:keycloak:1.0" name="apiman">
+  <kc:realm-public-key>MIGf..snip..QAB</kc:realm-public-key>
+  <kc:auth-server-url>https://keycloak-host.org:8443/auth</kc:auth-server-url>
+  <kc:ssl-required>none</kc:ssl-required>
+  <kc:enable-cors>false</kc:enable-cors>
+  <kc:principal-attribute>preferred_username</kc:principal-attribute>
+</kc:realm>
+```
+
+TIP: If you manually created the apiman realm in Keycloak, you will also need to 
+copy the realm's public key into <kc:realm-public-key> above.
+
 :numbered!:
