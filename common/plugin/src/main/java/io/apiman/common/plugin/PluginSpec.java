@@ -21,7 +21,7 @@ package io.apiman.common.plugin;
  * @author eric.wittmann@redhat.com
  */
 public class PluginSpec {
-    
+
     private double frameworkVersion = 1.0;
     private String name;
     private String description;
@@ -87,5 +87,14 @@ public class PluginSpec {
      */
     public void setFrameworkVersion(double frameworkVersion) {
         this.frameworkVersion = frameworkVersion;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "Plugin [frameworkVersion=" + frameworkVersion + ", name=" + name + ", description="
+                + description + ", version=" + version + "]";
     }
 }
