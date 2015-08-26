@@ -296,6 +296,8 @@ public class DefaultPluginRegistry implements IPluginRegistry {
             } else {
                 PluginSpec spec = PluginUtils.readPluginSpecFile(specFile);
                 Plugin plugin = new Plugin(spec, coordinates, pluginClassLoader);
+                // TODO use logger when available
+                System.out.println("Read apiman plugin: " + spec); //$NON-NLS-1$
                 return plugin;
             }
         } catch (Exception e) {
