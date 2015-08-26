@@ -22,8 +22,14 @@ import io.vertx.core.logging.LoggerFactory;
 import io.vertx.core.net.JksOptions;
 
 import java.net.URL;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import javax.net.ssl.SSLContext;
 
 /**
  * Build {@link HttpClientOptions} using populated {@link TLSOptions}.
@@ -31,6 +37,7 @@ import java.util.Map;
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 public class HttpClientOptionsFactory {
+    private static final String[] EMPTY = new String[]{};
     private static Map<TLSOptions, HttpClientOptions> configCache = new HashMap<>();
     private static Logger log = LoggerFactory.getLogger(HttpClientOptionsFactory.class);
 
@@ -68,7 +75,8 @@ public class HttpClientOptionsFactory {
         }
 
         if (tlsOptions.getAllowedCiphers() != null) {
-            for (String cipher : tlsOptions.getAllowedCiphers()) {
+            String[] ciphers = arrayDifference(tlsOptions.getAllowedCiphers(), tlsOptions.getDisallowedCiphers(), getDefaultCipherSuites());
+            for (String cipher : ciphers) {
                 clientOptions.addEnabledCipherSuite(cipher);
             }
         }
@@ -78,5 +86,27 @@ public class HttpClientOptionsFactory {
         }
 
         return clientOptions;
+    }
+
+    private static String[] arrayDifference(String[] allowed, String[] disallowed, String[] defaultItems) {
+        List<String> allowL = new ArrayList<>(Arrays.asList(optionalVar(allowed, defaultItems)));
+        List<String> disallowL = new ArrayList<>(Arrays.asList(optionalVar(disallowed, EMPTY)));
+        allowL.removeAll(disallowL);
+        return allowL.toArray(new String[allowL.size()]);
+    }
+
+    private static String[] optionalVar(String[] arr, String[] defaultArr) {
+        if (arr == null || arr.length==0) {
+            return defaultArr;
+        }
+        return arr;
+    }
+
+    private static String[] getDefaultCipherSuites() {
+        try {
+            return SSLContext.getDefault().getDefaultSSLParameters().getCipherSuites();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
