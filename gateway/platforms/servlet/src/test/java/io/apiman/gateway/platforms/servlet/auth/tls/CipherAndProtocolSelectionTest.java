@@ -155,7 +155,7 @@ public class CipherAndProtocolSelectionTest {
      */
     @Test
     public void shouldNotUseDisallowedCipher() throws Exception {
-        String preferredCipher = getPrefferedCipher();
+        final String preferredCipher = getPrefferedCipher();
 
         config.put(TLSOptions.TLS_TRUSTSTORE, getResourcePath("2waytest/mutual_trust_via_ca/common_ts.jks"));
         config.put(TLSOptions.TLS_TRUSTSTOREPASSWORD, "password");
@@ -378,8 +378,8 @@ public class CipherAndProtocolSelectionTest {
 
         server.start();
 
-        StringBuffer sbuff = new StringBuffer();
-        CountDownLatch latch = new CountDownLatch(1);
+        final StringBuffer sbuff = new StringBuffer();
+        final CountDownLatch latch = new CountDownLatch(1);
 
         HttpConnectorFactory factory = new HttpConnectorFactory(config);
         IServiceConnector connector = factory.createConnector(request, service, RequiredAuthType.DEFAULT);
