@@ -27,7 +27,10 @@ import java.security.SecureRandom;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -55,6 +58,7 @@ public class SSLSessionStrategyFactory {
     private SSLSessionStrategyFactory() {}
     private static final HostnameVerifier ALLOW_ANY = new AllowAnyVerifier();
     private static final TrustStrategy SELF_SIGNED = new TrustSelfSignedStrategy();
+    private static String[] EMPTY = new String[]{};
 
     /**
      * Convenience function parses map of options to generate {@link SSLSessionStrategy}.
@@ -65,7 +69,9 @@ public class SSLSessionStrategyFactory {
      *   <li>trustStore - default: <a href="https://docs.oracle.com/javase/6/docs/technotes/guides/security/jsse/JSSERefGuide.html#CustomizingStores">JSSERefGuide</a></li>
      *   <li>trustStorePassword - none</li>
      *   <li>allowedProtocols - {@link SSLParameters#getProtocols()}</li>
+     *   <li>disallowedProtocols - {@link SSLParameters#getCipherSuites()}</li>
      *   <li>allowedCiphers - {@link SSLParameters#getCipherSuites()}</li>
+     *   <li>disallowedCiphers - {@link SSLParameters#getCipherSuites()}</li>
      *   <li>allowAnyHost - false</li>
      *   <li>allowSelfSigned - false</li>
      * </ul>
@@ -83,8 +89,12 @@ public class SSLSessionStrategyFactory {
     public static SSLSessionStrategy buildStandard(TLSOptions optionsMap)
             throws NoSuchAlgorithmException, KeyManagementException, KeyStoreException,
             UnrecoverableKeyException, CertificateException, IOException {
-        String[] allowedProtocols = optionalVar(optionsMap.getAllowedProtocols(), getDefaultProtocols());
-        String[] allowedCiphers = optionalVar(optionsMap.getAllowedCiphers(), getDefaultCipherSuites());
+        String[] allowedProtocols = arrayDifference(optionsMap.getAllowedProtocols(),
+                optionsMap.getDisallowedProtocols(),
+                getDefaultProtocols());
+        String[] allowedCiphers = arrayDifference(optionsMap.getAllowedCiphers(),
+                optionsMap.getDisallowedCiphers(),
+                getDefaultCipherSuites());
 
         return build(optionsMap.getTrustStore(),
                 optionsMap.getTrustStorePassword(),
@@ -108,7 +118,9 @@ public class SSLSessionStrategyFactory {
      *   <li>keyAliases - none</li>
      *   <li>keyPassword - none</li>
      *   <li>allowedProtocols - {@link SSLParameters#getProtocols()}</li>
+     *   <li>disallowedProtocols - {@link SSLParameters#getCipherSuites()}</li>
      *   <li>allowedCiphers - {@link SSLParameters#getCipherSuites()}</li>
+     *   <li>disallowedCiphers - {@link SSLParameters#getCipherSuites()}</li>
      *   <li>allowAnyHost - false</li>
      *   <li>allowSelfSigned - false</li>
      * </ul>
@@ -130,8 +142,12 @@ public class SSLSessionStrategyFactory {
         Args.notNull(optionsMap.getKeyStore(), "KeyStore");
         Args.notEmpty(optionsMap.getKeyStore(), "KeyStore must not be empty");
 
-        String[] allowedProtocols = optionalVar(optionsMap.getAllowedProtocols(), getDefaultProtocols());
-        String[] allowedCiphers = optionalVar(optionsMap.getAllowedCiphers(), getDefaultCipherSuites());
+        String[] allowedProtocols = arrayDifference(optionsMap.getAllowedProtocols(),
+                optionsMap.getDisallowedProtocols(),
+                getDefaultProtocols());
+        String[] allowedCiphers = arrayDifference(optionsMap.getAllowedCiphers(),
+                optionsMap.getDisallowedCiphers(),
+                getDefaultCipherSuites());
 
         return build(optionsMap.getTrustStore(),
                 optionsMap.getTrustStorePassword(),
@@ -253,12 +269,34 @@ public class SSLSessionStrategyFactory {
         }
     }
 
-    private static String[] getDefaultCipherSuites() throws NoSuchAlgorithmException {
-        return SSLContext.getDefault().getDefaultSSLParameters().getCipherSuites();
+    private static String[] getDefaultCipherSuites() {
+        try {
+            return SSLContext.getDefault().getDefaultSSLParameters().getCipherSuites();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    private static String[] getDefaultProtocols() throws NoSuchAlgorithmException {
-        return SSLContext.getDefault().getDefaultSSLParameters().getProtocols();
+    private static String[] getDefaultProtocols() {
+        try {
+            return SSLContext.getDefault().getDefaultSSLParameters().getProtocols();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * List A - List B
+     *
+     * @param allowed allowed items
+     * @param disallowed disallowed items
+     * @return allowed items minus disallowed items
+     */
+    private static String[] arrayDifference(String[] allowed, String[] disallowed, String[] defaultItems) {
+        List<String> allowL = new ArrayList<>(Arrays.asList(optionalVar(allowed, defaultItems)));
+        List<String> disallowL = new ArrayList<>(Arrays.asList(optionalVar(disallowed, EMPTY)));
+        allowL.removeAll(disallowL);
+        return allowL.toArray(new String[allowL.size()]);
     }
 
     private static String[] optionalVar(String[] arr, String[] defaultArr) {
