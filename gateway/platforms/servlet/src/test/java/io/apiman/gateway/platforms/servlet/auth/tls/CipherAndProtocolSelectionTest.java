@@ -34,6 +34,7 @@ import java.nio.file.Paths;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -115,6 +116,7 @@ public class CipherAndProtocolSelectionTest {
                 while (requestAttrNames.hasMoreElements()) {
                     String elem = requestAttrNames.nextElement();
                     jettyRequestAttributes.put(elem, request.getAttribute(elem).toString());
+                    System.out.println(elem + " - " + request.getAttribute(elem).toString());
                 }
 
                 response.setStatus(HttpServletResponse.SC_OK);
@@ -153,11 +155,13 @@ public class CipherAndProtocolSelectionTest {
      */
     @Test
     public void shouldNotUseDisallowedCipher() throws Exception {
+        String preferredCipher = getPrefferedCipher();
+
         config.put(TLSOptions.TLS_TRUSTSTORE, getResourcePath("2waytest/mutual_trust_via_ca/common_ts.jks"));
         config.put(TLSOptions.TLS_TRUSTSTOREPASSWORD, "password");
         config.put(TLSOptions.TLS_ALLOWANYHOST, "true");
         config.put(TLSOptions.TLS_ALLOWSELFSIGNED, "false");
-        config.put(TLSOptions.TLS_DISALLOWEDCIPHERS, "TLS_RSA_WITH_AES_128_GCM_SHA256, TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256");
+        config.put(TLSOptions.TLS_DISALLOWEDCIPHERS, preferredCipher);
 
         server.start();
 
@@ -173,8 +177,7 @@ public class CipherAndProtocolSelectionTest {
 
                 Assert.assertTrue(result.isSuccess());
                 Assert.assertFalse(jettyRequestAttributes.get("javax.servlet.request.cipher_suite").equals(""));
-                Assert.assertFalse(jettyRequestAttributes.get("javax.servlet.request.cipher_suite").equals("TLS_RSA_WITH_AES_128_GCM_SHA256"));
-                Assert.assertFalse(jettyRequestAttributes.get("javax.servlet.request.cipher_suite").equals("TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256"));
+                Assert.assertFalse(jettyRequestAttributes.get("javax.servlet.request.cipher_suite").equals(preferredCipher));
             }
         });
 
@@ -188,13 +191,15 @@ public class CipherAndProtocolSelectionTest {
      */
     @Test
     public void shouldFailWhenNoValidCipherAllowed() throws Exception {
+        String preferredCipher = getPrefferedCipher();
+
         config.put(TLSOptions.TLS_TRUSTSTORE, getResourcePath("2waytest/mutual_trust_via_ca/common_ts.jks"));
         config.put(TLSOptions.TLS_TRUSTSTOREPASSWORD, "password");
         config.put(TLSOptions.TLS_ALLOWANYHOST, "true");
         config.put(TLSOptions.TLS_ALLOWSELFSIGNED, "false");
-        config.put(TLSOptions.TLS_ALLOWEDCIPHERS, "TLS_RSA_WITH_AES_128_GCM_SHA256");
+        config.put(TLSOptions.TLS_ALLOWEDCIPHERS, preferredCipher);
 
-        jettySslContextFactory.setExcludeCipherSuites("TLS_RSA_WITH_AES_128_GCM_SHA256");
+        jettySslContextFactory.setExcludeCipherSuites(preferredCipher);
         server.start();
 
 
@@ -327,13 +332,15 @@ public class CipherAndProtocolSelectionTest {
      */
     @Test
     public void shouldFailWhenRemoteCiphersAreExcluded() throws Exception {
+        String preferredCipher = getPrefferedCipher();
+
         config.put(TLSOptions.TLS_TRUSTSTORE, getResourcePath("2waytest/mutual_trust_via_ca/common_ts.jks"));
         config.put(TLSOptions.TLS_TRUSTSTOREPASSWORD, "password");
         config.put(TLSOptions.TLS_ALLOWANYHOST, "true");
         config.put(TLSOptions.TLS_ALLOWSELFSIGNED, "false");
-        config.put(TLSOptions.TLS_DISALLOWEDCIPHERS, "TLS_RSA_WITH_AES_128_GCM_SHA256");
+        config.put(TLSOptions.TLS_DISALLOWEDCIPHERS, preferredCipher);
 
-        jettySslContextFactory.setIncludeCipherSuites("TLS_RSA_WITH_AES_128_GCM_SHA256");
+        jettySslContextFactory.setIncludeCipherSuites(preferredCipher);
 
         server.start();
 
@@ -361,6 +368,38 @@ public class CipherAndProtocolSelectionTest {
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private String getPrefferedCipher() throws Exception {
+        config.put(TLSOptions.TLS_TRUSTSTORE, getResourcePath("2waytest/mutual_trust_via_ca/common_ts.jks"));
+        config.put(TLSOptions.TLS_TRUSTSTOREPASSWORD, "password");
+        config.put(TLSOptions.TLS_ALLOWANYHOST, "true");
+        config.put(TLSOptions.TLS_ALLOWSELFSIGNED, "false");
+
+        server.start();
+
+        StringBuffer sbuff = new StringBuffer();
+        CountDownLatch latch = new CountDownLatch(1);
+
+        HttpConnectorFactory factory = new HttpConnectorFactory(config);
+        IServiceConnector connector = factory.createConnector(request, service, RequiredAuthType.DEFAULT);
+        IServiceConnection connection = connector.connect(request,
+                new IAsyncResultHandler<IServiceConnectionResponse>() {
+
+            @Override
+            public void handle(IAsyncResult<IServiceConnectionResponse> result) {
+                if (result.isError())
+                    throw new RuntimeException(result.getError());
+
+                sbuff.append(jettyRequestAttributes.get("javax.servlet.request.cipher_suite"));
+                latch.countDown();
+            }
+        });
+
+        connection.end();
+        server.stop();
+        latch.await();
+        return sbuff.toString();
     }
 
 }
