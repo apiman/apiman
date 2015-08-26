@@ -18,7 +18,7 @@ package io.apiman.manager.api.rest.contract.exceptions;
 
 
 /**
- * Thrown when trying to create a Gateway that already exists.
+ * Thrown when trying to create a Plugin that already exists.
  *
  * @author eric.wittmann@redhat.com
  */

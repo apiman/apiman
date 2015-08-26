@@ -205,6 +205,7 @@ public class Service implements Serializable {
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
+    @SuppressWarnings("nls")
     @Override
     public String toString() {
         final int maxLen = 10;
@@ -216,6 +217,7 @@ public class Service implements Serializable {
                 + "]";
     }
 
+    @SuppressWarnings("nls")
     private String toString(Collection<?> collection, int maxLen) {
         StringBuilder builder = new StringBuilder();
         builder.append("[");

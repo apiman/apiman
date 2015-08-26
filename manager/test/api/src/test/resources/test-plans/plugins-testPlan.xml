@@ -19,5 +19,9 @@
     <test name="List Plugin Policy Defs">test-plan-data/plugins/103_list-plugin-policy-defs.resttest</test>
     <test name="Get JSON Schema Form">test-plan-data/plugins/104_get-config-form.resttest</test>
   </testGroup>
+  
+  <testGroup name="Available Plugins">
+    <test name="Get Available Plugins">test-plan-data/plugins/200_available-plugins.resttest</test>
+  </testGroup>
 
 </testPlan>

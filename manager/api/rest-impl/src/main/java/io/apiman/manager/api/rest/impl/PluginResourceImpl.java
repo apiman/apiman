@@ -22,6 +22,7 @@ import io.apiman.common.plugin.PluginCoordinates;
 import io.apiman.manager.api.beans.BeanUtils;
 import io.apiman.manager.api.beans.plugins.NewPluginBean;
 import io.apiman.manager.api.beans.plugins.PluginBean;
+import io.apiman.manager.api.beans.plugins.PluginRegistryBean;
 import io.apiman.manager.api.beans.policies.PolicyDefinitionBean;
 import io.apiman.manager.api.beans.summary.PluginSummaryBean;
 import io.apiman.manager.api.beans.summary.PolicyDefinitionSummaryBean;
@@ -29,6 +30,7 @@ import io.apiman.manager.api.beans.summary.PolicyFormType;
 import io.apiman.manager.api.core.IPluginRegistry;
 import io.apiman.manager.api.core.IStorage;
 import io.apiman.manager.api.core.IStorageQuery;
+import io.apiman.manager.api.core.config.ApiManagerConfig;
 import io.apiman.manager.api.core.exceptions.InvalidPluginException;
 import io.apiman.manager.api.core.exceptions.StorageException;
 import io.apiman.manager.api.core.logging.ApimanLogger;
@@ -45,11 +47,16 @@ import io.apiman.manager.api.rest.impl.i18n.Messages;
 import io.apiman.manager.api.rest.impl.util.ExceptionFactory;
 import io.apiman.manager.api.security.ISecurityContext;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -71,6 +78,7 @@ public class PluginResourceImpl implements IPluginResource {
     @Inject IStorageQuery query;
     @Inject ISecurityContext securityContext;
     @Inject IPluginRegistry pluginRegistry;
+    @Inject ApiManagerConfig config;
 
     @Inject @ApimanLogger(PluginResourceImpl.class)
     IApimanLogger log;
@@ -291,6 +299,46 @@ public class PluginResourceImpl implements IPluginResource {
             throw e;
         } catch (Throwable t) {
             throw new SystemErrorException(t);
+        }
+    }
+    
+    /**
+     * @see io.apiman.manager.api.rest.contract.IPluginResource#getAvailablePlugins()
+     */
+    @Override
+    public List<PluginSummaryBean> getAvailablePlugins() throws NotAuthorizedException {
+        if (!securityContext.isAdmin())
+            throw ExceptionFactory.notAuthorizedException();
+
+        List<PluginSummaryBean> rval = new ArrayList<>();
+        Set<URL> registries = config.getPluginRegistries();
+        
+        for (URL registryUrl : registries) {
+            PluginRegistryBean registry = loadRegistry(registryUrl);
+            rval.addAll(registry.getPlugins());
+        }
+        
+        // Sort before returning
+        Collections.sort(rval, new Comparator<PluginSummaryBean>() {
+            @Override
+            public int compare(PluginSummaryBean o1, PluginSummaryBean o2) {
+                return o1.getName().compareToIgnoreCase(o2.getName());
+            }
+        });
+        return rval;
+    }
+
+    /**
+     * Loads a plugin registry from its URL.  Will use the value in the 
+     * cache if it exists.  If not, it will connect to the remote URL and
+     * grab the registry JSON file.
+     * @param registryUrl the URL of the registry
+     */
+    private PluginRegistryBean loadRegistry(URL registryUrl) {
+        try {
+            return mapper.reader(PluginRegistryBean.class).readValue(registryUrl);
+        } catch (IOException e) {
+            return null;
         }
     }
 

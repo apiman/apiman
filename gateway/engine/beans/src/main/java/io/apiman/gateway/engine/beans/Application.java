@@ -150,6 +150,7 @@ public class Application implements Serializable {
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
+    @SuppressWarnings("nls")
     @Override
     public String toString() {
         final int maxLen = 10;
@@ -158,6 +159,7 @@ public class Application implements Serializable {
                 + (contracts != null ? toString(contracts, maxLen) : null) + "]";
     }
 
+    @SuppressWarnings("nls")
     private String toString(Collection<?> collection, int maxLen) {
         StringBuilder builder = new StringBuilder();
         builder.append("[");

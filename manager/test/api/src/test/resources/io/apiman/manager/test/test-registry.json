@@ -1,0 +1,54 @@
+{
+  "id" : "apiman-plugin-registry",
+  "name" : "Official apiman Plugins",
+  "description" : "This plugin registry lists all of the official apiman plugins.  No third party plugins are included in this registry.",
+  "version" : "1.0.0",
+  "repository" : {
+    "name" : "JBoss Public Maven Repository",
+    "url" : "http://repository.jboss.org/nexus/content/groups/public/"
+  },
+  "plugins" : [
+    {
+      "groupId" : "io.apiman.plugins",
+      "artifactId" : "apiman-plugins-cors-policy",
+      "version" : "1.0.0",
+      "name" : "CORS Policy Plugin",
+      "description" : "Provides a simple CORS policy, allowing an API to be more easily consumed directly by a browser."
+    },
+    {
+      "groupId" : "io.apiman.plugins",
+      "artifactId" : "apiman-plugins-http-security-policy",
+      "version" : "1.0.0",
+      "name" : "HTTP Security Policy Plugin",
+      "description" : ""
+    },
+    {
+      "groupId" : "io.apiman.plugins",
+      "artifactId" : "apiman-plugins-jsonp-policy",
+      "version" : "1.0.0",
+      "name" : "JSONP Policy Plugin",
+      "description" : "Provides a policy that can convert a standard JSON API into a JSONP endpoint."
+    },
+    {
+      "groupId" : "io.apiman.plugins",
+      "artifactId" : "apiman-plugins-keycloak-oauth-policy",
+      "version" : "1.0.0",
+      "name" : "Keycloak OAuth Policy Plugin",
+      "description" : "This plugin offers an OAuth2 policy which leverages the Keycloak authentication platform as the identity and access provider."
+    },
+    {
+      "groupId" : "io.apiman.plugins",
+      "artifactId" : "apiman-plugins-simple-header-policy",
+      "version" : "1.0.0",
+      "name" : "Simple Header Policy Plugin",
+      "description" : "Offers a simple policy that allows request headers to be added or stripped from the HTTP request (outgoing) or HTTP response (incoming)."
+    },
+    {
+      "groupId" : "io.apiman.plugins",
+      "artifactId" : "apiman-plugins-transformation-policy",
+      "version" : "1.0.0",
+      "name" : "XML<->JSON Transformation Policy Plugin",
+      "description" : "This plugin provides a very simple policy which can transform the request and/or response payload between XML and JSON."
+    }
+  ]
+}

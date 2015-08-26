@@ -18,12 +18,15 @@ package io.apiman.manager.api.beans.summary;
 import java.io.Serializable;
 import java.util.Date;
 
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
 /**
  * Models a single gateway configured by an admin.  When publishing services,
  * the user must specific which Plugin to publish to.
  *
  * @author eric.wittmann@redhat.com
  */
+@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class PluginSummaryBean implements Serializable {
 
     private static final long serialVersionUID = 7157863269972852063L;

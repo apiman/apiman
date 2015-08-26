@@ -4,21 +4,17 @@ GET /plugins admin/admin
 Content-Type: application/json
 
 [ { "artifactId" : "apiman-test-plugin-1",
-    "classifier" : null,
     "createdBy" : "admin",
     "description" : "This is the first plugin.",
     "groupId" : "io.apiman.test",
     "name" : "Plugin One",
-    "type" : null,
     "version" : "1.0"
   },
   { "artifactId" : "apiman-test-plugin-2",
-    "classifier" : null,
     "createdBy" : "admin",
     "description" : "This is the second plugin.",
     "groupId" : "io.apiman.test",
     "name" : "Plugin Two",
-    "type" : null,
     "version" : "1.0"
   }
 ]

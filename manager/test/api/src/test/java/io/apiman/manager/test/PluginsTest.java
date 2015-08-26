@@ -16,9 +16,10 @@
 package io.apiman.manager.test;
 
 import io.apiman.manager.test.junit.ManagerRestTestPlan;
-import io.apiman.manager.test.junit.RestTestSystemProperties;
 import io.apiman.manager.test.junit.ManagerRestTester;
+import io.apiman.manager.test.junit.RestTestSystemProperties;
 
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
 /**
@@ -31,6 +32,12 @@ import org.junit.runner.RunWith;
 @RestTestSystemProperties({
     "apiman.test.m2-path", "src/test/resources/test-plan-data/plugins/m2"
 })
+@SuppressWarnings("nls")
 public class PluginsTest {
+    
+    @BeforeClass
+    public static void setup() {
+        System.setProperty("apiman-manager.plugins.registries", PluginsTest.class.getResource("test-registry.json").toString());
+    }
 
 }

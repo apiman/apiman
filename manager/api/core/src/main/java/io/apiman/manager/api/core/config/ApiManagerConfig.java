@@ -69,6 +69,7 @@ public class ApiManagerConfig {
     public static final String APIMAN_MANAGER_SECURITY_CONTEXT_TYPE = "apiman-manager.security-context.type"; //$NON-NLS-1$
 
     public static final String APIMAN_PLUGIN_REPOSITORIES = "apiman.plugins.repositories"; //$NON-NLS-1$
+    public static final String APIMAN_PLUGIN_REGISTRIES = "apiman-manager.plugins.registries"; //$NON-NLS-1$
 
     public static final String DEFAULT_ES_CLUSTER_NAME = "apiman"; //$NON-NLS-1$
 
@@ -99,6 +100,25 @@ public class ApiManagerConfig {
             for (String repository : split) {
                 try {
                     rval.add(new URL(repository.trim()));
+                } catch (MalformedURLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        return rval;
+    }
+
+    /**
+     * @return the configured plugin registries
+     */
+    public Set<URL> getPluginRegistries() {
+        Set<URL> rval = new HashSet<>();
+        String registries = config.getString(APIMAN_PLUGIN_REGISTRIES);
+        if (registries != null) {
+            String[] split = registries.split(","); //$NON-NLS-1$
+            for (String registry : split) {
+                try {
+                    rval.add(new URL(registry.trim()));
                 } catch (MalformedURLException e) {
                     throw new RuntimeException(e);
                 }
