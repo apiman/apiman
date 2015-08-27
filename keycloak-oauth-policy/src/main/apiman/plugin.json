@@ -1,6 +1,6 @@
 {
   "frameworkVersion" : 1.0,
   "name" : "Keycloak OAuth Policy Plugin",
-  "description" : "OAuth2 authentication",
+  "description" : "This plugin offers an OAuth2 policy which leverages the Keycloak authentication platform as the identity and access provider.",
   "version" : "${project.version}"
 }

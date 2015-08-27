@@ -1,6 +1,6 @@
 {
   "frameworkVersion" : 1.0,
   "name" : "HTTP Header Policy Plugin",
-  "description" : "Allows the granular addition and removal of headers.",
+  "description" : "Offers a simple policy that allows request headers to be added or stripped from the HTTP request (outgoing) or HTTP response (incoming).",
   "version" : "${project.version}"
 }

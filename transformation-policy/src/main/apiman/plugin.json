@@ -1,6 +1,6 @@
 {
   "frameworkVersion" : 1.0,
   "name" : "Transformation Policy Plugin",
-  "description" : "This plugin transforms the data from one format to another.",
+  "description" : "This plugin provides a very simple policy which can transform the request and/or response payload between XML and JSON.",
   "version" : "${project.version}"
 }
