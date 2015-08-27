@@ -15,9 +15,6 @@
  */
 package io.apiman.manager.api.core.config;
 
-import io.apiman.common.config.ConfigFactory;
-import io.apiman.manager.api.core.logging.IApimanLogger;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -26,17 +23,17 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import javax.enterprise.context.ApplicationScoped;
-
 import org.apache.commons.configuration.Configuration;
+
+import io.apiman.common.config.ConfigFactory;
+import io.apiman.manager.api.core.logging.IApimanLogger;
 
 /**
  * Configuration object for the API Manager.
  *
  * @author eric.wittmann@redhat.com
  */
-@ApplicationScoped
-public class ApiManagerConfig {
+public abstract class ApiManagerConfig {
 
     public static final String APIMAN_MANAGER_CONFIG_LOGGER = "apiman-manager.config.logger"; //$NON-NLS-1$
 
