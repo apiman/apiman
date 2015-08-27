@@ -12,21 +12,21 @@
       "artifactId" : "apiman-plugins-cors-policy",
       "version" : "1.2.0-SNAPSHOT",
       "name" : "CORS Policy Plugin",
-      "description" : "Provides a simple CORS policy, allowing an API to be more easily consumed directly by a browser."
+      "description" : "This plugin implements CORS (Cross-origin resource sharing): A method of controlling access to resources outside of an originating domain."
     },
     {
       "groupId" : "io.apiman.plugins",
       "artifactId" : "apiman-plugins-http-security-policy",
       "version" : "1.2.0-SNAPSHOT",
       "name" : "HTTP Security Policy Plugin",
-      "description" : ""
+      "description" : "Provides a policy which allows security-related HTTP headers to be set, which can help mitigate a range of common security vulnerabilities."
     },
     {
       "groupId" : "io.apiman.plugins",
       "artifactId" : "apiman-plugins-jsonp-policy",
       "version" : "1.2.0-SNAPSHOT",
       "name" : "JSONP Policy Plugin",
-      "description" : "Provides a policy that can convert a standard JSON API into a JSONP endpoint."
+      "description" : "A plugin that contributes a policy that turns a standard RESTful endpoint into a JSONP compatible endpoint."
     },
     {
       "groupId" : "io.apiman.plugins",
