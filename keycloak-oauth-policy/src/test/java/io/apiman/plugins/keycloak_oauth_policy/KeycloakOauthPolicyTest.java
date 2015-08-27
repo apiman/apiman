@@ -6,17 +6,6 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import io.apiman.gateway.engine.beans.PolicyFailure;
-import io.apiman.gateway.engine.beans.ServiceRequest;
-import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
-import io.apiman.gateway.engine.components.ISharedStateComponent;
-import io.apiman.gateway.engine.impl.DefaultPolicyFailureFactoryComponent;
-import io.apiman.gateway.engine.impl.InMemorySharedStateComponent;
-import io.apiman.gateway.engine.policies.AuthorizationPolicy;
-import io.apiman.gateway.engine.policy.IPolicyChain;
-import io.apiman.gateway.engine.policy.IPolicyContext;
-import io.apiman.plugins.keycloak_oauth_policy.beans.ForwardRoles;
-import io.apiman.plugins.keycloak_oauth_policy.beans.KeycloakOauthConfigBean;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -40,6 +29,7 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemWriter;
 import org.bouncycastle.x509.X509V1CertificateGenerator;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -49,6 +39,20 @@ import org.keycloak.representations.AccessToken.Access;
 import org.keycloak.util.Time;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import io.apiman.gateway.engine.beans.PolicyFailure;
+import io.apiman.gateway.engine.beans.ServiceRequest;
+import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
+import io.apiman.gateway.engine.components.ISharedStateComponent;
+import io.apiman.gateway.engine.impl.DefaultPolicyFailureFactoryComponent;
+import io.apiman.gateway.engine.impl.InMemorySharedStateComponent;
+import io.apiman.gateway.engine.policies.AuthorizationPolicy;
+import io.apiman.gateway.engine.policy.IPolicyChain;
+import io.apiman.gateway.engine.policy.IPolicyContext;
+import io.apiman.plugins.keycloak_oauth_policy.beans.ForwardAuthInfo;
+import io.apiman.plugins.keycloak_oauth_policy.beans.ForwardAuthInfo.Field;
+import io.apiman.plugins.keycloak_oauth_policy.beans.ForwardRoles;
+import io.apiman.plugins.keycloak_oauth_policy.beans.KeycloakOauthConfigBean;
 
 /**
  * Test the {@link KeycloakOauthPolicy}.
@@ -106,6 +110,7 @@ public class KeycloakOauthPolicyTest {
         MockitoAnnotations.initMocks(this);
 
         token = new AccessToken();
+
         AccessToken realm = token.subject("CN=Client").issuer("apiman-realm"); // KC seems to use issuer for realm?
 
         realm.addAccess("apiman-service").addRole("apiman-gateway-user-role").addRole("a-nother-role");
@@ -292,6 +297,40 @@ public class KeycloakOauthPolicyTest {
 
         verify(mContext).setAttribute(eq(AuthorizationPolicy.AUTHENTICATED_USER_ROLES), eq(roles));
         verify(mChain).doApply(any(ServiceRequest.class));
+    }
+
+    @Test
+    public void shouldForwardAuthInfoName() throws CertificateEncodingException, IOException {
+        ForwardAuthInfo authInfo = new ForwardAuthInfo();
+        authInfo.setHeaders("X-TEST");
+        authInfo.setField(Field.USERNAME);
+        config.getForwardAuthInfo().add(authInfo);
+
+        token.setPreferredUsername("ABC");
+        String encoded = generateAndSerializeToken();
+        serviceRequest.getHeaders().put("Authorization", "Bearer " + encoded);
+        keycloakOauthPolicy.apply(serviceRequest, mContext, config, mChain);
+
+        verify(mChain).doApply(serviceRequest);
+
+        Assert.assertEquals("ABC", serviceRequest.getHeaders().get("X-TEST"));
+    }
+
+    @Test
+    public void shouldForwardAuthInfoSubject() throws CertificateEncodingException, IOException {
+        ForwardAuthInfo authInfo = new ForwardAuthInfo();
+        authInfo.setHeaders("X-TEST");
+        authInfo.setField(Field.EMAIL);
+        config.getForwardAuthInfo().add(authInfo);
+
+        token.setEmail("apiman@apiman.io");
+        String encoded = generateAndSerializeToken();
+        serviceRequest.getHeaders().put("Authorization", "Bearer " + encoded);
+        keycloakOauthPolicy.apply(serviceRequest, mContext, config, mChain);
+
+        verify(mChain).doApply(serviceRequest);
+
+        Assert.assertEquals("apiman@apiman.io", serviceRequest.getHeaders().get("X-TEST"));
     }
 
     private String certificateAsPem(X509Certificate x509) throws CertificateEncodingException, IOException {
