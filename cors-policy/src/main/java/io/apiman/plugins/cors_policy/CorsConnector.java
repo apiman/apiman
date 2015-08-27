@@ -15,11 +15,6 @@
  */
 package io.apiman.plugins.cors_policy;
 
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.commons.lang.StringUtils;
-
 import io.apiman.gateway.engine.IServiceConnection;
 import io.apiman.gateway.engine.IServiceConnectionResponse;
 import io.apiman.gateway.engine.IServiceConnector;
@@ -35,6 +30,11 @@ import io.apiman.gateway.engine.beans.exceptions.ConnectorException;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.io.IApimanBuffer;
 import io.apiman.plugins.cors_policy.util.HttpHelper;
+
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.lang.StringUtils;
 
 /**
  * CORS validator and connector. Implements http://www.w3.org/TR/2014/REC-cors-20140116/.
@@ -144,8 +144,9 @@ public class CorsConnector implements IServiceConnector {
         appendOptional(AC_EXPOSE_HEADERS_KEY, join(config.getExposeHeaders()), !config.getExposeHeaders()
                 .isEmpty(), null);
 
-        if (!isSimpleRequest(acRequestHeaders)) { // Should be a preflight request
-            if (request.getType().equals(HttpHelper.OPTIONS)) {
+        if (!isSimpleRequest(acRequestHeaders)) { // Should be a preflight request or real request
+            if (request.getType().equals(HttpHelper.OPTIONS) &&
+                    requestHeaders.get(AC_REQUEST_METHOD_KEY) != null) {
                 String[] acRequestMethods = split(requestHeaders.get(AC_REQUEST_METHOD_KEY));
 
                 // Append allowed methods even if we return an error.
@@ -167,8 +168,6 @@ public class CorsConnector implements IServiceConnector {
                 if (!isFailure()) {
                     shortCircuit = true;
                 }
-            } else {
-                doFailure(Messages.getString("CorsConnector.invalid_preflight_request")); //$NON-NLS-1$
             }
         }
     }
