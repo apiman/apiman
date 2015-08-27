@@ -1437,3 +1437,8 @@ textarea.apiman-endpoint {
 #apiman-svc-metrics-selector .bootstrap-select, #apiman-app-metrics-selector .bootstrap-select {
   width: auto;
 }
+
+table tr.apiman_deleting {
+  text-decoration: line-through;
+  background-color: rgb(255, 204, 205);
+}

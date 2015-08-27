@@ -16,11 +16,16 @@ module ApimanDialogs {
                     };
                     modalScope.onNo = function() {
                         if (noCallback) { noCallback(); }
+                        noCallback = null;
                     };
                     modalScope.title = title;
                     modalScope.message = message;
                     $('body').append($compile('<apiman-confirm-modal modal-title="{{ title }}">{{ message }}</apiman-confirm-modal>')(modalScope));
                     $timeout(function() {
+                        $('#confirmModal').on('hidden.bs.modal', function () {
+                            if (noCallback) { $rootScope.$apply(noCallback); }
+                            noCallback = null;
+                        });
                         $('#confirmModal')['modal']({'keyboard': true, 'backdrop': 'static'});
                     }, 1);
                 },
@@ -94,7 +99,7 @@ module ApimanDialogs {
                         }
                     };
                     modalScope.title = title;
-                    $('body').append($compile('<apiman-select-service-modal modal-title="{{ title }}"></apiman-confirm-modal>')(modalScope));
+                    $('body').append($compile('<apiman-select-service-modal modal-title="{{ title }}"></apiman-select-service-modal>')(modalScope));
                     $timeout(function() {
                         $('#selectServiceModal')['modal']({'keyboard': true, 'backdrop': 'static'});
                         $('#selectServiceModal').on('shown.bs.modal', function () {

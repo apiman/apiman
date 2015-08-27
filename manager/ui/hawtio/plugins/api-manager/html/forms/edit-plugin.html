@@ -50,17 +50,17 @@
               </dd>
             </dl>
           </div>
-          <div class="row">
+          <div class="row" ng-show="plugin.classifier">
             <dl>
-              <dt apiman-i18n-key="classifier.optional">Classifier (optional)</dt>
+              <dt apiman-i18n-key="classifier.optional">Classifier</dt>
               <dd>
                 <span data-field="classifier">{{ plugin.classifier }}</span>
               </dd>
             </dl>
           </div>
-          <div class="row">
+          <div class="row" ng-show="plugin.type">
             <dl>
-              <dt apiman-i18n-key="type.optional">Type (optional)</dt>
+              <dt apiman-i18n-key="type.optional">Type</dt>
               <dd>
                 <span data-field="type">{{ plugin.type }}</span>
               </dd>
@@ -96,8 +96,7 @@
       </div>
       <!-- Create Button -->
       <div class="row">
-        <a id="cancel" href="javascript:window.history.back()" class="btn btn-default btn-cancel" data-field="cancelButton" apiman-i18n-key="cancel">Cancel</a>
-        <button id="delete-plugin" apiman-action-btn="" class="btn btn-danger" style="margin-left: 100px;" data-field="deleteButton" apiman-i18n-key="delete-plugin" placeholder="Deleting..." data-icon="fa-cog" ng-click="deletePlugin()">Delete Plugin</button>
+        <a id="cancel" href="javascript:window.history.back()" class="btn btn-default" apiman-i18n-key="ok">OK</a>
       </div>
     </div> <!-- /container -->
   </body>

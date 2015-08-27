@@ -15,17 +15,6 @@ module Apiman {
                 })
             };
             
-            $scope.deletePlugin  = function() {
-                $scope.deleteButton.state = 'in-progress';
-                Dialogs.confirm('Confirm Delete Plugin', 'Do you really want to delete this plugin?', function() {
-                    ApimanSvcs.delete({ entityType: 'plugins', secondaryType: $scope.plugin.id }, function(reply) {
-                         PageLifecycle.redirectTo('/admin/plugins');
-                    }, PageLifecycle.handleError);
-                }, function() {
-                    $scope.deleteButton.state = 'complete';
-                });
-            }
-            
             PageLifecycle.loadPage('EditPlugin', pageData, $scope, function() {
                 PageLifecycle.setPageTitle('plugin-details');
             });

@@ -34,40 +34,109 @@
             <div class="row hr-row">
               <hr/>
             </div>
-            <!-- Filter and Actions -->
+
             <div class="row">
-              <div class="apiman-filters apiman-plugins-filters">
-                <a apiman-i18n-key="add-plugin" data-field="toNewPlugin" href="{{ pluginName }}/new-plugin" class="btn btn-primary pull-right">Add Plugin</a>
-              </div>
+              <ul class="nav nav-tabs">
+                <li class="active"><a href="#installed-plugins" data-toggle="tab" role="tab" apiman-i18n-key="installed-plugins">Installed Plugins</a></li>
+                <li><a href="#available-plugins" data-toggle="tab" role="tab" apiman-i18n-key="available-plugins">Available Plugins</a></li>
+              </ul>
             </div>
-            <!-- Table of Plugins -->
-            <div class="row">
-              <div class="table-responsive">
-                <table class="table table-striped table-bordered table-hover" data-field="plugins">
-                  <thead>
-                    <tr>
-                      <th apiman-i18n-key="name">Name</th>
-                      <th apiman-i18n-key="coordinates">Coordinates</th>
-                    </tr>
-                  </thead>
-                  <tbody >
-                    <tr ng-hide="plugins.length > 0">
-                      <td colspan="2">
-                        <div class="apiman-no-content container-fluid">
-                          <div class="row">
-                            <div class="col-md-12">
-                              <p class="apiman-no-entities-description" apiman-i18n-key="no-plugins-found">No plugins have been added! Try adding some plugins by clicking Add Plugin above.</p>
+            
+            <div class="tab-content">
+              <div id="installed-plugins" role="tabpanel" class="tab-pane fade active in">
+                <!-- Table of Plugins -->
+                <div class="row">
+                  <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-hover">
+                      <thead>
+                        <tr>
+                          <th apiman-i18n-key="name">Name</th>
+                          <th apiman-i18n-key="description">Description</th>
+                          <th apiman-i18n-key="actions">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr ng-hide="plugins.length > 0">
+                          <td colspan="2">
+                            <div class="apiman-no-content container-fluid">
+                              <div class="row">
+                                <div class="col-md-12">
+                                  <p class="apiman-no-entities-description" apiman-i18n-key="no-plugins-found">No plugins have been added! Try adding some plugins by clicking Add Plugin above.</p>
+                                </div>
+                              </div>
                             </div>
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr ng-repeat="plugin in plugins">
-                      <td>{{ plugin.name }}</td>
-                      <td><a href="{{ pluginName }}/admin/plugins/{{ plugin.id }}"><span>{{ plugin.groupId }}:{{ plugin.artifactId }}:{{ plugin.version}}:{{ plugin.type }}</span></a></td>
-                    </tr>
-                  </tbody>
-                </table>
+                          </td>
+                        </tr>
+                        <tr ng-repeat="plugin in plugins" ng-class="{apiman_deleting: plugin.deleting}">
+                          <td><a href="{{ pluginName }}/admin/plugins/{{ plugin.id }}">{{ plugin.name }}</a></td>
+                          <td><span>{{plugin.description}}</span></td>
+                          <td nowrap="nowrap">
+                            <a href="#" ng-click="uninstallPlugin(plugin)" apiman-i18n-key="uninstall">Uninstall</a>
+<!--                             | -->
+<!--                             <a href="#" apiman-i18n-key="upgrade">Upgrade</a> -->
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              <div id="available-plugins" role="tabpanel" class="tab-pane fade">
+                <div class="row">
+                  <div class="apiman-filters apiman-policyDefs-filters">
+                    <div>
+                      <apiman-search-box id="plugin-name-filter" apiman-i18n-key="filter-plugins" function="filterAvailablePlugins" placeholder="Filter by plugin name..." />
+                    </div>
+                    <a apiman-i18n-key="add-custom-plugin" href="{{ pluginName }}/new-plugin" class="btn btn-primary pull-right">Add Custom Plugin</a>
+                  </div>
+                </div>
+                <!-- Table of Available Plugins -->
+                <div class="row">
+                  <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-hover">
+                      <thead>
+                        <tr>
+                          <th apiman-i18n-key="name">Name</th>
+                          <th apiman-i18n-key="description">Description</th>
+                          <th apiman-i18n-key="actions">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr ng-hide="availablePlugins.length > 0">
+                          <td colspan="3">
+                            <div class="apiman-no-content container-fluid">
+                              <div class="row">
+                                <div class="col-md-12">
+                                  <p class="apiman-no-entities-description" apiman-i18n-key="no-available-plugins-found">No plugins found! Perhaps the plugin registry is not properly configured?</p>
+                                </div>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr ng-hide="filteredAvailablePlugins.length > 0 || availablePlugins.length == 0">
+                          <td colspan="3">
+                            <div class="apiman-no-content container-fluid">
+                              <div class="row">
+                                <div class="col-md-12">
+                                  <p class="apiman-no-entities-description" apiman-i18n-key="no-available-plugins-found">No plugins match your filter criteria.</p>
+                                </div>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr ng-repeat="plugin in filteredAvailablePlugins">
+                          <td>{{ plugin.name }}</td>
+                          <td><span>{{plugin.description}}</span></td>
+                          <td nowrap="nowrap">
+                            <a ng-hide="plugin.isInstalled" href="{{ pluginName }}/new-plugin?groupId={{ plugin.groupId }}&amp;artifactId={{ plugin.artifactId }}&amp;version={{ plugin.version }}&amp;classifier={{ plugin.classifier }}&amp;type={{ plugin.type }}" apiman-i18n-key="install">Install</a>
+                            <span class="apiman-label apiman-label-success" ng-hide="!plugin.isInstalled" apiman-i18n-key="installed">Installed</span>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
