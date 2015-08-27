@@ -92,6 +92,7 @@ public class PluginSpec {
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
+    @SuppressWarnings("nls")
     @Override
     public String toString() {
         return "Plugin [frameworkVersion=" + frameworkVersion + ", name=" + name + ", description="
