@@ -4,4 +4,4 @@ cp -rf user-guide/target/docbook/publish/en-US/html/* ../apiman.github.io/latest
 cp -rf developer-guide/target/docbook/publish/en-US/html/* ../apiman.github.io/latest/developer-guide/.
 cp -rf installation-guide/target/docbook/publish/en-US/html/* ../apiman.github.io/latest/installation-guide/.
 cp -rf production-guide/target/docbook/publish/en-US/html/* ../apiman.github.io/latest/production-guide/.
-
+cp -rf production-guide/en-US/images/* ../apiman.github.io/latest/images/images

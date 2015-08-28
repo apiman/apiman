@@ -20,6 +20,23 @@ https://github.com/apiman/apiman-deployer/tree/apiman-1.1.7.Final
 Simply download that script and run it on each of the machines you wish to install the various apiman
 components!
 
+== Architecture Summary
+Before we get started, it may be useful to know the overall architecture of apiman.  Let's start with a 
+picture!
+
+.Architecture of apiman
+image:images/apiman-architecture.png[Architecture of apiman]
+
+The apiman solution is made up of a number of pieces, including:
+
+* Keycloak Authentication Server
+* Relational Database
+* Elasticsearch Datastore
+* apiman API Gateway
+* apiman API Manager
+
+The image above should give you an idea of how they all fit together.
+
 == Database
 You have a number of persistence options in both Keycloak and apiman, but this guide will focus on using an 
 RDBMS instead of other options (e.g. Elasticsearch for apiman or mongodb for KC).
