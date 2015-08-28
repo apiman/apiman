@@ -137,6 +137,8 @@ public class CorsConnectorPreflightTest extends CorsConnectorTestBase {
         setOrigin("a");
         setHost("b");
 
+        request.setType("POST");
+
         connector = new CorsConnector(request, config, failureFactory);
 
         Assert.assertTrue(!connector.isFailure());
