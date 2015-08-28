@@ -15,18 +15,18 @@
  */
 package io.apiman.plugins.cors_policy;
 
-import static org.mockito.BDDMockito.*;
-
-import java.util.Map;
+import static org.mockito.BDDMockito.given;
 
 import io.apiman.plugins.cors_policy.util.HttpHelper;
+
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 /**
  * Test simple aspects of CORS
- * 
+ *
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 @SuppressWarnings("nls")
@@ -62,7 +62,7 @@ public class CorsConnectorSimpleTest extends CorsConnectorTestBase {
         Assert.assertTrue(!connector.isFailure());
         Assert.assertEquals("blergs", responseHeaders.get(CorsConnector.AC_ALLOW_ORIGIN_KEY));
     }
-    
+
     // Some browsers include Origin even with some cases where host == origin
     @Test
     public void shouldAllowWhenOriginMatchesHost() {
@@ -77,7 +77,7 @@ public class CorsConnectorSimpleTest extends CorsConnectorTestBase {
         Map<String, String> responseHeaders = connector.getResponseHeaders();
 
         Assert.assertTrue(!connector.isFailure());
-        Assert.assertEquals("panacalty", responseHeaders.get(CorsConnector.AC_ALLOW_ORIGIN_KEY));       
+        Assert.assertEquals("panacalty", responseHeaders.get(CorsConnector.AC_ALLOW_ORIGIN_KEY));
     }
 
     @Test
@@ -124,38 +124,6 @@ public class CorsConnectorSimpleTest extends CorsConnectorTestBase {
         connector = new CorsConnector(request, config, failureFactory);
 
         Assert.assertTrue(!connector.isFailure());
-    }
-
-    @Test
-    public void shouldForbidPostWithComplexContentType() {
-        given(request.getType()).willReturn(HttpHelper.POST);
-
-        setOrigin("http://example.com");
-        setHost("http://wibble.com");
-
-        allowOrigins.add("http://example.com");
-        // This type is NOT a simple contentType,
-        // hence should be rejected - must use preflight.
-        setContentType("text/json");
-
-        connector = new CorsConnector(request, config, failureFactory);
-
-        Assert.assertTrue(connector.isFailure());
-    }
-
-    @Test
-    public void shouldForbidNonSimpleVerbs() {
-        given(request.getType()).willReturn("PUT");
-
-        setOrigin("http://example.com");
-        setHost("http://wibble.com");
-
-        allowOrigins.add("http://example.com");
-
-        connector = new CorsConnector(request, config, failureFactory);
-
-        Assert.assertTrue(connector.isFailure());
-        Assert.assertEquals("Invalid simple request", 400, connector.getFailure().getFailureCode());
     }
 
     @Test
@@ -215,7 +183,7 @@ public class CorsConnectorSimpleTest extends CorsConnectorTestBase {
         Assert.assertTrue(!connector.isFailure());
         Assert.assertEquals("true", responseHeaders.get(CorsConnector.AC_ALLOW_CREDENTIALS_KEY));
     }
-    
+
     @Test
     public void shouldNotSetCredentialsHeaderIfUnset() {
         given(request.getType()).willReturn("GET");
@@ -233,6 +201,6 @@ public class CorsConnectorSimpleTest extends CorsConnectorTestBase {
 
         Assert.assertTrue(!connector.isFailure());
         // Header should not be set at all if allowCredentials is false.
-        Assert.assertEquals(null, responseHeaders.get(CorsConnector.AC_ALLOW_CREDENTIALS_KEY));        
+        Assert.assertEquals(null, responseHeaders.get(CorsConnector.AC_ALLOW_CREDENTIALS_KEY));
     }
 }

@@ -17,9 +17,9 @@ package io.apiman.plugins.cors_policy;
 
 import static org.mockito.BDDMockito.given;
 
-import java.util.Map;
-
 import io.apiman.plugins.cors_policy.util.HttpHelper;
+
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -27,7 +27,7 @@ import org.junit.Test;
 
 /**
  * Test preflight aspects of CORS
- * 
+ *
  * @author Marc Savy {@literal <msavy@redhat.com>}
  */
 @SuppressWarnings("nls")
@@ -39,7 +39,7 @@ public class CorsConnectorPreflightTest extends CorsConnectorTestBase {
         super.before();
         given(request.getType()).willReturn(HttpHelper.OPTIONS);
     }
-    
+
     @Test
     public void shouldSucceedWithMandatoryFields() {
         allowOrigins.add("bede");
@@ -47,7 +47,7 @@ public class CorsConnectorPreflightTest extends CorsConnectorTestBase {
 
         setOrigin("bede");
         setHost("venerable");
-        
+
         setRequestMethods(new String[] { "GET" });
 
         connector = new CorsConnector(request, config, failureFactory);
@@ -58,20 +58,7 @@ public class CorsConnectorPreflightTest extends CorsConnectorTestBase {
         Assert.assertEquals("bede", responseHeaders.get(CorsConnector.AC_ALLOW_ORIGIN_KEY));
         Assert.assertEquals("GET", responseHeaders.get(CorsConnector.AC_ALLOW_METHODS_KEY));
     }
-    
-    @Test
-    public void shouldFailWithoutMandatoryFields() {
-        allowOrigins.add("bede");
-        
-        setOrigin("bede");
-        setHost("venerable");
-        
-        connector = new CorsConnector(request, config, failureFactory);
 
-        Assert.assertTrue(connector.isFailure());
-        Assert.assertTrue(!connector.isShortcircuit());
-    }
-    
     @Test
     public void shouldFailWithDisallowedMethods() {
         allowOrigins.add("bede");
@@ -79,7 +66,7 @@ public class CorsConnectorPreflightTest extends CorsConnectorTestBase {
 
         setOrigin("bede");
         setHost("venerable");
-        
+
         setRequestMethods(new String[] { "DELETE" });
 
         connector = new CorsConnector(request, config, failureFactory);
@@ -92,54 +79,68 @@ public class CorsConnectorPreflightTest extends CorsConnectorTestBase {
         // Must still list allowed methods
         Assert.assertEquals("GET, HEAD", responseHeaders.get(CorsConnector.AC_ALLOW_METHODS_KEY));
     }
-    
+
     @Test
     public void shouldSucceedWithAllowedHeaders() {
         commonSetup();
-        
+
         allowHeaders.add("x-penshaw");
         allowHeaders.add("x-monument");
-        
+
         setRequestHeaders(new String[] { "x-monument", "x-penshaw" } );
-        
+
         connector = new CorsConnector(request, config, failureFactory);
         Map<String, String> responseHeaders = connector.getResponseHeaders();
-        
+
         Assert.assertTrue(!connector.isFailure());
         Assert.assertTrue(connector.isShortcircuit());
-        Assert.assertEquals("x-penshaw, x-monument", 
+        Assert.assertEquals("x-penshaw, x-monument",
                 responseHeaders.get(CorsConnector.AC_ALLOW_HEADERS_KEY));
     }
-    
+
     @Test
     public void shouldFailWithDisallowedHeaders() {
         commonSetup();
-        
+
         allowHeaders.add("x-monument");
-        
+
         setRequestHeaders(new String[] { "x-penshaw", "x-monument" } );
-        
+
         connector = new CorsConnector(request, config, failureFactory);
         Map<String, String> responseHeaders = connector.getResponseHeaders();
-        
+
         Assert.assertTrue(connector.isFailure());
         Assert.assertTrue(!connector.isShortcircuit());
-        Assert.assertEquals(null, 
-                responseHeaders.get(CorsConnector.AC_ALLOW_HEADERS_KEY));       
+        Assert.assertEquals(null,
+                responseHeaders.get(CorsConnector.AC_ALLOW_HEADERS_KEY));
     }
-    
+
     @Test
     public void shouldSetMaxAgeHeaderIfConfigSet() {
         commonSetup();
-        
+
         config.setMaxAge(9001);
-        
+
         connector = new CorsConnector(request, config, failureFactory);
         Map<String, String> responseHeaders = connector.getResponseHeaders();
-        
+
         Assert.assertTrue(!connector.isFailure());
         Assert.assertTrue(connector.isShortcircuit());
         Assert.assertEquals("9001", responseHeaders.get(CorsConnector.AC_MAX_AGE_KEY));
+    }
+
+    @Test
+    public void shouldPassThroughAfterPreflight() {
+        allowOrigins.add("*");
+        config.getAllowMethods().add("POST");
+
+        setOrigin("a");
+        setHost("b");
+
+        connector = new CorsConnector(request, config, failureFactory);
+
+        Assert.assertTrue(!connector.isFailure());
+        Assert.assertFalse(connector.isShortcircuit());
     }
 
     private void commonSetup() {
@@ -148,7 +149,7 @@ public class CorsConnectorPreflightTest extends CorsConnectorTestBase {
 
         setOrigin("bede");
         setHost("venerable");
-        
+
         setRequestMethods(new String[] { "GET" });
     }
 }
