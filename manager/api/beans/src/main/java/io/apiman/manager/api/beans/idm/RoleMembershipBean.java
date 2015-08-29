@@ -22,7 +22,10 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
 /**
@@ -57,6 +60,7 @@ public class RoleMembershipBean implements Serializable {
     private String roleId;
     @Column(name="org_id")
     private String organizationId;
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_on")
     private Date createdOn;
 
@@ -64,6 +68,11 @@ public class RoleMembershipBean implements Serializable {
      * Constructor.
      */
     public RoleMembershipBean() {
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        createdOn = new Date();
     }
 
     /**

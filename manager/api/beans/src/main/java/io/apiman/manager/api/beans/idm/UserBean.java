@@ -23,6 +23,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 /**
@@ -42,6 +44,7 @@ public class UserBean implements Serializable {
     @Column(name = "full_name")
     private String fullName;
     private String email;
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "joined_on", updatable=false)
     private Date joinedOn;
 

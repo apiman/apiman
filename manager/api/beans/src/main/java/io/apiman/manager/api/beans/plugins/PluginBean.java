@@ -22,7 +22,10 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
@@ -58,6 +61,7 @@ public class PluginBean implements Serializable {
     private String description;
     @Column(name = "created_by", updatable=false, nullable=false)
     private String createdBy;
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_on", updatable=false, nullable=false)
     private Date createdOn;
 
@@ -65,6 +69,11 @@ public class PluginBean implements Serializable {
      * Constructor.
      */
     public PluginBean() {
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        createdOn = new Date();
     }
 
     /**

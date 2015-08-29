@@ -21,7 +21,11 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
@@ -47,10 +51,12 @@ public class OrganizationBean implements Serializable {
     private String description;
     @Column(name = "created_by", updatable=false, nullable=false)
     private String createdBy;
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_on", updatable=false, nullable=false)
     private Date createdOn;
     @Column(name = "modified_by", updatable=true, nullable=false)
     private String modifiedBy;
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "modified_on", updatable=true, nullable=false)
     private Date modifiedOn;
 
@@ -58,6 +64,16 @@ public class OrganizationBean implements Serializable {
      * Constructor.
      */
     public OrganizationBean() {
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        createdOn = modifiedOn = new Date();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        modifiedOn = new Date();
     }
 
     /**

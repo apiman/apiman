@@ -28,7 +28,10 @@ import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
@@ -60,8 +63,14 @@ public class PlanBean implements Serializable {
     private String description;
     @Column(name = "created_by", updatable=false, nullable=false)
     private String createdBy;
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_on", updatable=false, nullable=false)
     private Date createdOn;
+
+    @PrePersist
+    protected void onCreate() {
+        createdOn = new Date();
+    }
 
     /**
      * @return the id
