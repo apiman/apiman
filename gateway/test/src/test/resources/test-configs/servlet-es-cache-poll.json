@@ -1,0 +1,8 @@
+{
+    "factory" : "io.apiman.gateway.test.junit.servlet.ServletGatewayTestServerFactory",
+    "type" : "es",
+    "config-properties" : {
+        "apiman-gateway.registry" : "io.apiman.gateway.engine.es.PollCachingESRegistry",
+        "apiman-gateway.registry.cache-polling-interval" : "2"
+    }
+}
