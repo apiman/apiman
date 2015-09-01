@@ -49,12 +49,16 @@ public class BasicMetricsTest {
     private OkHttpClient client;
 
     @Before
-    public void before() {
+    public void before() throws InterruptedException {
+        CountDownLatch latch = new CountDownLatch(1);
         client = new OkHttpClient();
+
         Map<String, String> promConfig = new HashMap<>();
         promConfig.put("port", "9876");
-        this.prometheusMetrics = new PrometheusScrapeMetrics(promConfig);
+        this.prometheusMetrics = new PrometheusScrapeMetrics(promConfig, result -> latch.countDown());
         prometheusMetrics.setComponentRegistry(null);
+
+        latch.await();
     }
 
     @After
