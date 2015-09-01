@@ -15,25 +15,17 @@
  */
 package io.apiman.gateway.engine.policies;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import java.util.HashSet;
+
+import org.junit.Test;
+import org.mockito.Mockito;
+
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.PolicyFailureType;
 import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
-import io.apiman.gateway.engine.policies.config.AuthorizationConfig;
-import io.apiman.gateway.engine.policies.config.AuthorizationRule;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-
-import org.junit.Test;
-import org.mockito.Mockito;
 
 /**
  * Unit test
@@ -43,62 +35,6 @@ import org.mockito.Mockito;
  */
 @SuppressWarnings({ "nls" })
 public class AuthorizationPolicyTest {
-
-    @Test
-    public void testParseConfiguration() {
-        AuthorizationPolicy policy = new AuthorizationPolicy();
-
-        String config = "{}";
-        Object parsed = policy.parseConfiguration(config);
-        assertNotNull(parsed);
-        assertEquals(AuthorizationConfig.class, parsed.getClass());
-
-        AuthorizationConfig parsedConfig = (AuthorizationConfig) parsed;
-        assertNotNull(parsedConfig.getRules());
-        assertTrue(parsedConfig.getRules().isEmpty());
-
-        // Single Path
-        config = "{\r\n" +
-                "  \"rules\" : [\r\n" +
-                "    { \"verb\" : \"GET\", \"pathPattern\" : \".*\", \"role\" : \"role-1\" }\r\n" +
-                "  ]\r\n" +
-                "}";
-        parsed = policy.parseConfiguration(config);
-        parsedConfig = (AuthorizationConfig) parsed;
-        assertNotNull(parsedConfig.getRules());
-        AuthorizationRule rule1 = new AuthorizationRule();
-        rule1.setVerb("GET");
-        rule1.setPathPattern(".*");
-        rule1.setRole("role-1");
-        List<AuthorizationRule> expectedConfiguration = Arrays.asList(rule1);
-        assertEquals(expectedConfiguration, parsedConfig.getRules());
-
-        // Multiple Paths
-        config = "{\r\n" +
-                "  \"rules\" : [\r\n" +
-                "    { \"verb\" : \"GET\", \"pathPattern\" : \".*\", \"role\" : \"role-1\" },\r\n" +
-                "    { \"verb\" : \"PUT\", \"pathPattern\" : \".+\", \"role\" : \"role-2\" },\r\n" +
-                "    { \"verb\" : \"POST\", \"pathPattern\" : \"(.*)\", \"role\" : \"role-3\" }\r\n" +
-                "  ]\r\n" +
-                "}";
-        parsed = policy.parseConfiguration(config);
-        parsedConfig = (AuthorizationConfig) parsed;
-        assertNotNull(parsedConfig.getRules());
-        expectedConfiguration = new ArrayList<>();
-        AuthorizationRule rule2 = new AuthorizationRule();
-        rule2.setVerb("PUT");
-        rule2.setPathPattern(".+");
-        rule2.setRole("role-2");
-        AuthorizationRule rule3 = new AuthorizationRule();
-        rule3.setVerb("POST");
-        rule3.setPathPattern("(.*)");
-        rule3.setRole("role-3");
-        expectedConfiguration.add(rule1);
-        expectedConfiguration.add(rule2);
-        expectedConfiguration.add(rule3);
-
-        assertEquals(expectedConfiguration, parsedConfig.getRules());
-    }
 
     @Test
     public void testApplySimple() {
@@ -193,6 +129,52 @@ public class AuthorizationPolicyTest {
         doTest(json, userRoles, "GET", "/other/resource", false);
         doTest(json, userRoles, "POST", "/admin/resource", false);
     }
+
+    @Test
+    public void testApplyMultipleAnyMatch() {
+        String json = "{\r\n" +
+                " \"multiMatch\" : \"any\"," +
+                "  \"rules\" : [\r\n" +
+                "    { \"verb\" : \"*\", \"pathPattern\" : \"/.*\", \"role\" : \"user\" },\r\n" +
+                "    { \"verb\" : \"*\", \"pathPattern\" : \"/multi/.*\", \"role\" : \"role-1\" },\r\n" +
+                "    { \"verb\" : \"*\", \"pathPattern\" : \"/multi/.*\", \"role\" : \"role-2\" },\r\n" +
+                "    { \"verb\" : \"*\", \"pathPattern\" : \"/admin/.*\", \"role\" : \"admin\" }\r\n" +
+                "  ]\r\n" +
+                "}";
+
+        HashSet<String> userRoles = new HashSet<>();
+        userRoles.add("other-role");
+        doTest(json, userRoles, "GET", "/multi/resource", false);
+
+        userRoles.add("role-1");
+        doTest(json, userRoles, "GET", "/multi/resource", true);
+
+        userRoles.add("role-2");
+        doTest(json, userRoles, "GET", "/multi/resource", true);
+    }
+
+    @Test
+    public void testApplyMultipleAllMatch() {
+        String json = "{\r\n" +
+                " \"multiMatch\" : \"all\"," +
+                "  \"rules\" : [\r\n" +
+                "    { \"verb\" : \"*\", \"pathPattern\" : \"/multi/.*\", \"role\" : \"role-1\" },\r\n" +
+                "    { \"verb\" : \"*\", \"pathPattern\" : \"/multi/.*\", \"role\" : \"role-2\" },\r\n" +
+                "    { \"verb\" : \"*\", \"pathPattern\" : \"/admin/.*\", \"role\" : \"admin\" }\r\n" +
+                "  ]\r\n" +
+                "}";
+
+        HashSet<String> userRoles = new HashSet<>();
+        userRoles.add("other-role");
+        doTest(json, userRoles, "GET", "/multi/resource", false);
+
+        userRoles.add("role-1");
+        doTest(json, userRoles, "GET", "/multi/resource", false);
+
+        userRoles.add("role-2");
+        doTest(json, userRoles, "GET", "/multi/resource", true);
+    }
+
 
 
     private void doTest(String json, HashSet<String> userRoles, String verb, String path, boolean shouldSucceed) {

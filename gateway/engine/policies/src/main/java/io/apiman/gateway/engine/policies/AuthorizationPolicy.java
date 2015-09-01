@@ -15,19 +15,20 @@
  */
 package io.apiman.gateway.engine.policies;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import io.apiman.gateway.engine.beans.PolicyFailure;
 import io.apiman.gateway.engine.beans.PolicyFailureType;
 import io.apiman.gateway.engine.beans.ServiceRequest;
 import io.apiman.gateway.engine.components.IPolicyFailureFactoryComponent;
 import io.apiman.gateway.engine.policies.config.AuthorizationConfig;
 import io.apiman.gateway.engine.policies.config.AuthorizationRule;
+import io.apiman.gateway.engine.policies.config.MultipleMatchType;
 import io.apiman.gateway.engine.policies.config.UnmatchedRequestType;
 import io.apiman.gateway.engine.policies.i18n.Messages;
 import io.apiman.gateway.engine.policy.IPolicyChain;
 import io.apiman.gateway.engine.policy.IPolicyContext;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Adds authorization capabilities to apiman. This policy allows users to
@@ -106,14 +107,30 @@ public class AuthorizationPolicy extends AbstractMappedPolicy<AuthorizationConfi
         if (resource == null || resource.trim().length() == 0) {
             resource = "/"; //$NON-NLS-1$
         }
+        // If multiMatch is set to 'any', then start out with authorized = false, and we need to
+        // find at least one match to turn authorized to true.  If it's set to "all" (the default)
+        // then start out authorized, and it requires *every* matching rule to pass or else it'll
+        // switch to false.
         boolean authorized = true;
+        if (config.getMultiMatch() == MultipleMatchType.any) {
+            authorized = false;
+        }
         boolean matchFound = false;
         for (AuthorizationRule authorizationRule : config.getRules()) {
             boolean verbMatches = "*".equals(authorizationRule.getVerb()) || verb.equalsIgnoreCase(authorizationRule.getVerb()); //$NON-NLS-1$
-            if (verbMatches && resource.matches(authorizationRule.getPathPattern())) {
+            boolean ruleMatches = resource.matches(authorizationRule.getPathPattern());
+            if (verbMatches && ruleMatches) {
                 // the verb and resource matched the rule - so enforce the role here!
-                authorized = authorized && userRoles.contains(authorizationRule.getRole());
+                boolean userHasRole = userRoles.contains(authorizationRule.getRole());
                 matchFound = true;
+
+                // If the multiMatch setting is "at least one matching rule" then do a logical
+                // OR operation.  If it's set to "all matching rules" then do a logical AND.
+                if (config.getMultiMatch() == MultipleMatchType.any) {
+                    authorized = authorized || userHasRole;
+                } else {
+                    authorized = authorized && userHasRole;
+                }
             }
         }
 

@@ -457,6 +457,10 @@ module Apiman {
                 if (!config.requestUnmatched) {
                     config.requestUnmatched = 'fail';
                 }
+                if (!config.multiMatch) {
+                    config.multiMatch = 'all';
+                }
+                
                 $scope.setValid(valid);
             };
             $scope.$watch('config', validate, true);

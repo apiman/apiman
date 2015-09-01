@@ -26,6 +26,7 @@ public class AuthorizationConfig {
 
     private List<AuthorizationRule> rules = new ArrayList<>();
     private UnmatchedRequestType requestUnmatched;
+    private MultipleMatchType multiMatch;
 
     /**
      * Constructor.
@@ -59,6 +60,20 @@ public class AuthorizationConfig {
      */
     public void setRequestUnmatched(UnmatchedRequestType requestUnmatched) {
         this.requestUnmatched = requestUnmatched;
+    }
+
+    /**
+     * @return the multiMatch
+     */
+    public MultipleMatchType getMultiMatch() {
+        return multiMatch;
+    }
+
+    /**
+     * @param multiMatch the multiMatch to set
+     */
+    public void setMultiMatch(MultipleMatchType multiMatch) {
+        this.multiMatch = multiMatch;
     }
 
 }
