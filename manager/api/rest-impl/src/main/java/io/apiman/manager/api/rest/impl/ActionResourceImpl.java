@@ -16,6 +16,17 @@
 
 package io.apiman.manager.api.rest.impl;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import io.apiman.gateway.engine.beans.Application;
 import io.apiman.gateway.engine.beans.Contract;
 import io.apiman.gateway.engine.beans.Policy;
@@ -55,17 +66,6 @@ import io.apiman.manager.api.rest.impl.audit.AuditUtils;
 import io.apiman.manager.api.rest.impl.i18n.Messages;
 import io.apiman.manager.api.rest.impl.util.ExceptionFactory;
 import io.apiman.manager.api.security.ISecurityContext;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 /**
  * Implementation of the Action API.
@@ -197,6 +197,7 @@ public class ActionResourceImpl implements IActionResource {
             storage.createAuditEntry(AuditUtils.servicePublished(versionBean, securityContext));
             storage.commitTx();
         } catch (PublishingException e) {
+            storage.rollbackTx();
             throw ExceptionFactory.actionException(Messages.i18n.format("PublishError"), e); //$NON-NLS-1$
         } catch (Exception e) {
             storage.rollbackTx();
