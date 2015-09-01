@@ -150,16 +150,7 @@ module Apiman {
         $httpProvider.interceptors.push('authInterceptor');
     }]);
 
-    _module.run(['$rootScope', 'SystemSvcs', 'HawtioNav', ($rootScope, SystemSvcs, HawtioNav: HawtioMainNav.Registry) => {
-        SystemSvcs.getStatus(function(response) {
-            if (response && response.up) {
-                HawtioNav.add(tab);
-            } else {
-                log.debug('apiman reports that it is not running.');
-            }
-        }, function(error) {
-            log.debug('Error getting apiman system status: ' + JSON.stringify(error));
-        });
+    _module.run(['$rootScope', ($rootScope) => {
         $rootScope.pluginName = Apiman.pluginName;
     }]);
 
