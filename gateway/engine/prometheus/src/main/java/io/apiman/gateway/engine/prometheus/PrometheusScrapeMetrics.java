@@ -103,13 +103,20 @@ public class PrometheusScrapeMetrics implements IMetrics {
                     APPLICATION)
             .register(collectorRegistry);
 
+    public PrometheusScrapeMetrics(Map<String, String> componentConfig,
+            Handler<AsyncResult<HttpServer>> listenHandler) {
+        this.vertx = Vertx.vertx();
+        this.componentConfig = componentConfig;
+        this.webServer = setupWebserver(listenHandler);
+    }
+
     public PrometheusScrapeMetrics(Map<String, String> componentConfig) {
         this.vertx = Vertx.vertx();
         this.componentConfig = componentConfig;
-        this.webServer = setupWebserver();
+        this.webServer = setupWebserver(null);
     }
 
-    private HttpServer setupWebserver() {
+    private HttpServer setupWebserver(Handler<AsyncResult<HttpServer>> listenHandler) {
         String port = componentConfig.get("port");
         Objects.requireNonNull(port, "Must specify port for scrape server to listen on");
         return vertx.createHttpServer().requestHandler(request -> {
@@ -126,7 +133,7 @@ public class PrometheusScrapeMetrics implements IMetrics {
                     .write(Json.encode(e));
             }
             response.end();
-        }).listen(Integer.parseInt(port));
+        }).listen(Integer.parseInt(port), listenHandler);
     }
 
     @Override
