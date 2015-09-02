@@ -27,7 +27,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
@@ -64,14 +68,18 @@ public class ApplicationVersionBean implements Serializable {
     private String version;
     @Column(name = "created_by", updatable=false, nullable=false)
     private String createdBy;
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_on", updatable=false, nullable=false)
     private Date createdOn;
     @Column(name = "modified_by", updatable=true, nullable=false)
     private String modifiedBy;
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "modified_on", updatable=true, nullable=false)
     private Date modifiedOn;
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "published_on")
     private Date publishedOn;
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "retired_on")
     private Date retiredOn;
 
@@ -79,6 +87,16 @@ public class ApplicationVersionBean implements Serializable {
      * Constructor.
      */
     public ApplicationVersionBean() {
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        createdOn = modifiedOn = new Date();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        modifiedOn = new Date();
     }
 
     /**

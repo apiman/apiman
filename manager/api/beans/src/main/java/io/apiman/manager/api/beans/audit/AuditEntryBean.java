@@ -25,7 +25,10 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.Type;
 
@@ -62,6 +65,7 @@ public class AuditEntryBean implements Serializable {
     private String entityId;
     @Column(name = "entity_version", updatable=false)
     private String entityVersion;
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_on", updatable=false, nullable=false)
     private Date createdOn;
     @Column(updatable=false, nullable=false)
@@ -76,6 +80,11 @@ public class AuditEntryBean implements Serializable {
      * Constructor.
      */
     public AuditEntryBean() {
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        createdOn = new Date();
     }
 
     /**

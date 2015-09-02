@@ -29,7 +29,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
 /**
@@ -67,6 +70,7 @@ public class ContractBean implements Serializable {
     private PlanVersionBean plan;
     @Column(name = "created_by", updatable=false, nullable=false)
     private String createdBy;
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_on", updatable=false, nullable=false)
     private Date createdOn;
     @Column(updatable=false, nullable=false)
@@ -76,6 +80,11 @@ public class ContractBean implements Serializable {
      * Constructor.
      */
     public ContractBean() {
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        createdOn = new Date();
     }
 
     /**

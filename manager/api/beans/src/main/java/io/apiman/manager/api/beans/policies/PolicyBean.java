@@ -35,6 +35,8 @@ import javax.persistence.PostUpdate;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
@@ -76,10 +78,12 @@ public class PolicyBean implements Serializable {
     private String configuration;
     @Column(name = "created_by", updatable=false, nullable=false)
     private String createdBy;
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_on", updatable=false, nullable=false)
     private Date createdOn;
     @Column(name = "modified_by", updatable=true, nullable=false)
     private String modifiedBy;
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "modified_on", updatable=true, nullable=false)
     private Date modifiedOn;
     @ManyToOne(fetch=FetchType.EAGER, optional=false)
@@ -93,8 +97,16 @@ public class PolicyBean implements Serializable {
     public PolicyBean() {
     }
 
-    @PrePersist @PreUpdate
-    protected void encryptData() {
+    @PrePersist
+    protected void onCreate() {
+        createdOn = modifiedOn = new Date();
+        // Encrypt the endpoint properties.
+        configuration = AesEncrypter.encrypt(configuration);
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        modifiedOn = new Date();
         // Encrypt the endpoint properties.
         configuration = AesEncrypter.encrypt(configuration);
     }
