@@ -99,7 +99,7 @@ public class ManagerApiMicroService {
      * @param handlers
      * @throws Exception
      */
-    protected void addModulesToJetty(ContextHandlerCollection handlers) throws Exception {
+    public void addModulesToJetty(ContextHandlerCollection handlers) throws Exception {
     	/* *************
          * Manager API
          * ************* */
@@ -130,21 +130,21 @@ public class ManagerApiMicroService {
     /**
      * @param apiManServer
      */
-    protected void addSecurityHandler(ServletContextHandler apiManServer) {
+    public void addSecurityHandler(ServletContextHandler apiManServer) {
         apiManServer.setSecurityHandler(createSecurityHandler());
     }
 
     /**
      * @param apiManServer
      */
-    protected void addAuthFilter(ServletContextHandler apiManServer) {
+    public void addAuthFilter(ServletContextHandler apiManServer) {
         apiManServer.addFilter(AuthenticationFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
     }
 
     /**
      * Creates a basic auth security handler.
      */
-    protected SecurityHandler createSecurityHandler() {
+    public SecurityHandler createSecurityHandler() {
         HashLoginService l = new HashLoginService();
         for (User user : Users.getUsers()) {
             l.putUser(user.getId(), Credential.getCredential(user.getPassword()), user.getRolesAsArray());
