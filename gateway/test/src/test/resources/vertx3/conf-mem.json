@@ -19,7 +19,7 @@
   //    "trustStore": "/path/to/your/truststore.jks",
   //    "keyStore": "/path/to/your/keystore.jks",
   //    "keyStorePassword": "abc123"
-      }
+  //    }
     }
   },
 
