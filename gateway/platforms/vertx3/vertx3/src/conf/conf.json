@@ -1,28 +1,32 @@
-{
+{ // Example ElasticSearch based config
   "registry": {
     "class": "io.apiman.gateway.engine.es.ESRegistry",
     "config": {
-      "client.type": "jest",
-      "client.cluster-name": "elasticsearch_msavy",
-      "client.host": "localhost",
-      "client.port": "9201"
+      "client": {
+        "type": "jest",
+        "cluster-name": "elasticsearch",
+        "host": "127.0.0.1",
+        "port": "9200",
+        "initialize": true
+      }
     }
   },
 
   "plugin-registry": {
-    "class": "io.apiman.gateway.platforms.vertx2.engine.VertxPluginRegistry",
+    "class": "io.apiman.gateway.platforms.vertx3.engine.VertxPluginRegistry",
     "config": {}
   },
 
   "connector-factory": {
-    "class": "io.apiman.gateway.platforms.vertx2.connector.ConnectorFactory",
+    "class": "io.apiman.gateway.platforms.vertx3.connector.ConnectorFactory",
     "config": {
-      //"tls.allowSelfSigned": true,
-      //"tls.devMode": true,
-      //"tls.trustStore": "/path/to/your/truststore.jks",
-      //"tls.trustStorePassword": "abc123",
-      //"tls.keyStore": "/path/to/your/keystore.jks",
-      //"tls.keyStorePassword": "abc123"
+    //  "tls": {
+    //    "allowSelfSigned": true,
+    //    "devMode": true,
+    //    "trustStore": "/path/to/your/truststore.jks",
+    //    "keyStore": "/path/to/your/keystore.jks",
+    //    "keyStorePassword": "abc123"
+    //  }
     }
   },
 
@@ -38,37 +42,43 @@
 
   "components": {
       "IHttpClientComponent": {
-        "class": "io.apiman.gateway.platforms.vertx2.components.HttpClientComponentImpl",
+        "class": "io.apiman.gateway.platforms.vertx3.components.HttpClientComponentImpl",
         "config": {}
       },
 
       "ISharedStateComponent": {
         "class": "io.apiman.gateway.engine.es.ESSharedStateComponent",
         "config": {
-          "client.type": "jest",
-          "client.cluster-name": "elasticsearch_msavy",
-          "client.host": "localhost",
-          "client.port": "9201"
+          "client": {
+            "type": "jest",
+            "cluster-name": "elasticsearch",
+            "host": "127.0.0.1",
+            "port": "9200",
+            "initialize": true
+          }
         }
       },
 
       "IRateLimiterComponent": {
         "class": "io.apiman.gateway.engine.es.ESRateLimiterComponent",
         "config": {
-          "client.type": "jest",
-          "client.cluster-name": "elasticsearch_msavy",
-          "client.host": "localhost",
-          "client.port": "9201"
+          "client": {
+            "type": "jest",
+            "cluster-name": "elasticsearch",
+            "host": "127.0.0.1",
+            "port": "9200",
+            "initialize": true
+          }
         }
       },
 
       "IPolicyFailureFactoryComponent": {
-        "class": "io.apiman.gateway.platforms.vertx2.components.PolicyFailureFactoryComponent",
+        "class": "io.apiman.gateway.platforms.vertx3.components.PolicyFailureFactoryComponent",
         "config": {}
       },
 
       "IBufferFactoryComponent": {
-        "class": "io.apiman.gateway.platforms.vertx2.components.BufferFactoryComponentImpl",
+        "class": "io.apiman.gateway.platforms.vertx3.components.BufferFactoryComponentImpl",
         "config": {}
       }
   },
@@ -84,10 +94,10 @@
   // Port - The port a given verticle listens on (where relevant)
   // Count - Number of given verticle type launched
   "verticles": {
-    "http": { "port": 8082, "count": 2 },
-    "https": { "port": 8443, "count": 2 },
+    "http": { "port": 8082, "count": 1 },
+    "https": { "port": 8443, "count": 1 },
     "api": { "port": 8081, "count": 1 },
-    "policy": { "port": -1, "count": 4}
+    "policy": { "port": -1, "count": 1 }
   },
 
 // SSL configuration to the gateway's *front end* (i.e. client <-> gateway).
@@ -107,7 +117,7 @@
     "required": "basic",
     "realm": "apiman-gateway",
     "basic": { // Password is SHA256 digest encoded as Base64.
-      "admin" : "XAbrPVoFoZ9JR21pTKgaNjRGYOnVuY49amYw8xwkIuc="
+      "admin" : "jGl25bVBBBW96Qi9Te4V37Fnqchz/Eu4qB9vKrRIqRg="
     }
   },
 

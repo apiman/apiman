@@ -13,12 +13,13 @@
   "connector-factory": {
     "class": "io.apiman.gateway.platforms.vertx3.connector.ConnectorFactory",
     "config": {
-      //"tls.allowSelfSigned": true,
-      //"tls.devMode": true,
-      //"tls.trustStore": "/path/to/your/truststore.jks",
-      //"tls.trustStorePassword": "abc123",
-      //"tls.keyStore": "/path/to/your/keystore.jks",
-      //"tls.keyStorePassword": "abc123"
+  //    "tls": {
+  //    "allowSelfSigned": true,
+  //    "devMode": true,
+  //    "trustStore": "/path/to/your/truststore.jks",
+  //    "keyStore": "/path/to/your/keystore.jks",
+  //    "keyStorePassword": "abc123"
+      }
     }
   },
 
