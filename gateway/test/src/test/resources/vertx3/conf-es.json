@@ -5,7 +5,7 @@
       "client": {
         "type": "jest",
         "cluster-name": "elasticsearch",
-        "host": "127.0.0.1",
+        "host": "localhost",
         "port": "9200",
         "initialize": true
       }
@@ -52,7 +52,7 @@
           "client": {
             "type": "jest",
             "cluster-name": "elasticsearch",
-            "host": "127.0.0.1",
+            "host": "localhost",
             "port": "9200",
             "initialize": true
           }
@@ -65,7 +65,7 @@
           "client": {
             "type": "jest",
             "cluster-name": "elasticsearch",
-            "host": "127.0.0.1",
+            "host": "localhost",
             "port": "9200",
             "initialize": true
           }
