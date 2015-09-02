@@ -191,7 +191,8 @@ public class VertxEngineConfig implements IEngineConfig {
 
     protected Map<String, String> toFlatStringMap(JsonObject jsonObject) {
         Map<String, String> outMap = new LinkedHashMap<>();
-        jsonMapToProperties("", jsonObject.getMap(), outMap);
+        // TODO figure out why this workaround is necessary.
+        jsonMapToProperties("", new JsonObject(jsonObject.encode()).getMap(), outMap);
         return outMap;
     }
 
