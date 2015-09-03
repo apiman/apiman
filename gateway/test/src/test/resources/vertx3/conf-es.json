@@ -1,12 +1,14 @@
-{
+{ // Example ElasticSearch based config
   "registry": {
     "class": "io.apiman.gateway.engine.es.ESRegistry",
     "config": {
-      "client.type": "jest",
-      "client.cluster-name": "elasticsearch_msavy",
-      "client.host": "127.0.0.1",
-      "client.port": "9200",
-      "client.initialize": true
+      "client": {
+        "type": "jest",
+        "cluster-name": "elasticsearch",
+        "host": "localhost",
+        "port": "9200",
+        "initialize": true
+      }
     }
   },
 
@@ -18,12 +20,13 @@
   "connector-factory": {
     "class": "io.apiman.gateway.platforms.vertx3.connector.ConnectorFactory",
     "config": {
-      //"tls.allowSelfSigned": true,
-      //"tls.devMode": true,
-      //"tls.trustStore": "/path/to/your/truststore.jks",
-      //"tls.trustStorePassword": "abc123",
-      //"tls.keyStore": "/path/to/your/keystore.jks",
-      //"tls.keyStorePassword": "abc123"
+    //  "tls": {
+    //    "allowSelfSigned": true,
+    //    "devMode": true,
+    //    "trustStore": "/path/to/your/truststore.jks",
+    //    "keyStore": "/path/to/your/keystore.jks",
+    //    "keyStorePassword": "abc123"
+    //  }
     }
   },
 
@@ -46,22 +49,26 @@
       "ISharedStateComponent": {
         "class": "io.apiman.gateway.engine.es.ESSharedStateComponent",
         "config": {
-          "client.type": "jest",
-          "client.cluster-name": "elasticsearch_msavy",
-          "client.host": "localhost",
-          "client.port": "9200",
-          "client.initialize": true
+          "client": {
+            "type": "jest",
+            "cluster-name": "elasticsearch",
+            "host": "localhost",
+            "port": "9200",
+            "initialize": true
+          }
         }
       },
 
       "IRateLimiterComponent": {
         "class": "io.apiman.gateway.engine.es.ESRateLimiterComponent",
         "config": {
-          "client.type": "jest",
-          "client.cluster-name": "elasticsearch_msavy",
-          "client.host": "localhost",
-          "client.port": "9200",
-          "client.initialize": true
+          "client": {
+            "type": "jest",
+            "cluster-name": "elasticsearch",
+            "host": "localhost",
+            "port": "9200",
+            "initialize": true
+          }
         }
       },
 
