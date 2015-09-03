@@ -7,10 +7,7 @@ before_install:
   - export MAVEN_OPTS="-Xmx512m -XX:MaxPermSize=192m"
   - sed -i.bak -e 's|https://nexus.codehaus.org/snapshots/|https://oss.sonatype.org/content/repositories/codehaus-snapshots/|g' ~/.m2/settings.xml
   - echo "Settings XML" && cat ~/.m2/settings.xml
-
-before_script:
-  - sleep 10 # Apparently needed to ensure ES has time to start up
-
+  
 jdk:
   - oraclejdk8
   - openjdk7
