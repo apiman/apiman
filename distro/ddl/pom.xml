@@ -161,7 +161,7 @@
               <goal>updateSQL</goal>
             </goals>
             <configuration>
-              <migrationSqlOutputFile>${basedir}/target/apiman_mysql.ddl</migrationSqlOutputFile>
+              <migrationSqlOutputFile>${basedir}/target/apiman_mysql5.ddl</migrationSqlOutputFile>
               <driver>com.mysql.jdbc.Driver</driver>
               <url>offline:mysql?version=5.1&amp;caseSensitive=true&amp;changeLogFile=${basedir}/target/changelog/mysql/databasechangelog.csv</url>
               <username>apiman</username>
