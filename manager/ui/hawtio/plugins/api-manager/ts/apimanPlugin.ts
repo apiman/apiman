@@ -150,7 +150,10 @@ module Apiman {
         $httpProvider.interceptors.push('authInterceptor');
     }]);
 
-    _module.run(['$rootScope', ($rootScope) => {
+    _module.run(['$rootScope', 'SystemSvcs', 'HawtioNav', 'Configuration', ($rootScope, SystemSvcs, HawtioNav: HawtioMainNav.Registry, Configuration) => {
+        if (!Configuration.platform || Configuration.platform == 'standalone') {
+            HawtioNav.add(tab);
+        }
         $rootScope.pluginName = Apiman.pluginName;
     }]);
 
