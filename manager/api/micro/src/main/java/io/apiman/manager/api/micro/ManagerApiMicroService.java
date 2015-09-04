@@ -15,13 +15,6 @@
  */
 package io.apiman.manager.api.micro;
 
-import io.apiman.common.servlet.ApimanCorsFilter;
-import io.apiman.common.servlet.AuthenticationFilter;
-import io.apiman.common.servlet.DisableCachingFilter;
-import io.apiman.common.servlet.LocaleFilter;
-import io.apiman.common.servlet.RootResourceFilter;
-import io.apiman.manager.api.security.impl.DefaultSecurityContextFilter;
-
 import java.util.EnumSet;
 
 import javax.servlet.DispatcherType;
@@ -40,6 +33,13 @@ import org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap;
 import org.jboss.weld.environment.servlet.BeanManagerResourceBindingListener;
 import org.jboss.weld.environment.servlet.Listener;
 
+import io.apiman.common.servlet.ApimanCorsFilter;
+import io.apiman.common.servlet.AuthenticationFilter;
+import io.apiman.common.servlet.DisableCachingFilter;
+import io.apiman.common.servlet.LocaleFilter;
+import io.apiman.common.servlet.RootResourceFilter;
+import io.apiman.manager.api.security.impl.DefaultSecurityContextFilter;
+
 /**
  * This class starts up an embedded Jetty test server so that integration tests
  * can be performed.
@@ -54,7 +54,6 @@ public class ManagerApiMicroService {
     /**
      * Constructor.
      */
-
     public ManagerApiMicroService() {
     }
 

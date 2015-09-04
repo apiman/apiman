@@ -16,6 +16,31 @@
 
 package io.apiman.manager.api.rest.impl;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.TreeMap;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
+
+import org.apache.commons.io.IOUtils;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.format.ISODateTimeFormat;
+
 import io.apiman.common.util.AesEncrypter;
 import io.apiman.gateway.engine.beans.ServiceEndpoint;
 import io.apiman.manager.api.beans.BeanUtils;
@@ -141,31 +166,6 @@ import io.apiman.manager.api.rest.impl.i18n.Messages;
 import io.apiman.manager.api.rest.impl.util.ExceptionFactory;
 import io.apiman.manager.api.rest.impl.util.FieldValidator;
 import io.apiman.manager.api.security.ISecurityContext;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.TreeMap;
-
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
-
-import org.apache.commons.io.IOUtils;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.format.ISODateTimeFormat;
 
 /**
  * Implementation of the Organization API.
@@ -1212,6 +1212,10 @@ public class OrganizationResourceImpl implements IOrganizationResource {
 
             if (bean.getInitialVersion() != null) {
                 NewServiceVersionBean newServiceVersion = new NewServiceVersionBean();
+                newServiceVersion.setEndpoint(bean.getEndpoint());
+                newServiceVersion.setEndpointType(bean.getEndpointType());
+                newServiceVersion.setPlans(bean.getPlans());
+                newServiceVersion.setPublicService(bean.getPublicService());
                 newServiceVersion.setVersion(bean.getInitialVersion());
                 createServiceVersionInternal(newServiceVersion, newService, gateway);
             }
@@ -1360,14 +1364,25 @@ public class OrganizationResourceImpl implements IOrganizationResource {
             try {
                 ServiceVersionBean cloneSource = getServiceVersion(organizationId, serviceId, bean.getCloneVersion());
 
-                // Clone primary attributes of the service version
+                // Clone primary attributes of the service version unless those attributes
+                // were included in the NewServiceVersionBean.  In other words, information
+                // sent as part of the "create version" payload take precedence over the
+                // cloned attributes.
                 UpdateServiceVersionBean updatedService = new UpdateServiceVersionBean();
-                updatedService.setEndpoint(cloneSource.getEndpoint());
-                updatedService.setEndpointType(cloneSource.getEndpointType());
+                if (bean.getEndpoint() == null) {
+                    updatedService.setEndpoint(cloneSource.getEndpoint());
+                }
+                if (bean.getEndpointType() == null) {
+                    updatedService.setEndpointType(cloneSource.getEndpointType());
+                }
                 updatedService.setEndpointProperties(cloneSource.getEndpointProperties());
                 updatedService.setGateways(cloneSource.getGateways());
-                updatedService.setPlans(cloneSource.getPlans());
-                updatedService.setPublicService(cloneSource.isPublicService());
+                if (bean.getPlans() == null) {
+                    updatedService.setPlans(cloneSource.getPlans());
+                }
+                if (bean.getPublicService() == null) {
+                    updatedService.setPublicService(cloneSource.isPublicService());
+                }
                 newVersion = updateServiceVersion(organizationId, serviceId, bean.getVersion(), updatedService );
 
                 // Clone the service definition document
@@ -1428,6 +1443,14 @@ public class OrganizationResourceImpl implements IOrganizationResource {
         newVersion.setModifiedOn(new Date());
         newVersion.setStatus(ServiceStatus.Created);
         newVersion.setService(service);
+        newVersion.setEndpoint(bean.getEndpoint());
+        newVersion.setEndpointType(bean.getEndpointType());
+        if (bean.getPublicService() != null) {
+            newVersion.setPublicService(bean.getPublicService());
+        }
+        if (bean.getPlans() != null) {
+            newVersion.setPlans(bean.getPlans());
+        }
 
         if (gateway != null) {
             if (newVersion.getGateways() == null) {

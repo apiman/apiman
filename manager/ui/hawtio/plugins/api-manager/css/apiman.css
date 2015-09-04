@@ -1442,3 +1442,143 @@ table tr.apiman_deleting {
   text-decoration: line-through;
   background-color: rgb(255, 204, 205);
 }
+
+
+.apiman-wizard-items {
+  padding: 0px;
+  border: 1px solid rgb(200, 200, 200);
+  padding-top: 15px;
+  padding-bottom: 0px;
+  margin-bottom: 10px;
+}
+.apiman-wizard-items .apiman-header {
+  font-size: 19px;
+  font-weight: bold;
+  color: #666;
+}
+.apiman-wizard-items .apiman-subheader {
+  font-size: 16px;
+  color: #666;
+}
+.apiman-wizard-items hr {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.apiman-wizard-items .metadata-with-icon .fa {
+  float: left;
+  line-height: 14px;
+  color: #456;
+}
+.apiman-wizard-items .metadata-with-icon div {
+  float: left;
+  margin-left: 3px;
+  min-height: 16px;
+  line-height: 14px;
+}
+.apiman-wizard-items .description {
+  margin-top: 8px;
+}
+
+
+.apiman-wizard .apiman-wizard-item {
+  padding: 12px;
+  margin-bottom: 1px;
+  background-color: #F2F2FA;
+}
+.apiman-wizard .apiman-wizard-item .step {
+  padding-left: 10px;
+  color: #999;
+}
+.apiman-wizard .apiman-wizard-item .step i {
+  font-size: 15px;
+}
+.apiman-wizard .apiman-wizard-item .step-title {
+  padding-left: 32px;
+  font-size: 15px;
+  font-weight: bold;
+  color: #999;
+  line-height: 13px;
+}
+
+.apiman-wizard .apiman-wizard-item.active {
+  background-color: white;
+}
+.apiman-wizard .apiman-wizard-item.active .step i, .apiman-wizard .apiman-wizard-item.active .step-title {
+  color: rgb(207, 97, 0);
+}
+.apiman-wizard .apiman-wizard-item.done .step i, .apiman-wizard .apiman-wizard-item.done .step-title {
+  color: rgb(33, 169, 150);
+}
+
+.apiman-wizard-page {
+  
+}
+.apiman-wizard-page h1 {
+  margin-top: 0px;
+  padding-top: 0px;
+  padding-bottom: 5px;
+  border-bottom: 1px dotted #999;
+}
+.apiman-wizard-page h3 {
+  text-decoration: underline;
+}
+
+.apiman-wizard-buttons {
+  width: 100%;
+  text-align: right;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.apiman-wizard-buttons button, .apiman-wizard-buttons a {
+  min-width: 75px;
+  margin-left: 10px;
+}
+.apiman-wizard-buttons button#back {
+  margin-right: 0px;
+}
+.apiman-wizard-buttons button#next {
+  margin-left: 0px;
+}
+.apiman-wizard-buttons button#back span.fa {
+  margin-right: 5px;
+}
+.apiman-wizard-buttons button#next span.fa {
+  margin-left: 5px;
+}
+
+.apiman-wizard-search-box {
+  padding: 10px;
+  border: 1px solid #ccc;
+  background-color: #F2F2FA;
+  box-shadow: 2px 2px 4px #eee;
+  border-radius: 3px;
+  margin-bottom: 15px;
+}
+.apiman-wizard-search-box input {
+  width: 50%
+}
+
+.apiman-wizard-search-results .apiman-wizard-table-wrapper {
+  max-height: 200px;
+  overflow: auto;
+}
+
+#form-page .apiman-plan-selector div.bootstrap-select {
+  width: auto;
+  min-width: 100px;
+}
+
+.apiman-import-wizard-services tr.pending {
+  color: #666;
+}
+.apiman-import-wizard-services tr.active {
+  color: #00A8E1;
+  font-style: italic;
+}
+.apiman-import-wizard-services tr.complete {
+  color: #3F9C35;
+}
+.apiman-import-wizard-services tr.error {
+  color: #C00;
+}

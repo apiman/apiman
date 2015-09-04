@@ -1,0 +1,22 @@
+GET /organizations/Organization1/services/Service5/versions/7.0 admin/admin
+----
+200
+Content-Type: application/json
+
+{
+  "service" : {
+    "organization" : {
+      "id" : "Organization1"
+    },
+    "id" : "Service5",
+    "name" : "Service 5",
+    "description" : "This is the description of Service 5.",
+    "createdBy":"admin"
+  },
+  "status" : "Ready",
+  "version" : "7.0",
+  "createdBy" : "admin",
+  "endpoint" : "http://localhost:9000/service-5",
+  "endpointType" : "rest",
+  "publicService" : true
+}

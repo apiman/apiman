@@ -16,6 +16,7 @@
 package io.apiman.manager.api.beans.services;
 
 import java.io.Serializable;
+import java.util.Set;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
@@ -32,6 +33,11 @@ public class NewServiceVersionBean implements Serializable {
     private String version;
     private boolean clone;
     private String cloneVersion;
+
+    private String endpoint;
+    private EndpointType endpointType;
+    private Boolean publicService;
+    private Set<ServicePlanBean> plans;
 
     /**
      * Constructor.
@@ -79,6 +85,62 @@ public class NewServiceVersionBean implements Serializable {
      */
     public void setCloneVersion(String cloneVersion) {
         this.cloneVersion = cloneVersion;
+    }
+
+    /**
+     * @return the endpoint
+     */
+    public String getEndpoint() {
+        return endpoint;
+    }
+
+    /**
+     * @param endpoint the endpoint to set
+     */
+    public void setEndpoint(String endpoint) {
+        this.endpoint = endpoint;
+    }
+
+    /**
+     * @return the endpointType
+     */
+    public EndpointType getEndpointType() {
+        return endpointType;
+    }
+
+    /**
+     * @param endpointType the endpointType to set
+     */
+    public void setEndpointType(EndpointType endpointType) {
+        this.endpointType = endpointType;
+    }
+
+    /**
+     * @return the publicService
+     */
+    public Boolean getPublicService() {
+        return publicService;
+    }
+
+    /**
+     * @param publicService the publicService to set
+     */
+    public void setPublicService(Boolean publicService) {
+        this.publicService = publicService;
+    }
+
+    /**
+     * @return the plans
+     */
+    public Set<ServicePlanBean> getPlans() {
+        return plans;
+    }
+
+    /**
+     * @param plans the plans to set
+     */
+    public void setPlans(Set<ServicePlanBean> plans) {
+        this.plans = plans;
     }
 
 }

@@ -26,14 +26,14 @@
                     <apiman-search-box id="services-filter" apiman-i18n-key="filter-org-services" function="filterServices" placeholder="Filter by service name..." />
                   </div>
                   <div apiman-permission="svcEdit" class="btn-group pull-right">
-                    <a data-field="toNewService" href="{{ pluginName }}/new-service" class="btn btn-primary" apiman-i18n-key="new-service">New Service</a>
-<!--                     <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"> -->
-<!--                       <span class="caret"></span> -->
-<!--                       <span class="sr-only" apiman-i18n-key="toggle-dropdown">Toggle Dropdown</span> -->
-<!--                     </button> -->
-<!--                     <ul class="dropdown-menu" role="menu"> -->
-<!--                       <li><a href="import-services.html" disabled="disabled" data-field="toImportServices" apiman-i18n-key="import-services">Import Service(s)</a></li> -->
-<!--                     </ul> -->
+                    <a href="{{ pluginName }}/new-service" class="btn btn-primary" apiman-i18n-key="new-service">New Service</a>
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                      <span class="caret"></span>
+                      <span class="sr-only" apiman-i18n-key="toggle-dropdown">Toggle Dropdown</span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                      <li><a href="{{ pluginName }}/orgs/{{ org.id }}/import/services" apiman-i18n-key="import-services">Import Service(s)</a></li>
+                    </ul>
                   </div>
                 </div>
                 <div class="clearfix"></div>

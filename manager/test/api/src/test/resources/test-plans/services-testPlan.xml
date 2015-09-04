@@ -35,6 +35,8 @@
     <test name="Get Version 1.0 (updated)">test-plan-data/services/versions/007_get-version-1.0.resttest</test>
     <test name="Create Service Version (invalid)">test-plan-data/services/versions/008_create-version-invalid.resttest</test>
     <test name="Create Service Version (duplicate)">test-plan-data/services/versions/009_create-version-duplicate.resttest</test>
+    <test name="Create Service 5">test-plan-data/services/versions/010_create-service-5-with-init.resttest</test>
+    <test name="Verify Service 5">test-plan-data/services/versions/011_get-svc-5-version-7.0.resttest</test>
   </testGroup>
 
   <!-- Test service plans -->
@@ -52,7 +54,7 @@
     <test name="Update Service Plans 2">test-plan-data/services/plans/008_update-version-1.0-plans.resttest</test>
     <test name="Get Version 1.0 (with 2 plans)">test-plan-data/services/plans/009_get-version-1.0.resttest</test>
     <test name="Update Service Plans 3">test-plan-data/services/plans/010_update-version-1.0-plans.resttest</test>
-    <test name="Get Version 1.0 (with 1 plan)">test-plan-data/services/plans/011_get-version-1.0.resttest</test>
+    <test name="Get Version 1.0 (back to 1 plan)">test-plan-data/services/plans/011_get-version-1.0.resttest</test>
     <test name="Update Service Plans (error 500)">test-plan-data/services/plans/012_update-version-1.0-plans-500.resttest</test>
     <test name="Get Service Plans">test-plan-data/services/plans/013_get-service-plans.resttest</test>
   </testGroup>
@@ -86,8 +88,8 @@
     <test name="Get Version 2.0 (def)">test-plan-data/services/definitions/002_get-version-2.0.resttest</test>
     <test name="Get Service Definition">test-plan-data/services/definitions/003_get-service-definition.resttest</test>
     <test name="Delete Service Definition">test-plan-data/services/definitions/004_delete-service-definition.resttest</test>
-    <test name="Get Service Definition (404)">test-plan-data/services/definitions/005_get-service-definition-2.0-404.resttest</test>
-    <test name="Get Service Definition (404)">test-plan-data/services/definitions/006_get-service-definition-1.0-404.resttest</test>
+    <test name="Get Service Definition 2.0 (404)">test-plan-data/services/definitions/005_get-service-definition-2.0-404.resttest</test>
+    <test name="Get Service Definition 1.0 (404)">test-plan-data/services/definitions/006_get-service-definition-1.0-404.resttest</test>
     <test name="Add Service Definition (WSDL)">test-plan-data/services/definitions/007_add-service-definition-wsdl.resttest</test>
     <test name="Get Version 2.0 (def) (WSDL)">test-plan-data/services/definitions/008_get-version-2.0-wsdl.resttest</test>
     <test name="Get Service Definition (WSDL)">test-plan-data/services/definitions/009_get-service-definition-wsdl.resttest</test>
@@ -101,6 +103,7 @@
     <test name="Get Version 2.1">test-plan-data/services/cloning/003_get-version-2.1.resttest</test>
     <test name="List Policies [3]">test-plan-data/services/cloning/004_list-policies.resttest</test>
     <test name="List Policies [4]">test-plan-data/services/cloning/005_get-cloned-service-definition.resttest</test>
+    <test name="Clone 1.0 --> 2.1 (with fields)">test-plan-data/services/cloning/006_clone-version-2.1-with-fields.resttest</test>
   </testGroup>
 
 </testPlan>
