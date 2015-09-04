@@ -24,13 +24,16 @@ module ApimanLogger {
     export var Logger = _module.factory('Logger', [
         function() {
             return {
+                debug: function() {
+                    console.debug(_formatMessage(arguments));
+                },
                 info: function() {
                     console.info(_formatMessage(arguments));
                 },
                 log: function() {
                     console.info(_formatMessage(arguments));
                 },
-                debug: function() {
+                warn: function() {
                     console.warn(_formatMessage(arguments));
                 },
                 error: function() {
