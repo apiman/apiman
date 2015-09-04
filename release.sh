@@ -30,13 +30,13 @@ echo "######################################"
 
 sed -i -r "s/\"version\".?:.?\".*\"/\"version\" : \"$RELEASE_VERSION\"/g" registry.json
 
-echo git add .
-echo git commit -m "Prepare for release $RELEASE_VERSION"
-echo git push origin $BRANCH
-echo git tag -a -m "Tagging release $RELEASE_VERSION" $RELEASE_VERSION
-echo git push origin $RELEASE_VERSION
+git add .
+git commit -m "Prepare for release $RELEASE_VERSION"
+git push origin $BRANCH
+git tag -a -m "Tagging release $RELEASE_VERSION" $RELEASE_VERSION
+git push origin $RELEASE_VERSION
 
 sed -i -r "s/\"version\".?:.?\".*\"/\"version\" : \"$DEV_VERSION\"/g" registry.json
-echo git add .
-echo git commit -m "Update to next development version: $DEV_VERSION"
-echo git push origin $BRANCH
+git add .
+git commit -m "Update to next development version: $DEV_VERSION"
+git push origin $BRANCH
