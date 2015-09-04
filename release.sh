@@ -28,5 +28,5 @@ echo "Release Version: $RELEASE_VERSION"
 echo "Dev Version: $DEV_VERSION"
 echo "######################################"
 
-echo git tag -a -m "Tagging release $RELEASE_VERSION" $RELEASE_VERSION
-echo git push origin $RELEASE_VERSION
+git tag -a -m "Tagging release $RELEASE_VERSION" $RELEASE_VERSION
+git push origin $RELEASE_VERSION
